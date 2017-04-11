@@ -1,0 +1,63 @@
+/* this file will be extracted to main dist folder and is imported in index.html */
+/* This file is for setting global styles  */
+@import 'variables';
+
+.navbar-inverse {
+    background-color: $nav-background-color;
+    border-color: $nav-background-color;
+}
+
+.navbar-inverse .navbar-brand {
+    color: #FFFFFF;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: #FFFFFF;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 30px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 30px;
+  background-color: $nav-background-color;
+}
+
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+// body > .container {
+//   padding: 60px 15px 0;
+// }
+// .container .text-muted {
+//   margin: 20px 0;
+// }
+
+.footer > .container {
+  color: #FFFFFF;
+}
+
+// code {
+//   font-size: 80%;
+// }
+
+.text-muted {
+    color: #FFFFFF;
+}
+
+.jumbotron {
+   background-color: #FFFFFF;
+}
