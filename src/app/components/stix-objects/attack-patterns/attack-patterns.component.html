@@ -6,7 +6,20 @@
             <a md-raised-button (click)="download()">DOWNLOAD</a>            
         </div>
     </div>
+    <div class="container">
+        <ul class="attackPatterns">
+            <li *ngFor="let attackPattern of attackPatterns" (click)="onSelect(attackPattern)"
+                [class.selected]="attackPattern === selectedAttackPattern">
+                    <span class="badge">{{attackPattern.id}}</span>
+                    <span>{{attackPattern.name}}</span>
+                    <button class="delete"
+                        (click)="delete(attackPattern); $event.stopPropagation()">x</button>
+            </li>
+        </ul>
+    </div>
 </div>
+
+
 
 
 <router-outlet></router-outlet>

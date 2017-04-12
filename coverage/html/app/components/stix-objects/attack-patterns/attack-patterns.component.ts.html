@@ -20,28 +20,28 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">90% </span>
+        <span class="strong">64.29% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>9/10</span>
+        <span class='fraction'>18/28</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">100% </span>
+        <span class="strong">0% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>0/0</span>
+        <span class='fraction'>0/2</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">75% </span>
+        <span class="strong">42.86% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>3/4</span>
+        <span class='fraction'>6/14</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">87.5% </span>
+        <span class="strong">68.18% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>7/8</span>
+        <span class='fraction'>15/22</span>
       </div>
     </div>
   </div>
-  <div class='status-line high'></div>
+  <div class='status-line medium'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet">1
 2
@@ -63,7 +63,50 @@
 18
 19
 20
-21</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -73,7 +116,11 @@
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
@@ -82,25 +129,98 @@
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Navigation } from '../models/navigation';
+import { AttackPattern } from '../../../models';
+import { AttackPatternsService } from '../../../services';
+&nbsp;
 @Component({
   selector: 'attack-patterns',
   styleUrls: ['./attack-patterns.component.css'],
   templateUrl: './attack-patterns.component.html'
 })
+&nbsp;
 export class AttackPatternsComponent implements OnInit {
 &nbsp;
-    constructor() {
+    public attackPatterns: AttackPattern[];
+    private selectedAttackPattern: AttackPattern;
+&nbsp;
+    constructor(private attackPatternsService: AttackPatternsService) {
         console.log('Initial AttackPatternsComponent');
     }
+&nbsp;
     public ngOnInit() {
-        console.log('Initial AttackPatternsComponent');
+       this.loadAttachPatterns();
+    }
+&nbsp;
+    public onSelect(attackPattern: AttackPattern<span class="fstat-no" title="function not covered" >): void {</span>
+<span class="cstat-no" title="statement not covered" >        this.selectedAttackPattern = attackPattern;</span>
+    }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    public delete(attackPattern: AttackPattern<span class="fstat-no" title="function not covered" >): void {</span></span>
+        let subscription = <span class="cstat-no" title="statement not covered" >this.attackPatternsService.delete(attackPattern.id).subscribe(</span>
+<span class="fstat-no" title="function not covered" >            () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                this.attackPatterns = this.attackPatterns.filter((h<span class="fstat-no" title="function not covered" >) =&gt; <span class="cstat-no" title="statement not covered" >h !== attackPattern)</span></span>;</span>
+<span class="cstat-no" title="statement not covered" >                if (this.selectedAttackPattern === attackPattern) { <span class="cstat-no" title="statement not covered" >this.selectedAttackPattern = null; </span>}</span>
+            }, (error<span class="fstat-no" title="function not covered" >) =&gt; {</span>
+                // handle errors here
+            }, <span class="fstat-no" title="function not covered" >() =&gt; {</span>
+                // prevent memory links
+<span class="cstat-no" title="statement not covered" >                subscription.unsubscribe();</span>
+            }
+        );
     }
 &nbsp;
 <span class="fstat-no" title="function not covered" >    public download(): void {</span>
 <span class="cstat-no" title="statement not covered" >        alert('download clicked');</span>
+    }
+&nbsp;
+    private loadAttachPatterns(): void {
+         let subscription = this.attackPatternsService.getAttackPatterns().subscribe(
+            (attackPatterns) =&gt; {
+                this.attackPatterns = attackPatterns;
+                console.log('this.attackPatterns ' + attackPatterns);
+            }, (error<span class="fstat-no" title="function not covered" >) =&gt; {</span>
+                // handle errors here
+<span class="cstat-no" title="statement not covered" >                 console.log('error ' + error);</span>
+            }, () =&gt; {
+                // prevent memory links
+                // subscription.unsubscribe();
+            }
+        );
     }
 }
 &nbsp;</pre></td></tr>
@@ -109,7 +229,7 @@ export class AttackPatternsComponent implements OnInit {
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Tue Apr 11 2017 14:34:17 GMT-0400 (EDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Tue Apr 11 2017 21:58:25 GMT-0400 (EDT)
 </div>
 </div>
 <script src="../../../../prettify.js"></script>

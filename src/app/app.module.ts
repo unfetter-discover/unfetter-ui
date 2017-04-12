@@ -6,6 +6,10 @@ import { NgModule,  ApplicationRef } from '@angular/core';
 import { removeNgStyles,  createNewHosts,  createInputTransfer } from '@angularclass/hmr';
 import { RouterModule,  PreloadAllModules } from '@angular/router';
 
+// Imports for loading & configuring the in-memory web api
+import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { InMemoryDataService }  from './in-memory-data.service';
+
 /*
  * Platform and Environment providers/directives/pipes
  */
@@ -49,6 +53,7 @@ type StoreType = {
     BrowserAnimationsModule,
     FormsModule,
     HttpModule,
+    InMemoryWebApiModule.forRoot(InMemoryDataService),
     RouterModule.forRoot(ROUTES, { useHash: true, preloadingStrategy: PreloadAllModules })
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection

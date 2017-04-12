@@ -5,7 +5,7 @@
   },
   "zone.js": {
     "bundle": "polyfills",
-    "version": "0.7.6"
+    "version": "0.8.5"
   },
   "@angular/platform-browser": {
     "bundle": "vendor",
@@ -41,6 +41,6 @@
   },
   "rxjs": {
     "bundle": "vendor",
-    "version": "5.0.2"
+    "version": "5.0.1"
   }
 }

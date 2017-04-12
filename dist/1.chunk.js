@@ -1,60 +1,60 @@
 webpackJsonpac__name_([1],{
 
-/***/ 379:
+/***/ 226:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sightings_module__ = __webpack_require__(412);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "SightingsModule", function() { return __WEBPACK_IMPORTED_MODULE_0__sightings_module__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__threat_actors_module__ = __webpack_require__(402);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "ThreatActorsModule", function() { return __WEBPACK_IMPORTED_MODULE_0__threat_actors_module__["a"]; });
 
 
 
 /***/ }),
 
-/***/ 391:
+/***/ 338:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_tslib__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(1);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SightingsComponent; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_tslib__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(2);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ThreatActorsComponent; });
 
 
-var SightingsComponent = (function () {
-    function SightingsComponent() {
-        console.log('Initial SightingsComponent');
+var ThreatActorsComponent = (function () {
+    function ThreatActorsComponent() {
+        console.log('Initial ThreatActorsComponent');
     }
-    SightingsComponent.prototype.ngOnInit = function () {
-        console.log('Initial SightingsComponent');
+    ThreatActorsComponent.prototype.ngOnInit = function () {
+        console.log('Initial ThreatActorsComponent');
     };
-    return SightingsComponent;
+    return ThreatActorsComponent;
 }());
-SightingsComponent = __WEBPACK_IMPORTED_MODULE_0_tslib__["a" /* __decorate */]([
+ThreatActorsComponent = __WEBPACK_IMPORTED_MODULE_0_tslib__["a" /* __decorate */]([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_core__["Component"])({
-        selector: 'sightings',
-        styles: [__webpack_require__(447)],
-        template: __webpack_require__(436)
+        selector: 'threat-actors',
+        styles: [__webpack_require__(436)],
+        template: __webpack_require__(425)
     }),
     __WEBPACK_IMPORTED_MODULE_0_tslib__["b" /* __metadata */]("design:paramtypes", [])
-], SightingsComponent);
+], ThreatActorsComponent);
 
 
 
 /***/ }),
 
-/***/ 412:
+/***/ 402:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_tslib__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_router__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__sightings_routes__ = __webpack_require__(413);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__sightings_component__ = __webpack_require__(391);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SightingsModule; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_tslib__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_core__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_router__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__threat_actors_routes__ = __webpack_require__(403);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__threat_actors_component__ = __webpack_require__(338);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ThreatActorsModule; });
 
 
 
@@ -62,51 +62,51 @@ SightingsComponent = __WEBPACK_IMPORTED_MODULE_0_tslib__["a" /* __decorate */]([
 
 
 
-console.log('`Sightings` bundle loaded asynchronously');
-var SightingsModule = (function () {
-    function SightingsModule() {
+console.log('`Detail` bundle loaded asynchronously');
+var ThreatActorsModule = (function () {
+    function ThreatActorsModule() {
     }
-    return SightingsModule;
+    return ThreatActorsModule;
 }());
-SightingsModule.routes = __WEBPACK_IMPORTED_MODULE_5__sightings_routes__["a" /* routes */];
-SightingsModule = __WEBPACK_IMPORTED_MODULE_0_tslib__["a" /* __decorate */]([
+ThreatActorsModule.routes = __WEBPACK_IMPORTED_MODULE_5__threat_actors_routes__["a" /* routes */];
+ThreatActorsModule = __WEBPACK_IMPORTED_MODULE_0_tslib__["a" /* __decorate */]([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__angular_core__["NgModule"])({
         declarations: [
             // Components / Directives/ Pipes
-            __WEBPACK_IMPORTED_MODULE_6__sightings_component__["a" /* SightingsComponent */],
+            __WEBPACK_IMPORTED_MODULE_6__threat_actors_component__["a" /* ThreatActorsComponent */],
         ],
         imports: [
             __WEBPACK_IMPORTED_MODULE_1__angular_common__["CommonModule"],
             __WEBPACK_IMPORTED_MODULE_2__angular_forms__["FormsModule"],
-            __WEBPACK_IMPORTED_MODULE_4__angular_router__["RouterModule"].forChild(__WEBPACK_IMPORTED_MODULE_5__sightings_routes__["a" /* routes */]),
+            __WEBPACK_IMPORTED_MODULE_4__angular_router__["RouterModule"].forChild(__WEBPACK_IMPORTED_MODULE_5__threat_actors_routes__["a" /* routes */]),
         ],
     })
-], SightingsModule);
+], ThreatActorsModule);
 
 
 
 /***/ }),
 
-/***/ 413:
+/***/ 403:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sightings_component__ = __webpack_require__(391);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__threat_actors_component__ = __webpack_require__(338);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return routes; });
 
 var routes = [
     { path: '', children: [
-            { path: '', component: __WEBPACK_IMPORTED_MODULE_0__sightings_component__["a" /* SightingsComponent */] },
+            { path: '', component: __WEBPACK_IMPORTED_MODULE_0__threat_actors_component__["a" /* ThreatActorsComponent */] },
         ] },
 ];
 
 
 /***/ }),
 
-/***/ 425:
+/***/ 414:
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(19)();
+exports = module.exports = __webpack_require__(6)();
 // imports
 
 
@@ -118,18 +118,18 @@ exports.push([module.i, "", ""]);
 
 /***/ }),
 
-/***/ 436:
+/***/ 425:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"jumbotron\">\n    <div class=\"container\">\n        <p>sightings</p>\n    </div>\n</div>\n\n\n<router-outlet></router-outlet>"
+module.exports = "<div class=\"jumbotron\">\n    <div class=\"container\">\n        <p>Threat Actors Component</p>\n    </div>\n</div>\n\n\n<router-outlet></router-outlet>"
 
 /***/ }),
 
-/***/ 447:
+/***/ 436:
 /***/ (function(module, exports, __webpack_require__) {
 
 
-        var result = __webpack_require__(425);
+        var result = __webpack_require__(414);
 
         if (typeof result === "string") {
             module.exports = result;

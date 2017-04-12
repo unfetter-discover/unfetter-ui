@@ -268,7 +268,7 @@ module.exports = function (options) {
         { from: 'src/assets', to: 'assets' },
         { from: 'node_modules/bootstrap/dist', to: 'assets/bootstrap' },
         { from: 'node_modules/@angular/material/core/theming/prebuilt/indigo-pink.css', to: 'assets/css' },
-
+        { from: 'node_modules/material-design-icons/iconfont', to: 'assets/fonts' },
         { from: 'src/meta'}
       ]),
 

@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { MdButtonModule } from '@angular/material';
 import { routes } from './attack-patterns.routes';
 import { AttackPatternsComponent } from './attack-patterns.component';
+import { AttackPatternsService } from '../../../services';
 
 console.log('`Detail` bundle loaded asynchronously');
 
@@ -19,6 +20,9 @@ console.log('`Detail` bundle loaded asynchronously');
      MdButtonModule,
     RouterModule.forChild(routes),
   ],
+  providers: [
+    AttackPatternsService
+  ]
 })
 export class AttackPatternsModule {
   public static routes = routes;

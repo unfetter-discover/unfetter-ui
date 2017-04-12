@@ -1,60 +1,60 @@
 webpackJsonpac__name_([5],{
 
-/***/ 375:
+/***/ 222:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__indicators_module__ = __webpack_require__(404);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "IndicatorsModule", function() { return __WEBPACK_IMPORTED_MODULE_0__indicators_module__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__intrusion_sets_module__ = __webpack_require__(394);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "IntrusionSetsModule", function() { return __WEBPACK_IMPORTED_MODULE_0__intrusion_sets_module__["a"]; });
 
 
 
 /***/ }),
 
-/***/ 387:
+/***/ 334:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_tslib__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(1);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return IndicatorsComponent; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_tslib__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(2);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return IntrusionSetsComponent; });
 
 
-var IndicatorsComponent = (function () {
-    function IndicatorsComponent() {
-        console.log('Initial IndicatorsComponent');
+var IntrusionSetsComponent = (function () {
+    function IntrusionSetsComponent() {
+        console.log('Initial IntrusionSetsComponent');
     }
-    IndicatorsComponent.prototype.ngOnInit = function () {
-        console.log('Initial IndicatorsComponent');
+    IntrusionSetsComponent.prototype.ngOnInit = function () {
+        console.log('Initial IntrusionSetsComponent');
     };
-    return IndicatorsComponent;
+    return IntrusionSetsComponent;
 }());
-IndicatorsComponent = __WEBPACK_IMPORTED_MODULE_0_tslib__["a" /* __decorate */]([
+IntrusionSetsComponent = __WEBPACK_IMPORTED_MODULE_0_tslib__["a" /* __decorate */]([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_core__["Component"])({
-        selector: 'indicators',
-        styles: [__webpack_require__(443)],
-        template: __webpack_require__(432)
+        selector: 'intrusion-sets',
+        styles: [__webpack_require__(432)],
+        template: __webpack_require__(421)
     }),
     __WEBPACK_IMPORTED_MODULE_0_tslib__["b" /* __metadata */]("design:paramtypes", [])
-], IndicatorsComponent);
+], IntrusionSetsComponent);
 
 
 
 /***/ }),
 
-/***/ 404:
+/***/ 394:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_tslib__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_router__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__indicators_routes__ = __webpack_require__(405);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__indicators_component__ = __webpack_require__(387);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return IndicatorsModule; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_tslib__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_core__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_router__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__intrusion_sets_routes__ = __webpack_require__(395);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__intrusion_sets_component__ = __webpack_require__(334);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return IntrusionSetsModule; });
 
 
 
@@ -62,51 +62,51 @@ IndicatorsComponent = __WEBPACK_IMPORTED_MODULE_0_tslib__["a" /* __decorate */](
 
 
 
-console.log('`IndicatorsComponent` bundle loaded asynchronously');
-var IndicatorsModule = (function () {
-    function IndicatorsModule() {
+console.log('`Detail` bundle loaded asynchronously');
+var IntrusionSetsModule = (function () {
+    function IntrusionSetsModule() {
     }
-    return IndicatorsModule;
+    return IntrusionSetsModule;
 }());
-IndicatorsModule.routes = __WEBPACK_IMPORTED_MODULE_5__indicators_routes__["a" /* routes */];
-IndicatorsModule = __WEBPACK_IMPORTED_MODULE_0_tslib__["a" /* __decorate */]([
+IntrusionSetsModule.routes = __WEBPACK_IMPORTED_MODULE_5__intrusion_sets_routes__["a" /* routes */];
+IntrusionSetsModule = __WEBPACK_IMPORTED_MODULE_0_tslib__["a" /* __decorate */]([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__angular_core__["NgModule"])({
         declarations: [
             // Components / Directives/ Pipes
-            __WEBPACK_IMPORTED_MODULE_6__indicators_component__["a" /* IndicatorsComponent */],
+            __WEBPACK_IMPORTED_MODULE_6__intrusion_sets_component__["a" /* IntrusionSetsComponent */],
         ],
         imports: [
             __WEBPACK_IMPORTED_MODULE_1__angular_common__["CommonModule"],
             __WEBPACK_IMPORTED_MODULE_2__angular_forms__["FormsModule"],
-            __WEBPACK_IMPORTED_MODULE_4__angular_router__["RouterModule"].forChild(__WEBPACK_IMPORTED_MODULE_5__indicators_routes__["a" /* routes */]),
+            __WEBPACK_IMPORTED_MODULE_4__angular_router__["RouterModule"].forChild(__WEBPACK_IMPORTED_MODULE_5__intrusion_sets_routes__["a" /* routes */]),
         ],
     })
-], IndicatorsModule);
+], IntrusionSetsModule);
 
 
 
 /***/ }),
 
-/***/ 405:
+/***/ 395:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__indicators_component__ = __webpack_require__(387);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__intrusion_sets_component__ = __webpack_require__(334);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return routes; });
 
 var routes = [
     { path: '', children: [
-            { path: '', component: __WEBPACK_IMPORTED_MODULE_0__indicators_component__["a" /* IndicatorsComponent */] },
+            { path: '', component: __WEBPACK_IMPORTED_MODULE_0__intrusion_sets_component__["a" /* IntrusionSetsComponent */] },
         ] },
 ];
 
 
 /***/ }),
 
-/***/ 421:
+/***/ 410:
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(19)();
+exports = module.exports = __webpack_require__(6)();
 // imports
 
 
@@ -118,18 +118,18 @@ exports.push([module.i, "", ""]);
 
 /***/ }),
 
-/***/ 432:
+/***/ 421:
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"jumbotron\">\n    <div class=\"container\">\n        <p>Indicators Component</p>\n    </div>\n</div>\n\n\n<router-outlet></router-outlet>"
+module.exports = "<div class=\"jumbotron\">\n    <div class=\"container\">\n        <p>IntrusionSets Component</p>\n    </div>\n</div>\n\n\n<router-outlet></router-outlet>"
 
 /***/ }),
 
-/***/ 443:
+/***/ 432:
 /***/ (function(module, exports, __webpack_require__) {
 
 
-        var result = __webpack_require__(421);
+        var result = __webpack_require__(410);
 
         if (typeof result === "string") {
             module.exports = result;

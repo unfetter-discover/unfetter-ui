@@ -26987,12 +26987,7 @@ var AjaxSubscriber = (function (_super) {
         }
         else {
             this.xhr = xhr;
-            // set up the events before open XHR
-            // https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest/Using_XMLHttpRequest
-            // You need to add the event listeners before calling open() on the request.
-            // Otherwise the progress events will not fire.
-            this.setupEvents(xhr, request);
-            // open XHR
+            // open XHR first
             var result = void 0;
             if (user) {
                 result = tryCatch_1.tryCatch(xhr.open).call(xhr, method, url, async, user, password);
@@ -27009,6 +27004,8 @@ var AjaxSubscriber = (function (_super) {
             xhr.responseType = request.responseType;
             // set headers
             this.setHeaders(xhr, headers);
+            // now set up the events
+            this.setupEvents(xhr, request);
             // finally send the request
             result = body ? tryCatch_1.tryCatch(xhr.send).call(xhr, body) : tryCatch_1.tryCatch(xhr.send).call(xhr);
             if (result === errorObject_1.errorObject) {
@@ -27061,19 +27058,14 @@ var AjaxSubscriber = (function (_super) {
         xhrTimeout.request = request;
         xhrTimeout.subscriber = this;
         xhrTimeout.progressSubscriber = progressSubscriber;
-        if (xhr.upload && 'withCredentials' in xhr) {
+        if (xhr.upload && 'withCredentials' in xhr && root_1.root.XDomainRequest) {
             if (progressSubscriber) {
                 var xhrProgress_1;
                 xhrProgress_1 = function (e) {
                     var progressSubscriber = xhrProgress_1.progressSubscriber;
                     progressSubscriber.next(e);
                 };
-                if (root_1.root.XDomainRequest) {
-                    xhr.onprogress = xhrProgress_1;
-                }
-                else {
-                    xhr.upload.onprogress = xhrProgress_1;
-                }
+                xhr.onprogress = xhrProgress_1;
                 xhrProgress_1.progressSubscriber = progressSubscriber;
             }
             var xhrError_1;
@@ -77003,7 +76995,7 @@ var GroupBySubscriber = (function (_super) {
         this.groups.delete(key);
     };
     GroupBySubscriber.prototype.unsubscribe = function () {
-        if (!this.closed) {
+        if (!this.closed && !this.attemptedToUnsubscribe) {
             this.attemptedToUnsubscribe = true;
             if (this.count === 0) {
                 _super.prototype.unsubscribe.call(this);
