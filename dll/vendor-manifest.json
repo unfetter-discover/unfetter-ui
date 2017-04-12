@@ -187,7 +187,6 @@
         "ɵmakeDecorator",
         "ɵisObservable",
         "ɵisPromise",
-        "ɵmerge",
         "ɵNOT_FOUND_CHECK_ONLY_ELEMENT_INJECTOR",
         "ɵNgModuleInjector",
         "ɵregisterModuleFactory",

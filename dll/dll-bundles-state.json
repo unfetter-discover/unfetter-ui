@@ -9,31 +9,31 @@
   },
   "@angular/platform-browser": {
     "bundle": "vendor",
-    "version": "4.0.0"
+    "version": "4.0.2"
   },
   "@angular/platform-browser-dynamic": {
     "bundle": "vendor",
-    "version": "4.0.0"
+    "version": "4.0.2"
   },
   "@angular/core": {
     "bundle": "vendor",
-    "version": "4.0.0"
+    "version": "4.0.2"
   },
   "@angular/common": {
     "bundle": "vendor",
-    "version": "4.0.0"
+    "version": "4.0.2"
   },
   "@angular/forms": {
     "bundle": "vendor",
-    "version": "4.0.0"
+    "version": "4.0.2"
   },
   "@angular/http": {
     "bundle": "vendor",
-    "version": "4.0.0"
+    "version": "4.0.2"
   },
   "@angular/router": {
     "bundle": "vendor",
-    "version": "4.0.0"
+    "version": "4.0.2"
   },
   "@angularclass/hmr": {
     "bundle": "vendor",
