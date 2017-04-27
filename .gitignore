@@ -7,7 +7,15 @@
 # dependencies
 /node_modules
 
-
 # misc
 /coverage/*
 npm-debug.log
+/bower_components
+
+# misc
+/.sass-cache
+/.idea
+/connect.lock
+/coverage/*
+npm-debug.log
+
