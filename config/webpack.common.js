@@ -28,7 +28,8 @@ const HMR = helpers.hasProcessFlag('hot');
 const AOT = helpers.hasNpmFlag('aot');
 const METADATA = {
   title: 'CTI-STIX-SERVICES',
-  baseUrl: '/unfetter-ui/',
+  //baseUrl: '/unfetter-ui/',
+  baseUrl: '/',
   isDevServer: helpers.isWebpackDevServer()
 };
 

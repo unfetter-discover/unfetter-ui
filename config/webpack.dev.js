@@ -20,7 +20,7 @@ const LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin');
  */
 const ENV = process.env.ENV = process.env.NODE_ENV = 'development';
 const HOST = process.env.HOST || 'localhost';
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 const HMR = helpers.hasProcessFlag('hot');
 const METADATA = webpackMerge(commonConfig({env: ENV}).metadata, {
   host: HOST,
@@ -61,7 +61,7 @@ module.exports = function (options) {
        * See: http://webpack.github.io/docs/configuration.html#output-path
        */
       path: helpers.root('dist'),
-      publicPath: '/unfetter-ui/',
+      // publicPath: '/unfetter-ui/',
 
       /**
        * Specifies the name of each output file on disk.

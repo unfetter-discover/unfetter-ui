@@ -929,6 +929,7 @@
         "MessageBundle",
         "Serializer",
         "Xliff",
+        "Xliff2",
         "Xmb",
         "Xtb",
         "DirectiveNormalizer",
