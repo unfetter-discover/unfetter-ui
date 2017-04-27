@@ -1,0 +1,34 @@
+<div class="header">
+    <div class="year">{{ currentYear }}</div>
+    <div class="date">{{ currentDayOfWeek.short }}, {{ currentDay}}. {{ currentMonth.short }}</div>
+</div>
+<div class="nav">
+    <button md-icon-button class="left" (click)="onPrevMonth()">
+        <md-icon>chevron_left</md-icon>
+    </button>
+    <div class="title">
+        <div [@calendarAnimation]="animate">{{ displayMonth.full }} {{ displayYear }}</div>
+    </div>
+    <button md-icon-button class="right" (click)="onNextMonth()">
+        <md-icon>chevron_right</md-icon>
+    </button>
+</div>
+<div class="content">
+    <div class="labels">
+        <div class="label" *ngFor="let day of dayNames">
+            {{ day.letter }}
+        </div>
+    </div>
+    <div [@calendarAnimation]="animate" class="month">
+        <div *ngFor="let day of displayDays" class="day" (click)="onSelectDate(day)" [ngClass]="getDayBackgroundColor(day)">
+            <span *ngIf="day != 0" [ngClass]="getDayForegroundColor(day)">
+                {{ day.getDate() }}
+              </span>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    <a md-button (click)="onToday()">Today</a>
+    <a md-button (click)="onCancel()">Cancel</a>
+    <a md-button (click)="onOk()">Ok</a>
+</div>

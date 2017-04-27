@@ -1,0 +1,10 @@
+
+        <md-input-container class="full-width">
+            <input mdInput placeholder="{{placeholder}}" [mdAutocomplete]="auto"  [(ngModel)]="formCtrl">
+        </md-input-container>
+
+        <md-autocomplete #auto="mdAutocomplete" class="full-width">
+            <md-option *ngFor="let filter of filtered | async" [value]="states">
+                {{ state }}
+            </md-option>
+        </md-autocomplete>

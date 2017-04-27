@@ -1,0 +1,35 @@
+<div class="row">
+        <div class="col-md-12">
+
+            <div class="button-row">
+                <a md-raised-button routerLink="./new">NEW</a>
+                <a md-raised-button (click)="download()">DOWNLOAD</a>            
+            </div>
+            <div class="pull-right">
+                <span class="right-align">Results: {{reports.length}}</span>            
+            </div>
+        </div>
+    </div>
+     <div class="row" >
+        <div class="col-md-12" *ngFor="let report of reports">
+           <md-card>
+                <md-card-header>
+                    <md-card-title>                             
+                       
+                    </md-card-title>  
+                    <div class="row full-width" >
+                        <div class="col-md-9">
+                            <div class="pull-left">
+                                <span>{{report.attributes.name}}</span> <img class="stix-icon" src="assets/icon/stix-icons/svg/{{label | lowercase}}-b.svg" *ngFor="let label of report.attributes.labels">
+                            </div>
+                        </div> 
+                         <div class="col-md-3">
+                             <a md-raised-button (click)="deleteButtonClicked(report)"><i class="fa fa-trash"></i></a> 
+                        </div>
+                    </div>
+                                  
+                </md-card-header>
+                
+            </md-card>
+        </div>
+    </div>

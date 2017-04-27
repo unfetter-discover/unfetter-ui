@@ -1,0 +1,130 @@
+@import '~@angular/material/core/theming/all-theme';
+@mixin calendar-theme($theme) {
+  $primary: map-get($theme, primary);
+
+    .header {
+        padding: 16px;
+        background-color:md-color($primary);
+    }
+    .footer [md-button] {
+        color: md-color($primary);
+    }
+    .day-background-normal {
+        background-color: transparent;
+    }
+    .day-background-selected {
+        background-color: md-color($primary);
+    }
+    .day-foreground-normal {
+        color: rgba(0, 0, 0, .87);
+    }
+    .day-foreground-selected {
+        color: rgba(255, 255, 255, .87);
+    }
+    .day-foreground-today {
+        color: md-color($primary);
+    }
+}
+.header, .nav, .content, .footer {
+    font-family: Roboto, "Segoe UI", "Helvetica Neue",sans-serif;
+}
+.header {
+    padding: 16px;
+}
+.header .year {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+.header .date {
+    color: rgba(255, 255, 255, 255);
+    font-size: 32px;
+    font-weight: 600;
+}
+.nav {
+    padding-top:8px;
+    padding-bottom:8px;
+    min-height: 40px;
+    overflow: hidden;
+    position: relative;
+}
+.nav .left {
+    position: absolute;
+    left: 8px;
+    z-index: 100;
+}
+.nav .right {
+    position: absolute;
+    right: 8px;
+    z-index: 100;
+}
+.nav .title {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    overflow: hidden;
+    z-index: 10;
+}
+.content {
+    font-size: 13px;
+    padding-left: 8px;
+    padding-right: 8px;
+    width: 18.2em;
+    height: 18.2em;
+    overflow: hidden;
+}
+.content .labels {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+    width: 100%;
+}
+.content .label {
+    display: inline-block;
+    width: 2.2em;
+    height: 2.2em;
+    margin: 0 0.2em;
+    line-height: 2.2em;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.4);
+}
+.content .month {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-flow: wrap;
+        flex-flow: wrap;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+}
+.content .day {
+    display: inline-block;
+    width: 2.2em;
+    height: 2.2em;
+    margin: 0 0.2em 0.4em;
+    border-radius: 2.2em;
+    line-height: 2.2em;
+    text-align: center;
+    -webkit-transition: 0.37s;
+    transition: 0.37s;
+    cursor: pointer;
+}
+.footer {
+    text-align: right;
+    padding: 8px;
+    padding-bottom: 16px;
+}
+.footer [md-button] {
+    min-width: 0;
+    font-weight: 600;
+    text-transform: uppercase;
+}

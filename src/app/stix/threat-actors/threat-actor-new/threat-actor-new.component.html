@@ -1,0 +1,38 @@
+
+<div class="row">
+    <div class="col-md-12">
+        <md-input-container class="full-width">
+        <input mdInput placeholder="Name"  [(ngModel)]="threatActor.attributes.name" value="{{threatActor.attributes.name}}">
+        </md-input-container>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+    <md-input-container class="full-width">
+        <input mdInput placeholder="Decsription" [(ngModel)]="threatActor.attributes.description" value="{{threatActor.attributes.description}}">
+        </md-input-container>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12"  *ngFor="let item of labels">
+        <section class="">
+            <md-checkbox class="example-margin"  (click)="addLabel(item.label)">{{item.label}}</md-checkbox>
+        </section>
+    </div>
+
+</div>
+
+<aliases [(model)]="threatActor"></aliases>
+
+<external-reference [(model)]="threatActor"></external-reference>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="button-row pull-right">
+                <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i>CANCEL</a> 
+                <a class=" " md-raised-button (click)="saveButtonClicked()"><i class="fa fa-floppy-o "></i>SAVE</a>            
+    
+        </div>
+    </div>
+</div>

@@ -1,0 +1,30 @@
+  <div class="row">
+            <div class="col-md-12">
+                <label>Aliases</label>
+                <div class="button-row">
+                    <a class="" md-raised-button (click)="addAliasButtonClicked()"><i class="fa fa-plus"></i>ADD</a>            
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                
+                    <md-card *ngFor="let alias of model.attributes.aliases" style="margin: 10px 0px;">
+                            <md-card-content>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                            <md-input-container class="full-width">
+                                                <input mdInput placeholder="Alias" value="{{alias}}">
+                                            </md-input-container>
+                                    </div>
+                                   
+                                </div>
+                            </md-card-content>
+                            <md-card-actions>
+                                <div class="button-row">
+                                    <a class="" md-raised-button (click)="removeAliasButtonClicked(alias)"><i class="fa fa-trash"></i>REMOVE</a>            
+                                </div>
+                            </md-card-actions>
+                    </md-card>
+                </div>
+        </div>

@@ -1,0 +1,30 @@
+<div class="row">
+    <div class="col-md-4">
+       
+        <form>
+        <md-select placeholder="Indicator Object Type" [(ngModel)]="selectedObjectType" name="objectTypes" class="full-width">
+            <md-option *ngFor="let objectType of objectTypes" [value]="objectType.label">
+                {{ objectType.label }}
+            </md-option>
+        </md-select>
+</form>
+
+    </div>
+    <div class="col-md-4">
+       <form>
+
+        <md-select placeholder="Indicator Object Property" [(ngModel)]="selectedObjectProperty" name="objectProperties" class="full-width">
+            <md-option *ngFor="let objectProperty of objectProperties" [value]="objectProperty.label">
+                {{ objectProperty.label }}
+            </md-option>
+        </md-select>
+</form>
+
+    </div>
+    <div class="col-md-4">
+       <md-input-container class="full-width">
+        <input mdInput placeholder="Indicator Object Value"  [(ngModel)]="selectedObjectValue" value="{{selectedObjectValue}">
+        </md-input-container>
+    </div>
+
+</div>

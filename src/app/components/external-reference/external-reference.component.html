@@ -1,0 +1,39 @@
+  <div class="row">
+            <div class="col-md-12">
+                <label>External References</label>
+                <div class="button-row">
+                    <a class="" md-raised-button (click)="addExternalReferenceButtonClicked()"><i class="fa fa-plus"></i>ADD</a>            
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                
+                    <md-card *ngFor="let externalReference of model.attributes.external_references" style="margin: 10px 0px;">
+                            <md-card-content>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                            <md-input-container class="full-width">
+                                                <input mdInput placeholder="External Id" [(ngModel)]="externalReference.externalId" value="{{externalReference.externalId}}">
+                                            </md-input-container>
+                                    </div>
+                                    <div class="col-md-4">
+                                            <md-input-container class="full-width">
+                                                <input mdInput placeholder="Source name" [(ngModel)]="externalReference.sourceName" value="{{externalReference.sourceName}}">
+                                            </md-input-container>
+                                    </div>
+                                    <div class="col-md-4">
+                                            <md-input-container class="full-width">
+                                                <input mdInput placeholder="URL" [(ngModel)]="externalReference.url" value="{{externalReference.url}}">
+                                            </md-input-container>
+                                    </div>
+                                </div>
+                            </md-card-content>
+                            <md-card-actions>
+                                <div class="button-row">
+                                    <a class="" md-raised-button (click)="removeExternalReferenceButtonClicked(externalReference)"><i class="fa fa-trash"></i>REMOVE</a>            
+                                </div>
+                            </md-card-actions>
+                    </md-card>
+                </div>
+        </div>

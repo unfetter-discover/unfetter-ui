@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+  <title>Parallax Template - Materialize</title>
+
+  <!-- CSS  -->
+  <link href="bin/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="extras/noUiSlider/nouislider.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <style>
+    header,main,footer {
+    padding-left:300px;
+}
+
+@media only screen and (max-width:992px){
+    header,main,footer {
+        padding-left:0;
+    }
+}
+
+  </style>
+</head>
+<body>
+<div class="container" style="height:1920px">
+        <div class="center">
+            <h5>Click on buttons to see the bug</h5>
+
+            <a class="waves-effect waves-light btn" onclick="$('#scrollbar-tap').tapTarget('open')">Open scrollbar bug</a>
+            <a class="waves-effect waves-light btn" onclick="$('#style-tap').tapTarget('open')">Open style bug</a>
+        </div>
+
+        <div class="fixed-action-btn click-to-toggle">
+          <a id="scrollbar" class="btn btn-floating btn-large cyan"><i class="material-icons">menu</i></a>
+          <ul>
+            <li><a id="style" class="btn btn-floating orange"><i class="material-icons">menu</i></a></li>
+          </ul>
+        </div>
+
+        <div id="scrollbar-tap" class="tap-target cyan" data-activates="scrollbar">
+          <div class="tap-target-content white-text">
+            <h5>Scrollbar bug<br><small>Scrollbar can disalign origin</small></h5>
+          </div>
+        </div>
+
+        <div id="style-tap" class="tap-target orange" data-activates="style">
+          <div class="tap-target-content white-text">
+            <h5>Style bug<br><small>Transform attributte can disalign origin</small></h5>
+          </div>
+        </div>
+</div>
+
+
+  <br><br><br><br>
+  <br><br><br><br>
+  <br><br><br><br>
+  <br><br><br><br>
+  <br><br><br><br>
+  <br><br><br><br>
+  <br><br><br><br>
+  <br><br><br><br>
+  <br><br><br><br>
+  <br><br><br><br>
+  <br><br><br><br>
+  <br><br><br><br>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script src="bin/materialize.js"></script>
+  <script src="js/init.js"></script>
+<script src="http://materializecss.com/extras/noUiSlider/nouislider.js"></script>
+  <script>
+(function($){
+  $(function(){
+
+
+
+  }); // end of document ready
+})(jQuery); // end of jQuery name space
+  </script>
+
+  </body>
+</html>

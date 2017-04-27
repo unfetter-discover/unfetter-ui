@@ -1,0 +1,30 @@
+<div class="row" >
+        <div class="col-md-12" *ngFor="let item of model">
+           <md-card>
+                <md-card-header>
+                     <div class="row full-width" >
+                        <div class="col-md-9">
+                     
+                                
+                                 <a class="pull-left" href (click)="showDetails($event, item)">{{item.attributes.name}}</a>
+
+
+                                <md-chip-list class="pull-left" *ngIf="showLabels">
+                                    <md-chip selected="true" color="accent" *ngFor="let label of item.attributes.labels">{{label}}</md-chip>
+                                </md-chip-list>
+                                <md-chip-list class="pull-left" *ngIf="showExternalReferences">
+                                    <md-chip selected="true"  *ngFor="let external_reference of item.attributes.external_references">{{external_reference.sourceName}}</md-chip>
+                                </md-chip-list>
+
+                        </div> 
+                         <div class="col-md-3">
+                           <a md-raised-button (click)="editButtonClicked(item)"><i class="fa fa-pencil"></i></a>
+                                <a md-raised-button (click)="deleteButtonClicked(item)"><i class="fa fa-trash"></i></a>            
+                        </div>
+                    </div>  
+                                  
+                </md-card-header>
+             
+            </md-card>
+        </div>
+    </div>

@@ -1,0 +1,65 @@
+<div class="row" *ngIf="courseOfAction">
+       <div class="col-md-12">
+            <div class="row">
+            <div class="col-md-12">
+                    <div class="button-row">
+                        <a class="" md-raised-button (click)="editButtonClicked()"><i class="fa fa-pencil"></i>EDIT</a>
+                        <a class="" md-raised-button (click)="deleteButtonClicked()"><i class="fa fa-trash"></i>DELETE</a>            
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 15px;">
+                <div class="col-md-12">
+                    <md-card>
+                        <!--<md-card-header>
+                            <md-card-subtitle>Name</md-card-subtitle>  
+                            <md-card-title>{{courseOfAction.name}}</md-card-title>                       
+                        </md-card-header>-->
+                        <md-card-content>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>Name</label>
+                                        <p>{{courseOfAction.attributes.name}}</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>Description</label>
+                                        <p>{{courseOfAction.attributes.description}}</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>Labels</label>
+
+
+                                        <md-chip-list>
+                                            <md-chip *ngFor="let label of courseOfAction.attributes.labels"
+                                                selected="true"
+                                                color="accent">
+                                                {{label}}
+                                            </md-chip>
+                                        </md-chip-list>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>External References</label>
+                                        <md-chip-list>
+                                            <md-chip *ngFor="let externalReferences of courseOfAction.attributes.external_references"
+                                                selected="true">
+                                                {{externalReferences.sourceName}}
+                                            </md-chip>
+                                        </md-chip-list>
+                                    </div>
+                                </div>
+                                
+                        </md-card-content>
+                    
+                    </md-card>
+                </div>
+            </div>
+       </div>
+</div>
+

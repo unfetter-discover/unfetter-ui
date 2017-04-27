@@ -1,0 +1,75 @@
+
+    <div class="row">
+        <div class="col-md-12">
+          
+            <div class="button-row">
+                <a md-raised-button routerLink="./new">NEW</a>
+                <a md-raised-button (click)="download()">DOWNLOAD</a>            
+            </div>
+            <div class="pull-right">
+                <!--<span class="right-align">Results: {{phaseNameGroups.length}}</span>            -->
+            </div>
+            
+        </div>
+    </div>
+   <div class="row">
+        <div class="col-md-12" *ngFor="let phaseNameGroup of phaseNameGroups">
+             <md-card > 
+                    <md-card-header>
+                        <div md-card-avatar class="example-header-image">
+                            <i class="fa fa-small fa-arrow-right"></i>
+                        </div>
+                         <a href (click)="onSelect($event, phaseNameGroup)">{{phaseNameGroup.name}}</a>              
+                    </md-card-header>
+                    <md-card-content *ngIf="phaseNameGroup.id === selectedPhaseNameGroup.id">
+
+
+                           
+                                
+                                <div *ngFor="let attackPattern of phaseNameGroup.attackPatterns">
+                                        <div class="pull-left">
+                                                <a href (click)="showDetails($event, attackPattern)">{{attackPattern.name}}</a>
+                                        </div> 
+                                            <a md-raised-button (click)="editButtonClicked(attackPattern)"><i class="fa fa-pencil"></i></a>
+                                        <a md-raised-button (click)="deleteButtonClicked(attackPattern)"><i class="fa fa-trash"></i></a>   
+                                        <md-divider></md-divider>         
+                                </div>
+                            
+                         
+
+
+                            <!--<div class="row full-width" *ngFor="let attackPattern of phaseNameGroup.attackPatterns"> 
+                                <div  class="col-md-9 collection-item list-collection-item grey lighten-5">
+                                    <div class="pull-left">
+                                            <a href (click)="showDetails($event, attackPattern)">{{attackPattern.name}}</a>
+                                    </div> 
+                                </div>
+                                <div  class="col-md-3 collection-item list-collection-item grey lighten-5">
+                                     <a md-raised-button (click)="editButtonClicked(attackPattern)"><i class="fa fa-pencil"></i></a>
+                                   <a md-raised-button (click)="deleteButtonClicked(attackPattern)"><i class="fa fa-trash"></i></a>            
+                               </div>  
+                            </div>-->
+                            
+                            
+                    </md-card-content>
+            </md-card>
+        </div>
+    </div>
+
+
+    <!--<md-list>
+                                <md-list-item *ngFor="let attackPattern of phaseNameGroup.attackPatterns"> 
+                                <div style="width: 100%" class="collection-item list-collection-item grey lighten-5">
+                                    <div class="pull-left">
+                                            <a href (click)="showDetails($event, attackPattern)">{{attackPattern.name}}</a>
+                                            
+                                        </div>
+                                        <div class="pull-right">
+                                                <div class="button-row">
+                                                    <a md-raised-button (click)="editButtonClicked(attackPattern)"><i class="fa fa-pencil"></i></a>
+                                                    <a md-raised-button (click)="deleteButtonClicked(attackPattern)"><i class="fa fa-trash"></i></a>            
+                                                </div>
+                                        </div>    
+                                </div>   
+                                </md-list-item>
+                            </md-list>-->

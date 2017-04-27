@@ -1,0 +1,72 @@
+    <div class="row">
+       <div class="col-md-12">
+            <div class="button-row">
+                <a class="" md-raised-button (click)="editButtonClicked()"><i class="fa fa-pencil"></i>EDIT</a>
+                <a class="" md-raised-button (click)="deleteButtonClicked()"><i class="fa fa-trash"></i>DELETE</a>            
+            </div>
+        </div>
+    </div>
+      <div class="row" style="margin-top: 15px;" *ngIf="campaign">
+        <div class="col-md-12">
+            <md-card>
+                <!--<md-card-header>
+                    <md-card-subtitle>Name</md-card-subtitle>  
+                    <md-card-title>{{campaign.name}}</md-card-title>                       
+                </md-card-header>-->
+                <md-card-content>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Name</label>
+                                <p>{{campaign.name}}</p>
+                            </div>
+                             <div class="col-md-6">
+                                <label>First Seen</label>
+                                <p>{{campaign.first_seen}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label>Objective</label>
+                                <p>{{campaign.objective}}</p>
+                            </div>
+                        </div>
+                         <div class="row">
+                            <div class="col-md-12">
+                                <label>Identities</label>
+                                <!--<div> 
+                                    <md-chip-list>
+                                        <md-chip color="primary" *ngFor="let killChainPhase of campaign.killChainPhases">{{killChainPhase}}</md-chip>
+                                    </md-chip-list>
+                                </div>-->
+                            </div>
+                        </div>
+                         <div class="row">
+                            <div class="col-md-12">
+                                <label>Intrusion Set</label>
+                                
+                            </div>
+                        </div>
+                         <div class="row">
+                            <div class="col-md-12">
+                                <label>Attack Patterns</label>
+                                <p></p>
+                            </div>
+                        </div>
+                         <div class="row">
+                            <div class="col-md-12">
+                                <label>Indicators</label>
+                                
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label>Description</label>
+                                <p>{{campaign.description}}</p>
+                            </div>
+                        </div>
+                </md-card-content>
+              
+            </md-card>
+        </div>
+    </div>
+

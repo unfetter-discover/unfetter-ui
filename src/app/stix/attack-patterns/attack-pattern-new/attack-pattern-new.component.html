@@ -1,0 +1,29 @@
+
+        <div class="row">
+            <div class="col-md-12">
+                <md-input-container class="full-width">
+                    <input mdInput placeholder="Name" value="{{attackPattern.attributes.name}}">
+                </md-input-container>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <md-input-container class="full-width">
+                    <textarea mdInput placeholder="Descrpition">{{attackPattern.attributes.description}}</textarea>
+                </md-input-container>
+            </div>
+        </div>
+        
+        <kill-chain-phases [(model)]="attackPattern"></kill-chain-phases>
+         <external-reference [(model)]="attackPattern"></external-reference>
+        
+          <div class="row">
+            <div class="col-md-12">
+                <div class="button-row pull-right">
+                    <a class="" md-raised-button (click)="cancel()"><i class="fa fa-arrow-left"></i>CANCEL</a> 
+                    <a class=" " md-raised-button (click)="save()"><i class="fa fa-floppy-o "></i>SAVE</a>            
+           
+                </div>
+            </div>
+          </div>
+   

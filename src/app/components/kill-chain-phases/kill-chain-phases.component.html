@@ -1,0 +1,35 @@
+<div class="row">
+            <div class="col-md-12">
+                <label>Kill Chain Phases</label>
+                <div class="button-row">
+                    <a class=" " md-raised-button (click)="addkillChainPhase()"><i class="fa fa-plus"></i>ADD</a>            
+                </div>
+            </div>
+        </div>
+         <div class="row">
+            <div class="col-md-12">
+              
+                     <md-card *ngFor="let killChainPhase of model.attributes.kill_chain_phases" >
+                            <md-card-content>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                            <md-input-container class="full-width">
+                                                <input mdInput placeholder="kill Chain Name" value="{{killChainPhase.name}}">
+                                            </md-input-container>
+                                    </div>
+                                    <div class="col-md-6">
+                                            <md-input-container class="full-width">
+                                                <input mdInput placeholder="Phase name" value="{{killChainPhase.phaseName}}">
+                                            </md-input-container>
+                                    </div>
+                                </div>
+                            </md-card-content>
+                            <md-card-actions>
+                                <div class="button-row">
+                                    <a class="" md-raised-button (click)="removekillChainPhase(killChainPhase)"><i class="fa fa-trash"></i>REMOVE</a>            
+                                </div>
+                            </md-card-actions>
+                    </md-card>
+                
+            </div>
+        </div>
