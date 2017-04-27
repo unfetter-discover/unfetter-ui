@@ -2,6 +2,7 @@
 /* This file is for setting global styles  */
 @import 'variables';
 
+
 .navbar-inverse {
     background-color: $nav-background-color;
     border-color: $nav-background-color;
@@ -61,3 +62,40 @@ body {
 .jumbotron {
    background-color: #FFFFFF;
 }
+
+.mat-card { 
+    width: 100%;
+    height: 100%;
+}
+
+.mat-list .mat-list-item .mat-list-item-content, .mat-nav-list .mat-list-item .mat-list-item-content {
+ 
+    height: auto !important;
+    
+}
+
+.btn, .btn-large {
+    text-decoration: none;
+    color: #fff;
+    background-color: #214f87;
+    text-align: center;
+    letter-spacing: .5px;
+    transition: .2s ease-out;
+    cursor: pointer;
+}
+
+.red {
+    background-color: #F44336 !important
+}
+.full-width {
+  width: 100%;
+}
+
+// // Import a pre-built theme 
+@import '~@angular/material/core/theming/prebuilt/deeppurple-amber';
+// @import '~@angular/material/core/theming/prebuilt/indigo-pink';
+// // Import your custom input theme file so you can call the custom-input-theme function 
+//@import '~angular-material-datepicker/src/datepicker/calendar.component.scss';
+ 
+// // Using the $theme variable from the pre-built theme you can call the theming function 
+//@include calendar-theme($theme);

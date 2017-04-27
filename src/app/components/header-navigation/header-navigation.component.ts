@@ -8,16 +8,16 @@ import { Navigation } from '../../models/navigation';
 })
 export class HeaderNavigationComponent implements OnInit {
     public navigations: Navigation[] = [
-        {url: 'attack-patterns', label: 'Attack Patterns'},
-        {url: 'campaigns', label: 'Campaigns'},
-        {url: 'courses-of-action', label: 'Courses of Action'},
+        {url: 'load-patterns', label: 'Attack Patterns'},
+        {url: 'load-campaigns', label: 'Campaigns'},
+        {url: 'load-courses-of-action', label: 'Courses of Action'},
         {url: 'indicators', label: 'Indicators'},
         {url: 'indentities', label: 'Identities'},
         {url: 'relationships', label: 'Relationships'},
-        {url: 'sightings', label: 'Sightings'},
+        {url: 'load-sightings', label: 'Sightings'},
         {url: 'threat-actors', label: 'Threat Actors'},
         {url: 'intrusion-sets', label: 'Intrusion Sets'},
-        {url: 'reports', label: 'Reports'}
+        {url: 'load-reports', label: 'Reports'}
     ];
 
     constructor() {

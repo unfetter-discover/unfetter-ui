@@ -1,11 +1,11 @@
 {
-  "main": {
-    "js": "main.bundle.js"
-  },
   "vendor": {
-    "js": "vendor.bundle.js"
+    "js": "/unfetter-ui/vendor.bundle.js"
+  },
+  "main": {
+    "js": "/unfetter-ui/main.bundle.js"
   },
   "polyfills": {
-    "js": "polyfills.bundle.js"
+    "js": "/unfetter-ui/polyfills.bundle.js"
   }
 }

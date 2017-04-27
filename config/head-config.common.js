@@ -16,8 +16,11 @@
 module.exports = {
   link: [
 
-    { rel: 'stylesheet',  href: '/assets/css/indigo-pink.css' },
+   
     { rel: 'stylesheet',  href: '/assets/bootstrap/css/bootstrap.min.css' },
+    // { rel: 'stylesheet',  href: '/assets/css/indigo-pink.css' },
+    { rel: 'stylesheet',  href: '/assets/materialize/css/materialize.min.css' },
+    { rel: 'stylesheet',  href: '/assets/css/vendor.css' },
    
     /** <link> tags for favicons **/
     // { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/assets/icon/favicon-32x32.png' },
@@ -26,8 +29,8 @@ module.exports = {
     { rel: 'manifest', href: '/assets/manifest.json' }
   ],
   meta: [
-    { name: 'msapplication-TileColor', content: '#00bcd4' },
-    { name: 'msapplication-TileImage', content: '/assets/icon/ms-icon-144x144.png', '=content': true },
-    { name: 'theme-color', content: '#00bcd4' }
+    // { name: 'msapplication-TileColor', content: '#00bcd4' },
+    // { name: 'msapplication-TileImage', content: '/assets/icon/ms-icon-144x144.png', '=content': true },
+    // { name: 'theme-color', content: '#00bcd4' }
   ]
 };

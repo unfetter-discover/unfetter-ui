@@ -90,13 +90,17 @@
     "@angularclass/hmr": "~1.2.2",
     "@angularclass/hmr-loader": "~3.0.2",
     "@angular/material" : "2.0.0-beta.2",
+    "md-accordion" : "0.0.1-alpha.1",
     "http-server": "^0.9.0",
     "ie-shim": "^0.1.0",
     "jasmine-core": "^2.5.2",
     "reflect-metadata": "^0.1.9",  
     "bootstrap": "3.3.7",
     "jquery": "3.2.1",
-    "material-design-icons" : "3.0.1"
+    "materialize-css" : "0.98.1",
+    "moment": "2.18.1",
+    "angular2-material-datepicker": "0.5.0",
+    "angular-material-datepicker": "1.0.2"
   },
   "devDependencies": {
     "@angular/compiler-cli": "4.0.0",

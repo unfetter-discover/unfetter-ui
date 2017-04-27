@@ -28,7 +28,7 @@ const METADATA = webpackMerge(commonConfig({env: ENV}).metadata, {
   ENV: ENV,
   HMR: HMR
 });
-
+console.log(METADATA.baseUrl)
 
 const DllBundlesPlugin = require('webpack-dll-bundles-plugin').DllBundlesPlugin;
 
@@ -61,6 +61,7 @@ module.exports = function (options) {
        * See: http://webpack.github.io/docs/configuration.html#output-path
        */
       path: helpers.root('dist'),
+      publicPath: '/unfetter-ui/',
 
       /**
        * Specifies the name of each output file on disk.

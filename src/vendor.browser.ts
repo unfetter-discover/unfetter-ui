@@ -13,3 +13,4 @@ import 'rxjs';
 // You can import js, ts, css, sass, ...
 import 'jquery';
 import 'bootstrap/dist/js/bootstrap';
+// mport 'materialize-css/dist/js/materialize.min.js';
