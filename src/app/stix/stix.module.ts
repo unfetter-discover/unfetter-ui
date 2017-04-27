@@ -9,19 +9,15 @@ import { ComponentModule } from '../components/component.module';
 import { StixService } from './stix.service';
 
 import {
-  AttackPatternsService,
   AttackPatternListComponent, AttackPatternsHomeComponent,
   AttackPatternComponent, AttackPatternNewComponent,
   AttackPatternEditComponent } from './attack-patterns';
 import {
-  CampaignService,
   CampaignsHomeComponent,
   CampaignsListComponent,
   CampaignsNewComponent,
-  CampaignsEditComponent,
-  CampaignComponent } from './campaigns';
+  CampaignsEditComponent, CampaignComponent } from './campaigns';
 import {
-    CourseOfActionService,
     CourseOfActionHomeComponent,
     CourseOfActionListComponent,
     CourseOfActionEditComponent,
@@ -29,7 +25,6 @@ import {
     CourseOfActionComponent } from './course-of-actions';
 
 import {
-    SightingService,
     SightingHomeComponent,
     SightingListComponent,
     SightingNewComponent,
@@ -39,7 +34,7 @@ import {
     import { ReportsComponent, ReportsListComponent, ReportNewComponent } from './reports';
     import { ThreatActorHomeComponent, ThreatActorListComponent, TheatActorComponent, ThreatActorNewComponent, ThreatActorEditComponent } from './threat-actors';
     import { IntrusionSetHomeComponent, IntrusionSetListComponent, IntrusionSetComponent, IntrusionSetEditComponent, IntrusionSetNewComponent } from './intrusion-sets';
-    import { RelationshipsComponent } from './relationships';
+    import { RelationshipsComponent, RelationshipNewComponent, RelationshipListComponent } from './relationships';
 
 import { StixRoutingModule } from './stix-routing.module';
 
@@ -104,6 +99,8 @@ import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
     IntrusionSetNewComponent,
 
     RelationshipsComponent,
+    RelationshipNewComponent,
+    RelationshipListComponent,
 
     IdentifierTypePipe,
     IdentifierSummarizedPipe
@@ -112,6 +109,6 @@ import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
 
   ],
   
-  providers: [ AttackPatternsService, CampaignService, CourseOfActionService, SightingService, StixService ],
+  providers: [ StixService ],
 })
 export class StixModule {}

@@ -4,14 +4,9 @@ import { Location } from '@angular/common';
 import { MdDialog, MdDialogRef } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
-import { StixObject } from '../models';
 import { BaseStixService } from './base-stix.service';
 
 export class BaseStixComponent {
-
-    // protected courseOfAction: StixObject;
-    protected items: StixObject[] = [];
-    protected item: StixObject;
 
     constructor(
         protected service: BaseStixService,
@@ -83,7 +78,7 @@ export class BaseStixComponent {
 
     private getItem(observer: any): void {
         this.route.params
-            .switchMap((params: Params) => this.service.get(+params['id']))
+            .switchMap((params: Params) => this.service.get(params['id']))
             .subscribe(
                 (stixObject) => {
                     observer.next(stixObject);

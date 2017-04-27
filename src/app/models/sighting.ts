@@ -24,6 +24,7 @@ export class Sighting {
         summary: string
     };
     constructor() {
+        this.type = 'sightings';
         this.attributes = {
             version: '',
             created: new Date(),

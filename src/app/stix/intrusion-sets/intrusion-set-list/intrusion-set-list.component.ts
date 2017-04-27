@@ -21,8 +21,7 @@ export class IntrusionSetListComponent extends BaseStixComponent implements OnIn
         public dialog: MdDialog) {
 
         super(stixService, route, router, dialog);
-        stixService.url = 'api/intrusionSets';
-
+        stixService.url = 'api/intrusion-sets';
         console.log('Initial IntrusionSetListComponent');
     }
 

@@ -1,98 +1,35 @@
 import { InMemoryDbService } from 'angular-in-memory-web-api';
 export class InMemoryDataService implements InMemoryDbService {
     public createDb() {
-        let attackPatterns = [
-            {id: 11, name: 'collection',
-                attackPatterns: [
-                    {id: 21, name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {id: 22, name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {id: 23, name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {id: 24, name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []}
-                ]
-            },
-            {id: 12, name: 'unspecified',
-                attackPatterns: [
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []}
-
-                ]
-            },
-            {id: 13, name: 'exfiltration',
-                attackPatterns: [
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []}
-
-                ]
-            },
-            {id: 14, name: 'defense-evasion',
-                attackPatterns: [
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []}
-
-                ]
-            },
-            {id: 15, name: 'redential-access',
-                attackPatterns: []
-            },
-            {id: 16, name: 'discovery',
-                attackPatterns: [
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []}
-
-                ]
-            },
-            {id: 17, name: 'command-and-control',
-                attackPatterns: [
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                ]
-            },
-            {id: 18, name: 'persistence',
-                attackPatterns: [
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []}
-
-                ]
-            },
-            {id: 19, name: 'lateral-movement',
-                attackPatterns: [
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []}
-
-                ]
-            },
-            {id: 20, name: 'privilege-escalation',
-                attackPatterns: [
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                    {name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []}
-
-                ]
-            }
-        ];
-
-        let attackPattern = [
-                {id: 21, name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', kill_ChainPhases: [{id: 1, name: 'kill1', phaseName: 'phase name'}], externalReferences: []},
-                {id: 22, name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                {id: 23, name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []},
-                {id: 24, name: 'name1', description: 'Sensitive data can be collected from', labels: 'mitre-attack', version: '' , created: '', modified: '', type: '', killChainPhases: [], externalReferences: []}
-        ];
-
-        let campaigns = [];
+        let url = {};
+        // {attackPatterns, attackPattern, courseofaction, sightings, reports, threatActors, campaigns, intrusionSets, relationships };
+        url['attack-patterns'] = [];
         for (let i = 0; i < 5; i++) {
-            campaigns[i] = { id: (i + 1 ), attributes: {
+                url['attack-patterns'][i] =  {
+                    type: 'attack-pattern',
+                    id: guid(),
+                    attributes: {
+                        created: '2016-09-01T00:00:00.000Z',
+                        modified: '2016-09-01T00:00:00.000Z',
+                        version: 0,
+                        labels: ['mitre-attack'],
+                        external_references: [
+                            {source_name: 'attack.mitre.org', xternal_id: 'T1003', url: 'https://attack.mitre.org/wiki/Technique/T1003' }
+                        ],
+                        name: 'name' + i,
+                        description: 'Sensitive data can be collected from',
+                        kill_chain_phases: [
+                            {kill_chain_name: 'killchainName',  phase_name:  'phaseName' }
+                        ],
+                        granular_markings: [],
+                        type: 'attack-pattern'
+                    }
+                };
+        }
+
+        url['campaigns'] = [];
+        for (let i = 0; i < 5; i++) {
+            url['campaigns'][i] = { id: (i + 1 ), attributes: {
                     name: 'campaigns' + (i + 1),
                     kill_ChainPhase: [],
                     external_references: [{externalId: 'CSC$', sourceName: 'CIS', url: 'http:someurl.com'}],
@@ -107,9 +44,9 @@ export class InMemoryDataService implements InMemoryDbService {
             };
         }
 
-        let courseofaction = [];
+        url['course-of-action'] = [];
         for (let i = 0; i < 11; i++) {
-            courseofaction[i] = { id: (i + 1 ), attributes: {
+            url['course-of-action'][i] = { id: (i + 1 ), attributes: {
                 name: 'course-of-action-' + (i + 1),
                 description: 'Sensitive data can be collected from',
                 first_seen: new Date(),
@@ -120,9 +57,9 @@ export class InMemoryDataService implements InMemoryDbService {
             };
         }
 
-        let sightings = [];
+        url['sightings'] = [];
         for (let i = 0; i < 11; i++) {
-            sightings[i] = { id: (i + 1 ), attributes: {
+            url['sightings'][i] = { id: (i + 1 ), attributes: {
                     sighting_of_ref: 'sightings' + (i + 1),
                     first_seen: new Date(),
                     last_seen: new Date(),
@@ -134,9 +71,9 @@ export class InMemoryDataService implements InMemoryDbService {
             };
         }
 
-        let reports = [];
+        url['reports'] = [];
         for (let i = 0; i < 5; i++) {
-            reports[i] = { id: (i + 1 ), attributes: {
+            url['reports'][i] = { id: (i + 1 ), attributes: {
                     name: 'reports' + (i + 1),
                     kill_ChainPhase: [],
                     external_references: [{externalId: 'CSC$', sourceName: 'CIS', url: 'http:someurl.com'}],
@@ -147,9 +84,9 @@ export class InMemoryDataService implements InMemoryDbService {
             };
         }
 
-        let threatActors = [];
+        url['threat-actors'] = [];
         for (let i = 0; i < 5; i++) {
-            threatActors[i] = { id: (i + 1 ), attributes: {
+            url['threat-actors'][i] = { id: (i + 1 ), attributes: {
                     name: 'threateActor' + (i + 1),
                     kill_ChainPhase: [],
                     external_references: [{externalId: 'CSC$', sourceName: 'CIS', url: 'http:someurl.com'}],
@@ -160,9 +97,9 @@ export class InMemoryDataService implements InMemoryDbService {
             };
         }
 
-        let intrusionSets = [];
+        url['intrusion-sets'] = [];
         for (let i = 0; i < 5; i++) {
-            intrusionSets[i] = { id: (i + 1 ), attributes: {
+            url['intrusion-sets'][i] = { id: (i + 1 ), attributes: {
                     name: 'intrusionSets' + (i + 1),
                     kill_ChainPhase: [],
                     external_references: [{externalId: 'CSC$', sourceName: 'CIS', url: 'http:someurl.com'}],
@@ -173,9 +110,9 @@ export class InMemoryDataService implements InMemoryDbService {
             };
         }
 
-        let relationships = [];
+        url['relationships'] = [];
         for (let i = 0; i < 5; i++) {
-            relationships[i] =  {
+            url['relationships'][i] =  {
                 type: 'relationships',
                 id: 'relationship--' + guid(),
                 attributes: {
@@ -192,7 +129,7 @@ export class InMemoryDataService implements InMemoryDbService {
                 }
             };
         }
-        return {attackPatterns, attackPattern, courseofaction, sightings, reports, threatActors, campaigns, intrusionSets, relationships };
+        return url;
     }
 }
 

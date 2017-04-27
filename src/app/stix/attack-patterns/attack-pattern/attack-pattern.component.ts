@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { BaseStixComponent } from '../../base-stix.component';
 import { AttackPattern } from '../../../models';
-import { AttackPatternsService } from '../attack-patterns.service';
+import { StixService } from '../../stix.service';
 
 @Component({
   selector: 'attack-pattern',
@@ -17,17 +17,18 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public attackPattern: AttackPattern;
 
     constructor(
-        public attackPatternsService: AttackPatternsService,
+        public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog,
         public location: Location) {
 
-        super(attackPatternsService, route, router, dialog);
+        super(stixService, route, router, dialog);
+        stixService.url = 'api/attack-patterns';
     }
 
     public ngOnInit() {
-       let subscription =  super.get().subscribe(
+        let subscription =  super.get().subscribe(
             (data) => {
                 this.attackPattern = data as AttackPattern;
 

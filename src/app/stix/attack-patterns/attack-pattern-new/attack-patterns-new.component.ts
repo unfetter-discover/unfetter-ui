@@ -3,29 +3,37 @@ import { MdDialog, MdDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { BaseStixComponent } from '../../base-stix.component';
-import { AttackPatternsService } from '../attack-patterns.service';
+import { StixService } from '../../stix.service';
 import { AttackPattern } from '../../../models';
 
 @Component({
     selector: 'attack-pattern-new',
     templateUrl: './attack-pattern-new.component.html'
 })
-export class AttackPatternNewComponent implements OnInit {
+export class AttackPatternNewComponent extends BaseStixComponent implements OnInit {
 
     private attackPattern: AttackPattern =  new AttackPattern();
 
-    constructor(private attackPatternsService: AttackPatternsService, private route: ActivatedRoute, private location: Location) {
+     constructor(
+        public stixService: StixService,
+        public route: ActivatedRoute,
+        public router: Router,
+        public dialog: MdDialog,
+        public location: Location) {
 
-     }
+        super(stixService, route, router, dialog);
+        stixService.url = 'api/attack-patterns';
+    }
+
     public ngOnInit() {
         console.log('Initial AttackPatternNewComponent');
     }
 
-    public save(): void {
-       let subscription = this.attackPatternsService.create(this.attackPattern).subscribe(
-            (attackPattern) => {
-                this.attackPattern = attackPattern;
-
+     public saveButtonClicked(): void {
+       let subscription = super.save(this.attackPattern).subscribe(
+            (data) => {
+                this.attackPattern = data as AttackPattern;
+                this.location.back();
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

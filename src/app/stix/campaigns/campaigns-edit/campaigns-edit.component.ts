@@ -3,28 +3,26 @@ import { MdDialog, MdDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { BaseStixComponent } from '../../base-stix.component';
-import { CampaignService } from '../campaigns.service';
+import { StixService } from '../../stix.service';
 import { Campaign } from '../../../models';
 
 @Component({
   selector: 'campaigns-edit',
   templateUrl: './campaigns-edit.component.html',
-  providers: [
-    CampaignService
-  ]
 })
 export class CampaignsEditComponent extends BaseStixComponent implements OnInit {
 
     public campaign: Campaign = new Campaign();
 
     constructor(
-        public campaignService: CampaignService,
+        public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog,
         public location: Location) {
 
-        super(campaignService, route, router, dialog);
+        super(stixService, route, router, dialog);
+        stixService.url = 'api/campaigns';
     }
 
     public ngOnInit() {

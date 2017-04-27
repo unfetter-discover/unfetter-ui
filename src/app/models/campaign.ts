@@ -14,6 +14,7 @@ export class Campaign {
         kill_chain_phases: KillChainPhase[];
     };
     constructor() {
+        this.type = 'campaigns';
         this.attributes = {
             version: '',
             created: new Date(),

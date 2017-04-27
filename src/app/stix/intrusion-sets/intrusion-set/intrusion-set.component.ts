@@ -19,7 +19,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
         public dialog: MdDialog) {
 
         super(stixService, route, router, dialog);
-
+        stixService.url = 'api/intrusion-sets';
         console.log('Initial TheatActorComponent');
     }
 

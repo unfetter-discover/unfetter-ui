@@ -1,6 +1,6 @@
  export class ExternalReference {
-     public sourceName: string;
-     public externalId: string;
+     public source_name: string;
+     public external_id: string;
      public description: string;
      public url: string;
 }

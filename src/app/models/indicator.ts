@@ -19,6 +19,7 @@ export class Indicator {
       
     };
     constructor() {
+        this.type = 'indicators';
         this.attributes = {
             version: '',
             created: new Date(),

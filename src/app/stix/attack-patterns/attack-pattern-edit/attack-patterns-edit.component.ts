@@ -3,7 +3,7 @@ import { MdDialog, MdDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { BaseStixComponent } from '../../base-stix.component';
-import { AttackPatternsService } from '../attack-patterns.service';
+import { StixService } from '../../stix.service';
 import { AttackPattern, ExternalReference, KillChainPhase } from '../../../models';
 
 @Component({
@@ -11,16 +11,18 @@ import { AttackPattern, ExternalReference, KillChainPhase } from '../../../model
     templateUrl: './attack-pattern-edit.component.html'
 })
 export class AttackPatternEditComponent extends BaseStixComponent implements OnInit {
-     private attackPattern: AttackPattern = <AttackPattern> {};
+     private attackPattern: AttackPattern;
 
     constructor(
-        private attackPatternsService: AttackPatternsService,
+        public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog,
         public location: Location) {
 
-        super(attackPatternsService, route, router, dialog, location);
+        super(stixService, route, router, dialog, location);
+        stixService.url = 'api/attack-patterns';
+
     }
 
     public ngOnInit() {
@@ -42,8 +44,8 @@ export class AttackPatternEditComponent extends BaseStixComponent implements OnI
     public addkillChainPhase(): void {
         // let id = this.attackPattern.kill_chain_phases.length + 1;
         let killChainPhase: KillChainPhase;
-        killChainPhase.killChainName = '';
-        killChainPhase.phaseName = '';
+        killChainPhase.kill_chain_name = '';
+        killChainPhase.phase_name = '';
         this.attackPattern.attributes.kill_chain_phases.unshift(killChainPhase);
     }
 

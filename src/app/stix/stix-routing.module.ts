@@ -6,14 +6,14 @@ import {
   AttackPatternsHomeComponent,
   AttackPatternComponent,
   AttackPatternNewComponent,
-  AttackPatternEditComponent, AttackPatternsService } from './attack-patterns';
+  AttackPatternEditComponent } from './attack-patterns';
 
 import {
   CampaignsHomeComponent,
   CampaignsListComponent,
   CampaignsNewComponent,
   CampaignsEditComponent,
-  CampaignComponent, CampaignService } from './campaigns';
+  CampaignComponent } from './campaigns';
 
 import {
   CourseOfActionHomeComponent,
@@ -31,17 +31,17 @@ import {
 
 import { ThreatActorHomeComponent, ThreatActorListComponent , TheatActorComponent, ThreatActorNewComponent, ThreatActorEditComponent } from './threat-actors';
 import { IntrusionSetHomeComponent, IntrusionSetListComponent, IntrusionSetComponent, IntrusionSetEditComponent, IntrusionSetNewComponent } from './intrusion-sets';
-import { RelationshipsComponent } from './relationships';
+import { RelationshipsComponent, RelationshipNewComponent, RelationshipListComponent } from './relationships';
 
-    import { ReportsComponent, ReportsListComponent, ReportNewComponent } from './reports';
+    import { ReportsComponent, ReportsListComponent, ReportNewComponent, } from './reports';
 
 const stixRoutes: Routes = [
     { path: 'attack-patterns', component: AttackPatternsHomeComponent,
         children: [
         { path: '', component: AttackPatternListComponent },
-        { path: 'attack-pattern/:id', component: AttackPatternComponent },
         { path: 'new', component: AttackPatternNewComponent },
-        { path: 'edit/attack-pattern/:id', component: AttackPatternEditComponent }
+        { path: ':id', component: AttackPatternComponent },
+        { path: 'edit/:id', component: AttackPatternEditComponent }
         ]
     },
     { path: 'campaigns', component: CampaignsHomeComponent,
@@ -93,7 +93,8 @@ const stixRoutes: Routes = [
     },
     { path: 'relationships', component: RelationshipsComponent,
       children: [
-          { path: 'new', component: IntrusionSetNewComponent },
+          { path: '', component: RelationshipListComponent},
+          { path: 'new', component: RelationshipNewComponent },
           { path: ':id', component: IntrusionSetComponent },
           { path: 'edit/:id', component: IntrusionSetEditComponent }
       ]
@@ -107,6 +108,6 @@ const stixRoutes: Routes = [
   exports: [
     RouterModule
   ],
-  providers: [ AttackPatternsService, CampaignService ],
+  providers: [ ],
 })
 export class StixRoutingModule { }

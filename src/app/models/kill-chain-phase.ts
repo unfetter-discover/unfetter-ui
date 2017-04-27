@@ -1,4 +1,4 @@
  export class KillChainPhase {
-     public killChainName: string;
-     public phaseName: string;
+     public kill_chain_name: string;
+     public phase_name: string;
 }

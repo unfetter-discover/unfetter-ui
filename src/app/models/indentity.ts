@@ -18,6 +18,7 @@ export class Indentity {
         contact_information: string;
     };
     constructor() {
+        this.type = 'identities';
         this.attributes = {
             version: '',
             created: new Date(),

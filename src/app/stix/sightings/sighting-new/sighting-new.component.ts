@@ -3,7 +3,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
 import { MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
 import { BaseStixComponent } from '../../base-stix.component';
-import { SightingService } from '../sighting.service';
+import { StixService } from '../../stix.service';
 import { Sighting } from '../../../models';
 
 @Component({
@@ -16,14 +16,14 @@ export class SightingNewComponent extends BaseStixComponent implements OnInit {
   private sourceTypes = ['Indicator', 'Campaign', 'Intrusion Set' ];
 
     constructor(
-        public sightingService: SightingService,
+        public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog,
         public location: Location) {
 
-        super(sightingService, route, router, dialog, location);
-
+        super(stixService, route, router, dialog, location);
+        stixService.url = 'api/sightings';
         console.log('Initial SightingNewComponent');
     }
     public ngOnInit() {
