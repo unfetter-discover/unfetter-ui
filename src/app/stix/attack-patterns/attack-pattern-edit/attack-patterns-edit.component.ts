@@ -21,7 +21,7 @@ export class AttackPatternEditComponent extends BaseStixComponent implements OnI
         public location: Location) {
 
         super(stixService, route, router, dialog, location);
-        stixService.url = 'api/attack-patterns';
+        stixService.url = 'cti-stix-store-api/attack-patterns';
 
     }
 

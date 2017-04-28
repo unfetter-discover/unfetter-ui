@@ -35,7 +35,7 @@ export class IntrusionSetNewComponent extends BaseStixComponent implements OnIni
         public location: Location) {
 
         super(stixService, route, router, dialog, location);
-        stixService.url = 'api/intrusion-sets';
+        stixService.url = 'cti-stix-store-api/intrusion-sets';
         console.log('Initial IntrusionSetNewComponent');
 
     }

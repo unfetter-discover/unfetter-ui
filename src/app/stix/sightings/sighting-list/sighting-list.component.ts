@@ -19,7 +19,7 @@ export class SightingListComponent extends BaseStixComponent implements OnInit {
         public dialog: MdDialog) {
 
         super(stixService, route, router, dialog);
-        stixService.url = 'api/sightings';
+        stixService.url = 'cti-stix-store-api/sightings';
         console.log('Initial SightingListComponent');
     }
 

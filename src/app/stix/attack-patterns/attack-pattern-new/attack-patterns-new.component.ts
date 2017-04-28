@@ -22,7 +22,7 @@ export class AttackPatternNewComponent extends BaseStixComponent implements OnIn
         public location: Location) {
 
         super(stixService, route, router, dialog);
-        stixService.url = 'api/attack-patterns';
+        stixService.url = 'cti-stix-store-api/attack-patterns';
     }
 
     public ngOnInit() {

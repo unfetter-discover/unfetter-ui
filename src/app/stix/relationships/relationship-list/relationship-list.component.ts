@@ -21,7 +21,7 @@ export class RelationshipListComponent extends BaseStixComponent implements OnIn
         public dialog: MdDialog) {
 
         super(stixService, route, router, dialog);
-        stixService.url = 'api/relationships';
+        stixService.url = 'cti-stix-store-api/relationships';
     }
     public ngOnInit() {
         console.log('Initial RelationshipsComponent');

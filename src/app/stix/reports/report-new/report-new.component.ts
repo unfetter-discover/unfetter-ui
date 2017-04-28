@@ -24,7 +24,7 @@ export class ReportNewComponent extends BaseStixComponent implements OnInit {
         public location: Location) {
 
         super(stixService, route, router, dialog, location);
-        stixService.url = 'api/reports';
+        stixService.url = 'cti-stix-store-api/reports';
         console.log('Initial ReportNewComponent');
     }
     public ngOnInit() {

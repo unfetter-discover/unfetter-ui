@@ -36,7 +36,7 @@ export class RelationshipNewComponent extends BaseStixComponent implements OnIni
     }
 
    public saveButtonClicked(): void {
-        this.stixService.url = 'api/relationship';
+        this.stixService.url = 'cti-stix-store-api/relationship';
         let subscription = super.save(this.relationship).subscribe(
             (data) => {
                 this.relationship = data as Relationship;
@@ -54,7 +54,7 @@ export class RelationshipNewComponent extends BaseStixComponent implements OnIni
     }
 
     public onSelectedSourceChange(): void {
-        this.stixService.url = 'api/' + this.selectedSource;
+        this.stixService.url = 'cti-stix-store-api/' + this.selectedSource;
         console.log(this.selectedSource);
         super.load().subscribe(
             (data) => {
@@ -64,7 +64,7 @@ export class RelationshipNewComponent extends BaseStixComponent implements OnIni
     }
 
     public onSelectedTargetTypeChange(): void {
-        this.stixService.url = 'api/' + this.selectedTargetType;
+        this.stixService.url = 'cti-stix-store-api/' + this.selectedTargetType;
         super.load().subscribe(
             (data) => {
                 this.selectedTargetTypes = data as any[];

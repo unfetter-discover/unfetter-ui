@@ -1,10 +1,12 @@
 import { InMemoryDbService } from 'angular-in-memory-web-api';
+
 export class InMemoryDataService implements InMemoryDbService {
+    
     public createDb() {
         let url = {};
         // {attackPatterns, attackPattern, courseofaction, sightings, reports, threatActors, campaigns, intrusionSets, relationships };
         url['attack-patterns'] = [];
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 10; i++) {
                 url['attack-patterns'][i] =  {
                     type: 'attack-pattern',
                     id: guid(),

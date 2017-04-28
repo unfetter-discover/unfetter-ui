@@ -20,7 +20,7 @@ export class ReportsListComponent extends BaseStixComponent implements OnInit {
         public dialog: MdDialog) {
 
         super(stixService, route, router, dialog);
-        stixService.url = 'api/reports';
+        stixService.url = 'cti-stix-store-api/reports';
 
         console.log('Initial ReportsListComponent');
     }

@@ -35,7 +35,7 @@ export class ThreatActorNewComponent extends BaseStixComponent implements OnInit
         public location: Location) {
 
         super(stixService, route, router, dialog, location);
-        stixService.url = 'api/threat-actors';
+        stixService.url = 'cti-stix-store-api/threat-actors';
 
         console.log('Initial ThreatActorNewComponent');
     }

@@ -21,7 +21,7 @@ export class CourseOfActionListComponent extends BaseStixComponent implements On
         super(stixService, route, router, dialog);
 
         console.log('Initial CourseOfActionListComponent');
-        stixService.url = 'api/threat-actors';
+        stixService.url = 'cti-stix-store-api/course-of-actions';
     }
 
     public ngOnInit() {

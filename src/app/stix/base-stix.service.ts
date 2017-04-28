@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs/Observable';
-import { StixObject } from '../models'
+//import { StixObject } from '../models'
 
 export interface BaseStixService {
     load(): Observable<any[]>;

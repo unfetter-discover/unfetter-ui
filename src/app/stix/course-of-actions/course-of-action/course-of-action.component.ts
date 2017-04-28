@@ -19,7 +19,7 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
         public dialog: MdDialog) {
 
         super(stixService, route, router, dialog);
-        stixService.url = 'api/threat-actors';
+        stixService.url = 'cti-stix-store-api/threat-actors';
 
         console.log('Initial CourseOfActionComponent');
     }

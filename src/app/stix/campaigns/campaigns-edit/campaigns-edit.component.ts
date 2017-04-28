@@ -22,7 +22,7 @@ export class CampaignsEditComponent extends BaseStixComponent implements OnInit 
         public location: Location) {
 
         super(stixService, route, router, dialog);
-        stixService.url = 'api/campaigns';
+        stixService.url = 'cti-stix-store-api/campaigns';
     }
 
     public ngOnInit() {
