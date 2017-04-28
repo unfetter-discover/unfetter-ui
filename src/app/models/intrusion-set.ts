@@ -22,6 +22,7 @@ export class IntrusionSet {
         kill_chain_phases: KillChainPhase[];
     };
     constructor() {
+        this.type = 'intrusion-sets';
         this.attributes = {
             version: '',
             created: new Date(),

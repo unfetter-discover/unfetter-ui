@@ -3,4 +3,3 @@ export { CourseOfActionListComponent } from './course-of-action-list/course-of-a
 export { CourseOfActionEditComponent } from './course-of-action-edit/course-of-action-edit.component';
 export { CourseOfActionNewComponent } from './course-of-action-new/course-of-action-new.component';
 export { CourseOfActionComponent } from './course-of-action/course-of-action.component';
-export { CourseOfActionService } from './course-of-action.service';

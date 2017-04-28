@@ -16,9 +16,9 @@ export class Relationship {
         relationship_type: string;
         source_ref: string;
         target_ref: string;
-      
     };
     constructor() {
+        this.type = 'relationships';
         this.attributes = {
             version: '',
             created: new Date(),
@@ -31,7 +31,6 @@ export class Relationship {
             relationship_type: '',
             source_ref: '',
             target_ref: ''
-            
         };
     }
 }

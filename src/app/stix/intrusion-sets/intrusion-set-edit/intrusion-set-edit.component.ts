@@ -35,7 +35,7 @@ export class IntrusionSetEditComponent extends BaseStixComponent implements OnIn
         public location: Location) {
 
         super(stixService, route, router, dialog, location);
-        stixService.url = 'api/intrusionSets';
+        stixService.url = 'api/intrusion-sets';
 
         console.log('Initial IntrusionSetEditComponent');
 

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { CampaignService } from './campaigns.service';
 
 @Component({
   selector: 'campaigns',
@@ -9,7 +8,7 @@ export class CampaignsHomeComponent implements OnInit {
     private pageTitle = 'Campaigns';
     private pageIcon = 'assets/icon/stix-icons/svg/campaign-b.svg';
 
-    constructor(private campaignService: CampaignService) {
+    constructor() {
         console.log('Initial CampaignsHomeComponent');
     }
     public ngOnInit() {

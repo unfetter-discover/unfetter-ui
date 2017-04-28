@@ -14,6 +14,7 @@ export class CourseOfAction {
         kill_chain_phases: KillChainPhase[];
     };
     constructor() {
+        this.type = 'course-of-actions';
         this.attributes = {
             version: '',
             created: new Date(),

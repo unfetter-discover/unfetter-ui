@@ -16,6 +16,7 @@ export class Report {
     };
 
      constructor() {
+        this.type = 'reports';
         this.attributes = {
             version: '',
             created: new Date(),

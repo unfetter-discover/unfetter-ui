@@ -3,32 +3,31 @@ import { MdDialog, MdDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BaseStixComponent } from '../../base-stix.component';
 import { StixService } from '../../stix.service';
-import { CourseOfAction } from '../../../models';
+import { Relationship } from '../../../models';
 
 @Component({
-  selector: 'course-of-action-list',
-  templateUrl: './course-of-action-list.component.html',
+  selector: 'relationship-list',
+  templateUrl: './relationship-list.component.html'
 })
-export class CourseOfActionListComponent extends BaseStixComponent implements OnInit {
-    private courseOfActions: CourseOfAction[] = [];
+export class RelationshipListComponent extends BaseStixComponent implements OnInit {
+    private pageTitle = 'Relationships';
+    private pageIcon = 'assets/icon/stix-icons/svg/relationship-b.svg';
+    private relationships: Relationship[] = [];
 
-    constructor(
+     constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog) {
 
         super(stixService, route, router, dialog);
-
-        console.log('Initial CourseOfActionListComponent');
-        stixService.url = 'api/threat-actors';
+        stixService.url = 'api/relationships';
     }
-
     public ngOnInit() {
-        console.log('Initial CourseOfActionListComponent');
+        console.log('Initial RelationshipsComponent');
         let subscription =  super.load().subscribe(
             (data) => {
-                this.courseOfActions = data as CourseOfAction[];
+                this.relationships = data as Relationship[];
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -39,5 +38,15 @@ export class CourseOfActionListComponent extends BaseStixComponent implements On
                 }
             }
         );
+    }
+
+    public showDetails(event: any, relationship: Relationship): void {
+        event.preventDefault();
+        let link = ['.', relationship.id];
+        super.gotoView(link);
+    }
+
+    public deleteButtonClicked(relationship: Relationship): void {
+        super.openDialog(relationship);
     }
 }

@@ -3,8 +3,8 @@ import { MdDialog, MdDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { BaseStixComponent } from '../../base-stix.component';
-import { AttackPattern } from '../../../models';
-import { AttackPatternsService } from '../attack-patterns.service';
+import { AttackPattern, KillChainPhase } from '../../../models';
+import { StixService } from '../../stix.service';
 
 @Component({
   selector: 'attack-pattern-list',
@@ -14,23 +14,29 @@ import { AttackPatternsService } from '../attack-patterns.service';
 
 export class AttackPatternListComponent extends BaseStixComponent implements OnInit {
 
-    public phaseNameGroups: any[];
-    private selectedPhaseNameGroup: any = {};
+    public attackPatterns: AttackPattern[] = [];
+    private selectedPhaseNameGroup: String;
+    private phaseNameGroups = {};
+    private phaseNameGroupKeys: string[];
 
      constructor(
-        public attackPatternsService: AttackPatternsService,
+        public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog,
         public location: Location) {
 
-        super(attackPatternsService, route, router, dialog);
+        super(stixService, route, router, dialog);
+        stixService.url = 'api/attack-patterns';
+        this.phaseNameGroups['unspecified'] = [];
     }
 
     public ngOnInit() {
        let subscription =  super.load().subscribe(
             (data) => {
-                this.phaseNameGroups = data;
+                this.attackPatterns = data as AttackPattern[];
+                this.getPhaseNameAttackPatterns();
+                this.phaseNameGroupKeys = Object.keys(this.phaseNameGroups);
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -62,5 +68,26 @@ export class AttackPatternListComponent extends BaseStixComponent implements OnI
 
     public deleteButtonClicked(attackPattern: AttackPattern): void {
         super.openDialog(attackPattern);
+    }
+
+    private getPhaseNameAttackPatterns() {
+        this.attackPatterns.forEach((attackPattern: AttackPattern) => {
+            let killChainPhases = attackPattern.attributes.kill_chain_phases;
+
+            if (!killChainPhases) {
+                let attackPatternsProxies = this.phaseNameGroups['unspecified'];
+                attackPatternsProxies.push(attackPattern);
+            } else {
+                killChainPhases.forEach( (killChainPhase: KillChainPhase) => {
+                    let phaseName = killChainPhase.phase_name;
+                    let attackPatternsProxies = this.phaseNameGroups[phaseName];
+                    if (attackPatternsProxies === undefined) {
+                        attackPatternsProxies = [];
+                        this.phaseNameGroups[phaseName] = attackPatternsProxies;
+                    }
+                    attackPatternsProxies.push(attackPattern);
+                });
+            }
+        });
     }
 }

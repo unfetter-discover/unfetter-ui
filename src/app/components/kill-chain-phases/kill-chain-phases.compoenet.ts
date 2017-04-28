@@ -22,8 +22,8 @@ export class KillChainPhasesComponent implements OnInit {
      public addkillChainPhase(): void {
         // let id = this.attackPattern.kill_chain_phases.length + 1;
         let killChainPhase = new KillChainPhase();
-        killChainPhase.killChainName = '';
-        killChainPhase.phaseName = '';
+        killChainPhase.kill_chain_name = '';
+        killChainPhase.phase_name = '';
         this.model.attributes.kill_chain_phases.unshift(killChainPhase);
     }
 

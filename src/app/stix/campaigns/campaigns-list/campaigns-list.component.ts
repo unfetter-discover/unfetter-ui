@@ -3,16 +3,12 @@ import { MdDialog, MdDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { BaseStixComponent } from '../../base-stix.component';
-import { CampaignService } from '../campaigns.service';
+import { StixService } from '../../stix.service';
 import { Campaign } from '../../../models';
 
 @Component({
   selector: 'campaigns-list',
-  templateUrl: './campaigns-list.component.html',
-  providers: [
-    CampaignService
-  ]
-
+  templateUrl: './campaigns-list.component.html'
 })
 
 export class CampaignsListComponent extends BaseStixComponent implements OnInit {
@@ -22,13 +18,14 @@ export class CampaignsListComponent extends BaseStixComponent implements OnInit 
     private showLabels: boolean = false;
 
     constructor(
-        public campaignService: CampaignService,
+        public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog,
         public location: Location) {
 
-        super(campaignService, route, router, dialog);
+        super(stixService, route, router, dialog);
+        stixService.url = 'api/campaigns';
     }
 
     public ngOnInit() {

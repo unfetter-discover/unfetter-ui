@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MdDialog, MdDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BaseStixComponent } from '../../base-stix.component';
-import { CourseOfActionService } from '../course-of-action.service';
+import { StixService } from '../../stix.service';
 import { CourseOfAction } from '../../../models';
 
 @Component({
@@ -13,12 +13,13 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
     private courseOfAction: CourseOfAction = new CourseOfAction();
 
      constructor(
-        public courseOfActionService: CourseOfActionService,
+        public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog) {
 
-        super(courseOfActionService, route, router, dialog);
+        super(stixService, route, router, dialog);
+        stixService.url = 'api/threat-actors';
 
         console.log('Initial CourseOfActionComponent');
     }

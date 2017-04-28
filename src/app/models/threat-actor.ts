@@ -15,6 +15,7 @@ export class ThreatActor {
         kill_chain_phases: KillChainPhase[];
     };
     constructor() {
+        this.type = 'threat-actors';
         this.attributes = {
             version: '',
             created: new Date(),
