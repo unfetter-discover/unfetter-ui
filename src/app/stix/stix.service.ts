@@ -33,12 +33,12 @@ export class StixService {
         .catch(this.handleError);
   }
 
-  public delete(id: number): Observable<void> {
+  public delete(id: string): Observable<void> {
     const url = `${this.url}/${id}`;
     return this.http
         .delete(url, {headers: this.headers})
         .map((response) => {
-            return response.json().data;
+            return response.json();
         })
         .catch(this.handleError);
   }
@@ -55,7 +55,7 @@ export class StixService {
   public update(item: any): Observable<any> {
     const url = `${this.url}/${item.id}`;
     return this.http
-        .put(url, JSON.stringify(item), {headers: this.headers})
+        .patch(url, JSON.stringify(item.attributes), {headers: this.headers})
         .map((response) => {
             return response.json().data;
         })

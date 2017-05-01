@@ -56,7 +56,7 @@ export class AttackPatternEditComponent extends BaseStixComponent implements OnI
     public saveButtonClicked(): void {
        let subscription = super.save(this.attackPattern).subscribe(
             (data) => {
-                this.attackPattern = data as AttackPattern;
+                //this.attackPattern = data as AttackPattern;
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
