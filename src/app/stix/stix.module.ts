@@ -91,7 +91,7 @@ import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
     TheatActorComponent,
     ThreatActorNewComponent,
     ThreatActorEditComponent,
-    
+
     IntrusionSetHomeComponent,
     IntrusionSetListComponent,
     IntrusionSetComponent,
@@ -104,11 +104,8 @@ import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
 
     IdentifierTypePipe,
     IdentifierSummarizedPipe
-    
-
-
   ],
-  
+
   providers: [ StixService ],
 })
 export class StixModule {}

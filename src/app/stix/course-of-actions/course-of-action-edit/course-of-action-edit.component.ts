@@ -4,7 +4,7 @@ import { Location } from '@angular/common';
 import { MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
 import { BaseStixComponent } from '../../base-stix.component';
 import { StixService } from '../../stix.service';
-import { CourseOfAction, ExternalReference, StixObject } from '../../../models';
+import { CourseOfAction, ExternalReference } from '../../../models';
 
 @Component({
   selector: 'course-of-action-edit',

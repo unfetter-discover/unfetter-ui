@@ -16,7 +16,6 @@ export class Indicator {
         pattern: string;
         valid_from: Date;
         valid_until: Date;
-      
     };
     constructor() {
         this.type = 'indicators';
@@ -32,7 +31,6 @@ export class Indicator {
             pattern: '',
             valid_from: new Date(),
             valid_until: new Date()
-            
         };
     }
 }

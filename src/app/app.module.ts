@@ -45,7 +45,7 @@ import '../styles/headings.css';
     MdDialogModule,
     ComponentModule,
     StixModule,
-    //InMemoryWebApiModule.forRoot(InMemoryDataService),
+    // InMemoryWebApiModule.forRoot(InMemoryDataService),
      AppRoutingModule,
     // RouterModule.forRoot(ROUTES, { useHash: true, preloadingStrategy: PreloadAllModules })
   ],
