@@ -14,7 +14,7 @@ export class BaseStixComponent {
         protected router: Router,
         protected dialog: MdDialog,
         protected location?: Location) {
-        console.log('Initial BaseStixComponent');
+        //console.log('Initial BaseStixComponent');
     }
 
      protected load(): Observable<any[]> {
@@ -44,9 +44,12 @@ export class BaseStixComponent {
 
     protected openDialog(item: any) {
         let dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: item });
-
+        let id = item.id;
         dialogRef.afterClosed().subscribe(
             (result) => {
+              if (result) {
+                this.deleteItem(id);
+              }
                 console.log(result);
         });
     }
@@ -83,6 +86,23 @@ export class BaseStixComponent {
                 (stixObject) => {
                     observer.next(stixObject);
                     observer.complete();
+                }, (error) => {
+                    // handle errors here
+                    console.log('error ' + error);
+                }, () => {
+                   // handle errors here
+                }
+            );
+    }
+
+    private deleteItem(id: string): void {
+      console.log('deleteItem : ' + id);
+        this.route.params
+            .switchMap((params: Params) => this.service.delete(id))
+            .subscribe(
+                (stixObject) => {
+                    //observer.next(stixObject);
+                    //observer.complete();
                 }, (error) => {
                     // handle errors here
                     console.log('error ' + error);

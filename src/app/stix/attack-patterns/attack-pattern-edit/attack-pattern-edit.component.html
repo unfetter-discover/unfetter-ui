@@ -3,14 +3,14 @@
         <div class="row">
             <div class="col-md-12">
                 <md-input-container class="full-width">
-                    <input mdInput placeholder="Name" value="{{attackPattern.name}}">
+                    <input mdInput placeholder="Name" value="{{attackPattern.attributes.name}}" [(ngModel)]="attackPattern.attributes.name">
                 </md-input-container>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <md-input-container class="full-width">
-                    <textarea mdInput placeholder="Descrpition">{{attackPattern.description}}</textarea>
+                    <textarea mdInput placeholder="Descrpition" [(ngModel)]="attackPattern.attributes.description">{{attackPattern.attributes.description}}</textarea>
                 </md-input-container>
             </div>
         </div>

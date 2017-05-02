@@ -66,7 +66,7 @@ export class AttackPatternListComponent extends BaseStixComponent implements OnI
         super.gotoView(link);
     }
 
-    public deleteButtonClicked(attackPattern: AttackPattern): void {
+    public deleteButtonClicked(attackPattern: AttackPattern): void {      
         super.openDialog(attackPattern);
     }
 
