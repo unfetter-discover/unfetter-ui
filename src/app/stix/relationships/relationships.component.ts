@@ -7,13 +7,12 @@ import { Relationship } from '../../models';
 
 @Component({
   selector: 'relationships',
-  templateUrl: './relationships.component.html'
+  template: `<page-header [pageTitle]='pageTitle'  [pageIcon]='pageIcon' [description]="description"></page-header>`,
 })
-export class RelationshipsComponent implements OnInit {
+export class RelationshipsComponent {
     private pageTitle = 'Relationships';
     private pageIcon = 'assets/icon/stix-icons/svg/relationship-b.svg';
-
-    public ngOnInit() {
-        console.log('Initial RelationshipsComponent');
-    }
+    private description = 'One type of relationship is created to ' +
+            'identify that a particular Course Of Action can mitigate a particular Attack Pattern.  Another type of relationship ' +
+            'describes an Attack Pattern is used by an Intrusion Set.'
 }

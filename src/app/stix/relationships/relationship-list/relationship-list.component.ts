@@ -24,7 +24,6 @@ export class RelationshipListComponent extends BaseStixComponent implements OnIn
         stixService.url = 'cti-stix-store-api/relationships';
     }
     public ngOnInit() {
-        console.log('Initial RelationshipsComponent');
         let subscription =  super.load().subscribe(
             (data) => {
                 this.relationships = data as Relationship[];

@@ -193,8 +193,8 @@ module.exports = function (options) {
         { 
           test: /\.(eot|woff2?|svg|ttf)([\?]?.*)$/,
           use: 'file-loader'
-        }
-
+        },
+       
       ],
 
     },
@@ -270,11 +270,11 @@ module.exports = function (options) {
         { from: 'node_modules/bootstrap/dist', to: 'assets/bootstrap' },
         // { from: 'node_modules/@angular/material/core/theming/prebuilt/indigo-pink.css', to: 'assets/css' },
         //{ from: 'node_modules/material-design-icons/iconfont', to: 'assets/fonts' },
-        //  { from: 'node_modules/jquery/dist/jquery.min.js', to: 'assets/jquery' },
+        // { from: 'node_modules/jquery/dist/jquery.min.js', to: 'assets/jquery' },
         // { from: 'node_modules/materialize-css/dist/css/materialize.min.css', to: 'assets/materialize/css' },
         // { from: 'node_modules/materialize-css/dist/js/materialize.min.js', to: 'assets/materialize/js' },
-        // { from: 'node_modules/materialize-css/dist/fonts', to: 'assets/materialize/fonts' },
-        { from: 'src/meta'}
+        // { from: 'node_modules/materialize-css/dist/fonts', to: 'assets/materialize/fonts' }
+       
       ]),
 
 
@@ -332,9 +332,9 @@ module.exports = function (options) {
       }),
 
       new webpack.ProvidePlugin({   
-              // jQuery: 'jquery',
-              // $: 'jquery',
-              // jquery: 'jquery',
+              jQuery: 'jquery',
+              $: 'jquery',
+              jquery: 'jquery'
               // // Materialize: 'Materialize',
               // materialize: 'materialize'
           }),

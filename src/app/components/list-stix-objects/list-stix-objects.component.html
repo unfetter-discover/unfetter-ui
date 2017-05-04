@@ -3,7 +3,7 @@
            <md-card>
                 <md-card-header>
                      <div class="row full-width" >
-                        <div class="col-md-9">
+                        <div class="col-lg-9 col-xs-6">
                      
                                 
                                  <a class="pull-left" href (click)="showDetails($event, item)">{{item.attributes.name}}</a>
@@ -12,13 +12,30 @@
                                 <md-chip-list class="pull-left" *ngIf="showLabels">
                                     <md-chip selected="true" color="accent" *ngFor="let label of item.attributes.labels">{{label}}</md-chip>
                                 </md-chip-list>
-                                <md-chip-list class="pull-left" *ngIf="showExternalReferences">
-                                    <md-chip selected="true"  *ngFor="let external_reference of item.attributes.external_references">{{external_reference.sourceName}}</md-chip>
+
+                                 <md-chip-list class="pull-left" *ngIf="showPattern">
+                                    <md-chip selected="true" color="accent">{{item.attributes.pattern}}</md-chip>
                                 </md-chip-list>
 
+                                <md-chip-list class="pull-left" *ngIf="showSectors">
+                                    <md-chip selected="true"  color="primary" *ngFor="let sector of item.attributes.sectors">{{sector}}</md-chip>
+                                </md-chip-list>
+
+                                 <md-chip-list class="pull-left" *ngIf="showKillChainPhases">
+                                    <md-chip selected="true"  color="warn"  *ngFor="let kill_chain_phase of item.attributes.kill_chain_phases">{{kill_chain_phase.phase_name}}</md-chip>
+                                </md-chip-list>
+
+                                <md-chip-list class="pull-left" *ngIf="showExternalReferences">
+                                    <md-chip selected="true"  color="primary" *ngFor="let external_reference of item.attributes.external_references">{{external_reference.source_name}}</md-chip>
+                                </md-chip-list>
+
+                                 
+
+
+
                         </div> 
-                         <div class="col-md-3">
-                           <a md-raised-button (click)="editButtonClicked(item)"><i class="fa fa-pencil"></i></a>
+                         <div class="col-lg-3 col-xs-6">
+                                <a md-raised-button (click)="editButtonClicked(item)"><i class="fa fa-pencil"></i></a>
                                 <a md-raised-button (click)="deleteButtonClicked(item)"><i class="fa fa-trash"></i></a>            
                         </div>
                     </div>  

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import {
   MdButtonModule, MdListModule, MdCardModule,
-  MdDialogModule, MdChipsModule, MdInputModule, MdSelectModule, MdAutocompleteModule , MdCheckboxModule } from '@angular/material';
+  MdDialogModule, MdChipsModule, MdInputModule, MdSelectModule, MdAutocompleteModule , MdCheckboxModule, MdRadioModule } from '@angular/material';
 import { DatePickerModule } from 'angular-material-datepicker';
 import { ComponentModule } from '../components/component.module';
 import { StixService } from './stix.service';
@@ -36,6 +36,11 @@ import {
     import { IntrusionSetHomeComponent, IntrusionSetListComponent, IntrusionSetComponent, IntrusionSetEditComponent, IntrusionSetNewComponent } from './intrusion-sets';
     import { RelationshipsComponent, RelationshipNewComponent, RelationshipListComponent } from './relationships';
 
+    
+import { IndicatorHomeComponent , IndicatorListComponent, IndicatorEditComponent, IndicatorNewComponent, IndicatorComponent } from './indicators';
+import { IdentityHomeComponent , IdentityListComponent, IdentityEditComponent, IdentityNewComponent, IdentityComponent } from './identities';
+
+
 import { StixRoutingModule } from './stix-routing.module';
 
 import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
@@ -52,6 +57,7 @@ import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
       MdSelectModule,
       MdAutocompleteModule,
       MdCheckboxModule,
+      MdRadioModule,
       ComponentModule,
       DatePickerModule,
       StixRoutingModule
@@ -101,7 +107,18 @@ import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
     RelationshipsComponent,
     RelationshipNewComponent,
     RelationshipListComponent,
+    IndicatorHomeComponent,
+    IndicatorListComponent,
+    IndicatorEditComponent,
+    IndicatorNewComponent,
+    IndicatorComponent,
 
+    IdentityHomeComponent,
+    IdentityListComponent,
+    IdentityEditComponent,
+    IdentityNewComponent,
+    IdentityComponent,
+    
     IdentifierTypePipe,
     IdentifierSummarizedPipe
   ],

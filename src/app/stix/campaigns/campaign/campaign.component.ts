@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MdDialog, MdDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
 import { Location } from '@angular/common';
 import { BaseStixComponent } from '../../base-stix.component';
 import { StixService } from '../../stix.service';
@@ -12,7 +13,7 @@ import { Campaign } from '../../../models';
 })
 export class CampaignComponent extends BaseStixComponent implements OnInit {
 
-    public campaign: Campaign;
+    protected campaign: Campaign = new Campaign();
 
     constructor(
         public stixService: StixService,
@@ -26,11 +27,22 @@ export class CampaignComponent extends BaseStixComponent implements OnInit {
     }
 
     public ngOnInit() {
-        console.log('Initial CampaignComponent');
+        this.loadCampaign();
+    }
+
+    public editButtonClicked(): void {
+        let link = ['../edit', this.campaign.id];
+        super.gotoView(link);
+    }
+
+    public deleteButtonClicked(): void {
+        super.openDialog(this.campaign);
+    }
+
+    protected loadCampaign(): void {
         let subscription =  super.get().subscribe(
             (data) => {
                 this.campaign = data as Campaign;
-                console.dir(this.campaign );
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -43,12 +55,24 @@ export class CampaignComponent extends BaseStixComponent implements OnInit {
         );
     }
 
-    public editButtonClicked(): void {
-        let link = ['../edit', this.campaign.id];
-        super.gotoView(link);
+    protected saveButtonClicked(): Observable<any> {
+        return Observable.create((observer) => {
+               let subscription = super.save(this.campaign).subscribe(
+                    (data) => {
+                        observer.next(data);
+                        observer.complete();
+                        this.location.back();
+                    }, (error) => {
+                        // handle errors here
+                        console.log('error ' + error);
+                    }, () => {
+                        // prevent memory links
+                        if (subscription) {
+                            subscription.unsubscribe();
+                        }
+                    }
+                );
+        });
     }
 
-    public deleteButtonClicked(): void {
-        super.openDialog(this.campaign);
-    }
 }

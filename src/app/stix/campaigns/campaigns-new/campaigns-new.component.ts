@@ -2,14 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { MdDialog, MdDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { BaseStixComponent } from '../../base-stix.component';
+import { CampaignsEditComponent } from '../campaigns-edit/campaigns-edit.component';
 import { StixService } from '../../stix.service';
 import { Campaign } from '../../../models';
+
 @Component({
   selector: 'campaigns-new',
   templateUrl: './campaigns-new.component.html'
 })
-export class CampaignsNewComponent extends BaseStixComponent implements OnInit {
+
+export class CampaignsNewComponent extends CampaignsEditComponent implements OnInit {
     public campaign: Campaign = new Campaign();
     public selectedValue1: string;
     public selectedValue2: string;
@@ -29,22 +31,17 @@ export class CampaignsNewComponent extends BaseStixComponent implements OnInit {
         public dialog: MdDialog,
         public location: Location) {
 
-        super(stixService, route, router, dialog);
-        stixService.url = 'cti-stix-store-api/campaigns';
+        super(stixService, route, router, dialog, location);
     }
 
     public ngOnInit() {
         console.log('Initial CampaignsNewComponent');
     }
 
-    public cancel(): void {
-        this.location.back();
-    }
-
-     public saveButtonClicked(): void {
-        let subscription = super.save(this.campaign).subscribe(
+    public saveCampaign(): void {
+       let subscription = super.saveButtonClicked().subscribe(
             (data) => {
-                this.campaign = data as Campaign;
+               this.location.back();
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

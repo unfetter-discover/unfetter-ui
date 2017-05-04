@@ -7,17 +7,9 @@ import { KillChainPhase } from '../../models';
   selector: 'kill-chain-phases',
   templateUrl: './kill-chain-phases.component.html'
 })
-export class KillChainPhasesComponent implements OnInit {
+export class KillChainPhasesComponent {
 
     @Input() public model: any;
-
-     constructor() {
-        console.log('Initial KillChainPhasesComponent');
-    }
-
-    public ngOnInit() {
-        console.log('Initial KillChainPhasesComponent');
-    }
 
      public addkillChainPhase(): void {
         // let id = this.attackPattern.kill_chain_phases.length + 1;

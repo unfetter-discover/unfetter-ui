@@ -19,14 +19,14 @@ module.exports = {
    
     { rel: 'stylesheet',  href: '/assets/bootstrap/css/bootstrap.min.css' },
     // { rel: 'stylesheet',  href: '/assets/css/indigo-pink.css' },
-    { rel: 'stylesheet',  href: '/assets/materialize/css/materialize.min.css' },
+    // { rel: 'stylesheet',  href: '/assets/materialize/css/materialize.min.css' },
     { rel: 'stylesheet',  href: '/assets/css/vendor.css' },
    
     /** <link> tags for favicons **/
     // { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/assets/icon/favicon-32x32.png' },
     
     /** <link> tags for a Web App Manifest **/
-    { rel: 'manifest', href: '/assets/manifest.json' }
+    // { rel: 'manifest', href: '/assets/manifest.json' }
   ],
   meta: [
     // { name: 'msapplication-TileColor', content: '#00bcd4' },

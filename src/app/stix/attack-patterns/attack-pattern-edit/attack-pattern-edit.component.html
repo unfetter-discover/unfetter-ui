@@ -10,19 +10,20 @@
         <div class="row">
             <div class="col-md-12">
                 <md-input-container class="full-width">
-                    <textarea mdInput placeholder="Descrpition" [(ngModel)]="attackPattern.attributes.description">{{attackPattern.attributes.description}}</textarea>
+                    <textarea mdInput mdTextareaAutosize placeholder="Descrpition" [(ngModel)]="attackPattern.attributes.description">{{attackPattern.attributes.description}}</textarea>
                 </md-input-container>
             </div>
         </div>
+
         <kill-chain-phases [(model)]="attackPattern"></kill-chain-phases>
 
-         <external-reference [(model)]="attackPattern"></external-reference>
+        <external-reference [(model)]="attackPattern"></external-reference>
 
-          <div class="row">
+        <div class="row">
             <div class="col-md-12">
                 <div class="button-row pull-right">
-                    <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i>CANCEL</a> 
-                    <a class=" " md-raised-button (click)="saveButtonClicked()"><i class="fa fa-floppy-o "></i>SAVE</a>            
+                    <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a> 
+                    <a class=" " md-raised-button (click)="saveAttackPattern()"><i class="fa fa-floppy-o "></i> SAVE</a>            
            
                 </div>
             </div>

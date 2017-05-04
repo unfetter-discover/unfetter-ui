@@ -1,17 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'campaigns',
-  templateUrl: './campaigns-home.component.html',
+  template: `<page-header [pageTitle]='pageTitle'  [pageIcon]='pageIcon' [description]="description"></page-header>`,
 })
-export class CampaignsHomeComponent implements OnInit {
+export class CampaignsHomeComponent {
     private pageTitle = 'Campaigns';
     private pageIcon = 'assets/icon/stix-icons/svg/campaign-b.svg';
-
-    constructor() {
-        console.log('Initial CampaignsHomeComponent');
-    }
-    public ngOnInit() {
-        console.log('Initial CampaignsHomeComponent');
-    }
+    private description = 'A Campaign is a grouping of adversarial behaviors that describe a set of malicious activities or attacks that ' +
+            'occur over a period of time against a specific set of targets. Campaigns usually have well defined objectives and may be part of an Intrusion Set.';
 }

@@ -3,7 +3,6 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
 import { MdDialog, MdDialogRef } from '@angular/material';
 import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
-
 export class BaseComponent {
 
     constructor(
@@ -11,7 +10,6 @@ export class BaseComponent {
         protected router: Router,
         protected dialog: MdDialog,
         protected location?: Location) {
-        console.log('Initial BaseStixComponent');
     }
     protected gotoView(command: any[]): void {
         this.router.navigate(command, { relativeTo: this.route });

@@ -2,19 +2,19 @@
 <div class="row">
     <div class="col-md-6">
         <md-input-container class="full-width">
-        <input mdInput placeholder="Name"  value="{{campaign.name}}">
+        <input mdInput placeholder="Name"  [(ngModel)]="campaign.attributes.name" value="{{campaign.attributes.name}}">
         </md-input-container>
     </div>
     <div class="col-md-6">
         <md-input-container class="full-width">
-        <input mdInput placeholder="Name"  value="">
+        <input mdInput placeholder="First Seen"  [(ngModel)]="campaign.attributes.first_seen" value="campaign.attributes.first_seen">
         </md-input-container>
     </div>
 </div>
 <div class="row">
     <div class="col-md-12">
         <md-input-container class="full-width">
-        <input mdInput placeholder="Objective"  value="{{campaign.objective}}">
+        <input mdInput placeholder="Objective"  [(ngModel)]="campaign.attributes.objective" value="{{campaign.attributes.objective}}">
         </md-input-container>
     </div>
 </div>
@@ -80,7 +80,7 @@
 <div class="col-md-12">
         
     <md-input-container class="full-width">
-        <input mdInput placeholder="Decsription"  value="{{campaign.description}}">
+        <input mdInput placeholder="Decsription"  [(ngModel)]="campaign.attributes.description" value="{{campaign.attributes.description}}">
         </md-input-container>
     
     </div>
@@ -88,8 +88,8 @@
 <div class="row">
     <div class="col-md-12">
         <div class="button-row pull-right">
-                <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i>CANCEL</a> 
-                <a class=" " md-raised-button (click)="saveButtonClicked()"><i class="fa fa-floppy-o "></i>SAVE</a>            
+                <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a> 
+                <a class=" " md-raised-button (click)="saveCampaign()"><i class="fa fa-floppy-o "></i> SAVE</a>            
     
         </div>
     </div>

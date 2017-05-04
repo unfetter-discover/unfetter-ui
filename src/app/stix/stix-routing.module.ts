@@ -31,6 +31,9 @@ import {
 
 import { ThreatActorHomeComponent, ThreatActorListComponent , TheatActorComponent, ThreatActorNewComponent, ThreatActorEditComponent } from './threat-actors';
 import { IntrusionSetHomeComponent, IntrusionSetListComponent, IntrusionSetComponent, IntrusionSetEditComponent, IntrusionSetNewComponent } from './intrusion-sets';
+import { IndicatorHomeComponent , IndicatorListComponent, IndicatorEditComponent, IndicatorNewComponent, IndicatorComponent } from './indicators';
+import { IdentityHomeComponent , IdentityListComponent, IdentityEditComponent, IdentityNewComponent, IdentityComponent } from './identities';
+
 import { RelationshipsComponent, RelationshipNewComponent, RelationshipListComponent } from './relationships';
 
     import { ReportsComponent, ReportsListComponent, ReportNewComponent, } from './reports';
@@ -97,6 +100,22 @@ const stixRoutes: Routes = [
           { path: 'new', component: RelationshipNewComponent },
           { path: ':id', component: IntrusionSetComponent },
           { path: 'edit/:id', component: IntrusionSetEditComponent }
+      ]
+    },
+    { path: 'indicators', component: IndicatorHomeComponent,
+      children: [
+          { path: '', component: IndicatorListComponent},
+          { path: 'new', component: IndicatorNewComponent },
+          { path: ':id', component: IndicatorComponent },
+          { path: 'edit/:id', component: IndicatorEditComponent }
+      ]
+    },
+    { path: 'identities', component: IdentityHomeComponent,
+      children: [
+          { path: '', component: IdentityListComponent},
+          { path: 'new', component: IdentityNewComponent },
+          { path: ':id', component: IdentityComponent },
+          { path: 'edit/:id', component: IdentityEditComponent }
       ]
     },
 ];

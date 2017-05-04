@@ -10,4 +10,5 @@
             </div>
         </div>
     </div>
+    <hr *ngIf="courseOfActions.length === 0" />
     <list-stix-objects [model]="courseOfActions" [showLabels]="'true'" [showExternalReferences]="'true'"></list-stix-objects>

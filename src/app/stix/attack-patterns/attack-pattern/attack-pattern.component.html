@@ -3,8 +3,8 @@
        <div class="col-md-12">
     
                 <div class="button-row">
-                    <a class="btn btn-large" md-raised-button (click)="editButtonClicked(attackPattern)"><i class="fa fa-pencil"></i>EDIT</a>
-                    <a class="red btn btn-large" md-raised-button (click)="deleteButtonClicked(attackPattern)"><i class="fa fa-trash"></i>DELETE</a>            
+                    <a class="btn btn-large" md-raised-button (click)="editButtonClicked(attackPattern)"><i class="fa fa-pencil"></i> EDIT</a>
+                    <a class="btn btn-large" md-raised-button (click)="deleteButtonClicked(attackPattern)"><i class="fa fa-trash"></i> DELETE</a>            
                 </div>
             
         </div>
@@ -17,41 +17,20 @@
                         <div class="row">
                             <div class="col">
                                 <label>Name</label>
-                                <p>{{attackPattern.attributes.name}}</p>
+                                <h6>{{attackPattern.attributes.name}}</h6>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col">
                                 <label>Description</label>
-                                <p>{{attackPattern.attributes.description}}</p>
+                                <h6>{{attackPattern.attributes.description}}</h6>
                             </div>
                         </div>
-                         <div class="row">
-                            <div class="col">
-                                <label>Kill Chain Phases</label>
-                                <div> 
-                                    <md-chip-list>
-                                        <md-chip color="primary" *ngFor="let kill_chain_phase of attackPattern.attributes.kill_chain_phases">{{kill_chain_phase.phase_name}}</md-chip>
-                                    </md-chip-list>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <label>Kill Chain Phases</label>
-                                <div> 
-                                    <md-chip-list>
-                                        <md-chip color="primary" *ngFor="let external_reference of attackPattern.attributes.external_references">{{external_reference.source_name}}</md-chip>
-                                    </md-chip-list>
-                                </div>
-                            </div>
-                        </div>
+                          <kill-chain-phases [(model)]="attackPattern"></kill-chain-phases>
+                        <external-reference [(model)]="attackPattern"></external-reference>
    
                 </md-card-content>
-                <!--<md-card-actions>
-                
-                </md-card-actions>-->
             </md-card>
         </div>
     </div>

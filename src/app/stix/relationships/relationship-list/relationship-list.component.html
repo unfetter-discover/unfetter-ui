@@ -12,8 +12,11 @@
             </div>
         </div>
     </div>
+     <hr *ngIf="relationships.length === 0" />
+
    <div class="row" >
         <div class="col-md-12" *ngFor="let relationship of relationships">
+
            <md-card>
                 <md-card-header>
                     <md-card-title>                             

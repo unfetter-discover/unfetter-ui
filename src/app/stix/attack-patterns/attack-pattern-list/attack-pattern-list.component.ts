@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MdDialog, MdDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { BaseStixComponent } from '../../base-stix.component';
+import { AttackPatternComponent } from '../attack-pattern/attack-pattern.component';
 import { AttackPattern, KillChainPhase } from '../../../models';
 import { StixService } from '../../stix.service';
 
@@ -12,7 +12,7 @@ import { StixService } from '../../stix.service';
 
 })
 
-export class AttackPatternListComponent extends BaseStixComponent implements OnInit {
+export class AttackPatternListComponent extends AttackPatternComponent implements OnInit {
 
     public attackPatterns: AttackPattern[] = [];
     private selectedPhaseNameGroup: String;
@@ -26,8 +26,7 @@ export class AttackPatternListComponent extends BaseStixComponent implements OnI
         public dialog: MdDialog,
         public location: Location) {
 
-        super(stixService, route, router, dialog);
-        stixService.url = 'cti-stix-store-api/attack-patterns';
+        super(stixService, route, router, dialog, location);
         this.phaseNameGroups['unspecified'] = [];
     }
 
@@ -55,10 +54,10 @@ export class AttackPatternListComponent extends BaseStixComponent implements OnI
 
     }
 
-    public editButtonClicked(attackPattern: AttackPattern): void {
+    public edit(attackPattern: AttackPattern): void {
         let link = ['edit', attackPattern.id];
         super.gotoView(link);
-    }
+     }
 
     public showDetails(event: any,  attackPattern: AttackPattern): void {
         event.preventDefault();
@@ -66,8 +65,9 @@ export class AttackPatternListComponent extends BaseStixComponent implements OnI
         super.gotoView(link);
     }
 
-    public deleteButtonClicked(attackPattern: AttackPattern): void {      
-        super.openDialog(attackPattern);
+    public delete(attackPattern: AttackPattern): void {
+        this.attackPattern = attackPattern;
+        super.deleteButtonClicked();
     }
 
     private getPhaseNameAttackPatterns() {

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MdDialog, MdDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
-import { BaseStixComponent } from '../../base-stix.component';
+import { Location } from '@angular/common';
+import { IntrusionSetComponent } from '../intrusion-set/intrusion-set.component';
 import { StixService } from '../../stix.service';
 import { IntrusionSet } from '../../../models';
 
@@ -9,7 +10,7 @@ import { IntrusionSet } from '../../../models';
   selector: 'intrusion-set-list',
   templateUrl: './intrusion-set-list.component.html',
 })
-export class IntrusionSetListComponent extends BaseStixComponent implements OnInit {
+export class IntrusionSetListComponent extends IntrusionSetComponent implements OnInit {
     private intrusionSets: IntrusionSet[] = [];
     private showLabels = false;
     private showExternalReferences = false;
@@ -18,15 +19,13 @@ export class IntrusionSetListComponent extends BaseStixComponent implements OnIn
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
-        public dialog: MdDialog) {
+        public dialog: MdDialog,
+        public location: Location) {
 
-        super(stixService, route, router, dialog);
-        stixService.url = 'cti-stix-store-api/intrusion-sets';
-        console.log('Initial IntrusionSetListComponent');
+        super(stixService, route, router, dialog, location);
     }
 
     public ngOnInit() {
-        console.log('Initial IntrusionSetListComponent');
         let subscription =  super.load().subscribe(
             (data) => {
                 this.intrusionSets = data as IntrusionSet[];

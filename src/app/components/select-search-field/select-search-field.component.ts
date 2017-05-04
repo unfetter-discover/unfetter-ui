@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/startWith';
+import { Observable } from 'rxjs/Observable';
+import { BaseComponentService } from '../base-service.component';
 
 @Component({
   selector: 'select-search-field',
@@ -8,44 +10,35 @@ import 'rxjs/add/operator/startWith';
 })
 export class SelectSearchFieldComponent implements OnInit {
     @Input() public placeholder: string;
-    @Input() public search: any;
-
+    @Input() public searchUrl: any;
     @Input() public labelField: string;
 
-    private formCtrl: FormControl;
-    private filtered: any;
+    private formCtrl: FormControl  = new FormControl();
+    private filteredOptions: Observable<string[]>;
     private selections: string;
-    private states = [
-    'Alabama',
-    'Alaska',
-    'Arizona',
-    'Arkansas',
-    'California',
-    'Colorado',
-    'Connecticut',
-    ];
+    private options = [ ];
 
-    constructor() {
+    constructor(public baseComponentService: BaseComponentService) {
         console.log('Initial SelectSearchFieldComponent');
-        this.formCtrl = new FormControl();
-        this.filtered = this.formCtrl.valueChanges
+        this.filteredOptions = this.formCtrl.valueChanges
             .startWith(null)
-            .map((name) => this.filterStates(name));
+            .map((val) => val ? this.filter(val) : this.options.slice());
     }
     public ngOnInit() {
-        console.log('Initial SelectSearchFieldComponent');
+        let url = 'cti-stix-store-api/' + this.searchUrl;
+        this.baseComponentService.autoCompelet(url).subscribe(
+            (data) => {
+                data.forEach(
+                    (record) => {
+                        this.options.push(record.attributes.name);
+                    }
+                );
+            }
+        );
     }
 
-    private filterStates(val: string) {
-        return val ? this.states.filter((s) => new RegExp(`^${val}`, 'gi').test(s))
-               : this.states;
-    }
     private filter(val: string) {
-        // this.stixService.load().subscribe(
-        //      (data) => {
-        //         this.filtered = data.filter((s) => new RegExp(`^${val}`, 'gi').test(s));
-        //     }
-        // );
-
+         return val ? this.options.filter((s) => new RegExp(`^${val}`, 'gi').test(s))
+               : this.options;
     }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
 import { MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
-import { BaseStixComponent } from '../../base-stix.component';
+import { IntrusionSetComponent } from '../intrusion-set/intrusion-set.component';
 import { StixService } from '../../stix.service';
 import { IntrusionSet } from '../../../models';
 
@@ -10,11 +10,9 @@ import { IntrusionSet } from '../../../models';
   selector: 'intrusion-set-edit',
   templateUrl: './intrusion-set-edit.component.html',
 })
-export class IntrusionSetEditComponent extends BaseStixComponent implements OnInit {
+export class IntrusionSetEditComponent extends IntrusionSetComponent implements OnInit {
 
-    private intursionSet: IntrusionSet = new IntrusionSet();
-
-     private labels = [
+     protected labels = [
         {label: 'activist'},
         {label: 'competitor'},
         {label: 'crime-syndicate'},
@@ -27,7 +25,8 @@ export class IntrusionSetEditComponent extends BaseStixComponent implements OnIn
         {label: 'spy'},
         {label: 'terrorist'}
     ];
-    constructor(
+
+   constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
@@ -35,51 +34,34 @@ export class IntrusionSetEditComponent extends BaseStixComponent implements OnIn
         public location: Location) {
 
         super(stixService, route, router, dialog, location);
-        stixService.url = 'cti-stix-store-api/intrusion-sets';
-
-        console.log('Initial IntrusionSetEditComponent');
-
     }
 
     public ngOnInit() {
-        console.log('Initial IntrusionSetEditComponent');
-        let sub = super.get().subscribe(
-            (data) => {
-                this.intursionSet = data as IntrusionSet;
-            }, (err) => {
-                 // handle errors here
-                 console.log('error ' + err);
-            }, () => {
-               if (sub) {
-                    sub.unsubscribe();
-                }
-            }
-        );
+       super.loadIntrusionSet();
     }
 
     public isChecked(label: string): boolean {
-        let found = this.intursionSet.attributes.labels.find((l) => {
+        let found = this.intrusionSet.attributes.labels.find((l) => {
             return l === label;
         });
         return found ? true : false;
     }
 
     public addLabel(label: string) {
-        this.intursionSet.attributes.labels.push(label);
+        this.intrusionSet.attributes.labels.push(label);
     }
 
-    public saveButtonClicked(): void {
-        let subscription = super.save(this.intursionSet).subscribe(
+    public saveIdentity(): void {
+         let sub = super.saveButtonClicked().subscribe(
             (data) => {
-                this.intursionSet = data as IntrusionSet;
-                this.location.back();
+                console.log('saved');
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
             }, () => {
                 // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
+                if (sub) {
+                    sub.unsubscribe();
                 }
             }
         );

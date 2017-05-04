@@ -1,5 +1,19 @@
 <div class="jumbotron">
     <div class="row">
+
+         <div class="col-md-11">
+          
+                    <span *ngIf="showDescription" class="help-description"><i class="fa fa-arrow-down"></i>  {{ description}}</span>
+                
+        </div>
+        <div class="col-md-1">
+            <a href (click)="toggleDescription($event)" >
+                <i class="fa fa-close" *ngIf="showDescription"></i>
+                <i class="fa fa-question-circle-o" *ngIf="!showDescription"></i>
+            </a>
+        </div>
+    </div>
+    <div class="row">
        <div class="col-md-12">
             
                 <h4>

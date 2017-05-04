@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MdDialog, MdDialogRef } from '@angular/material';
+import { Location } from '@angular/common';
+import { Observable } from 'rxjs/Observable';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BaseStixComponent } from '../../base-stix.component';
 import { StixService } from '../../stix.service';
@@ -10,36 +12,22 @@ import { CourseOfAction } from '../../../models';
     templateUrl: './course-of-action.component.html'
 })
 export class CourseOfActionComponent extends BaseStixComponent implements OnInit {
-    private courseOfAction: CourseOfAction = new CourseOfAction();
+    protected courseOfAction: CourseOfAction = new CourseOfAction();
 
      constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
-        public dialog: MdDialog) {
+        public dialog: MdDialog,
+        public location: Location) {
 
-        super(stixService, route, router, dialog);
-        stixService.url = 'cti-stix-store-api/threat-actors';
-
-        console.log('Initial CourseOfActionComponent');
+        super(stixService, route, router, dialog, location);
+        stixService.url = 'cti-stix-store-api/course-of-actions';
     }
 
     public ngOnInit() {
-        console.log('Initial CourseOfActionComponent');
-        let subscription =  super.get().subscribe(
-            (data) => {
-                this.courseOfAction = data as CourseOfAction;
-                console.dir(this.courseOfAction );
-            }, (error) => {
-                // handle errors here
-                 console.log('error ' + error);
-            }, () => {
-                // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
-                }
-            }
-        );
+
+        this.loadCourseOfAction();
     }
 
     public editButtonClicked(): void {
@@ -49,5 +37,40 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
 
     public deleteButtonClicked(): void {
         super.openDialog(this.courseOfAction);
+    }
+
+    protected saveButtonClicked(): Observable<any> {
+        return Observable.create((observer) => {
+               let subscription = super.save(this.courseOfAction).subscribe(
+                    (data) => {
+                        observer.next(data);
+                        observer.complete();
+                    }, (error) => {
+                        // handle errors here
+                        console.log('error ' + error);
+                    }, () => {
+                        // prevent memory links
+                        if (subscription) {
+                            subscription.unsubscribe();
+                        }
+                    }
+                );
+        });
+    }
+
+    protected loadCourseOfAction(): void {
+        let subscription =  super.get().subscribe(
+            (data) => {
+                this.courseOfAction = data as CourseOfAction;
+               }, (error) => {
+                // handle errors here
+                 console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (subscription) {
+                    subscription.unsubscribe();
+                }
+            }
+        );
     }
 }

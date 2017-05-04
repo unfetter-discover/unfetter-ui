@@ -3,17 +3,14 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'threat-actor-home',
-  templateUrl: './threat-actor-home.component.html'
+  template: `<page-header [pageTitle]='pageTitle'  [pageIcon]='pageIcon' [description]="description"></page-header>`,
 })
-export class ThreatActorHomeComponent implements OnInit {
+export class ThreatActorHomeComponent {
 
     private pageTitle = 'Threat Actor';
     private pageIcon = 'assets/icon/stix-icons/svg/threat-actor-b.svg';
-
-    constructor() {
-        console.log('Initial ThreatActorHomeComponent');
-    }
-    public ngOnInit() {
-        console.log('Initial ThreatActorHomeComponent');
-    }
+    private description = 'Threat Actors are actual individuals, groups or organizations believed to ' +
+            'be operating with malicious intent. Threat Actors can be characterized by their motives, ' +
+            'capabilities, intentions/goals, sophistication level, past activities, resources they have ' +
+            'access to, and their role in the organization.';
 }

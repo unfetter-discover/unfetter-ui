@@ -24,10 +24,8 @@ export class SightingEditComponent extends BaseStixComponent implements OnInit {
 
         super(stixService, route, router, dialog, location);
         stixService.url = 'cti-stix-store-api/sightings';
-        console.log('Initial SightingEditComponent');
     }
     public ngOnInit() {
-        console.log('Initial SightingEditComponent');
         let sub = super.get().subscribe(
             (data) => {
                 this.sighting = data as Sighting;

@@ -1,4 +1,4 @@
-import { ExternalReference, KillChainPhase } from '.';
+import { ExternalReference, KillChainPhase, Label } from '.';
 
 export class CourseOfAction {
     public id: number;
@@ -9,7 +9,7 @@ export class CourseOfAction {
         created: Date;
         modified: Date;
         description: string;
-        labels: string[];
+        label_names: Label[];
         external_references: ExternalReference[];
         kill_chain_phases: KillChainPhase[];
     };
@@ -20,7 +20,7 @@ export class CourseOfAction {
             created: new Date(),
             modified: new Date(),
             description: '',
-            labels: [],
+            label_names: [],
             external_references: [],
             kill_chain_phases: []
         };

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MdDialog, MdDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { BaseStixComponent } from '../../base-stix.component';
+import { CampaignComponent } from '../campaign/campaign.component';
 import { StixService } from '../../stix.service';
 import { Campaign } from '../../../models';
 
@@ -10,9 +10,7 @@ import { Campaign } from '../../../models';
   selector: 'campaigns-edit',
   templateUrl: './campaigns-edit.component.html',
 })
-export class CampaignsEditComponent extends BaseStixComponent implements OnInit {
-
-    public campaign: Campaign = new Campaign();
+export class CampaignsEditComponent extends CampaignComponent implements OnInit {
 
     constructor(
         public stixService: StixService,
@@ -21,30 +19,17 @@ export class CampaignsEditComponent extends BaseStixComponent implements OnInit 
         public dialog: MdDialog,
         public location: Location) {
 
-        super(stixService, route, router, dialog);
-        stixService.url = 'cti-stix-store-api/campaigns';
+        super(stixService, route, router, dialog, location);
     }
 
     public ngOnInit() {
-       let subscription =  super.get().subscribe(
-            (data) => {
-                this.campaign = data as Campaign;
-            }, (error) => {
-                // handle errors here
-                 console.log('error ' + error);
-            }, () => {
-                // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
-                }
-            }
-        );
+        super.loadCampaign();
     }
 
-   public saveButtonClicked(): void {
-       let subscription = super.save(this.campaign).subscribe(
+    public saveCampaign(): void {
+       let subscription = super.saveButtonClicked().subscribe(
             (data) => {
-                this.campaign = data as Campaign;
+               console.log('saved');
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
 import { MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
@@ -10,7 +10,7 @@ import { Sighting } from '../../../models';
   selector: 'sighting-new',
   templateUrl: './sighting-new.component.html',
 })
-export class SightingNewComponent extends BaseStixComponent implements OnInit {
+export class SightingNewComponent extends BaseStixComponent {
 
   private sighting: Sighting = new Sighting();
   private sourceTypes = ['Indicator', 'Campaign', 'Intrusion Set' ];
@@ -24,10 +24,6 @@ export class SightingNewComponent extends BaseStixComponent implements OnInit {
 
         super(stixService, route, router, dialog, location);
         stixService.url = 'cti-stix-store-api/sightings';
-        console.log('Initial SightingNewComponent');
-    }
-    public ngOnInit() {
-        console.log('Initial SightingNewComponent');
     }
 
     public saveButtonClicked(): void {

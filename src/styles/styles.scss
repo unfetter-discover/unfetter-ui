@@ -3,6 +3,10 @@
 @import 'variables';
 
 
+label {
+    color: #9e9e9e;
+}
+
 .navbar-inverse {
     background-color: $nav-background-color;
     border-color: $nav-background-color;
@@ -91,9 +95,13 @@ body {
   width: 100%;
 }
 
+.row {
+    margin-bottom: 10px; 
+}
+
 // // Import a pre-built theme 
 @import '~@angular/material/core/theming/prebuilt/deeppurple-amber';
-// @import '~@angular/material/core/theming/prebuilt/indigo-pink';
+@import '~@angular/material/core/theming/prebuilt/indigo-pink';
 // // Import your custom input theme file so you can call the custom-input-theme function 
 //@import '~angular-material-datepicker/src/datepicker/calendar.component.scss';
  

@@ -2,7 +2,7 @@
 <div class="row">
     <div class="col-md-12">
         <md-input-container class="full-width">
-        <input mdInput placeholder="Name"  [(ngModel)]="intursionSet.attributes.name" value="">
+        <input mdInput placeholder="Name"  [(ngModel)]="intrusionSet.attributes.name" value="">
         </md-input-container>
     </div>
 </div>
@@ -19,50 +19,49 @@
 <div class="row">
     <div class="col-md-12">
        <md-input-container class="full-width">
-        <input mdInput placeholder="Primary Motivation"  [(ngModel)]="intursionSet.attributes.primary_motivation" value="">
+        <input mdInput placeholder="Primary Motivation"  [(ngModel)]="intrusionSet.attributes.primary_motivation" value="">
         </md-input-container>
     </div>
 </div>
 <div class="row">
     <div class="col-md-12">
        <md-input-container class="full-width">
-        <input mdInput placeholder="Goals"  [(ngModel)]="intursionSet.attributes.goals" value="">
+        <input mdInput placeholder="Goals"  [(ngModel)]="intrusionSet.attributes.goals" value="">
         </md-input-container>
     </div>
 </div>
 <div class="row">
     <div class="col-md-12">
        <md-input-container class="full-width">
-        <input mdInput placeholder="Resource Level"  [(ngModel)]="intursionSet.attributes.resource_level" value="">
+        <input mdInput placeholder="Resource Level"  [(ngModel)]="intrusionSet.attributes.resource_level" value="">
         </md-input-container>
     </div>
 </div>
 <div class="row">
-    <div class="col-md-12">
-       <select-search-field></select-search-field>
+    <div class="col-md-4">
+        <p><img class='stix-icon'  src="assets/icon/stix-icons/svg/identity-b.svg"> Identities</p>
+       <select-search-field [placeholder]="'identities'" [searchUrl]="'identities'"></select-search-field>
     </div>
-</div>
 
-<div class="row">
-    <div class="col-md-12">
-       <select-search-field></select-search-field>
+    <div class="col-md-4">
+        <p><img class='stix-icon'  src="assets/icon/stix-icons/svg/threat-actor-b.svg"> Threat Actors</p>
+       <select-search-field [placeholder]="'Threat Actors'" [searchUrl]="'threat-actors'"></select-search-field>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
+
+    <div class="col-md-4">
         <p><img class='stix-icon'  src="assets/icon/stix-icons/svg/attack-pattern-b.svg"> Attack Patterns</p>
-       <select-search-field></select-search-field>
+       <select-search-field [placeholder]="'Attack Patterns'" [searchUrl]="'attack-patterns'"></select-search-field>
     </div>
 </div>
 
 
 
 
-<!--<external-reference [(model)]="intursionSet"></external-reference>-->
+<!--<external-reference [(model)]="intrusionSet"></external-reference>-->
 <div class="row">
     <div class="col-md-12">
         <md-input-container class="full-width">
-            <input mdInput placeholder="Decsription" [(ngModel)]="intursionSet.attributes.description" value="">
+            <input mdInput placeholder="Decsription" [(ngModel)]="intrusionSet.attributes.description" value="">
         </md-input-container>
     </div>
 </div>
@@ -71,8 +70,8 @@
 <div class="row">
     <div class="col-md-12">
         <div class="button-row pull-right">
-                <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i>CANCEL</a> 
-                <a class=" " md-raised-button (click)="saveButtonClicked()"><i class="fa fa-floppy-o "></i>SAVE</a>              
+                <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a> 
+                <a class=" " md-raised-button (click)="saveIdentity()"><i class="fa fa-floppy-o "></i> SAVE & CLOSE</a>              
         </div>
     </div>
 </div>
