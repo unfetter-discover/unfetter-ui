@@ -1,0 +1,50 @@
+<div class="row" *ngIf="indicator">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <md-input-container class="full-width">
+                <input mdInput placeholder="Name"  [(ngModel)]="indicator.attributes.name" value="{{indicator.attributes.name}}" />
+                </md-input-container>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+            <md-input-container class="full-width">
+                <textarea mdInput placeholder="Decsription"  [(ngModel)]="indicator.attributes.description" value="{{indicator.attributes.description}}"></textarea>
+                </md-input-container>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <md-input-container class="full-width">
+                    <input mdInput placeholder="Pattern"  [(ngModel)]="indicator.attributes.pattern" value="{{indicator.attributes.pattern}}" />
+                </md-input-container>
+            </div>
+        </div>
+        <div class="row" >
+            <div class="col-md-4">
+                <md-input-container class="full-width">
+                    <input mdInput placeholder="Valid From"  [(ngModel)]="indicator.attributes.valid_from" value="{{indicator.attributes.valid_from}}" />
+                </md-input-container>
+            </div>
+            <div class="col-md-4">
+                  <md-input-container class="full-width">
+                    <input mdInput placeholder="Valid To"  [(ngModel)]="indicator.attributes.valid_to" value="{{indicator.attributes.valid_to}}" />
+                    </md-input-container>     
+            </div>
+        </div>
+
+         <kill-chain-phases [(model)]="indicator"></kill-chain-phases>
+
+        <external-reference [(model)]="indicator"></external-reference>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="button-row pull-right">
+                        <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a> 
+                        <a class=" " md-raised-button (click)="saveIndicator()"><i class="fa fa-floppy-o "></i> SAVE & CLOSE</a>            
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
