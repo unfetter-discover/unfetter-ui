@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Location } from '@angular/common';
 import { MdDialog, MdDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -18,6 +18,7 @@ export class ListStixObjectComponent extends BaseComponent {
     @Input() public showKillChainPhases: boolean;
     @Input() public showExternalReferences: boolean;
     @Input() public showSectors: boolean;
+    @Output() public deletButtonClicked: EventEmitter<any> = new EventEmitter();
 
      constructor(
         public route: ActivatedRoute,
@@ -40,6 +41,6 @@ export class ListStixObjectComponent extends BaseComponent {
     }
 
     public deleteButtonClicked(item: any): void {
-        super.openDialog(item);
+        this.deletButtonClicked.emit(item);
     }
 }

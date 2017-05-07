@@ -11,4 +11,4 @@
         </div>
     </div>
     <hr *ngIf="indicators.length === 0" />
-    <list-stix-objects [model]="indicators" [showPattern]="showPattern" [showKillChainPhases]="showKillChainPhases" [showExternalReferences]="showExternalReferences"></list-stix-objects>
+    <list-stix-objects [model]="indicators" [showPattern]="showPattern" [showKillChainPhases]="showKillChainPhases" [showExternalReferences]="showExternalReferences" (deletButtonClicked)="delete($event)"></list-stix-objects>

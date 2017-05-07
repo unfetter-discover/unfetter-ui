@@ -1,7 +1,8 @@
 import { ExternalReference, KillChainPhase } from '.';
 
 export class AttackPattern {
-    public id: number;
+    public url = 'cti-stix-store-api/attack-patterns';
+    public id: string;
     public type: string;
 
     public attributes: {

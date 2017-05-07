@@ -40,4 +40,12 @@ export class IdentityListComponent extends IdentityComponent implements OnInit {
             }
         );
     }
+
+    public delete(identity: Identity): void {
+        super.openDialog(identity).subscribe(
+            () => {
+                 this.identities = this.identities.filter((h) => h.id !== identity.id);
+            }
+        );
+    }
 }

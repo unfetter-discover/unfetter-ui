@@ -1,6 +1,7 @@
 import { ExternalReference, KillChainPhase } from '.';
 
 export class Indicator {
+    public url = 'cti-stix-store-api/indicators';
     public id: number;
     public type: string;
 

@@ -27,7 +27,7 @@ export class SightingNewComponent extends BaseStixComponent {
     }
 
     public saveButtonClicked(): void {
-        let subscription = super.save(this.sighting).subscribe(
+        let subscription = super.create(this.sighting).subscribe(
             (data) => {
                 this.sighting = data as Sighting;
                 this.location.back();

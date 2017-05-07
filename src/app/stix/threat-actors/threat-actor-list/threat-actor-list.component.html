@@ -11,5 +11,5 @@
         </div>
     </div>
         <hr *ngIf="threatActors.length === 0" />
-    <list-stix-objects [model]="threatActors" [showLabels]="'true'" [showExternalReferences]="'true'"></list-stix-objects>
+    <list-stix-objects [model]="threatActors" [showLabels]="'true'" [showExternalReferences]="'true'" (deletButtonClicked)="delete($event)"></list-stix-objects>
    

@@ -43,4 +43,12 @@ export class CampaignsListComponent extends CampaignComponent implements OnInit 
             }
         );
     }
+
+     public delete(campaigns: Campaigns): void {
+        super.openDialog(campaigns).subscribe(
+            () => {
+                 this.campaigns = this.campaigns.filter((h) => h.id !== campaigns.id);
+            }
+        );
+    }
 }

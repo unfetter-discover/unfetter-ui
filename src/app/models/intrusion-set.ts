@@ -1,6 +1,7 @@
 import { ExternalReference, KillChainPhase } from '.';
 export class IntrusionSet {
-    public id: number;
+    public url = 'cti-stix-store-api/intrusion-sets';
+    public id: string;
     public type: string;
     public attributes: {
         version: string;

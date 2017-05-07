@@ -1,6 +1,7 @@
 import { ExternalReference, KillChainPhase } from '.';
 
 export class ThreatActor {
+    public url = 'cti-stix-store-api/threat-actors';
     public id: number;
     public type: string;
 

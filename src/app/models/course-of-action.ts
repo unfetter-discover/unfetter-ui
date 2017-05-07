@@ -1,6 +1,7 @@
 import { ExternalReference, KillChainPhase, Label } from '.';
 
 export class CourseOfAction {
+    public url = 'cti-stix-store-api/course-of-actions';
     public id: number;
     public type: string;
 

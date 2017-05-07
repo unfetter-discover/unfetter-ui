@@ -22,7 +22,7 @@ export class TheatActorComponent extends BaseStixComponent implements OnInit {
         public location: Location) {
 
         super(stixService, route, router, dialog, location);
-        stixService.url = 'cti-stix-store-api/threat-actors';
+        stixService.url = this.threatActor.url;
     }
 
     public ngOnInit() {

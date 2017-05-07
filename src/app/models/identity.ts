@@ -1,7 +1,8 @@
 import { ExternalReference, KillChainPhase } from '.';
 
 export class Identity {
-    public id: number;
+    public url = 'cti-stix-store-api/identities';
+    public id: string;
     public type: string;
 
     public attributes: {

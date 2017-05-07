@@ -11,4 +11,4 @@
         </div>
     </div>
     <hr *ngIf="campaigns.length === 0" />
-     <list-stix-objects [model]="campaigns" [showLabels]="showLabels" [showExternalReferences]="showExternalReferences"></list-stix-objects>
+     <list-stix-objects [model]="campaigns" [showLabels]="showLabels" [showExternalReferences]="showExternalReferences" (deletButtonClicked)="delete($event)"></list-stix-objects>

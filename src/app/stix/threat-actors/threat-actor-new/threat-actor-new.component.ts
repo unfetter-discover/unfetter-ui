@@ -23,9 +23,10 @@ export class ThreatActorNewComponent extends ThreatActorEditComponent implements
     }
 
      public saveThreatActor(): void {
-         let sub = super.saveButtonClicked().subscribe(
+         let sub = super.create(this.threatActor).subscribe(
             (data) => {
                 console.log('saved');
+                this.location.back();
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

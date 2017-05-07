@@ -22,11 +22,10 @@ export class IndicatorNewComponent extends IndicatorEditComponent {
         public location: Location) {
 
         super(stixService, route, router, dialog, location);
-        stixService.url = 'cti-stix-store-api/indicators';
     }
 
     public saveIndicator(): void {
-         let sub = super.saveButtonClicked().subscribe(
+         let sub = super.create(this.indicator).subscribe(
             (data) => {
                 console.log('saved');
             }, (error) => {

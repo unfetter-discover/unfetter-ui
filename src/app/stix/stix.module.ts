@@ -2,7 +2,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import {
-  MdButtonModule, MdListModule, MdCardModule,
+  MaterialModule, MdButtonModule, MdListModule, MdCardModule, MdSnackBarModule,
   MdDialogModule, MdChipsModule, MdInputModule, MdSelectModule, MdAutocompleteModule , MdCheckboxModule, MdRadioModule } from '@angular/material';
 import { DatePickerModule } from 'angular-material-datepicker';
 import { ComponentModule } from '../components/component.module';
@@ -49,6 +49,8 @@ import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
   imports: [
       CommonModule,
       FormsModule,
+      MaterialModule,
+      MdSnackBarModule,
       MdButtonModule,
       MdListModule,
       MdCardModule,

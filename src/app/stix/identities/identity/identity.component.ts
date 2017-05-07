@@ -23,7 +23,7 @@ export class IdentityComponent extends BaseStixComponent implements OnInit {
         public location: Location) {
 
         super(stixService, route, router, dialog, location);
-        stixService.url = 'cti-stix-store-api/identities';
+        stixService.url = this.identity.url;
     }
 
     public ngOnInit() {

@@ -31,56 +31,36 @@ export class StixService implements BaseStixService{
             })
             .catch(this.handleError);
     }
-    // public delete(id: number): Observable<void> {
-    //     const url = `${this.url}/${id}`;
-    //     return this.http
-    //         .delete(url, {headers: this.headers})
-    //         .map((response) => {
-    //             return response.json().data;
-    //         })
-    //         .catch(this.handleError);
-    // }
 
-  public delete(id: string): Observable<void> {
-    const url = `${this.url}/${id}`;
-    return this.http
-        .delete(url, {headers: this.headers})
-        .map((response) => {
-            return response.json();
-        })
-        .catch(this.handleError);
-  }
+    public delete(id: string): Observable<void> {
+        const url = `${this.url}/${id}`;
+        return this.http
+            .delete(url, {headers: this.headers})
+            .map((response) => {
+                return response.json();
+            })
+            .catch(this.handleError);
+    }
 
 
     public create(item: any): Observable<any> {
         return this.http
-            .post(this.url, JSON.stringify(item), {headers: this.headers})
+            .post(item.url, JSON.stringify({data: item}), {headers: this.headers})
             .map((response) => {
                 return response.json().data;
             })
             .catch(this.handleError);
     }
 
-// <<<<<<< HEAD
-//     public update(item: any): Observable<any> {
-//         const url = `${this.url}/${item.id}`;
-//         return this.http
-//             .put(url, JSON.stringify(item), {headers: this.headers})
-//             .map((response) => {
-//                 return response.json().data;
-//             })
-//             .catch(this.handleError);
-//     }
-// =======
-  public update(item: any): Observable<any> {
-    const url = `${this.url}/${item.id}`;
-    return this.http
-        .patch(url, JSON.stringify(item.attributes), {headers: this.headers})
-        .map((response) => {
-            return response.json().data;
-        })
-        .catch(this.handleError);
-  }
+    public update(item: any): Observable<any> {
+        const url = `${item.url}/${item.id}`;
+        return this.http
+            .patch(url, JSON.stringify(item.attributes), {headers: this.headers})
+            .map((response) => {
+                return response.json().data;
+            })
+            .catch(this.handleError);
+    }
 
     private handleError(error: any): Observable<any> {
         console.error('An error occurred', error); // for demo purposes only

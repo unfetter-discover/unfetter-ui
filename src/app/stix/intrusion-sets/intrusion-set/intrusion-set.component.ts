@@ -22,7 +22,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
         public location: Location) {
 
         super(stixService, route, router, dialog, location);
-        stixService.url = 'cti-stix-store-api/intrusion-sets';
+        stixService.url = this.intrusionSet.url;
     }
 
     public ngOnInit() {

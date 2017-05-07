@@ -23,7 +23,7 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent implemen
     }
 
     public saveIdentity(): void {
-         let sub = super.saveButtonClicked().subscribe(
+         let sub = super.create(this.intrusionSet).subscribe(
             (data) => {
                 console.log('saved');
             }, (error) => {

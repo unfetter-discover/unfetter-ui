@@ -23,7 +23,7 @@ export class SightingComponent extends BaseStixComponent implements OnInit {
         public location: Location) {
 
         super(stixService, route, router, dialog, location);
-        stixService.url = 'cti-stix-store-api/sightings';
+        stixService.url = this.sighting.url;
     }
     public ngOnInit() {
         let sub = super.get().subscribe(

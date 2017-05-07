@@ -12,5 +12,5 @@
     </div>
     <hr *ngIf="identities.length === 0" />
 
-    <list-stix-objects [model]="identities"  [showSectors]="showSectors" [showExternalReferences]="showExternalReferences"></list-stix-objects>
+    <list-stix-objects [model]="identities"  [showSectors]="showSectors" [showExternalReferences]="showExternalReferences" (deletButtonClicked)="delete($event)"></list-stix-objects>
    

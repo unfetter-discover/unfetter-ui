@@ -22,7 +22,7 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
         public location: Location) {
 
         super(stixService, route, router, dialog, location);
-        stixService.url = 'cti-stix-store-api/course-of-actions';
+        stixService.url = this.courseOfAction.url;
     }
 
     public ngOnInit() {

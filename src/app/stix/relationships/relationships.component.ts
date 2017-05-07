@@ -14,5 +14,5 @@ export class RelationshipsComponent {
     private pageIcon = 'assets/icon/stix-icons/svg/relationship-b.svg';
     private description = 'One type of relationship is created to ' +
             'identify that a particular Course Of Action can mitigate a particular Attack Pattern.  Another type of relationship ' +
-            'describes an Attack Pattern is used by an Intrusion Set.'
+            'describes an Attack Pattern is used by an Intrusion Set.';
 }

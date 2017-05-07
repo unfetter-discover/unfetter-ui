@@ -28,7 +28,7 @@ export class IdentityNewComponent extends IdentityEditComponent {
     }
 
      public saveIdentity(): void {
-         let sub = super.saveButtonClicked().subscribe(
+         let sub = super.create(this.identity).subscribe(
             (data) => {
                 this.location.back();
             }, (error) => {

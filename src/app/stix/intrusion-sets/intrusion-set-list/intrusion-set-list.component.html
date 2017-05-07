@@ -12,5 +12,5 @@
     </div>
     <hr *ngIf="intrusionSets.length === 0" />
 
-    <list-stix-objects [model]="intrusionSets" [showLabels]="showLabels" [showExternalReferences]="showExternalReferences"></list-stix-objects>
+    <list-stix-objects [model]="intrusionSets" [showLabels]="showLabels" [showExternalReferences]="showExternalReferences" (deletButtonClicked)="delete($event)"></list-stix-objects>
    

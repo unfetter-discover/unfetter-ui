@@ -23,7 +23,7 @@ export class IndicatorComponent extends BaseStixComponent implements OnInit {
         public location: Location) {
 
         super(stixService, route, router, dialog);
-        stixService.url = 'cti-stix-store-api/indicators';
+        stixService.url = this.indicator.url;
     }
 
     public ngOnInit() {

@@ -37,4 +37,12 @@ export class ThreatActorListComponent extends TheatActorComponent implements OnI
             }
         );
     }
+
+    public delete(threatActor: ThreatActor): void {
+        super.openDialog(threatActor).subscribe(
+            () => {
+                 this.threatActors = this.threatActors.filter((h) => h.id !== threatActor.id);
+            }
+        );
+    }
 }

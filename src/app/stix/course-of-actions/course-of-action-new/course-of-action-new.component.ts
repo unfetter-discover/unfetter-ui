@@ -25,7 +25,7 @@ export class CourseOfActionNewComponent extends CourseOfActionEditComponent {
     }
 
     protected saveCourceOfAction(): void {
-       let subscription = super.saveButtonClicked().subscribe(
+       let subscription = super.create(this.courseOfAction).subscribe(
             (stixObject) => {
                 this.location.back();
             }, (error) => {

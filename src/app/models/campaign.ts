@@ -1,6 +1,7 @@
 import { ExternalReference, KillChainPhase } from '.';
 export class Campaign {
-    public id: number;
+    public url = 'cti-stix-store-api/campaigns';
+    public id: string;
     public type: string;
 
     public attributes: {
@@ -10,8 +11,10 @@ export class Campaign {
         description: string;
         name: string;
         labels: string[];
-        external_references: ExternalReference[];
-        kill_chain_phases: KillChainPhase[];
+        first_seen: Date;
+        objective: string;
+        timestamp_precision: string;
+        
     };
     constructor() {
         this.type = 'campaigns';
@@ -22,8 +25,10 @@ export class Campaign {
             name: '',
             description: '',
             labels: [],
-            external_references: [],
-            kill_chain_phases: []
+            first_seen: new Date(),
+            objective: '',
+            timestamp_precision: ''
+            
         };
     }
 }

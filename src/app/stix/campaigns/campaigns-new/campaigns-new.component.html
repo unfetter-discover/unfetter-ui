@@ -19,68 +19,45 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-md-12">
-            <form>
-            <md-select placeholder="Identities" [(ngModel)]="selectedValue5" name="food5" class="full-width">
-                <md-option *ngFor="let food of foods" [value]="food.value">
-                {{food.viewValue}}
-                </md-option>
-            </md-select>
-            </form>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <form>
-                <md-select placeholder="Intrusion Sets" [(ngModel)]="selectedValue4" name="food4" class="full-width">
-                    <md-option *ngFor="let food of foods" [value]="food.value">
-                    {{food.viewValue}}
-                    </md-option>
-                </md-select>
-        </form>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <form>
-                <md-select placeholder="Attack Patterns" [(ngModel)]="selectedValue1" name="food1" class="full-width">
-                    <md-option *ngFor="let food of foods" [value]="food.value">
-                    {{food.viewValue}}
-                    </md-option>
-            </md-select>
-        </form>
-    </div>
-</div>
-<div class="row">
     <div class="col-md-4">
-        <form>
-            <md-select placeholder="Indicator Object Type" [(ngModel)]="selectedValue2" name="food2" class="full-width">
-                    <md-option *ngFor="let food of foods" [value]="food.value">
-                    {{food.viewValue}}
-                    </md-option>
-            </md-select>
-        </form>
+       <select-search-field [placeholder]="'identities'" [searchUrl]="'identities'" (optionChanged)="add($event)"></select-search-field>
+      <md-chip-list class="pull-left">
+            <md-chip selected="true" color="accent" *ngFor="let identity of identities">
+                {{identity.attributes.name}}
+                <a md-mini-fab (click)="remove(identity)"><md-icon>delete</md-icon></a>
+            </md-chip>
+        </md-chip-list>
     </div>
+
     <div class="col-md-4">
-            <form>
-            <md-select placeholder="Indicator Object Property" [(ngModel)]="selectedValue3" name="food3" class="full-width">
-                    <md-option *ngFor="let food of foods" [value]="food.value">
-                    {{food.viewValue}}
-                    </md-option>
-            </md-select>
-            </form>
+       <select-search-field [placeholder]="'Intrusion Sets'" [searchUrl]="'intrusion-sets'" (optionChanged)="add($event)"></select-search-field>
+       <md-chip-list class="pull-left">
+            <md-chip selected="true" color="accent" *ngFor="let intrusionSet of intrusionSets">
+                {{intrusionSet.attributes.name}}
+                <a md-mini-fab (click)="remove(intrusionSet)"><md-icon>delete</md-icon></a>
+            </md-chip>
+        </md-chip-list>
     </div>
+
     <div class="col-md-4">
-        <md-input-container  class="full-width">
-            <input mdInput placeholder="Indicator Object Value"  value="">
-        </md-input-container>
+       <select-search-field [placeholder]="'Attack Patterns'" [searchUrl]="'attack-patterns'" (optionChanged)="add($event)"></select-search-field>
+        <md-chip-list class="pull-left">
+            <md-chip selected="true" color="accent" *ngFor="let attackPattern of attackPatterns">
+                {{attackPattern.attributes.name}}
+                <a md-mini-fab (click)="remove(attackPattern)"><md-icon>delete</md-icon></a>
+            </md-chip>
+        </md-chip-list>
+       
     </div>
 </div>
+
+<indicator-pattern-field></indicator-pattern-field>
+
 <div class="row">
-<div class="col-md-12">
+    <div class="col-md-12">
         
-    <md-input-container class="full-width">
-        <input mdInput placeholder="Decsription"  [(ngModel)]="campaign.attributes.description" >
+        <md-input-container class="full-width">
+            <input mdInput placeholder="Decsription"  [(ngModel)]="campaign.attributes.description" >
         </md-input-container>
     
     </div>
