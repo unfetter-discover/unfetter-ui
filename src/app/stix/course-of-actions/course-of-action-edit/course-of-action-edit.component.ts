@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
-import { MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
+import { MdDialog, MdDialogRef, MdDialogConfig, MdSnackBar } from '@angular/material';
 import { CourseOfActionComponent } from '../course-of-action/course-of-action.component';
 import { StixService } from '../../stix.service';
 import { CourseOfAction, ExternalReference, Label } from '../../../models';
@@ -17,9 +17,10 @@ export class CourseOfActionEditComponent extends CourseOfActionComponent impleme
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog,
-        public location: Location) {
+        public location: Location,
+        public snackBar: MdSnackBar) {
 
-        super(stixService, route, router, dialog, location);
+        super(stixService, route, router, dialog, location, snackBar);
     }
 
     public ngOnInit() {

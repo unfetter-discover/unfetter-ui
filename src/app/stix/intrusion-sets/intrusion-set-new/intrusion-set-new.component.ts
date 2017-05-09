@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
-import { MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
+import { MdDialog, MdDialogRef, MdDialogConfig, MdSnackBar } from '@angular/material';
 import { IntrusionSetEditComponent } from '../intrusion-set-edit/intrusion-set-edit.component';
 import { StixService } from '../../stix.service';
 import { IntrusionSet } from '../../../models';
@@ -17,9 +17,14 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent implemen
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog,
-        public location: Location) {
+        public location: Location,
+        public snackBar: MdSnackBar) {
 
-        super(stixService, route, router, dialog, location);
+        super(stixService, route, router, dialog, location, snackBar);
+    }
+
+    public ngOnInit() {
+        // empty
     }
 
     public saveIdentity(): void {

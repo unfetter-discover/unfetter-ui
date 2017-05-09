@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { MdDialog, MdDialogRef } from '@angular/material';
+import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { CampaignsEditComponent } from '../campaigns-edit/campaigns-edit.component';
 import { StixService } from '../../stix.service';
-import { Campaign, AttackPattern, Identity, IntrusionSet , Relationship} from '../../../models';
+import { Campaign, AttackPattern, Identity, IntrusionSet , Relationship } from '../../../models';
 
 @Component({
   selector: 'campaigns-new',
@@ -22,9 +22,10 @@ export class CampaignsNewComponent extends CampaignsEditComponent implements OnI
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog,
-        public location: Location) {
+        public location: Location,
+        public snackBar: MdSnackBar) {
 
-        super(stixService, route, router, dialog, location);
+        super(stixService, route, router, dialog, location, snackBar);
     }
 
     public ngOnInit() {
@@ -51,7 +52,7 @@ export class CampaignsNewComponent extends CampaignsEditComponent implements OnI
     private saveRelationships(campaign: Campaign): void {
         this.attackPatterns.forEach((relatedRecord) => {
             let relationship = new Relationship();
-            relationship.attributes.relationship_type ='uses';
+            relationship.attributes.relationship_type = 'uses';
             relationship.attributes.source_ref = campaign.id;
             relationship.attributes.target_ref = relatedRecord.id;
             this.saveRelationship(relationship);
@@ -111,7 +112,7 @@ export class CampaignsNewComponent extends CampaignsEditComponent implements OnI
     private remove(object: any): void {
         if (object.type === 'attack-patterns') {
             this.attackPatterns = this.attackPatterns.filter((o) => o.id !== object.id);
-        } else if (object.type === 'intrusion-set') {
+        } else if (object.type === 'intrusion-sets') {
             this.intrusionSets = this.intrusionSets.filter((o) => o.id !== object.id);
         } else if (object.type === 'identities') {
             this.identities = this.identities.filter((o) => o.id !== object.id);
@@ -119,7 +120,7 @@ export class CampaignsNewComponent extends CampaignsEditComponent implements OnI
     }
 
     private found(list: any[], object: any): any {
-        return list.find((entry) => {return entry.id === object.id;});
+        return list.find( (entry) => { return entry.id === object.id; } );
     }
 
 }

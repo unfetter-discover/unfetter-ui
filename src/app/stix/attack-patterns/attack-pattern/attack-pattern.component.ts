@@ -26,8 +26,6 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         public snackBar: MdSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
-
-        super(stixService, route, router, dialog, location);
         stixService.url = this.attackPattern.url;
     }
 
@@ -66,7 +64,6 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                     (data) => {
                         observer.next(data);
                         observer.complete();
-                        this.location.back();
                     }, (error) => {
                         // handle errors here
                         console.log('error ' + error);

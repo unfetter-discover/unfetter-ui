@@ -2,7 +2,7 @@
 <div class="row">
     <div class="col-md-6">
         <md-input-container class="full-width">
-        <input mdInput placeholder="Name"  [(ngModel)]="campaign.attributes.name">
+        <input mdInput placeholder="Name" required [(ngModel)]="campaign.attributes.name">
         </md-input-container>
     </div>
     <div class="col-md-6">
@@ -24,7 +24,7 @@
       <md-chip-list class="pull-left">
             <md-chip selected="true" color="accent" *ngFor="let identity of identities">
                 {{identity.attributes.name}}
-                <a md-mini-fab (click)="remove(identity)"><md-icon>delete</md-icon></a>
+                <span class="cursor-pointer" (click)="remove(identity)"><i class="fa fa-trash"></i></span>
             </md-chip>
         </md-chip-list>
     </div>
@@ -34,7 +34,7 @@
        <md-chip-list class="pull-left">
             <md-chip selected="true" color="accent" *ngFor="let intrusionSet of intrusionSets">
                 {{intrusionSet.attributes.name}}
-                <a md-mini-fab (click)="remove(intrusionSet)"><md-icon>delete</md-icon></a>
+                <span class="cursor-pointer" (click)="remove(intrusionSet)"><i class="fa fa-trash"></i></span>
             </md-chip>
         </md-chip-list>
     </div>
@@ -44,7 +44,7 @@
         <md-chip-list class="pull-left">
             <md-chip selected="true" color="accent" *ngFor="let attackPattern of attackPatterns">
                 {{attackPattern.attributes.name}}
-                <a md-mini-fab (click)="remove(attackPattern)"><md-icon>delete</md-icon></a>
+               <span class="cursor-pointer" (click)="remove(attackPattern)"><i class="fa fa-trash"></i></span>
             </md-chip>
         </md-chip-list>
        
@@ -65,8 +65,9 @@
 <div class="row">
     <div class="col-md-12">
         <div class="button-row pull-right">
-                <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a> 
-                <a class=" " md-raised-button (click)="saveCampaign()"><i class="fa fa-floppy-o "></i> SAVE & CLOSE</a>            
+        
+                 <button  class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</button> 
+                 <button type="submit"  class=" " md-raised-button (click)="saveCampaign()" [disabled]="!campaign.attributes.name"><i class="fa fa-floppy-o "></i> SAVE & CLOSE</button>        
     
         </div>
     </div>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MdDialog, MdDialogRef } from '@angular/material';
+import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
 import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TheatActorComponent } from '../threat-actor/threat-actors.component';
@@ -18,8 +18,10 @@ export class ThreatActorListComponent extends TheatActorComponent implements OnI
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog,
-        public location: Location) {
-        super(stixService, route, router, dialog, location);
+        public location: Location,
+        public snackBar: MdSnackBar) {
+
+        super(stixService, route, router, dialog, location, snackBar);
     }
 
     public ngOnInit() {

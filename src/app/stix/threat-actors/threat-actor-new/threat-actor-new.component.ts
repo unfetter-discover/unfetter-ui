@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
-import { MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
+import { MdDialog, MdDialogRef, MdDialogConfig, MdSnackBar } from '@angular/material';
 import { ThreatActorEditComponent } from '../threat-actor-edit/threat-actor-edit.component';
 import { StixService } from '../../stix.service';
 import { ThreatActor } from '../../../models';
@@ -17,12 +17,17 @@ export class ThreatActorNewComponent extends ThreatActorEditComponent implements
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog,
-        public location: Location) {
+        public location: Location,
+        public snackBar: MdSnackBar) {
 
-        super(stixService, route, router, dialog, location);
+        super(stixService, route, router, dialog, location, snackBar);
     }
 
-     public saveThreatActor(): void {
+    public ngOnInit() {
+        // empty
+    }
+
+    public saveThreatActor(): void {
          let sub = super.create(this.threatActor).subscribe(
             (data) => {
                 console.log('saved');

@@ -66,10 +66,11 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
         super.gotoView(link);
     }
 
-    public delete(attackPattern: AttackPattern): void {
+    public delete(attackPattern: AttackPattern, key: string): void {
         super.openDialog(attackPattern).subscribe(
             () => {
                  this.attackPatterns = this.attackPatterns.filter((h) => h.id !== attackPattern.id);
+                 this.phaseNameGroups[key] = this.phaseNameGroups[key].filter((h) => h.id !== attackPattern.id);
             }
         );
     }

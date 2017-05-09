@@ -1,7 +1,8 @@
 import { ExternalReference, KillChainPhase } from '.';
 export class Report {
-    public id: number;
+    public id: string;
     public type: string;
+    public url = 'cti-stix-store-api/reports';
 
     public attributes: {
         version: string;
@@ -9,6 +10,7 @@ export class Report {
         modified: Date;
         description: string;
         name: string;
+        published: Date;
         labels: string[];
         object_refs: string[]
         external_references: ExternalReference[];
@@ -23,6 +25,7 @@ export class Report {
             modified: new Date(),
             name: '',
             description: '',
+            published: new Date(),
             object_refs:  [],
             labels: [],
             external_references: [],

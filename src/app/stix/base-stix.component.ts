@@ -7,7 +7,8 @@ import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/
 import { BaseStixService } from './base-stix.service';
 
 export class BaseStixComponent {
-
+    private duration = 3000;
+    
     constructor(
         protected service: BaseStixService,
         protected route: ActivatedRoute,
@@ -40,6 +41,7 @@ export class BaseStixComponent {
 
     protected save(item: any): Observable<any>  {
         let _self  = this;
+        item.url = this.service.url;
         return Observable.create((observer) => {
                _self.saveItem(item, observer);
         });
@@ -51,13 +53,12 @@ export class BaseStixComponent {
 
     protected openDialog(item: any): Observable<any> {
         let _self  = this;
-        console.log(item.id);
         return Observable.create((observer) => {
             let dialogRef = _self.dialog.open(ConfirmationDialogComponent, { data: item });
             dialogRef.afterClosed().subscribe(
                 (result) => {
                 if (result) {
-                    _self.deleteItem(item.id, observer);
+                    _self.deleteItem(item, observer);
                 }
             });
         });
@@ -78,7 +79,10 @@ export class BaseStixComponent {
                 observer.complete();
             }, (error) => {
                 // handle errors here
-                 console.log('error ' + error);
+                this.snackBar.open('Error ' + error , '', {
+                     duration: this.duration,
+                     extraClasses: ['snack-bar-background-error']
+                });
             }, () => {
                 // prevent memory links
                 if (subscription) {
@@ -97,26 +101,33 @@ export class BaseStixComponent {
                         observer.complete();
                     }, (error) => {
                         // handle errors here
-                        console.log('error ' + error);
+                        this.snackBar.open('Error ' + error , '', {
+                            duration: this.duration,
+                            extraClasses: ['snack-bar-background-error']
+                        });
                     }, () => {
                     // handle errors here
                     }
                 );
     }
 
-    private deleteItem(id: string, observer: any): void {
+    private deleteItem(item: any, observer: any): void {
         this.route.params
-            .switchMap((params: Params) => this.service.delete(id))
+            .switchMap((params: Params) => this.service.delete(item.id))
             .subscribe(
                 (stixObject) => {
                     observer.next(stixObject);
                     observer.complete();
-                    this.snackBar.open('Deleted', '', {
-                        duration: 2000,
+                    this.snackBar.open(item.attributes.name + ' has been successfully deleted', '', {
+                        duration: this.duration,
+                        extraClasses: ['snack-bar-background-success']
                     });
                 }, (error) => {
                     // handle errors here
-                    console.log('error ' + error);
+                     this.snackBar.open('Error ' + error , '', {
+                        duration: this.duration,
+                        extraClasses: ['snack-bar-background-error']
+                    });
                 }, () => {
                    // handle errors here
                 }
@@ -131,9 +142,18 @@ export class BaseStixComponent {
                     (resullts) => {
                         observer.next(data);
                         observer.complete();
+                        this.snackBar.open(item.attributes.name + ' has been successfully save', '', {
+                            duration: this.duration,
+                            extraClasses: ['snack-bar-background-success']
+                        });
                     } , (error) => {
                         // handle errors here
-                        console.log('error ' + error);
+                        // roollback create
+                        this.deleteItem(data, observer);
+                        this.snackBar.open('Error ' + error , '', {
+                            duration: this.duration,
+                            extraClasses: ['snack-bar-background-error']
+                        });
                     }, () => {
                         // prevent memory links
                         if (sub) {
@@ -143,7 +163,10 @@ export class BaseStixComponent {
                 );
             }, (error) => {
                 // handle errors here
-                 console.log('error ' + error);
+                this.snackBar.open('Error ' + error , '', {
+                    duration: this.duration,
+                    extraClasses: ['snack-bar-background-error']
+                });
             }, () => {
                 // prevent memory links
                 if (subscription) {
@@ -158,9 +181,16 @@ export class BaseStixComponent {
             (data) => {
                 observer.next(data);
                 observer.complete();
+                this.snackBar.open(item.attributes.name + ' has been successfully save', '', {
+                    duration: this.duration,
+                    extraClasses: ['snack-bar-background-success']
+                });
             }, (error) => {
                 // handle errors here
-                 console.log('error ' + error);
+                this.snackBar.open('Error ' + error , '', {
+                    duration: this.duration,
+                    extraClasses: ['snack-bar-background-error']
+                });
             }, () => {
                 // prevent memory links
                 if (subscription) {

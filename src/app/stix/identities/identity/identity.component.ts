@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
-import { MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
+import { MdDialog, MdDialogRef, MdDialogConfig, MdSnackBar } from '@angular/material';
 import { BaseStixComponent } from '../../base-stix.component';
 import { StixService } from '../../stix.service';
 import { Identity } from '../../../models';
@@ -20,9 +20,10 @@ export class IdentityComponent extends BaseStixComponent implements OnInit {
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog,
-        public location: Location) {
+        public location: Location,
+        public snackBar: MdSnackBar) {
 
-        super(stixService, route, router, dialog, location);
+        super(stixService, route, router, dialog, location, snackBar);
         stixService.url = this.identity.url;
     }
 

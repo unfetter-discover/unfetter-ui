@@ -24,7 +24,7 @@
         <div class="row" >
             <div class="col-md-4">
                 <md-input-container class="full-width">
-                    <input mdInput placeholder="Valid From"  [(ngModel)]="indicator.attributes.valid_from" value="{{indicator.attributes.valid_from}}" />
+                    <input mdInput placeholder="Valid From" required [(ngModel)]="indicator.attributes.valid_from" value="{{indicator.attributes.valid_from}}" />
                 </md-input-container>
             </div>
             <div class="col-md-4">
@@ -42,7 +42,7 @@
             <div class="col-md-12">
                 <div class="button-row pull-right">
                         <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a> 
-                        <a class=" " md-raised-button (click)="saveIndicator()"><i class="fa fa-floppy-o "></i> SAVE & CLOSE</a>            
+                        <a class=" " md-raised-button (click)="saveIndicator()" [disabled]="!indicator.attributes.name"><i class="fa fa-floppy-o "></i> SAVE & CLOSE</a>            
                 </div>
             </div>
         </div>

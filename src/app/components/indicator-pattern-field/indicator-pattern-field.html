@@ -41,16 +41,8 @@
     <div class="col-md-12">
            <md-chip-list class="pull-left">
                 <md-chip selected="true" color="accent" *ngFor="let indicator of indicators">{{indicator.pattern}}
-                    <a md-mini-fab (click)="remove(indicator)"><md-icon>delete</md-icon></a></md-chip>
+                    <span class="cursor-pointer" (click)="remove(indicator)"><i class="fa fa-trash"></i></span>
+                </md-chip>
             </md-chip-list>
     </div>
 </div>
-<!--
-  <p>
-        {{#each indicators as |indicator|}}
-            <span class="chip">
-            {{indicator.pattern}}
-            {{fa-icon "times" class="pointer" click=(action "remove" indicator)}}
-            </span>
-        {{/each}}
-        </p>-->

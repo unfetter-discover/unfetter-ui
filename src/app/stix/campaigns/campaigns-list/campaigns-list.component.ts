@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { MdDialog, MdDialogRef } from '@angular/material';
+import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { CampaignComponent } from '../campaign/campaign.component';
@@ -22,9 +22,10 @@ export class CampaignsListComponent extends CampaignComponent implements OnInit 
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog,
-        public location: Location) {
+        public location: Location,
+        public snackBar: MdSnackBar) {
 
-        super(stixService, route, router, dialog, location);
+        super(stixService, route, router, dialog, location, snackBar);
     }
 
     public ngOnInit() {
@@ -44,7 +45,7 @@ export class CampaignsListComponent extends CampaignComponent implements OnInit 
         );
     }
 
-     public delete(campaigns: Campaigns): void {
+     public delete(campaigns: Campaign): void {
         super.openDialog(campaigns).subscribe(
             () => {
                  this.campaigns = this.campaigns.filter((h) => h.id !== campaigns.id);

@@ -2,7 +2,7 @@
 <div class="row">
     <div class="col-md-12">
         <md-input-container class="full-width">
-        <input mdInput placeholder="Name"  [(ngModel)]="intrusionSet.attributes.name" value="{{intrusionSet.attributes.name}}">
+        <input mdInput placeholder="Name" required [(ngModel)]="intrusionSet.attributes.name" value="{{intrusionSet.attributes.name}}">
         </md-input-container>
     </div>
 </div>
@@ -72,7 +72,7 @@
     <div class="col-md-12">
         <div class="button-row pull-right">
                 <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a> 
-                <a class=" " md-raised-button (click)="saveIdentity()"><i class="fa fa-floppy-o "></i> SAVE</a>              
+                <a class=" " md-raised-button (click)="saveIdentity()" [disabled]="!intrusionSet.attributes.name"><i class="fa fa-floppy-o "></i> SAVE</a>              
         </div>
     </div>
 </div>

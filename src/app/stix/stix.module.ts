@@ -5,6 +5,8 @@ import {
   MaterialModule, MdButtonModule, MdListModule, MdCardModule, MdSnackBarModule,
   MdDialogModule, MdChipsModule, MdInputModule, MdSelectModule, MdAutocompleteModule , MdCheckboxModule, MdRadioModule } from '@angular/material';
 import { DatePickerModule } from 'angular-material-datepicker';
+import { DatepickerModule } from 'angular2-material-datepicker';
+// import { Md2Module } from 'md2';
 import { ComponentModule } from '../components/component.module';
 import { StixService } from './stix.service';
 
@@ -61,7 +63,9 @@ import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
       MdCheckboxModule,
       MdRadioModule,
       ComponentModule,
+      DatepickerModule,
       DatePickerModule,
+      // Md2Module.forRoot(),
       StixRoutingModule
   ],
   declarations: [

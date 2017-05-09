@@ -1,32 +1,37 @@
-  <div class="row" *ngIf="attackPattern">
-    <div class="col-md-12">
-        <div class="row">
-            <div class="col-md-12">
-                <md-input-container class="full-width">
-                    <input mdInput placeholder="Name" value="{{attackPattern.attributes.name}}" [(ngModel)]="attackPattern.attributes.name">
-                </md-input-container>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <md-input-container class="full-width">
-                    <textarea mdInput mdTextareaAutosize placeholder="Descrpition" [(ngModel)]="attackPattern.attributes.description">{{attackPattern.attributes.description}}</textarea>
-                </md-input-container>
-            </div>
-        </div>
 
-        <kill-chain-phases [(model)]="attackPattern"></kill-chain-phases>
-
-        <external-reference [(model)]="attackPattern"></external-reference>
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="button-row pull-right">
-                    <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a> 
-                    <a class=" " md-raised-button (click)="saveAttackPattern()"><i class="fa fa-floppy-o "></i> SAVE</a>            
-           
+    <div class="row" *ngIf="attackPattern">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                     <div class="form-group">
+                        <md-input-container class="full-width">
+                            <input mdInput class="form-control" required placeholder="Name" value="{{attackPattern.attributes.name}}" 
+                                [(ngModel)]="attackPattern.attributes.name">
+                        </md-input-container>
+                        
+                    </div>
                 </div>
             </div>
-          </div>
-     </div>
- </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <md-input-container class="full-width">
+                        <textarea mdInput mdTextareaAutosize placeholder="Descrpition" [(ngModel)]="attackPattern.attributes.description">{{attackPattern.attributes.description}}</textarea>
+                    </md-input-container>
+                </div>
+            </div>
+
+            <kill-chain-phases [(model)]="attackPattern"></kill-chain-phases>
+
+            <external-reference [(model)]="attackPattern"></external-reference>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="button-row pull-right">
+                         <button  class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</button> 
+                         <button type="submit"  class=" " md-raised-button (click)="saveAttackPattern()" [disabled]="!attackPattern.attributes.name"><i class="fa fa-floppy-o "></i> SAVE</button>            
+            
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

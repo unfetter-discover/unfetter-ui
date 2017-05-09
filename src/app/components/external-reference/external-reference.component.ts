@@ -14,8 +14,6 @@ export class ExternalReferenceComponent {
      public addExternalReferenceButtonClicked(): void {
         let externalReference = new ExternalReference();
         externalReference.external_id = '' + Math.random();
-        externalReference.source_name = 'source';
-        externalReference.url = 'some@mail.com';
         this.model.attributes.external_references.unshift(externalReference);
     }
 

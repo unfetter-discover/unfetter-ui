@@ -4,6 +4,7 @@ export class AttackPattern {
     public url = 'cti-stix-store-api/attack-patterns';
     public id: string;
     public type: string;
+    public links: {self: string};
 
     public attributes: {
         version: string;

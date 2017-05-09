@@ -1,0 +1,22 @@
+/*.collapsible-header {
+    display: block;
+    cursor: pointer;
+    min-height: 3rem;
+    line-height: 3rem;
+    padding: 0 1rem;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+}*/
+
+.collection .collection-item {
+    background-color: #fff;
+    padding: 10px 0px !important;
+    border-top: 1px solid #e0e0e0;
+}
+
+.grey.lighten-5 {
+    background-color: #fafafa !important;
+}
+.list-collection-item {
+    line-height: 32px !important;
+}

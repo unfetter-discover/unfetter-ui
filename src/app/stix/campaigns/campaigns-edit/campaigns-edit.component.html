@@ -2,7 +2,7 @@
 <div class="row">
     <div class="col-md-6">
         <md-input-container class="full-width">
-        <input mdInput placeholder="Name"  [(ngModel)]="campaign.attributes.name" value="{{campaign.attributes.name}}">
+        <input mdInput placeholder="Name"  required [(ngModel)]="campaign.attributes.name" value="{{campaign.attributes.name}}">
         </md-input-container>
     </div>
     <div class="col-md-6">
@@ -88,8 +88,8 @@
 <div class="row">
     <div class="col-md-12">
         <div class="button-row pull-right">
-                <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a> 
-                <a class=" " md-raised-button (click)="saveCampaign()"><i class="fa fa-floppy-o "></i> SAVE</a>            
+                <button  class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</button> 
+                 <button type="submit"  class=" " md-raised-button (click)="saveCampaign()" [disabled]="!campaign.attributes.name"><i class="fa fa-floppy-o "></i> SAVE</button>                  
     
         </div>
     </div>
