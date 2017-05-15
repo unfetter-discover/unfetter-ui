@@ -18,6 +18,8 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
     private selectedPhaseNameGroup: String;
     private phaseNameGroups = {};
     private phaseNameGroupKeys: string[];
+    private filterAttackPattern = {};
+    private numOfRows = 10;
 
      constructor(
         public stixService: StixService,
@@ -93,6 +95,24 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
                     attackPatternsProxies.push(attackPattern);
                 });
             }
+        });
+    }
+
+    private onTabShow(event: any): void {
+        let phaseName = this.phaseNameGroupKeys[event.index];
+        if (!this.filterAttackPattern[phaseName]) {
+            this.loadData({first: 0, rows: this.numOfRows}, this.phaseNameGroupKeys[event.index]);
+        }
+    }
+
+    private totalRecords(key: string): number {
+        return this.phaseNameGroups[key].length;
+    }
+
+    private loadData(event: any, phaseName: string): void {
+        let attackPatterns = this.phaseNameGroups[phaseName] as AttackPattern[];
+        this.filterAttackPattern[phaseName] = attackPatterns.filter((attackPattern: AttackPattern, index: number, arr: any) => {
+            return ( index >= event.first && index <  (event.first + event.rows) );
         });
     }
 }

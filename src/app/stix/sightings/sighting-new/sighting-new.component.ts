@@ -27,10 +27,6 @@ export class SightingNewComponent extends BaseStixComponent {
         stixService.url = this.sighting.url;
     }
 
-    public ngOnInit() { 
-        // empty
-    }
-    
     public saveButtonClicked(): void {
         let subscription = super.create(this.sighting).subscribe(
             (data) => {

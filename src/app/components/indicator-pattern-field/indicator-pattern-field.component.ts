@@ -27,7 +27,7 @@ export class IndicatorPatternFieldComponent {
     public selectedObjectValue: string;
     public indicators = [];
     private disabled = true;
-    
+
     private onInputChange(): void {
         if (this.selectedObjectType && this.selectedObjectProperty, this.selectedObjectValue ) {
             this.disabled = false;
@@ -36,10 +36,7 @@ export class IndicatorPatternFieldComponent {
 
     private add(): void {
         let pattern = `[${this.selectedObjectType}:${this.selectedObjectProperty} = '${this.selectedObjectValue}']`;
-        let indicator = {
-            name: pattern,
-            pattern: pattern
-        };
+        let indicator = { name: pattern,   pattern };
         this.indicators.push(indicator);
         this.clearFields();
     }

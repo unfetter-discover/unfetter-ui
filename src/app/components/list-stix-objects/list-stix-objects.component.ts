@@ -19,7 +19,9 @@ export class ListStixObjectComponent extends BaseComponent {
     @Input() public showExternalReferences: boolean;
     @Input() public showSectors: boolean;
     @Output() public deletButtonClicked: EventEmitter<any> = new EventEmitter();
+    private isLastRow: boolean;
 
+    private index = 0;
      constructor(
         public route: ActivatedRoute,
         public router: Router,
@@ -42,5 +44,11 @@ export class ListStixObjectComponent extends BaseComponent {
 
     public deleteButtonClicked(item: any): void {
         this.deletButtonClicked.emit(item);
+    }
+
+    private  notLastIndex(): boolean {
+        this.isLastRow = this.index < this.model.length ? true : false;
+        this.index = this.index + 1;
+        return this.isLastRow;
     }
 }

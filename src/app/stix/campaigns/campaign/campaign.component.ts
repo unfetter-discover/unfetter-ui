@@ -3,9 +3,11 @@ import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Location } from '@angular/common';
+import { Constance } from '../../../utils/constance';
+import * as moment from 'moment';
 import { BaseStixComponent } from '../../base-stix.component';
 import { StixService } from '../../stix.service';
-import { Campaign } from '../../../models';
+import { Campaign, Filter } from '../../../models';
 
 @Component({
   selector: 'campaign',
@@ -24,7 +26,7 @@ export class CampaignComponent extends BaseStixComponent implements OnInit {
         public snackBar: MdSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
-        stixService.url = this.campaign.url;
+        stixService.url = Constance.CAMPAIGN_URL;
     }
 
     public ngOnInit() {
@@ -41,16 +43,16 @@ export class CampaignComponent extends BaseStixComponent implements OnInit {
     }
 
     protected loadCampaign(): void {
-        let subscription =  super.get().subscribe(
+        let sub =  super.get().subscribe(
             (data) => {
-                this.campaign = data as Campaign;
+                this.campaign = new Campaign(data);
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
             }, () => {
                 // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
+                if (sub) {
+                    sub.unsubscribe();
                 }
             }
         );
@@ -75,5 +77,4 @@ export class CampaignComponent extends BaseStixComponent implements OnInit {
                 );
         });
     }
-
 }

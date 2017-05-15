@@ -1,12 +1,12 @@
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { CalendarModule, AccordionModule, DataListModule } from 'primeng/primeng';
 import {
   MaterialModule, MdButtonModule, MdListModule, MdCardModule, MdSnackBarModule,
   MdDialogModule, MdChipsModule, MdInputModule, MdSelectModule, MdAutocompleteModule , MdCheckboxModule, MdRadioModule } from '@angular/material';
-import { DatePickerModule } from 'angular-material-datepicker';
-import { DatepickerModule } from 'angular2-material-datepicker';
-// import { Md2Module } from 'md2';
+// import { DatePickerModule } from 'angular-material-datepicker';
+// import { DatepickerModule } from 'angular2-material-datepicker';
 import { ComponentModule } from '../components/component.module';
 import { StixService } from './stix.service';
 
@@ -37,15 +37,12 @@ import {
     import { ThreatActorHomeComponent, ThreatActorListComponent, TheatActorComponent, ThreatActorNewComponent, ThreatActorEditComponent } from './threat-actors';
     import { IntrusionSetHomeComponent, IntrusionSetListComponent, IntrusionSetComponent, IntrusionSetEditComponent, IntrusionSetNewComponent } from './intrusion-sets';
     import { RelationshipsComponent, RelationshipNewComponent, RelationshipListComponent } from './relationships';
+    import { IndicatorHomeComponent , IndicatorListComponent, IndicatorEditComponent, IndicatorNewComponent, IndicatorComponent } from './indicators';
+    import { IdentityHomeComponent , IdentityListComponent, IdentityEditComponent, IdentityNewComponent, IdentityComponent } from './identities';
+    import { StixRoutingModule } from './stix-routing.module';
+    import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
 
-    
-import { IndicatorHomeComponent , IndicatorListComponent, IndicatorEditComponent, IndicatorNewComponent, IndicatorComponent } from './indicators';
-import { IdentityHomeComponent , IdentityListComponent, IdentityEditComponent, IdentityNewComponent, IdentityComponent } from './identities';
-
-
-import { StixRoutingModule } from './stix-routing.module';
-
-import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
+import { MalwareListComponent } from './malwares/malware-list.component';
 
 @NgModule({
   imports: [
@@ -63,9 +60,11 @@ import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
       MdCheckboxModule,
       MdRadioModule,
       ComponentModule,
-      DatepickerModule,
-      DatePickerModule,
-      // Md2Module.forRoot(),
+      // DatepickerModule,
+      // DatePickerModule,
+      CalendarModule,
+      AccordionModule,
+      DataListModule,
       StixRoutingModule
   ],
   declarations: [
@@ -124,9 +123,10 @@ import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
     IdentityEditComponent,
     IdentityNewComponent,
     IdentityComponent,
-    
+
     IdentifierTypePipe,
-    IdentifierSummarizedPipe
+    IdentifierSummarizedPipe,
+    MalwareListComponent,
   ],
 
   providers: [ StixService ],

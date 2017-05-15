@@ -8,15 +8,37 @@
     border-bottom: 1px solid #ddd;
 }*/
 
-.collection .collection-item {
+/*.collection .collection-item {
     background-color: #fff;
     padding: 10px 0px !important;
     border-top: 1px solid #e0e0e0;
-}
+}*/
 
 .grey.lighten-5 {
     background-color: #fafafa !important;
 }
 .list-collection-item {
     line-height: 32px !important;
+}
+
+.collection-item {
+    margin-top: 10px;
+    margin-bottom: 10px; 
+}
+.collection-item a {
+    color: #039be5;
+}
+li div.list-item-row {
+    margin-left: 0px; 
+    margin-right: 0px; 
+    font-size:16px;
+    padding:20px;
+    border-bottom:1px solid #D5D5D5;
+}
+li:last-child div.list-item-row {
+    border-bottom: none;
+}
+
+.list-item-name {
+     color: #039be5 !important;
 }

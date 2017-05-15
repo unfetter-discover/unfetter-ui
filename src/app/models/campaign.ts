@@ -1,34 +1,50 @@
 import { ExternalReference, KillChainPhase } from '.';
+import { Constance } from '../utils/constance';
+import * as moment from 'moment';
+
 export class Campaign {
-    public url = 'cti-stix-store-api/campaigns';
+    public url = Constance.CAMPAIGN_URL;
     public id: string;
     public type: string;
 
     public attributes: {
         version: string;
-        created: Date;
-        modified: Date;
+        created: string;
+        modified: string;
         description: string;
         name: string;
         labels: string[];
-        first_seen: Date;
+        first_seen: string;
         objective: string;
         timestamp_precision: string;
-        
     };
-    constructor() {
-        this.type = 'campaigns';
-        this.attributes = {
+    constructor(data?: Campaign) {
+        this.type = Constance.CAMPAIGN_TYPE;
+        if (data) {
+            this.attributes = data.attributes;
+            this.id = data.id;
+            this.formatDate();
+        } else {
+            this.attributes = this.createAttributes();
+        }
+    }
+
+    public formatDate(): void {
+       this.attributes.first_seen =  this.attributes.first_seen ?
+            moment(this.attributes.first_seen).format(Constance.DATE_FORMATE) : moment().format(Constance.DATE_FORMATE);
+    }
+
+    private createAttributes(): any {
+        return {
             version: '',
-            created: new Date(),
-            modified: new Date(),
+            created: moment().format(Constance.DATE_FORMATE),
+            modified: moment().format(Constance.DATE_FORMATE),
             name: '',
             description: '',
             labels: [],
-            first_seen: new Date(),
+            first_seen: moment().format(Constance.DATE_FORMATE),
             objective: '',
             timestamp_precision: ''
-            
         };
     }
 }

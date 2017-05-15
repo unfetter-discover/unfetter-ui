@@ -6,9 +6,7 @@
         </md-input-container>
     </div>
     <div class="col-md-6">
-        <md-input-container class="full-width">
-        <input mdInput placeholder="First Seen"  [(ngModel)]="campaign.attributes.first_seen">
-        </md-input-container>
+        <p-calendar [(ngModel)]="campaign.attributes.first_seen"  dateFormat="MM-dd-yy" showIcon="true" placeholder="First Seen"></p-calendar>
     </div>
 </div>
 <div class="row">

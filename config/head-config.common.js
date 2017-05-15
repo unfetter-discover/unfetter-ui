@@ -18,8 +18,8 @@ module.exports = {
 
    
     { rel: 'stylesheet',  href: '/assets/bootstrap/css/bootstrap.min.css' },
-    // { rel: 'stylesheet',  href: '/assets/css/indigo-pink.css' },
-    // { rel: 'stylesheet',  href: '/assets/materialize/css/materialize.min.css' },
+    { rel: 'stylesheet',  href: '/assets/css/theme.css' },
+    { rel: 'stylesheet',  href: '/assets/css/primeng.min.css' },
     { rel: 'stylesheet',  href: '/assets/css/vendor.css' },
    
     /** <link> tags for favicons **/

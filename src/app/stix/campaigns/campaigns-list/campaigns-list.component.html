@@ -2,8 +2,8 @@
         <div class="col-md-12">
 
             <div class="button-row">
-                <a md-raised-button routerLink="./new">NEW</a>
-                <a md-raised-button (click)="download()">DOWNLOAD</a>            
+                <button md-raised-button routerLink="./new">NEW</button>
+                <button md-raised-button (click)="download()">DOWNLOAD</button>            
             </div>
             <div class="pull-right">
                 <span class="right-align">Results: {{campaigns.length}}</span>            
@@ -11,4 +11,4 @@
         </div>
     </div>
     <hr *ngIf="campaigns.length === 0" />
-     <list-stix-objects [model]="campaigns" [showLabels]="showLabels" [showExternalReferences]="showExternalReferences" (deletButtonClicked)="delete($event)"></list-stix-objects>
+    <list-stix-objects [model]="campaigns" [showLabels]="showLabels" [showExternalReferences]="showExternalReferences" (deletButtonClicked)="delete($event)"></list-stix-objects>

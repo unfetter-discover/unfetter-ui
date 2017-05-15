@@ -5,13 +5,7 @@
         </md-input-container>
     </div>
     <div class="col-md-6">
-        <!--<md2-datepicker class="full-width" [dateFormat]="YYYY-MM-DD" [placeholder]="Published" [(ngModel)]="report.attributes.published"></md2-datepicker>-->
-        <material-datepicker class="full-width" dateFormat="YYYY-MM-DD" [placeholder]="Published"  [(date)]="report.attributes.published" (onSelect)="dateChange($event)"></material-datepicker>
-        <!-- -->
-         <!--<md-datepicker class="full-width"></md-datepicker>-->
-        <!--<md-input-container class="full-width">
-        <input mdInput placeholder="Published"   value="">
-        </md-input-container>-->
+        <p-calendar [(ngModel)]="report.attributes.published" dateFormat="MM-dd-yy" showIcon="true"></p-calendar>
     </div>
 </div>
 <div class="row">

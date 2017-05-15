@@ -5,14 +5,15 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { BaseStixComponent } from '../../base-stix.component';
 import { StixService } from '../../stix.service';
 import { Relationship } from '../../../models';
+import { Constance } from '../../../utils/constance';
 
 @Component({
-  selector: 'relationship-list',
+  selector: 'relationships-list',
   templateUrl: './relationship-list.component.html'
 })
 export class RelationshipListComponent extends BaseStixComponent implements OnInit {
-    private pageTitle = 'Relationships';
-    private pageIcon = 'assets/icon/stix-icons/svg/relationship-b.svg';
+    private pageTitle = Constance.RELATIONSHIPS_TYPE;
+    private pageIcon = Constance.RELATIONSHIPS_ICON;
     private relationships: Relationship[] = [];
 
      constructor(
@@ -24,7 +25,7 @@ export class RelationshipListComponent extends BaseStixComponent implements OnIn
         public snackBar: MdSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
-        stixService.url = 'cti-stix-store-api/relationships';
+        stixService.url = Constance.RELATIONSHIPS_URL;
     }
     public ngOnInit() {
         let subscription =  super.load().subscribe(

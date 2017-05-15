@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Constance } from '../../utils/constance';
 
 @Component({
   selector: 'indicator-home',
@@ -6,6 +7,6 @@ import { Component, OnInit } from '@angular/core';
 })
 export class IndicatorHomeComponent {
     private pageTitle = 'Indicator';
-    private pageIcon = 'assets/icon/stix-icons/svg/indicator-b.svg';
+    private pageIcon = Constance.INDICATOR_ICON;
     private description = 'Indicators contain a pattern that can be used to detect suspicous or malicious cyber activity.';
 }

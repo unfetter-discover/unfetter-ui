@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { BaseStixComponent } from '../../base-stix.component';
 import { StixService } from '../../stix.service';
 import { Report } from '../../../models';
+import { Constance } from '../../../utils/constance';
 
 @Component({
   selector: 'report-list',
@@ -23,9 +24,7 @@ export class ReportsListComponent extends BaseStixComponent implements OnInit {
         public snackBar: MdSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
-        stixService.url = 'cti-stix-store-api/reports';
-
-        console.log('Initial ReportsListComponent');
+        stixService.url = Constance.REPORTS_URL;
     }
 
     public ngOnInit() {

@@ -3,6 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NgModule,  ApplicationRef } from '@angular/core';
 import { RouterModule,  PreloadAllModules } from '@angular/router';
+import { CalendarModule, AccordionModule, DataListModule } from 'primeng/primeng';
 import { MaterialModule, MdButtonModule, MdListModule, MdCardModule,
   MdDialogModule, MdChipsModule, MdInputModule, MdSelectModule, MdAutocompleteModule } from '@angular/material';
 import { HeaderNavigationComponent } from './header-navigation/header-navigation.component';
@@ -15,6 +16,7 @@ import { KillChainPhasesComponent } from './kill-chain-phases/kill-chain-phases.
 import { ListStixObjectComponent } from './list-stix-objects/list-stix-objects.component';
 import { ReadonlyContentComponent } from './readonly-content/readonly-content.component';
 import { AliasesComponent } from './aliases/aliases.component';
+import { RelationshipListComponent } from './relationship-list/relationship-list.component';
 import { BaseComponentService } from './base-service.component';
 
 @NgModule({
@@ -30,6 +32,7 @@ import { BaseComponentService } from './base-service.component';
     ListStixObjectComponent,
     ReadonlyContentComponent,
     AliasesComponent,
+    RelationshipListComponent
   ],
   imports: [
     CommonModule,
@@ -45,6 +48,7 @@ import { BaseComponentService } from './base-service.component';
     MdButtonModule,
     MdCardModule,
     MdChipsModule,
+    DataListModule
   ],
   exports: [
       PageHeaderComponent,
@@ -57,6 +61,7 @@ import { BaseComponentService } from './base-service.component';
       ListStixObjectComponent,
       ReadonlyContentComponent,
       AliasesComponent,
+      RelationshipListComponent
   ],
   providers: [
     BaseComponentService

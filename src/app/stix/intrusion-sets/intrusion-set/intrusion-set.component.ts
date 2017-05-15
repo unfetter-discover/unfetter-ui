@@ -61,7 +61,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     protected loadIntrusionSet(): void {
         let subscription =  super.get().subscribe(
             (data) => {
-                this.intrusionSet = data ? data as IntrusionSet : new IntrusionSet();
+                this.intrusionSet = new IntrusionSet(data);
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

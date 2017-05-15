@@ -23,7 +23,6 @@ import { AppRoutingModule }        from './app-routing.module';
 import { HomeComponent } from './home';
 import { PartnersComponent } from './partners/partners.component';
 import { NoContentComponent } from './no-content';
-
 import '../styles/styles.scss';
 import '../styles/headings.css';
 

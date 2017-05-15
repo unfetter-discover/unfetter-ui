@@ -18,4 +18,13 @@ export class BaseComponentService {
                    return response.json().data as any[];
                 });
     }
+
+    public get(url: string): Observable<any[]> {
+        console.log('url = ' + url);
+        return this.http
+               .get(url)
+               .map((response) => {
+                   return response.json().data as any[];
+                });
+    }
 }

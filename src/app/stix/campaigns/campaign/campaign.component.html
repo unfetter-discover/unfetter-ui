@@ -1,8 +1,8 @@
     <div class="row">
        <div class="col-md-12">
             <div class="button-row">
-                <a class="" md-raised-button (click)="editButtonClicked()"><i class="fa fa-pencil"></i> EDIT</a>
-                <a class="" md-raised-button (click)="deleteButtonClicked()"><i class="fa fa-trash"></i> DELETE</a>            
+                <button class="" md-raised-button (click)="editButtonClicked()"><i class="fa fa-pencil"></i> EDIT</button>
+                <button class="" md-raised-button (click)="deleteButtonClicked()"><i class="fa fa-trash"></i> DELETE</button>            
             </div>
         </div>
     </div>
@@ -47,5 +47,5 @@
     </div>
     <div class="pull-right grey-text">{{campaign.id}}</div>
 
-<h4>Relationships</h4>
 
+<relationship-list *ngIf="campaign.id" [model]="campaign"></relationship-list>

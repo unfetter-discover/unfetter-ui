@@ -11,8 +11,8 @@ import 'rxjs';
 
 // Other vendors for example jQuery, Lodash or Bootstrap
 // You can import js, ts, css, sass, ...
-import 'md2';
 import 'hammerjs';
 import 'jquery';
 import 'bootstrap/dist/js/bootstrap';
+import 'primeng/primeng';
 // mport 'materialize-css/dist/js/materialize.min.js';

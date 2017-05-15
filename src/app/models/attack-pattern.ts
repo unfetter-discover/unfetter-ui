@@ -1,7 +1,8 @@
 import { ExternalReference, KillChainPhase } from '.';
+import { Constance } from '../utils/constance';
 
 export class AttackPattern {
-    public url = 'cti-stix-store-api/attack-patterns';
+    public url = Constance.ATTACK_PATTERN_URL;
     public id: string;
     public type: string;
     public links: {self: string};
@@ -17,9 +18,18 @@ export class AttackPattern {
         kill_chain_phases: KillChainPhase[];
     };
 
-    constructor() {
-        this.type = 'attack-patterns';
-        this.attributes = {
+    constructor(data?: AttackPattern) {
+        this.type = Constance.ATTACK_PATTERN_TYPE;
+        if (data) {
+            this.attributes = data.attributes;
+            this.id = data.id;
+        } else {
+            this.attributes = this.createAttributes();
+        }
+    }
+
+    private createAttributes(): any {
+        return {
             version: '',
             created: new Date(),
             modified: new Date(),

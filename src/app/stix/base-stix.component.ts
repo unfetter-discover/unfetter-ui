@@ -8,7 +8,6 @@ import { BaseStixService } from './base-stix.service';
 
 export class BaseStixComponent {
     private duration = 3000;
-    
     constructor(
         protected service: BaseStixService,
         protected route: ActivatedRoute,
@@ -32,6 +31,28 @@ export class BaseStixComponent {
         });
     }
 
+     protected filter(url: string): Observable<any> {
+        let _self  = this;
+        return Observable.create((observer) => {
+              let subscription =  _self.service.filter(url).subscribe(
+                   (data) => {
+                        observer.next(data);
+                        observer.complete();
+                   }, (error: string) => {
+                        // handle errors here
+                        this.snackBar.open('Error ' + error , '', {
+                            duration: this.duration,
+                            extraClasses: ['snack-bar-background-error']
+                        });
+                    }, () => {
+                        // prevent memory links
+                        if (subscription) {
+                            subscription.unsubscribe();
+                        }
+                    }
+               );
+        });
+    }
     protected create(item: any): Observable<any>  {
         let _self  = this;
         return Observable.create((observer) => {
@@ -124,10 +145,11 @@ export class BaseStixComponent {
                     });
                 }, (error) => {
                     // handle errors here
-                     this.snackBar.open('Error ' + error , '', {
+                    this.snackBar.open('Error ' + error , '', {
                         duration: this.duration,
                         extraClasses: ['snack-bar-background-error']
                     });
+                    observer.throw = '';
                 }, () => {
                    // handle errors here
                 }

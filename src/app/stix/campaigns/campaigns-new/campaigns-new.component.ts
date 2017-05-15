@@ -13,10 +13,6 @@ import { Campaign, AttackPattern, Identity, IntrusionSet , Relationship } from '
 
 export class CampaignsNewComponent extends CampaignsEditComponent implements OnInit {
     public campaign: Campaign = new Campaign();
-    private attackPatterns: AttackPattern[] = [];
-    private identities: Identity[] = [];
-    private intrusionSets: IntrusionSet[] = [];
-
     constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
@@ -35,7 +31,7 @@ export class CampaignsNewComponent extends CampaignsEditComponent implements OnI
     public saveCampaign(): void {
        let subscription = super.create(this.campaign).subscribe(
             (data) => {
-                this.saveRelationships(data as Campaign);
+                super.saveRelationships(new Campaign(data));
                 this.location.back();
             }, (error) => {
                 // handle errors here
@@ -48,79 +44,4 @@ export class CampaignsNewComponent extends CampaignsEditComponent implements OnI
             }
         );
     }
-
-    private saveRelationships(campaign: Campaign): void {
-        this.attackPatterns.forEach((relatedRecord) => {
-            let relationship = new Relationship();
-            relationship.attributes.relationship_type = 'uses';
-            relationship.attributes.source_ref = campaign.id;
-            relationship.attributes.target_ref = relatedRecord.id;
-            this.saveRelationship(relationship);
-        });
-
-        this.intrusionSets.forEach((relatedRecord) => {
-            let relationship = new Relationship();
-            relationship.attributes.relationship_type =  'attributed-to';
-            relationship.attributes.source_ref = campaign.id;
-            relationship.attributes.target_ref = relatedRecord.id;
-            this.saveRelationship(relationship);
-        });
-
-        this.identities.forEach((relatedRecord) => {
-            let relationship = new Relationship();
-            relationship.attributes.relationship_type = 'targets';
-            relationship.attributes.source_ref = campaign.id;
-            relationship.attributes.target_ref = relatedRecord.id;
-            this.saveRelationship(relationship);
-        });
-    }
-
-    private saveRelationship(relationship: Relationship): void {
-        let created = new Date();
-        relationship.attributes.created = created;
-        relationship.attributes.modified = created;
-        relationship.attributes.version = '1';
-        let subscription = super.create(relationship).subscribe(
-            (data) => {
-                console.log('saved');
-            }, (error) => {
-                // handle errors here
-                console.log('error ' + error);
-            }, () => {
-                // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
-                }
-            }
-        );
-    }
-
-    // add chip
-    private add(event: any): void {
-        console.log(event.type);
-        if (event.type === 'attack-patterns' && !this.found(this.attackPatterns, event)) {
-            console.log('*****');
-            this.attackPatterns.push(event as AttackPattern);
-        } else if (event.type === 'intrusion-sets'  && !this.found(this.intrusionSets, event)) {
-            this.intrusionSets.push(event as IntrusionSet);
-        } else if (event.type === 'identities'  && !this.found(this.identities, event)) {
-            this.identities.push(event as Identity);
-        }
-    }
-
-    // remove chip
-    private remove(object: any): void {
-        if (object.type === 'attack-patterns') {
-            this.attackPatterns = this.attackPatterns.filter((o) => o.id !== object.id);
-        } else if (object.type === 'intrusion-sets') {
-            this.intrusionSets = this.intrusionSets.filter((o) => o.id !== object.id);
-        } else if (object.type === 'identities') {
-            this.identities = this.identities.filter((o) => o.id !== object.id);
-        }
-    }
-
-    private found(list: any[], object: any): any {
-        return list.find( (entry) => { return entry.id === object.id; } );
-    }
-
 }

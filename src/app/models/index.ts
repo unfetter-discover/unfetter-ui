@@ -12,3 +12,6 @@ export { Relationship } from './relationship';
 export { Indicator } from './indicator';
 export { Identity } from './identity';
 export { Label } from './label';
+export { SourceRefFilter } from './source-ref-filter';
+export { Filter } from './filter';
+export  { Malware } from './malware'

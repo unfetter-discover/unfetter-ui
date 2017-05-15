@@ -2,7 +2,7 @@ import { NgModule }             from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { HomeComponent } from './home';
-import { PartnersComponent } from './partners/partners.component'
+import { PartnersComponent } from './partners/partners.component';
 import { NoContentComponent } from './no-content';
 
 // import { CanDeactivateGuard }       from './can-deactivate-guard.service';

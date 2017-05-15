@@ -1,16 +1,19 @@
 import { ExternalReference, KillChainPhase } from '.';
+import { Constance } from '../utils/constance';
+import * as moment from 'moment';
+
 export class Report {
     public id: string;
     public type: string;
-    public url = 'cti-stix-store-api/reports';
+    public url = Constance.REPORTS_URL;
 
     public attributes: {
         version: string;
-        created: Date;
-        modified: Date;
+        created: string;
+        modified: string;
         description: string;
         name: string;
-        published: Date;
+        published: string;
         labels: string[];
         object_refs: string[]
         external_references: ExternalReference[];
@@ -21,11 +24,11 @@ export class Report {
         this.type = 'reports';
         this.attributes = {
             version: '',
-            created: new Date(),
-            modified: new Date(),
+            created: moment().format(Constance.DATE_FORMATE),
+            modified: moment().format(Constance.DATE_FORMATE),
             name: '',
             description: '',
-            published: new Date(),
+            published: moment().format(Constance.DATE_FORMATE),
             object_refs:  [],
             labels: [],
             external_references: [],

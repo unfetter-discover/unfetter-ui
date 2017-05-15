@@ -1,7 +1,8 @@
 import { ExternalReference, KillChainPhase } from '.';
+import { Constance } from '../utils/constance';
 
 export class Relationship {
-    public url = 'cti-stix-store-api//relationships';
+    public url = Constance.RELATIONSHIPS_URL;
     public id: number;
     public type: string;
 

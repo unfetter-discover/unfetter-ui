@@ -6,6 +6,7 @@ import { Location } from '@angular/common';
 import { BaseStixComponent } from '../../base-stix.component';
 import { AttackPattern } from '../../../models';
 import { StixService } from '../../stix.service';
+import { Constance } from '../../../utils/constance';
 
 @Component({
   selector: 'attack-pattern',
@@ -26,7 +27,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         public snackBar: MdSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
-        stixService.url = this.attackPattern.url;
+        stixService.url = Constance.ATTACK_PATTERN_URL;
     }
 
     public ngOnInit() {

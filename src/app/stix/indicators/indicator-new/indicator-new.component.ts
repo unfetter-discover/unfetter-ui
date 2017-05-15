@@ -10,7 +10,7 @@ import { Indicator } from '../../../models';
   selector: 'indicator-new',
   templateUrl: './indicator-new.component.html',
 })
-export class IndicatorNewComponent extends IndicatorEditComponent {
+export class IndicatorNewComponent extends IndicatorEditComponent implements OnInit {
 
    public indicator: Indicator = new Indicator();
 
@@ -25,7 +25,7 @@ export class IndicatorNewComponent extends IndicatorEditComponent {
         super(stixService, route, router, dialog, location, snackBar);
     }
 
-    public ngOnInit() { 
+    public ngOnInit(): void  {
         // empty
     }
 

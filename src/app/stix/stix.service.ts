@@ -1,12 +1,12 @@
 import { Injectable }    from '@angular/core';
-import { Headers, Http } from '@angular/http';
+import { Headers, Http, Response } from '@angular/http';
 import { Observable }     from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { BaseStixService } from './base-stix.service';
 import { Sighting } from '../../models';
 
 @Injectable()
-export class StixService implements BaseStixService{
+export class StixService implements BaseStixService {
     public url = '';  // URL to web api
     private headers = new Headers({'Content-Type': 'application/json'});
 
@@ -32,6 +32,15 @@ export class StixService implements BaseStixService{
             .catch(this.handleError);
     }
 
+     public filter(url: string): Observable<any> {
+         return this.http
+            .get(url)
+            .map((response) => {
+                return response.json().data;
+            })
+            .catch(this.handleError);
+    }
+
     public delete(id: string): Observable<void> {
         const url = `${this.url}/${id}`;
         return this.http
@@ -41,7 +50,6 @@ export class StixService implements BaseStixService{
             })
             .catch(this.handleError);
     }
-
 
     public create(item: any): Observable<any> {
         return this.http
@@ -62,8 +70,16 @@ export class StixService implements BaseStixService{
             .catch(this.handleError);
     }
 
-    private handleError(error: any): Observable<any> {
-        console.error('An error occurred', error); // for demo purposes only
-        return Observable.throw(error.message || error);
+    private handleError(error: Response | any): Observable<any> {
+        let errMsg: string;
+        if (error instanceof Response) {
+            const body = error.json() || '';
+            const err = body.error || JSON.stringify(body);
+            errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
+        } else {
+            errMsg = error.message ? error.message : error.toString();
+        }
+        console.error(errMsg);
+        return Observable.throw(errMsg);
     }
 }

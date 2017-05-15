@@ -26,19 +26,19 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <label>Pattern:</label>
-                                        <h6>{{indicator.attributes.pattern}}</h6>
+                                        <div><label>Pattern:</label></div>
+                                        <md-chip selected="true" color="accent">{{indicator.attributes.pattern}}</md-chip>
                                     </div>
                                 </div>
                                 <div class="row" >
                                     <div class="col-md-4">
                                         <md-input-container class="full-width">
-                                            <input mdInput placeholder="Valid From:" value="{{indicator.attributes.valid_from}}" />
+                                            <input readonly mdInput placeholder="Valid From:" value="{{indicator.attributes.valid_from}}" />
                                         </md-input-container>
                                     </div>
                                     <div class="col-md-4">
                                         <md-input-container class="full-width">
-                                            <input mdInput placeholder="Valid To:" value="{{indicator.attributes.valid_to}}" />
+                                            <input readonly mdInput placeholder="Valid To:" value="{{indicator.attributes.valid_to}}" />
                                             </md-input-container>     
                                     </div>
                                 </div>
@@ -72,6 +72,8 @@
             </div>
        </div>
 </div>
-    <div class="pull-right grey-text">{{indicator.id}}</div>
+<div class="pull-right grey-text">{{indicator.id}}</div>
+
+<relationship-list  *ngIf="indicator.id" [model]="indicator"></relationship-list>
 
 

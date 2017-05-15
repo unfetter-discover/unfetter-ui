@@ -35,8 +35,8 @@ import { IndicatorHomeComponent , IndicatorListComponent, IndicatorEditComponent
 import { IdentityHomeComponent , IdentityListComponent, IdentityEditComponent, IdentityNewComponent, IdentityComponent } from './identities';
 
 import { RelationshipsComponent, RelationshipNewComponent, RelationshipListComponent } from './relationships';
-
-    import { ReportsComponent, ReportsListComponent, ReportNewComponent, } from './reports';
+import { ReportsComponent, ReportsListComponent, ReportNewComponent, } from './reports';
+import { MalwareListComponent } from './malwares/malware-list.component';
 
 const stixRoutes: Routes = [
     { path: 'attack-patterns', component: AttackPatternsHomeComponent,
@@ -117,6 +117,8 @@ const stixRoutes: Routes = [
           { path: ':id', component: IdentityComponent },
           { path: 'edit/:id', component: IdentityEditComponent }
       ]
+    },
+     { path: 'malwares/:id', component: MalwareListComponent,
     },
 ];
 

@@ -28,35 +28,35 @@
             <div class="row">
                 <div class="col-md-6">
                     <label>First Seen</label>
-                    <p>{{intrusionSet.attributes.first_seen}}</p>
+                    <h5>{{intrusionSet.attributes.first_seen}}</h5>
                 </div>
                  <div class="col-md-6">
                     <label>Last Seen</label>
-                    <p>{{intrusionSet.attributes.last_seen}}</p>
+                    <h5>{{intrusionSet.attributes.last_seen}}</h5>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <label>Primary Motivation</label>
-                    <p>{{intrusionSet.attributes.primary_motivation}}</p>
+                    <h5>{{intrusionSet.attributes.primary_motivation}}</h5>
                 </div>
             </div>
-             <div class="row">Primary Motivation
+             <div class="row">
                 <div class="col-md-6">
                     <label>Goals</label>
-                    <p>{{intrusionSet.attributes.goals}}</p>
+                    <h5>{{intrusionSet.attributes.goals}}</h5>
                 </div>
             </div>
-             <div class="row">Primary Motivation
+             <div class="row">
                 <div class="col-md-6">
                     <label>Resource Level</label>
-                    <p>{{intrusionSet.attributes.resource_level}}</p>
+                    <h5>{{intrusionSet.attributes.resource_level}}</h5>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <label>Description</label>
-                    <p>{{intrusionSet.attributes.description}}</p>
+                    <h5>{{intrusionSet.attributes.description}}</h5>
                 </div>
             </div>
                     
@@ -64,16 +64,5 @@
     </md-card-content>
 
 </md-card>
- <p><label>Relationships</label></p>
-<div class="row">
-    <div class="col-md-12">
-        <label>External References</label>
-        <md-chip-list>
-            <md-chip *ngFor="let externalReferences of intrusionSet.attributes.external_references"
-                selected="true">
-                {{externalReferences.sourceName}}
-            </md-chip>
-        </md-chip-list>
-    </div>
-</div>
-<div class="pull-right grey-text">{{intrusionSet.id}}</div>
+     <div class="pull-right grey-text">{{intrusionSet.id}}</div>
+    <relationship-list *ngIf="intrusionSet.id" [model]="intrusionSet"></relationship-list>

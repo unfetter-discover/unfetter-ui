@@ -268,8 +268,8 @@ module.exports = function (options) {
       new CopyWebpackPlugin([
         { from: 'src/assets', to: 'assets' },
         { from: 'node_modules/bootstrap/dist', to: 'assets/bootstrap' },
-        // { from: 'node_modules/@angular/material/core/theming/prebuilt/indigo-pink.css', to: 'assets/css' },
-        //{ from: 'node_modules/material-design-icons/iconfont', to: 'assets/fonts' },
+        { from: 'node_modules/primeng/resources/primeng.min.css', to: 'assets/css' },
+        { from: 'node_modules/primeng/resources/themes/omega/theme.css', to: 'assets/css' },
         // { from: 'node_modules/jquery/dist/jquery.min.js', to: 'assets/jquery' },
         // { from: 'node_modules/materialize-css/dist/css/materialize.min.css', to: 'assets/materialize/css' },
         // { from: 'node_modules/materialize-css/dist/js/materialize.min.js', to: 'assets/materialize/js' },
