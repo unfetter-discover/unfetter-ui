@@ -20,7 +20,7 @@ import {
   CourseOfActionListComponent,
   CourseOfActionEditComponent,
   CourseOfActionComponent,
-  CourseOfActionNewComponent } from './course-of-actions';
+  CourseOfActionNewComponent, CourseOfActionMitigateComponent } from './course-of-actions';
 
   import {
     SightingHomeComponent,
@@ -55,6 +55,7 @@ const stixRoutes: Routes = [
          { path: 'edit/:id', component: CampaignsEditComponent }
       ]
     },
+     { path: 'mitigates/:id', component: CourseOfActionMitigateComponent},
     { path: 'course-of-action', component: CourseOfActionHomeComponent,
       children: [
             { path: '', component: CourseOfActionListComponent },

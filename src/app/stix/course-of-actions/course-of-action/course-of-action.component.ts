@@ -13,6 +13,8 @@ import { CourseOfAction } from '../../../models';
 })
 export class CourseOfActionComponent extends BaseStixComponent implements OnInit {
     protected courseOfAction: CourseOfAction = new CourseOfAction();
+    private showLabels = true;
+    private showExternalReferences = true;
 
      constructor(
         public stixService: StixService,
@@ -33,6 +35,11 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
 
     public editButtonClicked(): void {
         let link = ['../edit', this.courseOfAction.id];
+        super.gotoView(link);
+    }
+
+    public mitigateButtonClicked(): void {
+        let link = ['../../mitigates', this.courseOfAction.id];
         super.gotoView(link);
     }
 

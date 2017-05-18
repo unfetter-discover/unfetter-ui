@@ -24,7 +24,7 @@ import {
     CourseOfActionListComponent,
     CourseOfActionEditComponent,
     CourseOfActionNewComponent,
-    CourseOfActionComponent } from './course-of-actions';
+    CourseOfActionComponent, CourseOfActionMitigateComponent } from './course-of-actions';
 
 import {
     SightingHomeComponent,
@@ -86,6 +86,7 @@ import { MalwareListComponent } from './malwares/malware-list.component';
     CourseOfActionEditComponent,
     CourseOfActionNewComponent,
     CourseOfActionComponent,
+    CourseOfActionMitigateComponent,
 
     SightingHomeComponent,
     SightingListComponent,

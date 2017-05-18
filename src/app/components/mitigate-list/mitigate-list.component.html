@@ -1,0 +1,19 @@
+<page-header [pageTitle]="pageTitle"  [pageIcon]="pageIcon" [description]="description"></page-header>
+
+<div class="row"  *ngFor="let key of phaseNameGroupKeys" >
+    <div class="col-md-12">
+        <md-card>
+            <md-card-header style="border-bottom: 1px solid lightgray;">
+                <md-card-title><h4>{{key}}</h4></md-card-title>
+            </md-card-header>
+            <md-card-content>
+
+                <div class="row">
+                    <div class="col-md-4" *ngFor="let attackPattern of phaseNameGroups[key]">
+                             <md-checkbox  [checked]="isChecked(attackPattern)">{{attackPattern.attributes.name}}</md-checkbox>
+                    </div>
+                </div>
+            </md-card-content>
+        </md-card>
+    </div>
+</div>

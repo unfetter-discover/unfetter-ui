@@ -1,1 +1,1 @@
-export { ComponentModule } from './component.module.ts'
+export { ComponentModule } from './component.module'

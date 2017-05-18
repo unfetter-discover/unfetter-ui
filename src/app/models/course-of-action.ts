@@ -1,7 +1,8 @@
 import { ExternalReference, KillChainPhase, Label } from '.';
+import { Constance } from '../utils/constance';
 
 export class CourseOfAction {
-    public url = 'cti-stix-store-api/course-of-actions';
+    public url = Constance.COURSE_OF_ACTION_URL;
     public id: number;
     public type: string;
 
@@ -15,7 +16,7 @@ export class CourseOfAction {
         kill_chain_phases: KillChainPhase[];
     };
     constructor() {
-        this.type = 'course-of-actions';
+        this.type = Constance.COURSE_OF_ACTION_TYPE;
         this.attributes = {
             version: '',
             created: new Date(),

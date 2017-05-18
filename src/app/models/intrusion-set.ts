@@ -26,7 +26,7 @@ export class IntrusionSet {
         kill_chain_phases: KillChainPhase[];
     };
 
-    constructor(data?: Campaign) {
+    constructor(data?: IntrusionSet) {
         this.type = Constance.INTRUSION_SET_TYPE;
         if (data) {
             this.attributes = data.attributes;

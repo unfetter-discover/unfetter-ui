@@ -20,7 +20,6 @@ export class BaseComponentService {
     }
 
     public get(url: string): Observable<any[]> {
-        console.log('url = ' + url);
         return this.http
                .get(url)
                .map((response) => {

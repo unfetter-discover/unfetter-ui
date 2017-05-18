@@ -5,7 +5,7 @@ import { NgModule,  ApplicationRef } from '@angular/core';
 import { RouterModule,  PreloadAllModules } from '@angular/router';
 import { CalendarModule, AccordionModule, DataListModule } from 'primeng/primeng';
 import { MaterialModule, MdButtonModule, MdListModule, MdCardModule,
-  MdDialogModule, MdChipsModule, MdInputModule, MdSelectModule, MdAutocompleteModule } from '@angular/material';
+  MdDialogModule, MdChipsModule, MdInputModule, MdSelectModule, MdAutocompleteModule, MdCheckboxModule } from '@angular/material';
 import { HeaderNavigationComponent } from './header-navigation/header-navigation.component';
 import { PageHeaderComponent } from './page/page-header.component';
 import { ConfirmationDialogComponent } from './dialogs/confirmation/confirmation-dialog.component';
@@ -17,6 +17,7 @@ import { ListStixObjectComponent } from './list-stix-objects/list-stix-objects.c
 import { ReadonlyContentComponent } from './readonly-content/readonly-content.component';
 import { AliasesComponent } from './aliases/aliases.component';
 import { RelationshipListComponent } from './relationship-list/relationship-list.component';
+import { MitigateListComponent } from './mitigate-list/mitigate-list.component';
 import { BaseComponentService } from './base-service.component';
 
 @NgModule({
@@ -32,7 +33,8 @@ import { BaseComponentService } from './base-service.component';
     ListStixObjectComponent,
     ReadonlyContentComponent,
     AliasesComponent,
-    RelationshipListComponent
+    RelationshipListComponent,
+    MitigateListComponent
   ],
   imports: [
     CommonModule,
@@ -48,7 +50,8 @@ import { BaseComponentService } from './base-service.component';
     MdButtonModule,
     MdCardModule,
     MdChipsModule,
-    DataListModule
+    DataListModule,
+    MdCheckboxModule
   ],
   exports: [
       PageHeaderComponent,
@@ -61,7 +64,8 @@ import { BaseComponentService } from './base-service.component';
       ListStixObjectComponent,
       ReadonlyContentComponent,
       AliasesComponent,
-      RelationshipListComponent
+      RelationshipListComponent,
+      MitigateListComponent
   ],
   providers: [
     BaseComponentService

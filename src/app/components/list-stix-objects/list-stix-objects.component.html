@@ -5,7 +5,8 @@
                     <div class="row list-item-row">
                         <div class="col-lg-9 col-xs-6">                        
                             <a class="pull-left list-item-name"  href (click)="showDetails($event, data)">{{data.attributes.name}}</a>
-
+                            
+                         
                             <md-chip-list class="pull-left" *ngIf="showLabels">
                                 <md-chip selected="true" color="accent" *ngFor="let label of data.attributes.labels">{{label}}</md-chip>
                             </md-chip-list>
