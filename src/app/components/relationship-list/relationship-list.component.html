@@ -8,9 +8,9 @@
             <md-card-content>
 
                 <div class="row" >
-                    <div class="col-md-4" *ngFor="let relationship of relationships">
+                    <div class="col-md-4" *ngFor="let relationshipMap of relationshipMapping">
                             <h5>
-                                <a (click)="gotoDetail(relationship)"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationship)}}'> {{getName(relationship)}}</a>
+                                <a (click)="gotoDetail(relationshipMap)"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationshipMap)}}'> {{getName(relationshipMap)}}</a>
                             </h5>
                     </div>
                 </div>

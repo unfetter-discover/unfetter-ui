@@ -26,4 +26,21 @@ export class BaseComponentService {
                    return response.json().data as any[];
                 });
     }
+
+    public delete(url: string, id: string): Observable<any[]> {
+        const uri = `${url}/${id}`;
+        return this.http
+            .delete(uri, {headers: this.headers})
+            .map((response) => {
+                return response.json();
+            });
+    }
+
+     public save(url: string, item: any): Observable<any[]> {
+          return this.http
+            .post(url, JSON.stringify({data: item}), {headers: this.headers})
+            .map((response) => {
+                return response.json().data;
+            });
+    }
 }

@@ -20,7 +20,7 @@ import {
   CourseOfActionListComponent,
   CourseOfActionEditComponent,
   CourseOfActionComponent,
-  CourseOfActionNewComponent, CourseOfActionMitigateComponent } from './course-of-actions';
+  CourseOfActionNewComponent } from './course-of-actions';
 
   import {
     SightingHomeComponent,
@@ -34,7 +34,7 @@ import { IntrusionSetHomeComponent, IntrusionSetListComponent, IntrusionSetCompo
 import { IndicatorHomeComponent , IndicatorListComponent, IndicatorEditComponent, IndicatorNewComponent, IndicatorComponent } from './indicators';
 import { IdentityHomeComponent , IdentityListComponent, IdentityEditComponent, IdentityNewComponent, IdentityComponent } from './identities';
 
-import { RelationshipsComponent, RelationshipNewComponent, RelationshipListComponent } from './relationships';
+import { RelationshipsComponent, MitigateComponent, IntrusionUsesAttackComponent } from './relationships';
 import { ReportsComponent, ReportsListComponent, ReportNewComponent, } from './reports';
 import { MalwareListComponent } from './malwares/malware-list.component';
 
@@ -55,7 +55,6 @@ const stixRoutes: Routes = [
          { path: 'edit/:id', component: CampaignsEditComponent }
       ]
     },
-     { path: 'mitigates/:id', component: CourseOfActionMitigateComponent},
     { path: 'course-of-action', component: CourseOfActionHomeComponent,
       children: [
             { path: '', component: CourseOfActionListComponent },
@@ -95,12 +94,10 @@ const stixRoutes: Routes = [
           { path: 'edit/:id', component: IntrusionSetEditComponent }
       ]
     },
-    { path: 'relationships', component: RelationshipsComponent,
+    { path: 'relationships',
       children: [
-          { path: '', component: RelationshipListComponent},
-          { path: 'new', component: RelationshipNewComponent },
-          { path: ':id', component: IntrusionSetComponent },
-          { path: 'edit/:id', component: IntrusionSetEditComponent }
+           { path: 'mitigates/:id', component: MitigateComponent},
+           { path: 'intrusion-uses-attack/:id', component: IntrusionUsesAttackComponent},
       ]
     },
     { path: 'indicators', component: IndicatorHomeComponent,

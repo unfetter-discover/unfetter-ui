@@ -24,7 +24,7 @@ import {
     CourseOfActionListComponent,
     CourseOfActionEditComponent,
     CourseOfActionNewComponent,
-    CourseOfActionComponent, CourseOfActionMitigateComponent } from './course-of-actions';
+    CourseOfActionComponent } from './course-of-actions';
 
 import {
     SightingHomeComponent,
@@ -36,7 +36,7 @@ import {
     import { ReportsComponent, ReportsListComponent, ReportNewComponent } from './reports';
     import { ThreatActorHomeComponent, ThreatActorListComponent, TheatActorComponent, ThreatActorNewComponent, ThreatActorEditComponent } from './threat-actors';
     import { IntrusionSetHomeComponent, IntrusionSetListComponent, IntrusionSetComponent, IntrusionSetEditComponent, IntrusionSetNewComponent } from './intrusion-sets';
-    import { RelationshipsComponent, RelationshipNewComponent, RelationshipListComponent } from './relationships';
+    import { RelationshipsComponent, MitigateComponent, IntrusionUsesAttackComponent } from './relationships';
     import { IndicatorHomeComponent , IndicatorListComponent, IndicatorEditComponent, IndicatorNewComponent, IndicatorComponent } from './indicators';
     import { IdentityHomeComponent , IdentityListComponent, IdentityEditComponent, IdentityNewComponent, IdentityComponent } from './identities';
     import { StixRoutingModule } from './stix-routing.module';
@@ -86,7 +86,6 @@ import { MalwareListComponent } from './malwares/malware-list.component';
     CourseOfActionEditComponent,
     CourseOfActionNewComponent,
     CourseOfActionComponent,
-    CourseOfActionMitigateComponent,
 
     SightingHomeComponent,
     SightingListComponent,
@@ -111,8 +110,8 @@ import { MalwareListComponent } from './malwares/malware-list.component';
     IntrusionSetNewComponent,
 
     RelationshipsComponent,
-    RelationshipNewComponent,
-    RelationshipListComponent,
+    MitigateComponent,
+    IntrusionUsesAttackComponent,
     IndicatorHomeComponent,
     IndicatorListComponent,
     IndicatorEditComponent,

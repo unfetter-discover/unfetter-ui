@@ -13,6 +13,9 @@ export const Constance = {
     RELATIONSHIPS_URL: 'cti-stix-store-api//relationships',
     RELATIONSHIPS_ICON: 'assets/icon/stix-icons/svg/relationship-b.svg',
     RELATIONSHIPS_TYPE: 'Relationships',
+    RELATIONSHIPS_TYPES: {
+        MITIGATES: 'mitigates'
+    },
 
     INDICATOR_URL: 'cti-stix-store-api/indicators',
     INDICATOR_TYPE: 'indicators',

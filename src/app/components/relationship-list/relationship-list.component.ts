@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import { Campaign, Indicator, AttackPattern, Filter } from '../../models';
+import { Campaign, Indicator, AttackPattern, Relationship, Filter } from '../../models';
 import { Constance } from '../../utils/constance';
 import { BaseComponentService } from '../base-service.component';
 
@@ -12,7 +12,8 @@ import { BaseComponentService } from '../base-service.component';
 export class RelationshipListComponent implements OnInit {
     @Input() protected model: any;
     protected url: string;
-    protected relationships: any = [];
+    protected relationshipMapping: any = [];
+    private relationships: Relationship[];
 
     constructor(public baseComponentService: BaseComponentService, public router: Router) {
         console.dir(this.model);
@@ -32,8 +33,8 @@ export class RelationshipListComponent implements OnInit {
         let url = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
         let sub =  this.baseComponentService.get( encodeURI(url) ).subscribe(
         (data) => {
-            let list = data as any[];
-            list.forEach(
+            this.relationships = data as Relationship[];
+            this.relationships.forEach(
                 (relationship) => {
                     if (filter.where['source_ref']) {
                         this.loadStixObject(relationship.attributes.target_ref);
@@ -50,6 +51,25 @@ export class RelationshipListComponent implements OnInit {
                 if (sub) {
                     sub.unsubscribe();
                 }
+            }
+        );
+    }
+
+    protected deleteRelationships(id: string): void {
+        let relationship = this.relationships.find((r) => {
+            return r.attributes.source_ref === id || r.attributes.target_ref === id ;
+        });
+        this.baseComponentService.delete(Constance.RELATIONSHIPS_URL, relationship.id).subscribe(
+            () => {
+                  this.relationships = this.relationships.filter((r) => r.id === relationship.id);
+            }
+        );
+    }
+
+    protected saveRelationships(relationship: Relationship): void {
+        this.baseComponentService.save(Constance.RELATIONSHIPS_URL, relationship).subscribe(
+            (data) => {
+               this.relationships.push( new Relationship(data));
             }
         );
     }
@@ -72,7 +92,7 @@ export class RelationshipListComponent implements OnInit {
         const uri = `${url}/${id}`;
         let sub = this.baseComponentService.get(uri).subscribe(
             (data) => {
-                this.relationships.push(data);
+                this.relationshipMapping.push(data);
             }, (error) => {
                 console.log(error);
             }, () => {
@@ -83,32 +103,32 @@ export class RelationshipListComponent implements OnInit {
         );
     }
 
-    private getIcon(relationship: any): string {
+    private getIcon(relationshipMap: any): string {
         let icon = '';
-        if (relationship.type === Constance.ATTACK_PATTERN_TYPE ) {
+        if (relationshipMap.type === Constance.ATTACK_PATTERN_TYPE ) {
            icon = Constance.ATTACK_PATTERN_ICON;
-        } else if (relationship.type === Constance.CAMPAIGN_TYPE) {
+        } else if (relationshipMap.type === Constance.CAMPAIGN_TYPE) {
            icon = Constance.CAMPAIGN_ICON;
-        } else if (relationship.type === Constance.INDICATOR_TYPE) {
+        } else if (relationshipMap.type === Constance.INDICATOR_TYPE) {
             icon = Constance.INDICATOR_ICON;
-        } else if (relationship.type === Constance.INTRUSION_SET_TYPE) {
+        } else if (relationshipMap.type === Constance.INTRUSION_SET_TYPE) {
             icon = Constance.INTRUSION_SET_ICON;
-        } else if (relationship.type === Constance.MALWARE_TYPE) {
+        } else if (relationshipMap.type === Constance.MALWARE_TYPE) {
             icon = Constance.MALWARE_ICON;
         }
         return icon;
     }
 
-     private getName(relationship: any): string {
-        let name = relationship.attributes.name;
-        if (relationship.type === Constance.INDICATOR_TYPE) {
-            name = relationship.attributes.pattern;
+     private getName(relationshipMap: any): string {
+        let name = relationshipMap.attributes.name;
+        if (relationshipMap.type === Constance.INDICATOR_TYPE) {
+            name = relationshipMap.attributes.pattern;
         }
         return name;
     }
 
-    private gotoDetail(relationship: any): void {
-        let url = relationship.type + '/' + relationship.id;
+    private gotoDetail(relationshipMap: any): void {
+        let url = relationshipMap.type + '/' + relationshipMap.id;
         this.router.navigateByUrl(url);
     }
 }

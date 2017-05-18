@@ -3,7 +3,7 @@ import { Constance } from '../utils/constance';
 
 export class Relationship {
     public url = Constance.RELATIONSHIPS_URL;
-    public id: number;
+    public id: string;
     public type: string;
 
     public attributes: {
@@ -19,10 +19,20 @@ export class Relationship {
         source_ref: string;
         target_ref: string;
     };
-    constructor() {
-        this.type = 'relationships';
-        this.attributes = {
-            version: '',
+
+    constructor(data?: any) {
+        this.type = Constance.RELATIONSHIPS_TYPE;
+        if (data) {
+            this.attributes = data.attributes;
+            this.id = data.id;
+        } else {
+            this.attributes = this.createAttributes();
+        }
+    }
+
+    private createAttributes(): any {
+        return {
+            version: '1',
             created: new Date(),
             modified: new Date(),
             labels: [],

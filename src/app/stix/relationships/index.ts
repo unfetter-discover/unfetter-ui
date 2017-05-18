@@ -1,3 +1,3 @@
 export { RelationshipsComponent } from './relationships.component';
-export { RelationshipNewComponent } from './relationship-new/relationship-new.component';
-export { RelationshipListComponent } from './relationship-list/relationship-list.component';
+export { MitigateComponent } from './mitigates/mitigate.component';
+export { IntrusionUsesAttackComponent } from './intrusion-uses-attack/intrusion-uses-attack.component';

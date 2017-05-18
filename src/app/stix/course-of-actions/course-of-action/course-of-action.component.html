@@ -5,7 +5,7 @@
                     <div class="button-row">
                         <button class="" md-raised-button (click)="editButtonClicked()"><i class="fa fa-pencil"></i> EDIT</button>
                         <button class="" md-raised-button (click)="deleteButtonClicked()"><i class="fa fa-trash"></i> DELETE</button>          
-                         <button md-raised-button routerLink="/mitigates/{{courseOfAction.id}}">MITIGATES GRID</button>  
+                         <button md-raised-button routerLink="/relationships/mitigates/{{courseOfAction.id}}">MITIGATES GRID</button>  
                     </div>
                 </div>
             </div>
@@ -57,7 +57,8 @@
             </div>
        </div>
 </div>
-    <div class="pull-right grey-text">{{courseOfAction.id}}</div>
+  
 <relationship-list *ngIf="courseOfAction.id" [model]="courseOfAction"></relationship-list>
 
+<div class="pull-right grey-text">{{courseOfAction.id}}</div>
 
