@@ -48,7 +48,7 @@
     "server:dev:hmr": "npm run server:dev -- --inline --hot",
     "server:dev": "webpack-dev-server --config config/webpack.dev.js --open --progress --profile --watch --content-base src/",
     "server:prod": "http-server dist --ssl --cert /etc/pki/tls/certs/server.crt --key /etc/pki/tls/certs/server.key -c-1 --cors",
-    "server:prod:ci": "http-server dist -p 8080 -c-1 --cors",
+    "server:prod:ci": "http-server dist -p 80 -c-1 --cors",
     "server": "npm run server:dev",
     "start:hmr": "npm run server:dev:hmr",
     "start": "npm run server:dev",

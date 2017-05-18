@@ -58,6 +58,7 @@ module.exports = function (options) {
      * See: http://webpack.github.io/docs/configuration.html#entry
      */
     entry: {
+      //`webpack-dev-server/client?http://` + require("os").hostname(),
       'vendor': './src/vendor.browser.ts',
       'polyfills': './src/polyfills.browser.ts',
       'main':      AOT ? './src/main.browser.aot.ts' :
