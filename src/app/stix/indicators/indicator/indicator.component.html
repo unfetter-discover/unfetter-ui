@@ -1,0 +1,79 @@
+<div class="row" *ngIf="indicator">
+       <div class="col-md-12">
+            <div class="row">
+            <div class="col-md-12">
+                    <div class="button-row">
+                        <a class="" md-raised-button (click)="editButtonClicked()"><i class="fa fa-pencil"></i>EDIT</a>
+                        <a class="" md-raised-button (click)="deleteButtonClicked()"><i class="fa fa-trash"></i>DELETE</a>            
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 15px;">
+                <div class="col-md-12">
+                    <md-card>
+                             <md-card-content>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>Name:</label>
+                                        <h6>{{indicator.attributes.name}}</h6>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>Description:</label>
+                                        <h6>{{indicator.attributes.description}}</h6>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div><label>Pattern:</label></div>
+                                        <md-chip selected="true" color="accent">{{indicator.attributes.pattern}}</md-chip>
+                                    </div>
+                                </div>
+                                <div class="row" >
+                                    <div class="col-md-4">
+                                        <md-input-container class="full-width">
+                                            <input readonly mdInput placeholder="Valid From:" value="{{indicator.attributes.valid_from}}" />
+                                        </md-input-container>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <md-input-container class="full-width">
+                                            <input readonly mdInput placeholder="Valid To:" value="{{indicator.attributes.valid_to}}" />
+                                            </md-input-container>     
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>kill Chain Name:</label>
+                                        <md-chip-list>
+                                            <md-chip *ngFor="let kill_chain_phase of indicator.attributes.kill_chain_phases"
+                                                selected="true">
+                                                {{kill_chain_phase.phase_name}}
+                                            </md-chip>
+                                        </md-chip-list>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>External References:</label>
+                                        <md-chip-list>
+                                            <md-chip *ngFor="let externalReferences of indicator.attributes.external_references"
+                                                selected="true">
+                                                {{externalReferences.source_name}}
+                                            </md-chip>
+                                        </md-chip-list>
+                                    </div>
+                                </div>
+                                
+                        </md-card-content>
+                    
+                    </md-card>
+                </div>
+            </div>
+       </div>
+</div>
+<div class="pull-right grey-text">{{indicator.id}}</div>
+
+<relationship-list  *ngIf="indicator.id" [model]="indicator"></relationship-list>
+
+

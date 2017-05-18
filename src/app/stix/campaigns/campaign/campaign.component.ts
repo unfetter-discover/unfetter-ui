@@ -1,10 +1,13 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { MdDialog, MdDialogRef } from '@angular/material';
+import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
 import { Location } from '@angular/common';
+import { Constance } from '../../../utils/constance';
+import * as moment from 'moment';
 import { BaseStixComponent } from '../../base-stix.component';
 import { StixService } from '../../stix.service';
-import { Campaign } from '../../../models';
+import { Campaign, Filter } from '../../../models';
 
 @Component({
   selector: 'campaign',
@@ -12,35 +15,22 @@ import { Campaign } from '../../../models';
 })
 export class CampaignComponent extends BaseStixComponent implements OnInit {
 
-    public campaign: Campaign;
+    protected campaign: Campaign = new Campaign();
 
     constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog,
-        public location: Location) {
+        public location: Location,
+        public snackBar: MdSnackBar) {
 
-        super(stixService, route, router, dialog);
-        stixService.url = 'cti-stix-store-api/campaigns';
+        super(stixService, route, router, dialog, location, snackBar);
+        stixService.url = Constance.CAMPAIGN_URL;
     }
 
     public ngOnInit() {
-        console.log('Initial CampaignComponent');
-        let subscription =  super.get().subscribe(
-            (data) => {
-                this.campaign = data as Campaign;
-                console.dir(this.campaign );
-            }, (error) => {
-                // handle errors here
-                 console.log('error ' + error);
-            }, () => {
-                // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
-                }
-            }
-        );
+        this.loadCampaign();
     }
 
     public editButtonClicked(): void {
@@ -50,5 +40,41 @@ export class CampaignComponent extends BaseStixComponent implements OnInit {
 
     public deleteButtonClicked(): void {
         super.openDialog(this.campaign);
+    }
+
+    protected loadCampaign(): void {
+        let sub =  super.get().subscribe(
+            (data) => {
+                this.campaign = new Campaign(data);
+            }, (error) => {
+                // handle errors here
+                 console.log('error ' + error);
+            }, () => {
+                // prevent memory links
+                if (sub) {
+                    sub.unsubscribe();
+                }
+            }
+        );
+    }
+
+    protected saveButtonClicked(): Observable<any> {
+        return Observable.create((observer) => {
+               let subscription = super.save(this.campaign).subscribe(
+                    (data) => {
+                        observer.next(data);
+                        observer.complete();
+                        this.location.back();
+                    }, (error) => {
+                        // handle errors here
+                        console.log('error ' + error);
+                    }, () => {
+                        // prevent memory links
+                        if (subscription) {
+                            subscription.unsubscribe();
+                        }
+                    }
+                );
+        });
     }
 }

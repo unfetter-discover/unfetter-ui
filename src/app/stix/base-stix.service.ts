@@ -1,10 +1,11 @@
 import { Observable } from 'rxjs/Observable';
-//import { StixObject } from '../models'
 
 export interface BaseStixService {
+    url: string;
     load(): Observable<any[]>;
-    get(id: number): Observable<any>;
-    update(item: any):  Observable<any>;
-
-
+    get(id: string): Observable<any>;
+    update(item: any): Observable<any>;
+    create(item: any): Observable<any>;
+    delete(id: string): Observable<any>;
+    filter(url: string): Observable<any>;
 }

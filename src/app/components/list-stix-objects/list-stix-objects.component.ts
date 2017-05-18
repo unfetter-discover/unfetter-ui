@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Location } from '@angular/common';
 import { MdDialog, MdDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -10,12 +10,18 @@ import { BaseComponent } from '../base.component';
   selector: 'list-stix-objects',
   templateUrl: './list-stix-objects.component.html'
 })
-export class ListStixObjectComponent extends BaseComponent implements OnInit {
+export class ListStixObjectComponent extends BaseComponent {
 
     @Input() public model: any;
     @Input() public showLabels: boolean;
+    @Input() public showPattern: boolean;
+    @Input() public showKillChainPhases: boolean;
     @Input() public showExternalReferences: boolean;
+    @Input() public showSectors: boolean;
+    @Output() public deletButtonClicked: EventEmitter<any> = new EventEmitter();
+    private isLastRow: boolean;
 
+    private index = 0;
      constructor(
         public route: ActivatedRoute,
         public router: Router,
@@ -23,14 +29,9 @@ export class ListStixObjectComponent extends BaseComponent implements OnInit {
         public location: Location) {
 
         super(route, router, dialog);
-        console.log('Initial ListStixObjectComponent');
     }
 
-    public ngOnInit() {
-        console.log('Initial ListStixObjectComponent');
-    }
-
-     public editButtonClicked(item: any): void {
+    public editButtonClicked(item: any): void {
         let link = ['edit', item.id];
         super.gotoView(link);
     }
@@ -42,6 +43,12 @@ export class ListStixObjectComponent extends BaseComponent implements OnInit {
     }
 
     public deleteButtonClicked(item: any): void {
-        super.openDialog(item);
+        this.deletButtonClicked.emit(item);
+    }
+
+    private  notLastIndex(): boolean {
+        this.isLastRow = this.index < this.model.length ? true : false;
+        this.index = this.index + 1;
+        return this.isLastRow;
     }
 }

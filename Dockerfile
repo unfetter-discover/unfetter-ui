@@ -17,5 +17,5 @@ COPY . $WORKING_DIRECTORY
 RUN find / -name "cb-never*.tgz" -delete; npm cache clean
 
 # Start Application
-EXPOSE 8080
+EXPOSE 80
 CMD [ "npm", "run", "server:dev"]

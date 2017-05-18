@@ -1,7 +1,7 @@
 import { InMemoryDbService } from 'angular-in-memory-web-api';
 
 export class InMemoryDataService implements InMemoryDbService {
-    
+
     public createDb() {
         let url = {};
         // {attackPatterns, attackPattern, courseofaction, sightings, reports, threatActors, campaigns, intrusionSets, relationships };

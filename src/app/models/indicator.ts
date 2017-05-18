@@ -1,38 +1,59 @@
 import { ExternalReference, KillChainPhase } from '.';
+import { Constance } from '../utils/constance';
+import * as moment from 'moment';
 
 export class Indicator {
+    public url = Constance.INDICATOR_URL;
     public id: number;
     public type: string;
 
     public attributes: {
-        created: Date;
-        modified: Date;
+        created: string;
+        modified: string;
         version: string;
         labels: string[];
         external_references: ExternalReference[];
         kill_chain_phases: KillChainPhase[];
         name: string;
         description: string;
+        pattern_lang: string;
         pattern: string;
-        valid_from: Date;
-        valid_until: Date;
-      
+        valid_from: string;
+        valid_until: string;
     };
-    constructor() {
-        this.type = 'indicators';
-        this.attributes = {
+
+    constructor(data?: Indicator) {
+        this.type = Constance.INDICATOR_TYPE;
+        if (data) {
+            this.attributes = data.attributes;
+            this.id = data.id;
+        } else {
+            this.attributes = this.createAttributes();
+        }
+    }
+
+    public formatDate(): void {
+        this.attributes.valid_from =  this.attributes.valid_from ?
+            moment(this.attributes.valid_from).format(Constance.DATE_FORMATE) : moment().format(Constance.DATE_FORMATE);
+
+        this.attributes.valid_until =  this.attributes.valid_until ?
+            moment(this.attributes.valid_until).format(Constance.DATE_FORMATE) : moment().format(Constance.DATE_FORMATE);
+    }
+
+    private createAttributes(): any {
+        return {
             version: '',
-            created: new Date(),
-            modified: new Date(),
+            created: moment().format(Constance.DATE_FORMATE),
+            modified: moment().format(Constance.DATE_FORMATE),
             labels: [],
             external_references: [],
             kill_chain_phases: [],
             name: '',
             description: '',
+            pattern_lang: '',
             pattern: '',
-            valid_from: new Date(),
-            valid_until: new Date()
-            
+            valid_from: moment().format(Constance.DATE_FORMATE),
+            valid_until: moment().format(Constance.DATE_FORMATE)
         };
     }
 }

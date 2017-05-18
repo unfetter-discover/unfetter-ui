@@ -10,8 +10,11 @@
             </div>
         </div>
     </div>
+        <hr *ngIf="reports.length === 0" />
      <div class="row" >
         <div class="col-md-12" *ngFor="let report of reports">
+            
+
            <md-card>
                 <md-card-header>
                     <md-card-title>                             

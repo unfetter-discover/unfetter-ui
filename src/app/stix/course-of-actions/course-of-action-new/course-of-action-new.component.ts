@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
-import { MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
-import { BaseStixComponent } from '../../base-stix.component';
+import { MdDialog, MdDialogRef, MdDialogConfig, MdSnackBar } from '@angular/material';
+import { CourseOfActionEditComponent } from '../course-of-action-edit/course-of-action-edit.component';
 import { StixService } from '../../stix.service';
-import { CourseOfAction, ExternalReference, StixObject } from '../../../models';
+import { CourseOfAction, ExternalReference } from '../../../models';
 
 @Component({
   selector: 'course-of-action-new',
   templateUrl: './course-of-action-new.component.html',
 })
-export class CourseOfActionNewComponent extends BaseStixComponent implements OnInit {
+
+export class CourseOfActionNewComponent extends CourseOfActionEditComponent {
 
    public courseOfAction: CourseOfAction  = new CourseOfAction();
 
@@ -19,28 +20,16 @@ export class CourseOfActionNewComponent extends BaseStixComponent implements OnI
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog,
-        public location: Location) {
+        public location: Location,
+        public snackBar: MdSnackBar) {
 
-        super(stixService, route, router, dialog);
-        stixService.url = 'cti-stix-store-api/threat-actors';
+        super(stixService, route, router, dialog, location, snackBar);
     }
 
-    public ngOnInit() {
-        console.log('Initial CourseOfActionNewComponent');
-    }
-
-    public addLabelButtonClicked(): void {
-        this.courseOfAction.attributes.labels.unshift('');
-    }
-
-    public removeLabelButtonClicked(label: string): void {
-        this.courseOfAction.attributes.labels = this.courseOfAction.attributes.labels.filter((l) => l !== label);
-    }
-
-    public saveButtonClicked(): void {
-        let subscription = super.save(this.courseOfAction).subscribe(
-            (data) => {
-                this.courseOfAction = data as CourseOfAction;
+    protected saveCourceOfAction(): void {
+       let subscription = super.create(this.courseOfAction).subscribe(
+            (stixObject) => {
+                this.location.back();
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

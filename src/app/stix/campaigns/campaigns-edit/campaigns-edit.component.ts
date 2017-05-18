@@ -1,34 +1,39 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { MdDialog, MdDialogRef } from '@angular/material';
+import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { BaseStixComponent } from '../../base-stix.component';
+import { CampaignComponent } from '../campaign/campaign.component';
 import { StixService } from '../../stix.service';
-import { Campaign } from '../../../models';
+import { Campaign, AttackPattern, Identity, IntrusionSet , Relationship } from '../../../models';
 
 @Component({
   selector: 'campaigns-edit',
   templateUrl: './campaigns-edit.component.html',
 })
-export class CampaignsEditComponent extends BaseStixComponent implements OnInit {
-
-    public campaign: Campaign = new Campaign();
+export class CampaignsEditComponent extends CampaignComponent implements OnInit {
+    protected attackPatterns: AttackPattern[] = [];
+    protected identities: Identity[] = [];
+    protected intrusionSets: IntrusionSet[] = [];
 
     constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog,
-        public location: Location) {
+        public location: Location,
+        public snackBar: MdSnackBar) {
 
-        super(stixService, route, router, dialog);
-        stixService.url = 'cti-stix-store-api/campaigns';
+        super(stixService, route, router, dialog, location, snackBar);
     }
 
     public ngOnInit() {
-       let subscription =  super.get().subscribe(
+        super.loadCampaign();
+    }
+
+    public saveCampaign(): void {
+       let subscription = super.saveButtonClicked().subscribe(
             (data) => {
-                this.campaign = data as Campaign;
+                this.saveRelationships(new Campaign(data));
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -41,13 +46,43 @@ export class CampaignsEditComponent extends BaseStixComponent implements OnInit 
         );
     }
 
-   public saveButtonClicked(): void {
-       let subscription = super.save(this.campaign).subscribe(
+    protected saveRelationships(campaign: Campaign): void {
+        this.attackPatterns.forEach((relatedRecord) => {
+            let relationship = new Relationship();
+            relationship.attributes.relationship_type = 'uses';
+            relationship.attributes.source_ref = campaign.id;
+            relationship.attributes.target_ref = relatedRecord.id;
+            this.saveRelationship(relationship);
+        });
+
+        this.intrusionSets.forEach((relatedRecord) => {
+            let relationship = new Relationship();
+            relationship.attributes.relationship_type =  'attributed-to';
+            relationship.attributes.source_ref = campaign.id;
+            relationship.attributes.target_ref = relatedRecord.id;
+            this.saveRelationship(relationship);
+        });
+
+        this.identities.forEach((relatedRecord) => {
+            let relationship = new Relationship();
+            relationship.attributes.relationship_type = 'targets';
+            relationship.attributes.source_ref = campaign.id;
+            relationship.attributes.target_ref = relatedRecord.id;
+            this.saveRelationship(relationship);
+        });
+    }
+
+    protected saveRelationship(relationship: Relationship): void {
+        let created = new Date();
+        relationship.attributes.created = created;
+        relationship.attributes.modified = created;
+        relationship.attributes.version = '1';
+        let subscription = super.create(relationship).subscribe(
             (data) => {
-                this.campaign = data as Campaign;
+                console.log('saved');
             }, (error) => {
                 // handle errors here
-                 console.log('error ' + error);
+                console.log('error ' + error);
             }, () => {
                 // prevent memory links
                 if (subscription) {
@@ -55,5 +90,33 @@ export class CampaignsEditComponent extends BaseStixComponent implements OnInit 
                 }
             }
         );
+    }
+
+    // add chip
+    protected add(event: any): void {
+        console.log(event.type);
+        if (event.type === 'attack-patterns' && !this.found(this.attackPatterns, event)) {
+            console.log('*****');
+            this.attackPatterns.push(event as AttackPattern);
+        } else if (event.type === 'intrusion-sets'  && !this.found(this.intrusionSets, event)) {
+            this.intrusionSets.push(event as IntrusionSet);
+        } else if (event.type === 'identities'  && !this.found(this.identities, event)) {
+            this.identities.push(event as Identity);
+        }
+    }
+
+    // remove chip
+    protected remove(object: any): void {
+        if (object.type === 'attack-patterns') {
+            this.attackPatterns = this.attackPatterns.filter((o) => o.id !== object.id);
+        } else if (object.type === 'intrusion-sets') {
+            this.intrusionSets = this.intrusionSets.filter((o) => o.id !== object.id);
+        } else if (object.type === 'identities') {
+            this.identities = this.identities.filter((o) => o.id !== object.id);
+        }
+    }
+
+    private found(list: any[], object: any): any {
+        return list.find( (entry) => { return entry.id === object.id; } );
     }
 }

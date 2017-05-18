@@ -1,18 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'sighting-home',
-  templateUrl: './sighting-home.component.html'
+  template: `<page-header [pageTitle]='pageTitle'  [pageIcon]='pageIcon' [description]="description"></page-header>`,
 })
-export class SightingHomeComponent implements OnInit {
+export class SightingHomeComponent {
 
     private pageTitle = 'Sighting';
     private pageIcon = 'assets/icon/stix-icons/svg/relationship-b.svg';
-
-    constructor() {
-        console.log('Initial SightingHomeComponent');
-    }
-    public ngOnInit() {
-        console.log('Initial SightingHomeComponent');
-    }
+    private description = 'A sighting is a time in which a particular Campaign, Intrusion Set, or Incident was observed.';
 }

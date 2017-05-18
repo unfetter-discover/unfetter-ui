@@ -1,6 +1,7 @@
 import { ExternalReference, KillChainPhase } from '.';
 
 export class Sighting {
+    public url = 'cti-stix-store-api/sightings';
     public id: number;
     public type: string;
 

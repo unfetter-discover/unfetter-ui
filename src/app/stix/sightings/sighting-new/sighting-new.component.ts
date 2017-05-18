@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
-import { MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
+import { MdDialog, MdDialogRef, MdDialogConfig, MdSnackBar } from '@angular/material';
 import { BaseStixComponent } from '../../base-stix.component';
 import { StixService } from '../../stix.service';
 import { Sighting } from '../../../models';
@@ -10,7 +10,7 @@ import { Sighting } from '../../../models';
   selector: 'sighting-new',
   templateUrl: './sighting-new.component.html',
 })
-export class SightingNewComponent extends BaseStixComponent implements OnInit {
+export class SightingNewComponent extends BaseStixComponent {
 
   private sighting: Sighting = new Sighting();
   private sourceTypes = ['Indicator', 'Campaign', 'Intrusion Set' ];
@@ -20,18 +20,15 @@ export class SightingNewComponent extends BaseStixComponent implements OnInit {
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog,
-        public location: Location) {
+        public location: Location,
+        public snackBar: MdSnackBar) {
 
-        super(stixService, route, router, dialog, location);
-        stixService.url = 'cti-stix-store-api/sightings';
-        console.log('Initial SightingNewComponent');
-    }
-    public ngOnInit() {
-        console.log('Initial SightingNewComponent');
+        super(stixService, route, router, dialog, location, snackBar);
+        stixService.url = this.sighting.url;
     }
 
     public saveButtonClicked(): void {
-        let subscription = super.save(this.sighting).subscribe(
+        let subscription = super.create(this.sighting).subscribe(
             (data) => {
                 this.sighting = data as Sighting;
                 this.location.back();

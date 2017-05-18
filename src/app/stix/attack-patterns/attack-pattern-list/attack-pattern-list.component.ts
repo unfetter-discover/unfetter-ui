@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { MdDialog, MdDialogRef } from '@angular/material';
+import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { BaseStixComponent } from '../../base-stix.component';
+import { AttackPatternComponent } from '../attack-pattern/attack-pattern.component';
 import { AttackPattern, KillChainPhase } from '../../../models';
 import { StixService } from '../../stix.service';
 
@@ -12,22 +12,24 @@ import { StixService } from '../../stix.service';
 
 })
 
-export class AttackPatternListComponent extends BaseStixComponent implements OnInit {
+export class AttackPatternListComponent extends AttackPatternComponent implements OnInit {
 
     public attackPatterns: AttackPattern[] = [];
     private selectedPhaseNameGroup: String;
     private phaseNameGroups = {};
     private phaseNameGroupKeys: string[];
+    private filterAttackPattern = {};
+    private numOfRows = 10;
 
      constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog,
-        public location: Location) {
+        public location: Location,
+        public snackBar: MdSnackBar) {
 
-        super(stixService, route, router, dialog);
-        stixService.url = 'cti-stix-store-api/attack-patterns';
+        super(stixService, route, router, dialog, location, snackBar);
         this.phaseNameGroups['unspecified'] = [];
     }
 
@@ -55,10 +57,10 @@ export class AttackPatternListComponent extends BaseStixComponent implements OnI
 
     }
 
-    public editButtonClicked(attackPattern: AttackPattern): void {
+    public edit(attackPattern: AttackPattern): void {
         let link = ['edit', attackPattern.id];
         super.gotoView(link);
-    }
+     }
 
     public showDetails(event: any,  attackPattern: AttackPattern): void {
         event.preventDefault();
@@ -66,8 +68,13 @@ export class AttackPatternListComponent extends BaseStixComponent implements OnI
         super.gotoView(link);
     }
 
-    public deleteButtonClicked(attackPattern: AttackPattern): void {
-        super.openDialog(attackPattern);
+    public delete(attackPattern: AttackPattern, key: string): void {
+        super.openDialog(attackPattern).subscribe(
+            () => {
+                 this.attackPatterns = this.attackPatterns.filter((h) => h.id !== attackPattern.id);
+                 this.phaseNameGroups[key] = this.phaseNameGroups[key].filter((h) => h.id !== attackPattern.id);
+            }
+        );
     }
 
     private getPhaseNameAttackPatterns() {
@@ -88,6 +95,24 @@ export class AttackPatternListComponent extends BaseStixComponent implements OnI
                     attackPatternsProxies.push(attackPattern);
                 });
             }
+        });
+    }
+
+    private onTabShow(event: any): void {
+        let phaseName = this.phaseNameGroupKeys[event.index];
+        if (!this.filterAttackPattern[phaseName]) {
+            this.loadData({first: 0, rows: this.numOfRows}, this.phaseNameGroupKeys[event.index]);
+        }
+    }
+
+    private totalRecords(key: string): number {
+        return this.phaseNameGroups[key].length;
+    }
+
+    private loadData(event: any, phaseName: string): void {
+        let attackPatterns = this.phaseNameGroups[phaseName] as AttackPattern[];
+        this.filterAttackPattern[phaseName] = attackPatterns.filter((attackPattern: AttackPattern, index: number, arr: any) => {
+            return ( index >= event.first && index <  (event.first + event.rows) );
         });
     }
 }

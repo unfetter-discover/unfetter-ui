@@ -1,30 +1,33 @@
 import { Component, OnInit } from '@angular/core';
-import { MdDialog, MdDialogRef } from '@angular/material';
+import { Location } from '@angular/common';
+import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BaseStixComponent } from '../../base-stix.component';
 import { StixService } from '../../stix.service';
 import { Relationship } from '../../../models';
+import { Constance } from '../../../utils/constance';
 
 @Component({
-  selector: 'relationship-list',
+  selector: 'relationships-list',
   templateUrl: './relationship-list.component.html'
 })
 export class RelationshipListComponent extends BaseStixComponent implements OnInit {
-    private pageTitle = 'Relationships';
-    private pageIcon = 'assets/icon/stix-icons/svg/relationship-b.svg';
+    private pageTitle = Constance.RELATIONSHIPS_TYPE;
+    private pageIcon = Constance.RELATIONSHIPS_ICON;
     private relationships: Relationship[] = [];
 
      constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
-        public dialog: MdDialog) {
+        public dialog: MdDialog,
+        public location: Location,
+        public snackBar: MdSnackBar) {
 
-        super(stixService, route, router, dialog);
-        stixService.url = 'cti-stix-store-api/relationships';
+        super(stixService, route, router, dialog, location, snackBar);
+        stixService.url = Constance.RELATIONSHIPS_URL;
     }
     public ngOnInit() {
-        console.log('Initial RelationshipsComponent');
         let subscription =  super.load().subscribe(
             (data) => {
                 this.relationships = data as Relationship[];

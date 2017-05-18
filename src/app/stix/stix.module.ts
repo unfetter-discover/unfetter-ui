@@ -1,10 +1,12 @@
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { CalendarModule, AccordionModule, DataListModule } from 'primeng/primeng';
 import {
-  MdButtonModule, MdListModule, MdCardModule,
-  MdDialogModule, MdChipsModule, MdInputModule, MdSelectModule, MdAutocompleteModule , MdCheckboxModule } from '@angular/material';
-import { DatePickerModule } from 'angular-material-datepicker';
+  MaterialModule, MdButtonModule, MdListModule, MdCardModule, MdSnackBarModule,
+  MdDialogModule, MdChipsModule, MdInputModule, MdSelectModule, MdAutocompleteModule , MdCheckboxModule, MdRadioModule } from '@angular/material';
+// import { DatePickerModule } from 'angular-material-datepicker';
+// import { DatepickerModule } from 'angular2-material-datepicker';
 import { ComponentModule } from '../components/component.module';
 import { StixService } from './stix.service';
 
@@ -22,7 +24,7 @@ import {
     CourseOfActionListComponent,
     CourseOfActionEditComponent,
     CourseOfActionNewComponent,
-    CourseOfActionComponent } from './course-of-actions';
+    CourseOfActionComponent, CourseOfActionMitigateComponent } from './course-of-actions';
 
 import {
     SightingHomeComponent,
@@ -35,15 +37,19 @@ import {
     import { ThreatActorHomeComponent, ThreatActorListComponent, TheatActorComponent, ThreatActorNewComponent, ThreatActorEditComponent } from './threat-actors';
     import { IntrusionSetHomeComponent, IntrusionSetListComponent, IntrusionSetComponent, IntrusionSetEditComponent, IntrusionSetNewComponent } from './intrusion-sets';
     import { RelationshipsComponent, RelationshipNewComponent, RelationshipListComponent } from './relationships';
+    import { IndicatorHomeComponent , IndicatorListComponent, IndicatorEditComponent, IndicatorNewComponent, IndicatorComponent } from './indicators';
+    import { IdentityHomeComponent , IdentityListComponent, IdentityEditComponent, IdentityNewComponent, IdentityComponent } from './identities';
+    import { StixRoutingModule } from './stix-routing.module';
+    import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
 
-import { StixRoutingModule } from './stix-routing.module';
-
-import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
+import { MalwareListComponent } from './malwares/malware-list.component';
 
 @NgModule({
   imports: [
       CommonModule,
       FormsModule,
+      MaterialModule,
+      MdSnackBarModule,
       MdButtonModule,
       MdListModule,
       MdCardModule,
@@ -52,8 +58,13 @@ import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
       MdSelectModule,
       MdAutocompleteModule,
       MdCheckboxModule,
+      MdRadioModule,
       ComponentModule,
-      DatePickerModule,
+      // DatepickerModule,
+      // DatePickerModule,
+      CalendarModule,
+      AccordionModule,
+      DataListModule,
       StixRoutingModule
   ],
   declarations: [
@@ -75,6 +86,7 @@ import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
     CourseOfActionEditComponent,
     CourseOfActionNewComponent,
     CourseOfActionComponent,
+    CourseOfActionMitigateComponent,
 
     SightingHomeComponent,
     SightingListComponent,
@@ -91,7 +103,7 @@ import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
     TheatActorComponent,
     ThreatActorNewComponent,
     ThreatActorEditComponent,
-    
+
     IntrusionSetHomeComponent,
     IntrusionSetListComponent,
     IntrusionSetComponent,
@@ -101,14 +113,23 @@ import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
     RelationshipsComponent,
     RelationshipNewComponent,
     RelationshipListComponent,
+    IndicatorHomeComponent,
+    IndicatorListComponent,
+    IndicatorEditComponent,
+    IndicatorNewComponent,
+    IndicatorComponent,
+
+    IdentityHomeComponent,
+    IdentityListComponent,
+    IdentityEditComponent,
+    IdentityNewComponent,
+    IdentityComponent,
 
     IdentifierTypePipe,
-    IdentifierSummarizedPipe
-    
-
-
+    IdentifierSummarizedPipe,
+    MalwareListComponent,
   ],
-  
+
   providers: [ StixService ],
 })
 export class StixModule {}

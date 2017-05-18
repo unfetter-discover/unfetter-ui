@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { MdDialog, MdDialogRef } from '@angular/material';
+import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
+import { Location } from '@angular/common';
+import { Observable } from 'rxjs/Observable';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BaseStixComponent } from '../../base-stix.component';
 import { StixService } from '../../stix.service';
@@ -10,27 +12,65 @@ import { CourseOfAction } from '../../../models';
     templateUrl: './course-of-action.component.html'
 })
 export class CourseOfActionComponent extends BaseStixComponent implements OnInit {
-    private courseOfAction: CourseOfAction = new CourseOfAction();
+    protected courseOfAction: CourseOfAction = new CourseOfAction();
+    private showLabels = true;
+    private showExternalReferences = true;
 
      constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
-        public dialog: MdDialog) {
+        public dialog: MdDialog,
+        public location: Location,
+        public snackBar: MdSnackBar) {
 
-        super(stixService, route, router, dialog);
-        stixService.url = 'cti-stix-store-api/threat-actors';
-
-        console.log('Initial CourseOfActionComponent');
+        super(stixService, route, router, dialog, location, snackBar);
+        stixService.url = this.courseOfAction.url;
     }
 
     public ngOnInit() {
-        console.log('Initial CourseOfActionComponent');
+
+        this.loadCourseOfAction();
+    }
+
+    public editButtonClicked(): void {
+        let link = ['../edit', this.courseOfAction.id];
+        super.gotoView(link);
+    }
+
+    public mitigateButtonClicked(): void {
+        let link = ['../../mitigates', this.courseOfAction.id];
+        super.gotoView(link);
+    }
+
+    public deleteButtonClicked(): void {
+        super.openDialog(this.courseOfAction);
+    }
+
+    protected saveButtonClicked(): Observable<any> {
+        return Observable.create((observer) => {
+               let subscription = super.save(this.courseOfAction).subscribe(
+                    (data) => {
+                        observer.next(data);
+                        observer.complete();
+                    }, (error) => {
+                        // handle errors here
+                        console.log('error ' + error);
+                    }, () => {
+                        // prevent memory links
+                        if (subscription) {
+                            subscription.unsubscribe();
+                        }
+                    }
+                );
+        });
+    }
+
+    protected loadCourseOfAction(): void {
         let subscription =  super.get().subscribe(
             (data) => {
                 this.courseOfAction = data as CourseOfAction;
-                console.dir(this.courseOfAction );
-            }, (error) => {
+               }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
             }, () => {
@@ -40,14 +80,5 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
                 }
             }
         );
-    }
-
-    public editButtonClicked(): void {
-        let link = ['../edit', this.courseOfAction.id];
-        super.gotoView(link);
-    }
-
-    public deleteButtonClicked(): void {
-        super.openDialog(this.courseOfAction);
     }
 }

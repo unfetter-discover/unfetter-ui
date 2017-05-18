@@ -1,60 +1,44 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
-import { MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
-import { BaseStixComponent } from '../../base-stix.component';
+import { MdDialog, MdDialogRef, MdDialogConfig, MdSnackBar } from '@angular/material';
+import { CourseOfActionComponent } from '../course-of-action/course-of-action.component';
 import { StixService } from '../../stix.service';
-import { CourseOfAction, ExternalReference, StixObject } from '../../../models';
+import { CourseOfAction, ExternalReference, Label } from '../../../models';
 
 @Component({
   selector: 'course-of-action-edit',
   templateUrl: './course-of-action-edit.component.html'
 })
-export class CourseOfActionEditComponent extends BaseStixComponent implements OnInit {
-
-   public courseOfAction: CourseOfAction = new CourseOfAction();
+export class CourseOfActionEditComponent extends CourseOfActionComponent implements OnInit {
 
     constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog,
-        public location: Location) {
+        public location: Location,
+        public snackBar: MdSnackBar) {
 
-        super(stixService, route, router, dialog);
-        stixService.url = 'cti-stix-store-api/threat-actors';
+        super(stixService, route, router, dialog, location, snackBar);
     }
 
     public ngOnInit() {
-        console.log('Initial CourseOfActionEditComponent');
-        let subscription =  super.get().subscribe(
-            (data) => {
-                this.courseOfAction = data as CourseOfAction;
-                console.dir(this.courseOfAction);
-            }, (error) => {
-                // handle errors here
-                 console.log('error ' + error);
-            }, () => {
-                // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
-                }
-            }
-        );
+        super.loadCourseOfAction();
     }
 
-   public addLabelButtonClicked(): void {
-        this.courseOfAction.attributes.labels.unshift('');
+    protected addLabelButtonClicked(): void {
+        this.courseOfAction.attributes.label_names.unshift(new Label());
     }
 
-    public removeLabelButtonClicked(label: string): void {
-        this.courseOfAction.attributes.labels = this.courseOfAction.attributes.labels.filter((l) => l !== label);
+    protected removeLabelButtonClicked(label: Label): void {
+        this.courseOfAction.attributes.label_names = this.courseOfAction.attributes.label_names.filter((l) => l.name !== label.name);
     }
 
-    public saveButtonClicked(): void {
-       let subscription = super.save(this.courseOfAction).subscribe(
+    protected saveCourceOfAction(): void {
+       let subscription = super.saveButtonClicked().subscribe(
             (stixObject) => {
-                this.courseOfAction = stixObject as CourseOfAction;
+                console.log('saved');
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

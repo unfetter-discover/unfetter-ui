@@ -3,8 +3,8 @@
        <div class="col-md-12">
     
                 <div class="button-row">
-                    <a class="btn btn-large" md-raised-button (click)="editButtonClicked(attackPattern)"><i class="fa fa-pencil"></i>EDIT</a>
-                    <a class="red btn btn-large" md-raised-button (click)="deleteButtonClicked(attackPattern)"><i class="fa fa-trash"></i>DELETE</a>            
+                    <button  md-raised-button (click)="editButtonClicked(attackPattern)"><i class="fa fa-pencil"></i> EDIT</button>
+                    <button md-raised-button (click)="deleteButtonClicked(attackPattern)"><i class="fa fa-trash"></i> DELETE</button>            
                 </div>
             
         </div>
@@ -17,42 +17,43 @@
                         <div class="row">
                             <div class="col">
                                 <label>Name</label>
-                                <p>{{attackPattern.attributes.name}}</p>
+                                <h6>{{attackPattern.attributes.name}}</h6>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col">
                                 <label>Description</label>
-                                <p>{{attackPattern.attributes.description}}</p>
-                            </div>
-                        </div>
-                         <div class="row">
-                            <div class="col">
-                                <label>Kill Chain Phases</label>
-                                <div> 
-                                    <md-chip-list>
-                                        <md-chip color="primary" *ngFor="let kill_chain_phase of attackPattern.attributes.kill_chain_phases">{{kill_chain_phase.phase_name}}</md-chip>
-                                    </md-chip-list>
-                                </div>
+                                <h6>{{attackPattern.attributes.description}}</h6>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col">
-                                <label>Kill Chain Phases</label>
-                                <div> 
+                            <div class="col-md-12">
+                                <label>kill Chain Name:</label>
+                                <md-chip-list>
+                                    <md-chip *ngFor="let kill_chain_phase of attackPattern.attributes.kill_chain_phases"
+                                        selected="true">
+                                        {{kill_chain_phase.phase_name}}
+                                    </md-chip>
+                                </md-chip-list>
+                            </div>
+                        </div>
+                           <div class="row">
+                                <div class="col-md-12">
+                                    <label>External References</label>
                                     <md-chip-list>
-                                        <md-chip color="primary" *ngFor="let external_reference of attackPattern.attributes.external_references">{{external_reference.source_name}}</md-chip>
+                                        <md-chip *ngFor="let externalReferences of attackPattern.attributes.external_references"
+                                            selected="true">
+                                            {{externalReferences.source_name}}
+                                        </md-chip>
                                     </md-chip-list>
                                 </div>
                             </div>
-                        </div>
    
                 </md-card-content>
-                <!--<md-card-actions>
-                
-                </md-card-actions>-->
             </md-card>
         </div>
     </div>
+    <div class="pull-right grey-text">{{attackPattern.id}}</div>
+    <relationship-list *ngIf="attackPattern.id" [model]="attackPattern"></relationship-list>
 

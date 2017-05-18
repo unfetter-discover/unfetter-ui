@@ -58,6 +58,7 @@ module.exports = function (options) {
      * See: http://webpack.github.io/docs/configuration.html#entry
      */
     entry: {
+      //`webpack-dev-server/client?http://` + require("os").hostname(),
       'vendor': './src/vendor.browser.ts',
       'polyfills': './src/polyfills.browser.ts',
       'main':      AOT ? './src/main.browser.aot.ts' :
@@ -193,8 +194,8 @@ module.exports = function (options) {
         { 
           test: /\.(eot|woff2?|svg|ttf)([\?]?.*)$/,
           use: 'file-loader'
-        }
-
+        },
+       
       ],
 
     },
@@ -268,13 +269,13 @@ module.exports = function (options) {
       new CopyWebpackPlugin([
         { from: 'src/assets', to: 'assets' },
         { from: 'node_modules/bootstrap/dist', to: 'assets/bootstrap' },
-        // { from: 'node_modules/@angular/material/core/theming/prebuilt/indigo-pink.css', to: 'assets/css' },
-        //{ from: 'node_modules/material-design-icons/iconfont', to: 'assets/fonts' },
-        //  { from: 'node_modules/jquery/dist/jquery.min.js', to: 'assets/jquery' },
+        { from: 'node_modules/primeng/resources/primeng.min.css', to: 'assets/css' },
+        { from: 'node_modules/primeng/resources/themes/omega/theme.css', to: 'assets/css' },
+        // { from: 'node_modules/jquery/dist/jquery.min.js', to: 'assets/jquery' },
         // { from: 'node_modules/materialize-css/dist/css/materialize.min.css', to: 'assets/materialize/css' },
         // { from: 'node_modules/materialize-css/dist/js/materialize.min.js', to: 'assets/materialize/js' },
-        // { from: 'node_modules/materialize-css/dist/fonts', to: 'assets/materialize/fonts' },
-        { from: 'src/meta'}
+        // { from: 'node_modules/materialize-css/dist/fonts', to: 'assets/materialize/fonts' }
+       
       ]),
 
 
@@ -332,9 +333,9 @@ module.exports = function (options) {
       }),
 
       new webpack.ProvidePlugin({   
-              // jQuery: 'jquery',
-              // $: 'jquery',
-              // jquery: 'jquery',
+              jQuery: 'jquery',
+              $: 'jquery',
+              jquery: 'jquery'
               // // Materialize: 'Materialize',
               // materialize: 'materialize'
           }),

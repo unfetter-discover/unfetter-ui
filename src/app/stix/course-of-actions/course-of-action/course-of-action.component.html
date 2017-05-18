@@ -3,36 +3,31 @@
             <div class="row">
             <div class="col-md-12">
                     <div class="button-row">
-                        <a class="" md-raised-button (click)="editButtonClicked()"><i class="fa fa-pencil"></i>EDIT</a>
-                        <a class="" md-raised-button (click)="deleteButtonClicked()"><i class="fa fa-trash"></i>DELETE</a>            
+                        <button class="" md-raised-button (click)="editButtonClicked()"><i class="fa fa-pencil"></i> EDIT</button>
+                        <button class="" md-raised-button (click)="deleteButtonClicked()"><i class="fa fa-trash"></i> DELETE</button>          
+                         <button md-raised-button routerLink="/mitigates/{{courseOfAction.id}}">MITIGATES GRID</button>  
                     </div>
                 </div>
             </div>
             <div class="row" style="margin-top: 15px;">
                 <div class="col-md-12">
-                    <md-card>
-                        <!--<md-card-header>
-                            <md-card-subtitle>Name</md-card-subtitle>  
-                            <md-card-title>{{courseOfAction.name}}</md-card-title>                       
-                        </md-card-header>-->
+                    <md-card>                
                         <md-card-content>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label>Name</label>
-                                        <p>{{courseOfAction.attributes.name}}</p>
+                                        <h6>{{courseOfAction.attributes.name}}</h6>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label>Description</label>
-                                        <p>{{courseOfAction.attributes.description}}</p>
+                                        <h6>{{courseOfAction.attributes.description}}</h6>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label>Labels</label>
-
-
                                         <md-chip-list>
                                             <md-chip *ngFor="let label of courseOfAction.attributes.labels"
                                                 selected="true"
@@ -49,7 +44,7 @@
                                         <md-chip-list>
                                             <md-chip *ngFor="let externalReferences of courseOfAction.attributes.external_references"
                                                 selected="true">
-                                                {{externalReferences.sourceName}}
+                                                {{externalReferences.source_name}}
                                             </md-chip>
                                         </md-chip-list>
                                     </div>
@@ -62,4 +57,7 @@
             </div>
        </div>
 </div>
+    <div class="pull-right grey-text">{{courseOfAction.id}}</div>
+<relationship-list *ngIf="courseOfAction.id" [model]="courseOfAction"></relationship-list>
+
 

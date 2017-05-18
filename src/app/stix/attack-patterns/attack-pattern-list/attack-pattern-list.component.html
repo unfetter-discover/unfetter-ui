@@ -13,26 +13,44 @@
         </div>
     </div>
    <div class="row">
-        <div class="col-md-12" *ngFor="let key of phaseNameGroupKeys">
-             <md-card > 
-                    <md-card-header>
-                         <md-card-title>                             
-                        <div md-card-avatar class="example-header-image">
-                            <i class="fa fa-small fa-arrow-right"></i>
-                        </div>
-                         <a href (click)="onSelect($event, key)">{{key}}</a>      
-                    </md-card-title>  
-                       
-                               
-                    </md-card-header>
-                    <md-card-content *ngIf="key === selectedPhaseNameGroup">
-                    
-                        <div class="row" *ngFor="let attackPattern of phaseNameGroups[key]"  style="padding: 0px 0px 10px 0px;">
-                              <md-divider></md-divider>       
+       
+        <div class="col-md-12">
+            <p-accordion (onOpen)="onTabShow($event)">
+                <p-accordionTab header="{{key}}"  *ngFor="let key of phaseNameGroupKeys">
+                    <p-dataList *ngIf="filterAttackPattern[key]" [value]="filterAttackPattern[key]" [paginator]="true" [rows]="numOfRows" [lazy]="true" (onLazyLoad)="loadData($event, key)" [totalRecords]="totalRecords(key)">
+                        <ng-template let-attackPattern pTemplate="item">
+                            <div class="row  collection-item grey.lighten-5">
+                                
+                                <div class="col-md-9">
+                                    <a class="pull-left list-item--name" href (click)="showDetails($event, attackPattern)">{{attackPattern.attributes.name}}</a>
+
+
+                                    <md-chip-list *ngIf="attackPattern.attributes.external_references">
+                                        <md-chip *ngFor="let external_reference of attackPattern.attributes.external_references" style="margin-left: 5px;">
+                                            <a target="_blank" *ngIf="external_reference.url"> {{external_reference.source_name}}</a>
+                                            <span *ngIf="!external_reference.url"> {{external_reference.source_name}}</span>
+                                        </md-chip>
+                                    </md-chip-list>
+
+
+                                </div> 
+                                <div class="col-md-3">
+                                    <button md-raised-button (click)="edit(attackPattern)"><i class="fa fa-pencil"></i></button>
+                                    <button md-raised-button (click)="delete(attackPattern, key)"><i class="fa fa-trash"></i></button>   
+                                </div> 
+                                
+                                
+                            </div>
+                        </ng-template>
+                    </p-dataList>
+                    <!--<div class="row collection-item grey.lighten-5" *ngFor="let attackPattern of phaseNameGroups[key]">
+                                
                             <div class="col-md-9">
                                 <a class="pull-left" href (click)="showDetails($event, attackPattern)">{{attackPattern.attributes.name}}</a>
+
+
                                 <md-chip-list *ngIf="attackPattern.attributes.external_references">
-                                    <md-chip *ngFor="let external_reference of attackPattern.attributes.external_references">
+                                    <md-chip *ngFor="let external_reference of attackPattern.attributes.external_references" style="margin-left: 5px;">
                                         <a target="_blank" *ngIf="external_reference.url"> {{external_reference.source_name}}</a>
                                         <span *ngIf="!external_reference.url"> {{external_reference.source_name}}</span>
                                     </md-chip>
@@ -41,14 +59,49 @@
 
                             </div> 
                              <div class="col-md-3">
-                                   <a md-raised-button (click)="editButtonClicked(attackPattern)"><i class="fa fa-pencil"></i></a>
-                                    <a md-raised-button (click)="deleteButtonClicked(attackPattern)"><i class="fa fa-trash"></i></a>   
+                                   <a md-raised-button (click)="edit(attackPattern)"><i class="fa fa-pencil"></i></a>
+                                    <a md-raised-button (click)="delete(attackPattern, key)"><i class="fa fa-trash"></i></a>   
+                            </div> 
+                            
+                              
+                        </div>-->
+                </p-accordionTab>
+               
+            </p-accordion>
+             <!--<md-card > 
+                    <md-card-header class="collapsible-header">
+                        <div md-card-avatar class="example-header-image">
+                                <i class="fa fa-small fa-arrow-right"></i>
+                            </div>
+                            <a href (click)="onSelect($event, key)">{{key}}</a>      
+                    </md-card-header>
+
+                    <md-card-content *ngIf="key === selectedPhaseNameGroup" class="collection">
+                    
+                        <div class="row collection-item grey.lighten-5" *ngFor="let attackPattern of phaseNameGroups[key]">
+                              <md-divider></md-divider>       
+                            <div class="col-md-9">
+                                <a class="pull-left" href (click)="showDetails($event, attackPattern)">{{attackPattern.attributes.name}}</a>
+
+
+                                <md-chip-list *ngIf="attackPattern.attributes.external_references">
+                                    <md-chip *ngFor="let external_reference of attackPattern.attributes.external_references" style="margin-left: 5px;">
+                                        <a target="_blank" *ngIf="external_reference.url"> {{external_reference.source_name}}</a>
+                                        <span *ngIf="!external_reference.url"> {{external_reference.source_name}}</span>
+                                    </md-chip>
+                                </md-chip-list>
+
+
+                            </div> 
+                             <div class="col-md-3">
+                                   <a md-raised-button (click)="edit(attackPattern)"><i class="fa fa-pencil"></i></a>
+                                    <a md-raised-button (click)="delete(attackPattern, key)"><i class="fa fa-trash"></i></a>   
                             </div> 
                             
                               
                         </div>
                             
                     </md-card-content>
-            </md-card>
+            </md-card>-->
         </div>
     </div>

@@ -2,7 +2,7 @@
         <div class="col-md-12">
 
             <div class="button-row">
-                <a md-raised-button routerLink="./new">NEW</a>
+                <a md-raised-button routerLink="new">NEW</a>
                 <a md-raised-button (click)="download()">DOWNLOAD</a>            
             </div>
             <div class="pull-right">
@@ -10,5 +10,7 @@
             </div>
         </div>
     </div>
-    <list-stix-objects [model]="intrusionSets" [showLabels]="showLabels" [showExternalReferences]="showExternalReferences"></list-stix-objects>
+    <hr *ngIf="intrusionSets.length === 0" />
+
+    <list-stix-objects [model]="intrusionSets" [showLabels]="showLabels" [showExternalReferences]="showExternalReferences" (deletButtonClicked)="delete($event)"></list-stix-objects>
    

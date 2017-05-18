@@ -20,7 +20,7 @@ import {
   CourseOfActionListComponent,
   CourseOfActionEditComponent,
   CourseOfActionComponent,
-  CourseOfActionNewComponent } from './course-of-actions';
+  CourseOfActionNewComponent, CourseOfActionMitigateComponent } from './course-of-actions';
 
   import {
     SightingHomeComponent,
@@ -31,9 +31,12 @@ import {
 
 import { ThreatActorHomeComponent, ThreatActorListComponent , TheatActorComponent, ThreatActorNewComponent, ThreatActorEditComponent } from './threat-actors';
 import { IntrusionSetHomeComponent, IntrusionSetListComponent, IntrusionSetComponent, IntrusionSetEditComponent, IntrusionSetNewComponent } from './intrusion-sets';
-import { RelationshipsComponent, RelationshipNewComponent, RelationshipListComponent } from './relationships';
+import { IndicatorHomeComponent , IndicatorListComponent, IndicatorEditComponent, IndicatorNewComponent, IndicatorComponent } from './indicators';
+import { IdentityHomeComponent , IdentityListComponent, IdentityEditComponent, IdentityNewComponent, IdentityComponent } from './identities';
 
-    import { ReportsComponent, ReportsListComponent, ReportNewComponent, } from './reports';
+import { RelationshipsComponent, RelationshipNewComponent, RelationshipListComponent } from './relationships';
+import { ReportsComponent, ReportsListComponent, ReportNewComponent, } from './reports';
+import { MalwareListComponent } from './malwares/malware-list.component';
 
 const stixRoutes: Routes = [
     { path: 'attack-patterns', component: AttackPatternsHomeComponent,
@@ -52,6 +55,7 @@ const stixRoutes: Routes = [
          { path: 'edit/:id', component: CampaignsEditComponent }
       ]
     },
+     { path: 'mitigates/:id', component: CourseOfActionMitigateComponent},
     { path: 'course-of-action', component: CourseOfActionHomeComponent,
       children: [
             { path: '', component: CourseOfActionListComponent },
@@ -98,6 +102,24 @@ const stixRoutes: Routes = [
           { path: ':id', component: IntrusionSetComponent },
           { path: 'edit/:id', component: IntrusionSetEditComponent }
       ]
+    },
+    { path: 'indicators', component: IndicatorHomeComponent,
+      children: [
+          { path: '', component: IndicatorListComponent},
+          { path: 'new', component: IndicatorNewComponent },
+          { path: ':id', component: IndicatorComponent },
+          { path: 'edit/:id', component: IndicatorEditComponent }
+      ]
+    },
+    { path: 'identities', component: IdentityHomeComponent,
+      children: [
+          { path: '', component: IdentityListComponent},
+          { path: 'new', component: IdentityNewComponent },
+          { path: ':id', component: IdentityComponent },
+          { path: 'edit/:id', component: IdentityEditComponent }
+      ]
+    },
+     { path: 'malwares/:id', component: MalwareListComponent,
     },
 ];
 

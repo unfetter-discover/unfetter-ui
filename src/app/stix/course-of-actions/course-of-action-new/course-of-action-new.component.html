@@ -3,14 +3,14 @@
         <div class="row">
             <div class="col-md-12">
                 <md-input-container class="full-width">
-                <input mdInput placeholder="Name"  [(ngModel)]="courseOfAction.name" value="{{courseOfAction.attributes.name}}">
+                <input mdInput placeholder="Name" required [(ngModel)]="courseOfAction.attributes.name" value="{{courseOfAction.attributes.name}}">
                 </md-input-container>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
             <md-input-container class="full-width">
-                <input mdInput placeholder="Decsription" [(ngModel)]="courseOfAction.description" value="{{courseOfAction.attributes.description}}">
+                <input mdInput placeholder="Decsription" [(ngModel)]="courseOfAction.attributes.description" value="{{courseOfAction.attributes.description}}">
                 </md-input-container>
             </div>
         </div>
@@ -22,7 +22,7 @@
                 </div>
             </div>
         </div>
-        <div class="row" *ngFor="let label of courseOfAction.attributes.labels">
+        <div class="row" *ngFor="let label of courseOfAction.attributes.label_names">
             <div class="col-md-12">
                 
                     <md-card >
@@ -30,7 +30,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                             <md-input-container class="full-width">
-                                                <input mdInput placeholder="Label" value="{{label}}">
+                                                <input mdInput placeholder="Label" value="{{label.name}}">
                                             </md-input-container>
                                     </div>
                                    
@@ -51,8 +51,8 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="button-row pull-right">
-                        <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i>CANCEL</a> 
-                        <a class=" " md-raised-button (click)="saveButtonClicked()"><i class="fa fa-floppy-o "></i>SAVE</a>            
+                        <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a> 
+                        <a class=" " md-raised-button (click)="saveCourceOfAction()" [disabled]="!courseOfAction.attributes.name"><i class="fa fa-floppy-o "></i> SAVE & CLOSE</a>            
             
                 </div>
             </div>

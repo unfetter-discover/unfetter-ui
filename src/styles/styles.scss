@@ -2,6 +2,18 @@
 /* This file is for setting global styles  */
 @import 'variables';
 
+// // Import a pre-built theme 
+@import '~@angular/material/core/theming/prebuilt/deeppurple-amber';
+@import '~@angular/material/core/theming/prebuilt/indigo-pink';
+// // Import your custom input theme file so you can call the custom-input-theme function 
+//@import '~angular-material-datepicker/src/datepicker/calendar.component.scss';
+ 
+// // Using the $theme variable from the pre-built theme you can call the theming function 
+//@include calendar-theme($theme);
+
+label {
+    color: #9e9e9e;
+}
 
 .navbar-inverse {
     background-color: $nav-background-color;
@@ -73,7 +85,9 @@ body {
     height: auto !important;
     
 }
-
+.cursor-pointer {
+    cursor: pointer;
+}
 .btn, .btn-large {
     text-decoration: none;
     color: #fff;
@@ -91,11 +105,14 @@ body {
   width: 100%;
 }
 
-// // Import a pre-built theme 
-@import '~@angular/material/core/theming/prebuilt/deeppurple-amber';
-// @import '~@angular/material/core/theming/prebuilt/indigo-pink';
-// // Import your custom input theme file so you can call the custom-input-theme function 
-//@import '~angular-material-datepicker/src/datepicker/calendar.component.scss';
- 
-// // Using the $theme variable from the pre-built theme you can call the theming function 
-//@include calendar-theme($theme);
+.row {
+    margin-bottom: 10px; 
+}
+.snack-bar-background-success {
+    background :#008000 !important;
+}
+.snack-bar-background-error {
+    background :#ff0000 !important;
+}
+
+

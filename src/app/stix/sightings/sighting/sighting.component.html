@@ -35,13 +35,16 @@
                                 </md-input-container>
                     </div>
                     <div class="col-md-4">
-                        <md-datepicker></md-datepicker>
+                                 <p-calendar [(ngModel)]="sighting.attributes.published" dateFormat="YYYY-MM-DD" showIcon="true"></p-calendar>
+
                     </div>
                     <div class="col-md-4">
-                        <md-datepicker></md-datepicker>
+                                  <p-calendar [(ngModel)]="sighting.attributes.published" dateFormat="YYYY-MM-DD" showIcon="true"></p-calendar>
+
                     </div>
                 </div>
             </md-card-content>
         </md-card>
     </div>
 </div>
+ <div class="pull-right grey-text">{{sighting.id}}</div>

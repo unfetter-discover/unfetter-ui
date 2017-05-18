@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { MdDialog, MdDialogRef } from '@angular/material';
+import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { BaseStixComponent } from '../../base-stix.component';
+import { CampaignComponent } from '../campaign/campaign.component';
 import { StixService } from '../../stix.service';
 import { Campaign } from '../../../models';
 
@@ -11,7 +11,7 @@ import { Campaign } from '../../../models';
   templateUrl: './campaigns-list.component.html'
 })
 
-export class CampaignsListComponent extends BaseStixComponent implements OnInit {
+export class CampaignsListComponent extends CampaignComponent implements OnInit {
 
     public campaigns: Campaign[] = [];
     private showExternalReferences: boolean = false;
@@ -22,10 +22,10 @@ export class CampaignsListComponent extends BaseStixComponent implements OnInit 
         public route: ActivatedRoute,
         public router: Router,
         public dialog: MdDialog,
-        public location: Location) {
+        public location: Location,
+        public snackBar: MdSnackBar) {
 
-        super(stixService, route, router, dialog);
-        stixService.url = 'cti-stix-store-api/campaigns';
+        super(stixService, route, router, dialog, location, snackBar);
     }
 
     public ngOnInit() {
@@ -41,6 +41,14 @@ export class CampaignsListComponent extends BaseStixComponent implements OnInit 
                 if (subscription) {
                     subscription.unsubscribe();
                 }
+            }
+        );
+    }
+
+     public delete(campaigns: Campaign): void {
+        super.openDialog(campaigns).subscribe(
+            () => {
+                 this.campaigns = this.campaigns.filter((h) => h.id !== campaigns.id);
             }
         );
     }
