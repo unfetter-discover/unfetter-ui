@@ -29,7 +29,7 @@ export class SightingEditComponent extends BaseStixComponent implements OnInit {
     public ngOnInit() {
         let sub = super.get().subscribe(
             (data) => {
-                this.sighting = data as Sighting;
+                this.sighting =  new Sighting(data);
             }, (err) => {
                  // handle errors here
                  console.log('error ' + err);

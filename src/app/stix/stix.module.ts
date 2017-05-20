@@ -36,7 +36,7 @@ import {
     import { ReportsComponent, ReportsListComponent, ReportNewComponent } from './reports';
     import { ThreatActorHomeComponent, ThreatActorListComponent, TheatActorComponent, ThreatActorNewComponent, ThreatActorEditComponent } from './threat-actors';
     import { IntrusionSetHomeComponent, IntrusionSetListComponent, IntrusionSetComponent, IntrusionSetEditComponent, IntrusionSetNewComponent } from './intrusion-sets';
-    import { RelationshipsComponent, MitigateComponent, IntrusionUsesAttackComponent } from './relationships';
+    import { MitigateListComponent, MitigateComponent, IntrusionUsesAttackComponent } from './relationships';
     import { IndicatorHomeComponent , IndicatorListComponent, IndicatorEditComponent, IndicatorNewComponent, IndicatorComponent } from './indicators';
     import { IdentityHomeComponent , IdentityListComponent, IdentityEditComponent, IdentityNewComponent, IdentityComponent } from './identities';
     import { StixRoutingModule } from './stix-routing.module';
@@ -109,7 +109,7 @@ import { MalwareListComponent } from './malwares/malware-list.component';
     IntrusionSetEditComponent,
     IntrusionSetNewComponent,
 
-    RelationshipsComponent,
+    MitigateListComponent,
     MitigateComponent,
     IntrusionUsesAttackComponent,
     IndicatorHomeComponent,

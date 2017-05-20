@@ -27,7 +27,8 @@ export class IdentityListComponent extends IdentityComponent implements OnInit {
     }
 
     public ngOnInit() {
-        let subscription =  super.load().subscribe(
+        let filter = 'filter[order]=name';
+        let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.identities = data as Identity[];
             }, (error) => {

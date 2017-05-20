@@ -29,6 +29,10 @@ export const Constance = {
     INTRUSION_SET_TYPE: 'intrusion-sets',
     INTRUSION_SET_ICON: 'assets/icon/stix-icons/svg/threat-actor-b.svg',
 
+    SIGHTING_URL: 'cti-stix-store-api/sightings',
+    SIGHTING_TYPE: 'sightings',
+    SIGHTING_ICON: 'assets/icon/stix-icons/svg/campaign-b.svg',
+
     MALWARE_URL: 'cti-stix-store-api/malwares',
     MALWARE_TYPE: 'malwares',
     MALWARE_ICON: 'assets/icon/stix-icons/svg/malware-b.svg'

@@ -34,7 +34,7 @@ import { IntrusionSetHomeComponent, IntrusionSetListComponent, IntrusionSetCompo
 import { IndicatorHomeComponent , IndicatorListComponent, IndicatorEditComponent, IndicatorNewComponent, IndicatorComponent } from './indicators';
 import { IdentityHomeComponent , IdentityListComponent, IdentityEditComponent, IdentityNewComponent, IdentityComponent } from './identities';
 
-import { RelationshipsComponent, MitigateComponent, IntrusionUsesAttackComponent } from './relationships';
+import { MitigateListComponent, MitigateComponent, IntrusionUsesAttackComponent } from './relationships';
 import { ReportsComponent, ReportsListComponent, ReportNewComponent, } from './reports';
 import { MalwareListComponent } from './malwares/malware-list.component';
 
@@ -96,6 +96,7 @@ const stixRoutes: Routes = [
     },
     { path: 'relationships',
       children: [
+           { path: 'mitigates/:type/:action', component: MitigateListComponent},
            { path: 'mitigates/:id', component: MitigateComponent},
            { path: 'intrusion-uses-attack/:id', component: IntrusionUsesAttackComponent},
       ]

@@ -26,7 +26,8 @@ export class CourseOfActionListComponent extends CourseOfActionComponent impleme
     }
 
     public ngOnInit() {
-        let subscription =  super.load().subscribe(
+        let filter = 'filter[order]=name';
+        let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.courseOfActions = data as CourseOfAction[];
             }, (error) => {

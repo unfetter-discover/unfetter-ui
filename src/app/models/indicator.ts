@@ -27,6 +27,7 @@ export class Indicator {
         if (data) {
             this.attributes = data.attributes;
             this.id = data.id;
+            this.formatDate();
         } else {
             this.attributes = this.createAttributes();
         }

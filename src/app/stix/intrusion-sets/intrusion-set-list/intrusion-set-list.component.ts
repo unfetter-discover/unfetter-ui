@@ -27,7 +27,8 @@ export class IntrusionSetListComponent extends IntrusionSetComponent implements 
     }
 
     public ngOnInit() {
-        let subscription =  super.load().subscribe(
+        let filter = 'filter[order]=name';
+        let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.intrusionSets = data as IntrusionSet[];
             }, (error) => {

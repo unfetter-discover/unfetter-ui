@@ -20,8 +20,8 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
     private phaseNameGroupKeys: string[];
     private filterAttackPattern = {};
     private numOfRows = 10;
-
-     constructor(
+    
+    constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
@@ -34,7 +34,8 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
     }
 
     public ngOnInit() {
-       let subscription =  super.load().subscribe(
+        let filter = 'filter[order]=name';
+        let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.attackPatterns = data as AttackPattern[];
                 this.getPhaseNameAttackPatterns();

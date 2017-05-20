@@ -36,29 +36,7 @@ export class IndicatorComponent extends BaseStixComponent implements OnInit {
     protected loadIndicator(): void {
         let subscription =  super.get().subscribe(
             (data) => {
-                this.indicator =  data as Indicator;
-                // console.log(this.indicator.id);
-                // let filter = new Filter();
-                // filter.values.where['target_ref'] = this.indicator.id;
-                // this.loadRelationships(filter.values).subscribe(
-                //     (targetRefFilter) => {
-                //         let targetRelationships = targetRefFilter as any[];
-                //         targetRelationships.forEach(
-                //             (targetRelationship) => { this.realtionships.push(targetRelationship.attributes.target_ref); }
-                //         );
-                //         filter = new Filter();
-                //         filter.values.where['source_ref'] = this.indicator.id;
-                //         this.loadRelationships(filter.values).subscribe(
-                //             (sourceRefFilter) => {
-                //                 let sourceRelationships = sourceRefFilter as any[];
-                //                 sourceRelationships.forEach(
-                //                     (sourceRelationship) => { this.realtionships.push(sourceRelationship.attributes.source_ref); }
-                //                 );
-                //             }
-                //         );
-                //     }
-                // );
-
+                this.indicator =  new Indicator(data);
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
