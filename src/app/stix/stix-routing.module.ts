@@ -36,7 +36,7 @@ import { IdentityHomeComponent , IdentityListComponent, IdentityEditComponent, I
 
 import { MitigateListComponent, MitigateComponent, IntrusionUsesAttackComponent } from './relationships';
 import { ReportsComponent, ReportsListComponent, ReportNewComponent, } from './reports';
-import { MalwareListComponent } from './malwares/malware-list.component';
+import { MalwareHomeComponent, MalwareListComponent, MalwareComponent, MalwareEditComponent, MalwareNewComponent } from './malwares';
 
 const stixRoutes: Routes = [
     { path: 'attack-patterns', component: AttackPatternsHomeComponent,
@@ -55,7 +55,7 @@ const stixRoutes: Routes = [
          { path: 'edit/:id', component: CampaignsEditComponent }
       ]
     },
-    { path: 'course-of-action', component: CourseOfActionHomeComponent,
+    { path: 'course-of-actions', component: CourseOfActionHomeComponent,
       children: [
             { path: '', component: CourseOfActionListComponent },
             { path: 'new', component: CourseOfActionNewComponent },
@@ -117,8 +117,14 @@ const stixRoutes: Routes = [
           { path: 'edit/:id', component: IdentityEditComponent }
       ]
     },
-     { path: 'malwares/:id', component: MalwareListComponent,
-    },
+    { path: 'malwares', component: MalwareHomeComponent,
+      children: [
+          { path: '', component: MalwareListComponent},
+          { path: 'new', component: MalwareNewComponent },
+          { path: ':id', component: MalwareComponent },
+          { path: 'edit/:id', component: MalwareEditComponent }
+      ]
+    }
 ];
 
 @NgModule({

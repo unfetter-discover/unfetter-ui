@@ -10,7 +10,7 @@ export const Constance = {
     COURSE_OF_ACTION_TYPE: 'course-of-actions',
     COURSE_OF_ACTION_ICON: 'assets/icon/stix-icons/svg/course-of-action-b.svg',
 
-    RELATIONSHIPS_URL: 'cti-stix-store-api//relationships',
+    RELATIONSHIPS_URL: 'cti-stix-store-api/relationships',
     RELATIONSHIPS_ICON: 'assets/icon/stix-icons/svg/relationship-b.svg',
     RELATIONSHIPS_TYPE: 'Relationships',
     RELATIONSHIPS_TYPES: {

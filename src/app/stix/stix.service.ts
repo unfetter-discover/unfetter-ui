@@ -32,7 +32,7 @@ export class StixService implements BaseStixService {
             .catch(this.handleError);
     }
 
-     public filter(url: string): Observable<any> {
+     public getByUrl(url: string): Observable<any> {
          return this.http
             .get(url)
             .map((response) => {
@@ -41,8 +41,8 @@ export class StixService implements BaseStixService {
             .catch(this.handleError);
     }
 
-    public delete(id: string): Observable<void> {
-        const url = `${this.url}/${id}`;
+    public delete(item: any): Observable<void> {
+        const url = item.url + '/' + item.id;
         return this.http
             .delete(url, {headers: this.headers})
             .map((response) => {

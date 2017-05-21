@@ -20,7 +20,7 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
     private phaseNameGroupKeys: string[];
     private filterAttackPattern = {};
     private numOfRows = 10;
-    
+
     constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
@@ -69,7 +69,7 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
         super.gotoView(link);
     }
 
-    public delete(attackPattern: AttackPattern, key: string): void {
+    public deletButtonClicked(attackPattern: AttackPattern, key: string): void {
         super.openDialog(attackPattern).subscribe(
             () => {
                  this.attackPatterns = this.attackPatterns.filter((h) => h.id !== attackPattern.id);

@@ -42,7 +42,7 @@ export class CourseOfActionListComponent extends CourseOfActionComponent impleme
         );
     }
 
-    public delete(courseOfAction: CourseOfAction): void {
+    public deletButtonClicked(courseOfAction: CourseOfAction): void {
         super.openDialog(courseOfAction).subscribe(
             () => {
                  this.courseOfActions = this.courseOfActions.filter((h) => h.id !== courseOfAction.id);

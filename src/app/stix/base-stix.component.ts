@@ -31,10 +31,10 @@ export class BaseStixComponent {
         });
     }
 
-     protected filter(url: string): Observable<any> {
+     protected getByUrl(url: string): Observable<any> {
         let _self  = this;
         return Observable.create((observer) => {
-              let subscription =  _self.service.filter(url).subscribe(
+              let subscription =  _self.service.getByUrl(url).subscribe(
                    (data) => {
                         observer.next(data);
                         observer.complete();
@@ -65,6 +65,13 @@ export class BaseStixComponent {
         item.url = this.service.url;
         return Observable.create((observer) => {
                _self.saveItem(item, observer);
+        });
+    }
+
+    protected delete(item: any): Observable<any>  {
+        let _self  = this;
+        return Observable.create((observer) => {
+               _self.deleteItem(item, observer);
         });
     }
 
@@ -134,7 +141,7 @@ export class BaseStixComponent {
 
     private deleteItem(item: any, observer: any): void {
         this.route.params
-            .switchMap((params: Params) => this.service.delete(item.id))
+            .switchMap((params: Params) => this.service.delete(item))
             .subscribe(
                 (stixObject) => {
                     observer.next(stixObject);

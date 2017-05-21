@@ -54,6 +54,7 @@
             </md-card>
         </div>
     </div>
-    <div class="pull-right grey-text">{{attackPattern.id}}</div>
+  
     <relationship-list *ngIf="attackPattern.id" [model]="attackPattern"></relationship-list>
+      <div class="pull-right grey-text">{{attackPattern.id}}</div>
 

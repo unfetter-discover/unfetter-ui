@@ -4,7 +4,7 @@ import * as moment from 'moment';
 
 export class Indicator {
     public url = Constance.INDICATOR_URL;
-    public id: number;
+    public id: string;
     public type: string;
 
     public attributes: {

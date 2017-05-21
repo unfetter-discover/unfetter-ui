@@ -6,6 +6,6 @@ export interface BaseStixService {
     get(id: string): Observable<any>;
     update(item: any): Observable<any>;
     create(item: any): Observable<any>;
-    delete(id: string): Observable<any>;
-    filter(url: string): Observable<any>;
+    delete(item: any): Observable<any>;
+    getByUrl(url: string): Observable<any>;
 }

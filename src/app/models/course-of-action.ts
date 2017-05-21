@@ -1,26 +1,36 @@
 import { ExternalReference, KillChainPhase, Label } from '.';
 import { Constance } from '../utils/constance';
+import * as moment from 'moment';
 
 export class CourseOfAction {
     public url = Constance.COURSE_OF_ACTION_URL;
-    public id: number;
+    public id: string;
     public type: string;
 
     public attributes: {
         version: string;
-        created: Date;
-        modified: Date;
+        created: string;
+        modified: string;
         description: string;
         label_names: Label[];
         external_references: ExternalReference[];
         kill_chain_phases: KillChainPhase[];
     };
-    constructor() {
+    constructor(data?: CourseOfAction) {
         this.type = Constance.COURSE_OF_ACTION_TYPE;
-        this.attributes = {
-            version: '',
-            created: new Date(),
-            modified: new Date(),
+        if (data) {
+            this.attributes = data.attributes;
+            this.id = data.id;
+        } else {
+            this.attributes = this.createAttributes();
+        }
+    }
+
+    private createAttributes(): any {
+        return {
+            version: '1',
+            created: moment().format(Constance.DATE_FORMATE),
+            modified: moment().format(Constance.DATE_FORMATE),
             description: '',
             label_names: [],
             external_references: [],

@@ -11,11 +11,6 @@ import { SelectivePreloadingStrategy } from './selective-preloading-strategy';
 
 const appRoutes: Routes = [
     { path: 'home',  component: HomeComponent },
-    { path: 'load-patterns', redirectTo: '/attack-patterns', pathMatch: 'full' },
-    { path: 'load-campaigns', redirectTo: '/campaigns', pathMatch: 'full'},
-    { path: 'load-courses-of-action', redirectTo: '/course-of-action', pathMatch: 'full'},
-    { path: 'load-reports', redirectTo: '/reports', pathMatch: 'full' },
-    { path: 'load-sightings', redirectTo: '/sightings', pathMatch: 'full' },
     { path: 'partners',      component: PartnersComponent },
     { path: '',      component: HomeComponent },
     { path: '**',    component: NoContentComponent },

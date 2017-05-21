@@ -42,7 +42,7 @@ import {
     import { StixRoutingModule } from './stix-routing.module';
     import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
 
-import { MalwareListComponent } from './malwares/malware-list.component';
+import { MalwareHomeComponent, MalwareListComponent, MalwareComponent, MalwareEditComponent, MalwareNewComponent } from './malwares';
 
 @NgModule({
   imports: [
@@ -126,7 +126,12 @@ import { MalwareListComponent } from './malwares/malware-list.component';
 
     IdentifierTypePipe,
     IdentifierSummarizedPipe,
+
+    MalwareHomeComponent,
     MalwareListComponent,
+    MalwareEditComponent,
+    MalwareComponent,
+    MalwareNewComponent
   ],
 
   providers: [ StixService ],

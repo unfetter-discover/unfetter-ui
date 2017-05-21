@@ -11,5 +11,5 @@
             </div>
         </div>
     </div>
-    <hr *ngIf="courseOfActions.length === 0" />
-    <list-stix-objects [model]="courseOfActions" [showLabels]="'true'" [showExternalReferences]="'true'" (deletButtonClicked)="delete($event)"></list-stix-objects>
+
+    <list-stix-objects [model]="courseOfActions" [showLabels]="'true'" [showExternalReferences]="'true'" (deletButtonClicked)="deletButtonClicked($event)"></list-stix-objects>

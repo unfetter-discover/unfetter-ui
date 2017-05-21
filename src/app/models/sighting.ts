@@ -28,7 +28,7 @@ export class Sighting {
     };
 
      constructor(data?: Sighting) {
-         this.type = Constance.SIGHTING_TYPE;
+        this.type = Constance.SIGHTING_TYPE;
         if (data) {
             this.attributes = data.attributes;
             this.id = data.id;
