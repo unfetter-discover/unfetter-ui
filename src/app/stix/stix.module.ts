@@ -43,6 +43,8 @@ import {
     import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
 
 import { MalwareHomeComponent, MalwareListComponent, MalwareComponent, MalwareEditComponent, MalwareNewComponent } from './malwares';
+import { ToolHomeComponent, ToolListComponent } from './tools';
+
 
 @NgModule({
   imports: [
@@ -131,7 +133,9 @@ import { MalwareHomeComponent, MalwareListComponent, MalwareComponent, MalwareEd
     MalwareListComponent,
     MalwareEditComponent,
     MalwareComponent,
-    MalwareNewComponent
+    MalwareNewComponent,
+    ToolHomeComponent, 
+    ToolListComponent
   ],
 
   providers: [ StixService ],

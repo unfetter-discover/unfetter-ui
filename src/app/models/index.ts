@@ -14,4 +14,6 @@ export { Identity } from './identity';
 export { Label } from './label';
 export { SourceRefFilter } from './source-ref-filter';
 export { Filter } from './filter';
-export  { Malware } from './malware'
+export  { Malware } from './malware';
+export  { Tool } from './tool';
+
