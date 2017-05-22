@@ -27,7 +27,7 @@ const ngcWebpack = require('ngc-webpack');
 const HMR = helpers.hasProcessFlag('hot');
 const AOT = helpers.hasNpmFlag('aot');
 const METADATA = {
-  title: 'CTI-STIX-SERVICES',
+  title: 'UNFETTER',
   //baseUrl: '/unfetter-ui/',
   baseUrl: '/',
   isDevServer: helpers.isWebpackDevServer()

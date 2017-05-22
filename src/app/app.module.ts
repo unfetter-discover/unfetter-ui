@@ -21,6 +21,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule }        from './app-routing.module';
 
 import { HomeComponent } from './home';
+import { IntrusionSetDashboardComponent } from './intrusion-set-dashboard/intrusion-set-dashboard.component';
 import { PartnersComponent } from './partners/partners.component';
 import { NoContentComponent } from './no-content';
 import '../styles/styles.scss';
@@ -34,6 +35,7 @@ import '../styles/headings.css';
   declarations: [
     AppComponent,
     HomeComponent,
+    IntrusionSetDashboardComponent,
     PartnersComponent,
     NoContentComponent,
   ],

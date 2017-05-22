@@ -2,6 +2,7 @@ import { NgModule }             from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { HomeComponent } from './home';
+import { IntrusionSetDashboardComponent } from './intrusion-set-dashboard/intrusion-set-dashboard.component';
 import { PartnersComponent } from './partners/partners.component';
 import { NoContentComponent } from './no-content';
 
@@ -16,6 +17,7 @@ const appRoutes: Routes = [
     { path: 'load-courses-of-action', redirectTo: '/course-of-action', pathMatch: 'full'},
     { path: 'load-reports', redirectTo: '/reports', pathMatch: 'full' },
     { path: 'load-sightings', redirectTo: '/sightings', pathMatch: 'full' },
+    { path: 'intrusion-set-dashboard',      component: IntrusionSetDashboardComponent },
     { path: 'partners',      component: PartnersComponent },
     { path: '',      component: HomeComponent },
     { path: '**',    component: NoContentComponent },

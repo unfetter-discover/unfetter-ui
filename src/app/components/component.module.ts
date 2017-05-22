@@ -3,7 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NgModule,  ApplicationRef } from '@angular/core';
 import { RouterModule,  PreloadAllModules } from '@angular/router';
-import { CalendarModule, AccordionModule, DataListModule } from 'primeng/primeng';
+import { CalendarModule, AccordionModule, DataListModule, CheckboxModule } from 'primeng/primeng';
 import { MaterialModule, MdButtonModule, MdListModule, MdCardModule,
   MdDialogModule, MdChipsModule, MdInputModule, MdSelectModule, MdAutocompleteModule, MdCheckboxModule } from '@angular/material';
 import { HeaderNavigationComponent } from './header-navigation/header-navigation.component';
@@ -51,6 +51,7 @@ import { BaseComponentService } from './base-service.component';
     MdCardModule,
     MdChipsModule,
     DataListModule,
+    CheckboxModule,
     MdCheckboxModule
   ],
   exports: [
