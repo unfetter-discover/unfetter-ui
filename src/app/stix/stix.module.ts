@@ -36,13 +36,15 @@ import {
     import { ReportsComponent, ReportsListComponent, ReportNewComponent } from './reports';
     import { ThreatActorHomeComponent, ThreatActorListComponent, TheatActorComponent, ThreatActorNewComponent, ThreatActorEditComponent } from './threat-actors';
     import { IntrusionSetHomeComponent, IntrusionSetListComponent, IntrusionSetComponent, IntrusionSetEditComponent, IntrusionSetNewComponent } from './intrusion-sets';
-    import { RelationshipsComponent, MitigateComponent, IntrusionUsesAttackComponent } from './relationships';
+    import { MitigateListComponent, MitigateComponent, IntrusionUsesAttackComponent } from './relationships';
     import { IndicatorHomeComponent , IndicatorListComponent, IndicatorEditComponent, IndicatorNewComponent, IndicatorComponent } from './indicators';
     import { IdentityHomeComponent , IdentityListComponent, IdentityEditComponent, IdentityNewComponent, IdentityComponent } from './identities';
     import { StixRoutingModule } from './stix-routing.module';
     import { IdentifierTypePipe, IdentifierSummarizedPipe } from '../pipes';
 
-import { MalwareListComponent } from './malwares/malware-list.component';
+import { MalwareHomeComponent, MalwareListComponent, MalwareComponent, MalwareEditComponent, MalwareNewComponent } from './malwares';
+import { ToolHomeComponent, ToolListComponent } from './tools';
+
 
 @NgModule({
   imports: [
@@ -109,7 +111,7 @@ import { MalwareListComponent } from './malwares/malware-list.component';
     IntrusionSetEditComponent,
     IntrusionSetNewComponent,
 
-    RelationshipsComponent,
+    MitigateListComponent,
     MitigateComponent,
     IntrusionUsesAttackComponent,
     IndicatorHomeComponent,
@@ -126,7 +128,14 @@ import { MalwareListComponent } from './malwares/malware-list.component';
 
     IdentifierTypePipe,
     IdentifierSummarizedPipe,
+
+    MalwareHomeComponent,
     MalwareListComponent,
+    MalwareEditComponent,
+    MalwareComponent,
+    MalwareNewComponent,
+    ToolHomeComponent, 
+    ToolListComponent
   ],
 
   providers: [ StixService ],

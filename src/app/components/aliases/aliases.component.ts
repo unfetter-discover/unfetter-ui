@@ -7,15 +7,11 @@ import 'rxjs/add/operator/startWith';
   templateUrl: './aliases.component.html'
 })
 
-export class AliasesComponent implements OnInit {
+export class AliasesComponent {
 
     @Input() public model: any;
 
     constructor() {
-        console.log('Initial AliasesComponent');
-    }
-
-    public ngOnInit() {
         console.log('Initial AliasesComponent');
     }
 

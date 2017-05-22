@@ -34,9 +34,10 @@ import { IntrusionSetHomeComponent, IntrusionSetListComponent, IntrusionSetCompo
 import { IndicatorHomeComponent , IndicatorListComponent, IndicatorEditComponent, IndicatorNewComponent, IndicatorComponent } from './indicators';
 import { IdentityHomeComponent , IdentityListComponent, IdentityEditComponent, IdentityNewComponent, IdentityComponent } from './identities';
 
-import { RelationshipsComponent, MitigateComponent, IntrusionUsesAttackComponent } from './relationships';
+import { MitigateListComponent, MitigateComponent, IntrusionUsesAttackComponent } from './relationships';
 import { ReportsComponent, ReportsListComponent, ReportNewComponent, } from './reports';
-import { MalwareListComponent } from './malwares/malware-list.component';
+import { MalwareHomeComponent, MalwareListComponent, MalwareComponent, MalwareEditComponent, MalwareNewComponent } from './malwares';
+import { ToolHomeComponent, ToolListComponent } from './tools';
 
 const stixRoutes: Routes = [
     { path: 'attack-patterns', component: AttackPatternsHomeComponent,
@@ -55,7 +56,7 @@ const stixRoutes: Routes = [
          { path: 'edit/:id', component: CampaignsEditComponent }
       ]
     },
-    { path: 'course-of-action', component: CourseOfActionHomeComponent,
+    { path: 'course-of-actions', component: CourseOfActionHomeComponent,
       children: [
             { path: '', component: CourseOfActionListComponent },
             { path: 'new', component: CourseOfActionNewComponent },
@@ -96,6 +97,7 @@ const stixRoutes: Routes = [
     },
     { path: 'relationships',
       children: [
+           { path: 'mitigates/:type/:action', component: MitigateListComponent},
            { path: 'mitigates/:id', component: MitigateComponent},
            { path: 'intrusion-uses-attack/:id', component: IntrusionUsesAttackComponent},
       ]
@@ -116,8 +118,22 @@ const stixRoutes: Routes = [
           { path: 'edit/:id', component: IdentityEditComponent }
       ]
     },
-     { path: 'malwares/:id', component: MalwareListComponent,
+    { path: 'malwares', component: MalwareHomeComponent,
+      children: [
+          { path: '', component: MalwareListComponent},
+          { path: 'new', component: MalwareNewComponent },
+          { path: ':id', component: MalwareComponent },
+          { path: 'edit/:id', component: MalwareEditComponent }
+      ]
     },
+    { path: 'tools', component: ToolHomeComponent,
+      children: [
+          { path: '', component: ToolListComponent},
+          // { path: 'new', component: MalwareNewComponent },
+          // { path: ':id', component: MalwareComponent },
+          // { path: 'edit/:id', component: MalwareEditComponent }
+      ]
+    }
 ];
 
 @NgModule({

@@ -3,12 +3,13 @@
 
             <div class="button-row">
                 <a md-raised-button routerLink="./new">NEW</a>
-                <a md-raised-button (click)="download()">DOWNLOAD</a>            
+                <a md-raised-button (click)="download()">DOWNLOAD</a>     
+                <button md-raised-button routerLink="/relationships/mitigates/course-of-actions/attack-pattern">MITIGATES GRID</button>            
             </div>
             <div class="pull-right">
                 <span class="right-align">Results: {{courseOfActions.length}}</span>            
             </div>
         </div>
     </div>
-    <hr *ngIf="courseOfActions.length === 0" />
-    <list-stix-objects [model]="courseOfActions" [showLabels]="'true'" [showExternalReferences]="'true'" (deletButtonClicked)="delete($event)"></list-stix-objects>
+
+    <list-stix-objects [model]="courseOfActions" [showLabels]="'true'" [showExternalReferences]="'true'" (deletButtonClicked)="deletButtonClicked($event)"></list-stix-objects>

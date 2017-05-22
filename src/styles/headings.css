@@ -42,3 +42,10 @@ li:last-child div.list-item-row {
 .list-item-name {
      color: #039be5 !important;
 }
+
+.truncate {
+  width: 80%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

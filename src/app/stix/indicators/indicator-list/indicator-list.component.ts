@@ -29,8 +29,8 @@ export class IndicatorListComponent extends IndicatorComponent implements OnInit
     }
 
     public ngOnInit() {
-
-        let subscription =  super.load().subscribe(
+        let filter = 'filter[order]=name';
+        let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.indicators = data as Indicator[];
             }, (error) => {
@@ -45,7 +45,7 @@ export class IndicatorListComponent extends IndicatorComponent implements OnInit
         );
     }
 
-     public delete(indicator: Indicator): void {
+     public deletButtonClicked(indicator: Indicator): void {
         super.openDialog(indicator).subscribe(
             () => {
                  this.indicators = this.indicators.filter((h) => h.id !== indicator.id);

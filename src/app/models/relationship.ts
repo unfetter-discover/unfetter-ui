@@ -1,5 +1,6 @@
 import { ExternalReference, KillChainPhase } from '.';
 import { Constance } from '../utils/constance';
+import * as moment from 'moment';
 
 export class Relationship {
     public url = Constance.RELATIONSHIPS_URL;
@@ -33,8 +34,8 @@ export class Relationship {
     private createAttributes(): any {
         return {
             version: '1',
-            created: new Date(),
-            modified: new Date(),
+            created: moment().format(Constance.DATE_FORMATE),
+            modified: moment().format(Constance.DATE_FORMATE),
             labels: [],
             external_references: [],
             kill_chain_phases: [],

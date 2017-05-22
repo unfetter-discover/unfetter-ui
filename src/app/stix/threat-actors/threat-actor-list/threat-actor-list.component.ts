@@ -25,7 +25,8 @@ export class ThreatActorListComponent extends TheatActorComponent implements OnI
     }
 
     public ngOnInit() {
-        let subscription =  super.load().subscribe(
+        let filter = 'filter[order]=name';
+        let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.threatActors = data as ThreatActor[];
             }, (error) => {
@@ -40,7 +41,7 @@ export class ThreatActorListComponent extends TheatActorComponent implements OnI
         );
     }
 
-    public delete(threatActor: ThreatActor): void {
+    public deletButtonClicked(threatActor: ThreatActor): void {
         super.openDialog(threatActor).subscribe(
             () => {
                  this.threatActors = this.threatActors.filter((h) => h.id !== threatActor.id);

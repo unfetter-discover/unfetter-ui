@@ -27,7 +27,8 @@ export class IdentityListComponent extends IdentityComponent implements OnInit {
     }
 
     public ngOnInit() {
-        let subscription =  super.load().subscribe(
+        let filter = 'filter[order]=name';
+        let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.identities = data as Identity[];
             }, (error) => {
@@ -42,7 +43,7 @@ export class IdentityListComponent extends IdentityComponent implements OnInit {
         );
     }
 
-    public delete(identity: Identity): void {
+    public deletButtonClicked(identity: Identity): void {
         super.openDialog(identity).subscribe(
             () => {
                  this.identities = this.identities.filter((h) => h.id !== identity.id);

@@ -8,15 +8,17 @@ import { Navigation } from '../../models/navigation';
 })
 export class HeaderNavigationComponent {
     public navigations: Navigation[] = [
-        {url: 'load-patterns', label: 'Attack Patterns'},
-        {url: 'load-campaigns', label: 'Campaigns'},
-        {url: 'load-courses-of-action', label: 'Courses of Action'},
+        {url: 'attack-patterns', label: 'Attack Patterns'},
+        {url: 'campaigns', label: 'Campaigns'},
+        {url: 'course-of-actions', label: 'Courses of Action'},
         {url: 'indicators', label: 'Indicators'},
         {url: 'identities', label: 'Identities'},
+        {url: 'malwares', label: 'Malware'},
         {url: 'relationships', label: 'Relationships'},
-        {url: 'load-sightings', label: 'Sightings'},
+        {url: 'sightings', label: 'Sightings'},
+        {url: 'tools', label: 'Tools'},
         {url: 'threat-actors', label: 'Threat Actors'},
         {url: 'intrusion-sets', label: 'Intrusion Sets'},
-        {url: 'load-reports', label: 'Reports'}
+        {url: 'reports', label: 'Reports'}
     ];
 }

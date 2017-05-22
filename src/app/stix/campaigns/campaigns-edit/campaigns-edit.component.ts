@@ -73,10 +73,6 @@ export class CampaignsEditComponent extends CampaignComponent implements OnInit 
     }
 
     protected saveRelationship(relationship: Relationship): void {
-        let created = new Date();
-        relationship.attributes.created = created;
-        relationship.attributes.modified = created;
-        relationship.attributes.version = '1';
         let subscription = super.create(relationship).subscribe(
             (data) => {
                 console.log('saved');

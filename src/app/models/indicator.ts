@@ -4,7 +4,7 @@ import * as moment from 'moment';
 
 export class Indicator {
     public url = Constance.INDICATOR_URL;
-    public id: number;
+    public id: string;
     public type: string;
 
     public attributes: {
@@ -27,6 +27,7 @@ export class Indicator {
         if (data) {
             this.attributes = data.attributes;
             this.id = data.id;
+            this.formatDate();
         } else {
             this.attributes = this.createAttributes();
         }

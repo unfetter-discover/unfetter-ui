@@ -17,10 +17,10 @@ export class BaseStixComponent {
         protected snackBar?: MdSnackBar) {
     }
 
-     protected load(): Observable<any[]> {
+     protected load(filter?: any): Observable<any[]> {
          let _self  = this;
          return Observable.create((observer) => {
-               _self.loadItems(observer);
+               _self.loadItems(observer, filter);
          });
     }
 
@@ -31,10 +31,10 @@ export class BaseStixComponent {
         });
     }
 
-     protected filter(url: string): Observable<any> {
+     protected getByUrl(url: string): Observable<any> {
         let _self  = this;
         return Observable.create((observer) => {
-              let subscription =  _self.service.filter(url).subscribe(
+              let subscription =  _self.service.getByUrl(url).subscribe(
                    (data) => {
                         observer.next(data);
                         observer.complete();
@@ -68,6 +68,13 @@ export class BaseStixComponent {
         });
     }
 
+    protected delete(item: any): Observable<any>  {
+        let _self  = this;
+        return Observable.create((observer) => {
+               _self.deleteItem(item, observer);
+        });
+    }
+
     protected gotoView(command: any[]): void {
         this.router.navigate(command, { relativeTo: this.route });
     }
@@ -93,8 +100,8 @@ export class BaseStixComponent {
         this.location.back();
     }
 
-    private loadItems(observer: any): void {
-         let subscription = this.service.load().subscribe(
+    private loadItems(observer: any, filter?: any): void {
+         let subscription = this.service.load(filter).subscribe(
             (stixObjects) => {
                 observer.next(stixObjects);
                 observer.complete();
@@ -134,7 +141,7 @@ export class BaseStixComponent {
 
     private deleteItem(item: any, observer: any): void {
         this.route.params
-            .switchMap((params: Params) => this.service.delete(item.id))
+            .switchMap((params: Params) => this.service.delete(item))
             .subscribe(
                 (stixObject) => {
                     observer.next(stixObject);
@@ -159,30 +166,36 @@ export class BaseStixComponent {
     private createItem(item: any, observer: any): void {
         let subscription = this.service.create(item).subscribe(
             (data) => {
-                data.url = item.url;
-                let sub = this.service.update(data).subscribe(
-                    (resullts) => {
-                        observer.next(data);
-                        observer.complete();
-                        this.snackBar.open(item.attributes.name + ' has been successfully save', '', {
-                            duration: this.duration,
-                            extraClasses: ['snack-bar-background-success']
-                        });
-                    } , (error) => {
-                        // handle errors here
-                        // roollback create
-                        this.deleteItem(data, observer);
-                        this.snackBar.open('Error ' + error , '', {
-                            duration: this.duration,
-                            extraClasses: ['snack-bar-background-error']
-                        });
-                    }, () => {
-                        // prevent memory links
-                        if (sub) {
-                            sub.unsubscribe();
-                        }
-                    }
-                );
+                observer.next(data);
+                observer.complete();
+                this.snackBar.open(item.attributes.name + ' has been successfully save', '', {
+                    duration: this.duration,
+                    extraClasses: ['snack-bar-background-success']
+                });
+                // data.url = item.url;
+                // let sub = this.service.update(data).subscribe(
+                //     (resullts) => {
+                //         observer.next(data);
+                //         observer.complete();
+                //         this.snackBar.open(item.attributes.name + ' has been successfully save', '', {
+                //             duration: this.duration,
+                //             extraClasses: ['snack-bar-background-success']
+                //         });
+                //     } , (error) => {
+                //         // handle errors here
+                //         // roollback create
+                //         this.deleteItem(data, observer);
+                //         this.snackBar.open('Error ' + error , '', {
+                //             duration: this.duration,
+                //             extraClasses: ['snack-bar-background-error']
+                //         });
+                //     }, () => {
+                //         // prevent memory links
+                //         if (sub) {
+                //             sub.unsubscribe();
+                //         }
+                //     }
+                // );
             }, (error) => {
                 // handle errors here
                 this.snackBar.open('Error ' + error , '', {

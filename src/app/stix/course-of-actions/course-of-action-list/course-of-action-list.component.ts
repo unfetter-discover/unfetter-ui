@@ -26,7 +26,8 @@ export class CourseOfActionListComponent extends CourseOfActionComponent impleme
     }
 
     public ngOnInit() {
-        let subscription =  super.load().subscribe(
+        let filter = 'filter[order]=name';
+        let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.courseOfActions = data as CourseOfAction[];
             }, (error) => {
@@ -41,7 +42,7 @@ export class CourseOfActionListComponent extends CourseOfActionComponent impleme
         );
     }
 
-    public delete(courseOfAction: CourseOfAction): void {
+    public deletButtonClicked(courseOfAction: CourseOfAction): void {
         super.openDialog(courseOfAction).subscribe(
             () => {
                  this.courseOfActions = this.courseOfActions.filter((h) => h.id !== courseOfAction.id);
