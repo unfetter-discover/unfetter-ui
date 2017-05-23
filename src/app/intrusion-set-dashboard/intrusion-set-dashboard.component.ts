@@ -38,7 +38,6 @@ export class IntrusionSetDashboardComponent implements OnInit {
   }
 
   // private loadItems(observer: any): void {
-    
   //   console.log('load items from ' + this.service.url);
   //   let subscription = this.service.load().subscribe(
   //           (stixObjects) => {
