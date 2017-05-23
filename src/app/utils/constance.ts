@@ -35,7 +35,7 @@ export const Constance = {
 
     MALWARE_URL: 'cti-stix-store-api/malwares',
     MALWARE_TYPE: 'malwares',
-    MALWARE_ICON: 'assets/icon/stix-icons/svg/malware-b.svg'
+    MALWARE_ICON: 'assets/icon/stix-icons/svg/malware-b.svg',
 
     TOOL_URL: 'cti-stix-store-api/tools',
     TOOL_TYPE: 'tools',

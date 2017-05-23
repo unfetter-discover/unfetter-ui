@@ -37,5 +37,4 @@ export class IntrusionSetDashboardComponent implements OnInit {
       }
     );
   }
-
 }

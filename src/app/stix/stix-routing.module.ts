@@ -37,7 +37,7 @@ import { IdentityHomeComponent , IdentityListComponent, IdentityEditComponent, I
 import { MitigateListComponent, MitigateComponent, IntrusionUsesAttackComponent } from './relationships';
 import { ReportsComponent, ReportsListComponent, ReportNewComponent, } from './reports';
 import { MalwareHomeComponent, MalwareListComponent, MalwareComponent, MalwareEditComponent, MalwareNewComponent } from './malwares';
-import { ToolHomeComponent, ToolListComponent } from './tools';
+import { ToolHomeComponent, ToolListComponent, ToolComponent, ToolEditComponent, ToolNewComponent } from './tools';
 
 const stixRoutes: Routes = [
     { path: 'attack-patterns', component: AttackPatternsHomeComponent,
@@ -129,9 +129,9 @@ const stixRoutes: Routes = [
     { path: 'tools', component: ToolHomeComponent,
       children: [
           { path: '', component: ToolListComponent},
-          // { path: 'new', component: MalwareNewComponent },
-          // { path: ':id', component: MalwareComponent },
-          // { path: 'edit/:id', component: MalwareEditComponent }
+          { path: 'new', component: ToolNewComponent },
+          { path: ':id', component: ToolComponent },
+          { path: 'edit/:id', component: ToolEditComponent }
       ]
     }
 ];
