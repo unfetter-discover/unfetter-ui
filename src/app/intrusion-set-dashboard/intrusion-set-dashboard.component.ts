@@ -27,7 +27,8 @@ export class IntrusionSetDashboardComponent implements OnInit {
   public ngOnInit() {
     console.log('intrusion set dashboard init');
     this.service.url = Constance.INTRUSION_SET_URL;
-    this.service.load().subscribe(
+    let filter = { 'order': 'name ASC' };
+    this.service.load(filter).subscribe(
       (data) => {
         this.intrusionSets = data;
       }, (error) => {
@@ -36,26 +37,4 @@ export class IntrusionSetDashboardComponent implements OnInit {
       }
     );
   }
-
-  // private loadItems(observer: any): void {
-  //   console.log('load items from ' + this.service.url);
-  //   let subscription = this.service.load().subscribe(
-  //           (stixObjects) => {
-  //               observer.next(stixObjects);
-  //               observer.complete();
-  //           }, (error) => {
-  //               // handle errors here
-  //               this.snackBar.open('Error ' + error , '', {
-  //                    duration: this.duration,
-  //                    extraClasses: ['snack-bar-background-error']
-  //               });
-  //           }, () => {
-  //               // prevent memory links
-  //               if (subscription) {
-  //                   subscription.unsubscribe();
-  //               }
-  //           }
-  //       );
-  // }
-
 }
