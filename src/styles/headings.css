@@ -44,8 +44,20 @@ li:last-child div.list-item-row {
 }
 
 .truncate {
-  width: 80%;
+  width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.search-box {
+    width: 200px;
+    border: 1px solid lightgrey;
+}
+
+@media (max-width: 375px) {
+    .cell-padding {
+      margin: 10px;
+    }
+
 }

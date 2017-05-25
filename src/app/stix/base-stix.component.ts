@@ -7,7 +7,9 @@ import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/
 import { BaseStixService } from './base-stix.service';
 
 export class BaseStixComponent {
+    protected filteredItems: any[];
     private duration = 3000;
+
     constructor(
         protected service: BaseStixService,
         protected route: ActivatedRoute,
@@ -98,6 +100,10 @@ export class BaseStixComponent {
 
     protected cancelButtonClicked(): void {
         this.location.back();
+    }
+
+    protected onFilterItemsChange(filterItems: any[]): void {
+        this.filteredItems = filterItems;
     }
 
     private loadItems(observer: any, filter?: any): void {

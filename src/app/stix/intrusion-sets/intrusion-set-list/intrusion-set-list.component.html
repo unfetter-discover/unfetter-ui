@@ -1,4 +1,4 @@
-<div class="row">
+<!--<div class="row">
         <div class="col-md-12">
 
             <div class="button-row">
@@ -9,7 +9,8 @@
                 <span class="right-align">Results: {{intrusionSets.length}}</span>            
             </div>
         </div>
-    </div>
+    </div>-->
+    <buttons-filter [model]="intrusionSets" [filteredItems]="filteredItems" (filterItemsChange)="onFilterItemsChange($event)"></buttons-filter>
 
-    <list-stix-objects [model]="intrusionSets" [showLabels]="showLabels" [showExternalReferences]="showExternalReferences" (deletButtonClicked)="deletButtonClicked($event)"></list-stix-objects>
+    <list-stix-objects [model]="filteredItems" [showLabels]="showLabels" [showExternalReferences]="showExternalReferences" (deletButtonClicked)="deletButtonClicked($event)"></list-stix-objects>
    

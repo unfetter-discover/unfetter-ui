@@ -16,9 +16,11 @@ import { KillChainPhasesComponent } from './kill-chain-phases/kill-chain-phases.
 import { ListStixObjectComponent } from './list-stix-objects/list-stix-objects.component';
 import { ReadonlyContentComponent } from './readonly-content/readonly-content.component';
 import { AliasesComponent } from './aliases/aliases.component';
+import { FilterSearchBoxComponent } from './filter-search-box/filter-search-box.component';
 import { RelationshipListComponent } from './relationship-list/relationship-list.component';
 import { MitigateListComponent } from './mitigate-list/mitigate-list.component';
 import { BaseComponentService } from './base-service.component';
+import { ButtonsFilterComponent } from './buttons-filter/buttons-filter.component';
 
 @NgModule({
   declarations: [
@@ -33,8 +35,10 @@ import { BaseComponentService } from './base-service.component';
     ListStixObjectComponent,
     ReadonlyContentComponent,
     AliasesComponent,
+    FilterSearchBoxComponent,
     RelationshipListComponent,
-    MitigateListComponent
+    MitigateListComponent,
+    ButtonsFilterComponent
   ],
   imports: [
     CommonModule,
@@ -66,7 +70,9 @@ import { BaseComponentService } from './base-service.component';
       ReadonlyContentComponent,
       AliasesComponent,
       RelationshipListComponent,
-      MitigateListComponent
+      MitigateListComponent,
+      FilterSearchBoxComponent,
+      ButtonsFilterComponent
   ],
   providers: [
     BaseComponentService

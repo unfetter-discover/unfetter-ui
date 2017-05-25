@@ -27,7 +27,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
   public ngOnInit() {
     console.log('intrusion set dashboard init');
     this.service.url = Constance.INTRUSION_SET_URL;
-    let filter = { 'order': 'name ASC' };
+    let filter = { order: 'name ASC' };
     this.service.load(filter).subscribe(
       (data) => {
         this.intrusionSets = data;

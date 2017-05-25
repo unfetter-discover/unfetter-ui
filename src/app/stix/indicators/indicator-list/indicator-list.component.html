@@ -1,13 +1,3 @@
-<div class="row">
-        <div class="col-md-12">
 
-            <div class="button-row">
-                <a md-raised-button routerLink="./new"> NEW</a>
-                <a md-raised-button (click)="download()"> DOWNLOAD</a>            
-            </div>
-            <div class="pull-right">
-                <span class="right-align">Results: {{indicators.length}}</span>            
-            </div>
-        </div>
-    </div>
-    <list-stix-objects [model]="indicators" [showPattern]="showPattern" [showKillChainPhases]="showKillChainPhases" [showExternalReferences]="showExternalReferences" (deletButtonClicked)="deletButtonClicked($event)"></list-stix-objects>
+<buttons-filter [model]="indicators" [filteredItems]="filteredItems" (filterItemsChange)="onFilterItemsChange($event)"></buttons-filter>
+<list-stix-objects [model]="filteredItems" [showPattern]="showPattern" [showKillChainPhases]="showKillChainPhases" [showExternalReferences]="showExternalReferences" (deletButtonClicked)="deletButtonClicked($event)"></list-stix-objects>

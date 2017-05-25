@@ -12,7 +12,8 @@ export class CourseOfAction {
         created: string;
         modified: string;
         description: string;
-        label_names: Label[];
+        name: string;
+        label: string[];
         external_references: ExternalReference[];
         kill_chain_phases: KillChainPhase[];
     };
@@ -31,8 +32,9 @@ export class CourseOfAction {
             version: '1',
             created: moment().format(Constance.DATE_FORMATE),
             modified: moment().format(Constance.DATE_FORMATE),
+            name: '',
             description: '',
-            label_names: [],
+            label: [],
             external_references: [],
             kill_chain_phases: []
         };
