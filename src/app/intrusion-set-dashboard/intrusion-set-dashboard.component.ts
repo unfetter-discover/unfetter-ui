@@ -18,6 +18,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
 
   private duration = 3000;
   private intrusionSets: IntrusionSet[] = [];
+  protected selectedIntrusionSet = {};
 
   constructor(
     protected service: StixService,
@@ -27,7 +28,8 @@ export class IntrusionSetDashboardComponent implements OnInit {
   public ngOnInit() {
     console.log('intrusion set dashboard init');
     this.service.url = Constance.INTRUSION_SET_URL;
-    let filter = { 'order': 'name ASC' };
+    //let filter = { order: 'name ASC' };
+    let filter = 'filter[order]=name';
     this.service.load(filter).subscribe(
       (data) => {
         this.intrusionSets = data;
@@ -37,4 +39,9 @@ export class IntrusionSetDashboardComponent implements OnInit {
       }
     );
   }
+
+  protected select(intrusionSet) : void {
+    this.selectedIntrusionSet = intrusionSet.attributes;
+  }
+
 }

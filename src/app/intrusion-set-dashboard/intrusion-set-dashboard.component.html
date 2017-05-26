@@ -2,11 +2,22 @@
 
 <div class="row">
   <div class="col-sm-2">
-    <div *ngFor="let item of intrusionSets">
-      <md-checkbox  [checked]="true" >{{item.attributes.name}}</md-checkbox>
+    <div *ngFor="let intrusionSet of intrusionSets">
+      <md-checkbox><a (click)="select(intrusionSet)">{{intrusionSet.attributes.name}}</a></md-checkbox>
     </div>
   </div>
   <div class="col-sm-10">
-    Data...
+    <h1>Intrusion Set | <strong>{{selectedIntrusionSet.name}}</strong></h1>
+    <hr/>
+    <md-tab-group>
+      <md-tab label="One">
+        <h1>Attack Patterns Used</h1>
+        <p>...</p>
+      </md-tab>
+      <md-tab label="Two">
+        <h1>The following Critical Security Controls address the Attack Patterns in <strong>{{selectedIntrusionSet.name}}</strong></h1>
+        <p>...</p>
+      </md-tab>
+    </md-tab-group>
   </div>
 </div>
