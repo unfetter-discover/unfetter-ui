@@ -27,9 +27,10 @@ export class ToolNewComponent extends ToolEditComponent implements OnInit {
         console.log('ToolNewComponent');
     }
 
-    protected saveTool(): void {
+    private saveNewTool(): void {
        let sub = super.create(this.tool).subscribe(
-            (stixObject) => {
+            (data) => {
+                this.tool = new Tool(data);
                 if (this.newRelationships.length > 0 ) {
                     let count = this.newRelationships.length;
                     this.newRelationships.forEach((relationship) => {

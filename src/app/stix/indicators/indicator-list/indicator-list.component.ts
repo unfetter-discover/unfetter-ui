@@ -11,7 +11,7 @@ import { Indicator } from '../../../models';
   templateUrl: './indicator-list.component.html',
 })
 export class IndicatorListComponent extends IndicatorComponent implements OnInit {
-    private indicators: Indicator[] = [];
+    private indicators: Indicator[];
     private model: any;
     private showPattern = true;
     private showKillChainPhases = true;

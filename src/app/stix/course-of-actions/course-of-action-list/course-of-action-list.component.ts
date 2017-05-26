@@ -1,6 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
+
+import { Observable }        from 'rxjs/Observable';
+import { Subject }           from 'rxjs/Subject';
+
+// Observable class extensions
+import 'rxjs/add/observable/of';
+
+// Observable operators
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/distinctUntilChanged';
+
 import { CourseOfActionComponent } from '../course-of-action/course-of-action.component';
 import { Location } from '@angular/common';
 import { StixService } from '../../stix.service';
@@ -12,7 +24,7 @@ import { CourseOfAction } from '../../../models';
 })
 
 export class CourseOfActionListComponent extends CourseOfActionComponent implements OnInit {
-    private courseOfActions: CourseOfAction[] = [];
+    private courseOfActions: CourseOfAction[];
 
     constructor(
         public stixService: StixService,
@@ -30,6 +42,7 @@ export class CourseOfActionListComponent extends CourseOfActionComponent impleme
         let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.courseOfActions = data as CourseOfAction[];
+                // this.assignCopy();
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

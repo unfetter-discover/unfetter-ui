@@ -1,14 +1,3 @@
-<div class="row">
-        <div class="col-md-12">
 
-            <div class="button-row">
-                <button md-raised-button routerLink="./new">NEW</button>
-                <button md-raised-button (click)="download()">DOWNLOAD</button>            
-            </div>
-            <div class="pull-right">
-                <span class="right-align">Results: {{campaigns.length}}</span>            
-            </div>
-        </div>
-    </div>
-
-    <list-stix-objects [model]="campaigns" [showLabels]="showLabels" [showExternalReferences]="showExternalReferences" (deletButtonClicked)="deletButtonClicked($event)"></list-stix-objects>
+    <buttons-filter [model]="campaigns" [filteredItems]="filteredItems" (filterItemsChange)="onFilterItemsChange($event)"></buttons-filter>
+    <list-stix-objects [model]="filteredItems" [showLabels]="showLabels" [showExternalReferences]="showExternalReferences" (deletButtonClicked)="deletButtonClicked($event)"></list-stix-objects>

@@ -8,7 +8,7 @@ import { Tool, AttackPattern, Indicator, IntrusionSet, CourseOfAction, Filter, R
 import { Constance } from '../../../utils/constance';
 
 @Component({
-  selector: 'tool-set-edit',
+  selector: 'tool-edit',
   templateUrl: './tool-edit.component.html',
 })
 export class ToolEditComponent extends ToolComponent implements OnInit {
