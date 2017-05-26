@@ -30,7 +30,7 @@ export class ToolListComponent extends BaseStixComponent implements OnInit {
     }
 
     public ngOnInit() {
-        console.log('ToolListComponent');
+
         let filter = 'filter[order]=name';
         let subscription =  super.load(filter).subscribe(
             (data) => {
@@ -50,7 +50,7 @@ export class ToolListComponent extends BaseStixComponent implements OnInit {
     public deletButtonClicked(tool: Tool): void {
         super.openDialog(tool).subscribe(
             () => {
-                 this.tool = this.tools.filter((h) => h.id !== tool.id);
+                 this.tools = this.tools.filter((h) => h.id !== tool.id);
             }
         );
     }

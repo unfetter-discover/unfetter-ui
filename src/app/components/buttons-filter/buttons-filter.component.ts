@@ -15,4 +15,8 @@ export class ButtonsFilterComponent {
     private onFilterItemsChange(filterItems: any[]): void {
         this.filterItemsChange.emit(filterItems);
     }
+
+    private download(): void {
+        alert('not implemented');
+    }
 }
