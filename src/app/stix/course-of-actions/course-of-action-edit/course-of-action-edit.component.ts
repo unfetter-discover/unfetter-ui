@@ -28,11 +28,11 @@ export class CourseOfActionEditComponent extends CourseOfActionComponent impleme
     }
 
     protected addLabelButtonClicked(): void {
-        this.courseOfAction.attributes.label_names.unshift(new Label());
+        //this.courseOfAction.attributes.label.unshift(new Label());
     }
 
     protected removeLabelButtonClicked(label: Label): void {
-        this.courseOfAction.attributes.label_names = this.courseOfAction.attributes.label_names.filter((l) => l.name !== label.name);
+        //this.courseOfAction.attributes.label = this.courseOfAction.attributes.label.filter((l) => l.name !== label.name);
     }
 
     protected saveCourceOfAction(): void {
