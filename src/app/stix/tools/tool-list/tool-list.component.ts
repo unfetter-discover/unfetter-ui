@@ -30,7 +30,7 @@ export class ToolListComponent extends BaseStixComponent implements OnInit {
     }
 
     public ngOnInit() {
-        console.log('ToolListComponent');
+
         let filter = 'filter[order]=name';
         let subscription =  super.load(filter).subscribe(
             (data) => {
