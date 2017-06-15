@@ -255,7 +255,7 @@ export class LinkNodeGraphComponent implements OnChanges, AfterViewInit  {
 
   private setForceLink(simulation): void {
     let forceLink = D3.forceLink();
-    forceLink.id( (d) => { return d.id; } );
+    forceLink.id( (d: any) => { return d.id; } );
     forceLink.links(this.config.links);
     forceLink.distance(this.linkDistance);
     simulation.force('link', forceLink);
@@ -384,13 +384,13 @@ export class LinkNodeGraphComponent implements OnChanges, AfterViewInit  {
     );
     const forcePositionX = D3.forceX();
     forcePositionX.strength(3);
-    forcePositionX.x((node) => {
+    forcePositionX.x((node: any) => {
       return nodePositionX[node.id];
     });
 
     const forcePositionY = D3.forceY();
     forcePositionY.strength(3);
-    forcePositionY.y((node) => {
+    forcePositionY.y((node: any) => {
       return nodePositionY[node.id];
     });
 
