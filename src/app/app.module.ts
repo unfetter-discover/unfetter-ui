@@ -4,9 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NgModule,  ApplicationRef } from '@angular/core';
 import { RouterModule,  PreloadAllModules, Router } from '@angular/router';
-import { MaterialModule , MdDialogModule } from '@angular/material';
+import { MaterialModule , MdDialogModule, MdSlideToggleModule, MdSliderModule, MdCardModule } from '@angular/material';
+import { AutoCompleteModule } from 'primeng/primeng';
 import { ComponentModule } from './components/component.module';
-import { StixModule } from './stix/stix.module';
+import { StixModule } from './settings/stix.module';
 // Imports for loading & configuring the in-memory web api
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService }  from './in-memory-data.service';
@@ -25,6 +26,7 @@ import { IntrusionSetDashboardComponent } from './intrusion-set-dashboard/intrus
 import { PartnersComponent } from './partners/partners.component';
 import { NoContentComponent } from './no-content';
 import '../styles/styles.scss';
+import '../styles/app.scss';
 import '../styles/headings.css';
 
 /**
@@ -45,7 +47,11 @@ import '../styles/headings.css';
     FormsModule,
     HttpModule,
     MaterialModule,
+    AutoCompleteModule,
     MdDialogModule,
+    MdSliderModule,
+    MdSlideToggleModule,
+    MdCardModule,
     ComponentModule,
     StixModule,
     // InMemoryWebApiModule.forRoot(InMemoryDataService),

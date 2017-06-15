@@ -1,0 +1,94 @@
+<div class="row">
+      <div class="col-md-8">
+            <h4>
+                <!--{{stix-object-icon objectType="relationship"}}-->
+                Link Explorer
+            </h4>
+    </div>
+     <div class="col-md-4" *ngIf="selectedRecord"> 
+        <span class="text-{{selectedRecord.type}} stix-object-item-label">{{selectedRecord.attributes.name}}</span>
+    </div>
+</div>
+
+<div class="row"  *ngIf="graph && forcesEnabled">
+  <div class="col-md-3">
+   
+              <md-card class="result">
+             
+                <md-card-content>
+
+                    <h5>Forces</h5>
+                    <div class="row">
+                        <div class="col-md-12" *ngIf="forcesEnabled">
+                            <div class="checkbox">
+  <label>
+    <input type="checkbox" data-toggle="toggle">
+    Option one is enabled
+  </label>
+</div>
+                            <!--<md-checkbox >Collide</md-checkbox>-->
+                            <!--<md-checkbox class="example-margin" (change)="onChange($event)" [checked]="forcesEnabled.column">Column</md-checkbox>
+                            <md-checkbox class="example-margin" (change)="onChange($event)" [checked]="forcesEnabled.column">Charge</md-checkbox>
+                            <md-checkbox class="example-margin" (change)="onChange($event)" [checked]="forcesEnabled.link">Link</md-checkbox>
+                            <md-checkbox class="example-margin" (change)="onChange($event)" [checked]="forcesEnabled.center">Center</md-checkbox>-->
+
+                        </div>
+                       
+                    </div>
+                 </md-card-content>
+              </md-card>
+              <md-card class="result">
+                <md-card-content>
+                    <h5>Ledgend</h5>
+                    <div class="row">
+                        <span class="col-md-6">
+                            <img class='stix-icon height-30' src='assets/icon/stix-icons/svg/indicator-b.svg'>
+                            <span class="text-indicator stix-object-item-label">Indicator</span>
+                           
+                        </span>
+                         <span class="col-md-6">
+                            <img class='stix-icon height-30' src='assets/icon/stix-icons/svg/attack-pattern-b.svg'>
+                            <span class="text-attack-pattern stix-object-item-label">Attack Pattern</span>
+                           
+                        </span>
+                    </div>
+                    <div class="row">
+                        <span class="col-md-6">
+                            <img class='stix-icon height-30' src='assets/icon/stix-icons/svg/course-of-action-b.svg'>
+                            <span class="text-course-of-action stix-object-item-label">Course Of Action</span>
+                           
+                        </span>
+                         <span class="col-md-6">
+                            <img class='stix-icon height-30' src='assets/icon/stix-icons/svg/tool-b.svg'>
+                             <span class="text-tools stix-object-item-label">Tool</span>
+                          
+                        </span>
+                    </div>
+                    <div class="row">
+                        <span class="col-md-6">
+                            <img class='stix-icon height-30' src='assets/icon/stix-icons/svg/observable-path-b.svg'>
+                             <span class="text-observable-path stix-object-item-label">Observable Path</span>
+                           
+                        </span>
+                         <span class="col-md-6">
+                            <img class='stix-icon height-30' src='assets/icon/stix-icons/svg/threat-actor-b.svg'>
+                             <span class="text-intrusion-sets stix-object-item-label">Intrusion Set</span>
+                          
+                        </span>
+                    </div>
+                    <div class="row">
+                        <span class="col-md-6">
+                            <img class='stix-icon height-30' src='assets/icon/stix-icons/svg/malware-b.svg'>
+                             <span class="text-malware stix-object-item-label">Malware</span>
+                           
+                        </span>
+                        
+                    </div>
+                </md-card-content>
+              </md-card>
+       
+  </div>
+  <div class="col-md-9">
+      <link-node-graph *ngIf="graph && forcesEnabled" [config]="graph" [forcesEnabled]="forcesEnabled" (nodeMouseover)="nodeMouseover($event)" (nodeMouseout)="nodeMouseout($event)"></link-node-graph>
+  </div>
+</div>
