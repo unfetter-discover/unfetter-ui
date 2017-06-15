@@ -21,7 +21,7 @@ import { RelationshipListComponent } from './relationship-list/relationship-list
 import { MitigateListComponent } from './mitigate-list/mitigate-list.component';
 import { BaseComponentService } from './base-service.component';
 import { ButtonsFilterComponent } from './buttons-filter/buttons-filter.component';
-
+import { LinkNodeGraphComponent } from './link-node-graph/link-node-graph.component';
 @NgModule({
   declarations: [
     // Components / Directives/ Pipes
@@ -38,7 +38,8 @@ import { ButtonsFilterComponent } from './buttons-filter/buttons-filter.componen
     FilterSearchBoxComponent,
     RelationshipListComponent,
     MitigateListComponent,
-    ButtonsFilterComponent
+    ButtonsFilterComponent,
+    LinkNodeGraphComponent
   ],
   imports: [
     CommonModule,
@@ -72,7 +73,8 @@ import { ButtonsFilterComponent } from './buttons-filter/buttons-filter.componen
       RelationshipListComponent,
       MitigateListComponent,
       FilterSearchBoxComponent,
-      ButtonsFilterComponent
+      ButtonsFilterComponent,
+      LinkNodeGraphComponent
   ],
   providers: [
     BaseComponentService

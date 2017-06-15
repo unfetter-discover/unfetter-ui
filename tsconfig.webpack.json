@@ -20,7 +20,8 @@
     ],
     "types": [
       "hammerjs",
-      "node"
+      "node",
+      "d3"
     ]
   },
   "exclude": [

@@ -18,6 +18,7 @@ module.exports = {
 
    
     { rel: 'stylesheet',  href: '/assets/bootstrap/css/bootstrap.min.css' },
+    { rel: 'stylesheet',  href: '/assets/bootstrap-toggle/css/bootstrap-toggle.min.css' },
     { rel: 'stylesheet',  href: '/assets/css/theme.css' },
     { rel: 'stylesheet',  href: '/assets/css/primeng.min.css' },
     { rel: 'stylesheet',  href: '/assets/css/vendor.css' },

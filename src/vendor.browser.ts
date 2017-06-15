@@ -14,5 +14,8 @@ import 'rxjs';
 import 'hammerjs';
 import 'jquery';
 import 'bootstrap/dist/js/bootstrap';
+import 'bootstrap-toggle/css/bootstrap-toggle.min.css';
+import 'bootstrap-toggle/js/bootstrap-toggle.min.js';
 import 'primeng/primeng';
+import 'd3';
 // mport 'materialize-css/dist/js/materialize.min.js';
