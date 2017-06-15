@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { CheckboxModule } from 'primeng/primeng';
 import { Observable } from 'rxjs/Observable';
 import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
-
+import { BaseComponentService } from '../components/base-service.component' 
 import { Constance } from '../utils/constance';
 import { IntrusionSetComponent } from '../intrusion-set/intrusion-set.component';
 import { StixService } from '../settings/stix.service';
@@ -14,6 +14,7 @@ import { IntrusionSet } from '../models';
   selector: 'intrusion-set-dashboard',
   templateUrl: 'intrusion-set-dashboard.component.html',
 })
+  
 export class IntrusionSetDashboardComponent implements OnInit {
 
   private selectedIntrusionSet = [];
@@ -21,8 +22,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
   private intrusionSet: IntrusionSet;
   private results: any[];
   private intrusionSets: IntrusionSet[] = [];
-  private intrusionSetsDashboard = {};
-  
+  private intrusionSetsDashboard = {};  
   private autoTicks = false;
   private disabled = false;
   private invert = false;
@@ -33,17 +33,15 @@ export class IntrusionSetDashboardComponent implements OnInit {
   private thumbLabel = true;
   private value = 40;
   private vertical = false;
-
-
   private _tickInterval = 1;
   
   constructor(
     protected service: StixService,
+    protected baseService: BaseComponentService,
     protected snackBar: MdSnackBar) {
   }
 
   public ngOnInit() {
-    console.log('intrusion set dashboard init');
     this.service.url = Constance.INTRUSION_SET_URL;
     let filter = 'filter[order]=name';
     this.service.load(filter).subscribe(
@@ -138,5 +136,4 @@ export class IntrusionSetDashboardComponent implements OnInit {
   private set tickInterval(v) {
     this._tickInterval = Number(v);
   }
-
 }
