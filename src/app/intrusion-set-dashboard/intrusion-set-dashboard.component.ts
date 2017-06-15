@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { CheckboxModule } from 'primeng/primeng';
 import { Observable } from 'rxjs/Observable';
 import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
-import { BaseComponentService } from '../components/base-service.component' 
+import { BaseComponentService } from '../components/base-service.component';
 import { Constance } from '../utils/constance';
 import { IntrusionSetComponent } from '../intrusion-set/intrusion-set.component';
 import { StixService } from '../settings/stix.service';
@@ -14,15 +14,14 @@ import { IntrusionSet } from '../models';
   selector: 'intrusion-set-dashboard',
   templateUrl: 'intrusion-set-dashboard.component.html',
 })
-  
-export class IntrusionSetDashboardComponent implements OnInit {
 
+export class IntrusionSetDashboardComponent implements OnInit {
   private selectedIntrusionSet = [];
   private duration = 3000;
   private intrusionSet: IntrusionSet;
   private results: any[];
-  private intrusionSets: IntrusionSet[] = [];
-  private intrusionSetsDashboard = {};  
+  private intrusionSets: any[] = [];
+  private intrusionSetsDashboard = {};
   private autoTicks = false;
   private disabled = false;
   private invert = false;
@@ -34,7 +33,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
   private value = 40;
   private vertical = false;
   private _tickInterval = 1;
-  
+
   constructor(
     protected service: StixService,
     protected baseService: BaseComponentService,
@@ -55,7 +54,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
   }
 
   private select(intrusionSet: IntrusionSet, isAutoComplete?: boolean): void {
-    let found = this.selectedIntrusionSet.find(
+      let found = this.selectedIntrusionSet.find(
         (i) => {
           return intrusionSet.id === i.id;
         }
@@ -72,7 +71,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
         this.selectedIntrusionSet.push(intrusionSet);
       }
   }
-  
+
   private searchIntrusionSets(): void {
     let ids = [];
     this.selectedIntrusionSet.forEach(
@@ -100,7 +99,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
         );
   }
 
-  private remove(event: any, intrusionSet: IntrusionSet): void {
+  private remove(event: any, intrusionSet: any): void {
        event.preventDefault();
        this.selectedIntrusionSet = this.selectedIntrusionSet.filter(
          (i) => {
@@ -116,23 +115,23 @@ export class IntrusionSetDashboardComponent implements OnInit {
       (intrusionSet) => {
         this.remove(event, intrusionSet);
       }
-    )
+    );
   }
 
   private onSelect(event): void {
       let intrusionSet = this.intrusionSets.find(
-        (intrusionSet) => {
-          return intrusionSet.id === event.id;
+        (i) => {
+          return i.id === event.id;
         }
       );
       intrusionSet.checked = true;
-      this.select(intrusionSet, true);      
+      this.select(intrusionSet, true);
   }
 
   private get tickInterval(): number | 'auto' {
     return this.showTicks ? (this.autoTicks ? 'auto' : this._tickInterval) : null;
   }
-  
+
   private set tickInterval(v) {
     this._tickInterval = Number(v);
   }
