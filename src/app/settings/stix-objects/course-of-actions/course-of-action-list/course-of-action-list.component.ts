@@ -38,7 +38,8 @@ export class CourseOfActionListComponent extends CourseOfActionComponent impleme
     }
 
     public ngOnInit() {
-        let filter = 'filter[order]=name';
+        // let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '-1' }));
+        let filter = encodeURI('filter[order]=name');
         let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.courseOfActions = data as CourseOfAction[];

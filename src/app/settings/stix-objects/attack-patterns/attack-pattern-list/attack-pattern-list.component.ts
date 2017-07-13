@@ -34,7 +34,7 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
     }
 
     public ngOnInit() {
-        let filter = 'filter[order]=name';
+        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '-1' }));
         let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.attackPatterns = data as AttackPattern[];

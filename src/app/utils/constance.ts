@@ -22,7 +22,7 @@ export const Constance = {
     INDICATOR_TYPE: 'indicators',
     INDICATOR_ICON: 'assets/icon/stix-icons/svg/indicator-b.svg',
 
-    ATTACK_PATTERN_URL: 'cti-stix-store-api/attack-patterns',
+    ATTACK_PATTERN_URL: 'api/attack-patterns',
     ATTACK_PATTERN_TYPE: 'attack-patterns',
     ATTACK_PATTERN_ICON: 'assets/icon/stix-icons/svg/attack-pattern-b.svg',
 
