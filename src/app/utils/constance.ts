@@ -1,6 +1,7 @@
 export const Constance = {
     DATE_FORMATE: 'MMM-DD-YYYY',
     REPORTS_URL: 'cti-stix-store-api/reports',
+    REPORTS_ICON: 'assets/icon/stix-icons/svg/report-b.svg',
 
     CAMPAIGN_URL: 'cti-stix-store-api/campaigns',
     CAMPAIGN_TYPE: 'campaigns',

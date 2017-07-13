@@ -5,7 +5,7 @@ import { HttpModule } from '@angular/http';
 import { NgModule,  ApplicationRef } from '@angular/core';
 import { RouterModule,  PreloadAllModules, Router } from '@angular/router';
 import { MaterialModule , MdDialogModule, MdSlideToggleModule, MdSliderModule, MdCardModule } from '@angular/material';
-import { AutoCompleteModule } from 'primeng/primeng';
+import { AutoCompleteModule, CarouselModule, ProgressBarModule } from 'primeng/primeng';
 import { ComponentModule } from './components/component.module';
 import { StixModule } from './settings/stix.module';
 // Imports for loading & configuring the in-memory web api
@@ -28,6 +28,9 @@ import { NoContentComponent } from './no-content';
 import '../styles/styles.scss';
 import '../styles/app.scss';
 import '../styles/headings.css';
+import { ConceptMapComponent } from "./intrusion-set-dashboard/concept-map.component";
+import { CollapsibleTreeComponent } from "./intrusion-set-dashboard/collapsible-tree.component";
+import { AccordionModule } from "primeng/components/accordion/accordion";
 
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process
@@ -38,6 +41,8 @@ import '../styles/headings.css';
     AppComponent,
     HomeComponent,
     IntrusionSetDashboardComponent,
+    // ConceptMapComponent,
+    CollapsibleTreeComponent,
     PartnersComponent,
     NoContentComponent,
   ],
@@ -48,9 +53,12 @@ import '../styles/headings.css';
     HttpModule,
     MaterialModule,
     AutoCompleteModule,
+    CarouselModule,
     MdDialogModule,
     MdSliderModule,
+    AccordionModule,
     MdSlideToggleModule,
+    ProgressBarModule,
     MdCardModule,
     ComponentModule,
     StixModule,
