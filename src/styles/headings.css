@@ -252,3 +252,19 @@ li:last-child div.list-item-row {
 .ui-accordion-content {
     border: 1px solid lightgray;
 }
+
+
+.side{
+  position:fixed;
+  top:0;
+  left:0;
+  height:100%;
+  padding:0;
+}
+
+.scroll-area{
+  width:100%;
+  height:calc(100% - 200px);
+  float:left;
+  overflow-y:auto;
+}
