@@ -8,6 +8,7 @@ import { Component,  OnChanges,
 import { Location } from '@angular/common';
 import * as D3 from 'd3';
 
+
 @Component({
   selector: 'link-node-graph',
   templateUrl: './link-node-graph.component.html',
@@ -41,7 +42,6 @@ export class LinkNodeGraphComponent implements OnChanges, AfterViewInit  {
     }
 
     public ngOnChanges(changes: any): void {
-      console.dir(changes);
       if (this.group) {
         this.group.remove();
       }
@@ -180,7 +180,7 @@ export class LinkNodeGraphComponent implements OnChanges, AfterViewInit  {
 
     private setDragBehavior(node: any, link: any) {
       let _self = this;
-      node.call(D3.drag()
+      node.call(D3.behavior.drag()
           .on('start', dragstarted)
           .on('drag', dragged)
           .on('end', dragended));
@@ -209,7 +209,7 @@ export class LinkNodeGraphComponent implements OnChanges, AfterViewInit  {
 
     private setZoomBehavior(): any {
         let _self = this;
-        let zoom = D3.zoom().scaleExtent([this.min_zoom, this.max_zoom]);
+        let zoom = D3.behavior.zoom().scaleExtent([this.min_zoom, this.max_zoom]);
         zoom.on('zoom', (event) => {
           _self.shapesGroup.attr('transform', 'translate(' + D3.event.translate + ')scale(' + D3.event.scale + ')');
         });
@@ -217,54 +217,73 @@ export class LinkNodeGraphComponent implements OnChanges, AfterViewInit  {
     }
 
     private createSimulation(): any {
-      let simulation = D3.forceSimulation();
-      simulation.nodes(this.config.nodes);
-      if (this.forcesEnabled.charge) {
-        console.log(this.forcesEnabled.charge);
-        this.setForceCharge(simulation);
-      }
-      if (this.forcesEnabled.center) {
-         this.setForceCenter(simulation);
-      }
-      if (this.forcesEnabled.link) {
-        this.setForceLink(simulation);
-      }
-      if (this.forcesEnabled.collide) {
-         this.setForceCollide(simulation);
-      }
-      if (this.forcesEnabled.column) {
-         this.setColumnForcePosition(simulation);
-      }
+      let centerCoordinates = this.getCenterCoordinates();
+      let simulation = D3.layout.force();
+        simulation.nodes(this.config.nodes)
+    .links(this.config.links)
+    .size([centerCoordinates.x,, centerCoordinates.y])
+    .linkStrength(0.1)
+    .friction(0.9)
+    .linkDistance(20)
+    .charge(-30)
+    .gravity(0.1)
+    .theta(0.8)
+    .alpha(0.1)
+    .start();
+    
+  
+      // if (this.forcesEnabled.charge) {
+      //   this.setForceCharge(simulation);
+      // }
+      // if (this.forcesEnabled.center) {
+      //    this.setForceCenter(simulation); 
+      // }
+      // if (this.forcesEnabled.link) {
+      //   this.setForceLink(simulation);
+      // }
+      // if (this.forcesEnabled.collide) {
+      //    this.setForceCollide(simulation);
+      // }
+      // if (this.forcesEnabled.column) {
+      //    this.setColumnForcePosition(simulation);
+      // }
       return simulation;
   }
 
   private setForceCollide(simulation): void {
       // let radius = this.getNodeCollideRadius();
-      let _self = this;
-      let forceCollide = D3.forceCollide();
-      forceCollide.radius(this.collideRadius);
-      simulation.force('collide', forceCollide);
+      // let _self = this;
+      // let forceCollide = D3.forceCollide();
+      // forceCollide.radius(this.collideRadius);
+      // simulation.force('collide', forceCollide);
+      simulation.collideRadius(this.collideRadius)
   }
 
   private setForceCharge(simulation): void {
     let chargeStrength = this.chargeStrength;
-    let manyBody = D3.forceManyBody();
-    manyBody.strength(chargeStrength);
-    simulation.force('charge', manyBody);
+    // let manyBody = D3.forceManyBody();
+    // manyBody.strength(chargeStrength);
+    // simulation.force('charge', manyBody);
+    // simulation. charge(this.chargeStrength);
+    simulation.charge(chargeStrength)
   }
 
   private setForceLink(simulation): void {
-    let forceLink = D3.forceLink();
-    forceLink.id( (d: any) => { return d.id; } );
-    forceLink.links(this.config.links);
-    forceLink.distance(this.linkDistance);
-    simulation.force('link', forceLink);
+    // let forceLink = D3.forceLink();
+    // forceLink.id( (d: any) => { return d.id; } );
+    // forceLink.links(this.config.links);
+    // forceLink.distance(this.linkDistance);
+    // simulation.force('link', forceLink);
+
+    simulation.links(this.config.links);
+    simulation.linkDistance(this.linkDistance);
   }
 
   private setForceCenter(simulation): void {
     let centerCoordinates = this.getCenterCoordinates();
     let forceCenter = D3.forceCenter(centerCoordinates.x, centerCoordinates.y);
     simulation.force('center', forceCenter);
+    
   }
 
   private getNodeCollideRadius(node): any {

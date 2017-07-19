@@ -12,7 +12,7 @@ export class StixService implements BaseStixService {
     constructor(private http: Http) { }
 
     public load(filter?: any): Observable<any[]> {
-        const url = filter ? `${this.url}` + '?' + encodeURI(filter) : `${this.url}`;
+        const url = filter ? `${this.url}` + '?' + filter : `${this.url}`;
         return this.http
                .get(url)
                .map((response) => {

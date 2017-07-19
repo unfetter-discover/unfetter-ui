@@ -1,6 +1,7 @@
 export const Constance = {
     DATE_FORMATE: 'MMM-DD-YYYY',
     REPORTS_URL: 'cti-stix-store-api/reports',
+    REPORTS_ICON: 'assets/icon/stix-icons/svg/report-b.svg',
 
     CAMPAIGN_URL: 'cti-stix-store-api/campaigns',
     CAMPAIGN_TYPE: 'campaigns',
@@ -21,7 +22,7 @@ export const Constance = {
     INDICATOR_TYPE: 'indicators',
     INDICATOR_ICON: 'assets/icon/stix-icons/svg/indicator-b.svg',
 
-    ATTACK_PATTERN_URL: 'cti-stix-store-api/attack-patterns',
+    ATTACK_PATTERN_URL: 'api/attack-patterns',
     ATTACK_PATTERN_TYPE: 'attack-patterns',
     ATTACK_PATTERN_ICON: 'assets/icon/stix-icons/svg/attack-pattern-b.svg',
 

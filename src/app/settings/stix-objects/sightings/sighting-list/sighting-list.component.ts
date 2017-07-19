@@ -26,7 +26,8 @@ export class SightingListComponent extends BaseStixComponent implements OnInit {
     }
 
     public ngOnInit() {
-        let filter = 'sort=create';
+        // let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '-1' }));
+        let filter = encodeURI('sort=create');
         let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.sightings = data;

@@ -18,4 +18,5 @@ import 'bootstrap-toggle/css/bootstrap-toggle.min.css';
 import 'bootstrap-toggle/js/bootstrap-toggle.min.js';
 import 'primeng/primeng';
 import 'd3';
+import 'perfect-scrollbar'
 // mport 'materialize-css/dist/js/materialize.min.js';

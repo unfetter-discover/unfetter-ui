@@ -1,5 +1,5 @@
-<div class="row">
-    <div class="col-sm-2 intrusion-set-dashboard-side-panel">
+<div class="row height-100-percent">
+    <div class="height-100-percent col-sm-3 intrusion-set-dashboard-side-panel">
         <div class="row">
             <div class="col-sm-12">
               <p-autoComplete [(ngModel)]="intrusionSet" [suggestions]="results" (completeMethod)="search($event)" field="name" (onSelect)="onSelect($event)"></p-autoComplete>
@@ -10,26 +10,22 @@
               <div class="col-sm-12">
                 <span class="text-muted">Results ({{selectedIntrusionSet.length}}) Intrusion Sets</span>
                  <a style="float: right;" (click)="removeAll($event)">Clear Fliters</a>
+                 <hr />
               </div>
-              <div class="col-sm-12">
-                
-                  <span class="badge" *ngFor="let intrusionSet of selectedIntrusionSet">
-                      {{intrusionSet.attributes.name}}
-                      <a class="text-muted"  (click)="remove($event, intrusionSet)"><i class="fa fa-close"></i></a>
-                    </span>
-                </div>
-                <div class="col-sm-12">
-                  <div *ngFor="let intrusionSet of intrusionSets">
-                      <md-checkbox id="{{intrusionSet.id}}" [checked]="intrusionSet.checked" 
-                      class="intrusion-set-dashboard-side-panel-checkbox" (click)="select(intrusionSet)">
-                        <a>{{intrusionSet.attributes.name}}</a>
-                      </md-checkbox>
-                  </div>
+                 <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-6" *ngFor="let intrusionSet of intrusionSets">
+                            <md-checkbox id="{{intrusionSet.id}}" [checked]="intrusionSet.checked" 
+                            class="intrusion-set-dashboard-side-panel-checkbox" (click)="select(intrusionSet)">
+                                <a>{{intrusionSet.attributes.name}}</a>
+                            </md-checkbox>
+                        </div>
+                    </div>
               </div>
         </div>
       
     </div>
-    <div class="col-sm-10">
+    <div class="height-100-percent col-sm-9 overflow-y">
         <div class="row">
             <div class="col-sm-12">
                 <div style="float: left">
@@ -49,37 +45,82 @@
         </div>
         <div class="row">
             <div class="col-sm-12">
-           
+            
                 <md-tab-group>
                     <md-tab label="Attack Patterns Used">
-                       
-                              <md-card >
-                     <md-card-header>
-                        <md-card-title>Attack Patterns Used</md-card-title>
-                    </md-card-header>
-                    <md-card-content *ngIf="intrusionSetsDashboard.intrusion_sets">
-                         <div  *ngFor="let i of intrusionSetsDashboard.intrusion_sets"> 
-                                    <label>{{i.attributes.name}}</label>
-                                    <md-slider
-                                        class="example-margin"
-                                        [disabled]="disabled"
-                                        [invert]="invert"
-                                        [max]="max"
-                                        [min]="min"
-                                        [step]="step"
-                                        [thumb-label]="thumbLabel"
-                                        [tick-interval]="tickInterval"
-                                        [value]="value"
-                                        [vertical]="vertical">
-                                    </md-slider>                               
-                                </div>
-                    </md-card-content>
-                </md-card>
-                 <md-card style="margin-top: 10px;">Simple card</md-card>
-                        
+                              <md-card class="margin-top" *ngIf="intrusionSetsDashboard.intrusionSets">
+                                  <div class="row">
+                                                
+                                        <div class="col-xs-4" *ngFor="let i of intrusionSetsDashboard.intrusionSets"> 
+                                            
+                                                <div>
+                                                    <label [style.color]="i.color">{{i.name}}</label>
+                                                </div>
+                                            
+                                             <div>
+                                                
+                                                    
+                                                        <div class="pull-left">
+                                                            <small>{{calPercentage(i.attack_patterns.length , intrusionSetsDashboard.totalAttackPatterns)}}% </small>
+                                                        </div>
+                                                     
+                                                            <p-progressBar [value]="i.attack_patterns.length" [showValue]="false"></p-progressBar>
+                                                       
+                                                        
+                                                        <div class="pull-left">
+                                                            <small> {{i.attack_patterns.length}} OF {{intrusionSetsDashboard.totalAttackPatterns}}</small>
+                                                        </div>
+                                                
+                                             </div>
+                                        </div>
+                                  </div>
+                                
+                            </md-card>
+                           <md-card class="margin-top" *ngIf="intrusionSetsDashboard.killChainPhases">
+                                <p-carousel  headerText="Kill Chain Phases Used"  [value]="intrusionSetsDashboard.killChainPhases" numVisible="5">
+                                        <ng-template let-killChainPhase pTemplate="killChainPhase">
+                                        
+                                                <div class="ui-grid ui-grid-responsive">
+                                                    <div class="ui-grid-row">
+                                                        <div class="ui-grid-col-12 kill-chain-div">{{killChainPhase.name | uppercase}} <small class="badge pull-right">1/{{killChainPhase.attack_patterns.length}}</small></div>
+                                                    </div>
+                                                    <div class="ui-grid-row">
+                                                        <div class="ui-grid-col-12">
+                                                            <div class="carousel-content-wrapper">
+                                                                <div class="ui-grid ui-grid-responsive">
+                                                                    <div class="ui-grid-row" style="margin: 2px 0px;" *ngFor="let attack_pattern of killChainPhase.attack_patterns">
+                                                                        <div class="ui-grid-col-12 attack-pattern-div" [style.color]="attack_pattern.fore" [style.background]="attack_pattern.back">{{attack_pattern.name}} {{attack_pattern.color}}</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </div>
+                                            
+                                        </ng-template>
+                                </p-carousel>
+                            </md-card>
+                             <md-card class="margin-top" *ngIf="treeData">
+                                 <!--<concept-map [data]="graphMetaData"></concept-map>-->
+                                 <collapsible-tree [data]="treeData"></collapsible-tree>
+                             </md-card>
                     </md-tab>
                     <md-tab label="Critical Security Controls (CSC)">
-                    
+                        <p-accordion *ngIf="treeData">
+                            <p-accordionTab header="The following Critical Security Controls address the Attack Patterns in {{data.name}}"  *ngFor="let data of treeData.children">
+                                 <md-card class="margin-top" *ngFor="let csc of getCsc(data)">
+                                    <div><b>{{csc.name}}</b> - <span>{{csc.description}}</span></div>
+                                    <div><span>--> Mitigates {{csc.attackPatterns.length}} Attack Pattern(s):</span></div>
+                                    <div>
+                                        <ol style="color: blue;">
+                                            <li *ngFor="let attackPattern of csc.attackPatterns">{{attackPattern}}</li>
+                                        </ol>  
+                                    </div>
+                                </md-card>
+                            </p-accordionTab>                            
+                        </p-accordion>
+                                            
                     </md-tab>
                 </md-tab-group>
             </div>
