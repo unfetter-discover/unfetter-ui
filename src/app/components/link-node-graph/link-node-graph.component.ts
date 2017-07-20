@@ -8,7 +8,6 @@ import { Component,  OnChanges,
 import { Location } from '@angular/common';
 import * as D3 from 'd3';
 
-
 @Component({
   selector: 'link-node-graph',
   templateUrl: './link-node-graph.component.html',
@@ -186,7 +185,8 @@ export class LinkNodeGraphComponent implements OnChanges, AfterViewInit  {
           .on('end', dragended));
 
       function dragstarted(d) {
-        if (!D3.event.active) {
+        let event = D3.event as any;
+        if (!event.active) {
           _self.simulation.alphaTarget(0.3).restart();
         }
         d.fx = d.x;
@@ -194,12 +194,14 @@ export class LinkNodeGraphComponent implements OnChanges, AfterViewInit  {
       }
 
       function dragged(d) {
-        d.fx = D3.event.x;
-        d.fy = D3.event.y;
+        let event = D3.event as any;
+        d.fx = event.x;
+        d.fy = event.y;
       }
 
       function dragended(d) {
-        if (!D3.event.active) {
+        let event = D3.event as any;
+        if (!event.active) {
           _self.simulation.alphaTarget(0);
         }
         d.fx = null;
@@ -211,7 +213,8 @@ export class LinkNodeGraphComponent implements OnChanges, AfterViewInit  {
         let _self = this;
         let zoom = D3.behavior.zoom().scaleExtent([this.min_zoom, this.max_zoom]);
         zoom.on('zoom', (event) => {
-          _self.shapesGroup.attr('transform', 'translate(' + D3.event.translate + ')scale(' + D3.event.scale + ')');
+          let D3event = D3.event as any;
+          _self.shapesGroup.attr('transform', 'translate(' + D3event.translate + ')scale(' + D3event.scale + ')');
         });
         return zoom;
     }
@@ -219,24 +222,22 @@ export class LinkNodeGraphComponent implements OnChanges, AfterViewInit  {
     private createSimulation(): any {
       let centerCoordinates = this.getCenterCoordinates();
       let simulation = D3.layout.force();
-        simulation.nodes(this.config.nodes)
-    .links(this.config.links)
-    .size([centerCoordinates.x,, centerCoordinates.y])
-    .linkStrength(0.1)
-    .friction(0.9)
-    .linkDistance(20)
-    .charge(-30)
-    .gravity(0.1)
-    .theta(0.8)
-    .alpha(0.1)
-    .start();
-    
-  
+      simulation.nodes(this.config.nodes)
+        .links(this.config.links)
+        .size( [centerCoordinates.x, centerCoordinates.y] )
+        .linkStrength(0.1)
+        .friction(0.9)
+        .linkDistance(20)
+        .charge(-30)
+        .gravity(0.1)
+        .theta(0.8)
+        .alpha(0.1)
+        .start();
       // if (this.forcesEnabled.charge) {
       //   this.setForceCharge(simulation);
       // }
       // if (this.forcesEnabled.center) {
-      //    this.setForceCenter(simulation); 
+      //    this.setForceCenter(simulation);
       // }
       // if (this.forcesEnabled.link) {
       //   this.setForceLink(simulation);
@@ -256,7 +257,7 @@ export class LinkNodeGraphComponent implements OnChanges, AfterViewInit  {
       // let forceCollide = D3.forceCollide();
       // forceCollide.radius(this.collideRadius);
       // simulation.force('collide', forceCollide);
-      simulation.collideRadius(this.collideRadius)
+      simulation.collideRadius(this.collideRadius);
   }
 
   private setForceCharge(simulation): void {
@@ -265,7 +266,7 @@ export class LinkNodeGraphComponent implements OnChanges, AfterViewInit  {
     // manyBody.strength(chargeStrength);
     // simulation.force('charge', manyBody);
     // simulation. charge(this.chargeStrength);
-    simulation.charge(chargeStrength)
+    simulation.charge(chargeStrength);
   }
 
   private setForceLink(simulation): void {
@@ -281,9 +282,8 @@ export class LinkNodeGraphComponent implements OnChanges, AfterViewInit  {
 
   private setForceCenter(simulation): void {
     let centerCoordinates = this.getCenterCoordinates();
-    let forceCenter = D3.forceCenter(centerCoordinates.x, centerCoordinates.y);
-    simulation.force('center', forceCenter);
-    
+    // let forceCenter = D3.forceCenter(centerCoordinates.x, centerCoordinates.y);
+    // simulation.force('center', forceCenter);
   }
 
   private getNodeCollideRadius(node): any {
@@ -366,56 +366,56 @@ export class LinkNodeGraphComponent implements OnChanges, AfterViewInit  {
       return zoomOverlay;
   }
 
-  private setColumnForcePosition(simulation): void {
-    const nodeClasses = {};
+  // private setColumnForcePosition(simulation): void {
+  //   const nodeClasses = {};
 
-    this.config.nodes.forEach((node) => {
-      const nodeClass = node.classNames;
-      if (nodeClasses[nodeClass]) {
-        nodeClasses[nodeClass].push(node);
-      } else {
-        nodeClasses[nodeClass] = [node];
-      }
-    });
+  //   this.config.nodes.forEach((node) => {
+  //     const nodeClass = node.classNames;
+  //     if (nodeClasses[nodeClass]) {
+  //       nodeClasses[nodeClass].push(node);
+  //     } else {
+  //       nodeClasses[nodeClass] = [node];
+  //     }
+  //   });
 
-    const nodeClassColumns = {};
-    let totalColumns = 0;
-    Object.keys(nodeClasses).forEach(
-      (nodeClass) => {
-        totalColumns += 1;
-        nodeClassColumns[nodeClass] = 0;
-    });
-    const totalColumnSections = totalColumns + 2;
-    const bounding = this.htmlElement.getBoundingClientRect();
-    const width = bounding.width;
-    const columnSectionWidth = width / totalColumnSections;
-    let currentColumnPosition = columnSectionWidth;
+  //   const nodeClassColumns = {};
+  //   let totalColumns = 0;
+  //   Object.keys(nodeClasses).forEach(
+  //     (nodeClass) => {
+  //       totalColumns += 1;
+  //       nodeClassColumns[nodeClass] = 0;
+  //   });
+  //   const totalColumnSections = totalColumns + 2;
+  //   const bounding = this.htmlElement.getBoundingClientRect();
+  //   const width = bounding.width;
+  //   const columnSectionWidth = width / totalColumnSections;
+  //   let currentColumnPosition = columnSectionWidth;
 
-    const nodePositionX = {};
-    const nodePositionY = {};
-    Object.keys(nodeClassColumns).forEach(
-      (nodeClass) => {
-        nodeClassColumns[nodeClass] = currentColumnPosition;
-        const currentNodes = nodeClasses[nodeClass];
-        this.setNodePositions(nodePositionX, nodePositionY, currentColumnPosition, currentNodes);
-        currentColumnPosition += columnSectionWidth;
-      }
-    );
-    const forcePositionX = D3.forceX();
-    forcePositionX.strength(3);
-    forcePositionX.x((node: any) => {
-      return nodePositionX[node.id];
-    });
+  //   const nodePositionX = {};
+  //   const nodePositionY = {};
+  //   Object.keys(nodeClassColumns).forEach(
+  //     (nodeClass) => {
+  //       nodeClassColumns[nodeClass] = currentColumnPosition;
+  //       const currentNodes = nodeClasses[nodeClass];
+  //       this.setNodePositions(nodePositionX, nodePositionY, currentColumnPosition, currentNodes);
+  //       currentColumnPosition += columnSectionWidth;
+  //     }
+  //   );
+  //   const forcePositionX = D3.forceX();
+  //   forcePositionX.strength(3);
+  //   forcePositionX.x((node: any) => {
+  //     return nodePositionX[node.id];
+  //   });
 
-    const forcePositionY = D3.forceY();
-    forcePositionY.strength(3);
-    forcePositionY.y((node: any) => {
-      return nodePositionY[node.id];
-    });
+  //   const forcePositionY = D3.forceY();
+  //   forcePositionY.strength(3);
+  //   forcePositionY.y((node: any) => {
+  //     return nodePositionY[node.id];
+  //   });
 
-    simulation.force('columnForcePositionX', forcePositionX);
-    simulation.force('columnForcePositionY', forcePositionY);
-  }
+  //   simulation.force('columnForcePositionX', forcePositionX);
+  //   simulation.force('columnForcePositionY', forcePositionY);
+  // }
 
   private setNodePositions(nodePositionX, nodePositionY, currentColumnPosition, currentNodes): void {
     let currentNodePositionY = 1;

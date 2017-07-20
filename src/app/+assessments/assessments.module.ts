@@ -4,9 +4,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MaterialModule, MdButtonModule, MdCardModule, MdDialogModule } from '@angular/material';
 import { AssessmentsComponent } from './assessments.component';
-import { PageHeaderComponent } from "../components/page/page/header.component";
-import { ComponentModule } from "../components";
-import { AssessmentsService } from "./assessments.service";
+import { PageHeaderComponent } from '../components/page/page/header.component';
+import { ComponentModule } from '../components';
+import { AssessmentsService } from './assessments.service';
 
 console.log('`AssessmentsComponent` bundle loaded asynchronously');
 const routes = [

@@ -28,9 +28,9 @@ import { NoContentComponent } from './no-content';
 import '../styles/styles.scss';
 import '../styles/app.scss';
 import '../styles/headings.css';
-import { ConceptMapComponent } from "./intrusion-set-dashboard/concept-map.component";
-import { CollapsibleTreeComponent } from "./intrusion-set-dashboard/collapsible-tree.component";
-import { AccordionModule } from "primeng/components/accordion/accordion";
+import { ConceptMapComponent } from './intrusion-set-dashboard/concept-map.component';
+import { CollapsibleTreeComponent } from './intrusion-set-dashboard/collapsible-tree.component';
+import { AccordionModule } from 'primeng/components/accordion/accordion';
 
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process

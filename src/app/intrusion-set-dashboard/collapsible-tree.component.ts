@@ -20,27 +20,24 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
         // this.buildGraph('graph', 'graph-info', this.data)
     }
      public ngOnChanges(changes: any): void {
-      d3.select("#graph").selectAll("*").remove();
+      d3.select('#graph').selectAll('*').remove();
       this.data = changes.data.currentValue;
-      this.buildGraph('graph', 'graph-info', this.data)
+      this.buildGraph('graph', 'graph-info', this.data);
     }
 
     public buildGraph(chartElementId, infoElementId, dataJson): void {
         let previousNode = null;
-        let margin = {top: 20, right: 120, bottom: 20, left: 120},
-            width = 960 - margin.right - margin.left,
-            height = 800 - margin.top - margin.bottom;
-
-        let i = 0,
-            duration = 750,
-            root;
-
+        let margin = {top: 20, right: 120, bottom: 20, left: 120};
+        let width = 960 - margin.right - margin.left;
+        let height = 800 - margin.top - margin.bottom;
+        let i = 0;
+        let duration = 750;
+        let root;
         let tree = d3.layout.tree()
             .size([height, width]);
 
         let diagonal = d3.svg.diagonal()
-            .projection(function(d) { return [d.y, d.x]; });
-    
+            .projection((d) => { return [d.y, d.x]; });
 
         let svg = d3.select('#' + chartElementId).append('svg')
             .attr('width', width + margin.right + margin.left)
@@ -68,108 +65,109 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
         function update(source) {
 
             // Compute the new tree layout.
-            let nodes = tree.nodes(root).reverse(),
-                links = tree.links(nodes);
+            let nodes = tree.nodes(root).reverse();
+            let links = tree.links(nodes);
 
             // Normalize for fixed-depth.
-            nodes.forEach(function(d) { d.y = d.depth * 180; });
+            nodes.forEach((d) => { d.y = d.depth * 180; });
 
             // Update the nodes…
             let node = svg.selectAll('g.node')
-                .data(nodes, function(d: any) { return d.id || (d.id = ++i); });
+                .data(nodes, (d: any) => { return d.id || (d.id = ++i); });
 
             // Enter any new nodes at the parent's previous position.
             let nodeEnter = node.enter().append('g')
                 .attr('class', 'node')
-                .attr('transform', function(d: any) { return 'translate(' + source.y0 + ',' + source.x0 + ')'; })
+                .attr('transform', (d: any) => { return 'translate(' + source.y0 + ',' + source.x0 + ')'; })
                 .on('click', click);
 
                 // Define the div for the tooltip
-            var div = d3.select("body").append("div")	
-                .attr("class", "tooltip")				
-                .style("opacity", 0);
+            let div = d3.select('body').append('div')
+                .attr('class', 'tooltip')
+                .style('opacity', 0);
 
             nodeEnter.append('circle')
                 .attr('r', 1e-6)
-                .style('fill', function(d: any)  { 
-                    if(d.type === 'root') {
+                .style('fill', (d: any) => {
+                    if (d.type === 'root') {
                         return 'transparent';
                     } else {
-                        return d._children ? 'lightsteelblue' : '#fff'; 
+                        return d._children ? 'lightsteelblue' : '#fff';
                     }
                 })
-                .style('stroke', function(d: any) {
-                    if(d.type === 'root') {
+                .style('stroke', (d: any) => {
+                    if (d.type === 'root') {
                         return 'transparent';
                     }
                 })
-                .on("mouseover", function(d) {	
+                .on('mouseover', (d) => {
+                    let D3event = d3.event as any;
                     if (d.description) {
-                        div.transition()		
-                            .duration(200)		
-                            .style("opacity", .9);		
-                        div	.html(d.description)	
-                            .style("left", (d3.event.pageX) + "px")		
-                            .style("top", (d3.event.pageY - 28) + "px");	
+                        div.transition()
+                            .duration(200)
+                            .style('opacity', .9);
+                        div	.html(d.description)
+                            .style('left', (D3event.pageX) + 'px')
+                            .style('top', (D3event.pageY - 28) + 'px');
                     }
-                })	                    					
-                .on("mouseout", function(d) {	
-                    if (d.description) {	
-                        div.transition()		
-                            .duration(500)		
-                            .style("opacity", 0);	
+                })
+                .on('mouseout', (d) => {
+                    if (d.description) {
+                        div.transition()
+                            .duration(500)
+                            .style('opacity', 0);
                     }
                 });
 
             nodeEnter.append('text')
-                .attr('x', function(d: any) { return d.children || d._children || d.type === 'intrusion-set' ? -10 : 10; })
+                .attr('x', (d: any) => { return d.children || d._children || d.type === 'intrusion-set' ? -10 : 10; })
                 .attr('dy', '.35em')
-                .attr('text-anchor', function(d) { return d.children || d._children  || d.type === 'intrusion-set'  ? 'end' : 'start'; })
-                .text(function(d: any) { return d.name; })
+                .attr('text-anchor', (d) => { return d.children || d._children  || d.type === 'intrusion-set'  ? 'end' : 'start'; })
+                .text((d: any) => { return d.name; })
                 .style('fill-opacity', 1e-6)
-                 .style('fill', function(d: any) { 
+                 .style('fill', (d: any) => {
                     if (d.type === 'intrusion-set') {
-                         return d.color; 
+                         return d.color;
                     }
                 });
 
             // Transition nodes to their new position.
             let nodeUpdate = node.transition()
                 .duration(duration)
-                .attr('transform', function(d: any) { return 'translate(' + d.y + ',' + d.x + ')'; });
+                .attr('transform', (d: any) => { return 'translate(' + d.y + ',' + d.x + ')'; });
 
             nodeUpdate.select('circle')
                 .attr('r', 4.5)
-                .style('fill', function(d: any)  { 
-                    if(d.type === 'root') {
+                .style('fill', (d: any) => {
+                    if (d.type === 'root') {
                         return 'transparent';
-                    } else {                       
-                        return d._children ? 'lightsteelblue' : '#fff'; 
+                    } else {
+                        return d._children ? 'lightsteelblue' : '#fff';
                     }
                 })
-                .style('stroke', function(d: any) {
-                    if(d.type === 'root') {
+                .style('stroke', (d: any) => {
+                    if (d.type === 'root') {
                         return 'transparent';
                     }
                 });
 
             nodeUpdate.select('text')
                 .style('fill-opacity', 1)
-                .style('fill', function(d: any) { 
+                .style('fill', (d: any) => {
                     if (d.type === 'intrusion-set') {
-                         return d.color; 
+                         return d.color;
                     }
                 })
-                .style('stroke', function(d: any) {
+                .style('stroke', (d: any) => {
                     if (d.type === 'intrusion-set') {
-                         return d.color; 
+                         return d.color;
                     }
                 });
 
             // Transition exiting nodes to the parent's new position.
             let nodeExit = node.exit().transition()
                 .duration(duration)
-                .attr('transform', function(d) { return 'translate(' + source.y + ',' + source.x + ')'; })
+                .attr('transform', (d) => { return 'translate(' + source.y + ',' + source.x + ')'; })
                 .remove();
 
             nodeExit.select('circle')
@@ -180,19 +178,19 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
 
             // Update the links…
             let link = svg.selectAll('path.link')
-                .data(links, function(d: any) { return d.target.id; });
+                .data(links, (d: any) => { return d.target.id; });
 
             // Enter any new links at the parent's previous position.
             link.enter().insert('path', 'g')
                 .attr('class', 'link')
-                .attr('d', function(d: any) {
+                .attr('d', (d: any) => {
                     let o = {x: source.x0, y: source.y0};
                     return diagonal({source: o, target: o});
                 })
-                .style('stroke', function(d: any) {
+                .style('stroke', (d: any) => {
                     if (d.source.color) {
-                         return d.source.color; 
-                    } else if(d.source.type === 'root') {
+                         return d.source.color;
+                    } else if (d.source.type === 'root') {
                         return 'transparent';
                     }
                 });
@@ -205,14 +203,14 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
             // Transition exiting nodes to the parent's new position.
             link.exit().transition()
                 .duration(duration)
-                .attr('d', function(d: any) {
+                .attr('d', (d: any) => {
                     let o = {x: source.x, y: source.y};
                     return diagonal({source: o, target: o});
                 })
                 .remove();
 
             // Stash the old positions for transition.
-            nodes.forEach(function(d: any) {
+            nodes.forEach((d: any) => {
                 d.x0 = d.x;
                 d.y0 = d.y;
             });
@@ -221,7 +219,7 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
         // Toggle children on click.
         function click(d) {
             if ( previousNode && previousNode.id !== d.id && d.type === 'intrusion-set') {
-                click(previousNode)
+                click(previousNode);
             }
             if (d.children) {
                 d._children = d.children;
@@ -231,12 +229,10 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
                 d._children = null;
             }
             update(d);
-             if ((!previousNode || previousNode.id !== d.id) && d.type === 'intrusion-set') {
+            if ((!previousNode || previousNode.id !== d.id) && d.type === 'intrusion-set') {
               previousNode = d;
             }
-            
+
         }
     }
-
-    
 }

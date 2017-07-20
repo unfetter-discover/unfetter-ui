@@ -2,13 +2,13 @@
 /* This file is for setting global styles  */
 @import 'variables';
 
-// // Import a pre-built theme 
+// // Import a pre-built theme
 @import '~@angular/material/core/theming/prebuilt/deeppurple-amber';
 @import '~@angular/material/core/theming/prebuilt/indigo-pink';
-// // Import your custom input theme file so you can call the custom-input-theme function 
+// // Import your custom input theme file so you can call the custom-input-theme function
 //@import '~angular-material-datepicker/src/datepicker/calendar.component.scss';
- 
-// // Using the $theme variable from the pre-built theme you can call the theming function 
+
+// // Using the $theme variable from the pre-built theme you can call the theming function
 //@include calendar-theme($theme);
 
 label {
@@ -43,7 +43,7 @@ body {
   overflow: hidden;
 }
 .container-fluid{
-    height: 96%;
+    height: calc(100% - 30px);
     padding-right: 5px;
     padding-left: 5px;
 }
@@ -92,15 +92,15 @@ code {
 
 
 
-// .mat-card { 
+// .mat-card {
 //     width: 100%;
 //     height: 100%;
 // }
 
 .mat-list .mat-list-item .mat-list-item-content, .mat-nav-list .mat-list-item .mat-list-item-content {
- 
+
     height: auto !important;
-    
+
 }
 .mat-tab-body {
     padding: 5px;
@@ -144,7 +144,7 @@ code {
 }
 
 .margin-top {
-    margin-top: 10px; 
+    margin-top: 10px;
 }
 
 .kill-chain-div {
@@ -161,7 +161,7 @@ code {
     // background: pink;
 }
 .row {
-    margin-bottom: 10px; 
+    margin-bottom: 10px;
 }
 .snack-bar-background-success {
     background :#008000 !important;

@@ -47,7 +47,6 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
          let subscription =  super.get().subscribe(
             (data) => {
                 this.attackPattern = data as AttackPattern;
-                console.dir(data)
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

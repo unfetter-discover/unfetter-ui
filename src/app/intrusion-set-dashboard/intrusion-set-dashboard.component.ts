@@ -23,8 +23,8 @@ export class IntrusionSetDashboardComponent implements OnInit {
   private results: any[];
   private intrusionSets: any[] = [];
   private intrusionSetsDashboard = {};
-  private graphMetaData = {ditems: [], killChainPhase: [], themes: []}
-  private treeData : any;
+  private graphMetaData = {ditems: [], killChainPhase: [], themes: []};
+  private treeData: any;
 
   constructor(
     protected service: StixService,
@@ -103,63 +103,62 @@ export class IntrusionSetDashboardComponent implements OnInit {
                   (attack_pattern) => {
                     attack_pattern.intrusion_sets.forEach(
                       (intrusion_set) => {
-                        if(intrusionSet.name === intrusion_set.name) {
-                            killChainPhaseChild = killChainPhaseChild ? killChainPhaseChild : {name: killChainPhase.name , type: 'kill_chain_phase', color: intrusionSet.color, children: []}
+                        if (intrusionSet.name === intrusion_set.name) {
+                            killChainPhaseChild = killChainPhaseChild ? killChainPhaseChild : {name: killChainPhase.name , type: 'kill_chain_phase', color: intrusionSet.color, children: []};
                             let attackPatternChild  = {type: 'attack-pattern', name: attack_pattern.name, color: intrusionSet.color, description: attack_pattern.description};
                             killChainPhaseChild.children.push(attackPatternChild);
                             this.intrusionSetsDashboard['coursesOfAction'].forEach(
                               (coursesOfAction) => {
                                   let found = coursesOfAction.attack_patterns.find(
                                     (attack) => {
-                                      return attack._id === attack_pattern._id
+                                      return attack._id === attack_pattern._id;
                                     }
                                   );
-                                  if(found) {
+                                  if (found) {
                                     let coursesOfActionChild  = { type: 'course-of-action', name: coursesOfAction.name, description: coursesOfAction.description, color: intrusionSet.color};
-                                    if(!attackPatternChild['children']) {
-                                      attackPatternChild['children'] = []
+                                    if (!attackPatternChild['children']) {
+                                      attackPatternChild['children'] = [];
                                     }
-                                    attackPatternChild['children'].push(coursesOfActionChild)
+                                    attackPatternChild['children'].push(coursesOfActionChild);
                                   }
                               }
-                            )
+                            );
                         }
                     });
                 });
-                if( killChainPhaseChild ) {
+                if (killChainPhaseChild ) {
                   child['children'] = child['children'] ? child['children'] : [];
                   child['children'].push(killChainPhaseChild);
                 }
-              
+
           });
           root.children.push(child);
         });
-        this.treeData = root;
+      this.treeData = root;
   }
 
   private getCsc(data: any): any {
     let cscObject = {};
     let children = data.children ? data.children : data._children;
-    if(children) {
+    if (children) {
         children.forEach((child) => {
-        
-          let c = child._children ? child._children : child.children
-            c.forEach(
-              (attack_pattern) => {
-                let courseOfActionChildren = attack_pattern._children ? attack_pattern._children : attack_pattern.children;
-                if(courseOfActionChildren) {
+
+          let c = child._children ? child._children : child.children;
+          c.forEach(
+            (attack_pattern) => {
+              let courseOfActionChildren = attack_pattern._children ? attack_pattern._children : attack_pattern.children;
+              if (courseOfActionChildren) {
                   courseOfActionChildren.forEach(
-                      (courseOfAction) => {
-                        if (!cscObject[courseOfAction.name]) {
-                          cscObject[courseOfAction.name] = {attackPatterns: [], name: courseOfAction.name, description: courseOfAction.description}
-                        }
-                        cscObject[courseOfAction.name].attackPatterns.push(attack_pattern.name)
+                    (courseOfAction) => {
+                      if (!cscObject[courseOfAction.name]) {
+                        cscObject[courseOfAction.name] = {attackPatterns: [], name: courseOfAction.name, description: courseOfAction.description};
                       }
-                  );      
-                }
-                    
+                      cscObject[courseOfAction.name].attackPatterns.push(attack_pattern.name);
+                    }
+                );
               }
-            )
+            }
+          );
         });
     }
     let cscList = [];
@@ -174,47 +173,49 @@ export class IntrusionSetDashboardComponent implements OnInit {
 
   private buildMetaData(): void {
     this.graphMetaData.ditems = [];
-    this.graphMetaData.killChainPhase = []
+    this.graphMetaData.killChainPhase = [];
     let ditems = [];
     let group = 1;
     let count = 0;
     let c = 0;
     this.selectedIntrusionSet.forEach(
       (intrusionSet) => {
-         let links = []
-          this.intrusionSetsDashboard['killChainPhases'].forEach(
-          (killChainPhase) => { 
-            if ( (c % 2) === 0 && c > 0 ){
+        let links = [];
+        this.intrusionSetsDashboard['killChainPhases'].forEach (
+          (killChainPhase) => {
+            if ( (c % 2) === 0 && c > 0 ) {
               group = group + 1;
             }
-            this.graphMetaData.killChainPhase.push({name: killChainPhase.name, group: group});
+            this.graphMetaData.killChainPhase.push({name: killChainPhase.name, group: '{group}'});
             c++;
-            killChainPhase.attack_patterns.forEach(
+            killChainPhase.attack_patterns.forEach (
               (attack_pattern) => {
                 attack_pattern.intrusion_sets.forEach(
                   (i) => {
-                    if(intrusionSet.attributes.name === i.name) {
-                      let found = links.find((name)=>{
+                    if (intrusionSet.attributes.name === i.name) {
+                      let found = links.find((name) => {
                           return  name === killChainPhase.name;
                       });
-                      if(!found) {
+                      if (!found) {
                         links.push(killChainPhase.name);
                       }
                     }
                   }
-                )
-              })
-        });
+                );
+              }
+            );
+          }
+        );
 
         let item = {
-            'type': 'ditem',
-            'name': intrusionSet.attributes.name,
-            'description': intrusionSet.attributes.description,
-            'ditem': count,
-            'date': intrusionSet.attributes.created,
-            'slug': 'ditem-' + intrusionSet.id + '-' + intrusionSet.attributes.name,
-            'links': links
-        }
+                type: 'ditem',
+                name: intrusionSet.attributes.name,
+                description: intrusionSet.attributes.description,
+                ditem: count,
+                date: intrusionSet.attributes.created,
+                slug: 'ditem-' + intrusionSet.id + '-' + intrusionSet.attributes.name,
+                links: '{links}'
+        };
         count++;
         this.graphMetaData.ditems.push(item);
       }
