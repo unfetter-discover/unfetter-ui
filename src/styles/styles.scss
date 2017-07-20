@@ -3,8 +3,8 @@
 @import 'variables';
 
 // // Import a pre-built theme
-@import '~@angular/material/core/theming/prebuilt/deeppurple-amber';
-@import '~@angular/material/core/theming/prebuilt/indigo-pink';
+@import "~@angular/material/prebuilt-themes/deeppurple-amber";
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 // // Import your custom input theme file so you can call the custom-input-theme function
 //@import '~angular-material-datepicker/src/datepicker/calendar.component.scss';
 

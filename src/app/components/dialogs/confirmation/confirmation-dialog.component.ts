@@ -10,7 +10,7 @@ export class ConfirmationDialogComponent {
   private title: string;
 
   constructor(public dialogRef: MdDialogRef<ConfirmationDialogComponent>) {
-    this.deleteObject =  this.dialogRef.config.data;
+    // this.deleteObject =  this.dialogRef.config.data;
     this.title = this.deleteObject.attributes.name;
     if (this.deleteObject.type.toLowerCase() === 'relationships') {
       this.title = this.deleteObject.attributes.relationship_type;

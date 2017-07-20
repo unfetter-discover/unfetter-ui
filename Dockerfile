@@ -1,7 +1,7 @@
 FROM jmfirth/webpack
 
 # Install packages
-RUN npm install -g angular-cli && apt-get update && apt-get install git -y;
+# RUN npm install -g angular-cli && apt-get update && apt-get install git -y;
 
 # Create Application Directory
 ENV WORKING_DIRECTORY /usr/share/unfetter-ui
