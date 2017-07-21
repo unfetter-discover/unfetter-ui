@@ -25,8 +25,7 @@ export class ThreatActorListComponent extends TheatActorComponent implements OnI
     }
 
     public ngOnInit() {
-         // let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '-1' }));
-        let filter = encodeURI('filter[order]=name');
+        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '-1' }));
         let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.threatActors = data as ThreatActor[];

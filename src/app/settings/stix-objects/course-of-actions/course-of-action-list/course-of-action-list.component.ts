@@ -12,9 +12,7 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
-
 import { CourseOfActionComponent } from '../course-of-action/course-of-action.component';
-
 import { StixService } from '../../../stix.service';
 import { CourseOfAction } from '../../../../models';
 
@@ -38,8 +36,7 @@ export class CourseOfActionListComponent extends CourseOfActionComponent impleme
     }
 
     public ngOnInit() {
-        // let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '-1' }));
-        let filter = encodeURI('filter[order]=name');
+        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '-1' }));
         let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.courseOfActions = data as CourseOfAction[];

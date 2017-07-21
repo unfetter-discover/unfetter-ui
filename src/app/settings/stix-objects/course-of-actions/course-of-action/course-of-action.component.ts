@@ -6,6 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { BaseStixComponent } from '../../../base-stix.component';
 import { StixService } from '../../../stix.service';
 import { CourseOfAction } from '../../../../models';
+import { Constance } from '../../../../utils/constance';
 
 @Component({
     selector: 'course-of-action',
@@ -25,7 +26,7 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
         public snackBar: MdSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
-        stixService.url = this.courseOfAction.url;
+        stixService.url = Constance.COURSE_OF_ACTION_URL;
     }
 
     public ngOnInit() {

@@ -34,7 +34,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
 
   public ngOnInit() {
     this.service.url = Constance.INTRUSION_SET_URL;
-    let filter = 'filter[order]=name';
+    let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '-1' }));
     this.service.load(filter).subscribe(
       (data) => {
         this.intrusionSets = data;

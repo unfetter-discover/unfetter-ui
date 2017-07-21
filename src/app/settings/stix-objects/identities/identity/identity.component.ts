@@ -6,6 +6,7 @@ import { MdDialog, MdDialogRef, MdDialogConfig, MdSnackBar } from '@angular/mate
 import { BaseStixComponent } from '../../../base-stix.component';
 import { StixService } from '../../../stix.service';
 import { Identity } from '../../../../models';
+import { Constance } from '../../../../utils/constance';
 
 @Component({
   selector: 'identity',
@@ -24,7 +25,7 @@ export class IdentityComponent extends BaseStixComponent implements OnInit {
         public snackBar: MdSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
-        stixService.url = this.identity.url;
+        stixService.url = Constance.IDENTITIES_URL;
     }
 
     public ngOnInit() {

@@ -23,15 +23,12 @@ export class ToolListComponent extends BaseStixComponent implements OnInit {
         public dialog: MdDialog,
         public location: Location,
         public snackBar: MdSnackBar) {
-
         super(stixService, route, router, dialog, location, snackBar);
         stixService.url = Constance.TOOL_URL;
-
     }
 
     public ngOnInit() {
-
-        let filter = 'filter[order]=name';
+        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '-1' }));
         let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.tools = data as Tool[];

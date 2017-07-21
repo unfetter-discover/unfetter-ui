@@ -135,6 +135,13 @@ const stixRoutes: Routes = [
           { path: 'edit/:id', component: ToolEditComponent }
       ]
     },
+    // { path: 'tool', component: ToolHomeComponent,
+    //   children: [
+    //       { path: 'new', component: ToolNewComponent },
+    //       { path: ':id', component: ToolComponent },
+    //       { path: 'edit/:id', component: ToolEditComponent }
+    //   ]
+    // },
     { path: 'link-explorer', component: LinkExplorerComponent }
 ];
 
