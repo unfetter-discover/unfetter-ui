@@ -20,7 +20,7 @@ typings
 tsd_typings
 
 # Dist #
-dist
+# dist
 .awcache
 .webpack.json
 compiled
