@@ -1,11 +1,11 @@
 <form>
         <md-input-container class="full-width">
-            <input mdInput placeholder="{{placeholder}}" [mdAutocomplete]="auto" 
+            <input mdInput placeholder="{{placeholder}}" [mdAutocomplete]="auto"
              [formControl]="formCtrl" [value]="inputFieldValue">
         </md-input-container>
 </form>
         <md-autocomplete #auto="mdAutocomplete" class="full-width">
-            <md-option *ngFor="let option of filteredOptions | async" [value]="option.attributes.name" (onSelect)="onOptionChanged(option)">
+            <md-option *ngFor="let option of filteredOptions | async" [value]="option.attributes.name" (onSelectionChange)="onOptionChanged(option)">
                 {{ option.attributes.name }}
             </md-option>
         </md-autocomplete>

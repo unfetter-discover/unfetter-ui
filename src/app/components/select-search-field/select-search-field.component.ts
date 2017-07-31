@@ -18,7 +18,7 @@ export class SelectSearchFieldComponent implements OnInit {
     private filteredOptions: Observable<string[]>;
     private selections: string;
     private options = [ ];
-    private inputFieldValue = '';
+    private inputFieldValue;
 
     constructor(public baseComponentService: BaseComponentService) {
         console.log('Initial SelectSearchFieldComponent');
@@ -46,6 +46,6 @@ export class SelectSearchFieldComponent implements OnInit {
 
     private onOptionChanged(option: string): void {
         this.optionChanged.emit(option);
-        this.inputFieldValue = '';
+        this.inputFieldValue = null;
     }
 }

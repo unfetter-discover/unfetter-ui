@@ -8,7 +8,7 @@ export const Constance = {
     CAMPAIGN_ICON: 'assets/icon/stix-icons/svg/campaign-b.svg',
 
     COURSE_OF_ACTION_URL: 'api/course-of-actions',
-    COURSE_OF_ACTION_TYPE: 'course-of-actions',
+    COURSE_OF_ACTION_TYPE: 'course-of-action',
     COURSE_OF_ACTION_ICON: 'assets/icon/stix-icons/svg/course-of-action-b.svg',
 
     RELATIONSHIPS_URL: 'api/relationships',
@@ -21,7 +21,7 @@ export const Constance = {
     IDENTITIES_URL: 'api/identities',
 
     INDICATOR_URL: 'api/indicators',
-    INDICATOR_TYPE: 'indicators',
+    INDICATOR_TYPE: 'indicator',
     INDICATOR_ICON: 'assets/icon/stix-icons/svg/indicator-b.svg',
 
     ATTACK_PATTERN_URL: 'api/attack-patterns',
@@ -29,7 +29,7 @@ export const Constance = {
     ATTACK_PATTERN_ICON: 'assets/icon/stix-icons/svg/attack-pattern-b.svg',
 
     INTRUSION_SET_URL: 'api/intrusion-sets',
-    INTRUSION_SET_TYPE: 'intrusion-sets',
+    INTRUSION_SET_TYPE: 'intrusion-set',
     INTRUSION_SET_ICON: 'assets/icon/stix-icons/svg/threat-actor-b.svg',
 
     SIGHTING_URL: 'api/sightings',
