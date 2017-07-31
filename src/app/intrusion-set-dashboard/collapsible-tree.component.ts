@@ -27,7 +27,7 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
 
     public buildGraph(chartElementId, infoElementId, dataJson): void {
         let previousNode = null;
-        let margin = {top: 20, right: 120, bottom: 20, left: 120};
+        let margin = {top: 20, right: 120, bottom: 20, left: 0};
         let width = 960 - margin.right - margin.left;
         let height = 800 - margin.top - margin.bottom;
         let i = 0;
@@ -59,9 +59,9 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
 
         root.children.forEach(collapse);
         update(root);
-        for (let j = 0; j < root.children.lenght; j++) {
-            if (root.children[j].children) {
-                 click(root.children[i]);
+        for (let j = 0; j < root.children.length; j++) {
+            if (root.children[j]._children) {
+                 click(root.children[j]);
                  break;
             }
         }

@@ -23,14 +23,14 @@
 
 .collection-item {
     margin-top: 10px;
-    margin-bottom: 10px; 
+    margin-bottom: 10px;
 }
 .collection-item a {
     color: #039be5;
 }
 li div.list-item-row {
-    margin-left: 0px; 
-    margin-right: 0px; 
+    margin-left: 0px;
+    margin-right: 0px;
     font-size:16px;
     padding:20px;
     border-bottom:1px solid #D5D5D5;
@@ -230,7 +230,7 @@ li:last-child div.list-item-row {
     fill: transparent;
 }
 
- .tooltip {	
+ .tooltip {
     position: absolute;
     text-align: left;
     width: 200px;
@@ -267,4 +267,7 @@ li:last-child div.list-item-row {
   height:calc(100% - 200px);
   float:left;
   overflow-y:auto;
+}
+.mat-tab-body {
+    z-index: 0 !important;
 }

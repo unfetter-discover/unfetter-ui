@@ -27,7 +27,7 @@ export class SelectSearchFieldComponent implements OnInit {
             .map((val) => val ? this.filter(val) : this.options.slice());
     }
     public ngOnInit() {
-        let url = 'cti-stix-store-api/' + this.searchUrl;
+        let url = 'api/' + this.searchUrl;
         this.baseComponentService.autoCompelet(url).subscribe(
             (data) => {
                 data.forEach(

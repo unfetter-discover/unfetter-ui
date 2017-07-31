@@ -2,9 +2,12 @@
   <header-navigation></header-navigation>
 
 
-   <div class="container-fluid">
-      <div class="height-100-percent jumbotron">
-        <router-outlet></router-outlet>
+   <div class="container" style="height: 100%;">
+      <!-- <div class="height-100-percent jumbotron"> -->
+      <div class="row" style="margin-top: 60px;  height: 100%; overflow-y: auto;">
+        <div class="col-xs-12">
+            <router-outlet></router-outlet>
+        </div>
       </div>
  </div>
 
@@ -13,7 +16,7 @@
 
 
   <footer class="footer">
-      <div class="container-fluid">
-        <p class="text-muted"> Made by <a class="white text-lighten-3" target="_blank" href="http://www.iad.gov">NSA Information Assurance</a></p>
+      <div class="container">
+        <p> Made by <a class="white text-lighten-3" target="_blank" href="http://www.iad.gov">NSA Information Assurance</a></p>
       </div>
     </footer>

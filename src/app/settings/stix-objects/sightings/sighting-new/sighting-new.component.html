@@ -23,20 +23,20 @@
                 </md-input-container>
     </div>
      <div class="col-md-4">
-                   <p-calendar [(ngModel)]="sighting.attributes.first_seen" dateFormat="MM-dd-yy" showIcon="true"></p-calendar>
+                   <p-calendar [(ngModel)]="sighting.attributes.first_seen" dateFormat="M-dd-yy" showIcon="true"></p-calendar>
 
     </div>
      <div class="col-md-4">
-                   <p-calendar [(ngModel)]="sighting.attributes.last_seen" dateFormat="MM-dd-yy"  showIcon="true"></p-calendar>
+                   <p-calendar [(ngModel)]="sighting.attributes.last_seen" dateFormat="M-dd-yy"  showIcon="true"></p-calendar>
 
     </div>
 </div>
 <div class="row">
     <div class="col-md-12">
          <div class="button-row pull-right">
-                    <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a> 
-                    <a class=" " md-raised-button (click)="saveButtonClicked()" [disabled]="!sighting.attributes.sighting_of_ref"><i class="fa fa-floppy-o "></i> AVE & CLOSE</a>            
-        
+                    <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a>
+                    <a class=" " md-raised-button (click)="saveButtonClicked()" [disabled]="!sighting.attributes.sighting_of_ref"><i class="fa fa-floppy-o "></i> AVE & CLOSE</a>
+
             </div>
     </div>
 </div>

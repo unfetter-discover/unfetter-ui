@@ -25,13 +25,13 @@
             <div class="col-md-3">
                 <label>Valid From</label>
                  <div>
-                <p-calendar [(ngModel)]="indicator.attributes.valid_from"  dateFormat="MM-dd-yy" showIcon="true"></p-calendar>
+                <p-calendar [(ngModel)]="indicator.attributes.valid_from"  dateFormat="M-dd-yy" showIcon="true"></p-calendar>
                  </div>
             </div>
             <div class="col-md-3">
                 <label>Valid To</label>
                <div>
-                    <p-calendar [(ngModel)]="indicator.attributes.valid_to"  dateFormat="MM-dd-yy" showIcon="true"></p-calendar>
+                    <p-calendar [(ngModel)]="indicator.attributes.valid_to"  dateFormat="M-dd-yy" showIcon="true"></p-calendar>
                </div>
             </div>
         </div>
@@ -42,8 +42,8 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="button-row pull-right">
-                        <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a> 
-                        <a class=" " md-raised-button (click)="saveIndicator()" [disabled]="!indicator.attributes.name"><i class="fa fa-floppy-o "></i> SAVE & CLOSE</a>            
+                        <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a>
+                        <a class=" " md-raised-button (click)="saveIndicator()" [disabled]="!indicator.attributes.name"><i class="fa fa-floppy-o "></i> SAVE & CLOSE</a>
                 </div>
             </div>
         </div>
