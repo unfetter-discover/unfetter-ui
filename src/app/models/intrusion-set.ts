@@ -3,7 +3,7 @@ import { Constance } from '../utils/constance';
 import * as moment from 'moment';
 
 export class IntrusionSet {
-    public url = Constance.INTRUSION_SET_URL;
+    public static url = Constance.INTRUSION_SET_URL;
     public id: string;
     public type: string;
     public attributes: {

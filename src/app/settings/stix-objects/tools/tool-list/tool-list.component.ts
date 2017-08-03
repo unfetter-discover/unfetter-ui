@@ -15,6 +15,7 @@ import { Constance } from '../../../../utils/constance';
 
 export class ToolListComponent extends BaseStixComponent implements OnInit {
     private tools: Tool[] = [];
+    private url = Tool.url;
 
     constructor(
         public stixService: StixService,
@@ -28,7 +29,7 @@ export class ToolListComponent extends BaseStixComponent implements OnInit {
     }
 
     public ngOnInit() {
-        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '-1' }));
+        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
         let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.tools = data as Tool[];

@@ -35,13 +35,11 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
        let sub = super.get().subscribe(
         (data) => {
             this.tool =  new Tool(data);
-            let filter = new Filter();
-            filter.values.where['target_ref'] = this.tool.id;
-            this.loadRelationships(filter.values);
+            let filter = 'filter=' + encodeURIComponent(JSON.stringify({ target_ref: this.tool.id }));
+            this.loadRelationships(filter);
 
-            filter = new Filter();
-            filter.values.where['source_ref'] = this.tool.id;
-            this.loadRelationships(filter.values);
+            filter = 'filter=' + encodeURIComponent(JSON.stringify({ source_ref: this.tool.id }));
+            this.loadRelationships(filter);
         }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -109,14 +107,14 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         );
     }
 
-    protected loadRelationships(filter: any): void {
-        let url = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
-        let sub =  super.getByUrl( encodeURI(url) ).subscribe(
+    protected loadRelationships(filter: string): void {
+        let url = Constance.RELATIONSHIPS_URL + '?' + filter;
+        let sub =  super.getByUrl(url).subscribe(
         (data) => {
             this.savedRelationships = data as Relationship[];
             this.savedRelationships.forEach(
                 (relationship) => {
-                    if (filter.where['source_ref']) {
+                    if (filter.indexOf('source_ref') > 0 ) {
                         this.loadStixObject(relationship.attributes.target_ref);
                     } else {
                         this.loadStixObject(relationship.attributes.source_ref);

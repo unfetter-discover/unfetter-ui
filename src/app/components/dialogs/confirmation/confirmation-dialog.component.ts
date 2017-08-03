@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
+import { Component, Inject } from '@angular/core';
+import { MdDialog, MdDialogRef, MdDialogConfig, MD_DIALOG_DATA } from '@angular/material';
 
 @Component({
   selector: 'confirmation-dialog',
@@ -9,11 +9,11 @@ export class ConfirmationDialogComponent {
   public deleteObject: any;
   private title: string;
 
-  constructor(public dialogRef: MdDialogRef<ConfirmationDialogComponent>) {
+  constructor(@Inject(MD_DIALOG_DATA) public data: any) {
     // this.deleteObject =  this.dialogRef.config.data;
-    this.title = this.deleteObject.attributes.name;
-    if (this.deleteObject.type.toLowerCase() === 'relationships') {
-      this.title = this.deleteObject.attributes.relationship_type;
+    this.title = data.attributes.name;
+    if (data.type.toLowerCase() === 'relationships') {
+      this.title = data.attributes.relationship_type;
     }
   }
 }

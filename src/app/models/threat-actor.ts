@@ -1,8 +1,9 @@
 import { ExternalReference, KillChainPhase } from '.';
+import { Constance } from '../utils/constance';
 
 export class ThreatActor {
-    public url = 'cti-stix-store-api/threat-actors';
-    public id: number;
+    public static url = Constance.THREAT_ACTORS_URL;
+    public id: string;
     public type: string;
 
     public attributes: {
@@ -15,9 +16,18 @@ export class ThreatActor {
         external_references: ExternalReference[];
         kill_chain_phases: KillChainPhase[];
     };
-    constructor() {
-        this.type = 'threat-actors';
-        this.attributes = {
+     constructor(data?: ThreatActor) {
+        this.type = Constance.THREAT_ACTORS_TYPE;
+        if (data) {
+            this.attributes = data.attributes;
+            this.id = data.id;
+        } else {
+            this.attributes = this.createAttributes();
+        }
+    }
+
+    private createAttributes(): any {
+        return {
             version: '',
             created: new Date(),
             modified: new Date(),

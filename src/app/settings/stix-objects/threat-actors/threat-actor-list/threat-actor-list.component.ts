@@ -12,6 +12,7 @@ import { ThreatActor } from '../../../../models';
 })
 export class ThreatActorListComponent extends TheatActorComponent implements OnInit {
     private threatActors: ThreatActor[] = [];
+    private url = ThreatActor.url;
 
     constructor(
         public stixService: StixService,
@@ -25,7 +26,7 @@ export class ThreatActorListComponent extends TheatActorComponent implements OnI
     }
 
     public ngOnInit() {
-        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '-1' }));
+        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
         let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.threatActors = data as ThreatActor[];
