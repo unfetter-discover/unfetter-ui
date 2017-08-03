@@ -271,3 +271,8 @@ li:last-child div.list-item-row {
 .mat-tab-body {
     z-index: 0 !important;
 }
+
+.ui-datalist .ui-datalist-data {
+    margin: 10px !important;
+    padding: 0;
+}
