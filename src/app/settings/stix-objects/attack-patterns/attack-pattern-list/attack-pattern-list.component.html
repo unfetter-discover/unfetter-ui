@@ -1,31 +1,29 @@
 
     <div class="row">
         <div class="col-md-12">
-          
+
             <div class="button-row">
                 <a md-raised-button routerLink="./new">NEW</a>
-                <a md-raised-button (click)="download()">DOWNLOAD</a>            
+                <a md-raised-button (click)="download()">DOWNLOAD</a>
             </div>
             <div class="pull-right">
-                <span class="right-align">Results: {{attackPatterns.length}}</span>            
+                <span class="right-align">Results: {{attackPatterns.length}}</span>
             </div>
-            
+
         </div>
     </div>
    <div class="row height-100-percent">
-       
+
         <div class="col-md-12 scroll-area">
             <p-accordion (onOpen)="onTabShow($event)">
                 <p-accordionTab header="{{key}}"  *ngFor="let key of phaseNameGroupKeys">
                     <p-dataList *ngIf="filterAttackPattern[key]" [value]="filterAttackPattern[key]" [paginator]="true" [rows]="numOfRows" [lazy]="true" (onLazyLoad)="loadData($event, key)" [totalRecords]="totalRecords(key)">
                         <ng-template let-attackPattern pTemplate="item">
                             <div class="row  collection-item grey.lighten-5">
-                                
                                 <div class="col-md-9">
-                                    <a class="pull-left list-item--name" href (click)="showDetails($event, attackPattern)">{{attackPattern.attributes.name}}</a>
+                                    <a class="pull-left list-item--name" routerLink="/attack-patterns/{{attackPattern.id}}" (click)="showDetails($event, attackPattern)">{{attackPattern.attributes.name}}</a>
 
-
-                                    <md-chip-list *ngIf="attackPattern.attributes.external_references">
+                                     <md-chip-list *ngIf="attackPattern.attributes.external_references">
                                         <md-chip *ngFor="let external_reference of attackPattern.attributes.external_references" style="margin-left: 5px;">
                                             <a target="_blank" *ngIf="external_reference.url"> {{external_reference.source_name}}</a>
                                             <span *ngIf="!external_reference.url"> {{external_reference.source_name}}</span>
@@ -33,19 +31,19 @@
                                     </md-chip-list>
 
 
-                                </div> 
+                                </div>
                                 <div class="col-md-3">
                                     <button md-raised-button (click)="edit(attackPattern)"><i class="fa fa-pencil"></i></button>
-                                    <button md-raised-button (click)="deletButtonClicked(attackPattern, key)"><i class="fa fa-trash"></i></button>   
-                                </div> 
-                                
-                                
+                                    <button md-raised-button (click)="deletButtonClicked(attackPattern, key)"><i class="fa fa-trash"></i></button>
+                                </div>
+
+
                             </div>
                         </ng-template>
                     </p-dataList>
-                    
+
                 </p-accordionTab>
-               
+
             </p-accordion>
         </div>
     </div>

@@ -59,12 +59,24 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
 
         root.children.forEach(collapse);
         update(root);
-        for (let j = 0; j < root.children.length; j++) {
-            if (root.children[j]._children) {
-                 click(root.children[j]);
-                 break;
-            }
-        }
+        let BreakException = {};
+        try {
+            root.children.forEach(
+                (child: any) => {
+                    if (child._children) {
+                        click(child);
+                        throw BreakException;
+                    }
+                }
+            );
+        } catch (e) { console.log(''); }
+
+        // for (child: any in  root.children) {
+        //     if (child._children) {
+        //          click(child);
+        //          break;
+        //     }
+        // }
         d3.select(self.frameElement).style('height', '800px');
 
         function update(source) {

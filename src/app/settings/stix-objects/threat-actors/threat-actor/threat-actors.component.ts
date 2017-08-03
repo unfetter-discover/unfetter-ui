@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { BaseStixComponent } from '../../../base-stix.component';
 import { StixService } from '../../../stix.service';
 import { ThreatActor } from '../../../../models';
+import { Constance } from '../../../../utils/constance';
 
 @Component({
     selector: 'threat-actors',
@@ -23,7 +24,7 @@ export class TheatActorComponent extends BaseStixComponent implements OnInit {
         public snackBar: MdSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
-        stixService.url = this.threatActor.url;
+        stixService.url = Constance.THREAT_ACTORS_URL;
     }
 
     public ngOnInit() {

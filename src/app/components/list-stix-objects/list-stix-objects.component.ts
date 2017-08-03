@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { MdDialog, MdDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -10,9 +10,10 @@ import { BaseComponent } from '../base.component';
   selector: 'list-stix-objects',
   templateUrl: './list-stix-objects.component.html'
 })
-export class ListStixObjectComponent extends BaseComponent {
+export class ListStixObjectComponent extends BaseComponent implements OnInit {
 
     @Input() public model: any;
+    @Input() public url: string;
     @Input() public showLabels: boolean;
     @Input() public showPattern: boolean;
     @Input() public showKillChainPhases: boolean;
@@ -29,6 +30,10 @@ export class ListStixObjectComponent extends BaseComponent {
         public location: Location) {
 
         super(route, router, dialog);
+    }
+
+    public ngOnInit() {
+        this.url = this.url.replace('api', '');
     }
 
     public editButtonClicked(item: any): void {

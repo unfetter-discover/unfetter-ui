@@ -28,6 +28,14 @@ export const Constance = {
     ATTACK_PATTERN_TYPE: 'attack-patterns',
     ATTACK_PATTERN_ICON: 'assets/icon/stix-icons/svg/attack-pattern-b.svg',
 
+    THREAT_ACTORS_URL: 'api/threat-actors',
+    THREAT_ACTORS_TYPE: 'threat-actors',
+    THREAT_ACTORS_ICON: 'assets/icon/stix-icons/svg/attack-pattern-b.svg',
+
+    IDENTITY_URL: 'api/identities',
+    IDENTITY_TYPE: 'identities',
+    IDENTITY_ICON: 'assets/icon/stix-icons/svg/attack-pattern-b.svg',
+
     INTRUSION_SET_URL: 'api/intrusion-sets',
     INTRUSION_SET_TYPE: 'intrusion-set',
     INTRUSION_SET_ICON: 'assets/icon/stix-icons/svg/threat-actor-b.svg',

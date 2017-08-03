@@ -3,7 +3,7 @@ import { Constance } from '../utils/constance';
 import * as moment from 'moment';
 
 export class CourseOfAction {
-    public url = Constance.COURSE_OF_ACTION_URL;
+    public static url = Constance.COURSE_OF_ACTION_URL;
     public id: string;
     public type: string;
 

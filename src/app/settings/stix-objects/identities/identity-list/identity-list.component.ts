@@ -14,6 +14,7 @@ export class IdentityListComponent extends IdentityComponent implements OnInit {
     private identities: Identity[] = [];
     private showSectors = true;
     private showExternalReferences = true;
+    private url = Identity.url;
 
     constructor(
         public stixService: StixService,

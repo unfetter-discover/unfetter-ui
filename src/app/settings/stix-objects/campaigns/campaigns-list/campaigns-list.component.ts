@@ -16,6 +16,7 @@ export class CampaignsListComponent extends CampaignComponent implements OnInit 
     public campaigns: Campaign[] = [];
     private showExternalReferences: boolean = false;
     private showLabels: boolean = false;
+    private url = Campaign.url;
 
     constructor(
         public stixService: StixService,

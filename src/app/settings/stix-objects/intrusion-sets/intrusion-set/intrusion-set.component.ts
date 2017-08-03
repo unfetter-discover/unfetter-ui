@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { BaseStixComponent } from '../../../base-stix.component';
 import { StixService } from '../../../stix.service';
 import { IntrusionSet } from '../../../../models';
+import { Constance } from '../../../../utils/constance';
 
 @Component({
     selector: 'intrusion-set',
@@ -23,7 +24,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
         public snackBar: MdSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
-        stixService.url = this.intrusionSet.url;
+        stixService.url = Constance.INTRUSION_SET_URL;
     }
 
     public ngOnInit() {
@@ -62,6 +63,11 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
         let subscription =  super.get().subscribe(
             (data) => {
                 this.intrusionSet = new IntrusionSet(data);
+                let filter = 'filter=' + encodeURIComponent(JSON.stringify({ target_ref: this.intrusionSet.id }));
+                // this.loadRelationships(filter);
+
+                filter = 'filter=' + encodeURIComponent(JSON.stringify({ source_ref: this.intrusionSet.id }));
+                // this.loadRelationships(filter);
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
