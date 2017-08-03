@@ -1,16 +1,4 @@
-<!--<div class="row">
-        <div class="col-md-12">
 
-            <div class="button-row">
-                <a md-raised-button routerLink="new">NEW</a>
-                <a md-raised-button (click)="download()">DOWNLOAD</a>            
-            </div>
-            <div class="pull-right">
-                <span class="right-align">Results: {{intrusionSets.length}}</span>            
-            </div>
-        </div>
-    </div>-->
     <buttons-filter [model]="intrusionSets" [filteredItems]="filteredItems" (filterItemsChange)="onFilterItemsChange($event)"></buttons-filter>
 
-    <list-stix-objects [model]="filteredItems" [showLabels]="showLabels" [showExternalReferences]="showExternalReferences" (deletButtonClicked)="deletButtonClicked($event)"></list-stix-objects>
-   
+    <list-stix-objects [model]="filteredItems" [url]="url" [showLabels]="showLabels" [showExternalReferences]="showExternalReferences" (deletButtonClicked)="deletButtonClicked($event)"></list-stix-objects>

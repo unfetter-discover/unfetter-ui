@@ -1,7 +1,8 @@
 import { ExternalReference, KillChainPhase } from '.';
+import { Constance } from '../utils/constance';
 
 export class Identity {
-    public url = 'cti-stix-store-api/identities';
+    public static url = Constance.IDENTITY_URL;
     public id: string;
     public type: string;
 
@@ -18,9 +19,19 @@ export class Identity {
         sectors: string[];
         contact_information: string;
     };
-    constructor() {
-        this.type = 'identities';
-        this.attributes = {
+
+    constructor(data?: Identity) {
+        this.type = Constance.IDENTITY_TYPE;
+        if (data) {
+            this.attributes = data.attributes;
+            this.id = data.id;
+        } else {
+            this.attributes = this.createAttributes();
+        }
+    }
+
+     private createAttributes(): any {
+        return {
             version: '',
             created: new Date(),
             modified: new Date(),

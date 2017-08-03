@@ -87,9 +87,9 @@ export class BaseStixComponent {
             let dialogRef = _self.dialog.open(ConfirmationDialogComponent, { data: item });
             dialogRef.afterClosed().subscribe(
                 (result) => {
-                if (result) {
-                    _self.deleteItem(item, observer);
-                }
+                    if (result === 'true') {
+                        _self.deleteItem(item, observer);
+                    }
             });
         });
     }

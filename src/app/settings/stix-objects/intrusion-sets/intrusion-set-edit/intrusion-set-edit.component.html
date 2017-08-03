@@ -41,21 +41,39 @@
 </div>
 <div class="row">
     <div class="col-md-12">
-       <select-search-field></select-search-field>
+        <select-search-field [placeholder]="'Identities'" [searchUrl]="'identities'" (optionChanged)="add($event)"></select-search-field>
+        <md-chip-list class="pull-left">
+            <md-chip selected="true" color="accent" *ngFor="let identity of identities">
+                {{identity.attributes.name}}
+               <span class="cursor-pointer" (click)="remove(identity)"><i class="fa fa-trash"></i></span>
+            </md-chip>
+        </md-chip-list>
     </div>
 </div>
 
 <div class="row">
     <div class="col-md-12">
-       <select-search-field></select-search-field>
+        <select-search-field [placeholder]="'Threat Actors'" [searchUrl]="'threat-actors'" (optionChanged)="add($event)"></select-search-field>
+        <md-chip-list class="pull-left">
+            <md-chip selected="true" color="accent" *ngFor="let threatActor of threatActors">
+                {{threatActor.attributes.name}}
+               <span class="cursor-pointer" (click)="remove(threatActor)"><i class="fa fa-trash"></i></span>
+            </md-chip>
+        </md-chip-list>
     </div>
 </div>
 <div class="row">
     <div class="col-md-12">
-        <p><img class='stix-icon'  src="assets/icon/stix-icons/svg/attack-pattern-b.svg"> Attack Patterns</p>
-       <select-search-field></select-search-field>
+        <select-search-field [placeholder]="'Attack Patterns'" [searchUrl]="'attack-patterns'" (optionChanged)="add($event)"></select-search-field>
+        <md-chip-list class="pull-left">
+            <md-chip selected="true" color="accent" *ngFor="let attackPattern of attackPatterns">
+                {{attackPattern.attributes.name}}
+               <span class="cursor-pointer" (click)="remove(attackPattern)"><i class="fa fa-trash"></i></span>
+            </md-chip>
+        </md-chip-list>
     </div>
 </div>
+
 
 
 

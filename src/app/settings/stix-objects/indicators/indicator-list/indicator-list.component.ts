@@ -16,6 +16,7 @@ export class IndicatorListComponent extends IndicatorComponent implements OnInit
     private showPattern = true;
     private showKillChainPhases = true;
     private showExternalReferences = true;
+    private url = Indicator.url;
 
     constructor(
         public stixService: StixService,

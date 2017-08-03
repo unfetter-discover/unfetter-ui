@@ -34,12 +34,12 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
     }
 
     public ngOnInit() {
-        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '-1' }));
+        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
         let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.attackPatterns = data as AttackPattern[];
                 this.getPhaseNameAttackPatterns();
-                this.phaseNameGroupKeys = Object.keys(this.phaseNameGroups);
+                this.phaseNameGroupKeys = Object.keys(this.phaseNameGroups).sort();
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -112,8 +112,14 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
 
     private loadData(event: any, phaseName: string): void {
         let attackPatterns = this.phaseNameGroups[phaseName] as AttackPattern[];
-        this.filterAttackPattern[phaseName] = attackPatterns.filter((attackPattern: AttackPattern, index: number, arr: any) => {
+        attackPatterns = attackPatterns.filter((attackPattern: AttackPattern, index: number, arr: any) => {
             return ( index >= event.first && index <  (event.first + event.rows) );
         });
+        attackPatterns.sort(
+            (a1: AttackPattern, a2: AttackPattern) => {
+                return a1.attributes.name.toLowerCase().localeCompare(a2.attributes.name.toLowerCase())
+            }
+        )
+         this.filterAttackPattern[phaseName] = attackPatterns;
     }
 }

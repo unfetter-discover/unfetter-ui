@@ -14,7 +14,7 @@ export class IntrusionSetListComponent extends IntrusionSetComponent implements 
     private intrusionSets: IntrusionSet[] = [];
     private showLabels = false;
     private showExternalReferences = false;
-
+    private url = IntrusionSet.url;
     constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
@@ -24,10 +24,11 @@ export class IntrusionSetListComponent extends IntrusionSetComponent implements 
         public snackBar: MdSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
+
     }
 
     public ngOnInit() {
-        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '-1' }));
+        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
         let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.intrusionSets = data as IntrusionSet[];

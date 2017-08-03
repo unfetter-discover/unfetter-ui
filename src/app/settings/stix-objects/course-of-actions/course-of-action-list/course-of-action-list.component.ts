@@ -23,6 +23,7 @@ import { CourseOfAction } from '../../../../models';
 
 export class CourseOfActionListComponent extends CourseOfActionComponent implements OnInit {
     private courseOfActions: CourseOfAction[];
+    private url = CourseOfAction.url;
 
     constructor(
         public stixService: StixService,
