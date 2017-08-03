@@ -34,12 +34,12 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
     }
 
     public ngOnInit() {
-        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '-1' }));
+        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
         let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.attackPatterns = data as AttackPattern[];
                 this.getPhaseNameAttackPatterns();
-                this.phaseNameGroupKeys = Object.keys(this.phaseNameGroups);
+                this.phaseNameGroupKeys = Object.keys(this.phaseNameGroups).sort();
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
