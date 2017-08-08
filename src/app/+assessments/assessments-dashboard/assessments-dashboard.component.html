@@ -14,13 +14,13 @@
 
     <div *ngIf="riskByAttackPattern && riskByAttackPattern.phases && riskByAttackPattern.phases.length" id="phaseListWrapper">
         <div *ngFor="let phase of riskByAttackPattern.phases">
-            <phase-list [phase]="phase"></phase-list>
+            <phase-list [phase]="phase" [numAttackPatterns]="getNumAttackPatterns(phase._id)"></phase-list>
         </div>
     </div>
 
 
 
-    <p>{{ riskByAttackPattern | json }}</p>
+    <!--<p>{{ riskByAttackPattern | json }}</p>-->
     <p>{{ assessment | json }} </p>
 
     <hr>

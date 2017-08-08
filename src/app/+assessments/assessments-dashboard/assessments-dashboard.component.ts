@@ -11,8 +11,8 @@ import { Constance } from '../../utils/constance';
 
 export class AssessmentsDashboardComponent implements OnInit {
 
-    assessment: Object;
-    riskByAttackPattern: Object;
+    assessment: any;
+    riskByAttackPattern: any;
 
     constructor(
         private assessmentsDashboardService: AssessmentsDashboardService, 
@@ -32,11 +32,25 @@ export class AssessmentsDashboardComponent implements OnInit {
         this.assessmentsDashboardService.getRiskByAttackPattern(id).subscribe(
             res => {
                 this.riskByAttackPattern = res ? res : {};
-                console.log(this.riskByAttackPattern);
-                
+                console.log(this.riskByAttackPattern);                
             },
             err => console.log(err)
         );
+    }
+
+    getNumAttackPatterns(phaseName) {
+        let attackPatternsByKillChain = this.riskByAttackPattern.attackPatternsByKillChain;
+        // console.log(attackPatternsByKillChain);
+        // console.log(phaseName);
+        
+        
+
+        for (let killPhase of attackPatternsByKillChain) {
+            if (killPhase._id === phaseName && killPhase.attackPatterns !== undefined) {
+                return killPhase.attackPatterns.length;
+            }
+        }
+        return 0;
     }
 
 

@@ -2,7 +2,7 @@
     <div class="col-sm-3">
         <!-- TODO add capitalize / remove hyphen pipe -->
         <p>{{ phase._id }}</p>
-        <p class="text-muted">Attack Patterns &bull; {{ phase.scores.length }} / 99</p>
+        <p class="text-muted">Attack Patterns &bull; {{ phase.scores.length }} / {{ numAttackPatterns }}</p>
     </div>   
     <div class="col-sm-1">
         <div class="box" [style.background]="riskColor"></div>
