@@ -22,7 +22,7 @@ export class AssessmentsComponent implements OnInit {
 
   private reports: Report[] = [];
   constructor( protected dialog: MdDialog, private assessmentsService: AssessmentsService) {
-     assessmentsService.url = Constance.REPORTS_URL;
+     assessmentsService.url = Constance.X_UNFETTER_ASSESSMENT_URL;
   }
 
   public ngOnInit() {

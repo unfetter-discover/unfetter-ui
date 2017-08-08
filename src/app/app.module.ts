@@ -31,6 +31,7 @@ import '../styles/headings.css';
 import { ConceptMapComponent } from './intrusion-set-dashboard/concept-map.component';
 import { CollapsibleTreeComponent } from './intrusion-set-dashboard/collapsible-tree.component';
 import { AccordionModule } from 'primeng/components/accordion/accordion';
+import { AssessmentsModule } from './+assessments/assessments.module';
 
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process
@@ -65,6 +66,7 @@ import { AccordionModule } from 'primeng/components/accordion/accordion';
     // InMemoryWebApiModule.forRoot(InMemoryDataService),
      AppRoutingModule,
     // RouterModule.forRoot(ROUTES, { useHash: true, preloadingStrategy: PreloadAllModules })
+    AssessmentsModule,
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS,

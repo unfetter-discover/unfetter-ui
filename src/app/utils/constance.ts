@@ -54,5 +54,9 @@ export const Constance = {
 
     TOOL_URL: 'api/tools',
     TOOL_TYPE: 'tools',
-    TOOL_ICON: 'assets/icon/stix-icons/svg/tool-b.svg'
+    TOOL_ICON: 'assets/icon/stix-icons/svg/tool-b.svg',
+
+    X_UNFETTER_ASSESSMENT_URL: 'api/x-unfetter-assessments',
+    X_UNFETTER_ASSESSMENT_TYPE: 'x-unfetter-assessment',
+    // X_UNFETTER_ASSESSMENT_ICON: 'assets/icon/stix-icons/svg/x-unfetter-assessment-b.svg',
 };

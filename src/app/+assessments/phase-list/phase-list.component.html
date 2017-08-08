@@ -1,0 +1,16 @@
+<div class="phaseList row">
+    <div class="col-sm-3">
+        <!-- TODO add capitalize / remove hyphen pipe -->
+        <p>{{ phase._id }}</p>
+        <p class="text-muted">Attack Patterns &bull; {{ phase.scores.length }} / 99</p>
+    </div>   
+    <div class="col-sm-1">
+        <div class="box" [style.background]="riskColor"></div>
+    </div>
+    <div class="col-sm-1">
+        <p>{{ phase.avgRisk | percent:'2.1-1' }}</p>
+    </div>
+    <div class="col-md7">
+        Line
+    </div>
+</div>

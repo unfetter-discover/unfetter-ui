@@ -7,11 +7,21 @@ import { AssessmentsComponent } from './assessments.component';
 import { PageHeaderComponent } from '../components/page/page/header.component';
 import { ComponentModule } from '../components';
 import { AssessmentsService } from './assessments.service';
+import { AssessmentsDashboardComponent } from './assessments-dashboard/assessments-dashboard.component';
+import { AssessmentsDashboardService } from './assessments-dashboard/assessments-dashboard.service';
+import { GlobalModule } from 'app/global/global.module';
+import { PhaseList } from './phase-list/phase-list.component';
 
 console.log('`AssessmentsComponent` bundle loaded asynchronously');
 const routes = [
-  { path: '', component: AssessmentsComponent },
-  { path: 'assessment/edit/:id', component: AssessmentsComponent }
+  { 
+    path: '', 
+    component: AssessmentsComponent, 
+  }, 
+  {
+    path: 'dashboard/:id',
+    component: AssessmentsDashboardComponent,
+  },
 ];
 
 @NgModule({
@@ -19,7 +29,9 @@ const routes = [
     /**
      * Components / Directives/ Pipes
      */
-    AssessmentsComponent
+    AssessmentsComponent,
+    AssessmentsDashboardComponent,
+    PhaseList,
   ],
   imports: [
     CommonModule,
@@ -29,10 +41,12 @@ const routes = [
     MdDialogModule,
     MdButtonModule,
     RouterModule.forChild(routes),
-    ComponentModule
+    ComponentModule,
+    GlobalModule
   ],
   providers: [
-    AssessmentsService
+    AssessmentsService,
+    AssessmentsDashboardService
   ]
 })
 export class AssessmentsModule {

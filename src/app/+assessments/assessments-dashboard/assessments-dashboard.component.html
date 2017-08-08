@@ -1,0 +1,31 @@
+<div id="assessmentsDashboard">
+    <div class="row">
+        <div class="col-md-9">
+            <h3>
+                <!--<i class="material-icons">description</i>-->
+                <img class="stix-icon" src="assets/icon/stix-icons/svg/report-b.svg">
+                &nbsp;Assessment: {{ assessment.attributes.name}}</h3>
+        </div>
+        <div class="col-md-3 text-right">
+            <!-- TODO make date pipe -->
+            <p class="headingMarginMatch">Published &bull; <span class="text-muted">{{ assessment.attributes.created }}</span></p>
+        </div>
+    </div>
+
+    <div *ngIf="riskByAttackPattern && riskByAttackPattern.phases && riskByAttackPattern.phases.length" id="phaseListWrapper">
+        <div *ngFor="let phase of riskByAttackPattern.phases">
+            <phase-list [phase]="phase"></phase-list>
+        </div>
+    </div>
+
+
+
+    <p>{{ riskByAttackPattern | json }}</p>
+    <p>{{ assessment | json }} </p>
+
+    <hr>
+
+    <p class="text-muted">
+        <a routerLink="/assessments">Assessments Menu</a>
+    </p>
+</div>

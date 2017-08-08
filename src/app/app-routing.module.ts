@@ -11,7 +11,7 @@ import { NoContentComponent } from './no-content';
 import { SelectivePreloadingStrategy } from './selective-preloading-strategy';
 
 const appRoutes: Routes = [
-  { path: '',      component: HomeComponent },
+    { path: '',      component: HomeComponent },
     { path: 'home',  component: HomeComponent },
     { path: 'partners', component: PartnersComponent },
     { path: 'intrusion-set-dashboard',      component: IntrusionSetDashboardComponent },
