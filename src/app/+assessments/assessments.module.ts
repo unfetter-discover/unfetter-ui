@@ -11,6 +11,8 @@ import { AssessmentsDashboardComponent } from './assessments-dashboard/assessmen
 import { AssessmentsDashboardService } from './assessments-dashboard/assessments-dashboard.service';
 import { GlobalModule } from 'app/global/global.module';
 import { PhaseList } from './phase-list/phase-list.component';
+import { ChartsModule } from 'ng2-charts';
+import { AssessmentsGroup } from './group/group.component';
 
 console.log('`AssessmentsComponent` bundle loaded asynchronously');
 const routes = [
@@ -22,6 +24,10 @@ const routes = [
     path: 'dashboard/:id',
     component: AssessmentsDashboardComponent,
   },
+  {
+    path: 'group/:id',
+    component: AssessmentsGroup,
+  },
 ];
 
 @NgModule({
@@ -32,8 +38,10 @@ const routes = [
     AssessmentsComponent,
     AssessmentsDashboardComponent,
     PhaseList,
+    AssessmentsGroup,
   ],
   imports: [
+    ChartsModule,
     CommonModule,
     FormsModule,
     MaterialModule,
@@ -46,7 +54,7 @@ const routes = [
   ],
   providers: [
     AssessmentsService,
-    AssessmentsDashboardService
+    AssessmentsDashboardService,
   ]
 })
 export class AssessmentsModule {

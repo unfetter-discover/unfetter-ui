@@ -1,4 +1,19 @@
 export const Constance = {
+
+    // TODO store these on server?
+    KILL_CHAIN_PHASES: [
+        'persistence', 
+        'priviledge-escalation', 
+        'defense-evasion', 
+        'credential-access', 
+        'discovery',
+        'lateral-movement',
+        'execution',
+        'collection',
+        'exfiltration',
+        'command-and-control'
+    ],
+
     DATE_FORMATE: 'MMM-DD-YYYY',
     REPORTS_URL: 'api/reports',
     REPORTS_ICON: 'assets/icon/stix-icons/svg/report-b.svg',

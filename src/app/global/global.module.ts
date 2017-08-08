@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 
 import { GenericApi } from './services/genericapi.service';
+import { CapitalizePipe } from './pipes/capitalize.pipe';
 
 @NgModule({
     imports: [],
-    exports: [],
-    declarations: [],
+    exports: [CapitalizePipe],
+    declarations: [CapitalizePipe],
     providers: [GenericApi]
 })
 

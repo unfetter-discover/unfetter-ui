@@ -1,27 +1,55 @@
 <div id="assessmentsDashboard">
     <div class="row">
         <div class="col-md-9">
-            <h3>
+            <h4>
                 <!--<i class="material-icons">description</i>-->
                 <img class="stix-icon" src="assets/icon/stix-icons/svg/report-b.svg">
-                &nbsp;Assessment: {{ assessment.attributes.name}}</h3>
+                &nbsp;Assessment: {{ assessment.attributes.name}}
+            </h4>
         </div>
         <div class="col-md-3 text-right">
             <!-- TODO make date pipe -->
-            <p class="headingMarginMatch">Published &bull; <span class="text-muted">{{ assessment.attributes.created }}</span></p>
+            <p class="headingMarginMatch text-muted">Published &bull; {{ assessment.attributes.created | date:'medium' }}</p>
         </div>
     </div>
 
-    <div *ngIf="riskByAttackPattern && riskByAttackPattern.phases && riskByAttackPattern.phases.length" id="phaseListWrapper">
-        <div *ngFor="let phase of riskByAttackPattern.phases">
-            <phase-list [phase]="phase" [numAttackPatterns]="getNumAttackPatterns(phase._id)"></phase-list>
+    <div class="row"  *ngIf="riskByAttackPattern && riskByAttackPattern.phases && riskByAttackPattern.phases.length" id="phaseListWrapper">
+
+        <div class="col-md-8">
+
+            <div class="row">
+                <div class="col-xs-4">
+                    <h5>Kill Chain Phase</h5>
+                </div>
+                <div class="col-xs-3">
+                    <h5>Risk Level</h5>
+                </div>
+                <div class="col-xs-5">
+                    <h5>Coverage</h5>
+                </div>
+            </div>
+            <hr>
+
+            <div *ngFor="let phase of riskByAttackPattern.phases">
+                <phase-list [phase]="phase" [numAttackPatterns]="getNumAttackPatterns(phase._id)" [assessmentId]="assessment.id"></phase-list>
+            </div>
+            <p><small>Unassessed Kill Chain Phases: {{ unassessedPhases | capitalize }}</small>
+            </p>
         </div>
+
+        <div class="col-md-4" *ngIf="doughnutChartData[0].data && doughnutChartData[0].data.length == 2">
+            <br>
+            <h5 class="text-center">Risk Addressed</h5>
+            <canvas baseChart 
+                [datasets]="doughnutChartData" 
+                [labels]="doughnutChartLabels" 
+                [chartType]="doughnutChartType"
+                [colors]="doughnutChartColors"
+                [options]="chartOptions"></canvas>    
+        </div>
+
     </div>
-
-
-
-    <!--<p>{{ riskByAttackPattern | json }}</p>-->
-    <p>{{ assessment | json }} </p>
+    <br>    
 
     <hr>
 

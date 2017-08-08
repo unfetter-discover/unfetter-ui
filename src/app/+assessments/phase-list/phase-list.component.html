@@ -1,16 +1,18 @@
 <div class="phaseList row">
-    <div class="col-sm-3">
+    <div class="col-xs-4">
         <!-- TODO add capitalize / remove hyphen pipe -->
-        <p>{{ phase._id }}</p>
+        <p><a routerLink="/assessments/group/{{assessmentId}}">{{ phase._id | capitalize }}</a></p>
         <p class="text-muted">Attack Patterns &bull; {{ phase.scores.length }} / {{ numAttackPatterns }}</p>
     </div>   
-    <div class="col-sm-1">
+    <!--<div class="col-sm-1">
         <div class="box" [style.background]="riskColor"></div>
+    </div>-->
+    <div class="col-xs-3">
+        <p>{{ phase.avgRisk | percent:'2.1-1' }} 
+            <span class="greyTextShadow"><i class="material-icons" [style.color]="riskColor">lens</i></span>
+        </p>
     </div>
-    <div class="col-sm-1">
-        <p>{{ phase.avgRisk | percent:'2.1-1' }}</p>
-    </div>
-    <div class="col-md7">
+    <div class="col-xs-5">
         Line
     </div>
 </div>

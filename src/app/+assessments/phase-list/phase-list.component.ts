@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Constance } from '../../utils/constance';
 
 @Component({
@@ -11,6 +12,7 @@ export class PhaseList implements OnInit {
 
     @Input('phase') phase: any;
     @Input('numAttackPatterns') numAttackPatterns: any;
+    @Input('assessmentId') assessmentId: any;
 
     green: any = {
         h: 122,
@@ -25,7 +27,7 @@ export class PhaseList implements OnInit {
     };
 
     riskColor: any;
-    constructor() { }
+    constructor(private route: ActivatedRoute) { }
 
     ngOnInit() {
         let avgRisk = this.phase.avgRisk;
@@ -39,7 +41,9 @@ export class PhaseList implements OnInit {
         let lightnessDelta = this.red.l - this.green.l;
         riskHsl.l = this.green.l + lightnessDelta * avgRisk;      
 
-        this.riskColor = `hsla(${riskHsl.h}, ${riskHsl.s}%, ${riskHsl.l}%, 1)`;          
+        this.riskColor = `hsla(${riskHsl.h}, ${riskHsl.s}%, ${riskHsl.l}%, 1)`;     
+        console.log(this.assessmentId);
+             
     }
 
 
