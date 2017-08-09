@@ -38,7 +38,11 @@ export class IdentityComponent extends BaseStixComponent implements OnInit {
     }
 
     public deleteButtonClicked(): void {
-        super.openDialog(this.identity);
+        super.openDialog(this.identity).subscribe(
+            () => {
+                this.location.back();
+            }
+        );
     }
 
      protected addRemoveSector(sector: string) {

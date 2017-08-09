@@ -40,15 +40,15 @@ export const Constance = {
     INDICATOR_ICON: 'assets/icon/stix-icons/svg/indicator-b.svg',
 
     ATTACK_PATTERN_URL: 'api/attack-patterns',
-    ATTACK_PATTERN_TYPE: 'attack-patterns',
+    ATTACK_PATTERN_TYPE: 'attack-pattern',
     ATTACK_PATTERN_ICON: 'assets/icon/stix-icons/svg/attack-pattern-b.svg',
 
     THREAT_ACTORS_URL: 'api/threat-actors',
-    THREAT_ACTORS_TYPE: 'threat-actors',
+    THREAT_ACTORS_TYPE: 'threat-actor',
     THREAT_ACTORS_ICON: 'assets/icon/stix-icons/svg/attack-pattern-b.svg',
 
     IDENTITY_URL: 'api/identities',
-    IDENTITY_TYPE: 'identities',
+    IDENTITY_TYPE: 'identity',
     IDENTITY_ICON: 'assets/icon/stix-icons/svg/attack-pattern-b.svg',
 
     INTRUSION_SET_URL: 'api/intrusion-sets',
@@ -56,11 +56,11 @@ export const Constance = {
     INTRUSION_SET_ICON: 'assets/icon/stix-icons/svg/threat-actor-b.svg',
 
     SIGHTING_URL: 'api/sightings',
-    SIGHTING_TYPE: 'sightings',
+    SIGHTING_TYPE: 'sighting',
     SIGHTING_ICON: 'assets/icon/stix-icons/svg/campaign-b.svg',
 
     MALWARE_URL: 'api/malwares',
-    MALWARE_TYPE: 'malwares',
+    MALWARE_TYPE: 'malware',
     MALWARE_ICON: 'assets/icon/stix-icons/svg/malware-b.svg',
 
     OBSERVED_DATA_URL: 'api/observed-data',

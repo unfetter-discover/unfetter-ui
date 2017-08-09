@@ -38,18 +38,18 @@ html {
 }
 body {
   /* Margin bottom by footer height */
-  height: 100%;
   width: 100%;
-  overflow: hidden;
+
 }
 
 .footer {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   width: 100%;
   /* Set the fixed height of the footer here */
   height: 30px;
   background-color: $nav-background-color;
+  z-index: 1;
 }
 
 .jumbotron {
@@ -101,6 +101,12 @@ code {
 .mat-tab-body {
     padding: 5px;
 }
+
+.mat-tab-body-content {
+    height: inherit !important;
+    overflow: hidden !important;
+}
+
 .cursor-pointer {
     cursor: pointer;
 }

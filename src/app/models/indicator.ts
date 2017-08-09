@@ -3,7 +3,7 @@ import { Constance } from '../utils/constance';
 import * as moment from 'moment';
 
 export class Indicator {
-    public static url = Constance.INDICATOR_URL;
+    public url = Constance.INDICATOR_URL;
     public id: string;
     public type: string;
 

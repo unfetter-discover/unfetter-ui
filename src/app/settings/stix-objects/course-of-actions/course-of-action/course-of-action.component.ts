@@ -13,7 +13,7 @@ import { Constance } from '../../../../utils/constance';
     templateUrl: './course-of-action.component.html'
 })
 export class CourseOfActionComponent extends BaseStixComponent implements OnInit {
-    protected courseOfAction: CourseOfAction = new CourseOfAction();
+    protected courseOfAction = new CourseOfAction();
     private showLabels = true;
     private showExternalReferences = true;
 
@@ -45,7 +45,11 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
     }
 
     public deleteButtonClicked(): void {
-        super.openDialog(this.courseOfAction);
+        super.openDialog(this.courseOfAction).subscribe(
+            () => {
+                this.location.back();
+            }
+        );
     }
 
     protected saveButtonClicked(): Observable<any> {

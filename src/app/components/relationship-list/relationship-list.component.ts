@@ -20,13 +20,8 @@ export class RelationshipListComponent implements OnInit {
     }
 
     public ngOnInit() {
-        let filter = new Filter();
-        filter.values.where['target_ref'] = this.model.id;
-        this.loadRelationships(filter.values);
-
-        filter = new Filter();
-        filter.values.where['source_ref'] = this.model.id;
-        this.loadRelationships(filter.values);
+        this.loadRelationships({ target_ref: this.model.id});
+        this.loadRelationships({source_ref: this.model.id});
     }
 
     protected loadRelationships(filter: any): void {
@@ -36,7 +31,7 @@ export class RelationshipListComponent implements OnInit {
             this.relationships = data as Relationship[];
             this.relationships.forEach(
                 (relationship) => {
-                    if (filter.where['source_ref']) {
+                    if (filter['source_ref']) {
                         this.loadStixObject(relationship.attributes.target_ref);
                     } else {
                         this.loadStixObject(relationship.attributes.source_ref);
@@ -117,6 +112,22 @@ export class RelationshipListComponent implements OnInit {
             icon = Constance.MALWARE_ICON;
         }
         return icon;
+    }
+
+     private getUrl(relationshipMap: any): string {
+        let url = '';
+        if (relationshipMap.type === Constance.ATTACK_PATTERN_TYPE ) {
+           url = Constance.ATTACK_PATTERN_URL;
+        } else if (relationshipMap.type === Constance.CAMPAIGN_TYPE) {
+           url = Constance.CAMPAIGN_URL;
+        } else if (relationshipMap.type === Constance.INDICATOR_TYPE) {
+            url = Constance.INDICATOR_URL;
+        } else if (relationshipMap.type === Constance.INTRUSION_SET_TYPE) {
+            url = Constance.INTRUSION_SET_URL;
+        } else if (relationshipMap.type === Constance.MALWARE_TYPE) {
+            url = Constance.MALWARE_URL;
+        }
+        return url.replace('api', '');
     }
 
      private getName(relationshipMap: any): string {

@@ -117,9 +117,9 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
         });
         attackPatterns.sort(
             (a1: AttackPattern, a2: AttackPattern) => {
-                return a1.attributes.name.toLowerCase().localeCompare(a2.attributes.name.toLowerCase())
+                return a1.attributes.name.toLowerCase().localeCompare(a2.attributes.name.toLowerCase());
             }
-        )
-         this.filterAttackPattern[phaseName] = attackPatterns;
+        );
+        this.filterAttackPattern[phaseName] = attackPatterns;
     }
 }

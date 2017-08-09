@@ -22,6 +22,7 @@ import { MitigateListComponent } from './mitigate-list/mitigate-list.component';
 import { BaseComponentService } from './base-service.component';
 import { ButtonsFilterComponent } from './buttons-filter/buttons-filter.component';
 import { LinkNodeGraphComponent } from './link-node-graph/link-node-graph.component';
+import { LabelComponent } from './labels/label.component';
 @NgModule({
   declarations: [
     // Components / Directives/ Pipes
@@ -39,7 +40,8 @@ import { LinkNodeGraphComponent } from './link-node-graph/link-node-graph.compon
     RelationshipListComponent,
     MitigateListComponent,
     ButtonsFilterComponent,
-    LinkNodeGraphComponent
+    LinkNodeGraphComponent,
+    LabelComponent
   ],
   imports: [
     CommonModule,
@@ -60,29 +62,24 @@ import { LinkNodeGraphComponent } from './link-node-graph/link-node-graph.compon
     MdCheckboxModule
   ],
   exports: [
-      PageHeaderComponent,
-      ConfirmationDialogComponent,
-      HeaderNavigationComponent,
-      IndicatorPatternFieldComponent,
-      SelectSearchFieldComponent,
-      ExternalReferenceComponent,
-      KillChainPhasesComponent,
-      ListStixObjectComponent,
-      ReadonlyContentComponent,
-      AliasesComponent,
-      RelationshipListComponent,
-      MitigateListComponent,
-      FilterSearchBoxComponent,
-      ButtonsFilterComponent,
-      LinkNodeGraphComponent
+    PageHeaderComponent,
+    ConfirmationDialogComponent,
+    HeaderNavigationComponent,
+    IndicatorPatternFieldComponent,
+    SelectSearchFieldComponent,
+    ExternalReferenceComponent,
+    KillChainPhasesComponent,
+    ListStixObjectComponent,
+    ReadonlyContentComponent,
+    AliasesComponent,
+    RelationshipListComponent,
+    MitigateListComponent,
+    FilterSearchBoxComponent,
+    ButtonsFilterComponent,
+    LinkNodeGraphComponent,
+    LabelComponent
   ],
-  providers: [
-    BaseComponentService
-  ],
-  entryComponents: [
-     ConfirmationDialogComponent
-  ],
+  providers: [BaseComponentService],
+  entryComponents: [ConfirmationDialogComponent]
 })
-export class ComponentModule {
-
-}
+export class ComponentModule {}

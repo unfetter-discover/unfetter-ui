@@ -12,7 +12,7 @@ import { ThreatActor } from '../../../../models';
 })
 export class ThreatActorListComponent extends TheatActorComponent implements OnInit {
     private threatActors: ThreatActor[] = [];
-    private url = ThreatActor.url;
+    private url: string;
 
     constructor(
         public stixService: StixService,
@@ -23,6 +23,7 @@ export class ThreatActorListComponent extends TheatActorComponent implements OnI
         public snackBar: MdSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
+        this.url = stixService.url;
     }
 
     public ngOnInit() {

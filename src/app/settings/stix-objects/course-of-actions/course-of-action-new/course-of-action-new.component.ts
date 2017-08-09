@@ -11,9 +11,7 @@ import { CourseOfAction, ExternalReference } from '../../../../models';
   templateUrl: './course-of-action-new.component.html',
 })
 
-export class CourseOfActionNewComponent extends CourseOfActionEditComponent {
-
-   public courseOfAction: CourseOfAction  = new CourseOfAction();
+export class CourseOfActionNewComponent extends CourseOfActionEditComponent implements OnInit {
 
     constructor(
         public stixService: StixService,
@@ -24,6 +22,10 @@ export class CourseOfActionNewComponent extends CourseOfActionEditComponent {
         public snackBar: MdSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
+    }
+
+    public ngOnInit() {
+        this.courseOfAction  = new CourseOfAction();
     }
 
     protected saveCourceOfAction(): void {

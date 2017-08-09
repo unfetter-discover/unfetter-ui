@@ -2,7 +2,7 @@ import { ExternalReference, KillChainPhase } from '.';
 import { Constance } from '../utils/constance';
 
 export class ThreatActor {
-    public static url = Constance.THREAT_ACTORS_URL;
+    public url = Constance.THREAT_ACTORS_URL;
     public id: string;
     public type: string;
 

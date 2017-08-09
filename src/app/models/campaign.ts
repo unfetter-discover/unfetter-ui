@@ -3,7 +3,7 @@ import { Constance } from '../utils/constance';
 import * as moment from 'moment';
 
 export class Campaign {
-    public static url = Constance.CAMPAIGN_URL;
+    public url = Constance.CAMPAIGN_URL;
     public id: string;
     public type: string;
 

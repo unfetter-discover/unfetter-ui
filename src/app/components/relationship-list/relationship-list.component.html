@@ -10,7 +10,7 @@
                 <div class="row" >
                     <div class="col-md-4" *ngFor="let relationshipMap of relationshipMapping">
                             <h5>
-                                <a (click)="gotoDetail(relationshipMap)"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationshipMap)}}'> {{getName(relationshipMap)}}</a>
+                                <a routerLink="/{{getUrl(relationshipMap)}}/{{relationshipMap.id}}"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationshipMap)}}'> {{getName(relationshipMap)}}</a>
                             </h5>
                     </div>
                 </div>

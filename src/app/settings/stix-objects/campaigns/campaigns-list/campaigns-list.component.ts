@@ -16,7 +16,7 @@ export class CampaignsListComponent extends CampaignComponent implements OnInit 
     public campaigns: Campaign[] = [];
     private showExternalReferences: boolean = false;
     private showLabels: boolean = false;
-    private url = Campaign.url;
+    private url: string;
 
     constructor(
         public stixService: StixService,
@@ -27,6 +27,7 @@ export class CampaignsListComponent extends CampaignComponent implements OnInit 
         public snackBar: MdSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
+        this.url = stixService.url;
     }
 
     public ngOnInit() {

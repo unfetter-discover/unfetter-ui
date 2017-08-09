@@ -74,7 +74,11 @@ export class IndicatorComponent extends BaseStixComponent implements OnInit {
     }
 
     protected deleteButtonClicked(): void {
-        super.openDialog(this.indicator);
+        super.openDialog(this.indicator).subscribe(
+            () => {
+                this.location.back();
+            }
+        );
     }
 
     // private loadRelationships(filter: any): Observable<any> {
