@@ -15,7 +15,7 @@ import { Identity } from '../../../../models';
  ],
   templateUrl: './identity-new.component.html',
 })
-export class IdentityNewComponent extends IdentityEditComponent {
+export class IdentityNewComponent extends IdentityEditComponent implements OnInit {
 
     constructor(
         public stixService: StixService,
@@ -26,6 +26,10 @@ export class IdentityNewComponent extends IdentityEditComponent {
         public snackBar: MdSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
+    }
+
+    public ngOnInit() {
+        this.identity = new Identity();
     }
 
      public saveIdentity(): void {

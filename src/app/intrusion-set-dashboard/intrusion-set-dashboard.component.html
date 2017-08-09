@@ -1,5 +1,5 @@
-<div class="row height-100-percent">
-    <div class="col-sm-3 height-100-percent intrusion-set-dashboard-side-panel">
+<div class="row ">
+    <div class="col-sm-3  intrusion-set-dashboard-side-panel">
         <div class="row">
             <div class="col-sm-12">
               <p-autoComplete [(ngModel)]="intrusionSet" [suggestions]="results" (completeMethod)="search($event)" field="name" (onSelect)="onSelect($event)"></p-autoComplete>
@@ -13,8 +13,8 @@
                  <hr />
               </div>
          </div>
-        <div class="row height-100-percent">
-                 <div class="col-sm-12 height-100-percent">
+        <div class="row ">
+                 <div class="col-sm-12 ">
                     <div class="row">
                         <div class="col-sm-6" *ngFor="let intrusionSet of intrusionSets">
                             <md-checkbox id="{{intrusionSet.id}}" [checked]="intrusionSet.checked"
@@ -27,7 +27,7 @@
         </div>
 
     </div>
-    <div class="height-100-percent col-sm-9">
+    <div class=" col-sm-9">
         <div class="row">
             <div class="col-sm-12">
                 <div style="float: left">
@@ -49,7 +49,7 @@
             <div class="col-sm-12">
 
                 <md-tab-group>
-                    <md-tab label="Attack Patterns Used">
+                    <md-tab id="intrusionSetsDashboard" label="Attack Patterns Used">
                               <md-card class="margin-top" *ngIf="intrusionSetsDashboard.intrusionSets">
                                   <div class="row">
 

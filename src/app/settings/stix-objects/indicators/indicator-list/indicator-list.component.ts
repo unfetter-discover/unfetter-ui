@@ -16,7 +16,7 @@ export class IndicatorListComponent extends IndicatorComponent implements OnInit
     private showPattern = true;
     private showKillChainPhases = true;
     private showExternalReferences = true;
-    private url = Indicator.url;
+    private url: string;
 
     constructor(
         public stixService: StixService,
@@ -27,10 +27,11 @@ export class IndicatorListComponent extends IndicatorComponent implements OnInit
         public snackBar: MdSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
+        this.url = stixService.url;
     }
 
     public ngOnInit() {
-        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '-1' }));
+        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
         let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.indicators = data as Indicator[];

@@ -15,7 +15,7 @@ import { Constance } from '../../../../utils/constance';
 
 export class ToolListComponent extends BaseStixComponent implements OnInit {
     private tools: Tool[] = [];
-    private url = Tool.url;
+    private url: string;
 
     constructor(
         public stixService: StixService,
@@ -26,6 +26,7 @@ export class ToolListComponent extends BaseStixComponent implements OnInit {
         public snackBar: MdSnackBar) {
         super(stixService, route, router, dialog, location, snackBar);
         stixService.url = Constance.TOOL_URL;
+        this.url = stixService.url;
     }
 
     public ngOnInit() {

@@ -37,7 +37,11 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     }
 
     public deleteButtonClicked(): void {
-        super.openDialog(this.intrusionSet);
+        super.openDialog(this.intrusionSet).subscribe(
+            () => {
+                this.location.back();
+            }
+        );
     }
 
     protected saveButtonClicked(): Observable<any> {

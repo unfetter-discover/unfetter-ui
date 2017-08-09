@@ -2,7 +2,7 @@ import { ExternalReference, KillChainPhase } from '.';
 import { Constance } from '../utils/constance';
 
 export class Identity {
-    public static url = Constance.IDENTITY_URL;
+    public url = Constance.IDENTITY_URL;
     public id: string;
     public type: string;
 

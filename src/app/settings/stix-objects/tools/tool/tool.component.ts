@@ -38,7 +38,11 @@ export class ToolComponent extends BaseStixComponent implements OnInit {
     }
 
     public deleteButtonClicked(): void {
-        super.openDialog(this.tool);
+        super.openDialog(this.tool).subscribe(
+            () => {
+                this.location.back();
+            }
+        );
     }
 
     protected saveButtonClicked(): Observable<any> {

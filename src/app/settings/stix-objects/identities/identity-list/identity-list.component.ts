@@ -14,7 +14,7 @@ export class IdentityListComponent extends IdentityComponent implements OnInit {
     private identities: Identity[] = [];
     private showSectors = true;
     private showExternalReferences = true;
-    private url = Identity.url;
+    private url: string;
 
     constructor(
         public stixService: StixService,
@@ -25,10 +25,11 @@ export class IdentityListComponent extends IdentityComponent implements OnInit {
         public snackBar: MdSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
+        this.url = stixService.url;
     }
 
     public ngOnInit() {
-        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '-1' }));
+        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
         let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.identities = data as Identity[];

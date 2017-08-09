@@ -39,7 +39,11 @@ export class CampaignComponent extends BaseStixComponent implements OnInit {
     }
 
     public deleteButtonClicked(): void {
-        super.openDialog(this.campaign);
+        super.openDialog(this.campaign).subscribe(
+            () => {
+                this.location.back();
+            }
+        );
     }
 
     protected loadCampaign(): void {

@@ -20,6 +20,10 @@ export class AliasesComponent {
     }
 
     public removeAliasButtonClicked(alias: string): void {
-        this.model.attributes.alias = this.model.attributes.alias.filter((h) => h !== alias);
+        this.model.attributes.aliases = this.model.attributes.aliases.filter((h) => h !== alias);
+    }
+
+     private update(index: number, value: string): void {
+        this.model.attributes.aliases[index] = value;
     }
 }
