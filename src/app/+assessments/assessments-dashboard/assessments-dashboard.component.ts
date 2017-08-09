@@ -65,16 +65,17 @@ export class AssessmentsDashboardComponent implements OnInit {
             err => console.log(err)             
         );
 
-        this.assessmentsDashboardService.getRiskByAttackPattern(id).subscribe(
-            res => {
-                this.riskByAttackPattern = res ? res : {};
-                // console.log(this.riskByAttackPattern); 
-                this.doughnutChartData[0].data = [this.riskByAttackPattern.totalRisk, (1 - this.riskByAttackPattern.totalRisk)];
+        this.assessmentsDashboardService.getRiskByAttackPattern(id)
+            .subscribe(
+                res => {
+                    this.riskByAttackPattern = res ? res : {};
+                    // console.log(this.riskByAttackPattern); 
+                    this.doughnutChartData[0].data = [this.riskByAttackPattern.totalRisk, (1 - this.riskByAttackPattern.totalRisk)];
 
-                this.populateUnassessedPhases();
-            },
-            err => console.log(err)
-        );
+                    this.populateUnassessedPhases();
+                },
+                err => console.log(err)
+            );
     }
 
     getNumAttackPatterns(phaseName) {
