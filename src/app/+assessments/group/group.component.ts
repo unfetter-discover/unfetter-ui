@@ -24,13 +24,14 @@ export class AssessmentsGroup implements OnInit {
 
     ngOnInit() {
         this.id = this.route.snapshot.params['id'] ? this.route.snapshot.params['id'] : '';
+        let routedPhase = this.route.snapshot.params['phase'] ? this.route.snapshot.params['phase'] : '';
         this.assessmentsDashboardService.getRiskByAttackPattern(this.id)
             .subscribe(
                 res => {
                     this.riskByAttackPattern = res ? res : {};
                     this.populateUnassessedPhases();
-                    this.activePhase = this.riskByAttackPattern.phases[0]._id;
-                    this.setAttackPattern(this.getScores(this.activePhase)[0].attackPatternName);
+                    this.activePhase = routedPhase ? routedPhase : this.riskByAttackPattern.phases[0]._id;
+                    this.setAttackPattern(this.getScores(this.activePhase)[0].attackPatternId);
                 },
                 err => console.log(err)
             );
@@ -92,17 +93,17 @@ export class AssessmentsGroup implements OnInit {
 
     setPhase(phaseName) {
         this.activePhase = phaseName;
-        this.setAttackPattern(this.getScores(this.activePhase)[0].attackPatternName);
+        this.setAttackPattern(this.getScores(this.activePhase)[0].attackPatternId);
     }
 
     getScores(phaseName) {
         return this.riskByAttackPattern.phases.find(phase => phase._id === phaseName).scores
     }
 
-    setAttackPattern(attackPatternName) {
+    setAttackPattern(attackPatternId) {        
         this.currentAttackPattern = this.riskByAttackPattern.attackPatternsByKillChain
             .find(killChain => killChain._id === this.activePhase)
             .attackPatterns
-            .find(attackPattern => attackPattern.name === attackPatternName);        
+            .find(attackPattern => attackPattern.id === attackPatternId);        
     }
 }

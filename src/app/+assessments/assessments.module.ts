@@ -13,6 +13,7 @@ import { GlobalModule } from 'app/global/global.module';
 import { PhaseList } from './phase-list/phase-list.component';
 import { ChartsModule } from 'ng2-charts';
 import { AssessmentsGroup } from './group/group.component';
+import { RiskBreakdown } from './risk-breakdown/risk-breakdown.component';
 
 console.log('`AssessmentsComponent` bundle loaded asynchronously');
 const routes = [
@@ -25,7 +26,7 @@ const routes = [
     component: AssessmentsDashboardComponent,
   },
   {
-    path: 'group/:id',
+    path: 'group/:id/:phase',
     component: AssessmentsGroup,
   },
 ];
@@ -39,6 +40,7 @@ const routes = [
     AssessmentsDashboardComponent,
     PhaseList,
     AssessmentsGroup,
+    RiskBreakdown,
   ],
   imports: [
     ChartsModule,

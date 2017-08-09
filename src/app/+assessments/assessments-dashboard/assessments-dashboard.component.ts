@@ -58,9 +58,7 @@ export class AssessmentsDashboardComponent implements OnInit {
         this.assessment['attributes'] = {};
         this.assessmentsDashboardService.getById(id).subscribe(
             res => {
-                this.assessment = res ? res : {};        
-                console.log(this.assessment);
-                     
+                this.assessment = res ? res : {};                             
             },
             err => console.log(err)             
         );
@@ -69,7 +67,7 @@ export class AssessmentsDashboardComponent implements OnInit {
             .subscribe(
                 res => {
                     this.riskByAttackPattern = res ? res : {};
-                    // console.log(this.riskByAttackPattern); 
+                    console.log(this.riskByAttackPattern); 
                     this.doughnutChartData[0].data = [this.riskByAttackPattern.totalRisk, (1 - this.riskByAttackPattern.totalRisk)];
 
                     this.populateUnassessedPhases();
@@ -99,5 +97,9 @@ export class AssessmentsDashboardComponent implements OnInit {
             .filter(phase => assessedPhases.indexOf(phase) < 0)
             .reduce((prev, phase) => prev.concat(', '.concat(phase)), '')
             .slice(2);
+    }
+
+    getQuestions(phaseName) {        
+        return "stub";
     }
 }

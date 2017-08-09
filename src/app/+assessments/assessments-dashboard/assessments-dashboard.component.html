@@ -1,14 +1,22 @@
 <div id="assessmentsDashboard">
     <div class="row">
-        <div class="col-md-9">
+        <br>
+        <div class="col-sm-12">
+            <ol class="breadcrumb">
+                <li><a routerLink="/assessments">Assessments</a></li>
+                <li class="active">Dashboard</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-8">
             <h4>
-                <!--<i class="material-icons">description</i>-->
                 <img class="stix-icon" src="assets/icon/stix-icons/svg/report-b.svg">
                 &nbsp;Assessment: {{ assessment.attributes.name}}
             </h4>
         </div>
-        <div class="col-md-3 text-right">
-            <!-- TODO make date pipe -->
+        <div class="col-xs-4 text-right">
             <p class="headingMarginMatch text-muted">Published &bull; {{ assessment.attributes.created | date:'medium' }}</p>
         </div>
     </div>
@@ -31,7 +39,7 @@
             <hr>
 
             <div *ngFor="let phase of riskByAttackPattern.phases">
-                <phase-list [phase]="phase" [numAttackPatterns]="getNumAttackPatterns(phase._id)" [assessmentId]="assessment.id"></phase-list>
+                <phase-list [phase]="phase" [numAttackPatterns]="getNumAttackPatterns(phase._id)" [assessmentId]="assessment.id" [questions]="getQuestions(phase)"></phase-list>
             </div>
             <p><small>Unassessed Kill Chain Phases: {{ unassessedPhases | capitalize }}</small>
             </p>
@@ -50,10 +58,4 @@
 
     </div>
     <br>    
-
-    <hr>
-
-    <p class="text-muted">
-        <a routerLink="/assessments">Assessments Menu</a>
-    </p>
 </div>

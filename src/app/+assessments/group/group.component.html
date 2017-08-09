@@ -1,14 +1,23 @@
 <div id="assessmentsGroup">
 
     <div class="row">
-        <div class="col-md-9">
+        <br>
+        <div class="col-sm-12">
+            <ol class="breadcrumb">
+                <li><a routerLink="/assessments">Assessments</a></li>
+                <li><a routerLink="/assessments/dashboard/{{id}}">Dashboard</a></li>
+                <li class="active">Group</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-8">
             <h4>
-                <!--<i class="material-icons">description</i>-->
                 <img class="stix-icon" src="assets/icon/stix-icons/svg/report-b.svg"> &nbsp;Assessment: {{ assessment.attributes.name}}
             </h4>
         </div>
-        <div class="col-md-3 text-right">
-            <!-- TODO make date pipe -->
+        <div class="col-xs-4 text-right">
             <p class="headingMarginMatch text-muted">Published &bull; {{ assessment.attributes.created | date:'medium' }}</p>
         </div>
     </div>
@@ -33,33 +42,47 @@
             <h4 class="text-muted">Phase:&nbsp;{{ activePhase | capitalize }}</h4>
             <div *ngFor="let score of getScores(activePhase)" class="attackPatternListItem">
                 <span class="greyTextShadow"><i class="material-icons" [style.color]="getRiskColor(score.risk)">lens</i></span>&nbsp;
-                <a (click)="setAttackPattern(score.attackPatternName)">{{ score.attackPatternName }}</a>
+                <a (click)="setAttackPattern(score.attackPatternId)">{{ score.attackPatternName }}</a>
             </div>
         </div>
 
         <div class="col-sm-6">
             <div *ngIf="currentAttackPattern">
-                <h4>{{ currentAttackPattern.name }}</h4>
-                <p *ngIf="currentAttackPattern.kill_chain_phases && currentAttackPattern.kill_chain_phases.length > 0">Kill Chain Phases:</p>
-                <ul *ngIf="currentAttackPattern.kill_chain_phases">
-                    <li *ngFor="let killchain of currentAttackPattern.kill_chain_phases">{{ killchain.phase_name }}</li>
-                </ul>
-                <p *ngIf="currentAttackPattern.x_unfetter_sophistication_level !== undefined && currentAttackPattern.x_unfetter_sophistication_level !== null">Sophiciation Level: {{ currentAttackPattern.x_unfetter_sophistication_level }}</p>
-                <p *ngIf="currentAttackPattern.description">Description:<br> {{ currentAttackPattern.description }}</p>
+                <h4>{{ currentAttackPattern.name }}</h4><br>
+
+                <div *ngIf=" currentAttackPattern.kill_chain_phases && currentAttackPattern.kill_chain_phases.length> 0">
+                    <p><strong>Kill Chain Phases</strong></p>
+                    <ul>
+                        <li *ngFor="let killchain of currentAttackPattern.kill_chain_phases">{{ killchain.phase_name }}</li>
+                    </ul>
+                </div>
+
+                <div *ngIf="currentAttackPattern.x_unfetter_sophistication_level !== undefined && currentAttackPattern.x_unfetter_sophistication_level
+                !== null">
+                    <p><strong>Sophistication Level</strong></p>
+                    <p>{{ currentAttackPattern.x_unfetter_sophistication_level | sophistication }}</p>
+                </div>
+
+                <div *ngIf="currentAttackPattern.description">
+                    <p><strong>Description</strong></p>
+                    <p>{{ currentAttackPattern.description }}</p>
+                </div>
+
                 <div *ngIf="currentAttackPattern.external_references">
-                    <p>External References:</p>
+                    <p><strong>External References</strong></p>
                     <p *ngFor="let ref of currentAttackPattern.external_references">
                         <a href="{{ ref.url }}" target="_blank">{{ ref.source_name }} <span *ngIf="ref.external_id">&bull; {{ ref.external_id }}</span></a>
                     </p>
                 </div>
+
             </div>
         </div>
     </div>
 
-    <hr>
+    <!--<hr>
     <p class="text-muted">
         <a routerLink="/assessments/dashboard/{{id}}">Dashboard View</a> &bull;
         <a routerLink="/assessments">Assessments Menu</a>
-    </p>
+    </p>-->
 
 </div>

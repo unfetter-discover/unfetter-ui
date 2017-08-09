@@ -13,6 +13,7 @@ export class PhaseList implements OnInit {
     @Input('phase') phase: any;
     @Input('numAttackPatterns') numAttackPatterns: any;
     @Input('assessmentId') assessmentId: any;
+    @Input('questions') questions: any;
 
     green: any = {
         h: 122,
@@ -41,9 +42,7 @@ export class PhaseList implements OnInit {
         let lightnessDelta = this.red.l - this.green.l;
         riskHsl.l = this.green.l + lightnessDelta * avgRisk;      
 
-        this.riskColor = `hsla(${riskHsl.h}, ${riskHsl.s}%, ${riskHsl.l}%, 1)`;     
-        console.log(this.assessmentId);
-             
+        this.riskColor = `hsla(${riskHsl.h}, ${riskHsl.s}%, ${riskHsl.l}%, 1)`; 
     }
 
 
