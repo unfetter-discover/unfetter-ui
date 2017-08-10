@@ -14,7 +14,7 @@ export class HeaderNavigationComponent {
         {url: 'stix/indicators', label: 'Indicators'},
         {url: 'stix/identities', label: 'Identities'},
         {url: 'stix/malwares', label: 'Malware'},
-        {url: 'stix/relationships', label: 'Relationships'},
+        // {url: 'stix/relationships', label: 'Relationships'},
         {url: 'stix/sightings', label: 'Sightings'},
         {url: 'stix/tools', label: 'Tools'},
         {url: 'stix/threat-actors', label: 'Threat Actors'},

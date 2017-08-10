@@ -3,9 +3,7 @@
 
     <ul class="nav nav-pills">
         <li *ngFor="let navigation of navigations">
-            <a [routerLink]="[navigation.url]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                                {{navigation.label}}
-                              </a>
+            <a [routerLink]="[navigation.url]" routerLinkActive="active">{{navigation.label}}</a>
         </li>
     </ul>
 
