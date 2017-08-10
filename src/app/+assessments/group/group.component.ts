@@ -100,7 +100,7 @@ export class AssessmentsGroup implements OnInit {
         return this.riskByAttackPattern.phases.find(phase => phase._id === phaseName).scores
     }
 
-    setAttackPattern(attackPatternId) {        
+    setAttackPattern(attackPatternId) {      
         this.currentAttackPattern = this.riskByAttackPattern.attackPatternsByKillChain
             .find(killChain => killChain._id === this.activePhase)
             .attackPatterns
