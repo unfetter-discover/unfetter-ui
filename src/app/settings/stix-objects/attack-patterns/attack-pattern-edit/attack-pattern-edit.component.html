@@ -5,10 +5,10 @@
                 <div class="col-md-12">
                      <div class="form-group">
                         <md-input-container class="full-width">
-                            <input mdInput class="form-control" required placeholder="Name" value="{{attackPattern.attributes.name}}" 
+                            <input mdInput class="form-control" required placeholder="Name" value="{{attackPattern.attributes.name}}"
                                 [(ngModel)]="attackPattern.attributes.name">
                         </md-input-container>
-                        
+
                     </div>
                 </div>
             </div>
@@ -19,6 +19,17 @@
                     </md-input-container>
                 </div>
             </div>
+             <div class="row">
+                <div class="col-md-12">
+                    <form>
+                        <md-select name="sophistication-levels" placeholder="How sophisticated would an attacker need to be to leverage this technique?" [(ngModel)]="attackPattern.attributes.x_unfetter_sophistication_level" class="full-width">
+                            <md-option *ngFor="let sophistication_levels of x_unfetter_sophistication_levels" [value]="sophistication_levels.id">
+                                {{ sophistication_levels.value }}
+                            </md-option>
+                        </md-select>
+                    </form>
+                </div>
+             </div>
 
             <kill-chain-phases [(model)]="attackPattern"></kill-chain-phases>
 
@@ -27,9 +38,9 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="button-row pull-right">
-                         <button  class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</button> 
-                         <button type="submit"  class=" " md-raised-button (click)="saveAttackPattern()" [disabled]="!attackPattern.attributes.name"><i class="fa fa-floppy-o "></i> SAVE</button>            
-            
+                         <button  class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</button>
+                         <button type="submit"  class=" " md-raised-button (click)="saveAttackPattern()" [disabled]="!attackPattern.attributes.name"><i class="fa fa-floppy-o "></i> SAVE</button>
+
                     </div>
                 </div>
             </div>
