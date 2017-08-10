@@ -12,28 +12,23 @@
 
 <div class="row"  *ngIf="graph && forcesEnabled">
   <div class="col-md-3">
-   
               <md-card class="result">
-             
                 <md-card-content>
-
                     <h5>Forces</h5>
                     <div class="row">
                         <div class="col-md-12" *ngIf="forcesEnabled">
                             <div class="checkbox">
-  <label>
-    <input type="checkbox" data-toggle="toggle">
-    Option one is enabled
-  </label>
-</div>
+                                <label>
+                                    <input type="checkbox" data-toggle="toggle">
+                                    Option one is enabled
+                                </label>
+                            </div>
                             <!--<md-checkbox >Collide</md-checkbox>-->
                             <!--<md-checkbox class="example-margin" (change)="onChange($event)" [checked]="forcesEnabled.column">Column</md-checkbox>
                             <md-checkbox class="example-margin" (change)="onChange($event)" [checked]="forcesEnabled.column">Charge</md-checkbox>
                             <md-checkbox class="example-margin" (change)="onChange($event)" [checked]="forcesEnabled.link">Link</md-checkbox>
                             <md-checkbox class="example-margin" (change)="onChange($event)" [checked]="forcesEnabled.center">Center</md-checkbox>-->
-
                         </div>
-                       
                     </div>
                  </md-card-content>
               </md-card>
@@ -89,6 +84,6 @@
        
   </div>
   <div class="col-md-9">
-      <link-node-graph *ngIf="graph && forcesEnabled" [config]="graph" [forcesEnabled]="forcesEnabled" (nodeMouseover)="nodeMouseover($event)" (nodeMouseout)="nodeMouseout($event)"></link-node-graph>
+       <link-node-graph *ngIf="graph && forcesEnabled" [config]="graph" [forcesEnabled]="forcesEnabled" (nodeMouseover)="nodeMouseover($event)" (nodeMouseout)="nodeMouseout($event)"></link-node-graph> 
   </div>
 </div>
