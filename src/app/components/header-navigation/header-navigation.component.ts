@@ -14,7 +14,7 @@ export class HeaderNavigationComponent {
         {url: 'indicators', label: 'Indicators'},
         {url: 'identities', label: 'Identities'},
         {url: 'malwares', label: 'Malware'},
-        {url: 'relationships', label: 'Relationships'},
+        // {url: 'relationships', label: 'Relationships'},
         {url: 'sightings', label: 'Sightings'},
         {url: 'tools', label: 'Tools'},
         {url: 'threat-actors', label: 'Threat Actors'},
