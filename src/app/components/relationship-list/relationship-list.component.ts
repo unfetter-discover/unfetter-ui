@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Campaign, Indicator, AttackPattern, Relationship, Filter } from '../../models';
@@ -9,7 +9,7 @@ import { BaseComponentService } from '../base-service.component';
   selector: 'relationship-list',
   templateUrl: './relationship-list.component.html'
 })
-export class RelationshipListComponent implements OnInit {
+export class RelationshipListComponent implements OnInit, OnChanges {
     @Input() protected model: any;
     protected url: string;
     protected relationshipMapping: any = [];
@@ -19,9 +19,17 @@ export class RelationshipListComponent implements OnInit {
         console.dir(this.model);
     }
 
-    public ngOnInit() {
-        this.loadRelationships({ target_ref: this.model.id});
-        this.loadRelationships({source_ref: this.model.id});
+    public ngOnInit() {        
+        // this.loadRelationships({ target_ref: this.model.id});
+        // this.loadRelationships({source_ref: this.model.id});
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.model.currentValue.id !== undefined) {
+            this.relationshipMapping = [];
+            this.loadRelationships({ target_ref: changes.model.currentValue.id });
+            this.loadRelationships({ source_ref: changes.model.currentValue.id });
+        }  
     }
 
     protected loadRelationships(filter: any): void {

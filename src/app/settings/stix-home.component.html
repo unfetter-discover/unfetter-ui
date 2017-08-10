@@ -1,0 +1,13 @@
+<div id="stixHome" class="container">
+    <h2>Stix Objects</h2>
+
+    <ul class="nav nav-pills">
+        <li *ngFor="let navigation of navigations">
+            <a [routerLink]="[navigation.url]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                                {{navigation.label}}
+                              </a>
+        </li>
+    </ul>
+
+    <router-outlet></router-outlet>
+</div>

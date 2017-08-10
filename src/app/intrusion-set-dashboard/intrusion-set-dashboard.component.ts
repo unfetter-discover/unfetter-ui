@@ -14,6 +14,7 @@ import * as Ps from 'perfect-scrollbar';
 @Component({
   selector: 'intrusion-set-dashboard',
   templateUrl: 'intrusion-set-dashboard.component.html',
+  styleUrls: ['./intrusion-set-dashboard.component.css'],
 })
 
 export class IntrusionSetDashboardComponent implements OnInit {
