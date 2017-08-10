@@ -1,130 +1,133 @@
-<div class="row ">
-    <div class="col-sm-3  intrusion-set-dashboard-side-panel">
-        <div class="row">
-            <div class="col-sm-12">
-              <p-autoComplete [(ngModel)]="intrusionSet" [suggestions]="results" (completeMethod)="search($event)" field="name" (onSelect)="onSelect($event)"></p-autoComplete>
-              <a style="line-height: 30px;" md-raised-button (click)="searchIntrusionSets()">Search</a>
+<div class="container-fluid">
+    <div class="row ">
+
+        <div class="col-md-3  intrusion-set-dashboard-side-panel">
+            <div class="row">
+                <div class="col-sm-12">
+                <p-autoComplete [(ngModel)]="intrusionSet" [suggestions]="results" (completeMethod)="search($event)" field="name" (onSelect)="onSelect($event)"></p-autoComplete>
+                <a style="line-height: 30px;" md-raised-button (click)="searchIntrusionSets()">Search</a>
+                </div>
             </div>
-        </div>
-         <div class="row">
-              <div class="col-sm-12">
-                <span class="text-muted">Results ({{selectedIntrusionSet.length}}) Intrusion Sets</span>
-                 <a style="float: right;" (click)="removeAll($event)">Clear Fliters</a>
-                 <hr />
-              </div>
-         </div>
-        <div class="row ">
-                 <div class="col-sm-12 ">
-                    <div class="row">
-                        <div class="col-sm-6" *ngFor="let intrusionSet of intrusionSets">
-                            <md-checkbox id="{{intrusionSet.id}}" [checked]="intrusionSet.checked"
-                            class="intrusion-set-dashboard-side-panel-checkbox" (click)="select(intrusionSet)">
-                                <a>{{intrusionSet.attributes.name}}</a>
-                            </md-checkbox>
+            <div class="row">
+                <div class="col-sm-12">
+                    <span class="text-muted">Results ({{selectedIntrusionSet.length}}) Intrusion Sets</span>
+                    <a style="float: right;" (click)="removeAll($event)">Clear Fliters</a>
+                    <hr />
+                </div>
+            </div>
+            <div class="row ">
+                    <div class="col-sm-12 ">
+                        <div class="row">
+                            <div class="col-sm-6" *ngFor="let intrusionSet of intrusionSets">
+                                <md-checkbox id="{{intrusionSet.id}}" [checked]="intrusionSet.checked"
+                                class="intrusion-set-dashboard-side-panel-checkbox" (click)="select(intrusionSet)">
+                                    <a>{{intrusionSet.attributes.name}}</a>
+                                </md-checkbox>
+                            </div>
                         </div>
-                    </div>
-              </div>
-        </div>
-
-    </div>
-    <div class=" col-sm-9">
-        <div class="row">
-            <div class="col-sm-12">
-                <div style="float: left">
-                    <img class='stix-icon height-30' src='assets/icon/stix-icons/svg/threat-actor-b.svg'>
-                </div>
-                <div style="float: left">
-                      <h4>Intrusion Sets
-                            <i *ngIf="intrusionSetsDashboard.intrusion_sets" class="fa fa-angle-right"></i>
-                            <a><strong *ngFor="let i of intrusionSetsDashboard.intrusion_sets;  let first = first; let last = last">
-                                {{i.attributes.name}}
-                                <i *ngIf="!last"> / </i>
-                            </strong></a>
-
-                      </h4>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
 
-                <md-tab-group>
-                    <md-tab id="intrusionSetsDashboard" label="Attack Patterns Used">
-                              <md-card class="margin-top" *ngIf="intrusionSetsDashboard.intrusionSets">
-                                  <div class="row">
+        <div class="col-md-9 intrusion-set-dashboard-main-panel">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div style="float: left">
+                        <img class='stix-icon height-30' src='assets/icon/stix-icons/svg/threat-actor-b.svg'>
+                    </div>
+                    <div style="float: left">
+                        <h4>Intrusion Sets
+                                <i *ngIf="intrusionSetsDashboard.intrusion_sets" class="fa fa-angle-right"></i>
+                                <a><strong *ngFor="let i of intrusionSetsDashboard.intrusion_sets;  let first = first; let last = last">
+                                    {{i.attributes.name}}
+                                    <i *ngIf="!last"> / </i>
+                                </strong></a>
 
-                                        <div class="col-xs-4" *ngFor="let i of intrusionSetsDashboard.intrusionSets">
+                        </h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+
+                    <md-tab-group>
+                        <md-tab id="intrusionSetsDashboard" label="Attack Patterns Used">
+                                <md-card class="margin-top" *ngIf="intrusionSetsDashboard.intrusionSets">
+                                    <div class="row">
+
+                                            <div class="col-xs-4" *ngFor="let i of intrusionSetsDashboard.intrusionSets">
+
+                                                    <div>
+                                                        <label [style.color]="i.color">{{i.name}}</label>
+                                                    </div>
 
                                                 <div>
-                                                    <label [style.color]="i.color">{{i.name}}</label>
+
+
+                                                            <div class="pull-left">
+                                                                <small>{{calPercentage(i.attack_patterns.length , intrusionSetsDashboard.totalAttackPatterns)}}% </small>
+                                                            </div>
+
+                                                                <p-progressBar [value]="i.attack_patterns.length" [showValue]="false"></p-progressBar>
+
+
+                                                            <div class="pull-left">
+                                                                <small> {{i.attack_patterns.length}} OF {{intrusionSetsDashboard.totalAttackPatterns}}</small>
+                                                            </div>
+
                                                 </div>
+                                            </div>
+                                    </div>
 
-                                             <div>
+                                </md-card>
+                            <md-card class="margin-top" *ngIf="intrusionSetsDashboard.killChainPhases">
+                                    <p-carousel  headerText="Kill Chain Phases Used"  [value]="intrusionSetsDashboard.killChainPhases" numVisible="5">
+                                            <ng-template let-killChainPhase pTemplate="killChainPhase">
 
-
-                                                        <div class="pull-left">
-                                                            <small>{{calPercentage(i.attack_patterns.length , intrusionSetsDashboard.totalAttackPatterns)}}% </small>
+                                                    <div class="ui-grid ui-grid-responsive">
+                                                        <div class="ui-grid-row">
+                                                            <div class="ui-grid-col-12 kill-chain-div">{{killChainPhase.name | uppercase}} <small class="badge pull-right">1/{{killChainPhase.attack_patterns.length}}</small></div>
                                                         </div>
-
-                                                            <p-progressBar [value]="i.attack_patterns.length" [showValue]="false"></p-progressBar>
-
-
-                                                        <div class="pull-left">
-                                                            <small> {{i.attack_patterns.length}} OF {{intrusionSetsDashboard.totalAttackPatterns}}</small>
-                                                        </div>
-
-                                             </div>
-                                        </div>
-                                  </div>
-
-                            </md-card>
-                           <md-card class="margin-top" *ngIf="intrusionSetsDashboard.killChainPhases">
-                                <p-carousel  headerText="Kill Chain Phases Used"  [value]="intrusionSetsDashboard.killChainPhases" numVisible="5">
-                                        <ng-template let-killChainPhase pTemplate="killChainPhase">
-
-                                                <div class="ui-grid ui-grid-responsive">
-                                                    <div class="ui-grid-row">
-                                                        <div class="ui-grid-col-12 kill-chain-div">{{killChainPhase.name | uppercase}} <small class="badge pull-right">1/{{killChainPhase.attack_patterns.length}}</small></div>
-                                                    </div>
-                                                    <div class="ui-grid-row">
-                                                        <div class="ui-grid-col-12">
-                                                            <div class="carousel-content-wrapper">
-                                                                <div class="ui-grid ui-grid-responsive">
-                                                                    <div class="ui-grid-row" style="margin: 2px 0px;" *ngFor="let attack_pattern of killChainPhase.attack_patterns">
-                                                                        <div class="ui-grid-col-12 attack-pattern-div" [style.color]="attack_pattern.fore" [style.background]="attack_pattern.back">{{attack_pattern.name}} {{attack_pattern.color}}</div>
+                                                        <div class="ui-grid-row">
+                                                            <div class="ui-grid-col-12">
+                                                                <div class="carousel-content-wrapper">
+                                                                    <div class="ui-grid ui-grid-responsive">
+                                                                        <div class="ui-grid-row" style="margin: 2px 0px;" *ngFor="let attack_pattern of killChainPhase.attack_patterns">
+                                                                            <div class="ui-grid-col-12 attack-pattern-div" [style.color]="attack_pattern.fore" [style.background]="attack_pattern.back">{{attack_pattern.name}} {{attack_pattern.color}}</div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
+
                                                         </div>
-
                                                     </div>
-                                                </div>
 
-                                        </ng-template>
-                                </p-carousel>
-                            </md-card>
-                             <md-card class="margin-top" *ngIf="treeData">
-                                 <!--<concept-map [data]="graphMetaData"></concept-map>-->
-                                 <collapsible-tree [data]="treeData"></collapsible-tree>
-                             </md-card>
-                    </md-tab>
-                    <md-tab label="Critical Security Controls (CSC)">
-                        <p-accordion *ngIf="treeData">
-                            <p-accordionTab header="The following Critical Security Controls address the Attack Patterns in {{data.name}}"  *ngFor="let data of treeData.children">
-                                 <md-card class="margin-top" *ngFor="let csc of getCsc(data)">
-                                    <div><b>{{csc.name}}</b> - <span>{{csc.description}}</span></div>
-                                    <div><span>--> Mitigates {{csc.attackPatterns.length}} Attack Pattern(s):</span></div>
-                                    <div>
-                                        <ol style="color: blue;">
-                                            <li *ngFor="let attackPattern of csc.attackPatterns">{{attackPattern}}</li>
-                                        </ol>
-                                    </div>
+                                            </ng-template>
+                                    </p-carousel>
                                 </md-card>
-                            </p-accordionTab>
-                        </p-accordion>
+                                <md-card class="margin-top" *ngIf="treeData">
+                                    <!--<concept-map [data]="graphMetaData"></concept-map>-->
+                                    <collapsible-tree [data]="treeData"></collapsible-tree>
+                                </md-card>
+                        </md-tab>
+                        <md-tab label="Critical Security Controls (CSC)">
+                            <p-accordion *ngIf="treeData">
+                                <p-accordionTab header="The following Critical Security Controls address the Attack Patterns in {{data.name}}"  *ngFor="let data of treeData.children">
+                                    <md-card class="margin-top" *ngFor="let csc of getCsc(data)">
+                                        <div><b>{{csc.name}}</b> - <span>{{csc.description}}</span></div>
+                                        <div><span>--> Mitigates {{csc.attackPatterns.length}} Attack Pattern(s):</span></div>
+                                        <div>
+                                            <ol style="color: blue;">
+                                                <li *ngFor="let attackPattern of csc.attackPatterns">{{attackPattern}}</li>
+                                            </ol>
+                                        </div>
+                                    </md-card>
+                                </p-accordionTab>
+                            </p-accordion>
 
-                    </md-tab>
-                </md-tab-group>
+                        </md-tab>
+                    </md-tab-group>
+                </div>
             </div>
         </div>
     </div>

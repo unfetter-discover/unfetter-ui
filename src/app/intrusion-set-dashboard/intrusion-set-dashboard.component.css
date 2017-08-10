@@ -1,0 +1,22 @@
+.intrusion-set-dashboard-side-panel {
+    padding-top: 27px;    
+    padding-bottom: 30px;
+}
+
+.intrusion-set-dashboard-main-panel {
+    padding-top: 15px;
+}
+
+@media only screen and (min-width: 992px) {
+    .intrusion-set-dashboard-side-panel {
+        padding-top: 77px;
+        padding-bottom: 100px;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        overflow-y: auto;
+    }
+    .intrusion-set-dashboard-main-panel {
+        margin-left: 25%;
+    }
+}

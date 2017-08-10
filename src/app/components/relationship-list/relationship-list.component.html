@@ -1,5 +1,5 @@
 
-<div class="row" >
+<div class="row" *ngIf="relationshipMapping && relationshipMapping.length > 0">
     <div class="col-md-12">
         <md-card>
             <md-card-header style="border-bottom: 1px solid lightgray;">
@@ -10,7 +10,7 @@
                 <div class="row" >
                     <div class="col-md-4" *ngFor="let relationshipMap of relationshipMapping">
                             <h5>
-                                <a routerLink="/{{getUrl(relationshipMap)}}/{{relationshipMap.id}}"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationshipMap)}}'> {{getName(relationshipMap)}}</a>
+                                <a routerLink="/stix/{{getUrl(relationshipMap)}}/{{relationshipMap.id}}"> <img style="height: 30px;" class='stix-icon' src='{{getIcon(relationshipMap)}}'> {{getName(relationshipMap)}}</a>
                             </h5>
                     </div>
                 </div>
