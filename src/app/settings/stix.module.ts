@@ -44,7 +44,7 @@ import {
 import { MalwareHomeComponent, MalwareListComponent, MalwareComponent, MalwareEditComponent, MalwareNewComponent } from './stix-objects/malwares';
 import { ToolHomeComponent, ToolListComponent, ToolComponent, ToolEditComponent, ToolNewComponent } from './stix-objects/tools';
 import { LinkExplorerComponent } from './link-explorer';
-import { StixHome } from './stix-home.component';
+import { StixHomeComponent } from './stix-home.component';
 
 @NgModule({
   imports: [
@@ -139,7 +139,7 @@ import { StixHome } from './stix-home.component';
     ToolEditComponent,
     ToolNewComponent,
     LinkExplorerComponent,
-    StixHome
+    StixHomeComponent
   ],
 
   providers: [ StixService ],

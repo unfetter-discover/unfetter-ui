@@ -95,12 +95,12 @@ import {
   LinkExplorerComponent
 } from './link-explorer';
 import {
-  StixHome
+  StixHomeComponent
 } from './stix-home.component';
 
 const stixRoutes: Routes = [{
     path: 'stix',
-    component: StixHome,
+    component: StixHomeComponent,
     children: [
       {
         path: '',

@@ -19,17 +19,17 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         console.dir(this.model);
     }
 
-    public ngOnInit() {        
+    public ngOnInit() {
         // this.loadRelationships({ target_ref: this.model.id});
         // this.loadRelationships({source_ref: this.model.id});
     }
 
-    ngOnChanges(changes: SimpleChanges) {
+    public ngOnChanges(changes: SimpleChanges) {
         if (changes.model.currentValue.id !== undefined) {
             this.relationshipMapping = [];
             this.loadRelationships({ target_ref: changes.model.currentValue.id });
             this.loadRelationships({ source_ref: changes.model.currentValue.id });
-        }  
+        }
     }
 
     protected loadRelationships(filter: any): void {

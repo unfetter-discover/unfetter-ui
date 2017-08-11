@@ -12,13 +12,11 @@ import { Constance } from '../../utils/constance';
     styleUrls: [ 'link-explorer.component.css' ]
 })
 export class LinkExplorerComponent implements OnInit {
-    private checked: Boolean = true;
-    private graph: {};
-    private selectedRecord: any;
-    private forcesEnabled = { };
-    private forcesEnabledTemp = { center: true, charge: true, collide: true, column: true, link: true };
-
-    private readonly RELATIONSHIP_PATH = '/cti-stix-store-api/relationships';
+    public checked = true;
+    public graph: any;
+    public selectedRecord: any;
+    public forcesEnabled: any;
+    public forcesEnabledTemp = { center: true, charge: true, collide: true, column: true, link: true };
 
     constructor(private service: StixService) {
         console.log('LinkExplorerComponent ctor');
@@ -31,25 +29,25 @@ export class LinkExplorerComponent implements OnInit {
     }
 
      private loadRelationships(): void {
-        // let parameters = { 'filter[order]': 'relationship_type' };
         const parameters = { relationship_type: -1 };
-        // let url = this.RELATIONSHIP_PATH + '?filter=' + JSON.stringify(parameters);
-        // https://localhost/api/relationships?sort={%22relationship_type%22:-1}
         const url = Constance.RELATIONSHIPS_URL + '?sort=' + JSON.stringify(parameters);
-        const sub =  this.service.getByUrl( encodeURI(url) ).subscribe(
-            (data) => {
-                const relationships = data as Relationship[];
-                this.graph = {nodes: this.getNodes(relationships), links: this.getLinks(relationships)};
-            }, (error) => {
-                // handle errors here
-                console.log('error ' + error);
-            }, () => {
-                // prevent memory links
-                if (sub) {
-                    sub.unsubscribe();
-                }
-            }
-        );
+        const sub = this.service.getByUrl( encodeURI(url) )
+                        // TODO : remove the delay when finished testing
+                        .delay(2 * 1000)
+                        .subscribe(
+                            (data) => {
+                                const relationships = data as Relationship[];
+                                this.graph = {nodes: this.getNodes(relationships), links: this.getLinks(relationships)};
+                            }, (error) => {
+                                // handle errors here
+                                console.log('error ' + error);
+                            }, () => {
+                                // prevent memory links
+                                if (sub) {
+                                    sub.unsubscribe();
+                                }
+                            }
+                        );
     }
 
     private getNodes(relationships: Relationship[]) {

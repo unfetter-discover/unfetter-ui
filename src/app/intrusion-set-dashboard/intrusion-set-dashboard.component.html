@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" *ngIf="intrusionSets; else loadingBlock">
     <div class="row ">
 
         <div class="col-md-3  intrusion-set-dashboard-side-panel">
@@ -132,3 +132,7 @@
         </div>
     </div>
 </div>
+
+<ng-template #loadingBlock>
+    <div class="loading"><md-spinner></md-spinner><span class="loading-text">Loading...</span></div>
+</ng-template>

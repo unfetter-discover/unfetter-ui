@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" *ngIf="graph && forcesEnabled">
       <div class="col-md-8">
             <h4>
                 <!--{{stix-object-icon objectType="relationship"}}-->
@@ -10,7 +10,7 @@
     </div>
 </div>
 
-<div class="row"  *ngIf="graph && forcesEnabled">
+<div class="row" *ngIf="graph && forcesEnabled; else loadingBlock" >
   <div class="col-md-3">
               <md-card class="result">
                 <md-card-content>
@@ -87,3 +87,8 @@
        <link-node-graph *ngIf="graph && forcesEnabled" [config]="graph" [forcesEnabled]="forcesEnabled" (nodeMouseover)="nodeMouseover($event)" (nodeMouseout)="nodeMouseout($event)"></link-node-graph> 
   </div>
 </div>
+
+<ng-template #loadingBlock>
+    <div class="loading"><md-spinner></md-spinner><span class="loading-text">Loading...</span></div>
+</ng-template>
+
