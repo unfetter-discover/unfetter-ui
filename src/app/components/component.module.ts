@@ -52,7 +52,6 @@ import { LabelComponent } from './labels/label.component';
     MaterialModule,
     MdSelectModule,
     MdInputModule,
-    MdSelectModule,
     MdAutocompleteModule,
     MdButtonModule,
     MdCardModule,

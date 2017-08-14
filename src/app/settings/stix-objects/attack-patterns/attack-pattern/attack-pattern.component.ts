@@ -17,6 +17,12 @@ import { Constance } from '../../../../utils/constance';
 export class AttackPatternComponent extends BaseStixComponent implements OnInit {
 
     protected attackPattern: AttackPattern = new AttackPattern();
+    protected x_unfetter_sophistication_levels = [
+          { id : 1, value: '1 - Novice' },
+          { id : 2, value: '2 - Practicioner' },
+          { id : 3, value: '3 - Expert' },
+          { id : 4, value: '4 - Innovator' }
+    ];
 
     constructor(
         public stixService: StixService,
@@ -80,5 +86,14 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
                     }
                 );
         });
+    }
+
+    private getSophisticationLevel(id: number): string {
+        let sophisticationLevel = this.x_unfetter_sophistication_levels.find(
+            (sophistication) => {
+                return sophistication.id === id;
+            }
+        );
+        return sophisticationLevel ? sophisticationLevel.value : '';
     }
 }

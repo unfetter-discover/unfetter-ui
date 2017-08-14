@@ -1,30 +1,36 @@
 
     <div class="row" *ngIf="attackPattern">
        <div class="col-md-12">
-    
+
                 <div class="button-row">
                     <button  md-raised-button (click)="editButtonClicked(attackPattern)"><i class="fa fa-pencil"></i> EDIT</button>
-                    <button md-raised-button (click)="deleteButtonClicked(attackPattern)"><i class="fa fa-trash"></i> DELETE</button>            
+                    <button md-raised-button (click)="deleteButtonClicked(attackPattern)"><i class="fa fa-trash"></i> DELETE</button>
                 </div>
-            
+
         </div>
     </div>
       <div class="row" style="margin-top: 15px;" *ngIf="attackPattern">
         <div class="col-md-12">
             <md-card>
-            
+
                 <md-card-content>
                         <div class="row">
-                            <div class="col">
+                           <div class="col-md-12">
                                 <label>Name</label>
                                 <h6>{{attackPattern.attributes.name}}</h6>
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="col">
+                           <div class="col-md-12">
                                 <label>Description</label>
                                 <h6>{{attackPattern.attributes.description}}</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label>Sophistication</label>
+                                <h6>{{getSophisticationLevel(attackPattern.attributes.x_unfetter_sophistication_level)}}</h6>
                             </div>
                         </div>
                         <div class="row">
@@ -49,12 +55,12 @@
                                     </md-chip-list>
                                 </div>
                             </div>
-   
+
                 </md-card-content>
             </md-card>
         </div>
     </div>
-  
+
     <relationship-list *ngIf="attackPattern.id" [model]="attackPattern"></relationship-list>
       <div class="pull-right grey-text">{{attackPattern.id}}</div>
 

@@ -5,7 +5,7 @@
         </md-input-container>
     </div>
     <div class="col-md-6">
-        <p-calendar [(ngModel)]="report.attributes.published" dateFormat="MM-dd-yy" showIcon="true"></p-calendar>
+        <p-calendar [(ngModel)]="report.attributes.published" dateFormat="M-dd-yy" showIcon="true"></p-calendar>
     </div>
 </div>
 <div class="row">
@@ -17,7 +17,7 @@
 </div>
 <div class="row">
     <div class="col-md-12">
-        
+
         <select-search-field [placeholder]="'Intrusion Sets'" [searchUrl]="'intrusion-sets'" (optionChanged)="add($event)"></select-search-field>
         <md-chip-list class="pull-left">
             <md-chip selected="true" color="accent" *ngFor="let intrusionSet of intrusionSets">
@@ -54,9 +54,9 @@
 <div class="row">
     <div class="col-md-12">
         <div class="button-row pull-right">
-                <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a> 
-                <a class=" " md-raised-button (click)="saveButtonClicked()" [disabled]="!report.attributes.name"><i class="fa fa-floppy-o "></i> SAVE</a>            
-    
+                <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a>
+                <a class=" " md-raised-button (click)="saveButtonClicked()" [disabled]="!report.attributes.name"><i class="fa fa-floppy-o "></i> SAVE</a>
+
         </div>
     </div>
 </div>
