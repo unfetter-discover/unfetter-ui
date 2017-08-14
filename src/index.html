@@ -21,20 +21,34 @@
 <!--<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>-->
 <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.bundle.js"></script>-->
 
+    <style>
+       @keyframes fadeIn { 
+                    from {  
+                      opacity: .2; 
+                      transform: translateY(-40px) scale(.8);
+                    } 
+                    to { 
+                      opacity: 1; 
+                      transform: translateY(5px) scale(1);
+                    }  
+                  }
+    </style>
 </head>
 
 <body>
 
   <app>
-    Loading...
+    <div style="animation: 1.2s ease-in fadeIn; background-color: #fafafa;">
+      <img align="middle" 
+            style="width: 375px; height: 100vh; margin: auto; display:block" 
+            src="<%= htmlWebpackPlugin.options.metadata.baseUrl === '/' ? './' : htmlWebpackPlugin.options.metadata.baseUrl %>assets/icon/unfetter-shield.svg">
+    </div>
   </app>
-
 
   <% if (htmlWebpackPlugin.options.metadata.isDevServer && htmlWebpackPlugin.options.metadata.HMR !== true) { %>
   <!-- Webpack Dev Server reload -->
   <script src="/webpack-dev-server.js"></script>
   <% } %>
-
 
 </body>
 </html>

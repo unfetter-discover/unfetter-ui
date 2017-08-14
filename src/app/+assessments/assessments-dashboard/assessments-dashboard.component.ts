@@ -10,21 +10,16 @@ import { Constance } from '../../utils/constance';
 })
 
 export class AssessmentsDashboardComponent implements OnInit {
-
-    private assessment: any;
-    private riskByAttackPattern: any;
-    private unassessedPhases: String;
-
     public doughnutChartLabels: string[] = ['Risk Accepted', 'Risk Addressed', ];
     public doughnutChartData: any[] = [{
         data: [],
         backgroundColor: [
-            "#F44336",
-            "#4CAF50",
+            '#F44336',
+            '#4CAF50',
         ],
         hoverBackgroundColor: [
-            "#C62828",
-            "#2E7D32",
+            '#C62828',
+            '#2E7D32',
         ]
     }];
     public doughnutChartType: string = 'doughnut';
@@ -47,32 +42,35 @@ export class AssessmentsDashboardComponent implements OnInit {
         }
     };
 
+    private assessment: any;
+    private riskByAttackPattern: any;
+    private unassessedPhases: String;
 
     constructor(
-        private assessmentsDashboardService: AssessmentsDashboardService, 
-        private route: ActivatedRoute,
+        private assessmentsDashboardService: AssessmentsDashboardService,
+        private route: ActivatedRoute
     ){}
 
-    ngOnInit() {
+    public ngOnInit() {
         let id = this.route.snapshot.params['id'] ? this.route.snapshot.params['id'] : ''; this.assessment = {};
         this.assessment['attributes'] = {};
         this.assessmentsDashboardService.getById(id).subscribe(
-            res => {
-                this.assessment = res ? res : {};                             
+            (res) => {
+                this.assessment = res ? res : {};
             },
-            err => console.log(err)             
+            (err) => console.log(err)
         );
 
         this.assessmentsDashboardService.getRiskByAttackPattern(id)
             .subscribe(
-                res => {
+                (res) => {
                     this.riskByAttackPattern = res ? res : {};
-                    console.log(this.riskByAttackPattern); 
+                    console.log(this.riskByAttackPattern);
                     this.doughnutChartData[0].data = [this.riskByAttackPattern.totalRisk, (1 - this.riskByAttackPattern.totalRisk)];
 
                     this.populateUnassessedPhases();
                 },
-                err => console.log(err)
+                (err) => console.log(err)
             );
     }
 
@@ -80,8 +78,6 @@ export class AssessmentsDashboardComponent implements OnInit {
         let attackPatternsByKillChain = this.riskByAttackPattern.attackPatternsByKillChain;
         // console.log(attackPatternsByKillChain);
         // console.log(phaseName);
-        
-        
 
         for (let killPhase of attackPatternsByKillChain) {
             if (killPhase._id === phaseName && killPhase.attackPatterns !== undefined) {
@@ -92,14 +88,14 @@ export class AssessmentsDashboardComponent implements OnInit {
     }
 
     populateUnassessedPhases() {
-        let assessedPhases = this.riskByAttackPattern.phases.map(phase => phase._id);
+        let assessedPhases = this.riskByAttackPattern.phases.map((phase) => phase._id);
         this.unassessedPhases = Constance.KILL_CHAIN_PHASES
-            .filter(phase => assessedPhases.indexOf(phase) < 0)
+            .filter((phase) => assessedPhases.indexOf(phase) < 0)
             .reduce((prev, phase) => prev.concat(', '.concat(phase)), '')
             .slice(2);
     }
 
-    getQuestions(phaseName) {        
-        return "stub";
+    getQuestions(phaseName) {
+        return 'stub';
     }
 }

@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
     templateUrl: 'stix-home.component.html',
     styleUrls: ['stix-home.component.css']
 })
-export class StixHome {
+export class StixHomeComponent {
     public navigations: any[] = [
         { url: 'attack-patterns', label: 'Attack Patterns' },
         { url: 'campaigns', label: 'Campaigns' },
