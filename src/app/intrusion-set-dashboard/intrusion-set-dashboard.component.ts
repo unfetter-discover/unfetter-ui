@@ -37,7 +37,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
     this.service.url = Constance.INTRUSION_SET_URL;
     const filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
     const sub = this.service.load(filter)
-      .delay(2 * 1000)
+      // .delay(2 * 1000)
       .subscribe(
           (data) => {
             this.intrusionSets = data;

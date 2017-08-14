@@ -33,7 +33,7 @@ export class LinkExplorerComponent implements OnInit {
         const url = Constance.RELATIONSHIPS_URL + '?sort=' + JSON.stringify(parameters);
         const sub = this.service.getByUrl( encodeURI(url) )
                         // TODO : remove the delay when finished testing
-                        .delay(2 * 1000)
+                        // .delay(2 * 1000)
                         .subscribe(
                             (data) => {
                                 const relationships = data as Relationship[];
