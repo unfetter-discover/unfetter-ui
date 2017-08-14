@@ -1,4 +1,4 @@
-<nav class="navbar navbar-inverse navbar-fixed-top">
+<nav class="navbar navbar-inverse navbar-fixed-top mat-elevation-z4">
     <div class="container-fluid">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -17,9 +17,22 @@
         <ul class="nav navbar-nav">
            <li><a routerLink="./assessments">Assessments</a></li>
           <li><a routerLink="./intrusion-set-dashboard" >Intrusion Set Dashboard</a></li>
-          <li><a target="_blank" href="/api/explorer/">View API</a></li>
-
+          <li><a routerLink="./link-explorer">Link Explorer</a></li>
           <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">STIX<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li *ngFor="let navigation of navigations">
+                <a [routerLink]="[navigation.url]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                                {{navigation.label}}
+                              </a>
+              <li><a routerLink="./link-explorer">Link Explorer</a></li>
+              
+            </ul>
+          </li>
+
+          <!--<li><a target="_blank" href="/api/explorer/">View API</a></li>-->
+
+          <!--<li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
               aria-expanded="false">Settings<span class="caret"></span></a>
                <ul class="dropdown-menu">
@@ -36,8 +49,9 @@
                       </ul>
                   </li>
               </ul>
-          </li>
-          <li><a routerLink="./partners" >Partners</a></li>
+          </li>-->
+
+          <!--<li><a routerLink="./partners" >Partners</a></li>-->
         </ul>
       </div><!--/.nav-collapse -->
     </div>

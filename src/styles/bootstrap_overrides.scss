@@ -1,0 +1,32 @@
+@import 'variables';
+
+
+@function calculateNewPadding() {
+    @return $default-navbar-nav-a-padding+ (($navbar-height - $default-navbar-height) / 2);
+}
+
+@mixin resetAnchorPadding {
+    padding-top: calculateNewPadding() + px;
+    padding-bottom: calculateNewPadding() + px;
+}
+
+@media (min-width: 768px) {
+    .navbar {
+        .navbar-nav {
+            >li>a {
+                @include resetAnchorPadding;
+            }
+        }
+    }
+}
+
+.navbar-inverse {
+    background-color: $nav-background-color;
+    border-color: $nav-background-color;
+    .navbar-brand {
+        color: #FFFFFF;
+    }
+    .navbar-nav>li>a {
+        color: #FFFFFF;
+    }
+}
