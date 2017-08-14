@@ -17,6 +17,9 @@
                 @include resetAnchorPadding;
             }
         }
+        .navbar-brand {
+            padding-top: 12px !important;
+        }        
     }
 }
 
@@ -24,7 +27,8 @@
     background-color: $nav-background-color;
     border-color: $nav-background-color;
     .navbar-brand {
-        color: #FFFFFF;
+        color: #FFFFFF;      
+        padding-top: 5px;  
     }
     .navbar-nav>li>a {
         color: #FFFFFF;
