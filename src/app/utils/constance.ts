@@ -63,6 +63,8 @@ export const Constance = {
     MALWARE_TYPE: 'malware',
     MALWARE_ICON: 'assets/icon/stix-icons/svg/malware-b.svg',
 
+    MULTIPLES_URL: 'api/multiples',
+
     OBSERVED_DATA_URL: 'api/observed-data',
     OBSERVED_DATA_TYPE: 'observed-data',
     OBSERVED_DATA_ICON: 'assets/icon/stix-icons/svg/malware-b.svg',
