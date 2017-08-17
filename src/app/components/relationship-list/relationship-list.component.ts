@@ -27,8 +27,8 @@ export class RelationshipListComponent implements OnInit, OnChanges {
     public ngOnChanges(changes: SimpleChanges) {
         if (changes.model.currentValue.id !== undefined) {
             this.relationshipMapping = [];
-            this.loadRelationships({ target_ref: changes.model.currentValue.id });
-            this.loadRelationships({ source_ref: changes.model.currentValue.id });
+            this.loadRelationships({ 'stix.target_ref': changes.model.currentValue.id });
+            this.loadRelationships({ 'stix.source_ref': changes.model.currentValue.id });
         }
     }
 
@@ -39,7 +39,7 @@ export class RelationshipListComponent implements OnInit, OnChanges {
             this.relationships = data as Relationship[];
             this.relationships.forEach(
                 (relationship) => {
-                    if (filter['source_ref']) {
+                    if (filter['stix.source_ref']) {
                         this.loadStixObject(relationship.attributes.target_ref);
                     } else {
                         this.loadStixObject(relationship.attributes.source_ref);

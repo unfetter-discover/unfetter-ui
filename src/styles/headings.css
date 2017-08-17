@@ -55,10 +55,6 @@ li:last-child div.list-item-row {
     border: 1px solid lightgrey;
 }
 
-.navbar-brand {
-    padding: 5px 15px !important;
-}
-
 .center {
     text-align: center;
 }
