@@ -27,14 +27,15 @@ export class AssessmentsDashboardComponent implements OnInit {
     public chartOptions: Object = {
         tooltips: {
             callbacks: {
-                label: function (tooltipItem, data) {
+                label: (tooltipItem, data) => {
                     let allData = data.datasets[tooltipItem.datasetIndex].data;
                     let tooltipLabel = data.labels[tooltipItem.index];
                     let tooltipData = allData[tooltipItem.index];
                     let total = 0;
-                    for (let i in allData) {
-                        total += allData[i];
-                    }
+                    allData.forEach(
+                        (d) => {
+                         total += d;
+                    });
                     let tooltipPercentage = Math.round((tooltipData / total) * 100);
                     return `${tooltipLabel}: ${tooltipPercentage}%`;
                 }
@@ -49,7 +50,7 @@ export class AssessmentsDashboardComponent implements OnInit {
     constructor(
         private assessmentsDashboardService: AssessmentsDashboardService,
         private route: ActivatedRoute
-    ){}
+    ) {}
 
     public ngOnInit() {
         let id = this.route.snapshot.params['id'] ? this.route.snapshot.params['id'] : ''; this.assessment = {};

@@ -8,7 +8,7 @@ import { Constance } from '../../utils/constance';
     templateUrl: './group.component.html',
     styleUrls: ['./group.component.css']
 })
-export class AssessmentsGroup implements OnInit {
+export class AssessmentsGroupComponent implements OnInit {
 
     private activePhase: String;
     private assessment: any;
@@ -27,23 +27,23 @@ export class AssessmentsGroup implements OnInit {
         let routedPhase = this.route.snapshot.params['phase'] ? this.route.snapshot.params['phase'] : '';
         this.assessmentsDashboardService.getRiskByAttackPattern(this.id)
             .subscribe(
-                res => {
+                (res) => {
                     this.riskByAttackPattern = res ? res : {};
                     this.populateUnassessedPhases();
                     this.activePhase = routedPhase ? routedPhase : this.riskByAttackPattern.phases[0]._id;
                     this.setAttackPattern(this.getScores(this.activePhase)[0].attackPatternId);
                 },
-                err => console.log(err)
+                (err) => console.log(err)
             );
 
         this.assessment = {};
         this.assessment['attributes'] = {};
         this.assessmentsDashboardService.getById(this.id)
             .subscribe(
-                res => {
+                (res) => {
                     this.assessment = res ? res : {};
                 },
-                err => console.log(err)
+                (err) => console.log(err)
             );
     }
 
@@ -59,9 +59,9 @@ export class AssessmentsGroup implements OnInit {
     }
 
     public populateUnassessedPhases() {
-        let assessedPhases = this.riskByAttackPattern.phases.map(phase => phase._id);
+        let assessedPhases = this.riskByAttackPattern.phases.map((phase) => phase._id);
         this.unassessedPhases = Constance.KILL_CHAIN_PHASES
-            .filter(phase => assessedPhases.indexOf(phase) < 0)
+            .filter((phase) => assessedPhases.indexOf(phase) < 0)
             .reduce((prev, phase) => prev.concat(', '.concat(phase)), '')
             .slice(2);
     }
@@ -97,13 +97,13 @@ export class AssessmentsGroup implements OnInit {
     }
 
     public getScores(phaseName) {
-        return this.riskByAttackPattern.phases.find(phase => phase._id === phaseName).scores
+        return this.riskByAttackPattern.phases.find((phase) => phase._id === phaseName).scores;
     }
 
     public setAttackPattern(attackPatternId) {
         this.currentAttackPattern = this.riskByAttackPattern.attackPatternsByKillChain
-            .find(killChain => killChain._id === this.activePhase)
+            .find((killChain) => killChain._id === this.activePhase)
             .attackPatterns
-            .find(attackPattern => attackPattern.id === attackPatternId);
+            .find((attackPattern) => attackPattern.id === attackPatternId);
     }
 }

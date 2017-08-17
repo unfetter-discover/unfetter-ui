@@ -19,7 +19,7 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
     public ngOnInit() {}
 
     /**
-     * TODO: verify this is not called too often, 
+     * TODO: verify this is not called too often,
      *  as ngOnChanges can be called often and computation should not be expensive
      * @description
      *  updates this components graph on change
@@ -300,7 +300,7 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
      *
      * @param s {Coordinate}
      * @param d {Coordinate}
-     * 
+     *
      * @return {string} in the form of a svg path, ie M x y C y x, y x yx
      */
     private diagonal(s: Coordinate, d: Coordinate): string {

@@ -8,29 +8,29 @@ import { Constance } from '../../utils/constance';
     styleUrls: ['./phase-list.component.css']
 })
 
-export class PhaseList implements OnInit {
+export class PhaseListComponent implements OnInit {
 
-    @Input('phase') phase: any;
-    @Input('numAttackPatterns') numAttackPatterns: any;
-    @Input('assessmentId') assessmentId: any;
-    @Input('questions') questions: any;
+    @Input('phase') public phase: any;
+    @Input('numAttackPatterns') public numAttackPatterns: any;
+    @Input('assessmentId') public assessmentId: any;
+    @Input('questions') public questions: any;
 
-    green: any = {
+    public green: any = {
         h: 122,
         s: 39,
         l: 49
     };
 
-    red: any = {
+    public red: any = {
         h: 4,
         s: 90,
         l: 58
     };
 
-    riskColor: any;
+    public riskColor: any;
     constructor(private route: ActivatedRoute) { }
 
-    ngOnInit() {
+    public ngOnInit() {
         let avgRisk = this.phase.avgRisk;
         let riskHsl: any = {};
 
@@ -40,10 +40,8 @@ export class PhaseList implements OnInit {
         let saturationDelta = this.red.s - this.green.s;
         riskHsl.s = this.green.h + saturationDelta * avgRisk;
         let lightnessDelta = this.red.l - this.green.l;
-        riskHsl.l = this.green.l + lightnessDelta * avgRisk;      
+        riskHsl.l = this.green.l + lightnessDelta * avgRisk;
 
-        this.riskColor = `hsla(${riskHsl.h}, ${riskHsl.s}%, ${riskHsl.l}%, 1)`; 
+        this.riskColor = `hsla(${riskHsl.h}, ${riskHsl.s}%, ${riskHsl.l}%, 1)`;
     }
-
-
 }
