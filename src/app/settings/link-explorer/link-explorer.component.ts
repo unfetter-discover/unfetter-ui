@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import { MdDialog, MdDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -8,37 +8,46 @@ import { Constance } from '../../utils/constance';
 
 @Component({
     selector: 'link-explorer',
-    templateUrl: 'link-explorer.component.html'
-
+    templateUrl: 'link-explorer.component.html',
+    styleUrls: [ 'link-explorer.component.css' ]
 })
-export class LinkExplorerComponent {
-    private checked: Boolean = true;
-    private graph: {};
-    private selectedRecord: any;
-    private forcesEnabled = { };
-    private forcesEnabledTemp = { center: true, charge: true, collide: true, column: true, link: true };
+export class LinkExplorerComponent implements OnInit {
+    public checked = true;
+    public graph: any;
+    public selectedRecord: any;
+    public forcesEnabled: any;
+    public forcesEnabledTemp = { center: true, charge: true, collide: true, column: true, link: true };
+
     constructor(private service: StixService) {
-        this.loadRelationships();
-        this.forcesEnabled = this.naiveShallowCopy(this.forcesEnabledTemp);
+        console.log('LinkExplorerComponent ctor');
      }
 
+    public ngOnInit(): void {
+        console.log('onInit');
+        this.loadRelationships();
+        this.forcesEnabled = this.naiveShallowCopy(this.forcesEnabledTemp);
+    }
+
      private loadRelationships(): void {
-        let parameters = { 'filter[order]': 'relationship_type' };
-        let url = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(parameters);
-        let sub =  this.service.getByUrl( encodeURI(url) ).subscribe(
-        (data) => {
-           let relationships = data as Relationship[];
-           this.graph = {nodes: this.getNodes(relationships), links: this.getLinks(relationships)};
-            }, (error) => {
-                // handle errors here
-                console.log('error ' + error);
-            }, () => {
-                // prevent memory links
-                if (sub) {
-                    sub.unsubscribe();
-                }
-            }
-        );
+        const parameters = { relationship_type: -1 };
+        const url = Constance.RELATIONSHIPS_URL + '?sort=' + JSON.stringify(parameters);
+        const sub = this.service.getByUrl( encodeURI(url) )
+                        // TODO : remove the delay when finished testing
+                        // .delay(2 * 1000)
+                        .subscribe(
+                            (data) => {
+                                const relationships = data as Relationship[];
+                                this.graph = {nodes: this.getNodes(relationships), links: this.getLinks(relationships)};
+                            }, (error) => {
+                                // handle errors here
+                                console.log('error ' + error);
+                            }, () => {
+                                // prevent memory links
+                                if (sub) {
+                                    sub.unsubscribe();
+                                }
+                            }
+                        );
     }
 
     private getNodes(relationships: Relationship[]) {

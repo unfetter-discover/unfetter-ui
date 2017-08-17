@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Campaign, Indicator, AttackPattern, Relationship, Filter } from '../../models';
@@ -9,7 +9,7 @@ import { BaseComponentService } from '../base-service.component';
   selector: 'relationship-list',
   templateUrl: './relationship-list.component.html'
 })
-export class RelationshipListComponent implements OnInit {
+export class RelationshipListComponent implements OnInit, OnChanges {
     @Input() protected model: any;
     protected url: string;
     protected relationshipMapping: any = [];
@@ -20,8 +20,16 @@ export class RelationshipListComponent implements OnInit {
     }
 
     public ngOnInit() {
-        this.loadRelationships({ target_ref: this.model.id});
-        this.loadRelationships({source_ref: this.model.id});
+        // this.loadRelationships({ target_ref: this.model.id});
+        // this.loadRelationships({source_ref: this.model.id});
+    }
+
+    public ngOnChanges(changes: SimpleChanges) {
+        if (changes.model.currentValue.id !== undefined) {
+            this.relationshipMapping = [];
+            this.loadRelationships({ 'stix.target_ref': changes.model.currentValue.id });
+            this.loadRelationships({ 'stix.source_ref': changes.model.currentValue.id });
+        }
     }
 
     protected loadRelationships(filter: any): void {
@@ -31,7 +39,7 @@ export class RelationshipListComponent implements OnInit {
             this.relationships = data as Relationship[];
             this.relationships.forEach(
                 (relationship) => {
-                    if (filter['source_ref']) {
+                    if (filter['stix.source_ref']) {
                         this.loadStixObject(relationship.attributes.target_ref);
                     } else {
                         this.loadStixObject(relationship.attributes.source_ref);

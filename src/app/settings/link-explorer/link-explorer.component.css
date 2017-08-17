@@ -1,0 +1,15 @@
+.loading {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+}
+
+.loading md-spinner {
+    margin: 0 auto;
+}
+
+.loading .loading-text {
+    margin: 0 auto;
+    display: block;
+}

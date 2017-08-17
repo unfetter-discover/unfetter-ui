@@ -1,0 +1,61 @@
+<div id="assessmentsDashboard" class="container">
+    <div class="row">
+        <br>
+        <div class="col-sm-12">
+            <ol class="breadcrumb">
+                <li><a routerLink="/assessments">Assessments</a></li>
+                <li class="active">Dashboard</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-8">
+            <h4>
+                <img class="stix-icon" src="assets/icon/stix-icons/svg/report-b.svg">
+                &nbsp;Assessment: {{ assessment.attributes.name}}
+            </h4>
+        </div>
+        <div class="col-xs-4 text-right">
+            <p class="headingMarginMatch text-muted">Published &bull; {{ assessment.attributes.created | date:'medium' }}</p>
+        </div>
+    </div>
+
+    <div class="row"  *ngIf="riskByAttackPattern && riskByAttackPattern.phases && riskByAttackPattern.phases.length" id="phaseListWrapper">
+
+        <div class="col-md-8">
+
+            <div class="row">
+                <div class="col-xs-4">
+                    <h5>Kill Chain Phase</h5>
+                </div>
+                <div class="col-xs-3">
+                    <h5>Risk Level</h5>
+                </div>
+                <div class="col-xs-5">
+                    <h5>Coverage</h5>
+                </div>
+            </div>
+            <hr>
+
+            <div *ngFor="let phase of riskByAttackPattern.phases">
+                <phase-list [phase]="phase" [numAttackPatterns]="getNumAttackPatterns(phase._id)" [assessmentId]="assessment.id" [questions]="getQuestions(phase)"></phase-list>
+            </div>
+            <p><small>Unassessed Kill Chain Phases: {{ unassessedPhases | capitalize }}</small>
+            </p>
+        </div>
+
+        <div class="col-md-4" *ngIf="doughnutChartData[0].data && doughnutChartData[0].data.length == 2">
+            <br>
+            <h5 class="text-center">Risk Addressed</h5>
+            <canvas baseChart 
+                [datasets]="doughnutChartData" 
+                [labels]="doughnutChartLabels" 
+                [chartType]="doughnutChartType"
+                [colors]="doughnutChartColors"
+                [options]="chartOptions"></canvas>    
+        </div>
+
+    </div>
+    <br>    
+</div>

@@ -1,4 +1,19 @@
 export const Constance = {
+
+    // TODO store these on server?
+    KILL_CHAIN_PHASES: [
+        'persistence', 
+        'priviledge-escalation', 
+        'defense-evasion', 
+        'credential-access', 
+        'discovery',
+        'lateral-movement',
+        'execution',
+        'collection',
+        'exfiltration',
+        'command-and-control'
+    ],
+
     DATE_FORMATE: 'MMM-DD-YYYY',
     REPORTS_URL: 'api/reports',
     REPORTS_ICON: 'assets/icon/stix-icons/svg/report-b.svg',
@@ -48,11 +63,17 @@ export const Constance = {
     MALWARE_TYPE: 'malware',
     MALWARE_ICON: 'assets/icon/stix-icons/svg/malware-b.svg',
 
+    MULTIPLES_URL: 'api/multiples',
+
     OBSERVED_DATA_URL: 'api/observed-data',
     OBSERVED_DATA_TYPE: 'observed-data',
     OBSERVED_DATA_ICON: 'assets/icon/stix-icons/svg/malware-b.svg',
 
     TOOL_URL: 'api/tools',
     TOOL_TYPE: 'tools',
-    TOOL_ICON: 'assets/icon/stix-icons/svg/tool-b.svg'
+    TOOL_ICON: 'assets/icon/stix-icons/svg/tool-b.svg',
+
+    X_UNFETTER_ASSESSMENT_URL: 'api/x-unfetter-assessments',
+    X_UNFETTER_ASSESSMENT_TYPE: 'x-unfetter-assessment',
+    // X_UNFETTER_ASSESSMENT_ICON: 'assets/icon/stix-icons/svg/x-unfetter-assessment-b.svg',
 };
