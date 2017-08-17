@@ -9,7 +9,7 @@ export class CapitalizePipe implements PipeTransform {
             transformed = transformed
                 .replace(/\b([a-z])(\w+)/g, (_, g1, g2) => {
                     let word = g1.concat(g2);
-                    if ( word === 'and' || word === 'or' || word ==='the') {
+                    if ( word === 'and' || word === 'or' || word === 'the') {
                         return word;
                     }
                     return g1.toUpperCase() + g2;

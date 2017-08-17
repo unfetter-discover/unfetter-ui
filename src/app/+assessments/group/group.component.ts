@@ -22,7 +22,7 @@ export class AssessmentsGroup implements OnInit {
         private route: ActivatedRoute,
     ) { }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.id = this.route.snapshot.params['id'] ? this.route.snapshot.params['id'] : '';
         let routedPhase = this.route.snapshot.params['phase'] ? this.route.snapshot.params['phase'] : '';
         this.assessmentsDashboardService.getRiskByAttackPattern(this.id)
@@ -47,7 +47,7 @@ export class AssessmentsGroup implements OnInit {
             );
     }
 
-    getNumAttackPatterns(phaseName) {
+    public getNumAttackPatterns(phaseName) {
         let attackPatternsByKillChain = this.riskByAttackPattern.attackPatternsByKillChain;
 
         for (let killPhase of attackPatternsByKillChain) {
@@ -58,7 +58,7 @@ export class AssessmentsGroup implements OnInit {
         return 0;
     }
 
-    populateUnassessedPhases() {
+    public populateUnassessedPhases() {
         let assessedPhases = this.riskByAttackPattern.phases.map(phase => phase._id);
         this.unassessedPhases = Constance.KILL_CHAIN_PHASES
             .filter(phase => assessedPhases.indexOf(phase) < 0)
@@ -66,7 +66,7 @@ export class AssessmentsGroup implements OnInit {
             .slice(2);
     }
 
-    getRiskColor(avgRisk) {
+    public getRiskColor(avgRisk) {
         let riskHsl: any = {};
 
         let green: any = {
@@ -88,22 +88,22 @@ export class AssessmentsGroup implements OnInit {
         let lightnessDelta = red.l - green.l;
         riskHsl.l = green.l + lightnessDelta * avgRisk;
 
-        return `hsla(${riskHsl.h}, ${riskHsl.s}%, ${riskHsl.l}%, 1)`; 
+        return `hsla(${riskHsl.h}, ${riskHsl.s}%, ${riskHsl.l}%, 1)`;
     }
 
-    setPhase(phaseName) {
+    public setPhase(phaseName) {
         this.activePhase = phaseName;
         this.setAttackPattern(this.getScores(this.activePhase)[0].attackPatternId);
     }
 
-    getScores(phaseName) {
+    public getScores(phaseName) {
         return this.riskByAttackPattern.phases.find(phase => phase._id === phaseName).scores
     }
 
-    setAttackPattern(attackPatternId) {      
+    public setAttackPattern(attackPatternId) {
         this.currentAttackPattern = this.riskByAttackPattern.attackPatternsByKillChain
             .find(killChain => killChain._id === this.activePhase)
             .attackPatterns
-            .find(attackPattern => attackPattern.id === attackPatternId);        
+            .find(attackPattern => attackPattern.id === attackPatternId);
     }
 }

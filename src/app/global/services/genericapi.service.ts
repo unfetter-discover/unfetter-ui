@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Rx';
 @Injectable()
 export class GenericApi {
     // TODO dont hard code this
-    private baseUrl: string = "https://localhost/";
+    private baseUrl: string = 'https://localhost/';
     private data: any = null;
 
     constructor(private http: Http) { }
@@ -33,7 +33,7 @@ export class GenericApi {
     }
 
     public delete(url: string, data?: any): Observable<Response> {
-        this.data = (data != undefined && data != null) ? '/' + data : '';
+        this.data = (data !== undefined && data !== null) ? '/' + data : '';
         let builtUrl = this.baseUrl + url + this.data;
         return this.http.delete(builtUrl)
             .map(this.extractData)
@@ -42,7 +42,7 @@ export class GenericApi {
 
     private extractData(res: Response) {
         let body = res.json();
-        if(body['data'] !== undefined) {
+        if (body['data'] !== undefined) {
             return body['data'] as any[];
         }
         return ({});
