@@ -1,0 +1,73 @@
+<page-header [pageTitle]="pageTitle"  [pageIcon]="pageIcon" [description]="description"></page-header>
+<div class="row" *ngIf="showSummarry">
+    <div class="col-xs-12">
+        <md-card>
+            <md-card-content>
+                <p>Assessment Description</p>
+                <div class="row">
+                    <div class="col-xs-8">
+                        <md-input-container class="full-width">
+                            <input mdInput placeholder="Name"   name="assessment-name" value="Assessment Report">
+                        </md-input-container>
+                    </div>
+                    <div class="col-xs-4">
+                        <label>Published</label>
+                        <div>
+                             <p-calendar dateFormat="M-dd-yy" showIcon="true"></p-calendar>
+                        </div>
+                    </div>
+                </div>
+            </md-card-content>
+        </md-card>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <md-card *ngIf="currentAssessmentGroup">
+            <md-card-content>
+                <div class="row">
+                    <div class="col-xs-3">
+                        <div style="display: block">
+                            <canvas baseChart
+                                 [datasets]="doughnutChartData"
+                                [labels]="doughnutChartLabels"
+                                [chartType]="doughnutChartType"
+                                [colors]="doughnutChartColors"
+                                [options]="chartOptions"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-xs-9">
+                       <h1> {{currentAssessmentGroup.description}}</h1>
+                    </div>
+                </div>
+                <div class="row" *ngFor="let assessment of currentAssessmentGroup.assessments" >
+                    <div class="col-xs-12">
+                         <div class="row">
+                            <div class="col-xs-12">
+                                <div class="box" [style.background]="assessment.risk | riskColor"></div>
+                                <strong>{{assessment.name}} -- {{assessment.description | firstSentence}}</strong> {{assessment.description | restSentence}}
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 5px;">
+                            <div class="col-xs-{{ assessment.measurements.length | columnSize}}" *ngFor="let measurement of assessment.measurements">
+                                <form>
+                                        <md-select  name="objectProperties"  (change)="updateRisks(measurement, assessment)" [(ngModel)]="measurement.risk" class="full-width">
+                                            <md-option *ngFor="let options of measurement.options" [value]="options.risk">
+                                                {{ options.name }}
+                                            </md-option>
+                                        </md-select>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </md-card-content>
+        </md-card>
+    </div>
+</div>
+ <div class="row">
+    <div class="col-xs-12 col-md-8">
+        <a md-raised-button [disabled]="page === 1" (click)="back()"> Back</a>
+        <a md-raised-button (click)="next()"> {{buttonLabel}}</a>
+    </div>
+</div>

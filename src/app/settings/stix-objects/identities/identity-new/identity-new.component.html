@@ -1,0 +1,49 @@
+
+<div class="row">
+    <div class="col-md-12">
+        <md-input-container class="full-width">
+        <input mdInput placeholder="Name" required [(ngModel)]="identity.attributes.name" value="">
+        </md-input-container>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+       <md-input-container class="full-width">
+        <input mdInput placeholder="Description"  [(ngModel)]="identity.attributes.description" value="">
+        </md-input-container>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <label>Identity Class</label>
+        <div class="row">
+            <div class="col-md-12">
+                <md-radio-group class="identity-radio-group" [(ngModel)]="identity.attributes.identity_class">
+                    <md-radio-button class="identity-radio-button" *ngFor="let identityClass of identityClasses" [value]="identityClass.label">
+                        {{identityClass.label}}
+                    </md-radio-button>
+                </md-radio-group>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <label>Sectors</label>
+        <div class="row">
+            <div class="col-md-4" *ngFor="let sector of sectorOptions">
+                    <md-checkbox class="identity-margin" (change)="addRemoveSector(sector.label)">{{sector.label}}</md-checkbox>
+            </div>
+        </div>
+    </div>
+</div>
+
+<external-reference [(model)]="identity"></external-reference>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="button-row pull-right">
+                <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a> 
+                <a class=" " md-raised-button (click)="saveIdentity()" [disabled]="!identity.attributes.name"><i class="fa fa-floppy-o "></i> SAVE & CLOSE</a>              
+        </div>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+.intrusion-set-dashboard-side-panel {
+    padding-top: 27px;    
+    padding-bottom: 30px;
+}
+
+.intrusion-set-dashboard-main-panel {
+    padding-top: 15px;
+}
+
+@media only screen and (min-width: 992px) {
+    .intrusion-set-dashboard-side-panel {
+        padding-top: 91px;
+        padding-bottom: 100px;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        overflow-y: auto;
+    }
+    .intrusion-set-dashboard-main-panel {
+        margin-left: 25%;
+    }
+}
+
+.loading {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+}
+
+.loading md-spinner {
+    margin: auto auto;
+}
+
+.loading .loading-text {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}

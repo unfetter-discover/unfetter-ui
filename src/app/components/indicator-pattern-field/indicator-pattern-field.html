@@ -1,0 +1,48 @@
+<div class="row" style="margin-top:30px;">
+    <div class="col-md-4">
+       
+        <form>
+        <md-select placeholder="Indicator Object Type"  (change)="onInputChange()" [(ngModel)]="selectedObjectType" name="objectTypes" class="full-width">
+            <md-option *ngFor="let objectType of objectTypes" [value]="objectType.label">
+                {{ objectType.label }}
+            </md-option>
+        </md-select>
+</form>
+
+    </div>
+    <div class="col-md-4">
+       <form>
+
+        <md-select placeholder="Indicator Object Property" (change)="onInputChange()" [(ngModel)]="selectedObjectProperty" name="objectProperties" class="full-width">
+            <md-option *ngFor="let objectProperty of objectProperties" [value]="objectProperty.label">
+                {{ objectProperty.label }}
+            </md-option>
+        </md-select>
+</form>
+
+    </div>
+    <div class="col-md-3">
+       <md-input-container class="full-width">
+        <input mdInput placeholder="Indicator Object Value"  (change)="onInputChange()" [(ngModel)]="selectedObjectValue" value="{{selectedObjectValue}">
+        </md-input-container>
+    </div>
+    
+    <div>
+        <div class="col-md-1">
+              <button md-mini-fab [disabled]="disabled" (click)="add()"><md-icon>add</md-icon></button>
+            <!--<a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa ffa-plus-circle"></i> CANCEL</a> -->
+        </div>
+
+      
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-md-12">
+           <md-chip-list class="pull-left">
+                <md-chip selected="true" color="accent" *ngFor="let indicator of indicators">{{indicator.pattern}}
+                    <span class="cursor-pointer" (click)="remove(indicator)"><i class="fa fa-trash"></i></span>
+                </md-chip>
+            </md-chip-list>
+    </div>
+</div>

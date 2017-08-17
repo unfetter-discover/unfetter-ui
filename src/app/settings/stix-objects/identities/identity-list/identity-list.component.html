@@ -1,0 +1,4 @@
+
+    <buttons-filter [model]="identities" [filteredItems]="filteredItems" (filterItemsChange)="onFilterItemsChange($event)"></buttons-filter>
+
+    <list-stix-objects [model]="filteredItems" [url]="url" [showSectors]="showSectors" [showExternalReferences]="showExternalReferences" (deletButtonClicked)="deletButtonClicked($event)"></list-stix-objects>

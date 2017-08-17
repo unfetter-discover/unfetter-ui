@@ -1,0 +1,56 @@
+.link-node-graph {
+    width: 100%;
+    height: 100vh;
+}
+
+.link-node-graph-md {
+    width: 50%;
+    height: 200px;
+}
+
+.node {
+    fill: lightgrey;
+    stroke: darkgrey;
+    cursor: pointer;
+}
+
+.node.malware {
+    fill: rgb(146, 11, 11);
+}
+
+.node.threat-actor {
+    fill: rgb(193, 39, 44);
+}
+
+.node.course-of-action {
+    fill: rgb(57, 181, 73);
+}
+
+.node.indicator {
+    fill: rgb(190, 177, 19);
+}
+
+.node.attack-pattern {
+    fill: rgb(35, 159, 221);
+}
+
+.node.tool {
+    fill: rgb(104, 5, 6);
+}
+
+.node.observable-path {
+    fill: #00897b;
+}
+
+.node.campaign {
+    fill: #006699;
+}
+
+.node.unselected {
+    fill: #eeeeee;
+}
+
+.link {
+    stroke: #cccccc;
+    fill: transparent;
+}
