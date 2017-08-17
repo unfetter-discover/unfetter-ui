@@ -1,20 +1,17 @@
 {
-  "name": "angular2-webpack-starter",
-  "version": "5.4.1",
-  "description": "An Angular 2 Webpack Starter kit featuring Angular 2 (Router, Http, Forms, Services, Tests, E2E, Coverage), Karma, Protractor, Jasmine, Istanbul, TypeScript, and Webpack by AngularClass",
+  "name": "unfetter-ui",
+  "version": "1.0.0",
+  "description": "UNFETTER UI",
   "keywords": [
-    "angular2",
-    "webpack",
-    "typescript"
+    "unfetter"
   ],
-  "author": "Patrick Stapleton <patrick@angularclass.com>",
-  "homepage": "https://github.com/angularclass/angular2-webpack-starter",
+  "author": "UNFETTER",
+  "homepage": "https://github.com/unfetter-discover/unfetter-ui",
   "license": "MIT",
   "scripts": {
     "build:aot:prod": "npm run clean:dist && npm run clean:aot && webpack --config config/webpack.prod.js  --progress --profile --bail",
     "build:aot": "npm run build:aot:prod",
     "build:dev": "npm run clean:dist && webpack --config config/webpack.dev.js --progress --profile",
-    "build:docker": "npm run build:prod && docker build -t angular2-webpack-start:latest .",
     "build:prod": "npm run clean:dist && webpack --config config/webpack.prod.js  --progress --profile --bail",
     "build": "npm run build:dev",
     "ci:aot": "npm run lint && npm run test && npm run build:aot && npm run e2e",
@@ -23,19 +20,14 @@
     "ci:testall": "npm run lint && npm run test && npm run build:prod && npm run e2e && npm run build:aot && npm run e2e",
     "ci:travis": "npm run lint && npm run test && npm run build:aot && npm run e2e:travis",
     "ci": "npm run ci:testall",
-    "clean:dll": "npm run rimraf -- dll",
     "clean:aot": "npm run rimraf -- compiled",
     "clean:dist": "npm run rimraf -- dist",
     "clean:install": "npm set progress=false && npm install",
-    "clean": "npm cache clean && npm run rimraf -- node_modules doc coverage dist compiled dll",
-    "docker": "docker",
+    "clean": "npm cache clean && npm run rimraf -- node_modules doc coverage dist compiled",
     "docs": "npm run typedoc -- --options typedoc.json --exclude '**/*.spec.ts' ./src/",
     "e2e:live": "npm-run-all -p -r server:prod:ci protractor:live",
     "e2e:travis": "npm-run-all -p -r server:prod:ci protractor:delay",
     "e2e": "npm-run-all -p -r server:prod:ci protractor",
-    "github-deploy:dev": "webpack --config config/webpack.github-deploy.js --progress --profile --env.githubDev",
-    "github-deploy:prod": "webpack --config config/webpack.github-deploy.js --progress --profile --env.githubProd",
-    "github-deploy": "npm run github-deploy:dev",
     "lint": "npm run tslint \"src/**/*.ts\"",
     "postinstall": "npm run webdriver:update",
     "postversion": "git push && git push --tags",
@@ -70,7 +62,7 @@
     "webpack": "webpack"
   },
   "dependencies": {
-    "@angular/animations": "^4.3.1",
+    "@angular/animations": "~4.3.1",
     "@angular/cdk": "2.0.0-beta.8",
     "@angular/common": "~4.3.1",
     "@angular/compiler": "~4.3.1",
@@ -136,7 +128,6 @@
     "codelyzer": "~2.0.0-beta.4",
     "copy-webpack-plugin": "^4.0.0",
     "css-loader": "^0.26.0",
-    "electron": "^1.4.1",
     "exports-loader": "^0.6.3",
     "null-loader": "0.1.1",
     "expose-loader": "^0.7.1",
@@ -159,7 +150,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "2.0.1",
     "ng-router-loader": "^2.1.0",
-    "ngc-webpack": "~1.1.0",
+    "ngc-webpack": "~3.2.2",
     "node-sass": "^4.5.0",
     "npm-run-all": "^4.0.1",
     "optimize-js-plugin": "0.0.4",
@@ -178,23 +169,22 @@
     "tslint": "~4.5.1",
     "tslint-loader": "^3.3.0",
     "typedoc": "^0.5.3",
-    "typescript": "~2.2.1",
+    "typescript": "~2.3.0",
     "url-loader": "^0.5.7",
     "webpack": "2.3.1",
     "webpack-dev-middleware": "^1.10.0",
     "webpack-dev-server": "2.4.1",
-    "webpack-dll-bundles-plugin": "^1.0.0-beta.5",
     "webpack-merge": "~3.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/angularclass/angular2-webpack-starter.git"
+    "url": "https://github.com/unfetter-discover/unfetter-ui"
   },
   "bugs": {
-    "url": "https://github.com/angularclass/angular2-webpack-starter/issues"
+    "url": "https://github.com/unfetter-discover/unfetter/issues"
   },
   "engines": {
-    "node": ">= 4.2.1",
-    "npm": ">= 3"
+    "node": ">= 6.10.0",
+    "npm": ">= 5"
   }
 }
