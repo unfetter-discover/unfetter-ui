@@ -14,17 +14,18 @@ import * as Ps from 'perfect-scrollbar';
 @Component({
   selector: 'intrusion-set-dashboard',
   templateUrl: 'intrusion-set-dashboard.component.html',
+  styleUrls: ['./intrusion-set-dashboard.component.css'],
 })
-
 export class IntrusionSetDashboardComponent implements OnInit {
-  private selectedIntrusionSet = [];
+  public selectedIntrusionSet = [];
+  public intrusionSet: IntrusionSet;
+  public results: any[];
+  public intrusionSets: any[];
+  public intrusionSetsDashboard: any = {};
+  public graphMetaData = {ditems: [], killChainPhase: [], themes: []};
+  public treeData: any;
+
   private duration = 3000;
-  private intrusionSet: IntrusionSet;
-  private results: any[];
-  private intrusionSets: any[] = [];
-  private intrusionSetsDashboard = {};
-  private graphMetaData = {ditems: [], killChainPhase: [], themes: []};
-  private treeData: any;
 
   constructor(
     protected service: StixService,
@@ -34,22 +35,25 @@ export class IntrusionSetDashboardComponent implements OnInit {
 
   public ngOnInit() {
     this.service.url = Constance.INTRUSION_SET_URL;
-    let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
-    this.service.load(filter).subscribe(
-      (data) => {
-        this.intrusionSets = data;
-      }, (error) => {
-        // handle errors here
-        console.log('error ' + error);
-      }
-    );
+    const filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
+    const sub = this.service.load(filter)
+      // .delay(2 * 1000)
+      .subscribe(
+          (data) => {
+            this.intrusionSets = data;
+          }, (error) => {
+            // handle errors here
+            console.log('error ' + error);
+          },
+          () => sub ? sub.unsubscribe() : 0
+        );
   }
 
   private calPercentage(part: number, whole: number): number {
     return Math.round((part / whole) * 100);
   }
   private select(intrusionSet: IntrusionSet, isAutoComplete?: boolean): void {
-      let found = this.selectedIntrusionSet.find(
+      const found = this.selectedIntrusionSet.find(
         (i) => {
           return intrusionSet.id === i.id;
         }
@@ -68,31 +72,37 @@ export class IntrusionSetDashboardComponent implements OnInit {
   }
 
   private searchIntrusionSets(): void {
-    let ids = [];
+    const ids = [];
     this.selectedIntrusionSet.forEach(
       (intrusionSet) => {
           ids.push(intrusionSet.id);
       }
     );
-    let url = 'api/dashboards/intrusionSetView?intrusionSetIds=' + ids.join();
-    this.service.getByUrl(url).subscribe(
-      (data: any) => {
-        this.color(data);
-        this.intrusionSetsDashboard = data;
-        // this.buildMetaData();
-        this.treeData = null;
-        this.buildTreeData();
-        setTimeout(() => {
-          // let container = document.getElementsByClassName('carousel-content-wrapper');
-          // for (let element in container) {
-          //    Ps.initialize(element as any);
-          // }
-        }, 5000);
-    });
+
+    const url = 'api/dashboards/intrusionSetView?intrusionSetIds=' + ids.join();
+    const sub = this.service
+        .getByUrl(url)
+        .subscribe(
+          (data: any) => {
+            this.color(data);
+            this.intrusionSetsDashboard = data;
+            // this.buildMetaData();
+            this.treeData = null;
+            this.buildTreeData();
+            setTimeout(() => {
+              // let container = document.getElementsByClassName('carousel-content-wrapper');
+              // for (let element in container) {
+              //    Ps.initialize(element as any);
+              // }
+            }, 5000);
+          },
+          (err) => console.log(err),
+          () => sub ? sub.unsubscribe() : 0
+        );
   }
 
   private buildTreeData(): void {
-      let root = {name: '', type: 'root', children: []};
+      const root = {name: '', type: 'root', children: []};
       this.intrusionSetsDashboard['intrusionSets'].forEach(
         (intrusionSet) => {
           let child = {name: intrusionSet.name , type: intrusionSet.type, color: intrusionSet.color, description: intrusionSet.description};
@@ -138,15 +148,15 @@ export class IntrusionSetDashboardComponent implements OnInit {
   }
 
   private getCsc(data: any): any {
-    let cscObject = {};
-    let children = data.children ? data.children : data._children;
+    const cscObject = {};
+    const children = data.children ? data.children : data._children;
     if (children) {
         children.forEach((child) => {
 
-          let c = child._children ? child._children : child.children;
+          const c = child._children ? child._children : child.children;
           c.forEach(
             (attack_pattern) => {
-              let courseOfActionChildren = attack_pattern._children ? attack_pattern._children : attack_pattern.children;
+              const courseOfActionChildren = attack_pattern._children ? attack_pattern._children : attack_pattern.children;
               if (courseOfActionChildren) {
                   courseOfActionChildren.forEach(
                     (courseOfAction) => {
@@ -161,7 +171,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
           );
         });
     }
-    let cscList = [];
+    const cscList = [];
     Object.keys(cscObject).forEach(
       (key) => {
           cscList.push(cscObject[key]);

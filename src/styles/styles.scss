@@ -19,7 +19,10 @@ label {
     background-color: $nav-background-color;
     border-color: $nav-background-color;
 }
-
+// Compensate header/footer padding
+#routerWrapper {
+    padding-top: 50px;
+}
 .navbar-inverse .navbar-brand {
     color: #FFFFFF;
 }
@@ -31,16 +34,16 @@ label {
 /* Sticky footer styles
 /* Sticky footer styles
 -------------------------------------------------- */
-html {
-  position: relative;
-  height: 100%;
-  width: 100%;
-}
-body {
-  /* Margin bottom by footer height */
-  width: 100%;
+// html {
+//   position: relative;
+//   height: 100%;
+//   width: 100%;
+// }
+// body {
+//   /* Margin bottom by footer height */
+//   width: 100%;
 
-}
+// }
 
 .footer {
   position: fixed;
@@ -162,9 +165,6 @@ code {
     padding: 5px;
     // background: pink;
 }
-.row {
-    margin-bottom: 10px;
-}
 .snack-bar-background-success {
     background :#008000 !important;
 }
@@ -207,4 +207,20 @@ code {
     fill: none;
     stroke: #ccc;
     stroke-width: 1.5px;
+}
+
+.headingMarginMatch {
+    margin-top: 20px;
+}
+
+.greyTextShadow {
+    text-shadow: 0 0 4px rgba(204, 204, 204, 0.5), 0 2px 2px rgba(204, 204, 204, 0.7);
+}
+
+a {
+    cursor: pointer;
+}
+
+.altClearFix {
+    clear: both;
 }

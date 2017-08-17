@@ -14,4 +14,4 @@
 </div>-->
 <buttons-filter [model]="courseOfActions" [filteredItems]="filteredItems" [showGrid]="'true'" (filterItemsChange)="onFilterItemsChange($event)"></buttons-filter>
 
-<list-stix-objects  *ngIf="courseOfActions" [url]="url" [model]="filteredItems" [showLabels]="'true'" [showExternalReferences]="'true'" (deletButtonClicked)="deletButtonClicked($event)"></list-stix-objects>
+<list-stix-objects  *ngIf="courseOfActions" [model]="courseOfActions" [showLabels]="'true'" [url]="url" [showExternalReferences]="'true'" (deletButtonClicked)="deletButtonClicked($event)"></list-stix-objects>

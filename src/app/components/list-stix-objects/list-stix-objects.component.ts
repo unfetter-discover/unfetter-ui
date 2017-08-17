@@ -33,7 +33,8 @@ export class ListStixObjectComponent extends BaseComponent implements OnInit {
     }
 
     public ngOnInit() {
-        this.url = this.url.replace('api', '');
+        this.url = this.url ? this.url.replace('api', '') : '';
+        console.log('**** ' + this.url);
     }
 
     public editButtonClicked(item: any): void {

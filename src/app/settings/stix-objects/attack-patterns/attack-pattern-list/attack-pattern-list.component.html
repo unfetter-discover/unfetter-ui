@@ -21,7 +21,7 @@
                         <ng-template let-attackPattern pTemplate="item">
                             <div class="row  collection-item grey.lighten-5">
                                 <div class="col-md-9">
-                                    <a class="pull-left list-item--name" routerLink="/attack-patterns/{{attackPattern.id}}">{{attackPattern.attributes.name}}</a>
+                                    <a class="pull-left list-item--name" routerLink="{{attackPattern.id}}">{{attackPattern.attributes.name}}</a>
 
                                      <md-chip-list *ngIf="attackPattern.attributes.external_references">
                                         <md-chip *ngFor="let external_reference of attackPattern.attributes.external_references" style="margin-left: 5px;">
