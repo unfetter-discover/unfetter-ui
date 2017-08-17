@@ -2,10 +2,10 @@ export const Constance = {
 
     // TODO store these on server?
     KILL_CHAIN_PHASES: [
-        'persistence', 
-        'priviledge-escalation', 
-        'defense-evasion', 
-        'credential-access', 
+        'persistence',
+        'priviledge-escalation',
+        'defense-evasion',
+        'credential-access',
         'discovery',
         'lateral-movement',
         'execution',

@@ -5,27 +5,27 @@ import { Observable } from 'rxjs/Rx';
 @Injectable()
 export class GenericApi {
     // TODO dont hard code this
-    private baseUrl: string = "https://localhost/";
+    private baseUrl: string = 'https://localhost/';
     private data: any = null;
 
     constructor(private http: Http) { }
 
     public get(url: string, data?: any): Observable<Response> {
-        this.data = (data != undefined && data != null) ? '/' + data : '';
+        this.data = (data !== undefined && data !== null) ? '/' + data : '';
         let builtUrl = this.baseUrl + url + this.data;
         return this.http.get(builtUrl)
             .map(this.extractData)
             .catch(this.handleError);
     }
 
-    post(url: string, data: any, type?: string): Observable<Response> {
+    public post(url: string, data: any, type?: string): Observable<Response> {
         let builtUrl = this.baseUrl + url;
         return this.http.post(builtUrl, data)
             .map(this.extractData)
             .catch(this.handleError);
     }
 
-    patch(url: string, data: any): Observable<Response> {
+    public patch(url: string, data: any): Observable<Response> {
         let builtUrl = this.baseUrl + url;
         return this.http.patch(builtUrl, data)
             .map(this.extractData)
@@ -33,7 +33,7 @@ export class GenericApi {
     }
 
     public delete(url: string, data?: any): Observable<Response> {
-        this.data = (data != undefined && data != null) ? '/' + data : '';
+        this.data = (data !== undefined && data !== null) ? '/' + data : '';
         let builtUrl = this.baseUrl + url + this.data;
         return this.http.delete(builtUrl)
             .map(this.extractData)
@@ -42,7 +42,7 @@ export class GenericApi {
 
     private extractData(res: Response) {
         let body = res.json();
-        if(body['data'] !== undefined) {
+        if (body['data'] !== undefined) {
             return body['data'] as any[];
         }
         return ({});
@@ -59,6 +59,4 @@ export class GenericApi {
         }
         return Observable.throw(errMsg);
     }
-
-
 }

@@ -1,11 +1,11 @@
-import { Pipe, PipeTransform } from '@angular/core'
+import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'sophistication' })
 export class SophisticationPipe implements PipeTransform {
 
-    transform(value: any) {
+    public transform(value: any) {
         let name;
-        switch(value) {
+        switch (value) {
         case 0:
             name = 'Novice';
             break;

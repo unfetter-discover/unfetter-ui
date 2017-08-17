@@ -8,7 +8,7 @@ import { Constance } from '../../utils/constance';
     templateUrl: './group.component.html',
     styleUrls: ['./group.component.css']
 })
-export class AssessmentsGroup implements OnInit {
+export class AssessmentsGroupComponent implements OnInit {
 
     private activePhase: String;
     private assessment: any;
@@ -22,32 +22,32 @@ export class AssessmentsGroup implements OnInit {
         private route: ActivatedRoute,
     ) { }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.id = this.route.snapshot.params['id'] ? this.route.snapshot.params['id'] : '';
         let routedPhase = this.route.snapshot.params['phase'] ? this.route.snapshot.params['phase'] : '';
         this.assessmentsDashboardService.getRiskByAttackPattern(this.id)
             .subscribe(
-                res => {
+                (res) => {
                     this.riskByAttackPattern = res ? res : {};
                     this.populateUnassessedPhases();
                     this.activePhase = routedPhase ? routedPhase : this.riskByAttackPattern.phases[0]._id;
                     this.setAttackPattern(this.getScores(this.activePhase)[0].attackPatternId);
                 },
-                err => console.log(err)
+                (err) => console.log(err)
             );
 
         this.assessment = {};
         this.assessment['attributes'] = {};
         this.assessmentsDashboardService.getById(this.id)
             .subscribe(
-                res => {
+                (res) => {
                     this.assessment = res ? res : {};
                 },
-                err => console.log(err)
+                (err) => console.log(err)
             );
     }
 
-    getNumAttackPatterns(phaseName) {
+    public getNumAttackPatterns(phaseName) {
         let attackPatternsByKillChain = this.riskByAttackPattern.attackPatternsByKillChain;
 
         for (let killPhase of attackPatternsByKillChain) {
@@ -58,15 +58,15 @@ export class AssessmentsGroup implements OnInit {
         return 0;
     }
 
-    populateUnassessedPhases() {
-        let assessedPhases = this.riskByAttackPattern.phases.map(phase => phase._id);
+    public populateUnassessedPhases() {
+        let assessedPhases = this.riskByAttackPattern.phases.map((phase) => phase._id);
         this.unassessedPhases = Constance.KILL_CHAIN_PHASES
-            .filter(phase => assessedPhases.indexOf(phase) < 0)
+            .filter((phase) => assessedPhases.indexOf(phase) < 0)
             .reduce((prev, phase) => prev.concat(', '.concat(phase)), '')
             .slice(2);
     }
 
-    getRiskColor(avgRisk) {
+    public getRiskColor(avgRisk) {
         let riskHsl: any = {};
 
         let green: any = {
@@ -88,22 +88,22 @@ export class AssessmentsGroup implements OnInit {
         let lightnessDelta = red.l - green.l;
         riskHsl.l = green.l + lightnessDelta * avgRisk;
 
-        return `hsla(${riskHsl.h}, ${riskHsl.s}%, ${riskHsl.l}%, 1)`; 
+        return `hsla(${riskHsl.h}, ${riskHsl.s}%, ${riskHsl.l}%, 1)`;
     }
 
-    setPhase(phaseName) {
+    public setPhase(phaseName) {
         this.activePhase = phaseName;
         this.setAttackPattern(this.getScores(this.activePhase)[0].attackPatternId);
     }
 
-    getScores(phaseName) {
-        return this.riskByAttackPattern.phases.find(phase => phase._id === phaseName).scores
+    public getScores(phaseName) {
+        return this.riskByAttackPattern.phases.find((phase) => phase._id === phaseName).scores;
     }
 
-    setAttackPattern(attackPatternId) {      
+    public setAttackPattern(attackPatternId) {
         this.currentAttackPattern = this.riskByAttackPattern.attackPatternsByKillChain
-            .find(killChain => killChain._id === this.activePhase)
+            .find((killChain) => killChain._id === this.activePhase)
             .attackPatterns
-            .find(attackPattern => attackPattern.id === attackPatternId);        
+            .find((attackPattern) => attackPattern.id === attackPatternId);
     }
 }

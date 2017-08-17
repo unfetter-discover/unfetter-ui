@@ -11,4 +11,4 @@ import { SophisticationPipe } from './pipes/sophistication.pipe';
     providers: [GenericApi]
 })
 
-export class GlobalModule{}
+export class GlobalModule {}

@@ -27,15 +27,16 @@ export class AssessmentsDashboardComponent implements OnInit {
     public chartOptions: Object = {
         tooltips: {
             callbacks: {
-                label: function (tooltipItem, data) {
-                    var allData = data.datasets[tooltipItem.datasetIndex].data;
-                    var tooltipLabel = data.labels[tooltipItem.index];
-                    var tooltipData = allData[tooltipItem.index];
-                    var total = 0;
-                    for (var i in allData) {
-                        total += allData[i];
-                    }
-                    var tooltipPercentage = Math.round((tooltipData / total) * 100);
+                label: (tooltipItem, data) => {
+                    let allData = data.datasets[tooltipItem.datasetIndex].data;
+                    let tooltipLabel = data.labels[tooltipItem.index];
+                    let tooltipData = allData[tooltipItem.index];
+                    let total = 0;
+                    allData.forEach(
+                        (d) => {
+                         total += d;
+                    });
+                    let tooltipPercentage = Math.round((tooltipData / total) * 100);
                     return `${tooltipLabel}: ${tooltipPercentage}%`;
                 }
             }
@@ -49,7 +50,7 @@ export class AssessmentsDashboardComponent implements OnInit {
     constructor(
         private assessmentsDashboardService: AssessmentsDashboardService,
         private route: ActivatedRoute
-    ){}
+    ) {}
 
     public ngOnInit() {
         let id = this.route.snapshot.params['id'] ? this.route.snapshot.params['id'] : ''; this.assessment = {};
@@ -74,7 +75,7 @@ export class AssessmentsDashboardComponent implements OnInit {
             );
     }
 
-    getNumAttackPatterns(phaseName) {
+    public getNumAttackPatterns(phaseName) {
         let attackPatternsByKillChain = this.riskByAttackPattern.attackPatternsByKillChain;
         // console.log(attackPatternsByKillChain);
         // console.log(phaseName);
@@ -87,7 +88,7 @@ export class AssessmentsDashboardComponent implements OnInit {
         return 0;
     }
 
-    populateUnassessedPhases() {
+    public populateUnassessedPhases() {
         let assessedPhases = this.riskByAttackPattern.phases.map((phase) => phase._id);
         this.unassessedPhases = Constance.KILL_CHAIN_PHASES
             .filter((phase) => assessedPhases.indexOf(phase) < 0)
@@ -95,7 +96,7 @@ export class AssessmentsDashboardComponent implements OnInit {
             .slice(2);
     }
 
-    getQuestions(phaseName) {
+    public getQuestions(phaseName) {
         return 'stub';
     }
 }
