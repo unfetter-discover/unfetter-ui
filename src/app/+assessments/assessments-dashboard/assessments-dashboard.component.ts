@@ -28,14 +28,14 @@ export class AssessmentsDashboardComponent implements OnInit {
         tooltips: {
             callbacks: {
                 label: function (tooltipItem, data) {
-                    var allData = data.datasets[tooltipItem.datasetIndex].data;
-                    var tooltipLabel = data.labels[tooltipItem.index];
-                    var tooltipData = allData[tooltipItem.index];
-                    var total = 0;
-                    for (var i in allData) {
+                    let allData = data.datasets[tooltipItem.datasetIndex].data;
+                    let tooltipLabel = data.labels[tooltipItem.index];
+                    let tooltipData = allData[tooltipItem.index];
+                    let total = 0;
+                    for (let i in allData) {
                         total += allData[i];
                     }
-                    var tooltipPercentage = Math.round((tooltipData / total) * 100);
+                    let tooltipPercentage = Math.round((tooltipData / total) * 100);
                     return `${tooltipLabel}: ${tooltipPercentage}%`;
                 }
             }
@@ -74,7 +74,7 @@ export class AssessmentsDashboardComponent implements OnInit {
             );
     }
 
-    getNumAttackPatterns(phaseName) {
+    public getNumAttackPatterns(phaseName) {
         let attackPatternsByKillChain = this.riskByAttackPattern.attackPatternsByKillChain;
         // console.log(attackPatternsByKillChain);
         // console.log(phaseName);
@@ -87,7 +87,7 @@ export class AssessmentsDashboardComponent implements OnInit {
         return 0;
     }
 
-    populateUnassessedPhases() {
+    public populateUnassessedPhases() {
         let assessedPhases = this.riskByAttackPattern.phases.map((phase) => phase._id);
         this.unassessedPhases = Constance.KILL_CHAIN_PHASES
             .filter((phase) => assessedPhases.indexOf(phase) < 0)
@@ -95,7 +95,7 @@ export class AssessmentsDashboardComponent implements OnInit {
             .slice(2);
     }
 
-    getQuestions(phaseName) {
+    public getQuestions(phaseName) {
         return 'stub';
     }
 }

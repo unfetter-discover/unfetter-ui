@@ -11,7 +11,7 @@ export class GenericApi {
     constructor(private http: Http) { }
 
     public get(url: string, data?: any): Observable<Response> {
-        this.data = (data != undefined && data != null) ? '/' + data : '';
+        this.data = (data !== undefined && data !== null) ? '/' + data : '';
         let builtUrl = this.baseUrl + url + this.data;
         return this.http.get(builtUrl)
             .map(this.extractData)

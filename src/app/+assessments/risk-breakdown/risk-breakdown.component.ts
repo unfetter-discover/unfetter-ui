@@ -7,7 +7,8 @@ import { Constance } from '../../utils/constance';
     styleUrls: ['risk-breakdown.component.css']
 })
 export class RiskBreakdown implements OnInit {
-    ngOnInit() {
 
+    public ngOnInit() {
+        // init
     }
 }
