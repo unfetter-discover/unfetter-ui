@@ -1,10 +1,19 @@
 /* this file will be extracted to main dist folder and is imported in index.html */
 /* This file is for setting global styles  */
 @import 'variables';
+@import 'bootstrap_overrides';
 
 // // Import a pre-built theme
-@import "~@angular/material/prebuilt-themes/deeppurple-amber";
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+// @import "~@angular/material/prebuilt-themes/deeppurple-amber";
+// @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import '~@angular/material/theming';
+@include mat-core();
+$my-app-primary: mat-palette($mat-light-blue, 800);
+$my-app-accent : mat-palette($mat-amber);
+$my-app-warn : mat-palette($mat-deep-orange);
+$my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
+@include angular-material-theme($my-app-theme);
+
 // // Import your custom input theme file so you can call the custom-input-theme function
 //@import '~angular-material-datepicker/src/datepicker/calendar.component.scss';
 @font-face {
@@ -38,22 +47,12 @@ label {
     color: #9e9e9e;
 }
 
-.navbar-inverse {
-    background-color: $nav-background-color;
-    border-color: $nav-background-color;
-}
 // Compensate header/footer padding
 #routerWrapper {
-    padding-top: 50px;
-    padding-bottom: 30px;
-}
-.navbar-inverse .navbar-brand {
-    color: #FFFFFF;
+    padding-top: $navbar-height + px;
+    padding-bottom: $footer-height + px;
 }
 
-.navbar-inverse .navbar-nav > li > a {
-    color: #FFFFFF;
-}
 
 /* Sticky footer styles
 /* Sticky footer styles
@@ -77,14 +76,15 @@ label {
   height: 30px;
   background-color: $nav-background-color;
   z-index: 1;
+  padding-top: 5px;
 }
 
-.jumbotron {
-   background-color: #FFFFFF;
-   padding-right: 15px !important;
-    padding-left: 15px !important;
-    padding-bottom: 0px !important;
-}
+// .jumbotron {
+//    background-color: #FFFFFF;
+//    padding-right: 15px !important;
+//     padding-left: 15px !important;
+//     padding-bottom: 0px !important;
+// }
 
 .height-100-percent {
     height: 100%;
@@ -93,9 +93,9 @@ label {
 -------------------------------------------------- */
 /* Not required for template or sticky footer method. */
 
-body > .container {
-  padding: 60px 15px 0;
-}
+// body > .container {
+//   padding: 60px 15px 0;
+// }
 .container .text-muted {
   margin: 20px 0;
 }
@@ -109,9 +109,9 @@ code {
   font-size: 80%;
 }
 
-.text-muted {
-    color: #FFFFFF;
-}
+// .text-muted {
+//     color: #FFFFFF;
+// }
 
 
 

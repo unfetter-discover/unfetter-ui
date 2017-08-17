@@ -33,7 +33,7 @@ export class AssessmentsComponent implements OnInit {
     // let filter = 'filter[order]=name';
     this.assessmentsService.load(filter).subscribe(
       (data) => {
-         this.reports = data as Report[];
+         this.reports = data as Report[];         
       }
     );
   }
