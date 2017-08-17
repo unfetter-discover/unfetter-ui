@@ -106,6 +106,7 @@
     "moment": "2.18.1",
     "primeng": "4.0.0",
     "reflect-metadata": "^0.1.10",
+    "ng2-charts": "^1.6.0",
     "perfect-scrollbar": "0.7.1",
     "rxjs": "5.4.2",
     "zone.js": "^0.8.5"
