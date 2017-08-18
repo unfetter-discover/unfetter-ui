@@ -74,7 +74,7 @@ export class AssessmentComponent extends Measurements implements OnChanges {
     console.log('changes');
     let data = changes['model'].currentValue;
     if (data) {
-      this.assessmentGroups = this.creatAssessmentGroups(data);
+      this.assessmentGroups = this.createAssessmentGroups(data);
       this.currentAssessmentGroup = this.assessmentGroup;
       this.pageTitle = this.splitTitle();
       this.updateChart();
@@ -92,7 +92,7 @@ export class AssessmentComponent extends Measurements implements OnChanges {
     return this.assessmentGroups[index];
   }
 
-  private creatAssessmentGroups(assessedObjects: any[]): any[] {
+  private createAssessmentGroups(assessedObjects: any[]): any[] {
     let assessmentGroups = [];
     let self = this;
     if (assessedObjects) {
@@ -269,6 +269,8 @@ export class AssessmentComponent extends Measurements implements OnChanges {
   }
 
   private saveAssessments(): void {
+    console.log(this.assessments);
+    
     this.assessmentsService.url = 'api/x-unfetter-assessments';
     this.assessments.forEach((assessment) => {
       // this.assessmentsService.save(assessment).subscribe(

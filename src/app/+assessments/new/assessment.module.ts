@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
-import { MaterialModule, MdButtonModule, MdCardModule, MdDialogModule, MdSnackBarModule } from '@angular/material';
+import { MaterialModule, MdButtonModule, MdCardModule, MdDialogModule, MdSnackBarModule, MdNativeDateModule } from '@angular/material';
 import { ChartsModule } from 'ng2-charts';
 import { CalendarModule } from 'primeng/primeng';
 import { PipesModule } from '../../pipes';
@@ -28,7 +28,8 @@ import { AssessmentsService } from '../assessments.service';
     ComponentModule,
     CalendarModule,
     ChartsModule,
-    PipesModule
+    PipesModule, 
+    MdNativeDateModule
   ],
   exports: [
     AssessmentComponent

@@ -1,6 +1,6 @@
 
 import { Component, OnInit } from '@angular/core';
-import * as Ps from 'perfect-scrollbar';
+// import * as Ps from 'perfect-scrollbar';
 import { Constance } from '../utils/constance';
 import { AssessmentsService } from './assessments.service';
 import { Report } from '../models/report';
@@ -21,17 +21,20 @@ export class AssessmentsComponent implements OnInit {
             'multiple reports to see how new or different Courses of Actions implemented may change your security posture.';
 
   private reports: Report[] = [];
-  constructor( protected dialog: MdDialog, private assessmentsService: AssessmentsService) {
-     assessmentsService.url = Constance.X_UNFETTER_ASSESSMENT_URL;
+  constructor( protected dialog: MdDialog, private assessmentsService: AssessmentsService) { 
   }
 
-  public ngOnInit() {
-    let filter = {
-            'filter[order]': 'created DESC',
-            'filter[where][labels]': 'assessment'
-        };
+  public ngOnInit() {    
+    console.log('Delete this comment');
+    
+    this.assessmentsService.url = Constance.X_UNFETTER_ASSESSMENT_URL;  
+    
+    // let filter = {
+    //         'filter[order]': 'created DESC',
+    //         'filter[where][labels]': 'assessment'
+    //     };
     // let filter = 'filter[order]=name';
-    this.assessmentsService.load(filter).subscribe(
+    this.assessmentsService.load({}).subscribe(
       (data) => {
          this.reports = data as Report[];         
       }

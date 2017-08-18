@@ -2,31 +2,43 @@
 <div class="row" *ngIf="showSummarry">
     <div class="col-xs-12">
         <md-card>
+            <md-card-header>
+                <md-card-title>Assessment Report</md-card-title>
+            </md-card-header>
             <md-card-content>
-                <p>Assessment Description</p>
-                <div class="row">
+                <!--<p>Assessment Description</p>-->
+                <div class="row mat-card-padding">
                     <div class="col-xs-8">
                         <md-input-container class="full-width">
-                            <input mdInput placeholder="Name"   name="assessment-name" value="Assessment Report">
+                            <input mdInput placeholder="Assessment Name"   name="assessment-name">
                         </md-input-container>
                     </div>
                     <div class="col-xs-4">
-                        <label>Published</label>
+                        <!--<label>Published</label>
                         <div>
                              <p-calendar dateFormat="M-dd-yy" showIcon="true"></p-calendar>
-                        </div>
+                        </div>-->
+                        <md-input-container>
+                            <input mdInput [mdDatepicker]="picker" placeholder="Choose a date">
+                            <button mdSuffix [mdDatepickerToggle]="picker"></button>
+                        </md-input-container>
+                        <md-datepicker #picker></md-datepicker>
                     </div>
                 </div>
             </md-card-content>
+            <md-card-actions>
+                <button md-button [disabled]="page === 1" (click)="back()"> Back</button>
+                <button md-button (click)="next()" [ngClass]="{'mat-primary': buttonLabel === 'Save'}"> {{buttonLabel}}</button>
+            </md-card-actions>
         </md-card>
     </div>
 </div>
-<div class="row">
+<div class="row margin-bottom">
     <div class="col-xs-12">
         <md-card *ngIf="currentAssessmentGroup">
             <md-card-content>
-                <div class="row">
-                    <div class="col-xs-3">
+                <div class="row margin-bottom">
+                    <div class="col-sm-3">
                         <div style="display: block">
                             <canvas baseChart
                                  [datasets]="doughnutChartData"
@@ -36,11 +48,11 @@
                                 [options]="chartOptions"></canvas>
                         </div>
                     </div>
-                    <div class="col-xs-9">
+                    <div class="col-sm-9">
                        <h1> {{currentAssessmentGroup.description}}</h1>
                     </div>
                 </div>
-                <div class="row" *ngFor="let assessment of currentAssessmentGroup.assessments" >
+                <div class="row margin-bottom" *ngFor="let assessment of currentAssessmentGroup.assessments" >
                     <div class="col-xs-12">
                          <div class="row">
                             <div class="col-xs-12">
@@ -62,12 +74,17 @@
                     </div>
                 </div>
             </md-card-content>
+            <md-card-actions>
+                <button md-button [disabled]="page === 1" (click)="back()"> Back</button>
+                <button md-button (click)="next()" [ngClass]="{'mat-primary': buttonLabel === 'Save'}"> {{buttonLabel}}</button>
+            </md-card-actions>
         </md-card>
     </div>
 </div>
- <div class="row">
+ <!--<div class="row">
     <div class="col-xs-12 col-md-8">
         <a md-raised-button [disabled]="page === 1" (click)="back()"> Back</a>
-        <a md-raised-button (click)="next()"> {{buttonLabel}}</a>
+        <a md-raised-button (click)="next()" [ngClass]="{'mat-primary': buttonLabel === 'Save'}"> {{buttonLabel}}</a>
     </div>
-</div>
+</div>-->
+<br><br>

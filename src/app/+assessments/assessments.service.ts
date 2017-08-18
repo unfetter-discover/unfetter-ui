@@ -11,6 +11,8 @@ export class AssessmentsService {
     constructor(private http: Http) { }
 
     public load(filter?: any): Observable<any[]> {
+        console.log(this.url);
+        
         const url = filter ? `${this.url}` + '?' + encodeURI(filter) : `${this.url}`;
         return this.http
                .get(url)

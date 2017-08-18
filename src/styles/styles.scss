@@ -175,6 +175,14 @@ code {
 .margin-top {
     margin-top: 10px;
 }
+.margin-bottom {
+    margin-bottom: 15px;
+}
+// Used to match the padding of md-card elements
+.mat-card-padding {
+    padding-left: 8px;
+    padding-right: 8px;
+}
 
 .kill-chain-div {
     font-weight: bold;
