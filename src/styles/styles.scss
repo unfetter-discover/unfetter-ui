@@ -2,6 +2,7 @@
 /* This file is for setting global styles  */
 @import 'variables';
 @import 'bootstrap_overrides';
+@import 'primeng_overrides';
 
 // // Import a pre-built theme
 // @import "~@angular/material/prebuilt-themes/deeppurple-amber";
@@ -40,7 +41,11 @@ body {
     font-family: "Roboto", "Helvetica Neue",
     Helvetica,
     Arial,
-    sans-serif
+    sans-serif;    
+}
+
+html, body{
+    background: #fafafa !important;
 }
 
 label {

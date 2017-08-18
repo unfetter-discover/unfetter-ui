@@ -35,6 +35,9 @@ export class AssessmentComponent extends Measurements implements OnChanges {
   public doughnutChartType: string = 'doughnut';
   public doughnutChartColors: Object[] = [{}];
   public chartOptions: Object = {
+    legend: {
+      display: false
+    },
     tooltips: {
       callbacks: {
         label: (tooltipItem, data) => {
@@ -62,6 +65,9 @@ export class AssessmentComponent extends Measurements implements OnChanges {
   private defaultMeasurement = 'Nothing';
   private showSummarry = false;
   private buttonLabel = 'Next';
+  private assessmentName: String = '';
+  private assessmentDescription: String = '';
+  private saved: boolean = false;
 
   constructor(
     private assessmentsService: AssessmentsService,
@@ -70,7 +76,7 @@ export class AssessmentComponent extends Measurements implements OnChanges {
     super();
   }
 
-  public ngOnChanges(changes: SimpleChanges): void {
+  public ngOnChanges(changes: SimpleChanges): void { 
     console.log('changes');
     let data = changes['model'].currentValue;
     if (data) {
@@ -108,10 +114,11 @@ export class AssessmentComponent extends Measurements implements OnChanges {
         assessment.measurements = [];
         assessment.kill_chain_phases =
           assessedObject.attributes.kill_chain_phases;
-        assessment.course_of_action_id = assessedObject.id;
+        assessment.id = assessedObject.id;
         assessment.name = assessedObject.attributes.name;
         assessment.description = assessedObject.attributes.description;
         assessment.measurements = this.buildMeasurements(assessedObject.id);
+        assessment.type = assessedObject.type;
 
         let risk = this.getRisk(assessment.measurements);
         assessment.risk = risk;
@@ -268,22 +275,60 @@ export class AssessmentComponent extends Measurements implements OnChanges {
     return split.join(' ');
   }
 
-  private saveAssessments(): void {
-    console.log(this.assessments);
-    
-    this.assessmentsService.url = 'api/x-unfetter-assessments';
-    this.assessments.forEach((assessment) => {
-      // this.assessmentsService.save(assessment).subscribe(
-      //     () => {
-      //     },
-      //     (err) => {
-      //     },() => {
-      //     }
-      // );
+  generateXUnfetterAssessment(assessmentsGroups: any) {
+    let retVal: any = {};
+    retVal.type = 'x-unfetter-assessment';
+    retVal.name = this.assessmentName;
+    retVal.description = this.assessmentDescription;
+    retVal.assessment_objects = [];
+
+    assessmentsGroups.forEach(assessmentsGroup => {
+
+      if (assessmentsGroup.assessments !== undefined) {    
+        assessmentsGroup.assessments.forEach(assessment => {
+          let temp: any = {};
+
+          temp.stix = {};
+          temp.stix.id = assessment.id;
+          temp.stix.type = assessment.type;
+          temp.stix.description = assessment.description || '';
+          temp.stix.name = assessment.name;
+
+          temp.questions = [];          
+          if(assessment.measurements !== undefined) {
+            assessment.measurements.forEach(measurement => {
+              temp.questions.push(measurement);
+            });
+          } else {
+            return { 'error': 'No measurements/questions on assessment' };
+          }
+
+          temp.risk = temp.questions
+            .map(question => question.risk)
+            .reduce((prev, cur) => prev += cur, 0)
+            / temp.questions.length;
+
+
+          retVal['assessment_objects'].push(temp);
+        });
+
+        
+
+      } else {
+        return {'error': 'No assessments in group'};
+      }
+
     });
-    // this.snackBar.open('Error ' + error, '', {
-    //   duration: this.duration,
-    //   extraClasses: ['snack-bar-background-error']
-    // });
+    
+    return retVal;
+  }
+
+  private saveAssessments(): void {    
+    let xUnfetterAssessment = this.generateXUnfetterAssessment(this.assessmentGroups);   
+    this.assessmentsService.url = 'api/x-unfetter-assessments';
+    this.assessmentsService.save(xUnfetterAssessment).subscribe(
+      res => this.saved = true,
+      err => console.log(err)    
+    );
   }
 }

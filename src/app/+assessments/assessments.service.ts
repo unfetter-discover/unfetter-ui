@@ -24,7 +24,7 @@ export class AssessmentsService {
 
     public save(item: any): Observable<any[]> {
         return this.http
-            .post(this.url, JSON.stringify({data: item}), {headers: this.headers})
+            .post(this.url, JSON.stringify(item), {headers: this.headers})
             .map((response) => {
                 return response.json().data;
             })
