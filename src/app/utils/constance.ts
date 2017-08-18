@@ -76,4 +76,21 @@ export const Constance = {
     X_UNFETTER_ASSESSMENT_URL: 'api/x-unfetter-assessments',
     X_UNFETTER_ASSESSMENT_TYPE: 'x-unfetter-assessment',
     // X_UNFETTER_ASSESSMENT_ICON: 'assets/icon/stix-icons/svg/x-unfetter-assessment-b.svg',
+
+    COLORS: {
+        green: '#4CAF50',
+        darkGreen: '#2E7D32',
+        red: '#F44336',
+        darkRed: '#C62828',
+        greenHsl: {
+            h: 122,
+            s: 39,
+            l: 49
+        },
+        redHsl: {
+            h: 4,
+            s: 90,
+            l: 58
+        },
+    },
 };

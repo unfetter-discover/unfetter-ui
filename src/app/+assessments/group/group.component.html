@@ -41,7 +41,7 @@
             <h4>Attack Patterns</h4>
             <h4 class="text-muted">Phase:&nbsp;{{ activePhase | capitalize }}</h4>
             <div *ngFor="let score of getScores(activePhase)" class="attackPatternListItem">
-                <span class="greyTextShadow"><i class="material-icons" [style.color]="getRiskColor(score.risk)" mdTooltip="{{ score.risk | percent:'2.1-1' }}" mdTooltipPosition="after">lens</i></span>&nbsp;
+                <risk-icon [risk]="score.risk" [showTooltip]="true"></risk-icon>&nbsp;
                 <a (click)="setAttackPattern(score.attackPatternId)">{{ score.attackPatternName }}</a>
             </div>
         </div>

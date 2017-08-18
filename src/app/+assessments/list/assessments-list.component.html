@@ -1,0 +1,41 @@
+<div class="container" id="assessmentList">
+    <page-header [pageTitle]="pageTitle" [pageIcon]="pageIcon" [description]="description"></page-header>
+    <div class="row">
+        <div class="col-xs-12">
+            <h5>Create Assessment</h5>
+        </div>
+        <div class="col-xs-12">
+            <a md-raised-button routerLink="./indicators">Assess Indicators</a>
+            <a md-raised-button routerLink="./mitigations">Assess Mitigations</a>
+            <a md-raised-button routerLink="./sensors">Assess Sensors</a>
+        </div>
+    </div>
+    <br>
+    <hr>
+    <br>
+    <div class="row">
+        <div class="col-xs-12">
+            <h5>View Assessment</h5>
+        </div>
+        <div class="col-xs-12">
+            <md-card class="margin-top" *ngFor="let report of reports">
+                <div class="row">
+                    <div class="col-xs-7">
+                        <a routerLink="dashboard/{{report.id}}">{{report.attributes.name}}</a>
+                    </div>
+                    <div class="col-xs-5 text-right buttonGrp">
+                        <button md-button (click)="edit(report)" class="mat-accent">
+                            <i class="material-icons">assessment</i>
+                        </button>
+                        <button md-button (click)="edit(report)" class="mat-primary">
+                            <i class="material-icons">create</i>
+                        </button>
+                        <button md-button (click)="delete(report)" class="mat-warn">
+                            <i class="material-icons">delete</i>
+                        </button>
+                    </div>
+                </div>
+            </md-card>
+        </div>
+    </div>
+</div>

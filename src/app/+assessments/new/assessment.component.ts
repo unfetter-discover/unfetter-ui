@@ -28,8 +28,14 @@ export class AssessmentComponent extends Measurements implements OnChanges {
   public doughnutChartData: any[] = [
     {
       data: [],
-      backgroundColor: ['#F44336', '#4CAF50'],
-      hoverBackgroundColor: ['#C62828', '#2E7D32']
+      backgroundColor: [
+        Constance.COLORS.red,
+        Constance.COLORS.green,
+      ],
+      hoverBackgroundColor: [
+        Constance.COLORS.darkRed,
+        Constance.COLORS.darkGreen,
+      ]
     }
   ];
   public doughnutChartType: string = 'doughnut';
@@ -68,6 +74,7 @@ export class AssessmentComponent extends Measurements implements OnChanges {
   private assessmentName: String = '';
   private assessmentDescription: String = '';
   private saved: boolean = false;
+  private publishDate: Date = new Date();
 
   constructor(
     private assessmentsService: AssessmentsService,

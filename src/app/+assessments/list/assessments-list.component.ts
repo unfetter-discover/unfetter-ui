@@ -1,18 +1,19 @@
 
 import { Component, OnInit } from '@angular/core';
-// import * as Ps from 'perfect-scrollbar';
-import { Constance } from '../utils/constance';
-import { AssessmentsService } from './assessments.service';
-import { Report } from '../models/report';
-import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
+import * as Ps from 'perfect-scrollbar';
 import { MdDialog } from '@angular/material';
+import { Constance } from '../../utils/constance';
+import { AssessmentsService } from '../assessments.service';
+import { Report } from '../../models/report';
+import { ConfirmationDialogComponent } from '../../components/dialogs/confirmation/confirmation-dialog.component';
 
 @Component({
-  selector: 'assessments',
-  templateUrl: './assessments.component.html',
+  selector: 'assessments-list',
+  templateUrl: './assessments-list.component.html',
+  styleUrls: ['./assessments-list.component.css'],
 })
 
-export class AssessmentsComponent implements OnInit {
+export class AssessmentsListComponent implements OnInit {
   private pageTitle = 'Assessments';
   private pageIcon = Constance.REPORTS_ICON;
   private description =  'An assessment is a survey of the Courses of Actions that your organization implements, ' +
@@ -21,14 +22,11 @@ export class AssessmentsComponent implements OnInit {
             'multiple reports to see how new or different Courses of Actions implemented may change your security posture.';
 
   private reports: Report[] = [];
-  constructor( protected dialog: MdDialog, private assessmentsService: AssessmentsService) { 
+  constructor( protected dialog: MdDialog, private assessmentsService: AssessmentsService) {
+     assessmentsService.url = Constance.X_UNFETTER_ASSESSMENT_URL;
   }
 
-  public ngOnInit() {    
-    console.log('Delete this comment');
-    
-    this.assessmentsService.url = Constance.X_UNFETTER_ASSESSMENT_URL;  
-    
+  public ngOnInit() {
     // let filter = {
     //         'filter[order]': 'created DESC',
     //         'filter[where][labels]': 'assessment'
@@ -36,7 +34,7 @@ export class AssessmentsComponent implements OnInit {
     // let filter = 'filter[order]=name';
     this.assessmentsService.load({}).subscribe(
       (data) => {
-         this.reports = data as Report[];         
+         this.reports = data as Report[];
       }
     );
   }

@@ -9,7 +9,7 @@
     </div>-->
     <div class="col-xs-3">
         <p>{{ phase.avgRisk | percent:'2.1-1' }} 
-            <span class="greyTextShadow"><i class="material-icons" [style.color]="riskColor">lens</i></span>
+            <risk-icon [risk]="phase.avgRisk"></risk-icon>
         </p>
     </div>
     <div class="col-xs-5">

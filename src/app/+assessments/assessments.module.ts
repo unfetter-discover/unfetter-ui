@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MaterialModule, MdButtonModule, MdCardModule, MdDialogModule } from '@angular/material';
-import { AssessmentsComponent } from './list/assessments.component';
+import { AssessmentsListComponent } from './list/assessments-list.component';
 import { ComponentModule } from '../components';
 import { AssessmentsService } from './assessments.service';
 import { AssessmentsLayoutComponent } from './assessments-layout.component';
@@ -19,7 +19,7 @@ const routes = [
        {
           path: '', component: AssessmentsLayoutComponent,
           children: [
-              { path: '', component: AssessmentsComponent },
+              { path: '', component: AssessmentsListComponent },
               { path: 'indicators',  loadChildren: './new/indicators#IndicatorsModule' },
               { path: 'mitigations', loadChildren: './new/mitigations#MitigationsModule' },
               { path: 'sensors',  loadChildren: './new/sensors#SensorsModule' }
@@ -34,7 +34,7 @@ const routes = [
     /**
      * Components / Directives/ Pipes
      */
-    AssessmentsComponent,
+    AssessmentsListComponent,
     AssessmentsLayoutComponent,
     AssessmentsDashboardComponent,
     PhaseListComponent,

@@ -66,31 +66,6 @@ export class AssessmentsGroupComponent implements OnInit {
             .slice(2);
     }
 
-    public getRiskColor(avgRisk) {
-        let riskHsl: any = {};
-
-        let green: any = {
-            h: 122,
-            s: 39,
-            l: 49
-        };
-
-        let red: any = {
-            h: 4,
-            s: 90,
-            l: 58
-        };
-
-        let hueDelta = green.h - red.h;
-        riskHsl.h = green.h - hueDelta * avgRisk;
-        let saturationDelta = red.s - green.s;
-        riskHsl.s = green.h + saturationDelta * avgRisk;
-        let lightnessDelta = red.l - green.l;
-        riskHsl.l = green.l + lightnessDelta * avgRisk;
-
-        return `hsla(${riskHsl.h}, ${riskHsl.s}%, ${riskHsl.l}%, 1)`;
-    }
-
     public setPhase(phaseName) {
         this.activePhase = phaseName;
         this.setAttackPattern(this.getScores(this.activePhase)[0].attackPatternId);

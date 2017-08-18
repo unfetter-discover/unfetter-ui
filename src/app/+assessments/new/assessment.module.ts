@@ -8,6 +8,7 @@ import { PipesModule } from '../../pipes';
 import { AssessmentComponent } from './assessment.component';
 import { ComponentModule } from '../../components';
 import { AssessmentsService } from '../assessments.service';
+import { GlobalModule } from 'app/global/global.module';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { AssessmentsService } from '../assessments.service';
     CalendarModule,
     ChartsModule,
     PipesModule, 
-    MdNativeDateModule
+    MdNativeDateModule,
+    GlobalModule
   ],
   exports: [
     AssessmentComponent

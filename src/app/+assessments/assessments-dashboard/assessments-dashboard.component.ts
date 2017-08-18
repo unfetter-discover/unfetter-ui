@@ -14,12 +14,12 @@ export class AssessmentsDashboardComponent implements OnInit {
     public doughnutChartData: any[] = [{
         data: [],
         backgroundColor: [
-            '#F44336',
-            '#4CAF50',
+            Constance.COLORS.red,
+            Constance.COLORS.green,
         ],
         hoverBackgroundColor: [
-            '#C62828',
-            '#2E7D32',
+            Constance.COLORS.darkRed,
+            Constance.COLORS.darkGreen,
         ]
     }];
     public doughnutChartType: string = 'doughnut';
