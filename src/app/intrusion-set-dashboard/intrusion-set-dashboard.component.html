@@ -62,7 +62,7 @@
                                         <div class="col-xs-4 paddingBottom" *ngFor="let i of intrusionSetsDashboard.intrusionSets" [ngClass]="{'altClearFix': i !== 0 && i % 3 == 0}">
 
                                             <div>
-                                                <label [style.color]="i.color" class="lightTextShadow">{{i.name}}</label> <small class="text-muted pull-right"> {{i.attack_patterns.length}} / {{intrusionSetsDashboard.totalAttackPatterns}}</small>
+                                                <label [style.color]="i.color">{{i.name}}</label> <small class="text-muted pull-right"> {{i.attack_patterns.length}} / {{intrusionSetsDashboard.totalAttackPatterns}}</small>
                                             </div>
 
                                             <div>
