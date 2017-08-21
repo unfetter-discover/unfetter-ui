@@ -82,6 +82,8 @@ export const Constance = {
         darkGreen: '#2E7D32',
         red: '#F44336',
         darkRed: '#C62828',
+        yellow: '#FFEB3B',
+        darkYellow: '#F9A825',
         greenHsl: {
             h: 122,
             s: 39,
@@ -91,6 +93,11 @@ export const Constance = {
             h: 4,
             s: 90,
             l: 58
+        },
+        yellowHsl: {
+            h: 54,
+            s: 100,
+            l: 62
         },
     },
 };

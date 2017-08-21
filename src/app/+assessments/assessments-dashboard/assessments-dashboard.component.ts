@@ -46,6 +46,8 @@ export class AssessmentsDashboardComponent implements OnInit {
     private assessment: any;
     private riskByAttackPattern: any;
     private unassessedPhases: String;
+    private riskBreakdown: any;
+    private processingComplete: boolean = false;
 
     constructor(
         private assessmentsDashboardService: AssessmentsDashboardService,
@@ -66,13 +68,47 @@ export class AssessmentsDashboardComponent implements OnInit {
             .subscribe(
                 (res) => {
                     this.riskByAttackPattern = res ? res : {};
-                    console.log(this.riskByAttackPattern);
                     this.doughnutChartData[0].data = [this.riskByAttackPattern.totalRisk, (1 - this.riskByAttackPattern.totalRisk)];
-
                     this.populateUnassessedPhases();
+                    this.calculateRiskBreakdown();
+                    this.processingComplete = true;
                 },
                 (err) => console.log(err)
             );
+    }
+
+    public calculateRiskBreakdown() {
+        let phases = this.riskByAttackPattern.phases;        
+        
+        let riskTree = {};
+
+        if (phases !== undefined) {            
+            phases.forEach(phase => {                
+                riskTree[phase._id] = {};
+
+                phase.scores.forEach(score => {
+                    score.questions.forEach(question => {
+                        if (riskTree[phase._id][question.name] === undefined) {
+                            riskTree[phase._id][question.name] = [];
+                        }
+                        riskTree[phase._id][question.name].push(question.risk);                       
+                    });
+                });
+            });
+        }               
+
+        this.riskBreakdown = {};
+        for(let phase in riskTree) {
+            this.riskBreakdown[phase] = {};
+            for(let question in riskTree[phase]) {                
+                /* Average risk for each question-category, 
+                 then multiply it by 1 / the number of question-categories.
+                 This will show how much each question contributes to absolute overall risk. */
+                this.riskBreakdown[phase][question] = (riskTree[phase][question]
+                    .reduce((prev, cur) => prev += cur, 0)
+                    / riskTree[phase][question].length) * (1 / Object.keys(riskTree[phase]).length);
+            }            
+        }        
     }
 
     public getNumAttackPatterns(phaseName) {

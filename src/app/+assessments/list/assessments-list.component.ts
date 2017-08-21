@@ -32,7 +32,7 @@ export class AssessmentsListComponent implements OnInit {
     //         'filter[where][labels]': 'assessment'
     //     };
     // let filter = 'filter[order]=name';
-    this.assessmentsService.load({}).subscribe(
+    this.assessmentsService.load(`sort=${JSON.stringify({ "stix.created": -1 })}`).subscribe(
       (data) => {
          this.reports = data as Report[];
       }

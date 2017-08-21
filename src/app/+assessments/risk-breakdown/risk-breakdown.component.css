@@ -1,0 +1,15 @@
+.riskBreakdown {
+    margin-top: calc(0.5em - 2.5px);
+    display: flex;
+    background: #b3e5fc;
+}
+
+.riskCategory,
+.riskBreakdown {
+    height: 5px;
+}
+
+.riskCategory {
+    background: #685032;
+    display: inline-block;
+}

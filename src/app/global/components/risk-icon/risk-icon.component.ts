@@ -17,14 +17,28 @@ export class RiskIcon {
 
         let green = Constance.COLORS.greenHsl;
         let red = Constance.COLORS.redHsl;
+        let yellow = Constance.COLORS.yellowHsl;
 
-        let hueDelta = green.h - red.h;
-        riskHsl.h = green.h - hueDelta * avgRisk;
-        let saturationDelta = red.s - green.s;
-        riskHsl.s = green.h + saturationDelta * avgRisk;
-        let lightnessDelta = red.l - green.l;
-        riskHsl.l = green.l + lightnessDelta * avgRisk;
+        if(avgRisk === 0.5 ) {
+            riskHsl = yellow;
+        } else if(avgRisk < 0.5) {
+            // Fade green to yellow
+            let hueDelta = green.h - yellow.h;
+            riskHsl.h = green.h - hueDelta * avgRisk;
+            let saturationDelta = yellow.s - green.s;
+            riskHsl.s = green.s + saturationDelta * avgRisk;
+            let lightnessDelta = yellow.l - green.l;
+            riskHsl.l = green.l + lightnessDelta * avgRisk;
+        } else if(avgRisk > 0.5) {
+            // Fade yellow to red
+            let hueDelta = yellow.h - red.h;
+            riskHsl.h = yellow.h - hueDelta * avgRisk;
+            let saturationDelta = yellow.s - red.s;
+            riskHsl.s = yellow.s - saturationDelta * avgRisk;
+            let lightnessDelta = yellow.l - red.l;
+            riskHsl.l = yellow.l - lightnessDelta * avgRisk;
+        }        
 
-        return `hsla(${riskHsl.h}, ${riskHsl.s}%, ${riskHsl.l}%, 1)`;
+        return `hsla(${parseInt(riskHsl.h)}, ${parseInt(riskHsl.s)}%, ${parseInt(riskHsl.l)}%, 1)`;
     }
 }

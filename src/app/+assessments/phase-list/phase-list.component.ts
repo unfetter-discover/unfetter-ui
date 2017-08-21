@@ -14,6 +14,7 @@ export class PhaseListComponent {
     @Input('numAttackPatterns') public numAttackPatterns: any;
     @Input('assessmentId') public assessmentId: any;
     @Input('questions') public questions: any;
+    @Input('riskBreakdown') public riskBreakdown: any;
 
     constructor(private route: ActivatedRoute) { }
 }
