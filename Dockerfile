@@ -8,7 +8,10 @@ RUN mkdir -p $WORKING_DIRECTORY
 WORKDIR $WORKING_DIRECTORY
 
 # Install Dependencies
+COPY package-lock.json $WORKING_DIRECTORY
 COPY package.json $WORKING_DIRECTORY
+
+# RUN rm -rf $WORKING_DIRECTORY/node_modules/node-sass/
 
 RUN apk update && \
     # build node-sass; 
@@ -21,10 +24,10 @@ RUN apk update && \
     # npm rebuild node-sass --force && \
     # angular uses node-sass
     apk add --no-cache libsass && \
+    # get correct webpack version, match this with package-lock.json
     npm install -g webpack@~2.3.1 webpack-dev-server@2.4.1 && \
-    # get latest webpack-merge to fix, Error: Cannot find module 'webpack-merge' 
-    npm install webpack-merge -D && \
-    # npm install webpack webpack-dev-server -g && \
+    # get correct webpack-merge to fix, Error: Cannot find module 'webpack-merge' 
+    # npm install webpaclsk-merge@3.0.0 -D && \
     npm install
 
 COPY . $WORKING_DIRECTORY
