@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { MaterialModule, MdButtonModule, MdCardModule, MdDialogModule } from '@angular/material';
 import { AssessmentsListComponent } from './list/assessments-list.component';
 import { ComponentModule } from '../components';
@@ -14,20 +13,9 @@ import { PhaseListComponent } from './phase-list/phase-list.component';
 import { ChartsModule } from 'ng2-charts';
 import { AssessmentsGroupComponent } from './group/group.component';
 import { RiskBreakdownComponent } from './risk-breakdown/risk-breakdown.component';
-
-const routes = [
-       {
-          path: '', component: AssessmentsLayoutComponent,
-          children: [
-              { path: '', component: AssessmentsListComponent },
-              { path: 'indicators',  loadChildren: './new/indicators#IndicatorsModule' },
-              { path: 'mitigations', loadChildren: './new/mitigations#MitigationsModule' },
-              { path: 'sensors',  loadChildren: './new/sensors#SensorsModule' }
-          ]
-      },
-      { path: 'dashboard/:id',  component: AssessmentsDashboardComponent },
-      { path: 'group/:id/:phase',   component: AssessmentsGroupComponent  },
-];
+import { AssessmentsSummaryComponent } from './assessments-summary/assessments-summary.component';
+import { AssessmentsSummaryService } from './assessments-summary/assessments-summary.service';
+import { assessmentsRouting } from './assessments.routing';
 
 @NgModule({
   declarations: [
@@ -39,7 +27,8 @@ const routes = [
     AssessmentsDashboardComponent,
     PhaseListComponent,
     AssessmentsGroupComponent,
-    RiskBreakdownComponent
+    RiskBreakdownComponent,
+    AssessmentsSummaryComponent
   ],
   imports: [
     ChartsModule,
@@ -49,15 +38,14 @@ const routes = [
     MdCardModule,
     MdDialogModule,
     MdButtonModule,
-    RouterModule.forChild(routes),
+    assessmentsRouting,
     ComponentModule,
     GlobalModule
   ],
   providers: [
     AssessmentsService,
     AssessmentsDashboardService,
+    AssessmentsSummaryService,
   ]
 })
-export class AssessmentsModule {
-  public static routes = routes;
-}
+export class AssessmentsModule {}
