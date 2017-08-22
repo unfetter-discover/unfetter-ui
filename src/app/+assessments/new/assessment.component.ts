@@ -6,13 +6,7 @@ import {
   ChangeDetectorRef
 } from '@angular/core';
 import { MdSnackBar } from '@angular/material';
-import {
-  trigger,
-  state,
-  style,
-  animate,
-  transition
-} from '@angular/animations';
+import { Location } from '@angular/common';
 import { Measurements } from './measurements';
 import { Constance } from '../../utils/constance';
 import { AssessmentsService } from '../assessments.service';
@@ -93,20 +87,21 @@ export class AssessmentComponent extends Measurements implements OnChanges {
 
   constructor(
     private assessmentsService: AssessmentsService,
-    private snackBar: MdSnackBar
+    private snackBar: MdSnackBar,
+    private location: Location,
   ) {
     super();
   }
 
-  public ngOnChanges(changes: SimpleChanges): void { 
-    console.log('changes');
-    let data = changes['model'].currentValue;
-    if (data) {
-      this.assessmentGroups = this.createAssessmentGroups(data);
-      this.currentAssessmentGroup = this.assessmentGroup;
-      this.pageTitle = this.splitTitle();
-      this.updateChart();
-    }
+  public ngOnChanges(changes: SimpleChanges): void {
+      console.log('changes');
+      let data = changes['model'].currentValue;
+      if (data) {
+        this.assessmentGroups = this.createAssessmentGroups(data);
+        this.currentAssessmentGroup = this.assessmentGroup;
+        this.pageTitle = this.splitTitle();
+        this.updateChart();
+      }
   }
 
   private get assessmentGroup(): any {
@@ -297,60 +292,64 @@ export class AssessmentComponent extends Measurements implements OnChanges {
     return split.join(' ');
   }
 
-  generateXUnfetterAssessment(assessmentsGroups: any) {
+  private generateXUnfetterAssessment(assessmentsGroups: any) {
     let retVal: any = {};
     retVal.type = 'x-unfetter-assessment';
     retVal.name = this.assessmentName;
     retVal.description = this.assessmentDescription;
     retVal.assessment_objects = [];
 
-    assessmentsGroups.forEach(assessmentsGroup => {
+    assessmentsGroups.forEach(
+      (assessmentsGroup) => {
+        if (assessmentsGroup.assessments !== undefined) {
+          assessmentsGroup.assessments.forEach(
+            (assessment) => {
+              let temp: any = {};
 
-      if (assessmentsGroup.assessments !== undefined) {    
-        assessmentsGroup.assessments.forEach(assessment => {
-          let temp: any = {};
+              temp.stix = {};
+              temp.stix.id = assessment.id;
+              temp.stix.type = assessment.type;
+              // temp.stix.description = assessment.description || '';
+              temp.stix.name = assessment.name;
 
-          temp.stix = {};
-          temp.stix.id = assessment.id;
-          temp.stix.type = assessment.type;
-          // temp.stix.description = assessment.description || '';
-          temp.stix.name = assessment.name;
+              temp.questions = [];
+              if (assessment.measurements !== undefined) {
+                assessment.measurements.forEach(
+                  (measurement) => {
+                    temp.questions.push(measurement);
+                  });
+              } else {
+                return { error: 'No measurements/questions on assessment' };
+              }
 
-          temp.questions = [];          
-          if(assessment.measurements !== undefined) {
-            assessment.measurements.forEach(measurement => {
-              temp.questions.push(measurement);
-            });
-          } else {
-            return { 'error': 'No measurements/questions on assessment' };
-          }
+              temp.risk = temp.questions
+                .map((question) => question.risk)
+                .reduce((prev, cur) => prev += cur, 0)
+                / temp.questions.length;
 
-          temp.risk = temp.questions
-            .map(question => question.risk)
-            .reduce((prev, cur) => prev += cur, 0)
-            / temp.questions.length;
-
-
-          retVal['assessment_objects'].push(temp);
-        });
-
-        
-
-      } else {
-        return {'error': 'No assessments in group'};
-      }
+              retVal['assessment_objects'].push(temp);
+          });
+        } else {
+          return {error: 'No assessments in group'};
+        }
 
     });
-    
+
     return retVal;
   }
 
-  private saveAssessments(): void {    
-    let xUnfetterAssessment = this.generateXUnfetterAssessment(this.assessmentGroups);   
+  private saveAssessments(): void {
+    let xUnfetterAssessment = this.generateXUnfetterAssessment(this.assessmentGroups);
     this.assessmentsService.url = 'api/x-unfetter-assessments';
-    this.assessmentsService.save(xUnfetterAssessment).subscribe(
-      res => this.saved = true,
-      err => console.log(err)    
+    let sub = this.assessmentsService.save(xUnfetterAssessment).subscribe(
+      (res) => {
+        this.saved = true;
+        this.location.back();
+      }, (err) => {
+        console.log(err);
+      }, () => {
+        sub.unsubscribe();
+      }
     );
   }
 }

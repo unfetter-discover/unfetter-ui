@@ -8,7 +8,11 @@
             <a md-raised-button routerLink="./indicators">Assess Indicators</a>
             <a md-raised-button routerLink="./mitigations">Assess Mitigations</a>
             <a md-raised-button routerLink="./sensors">Assess Sensors</a>
+            <div class="pull-right">
+                <span class="right-align">Results: {{assessments.length}}</span>
+            </div>
         </div>
+
     </div>
     <br>
     <hr>
@@ -18,19 +22,19 @@
             <h5>View Assessment</h5>
         </div>
         <div class="col-xs-12">
-            <md-card class="margin-top" *ngFor="let report of reports">
+            <md-card class="margin-top" *ngFor="let assessment of assessments">
                 <div class="row">
                     <div class="col-xs-7">
-                        <a routerLink="dashboard/{{report.id}}">{{report.attributes.name}}</a>
+                        <a routerLink="dashboard/{{assessment.id}}">{{assessment.attributes.name}}</a>
                     </div>
                     <div class="col-xs-5 text-right buttonGrp">
-                        <button md-button (click)="edit(report)" class="mat-accent">
+                        <button md-button (click)="edit(assessment)" class="mat-accent">
                             <i class="material-icons">assessment</i>
                         </button>
-                        <button md-button (click)="edit(report)" class="mat-primary">
+                        <button md-button (click)="edit(assessment)" class="mat-primary">
                             <i class="material-icons">create</i>
                         </button>
-                        <button md-button (click)="delete(report)" class="mat-warn">
+                        <button md-button (click)="delete(assessment)" class="mat-warn">
                             <i class="material-icons">delete</i>
                         </button>
                     </div>
