@@ -1,3 +1,4 @@
+<<<<<<< 3785c6b885c1506af9e445b70d5c282404638dca
 <div class="container" *ngIf="summary; else loadingBlock">
     <ol class="breadcrumb">
         <li><a href="#/assessments">Assessments</a></li>
@@ -76,19 +77,40 @@
         <br/>
         <br/>
 
+=======
+<div class="container">
+    <p *ngIf="summary"> {{summary}} </p>
+    <p *ngIf="!summary"> No summary found! ID: {{id}} </p>
+
+    <div *ngIf="summary">
+
+        <div class="row">
+            <span>
+                {{summary.attributes.name}}
+            </span>
+            <span>
+                {{summary.attributes.modified}}
+            </span>
+        </div>
+
+>>>>>>> issue #332 router for assessments summary page
         <div class="row">
             <span>
                 {{summary.attributes.description}}
             </span>
         </div>
 
+<<<<<<< 3785c6b885c1506af9e445b70d5c282404638dca
         <br/>
         <br/>
+=======
+>>>>>>> issue #332 router for assessments summary page
         <div class="row" *ngFor="let assessemntObj of summary.attributes['assessment_objects']">
             {{assessemntObj.risk}}
         </div>
 
     </div>
+<<<<<<< 3785c6b885c1506af9e445b70d5c282404638dca
 </div>
 
 
@@ -96,3 +118,8 @@
     <div class="loading">
         <md-spinner></md-spinner><span class="loading-text">Loading...</span></div>
 </ng-template>
+=======
+    
+
+</div>
+>>>>>>> issue #332 router for assessments summary page
