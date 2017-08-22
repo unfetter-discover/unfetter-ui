@@ -19,7 +19,22 @@ import { AssessmentsService } from '../assessments.service';
 
 @Component({
   selector: 'assessment',
-  templateUrl: './assessment.component.html'
+  templateUrl: './assessment.component.html',
+  styles: [
+    ` .btn-wrapper  {
+        padding-top: 1%;
+       }
+      .btn-wrapper a {
+        margin-right: 5px;
+      }
+      .margin-top-3percent {
+            margin-top: 3%
+      }
+      . margin-top-10 {
+         margin-top: 10px;
+      }
+    `
+  ]
 })
 export class AssessmentComponent extends Measurements implements OnChanges {
   @Input() public model: any[];

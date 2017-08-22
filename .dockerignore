@@ -10,7 +10,7 @@ Icon?
 Thumbs.db
 
 # Node Files #
-node_modules
+# node_modules
 npm-debug.log
 npm-debug.log.*
 

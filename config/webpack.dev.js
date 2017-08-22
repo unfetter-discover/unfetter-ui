@@ -239,6 +239,7 @@ module.exports = function (options) {
         poll: 1000,
         ignored: /node_modules/
       }
+      // disableHostCheck: true
     },
 
     /*

@@ -79,7 +79,7 @@
             <md-card-actions class="text-right">
                 <button md-button [disabled]="page === 1" (click)="back()"> Back</button>
                 <button md-button (click)="next()" *ngIf="!(buttonLabel === 'Save' && saved)"> {{buttonLabel}}</button>
-                <button md-button disabled *ngIf="buttonLabel === 'Save' && saved"> 
+                <button md-button disabled *ngIf="buttonLabel === 'Save' && saved">
                     <i class="material-icons text-success">check</i>&nbsp;Saved
                 </button>
             </md-card-actions>
