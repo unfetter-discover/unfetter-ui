@@ -42,7 +42,6 @@ export class AssessmentsGroupComponent implements OnInit {
                 (res) => {
                     this.assessedObjects = res ? res : {};
                     console.log('Assessed objs\n', this.assessedObjects);
-                    
                 },
                 (err) => console.log(err)
             );

@@ -25,7 +25,7 @@ export class RiskBreakdownComponent implements OnInit {
 
     public getColor(category: string) {
         let index = Object.keys(this.riskBreakdown).indexOf(category) % 10;
-        if(index === undefined) {
+        if (index === undefined) {
             index = Math.floor(Math.random() * (9 - 0 + 1));
         }
         return Constance.MAT_COLORS[Constance.MAT_GRAPH_COLORS[index]][500];

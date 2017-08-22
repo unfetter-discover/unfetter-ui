@@ -43,7 +43,7 @@ export class AssessmentsListComponent implements OnInit {
     let dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: item });
     dialogRef.afterClosed().subscribe(
         (result) => {
-        if (result) {
+        if (result === 'true') {
              let sub  = _self.assessmentsService.delete(item).subscribe(
                (d) => {
                  this.assessments = this.assessments.filter((a) => a.id !== item.id);
