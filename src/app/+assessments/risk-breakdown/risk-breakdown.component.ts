@@ -24,29 +24,10 @@ export class RiskBreakdownComponent implements OnInit {
     }
 
     public getColor(category: string) {
-        switch (Object.keys(this.riskBreakdown).indexOf(category) % 10) {
-            case 0:
-                return '#0277bd';
-            case 1:
-                return '#E91E63';
-            case 2:
-                return '#FFC107';
-            case 3:
-                return '#8BC34A';
-            case 4:
-                return '#00BCD4';
-            case 5:
-                return '#673AB7';
-            case 6:
-                return '#03A9F4';
-            case 7:
-                return '#FF5722';
-            case 8:
-                return '#009688';
-            case 9:
-                return '#FF9800';
-            default:
-                return '#9C27B0';
+        let index = Object.keys(this.riskBreakdown).indexOf(category) % 10;
+        if(index === undefined) {
+            index = Math.floor(Math.random() * (9 - 0 + 1));
         }
+        return Constance.MAT_COLORS[Constance.MAT_GRAPH_COLORS[index]][500];
     }
 }

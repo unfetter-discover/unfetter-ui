@@ -47,7 +47,10 @@ export class AssessmentsDashboardComponent implements OnInit {
                     return `${tooltipLabel}: ${tooltipPercentage}%`;
                 }
             }
-        }
+        },
+        legend: {
+            position: 'bottom',
+        },
     };
 
     private assessment: any;

@@ -3,5 +3,5 @@
         class="riskCategory" 
         [style.flexBasis]="(riskBreakdown[category] * 100) + '%'" 
         [style.background]="getColor(category)"
-        mdTooltip="{{ category | capitalize }} - {{ riskBreakdown[category] | percent:'2.1-1' }}"></div>
+        mdTooltip="{{ category | capitalize }} &bull; {{ riskBreakdown[category] | percent:'2.1-1' }}"></div>
 </div>

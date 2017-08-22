@@ -3,7 +3,7 @@ export const Constance = {
     // TODO store these on server?
     KILL_CHAIN_PHASES: [
         'persistence',
-        'priviledge-escalation',
+        'privilege-escalation',
         'defense-evasion',
         'credential-access',
         'discovery',
@@ -102,16 +102,16 @@ export const Constance = {
     },
 
     MAT_GRAPH_COLORS: [
-        'lightblue', 
-        'pink',
-        'amber',
-        'lightgreen',
-        'deeppurple',
-        'lightblue',
-        'deeporange',
-        'teal',
+        'blue', 
         'orange',
-        'purple'
+        'lightgreen',
+        'pink',
+        'deeppurple',
+        'brown',
+        'indigo',
+        'bluegrey',
+        'lime',
+        'lightblue'
     ],
 
     MAT_COLORS: {

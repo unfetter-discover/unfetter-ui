@@ -62,7 +62,10 @@
                                         <div class="col-xs-4 paddingBottom" *ngFor="let i of intrusionSetsDashboard.intrusionSets" [ngClass]="{'altClearFix': i !== 0 && i % 3 == 0}">
 
                                             <div>
-                                                <label [style.color]="i.color">{{i.name}}</label> <small class="text-muted pull-right"> {{i.attack_patterns.length}} / {{intrusionSetsDashboard.totalAttackPatterns}}</small>
+                                                <span [style.color]="i.color" class="greyTextShadow"><i class="material-icons">lens</i></span>&nbsp;
+                                                <label>{{i.name}}</label>
+                                                <!--<label [style.color]="i.color">{{i.name}}</label> -->
+                                                <small class="text-muted pull-right"> {{i.attack_patterns.length}} / {{intrusionSetsDashboard.totalAttackPatterns}}</small>
                                             </div>
 
                                             <div>
@@ -117,6 +120,7 @@
                                     <collapsible-tree [data]="treeData"></collapsible-tree>
                                 </md-card>
                             </div>
+                            <br>
                         </md-tab>
                         <md-tab label="Critical Security Controls (CSC)">
                             <p-accordion *ngIf="treeData">
@@ -133,6 +137,7 @@
                                 </p-accordionTab>
                             </p-accordion>
 
+                            <br>
                         </md-tab>
                     </md-tab-group>
                 </div>

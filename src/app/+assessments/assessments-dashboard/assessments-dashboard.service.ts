@@ -16,4 +16,8 @@ export class AssessmentsDashboardService {
     public getRiskByAttackPattern(id: String): Observable<any> {
         return this.genericApi.get(`${this.baseUrl}/${id}/risk-by-attack-pattern`);
     }
+
+    public getAssessedObjects(id: String): Observable<any> {
+        return this.genericApi.get(`${this.baseUrl}/${id}/assessed-objects`);
+    }
 }

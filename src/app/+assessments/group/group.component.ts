@@ -13,6 +13,7 @@ export class AssessmentsGroupComponent implements OnInit {
     private activePhase: String;
     private assessment: any;
     private riskByAttackPattern: any;
+    private assessedObjects: any;
     private unassessedPhases: String;
     private currentAttackPattern: any;
     private id: String = '';
@@ -32,6 +33,16 @@ export class AssessmentsGroupComponent implements OnInit {
                     this.populateUnassessedPhases();
                     this.activePhase = routedPhase ? routedPhase : this.riskByAttackPattern.phases[0]._id;
                     this.setAttackPattern(this.getScores(this.activePhase)[0].attackPatternId);
+                },
+                (err) => console.log(err)
+            );
+
+        this.assessmentsDashboardService.getAssessedObjects(this.id)
+            .subscribe(
+                (res) => {
+                    this.assessedObjects = res ? res : {};
+                    console.log('Assessed objs\n', this.assessedObjects);
+                    
                 },
                 (err) => console.log(err)
             );
