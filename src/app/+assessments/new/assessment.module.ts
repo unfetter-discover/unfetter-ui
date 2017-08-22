@@ -29,7 +29,7 @@ import { GlobalModule } from 'app/global/global.module';
     ComponentModule,
     CalendarModule,
     ChartsModule,
-    PipesModule, 
+    PipesModule,
     MdNativeDateModule,
     GlobalModule
   ],
