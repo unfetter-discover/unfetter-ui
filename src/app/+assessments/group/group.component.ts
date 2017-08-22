@@ -41,8 +41,6 @@ export class AssessmentsGroupComponent implements OnInit {
             .subscribe(
                 (res) => {
                     this.assessedObjects = res ? res : {};
-                    console.log('Assessed objs\n', this.assessedObjects);
-                    
                 },
                 (err) => console.log(err)
             );
@@ -55,7 +53,7 @@ export class AssessmentsGroupComponent implements OnInit {
                     this.assessment = res ? res : {};
                 },
                 (err) => console.log(err)
-            );
+            );        
     }
 
     public getNumAttackPatterns(phaseName) {
@@ -87,9 +85,24 @@ export class AssessmentsGroupComponent implements OnInit {
     }
 
     public setAttackPattern(attackPatternId) {
+        // Get attack pattern details
         this.currentAttackPattern = this.riskByAttackPattern.attackPatternsByKillChain
             .find((killChain) => killChain._id === this.activePhase)
             .attackPatterns
             .find((attackPattern) => attackPattern.id === attackPatternId);
+
+        // Get relationships for attack pattern, link to assessed objects
+        this.assessmentsDashboardService.getAttackPatternRelationships(attackPatternId)
+            .subscribe(
+                res => {
+                    let assessmentCanidates = res.map(relationship => relationship.attributes.source_ref);
+                    let displayedAssessedObjects = this.assessedObjects
+                        .filter(assessedObj => assessmentCanidates.indexOf(assessedObj.stix.id) > -1);    
+
+                    console.log(displayedAssessedObjects);
+                                    
+                },
+                err => console.log(err)
+            );
     }
 }
