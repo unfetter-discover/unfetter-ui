@@ -8,6 +8,7 @@ import { AssessmentsSummaryComponent } from './assessments-summary/assessments-s
 import { AssessmentsGroupComponent } from './group/group.component';
 
 const routes = [
+<<<<<<< e6e12d1638f9c3d452f24abb534d9bf2235bcfe0
         {
             path: '', component: AssessmentsLayoutComponent,
             children: [
@@ -22,6 +23,20 @@ const routes = [
         { path: 'dashboard/:id',  component: AssessmentsDashboardComponent },
         { path: 'group/:id/:phase',   component: AssessmentsGroupComponent  },
         { path: 'summary/:id', component: AssessmentsSummaryComponent }
+=======
+       {
+          path: '', component: AssessmentsLayoutComponent,
+          children: [
+              { path: '', component: AssessmentsListComponent },
+              { path: 'indicators',  loadChildren: './new/indicators#IndicatorsModule' },
+              { path: 'mitigations', loadChildren: './new/mitigations#MitigationsModule' },
+              { path: 'sensors',  loadChildren: './new/sensors#SensorsModule' }
+          ]
+      },
+      { path: 'dashboard/:id',  component: AssessmentsDashboardComponent },
+      { path: 'group/:id/:phase',   component: AssessmentsGroupComponent  },
+      { path: 'summary/:id', component: AssessmentsSummaryComponent }
+>>>>>>> issue #332 router for assessments summary page
 ];
 
 export const assessmentsRouting: ModuleWithProviders = RouterModule.forChild(routes);
