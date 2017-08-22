@@ -1,0 +1,29 @@
+<div class="container">
+    <p *ngIf="summary"> {{summary}} </p>
+    <p *ngIf="!summary"> No summary found! ID: {{id}} </p>
+
+    <div *ngIf="summary">
+
+        <div class="row">
+            <span>
+                {{summary.attributes.name}}
+            </span>
+            <span>
+                {{summary.attributes.modified}}
+            </span>
+        </div>
+
+        <div class="row">
+            <span>
+                {{summary.attributes.description}}
+            </span>
+        </div>
+
+        <div class="row" *ngFor="let assessemntObj of summary.attributes['assessment_objects']">
+            {{assessemntObj.risk}}
+        </div>
+
+    </div>
+    
+
+</div>

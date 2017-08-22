@@ -14,14 +14,15 @@ import { ConfirmationDialogComponent } from '../../components/dialogs/confirmati
 })
 
 export class AssessmentsListComponent implements OnInit {
-  private pageTitle = 'Assessments';
-  private pageIcon = Constance.REPORTS_ICON;
-  private description =  'An assessment is a survey of the Courses of Actions that your organization implements, ' +
+  public assessments = [];
+
+  public pageTitle = 'Assessments';
+  public pageIcon = Constance.REPORTS_ICON;
+  public description =  'An assessment is a survey of the Courses of Actions that your organization implements, ' +
             'and to what level (High, Medium, or Low).  Unfetter|Discover will use the survey to help you ' +
             'understand your gaps, how important they are and which should be addressed.  You may create ' +
             'multiple reports to see how new or different Courses of Actions implemented may change your security posture.';
 
-  private assessments = [];
   constructor( protected dialog: MdDialog, private assessmentsService: AssessmentsService) {
      assessmentsService.url = Constance.X_UNFETTER_ASSESSMENT_URL;
   }
