@@ -28,9 +28,9 @@
                         <a routerLink="dashboard/{{assessment.id}}">{{assessment.attributes.name}}</a>
                     </div>
                     <div class="col-xs-5 text-right buttonGrp">
-                        <button md-button (click)="edit(assessment)" class="mat-accent">
+                        <a md-button routerLink="summary/{{assessment.id}}" class="mat-accent">
                             <i class="material-icons">assessment</i>
-                        </button>
+                        </a>
                         <button md-button (click)="edit(assessment)" class="mat-primary">
                             <i class="material-icons">create</i>
                         </button>
