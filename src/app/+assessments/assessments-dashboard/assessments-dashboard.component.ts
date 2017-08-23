@@ -88,48 +88,48 @@ export class AssessmentsDashboardComponent implements OnInit {
     }
 
     public calculateRiskBreakdown() {
-        let phases = this.riskByAttackPattern.phases;        
-        
+        let phases = this.riskByAttackPattern.phases;
+
         let riskTree = {};
 
         // Group data by kill chain phase, then question => set value array of risk values
-        if (phases !== undefined) {            
-            phases.forEach(phase => {                
+        if (phases !== undefined) {
+            phases.forEach(phase => {
                 riskTree[phase._id] = {};
                 phase.scores.forEach(score => {
                     score.questions.forEach(question => {
                         if (riskTree[phase._id][question.name] === undefined) {
                             riskTree[phase._id][question.name] = [];
                         }
-                        riskTree[phase._id][question.name].push(question.risk);                       
+                        riskTree[phase._id][question.name].push(question.risk);
                     });
                 });
             });
-        }               
+        }
 
         // Calcuate average risk per question
         let questionSet: any = new Set();
         this.riskBreakdown = {};
-        for(let phase in riskTree) {
+        for (let phase in riskTree) {
             this.riskBreakdown[phase] = {};
-            for(let question in riskTree[phase]) {    
-                questionSet.add(question);            
-                /* Average risk for each question-category, 
+            for(let question in riskTree[phase]) {
+                questionSet.add(question);
+                /* Average risk for each question-category,
                  then multiply it by 1 / the number of question-categories.
                  This will show how much each question contributes to absolute overall risk. */
                 this.riskBreakdown[phase][question] = (riskTree[phase][question]
                     .reduce((prev, cur) => prev += cur, 0)
                     / riskTree[phase][question].length) * (1 / Object.keys(riskTree[phase]).length);
-            }            
-        }   
+            }
+        }
 
         // Setup riskBreakdownChart & calculate average risk per question regardless of phase
         let count;
         let sum;
-        let i = 0;        
+        let i = 0;
         questionSet.forEach(question => {
             this.riskBreakdownChartLabels.push(question.charAt(0).toUpperCase() + question.slice(1));
-            
+
             this.riskBreakdownChartData[0].backgroundColor.push(Constance.MAT_COLORS[Constance.MAT_GRAPH_COLORS[i]][500]);
             this.riskBreakdownChartData[0].hoverBackgroundColor.push(Constance.MAT_COLORS[Constance.MAT_GRAPH_COLORS[i]][800]);
             sum = count = 0;
@@ -139,8 +139,8 @@ export class AssessmentsDashboardComponent implements OnInit {
                     count++;
                 }
             }
-            this.riskBreakdownChartData[0].data.push(sum / count);          
-            i++;  
+            this.riskBreakdownChartData[0].data.push(sum / count);
+            i++;
         });
         let riskAccepted = 1 - this.riskBreakdownChartData[0].data.reduce((prev, cur) => prev += cur, 0);
         this.riskBreakdownChartData[0].data.push(riskAccepted);

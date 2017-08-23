@@ -10,7 +10,7 @@ export class AssessmentsService {
 
     constructor(private http: Http) { }
 
-    public load(filter?: any): Observable<any[]> {                
+    public load(filter?: any): Observable<any[]> {
         const url = filter ? `${this.url}` + '?' + encodeURI(filter) : `${this.url}`;
         return this.http
                .get(url)
@@ -25,6 +25,16 @@ export class AssessmentsService {
             .post(this.url, JSON.stringify(item), {headers: this.headers})
             .map((response) => {
                 return response.json().data;
+            })
+            .catch(this.handleError);
+    }
+
+    public delete(item: any): Observable<void> {
+        const url = this.url + '/' + item.id;
+        return this.http
+            .delete(url, {headers: this.headers})
+            .map((response) => {
+                return response.json();
             })
             .catch(this.handleError);
     }

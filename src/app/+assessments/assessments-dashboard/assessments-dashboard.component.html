@@ -43,7 +43,8 @@
                     <phase-list [phase]="phase" [numAttackPatterns]="getNumAttackPatterns(phase._id)" [assessmentId]="assessment.id" [questions]="getQuestions(phase)"
                         [riskBreakdown]="riskBreakdown[phase._id]"></phase-list>
                 </div>
-                <p><small>Unassessed Kill Chain Phases: {{ unassessedPhases | capitalize }}</small>
+                <p *ngIf="unassessedPhases && unassessedPhases.length">
+                    <small>Unassessed Kill Chain Phases: {{ unassessedPhases | capitalize }}</small>
                 </p>
             </div>
 

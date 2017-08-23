@@ -26,4 +26,8 @@ export class AssessmentsDashboardService {
         let query = { "stix.target_ref": id, "stix.relationship_type": { "$in": ["mitigates", "indicates"] } };
         return this.genericApi.get(`${this.relationshipsUrl}?filter=${encodeURI(JSON.stringify(query))}`);
     }
+
+    public genericPost(route: string, data: any) {
+        return this.genericApi.post(route, data);        
+    }
 }

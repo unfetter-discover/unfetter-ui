@@ -21,26 +21,21 @@ export class AssessmentsListComponent implements OnInit {
             'understand your gaps, how important they are and which should be addressed.  You may create ' +
             'multiple reports to see how new or different Courses of Actions implemented may change your security posture.';
 
-  private reports: Report[] = [];
+  private assessments = [];
   constructor( protected dialog: MdDialog, private assessmentsService: AssessmentsService) {
      assessmentsService.url = Constance.X_UNFETTER_ASSESSMENT_URL;
   }
 
   public ngOnInit() {
-    // let filter = {
-    //         'filter[order]': 'created DESC',
-    //         'filter[where][labels]': 'assessment'
-    //     };
-    // let filter = 'filter[order]=name';
-    this.assessmentsService.load(`sort=${JSON.stringify({ "stix.created": -1 })}`).subscribe(
+    this.assessmentsService.load(`sort=${JSON.stringify({ 'stix.created': -1 })}`).subscribe(
       (data) => {
-         this.reports = data as Report[];
+         this.assessments = data;
       }
     );
   }
 
-  private edit(): void {
-    // conspe
+  private edit(item: any): void {
+    console.dir(item);
   }
 
   private delete(item: any): void {
@@ -48,8 +43,16 @@ export class AssessmentsListComponent implements OnInit {
     let dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: item });
     dialogRef.afterClosed().subscribe(
         (result) => {
-        if (result) {
-            // _self.assessmentsService.delete(item);
+        if (result === 'true') {
+             let sub  = _self.assessmentsService.delete(item).subscribe(
+               (d) => {
+                 this.assessments = this.assessments.filter((a) => a.id !== item.id);
+               }, (err) => {
+                 console.log('err');
+               }, () => {
+                  sub.unsubscribe();
+               }
+             );
         }
     });
   }
