@@ -31,7 +31,6 @@ export class AssessmentsService {
 
     public delete(item: any): Observable<void> {
         const url = this.url + '/' + item.id;
-        console.log(url)
         return this.http
             .delete(url, {headers: this.headers})
             .map((response) => {
