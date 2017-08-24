@@ -183,10 +183,12 @@ export class AssessmentsGroupComponent implements OnInit {
                 res => {
                     let assessmentCanidates = res.map(relationship => relationship.attributes.source_ref);
                     this.displayedAssessedObjects = this.assessedObjects
-                        .filter(assessedObj => assessmentCanidates.indexOf(assessedObj.stix.id) > -1);
-
-                    console.log(this.displayedAssessedObjects);
-
+                        .filter(assessedObj => assessmentCanidates.indexOf(assessedObj.stix.id) > -1)
+                        .map(assessedObj => {
+                            let retObj = assessedObj;
+                            retObj.risk = this.getRisk(assessedObj.stix.id);
+                            return retObj;
+                        });                      
                 },
                 err => console.log(err)
             );
@@ -259,15 +261,42 @@ export class AssessmentsGroupComponent implements OnInit {
                         );
 
                     // update assessment
+                    let tempAssessmentObject: any = {};
+                    tempAssessmentObject.questions = questions;
+                    tempAssessmentObject.stix = {
+                        id: newId,
+                        type: convertedObj.type,
+                        name: convertedObj.name,                       
+                    };
+                    if (convertedObj.description !== undefined) {
+                        tempAssessmentObject.stix.description = convertedObj.description;
+                    }
+                    tempAssessmentObject.risk = questions
+                        .map(question => question.risk)
+                        .reduce((prev, cur) => prev += cur, 0)
+                        / questions.length;                   
+
+                    this.assessment.attributes.assessment_objects.push(tempAssessmentObject);
+                    let assessmentToUpload: any = this.assessment.attributes;
+                    assessmentToUpload.modified = new Date().toISOString();
+                    console.log(assessmentToUpload);
+                    this.assessmentsDashboardService.genericPatch(`${Constance.X_UNFETTER_ASSESSMENT_URL}/${this.assessment.id}`, assessmentToUpload)
+                        .subscribe(
+                            assessmentRes => {
+                                console.log('Assessment updated successfully');
+                                this.displayedAssessedObjects.push(tempAssessmentObject);
+                            },
+                            assessmentErr => console.log(assessmentErr)
+                        );
                     
+
+
+                    // TODO update UI to show new object
                     
 
                     
                 }, 
                 assessedErr => console.log(assessedErr)                
-            );        
-
-
-        // TODO uploaded edited assessment           
+            );             
     }
 }
