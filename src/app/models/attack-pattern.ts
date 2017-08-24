@@ -6,6 +6,8 @@ export class AttackPattern {
     public id: string;
     public type: string;
     public links: {self: string};
+    public x_unfetter_sophistication_level: number;
+    public description: string;
 
     public attributes: {
         version: string;
