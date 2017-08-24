@@ -1,15 +1,19 @@
 import {
   Component,
+  ViewChild,
   Input,
-  OnChanges,
+  OnInit,
   SimpleChanges,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  ElementRef
 } from '@angular/core';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { MdSnackBar } from '@angular/material';
 import { Location } from '@angular/common';
 import { Measurements } from './measurements';
 import { Constance } from '../../utils/constance';
 import { AssessmentsService } from '../assessments.service';
+import { GenericApi } from '../../global/services/genericapi.service';
 
 @Component({
   selector: 'assessment',
@@ -30,9 +34,12 @@ import { AssessmentsService } from '../assessments.service';
     `
   ]
 })
-export class AssessmentComponent extends Measurements implements OnChanges {
-  @Input() public model: any[];
-  @Input() public description: string;
+export class AssessmentComponent extends Measurements implements OnInit {
+  public model: any;
+  public assessmentDescription: String = '';
+  public saved: boolean = false;
+  public publishDate: Date = new Date();
+  public buttonLabel = 'Next';
   public doughnutChartLabels: string[] = ['Risk Accepted', 'Risk Addressed'];
   public doughnutChartData: any[] = [
     {
@@ -70,32 +77,96 @@ export class AssessmentComponent extends Measurements implements OnChanges {
       }
     }
   };
-  private pageIcon = Constance.REPORTS_ICON;
-  private pageTitle = 'Assessments';
+  public description =  'An Assessment is your evaluation of the implementations of your network.  You will rate your environment ' +
+            ' to the best of your ability.' +
+            'On the final page of the survey, you will be asked to enter a name for the report and a description.  Unfetter Discover will ' +
+            'use the survey to help you understand your gaps, how important they are and which should be addressed.  You may create ' +
+            'multiple reports to see how your risk is changed when implementing different security processes.';
+  public pageIcon = Constance.REPORTS_ICON;
+  public pageTitle = 'Assessments';
+  public showSummarry = false;
+  public assessmentName: String = '';
+  public currentAssessmentGroup: any = {};
+  public selectedRisk = '1';
   private assessments: any = [];
   private killChains: any = [];
   private assessmentGroups: any;
-  private currentAssessmentGroup: any = {};
   private page = 1;
   private defaultMeasurement = 'Nothing';
-  private showSummarry = false;
-  private buttonLabel = 'Next';
-  private assessmentName: String = '';
-  private assessmentDescription: String = '';
-  private saved: boolean = false;
-  private publishDate: Date = new Date();
+  private url: string;
 
   constructor(
-    private assessmentsService: AssessmentsService,
+    private genericApi: GenericApi,
     private snackBar: MdSnackBar,
     private location: Location,
+    private route: ActivatedRoute,
   ) {
     super();
   }
 
-  public ngOnChanges(changes: SimpleChanges): void {
-      console.log('changes');
-      let data = changes['model'].currentValue;
+  public ngOnInit() {
+    let type = this.route.snapshot.paramMap.get('type');
+    let id = this.route.snapshot.paramMap.get('id');
+
+    switch (type) {
+        case 'indicator' : {
+          this.url = Constance.INDICATOR_URL;
+          break;
+        }
+        case 'mitigation' : {
+          this.url = Constance.COURSE_OF_ACTION_URL;
+           break;
+        }
+        default: {
+         this.url = 'api/x-unfetter-sensors';
+        }
+    }
+    this.genericApi.get(this.url).subscribe(
+      (data) => {
+        this.build(data);
+        if (id) {
+          this.url = 'api/x-unfetter-assessments';
+          this.genericApi.get(this.url, id).subscribe(
+            (data) => {
+              this.model = data;
+
+              this.selectedRiskValue = null;
+              this.calculateGroupRisk();
+              this.updateChart();
+               console.dir(this.model)
+            }
+          );
+        }
+      }
+    );
+  }
+
+  public set selectedRiskValue(measurement: any) {
+      if (this.model) {
+         console.dir(this.currentAssessmentGroup.assessments)
+        this.currentAssessmentGroup.assessments.forEach(
+          (assessment) => {
+            let assessment_object = this.model.attributes.assessment_objects.find(
+                (assessment_object) => {
+                  return assessment.id === assessment_object.stix.id;
+                }
+            );
+             assessment.risk  = assessment_object.risk;
+             console.dir(assessment_object)
+            assessment.measurements.forEach(
+              (m) => {
+                let question = assessment_object.questions.find((q) => { return q.name === m.name});
+                console.dir(question)
+                m.risk = question.selected_value.risk
+              }
+
+            );
+          }
+        );
+      }
+  }
+
+  private build(data: any): void {
       if (data) {
         this.assessmentGroups = this.createAssessmentGroups(data);
         this.currentAssessmentGroup = this.assessmentGroup;
@@ -235,14 +306,33 @@ export class AssessmentComponent extends Measurements implements OnChanges {
     return hash;
   }
 
-  private updateRisks(measurement: any, assessment: any): void {
-    assessment.risk = measurement.risk;
+  private calculateGroupRisk(): number {
     let groupRisk = this.calculateRisk(this.currentAssessmentGroup.assessments);
     let riskArray = [];
     riskArray.push(groupRisk);
     riskArray.push(1 - groupRisk);
     this.currentAssessmentGroup.risk = groupRisk;
     this.currentAssessmentGroup.riskArray = riskArray;
+    return groupRisk;
+  }
+
+  private updateRisks(option: any, measurement: any, assessment: any): void {
+    // console.dir(option)
+    assessment.risk = option.selected.value.risk;
+    let groupRisk = this.calculateGroupRisk();
+    if (this.model) {
+        let assessment_object = this.model.attributes.assessment_objects.find(
+          (assessment_object) => { return assessment.id === assessment_object.stix.id; }
+        );
+
+        assessment_object.risk = groupRisk;
+        console.log('groupRisk ' + groupRisk)
+        let question = assessment_object.questions.find((q) => { console.log(' q.name ' +  q.name); return q.name === measurement.name});
+         // console.dir(question)
+        question.risk = option.selected.value.risk;
+        question.selected_value = option.selected.value
+        // console.dir(question)
+    }
     this.updateChart();
   }
 
@@ -255,6 +345,7 @@ export class AssessmentComponent extends Measurements implements OnChanges {
     this.showSummarry = false;
     this.currentAssessmentGroup = this.assessmentGroup;
     this.pageTitle = this.splitTitle();
+    this.selectedRiskValue = null;
     this.updateChart();
   }
 
@@ -273,10 +364,15 @@ export class AssessmentComponent extends Measurements implements OnChanges {
         this.currentAssessmentGroup = null;
         this.showSummarry = true;
         this.buttonLabel = 'Save';
+        if (this.model) {
+           this.assessmentName = this.model.attributes.name;
+           this.assessmentDescription = this.model.attributes.description;
+        }
       } else {
         this.page = this.page + 1;
         this.currentAssessmentGroup = this.assessmentGroup;
         this.pageTitle = this.splitTitle();
+        this.selectedRiskValue = null;
         this.updateChart();
       }
     }
@@ -339,17 +435,37 @@ export class AssessmentComponent extends Measurements implements OnChanges {
   }
 
   private saveAssessments(): void {
-    let xUnfetterAssessment = this.generateXUnfetterAssessment(this.assessmentGroups);
-    this.assessmentsService.url = 'api/x-unfetter-assessments';
-    let sub = this.assessmentsService.save(xUnfetterAssessment).subscribe(
-      (res) => {
-        this.saved = true;
-        this.location.back();
-      }, (err) => {
-        console.log(err);
-      }, () => {
-        sub.unsubscribe();
-      }
-    );
-  }
+    this.url = 'api/x-unfetter-assessments';
+    if (this.model) {
+      let retVal: any = {};
+      retVal.type = 'x-unfetter-assessment';
+      retVal.name = this.assessmentName;
+      retVal.description = this.assessmentDescription;
+      retVal.assessment_objects = this.model.attributes.assessment_objects;
+      this.url = this.url + '/' + this.model.id;
+      let sub = this.genericApi.patch( this.url, retVal).subscribe(
+          (res) => {
+            this.saved = true;
+            this.location.back();
+          }, (err) => {
+            console.log(err);
+          }, () => {
+            sub.unsubscribe();
+          }
+      );
+    } else {
+        let xUnfetterAssessment = this.generateXUnfetterAssessment(this.assessmentGroups);
+        let sub = this.genericApi.post( this.url, xUnfetterAssessment).subscribe(
+            (res) => {
+              this.saved = true;
+              this.location.back();
+            }, (err) => {
+              console.log(err);
+            }, () => {
+              sub.unsubscribe();
+            }
+          );
+        }
+    }
+
 }

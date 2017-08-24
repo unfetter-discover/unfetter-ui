@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { MaterialModule, MdButtonModule, MdCardModule, MdDialogModule, MdSnackBarModule, MdNativeDateModule } from '@angular/material';
 import { ChartsModule } from 'ng2-charts';
 import { CalendarModule } from 'primeng/primeng';
@@ -8,7 +9,11 @@ import { PipesModule } from '../../pipes';
 import { AssessmentComponent } from './assessment.component';
 import { ComponentModule } from '../../components';
 import { AssessmentsService } from '../assessments.service';
-import { GlobalModule } from 'app/global/global.module';
+import { GlobalModule } from '../../global/global.module';
+
+const routes = [
+   { path: '', component: AssessmentComponent  }
+];
 
 @NgModule({
   declarations: [
@@ -31,7 +36,8 @@ import { GlobalModule } from 'app/global/global.module';
     ChartsModule,
     PipesModule,
     MdNativeDateModule,
-    GlobalModule
+    GlobalModule,
+    RouterModule.forChild(routes)
   ],
   exports: [
     AssessmentComponent

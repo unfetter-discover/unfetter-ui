@@ -63,8 +63,8 @@
                             <div class="row" style="margin-top: 5px;">
                                 <div class="col-xs-{{ assessment.measurements.length | columnSize}}" *ngFor="let measurement of assessment.measurements">
                                     <form>
-                                        <md-select name="objectProperties" (change)="updateRisks(measurement, assessment)" [(ngModel)]="measurement.risk" class="full-width">
-                                            <md-option *ngFor="let options of measurement.options" [value]="options.risk">
+                                        <md-select #question name="question"  (change)="updateRisks(question, measurement, assessment)" [(ngModel)]="measurement.risk" class="full-width">
+                                            <md-option  *ngFor="let options of measurement.options" [value]="options.risk">
                                                 {{ options.name }}
                                             </md-option>
                                         </md-select>
