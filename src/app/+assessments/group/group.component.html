@@ -33,9 +33,15 @@
                 <p class="text-muted">Attack Patterns &bull; {{ phase.scores.length }} / {{ getNumAttackPatterns(phase._id) }}</p>
             </div>
 
-            <p *ngIf="unassessedPhases && unassessedPhases.length > 0">
-                <small>Unassessed Kill Chain Phases: {{ unassessedPhases | capitalize }}</small>
-            </p>
+            <div *ngIf="unassessedPhases && unassessedPhases.length > 0">
+                <hr>
+                <h5 class="text-muted">
+                    <small>Unassessed Kill Chain Phases</small>
+                </h5>
+                <div class="attackPatternListItem" *ngFor="let unassessedPhase of unassessedPhases">
+                    <small><a (click)="setPhase(unassessedPhase)">{{unassessedPhase | capitalize }}</a></small>
+                </div>
+            </div>
         </div>
 
         <div class="col-sm-3">
@@ -44,6 +50,13 @@
             <div *ngFor="let score of getScores(activePhase)" class="attackPatternListItem">
                 <risk-icon [risk]="score.risk" [showTooltip]="true"></risk-icon>&nbsp;
                 <a (click)="setAttackPattern(score.attackPatternId)">{{ score.attackPatternName }}</a>
+            </div>
+            <div *ngIf="unassessedAttackPatterns && unassessedAttackPatterns.length > 0">
+                <hr>
+                <h5 class="text-muted">Unassessed Attack Patterns</h5>
+                <div *ngFor="let unassessedAttackPattern of unassessedAttackPatterns" class="attackPatternListItem">
+                    <a (click)="setAttackPattern(unassessedAttackPattern.id)">{{ unassessedAttackPattern.attributes.name }}</a>
+                </div>
             </div>
         </div>
 
@@ -102,20 +115,19 @@
 
                                     <div *ngSwitchCase="'indicator'">
                                         <div class="row">
-                                            <div *ngFor="let measurement of indicator.questions" class="col-xs-12">   
-                                                <label class="mat-label">{{measurement.name | capitalize}}</label>                             
+                                            <div *ngFor="let measurement of indicator.questions" class="col-xs-12">
+                                                <label class="mat-label">{{measurement.name | capitalize}}</label>
                                                 <md-select [(ngModel)]="measurement.risk" class="full-width mdSelectBotMargin">
                                                     <md-option *ngFor="let option of measurement.options" [value]="option.risk">
                                                         {{ option.name }}
                                                     </md-option>
-                                                </md-select>                                      
+                                                </md-select>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <md-input-container class="full-width">
-                                                    <input mdInput placeholder="Name" required [(ngModel)]="indicator.name" value="{{indicator.name}}"
-                                                    />
+                                                    <input mdInput placeholder="Name" required [(ngModel)]="indicator.name" value="{{indicator.name}}" />
                                                 </md-input-container>
                                             </div>
                                         </div>
@@ -129,8 +141,7 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <md-input-container class="full-width">
-                                                    <input mdInput placeholder="Pattern" [(ngModel)]="indicator.pattern" value="{{indicator.pattern}}"
-                                                    />
+                                                    <input mdInput placeholder="Pattern" [(ngModel)]="indicator.pattern" value="{{indicator.pattern}}" />
                                                 </md-input-container>
                                             </div>
                                         </div>
@@ -193,8 +204,7 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <md-input-container class="full-width">
-                                                    <input mdInput placeholder="Name" required [(ngModel)]="xUnfetterSensor.name" value="{{xUnfetterSensor.name}}"
-                                                    />
+                                                    <input mdInput placeholder="Name" required [(ngModel)]="xUnfetterSensor.name" value="{{xUnfetterSensor.name}}" />
                                                 </md-input-container>
                                             </div>
                                         </div>
@@ -232,11 +242,34 @@
                                 <md-card-content>
                                     {{ assessedObj.stix.description }}
                                 </md-card-content>
+
+                                <md-card-content>
+                                    <div *ngIf="assessedObj.editActive">
+                                        <div *ngFor="let measurement of assessedObj.questions">
+                                            <label class="mat-label">{{measurement.name | capitalize}}</label>
+                                            <md-select [(ngModel)]="measurement.risk" class="full-width mdSelectBotMargin">
+                                                <md-option *ngFor="let option of measurement.options" [value]="option.risk">
+                                                    {{ option.name }}
+                                                </md-option>
+                                            </md-select>
+                                        </div>
+                                    </div>
+
+                                    <p class="text-right" *ngIf="assessedObj.editActive">
+                                        <button md-button (click)="assessedObj.editActive = false">Cancel</button>
+                                        <button md-button (click)="editAssessedObject(assessedObj)">Save</button>
+                                    </p>
+
+                                    <p class="text-right" *ngIf="!assessedObj.editActive">
+                                        <button md-button (click)="assessedObj.editActive = true">Edit</button>
+                                    </p>
+
+                                </md-card-content>
                             </md-card>
                             <br>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
         </div>

@@ -27,6 +27,10 @@ export class AssessmentsDashboardService {
         return this.genericApi.get(`${this.relationshipsUrl}?filter=${encodeURI(JSON.stringify(query))}`);
     }
 
+    public genericGet(route: string) {
+        return this.genericApi.get(route);
+    }
+
     public genericPost(route: string, data: any) {
         return this.genericApi.post(route, data);        
     }
