@@ -13,7 +13,6 @@ export class AssessmentsSummaryService {
         return this.genericApi.get(`${this.baseUrl}/${id}`);
     }
 
-<<<<<<< 3785c6b885c1506af9e445b70d5c282404638dca
     public getRiskPerKillChain(id: string): Observable<any> {
         if (!id) {
             return Observable.empty();
@@ -32,6 +31,4 @@ export class AssessmentsSummaryService {
         return this.genericApi.get(url);
     }
 
-=======
->>>>>>> issue #332 router for assessments summary page
 }
