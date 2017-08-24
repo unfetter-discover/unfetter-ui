@@ -1,4 +1,4 @@
-<div class="container" *ngIf="summary; else loadingBlock">
+<div class="container" *ngIf="summary && weakestAttackPatterns; else loadingBlock">
     <ol class="breadcrumb">
         <li><a href="#/assessments">Assessments</a></li>
         <li class="active">{{summary?.attributes.name || 'No summary found!'}} ({{summary?.attributes.modified}})</li>
@@ -73,19 +73,10 @@
         <hr>
         <br/>
         <br/>
-        <br/>
-        <br/>
-
         <div class="row">
             <span>
                 {{summary.attributes.description}}
             </span>
-        </div>
-
-        <br/>
-        <br/>
-        <div class="row" *ngFor="let assessemntObj of summary.attributes['assessment_objects']">
-            {{assessemntObj.risk}}
         </div>
 
     </div>
