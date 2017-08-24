@@ -16,6 +16,7 @@ import { RiskBreakdownComponent } from './risk-breakdown/risk-breakdown.componen
 import { AssessmentsSummaryComponent } from './assessments-summary/assessments-summary.component';
 import { AssessmentsSummaryService } from './assessments-summary/assessments-summary.service';
 import { assessmentsRouting } from './assessments.routing';
+import { AssessmentsCalculationService } from './assessments-summary/assessments-calculation.service';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { assessmentsRouting } from './assessments.routing';
     AssessmentsService,
     AssessmentsDashboardService,
     AssessmentsSummaryService,
+    AssessmentsCalculationService
   ]
 })
 export class AssessmentsModule {}
