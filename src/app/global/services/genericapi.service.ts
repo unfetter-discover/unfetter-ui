@@ -24,9 +24,9 @@ export class GenericApi {
     }
 
     public post(url: string, data: any, type?: string): Observable<Response> {
-        let builtUrl = this.baseUrl + url;        
+        let builtUrl = this.baseUrl + url;
         console.log('built url! ',builtUrl, '~~~~', this.baseUrl);
-        
+
         return this.http.post(builtUrl, data, {headers: this.postHeaders})
             .map(this.extractData)
             .catch(this.handleError);
