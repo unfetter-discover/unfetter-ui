@@ -45,6 +45,7 @@ import { MalwareHomeComponent, MalwareListComponent, MalwareComponent, MalwareEd
 import { ToolHomeComponent, ToolListComponent, ToolComponent, ToolEditComponent, ToolNewComponent } from './stix-objects/tools';
 import { LinkExplorerComponent } from './link-explorer';
 import { StixHomeComponent } from './stix-home.component';
+import { GlobalModule } from 'app/global/global.module';
 
 @NgModule({
   imports: [
@@ -66,7 +67,8 @@ import { StixHomeComponent } from './stix-home.component';
       CalendarModule,
       AccordionModule,
       DataListModule,
-      StixRoutingModule
+      StixRoutingModule,
+      GlobalModule
   ],
   declarations: [
     // Components / Directives/ Pipes

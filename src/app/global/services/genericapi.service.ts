@@ -7,8 +7,13 @@ export class GenericApi {
     // TODO dont hard code this
     private baseUrl: string = 'https://localhost/';
     private data: any = null;
+    private postHeaders: Headers;
 
-    constructor(private http: Http) { }
+    constructor(private http: Http) { 
+        this.postHeaders = new Headers();
+        this.postHeaders.append('Content-Type', 'application/json');
+        this.postHeaders.append('Accept', 'application/vnd.api+json');
+    }
 
     public get(url: string, data?: any): Observable<Response> {
         this.data = (data !== undefined && data !== null) ? '/' + data : '';
@@ -19,15 +24,15 @@ export class GenericApi {
     }
 
     public post(url: string, data: any, type?: string): Observable<Response> {
-        let builtUrl = this.baseUrl + url;
-        return this.http.post(builtUrl, data)
+        let builtUrl = this.baseUrl + url;                
+        return this.http.post(builtUrl, data, {headers: this.postHeaders})
             .map(this.extractData)
             .catch(this.handleError);
     }
 
     public patch(url: string, data: any): Observable<Response> {
         let builtUrl = this.baseUrl + url;
-        return this.http.patch(builtUrl, data)
+        return this.http.patch(builtUrl, data, { headers: this.postHeaders })
             .map(this.extractData)
             .catch(this.handleError);
     }

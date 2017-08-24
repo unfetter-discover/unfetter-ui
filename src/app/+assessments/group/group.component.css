@@ -1,3 +1,6 @@
 .attackPatternListItem {
     margin-top: 0.4rem;
 }
+br.altClearFix {
+    height: 0;
+}

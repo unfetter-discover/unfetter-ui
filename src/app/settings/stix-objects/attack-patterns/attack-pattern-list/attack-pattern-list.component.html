@@ -16,7 +16,7 @@
 
         <div class="col-md-12 scroll-area">
             <p-accordion (onOpen)="onTabShow($event)">
-                <p-accordionTab header="{{key}}"  *ngFor="let key of phaseNameGroupKeys">
+                <p-accordionTab header="{{key | capitalize }}"  *ngFor="let key of phaseNameGroupKeys">
                     <p-dataList *ngIf="filterAttackPattern[key]" [value]="filterAttackPattern[key]" [paginator]="true" [rows]="numOfRows" [lazy]="true" (onLazyLoad)="loadData($event, key)" [totalRecords]="totalRecords(key)">
                         <ng-template let-attackPattern pTemplate="item">
                             <div class="row  collection-item grey.lighten-5">

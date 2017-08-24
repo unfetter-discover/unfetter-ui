@@ -1,0 +1,9 @@
+.ui-widget-content {
+    background: inherit;
+}
+
+.ui-accordion {
+    .ui-accordion-header.ui-state-active {
+        background-color: inherit !important;
+    }
+}

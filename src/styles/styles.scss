@@ -2,6 +2,7 @@
 /* This file is for setting global styles  */
 @import 'variables';
 @import 'bootstrap_overrides';
+@import 'primeng_overrides';
 
 // // Import a pre-built theme
 // @import "~@angular/material/prebuilt-themes/deeppurple-amber";
@@ -9,7 +10,7 @@
 @import '~@angular/material/theming';
 @include mat-core();
 $my-app-primary: mat-palette($mat-light-blue, 800);
-$my-app-accent : mat-palette($mat-amber);
+$my-app-accent: mat-palette($mat-amber, A200, A100, A400);
 $my-app-warn : mat-palette($mat-deep-orange);
 $my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
 @include angular-material-theme($my-app-theme);
@@ -40,7 +41,11 @@ body {
     font-family: "Roboto", "Helvetica Neue",
     Helvetica,
     Arial,
-    sans-serif
+    sans-serif;    
+}
+
+html, body{
+    background: #fafafa !important;
 }
 
 label {
@@ -175,6 +180,14 @@ code {
 .margin-top {
     margin-top: 10px;
 }
+.margin-bottom {
+    margin-bottom: 15px;
+}
+// Used to match the padding of md-card elements
+.mat-card-padding {
+    padding-left: 8px;
+    padding-right: 8px;
+}
 
 .kill-chain-div {
     font-weight: bold;
@@ -247,4 +260,26 @@ a {
 
 .altClearFix {
     clear: both;
+}
+
+.whiteText {
+    color: #fff;
+}
+.lightTextShadow {
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.3),
+    1px 1px 1px rgba(0, 0, 0, 0.2),
+    0 0 3px rgba(0, 0, 0, 0.1);
+}
+.paddingBottom {
+    padding-bottom: 10px;
+}
+.mdSelectBotMargin {
+    margin-bottom: 0.43em;
+}
+
+.mat-label {
+    color: rgba(0, 0, 0, 0.38);
+    font-weight: normal;
+    font-size: 12px;
+    margin-top: 2px;
 }

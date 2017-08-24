@@ -1,5 +1,6 @@
 
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import * as Ps from 'perfect-scrollbar';
 import { MdDialog } from '@angular/material';
 import { Constance } from '../../utils/constance';
@@ -8,38 +9,42 @@ import { Report } from '../../models/report';
 import { ConfirmationDialogComponent } from '../../components/dialogs/confirmation/confirmation-dialog.component';
 
 @Component({
-  selector: 'assessments',
-  templateUrl: './assessments.component.html',
+  selector: 'assessments-list',
+  templateUrl: './assessments-list.component.html',
+  styleUrls: ['./assessments-list.component.css'],
 })
 
-export class AssessmentsComponent implements OnInit {
+export class AssessmentsListComponent implements OnInit {
+
   private pageTitle = 'Assessments';
   private pageIcon = Constance.REPORTS_ICON;
   private description =  'An assessment is a survey of the Courses of Actions that your organization implements, ' +
             'and to what level (High, Medium, or Low).  Unfetter|Discover will use the survey to help you ' +
             'understand your gaps, how important they are and which should be addressed.  You may create ' +
             'multiple reports to see how new or different Courses of Actions implemented may change your security posture.';
+  private assessments = [];
 
-  private reports: Report[] = [];
-  constructor( protected dialog: MdDialog, private assessmentsService: AssessmentsService) {
-     assessmentsService.url = Constance.REPORTS_URL;
+  constructor(
+    private dialog: MdDialog,
+    private assessmentsService: AssessmentsService,
+    private router: Router,
+    private route: ActivatedRoute) {
+        assessmentsService.url = Constance.X_UNFETTER_ASSESSMENT_URL;
   }
 
   public ngOnInit() {
-    let filter = {
-            'filter[order]': 'created DESC',
-            'filter[where][labels]': 'assessment'
-        };
-    // let filter = 'filter[order]=name';
-    this.assessmentsService.load(filter).subscribe(
+    this.assessmentsService.load(`sort=${JSON.stringify({ 'stix.created': -1 })}`).subscribe(
       (data) => {
-         this.reports = data as Report[];
+         this.assessments = data;
       }
     );
   }
 
-  private edit(): void {
-    // conspe
+  private edit(item: any): void {
+     let type = item.attributes.assessment_objects[0].stix.type;
+     console.log(type)
+     let link = ['assessment/edit', type, item.id];
+     this.router.navigate(link, { relativeTo: this.route });
   }
 
   private delete(item: any): void {
@@ -47,8 +52,16 @@ export class AssessmentsComponent implements OnInit {
     let dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: item });
     dialogRef.afterClosed().subscribe(
         (result) => {
-        if (result) {
-            // _self.assessmentsService.delete(item);
+        if (result === 'true') {
+             let sub  = _self.assessmentsService.delete(item).subscribe(
+               (d) => {
+                 this.assessments = this.assessments.filter((a) => a.id !== item.id);
+               }, (err) => {
+                 console.log('err');
+               }, () => {
+                  sub.unsubscribe();
+               }
+             );
         }
     });
   }

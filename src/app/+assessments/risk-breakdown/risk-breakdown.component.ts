@@ -1,5 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Constance } from '../../utils/constance';
+import {
+    Component,
+    OnInit,
+    Input
+} from '@angular/core';
+import {
+    Constance
+} from '../../utils/constance';
 
 @Component({
     selector: 'risk-breakdown',
@@ -9,7 +15,19 @@ import { Constance } from '../../utils/constance';
 
 export class RiskBreakdownComponent implements OnInit {
 
+    @Input('riskBreakdown') public riskBreakdown: any;
+
+    private categories: String[];
+
     public ngOnInit() {
-        // init
+        this.categories = Object.keys(this.riskBreakdown);
+    }
+
+    public getColor(category: string) {
+        let index = Object.keys(this.riskBreakdown).indexOf(category) % 10;
+        if (index === undefined) {
+            index = Math.floor(Math.random() * (9 - 0 + 1));
+        }
+        return Constance.MAT_COLORS[Constance.MAT_GRAPH_COLORS[index]][500];
     }
 }

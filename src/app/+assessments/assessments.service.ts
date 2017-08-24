@@ -22,9 +22,19 @@ export class AssessmentsService {
 
     public save(item: any): Observable<any[]> {
         return this.http
-            .post(this.url, JSON.stringify({data: item}), {headers: this.headers})
+            .post(this.url, JSON.stringify(item), {headers: this.headers})
             .map((response) => {
                 return response.json().data;
+            })
+            .catch(this.handleError);
+    }
+
+    public delete(item: any): Observable<void> {
+        const url = this.url + '/' + item.id;
+        return this.http
+            .delete(url, {headers: this.headers})
+            .map((response) => {
+                return response.json();
             })
             .catch(this.handleError);
     }
