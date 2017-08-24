@@ -73,9 +73,15 @@ export const Constance = {
     TOOL_TYPE: 'tools',
     TOOL_ICON: 'assets/icon/stix-icons/svg/tool-b.svg',
 
+    X_UNFETTER_SENSOR_URL: 'api/x-unfetter-sensors',
+    X_UNFETTER_SENSOR_TYPE: 'x-unfetter-sensor',
+    // TODO change icon
+    X_UNFETTER_SENSOR_ICON: 'assets/icon/stix-icons/svg/tool-b.svg',
+
     X_UNFETTER_ASSESSMENT_URL: 'api/x-unfetter-assessments',
     X_UNFETTER_ASSESSMENT_TYPE: 'x-unfetter-assessment',
-    // X_UNFETTER_ASSESSMENT_ICON: 'assets/icon/stix-icons/svg/x-unfetter-assessment-b.svg',
+    // TODO change icon
+    X_UNFETTER_ASSESSMENT_ICON: 'assets/icon/stix-icons/svg/report-b.svg',
 
     COLORS: {
         green: '#4CAF50',
@@ -407,5 +413,56 @@ export const Constance = {
             '800': '#37474f',
             '900': '#263238'
         }
+    },
+
+    MEASUREMENTS: {
+        'indicator': {
+            'coverage': [
+                'Nothing',
+                'Local Logging',
+                'Central Logging, No Alerting',
+                'Alerting, but false positives/negatives',
+                'Real Time Alerting, No False Positives/Negatives'
+            ],
+        },
+        'course-of-action': {
+            'policy': [
+                'No Policy',
+                'Informal Policy',
+                'Partial Written Policy',
+                'Written Policy',
+                'Approved Written Policy'
+            ],
+            'implementation': [
+                'Not Implemented',
+                'Parts of Policy Implemented',
+                'Implemented on Some Systems',
+                'Implemented on Most Systems',
+                'Implemented on All Systems'
+            ],
+            'automation': [
+                'Not Automated',
+                'Parts of Policy Automated',
+                'Automated on Some Systems',
+                'Automated on Most Systems',
+                'Automated on All Systems'
+            ],
+            'reporting': [
+                'Not Reported',
+                'Parts of Policy Reported',
+                'Reported on Some Systems',
+                'Reported on Most Systems',
+                'Reported on All Systems'
+            ],            
+        },
+        'x-unfetter-sensor': {
+            'coverage': [
+                'no coverage',
+                'some coverage',
+                'half coverage',
+                'most critical systems covered',
+                'all critical systems covered'
+            ],
+        },
     },
 };

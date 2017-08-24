@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-xs-8">
             <h4>
-                <img class="stix-icon" src="assets/icon/stix-icons/svg/report-b.svg"> &nbsp;Assessment: {{ assessment.attributes.name}}
+                <img class="stix-icon" src="assets/icon/stix-icons/svg/report-b.svg"> &nbsp;Assessment: {{ assessment.name}}
             </h4>
         </div>
         <div class="col-xs-4 text-right">
@@ -33,7 +33,9 @@
                 </p>
                 <p class="text-muted">Attack Patterns &bull; {{ phase.scores.length }} / {{ getNumAttackPatterns(phase._id) }}</p>
             </div>
-            <p><small>Unassessed Kill Chain Phases: {{ unassessedPhases | capitalize }}</small>
+
+            <p *ngIf="unassessedPhases && unassessedPhases.length > 0">
+                <small>Unassessed Kill Chain Phases: {{ unassessedPhases | capitalize }}</small>
             </p>
         </div>
 
@@ -52,9 +54,7 @@
 
                 <div *ngIf=" currentAttackPattern.kill_chain_phases && currentAttackPattern.kill_chain_phases.length> 0">
                     <p><strong>Kill Chain Phases</strong></p>
-                    <ul>
-                        <li *ngFor="let killchain of currentAttackPattern.kill_chain_phases">{{ killchain.phase_name }}</li>
-                    </ul>
+                    <p *ngFor="let killchain of currentAttackPattern.kill_chain_phases">{{ killchain.kill_chain_name }} &bull; <span class="text-muted">{{ killchain.phase_name }}</span></p>
                 </div>
 
                 <div *ngIf="currentAttackPattern.x_unfetter_sophistication_level !== undefined && currentAttackPattern.x_unfetter_sophistication_level
@@ -75,7 +75,164 @@
                     </p>
                 </div>
 
-                <!--<relationship-list [model]="currentAttackPattern" *ngIf="currentAttackPattern !== null"></relationship-list>-->
+                <div id="assessedObjectsWrapper">
+                    <hr>
+                    <md-card>
+                        <md-card-title class="pull-left">Assessed Objects</md-card-title>
+                        <md-card-title class="pull-right">
+                            <button md-fab (click)="!addAssessedObject ? addAssessedObject = true : ''"><i class="material-icons">add</i></button>
+                        </md-card-title>
+                        <br class="altClearFix">
+                    </md-card>
+                    <br>
+
+                    <div *ngIf="addAssessedObject">
+                        <md-card>
+                            <md-card-title>Add Assessed Object</md-card-title>
+                            <md-card-content>
+                                <br>
+                                <md-select placeholder="Choose Type" [(ngModel)]=addAssessedType class="full-width">
+                                    <md-option value="indicator">Indicator</md-option>
+                                    <md-option value="course-of-action">Course of Action</md-option>
+                                    <md-option value="x-unfetter-sensor">Sensor</md-option>
+                                </md-select>
+                            </md-card-content>
+                            <md-card-content *ngIf="addAssessedType !== undefined">
+                                <br>
+                                <div [ngSwitch]="addAssessedType">
+
+                                    <div *ngSwitchCase="'indicator'">
+                                        <div class="row">
+                                            <div *ngFor="let measurement of indicator.questions" class="col-xs-12">                                
+                                                <md-select [(ngModel)]="measurement.risk" class="full-width mdSelectBotMargin">
+                                                    <md-option *ngFor="let option of measurement.options" [value]="option.risk">
+                                                        {{ option.name }}
+                                                    </md-option>
+                                                </md-select>                                      
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <md-input-container class="full-width">
+                                                    <input mdInput placeholder="Name" required [(ngModel)]="indicator.name" value="{{indicator.name}}"
+                                                    />
+                                                </md-input-container>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <md-input-container class="full-width">
+                                                    <textarea mdInput placeholder="Description" [(ngModel)]="indicator.description" value="{{indicator.description}}"></textarea>
+                                                </md-input-container>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <md-input-container class="full-width">
+                                                    <input mdInput placeholder="Pattern" [(ngModel)]="indicator.pattern" value="{{indicator.pattern}}"
+                                                    />
+                                                </md-input-container>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <p class="text-right">
+                                                <button md-button (click)="addAssessedObject ? addAssessedObject = false : ''">Cancel</button>
+                                                <button md-button [disabled]="!indicator.name" (click)="indicator.name ? createAssessedObject(indicator, currentAttackPattern) : ''">Save</button>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <!-- End indicator-->
+
+                                    <div *ngSwitchCase="'course-of-action'">
+                                        <div class="row">
+                                            <div *ngFor="let measurement of courseOfAction.questions" class="col-xs-12">
+                                                <md-select [(ngModel)]="measurement.risk" class="full-width mdSelectBotMargin">
+                                                    <md-option *ngFor="let option of measurement.options" [value]="option.risk">
+                                                        {{ option.name }}
+                                                    </md-option>
+                                                </md-select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <md-input-container class="full-width">
+                                                    <input mdInput placeholder="Name" required [(ngModel)]="courseOfAction.name" value="{{courseOfAction.name}}">
+                                                </md-input-container>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <md-input-container class="full-width">
+                                                    <input mdInput placeholder="Description" [(ngModel)]="courseOfAction.description" value="{{courseOfAction.description}}">
+                                                </md-input-container>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <p class="text-right">
+                                                <button md-button (click)="addAssessedObject ? addAssessedObject = false : ''">Cancel</button>
+                                                <button md-button [disabled]="!courseOfAction.name" (click)="courseOfAction.name ? createAssessedObject(courseOfAction, currentAttackPattern) : ''">Save</button>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <!-- End COA -->
+
+                                    <div *ngSwitchCase="'x-unfetter-sensor'">
+                                        <div class="row">
+                                            <div *ngFor="let measurement of xUnfetterSensor.questions" class="col-xs-12">
+                                                <md-select [(ngModel)]="measurement.risk" class="full-width mdSelectBotMargin">
+                                                    <md-option *ngFor="let option of measurement.options" [value]="option.risk">
+                                                        {{ option.name }}
+                                                    </md-option>
+                                                </md-select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <md-input-container class="full-width">
+                                                    <input mdInput placeholder="Name" required [(ngModel)]="xUnfetterSensor.name" value="{{xUnfetterSensor.name}}"
+                                                    />
+                                                </md-input-container>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <md-input-container class="full-width">
+                                                    <textarea mdInput placeholder="Description" [(ngModel)]="xUnfetterSensor.description" value="{{xUnfetterSensor.description}}"></textarea>
+                                                </md-input-container>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <p class="text-right">
+                                                <button md-button (click)="addAssessedObject ? addAssessedObject = false : ''">Cancel</button>
+                                                <button md-button [disabled]="!xUnfetterSensor.name" (click)="xUnfetterSensor.name ? createAssessedObject(xUnfetterSensor, currentAttackPattern) : ''">Save</button>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <!-- End sensor -->
+
+                                </div>
+                            </md-card-content>
+                        </md-card>
+                        <br>
+                    </div>
+
+                    <div *ngFor="let assessedObj of displayedAssessedObjects">
+                        <md-card>
+                            <md-card-title><img src="{{ getStixIcon(assessedObj.stix.type) }}" alt=""> {{ assessedObj.stix.name }}</md-card-title>
+                            <md-card-content>
+                                <span class="text-muted">Risk Accepted &bull;</span>&nbsp;{{ getRisk(assessedObj.stix.id)
+                                | percent:'2.1-1'}}
+                            </md-card-content>
+                            <md-card-content>
+                                {{ assessedObj.stix.description }}
+                            </md-card-content>
+                        </md-card>
+                        <br>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AssessmentsDashboardService } from '../assessments-dashboard/assessments-dashboard.service';
 import { Constance } from '../../utils/constance';
 
+
 @Component({
     selector: 'assessments-group',
     templateUrl: './group.component.html',
@@ -17,6 +18,13 @@ export class AssessmentsGroupComponent implements OnInit {
     private unassessedPhases: String;
     private currentAttackPattern: any;
     private id: String = '';
+    private displayedAssessedObjects: any[];
+    private addAssessedObject: boolean;
+    private addAssessedType: String;
+
+    public indicator: any;
+    public courseOfAction: any;
+    public xUnfetterSensor: any;
 
     constructor(
         private assessmentsDashboardService: AssessmentsDashboardService,
@@ -24,6 +32,7 @@ export class AssessmentsGroupComponent implements OnInit {
     ) { }
 
     public ngOnInit() {
+        this.resetNewAssessmentObjects();
         this.id = this.route.snapshot.params['id'] ? this.route.snapshot.params['id'] : '';
         let routedPhase = this.route.snapshot.params['phase'] ? this.route.snapshot.params['phase'] : '';
         this.assessmentsDashboardService.getRiskByAttackPattern(this.id)
@@ -41,7 +50,6 @@ export class AssessmentsGroupComponent implements OnInit {
             .subscribe(
                 (res) => {
                     this.assessedObjects = res ? res : {};
-                    console.log('Assessed objs\n', this.assessedObjects);
                 },
                 (err) => console.log(err)
             );
@@ -55,6 +63,81 @@ export class AssessmentsGroupComponent implements OnInit {
                 },
                 (err) => console.log(err)
             );
+    }
+
+    resetNewAssessmentObjects() {
+        this.addAssessedObject = false;
+        this.addAssessedType = '';
+        this.indicator = {
+            type: 'indicator',
+            name: '',
+            description: '',
+            pattern: '',
+            questions: [],
+        };
+        this.courseOfAction = {
+            type: 'course-of-action',
+            name: '',
+            description: '',
+            questions: [],
+        };
+        this.xUnfetterSensor = {
+            type: 'x-unfetter-sensor',
+            name: '',
+            description: '',
+            questions: [],
+        };   
+
+        for(let stixType in Constance.MEASUREMENTS) {
+            for (let question in Constance.MEASUREMENTS[stixType]) {
+                switch(stixType) {
+                case 'indicator':
+                    this.indicator.questions.push({
+                        name: question,
+                        risk: 1,
+                        options: this.getOptions(Constance.MEASUREMENTS[stixType][question]),
+                        selected_value: {
+                            name: Constance.MEASUREMENTS[stixType][question][0].name,
+                            risk: 1,
+                        }
+                    });
+                    break;
+                case 'course-of-action':
+                    this.courseOfAction.questions.push({
+                        name: question,
+                        risk: 1,
+                        options: this.getOptions(Constance.MEASUREMENTS[stixType][question]),
+                        selected_value: {
+                            name: Constance.MEASUREMENTS[stixType][question][0].name,
+                            risk: 1,
+                        }
+                    });
+                    break;
+                case 'x-unfetter-sensor':
+                    this.xUnfetterSensor.questions.push({
+                        name: question,
+                        risk: 1,
+                        options: this.getOptions(Constance.MEASUREMENTS[stixType][question]),
+                        selected_value: {
+                            name: Constance.MEASUREMENTS[stixType][question][0].name,
+                            risk: 1,
+                        }
+                    });
+                    break;
+                }
+            }
+        }
+    }
+
+    public getOptions(options) {
+        let retVal = [];
+        options.forEach((label, index) => {
+            let data: any = {};
+            data.name = label;
+            data.risk = 1 - (index / (options.length - 1));
+            retVal.push(data);
+        });
+        return retVal;
     }
 
     public getNumAttackPatterns(phaseName) {
@@ -77,6 +160,7 @@ export class AssessmentsGroupComponent implements OnInit {
     }
 
     public setPhase(phaseName) {
+        this.resetNewAssessmentObjects();
         this.activePhase = phaseName;
         this.setAttackPattern(this.getScores(this.activePhase)[0].attackPatternId);
     }
@@ -86,9 +170,104 @@ export class AssessmentsGroupComponent implements OnInit {
     }
 
     public setAttackPattern(attackPatternId) {
+        // Get attack pattern details
+        this.resetNewAssessmentObjects();
         this.currentAttackPattern = this.riskByAttackPattern.attackPatternsByKillChain
             .find((killChain) => killChain._id === this.activePhase)
             .attackPatterns
             .find((attackPattern) => attackPattern.id === attackPatternId);
+
+        // Get relationships for attack pattern, link to assessed objects
+        this.assessmentsDashboardService.getAttackPatternRelationships(attackPatternId)
+            .subscribe(
+                res => {
+                    let assessmentCanidates = res.map(relationship => relationship.attributes.source_ref);
+                    this.displayedAssessedObjects = this.assessedObjects
+                        .filter(assessedObj => assessmentCanidates.indexOf(assessedObj.stix.id) > -1);
+
+                    console.log(this.displayedAssessedObjects);
+
+                },
+                err => console.log(err)
+            );
+    }
+
+    public getStixIcon(stixType) {
+        let convertedStixType = stixType.replace(/-/g, '_').toUpperCase().concat('_ICON');       
+        if (Constance[convertedStixType] !== undefined) {
+            return Constance[convertedStixType];
+        } else {
+            // Return error icon?
+            return '';
+        }    
+    }
+
+    public getRisk(id) {
+        for (let assessment_object of this.assessment.attributes.assessment_objects) {
+            if (assessment_object.stix.id === id) {
+                return assessment_object.risk;                 
+            }
+        }  
+    }
+
+    public createAssessedObject(newAssessedObject, attackPattern) {
+
+        // Update & save questions for assessment
+        for (let i = 0; i < newAssessedObject.questions.length; i++) {
+            newAssessedObject.questions[i].selected_value.risk = newAssessedObject.questions[i].risk;
+            for (let option of newAssessedObject.questions[i].options) {
+                if (option.risk === newAssessedObject.questions[i].risk) {
+                    newAssessedObject.questions[i].selected_value.name = option.name;
+                }
+            }
+        }
+        let questions = newAssessedObject.questions;
+        delete newAssessedObject.questions;
+        
+        let convertedObj: any = {};
+        for (let prop in newAssessedObject) {
+            if (newAssessedObject[prop]) {
+                convertedObj[prop] = newAssessedObject[prop];
+            }
+        }  
+
+        // Uploaded indicator, COA, or sensor
+        this.assessmentsDashboardService.genericPost(`api/${convertedObj.type}s`, convertedObj)
+            .subscribe(
+                assessedRes => {
+                    let newId = assessedRes[0].attributes.id;   
+
+                    // create relationship
+                    let relationshipObj: any = {type:'relationship'};
+                    switch (newAssessedObject.type) {
+                        case 'x-unfetter-sensor':
+                        case 'course-of-action':
+                            relationshipObj.relationship_type = 'mitigates';
+                            break;
+                        case 'indicator':
+                            relationshipObj.relationship_type = 'indicates';
+                            break;
+                    }
+                    relationshipObj.source_ref = newId;      
+                    relationshipObj.target_ref = attackPattern.id;    
+                    this.assessmentsDashboardService.genericPost(Constance.RELATIONSHIPS_URL, relationshipObj)
+                        .subscribe(
+                            relationshipRes => {
+                                console.log('Relationship uploaded successfully');                                
+                            },
+                            relationshipErr => console.log(relationshipErr)                            
+                        );
+
+                    // update assessment
+                    
+                    
+
+                    
+                }, 
+                assessedErr => console.log(assessedErr)                
+            );        
+
+
+        // TODO uploaded edited assessment           
     }
 }
