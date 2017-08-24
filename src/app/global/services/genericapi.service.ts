@@ -24,9 +24,7 @@ export class GenericApi {
     }
 
     public post(url: string, data: any, type?: string): Observable<Response> {
-        let builtUrl = this.baseUrl + url;        
-        console.log('built url! ',builtUrl, '~~~~', this.baseUrl);
-        
+        let builtUrl = this.baseUrl + url;                
         return this.http.post(builtUrl, data, {headers: this.postHeaders})
             .map(this.extractData)
             .catch(this.handleError);
@@ -34,7 +32,7 @@ export class GenericApi {
 
     public patch(url: string, data: any): Observable<Response> {
         let builtUrl = this.baseUrl + url;
-        return this.http.patch(builtUrl, data)
+        return this.http.patch(builtUrl, data, { headers: this.postHeaders })
             .map(this.extractData)
             .catch(this.handleError);
     }

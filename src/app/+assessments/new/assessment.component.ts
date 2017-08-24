@@ -405,7 +405,7 @@ export class AssessmentComponent extends Measurements implements OnInit {
               temp.stix = {};
               temp.stix.id = assessment.id;
               temp.stix.type = assessment.type;
-              // temp.stix.description = assessment.description || '';
+              temp.stix.description = assessment.description || '';
               temp.stix.name = assessment.name;
 
               temp.questions = [];
