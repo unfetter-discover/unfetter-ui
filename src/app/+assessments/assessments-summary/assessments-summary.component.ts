@@ -16,6 +16,7 @@ import { AttackPattern } from "../../models/attack-pattern";
 export class AssessmentsSummaryComponent implements OnInit {
     public assessedObjects: any;
     public summary: any;
+    public summaryDate: Date;
     public id: string;
     public phaseNameGroups: any[];
     // public attackKillChains: any[];
@@ -177,6 +178,8 @@ export class AssessmentsSummaryComponent implements OnInit {
                     this.totalRiskValue = this.assessmentsCalculationService.formatRisk(risk);
                     this.riskLabelClass = risk > this.riskLevel ? 'label-warning' : 'label-default';
                 }
+
+                this.summaryDate = new Date(this.summary.attributes.modified);
             },
             (err) => console.log(err),
             () => getById$.unsubscribe()
