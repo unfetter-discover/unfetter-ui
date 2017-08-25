@@ -1,7 +1,7 @@
 <div class="container" *ngIf="summary && weakestAttackPatterns; else loadingBlock">
     <ol class="breadcrumb">
         <li><a href="#/assessments">Assessments</a></li>
-        <li class="active">{{summary?.attributes.name || 'No summary found!'}} ({{summary?.attributes.modified}})</li>
+        <li class="active">{{summary?.attributes.name || 'No summary found!'}} <span *ngIf="summaryDate">({{ summaryDate | date:'dd/MM/yyyy'}})</span></li>
     </ol>
 
     <div *ngIf="!summary"> 
@@ -50,11 +50,11 @@
                             </thead>
                             <tbody>
                                 <tr *ngFor="let risk of sortedRisks">
-                                  <td>{{risk.phaseName}}</td>
+                                  <td>{{ risk.phaseName | capitalize }}</td>
                                   <td *ngIf="risk.objects; else noObjectsDiv">
                                     <ul>
                                         <li *ngFor="let obj of risk.objects">
-                                            <a href="cti-stix-ui/course-of-actions/{{obj.id}}">{{obj.name}}</a>
+                                            <a href="#stix/{{obj.type}}s/{{obj.id}}">{{obj.name}}</a>
                                         </li>
                                     </ul>
                                   </td>
