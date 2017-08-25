@@ -40,7 +40,7 @@
                 <hr>
 
                 <div *ngFor="let phase of riskByAttackPattern.phases">
-                    <phase-list [phase]="phase" [numAttackPatterns]="getNumAttackPatterns(phase._id)" [assessmentId]="assessment.id" [questions]="getQuestions(phase)"
+                    <phase-list [phase]="phase" [numAttackPatterns]="getNumAttackPatterns(phase._id)" 
                         [riskBreakdown]="riskBreakdown[phase._id]"></phase-list>
                 </div>
                 <p *ngIf="unassessedPhases && unassessedPhases.length">
