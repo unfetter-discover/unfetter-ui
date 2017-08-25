@@ -12,6 +12,7 @@ export class PhaseListComponent implements OnInit {
 
     @Input('phase') public phase: any;
     @Input('numAttackPatterns') public numAttackPatterns: any;
+    @Input('assessmentId') public assessmentId: any;
     @Input('riskBreakdown') public riskBreakdown: any;
 
     private totalRisk: number = 1;

@@ -41,8 +41,8 @@ export class AssessmentsGroupComponent implements OnInit {
                 (res) => {
                     this.riskByAttackPattern = res ? res : {};
                     this.populateUnassessedPhases();
-                    this.activePhase = routedPhase ? routedPhase : this.riskByAttackPattern.phases[0]._id;
-                    this.setAttackPattern(this.getScores(this.activePhase)[0].attackPatternId);
+                    this.activePhase = routedPhase ? routedPhase : this.riskByAttackPattern.phases[0]._id;                    
+                    this.setAttackPattern(this.getAttackPatternsByPhase(this.activePhase)[0].attackPatternId);
                 },
                 (err) => console.log(err)
             );
@@ -161,25 +161,54 @@ export class AssessmentsGroupComponent implements OnInit {
     public setPhase(phaseName) {
         this.resetNewAssessmentObjects();
         this.activePhase = phaseName;
-        this.getScores(this.activePhase).length > 0 ? this.setAttackPattern(this.getScores(this.activePhase)[0].attackPatternId) : '';
+        this.getAttackPatternsByPhase(this.activePhase).length > 0 ? this.setAttackPattern(this.getAttackPatternsByPhase(this.activePhase)[0].attackPatternId) : '';
     }
 
-    public getScores(phaseName) {        
-        return this.riskByAttackPattern.phases.find((phase) => phase._id === phaseName) ? this.riskByAttackPattern.phases.find((phase) => phase._id === phaseName).scores : [];
+    public getAttackPatternsByPhase(phaseName) {        
+        return this.riskByAttackPattern.phases.find((phase) => phase._id === phaseName) ? this.riskByAttackPattern.phases.find((phase) => phase._id === phaseName).attackPatterns : [];
+    }
+
+    public getRiskByAttackPatternId(attackPatternId) {
+        for (let ap of this.riskByAttackPattern.assessedByAttackPattern) {
+            if(ap._id === attackPatternId) {
+                return ap.risk;
+            }
+        }
+        return 1;
+    }
+
+    public getRiskByPhase(phaseName) {
+        let phaseObj = this.riskByAttackPattern.phases.find((phase) => phase._id === phaseName);
+        if (phaseObj) {
+            let sum = 0, count = 0;
+            for (let ao of phaseObj.assessedObjects) {
+                sum += ao.risk;
+                count++;
+            }            
+            return sum / count;
+        } else {
+            return 1;
+        }
     }
 
     public setAttackPattern(attackPatternId) {
+        this.resetNewAssessmentObjects();  
+
         // Get attack pattern details
-        this.resetNewAssessmentObjects();
-        this.currentAttackPattern = this.riskByAttackPattern.attackPatternsByKillChain
-            .find((killChain) => killChain._id === this.activePhase)
-            .attackPatterns
-            .find((attackPattern) => attackPattern.id === attackPatternId);
+        this.assessmentsDashboardService.genericGet(`${Constance.ATTACK_PATTERN_URL}/${attackPatternId}`)
+            .subscribe(
+            res => {                
+                let dat: any = res;
+                this.currentAttackPattern = dat.attributes;
+            },
+                err => console.log(err)
+            );
+        
 
         // Get relationships for attack pattern, link to assessed objects
         this.assessmentsDashboardService.getAttackPatternRelationships(attackPatternId)
             .subscribe(
-                res => {
+                res => {                    
                     let assessmentCanidates = res.map(relationship => relationship.attributes.source_ref);
                     this.displayedAssessedObjects = this.assessedObjects
                         .filter(assessedObj => assessmentCanidates.indexOf(assessedObj.stix.id) > -1)
@@ -195,8 +224,8 @@ export class AssessmentsGroupComponent implements OnInit {
             );
 
         // Get unassessed attack patterns
-        let assessedAps = this.getScores(this.activePhase)
-            .map(score => score.attackPatternId);
+        let assessedAps = this.getAttackPatternsByPhase(this.activePhase)
+            .map(ap => ap.attackPatternId);
         
         let query = { 'stix.kill_chain_phases.phase_name': this.activePhase };
         this.assessmentsDashboardService.genericGet(`${Constance.ATTACK_PATTERN_URL}?filter=${encodeURI(JSON.stringify(query))}`)

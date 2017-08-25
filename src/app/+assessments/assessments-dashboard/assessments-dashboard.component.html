@@ -41,7 +41,7 @@
 
                 <div *ngFor="let phase of riskByAttackPattern.phases">
                     <phase-list [phase]="phase" [numAttackPatterns]="getNumAttackPatterns(phase._id)" 
-                        [riskBreakdown]="riskBreakdown[phase._id]"></phase-list>
+                        [riskBreakdown]="riskBreakdown[phase._id]" [assessmentId]="assessment.id"></phase-list>
                 </div>
                 <p *ngIf="unassessedPhases && unassessedPhases.length">
                     <small>Unassessed Kill Chain Phases: {{ unassessedPhases | capitalize }}</small>
