@@ -101,6 +101,17 @@ export class IntrusionSetDashboardComponent implements OnInit {
         );
   }
 
+  public count(attack_patterns: any): number {
+    let count = 0;
+    attack_patterns.forEach(
+      (attack_pattern) => {
+        if ( attack_pattern.back !== '#FFFFFF') {
+            count = count + 1;
+        }
+      }
+    )
+    return count;
+  }
   private buildTreeData(): void {
       const root = {name: '', type: 'root', children: []};
       this.intrusionSetsDashboard['intrusionSets'].forEach(
