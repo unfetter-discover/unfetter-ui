@@ -40,6 +40,7 @@ export class AssessmentComponent extends Measurements implements OnInit {
   public saved: boolean = false;
   public publishDate: Date = new Date();
   public buttonLabel = 'Next';
+  public navigations = [];
   public doughnutChartLabels: string[] = ['Risk Accepted', 'Risk Addressed'];
   public doughnutChartData: any[] = [
     {
@@ -88,10 +89,10 @@ export class AssessmentComponent extends Measurements implements OnInit {
   public assessmentName: String = '';
   public currentAssessmentGroup: any = {};
   public selectedRisk = '1';
+  public page = 1;
   private assessments: any = [];
   private killChains: any = [];
   private assessmentGroups: any;
-  private page = 1;
   private defaultMeasurement = 'Nothing';
   private url: string;
 
@@ -107,7 +108,6 @@ export class AssessmentComponent extends Measurements implements OnInit {
   public ngOnInit() {
     let type = this.route.snapshot.paramMap.get('type');
     let id = this.route.snapshot.paramMap.get('id');
-
     switch (type) {
         case 'indicator' : {
           this.url = Constance.INDICATOR_URL;
@@ -129,11 +129,12 @@ export class AssessmentComponent extends Measurements implements OnInit {
           this.genericApi.get(this.url, id).subscribe(
             (data) => {
               this.model = data;
-
+              // console.log('this.model')
+              // console.dir(this.model)
               this.selectedRiskValue = null;
-              this.calculateGroupRisk();
+              // this.calculateGroupRisk();
               this.updateChart();
-               console.dir(this.model)
+
             }
           );
         }
@@ -143,7 +144,8 @@ export class AssessmentComponent extends Measurements implements OnInit {
 
   public set selectedRiskValue(measurement: any) {
       if (this.model) {
-         console.dir(this.currentAssessmentGroup.assessments)
+        // console.log('this.currentAssessmentGroup.assessments')
+        // console.dir(this.currentAssessmentGroup.assessments)
         this.currentAssessmentGroup.assessments.forEach(
           (assessment) => {
             let assessment_object = this.model.attributes.assessment_objects.find(
@@ -151,18 +153,21 @@ export class AssessmentComponent extends Measurements implements OnInit {
                   return assessment.id === assessment_object.stix.id;
                 }
             );
-             assessment.risk  = assessment_object.risk;
-             console.dir(assessment_object)
+            assessment.risk  = assessment_object.risk;
+            // console.log('assessment_object from model')
+            // console.dir(assessment_object)
             assessment.measurements.forEach(
               (m) => {
                 let question = assessment_object.questions.find((q) => { return q.name === m.name});
-                console.dir(question)
-                m.risk = question.selected_value.risk
+                // console.log('update risk currentAssessmentGroup.assessment')
+                // console.dir(question)
+                m.risk = assessment_object.risk; // question.selected_value.risk
               }
 
             );
           }
         );
+        this.calculateGroupRisk();
       }
   }
 
@@ -194,23 +199,23 @@ export class AssessmentComponent extends Measurements implements OnInit {
       let assessments: any = [];
       assessedObjects.forEach(
           (assessedObject) => {
-        let assessment: any = {};
-        assessment.version = '1';
-        assessment.modified = new Date();
-        assessment.created = new Date();
+              let assessment: any = {};
+              assessment.version = '1';
+              assessment.modified = new Date();
+              assessment.created = new Date();
 
-        assessment.measurements = [];
-        assessment.kill_chain_phases =
-          assessedObject.attributes.kill_chain_phases;
-        assessment.id = assessedObject.id;
-        assessment.name = assessedObject.attributes.name;
-        assessment.description = assessedObject.attributes.description;
-        assessment.measurements = this.buildMeasurements(assessedObject.id);
-        assessment.type = assessedObject.type;
+              assessment.measurements = [];
+              assessment.kill_chain_phases =
+                assessedObject.attributes.kill_chain_phases;
+              assessment.id = assessedObject.id;
+              assessment.name = assessedObject.attributes.name;
+              assessment.description = assessedObject.attributes.description;
+              assessment.measurements = this.buildMeasurements(assessedObject.id);
+              assessment.type = assessedObject.type;
 
-        let risk = this.getRisk(assessment.measurements);
-        assessment.risk = risk;
-        assessments.push(assessment);
+              let risk = this.getRisk(assessment.measurements);
+              assessment.risk = risk;
+              assessments.push(assessment);
       });
       // We do this so we can just save all the assessments later.
       this.assessments = assessments;
@@ -220,13 +225,15 @@ export class AssessmentComponent extends Measurements implements OnInit {
       let keys = Object.keys(assessmentObjectsGroups);
       keys = keys.sort();
       keys.forEach(
-          (phaseName) => {
+          (phaseName, index) => {
         // TODO - Need to remove the 'courseOfAction' name
         let courseOfActionGroup = assessmentObjectsGroups[phaseName];
 
         // This is the x-unfetter-control-assessments
         let assessmentGroup: any = {};
         assessmentGroup.name = phaseName;
+        let step = (index+1);
+        this.navigations.push({label: this.splitTitle(phaseName), page: step})
         // TODO: Need to get description somehow from the key phase information
         assessmentGroup.description = this.killChains[phaseName];
         assessmentGroup.assessments = courseOfActionGroup;
@@ -239,6 +246,8 @@ export class AssessmentComponent extends Measurements implements OnInit {
         assessmentGroups.push(assessmentGroup);
       });
     }
+    let laststep = (this.navigations.length + 1);
+    this.navigations.push({label: 'Summary', page: laststep });
     return assessmentGroups;
   }
 
@@ -318,22 +327,33 @@ export class AssessmentComponent extends Measurements implements OnInit {
 
   private updateRisks(option: any, measurement: any, assessment: any): void {
     // console.dir(option)
-    assessment.risk = option.selected.value.risk;
+    // console.log('option.selected.value.risk ' + option.selected.value)
+    assessment.risk = option.selected.value;
     let groupRisk = this.calculateGroupRisk();
+    // console.log('groupRisk ' + groupRisk)
     if (this.model) {
         let assessment_object = this.model.attributes.assessment_objects.find(
           (assessment_object) => { return assessment.id === assessment_object.stix.id; }
         );
 
         assessment_object.risk = groupRisk;
-        console.log('groupRisk ' + groupRisk)
-        let question = assessment_object.questions.find((q) => { console.log(' q.name ' +  q.name); return q.name === measurement.name});
-         // console.dir(question)
+        let question = assessment_object.questions.find((q) => { return q.name === measurement.name});
+        // console.dir(question)
         question.risk = option.selected.value.risk;
         question.selected_value = option.selected.value
         // console.dir(question)
     }
     this.updateChart();
+  }
+
+  private navigationClicked(step: number): void {
+      if (step > this.page) {
+        this.page = step - 1;
+        this.next();
+      } else if (step < this.page) {
+        this.page = step + 1;
+        this.back();
+      }
   }
 
   private back(): void {
@@ -359,7 +379,8 @@ export class AssessmentComponent extends Measurements implements OnInit {
     if (this.buttonLabel === 'Save') {
       this.saveAssessments();
     } else {
-      if (this.page + 1 >= this.assessmentGroups.length) {
+      if ((this.page + 1) > this.assessmentGroups.length) {
+        this.page = this.page + 1;
         this.pageTitle = ' Assessment Summary';
         this.currentAssessmentGroup = null;
         this.showSummarry = true;
@@ -378,8 +399,8 @@ export class AssessmentComponent extends Measurements implements OnInit {
     }
   }
 
-  private splitTitle(): string {
-    let split = this.currentAssessmentGroup.name.split('-');
+  private splitTitle(title?: string): string {
+    let split = title? title.split('-') : this.currentAssessmentGroup.name.split('-');
     for (let i = 0; i < split.length; i++) {
       let s = split[i];
       s = s.charAt(0).toUpperCase() + s.slice(1);

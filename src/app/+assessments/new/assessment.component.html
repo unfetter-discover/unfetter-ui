@@ -1,3 +1,13 @@
+<div id="stixHome" class="container">
+    <h2>Assessments</h2>
+
+    <ul class="nav nav-pills">
+        <li *ngFor="let navigation of navigations" [class.active]="navigation.page === page">
+            <a (click)="navigationClicked(navigation.page)">{{navigation.label}}</a>
+        </li>
+    </ul>
+</div>
+
 <page-header [pageTitle]="pageTitle"  [pageIcon]="pageIcon" [description]="description"></page-header>
 <div class="row">
     <div class="col-xs-12">
