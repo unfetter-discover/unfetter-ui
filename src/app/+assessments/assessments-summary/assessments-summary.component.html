@@ -1,0 +1,90 @@
+<div class="container" *ngIf="summary && weakestAttackPatterns; else loadingBlock">
+    <br>
+    <ol class="breadcrumb">
+        <li><a href="#/assessments">Assessments</a></li>
+        <li class="active">{{summary?.attributes.name || 'No summary found!'}} <span *ngIf="summaryDate">({{ summaryDate | date:'dd/MM/yyyy'}})</span></li>
+    </ol>
+
+    <div *ngIf="!summary"> 
+        <h3>
+            No summary found! ID: {{id}} 
+        </h3>
+    </div>
+    
+    <div *ngIf="summary">
+        <h3 class="page-header">Good news! You've reduced your risk already, but we can improve some areas of your defense.</h3>
+
+        <div class="row">
+            <div class="col-md-6 weakestChain">
+                <h3>Assessment Report Overview</h3>
+                <div class="col-md2">
+                    <span>Overall Implementation Risk <span class="label {{riskLabelClass}}">{{totalRiskValue}}%</span></span> 
+                    CHART
+                </div>
+
+                <div>
+                    <h3>Weaknesses</h3>
+                    <div>
+                        <ul *ngIf="weakestAttackPatterns && weakestAttackPatterns.length > 0; else noWeakestAttackPatterns">
+                            <li *ngFor="let attackPattern of weakestAttackPatterns">
+                                {{attackPattern.description}}
+                            </li>
+                        </ul>
+                        <ng-template #noWeakestAttackPatterns>
+                            No Weaknesses found? Either we messed up or you are good!
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div>
+                    <div class="panel panel-default topN">
+                        <div class="panel-heading">
+                            <h3>Where you are most vulnerable</h3>
+                        </div>
+
+                        <table class="table">
+                            <thead>
+                                <th>KILL CHAIN EFFECTED</th>
+                                <th>ASSESSED ITEM</th>
+                                <th>RISK</th>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let risk of sortedRisks">
+                                  <td>{{ risk.phaseName | capitalize }}</td>
+                                  <td *ngIf="risk.objects; else noObjectsDiv">
+                                    <ul>
+                                        <li *ngFor="let obj of risk.objects">
+                                            <a href="#stix/{{obj.type}}s/{{obj.id}}">{{obj.name}}</a>
+                                        </li>
+                                    </ul>
+                                  </td>
+                                <ng-template #noObjectsDiv>
+                                    No objects found!
+                                </ng-template>
+                                  <td><span class="label label-warning">{{calculateRisk(risk.objects)}}</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                </div>            
+            </div>
+        </div>
+
+        <hr>
+        <br/>
+        <br/>
+        <div class="row">
+            <span>
+                {{summary.attributes.description}}
+            </span>
+        </div>
+
+    </div>
+</div>
+
+<ng-template #loadingBlock>
+    <div class="container loading">
+        <md-spinner></md-spinner><span class="loading-text">Loading...</span>
+    </div>
+</ng-template>

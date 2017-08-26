@@ -5,9 +5,9 @@
             <h5>Create Assessment</h5>
         </div>
         <div class="col-xs-12">
-            <a md-raised-button routerLink="assessment/indicator">Assess Indicators</a>
-            <a md-raised-button routerLink="assessment/mitigation">Assess Mitigations</a>
-            <a md-raised-button routerLink="assessment/sensor">Assess Sensors</a>
+            <a md-raised-button routerLink="assessment/indicator" class="mat-primary">Assess Indicators</a>
+            <a md-raised-button routerLink="assessment/mitigation" class="mat-primary">Assess Mitigations</a>
+            <a md-raised-button routerLink="assessment/sensor" class="mat-primary">Assess Sensors</a>
             <div class="pull-right">
                 <span class="right-align">Results: {{assessments.length}}</span>
             </div>
@@ -24,20 +24,25 @@
         <div class="col-xs-12">
             <md-card class="margin-top" *ngFor="let assessment of assessments">
                 <div class="row">
-                    <div class="col-xs-7">
-                        <a routerLink="dashboard/{{assessment.id}}">{{assessment.attributes.name}}</a>
+                    <div class="col-xs-12 flex itemsCenter">
+                        <span>
+                            <a routerLink="dashboard/{{assessment.id}}">{{assessment.attributes.name}}</a><br>
+                            <small class="text-muted">{{ assessment.attributes.created  | date:'medium'}}</small>
+                        </span>
+                        <span class="flex1"></span>
+                        <span class="text-right buttonGrp">
+                            <button md-button routerLink="summary/{{assessment.id}}" class="mat-accent">
+                                <i class="material-icons">assessment</i>
+                            </button>
+                                <button md-button (click)="edit(assessment)" class="mat-primary">
+                                <i class="material-icons">create</i>
+                            </button>
+                                <button md-button (click)="delete(assessment)" class="mat-warn">
+                                <i class="material-icons">delete</i>
+                            </button>
+                        </span>
                     </div>
-                    <div class="col-xs-5 text-right buttonGrp">
-                        <button md-button (click)="edit(assessment)" class="mat-accent">
-                            <i class="material-icons">assessment</i>
-                        </button>
-                        <button md-button (click)="edit(assessment)" class="mat-primary">
-                            <i class="material-icons">create</i>
-                        </button>
-                        <button md-button (click)="delete(assessment)" class="mat-warn">
-                            <i class="material-icons">delete</i>
-                        </button>
-                    </div>
+
                 </div>
             </md-card>
         </div>

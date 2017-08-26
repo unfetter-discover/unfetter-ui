@@ -1,0 +1,17 @@
+# docker compose file to only start up the new UI
+version: '2'
+services:
+  unfetter-ui:
+    build: ../unfetter-ui
+    image: unfetter-ui
+    volumes:
+    - ./certs/:/etc/pki/tls/certs
+    - ../unfetter-ui/src:/usr/share/unfetter-ui/src
+    - ../unfetter-ui/dist:/usr/share/unfetter-ui/dist
+    - ../unfetter-ui/config:/usr/share/unfetter-ui/config
+    ports:
+    - "443:80"
+    entrypoint:
+    - npm
+    - run
+    - server:dev:alt
