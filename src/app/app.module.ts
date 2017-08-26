@@ -32,6 +32,7 @@ import { ConceptMapComponent } from './intrusion-set-dashboard/concept-map.compo
 import { CollapsibleTreeComponent } from './intrusion-set-dashboard/collapsible-tree.component';
 import { AccordionModule } from 'primeng/components/accordion/accordion';
 import { AssessmentsModule } from './+assessments/assessments.module';
+import { GlobalModule } from './global/global.module';
 
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process
@@ -42,7 +43,6 @@ import { AssessmentsModule } from './+assessments/assessments.module';
     AppComponent,
     HomeComponent,
     IntrusionSetDashboardComponent,
-    // ConceptMapComponent,
     CollapsibleTreeComponent,
     PartnersComponent,
     NoContentComponent,
@@ -62,6 +62,7 @@ import { AssessmentsModule } from './+assessments/assessments.module';
     ProgressBarModule,
     MdCardModule,
     ComponentModule,
+    GlobalModule,
     StixModule,
     // InMemoryWebApiModule.forRoot(InMemoryDataService),
      AppRoutingModule,
