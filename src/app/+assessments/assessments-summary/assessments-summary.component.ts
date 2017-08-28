@@ -8,6 +8,7 @@ import { Risk } from './risk';
 import { AverageRisk } from './average-risk';
 import { AttackPattern } from '../../models/attack-pattern';
 import { AssessmentChartComponent } from './assessment-chart/assessment-chart.component';
+import { ThresholdOption } from './threshold-option';
 
 @Component({
     selector: 'assessments-summary',
@@ -21,7 +22,6 @@ export class AssessmentsSummaryComponent implements OnInit {
     public selectedRisk: number = 0;
     public id: string;
     public phaseNameGroups: any[];
-    // public attackKillChains: any[];
     public model: any;
     public totalRiskValue: string;
     public riskLabelClass = 'label-info';
@@ -236,7 +236,9 @@ export class AssessmentsSummaryComponent implements OnInit {
     }
 
     public redrawCharts(): void {
-        console.log('request to redraw charts with threshold', this.selectedRisk);
+        console.log('request to redraw charts with threshold', this.selectedRisk, this.thresholdOptions);
+        // need to set this now, this change method doesnt seem to propogate the new value to the child until after this method
+        this.chartOne.riskThreshold = this.selectedRisk;
         this.chartOne.renderChart();
     }
 
@@ -259,9 +261,3 @@ export class AssessmentsSummaryComponent implements OnInit {
     }
 
 }
-
-
-interface ThresholdOption {
-    name: string;
-    risk: number;
-};

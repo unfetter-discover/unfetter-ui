@@ -24,18 +24,19 @@ export class AssessmentChartComponent implements OnInit {
     public riskThreshold: number;
     public readonly riskThresholdDefault = 0.0;
 
+    @Input()
+    public riskLabelOptions;
+
     public barChartOptions: any = {
         scaleShowVerticalLines: false,
         responsive: true,
-        options: {
-            scales: {
-                xAxes: [{
-                    stacked: true
-                }],
-                yAxes: [{
-                    stacked: true
-                }]
-            }
+        scales: {
+            xAxes: [{
+                stacked: true
+            }],
+            yAxes: [{
+                stacked: true
+            }]
         }
     };
 
@@ -43,8 +44,8 @@ export class AssessmentChartComponent implements OnInit {
     public barChartType: string = 'bar';
 
     public barChartData: any[] = [
-        { data: [], label: 'Below the policy' },
-        { data: [], label: 'At policy or better' }
+        { data: [], label: '' },
+        { data: [], label: '' }
     ];
 
     protected readonly rootLabelRegex = /(\w+\s+\d+).(\d+)*/;
@@ -57,7 +58,6 @@ export class AssessmentChartComponent implements OnInit {
         this.showLabels = this.showLabels || this.showLabelsDefault;
         this.showLegand = this.showLegand || this.showLegandDefault;
         this.riskThreshold = this.riskThreshold || this.riskThresholdDefault;
-
         this.renderChart();
     }
 
@@ -66,11 +66,12 @@ export class AssessmentChartComponent implements OnInit {
      *  renders the chart components, based on applied threshold
      */
     public renderChart(): void {
+        this.renderLabels();
+
         const rootLabelGrouping = {};
         let firstQuestion;
         this.assessmentObjects
             .forEach((el) => {
-                console.log('assessment objects, render chart', el);
                 const fullLabel = el.stix.name;
                 const label = this.parseToRootLabel(el.stix.name);
                 const data: number[] = [];
@@ -129,6 +130,15 @@ export class AssessmentChartComponent implements OnInit {
         console.log(this.barChartData);
         // build labels based on root label
         this.barChartLabels = this.showLabels ? Array.from(uniqGroups.keys()) : [];
+    }
+
+    public renderLabels(): void {
+        if (this.riskLabelOptions) {
+            const option = this.riskLabelOptions.find((opt) => opt.risk === this.riskThreshold);
+            const name = option.name;
+            this.barChartData[0].label = 'Below ' + name;
+            this.barChartData[1].label = 'At Or Above ' + name;
+        }
     }
 
     // events
