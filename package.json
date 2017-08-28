@@ -39,6 +39,7 @@
     "rimraf": "rimraf",
     "server:dev:hmr": "npm run server:dev -- --inline --hot",
     "server:dev": "webpack-dev-server --config config/webpack.dev.js --open --progress --profile --watch --content-base src/",
+    "server:local:dev": "export HOST='localhost'; export PORT=9443 && webpack-dev-server --config config/webpack.dev.local.js --open --progress --profile --watch --content-base src/",
     "server:dev:alt": "webpack-dev-server --config config/webpack.dev.js --public=0.0.0.0:443 --hot --content-base src/",
     "//": "--public:0.0.0.0:443 in the server:dev:alt line fixes the sockjs-node network errors when running webpack-dev-server",
     "server:prod": "http-server dist -p 80 --ssl --cert /etc/pki/tls/certs/server.crt --key /etc/pki/tls/certs/server.key -c-1 --cors",
