@@ -90,9 +90,11 @@
                 </div>                 
             </div>
             <div class="col-md-6">
-                <assessment-chart #chartOne
-                    [riskThreshold]="selectedRisk"            
-                    [assessmentObjects]="summary.attributes.assessment_objects"></assessment-chart>
+                <div class="panel panel-default">
+                    <assessment-chart #chartOne
+                        [riskThreshold]="selectedRisk"
+                        [riskLabelOptions]="thresholdOptions"      
+                        [assessmentObjects]="summary.attributes.assessment_objects"></assessment-chart>
             </div>
         </div>
         

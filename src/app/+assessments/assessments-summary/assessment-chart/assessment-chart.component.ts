@@ -24,27 +24,28 @@ export class AssessmentChartComponent implements OnInit {
     public riskThreshold: number;
     public readonly riskThresholdDefault = 0.0;
 
+    @Input()
+    public riskLabelOptions;
+
     public barChartOptions: any = {
         scaleShowVerticalLines: false,
         responsive: true,
-        options: {
-            scales: {
-                xAxes: [{
-                    stacked: true
-                }],
-                yAxes: [{
-                    stacked: true
-                }]
-            }
+        scales: {
+            xAxes: [{
+                stacked: true
+            }],
+            yAxes: [{
+                stacked: true
+            }]
         }
     };
 
-    public barChartLabels: string[] = [ ];
+    public barChartLabels: string[] = [];
     public barChartType: string = 'bar';
 
     public barChartData: any[] = [
-        { data: [], label: 'Below the policy' },
-        { data: [], label: 'At policy or better' }
+        { data: [], label: '' },
+        { data: [], label: '' }
     ];
 
     protected readonly rootLabelRegex = /(\w+\s+\d+).(\d+)*/;
@@ -57,7 +58,6 @@ export class AssessmentChartComponent implements OnInit {
         this.showLabels = this.showLabels || this.showLabelsDefault;
         this.showLegand = this.showLegand || this.showLegandDefault;
         this.riskThreshold = this.riskThreshold || this.riskThresholdDefault;
-
         this.renderChart();
     }
 
@@ -66,25 +66,26 @@ export class AssessmentChartComponent implements OnInit {
      *  renders the chart components, based on applied threshold
      */
     public renderChart(): void {
+        this.renderLabels();
+
         const rootLabelGrouping = {};
         let firstQuestion;
         this.assessmentObjects
             .forEach((el) => {
-                console.log('assessment objects, render chart', el);
                 const fullLabel = el.stix.name;
                 const label = this.parseToRootLabel(el.stix.name);
                 const data: number[] = [];
                 let risk;
 
                 const questions = el.questions;
-                const policy = questions.find((q) => q.name === 'policy');
+                const question = questions[0];
 
-                if (!policy) {
+                if (!question) {
                     console.log('missing policy question!  moving on...');
                     return;
                 }
 
-                risk = policy.risk;
+                risk = question.risk;
                 const obj = {
                     label,
                     fullLabel,
@@ -96,7 +97,7 @@ export class AssessmentChartComponent implements OnInit {
                 if (arr) {
                     arr.push(obj);
                 } else {
-                    rootLabelGrouping[label] =  [ obj ];
+                    rootLabelGrouping[label] = [obj];
                 }
             });
 
@@ -131,6 +132,15 @@ export class AssessmentChartComponent implements OnInit {
         this.barChartLabels = this.showLabels ? Array.from(uniqGroups.keys()) : [];
     }
 
+    public renderLabels(): void {
+        if (this.riskLabelOptions) {
+            const option = this.riskLabelOptions.find((opt) => opt.risk === this.riskThreshold);
+            const name = option.name;
+            this.barChartData[0].label = 'Below ' + name;
+            this.barChartData[1].label = 'At Or Above ' + name;
+        }
+    }
+
     // events
     public chartClicked(e: any): void {
         console.log(e);
@@ -147,7 +157,6 @@ export class AssessmentChartComponent implements OnInit {
      * @returns {string}
      */
     protected parseToRootLabel(label: string): string {
-        // this.rootLabelRegex
         const arr = this.rootLabelRegex.exec(label);
         return (arr && arr.length > 1) ? arr[1] : label;
     }
