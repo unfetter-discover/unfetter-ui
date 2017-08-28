@@ -43,9 +43,19 @@
                     <phase-list [phase]="phase" [numAttackPatterns]="getNumAttackPatterns(phase._id)" 
                         [riskBreakdown]="riskBreakdown[phase._id]" [assessmentId]="assessment.id"></phase-list>
                 </div>
-                <p *ngIf="unassessedPhases && unassessedPhases.length">
+                <!--<p *ngIf="unassessedPhases && unassessedPhases.length">
                     <small>Unassessed Kill Chain Phases: {{ unassessedPhases | capitalize }}</small>
-                </p>
+                </p>-->
+                <div *ngIf="unassessedPhases && unassessedPhases.length > 0">
+                    <hr>
+                    <h5 class="text-muted">
+                        <small>Unassessed Kill Chain Phases</small>
+                    </h5>
+                    <div class="attackPatternListItem" *ngFor="let unassessedPhase of unassessedPhases">         
+                        <small>{{unassessedPhase | capitalize }}</small>
+                        <!--<small><a routerLink="/assessments/group/{{assessment.id}}/{{unassessedPhase}}">{{unassessedPhase | capitalize }}</a></small>-->
+                    </div>
+                </div>
             </div>
 
             <div class="col-md-4" *ngIf="doughnutChartData[0].data && doughnutChartData[0].data.length == 2">

@@ -55,7 +55,7 @@ export class AssessmentsDashboardComponent implements OnInit {
 
     private assessment: any;
     private riskByAttackPattern: any;
-    private unassessedPhases: String;
+    private unassessedPhases: any[];
     private riskBreakdown: any;
     private processingComplete: boolean = false;
 
@@ -110,39 +110,7 @@ export class AssessmentsDashboardComponent implements OnInit {
                         riskTree[phase._id][question.name].push(question.risk);
                     });
                 });
-
-
-
-                // phase.attackPatterns.forEach(attackPattern => {
-
-                //     let questions: any = assessedByAttackPattern
-                //         .find(ap => ap._id === attackPattern.attackPatternId);
-
-                //     if(questions) {
-                //         questions = questions.assessedObjects.map(ao => ao.questions);
-                //         console.log(questions);
-                //         questions.forEach(question => {
-                            // if (riskTree[phase._id][question.name] === undefined) {
-                            //     riskTree[phase._id][question.name] = [];
-                            // }
-                            // riskTree[phase._id][question.name].push(question.risk);
-                //         });
-                        
-                //     }                   
-                                        
-                // });
-
-                // phase.scores.forEach(score => {
-                    // score.questions.forEach(question => {
-                    //     if (riskTree[phase._id][question.name] === undefined) {
-                    //         riskTree[phase._id][question.name] = [];
-                    //     }
-                    //     riskTree[phase._id][question.name].push(question.risk);
-                    // });
-                // });
-            });
-
-            console.log(riskTree);          
+            });       
             
 
             // Calcuate average risk per question
@@ -185,18 +153,8 @@ export class AssessmentsDashboardComponent implements OnInit {
                 totalRisk += riskBreakdownAvg[question];
             }
 
-            this.doughnutChartData[0].data = [totalRisk, 1 - totalRisk];
-
-            console.log(riskBreakdownTemp);
-            console.log(riskBreakdownAvg);
-            
-            
-
-            
-
-      
-            
-            
+            this.doughnutChartData[0].data = [totalRisk, 1 - totalRisk];    
+                    
 
             // Setup riskBreakdownChart & calculate average risk per question regardless of phase            
             // let count;
@@ -241,12 +199,6 @@ export class AssessmentsDashboardComponent implements OnInit {
     public populateUnassessedPhases() {
         let assessedPhases = this.riskByAttackPattern.phases.map((phase) => phase._id);
         this.unassessedPhases = Constance.KILL_CHAIN_PHASES
-            .filter((phase) => assessedPhases.indexOf(phase) < 0)
-            .reduce((prev, phase) => prev.concat(', '.concat(phase)), '')
-            .slice(2);
-    }
-
-    public getQuestions(phaseName) {
-        return 'stub';
+            .filter((phase) => assessedPhases.indexOf(phase) < 0);
     }
 }

@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col-xs-8">
             <h4>
-                <img class="stix-icon" src="assets/icon/stix-icons/svg/report-b.svg"> &nbsp;Assessment: {{ assessment.name}}
+                <img class="stix-icon" src="assets/icon/stix-icons/svg/report-b.svg"> &nbsp;Assessment: {{ assessment.attributes.name}}
             </h4>
         </div>
         <div class="col-xs-4 text-right">
@@ -48,10 +48,13 @@
         <div class="col-sm-3">
             <h4>Attack Patterns</h4>
             <h4 class="text-muted">Phase:&nbsp;{{ activePhase | capitalize }}</h4>
-            <div *ngFor="let ap of getAttackPatternsByPhase(activePhase)" class="attackPatternListItem">
-                <risk-icon [risk]="getRiskByAttackPatternId(ap.attackPatternId)" [showTooltip]="true"></risk-icon>&nbsp;
-                <a (click)="setAttackPattern(ap.attackPatternId)">{{ ap.attackPatternName }}</a>
+            <div *ngIf="attackPatternsByPhase && attackPatternsByPhase.length">
+                <div *ngFor="let ap of attackPatternsByPhase" class="attackPatternListItem">
+                    <risk-icon [risk]="getRiskByAttackPatternId(ap.attackPatternId)" [showTooltip]="true"></risk-icon>&nbsp;
+                    <a (click)="setAttackPattern(ap.attackPatternId)">{{ ap.attackPatternName }}</a>
+                </div>
             </div>
+            
             <div *ngIf="unassessedAttackPatterns && unassessedAttackPatterns.length > 0">
                 <hr>
                 <h5 class="text-muted">Unassessed Attack Patterns</h5>

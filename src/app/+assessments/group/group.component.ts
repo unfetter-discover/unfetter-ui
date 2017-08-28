@@ -20,6 +20,7 @@ export class AssessmentsGroupComponent implements OnInit {
     private id: String = '';
     private displayedAssessedObjects: any[];
     private unassessedAttackPatterns: any[];
+    private attackPatternsByPhase: any[];
     private addAssessedObject: boolean;
     private addAssessedType: String;
 
@@ -161,7 +162,8 @@ export class AssessmentsGroupComponent implements OnInit {
     public setPhase(phaseName) {
         this.resetNewAssessmentObjects();
         this.activePhase = phaseName;
-        this.getAttackPatternsByPhase(this.activePhase).length > 0 ? this.setAttackPattern(this.getAttackPatternsByPhase(this.activePhase)[0].attackPatternId) : '';
+        this.attackPatternsByPhase = this.getAttackPatternsByPhase(this.activePhase);
+        this.getAttackPatternsByPhase(this.activePhase).length > 0 ? this.setAttackPattern(this.getAttackPatternsByPhase(this.activePhase)[0].attackPatternId) : this.setAttackPattern(-1);
     }
 
     public getAttackPatternsByPhase(phaseName) {        
@@ -194,21 +196,21 @@ export class AssessmentsGroupComponent implements OnInit {
     public setAttackPattern(attackPatternId) {
         this.resetNewAssessmentObjects();  
 
-        // Get attack pattern details
-        this.assessmentsDashboardService.genericGet(`${Constance.ATTACK_PATTERN_URL}/${attackPatternId}`)
-            .subscribe(
-            res => {                
-                let dat: any = res;
-                this.currentAttackPattern = dat.attributes;
-            },
+        if (attackPatternId !== -1) {
+            // Get attack pattern details
+            this.assessmentsDashboardService.genericGet(`${Constance.ATTACK_PATTERN_URL}/${attackPatternId}`)
+                .subscribe(
+                res => {
+                    let dat: any = res;
+                    this.currentAttackPattern = dat.attributes;
+                },
                 err => console.log(err)
-            );
-        
+                );
 
-        // Get relationships for attack pattern, link to assessed objects
-        this.assessmentsDashboardService.getAttackPatternRelationships(attackPatternId)
-            .subscribe(
-                res => {                    
+            // Get relationships for attack pattern, link to assessed objects
+            this.assessmentsDashboardService.getAttackPatternRelationships(attackPatternId)
+                .subscribe(
+                res => {
                     let assessmentCanidates = res.map(relationship => relationship.attributes.source_ref);
                     this.displayedAssessedObjects = this.assessedObjects
                         .filter(assessedObj => assessmentCanidates.indexOf(assessedObj.stix.id) > -1)
@@ -218,10 +220,15 @@ export class AssessmentsGroupComponent implements OnInit {
                             retObj.editActive = false;
                             retObj.questions = this.getQuestions(assessedObj.stix.id);
                             return retObj;
-                        });                      
+                        });
                 },
                 err => console.log(err)
-            );
+                );
+        }
+        
+        
+
+        
 
         // Get unassessed attack patterns
         let assessedAps = this.getAttackPatternsByPhase(this.activePhase)
