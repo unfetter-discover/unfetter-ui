@@ -55,7 +55,7 @@ export class AssessmentsDashboardComponent implements OnInit {
 
     private assessment: any;
     private riskByAttackPattern: any;
-    private unassessedPhases: String;
+    private unassessedPhases: any[];
     private riskBreakdown: any;
     private processingComplete: boolean = false;
 
@@ -78,7 +78,8 @@ export class AssessmentsDashboardComponent implements OnInit {
             .subscribe(
                 (res) => {
                     this.riskByAttackPattern = res ? res : {};
-                    this.doughnutChartData[0].data = [this.riskByAttackPattern.totalRisk, (1 - this.riskByAttackPattern.totalRisk)];
+                    // TODO this doesn't work
+                    // this.doughnutChartData[0].data = [this.riskByAttackPattern.totalRisk, (1 - this.riskByAttackPattern.totalRisk)];
                     this.populateUnassessedPhases();
                     this.calculateRiskBreakdown();
                     this.processingComplete = true;
@@ -89,85 +90,104 @@ export class AssessmentsDashboardComponent implements OnInit {
 
     public calculateRiskBreakdown() {
         let phases = this.riskByAttackPattern.phases;
+        let assessedByAttackPattern = this.riskByAttackPattern.assessedByAttackPattern;
 
         let riskTree = {};
 
-        // Group data by kill chain phase, then question => set value array of risk values
-        if (phases !== undefined) {
+        if (phases !== undefined && assessedByAttackPattern !== undefined) {
+
+            // Group data by kill chain phase, then question => set value array of risk values
             phases.forEach(phase => {
                 riskTree[phase._id] = {};
-                phase.scores.forEach(score => {
-                    score.questions.forEach(question => {
+
+                // Assessed Objects per phase
+                phase.assessedObjects.forEach(assessedObject => {
+                    // Questions per assessed object
+                    assessedObject.questions.forEach(question => {
                         if (riskTree[phase._id][question.name] === undefined) {
                             riskTree[phase._id][question.name] = [];
                         }
                         riskTree[phase._id][question.name].push(question.risk);
                     });
                 });
-            });
-        }
+            });       
+            
 
-        // Calcuate average risk per question
-        let questionSet: any = new Set();
-        this.riskBreakdown = {};
-        for (let phase in riskTree) {
-            this.riskBreakdown[phase] = {};
-            for(let question in riskTree[phase]) {
-                questionSet.add(question);
-                /* Average risk for each question-category,
-                 then multiply it by 1 / the number of question-categories.
-                 This will show how much each question contributes to absolute overall risk. */
-                this.riskBreakdown[phase][question] = (riskTree[phase][question]
-                    .reduce((prev, cur) => prev += cur, 0)
-                    / riskTree[phase][question].length) * (1 / Object.keys(riskTree[phase]).length);
-            }
-        }
+            // Calcuate average risk per question
+            // TODO delete this
+            let questionSet: any = new Set();
+            this.riskBreakdown = {};
+            for (let phase in riskTree) {
+                this.riskBreakdown[phase] = {};
+                for (let question in riskTree[phase]) {                    
+                    questionSet.add(question);
+                    /* Average risk for each question-category,
+                     then multiply it by 1 / the number of question-categories.
+                     This will show how much each question contributes to absolute overall risk. */
+                    this.riskBreakdown[phase][question] = (riskTree[phase][question]
+                        .reduce((prev, cur) => prev += cur, 0)
+                        / riskTree[phase][question].length) * (1 / Object.keys(riskTree[phase]).length);
+                }
+            }         
 
-        // Setup riskBreakdownChart & calculate average risk per question regardless of phase
-        let count;
-        let sum;
-        let i = 0;
-        questionSet.forEach(question => {
-            this.riskBreakdownChartLabels.push(question.charAt(0).toUpperCase() + question.slice(1));
-
-            this.riskBreakdownChartData[0].backgroundColor.push(Constance.MAT_COLORS[Constance.MAT_GRAPH_COLORS[i]][500]);
-            this.riskBreakdownChartData[0].hoverBackgroundColor.push(Constance.MAT_COLORS[Constance.MAT_GRAPH_COLORS[i]][800]);
-            sum = count = 0;
-            for(let phase in riskTree) {
-                if (this.riskBreakdown[phase][question] !== undefined) {
-                    sum += this.riskBreakdown[phase][question];
-                    count++;
+            let riskBreakdownTemp = {};
+            
+            for(let assessedObject of this.assessment.attributes.assessment_objects) {
+                for(let question of assessedObject.questions) {
+                    questionSet.add(question.name);
+                    if (riskBreakdownTemp[question.name] === undefined) {
+                        riskBreakdownTemp[question.name] = [];
+                    }
+                    
+                    riskBreakdownTemp[question.name].push(question.risk);
                 }
             }
-            this.riskBreakdownChartData[0].data.push(sum / count);
-            i++;
-        });
-        let riskAccepted = 1 - this.riskBreakdownChartData[0].data.reduce((prev, cur) => prev += cur, 0);
-        this.riskBreakdownChartData[0].data.push(riskAccepted);
-        this.riskBreakdownChartData[0].backgroundColor.push(Constance.COLORS.green);
-        this.riskBreakdownChartData[0].hoverBackgroundColor.push(Constance.COLORS.darkGreen);
-        this.riskBreakdownChartLabels.push('Risk Addressed');
 
+            let totalRisk = 0;
+            let riskBreakdownAvg = {};
 
-        console.log(this.riskBreakdownChartData);
+            for (let question in riskBreakdownTemp) {
+                riskBreakdownAvg[question] = (riskBreakdownTemp[question]
+                    .reduce((prev, cur) => prev += cur, 0)
+                    / riskBreakdownTemp[question].length) * (1 / questionSet.size);
+                totalRisk += riskBreakdownAvg[question];
+            }
+
+            this.doughnutChartData[0].data = [totalRisk, 1 - totalRisk];    
+                    
+
+            // Setup riskBreakdownChart & calculate average risk per question regardless of phase            
+            // let count;
+            // let sum;
+            let i = 0;
+            questionSet.forEach(question => {
+                this.riskBreakdownChartLabels.push(question.charAt(0).toUpperCase() + question.slice(1));
+
+                this.riskBreakdownChartData[0].backgroundColor.push(Constance.MAT_COLORS[Constance.MAT_GRAPH_COLORS[i]][500]);
+                this.riskBreakdownChartData[0].hoverBackgroundColor.push(Constance.MAT_COLORS[Constance.MAT_GRAPH_COLORS[i]][800]);
+                // sum = count = 0;
+                // for (let phase in riskTree) {
+                //     if (this.riskBreakdown[phase][question] !== undefined) {
+                //         sum += this.riskBreakdown[phase][question];
+                //         count++;
+                //     }
+                // }
+                // this.riskBreakdownChartData[0].data.push(sum / count);
+                this.riskBreakdownChartData[0].data.push(riskBreakdownAvg[question]);
+                i++;
+            });
+            let riskAccepted = 1 - this.riskBreakdownChartData[0].data.reduce((prev, cur) => prev += cur, 0);
+            this.riskBreakdownChartData[0].data.push(riskAccepted);
+            this.riskBreakdownChartData[0].backgroundColor.push(Constance.COLORS.green);
+            this.riskBreakdownChartData[0].hoverBackgroundColor.push(Constance.COLORS.darkGreen);
+            this.riskBreakdownChartLabels.push('Risk Addressed');
+        }
+
+        
     }
-
-    /*public riskBreakdownChartLabels: string[] = ['Risk Addressed',];
-    public riskBreakdownChartData: any[] = [{
-        data: [],
-        backgroundColor: [
-            Constance.COLORS.green,
-        ],
-        hoverBackgroundColor: [
-            Constance.COLORS.darkGreen,
-        ]
-    }]; */
 
     public getNumAttackPatterns(phaseName) {
         let attackPatternsByKillChain = this.riskByAttackPattern.attackPatternsByKillChain;
-        // console.log(attackPatternsByKillChain);
-        // console.log(phaseName);
-
         for (let killPhase of attackPatternsByKillChain) {
             if (killPhase._id === phaseName && killPhase.attackPatterns !== undefined) {
                 return killPhase.attackPatterns.length;
@@ -179,12 +199,6 @@ export class AssessmentsDashboardComponent implements OnInit {
     public populateUnassessedPhases() {
         let assessedPhases = this.riskByAttackPattern.phases.map((phase) => phase._id);
         this.unassessedPhases = Constance.KILL_CHAIN_PHASES
-            .filter((phase) => assessedPhases.indexOf(phase) < 0)
-            .reduce((prev, phase) => prev.concat(', '.concat(phase)), '')
-            .slice(2);
-    }
-
-    public getQuestions(phaseName) {
-        return 'stub';
+            .filter((phase) => assessedPhases.indexOf(phase) < 0);
     }
 }
