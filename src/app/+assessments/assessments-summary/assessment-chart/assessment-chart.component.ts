@@ -70,6 +70,7 @@ export class AssessmentChartComponent implements OnInit {
         let firstQuestion;
         this.assessmentObjects
             .forEach((el) => {
+                console.log('assessment objects, render chart', el);
                 const fullLabel = el.stix.name;
                 const label = this.parseToRootLabel(el.stix.name);
                 const data: number[] = [];
@@ -148,7 +149,7 @@ export class AssessmentChartComponent implements OnInit {
     protected parseToRootLabel(label: string): string {
         // this.rootLabelRegex
         const arr = this.rootLabelRegex.exec(label);
-        return arr.length > 1 ? arr[1] : label;
+        return (arr && arr.length > 1) ? arr[1] : label;
     }
 }
 

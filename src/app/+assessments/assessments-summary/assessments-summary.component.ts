@@ -175,7 +175,7 @@ export class AssessmentsSummaryComponent implements OnInit {
         this.id = this.route.snapshot.params['id'] ? this.route.snapshot.params['id'] : '';
         const getById$ = this.assessmentsSummaryService.getById(this.id).subscribe(
             (res) => {
-                console.log(res);
+                console.log('assessments summary', res);
                 this.summary = res;
                 const assessments = this.summary.attributes['assessment_objects'];
                 if (assessments) {
