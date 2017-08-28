@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AssessmentsSummaryService } from './assessments-summary.service';
 import { Constance } from '../../utils/constance';
@@ -7,6 +7,7 @@ import { SortHelper } from './sort-helper';
 import { Risk } from './risk';
 import { AverageRisk } from './average-risk';
 import { AttackPattern } from '../../models/attack-pattern';
+import { AssessmentChartComponent } from './assessment-chart/assessment-chart.component';
 
 @Component({
     selector: 'assessments-summary',
@@ -14,9 +15,10 @@ import { AttackPattern } from '../../models/attack-pattern';
     styleUrls: ['./assessments-summary.component.css']
 })
 export class AssessmentsSummaryComponent implements OnInit {
-    public assessedObjects: any;
     public summary: any;
     public summaryDate: Date;
+    public thresholdOptions: ThresholdOption[];
+    public selectedRisk: number = 0;
     public id: string;
     public phaseNameGroups: any[];
     // public attackKillChains: any[];
@@ -27,6 +29,9 @@ export class AssessmentsSummaryComponent implements OnInit {
     public sortedRisks;
     public topNRisks = 3;
     public weakestAttackPatterns: AttackPattern[];
+
+    @ViewChild('chartOne')
+    public chartOne: AssessmentChartComponent;
 
     /**
      *  Computed property that will return the option types for the assessments.  This is assuming
@@ -177,6 +182,12 @@ export class AssessmentsSummaryComponent implements OnInit {
                     const risk = this.assessmentsCalculationService.calculateRisk(assessments);
                     this.totalRiskValue = this.assessmentsCalculationService.formatRisk(risk);
                     this.riskLabelClass = risk > this.riskLevel ? 'label-warning' : 'label-default';
+
+                    // set threshold dropdown options
+                    const question = assessments[0].questions[0];
+                    if (question && question.name === 'policy') {
+                        this.thresholdOptions = question.options;
+                    }
                 }
 
                 this.summaryDate = new Date(this.summary.attributes.modified);
@@ -224,6 +235,11 @@ export class AssessmentsSummaryComponent implements OnInit {
             () => attackPattern$.unsubscribe());
     }
 
+    public redrawCharts(): void {
+        console.log('request to redraw charts with threshold', this.selectedRisk);
+        this.chartOne.renderChart();
+    }
+
     private calculateRisk(riskArr: Risk[]): string {
         const risk = this.assessmentsCalculationService.calculateRisk(riskArr);
         return this.assessmentsCalculationService.formatRisk(risk);
@@ -243,3 +259,9 @@ export class AssessmentsSummaryComponent implements OnInit {
     }
 
 }
+
+
+interface ThresholdOption {
+    name: string;
+    risk: number;
+};

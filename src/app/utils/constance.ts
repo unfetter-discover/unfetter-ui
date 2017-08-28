@@ -83,6 +83,9 @@ export const Constance = {
     // TODO change icon
     X_UNFETTER_ASSESSMENT_ICON: 'assets/icon/stix-icons/svg/report-b.svg',
 
+    // API_HOST: process.env.HOST ? `https://${process.env.HOST}:${process.env.PORT}/` : '',
+    API_HOST: '',
+
     COLORS: {
         green: '#4CAF50',
         darkGreen: '#2E7D32',

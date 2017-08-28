@@ -37,42 +37,62 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div>
-                    <div class="panel panel-default topN">
-                        <div class="panel-heading">
-                            <h3>Where you are most vulnerable</h3>
-                        </div>
+                <div class="panel panel-default topN">
+                    <div class="panel-heading">
+                        <h3>Where you are most vulnerable</h3>
+                    </div>
 
-                        <table class="table">
-                            <thead>
-                                <th>KILL CHAIN EFFECTED</th>
-                                <th>ASSESSED ITEM</th>
-                                <th>RISK</th>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let risk of sortedRisks">
-                                  <td>{{ risk.phaseName | capitalize }}</td>
-                                  <td *ngIf="risk.objects; else noObjectsDiv">
-                                    <ul>
-                                        <li *ngFor="let obj of risk.objects">
-                                            <a href="#stix/{{obj.type}}s/{{obj.id}}">{{obj.name}}</a>
-                                        </li>
-                                    </ul>
-                                  </td>
-                                <ng-template #noObjectsDiv>
-                                    No objects found!
-                                </ng-template>
-                                  <td><span class="label label-warning">{{calculateRisk(risk.objects)}}</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        </div>
-                </div>            
+                    <table class="table">
+                        <thead>
+                            <th>KILL CHAIN EFFECTED</th>
+                            <th>ASSESSED ITEM</th>
+                            <th>RISK</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let risk of sortedRisks">
+                                <td>{{ risk.phaseName | capitalize }}</td>
+                                <td *ngIf="risk.objects; else noObjectsDiv">
+                                <ul>
+                                    <li *ngFor="let obj of risk.objects">
+                                        <a href="#stix/{{obj.type}}s/{{obj.id}}">{{obj.name}}</a>
+                                    </li>
+                                </ul>
+                                </td>
+                            <ng-template #noObjectsDiv>
+                                No objects found!
+                            </ng-template>
+                                <td><span class="label label-warning">{{calculateRisk(risk.objects)}}</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
             </div>
         </div>
 
         <hr>
         <br/>
+        <div class="row">
+            <div class="col-md-6">
+                <md-select placeholder="Select threshold" [(ngModel)]="selectedRisk" name="threshold" (change)="redrawCharts()">
+                    <md-option *ngFor="let option of thresholdOptions" [value]="option.risk">
+                        {{option.name}}
+                    </md-option>
+                </md-select>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col-md-6 panel">
+                <h3>COMING SOON...</h3>
+            </div>
+            <div class="col-md-6">
+                <assessment-chart #chartOne
+                    [riskThreshold]="selectedRisk"            
+                    [assessmentObjects]="summary.attributes.assessment_objects"></assessment-chart>
+            </div>
+        </div>
+        
+        <hr>
         <br/>
         <div class="row">
             <span>

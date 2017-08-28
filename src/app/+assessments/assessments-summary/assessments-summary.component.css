@@ -36,3 +36,7 @@
     margin: 0px;
     padding-left: 4px;
 }
+
+.row md-select {
+    width: 100%;
+}
