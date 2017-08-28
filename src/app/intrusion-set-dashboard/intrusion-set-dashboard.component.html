@@ -53,7 +53,7 @@
                     <md-tab-group>
                         <md-tab id="intrusionSetsDashboard" label="Attack Patterns Used">
                             <div id="graphWrapper">
-                                <md-card class="margin-top" *ngIf="intrusionSetsDashboard.intrusionSets">
+                                <md-card class="margin-top">
                                     <md-card-header>
                                         <md-card-subtitle>Attack Patterns Used Per Intrusion Set</md-card-subtitle>
                                     </md-card-header>
@@ -70,28 +70,19 @@
 
                                             <div>
 
-
-                                                <!--<div class="pull-left">
-                                                    <small>{{calPercentage(i.attack_patterns.length , intrusionSetsDashboard.totalAttackPatterns)}}% </small>
-                                                </div>-->
-
-                                                <!--<p-progressBar [value]="i.attack_patterns.length" [showValue]="false"></p-progressBar>-->
-
                                                 <md-progress-bar [value]="i.attack_patterns.length" [bufferValue]="intrusionSetsDashboard.totalAttackPatterns">
                                                 </md-progress-bar>
-
-
-                                                <!--<div class="text-muted">&nbsp;
-                                                    <small> {{i.attack_patterns.length}} / {{intrusionSetsDashboard.totalAttackPatterns}}</small>
-                                                </div>-->
 
                                             </div>
                                         </div>
                                     </div>
 
                                 </md-card>
-                                <md-card class="margin-top" *ngIf="intrusionSetsDashboard.killChainPhases">
-                                    <p-carousel headerText="Kill Chain Phases Used" [value]="intrusionSetsDashboard.killChainPhases" numVisible="5">
+                                <md-card class="margin-top">
+                                    <!-- <md-card-header *ngIf="!intrusionSetsDashboard.killChainPhases">
+                                        <md-card-subtitle>Kill Chain Phases Used</md-card-subtitle>
+                                    </md-card-header> -->
+                                    <p-carousel *ngIf="intrusionSetsDashboard.killChainPhases" headerText="Kill Chain Phases Used" [value]="intrusionSetsDashboard.killChainPhases" numVisible="5">
                                         <ng-template let-killChainPhase pTemplate="killChainPhase">
 
                                             <div class="ui-grid ui-grid-responsive">
@@ -115,9 +106,11 @@
                                         </ng-template>
                                     </p-carousel>
                                 </md-card>
-                                <md-card class="margin-top" *ngIf="treeData">
-                                    <!--<concept-map [data]="graphMetaData"></concept-map>-->
-                                    <collapsible-tree [data]="treeData"></collapsible-tree>
+                                <md-card class="margin-top">
+                                      <md-card-header *ngIf="!treeData">
+                                        <md-card-subtitle>Graph</md-card-subtitle>
+                                    </md-card-header>
+                                    <collapsible-tree *ngIf="treeData" [data]="treeData"></collapsible-tree>
                                 </md-card>
                             </div>
                             <br>

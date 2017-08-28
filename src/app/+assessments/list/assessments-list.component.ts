@@ -42,7 +42,6 @@ export class AssessmentsListComponent implements OnInit {
 
   private edit(item: any): void {
      let type = item.attributes.assessment_objects[0].stix.type;
-     console.log(type);
      let link = ['assessment/edit', type, item.id];
      this.router.navigate(link, { relativeTo: this.route });
   }

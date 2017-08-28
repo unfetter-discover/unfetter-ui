@@ -9,13 +9,13 @@ export class GenericApi {
     private data: any = null;
     private postHeaders: Headers;
 
-    constructor(private http: Http) { 
+    constructor(private http: Http) {
         this.postHeaders = new Headers();
         this.postHeaders.append('Content-Type', 'application/json');
         this.postHeaders.append('Accept', 'application/vnd.api+json');
     }
 
-    public get(url: string, data?: any): Observable<Response> {
+    public get(url: string, data?: any): Observable<any> {
         this.data = (data !== undefined && data !== null) ? '/' + data : '';
         let builtUrl = this.baseUrl + url + this.data;
         return this.http.get(builtUrl)
@@ -25,8 +25,6 @@ export class GenericApi {
 
     public post(url: string, data: any, type?: string): Observable<Response> {
         let builtUrl = this.baseUrl + url;
-        console.log('built url! ', builtUrl, '~~~~', this.baseUrl);
-
         return this.http.post(builtUrl, data, {headers: this.postHeaders})
             .map(this.extractData)
             .catch(this.handleError);
