@@ -42,4 +42,19 @@ export class AssessmentsCalculationService {
 
         return risk / measureObject.length;
     }
+
+    public sophisicationNumberToWord(number: any): string {
+        switch (parseInt(number)) {
+            case 0:
+                return 'Novice';
+            case 1:
+                return 'Practitioner';
+            case 2:
+                return 'Expert';
+            case 3:
+                return 'Innovator';
+            default:
+                return number;
+        }
+    }
 }

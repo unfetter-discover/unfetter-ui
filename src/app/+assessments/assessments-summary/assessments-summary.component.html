@@ -82,8 +82,12 @@
         </div>
         <br/>
         <div class="row">
-            <div class="col-md-6 panel">
-                <h3>COMING SOON...</h3>
+            <div class="col-md-6">
+                <div *ngIf="summaryAggregation && summaryAggregation.assessedAttackPatternCountBySophisicationLevel && summaryAggregation.totalAttackPatternCountBySophisicationLevel">
+                    <sophistication-breakdown 
+                    [assessedAttackPatterns]="summaryAggregation.assessedAttackPatternCountBySophisicationLevel" 
+                    [allAttackPatterns]="summaryAggregation.totalAttackPatternCountBySophisicationLevel"></sophistication-breakdown>
+                </div>                 
             </div>
             <div class="col-md-6">
                 <assessment-chart #chartOne

@@ -29,6 +29,7 @@ export class AssessmentsSummaryComponent implements OnInit {
     public sortedRisks;
     public topNRisks = 3;
     public weakestAttackPatterns: AttackPattern[];
+    private summaryAggregation: any;
 
     @ViewChild('chartOne')
     public chartOne: AssessmentChartComponent;
@@ -194,6 +195,14 @@ export class AssessmentsSummaryComponent implements OnInit {
             },
             (err) => console.log(err),
             () => getById$.unsubscribe()
+        );
+
+        const summaryAggregation$ = this.assessmentsSummaryService.getSummaryAggregation(this.id).subscribe(
+            (res) => {
+                this.summaryAggregation = res;              
+            },
+            (err) => console.log(err),
+            () => summaryAggregation$.unsubscribe()            
         );
 
         const killChain$ = this.assessmentsSummaryService.getRiskPerKillChain(this.id).subscribe(
