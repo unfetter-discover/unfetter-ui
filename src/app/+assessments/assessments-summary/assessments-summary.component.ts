@@ -185,7 +185,7 @@ export class AssessmentsSummaryComponent implements OnInit {
 
                     // set threshold dropdown options
                     const question = assessments[0].questions[0];
-                    if (question && question.name === 'policy') {
+                    if (question) {
                         this.thresholdOptions = question.options;
                     }
                 }

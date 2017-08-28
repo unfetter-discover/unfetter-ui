@@ -39,7 +39,7 @@ export class AssessmentChartComponent implements OnInit {
         }
     };
 
-    public barChartLabels: string[] = [ ];
+    public barChartLabels: string[] = [];
     public barChartType: string = 'bar';
 
     public barChartData: any[] = [
@@ -77,14 +77,14 @@ export class AssessmentChartComponent implements OnInit {
                 let risk;
 
                 const questions = el.questions;
-                const policy = questions.find((q) => q.name === 'policy');
+                const question = questions[0];
 
-                if (!policy) {
+                if (!question) {
                     console.log('missing policy question!  moving on...');
                     return;
                 }
 
-                risk = policy.risk;
+                risk = question.risk;
                 const obj = {
                     label,
                     fullLabel,
@@ -96,7 +96,7 @@ export class AssessmentChartComponent implements OnInit {
                 if (arr) {
                     arr.push(obj);
                 } else {
-                    rootLabelGrouping[label] =  [ obj ];
+                    rootLabelGrouping[label] = [obj];
                 }
             });
 
@@ -147,7 +147,6 @@ export class AssessmentChartComponent implements OnInit {
      * @returns {string}
      */
     protected parseToRootLabel(label: string): string {
-        // this.rootLabelRegex
         const arr = this.rootLabelRegex.exec(label);
         return (arr && arr.length > 1) ? arr[1] : label;
     }
