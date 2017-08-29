@@ -42,6 +42,7 @@
     "no-string-literal": false,
     "no-use-before-declare": true,
     "object-literal-sort-keys": false,
+    "object-literal-key-quotes": [ false ],
     "ordered-imports": [ false ],
     "quotemark": [
       true,

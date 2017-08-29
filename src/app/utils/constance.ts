@@ -456,7 +456,7 @@ export const Constance = {
                 'Reported on Some Systems',
                 'Reported on Most Systems',
                 'Reported on All Systems'
-            ],            
+            ],
         },
         'x-unfetter-sensor': {
             'coverage': [

@@ -41,18 +41,18 @@ export class AssessmentsListComponent implements OnInit {
   }
 
   private edit(item: any): void {
-     let type = item.attributes.assessment_objects[0].stix.type;
-     let link = ['assessment/edit', type, item.id];
+     const type = item.attributes.assessment_objects[0].stix.type;
+     const link = ['assessment/edit', type, item.id];
      this.router.navigate(link, { relativeTo: this.route });
   }
 
   private delete(item: any): void {
-    let _self = this;
-    let dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: item });
+    const _self = this;
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: item });
     dialogRef.afterClosed().subscribe(
         (result) => {
         if (result === 'true') {
-             let sub  = _self.assessmentsService.delete(item).subscribe(
+             const sub  = _self.assessmentsService.delete(item).subscribe(
                (d) => {
                  this.assessments = this.assessments.filter((a) => a.id !== item.id);
                }, (err) => {

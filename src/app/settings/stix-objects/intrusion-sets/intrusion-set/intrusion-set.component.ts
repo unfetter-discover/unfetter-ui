@@ -32,7 +32,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     }
 
     public editButtonClicked(): void {
-        let link = ['../edit', this.intrusionSet.id];
+        const link = ['../edit', this.intrusionSet.id];
         super.gotoView(link);
     }
 
@@ -46,7 +46,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
 
     protected saveButtonClicked(): Observable<any> {
         return Observable.create((observer) => {
-               let subscription = super.save(this.intrusionSet).subscribe(
+               const subscription = super.save(this.intrusionSet).subscribe(
                     (data) => {
                         observer.next(data);
                         observer.complete();
@@ -64,7 +64,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
     }
 
     protected loadIntrusionSet(): void {
-        let subscription =  super.get().subscribe(
+        const subscription =  super.get().subscribe(
             (data) => {
                 this.intrusionSet = new IntrusionSet(data);
                 let filter = 'filter=' + encodeURIComponent(JSON.stringify({ target_ref: this.intrusionSet.id }));

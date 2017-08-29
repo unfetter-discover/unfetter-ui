@@ -3,4 +3,4 @@
         order: 'relationship_type asc',
         where: { }
     };
- };
+ }

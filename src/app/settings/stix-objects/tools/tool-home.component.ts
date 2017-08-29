@@ -8,9 +8,9 @@ import { Constance } from '../../../utils/constance';
 })
 export class ToolHomeComponent {
 
-    private pageTitle = 'Tools';
-    private pageIcon = Constance.TOOL_ICON;
-    private description = 'Tools are legitimate software that can be used by threat actors to ' +
+    public pageTitle = 'Tools';
+    public pageIcon = Constance.TOOL_ICON;
+    public description = 'Tools are legitimate software that can be used by threat actors to ' +
     'perform attacks. Knowing how and when threat actors use such tools can be important for ' +
     'understanding how campaigns are executed. Unlike malware, these tools or software packages ' +
     'are often found on a system and have legitimate purposes for power users, system administrators, ' +

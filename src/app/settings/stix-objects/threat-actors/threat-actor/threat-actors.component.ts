@@ -32,7 +32,7 @@ export class TheatActorComponent extends BaseStixComponent implements OnInit {
     }
 
     public editButtonClicked(): void {
-        let link = ['../edit', this.threatActor.id];
+        const link = ['../edit', this.threatActor.id];
         super.gotoView(link);
     }
 
@@ -42,7 +42,7 @@ export class TheatActorComponent extends BaseStixComponent implements OnInit {
 
     protected saveButtonClicked(): Observable<any> {
         return Observable.create((observer) => {
-               let subscription = super.save(this.threatActor).subscribe(
+               const subscription = super.save(this.threatActor).subscribe(
                     (data) => {
                         observer.next(data);
                         observer.complete();
@@ -60,7 +60,7 @@ export class TheatActorComponent extends BaseStixComponent implements OnInit {
     }
 
     protected loadThreatActor(): void {
-         let subscription =  super.get().subscribe(
+         const subscription =  super.get().subscribe(
             (data) => {
                 this.threatActor = data as ThreatActor;
             }, (error) => {
