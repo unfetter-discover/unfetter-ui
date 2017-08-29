@@ -7,12 +7,22 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-md-6">
-          <p-calendar [(ngModel)]="intrusionSet.attributes.first_seen"  dateFormat="M-dd-yy" showIcon="true"></p-calendar>
+     <div class="col-md-6">
+                 <!-- <p-calendar [(ngModel)]="intrusionSet.attributes.first_seen"  dateFormat="M-dd-yy"  showIcon="true"></p-calendar> -->
 
+  <md-input-container class="full-width">
+                    <input mdInput [mdDatepicker]="picker" placeholder="First Seen" [(ngModel)]="intrusionSet.attributes.first_seen">
+                    <button mdSuffix [mdDatepickerToggle]="picker"></button>
+                </md-input-container>
+                <md-datepicker #picker></md-datepicker>
     </div>
     <div class="col-md-6">
-           <p-calendar [(ngModel)]="intrusionSet.attributes.last_seen"  dateFormat="M-dd-yy" showIcon="true"></p-calendar>
+                 <!-- <p-calendar [(ngModel)]="intrusionSet.attributes.last_seen"  dateFormat="M-dd-yy" showIcon="true"></p-calendar> -->
+  <md-input-container class="full-width">
+                    <input mdInput [mdDatepicker]="picker_last_seen" placeholder="Last Seen" [(ngModel)]="intrusionSet.attributes.last_seen">
+                    <button mdSuffix [mdDatepickerToggle]="picker_last_seen"></button>
+                </md-input-container>
+                <md-datepicker #picker_last_seen></md-datepicker>
     </div>
 </div>
 

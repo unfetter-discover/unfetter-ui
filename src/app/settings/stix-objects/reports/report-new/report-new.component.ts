@@ -13,10 +13,10 @@ import { Report, AttackPattern, IntrusionSet, Relationship } from '../../../../m
 })
 export class ReportNewComponent extends BaseStixComponent implements OnInit {
 
-  private report: Report = new Report();
-  private attackPatterns: AttackPattern[] = [];
-  private intrusionSets: IntrusionSet[] = [];
-  private labels = ['Indicator', 'Campaign', 'Intrusion Set' ];
+  public report: Report = new Report();
+  public attackPatterns: AttackPattern[] = [];
+  public intrusionSets: IntrusionSet[] = [];
+  public labels = ['Indicator', 'Campaign', 'Intrusion Set' ];
 
    constructor(
         public stixService: StixService,

@@ -22,11 +22,21 @@
                 <input mdInput placeholder="Count"  [(ngModel)]="sighting.attributes.count" value="{{sighting.attributes.count}}">
                 </md-input-container>
     </div>
-     <div class="col-md-4">{{sighting.attributes.first_seen}}
-          <p-calendar [(ngModel)]="sighting.attributes.first_seen" dateFormat="M-dd-yy" showIcon="true"></p-calendar>
+     <div class="col-md-4">
+         <md-input-container class="full-width">
+                    <input mdInput [mdDatepicker]="picker" placeholder="First Seen" [(ngModel)]="sighting.attributes.first_seen">
+                    <button mdSuffix [mdDatepickerToggle]="picker"></button>
+                </md-input-container>
+                <md-datepicker #picker></md-datepicker>
+          <!-- <p-calendar [(ngModel)]="sighting.attributes.first_seen" dateFormat="M-dd-yy" showIcon="true"></p-calendar> -->
     </div>
      <div class="col-md-4">
-          <p-calendar [(ngModel)]="sighting.attributes.last_seen" dateFormat="M-dd-yy"  showIcon="true"></p-calendar>
+           <md-input-container class="full-width">
+                    <input mdInput [mdDatepicker]="picker_last_seen" placeholder="Last Seen" [(ngModel)]="sighting.attributes.last_seen">
+                    <button mdSuffix [mdDatepickerToggle]="picker_last_seen"></button>
+                </md-input-container>
+                <md-datepicker #picker_last_seen></md-datepicker>
+          <!-- <p-calendar [(ngModel)]="sighting.attributes.last_seen" dateFormat="M-dd-yy"  showIcon="true"></p-calendar> -->
     </div>
 </div>
 <div class="row">

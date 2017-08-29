@@ -14,9 +14,9 @@ const routes = [
                 { path: '', component: AssessmentsListComponent },
                 { path: 'assessment/:type', loadChildren: './new#AssessmentModule' },
                 { path: 'assessment/edit/:type/:id', loadChildren: './new#AssessmentModule' },
-                { path: 'indicators',  loadChildren: './new/indicators#IndicatorsModule' },
-                { path: 'mitigations', loadChildren: './new/mitigations#MitigationsModule' },
-                { path: 'sensors',  loadChildren: './new/sensors#SensorsModule' }
+                // { path: 'indicators',  loadChildren: './new/indicators#IndicatorsModule' },
+                // { path: 'mitigations', loadChildren: './new/mitigations#MitigationsModule' },
+                // { path: 'sensors',  loadChildren: './new/sensors#SensorsModule' }
             ]
         },
         { path: 'dashboard/:id',  component: AssessmentsDashboardComponent },

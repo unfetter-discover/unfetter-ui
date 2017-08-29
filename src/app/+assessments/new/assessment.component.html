@@ -10,7 +10,26 @@
 
 <page-header [pageTitle]="pageTitle"  [pageIcon]="pageIcon" [description]="description"></page-header>
 <div class="row">
-    <div class="col-xs-12">
+      <div class="col-xs-2">
+                <!-- Stepers Wrapper -->
+        <ul class="stepper stepper-vertical">
+
+           <!-- First Step -->
+            <li class="completed" *ngFor="let navigation of navigations">
+              <!--Section Title -->
+                <a href="#!">
+                    <span class="circle">{{navigation.page}}</span>
+                    <span class="label">{{navigation.label}}</span>
+                </a>
+
+            </li>
+
+        </ul>
+        <!-- /.Stepers Wrapper -->
+
+     </div>
+    <div class="col-xs-10">
+
         <md-card>
 
             <div *ngIf="showSummarry">

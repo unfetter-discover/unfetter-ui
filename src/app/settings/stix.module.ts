@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { CalendarModule, AccordionModule, DataListModule } from 'primeng/primeng';
 import {
-  MaterialModule, MdButtonModule, MdListModule, MdCardModule, MdSnackBarModule,
+  MaterialModule, MdButtonModule, MdListModule, MdCardModule, MdSnackBarModule, MdNativeDateModule,
   MdDialogModule, MdChipsModule, MdInputModule, MdSelectModule, MdAutocompleteModule , MdCheckboxModule, MdRadioModule, MdSlideToggleModule } from '@angular/material';
 
 import { ComponentModule } from '../components/component.module';
@@ -60,6 +60,7 @@ import { GlobalModule } from 'app/global/global.module';
       MdInputModule,
       MdSelectModule,
       MdAutocompleteModule,
+      MdNativeDateModule,
       MdCheckboxModule,
       MdRadioModule,
       MdSlideToggleModule,

@@ -3,8 +3,8 @@
         <div class="col-md-12">
 
             <div class="button-row">
-                <a md-raised-button routerLink="./new">NEW</a>
-                <a md-raised-button (click)="download()">DOWNLOAD</a>
+                <a md-raised-button routerLink="./new" class="mat-primary">NEW</a>
+                <a md-raised-button (click)="download()" class="mat-primary">DOWNLOAD</a>
             </div>
             <div class="pull-right">
                 <span class="right-align">Results: {{attackPatterns.length}}</span>
@@ -33,8 +33,11 @@
 
                                 </div>
                                 <div class="col-md-3">
+
                                     <button class="pull-right" md-raised-button (click)="deletButtonClicked(attackPattern, key)"><i class="fa fa-trash"></i></button>
+
                                     <button class="pull-right" md-raised-button (click)="edit(attackPattern)"><i class="fa fa-pencil"></i></button>
+
                                 </div>
 
 

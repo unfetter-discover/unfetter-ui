@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { StepsModule, MenuItem } from 'primeng/primeng';
 import { MaterialModule, MdButtonModule, MdCardModule, MdDialogModule, MdSnackBarModule, MdNativeDateModule } from '@angular/material';
 import { ChartsModule } from 'ng2-charts';
 import { CalendarModule } from 'primeng/primeng';
@@ -34,13 +35,15 @@ const routes = [
     ComponentModule,
     CalendarModule,
     ChartsModule,
+    StepsModule,
+
     PipesModule,
     MdNativeDateModule,
     GlobalModule,
     RouterModule.forChild(routes)
   ],
   exports: [
-    AssessmentComponent
+    AssessmentComponent,
   ],
 
   providers: [

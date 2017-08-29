@@ -21,18 +21,28 @@
                 </md-input-container>
             </div>
         </div>
-         <div class="row" >
-            <div class="col-md-3">
-                <label>Valid From</label>
+        <div class="row" >
+            <div class="col-md-6">
+                <!-- <label>Valid From</label>
                  <div>
-                    <p-calendar [(ngModel)]="indicator.attributes.valid_from"  dateFormat="M-dd-yy" showIcon="true"></p-calendar>
-                 </div>
+                <p-calendar [(ngModel)]="indicator.attributes.valid_from"  dateFormat="M-dd-yy" showIcon="true"></p-calendar>
+                 </div> -->
+                <md-input-container class="full-width">
+                    <input mdInput [mdDatepicker]="picker" placeholder="Valid From" [(ngModel)]="indicator.attributes.valid_from">
+                    <button mdSuffix [mdDatepickerToggle]="picker"></button>
+                </md-input-container>
+                <md-datepicker #picker></md-datepicker>
             </div>
-            <div class="col-md-3">
-                <label>Valid To</label>
-               <div>
-                     <p-calendar [(ngModel)]="indicator.attributes.valid_to"  dateFormat="M-dd-yy" showIcon="true"></p-calendar>
-               </div>
+            <div class="col-md-6">
+                <!-- <label>Valid To</label>
+               <div> -->
+                    <md-input-container class="full-width">
+                        <input mdInput [mdDatepicker]="picker_to" placeholder="Valid To" [(ngModel)]="indicator.attributes.valid_to">
+                        <button mdSuffix [mdDatepickerToggle]="picker_to"></button>
+                    </md-input-container>
+                    <md-datepicker #picker_to></md-datepicker>
+                    <!-- <p-calendar [(ngModel)]="indicator.attributes.valid_to"  dateFormat="M-dd-yy" showIcon="true"></p-calendar> -->
+               <!-- </div> -->
             </div>
         </div>
          <kill-chain-phases [(model)]="indicator"></kill-chain-phases>
