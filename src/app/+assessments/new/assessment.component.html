@@ -1,4 +1,4 @@
-<div id="stixHome" class="container">
+<!-- <div id="stixHome" class="container">
     <h2>Assessments</h2>
 
     <ul class="nav nav-pills">
@@ -6,7 +6,7 @@
             <a (click)="navigationClicked(navigation.page)">{{navigation.label}}</a>
         </li>
     </ul>
-</div>
+</div> -->
 
 <page-header [pageTitle]="pageTitle"  [pageIcon]="pageIcon" [description]="description"></page-header>
 <div class="row">
@@ -15,9 +15,9 @@
         <ul class="stepper stepper-vertical">
 
            <!-- First Step -->
-            <li class="completed" *ngFor="let navigation of navigations">
+            <li [class.active]="navigation.page === page" *ngFor="let navigation of navigations">
               <!--Section Title -->
-                <a href="#!">
+                <a href (click)="navigationClicked($event, navigation.page)">
                     <span class="circle">{{navigation.page}}</span>
                     <span class="label">{{navigation.label}}</span>
                 </a>

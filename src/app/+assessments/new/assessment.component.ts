@@ -34,6 +34,10 @@ import { MenuItem } from 'primeng/primeng';
       . margin-top-10 {
          margin-top: 10px;
       }
+        .stepper-vertical {
+              margin-left: 0px;
+          padding-left: 0px;
+        }
   .stepper-vertical li {
     display: -webkit-box;
     display: -webkit-flex;
@@ -112,7 +116,7 @@ import { MenuItem } from 'primeng/primeng';
 }
 
 .stepper li a {
-    padding: 20px 24px 20px 24px;
+   padding: 10px;
     font-size: 14px;
     text-align: center;
     color: #0275d8;
@@ -495,7 +499,9 @@ export class AssessmentComponent extends Measurements implements OnInit {
     this.updateChart();
   }
 
-  private navigationClicked(step: number): void {
+  private navigationClicked(e:any, step: number): void {
+      e.preventDefault();
+      e.stopP
       if (step > this.page) {
         this.page = step - 1;
         this.next();
