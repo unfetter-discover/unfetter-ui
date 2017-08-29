@@ -249,8 +249,6 @@ export class AssessmentsSummaryComponent implements OnInit {
     public populateTechniqueBreakdown(): void {
         // Total assessed objects to calculated risk
         let assessedRiskMapping = this.summaryAggregation.assessedAttackPatternCountBySophisicationLevel;
-
-        console.log('cur risk!!! ', this.selectedRisk);
         
         // Find IDs that meet risk threshold
         // TODO should be <= risk or < risk?
@@ -299,6 +297,15 @@ export class AssessmentsSummaryComponent implements OnInit {
     private calculateRisk(riskArr: Risk[]): string {
         const risk = this.assessmentsCalculationService.calculateRisk(riskArr);
         return this.assessmentsCalculationService.formatRisk(risk);
+    }
+
+    private getThresholdOptionName(optionNumber) {
+        let curOpt = this.thresholdOptions.find(opt => opt.risk == optionNumber);
+        if (curOpt) {
+            return curOpt.name;
+        } else {
+            return "N/A";
+        }
     }
 
     private retrieveAssessmentRisks(assessment): Risk[] {

@@ -10,8 +10,10 @@
             No summary found! ID: {{id}}
         </h3>
     </div>
+</div>
 
-    <div *ngIf="summary">
+<div *ngIf="summary">
+    <div class="container">
         <h3 class="page-header">Good news! You've reduced your risk already, but we can improve some areas of your defense.</h3>
 
         <div class="row">
@@ -68,7 +70,6 @@
                 </div>
             </div>
         </div>
-
         <hr>
         <br/>
         <div class="row">
@@ -81,38 +82,67 @@
             </div>
         </div>
         <br/>
-        <div class="row">
-            <div class="col-md-6">
-                <div *ngIf="summaryAggregation && summaryAggregation.assessedAttackPatternCountBySophisicationLevel && summaryAggregation.totalAttackPatternCountBySophisicationLevel">
-                    <sophistication-breakdown [assessedAttackPatterns]="summaryAggregation.assessedAttackPatternCountBySophisicationLevel" [allAttackPatterns]="summaryAggregation.totalAttackPatternCountBySophisicationLevel"></sophistication-breakdown>
+    </div>
+    <!-- End container -->
+
+    <div id="chartWrapper">
+        <br>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="summaryPanel">
+                        <div class="summaryPanelContent">
+                            <div *ngIf="summaryAggregation && summaryAggregation.assessedAttackPatternCountBySophisicationLevel && summaryAggregation.totalAttackPatternCountBySophisicationLevel">
+                                <sophistication-breakdown [assessedAttackPatterns]="summaryAggregation.assessedAttackPatternCountBySophisicationLevel" [allAttackPatterns]="summaryAggregation.totalAttackPatternCountBySophisicationLevel"></sophistication-breakdown>
+                            </div>
+                        </div>
+                        <div class="summaryPanelTitle">
+                            <h5 class="text-center">Sophistication Breakdown</h5>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="summaryPanel">
+                        <div class="summaryPanelContent">
+                            <assessment-chart #chartOne [riskThreshold]="selectedRisk" [riskLabelOptions]="thresholdOptions" [assessmentObjects]="summary.attributes.assessment_objects"></assessment-chart>
+                        </div>
+                        <div class="summaryPanelTitle">
+                            <h5 class="text-center">% of assessments better than {{ getThresholdOptionName(selectedRisk) }}</h5>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <assessment-chart #chartOne [riskThreshold]="selectedRisk" [riskLabelOptions]="thresholdOptions" [assessmentObjects]="summary.attributes.assessment_objects"></assessment-chart>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="summaryPanel">
+                        <div class="summaryPanelContent">
+                            <div *ngIf="techniqueBreakdown">
+                                {{techniqueBreakdown | json}}
+                            </div>
+                        </div>
+                        <div class="summaryPanelTitle">
+                            <h5 class="text-center">% Techniques Detected by Skill</h5>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+        <br><br><br>
+    </div>
 
-        <div class="row">
-            <div class="col-md-6">
-                <div *ngIf="techniqueBreakdown">
-                    {{techniqueBreakdown | json}}
-                </div>
-            </div>
-            <!--<hr>
+    <!--<hr>
             <br/>
             <div class="row">
                 <span>
                 {{summary.attributes.description}}
             </span>
             </div>-->
+</div>
 
-        </div>
+<ng-template #loadingBlock>
+    <div class="container loading">
+        <md-spinner></md-spinner><span class="loading-text">Loading...</span>
     </div>
-
-    <ng-template #loadingBlock>
-        <div class="container loading">
-            <md-spinner></md-spinner><span class="loading-text">Loading...</span>
-        </div>
-    </ng-template>
+</ng-template>
