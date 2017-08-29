@@ -30,6 +30,7 @@ export class AssessmentsSummaryComponent implements OnInit {
     public topNRisks = 3;
     public weakestAttackPatterns: AttackPattern[];
     private summaryAggregation: any;
+    private techniqueBreakdown: any;
 
     @ViewChild('chartOne')
     public chartOne: AssessmentChartComponent;
@@ -199,7 +200,8 @@ export class AssessmentsSummaryComponent implements OnInit {
 
         const summaryAggregation$ = this.assessmentsSummaryService.getSummaryAggregation(this.id).subscribe(
             (res) => {
-                this.summaryAggregation = res;              
+                this.summaryAggregation = res;      
+                this.populateTechniqueBreakdown();        
             },
             (err) => console.log(err),
             () => summaryAggregation$.unsubscribe()            
@@ -244,11 +246,54 @@ export class AssessmentsSummaryComponent implements OnInit {
             () => attackPattern$.unsubscribe());
     }
 
+    public populateTechniqueBreakdown(): void {
+        // Total assessed objects to calculated risk
+        let assessedRiskMapping = this.summaryAggregation.assessedAttackPatternCountBySophisicationLevel;
+
+        console.log('cur risk!!! ', this.selectedRisk);
+        
+        // Find IDs that meet risk threshold
+        // TODO should be <= risk or < risk?
+        let includedIds: any = this.summary.attributes.assessment_objects
+            .filter(ao => ao.risk <= this.selectedRisk)
+            .map(ao => ao.stix.id);
+            let bleh = [];
+
+        let attackPatternSet = new Set();
+        // Find assessed-objects-to-attack-patterns maps that meet those Ids
+        this.summaryAggregation.attackPatternsByAssessedObject
+            .filter(aoToApMap => includedIds.includes(aoToApMap._id))
+            .forEach(aoToApMap => {
+                aoToApMap.attackPatterns.forEach(ap => {
+                    attackPatternSet.add(JSON.stringify(ap));                     
+                });
+            });       
+
+        let attackPatternSetMap = {};
+        attackPatternSet.forEach(ap => {
+            let curAp = JSON.parse(ap);            
+            if (attackPatternSetMap[curAp['x_unfetter_sophistication_level']] === undefined) {
+                attackPatternSetMap[curAp['x_unfetter_sophistication_level']] = 0;
+            }
+            ++attackPatternSetMap[curAp['x_unfetter_sophistication_level']];
+        });
+
+        this.techniqueBreakdown = {};
+        for (let prop in assessedRiskMapping) {
+            if (attackPatternSetMap[prop] === undefined) {
+                this.techniqueBreakdown[prop] = 0;
+            } else {
+                this.techniqueBreakdown[prop] = attackPatternSetMap[prop] / assessedRiskMapping[prop];
+            }
+        }           
+    }
+
     public redrawCharts(): void {
         console.log('request to redraw charts with threshold', this.selectedRisk, this.thresholdOptions);
         // need to set this now, this change method doesnt seem to propogate the new value to the child until after this method
         this.chartOne.riskThreshold = this.selectedRisk;
         this.chartOne.renderChart();
+        this.populateTechniqueBreakdown();
     }
 
     private calculateRisk(riskArr: Risk[]): string {

@@ -5,12 +5,12 @@
         <li class="active">{{summary?.attributes.name || 'No summary found!'}} <span *ngIf="summaryDate">({{ summaryDate | date:'dd/MM/yyyy'}})</span></li>
     </ol>
 
-    <div *ngIf="!summary"> 
+    <div *ngIf="!summary">
         <h3>
-            No summary found! ID: {{id}} 
+            No summary found! ID: {{id}}
         </h3>
     </div>
-    
+
     <div *ngIf="summary">
         <h3 class="page-header">Good news! You've reduced your risk already, but we can improve some areas of your defense.</h3>
 
@@ -18,7 +18,7 @@
             <div class="col-md-6 weakestChain">
                 <h3>Assessment Report Overview</h3>
                 <div class="col-md2">
-                    <span>Overall Implementation Risk <span class="label {{riskLabelClass}}">{{totalRiskValue}}%</span></span> 
+                    <span>Overall Implementation Risk <span class="label {{riskLabelClass}}">{{totalRiskValue}}%</span></span>
                     CHART
                 </div>
 
@@ -52,20 +52,20 @@
                             <tr *ngFor="let risk of sortedRisks">
                                 <td>{{ risk.phaseName | capitalize }}</td>
                                 <td *ngIf="risk.objects; else noObjectsDiv">
-                                <ul>
-                                    <li *ngFor="let obj of risk.objects">
-                                        <a href="#stix/{{obj.type}}s/{{obj.id}}">{{obj.name}}</a>
-                                    </li>
-                                </ul>
+                                    <ul>
+                                        <li *ngFor="let obj of risk.objects">
+                                            <a href="#stix/{{obj.type}}s/{{obj.id}}">{{obj.name}}</a>
+                                        </li>
+                                    </ul>
                                 </td>
-                            <ng-template #noObjectsDiv>
-                                No objects found!
-                            </ng-template>
+                                <ng-template #noObjectsDiv>
+                                    No objects found!
+                                </ng-template>
                                 <td><span class="label label-warning">{{calculateRisk(risk.objects)}}</span></td>
                             </tr>
                         </tbody>
                     </table>
-                    </div>
+                </div>
             </div>
         </div>
 
@@ -84,33 +84,35 @@
         <div class="row">
             <div class="col-md-6">
                 <div *ngIf="summaryAggregation && summaryAggregation.assessedAttackPatternCountBySophisicationLevel && summaryAggregation.totalAttackPatternCountBySophisicationLevel">
-                    <sophistication-breakdown 
-                    [assessedAttackPatterns]="summaryAggregation.assessedAttackPatternCountBySophisicationLevel" 
-                    [allAttackPatterns]="summaryAggregation.totalAttackPatternCountBySophisicationLevel"></sophistication-breakdown>
-                </div>                 
+                    <sophistication-breakdown [assessedAttackPatterns]="summaryAggregation.assessedAttackPatternCountBySophisicationLevel" [allAttackPatterns]="summaryAggregation.totalAttackPatternCountBySophisicationLevel"></sophistication-breakdown>
+                </div>
             </div>
             <div class="col-md-6">
                 <div class="panel panel-default">
-                    <assessment-chart #chartOne
-                        [riskThreshold]="selectedRisk"
-                        [riskLabelOptions]="thresholdOptions"      
-                        [assessmentObjects]="summary.attributes.assessment_objects"></assessment-chart>
+                    <assessment-chart #chartOne [riskThreshold]="selectedRisk" [riskLabelOptions]="thresholdOptions" [assessmentObjects]="summary.attributes.assessment_objects"></assessment-chart>
+                </div>
             </div>
         </div>
-        
-        <hr>
-        <br/>
+
         <div class="row">
-            <span>
+            <div class="col-md-6">
+                <div *ngIf="techniqueBreakdown">
+                    {{techniqueBreakdown | json}}
+                </div>
+            </div>
+            <!--<hr>
+            <br/>
+            <div class="row">
+                <span>
                 {{summary.attributes.description}}
             </span>
+            </div>-->
+
         </div>
-
     </div>
-</div>
 
-<ng-template #loadingBlock>
-    <div class="container loading">
-        <md-spinner></md-spinner><span class="loading-text">Loading...</span>
-    </div>
-</ng-template>
+    <ng-template #loadingBlock>
+        <div class="container loading">
+            <md-spinner></md-spinner><span class="loading-text">Loading...</span>
+        </div>
+    </ng-template>
