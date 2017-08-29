@@ -69,7 +69,6 @@ export class AssessmentChartComponent implements OnInit {
         this.renderLabels();
 
         const rootLabelGrouping = {};
-        let firstQuestion;
         this.assessmentObjects
             .forEach((el) => {
                 const fullLabel = el.stix.name;
@@ -127,7 +126,6 @@ export class AssessmentChartComponent implements OnInit {
             index = index + 1;
         });
 
-        console.log(this.barChartData);
         // build labels based on root label
         this.barChartLabels = this.showLabels ? Array.from(uniqGroups.keys()) : [];
     }

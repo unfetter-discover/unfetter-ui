@@ -35,16 +35,21 @@ export class AssessmentsCalculationService {
         let risk = 0;
         let count = 0;
         measureObject.forEach((measurement) => {
-            let selected_value = measurement.selected_value;
-            risk = risk + parseFloat(selected_value.risk);
+            const selectedValue = measurement.selected_value;
+            risk = risk + parseFloat(selectedValue.risk);
             count = count + 1;
         });
 
         return risk / measureObject.length;
     }
 
-    public sophisicationNumberToWord(number: any): string {
-        switch (parseInt(number)) {
+    public sophisicationNumberToWord(num: string): string {
+        const val = parseInt(num, 10);
+        return this.sophisicationValueToWord(val);
+    }
+
+    public sophisicationValueToWord(num: number): string {
+        switch (num) {
             case 0:
                 return 'Novice';
             case 1:
@@ -54,7 +59,8 @@ export class AssessmentsCalculationService {
             case 3:
                 return 'Innovator';
             default:
-                return number;
+                return num.toString();
         }
     }
+
 }

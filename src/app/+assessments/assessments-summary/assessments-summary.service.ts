@@ -31,7 +31,7 @@ export class AssessmentsSummaryService {
         return this.genericApi.get(url);
     }
 
-    public getSummaryAggregation(id: string): Observable<any> {        
+    public getSummaryAggregation(id: string): Observable<any> {
         if (!id) {
             return Observable.empty();
         }

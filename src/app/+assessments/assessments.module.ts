@@ -19,6 +19,7 @@ import { assessmentsRouting } from './assessments.routing';
 import { AssessmentsCalculationService } from './assessments-summary/assessments-calculation.service';
 import { AssessmentChartComponent } from './assessments-summary/assessment-chart/assessment-chart.component';
 import { SophisticationBreakdownComponent } from './assessments-summary/sophistication-breakdown/sophistication-breakdown.component';
+import { TechniquesChartComponent } from './assessments-summary/techniques-chart/techniques-chart.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { SophisticationBreakdownComponent } from './assessments-summary/sophisti
     RiskBreakdownComponent,
     AssessmentsSummaryComponent,
     AssessmentChartComponent,
-    SophisticationBreakdownComponent
+    SophisticationBreakdownComponent,
+    TechniquesChartComponent
   ],
   imports: [
     ChartsModule,

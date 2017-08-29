@@ -4,6 +4,32 @@ import { AttackPattern } from '../../models/attack-pattern';
 
 export class SortHelper {
 
+    public static sortDesc(): (a: any, b: any) => number {
+        const sorter = (a: any, b: any) => {
+            if (a > b) {
+                return 1;
+            } else if (a < b) {
+                return -1;
+            }
+            return 0;
+        };
+
+        return sorter;
+    }
+
+    public static sortAsc(): (a: any, b: any) => number {
+        const sorter = (a: any, b: any) => {
+            if (a > b) {
+                return -1;
+            } else if (a < b) {
+                return 1;
+            }
+            return 0;
+        };
+
+        return sorter;
+    }
+
     public static sortByRiskDesc(): (a: Risk, b: Risk) => number {
         const sorter = (a: Risk, b: Risk) => {
             if (a.risk > b.risk) {
