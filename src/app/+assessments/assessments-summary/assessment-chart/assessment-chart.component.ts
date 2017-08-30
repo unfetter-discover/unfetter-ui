@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Constance } from '../../utils/constance';
+import { Constance } from '../../../utils/constance';
+import { AssessmentsCalculationService } from '../assessments-calculation.service';
 
 @Component({
     selector: 'assessment-chart',
@@ -32,7 +33,8 @@ export class AssessmentChartComponent implements OnInit {
         responsive: true,
         scales: {
             xAxes: [{
-                stacked: true
+                stacked: true,
+                display: true
             }],
             yAxes: [{
                 stacked: true
@@ -44,17 +46,24 @@ export class AssessmentChartComponent implements OnInit {
     public barChartType: string = 'bar';
 
     public barChartData: any[] = [
-        { data: [], label: '' },
-        { data: [], label: '' }
+        { data: [], label: '', borderWidth: 0 },
+        { data: [], label: '', borderWidth: 0 }
     ];
+    private colors: any[];
 
     protected readonly rootLabelRegex = /(\w+\s+\d+).(\d+)*/;
+
+    // Hide label is one is longer than this
+    private readonly longestLabelThreshold: number = 10;
+
+    constructor(private assessmentsCalculationService: AssessmentsCalculationService) { }
 
     /**
      * @description
      *  initialize this class memebers, calls render when finished
      */
     public ngOnInit(): void {
+        this.colors = this.assessmentsCalculationService.barColors;
         this.showLabels = this.showLabels || this.showLabelsDefault;
         this.showLegand = this.showLegand || this.showLegandDefault;
         this.riskThreshold = this.riskThreshold || this.riskThresholdDefault;
@@ -127,7 +136,7 @@ export class AssessmentChartComponent implements OnInit {
         });
 
         // build labels based on root label
-        this.barChartLabels = this.showLabels ? Array.from(uniqGroups.keys()) : [];
+        this.barChartLabels = this.showLabels ? Array.from(uniqGroups.keys()) : [];            
     }
 
     public renderLabels(): void {

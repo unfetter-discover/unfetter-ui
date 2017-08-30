@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Constance } from '../../utils/constance';
+import { Constance } from '../../../utils/constance';
 import { SortHelper } from '../sort-helper';
 import { AssessmentsCalculationService } from '../assessments-calculation.service';
 
@@ -43,9 +43,10 @@ export class TechniquesChartComponent implements OnInit {
     public barChartLabels: string[] = [];
     public readonly barChartType: string = 'bar';
     public barChartData: any[] = [
-        { data: [], label: '' },
-        { data: [], label: '' }
+        { data: [], label: '', borderWidth: 0 },
+        { data: [], label: '', borderWidth: 0 }
     ];
+    private colors: any[];
 
     // tslint:disable-next-line:no-empty
     public constructor(private assessmentsCalculationService: AssessmentsCalculationService) {}
@@ -55,6 +56,7 @@ export class TechniquesChartComponent implements OnInit {
      *  initialize this class memebers, calls render when finished
      */
     public ngOnInit(): void {
+        this.colors = this.assessmentsCalculationService.barColors
         this.showLabels = this.showLabels || this.showLabelsDefault;
         this.showLegand = this.showLegand || this.showLegandDefault;
         this.riskThreshold = this.riskThreshold || this.riskThresholdDefault;
@@ -65,7 +67,10 @@ export class TechniquesChartComponent implements OnInit {
      * @description
      *  renders the chart components, based on applied threshold
      */
-    public renderChart(): void {
+    public renderChart(selectedRisk?: number): void {
+        if(selectedRisk) {
+            this.riskThreshold = selectedRisk;
+        }
         console.log('render chart, techniques breakdown', this.techniqueBreakdown);
         this.renderLabels();
         this.renderLegend();

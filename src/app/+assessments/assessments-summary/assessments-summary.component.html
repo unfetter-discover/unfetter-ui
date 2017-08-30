@@ -105,34 +105,33 @@
                 <div class="col-md-6">
                     <div class="summaryPanel">
                         <div class="summaryPanelContent">
+                            <div *ngIf="techniqueBreakdown;else noTechinquesData">
+
+                                <techniques-chart #techniquesChart [riskThreshold]="selectedRisk" [riskLabelOptions]="thresholdOptions" [techniqueBreakdown]="techniqueBreakdown">
+                                </techniques-chart>
+
+                            </div>
+                            <ng-template #noTechinquesData>No data to load chart!</ng-template>
+                        </div>
+                        <div class="summaryPanelTitle">
+                            <h5 class="text-center">% Techniques Detected by Skill</h5>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="summaryPanel">
+                        <div class="summaryPanelContent">
                             <assessment-chart #assessmentChart [riskThreshold]="selectedRisk" [riskLabelOptions]="thresholdOptions" [assessmentObjects]="summary.attributes.assessment_objects"></assessment-chart>
                         </div>
                         <div class="summaryPanelTitle">
                             <h5 class="text-center">% of assessments better than {{ getThresholdOptionName(selectedRisk) }}</h5>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="summaryPanel">
-                        <div class="summaryPanelContent">
-                            <div *ngIf="techniqueBreakdown;else noTechinquesData">
-                                <div class="row">
-                                    <techniques-chart #techniquesChart
-                                        [riskThreshold]="selectedRisk"
-                                        [riskLabelOptions]="thresholdOptions"
-                                        [techniqueBreakdown]="techniqueBreakdown">
-                                    </techniques-chart>
-                                    <ng-template #noTechinquesData>No data to load chart!</ng-template>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="summaryPanelTitle">
-                            <h5 class="text-center">% Techniques Detected by Skill</h5>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>

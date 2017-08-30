@@ -23,8 +23,9 @@ export class SophisticationBreakdownComponent implements OnInit {
             }]
         },
     };
+    public colors;
     public barChartLabels: string[] = [];
-    public barChartType: string = 'horizontalBar';
+    public barChartType: string = 'bar';
     public barChartLegend: boolean = true;
 
     public barChartData: any[] = [
@@ -43,6 +44,8 @@ export class SophisticationBreakdownComponent implements OnInit {
     constructor(private assessmentsCalculationService: AssessmentsCalculationService){}
 
     ngOnInit() {
+        this.colors = this.assessmentsCalculationService.barColors;
+        
         this.barChartLabels = Object.keys(this.allAttackPatterns)
             .map(level => this.assessmentsCalculationService.sophisicationNumberToWord(level));
 

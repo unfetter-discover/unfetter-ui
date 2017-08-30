@@ -2,9 +2,19 @@ import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { Risk } from './risk';
+import { Constance } from '../../utils/constance';
 
 @Injectable()
 export class AssessmentsCalculationService {
+
+    public barColors: any = [
+        {
+            backgroundColor: Constance.MAT_COLORS['lightblue']['800']
+        },
+        {
+            backgroundColor: Constance.MAT_COLORS['bluegrey']['300']   
+        }
+    ];
 
     // tslint:disable-next-line:no-empty
     constructor() {}

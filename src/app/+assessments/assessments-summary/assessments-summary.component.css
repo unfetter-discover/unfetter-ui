@@ -58,14 +58,9 @@
 .summaryPanelTitle {
     padding: 15px;
     background: #E2E2E2;
+    border-radius: 0 0 8px 8px;
 }
 #chartWrapper {
     background: #f2f2f2;
     width: 100%;
-}
-@media screen and (min-width: 768px) {
-    #chartWrapper .container {
-        padding-left: 30px;
-        padding-right: 30px;
-    }
 }
