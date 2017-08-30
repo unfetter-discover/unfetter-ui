@@ -36,8 +36,23 @@ export class TechniquesChartComponent implements OnInit {
                 stacked: true
             }],
             yAxes: [{
-                stacked: true
+                stacked: true,
+                ticks: {
+                    suggestedMin: 0,
+                    suggestedMax: 100,
+                    stepSize: 10
+                }
             }]
+        },
+        tooltips: {
+            callbacks: {
+                label: (tooltipItem, data) => {
+                    const dataset = data.datasets[tooltipItem.datasetIndex];
+                    const val = dataset.data[tooltipItem.index] || 0;
+                    const percentage = val;
+                    return `${percentage}%`;
+                }
+            }
         }
     };
     public barChartLabels: string[] = [];
@@ -56,7 +71,7 @@ export class TechniquesChartComponent implements OnInit {
      *  initialize this class memebers, calls render when finished
      */
     public ngOnInit(): void {
-        this.colors = this.assessmentsCalculationService.barColors
+        this.colors = this.assessmentsCalculationService.barColors;
         this.showLabels = this.showLabels || this.showLabelsDefault;
         this.showLegand = this.showLegand || this.showLegandDefault;
         this.riskThreshold = this.riskThreshold || this.riskThresholdDefault;
@@ -79,8 +94,10 @@ export class TechniquesChartComponent implements OnInit {
         const breakdown = Object.keys(this.techniqueBreakdown);
         let index = 0;
         breakdown.forEach((key) => {
-            this.barChartData[0].data[index] = this.techniqueBreakdown[key];
-            this.barChartData[1].data[index] = 1.0  - this.techniqueBreakdown[key];
+            const val = this.techniqueBreakdown[key];
+            const complement = 1.0  - val;
+            this.barChartData[0].data[index] = Math.round(val * 100);
+            this.barChartData[1].data[index] = Math.round(complement * 100);
             index = index + 1;
         });
     }
@@ -123,4 +140,4 @@ export class TechniquesChartComponent implements OnInit {
 
 interface SophisticationKeys {
     0: number; 1: number; 2: number; 3: number;
-};
+}

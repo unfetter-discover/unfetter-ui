@@ -40,8 +40,23 @@ export class AssessmentChartComponent implements OnInit {
                 }
             }],
             yAxes: [{
-                stacked: true
+                stacked: true,
+                ticks: {
+                    suggestedMin: 0,
+                    suggestedMax: 100,
+                    stepSize: 10
+                }
             }]
+        },
+        tooltips: {
+            callbacks: {
+                label: (tooltipItem, data) => {
+                    const dataset = data.datasets[tooltipItem.datasetIndex];
+                    const val = dataset.data[tooltipItem.index] || 0;
+                    const percentage = val;
+                    return `${percentage}%`;
+                }
+            }
         }
     };
 
@@ -52,12 +67,12 @@ export class AssessmentChartComponent implements OnInit {
         { data: [], label: '', borderWidth: 0 },
         { data: [], label: '', borderWidth: 0 }
     ];
-    private colors: any[];
 
     protected readonly rootLabelRegex = /(\w+\s+\d+).(\d+)*/;
 
     // Hide label is one is longer than this
     private readonly longestLabelThreshold: number = 10;
+    private colors: any[];
 
     constructor(private assessmentsCalculationService: AssessmentsCalculationService) { }
 
@@ -126,20 +141,31 @@ export class AssessmentChartComponent implements OnInit {
 
         // for every group, find the data array index and manipulate counts based on drop down threshold
         let index = 0;
+
+        // count based on risk scores
         uniqGroups.forEach((key) => {
             const policyQuestions = rootLabelGrouping[key];
             policyQuestions.forEach((policy) => {
                 if (policy.risk < this.riskThreshold) {
-                    this.barChartData[1].data[index] = this.barChartData[1].data[index] + 1;
+                    this.barChartData[1].data[index] += 1;
                 } else {
-                    this.barChartData[0].data[index] = this.barChartData[0].data[index] + 1;
+                    this.barChartData[0].data[index] += 1;
                 }
             });
             index = index + 1;
         });
 
+        // convert to percentages
+        for (let i = 0; i < index; i++) {
+            const val1 = this.barChartData[0].data[i];
+            const val2 = this.barChartData[1].data[i];
+            const total = val1 + val2;
+            this.barChartData[0].data[i] = Math.round((val1 / total) * 100);
+            this.barChartData[1].data[i] = Math.round((val2 / total) * 100);
+        }
+
         // build labels based on root label
-        this.barChartLabels = this.showLabels ? Array.from(uniqGroups.keys()) : [];            
+        this.barChartLabels = this.showLabels ? Array.from(uniqGroups.keys()) : [];
     }
 
     public renderLabels(): void {

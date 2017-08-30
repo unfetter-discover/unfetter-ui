@@ -41,7 +41,7 @@ export class ThreatActorEditComponent extends TheatActorComponent implements OnI
     }
 
     public isChecked(label: string): boolean {
-        let found = this.threatActor.attributes.labels.find((l) => {
+        const found = this.threatActor.attributes.labels.find((l) => {
             return l === label;
         });
         return found ? true : false;
@@ -52,7 +52,7 @@ export class ThreatActorEditComponent extends TheatActorComponent implements OnI
     }
 
     public saveThreatActor(): void {
-         let sub = super.saveButtonClicked().subscribe(
+         const sub = super.saveButtonClicked().subscribe(
             (data) => {
                 console.log('saved');
             }, (error) => {

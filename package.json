@@ -49,7 +49,7 @@
     "start": "npm run server:dev",
     "test": "npm run lint && karma start",
     "tslint": "tslint",
-    "typedoc": "typedoc",
+    "typedoc": "typedoc --json typedoc.json",
     "version": "npm run build",
     "watch:dev:hmr": "npm run watch:dev -- --hot",
     "watch:dev": "npm run build:dev -- --watch",
