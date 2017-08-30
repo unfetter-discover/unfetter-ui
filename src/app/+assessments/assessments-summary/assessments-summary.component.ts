@@ -154,7 +154,7 @@ export class AssessmentsSummaryComponent implements OnInit {
             }
         }
 
-        console.log(this.techniqueBreakdown);
+        console.log('current assessment summary techinque breakdown', this.techniqueBreakdown);
     }
 
     public redrawCharts(): void {
@@ -165,6 +165,7 @@ export class AssessmentsSummaryComponent implements OnInit {
 
         this.populateTechniqueBreakdown();
         this.techniquesChart.riskThreshold = this.selectedRisk;
+        this.techniquesChart.techniqueBreakdown = this.techniqueBreakdown;
         this.techniquesChart.renderChart();
     }
 
@@ -174,7 +175,7 @@ export class AssessmentsSummaryComponent implements OnInit {
     }
 
     private getThresholdOptionName(optionNumber) {
-        const curOpt = this.thresholdOptions.find((opt) => opt.risk == optionNumber);
+        const curOpt = this.thresholdOptions.find((opt) => opt.risk === optionNumber);
         if (curOpt) {
             return curOpt.name;
         } else {
