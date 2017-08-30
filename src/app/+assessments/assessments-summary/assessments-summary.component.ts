@@ -26,11 +26,9 @@ export class AssessmentsSummaryComponent implements OnInit {
     public summary: any;
     public summaryDate: Date;
     public thresholdOptions: ThresholdOption[];
-    public selectedRisk: number = 0;
+    public selectedRisk: number = 0.5;
     public id: string;
     public phaseNameGroups: any[];
-    public model: any;
-    public totalRiskValue: string;
     public riskLabelClass = 'label-info';
     public riskPerKillChain;
     public sortedRisks;
