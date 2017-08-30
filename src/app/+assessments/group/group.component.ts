@@ -42,8 +42,8 @@ export class AssessmentsGroupComponent implements OnInit {
                 (res) => {
                     this.riskByAttackPattern = res ? res : {};
                     this.populateUnassessedPhases();
-                    this.activePhase = routedPhase ? routedPhase : this.riskByAttackPattern.phases[0]._id;                    
-                    this.setAttackPattern(this.getAttackPatternsByPhase(this.activePhase)[0].attackPatternId);
+                    this.activePhase = routedPhase ? routedPhase : this.riskByAttackPattern.phases[0]._id; 
+                    this.setPhase(this.activePhase);     
                 },
                 (err) => console.log(err)
             );
