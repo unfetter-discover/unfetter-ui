@@ -8,8 +8,8 @@ import { AssessmentsCalculationService } from '../assessments-calculation.servic
     styleUrls: ['./sophistication-breakdown.component.css']
 })
 export class SophisticationBreakdownComponent implements OnInit {
-    @Input('assessedAttackPatterns') private assessedAttackPatterns: any;
-    @Input('allAttackPatterns') private allAttackPatterns: any;
+    @Input('assessedAttackPatterns') public assessedAttackPatterns: any;
+    @Input('allAttackPatterns') public allAttackPatterns: any;
 
     public barChartOptions: any = {
         scaleShowVerticalLines: false,
@@ -29,13 +29,13 @@ export class SophisticationBreakdownComponent implements OnInit {
     public barChartLegend: boolean = true;
 
     public barChartData: any[] = [
-        { 
-            data: [], 
+        {
+            data: [],
             label: 'Assessed Attack Patterns',
             borderWidth: 0,
         },
-        { 
-            data: [], 
+        {
+            data: [],
             label: 'Unassessed Attack Patterns',
             borderWidth: 0,
         }
@@ -43,11 +43,11 @@ export class SophisticationBreakdownComponent implements OnInit {
 
     constructor(private assessmentsCalculationService: AssessmentsCalculationService){}
 
-    ngOnInit() {
+    public ngOnInit() {
         this.colors = this.assessmentsCalculationService.barColors;
-        
+
         this.barChartLabels = Object.keys(this.allAttackPatterns)
-            .map(level => this.assessmentsCalculationService.sophisicationNumberToWord(level));
+            .map((level) => this.assessmentsCalculationService.sophisicationNumberToWord(level));
 
         for (let prop in this.assessedAttackPatterns) {
             this.barChartData[0].data.push(this.assessedAttackPatterns[prop]);
@@ -55,6 +55,6 @@ export class SophisticationBreakdownComponent implements OnInit {
 
         for (let prop in this.allAttackPatterns) {
             this.barChartData[1].data.push(this.allAttackPatterns[prop]);
-        }   
+        }
     }
 }

@@ -152,7 +152,7 @@ export class AssessmentsGroupComponent implements OnInit {
     }
 
     public populateUnassessedPhases() {
-        let assessedPhases = this.riskByAttackPattern.phases.map((phase) => phase._id);
+        const assessedPhases = this.riskByAttackPattern.phases.map((phase) => phase._id);
         this.unassessedPhases = Constance.KILL_CHAIN_PHASES
             .filter((phase) => assessedPhases.indexOf(phase) < 0);
     }

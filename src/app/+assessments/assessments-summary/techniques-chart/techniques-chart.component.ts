@@ -111,8 +111,8 @@ export class TechniquesChartComponent implements OnInit {
         if (this.riskLabelOptions) {
             const option = this.riskLabelOptions.find((opt) => opt.risk === this.riskThreshold);
             const name = option.name;
-            this.barChartData[0].label = 'Below ' + name;
-            this.barChartData[1].label = 'At Or Above ' + name;
+            this.barChartData[0].label = 'At Or Above ' + name;
+            this.barChartData[1].label = 'Below ' + name;
         }
     }
 
