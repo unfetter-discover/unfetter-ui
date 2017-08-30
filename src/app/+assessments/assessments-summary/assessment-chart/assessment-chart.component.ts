@@ -34,7 +34,10 @@ export class AssessmentChartComponent implements OnInit {
         scales: {
             xAxes: [{
                 stacked: true,
-                display: true
+                display: true,
+                ticks: {
+                    minRotation: 90,
+                }
             }],
             yAxes: [{
                 stacked: true
