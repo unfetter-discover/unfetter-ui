@@ -2,9 +2,19 @@ import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { Risk } from './risk';
+import { Constance } from '../../utils/constance';
 
 @Injectable()
 export class AssessmentsCalculationService {
+
+    public barColors: any = [
+        {
+            backgroundColor: Constance.MAT_COLORS['lightblue']['800']
+        },
+        {
+            backgroundColor: Constance.MAT_COLORS['lightblue']['100']   
+        }
+    ];
 
     // tslint:disable-next-line:no-empty
     constructor() {}
@@ -35,11 +45,32 @@ export class AssessmentsCalculationService {
         let risk = 0;
         let count = 0;
         measureObject.forEach((measurement) => {
-            let selected_value = measurement.selected_value;
-            risk = risk + parseFloat(selected_value.risk);
+            const selectedValue = measurement.selected_value;
+            risk = risk + parseFloat(selectedValue.risk);
             count = count + 1;
         });
 
         return risk / measureObject.length;
     }
+
+    public sophisicationNumberToWord(num: string): string {
+        const val = parseInt(num, 10);
+        return this.sophisicationValueToWord(val);
+    }
+
+    public sophisicationValueToWord(num: number): string {
+        switch (num) {
+            case 0:
+                return 'Novice';
+            case 1:
+                return 'Practitioner';
+            case 2:
+                return 'Expert';
+            case 3:
+                return 'Innovator';
+            default:
+                return num.toString();
+        }
+    }
+
 }

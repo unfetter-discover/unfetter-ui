@@ -17,7 +17,7 @@ export class RiskBreakdownComponent implements OnInit {
 
     @Input('riskBreakdown') public riskBreakdown: any;
 
-    private categories: String[];
+    private categories: string[];
 
     public ngOnInit() {
         this.categories = Object.keys(this.riskBreakdown);

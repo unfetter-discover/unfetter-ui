@@ -34,7 +34,7 @@ export class IndicatorComponent extends BaseStixComponent implements OnInit {
     }
 
     protected loadIndicator(): void {
-        let subscription =  super.get().subscribe(
+        const subscription =  super.get().subscribe(
             (data) => {
                 this.indicator =  new Indicator(data);
             }, (error) => {
@@ -51,7 +51,7 @@ export class IndicatorComponent extends BaseStixComponent implements OnInit {
 
     protected saveButtonClicked(): Observable<any> {
         return Observable.create((observer) => {
-               let subscription = super.save(this.indicator).subscribe(
+               const subscription = super.save(this.indicator).subscribe(
                     (data) => {
                         observer.next(data);
                         observer.complete();
@@ -69,7 +69,7 @@ export class IndicatorComponent extends BaseStixComponent implements OnInit {
     }
 
     protected editButtonClicked(): void {
-        let link = ['../edit', this.indicator.id];
+        const link = ['../edit', this.indicator.id];
         super.gotoView(link);
     }
 

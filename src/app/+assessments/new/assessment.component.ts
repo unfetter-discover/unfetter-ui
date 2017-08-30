@@ -186,7 +186,7 @@ import { MenuItem } from 'primeng/primeng';
 })
 export class AssessmentComponent extends Measurements implements OnInit {
   public model: any;
-  public assessmentDescription: String = '';
+  public assessmentDescription: string = '';
   public saved: boolean = false;
   public publishDate: Date = new Date();
   public buttonLabel = 'Next';
@@ -215,15 +215,15 @@ export class AssessmentComponent extends Measurements implements OnInit {
     tooltips: {
       callbacks: {
         label: (tooltipItem, data) => {
-          let allData = data.datasets[tooltipItem.datasetIndex].data;
-          let tooltipLabel = data.labels[tooltipItem.index];
-          let tooltipData = allData[tooltipItem.index];
+          const allData = data.datasets[tooltipItem.datasetIndex].data;
+          const tooltipLabel = data.labels[tooltipItem.index];
+          const tooltipData = allData[tooltipItem.index];
           let total = 0;
           allData.forEach(
               (d) => {
             total += d;
           });
-          let tooltipPercentage = Math.round(tooltipData / total * 100);
+          const tooltipPercentage = Math.round(tooltipData / total * 100);
           return `${tooltipLabel}: ${tooltipPercentage}%`;
         }
       }
@@ -257,9 +257,8 @@ export class AssessmentComponent extends Measurements implements OnInit {
   }
 
   public ngOnInit() {
-
-    let type = this.route.snapshot.paramMap.get('type');
-    let id = this.route.snapshot.paramMap.get('id');
+    const type = this.route.snapshot.paramMap.get('type');
+    const id = this.route.snapshot.paramMap.get('id');
     switch (type) {
         case 'indicator' : {
           this.url = Constance.INDICATOR_URL;
@@ -300,7 +299,7 @@ export class AssessmentComponent extends Measurements implements OnInit {
         // console.dir(this.currentAssessmentGroup.assessments)
         this.currentAssessmentGroup.assessments.forEach(
           (assessment) => {
-            let assessment_object = this.model.attributes.assessment_objects.find(
+            const assessment_object = this.model.attributes.assessment_objects.find(
                 (assessment_object) => {
                   return assessment.id === assessment_object.stix.id;
                 }
@@ -310,7 +309,7 @@ export class AssessmentComponent extends Measurements implements OnInit {
             // console.dir(assessment_object)
             assessment.measurements.forEach(
               (m) => {
-                let question = assessment_object.questions.find((q) => { return q.name === m.name});
+                const question = assessment_object.questions.find((q) => q.name === m.name);
                 // console.log('update risk currentAssessmentGroup.assessment')
                 // console.dir(question)
                 m.risk = assessment_object.risk; // question.selected_value.risk
@@ -344,14 +343,14 @@ export class AssessmentComponent extends Measurements implements OnInit {
   }
 
   private createAssessmentGroups(assessedObjects: any[]): any[] {
-    let assessmentGroups = [];
-    let self = this;
+    const assessmentGroups = [];
+    const self = this;
     if (assessedObjects) {
       // Go through and build each item
-      let assessments: any = [];
+      const assessments: any = [];
       assessedObjects.forEach(
           (assessedObject) => {
-              let assessment: any = {};
+              const assessment: any = {};
               assessment.version = '1';
               assessment.modified = new Date();
               assessment.created = new Date();
@@ -365,7 +364,7 @@ export class AssessmentComponent extends Measurements implements OnInit {
               assessment.measurements = this.buildMeasurements(assessedObject.id);
               assessment.type = assessedObject.type;
 
-              let risk = this.getRisk(assessment.measurements);
+              const risk = this.getRisk(assessment.measurements);
               assessment.risk = risk;
               assessments.push(assessment);
       });
@@ -373,54 +372,54 @@ export class AssessmentComponent extends Measurements implements OnInit {
       this.assessments = assessments;
       this.killChains = this.buildKillChain(assessments);
 
-      let assessmentObjectsGroups = this.groupObjectsByKillPhase(assessments);
+      const assessmentObjectsGroups = this.groupObjectsByKillPhase(assessments);
       let keys = Object.keys(assessmentObjectsGroups);
       keys = keys.sort();
       keys.forEach(
           (phaseName, index) => {
         // TODO - Need to remove the 'courseOfAction' name
-        let courseOfActionGroup = assessmentObjectsGroups[phaseName];
+        const courseOfActionGroup = assessmentObjectsGroups[phaseName];
 
         // This is the x-unfetter-control-assessments
-        let assessmentGroup: any = {};
+        const assessmentGroup: any = {};
         assessmentGroup.name = phaseName;
-        let step = (index+1);
+        const step = (index+1);
         this.navigations.push({label: this.splitTitle(phaseName), page: step})
          this.item = this.navigations;
         // TODO: Need to get description somehow from the key phase information
         assessmentGroup.description = this.killChains[phaseName];
         assessmentGroup.assessments = courseOfActionGroup;
         assessmentGroup.risk = 1;
-        let riskArray = [1, 0];
+        const riskArray = [1, 0];
         assessmentGroup.riskArray = riskArray;
-        let riskArrayLabels = ['Risk Accepted', 'Risk Addressed'];
+        const riskArrayLabels = ['Risk Accepted', 'Risk Addressed'];
         assessmentGroup.riskArrayLabels = riskArrayLabels;
 
         assessmentGroups.push(assessmentGroup);
       });
     }
-    let laststep = (this.navigations.length + 1);
+    const laststep = (this.navigations.length + 1);
     this.navigations.push({label: 'Summary', page: laststep });
     return assessmentGroups;
   }
 
   private buildKillChain(stixObjects): any {
-    let killChains = [];
+    const killChains = [];
     stixObjects.forEach(
         (stixObject) => {
-      let killChainPhases = stixObject.kill_chain_phases;
+      const killChainPhases = stixObject.kill_chain_phases;
       if (!killChainPhases) {
-        let phaseName = 'unknown';
+        const phaseName = 'unknown';
         if (!killChains[phaseName]) {
-          let description = 'unknown description';
+          const description = 'unknown description';
           killChains[phaseName] = description;
         }
       } else {
         killChainPhases.forEach(
             (killChainPhase) => {
-          let phaseName = killChainPhase.phase_name;
+          const phaseName = killChainPhase.phase_name;
           if (!killChains[phaseName]) {
-            let description = killChainPhase.description;
+            const description = killChainPhase.description;
             if (description) {
               killChains[phaseName] = description;
             } else {
@@ -434,29 +433,29 @@ export class AssessmentComponent extends Measurements implements OnInit {
   }
 
   private groupObjectsByKillPhase(stixObjects): any {
-    let hash = {};
+    const hash = {};
     stixObjects.forEach(
         (stixObject) => {
-      let killChainPhases = stixObject.kill_chain_phases;
+      const killChainPhases = stixObject.kill_chain_phases;
       if (!killChainPhases) {
-        let phaseName = 'unknown';
+        const phaseName = 'unknown';
         let objectProxies = hash[phaseName];
         if (objectProxies === undefined) {
           objectProxies = [];
           hash[phaseName] = objectProxies;
         }
-        let objectProxy = { content: stixObject };
+        const objectProxy = { content: stixObject };
         objectProxies.push(stixObject);
       } else {
         killChainPhases.forEach(
             (killChainPhase) => {
-          let phaseName = killChainPhase.phase_name;
+          const phaseName = killChainPhase.phase_name;
           let objectProxies = hash[phaseName];
           if (objectProxies === undefined) {
             objectProxies = [];
             hash[phaseName] = objectProxies;
           }
-          let objectProxy = {
+          const objectProxy = {
             content: stixObject
           };
 
@@ -469,8 +468,8 @@ export class AssessmentComponent extends Measurements implements OnInit {
   }
 
   private calculateGroupRisk(): number {
-    let groupRisk = this.calculateRisk(this.currentAssessmentGroup.assessments);
-    let riskArray = [];
+    const groupRisk = this.calculateRisk(this.currentAssessmentGroup.assessments);
+    const riskArray = [];
     riskArray.push(groupRisk);
     riskArray.push(1 - groupRisk);
     this.currentAssessmentGroup.risk = groupRisk;
@@ -482,15 +481,15 @@ export class AssessmentComponent extends Measurements implements OnInit {
     // console.dir(option)
     // console.log('option.selected.value.risk ' + option.selected.value)
     assessment.risk = option.selected.value;
-    let groupRisk = this.calculateGroupRisk();
+    const groupRisk = this.calculateGroupRisk();
     // console.log('groupRisk ' + groupRisk)
     if (this.model) {
-        let assessment_object = this.model.attributes.assessment_objects.find(
+        const assessment_object = this.model.attributes.assessment_objects.find(
           (assessment_object) => { return assessment.id === assessment_object.stix.id; }
         );
 
         assessment_object.risk = groupRisk;
-        let question = assessment_object.questions.find((q) => { return q.name === measurement.name});
+        const question = assessment_object.questions.find((q) => { return q.name === measurement.name});
         // console.dir(question)
         question.risk = option.selected.value.risk;
         question.selected_value = option.selected.value
@@ -525,7 +524,7 @@ export class AssessmentComponent extends Measurements implements OnInit {
   }
 
   private updateChart(): void {
-    let chartData = this.doughnutChartData.slice();
+    const chartData = this.doughnutChartData.slice();
     chartData[0].data = this.currentAssessmentGroup.riskArray;
     this.doughnutChartData = chartData;
   }
@@ -555,7 +554,7 @@ export class AssessmentComponent extends Measurements implements OnInit {
   }
 
   private splitTitle(title?: string): string {
-    let split = title? title.split('-') : this.currentAssessmentGroup.name.split('-');
+    const split = title? title.split('-') : this.currentAssessmentGroup.name.split('-');
     for (let i = 0; i < split.length; i++) {
       let s = split[i];
       s = s.charAt(0).toUpperCase() + s.slice(1);
@@ -565,7 +564,7 @@ export class AssessmentComponent extends Measurements implements OnInit {
   }
 
   private generateXUnfetterAssessment(assessmentsGroups: any) {
-    let retVal: any = {};
+    const retVal: any = {};
     retVal.type = 'x-unfetter-assessment';
     retVal.name = this.assessmentName;
     retVal.description = this.assessmentDescription;
@@ -576,7 +575,7 @@ export class AssessmentComponent extends Measurements implements OnInit {
         if (assessmentsGroup.assessments !== undefined) {
           assessmentsGroup.assessments.forEach(
             (assessment) => {
-              let temp: any = {};
+              const temp: any = {};
 
               temp.stix = {};
               temp.stix.id = assessment.id;
@@ -613,13 +612,13 @@ export class AssessmentComponent extends Measurements implements OnInit {
   private saveAssessments(): void {
     this.url = 'api/x-unfetter-assessments';
     if (this.model) {
-      let retVal: any = {};
+      const retVal: any = {};
       retVal.type = 'x-unfetter-assessment';
       retVal.name = this.assessmentName;
       retVal.description = this.assessmentDescription;
       retVal.assessment_objects = this.model.attributes.assessment_objects;
       this.url = this.url + '/' + this.model.id;
-      let sub = this.genericApi.patch( this.url, retVal).subscribe(
+      const sub = this.genericApi.patch( this.url, retVal).subscribe(
           (res) => {
             this.saved = true;
             this.location.back();
@@ -630,8 +629,8 @@ export class AssessmentComponent extends Measurements implements OnInit {
           }
       );
     } else {
-        let xUnfetterAssessment = this.generateXUnfetterAssessment(this.assessmentGroups);
-        let sub = this.genericApi.post( this.url, xUnfetterAssessment).subscribe(
+        const xUnfetterAssessment = this.generateXUnfetterAssessment(this.assessmentGroups);
+        const sub = this.genericApi.post( this.url, xUnfetterAssessment).subscribe(
             (res) => {
               this.saved = true;
               this.location.back();

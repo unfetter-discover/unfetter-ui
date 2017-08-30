@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
+import { Constance } from '../../utils/constance';
 
 @Injectable()
 export class GenericApi {
-    // TODO dont hard code this
-    private baseUrl: string = 'https://localhost/';
+    private baseUrl: String = Constance.API_HOST || '';
     private data: any = null;
     private postHeaders: Headers;
 

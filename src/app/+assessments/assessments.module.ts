@@ -17,6 +17,9 @@ import { AssessmentsSummaryComponent } from './assessments-summary/assessments-s
 import { AssessmentsSummaryService } from './assessments-summary/assessments-summary.service';
 import { assessmentsRouting } from './assessments.routing';
 import { AssessmentsCalculationService } from './assessments-summary/assessments-calculation.service';
+import { AssessmentChartComponent } from './assessments-summary/assessment-chart/assessment-chart.component';
+import { SophisticationBreakdownComponent } from './assessments-summary/sophistication-breakdown/sophistication-breakdown.component';
+import { TechniquesChartComponent } from './assessments-summary/techniques-chart/techniques-chart.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +32,10 @@ import { AssessmentsCalculationService } from './assessments-summary/assessments
     PhaseListComponent,
     AssessmentsGroupComponent,
     RiskBreakdownComponent,
-    AssessmentsSummaryComponent
+    AssessmentsSummaryComponent,
+    AssessmentChartComponent,
+    SophisticationBreakdownComponent,
+    TechniquesChartComponent
   ],
   imports: [
     ChartsModule,

@@ -5,20 +5,22 @@
         <li class="active">{{summary?.attributes.name || 'No summary found!'}} <span *ngIf="summaryDate">({{ summaryDate | date:'dd/MM/yyyy'}})</span></li>
     </ol>
 
-    <div *ngIf="!summary"> 
+    <div *ngIf="!summary">
         <h3>
-            No summary found! ID: {{id}} 
+            No summary found! ID: {{id}}
         </h3>
     </div>
-    
-    <div *ngIf="summary">
+</div>
+
+<div *ngIf="summary">
+    <div class="container">
         <h3 class="page-header">Good news! You've reduced your risk already, but we can improve some areas of your defense.</h3>
 
         <div class="row">
             <div class="col-md-6 weakestChain">
                 <h3>Assessment Report Overview</h3>
                 <div class="col-md2">
-                    <span>Overall Implementation Risk <span class="label {{riskLabelClass}}">{{totalRiskValue}}%</span></span> 
+                    <span>Overall Implementation Risk <span class="label {{riskLabelClass}}">{{totalRiskValue}}%</span></span>
                     CHART
                 </div>
 
@@ -37,50 +39,112 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div>
-                    <div class="panel panel-default topN">
-                        <div class="panel-heading">
-                            <h3>Where you are most vulnerable</h3>
-                        </div>
+                <div class="panel panel-default topN">
+                    <div class="panel-heading">
+                        <h3>Where you are most vulnerable</h3>
+                    </div>
 
-                        <table class="table">
-                            <thead>
-                                <th>KILL CHAIN EFFECTED</th>
-                                <th>ASSESSED ITEM</th>
-                                <th>RISK</th>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let risk of sortedRisks">
-                                  <td>{{ risk.phaseName | capitalize }}</td>
-                                  <td *ngIf="risk.objects; else noObjectsDiv">
+                    <table class="table">
+                        <thead>
+                            <th>KILL CHAIN EFFECTED</th>
+                            <th>ASSESSED ITEM</th>
+                            <th>RISK</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let risk of sortedRisks">
+                                <td>{{ risk.phaseName | capitalize }}</td>
+                                <td *ngIf="risk.objects; else noObjectsDiv">
                                     <ul>
                                         <li *ngFor="let obj of risk.objects">
                                             <a href="#stix/{{obj.type}}s/{{obj.id}}">{{obj.name}}</a>
                                         </li>
                                     </ul>
-                                  </td>
+                                </td>
                                 <ng-template #noObjectsDiv>
                                     No objects found!
                                 </ng-template>
-                                  <td><span class="label label-warning">{{calculateRisk(risk.objects)}}</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        </div>
-                </div>            
+                                <td><span class="label label-warning">{{calculateRisk(risk.objects)}}</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-
         <hr>
         <br/>
-        <br/>
         <div class="row">
-            <span>
+            <div class="col-md-6">
+                <md-select placeholder="Select threshold" [(ngModel)]="selectedRisk" name="threshold" (change)="redrawCharts()">
+                    <md-option *ngFor="let option of thresholdOptions" [value]="option.risk">
+                        {{option.name}}
+                    </md-option>
+                </md-select>
+            </div>
+        </div>
+        <br/>
+    </div>
+    <!-- End container -->
+
+    <div id="chartWrapper">
+        <br>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="summaryPanel">
+                        <div class="summaryPanelContent">
+                            <div *ngIf="summaryAggregation && summaryAggregation.assessedAttackPatternCountBySophisicationLevel && summaryAggregation.totalAttackPatternCountBySophisicationLevel">
+                                <sophistication-breakdown [assessedAttackPatterns]="summaryAggregation.assessedAttackPatternCountBySophisicationLevel" [allAttackPatterns]="summaryAggregation.totalAttackPatternCountBySophisicationLevel"></sophistication-breakdown>
+                            </div>
+                        </div>
+                        <div class="summaryPanelTitle">
+                            <h5 class="text-center">Sophistication Breakdown</h5>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div class="summaryPanel">
+                        <div class="summaryPanelContent">
+                            <div *ngIf="techniqueBreakdown;else noTechinquesData">
+
+                                <techniques-chart #techniquesChart [riskThreshold]="selectedRisk" [riskLabelOptions]="thresholdOptions" [techniqueBreakdown]="techniqueBreakdown">
+                                </techniques-chart>
+
+                            </div>
+                            <ng-template #noTechinquesData>No data to load chart!</ng-template>
+                        </div>
+                        <div class="summaryPanelTitle">
+                            <h5 class="text-center">% Techniques Detected by Skill</h5>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="summaryPanel">
+                        <div class="summaryPanelContent">
+                            <assessment-chart #assessmentChart [riskThreshold]="selectedRisk" [riskLabelOptions]="thresholdOptions" [assessmentObjects]="summary.attributes.assessment_objects"></assessment-chart>
+                        </div>
+                        <div class="summaryPanelTitle">
+                            <h5 class="text-center">% of assessments better than {{ getThresholdOptionName(selectedRisk) }}</h5>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <br><br><br>
+    </div>
+
+    <!--<hr>
+            <br/>
+            <div class="row">
+                <span>
                 {{summary.attributes.description}}
             </span>
-        </div>
-
-    </div>
+            </div>-->
 </div>
 
 <ng-template #loadingBlock>

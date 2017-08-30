@@ -20,7 +20,7 @@ export class Measurements {
 
     protected buildMeasurements(dataType) {
 
-        let measurements = [];
+        const measurements = [];
         if (dataType.substr( 0, 6 ) === 'course') {
             // If the data type starts with course of action
             const policyOptions = ['No Policy',
@@ -34,13 +34,13 @@ export class Measurements {
                                             'Implemented on Most Systems',
                                             'Implemented on All Systems' ];
 
-            let automationOptions = ['Not Automated',
+            const automationOptions = ['Not Automated',
                                     'Parts of Policy Automated',
                                     'Automated on Some Systems',
                                     'Automated on Most Systems',
                                     'Automated on All Systems'];
 
-            let reportingOptions = ['Not Reported',
+            const reportingOptions = ['Not Reported',
                                     'Parts of Policy Reported',
                                     'Reported on Some Systems',
                                     'Reported on Most Systems',
@@ -53,7 +53,7 @@ export class Measurements {
 
         } else if (dataType.substr(0 , 6) === 'indica') {
             // Then, assuming its an indicator
-            let indicatorOption = ['Nothing',
+            const indicatorOption = ['Nothing',
                             'Local Logging',
                             'Central Logging, No Alerting',
                             'Alerting, but false positives/negatives',
@@ -63,7 +63,7 @@ export class Measurements {
 
         } else {
             // Then, assuming its an indicator
-            let indicatorOption = ['no coverage',
+            const indicatorOption = ['no coverage',
                             'some coverage',
                             'half coverage',
                             'most critical systems covered',
@@ -94,7 +94,7 @@ export class Measurements {
         let count = 0;
         measureObject.forEach(
             (measurement) => {
-            let selected_value = measurement.selected_value;
+            const selected_value = measurement.selected_value;
             risk = risk + parseFloat(selected_value.risk);
             count = count + 1;
         });
@@ -103,15 +103,15 @@ export class Measurements {
 
     protected getRiskByName(assessments) {
         if (Array.isArray(assessments)) {
-            let riskMap = [];
+            const riskMap = [];
             assessments.forEach(
                 (assessment) => {
-                    let measurements = assessment.measurements;
+                    const measurements = assessment.measurements;
                     measurements.forEach(
                         (measurement) => {
-                                let name = measurement.name;
-                                let risk = measurement.risk;
-                                let riskObject = riskMap.find((n) => { return n === name; });
+                                const name = measurement.name;
+                                const risk = measurement.risk;
+                                let riskObject = riskMap.find((n) => n === name);
                                 if (riskObject) {
                                     riskObject.risk = riskObject.risk + risk;
                                     riskObject.count = riskObject.count + 1;
@@ -136,12 +136,12 @@ export class Measurements {
     }
 
     protected createMeasurement(name, selectedOption, options) {
-        let measurement: any = {};
+        const measurement: any = {};
         measurement.name = name;
         measurement.options = [];
         options.forEach(
             (label, index) => {
-            let data: any = {};
+            const data: any = {};
             data.name = label;
             data.risk = 1 - ( index / ( options.length - 1 ));
             measurement.options.push(data);

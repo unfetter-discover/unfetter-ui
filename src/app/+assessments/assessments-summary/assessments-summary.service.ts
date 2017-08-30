@@ -31,4 +31,12 @@ export class AssessmentsSummaryService {
         return this.genericApi.get(url);
     }
 
+    public getSummaryAggregation(id: string): Observable<any> {
+        if (!id) {
+            return Observable.empty();
+        }
+
+        const url = `api/x-unfetter-assessments/${id}/summary-aggregations`;
+        return this.genericApi.get(url);
+    }
 }

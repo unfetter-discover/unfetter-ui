@@ -55,7 +55,7 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     }
 
     public isChecked(label: string): boolean {
-        let found = this.intrusionSet.attributes.labels.find((l) => {
+        const found = this.intrusionSet.attributes.labels.find((l) => {
             return l === label;
         });
         return found ? true : false;
@@ -66,7 +66,7 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     }
 
     public saveIdentity(): void {
-         let sub = super.saveButtonClicked().subscribe(
+         const sub = super.saveButtonClicked().subscribe(
             (data) => {
                 console.log('saved');
             }, (error) => {
@@ -84,24 +84,24 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
      // add chip
     protected add(event: any): void {
         console.log(event.type);
-        let relationship = new Relationship();
+        const relationship = new Relationship();
         this.newRelationships.push(relationship);
         relationship.attributes.source_ref = this.intrusionSet.id;
 
         if (event.type === Constance.ATTACK_PATTERN_TYPE && !this.found(this.attackPatterns, event)) {
-            let attackPattern = new AttackPattern(event);
+            const attackPattern = new AttackPattern(event);
             relationship.attributes.relationship_type = 'uses';
             relationship.attributes.target_ref = attackPattern.id;
 
             this.attackPatterns.push(attackPattern);
         } else if (event.type === Constance.IDENTITY_TYPE && !this.found(this.identities, event)) {
-            let identity = new Identity(event);
+            const identity = new Identity(event);
             relationship.attributes.relationship_type = 'uses';
             relationship.attributes.target_ref = identity.id;
 
             this.identities.push(identity);
         } else if (event.type === Constance.INTRUSION_SET_TYPE && !this.found(this.threatActors, event)) {
-            let threatActor = new ThreatActor(event);
+            const threatActor = new ThreatActor(event);
             relationship.attributes.relationship_type = 'uses';
             relationship.attributes.target_ref = threatActor.id;
 
@@ -110,6 +110,6 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     }
 
     private found(list: any[], object: any): any {
-        return list.find( (entry) => { return entry.id === object.id; } );
+        return list.find( (entry) => entry.id === object.id );
     }
 }

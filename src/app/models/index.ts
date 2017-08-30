@@ -1,5 +1,5 @@
-export { AttackPattern } from './attack-pattern'
-export { ExternalReference } from './externalReference'
+export { AttackPattern } from './attack-pattern';
+export { ExternalReference } from './externalReference';
 export { Navigation } from './navigation';
 export { Campaign } from './campaign';
 export { Sighting } from './sighting';
