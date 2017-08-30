@@ -3,10 +3,10 @@ import { inject, async, TestBed,  ComponentFixture } from '@angular/core/testing
 import { AttackPatternsService } from '../../../services';
 
 // Load the implementations that should be tested
-import { AttackPatternsComponent } from './attack-patterns.component';
+import { AttackPatternsComponent } from '../attack-patterns.component';
 import { AttackPattern } from '../../../models/attack-pattern';
 
-import { Observable }     from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 
 describe(`AttackPatternsComponent`, () => {
   let comp: AttackPatternsComponent;

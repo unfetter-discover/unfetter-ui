@@ -30,20 +30,20 @@ export class AssessmentsDashboardComponent implements OnInit {
     }];
 
     public doughnutChartType: string = 'doughnut';
-    public doughnutChartColors: Object[] = [{}];
-    public chartOptions: Object = {
+    public doughnutChartColors: object[] = [{}];
+    public chartOptions: object = {
         tooltips: {
             callbacks: {
                 label: (tooltipItem, data) => {
-                    let allData = data.datasets[tooltipItem.datasetIndex].data;
-                    let tooltipLabel = data.labels[tooltipItem.index];
-                    let tooltipData = allData[tooltipItem.index];
+                    const allData = data.datasets[tooltipItem.datasetIndex].data;
+                    const tooltipLabel = data.labels[tooltipItem.index];
+                    const tooltipData = allData[tooltipItem.index];
                     let total = 0;
                     allData.forEach(
                         (d) => {
                          total += d;
                     });
-                    let tooltipPercentage = Math.round((tooltipData / total) * 100);
+                    const tooltipPercentage = Math.round((tooltipData / total) * 100);
                     return `${tooltipLabel}: ${tooltipPercentage}%`;
                 }
             }
@@ -65,7 +65,7 @@ export class AssessmentsDashboardComponent implements OnInit {
     ) {}
 
     public ngOnInit() {
-        let id = this.route.snapshot.params['id'] ? this.route.snapshot.params['id'] : ''; this.assessment = {};
+        const id = this.route.snapshot.params['id'] ? this.route.snapshot.params['id'] : ''; this.assessment = {};
         this.assessment['attributes'] = {};
         this.assessmentsDashboardService.getById(id).subscribe(
             (res) => {
@@ -89,37 +89,36 @@ export class AssessmentsDashboardComponent implements OnInit {
     }
 
     public calculateRiskBreakdown() {
-        let phases = this.riskByAttackPattern.phases;
-        let assessedByAttackPattern = this.riskByAttackPattern.assessedByAttackPattern;
+        const phases = this.riskByAttackPattern.phases;
+        const assessedByAttackPattern = this.riskByAttackPattern.assessedByAttackPattern;
 
-        let riskTree = {};
+        const riskTree = {};
 
         if (phases !== undefined && assessedByAttackPattern !== undefined) {
 
             // Group data by kill chain phase, then question => set value array of risk values
-            phases.forEach(phase => {
+            phases.forEach((phase) => {
                 riskTree[phase._id] = {};
 
                 // Assessed Objects per phase
-                phase.assessedObjects.forEach(assessedObject => {
+                phase.assessedObjects.forEach((assessedObject) => {
                     // Questions per assessed object
-                    assessedObject.questions.forEach(question => {
+                    assessedObject.questions.forEach((question) => {
                         if (riskTree[phase._id][question.name] === undefined) {
                             riskTree[phase._id][question.name] = [];
                         }
                         riskTree[phase._id][question.name].push(question.risk);
                     });
                 });
-            });       
-            
+            });
 
             // Calcuate average risk per question
             // TODO delete this
-            let questionSet: any = new Set();
+            const questionSet: any = new Set();
             this.riskBreakdown = {};
             for (let phase in riskTree) {
                 this.riskBreakdown[phase] = {};
-                for (let question in riskTree[phase]) {                    
+                for (let question in riskTree[phase]) {
                     questionSet.add(question);
                     /* Average risk for each question-category,
                      then multiply it by 1 / the number of question-categories.
@@ -128,23 +127,23 @@ export class AssessmentsDashboardComponent implements OnInit {
                         .reduce((prev, cur) => prev += cur, 0)
                         / riskTree[phase][question].length) * (1 / Object.keys(riskTree[phase]).length);
                 }
-            }         
+            }
 
-            let riskBreakdownTemp = {};
-            
+            const riskBreakdownTemp = {};
+
             for(let assessedObject of this.assessment.attributes.assessment_objects) {
                 for(let question of assessedObject.questions) {
                     questionSet.add(question.name);
                     if (riskBreakdownTemp[question.name] === undefined) {
                         riskBreakdownTemp[question.name] = [];
                     }
-                    
+
                     riskBreakdownTemp[question.name].push(question.risk);
                 }
             }
 
             let totalRisk = 0;
-            let riskBreakdownAvg = {};
+            const riskBreakdownAvg = {};
 
             for (let question in riskBreakdownTemp) {
                 riskBreakdownAvg[question] = (riskBreakdownTemp[question]
@@ -153,14 +152,13 @@ export class AssessmentsDashboardComponent implements OnInit {
                 totalRisk += riskBreakdownAvg[question];
             }
 
-            this.doughnutChartData[0].data = [totalRisk, 1 - totalRisk];    
-                    
+            this.doughnutChartData[0].data = [totalRisk, 1 - totalRisk];
 
-            // Setup riskBreakdownChart & calculate average risk per question regardless of phase            
+            // Setup riskBreakdownChart & calculate average risk per question regardless of phase
             // let count;
             // let sum;
             let i = 0;
-            questionSet.forEach(question => {
+            questionSet.forEach((question) => {
                 this.riskBreakdownChartLabels.push(question.charAt(0).toUpperCase() + question.slice(1));
 
                 this.riskBreakdownChartData[0].backgroundColor.push(Constance.MAT_COLORS[Constance.MAT_GRAPH_COLORS[i]][500]);
@@ -176,18 +174,17 @@ export class AssessmentsDashboardComponent implements OnInit {
                 this.riskBreakdownChartData[0].data.push(riskBreakdownAvg[question]);
                 i++;
             });
-            let riskAccepted = 1 - this.riskBreakdownChartData[0].data.reduce((prev, cur) => prev += cur, 0);
+            const riskAccepted = 1 - this.riskBreakdownChartData[0].data.reduce((prev, cur) => prev += cur, 0);
             this.riskBreakdownChartData[0].data.push(riskAccepted);
             this.riskBreakdownChartData[0].backgroundColor.push(Constance.COLORS.green);
             this.riskBreakdownChartData[0].hoverBackgroundColor.push(Constance.COLORS.darkGreen);
             this.riskBreakdownChartLabels.push('Risk Addressed');
         }
 
-        
     }
 
     public getNumAttackPatterns(phaseName) {
-        let attackPatternsByKillChain = this.riskByAttackPattern.attackPatternsByKillChain;
+        const attackPatternsByKillChain = this.riskByAttackPattern.attackPatternsByKillChain;
         for (let killPhase of attackPatternsByKillChain) {
             if (killPhase._id === phaseName && killPhase.attackPatterns !== undefined) {
                 return killPhase.attackPatterns.length;
@@ -197,7 +194,7 @@ export class AssessmentsDashboardComponent implements OnInit {
     }
 
     public populateUnassessedPhases() {
-        let assessedPhases = this.riskByAttackPattern.phases.map((phase) => phase._id);
+        const assessedPhases = this.riskByAttackPattern.phases.map((phase) => phase._id);
         this.unassessedPhases = Constance.KILL_CHAIN_PHASES
             .filter((phase) => assessedPhases.indexOf(phase) < 0);
     }

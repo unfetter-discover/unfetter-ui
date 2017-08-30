@@ -6,24 +6,24 @@ import { Constance } from '../../utils/constance';
 
 @Injectable()
 export class AssessmentsDashboardService {
-    public baseUrl: String = Constance.X_UNFETTER_ASSESSMENT_URL;
-    public relationshipsUrl: String = Constance.RELATIONSHIPS_URL;
+    public baseUrl = Constance.X_UNFETTER_ASSESSMENT_URL;
+    public relationshipsUrl = Constance.RELATIONSHIPS_URL;
     constructor(private genericApi: GenericApi) { }
 
-    public getById(id: String): Observable<any> {
+    public getById(id: string): Observable<any> {
         return this.genericApi.get(`${this.baseUrl}/${id}`);
     }
 
-    public getRiskByAttackPattern(id: String): Observable<any> {
+    public getRiskByAttackPattern(id: string): Observable<any> {
         return this.genericApi.get(`${this.baseUrl}/${id}/risk-by-attack-pattern`);
     }
 
-    public getAssessedObjects(id: String): Observable<any> {
+    public getAssessedObjects(id: string): Observable<any> {
         return this.genericApi.get(`${this.baseUrl}/${id}/assessed-objects`);
     }
 
-    public getAttackPatternRelationships(id: String): Observable<any> {
-        let query = { "stix.target_ref": id, "stix.relationship_type": { "$in": ["mitigates", "indicates"] } };
+    public getAttackPatternRelationships(id: string): Observable<any> {
+        let query = { 'stix.target_ref': id, 'stix.relationship_type': { '$in': ['mitigates', 'indicates'] } };
         return this.genericApi.get(`${this.relationshipsUrl}?filter=${encodeURI(JSON.stringify(query))}`);
     }
 
@@ -32,7 +32,7 @@ export class AssessmentsDashboardService {
     }
 
     public genericPost(route: string, data: any) {
-        return this.genericApi.post(route, data);        
+        return this.genericApi.post(route, data);
     }
 
     public genericPatch(route: string, data: any) {
