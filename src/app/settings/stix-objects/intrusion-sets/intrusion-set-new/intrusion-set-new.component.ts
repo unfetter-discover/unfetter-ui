@@ -34,10 +34,10 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent implemen
         // empty
     }
 
-    public saveIdentity(): void {
+    public saveButtonClicked(): void {
         const sub = super.create(this.intrusionSet).subscribe(
             (data) => {
-                console.log('saved');
+                this.location.back();
             }, (error) => {
                 // handle errors here
                 console.log('error ' + error);
