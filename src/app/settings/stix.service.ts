@@ -51,7 +51,6 @@ export class StixService implements BaseStixService {
     }
 
     public create(item: any): Observable<any> {
-        console.log(JSON.stringify({item}));
         return this.http
             .post(item.url, JSON.stringify({data: item}), {headers: this.headers})
             .map((response) => {
@@ -63,7 +62,7 @@ export class StixService implements BaseStixService {
     public update(item: any): Observable<any> {
         const url = `${item.url}/${item.id}`;
         return this.http
-            .patch(url, JSON.stringify({data: item.attributes}), {headers: this.headers})
+            .patch(url, JSON.stringify(item), {headers: this.headers})
             .map((response) => {
                 return response.json().data;
             })

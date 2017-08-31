@@ -4,7 +4,7 @@
         <div class="col-md-3  intrusion-set-dashboard-side-panel">
             <div class="row">
                 <div class="col-sm-12">
-                    <p-autoComplete [(ngModel)]="intrusionSet" [suggestions]="results" (completeMethod)="search($event)" field="name" (onSelect)="onSelect($event)"></p-autoComplete>
+                    <p-autoComplete styleClass="intrusionClass" [(ngModel)]="intrusionSet" [suggestions]="results" (completeMethod)="search($event)" field="name" (onSelect)="onSelect($event)"></p-autoComplete>
                     <a style="line-height: 30px;" md-raised-button (click)="searchIntrusionSets()">Search</a>
                 </div>
             </div>

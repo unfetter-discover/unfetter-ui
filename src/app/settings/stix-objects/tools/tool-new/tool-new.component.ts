@@ -28,6 +28,7 @@ export class ToolNewComponent extends ToolEditComponent implements OnInit {
     }
 
     private saveNewTool(): void {
+             console.log(this.tool.url);
        let sub = super.create(this.tool).subscribe(
             (data) => {
                 this.tool = new Tool(data);

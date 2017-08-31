@@ -3,7 +3,7 @@ import { Constance } from '../utils/constance';
 import * as moment from 'moment';
 
 export class Tool {
-    public static url = Constance.TOOL_URL;
+    public url = Constance.TOOL_URL;
     public id: string;
     public type: string;
     public links: {self: string};

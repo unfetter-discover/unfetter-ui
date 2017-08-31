@@ -12,7 +12,7 @@ import { Sighting } from '../../../../models';
 })
 export class SightingNewComponent extends BaseStixComponent {
 
-  public sighting: Sighting = new Sighting();
+  public sighting = new Sighting();
   public sourceTypes = [{label: 'Indicator', value: 'indicator'}, {label: 'Campaign', value: 'Campaign'}, {label: 'Intrusion Set', value: 'Intrusion Set'} ];
 
     constructor(
@@ -31,9 +31,11 @@ export class SightingNewComponent extends BaseStixComponent {
         if (!this.sighting.attributes.sighting_of_ref) {
             return;
         }
-        let subscription = super.create(this.sighting).subscribe(
+        const subscription = super.create(this.sighting).subscribe(
             (data) => {
                 // this.sighting = data as Sighting;
+                const attr: any = this.sighting.attributes;
+                attr.name = attr.name || this.sighting.type;
                 this.location.back();
             }, (error) => {
                 // handle errors here
