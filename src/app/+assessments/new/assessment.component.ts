@@ -463,7 +463,7 @@ export class AssessmentComponent extends Measurements implements OnInit {
       const xUnfetterAssessment = this.generateXUnfetterAssessment(
         this.assessmentGroups
       );
-      const sub = this.genericApi.post(this.url, xUnfetterAssessment).subscribe(
+      const sub = this.genericApi.post(this.url, {'data':{'attributes':xUnfetterAssessment}}).subscribe(
         (res) => {
           this.saved = true;
           this.location.back();
