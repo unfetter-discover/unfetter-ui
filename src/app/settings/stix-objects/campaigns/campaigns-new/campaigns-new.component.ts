@@ -31,7 +31,7 @@ export class CampaignsNewComponent extends CampaignsEditComponent implements OnI
     public saveCampaign(): void {
        let subscription = super.create(this.campaign).subscribe(
             (data) => {
-                super.saveRelationships(new Campaign(data));
+                super.saveRelationships(this.campaign);
                 this.location.back();
             }, (error) => {
                 // handle errors here
