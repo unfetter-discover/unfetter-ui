@@ -15,10 +15,11 @@ export const Constance = {
 
   DATE_FORMATE: 'MMM-DD-YYYY',
   REPORTS_URL: 'api/reports',
+  REPORTS_TYPE: 'report',
   REPORTS_ICON: 'assets/icon/stix-icons/svg/report-b.svg',
 
   CAMPAIGN_URL: 'api/campaigns',
-  CAMPAIGN_TYPE: 'campaigns',
+  CAMPAIGN_TYPE: 'campaign',
   CAMPAIGN_ICON: 'assets/icon/stix-icons/svg/campaign-b.svg',
 
   COURSE_OF_ACTION_URL: 'api/course-of-actions',
@@ -29,7 +30,8 @@ export const Constance = {
   RELATIONSHIPS_ICON: 'assets/icon/stix-icons/svg/relationship-b.svg',
   RELATIONSHIPS_TYPE: 'Relationships',
   RELATIONSHIPS_TYPES: {
-    MITIGATES: 'mitigates'
+    MITIGATES: 'mitigates',
+    INDICATES: 'indicates'
   },
 
   IDENTITIES_URL: 'api/identities',
@@ -67,7 +69,6 @@ export const Constance = {
   OBSERVED_DATA_URL: 'api/observed-data',
   OBSERVED_DATA_TYPE: 'observed-data',
   OBSERVED_DATA_ICON: 'assets/icon/stix-icons/svg/malware-b.svg',
-
   TOOL_URL: 'api/tools',
   TOOL_TYPE: 'tool',
   TOOL_ICON: 'assets/icon/stix-icons/svg/tool-b.svg',
@@ -109,20 +110,6 @@ export const Constance = {
     }
   },
 
-<<<<<<< Updated upstream
-    MAT_GRAPH_COLORS: [
-        'blue',
-        'orange',
-        'pink',
-        'deeppurple',
-        'brown',
-        'indigo',
-        'bluegrey',
-        'lime',
-        'lightblue',
-        'lightgreen'
-    ],
-=======
   MAT_GRAPH_COLORS: [
     'blue',
     'orange',
@@ -135,7 +122,6 @@ export const Constance = {
     'lime',
     'lightblue'
   ],
->>>>>>> Stashed changes
 
   MAT_COLORS: {
     red: {

@@ -21,7 +21,7 @@ export class Report {
     };
 
      constructor() {
-        this.type = 'reports';
+        this.type = Constance.REPORTS_TYPE;
         this.attributes = {
             version: '',
             created: moment().format(Constance.DATE_FORMATE),
