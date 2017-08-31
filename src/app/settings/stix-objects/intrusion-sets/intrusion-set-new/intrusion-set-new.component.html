@@ -26,11 +26,13 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row selectRow">
     <div class="col-md-12">
-       <md-input-container class="full-width">
-        <input mdInput placeholder="Primary Motivation"  [(ngModel)]="intrusionSet.attributes.primary_motivation" value="">
-        </md-input-container>
+        <md-select class="full-width" placeholder="Primary Motivation" [(ngModel)]="intrusionSet.attributes.primary_motivation">
+            <md-option *ngFor="let motivation of motivations" [value]="motivation">
+                {{motivation}}
+            </md-option>
+        </md-select>
     </div>
 </div>
 <div class="row">
@@ -40,11 +42,13 @@
         </md-input-container>
     </div>
 </div>
-<div class="row">
+<div class="row selectRow">
     <div class="col-md-12">
-       <md-input-container class="full-width">
-        <input mdInput placeholder="Resource Level"  [(ngModel)]="intrusionSet.attributes.resource_level" value="">
-        </md-input-container>
+        <md-select class="full-width" placeholder="Resource Level" [(ngModel)]="intrusionSet.attributes.resource_level">
+            <md-option *ngFor="let resourceLevel of resourceLevels" [value]="resourceLevel">
+                {{resourceLevel}}
+            </md-option>
+        </md-select>
     </div>
 </div>
 <div class="row">

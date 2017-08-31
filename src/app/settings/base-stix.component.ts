@@ -20,23 +20,23 @@ export class BaseStixComponent {
     }
 
      protected load(filter?: any): Observable<any[]> {
-         let _self  = this;
+         const _self  = this;
          return Observable.create((observer) => {
                _self.loadItems(observer, filter);
          });
     }
 
     protected get(): Observable<any> {
-        let _self  = this;
+        const _self  = this;
         return Observable.create((observer) => {
                _self.getItem(observer);
         });
     }
 
      protected getByUrl(url: string): Observable<any> {
-        let _self  = this;
+        const _self  = this;
         return Observable.create((observer) => {
-              let subscription =  _self.service.getByUrl(url).subscribe(
+              const subscription =  _self.service.getByUrl(url).subscribe(
                    (data) => {
                         observer.next(data);
                         observer.complete();
@@ -56,14 +56,14 @@ export class BaseStixComponent {
         });
     }
     protected create(item: any): Observable<any>  {
-        let _self  = this;
+        const _self  = this;
         return Observable.create((observer) => {
                _self.createItem(item, observer);
         });
     }
 
     protected save(item: any): Observable<any>  {
-        let _self  = this;
+        const _self  = this;
         item.url = this.service.url;
         return Observable.create((observer) => {
                _self.saveItem(item, observer);
@@ -71,7 +71,7 @@ export class BaseStixComponent {
     }
 
     protected delete(item: any): Observable<any>  {
-        let _self  = this;
+        const _self  = this;
         return Observable.create((observer) => {
                _self.deleteItem(item, observer);
         });
@@ -82,9 +82,9 @@ export class BaseStixComponent {
     }
 
     protected openDialog(item: any): Observable<any> {
-        let _self  = this;
+        const _self  = this;
         return Observable.create((observer) => {
-            let dialogRef = _self.dialog.open(ConfirmationDialogComponent, { data: item });
+            const dialogRef = _self.dialog.open(ConfirmationDialogComponent, { data: item });
             dialogRef.afterClosed().subscribe(
                 (result) => {
                     if (result === 'true') {
@@ -107,7 +107,7 @@ export class BaseStixComponent {
     }
 
     private loadItems(observer: any, filter?: any): void {
-         let subscription = this.service.load(filter).subscribe(
+         const subscription = this.service.load(filter).subscribe(
             (stixObjects) => {
                 observer.next(stixObjects);
                 observer.complete();
@@ -170,7 +170,7 @@ export class BaseStixComponent {
     }
 
     private createItem(item: any, observer: any): void {
-        let subscription = this.service.create(item).subscribe(
+        const subscription = this.service.create(item).subscribe(
             (data) => {
                 observer.next(data);
                 observer.complete();
@@ -218,7 +218,7 @@ export class BaseStixComponent {
     }
 
     private saveItem(item: any, observer: any): void {
-        let subscription = this.service.update(item).subscribe(
+        const subscription = this.service.update(item).subscribe(
             (data) => {
                 observer.next(data);
                 observer.complete();
