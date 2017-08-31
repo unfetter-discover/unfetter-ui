@@ -30,7 +30,8 @@ export class CourseOfActionEditComponent extends CourseOfActionComponent impleme
     protected saveCourceOfAction(): void {
        let subscription = super.saveButtonClicked().subscribe(
             (stixObject) => {
-                console.log('saved');
+                this.location.back();
+                
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

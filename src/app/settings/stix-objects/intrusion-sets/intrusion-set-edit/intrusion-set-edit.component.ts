@@ -68,7 +68,7 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     public saveIdentity(): void {
          const sub = super.saveButtonClicked().subscribe(
             (data) => {
-                console.log('saved');
+                this.location.back();
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
