@@ -53,7 +53,7 @@ export class StixService implements BaseStixService {
     public create(item: any): Observable<any> {
         console.log(JSON.stringify({item}));
         return this.http
-            .post(item.url, item, {headers: this.headers})
+            .post(item.url, JSON.stringify({data: item}), {headers: this.headers})
             .map((response) => {
                 return response.json().data;
             })
