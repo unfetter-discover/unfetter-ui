@@ -29,7 +29,7 @@ export class IdentityListComponent extends IdentityComponent implements OnInit {
     }
 
     public ngOnInit() {
-        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
+        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ 'stix.name': '1' }));
         let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.identities = data as Identity[];
@@ -48,7 +48,7 @@ export class IdentityListComponent extends IdentityComponent implements OnInit {
     public deletButtonClicked(identity: Identity): void {
         super.openDialog(identity).subscribe(
             () => {
-                 this.identities = this.identities.filter((h) => h.id !== identity.id);
+                 this.filteredItems = this.filteredItems.filter((h) => h.id !== identity.id);
             }
         );
     }

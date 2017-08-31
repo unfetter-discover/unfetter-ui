@@ -27,7 +27,7 @@ export class SightingListComponent extends BaseStixComponent implements OnInit {
     }
 
     public ngOnInit() {
-        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
+        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ 'stix.name': '1' }));
         let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.sightings = data;
@@ -55,6 +55,10 @@ export class SightingListComponent extends BaseStixComponent implements OnInit {
     }
 
     public deleteButtonClicked(sighting: Sighting): void {
-        super.openDialog(sighting);
+        super.openDialog(sighting).subscribe(
+            () => {
+                this.filteredItems = this.filteredItems.filter((h) => h.id !== sighting.id);
+            }
+        );
     }
 }

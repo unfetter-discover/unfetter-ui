@@ -48,7 +48,7 @@ export class IntrusionSetListComponent extends IntrusionSetComponent implements 
     public deletButtonClicked(intrusionSet: IntrusionSet): void {
         super.openDialog(intrusionSet).subscribe(
             () => {
-                 this.intrusionSets = this.intrusionSets.filter((h) => h.id !== intrusionSet.id);
+                 this.filteredItems = this.filteredItems.filter((h) => h.id !== intrusionSet.id);
             }
         );
     }

@@ -3,23 +3,25 @@
 
 <div class="row" style="margin-top: 15px;">
 
-    <div class="col-md-12">
+   <div class="row"  style="margin-top: 15px;">
+        <div class="col-md-12">
+            <div style="margin-top: 1%;">
+                <p-dataList [value]="filteredItems">
+                        <ng-template let-data pTemplate="item">
+                            <div class="row list-item-row">
+                                <div class="col-md-9">
+                                                <div class="pull-left">
+                                                    <a routerLink="/stix/sightings/{{data.id}}" >{{data.attributes.sighting_of_ref}}</a>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <a md-raised-button (click)="editButtonClicked(data)"><i class="fa fa-pencil"></i></a>
+                                                <a md-raised-button (click)="deleteButtonClicked(data)"><i class="fa fa-trash"></i></a>
+                                            </div>
+                            </div>
 
-        <md-card class="margin-top" *ngFor="let data of filteredItems">
-            <md-card-content>
-                <div class="row full-width">
-                    <div class="col-md-9">
-                        <div class="pull-left">
-                            <a routerLink="/stix/sightings/{{data.id}}">{{data.attributes.sighting_of_ref}}</a>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <a md-raised-button (click)="editButtonClicked(data)"><i class="fa fa-pencil"></i></a>
-                        <a md-raised-button (click)="deleteButtonClicked(data)"><i class="fa fa-trash"></i></a>
-                    </div>
-                </div>
-            </md-card-content>
-
-        </md-card>
+                        </ng-template>
+                </p-dataList>
+            </div>
+        </div>
     </div>
-</div>

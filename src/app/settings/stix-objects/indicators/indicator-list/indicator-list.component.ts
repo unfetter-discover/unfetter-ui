@@ -31,7 +31,7 @@ export class IndicatorListComponent extends IndicatorComponent implements OnInit
     }
 
     public ngOnInit() {
-        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
+        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ 'stix.name': '1' }));
         let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.indicators = data as Indicator[];
@@ -50,7 +50,7 @@ export class IndicatorListComponent extends IndicatorComponent implements OnInit
      public deletButtonClicked(indicator: Indicator): void {
         super.openDialog(indicator).subscribe(
             () => {
-                 this.indicators = this.indicators.filter((h) => h.id !== indicator.id);
+                 this.filteredItems = this.filteredItems.filter((h) => h.id !== indicator.id);
             }
         );
     }

@@ -83,6 +83,7 @@ export class BaseStixComponent {
 
     protected openDialog(item: any): Observable<any> {
         const _self  = this;
+        item.url = this.service.url;
         return Observable.create((observer) => {
             const dialogRef = _self.dialog.open(ConfirmationDialogComponent, { data: item });
             dialogRef.afterClosed().subscribe(
