@@ -81,8 +81,10 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
     private getPhaseNameAttackPatterns() {
         this.attackPatterns.forEach((attackPattern: AttackPattern) => {
             let killChainPhases = attackPattern.attributes.kill_chain_phases;
-
-            if (!killChainPhases) {
+if (attackPattern.attributes.name === "test attack") {
+    console.dir(killChainPhases)
+}
+            if (!killChainPhases || killChainPhases.length === 0) {
                 let attackPatternsProxies = this.phaseNameGroups['unspecified'];
                 attackPatternsProxies.push(attackPattern);
             } else {
