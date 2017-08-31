@@ -12,8 +12,8 @@ import { Sighting } from '../../../../models';
 })
 export class SightingComponent extends BaseStixComponent implements OnInit {
 
-  private sighting: Sighting = new Sighting();
-  private sourceTypes = ['Indicator', 'Campaign', 'Intrusion Set' ];
+  public sighting: Sighting = new Sighting();
+  public sourceTypes = ['Indicator', 'Campaign', 'Intrusion Set' ];
 
     constructor(
         public stixService: StixService,

@@ -42,6 +42,9 @@ export class SightingEditComponent extends BaseStixComponent implements OnInit {
     }
 
     public saveButtonClicked(): void {
+        if (!this.sighting.attributes.sighting_of_ref) {
+            return;
+        }
         let sub = super.save(this.sighting).subscribe(
             (data) => {
                 this.sighting = data as Sighting;

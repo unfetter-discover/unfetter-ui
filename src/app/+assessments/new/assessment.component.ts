@@ -63,7 +63,7 @@ import { MenuItem } from 'primeng/primeng';
 }
 
 .stepper-vertical li:not(:last-child):after {
-    content: " ";
+    content: ' ';
     position: absolute;
     width: 1px;
     height: -webkit-calc(100% - 40px);
@@ -196,13 +196,10 @@ export class AssessmentComponent extends Measurements implements OnInit {
   public doughnutChartData: any[] = [
     {
       data: [],
-      backgroundColor: [
-        Constance.COLORS.red,
-        Constance.COLORS.green,
-      ],
+      backgroundColor: [Constance.COLORS.red, Constance.COLORS.green],
       hoverBackgroundColor: [
         Constance.COLORS.darkRed,
-        Constance.COLORS.darkGreen,
+        Constance.COLORS.darkGreen
       ]
     }
   ];
@@ -219,8 +216,7 @@ export class AssessmentComponent extends Measurements implements OnInit {
           const tooltipLabel = data.labels[tooltipItem.index];
           const tooltipData = allData[tooltipItem.index];
           let total = 0;
-          allData.forEach(
-              (d) => {
+          allData.forEach((d) => {
             total += d;
           });
           const tooltipPercentage = Math.round(tooltipData / total * 100);
@@ -229,11 +225,11 @@ export class AssessmentComponent extends Measurements implements OnInit {
       }
     }
   };
-  public description =  'An Assessment is your evaluation of the implementations of your network.  You will rate your environment ' +
-            ' to the best of your ability.' +
-            'On the final page of the survey, you will be asked to enter a name for the report and a description.  Unfetter Discover will ' +
-            'use the survey to help you understand your gaps, how important they are and which should be addressed.  You may create ' +
-            'multiple reports to see how your risk is changed when implementing different security processes.';
+  public description = 'An Assessment is your evaluation of the implementations of your network.  You will rate your environment ' +
+    ' to the best of your ability.' +
+    'On the final page of the survey, you will be asked to enter a name for the report and a description.  Unfetter Discover will ' +
+    'use the survey to help you understand your gaps, how important they are and which should be addressed.  You may create ' +
+    'multiple reports to see how your risk is changed when implementing different security processes.';
   public pageIcon = Constance.REPORTS_ICON;
   public pageTitle = 'Assessments';
   public showSummarry = false;
@@ -251,7 +247,7 @@ export class AssessmentComponent extends Measurements implements OnInit {
     private genericApi: GenericApi,
     private snackBar: MdSnackBar,
     private location: Location,
-    private route: ActivatedRoute,
+    private route: ActivatedRoute
   ) {
     super();
   }
@@ -260,75 +256,67 @@ export class AssessmentComponent extends Measurements implements OnInit {
     const type = this.route.snapshot.paramMap.get('type');
     const id = this.route.snapshot.paramMap.get('id');
     switch (type) {
-        case 'indicator' : {
-          this.url = Constance.INDICATOR_URL;
-          break;
-        }
-        case 'mitigation' : {
-          this.url = Constance.COURSE_OF_ACTION_URL;
-           break;
-        }
-        default: {
-         this.url = 'api/x-unfetter-sensors';
-        }
-    }
-    this.genericApi.get(this.url).subscribe(
-      (data) => {
-        this.build(data);
-        if (id) {
-          this.url = 'api/x-unfetter-assessments';
-          this.genericApi.get(this.url, id).subscribe(
-            (data) => {
-              this.model = data;
-              // console.log('this.model')
-              // console.dir(this.model)
-              this.selectedRiskValue = null;
-              // this.calculateGroupRisk();
-              this.updateChart();
-
-            }
-          );
-        }
+      case 'indicator': {
+        this.url = Constance.INDICATOR_URL;
+        break;
       }
-    );
+      case 'mitigation': {
+        this.url = Constance.COURSE_OF_ACTION_URL;
+        break;
+      }
+      default: {
+        this.url = 'api/x-unfetter-sensors';
+      }
+    }
+    this.genericApi.get(this.url).subscribe((data) => {
+      this.build(data);
+      if (id) {
+        this.url = 'api/x-unfetter-assessments';
+        this.genericApi.get(this.url, id).subscribe((res) => {
+          this.model = res;
+          // console.log('this.model')
+          // console.dir(this.model)
+          this.selectedRiskValue = null;
+          // this.calculateGroupRisk();
+          this.updateChart();
+        });
+      }
+    });
   }
 
   public set selectedRiskValue(measurement: any) {
-      if (this.model) {
-        // console.log('this.currentAssessmentGroup.assessments')
-        // console.dir(this.currentAssessmentGroup.assessments)
-        this.currentAssessmentGroup.assessments.forEach(
-          (assessment) => {
-            const assessment_object = this.model.attributes.assessment_objects.find(
-                (assessment_object) => {
-                  return assessment.id === assessment_object.stix.id;
-                }
-            );
-            assessment.risk  = assessment_object.risk;
-            // console.log('assessment_object from model')
-            // console.dir(assessment_object)
-            assessment.measurements.forEach(
-              (m) => {
-                const question = assessment_object.questions.find((q) => q.name === m.name);
-                // console.log('update risk currentAssessmentGroup.assessment')
-                // console.dir(question)
-                m.risk = assessment_object.risk; // question.selected_value.risk
-              }
-
-            );
+    if (this.model) {
+      // console.log('this.currentAssessmentGroup.assessments')
+      // console.dir(this.currentAssessmentGroup.assessments)
+      this.currentAssessmentGroup.assessments.forEach((assessment) => {
+        const assessment_object = this.model.attributes.assessment_objects.find(
+          (assessmentObject) => {
+            return assessment.id === assessmentObject.stix.id;
           }
         );
-        this.calculateGroupRisk();
-      }
+        assessment.risk = assessment_object.risk;
+        // console.log('assessment_object from model')
+        // console.dir(assessment_object)
+        assessment.measurements.forEach((m) => {
+          const question = assessment_object.questions.find(
+            (q) => q.name === m.name
+          );
+          // console.log('update risk currentAssessmentGroup.assessment')
+          // console.dir(question)
+          m.risk = assessment_object.risk; // question.selected_value.risk
+        });
+      });
+      this.calculateGroupRisk();
+    }
   }
 
   private build(data: any): void {
-      if (data) {
-        this.assessmentGroups = this.createAssessmentGroups(data);
-        this.currentAssessmentGroup = this.assessmentGroup;
-        this.pageTitle = this.splitTitle();
-        this.updateChart();
-      }
+    if (data) {
+      this.assessmentGroups = this.createAssessmentGroups(data);
+      this.currentAssessmentGroup = this.assessmentGroup;
+      this.pageTitle = this.splitTitle();
+      this.updateChart();
+    }
   }
 
   private get assessmentGroup(): any {
@@ -348,25 +336,24 @@ export class AssessmentComponent extends Measurements implements OnInit {
     if (assessedObjects) {
       // Go through and build each item
       const assessments: any = [];
-      assessedObjects.forEach(
-          (assessedObject) => {
-              const assessment: any = {};
-              assessment.version = '1';
-              assessment.modified = new Date();
-              assessment.created = new Date();
+      assessedObjects.forEach((assessedObject) => {
+        const assessment: any = {};
+        assessment.version = '1';
+        assessment.modified = new Date();
+        assessment.created = new Date();
 
-              assessment.measurements = [];
-              assessment.kill_chain_phases =
-                assessedObject.attributes.kill_chain_phases;
-              assessment.id = assessedObject.id;
-              assessment.name = assessedObject.attributes.name;
-              assessment.description = assessedObject.attributes.description;
-              assessment.measurements = this.buildMeasurements(assessedObject.id);
-              assessment.type = assessedObject.type;
+        assessment.measurements = [];
+        assessment.kill_chain_phases =
+          assessedObject.attributes.kill_chain_phases;
+        assessment.id = assessedObject.id;
+        assessment.name = assessedObject.attributes.name;
+        assessment.description = assessedObject.attributes.description;
+        assessment.measurements = this.buildMeasurements(assessedObject.id);
+        assessment.type = assessedObject.type;
 
-              const risk = this.getRisk(assessment.measurements);
-              assessment.risk = risk;
-              assessments.push(assessment);
+        const risk = this.getRisk(assessment.measurements);
+        assessment.risk = risk;
+        assessments.push(assessment);
       });
       // We do this so we can just save all the assessments later.
       this.assessments = assessments;
@@ -375,17 +362,19 @@ export class AssessmentComponent extends Measurements implements OnInit {
       const assessmentObjectsGroups = this.groupObjectsByKillPhase(assessments);
       let keys = Object.keys(assessmentObjectsGroups);
       keys = keys.sort();
-      keys.forEach(
-          (phaseName, index) => {
+      keys.forEach((phaseName, index) => {
         // TODO - Need to remove the 'courseOfAction' name
         const courseOfActionGroup = assessmentObjectsGroups[phaseName];
 
         // This is the x-unfetter-control-assessments
         const assessmentGroup: any = {};
         assessmentGroup.name = phaseName;
-        const step = (index+1);
-        this.navigations.push({label: this.splitTitle(phaseName), page: step})
-         this.item = this.navigations;
+        const step = index + 1;
+        this.navigations.push({
+          label: this.splitTitle(phaseName),
+          page: step
+        });
+        this.item = this.navigations;
         // TODO: Need to get description somehow from the key phase information
         assessmentGroup.description = this.killChains[phaseName];
         assessmentGroup.assessments = courseOfActionGroup;
@@ -394,19 +383,17 @@ export class AssessmentComponent extends Measurements implements OnInit {
         assessmentGroup.riskArray = riskArray;
         const riskArrayLabels = ['Risk Accepted', 'Risk Addressed'];
         assessmentGroup.riskArrayLabels = riskArrayLabels;
-
         assessmentGroups.push(assessmentGroup);
       });
     }
-    const laststep = (this.navigations.length + 1);
-    this.navigations.push({label: 'Summary', page: laststep });
+    const laststep = this.navigations.length + 1;
+    this.navigations.push({ label: 'Summary', page: laststep });
     return assessmentGroups;
   }
 
   private buildKillChain(stixObjects): any {
     const killChains = [];
-    stixObjects.forEach(
-        (stixObject) => {
+    stixObjects.forEach((stixObject) => {
       const killChainPhases = stixObject.kill_chain_phases;
       if (!killChainPhases) {
         const phaseName = 'unknown';
@@ -415,8 +402,7 @@ export class AssessmentComponent extends Measurements implements OnInit {
           killChains[phaseName] = description;
         }
       } else {
-        killChainPhases.forEach(
-            (killChainPhase) => {
+        killChainPhases.forEach((killChainPhase) => {
           const phaseName = killChainPhase.phase_name;
           if (!killChains[phaseName]) {
             const description = killChainPhase.description;
@@ -434,8 +420,7 @@ export class AssessmentComponent extends Measurements implements OnInit {
 
   private groupObjectsByKillPhase(stixObjects): any {
     const hash = {};
-    stixObjects.forEach(
-        (stixObject) => {
+    stixObjects.forEach((stixObject) => {
       const killChainPhases = stixObject.kill_chain_phases;
       if (!killChainPhases) {
         const phaseName = 'unknown';
@@ -447,8 +432,7 @@ export class AssessmentComponent extends Measurements implements OnInit {
         const objectProxy = { content: stixObject };
         objectProxies.push(stixObject);
       } else {
-        killChainPhases.forEach(
-            (killChainPhase) => {
+        killChainPhases.forEach((killChainPhase) => {
           const phaseName = killChainPhase.phase_name;
           let objectProxies = hash[phaseName];
           if (objectProxies === undefined) {
@@ -468,7 +452,9 @@ export class AssessmentComponent extends Measurements implements OnInit {
   }
 
   private calculateGroupRisk(): number {
-    const groupRisk = this.calculateRisk(this.currentAssessmentGroup.assessments);
+    const groupRisk = this.calculateRisk(
+      this.currentAssessmentGroup.assessments
+    );
     const riskArray = [];
     riskArray.push(groupRisk);
     riskArray.push(1 - groupRisk);
@@ -484,30 +470,33 @@ export class AssessmentComponent extends Measurements implements OnInit {
     const groupRisk = this.calculateGroupRisk();
     // console.log('groupRisk ' + groupRisk)
     if (this.model) {
-        const assessment_object = this.model.attributes.assessment_objects.find(
-          (assessment_object) => { return assessment.id === assessment_object.stix.id; }
-        );
+      const assessment_object = this.model.attributes.assessment_objects.find(
+        (assessmentObject) => {
+          return assessment.id === assessmentObject.stix.id;
+        }
+      );
 
-        assessment_object.risk = groupRisk;
-        const question = assessment_object.questions.find((q) => { return q.name === measurement.name});
-        // console.dir(question)
-        question.risk = option.selected.value.risk;
-        question.selected_value = option.selected.value
-        // console.dir(question)
+      assessment_object.risk = groupRisk;
+      const question = assessment_object.questions.find((q) => {
+        return q.name === measurement.name;
+      });
+      // console.dir(question)
+      question.risk = option.selected.value.risk;
+      question.selected_value = option.selected.value;
+      // console.dir(question)
     }
     this.updateChart();
   }
 
-  private navigationClicked(e:any, step: number): void {
-      e.preventDefault();
-      e.stopP
-      if (step > this.page) {
-        this.page = step - 1;
-        this.next();
-      } else if (step < this.page) {
-        this.page = step + 1;
-        this.back();
-      }
+  private navigationClicked(e: any, step: number): void {
+    e.preventDefault();
+    if (step > this.page) {
+      this.page = step - 1;
+      this.next();
+    } else if (step < this.page) {
+      this.page = step + 1;
+      this.back();
+    }
   }
 
   private back(): void {
@@ -533,15 +522,15 @@ export class AssessmentComponent extends Measurements implements OnInit {
     if (this.buttonLabel === 'Save') {
       this.saveAssessments();
     } else {
-      if ((this.page + 1) > this.assessmentGroups.length) {
+      if (this.page + 1 > this.assessmentGroups.length) {
         this.page = this.page + 1;
         this.pageTitle = ' Assessment Summary';
         this.currentAssessmentGroup = null;
         this.showSummarry = true;
         this.buttonLabel = 'Save';
         if (this.model) {
-           this.assessmentName = this.model.attributes.name;
-           this.assessmentDescription = this.model.attributes.description;
+          this.assessmentName = this.model.attributes.name;
+          this.assessmentDescription = this.model.attributes.description;
         }
       } else {
         this.page = this.page + 1;
@@ -554,7 +543,9 @@ export class AssessmentComponent extends Measurements implements OnInit {
   }
 
   private splitTitle(title?: string): string {
-    const split = title? title.split('-') : this.currentAssessmentGroup.name.split('-');
+    const split = title
+      ? title.split('-')
+      : this.currentAssessmentGroup.name.split('-');
     for (let i = 0; i < split.length; i++) {
       let s = split[i];
       s = s.charAt(0).toUpperCase() + s.slice(1);
@@ -570,40 +561,36 @@ export class AssessmentComponent extends Measurements implements OnInit {
     retVal.description = this.assessmentDescription;
     retVal.assessment_objects = [];
 
-    assessmentsGroups.forEach(
-      (assessmentsGroup) => {
-        if (assessmentsGroup.assessments !== undefined) {
-          assessmentsGroup.assessments.forEach(
-            (assessment) => {
-              const temp: any = {};
+    assessmentsGroups.forEach((assessmentsGroup) => {
+      if (assessmentsGroup.assessments !== undefined) {
+        assessmentsGroup.assessments.forEach((assessment) => {
+          const temp: any = {};
 
-              temp.stix = {};
-              temp.stix.id = assessment.id;
-              temp.stix.type = assessment.type;
-              temp.stix.description = assessment.description || '';
-              temp.stix.name = assessment.name;
+          temp.stix = {};
+          temp.stix.id = assessment.id;
+          temp.stix.type = assessment.type;
+          temp.stix.description = assessment.description || '';
+          temp.stix.name = assessment.name;
 
-              temp.questions = [];
-              if (assessment.measurements !== undefined) {
-                assessment.measurements.forEach(
-                  (measurement) => {
-                    temp.questions.push(measurement);
-                  });
-              } else {
-                return { error: 'No measurements/questions on assessment' };
-              }
+          temp.questions = [];
+          if (assessment.measurements !== undefined) {
+            assessment.measurements.forEach((measurement) => {
+              temp.questions.push(measurement);
+            });
+          } else {
+            return { error: 'No measurements/questions on assessment' };
+          }
 
-              temp.risk = temp.questions
-                .map((question) => question.risk)
-                .reduce((prev, cur) => prev += cur, 0)
-                / temp.questions.length;
+          temp.risk =
+            temp.questions
+              .map((question) => question.risk)
+              .reduce((prev, cur) => (prev += cur), 0) / temp.questions.length;
 
-              retVal['assessment_objects'].push(temp);
-          });
-        } else {
-          return {error: 'No assessments in group'};
-        }
-
+          retVal['assessment_objects'].push(temp);
+        });
+      } else {
+        return { error: 'No assessments in group' };
+      }
     });
 
     return retVal;
@@ -618,29 +605,34 @@ export class AssessmentComponent extends Measurements implements OnInit {
       retVal.description = this.assessmentDescription;
       retVal.assessment_objects = this.model.attributes.assessment_objects;
       this.url = this.url + '/' + this.model.id;
-      const sub = this.genericApi.patch( this.url, retVal).subscribe(
-          (res) => {
-            this.saved = true;
-            this.location.back();
-          }, (err) => {
-            console.log(err);
-          }, () => {
-            sub.unsubscribe();
-          }
+      const sub = this.genericApi.patch(this.url, retVal).subscribe(
+        (res) => {
+          this.saved = true;
+          this.location.back();
+        },
+        (err) => {
+          console.log(err);
+        },
+        () => {
+          sub.unsubscribe();
+        }
       );
     } else {
-        const xUnfetterAssessment = this.generateXUnfetterAssessment(this.assessmentGroups);
-        const sub = this.genericApi.post( this.url, xUnfetterAssessment).subscribe(
-            (res) => {
-              this.saved = true;
-              this.location.back();
-            }, (err) => {
-              console.log(err);
-            }, () => {
-              sub.unsubscribe();
-            }
-          );
+      const xUnfetterAssessment = this.generateXUnfetterAssessment(
+        this.assessmentGroups
+      );
+      const sub = this.genericApi.post(this.url, xUnfetterAssessment).subscribe(
+        (res) => {
+          this.saved = true;
+          this.location.back();
+        },
+        (err) => {
+          console.log(err);
+        },
+        () => {
+          sub.unsubscribe();
         }
+      );
     }
-
+  }
 }

@@ -131,8 +131,8 @@ export class AssessmentsDashboardComponent implements OnInit {
 
             const riskBreakdownTemp = {};
 
-            for(let assessedObject of this.assessment.attributes.assessment_objects) {
-                for(let question of assessedObject.questions) {
+            for (let assessedObject of this.assessment.attributes.assessment_objects) {
+                for (let question of assessedObject.questions) {
                     questionSet.add(question.name);
                     if (riskBreakdownTemp[question.name] === undefined) {
                         riskBreakdownTemp[question.name] = [];

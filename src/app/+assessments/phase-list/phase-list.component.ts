@@ -19,7 +19,7 @@ export class PhaseListComponent implements OnInit {
 
     constructor(private route: ActivatedRoute) { }
 
-    ngOnInit() {
+    public ngOnInit() {
         let tempRisk = 0;
         for (let question in this.riskBreakdown) {
             tempRisk += this.riskBreakdown[question];

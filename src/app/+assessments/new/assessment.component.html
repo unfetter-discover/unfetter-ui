@@ -76,7 +76,7 @@
                             </div>
                         </div>
                         <div class="col-sm-9">
-                            <h1> {{currentAssessmentGroup.description}}</h1>
+                            <h3> {{currentAssessmentGroup.description}}</h3>
                         </div>
                     </div>
                     <div class="row margin-bottom" *ngFor="let assessment of currentAssessmentGroup.assessments">
@@ -89,7 +89,7 @@
                                     | restSentence}}
                                 </div>
                             </div>
-                            <div class="row" style="margin-top: 5px;">
+                            <div class="row" style="margin: 10px 0px;">
                                 <div class="col-xs-{{ assessment.measurements.length | columnSize}}" *ngFor="let measurement of assessment.measurements">
                                     <form>
                                         <md-select #question name="question"  (change)="updateRisks(question, measurement, assessment)" [(ngModel)]="measurement.risk" class="full-width">
