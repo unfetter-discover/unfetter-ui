@@ -41,7 +41,7 @@ export class SophisticationBreakdownComponent implements OnInit {
         }
     ];
 
-    constructor(private assessmentsCalculationService: AssessmentsCalculationService){}
+    constructor(private assessmentsCalculationService: AssessmentsCalculationService) {}
 
     public ngOnInit() {
         this.colors = this.assessmentsCalculationService.barColors;

@@ -12,7 +12,7 @@ export class AssessmentsCalculationService {
             backgroundColor: Constance.MAT_COLORS['lightblue']['800']
         },
         {
-            backgroundColor: Constance.MAT_COLORS['lightblue']['100']   
+            backgroundColor: Constance.MAT_COLORS['lightblue']['100']
         }
     ];
 

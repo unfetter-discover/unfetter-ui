@@ -5,13 +5,14 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { BaseStixComponent } from '../../../base-stix.component';
 import { StixService } from '../../../stix.service';
 import { Sighting } from '../../../../models';
+import { Constance } from '../../../../utils/constance';
 
 @Component({
   selector: 'sighting-list',
   templateUrl: './sighting-list.component.html',
 })
 export class SightingListComponent extends BaseStixComponent implements OnInit {
-    private sightings: Sighting[] = [];
+    public sightings: Sighting[] = [];
 
     constructor(
         public stixService: StixService,
@@ -22,7 +23,7 @@ export class SightingListComponent extends BaseStixComponent implements OnInit {
         public snackBar: MdSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
-        stixService.url = 'cti-stix-store-api/sightings';
+        stixService.url = Constance.SIGHTING_URL;
     }
 
     public ngOnInit() {

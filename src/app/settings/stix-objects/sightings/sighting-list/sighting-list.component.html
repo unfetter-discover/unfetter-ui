@@ -1,7 +1,7 @@
 
     <buttons-filter [model]="sightings" [filteredItems]="filteredItems" (filterItemsChange)="onFilterItemsChange($event)"></buttons-filter>
 
-   <div class="row" >
+   <div class="row"  style="margin-top: 15px;">
         <div class="col-md-12">
             <p-dataList [value]="filteredItems">
                     <ng-template let-data pTemplate="item">
@@ -13,7 +13,7 @@
                                     <div class="row full-width" >
                                         <div class="col-md-9">
                                             <div class="pull-left">
-                                                <a routerLink="/sightings/{{data.id}}" >{{data.attributes.sighting_of_ref}}</a>
+                                                <a routerLink="/stix/sightings/{{data.id}}" >{{data.attributes.sighting_of_ref}}</a>
                                             </div>
                                         </div>
                                         <div class="col-md-3">

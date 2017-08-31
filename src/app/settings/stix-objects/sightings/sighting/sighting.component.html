@@ -1,8 +1,8 @@
 <div class="row">
     <div class="col-md-12">
         <div class="button-row">
-            <a cclass="mat-primary" md-raised-button (click)="editButtonClicked()"><i class="fa fa-pencil"></i>EDIT</a>
-            <a class="mat-primary" md-raised-button (click)="deleteButtonClicked()"><i class="fa fa-trash"></i>DELETE</a>
+            <a class="mat-primary" md-raised-button (click)="editButtonClicked()"><i class="fa fa-pencil"></i> EDIT</a>
+            <a class="mat-primary" md-raised-button (click)="deleteButtonClicked()"><i class="fa fa-trash"></i> DELETE</a>
         </div>
     </div>
 </div>
@@ -13,36 +13,30 @@
                 <div class="row">
                     <div class="col-md-12">
                         <label>Source Type</label>
-                        <md-select placeholder="Please Choose..." [(ngModel)]="sighting.attributes.sighting_of_ref" name="sourceTypes" class="full-width">
-                                <md-option *ngFor="let sourceType of sourceTypes" [value]="sourceType">
-                                    {{sourceType}}
-                                </md-option>
-                        </md-select>
+                        <p>{{sighting.attributes.sighting_of_ref}}</p>
                     </div>
                 </div>
-                <div class="row">
+                 <div class="row">
                     <div class="col-md-12">
                         <label>Where Sighted Reference</label>
-                        <md-input-container class="full-width">
-                                <input mdInput placeholder="Summarry"  [(ngModel)]="sighting.attributes.summary" value="{{sighting.attributes.summary}}">
-                                </md-input-container>
+                        <p>{{sighting.attributes.summary}}</p>
                     </div>
                 </div>
-                <div class="row">
+                 <div class="row">
                     <div class="col-md-4">
-                        <md-input-container class="full-width">
-                                <input mdInput placeholder="Count"  [(ngModel)]="sighting.attributes.count" value="{{sighting.attributes.count}}">
-                                </md-input-container>
+                        <label>Count</label>
+                        <p>{{sighting.attributes.count}}</p>
                     </div>
                     <div class="col-md-4">
-                                 <p-calendar [(ngModel)]="sighting.attributes.published" dateFormat="M-dd-yy" showIcon="true"></p-calendar>
-
+                        <label>First Seen</label>
+                        <p>{{sighting.attributes.first_seen}}</p>
                     </div>
                     <div class="col-md-4">
-                                  <p-calendar [(ngModel)]="sighting.attributes.published" dateFormat="M-dd-yy" showIcon="true"></p-calendar>
-
+                        <label>Last Seen</label>
+                        <p>{{sighting.attributes.last_seen}}</p>
                     </div>
                 </div>
+
             </md-card-content>
         </md-card>
     </div>

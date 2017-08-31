@@ -83,7 +83,7 @@ export class TechniquesChartComponent implements OnInit {
      *  renders the chart components, based on applied threshold
      */
     public renderChart(selectedRisk?: number): void {
-        if(selectedRisk) {
+        if (selectedRisk) {
             this.riskThreshold = selectedRisk;
         }
         console.log('render chart, techniques breakdown', this.techniqueBreakdown);

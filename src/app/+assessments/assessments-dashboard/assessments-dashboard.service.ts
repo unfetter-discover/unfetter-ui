@@ -23,7 +23,7 @@ export class AssessmentsDashboardService {
     }
 
     public getAttackPatternRelationships(id: string): Observable<any> {
-        let query = { 'stix.target_ref': id, 'stix.relationship_type': { '$in': ['mitigates', 'indicates'] } };
+        let query = { 'stix.target_ref': id, 'stix.relationship_type': { $in: ['mitigates', 'indicates'] } };
         return this.genericApi.get(`${this.relationshipsUrl}?filter=${encodeURI(JSON.stringify(query))}`);
     }
 
