@@ -33,7 +33,7 @@ export class SightingNewComponent extends BaseStixComponent {
         }
         let subscription = super.create(this.sighting).subscribe(
             (data) => {
-                this.sighting = data as Sighting;
+                // this.sighting = data as Sighting;
                 this.location.back();
             }, (error) => {
                 // handle errors here
