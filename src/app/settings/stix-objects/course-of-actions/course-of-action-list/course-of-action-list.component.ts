@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { Observable }        from 'rxjs/Observable';
-import { Subject }           from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
 // Observable class extensions
 import 'rxjs/add/observable/of';
@@ -17,8 +17,8 @@ import { StixService } from '../../../stix.service';
 import { CourseOfAction } from '../../../../models';
 
 @Component({
-  selector: 'course-of-action-list',
-  templateUrl: './course-of-action-list.component.html',
+    selector: 'course-of-action-list',
+    templateUrl: './course-of-action-list.component.html',
 })
 
 export class CourseOfActionListComponent extends CourseOfActionComponent implements OnInit {
@@ -38,14 +38,14 @@ export class CourseOfActionListComponent extends CourseOfActionComponent impleme
     }
 
     public ngOnInit() {
-        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
-        let subscription =  super.load(filter).subscribe(
+        const filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
+        const subscription = super.load(filter).subscribe(
             (data) => {
                 this.courseOfActions = data as CourseOfAction[];
                 // this.assignCopy();
             }, (error) => {
                 // handle errors here
-                 console.log('error ' + error);
+                console.log('error ' + error);
             }, () => {
                 // prevent memory links
                 if (subscription) {
@@ -58,7 +58,7 @@ export class CourseOfActionListComponent extends CourseOfActionComponent impleme
     public deletButtonClicked(courseOfAction: CourseOfAction): void {
         super.openDialog(courseOfAction).subscribe(
             () => {
-                 this.courseOfActions = this.courseOfActions.filter((h) => h.id !== courseOfAction.id);
+                this.courseOfActions = this.courseOfActions.filter((h) => h.id !== courseOfAction.id);
             }
         );
     }

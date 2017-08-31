@@ -109,6 +109,7 @@ export const Constance = {
     }
   },
 
+<<<<<<< Updated upstream
     MAT_GRAPH_COLORS: [
         'blue',
         'orange',
@@ -121,6 +122,20 @@ export const Constance = {
         'lightblue',
         'lightgreen'
     ],
+=======
+  MAT_GRAPH_COLORS: [
+    'blue',
+    'orange',
+    'lightgreen',
+    'pink',
+    'deeppurple',
+    'brown',
+    'indigo',
+    'bluegrey',
+    'lime',
+    'lightblue'
+  ],
+>>>>>>> Stashed changes
 
   MAT_COLORS: {
     red: {

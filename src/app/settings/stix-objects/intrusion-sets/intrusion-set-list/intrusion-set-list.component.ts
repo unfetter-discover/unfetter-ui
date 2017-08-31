@@ -29,7 +29,7 @@ export class IntrusionSetListComponent extends IntrusionSetComponent implements 
     }
 
     public ngOnInit() {
-        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
+        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ 'stix.name': '1' }));
         let subscription =  super.load(filter).subscribe(
             (data) => {
                 this.intrusionSets = data as IntrusionSet[];

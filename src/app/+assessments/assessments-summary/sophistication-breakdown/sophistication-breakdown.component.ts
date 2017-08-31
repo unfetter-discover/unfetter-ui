@@ -49,11 +49,11 @@ export class SophisticationBreakdownComponent implements OnInit {
         this.barChartLabels = Object.keys(this.allAttackPatterns)
             .map((level) => this.assessmentsCalculationService.sophisicationNumberToWord(level));
 
-        for (let prop in this.assessedAttackPatterns) {
+        for (const prop in Object.keys(this.assessedAttackPatterns)) {
             this.barChartData[0].data.push(this.assessedAttackPatterns[prop]);
         }
 
-        for (let prop in this.allAttackPatterns) {
+        for (const prop in Object.keys(this.allAttackPatterns)) {
             this.barChartData[1].data.push(this.allAttackPatterns[prop]);
         }
     }

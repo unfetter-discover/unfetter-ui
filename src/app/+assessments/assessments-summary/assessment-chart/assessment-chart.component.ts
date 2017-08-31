@@ -69,10 +69,10 @@ export class AssessmentChartComponent implements OnInit {
     ];
 
     protected readonly rootLabelRegex = /(\w+\s+\d+).(\d+)*/;
+    protected colors: any[];
 
     // Hide label is one is longer than this
     private readonly longestLabelThreshold: number = 10;
-    private colors: any[];
 
     constructor(private assessmentsCalculationService: AssessmentsCalculationService) { }
 
