@@ -21,6 +21,9 @@ import { MenuItem } from 'primeng/primeng';
   selector: 'assessment',
   templateUrl: './assessment.component.html',
   encapsulation: ViewEncapsulation.None,
+  styleUrls: [
+    `./assessment.component.css`
+  ]
 
 })
 export class AssessmentComponent extends Measurements implements OnInit {
