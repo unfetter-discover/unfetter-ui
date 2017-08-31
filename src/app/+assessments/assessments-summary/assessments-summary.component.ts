@@ -38,6 +38,7 @@ export class AssessmentsSummaryComponent implements OnInit {
 
     public readonly topNRisks = 3;
     public readonly riskLevel = 0.50;
+    public totalRiskValue: any;
 
     constructor(
         private assessmentsSummaryService: AssessmentsSummaryService,

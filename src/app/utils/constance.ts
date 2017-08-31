@@ -113,14 +113,14 @@ export const Constance = {
     MAT_GRAPH_COLORS: [
         'blue',
         'orange',
-        'lightgreen',
         'pink',
         'deeppurple',
         'brown',
         'indigo',
         'bluegrey',
         'lime',
-        'lightblue'
+        'lightblue',
+        'lightgreen'
     ],
 
     MAT_COLORS: {
