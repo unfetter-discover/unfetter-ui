@@ -15,7 +15,7 @@ const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'partners', component: PartnersComponent },
   { path: 'intrusion-set-dashboard', component: IntrusionSetDashboardComponent },
-  { path: 'assessments', loadChildren: './+assessments#AssessmentsModule' },
+  { path: 'assessments', loadChildren: './assessments#AssessmentsModule' },
   { path: '**', component: NoContentComponent },
 ];
 

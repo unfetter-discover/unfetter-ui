@@ -27,8 +27,8 @@ export class SightingListComponent extends BaseStixComponent implements OnInit {
     }
 
     public ngOnInit() {
-        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ 'stix.name': '1' }));
-        let subscription =  super.load(filter).subscribe(
+        const filter = 'sort=' + encodeURIComponent(JSON.stringify({ 'stix.name': '1' }));
+        const subscription =  super.load(filter).subscribe(
             (data) => {
                 this.sightings = data;
             }, (error) => {
@@ -44,13 +44,13 @@ export class SightingListComponent extends BaseStixComponent implements OnInit {
     }
 
     public editButtonClicked(sighting: Sighting): void {
-        let link = ['edit', sighting.id];
+        const link = ['edit', sighting.id];
         super.gotoView(link);
     }
 
     public showDetails(event: any, sighting: Sighting): void {
         event.preventDefault();
-        let link = ['.', sighting.id];
+        const link = ['.', sighting.id];
         super.gotoView(link);
     }
 

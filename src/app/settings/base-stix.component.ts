@@ -175,7 +175,7 @@ export class BaseStixComponent {
             (data) => {
                 observer.next(data);
                 observer.complete();
-                this.snackBar.open(item.attributes.name + ' has been successfully save', '', {
+                this.snackBar.open(item.attributes.name + ' has been successfully saved', '', {
                     duration: this.duration,
                     extraClasses: ['snack-bar-background-success']
                 });
