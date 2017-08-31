@@ -109,6 +109,7 @@ export const Constance = {
     }
   },
 
+<<<<<<< HEAD
   MAT_GRAPH_COLORS: [
     'blue',
     'orange',
@@ -121,6 +122,20 @@ export const Constance = {
     'lime',
     'lightblue'
   ],
+=======
+    MAT_GRAPH_COLORS: [
+        'blue',
+        'orange',
+        'pink',
+        'deeppurple',
+        'brown',
+        'indigo',
+        'bluegrey',
+        'lime',
+        'lightblue',
+        'lightgreen'
+    ],
+>>>>>>> issue-374
 
   MAT_COLORS: {
     red: {

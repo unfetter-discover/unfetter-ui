@@ -27,7 +27,6 @@ export class AssessmentsSummaryComponent implements OnInit {
     public summaryDate: Date;
     public thresholdOptions: ThresholdOption[];
     public selectedRisk: number = 0.5;
-    public totalRiskValue: string;
     public id: string;
     public phaseNameGroups: any[];
     public riskLabelClass = 'label-info';
@@ -39,6 +38,7 @@ export class AssessmentsSummaryComponent implements OnInit {
 
     public readonly topNRisks = 3;
     public readonly riskLevel = 0.50;
+    public totalRiskValue: any;
 
     constructor(
         private assessmentsSummaryService: AssessmentsSummaryService,
@@ -194,5 +194,4 @@ export class AssessmentsSummaryComponent implements OnInit {
             return [];
         }
     }
-
 }
