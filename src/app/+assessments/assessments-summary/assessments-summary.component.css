@@ -1,0 +1,66 @@
+:host { 
+    background-color: #fafafa;
+}
+
+.loading {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+}
+
+.loading md-spinner {
+    margin: auto auto;
+    flex: 1 0 auto;
+}
+
+.loading .loading-text {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    flex: 1 0 auto;
+}
+
+.topN td ul {
+    list-style: none;
+    margin: 0px;
+    padding-left: 4px;
+}
+
+.topN th {
+    text-align: center;
+}
+
+.weakestChain ul {
+    list-style: none;
+    margin: 0px;
+    padding-left: 4px;
+}
+
+.row md-select {
+    width: 100%;
+}
+.summaryPanel:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+.summaryPanel {
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    border: none;
+    border-radius: 8px;
+    margin-top: 30px;
+}
+.summaryPanelContent {
+    padding: 16px;
+    background: #ffffff;
+    border-radius: 8px 8px 0 0;
+}
+.summaryPanelTitle {
+    padding: 15px;
+    background: #E2E2E2;
+    border-radius: 0 0 8px 8px;
+}
+#chartWrapper {
+    background: #f2f2f2;
+    width: 100%;
+}

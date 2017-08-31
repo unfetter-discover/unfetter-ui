@@ -1,0 +1,46 @@
+<div class="row" >
+        <div class="col-md-12">
+            <div style="margin-top: 1%;">
+                <p-dataList [value]="model">
+                    <ng-template let-data pTemplate="item">
+                        <div class="row list-item-row">
+                            <div class="col-lg-9 col-xs-12">
+                                <div>
+                                    <a class="list-item-name"  routerLink="/stix/{{url}}/{{data.id}}" >{{data.attributes.name}}</a>
+                                </div>
+                                <div class="truncate">
+                                    <small>{{data.attributes.description}}</small>
+                                </div>
+
+                                <md-chip-list class="pull-left" *ngIf="showLabels">
+                                    <md-chip selected="true" color="accent" *ngFor="let label of data.attributes.labels">{{label}}</md-chip>
+                                </md-chip-list>
+
+                                <md-chip-list class="pull-left" *ngIf="showPattern">
+                                    <md-chip selected="true" color="accent">{{data.attributes.pattern}}</md-chip>
+                                </md-chip-list>
+
+                                <md-chip-list class="pull-left" *ngIf="showSectors">
+                                    <md-chip selected="true"  color="primary" *ngFor="let sector of data.attributes.sectors">{{sector}}</md-chip>
+                                </md-chip-list>
+
+                                    <md-chip-list class="pull-left" *ngIf="showKillChainPhases">
+                                    <md-chip selected="true"  color="warn"  *ngFor="let kill_chain_phase of data.attributes.kill_chain_phases">{{kill_chain_phase.phase_name}}</md-chip>
+                                </md-chip-list>
+
+                                <md-chip-list class="pull-left" *ngIf="showExternalReferences">
+                                    <md-chip selected="true"  color="primary" *ngFor="let external_reference of data.attributes.external_references">{{external_reference.source_name}}</md-chip>
+                                </md-chip-list>
+                            </div>
+                            <div class="col-lg-3 col-xs-12">
+                                    <button md-raised-button (click)="editButtonClicked(data)"><i class="fa fa-pencil"></i></button>
+                                    <button md-raised-button (click)="deleteButtonClicked(data)"><i class="fa fa-trash"></i></button>
+                            </div>
+
+                        </div>
+                    </ng-template>
+                </p-dataList>
+            </div>
+
+        </div>
+    </div>
