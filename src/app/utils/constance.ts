@@ -69,7 +69,7 @@ export const Constance = {
   OBSERVED_DATA_ICON: 'assets/icon/stix-icons/svg/malware-b.svg',
 
   TOOL_URL: 'api/tools',
-  TOOL_TYPE: 'tools',
+  TOOL_TYPE: 'tool',
   TOOL_ICON: 'assets/icon/stix-icons/svg/tool-b.svg',
 
   X_UNFETTER_SENSOR_URL: 'api/x-unfetter-sensors',
