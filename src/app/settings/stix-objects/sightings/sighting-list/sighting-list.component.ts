@@ -55,6 +55,10 @@ export class SightingListComponent extends BaseStixComponent implements OnInit {
     }
 
     public deleteButtonClicked(sighting: Sighting): void {
-        super.openDialog(sighting);
+        super.openDialog(sighting).subscribe(
+            () => {
+                this.filteredItems = this.filteredItems.filter((h) => h.id !== sighting.id);
+            }
+        );
     }
 }
