@@ -27,6 +27,7 @@ export class AssessmentsSummaryComponent implements OnInit {
     public summaryDate: Date;
     public thresholdOptions: ThresholdOption[];
     public selectedRisk: number = 0.5;
+    public totalRiskValue: string;
     public id: string;
     public phaseNameGroups: any[];
     public riskLabelClass = 'label-info';
@@ -144,7 +145,7 @@ export class AssessmentsSummaryComponent implements OnInit {
         });
 
         this.techniqueBreakdown = {};
-        for (let prop in assessedRiskMapping) {
+        for (const prop in Object.keys(assessedRiskMapping)) {
             if (attackPatternSetMap[prop] === undefined) {
                 this.techniqueBreakdown[prop] = 0;
             } else {
