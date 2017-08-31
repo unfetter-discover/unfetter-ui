@@ -46,7 +46,7 @@ export class ThreatActorListComponent extends TheatActorComponent implements OnI
     public deletButtonClicked(threatActor: ThreatActor): void {
         super.openDialog(threatActor).subscribe(
             () => {
-                 this.threatActors = this.threatActors.filter((h) => h.id !== threatActor.id);
+                 this.filteredItems = this.filteredItems.filter((h) => h.id !== threatActor.id);
             }
         );
     }

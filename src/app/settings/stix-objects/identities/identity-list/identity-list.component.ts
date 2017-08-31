@@ -48,7 +48,7 @@ export class IdentityListComponent extends IdentityComponent implements OnInit {
     public deletButtonClicked(identity: Identity): void {
         super.openDialog(identity).subscribe(
             () => {
-                 this.identities = this.identities.filter((h) => h.id !== identity.id);
+                 this.filteredItems = this.filteredItems.filter((h) => h.id !== identity.id);
             }
         );
     }

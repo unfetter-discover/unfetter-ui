@@ -50,7 +50,7 @@ export class IndicatorListComponent extends IndicatorComponent implements OnInit
      public deletButtonClicked(indicator: Indicator): void {
         super.openDialog(indicator).subscribe(
             () => {
-                 this.indicators = this.indicators.filter((h) => h.id !== indicator.id);
+                 this.filteredItems = this.filteredItems.filter((h) => h.id !== indicator.id);
             }
         );
     }
