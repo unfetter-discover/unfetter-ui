@@ -7,7 +7,7 @@ import { StixService } from '../../../stix.service';
 import { IntrusionSet } from '../../../../models';
 import { Motivation } from '../../../../models/motivation.enum';
 import { ResourceLevel } from '../../../../models/resource-level.enum';
-import { SortHelper } from '../../../../+assessments/assessments-summary/sort-helper';
+import { SortHelper } from '../../../../assessments/assessments-summary/sort-helper';
 
 @Component({
     selector: 'intrusion-set-new',

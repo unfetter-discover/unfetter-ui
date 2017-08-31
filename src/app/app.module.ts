@@ -31,7 +31,7 @@ import '../styles/headings.css';
 import { ConceptMapComponent } from './intrusion-set-dashboard/concept-map.component';
 import { CollapsibleTreeComponent } from './intrusion-set-dashboard/collapsible-tree.component';
 import { AccordionModule } from 'primeng/components/accordion/accordion';
-import { AssessmentsModule } from './+assessments/assessments.module';
+import { AssessmentsModule } from './assessments/assessments.module';
 import { GlobalModule } from './global/global.module';
 
 /**
