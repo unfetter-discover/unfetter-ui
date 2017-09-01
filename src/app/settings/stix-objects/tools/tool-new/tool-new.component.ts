@@ -8,12 +8,12 @@ import { Tool, AttackPattern, Indicator, IntrusionSet, CourseOfAction, Filter, R
 import { Constance } from '../../../../utils/constance';
 
 @Component({
-  selector: 'tool-new',
-  templateUrl: './tool-new.component.html',
+    selector: 'tool-new',
+    templateUrl: './tool-new.component.html',
 })
 export class ToolNewComponent extends ToolEditComponent implements OnInit {
 
-   constructor(
+    constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
@@ -28,11 +28,11 @@ export class ToolNewComponent extends ToolEditComponent implements OnInit {
     }
 
     private saveNewTool(): void {
-             console.log(this.tool.url);
-       let sub = super.create(this.tool).subscribe(
+        console.log(this.tool.url);
+        const sub = super.create(this.tool).subscribe(
             (data) => {
                 this.tool = new Tool(data);
-                if (this.newRelationships.length > 0 ) {
+                if (this.newRelationships.length > 0) {
                     let count = this.newRelationships.length;
                     this.newRelationships.forEach((relationship) => {
                         this.saveRelationship(relationship);
@@ -46,7 +46,7 @@ export class ToolNewComponent extends ToolEditComponent implements OnInit {
                 }
             }, (error) => {
                 // handle errors here
-                 console.log('error ' + error);
+                console.log('error ' + error);
             }, () => {
                 // prevent memory links
                 if (sub) {

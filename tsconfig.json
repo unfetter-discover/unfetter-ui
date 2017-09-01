@@ -13,7 +13,8 @@
     "strictNullChecks": false,
     "lib": [
       "dom",
-      "es6"
+      "es6",
+      "es2016.array.include"
     ],
     "typeRoots": [
       "node_modules/@types"
