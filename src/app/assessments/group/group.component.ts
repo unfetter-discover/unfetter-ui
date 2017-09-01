@@ -50,14 +50,14 @@ export class AssessmentsGroupComponent implements OnInit {
    *
    * @returns {void}
    */
-  public initData(): void {
+  public initData(curApIndex: number = 0): void {
     const riskByAttackPattern$ = this.assessmentsDashboardService
       .getRiskByAttackPattern(this.currentId).subscribe(
         (res) => {
           this.riskByAttackPattern = res ? res : {};
           this.populateUnassessedPhases();
-          this.activePhase = this.currentPhase || this.riskByAttackPattern.phases[0]._id;
-          this.setPhase(this.activePhase);
+          this.activePhase = this.activePhase || this.currentPhase || this.riskByAttackPattern.phases[0]._id;
+          this.setPhase(this.activePhase, curApIndex);
         },
         (err) => console.log(err),
         () => riskByAttackPattern$.unsubscribe()
@@ -189,17 +189,12 @@ export class AssessmentsGroupComponent implements OnInit {
     );
   }
 
-  public setPhase(phaseName) {
-    this.resetNewAssessmentObjects();
+  public setPhase(phaseName, curApIndex: number = 0) {
+    this.resetNewAssessmentObjects();    
     this.activePhase = phaseName;
-    this.attackPatternsByPhase = this.getAttackPatternsByPhase(
-      this.activePhase
-    );
-    this.getAttackPatternsByPhase(this.activePhase).length > 0
-      ? this.setAttackPattern(
-        this.getAttackPatternsByPhase(this.activePhase)[0].attackPatternId
-      )
-      : this.setAttackPattern(-1);
+    this.attackPatternsByPhase = this.getAttackPatternsByPhase(this.activePhase);
+    let currentAttackPatternId: any = this.attackPatternsByPhase.length > 0 ? this.attackPatternsByPhase[curApIndex].attackPatternId : -1;    
+    this.setAttackPattern(currentAttackPatternId);
   }
 
   public getAttackPatternsByPhase(phaseName) {
@@ -458,8 +453,17 @@ export class AssessmentsGroupComponent implements OnInit {
       .subscribe((assessmentRes) => {
         console.log('Assessment updated successfully');
         // refresh data
+        let indexOfCurAp = 0;
+        console.log('curap', this.currentAttackPattern);
+        
+        for (let i = 0; i < this.attackPatternsByPhase.length; i++) {
+          if (this.attackPatternsByPhase[i].attackPatternId === this.currentAttackPattern.id){
+            indexOfCurAp = i;
+          }
+        }     
+                
         this.resetNewAssessmentObjects();
-        this.initData();
+        this.initData(indexOfCurAp);
       },
       (assessmentErr) => console.log(assessmentErr)
       );
