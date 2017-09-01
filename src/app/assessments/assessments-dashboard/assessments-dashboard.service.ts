@@ -32,10 +32,10 @@ export class AssessmentsDashboardService {
     }
 
     public genericPost(route: string, data: any) {
-        return this.genericApi.post(route, data);
+        return this.genericApi.post(route, {'data':{'attributes': data}});
     }
 
     public genericPatch(route: string, data: any) {
-        return this.genericApi.patch(route, data);
+        return this.genericApi.patch(route, {'data':{'attributes': data}});
     }
 }
