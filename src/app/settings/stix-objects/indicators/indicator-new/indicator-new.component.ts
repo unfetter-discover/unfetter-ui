@@ -32,7 +32,7 @@ export class IndicatorNewComponent extends IndicatorEditComponent implements OnI
     public saveIndicator(): void {
          let sub = super.create(this.indicator).subscribe(
             (data) => {
-                console.log('saved');
+                this.location.back();
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

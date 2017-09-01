@@ -30,7 +30,7 @@ export class IndicatorEditComponent extends IndicatorComponent implements OnInit
     public saveIndicator(): void {
          let sub = super.saveButtonClicked().subscribe(
             (data) => {
-                console.log('saved');
+                this.location.back();
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

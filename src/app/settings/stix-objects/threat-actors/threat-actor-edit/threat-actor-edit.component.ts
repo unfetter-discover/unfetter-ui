@@ -54,7 +54,7 @@ export class ThreatActorEditComponent extends TheatActorComponent implements OnI
     public saveThreatActor(): void {
          const sub = super.saveButtonClicked().subscribe(
             (data) => {
-                console.log('saved');
+                this.location.back();
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

@@ -76,7 +76,7 @@ export class IdentityEditComponent extends IdentityComponent implements OnInit {
      public saveIdentity(): void {
          let sub = super.saveButtonClicked().subscribe(
             (data) => {
-                console.log('saved');
+                this.location.back();
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
