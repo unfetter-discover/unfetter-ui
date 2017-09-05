@@ -49,7 +49,7 @@ export class ToolListComponent extends BaseStixComponent implements OnInit {
     public deletButtonClicked(tool: Tool): void {
         super.openDialog(tool).subscribe(
             () => {
-                 this.tools = this.tools.filter((h) => h.id !== tool.id);
+                 this.filteredItems = this.filteredItems.filter((h) => h.id !== tool.id);
             }
         );
     }

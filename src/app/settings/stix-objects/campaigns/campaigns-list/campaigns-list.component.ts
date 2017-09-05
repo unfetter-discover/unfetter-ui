@@ -51,7 +51,7 @@ export class CampaignsListComponent extends CampaignComponent implements OnInit 
      public deletButtonClicked(campaigns: Campaign): void {
         super.openDialog(campaigns).subscribe(
             () => {
-                 this.campaigns = this.campaigns.filter((h) => h.id !== campaigns.id);
+                 this.filteredItems = this.filteredItems.filter((h) => h.id !== campaigns.id);
             }
         );
     }
