@@ -59,4 +59,8 @@ export class SightingEditComponent extends BaseStixComponent implements OnInit {
             }
         );
     }
+
+     public summaryClicked(field: any): void {
+       this.sighting.attributes.summary = field.checked
+    }
 }

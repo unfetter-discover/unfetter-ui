@@ -10,10 +10,7 @@
 </div>
 <div class="row">
     <div class="col-md-12">
-        <label>Where Sighted Reference</label>
-         <md-input-container class="full-width">
-                <input mdInput placeholder="Summarry"  [(ngModel)]="sighting.attributes.summary" value="{{sighting.attributes.summary}}">
-                </md-input-container>
+        <md-checkbox #summary_field name="summary-field" class="example-margin"  (click)="summaryClicked(summary_field)">Summary</md-checkbox>
     </div>
 </div>
 <div class="row">
@@ -28,7 +25,6 @@
                     <button mdSuffix [mdDatepickerToggle]="picker"></button>
                 </md-input-container>
                 <md-datepicker #picker></md-datepicker>
-          <!-- <p-calendar [(ngModel)]="sighting.attributes.first_seen" dateFormat="M-dd-yy" showIcon="true"></p-calendar> -->
     </div>
      <div class="col-md-4">
            <md-input-container class="full-width">
@@ -36,7 +32,6 @@
                     <button mdSuffix [mdDatepickerToggle]="picker_last_seen"></button>
                 </md-input-container>
                 <md-datepicker #picker_last_seen></md-datepicker>
-          <!-- <p-calendar [(ngModel)]="sighting.attributes.last_seen" dateFormat="M-dd-yy"  showIcon="true"></p-calendar> -->
     </div>
 </div>
 <div class="row">
