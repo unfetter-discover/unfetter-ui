@@ -447,7 +447,7 @@ export class AssessmentComponent extends Measurements implements OnInit {
       retVal.description = this.assessmentDescription;
       retVal.assessment_objects = this.model.attributes.assessment_objects;
       this.url = this.url + '/' + this.model.id;
-      const sub = this.genericApi.patch(this.url, retVal).subscribe(
+      const sub = this.genericApi.patch(this.url, { 'data': { 'attributes':retVal}}).subscribe(
         (res) => {
           this.saved = true;
           this.location.back();
