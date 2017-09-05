@@ -131,6 +131,9 @@ export class IntrusionSetDashboardComponent implements OnInit {
   }
 
   private searchIntrusionSets(): void {
+    if (this.selectedIntrusionSet.length === 0) {
+      return;
+    }
     const ids = [];
     this.selectedIntrusionSet.forEach((intrusionSet) => {
       ids.push(intrusionSet.id);
