@@ -13,7 +13,7 @@ import { SensorComponent } from '../sensor/sensor.component';
 
 export class SensorListComponent extends SensorComponent implements OnInit {
 
-    public sensor: [] = [];
+    public sensors = [];
     public filterAttackPattern = {};
     public url = Constance.X_UNFETTER_SENSOR_URL;
 
