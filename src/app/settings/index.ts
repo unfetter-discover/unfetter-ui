@@ -1,1 +1,1 @@
-export { StixModule } from './stix.module.ts'
+export { StixModule } from './stix.module.ts';

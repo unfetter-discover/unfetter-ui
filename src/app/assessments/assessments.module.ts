@@ -8,7 +8,6 @@ import { AssessmentsService } from './assessments.service';
 import { AssessmentsLayoutComponent } from './assessments-layout.component';
 import { AssessmentsDashboardComponent } from './assessments-dashboard/assessments-dashboard.component';
 import { AssessmentsDashboardService } from './assessments-dashboard/assessments-dashboard.service';
-import { GlobalModule } from 'app/global/global.module';
 import { PhaseListComponent } from './phase-list/phase-list.component';
 import { ChartsModule } from 'ng2-charts';
 import { AssessmentsGroupComponent } from './group/group.component';
@@ -20,6 +19,7 @@ import { AssessmentsCalculationService } from './assessments-summary/assessments
 import { AssessmentChartComponent } from './assessments-summary/assessment-chart/assessment-chart.component';
 import { SophisticationBreakdownComponent } from './assessments-summary/sophistication-breakdown/sophistication-breakdown.component';
 import { TechniquesChartComponent } from './assessments-summary/techniques-chart/techniques-chart.component';
+import { GlobalModule } from '../global/global.module';
 
 @NgModule({
   declarations: [

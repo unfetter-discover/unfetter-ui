@@ -10,9 +10,9 @@ import { Relationship } from '../../../models';
   template: `<page-header [pageTitle]='pageTitle'  [pageIcon]='pageIcon' [description]="description"></page-header>`,
 })
 export class RelationshipsComponent {
-    private pageTitle = 'Relationships';
-    private pageIcon = 'assets/icon/stix-icons/svg/relationship-b.svg';
-    private description = 'One type of relationship is created to ' +
+    public pageTitle = 'Relationships';
+    public pageIcon = 'assets/icon/stix-icons/svg/relationship-b.svg';
+    public description = 'One type of relationship is created to ' +
             'identify that a particular Course Of Action can mitigate a particular Attack Pattern.  Another type of relationship ' +
             'describes an Attack Pattern is used by an Intrusion Set.';
 }

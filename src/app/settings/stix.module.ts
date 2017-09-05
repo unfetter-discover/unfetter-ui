@@ -38,7 +38,7 @@ import { SensorHomeComponent, SensorListComponent, SensorNewComponent, SensorEdi
 import { ReportsComponent, ReportsListComponent, ReportNewComponent } from './stix-objects/reports';
 import { ThreatActorHomeComponent, ThreatActorListComponent, TheatActorComponent, ThreatActorNewComponent, ThreatActorEditComponent } from './stix-objects/threat-actors';
 import { IntrusionSetHomeComponent, IntrusionSetListComponent, IntrusionSetComponent, IntrusionSetEditComponent, IntrusionSetNewComponent } from './stix-objects/intrusion-sets';
-import { MitigateListComponent, MitigateComponent, IntrusionUsesAttackComponent } from './stix-objects/relationships';
+import { MitigateListComponent, MitigateComponent, IntrusionUsesAttackComponent, RelationshipsComponent, RelationshipNewComponent } from './stix-objects/relationships';
 import { IndicatorHomeComponent , IndicatorListComponent, IndicatorEditComponent, IndicatorNewComponent, IndicatorComponent } from './stix-objects/indicators';
 import { IdentityHomeComponent , IdentityListComponent, IdentityEditComponent, IdentityNewComponent, IdentityComponent } from './stix-objects/identities';
 
@@ -46,7 +46,7 @@ import { MalwareHomeComponent, MalwareListComponent, MalwareComponent, MalwareEd
 import { ToolHomeComponent, ToolListComponent, ToolComponent, ToolEditComponent, ToolNewComponent } from './stix-objects/tools';
 import { LinkExplorerComponent } from './link-explorer';
 import { StixHomeComponent } from './stix-home.component';
-import { GlobalModule } from 'app/global/global.module';
+import { GlobalModule } from '../global/global.module';
 
 @NgModule({
   imports: [
@@ -143,6 +143,8 @@ import { GlobalModule } from 'app/global/global.module';
     MalwareEditComponent,
     MalwareComponent,
     MalwareNewComponent,
+    RelationshipsComponent,
+    RelationshipNewComponent,
     ToolHomeComponent,
     ToolListComponent,
     ToolComponent,
