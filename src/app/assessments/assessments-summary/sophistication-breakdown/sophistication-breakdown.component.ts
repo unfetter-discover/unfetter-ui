@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Constance } from '../../../utils/constance';
 import { AssessmentsCalculationService } from '../assessments-calculation.service';
+import { ChartData } from '../chart-data';
 
 @Component({
     selector: 'sophistication-breakdown',
@@ -25,10 +26,10 @@ export class SophisticationBreakdownComponent implements OnInit {
     };
     public colors;
     public barChartLabels: string[] = [];
-    public barChartType: string = 'bar';
+    public readonly barChartType: string = 'bar';
     public barChartLegend: boolean = true;
 
-    public barChartData: any[] = [
+    public readonly barChartData: ChartData[] = [
         {
             data: [],
             label: 'Assessed Attack Patterns',
@@ -43,6 +44,10 @@ export class SophisticationBreakdownComponent implements OnInit {
 
     constructor(private assessmentsCalculationService: AssessmentsCalculationService) {}
 
+    /**
+     * @description
+     *  initialize this class members and chart data, without making a network call
+     */
     public ngOnInit() {
         this.colors = this.assessmentsCalculationService.barColors;
 

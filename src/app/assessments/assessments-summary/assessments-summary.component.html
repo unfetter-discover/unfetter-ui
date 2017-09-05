@@ -125,7 +125,14 @@
                 <div class="col-md-12">
                     <div class="summaryPanel">
                         <div class="summaryPanelContent">
-                            <assessment-chart #assessmentChart [riskThreshold]="selectedRisk" [riskLabelOptions]="thresholdOptions" [assessmentObjects]="summary.attributes.assessment_objects"></assessment-chart>
+                            <assessment-chart #assessmentChart 
+                                    [riskThreshold]="selectedRisk" 
+                                    [riskLabelOptions]="thresholdOptions"
+                                    [assessmentObjects]="summary.attributes.assessment_objects"
+                                    [assessmentsGroupingTotal]="assessmentsGroupingTotal"
+                                    [assessmentsGroupingFiltered]="assessmentsGroupingFiltered"
+                                >
+                            </assessment-chart>
                         </div>
                         <div class="summaryPanelTitle">
                             <h5 class="text-center">% of assessments better than {{ getThresholdOptionName(selectedRisk) }}</h5>

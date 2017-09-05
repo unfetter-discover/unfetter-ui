@@ -6,10 +6,10 @@ import { Constance } from '../../utils/constance';
 
 @Injectable()
 export class AssessmentsSummaryService {
-    public baseUrl: String = Constance.X_UNFETTER_ASSESSMENT_URL;
+    public baseUrl: string = Constance.X_UNFETTER_ASSESSMENT_URL;
     constructor(private genericApi: GenericApi) { }
 
-    public getById(id: String): Observable<any> {
+    public getById(id: string): Observable<any> {
         return this.genericApi.get(`${this.baseUrl}/${id}`);
     }
 

@@ -35,6 +35,9 @@ export class AssessmentsSummaryComponent implements OnInit {
     public weakestAttackPatterns: AttackPattern[];
     public summaryAggregation: any;
     public techniqueBreakdown: any;
+    public riskByAttackPattern: RiskByAttackPattern;
+    public assessmentsGroupingTotal: any;
+    public assessmentsGroupingFiltered: any;
 
     public readonly topNRisks = 3;
     public readonly riskLevel = 0.50;
@@ -44,8 +47,12 @@ export class AssessmentsSummaryComponent implements OnInit {
         private assessmentsSummaryService: AssessmentsSummaryService,
         private assessmentsCalculationService: AssessmentsCalculationService,
         private route: ActivatedRoute
-    ) {}
+    ) { }
 
+    /**
+     * @description
+     *  initialize this component, fetching data from backend
+     */
     public ngOnInit() {
         this.id = this.route.snapshot.params['id'] ? this.route.snapshot.params['id'] : '';
         const getById$ = this.assessmentsSummaryService.getById(this.id).subscribe(
@@ -73,7 +80,7 @@ export class AssessmentsSummaryComponent implements OnInit {
         const summaryAggregation$ = this.assessmentsSummaryService.getSummaryAggregation(this.id).subscribe(
             (res) => {
                 this.summaryAggregation = res;
-                this.populateTechniqueBreakdown();
+                this.redrawCharts();
             },
             (err) => console.log(err),
             () => summaryAggregation$.unsubscribe()
@@ -96,7 +103,8 @@ export class AssessmentsSummaryComponent implements OnInit {
 
         const attackPattern$ = this.assessmentsSummaryService.getRiskPerAttackPattern(this.id).subscribe(
             (res) => {
-                const phases: AverageRisk[] = res.phases;
+                this.riskByAttackPattern = res;
+                const phases: AverageRisk[] = this.riskByAttackPattern.phases;
                 const weakestPhaseId = phases.sort(SortHelper.sortByAvgRiskDesc())[0]._id || '';
 
                 const attackPatternsByKillChain = res.attackPatternsByKillChain;
@@ -115,16 +123,16 @@ export class AssessmentsSummaryComponent implements OnInit {
             () => attackPattern$.unsubscribe());
     }
 
+    /**
+     * @description
+     *  populate grouping and assessment object tallies for technique by skill chart
+     * @returns {void}
+     */
     public populateTechniqueBreakdown(): void {
         // Total assessed objects to calculated risk
         const assessedRiskMapping = this.summaryAggregation.assessedAttackPatternCountBySophisicationLevel;
 
-        // Find IDs that meet risk threshold
-        // TODO should be <= risk or < risk?
-        const includedIds: any = this.summary.attributes.assessment_objects
-            .filter((ao) => ao.risk <= this.selectedRisk)
-            .map((ao) => ao.stix.id);
-
+        const includedIds = this.filterOnRisk();
         const attackPatternSet = new Set();
         // Find assessed-objects-to-attack-patterns maps that meet those Ids
         this.summaryAggregation.attackPatternsByAssessedObject
@@ -156,10 +164,52 @@ export class AssessmentsSummaryComponent implements OnInit {
         console.log('current assessment summary techinque breakdown', this.techniqueBreakdown);
     }
 
+    /**
+     * @description
+     *  populate kill chain grouping and assessment object tallies for assessment grouping chart
+     * @returns {void}
+     */
+    public populateAssessmentsGrouping(): void {
+        const includedIds = this.filterOnRisk();
+        const killChainTotal = {};
+        const killChainFiltered = {};
+
+        const tally = (tallyObject: object) => {
+            return (assessedObject) => {
+                // flat map kill chain names
+                const killChainNames = assessedObject.attackPatterns
+                    .reduce((memo, pattern) => memo.concat(pattern['kill_chain_phases']), []);
+                const names: string[] = killChainNames.map((chain) => chain['phase_name'].toLowerCase() as string);
+                const uniqNames: string[] = Array.from(new Set(names));
+                names.forEach((name) => tallyObject[name] = tallyObject[name] ? tallyObject[name] + 1 : 1);
+                return assessedObject;
+            };
+        };
+
+        // Find assessed-objects to kill chain maps grouping
+        this.summaryAggregation.attackPatternsByAssessedObject
+            // tally totals
+            .map(tally(killChainTotal))
+            .filter((aoToApMap) => includedIds.includes(aoToApMap._id))
+            // tally filtered objects
+            .map(tally(killChainFiltered));
+
+        this.assessmentsGroupingTotal = killChainTotal;
+        this.assessmentsGroupingFiltered = killChainFiltered;
+    }
+
+    /**
+     * @description
+     *  regenerate grouping and counts then tell charts to refresh. called on threshold change
+     * @returns {void}
+     */
     public redrawCharts(): void {
         console.log('request to redraw charts with threshold', this.selectedRisk, this.thresholdOptions);
         // need to set this now, this change method doesnt seem to propogate the new value to the child until after this method
+        this.populateAssessmentsGrouping();
         this.assessmentChart.riskThreshold = this.selectedRisk;
+        this.assessmentChart.assessmentsGroupingFiltered = this.assessmentsGroupingFiltered;
+        this.assessmentChart.assessmentsGroupingTotal = this.assessmentsGroupingTotal;
         this.assessmentChart.renderChart();
 
         this.populateTechniqueBreakdown();
@@ -194,4 +244,25 @@ export class AssessmentsSummaryComponent implements OnInit {
             return [];
         }
     }
+
+    /**
+     * @description
+     *  Find IDs that meet risk threshold
+     *  TODO should be <= risk or < risk?
+     * @returns {string[]}
+     */
+    private filterOnRisk(): string[] {
+        const includedIds: string[] = this.summary.attributes.assessment_objects
+            .filter((ao) => ao.risk <= this.selectedRisk)
+            .map((ao) => ao.stix.id);
+        return includedIds;
+    }
+}
+
+interface RiskByAttackPattern {
+    assessedByAttackPattern: any[];
+    attackPatternsByKillChain: any[];
+    phases: any[];
+
+    links: { 'self': string } | any;
 }
