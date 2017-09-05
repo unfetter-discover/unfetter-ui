@@ -33,17 +33,17 @@ export class Relationship {
 
     private createAttributes(): any {
         return {
-            version: '1',
+            // version: '1',
             created: moment().format(Constance.DATE_FORMATE),
             modified: moment().format(Constance.DATE_FORMATE),
             labels: [],
             external_references: [],
             kill_chain_phases: [],
-            name: '',
-            description: '',
-            relationship_type: '',
-            source_ref: '',
-            target_ref: ''
+            // name: '',
+            // description: '',
+            // relationship_type: '',
+            // source_ref: '',
+            // target_ref: ''
         };
     }
 }

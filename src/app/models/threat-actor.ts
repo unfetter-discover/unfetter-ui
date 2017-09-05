@@ -28,10 +28,10 @@ export class ThreatActor {
 
     private createAttributes(): any {
         return {
-            version: '',
+            // version: '',
             created: new Date(),
             modified: new Date(),
-            description: '',
+            // description: '',
             labels: [],
             aliases: [],
             external_references: [],

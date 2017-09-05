@@ -32,17 +32,17 @@ export class Identity {
 
      private createAttributes(): any {
         return {
-            version: '',
+            // version: '',
             created: new Date(),
             modified: new Date(),
             labels: [],
             external_references: [],
             kill_chain_phases: [],
-            name: '',
-            description: '',
-            identity_class: '',
+            // name: '',
+            // description: '',
+            // identity_class: '',
             sectors: [],
-            contact_information: ''
+            // contact_information: ''
         };
     }
 }

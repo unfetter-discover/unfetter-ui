@@ -29,11 +29,11 @@ export class CourseOfAction {
 
     private createAttributes(): any {
         return {
-            version: '1',
+            // version: '1',
             created: moment().format(Constance.DATE_FORMATE),
             modified: moment().format(Constance.DATE_FORMATE),
-            name: '',
-            description: '',
+            // name: '',
+            // description: '',
             labels: [],
             external_references: [],
             kill_chain_phases: []

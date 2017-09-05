@@ -47,23 +47,19 @@ export class Sighting {
 
     private createAttributes(): any {
         return {
-            version: '1',
+            // version: '1',
             created: moment().format(Constance.DATE_FORMATE),
             modified: moment().format(Constance.DATE_FORMATE),
             external_references: [],
             first_seen: moment().format(Constance.DATE_FORMATE),
-            firstseen_precision: '',
+            // firstseen_precision: '',
             last_seen: moment().format(Constance.DATE_FORMATE),
-            lastseen_precision: '',
+            // lastseen_precision: '',
             count: 0,
-            sighting_of_ref: '',
-            observed_data_refs: [
-            ''
-            ],
-            where_sighted_refs: [
-            ''
-            ],
-            summary: ''
+            // sighting_of_ref: '',
+            observed_data_refs: [],
+            where_sighted_refs: [],
+            // summary: ''
         };
     }
 }
