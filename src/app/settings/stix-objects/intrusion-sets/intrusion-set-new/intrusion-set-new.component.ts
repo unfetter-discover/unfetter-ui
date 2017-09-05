@@ -8,6 +8,7 @@ import { IntrusionSet } from '../../../../models';
 import { Motivation } from '../../../../models/motivation.enum';
 import { ResourceLevel } from '../../../../models/resource-level.enum';
 import { SortHelper } from '../../../../assessments/assessments-summary/sort-helper';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
     selector: 'intrusion-set-new',
@@ -34,19 +35,22 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent implemen
         // empty
     }
 
-    public saveButtonClicked(): void {
-        const sub = super.create(this.intrusionSet).subscribe(
-            (data) => {
-                this.location.back();
-            }, (error) => {
-                // handle errors here
-                console.log('error ' + error);
-            }, () => {
-                // prevent memory links
-                if (sub) {
-                    sub.unsubscribe();
+    public saveButtonClicked(): Observable<any> {
+        const observable = super.create(this.intrusionSet);
+        const sub = observable
+            .subscribe(
+                (data) => {
+                    this.location.back();
+                }, (error) => {
+                    // handle errors here
+                    console.log('error ' + error);
+                }, () => {
+                    // prevent memory links
+                    if (sub) {
+                        sub.unsubscribe();
+                    }
                 }
-            }
-        );
+            );
+        return observable;
     }
 }

@@ -61,7 +61,7 @@ export class TechniquesChartComponent implements OnInit {
         { data: [], label: '', borderWidth: 0 },
         { data: [], label: '', borderWidth: 0 }
     ];
-    private colors: any[];
+    public colors: any[];
 
     // tslint:disable-next-line:no-empty
     public constructor(private assessmentsCalculationService: AssessmentsCalculationService) {}
