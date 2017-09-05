@@ -19,7 +19,8 @@ export class SensorComponent extends BaseStixComponent implements OnInit {
             aliases: [],
             kill_chain_phases: [],
             description: ''
-        }
+        },
+        type: 'x-unfetter-sensor'
     };
 
     constructor(

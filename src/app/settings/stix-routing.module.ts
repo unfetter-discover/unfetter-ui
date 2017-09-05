@@ -137,7 +137,7 @@ const stixRoutes: Routes = [{
         ]
       },
       {
-        path: 'Sensor',
+        path: 'campaigns',
         component: CampaignsHomeComponent,
         children: [{
             path: '',
