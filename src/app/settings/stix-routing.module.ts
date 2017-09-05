@@ -98,6 +98,14 @@ import {
   StixHomeComponent
 } from './stix-home.component';
 
+import {
+  SensorHomeComponent,
+  SensorListComponent,
+  SensorComponent,
+  SensorEditComponent,
+  SensorNewComponent
+} from './stix-objects/sensors';
+
 const stixRoutes: Routes = [{
     path: 'stix',
     component: StixHomeComponent,
@@ -129,7 +137,7 @@ const stixRoutes: Routes = [{
         ]
       },
       {
-        path: 'campaigns',
+        path: 'Sensor',
         component: CampaignsHomeComponent,
         children: [{
             path: '',
@@ -357,7 +365,28 @@ const stixRoutes: Routes = [{
       {
         path: 'link-explorer',
         component: LinkExplorerComponent
-      }
+      },
+      {
+        path: 'x-unfetter-sensors',
+        component: SensorHomeComponent,
+        children: [{
+            path: '',
+            component: SensorListComponent
+          },
+          {
+            path: 'new',
+            component: SensorNewComponent
+          },
+          {
+            path: ':id',
+            component: SensorComponent
+          },
+          {
+            path: 'edit/:id',
+            component: SensorEditComponent
+          }
+        ]
+      },
     ]
   }
 
