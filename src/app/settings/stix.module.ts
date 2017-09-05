@@ -34,6 +34,7 @@ import {
     SightingEditComponent,
     SightingComponent } from './stix-objects/sightings';
 
+import { SensorHomeComponent, SensorListComponent, SensorNewComponent, SensorEditComponent, SensorComponent } from './stix-objects/sensors';
 import { ReportsComponent, ReportsListComponent, ReportNewComponent } from './stix-objects/reports';
 import { ThreatActorHomeComponent, ThreatActorListComponent, TheatActorComponent, ThreatActorNewComponent, ThreatActorEditComponent } from './stix-objects/threat-actors';
 import { IntrusionSetHomeComponent, IntrusionSetListComponent, IntrusionSetComponent, IntrusionSetEditComponent, IntrusionSetNewComponent } from './stix-objects/intrusion-sets';
@@ -96,6 +97,12 @@ import { GlobalModule } from 'app/global/global.module';
     SightingNewComponent,
     SightingEditComponent,
     SightingComponent,
+
+    SensorHomeComponent,
+    SensorListComponent,
+    SensorNewComponent,
+    SensorEditComponent,
+    SensorComponent,
 
     ReportsComponent,
     ReportsListComponent,

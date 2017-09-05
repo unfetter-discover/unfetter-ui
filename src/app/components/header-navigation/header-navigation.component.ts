@@ -1,5 +1,6 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { Navigation } from '../../models/navigation';
+
 @Component({
   selector: 'header-navigation',
   encapsulation: ViewEncapsulation.None,
@@ -20,5 +21,6 @@ export class HeaderNavigationComponent {
     { url: 'stix/threat-actors', label: 'Threat Actors' },
     { url: 'stix/intrusion-sets', label: 'Intrusion Sets' },
     { url: 'stix/reports', label: 'Reports' }
+    { url: 'stix/x-unfetter-sensors', label: 'Sensors' }
   ];
 }
