@@ -20,7 +20,7 @@ export class HeaderNavigationComponent {
     { url: 'stix/tools', label: 'Tools' },
     { url: 'stix/threat-actors', label: 'Threat Actors' },
     { url: 'stix/intrusion-sets', label: 'Intrusion Sets' },
-    { url: 'stix/reports', label: 'Reports' }
+    { url: 'stix/reports', label: 'Reports' },
     { url: 'stix/x-unfetter-sensors', label: 'Sensors' }
   ];
 }
