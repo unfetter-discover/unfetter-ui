@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <p-autoComplete styleClass="intrusionClass" [(ngModel)]="intrusionSet" [suggestions]="results" (completeMethod)="search($event)" field="name" (onSelect)="onSelect($event)"></p-autoComplete>
-                    <a style="line-height: 30px;" md-raised-button (click)="searchIntrusionSets()">Search</a>
+                    <button style="line-height: 30px;" md-raised-button (click)="searchIntrusionSets()">Search</button>
                 </div>
             </div>
             <div class="row">
