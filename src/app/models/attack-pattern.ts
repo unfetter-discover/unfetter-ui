@@ -33,15 +33,15 @@ export class AttackPattern {
 
     private createAttributes(): any {
         return {
-            version: '',
+            // version: '',
             created: new Date(),
             modified: new Date(),
-            description: '',
-            name: '',
+            // description: '',
+            // name: '',
             labels: [],
             external_references: [],
             kill_chain_phases: [],
-            x_unfetter_sophistication_level: -1
+            // x_unfetter_sophistication_level: -1
         };
     }
 }

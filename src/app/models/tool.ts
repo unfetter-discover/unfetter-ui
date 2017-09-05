@@ -32,11 +32,11 @@ export class Tool {
 
     private createAttributes(): any {
         return {
-            version: '1',
+            // version: '1',
             created: moment().format(Constance.DATE_FORMATE),
             modified: moment().format(Constance.DATE_FORMATE),
-            description: '',
-            name: '',
+            // description: '',
+            // name: '',
             aliases: [],
             labels: [],
             external_references: [],

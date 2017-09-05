@@ -2,7 +2,7 @@
     <h2>Stix Objects</h2>
 
     <ul class="nav nav-pills">
-        <li *ngFor="let navigation of navigations" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+        <li *ngFor="let navigation of navigations" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:false}">
             <a [routerLink]="[navigation.url]">{{navigation.label}}</a>
         </li>
     </ul>
