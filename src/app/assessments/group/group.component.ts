@@ -14,19 +14,19 @@ export class AssessmentsGroupComponent implements OnInit {
   public courseOfAction: any;
   public xUnfetterSensor: any;
 
-  private activePhase: string;
-  private assessment: any;
-  private riskByAttackPattern: { assessedByAttackPattern: AssessedByAttackPattern[], attackPatternsByKillChain: GroupAttackPattern[], phases: GroupPhase[] };
-  private assessedObjects: any;
-  private unassessedPhases: string[];
-  private currentAttackPattern: any;
-  private currentId: string;
-  private currentPhase: string;
-  private displayedAssessedObjects: any[];
-  private unassessedAttackPatterns: any[];
-  private attackPatternsByPhase: any[];
-  private addAssessedObject: boolean;
-  private addAssessedType: string;
+  public activePhase: string;
+  public assessment: any;
+  public riskByAttackPattern: { assessedByAttackPattern: AssessedByAttackPattern[], attackPatternsByKillChain: GroupAttackPattern[], phases: GroupPhase[] };
+  public assessedObjects: any;
+  public unassessedPhases: string[];
+  public currentAttackPattern: any;
+  public currentId: string;
+  public currentPhase: string;
+  public displayedAssessedObjects: any[];
+  public unassessedAttackPatterns: any[];
+  public attackPatternsByPhase: any[];
+  public addAssessedObject: boolean;
+  public addAssessedType: string;
 
   constructor(
     private assessmentsDashboardService: AssessmentsDashboardService,
