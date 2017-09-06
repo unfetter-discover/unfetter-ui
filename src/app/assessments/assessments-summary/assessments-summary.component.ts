@@ -223,7 +223,7 @@ export class AssessmentsSummaryComponent implements OnInit {
         return this.assessmentsCalculationService.formatRisk(risk);
     }
 
-    private getThresholdOptionName(optionNumber) {
+    public getThresholdOptionName(optionNumber) {
         const curOpt = this.thresholdOptions.find((opt) => opt.risk === optionNumber);
         if (curOpt) {
             return curOpt.name;
