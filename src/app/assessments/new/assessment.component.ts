@@ -306,11 +306,17 @@ export class AssessmentComponent extends Measurements implements OnInit {
   }
 
   private updateRisks(option: any, measurement: any, assessment: any): void {
-    // console.dir(option)
-    // console.log('option.selected.value.risk ' + option.selected.value)
-    assessment.risk = option.selected.value;
+
+    const newRisk = option.selected.value;
+    // update measurement value in assessments
+    const assessmentMeasurementToUpdate = assessment.measurements.find(assMes => assMes.name === measurement.name);
+    // assessmentMeasurementToUpdate.risk = newRisk;
+    this.updateQuestionRisk(assessmentMeasurementToUpdate, newRisk);
+    // calculate risk of all measurements
+    assessment.risk = this.calculateMeasurementsAvgRisk(assessment.measurements);
+
     const groupRisk = this.calculateGroupRisk();
-    // console.log('groupRisk ' + groupRisk)
+
     if (this.model) {
       const assessment_object = this.model.attributes.assessment_objects.find(
         (assessmentObject) => {
@@ -322,10 +328,8 @@ export class AssessmentComponent extends Measurements implements OnInit {
       const question = assessment_object.questions.find((q) => {
         return q.name === measurement.name;
       });
-      // console.dir(question)
       question.risk = option.selected.value.risk;
       question.selected_value = option.selected.value;
-      // console.dir(question)
     }
     this.updateChart();
   }
