@@ -68,6 +68,11 @@
             <div *ngIf="currentAttackPattern">
                 <h4>{{ currentAttackPattern.name }}</h4><br>
 
+                <div>
+                    <p><strong>Risk Level</strong></p>
+                    <p>{{ getRiskByAttackPatternId(currentAttackPattern.id) | percent:'2.1-1' }}</p>
+                </div>
+
                 <div *ngIf=" currentAttackPattern.kill_chain_phases && currentAttackPattern.kill_chain_phases.length> 0">
                     <p><strong>Kill Chain Phases</strong></p>
                     <p *ngFor="let killchain of currentAttackPattern.kill_chain_phases">{{ killchain.kill_chain_name }} &bull; <span class="text-muted">{{ killchain.phase_name }}</span></p>
