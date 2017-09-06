@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Constance } from '../../../utils/constance';
 import { SortHelper } from '../sort-helper';
 import { AssessmentsCalculationService } from '../assessments-calculation.service';
+import { ChartData } from '../chart-data';
 
 @Component({
     selector: 'techniques-chart',
@@ -57,7 +58,7 @@ export class TechniquesChartComponent implements OnInit {
     };
     public barChartLabels: string[] = [];
     public readonly barChartType: string = 'bar';
-    public barChartData: any[] = [
+    public barChartData: ChartData[] = [
         { data: [], label: '', borderWidth: 0 },
         { data: [], label: '', borderWidth: 0 }
     ];
@@ -68,7 +69,7 @@ export class TechniquesChartComponent implements OnInit {
 
     /**
      * @description
-     *  initialize this class memebers, calls render when finished
+     *  initialize this class member, calls render when finished
      */
     public ngOnInit(): void {
         this.colors = this.assessmentsCalculationService.barColors;
@@ -107,6 +108,11 @@ export class TechniquesChartComponent implements OnInit {
             .map((level) => this.assessmentsCalculationService.sophisicationNumberToWord(level));
     }
 
+    /**
+     * @description
+     *  render legend at top of graph
+     * @returns {void}
+     */
     public renderLegend(): void {
         if (this.riskLabelOptions) {
             const option = this.riskLabelOptions.find((opt) => opt.risk === this.riskThreshold);
