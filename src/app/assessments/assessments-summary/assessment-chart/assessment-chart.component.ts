@@ -2,6 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Constance } from '../../../utils/constance';
 import { AssessmentsCalculationService } from '../assessments-calculation.service';
+import { SortHelper } from '../sort-helper';
+import { ChartData } from '../chart-data';
 
 @Component({
     selector: 'assessment-chart',
@@ -12,6 +14,12 @@ export class AssessmentChartComponent implements OnInit {
 
     @Input()
     public assessmentObjects: any[];
+
+    @Input()
+    public assessmentsGroupingTotal: any[];
+
+    @Input()
+    public assessmentsGroupingFiltered: any[];
 
     @Input()
     public showLabels: boolean;
@@ -61,15 +69,14 @@ export class AssessmentChartComponent implements OnInit {
     };
 
     public barChartLabels: string[] = [];
-    public barChartType: string = 'bar';
-
-    public barChartData: any[] = [
+    public readonly barChartType: string = 'bar';
+    public readonly barChartData: ChartData[] = [
         { data: [], label: '', borderWidth: 0 },
         { data: [], label: '', borderWidth: 0 }
     ];
+    public colors: any[];
 
     protected readonly rootLabelRegex = /(\w+\s+\d+).(\d+)*/;
-    protected colors: any[];
 
     // Hide label is one is longer than this
     private readonly longestLabelThreshold: number = 10;
@@ -78,7 +85,7 @@ export class AssessmentChartComponent implements OnInit {
 
     /**
      * @description
-     *  initialize this class memebers, calls render when finished
+     *  initialize this class members, without making a network call, calls render when finished
      */
     public ngOnInit(): void {
         this.colors = this.assessmentsCalculationService.barColors;
@@ -90,70 +97,39 @@ export class AssessmentChartComponent implements OnInit {
 
     /**
      * @description
-     *  renders the chart components, based on applied threshold
+     *  renders the chart, based on applied threshold
+     * @returns {void}
      */
     public renderChart(): void {
-        this.renderLabels();
-
-        const rootLabelGrouping = {};
-        this.assessmentObjects
-            .forEach((el) => {
-                const fullLabel = el.stix.name;
-                const label = this.parseToRootLabel(el.stix.name);
-                const data: number[] = [];
-                let risk;
-
-                const questions = el.questions;
-                const question = questions[0];
-
-                if (!question) {
-                    console.log('missing policy question!  moving on...');
-                    return;
-                }
-
-                risk = question.risk;
-                const obj = {
-                    label,
-                    fullLabel,
-                    data,
-                    risk
-                } as ChartData;
-
-                const arr = rootLabelGrouping[label];
-                if (arr) {
-                    arr.push(obj);
-                } else {
-                    rootLabelGrouping[label] = [obj];
-                }
-            });
-
-        // build x plane labels
-        const uniqGroups = new Set(Array.from(Object.keys(rootLabelGrouping)));
-
-        // init data array
-        const size = uniqGroups.size;
-        this.barChartData[0].data = [];
-        this.barChartData[1].data = [];
-        for (let i = 0; i < size; i++) {
-            this.barChartData[0].data[i] = 0;
-            this.barChartData[1].data[i] = 0;
+        console.log('render chart', this.assessmentsGroupingTotal, this.assessmentsGroupingFiltered);
+        if (!this.assessmentsGroupingFiltered || !this.assessmentsGroupingTotal) {
+            return;
         }
 
-        // for every group, find the data array index and manipulate counts based on drop down threshold
-        let index = 0;
+        this.renderLegend();
 
-        // count based on risk scores
-        uniqGroups.forEach((key) => {
-            const policyQuestions = rootLabelGrouping[key];
-            policyQuestions.forEach((policy) => {
-                if (policy.risk < this.riskThreshold) {
-                    this.barChartData[1].data[index] += 1;
-                } else {
-                    this.barChartData[0].data[index] += 1;
-                }
+        // generate uniq grouping
+        const uniqGroups = Array.from(new Set(
+            Array.from(Object.keys(this.assessmentsGroupingTotal))
+                .map((el) => el.toLowerCase())))
+            .sort(SortHelper.sortDesc());
+
+        // init data array
+        const size = uniqGroups.length;
+        this.barChartData[0].data = [];
+        this.barChartData[1].data = [];
+
+        let index = 0;
+        // assign data array
+        uniqGroups
+            .forEach((key) => {
+                const filterCount = this.assessmentsGroupingFiltered[key] ? this.assessmentsGroupingFiltered[key] : 0;
+                this.barChartData[0].data[index] = filterCount;
+                this.barChartData[1].data[index] = this.assessmentsGroupingTotal[key] - filterCount;
+                index = index + 1;
             });
-            index = index + 1;
-        });
+
+        console.log(this.barChartData);
 
         // convert to percentages
         for (let i = 0; i < index; i++) {
@@ -165,10 +141,15 @@ export class AssessmentChartComponent implements OnInit {
         }
 
         // build labels based on root label
-        this.barChartLabels = this.showLabels ? Array.from(uniqGroups.keys()) : [];
+        this.barChartLabels = this.showLabels ? uniqGroups : [];
     }
 
-    public renderLabels(): void {
+    /**
+     * @description
+     *  render legend at top of graph
+     * @returns {void}
+     */
+    public renderLegend(): void {
         if (this.riskLabelOptions) {
             const option = this.riskLabelOptions.find((opt) => opt.risk === this.riskThreshold);
             const name = option.name;
@@ -186,21 +167,4 @@ export class AssessmentChartComponent implements OnInit {
         console.log(e);
     }
 
-    /**
-     * @description
-     *  take el.stix.name, and truncate the last 5.3 to just 5, and roll up a count on every first numeric level
-     * @param {string} label
-     * @returns {string}
-     */
-    protected parseToRootLabel(label: string): string {
-        const arr = this.rootLabelRegex.exec(label);
-        return (arr && arr.length > 1) ? arr[1] : label;
-    }
-}
-
-interface ChartData {
-    label: string;
-    fullLabel: string;
-    data: number[];
-    risk: number;
 }

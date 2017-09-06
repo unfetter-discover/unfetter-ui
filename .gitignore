@@ -4,6 +4,7 @@
 /dist
 /tmp
 /.awcache/*
+compiled/*
 
 # dependencies
 /node_modules/**
