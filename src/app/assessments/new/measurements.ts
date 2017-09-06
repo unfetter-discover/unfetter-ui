@@ -161,7 +161,7 @@ export class Measurements {
 
     protected calculateMeasurementsAvgRisk(measurements: any[]) {
         return measurements
-            .map(assMes => assMes.risk)
+            .map((assMes) => assMes.risk)
             .reduce((prev, cur) => prev += cur, 0) /
             measurements.length;
     }
@@ -171,7 +171,7 @@ export class Measurements {
             question.selected_value = {};
         }
         question.selected_value.risk = risk;
-        let matchingOption = question.options.find(q => q.risk == risk);
+        const matchingOption = question.options.find((q) => q.risk === risk);
         question.selected_value.name = matchingOption.name;
         question.risk = risk;
     }

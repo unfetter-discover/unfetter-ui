@@ -6,7 +6,8 @@ import {
   SimpleChanges,
   ChangeDetectorRef,
   ViewEncapsulation,
-  ElementRef
+  ElementRef,
+  OnDestroy
 } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { MdSnackBar } from '@angular/material';
@@ -21,21 +22,18 @@ import { MenuItem } from 'primeng/primeng';
   selector: 'assessment',
   templateUrl: './assessment.component.html',
   encapsulation: ViewEncapsulation.None,
-  styleUrls: [
-    `./assessment.component.css`
-  ]
-
+  styleUrls: [`./assessment.component.css`]
 })
-export class AssessmentComponent extends Measurements implements OnInit {
+export class AssessmentComponent extends Measurements implements OnInit, OnDestroy {
   public model: any;
-  public assessmentDescription: string = '';
-  public saved: boolean = false;
-  public publishDate: Date = new Date();
+  public assessmentDescription = '';
+  public saved = false;
+  public publishDate = new Date();
   public buttonLabel = 'Next';
   public navigations = [];
   public item: MenuItem[];
-  public doughnutChartLabels: string[] = ['Risk Accepted', 'Risk Addressed'];
-  public doughnutChartData: any[] = [
+  public doughnutChartLabels = ['Risk Accepted', 'Risk Addressed'];
+  public doughnutChartData = [
     {
       data: [],
       backgroundColor: [Constance.COLORS.red, Constance.COLORS.green],
@@ -46,8 +44,8 @@ export class AssessmentComponent extends Measurements implements OnInit {
     }
   ];
   public doughnutChartType: string = 'doughnut';
-  public doughnutChartColors: Object[] = [{}];
-  public chartOptions: Object = {
+  public doughnutChartColors: object[] = [{}];
+  public chartOptions = {
     legend: {
       display: false
     },
@@ -67,88 +65,185 @@ export class AssessmentComponent extends Measurements implements OnInit {
       }
     }
   };
-  public description = 'An Assessment is your evaluation of the implementations of your network.  You will rate your environment ' +
-    ' to the best of your ability.' +
-    'On the final page of the survey, you will be asked to enter a name for the report and a description.  Unfetter Discover will ' +
-    'use the survey to help you understand your gaps, how important they are and which should be addressed.  You may create ' +
-    'multiple reports to see how your risk is changed when implementing different security processes.';
+  public description = `An Assessment is your evaluation of the implementations of your network.  You will rate your environment
+  ' to the best of your ability. On the final page of the survey, you will be asked to enter a name for the report and a description.
+  Unfetter Discover will use the survey to help you understand your gaps, how important they are and which should be addressed.
+  You may create multiple reports to see how your risk is changed when implementing different security processes.`;
   public pageIcon = Constance.REPORTS_ICON;
   public pageTitle = 'Assessments';
   public showSummarry = false;
-  public assessmentName: String = '';
-  public currentAssessmentGroup: any = {};
+  public assessmentName = '';
+  public currentAssessmentGroup = {} as any;
   public selectedRisk = '1';
   public page = 1;
-  private assessments: any = [];
-  private killChains: any = [];
+  private assessments = [];
+  private killChains = [];
   private assessmentGroups: any;
   private defaultMeasurement = 'Nothing';
   private url: string;
+  private readonly subscriptions = [];
 
-  constructor(
-    private genericApi: GenericApi,
-    private snackBar: MdSnackBar,
-    private location: Location,
-    private route: ActivatedRoute
-  ) {
+  constructor(private genericApi: GenericApi, private snackBar: MdSnackBar,
+              private location: Location, private route: ActivatedRoute) {
     super();
   }
 
-  public ngOnInit() {
+  /**
+   * @description
+   *  initializes this component, fetchs data to build page
+   */
+  public ngOnInit(): void {
     const type = this.route.snapshot.paramMap.get('type');
     const id = this.route.snapshot.paramMap.get('id');
-    switch (type) {
-      case 'indicator': {
-        this.url = Constance.INDICATOR_URL;
-        break;
-      }
-      case 'mitigation': {
-        this.url = Constance.COURSE_OF_ACTION_URL;
-        break;
-      }
-      default: {
-        this.url = 'api/x-unfetter-sensors';
-      }
-    }
-    this.genericApi.get(this.url).subscribe((data) => {
-      this.build(data);
-      if (id) {
-        this.url = 'api/x-unfetter-assessments';
-        this.genericApi.get(this.url, id).subscribe((res) => {
-          this.model = res;
-          // console.log('this.model')
-          // console.dir(this.model)
-          this.selectedRiskValue = null;
-          // this.calculateGroupRisk();
-          this.updateChart();
-        });
-      }
-    });
+    this.url = this.generateUrl(type);
+    const logErr = (err) => console.log(err);
+    const sub1 = this.genericApi.get(this.url)
+      .subscribe((data) => {
+        this.build(data);
+        if (id) {
+          this.url = 'api/x-unfetter-assessments';
+          const sub2 = this.genericApi.get(this.url, id)
+            .subscribe((res) => {
+              this.model = res;
+              this.selectedRiskValue = null;
+              this.updateChart();
+            }, logErr);
+          this.subscriptions.push(sub2);
+        }
+      }, logErr);
+
+    this.subscriptions.push(sub1);
+  }
+
+  /**
+   * @description
+   *  cleans up this component, unsubscribes to data
+   */
+  public ngOnDestroy(): void {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
   public set selectedRiskValue(measurement: any) {
     if (this.model) {
-      // console.log('this.currentAssessmentGroup.assessments')
-      // console.dir(this.currentAssessmentGroup.assessments)
       this.currentAssessmentGroup.assessments.forEach((assessment) => {
-        const assessment_object = this.model.attributes.assessment_objects.find(
-          (assessmentObject) => {
-            return assessment.id === assessmentObject.stix.id;
-          }
-        );
-        assessment.risk = assessment_object.risk;
-        // console.log('assessment_object from model')
-        // console.dir(assessment_object)
+        const assessmentObject = this.model
+          .attributes.assessment_objects.find((el) => assessment.id === el.stix.id);
+        if (!assessmentObject) {
+          console.warn(`assessmentObject not found! id: ${assessment.id}, moving on...`);
+          return;
+        }
+        assessment.risk = assessmentObject.risk;
         assessment.measurements.forEach((m) => {
-          const question = assessment_object.questions.find(
-            (q) => q.name === m.name
-          );
-          // console.log('update risk currentAssessmentGroup.assessment')
-          // console.dir(question)
-          m.risk = assessment_object.risk; // question.selected_value.risk
+          const question = assessmentObject.questions.find((q) => q.name === m.name);
+          m.risk = assessmentObject.risk; // question.selected_value.risk
         });
       });
       this.calculateGroupRisk();
+    }
+  }
+
+  /**
+   * @description clicked a stepper
+   * @param {number} step
+   * @param {UIEvent} event optional
+   * @returns {void}
+   */
+  public navigationClicked(step: number, event?: UIEvent): void {
+    if (event) {
+      event.preventDefault();
+    }
+
+    if (step > this.page) {
+      this.page = step - 1;
+      this.next();
+    } else if (step < this.page) {
+      this.page = step + 1;
+      this.back();
+    }
+  }
+
+  /**
+   * @description update riskss
+   * @param option
+   * @param measurement
+   * @param assessment
+   * @returns {void}
+   */
+  public updateRisks(option: any, measurement: any, assessment: any): void {
+    const newRisk = option.selected.value;
+    // update measurement value in assessments
+    const assessmentMeasurementToUpdate = assessment.measurements.find((assMes) => assMes.name === measurement.name);
+    // assessmentMeasurementToUpdate.risk = newRisk;
+    this.updateQuestionRisk(assessmentMeasurementToUpdate, newRisk);
+    // calculate risk of all measurements
+    assessment.risk = this.calculateMeasurementsAvgRisk(assessment.measurements);
+
+    const groupRisk = this.calculateGroupRisk();
+
+    if (this.model) {
+      const assessment_object = this.model.attributes.assessment_objects
+        .find((assessmentObject) => assessment.id === assessmentObject.stix.id);
+
+      assessment_object.risk = groupRisk;
+      const question = assessment_object.questions.find((q) => q.name === measurement.name);
+      question.risk = option.selected.value.risk;
+      question.selected_value = option.selected.value;
+    }
+    this.updateChart();
+  }
+
+  /**
+   * @description clicked back a page
+   * @param {UIEvent} event optional
+   * @returns {void}
+   */
+  public back(event?: UIEvent): void {
+    if (event) {
+      event.preventDefault();
+    }
+
+    if (this.page === 1) {
+      return;
+    }
+    this.page = this.page - 1;
+    this.buttonLabel = 'Next';
+    this.showSummarry = false;
+    this.currentAssessmentGroup = this.assessmentGroup;
+    this.pageTitle = this.splitTitle();
+    this.selectedRiskValue = null;
+    this.updateChart();
+  }
+
+  /**
+   * @description clicked next page
+   * @param {UIEvent} event optional
+   * @return {void}
+   */
+  public next(event?: UIEvent): void {
+    if (event) {
+      event.preventDefault();
+    }
+
+    if (this.buttonLabel === 'Save') {
+      this.saveAssessments();
+    } else {
+      if (this.page + 1 > this.assessmentGroups.length) {
+        this.page = this.page + 1;
+        this.pageTitle = ' Assessment Summary';
+        this.currentAssessmentGroup = null;
+        this.showSummarry = true;
+        this.buttonLabel = 'Save';
+        if (this.model) {
+          this.assessmentName = this.model.attributes.name;
+          this.assessmentDescription = this.model.attributes.description;
+        }
+      } else {
+        this.page = this.page + 1;
+        this.currentAssessmentGroup = this.assessmentGroup;
+        this.pageTitle = this.splitTitle();
+        this.selectedRiskValue = null;
+        this.updateChart();
+      }
     }
   }
 
@@ -202,8 +297,7 @@ export class AssessmentComponent extends Measurements implements OnInit {
       this.killChains = this.buildKillChain(assessments);
 
       const assessmentObjectsGroups = this.groupObjectsByKillPhase(assessments);
-      let keys = Object.keys(assessmentObjectsGroups);
-      keys = keys.sort();
+      const keys = Object.keys(assessmentObjectsGroups).sort();
       keys.forEach((phaseName, index) => {
         // TODO - Need to remove the 'courseOfAction' name
         const courseOfActionGroup = assessmentObjectsGroups[phaseName];
@@ -294,9 +388,7 @@ export class AssessmentComponent extends Measurements implements OnInit {
   }
 
   private calculateGroupRisk(): number {
-    const groupRisk = this.calculateRisk(
-      this.currentAssessmentGroup.assessments
-    );
+    const groupRisk = this.calculateRisk(this.currentAssessmentGroup.assessments);
     const riskArray = [];
     riskArray.push(groupRisk);
     riskArray.push(1 - groupRisk);
@@ -305,87 +397,10 @@ export class AssessmentComponent extends Measurements implements OnInit {
     return groupRisk;
   }
 
-  private updateRisks(option: any, measurement: any, assessment: any): void {
-
-    const newRisk = option.selected.value;
-    // update measurement value in assessments
-    const assessmentMeasurementToUpdate = assessment.measurements.find(assMes => assMes.name === measurement.name);
-    // assessmentMeasurementToUpdate.risk = newRisk;
-    this.updateQuestionRisk(assessmentMeasurementToUpdate, newRisk);
-    // calculate risk of all measurements
-    assessment.risk = this.calculateMeasurementsAvgRisk(assessment.measurements);
-
-    const groupRisk = this.calculateGroupRisk();
-
-    if (this.model) {
-      const assessment_object = this.model.attributes.assessment_objects.find(
-        (assessmentObject) => {
-          return assessment.id === assessmentObject.stix.id;
-        }
-      );
-
-      assessment_object.risk = groupRisk;
-      const question = assessment_object.questions.find((q) => {
-        return q.name === measurement.name;
-      });
-      question.risk = option.selected.value.risk;
-      question.selected_value = option.selected.value;
-    }
-    this.updateChart();
-  }
-
-  private navigationClicked(e: any, step: number): void {
-    e.preventDefault();
-    if (step > this.page) {
-      this.page = step - 1;
-      this.next();
-    } else if (step < this.page) {
-      this.page = step + 1;
-      this.back();
-    }
-  }
-
-  private back(): void {
-    if (this.page === 1) {
-      return;
-    }
-    this.page = this.page - 1;
-    this.buttonLabel = 'Next';
-    this.showSummarry = false;
-    this.currentAssessmentGroup = this.assessmentGroup;
-    this.pageTitle = this.splitTitle();
-    this.selectedRiskValue = null;
-    this.updateChart();
-  }
-
   private updateChart(): void {
     const chartData = this.doughnutChartData.slice();
     chartData[0].data = this.currentAssessmentGroup.riskArray;
     this.doughnutChartData = chartData;
-  }
-
-  private next(): void {
-    if (this.buttonLabel === 'Save') {
-      this.saveAssessments();
-    } else {
-      if (this.page + 1 > this.assessmentGroups.length) {
-        this.page = this.page + 1;
-        this.pageTitle = ' Assessment Summary';
-        this.currentAssessmentGroup = null;
-        this.showSummarry = true;
-        this.buttonLabel = 'Save';
-        if (this.model) {
-          this.assessmentName = this.model.attributes.name;
-          this.assessmentDescription = this.model.attributes.description;
-        }
-      } else {
-        this.page = this.page + 1;
-        this.currentAssessmentGroup = this.assessmentGroup;
-        this.pageTitle = this.splitTitle();
-        this.selectedRiskValue = null;
-        this.updateChart();
-      }
-    }
   }
 
   private splitTitle(title?: string): string {
@@ -451,7 +466,7 @@ export class AssessmentComponent extends Measurements implements OnInit {
       retVal.description = this.assessmentDescription;
       retVal.assessment_objects = this.model.attributes.assessment_objects;
       this.url = this.url + '/' + this.model.id;
-      const sub = this.genericApi.patch(this.url, { 'data': { 'attributes':retVal}}).subscribe(
+      const sub = this.genericApi.patch(this.url, { 'data': { 'attributes': retVal } }).subscribe(
         (res) => {
           this.saved = true;
           this.location.back();
@@ -467,7 +482,7 @@ export class AssessmentComponent extends Measurements implements OnInit {
       const xUnfetterAssessment = this.generateXUnfetterAssessment(
         this.assessmentGroups
       );
-      const sub = this.genericApi.post(this.url, {'data':{'attributes':xUnfetterAssessment}}).subscribe(
+      const sub = this.genericApi.post(this.url, { 'data': { 'attributes': xUnfetterAssessment } }).subscribe(
         (res) => {
           this.saved = true;
           this.location.back();
@@ -481,4 +496,33 @@ export class AssessmentComponent extends Measurements implements OnInit {
       );
     }
   }
+
+  /**
+   * @description
+   *  take a stix object type and determine url to fetch data
+   * @param {string} type
+   *  string in the form of a url path
+   */
+  private generateUrl(type = ''): string {
+    let url = '';
+    switch (type) {
+      case 'indicator': {
+        url = Constance.INDICATOR_URL;
+        break;
+      }
+      case 'mitigation': {
+        url = Constance.COURSE_OF_ACTION_URL;
+        break;
+      }
+      case 'course-of-action': {
+        url = Constance.COURSE_OF_ACTION_URL;
+        break;
+      }
+      default: {
+        url = 'api/x-unfetter-sensors';
+      }
+    }
+    return url;
+  }
+
 }

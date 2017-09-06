@@ -19,7 +19,7 @@
                 <!-- First Step -->
                 <li [class.active]="navigation.page === page" *ngFor="let navigation of navigations">
                     <!--Section Title -->
-                    <a href (click)="navigationClicked($event, navigation.page)">
+                    <a href (click)="navigationClicked(navigation.page, $event)">
                     <span class="circle">
                         <!--{{navigation.page}}-->&nbsp;
                         </span>
@@ -111,8 +111,8 @@
             </div>
 
             <md-card-actions class="text-right">
-                <button md-button [disabled]="page === 1" (click)="back()"> Back</button>
-                <button md-button (click)="next()" *ngIf="!(buttonLabel === 'Save' && saved)"> {{buttonLabel}}</button>
+                <button md-button [disabled]="page === 1" (click)="back($event)"> Back</button>
+                <button md-button (click)="next($event)" *ngIf="!(buttonLabel === 'Save' && saved)"> {{buttonLabel}}</button>
                 <button md-button disabled *ngIf="buttonLabel === 'Save' && saved">
                     <i class="material-icons text-success">check</i>&nbsp;Saved
                 </button>
