@@ -65,11 +65,10 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
       }
     }
   };
-  public description = 'An Assessment is your evaluation of the implementations of your network.  You will rate your environment ' +
-  ' to the best of your ability.' +
-  'On the final page of the survey, you will be asked to enter a name for the report and a description.  Unfetter Discover will ' +
-  'use the survey to help you understand your gaps, how important they are and which should be addressed.  You may create ' +
-  'multiple reports to see how your risk is changed when implementing different security processes.';
+  public description = `An Assessment is your evaluation of the implementations of your network.  You will rate your environment
+  ' to the best of your ability. On the final page of the survey, you will be asked to enter a name for the report and a description.
+  Unfetter Discover will use the survey to help you understand your gaps, how important they are and which should be addressed.
+  You may create multiple reports to see how your risk is changed when implementing different security processes.`;
   public pageIcon = Constance.REPORTS_ICON;
   public pageTitle = 'Assessments';
   public showSummarry = false;
@@ -126,8 +125,6 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
 
   public set selectedRiskValue(measurement: any) {
     if (this.model) {
-      // console.log('this.currentAssessmentGroup.assessments')
-      // console.dir(this.currentAssessmentGroup.assessments)
       this.currentAssessmentGroup.assessments.forEach((assessment) => {
         const assessmentObject = this.model
           .attributes.assessment_objects.find((el) => assessment.id === el.stix.id);
@@ -136,12 +133,8 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
           return;
         }
         assessment.risk = assessmentObject.risk;
-        // console.log('assessment_object from model')
-        // console.dir(assessment_object)
         assessment.measurements.forEach((m) => {
           const question = assessmentObject.questions.find((q) => q.name === m.name);
-          // console.log('update risk currentAssessmentGroup.assessment')
-          // console.dir(question)
           m.risk = assessmentObject.risk; // question.selected_value.risk
         });
       });
@@ -191,7 +184,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
       const assessment_object = this.model.attributes.assessment_objects
         .find((assessmentObject) => assessment.id === assessmentObject.stix.id);
 
-      assessment_object.rissk = groupRisk;
+      assessment_object.risk = groupRisk;
       const question = assessment_object.questions.find((q) => q.name === measurement.name);
       question.risk = option.selected.value.risk;
       question.selected_value = option.selected.value;
@@ -304,8 +297,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
       this.killChains = this.buildKillChain(assessments);
 
       const assessmentObjectsGroups = this.groupObjectsByKillPhase(assessments);
-      let keys = Object.keys(assessmentObjectsGroups);
-      keys = keys.sort();
+      const keys = Object.keys(assessmentObjectsGroups).sort();
       keys.forEach((phaseName, index) => {
         // TODO - Need to remove the 'courseOfAction' name
         const courseOfActionGroup = assessmentObjectsGroups[phaseName];
@@ -396,9 +388,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
   }
 
   private calculateGroupRisk(): number {
-    const groupRisk = this.calculateRisk(
-      this.currentAssessmentGroup.assessments
-    );
+    const groupRisk = this.calculateRisk(this.currentAssessmentGroup.assessments);
     const riskArray = [];
     riskArray.push(groupRisk);
     riskArray.push(1 - groupRisk);
