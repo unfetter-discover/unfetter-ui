@@ -1,9 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { FormControl } from '@angular/forms';
 import { Location } from '@angular/common';
 import { MdDialog, MdDialogRef, MdDialogConfig, MdSnackBar } from '@angular/material';
 import { IntrusionSetComponent } from '../intrusion-set/intrusion-set.component';
 import { StixService } from '../../../stix.service';
+import { Motivation } from '../../../../models/motivation.enum';
+import { ResourceLevel } from '../../../../models/resource-level.enum';
+import { SortHelper } from '../../../../assessments/assessments-summary/sort-helper';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/startWith';
+import 'rxjs/add/operator/map';
+
 import {
   IntrusionSet,
   AttackPattern,
@@ -18,6 +26,10 @@ import { Constance } from '../../../../utils/constance';
   templateUrl: './intrusion-set-edit.component.html',
 })
 export class IntrusionSetEditComponent extends IntrusionSetComponent implements OnInit {
+    public motivations = new Set(Motivation.values().map((el) => el.toString()).sort(SortHelper.sortDesc()));
+    public resourceLevels = new Set(ResourceLevel.values().map((el) => el.toString()).sort(SortHelper.sortDesc()));
+    public motivationCtrl: FormControl;
+    public resourceLevelCtrl: FormControl;
 
     protected labels = [
         {label: 'activist'},
@@ -48,6 +60,8 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
         public snackBar: MdSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
+        this.motivationCtrl = new FormControl();
+        this.resourceLevelCtrl = new FormControl();
     }
 
     public ngOnInit() {
