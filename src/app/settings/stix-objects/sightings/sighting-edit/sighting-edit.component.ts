@@ -48,6 +48,7 @@ export class SightingEditComponent extends BaseStixComponent implements OnInit {
         let sub = super.save(this.sighting).subscribe(
             (data) => {
                 this.sighting = data as Sighting;
+                this.location.back();
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
@@ -60,7 +61,7 @@ export class SightingEditComponent extends BaseStixComponent implements OnInit {
         );
     }
 
-     public summaryClicked(field: any): void {
-       this.sighting.attributes.summary = field.checked
+    public summaryClicked(field: any): void {
+      this.sighting.attributes.summary = !field.checked;
     }
 }
