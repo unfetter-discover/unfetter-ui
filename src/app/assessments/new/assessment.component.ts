@@ -187,7 +187,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
       const assessment_object = this.model.attributes.assessment_objects
         .find((assessmentObject) => assessment.id === assessmentObject.stix.id);
 
-      let question = assessment_object.questions.find((q) => q.name === measurement.name);
+      const question = assessment_object.questions.find((q) => q.name === measurement.name);
       this.updateQuestionRisk(question, newRisk);
       assessment_object.risk = assessment.risk;
 
@@ -217,7 +217,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
     this.currentAssessmentGroup = this.assessmentGroup;
     this.pageTitle = this.splitTitle();
     this.selectedRiskValue = null;
-      this.updateChart();
+    this.updateChart();
   }
 
   /**
