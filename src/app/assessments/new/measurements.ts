@@ -170,9 +170,10 @@ export class Measurements {
         if (question.selected_value === undefined) {
             question.selected_value = {};
         }
-        question.selected_value.risk = risk;
+        // question.selected_value.risk = risk;
         const matchingOption = question.options.find((q) => q.risk === risk);
-        question.selected_value.name = matchingOption.name;
+        // question.selected_value.name = matchingOption.name;
+        question.selected_value = matchingOption;
         question.risk = risk;
     }
 }
