@@ -57,6 +57,7 @@ export class AssessmentChartComponent implements OnInit {
             }]
         },
         tooltips: {
+            mode: 'index',
             callbacks: {
                 label: (tooltipItem, data) => {
                     const dataset = data.datasets[tooltipItem.datasetIndex];
@@ -140,8 +141,23 @@ export class AssessmentChartComponent implements OnInit {
             this.barChartData[1].data[i] = Math.round((val2 / total) * 100);
         }
 
+        console.log('UNIQ',uniqGroups);
+
+        const convertedLabels: any = uniqGroups.map(word => {
+            word = word.replace(/-/g, ' ');
+            word = word.replace(/\b([a-z])(\w+)/g, (_, g1, g2) => {
+                let word = g1.concat(g2);
+                if (word === 'and' || word === 'or' || word === 'the') {
+                    return word;
+                }
+                return g1.toUpperCase() + g2;
+            });
+            return word;
+        });
+        
+
         // build labels based on root label
-        this.barChartLabels = this.showLabels ? uniqGroups : [];
+        this.barChartLabels = this.showLabels ? convertedLabels : [];
     }
 
     /**

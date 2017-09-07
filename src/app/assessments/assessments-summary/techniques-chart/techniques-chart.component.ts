@@ -46,6 +46,7 @@ export class TechniquesChartComponent implements OnInit {
             }]
         },
         tooltips: {
+            mode: 'index',
             callbacks: {
                 label: (tooltipItem, data) => {
                     const dataset = data.datasets[tooltipItem.datasetIndex];
