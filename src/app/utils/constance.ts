@@ -420,7 +420,7 @@ export const Constance = {
 
   MEASUREMENTS: {
     'indicator': {
-      coverage: [
+      policy: [
         'Nothing',
         'Local Logging',
         'Central Logging, No Alerting',
