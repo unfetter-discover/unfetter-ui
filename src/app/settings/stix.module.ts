@@ -1,4 +1,4 @@
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { CalendarModule, AccordionModule, DataListModule } from 'primeng/primeng';
@@ -52,6 +52,7 @@ import { GlobalModule } from '../global/global.module';
   imports: [
       CommonModule,
       FormsModule,
+      ReactiveFormsModule,
       MaterialModule,
       MdSnackBarModule,
       MdButtonModule,
