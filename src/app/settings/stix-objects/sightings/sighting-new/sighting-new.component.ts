@@ -50,6 +50,6 @@ export class SightingNewComponent extends BaseStixComponent {
     }
 
     public summaryClicked(field: any): void {
-       this.sighting.attributes.summary = field.checked
+       this.sighting.attributes.summary = !field.checked;
     }
 }

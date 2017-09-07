@@ -10,7 +10,7 @@
 </div>
 <div class="row">
     <div class="col-md-12">
-        <md-checkbox #summary_field name="summary-field" class="example-margin"  (click)="summaryClicked(summary_field)">Summary</md-checkbox>
+        <md-checkbox #summary_field name="summary-field" class="example-margin"  [checked]="sighting.attributes.summary" (click)="summaryClicked(summary_field)">Summary</md-checkbox>
     </div>
 </div>
 <div class="row">

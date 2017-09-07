@@ -24,7 +24,7 @@ export class Sighting {
         where_sighted_refs: [
           string
         ];
-        summary: string
+        summary: boolean
     };
 
      constructor(data?: Sighting) {
