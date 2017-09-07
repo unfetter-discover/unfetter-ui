@@ -28,11 +28,19 @@
 
 <div class="row selectRow">
     <div class="col-md-12">
-        <md-select class="full-width" placeholder="Primary Motivation" [(ngModel)]="intrusionSet.attributes.primary_motivation">
+           <form>
+            <md-input-container class="full-width">
+                <input mdInput placeholder="Primary Motivation" aria-label="Primary Motivation" [mdAutocomplete]="auto"
+                [formControl]="motivationCtrl" [(ngModel)]="intrusionSet.attributes.primary_motivation">
+            </md-input-container>
+        </form>
+        <md-autocomplete name="auto" #auto="mdAutocomplete" >
             <md-option *ngFor="let motivation of motivations" [value]="motivation">
-                {{motivation}}
+
+                <span>{{ motivation }}</span>
             </md-option>
-        </md-select>
+        </md-autocomplete>
+
     </div>
 </div>
 <div class="row">
@@ -44,11 +52,17 @@
 </div>
 <div class="row selectRow">
     <div class="col-md-12">
-        <md-select class="full-width" placeholder="Resource Level" [(ngModel)]="intrusionSet.attributes.resource_level">
+         <form>
+            <md-input-container class="full-width">
+                <input mdInput placeholder="Resource Level" aria-label="Resource Level" [mdAutocomplete]="autores"
+                [formControl]="resourceLevelCtrl" [(ngModel)]="intrusionSet.attributes.resource_level">
+            </md-input-container>
+        </form>
+        <md-autocomplete name="autores" #autores="mdAutocomplete">
             <md-option *ngFor="let resourceLevel of resourceLevels" [value]="resourceLevel">
-                {{resourceLevel}}
+                <span>{{ resourceLevel }}</span>
             </md-option>
-        </md-select>
+        </md-autocomplete>
     </div>
 </div>
 <div class="row">

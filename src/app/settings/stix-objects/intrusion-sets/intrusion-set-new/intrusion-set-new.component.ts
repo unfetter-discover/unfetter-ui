@@ -5,10 +5,6 @@ import { MdDialog, MdDialogRef, MdDialogConfig, MdSnackBar } from '@angular/mate
 import { IntrusionSetEditComponent } from '../intrusion-set-edit/intrusion-set-edit.component';
 import { StixService } from '../../../stix.service';
 import { IntrusionSet } from '../../../../models';
-import { Motivation } from '../../../../models/motivation.enum';
-import { ResourceLevel } from '../../../../models/resource-level.enum';
-import { SortHelper } from '../../../../assessments/assessments-summary/sort-helper';
-import { Observable } from 'rxjs/Observable';
 
 @Component({
     selector: 'intrusion-set-new',
@@ -17,8 +13,7 @@ import { Observable } from 'rxjs/Observable';
 })
 export class IntrusionSetNewComponent extends IntrusionSetEditComponent implements OnInit {
 
-    public motivations = new Set(Motivation.values().map((el) => el.toString()).sort(SortHelper.sortDesc()));
-    public resourceLevels = new Set(ResourceLevel.values().map((el) => el.toString()).sort(SortHelper.sortDesc()));
+
 
     constructor(
         public stixService: StixService,
@@ -32,7 +27,7 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent implemen
     }
 
     public ngOnInit() {
-        // empty
+
     }
 
     public saveButtonClicked(): Observable<any> {
