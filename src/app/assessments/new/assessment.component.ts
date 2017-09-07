@@ -135,8 +135,9 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         assessment.risk = assessmentObject.risk;
         assessment.measurements.forEach((m) => {
           const question = assessmentObject.questions.find((q) => q.name === m.name);
-          m.risk = assessmentObject.risk; // question.selected_value.risk
+          m.risk = question.risk; // question.selected_value.risk         
         });
+
       });
       this.calculateGroupRisk();
     }
@@ -184,10 +185,13 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
       const assessment_object = this.model.attributes.assessment_objects
         .find((assessmentObject) => assessment.id === assessmentObject.stix.id);
 
-      assessment_object.risk = groupRisk;
-      const question = assessment_object.questions.find((q) => q.name === measurement.name);
-      question.risk = option.selected.value.risk;
-      question.selected_value = option.selected.value;
+      let question = assessment_object.questions.find((q) => q.name === measurement.name);
+      this.updateQuestionRisk(question, newRisk);
+      assessment_object.risk = assessment.risk;
+
+      // assessment_object.risk = groupRisk;
+      // question.risk = option.selected.value.risk;
+      // question.selected_value = option.selected.value;
     }
     this.updateChart();
   }
