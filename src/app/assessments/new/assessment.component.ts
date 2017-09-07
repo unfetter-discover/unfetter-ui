@@ -141,7 +141,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
       });
       this.calculateGroupRisk();
     } else {
-        this.calculateGroupRisk();
+      this.calculateGroupRisk();
     }
   }
 
