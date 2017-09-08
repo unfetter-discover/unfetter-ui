@@ -116,10 +116,10 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
                 const sub1 = this.assessmentsDashboardService
                     .genericPost(Constance.RELATIONSHIPS_URL, relationshipObj)
                     .subscribe(
-                    (relationshipRes) => {
-                        console.log('Relationship uploaded successfully');
-                    },
-                    (relationshipErr) => console.log(relationshipErr)
+                        (relationshipRes) => {
+                            console.log('Relationship uploaded successfully');
+                        },
+                        (relationshipErr) => console.log(relationshipErr)
                     );
                 this.subscriptions.push(sub1);
 
@@ -152,11 +152,11 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
                         this.displayedAssessedObjects.push(tempAssessmentObject);
                         this.assessedObjects.push({ stix: createdObj });
                         this.resetNewAssessmentObjects();
+                        this.addAssessmentEvent.emit(true);
                     },
                     (assessmentErr) => console.log(assessmentErr)
                     );
                 this.subscriptions.push(sub2);
-                this.addAssessmentEvent.emit(true);
             },
             (assessedErr) => console.log(assessedErr)
             );

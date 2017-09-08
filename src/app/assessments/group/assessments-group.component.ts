@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, QueryList, ViewChildren, AfterContentInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ViewChild, OnInit, QueryList, ViewChildren, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AssessmentsDashboardService } from '../assessments-dashboard/assessments-dashboard.service';
 import { Constance } from '../../utils/constance';
@@ -11,7 +11,7 @@ import { Observable } from 'rxjs/Observable';
   templateUrl: './assessments-group.component.html',
   styleUrls: ['./assessments-group.component.css']
 })
-export class AssessmentsGroupComponent implements OnInit, AfterViewInit, AfterContentInit {
+export class AssessmentsGroupComponent implements OnInit, AfterViewInit {
 
   @ViewChildren('addAssessedObjectComponent')
   public addAssessedObjectComponents: QueryList<AddAssessedObjectComponent>;
@@ -50,6 +50,9 @@ export class AssessmentsGroupComponent implements OnInit, AfterViewInit, AfterCo
     this.initData();
   }
 
+  /**
+   * @description init after view
+   */
   public ngAfterViewInit(): void {
     console.log('after view init');
     const sub = this.addAssessedObjectComponents.changes
@@ -57,17 +60,16 @@ export class AssessmentsGroupComponent implements OnInit, AfterViewInit, AfterCo
         (comps: QueryList<AddAssessedObjectComponent>) => {
           this.addAssessedObjectComponent = comps.first;
           this.resetNewAssessmentObjects();
+          // When binding to a child component,
+          //  and updating that binding in a parent ngInit method
+          //  and in development mode, ie enableProdMode() not called
+          // one may encounter the
+          //  "expression changed after it was checked"
+          // this is one fix for that state
           this.changeDetector.detectChanges();
-        },
-        (err) => console.log(err),
-        () => sub.unsubscribe());
-  }
-
-  /**
-   * @description init after childern are initialized
-   */
-  public ngAfterContentInit(): void {
-    console.log('after content init');
+      },
+      (err) => console.log(err),
+      () => sub.unsubscribe());
   }
 
   /**
@@ -78,15 +80,15 @@ export class AssessmentsGroupComponent implements OnInit, AfterViewInit, AfterCo
    */
   public initData(curApIndex: number = 0): void {
     const riskByAttackPattern$ = this.assessmentsDashboardService
-      .getRiskByAttackPattern(this.currentId).subscribe(
-        (res) => {
-          this.riskByAttackPattern = res ? res : {};
-          this.populateUnassessedPhases();
-          this.activePhase = this.activePhase || this.currentPhase || this.riskByAttackPattern.phases[0]._id;
-          this.setPhase(this.activePhase, curApIndex);
-        },
-        (err) => console.log(err),
-        () => riskByAttackPattern$.unsubscribe()
+        .getRiskByAttackPattern(this.currentId).subscribe(
+          (res) => {
+            this.riskByAttackPattern = res ? res : {};
+            this.populateUnassessedPhases();
+            this.activePhase = this.activePhase || this.currentPhase || this.riskByAttackPattern.phases[0]._id;
+            this.setPhase(this.activePhase, curApIndex);
+          },
+          (err) => console.log(err),
+          () => riskByAttackPattern$.unsubscribe()
       );
 
     const assessedObjects$ = this.assessmentsDashboardService
@@ -133,12 +135,10 @@ export class AssessmentsGroupComponent implements OnInit, AfterViewInit, AfterCo
   }
 
   public populateUnassessedPhases() {
-    const assessedPhases = this.riskByAttackPattern.phases.map(
-      (phase) => phase._id
-    );
-    this.unassessedPhases = Constance.KILL_CHAIN_PHASES.filter(
-      (phase) => assessedPhases.indexOf(phase) < 0
-    );
+    const assessedPhases = this.riskByAttackPattern.phases
+      .map((phase) => phase._id);
+    this.unassessedPhases = Constance.KILL_CHAIN_PHASES
+      .filter((phase) => assessedPhases.indexOf(phase) < 0);
   }
 
   public setPhase(phaseName, curApIndex: number = 0) {
@@ -150,8 +150,8 @@ export class AssessmentsGroupComponent implements OnInit, AfterViewInit, AfterCo
   }
 
   public getAttackPatternsByPhase(phaseName) {
-    return this.riskByAttackPattern
-      .phases.find((phase) => phase._id === phaseName) ? this.riskByAttackPattern.phases.find((phase) => phase._id === phaseName).attackPatterns : [];
+    const phase = this.riskByAttackPattern.phases.find((el) => el._id === phaseName);
+    return phase && phase.attackPatterns ? phase.attackPatterns : [];
   }
 
   public getRiskByAttackPatternId(attackPatternId) {
@@ -178,7 +178,7 @@ export class AssessmentsGroupComponent implements OnInit, AfterViewInit, AfterCo
     }
   }
 
-  public setAttackPattern(attackPatternId) {
+  public setAttackPattern(attackPatternId): void {
     this.resetNewAssessmentObjects();
 
     if (attackPatternId !== -1) {
@@ -216,24 +216,19 @@ export class AssessmentsGroupComponent implements OnInit, AfterViewInit, AfterCo
     }
 
     // Get unassessed attack patterns
-    const assessedAps = this.getAttackPatternsByPhase(this.activePhase).map(
-      (ap) => ap.attackPatternId
-    );
+    const assessedAps = this.getAttackPatternsByPhase(this.activePhase)
+      .map((ap) => ap.attackPatternId);
 
     const query = { 'stix.kill_chain_phases.phase_name': this.activePhase };
     this.assessmentsDashboardService
-      .genericGet(
-      `${Constance.ATTACK_PATTERN_URL}?filter=${encodeURI(
-        JSON.stringify(query)
-      )}`
-      )
+      .genericGet(`${Constance.ATTACK_PATTERN_URL}?filter=${encodeURI(JSON.stringify(query))}`)
       .subscribe(
-      (res) => {
-        const dat: any = res;
-        this.unassessedAttackPatterns =
-          dat.filter((ap) => !assessedAps.includes(ap.id));
-      },
-      (err) => console.log(err)
+        (res) => {
+          const dat: any = res;
+          this.unassessedAttackPatterns =
+            dat.filter((ap) => !assessedAps.includes(ap.id));
+        },
+        (err) => console.log(err)
       );
   }
 
@@ -287,24 +282,11 @@ export class AssessmentsGroupComponent implements OnInit, AfterViewInit, AfterCo
         .map((question) => question.risk)
         .reduce((prev, cur) => (prev += cur), 0) / assessedObj.questions.length;
 
-    // tslint:disable-next-line:prefer-for-of
-    // for (let i = 0; i < this.assessment.attributes.assessment_objects.length; i++) {
-    //   if (this.assessment.attributes.assessment_objects[i].stix.id === assessedObj.stix.id) {
-    //     this.assessment.attributes.assessment_objects[i].risk =
-    //       assessedObj.risk;
-    //     this.assessment.attributes.assessment_objects[i].questions =
-    //       assessedObj.questions;
-    //     break;
-    //   }
-    // }
-
-    let assObjToEdit = this.assessment.attributes.assessment_objects
-      .find(assObj => assObj.stix.id === assessedObj.stix.id);
+    const assObjToEdit = this.assessment.attributes.assessment_objects
+      .find((assObj) => assObj.stix.id === assessedObj.stix.id);
 
     assObjToEdit.risk = assessedObj.risk;
     // assObjToEdit.questions.selected_value = assessedObj.questions.selected_value;
-
-    
 
     const objToPatch = this.assessment.attributes;
     objToPatch.modified = new Date().toISOString();
