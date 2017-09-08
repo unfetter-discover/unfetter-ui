@@ -1,4 +1,4 @@
-<div id="assessmentsDashboard" class="container">
+<div id="assessmentsDashboard" class="container fadeIn" *ngIf="riskByAttackPattern && assessment; else loadingBlock">
     <div class="row">
         <br>
         <div class="col-sm-12">
@@ -97,3 +97,9 @@
 
     <br>
 </div>
+
+<ng-template #loadingBlock>
+    <div class="loading">
+        <md-spinner></md-spinner>
+    </div>
+</ng-template>
