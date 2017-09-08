@@ -42,7 +42,7 @@ export class AssessmentsListComponent implements OnInit {
 
   private edit(item: any): void {
      const type = item.attributes.assessment_objects[0].stix.type;
-     const link = ['assessment/edit', type, item.id];
+     const link = ['wizard/edit', type, item.id];
      this.router.navigate(link, { relativeTo: this.route });
   }
 

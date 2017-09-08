@@ -20,9 +20,9 @@ import { MenuItem } from 'primeng/primeng';
 
 @Component({
   selector: 'assessment',
-  templateUrl: './assessment.component.html',
-  encapsulation: ViewEncapsulation.None,
-  styleUrls: [`./assessment.component.css`]
+  templateUrl: './assessment-wizard.component.html',
+  // encapsulation: ViewEncapsulation.None,
+  styleUrls: [`./assessment-wizard.component.css`]
 })
 export class AssessmentComponent extends Measurements implements OnInit, OnDestroy {
   public model: any;

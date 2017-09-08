@@ -7,7 +7,7 @@ import { MaterialModule, MdButtonModule, MdCardModule, MdDialogModule, MdSnackBa
 import { ChartsModule } from 'ng2-charts';
 import { CalendarModule } from 'primeng/primeng';
 import { PipesModule } from '../../pipes';
-import { AssessmentComponent } from './assessment.component';
+import { AssessmentComponent } from './assessment-wizard.component';
 import { ComponentModule } from '../../components';
 import { AssessmentsService } from '../assessments.service';
 import { GlobalModule } from '../../global/global.module';
