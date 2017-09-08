@@ -106,10 +106,11 @@
                     <div class="summaryPanel">
                         <div class="summaryPanelContent">
                             <div *ngIf="techniqueBreakdown;else noTechinquesData">
-
-                                <techniques-chart #techniquesChart [riskThreshold]="selectedRisk" [riskLabelOptions]="thresholdOptions" [techniqueBreakdown]="techniqueBreakdown">
+                                <techniques-chart #techniquesChart 
+                                    [riskThreshold]="selectedRisk" 
+                                    [riskLabelOptions]="thresholdOptions" 
+                                    [techniqueBreakdown]="techniqueBreakdown">
                                 </techniques-chart>
-
                             </div>
                             <ng-template #noTechinquesData>No data to load chart!</ng-template>
                         </div>
@@ -125,14 +126,17 @@
                 <div class="col-md-12">
                     <div class="summaryPanel">
                         <div class="summaryPanelContent">
-                            <assessment-chart #assessmentChart 
+                            <div *ngIf="summary;else noAssessmentsChartData">
+                                    <assessment-chart #assessmentChart 
                                     [riskThreshold]="selectedRisk" 
                                     [riskLabelOptions]="thresholdOptions"
                                     [assessmentObjects]="summary.attributes.assessment_objects"
                                     [assessmentsGroupingTotal]="assessmentsGroupingTotal"
                                     [assessmentsGroupingFiltered]="assessmentsGroupingFiltered"
-                                >
-                            </assessment-chart>
+                                    >
+                                </assessment-chart>
+                            </div>
+                            <ng-template #noAssessmentsChartData>No data to load chart!</ng-template>
                         </div>
                         <div class="summaryPanelTitle">
                             <h5 class="text-center">% of assessments better than {{ getThresholdOptionName(selectedRisk) }}</h5>
