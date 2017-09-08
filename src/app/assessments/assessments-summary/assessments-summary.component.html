@@ -1,4 +1,4 @@
-<div class="container" *ngIf="summary && weakestAttackPatterns; else loadingBlock">
+<div class="container fadeIn" *ngIf="summary && weakestAttackPatterns; else loadingBlock">
     <br>
     <ol class="breadcrumb">
         <li><a href="#/assessments">Assessments</a></li>
@@ -12,7 +12,7 @@
     </div>
 </div>
 
-<div *ngIf="summary">
+<div *ngIf="summary" class="fadeIn">
     <div class="container">
         <h3 class="page-header">Good news! You've reduced your risk already, but we can improve some areas of your defense.</h3>
 
@@ -155,7 +155,7 @@
 </div>
 
 <ng-template #loadingBlock>
-    <div class="container loading">
-        <md-spinner></md-spinner><span class="loading-text">Loading...</span>
+    <div class="loading">
+        <md-spinner></md-spinner>
     </div>
 </ng-template>
