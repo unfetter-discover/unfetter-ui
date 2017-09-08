@@ -5,7 +5,7 @@ import {
 } from '@angular/core';
 import {
     Constance
-} from '../../utils/constance';
+} from '../../../utils/constance';
 
 @Component({
     selector: 'risk-breakdown',

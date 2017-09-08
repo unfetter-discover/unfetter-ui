@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Constance } from '../../utils/constance';
+import { Constance } from '../../../utils/constance';
 
 @Component({
     selector: 'phase-list',
