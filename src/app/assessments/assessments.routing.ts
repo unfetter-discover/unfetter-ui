@@ -5,7 +5,7 @@ import { ModuleWithProviders } from '@angular/core';
 import { AssessmentsListComponent } from './list/assessments-list.component';
 import { AssessmentsDashboardComponent } from './assessments-dashboard/assessments-dashboard.component';
 import { AssessmentsSummaryComponent } from './assessments-summary/assessments-summary.component';
-import { AssessmentsGroupComponent } from './group/group.component';
+import { AssessmentsGroupComponent } from './group/assessments-group.component';
 
 const routes = [
         {

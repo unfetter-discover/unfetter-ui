@@ -1,21 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, QueryList, ViewChildren, AfterContentInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AssessmentsDashboardService } from '../assessments-dashboard/assessments-dashboard.service';
 import { Constance } from '../../utils/constance';
 import { AttackPattern } from '../../models/attack-pattern';
+import { AddAssessedObjectComponent } from './add-assessed-object/add-assessed-object.component';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'assessments-group',
-  templateUrl: './group.component.html',
-  styleUrls: ['./group.component.css']
+  templateUrl: './assessments-group.component.html',
+  styleUrls: ['./assessments-group.component.css']
 })
-export class AssessmentsGroupComponent implements OnInit {
+export class AssessmentsGroupComponent implements OnInit, AfterViewInit, AfterContentInit {
+
+  @ViewChildren('addAssessedObjectComponent')
+  public addAssessedObjectComponents: QueryList<AddAssessedObjectComponent>;
+  public addAssessedObjectComponent: AddAssessedObjectComponent;
+
   public indicator: any;
   public courseOfAction: any;
   public xUnfetterSensor: any;
 
   public activePhase: string;
-  public assessment: any;
+  public assessment = {} as any;
   public riskByAttackPattern: { assessedByAttackPattern: AssessedByAttackPattern[], attackPatternsByKillChain: GroupAttackPattern[], phases: GroupPhase[] };
   public assessedObjects: any;
   public unassessedPhases: string[];
@@ -28,20 +35,39 @@ export class AssessmentsGroupComponent implements OnInit {
   public addAssessedObject: boolean;
   public addAssessedType: string;
 
-  constructor(
-    private assessmentsDashboardService: AssessmentsDashboardService,
-    private route: ActivatedRoute
-  ) { }
+  constructor(private assessmentsDashboardService: AssessmentsDashboardService,
+              private route: ActivatedRoute,
+              private changeDetector: ChangeDetectorRef) { }
 
-  public ngOnInit() {
-    this.resetNewAssessmentObjects();
+  /**
+   * @description init before childern are initialized
+   */
+  public ngOnInit(): void {
     this.currentId = this.route.snapshot.params['id']
-      ? this.route.snapshot.params['id']
-      : '';
+      ? this.route.snapshot.params['id'] : '';
     this.currentPhase = this.route.snapshot.params['phase']
-      ? this.route.snapshot.params['phase']
-      : '';
+      ? this.route.snapshot.params['phase'] : '';
     this.initData();
+  }
+
+  public ngAfterViewInit(): void {
+    console.log('after view init');
+    const sub = this.addAssessedObjectComponents.changes
+      .subscribe(
+        (comps: QueryList<AddAssessedObjectComponent>) => {
+          this.addAssessedObjectComponent = comps.first;
+          this.resetNewAssessmentObjects();
+          this.changeDetector.detectChanges();
+        },
+        (err) => console.log(err),
+        () => sub.unsubscribe());
+  }
+
+  /**
+   * @description init after childern are initialized
+   */
+  public ngAfterContentInit(): void {
+    console.log('after content init');
   }
 
   /**
@@ -82,87 +108,13 @@ export class AssessmentsGroupComponent implements OnInit {
         (err) => console.log(err),
         () => getById$.unsubscribe()
       );
+
   }
 
-  public resetNewAssessmentObjects() {
-    this.addAssessedObject = false;
-    this.addAssessedType = '';
-    this.indicator = {
-      type: 'indicator',
-      name: '',
-      description: '',
-      pattern: '',
-      questions: []
-    };
-    this.courseOfAction = {
-      type: 'course-of-action',
-      name: '',
-      description: '',
-      questions: []
-    };
-    this.xUnfetterSensor = {
-      type: 'x-unfetter-sensor',
-      name: '',
-      description: '',
-      questions: []
-    };
-
-    for (const stixType in Constance.MEASUREMENTS) {
-      for (const question in Constance.MEASUREMENTS[stixType]) {
-        switch (stixType) {
-          case 'indicator':
-            this.indicator.questions.push({
-              name: question,
-              risk: 1,
-              options: this.getOptions(
-                Constance.MEASUREMENTS[stixType][question]
-              ),
-              selected_value: {
-                name: Constance.MEASUREMENTS[stixType][question][0].name,
-                risk: 1
-              }
-            });
-            break;
-          case 'course-of-action':
-            this.courseOfAction.questions.push({
-              name: question,
-              risk: 1,
-              options: this.getOptions(
-                Constance.MEASUREMENTS[stixType][question]
-              ),
-              selected_value: {
-                name: Constance.MEASUREMENTS[stixType][question][0].name,
-                risk: 1
-              }
-            });
-            break;
-          case 'x-unfetter-sensor':
-            this.xUnfetterSensor.questions.push({
-              name: question,
-              risk: 1,
-              options: this.getOptions(
-                Constance.MEASUREMENTS[stixType][question]
-              ),
-              selected_value: {
-                name: Constance.MEASUREMENTS[stixType][question][0].name,
-                risk: 1
-              }
-            });
-            break;
-        }
-      }
+  public resetNewAssessmentObjects(): void {
+    if (this.addAssessedObjectComponent) {
+      this.addAssessedObjectComponent.resetNewAssessmentObjects();
     }
-  }
-
-  public getOptions(options) {
-    const retVal = [];
-    options.forEach((label, index) => {
-      const data: any = {};
-      data.name = label;
-      data.risk = 1 - index / (options.length - 1);
-      retVal.push(data);
-    });
-    return retVal;
   }
 
   public getNumAttackPatterns(phaseName) {
@@ -190,20 +142,16 @@ export class AssessmentsGroupComponent implements OnInit {
   }
 
   public setPhase(phaseName, curApIndex: number = 0) {
-    this.resetNewAssessmentObjects();    
+    this.resetNewAssessmentObjects();
     this.activePhase = phaseName;
     this.attackPatternsByPhase = this.getAttackPatternsByPhase(this.activePhase);
-    let currentAttackPatternId: any = this.attackPatternsByPhase.length > 0 ? this.attackPatternsByPhase[curApIndex].attackPatternId : -1;    
+    const currentAttackPatternId: any = this.attackPatternsByPhase.length > 0 ? this.attackPatternsByPhase[curApIndex].attackPatternId : -1;
     this.setAttackPattern(currentAttackPatternId);
   }
 
   public getAttackPatternsByPhase(phaseName) {
-    return this.riskByAttackPattern.phases.find(
-      (phase) => phase._id === phaseName
-    )
-      ? this.riskByAttackPattern.phases.find((phase) => phase._id === phaseName)
-        .attackPatterns
-      : [];
+    return this.riskByAttackPattern
+      .phases.find((phase) => phase._id === phaseName) ? this.riskByAttackPattern.phases.find((phase) => phase._id === phaseName).attackPatterns : [];
   }
 
   public getRiskByAttackPatternId(attackPatternId) {
@@ -254,10 +202,7 @@ export class AssessmentsGroupComponent implements OnInit {
             (relationship) => relationship.attributes.source_ref
           );
           this.displayedAssessedObjects = this.assessedObjects
-            .filter(
-            (assessedObj) =>
-              assessmentCanidates.indexOf(assessedObj.stix.id) > -1
-            )
+            .filter((assessedObj) => assessmentCanidates.indexOf(assessedObj.stix.id) > -1)
             .map((assessedObj) => {
               const retObj = assessedObj;
               retObj.risk = this.getRisk(assessedObj.stix.id);
@@ -323,99 +268,6 @@ export class AssessmentsGroupComponent implements OnInit {
     }
   }
 
-  public createAssessedObject(newAssessedObject, attackPattern) {
-    // Update & save questions for assessment
-    // tslint:disable-next-line:prefer-for-of
-    for (let i = 0; i < newAssessedObject.questions.length; i++) {
-      newAssessedObject.questions[i].selected_value.risk =
-        newAssessedObject.questions[i].risk;
-      for (const option of newAssessedObject.questions[i].options) {
-        if (option.risk === newAssessedObject.questions[i].risk) {
-          newAssessedObject.questions[i].selected_value.name = option.name;
-        }
-      }
-    }
-    const questions = newAssessedObject.questions;
-    delete newAssessedObject.questions;
-
-    const convertedObj: any = {};
-    for (const prop in newAssessedObject) {
-      if (newAssessedObject[prop]) {
-        convertedObj[prop] = newAssessedObject[prop];
-      }
-    }
-
-    // Uploaded indicator, COA, or sensor
-    this.assessmentsDashboardService
-      .genericPost(`api/${convertedObj.type}s`, convertedObj)
-      .subscribe(
-      (assessedRes) => {
-        const newId = assessedRes[0].attributes.id;
-        const createdObj = assessedRes[0].attributes;
-
-        // create relationship
-        const relationshipObj: any = { type: 'relationship' };
-        switch (newAssessedObject.type) {
-          case 'x-unfetter-sensor':
-          case 'course-of-action':
-            relationshipObj.relationship_type = 'mitigates';
-            break;
-          case 'indicator':
-            relationshipObj.relationship_type = 'indicates';
-            break;
-        }
-        relationshipObj.source_ref = newId;
-        relationshipObj.target_ref = attackPattern.id;
-        this.assessmentsDashboardService
-          .genericPost(Constance.RELATIONSHIPS_URL, relationshipObj)
-          .subscribe(
-          (relationshipRes) => {
-            console.log('Relationship uploaded successfully');
-          },
-          (relationshipErr) => console.log(relationshipErr)
-          );
-
-        // update assessment
-        const tempAssessmentObject: any = {};
-        tempAssessmentObject.questions = questions;
-        tempAssessmentObject.stix = {
-          id: newId,
-          type: convertedObj.type,
-          name: convertedObj.name
-        };
-        if (convertedObj.description !== undefined) {
-          tempAssessmentObject.stix.description = convertedObj.description;
-        }
-        tempAssessmentObject.risk =
-          questions
-            .map((question) => question.risk)
-            .reduce((prev, cur) => (prev += cur), 0) / questions.length;
-
-        this.assessment.attributes.assessment_objects.push(
-          tempAssessmentObject
-        );
-        const assessmentToUpload: any = this.assessment.attributes;
-        assessmentToUpload.modified = new Date().toISOString();
-        console.log(assessmentToUpload);
-        this.assessmentsDashboardService
-          .genericPatch(
-          `${Constance.X_UNFETTER_ASSESSMENT_URL}/${this.assessment.id}`,
-          assessmentToUpload
-          )
-          .subscribe(
-          (assessmentRes) => {
-            console.log('Assessment updated successfully');
-            this.displayedAssessedObjects.push(tempAssessmentObject);
-            this.assessedObjects.push({ stix: createdObj });
-            this.resetNewAssessmentObjects();
-          },
-          (assessmentErr) => console.log(assessmentErr)
-          );
-      },
-      (assessedErr) => console.log(assessedErr)
-      );
-  }
-
   public editAssessedObject(assessedObj) {
     // Set new question value
     // tslint:disable-next-line:prefer-for-of
@@ -464,13 +316,13 @@ export class AssessmentsGroupComponent implements OnInit {
         // refresh data
         let indexOfCurAp = 0;
         console.log('curap', this.currentAttackPattern);
-        
+
         for (let i = 0; i < this.attackPatternsByPhase.length; i++) {
-          if (this.attackPatternsByPhase[i].attackPatternId === this.currentAttackPattern.id){
+          if (this.attackPatternsByPhase[i].attackPatternId === this.currentAttackPattern.id) {
             indexOfCurAp = i;
           }
-        }     
-                
+        }
+
         this.resetNewAssessmentObjects();
         this.initData(indexOfCurAp);
       },
