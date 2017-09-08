@@ -23,6 +23,15 @@ export class SophisticationBreakdownComponent implements OnInit {
                 stacked: true
             }]
         },
+        tooltips: {
+            mode: 'index',
+            callbacks: {
+                label: (tooltipItem, data) => {
+                    const dataset = data.datasets[tooltipItem.datasetIndex];
+                    return dataset.data[tooltipItem.index] || 0;
+                }
+            }
+        }
     };
     public colors;
     public barChartLabels: string[] = [];

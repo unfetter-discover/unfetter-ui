@@ -53,11 +53,11 @@ export class AssessmentsDashboardComponent implements OnInit {
         },
     };
 
-    private assessment: any;
-    private riskByAttackPattern: any;
-    private unassessedPhases: any[];
-    private riskBreakdown: any;
-    private processingComplete: boolean = false;
+    public assessment: any;
+    public riskByAttackPattern: any;
+    public unassessedPhases: any[];
+    public riskBreakdown: any;
+    public processingComplete: boolean = false;
 
     constructor(
         private assessmentsDashboardService: AssessmentsDashboardService,
@@ -185,7 +185,7 @@ export class AssessmentsDashboardComponent implements OnInit {
 
     public getNumAttackPatterns(phaseName) {
         const attackPatternsByKillChain = this.riskByAttackPattern.attackPatternsByKillChain;
-        for (let killPhase of attackPatternsByKillChain) {
+        for (const killPhase of attackPatternsByKillChain) {
             if (killPhase._id === phaseName && killPhase.attackPatterns !== undefined) {
                 return killPhase.attackPatterns.length;
             }

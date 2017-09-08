@@ -10,7 +10,7 @@
     </div>
 </div>
 
-<div class="row" *ngIf="graph && forcesEnabled; else loadingBlock" >
+<div class="row fadeIn" *ngIf="graph && forcesEnabled; else loadingBlock" >
   <div class="col-md-3">
               <md-card class="result">
                 <md-card-content>
@@ -89,6 +89,5 @@
 </div>
 
 <ng-template #loadingBlock>
-    <div class="loading"><md-spinner></md-spinner><span class="loading-text">Loading...</span></div>
+    <div class="loading"><md-spinner></md-spinner></div>
 </ng-template>
-
