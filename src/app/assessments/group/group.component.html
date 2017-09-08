@@ -244,8 +244,6 @@
                             <md-card>
                                 <md-card-title><img src="{{ getStixIcon(assessedObj.stix.type) }}" alt=""> {{ assessedObj.stix.name }}</md-card-title>
                                 <md-card-content>
-                                    <!--<span class="text-muted">Risk Accepted &bull;</span>&nbsp;{{ getRisk(assessedObj.stix.id)
-                                | percent:'2.1-1'}}-->
                                     <span class="text-muted">Risk Accepted &bull;</span>&nbsp;{{ assessedObj.risk | percent:'2.1-1'}}
                                 </md-card-content>
                                 <md-card-content>
