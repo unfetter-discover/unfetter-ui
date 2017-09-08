@@ -12,7 +12,7 @@ import { ConfirmationDialogComponent } from './dialogs/confirmation/confirmation
 import { IndicatorPatternFieldComponent } from './indicator-pattern-field/indicator-pattern-field.component';
 import { SelectSearchFieldComponent } from './select-search-field/select-search-field.component';
 import { ExternalReferenceComponent } from './external-reference/external-reference.component';
-import { KillChainPhasesComponent } from './kill-chain-phases/kill-chain-phases.compoenet';
+import { KillChainPhasesComponent } from './kill-chain-phases/kill-chain-phases.component';
 import { ListStixObjectComponent } from './list-stix-objects/list-stix-objects.component';
 import { ReadonlyContentComponent } from './readonly-content/readonly-content.component';
 import { AliasesComponent } from './aliases/aliases.component';

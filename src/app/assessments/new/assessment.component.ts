@@ -427,7 +427,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
     retVal.name = this.assessmentName;
     retVal.description = this.assessmentDescription;
     // retVal.assessment_objects = [];
-    let assessmentSet = new Set();
+    const assessmentSet = new Set();
 
     assessmentsGroups.forEach((assessmentsGroup) => {
       if (assessmentsGroup.assessments !== undefined) {
@@ -461,7 +461,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
       }
     });
 
-    retVal['assessment_objects'] = Array.from(assessmentSet).map(dat => JSON.parse(dat));
+    retVal['assessment_objects'] = Array.from(assessmentSet).map((dat) => JSON.parse(dat));
     return retVal;
   }
 

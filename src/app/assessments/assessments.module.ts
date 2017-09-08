@@ -10,7 +10,6 @@ import { AssessmentsDashboardComponent } from './assessments-dashboard/assessmen
 import { AssessmentsDashboardService } from './assessments-dashboard/assessments-dashboard.service';
 import { PhaseListComponent } from './phase-list/phase-list.component';
 import { ChartsModule } from 'ng2-charts';
-import { AssessmentsGroupComponent } from './group/group.component';
 import { RiskBreakdownComponent } from './risk-breakdown/risk-breakdown.component';
 import { AssessmentsSummaryComponent } from './assessments-summary/assessments-summary.component';
 import { AssessmentsSummaryService } from './assessments-summary/assessments-summary.service';
@@ -20,20 +19,23 @@ import { AssessmentChartComponent } from './assessments-summary/assessment-chart
 import { SophisticationBreakdownComponent } from './assessments-summary/sophistication-breakdown/sophistication-breakdown.component';
 import { TechniquesChartComponent } from './assessments-summary/techniques-chart/techniques-chart.component';
 import { GlobalModule } from '../global/global.module';
+import { AddAssessedObjectComponent } from './group/add-assessed-object/add-assessed-object.component';
+import { AssessmentsGroupComponent } from './group/assessments-group.component';
 
 @NgModule({
   declarations: [
     /**
      * Components / Directives/ Pipes
      */
+    AddAssessedObjectComponent,
     AssessmentsListComponent,
     AssessmentsLayoutComponent,
     AssessmentsDashboardComponent,
-    PhaseListComponent,
     AssessmentsGroupComponent,
-    RiskBreakdownComponent,
     AssessmentsSummaryComponent,
     AssessmentChartComponent,
+    PhaseListComponent,
+    RiskBreakdownComponent,
     SophisticationBreakdownComponent,
     TechniquesChartComponent
   ],
