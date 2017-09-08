@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AttackPattern } from '../../models/attack-pattern';
 import { Constance } from '../../utils/constance';
@@ -10,17 +10,21 @@ import { Risk } from './risk';
 import { SortHelper } from './sort-helper';
 import { ThresholdOption } from './threshold-option';
 import { TechniquesChartComponent } from './techniques-chart/techniques-chart.component';
+import { Subscription } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
     selector: 'assessments-summary',
     templateUrl: './assessments-summary.component.html',
     styleUrls: ['./assessments-summary.component.css']
 })
-export class AssessmentsSummaryComponent implements OnInit {
-    @ViewChild('assessmentChart')
+export class AssessmentsSummaryComponent implements OnInit, AfterViewInit {
+    @ViewChildren('assessmentChart')
+    public assessmentChartComponents: QueryList<AssessmentChartComponent>;
     public assessmentChart: AssessmentChartComponent;
 
-    @ViewChild('techniquesChart')
+    @ViewChildren('techniquesChart')
+    public techniquesChartComponents: QueryList<TechniquesChartComponent>;
     public techniquesChart: TechniquesChartComponent;
 
     public summary: any;
@@ -43,6 +47,8 @@ export class AssessmentsSummaryComponent implements OnInit {
     public readonly riskLevel = 0.50;
     public totalRiskValue: any;
 
+    private readonly subscriptions: Subscription[] = [];
+
     constructor(
         private assessmentsSummaryService: AssessmentsSummaryService,
         private assessmentsCalculationService: AssessmentsCalculationService,
@@ -55,72 +61,48 @@ export class AssessmentsSummaryComponent implements OnInit {
      */
     public ngOnInit() {
         this.id = this.route.snapshot.params['id'] ? this.route.snapshot.params['id'] : '';
-        const getById$ = this.assessmentsSummaryService.getById(this.id).subscribe(
-            (res) => {
-                this.summary = res;
-                const assessments = this.summary.attributes['assessment_objects'];
-                if (assessments) {
-                    const risk = this.assessmentsCalculationService.calculateRisk(assessments);
-                    this.totalRiskValue = this.assessmentsCalculationService.formatRisk(risk);
-                    this.riskLabelClass = risk > this.riskLevel ? 'label-warning' : 'label-default';
 
-                    // set threshold dropdown options
-                    const question = assessments[0].questions[0];
-                    if (question) {
-                        this.thresholdOptions = question.options;
-                    }
-                }
-
-                this.summaryDate = new Date(this.summary.attributes.modified);
+        const getById$ = this.assessmentsSummaryService.getById(this.id);
+        const summaryAggregation$ = this.assessmentsSummaryService.getSummaryAggregation(this.id);
+        const killChain$ = this.assessmentsSummaryService.getRiskPerKillChain(this.id);
+        const attackPattern$ = this.assessmentsSummaryService.getRiskPerAttackPattern(this.id);
+        const sub = Observable.combineLatest(getById$, summaryAggregation$, killChain$, attackPattern$)
+            .subscribe((val) => {
+                const [getByIdResp, summaryAggregationResp, killChainResp, attackPatternResp ] = val;
+                this.getByIdRespHandler(getByIdResp);
+                this.summaryAggregationRespHandler(summaryAggregationResp);
+                this.killChainRespHandler(killChainResp);
+                this.attackPatternResponseHandler(attackPatternResp);
+                this.populateAssessmentsGrouping();
+                this.populateTechniqueBreakdown();
             },
-            (err) => console.log(err),
-            () => getById$.unsubscribe()
-        );
+            (err) => console.log(err));
+        this.subscriptions.push(sub);
+    }
 
-        const summaryAggregation$ = this.assessmentsSummaryService.getSummaryAggregation(this.id).subscribe(
-            (res) => {
-                this.summaryAggregation = res;
-                this.redrawCharts();
+    /**
+     * @description initialize childern
+     */
+    public ngAfterViewInit(): void {
+        const sub1 = Observable
+            .combineLatest(this.assessmentChartComponents.changes, this.techniquesChartComponents.changes)
+            .subscribe(
+                (val: any[]) => {
+                    const [ assessmentCharts, techniqueCharts ] = val;
+                    this.assessmentChart = assessmentCharts.first;
+                    this.techniquesChart = techniqueCharts.first;
+                    console.log(this.assessmentChart, this.techniquesChart);
             },
-            (err) => console.log(err),
-            () => summaryAggregation$.unsubscribe()
-        );
+            (err) => console.log(err)
+            );
+        this.subscriptions.push(sub1);
+    }
 
-        const killChain$ = this.assessmentsSummaryService.getRiskPerKillChain(this.id).subscribe(
-            (res) => {
-                this.riskPerKillChain = res;
-                const risks: Risk[] = this.retrieveAssessmentRisks(this.riskPerKillChain);
-                this.sortedRisks = risks.sort(SortHelper.sortByRiskDesc());
-                this.sortedRisks = this.sortedRisks.slice(0, this.topNRisks);
-                this.sortedRisks.forEach((el) => {
-                    const objects = el.objects || [];
-                    el.objects = objects.sort(SortHelper.sortByRiskDesc());
-                    el.objects = el.objects.slice(0, this.topNRisks);
-                });
-            },
-            (err) => console.log(err),
-            () => killChain$.unsubscribe());
-
-        const attackPattern$ = this.assessmentsSummaryService.getRiskPerAttackPattern(this.id).subscribe(
-            (res) => {
-                this.riskByAttackPattern = res;
-                const phases: AverageRisk[] = this.riskByAttackPattern.phases;
-                const weakestPhaseId = phases.sort(SortHelper.sortByAvgRiskDesc())[0]._id || '';
-
-                const attackPatternsByKillChain = res.attackPatternsByKillChain;
-                const riskiestAttackPattern = attackPatternsByKillChain.find((el) => el._id === weakestPhaseId);
-
-                if (!riskiestAttackPattern) {
-                    console.error('did not find the riskiest attack pattern! attempting to move on...');
-                    return;
-                }
-
-                const attackPatterns = riskiestAttackPattern.attackPatterns;
-                this.weakestAttackPatterns = attackPatterns.sort(SortHelper.sortBySophisticationLevelAsc()) || [];
-                this.weakestAttackPatterns = this.weakestAttackPatterns.slice(0, 1);
-            },
-            (err) => console.log(err),
-            () => attackPattern$.unsubscribe());
+    /**
+     * @description clean up subscription on destroy of this component
+     */
+    public ngDestroy(): void {
+        this.subscriptions.forEach((sub) => sub.unsubscribe());
     }
 
     /**
@@ -232,6 +214,55 @@ export class AssessmentsSummaryComponent implements OnInit {
         }
     }
 
+    public getByIdRespHandler(res): void {
+        this.summary = res;
+        const assessments = this.summary.attributes['assessment_objects'];
+        if (assessments) {
+            const risk = this.assessmentsCalculationService.calculateRisk(assessments);
+            this.totalRiskValue = this.assessmentsCalculationService.formatRisk(risk);
+            this.riskLabelClass = risk > this.riskLevel ? 'label-warning' : 'label-default';
+
+            // set threshold dropdown options
+            const question = assessments[0].questions[0];
+            if (question) {
+                this.thresholdOptions = question.options;
+            }
+        }
+
+        this.summaryDate = new Date(this.summary.attributes.modified);
+    }
+
+    public summaryAggregationRespHandler(res): void {
+        this.summaryAggregation = res;
+    }
+
+    public killChainRespHandler(res): void {
+        this.riskPerKillChain = res;
+        const risks: Risk[] = this.retrieveAssessmentRisks(this.riskPerKillChain);
+        this.sortedRisks = risks.sort(SortHelper.sortByRiskDesc());
+        this.sortedRisks = this.sortedRisks.slice(0, this.topNRisks);
+        this.sortedRisks.forEach((el) => {
+            const objects = el.objects || [];
+            el.objects = objects.sort(SortHelper.sortByRiskDesc());
+            el.objects = el.objects.slice(0, this.topNRisks);
+        });
+    }
+
+    public attackPatternResponseHandler(res): void {
+        this.riskByAttackPattern = res;
+        const phases: AverageRisk[] = this.riskByAttackPattern.phases;
+        const weakestPhaseId = phases.sort(SortHelper.sortByAvgRiskDesc())[0]._id || '';
+        const attackPatternsByKillChain = res.attackPatternsByKillChain;
+        const riskiestAttackPattern = attackPatternsByKillChain.find((el) => el._id === weakestPhaseId);
+        if (!riskiestAttackPattern) {
+            console.error('did not find the riskiest attack pattern! attempting to move on...');
+            return;
+        }
+        const attackPatterns = riskiestAttackPattern.attackPatterns;
+        this.weakestAttackPatterns = attackPatterns.sort(SortHelper.sortBySophisticationLevelAsc()) || [];
+        this.weakestAttackPatterns = this.weakestAttackPatterns.slice(0, 1);
+    }
+
     private retrieveAssessmentRisks(assessment): Risk[] {
         if (assessment.courseOfActions && assessment.courseOfActions.length > 0) {
             return assessment.courseOfActions;
@@ -257,6 +288,7 @@ export class AssessmentsSummaryComponent implements OnInit {
             .map((ao) => ao.stix.id);
         return includedIds;
     }
+
 }
 
 interface RiskByAttackPattern {
