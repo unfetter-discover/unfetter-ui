@@ -436,15 +436,24 @@ export class AssessmentsGroupComponent implements OnInit {
         .reduce((prev, cur) => (prev += cur), 0) / assessedObj.questions.length;
 
     // tslint:disable-next-line:prefer-for-of
-    for (let i = 0; i < this.assessment.attributes.assessment_objects.length; i++) {
-      if (this.assessment.attributes.assessment_objects[i].stix.id === assessedObj.stix.id) {
-        this.assessment.attributes.assessment_objects[i].risk =
-          assessedObj.risk;
-        this.assessment.attributes.assessment_objects[i].questions =
-          assessedObj.questions;
-        break;
-      }
-    }
+    // for (let i = 0; i < this.assessment.attributes.assessment_objects.length; i++) {
+    //   if (this.assessment.attributes.assessment_objects[i].stix.id === assessedObj.stix.id) {
+    //     this.assessment.attributes.assessment_objects[i].risk =
+    //       assessedObj.risk;
+    //     this.assessment.attributes.assessment_objects[i].questions =
+    //       assessedObj.questions;
+    //     break;
+    //   }
+    // }
+
+    let assObjToEdit = this.assessment.attributes.assessment_objects
+      .find(assObj => assObj.stix.id === assessedObj.stix.id);
+
+    assObjToEdit.risk = assessedObj.risk;
+    // assObjToEdit.questions.selected_value = assessedObj.questions.selected_value;
+
+    
+
     const objToPatch = this.assessment.attributes;
     objToPatch.modified = new Date().toISOString();
     console.log(objToPatch);
