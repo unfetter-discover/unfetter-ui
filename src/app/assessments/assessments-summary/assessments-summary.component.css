@@ -2,25 +2,6 @@
     background-color: #fafafa;
 }
 
-.loading {
-    height: 100vh;
-    width: 100%;
-    display: flex;
-    flex-flow: column;
-}
-
-.loading md-spinner {
-    margin: auto auto;
-    flex: 1 0 auto;
-}
-
-.loading .loading-text {
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
-    flex: 1 0 auto;
-}
-
 .topN td ul {
     list-style: none;
     margin: 0px;
