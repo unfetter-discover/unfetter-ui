@@ -29,11 +29,11 @@
                     </div>
                     <div class="col-md-4">
                         <label>First Seen</label>
-                        <p>{{sighting.attributes.first_seen}}</p>
+                        <p>{{sighting.attributes.first_seen | date:'medium' }}</p>
                     </div>
                     <div class="col-md-4">
                         <label>Last Seen</label>
-                        <p>{{sighting.attributes.last_seen}}</p>
+                        <p>{{sighting.attributes.last_seen | date:'medium' }}</p>
                     </div>
                 </div>
 

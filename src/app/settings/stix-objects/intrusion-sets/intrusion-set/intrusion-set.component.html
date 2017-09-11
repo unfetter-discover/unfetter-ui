@@ -22,11 +22,11 @@
                     <div class="row">
                         <div class="col-md-6">
                             <label>First Seen</label>
-                            <h5>{{intrusionSet.attributes.first_seen}}</h5>
+                            <p>{{intrusionSet.attributes.first_seen | date:'medium' }}</p>
                         </div>
                         <div class="col-md-6">
                             <label>Last Seen</label>
-                            <h5>{{intrusionSet.attributes.last_seen}}</h5>
+                            <p>{{intrusionSet.attributes.last_seen | date:'medium' }}</p>
                         </div>
                     </div>
                     <div class="row">
