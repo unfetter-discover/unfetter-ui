@@ -34,11 +34,9 @@ export class Indicator {
     }
 
     public formatDate(): void {
-        this.attributes.valid_from =  this.attributes.valid_from ?
-            moment(this.attributes.valid_from).format(Constance.DATE_FORMATE) : moment().format(Constance.DATE_FORMATE);
+        this.attributes.valid_from =  new Date().toISOString();
 
-        this.attributes.valid_until =  this.attributes.valid_until ?
-            moment(this.attributes.valid_until).format(Constance.DATE_FORMATE) : moment().format(Constance.DATE_FORMATE);
+        this.attributes.valid_until = new Date().toISOString();
     }
 
     private createAttributes(): any {
@@ -53,8 +51,8 @@ export class Indicator {
             // description: '',
             // pattern_lang: '',
             // pattern: '',
-            valid_from: moment().format(Constance.DATE_FORMATE),
-            valid_until: moment().format(Constance.DATE_FORMATE)
+            valid_from: new Date().toISOString(),
+            valid_until: new Date().toISOString()
         };
     }
 }
