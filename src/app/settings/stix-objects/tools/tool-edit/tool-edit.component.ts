@@ -74,7 +74,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         relationship.url = Constance.RELATIONSHIPS_URL;
         let subscription = super.create(relationship).subscribe(
             (data) => {
-                console.log('saved');
+
             }, (error) => {
                 // handle errors here
                 console.log('error ' + error);
@@ -91,7 +91,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         relationship.url = Constance.RELATIONSHIPS_URL;
         let subscription = super.delete(relationship).subscribe(
             (data) => {
-                console.log('delected');
+
             }, (error) => {
                 // handle errors here
                 console.log('error ' + error);
@@ -132,7 +132,6 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
 
      // add chip
     protected add(event: any): void {
-        console.log(event.type);
         let relationship = new Relationship();
         this.newRelationships.push(relationship);
         relationship.attributes.source_ref = this.tool.id;

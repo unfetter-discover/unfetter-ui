@@ -9,8 +9,6 @@ import { AppState } from './app.service';
    templateUrl: './assessments-layout.component.html'
 })
 export class AssessmentsLayoutComponent implements OnInit {
-  public ngOnInit() {
-    console.log('Initial App State');
-  }
+  public ngOnInit() { }
 
 }

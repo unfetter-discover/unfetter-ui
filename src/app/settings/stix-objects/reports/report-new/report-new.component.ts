@@ -29,9 +29,7 @@ export class ReportNewComponent extends BaseStixComponent implements OnInit {
         super(stixService, route, router, dialog, location, snackBar);
         stixService.url = this.report.url;
     }
-    public ngOnInit() {
-        console.log('Initial ReportNewComponent');
-    }
+    public ngOnInit() { }
 
     public saveButtonClicked(): void {
         const subscription = super.create(this.report).subscribe(

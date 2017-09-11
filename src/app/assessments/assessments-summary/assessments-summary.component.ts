@@ -91,7 +91,6 @@ export class AssessmentsSummaryComponent implements OnInit, AfterViewInit {
                     const [ assessmentCharts, techniqueCharts ] = val;
                     this.assessmentChart = assessmentCharts.first;
                     this.techniquesChart = techniqueCharts.first;
-                    console.log(this.assessmentChart, this.techniquesChart);
             },
             (err) => console.log(err)
             );
@@ -142,8 +141,6 @@ export class AssessmentsSummaryComponent implements OnInit, AfterViewInit {
                 this.techniqueBreakdown[prop] = attackPatternSetMap[prop] / assessedRiskMapping[prop];
             }
         }
-
-        console.log('current assessment summary techinque breakdown', this.techniqueBreakdown);
     }
 
     /**
@@ -186,7 +183,6 @@ export class AssessmentsSummaryComponent implements OnInit, AfterViewInit {
      * @returns {void}
      */
     public redrawCharts(): void {
-        console.log('request to redraw charts with threshold', this.selectedRisk, this.thresholdOptions);
         // need to set this now, this change method doesnt seem to propogate the new value to the child until after this method
         this.populateAssessmentsGrouping();
         this.assessmentChart.riskThreshold = this.selectedRisk;

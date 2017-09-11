@@ -16,8 +16,6 @@ import { AppState } from './app.service';
   templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
-  public ngOnInit() {
-    console.log('Initial App State');
-  }
+  public ngOnInit() { }
 
 }

@@ -34,9 +34,7 @@ export class RelationshipNewComponent extends BaseStixComponent implements OnIni
         super(stixService, route, router, dialog, location, snackBar);
 
     }
-    public ngOnInit() {
-        console.log('Initial RelationshipNewComponent');
-    }
+    public ngOnInit() { }
 
    public saveButtonClicked(): void {
         this.stixService.url = 'cti-stix-store-api/relationship';
@@ -58,7 +56,6 @@ export class RelationshipNewComponent extends BaseStixComponent implements OnIni
 
     public onSelectedSourceChange(): void {
         this.stixService.url = 'cti-stix-store-api/' + this.selectedSource;
-        console.log(this.selectedSource);
         super.load().subscribe(
             (data) => {
                 this.selectedSources = data as any[];
@@ -73,6 +70,5 @@ export class RelationshipNewComponent extends BaseStixComponent implements OnIni
                 this.selectedTargetTypes = data as any[];
             }
         );
-        console.log(this.selectedTargetType);
     }
 }

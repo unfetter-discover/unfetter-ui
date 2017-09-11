@@ -23,9 +23,7 @@ export class ToolNewComponent extends ToolEditComponent implements OnInit {
         super(stixService, route, router, dialog, location, snackBar);
     }
 
-    public ngOnInit() {
-        console.log('ToolNewComponent');
-    }
+    public ngOnInit() { }
 
     private saveNewTool(): void {
         console.log(this.tool.url);

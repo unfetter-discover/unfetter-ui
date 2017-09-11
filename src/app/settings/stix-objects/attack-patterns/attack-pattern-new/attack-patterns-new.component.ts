@@ -23,9 +23,7 @@ export class AttackPatternNewComponent extends AttackPatternEditComponent implem
         super(stixService, route, router, dialog, location, snackBar);
     }
 
-    public ngOnInit() {
-        console.log('Initial AttackPatternNewComponent');
-    }
+    public ngOnInit() { }
 
      public saveAttackPattern(): void {
          let sub = super.create(this.attackPattern).subscribe(
