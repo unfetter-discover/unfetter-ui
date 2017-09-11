@@ -34,9 +34,11 @@ export class Indicator {
     }
 
     public formatDate(): void {
-        this.attributes.valid_from =  new Date().toISOString();
+        this.attributes.valid_from =  this.attributes.valid_from ?
+            this.attributes.valid_from  : new Date().toISOString();
 
-        this.attributes.valid_until = new Date().toISOString();
+        this.attributes.valid_until =  this.attributes.valid_until ?
+            this.attributes.valid_until : new Date().toISOString();
     }
 
     private createAttributes(): any {

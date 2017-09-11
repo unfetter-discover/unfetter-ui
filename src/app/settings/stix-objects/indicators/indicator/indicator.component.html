@@ -33,12 +33,12 @@
                                 <div class="row" >
                                     <div class="col-md-4">
                                         <md-input-container class="full-width">
-                                            <input readonly mdInput placeholder="Valid From:" value="{{indicator.attributes.valid_from}}" />
+                                            <input readonly mdInput placeholder="Valid From:" value="{{indicator.attributes.valid_from | date:'medium' }}" />
                                         </md-input-container>
                                     </div>
                                     <div class="col-md-4">
                                         <md-input-container class="full-width">
-                                            <input readonly mdInput placeholder="Valid To:" value="{{indicator.attributes.valid_to}}" />
+                                            <input readonly mdInput placeholder="Valid Until:" value="{{indicator.attributes.valid_until | date:'medium' }}" />
                                             </md-input-container>
                                     </div>
                                 </div>
