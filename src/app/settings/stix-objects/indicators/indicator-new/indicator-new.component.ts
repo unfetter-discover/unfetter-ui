@@ -30,8 +30,6 @@ export class IndicatorNewComponent extends IndicatorEditComponent implements OnI
     }
 
     public saveIndicator(): void {
-        let b = this.indicator;
-        let a = 1+1;
          let sub = super.create(this.indicator).subscribe(
             (data) => {
                 this.location.back();
