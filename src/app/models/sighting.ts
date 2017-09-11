@@ -48,12 +48,12 @@ export class Sighting {
     private createAttributes(): any {
         return {
             // version: '1',
-            created: moment().format(Constance.DATE_FORMATE),
-            modified: moment().format(Constance.DATE_FORMATE),
+            // created: moment().format(Constance.DATE_FORMATE),
+            // modified: moment().format(Constance.DATE_FORMATE),
             external_references: [],
-            first_seen: moment().format(Constance.DATE_FORMATE),
+            first_seen: new Date().toISOString(),
             // firstseen_precision: '',
-            last_seen: moment().format(Constance.DATE_FORMATE),
+            last_seen: new Date().toISOString(),
             // lastseen_precision: '',
             count: 0,
             // sighting_of_ref: '',

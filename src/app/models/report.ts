@@ -24,11 +24,11 @@ export class Report {
         this.type = Constance.REPORTS_TYPE;
         this.attributes = {
             version: '',
-            created: moment().format(Constance.DATE_FORMATE),
-            modified: moment().format(Constance.DATE_FORMATE),
+            created: new Date().toISOString(),
+            modified: new Date().toISOString(),
             name: '',
             description: '',
-            published: moment().format(Constance.DATE_FORMATE),
+            published: new Date().toISOString(),
             object_refs:  [],
             labels: [],
             external_references: [],
