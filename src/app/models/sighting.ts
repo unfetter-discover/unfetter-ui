@@ -40,9 +40,9 @@ export class Sighting {
 
     public formatDate(): void {
        this.attributes.first_seen =  this.attributes.first_seen ?
-            moment(this.attributes.first_seen).format(Constance.DATE_FORMATE) : moment().format(Constance.DATE_FORMATE);
+            moment(this.attributes.first_seen).toISOString() : moment().toISOString();
        this.attributes.last_seen =  this.attributes.last_seen ?
-            moment(this.attributes.last_seen).format(Constance.DATE_FORMATE) : moment().format(Constance.DATE_FORMATE);
+            moment(this.attributes.last_seen).toISOString() : moment().toISOString();
     }
 
     private createAttributes(): any {
