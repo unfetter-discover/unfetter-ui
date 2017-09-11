@@ -1,0 +1,3 @@
+
+<buttons-filter [model]="indicators" [filteredItems]="filteredItems" (filterItemsChange)="onFilterItemsChange($event)"></buttons-filter>
+<list-stix-objects [model]="filteredItems" [url]="url" [showPattern]="showPattern" [showKillChainPhases]="showKillChainPhases" [showExternalReferences]="showExternalReferences" (deletButtonClicked)="deletButtonClicked($event)"></list-stix-objects>

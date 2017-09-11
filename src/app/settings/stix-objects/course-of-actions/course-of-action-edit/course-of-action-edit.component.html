@@ -1,0 +1,61 @@
+<div class="row" *ngIf="courseOfAction">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <md-input-container class="full-width">
+                <input mdInput placeholder="Name" required [(ngModel)]="courseOfAction.attributes.name" value="{{courseOfAction.attributes.name}}">
+                </md-input-container>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+            <md-input-container class="full-width">
+                <input mdInput placeholder="Description"  [(ngModel)]="courseOfAction.attributes.description" value="{{courseOfAction.attributes.description}}">
+                </md-input-container>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Labels</label>
+                <div class="button-row">
+                    <a class=" " md-raised-button (click)="addLabelButtonClicked()"><i class="fa fa-plus"></i>ADD</a>
+                </div>
+            </div>
+        </div>
+        <div class="row" >
+            <div class="col-md-12">
+
+                    <md-card *ngFor="let label of courseOfAction.attributes.label_names" style="margin: 10px 0px;">
+                            <md-card-content>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                            <md-input-container class="full-width">
+                                                <input mdInput placeholder="Label"  value="{{label.name}}">
+                                            </md-input-container>
+                                    </div>
+
+                                </div>
+                            </md-card-content>
+                            <md-card-actions>
+                                <div class="button-row">
+                                    <a class="" md-raised-button (click)="removeLabelButtonClicked(label)"><i class="fa fa-trash"></i>REMOVE</a>
+                                </div>
+                            </md-card-actions>
+                    </md-card>
+
+
+            </div>
+        </div>
+        <external-reference [(model)]="courseOfAction"></external-reference>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="button-row pull-right">
+                        <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i>CANCEL</a>
+                        <a class=" " md-raised-button (click)="saveCourceOfAction()" [disabled]="!courseOfAction.attributes.name"><i class="fa fa-floppy-o "></i>SAVE & CLOSE</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

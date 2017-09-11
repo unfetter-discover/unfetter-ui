@@ -1,0 +1,44 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="button-row">
+            <a class="mat-primary" md-raised-button (click)="editButtonClicked()"><i class="fa fa-pencil"></i> EDIT</a>
+            <a class="mat-primary" md-raised-button (click)="deleteButtonClicked()"><i class="fa fa-trash"></i> DELETE</a>
+        </div>
+    </div>
+</div>
+<div class="row" *ngIf="sighting"   style="margin-top: 15px;">
+    <div class="col-md-12">
+        <md-card>
+            <md-card-content>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Source Type</label>
+                        <p>{{sighting.attributes.sighting_of_ref}}</p>
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class="col-md-12">
+                        <label>Where Sighted Reference</label>
+                        <p>{{sighting.attributes.summary}}</p>
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class="col-md-4">
+                        <label>Count</label>
+                        <p>{{sighting.attributes.count}}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <label>First Seen</label>
+                        <p>{{sighting.attributes.first_seen}}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Last Seen</label>
+                        <p>{{sighting.attributes.last_seen}}</p>
+                    </div>
+                </div>
+
+            </md-card-content>
+        </md-card>
+    </div>
+</div>
+ <div class="pull-right grey-text">{{sighting.id}}</div>

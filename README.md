@@ -1,10 +1,4 @@
 # unfetter-ui
+The Unfetter-UI is an Angular front end of the [Unfetter](https://unfetter.io) project.  the Unfetter-UI is just one component of the entire Unfetter project, build as separate Docker Containers.
 
-unfetter-ui is an Angular 2 rewrite of the cti-stix-ui and unfetter-discover-ui Ember web applications.  
-
-# status
-
-* [TBD] - Conversion complete
-* [20170411] - ...
-* [20170407] - Initial code check-in
-* [20170407] - Repo created
+Learn more at the core Unfetter Project Repository at https://github.com/unfetter-discover/unfetter

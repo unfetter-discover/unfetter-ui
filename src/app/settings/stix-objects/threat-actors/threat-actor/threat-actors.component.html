@@ -1,0 +1,20 @@
+<div class="row" *ngIf="threatActor">
+       <div class="col-md-12">
+            <div class="row">
+            <div class="col-md-12">
+                    <div class="button-row">
+                        <a class="mat-primary" md-raised-button (click)="editButtonClicked()"><i class="fa fa-pencil"></i> EDIT</a>
+                        <a class="mat-primary" md-raised-button (click)="deleteButtonClicked()"><i class="fa fa-trash"></i> DELETE</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 15px;">
+                <div class="col-md-12">
+
+                </div>
+            </div>
+       </div>
+</div>
+
+<readonly-content [(model)]="threatActor"></readonly-content>
+ <div class="pull-right grey-text">{{threatActor.id}}</div>

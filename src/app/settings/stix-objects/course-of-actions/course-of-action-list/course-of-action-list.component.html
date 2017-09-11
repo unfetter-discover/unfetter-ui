@@ -1,0 +1,17 @@
+<!--<div class="row" *ngIf="courseOfActions">
+    <div class="col-md-12">
+
+        <div class="button-row">
+            <a md-raised-button routerLink="./new">NEW</a>
+            <a md-raised-button (click)="download()">DOWNLOAD</a>
+            <button md-raised-button routerLink="/relationships/mitigates/course-of-actions/attack-pattern">MITIGATES GRID</button>
+        </div>
+        <div class="pull-right">
+            <filter-search-box  [items]="courseOfActions" (filterItemsChange)="onFilterItemsChange($event)"></filter-search-box>
+            <span *ngIf="filteredItems" class="right-align">Results: {{filteredItems.length}}</span>
+        </div>
+    </div>
+</div>-->
+<buttons-filter [model]="courseOfActions" [filteredItems]="filteredItems"  (filterItemsChange)="onFilterItemsChange($event)"></buttons-filter>
+
+<list-stix-objects  *ngIf="courseOfActions" [model]="courseOfActions" [showLabels]="'true'" [url]="url" [showExternalReferences]="'true'" (deletButtonClicked)="deletButtonClicked($event)"></list-stix-objects>

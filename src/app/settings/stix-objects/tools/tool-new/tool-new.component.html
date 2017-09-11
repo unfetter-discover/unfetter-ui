@@ -1,0 +1,80 @@
+
+<div class="row">
+    <div class="col-md-12">
+        <md-input-container class="full-width">
+        <input mdInput placeholder="Name" required [(ngModel)]="tool.attributes.name" value="{{tool.attributes.name}}">
+        </md-input-container>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <md-input-container class="full-width">
+            <input mdInput placeholder="Description" [(ngModel)]="tool.attributes.description" value="{{tool.attributes.description}}">
+        </md-input-container>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <select-search-field [placeholder]="'Attack Patterns'" [searchUrl]="'attack-patterns'" (optionChanged)="add($event)"></select-search-field>
+        <md-chip-list class="pull-left">
+            <md-chip selected="true" color="accent" *ngFor="let attackPattern of attackPatterns">
+                {{attackPattern.attributes.name}}
+               <span class="cursor-pointer" (click)="remove(attackPattern)"><i class="fa fa-trash"></i></span>
+            </md-chip>
+        </md-chip-list>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <select-search-field [placeholder]="'Course Of Actions'" [searchUrl]="'course-of-actions'" (optionChanged)="add($event)"></select-search-field>
+       <md-chip-list class="pull-left">
+            <md-chip selected="true" color="accent" *ngFor="let courseOfAction of courseOfActions">
+                {{courseOfAction.attributes.name}}
+                <span class="cursor-pointer" (click)="remove(courseOfAction)"><i class="fa fa-trash"></i></span>
+            </md-chip>
+        </md-chip-list>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+          <select-search-field [placeholder]="'indicators'" [searchUrl]="'indicators'" (optionChanged)="add($event)"></select-search-field>
+       <md-chip-list class="pull-left">
+            <md-chip selected="true" color="accent" *ngFor="let indicator of indicators">
+                {{indicator.attributes.name}}
+                <span class="cursor-pointer" (click)="remove(indicator)"><i class="fa fa-trash"></i></span>
+            </md-chip>
+        </md-chip-list>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+          <select-search-field [placeholder]="'Intrusion Sets'" [searchUrl]="'intrusion-sets'" (optionChanged)="add($event)"></select-search-field>
+       <md-chip-list class="pull-left">
+            <md-chip selected="true" color="accent" *ngFor="let intrusionSet of intrusionSets">
+                {{intrusionSet.attributes.name}}
+                <span class="cursor-pointer" (click)="remove(intrusionSet)"><i class="fa fa-trash"></i></span>
+            </md-chip>
+        </md-chip-list>
+    </div>
+</div>
+
+
+
+<kill-chain-phases [(model)]="tool"></kill-chain-phases>
+
+<external-reference [(model)]="tool"></external-reference>
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="button-row pull-right">
+                <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a>
+                <a class=" " md-raised-button (click)="saveNewTool()" [disabled]="!tool.attributes.name"><i class="fa fa-floppy-o "></i> SAVE & CLOSE</a>
+        </div>
+    </div>
+</div>

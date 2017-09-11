@@ -1,0 +1,162 @@
+<div id="assessmentsGroup" class="container fadeIn" *ngIf="riskByAttackPattern && assessedObjects && assessment; else loadingBlock">
+                
+    <div class="row">
+        <br>
+        <div class="col-sm-12">
+            <ol class="breadcrumb">
+                <li><a routerLink="/assessments">Assessments</a></li>
+                <li><a routerLink="/assessments/dashboard/{{currentId}}">Dashboard</a></li>
+                <li class="active">Group</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-8">
+            <h4>
+                <img class="stix-icon" src="assets/icon/stix-icons/svg/report-b.svg"> &nbsp;Assessment: {{ assessment.attributes.name}}
+            </h4>
+        </div>
+        <div class="col-xs-4 text-right">
+            <p class="headingMarginMatch text-muted">Published &bull; {{ assessment.attributes.created | date:'medium' }}</p>
+        </div>
+    </div>
+
+
+    <div class="row" *ngIf="riskByAttackPattern && riskByAttackPattern.phases && riskByAttackPattern.phases.length" id="phaseListWrapper">
+
+        <div class="col-sm-3">
+            <h4>Kill Chain Phases</h4><br>
+            <div *ngFor="let phase of riskByAttackPattern.phases">
+                <p>
+                    <!--Get avg risk per phase-->
+                    <a (click)="setPhase(phase._id)">{{ phase._id | capitalize }}</a> &bull; <span>{{ getRiskByPhase(phase._id) | percent:'2.1-1' }}</span>
+                </p>
+                <p class="text-muted">Attack Patterns &bull; {{ phase.attackPatterns.length }} / {{ getNumAttackPatterns(phase._id) }}</p>
+            </div>
+
+            <div *ngIf="unassessedPhases && unassessedPhases.length > 0">
+                <hr>
+                <h5 class="text-muted">
+                    <small>Unassessed Kill Chain Phases</small>
+                </h5>
+                <div class="attackPatternListItem" *ngFor="let unassessedPhase of unassessedPhases">
+                    <small><a (click)="setPhase(unassessedPhase)">{{unassessedPhase | capitalize }}</a></small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-3">
+            <h4>Attack Patterns</h4>
+            <h4 class="text-muted">Phase:&nbsp;{{ activePhase | capitalize }}</h4>
+            <div *ngIf="attackPatternsByPhase && attackPatternsByPhase.length">
+                <div *ngFor="let ap of attackPatternsByPhase" class="attackPatternListItem">
+                    <risk-icon [risk]="getRiskByAttackPatternId(ap.attackPatternId)" [showTooltip]="true"></risk-icon>&nbsp;
+                    <a (click)="setAttackPattern(ap.attackPatternId)">{{ ap.attackPatternName }}</a>
+                </div>
+            </div>
+            
+            <div *ngIf="unassessedAttackPatterns && unassessedAttackPatterns.length > 0">
+                <hr>
+                <h5 class="text-muted">Unassessed Attack Patterns</h5>
+                <div *ngFor="let unassessedAttackPattern of unassessedAttackPatterns" class="attackPatternListItem">
+                    <a (click)="setAttackPattern(unassessedAttackPattern.id)">{{ unassessedAttackPattern.attributes.name }}</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div *ngIf="currentAttackPattern">
+                <h4>{{ currentAttackPattern.name }}</h4><br>
+
+                <div>
+                    <p><strong>Risk Level</strong></p>
+                    <p>{{ getRiskByAttackPatternId(currentAttackPattern.id) | percent:'2.1-1' }}</p>
+                </div>
+
+                <div *ngIf=" currentAttackPattern.kill_chain_phases && currentAttackPattern.kill_chain_phases.length> 0">
+                    <p><strong>Kill Chain Phases</strong></p>
+                    <p *ngFor="let killchain of currentAttackPattern.kill_chain_phases">{{ killchain.kill_chain_name }} &bull; <span class="text-muted">{{ killchain.phase_name }}</span></p>
+                </div>
+
+                <div *ngIf="currentAttackPattern.x_unfetter_sophistication_level !== undefined && currentAttackPattern.x_unfetter_sophistication_level
+                !== null">
+                    <p><strong>Sophistication Level</strong></p>
+                    <p>{{ currentAttackPattern.x_unfetter_sophistication_level | sophistication }}</p>
+                </div>
+
+                <div *ngIf="currentAttackPattern.description">
+                    <p><strong>Description</strong></p>
+                    <p>{{ currentAttackPattern.description }}</p>
+                </div>
+
+                <div *ngIf="currentAttackPattern.external_references">
+                    <p><strong>External References</strong></p>
+                    <p *ngFor="let ref of currentAttackPattern.external_references">
+                        <a href="{{ ref.url }}" target="_blank">{{ ref.source_name }} <span *ngIf="ref.external_id">&bull; {{ ref.external_id }}</span></a>
+                    </p>
+                </div>
+
+                <add-assessed-object #addAssessedObjectComponent
+                    *ngIf="assessment"
+                    [assessment]="assessment"
+                    [addAssessedObject]="addAssessedObject"
+                    [addAssessedType]="addAssessedType"
+                    [currentAttackPattern]="currentAttackPattern"
+                    [indicator]="indicator"
+                    [courseOfAction]="courseOfAction"
+                    [xUnfetterSensor]="xUnfetterSensor"
+                    [displayedAssessedObjects]="displayedAssessedObjects"
+                    [assessedObjects]="assessedObjects"
+                    (addAssessmentEvent)="$event ? initData() : 0"
+                ></add-assessed-object>
+
+                <div *ngIf="displayedAssessedObjects && displayedAssessedObjects.length">
+                    <div *ngFor="let assessedObj of displayedAssessedObjects | sortByField: 'risk'">
+                        <md-card>
+                            <md-card-title><img src="{{ getStixIcon(assessedObj.stix.type) }}" alt=""> {{ assessedObj.stix.name }}</md-card-title>
+                            <md-card-content>
+                                <!--<span class="text-muted">Risk Accepted &bull;</span>&nbsp;{{ getRisk(assessedObj.stix.id)
+                            | percent:'2.1-1'}}-->
+                                <span class="text-muted">Risk Accepted &bull;</span>&nbsp;{{ assessedObj.risk | percent:'2.1-1'}}
+                            </md-card-content>
+                            <md-card-content>
+                                {{ assessedObj.stix.description }}
+                            </md-card-content>
+
+                            <md-card-content>
+                                <div *ngIf="assessedObj.editActive">
+                                    <div *ngFor="let measurement of assessedObj.questions">
+                                        <label class="mat-label">{{measurement.name | capitalize}}</label>
+                                        <md-select [(ngModel)]="measurement.risk" class="full-width mdSelectBotMargin">
+                                            <md-option *ngFor="let option of measurement.options" [value]="option.risk">
+                                                {{ option.name }}
+                                            </md-option>
+                                        </md-select>
+                                    </div>
+                                </div>
+
+                                <p class="text-right" *ngIf="assessedObj.editActive">
+                                    <button md-button (click)="assessedObj.editActive = false">Cancel</button>
+                                    <button md-button (click)="editAssessedObject(assessedObj)">Save</button>
+                                </p>
+
+                                <p class="text-right" *ngIf="!assessedObj.editActive">
+                                    <button md-button (click)="assessedObj.editActive = true">Edit</button>
+                                </p>
+
+                            </md-card-content>
+                        </md-card>
+                        <br>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #loadingBlock>
+    <div class="loading">
+        <md-spinner></md-spinner>
+    </div>
+</ng-template>

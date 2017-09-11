@@ -1,0 +1,131 @@
+<!-- <div id="stixHome" class="container">
+    <h2>Assessments</h2>
+
+    <ul class="nav nav-pills">
+        <li *ngFor="let navigation of navigations" [class.active]="navigation.page === page">
+            <a (click)="navigationClicked(navigation.page)">{{navigation.label}}</a>
+        </li>
+    </ul>
+</div> -->
+
+<page-header [pageTitle]="pageTitle" [pageIcon]="pageIcon" [description]="description"></page-header>
+<div class="flex">
+
+    <div>
+        <div>
+            <!-- Stepers Wrapper -->
+            <ul class="stepper stepper-vertical">
+
+                <!-- First Step -->
+                <li [class.active]="navigation.page === page" *ngFor="let navigation of navigations">
+                    <!--Section Title -->
+                    <a href (click)="navigationClicked(navigation.page, $event)">
+                    <span class="circle">
+                        <!--{{navigation.page}}-->&nbsp;
+                        </span>
+                    <span class="label">{{navigation.label}}</span>
+                </a>
+
+                </li>
+            </ul>
+            <!-- /.Stepers Wrapper -->
+        </div>
+    </div>
+
+    <div class="flex1">
+
+        <md-card>
+
+            <div *ngIf="showSummarry">
+                <md-card-header>
+                    <md-card-title>Assessment Report</md-card-title>
+                </md-card-header>
+                <md-card-content>
+                    <!--<p>Assessment Description</p>-->
+                    <div class="row mat-card-padding">
+                        <div class="col-xs-8">
+                            <md-input-container class="full-width">
+                                <input mdInput placeholder="Assessment Name" name="assessment-name" [(ngModel)]="assessmentName">
+                            </md-input-container>
+                        </div>
+                        <div class="col-xs-4">
+                            <!--<label>Published</label>
+                            <div>
+                                <p-calendar dateFormat="M-dd-yy" showIcon="true"></p-calendar>
+                            </div>-->
+                            <md-input-container class="full-width">
+                                <input mdInput [mdDatepicker]="picker" placeholder="Published" [(ngModel)]="publishDate">
+                                <button mdSuffix [mdDatepickerToggle]="picker"></button>
+                            </md-input-container>
+                            <md-datepicker #picker></md-datepicker>
+                        </div>
+                    </div>
+                    <div class="row mat-card-padding">
+                        <div class="col-xs-12">
+                            <md-input-container class="full-width">
+                                <textarea mdInput placeholder="Assessment Description" [(ngModel)]="assessmentDescription"></textarea>
+                            </md-input-container>
+                        </div>
+                    </div>
+                </md-card-content>
+            </div>
+
+            <div *ngIf="currentAssessmentGroup">
+                <md-card-content>
+                    <div class="row margin-bottom">
+                        <div class="col-sm-3">
+                            <div style="display: block">
+                                <canvas baseChart [datasets]="doughnutChartData" [labels]="doughnutChartLabels" [chartType]="doughnutChartType" [colors]="doughnutChartColors"
+                                    [options]="chartOptions"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-sm-9">
+                            <h3> {{currentAssessmentGroup.description}}</h3>
+                        </div>
+                    </div>
+                    <div class="row margin-bottom" *ngFor="let assessment of currentAssessmentGroup.assessments">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <!--<div class="box" [style.background]="assessment.risk | riskColor"></div>-->
+                                    <risk-icon [risk]="assessment.risk" [showTooltip]="true"></risk-icon>
+                                    <strong>{{assessment.name}} -- {{assessment.description | firstSentence}}</strong> {{assessment.description
+                                    | restSentence}}
+                                </div>
+                            </div>
+                            <div class="row" style="margin: 10px 0px;">
+                                <div class="col-xs-{{ assessment.measurements.length | columnSize}}" *ngFor="let measurement of assessment.measurements">
+                                    <form>
+                                        <md-select #question name="question" (change)="updateRisks(question, measurement, assessment)" [(ngModel)]="measurement.risk"
+                                            class="full-width">
+                                            <md-option *ngFor="let options of measurement.options" [value]="options.risk">
+                                                {{ options.name }}
+                                            </md-option>
+                                        </md-select>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </md-card-content>
+            </div>
+
+            <md-card-actions class="text-right">
+                <button md-button [disabled]="page === 1" (click)="back($event)"> Back</button>
+                <button md-button (click)="next($event)" *ngIf="!(buttonLabel === 'Save' && saved)"> {{buttonLabel}}</button>
+                <button md-button disabled *ngIf="buttonLabel === 'Save' && saved">
+                    <i class="material-icons text-success">check</i>&nbsp;Saved
+                </button>
+            </md-card-actions>
+
+        </md-card>
+    </div>
+</div>
+
+<!--<div class="row">
+    <div class="col-xs-12 col-md-8">
+        <a md-raised-button [disabled]="page === 1" (click)="back()"> Back</a>
+        <a md-raised-button (click)="next()" [ngClass]="{'mat-primary': buttonLabel === 'Save'}"> {{buttonLabel}}</a>
+    </div>
+</div>-->
+<br><br>

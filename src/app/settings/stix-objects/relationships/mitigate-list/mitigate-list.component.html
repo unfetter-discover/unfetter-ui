@@ -1,0 +1,14 @@
+
+
+
+   <div class="row">
+       
+        <div class="col-md-12">
+            <p-accordion (onOpen)="onTabShow($event)">
+                <p-accordionTab header="{{target.attributes.name}} -  {{target.index}}"  *ngFor="let target of targets ;trackBy:trackByFn">
+                   <mitigate-list *ngIf="target && source && target.index === 1" [model]="target" [source]="source" [title]="title" [description]="description"></mitigate-list>
+                </p-accordionTab>
+            </p-accordion>
+        </div>
+   </div>
+   

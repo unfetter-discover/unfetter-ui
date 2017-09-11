@@ -1,0 +1,24 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+/dist
+/tmp
+/.awcache/*
+compiled/*
+
+# dependencies
+/node_modules/**
+/dll/**
+
+# misc
+/coverage/*
+npm-debug.log
+/bower_components
+
+# misc
+/.sass-cache
+/.idea
+/connect.lock
+/coverage/*
+npm-debug.log
+

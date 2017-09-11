@@ -1,0 +1,4 @@
+
+    <buttons-filter [model]="intrusionSets" [filteredItems]="filteredItems" (filterItemsChange)="onFilterItemsChange($event)"></buttons-filter>
+
+    <list-stix-objects [model]="filteredItems" [url]="url" [showLabels]="showLabels" [showExternalReferences]="showExternalReferences" (deletButtonClicked)="deletButtonClicked($event)"></list-stix-objects>

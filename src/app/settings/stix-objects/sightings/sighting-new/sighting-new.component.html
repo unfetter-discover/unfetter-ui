@@ -1,0 +1,45 @@
+<div class="row">
+    <div class="col-md-12">
+        <label>Source Type</label>
+        <md-select required  [(ngModel)]="sighting.attributes.sighting_of_ref" name="sourceTypes" class="full-width">
+                <md-option *ngFor="let sourceType of sourceTypes" [value]="sourceType.value">
+                     {{sourceType.label}}
+                </md-option>
+        </md-select>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <md-checkbox #summary_field name="summary-field" class="example-margin"  (click)="summaryClicked(summary_field)">Summary</md-checkbox>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+         <md-input-container class="full-width">
+                <input type="number" mdInput placeholder="Count"  [(ngModel)]="sighting.attributes.count" value="{{sighting.attributes.count}}">
+                </md-input-container>
+    </div>
+      <div class="col-md-4">
+         <md-input-container class="full-width">
+                    <input mdInput [mdDatepicker]="picker" placeholder="First Seen" [(ngModel)]="sighting.attributes.first_seen">
+                    <button mdSuffix [mdDatepickerToggle]="picker"></button>
+                </md-input-container>
+                <md-datepicker #picker></md-datepicker>
+    </div>
+     <div class="col-md-4">
+           <md-input-container class="full-width">
+                    <input mdInput [mdDatepicker]="picker_last_seen" placeholder="Last Seen" [(ngModel)]="sighting.attributes.last_seen">
+                    <button mdSuffix [mdDatepickerToggle]="picker_last_seen"></button>
+                </md-input-container>
+                <md-datepicker #picker_last_seen></md-datepicker>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+         <div class="button-row pull-right">
+                    <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a>
+                    <a class=" " md-raised-button (click)="saveButtonClicked()" [disabled]="!sighting.attributes.sighting_of_ref"><i class="fa fa-floppy-o "></i> SAVE & CLOSE</a>
+
+            </div>
+    </div>
+</div>

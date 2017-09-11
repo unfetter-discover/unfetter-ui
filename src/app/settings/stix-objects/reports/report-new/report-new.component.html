@@ -1,0 +1,67 @@
+<div class="row">
+    <div class="col-md-6">
+        <md-input-container class="full-width">
+        <input mdInput placeholder="Name" required [(ngModel)]="report.attributes.name" value="{{report.attributes.name}}">
+        </md-input-container>
+    </div>
+    <div class="col-md-6">
+        <!-- <p-calendar [(ngModel)]="report.attributes.published" dateFormat="M-dd-yy" showIcon="true"></p-calendar> -->
+        <md-input-container class="full-width">
+                    <input mdInput [mdDatepicker]="picker" placeholder="Published Date" [(ngModel)]="report.attributes.published">
+                    <button mdSuffix [mdDatepickerToggle]="picker"></button>
+                </md-input-container>
+                <md-datepicker #picker></md-datepicker>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <md-input-container class="full-width">
+        <input mdInput placeholder="Description"  [(ngModel)]="report.attributes.description" value="{{report.attributes.description}}">
+        </md-input-container>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+
+        <select-search-field [placeholder]="'Intrusion Sets'" [searchUrl]="'intrusion-sets'" (optionChanged)="add($event)"></select-search-field>
+        <md-chip-list class="pull-left">
+            <md-chip selected="true" color="accent" *ngFor="let intrusionSet of intrusionSets">
+                {{intrusionSet.attributes.name}}
+                <span class="cursor-pointer" (click)="remove(intrusionSet)"><i class="fa fa-trash"></i></span>
+            </md-chip>
+        </md-chip-list>
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <select-search-field [placeholder]="'Attack Patterns'" [searchUrl]="'attack-patterns'" (optionChanged)="add($event)"></select-search-field>
+        <md-chip-list class="pull-left">
+            <md-chip selected="true" color="accent" *ngFor="let attackPattern of attackPatterns">
+                {{attackPattern.attributes.name}}
+                <span (click)="remove(attackPattern)"><i class="fa fa-trash"></i></span>
+            </md-chip>
+        </md-chip-list>
+    </div>
+</div>
+<indicator-pattern-field></indicator-pattern-field>
+
+<div class="row">
+    <div class="col-md-2" *ngFor="let label of labels">
+        <section class="">
+            <md-checkbox class="example-margin" >{{label}}</md-checkbox>
+        </section>
+    </div>
+
+</div>
+<external-reference [(model)]="report"></external-reference>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="button-row pull-right">
+                <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a>
+                <a class=" " md-raised-button (click)="saveButtonClicked()" [disabled]="!report.attributes.name"><i class="fa fa-floppy-o "></i> SAVE & CLOSE</a>
+
+        </div>
+    </div>
+</div>

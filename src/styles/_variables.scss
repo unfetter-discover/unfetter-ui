@@ -1,0 +1,12 @@
+// $nav-button-color: #00838F;
+$nav-background-color: #17375e;
+
+$navbar-height: 64;
+$footer-height: 30;
+
+@function headerFooterOffset() {
+    @return ($navbar-height + $footer-height) + px;
+}
+
+$default-navbar-height: 50;
+$default-navbar-nav-a-padding: 15;

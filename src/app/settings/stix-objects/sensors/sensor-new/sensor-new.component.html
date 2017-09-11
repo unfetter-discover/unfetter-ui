@@ -1,0 +1,31 @@
+
+<div  *ngIf="sensor" class="row">
+    <div class="col-md-12">
+        <md-input-container class="full-width">
+        <input mdInput placeholder="Name" required [(ngModel)]="sensor.attributes.name" value="{{sensor.attributes.name}}">
+        </md-input-container>
+    </div>
+</div>
+<div  *ngIf="sensor" class="row">
+    <div class="col-md-12">
+        <md-input-container class="full-width">
+            <input mdInput placeholder="Decsription" [(ngModel)]="sensor.attributes.description" value="{{sensor.attributes.description}}">
+        </md-input-container>
+    </div>
+</div>
+
+
+<kill-chain-phases  *ngIf="sensor" [(model)]="sensor"></kill-chain-phases>
+
+<aliases  *ngIf="sensor" [(model)]="sensor"></aliases>
+
+
+
+<div  *ngIf="sensor" class="row">
+    <div class="col-md-12">
+        <div class="button-row pull-right">
+                <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a>
+                <a class=" " md-raised-button (click)="saveNewSensor()" [disabled]="!sensor.attributes.name"><i class="fa fa-floppy-o "></i> SAVE & CLOSE</a>
+        </div>
+    </div>
+</div>
