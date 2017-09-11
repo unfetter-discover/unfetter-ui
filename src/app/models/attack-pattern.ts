@@ -34,8 +34,8 @@ export class AttackPattern {
     private createAttributes(): any {
         return {
             // version: '',
-            created: new Date(),
-            modified: new Date(),
+            // created: new Date(),
+            // modified: new Date(),
             // description: '',
             // name: '',
             labels: [],

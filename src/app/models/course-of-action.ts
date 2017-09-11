@@ -30,8 +30,9 @@ export class CourseOfAction {
     private createAttributes(): any {
         return {
             // version: '1',
-            created: moment().format(Constance.DATE_FORMATE),
-            modified: moment().format(Constance.DATE_FORMATE),
+            // created: new Date().toISOString(),
+            //  modified: new Date().toISOString(),
+
             // name: '',
             // description: '',
             labels: [],
