@@ -49,8 +49,9 @@ export class ToolComponent extends BaseStixComponent implements OnInit {
         return Observable.create((observer) => {
                let subscription = super.save(this.tool).subscribe(
                     (data) => {
-                        observer.next(data);
-                        observer.complete();
+                        this.location.back();
+                        // observer.next(data);
+                        // observer.complete();
                     }, (error) => {
                         // handle errors here
                         console.log('error ' + error);
