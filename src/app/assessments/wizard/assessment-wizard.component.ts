@@ -105,6 +105,9 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
           const sub2 = this.genericApi.get(this.url, id)
             .subscribe((res) => {
               this.model = res;
+              if(this.model.attributes.created !== undefined) {
+                this.publishDate = new Date(this.model.attributes.created);                
+              }
               this.selectedRiskValue = null;
               this.updateChart();
             }, logErr);
@@ -426,6 +429,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
     retVal.type = 'x-unfetter-assessment';
     retVal.name = this.assessmentName;
     retVal.description = this.assessmentDescription;
+    retVal.created = this.publishDate.toISOString();
     // retVal.assessment_objects = [];
     const assessmentSet = new Set();
 
@@ -461,7 +465,8 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
       }
     });
 
-    retVal['assessment_objects'] = Array.from(assessmentSet).map((dat) => JSON.parse(dat));
+    retVal['assessment_objects'] = Array.from(assessmentSet)
+      .map((dat) => JSON.parse(dat));
     return retVal;
   }
 
@@ -469,6 +474,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
     this.url = 'api/x-unfetter-assessments';
     if (this.model) {
       const retVal: any = {};
+      retVal.created = this.publishDate.toISOString();
       retVal.type = 'x-unfetter-assessment';
       retVal.name = this.assessmentName;
       retVal.description = this.assessmentDescription;
