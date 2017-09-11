@@ -47,12 +47,12 @@ export class IntrusionSet {
     private createAttributes(): any {
         return {
             // version: '',
-            created: moment().format(Constance.DATE_FORMATE),
-            modified: moment().format(Constance.DATE_FORMATE),
+            //created: moment().format(Constance.DATE_FORMATE),
+            //modified: moment().format(Constance.DATE_FORMATE),
             // name: '',
             // description: '',
-            first_seen: moment().format(Constance.DATE_FORMATE),
-            last_seen: moment().format(Constance.DATE_FORMATE),
+            first_seen: new Date().toISOString(),
+            last_seen: new Date().toISOString(),
             // goals: '',
             // resource_level: '',
             // primary_motivation: '',
