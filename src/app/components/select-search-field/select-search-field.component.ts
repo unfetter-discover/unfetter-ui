@@ -21,7 +21,6 @@ export class SelectSearchFieldComponent implements OnInit {
     private inputFieldValue;
 
     constructor(public baseComponentService: BaseComponentService) {
-        console.log('Initial SelectSearchFieldComponent');
         this.filteredOptions = this.formCtrl.valueChanges
             .startWith(null)
             .map((val) => val ? this.filter(val) : this.options.slice());

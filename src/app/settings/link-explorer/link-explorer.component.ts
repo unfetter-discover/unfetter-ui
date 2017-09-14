@@ -18,12 +18,9 @@ export class LinkExplorerComponent implements OnInit {
     public forcesEnabled: any;
     public forcesEnabledTemp = { center: true, charge: true, collide: true, column: true, link: true };
 
-    constructor(private service: StixService) {
-        console.log('LinkExplorerComponent ctor');
-     }
+    constructor(private service: StixService) { }
 
     public ngOnInit(): void {
-        console.log('onInit');
         this.loadRelationships();
         this.forcesEnabled = this.naiveShallowCopy(this.forcesEnabledTemp);
     }

@@ -10,9 +10,7 @@ import * as d3 from 'd3';
 export class ConceptMapComponent implements OnInit {
      @Input() public data: any;
 
-    constructor() {
-        console.log('Initial App State ConceptMapComponent');
-    }
+    constructor() { }
 
     public ngOnInit() {
         // this.conceptMap('graph', 'graph-info', this.data)

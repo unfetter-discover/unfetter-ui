@@ -102,7 +102,6 @@ export class AssessmentChartComponent implements OnInit {
      * @returns {void}
      */
     public renderChart(): void {
-        console.log('render chart', this.assessmentsGroupingTotal, this.assessmentsGroupingFiltered);
         if (!this.assessmentsGroupingFiltered || !this.assessmentsGroupingTotal) {
             return;
         }
@@ -130,8 +129,6 @@ export class AssessmentChartComponent implements OnInit {
                 index = index + 1;
             });
 
-        console.log(this.barChartData);
-
         // convert to percentages
         for (let i = 0; i < index; i++) {
             const val1 = this.barChartData[0].data[i];
@@ -140,8 +137,6 @@ export class AssessmentChartComponent implements OnInit {
             this.barChartData[0].data[i] = Math.round((val1 / total) * 100);
             this.barChartData[1].data[i] = Math.round((val2 / total) * 100);
         }
-
-        console.log('UNIQ',uniqGroups);
 
         const convertedLabels: any = uniqGroups.map(word => {
             word = word.replace(/-/g, ' ');

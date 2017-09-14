@@ -11,9 +11,7 @@ export class AliasesComponent {
 
     @Input() public model: any;
 
-    constructor() {
-        console.log('Initial AliasesComponent');
-    }
+    constructor() {}
 
     public addAliasButtonClicked(): void {
         this.model.attributes.aliases.unshift('  ');

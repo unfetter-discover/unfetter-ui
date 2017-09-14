@@ -30,8 +30,6 @@ export class Campaign {
     }
 
     public formatDate(): void {
-        console.log("aaaaa");
-        console.log(moment(this.attributes.first_seen).toISOString());
        this.attributes.first_seen =  this.attributes.first_seen ?
             moment(this.attributes.first_seen).toISOString() : moment().toISOString();
     }

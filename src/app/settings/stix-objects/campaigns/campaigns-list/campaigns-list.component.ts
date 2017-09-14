@@ -34,8 +34,7 @@ export class CampaignsListComponent extends CampaignComponent implements OnInit 
         let filter = 'sort=' + encodeURIComponent(JSON.stringify({ 'stix.name': '-1' }));
         let subscription =  super.load(filter).subscribe(
             (data) => {
-                this.campaigns = data as Campaign[] ;
-                console.dir(this.campaigns);
+                this.campaigns = data as Campaign[];
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

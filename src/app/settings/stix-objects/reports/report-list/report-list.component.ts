@@ -28,7 +28,6 @@ export class ReportsListComponent extends BaseStixComponent implements OnInit {
     }
 
     public ngOnInit() {
-        console.log('Initial ReportsListComponent');
         let subscription =  super.load().subscribe(
             (data) => {
                 this.reports = data as Report[];

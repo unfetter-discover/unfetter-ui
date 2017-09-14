@@ -75,7 +75,6 @@ export class CampaignsEditComponent extends CampaignComponent implements OnInit 
     protected saveRelationship(relationship: Relationship): void {
         let subscription = super.create(relationship).subscribe(
             (data) => {
-                console.log('saved');
             }, (error) => {
                 // handle errors here
                 console.log('error ' + error);
@@ -92,7 +91,6 @@ export class CampaignsEditComponent extends CampaignComponent implements OnInit 
     protected add(event: any): void {
         console.log(event.type);
         if (event.type === 'attack-patterns' && !this.found(this.attackPatterns, event)) {
-            console.log('*****');
             this.attackPatterns.push(event as AttackPattern);
         } else if (event.type === 'intrusion-sets'  && !this.found(this.intrusionSets, event)) {
             this.intrusionSets.push(event as IntrusionSet);

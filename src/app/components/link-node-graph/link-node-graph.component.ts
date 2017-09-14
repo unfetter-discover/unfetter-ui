@@ -41,7 +41,6 @@ export class LinkNodeGraphComponent implements OnChanges, AfterViewInit  {
     }
 
     public ngOnChanges(changes: any): void {
-      console.dir(changes);
       if (this.group) {
         this.group.remove();
       }
@@ -220,7 +219,6 @@ export class LinkNodeGraphComponent implements OnChanges, AfterViewInit  {
       let simulation = D3.forceSimulation();
       simulation.nodes(this.config.nodes);
       if (this.forcesEnabled.charge) {
-        console.log(this.forcesEnabled.charge);
         this.setForceCharge(simulation);
       }
       if (this.forcesEnabled.center) {
