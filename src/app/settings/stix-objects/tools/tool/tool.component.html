@@ -12,6 +12,12 @@
             <md-card-content>
                     <div class="row">
                         <div class="col-md-12">
+                            <label>Name</label>
+                            <p>{{tool.attributes.name}}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
                             <label>Aliases</label>
                             <md-chip-list>
                                 <md-chip *ngFor="let aliase of tool.attributes.aliases" selected="true">
