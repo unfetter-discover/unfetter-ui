@@ -58,21 +58,6 @@ label {
     padding-bottom: $footer-height + px;
 }
 
-
-/* Sticky footer styles
-/* Sticky footer styles
--------------------------------------------------- */
-// html {
-//   position: relative;
-//   height: 100%;
-//   width: 100%;
-// }
-// body {
-//   /* Margin bottom by footer height */
-//   width: 100%;
-
-// }
-
 .footer {
   position: fixed;
   bottom: 0;
@@ -83,13 +68,6 @@ label {
   z-index: 1;
   padding-top: 5px;
 }
-
-// .jumbotron {
-//    background-color: #FFFFFF;
-//    padding-right: 15px !important;
-//     padding-left: 15px !important;
-//     padding-bottom: 0px !important;
-// }
 
 .height-100-percent {
     height: 100%;
@@ -113,17 +91,6 @@ label {
 code {
   font-size: 80%;
 }
-
-// .text-muted {
-//     color: #FFFFFF;
-// }
-
-
-
-// .mat-card {
-//     width: 100%;
-//     height: 100%;
-// }
 
 .mat-list .mat-list-item .mat-list-item-content, .mat-nav-list .mat-list-item .mat-list-item-content {
 
@@ -311,6 +278,24 @@ a {
     display: block;
     flex: 1 0 auto;
 }
+
+// ~~~ Icons ~~~
+
+.stix-icon {
+    height: 30px;
+    width: 30px;
+}
+.stix-icon-header {
+    height: 30px;
+    width: 30px;
+}
+.stix-icon-mini {
+    height: 20px;
+    width: 20px;
+}
+
+// ~~~ Animations ~~~
+
 .fadeIn {
     animation-name: opacity01;
     animation-duration: 0.4s;
@@ -320,6 +305,23 @@ a {
         opacity: 0;
     }
     100% {
+        opacity: 1;
+    }
+}
+.slideIn {
+    animation: slideInLR 0.2s forwards;
+    opacity: 0;
+}
+@keyframes slideInLR {
+    0% {
+        opacity: 0;
+        transform: translateX(-2%);
+    }
+    90% {
+        transform: translateX(0.2%);
+    }
+    100% {
+        transform: translateX(0%);
         opacity: 1;
     }
 }
