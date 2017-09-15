@@ -31,15 +31,19 @@
                                     </div>
                                 </div>
                                 <div class="row" >
-                                    <div class="col-md-4">
-                                        <md-input-container class="full-width">
+                                    <div class="col-md-6">
+                                        <label>Valid From:</label>
+                                        <p>{{indicator.attributes.valid_from | date:'medium' }}</p>
+                                        <!--<md-input-container class="full-width">
                                             <input readonly mdInput placeholder="Valid From:" value="{{indicator.attributes.valid_from | date:'medium' }}" />
-                                        </md-input-container>
+                                        </md-input-container>-->
                                     </div>
-                                    <div class="col-md-4">
-                                        <md-input-container class="full-width">
+                                    <div class="col-md-6">
+                                        <label>Valid Until:</label>
+                                        <p>{{indicator.attributes.valid_until | date:'medium' }}</p>
+                                        <!--<md-input-container class="full-width">
                                             <input readonly mdInput placeholder="Valid Until:" value="{{indicator.attributes.valid_until | date:'medium' }}" />
-                                            </md-input-container>
+                                            </md-input-container>-->
                                     </div>
                                 </div>
                                 <div class="row">
