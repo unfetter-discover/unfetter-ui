@@ -23,6 +23,7 @@ import { BaseComponentService } from './base-service.component';
 import { ButtonsFilterComponent } from './buttons-filter/buttons-filter.component';
 import { LinkNodeGraphComponent } from './link-node-graph/link-node-graph.component';
 import { LabelComponent } from './labels/label.component';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 @NgModule({
   declarations: [
     // Components / Directives/ Pipes
@@ -58,7 +59,8 @@ import { LabelComponent } from './labels/label.component';
     MdChipsModule,
     DataListModule,
     CheckboxModule,
-    MdCheckboxModule
+    MdCheckboxModule,
+    BsDropdownModule.forRoot()
   ],
   exports: [
     PageHeaderComponent,

@@ -31,7 +31,7 @@ export class Campaign {
 
     public formatDate(): void {
        this.attributes.first_seen =  this.attributes.first_seen ?
-            moment(this.attributes.first_seen).toISOString() : moment().toISOString();
+           moment(this.attributes.first_seen).toISOString() : new Date().toISOString();
     }
 
     private createAttributes(): any {
@@ -42,7 +42,7 @@ export class Campaign {
             // name: '',
             // description: '',
             labels: [],
-            first_seen: moment().toISOString(),
+            first_seen: new Date().toISOString(),
             // objective: '',
             // timestamp_precision: ''
         };

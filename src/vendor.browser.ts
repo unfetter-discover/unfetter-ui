@@ -13,9 +13,6 @@ import 'rxjs';
 // You can import js, ts, css, sass, ...
 import 'hammerjs';
 // import 'jquery';
-import 'bootstrap/dist/js/bootstrap';
-// import 'bootstrap-toggle/css/bootstrap-toggle.min.css';
-// import 'bootstrap-toggle/js/bootstrap-toggle.min.js';
 import 'primeng/primeng';
 import 'd3';
 import 'perfect-scrollbar';
