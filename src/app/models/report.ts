@@ -9,11 +9,11 @@ export class Report {
 
     public attributes: {
         version: string;
-        created: string;
-        modified: string;
+        created: any;
+        modified: any;
         description: string;
         name: string;
-        published: string;
+        published: any;
         labels: string[];
         object_refs: string[]
         external_references: ExternalReference[];
@@ -24,11 +24,11 @@ export class Report {
         this.type = Constance.REPORTS_TYPE;
         this.attributes = {
             version: '',
-            created: new Date().toISOString(),
-            modified: new Date().toISOString(),
+            created: new Date(),
+            modified: new Date(),
             name: '',
             description: '',
-            published: new Date().toISOString(),
+            published: new Date(),
             object_refs:  [],
             labels: [],
             external_references: [],

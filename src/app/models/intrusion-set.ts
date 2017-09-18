@@ -14,8 +14,8 @@ export class IntrusionSet {
         name: string;
         labels: string[];
         aliases: string[];
-        first_seen: string;
-        last_seen: string;
+        first_seen: any;
+        last_seen: any;
         goals: string;
         resource_level: string;
         primary_motivation: string;
@@ -39,9 +39,9 @@ export class IntrusionSet {
 
     public formatDate(): void {
        this.attributes.first_seen =  this.attributes.first_seen ?
-            moment(this.attributes.first_seen).toISOString() : moment().toISOString();
+           new Date(this.attributes.first_seen) : new Date();
        this.attributes.last_seen =  this.attributes.last_seen ?
-            moment(this.attributes.last_seen).toISOString() : moment().toISOString();
+           new Date(this.attributes.last_seen) : new Date();
     }
 
     private createAttributes(): any {
@@ -51,8 +51,8 @@ export class IntrusionSet {
             //modified: moment().format(Constance.DATE_FORMATE),
             // name: '',
             // description: '',
-            first_seen: new Date().toISOString(),
-            last_seen: new Date().toISOString(),
+            first_seen: new Date(),
+            last_seen: new Date(),
             // goals: '',
             // resource_level: '',
             // primary_motivation: '',

@@ -18,8 +18,8 @@ export class Indicator {
         description: string;
         pattern_lang: string;
         pattern: string;
-        valid_from: string;
-        valid_until: string;
+        valid_from: any;
+        valid_until: any;
     };
 
     constructor(data?: Indicator) {
@@ -35,9 +35,9 @@ export class Indicator {
 
     public formatDate(): void {
         this.attributes.valid_from =  this.attributes.valid_from ?
-            moment(this.attributes.valid_from).toISOString() : moment().toISOString();
+            new Date(this.attributes.valid_from) : new Date();
         this.attributes.valid_until =  this.attributes.valid_until ?
-            moment(this.attributes.valid_until).toISOString() : moment().toISOString();
+            new Date(this.attributes.valid_until) : new Date();
     }
 
     private createAttributes(): any {
@@ -52,8 +52,8 @@ export class Indicator {
             // description: '',
             // pattern_lang: '',
             // pattern: '',
-            valid_from: new Date().toISOString(),
-            valid_until: new Date().toISOString()
+            valid_from: new Date(),
+            valid_until: new Date()
         };
     }
 }
