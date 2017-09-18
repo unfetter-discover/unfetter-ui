@@ -33,8 +33,8 @@ export class ObservedData {
     private createAttributes(): any {
         return {
             // version: '1',
-            //created: moment().format(Constance.DATE_FORMATE),
-            //modified: moment().format(Constance.DATE_FORMATE),
+            // created: moment().format(Constance.DATE_FORMATE),
+            // modified: moment().format(Constance.DATE_FORMATE),
             first_observed: new Date().toISOString(),
             last_observed: new Date().toISOString(),
             labels: [],

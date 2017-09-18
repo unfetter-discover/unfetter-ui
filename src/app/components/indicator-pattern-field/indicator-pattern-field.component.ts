@@ -26,26 +26,26 @@ export class IndicatorPatternFieldComponent {
     public selectedObjectProperty: string;
     public selectedObjectValue: string;
     public indicators = [];
-    private disabled = true;
+    public disabled = true;
 
-    private onInputChange(): void {
-        if (this.selectedObjectType && this.selectedObjectProperty, this.selectedObjectValue ) {
+    public onInputChange(): void {
+        if (this.selectedObjectValue) {
             this.disabled = false;
         }
     }
 
-    private add(): void {
+    public add(): void {
         let pattern = `[${this.selectedObjectType}:${this.selectedObjectProperty} = '${this.selectedObjectValue}']`;
         let indicator = { name: pattern,   pattern };
         this.indicators.push(indicator);
         this.clearFields();
     }
 
-    private remove(indicator: any): void {
+    public remove(indicator: any): void {
         this.indicators = this.indicators.filter((i) => i.pattern !== indicator.pattern);
     }
 
-    private clearFields() {
+    public clearFields() {
         this.selectedObjectType = null;
         this.selectedObjectProperty = null;
         this.selectedObjectValue = null;

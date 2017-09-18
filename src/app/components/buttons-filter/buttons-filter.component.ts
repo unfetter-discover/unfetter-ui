@@ -10,13 +10,13 @@ export class ButtonsFilterComponent {
     @Input() public model: any[];
     @Input() public filteredItems: any[];
     @Input() public showGrid = false;
-    @Output() private filterItemsChange = new EventEmitter<any[]>();
+    @Output() public filterItemsChange = new EventEmitter<any[]>();
 
-    private onFilterItemsChange(filterItems: any[]): void {
+    public onFilterItemsChange(filterItems: any[]): void {
         this.filterItemsChange.emit(filterItems);
     }
 
-    private download(): void {
+    public download(): void {
         alert('not implemented');
     }
 }

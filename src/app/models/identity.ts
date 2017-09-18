@@ -33,8 +33,8 @@ export class Identity {
      private createAttributes(): any {
         return {
             // version: '',
-            //created: new Date(),
-            //modified: new Date(),
+            // created: new Date(),
+            // modified: new Date(),
             labels: [],
             external_references: [],
             kill_chain_phases: [],

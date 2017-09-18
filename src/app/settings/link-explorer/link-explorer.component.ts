@@ -25,7 +25,7 @@ export class LinkExplorerComponent implements OnInit {
         this.forcesEnabled = this.naiveShallowCopy(this.forcesEnabledTemp);
     }
 
-     private loadRelationships(): void {
+    public loadRelationships(): void {
         const parameters = { relationship_type: -1 };
         const url = Constance.RELATIONSHIPS_URL + '?sort=' + JSON.stringify(parameters);
         const sub = this.service.getByUrl( encodeURI(url) )
@@ -47,7 +47,7 @@ export class LinkExplorerComponent implements OnInit {
                         );
     }
 
-    private getNodes(relationships: Relationship[]) {
+    public getNodes(relationships: Relationship[]) {
         let references = relationships.reduce((accumulation, relationship) => {
             const sourceRef = relationship.attributes.source_ref;
             const targetRef = relationship.attributes.target_ref;
@@ -84,7 +84,7 @@ export class LinkExplorerComponent implements OnInit {
         return nodes;
     }
 
-    private getLinks(relationships: Relationship[]): any {
+    public getLinks(relationships: Relationship[]): any {
         return relationships.map((relationship) => {
             return {
                 id: relationship.id,
@@ -94,7 +94,7 @@ export class LinkExplorerComponent implements OnInit {
         }, this);
     }
 
-    private nodeMouseover(node: any): void {
+    public nodeMouseover(node: any): void {
         let id = node.id;
         let modelName = id.split('--')[0];
         let o = null;
@@ -135,7 +135,7 @@ export class LinkExplorerComponent implements OnInit {
         );
     }
 
-    private nodeMouseout(node: any): void {
+    public nodeMouseout(node: any): void {
         this.selectedRecord = null;
     }
 

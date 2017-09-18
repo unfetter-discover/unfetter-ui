@@ -11,10 +11,10 @@ import { Identity } from '../../../../models';
   templateUrl: './identity-list.component.html',
 })
 export class IdentityListComponent extends IdentityComponent implements OnInit {
-    private identities: Identity[] = [];
-    private showSectors = true;
-    private showExternalReferences = true;
-    private url: string;
+    public identities: Identity[] = [];
+    public showSectors = true;
+    public showExternalReferences = true;
+    public url: string;
 
     constructor(
         public stixService: StixService,

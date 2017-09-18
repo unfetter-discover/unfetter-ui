@@ -11,10 +11,10 @@ import { IntrusionSet } from '../../../../models';
   templateUrl: './intrusion-set-list.component.html',
 })
 export class IntrusionSetListComponent extends IntrusionSetComponent implements OnInit {
-    private intrusionSets: IntrusionSet[] = [];
-    private showLabels = false;
-    private showExternalReferences = false;
-    private url: string;
+    public intrusionSets: IntrusionSet[] = [];
+    public showLabels = false;
+    public showExternalReferences = false;
+    public url: string;
     constructor(
         public stixService: StixService,
         public route: ActivatedRoute,

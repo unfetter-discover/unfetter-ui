@@ -43,8 +43,8 @@ export class Indicator {
     private createAttributes(): any {
         return {
             // version: '',
-            //created: moment().format(Constance.DATE_FORMATE),
-            //modified: moment().format(Constance.DATE_FORMATE),
+            // created: moment().format(Constance.DATE_FORMATE),
+            // modified: moment().format(Constance.DATE_FORMATE),
             labels: [],
             external_references: [],
             kill_chain_phases: [],

@@ -13,9 +13,9 @@ import { Constance } from '../../../../utils/constance';
     templateUrl: './course-of-action.component.html'
 })
 export class CourseOfActionComponent extends BaseStixComponent implements OnInit {
-    protected courseOfAction = new CourseOfAction();
-    private showLabels = true;
-    private showExternalReferences = true;
+    public courseOfAction = new CourseOfAction();
+    public showLabels = true;
+    public showExternalReferences = true;
 
      constructor(
         public stixService: StixService,
@@ -52,7 +52,7 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
         );
     }
 
-    protected saveButtonClicked(): Observable<any> {
+    public saveButtonClicked(): Observable<any> {
         return Observable.create((observer) => {
                let subscription = super.save(this.courseOfAction).subscribe(
                     (data) => {
@@ -71,7 +71,7 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
         });
     }
 
-    protected loadCourseOfAction(): void {
+    public loadCourseOfAction(): void {
         let subscription =  super.get().subscribe(
             (data) => {
                 this.courseOfAction = data as CourseOfAction;

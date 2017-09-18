@@ -105,7 +105,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
           const sub2 = this.genericApi.get(this.url, id)
             .subscribe((res) => {
               this.model = res;
-              if(this.model.attributes.created !== undefined) {
+              if (this.model.attributes.created !== undefined) {
                 this.publishDate = new Date(this.model.attributes.created);                
               }
               this.selectedRiskValue = null;
