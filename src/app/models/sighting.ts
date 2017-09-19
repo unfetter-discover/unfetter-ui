@@ -12,9 +12,9 @@ export class Sighting {
         created: string;
         modified: string;
         external_references: ExternalReference[];
-        first_seen: string;
+        first_seen: any;
         firstseen_precision: string;
-        last_seen: string;
+        last_seen: any;
         lastseen_precision: string;
         count: 0;
         sighting_of_ref: string;
@@ -40,9 +40,9 @@ export class Sighting {
 
     public formatDate(): void {
        this.attributes.first_seen =  this.attributes.first_seen ?
-            moment(this.attributes.first_seen).toISOString() : moment().toISOString();
+            new Date(this.attributes.first_seen) : new Date();
        this.attributes.last_seen =  this.attributes.last_seen ?
-            moment(this.attributes.last_seen).toISOString() : moment().toISOString();
+            new Date(this.attributes.last_seen) : new Date();
     }
 
     private createAttributes(): any {
@@ -51,9 +51,9 @@ export class Sighting {
             // created: moment().format(Constance.DATE_FORMATE),
             // modified: moment().format(Constance.DATE_FORMATE),
             external_references: [],
-            first_seen: new Date().toISOString(),
+            first_seen: new Date(),
             // firstseen_precision: '',
-            last_seen: new Date().toISOString(),
+            last_seen: new Date(),
             // lastseen_precision: '',
             count: 0,
             // sighting_of_ref: '',

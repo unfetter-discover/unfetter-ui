@@ -27,20 +27,30 @@
                  <div>
                 <p-calendar [(ngModel)]="indicator.attributes.valid_from"  dateFormat="M-dd-yy" showIcon="true"></p-calendar>
                  </div> -->
-                <md-input-container class="full-width">
+                <!--<md-input-container class="full-width">
                     <input mdInput [mdDatepicker]="picker" placeholder="Valid From" [(ngModel)]="indicator.attributes.valid_from">
                     <button mdSuffix [mdDatepickerToggle]="picker"></button>
                 </md-input-container>
-                <md-datepicker #picker></md-datepicker>
+                <md-datepicker #picker></md-datepicker>-->
+                <md-form-field class="full-width">
+                    <input mdInput [mdDatepicker]="picker" placeholder="Valid From" [(ngModel)]="indicator.attributes.valid_from">
+                    <md-datepicker-toggle mdSuffix [for]="picker"></md-datepicker-toggle>
+                    <md-datepicker #picker></md-datepicker>
+                </md-form-field>
             </div>
             <div class="col-md-6">
                 <!-- <label>Valid To</label>
                <div> -->
-                    <md-input-container class="full-width">
+                    <!--<md-input-container class="full-width">
                         <input mdInput [mdDatepicker]="picker_to" placeholder="Valid Until" [(ngModel)]="indicator.attributes.valid_until">
                         <button mdSuffix [mdDatepickerToggle]="picker_to"></button>
                     </md-input-container>
-                    <md-datepicker #picker_to></md-datepicker>
+                    <md-datepicker #picker_to></md-datepicker>-->
+                        <md-form-field class="full-width">
+                            <input mdInput [mdDatepicker]="picker_to" placeholder="Valid Until" [(ngModel)]="indicator.attributes.valid_until">
+                            <md-datepicker-toggle mdSuffix [for]="picker_to"></md-datepicker-toggle>
+                            <md-datepicker #picker_to></md-datepicker>
+                        </md-form-field>
                     <!-- <p-calendar [(ngModel)]="indicator.attributes.valid_to"  dateFormat="M-dd-yy" showIcon="true"></p-calendar> -->
                <!-- </div> -->
             </div>
