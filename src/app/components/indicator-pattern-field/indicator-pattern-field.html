@@ -30,7 +30,6 @@
     <div>
         <div class="col-md-1">
               <button md-mini-fab [disabled]="disabled" (click)="add()"><md-icon>add</md-icon></button>
-            <!--<a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa ffa-plus-circle"></i> CANCEL</a> -->
         </div>
 
       
@@ -41,7 +40,7 @@
     <div class="col-md-12">
            <md-chip-list class="pull-left">
                 <md-chip selected="true" color="accent" *ngFor="let indicator of indicators">{{indicator.pattern}}
-                    <span class="cursor-pointer" (click)="remove(indicator)"><i class="fa fa-trash"></i></span>
+                    <span class="cursor-pointer" (click)="remove(indicator)"><i class="material-icons">delete</i></span>
                 </md-chip>
             </md-chip-list>
     </div>
