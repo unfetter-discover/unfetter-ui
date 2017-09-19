@@ -14,7 +14,7 @@ import { Constance } from '../../../../utils/constance';
 })
 export class IdentityComponent extends BaseStixComponent implements OnInit {
 
-    protected identity: Identity = new Identity();
+    public identity: Identity = new Identity();
 
     constructor(
         public stixService: StixService,
@@ -45,7 +45,7 @@ export class IdentityComponent extends BaseStixComponent implements OnInit {
         );
     }
 
-     protected addRemoveSector(sector: string) {
+    public addRemoveSector(sector: string) {
         if ( this.foundSector(sector) ) {
             this.identity.attributes.sectors = this.identity.attributes.sectors.filter((s) => s !== sector);
         } else {
@@ -53,7 +53,7 @@ export class IdentityComponent extends BaseStixComponent implements OnInit {
         }
     }
 
-     protected loadIdentity(): void {
+    public loadIdentity(): void {
         let subscription =  super.get().subscribe(
             (data) => {
                 this.identity = data as Identity;
@@ -70,7 +70,7 @@ export class IdentityComponent extends BaseStixComponent implements OnInit {
         );
     }
 
-    protected saveButtonClicked(): Observable<any> {
+    public saveButtonClicked(): Observable<any> {
         return Observable.create((observer) => {
                let subscription = super.save(this.identity).subscribe(
                     (data) => {
@@ -89,7 +89,7 @@ export class IdentityComponent extends BaseStixComponent implements OnInit {
         });
     }
 
-    protected foundSector(sector: string): boolean {
+    public foundSector(sector: string): boolean {
         let found = this.identity.attributes.sectors.find((s) => {
             return s === sector;
         });

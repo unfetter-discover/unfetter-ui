@@ -11,12 +11,12 @@ import { Indicator } from '../../../../models';
   templateUrl: './indicator-list.component.html',
 })
 export class IndicatorListComponent extends IndicatorComponent implements OnInit {
-    private indicators: Indicator[];
-    private model: any;
-    private showPattern = true;
-    private showKillChainPhases = true;
-    private showExternalReferences = true;
-    private url: string;
+    public indicators: Indicator[];
+    public model: any;
+    public showPattern = true;
+    public showKillChainPhases = true;
+    public showExternalReferences = true;
+    public url: string;
 
     constructor(
         public stixService: StixService,

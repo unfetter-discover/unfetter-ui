@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-6">
             <form>
-            <md-select placeholder="Source Type" [(ngModel)]="rselectedSource" name="sourceRef" class="full-width" (change)="onSelectionChange()">
+            <md-select placeholder="Source Type" [(ngModel)]="selectedSource" name="sourceRef" class="full-width" (change)="onSelectedSourceChange()">
                 <md-option *ngFor="let type of types" [value]="type.id">
                     {{type.label}}
                 </md-option>
@@ -28,7 +28,7 @@
 <div class="row">
     <div class="col-md-6">
             <form>
-            <md-select placeholder="Target Type" [(ngModel)]="selectedTargetType" name="targetRef" class="full-width" (change)="onSelectionChange()">
+            <md-select placeholder="Target Type" [(ngModel)]="selectedTargetType" name="targetRef" class="full-width" (change)="onSelectedSourceChange()">
                <md-option *ngFor="let type of types" [value]="type.id">
                     {{type.label}}
                 </md-option>

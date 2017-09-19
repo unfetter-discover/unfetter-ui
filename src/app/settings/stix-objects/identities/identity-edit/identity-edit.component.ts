@@ -17,7 +17,7 @@ import { Identity } from '../../../../models';
 })
 export class IdentityEditComponent extends IdentityComponent implements OnInit {
 
-    protected identityClasses = [
+    public identityClasses = [
         { label: 'individual', id: 'individual' },
         { label: 'group', id: 'group' },
         { label: 'organization', id: 'organization' },
@@ -25,7 +25,7 @@ export class IdentityEditComponent extends IdentityComponent implements OnInit {
         { label: 'unknown', id: 'unknown' }
     ];
 
-    protected sectorOptions = [
+    public sectorOptions = [
             { label: 'agriculture', id: 'agriculture' },
             { label: 'aerospace', id: 'aerospace' },
             { label: 'automotive', id: 'automotive' },

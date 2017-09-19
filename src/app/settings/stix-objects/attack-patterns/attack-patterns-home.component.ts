@@ -12,9 +12,9 @@ import { Constance } from '../../../utils/constance';
 
 })
 export class AttackPatternsHomeComponent {
-    private pageTitle = 'Attack Pattern';
-    private pageIcon = Constance.ATTACK_PATTERN_ICON;
-    private description = 'Each Attack Pattern is a type of TTP that describes behaviors and actions that adversaries may take in your network.' +
+    public pageTitle = 'Attack Pattern';
+    public pageIcon = Constance.ATTACK_PATTERN_ICON;
+    public description = 'Each Attack Pattern is a type of TTP that describes behaviors and actions that adversaries may take in your network.' +
                 '  Attack Patterns are used to help categorize an attack, generalize specific attacks to the patterns that they follow, ' +
                 'and provide detailed information about how attacks are preformed.  An example of an attack pattern could be \'spear fishing\',' +
                 ' \'lateral movement\', or \'exploit vulnerability\'.  On this page, more Attack Patterns can be created or deleted.';

@@ -11,13 +11,13 @@ import { Relationship } from '../../../../models';
   templateUrl: './relationship-new.component.html'
 })
 export class RelationshipNewComponent extends BaseStixComponent implements OnInit {
-    private relationship: Relationship  = new Relationship();
-    private selectedSource: string;
-    private selectedSources: any[];
-    private selectedTargetType: string;
-    private selectedTargetTypes: any[];
+    public relationship: Relationship  = new Relationship();
+    public selectedSource: string;
+    public selectedSources: any[];
+    public selectedTargetType: string;
+    public selectedTargetTypes: any[];
 
-    private types = [
+    public types = [
         { label: 'Attack Pattern', id: 'attack-pattern'},
         { label: 'Course of Action', id: 'course-of-action'},
         { label: 'Intrusion Set', id: 'intrusion-set' }

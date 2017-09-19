@@ -13,10 +13,10 @@ import { Constance } from '../../../../utils/constance';
     templateUrl: './mitigate.component.html'
 })
 export class MitigateComponent extends BaseStixComponent  implements OnInit {
-    protected target: any;
-    protected title: string;
-    protected description: string;
-    private source: AttackPattern[];
+    public target: any;
+    public title: string;
+    public description: string;
+    public source: AttackPattern[];
 
     constructor(
         public stixService: StixService,
@@ -49,7 +49,7 @@ export class MitigateComponent extends BaseStixComponent  implements OnInit {
         );
     }
 
-    protected loadAttachPatteren(): void {
+    public loadAttachPatteren(): void {
         this.stixService.url = Constance.ATTACK_PATTERN_URL;
         super.load().subscribe(
             (data) => {

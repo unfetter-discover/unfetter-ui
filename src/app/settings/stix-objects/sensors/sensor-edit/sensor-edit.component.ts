@@ -39,7 +39,7 @@ export class SensorEditComponent extends SensorComponent implements OnInit {
       );
     }
 
-    protected saveSensor(): void {
+    public saveSensor(): void {
          let sub = super.saveButtonClicked().subscribe(
             (data) => {
                 this.sensor =  data;

@@ -36,7 +36,7 @@ import {
 
 import { SensorHomeComponent, SensorListComponent, SensorNewComponent, SensorEditComponent, SensorComponent } from './stix-objects/sensors';
 import { ReportsComponent, ReportsListComponent, ReportNewComponent } from './stix-objects/reports';
-import { ThreatActorHomeComponent, ThreatActorListComponent, TheatActorComponent, ThreatActorNewComponent, ThreatActorEditComponent } from './stix-objects/threat-actors';
+import { ThreatActorHomeComponent, ThreatActorListComponent, ThreatActorsComponent, ThreatActorNewComponent, ThreatActorEditComponent } from './stix-objects/threat-actors';
 import { IntrusionSetHomeComponent, IntrusionSetListComponent, IntrusionSetComponent, IntrusionSetEditComponent, IntrusionSetNewComponent } from './stix-objects/intrusion-sets';
 import { MitigateListComponent, MitigateComponent, IntrusionUsesAttackComponent, RelationshipsComponent, RelationshipNewComponent } from './stix-objects/relationships';
 import { IndicatorHomeComponent , IndicatorListComponent, IndicatorEditComponent, IndicatorNewComponent, IndicatorComponent } from './stix-objects/indicators';
@@ -111,7 +111,7 @@ import { GlobalModule } from '../global/global.module';
 
     ThreatActorHomeComponent,
     ThreatActorListComponent,
-    TheatActorComponent,
+    ThreatActorsComponent,
     ThreatActorNewComponent,
     ThreatActorEditComponent,
 

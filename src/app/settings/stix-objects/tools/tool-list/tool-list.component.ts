@@ -14,8 +14,8 @@ import { Constance } from '../../../../utils/constance';
 })
 
 export class ToolListComponent extends BaseStixComponent implements OnInit {
-    private tools: Tool[] = [];
-    private url: string;
+    public tools: Tool[] = [];
+    public url: string;
 
     constructor(
         public stixService: StixService,

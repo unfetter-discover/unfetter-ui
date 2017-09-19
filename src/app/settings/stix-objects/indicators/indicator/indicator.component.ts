@@ -14,7 +14,7 @@ import { Constance } from '../../../../utils/constance';
 })
 export class IndicatorComponent extends BaseStixComponent implements OnInit {
 
-   protected indicator: Indicator = new Indicator();
+   public indicator: Indicator = new Indicator();
 
     constructor(
         public stixService: StixService,
@@ -33,7 +33,7 @@ export class IndicatorComponent extends BaseStixComponent implements OnInit {
         this.loadIndicator();
     }
 
-    protected loadIndicator(): void {
+    public loadIndicator(): void {
         const subscription =  super.get().subscribe(
             (data) => {
                 this.indicator =  new Indicator(data);
@@ -49,7 +49,7 @@ export class IndicatorComponent extends BaseStixComponent implements OnInit {
         );
     }
 
-    protected saveButtonClicked(): Observable<any> {
+    public saveButtonClicked(): Observable<any> {
         return Observable.create((observer) => {
                const subscription = super.save(this.indicator).subscribe(
                     (data) => {
@@ -68,12 +68,12 @@ export class IndicatorComponent extends BaseStixComponent implements OnInit {
         });
     }
 
-    protected editButtonClicked(): void {
+    public editButtonClicked(): void {
         const link = ['../edit', this.indicator.id];
         super.gotoView(link);
     }
 
-    protected deleteButtonClicked(): void {
+    public deleteButtonClicked(): void {
         super.openDialog(this.indicator).subscribe(
             () => {
                 this.location.back();

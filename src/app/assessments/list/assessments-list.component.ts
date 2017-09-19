@@ -25,10 +25,10 @@ export class AssessmentsListComponent implements OnInit {
   public assessments = [];
 
   constructor(
-    private dialog: MdDialog,
-    private assessmentsService: AssessmentsService,
-    private router: Router,
-    private route: ActivatedRoute) {
+    public dialog: MdDialog,
+    public assessmentsService: AssessmentsService,
+    public router: Router,
+    public route: ActivatedRoute) {
         assessmentsService.url = Constance.X_UNFETTER_ASSESSMENT_URL;
   }
 
@@ -40,13 +40,13 @@ export class AssessmentsListComponent implements OnInit {
     );
   }
 
-  private edit(item: any): void {
+  public edit(item: any): void {
      const type = item.attributes.assessment_objects[0].stix.type;
      const link = ['wizard/edit', type, item.id];
      this.router.navigate(link, { relativeTo: this.route });
   }
 
-  private delete(item: any): void {
+  public delete(item: any): void {
     const _self = this;
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: item });
     dialogRef.afterClosed().subscribe(

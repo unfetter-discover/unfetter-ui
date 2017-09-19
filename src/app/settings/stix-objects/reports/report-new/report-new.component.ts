@@ -48,7 +48,7 @@ export class ReportNewComponent extends BaseStixComponent implements OnInit {
         );
     }
 
-    private saveRelationships(report: Report): void {
+    public saveRelationships(report: Report): void {
         this.attackPatterns.forEach((relatedRecord) => {
             const relationship = new Relationship();
             relationship.attributes.relationship_type = 'uses';
@@ -66,7 +66,7 @@ export class ReportNewComponent extends BaseStixComponent implements OnInit {
         });
     }
 
-    private saveRelationship(relationship: Relationship): void {
+    public saveRelationship(relationship: Relationship): void {
         const created = new Date();
         relationship.attributes.created = created;
         relationship.attributes.modified = created;
@@ -87,7 +87,7 @@ export class ReportNewComponent extends BaseStixComponent implements OnInit {
     }
 
     // add chip
-    private add(event: any): void {
+    public add(event: any): void {
         if (event.type === 'attack-patterns' && !this.found(this.attackPatterns, event)) {
             this.attackPatterns.push(event as AttackPattern);
         } else if (event.type === 'intrusion-sets' && !this.found(this.intrusionSets, event)) {
@@ -96,7 +96,7 @@ export class ReportNewComponent extends BaseStixComponent implements OnInit {
     }
 
     // remove chip
-    private remove(object: any): void {
+    public remove(object: any): void {
         event.preventDefault();
         if (object.type === 'attack-patterns') {
             this.attackPatterns = this.attackPatterns.filter((o) => o.id !== object.id);
@@ -105,11 +105,11 @@ export class ReportNewComponent extends BaseStixComponent implements OnInit {
         }
     }
 
-    private found(list: any[], object: any): any {
+    public found(list: any[], object: any): any {
         return list.find((entry) => entry.id === object.id);
     }
 
-    private dateChange(date: string): void {
+    public dateChange(date: string): void {
         console.log(date);
     }
 

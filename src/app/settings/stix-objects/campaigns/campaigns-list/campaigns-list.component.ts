@@ -14,9 +14,9 @@ import { Campaign } from '../../../../models';
 export class CampaignsListComponent extends CampaignComponent implements OnInit {
 
     public campaigns: Campaign[] = [];
-    private showExternalReferences: boolean = false;
-    private showLabels: boolean = false;
-    private url: string;
+    public showExternalReferences: boolean = false;
+    public showLabels: boolean = false;
+    public url: string;
 
     constructor(
         public stixService: StixService,

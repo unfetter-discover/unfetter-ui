@@ -25,7 +25,7 @@ export class ToolNewComponent extends ToolEditComponent implements OnInit {
 
     public ngOnInit() { }
 
-    private saveNewTool(): void {
+    public saveNewTool(): void {
         console.log(this.tool.url);
         const sub = super.create(this.tool).subscribe(
             (data) => {

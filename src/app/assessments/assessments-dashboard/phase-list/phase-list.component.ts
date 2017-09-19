@@ -15,7 +15,7 @@ export class PhaseListComponent implements OnInit {
     @Input('assessmentId') public assessmentId: any;
     @Input('riskBreakdown') public riskBreakdown: any;
 
-    private totalRisk: number = 1;
+    public totalRisk: number = 1;
 
     constructor(private route: ActivatedRoute) { }
 

@@ -10,15 +10,15 @@ export class LabelComponent {
 
     @Input() public model: any;
 
-    private addLabelButtonClicked(): void {
+    public addLabelButtonClicked(): void {
         this.model.attributes.labels.unshift(' ');
     }
 
-    private removeLabelButtonClicked(label: string): void {
+    public removeLabelButtonClicked(label: string): void {
         this.model.attributes.labels = this.model.attributes.labels.filter((l) => l !== label);
     }
 
-    private update(index: number, value: string): void {
+    public update(index: number, value: string): void {
         this.model.attributes.labels[index] = value;
     }
 }

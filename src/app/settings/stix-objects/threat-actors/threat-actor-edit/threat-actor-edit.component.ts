@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
 import { MdDialog, MdDialogRef, MdDialogConfig, MdSnackBar } from '@angular/material';
-import { TheatActorComponent } from '../threat-actor/threat-actors.component';
+import { ThreatActorsComponent } from '../threat-actor/threat-actors.component';
 import { StixService } from '../../../stix.service';
 import { ThreatActor } from '../../../../models';
 
@@ -10,9 +10,9 @@ import { ThreatActor } from '../../../../models';
   selector: 'threat-actor-edit',
   templateUrl: './threat-actor-edit.component.html',
 })
-export class ThreatActorEditComponent extends TheatActorComponent implements OnInit {
+export class ThreatActorEditComponent extends ThreatActorsComponent implements OnInit {
 
-    protected labels = [
+    public labels = [
         {label: 'activist'},
         {label: 'competitor'},
         {label: 'crime-syndicate'},

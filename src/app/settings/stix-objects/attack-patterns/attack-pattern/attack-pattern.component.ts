@@ -16,8 +16,8 @@ import { Constance } from '../../../../utils/constance';
 
 export class AttackPatternComponent extends BaseStixComponent implements OnInit {
 
-    protected attackPattern: AttackPattern = new AttackPattern();
-    protected x_unfetter_sophistication_levels = [
+    public attackPattern: AttackPattern = new AttackPattern();
+    public x_unfetter_sophistication_levels = [
           { id : 1, value: '1 - Novice' },
           { id : 2, value: '2 - Practicioner' },
           { id : 3, value: '3 - Expert' },
@@ -40,12 +40,12 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
        this.loadAttackPattern();
     }
 
-    protected editButtonClicked(): void {
+    public editButtonClicked(): void {
         let link = ['../edit', this.attackPattern.id];
         super.gotoView(link);
     }
 
-    protected deleteButtonClicked(): void {
+    public deleteButtonClicked(): void {
         super.openDialog(this.attackPattern).subscribe(
             () => {
                 this.location.back();
@@ -53,7 +53,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         );
     }
 
-    protected loadAttackPattern(): void {
+    public loadAttackPattern(): void {
          let subscription =  super.get().subscribe(
             (data) => {
                 this.attackPattern = data as AttackPattern;
@@ -69,7 +69,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         );
     }
 
-    protected saveButtonClicked(): Observable<any> {
+    public saveButtonClicked(): Observable<any> {
         return Observable.create((observer) => {
                let subscription = super.save(this.attackPattern).subscribe(
                     (data) => {
@@ -88,7 +88,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         });
     }
 
-    private getSophisticationLevel(id: number): string {
+    public getSophisticationLevel(id: number): string {
         let sophisticationLevel = this.x_unfetter_sophistication_levels.find(
             (sophistication) => {
                 return sophistication.id === id;

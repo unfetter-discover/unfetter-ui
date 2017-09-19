@@ -6,7 +6,7 @@ import { Constance } from '../../../utils/constance';
   template: `<page-header [pageTitle]="pageTitle"  [pageIcon]="pageIcon" [description]="description"></page-header>`,
 })
 export class IndicatorHomeComponent {
-    private pageTitle = 'Indicator';
-    private pageIcon = Constance.INDICATOR_ICON;
-    private description = 'Indicators contain a pattern that can be used to detect suspicous or malicious cyber activity.';
+    public pageTitle = 'Indicator';
+    public pageIcon = Constance.INDICATOR_ICON;
+    public description = 'Indicators contain a pattern that can be used to detect suspicous or malicious cyber activity.';
 }

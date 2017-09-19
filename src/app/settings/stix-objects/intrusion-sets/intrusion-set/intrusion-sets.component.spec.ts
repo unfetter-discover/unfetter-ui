@@ -2,16 +2,16 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { inject, async, TestBed,  ComponentFixture } from '@angular/core/testing';
 
 // Load the implementations that should be tested
-import { IntrusionSetsComponent } from './intrusion-sets.component';
+import { IntrusionSetComponent } from './intrusion-set.component';
 
 describe(`IntrusionSetsComponent`, () => {
-  let comp: IntrusionSetsComponent;
-  let fixture: ComponentFixture<IntrusionSetsComponent>;
+  let comp: IntrusionSetComponent;
+  let fixture: ComponentFixture<IntrusionSetComponent>;
 
   // async beforeEach
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ IntrusionSetsComponent ],
+      declarations: [ IntrusionSetComponent ],
       schemas: [NO_ERRORS_SCHEMA],
       providers: []
     })
@@ -20,7 +20,7 @@ describe(`IntrusionSetsComponent`, () => {
 
   // synchronous beforeEach
   beforeEach(() => {
-    fixture = TestBed.createComponent(IntrusionSetsComponent);
+    fixture = TestBed.createComponent(IntrusionSetComponent);
     comp    = fixture.componentInstance;
 
     fixture.detectChanges(); // trigger initial data binding

@@ -13,7 +13,7 @@ import { Constance } from '../../../../utils/constance';
 })
 
 export class ReportsListComponent extends BaseStixComponent implements OnInit {
-    private reports: Report[] = [];
+    public reports: Report[] = [];
 
     constructor(
         public stixService: StixService,

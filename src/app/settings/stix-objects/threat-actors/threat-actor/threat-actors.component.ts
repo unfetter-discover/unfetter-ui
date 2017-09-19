@@ -12,8 +12,8 @@ import { Constance } from '../../../../utils/constance';
     selector: 'threat-actors',
     templateUrl: './threat-actors.component.html'
 })
-export class TheatActorComponent extends BaseStixComponent implements OnInit {
-    protected  threatActor: ThreatActor = new ThreatActor();
+export class ThreatActorsComponent extends BaseStixComponent implements OnInit {
+    public threatActor = new ThreatActor();
 
      constructor(
         public stixService: StixService,
@@ -40,7 +40,7 @@ export class TheatActorComponent extends BaseStixComponent implements OnInit {
         super.openDialog(this.threatActor);
     }
 
-    protected saveButtonClicked(): Observable<any> {
+    public saveButtonClicked(): Observable<any> {
         return Observable.create((observer) => {
                const subscription = super.save(this.threatActor).subscribe(
                     (data) => {
@@ -59,7 +59,7 @@ export class TheatActorComponent extends BaseStixComponent implements OnInit {
         });
     }
 
-    protected loadThreatActor(): void {
+    public loadThreatActor(): void {
          const subscription =  super.get().subscribe(
             (data) => {
                 this.threatActor = data as ThreatActor;

@@ -60,7 +60,7 @@ export class SensorListComponent extends SensorComponent implements OnInit {
         super.openDialog(sensor).subscribe(
             () => {
                 console.log('******** ' + sensor.id)
-                 this.filteredItems = this.filteredItems.filter((h) => h.id !== sensor.id);
+                this.filteredItems = this.filteredItems.filter((h) => h.id !== sensor.id);
 
             }
         );
