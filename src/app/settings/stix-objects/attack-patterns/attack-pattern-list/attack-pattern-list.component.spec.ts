@@ -1,27 +1,23 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { inject, async, TestBed,  ComponentFixture } from '@angular/core/testing';
-import { AttackPatternsService } from '../../../services';
+import { AttackPatternComponent } from '../attack-pattern/attack-pattern.component';
 
 // Load the implementations that should be tested
-import { AttackPatternsComponent } from '../attack-patterns.component';
-import { AttackPattern } from '../../../models/attack-pattern';
+import { AttackPattern } from '../../../../models/attack-pattern';
 
 import { Observable } from 'rxjs/Observable';
+import { StixService } from '../../../stix.service';
 
 describe(`AttackPatternsComponent`, () => {
-  let comp: AttackPatternsComponent;
-  let fixture: ComponentFixture<AttackPatternsComponent>;
+  let comp: AttackPatternComponent;
+  let fixture: ComponentFixture<AttackPatternComponent>;
   let MockAttackPatternsService = {
-     getAttackPatterns: (): Observable<AttackPattern[]> => {
+     get: (): Observable<AttackPattern> => {
         let pattern: AttackPattern;
-        let attackPatterens = [ ];
-        for (let i = 0; i < 2; i++) {
-            pattern =  new AttackPattern();
-            pattern.id = i;
-            pattern.name = 'pattern' + i;
-            attackPatterens.push(pattern);
-        }
-        return Observable.of(attackPatterens);
+        pattern =  new AttackPattern();
+        pattern.id = Math.round((Math.random() * 100)).toString();
+        pattern.attributes.name = 'pattern' + pattern.id;
+        return Observable.of(pattern);
      }
   };
   let attackPatternsService;
@@ -29,10 +25,10 @@ describe(`AttackPatternsComponent`, () => {
   // async beforeEach
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AttackPatternsComponent ],
+      declarations: [ AttackPatternComponent ],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
-        {provide: AttackPatternsService, useValue: MockAttackPatternsService}
+        {provide: StixService, useValue: MockAttackPatternsService}
       ]
     })
     .compileComponents(); // compile template and css
@@ -40,11 +36,11 @@ describe(`AttackPatternsComponent`, () => {
 
   // synchronous beforeEach
   beforeEach(() => {
-      fixture = TestBed.createComponent(AttackPatternsComponent);
+      fixture = TestBed.createComponent(AttackPatternComponent);
       comp    = fixture.componentInstance;
 
       // UserService actually injected into the component
-      attackPatternsService = fixture.debugElement.injector.get(AttackPatternsService);
+      attackPatternsService = fixture.debugElement.injector.get(StixService);
   });
 
   it(`should be readly initialized`, () => {
@@ -54,7 +50,7 @@ describe(`AttackPatternsComponent`, () => {
 
   it(`should load attach patterns`, () => {
     fixture.detectChanges(); // trigger initial data binding
-    expect(comp.attackPatterns.length).toEqual(2, 'should load two attack patterns');
+    expect(comp.attackPattern).toBeDefined('should load a attack pattern');
   });
 
 });

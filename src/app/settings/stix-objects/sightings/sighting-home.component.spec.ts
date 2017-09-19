@@ -1,17 +1,17 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { inject, async, TestBed,  ComponentFixture } from '@angular/core/testing';
+import { SightingComponent } from './index';
 
 // Load the implementations that should be tested
-import { SightingsComponent } from './sightings.component';
 
 describe(`SightingsComponent`, () => {
-  let comp: SightingsComponent;
-  let fixture: ComponentFixture<SightingsComponent>;
+  let comp: SightingComponent;
+  let fixture: ComponentFixture<SightingComponent>;
 
   // async beforeEach
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SightingsComponent ],
+      declarations: [ SightingComponent ],
       schemas: [NO_ERRORS_SCHEMA],
       providers: []
     })
@@ -20,7 +20,7 @@ describe(`SightingsComponent`, () => {
 
   // synchronous beforeEach
   beforeEach(() => {
-    fixture = TestBed.createComponent(SightingsComponent);
+    fixture = TestBed.createComponent(SightingComponent);
     comp    = fixture.componentInstance;
 
     fixture.detectChanges(); // trigger initial data binding
