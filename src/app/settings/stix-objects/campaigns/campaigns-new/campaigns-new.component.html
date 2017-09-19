@@ -27,7 +27,7 @@
       <md-chip-list class="pull-left">
             <md-chip selected="true" color="accent" *ngFor="let identity of identities">
                 {{identity.attributes.name}}
-                <span class="cursor-pointer" (click)="remove(identity)"><i class="fa fa-trash"></i></span>
+                <span class="cursor-pointer" (click)="remove(identity)"><i class="material-icons">delete</i></span>
             </md-chip>
         </md-chip-list>
     </div>
@@ -37,7 +37,7 @@
        <md-chip-list class="pull-left">
             <md-chip selected="true" color="accent" *ngFor="let intrusionSet of intrusionSets">
                 {{intrusionSet.attributes.name}}
-                <span class="cursor-pointer" (click)="remove(intrusionSet)"><i class="fa fa-trash"></i></span>
+                <span class="cursor-pointer" (click)="remove(intrusionSet)"><i class="material-icons">delete</i></span>
             </md-chip>
         </md-chip-list>
     </div>
@@ -47,7 +47,7 @@
         <md-chip-list class="pull-left">
             <md-chip selected="true" color="accent" *ngFor="let attackPattern of attackPatterns">
                 {{attackPattern.attributes.name}}
-               <span class="cursor-pointer" (click)="remove(attackPattern)"><i class="fa fa-trash"></i></span>
+               <span class="cursor-pointer" (click)="remove(attackPattern)"><i class="material-icons">delete</i></span>
             </md-chip>
         </md-chip-list>
 
@@ -69,8 +69,8 @@
     <div class="col-md-12">
         <div class="button-row pull-right">
 
-                 <button  class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</button>
-                 <button type="submit"  class=" " md-raised-button (click)="saveCampaign()" [disabled]="!campaign.attributes.name"><i class="fa fa-floppy-o "></i> SAVE & CLOSE</button>
+                 <button  class="" md-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</button>
+                 <button type="submit"  class=" " md-raised-button (click)="saveCampaign()" [disabled]="!campaign.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</button>
 
         </div>
     </div>

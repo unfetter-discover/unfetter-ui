@@ -37,7 +37,7 @@
                     </div>
                     <div style="float: left">
                         <h4>Intrusion Sets
-                            <i *ngIf="intrusionSetsDashboard.intrusion_sets" class="fa fa-angle-right"></i>
+                            <i *ngIf="intrusionSetsDashboard.intrusion_sets" class="material-icons">keyboard_arrow_right</i>
                             <a><strong *ngFor="let i of intrusionSetsDashboard.intrusion_sets;  let first = first; let last = last">
                                     {{i.attributes.name}}
                                     <i *ngIf="!last"> / </i>
