@@ -88,23 +88,27 @@ label {
   padding-left: 15px;
 }
 
-code {
-  font-size: 80%;
-}
 
-.mat-list .mat-list-item .mat-list-item-content, .mat-nav-list .mat-list-item .mat-list-item-content {
+// ~~~~~~~~~~ Pinned for deletion
+// ~~~~~~~~~~ These do not seem like appropiate global overrides.  If these are component specific please make a class
+// code {
+//   font-size: 80%;
+// }
 
-    height: auto !important;
+// .mat-list .mat-list-item .mat-list-item-content, .mat-nav-list .mat-list-item .mat-list-item-content {
 
-}
-.mat-tab-body {
-    padding: 5px;
-}
+//     height: auto !important;
 
-.mat-tab-body-content {
-    height: inherit !important;
-    overflow: hidden !important;
-}
+// }
+// .mat-tab-body {
+//     padding: 5px;
+// }
+
+// .mat-tab-body-content {
+//     height: inherit !important;
+//     overflow: hidden !important;
+// }
+// ~~~~~~~~~~ End pinned for deletion
 
 .cursor-pointer {
     cursor: pointer;
@@ -149,6 +153,21 @@ code {
 }
 .margin-bottom {
     margin-bottom: 15px;
+}
+// Margin top & bottom helpers in increments of 3 or 5
+@for $i from 1 to 8 {
+    .mt-#{$i * 5} {
+        margin-top: $i * 5px;
+    }
+    .mb-#{$i * 5} {
+        margin-bottom: $i * 5px;
+    }
+    .mt-#{$i * 3} {
+        margin-top: $i * 3px;
+    }
+    .mb-#{$i * 3} {
+        margin-bottom: $i * 3px;
+    }  
 }
 // Used to match the padding of md-card elements
 .mat-card-padding {
