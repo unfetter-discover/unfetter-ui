@@ -1,0 +1,16 @@
+.container {
+    padding-top: 24px;
+}
+
+.title {
+    font-size: 24px;
+}
+
+.title-border {
+    border-right: 1px solid black;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #777;
+}

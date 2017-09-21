@@ -17,16 +17,16 @@
       "es2016.array.include"
     ],
     "typeRoots": [
-      "node_modules/@types"
+      // "node_modules/@types"
     ],
     "types": [
-      "hammerjs",
-      "jasmine",
-      "node",
-      "source-map",
-      "uglify-js",
-      "webpack",
-      "d3"
+      // "hammerjs",
+      // "jasmine",
+      // "node",
+      // "source-map",
+      // "uglify-js",
+      // "webpack",
+      // "d3"
     ]
   },
   "exclude": [
