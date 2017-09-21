@@ -95,7 +95,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
   public ngOnInit(): void {
     const type = this.route.snapshot.paramMap.get('type');
     const id = this.route.snapshot.paramMap.get('id');
-    this.url = this.generateUrl(type);
+    this.url = this.generateUrl(type) + '?metaproperties=true';
     const logErr = (err) => console.log(err);
     const sub1 = this.genericApi.get(this.url)
       .subscribe((data) => {
@@ -291,6 +291,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         assessment.measurements = [];
         assessment.kill_chain_phases =
           assessedObject.attributes.kill_chain_phases;
+        assessment.groupings = assessedObject.attributes.groupings;
         assessment.id = assessedObject.id;
         assessment.name = assessedObject.attributes.name;
         assessment.description = assessedObject.attributes.description;
@@ -339,7 +340,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
   private buildKillChain(stixObjects): any {
     const killChains = [];
     stixObjects.forEach((stixObject) => {
-      const killChainPhases = stixObject.kill_chain_phases;
+      const killChainPhases = stixObject.groupings;
       if (!killChainPhases) {
         const phaseName = 'unknown';
         if (!killChains[phaseName]) {
@@ -348,7 +349,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         }
       } else {
         killChainPhases.forEach((killChainPhase) => {
-          const phaseName = killChainPhase.phase_name;
+          const phaseName = killChainPhase.groupingValue;
           if (!killChains[phaseName]) {
             const description = killChainPhase.description;
             if (description) {
@@ -366,7 +367,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
   private groupObjectsByKillPhase(stixObjects): any {
     const hash = {};
     stixObjects.forEach((stixObject) => {
-      const killChainPhases = stixObject.kill_chain_phases;
+      const killChainPhases = stixObject.groupings;
       if (!killChainPhases) {
         const phaseName = 'unknown';
         let objectProxies = hash[phaseName];
@@ -378,7 +379,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         objectProxies.push(stixObject);
       } else {
         killChainPhases.forEach((killChainPhase) => {
-          const phaseName = killChainPhase.phase_name;
+          const phaseName = killChainPhase.groupingValue;
           let objectProxies = hash[phaseName];
           if (objectProxies === undefined) {
             objectProxies = [];
