@@ -5,7 +5,7 @@ import { routing } from './threat-report-overview-routing.module';
 import { ThreatReportOverviewComponent } from './threat-report-overview.component';
 import { ThreatReportOverviewService } from './threat-report-overview.service';
 
-import { MdButtonModule, MdChipsModule, MdSelectModule, MdInputModule, MdAutocompleteModule, MdCheckboxModule } from '@angular/material';
+import { MdButtonModule, MdChipsModule, MdSelectModule, MdInputModule, MdIconModule, MdAutocompleteModule, MdCheckboxModule } from '@angular/material';
 import { MdTableModule } from '@angular/material';
 
 const troComponents = [
@@ -24,6 +24,7 @@ const mdComponents = [
   MdInputModule,
   MdSelectModule,
   MdTableModule,
+  MdIconModule,
 ]
 
 @NgModule({

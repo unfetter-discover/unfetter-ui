@@ -9,6 +9,9 @@
   "homepage": "https://github.com/unfetter-discover/unfetter-ui",
   "license": "MIT",
   "scripts": {
+    "analyze": "webpack-bundle-analyzer stats.json dist",
+    "analyze:dev": "npm run clean && webpack --config config/webpack.dev.js --profile --json > stats.json && npm run analyze",
+    "analyze:prod": "npm run clean && webpack --config config/webpack.prod.js --profile > stats.json && npm run analyze",    
     "build:aot:prod": "npm run clean:dist && npm run clean:aot && webpack --config config/webpack.prod.js  --progress --profile --bail",
     "build:aot": "npm run build:aot:prod",
     "build:dev": "npm run clean:dist && webpack --config config/webpack.dev.js --progress --profile",
@@ -23,7 +26,7 @@
     "clean:aot": "npm run rimraf -- compiled",
     "clean:dist": "npm run rimraf -- dist",
     "clean:install": "npm set progress=false && npm install",
-    "clean": "npm run rimraf -- node_modules doc coverage dist compiled",
+    "clean": "npm run rimraf -- doc coverage dist compiled stats.json",
     "docs": "npm run typedoc -- --options typedoc.json --exclude '**/*.spec.ts' ./src/",
     "e2e:live": "npm-run-all -p -r server:prod:ci protractor:live",
     "e2e:travis": "npm-run-all -p -r server:prod:ci protractor:delay",
@@ -166,6 +169,7 @@
     "typescript": "~2.4.0",
     "url-loader": "^0.5.7",
     "webpack": "2.3.1",
+    "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-middleware": "^1.10.0",
     "webpack-dev-server": "2.4.1",
     "webpack-merge": "~3.0.0"
