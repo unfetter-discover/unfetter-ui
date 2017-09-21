@@ -12,14 +12,18 @@ export class ThreatReportOverviewService {
   constructor(private http: Http) { }
 
   public load(filter?: string): Observable<ThreatReportOverview[]> {
-    return Observable.of([
-      { 
-        id: 1,
-        name: 'name',
-        date: new Date().toISOString(),
-        author: 'author1'
-      } as ThreatReportOverview
-    ]);
+
+    const lim = 10;
+    const arr = Array(lim);
+    for (let i = 0; i < lim; i++) {
+      arr[i] = { 
+            id: i,
+            name: `name-${i}`,
+            date: new Date().toISOString(),
+            author: `author-${i}`
+          } as ThreatReportOverview
+    }
+    return Observable.of(arr);
   }
 
 }

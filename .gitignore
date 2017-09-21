@@ -5,6 +5,7 @@
 /tmp
 /.awcache/*
 compiled/*
+stats.json
 
 # dependencies
 /node_modules/**
