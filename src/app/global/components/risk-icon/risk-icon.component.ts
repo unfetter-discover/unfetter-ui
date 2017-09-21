@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Constance } from '../../../utils/constance';
 
 @Component({
@@ -6,16 +6,11 @@ import { Constance } from '../../../utils/constance';
   styleUrls: ['risk-icon.component.css'],
   templateUrl: 'risk-icon.component.html'
 })
-export class RiskIconComponent implements OnInit {
+export class RiskIconComponent {
   @Input('risk') public risk: number;
   @Input('showTooltip') public showTooltip = false;
   @Input('tooltipPlacement') public tooltipPlacement = 'after';
-
-  ngOnInit() {
-    console.log(this.showTooltip);
-    
-  }
-
+  
   public getRiskColor(avgRisk) {
     let riskHsl: any = {};
 
