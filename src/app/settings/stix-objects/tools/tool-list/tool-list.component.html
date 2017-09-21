@@ -2,4 +2,4 @@
 <buttons-filter [model]="tools" [filteredItems]="filteredItems" (filterItemsChange)="onFilterItemsChange($event)"></buttons-filter>
 
 
-<list-stix-objects [model]="filteredItems" [url]="url"  [showLabels]="showLabels" [showExternalReferences]="showExternalReferences" (deletButtonClicked)="deletButtonClicked($event)"></list-stix-objects>
+<list-stix-objects [model]="filteredItems" [url]="url"  showLabels="true" showExternalReferences="true" (deletButtonClicked)="deletButtonClicked($event)"></list-stix-objects>

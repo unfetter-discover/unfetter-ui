@@ -1,0 +1,61 @@
+<div class="container">
+    <div class="row first-line">
+        <div class="col-md-6 title title-border">
+            <div>
+                Threat Reports Overview
+            </div>
+            <span class="subtitle">
+                View your recent workproducts or create a new one
+            </span>
+        </div>
+        <div class="col-md-4 top-right-panel">
+            <div class="title">
+                CREATE NEW PRODUCT
+            </div>
+            <!-- <span clas="subtitle">
+                Loreum ipsum dorat
+            </span> -->
+            <span>
+                <button color="primary" md-raised-button>NEW</button>
+            </span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="title col-md-6">RECENT WORK PRODUCTS</div>
+        <div class="col-md-6">
+            <md-form-field floatPlaceholder="never">
+                <input mdInput #filter placeholder="Filter Recent work products" color="primary">
+                <md-icon mdSuffix color="primary">search</md-icon>
+            </md-form-field>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <md-table #table [dataSource]="dataSource">
+
+                <ng-container mdColumnDef="id">
+                    <md-header-cell *mdHeaderCellDef> ID </md-header-cell>
+                    <md-cell *mdCellDef="let row"> {{row.id}} </md-cell>
+                </ng-container>
+
+                <ng-container mdColumnDef="name">
+                    <md-header-cell *mdHeaderCellDef> Name </md-header-cell>
+                    <md-cell *mdCellDef="let row"> {{row.name}} </md-cell>
+                </ng-container>
+            
+                <ng-container mdColumnDef="date">
+                    <md-header-cell *mdHeaderCellDef> Modified </md-header-cell>
+                    <md-cell *mdCellDef="let row"> {{row.date}} </md-cell>
+                </ng-container>
+            
+                <ng-container mdColumnDef="author">
+                    <md-header-cell *mdHeaderCellDef> Author </md-header-cell>
+                    <md-cell *mdCellDef="let row"> {{row.author}} </md-cell>
+                </ng-container>
+            
+                <md-header-row *mdHeaderRowDef="displayCols"></md-header-row>
+                <md-row *mdRowDef="let row; columns: displayCols;"></md-row>
+            </md-table>
+        </div>
+    </div>
+</div>

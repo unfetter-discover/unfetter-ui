@@ -16,6 +16,7 @@ const appRoutes: Routes = [
   { path: 'partners', component: PartnersComponent },
   { path: 'intrusion-set-dashboard', component: IntrusionSetDashboardComponent },
   { path: 'assessments', loadChildren: './assessments#AssessmentsModule' },
+  { path: 'tro', loadChildren: 'app/threat-report-overview/threat-report-overview.module#ThreatReportOverviewModule' },
   { path: '**', component: NoContentComponent },
 ];
 
