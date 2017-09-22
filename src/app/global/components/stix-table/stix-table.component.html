@@ -1,11 +1,10 @@
 <div class="stixTableComponent">
-    <md-table #table [dataSource]="dataSource">
+    <md-table #table [dataSource]="dataSource" class="unfetterAngularMaterialTable hideHeader">
 
         <ng-container mdColumnDef="name">
             <md-header-cell *mdHeaderCellDef>STIX</md-header-cell>
             <md-cell *mdCellDef="let element">
                 <a routerLink="{{element.id}}">{{element.name}}</a>
-                <!-- <span>{{element.name}}</span> -->
                 <md-chip-list *ngIf="element.external_references" class="inlineFlex">
                     <md-chip *ngFor="let external_reference of element.external_references" style="margin-left: 5px;">
                         <a target="_blank" *ngIf="external_reference.url"> {{external_reference.source_name}}</a>
@@ -19,7 +18,7 @@
             <md-header-cell *mdHeaderCellDef> &nbsp; </md-header-cell>
             <md-cell *mdCellDef="let element">
                 <div class="buttonGrp text-right">
-                    <button class="mat-primary" md-button (click)="edit(element)">
+                    <button class="mat-primary" md-button routerLink="edit/{{element.id}}">
                         <i class="material-icons">create</i>
                     </button>
                     <button class="mat-warn" md-button (click)="deletButtonClicked(attackPattern, key)">

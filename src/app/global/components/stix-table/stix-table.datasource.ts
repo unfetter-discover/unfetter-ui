@@ -19,21 +19,22 @@ export class StixTableDataSource extends DataSource<any> {
         this.data = data.map((ap) => ap.attributes);
     }
 
+    public updateData() {
+        const pageSize = this.paginator.pageSize;
+        const startIndex = this.paginator.pageIndex * pageSize;
+        let itemsOnPage;
+        if ((startIndex + pageSize) < this.paginator.length) {
+            itemsOnPage = pageSize;
+        } else {
+            itemsOnPage = this.paginator.length - startIndex;
+        }
+        return this.data.slice(startIndex, startIndex + itemsOnPage);
+    }
+
     public connect(): Observable<any[]> { 
-        // let junk = new BehaviorSubject<any>('');
-        return this.paginator.page.map(() => {
-            const pageSize = this.paginator.pageSize;
-            const startIndex = this.paginator.pageIndex * pageSize;
-            let itemsOnPage;
-            if ((startIndex + pageSize) < this.paginator.length) {
-                itemsOnPage = pageSize;
-            } else {
-                itemsOnPage = this.paginator.length - startIndex;
-            }
-            console.log('start', startIndex, 'count', itemsOnPage);
-            console.log('data', this.data);            
-            console.log('page items', this.data.slice(startIndex, startIndex + itemsOnPage));         
-            return this.data.slice(startIndex, startIndex + itemsOnPage)
+        let junk = Observable.of(1);
+        return junk.concat(this.paginator.page).map(() => {
+            return this.updateData();
         });
     }
 
