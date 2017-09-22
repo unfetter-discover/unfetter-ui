@@ -24,7 +24,7 @@
                 </md-expansion-panel-header>
 
                 <div class="example-container" *ngIf="attackPatternByPhaseMap !== undefined && attackPatternByPhaseMap[key] !== undefined">
-                    <stix-table [stixData]="attackPatternByPhaseMap[key]"></stix-table>                  
+                    <stix-table [stixData]="attackPatternByPhaseMap[key]" (delete)="deletButtonClicked($event, key)"></stix-table>                  
                 </div>
                 
             </md-expansion-panel>
