@@ -147,6 +147,9 @@ label {
     overflow-y: auto;
     position: relative;
 }
+.inlineFlex {
+    display: inline-flex;
+}
 
 .margin-top {
     margin-top: 10px;
@@ -344,5 +347,38 @@ a {
     100% {
         transform: translateX(0%);
         opacity: 1;
+    }
+}
+
+// ~~~ Angular Material helpers, *NOT* overrides ~~~
+.buttonGrp .mat-button {
+    font-size: 2.5rem;
+}
+.mat-expansion-panel {
+    transition: box-shadow 0.3s ease-in-out;
+}
+.mat-expansion-panel-header-title {
+    align-items: center;
+    .mat-badge {
+        color: white;
+        background: #607D8B;
+        padding: 2.5px 8px;
+        border-radius: 11px;
+        font-size: 12px;
+    }
+}
+.mat-expanded {
+    &.mat-expansion-panel {
+        box-shadow: 0px 6px 7px -4px rgba(0, 0, 0, 0.2),
+        0px 11px 15px 1px rgba(0, 0, 0, 0.14),
+        0px 4px 20px 3px rgba(0, 0, 0, 0.12) !important;
+    }
+    .mat-expansion-panel-header {
+        background: #0177bc !important;
+        transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+        .mat-expansion-panel-header-title,
+        .mat-expansion-indicator::after {
+            color: white !important;
+        }
     }
 }

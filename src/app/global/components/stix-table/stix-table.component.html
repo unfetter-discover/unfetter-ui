@@ -1,0 +1,36 @@
+<div class="stixTableComponent">
+    <md-table #table [dataSource]="dataSource">
+
+        <ng-container mdColumnDef="name">
+            <md-header-cell *mdHeaderCellDef>STIX</md-header-cell>
+            <md-cell *mdCellDef="let element">
+                <a routerLink="{{element.id}}">{{element.name}}</a>
+                <!-- <span>{{element.name}}</span> -->
+                <md-chip-list *ngIf="element.external_references" class="inlineFlex">
+                    <md-chip *ngFor="let external_reference of element.external_references" style="margin-left: 5px;">
+                        <a target="_blank" *ngIf="external_reference.url"> {{external_reference.source_name}}</a>
+                        <span *ngIf="!external_reference.url"> {{external_reference.source_name}}</span>
+                    </md-chip>
+                </md-chip-list>
+            </md-cell>
+        </ng-container>
+
+        <ng-container mdColumnDef="action">
+            <md-header-cell *mdHeaderCellDef> &nbsp; </md-header-cell>
+            <md-cell *mdCellDef="let element">
+                <div class="buttonGrp text-right">
+                    <button class="mat-primary" md-button (click)="edit(element)">
+                        <i class="material-icons">create</i>
+                    </button>
+                    <button class="mat-warn" md-button (click)="deletButtonClicked(attackPattern, key)">
+                        <i class="material-icons">delete</i>
+                    </button>
+                </div>
+            </md-cell>
+        </ng-container>
+
+        <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
+        <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
+    </md-table>
+    <md-paginator #paginator [length]="stixData.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></md-paginator>
+</div>
