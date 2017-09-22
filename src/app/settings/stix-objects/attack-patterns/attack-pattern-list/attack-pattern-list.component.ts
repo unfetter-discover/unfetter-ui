@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChildren, QueryList, ChangeDetectorRef  } from '@angular/core';
 import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -28,7 +28,8 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
         public router: Router,
         public dialog: MdDialog,
         public location: Location,
-        public snackBar: MdSnackBar) {
+        public snackBar: MdSnackBar,
+        private ref: ChangeDetectorRef) {
 
         super(stixService, route, router, dialog, location, snackBar);
         this.phaseNameGroups['unspecified'] = [];
@@ -95,6 +96,12 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
             () => {
                 this.attackPatterns = this.attackPatterns.filter((h) => h.id !== attackPattern.id);
                 this.phaseNameGroups[key] = this.phaseNameGroups[key].filter((h) => h.id !== attackPattern.id);
+
+                // TODO determine if there is a better wya to do this
+                let temp = this.attackPatternByPhaseMap[key].filter((h) => h.id !== attackPattern.id);
+                delete this.attackPatternByPhaseMap[key];
+                this.ref.detectChanges();
+                this.attackPatternByPhaseMap[key] = temp;
             }
         );
     }
