@@ -1,0 +1,23 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 mat-title">
+            NEW PRODUCT
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <md-form-field>
+                <input mdInput #filter placeholder="ENTER WORKPRODUCT NAME" color="primary">
+            </md-form-field>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            BOUNDRIES
+            <md-slide-toggle color="primary" (change)="boundriesToggled($event)" [checked]="showCheckBoxes"></md-slide-toggle>
+        </div>
+        <div *ngIf="showCheckBoxes === true" class="col-md-10">
+            checkboxes
+        </div>
+    </div>
+</div>

@@ -1,5 +1,5 @@
 # docker compose file to only start up the new UI
-version: '2'
+version: '3.0'
 services:
   unfetter-ui:
     build: ../unfetter-ui
@@ -10,7 +10,7 @@ services:
     - ../unfetter-ui/dist:/usr/share/unfetter-ui/dist
     - ../unfetter-ui/config:/usr/share/unfetter-ui/config
     ports:
-    - "443:80"
+    - "443:443"
     entrypoint:
     - npm
     - run

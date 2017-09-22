@@ -1,4 +1,4 @@
-FROM node:8.4.0-alpine
+FROM node:8.5.0-alpine
 
 # Create Application Directory
 ENV WORKING_DIRECTORY /usr/share/unfetter-ui

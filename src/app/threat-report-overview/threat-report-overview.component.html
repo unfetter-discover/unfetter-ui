@@ -1,27 +1,27 @@
 <div class="container">
     <div class="row first-line">
-        <div class="col-md-6 title title-border">
+        <div class="col-md-6 mat-headline title-border">
             <div>
-                Threat Reports Overview
+                THREAT REPORTS OVERVIEW
             </div>
-            <span class="subtitle">
+            <span class="mat-subheading-1">
                 View your recent workproducts or create a new one
             </span>
         </div>
         <div class="col-md-4 top-right-panel">
-            <div class="title">
+            <div class="mat-headline">
                 CREATE NEW PRODUCT
             </div>
-            <!-- <span clas="subtitle">
+            <span class="mat-subheading-1">
                 Loreum ipsum dorat
-            </span> -->
+            </span>
             <span>
-                <button color="primary" md-raised-button>NEW</button>
+                <button color="primary" md-raised-button routerLink='./create/'>NEW</button>
             </span>
         </div>
     </div>
     <div class="row">
-        <div class="title col-md-6">RECENT WORK PRODUCTS</div>
+        <div class="mat-title col-md-6">RECENT WORK PRODUCTS</div>
         <div class="col-md-6">
             <md-form-field floatPlaceholder="never">
                 <input mdInput #filter placeholder="Filter Recent work products" color="primary">
@@ -31,7 +31,7 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <md-table #table [dataSource]="dataSource">
+            <md-table class="mat-elevation-z3" #table [dataSource]="dataSource">
 
                 <ng-container mdColumnDef="id">
                     <md-header-cell *mdHeaderCellDef> ID </md-header-cell>
