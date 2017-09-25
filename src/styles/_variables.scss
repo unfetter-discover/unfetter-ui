@@ -8,9 +8,29 @@ $neutral-color: #607D8B;
 $navbar-height: 64;
 $footer-height: 30;
 
+
+$default-navbar-height: 50;
+$default-navbar-nav-a-padding: 15;
+
 @function headerFooterOffset() {
     @return ($navbar-height + $footer-height) + px;
 }
 
-$default-navbar-height: 50;
-$default-navbar-nav-a-padding: 15;
+@mixin material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'liga';
+}
