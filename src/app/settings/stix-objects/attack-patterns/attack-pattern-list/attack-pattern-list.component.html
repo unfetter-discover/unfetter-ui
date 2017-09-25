@@ -20,6 +20,7 @@
                     <md-panel-title>
                         {{key | capitalize }}&nbsp;
                         <span *ngIf="attackPatternByPhaseMap[key] !== undefined" class="mat-badge">{{attackPatternByPhaseMap[key].length}}</span>
+                        <span *ngIf="attackPatternByPhaseMap[key] === undefined || !attackPatternByPhaseMap[key].length" class="mat-badge">0</span>
                     </md-panel-title>
                 </md-expansion-panel-header>
 
@@ -31,7 +32,7 @@
         </md-accordion>
 
         <br>
-        <p-accordion (onOpen)="onTabShow($event)">
+        <!-- <p-accordion (onOpen)="onTabShow($event)">
             <p-accordionTab header="{{key | capitalize }}" *ngFor="let key of phaseNameGroupKeys">
                 <p-dataList *ngIf="filterAttackPattern[key]" [value]="filterAttackPattern[key]" [paginator]="true" [rows]="numOfRows" [lazy]="true"
                     (onLazyLoad)="loadData($event, key)" [totalRecords]="totalRecords(key)">
@@ -64,7 +65,7 @@
 
             </p-accordionTab>
 
-        </p-accordion>
+        </p-accordion> -->
 
     </div>
 </div>
