@@ -1,3 +1,5 @@
+@import 'variables';
+
 .ui-widget-content {
     background: inherit;
 }
@@ -7,9 +9,72 @@
         background-color: inherit !important;
     }
 }
-.intrusionClass
-    {.ui-widget-content {
+.intrusionClass {
+    .ui-widget-content {
         background: white;
+    }
+}
 
+.ui-carousel {
+    .ui-carousel-header {
+        display: flex;
+        align-items: center;
+        border: none;
+        margin-right: -1px;
+        margin-left: -1px;
+        margin-top: -1px;
+        color: white;
+        border-radius: 0px;
+        background: $primary-color;
+        padding: 16px 24px;
+    }
+    .ui-carousel-header-title {
+        flex: 1;
+    }
+    .ui-carousel-button {
+        width: 25px;
+        height: 25px;
+        background-color: $accent-color;
+        border: none;
+        border-radius: 50%;
+        font-size: 25px;
+        color: white;
+        &.ui-carousel-prev-button {
+            order: 2;
+            &:before {
+                content: "<";
+                top: 14px;
+                right: 64px;
+                position: absolute;
+            }
+        }
+        &.ui-carousel-next-button {
+            order: 3;
+            &:before {
+                content: ">";
+                top: 14px;
+                right: 32px;
+                position: absolute;
+            }
+        }
+    }
+}
+
+// Intrustion Set Dashboard specific overrides
+#intrusionSetDashboard {
+    .ui-carousel.ui-widget.ui-widget-content.ui-corner-all {
+        border: none !important;
+        border-radius: 0 !important;
+    }
+    .carouselSubheadingRow {
+        .badge {
+            background-color: $neutral-color !important;
+        }
+        .kill-chain-div {
+            font-weight: bold;
+            padding: 5px;
+            background: $accent-alt-color;
+            border-bottom: 2px solid #2E7D32;
+        }
     }
 }
