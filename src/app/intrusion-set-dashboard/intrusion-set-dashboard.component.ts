@@ -30,7 +30,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
   constructor(
     protected genericApi: GenericApi,
     protected snackBar: MdSnackBar
-  ) {}
+  ) { }
 
   public ngOnInit() {
     let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
