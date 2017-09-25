@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChildren, QueryList, ChangeDetectorRef  } from '@angular/core';
 import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -18,7 +18,9 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
     public phaseNameGroups = {};
     public phaseNameGroupKeys: string[];
     public filterAttackPattern = {};
+    public attackPatternByPhaseMap: any = {};
     public numOfRows = 10;
+    public displayedColumns: string[] = ['name', 'action'];
 
     constructor(
         public stixService: StixService,
@@ -26,7 +28,8 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
         public router: Router,
         public dialog: MdDialog,
         public location: Location,
-        public snackBar: MdSnackBar) {
+        public snackBar: MdSnackBar,
+        private ref: ChangeDetectorRef) {
 
         super(stixService, route, router, dialog, location, snackBar);
         this.phaseNameGroups['unspecified'] = [];
@@ -38,6 +41,7 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
             (data) => {
                 this.attackPatterns = data as AttackPattern[];
                 this.getPhaseNameAttackPatterns();
+                this.populateAttackPatternByPhaseMap();
                 this.phaseNameGroupKeys = Object.keys(this.phaseNameGroups).sort();
             }, (error) => {
                 // handle errors here
@@ -49,6 +53,25 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
                 }
             }
         );
+    }
+
+    public populateAttackPatternByPhaseMap() {
+        this.attackPatterns.forEach((attackPattern: AttackPattern) => {
+            let killChainPhases = attackPattern.attributes.kill_chain_phases;
+            if (!killChainPhases || killChainPhases.length === 0) {
+                if (this.attackPatternByPhaseMap.unspecified === undefined) {
+                    this.attackPatternByPhaseMap.unspecified = [];
+                }
+                this.attackPatternByPhaseMap.unspecified.push(attackPattern);
+            } else {
+                killChainPhases.forEach((killChainPhase: KillChainPhase) => {
+                    if (this.attackPatternByPhaseMap[killChainPhase.phase_name] === undefined) {
+                        this.attackPatternByPhaseMap[killChainPhase.phase_name] = [];
+                    }
+                    this.attackPatternByPhaseMap[killChainPhase.phase_name].push(attackPattern);
+                });
+            }
+        });
     }
 
     public onSelect(event: any, phaseNameGroup: any): void {
@@ -73,6 +96,12 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
             () => {
                 this.attackPatterns = this.attackPatterns.filter((h) => h.id !== attackPattern.id);
                 this.phaseNameGroups[key] = this.phaseNameGroups[key].filter((h) => h.id !== attackPattern.id);
+
+                // TODO determine if there is a better wya to do this
+                let temp = this.attackPatternByPhaseMap[key].filter((h) => h.id !== attackPattern.id);
+                delete this.attackPatternByPhaseMap[key];
+                this.ref.detectChanges();
+                this.attackPatternByPhaseMap[key] = temp;
             }
         );
     }
