@@ -5,3 +5,16 @@
 md-form-field {
     width: 100%;
 }
+
+md-select {
+    width: 100%;
+}
+
+md-chip {
+    max-width: 200px;
+    text-overflow: ellipsis;
+}
+
+.mat-chip-list-stacked {
+    margin-top: 24px;
+}

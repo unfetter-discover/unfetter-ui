@@ -13,15 +13,15 @@ type troColName = keyof ThreatReportOverview;
 })
 export class ThreatReportOverviewComponent implements OnInit, OnDestroy {
 
-  @ViewChild('filter') 
+  @ViewChild('filter')
   public filter: ElementRef;
 
-  public displayCols: troColName[] = [ 'id', 'name', 'date', 'author' ];
-  public dataSource: ThreatReportOverviewDataSource; 
-  
+  public displayCols: troColName[] = ['id', 'name', 'date', 'author'];
+  public dataSource: ThreatReportOverviewDataSource;
+
   private readonly subscriptions = [];
 
-  constructor(protected threatReportOverviewService: ThreatReportOverviewService) {}
+  constructor(protected threatReportOverviewService: ThreatReportOverviewService) { }
 
   /**
    * @description fetch data for this component
@@ -30,14 +30,14 @@ export class ThreatReportOverviewComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.dataSource = new ThreatReportOverviewDataSource(this.threatReportOverviewService);
     Observable.fromEvent(this.filter.nativeElement, 'keyup')
-    .debounceTime(150)
-    .distinctUntilChanged()
-    .subscribe(() => {
-      if (!this.dataSource) { 
-        return; 
-      }
-      this.dataSource.nextFilter(this.filter.nativeElement.value);
-    });
+      .debounceTime(150)
+      .distinctUntilChanged()
+      .subscribe(() => {
+        if (!this.dataSource) {
+          return;
+        }
+        this.dataSource.nextFilter(this.filter.nativeElement.value);
+      });
     // const sub$ = this.threatReportOverviewService
     //   .load()
     //   .subscribe((threatReports) => {

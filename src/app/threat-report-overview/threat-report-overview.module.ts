@@ -7,9 +7,12 @@ import { ThreatReportOverviewComponent } from './threat-report-overview.componen
 import { ThreatReportOverviewService } from './threat-report-overview.service';
 import { ThreatReportCreationComponent } from './create/threat-report-creation.component';
 
-import { MdButtonModule, MdChipsModule, MdSelectModule, MdInputModule, MdIconModule, MdAutocompleteModule, MdCheckboxModule } from '@angular/material';
+import { MdButtonModule, MdChipsModule, MdInputModule, MdIconModule, MdAutocompleteModule } from '@angular/material';
+import { MdCheckboxModule } from '@angular/material';
+import { MdDatepickerModule } from '@angular/material';
+import { MdSelectModule } from '@angular/material';
+import { MdSlideToggleModule } from '@angular/material';
 import { MdTableModule } from '@angular/material';
-import { MdSlideToggleModule } from '@angular/material'
 
 const troComponents = [
   ThreatReportOverviewComponent,
@@ -25,6 +28,7 @@ const mdComponents = [
   MdButtonModule,
   MdCheckboxModule,
   MdChipsModule,
+  MdDatepickerModule,
   MdInputModule,
   MdSelectModule,
   MdSlideToggleModule,
