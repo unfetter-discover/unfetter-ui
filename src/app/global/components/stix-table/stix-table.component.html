@@ -1,5 +1,5 @@
 <div class="stixTableComponent">
-    <md-table #table [dataSource]="dataSource" class="unfetterAngularMaterialTable hideHeader">
+    <md-table #table [dataSource]="dataSource" class="unfetterAngularMaterialTable hideHeader" [class.fix-height-table]="stixData.length > 10">
 
         <ng-container mdColumnDef="name">
             <md-header-cell *mdHeaderCellDef>STIX</md-header-cell>
