@@ -37,24 +37,26 @@
         background-color: $accent-color;
         border: none;
         border-radius: 50%;
-        font-size: 25px;
+        font-size: 30px;
         color: white;
         &.ui-carousel-prev-button {
             order: 2;
             &:before {
-                content: "<";
-                top: 14px;
-                right: 64px;
+                content: "keyboard_arrow_left";
+                top: 18px;
+                right: 58px;
                 position: absolute;
+                @include material-icons;
             }
         }
         &.ui-carousel-next-button {
             order: 3;
             &:before {
-                content: ">";
-                top: 14px;
-                right: 32px;
+                content: "keyboard_arrow_right";
+                top: 18px;
+                right: 25px;
                 position: absolute;
+                @include material-icons;
             }
         }
     }
