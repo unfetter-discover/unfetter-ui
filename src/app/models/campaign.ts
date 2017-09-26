@@ -30,8 +30,6 @@ export class Campaign {
     }
 
     public formatDate(): void {
-        console.log("aaaaa");
-        console.log(moment(this.attributes.first_seen).toISOString());
        this.attributes.first_seen =  this.attributes.first_seen ?
             moment(this.attributes.first_seen).toISOString() : moment().toISOString();
     }
@@ -39,8 +37,8 @@ export class Campaign {
     private createAttributes(): any {
         return {
             // version: '',
-            //created: moment().format(Constance.DATE_FORMATE),
-            //modified: moment().format(Constance.DATE_FORMATE),
+            // created: moment().format(Constance.DATE_FORMATE),
+            // modified: moment().format(Constance.DATE_FORMATE),
             // name: '',
             // description: '',
             labels: [],

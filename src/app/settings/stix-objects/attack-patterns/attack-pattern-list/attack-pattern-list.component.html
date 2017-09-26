@@ -15,13 +15,13 @@
    <div class="row height-100-percent">
 
         <div class="col-md-12 scroll-area">
-            <p-accordion (onOpen)="onTabShow($event)">
-                <p-accordionTab header="{{key | capitalize }}"  *ngFor="let key of phaseNameGroupKeys">
+            <p-accordion id="test" (onOpen)="onTabShow($event)">
+                <p-accordionTab id="{{key}}" header="{{key | capitalize }}"  *ngFor="let key of phaseNameGroupKeys">
                     <p-dataList *ngIf="filterAttackPattern[key]" [value]="filterAttackPattern[key]" [paginator]="true" [rows]="numOfRows" [lazy]="true" (onLazyLoad)="loadData($event, key)" [totalRecords]="totalRecords(key)">
                         <ng-template let-attackPattern pTemplate="item">
                             <div class="row  collection-item grey.lighten-5">
                                 <div class="col-md-9">
-                                    <a class="pull-left list-item--name" routerLink="{{attackPattern.id}}">{{attackPattern.attributes.name}}</a>
+                                    <a id="{{attackPattern.id}}" class="pull-left list-item--name" routerLink="{{attackPattern.id}}">{{attackPattern.attributes.name}}</a>
 
                                      <md-chip-list *ngIf="attackPattern.attributes.external_references">
                                         <md-chip *ngFor="let external_reference of attackPattern.attributes.external_references" style="margin-left: 5px;">

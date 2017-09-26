@@ -1,60 +1,88 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { inject, async, TestBed,  ComponentFixture } from '@angular/core/testing';
-import { AttackPatternsService } from '../../../services';
+import { NO_ERRORS_SCHEMA, DebugElement } from '@angular/core';
+import {
+  inject,
+  async,
+  TestBed,
+  ComponentFixture
+} from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MdDialog, MdSnackBar } from '@angular/material';
+import { Location } from '@angular/common';
+import { Observable } from 'rxjs/Observable';
+import { StixService } from '../../../stix.service';
 
 // Load the implementations that should be tested
-import { AttackPatternsComponent } from '../attack-patterns.component';
-import { AttackPattern } from '../../../models/attack-pattern';
+import { AttackPatternListComponent } from './attack-pattern-list.component';
+import { GlobalModule } from '../../../../global/global.module';
 
-import { Observable } from 'rxjs/Observable';
-
-describe(`AttackPatternsComponent`, () => {
-  let comp: AttackPatternsComponent;
-  let fixture: ComponentFixture<AttackPatternsComponent>;
-  let MockAttackPatternsService = {
-     getAttackPatterns: (): Observable<AttackPattern[]> => {
-        let pattern: AttackPattern;
-        let attackPatterens = [ ];
-        for (let i = 0; i < 2; i++) {
-            pattern =  new AttackPattern();
-            pattern.id = i;
-            pattern.name = 'pattern' + i;
-            attackPatterens.push(pattern);
-        }
-        return Observable.of(attackPatterens);
-     }
+describe(`AttackPatternListComponent`, () => {
+  let comp: AttackPatternListComponent;
+  let fixture: ComponentFixture<AttackPatternListComponent>;
+  let de: DebugElement;
+  let el: HTMLElement;
+  let res = [];
+  let serviceMock = {
+    url: '',
+    load: (filter?: any): Observable<any[]> => {
+      return Observable.of(res);
+    }
   };
-  let attackPatternsService;
 
   // async beforeEach
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ AttackPatternsComponent ],
-      schemas: [NO_ERRORS_SCHEMA],
-      providers: [
-        {provide: AttackPatternsService, useValue: MockAttackPatternsService}
-      ]
+  beforeEach(
+    async(() => {
+      TestBed.configureTestingModule({
+        imports: [
+          GlobalModule
+        ],
+        declarations: [AttackPatternListComponent],
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [
+          { provide: StixService, useValue: serviceMock },
+          { provide: ActivatedRoute, useValue: {} },
+          { provide: Router, useValue: {} },
+          { provide: MdDialog, useValue: {} },
+          { provide: Location, useValue: {} },
+          { provide: MdSnackBar, useValue: {} }
+        ]
+      });
     })
-    .compileComponents(); // compile template and css
-  }));
+  );
 
-  // synchronous beforeEach
   beforeEach(() => {
-      fixture = TestBed.createComponent(AttackPatternsComponent);
-      comp    = fixture.componentInstance;
+    fixture = TestBed.createComponent(AttackPatternListComponent);
+    comp = fixture.componentInstance; // AttackPatternListComponent test instance
 
-      // UserService actually injected into the component
-      attackPatternsService = fixture.debugElement.injector.get(AttackPatternsService);
+    // query for the title <h1> by CSS element selector
+    de = fixture.debugElement.query(By.css('h1'));
   });
 
-  it(`should be readly initialized`, () => {
-    expect(fixture).toBeDefined();
-    expect(comp).toBeDefined();
+  it('should display one attack pattern', () => {
+    const attackPatternId = 'abcd-123';
+    const data = createData(attackPatternId);
+
+    res.push(data);
+    fixture.detectChanges();
+    expect(comp.attackPatterns.length).toEqual(1);
+
+    de = fixture.debugElement.query(By.css('p-accordiontab'));
+    alert('*******');
+    alert(de);
+    de.triggerEventHandler('click', null);
+    const elId = '#' + attackPatternId;
+    de = fixture.debugElement.query(By.css(elId));
+    el = de.nativeElement;
+    expect(comp.attackPatterns.length).toEqual(1);
+    expect(el.textContent).toEqual(data.attributes.name);
   });
 
-  it(`should load attach patterns`, () => {
-    fixture.detectChanges(); // trigger initial data binding
-    expect(comp.attackPatterns.length).toEqual(2, 'should load two attack patterns');
-  });
-
+  function createData(dataId: string) {
+    return {
+      id: dataId,
+      attributes: {
+        name: 'Attack Pattern One'
+      }
+    };
+  }
 });

@@ -31,7 +31,6 @@ export class CourseOfActionEditComponent extends CourseOfActionComponent impleme
        let subscription = super.saveButtonClicked().subscribe(
             (stixObject) => {
                 this.location.back();
-                
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

@@ -81,9 +81,9 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
     private getPhaseNameAttackPatterns() {
         this.attackPatterns.forEach((attackPattern: AttackPattern) => {
             let killChainPhases = attackPattern.attributes.kill_chain_phases;
-if (attackPattern.attributes.name === "test attack") {
-    console.dir(killChainPhases)
-}
+            if (attackPattern.attributes.name === 'test attack') {
+                console.dir(killChainPhases);
+            }
             if (!killChainPhases || killChainPhases.length === 0) {
                 let attackPatternsProxies = this.phaseNameGroups['unspecified'];
                 attackPatternsProxies.push(attackPattern);
@@ -102,6 +102,7 @@ if (attackPattern.attributes.name === "test attack") {
     }
 
     private onTabShow(event: any): void {
+        alert('tab click');
         let phaseName = this.phaseNameGroupKeys[event.index];
         if (!this.filterAttackPattern[phaseName]) {
             this.loadData({first: 0, rows: this.numOfRows}, this.phaseNameGroupKeys[event.index]);

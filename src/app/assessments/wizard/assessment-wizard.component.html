@@ -98,10 +98,12 @@
                                     <form>
                                         <md-select #question name="question" (change)="updateRisks(question, measurement, assessment)" [(ngModel)]="measurement.risk"
                                             class="full-width">
+                                            <md-option ></md-option>
                                             <md-option *ngFor="let options of measurement.options" [value]="options.risk">
-                                                {{ options.name }}
+                                                {{ options.name }}-{{ options.risk }}
                                             </md-option>
                                         </md-select>
+                                        {{measurement.risk}}
                                     </form>
                                 </div>
                             </div>
