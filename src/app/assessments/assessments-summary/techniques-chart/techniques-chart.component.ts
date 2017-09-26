@@ -88,7 +88,6 @@ export class TechniquesChartComponent implements OnInit {
         if (selectedRisk) {
             this.riskThreshold = selectedRisk;
         }
-        console.log('render chart, techniques breakdown', this.techniqueBreakdown);
         this.renderLabels();
         this.renderLegend();
         this.initDataArray();

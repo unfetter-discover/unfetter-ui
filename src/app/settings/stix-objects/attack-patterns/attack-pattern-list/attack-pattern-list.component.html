@@ -1,19 +1,19 @@
+<div class="row">
+    <div class="col-md-12">
 
-    <div class="row">
-        <div class="col-md-12">
-
-            <div class="button-row">
-                <a md-raised-button routerLink="./new" class="mat-primary">NEW</a>
-                <a md-raised-button (click)="download()" class="mat-primary">DOWNLOAD</a>
-            </div>
-            <div class="pull-right">
-                <span class="right-align">Results: {{attackPatterns.length}}</span>
-            </div>
-
+        <div class="button-row">
+            <a md-raised-button routerLink="./new" class="mat-primary">NEW</a>
+            <a md-raised-button (click)="download()" class="mat-primary">DOWNLOAD</a>
         </div>
-    </div>
-   <div class="row height-100-percent">
+        <div class="pull-right">
+            <span class="right-align">Results: {{attackPatterns.length}}</span>
+        </div>
 
+    </div>
+</div>
+<div class="row height-100-percent">
+
+<<<<<<< HEAD
         <div class="col-md-12 scroll-area">
             <p-accordion id="test" (onOpen)="onTabShow($event)">
                 <p-accordionTab id="{{key}}" header="{{key | capitalize }}"  *ngFor="let key of phaseNameGroupKeys">
@@ -22,31 +22,61 @@
                             <div class="row  collection-item grey.lighten-5">
                                 <div class="col-md-9">
                                     <a id="{{attackPattern.id}}" class="pull-left list-item--name" routerLink="{{attackPattern.id}}">{{attackPattern.attributes.name}}</a>
+=======
+    <div class="col-md-12 scroll-area">
+        <md-accordion class="unfetterAngularMaterialAccordion">
+            <md-expansion-panel *ngFor="let key of phaseNameGroupKeys">
+                <md-expansion-panel-header>
+                    <md-panel-title>
+                        {{key | capitalize }}&nbsp;
+                        <span *ngIf="attackPatternByPhaseMap[key] !== undefined" class="mat-badge">{{attackPatternByPhaseMap[key].length}}</span>
+                        <span *ngIf="attackPatternByPhaseMap[key] === undefined || !attackPatternByPhaseMap[key].length" class="mat-badge">0</span>
+                    </md-panel-title>
+                </md-expansion-panel-header>
+>>>>>>> 283ec9c049b98e2f29a9b31f1772293727fdeb72
 
-                                     <md-chip-list *ngIf="attackPattern.attributes.external_references">
-                                        <md-chip *ngFor="let external_reference of attackPattern.attributes.external_references" style="margin-left: 5px;">
-                                            <a target="_blank" *ngIf="external_reference.url"> {{external_reference.source_name}}</a>
-                                            <span *ngIf="!external_reference.url"> {{external_reference.source_name}}</span>
-                                        </md-chip>
-                                    </md-chip-list>
+                <div class="example-container" *ngIf="attackPatternByPhaseMap !== undefined && attackPatternByPhaseMap[key] !== undefined">
+                    <stix-table [stixData]="attackPatternByPhaseMap[key]" (delete)="deletButtonClicked($event, key)"></stix-table>                  
+                </div>
+                
+            </md-expansion-panel>
+        </md-accordion>
 
+        <br>
+        <!-- <p-accordion (onOpen)="onTabShow($event)">
+            <p-accordionTab header="{{key | capitalize }}" *ngFor="let key of phaseNameGroupKeys">
+                <p-dataList *ngIf="filterAttackPattern[key]" [value]="filterAttackPattern[key]" [paginator]="true" [rows]="numOfRows" [lazy]="true"
+                    (onLazyLoad)="loadData($event, key)" [totalRecords]="totalRecords(key)">
+                    <ng-template let-attackPattern pTemplate="item">
+                        <div class="row  collection-item grey.lighten-5">
+                            <div class="col-md-9">
+                                <a class="pull-left list-item--name" routerLink="{{attackPattern.id}}">{{attackPattern.attributes.name}}</a>
 
-                                </div>
-                                <div class="col-md-3">
-
-                                    <button class="pull-right" md-raised-button (click)="deletButtonClicked(attackPattern, key)"><i class="fa fa-trash"></i></button>
-
-                                    <button class="pull-right" md-raised-button (click)="edit(attackPattern)"><i class="fa fa-pencil"></i></button>
-
-                                </div>
+                                <md-chip-list *ngIf="attackPattern.attributes.external_references">
+                                    <md-chip *ngFor="let external_reference of attackPattern.attributes.external_references" style="margin-left: 5px;">
+                                        <a target="_blank" *ngIf="external_reference.url"> {{external_reference.source_name}}</a>
+                                        <span *ngIf="!external_reference.url"> {{external_reference.source_name}}</span>
+                                    </md-chip>
+                                </md-chip-list>
 
 
                             </div>
-                        </ng-template>
-                    </p-dataList>
+                            <div class="col-md-3">
 
-                </p-accordionTab>
+                                <button class="pull-right" md-raised-button (click)="deletButtonClicked(attackPattern, key)"><i class="material-icons">delete</i></button>
 
-            </p-accordion>
-        </div>
+                                <button class="pull-right" md-raised-button (click)="edit(attackPattern)"><i class="material-icons">create</i></button>
+
+                            </div>
+
+
+                        </div>
+                    </ng-template>
+                </p-dataList>
+
+            </p-accordionTab>
+
+        </p-accordion> -->
+
     </div>
+</div>

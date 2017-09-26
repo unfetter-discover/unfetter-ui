@@ -13,7 +13,7 @@ import { Constance } from '../../../../utils/constance';
 })
 
 export class ReportsListComponent extends BaseStixComponent implements OnInit {
-    private reports: Report[] = [];
+    public reports: Report[] = [];
 
     constructor(
         public stixService: StixService,
@@ -28,7 +28,6 @@ export class ReportsListComponent extends BaseStixComponent implements OnInit {
     }
 
     public ngOnInit() {
-        console.log('Initial ReportsListComponent');
         let subscription =  super.load().subscribe(
             (data) => {
                 this.reports = data as Report[];

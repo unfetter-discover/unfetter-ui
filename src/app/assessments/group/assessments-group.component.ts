@@ -54,7 +54,6 @@ export class AssessmentsGroupComponent implements OnInit, AfterViewInit {
    * @description init after view
    */
   public ngAfterViewInit(): void {
-    console.log('after view init');
     const sub = this.addAssessedObjectComponents.changes
       .subscribe(
         (comps: QueryList<AddAssessedObjectComponent>) => {
@@ -290,14 +289,11 @@ export class AssessmentsGroupComponent implements OnInit, AfterViewInit {
 
     const objToPatch = this.assessment.attributes;
     objToPatch.modified = new Date().toISOString();
-    console.log(objToPatch);
     this.assessmentsDashboardService
       .genericPatch(`${Constance.X_UNFETTER_ASSESSMENT_URL}/${this.assessment.id}`, objToPatch)
       .subscribe((assessmentRes) => {
-        console.log('Assessment updated successfully');
         // refresh data
         let indexOfCurAp = 0;
-        console.log('curap', this.currentAttackPattern);
 
         for (let i = 0; i < this.attackPatternsByPhase.length; i++) {
           if (this.attackPatternsByPhase[i].attackPatternId === this.currentAttackPattern.id) {

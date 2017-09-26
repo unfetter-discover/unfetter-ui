@@ -24,8 +24,8 @@ export class IntrusionSetDashboardComponent implements OnInit {
   public intrusionSetsDashboard: any = {};
   public graphMetaData = { ditems: [], killChainPhase: [], themes: [] };
   public treeData: any;
-  private duration = 3000;
-  private groupKillchain: any[];
+  public duration = 3000;
+  public groupKillchain: any[];
 
   constructor(
     protected genericApi: GenericApi,
@@ -77,7 +77,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
     return count;
   }
 
-  private groupByKillchain(attackPatterns: any[]): any[] {
+  public groupByKillchain(attackPatterns: any[]): any[] {
     const killChainAttackPattern = [];
     const killChainAttackPatternGroup = {};
     attackPatterns.forEach((attackPattern) => {
@@ -105,10 +105,11 @@ export class IntrusionSetDashboardComponent implements OnInit {
     return killChainAttackPattern;
   }
 
-  private calPercentage(part: number, whole: number): number {
+  public calPercentage(part: number, whole: number): number {
     return Math.round(part / whole * 100);
   }
-  private select(intrusionSet: IntrusionSet, isAutoComplete?: boolean): void {
+
+  public select(intrusionSet: IntrusionSet, isAutoComplete?: boolean): void {
     const found = this.selectedIntrusionSet.find((i) => {
       return intrusionSet.id === i.id;
     });
@@ -130,7 +131,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
     }
   }
 
-  private searchIntrusionSets(): void {
+  public searchIntrusionSets(): void {
     if (this.selectedIntrusionSet.length === 0) {
       return;
     }
@@ -159,7 +160,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
     );
   }
 
-  private buildTreeData(): void {
+  public buildTreeData(): void {
     const root = { name: '', type: 'root', children: [] };
     this.intrusionSetsDashboard['intrusionSets'].forEach((intrusionSet) => {
       const child = {
@@ -220,7 +221,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
     this.treeData = root;
   }
 
-  private getCsc(data: any): any {
+  public getCsc(data: any): any {
     const cscObject = {};
     const children = data.children ? data.children : data._children;
     if (children) {
@@ -255,7 +256,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
     return cscList;
   }
 
-  private buildMetaData(): void {
+  public buildMetaData(): void {
     this.graphMetaData.ditems = [];
     this.graphMetaData.killChainPhase = [];
     const ditems = [];
@@ -301,7 +302,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
     });
   }
 
-  private search(event) {
+  public search(event) {
     this.results = [];
     this.intrusionSets
       .filter((intrusionSet) => {
@@ -319,7 +320,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
       });
   }
 
-  private remove(event: any, intrusionSet: any): void {
+  public remove(event: any, intrusionSet: any): void {
     event.preventDefault();
     this.selectedIntrusionSet = this.selectedIntrusionSet.filter((i) => {
       return i.id !== intrusionSet.id;
@@ -331,7 +332,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
     }
   }
 
-  private removeAll(event): void {
+  public removeAll(event): void {
     event.preventDefault();
     this.selectedIntrusionSet.forEach((intrusionSet) => {
       this.remove(event, intrusionSet);
@@ -339,7 +340,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
     this.intrusionSetsDashboard['killChainPhases'] = this.groupKillchain;
   }
 
-  private onSelect(event): void {
+  public onSelect(event): void {
     const intrusionSet = this.intrusionSets.find((i) => {
       return i.id === event.id;
     });
@@ -347,7 +348,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
     this.select(intrusionSet, true);
   }
 
-  private hexToRgb(hex): any {
+  public hexToRgb(hex): any {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
       ? {
@@ -358,7 +359,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
       : null;
   }
 
-  private color(data: string): void {
+  public color(data: string): void {
     data['killChainPhases'].forEach((killChainPhase) => {
       killChainPhase.attack_patterns.forEach((attack_pattern) => {
         const found = data['intrusionSets'].find((intrusionSet) => {

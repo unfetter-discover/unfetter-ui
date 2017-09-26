@@ -5,7 +5,7 @@ import { Constance } from '../../utils/constance';
 
 @Injectable()
 export class GenericApi {
-    private baseUrl: String = Constance.API_HOST || '';
+    private baseUrl = Constance.API_HOST || '';
     private data: any = null;
     private postHeaders: Headers;
 

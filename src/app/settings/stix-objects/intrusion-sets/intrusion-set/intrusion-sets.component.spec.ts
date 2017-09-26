@@ -6,9 +6,14 @@ import { Location } from '@angular/common';
 
 // Load the implementations that should be tested
 import { IntrusionSetComponent } from './intrusion-set.component';
+<<<<<<< HEAD
 import { StixService } from '../../../stix.service';
 
 describe(`IntrusionSetComponent`, () => {
+=======
+
+describe(`IntrusionSetsComponent`, () => {
+>>>>>>> 283ec9c049b98e2f29a9b31f1772293727fdeb72
   let comp: IntrusionSetComponent;
   let fixture: ComponentFixture<IntrusionSetComponent>;
 
@@ -31,9 +36,18 @@ describe(`IntrusionSetComponent`, () => {
   }));
 
   // synchronous beforeEach
+<<<<<<< HEAD
   // beforeEach(() => {
   //   fixture.detectChanges(); // trigger initial data binding
   // });
+=======
+  beforeEach(() => {
+    fixture = TestBed.createComponent(IntrusionSetComponent);
+    comp    = fixture.componentInstance;
+
+    fixture.detectChanges(); // trigger initial data binding
+  });
+>>>>>>> 283ec9c049b98e2f29a9b31f1772293727fdeb72
 
   it(`should be readly initialized`, () => {
     expect(fixture).toBeDefined('IntrusionSetComponent not defined');

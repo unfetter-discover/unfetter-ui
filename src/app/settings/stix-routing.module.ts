@@ -41,7 +41,7 @@ import {
 import {
   ThreatActorHomeComponent,
   ThreatActorListComponent,
-  TheatActorComponent,
+  ThreatActorsComponent,
   ThreatActorNewComponent,
   ThreatActorEditComponent
 } from './stix-objects/threat-actors';
@@ -226,7 +226,7 @@ const stixRoutes: Routes = [{
           },
           {
             path: ':id',
-            component: TheatActorComponent
+            component: ThreatActorsComponent
           },
           {
             path: 'edit/:id',

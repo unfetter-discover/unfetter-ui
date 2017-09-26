@@ -20,13 +20,10 @@ export class BaseComponent {
 
         dialogRef.afterClosed().subscribe(
             (result) => {
-                console.log(result);
         });
     }
 
-    protected download(): void {
-        console.log('download');
-    }
+    protected download(): void {}
 
     protected cancelButtonClicked(): void {
         this.location.back();

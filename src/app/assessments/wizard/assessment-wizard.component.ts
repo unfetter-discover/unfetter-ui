@@ -77,7 +77,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
   public selectedRisk = '1';
   public page = 1;
   private assessments = [];
-  private killChains = [];
+  private groupings = [];
   private assessmentGroups: any;
   private defaultMeasurement = 'Nothing';
   private url: string;
@@ -95,7 +95,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
   public ngOnInit(): void {
     const type = this.route.snapshot.paramMap.get('type');
     const id = this.route.snapshot.paramMap.get('id');
-    this.url = this.generateUrl(type);
+    this.url = this.generateUrl(type) + '?metaproperties=true';
     const logErr = (err) => console.log(err);
     const sub1 = this.genericApi.get(this.url)
       .subscribe((data) => {
@@ -106,7 +106,11 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
             .subscribe((res) => {
               this.model = res;
               if (this.model.attributes.created !== undefined) {
+<<<<<<< HEAD
                 this.publishDate = new Date(this.model.attributes.created);
+=======
+                this.publishDate = new Date(this.model.attributes.created);                
+>>>>>>> 283ec9c049b98e2f29a9b31f1772293727fdeb72
               }
               this.selectedRiskValue = null;
               this.updateChart();
@@ -289,8 +293,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         assessment.created = new Date();
 
         assessment.measurements = [];
-        assessment.kill_chain_phases =
-          assessedObject.attributes.kill_chain_phases;
+        assessment.groupings = assessedObject.attributes.groupings;
         assessment.id = assessedObject.id;
         assessment.name = assessedObject.attributes.name;
         assessment.description = assessedObject.attributes.description;
@@ -303,9 +306,9 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
       });
       // We do this so we can just save all the assessments later.
       this.assessments = assessments;
-      this.killChains = this.buildKillChain(assessments);
+      this.groupings = this.buildGrouping(assessments);
 
-      const assessmentObjectsGroups = this.groupObjectsByKillPhase(assessments);
+      const assessmentObjectsGroups = this.doObjectGroupings(assessments);
       const keys = Object.keys(assessmentObjectsGroups).sort();
       keys.forEach((phaseName, index) => {
         // TODO - Need to remove the 'courseOfAction' name
@@ -321,7 +324,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         });
         this.item = this.navigations;
         // TODO: Need to get description somehow from the key phase information
-        assessmentGroup.description = this.killChains[phaseName];
+        assessmentGroup.description = this.groupings[phaseName];
         assessmentGroup.assessments = courseOfActionGroup;
         assessmentGroup.risk = 1;
         const riskArray = [1, 0];
@@ -336,38 +339,38 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
     return assessmentGroups;
   }
 
-  private buildKillChain(stixObjects): any {
-    const killChains = [];
+  private buildGrouping(stixObjects): any {
+    const groupings = [];
     stixObjects.forEach((stixObject) => {
-      const killChainPhases = stixObject.kill_chain_phases;
-      if (!killChainPhases) {
+      const groupingStages = stixObject.groupings;
+      if (!groupingStages) {
         const phaseName = 'unknown';
-        if (!killChains[phaseName]) {
+        if (!groupings[phaseName]) {
           const description = 'unknown description';
-          killChains[phaseName] = description;
+          groupings[phaseName] = description;
         }
       } else {
-        killChainPhases.forEach((killChainPhase) => {
-          const phaseName = killChainPhase.phase_name;
-          if (!killChains[phaseName]) {
-            const description = killChainPhase.description;
+        groupingStages.forEach((groupingStage) => {
+          const phaseName = groupingStage.groupingValue;
+          if (!groupings[phaseName]) {
+            const description = groupingStage.description;
             if (description) {
-              killChains[phaseName] = description;
+              groupings[phaseName] = description;
             } else {
-              killChains[phaseName] = phaseName;
+              groupings[phaseName] = phaseName;
             }
           }
         });
       }
     });
-    return killChains;
+    return groupings;
   }
 
-  private groupObjectsByKillPhase(stixObjects): any {
+  private doObjectGroupings(stixObjects): any {
     const hash = {};
     stixObjects.forEach((stixObject) => {
-      const killChainPhases = stixObject.kill_chain_phases;
-      if (!killChainPhases) {
+      const groupingStages = stixObject.groupings;
+      if (!groupingStages) {
         const phaseName = 'unknown';
         let objectProxies = hash[phaseName];
         if (objectProxies === undefined) {
@@ -377,8 +380,8 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         const objectProxy = { content: stixObject };
         objectProxies.push(stixObject);
       } else {
-        killChainPhases.forEach((killChainPhase) => {
-          const phaseName = killChainPhase.phase_name;
+        groupingStages.forEach((groupingStage) => {
+          const phaseName = groupingStage.groupingValue;
           let objectProxies = hash[phaseName];
           if (objectProxies === undefined) {
             objectProxies = [];

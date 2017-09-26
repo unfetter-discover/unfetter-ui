@@ -10,7 +10,7 @@ export class RiskIconComponent {
   @Input('risk') public risk: number;
   @Input('showTooltip') public showTooltip = false;
   @Input('tooltipPlacement') public tooltipPlacement = 'after';
-
+  
   public getRiskColor(avgRisk) {
     let riskHsl: any = {};
 

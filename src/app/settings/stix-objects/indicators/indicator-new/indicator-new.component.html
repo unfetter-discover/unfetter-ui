@@ -27,20 +27,30 @@
                  <div>
                 <p-calendar [(ngModel)]="indicator.attributes.valid_from"  dateFormat="M-dd-yy" showIcon="true"></p-calendar>
                  </div> -->
-                <md-input-container class="full-width">
+                <!--<md-input-container class="full-width">
                     <input mdInput [mdDatepicker]="picker" placeholder="Valid From" [(ngModel)]="indicator.attributes.valid_from">
                     <button mdSuffix [mdDatepickerToggle]="picker"></button>
                 </md-input-container>
-                <md-datepicker #picker></md-datepicker>
+                <md-datepicker #picker></md-datepicker>-->
+                <md-form-field class="full-width">
+                    <input mdInput [mdDatepicker]="picker" placeholder="Valid From" [(ngModel)]="indicator.attributes.valid_from">
+                    <md-datepicker-toggle mdSuffix [for]="picker"></md-datepicker-toggle>
+                    <md-datepicker #picker></md-datepicker>
+                </md-form-field>
             </div>
             <div class="col-md-6">
                 <!-- <label>Valid To</label>
                <div> -->
-                    <md-input-container class="full-width">
+                    <!--<md-input-container class="full-width">
                         <input mdInput [mdDatepicker]="picker_to" placeholder="Valid Until" [(ngModel)]="indicator.attributes.valid_until">
                         <button mdSuffix [mdDatepickerToggle]="picker_to"></button>
                     </md-input-container>
-                    <md-datepicker #picker_to></md-datepicker>
+                    <md-datepicker #picker_to></md-datepicker>-->
+                    <md-form-field class="full-width">
+                        <input mdInput [mdDatepicker]="picker_to" placeholder="Valid Until" [(ngModel)]="indicator.attributes.valid_until">
+                        <md-datepicker-toggle mdSuffix [for]="picker_to"></md-datepicker-toggle>
+                        <md-datepicker #picker_to></md-datepicker>
+                    </md-form-field>
                     <!-- <p-calendar [(ngModel)]="indicator.attributes.valid_to"  dateFormat="M-dd-yy" showIcon="true"></p-calendar> -->
                <!-- </div> -->
             </div>
@@ -52,8 +62,8 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="button-row pull-right">
-                        <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a>
-                        <a class=" " md-raised-button (click)="saveIndicator()" [disabled]="!indicator.attributes.name"><i class="fa fa-floppy-o "></i> SAVE & CLOSE</a>
+                        <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</a>
+                        <a class=" " md-raised-button (click)="saveIndicator()" [disabled]="!indicator.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</a>
                 </div>
             </div>
         </div>

@@ -15,7 +15,7 @@ import { Constance } from '../../../../utils/constance';
 })
 
 export class ToolComponent extends BaseStixComponent implements OnInit {
-   protected tool: Tool = new Tool();
+   public tool: Tool = new Tool();
    constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
@@ -45,12 +45,13 @@ export class ToolComponent extends BaseStixComponent implements OnInit {
         );
     }
 
-    protected saveButtonClicked(): Observable<any> {
+    public saveButtonClicked(): Observable<any> {
         return Observable.create((observer) => {
                let subscription = super.save(this.tool).subscribe(
                     (data) => {
-                        observer.next(data);
-                        observer.complete();
+                        this.location.back();
+                        // observer.next(data);
+                        // observer.complete();
                     }, (error) => {
                         // handle errors here
                         console.log('error ' + error);
@@ -64,7 +65,7 @@ export class ToolComponent extends BaseStixComponent implements OnInit {
         });
     }
 
-    protected loadTool(): void {
+    public loadTool(): void {
       let sub = super.get().subscribe(
         (data) => {
           this.tool =  new Tool(data);

@@ -31,7 +31,7 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     public motivationCtrl: FormControl;
     public resourceLevelCtrl: FormControl;
 
-    protected labels = [
+    public labels = [
         {label: 'activist'},
         {label: 'competitor'},
         {label: 'crime-syndicate'},
@@ -44,12 +44,12 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
         {label: 'spy'},
         {label: 'terrorist'}
     ];
-    protected attackPatterns: AttackPattern[] = [];
-    protected identities: Identity[] = [];
-    protected threatActors: ThreatActor[] = [];
-    protected newRelationships: Relationship[] = [];
-    protected savedRelationships: Relationship[] = [];
-    protected deletedRelationships: Relationship[] = [];
+    public attackPatterns: AttackPattern[] = [];
+    public identities: Identity[] = [];
+    public threatActors: ThreatActor[] = [];
+    public newRelationships: Relationship[] = [];
+    public savedRelationships: Relationship[] = [];
+    public deletedRelationships: Relationship[] = [];
 
    constructor(
         public stixService: StixService,
@@ -96,7 +96,7 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     }
 
      // add chip
-    protected add(event: any): void {
+    public add(event: any): void {
         console.log(event.type);
         const relationship = new Relationship();
         this.newRelationships.push(relationship);

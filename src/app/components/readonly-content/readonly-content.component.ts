@@ -12,7 +12,5 @@ export class ReadonlyContentComponent {
 
     @Input() public model: any;
 
-     constructor() {
-         console.log('Initial ReadonlyContentComponent');
-    }
+     constructor() { }
 }

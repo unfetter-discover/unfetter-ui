@@ -8,7 +8,11 @@ import { StixService } from '../../../stix.service';
 // Load the implementations that should be tested
 import { IdentityComponent } from './identity.component';
 
+<<<<<<< HEAD
 describe(`IdentityComponent`, () => {
+=======
+describe(`IndentitiesComponent`, () => {
+>>>>>>> 283ec9c049b98e2f29a9b31f1772293727fdeb72
   let comp: IdentityComponent;
   let fixture: ComponentFixture<IdentityComponent>;
 
@@ -31,9 +35,18 @@ describe(`IdentityComponent`, () => {
   }));
 
   // synchronous beforeEach
+<<<<<<< HEAD
   // beforeEach(() => {
   //   fixture.detectChanges(); // trigger initial data binding
   // });
+=======
+  beforeEach(() => {
+    fixture = TestBed.createComponent(IdentityComponent);
+    comp    = fixture.componentInstance;
+
+    fixture.detectChanges(); // trigger initial data binding
+  });
+>>>>>>> 283ec9c049b98e2f29a9b31f1772293727fdeb72
 
   it(`should be readly initialized`, () => {
     expect(fixture).toBeDefined();

@@ -3,13 +3,13 @@
 
          <div class="col-md-11">
           
-                    <small *ngIf="showDescription" class="help-description"><i class="fa fa-arrow-down"></i>  {{ description}}</small>
+                    <small *ngIf="showDescription" class="help-description"><i class="material-icons">keyboard_arrow_down</i>  {{ description}}</small>
                 
         </div>
         <div class="col-md-1">
             <a href (click)="toggleDescription($event)" >
-                <i class="fa fa-close" *ngIf="showDescription"></i>
-                <i class="fa fa-question-circle-o" *ngIf="!showDescription"></i>
+                <i class="material-icons" *ngIf="showDescription">close</i>
+                <i class="material-icons" *ngIf="!showDescription">help_outline</i>
             </a>
         </div>
     </div>

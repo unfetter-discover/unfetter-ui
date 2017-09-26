@@ -1,0 +1,25 @@
+.container {
+    padding-top: 24px;
+}
+
+.title-border {
+    border-right: 4px solid rgba(0,0,0,0.2);
+    min-height: 15vh;
+}
+
+.top-right-panel {
+    padding-left: 16px;
+}
+
+.first-line { 
+    min-height: 15vh;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #777;
+}
+
+md-form-field {
+    width: 100%;
+}

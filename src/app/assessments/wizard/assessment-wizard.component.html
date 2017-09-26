@@ -53,11 +53,16 @@
                             <div>
                                 <p-calendar dateFormat="M-dd-yy" showIcon="true"></p-calendar>
                             </div>-->
-                            <md-input-container class="full-width">
+                            <!--<md-input-container class="full-width">
                                 <input mdInput [mdDatepicker]="picker" placeholder="Published" [(ngModel)]="publishDate">
                                 <button mdSuffix [mdDatepickerToggle]="picker"></button>
                             </md-input-container>
-                            <md-datepicker #picker></md-datepicker>
+                            <md-datepicker #picker></md-datepicker>-->
+                            <md-form-field class="full-width">
+                                <input mdInput [mdDatepicker]="picker" placeholder="Published" [(ngModel)]="publishDate">
+                                <md-datepicker-toggle mdSuffix [for]="picker"></md-datepicker-toggle>
+                                <md-datepicker #picker></md-datepicker>
+                            </md-form-field>
                         </div>
                     </div>
                     <div class="row mat-card-padding">

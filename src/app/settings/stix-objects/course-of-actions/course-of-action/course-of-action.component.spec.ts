@@ -6,7 +6,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 // Load the implementations that should be tested
 import { CourseOfActionComponent } from './course-of-action.component';
+<<<<<<< HEAD
 import { StixService } from '../../../stix.service';
+=======
+>>>>>>> 283ec9c049b98e2f29a9b31f1772293727fdeb72
 
 describe(`CoursesOfActionComponent`, () => {
   let comp: CourseOfActionComponent;
@@ -17,6 +20,7 @@ describe(`CoursesOfActionComponent`, () => {
     TestBed.configureTestingModule({
       declarations: [ CourseOfActionComponent ],
       schemas: [NO_ERRORS_SCHEMA],
+<<<<<<< HEAD
       providers: [
         {provide: StixService, useValue: {} },
         {provide: ActivatedRoute, useValue: {} },
@@ -26,6 +30,15 @@ describe(`CoursesOfActionComponent`, () => {
         {provide: MdSnackBar, useValue: {} }
       ]
     });
+=======
+      providers: []
+    })
+    .compileComponents(); // compile template and css
+  }));
+
+  // synchronous beforeEach
+  beforeEach(() => {
+>>>>>>> 283ec9c049b98e2f29a9b31f1772293727fdeb72
     fixture = TestBed.createComponent(CourseOfActionComponent);
     comp    = fixture.componentInstance;
   });

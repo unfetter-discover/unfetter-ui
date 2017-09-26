@@ -18,6 +18,7 @@ export class Tool {
         aliases: string[];
         external_references: ExternalReference[];
         kill_chain_phases: KillChainPhase[];
+        tool_version: string;
     };
 
     constructor(data?: Tool) {
@@ -36,7 +37,7 @@ export class Tool {
             // created: moment().format(Constance.DATE_FORMATE),
             // modified: moment().format(Constance.DATE_FORMATE),
             // description: '',
-            // name: '',
+            name: '',
             aliases: [],
             labels: [],
             external_references: [],

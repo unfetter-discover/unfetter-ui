@@ -1,9 +1,11 @@
 /* this file will be extracted to main dist folder and is imported in index.html */
+
+
 /* This file is for setting global styles  */
+
 @import 'variables';
 @import 'bootstrap_overrides';
 @import 'primeng_overrides';
-
 // // Import a pre-built theme
 // @import "~@angular/material/prebuilt-themes/deeppurple-amber";
 // @import "~@angular/material/prebuilt-themes/indigo-pink.css";
@@ -11,10 +13,9 @@
 @include mat-core();
 $my-app-primary: mat-palette($mat-light-blue, 800);
 $my-app-accent: mat-palette($mat-amber, A200, A100, A400);
-$my-app-warn : mat-palette($mat-deep-orange);
+$my-app-warn: mat-palette($mat-deep-orange);
 $my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
 @include angular-material-theme($my-app-theme);
-
 // // Import your custom input theme file so you can call the custom-input-theme function
 //@import '~angular-material-datepicker/src/datepicker/calendar.component.scss';
 @font-face {
@@ -23,28 +24,29 @@ $my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
     font-weight: normal;
     font-style: normal;
 }
+
 @font-face {
     font-family: 'Roboto';
     src: url('https://localhost/assets/fonts/Roboto/Roboto-Bold.ttf');
     font-weight: bold;
     font-style: normal;
 }
+
 @font-face {
     font-family: 'Roboto';
     src: url('https://localhost/assets/fonts/Roboto/Roboto-Italic.ttf');
     font-weight: normal;
     font-style: italic;
 }
+
 // // Using the $theme variable from the pre-built theme you can call the theming function
 //@include calendar-theme($theme);
 body {
-    font-family: "Roboto", "Helvetica Neue",
-    Helvetica,
-    Arial,
-    sans-serif;    
+    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-html, body{
+html,
+body {
     background: #fafafa !important;
 }
 
@@ -58,91 +60,62 @@ label {
     padding-bottom: $footer-height + px;
 }
 
-
-/* Sticky footer styles
-/* Sticky footer styles
--------------------------------------------------- */
-// html {
-//   position: relative;
-//   height: 100%;
-//   width: 100%;
-// }
-// body {
-//   /* Margin bottom by footer height */
-//   width: 100%;
-
-// }
-
 .footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  /* Set the fixed height of the footer here */
-  height: 30px;
-  background-color: $nav-background-color;
-  z-index: 1;
-  padding-top: 5px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 30px;
+    background-color: $nav-background-color;
+    z-index: 1;
+    padding-top: 5px;
 }
-
-// .jumbotron {
-//    background-color: #FFFFFF;
-//    padding-right: 15px !important;
-//     padding-left: 15px !important;
-//     padding-bottom: 0px !important;
-// }
 
 .height-100-percent {
     height: 100%;
 }
+
+
 /* Custom page CSS
 -------------------------------------------------- */
+
+
 /* Not required for template or sticky footer method. */
 
 // body > .container {
 //   padding: 60px 15px 0;
 // }
 .container .text-muted {
-  margin: 20px 0;
+    margin: 20px 0;
 }
 
-.footer > .container {
-  padding-right: 15px;
-  padding-left: 15px;
+.footer>.container {
+    padding-right: 15px;
+    padding-left: 15px;
 }
 
-code {
-  font-size: 80%;
-}
-
-// .text-muted {
-//     color: #FFFFFF;
+// ~~~~~~~~~~ Pinned for deletion
+// ~~~~~~~~~~ These do not seem like appropiate global overrides.  If these are component specific please make a class
+// code {
+//   font-size: 80%;
 // }
-
-
-
-// .mat-card {
-//     width: 100%;
-//     height: 100%;
+// .mat-list .mat-list-item .mat-list-item-content, .mat-nav-list .mat-list-item .mat-list-item-content {
+//     height: auto !important;
 // }
-
-.mat-list .mat-list-item .mat-list-item-content, .mat-nav-list .mat-list-item .mat-list-item-content {
-
-    height: auto !important;
-
-}
-.mat-tab-body {
-    padding: 5px;
-}
-
-.mat-tab-body-content {
-    height: inherit !important;
-    overflow: hidden !important;
-}
-
+// .mat-tab-body {
+//     padding: 5px;
+// }
+// .mat-tab-body-content {
+//     height: inherit !important;
+//     overflow: hidden !important;
+// }
+// ~~~~~~~~~~ End pinned for deletion
 .cursor-pointer {
     cursor: pointer;
 }
-.btn, .btn-large {
+
+.btn,
+.btn-large {
     text-decoration: none;
     color: #fff;
     background-color: #214f87;
@@ -155,68 +128,86 @@ code {
 .red {
     background-color: #F44336 !important
 }
+
 .full-width {
-  width: 100%;
-}
-.carousel-wrapper {
-    box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-    transition: box-shadow 280ms cubic-bezier(.4,0,.2,1);
-    will-change: box-shadow;
-    display: block;
-    position: relative;
-    padding: 24px;
-    border-radius: 2px;
-    font-family: 'Roboto',"Helvetica Neue",sans-serif;
+    width: 100%;
 }
 
-.carousel-content-wrapper {
-     height: 100%;
-    max-height: 250px;
-    min-height: 50px;
-    overflow-y: auto;
-    position: relative;
+.inlineFlex {
+    display: inline-flex;
 }
 
 .margin-top {
     margin-top: 10px;
 }
+
 .margin-bottom {
     margin-bottom: 15px;
 }
+
+// Margin top & bottom helpers in increments of 3 or 5
+@for $i from 1 to 8 {
+    .mt-#{$i * 5} {
+        margin-top: $i * 5px;
+    }
+    .mb-#{$i * 5} {
+        margin-bottom: $i * 5px;
+    }
+    .mt-#{$i * 3} {
+        margin-top: $i * 3px;
+    }
+    .mb-#{$i * 3} {
+        margin-bottom: $i * 3px;
+    }
+}
+
 // Used to match the padding of md-card elements
 .mat-card-padding {
     padding-left: 8px;
     padding-right: 8px;
 }
 
-.kill-chain-div {
-    font-weight: bold;
-    padding: 5px;
-    /* text-align: center; */
-    border: 1px solid lightgray;
-    margin: 2px;
-}
-
 .attack-pattern-div {
     font-size: .9em;
-    padding: 5px;
-    // background: pink;
+    padding: 5px; // background: pink;
 }
+
 .snack-bar-background-success {
-    background :#008000 !important;
+    background: $accent-alt-color !important;
 }
+
 .snack-bar-background-error {
-    background :#ff0000 !important;
+    background: $warn-color !important;
 }
-.intrusion-set-dashboard-side-panel {
-    background-color: #0c1e30;
-}
-.intrusion-set-dashboard-side-panel-checkbox > .mat-checkbox-layout > .mat-checkbox-inner-container >.mat-checkbox-frame {
-    border-color: lightslategrey;
-}
-.ui-autocomplete {
-    background-color: #0c1e30;
+
+// ~~~ Intrusion Set Dashboard ~~~
+#intrusionSetDashboard {
+    .node {
+        cursor: pointer;
+    }
+    .node circle {
+        fill: #fff;
+        stroke: $neutral-color;
+        stroke-width: 1.5px;
+    }
+    .node text {
+        font: 12px sans-serif;
+    }
+    .link {
+        fill: none;
+        stroke: #ccc;
+        stroke-width: 1.5px;
+    }
+    .intrusion-set-dashboard-side-panel {
+        background-color: #0c1e30;
+    }
+    .intrusion-set-dashboard-side-panel-checkbox>.mat-checkbox-layout>.mat-checkbox-inner-container>.mat-checkbox-frame {
+        border-color: $neutral-color;
+    }
+    .ui-autocomplete {
+        background-color: #0c1e30;
         margin-top: 5px;
+    }
 }
 
 .ui-progressbar {
@@ -225,25 +216,6 @@ code {
     position: relative;
     width: 50%;
     float: left
-}
- .node {
-    cursor: pointer;
-}
-
-.node circle {
-    fill: #fff;
-    stroke: steelblue;
-    stroke-width: 1.5px;
-}
-
-.node text {
-    font: 12px sans-serif;
-}
-
-.link {
-    fill: none;
-    stroke: #ccc;
-    stroke-width: 1.5px;
 }
 
 .headingMarginMatch {
@@ -265,16 +237,21 @@ a {
 .whiteText {
     color: #fff;
 }
+
 .lightTextShadow {
-    text-shadow: 0 0 1px rgba(0, 0, 0, 0.3),
-    1px 1px 1px rgba(0, 0, 0, 0.2),
-    0 0 3px rgba(0, 0, 0, 0.1);
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 1px 1px 1px rgba(0, 0, 0, 0.2), 0 0 3px rgba(0, 0, 0, 0.1);
 }
+
 .paddingBottom {
     padding-bottom: 10px;
 }
+
 .mdSelectBotMargin {
     margin-bottom: 0.43em;
+}
+
+.md-24 {
+    font-size: 24px;
 }
 
 .mat-label {
@@ -283,43 +260,138 @@ a {
     font-size: 12px;
     margin-top: 2px;
 }
+
+// ~~~ Flex Helpers ~~~
+
 .flex {
     display: flex;
 }
-.itemsCenter {
+
+.flexItemsCenter {
     align-items: center;
 }
+
 .flex1 {
     flex: 1;
 }
+
 .flexAuto {
     flex: auto;
 }
+.flexNowrap {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    min-width: 0;
+}
+
 .loading {
-    height: calc(100vh - #{headerFooterOffset()});
-    // width: 100vw;
+    height: calc(100vh - #{headerFooterOffset()}); // width: 100vw;
     display: flex;
     flex-flow: column;
 }
+
 .loading md-spinner {
     margin: auto auto;
     flex: 1 0 auto;
 }
+
 .loading .loading-text {
     margin-left: auto;
     margin-right: auto;
     display: block;
     flex: 1 0 auto;
 }
+
+// ~~~ Icons ~~~
+.stix-icon {
+    height: 30px;
+    width: 30px;
+}
+
+.stix-icon-header {
+    height: 30px;
+    width: 30px;
+}
+
+.stix-icon-mini {
+    height: 20px;
+    width: 20px;
+}
+
+// ~~~ Animations ~~~
 .fadeIn {
     animation-name: opacity01;
     animation-duration: 0.4s;
 }
+
 @keyframes opacity01 {
     0% {
         opacity: 0;
     }
     100% {
         opacity: 1;
+    }
+}
+
+.slideIn {
+    animation: slideInLR 0.2s forwards;
+    opacity: 0;
+}
+
+@keyframes slideInLR {
+    0% {
+        opacity: 0;
+        transform: translateX(-2%);
+    }
+    90% {
+        transform: translateX(0.2%);
+    }
+    100% {
+        transform: translateX(0%);
+        opacity: 1;
+    }
+}
+
+// ~~~ Angular Material helpers, *NOT* overrides ~~~
+.buttonGrp .mat-button {
+    font-size: 2.5rem;
+}
+
+// ~~~ Angular Material Themes: *ALWAYS* nest in a class, *NOT* overrides ~~~
+.unfetterAngularMaterialAccordion {
+    .mat-expansion-panel {
+        transition: box-shadow 0.3s ease-in-out;
+    }
+    .mat-expansion-panel-header-title {
+        align-items: center;
+        .mat-badge {
+            color: white;
+            background: $neutral-color;
+            padding: 2.5px 8px;
+            border-radius: 11px;
+            font-size: 12px;
+        }
+    }
+    .mat-expanded {
+        &.mat-expansion-panel {
+            box-shadow: 0px 6px 7px -4px rgba(0, 0, 0, 0.2), 0px 11px 15px 1px rgba(0, 0, 0, 0.14), 0px 4px 20px 3px rgba(0, 0, 0, 0.12) !important;
+        }
+        .mat-expansion-panel-header {
+            background: $primary-color !important;
+            transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+            .mat-expansion-panel-header-title,
+            .mat-expansion-indicator::after {
+                color: white !important;
+            }
+        }
+    }
+}
+
+.unfetterAngularMaterialTable {
+    &.hideHeader {
+        .mat-header-row {
+            display: none !important;
+        }
     }
 }

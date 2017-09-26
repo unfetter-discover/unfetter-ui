@@ -6,11 +6,17 @@
     </div>
     <div class="col-md-6">
         <!-- <p-calendar [(ngModel)]="report.attributes.published" dateFormat="M-dd-yy" showIcon="true"></p-calendar> -->
-        <md-input-container class="full-width">
+        <!--<md-input-container class="full-width">
                     <input mdInput [mdDatepicker]="picker" placeholder="Published Date" [(ngModel)]="report.attributes.published">
                     <button mdSuffix [mdDatepickerToggle]="picker"></button>
                 </md-input-container>
-                <md-datepicker #picker></md-datepicker>
+                <md-datepicker #picker></md-datepicker>-->
+
+                <md-form-field class="full-width">
+                    <input mdInput [mdDatepicker]="picker" placeholder="Published Date" [(ngModel)]="report.attributes.published">
+                    <md-datepicker-toggle mdSuffix [for]="picker"></md-datepicker-toggle>
+                    <md-datepicker #picker></md-datepicker>
+                </md-form-field>
     </div>
 </div>
 <div class="row">
@@ -27,7 +33,7 @@
         <md-chip-list class="pull-left">
             <md-chip selected="true" color="accent" *ngFor="let intrusionSet of intrusionSets">
                 {{intrusionSet.attributes.name}}
-                <span class="cursor-pointer" (click)="remove(intrusionSet)"><i class="fa fa-trash"></i></span>
+                <span class="cursor-pointer" (click)="remove(intrusionSet)"><i class="material-icons">delete</i></span>
             </md-chip>
         </md-chip-list>
 
@@ -39,7 +45,7 @@
         <md-chip-list class="pull-left">
             <md-chip selected="true" color="accent" *ngFor="let attackPattern of attackPatterns">
                 {{attackPattern.attributes.name}}
-                <span (click)="remove(attackPattern)"><i class="fa fa-trash"></i></span>
+                <span (click)="remove(attackPattern)"><i class="material-icons">delete</i></span>
             </md-chip>
         </md-chip-list>
     </div>
@@ -59,8 +65,8 @@
 <div class="row">
     <div class="col-md-12">
         <div class="button-row pull-right">
-                <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="fa fa-arrow-left"></i> CANCEL</a>
-                <a class=" " md-raised-button (click)="saveButtonClicked()" [disabled]="!report.attributes.name"><i class="fa fa-floppy-o "></i> SAVE & CLOSE</a>
+                <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</a>
+                <a class=" " md-raised-button (click)="saveButtonClicked()" [disabled]="!report.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</a>
 
         </div>
     </div>

@@ -24,9 +24,7 @@ export class CampaignsNewComponent extends CampaignsEditComponent implements OnI
         super(stixService, route, router, dialog, location, snackBar);
     }
 
-    public ngOnInit() {
-        console.log('Initial CampaignsNewComponent');
-    }
+    public ngOnInit() { }
 
     public saveCampaign(): void {
        let subscription = super.create(this.campaign).subscribe(

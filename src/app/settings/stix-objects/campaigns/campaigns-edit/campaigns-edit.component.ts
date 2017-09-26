@@ -11,9 +11,9 @@ import { Campaign, AttackPattern, Identity, IntrusionSet , Relationship } from '
   templateUrl: './campaigns-edit.component.html',
 })
 export class CampaignsEditComponent extends CampaignComponent implements OnInit {
-    protected attackPatterns: AttackPattern[] = [];
-    protected identities: Identity[] = [];
-    protected intrusionSets: IntrusionSet[] = [];
+    public attackPatterns: AttackPattern[] = [];
+    public identities: Identity[] = [];
+    public intrusionSets: IntrusionSet[] = [];
 
     constructor(
         public stixService: StixService,
@@ -46,7 +46,7 @@ export class CampaignsEditComponent extends CampaignComponent implements OnInit 
         );
     }
 
-    protected saveRelationships(campaign: Campaign): void {
+    public saveRelationships(campaign: Campaign): void {
         this.attackPatterns.forEach((relatedRecord) => {
             let relationship = new Relationship();
             relationship.attributes.relationship_type = 'uses';
@@ -72,10 +72,9 @@ export class CampaignsEditComponent extends CampaignComponent implements OnInit 
         });
     }
 
-    protected saveRelationship(relationship: Relationship): void {
+    public saveRelationship(relationship: Relationship): void {
         let subscription = super.create(relationship).subscribe(
             (data) => {
-                console.log('saved');
             }, (error) => {
                 // handle errors here
                 console.log('error ' + error);
@@ -89,10 +88,9 @@ export class CampaignsEditComponent extends CampaignComponent implements OnInit 
     }
 
     // add chip
-    protected add(event: any): void {
+    public add(event: any): void {
         console.log(event.type);
         if (event.type === 'attack-patterns' && !this.found(this.attackPatterns, event)) {
-            console.log('*****');
             this.attackPatterns.push(event as AttackPattern);
         } else if (event.type === 'intrusion-sets'  && !this.found(this.intrusionSets, event)) {
             this.intrusionSets.push(event as IntrusionSet);
@@ -102,7 +100,7 @@ export class CampaignsEditComponent extends CampaignComponent implements OnInit 
     }
 
     // remove chip
-    protected remove(object: any): void {
+    public remove(object: any): void {
         if (object.type === 'attack-patterns') {
             this.attackPatterns = this.attackPatterns.filter((o) => o.id !== object.id);
         } else if (object.type === 'intrusion-sets') {

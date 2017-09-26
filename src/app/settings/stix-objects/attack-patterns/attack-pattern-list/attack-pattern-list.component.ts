@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChildren, QueryList, ChangeDetectorRef  } from '@angular/core';
 import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -7,19 +7,20 @@ import { AttackPattern, KillChainPhase } from '../../../../models';
 import { StixService } from '../../../stix.service';
 
 @Component({
-  selector: 'attack-pattern-list',
-  templateUrl: './attack-pattern-list.component.html',
+    selector: 'attack-pattern-list',
+    templateUrl: './attack-pattern-list.component.html',
 
 })
-
 export class AttackPatternListComponent extends AttackPatternComponent implements OnInit {
 
     public attackPatterns: AttackPattern[] = [];
-    private selectedPhaseNameGroup: String;
-    private phaseNameGroups = {};
-    private phaseNameGroupKeys: string[];
-    private filterAttackPattern = {};
-    private numOfRows = 10;
+    public selectedPhaseNameGroup: string;
+    public phaseNameGroups = {};
+    public phaseNameGroupKeys: string[];
+    public filterAttackPattern = {};
+    public attackPatternByPhaseMap: any = {};
+    public numOfRows = 10;
+    public displayedColumns: string[] = ['name', 'action'];
 
     constructor(
         public stixService: StixService,
@@ -27,7 +28,8 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
         public router: Router,
         public dialog: MdDialog,
         public location: Location,
-        public snackBar: MdSnackBar) {
+        public snackBar: MdSnackBar,
+        private ref: ChangeDetectorRef) {
 
         super(stixService, route, router, dialog, location, snackBar);
         this.phaseNameGroups['unspecified'] = [];
@@ -35,14 +37,15 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
 
     public ngOnInit() {
         let filter = 'sort=' + encodeURIComponent(JSON.stringify({ 'stix.name': '1' }));
-        let subscription =  super.load(filter).subscribe(
+        let subscription = super.load(filter).subscribe(
             (data) => {
                 this.attackPatterns = data as AttackPattern[];
                 this.getPhaseNameAttackPatterns();
+                this.populateAttackPatternByPhaseMap();
                 this.phaseNameGroupKeys = Object.keys(this.phaseNameGroups).sort();
             }, (error) => {
                 // handle errors here
-                 console.log('error ' + error);
+                console.log('error ' + error);
             }, () => {
                 // prevent memory links
                 if (subscription) {
@@ -50,6 +53,25 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
                 }
             }
         );
+    }
+
+    public populateAttackPatternByPhaseMap() {
+        this.attackPatterns.forEach((attackPattern: AttackPattern) => {
+            let killChainPhases = attackPattern.attributes.kill_chain_phases;
+            if (!killChainPhases || killChainPhases.length === 0) {
+                if (this.attackPatternByPhaseMap.unspecified === undefined) {
+                    this.attackPatternByPhaseMap.unspecified = [];
+                }
+                this.attackPatternByPhaseMap.unspecified.push(attackPattern);
+            } else {
+                killChainPhases.forEach((killChainPhase: KillChainPhase) => {
+                    if (this.attackPatternByPhaseMap[killChainPhase.phase_name] === undefined) {
+                        this.attackPatternByPhaseMap[killChainPhase.phase_name] = [];
+                    }
+                    this.attackPatternByPhaseMap[killChainPhase.phase_name].push(attackPattern);
+                });
+            }
+        });
     }
 
     public onSelect(event: any, phaseNameGroup: any): void {
@@ -61,9 +83,9 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
     public edit(attackPattern: AttackPattern): void {
         let link = ['edit', attackPattern.id];
         super.gotoView(link);
-     }
+    }
 
-    public showDetails(event: any,  attackPattern: AttackPattern): void {
+    public showDetails(event: any, attackPattern: AttackPattern): void {
         event.preventDefault();
         let link = ['.', attackPattern.id];
         super.gotoView(link);
@@ -72,13 +94,19 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
     public deletButtonClicked(attackPattern: AttackPattern, key: string): void {
         super.openDialog(attackPattern).subscribe(
             () => {
-                 this.attackPatterns = this.attackPatterns.filter((h) => h.id !== attackPattern.id);
-                 this.phaseNameGroups[key] = this.phaseNameGroups[key].filter((h) => h.id !== attackPattern.id);
+                this.attackPatterns = this.attackPatterns.filter((h) => h.id !== attackPattern.id);
+                this.phaseNameGroups[key] = this.phaseNameGroups[key].filter((h) => h.id !== attackPattern.id);
+
+                // TODO determine if there is a better wya to do this
+                let temp = this.attackPatternByPhaseMap[key].filter((h) => h.id !== attackPattern.id);
+                delete this.attackPatternByPhaseMap[key];
+                this.ref.detectChanges();
+                this.attackPatternByPhaseMap[key] = temp;
             }
         );
     }
 
-    private getPhaseNameAttackPatterns() {
+    public getPhaseNameAttackPatterns() {
         this.attackPatterns.forEach((attackPattern: AttackPattern) => {
             let killChainPhases = attackPattern.attributes.kill_chain_phases;
             if (attackPattern.attributes.name === 'test attack') {
@@ -88,7 +116,7 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
                 let attackPatternsProxies = this.phaseNameGroups['unspecified'];
                 attackPatternsProxies.push(attackPattern);
             } else {
-                killChainPhases.forEach( (killChainPhase: KillChainPhase) => {
+                killChainPhases.forEach((killChainPhase: KillChainPhase) => {
                     let phaseName = killChainPhase.phase_name.toLowerCase();
                     let attackPatternsProxies = this.phaseNameGroups[phaseName];
                     if (attackPatternsProxies === undefined) {
@@ -101,22 +129,26 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
         });
     }
 
+<<<<<<< HEAD
     private onTabShow(event: any): void {
         alert('tab click');
+=======
+    public onTabShow(event: any): void {
+>>>>>>> 283ec9c049b98e2f29a9b31f1772293727fdeb72
         let phaseName = this.phaseNameGroupKeys[event.index];
         if (!this.filterAttackPattern[phaseName]) {
-            this.loadData({first: 0, rows: this.numOfRows}, this.phaseNameGroupKeys[event.index]);
+            this.loadData({ first: 0, rows: this.numOfRows }, this.phaseNameGroupKeys[event.index]);
         }
     }
 
-    private totalRecords(key: string): number {
+    public totalRecords(key: string): number {
         return this.phaseNameGroups[key].length;
     }
 
-    private loadData(event: any, phaseName: string): void {
+    public loadData(event: any, phaseName: string): void {
         let attackPatterns = this.phaseNameGroups[phaseName] as AttackPattern[];
         attackPatterns = attackPatterns.filter((attackPattern: AttackPattern, index: number, arr: any) => {
-            return ( index >= event.first && index <  (event.first + event.rows) );
+            return (index >= event.first && index < (event.first + event.rows));
         });
         attackPatterns.sort(
             (a1: AttackPattern, a2: AttackPattern) => {

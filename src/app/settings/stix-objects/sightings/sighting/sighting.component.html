@@ -1,8 +1,8 @@
 <div class="row">
     <div class="col-md-12">
         <div class="button-row">
-            <a class="mat-primary" md-raised-button (click)="editButtonClicked()"><i class="fa fa-pencil"></i> EDIT</a>
-            <a class="mat-primary" md-raised-button (click)="deleteButtonClicked()"><i class="fa fa-trash"></i> DELETE</a>
+            <a class="mat-primary" md-raised-button (click)="editButtonClicked()"><i class="material-icons">create</i> EDIT</a>
+            <a class="mat-primary" md-raised-button (click)="deleteButtonClicked()"><i class="material-icons">delete</i> DELETE</a>
         </div>
     </div>
 </div>
@@ -29,11 +29,11 @@
                     </div>
                     <div class="col-md-4">
                         <label>First Seen</label>
-                        <p>{{sighting.attributes.first_seen}}</p>
+                        <p>{{sighting.attributes.first_seen | date:'medium' }}</p>
                     </div>
                     <div class="col-md-4">
                         <label>Last Seen</label>
-                        <p>{{sighting.attributes.last_seen}}</p>
+                        <p>{{sighting.attributes.last_seen | date:'medium' }}</p>
                     </div>
                 </div>
 
