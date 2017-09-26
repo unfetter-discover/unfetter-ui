@@ -8,7 +8,7 @@ import { ChartData } from '../chart-data';
 @Component({
     selector: 'techniques-chart',
     templateUrl: './techniques-chart.component.html',
-    styleUrls: ['./techniques-chart.component.css']
+    styleUrls: ['./techniques-chart.component.scss']
 })
 export class TechniquesChartComponent implements OnInit {
     @Input()

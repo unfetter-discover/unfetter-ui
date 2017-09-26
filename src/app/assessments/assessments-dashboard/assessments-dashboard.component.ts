@@ -6,7 +6,7 @@ import { Constance } from '../../utils/constance';
 @Component({
     selector: 'assessments-dashboard',
     templateUrl: './assessments-dashboard.component.html',
-    styleUrls: ['./assessments-dashboard.component.css']
+    styleUrls: ['./assessments-dashboard.component.scss']
 })
 
 export class AssessmentsDashboardComponent implements OnInit {

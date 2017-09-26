@@ -3,7 +3,7 @@ import { Constance } from '../../../utils/constance';
 
 @Component({
   selector: 'risk-icon',
-  styleUrls: ['risk-icon.component.css'],
+  styleUrls: ['risk-icon.component.scss'],
   templateUrl: 'risk-icon.component.html'
 })
 export class RiskIconComponent {

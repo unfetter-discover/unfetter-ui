@@ -9,7 +9,7 @@ type troColName = keyof ThreatReportOverview;
 @Component({
    selector: 'threat-report-overview',
    templateUrl: './threat-report-overview.component.html',
-   styleUrls: ['threat-report-overview.component.css']
+   styleUrls: ['threat-report-overview.component.scss']
 })
 export class ThreatReportOverviewComponent implements OnInit, OnDestroy {
 

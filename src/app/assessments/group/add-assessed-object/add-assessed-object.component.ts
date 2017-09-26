@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 @Component({
     selector: 'add-assessed-object',
     templateUrl: './add-assessed-object.component.html',
-    styleUrls: ['./add-assessed-object.component.css']
+    styleUrls: ['./add-assessed-object.component.scss']
 })
 export class AddAssessedObjectComponent implements OnInit, OnDestroy {
 

@@ -4,7 +4,7 @@ import { Navigation } from '../../models/navigation';
 @Component({
   selector: 'header-navigation',
   encapsulation: ViewEncapsulation.None,
-  styleUrls: ['./header-navigation.component.css'],
+  styleUrls: ['./header-navigation.component.scss'],
   templateUrl: './header-navigation.component.html'
 })
 export class HeaderNavigationComponent {

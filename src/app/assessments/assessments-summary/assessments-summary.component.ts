@@ -16,7 +16,7 @@ import { Observable } from 'rxjs/Observable';
 @Component({
     selector: 'assessments-summary',
     templateUrl: './assessments-summary.component.html',
-    styleUrls: ['./assessments-summary.component.css']
+    styleUrls: ['./assessments-summary.component.scss']
 })
 export class AssessmentsSummaryComponent implements OnInit, AfterViewInit {
     @ViewChildren('assessmentChart')

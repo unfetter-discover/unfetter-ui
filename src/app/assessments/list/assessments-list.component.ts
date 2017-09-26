@@ -11,7 +11,7 @@ import { ConfirmationDialogComponent } from '../../components/dialogs/confirmati
 @Component({
   selector: 'assessments-list',
   templateUrl: './assessments-list.component.html',
-  styleUrls: ['./assessments-list.component.css'],
+  styleUrls: ['./assessments-list.component.scss'],
 })
 
 export class AssessmentsListComponent implements OnInit {

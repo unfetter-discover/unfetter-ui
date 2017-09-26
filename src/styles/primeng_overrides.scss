@@ -26,7 +26,7 @@
         color: white;
         border-radius: 2px 2px 0 0;
         background: $primary-color;
-        padding: 16px 24px;
+        padding: 16px 32px;
     }
     .ui-carousel-header-title {
         flex: 1;
@@ -44,7 +44,7 @@
             &:before {
                 content: "keyboard_arrow_left";
                 top: 18px;
-                right: 58px;
+                right: 66px;
                 position: absolute;
                 @include material-icons;
             }
@@ -54,7 +54,7 @@
             &:before {
                 content: "keyboard_arrow_right";
                 top: 18px;
-                right: 25px;
+                right: 33px;
                 position: absolute;
                 @include material-icons;
             }
