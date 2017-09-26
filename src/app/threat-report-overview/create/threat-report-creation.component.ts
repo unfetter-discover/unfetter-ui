@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'threat-report-creation',
   templateUrl: './threat-report-creation.component.html',
-  styleUrls: ['threat-report-creation.component.css']
+  styleUrls: ['threat-report-creation.component.scss']
 })
 export class ThreatReportCreationComponent implements OnInit, OnDestroy {
 

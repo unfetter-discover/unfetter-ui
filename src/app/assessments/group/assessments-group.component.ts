@@ -9,7 +9,7 @@ import { Observable } from 'rxjs/Observable';
 @Component({
   selector: 'assessments-group',
   templateUrl: './assessments-group.component.html',
-  styleUrls: ['./assessments-group.component.css']
+  styleUrls: ['./assessments-group.component.scss']
 })
 export class AssessmentsGroupComponent implements OnInit, AfterViewInit {
 

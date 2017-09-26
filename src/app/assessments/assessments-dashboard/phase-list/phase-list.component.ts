@@ -5,7 +5,7 @@ import { Constance } from '../../../utils/constance';
 @Component({
     selector: 'phase-list',
     templateUrl: './phase-list.component.html',
-    styleUrls: ['./phase-list.component.css']
+    styleUrls: ['./phase-list.component.scss']
 })
 
 export class PhaseListComponent implements OnInit {

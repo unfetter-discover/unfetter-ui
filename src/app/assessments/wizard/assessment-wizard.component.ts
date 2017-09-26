@@ -22,7 +22,7 @@ import { MenuItem } from 'primeng/primeng';
   selector: 'assessment',
   templateUrl: './assessment-wizard.component.html',
   // encapsulation: ViewEncapsulation.None,
-  styleUrls: [`./assessment-wizard.component.css`]
+  styleUrls: [`./assessment-wizard.component.scss`]
 })
 export class AssessmentComponent extends Measurements implements OnInit, OnDestroy {
   public model: any;

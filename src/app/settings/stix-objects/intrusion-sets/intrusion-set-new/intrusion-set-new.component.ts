@@ -10,7 +10,7 @@ import { Observable } from 'rxjs/Observable';
 @Component({
     selector: 'intrusion-set-new',
     templateUrl: './intrusion-set-new.component.html',
-    styleUrls: ['./intrusion-set-new.component.css']
+    styleUrls: ['./intrusion-set-new.component.scss']
 })
 export class IntrusionSetNewComponent extends IntrusionSetEditComponent {
 

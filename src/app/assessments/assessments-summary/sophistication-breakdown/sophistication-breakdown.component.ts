@@ -6,7 +6,7 @@ import { ChartData } from '../chart-data';
 @Component({
     selector: 'sophistication-breakdown',
     templateUrl: './sophistication-breakdown.component.html',
-    styleUrls: ['./sophistication-breakdown.component.css']
+    styleUrls: ['./sophistication-breakdown.component.scss']
 })
 export class SophisticationBreakdownComponent implements OnInit {
     @Input('assessedAttackPatterns') public assessedAttackPatterns: any;

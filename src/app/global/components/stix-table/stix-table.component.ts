@@ -10,7 +10,7 @@ import { StixTableDataSource } from './stix-table.datasource';
 
 @Component({
     selector: 'stix-table',
-    styleUrls: ['stix-table.component.css'],
+    styleUrls: ['stix-table.component.scss'],
     templateUrl: 'stix-table.component.html'
 })
 export class StixTableComponent implements OnInit {

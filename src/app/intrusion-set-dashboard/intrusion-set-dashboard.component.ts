@@ -14,7 +14,7 @@ import { GenericApi } from '../global/services/genericapi.service';
 @Component({
   selector: 'intrusion-set-dashboard',
   templateUrl: 'intrusion-set-dashboard.component.html',
-  styleUrls: ['./intrusion-set-dashboard.component.css']
+  styleUrls: ['./intrusion-set-dashboard.component.scss']
 })
 export class IntrusionSetDashboardComponent implements OnInit {
   public selectedIntrusionSet = [];

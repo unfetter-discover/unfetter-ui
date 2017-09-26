@@ -11,7 +11,7 @@ import * as D3 from 'd3';
 @Component({
   selector: 'link-node-graph',
   templateUrl: './link-node-graph.component.html',
-  styleUrls: ['./link-node-graph.component.css']
+  styleUrls: ['./link-node-graph.component.scss']
 })
 export class LinkNodeGraphComponent implements OnChanges, AfterViewInit  {
     @Output() private nodeMouseover = new EventEmitter();

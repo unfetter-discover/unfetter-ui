@@ -9,7 +9,7 @@ import { Constance } from '../../utils/constance';
 @Component({
     selector: 'link-explorer',
     templateUrl: 'link-explorer.component.html',
-    styleUrls: [ 'link-explorer.component.css' ]
+    styleUrls: [ 'link-explorer.component.scss' ]
 })
 export class LinkExplorerComponent implements OnInit {
     public checked = true;

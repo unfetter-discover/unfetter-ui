@@ -10,7 +10,7 @@ import {
 @Component({
     selector: 'risk-breakdown',
     templateUrl: 'risk-breakdown.component.html',
-    styleUrls: ['risk-breakdown.component.css']
+    styleUrls: ['risk-breakdown.component.scss']
 })
 
 export class RiskBreakdownComponent implements OnInit {

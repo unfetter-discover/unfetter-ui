@@ -8,7 +8,7 @@ import { ChartData } from '../chart-data';
 @Component({
     selector: 'assessment-chart',
     templateUrl: './assessment-chart.component.html',
-    styleUrls: ['./assessment-chart.component.css']
+    styleUrls: ['./assessment-chart.component.scss']
 })
 export class AssessmentChartComponent implements OnInit {
 
