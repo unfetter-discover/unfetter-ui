@@ -90,7 +90,10 @@
 
                                                 <div class="ui-grid ui-grid-responsive">
                                                     <div class="ui-grid-row carouselSubheadingRow">
-                                                        <div class="ui-grid-col-12 kill-chain-div">{{killChainPhase.name | capitalize}} <small class="badge pull-right">{{count(killChainPhase.attack_patterns)}}/{{killChainPhase.attack_patterns.length}}</small></div>
+                                                        <div class="ui-grid-col-12 kill-chain-div flex">
+                                                            <span class="flex1 flexNowrap">{{killChainPhase.name | capitalize}}</span>
+                                                            <small class="badge">{{count(killChainPhase.attack_patterns)}}/{{killChainPhase.attack_patterns.length}}</small>
+                                                        </div>
                                                     </div>
                                                     <div class="ui-grid-row">
                                                         <div class="ui-grid-col-12">

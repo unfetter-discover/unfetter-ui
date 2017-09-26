@@ -24,7 +24,7 @@
         <div class="col-xs-12">
             <md-card class="mt-12 slideIn" *ngFor="let assessment of assessments; let i = index" [style.animationDelay]="(i * 0.03) + 's'">
                 <div class="row">
-                    <div class="col-xs-12 flex itemsCenter">
+                    <div class="col-xs-12 flex flexItemsCenter">
                         <span>
                             <a routerLink="dashboard/{{assessment.id}}">{{assessment.attributes.name}}</a><br>
                             <small class="text-muted">{{ assessment.attributes.created  | date:'medium'}}</small>

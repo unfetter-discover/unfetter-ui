@@ -133,25 +133,6 @@ label {
     width: 100%;
 }
 
-.carousel-wrapper {
-    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
-    transition: box-shadow 280ms cubic-bezier(.4, 0, .2, 1);
-    will-change: box-shadow;
-    display: block;
-    position: relative;
-    padding: 24px;
-    border-radius: 2px;
-    font-family: 'Roboto', "Helvetica Neue", sans-serif;
-}
-
-.carousel-content-wrapper {
-    height: 100%;
-    max-height: 250px;
-    min-height: 50px;
-    overflow-y: auto;
-    position: relative;
-}
-
 .inlineFlex {
     display: inline-flex;
 }
@@ -280,11 +261,13 @@ a {
     margin-top: 2px;
 }
 
+// ~~~ Flex Helpers ~~~
+
 .flex {
     display: flex;
 }
 
-.itemsCenter {
+.flexItemsCenter {
     align-items: center;
 }
 
@@ -294,6 +277,12 @@ a {
 
 .flexAuto {
     flex: auto;
+}
+.flexNowrap {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    min-width: 0;
 }
 
 .loading {
