@@ -141,24 +141,15 @@ export class AssessmentChartComponent implements OnInit {
         const convertedLabels: any = uniqGroups.map((word) => {
             word = word.replace(/-/g, ' ');
             word = word.replace(/\b([a-z])(\w+)/g, (_, g1, g2) => {
-<<<<<<< HEAD
-                let w = g1.concat(g2);
-                if (w === 'and' || w === 'or' || w === 'the') {
-                    return w;
-=======
                 const replacement = g1.concat(g2);
                 if (replacement === 'and' || replacement === 'or' || replacement === 'the') {
                     return replacement;
->>>>>>> 283ec9c049b98e2f29a9b31f1772293727fdeb72
                 }
                 return g1.toUpperCase() + g2;
             });
             return word;
         });
-<<<<<<< HEAD
-=======
-        
->>>>>>> 283ec9c049b98e2f29a9b31f1772293727fdeb72
+
         // build labels based on root label
         this.barChartLabels = this.showLabels ? convertedLabels : [];
     }

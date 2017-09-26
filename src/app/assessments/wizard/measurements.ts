@@ -89,7 +89,8 @@ export class Measurements {
         assessments.forEach(
             (assessment) => {
                 if (assessment.risk && (typeof assessment.risk === 'number')) {
-                    risk = risk + assessment.risk;
+                    const r = assessment.risk === -1 ? 1 : assessment.risk
+                    risk += r;
                 }
             });
         return risk / assessments.length;

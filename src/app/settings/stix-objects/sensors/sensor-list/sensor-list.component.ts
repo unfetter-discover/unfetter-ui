@@ -59,13 +59,7 @@ export class SensorListComponent extends SensorComponent implements OnInit {
     public deletButtonClicked(sensor: any): void {
         super.openDialog(sensor).subscribe(
             () => {
-<<<<<<< HEAD
                 this.filteredItems = this.filteredItems.filter((h) => h.id !== sensor.id);
-=======
-                console.log('******** ' + sensor.id)
-                this.filteredItems = this.filteredItems.filter((h) => h.id !== sensor.id);
-
->>>>>>> 283ec9c049b98e2f29a9b31f1772293727fdeb72
             }
         );
     }

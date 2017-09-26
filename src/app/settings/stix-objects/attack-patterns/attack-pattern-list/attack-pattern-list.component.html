@@ -13,16 +13,6 @@
 </div>
 <div class="row height-100-percent">
 
-<<<<<<< HEAD
-        <div class="col-md-12 scroll-area">
-            <p-accordion id="test" (onOpen)="onTabShow($event)">
-                <p-accordionTab id="{{key}}" header="{{key | capitalize }}"  *ngFor="let key of phaseNameGroupKeys">
-                    <p-dataList *ngIf="filterAttackPattern[key]" [value]="filterAttackPattern[key]" [paginator]="true" [rows]="numOfRows" [lazy]="true" (onLazyLoad)="loadData($event, key)" [totalRecords]="totalRecords(key)">
-                        <ng-template let-attackPattern pTemplate="item">
-                            <div class="row  collection-item grey.lighten-5">
-                                <div class="col-md-9">
-                                    <a id="{{attackPattern.id}}" class="pull-left list-item--name" routerLink="{{attackPattern.id}}">{{attackPattern.attributes.name}}</a>
-=======
     <div class="col-md-12 scroll-area">
         <md-accordion class="unfetterAngularMaterialAccordion">
             <md-expansion-panel *ngFor="let key of phaseNameGroupKeys">
@@ -33,12 +23,11 @@
                         <span *ngIf="attackPatternByPhaseMap[key] === undefined || !attackPatternByPhaseMap[key].length" class="mat-badge">0</span>
                     </md-panel-title>
                 </md-expansion-panel-header>
->>>>>>> 283ec9c049b98e2f29a9b31f1772293727fdeb72
 
                 <div class="example-container" *ngIf="attackPatternByPhaseMap !== undefined && attackPatternByPhaseMap[key] !== undefined">
-                    <stix-table [stixData]="attackPatternByPhaseMap[key]" (delete)="deletButtonClicked($event, key)"></stix-table>                  
+                    <stix-table [stixData]="attackPatternByPhaseMap[key]" (delete)="deletButtonClicked($event, key)"></stix-table>
                 </div>
-                
+
             </md-expansion-panel>
         </md-accordion>
 

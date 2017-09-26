@@ -75,6 +75,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
   public assessmentName = '';
   public currentAssessmentGroup = {} as any;
   public selectedRisk = '1';
+  public defaultValue = -1;
   public page = 1;
   private assessments = [];
   private groupings = [];
@@ -106,11 +107,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
             .subscribe((res) => {
               this.model = res;
               if (this.model.attributes.created !== undefined) {
-<<<<<<< HEAD
                 this.publishDate = new Date(this.model.attributes.created);
-=======
-                this.publishDate = new Date(this.model.attributes.created);                
->>>>>>> 283ec9c049b98e2f29a9b31f1772293727fdeb72
               }
               this.selectedRiskValue = null;
               this.updateChart();
@@ -180,7 +177,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
    * @returns {void}
    */
   public updateRisks(option: any, measurement: any, assessment: any): void {
-    const newRisk = option.selected.value;
+    const newRisk = option.selected.value; // === '0' ? 0 : option.selected.value;
     // update measurement value in assessments
     const assessmentMeasurementToUpdate = assessment.measurements.find((assMes) => assMes.name === measurement.name);
     // assessmentMeasurementToUpdate.risk = newRisk;
@@ -191,9 +188,22 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
     const groupRisk = this.calculateGroupRisk();
 
     if (this.model) {
-      const assessment_object = this.model.attributes.assessment_objects
+      let assessment_object = this.model.attributes.assessment_objects
         .find((assessmentObject) => assessment.id === assessmentObject.stix.id);
 
+      if (!assessment_object) {
+        assessment_object = {
+          questions: assessment.measurements,
+          risk: newRisk,
+          stix: {
+            id: assessment.id,
+            description: assessment.description,
+            type: assessment.type,
+            name: assessment.name
+          }
+        };
+        this.model.attributes.assessment_objects.push(assessment_object);
+     }
       const question = assessment_object.questions.find((q) => q.name === measurement.name);
       this.updateQuestionRisk(question, newRisk);
       assessment_object.risk = assessment.risk;
@@ -260,6 +270,19 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
     }
   }
 
+  public selectedValue(assessment: any, measurement: any): number {
+    if (!this.model) {
+       return assessment.risk; // this.defaultValue;
+    } else {
+      let a = this.model.attributes.assessment_objects.find(
+        (assessment_objects) => {
+          return assessment_objects.stix.id === assessment.id;
+        }
+      );
+      return a ? a.risk : this.defaultValue;
+    }
+  }
+
   private build(data: any): void {
     if (data) {
       this.assessmentGroups = this.createAssessmentGroups(data);
@@ -301,7 +324,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         assessment.type = assessedObject.type;
 
         const risk = this.getRisk(assessment.measurements);
-        assessment.risk = risk;
+        assessment.risk = -1;
         assessments.push(assessment);
       });
       // We do this so we can just save all the assessments later.
@@ -481,7 +504,14 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
       retVal.type = 'x-unfetter-assessment';
       retVal.name = this.assessmentName;
       retVal.description = this.assessmentDescription;
-      retVal.assessment_objects = this.model.attributes.assessment_objects;
+      retVal.assessment_objects = this.model.attributes.assessment_objects.filter(
+        (assessment_object) => {
+          const q = assessment_object.questions.find((question) => {
+            return question.risk < 0
+          });
+          return q == null;
+        }
+      );
       this.url = this.url + '/' + this.model.id;
       const sub = this.genericApi.patch(this.url, { 'data': { 'attributes': retVal } }).subscribe(
         (res) => {

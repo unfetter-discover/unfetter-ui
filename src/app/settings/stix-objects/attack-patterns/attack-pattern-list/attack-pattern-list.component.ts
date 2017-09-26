@@ -129,12 +129,7 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
         });
     }
 
-<<<<<<< HEAD
-    private onTabShow(event: any): void {
-        alert('tab click');
-=======
     public onTabShow(event: any): void {
->>>>>>> 283ec9c049b98e2f29a9b31f1772293727fdeb72
         let phaseName = this.phaseNameGroupKeys[event.index];
         if (!this.filterAttackPattern[phaseName]) {
             this.loadData({ first: 0, rows: this.numOfRows }, this.phaseNameGroupKeys[event.index]);
