@@ -20,7 +20,7 @@ export class StixTableComponent implements OnInit {
     @ViewChild('paginator') public paginator: MdPaginator;
 
     public dataSource: any;
-    public displayedColumns: string[] = ['name', 'action'];
+    public displayedColumns: string[] = ['stix'];
 
     constructor(router: Router, route: ActivatedRoute) {}
 
@@ -34,6 +34,13 @@ export class StixTableComponent implements OnInit {
             type: stixElement.type,
             attributes: stixElement
         });
+    }
+
+    public externalReferencesToolTipGen(externalReferences): string {
+        return externalReferences
+            .filter((er) => er.source_name !== undefined)
+            .map((er) => er.source_name)
+            .join(', ');
     }
    
 }
