@@ -11,12 +11,33 @@ import { SophisticationPipe } from './pipes/sophistication.pipe';
 import { FieldSortPipe } from './pipes/field-sort.pipe';
 import { RiskIconComponent } from './components/risk-icon/risk-icon.component';
 import { StixTableComponent } from './components/stix-table/stix-table.component';
+import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
 
 @NgModule({
-    imports: [CommonModule, MaterialModule, RouterModule],
-    exports: [CapitalizePipe, SophisticationPipe, RiskIconComponent, StixTableComponent, FieldSortPipe],
-    declarations: [CapitalizePipe, SophisticationPipe, RiskIconComponent, StixTableComponent, FieldSortPipe],
-    providers: [GenericApi]
+    imports: [
+        CommonModule, 
+        MaterialModule, 
+        RouterModule
+    ],
+    exports: [
+        CapitalizePipe, 
+        SophisticationPipe, 
+        RiskIconComponent, 
+        StixTableComponent, 
+        FieldSortPipe, 
+        LoadingSpinnerComponent
+    ],
+    declarations: [
+        CapitalizePipe, 
+        SophisticationPipe, 
+        RiskIconComponent, 
+        StixTableComponent, 
+        FieldSortPipe, 
+        LoadingSpinnerComponent
+    ],
+    providers: [
+        GenericApi
+    ]
 })
 
 export class GlobalModule {}
