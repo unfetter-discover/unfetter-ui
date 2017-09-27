@@ -462,8 +462,10 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
     assessmentsGroups.forEach((assessmentsGroup) => {
       if (assessmentsGroup.assessments !== undefined) {
         assessmentsGroup.assessments.forEach((assessment) => {
+          if (assessment.risk < 0) {
+            return;
+          }
           const temp: any = {};
-
           temp.stix = {};
           temp.stix.id = assessment.id;
           temp.stix.type = assessment.type;
