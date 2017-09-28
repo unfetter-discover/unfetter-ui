@@ -176,17 +176,26 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
    * @param assessment
    * @returns {void}
    */
+  private tempModel = {}
   public updateRisks(option: any, measurement: any, assessment: any): void {
     const newRisk = option.selected.value ;
     // update measurement value in assessments
     const assessmentMeasurementToUpdate = assessment.measurements.find((assMes) => assMes.name === measurement.name);
     // assessmentMeasurementToUpdate.risk = newRisk;
     this.updateQuestionRisk(assessmentMeasurementToUpdate, newRisk);
-    assessment.measurements.forEach((m) => {
-        if (m.name !== assessmentMeasurementToUpdate.name) {
-          m.selected_value = {name: '', risk: this.defaultValue};
-        }
-    })
+
+    if (!this.model) {
+      if(!this.tempModel[assessment.id]) {
+        this.tempModel[assessment.id] = {assessment: '', measurements: []};
+      }
+      this.tempModel[assessment.id].assessment= assessment;
+      this.tempModel[assessment.id].measurements = this.tempModel[assessment.id].measurements.filter((m) => {
+          return m.name !== assessmentMeasurementToUpdate.name;
+      });
+      this.tempModel[assessment.id].measurements.push(assessmentMeasurementToUpdate);
+      // this.tempModel[assessment.id].push(assessmentMeasurementToUpdate);
+    }
+
     // calculate risk of all measurements
     if (newRisk < 0) {
       assessmentMeasurementToUpdate.risk = 1;
@@ -200,7 +209,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
 
       if (!assessment_object) {
         assessment_object = {
-          questions: assessment.measurements,
+          questions: [measurement],
           risk: newRisk,
           stix: {
             id: assessment.id,
@@ -484,42 +493,71 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
     // retVal.assessment_objects = [];
     const assessmentSet = new Set();
 
-    assessmentsGroups.forEach((assessmentsGroup) => {
-      if (assessmentsGroup.assessments !== undefined) {
-        assessmentsGroup.assessments.forEach((assessment) => {
-          if (assessment.risk < 0) {
-            return;
-          }
-          const temp: any = {};
-          temp.stix = {};
-          temp.stix.id = assessment.id;
-          temp.stix.type = assessment.type;
-          temp.stix.description = assessment.description || '';
-          temp.stix.name = assessment.name;
+    Object.keys(this.tempModel).forEach(
 
-          temp.questions = [];
-          if (assessment.measurements !== undefined) {
-            assessment.measurements.forEach((measurement) => {
-              if (measurement.selected_value.risk < 0) {
-                return;
-              }
-              temp.questions.push(measurement);
-            });
-          } else {
-            return { error: 'No measurements/questions on assessment' };
-          }
+      (assessmentId) => {
+        const assessmentObj = this.tempModel[assessmentId];
+        const temp: any = {};
+        temp.stix = {};
+        temp.stix.id = assessmentObj.assessment.id;
+        temp.stix.type = assessmentObj.assessment.type;
+        temp.stix.description = assessmentObj.assessment.description || '';
+        temp.stix.name = assessmentObj.assessment.name;
 
-          temp.risk = temp.questions
-              .map((question) => question.risk)
-              .reduce((prev, cur) => (prev += cur), 0) / temp.questions.length;
+        temp.questions = [];
+        if (assessmentObj.measurements !== undefined) {
+          assessmentObj.measurements.forEach((measurement) => {
+            if (measurement.selected_value.risk < 0) {
+              return;
+            }
+            temp.questions.push(measurement);
+          });
+        }
+        temp.risk = temp.questions
+        .map((question) => question.risk)
+        .reduce((prev, cur) => (prev += cur), 0) / temp.questions.length;
 
-          assessmentSet.add(JSON.stringify(temp));
+        assessmentSet.add(JSON.stringify(temp));
 
-        });
-      } else {
-        return { error: 'No assessments in group' };
       }
-    });
+    )
+
+    // assessmentsGroups.forEach((assessmentsGroup) => {
+    //   if (assessmentsGroup.assessments !== undefined) {
+    //     assessmentsGroup.assessments.forEach((assessment) => {
+    //       if (assessment.risk < 0) {
+    //         return;
+    //       }
+    //       const temp: any = {};
+    //       temp.stix = {};
+    //       temp.stix.id = assessment.id;
+    //       temp.stix.type = assessment.type;
+    //       temp.stix.description = assessment.description || '';
+    //       temp.stix.name = assessment.name;
+
+    //       temp.questions = [];
+    //       if (assessment.measurements !== undefined) {
+    //         assessment.measurements.forEach((measurement) => {
+    //           if (measurement.selected_value.risk < 0) {
+    //             return;
+    //           }
+    //           temp.questions.push(measurement);
+    //         });
+    //       } else {
+    //         return { error: 'No measurements/questions on assessment' };
+    //       }
+
+    //       temp.risk = temp.questions
+    //           .map((question) => question.risk)
+    //           .reduce((prev, cur) => (prev += cur), 0) / temp.questions.length;
+
+    //       assessmentSet.add(JSON.stringify(temp));
+
+    //     });
+    //   } else {
+    //     return { error: 'No assessments in group' };
+    //   }
+    // });
 
     retVal['assessment_objects'] = Array.from(assessmentSet)
       .map((dat) => JSON.parse(dat));
@@ -536,15 +574,20 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
       retVal.description = this.assessmentDescription;
       retVal.assessment_objects = this.model.attributes.assessment_objects.filter(
         (assessment_object) => {
-          const q = assessment_object.questions.find((question) => {
-            return question.risk < 0
+          let filter = false;
+          assessment_object.questions.forEach((question) => {
+             if ( question.risk >= 0 ) {
+               filter = true;
+             }
           });
-          return q == null;
+          return filter;
         }
       );
-      if (retVal.assessment_objects.questions && retVal.assessment_objects.questions.length > 1) {
-        retVal.assessment_objects.questions = retVal.assessment_objects.questions.filter((question) => {
-          return question.risk < 0
+      if (retVal.assessment_objects) {
+        retVal.assessment_objects.forEach((assessment_object) => {
+            assessment_object.questions = assessment_object.questions.filter((question) => {
+            return question.risk >= 0
+          });
         });
       }
 
