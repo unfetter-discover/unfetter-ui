@@ -507,7 +507,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         temp.questions = [];
         if (assessmentObj.measurements !== undefined) {
           assessmentObj.measurements.forEach((measurement) => {
-            if (measurement.selected_value.risk < 0) {
+            if (!measurement.selected_value || measurement.selected_value.risk < 0) {
               return;
             }
             temp.questions.push(measurement);
