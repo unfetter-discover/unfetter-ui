@@ -18,11 +18,15 @@
     .mat-chip-list-stacked {
         margin-top: 24px;
     }
+
     #formWrapper {
-        .col-xs-12 {
-            width: 20%;
+        @media screen and (min-width: 768px) {
+            .col-xs-12 {
+                width: 20%;
+            }
         }
-    }    
+    }
+ 
     .slideWrapper {
         margin-bottom: -8px;
     }
