@@ -1,53 +1,62 @@
-<div class="container">
-    <div class="row">
+<div class="container" id="threatReportCreationComponent">
+    <div class="row mt-10">
         <div class="col-md-12 mat-title">
-            NEW PRODUCT
+            New Product
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
             <md-form-field>
-                <input mdInput #filter placeholder="ENTER WORKPRODUCT NAME" color="primary">
+                <input mdInput #filter placeholder="Workproduct Name" color="primary">
             </md-form-field>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-2">
-            BOUNDRIES
-            <md-slide-toggle color="primary" (change)="boundriesToggled($event)" [checked]="showCheckBoxes"></md-slide-toggle>
-        </div>
-        <div *ngIf="showCheckBoxes === true" class="col-md-10">
-            checkboxes
+    <div class="row mt-10">
+        <div class="col-xs-12 flex flexItemsCenter">
+            <span class="flex flexItemsCenter">
+                <span>Boundries&nbsp;</span>
+                <span class="slideWrapper">
+                    <md-slide-toggle color="primary" (change)="boundriesToggled($event)" [checked]="showCheckBoxes"></md-slide-toggle>
+                </span>                
+            </span>
+            <span *ngIf="showCheckBoxes === true" class="flex1">
+                Checkboxes
+            </span>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-2 col-xs-12">
+    <div class="row mt-10" id="formWrapper">
+        <div class="col-xs-12">
             <md-select placeholder="Intrusion Set" color="primary" floatPlaceholder="always" (change)="addSelectedIntrusionSet($event)">
                 <md-option *ngFor="let intrusion of intrusions" [value]="intrusion.value">
                     {{ intrusion.displayValue }}
                 </md-option>
             </md-select>
-            <md-chip-list class="mat-chip-list-stacked" selectable="true">
-                <md-chip *ngFor="let selectedIntrusion of selectedInstrusions" removable="true" selectable="true">
-                    {{ selectedIntrusion }}
-                </md-chip>
-            </md-chip-list>
+            <div class="mt-10 mb-10">
+                <md-chip-list class="mat-chip-list-stacked" selectable="true">
+                    <md-chip *ngFor="let selectedIntrusion of selectedInstrusions" removable="true" selectable="true">
+                        <div class="flex">
+                            <span class="flex1 flexNowrap">{{ selectedIntrusion }}</span>
+                            <md-icon mdChipRemove (click)="removeChip(selectedIntrusion, 'intrusion-set')">cancel</md-icon>
+                        </div>
+                    </md-chip>
+                </md-chip-list>
+            </div>
         </div>
-        <div class="col-md-2 col-xs-12">
+        <div class="col-xs-12">
             <md-form-field floatPlaceholder="always">
                 <input mdInput [mdDatepicker]="startDatePicker" placeholder="Start Date" color="primary" floatPlaceholder="always">
                 <md-datepicker-toggle mdSuffix [for]="startDatePicker"></md-datepicker-toggle>
                 <md-datepicker #startDatePicker></md-datepicker>
             </md-form-field>
         </div>
-        <div class="col-md-2 col-xs-12">
+        <div class="col-xs-12">
             <md-form-field floatPlaceholder="always">
                 <input mdInput [mdDatepicker]="endDatePicker" placeholder="End Date" color="primary" floatPlaceholder="always">
                 <md-datepicker-toggle mdSuffix [for]="endDatePicker"></md-datepicker-toggle>
                 <md-datepicker #endDatePicker></md-datepicker>
             </md-form-field>
         </div>
-        <div class="col-md-2 col-xs-12">
+        <div class="col-xs-12">
             <md-form-field floatPlaceholder="always">
                 <input mdInput placeholder="Target" color="primary" floatPlaceholder="always" (keyup.enter)="addTarget($event)">
             </md-form-field>
@@ -57,21 +66,26 @@
                 </md-chip>
             </md-chip-list>
         </div>
-        <div class="col-md-2 col-xs-12">
+        <div class="col-xs-12">
             <md-select placeholder="Malware" color="primary" floatPlaceholder="always" (change)="addSelectedMalware($event)">
                 <md-option *ngFor="let curMalware of malware" [value]="curMalware.value">
                     {{ curMalware.displayValue }}
                 </md-option>
             </md-select>
-            <md-chip-list class="mat-chip-list-stacked" selectable="true">
-                <md-chip *ngFor="let malware of selectedMalware" removable="true">
-                    {{ malware }}
-                </md-chip>
-            </md-chip-list>
+            <div class="mt-10 mb-10">
+                <md-chip-list class="mat-chip-list-stacked mt-10" selectable="true">
+                    <md-chip *ngFor="let malware of selectedMalware" removable="true">
+                        <div class="flex">
+                            <span class="flex1 flexNowrap">{{ malware }}</span>
+                            <md-icon mdChipRemove (click)="removeChip(malware, 'malware')">cancel</md-icon>
+                        </div>
+                    </md-chip>
+                </md-chip-list>
+            </div>
         </div>
     </div>
     <div class="row pull-right">
-        <div class="col-md-12 col-xs-12 pull-right">
+        <div class="col-md-12 col-xs-12 pull-right mt-10">
                 <button color="primary" md-button>CANCEL</button>
                 <button color="primary" md-raised-button routerLink="#">SAVE</button>
         </div>
