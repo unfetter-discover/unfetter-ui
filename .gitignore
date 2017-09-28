@@ -12,7 +12,6 @@ stats.json
 /dll/**
 
 # misc
-/coverage/*
 npm-debug.log
 /bower_components
 
@@ -22,4 +21,5 @@ npm-debug.log
 /connect.lock
 coverage/**/*
 npm-debug.log
+
 

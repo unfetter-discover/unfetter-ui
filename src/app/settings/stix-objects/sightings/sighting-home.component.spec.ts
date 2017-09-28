@@ -3,15 +3,16 @@ import { inject, async, TestBed,  ComponentFixture } from '@angular/core/testing
 import { SightingComponent } from './index';
 
 // Load the implementations that should be tested
+import { SightingHomeComponent } from './sighting-home.component';
 
 describe(`SightingsComponent`, () => {
-  let comp: SightingComponent;
-  let fixture: ComponentFixture<SightingComponent>;
+  let comp: SightingHomeComponent;
+  let fixture: ComponentFixture<SightingHomeComponent>;
 
   // async beforeEach
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SightingComponent ],
+      declarations: [ SightingHomeComponent ],
       schemas: [NO_ERRORS_SCHEMA],
       providers: []
     })
@@ -20,7 +21,7 @@ describe(`SightingsComponent`, () => {
 
   // synchronous beforeEach
   beforeEach(() => {
-    fixture = TestBed.createComponent(SightingComponent);
+    fixture = TestBed.createComponent(SightingHomeComponent);
     comp    = fixture.componentInstance;
 
     fixture.detectChanges(); // trigger initial data binding

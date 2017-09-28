@@ -149,7 +149,7 @@ export class AssessmentChartComponent implements OnInit {
             });
             return word;
         });
-        
+
         // build labels based on root label
         this.barChartLabels = this.showLabels ? convertedLabels : [];
     }

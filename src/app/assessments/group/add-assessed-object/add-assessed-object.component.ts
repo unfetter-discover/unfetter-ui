@@ -105,6 +105,8 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
                     case 'indicator':
                         relationshipObj.relationship_type = 'indicates';
                         break;
+                    default :
+                        break;
                 }
                 relationshipObj.source_ref = newId;
                 relationshipObj.target_ref = attackPattern.id;
@@ -223,6 +225,8 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
                                 risk: 1
                             }
                         });
+                        break;
+                    default :
                         break;
                 }
             }

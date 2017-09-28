@@ -44,7 +44,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
     }
   ];
   public doughnutChartType: string = 'doughnut';
-  public doughnutChartColors: object[] = [{}];
+  public doughnutChartColors = [{}];
   public chartOptions = {
     legend: {
       display: false
@@ -75,6 +75,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
   public assessmentName = '';
   public currentAssessmentGroup = {} as any;
   public selectedRisk = '1';
+  public defaultValue = -1;
   public page = 1;
   private assessments = [];
   private groupings = [];
@@ -106,7 +107,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
             .subscribe((res) => {
               this.model = res;
               if (this.model.attributes.created !== undefined) {
-                this.publishDate = new Date(this.model.attributes.created);                
+                this.publishDate = new Date(this.model.attributes.created);
               }
               this.selectedRiskValue = null;
               this.updateChart();
@@ -138,7 +139,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         assessment.risk = assessmentObject.risk;
         assessment.measurements.forEach((m) => {
           const question = assessmentObject.questions.find((q) => q.name === m.name);
-          m.risk = question.risk; // question.selected_value.risk
+          m.risk = question ? question.risk : 1;
         });
 
       });
@@ -176,22 +177,53 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
    * @returns {void}
    */
   public updateRisks(option: any, measurement: any, assessment: any): void {
-    const newRisk = option.selected.value;
+    const newRisk = option.selected.value ;
     // update measurement value in assessments
     const assessmentMeasurementToUpdate = assessment.measurements.find((assMes) => assMes.name === measurement.name);
     // assessmentMeasurementToUpdate.risk = newRisk;
     this.updateQuestionRisk(assessmentMeasurementToUpdate, newRisk);
+    assessment.measurements.forEach((m) => {
+        if (m.name !== assessmentMeasurementToUpdate.name) {
+          m.selected_value = {name: '', risk: this.defaultValue};
+        }
+    })
     // calculate risk of all measurements
+    if (newRisk < 0) {
+      assessmentMeasurementToUpdate.risk = 1;
+    }
     assessment.risk = this.calculateMeasurementsAvgRisk(assessment.measurements);
-
     const groupRisk = this.calculateGroupRisk();
 
     if (this.model) {
-      const assessment_object = this.model.attributes.assessment_objects
+      let assessment_object = this.model.attributes.assessment_objects
         .find((assessmentObject) => assessment.id === assessmentObject.stix.id);
 
-      const question = assessment_object.questions.find((q) => q.name === measurement.name);
-      this.updateQuestionRisk(question, newRisk);
+      if (!assessment_object) {
+        assessment_object = {
+          questions: assessment.measurements,
+          risk: newRisk,
+          stix: {
+            id: assessment.id,
+            description: assessment.description,
+            type: assessment.type,
+            name: assessment.name
+          }
+        };
+        this.model.attributes.assessment_objects.push(assessment_object);
+     }
+      let question = assessment_object.questions.find((q) => q.name === measurement.name);
+      if (!question) {
+        question = measurement;
+        //   name:  measurement.name,
+        //   risk: newRisk,
+        //   options: measurement.options,
+        //   selected_value: { name: measurement.selected_value.name, risk: newRisk }
+        // }
+        assessment_object.questions.push(question);
+      } else {
+        this.updateQuestionRisk(question, newRisk);
+      }
+
       assessment_object.risk = assessment.risk;
 
       // assessment_object.risk = groupRisk;
@@ -256,6 +288,26 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
     }
   }
 
+  public selectedValue(assessment: any, measurement: any, option: any): number {
+    if (!this.model) {
+       return option.value ? option.value : this.defaultValue;
+    } else {
+      let a = this.model.attributes.assessment_objects.find(
+        (assessment_objects) => {
+          return assessment_objects.stix.id === assessment.id;
+        }
+      );
+      if (!a) {
+        return this.defaultValue;
+      } else {
+        const q = a.questions.find((question) => {
+          return question.name === measurement.name;
+        });
+        return q && q.selected_value ? q.selected_value.risk : this.defaultValue;
+      }
+    }
+  }
+
   private build(data: any): void {
     if (data) {
       this.assessmentGroups = this.createAssessmentGroups(data);
@@ -297,7 +349,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         assessment.type = assessedObject.type;
 
         const risk = this.getRisk(assessment.measurements);
-        assessment.risk = risk;
+        assessment.risk = -1;
         assessments.push(assessment);
       });
       // We do this so we can just save all the assessments later.
@@ -435,8 +487,10 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
     assessmentsGroups.forEach((assessmentsGroup) => {
       if (assessmentsGroup.assessments !== undefined) {
         assessmentsGroup.assessments.forEach((assessment) => {
+          if (assessment.risk < 0) {
+            return;
+          }
           const temp: any = {};
-
           temp.stix = {};
           temp.stix.id = assessment.id;
           temp.stix.type = assessment.type;
@@ -446,6 +500,9 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
           temp.questions = [];
           if (assessment.measurements !== undefined) {
             assessment.measurements.forEach((measurement) => {
+              if (measurement.selected_value.risk < 0) {
+                return;
+              }
               temp.questions.push(measurement);
             });
           } else {
@@ -477,7 +534,20 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
       retVal.type = 'x-unfetter-assessment';
       retVal.name = this.assessmentName;
       retVal.description = this.assessmentDescription;
-      retVal.assessment_objects = this.model.attributes.assessment_objects;
+      retVal.assessment_objects = this.model.attributes.assessment_objects.filter(
+        (assessment_object) => {
+          const q = assessment_object.questions.find((question) => {
+            return question.risk < 0
+          });
+          return q == null;
+        }
+      );
+      if (retVal.assessment_objects.questions && retVal.assessment_objects.questions.length > 1) {
+        retVal.assessment_objects.questions = retVal.assessment_objects.questions.filter((question) => {
+          return question.risk < 0
+        });
+      }
+
       this.url = this.url + '/' + this.model.id;
       const sub = this.genericApi.patch(this.url, { 'data': { 'attributes': retVal } }).subscribe(
         (res) => {

@@ -38,8 +38,7 @@ export class RiskIconComponent {
       riskHsl.l = yellow.l - lightnessDelta * avgRisk;
     }
 
-    return `hsla(${parseInt(riskHsl.h)}, ${parseInt(riskHsl.s)}%, ${parseInt(
-      riskHsl.l
-    )}%, 1)`;
+    return `hsla(${parseInt(riskHsl.h, 10 )}, ${parseInt(riskHsl.s, 10)}%, ${parseInt(
+      riskHsl.l, 10)}%, 1)`;
   }
 }

@@ -30,7 +30,7 @@ export class AssessmentsDashboardComponent implements OnInit {
     }];
 
     public doughnutChartType: string = 'doughnut';
-    public doughnutChartColors: object[] = [{}];
+    public doughnutChartColors = [{}];
     public chartOptions: object = {
         tooltips: {
             callbacks: {

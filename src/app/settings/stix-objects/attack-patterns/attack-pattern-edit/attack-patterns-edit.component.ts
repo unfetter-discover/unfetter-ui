@@ -44,7 +44,6 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
          let sub = super.saveButtonClicked().subscribe(
             (data) => {
                 this.location.back();
-                
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
