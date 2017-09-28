@@ -32,7 +32,7 @@ describe(`App`, () => {
     expect(comp).toBeDefined();
   });
 
-  it('should log ngOnInit', () => {
+  xit('should log ngOnInit', () => {
     spyOn(console, 'log');
     expect(console.log).not.toHaveBeenCalled();
 

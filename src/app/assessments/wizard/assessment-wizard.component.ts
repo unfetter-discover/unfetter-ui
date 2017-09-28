@@ -182,6 +182,11 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
     const assessmentMeasurementToUpdate = assessment.measurements.find((assMes) => assMes.name === measurement.name);
     // assessmentMeasurementToUpdate.risk = newRisk;
     this.updateQuestionRisk(assessmentMeasurementToUpdate, newRisk);
+    assessment.measurements.forEach((m) => {
+        if (m.name !== assessmentMeasurementToUpdate.name) {
+          m.selected_value = {name: '', risk: this.defaultValue};
+        }
+    })
     // calculate risk of all measurements
     assessment.risk = this.calculateMeasurementsAvgRisk(assessment.measurements);
 
@@ -270,16 +275,23 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
     }
   }
 
-  public selectedValue(assessment: any, measurement: any): number {
+  public selectedValue(assessment: any, measurement: any, option: any): number {
     if (!this.model) {
-       return assessment.risk; // this.defaultValue;
+       return option.value ? option.value : this.defaultValue;
     } else {
       let a = this.model.attributes.assessment_objects.find(
         (assessment_objects) => {
           return assessment_objects.stix.id === assessment.id;
         }
       );
-      return a ? a.risk : this.defaultValue;
+      if (!a) {
+        return this.defaultValue;
+      } else {
+        const q = a.questions.find((question) => {
+          return question.name === measurement.name;
+        });
+        return q.selected_value.risk;
+      }
     }
   }
 

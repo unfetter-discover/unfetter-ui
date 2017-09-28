@@ -8,11 +8,7 @@ import { StixService } from '../../../stix.service';
 // Load the implementations that should be tested
 import { IndicatorComponent } from './indicator.component';
 
-<<<<<<< HEAD
 describe(`IndicatorComponent`, () => {
-=======
-describe(`IndicatorsComponent`, () => {
->>>>>>> 283ec9c049b98e2f29a9b31f1772293727fdeb72
   let comp: IndicatorComponent;
   let fixture: ComponentFixture<IndicatorComponent>;
 
@@ -35,18 +31,9 @@ describe(`IndicatorsComponent`, () => {
   }));
 
   // synchronous beforeEach
-<<<<<<< HEAD
   // beforeEach(() => {
   //   fixture.detectChanges(); // trigger initial data binding
   // });
-=======
-  beforeEach(() => {
-    fixture = TestBed.createComponent(IndicatorComponent);
-    comp    = fixture.componentInstance;
-
-    fixture.detectChanges(); // trigger initial data binding
-  });
->>>>>>> 283ec9c049b98e2f29a9b31f1772293727fdeb72
 
   it(`should be readly initialized`, () => {
     expect(fixture).toBeDefined();

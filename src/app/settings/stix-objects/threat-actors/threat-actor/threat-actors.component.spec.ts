@@ -6,16 +6,16 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { StixService } from '../../../stix.service';
 
 // Load the implementations that should be tested
-import { TheatActorComponent } from './threat-actors.component';
+import { ThreatActorsComponent } from './threat-actors.component';
 
-describe(`TheatActorComponent`, () => {
-  let comp: TheatActorComponent;
-  let fixture: ComponentFixture<TheatActorComponent>;
+describe(`ThreatActorsComponent`, () => {
+  let comp: ThreatActorsComponent;
+  let fixture: ComponentFixture<ThreatActorsComponent>;
 
   // async beforeEach
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TheatActorComponent ],
+      declarations: [ ThreatActorsComponent ],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
         {provide: StixService, useValue: {} },
@@ -26,9 +26,12 @@ describe(`TheatActorComponent`, () => {
         {provide: MdSnackBar, useValue: {} }
       ]
     });
-    fixture = TestBed.createComponent(TheatActorComponent);
-    comp    = fixture.componentInstance;
+
   }));
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ThreatActorsComponent);
+    comp    = fixture.componentInstance;
+  });
 
   // synchronous beforeEach
   // beforeEach(() => {
