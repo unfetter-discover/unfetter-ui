@@ -100,13 +100,17 @@ module.exports = function (config) {
      * available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
      */
     browsers: [
-      'Chrome'
+      'ChromeWithDebugging'
     ],
 
     customLaunchers: {
       ChromeTravisCi: {
         base: 'Chrome',
         flags: ['--no-sandbox']
+      },
+      ChromeWithDebugging: {
+        base: 'Chrome',
+        flags: ['--remote-debugging-port=9222']
       }
     },
 
