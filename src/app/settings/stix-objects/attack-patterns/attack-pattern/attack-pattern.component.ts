@@ -96,4 +96,8 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         );
         return sophisticationLevel ? sophisticationLevel.value : '';
     }
+
+    public cleanWhitespace(inputString): string {
+        return inputString ? inputString.replace(/(?:\r\n|\r|\n)/g, '<br>') : '';
+    }
 }
