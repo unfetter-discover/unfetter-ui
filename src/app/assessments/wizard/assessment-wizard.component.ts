@@ -177,7 +177,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
    * @returns {void}
    */
   public updateRisks(option: any, measurement: any, assessment: any): void {
-    const newRisk = option.selected.value; // === '0' ? 0 : option.selected.value;
+    const newRisk = option.selected.value ;
     // update measurement value in assessments
     const assessmentMeasurementToUpdate = assessment.measurements.find((assMes) => assMes.name === measurement.name);
     // assessmentMeasurementToUpdate.risk = newRisk;
@@ -188,8 +188,10 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         }
     })
     // calculate risk of all measurements
+    if (newRisk < 0) {
+      assessmentMeasurementToUpdate.risk = 1;
+    }
     assessment.risk = this.calculateMeasurementsAvgRisk(assessment.measurements);
-
     const groupRisk = this.calculateGroupRisk();
 
     if (this.model) {
@@ -211,11 +213,12 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
      }
       let question = assessment_object.questions.find((q) => q.name === measurement.name);
       if (!question) {
-        question = {
-          name:  measurement.name,
-          risk: newRisk,
-          selected_value: { name: measurement.selected_value.name, risk: newRisk }
-        }
+        question = measurement;
+        //   name:  measurement.name,
+        //   risk: newRisk,
+        //   options: measurement.options,
+        //   selected_value: { name: measurement.selected_value.name, risk: newRisk }
+        // }
         assessment_object.questions.push(question);
       } else {
         this.updateQuestionRisk(question, newRisk);
@@ -300,7 +303,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         const q = a.questions.find((question) => {
           return question.name === measurement.name;
         });
-        return q ? q.selected_value.risk : this.defaultValue;
+        return q && q.selected_value ? q.selected_value.risk : this.defaultValue;
       }
     }
   }
