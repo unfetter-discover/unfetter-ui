@@ -3,7 +3,8 @@ import { Headers, Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
-import { ThreatReportOverview } from './threat-report-overview.model';
+import { ThreatReport } from './models/threat-report.model';
+import { ThreatReportMock } from './models/threat-report-mock.model';
 
 @Injectable()
 export class ThreatReportOverviewService {
@@ -11,18 +12,8 @@ export class ThreatReportOverviewService {
 
   constructor(private http: Http) { }
 
-  public load(filter?: string): Observable<ThreatReportOverview[]> {
-
-    const lim = 10;
-    const arr = Array(lim);
-    for (let i = 0; i < lim; i++) {
-      arr[i] = { 
-            id: i,
-            name: `name-${i}`,
-            date: new Date().toISOString(),
-            author: `author-${i}`
-          } as ThreatReportOverview
-    }
+  public load(filter?: string): Observable<ThreatReport[]> {
+    const arr = ThreatReportMock.mockMany(10);
     return Observable.of(arr);
   }
 
