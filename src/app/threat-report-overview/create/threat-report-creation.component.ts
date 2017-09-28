@@ -150,4 +150,15 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
 
   }
 
+  public removeChip(stixName: string, stixType: string) {
+    switch (stixType) {
+      case 'intrusion-set':
+        this.selectedInstrusions.delete(stixName);
+        break;
+      case 'malware':
+        this.selectedMalware.delete(stixName);
+        break;
+    }    
+  }
+
 }
