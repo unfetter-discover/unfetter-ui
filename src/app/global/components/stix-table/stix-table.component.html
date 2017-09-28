@@ -1,30 +1,34 @@
 <div class="stixTableComponent">
     <md-table #table [dataSource]="dataSource" class="unfetterAngularMaterialTable hideHeader" [class.fix-height-table]="stixData.length > 10">
 
-        <ng-container mdColumnDef="name">
+        <ng-container mdColumnDef="stix">
             <md-header-cell *mdHeaderCellDef>STIX</md-header-cell>
             <md-cell *mdCellDef="let element">
-                <a routerLink="{{element.id}}">{{element.name}}</a>
-                <md-chip-list *ngIf="element.external_references" class="inlineFlex">
-                    <md-chip *ngFor="let external_reference of element.external_references" style="margin-left: 5px;">
-                        <a target="_blank" *ngIf="external_reference.url"> {{external_reference.source_name}}</a>
-                        <span *ngIf="!external_reference.url"> {{external_reference.source_name}}</span>
-                    </md-chip>
-                </md-chip-list>
-            </md-cell>
-        </ng-container>
-
-        <ng-container mdColumnDef="action">
-            <md-header-cell *mdHeaderCellDef> &nbsp; </md-header-cell>
-            <md-cell *mdCellDef="let element">
-                <div class="buttonGrp text-right">
-                    <button class="mat-primary" md-button routerLink="edit/{{element.id}}">
-                        <i class="material-icons">create</i>
-                    </button>
-                    <button class="mat-warn" md-button (click)="deletButtonClicked(element)">
-                        <i class="material-icons">delete</i>
-                    </button>
-                </div>
+                <div class="flex flexItemsCenter">
+                    <span class="flex1">
+                        <a routerLink="{{element.id}}">{{element.name}}</a>
+                        <md-chip-list *ngIf="element.external_references" class="inlineFlex">
+                            <md-chip *ngFor="let external_reference of element.external_references.slice(0,3)" class="chipListChip">
+                                <a target="_blank" *ngIf="external_reference.url"> {{external_reference.source_name}}</a>
+                                <span *ngIf="!external_reference.url"> {{external_reference.source_name}}</span>
+                            </md-chip>
+                        </md-chip-list>
+                        <small *ngIf="element.external_references && element.external_references.length > 3" 
+                            class="text-muted" 
+                            mdTooltip="{{ externalReferencesToolTipGen(element.external_references.slice(3)) }}"
+                            mdTooltipPosition="after"> 
+                            + {{ element.external_references.length - 3 }} more
+                        </small>
+                    </span>
+                    <span class="buttonGrp text-right">
+                        <button class="mat-primary" md-button routerLink="edit/{{element.id}}">
+                            <i class="material-icons">create</i>
+                        </button>
+                            <button class="mat-warn" md-button (click)="deletButtonClicked(element)">
+                            <i class="material-icons">delete</i>
+                        </button>
+                    </span>
+                </div>                               
             </md-cell>
         </ng-container>
 
