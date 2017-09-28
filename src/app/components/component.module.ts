@@ -24,6 +24,7 @@ import { ButtonsFilterComponent } from './buttons-filter/buttons-filter.componen
 import { LinkNodeGraphComponent } from './link-node-graph/link-node-graph.component';
 import { LabelComponent } from './labels/label.component';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
 @NgModule({
   declarations: [
     // Components / Directives/ Pipes
@@ -60,7 +61,8 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
     DataListModule,
     CheckboxModule,
     MdCheckboxModule,
-    BsDropdownModule.forRoot()
+    BsDropdownModule.forRoot(),
+    CollapseModule.forRoot()
   ],
   exports: [
     PageHeaderComponent,

@@ -1,10 +1,12 @@
 import { Component, ViewChild, OnInit, QueryList, ViewChildren, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AssessmentsDashboardService } from '../assessments-dashboard/assessments-dashboard.service';
-import { Constance } from '../../utils/constance';
+import { Observable } from 'rxjs/Observable';
+
 import { AttackPattern } from '../../models/attack-pattern';
 import { AddAssessedObjectComponent } from './add-assessed-object/add-assessed-object.component';
-import { Observable } from 'rxjs/Observable';
+import { AssessmentsDashboardService } from '../assessments-dashboard/assessments-dashboard.service';
+import { Constance } from '../../utils/constance';
+import { FormatHelpers } from '../../global/static/format-helpers';
 
 @Component({
   selector: 'assessments-group',
@@ -306,6 +308,10 @@ export class AssessmentsGroupComponent implements OnInit, AfterViewInit {
       },
       (assessmentErr) => console.log(assessmentErr)
       );
+  }
+
+  public whitespaceToBreak(inputString: string): string {
+    return FormatHelpers.mitreCitationsToHtml(FormatHelpers.whitespaceToBreak(inputString));
   }
 }
 

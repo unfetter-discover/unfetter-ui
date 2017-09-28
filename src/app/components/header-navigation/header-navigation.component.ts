@@ -23,4 +23,6 @@ export class HeaderNavigationComponent {
     { url: 'stix/reports', label: 'Reports' },
     { url: 'stix/x-unfetter-sensors', label: 'Sensors' }
   ];
+
+  public collapsed: boolean = true;
 }

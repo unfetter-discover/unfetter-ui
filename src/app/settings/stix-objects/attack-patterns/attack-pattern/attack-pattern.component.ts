@@ -7,6 +7,7 @@ import { BaseStixComponent } from '../../../base-stix.component';
 import { AttackPattern } from '../../../../models';
 import { StixService } from '../../../stix.service';
 import { Constance } from '../../../../utils/constance';
+import { FormatHelpers } from '../../../../global/static/format-helpers'
 
 @Component({
   selector: 'attack-pattern',
@@ -98,6 +99,6 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     }
 
     public cleanWhitespace(inputString): string {
-        return inputString ? inputString.replace(/(?:\r\n|\r|\n)/g, '<br>') : '';
+        return FormatHelpers.mitreCitationsToHtml(FormatHelpers.whitespaceToBreak(inputString));
     }
 }
