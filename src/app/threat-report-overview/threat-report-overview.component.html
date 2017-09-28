@@ -35,7 +35,7 @@
 
                 <ng-container mdColumnDef="id">
                     <md-header-cell *mdHeaderCellDef> ID </md-header-cell>
-                    <md-cell *mdCellDef="let row"> {{row.id}} </md-cell>
+                    <md-cell *mdCellDef="let row">  <button color="primary" md-button routerLink="./modify/{{row.id}}">{{row.id}}</button> </md-cell>
                 </ng-container>
 
                 <ng-container mdColumnDef="name">
@@ -52,6 +52,13 @@
                     <md-header-cell *mdHeaderCellDef> Author </md-header-cell>
                     <md-cell *mdCellDef="let row"> {{row.author}} </md-cell>
                 </ng-container>
+
+                <!-- <ng-container mdColumnDef='actions'>
+                    <md-header-cell *mdHeaderCellDef> </md-header-cell>
+                    <md-cell *mdCellDef="let row">
+                        <button color="primary" md-button routerLink="./modify/{{row.id}}">open</button>
+                    </md-cell>
+                </ng-container> -->
             
                 <md-header-row *mdHeaderRowDef="displayCols"></md-header-row>
                 <md-row *mdRowDef="let row; columns: displayCols;"></md-row>

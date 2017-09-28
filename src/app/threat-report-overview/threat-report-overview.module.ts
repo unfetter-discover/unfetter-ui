@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { ComponentModule } from '../components';
 import { GlobalModule } from '../global/global.module';
 import { routing } from './threat-report-overview-routing.module';
+import { ThreatReportCreationComponent } from './create/threat-report-creation.component';
 import { ThreatReportOverviewComponent } from './threat-report-overview.component';
 import { ThreatReportOverviewService } from './threat-report-overview.service';
-import { ThreatReportCreationComponent } from './create/threat-report-creation.component';
+import { ThreatReportModifyComponent } from './modify/threat-report-modify.component';
 
 import { MdButtonModule, MdChipsModule, MdInputModule, MdIconModule, MdAutocompleteModule } from '@angular/material';
 import { MdCheckboxModule } from '@angular/material';
@@ -16,7 +17,8 @@ import { MdTableModule } from '@angular/material';
 
 const troComponents = [
   ThreatReportOverviewComponent,
-  ThreatReportCreationComponent
+  ThreatReportCreationComponent,
+  ThreatReportModifyComponent
 ];
 
 const troServices = [

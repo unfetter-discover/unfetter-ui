@@ -5,9 +5,9 @@ import { Observable } from 'rxjs/Observable';
 import { GenericApi } from '../../global/services/genericapi.service';
 import { Constance } from '../../utils/constance';
 import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
-import { SelectOption } from './select-option';
 import { IntrusionSet } from '../../models/intrusion-set';
 import { Malware } from '../../models/malware';
+import { SelectOption } from '../models/select-option';
 
 @Component({
   selector: 'threat-report-creation',
@@ -150,6 +150,11 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
 
   }
 
+  /**
+   * Remove a chip
+   * @param {string} stixName
+   * @param {string} stixType
+   */
   public removeChip(stixName: string, stixType: string) {
     switch (stixType) {
       case 'intrusion-set':
@@ -158,7 +163,15 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
       case 'malware':
         this.selectedMalware.delete(stixName);
         break;
-    }    
+    }
+  }
+
+  /**
+   * go back to list view
+   * @param {UIEvent} optional event
+   */
+  public cancel(event: UIEvent): void {
+    this.router.navigate(['/tro']);
   }
 
 }
