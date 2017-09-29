@@ -24,7 +24,8 @@
 }
 
 .navbar-inverse {
-    background-color: $nav-background-color;
+    // background-color: $nav-background-color;
+    background: linear-gradient(60deg, #0097A7, #4fc2f9);
     border-color: $nav-background-color;
     .navbar-brand {
         color: #FFFFFF;      
@@ -42,6 +43,6 @@
 }
 
 // WARNING if the primary color is not blue, delete this
-a {
-    color: $primary-color;
-}
+// a {
+//     color: $primary-color;
+// }

@@ -7,8 +7,10 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <div class="navbar-brand" style="font-size: 250%; margin-top: 5px; cursor: pointer;" (click)="menuClicked()">
-          <i class="material-icons">menu</i>
+        <div class="navbar-brand" style="font-size: 250%; margin-top: 3px; cursor: pointer;" (click)="menuClicked()">
+          <button md-icon-button style="font-size: 32px;">
+            <i class="material-icons">menu</i>
+          </button>
         </div>
           <a class="navbar-brand"  [routerLink]=" ['./'] "
           routerLinkActive="active" [routerLinkActiveOptions]= "{exact: true}">

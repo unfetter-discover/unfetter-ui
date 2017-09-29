@@ -1,33 +1,102 @@
+<div id="helpIcon">
+  <div id="helpIconBox" style="display: inline-flex;">
+    <div class="material-icons">info_outline</div>
+  </div> 
+  <div id="helpContent" style="display: inline-block;" class="mat-elevation-z12">
+    <h4>Attack Pattern</h4>
+    <p>Each Attack Pattern is a type of TTP that describes behaviors and actions that adversaries may take in your network. Attack
+    Patterns are used to help categorize an attack, generalize specific attacks to the patterns that they follow, and provide
+    detailed information about how attacks are preformed. An example of an attack pattern could be 'spear fishing', 'lateral    movement', or 'exploit vulnerability'. On this page, more Attack Patterns can be created or deleted.</p>
+  </div>
+</div>
+
+
 <md-sidenav-container id="sidenavContainer">
   <md-sidenav #sidenav id="sidenavMenu" opened="true" mode="side" class="mat-elevation-z14">
 
-    <div style="height: 200px; width: 100%; background-image: url('https://www.transparenttextures.com/patterns/billie-holiday.png'); padding: 16px; background-color: #2979FF; flex-direction: column; border-bottom: 3px solid #E91E63;" class="flex">
+    <div style="height: 200px; width: 100%; background-image: url('https://s.tmimgcdn.com/blog/wp-content/uploads/2016/04/1-1.jpg?x47994'); padding: 16px; flex-direction: column; border-bottom: 3px solid #E91E63;"
+      class="flex">
       <div style="border: none; border-radius: 50%; width: 100px; height: 100px; overflow: hidden;" class="mb-5">
         <img src="http://www.upplanet.com/bighero/outlay-demo/img/avatars/avatar2.png" height="100px" width="100px">
       </div>
-      <div class="mb-5 whiteText" style="font-size: 120%; font-weight: 300;">Unfetter User</div>     
-      <div class="flex flexAlignCenter whiteText">
+      <div class="mb-5 whiteText" style="font-size: 120%; font-weight: 300;">Unfetter User</div>
+
+      <div class="flex flexItemsCenter whiteText">
         <span style="font-size: 120%; font-weight: 300;">admin@unfetter.io</span>
         <span class="flex1"></span>
+
         <span style="font-size: 24px;">
-          <i class="material-icons">keyboard_arrow_down</i>
-        </span>  
-      </div> 
+          <button md-icon-button [mdMenuTriggerFor]="menu" class="md-24">
+          <md-icon>arrow_drop_down</md-icon>
+        </button>
+                  <md-menu #menu="mdMenu">
+                    <button md-menu-item>
+            <md-icon>dialpad</md-icon>
+            <span>Redial</span>
+        </button>
+        <button md-menu-item disabled>
+            <md-icon>voicemail</md-icon>
+            <span>Check voicemail</span>
+          </button>
+        <button md-menu-item>
+            <md-icon>notifications_off</md-icon>
+            <span>Disable alerts</span>
+          </button>
+        </md-menu>
+        </span>
+      </div>
+
     </div>
 
-    <button md-button style="width: 100%; text-align: left;">Assessments</button>
+    <!-- <button md-button style="width: 100%; text-align: left;">Assessments</button>
     <button md-button style="width: 100%; text-align: left;">Intrusion Set Dashboard</button>
     <button md-button style="width: 100%; text-align: left;">Threat Report Overview</button>
     <button md-button style="width: 100%; text-align: left;">Link Explorer</button>
     <button md-button style="width: 100%; text-align: left;">
-      <div class="flex flexAlignCenter">
+      <div class="flex flexItemsCenter">
         <span>STIX</span>
         <span class="flex1"></span>
-        <span class="md-24 flex flexAlignCenter">
-          <i class="material-icons">keyboard_arrow_right</i>
+        <span class="md-24 flex flexItemsCenter">
+          <i class="material-icons">keyboard_arrow_down</i>
         </span>
       </div>
-    </button>
+    </button> -->
+
+    <md-nav-list style="padding-top: 0;">
+      <md-list-item>
+        <a mdLine>Assessments</a>
+      </md-list-item>
+      <md-list-item>
+        <a mdLine>Intrusion Set Dashboard</a>
+      </md-list-item>
+      <md-list-item>
+        <a mdLine>Threat Report Overview</a>
+      </md-list-item>
+      <md-list-item>
+        <a mdLine>Link Explorer</a>
+      </md-list-item>
+      <md-list-item>
+        <a mdLine>STIX</a>
+        <button md-icon-button (click)="showInfo(link)">
+          <md-icon class="md-24">keyboard_arrow_down</md-icon>
+      </button>
+      </md-list-item>
+    </md-nav-list>
+
+    <div class="submenu">
+      <md-nav-list style="padding-top: 0;">
+        <md-list-item class="active">
+          <a mdLine>Attack Patterns</a>
+        </md-list-item>
+        <md-list-item>
+          <a mdLine>Courses of Action</a>
+        </md-list-item>
+        <md-list-item>
+          <a mdLine>Indicators</a>
+        </md-list-item>
+      </md-nav-list>
+    </div>
+
   </md-sidenav>
 
   <div id="mainContent">

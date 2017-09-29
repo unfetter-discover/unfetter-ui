@@ -11,8 +11,8 @@
 // @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 @import '~@angular/material/theming';
 @include mat-core();
-$my-app-primary: mat-palette($mat-light-blue, 800);
-$my-app-accent: mat-palette($mat-amber, A200, A100, A400);
+$my-app-primary: mat-palette($mat-cyan, 700);
+$my-app-accent: mat-palette($mat-pink, A200, A100, A400);
 $my-app-warn: mat-palette($mat-deep-orange);
 $my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
 @include angular-material-theme($my-app-theme);
@@ -384,7 +384,8 @@ a {
             box-shadow: 0px 6px 7px -4px rgba(0, 0, 0, 0.2), 0px 11px 15px 1px rgba(0, 0, 0, 0.14), 0px 4px 20px 3px rgba(0, 0, 0, 0.12) !important;
         }
         .mat-expansion-panel-header {
-            background: $primary-color !important;
+            // background: $primary-color !important;
+            background: linear-gradient(60deg, #0097A7, #4fc2f9) !important;
             transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
             .mat-expansion-panel-header-title,
             .mat-expansion-indicator::after {
