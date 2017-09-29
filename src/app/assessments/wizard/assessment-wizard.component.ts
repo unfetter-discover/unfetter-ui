@@ -82,6 +82,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
   private assessmentGroups: any;
   private defaultMeasurement = 'Nothing';
   private url: string;
+  private tempModel = {};
   private readonly subscriptions = [];
 
   constructor(private genericApi: GenericApi, private snackBar: MdSnackBar,
@@ -176,21 +177,36 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
    * @param assessment
    * @returns {void}
    */
+
   public updateRisks(option: any, measurement: any, assessment: any): void {
     const newRisk = option.selected.value ;
     // update measurement value in assessments
     const assessmentMeasurementToUpdate = assessment.measurements.find((assMes) => assMes.name === measurement.name);
-    // assessmentMeasurementToUpdate.risk = newRisk;
     this.updateQuestionRisk(assessmentMeasurementToUpdate, newRisk);
-    assessment.measurements.forEach((m) => {
-        if (m.name !== assessmentMeasurementToUpdate.name) {
-          m.selected_value = {name: '', risk: this.defaultValue};
-        }
-    })
-    // calculate risk of all measurements
+    // we need a temp model to hold selected question
+    if (!this.model) {
+      if (!this.tempModel[assessment.id]) {
+        this.tempModel[assessment.id] = {assessment: '', measurements: []};
+      }
+      this.tempModel[assessment.id].assessment = assessment;
+      this.tempModel[assessment.id].measurements = this.tempModel[assessment.id].measurements.filter((m) => {
+          return m.name !== assessmentMeasurementToUpdate.name;
+      });
+      // only add if question is selected
+      if (newRisk >= 0) {
+        this.tempModel[assessment.id].measurements.push(assessmentMeasurementToUpdate);
+      }
+      // if no questions selected remove
+      if (this.tempModel[assessment.id].measurements.length === 0) {
+        delete this.tempModel[assessment.id];
+      }
+    }
+    // can not have negative. if new newRisk is < 0
+    // set assessmentMeasurementToUpdate.risk to 1
     if (newRisk < 0) {
       assessmentMeasurementToUpdate.risk = 1;
     }
+    // calculate risk of all measurements
     assessment.risk = this.calculateMeasurementsAvgRisk(assessment.measurements);
     const groupRisk = this.calculateGroupRisk();
 
@@ -200,7 +216,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
 
       if (!assessment_object) {
         assessment_object = {
-          questions: assessment.measurements,
+          questions: [measurement],
           risk: newRisk,
           stix: {
             id: assessment.id,
@@ -214,21 +230,11 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
       let question = assessment_object.questions.find((q) => q.name === measurement.name);
       if (!question) {
         question = measurement;
-        //   name:  measurement.name,
-        //   risk: newRisk,
-        //   options: measurement.options,
-        //   selected_value: { name: measurement.selected_value.name, risk: newRisk }
-        // }
         assessment_object.questions.push(question);
       } else {
         this.updateQuestionRisk(question, newRisk);
       }
-
       assessment_object.risk = assessment.risk;
-
-      // assessment_object.risk = groupRisk;
-      // question.risk = option.selected.value.risk;
-      // question.selected_value = option.selected.value;
     }
     this.updateChart();
   }
@@ -290,7 +296,16 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
 
   public selectedValue(assessment: any, measurement: any, option: any): number {
     if (!this.model) {
-       return option.value ? option.value : this.defaultValue;
+      if (this.tempModel) {
+        if (this.tempModel[assessment.id]) {
+          const found = this.tempModel[assessment.id].measurements.find((m) => { return m.name === measurement.name; });
+          return found ? found.risk : this.defaultValue;
+        } else {
+          return option.value ? option.value : this.defaultValue;
+        }
+      } else {
+        return option.value ? option.value : this.defaultValue;
+      }
     } else {
       let a = this.model.attributes.assessment_objects.find(
         (assessment_objects) => {
@@ -484,42 +499,71 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
     // retVal.assessment_objects = [];
     const assessmentSet = new Set();
 
-    assessmentsGroups.forEach((assessmentsGroup) => {
-      if (assessmentsGroup.assessments !== undefined) {
-        assessmentsGroup.assessments.forEach((assessment) => {
-          if (assessment.risk < 0) {
-            return;
-          }
-          const temp: any = {};
-          temp.stix = {};
-          temp.stix.id = assessment.id;
-          temp.stix.type = assessment.type;
-          temp.stix.description = assessment.description || '';
-          temp.stix.name = assessment.name;
+    Object.keys(this.tempModel).forEach(
 
-          temp.questions = [];
-          if (assessment.measurements !== undefined) {
-            assessment.measurements.forEach((measurement) => {
-              if (measurement.selected_value.risk < 0) {
-                return;
-              }
-              temp.questions.push(measurement);
-            });
-          } else {
-            return { error: 'No measurements/questions on assessment' };
-          }
+      (assessmentId) => {
+        const assessmentObj = this.tempModel[assessmentId];
+        const temp: any = {};
+        temp.stix = {};
+        temp.stix.id = assessmentObj.assessment.id;
+        temp.stix.type = assessmentObj.assessment.type;
+        temp.stix.description = assessmentObj.assessment.description || '';
+        temp.stix.name = assessmentObj.assessment.name;
 
-          temp.risk = temp.questions
-              .map((question) => question.risk)
-              .reduce((prev, cur) => (prev += cur), 0) / temp.questions.length;
+        temp.questions = [];
+        if (assessmentObj.measurements !== undefined) {
+          assessmentObj.measurements.forEach((measurement) => {
+            if (!measurement.selected_value || measurement.selected_value.risk < 0) {
+              return;
+            }
+            temp.questions.push(measurement);
+          });
+        }
+        temp.risk = temp.questions
+        .map((question) => question.risk)
+        .reduce((prev, cur) => (prev += cur), 0) / temp.questions.length;
 
-          assessmentSet.add(JSON.stringify(temp));
+        assessmentSet.add(JSON.stringify(temp));
 
-        });
-      } else {
-        return { error: 'No assessments in group' };
       }
-    });
+    )
+
+    // assessmentsGroups.forEach((assessmentsGroup) => {
+    //   if (assessmentsGroup.assessments !== undefined) {
+    //     assessmentsGroup.assessments.forEach((assessment) => {
+    //       if (assessment.risk < 0) {
+    //         return;
+    //       }
+    //       const temp: any = {};
+    //       temp.stix = {};
+    //       temp.stix.id = assessment.id;
+    //       temp.stix.type = assessment.type;
+    //       temp.stix.description = assessment.description || '';
+    //       temp.stix.name = assessment.name;
+
+    //       temp.questions = [];
+    //       if (assessment.measurements !== undefined) {
+    //         assessment.measurements.forEach((measurement) => {
+    //           if (measurement.selected_value.risk < 0) {
+    //             return;
+    //           }
+    //           temp.questions.push(measurement);
+    //         });
+    //       } else {
+    //         return { error: 'No measurements/questions on assessment' };
+    //       }
+
+    //       temp.risk = temp.questions
+    //           .map((question) => question.risk)
+    //           .reduce((prev, cur) => (prev += cur), 0) / temp.questions.length;
+
+    //       assessmentSet.add(JSON.stringify(temp));
+
+    //     });
+    //   } else {
+    //     return { error: 'No assessments in group' };
+    //   }
+    // });
 
     retVal['assessment_objects'] = Array.from(assessmentSet)
       .map((dat) => JSON.parse(dat));
@@ -536,15 +580,20 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
       retVal.description = this.assessmentDescription;
       retVal.assessment_objects = this.model.attributes.assessment_objects.filter(
         (assessment_object) => {
-          const q = assessment_object.questions.find((question) => {
-            return question.risk < 0
+          let filter = false;
+          assessment_object.questions.forEach((question) => {
+             if ( question.risk >= 0 ) {
+               filter = true;
+             }
           });
-          return q == null;
+          return filter;
         }
       );
-      if (retVal.assessment_objects.questions && retVal.assessment_objects.questions.length > 1) {
-        retVal.assessment_objects.questions = retVal.assessment_objects.questions.filter((question) => {
-          return question.risk < 0
+      if (retVal.assessment_objects) {
+        retVal.assessment_objects.forEach((assessment_object) => {
+            assessment_object.questions = assessment_object.questions.filter((question) => {
+            return question.risk >= 0
+          });
         });
       }
 
