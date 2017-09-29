@@ -1,20 +1,56 @@
-<header-navigation></header-navigation>
+<md-sidenav-container id="sidenavContainer">
+  <md-sidenav #sidenav id="sidenavMenu" opened="true" mode="side" class="mat-elevation-z14">
 
-<div id="routerWrapper">
-    <router-outlet></router-outlet>
-</div>
+    <div style="height: 200px; width: 100%; background-image: url('https://www.transparenttextures.com/patterns/billie-holiday.png'); padding: 16px; background-color: #2979FF; flex-direction: column; border-bottom: 3px solid #E91E63;" class="flex">
+      <div style="border: none; border-radius: 50%; width: 100px; height: 100px; overflow: hidden;" class="mb-5">
+        <img src="http://www.upplanet.com/bighero/outlay-demo/img/avatars/avatar2.png" height="100px" width="100px">
+      </div>
+      <div class="mb-5 whiteText" style="font-size: 120%; font-weight: 300;">Unfetter User</div>     
+      <div class="flex flexAlignCenter whiteText">
+        <span style="font-size: 120%; font-weight: 300;">admin@unfetter.io</span>
+        <span class="flex1"></span>
+        <span style="font-size: 24px;">
+          <i class="material-icons">keyboard_arrow_down</i>
+        </span>  
+      </div> 
+    </div>
 
-<footer class="footer">
-  <div class="container-fluid">
-    <div class="col-xs-5">
-      <p> Made by <a class="white text-lighten-3" target="_blank" href="http://www.iad.gov">NSA Information Assurance</a></p>
+    <button md-button style="width: 100%; text-align: left;">Assessments</button>
+    <button md-button style="width: 100%; text-align: left;">Intrusion Set Dashboard</button>
+    <button md-button style="width: 100%; text-align: left;">Threat Report Overview</button>
+    <button md-button style="width: 100%; text-align: left;">Link Explorer</button>
+    <button md-button style="width: 100%; text-align: left;">
+      <div class="flex flexAlignCenter">
+        <span>STIX</span>
+        <span class="flex1"></span>
+        <span class="md-24 flex flexAlignCenter">
+          <i class="material-icons">keyboard_arrow_right</i>
+        </span>
+      </div>
+    </button>
+  </md-sidenav>
+
+  <div id="mainContent">
+    <header-navigation (toggleSidenav)="sidenav.toggle()"></header-navigation>
+
+    <div id="routerWrapper">
+      <router-outlet></router-outlet>
     </div>
-    <div class="col-xs-7">
-      <p class="text-right">
-        <a routerLink="./partners">Partners</a>&emsp;|&emsp;
-        <a target="_blank" href="/api/explorer/">View API</a>
-      </p>
-    </div>
-    
+
+    <footer class="footer">
+      <div class="container-fluid">
+        <div class="col-xs-5">
+          <p> Made by <a class="white text-lighten-3" target="_blank" href="http://www.iad.gov">NSA Information Assurance</a></p>
+        </div>
+        <div class="col-xs-7">
+          <p class="text-right">
+            <a routerLink="./partners">Partners</a>&emsp;|&emsp;
+            <a target="_blank" href="/api/explorer/">View API</a>
+          </p>
+        </div>
+
+      </div>
+    </footer>
   </div>
-</footer>
+
+</md-sidenav-container>
