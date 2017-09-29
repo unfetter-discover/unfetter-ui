@@ -41,8 +41,11 @@ $my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
 
 // // Using the $theme variable from the pre-built theme you can call the theming function
 //@include calendar-theme($theme);
-body {
-    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+// body {
+//     font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+// }
+* {
+    font-family: 'Nunito';
 }
 
 html,
@@ -370,6 +373,8 @@ a {
         transition: box-shadow 0.3s ease-in-out;
     }
     .mat-expansion-panel-header-title {
+        font-size: 18px;
+        font-weight: 300;
         align-items: center;
         .mat-badge {
             color: white;
@@ -385,7 +390,7 @@ a {
         }
         .mat-expansion-panel-header {
             // background: $primary-color !important;
-            background: linear-gradient(60deg, #0097A7, #4fc2f9) !important;
+            background: linear-gradient(60deg, #0097A7, #4fc2f9) !important;            
             transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
             .mat-expansion-panel-header-title,
             .mat-expansion-indicator::after {
