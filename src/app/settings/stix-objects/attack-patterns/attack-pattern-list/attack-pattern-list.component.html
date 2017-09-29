@@ -1,4 +1,30 @@
-<div class="row">
+<div id="header">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h1 style="margin-top: 70px; font-weight: 300;">Attack Patterns <sup>
+                        <small class="whiteText">
+                            <i class="material-icons">info_outline</i>
+                        </small>
+                    </sup>
+                </h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="fabWrapper">
+    <button md-fab color="primary">
+        <md-icon class="md-24" aria-label="Example icon-button with a heart icon">add</md-icon>
+    </button>
+    <button md-fab color="warn">
+        <md-icon class="md-24" aria-label="Example icon-button with a heart icon">file_download</md-icon>
+    </button>
+</div>
+
+
+
+<!-- <div class="row">
     <div class="col-md-12">
 
         <div class="button-row">
@@ -10,29 +36,30 @@
         </div>
 
     </div>
-</div>
-<div class="row height-100-percent">
+</div> -->
+<div class="container">
+    <div class="row height-100-percent">
 
-    <div class="col-md-12 scroll-area">
-        <md-accordion class="unfetterAngularMaterialAccordion">
-            <md-expansion-panel *ngFor="let key of phaseNameGroupKeys">
-                <md-expansion-panel-header>
-                    <md-panel-title>
-                        {{key | capitalize }}&nbsp;
-                        <span *ngIf="attackPatternByPhaseMap[key] !== undefined" class="mat-badge">{{attackPatternByPhaseMap[key].length}}</span>
-                        <span *ngIf="attackPatternByPhaseMap[key] === undefined || !attackPatternByPhaseMap[key].length" class="mat-badge">0</span>
-                    </md-panel-title>
-                </md-expansion-panel-header>
+        <div class="col-md-12 scroll-area" style="margin-top: -64px;">
+            <md-accordion class="unfetterAngularMaterialAccordion">
+                <md-expansion-panel *ngFor="let key of phaseNameGroupKeys">
+                    <md-expansion-panel-header>
+                        <md-panel-title>
+                            {{key | capitalize }}&nbsp;
+                            <span *ngIf="attackPatternByPhaseMap[key] !== undefined" class="mat-badge">{{attackPatternByPhaseMap[key].length}}</span>
+                            <span *ngIf="attackPatternByPhaseMap[key] === undefined || !attackPatternByPhaseMap[key].length" class="mat-badge">0</span>
+                        </md-panel-title>
+                    </md-expansion-panel-header>
 
-                <div class="example-container" *ngIf="attackPatternByPhaseMap !== undefined && attackPatternByPhaseMap[key] !== undefined">
-                    <stix-table [stixData]="attackPatternByPhaseMap[key]" (delete)="deletButtonClicked($event, key)"></stix-table>
-                </div>
+                    <div class="example-container" *ngIf="attackPatternByPhaseMap !== undefined && attackPatternByPhaseMap[key] !== undefined">
+                        <stix-table [stixData]="attackPatternByPhaseMap[key]" (delete)="deletButtonClicked($event, key)"></stix-table>
+                    </div>
 
-            </md-expansion-panel>
-        </md-accordion>
+                </md-expansion-panel>
+            </md-accordion>
 
-        <br>
-        <!-- <p-accordion (onOpen)="onTabShow($event)">
+            <br>
+            <!-- <p-accordion (onOpen)="onTabShow($event)">
             <p-accordionTab header="{{key | capitalize }}" *ngFor="let key of phaseNameGroupKeys">
                 <p-dataList *ngIf="filterAttackPattern[key]" [value]="filterAttackPattern[key]" [paginator]="true" [rows]="numOfRows" [lazy]="true"
                     (onLazyLoad)="loadData($event, key)" [totalRecords]="totalRecords(key)">
@@ -67,5 +94,6 @@
 
         </p-accordion> -->
 
+        </div>
     </div>
 </div>

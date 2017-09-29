@@ -8,6 +8,7 @@ import { StixService } from '../../../stix.service';
 
 @Component({
     selector: 'attack-pattern-list',
+    styleUrls: ['./attack-pattern-list.component.scss'],
     templateUrl: './attack-pattern-list.component.html',
 
 })

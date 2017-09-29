@@ -1,0 +1,15 @@
+#header {
+    height: 200px;
+    background-image: url('https://i.imgur.com/AMf9X7E.jpg');
+    background-color: #0277BD;
+    // background-image: url("https://www.transparenttextures.com/patterns/beige-paper.png");
+    color: white;
+    background-size: cover;
+}
+
+#fabWrapper {
+    z-index: 100;
+    position: fixed;
+    right: 25px;
+    bottom: 50px;
+}
