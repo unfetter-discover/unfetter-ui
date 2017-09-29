@@ -82,6 +82,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
   private assessmentGroups: any;
   private defaultMeasurement = 'Nothing';
   private url: string;
+  private tempModel = {};
   private readonly subscriptions = [];
 
   constructor(private genericApi: GenericApi, private snackBar: MdSnackBar,
@@ -176,30 +177,36 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
    * @param assessment
    * @returns {void}
    */
-  private tempModel = {}
+
   public updateRisks(option: any, measurement: any, assessment: any): void {
     const newRisk = option.selected.value ;
     // update measurement value in assessments
     const assessmentMeasurementToUpdate = assessment.measurements.find((assMes) => assMes.name === measurement.name);
-    // assessmentMeasurementToUpdate.risk = newRisk;
     this.updateQuestionRisk(assessmentMeasurementToUpdate, newRisk);
-
+    // we need a temp model to hold selected question
     if (!this.model) {
-      if(!this.tempModel[assessment.id]) {
+      if (!this.tempModel[assessment.id]) {
         this.tempModel[assessment.id] = {assessment: '', measurements: []};
       }
-      this.tempModel[assessment.id].assessment= assessment;
+      this.tempModel[assessment.id].assessment = assessment;
       this.tempModel[assessment.id].measurements = this.tempModel[assessment.id].measurements.filter((m) => {
           return m.name !== assessmentMeasurementToUpdate.name;
       });
-      this.tempModel[assessment.id].measurements.push(assessmentMeasurementToUpdate);
-      // this.tempModel[assessment.id].push(assessmentMeasurementToUpdate);
+      // only add if question is selected
+      if (newRisk >= 0) {
+        this.tempModel[assessment.id].measurements.push(assessmentMeasurementToUpdate);
+      }
+      // if no questions selected remove
+      if (this.tempModel[assessment.id].measurements.length === 0) {
+        delete this.tempModel[assessment.id];
+      }
     }
-
-    // calculate risk of all measurements
+    // can not have negative. if new newRisk is < 0
+    // set assessmentMeasurementToUpdate.risk to 1
     if (newRisk < 0) {
       assessmentMeasurementToUpdate.risk = 1;
     }
+    // calculate risk of all measurements
     assessment.risk = this.calculateMeasurementsAvgRisk(assessment.measurements);
     const groupRisk = this.calculateGroupRisk();
 
@@ -223,21 +230,11 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
       let question = assessment_object.questions.find((q) => q.name === measurement.name);
       if (!question) {
         question = measurement;
-        //   name:  measurement.name,
-        //   risk: newRisk,
-        //   options: measurement.options,
-        //   selected_value: { name: measurement.selected_value.name, risk: newRisk }
-        // }
         assessment_object.questions.push(question);
       } else {
         this.updateQuestionRisk(question, newRisk);
       }
-
       assessment_object.risk = assessment.risk;
-
-      // assessment_object.risk = groupRisk;
-      // question.risk = option.selected.value.risk;
-      // question.selected_value = option.selected.value;
     }
     this.updateChart();
   }
@@ -299,7 +296,16 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
 
   public selectedValue(assessment: any, measurement: any, option: any): number {
     if (!this.model) {
-       return option.value ? option.value : this.defaultValue;
+      if (this.tempModel) {
+        if (this.tempModel[assessment.id]) {
+          const found = this.tempModel[assessment.id].measurements.find((m) => { return m.name === measurement.name; });
+          return found ? found.risk : this.defaultValue;
+        } else {
+          return option.value ? option.value : this.defaultValue;
+        }
+      } else {
+        return option.value ? option.value : this.defaultValue;
+      }
     } else {
       let a = this.model.attributes.assessment_objects.find(
         (assessment_objects) => {
