@@ -87,7 +87,7 @@
 
                 <div *ngIf="currentAttackPattern.description">
                     <p><strong>Description</strong></p>
-                    <p>{{ currentAttackPattern.description }}</p>
+                    <p [innerHTML]="whitespaceToBreak(currentAttackPattern.description)"></p>
                 </div>
 
                 <div *ngIf="currentAttackPattern.external_references">

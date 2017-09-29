@@ -1,17 +1,18 @@
 
-    <div class="row">
-
-         <div class="col-md-11">
-          
-                    <small *ngIf="showDescription" class="help-description"><i class="material-icons">keyboard_arrow_down</i>  {{ description}}</small>
-                
-        </div>
-        <div class="col-md-1">
-            <a href (click)="toggleDescription($event)" >
-                <i class="material-icons" *ngIf="showDescription">close</i>
-                <i class="material-icons" *ngIf="!showDescription">help_outline</i>
-            </a>
-        </div>
+    <div class="row mt-3">
+        <div class="col-xs-12 flex">
+            <span class="flex1">
+            
+                        <small *ngIf="showDescription" class="help-description fadeIn"><i class="material-icons">keyboard_arrow_down</i>  {{ description}}</small>
+                    
+            </span>
+            <span>
+                <a href (click)="toggleDescription($event)" >
+                    <i class="material-icons" *ngIf="showDescription">close</i>
+                    <i class="material-icons" *ngIf="!showDescription">help_outline</i>
+                </a>
+            </span>
+        </div>         
     </div>
     <div class="row">
        <div class="col-md-12">
