@@ -204,7 +204,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
     // can not have negative. if new newRisk is < 0
     // set assessmentMeasurementToUpdate.risk to 1
     if (newRisk < 0) {
-      assessmentMeasurementToUpdate.risk = 1;
+      assessmentMeasurementToUpdate.risk = -1;
     }
     // calculate risk of all measurements
     assessment.risk = this.calculateMeasurementsAvgRisk(assessment.measurements);
