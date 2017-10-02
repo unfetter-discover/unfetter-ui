@@ -3,3 +3,9 @@
         overflow: auto !important;
     }
 }
+
+@media screen and (min-width: 768px) and (max-width: 825px) {
+    .nav>li>a {
+        padding: 10px 12px;
+    }
+}
