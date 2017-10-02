@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterContentInit } from '@angular/core';
+import { Component, OnInit, AfterContentInit, ChangeDetectorRef } from '@angular/core';
 import { CheckboxModule } from 'primeng/primeng';
 import { Observable } from 'rxjs/Observable';
 import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
@@ -26,10 +26,12 @@ export class IntrusionSetDashboardComponent implements OnInit {
   public treeData: any;
   public duration = 3000;
   public groupKillchain: any[];
+  public treeSpinner: boolean = false;
 
   constructor(
     protected genericApi: GenericApi,
-    protected snackBar: MdSnackBar
+    protected snackBar: MdSnackBar,
+    protected ref: ChangeDetectorRef
   ) { }
 
   public ngOnInit() {
@@ -132,6 +134,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
   }
 
   public searchIntrusionSets(): void {
+    this.treeSpinner = true;
     if (this.selectedIntrusionSet.length === 0) {
       return;
     }
@@ -218,7 +221,12 @@ export class IntrusionSetDashboardComponent implements OnInit {
       });
       root.children.push(child);
     });
-    this.treeData = root;
+    this.treeData = root;        
+  }
+
+  public treeComplete() {
+    this.ref.detectChanges();
+    this.treeSpinner = false;    
   }
 
   public getCsc(data: any): any {
