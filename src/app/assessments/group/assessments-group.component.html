@@ -76,7 +76,7 @@
 
                 <div *ngIf=" currentAttackPattern.kill_chain_phases && currentAttackPattern.kill_chain_phases.length> 0">
                     <p><strong>Kill Chain Phases</strong></p>
-                    <p *ngFor="let killchain of currentAttackPattern.kill_chain_phases">{{ killchain.kill_chain_name }} &bull; <span class="text-muted">{{ killchain.phase_name }}</span></p>
+                    <p *ngFor="let killchain of currentAttackPattern.kill_chain_phases">{{ killchain.kill_chain_name | capitalize }} &bull; <span class="text-muted">{{ killchain.phase_name | capitalize }}</span></p>
                 </div>
 
                 <div *ngIf="currentAttackPattern.x_unfetter_sophistication_level !== undefined && currentAttackPattern.x_unfetter_sophistication_level
