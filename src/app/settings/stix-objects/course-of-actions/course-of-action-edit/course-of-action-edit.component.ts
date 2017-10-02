@@ -27,11 +27,10 @@ export class CourseOfActionEditComponent extends CourseOfActionComponent impleme
         super.loadCourseOfAction();
     }
 
-    protected saveCourceOfAction(): void {
+    public saveCourceOfAction(): void {
        let subscription = super.saveButtonClicked().subscribe(
             (stixObject) => {
                 this.location.back();
-                
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);

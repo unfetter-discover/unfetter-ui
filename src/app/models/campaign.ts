@@ -14,7 +14,7 @@ export class Campaign {
         description: string;
         name: string;
         labels: string[];
-        first_seen: string;
+        first_seen: any;
         objective: string;
         timestamp_precision: string;
     };
@@ -30,21 +30,19 @@ export class Campaign {
     }
 
     public formatDate(): void {
-        console.log("aaaaa");
-        console.log(moment(this.attributes.first_seen).toISOString());
        this.attributes.first_seen =  this.attributes.first_seen ?
-            moment(this.attributes.first_seen).toISOString() : moment().toISOString();
+           new Date(this.attributes.first_seen) : new Date();
     }
 
     private createAttributes(): any {
         return {
             // version: '',
-            //created: moment().format(Constance.DATE_FORMATE),
-            //modified: moment().format(Constance.DATE_FORMATE),
+            // created: moment().format(Constance.DATE_FORMATE),
+            // modified: moment().format(Constance.DATE_FORMATE),
             // name: '',
             // description: '',
             labels: [],
-            first_seen: moment().toISOString(),
+            first_seen: new Date(),
             // objective: '',
             // timestamp_precision: ''
         };

@@ -13,7 +13,7 @@ import { Constance } from '../../../../utils/constance';
     templateUrl: './intrusion-set.component.html'
 })
 export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
-    protected intrusionSet: IntrusionSet = new IntrusionSet();
+    public intrusionSet: IntrusionSet = new IntrusionSet();
 
      constructor(
         public stixService: StixService,
@@ -44,7 +44,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
         );
     }
 
-    protected saveButtonClicked(): Observable<any> {
+    public saveButtonClicked(): Observable<any> {
         return Observable.create((observer) => {
                const subscription = super.save(this.intrusionSet).subscribe(
                     (data) => {
@@ -63,7 +63,7 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
         });
     }
 
-    protected loadIntrusionSet(): void {
+    public loadIntrusionSet(): void {
         const subscription =  super.get().subscribe(
             (data) => {
                 this.intrusionSet = new IntrusionSet(data);

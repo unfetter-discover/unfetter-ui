@@ -8,7 +8,7 @@ import { ChartData } from '../chart-data';
 @Component({
     selector: 'assessment-chart',
     templateUrl: './assessment-chart.component.html',
-    styleUrls: ['./assessment-chart.component.css']
+    styleUrls: ['./assessment-chart.component.scss']
 })
 export class AssessmentChartComponent implements OnInit {
 
@@ -102,7 +102,6 @@ export class AssessmentChartComponent implements OnInit {
      * @returns {void}
      */
     public renderChart(): void {
-        console.log('render chart', this.assessmentsGroupingTotal, this.assessmentsGroupingFiltered);
         if (!this.assessmentsGroupingFiltered || !this.assessmentsGroupingTotal) {
             return;
         }
@@ -130,8 +129,6 @@ export class AssessmentChartComponent implements OnInit {
                 index = index + 1;
             });
 
-        console.log(this.barChartData);
-
         // convert to percentages
         for (let i = 0; i < index; i++) {
             const val1 = this.barChartData[0].data[i];
@@ -141,20 +138,17 @@ export class AssessmentChartComponent implements OnInit {
             this.barChartData[1].data[i] = Math.round((val2 / total) * 100);
         }
 
-        console.log('UNIQ',uniqGroups);
-
-        const convertedLabels: any = uniqGroups.map(word => {
+        const convertedLabels: any = uniqGroups.map((word) => {
             word = word.replace(/-/g, ' ');
             word = word.replace(/\b([a-z])(\w+)/g, (_, g1, g2) => {
-                let word = g1.concat(g2);
-                if (word === 'and' || word === 'or' || word === 'the') {
-                    return word;
+                const replacement = g1.concat(g2);
+                if (replacement === 'and' || replacement === 'or' || replacement === 'the') {
+                    return replacement;
                 }
                 return g1.toUpperCase() + g2;
             });
             return word;
         });
-        
 
         // build labels based on root label
         this.barChartLabels = this.showLabels ? convertedLabels : [];

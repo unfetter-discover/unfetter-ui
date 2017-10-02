@@ -7,33 +7,33 @@ import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/
 import { BaseStixService } from './base-stix.service';
 
 export class BaseStixComponent {
-    protected filteredItems: any[];
+    public filteredItems: any[];
     private duration = 3000;
 
     constructor(
-        protected service: BaseStixService,
-        protected route: ActivatedRoute,
-        protected router: Router,
-        protected dialog: MdDialog,
-        protected location: Location,
-        protected snackBar?: MdSnackBar) {
+        public service: BaseStixService,
+        public route: ActivatedRoute,
+        public router: Router,
+        public dialog: MdDialog,
+        public location: Location,
+        public snackBar?: MdSnackBar) {
     }
 
-     protected load(filter?: any): Observable<any[]> {
+     public load(filter?: any): Observable<any[]> {
          const _self  = this;
          return Observable.create((observer) => {
                _self.loadItems(observer, filter);
          });
     }
 
-    protected get(): Observable<any> {
+    public get(): Observable<any> {
         const _self  = this;
         return Observable.create((observer) => {
                _self.getItem(observer);
         });
     }
 
-     protected getByUrl(url: string): Observable<any> {
+    public getByUrl(url: string): Observable<any> {
         const _self  = this;
         return Observable.create((observer) => {
               const subscription =  _self.service.getByUrl(url).subscribe(
@@ -55,14 +55,14 @@ export class BaseStixComponent {
                );
         });
     }
-    protected create(item: any): Observable<any>  {
+    public create(item: any): Observable<any>  {
         const _self  = this;
         return Observable.create((observer) => {
                _self.createItem(item, observer);
         });
     }
 
-    protected save(item: any): Observable<any>  {
+    public save(item: any): Observable<any>  {
         const _self  = this;
         item.url = this.service.url;
         return Observable.create((observer) => {
@@ -70,18 +70,18 @@ export class BaseStixComponent {
         });
     }
 
-    protected delete(item: any): Observable<any>  {
+    public delete(item: any): Observable<any>  {
         const _self  = this;
         return Observable.create((observer) => {
                _self.deleteItem(item, observer);
         });
     }
 
-    protected gotoView(command: any[]): void {
+    public gotoView(command: any[]): void {
         this.router.navigate(command, { relativeTo: this.route });
     }
 
-    protected openDialog(item: any): Observable<any> {
+    public openDialog(item: any): Observable<any> {
         const _self  = this;
         item.url = this.service.url;
         return Observable.create((observer) => {
@@ -95,19 +95,19 @@ export class BaseStixComponent {
         });
     }
 
-    protected download(): void {
+    public download(): void {
         console.log('download');
     }
 
-    protected cancelButtonClicked(): void {
+    public cancelButtonClicked(): void {
         this.location.back();
     }
 
-    protected onFilterItemsChange(filterItems: any[]): void {
+    public onFilterItemsChange(filterItems: any[]): void {
         this.filteredItems = filterItems;
     }
 
-    private loadItems(observer: any, filter?: any): void {
+    public loadItems(observer: any, filter?: any): void {
          const subscription = this.service.load(filter).subscribe(
             (stixObjects) => {
                 observer.next(stixObjects);
@@ -127,7 +127,7 @@ export class BaseStixComponent {
         );
     }
 
-    private getItem(observer: any): void {
+    public getItem(observer: any): void {
        this.route.params
                 .switchMap((params: Params) => this.service.get(params['id']))
                 .subscribe(
@@ -146,7 +146,7 @@ export class BaseStixComponent {
                 );
     }
 
-    private deleteItem(item: any, observer: any): void {
+    public deleteItem(item: any, observer: any): void {
         this.route.params
             .switchMap((params: Params) => this.service.delete(item))
             .subscribe(
@@ -170,7 +170,7 @@ export class BaseStixComponent {
             );
     }
 
-    private createItem(item: any, observer: any): void {
+    public createItem(item: any, observer: any): void {
         const subscription = this.service.create(item).subscribe(
             (data) => {
                 observer.next(data);
@@ -218,7 +218,7 @@ export class BaseStixComponent {
         );
     }
 
-    private saveItem(item: any, observer: any): void {
+    public saveItem(item: any, observer: any): void {
         const subscription = this.service.update(item).subscribe(
             (data) => {
                 observer.next(data);

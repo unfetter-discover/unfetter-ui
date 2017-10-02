@@ -15,7 +15,7 @@ import { Campaign, Filter } from '../../../../models';
 })
 export class CampaignComponent extends BaseStixComponent implements OnInit {
 
-    protected campaign: Campaign = new Campaign();
+    public campaign: Campaign = new Campaign();
 
     constructor(
         public stixService: StixService,
@@ -46,7 +46,7 @@ export class CampaignComponent extends BaseStixComponent implements OnInit {
         );
     }
 
-    protected loadCampaign(): void {
+    public loadCampaign(): void {
         let sub =  super.get().subscribe(
             (data) => {
                 this.campaign = new Campaign(data);
@@ -62,7 +62,7 @@ export class CampaignComponent extends BaseStixComponent implements OnInit {
         );
     }
 
-    protected saveButtonClicked(): Observable<any> {
+    public saveButtonClicked(): Observable<any> {
         return Observable.create((observer) => {
                let subscription = super.save(this.campaign).subscribe(
                     (data) => {

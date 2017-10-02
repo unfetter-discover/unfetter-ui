@@ -18,7 +18,7 @@ export class MitigateListComponent extends RelationshipListComponent implements 
     public phaseNameGroupKeys: string[];
     public phaseNameGroups = {};
     public show = false;
-    private pageIcon = Constance.RELATIONSHIPS_ICON;
+    public pageIcon = Constance.RELATIONSHIPS_ICON;
 
     constructor(public baseComponentService: BaseComponentService, public router: Router) {
         super(baseComponentService, router);
@@ -37,11 +37,11 @@ export class MitigateListComponent extends RelationshipListComponent implements 
         this.show = true;
     }
 
-    private isChecked(attackPattern: AttackPattern): boolean {
+    public isChecked(attackPattern: AttackPattern): boolean {
           return this.find(attackPattern) ? true : false;
     }
 
-    private update(attackPattern: AttackPattern): void {
+    public update(attackPattern: AttackPattern): void {
         let relationshipMap = this.find(attackPattern);
         if (relationshipMap) {
             super.deleteRelationships(relationshipMap.id);
@@ -54,7 +54,7 @@ export class MitigateListComponent extends RelationshipListComponent implements 
         }
     }
 
-    private getPhaseNameAttackPatterns() {
+    public getPhaseNameAttackPatterns() {
         this.phaseNameGroups['unspecified'] = [];
         this.source.forEach((data) => {
             let attackPattern = new AttackPattern(data);
@@ -77,7 +77,7 @@ export class MitigateListComponent extends RelationshipListComponent implements 
         });
     }
 
-    private find(attackPattern: AttackPattern): AttackPattern {
+    public find(attackPattern: AttackPattern): AttackPattern {
        return this.relationshipMapping.find((relationship) => {
             return relationship.id === attackPattern.id;
         });

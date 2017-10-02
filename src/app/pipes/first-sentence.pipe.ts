@@ -18,7 +18,7 @@ export class FirstSentencePipe implements PipeTransform {
         }
     }
 
-    private trimSpace (str) {
+    private trimSpace(str) {
         return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
     }
 }

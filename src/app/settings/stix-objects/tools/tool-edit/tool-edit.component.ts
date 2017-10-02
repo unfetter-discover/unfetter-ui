@@ -13,13 +13,13 @@ import { Constance } from '../../../../utils/constance';
 })
 export class ToolEditComponent extends ToolComponent implements OnInit {
 
-    protected attackPatterns: AttackPattern[] = [];
-    protected indicators: Indicator[] = [];
-    protected courseOfActions: CourseOfAction[] = [];
-    protected intrusionSets: IntrusionSet[] = [];
-    protected newRelationships: Relationship[] = [];
-    protected savedRelationships: Relationship[] = [];
-    protected deletedRelationships: Relationship[] = [];
+    public attackPatterns: AttackPattern[] = [];
+    public indicators: Indicator[] = [];
+    public courseOfActions: CourseOfAction[] = [];
+    public intrusionSets: IntrusionSet[] = [];
+    public newRelationships: Relationship[] = [];
+    public savedRelationships: Relationship[] = [];
+    public deletedRelationships: Relationship[] = [];
 
    constructor(
         public stixService: StixService,
@@ -49,7 +49,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
       );
     }
 
-    protected saveTool(): void {
+    public saveTool(): void {
          let sub = super.saveButtonClicked().subscribe(
             (data) => {
                 this.newRelationships.forEach((relationship) => {
@@ -70,11 +70,11 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         );
     }
 
-    protected saveRelationship(relationship: Relationship): void {
+    public saveRelationship(relationship: Relationship): void {
         relationship.url = Constance.RELATIONSHIPS_URL;
         let subscription = super.create(relationship).subscribe(
             (data) => {
-                console.log('saved');
+
             }, (error) => {
                 // handle errors here
                 console.log('error ' + error);
@@ -87,11 +87,11 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         );
     }
 
-    protected deleteRelationship(relationship: Relationship): void {
+    public deleteRelationship(relationship: Relationship): void {
         relationship.url = Constance.RELATIONSHIPS_URL;
         let subscription = super.delete(relationship).subscribe(
             (data) => {
-                console.log('delected');
+
             }, (error) => {
                 // handle errors here
                 console.log('error ' + error);
@@ -104,7 +104,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         );
     }
 
-    protected loadRelationships(filter: any): void {
+    public loadRelationships(filter: any): void {
         let url = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
         let sub =  super.getByUrl(url).subscribe(
         (data) => {
@@ -131,8 +131,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
     }
 
      // add chip
-    protected add(event: any): void {
-        console.log(event.type);
+    public add(event: any): void {
         let relationship = new Relationship();
         this.newRelationships.push(relationship);
         relationship.attributes.source_ref = this.tool.id;
@@ -165,7 +164,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
     }
 
     // remove chip
-    protected remove(object: any): void {
+    public remove(object: any): void {
         if (object.type === Constance.ATTACK_PATTERN_TYPE) {
             this.attackPatterns = this.attackPatterns.filter((o) => o.id !== object.id);
         } else if (object.type === Constance.INTRUSION_SET_TYPE) {
@@ -184,11 +183,11 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         }
     }
 
-    private found(list: any[], object: any): any {
+    public found(list: any[], object: any): any {
         return list.find( (entry) => { return entry.id === object.id; } );
     }
 
-    private loadStixObject(id: string): void {
+    public loadStixObject(id: string): void {
         if (id.indexOf('indicator') >= 0) {
             this.loadObject(Constance.INDICATOR_URL, id, this.indicators);
         } else if (id.indexOf('attack-pattern') >= 0) {
@@ -200,7 +199,7 @@ export class ToolEditComponent extends ToolComponent implements OnInit {
         }
     }
 
-    private loadObject(url: string, id: string, list: any ): void {
+    public loadObject(url: string, id: string, list: any ): void {
         const uri = `${url}/${id}`;
         let sub = super.getByUrl(uri).subscribe(
             (data) => {

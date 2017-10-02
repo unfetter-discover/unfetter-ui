@@ -10,10 +10,10 @@ import { BaseComponentService } from '../base-service.component';
   templateUrl: './relationship-list.component.html'
 })
 export class RelationshipListComponent implements OnInit, OnChanges {
-    @Input() protected model: any;
-    protected url: string;
-    protected relationshipMapping: any = [];
-    private relationships: Relationship[];
+    @Input() public model: any;
+    public url: string;
+    public relationshipMapping: any = [];
+    public relationships: Relationship[];
 
     constructor(public baseComponentService: BaseComponentService, public router: Router) {
         console.dir(this.model);
@@ -32,7 +32,7 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         }
     }
 
-    protected loadRelationships(filter: any): void {
+    public loadRelationships(filter: any): void {
         let url = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
         let sub =  this.baseComponentService.get( encodeURI(url) ).subscribe(
         (data) => {
@@ -58,7 +58,7 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         );
     }
 
-    protected deleteRelationships(id: string): void {
+    public deleteRelationships(id: string): void {
         let relationship = this.relationships.find((r) => {
             return r.attributes.source_ref === id || r.attributes.target_ref === id ;
         });
@@ -69,7 +69,7 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         );
     }
 
-    protected saveRelationships(relationship: Relationship): void {
+    public saveRelationships(relationship: Relationship): void {
         this.baseComponentService.save(Constance.RELATIONSHIPS_URL, relationship).subscribe(
             (data) => {
                this.relationships.push( new Relationship(data));
@@ -77,7 +77,7 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         );
     }
 
-    private loadStixObject(id: string): void {
+    public loadStixObject(id: string): void {
         if (id.indexOf('indicator') >= 0) {
             this.load(Constance.INDICATOR_URL, id);
         } else if (id.indexOf('attack-pattern') >= 0) {
@@ -91,7 +91,7 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         }
     }
 
-    private load(url: string, id: string ): void {
+    public load(url: string, id: string ): void {
         const uri = `${url}/${id}`;
         let sub = this.baseComponentService.get(uri).subscribe(
             (data) => {
@@ -106,7 +106,7 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         );
     }
 
-    private getIcon(relationshipMap: any): string {
+    public getIcon(relationshipMap: any): string {
         let icon = '';
         if (relationshipMap.type === Constance.ATTACK_PATTERN_TYPE ) {
            icon = Constance.ATTACK_PATTERN_ICON;
@@ -122,7 +122,7 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         return icon;
     }
 
-     private getUrl(relationshipMap: any): string {
+     public getUrl(relationshipMap: any): string {
         let url = '';
         if (relationshipMap.type === Constance.ATTACK_PATTERN_TYPE ) {
            url = Constance.ATTACK_PATTERN_URL;
@@ -138,7 +138,7 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         return url.replace('api', '');
     }
 
-     private getName(relationshipMap: any): string {
+     public getName(relationshipMap: any): string {
         let name = relationshipMap.attributes.name;
         if (relationshipMap.type === Constance.INDICATOR_TYPE) {
             name = relationshipMap.attributes.pattern;
@@ -146,7 +146,7 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         return name;
     }
 
-    private gotoDetail(relationshipMap: any): void {
+    public gotoDetail(relationshipMap: any): void {
         let url = relationshipMap.type + '/' + relationshipMap.id;
         this.router.navigateByUrl(url);
     }

@@ -3,8 +3,8 @@
        <div class="col-md-12">
 
                 <div class="button-row">
-                    <button  class="mat-primary" md-raised-button (click)="editButtonClicked(attackPattern)"><i class="fa fa-pencil"></i> EDIT</button>
-                    <button class="mat-primary" md-raised-button (click)="deleteButtonClicked(attackPattern)"><i class="fa fa-trash"></i> DELETE</button>
+                    <button  class="mat-primary" md-raised-button (click)="editButtonClicked(attackPattern)"><i class="material-icons">create</i> EDIT</button>
+                    <button class="mat-primary" md-raised-button (click)="deleteButtonClicked(attackPattern)"><i class="material-icons">delete</i> DELETE</button>
                 </div>
 
         </div>
@@ -24,7 +24,7 @@
                         <div class="row">
                            <div class="col-md-12">
                                 <label>Description</label>
-                                <h6>{{attackPattern.attributes.description}}</h6>
+                                <h6 [innerHTML]="cleanWhitespace(attackPattern.attributes.description)"></h6>
                             </div>
                         </div>
                         <div class="row">

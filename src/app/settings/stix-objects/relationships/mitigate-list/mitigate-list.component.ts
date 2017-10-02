@@ -12,10 +12,10 @@ import { Constance } from '../../../../utils/constance';
   templateUrl: './mitigate-list.component.html'
 })
 export class MitigateListComponent extends MitigateComponent implements OnInit {
-    private pageTitle = Constance.RELATIONSHIPS_TYPE;
-    private pageIcon = Constance.RELATIONSHIPS_ICON;
-    private targets: any[] = [];
-    private count = -1;
+    public pageTitle = Constance.RELATIONSHIPS_TYPE;
+    public pageIcon = Constance.RELATIONSHIPS_ICON;
+    public targets: any[] = [];
+    public count = -1;
 
      constructor(
         public stixService: StixService,
@@ -53,9 +53,9 @@ export class MitigateListComponent extends MitigateComponent implements OnInit {
         );
     }
 
-    private onTabShow(event: any): void {console.log('');  }
+    public onTabShow(event: any): void {console.log('');  }
 
-    private trackByFn(index: number, item: any): number {
+    public trackByFn(index: number, item: any): number {
         item.index = index;
         console.log( item.index);
         return  item.index;

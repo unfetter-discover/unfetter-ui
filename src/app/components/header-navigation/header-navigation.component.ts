@@ -4,7 +4,7 @@ import { Navigation } from '../../models/navigation';
 @Component({
   selector: 'header-navigation',
   encapsulation: ViewEncapsulation.None,
-  styleUrls: ['./header-navigation.component.css'],
+  styleUrls: ['./header-navigation.component.scss'],
   templateUrl: './header-navigation.component.html'
 })
 export class HeaderNavigationComponent {
@@ -23,4 +23,6 @@ export class HeaderNavigationComponent {
     { url: 'stix/reports', label: 'Reports' },
     { url: 'stix/x-unfetter-sensors', label: 'Sensors' }
   ];
+
+  public collapsed: boolean = true;
 }

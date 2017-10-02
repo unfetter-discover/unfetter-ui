@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
     selector: 'stix-home',
     templateUrl: 'stix-home.component.html',
-    styleUrls: ['stix-home.component.css']
+    styleUrls: ['stix-home.component.scss']
 })
 export class StixHomeComponent {
     public navigations: any[] = [

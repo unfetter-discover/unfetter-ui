@@ -34,3 +34,14 @@
         color: #FFFFFF;
     }
 }
+
+.nav-pills>li.active>a,
+.nav-pills>li.active>a:focus,
+.nav-pills>li.active>a:hover {
+    background-color: $primary-color !important;
+}
+
+// WARNING if the primary color is not blue, delete this
+a {
+    color: $primary-color;
+}

@@ -5,13 +5,13 @@
 /tmp
 /.awcache/*
 compiled/*
+stats.json
 
 # dependencies
 /node_modules/**
 /dll/**
 
 # misc
-/coverage/*
 npm-debug.log
 /bower_components
 
@@ -19,6 +19,7 @@ npm-debug.log
 /.sass-cache
 /.idea
 /connect.lock
-/coverage/*
+coverage/**/*
 npm-debug.log
+
 

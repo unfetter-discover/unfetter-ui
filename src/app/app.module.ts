@@ -26,7 +26,7 @@ import { IntrusionSetDashboardComponent } from './intrusion-set-dashboard/intrus
 import { PartnersComponent } from './partners/partners.component';
 import { NoContentComponent } from './no-content';
 import '../styles/styles.scss';
-import '../styles/app.scss';
+// import '../styles/app.scss';
 import '../styles/headings.css';
 import { ConceptMapComponent } from './intrusion-set-dashboard/concept-map.component';
 import { CollapsibleTreeComponent } from './intrusion-set-dashboard/collapsible-tree.component';

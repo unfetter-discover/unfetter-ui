@@ -11,7 +11,7 @@ import * as D3 from 'd3';
 @Component({
   selector: 'link-node-graph',
   templateUrl: './link-node-graph.component.html',
-  styleUrls: ['./link-node-graph.component.css']
+  styleUrls: ['./link-node-graph.component.scss']
 })
 export class LinkNodeGraphComponent implements OnChanges, AfterViewInit  {
     @Output() private nodeMouseover = new EventEmitter();
@@ -41,7 +41,6 @@ export class LinkNodeGraphComponent implements OnChanges, AfterViewInit  {
     }
 
     public ngOnChanges(changes: any): void {
-      console.dir(changes);
       if (this.group) {
         this.group.remove();
       }
@@ -220,7 +219,6 @@ export class LinkNodeGraphComponent implements OnChanges, AfterViewInit  {
       let simulation = D3.forceSimulation();
       simulation.nodes(this.config.nodes);
       if (this.forcesEnabled.charge) {
-        console.log(this.forcesEnabled.charge);
         this.setForceCharge(simulation);
       }
       if (this.forcesEnabled.center) {

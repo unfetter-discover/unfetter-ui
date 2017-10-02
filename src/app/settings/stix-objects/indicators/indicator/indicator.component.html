@@ -3,8 +3,8 @@
             <div class="row">
             <div class="col-md-12">
                     <div class="button-row">
-                        <a class="mat-primary" md-raised-button (click)="editButtonClicked()"><i class="fa fa-pencil"></i> EDIT</a>
-                        <a class="mat-primary" md-raised-button (click)="deleteButtonClicked()"><i class="fa fa-trash"></i> DELETE</a>
+                        <a class="mat-primary" md-raised-button (click)="editButtonClicked()"><i class="material-icons">create</i> EDIT</a>
+                        <a class="mat-primary" md-raised-button (click)="deleteButtonClicked()"><i class="material-icons">delete</i> DELETE</a>
                     </div>
                 </div>
             </div>
@@ -31,15 +31,19 @@
                                     </div>
                                 </div>
                                 <div class="row" >
-                                    <div class="col-md-4">
-                                        <md-input-container class="full-width">
+                                    <div class="col-md-6">
+                                        <label>Valid From:</label>
+                                        <p>{{indicator.attributes.valid_from | date:'medium' }}</p>
+                                        <!--<md-input-container class="full-width">
                                             <input readonly mdInput placeholder="Valid From:" value="{{indicator.attributes.valid_from | date:'medium' }}" />
-                                        </md-input-container>
+                                        </md-input-container>-->
                                     </div>
-                                    <div class="col-md-4">
-                                        <md-input-container class="full-width">
+                                    <div class="col-md-6">
+                                        <label>Valid Until:</label>
+                                        <p>{{indicator.attributes.valid_until | date:'medium' }}</p>
+                                        <!--<md-input-container class="full-width">
                                             <input readonly mdInput placeholder="Valid Until:" value="{{indicator.attributes.valid_until | date:'medium' }}" />
-                                            </md-input-container>
+                                            </md-input-container>-->
                                     </div>
                                 </div>
                                 <div class="row">

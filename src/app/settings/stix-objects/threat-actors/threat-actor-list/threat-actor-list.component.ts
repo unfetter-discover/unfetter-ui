@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
 import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { TheatActorComponent } from '../threat-actor/threat-actors.component';
+import { ThreatActorsComponent } from '../threat-actor/threat-actors.component';
 import { StixService } from '../../../stix.service';
 import { ThreatActor } from '../../../../models';
 
@@ -10,9 +10,9 @@ import { ThreatActor } from '../../../../models';
   selector: 'threat-actor-list',
   templateUrl: './threat-actor-list.component.html',
 })
-export class ThreatActorListComponent extends TheatActorComponent implements OnInit {
-    private threatActors: ThreatActor[] = [];
-    private url: string;
+export class ThreatActorListComponent extends ThreatActorsComponent implements OnInit {
+    public threatActors: ThreatActor[] = [];
+    public url: string;
 
     constructor(
         public stixService: StixService,

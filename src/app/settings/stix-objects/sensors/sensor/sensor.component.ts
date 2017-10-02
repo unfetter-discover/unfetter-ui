@@ -14,7 +14,7 @@ import { StixService } from '../../../stix.service';
 })
 export class SensorComponent extends BaseStixComponent implements OnInit {
 
-    protected sensor: any = {
+    public sensor: any = {
         attributes: {
             aliases: [],
             kill_chain_phases: [],

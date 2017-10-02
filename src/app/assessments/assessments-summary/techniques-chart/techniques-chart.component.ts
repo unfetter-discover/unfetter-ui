@@ -8,7 +8,7 @@ import { ChartData } from '../chart-data';
 @Component({
     selector: 'techniques-chart',
     templateUrl: './techniques-chart.component.html',
-    styleUrls: ['./techniques-chart.component.css']
+    styleUrls: ['./techniques-chart.component.scss']
 })
 export class TechniquesChartComponent implements OnInit {
     @Input()
@@ -88,7 +88,6 @@ export class TechniquesChartComponent implements OnInit {
         if (selectedRisk) {
             this.riskThreshold = selectedRisk;
         }
-        console.log('render chart, techniques breakdown', this.techniqueBreakdown);
         this.renderLabels();
         this.renderLegend();
         this.initDataArray();

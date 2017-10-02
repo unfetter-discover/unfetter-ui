@@ -1,15 +1,17 @@
 import { Component, ViewChild, OnInit, QueryList, ViewChildren, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AssessmentsDashboardService } from '../assessments-dashboard/assessments-dashboard.service';
-import { Constance } from '../../utils/constance';
+import { Observable } from 'rxjs/Observable';
+
 import { AttackPattern } from '../../models/attack-pattern';
 import { AddAssessedObjectComponent } from './add-assessed-object/add-assessed-object.component';
-import { Observable } from 'rxjs/Observable';
+import { AssessmentsDashboardService } from '../assessments-dashboard/assessments-dashboard.service';
+import { Constance } from '../../utils/constance';
+import { FormatHelpers } from '../../global/static/format-helpers';
 
 @Component({
   selector: 'assessments-group',
   templateUrl: './assessments-group.component.html',
-  styleUrls: ['./assessments-group.component.css']
+  styleUrls: ['./assessments-group.component.scss']
 })
 export class AssessmentsGroupComponent implements OnInit, AfterViewInit {
 
@@ -54,7 +56,6 @@ export class AssessmentsGroupComponent implements OnInit, AfterViewInit {
    * @description init after view
    */
   public ngAfterViewInit(): void {
-    console.log('after view init');
     const sub = this.addAssessedObjectComponents.changes
       .subscribe(
         (comps: QueryList<AddAssessedObjectComponent>) => {
@@ -290,14 +291,11 @@ export class AssessmentsGroupComponent implements OnInit, AfterViewInit {
 
     const objToPatch = this.assessment.attributes;
     objToPatch.modified = new Date().toISOString();
-    console.log(objToPatch);
     this.assessmentsDashboardService
       .genericPatch(`${Constance.X_UNFETTER_ASSESSMENT_URL}/${this.assessment.id}`, objToPatch)
       .subscribe((assessmentRes) => {
-        console.log('Assessment updated successfully');
         // refresh data
         let indexOfCurAp = 0;
-        console.log('curap', this.currentAttackPattern);
 
         for (let i = 0; i < this.attackPatternsByPhase.length; i++) {
           if (this.attackPatternsByPhase[i].attackPatternId === this.currentAttackPattern.id) {
@@ -310,6 +308,10 @@ export class AssessmentsGroupComponent implements OnInit, AfterViewInit {
       },
       (assessmentErr) => console.log(assessmentErr)
       );
+  }
+
+  public whitespaceToBreak(inputString: string): string {
+    return FormatHelpers.mitreCitationsToHtml(FormatHelpers.whitespaceToBreak(inputString));
   }
 }
 

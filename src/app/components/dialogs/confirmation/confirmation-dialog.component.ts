@@ -7,7 +7,7 @@ import { MdDialog, MdDialogRef, MdDialogConfig, MD_DIALOG_DATA } from '@angular/
 })
 export class ConfirmationDialogComponent {
   public deleteObject: any;
-  private title: string;
+  public title: string;
 
   constructor(@Inject(MD_DIALOG_DATA) public data: any) {
     // this.deleteObject =  this.dialogRef.config.data;

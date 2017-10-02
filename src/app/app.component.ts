@@ -11,13 +11,11 @@ import { AppState } from './app.service';
   selector: 'app',
   encapsulation: ViewEncapsulation.None,
   styleUrls: [
-    './app.component.css'
+    './app.component.scss'
   ],
   templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
-  public ngOnInit() {
-    console.log('Initial App State');
-  }
+  public ngOnInit() { }
 
 }

@@ -15,6 +15,7 @@ export class ThreatActor {
         aliases: string[];
         external_references: ExternalReference[];
         kill_chain_phases: KillChainPhase[];
+        name: string;
     };
      constructor(data?: ThreatActor) {
         this.type = Constance.THREAT_ACTORS_TYPE;
@@ -29,8 +30,8 @@ export class ThreatActor {
     private createAttributes(): any {
         return {
             // version: '',
-            //created: new Date(),
-            //modified: new Date(),
+            // created: new Date(),
+            // modified: new Date(),
             // description: '',
             labels: [],
             aliases: [],

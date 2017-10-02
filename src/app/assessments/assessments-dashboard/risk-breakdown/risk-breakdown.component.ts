@@ -10,14 +10,14 @@ import {
 @Component({
     selector: 'risk-breakdown',
     templateUrl: 'risk-breakdown.component.html',
-    styleUrls: ['risk-breakdown.component.css']
+    styleUrls: ['risk-breakdown.component.scss']
 })
 
 export class RiskBreakdownComponent implements OnInit {
 
     @Input('riskBreakdown') public riskBreakdown: any;
 
-    private categories: string[];
+    public categories: string[];
 
     public ngOnInit() {
         this.categories = Object.keys(this.riskBreakdown);

@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 @Component({
     selector: 'add-assessed-object',
     templateUrl: './add-assessed-object.component.html',
-    styleUrls: ['./add-assessed-object.component.css']
+    styleUrls: ['./add-assessed-object.component.scss']
 })
 export class AddAssessedObjectComponent implements OnInit, OnDestroy {
 
@@ -44,16 +44,12 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
 
     private readonly subscriptions: Subscription[] = [];
 
-    public constructor(private assessmentsDashboardService: AssessmentsDashboardService) {
-        console.log('ctor');
-    }
+    public constructor(private assessmentsDashboardService: AssessmentsDashboardService) { }
 
     /**
      * @description initialize this component
      */
-    public ngOnInit(): void {
-        console.log('oninit');
-    }
+    public ngOnInit(): void { }
 
     /**
      * @description unsubscribes from subscriptions, cleans up this component
@@ -70,7 +66,6 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
      * @param attackPattern
      */
     public createAssessedObject(newAssessedObject, attackPattern) {
-        console.log('createAssessedObject', this.addAssessedType, attackPattern, newAssessedObject);
         // Update & save questions for assessment
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < newAssessedObject.questions.length; i++) {
@@ -110,6 +105,8 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
                     case 'indicator':
                         relationshipObj.relationship_type = 'indicates';
                         break;
+                    default :
+                        break;
                 }
                 relationshipObj.source_ref = newId;
                 relationshipObj.target_ref = attackPattern.id;
@@ -117,7 +114,6 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
                     .genericPost(Constance.RELATIONSHIPS_URL, relationshipObj)
                     .subscribe(
                         (relationshipRes) => {
-                            console.log('Relationship uploaded successfully');
                         },
                         (relationshipErr) => console.log(relationshipErr)
                     );
@@ -144,11 +140,9 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
                 );
                 const assessmentToUpload: any = this.assessment.attributes;
                 assessmentToUpload.modified = new Date().toISOString();
-                console.log(assessmentToUpload);
                 const sub2 = this.assessmentsDashboardService
                     .genericPatch(`${Constance.X_UNFETTER_ASSESSMENT_URL}/${this.assessment.id}`, assessmentToUpload)
                     .subscribe((assessmentRes) => {
-                        console.log('Assessment updated successfully');
                         this.displayedAssessedObjects.push(tempAssessmentObject);
                         this.assessedObjects.push({ stix: createdObj });
                         this.resetNewAssessmentObjects();
@@ -231,6 +225,8 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
                                 risk: 1
                             }
                         });
+                        break;
+                    default :
                         break;
                 }
             }

@@ -22,7 +22,7 @@ import { MenuItem } from 'primeng/primeng';
   selector: 'assessment',
   templateUrl: './assessment-wizard.component.html',
   // encapsulation: ViewEncapsulation.None,
-  styleUrls: [`./assessment-wizard.component.css`]
+  styleUrls: [`./assessment-wizard.component.scss`]
 })
 export class AssessmentComponent extends Measurements implements OnInit, OnDestroy {
   public model: any;
@@ -44,7 +44,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
     }
   ];
   public doughnutChartType: string = 'doughnut';
-  public doughnutChartColors: object[] = [{}];
+  public doughnutChartColors = [{}];
   public chartOptions = {
     legend: {
       display: false
@@ -75,12 +75,14 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
   public assessmentName = '';
   public currentAssessmentGroup = {} as any;
   public selectedRisk = '1';
+  public defaultValue = -1;
   public page = 1;
   private assessments = [];
-  private killChains = [];
+  private groupings = [];
   private assessmentGroups: any;
   private defaultMeasurement = 'Nothing';
   private url: string;
+  private tempModel = {};
   private readonly subscriptions = [];
 
   constructor(private genericApi: GenericApi, private snackBar: MdSnackBar,
@@ -95,7 +97,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
   public ngOnInit(): void {
     const type = this.route.snapshot.paramMap.get('type');
     const id = this.route.snapshot.paramMap.get('id');
-    this.url = this.generateUrl(type);
+    this.url = this.generateUrl(type) + '?metaproperties=true';
     const logErr = (err) => console.log(err);
     const sub1 = this.genericApi.get(this.url)
       .subscribe((data) => {
@@ -105,8 +107,8 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
           const sub2 = this.genericApi.get(this.url, id)
             .subscribe((res) => {
               this.model = res;
-              if(this.model.attributes.created !== undefined) {
-                this.publishDate = new Date(this.model.attributes.created);                
+              if (this.model.attributes.created !== undefined) {
+                this.publishDate = new Date(this.model.attributes.created);
               }
               this.selectedRiskValue = null;
               this.updateChart();
@@ -138,7 +140,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         assessment.risk = assessmentObject.risk;
         assessment.measurements.forEach((m) => {
           const question = assessmentObject.questions.find((q) => q.name === m.name);
-          m.risk = question.risk; // question.selected_value.risk
+          m.risk = question ? question.risk : 1;
         });
 
       });
@@ -175,28 +177,64 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
    * @param assessment
    * @returns {void}
    */
+
   public updateRisks(option: any, measurement: any, assessment: any): void {
-    const newRisk = option.selected.value;
+    const newRisk = option.selected.value ;
     // update measurement value in assessments
     const assessmentMeasurementToUpdate = assessment.measurements.find((assMes) => assMes.name === measurement.name);
-    // assessmentMeasurementToUpdate.risk = newRisk;
     this.updateQuestionRisk(assessmentMeasurementToUpdate, newRisk);
+    // we need a temp model to hold selected question
+    if (!this.model) {
+      if (!this.tempModel[assessment.id]) {
+        this.tempModel[assessment.id] = {assessment: '', measurements: []};
+      }
+      this.tempModel[assessment.id].assessment = assessment;
+      this.tempModel[assessment.id].measurements = this.tempModel[assessment.id].measurements.filter((m) => {
+          return m.name !== assessmentMeasurementToUpdate.name;
+      });
+      // only add if question is selected
+      if (newRisk >= 0) {
+        this.tempModel[assessment.id].measurements.push(assessmentMeasurementToUpdate);
+      }
+      // if no questions selected remove
+      if (this.tempModel[assessment.id].measurements.length === 0) {
+        delete this.tempModel[assessment.id];
+      }
+    }
+    // can not have negative. if new newRisk is < 0
+    // set assessmentMeasurementToUpdate.risk to 1
+    if (newRisk < 0) {
+      assessmentMeasurementToUpdate.risk = 1;
+    }
     // calculate risk of all measurements
     assessment.risk = this.calculateMeasurementsAvgRisk(assessment.measurements);
-
     const groupRisk = this.calculateGroupRisk();
 
     if (this.model) {
-      const assessment_object = this.model.attributes.assessment_objects
+      let assessment_object = this.model.attributes.assessment_objects
         .find((assessmentObject) => assessment.id === assessmentObject.stix.id);
 
-      const question = assessment_object.questions.find((q) => q.name === measurement.name);
-      this.updateQuestionRisk(question, newRisk);
+      if (!assessment_object) {
+        assessment_object = {
+          questions: [measurement],
+          risk: newRisk,
+          stix: {
+            id: assessment.id,
+            description: assessment.description,
+            type: assessment.type,
+            name: assessment.name
+          }
+        };
+        this.model.attributes.assessment_objects.push(assessment_object);
+     }
+      let question = assessment_object.questions.find((q) => q.name === measurement.name);
+      if (!question) {
+        question = measurement;
+        assessment_object.questions.push(question);
+      } else {
+        this.updateQuestionRisk(question, newRisk);
+      }
       assessment_object.risk = assessment.risk;
-
-      // assessment_object.risk = groupRisk;
-      // question.risk = option.selected.value.risk;
-      // question.selected_value = option.selected.value;
     }
     this.updateChart();
   }
@@ -256,6 +294,35 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
     }
   }
 
+  public selectedValue(assessment: any, measurement: any, option: any): number {
+    if (!this.model) {
+      if (this.tempModel) {
+        if (this.tempModel[assessment.id]) {
+          const found = this.tempModel[assessment.id].measurements.find((m) => { return m.name === measurement.name; });
+          return found ? found.risk : this.defaultValue;
+        } else {
+          return option.value ? option.value : this.defaultValue;
+        }
+      } else {
+        return option.value ? option.value : this.defaultValue;
+      }
+    } else {
+      let a = this.model.attributes.assessment_objects.find(
+        (assessment_objects) => {
+          return assessment_objects.stix.id === assessment.id;
+        }
+      );
+      if (!a) {
+        return this.defaultValue;
+      } else {
+        const q = a.questions.find((question) => {
+          return question.name === measurement.name;
+        });
+        return q && q.selected_value ? q.selected_value.risk : this.defaultValue;
+      }
+    }
+  }
+
   private build(data: any): void {
     if (data) {
       this.assessmentGroups = this.createAssessmentGroups(data);
@@ -289,8 +356,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         assessment.created = new Date();
 
         assessment.measurements = [];
-        assessment.kill_chain_phases =
-          assessedObject.attributes.kill_chain_phases;
+        assessment.groupings = assessedObject.attributes.groupings;
         assessment.id = assessedObject.id;
         assessment.name = assessedObject.attributes.name;
         assessment.description = assessedObject.attributes.description;
@@ -298,14 +364,14 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         assessment.type = assessedObject.type;
 
         const risk = this.getRisk(assessment.measurements);
-        assessment.risk = risk;
+        assessment.risk = -1;
         assessments.push(assessment);
       });
       // We do this so we can just save all the assessments later.
       this.assessments = assessments;
-      this.killChains = this.buildKillChain(assessments);
+      this.groupings = this.buildGrouping(assessments);
 
-      const assessmentObjectsGroups = this.groupObjectsByKillPhase(assessments);
+      const assessmentObjectsGroups = this.doObjectGroupings(assessments);
       const keys = Object.keys(assessmentObjectsGroups).sort();
       keys.forEach((phaseName, index) => {
         // TODO - Need to remove the 'courseOfAction' name
@@ -321,7 +387,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         });
         this.item = this.navigations;
         // TODO: Need to get description somehow from the key phase information
-        assessmentGroup.description = this.killChains[phaseName];
+        assessmentGroup.description = this.groupings[phaseName];
         assessmentGroup.assessments = courseOfActionGroup;
         assessmentGroup.risk = 1;
         const riskArray = [1, 0];
@@ -336,38 +402,38 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
     return assessmentGroups;
   }
 
-  private buildKillChain(stixObjects): any {
-    const killChains = [];
+  private buildGrouping(stixObjects): any {
+    const groupings = [];
     stixObjects.forEach((stixObject) => {
-      const killChainPhases = stixObject.kill_chain_phases;
-      if (!killChainPhases) {
+      const groupingStages = stixObject.groupings;
+      if (!groupingStages) {
         const phaseName = 'unknown';
-        if (!killChains[phaseName]) {
+        if (!groupings[phaseName]) {
           const description = 'unknown description';
-          killChains[phaseName] = description;
+          groupings[phaseName] = description;
         }
       } else {
-        killChainPhases.forEach((killChainPhase) => {
-          const phaseName = killChainPhase.phase_name;
-          if (!killChains[phaseName]) {
-            const description = killChainPhase.description;
+        groupingStages.forEach((groupingStage) => {
+          const phaseName = groupingStage.groupingValue;
+          if (!groupings[phaseName]) {
+            const description = groupingStage.description;
             if (description) {
-              killChains[phaseName] = description;
+              groupings[phaseName] = description;
             } else {
-              killChains[phaseName] = phaseName;
+              groupings[phaseName] = phaseName;
             }
           }
         });
       }
     });
-    return killChains;
+    return groupings;
   }
 
-  private groupObjectsByKillPhase(stixObjects): any {
+  private doObjectGroupings(stixObjects): any {
     const hash = {};
     stixObjects.forEach((stixObject) => {
-      const killChainPhases = stixObject.kill_chain_phases;
-      if (!killChainPhases) {
+      const groupingStages = stixObject.groupings;
+      if (!groupingStages) {
         const phaseName = 'unknown';
         let objectProxies = hash[phaseName];
         if (objectProxies === undefined) {
@@ -377,8 +443,8 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         const objectProxy = { content: stixObject };
         objectProxies.push(stixObject);
       } else {
-        killChainPhases.forEach((killChainPhase) => {
-          const phaseName = killChainPhase.phase_name;
+        groupingStages.forEach((groupingStage) => {
+          const phaseName = groupingStage.groupingValue;
           let objectProxies = hash[phaseName];
           if (objectProxies === undefined) {
             objectProxies = [];
@@ -433,37 +499,71 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
     // retVal.assessment_objects = [];
     const assessmentSet = new Set();
 
-    assessmentsGroups.forEach((assessmentsGroup) => {
-      if (assessmentsGroup.assessments !== undefined) {
-        assessmentsGroup.assessments.forEach((assessment) => {
-          const temp: any = {};
+    Object.keys(this.tempModel).forEach(
 
-          temp.stix = {};
-          temp.stix.id = assessment.id;
-          temp.stix.type = assessment.type;
-          temp.stix.description = assessment.description || '';
-          temp.stix.name = assessment.name;
+      (assessmentId) => {
+        const assessmentObj = this.tempModel[assessmentId];
+        const temp: any = {};
+        temp.stix = {};
+        temp.stix.id = assessmentObj.assessment.id;
+        temp.stix.type = assessmentObj.assessment.type;
+        temp.stix.description = assessmentObj.assessment.description || '';
+        temp.stix.name = assessmentObj.assessment.name;
 
-          temp.questions = [];
-          if (assessment.measurements !== undefined) {
-            assessment.measurements.forEach((measurement) => {
-              temp.questions.push(measurement);
-            });
-          } else {
-            return { error: 'No measurements/questions on assessment' };
-          }
+        temp.questions = [];
+        if (assessmentObj.measurements !== undefined) {
+          assessmentObj.measurements.forEach((measurement) => {
+            if (!measurement.selected_value || measurement.selected_value.risk < 0) {
+              return;
+            }
+            temp.questions.push(measurement);
+          });
+        }
+        temp.risk = temp.questions
+        .map((question) => question.risk)
+        .reduce((prev, cur) => (prev += cur), 0) / temp.questions.length;
 
-          temp.risk = temp.questions
-              .map((question) => question.risk)
-              .reduce((prev, cur) => (prev += cur), 0) / temp.questions.length;
+        assessmentSet.add(JSON.stringify(temp));
 
-          assessmentSet.add(JSON.stringify(temp));
-
-        });
-      } else {
-        return { error: 'No assessments in group' };
       }
-    });
+    )
+
+    // assessmentsGroups.forEach((assessmentsGroup) => {
+    //   if (assessmentsGroup.assessments !== undefined) {
+    //     assessmentsGroup.assessments.forEach((assessment) => {
+    //       if (assessment.risk < 0) {
+    //         return;
+    //       }
+    //       const temp: any = {};
+    //       temp.stix = {};
+    //       temp.stix.id = assessment.id;
+    //       temp.stix.type = assessment.type;
+    //       temp.stix.description = assessment.description || '';
+    //       temp.stix.name = assessment.name;
+
+    //       temp.questions = [];
+    //       if (assessment.measurements !== undefined) {
+    //         assessment.measurements.forEach((measurement) => {
+    //           if (measurement.selected_value.risk < 0) {
+    //             return;
+    //           }
+    //           temp.questions.push(measurement);
+    //         });
+    //       } else {
+    //         return { error: 'No measurements/questions on assessment' };
+    //       }
+
+    //       temp.risk = temp.questions
+    //           .map((question) => question.risk)
+    //           .reduce((prev, cur) => (prev += cur), 0) / temp.questions.length;
+
+    //       assessmentSet.add(JSON.stringify(temp));
+
+    //     });
+    //   } else {
+    //     return { error: 'No assessments in group' };
+    //   }
+    // });
 
     retVal['assessment_objects'] = Array.from(assessmentSet)
       .map((dat) => JSON.parse(dat));
@@ -478,7 +578,25 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
       retVal.type = 'x-unfetter-assessment';
       retVal.name = this.assessmentName;
       retVal.description = this.assessmentDescription;
-      retVal.assessment_objects = this.model.attributes.assessment_objects;
+      retVal.assessment_objects = this.model.attributes.assessment_objects.filter(
+        (assessment_object) => {
+          let filter = false;
+          assessment_object.questions.forEach((question) => {
+             if ( question.risk >= 0 ) {
+               filter = true;
+             }
+          });
+          return filter;
+        }
+      );
+      if (retVal.assessment_objects) {
+        retVal.assessment_objects.forEach((assessment_object) => {
+            assessment_object.questions = assessment_object.questions.filter((question) => {
+            return question.risk >= 0
+          });
+        });
+      }
+
       this.url = this.url + '/' + this.model.id;
       const sub = this.genericApi.patch(this.url, { 'data': { 'attributes': retVal } }).subscribe(
         (res) => {
