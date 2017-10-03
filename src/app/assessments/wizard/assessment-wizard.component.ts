@@ -140,7 +140,9 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         assessment.risk = assessmentObject.risk;
         assessment.measurements.forEach((m) => {
           const question = assessmentObject.questions.find((q) => q.name === m.name);
-          m.risk = question ? question.risk : 1;
+          if (question) {
+            m.risk = question.risk;
+          }
         });
 
       });
@@ -226,18 +228,26 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
           }
         };
         this.model.attributes.assessment_objects.push(assessment_object);
-     }
-      let question = assessment_object.questions.find((q) => q.name === measurement.name);
-      if (!question) {
-        question = measurement;
-        assessment_object.questions.push(question);
+     } else {
+      if (newRisk < 0) {
+        assessment_object.questions = assessment_object.questions.filter((q) => { return q.name !== measurement.name } );
+        if (assessment_object.questions.length === 0) {
+          assessment_object.risk = newRisk;
+        }
       } else {
-        this.updateQuestionRisk(question, newRisk);
+        let question = assessment_object.questions.find((q) => q.name === measurement.name);
+        if (!question) {
+          question = measurement;
+          assessment_object.questions.push(question);
+        } else {
+          this.updateQuestionRisk(question, newRisk);
+        }
+        assessment_object.risk = assessment.risk;
       }
-      assessment_object.risk = assessment.risk;
     }
-    this.updateChart();
   }
+    this.updateChart();
+}
 
   /**
    * @description clicked back a page
