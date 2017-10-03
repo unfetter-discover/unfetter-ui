@@ -1,4 +1,6 @@
 <span class="riskIcon greyTextShadow">
     <i class="material-icons" [style.color]="getRiskColor(risk)" *ngIf="!showTooltip">lens</i>
-    <i class="material-icons" [style.color]="getRiskColor(risk)" *ngIf="showTooltip" mdTooltip="{{ risk | percent:'2.1-1' }}" mdTooltipPosition="{{tooltipPlacement}}">lens</i>
+    <i class="material-icons" [style.color]="getRiskColor(risk)" *ngIf="showTooltip && risk >= 0" mdTooltip="{{ risk | percent:'2.1-1' }}" mdTooltipPosition="{{tooltipPlacement}}">lens</i>
+    <i class="material-icons" [style.color]="getRiskColor(risk)" *ngIf="showTooltip && risk < 0" mdTooltip="Risk Unknown"
+        mdTooltipPosition="{{tooltipPlacement}}">lens</i>
 </span>
