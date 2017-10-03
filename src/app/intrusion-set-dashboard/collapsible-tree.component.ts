@@ -1,5 +1,5 @@
 
-import { Component, OnInit, OnChanges, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 import * as d3 from 'd3';
 
 @Component({
@@ -10,6 +10,7 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
     private static readonly DEFAULT_COLOR = 'lightsteelblue';
 
     @Input() public data: any;
+    @Output() public treeComplete: EventEmitter<any> = new EventEmitter();
     private svg: any;
 
     // tslint:disable-next-line:no-empty
@@ -292,6 +293,8 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
             }
 
         }
+        
+        this.treeComplete.emit();        
     }
 
     /**
