@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterContentInit, ChangeDetectorRef } from '@angular/core';
 import { CheckboxModule } from 'primeng/primeng';
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
 import { BaseComponentService } from '../components/base-service.component';
 import { Constance } from '../utils/constance';
@@ -27,6 +28,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
   public duration = 3000;
   public groupKillchain: any[];
   public treeSpinner: boolean = false;
+  public checkboxDebouncer: Subject<any> = new Subject();
 
   constructor(
     protected genericApi: GenericApi,
@@ -66,7 +68,14 @@ export class IntrusionSetDashboardComponent implements OnInit {
         console.log('error ' + error);
       },
       () => (sub ? sub.unsubscribe() : 0)
-    );
+    );   
+    this.checkboxDebouncer
+      .debounceTime(500)
+      .subscribe(() => {
+        console.log('Searching intrusion sets');      
+        this.searchIntrusionSets();
+      },
+      (e) => console.log(e));
   }
 
   public count(attack_patterns: any): number {
@@ -125,7 +134,8 @@ export class IntrusionSetDashboardComponent implements OnInit {
       this.selectedIntrusionSet.push(intrusionSet);
     }
     if (this.selectedIntrusionSet.length > 0) {
-      this.searchIntrusionSets();
+      // this.searchIntrusionSets();
+      this.checkboxDebouncer.next();
     } else {
       this.intrusionSetsDashboard.intrusionSets = null;
       this.intrusionSetsDashboard.killChainPhases = this.groupKillchain;
