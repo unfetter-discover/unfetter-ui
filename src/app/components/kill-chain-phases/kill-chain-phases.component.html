@@ -2,13 +2,13 @@
             <div class="col-md-12">
                 <label>Kill Chain Phases</label>
                 <div class="button-row">
-                    <a class=" " md-raised-button (click)="addkillChainPhase()"><i class="material-icons">add</i> ADD</a>            
+                    <a id="add-kill-chain" md-raised-button (click)="addkillChainPhase()"><i class="material-icons">add</i> ADD</a>
                 </div>
             </div>
         </div>
          <div class="row">
             <div class="col-md-12">
-              
+
                      <md-card *ngFor="let killChainPhase of model.attributes.kill_chain_phases" style="margin: 10px 0px;">
                             <md-card-content>
                                 <div class="row">
@@ -26,10 +26,10 @@
                             </md-card-content>
                             <md-card-actions>
                                 <div class="button-row">
-                                    <a class="" md-raised-button (click)="removekillChainPhase(killChainPhase)"><i class="material-icons">delete</i> REMOVE</a>            
+                                    <a class="" md-raised-button (click)="removekillChainPhase(killChainPhase)"><i class="material-icons">delete</i> REMOVE</a>
                                 </div>
                             </md-card-actions>
                     </md-card>
-                
+
             </div>
         </div>

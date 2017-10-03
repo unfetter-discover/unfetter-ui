@@ -93,7 +93,7 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <!--<div class="box" [style.background]="assessment.risk | riskColor"></div>-->
-                                    <risk-icon [risk]="assessment.risk" [showTooltip]="true"></risk-icon>
+                                    <risk-icon [risk]="assessment.risk" [showTooltip]="true"></risk-icon>{{assessment.risk}}
                                     <strong>{{assessment.name}} -- {{assessment.description | firstSentence}}</strong> {{assessment.description
                                     | restSentence}}
                                 </div>
