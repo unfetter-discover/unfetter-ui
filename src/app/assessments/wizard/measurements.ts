@@ -50,10 +50,10 @@ export class Measurements {
                 'Reported on All Systems'
             ];
 
-            measurements.push(this.createMeasurement('policy', 0, policyOptions));
-            measurements.push(this.createMeasurement('implementation', 0, implementationOptions));
-            measurements.push(this.createMeasurement('automation', 0, automationOptions));
-            measurements.push(this.createMeasurement('reporting', 0, reportingOptions));
+            measurements.push(this.createMeasurement('policy', -1, policyOptions));
+            measurements.push(this.createMeasurement('implementation', -1, implementationOptions));
+            measurements.push(this.createMeasurement('automation', -1, automationOptions));
+            measurements.push(this.createMeasurement('reporting', -1, reportingOptions));
 
         } else if (dataType.substr(0, 6) === 'indica') {
             // Then, assuming its an indicator
@@ -64,7 +64,7 @@ export class Measurements {
                 'Real Time Alerting, No False Positives/Negatives'
             ];
 
-            measurements.push(this.createMeasurement('policy', 0, indicatorOption));
+            measurements.push(this.createMeasurement('policy', -1, indicatorOption));
 
         } else {
             // Then, assuming its an indicator
@@ -75,7 +75,7 @@ export class Measurements {
                 'all critical systems covered'
             ];
 
-            measurements.push(this.createMeasurement('coverage', 0, indicatorOption));
+            measurements.push(this.createMeasurement('coverage', -1, indicatorOption));
         }
         return measurements;
     }
@@ -154,20 +154,35 @@ export class Measurements {
                 measurement.options.push(data);
             });
 
-        measurement.selected_value = measurement.options[selectedOption];
-        measurement.risk = measurement.selected_value.risk;
+        if (selectedOption !== -1) {
+            measurement.selected_value = measurement.options[selectedOption];
+            measurement.risk = measurement.selected_value.risk;
+        } else {
+            measurement.selected_value = {name: 'Unselected', risk: -1};
+            measurement.risk = -1;
+        }
+
         /***measurement.selected_option = selectedOption;**/
         return measurement;
     }
 
     protected calculateMeasurementsAvgRisk(measurements: any[]) {
-        return measurements
-            .map((assMes) => assMes.risk)
-            .reduce((prev, cur) => prev += cur, 0) /
-            measurements.length;
+        console.log(measurements);
+        
+        let validMeasurements = measurements.filter((measurement) => measurement.risk !== -1);
+        if (validMeasurements && validMeasurements.length) { 
+            return validMeasurements
+                .map((assMes) => assMes.risk)
+                .reduce((prev, cur) => prev += cur, 0) /
+                validMeasurements.length;
+        } else {
+            return -1;
+        }        
     }
 
     protected updateQuestionRisk(question, risk) {
+        console.log(question, risk);
+        
         if (question.selected_value === undefined) {
             question.selected_value = {};
         }
