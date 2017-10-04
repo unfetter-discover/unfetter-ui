@@ -408,10 +408,10 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
       const groupingStages = stixObject.groupings;
       if (!groupingStages) {
         const phaseName = 'unknown';
-        if (!groupings[phaseName]) {
-          const description = 'unknown description';
-          groupings[phaseName] = description;
-        }
+        // if (!groupings[phaseName]) {
+        //   const description = 'unknown description';
+        //   groupings[phaseName] = description;
+        // }
       } else {
         groupingStages.forEach((groupingStage) => {
           const phaseName = groupingStage.groupingValue;
@@ -419,9 +419,10 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
             const description = groupingStage.description;
             if (description) {
               groupings[phaseName] = description;
-            } else {
-              groupings[phaseName] = phaseName;
-            }
+            } 
+            // else {
+            //   groupings[phaseName] = phaseName;
+            // }
           }
         });
       }
