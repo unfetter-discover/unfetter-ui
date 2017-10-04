@@ -285,6 +285,26 @@ a {
     min-width: 0;
 }
 
+@media screen and (min-width: 768px) {
+    .flex-sm {
+        display: flex;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .flex-md {
+        display: flex;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .flex-lg {
+        display: flex;
+    }
+}
+
+// ~~~ Loading classes ~~~
+
 .loading {
     height: calc(100vh - #{headerFooterOffset()}); // width: 100vw;
     display: flex;
