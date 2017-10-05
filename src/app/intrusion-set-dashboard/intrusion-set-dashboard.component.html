@@ -2,12 +2,22 @@
     <div class="container-fluid fadeIn" *ngIf="intrusionSets; else loadingBlock">
         <div class="row ">
 
-            <div class="col-md-3  intrusion-set-dashboard-side-panel">
-                <div class="row">
+            <div class="col-md-3  intrusion-set-dashboard-side-panel mat-elevation-z8">
+                <!-- <div class="row">
                     <div class="col-sm-12">
                         <p-autoComplete styleClass="intrusionClass" [(ngModel)]="intrusionSet" [suggestions]="results" (completeMethod)="search($event)"
                             field="name" (onSelect)="onSelect($event)"></p-autoComplete>
                         <button style="line-height: 30px;" md-raised-button (click)="searchIntrusionSets()">Search</button>
+                    </div>
+                </div> -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <md-form-field class="full-width">
+                            <input mdInput placeholder="Intrusion Set" aria-label="Intrusion Set" [mdAutocomplete]="auto">
+                            <md-autocomplete #auto="mdAutocomplete">
+                                <md-option>APT123</md-option>
+                            </md-autocomplete>
+                        </md-form-field>
                     </div>
                 </div>
                 <div class="row">
@@ -33,7 +43,7 @@
 
             <div class="col-md-9 intrusion-set-dashboard-main-panel">
                 <div class="row">
-                    <div class="col-sm-12">
+                    <!-- <div class="col-sm-12">
                         <div style="float: left">
                             <img class='stix-icon height-30' src='assets/icon/stix-icons/svg/threat-actor-b.svg'>
                         </div>
@@ -47,7 +57,12 @@
 
                             </h4>
                         </div>
-                    </div>
+                    </div> -->
+           
+                        <div class="col-xs-12 titleWrapper flex flexItemsCenter">
+                            <p>Intrusion Sets</p>
+                        </div>
+         
                 </div>
                 <div class="row">
                     <div class="col-sm-12">

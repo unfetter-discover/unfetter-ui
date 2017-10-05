@@ -202,13 +202,13 @@ label {
         stroke-width: 1.5px;
     }
     .intrusion-set-dashboard-side-panel {
-        background-color: #0c1e30;
+        background-color: rgb(203, 240, 233);
     }
     .intrusion-set-dashboard-side-panel-checkbox>.mat-checkbox-layout>.mat-checkbox-inner-container>.mat-checkbox-frame {
         border-color: $neutral-color;
     }
     .ui-autocomplete {
-        background-color: #0c1e30;
+        background-color: rgba(0,155,166,0.25);
         margin-top: 5px;
     }
 }
@@ -262,6 +262,10 @@ a {
     font-weight: normal;
     font-size: 12px;
     margin-top: 2px;
+}
+
+.mat-mini-fab {
+    transition: top 0.2s ease-in-out;
 }
 
 // ~~~ Flex Helpers ~~~
@@ -389,8 +393,8 @@ a {
             box-shadow: 0px 6px 7px -4px rgba(0, 0, 0, 0.2), 0px 11px 15px 1px rgba(0, 0, 0, 0.14), 0px 4px 20px 3px rgba(0, 0, 0, 0.12) !important;
         }
         .mat-expansion-panel-header {
-            // background: $primary-color !important;
-            background: linear-gradient(60deg, #0097A7, #4fc2f9) !important;            
+            background: $primary-color !important;
+            // background: linear-gradient(60deg, #0097A7, #4fc2f9) !important;            
             transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
             .mat-expansion-panel-header-title,
             .mat-expansion-indicator::after {

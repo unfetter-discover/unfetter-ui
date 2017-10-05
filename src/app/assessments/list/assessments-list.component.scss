@@ -4,3 +4,54 @@
 #assessmentList {
     padding-bottom: 50px;
 }
+
+.titleWrapper {
+    height: 170px;
+    color: white;
+    font-size: 40px;
+    font-weight: 200;
+    background: url(https://maxcdn.icons8.com/app/uploads/2016/03/material-1.jpg);
+    background-size: cover;
+    background-position: bottom;
+    p {
+        margin-top: 40px;
+    }
+}
+
+#fabWrapper {
+    position: fixed;
+    bottom: 50px;
+    right: 20px;
+    #wrapperInner {
+        position: relative;
+        .mini {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            transition: top 0.2s ease-in-out;
+        }
+    }
+    #add {
+        z-index: 100;
+    }
+    #i {
+        z-index: 99;
+    }
+    #m {
+        z-index: 98;
+    }
+    #s {
+        z-index: 97;
+    }
+    .speedDial {
+        #i {
+            top: -50px;
+        }
+        #m {
+            top: -100px;
+        }
+        #s {
+            top: -150px;
+        }
+    }
+}

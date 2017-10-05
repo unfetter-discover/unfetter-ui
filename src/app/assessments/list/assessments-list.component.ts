@@ -16,6 +16,8 @@ import { ConfirmationDialogComponent } from '../../components/dialogs/confirmati
 
 export class AssessmentsListComponent implements OnInit {
 
+  public speedDial: boolean = false;
+
   public pageTitle = 'Assessments';
   public pageIcon = Constance.REPORTS_ICON;
   public description =  'An assessment is a survey of the Courses of Actions that your organization implements, ' +

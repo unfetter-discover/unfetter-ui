@@ -1,5 +1,27 @@
+<div id="fabWrapper">
+    <div id="wrapperInner" [ngClass]="{'speedDial': speedDial}">
+        <button md-fab color="primary" id="add" (click)="speedDial = !speedDial">
+            <md-icon class="md-24" aria-label="Example icon-button with a heart icon">add</md-icon>
+        </button>
+        <div class="mini" id="i"><button md-mini-fab color="primary"><img class="stix-icon" style="height: 23px;" src="assets/icon/stix-icons/svg/indicator-b.svg"></button></div>
+        <div class="mini" id="m"><button md-mini-fab color="primary"><img class="stix-icon" style="height: 23px;" src="assets/icon/stix-icons/svg/course-of-action-b.svg"></button></div>
+        <div class="mini" id="s"><button md-mini-fab color="primary"><img class="stix-icon" style="height: 23px;" src="assets/icon/stix-icons/svg/tool-b.svg"></button></div>
+    </div>
+</div>
+
+<div class="full-width titleWrapper">
+    <div class="container">
+        <div class="row">
+        <div class="col-xs-12">
+            <p>Assessments</p>
+        </div>
+</div>
+    </div>
+</div>
+
+
 <div class="container" id="assessmentList">
-    <page-header [pageTitle]="pageTitle" [pageIcon]="pageIcon" [description]="description"></page-header>
+    <!-- <page-header [pageTitle]="pageTitle" [pageIcon]="pageIcon" [description]="description"></page-header>
     <div class="row">
         <div class="col-xs-12">
             <h5>Create Assessment</h5>
@@ -13,15 +35,17 @@
     </div>
     <br>
     <hr>
-    <br>
+    <br> -->
+    
+
     <div class="row">
-        <div class="col-xs-12">
+        <!-- <div class="col-xs-12">
             <div class="pull-right">
                 <span class="right-align">Results: {{assessments.length}}</span>
             </div>
             <h5>View Assessment</h5>
-        </div>
-        <div class="col-xs-12">
+        </div> -->
+        <div class="col-xs-12" style="margin-top: -64px;">
             <md-card class="mt-12 slideIn" *ngFor="let assessment of assessments; let i = index" [style.animationDelay]="(i * 0.03) + 's'">
                 <div class="row">
                     <div class="col-xs-12 flex flexItemsCenter">
@@ -47,4 +71,11 @@
             </md-card>
         </div>
     </div>
+
+    <div class="row">  <div class="col-xs-12 text-right">
+        <br>
+                <span class="right-align">Results: {{assessments.length}}</span>
+            </div></div>
+    
+    
 </div>
