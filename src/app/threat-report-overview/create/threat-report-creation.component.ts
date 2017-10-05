@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
@@ -8,6 +8,7 @@ import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
 import { IntrusionSet } from '../../models/intrusion-set';
 import { Malware } from '../../models/malware';
 import { SelectOption } from '../models/select-option';
+import { FileUploadComponent } from '../file-upload/file-upload.component';
 
 @Component({
   selector: 'threat-report-creation',
@@ -16,6 +17,8 @@ import { SelectOption } from '../models/select-option';
 })
 export class ThreatReportCreationComponent implements OnInit, OnDestroy {
 
+  @ViewChild('fileUpload')
+  public fileUpload: FileUploadComponent;
   public showCheckBoxes = true;
   public intrusions: SelectOption[];
   public malware: SelectOption[];
@@ -73,8 +76,6 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    * @returns {void}
    */
   public boundriesToggled($event?: UIEvent): void {
-    console.log($event);
-
     const el = $event as any;
     if (el && el.checked !== undefined) {
       this.showCheckBoxes = el.checked;
@@ -86,7 +87,6 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    * @param {UIEvent} event - optional 
    */
   public addTarget(event?: UIEvent): void {
-    console.log(event);
     if (!event || !event.target) {
       return;
     }
@@ -105,7 +105,6 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    */
   public addSelectedIntrusionSet(event?: UIEvent): void {
     const ev = event as any;
-    console.log(ev);
     if (!ev || !ev.value) {
       return;
     }
@@ -172,6 +171,36 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    */
   public cancel(event: UIEvent): void {
     this.router.navigate(['/tro']);
+  }
+
+  public save(event: UIEvent): void {
+    console.log(event);
+    console.log(this.fileUpload.value());
+
+    // TODO: post to server,
+    //  enctype='multipart/form-data'
+    //      * https://stackoverflow.com/questions/39863317/how-to-force-angular2-to-post-using-x-www-form-urlencoded
+    //       For Angular 4.3+ (New HTTPClient) use the following:
+
+    //       let body = new URLSearchParams();
+    //       body.set('user', username);
+    //       body.set('password', password);
+
+    //       let options = {
+    //           headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+    //       };
+
+    //       this.http
+    //           .post('//yourUrl.com/login', body.toString(), options)
+    //           .subscribe(response => {
+    //               //...
+    //           });
+    //           Note 3 things to make it work as expected:
+
+    // Use URLSearchParams for your body
+    // Convert body to string
+    // Set the header's content-type
+    // Attention: Older browsers do need a polyfill! I used: npm i url-search-params-polyfill --save and then added to polyfills.ts: import 'url-search-params-polyfill';
   }
 
 }

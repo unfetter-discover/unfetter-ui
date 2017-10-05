@@ -1,0 +1,6 @@
+<md-form-field>
+    <input #fileUpload id="fileInput" name="file" type="file" class="hide">
+    <input mdInput #fileUpload2 id="fileInput2" type="input" multiple placeholder="workproduct files" color="primary">
+    <md-icon mdSuffix color="red">attachment</md-icon>
+</md-form-field>
+<button md-button md-raised-button id="uploadButton" class="" (click)="openFileUpload($event)"> Choose Files </button>

@@ -84,10 +84,15 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12 col-xs-12 mt-10">
+            <file-upload #fileUpload></file-upload>
+        </div>
+    </div>
     <div class="row pull-right">
         <div class="col-md-12 col-xs-12 pull-right mt-10">
                 <button color="primary" md-button (click)="cancel($event)">CANCEL</button>
-                <button color="primary" md-raised-button routerLink="#">SAVE</button>
+                <button color="primary" md-raised-button (click)="save($event)">SAVE</button>
         </div>
     </div>
 
