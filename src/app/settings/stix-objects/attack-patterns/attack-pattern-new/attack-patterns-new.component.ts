@@ -26,7 +26,6 @@ export class AttackPatternNewComponent extends AttackPatternEditComponent implem
     public ngOnInit() { }
 
      public saveAttackPattern(): void {
-         console.log('saveAttackPattern')
          let sub = super.create(this.attackPattern).subscribe(
             (data) => {
                  this.location.back();
