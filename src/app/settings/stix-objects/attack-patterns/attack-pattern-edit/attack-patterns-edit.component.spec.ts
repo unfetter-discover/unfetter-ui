@@ -74,6 +74,10 @@ let stixServiceStub = {
 
   create: (item: any): Observable<any> => {
     return Observable.of(item);
+  },
+
+  update: (item: any): Observable<any> => {
+    return Observable.of(item);
   }
 }
 
@@ -151,17 +155,45 @@ function updating() {
       fixture.whenStable().then(() => {
         const oldKill_chain_phases = comp.attackPattern.attributes.kill_chain_phases[0];
 
-        el = fixture.debugElement.query(By.css('#kill-chain-name')).nativeElement;
-        expect(el.value).toBe(oldKill_chain_phases.kill_chain_name);
-        el.value = 'killChainName';
+        el = fixture.debugElement.query(By.css('.attack-pattern-name')).nativeElement;
+        // simulate user entering new name into the text box
+        el.value = 'new attack pattern name';
         el.dispatchEvent(newEvent('input'));
-
-        el = fixture.debugElement.query(By.css('.attack-pattern-desc')).nativeElement;
-        expect(el.value).toBe(comp.attackPattern.attributes.description);
 
         // attack pattern model kill_chain_phases field should be updated
         expect(comp.attackPattern.attributes.kill_chain_phases[0].kill_chain_name).not.toEqual(el.value, 'should update attack pattern description');
         // expect(comp.attackPattern.attributes.description).toEqual(el.value, 'should update attack pattern description');
+      });
+    });
+
+    it('should save updated attack pattern', () => {
+      fixture.detectChanges(); // runs initial lifecycle hooks
+      fixture.whenStable().then(() => {
+        const location  = fixture.debugElement.injector.get(Location);
+        const locationSpy = spyOn(location, 'back');
+
+        const stixService = fixture.debugElement.injector.get(StixService);
+        const saveSpy = spyOn(stixService, 'update').and.callThrough();
+
+        const oldAttackPattern = comp.attackPattern;
+
+        el = fixture.debugElement.query(By.css('#kill-chain-name')).nativeElement;
+        el.value = 'killChainName';
+        el.dispatchEvent(newEvent('input'));
+
+        el = fixture.debugElement.query(By.css('.attack-pattern-desc')).nativeElement;
+        // simulate user entering new description into the text box
+        el.value = 'new attack pattern description';
+        el.dispatchEvent(newEvent('input'));
+
+        de = fixture.debugElement.query(By.css('#save-btn'));
+        click(de);
+
+        // should create attack-pattern
+        expect(saveSpy.calls.any()).toBe(true, 'StixService.update called');
+
+        // should navigate back after saving
+        expect(locationSpy.calls.any()).toBe(true, 'should navigate back after saving');
       });
     });
   })
