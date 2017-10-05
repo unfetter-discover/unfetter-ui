@@ -8,10 +8,7 @@ import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
 import { IntrusionSet } from '../../models/intrusion-set';
 import { Malware } from '../../models/malware';
 import { SelectOption } from '../models/select-option';
-<<<<<<< 5ce27f868b7115815467d1d1777375e6c5f0d583
 import { FileUploadComponent } from '../file-upload/file-upload.component';
-=======
->>>>>>> unfetter-discover/unfetter#345 prep for add object page
 
 @Component({
   selector: 'threat-report-creation',
