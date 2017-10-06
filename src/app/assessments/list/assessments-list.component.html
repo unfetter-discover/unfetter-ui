@@ -1,11 +1,28 @@
 <div id="fabWrapper">
     <div id="wrapperInner" [ngClass]="{'speedDial': speedDial}">
-        <button md-fab color="primary" id="add" (click)="speedDial = !speedDial">
+
+        <button md-fab color="accent" id="add" (click)="speedDial = !speedDial">
             <md-icon class="md-24" aria-label="Example icon-button with a heart icon">add</md-icon>
         </button>
-        <div class="mini" id="i"><button md-mini-fab color="primary"><img class="stix-icon" style="height: 23px;" src="assets/icon/stix-icons/svg/indicator-b.svg"></button></div>
-        <div class="mini" id="m"><button md-mini-fab color="primary"><img class="stix-icon" style="height: 23px;" src="assets/icon/stix-icons/svg/course-of-action-b.svg"></button></div>
-        <div class="mini" id="s"><button md-mini-fab color="primary"><img class="stix-icon" style="height: 23px;" src="assets/icon/stix-icons/svg/tool-b.svg"></button></div>
+
+        <div class="mini" id="i" mdTooltip="Access Indicators" mdTooltipPosition="left">
+            <button md-mini-fab color="primary">
+                <img class="stix-icon" style="height: 23px;" src="assets/icon/stix-icons/svg/indicator-b.svg">
+            </button>
+        </div>
+
+        <div class="mini" id="m" mdTooltip="Access Mitigations" mdTooltipPosition="left">
+            <button md-mini-fab color="primary">
+                <img class="stix-icon" style="height: 23px;" src="assets/icon/stix-icons/svg/course-of-action-b.svg">
+            </button>
+        </div>
+
+        <div class="mini" id="s" mdTooltip="Access Sensors" mdTooltipPosition="left">
+            <button md-mini-fab color="primary">
+                <img class="stix-icon" style="height: 23px;" src="assets/icon/stix-icons/svg/tool-b.svg">
+            </button>
+        </div>
+
     </div>
 </div>
 

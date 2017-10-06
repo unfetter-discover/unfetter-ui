@@ -33,6 +33,7 @@
     }
     #add {
         z-index: 100;
+        transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)
     }
     #i {
         z-index: 99;
@@ -44,6 +45,9 @@
         z-index: 97;
     }
     .speedDial {
+        #add {
+            transform: rotateZ(135deg);
+        }
         #i {
             top: -50px;
         }
