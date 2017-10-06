@@ -8,17 +8,32 @@ export class GenericApi {
     private baseUrl = Constance.API_HOST || '';
     private data: any = null;
     private postHeaders: Headers;
+    private authHeaders: Headers;
 
     constructor(private http: Http) {
         this.postHeaders = new Headers();
         this.postHeaders.append('Content-Type', 'application/json');
         this.postHeaders.append('Accept', 'application/vnd.api+json');
+        this.authHeaders = new Headers();
+    }
+
+    public setAuthHeaders(token) {
+        this.authHeaders.set('Authorization', token);
+        this.postHeaders.set('Authorization', token);
     }
 
     public get(url: string, data?: any): Observable<any> {
         this.data = (data !== undefined && data !== null) ? '/' + data : '';
         let builtUrl = this.baseUrl + url + this.data;
-        return this.http.get(builtUrl)
+        
+        if (!this.authHeaders.get('Authorization')) {
+            let token = localStorage.getItem('unfetterUiToken');
+            if (token) {
+                this.setAuthHeaders(token);
+            }
+        }
+        
+        return this.http.get(builtUrl, {headers: this.authHeaders})
             .map(this.extractData)
             .catch(this.handleError);
     }

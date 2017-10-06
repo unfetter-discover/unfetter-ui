@@ -83,6 +83,9 @@ export const Constance = {
   // TODO change icon
   X_UNFETTER_ASSESSMENT_ICON: 'assets/icon/stix-icons/svg/report-b.svg',
 
+  USER_FROM_TOKEN_URL: 'api/auth/user-from-token',
+  FINALIZE_REGISTRATION_URL: 'api/auth/finalize-registration',
+
   // API_HOST: process.env.HOST ? `https://${process.env.HOST}:${process.env.PORT}/` : '',
   API_HOST: '',
 
