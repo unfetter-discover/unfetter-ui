@@ -29,6 +29,7 @@ import { ComponentModule } from '../../../../components/component.module';
 import { FormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { newEvent, click } from '../../../../testing/index';
 
 // Load the implementations that should be tested
 import { AttackPatternNewComponent } from './attack-patterns-new.component';
@@ -90,7 +91,7 @@ function buttons() {
           de = fixture.debugElement.query(By.css('#save-btn'))
           // should not create attack-pattern
           expect(de.nativeElement.disabled).toBe(true, 'should disable save button if name field is empty');
-        });
+      });
 
       it('should enable save button if name field is not empty', () => {
           comp.attackPattern.attributes.name = 'Test Attack Pattern name';
@@ -262,12 +263,6 @@ function formFields() {
 
     }));
   })
-
-}
-
-function click(e: DebugElement ) {
-  // query for the save element selector
-  e.triggerEventHandler('click', null);
 }
 
 function moduleSetup() {
@@ -309,10 +304,4 @@ function createComponent() {
     fixture = TestBed.createComponent(AttackPatternNewComponent);
     comp = fixture.componentInstance; // AttackPatternNewComponent test
   });
-}
-
-function newEvent(eventName: string, bubbles = false, cancelable = false) {
-  let evt = document.createEvent('CustomEvent');  // MUST be 'CustomEvent'
-  evt.initCustomEvent(eventName, bubbles, cancelable, null);
-  return evt;
 }
