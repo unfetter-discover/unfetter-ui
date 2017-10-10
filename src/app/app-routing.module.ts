@@ -7,16 +7,16 @@ import { PartnersComponent } from './partners/partners.component';
 import { NoContentComponent } from './no-content';
 
 // import { CanDeactivateGuard }       from './can-deactivate-guard.service';
-// import { AuthGuard }                from './auth-guard.service';
+import { AuthGuard } from './global/services/auth.guard';
 import { SelectivePreloadingStrategy } from './selective-preloading-strategy';
 
 const appRoutes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
   { path: 'partners', component: PartnersComponent },
-  { path: 'intrusion-set-dashboard', component: IntrusionSetDashboardComponent },
-  { path: 'assessments', loadChildren: './assessments#AssessmentsModule' },
-  { path: 'tro', loadChildren: 'app/threat-report-overview/threat-report-overview.module#ThreatReportOverviewModule' },
+  { path: 'intrusion-set-dashboard', component: IntrusionSetDashboardComponent, canActivate: [AuthGuard] },
+  { path: 'assessments', loadChildren: './assessments#AssessmentsModule', canActivate: [AuthGuard] },
+  { path: 'tro', loadChildren: 'app/threat-report-overview/threat-report-overview.module#ThreatReportOverviewModule', canActivate: [AuthGuard] },
   { path: 'users', loadChildren: 'app/users/users.module#UsersModule' },
   { path: '**', component: NoContentComponent },
 ];

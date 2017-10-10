@@ -267,6 +267,10 @@ a {
     display: flex;
 }
 
+.flexImportant {
+    display: flex !important;
+}
+
 .flexItemsCenter {
     align-items: center;
 }

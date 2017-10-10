@@ -1,5 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
+
 import { Navigation } from '../../models/navigation';
+import { AuthService } from '../../global/services/auth.service';
 
 @Component({
   selector: 'header-navigation',
@@ -7,7 +9,8 @@ import { Navigation } from '../../models/navigation';
   styleUrls: ['./header-navigation.component.scss'],
   templateUrl: './header-navigation.component.html'
 })
-export class HeaderNavigationComponent {
+export class HeaderNavigationComponent {  
+
   public navigations: Navigation[] = [
     { url: 'stix/attack-patterns', label: 'Attack Patterns' },
     { url: 'stix/campaigns', label: 'Campaigns' },
@@ -25,4 +28,6 @@ export class HeaderNavigationComponent {
   ];
 
   public collapsed: boolean = true;
+
+  constructor(public authService: AuthService) {}
 }
