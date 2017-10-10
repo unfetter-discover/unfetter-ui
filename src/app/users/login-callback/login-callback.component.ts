@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GenericApi } from '../../global/services/genericapi.service';
+import { AuthService } from '../../global/services/auth.service';
+import { UsersService } from '../users.service';
 
 @Component({
     selector: 'login-callback',
@@ -9,20 +10,38 @@ import { GenericApi } from '../../global/services/genericapi.service';
 })
 
 export class LoginCallbackComponent implements OnInit {
-    constructor(private route: ActivatedRoute, private router: Router, private genericApi: GenericApi) { }
+    constructor(
+        private route: ActivatedRoute, 
+        private router: Router, 
+        private authService: AuthService,
+        private usersService: UsersService
+    ) { }
 
     public ngOnInit() {
         let params$ = this.route.params
             .subscribe((params) => {
+
+                // Set token and headers
                 localStorage.clear();
-                localStorage.setItem('unfetterUiToken', params.token);
-                this.genericApi.setAuthHeaders(params.token);
+                this.authService.setToken(params.token);    
                 
                 let registered = JSON.parse(params.registered);                
                 if (!registered) {
                     this.router.navigate(['/users/register']);
                 } else {
-                    this.router.navigate(['/']);
+                    let userFromToken$ = this.usersService.getUserFromToken()
+                        .subscribe(
+                        (res) => {
+                            let user = res.attributes;
+                            this.authService.setUser(user);                                                       
+                        },
+                        (err) => {
+                            console.log(err);
+                        },
+                        () => {
+                            userFromToken$.unsubscribe();
+                            this.router.navigate(['/']);
+                        });                    
                 }                          
             },
             (err) => {
