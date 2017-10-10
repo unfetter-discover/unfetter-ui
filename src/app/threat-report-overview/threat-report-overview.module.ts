@@ -7,7 +7,6 @@ import { ThreatReportCreationComponent } from './create/threat-report-creation.c
 import { ThreatReportOverviewComponent } from './threat-report-overview.component';
 import { ThreatReportOverviewService } from './threat-report-overview.service';
 import { ThreatReportModifyComponent } from './modify/threat-report-modify.component';
-import { FileUploadComponent } from './file-upload/file-upload.component';
 
 import { MdButtonModule, MdChipsModule, MdInputModule, MdIconModule, MdAutocompleteModule } from '@angular/material';
 import { MdCheckboxModule } from '@angular/material';
@@ -15,16 +14,16 @@ import { MdDatepickerModule } from '@angular/material';
 import { MdSelectModule } from '@angular/material';
 import { MdSlideToggleModule } from '@angular/material';
 import { MdTableModule } from '@angular/material';
+import { FileUploadModule } from './file-upload/file-upload.module';
 
 const troComponents = [
   ThreatReportOverviewComponent,
   ThreatReportCreationComponent,
   ThreatReportModifyComponent,
-  FileUploadComponent,
 ];
 
 const troServices = [
-  ThreatReportOverviewService
+  ThreatReportOverviewService,
 ];
 
 const mdComponents = [
@@ -49,6 +48,7 @@ const mdComponents = [
     GlobalModule,
     CommonModule,
     ...mdComponents,
+    FileUploadModule,
     routing
   ],
   providers: [
