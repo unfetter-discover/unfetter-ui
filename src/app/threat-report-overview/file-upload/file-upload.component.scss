@@ -1,3 +1,10 @@
 .hide {
     visibility: none;
 }
+
+md-icon {
+    transform: rotateZ(90deg);
+    background-color: red;
+    color: #fafafa;
+    border-radius: 50%;
+}
