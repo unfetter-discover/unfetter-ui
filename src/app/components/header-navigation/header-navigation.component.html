@@ -34,25 +34,27 @@
             </ul>
           </li>
 
-          <li dropdown class="dropdown" *ngIf="authService.loggedIn()">
+          <li dropdown class="dropdown" *ngIf="authService.loggedIn()">            
             <a dropdownToggle class="dropdown-toggle" data-toggle="user" role="button" aria-haspopup="true" aria-expanded="false">
               <img src="{{authService.getUser().github.avatar_url}}" alt="User" id="avatar" *ngIf="authService.getUser() !== null && authService.getUser().github.avatar_url !== undefined">
-              <span *ngIf="authService.getUser().github.avatar_url === undefined">{{authService.getUser().username}}</span>
+              <span *ngIf="authService.getUser().github.avatar_url === undefined">{{authService.getUser().userName}}</span>
               <span class="caret"></span>
             </a>
             <ul *dropdownMenu class="dropdown-menu">
+              <li class="dropdown-header" *ngIf="authService.getUser() !== null">
+                Signed in as: <strong>{{ authService.getUser().userName }}</strong>
+              </li>
+              <li role="separator" class="divider"></li>
               <li>
                 <a class="flexImportant flexItemsCenter">
                   <i class="material-icons">person_outline</i>
-                  <span class="flex1"></span>
-                  <span>Profile</span>
+                  <span>&nbsp;&nbsp;Profile</span>
                 </a>
               </li>
               <li>
                 <a (click)="authService.logOut()" class="flexImportant flexItemsCenter">
                   <i class="material-icons">exit_to_app</i>
-                  <span class="flex1"></span>
-                  <span>Logout</span>
+                  <span>&nbsp;&nbsp;Logout</span>
                 </a>
               </li>
             </ul>

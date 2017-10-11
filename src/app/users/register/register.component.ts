@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+
 import { UsersService } from '../users.service';
+import { AuthService } from '../../global/services/auth.service';
 
 @Component({
     selector: 'register',
@@ -12,8 +14,10 @@ import { UsersService } from '../users.service';
 export class RegisterComponent implements OnInit {
     public form: FormGroup;
     public userReturn: any;
+    public registrationSubmitted: boolean = false;
+    public submitError: boolean = false;
 
-    constructor(private usersService: UsersService) {  }
+    constructor(private usersService: UsersService, private router: Router, private authService: AuthService) {  }
 
     public ngOnInit() {
         const token = localStorage.getItem('unfetterUiToken');
@@ -48,6 +52,7 @@ export class RegisterComponent implements OnInit {
     }
 
     public registerSubmit() {
+        this.registrationSubmitted = true;
         for (let control in this.form.controls) {
             if (this.form.controls[control].value && this.form.controls[control].value !== '') {
                 if (this.form.controls[control].value instanceof Array) {                    
@@ -63,14 +68,21 @@ export class RegisterComponent implements OnInit {
         let submitRegistration$ = this.usersService.finalizeRegistration(this.userReturn)
             .subscribe(
                 (res) => {
+                    console.log('SUBMIT RES', res);
+                    
                     let registered = res.attributes.registered;
                     if (registered) {
-                       console.log('Registraiton complete');
-                       // TODO handle registration complete                        
-                    }     
+                        // TODO registration notification
+                        this.authService.setUser(res.attributes);   
+                        this.router.navigate(['/']);                      
+                    } else {
+                        console.warn('Server did not properly register user.');                        
+                        this.submitError = true;
+                    }    
                 },
                 (err) => {
                     console.log(err);
+                    this.submitError = true;
                 },
                 () => {
                     submitRegistration$.unsubscribe();
