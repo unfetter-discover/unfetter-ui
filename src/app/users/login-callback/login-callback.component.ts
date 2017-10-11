@@ -24,27 +24,47 @@ export class LoginCallbackComponent implements OnInit {
                 // Set token and headers
                 localStorage.clear();
                 this.authService.setToken(params.token);    
-                
-                let registered = JSON.parse(params.registered);                
-                if (!registered) {
-                    this.router.navigate(['/users/register']);
-                } else {
-                    let userFromToken$ = this.usersService.getUserFromToken()
-                        .subscribe(
-                        (res) => {
-                            console.log('SUBMIT RES', res);
-                            
-                            let user = res.attributes;
-                            this.authService.setUser(user);                                                       
-                        },
-                        (err) => {
-                            console.log(err);
-                        },
-                        () => {
-                            userFromToken$.unsubscribe();
+                let userFromToken$ = this.usersService.getUserFromToken()
+                    .subscribe(
+                    (res) => {
+                        console.log('SUBMIT RES', res);
+
+                        let user = res.attributes;                        
+                        if (user.registered === false) {
+                            this.router.navigate(['/users/register']);
+                        } else {
+                            this.authService.setUser(user);                         
                             this.router.navigate(['/']);
-                        });                    
-                }                          
+                        }
+                    },
+                    (err) => {
+                        console.log(err);
+                        this.router.navigate(['/']);
+                    },
+                    () => {
+                        userFromToken$.unsubscribe();                        
+                    });   
+                
+                // let registered = JSON.parse(params.registered);                
+                // if (!registered) {
+                //     this.router.navigate(['/users/register']);
+                // } else {
+                //     let userFromToken$ = this.usersService.getUserFromToken()
+                //         .subscribe(
+                //         (res) => {
+                //             console.log('SUBMIT RES', res);
+                            
+                //             let user = res.attributes;
+                //             this.authService.setUser(user);                                                       
+                //         },
+                //         (err) => {
+                //             console.log(err);
+                //         },
+                //         () => {
+                //             userFromToken$.unsubscribe();
+                //             this.router.navigate(['/']);
+                //         });                    
+                // }                          
             },
             (err) => {
                 console.log(err);                
