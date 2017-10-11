@@ -23,7 +23,7 @@ export class AuthService {
         localStorage.setItem('user', JSON.stringify(user));
     }
 
-    public getUser() {
+    public getUser(): any {
         let user = localStorage.getItem('user');
         if (user) {
             user = JSON.parse(user);
@@ -32,7 +32,11 @@ export class AuthService {
     }
 
     public loggedIn() {
-        return tokenNotExpired('unfetterUiToken') && this.getUser() !== null;
+        return tokenNotExpired('unfetterUiToken') && this.getUser() !== null && this.getUser().approved === true;
+    }
+
+    public pendingApproval() {
+        return tokenNotExpired('unfetterUiToken') && this.getUser() !== null && this.getUser().approved === false;
     }
 
     public logOut() {

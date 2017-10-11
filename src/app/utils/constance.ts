@@ -86,6 +86,10 @@ export const Constance = {
   USER_FROM_TOKEN_URL: 'api/auth/user-from-token',
   FINALIZE_REGISTRATION_URL: 'api/auth/finalize-registration',
 
+  // ADMIN
+  USERS_PENDING_APPROVAL_URL: 'api/admin/users-pending-approval',
+  PROCESS_USER_APPROVAL_URL: 'api/admin/process-user-approval',
+
   // API_HOST: process.env.HOST ? `https://${process.env.HOST}:${process.env.PORT}/` : '',
   API_HOST: '',
 

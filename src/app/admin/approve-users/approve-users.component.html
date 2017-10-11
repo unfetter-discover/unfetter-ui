@@ -1,0 +1,38 @@
+<div id="approveUsers" class="row">
+    <div class="col-xs-12">
+
+        <div class="alert alert-info" *ngIf="message">{{message}}</div>
+
+        <div *ngIf="users && users.length">
+            <h5>Approve / Deny Users</h5>
+            <table class="table table-striped">
+                <thead>
+                    <th>User Name</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th class="text-right" id="actionHeader">Approve / Deny User</th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of users">
+                        <td>{{ user.userName }}</td>
+                        <td>{{ user.lastName }}, {{ user.firstName }}</td>
+                        <td>{{ user.email }}</td>
+                        <td class="text-right">
+                            <button md-button class="mat-primary md-24" (click)="userAction(user, 'APPROVE_USER')">
+                                <i class="material-icons">check_circle</i>
+                            </button>
+                            <button md-button class="mat-warn md-24" (click)="userAction(user, 'DENY_USER')">
+                                <i class="material-icons">remove_circle</i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div *ngIf="!(users && users.length)" class="alert-alert-info">
+            There are no users pending approval.
+        </div>
+
+    </div>
+</div>
