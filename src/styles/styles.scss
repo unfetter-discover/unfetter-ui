@@ -431,3 +431,21 @@ a {
         height: 23px !important;
     }
 }
+
+// Color helpers
+.textPrimary {
+    color: $primary-color;
+}
+.textAccent {
+    color: $accent-color;
+}
+.textAccentAlt{
+    color: $accent-alt-color;
+}
+.textWarn {
+    color: $warn-color;
+}
+.textNeutral {
+    color: $neutral-color;
+}
+

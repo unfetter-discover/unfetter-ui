@@ -5,7 +5,17 @@
             <p class="lead">You are almost ready to use Unfetter.  Please verify and fill out the following information.</p>
         </div>
     </div>
-    <div class="row">
+
+    <div class="row mb-20" *ngIf="submitError">
+        <div class="col-xs-12">
+            <p class="flex flexItemsCenter">
+                <span class="md-24"><i class="material-icons textWarn">warning</i></span>
+                <span>&nbsp;&nbsp;An error occured processing your registration. <a routerLink="/">Return</a></span>
+            </p>
+        </div>
+    </div>
+
+    <div class="row" *ngIf="!submitError">
         <div class="col-xs-12 col-lg-6 col-lg-offset-3">
             <md-card *ngIf="form !== undefined">
 
@@ -57,7 +67,7 @@
 
                         <p class="text-right mt-10">
                             <button md-button routerLink="/">Cancel</button>
-                            <button md-raised-button color="accent" [disabled]="form.status === 'INVALID'" type="submit">Register</button>
+                            <button md-raised-button color="accent" [disabled]="form.status === 'INVALID' || registrationSubmitted" type="submit">Register</button>
                         </p>              
                     
                     </form>

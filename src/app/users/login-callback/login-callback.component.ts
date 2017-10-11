@@ -32,6 +32,8 @@ export class LoginCallbackComponent implements OnInit {
                     let userFromToken$ = this.usersService.getUserFromToken()
                         .subscribe(
                         (res) => {
+                            console.log('SUBMIT RES', res);
+                            
                             let user = res.attributes;
                             this.authService.setUser(user);                                                       
                         },
