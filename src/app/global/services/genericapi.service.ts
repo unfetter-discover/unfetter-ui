@@ -38,24 +38,24 @@ export class GenericApi {
             .catch(this.handleError);
     }
 
-    public post(url: string, data: any, type?: string): Observable<Response> {
+    public post(url: string, data: any, type?: string): Observable<any> {
         let builtUrl = this.baseUrl + url;
         return this.http.post(builtUrl, data, {headers: this.postHeaders})
             .map(this.extractData)
             .catch(this.handleError);
     }
 
-    public patch(url: string, data: any): Observable<Response> {
+    public patch(url: string, data: any): Observable<any> {
         let builtUrl = this.baseUrl + url;
         return this.http.patch(builtUrl, data, { headers: this.postHeaders })
             .map(this.extractData)
             .catch(this.handleError);
     }
 
-    public delete(url: string, data?: any): Observable<Response> {
+    public delete(url: string, data?: any): Observable<any> {
         this.data = (data !== undefined && data !== null) ? '/' + data : '';
         let builtUrl = this.baseUrl + url + this.data;
-        return this.http.delete(builtUrl)
+        return this.http.delete(builtUrl, {headers: this.authHeaders})
             .map(this.extractData)
             .catch(this.handleError);
     }
