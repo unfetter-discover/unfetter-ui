@@ -42,15 +42,22 @@
             </a>
             <ul *dropdownMenu class="dropdown-menu">
               <li class="dropdown-header" *ngIf="authService.getUser() !== null">
-                Signed in as: <strong>{{ authService.getUser().userName }}</strong>
+                Signed in as <strong>{{ authService.getUser().userName }}</strong>
               </li>
               <li role="separator" class="divider"></li>
+              <li>
+                <a class="flexImportant flexItemsCenter">
+                  <i class="material-icons">settings</i>
+                  <span>&nbsp;&nbsp;Settings</span>
+                </a>
+              </li>
               <li>
                 <a class="flexImportant flexItemsCenter">
                   <i class="material-icons">person_outline</i>
                   <span>&nbsp;&nbsp;Profile</span>
                 </a>
               </li>
+              <li role="separator" class="divider"></li>
               <li>
                 <a (click)="authService.logOut()" class="flexImportant flexItemsCenter">
                   <i class="material-icons">exit_to_app</i>
