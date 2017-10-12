@@ -1,12 +1,8 @@
-/*
- * Angular 2 decorators and services
- */
-import { Component,  OnInit,  ViewEncapsulation } from '@angular/core';
+import { Component,  ViewEncapsulation } from '@angular/core';
+
 import { AppState } from './app.service';
-/*
- * App Component
- * Top Level Component
- */
+import { AuthService } from './global/services/auth.service';
+
 @Component({
   selector: 'app',
   encapsulation: ViewEncapsulation.None,
@@ -15,7 +11,6 @@ import { AppState } from './app.service';
   ],
   templateUrl: './app.component.html'
 })
-export class AppComponent implements OnInit {
-  public ngOnInit() { }
-
+export class AppComponent {
+  constructor(public authService: AuthService) {}
 }

@@ -3,7 +3,7 @@ import { AdminService } from '../admin.service';
 
 @Component({
     selector: 'approve-users',
-    templateUrl: 'approve-users.component.html',=
+    templateUrl: 'approve-users.component.html',
     styleUrls: ['approve-users.component.scss']
 })
 export class ApproveUsersComponent implements OnInit {
