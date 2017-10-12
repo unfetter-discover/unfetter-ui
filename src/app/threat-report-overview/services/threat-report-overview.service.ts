@@ -3,8 +3,8 @@ import { Headers, Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
-import { ThreatReport } from './models/threat-report.model';
-import { ThreatReportMock } from './models/threat-report-mock.model';
+import { ThreatReport } from '../models/threat-report.model';
+import { ThreatReportMock } from '../models/threat-report-mock.model';
 
 @Injectable()
 export class ThreatReportOverviewService {

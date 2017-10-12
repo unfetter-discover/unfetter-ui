@@ -9,6 +9,7 @@ import { Constance } from '../../utils/constance';
 @Injectable()
 export class UploadService {
     private baseUrl = Constance.API_HOST || '';
+    private path = `/api/ctf/upload`;
     private data: any = null;
     private postHeaders: HttpHeaders;
 
@@ -20,40 +21,51 @@ export class UploadService {
 
     /**
      * @description upload a file
-     * @param url 
      * @param file 
      */
-    public post(url: string, file: File): Observable<HttpEvent<{}>> {
+    public post(file: File): Observable<any[]> {
         const formData: FormData = new FormData();
         formData.append('upfile', file, file.name);
-        const fullUrl = this.baseUrl + url;
+        const fullUrl = this.baseUrl + this.path;
         const req = new HttpRequest('POST', fullUrl, formData, {
             reportProgress: true,
             headers: this.postHeaders
         });
-        // return this.http.post<Response>(fullUrl, data, { headers: this.postHeaders })
-        //     .map(this.extractData)
-        //     .catch(this.handleError);
         return this.http.request(req)
             .map((event) => {
                 if (event.type === HttpEventType.UploadProgress) {
                     const percentDone = Math.round(100 * event.loaded / event.total);
                     console.log(`File is ${percentDone}% uploaded`);
                 } else if (event instanceof HttpResponse) {
-                    console.log('File is completley uploaded');
+                    console.log('File is completly uploaded');
                     return event;
                 }
             })
+            .map((event) => {
+                if (event instanceof HttpResponse) {
+                    return event.body;
+                } else {
+                    return [];
+                }
+            })
+            .catch(this.handleError);
     }
 
-    private extractData(res: Response) {
-        let body = res.json();
-        if (body['data'] !== undefined) {
-            return body['data'] as any[];
-        }
-        return ({});
-    }
+    /**
+     * @description extract the data elements from the response body
+     * @param res 
+     */
+    // private extractData(res: HttpResponse<{}>) {
+    //     const body = res.body;
+    //     if (body['data'] !== undefined) {
+    //         return body['data'] as any[];
+    //     }
+    //     return ({});
+    // }
 
+    /**
+     * @description throws an observable error with jsons error message
+     */
     private handleError(error: any) {
         let errMsg: string;
         if (error instanceof Response) {

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
@@ -16,6 +16,9 @@ export class FileUploadComponent implements OnInit {
     @ViewChild('fileUpload')
     public fileUploadEl: ElementRef;
 
+    @Output('fileParsedEvent')
+    public fileParsedEvent = new EventEmitter<any[]>();
+    
     public fName = '';
     private readonly subscriptions = [];
 
@@ -26,20 +29,7 @@ export class FileUploadComponent implements OnInit {
    * @description
    * @returns {void}
    */
-  public ngOnInit(): void {
-    // this.fileUploadEl.nativeElement.onchange = (arg) => {
-    //   console.log(`file selected`, arg);
-    //   const val = arg.target.value;
-    //   this.fName = val;
-
-    //   const url = `/api/ctf/upload`;
-    //   const data = `upfile=${this.fName}`;
-    //   const s$ = this.uploadService.post(url, data).subscribe((resp) => {
-    //     console.log('upload service response ', resp);
-    //   });
-    //   this.subscriptions.push(s$);
-    // };
-  }
+  public ngOnInit(): void { }
 
   /**
    * @description opens the file upload dialog
@@ -71,12 +61,12 @@ export class FileUploadComponent implements OnInit {
       return;
     }
 
-    const url = `/api/ctf/upload`;
     const file = files[0];
     this.fName = file.name;
-    const s$ = this.uploadService.post(url, file)
+    const s$ = this.uploadService.post(file)
       .subscribe((resp) => {
         console.log('upload service response ', resp);
+        this.fileParsedEvent.emit(resp);
       });
     this.subscriptions.push(s$);
   }

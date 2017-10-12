@@ -1,7 +1,7 @@
 import { DataSource } from '@angular/cdk/table';
 import { CollectionViewer } from '@angular/cdk/collections';
 import { Observable } from 'rxjs/Observable';
-import { ThreatReportOverviewService } from './threat-report-overview.service';
+import { ThreatReportOverviewService } from './services/threat-report-overview.service';
 import { ThreatReport } from './models/threat-report.model';
 import { BehaviorSubject } from 'rxjs';
 
