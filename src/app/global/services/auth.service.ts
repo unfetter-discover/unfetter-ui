@@ -35,6 +35,10 @@ export class AuthService {
         return tokenNotExpired('unfetterUiToken') && this.getUser() !== null && this.getUser().approved === true;
     }
 
+    public isAdmin() {
+        return this.loggedIn() && this.getUser().role === 'ADMIN';
+    }
+
     public pendingApproval() {
         return tokenNotExpired('unfetterUiToken') && this.getUser() !== null && this.getUser().approved === false;
     }
@@ -42,5 +46,9 @@ export class AuthService {
     public logOut() {
         localStorage.clear();
         this.router.navigate(['/']);
+    }
+
+    public hasRole(allowedRoles) {
+        return allowedRoles.find((role) => role === this.getUser().role) !== undefined;
     }
 }
