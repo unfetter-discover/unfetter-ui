@@ -9,6 +9,12 @@ import { IntrusionSet } from '../../models/intrusion-set';
 import { Malware } from '../../models/malware';
 import { SelectOption } from '../models/select-option';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
+import { UploadService } from '../file-upload/upload.service';
+
+// const UUID = require('uuid');
+import * as UUID from 'uuid';
+import { ThreatReport } from '../models/threat-report.model';
+import { ThreatReportSharedService } from '../services/threat-report-shared.service';
 
 @Component({
   selector: 'threat-report-creation',
@@ -20,15 +26,21 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
   @ViewChild('fileUpload')
   public fileUpload: FileUploadComponent;
   public showCheckBoxes = true;
+  public name: string;
   public intrusions: SelectOption[];
   public malware: SelectOption[];
+  public startDate;
+  public endDate;
+  public reports;
   public readonly selectedInstrusions = new Set<string>();
   public readonly selectedMalware = new Set<string>();
   public readonly selectedTargets = new Set<string>();
+
   private readonly subscriptions = [];
 
   constructor(protected router: Router,
-              protected genericApi: GenericApi) { }
+              protected genericApi: GenericApi,
+              protected sharedService: ThreatReportSharedService) { }
 
   /**
    * @description fetch data for this component
@@ -167,40 +179,41 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
 
   /**
    * go back to list view
-   * @param {UIEvent} optional event
+   * @param {UIEvent} event optional
    */
   public cancel(event: UIEvent): void {
     this.router.navigate(['/tro']);
   }
 
+  /**
+   * @description
+   * @param {UIEvent} event optional
+   */
   public save(event: UIEvent): void {
     console.log(event);
     console.log(this.fileUpload.value());
 
-    // TODO: post to server,
-    //  enctype='multipart/form-data'
-    //      * https://stackoverflow.com/questions/39863317/how-to-force-angular2-to-post-using-x-www-form-urlencoded
-    //       For Angular 4.3+ (New HTTPClient) use the following:
+    // const id = UUID.v4();
+    const tro = new ThreatReport();
+    tro.name = this.name;
+    if (this.showCheckBoxes) {
+      tro.boundries.intrusions = this.selectedInstrusions;
+      tro.boundries.malware = this.selectedMalware;
+      tro.boundries.targets = this.selectedTargets;
+      tro.boundries.startDate = this.startDate;
+      tro.boundries.endDate = this.endDate;
+    }
+    tro.reports = this.reports || [];
+    this.sharedService.threatReportOverview = tro;
+    this.router.navigate([`/tro/modify`, tro.id]);
+  }
 
-    //       let body = new URLSearchParams();
-    //       body.set('user', username);
-    //       body.set('password', password);
-
-    //       let options = {
-    //           headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
-    //       };
-
-    //       this.http
-    //           .post('//yourUrl.com/login', body.toString(), options)
-    //           .subscribe(response => {
-    //               //...
-    //           });
-    //           Note 3 things to make it work as expected:
-
-    // Use URLSearchParams for your body
-    // Convert body to string
-    // Set the header's content-type
-    // Attention: Older browsers do need a polyfill! I used: npm i url-search-params-polyfill --save and then added to polyfills.ts: import 'url-search-params-polyfill';
+  /**
+   * @description recieve a fileParsed event
+   */
+  public fileParsed(event): void {
+    console.log(`file parsed data`, event);
+    this.reports = event;
   }
 
 }

@@ -5,16 +5,20 @@ import { GlobalModule } from '../global/global.module';
 import { routing } from './threat-report-overview-routing.module';
 import { ThreatReportCreationComponent } from './create/threat-report-creation.component';
 import { ThreatReportOverviewComponent } from './threat-report-overview.component';
-import { ThreatReportOverviewService } from './threat-report-overview.service';
+import { ThreatReportOverviewService } from './services/threat-report-overview.service';
+import { ThreatReportSharedService } from './services/threat-report-shared.service';
 import { ThreatReportModifyComponent } from './modify/threat-report-modify.component';
 
-import { MdButtonModule, MdChipsModule, MdInputModule, MdIconModule, MdAutocompleteModule } from '@angular/material';
+import { MdButtonModule, MdChipsModule, MdInputModule, MdIconModule } from '@angular/material';
 import { MdCheckboxModule } from '@angular/material';
 import { MdDatepickerModule } from '@angular/material';
+import { MdPaginatorModule } from '@angular/material';
 import { MdSelectModule } from '@angular/material';
 import { MdSlideToggleModule } from '@angular/material';
 import { MdTableModule } from '@angular/material';
+
 import { FileUploadModule } from './file-upload/file-upload.module';
+import { FormsModule } from '@angular/forms';
 
 const troComponents = [
   ThreatReportOverviewComponent,
@@ -24,19 +28,20 @@ const troComponents = [
 
 const troServices = [
   ThreatReportOverviewService,
+  ThreatReportSharedService,
 ];
 
 const mdComponents = [
-  MdAutocompleteModule,
   MdButtonModule,
   MdCheckboxModule,
   MdChipsModule,
   MdDatepickerModule,
   MdInputModule,
+  MdIconModule,
+  MdPaginatorModule,
   MdSelectModule,
   MdSlideToggleModule,
   MdTableModule,
-  MdIconModule,
 ]
 
 @NgModule({
@@ -47,6 +52,7 @@ const mdComponents = [
     ComponentModule,
     GlobalModule,
     CommonModule,
+    FormsModule,
     ...mdComponents,
     FileUploadModule,
     routing

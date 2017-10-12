@@ -1,7 +1,51 @@
 .title-hr {
-    border-right: 4px solid rgba(0,0,0,0.2);
+    border: 2px solid rgba(0,0,0,.2);
 }
 
 md-form-field {
     width: 100%;
+}
+
+.flex {
+    display: flex;
+}
+
+.middle {
+    // margin: 0 auto;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.title {
+    margin-bottom: 8px;
+    word-break: break-word;
+}
+
+.mb-24 {
+    margin-bottom: 24px;
+}
+
+.mat-chip-list-wrapper {
+    width: 30%;
+}
+
+.margin-chips {
+    margin: 4px 16px;
+}
+
+.mat-column-author {
+    max-width: 115px;
+}
+
+.mat-column-date {
+    max-width: 200px;
+}
+
+md-cell p {
+    margin-bottom: 0px;
+    margin-top: 8px;
+}
+
+md-cell a md-icon {
+    display: none;
 }
