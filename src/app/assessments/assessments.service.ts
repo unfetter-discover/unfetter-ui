@@ -16,6 +16,11 @@ export class AssessmentsService {
         return this.genericApi.get(url);
     }
 
+    public delete(item: any): Observable<any> {
+        const url = this.baseUrl + '/' + item.id;
+        return this.genericApi.delete(url);
+    }
+
     // public save(item: any): Observable<any[]> {
     //     return this.http
     //         .post(this.url, JSON.stringify(item), { headers: this.headers })
