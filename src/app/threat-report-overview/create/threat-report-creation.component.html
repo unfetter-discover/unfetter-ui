@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-md-12">
             <md-form-field>
-                <input mdInput #filter placeholder="Workproduct Name" color="primary">
+                <input mdInput #filter [(ngModel)]="name" placeholder="Workproduct Name" color="primary">
             </md-form-field>
         </div>
     </div>
@@ -17,14 +17,14 @@
                 <span>Boundries&nbsp;</span>
                 <span class="slideWrapper">
                     <md-slide-toggle color="primary" (change)="boundriesToggled($event)" [checked]="showCheckBoxes"></md-slide-toggle>
-                </span>                
+                </span>
             </span>
-            <span *ngIf="showCheckBoxes === true" class="flex1">
+            <!-- <span *ngIf="showCheckBoxes === true" class="flex1">
                 Checkboxes
-            </span>
+            </span> -->
         </div>
     </div>
-    <div class="row mt-10" id="formWrapper">
+    <div class="row mt-10" id="formWrapper" *ngIf="showCheckBoxes">
         <div class="col-xs-12">
             <md-select placeholder="Intrusion Set" color="primary" floatPlaceholder="always" (change)="addSelectedIntrusionSet($event)">
                 <md-option *ngFor="let intrusion of intrusions" [value]="intrusion.value">
@@ -44,17 +44,22 @@
         </div>
         <div class="col-xs-12">
             <md-form-field floatPlaceholder="always">
-                <input mdInput [mdDatepicker]="startDatePicker" placeholder="Start Date" color="primary" floatPlaceholder="always">
+                <input #startDateInput mdInput  [min]="minStartDate" [max]="maxStartDate" (dateChange)="startDateChanged(startDateInput.value)" [(ngModel)]="startDate"
+                    [mdDatepicker]="startDatePicker" placeholder="Start Date" color="primary" floatPlaceholder="always" />
                 <md-datepicker-toggle mdSuffix [for]="startDatePicker"></md-datepicker-toggle>
                 <md-datepicker #startDatePicker></md-datepicker>
             </md-form-field>
+            <small *ngIf="dateError.startDate.isError" style="color:red;">{{ dateError.errorMessage }}</small>
         </div>
         <div class="col-xs-12">
             <md-form-field floatPlaceholder="always">
-                <input mdInput [mdDatepicker]="endDatePicker" placeholder="End Date" color="primary" floatPlaceholder="always">
+                <input #endDateInput mdInput  [(ngModel)]="endDate" [min]="minEndDate" (dateChange)="endDateChanged(endDateInput.value)"
+                 [mdDatepicker]="endDatePicker" placeholder="End Date" color="primary" floatPlaceholder="always">
                 <md-datepicker-toggle mdSuffix [for]="endDatePicker"></md-datepicker-toggle>
                 <md-datepicker #endDatePicker></md-datepicker>
             </md-form-field>
+            <small *ngIf="dateError.endDate.isError" style="color:red;">{{ dateError.errorMessage }}</small>
+            <small *ngIf="dateError.endDate.isSameOrBefore" style="color:red;">{{ dateError.endDate.isSameOrBeforeMessage }}</small>
         </div>
         <div class="col-xs-12">
             <md-form-field floatPlaceholder="always">
@@ -84,10 +89,15 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12 col-xs-12 mt-10">
+            <file-upload #fileUpload (fileParsedEvent)="fileParsed($event)"></file-upload>
+        </div>
+    </div>
     <div class="row pull-right">
         <div class="col-md-12 col-xs-12 pull-right mt-10">
-                <button color="primary" md-button>CANCEL</button>
-                <button color="primary" md-raised-button routerLink="#">SAVE</button>
+                <button color="primary" md-button (click)="cancel($event)">CANCEL</button>
+                <button [disabled]="dateError.startDate.isError || dateError.endDate.isError"  color="primary" md-raised-button (click)="save($event)">CONTINUE</button>
         </div>
     </div>
 

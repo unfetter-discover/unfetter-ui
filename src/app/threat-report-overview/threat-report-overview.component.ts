@@ -1,15 +1,15 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { ThreatReportOverviewService } from './threat-report-overview.service';
+import { ThreatReportOverviewService } from './services/threat-report-overview.service';
 import { ThreatReportOverviewDataSource } from './threat-report-overview.datasource';
-import { ThreatReportOverview } from './threat-report-overview.model';
+import { ThreatReport } from './models/threat-report.model';
 import { Observable } from 'rxjs/Observable';
 
-type troColName = keyof ThreatReportOverview;
+type troColName = keyof ThreatReport;
 
 @Component({
-   selector: 'threat-report-overview',
-   templateUrl: './threat-report-overview.component.html',
-   styleUrls: ['threat-report-overview.component.scss']
+  selector: 'threat-report-overview',
+  templateUrl: './threat-report-overview.component.html',
+  styleUrls: ['threat-report-overview.component.scss']
 })
 export class ThreatReportOverviewComponent implements OnInit, OnDestroy {
 
