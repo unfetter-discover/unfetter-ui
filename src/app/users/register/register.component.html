@@ -1,5 +1,5 @@
 <div id="registerComponent" class="container">
-    <div class="row mt-20 mb-20">
+    <div class="row mt-20 mb-10">
         <div class="col-xs-12 col-lg-6 col-lg-offset-3">
             <h3>Finalize Registration</h3>
             <p class="lead">You are almost ready to use Unfetter.  Please verify and fill out the following information.</p>
@@ -60,16 +60,44 @@
                             </md-error>
                         </md-form-field>
 
-                        <md-select placeholder="Organizations" [multiple]="true" class="full-width mb-20" formControlName="organizations">
+                        <!-- <md-select placeholder="Organizations" [multiple]="true" class="full-width mb-20" formControlName="organizations">
                             <md-option value="1">Foo</md-option>
                             <md-option value="2">Bar</md-option>
-                        </md-select>
+                        </md-select> -->
 
-                        <div>
-                            <md-radio-group>
-                                <md-radio-button value="1" selected>Create STIX Identity</md-radio-button>&emsp;
-                                <md-radio-button value="2">Import STIX Identity</md-radio-button>
-                            </md-radio-group>
+                        <div id="identityForm">
+                            <hr>
+                            <p class="lead">STIX Identity</p>
+                            <!-- <md-radio-group formControlName="identityFormRadio" class="mb-5">
+                                <md-radio-button value="create" checked="true">Create STIX Identity</md-radio-button>&emsp;
+                                <md-radio-button value="import">Import STIX Identity</md-radio-button>
+                            </md-radio-group> -->
+
+                            <div formGroupName="identity">
+                                <md-form-field class="full-width mb-10">
+                                    <input mdInput required placeholder="Name" formControlName="name">
+                                    <md-error *ngIf="form.get('identity').get('name').hasError('required')">
+                                        Name is <strong>required</strong>
+                                    </md-error>
+                                </md-form-field>
+
+                                <md-form-field class="full-width mb-10">
+                                    <textarea mdInput placeholder="Description" formControlName="description"></textarea>
+                                </md-form-field>
+
+                                <md-select required placeholder="Identity Class" class="full-width mb-20" formControlName="identity_class">
+                                    <md-option [value]="ic.id" *ngFor="let ic of identityClasses">{{ic.label}}</md-option>
+                                </md-select>
+
+                                <md-select placeholder="Sectors" [multiple]="true" class="full-width mb-20" formControlName="sectors">
+                                    <md-option [value]="sector.id" *ngFor="let sector of identitySectors">{{sector.label}}</md-option>
+                                </md-select>
+
+                                <md-form-field class="full-width mb-10">
+                                    <textarea mdInput placeholder="Contact Information" formControlName="contact_information"></textarea>
+                                </md-form-field>
+                            </div>                           
+
                         </div>
 
                         <p class="text-right mt-10">

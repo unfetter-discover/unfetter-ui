@@ -93,6 +93,44 @@ export const Constance = {
   // API_HOST: process.env.HOST ? `https://${process.env.HOST}:${process.env.PORT}/` : '',
   API_HOST: '',
 
+  IDENTITY_CLASSES: [
+    { label: 'Individual', id: 'individual' },
+    { label: 'Group', id: 'group' },
+    { label: 'Organization', id: 'organization' },
+    { label: 'Class', id: 'class' },
+    { label: 'Unknown', id: 'unknown' }
+  ],
+
+  IDENTITY_SECTOR_OPTIONS: [
+    { label: 'Agriculture', id: 'agriculture' },
+    { label: 'Aerospace', id: 'aerospace' },
+    { label: 'Automotive', id: 'automotive' },
+    { label: 'Communications', id: 'communications' },
+    { label: 'Construction', id: 'construction' },
+    { label: 'Defence', id: 'defence' },
+    { label: 'Education', id: 'education' },
+    { label: 'Energy', id: 'energy' },
+    { label: 'Entertainment', id: 'entertainment' },
+    { label: 'Financial services', id: 'financial-services' },
+    { label: 'Gov national', id: 'government-national' },
+    { label: 'Gov regional', id: 'government-regional' },
+    { label: 'Gov local', id: 'government-local' },
+    { label: 'Gov public services', id: 'government-public-services' },
+    { label: 'Healthcare', id: 'healthcare' },
+    { label: 'Hospitality leisure', id: 'hospitality-leisure' },
+    { label: 'Infrastructure', id: 'infrastructure' },
+    { label: 'Insurance', id: 'insurance' },
+    { label: 'Manufacturing', id: 'manufacturing' },
+    { label: 'Mining', id: 'mining' },
+    { label: 'Non-Profit', id: 'non-profit' },
+    { label: 'Pharmaceuticals', id: 'pharmaceuticals' },
+    { label: 'Retail', id: 'retail' },
+    { label: 'Technology', id: 'technology' },
+    { label: 'Telecommunications', id: 'telecommunications' },
+    { label: 'Transportation', id: 'transportation' },
+    { label: 'Utilities', id: 'utilities' }
+  ],
+
   COLORS: {
     green: '#4CAF50',
     darkGreen: '#2E7D32',
