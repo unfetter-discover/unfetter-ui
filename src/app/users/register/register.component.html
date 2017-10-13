@@ -65,6 +65,13 @@
                             <md-option value="2">Bar</md-option>
                         </md-select>
 
+                        <div>
+                            <md-radio-group>
+                                <md-radio-button value="1" selected>Create STIX Identity</md-radio-button>&emsp;
+                                <md-radio-button value="2">Import STIX Identity</md-radio-button>
+                            </md-radio-group>
+                        </div>
+
                         <p class="text-right mt-10">
                             <button md-button routerLink="/">Cancel</button>
                             <button md-raised-button color="accent" [disabled]="form.status === 'INVALID' || registrationSubmitted" type="submit">Register</button>

@@ -11,6 +11,7 @@ $footer-height: 30;
 
 $default-navbar-height: 50;
 $default-navbar-nav-a-padding: 15;
+$default-navbar-mat-button-padding: 7;
 
 @function headerFooterOffset() {
     @return ($navbar-height + $footer-height) + px;

@@ -17,7 +17,11 @@
       <div id="navbar" class="collapse navbar-collapse navbar-right" [collapse]="collapsed">
         <ul class="nav navbar-nav">
           <!-- Logged Out only -->
-          <li *ngIf="!authService.loggedIn()"><a href="/api/auth/github-login/">Login</a></li>
+          <li *ngIf="!authService.loggedIn()">
+            <a href="/api/auth/github-login/" class="mdButtonNavItem">
+              <button md-raised-button color="primary">Sign In</button>
+            </a>
+          </li>
           
           <!-- Logged In Only -->
            <li *ngIf="authService.loggedIn()"><a routerLink="./assessments">Assessments</a></li>
