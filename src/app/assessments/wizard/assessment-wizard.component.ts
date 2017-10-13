@@ -180,7 +180,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
    * @returns {void}
    */
 
-  public updateRisks(option: any, measurement: any, assessment: any): void {
+   public updateRisks(option: any, measurement: any, assessment: any): void {
     const newRisk = option.selected.value ;
     // update measurement value in assessments
     const assessmentMeasurementToUpdate = assessment.measurements.find((assMes) => assMes.name === measurement.name);
@@ -248,7 +248,6 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
   }
     this.updateChart();
 }
-
   /**
    * @description clicked back a page
    * @param {UIEvent} event optional

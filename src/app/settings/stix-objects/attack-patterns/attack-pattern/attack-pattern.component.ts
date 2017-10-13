@@ -18,6 +18,7 @@ import { FormatHelpers } from '../../../../global/static/format-helpers'
 export class AttackPatternComponent extends BaseStixComponent implements OnInit {
 
     public attackPattern: AttackPattern = new AttackPattern();
+    public defaultValue = 0;
     public x_unfetter_sophistication_levels = [
           { id : 1, value: '1 - Novice' },
           { id : 2, value: '2 - Practicioner' },

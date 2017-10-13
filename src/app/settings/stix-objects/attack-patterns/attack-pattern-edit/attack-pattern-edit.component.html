@@ -5,7 +5,7 @@
                 <div class="col-md-12">
                      <div class="form-group">
                         <md-input-container class="full-width">
-                            <input mdInput class="form-control" required placeholder="Name" value="{{attackPattern.attributes.name}}"
+                            <input mdInput class="form-control attack-pattern-name" required placeholder="Name" value="{{attackPattern.attributes.name}}"
                                 [(ngModel)]="attackPattern.attributes.name">
                         </md-input-container>
 
@@ -15,7 +15,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <md-input-container class="full-width">
-                        <textarea mdInput mdTextareaAutosize placeholder="Descrpition" [(ngModel)]="attackPattern.attributes.description">{{attackPattern.attributes.description}}</textarea>
+                        <textarea mdInput class="attack-pattern-desc" mdTextareaAutosize placeholder="Descrpition" [(ngModel)]="attackPattern.attributes.description">{{attackPattern.attributes.description}}</textarea>
                     </md-input-container>
                 </div>
             </div>
@@ -39,7 +39,7 @@
                 <div class="col-md-12">
                     <div class="button-row pull-right">
                          <button  class="" md-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</button>
-                         <button type="submit"  class=" " md-raised-button (click)="saveAttackPattern()" [disabled]="!attackPattern.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</button>
+                         <button type="submit"  id="save-btn" md-raised-button (click)="saveAttackPattern()" [disabled]="!attackPattern.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</button>
 
                     </div>
                 </div>

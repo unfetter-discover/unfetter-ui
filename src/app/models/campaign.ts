@@ -36,15 +36,8 @@ export class Campaign {
 
     private createAttributes(): any {
         return {
-            // version: '',
-            // created: moment().format(Constance.DATE_FORMATE),
-            // modified: moment().format(Constance.DATE_FORMATE),
-            // name: '',
-            // description: '',
             labels: [],
-            first_seen: new Date(),
-            // objective: '',
-            // timestamp_precision: ''
+            first_seen: new Date()
         };
     }
 }
