@@ -222,6 +222,9 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
       case 'malware':
         this.selectedMalware.delete(stixName);
         break;
+      case 'target':
+        this.selectedTargets.delete(stixName);
+        break;
     }
   }
 

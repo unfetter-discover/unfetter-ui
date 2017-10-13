@@ -67,7 +67,10 @@
             </md-form-field>
             <md-chip-list class="mat-chip-list-stacked" selectable="true">
                 <md-chip *ngFor="let target of selectedTargets" removable="true">
-                    {{ target }}
+                    <div class="flex">
+                        <span class="flex1 flexNowrap">{{ target }}</span>
+                        <md-icon mdChipRemove (click)="removeChip(target, 'target')">cancel</md-icon>
+                    </div>
                 </md-chip>
             </md-chip-list>
         </div>
