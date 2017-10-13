@@ -13,6 +13,7 @@ import { UploadService } from '../file-upload/upload.service';
 
 // const UUID = require('uuid');
 import * as UUID from 'uuid';
+import * as moment from 'moment';
 import { ThreatReport } from '../models/threat-report.model';
 import { ThreatReportSharedService } from '../services/threat-report-shared.service';
 
@@ -31,10 +32,18 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
   public malware: SelectOption[];
   public startDate;
   public endDate;
+  public minStartDate;
+  public maxStartDate;
+  public minEndDate;
   public reports;
   public readonly selectedInstrusions = new Set<string>();
   public readonly selectedMalware = new Set<string>();
   public readonly selectedTargets = new Set<string>();
+  public dateError = {
+    startDate: { isError: false },
+    endDate: { isError: false, isSameOrBefore: false, isSameOrBeforeMessage: 'End Date must be after Start Date.'},
+    errorMessage: 'Not a valid date'
+  }
 
   private readonly subscriptions = [];
 
@@ -82,6 +91,45 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
+  public startDateChanged(value: any): void {
+    if (!value) {
+      this.minEndDate = null;
+      this.dateError.startDate.isError = false;
+      this.dateError.endDate.isSameOrBefore = false;
+    } else if (moment(value, 'MM/DD/YYYY').isValid()) {
+      this.startDate = moment(value, 'MM/DD/YYYY').toDate();
+      this.dateError.startDate.isError = false;
+      const date = moment(value, 'MM/DD/YYYY').add(1, 'd');
+      this.minEndDate = new Date(date.year(), date.month(), date.date());
+      this.isEndDateSameOrBeforeStartDate(value);
+    } else {
+      this.dateError.startDate.isError = true;
+    }
+  }
+
+  public endDateChanged(value: any): void {
+    if (!value) {
+      this.dateError.endDate.isError = false;
+      this.dateError.endDate.isSameOrBefore = false;
+    }else if (moment(value, 'MM/DD/YYYY').isValid()) {
+      this.dateError.endDate.isError = false;
+      this.endDate = moment(value, 'MM/DD/YYYY').toDate();
+      this.isEndDateSameOrBeforeStartDate(value);
+    } else {
+      this.dateError.endDate.isError = true;
+      this.dateError.endDate.isSameOrBefore = false;
+
+    }
+  }
+
+  private isEndDateSameOrBeforeStartDate(value: any): void {
+    if (moment(value, 'MM/DD/YYYY').isValid() && moment(this.endDate, 'MM/DD/YYYY').isSameOrBefore(moment(this.startDate, 'MM/DD/YYYY')) ){
+      this.dateError.endDate.isSameOrBefore = true;
+    } else {
+      this.dateError.endDate.isSameOrBefore = false;
+    }
+  }
+
   /**
    * @description toggle the boundries checkboxes show hide state
    * @param {UIEvent} $event
@@ -96,7 +144,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
 
   /**
    * @description add to targets, add a chip
-   * @param {UIEvent} event - optional 
+   * @param {UIEvent} event - optional
    */
   public addTarget(event?: UIEvent): void {
     if (!event || !event.target) {
@@ -113,7 +161,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
 
   /**
    * @description add to selected set, add a chip
-   * @param {UIEvent} event - optional 
+   * @param {UIEvent} event - optional
    */
   public addSelectedIntrusionSet(event?: UIEvent): void {
     const ev = event as any;
@@ -137,7 +185,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
 
   /**
    * @description add to selected malwares, add a chip
-   * @param {UIEvent} event - optional 
+   * @param {UIEvent} event - optional
    */
   public addSelectedMalware(event?: UIEvent): void {
     const ev = event as any;
