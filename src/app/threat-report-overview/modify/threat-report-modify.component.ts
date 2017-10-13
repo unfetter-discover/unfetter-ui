@@ -85,7 +85,8 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
    * go back to list view
    * @param {UIEvent} event optional
    */
-  public cancel(event: UIEvent): void {
+  public cancel(event?: UIEvent): void {
+    this.sharedService.threatReportOverview = undefined;
     this.router.navigate(['/tro']);
   }
 
@@ -93,12 +94,17 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
    * @description
    * @param {UIEvent} event optional
    */
-  public save(event: UIEvent): void {
+  public save(event?: UIEvent): void {
     console.log(event);
-    const id = UUID.v4();
-    this.threatReport.id = id;
-    // TODO: save to database
-    // this.router.navigate([`/tro/modify`, tro.id]);
+    //  save to database
+    this.service.saveThreatReport(this.threatReport).subscribe(
+      (reports) => {
+        console.log(`saved ${reports}`);
+        // const id = (tro as any).data.id;
+        this.router.navigate([`/tro`]);
+      },
+      (err) => console.log(err),
+    )
   }
 
 }

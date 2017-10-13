@@ -19,6 +19,7 @@ import { MdTableModule } from '@angular/material';
 
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 const troComponents = [
   ThreatReportOverviewComponent,
@@ -54,6 +55,7 @@ const mdComponents = [
     GlobalModule,
     CommonModule,
     FormsModule,
+    HttpClientModule,
     ...mdComponents,
     FileUploadModule,
     routing

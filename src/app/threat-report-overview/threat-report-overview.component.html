@@ -45,7 +45,7 @@
             
                 <ng-container mdColumnDef="date">
                     <md-header-cell *mdHeaderCellDef> Modified </md-header-cell>
-                    <md-cell *mdCellDef="let row"> {{row.date}} </md-cell>
+                    <md-cell *mdCellDef="let row"> {{ row.date | date:'medium' }} </md-cell>
                 </ng-container>
             
                 <ng-container mdColumnDef="author">
