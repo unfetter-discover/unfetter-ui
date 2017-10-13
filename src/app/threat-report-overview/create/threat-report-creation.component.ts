@@ -122,14 +122,6 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     }
   }
 
-  private isEndDateSameOrBeforeStartDate(value: any): void {
-    if (moment(value, 'MM/DD/YYYY').isValid() && moment(this.endDate, 'MM/DD/YYYY').isSameOrBefore(moment(this.startDate, 'MM/DD/YYYY')) ){
-      this.dateError.endDate.isSameOrBefore = true;
-    } else {
-      this.dateError.endDate.isSameOrBefore = false;
-    }
-  }
-
   /**
    * @description toggle the boundries checkboxes show hide state
    * @param {UIEvent} $event
@@ -222,6 +214,9 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
       case 'malware':
         this.selectedMalware.delete(stixName);
         break;
+      case 'target':
+        this.selectedTargets.delete(stixName);
+        break;
     }
   }
 
@@ -262,6 +257,14 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
   public fileParsed(event): void {
     console.log(`file parsed data`, event);
     this.reports = event;
+  }
+
+  private isEndDateSameOrBeforeStartDate(value: any): void {
+    if (moment(value, 'MM/DD/YYYY').isValid() && moment(this.endDate, 'MM/DD/YYYY').isSameOrBefore(moment(this.startDate, 'MM/DD/YYYY')) ){
+      this.dateError.endDate.isSameOrBefore = true;
+    } else {
+      this.dateError.endDate.isSameOrBefore = false;
+    }
   }
 
 }
