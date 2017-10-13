@@ -9,17 +9,23 @@
             <div class="flex" *ngIf="threatReport">
                 <md-chip-list class="mat-chip-list-stacked margin-chips" selectable="true">
                     <md-chip *ngFor="let intrusion of threatReport.boundries.intrusions">
-                        {{ intrusion }}
+                        <div class="flex">
+                            <span class="flex1 flexNowrap">{{ intrusion }}</span>
+                        </div>
                     </md-chip>
                 </md-chip-list>
                 <md-chip-list class="mat-chip-list-stacked margin-chips" selectable="true">
                     <md-chip *ngFor="let target of threatReport.boundries.targets">
-                        {{ target }}
+                        <div class="flex">
+                            <span class="flex1 flexNowrap">{{ target }}</span>
+                        </div>
                     </md-chip>
                 </md-chip-list>
                 <md-chip-list class="mat-chip-list-stacked margin-chips" selectable="true">
                     <md-chip *ngFor="let malware of threatReport.boundries.malware">
-                        {{ malware }}
+                        <div class="flex">
+                            <span class="flex1 flexNowrap">{{ malware }}</span>
+                        </div>
                     </md-chip>
                 </md-chip-list>
             </div>
@@ -82,15 +88,15 @@
                     </ng-container>
                     <ng-container mdColumnDef="author">
                         <md-header-cell *mdHeaderCellDef> Author </md-header-cell>
-                        <md-cell *mdCellDef="let row"> 
+                        <md-cell *mdCellDef="let row">
                             <span class="mat-caption">
-                                {{row.data.attributes.created_by_ref}} 
+                                {{row.data.attributes.created_by_ref}}
                             </span>
                         </md-cell>
                     </ng-container>
                     <ng-container mdColumnDef="date">
                         <md-header-cell *mdHeaderCellDef> Modified Date </md-header-cell>
-                        <md-cell *mdCellDef="let row" [style.color]="row.color"> 
+                        <md-cell *mdCellDef="let row" [style.color]="row.color">
                             <span class="mat-caption">
                                 {{row.data.attributes.modified |  date:'medium' }}
                             </span>

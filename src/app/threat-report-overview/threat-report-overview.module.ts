@@ -9,7 +9,7 @@ import { ThreatReportOverviewService } from './services/threat-report-overview.s
 import { ThreatReportSharedService } from './services/threat-report-shared.service';
 import { ThreatReportModifyComponent } from './modify/threat-report-modify.component';
 
-import { MdButtonModule, MdChipsModule, MdInputModule, MdIconModule } from '@angular/material';
+import { MdButtonModule, MdChipsModule, MdInputModule, MdIconModule, MdTooltipModule } from '@angular/material';
 import { MdCheckboxModule } from '@angular/material';
 import { MdDatepickerModule } from '@angular/material';
 import { MdPaginatorModule } from '@angular/material';
@@ -41,6 +41,7 @@ const mdComponents = [
   MdPaginatorModule,
   MdSelectModule,
   MdSlideToggleModule,
+  MdTooltipModule,
   MdTableModule,
 ]
 
