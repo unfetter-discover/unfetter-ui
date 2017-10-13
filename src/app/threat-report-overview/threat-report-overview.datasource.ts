@@ -21,16 +21,20 @@ export class ThreatReportOverviewDataSource extends DataSource<ThreatReport> {
      */
     public connect(collectionViewer: CollectionViewer): Observable<ThreatReport[]> {
         return this.filterChange
-                .switchMap((val) => {
-                    console.log('filter on val', val);
-                    const filterVal = val.trim().toLowerCase() || '';
-                    if (!filterVal || filterVal.length === 0) {
-                        return this.service.load();
-                    }
+            .switchMap((val) => {
+                console.log('filter on val', val);
+                const filterVal = val.trim().toLowerCase() || '';
+                const products$ = this.service.load();
+                if (!filterVal || filterVal.length === 0) {
+                    return products$;
+                }
 
-                    return this.service.load()
-                        .map((el) => el.filter((tro) => tro.name.includes(filterVal) || tro.author.includes(filterVal)));
-                });
+                return products$
+                    .map((el) => {
+                        return el.filter((tro) => tro.name.trim().toLowerCase().includes(filterVal) 
+                            || tro.author.trim().toLowerCase().includes(filterVal));
+                    });
+            });
     }
 
     public disconnect(collectionViewer: CollectionViewer): void {

@@ -38,7 +38,7 @@ export class ThreatReportOverviewService {
         }
         tr.name = name;
         tr.author = author;
-        tr.boundries = el.attributes.work_product.boundries;
+        tr.boundries = Object.assign({}, el.attributes.work_product.boundries);
         const report = el.attributes;
         tr.reports.push(report);
         return memo;

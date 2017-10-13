@@ -6,7 +6,7 @@ export class ThreatReportMock {
         return {
                 id,
                 name: `name-${id}`,
-                date: new Date().toISOString(),
+                date: new Date(),
                 author: `author-${id}`
               } as ThreatReport;
     }
@@ -17,7 +17,7 @@ export class ThreatReportMock {
           arr[i] = { 
                 id: i,
                 name: `name-${i}`,
-                date: new Date().toISOString(),
+                date: new Date(),
                 author: `author-${i}`
               } as ThreatReport
         }
