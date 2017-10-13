@@ -41,7 +41,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
   public readonly selectedTargets = new Set<string>();
   public dateError = {
     startDate: { isError: false },
-    endDate: { isError: false, isSameOrBefore: false, isSameOrBeforeMessage: 'End Date must be after Start Date.'},
+    endDate: { isError: false, isSameOrBefore: false, isSameOrBeforeMessage: 'End Date must be after Start Date.' },
     errorMessage: 'Not a valid date'
   }
 
@@ -111,7 +111,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     if (!value) {
       this.dateError.endDate.isError = false;
       this.dateError.endDate.isSameOrBefore = false;
-    }else if (moment(value, 'MM/DD/YYYY').isValid()) {
+    } else if (moment(value, 'MM/DD/YYYY').isValid()) {
       this.dateError.endDate.isError = false;
       this.endDate = moment(value, 'MM/DD/YYYY').toDate();
       this.isEndDateSameOrBeforeStartDate(value);
@@ -122,8 +122,8 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     }
   }
 
-  private isEndDateSameOrBeforeStartDate(value: any): void {
-    if (moment(value, 'MM/DD/YYYY').isValid() && moment(this.endDate, 'MM/DD/YYYY').isSameOrBefore(moment(this.startDate, 'MM/DD/YYYY')) ){
+  public isEndDateSameOrBeforeStartDate(value: any): void {
+    if (moment(value, 'MM/DD/YYYY').isValid() && moment(this.endDate, 'MM/DD/YYYY').isSameOrBefore(moment(this.startDate, 'MM/DD/YYYY'))) {
       this.dateError.endDate.isSameOrBefore = true;
     } else {
       this.dateError.endDate.isSameOrBefore = false;
