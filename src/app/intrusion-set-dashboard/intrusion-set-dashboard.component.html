@@ -33,7 +33,7 @@
 
             <div class="col-md-9 intrusion-set-dashboard-main-panel">
                 <div class="row">
-                    <div class="col-sm-12">
+                    <div class="col-sm-12">                        
                         <div style="float: left">
                             <img class='stix-icon height-30' src='assets/icon/stix-icons/svg/threat-actor-b.svg'>
                         </div>
@@ -44,7 +44,6 @@
                                     {{i.attributes.name}}
                                     <i *ngIf="!last"> / </i>
                                 </strong></a>
-
                             </h4>
                         </div>
                     </div>
@@ -52,7 +51,10 @@
                 <div class="row">
                     <div class="col-sm-12">
 
-                        <md-tab-group>
+                        <p id="treeSpinner" class="flex flexItemsCenter" [style.display]="treeSpinner ? 'flex' : 'none'">
+                            <md-spinner></md-spinner>
+                        </p>
+                        <md-tab-group [style.opacity]="treeSpinner ? 0 : 1" id="tabGroup">
                             <md-tab id="intrusionSetsDashboard" label="Attack Patterns Used">
                                 <div id="graphWrapper">
                                     <md-card class="margin-top">
@@ -116,7 +118,7 @@
                                         <md-card-header *ngIf="!treeData">
                                             <md-card-subtitle>Graph</md-card-subtitle>
                                         </md-card-header>
-                                        <collapsible-tree *ngIf="treeData" [data]="treeData"></collapsible-tree>
+                                        <collapsible-tree *ngIf="treeData" [data]="treeData" (treeComplete)="treeComplete()"></collapsible-tree>
                                     </md-card>
                                 </div>
                                 <br>

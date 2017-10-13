@@ -140,7 +140,9 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         assessment.risk = assessmentObject.risk;
         assessment.measurements.forEach((m) => {
           const question = assessmentObject.questions.find((q) => q.name === m.name);
-          m.risk = question ? question.risk : 1;
+          if (question) {
+            m.risk = question.risk;
+          }
         });
 
       });
@@ -178,7 +180,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
    * @returns {void}
    */
 
-  public updateRisks(option: any, measurement: any, assessment: any): void {
+   public updateRisks(option: any, measurement: any, assessment: any): void {
     const newRisk = option.selected.value ;
     // update measurement value in assessments
     const assessmentMeasurementToUpdate = assessment.measurements.find((assMes) => assMes.name === measurement.name);
@@ -199,80 +201,53 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
       // if no questions selected remove
       if (this.tempModel[assessment.id].measurements.length === 0) {
         delete this.tempModel[assessment.id];
-        assessment.risk = -1
-        const riskArray = [1, 0];
-        this.currentAssessmentGroup.risk = 1;
-        this.currentAssessmentGroup.riskArray = riskArray;
-      } else {
-         // can not have negative. if new newRisk is < 0
-        // set assessmentMeasurementToUpdate.risk to 1
-        if (newRisk < 0) {
-          assessmentMeasurementToUpdate.risk = 1;
-        }
-         // calculate risk of all measurements
-        assessment.risk = this.calculateMeasurementsAvgRisk(assessment.measurements);
-        const groupRisk = this.calculateGroupRisk();
       }
-    } else {
-        let assessment_object = this.model.attributes.assessment_objects
-        .find((assessmentObject) => assessment.id === assessmentObject.stix.id);
-        if (!assessment_object) {
-          assessment_object = {
-            questions: [measurement],
-            risk: newRisk,
-            stix: {
-              id: assessment.id,
-              description: assessment.description,
-              type: assessment.type,
-              name: assessment.name
-            }
-          };
-          this.model.attributes.assessment_objects.push(assessment_object);
-        } else {
-          if (newRisk < 0) {
-            assessment_object.questions = assessment_object.questions.filter((q) => { return q.name !== measurement.name } );
-            if (assessment_object.questions.length === 0) {
-              assessment_object.risk = -1
-              assessment.risk = -1
-              const riskArray = [1, 0];
-              this.currentAssessmentGroup.risk = 1;
-              this.currentAssessmentGroup.riskArray = riskArray;
-            } else {
-              measurement.risk = newRisk;
-              // calculate risk of all measurements
-              assessment.risk = this.calculateMeasurementsAvgRisk(assessment.measurements);
-              this.calculateGroupRisk();
-              assessment_object.risk = assessment.risk;
-            }
-          } else {
-            let question = assessment_object.questions.find((q) => q.name === measurement.name);
-            if (!question) {
-              question = measurement;
-              assessment_object.questions.push(question);
-            }
-            this.updateQuestionRisk(question, newRisk);
-            measurement.risk = newRisk;
-            // calculate risk of all measurements
-            assessment.risk = this.calculateMeasurementsAvgRisk(assessment.measurements);
-            this.calculateGroupRisk();
-            assessment_object.risk = assessment.risk;
-
-          }
-        }
-        // let question = assessment_object.questions.find((q) => q.name === measurement.name);
-        // if (!question) {
-        //   question = measurement;
-        //   assessment_object.questions.push(question);
-        // } else if (newRisk < 0) {
-
-        // }else {
-        //   this.updateQuestionRisk(question, newRisk);
-        // }
-
     }
-    this.updateChart();
-  }
+    // can not have negative. if new newRisk is < 0
+    // set assessmentMeasurementToUpdate.risk to 1
+    if (newRisk < 0) {
+      assessmentMeasurementToUpdate.risk = -1;
+    }
+    // calculate risk of all measurements
+    assessment.risk = this.calculateMeasurementsAvgRisk(assessment.measurements);
+    const groupRisk = this.calculateGroupRisk();
 
+    if (this.model) {
+      let assessment_object = this.model.attributes.assessment_objects
+        .find((assessmentObject) => assessment.id === assessmentObject.stix.id);
+
+      if (!assessment_object) {
+        assessment_object = {
+          questions: [measurement],
+          risk: newRisk,
+          stix: {
+            id: assessment.id,
+            description: assessment.description,
+            type: assessment.type,
+            name: assessment.name
+          }
+        };
+        this.model.attributes.assessment_objects.push(assessment_object);
+     } else {
+      if (newRisk < 0) {
+        assessment_object.questions = assessment_object.questions.filter((q) => { return q.name !== measurement.name } );
+        if (assessment_object.questions.length === 0) {
+          assessment_object.risk = newRisk;
+        }
+      } else {
+        let question = assessment_object.questions.find((q) => q.name === measurement.name);
+        if (!question) {
+          question = measurement;
+          assessment_object.questions.push(question);
+        } else {
+          this.updateQuestionRisk(question, newRisk);
+        }
+        assessment_object.risk = assessment.risk;
+      }
+    }
+  }
+    this.updateChart();
+}
   /**
    * @description clicked back a page
    * @param {UIEvent} event optional
@@ -442,10 +417,10 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
       const groupingStages = stixObject.groupings;
       if (!groupingStages) {
         const phaseName = 'unknown';
-        if (!groupings[phaseName]) {
-          const description = 'unknown description';
-          groupings[phaseName] = description;
-        }
+        // if (!groupings[phaseName]) {
+        //   const description = 'unknown description';
+        //   groupings[phaseName] = description;
+        // }
       } else {
         groupingStages.forEach((groupingStage) => {
           const phaseName = groupingStage.groupingValue;
@@ -453,9 +428,10 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
             const description = groupingStage.description;
             if (description) {
               groupings[phaseName] = description;
-            } else {
-              groupings[phaseName] = phaseName;
-            }
+            } 
+            // else {
+            //   groupings[phaseName] = phaseName;
+            // }
           }
         });
       }
