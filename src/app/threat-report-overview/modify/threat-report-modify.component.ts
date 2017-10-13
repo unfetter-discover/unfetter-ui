@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ViewChild, AfterViewInit, OnInit } from '@angular/core';
+import { Component, OnDestroy, ViewChild, AfterViewInit, OnInit, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
@@ -16,11 +16,14 @@ import * as UUID from 'uuid';
   styleUrls: ['threat-report-modify.component.scss']
 })
 export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDestroy {
-  
+
   public static readonly ROUTER_DATA_KEY = 'ThreatReportOverview';
 
   @ViewChild('paginator')
   public paginator: MdPaginator;
+
+  @ViewChild('filter')
+  public filter: ElementRef;
 
   public displayCols = ['title', 'date', 'author'];
   public threatReport: ThreatReport;
@@ -39,22 +42,43 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
     this.id = this.route.snapshot.paramMap.get('id');
     this.threatReport = this.sharedService.threatReportOverview || new ThreatReport();
     this.dataSource = new ThreatReportModifyDataSource(this.threatReport.reports, this.paginator);
+    Observable.fromEvent(this.filter.nativeElement, 'keyup')
+      .debounceTime(150)
+      .distinctUntilChanged()
+      .subscribe(() => {
+        if (!this.dataSource) {
+          return;
+        }
+        this.dataSource.nextFilter(this.filter.nativeElement.value);
+    }
+
   }
 
   public ngAfterViewInit(): void {
+    // if( this.threatReport && this.threatReport.reports.length > 0 ) {
+    //   Observable.fromEvent(this.filter.nativeElement, 'keyup')
+    //   .debounceTime(150)
+    //   .distinctUntilChanged()
+    //   .subscribe(() => {
+    //     if (!this.dataSource) {
+    //       return;
+    //     }
+    //     this.dataSource.nextFilter(this.filter.nativeElement.value);
+    // });
+    // }
     // const observableList = [ this.paginators.changes ];
     // if (!this.id || this.id === -1) {
     //   // go fetch data for this component
     //   observableList.push(this.service.load());
     // }
 
-    // had to monitor querylist on paginator because of the  ExpressionChangedAfterItHasBeenCheckedError error, 
+    // had to monitor querylist on paginator because of the  ExpressionChangedAfterItHasBeenCheckedError error,
     //  due to putting a ngIf on the table
     // const sub$ = Observable
     //   .combineLatest(...observableList)
     //   .subscribe((combined) => {
     //     const [ paginators, threatReports ] = combined;
-    //     this.paginator = paginators.first;       
+    //     this.paginator = paginators.first;
     //     if (threatReports) {
     //       const arr = threatReports.first;
     //       this.threatReport = arr.filter((el) => el.id === Number(this.id))[0] || new ThreatReport();
@@ -69,14 +93,14 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
     //   // go fetch data for this component
     //   observableList.push(this.service.load());
     // }
-    
-    // had to monitor querylist on paginator because of the  ExpressionChangedAfterItHasBeenCheckedError error, 
+
+    // had to monitor querylist on paginator because of the  ExpressionChangedAfterItHasBeenCheckedError error,
     //  due to putting a ngIf on the table
     // const sub$ = Observable
     //   .combineLatest(...observableList)
     //   .subscribe((combined) => {
     //     const [ paginators, threatReports ] = combined;
-    //     this.paginator = paginators.first;       
+    //     this.paginator = paginators.first;
     //     if (threatReports) {
     //       const arr = threatReports.first;
     //       this.threatReport = arr.filter((el) => el.id === Number(this.id))[0] || new ThreatReport();

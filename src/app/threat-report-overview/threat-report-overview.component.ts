@@ -29,7 +29,8 @@ export class ThreatReportOverviewComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     this.dataSource = new ThreatReportOverviewDataSource(this.threatReportOverviewService);
-    Observable.fromEvent(this.filter.nativeElement, 'keyup')
+    if (this.filter) {
+      Observable.fromEvent(this.filter.nativeElement, 'keyup')
       .debounceTime(150)
       .distinctUntilChanged()
       .subscribe(() => {
@@ -38,6 +39,8 @@ export class ThreatReportOverviewComponent implements OnInit, OnDestroy {
         }
         this.dataSource.nextFilter(this.filter.nativeElement.value);
       });
+    }
+
     // const sub$ = this.threatReportOverviewService
     //   .load()
     //   .subscribe((threatReports) => {

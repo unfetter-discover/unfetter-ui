@@ -260,7 +260,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
   }
 
   private isEndDateSameOrBeforeStartDate(value: any): void {
-    if (moment(value, 'MM/DD/YYYY').isValid() && moment(this.endDate, 'MM/DD/YYYY').isSameOrBefore(moment(this.startDate, 'MM/DD/YYYY')) ){
+    if (moment(value, 'MM/DD/YYYY').isValid() && moment(this.endDate, 'MM/DD/YYYY').isSameOrBefore(moment(this.startDate, 'MM/DD/YYYY')) ) {
       this.dateError.endDate.isSameOrBefore = true;
     } else {
       this.dateError.endDate.isSameOrBefore = false;
