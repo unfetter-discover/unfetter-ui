@@ -1,13 +1,18 @@
 @import 'variables';
 
 
-@function calculateNewPadding() {
-    @return $default-navbar-nav-a-padding+ (($navbar-height - $default-navbar-height) / 2);
+@function calculateNewPadding($default-padding) {
+    @return $default-padding +(($navbar-height - $default-navbar-height) / 2);
 }
 
 @mixin resetAnchorPadding {
-    padding-top: calculateNewPadding() + px;
-    padding-bottom: calculateNewPadding() + px;
+    padding-top: calculateNewPadding($default-navbar-nav-a-padding)+px;
+    padding-bottom: calculateNewPadding($default-navbar-nav-a-padding)+px;
+}
+
+@mixin resetMatButtonPadding {
+    padding-top: calculateNewPadding($default-navbar-mat-button-padding)+px;
+    padding-bottom: calculateNewPadding($default-navbar-mat-button-padding)+px;
 }
 
 @media (min-width: 768px) {
@@ -16,7 +21,10 @@
             >li>a {
                 @include resetAnchorPadding;
             }
-        }
+            >li>a.mdButtonNavItem {
+                @include resetMatButtonPadding;
+            }
+        }        
         .navbar-brand {
             padding-top: 12px !important;
         }        
@@ -25,7 +33,7 @@
 
 .navbar-inverse {
     background-color: $nav-background-color;
-    border-color: $nav-background-color;
+    border-bottom: none;
     .navbar-brand {
         color: #FFFFFF;      
         padding-top: 5px;  
