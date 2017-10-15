@@ -81,6 +81,25 @@ let stixServiceStub = {
   }
 }
 
+class ActivatedRouteStub {
+  // ActivatedRoute.paramMap is Observable
+  public  subject = new BehaviorSubject(convertToParamMap(this.testParamMap));
+  public params = this.subject.asObservable();
+
+  // Test parameters
+  private _testParamMap: ParamMap;
+  get testParamMap() { return this._testParamMap; }
+  set testParamMap(params: {}) {
+    this._testParamMap = convertToParamMap(params);
+    this.subject.next(this._testParamMap);
+  }
+
+  // ActivatedRoute.snapshot.paramMap
+  get snapshot() {
+    return { paramMap: this.testParamMap };
+  }
+}
+
 ////// Tests //////
 describe('AttackPatternEditComponent', () => {
   beforeEach(() => {
@@ -297,23 +316,4 @@ function newEvent(eventName: string, bubbles = false, cancelable = false) {
   let evt = document.createEvent('CustomEvent');  // MUST be 'CustomEvent'
   evt.initCustomEvent(eventName, bubbles, cancelable, null);
   return evt;
-}
-
-class ActivatedRouteStub {
-  // ActivatedRoute.paramMap is Observable
-  public  subject = new BehaviorSubject(convertToParamMap(this.testParamMap));
-  public params = this.subject.asObservable();
-
-  // Test parameters
-  private _testParamMap: ParamMap;
-  get testParamMap() { return this._testParamMap; }
-  set testParamMap(params: {}) {
-    this._testParamMap = convertToParamMap(params);
-    this.subject.next(this._testParamMap);
-  }
-
-  // ActivatedRoute.snapshot.paramMap
-  get snapshot() {
-    return { paramMap: this.testParamMap };
-  }
 }

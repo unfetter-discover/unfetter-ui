@@ -1,5 +1,5 @@
 
-import { Component, OnDestroy, ViewChild, AfterViewInit, OnInit, ElementRef } from '@angular/core';
+import { Component, OnDestroy, ViewChild, OnInit, ElementRef, AfterViewInit } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
@@ -82,8 +82,8 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
    * go back to list view
    * @param {UIEvent} event optional
    */
-  public cancel(event?: UIEvent): void {
-    this.sharedService.threatReportOverview = undefined;
+  public cancel(event: UIEvent): void {
+    this.sharedService.threatReportOverview = null;
     this.router.navigate(['/tro']);
   }
 

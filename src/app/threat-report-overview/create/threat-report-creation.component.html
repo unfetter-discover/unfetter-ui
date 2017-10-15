@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-md-12">
             <md-form-field>
-                <input mdInput #filter [(ngModel)]="name" placeholder="Workproduct Name" color="primary">
+                <input mdInput #filter [(ngModel)]="threatReport.name" placeholder="Workproduct Name" color="primary">
             </md-form-field>
         </div>
     </div>
@@ -26,14 +26,14 @@
     </div>
     <div class="row mt-10" id="formWrapper" *ngIf="showCheckBoxes">
         <div class="col-xs-12">
-            <md-select placeholder="Intrusion Set" color="primary" floatPlaceholder="always" (change)="addSelectedIntrusionSet($event)">
+            <md-select #intrusionset placeholder="Intrusion Set" color="primary" floatPlaceholder="always" (change)="addChip(intrusionset.selected.viewValue, 'intrusion-set')">
                 <md-option *ngFor="let intrusion of intrusions" [value]="intrusion.value">
                     {{ intrusion.displayValue }}
                 </md-option>
             </md-select>
             <div class="mt-10 mb-10">
                 <md-chip-list class="mat-chip-list-stacked" selectable="true">
-                    <md-chip *ngFor="let selectedIntrusion of selectedInstrusions" removable="true" selectable="true">
+                    <md-chip *ngFor="let selectedIntrusion of threatReport.boundries.intrusions" removable="true" selectable="true">
                         <div class="flex">
                             <span class="flex1 flexNowrap">{{ selectedIntrusion }}</span>
                             <md-icon mdChipRemove (click)="removeChip(selectedIntrusion, 'intrusion-set')">cancel</md-icon>
@@ -44,7 +44,7 @@
         </div>
         <div class="col-xs-12">
             <md-form-field floatPlaceholder="always">
-                <input #startDateInput mdInput  [min]="minStartDate" [max]="maxStartDate" (dateChange)="startDateChanged(startDateInput.value)" [(ngModel)]="startDate"
+                <input #startDateInput mdInput [(ngModel)]="threatReport.boundries.startDate" [min]="minStartDate" [max]="maxStartDate" (dateChange)="startDateChanged(startDateInput.value)" [(ngModel)]="startDate"
                     [mdDatepicker]="startDatePicker" placeholder="Start Date" color="primary" floatPlaceholder="always" />
                 <md-datepicker-toggle mdSuffix [for]="startDatePicker"></md-datepicker-toggle>
                 <md-datepicker #startDatePicker></md-datepicker>
@@ -53,7 +53,7 @@
         </div>
         <div class="col-xs-12">
             <md-form-field floatPlaceholder="always">
-                <input #endDateInput mdInput  [(ngModel)]="endDate" [min]="minEndDate" (dateChange)="endDateChanged(endDateInput.value)"
+                <input #endDateInput mdInput  [(ngModel)]="threatReport.boundries.endDate" [min]="minEndDate" (dateChange)="endDateChanged(endDateInput.value)"
                  [mdDatepicker]="endDatePicker" placeholder="End Date" color="primary" floatPlaceholder="always">
                 <md-datepicker-toggle mdSuffix [for]="endDatePicker"></md-datepicker-toggle>
                 <md-datepicker #endDatePicker></md-datepicker>
@@ -63,10 +63,10 @@
         </div>
         <div class="col-xs-12">
             <md-form-field floatPlaceholder="always">
-                <input mdInput placeholder="Target" color="primary" floatPlaceholder="always" (keyup.enter)="addTarget($event)">
+                <input mdInput #targetSelected placeholder="Target" color="primary" floatPlaceholder="always" (keyup.enter)="addChip(targetSelected.value, 'target')">
             </md-form-field>
             <md-chip-list class="mat-chip-list-stacked" selectable="true">
-                <md-chip *ngFor="let target of selectedTargets" removable="true">
+                <md-chip *ngFor="let target of threatReport.boundries.targets" removable="true">
                     <div class="flex">
                         <span class="flex1 flexNowrap">{{ target }}</span>
                         <md-icon mdChipRemove (click)="removeChip(target, 'target')">cancel</md-icon>
@@ -75,14 +75,14 @@
             </md-chip-list>
         </div>
         <div class="col-xs-12">
-            <md-select placeholder="Malware" color="primary" floatPlaceholder="always" (change)="addSelectedMalware($event)">
+            <md-select #malwareSelected placeholder="Malware" color="primary" floatPlaceholder="always" (change)="addChip(malwareSelected.selected.viewValue, 'malware')">
                 <md-option *ngFor="let curMalware of malware" [value]="curMalware.value">
                     {{ curMalware.displayValue }}
                 </md-option>
             </md-select>
             <div class="mt-10 mb-10">
                 <md-chip-list class="mat-chip-list-stacked mt-10" selectable="true">
-                    <md-chip *ngFor="let malware of selectedMalware" removable="true">
+                    <md-chip  *ngFor="let malware of threatReport.boundries.malware" removable="true">
                         <div class="flex">
                             <span class="flex1 flexNowrap">{{ malware }}</span>
                             <md-icon mdChipRemove (click)="removeChip(malware, 'malware')">cancel</md-icon>
@@ -100,7 +100,7 @@
     <div class="row pull-right">
         <div class="col-md-12 col-xs-12 pull-right mt-10">
                 <button color="primary" md-button (click)="cancel($event)">CANCEL</button>
-                <button [disabled]="dateError.startDate.isError || dateError.endDate.isError"  color="primary" md-raised-button (click)="save($event)">CONTINUE</button>
+                <button [disabled]="dateError.startDate.isError || dateError.endDate.isError || dateError.endDate.isSameOrBefore"  color="primary" md-raised-button (click)="save($event)">CONTINUE</button>
         </div>
     </div>
 
