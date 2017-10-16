@@ -12,6 +12,9 @@ const routes = [
             path: 'create', component: ThreatReportCreationComponent
         },
         {
+            path: 'modify', component: ThreatReportModifyComponent
+        },
+        {
             path: 'modify/:id', component: ThreatReportModifyComponent
         }
 ];

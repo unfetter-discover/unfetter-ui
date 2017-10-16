@@ -11,6 +11,7 @@ import { BehaviorSubject } from 'rxjs';
  * @description handles filter events from the UI sent to the datasource, in this case a service call
  */
 export class ThreatReportModifyDataSource extends DataSource<{}> {
+    public curDisplayLen = -1;
     protected filterChange = new BehaviorSubject('');
 
     constructor(public csvImportData: any[], public paginator: MdPaginator) {
@@ -33,16 +34,28 @@ export class ThreatReportModifyDataSource extends DataSource<{}> {
         }
 
         return Observable.merge(...changes).map(() => {
-           let data =  this.csvImportData;
-           const value = this.filterChange.value.toLowerCase();
-           data = data.filter((d) => {
-               return d.data.attributes.title.toLowerCase().includes(value) ||  d.data.attributes.description.toLowerCase().includes(value)
-           });
-           // data = data ? data : this.csvImportData;
-           const pageIndex = (this.paginator && this.paginator.pageIndex) ? this.paginator.pageIndex : 0;
-           const pageSize = (this.paginator && this.paginator.pageSize) ? this.paginator.pageSize : 25;
-           const startIndex = pageIndex * pageSize;
-           return data.slice(startIndex, pageSize);
+            let data = this.csvImportData;
+            const value = this.filterChange.value.toLowerCase();
+            if (value || value.trim().length > 0) {
+                data = data.filter((d) => {
+                    let title;
+                    let descrip;
+                    if (d.data) {
+                        title = d.data.attributes.title;
+                        descrip = d.data.attributes.description;
+                    } else {
+                        title = d.name;
+                        descrip = d.description;
+                    }
+                    return title.toLowerCase().includes(value) || descrip.toLowerCase().includes(value);
+                });
+            }
+            const pageIndex = (this.paginator && this.paginator.pageIndex) ? this.paginator.pageIndex : 0;
+            const pageSize = (this.paginator && this.paginator.pageSize) ? this.paginator.pageSize : 25;
+            const startIndex = pageIndex * pageSize;
+            const display = data.slice(startIndex, pageSize);
+            this.curDisplayLen = display.length;
+            return display;
         });
     }
 

@@ -1,7 +1,7 @@
 import { Boundries } from './boundries';
 
 export class ThreatReport {
-    public id = -1;
+    public id = '';
     public name: string;
     public date = new Date();
     public author = 'n/a';

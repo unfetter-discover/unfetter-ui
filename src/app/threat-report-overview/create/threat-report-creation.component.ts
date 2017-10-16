@@ -12,8 +12,7 @@ import { SelectOption } from '../models/select-option';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { UploadService } from '../file-upload/upload.service';
 
-// const UUID = require('uuid');
-import * as UUID from 'uuid';
+// import * as UUID from 'uuid';
 import * as moment from 'moment';
 import { ThreatReport } from '../models/threat-report.model';
 import { ThreatReportSharedService } from '../services/threat-report-shared.service';
@@ -44,7 +43,8 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     startDate: { isError: false },
     endDate: { isError: false, isSameOrBefore: false, isSameOrBeforeMessage: 'End Date must be after Start Date.' },
     errorMessage: 'Not a valid date'
-  }
+  };
+  public readonly dateFormat = this.dateFormat;
 
   private readonly subscriptions = [];
 
@@ -58,8 +58,8 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    * @returns {void}
    */
   public ngOnInit(): void {
-    if ( this.sharedService.threatReportOverview ) {
-       // Deep Clone
+    if (this.sharedService.threatReportOverview) {
+      // Deep Clone
       this.clone();
     }
     const intrusionFilter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
@@ -97,16 +97,20 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
+  /**
+   * @description handle start date changed, does validation
+   * @param value 
+   */
   public startDateChanged(value: any): void {
     if (!value) {
       this.minEndDate = null;
       this.dateError.startDate.isError = false;
       this.dateError.endDate.isSameOrBefore = false;
       this.threatReport.boundries.startDate = null;
-    } else if (moment(value, 'MM/DD/YYYY').isValid()) {
-      this.threatReport.boundries.startDate = moment(value, 'MM/DD/YYYY').toDate();
+    } else if (moment(value, this.dateFormat).isValid()) {
+      this.threatReport.boundries.startDate = moment(value, this.dateFormat).toDate();
       this.dateError.startDate.isError = false;
-      const date = moment(value, 'MM/DD/YYYY').add(1, 'd');
+      const date = moment(value, this.dateFormat).add(1, 'd');
       this.minEndDate = new Date(date.year(), date.month(), date.date());
       this.isEndDateSameOrBeforeStartDate(value);
     } else {
@@ -115,14 +119,18 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @description handle end date changed, does validation
+   * @param value 
+   */
   public endDateChanged(value: any): void {
     if (!value) {
       this.dateError.endDate.isError = false;
       this.dateError.endDate.isSameOrBefore = false;
       this.threatReport.boundries.endDate = null;
-    } else if (moment(value, 'MM/DD/YYYY').isValid()) {
+    } else if (moment(value, this.dateFormat).isValid()) {
       this.dateError.endDate.isError = false;
-      this.threatReport.boundries.endDate = moment(value, 'MM/DD/YYYY').toDate();
+      this.threatReport.boundries.endDate = moment(value, this.dateFormat).toDate();
       this.isEndDateSameOrBeforeStartDate(value);
     } else {
       this.threatReport.boundries.endDate = null;
@@ -146,50 +154,55 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
 
   /**
    * @description add to selected malwares, add a chip
-   * @param {UIEvent} event - optional
+   * @param {string} value
+   * @param {string} stixType
    */
-  public addChip(value: any, stixType: string): void {
-    let chips = new Set<string>();
+  public addChip(value: string, stixType: string): void {
+    if (!value || !stixType) {
+      return;
+    }
+
+    let chips: Set<string> | undefined;
     switch (stixType) {
       case 'intrusion-set':
-        if (!this.threatReport.boundries.intrusions) {
-          this.threatReport.boundries.intrusions = chips;
-        }
         chips = this.threatReport.boundries.intrusions;
         break;
       case 'malware':
-        if (!this.threatReport.boundries.malware) {
-          this.threatReport.boundries.malware = chips;
-        }
         chips = this.threatReport.boundries.malware;
         break;
       case 'target':
-        if (!this.threatReport.boundries.targets) {
-          this.threatReport.boundries.targets = chips;
-        }
         chips = this.threatReport.boundries.targets;
         break;
     }
-    chips.add(value);
+
+    if (chips) {
+      chips = chips.add(value);
+    }
   }
 
   /**
-   * Remove a chip
+   * @description Remove a chip from the correct chip Set
    * @param {string} stixName
    * @param {string} stixType
    */
   public removeChip(stixName: string, stixType: string) {
+    if (!stixName || !stixType) {
+      return;
+    }
+
+    let chips;
     switch (stixType) {
       case 'intrusion-set':
-        this.threatReport.boundries.intrusions.delete(stixName);
+        chips = this.threatReport.boundries.intrusions;
         break;
       case 'malware':
-        this.threatReport.boundries.malware.delete(stixName);
+        chips = this.threatReport.boundries.malware;
         break;
       case 'target':
-        this.threatReport.boundries.targets.delete(stixName);
+        chips = this.threatReport.boundries.targets;
         break;
     }
+    chips.delete(stixName);
   }
 
   /**
@@ -208,54 +221,50 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     console.log(event);
     console.log(this.fileUpload.value());
 
-    // const id = UUID.v4();
-    // const tro = new ThreatReport();
-    // tro.name = this.name;
-    // if (this.showCheckBoxes) {
-    //   tro.boundries.intrusions = this.selectedInstrusions;
-    //   tro.boundries.malware = this.selectedMalware;
-    //   tro.boundries.targets = this.selectedTargets;
-    //   tro.boundries.startDate = this.startDate;
-    //   tro.boundries.endDate = this.endDate;
-    // }
     this.threatReport.reports = this.reports || [];
     this.sharedService.threatReportOverview = this.threatReport;
-    // this.router.navigate([`/tro/modify`, tro.id]);
-    this.location.back();
+    this.router.navigate([`/tro/modify`, this.threatReport.id]);
   }
 
   /**
    * @description recieve a fileParsed event
+   * @param {UIEvent} event optional
+   * @return {void}
    */
-  public fileParsed(event): void {
+  public fileParsed(event?: UIEvent): void {
     console.log(`file parsed data`, event);
     this.reports = event;
 
   }
 
+  /**
+   * @description
+   * @return {void}
+   */
   private isEndDateSameOrBeforeStartDate(value: any): void {
-    if (moment(value, 'MM/DD/YYYY').isValid() && moment(this.threatReport.boundries.endDate, 'MM/DD/YYYY').isSameOrBefore(moment(this.threatReport.boundries.startDate, 'MM/DD/YYYY')) ) {
+    if (moment(value, this.dateFormat).isValid() && moment(this.threatReport.boundries.endDate, this.dateFormat).isSameOrBefore(moment(this.threatReport.boundries.startDate, this.dateFormat))) {
       this.dateError.endDate.isSameOrBefore = true;
     } else {
       this.dateError.endDate.isSameOrBefore = false;
     }
   }
 
+  /**
+   * @description deep clone `this.threatReportOverview` from this components `this.sharedService`
+   * @return {void}
+   */
   private clone(): void {
     this.threatReport = JSON.parse(JSON.stringify(this.sharedService.threatReportOverview));
 
-    this.threatReport.boundries.intrusions = this.sharedService.threatReportOverview.boundries.intrusions ?
-    new Set(this.sharedService.threatReportOverview.boundries.intrusions) : new Set<string>();
+    this.threatReport.boundries.intrusions = this.sharedService.threatReportOverview.boundries.intrusions || new Set<string>();
 
-    this.threatReport.boundries.targets = this.sharedService.threatReportOverview.boundries.targets ?
-    new Set(this.sharedService.threatReportOverview.boundries.targets) : new Set<string>();
+    this.threatReport.boundries.targets = this.sharedService.threatReportOverview.boundries.targets || new Set<string>();
 
-    this.threatReport.boundries.malware = this.sharedService.threatReportOverview.boundries.malware ?
-    new Set(this.sharedService.threatReportOverview.boundries.malware) : new Set<string>();
-    if ( this.sharedService.threatReportOverview.boundries.startDate ) {
+    this.threatReport.boundries.malware = this.sharedService.threatReportOverview.boundries.malware || new Set<string>();
+    if (this.sharedService.threatReportOverview.boundries.startDate) {
       this.threatReport.boundries.startDate = new Date(this.sharedService.threatReportOverview.boundries.startDate);
     }
-    if ( this.sharedService.threatReportOverview.boundries.endDate ) {
+    if (this.sharedService.threatReportOverview.boundries.endDate) {
       this.threatReport.boundries.endDate = new Date(this.sharedService.threatReportOverview.boundries.endDate);
     }
   }

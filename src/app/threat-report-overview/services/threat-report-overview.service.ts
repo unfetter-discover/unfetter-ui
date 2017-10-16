@@ -9,6 +9,9 @@ import { ThreatReport } from '../models/threat-report.model';
 import { ThreatReportMock } from '../models/threat-report-mock.model';
 import { Constance } from '../../utils/constance';
 import { GenericApi } from '../../global/services/genericapi.service';
+import { Boundries } from '../models/boundries';
+
+import * as UUID from 'uuid';
 
 @Injectable()
 export class ThreatReportOverviewService {
@@ -19,18 +22,21 @@ export class ThreatReportOverviewService {
 
   /**
    * @description pull a list of threat report objects from the backend mongo database
-   * @param filter 
    */
-  public load(filter?: string): Observable<ThreatReport[]> {
+  public loadAll(): Observable<ThreatReport[]> {
     const url = this.reportsUrl + '?extendedproperties=true&metaproperties=true';
     return this.genericService.get(url)
       .flatMap((el) => el)
       .reduce((memo, el: any) => {
-        console.log(el);
+        // map threat reports to a key, this reduce performs a grouping by like reports
         const name = el.attributes.work_product.name;
         const author = el.attributes.work_product.author || '';
         const date = el.attributes.work_product.date || '';
-        const key = name + author + date;
+        const id = el.attributes.work_product.id || -1;
+        let key = el.attributes.work_product.id;
+        if (!key) {
+          key = name + author + date;
+        }
         let tr = memo[key];
         if (!tr) {
           tr = new ThreatReport();
@@ -38,14 +44,22 @@ export class ThreatReportOverviewService {
         }
         tr.name = name;
         tr.author = author;
-        tr.boundries = Object.assign({}, el.attributes.work_product.boundries);
+        tr.id = id;
+        const srcBoundries = el.attributes.work_product.boundries;
+        tr.boundries = new Boundries();
+        tr.boundries.startDate = srcBoundries.startDate;
+        tr.boundries.endDate = srcBoundries.endDate;
+        tr.boundries.intrusions = new Set(Array.from(srcBoundries.intrusions));
+        tr.boundries.malware = new Set(Array.from(srcBoundries.malware));
+        tr.boundries.targets = new Set(Array.from(srcBoundries.targets));
         const report = el.attributes;
         tr.reports.push(report);
         return memo;
       }, {})
       .map((obj) => {
+        // map from object of keys back to an array, grouped correctly
         const keys = Object.keys(obj);
-        return keys.map((key) => obj[key]); 
+        return keys.map((key) => obj[key]);
       });
   }
 
@@ -62,14 +76,21 @@ export class ThreatReportOverviewService {
     const headers = this.headers;
 
     const reports = threatReport.reports;
+    const id = UUID.v4();
     const calls = reports.map((report) => {
       const attributes = Object.assign({}, report.data.attributes);
       const meta = { work_product: {} };
       const workProduct: any = meta.work_product;
-      workProduct.boundries = Object.assign({}, threatReport.boundries);
+      workProduct.boundries = {};
+      workProduct.boundries.startDate = threatReport.boundries.startDate;
+      workProduct.boundries.endDate = threatReport.boundries.endDate;
+      workProduct.boundries.intrusions = Array.from(threatReport.boundries.intrusions);
+      workProduct.boundries.malware = Array.from(threatReport.boundries.malware);
+      workProduct.boundries.targets = Array.from(threatReport.boundries.targets);
       workProduct.name = threatReport.name;
       workProduct.date = threatReport.date;
       workProduct.author = threatReport.author;
+      workProduct.id = id;
       attributes.metaProperties = meta;
       const body = JSON.stringify({
         data: {

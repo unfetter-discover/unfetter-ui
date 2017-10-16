@@ -19,14 +19,11 @@
                     <md-slide-toggle color="primary" (change)="boundriesToggled($event)" [checked]="showCheckBoxes"></md-slide-toggle>
                 </span>
             </span>
-            <!-- <span *ngIf="showCheckBoxes === true" class="flex1">
-                Checkboxes
-            </span> -->
         </div>
     </div>
     <div class="row mt-10" id="formWrapper" *ngIf="showCheckBoxes">
         <div class="col-xs-12">
-            <md-select #intrusionset placeholder="Intrusion Set" color="primary" floatPlaceholder="always" (change)="addChip(intrusionset.selected.viewValue, 'intrusion-set')">
+            <md-select placeholder="Intrusion Set" color="primary" floatPlaceholder="always" (change)="addChip($event.source.selected.viewValue, 'intrusion-set')">
                 <md-option *ngFor="let intrusion of intrusions" [value]="intrusion.value">
                     {{ intrusion.displayValue }}
                 </md-option>
@@ -44,7 +41,7 @@
         </div>
         <div class="col-xs-12">
             <md-form-field floatPlaceholder="always">
-                <input #startDateInput mdInput [(ngModel)]="threatReport.boundries.startDate" [min]="minStartDate" [max]="maxStartDate" (dateChange)="startDateChanged(startDateInput.value)" [(ngModel)]="startDate"
+                <input #startDateInput mdInput [(ngModel)]="threatReport.boundries.startDate" [max]="maxStartDate" (dateChange)="startDateChanged(startDateInput.value)" [(ngModel)]="startDate"
                     [mdDatepicker]="startDatePicker" placeholder="Start Date" color="primary" floatPlaceholder="always" />
                 <md-datepicker-toggle mdSuffix [for]="startDatePicker"></md-datepicker-toggle>
                 <md-datepicker #startDatePicker></md-datepicker>
@@ -75,7 +72,7 @@
             </md-chip-list>
         </div>
         <div class="col-xs-12">
-            <md-select #malwareSelected placeholder="Malware" color="primary" floatPlaceholder="always" (change)="addChip(malwareSelected.selected.viewValue, 'malware')">
+            <md-select #malwareSelected placeholder="Malware" color="primary" floatPlaceholder="always" (change)="addChip($event.source.selected.viewValue, 'malware')">
                 <md-option *ngFor="let curMalware of malware" [value]="curMalware.value">
                     {{ curMalware.displayValue }}
                 </md-option>
@@ -100,7 +97,10 @@
     <div class="row pull-right">
         <div class="col-md-12 col-xs-12 pull-right mt-10">
                 <button color="primary" md-button (click)="cancel($event)">CANCEL</button>
-                <button [disabled]="dateError.startDate.isError || dateError.endDate.isError || dateError.endDate.isSameOrBefore"  color="primary" md-raised-button (click)="save($event)">CONTINUE</button>
+                <button [disabled]="dateError.startDate.isError || dateError.endDate.isError || dateError.endDate.isSameOrBefore"  
+                    color="primary" md-raised-button (click)="save($event)">
+                    CONTINUE
+                </button>
         </div>
     </div>
 
