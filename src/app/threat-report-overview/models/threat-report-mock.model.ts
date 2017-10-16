@@ -2,7 +2,7 @@ import { ThreatReport } from './threat-report.model';
 
 export class ThreatReportMock {
 
-    public static mock(id = 1): ThreatReport {
+    public static mock(id = 'abc'): ThreatReport {
         return {
                 id,
                 name: `name-${id}`,
@@ -15,7 +15,7 @@ export class ThreatReportMock {
         const arr: ThreatReport[] = Array(lim);
         for (let i = 0; i < lim; i++) {
           arr[i] = { 
-                id: i,
+                id: `${i}`,
                 name: `name-${i}`,
                 date: new Date(),
                 author: `author-${i}`

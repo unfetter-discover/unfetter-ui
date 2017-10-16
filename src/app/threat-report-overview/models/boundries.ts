@@ -1,7 +1,7 @@
 export class Boundries { 
-    public malware?: Set<string>;
-    public intrusions?: Set<string>;
-    public targets?: Set<string>;
+    public malware = new Set<string>();
+    public intrusions = new Set<string>();
+    public targets = new Set<string>();
     public startDate?: any;
     public endDate?: any;
 }

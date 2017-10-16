@@ -16,7 +16,7 @@
                 Loreum ipsum dorat
             </span>
             <span>
-                <button color="primary" md-raised-button routerLink="./create/">NEW</button>
+                <button color="primary" md-raised-button (click)="routeCreateNew($event)">NEW</button>
             </span>
         </div>
     </div>
@@ -33,21 +33,18 @@
         <div class="col-md-12">
             <md-table class="mat-elevation-z3" #table [dataSource]="dataSource">
 
-                <ng-container mdColumnDef="id">
-                    <md-header-cell *mdHeaderCellDef> ID </md-header-cell>
-                    <md-cell *mdCellDef="let row">  <button color="primary" md-button routerLink="./modify/{{row.id}}">{{row.id}}</button> </md-cell>
-                </ng-container>
-
                 <ng-container mdColumnDef="name">
                     <md-header-cell *mdHeaderCellDef> Name </md-header-cell>
-                    <md-cell *mdCellDef="let row"> {{row.name}} </md-cell>
+                    <md-cell *mdCellDef="let row"> 
+                        <a routerLink="./modify/{{row.id}}"> {{row.name}} </a>
+                    </md-cell>
                 </ng-container>
             
                 <ng-container mdColumnDef="date">
                     <md-header-cell *mdHeaderCellDef> Modified </md-header-cell>
                     <md-cell *mdCellDef="let row"> {{ row.date | date:'medium' }} </md-cell>
                 </ng-container>
-            
+
                 <ng-container mdColumnDef="author">
                     <md-header-cell *mdHeaderCellDef> Author </md-header-cell>
                     <md-cell *mdCellDef="let row"> {{row.author}} </md-cell>

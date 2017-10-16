@@ -24,7 +24,7 @@ export class ThreatReportOverviewDataSource extends DataSource<ThreatReport> {
             .switchMap((val) => {
                 console.log('filter on val', val);
                 const filterVal = val.trim().toLowerCase() || '';
-                const products$ = this.service.load();
+                const products$ = this.service.loadAll();
                 if (!filterVal || filterVal.length === 0) {
                     return products$;
                 }
