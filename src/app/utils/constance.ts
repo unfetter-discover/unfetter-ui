@@ -28,7 +28,7 @@ export const Constance = {
 
   RELATIONSHIPS_URL: 'api/relationships',
   RELATIONSHIPS_ICON: 'assets/icon/stix-icons/svg/relationship-b.svg',
-  RELATIONSHIPS_TYPE: 'Relationships',
+  RELATIONSHIPS_TYPE: 'relationship',
   RELATIONSHIPS_TYPES: {
     MITIGATES: 'mitigates',
     INDICATES: 'indicates'

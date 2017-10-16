@@ -29,6 +29,12 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
+                                <label>Mitigation</label>
+                                <h6>{{mitigation}}</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
                                 <label>Sophistication</label>
                                 <h6>{{getSophisticationLevel(attackPattern.attributes.x_unfetter_sophistication_level)}}</h6>
                             </div>
@@ -63,4 +69,3 @@
 
     <relationship-list *ngIf="attackPattern.id" [model]="attackPattern"></relationship-list>
       <div class="pull-right grey-text">{{attackPattern.id}}</div>
-

@@ -153,10 +153,12 @@ export class BaseStixComponent {
                 (stixObject) => {
                     observer.next(stixObject);
                     observer.complete();
-                    this.snackBar.open(item.attributes.name + ' has been successfully deleted', '', {
-                        duration: this.duration,
-                        extraClasses: ['snack-bar-background-success']
-                    });
+                    if (item.attributes.name) {
+                        this.snackBar.open(item.attributes.name + ' has been successfully deleted', '', {
+                            duration: this.duration,
+                            extraClasses: ['snack-bar-background-success']
+                        });
+                    }
                 }, (error) => {
                     // handle errors here
                     this.snackBar.open('Error ' + error , '', {
@@ -175,10 +177,12 @@ export class BaseStixComponent {
             (data) => {
                 observer.next(data);
                 observer.complete();
-                this.snackBar.open(item.attributes.name + ' has been successfully saved', '', {
-                    duration: this.duration,
-                    extraClasses: ['snack-bar-background-success']
-                });
+                if (item.attributes.name) {
+                    this.snackBar.open(item.attributes.name + ' has been successfully saved', '', {
+                        duration: this.duration,
+                        extraClasses: ['snack-bar-background-success']
+                    });
+                }
                 // data.url = item.url;
                 // let sub = this.service.update(data).subscribe(
                 //     (resullts) => {
@@ -223,10 +227,12 @@ export class BaseStixComponent {
             (data) => {
                 observer.next(data);
                 observer.complete();
-                this.snackBar.open(item.attributes.name + ' has been successfully save', '', {
-                    duration: this.duration,
-                    extraClasses: ['snack-bar-background-success']
-                });
+                if (item.attributes.name) {
+                    this.snackBar.open(item.attributes.name + ' has been successfully saved', '', {
+                        duration: this.duration,
+                        extraClasses: ['snack-bar-background-success']
+                    });
+                }
             }, (error) => {
                 // handle errors here
                 this.snackBar.open('Error ' + error , '', {
