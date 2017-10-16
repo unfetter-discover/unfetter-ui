@@ -8,4 +8,8 @@ export class ThreatReport {
 
     public boundries = new Boundries();
     public reports = [];
+
+    public isEmpty(): boolean {
+        return this.boundries.emptyBoundries() && this.reports.length === 0;
+    }
 }

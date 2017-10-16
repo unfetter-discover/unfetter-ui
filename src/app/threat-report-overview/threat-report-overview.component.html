@@ -1,20 +1,17 @@
-<div class="container">
+<div class="container" *ngIf="!loading; loadingBlock">
     <div class="row first-line">
-        <div class="col-sm-6 mat-headline title-border">
-            <div>
-                Threat Reports Overview
-            </div>
-            <span class="mat-subheading-1">
-                View your recent workproducts or create a new one
+        <div class="col-sm-6 title-border">
+            <h2>
+                Your Work Product(s)
+            </h2>
+            <span class="subtitle">
+                View your recent work products or create a new one.  Work products contain scope, in terms of query boundries in addition to reporting references.  Work products are not shareable at this time.
             </span>
         </div>
         <div class="col-sm-4 top-right-panel">
-            <div class="mat-headline">
+            <h2>
                 Create New Product
-            </div>
-            <span class="mat-subheading-1">
-                Loreum ipsum dorat
-            </span>
+            </h2>
             <span>
                 <button color="primary" md-raised-button (click)="routeCreateNew($event)">NEW</button>
             </span>
@@ -63,3 +60,7 @@
         </div>
     </div>
 </div>
+
+<ng-template #loadingBlock>
+    <loading-spinner></loading-spinner>
+</ng-template>

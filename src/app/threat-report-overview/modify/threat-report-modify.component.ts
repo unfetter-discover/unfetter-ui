@@ -11,6 +11,7 @@ import { MdPaginator } from '@angular/material';
 import { ThreatReportModifyDataSource } from './threat-report-modify.datasource';
 
 import * as UUID from 'uuid';
+import { Constance } from '../../utils/constance';
 
 @Component({
   selector: 'threat-report-modify',
@@ -31,6 +32,8 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
   public threatReport: ThreatReport;
   public dataSource: ThreatReportModifyDataSource;
   public id = '';
+  public inProgress = true;
+  public readonly iconUrl = Constance.CAMPAIGN_ICON;
 
   private readonly subscriptions = [];
 
@@ -60,12 +63,14 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
           });
           this.sharedService.threatReportOverview = this.threatReport;
           this.dataSource = new ThreatReportModifyDataSource(this.threatReport.reports, this.paginator);
+          this.inProgress = false;   
         },
         (err) => console.log(err),
         () => loadId$.unsubscribe());
     } else {
       this.threatReport = this.sharedService.threatReportOverview || new ThreatReport();
       this.dataSource = new ThreatReportModifyDataSource(this.threatReport.reports, this.paginator);
+      this.inProgress = false;
     }
   }
 
@@ -74,15 +79,7 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
    */
   public ngAfterViewInit(): void {
     if (this.threatReport && this.threatReport.reports.length > 0) {
-      Observable.fromEvent(this.filter.nativeElement, 'keyup')
-        .debounceTime(150)
-        .distinctUntilChanged()
-        .subscribe(() => {
-          if (!this.dataSource) {
-            return;
-          }
-          this.dataSource.nextFilter(this.filter.nativeElement.value);
-        });
+      this.initFilter();
     }
   }
 
@@ -107,7 +104,6 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
    * @param {UIEvent} event optional
    */
   public save(event?: UIEvent): void {
-    console.log(event);
     //  save to database
     const sub$ = this.service.saveThreatReport(this.threatReport)
       .subscribe(
@@ -119,6 +115,21 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
       (err) => console.log(err),
     );
     this.subscriptions.push(sub$);
+  }
+
+  /**
+   * @description initialize the filter input box
+   */
+  protected initFilter(): void {
+    Observable.fromEvent(this.filter.nativeElement, 'keyup')
+    .debounceTime(150)
+    .distinctUntilChanged()
+    .subscribe(() => {
+      if (!this.dataSource) {
+        return;
+      }
+      this.dataSource.nextFilter(this.filter.nativeElement.value);
+    });
   }
 
 }

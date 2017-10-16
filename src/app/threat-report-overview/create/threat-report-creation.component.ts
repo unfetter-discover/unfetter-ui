@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
 
+import * as moment from 'moment';
+
 import { GenericApi } from '../../global/services/genericapi.service';
 import { Constance } from '../../utils/constance';
 import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
@@ -11,11 +13,9 @@ import { Malware } from '../../models/malware';
 import { SelectOption } from '../models/select-option';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { UploadService } from '../file-upload/upload.service';
-
-// import * as UUID from 'uuid';
-import * as moment from 'moment';
 import { ThreatReport } from '../models/threat-report.model';
 import { ThreatReportSharedService } from '../services/threat-report-shared.service';
+import { Boundries } from '../models/boundries';
 
 @Component({
   selector: 'threat-report-creation',
@@ -27,17 +27,11 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
   @ViewChild('fileUpload')
   public fileUpload: FileUploadComponent;
   public showCheckBoxes = true;
-  // public name: string;
   public intrusions: SelectOption[];
   public malware: SelectOption[];
-  // public startDate;
-  // public endDate;
   public maxStartDate;
   public minEndDate;
   public reports;
-  // public readonly selectedInstrusions = new Set<string>();
-  // public readonly selectedMalware = new Set<string>();
-  // public readonly selectedTargets = new Set<string>();
   public threatReport = new ThreatReport();
   public dateError = {
     startDate: { isError: false },
@@ -218,9 +212,6 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    * @param {UIEvent} event optional
    */
   public save(event: UIEvent): void {
-    console.log(event);
-    console.log(this.fileUpload.value());
-
     this.threatReport.reports = this.reports || [];
     this.sharedService.threatReportOverview = this.threatReport;
     this.router.navigate([`/tro/modify`, this.threatReport.id]);
@@ -254,12 +245,13 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   private clone(): void {
-    this.threatReport = JSON.parse(JSON.stringify(this.sharedService.threatReportOverview));
-
+    // remember to new up an object, otherwise object method will not exist, using just an object literal copy
+    const tmp = Object.assign(new ThreatReport(), JSON.parse(JSON.stringify(this.sharedService.threatReportOverview)));
+    this.threatReport = tmp;
+    // this is needed to make sure boundries is acutally and object and not an object literal at runtime
+    this.threatReport.boundries = new Boundries();
     this.threatReport.boundries.intrusions = this.sharedService.threatReportOverview.boundries.intrusions || new Set<string>();
-
     this.threatReport.boundries.targets = this.sharedService.threatReportOverview.boundries.targets || new Set<string>();
-
     this.threatReport.boundries.malware = this.sharedService.threatReportOverview.boundries.malware || new Set<string>();
     if (this.sharedService.threatReportOverview.boundries.startDate) {
       this.threatReport.boundries.startDate = new Date(this.sharedService.threatReportOverview.boundries.startDate);

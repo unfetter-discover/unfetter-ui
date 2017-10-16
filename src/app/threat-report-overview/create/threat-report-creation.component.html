@@ -1,8 +1,8 @@
 <div class="container" id="threatReportCreationComponent">
     <div class="row mt-10">
-        <div class="col-md-12 mat-title">
+        <h2 class="col-md-12">
             New Product
-        </div>
+        </h2>
     </div>
     <div class="row">
         <div class="col-md-12">
@@ -28,7 +28,7 @@
                     {{ intrusion.displayValue }}
                 </md-option>
             </md-select>
-            <div class="mt-10 mb-10">
+            <div class="mt-18 mb-10">
                 <md-chip-list class="mat-chip-list-stacked" selectable="true">
                     <md-chip *ngFor="let selectedIntrusion of threatReport.boundries.intrusions" removable="true" selectable="true">
                         <div class="flex">
@@ -77,8 +77,8 @@
                     {{ curMalware.displayValue }}
                 </md-option>
             </md-select>
-            <div class="mt-10 mb-10">
-                <md-chip-list class="mat-chip-list-stacked mt-10" selectable="true">
+            <div class="mt-18 mb-10">
+                <md-chip-list class="mat-chip-list-stacked" selectable="true">
                     <md-chip  *ngFor="let malware of threatReport.boundries.malware" removable="true">
                         <div class="flex">
                             <span class="flex1 flexNowrap">{{ malware }}</span>

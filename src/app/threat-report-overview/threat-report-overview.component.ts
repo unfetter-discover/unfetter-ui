@@ -20,6 +20,7 @@ export class ThreatReportOverviewComponent implements OnInit, OnDestroy {
 
   public displayCols: troColName[] = ['name', 'date', 'author'];
   public dataSource: ThreatReportOverviewDataSource;
+  public loading = true;
 
   private readonly subscriptions = [];
 
@@ -45,6 +46,7 @@ export class ThreatReportOverviewComponent implements OnInit, OnDestroy {
           this.dataSource.nextFilter(this.filter.nativeElement.value);
         });
     }
+    this.loading = false;
   }
 
   /**

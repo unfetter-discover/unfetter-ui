@@ -81,7 +81,7 @@ export class ThreatReportOverviewService {
       const attributes = Object.assign({}, report.data.attributes);
       const meta = { work_product: {} };
       const workProduct: any = meta.work_product;
-      workProduct.boundries = {};
+      workProduct.boundries = new Boundries();
       workProduct.boundries.startDate = threatReport.boundries.startDate;
       workProduct.boundries.endDate = threatReport.boundries.endDate;
       workProduct.boundries.intrusions = Array.from(threatReport.boundries.intrusions);
