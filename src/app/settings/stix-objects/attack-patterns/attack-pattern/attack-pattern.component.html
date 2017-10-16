@@ -24,13 +24,13 @@
                         <div class="row">
                            <div class="col-md-12">
                                 <label>Description</label>
-                                <h6 [innerHTML]="cleanWhitespace(attackPattern.attributes.description)"></h6>
+                                <h6 [innerHTML]="formatText(attackPattern.attributes.description)"></h6>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <label>Mitigation</label>
-                                <h6>{{mitigation}}</h6>
+                                <h6 [innerHTML]="formatText(mitigation)"></h6>
                             </div>
                         </div>
                         <div class="row">

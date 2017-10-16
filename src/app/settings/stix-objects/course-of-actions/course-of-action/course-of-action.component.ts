@@ -7,6 +7,7 @@ import { BaseStixComponent } from '../../../base-stix.component';
 import { StixService } from '../../../stix.service';
 import { CourseOfAction } from '../../../../models';
 import { Constance } from '../../../../utils/constance';
+import { FormatHelpers } from '../../../../global/static/format-helpers';
 
 @Component({
     selector: 'course-of-action',
@@ -85,5 +86,9 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
                 }
             }
         );
+    }
+    
+    public formatText(inputString): string {
+        return FormatHelpers.formatAll(inputString);
     }
 }

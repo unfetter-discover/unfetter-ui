@@ -7,7 +7,7 @@ import { BaseStixComponent } from '../../../base-stix.component';
 import { AttackPattern, CourseOfAction, Relationship } from '../../../../models';
 import { StixService } from '../../../stix.service';
 import { Constance } from '../../../../utils/constance';
-import { FormatHelpers } from '../../../../global/static/format-helpers'
+import { FormatHelpers } from '../../../../global/static/format-helpers';
 
 @Component({
   selector: 'attack-pattern',
@@ -208,7 +208,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
         );
     }
 
-    public cleanWhitespace(inputString): string {
-        return FormatHelpers.mitreCitationsToHtml(FormatHelpers.whitespaceToBreak(inputString));
+    public formatText(inputString): string {
+        return FormatHelpers.formatAll(inputString);
     }
 }
