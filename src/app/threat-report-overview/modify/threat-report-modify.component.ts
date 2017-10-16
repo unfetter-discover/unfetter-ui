@@ -24,7 +24,6 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
   @ViewChild('paginator')
   public paginator: MdPaginator;
 
-
   @ViewChild('filter')
   public filter: ElementRef;
 
@@ -46,21 +45,7 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
     this.threatReport = this.sharedService.threatReportOverview || new ThreatReport();
     this.dataSource = new ThreatReportModifyDataSource(this.threatReport.reports, this.paginator);
 
-    Observable.fromEvent(this.filter.nativeElement, 'keyup')
-      .debounceTime(150)
-      .distinctUntilChanged()
-      .subscribe(() => {
-        if (!this.dataSource) {
-          return;
-        }
-        this.dataSource.nextFilter(this.filter.nativeElement.value);
-    }
-
-  }
-
-  public ngAfterViewInit(): void {
-    // if( this.threatReport && this.threatReport.reports.length > 0 ) {
-    //   Observable.fromEvent(this.filter.nativeElement, 'keyup')
+    // Observable.fromEvent(this.filter.nativeElement, 'keyup')
     //   .debounceTime(150)
     //   .distinctUntilChanged()
     //   .subscribe(() => {
@@ -69,11 +54,23 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
     //     }
     //     this.dataSource.nextFilter(this.filter.nativeElement.value);
     // });
-    // }
 
   }
 
- 
+  public ngAfterViewInit(): void {
+    if (this.threatReport && this.threatReport.reports.length > 0) {
+      Observable.fromEvent(this.filter.nativeElement, 'keyup')
+        .debounceTime(150)
+        .distinctUntilChanged()
+        .subscribe(() => {
+          if (!this.dataSource) {
+            return;
+          }
+          this.dataSource.nextFilter(this.filter.nativeElement.value);
+        });
+    }
+  }
+
   /**
    * @description clean up component
    */
@@ -85,7 +82,8 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
    * go back to list view
    * @param {UIEvent} event optional
    */
-  public cancel(event: UIEvent): void {
+  public cancel(event?: UIEvent): void {
+    this.sharedService.threatReportOverview = undefined;
     this.router.navigate(['/tro']);
   }
 
@@ -93,12 +91,17 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
    * @description
    * @param {UIEvent} event optional
    */
-  public save(event: UIEvent): void {
+  public save(event?: UIEvent): void {
     console.log(event);
-    const id = UUID.v4();
-    this.threatReport.id = id;
-    // TODO: save to database
-    // this.router.navigate([`/tro/modify`, tro.id]);
+    //  save to database
+    this.service.saveThreatReport(this.threatReport).subscribe(
+      (reports) => {
+        // console.log(`saved ${reports}`);
+        // const id = (tro as any).data.id;
+        this.router.navigate([`/tro`]);
+      },
+      (err) => console.log(err),
+    )
   }
 
 }
