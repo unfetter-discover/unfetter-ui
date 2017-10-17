@@ -384,7 +384,23 @@ a {
     margin-left: 5px !important;
 }
 
-// ~~~ Angular Material Themes: *ALWAYS* nest in a class, *NOT* overrides ~~~
+// ~~~ Angular Material Themes: *ALWAYS* nest in a class or id, *NOT* overrides ~~~
+#indicatorSharingList {
+    .mat-card-header-text {
+        margin: 0 !important;
+        .mat-card-title {
+            font-size: 22px;
+            font-weight: 300;
+        }
+    }
+    .mat-card-actions {
+        text-align: right;
+    }
+    .mat-tab-body-content {
+        padding: 10px 3px 5px;
+    }
+}
+
 .unfetterAngularMaterialAccordion {
     .mat-expansion-panel {
         transition: box-shadow 0.3s ease-in-out;

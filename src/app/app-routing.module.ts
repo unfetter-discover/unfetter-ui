@@ -17,6 +17,7 @@ const appRoutes: Routes = [
   { path: 'intrusion-set-dashboard', component: IntrusionSetDashboardComponent },
   { path: 'assessments', loadChildren: './assessments#AssessmentsModule' },
   { path: 'tro', loadChildren: 'app/threat-report-overview/threat-report-overview.module#ThreatReportOverviewModule' },
+  { path: 'indicator-sharing', loadChildren: 'app/indicator-sharing/indicator-sharing.module#IndicatorSharingModule' },
   { path: '**', component: NoContentComponent },
 ];
 
