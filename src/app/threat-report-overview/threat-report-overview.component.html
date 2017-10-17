@@ -32,11 +32,11 @@
 
                 <ng-container mdColumnDef="name">
                     <md-header-cell *mdHeaderCellDef> Name </md-header-cell>
-                    <md-cell *mdCellDef="let row"> 
-                        <a routerLink="./modify/{{row.id}}"> {{row.name}} </a>
+                    <md-cell *mdCellDef="let row">
+                        {{row.name}}
                     </md-cell>
                 </ng-container>
-            
+
                 <ng-container mdColumnDef="date">
                     <md-header-cell *mdHeaderCellDef> Modified </md-header-cell>
                     <md-cell *mdCellDef="let row"> {{ row.date | date:'medium' }} </md-cell>
@@ -47,13 +47,20 @@
                     <md-cell *mdCellDef="let row"> {{row.author}} </md-cell>
                 </ng-container>
 
-                <!-- <ng-container mdColumnDef='actions'>
+                <ng-container mdColumnDef='actions'>
                     <md-header-cell *mdHeaderCellDef> </md-header-cell>
                     <md-cell *mdCellDef="let row">
-                        <button color="primary" md-button routerLink="./modify/{{row.id}}">open</button>
+                        <span class="buttonGrp text-right">
+                            <button class="mat-primary" md-button routerLink="./modify/{{row.id}}">
+                                <i class="material-icons">create</i>
+                            </button>
+                                <button class="mat-warn" md-button (click)="deletButtonClicked(row)">
+                                <i class="material-icons">delete</i>
+                            </button>
+                        </span>
                     </md-cell>
-                </ng-container> -->
-            
+                </ng-container>
+
                 <md-header-row *mdHeaderRowDef="displayCols"></md-header-row>
                 <md-row *mdRowDef="let row; columns: displayCols;"></md-row>
             </md-table>

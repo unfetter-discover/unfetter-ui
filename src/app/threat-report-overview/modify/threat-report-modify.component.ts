@@ -7,11 +7,12 @@ import { Observable } from 'rxjs/Observable';
 import { ThreatReportSharedService } from '../services/threat-report-shared.service';
 import { ThreatReportOverviewService } from '../services/threat-report-overview.service';
 import { ThreatReport } from '../models/threat-report.model';
-import { MdPaginator } from '@angular/material';
+import { MdPaginator, MdSnackBar, MdDialog } from '@angular/material';
 import { ThreatReportModifyDataSource } from './threat-report-modify.datasource';
 
 import * as UUID from 'uuid';
 import { Constance } from '../../utils/constance';
+import { ConfirmationDialogComponent } from '../../components/dialogs/confirmation/confirmation-dialog.component';
 
 @Component({
   selector: 'threat-report-modify',
@@ -28,7 +29,7 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
   @ViewChild('filter')
   public filter: ElementRef;
 
-  public displayCols = ['title', 'date', 'author'];
+  public displayCols = ['title', 'date', 'author', 'actions'];
   public threatReport: ThreatReport;
   public dataSource: ThreatReportModifyDataSource;
   public id = '';
@@ -41,7 +42,9 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
               protected router: Router,
               protected location: Location,
               protected service: ThreatReportOverviewService,
-              protected sharedService: ThreatReportSharedService) { }
+              protected sharedService: ThreatReportSharedService,
+              protected dialog: MdDialog,
+              protected snackBar: MdSnackBar) { }
 
   /**
    * @description initialize this component
@@ -49,24 +52,9 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
   public ngOnInit(): void {
     console.log('on init');
     this.id = this.route.snapshot.paramMap.get('id');
+    this.threatReport = this.sharedService.threatReportOverview;
     if (this.id && this.id.trim() !== '') {
-      const loadId$ = this.service.loadAll()
-        .flatMap((arr) => arr)
-        .filter((tro) => tro.id === this.id)
-        .subscribe(
-        (tro) => {
-          this.threatReport = tro;
-          this.threatReport.reports = this.threatReport.reports.map((report) => {
-            const o = { data: { attributes: {} } };
-            o.data.attributes = Object.assign(o.data.attributes, report);
-            return o;
-          });
-          this.sharedService.threatReportOverview = this.threatReport;
-          this.dataSource = new ThreatReportModifyDataSource(this.threatReport.reports, this.paginator);
-          this.inProgress = false;   
-        },
-        (err) => console.log(err),
-        () => loadId$.unsubscribe());
+      this.load();
     } else {
       this.threatReport = this.sharedService.threatReportOverview || new ThreatReport();
       this.dataSource = new ThreatReportModifyDataSource(this.threatReport.reports, this.paginator);
@@ -116,20 +104,74 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
     );
     this.subscriptions.push(sub$);
   }
+/**
+ *
+ * @param report
+ */
+  public deletButtonClicked(row: any): void {
+    console.log(row.data)
+    const _self = this;
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: row.data });
+    dialogRef.afterClosed().subscribe(
+        (result) => {
+            if (result === 'true') {
+              const sub = _self.service.deleteThreatReport(row.data.attributes.id).subscribe(
+                (d) => {
+                  _self.load();
+                }, (err) => {
+
+                }, () => {
+                  sub.unsubscribe();
+                }
+              );
+          }
+        });
+  }
 
   /**
    * @description initialize the filter input box
    */
   protected initFilter(): void {
-    Observable.fromEvent(this.filter.nativeElement, 'keyup')
-    .debounceTime(150)
-    .distinctUntilChanged()
-    .subscribe(() => {
-      if (!this.dataSource) {
-        return;
-      }
-      this.dataSource.nextFilter(this.filter.nativeElement.value);
-    });
+    const _self = this;
+    setTimeout(
+      () => {
+        Observable.fromEvent(this.filter.nativeElement, 'keyup')
+        .debounceTime(150)
+        .distinctUntilChanged()
+        .subscribe(() => {
+          if (!this.dataSource) {
+            return;
+          }
+          this.dataSource.nextFilter(_self.filter.nativeElement.value);
+        });
+      }, 100
+    )
+  }
+
+  private load(): void {
+    const loadId$ = this.service.loadAll()
+    .flatMap((arr) => arr)
+    .filter((tro) => tro.id === this.id)
+    .subscribe(
+      (tro) => {
+        if (this.threatReport) {
+          if (!this.threatReport.reports || this.threatReport.reports.length === 0) {
+            this.threatReport.reports = tro.reports;
+          }
+        } else {
+          this.threatReport =  tro;
+        }
+        this.threatReport.reports = this.threatReport.reports.map((report) => {
+          const o = { data: { attributes: {} } };
+          o.data.attributes = Object.assign(o.data.attributes, report);
+          return o;
+        });
+        this.sharedService.threatReportOverview = this.threatReport;
+        this.dataSource = new ThreatReportModifyDataSource(this.threatReport.reports, this.paginator);
+        this.inProgress = false;
+      },
+      (err) => console.log(err),
+      () => loadId$.unsubscribe());
   }
 
 }

@@ -93,7 +93,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
 
   /**
    * @description handle start date changed, does validation
-   * @param value 
+   * @param value
    */
   public startDateChanged(value: any): void {
     if (!value) {
@@ -115,7 +115,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
 
   /**
    * @description handle end date changed, does validation
-   * @param value 
+   * @param value
    */
   public endDateChanged(value: any): void {
     if (!value) {
@@ -248,6 +248,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     // remember to new up an object, otherwise object method will not exist, using just an object literal copy
     const tmp = Object.assign(new ThreatReport(), JSON.parse(JSON.stringify(this.sharedService.threatReportOverview)));
     this.threatReport = tmp;
+    this.reports = this.sharedService.threatReportOverview.reports || [];
     // this is needed to make sure boundries is acutally and object and not an object literal at runtime
     this.threatReport.boundries = new Boundries();
     this.threatReport.boundries.intrusions = this.sharedService.threatReportOverview.boundries.intrusions || new Set<string>();

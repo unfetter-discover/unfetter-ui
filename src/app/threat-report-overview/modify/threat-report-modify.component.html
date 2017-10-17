@@ -39,8 +39,8 @@
         </div>
     </div>
     <hr class="title-hr">
-    <div class="row" *ngIf="threatReport && !threatReport.isEmpty(); else noBoundries">
-        <div class="col-xs-6 col-md-6" *ngIf="threatReport && dataSource && threatReport.reports.length > 0">
+    <div class="row">
+        <div class="col-xs-6 col-md-6" [hidden]="threatReport && threatReport.reports.length === 0">
             <h4>
                 Include Objects
             </h4>
@@ -100,6 +100,16 @@
                             </span>
                         </md-cell>
                     </ng-container>
+                    <ng-container mdColumnDef='actions'>
+                        <md-header-cell *mdHeaderCellDef> </md-header-cell>
+                        <md-cell *mdCellDef="let row">
+                            <span class="buttonGrp text-right">
+                                <button class="mat-warn" md-button (click)="deletButtonClicked(row)">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                            </span>
+                        </md-cell>
+                    </ng-container>
                     <md-header-row *mdHeaderRowDef="displayCols"></md-header-row>
                     <md-row *mdRowDef="let row; columns: displayCols;"></md-row>
                 </md-table>
@@ -128,8 +138,8 @@
 <ng-template #noBoundries>
     <div class="emptyState">
         You have no boundries defined or associated reports
-        <img align="middle" 
-        style="width: 375px; height: 400px; margin: auto; display:block; opacity: .54" 
+        <img align="middle"
+        style="width: 375px; height: 400px; margin: auto; display:block; opacity: .54"
         src="{{iconUrl}}">
     </div>
 </ng-template>

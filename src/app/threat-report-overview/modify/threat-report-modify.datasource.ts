@@ -41,7 +41,7 @@ export class ThreatReportModifyDataSource extends DataSource<{}> {
                     let title;
                     let descrip;
                     if (d.data) {
-                        title = d.data.attributes.title;
+                        title = d.data.attributes.name;
                         descrip = d.data.attributes.description;
                     } else {
                         title = d.name;

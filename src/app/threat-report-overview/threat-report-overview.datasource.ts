@@ -17,7 +17,7 @@ export class ThreatReportOverviewDataSource extends DataSource<ThreatReport> {
 
     /**
      * @description listens to filter events and fetch/filters data accordingly
-     * @param collectionViewer 
+     * @param collectionViewer
      */
     public connect(collectionViewer: CollectionViewer): Observable<ThreatReport[]> {
         return this.filterChange
@@ -31,7 +31,7 @@ export class ThreatReportOverviewDataSource extends DataSource<ThreatReport> {
 
                 return products$
                     .map((el) => {
-                        return el.filter((tro) => tro.name.trim().toLowerCase().includes(filterVal) 
+                        return el.filter((tro) => tro.name.trim().toLowerCase().includes(filterVal)
                             || tro.author.trim().toLowerCase().includes(filterVal));
                     });
             });
