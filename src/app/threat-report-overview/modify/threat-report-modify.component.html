@@ -39,8 +39,8 @@
         </div>
     </div>
     <hr class="title-hr">
-    <div class="row">
-        <div class="col-xs-6 col-md-6" [hidden]="threatReport && threatReport.reports.length === 0">
+    <div class="row" *ngIf="threatReport && !threatReport.isEmpty(); else noBoundries">
+        <div class="col-xs-6 col-md-6">
             <h4>
                 Include Objects
             </h4>
