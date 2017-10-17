@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FileUploadComponent } from './file-upload.component';
 import { UploadService } from './upload.service';
-import { MdIconModule, MdInputModule, MdButtonModule, MdProgressBarModule, MdCardModule } from '@angular/material';
+import { MdIconModule, MdInputModule, MdButtonModule, MdProgressBarModule, MdCardModule, MdListModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 
 const components = [
@@ -13,6 +13,7 @@ const components = [
 const mdComponents = [
     MdButtonModule,
     MdCardModule,
+    MdListModule,
     MdIconModule,
     MdInputModule,
     MdProgressBarModule,

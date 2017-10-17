@@ -29,15 +29,20 @@ export class ThreatReportOverviewService {
       .flatMap((el) => el)
       .reduce((memo, el: any) => {
         // map threat reports to a key, this reduce performs a grouping by like reports
-        const name = el.attributes.work_product.name;
-        const author = el.attributes.work_product.author || '';
-        const date = el.attributes.work_product.date || '';
-        const id = el.attributes.work_product.id || -1;
-        let key = el.attributes.work_product.id;
+        const name = el.attributes.work_product ? el.attributes.work_product.name : '';
+        const author = el.attributes.work_product ? el.attributes.work_product.author : '';
+        const date = el.attributes.work_product ?  el.attributes.work_product.date : '';
+        const id = el.attributes.work_product ? el.attributes.work_product.id : -1;
+        let key = el.attributes.work_product ? el.attributes.work_product.id : null;
         if (!key) {
           key = name + author + date;
+          if (key.length === 0) {
+            key = el.attributes.id;
+          }
         }
         let tr = memo[key];
+        // let key = el.attributes.id;
+        // let tr = memo[el.attributes.id]
         if (!tr) {
           tr = new ThreatReport();
           memo[key] = tr;
@@ -45,13 +50,16 @@ export class ThreatReportOverviewService {
         tr.name = name;
         tr.author = author;
         tr.id = id;
-        const srcBoundries = el.attributes.work_product.boundries;
+        const srcBoundries = el.attributes.work_product ? el.attributes.work_product.boundries : null;
         tr.boundries = new Boundries();
-        tr.boundries.startDate = srcBoundries.startDate;
-        tr.boundries.endDate = srcBoundries.endDate;
-        tr.boundries.intrusions = new Set(Array.from(srcBoundries.intrusions));
-        tr.boundries.malware = new Set(Array.from(srcBoundries.malware));
-        tr.boundries.targets = new Set(Array.from(srcBoundries.targets));
+        if (srcBoundries) {
+          tr.boundries.startDate = srcBoundries.startDate;
+          tr.boundries.endDate = srcBoundries.endDate;
+          tr.boundries.intrusions = new Set(Array.from(srcBoundries.intrusions));
+          tr.boundries.malware = new Set(Array.from(srcBoundries.malware));
+          tr.boundries.targets = new Set(Array.from(srcBoundries.targets));
+        }
+
         const report = el.attributes;
         tr.reports.push(report);
         return memo;
@@ -65,7 +73,7 @@ export class ThreatReportOverviewService {
 
   /**
    * @description save a threat report to the mongo backend database
-   * @param threatReport 
+   * @param threatReport
    */
   public saveThreatReport(threatReport: ThreatReport): Observable<ThreatReport[]> {
     if (!threatReport) {

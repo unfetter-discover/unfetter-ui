@@ -19,8 +19,9 @@ export class FileUploadComponent implements OnInit {
 
     @Output('fileParsedEvent')
     public fileParsedEvent = new EventEmitter<any[]>();
-    
+
     public fName = '';
+    public numEventsParsed = -1;
     public loading = false;
     private readonly subscriptions = [];
 
@@ -76,14 +77,23 @@ export class FileUploadComponent implements OnInit {
         //   this.uploadProgress = percentDone;
         //   console.log(`File is ${percentDone}% uploaded.`);
         // }
-        if (resp instanceof HttpResponse) {
-          console.log('File is completely uploaded!');
-          // this.loading = false;
-          this.fileParsedEvent.emit(resp as any);
-        }
+        // if (resp instanceof HttpResponse) {
+        console.log('File is completely uploaded!');
+        this.numEventsParsed = (resp as any).length || -1;
+        this.fileParsedEvent.emit(resp as any);
+        // }
       },
       (err) => console.log(err),
       () => this.loading = false);
     this.subscriptions.push(s$);
+  }
+
+  /**
+   * @description event handler to remove an uploaded file
+   */
+  public onRemoveFile(event: UIEvent): void {
+    this.fName = '';
+    this.numEventsParsed = -1;
+    this.fileParsedEvent.emit([]);
   }
 }
