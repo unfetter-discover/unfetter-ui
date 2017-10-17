@@ -1,0 +1,16 @@
+#titleWrapper {
+    background: linear-gradient(60deg, #0288D1, #03A9F4);
+    height: 150px;
+    padding-top: 10px;
+
+    p {
+        font-size: 50px;
+        font-weight: 300;
+        color: white;
+        text-shadow: 2px 1px 1px rgba(0,0,0,0.4);
+    }
+}
+
+#routeWrapper {
+    margin-top: -64px;
+}

@@ -9,6 +9,7 @@ import { GlobalModule } from '../global/global.module';
 // Components
 import { IndicatorSharingLayoutComponent } from './indicator-sharing-layout/indicator-sharing-layout.component';
 import { IndicatorSharingListComponent } from './indicator-sharing-list/indicator-sharing-list.component';
+import { IndicatorCardComponent } from './indicator-card/indicator-card.component';
 
 // Services
 import { IndicatorSharingService } from './indicator-sharing.service';
@@ -20,11 +21,11 @@ import { IndicatorSharingService } from './indicator-sharing.service';
         routing,
         GlobalModule
     ],
-    exports: [        
-    ],
+    exports: [],
     declarations: [
         IndicatorSharingLayoutComponent,
-        IndicatorSharingListComponent
+        IndicatorSharingListComponent,
+        IndicatorCardComponent
     ],
     providers: [
         IndicatorSharingService

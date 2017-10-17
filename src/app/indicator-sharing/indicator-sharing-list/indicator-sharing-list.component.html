@@ -1,56 +1,16 @@
 <div id="indicatorSharingList" class="container">
-
     <div class="row">
         <div class="col-xs-12">
-            <h3>Here be indicators!</h3>
 
-            <md-card *ngFor="let filteredIndciator of filteredIndciators" class="mb-15">
-                <md-card-header>
-                    <md-card-title>{{ filteredIndciator.name }}</md-card-title>
-                    <md-card-subtitle>
-                        Submitted {{ filteredIndciator.created | date:'medium' }} 
-                        by <a>InfosecWarriorz</a>
-                    </md-card-subtitle>
-                </md-card-header>
+            <div *ngFor="let filteredIndicator of filteredIndicators" class="mb-15">
+                <indicator-card [indicator]="filteredIndicator"></indicator-card>               
+            </div>
 
-                <md-card-content>
-                    <p>{{ filteredIndciator.description }}</p>                    
-                    <label>Pattern</label>
-                    <p>{{ filteredIndciator.pattern }}</p>
-
-                    <md-tab-group [selectedIndex]="filteredIndciator.selectedIndex" (selectedIndexChange)="filteredIndciator.selectedIndex = $event">
-                        <md-tab label="Labels">
-                            <md-chip-list>
-                                <md-chip *ngFor="let label of filteredIndciator.labels">{{label | capitalize}}</md-chip>
-                            </md-chip-list>
-                        </md-tab>
-
-                        <md-tab label="References">
-                            <md-chip-list>
-                                <md-chip *ngFor="let reference of filteredIndciator.external_references" color="accent" selected="true">{{reference.source_name | capitalize}}</md-chip>
-                            </md-chip-list>
-                        </md-tab>
-
-                        <md-tab label="Messages">
-                            <p>Under Construction</p>
-                        </md-tab>
-                    </md-tab-group>
-                    
-                </md-card-content>
-
-                <md-card-actions>
-                    <button md-button color="primary">
-                        <i class="material-icons md-24">thumb_up</i>
-                        &nbsp;18
-                    </button>
-                    <button md-button color="accent" (click)="filteredIndciator.selectedIndex = 2">
-                        <i class="material-icons md-24">message</i>
-                        &nbsp;4
-                    </button>
-                </md-card-actions>
-            </md-card>
-
+            <div class="text-center mt-15 mb-20" *ngIf="displayShowMoreButton()">
+                <button md-button color="primary" class="full-width" (click)="showMoreIndicators()">Show More Indicators</button>
+            </div>
         </div>
     </div>
 
+    <br>
 </div>

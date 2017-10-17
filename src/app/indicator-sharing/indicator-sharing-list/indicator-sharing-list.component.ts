@@ -9,18 +9,20 @@ import { IndicatorSharingService } from '../indicator-sharing.service';
 
 export class IndicatorSharingListComponent implements OnInit {
 
-    public filteredIndciators: any;
+    public filteredIndicators: any;
+    public allIndicators: any;
+    public DEFAULT_LENGTH: number = 5;
+    public serverCallComplete: boolean = false;
+
     constructor(private indicatorSharingService: IndicatorSharingService) { }
 
     public ngOnInit() { 
         const getIndicators$ = this.indicatorSharingService.getIndicators()
             .subscribe(
                 (results) => {
-                    this.filteredIndciators = results.map((res) => {
-                        let temp = res.attributes;
-                        temp.selectedIndex = 0;
-                        return temp;
-                    });
+                    this.allIndicators = results.map((res) => res.attributes);
+                    this.filteredIndicators = this.allIndicators.slice(0, this.DEFAULT_LENGTH);
+                    this.serverCallComplete = true;
                 },
                 (err) => {
                     console.log(err);                    
@@ -31,8 +33,16 @@ export class IndicatorSharingListComponent implements OnInit {
             );
     }
 
-    public onTabChange(e: Event) {
-        console.log(e);
-        
+    public showMoreIndicators() {
+        const currentLength = this.filteredIndicators.length;
+        this.filteredIndicators = this.filteredIndicators.concat(this.allIndicators.slice(currentLength, currentLength + this.DEFAULT_LENGTH));
+    }
+
+    public displayShowMoreButton() {
+        if (!this.serverCallComplete || !this.filteredIndicators || this.filteredIndicators.length === 0) {
+            return false;
+        } else {
+            return (this.filteredIndicators.length + this.DEFAULT_LENGTH) < this.allIndicators.length;
+        }
     }
 }

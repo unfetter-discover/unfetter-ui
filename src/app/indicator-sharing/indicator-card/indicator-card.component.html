@@ -1,0 +1,44 @@
+<md-card class="indicatorCard" *ngIf="indicator">
+    <md-card-header>
+        <md-card-title>{{ indicator.name }}</md-card-title>
+        <md-card-subtitle>
+            Submitted {{ indicator.created | date:'medium' }} by <a>InfosecWarriorz</a>
+        </md-card-subtitle>
+    </md-card-header>
+
+    <md-card-content>
+        <p>{{ indicator.description }}</p>
+        <label>Pattern</label>
+        <p>{{ indicator.pattern }}</p>
+
+        <md-tab-group>
+            <md-tab label="Labels">
+                <md-chip-list>
+                    <md-chip *ngFor="let label of indicator.labels">{{label | capitalize}}</md-chip>
+                </md-chip-list>
+            </md-tab>
+
+            <md-tab label="References">
+                <md-chip-list>
+                    <md-chip *ngFor="let reference of indicator.external_references" color="accent" selected="true">{{reference.source_name | capitalize}}</md-chip>
+                </md-chip-list>
+            </md-tab>
+
+            <md-tab label="Comments">
+                <p>Under Construction</p>
+            </md-tab>
+        </md-tab-group>
+
+    </md-card-content>
+
+    <md-card-actions>
+        <button md-button color="primary">
+                    <i class="material-icons md-24">thumb_up</i>
+                    &nbsp;18
+                </button>
+        <button md-button color="accent">
+                    <i class="material-icons md-24">message</i>
+                    &nbsp;4
+                </button>
+    </md-card-actions>
+</md-card>
