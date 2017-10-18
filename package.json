@@ -11,7 +11,7 @@
   "scripts": {
     "analyze": "webpack-bundle-analyzer stats.json dist",
     "analyze:dev": "npm run clean && webpack --config config/webpack.dev.js --profile --json > stats.json && npm run analyze",
-    "analyze:prod": "npm run clean && webpack --config config/webpack.prod.js --profile > stats.json && npm run analyze",    
+    "analyze:prod": "npm run clean && webpack --config config/webpack.prod.js --profile > stats.json && npm run analyze",
     "build:aot:prod": "npm run clean:dist && npm run clean:aot && webpack --config config/webpack.prod.js  --progress --profile --bail",
     "build:aot": "npm run build:aot:prod",
     "build:dev": "npm run clean:dist && webpack --config config/webpack.dev.js --progress --profile",
@@ -84,6 +84,7 @@
     "@angularclass/conventions-loader": "^1.0.2",
     "@angularclass/hmr": "~1.2.2",
     "@angularclass/hmr-loader": "~3.0.2",
+    "angular2-jwt": "^0.2.3",
     "bootstrap": "3.3.7",
     "core-js": "^2.4.1",
     "d3": "4.10.0",

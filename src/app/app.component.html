@@ -13,6 +13,9 @@
       <p class="text-right">
         <a routerLink="./partners">Partners</a>&emsp;|&emsp;
         <a target="_blank" href="/api/explorer/">View API</a>
+        <span *ngIf="authService.isAdmin()">
+          &emsp;|&emsp;<a routerLink="./admin">Admin</a>
+        </span>        
       </p>
     </div>
     
