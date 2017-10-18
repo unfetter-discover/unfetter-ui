@@ -1,28 +1,28 @@
-<div class="container mt-10">
-    <div class="row flex">
-        <div class="col-xs-12 col-md-5 mat-display-3 title" *ngIf="threatReport">
+<div class="container mt-10" *ngIf="!inProgress; else loadingBlock">
+    <div class="row flex" *ngIf="threatReport">
+        <div class="col-xs-12 col-md-5 mat-display-3 title">
             {{ threatReport.name || 'Threat Report Unamed' }}
         </div>
         <div class="col-xs-12 col-md-5">
-            <h4>
+            <h4 *ngIf="threatReport.boundries.intrusions.size > 0 || threatReport.boundries.malware.size > 0 || threatReport.boundries.targets.size > 0">
                 Boundries
             </h4>
             <div class="flex" *ngIf="threatReport">
-                <md-chip-list class="mat-chip-list-stacked margin-chips" selectable="true">
+                <md-chip-list *ngIf="threatReport.boundries.intrusions.size > 0" class="mat-chip-list-stacked margin-chips" selectable="true">
                     <md-chip *ngFor="let intrusion of threatReport.boundries.intrusions">
                         <div class="flex">
                             <span class="flex1 flexNowrap">{{ intrusion }}</span>
                         </div>
                     </md-chip>
                 </md-chip-list>
-                <md-chip-list class="mat-chip-list-stacked margin-chips" selectable="true">
+                <md-chip-list *ngIf="threatReport.boundries.targets.size > 0" class="mat-chip-list-stacked margin-chips" selectable="true">
                     <md-chip *ngFor="let target of threatReport.boundries.targets">
                         <div class="flex">
                             <span class="flex1 flexNowrap">{{ target }}</span>
                         </div>
                     </md-chip>
                 </md-chip-list>
-                <md-chip-list class="mat-chip-list-stacked margin-chips" selectable="true">
+                <md-chip-list *ngIf="threatReport.boundries.malware.size > 0" class="mat-chip-list-stacked margin-chips" selectable="true">
                     <md-chip *ngFor="let malware of threatReport.boundries.malware">
                         <div class="flex">
                             <span class="flex1 flexNowrap">{{ malware }}</span>
@@ -39,8 +39,8 @@
         </div>
     </div>
     <hr class="title-hr">
-    <div class="row">
-        <div class="col-xs-6 col-md-6" *ngIf="threatReport && dataSource && threatReport.reports.length > 0">
+    <div class="row" *ngIf="threatReport && !threatReport.isEmpty(); else noBoundries">
+        <div class="col-xs-6 col-md-6">
             <h4>
                 Include Objects
             </h4>
@@ -49,7 +49,7 @@
                 <md-icon mdSuffix color="primary">search</md-icon>
             </md-form-field>
         </div>
-        <div class="col-xs-3 col-md-3">
+        <div class="col-xs-3 col-md-3" *ngIf="threatReport?.boundries?.startDate">
             <h4>
                 Start Date
             </h4>
@@ -57,17 +57,13 @@
                 {{ threatReport?.boundries?.startDate | date:'medium' }}
             </span>
         </div>
-        <div class="col-xs-3 col-md-3">
+        <div class="col-xs-3 col-md-3" *ngIf="threatReport?.boundries?.endDate">
             <h4>
                 End Date
             </h4>
             <span *ngIf="threatReport?.boundries?.endDate; else nonDefined">
                 {{ threatReport?.boundries?.endDate | date:'medium' }}
             </span>
-        </div>
-    </div>
-    <div class="row mb-24">
-        <div class="col-xs-6">
         </div>
     </div>
     <div class="row mb-24" *ngIf="threatReport && dataSource && threatReport.reports.length > 0">
@@ -104,6 +100,16 @@
                             </span>
                         </md-cell>
                     </ng-container>
+                    <ng-container mdColumnDef='actions'>
+                        <md-header-cell *mdHeaderCellDef> </md-header-cell>
+                        <md-cell *mdCellDef="let row">
+                            <span class="buttonGrp text-right">
+                                <button class="mat-warn" md-button (click)="deletButtonClicked(row)">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                            </span>
+                        </md-cell>
+                    </ng-container>
                     <md-header-row *mdHeaderRowDef="displayCols"></md-header-row>
                     <md-row *mdRowDef="let row; columns: displayCols;"></md-row>
                 </md-table>
@@ -112,15 +118,12 @@
             </div>
         </div>
     </div>
-    <div class="row">
-
-    </div>
-
     <div class="row pull-right mb-10 mt-10">
         <div class="col-md-12 col-xs-12">
             <button color="primary" md-button (click)="cancel($event)">CANCEL</button>
-            <button md-raised-button color="primary" (click)="save($event)">
-                <md-icon class="md-24">save</md-icon>SAVE
+            <button md-raised-button color="primary" [disabled]="threatReport && threatReport.isEmpty()" (click)="save($event)">
+                <md-icon class="md-24">save</md-icon>
+                SAVE
             </button>
         </div>
     </div>
@@ -130,4 +133,17 @@
     <span class="mat-caption">
         Not defined
     </span>
+</ng-template>
+
+<ng-template #noBoundries>
+    <div class="emptyState">
+        You have no boundries defined or associated reports
+        <img align="middle"
+        style="width: 375px; height: 400px; margin: auto; display:block; opacity: .54"
+        src="{{iconUrl}}">
+    </div>
+</ng-template>
+
+<ng-template #loadingBlock>
+    <loading-spinner></loading-spinner>
 </ng-template>

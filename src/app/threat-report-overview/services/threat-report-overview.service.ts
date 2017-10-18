@@ -65,7 +65,7 @@ export class ThreatReportOverviewService {
 
   /**
    * @description save a threat report to the mongo backend database
-   * @param threatReport 
+   * @param threatReport
    */
   public saveThreatReport(threatReport: ThreatReport): Observable<ThreatReport[]> {
     if (!threatReport) {
@@ -81,7 +81,7 @@ export class ThreatReportOverviewService {
       const attributes = Object.assign({}, report.data.attributes);
       const meta = { work_product: {} };
       const workProduct: any = meta.work_product;
-      workProduct.boundries = {};
+      workProduct.boundries = new Boundries();
       workProduct.boundries.startDate = threatReport.boundries.startDate;
       workProduct.boundries.endDate = threatReport.boundries.endDate;
       workProduct.boundries.intrusions = Array.from(threatReport.boundries.intrusions);
@@ -102,6 +102,27 @@ export class ThreatReportOverviewService {
     });
 
     return Observable.forkJoin(...calls);
+  }
+
+  /**
+   *  @description delete a threat report from the mongo backend database
+   *  @param id
+   */
+  public deleteThreatReport(id: string): Observable<ThreatReport[]> {
+    const url = this.reportsUrl + '/' + id;
+    return Observable.create((observer) => {
+      const sub  = this.genericService.delete(url).subscribe(
+        (data) => {
+          observer.next(data);
+          observer.complete();
+        }, (error) => {
+          // handle errors here
+          observer.throw = '';
+        }, () => {
+          sub.unsubscribe();
+        }
+      );
+    });
   }
 
 }

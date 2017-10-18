@@ -1,5 +1,5 @@
 .title-hr {
-    border: 2px solid rgba(0,0,0,.2);
+    border: 2px solid rgba(1,1,1,.2);
 }
 
 md-form-field {
@@ -30,12 +30,20 @@ md-form-field {
 }
 
 .margin-chips {
-    margin: 4px 16px;
+    margin-left: 0px;
+    margin-right: 4px;
+    margin-top: 16px;
+    margin-bottom: 0px;
 }
 
 .mat-column-author {
     max-width: 115px;
 }
+
+.mat-column-actions {
+    max-width: 115px;
+}
+
 
 .mat-column-date {
     max-width: 200px;
@@ -48,4 +56,19 @@ md-cell p {
 
 md-cell a md-icon {
     display: none;
+}
+
+h4 {
+    color: rgba(1,1,1, .54);
+}
+
+.title {
+    color: rgba(1,1,1, .54);
+}
+
+.emptyState {
+    opacity: .54;
+    text-align: center;
+    font-size: 24px;
+    color: rgba(1,1,1, .54);
 }
