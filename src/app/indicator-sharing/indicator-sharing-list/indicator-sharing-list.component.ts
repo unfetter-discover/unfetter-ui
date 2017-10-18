@@ -13,6 +13,7 @@ export class IndicatorSharingListComponent implements OnInit {
     public allIndicators: any;
     public DEFAULT_LENGTH: number = 5;
     public serverCallComplete: boolean = false;
+    public indicatorToAttackPatternMap: any = {};
 
     constructor(private indicatorSharingService: IndicatorSharingService) { }
 
@@ -25,10 +26,25 @@ export class IndicatorSharingListComponent implements OnInit {
                     this.serverCallComplete = true;
                 },
                 (err) => {
-                    console.log(err);                    
+                    console.log(err);
                 },
                 () => {
                     getIndicators$.unsubscribe();
+                }
+            );
+
+        const getAttackPatternsByIndicator$ = this.indicatorSharingService.getAttackPatternsByIndicator()
+            .subscribe(
+                (result) => {
+                    result.attributes.forEach((res) => {
+                        this.indicatorToAttackPatternMap[res._id] = res.attackPatterns;
+                    });                              
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    getAttackPatternsByIndicator$.unsubscribe();
                 }
             );
     }
@@ -44,5 +60,9 @@ export class IndicatorSharingListComponent implements OnInit {
         } else {
             return (this.filteredIndicators.length + this.DEFAULT_LENGTH) < this.allIndicators.length;
         }
+    }
+
+    public getAttackPatternsByIndicatorId(indicatorId) {
+        return this.indicatorToAttackPatternMap[indicatorId] !== undefined ? this.indicatorToAttackPatternMap[indicatorId] : [];
     }
 }

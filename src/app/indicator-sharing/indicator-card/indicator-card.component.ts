@@ -8,4 +8,5 @@ import { Component, Input } from '@angular/core';
 
 export class IndicatorCardComponent {
     @Input() public indicator: any;
+    @Input() public attackPatterns: any;
 }

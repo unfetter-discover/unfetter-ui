@@ -13,4 +13,8 @@ export class IndicatorSharingService {
         const url = `${this.baseUrl}?filter=${encodeURIComponent(JSON.stringify(filter))}`;
         return this.genericApi.get(url);
     }
+
+    public getAttackPatternsByIndicator(): Observable<any> {
+        return this.genericApi.get(`${this.baseUrl}/attack-patterns-by-indicator`);
+    }
 }

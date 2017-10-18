@@ -27,6 +27,20 @@
             <md-tab label="Comments">
                 <p>Under Construction</p>
             </md-tab>
+
+            <md-tab label="Attack Patterns" *ngIf="attackPatterns && attackPatterns.length > 0">
+                <md-list>
+                    <md-list-item *ngFor="let ap of attackPatterns">
+                        <h4 md-line>{{ap.name}}</h4>
+                        <div md-line *ngIf="ap.kill_chain_phases">
+                            <span *ngFor="let phase of ap.kill_chain_phases; let i = index" class="text-muted">
+                                <span mdTooltip="{{ phase.kill_chain_name | capitalize }}" mdTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>
+                                <span *ngIf="i < (ap.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
+                            </span>
+                        </div>
+                    </md-list-item>
+                </md-list>
+            </md-tab>
         </md-tab-group>
 
     </md-card-content>
