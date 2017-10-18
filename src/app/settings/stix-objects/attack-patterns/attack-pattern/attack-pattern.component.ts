@@ -23,7 +23,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     public origCoA: CourseOfAction;
     public relationship: Relationship = new Relationship();
     public coaId: string = '';
-    public target: any;
+    public target: Relationship[];
     public defaultValue = 0;
     public x_unfetter_sophistication_levels = [
           { id : 1, value: '1 - Novice' },
@@ -107,11 +107,12 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
     }
 
     public findCoA(): void {
-        let filter = { 'stix.target_ref': this.attackPattern.id };
-        let uri = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
-        let subscription =  super.getByUrl(uri).subscribe(
+        let filter = 'filter=' + encodeURIComponent(JSON.stringify({ 'stix.target_ref': this.attackPattern.id }));
+        this.stixService.url = Constance.RELATIONSHIPS_URL;
+        let subscription =  super.load(filter).subscribe(
             (data) => {
-                this.target = data as Relationship;
+                this.stixService.url = Constance.ATTACK_PATTERN_URL;
+                this.target = data as Relationship[];
                 this.target.forEach((relationship: Relationship) => {
                     if (relationship.attributes.relationship_type === 'mitigates') {
                         this.getMitigation(relationship.attributes.source_ref);
