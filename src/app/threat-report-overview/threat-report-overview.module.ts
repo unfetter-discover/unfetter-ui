@@ -5,7 +5,6 @@ import { GlobalModule } from '../global/global.module';
 import { routing } from './threat-report-overview-routing.module';
 import { ThreatReportCreationComponent } from './create/threat-report-creation.component';
 import { ThreatReportOverviewComponent } from './threat-report-overview.component';
-import { ThreatReportOverviewService } from './services/threat-report-overview.service';
 import { ThreatReportSharedService } from './services/threat-report-shared.service';
 import { ThreatReportModifyComponent } from './modify/threat-report-modify.component';
 
@@ -28,7 +27,6 @@ const troComponents = [
 ];
 
 const troServices = [
-  ThreatReportOverviewService,
   ThreatReportSharedService,
 ];
 

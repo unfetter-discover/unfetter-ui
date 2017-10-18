@@ -32,6 +32,8 @@ import { ConceptMapComponent } from './intrusion-set-dashboard/concept-map.compo
 import { CollapsibleTreeComponent } from './intrusion-set-dashboard/collapsible-tree.component';
 import { AccordionModule } from 'primeng/components/accordion/accordion';
 import { AssessmentsModule } from './assessments/assessments.module';
+import { ThreatDashboardModule } from './threat-dashboard/threat-dashboard.module';
+
 import { GlobalModule } from './global/global.module';
 
 /**
@@ -56,12 +58,9 @@ import { GlobalModule } from './global/global.module';
     MaterialModule,
     AutoCompleteModule,
     CarouselModule,
-    MdDialogModule,
     MdSliderModule,
     AccordionModule,
-    MdSlideToggleModule,
     ProgressBarModule,
-    MdCardModule,
     ComponentModule,
     GlobalModule,
     StixModule,
@@ -69,6 +68,7 @@ import { GlobalModule } from './global/global.module';
     AppRoutingModule,
     // RouterModule.forRoot(ROUTES, { useHash: true, preloadingStrategy: PreloadAllModules })
     AssessmentsModule,
+    ThreatDashboardModule,
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS,

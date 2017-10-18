@@ -1,9 +1,10 @@
 import { DataSource } from '@angular/cdk/table';
 import { CollectionViewer } from '@angular/cdk/collections';
 import { Observable } from 'rxjs/Observable';
-import { ThreatReportOverviewService } from './services/threat-report-overview.service';
-import { ThreatReport } from './models/threat-report.model';
 import { BehaviorSubject } from 'rxjs';
+
+import { ThreatReport } from './models/threat-report.model';
+import { ThreatReportOverviewService } from '../threat-dashboard/services/threat-report-overview.service';
 
 /**
  * @description handles filter events from the UI sent to the datasource, in this case a service call

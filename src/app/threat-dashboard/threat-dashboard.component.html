@@ -1,0 +1,46 @@
+<div class="container-fluid fadeIn" *ngIf="threatReport; else loadingBlock">
+    <div class="side-panel row col-md-2">
+        <div class="header">
+            <span class="mat-display-1">{{threatReport.name}}</span>
+            <p class="mat-subheader">
+                {{threatReport.reports.length}} OBJECTS
+            </p>
+        </div>
+        <div>
+            <ul>
+                <li *ngFor="let tro of threatReport.reports">
+                    {{tro.name}}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="main-panel row col-md-10">
+        <div class="row">
+            <div class="col-sm-12">
+                <div>
+                    <img class='stix-icon height-30' src='assets/icon/stix-icons/svg/threat-actor-b.svg'>
+                    <h4>{{threatReport.name}}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <p id="treeSpinner" class="flex flexItemsCenter" [style.display]="treeSpinner ? 'flex' : 'none'">
+                    <md-spinner></md-spinner>
+                </p>
+                <md-tab-group [style.opacity]="treeSpinner ? 0 : 1" id="tabGroup">
+                    <md-tab label="MATRIX">
+                        <p>Matrix!</p>
+                    </md-tab>
+                    <md-tab label="AMA" disabled="true">
+                        <p>AMA goes here!</p>
+                    </md-tab>
+                </md-tab-group>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #loadingBlock>
+    <loading-spinner></loading-spinner>
+</ng-template>
