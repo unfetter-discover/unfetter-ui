@@ -1,4 +1,4 @@
-FROM node:6.9.1
+FROM node:8.5-alpine
 
 LABEL MAINTAINER="UNFETTER"
 LABEL Description="UNFETTER user interface, Angular app"
@@ -22,11 +22,9 @@ RUN npm install && \
 COPY . $WORKING_DIRECTORY
 
 # The NPM package depends on TAR package, which has a test directory with an encrypted tgz file, that gets blocked by some antivirus scanners. Removing it.
-RUN npm run build:prod && \
-    find / -name "cb-never*.tgz" -delete && \
-    rm -rf /usr/share/man && \
-    rm -rf /tmp/*
+# RUN npm run build:prod && \
+RUN find / -name "cb-never*.tgz" -delete
 
 # Start Application
-EXPOSE 80
-CMD [ "npm", "run", "server:dev:alt"]
+# EXPOSE 80
+# CMD [ "npm", "run", "server:dev:alt"]
