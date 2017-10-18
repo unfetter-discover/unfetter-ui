@@ -1,0 +1,64 @@
+<md-card class="indicatorCard" *ngIf="indicator">
+    <md-card-header>
+        <md-card-title>{{ indicator.name }}</md-card-title>
+        <md-card-subtitle>
+            Submitted {{ indicator.created | date:'medium' }} by <a>InfosecWarriorz</a>
+        </md-card-subtitle>
+    </md-card-header>
+
+    <md-card-content>        
+        <label>Pattern ({{ indicator.pattern_lang | capitalize }})</label>
+        <p>{{ indicator.pattern }}</p>
+
+        <md-tab-group>
+            <md-tab label="Labels">
+                <md-chip-list>
+                    <md-chip *ngFor="let label of indicator.labels">{{label | capitalize}}</md-chip>
+                </md-chip-list>
+            </md-tab>
+
+            <md-tab label="Details">
+                <div *ngIf="indicator.description">
+                    <label>Description</label>
+                    <p>{{ indicator.description }}</p>
+                </div>
+                <div *ngIf="indicator.external_references">
+                    <label>External References</label>
+                    <md-chip-list>
+                        <md-chip *ngFor="let reference of indicator.external_references" color="accent" selected="true">{{reference.source_name | capitalize}}</md-chip>
+                    </md-chip-list>
+                </div>                
+            </md-tab>
+
+            <md-tab label="Comments">
+                <p>Under Construction</p>
+            </md-tab>
+
+            <md-tab label="Attack Patterns" *ngIf="attackPatterns && attackPatterns.length > 0">
+                <md-list>
+                    <md-list-item *ngFor="let ap of attackPatterns">
+                        <h4 md-line>{{ap.name}}</h4>
+                        <div md-line *ngIf="ap.kill_chain_phases">
+                            <span *ngFor="let phase of ap.kill_chain_phases; let i = index" class="text-muted">
+                                <span mdTooltip="{{ phase.kill_chain_name | capitalize }}" mdTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>
+                                <span *ngIf="i < (ap.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
+                            </span>
+                        </div>
+                    </md-list-item>
+                </md-list>
+            </md-tab>
+        </md-tab-group>
+
+    </md-card-content>
+
+    <md-card-actions>
+        <button md-button color="primary">
+                    <i class="material-icons md-24">thumb_up</i>
+                    &nbsp;18
+                </button>
+        <button md-button color="accent">
+                    <i class="material-icons md-24">message</i>
+                    &nbsp;4
+                </button>
+    </md-card-actions>
+</md-card>
