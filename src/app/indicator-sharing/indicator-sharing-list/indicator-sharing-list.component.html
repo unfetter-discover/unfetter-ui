@@ -8,21 +8,15 @@
                         <i class="material-icons">search</i>
                         <span>Search Analytics</span>
                     </md-card-title>
-                    <md-card-subtitle>Labels</md-card-subtitle>
                 </md-card-header>
+
                 <md-card-content>
-                    List of Labels
+                    <md-select placeholder="Labels" [multiple]="true" class="full-width mb-20" (change)="filterLabelChange($event)">
+                        <md-option value="{{label}}" *ngFor="let label of searchParameters.labels">{{ label | capitalize }}</md-option>
+                    </md-select>
                 </md-card-content>
 
-                <md-card-header>
-                    <md-card-subtitle>Organization</md-card-subtitle>
-                </md-card-header>
-                <md-card-content>
-                    List of Organizations
-                </md-card-content>
-
-                <md-card-content><hr></md-card-content>
-                <md-card-header *ngIf="filteredIndicators && allIndicators">
+                <md-card-header *ngIf="displayedIndicators && allIndicators">
                     <md-card-subtitle>Results: {{ filteredIndicators.length }} / {{ allIndicators.length }}</md-card-subtitle>
                 </md-card-header>
             </md-card>
@@ -30,8 +24,11 @@
 
         <div class="col-xs-8 col-lg-7" id="indicatorListWrapper">
 
-            <div *ngFor="let filteredIndicator of filteredIndicators" class="mb-15">
-                <indicator-card [indicator]="filteredIndicator" [attackPatterns]="getAttackPatternsByIndicatorId(filteredIndicator.id)"></indicator-card>               
+            <div *ngFor="let indicator of displayedIndicators" class="mb-15">
+                <indicator-card 
+                    [indicator]="indicator" 
+                    [attackPatterns]="getAttackPatternsByIndicatorId(indicator.id)"
+                    [searchParameters]="searchParameters"></indicator-card>               
             </div>
 
             <div class="text-center mt-15 mb-20" *ngIf="displayShowMoreButton()">

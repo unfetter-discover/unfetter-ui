@@ -9,11 +9,16 @@ import { IndicatorSharingService } from '../indicator-sharing.service';
 
 export class IndicatorSharingListComponent implements OnInit {
 
-    public filteredIndicators: any;
+    public displayedIndicators: any;
     public allIndicators: any;
+    public filteredIndicators: any;
     public DEFAULT_LENGTH: number = 5;
     public serverCallComplete: boolean = false;
     public indicatorToAttackPatternMap: any = {};
+    public searchParameters: any = {
+        labels: [],
+        activeLabels: []
+    };
 
     constructor(private indicatorSharingService: IndicatorSharingService) { }
 
@@ -21,9 +26,11 @@ export class IndicatorSharingListComponent implements OnInit {
         const getIndicators$ = this.indicatorSharingService.getIndicators()
             .subscribe(
                 (results) => {
-                    this.allIndicators = results.map((res) => res.attributes);
-                    this.filteredIndicators = this.allIndicators.slice(0, this.DEFAULT_LENGTH);
+                    this.filteredIndicators = this.allIndicators = results.map((res) => res.attributes);                    
                     this.serverCallComplete = true;
+
+                    this.setDisplayedIndicators();
+                    this.setIndicatorSearchParameters();
                 },
                 (err) => {
                     console.log(err);
@@ -49,16 +56,54 @@ export class IndicatorSharingListComponent implements OnInit {
             );
     }
 
+    public filterLabelChange(e) {        
+        this.searchParameters.activeLabels = e.value;
+        this.filteredIndicators = this.allIndicators
+            .filter((indicator) => {
+                if (indicator.labels !== undefined && indicator.labels.length > 0) {
+                    let labelPresent = false;
+                    indicator.labels
+                        .forEach((label) => {
+                            if (this.searchParameters.activeLabels.includes(label)) {
+                                labelPresent = true;
+                            }
+                        });
+                    return labelPresent
+                } else {
+                    return false;
+                }                
+            });     
+
+        this.setDisplayedIndicators();
+    }
+
+    public setDisplayedIndicators() {
+        this.displayedIndicators = this.filteredIndicators.slice(0, this.DEFAULT_LENGTH);
+    }
+
+    public setIndicatorSearchParameters() {        
+        let labelSet: Set<string> = new Set();
+        
+        this.allIndicators
+            .filter((indicator) => indicator.labels !== undefined && indicator.labels.length > 0)
+            .map((indicator) => indicator.labels)
+            .reduce((prev, cur) => prev.concat(cur), [])
+            .forEach((label) => labelSet.add(label));
+        
+        this.searchParameters.labels = Array.from(labelSet);        
+        this.searchParameters.activeLabels = this.searchParameters.labels.slice();
+    }
+
     public showMoreIndicators() {
-        const currentLength = this.filteredIndicators.length;
-        this.filteredIndicators = this.filteredIndicators.concat(this.allIndicators.slice(currentLength, currentLength + this.DEFAULT_LENGTH));
+        const currentLength = this.displayedIndicators.length;
+        this.displayedIndicators = this.displayedIndicators.concat(this.filteredIndicators.slice(currentLength, currentLength + this.DEFAULT_LENGTH));
     }
 
     public displayShowMoreButton() {
-        if (!this.serverCallComplete || !this.filteredIndicators || this.filteredIndicators.length === 0) {
+        if (!this.serverCallComplete || !this.displayedIndicators || this.displayedIndicators.length === 0) {
             return false;
         } else {
-            return (this.filteredIndicators.length + this.DEFAULT_LENGTH) < this.allIndicators.length;
+            return (this.displayedIndicators.length + this.DEFAULT_LENGTH) < this.filteredIndicators.length;
         }
     }
 

@@ -13,7 +13,10 @@
         <md-tab-group>
             <md-tab label="Labels">
                 <md-chip-list>
-                    <md-chip *ngFor="let label of indicator.labels">{{label | capitalize}}</md-chip>
+                    <md-chip 
+                        *ngFor="let label of indicator.labels" 
+                        [selected]="labelSelected(label)" 
+                        class="cursor-pointer">{{label | capitalize}}</md-chip>
                 </md-chip-list>
             </md-tab>
 
