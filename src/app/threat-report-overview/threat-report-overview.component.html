@@ -1,20 +1,17 @@
-<div class="container">
+<div class="container" *ngIf="!loading; loadingBlock">
     <div class="row first-line">
-        <div class="col-sm-6 mat-headline title-border">
-            <div>
-                Threat Reports Overview
-            </div>
-            <span class="mat-subheading-1">
-                View your recent workproducts or create a new one
+        <div class="col-sm-6 title-border">
+            <h2>
+                Your Work Product(s)
+            </h2>
+            <span class="subtitle">
+                View your recent work products or create a new one.  Work products contain scope, in terms of query boundries in addition to reporting references.  Work products are not shareable at this time.
             </span>
         </div>
         <div class="col-sm-4 top-right-panel">
-            <div class="mat-headline">
+            <h2>
                 Create New Product
-            </div>
-            <span class="mat-subheading-1">
-                Loreum ipsum dorat
-            </span>
+            </h2>
             <span>
                 <button color="primary" md-raised-button (click)="routeCreateNew($event)">NEW</button>
             </span>
@@ -35,11 +32,11 @@
 
                 <ng-container mdColumnDef="name">
                     <md-header-cell *mdHeaderCellDef> Name </md-header-cell>
-                    <md-cell *mdCellDef="let row"> 
-                        <a routerLink="./modify/{{row.id}}"> {{row.name}} </a>
+                    <md-cell *mdCellDef="let row">
+                        {{row.name}}
                     </md-cell>
                 </ng-container>
-            
+
                 <ng-container mdColumnDef="date">
                     <md-header-cell *mdHeaderCellDef> Modified </md-header-cell>
                     <md-cell *mdCellDef="let row"> {{ row.date | date:'medium' }} </md-cell>
@@ -50,16 +47,27 @@
                     <md-cell *mdCellDef="let row"> {{row.author}} </md-cell>
                 </ng-container>
 
-                <!-- <ng-container mdColumnDef='actions'>
+                <ng-container mdColumnDef='actions'>
                     <md-header-cell *mdHeaderCellDef> </md-header-cell>
                     <md-cell *mdCellDef="let row">
-                        <button color="primary" md-button routerLink="./modify/{{row.id}}">open</button>
+                        <span class="buttonGrp text-right">
+                            <button class="mat-primary" md-button routerLink="./modify/{{row.id}}">
+                                <i class="material-icons">create</i>
+                            </button>
+                                <button class="mat-warn" md-button (click)="deleteButtonClicked(row)">
+                                <i class="material-icons">delete</i>
+                            </button>
+                        </span>
                     </md-cell>
-                </ng-container> -->
-            
+                </ng-container>
+
                 <md-header-row *mdHeaderRowDef="displayCols"></md-header-row>
                 <md-row *mdRowDef="let row; columns: displayCols;"></md-row>
             </md-table>
         </div>
     </div>
 </div>
+
+<ng-template #loadingBlock>
+    <loading-spinner></loading-spinner>
+</ng-template>

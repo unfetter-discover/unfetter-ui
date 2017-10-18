@@ -12,7 +12,7 @@ export class ConfirmationDialogComponent {
   constructor(@Inject(MD_DIALOG_DATA) public data: any) {
     // this.deleteObject =  this.dialogRef.config.data;
     this.title = data.attributes.name;
-    if (data.type.toLowerCase() === 'relationships') {
+    if (data.type && data.type.toLowerCase() === 'relationships') {
       this.title = data.attributes.relationship_type;
     }
   }

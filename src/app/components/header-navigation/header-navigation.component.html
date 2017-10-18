@@ -1,5 +1,6 @@
 <nav class="navbar navbar-inverse navbar-fixed-top mat-elevation-z4">
     <div class="container-fluid">
+
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" (click)="collapsed = !collapsed">
           <span class="sr-only">Toggle navigation</span>
@@ -11,49 +12,68 @@
           routerLinkActive="active" [routerLinkActiveOptions]= "{exact: true}">
             <img src="assets/icon/brand-logo.png">
         </a>
-        <!--<a class="navbar-brand" href="#">CTI-STIX-SERVICES</a>-->
       </div>
+
       <div id="navbar" class="collapse navbar-collapse navbar-right" [collapse]="collapsed">
         <ul class="nav navbar-nav">
-           <li><a routerLink="./assessments">Assessments</a></li>
-          <li><a routerLink="./intrusion-set-dashboard" >Intrusion Set Dashboard</a></li>
-          <li><a routerLink="./stix/link-explorer">Link Explorer</a></li>
-          <li><a target="_blank" href="/api/explorer/">View API</a></li>
-          <li dropdown class="dropdown">
+          <!-- Logged Out only -->
+          <li *ngIf="!authService.loggedIn()">
+            <a href="/api/auth/github-login/" class="mdButtonNavItem">
+              <button md-raised-button color="primary">Sign In</button>
+            </a>
+          </li>
+          
+          <!-- Logged In Only -->
+           <li *ngIf="authService.loggedIn()"><a routerLink="./assessments">Assessments</a></li>
+          <li *ngIf="authService.loggedIn()"><a routerLink="./intrusion-set-dashboard" >Intrusion Set Dashboard</a></li>
+          <li *ngIf="authService.loggedIn()"><a routerLink="./stix/link-explorer">Link Explorer</a></li>
+          <li *ngIf="authService.loggedIn()"><a target="_blank" href="/api/explorer/">View API</a></li>
+
+          <li dropdown class="dropdown" *ngIf="authService.loggedIn()">
             <a dropdownToggle class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">STIX<span class="caret"></span></a>
-            <ul *dropdownMenu class="dropdown-menu">
+            <ul  class="dropdown-menu">
               <li *ngFor="let navigation of navigations">
-                <a [routerLink]="[navigation.url]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-                                {{navigation.label}}
-                              </a>
-              
+                <a [routerLink]="[navigation.url]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{navigation.label}}</a>      
+              </li>        
             </ul>
           </li>
 
-          <!--<li><a target="_blank" href="/api/explorer/">View API</a></li>-->
+          <li dropdown class="dropdown" *ngIf="authService.loggedIn()">            
+            <a dropdownToggle class="dropdown-toggle" data-toggle="user" role="button" aria-haspopup="true" aria-expanded="false">
+              <img src="{{authService.getUser().github.avatar_url}}" alt="User" id="avatar" *ngIf="authService.getUser() !== null && authService.getUser().github.avatar_url !== undefined">
+              <span *ngIf="authService.getUser().github.avatar_url === undefined">{{authService.getUser().userName}}</span>
+              <span class="caret"></span>
+            </a>
+            <ul *dropdownMenu class="dropdown-menu">
+              <li class="dropdown-header" *ngIf="authService.getUser() !== null">
+                Signed in as <strong>{{ authService.getUser().userName }}</strong>
+              </li>
+              <li role="separator" class="divider"></li>
+              <li>
+                <a class="flexImportant flexItemsCenter">
+                  <i class="material-icons">settings</i>
+                  <span>&nbsp;&nbsp;Settings</span>
+                </a>
+              </li>
+              <li>
+                <a class="flexImportant flexItemsCenter">
+                  <i class="material-icons">person_outline</i>
+                  <span>&nbsp;&nbsp;Profile</span>
+                </a>
+              </li>
+              <li role="separator" class="divider"></li>
+              <li>
+                <a (click)="authService.logOut()" class="flexImportant flexItemsCenter">
+                  <i class="material-icons">exit_to_app</i>
+                  <span>&nbsp;&nbsp;Logout</span>
+                </a>
+              </li>
+            </ul>
+          </li>
 
-          <!--<li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-              aria-expanded="false">Settings<span class="caret"></span></a>
-               <ul class="dropdown-menu">
-                  <li><a routerLink="./stix/link-explorer" >Link Explorer</a></li>
-                    <li class="divider"></li>
-                    <li class="dropdown-submenu">
-                      <a tabindex="-1" href="#">STIX Objects</a>
-                      <ul class="dropdown-menu">
-                          <li *ngFor="let navigation of navigations">
-                              <a [routerLink]="[navigation.url]"  routerLinkActive="active" [routerLinkActiveOptions]= "{exact: true}">
-                                {{navigation.label}}
-                              </a>
-                          </li>
-                      </ul>
-                  </li>
-              </ul>
-          </li>-->
-
-          <!--<li><a routerLink="./partners" >Partners</a></li>-->
         </ul>
       </div><!--/.nav-collapse -->
+
     </div>
   </nav>
 
