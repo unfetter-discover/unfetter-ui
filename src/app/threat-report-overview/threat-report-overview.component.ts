@@ -73,7 +73,7 @@ export class ThreatReportOverviewComponent implements OnInit, AfterViewInit, OnD
    */
   public routeCreateNew(event?: UIEvent): void {
     this.sharedService.threatReportOverview = undefined;
-    this.router.navigate(['/tro/create']);
+    this.router.navigate(['/threat-dashboard/create']);
   }
 
   /**

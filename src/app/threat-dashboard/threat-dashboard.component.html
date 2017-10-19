@@ -1,41 +1,69 @@
 <div class="container-fluid fadeIn" *ngIf="threatReport; else loadingBlock">
-    <div class="side-panel row col-md-2">
-        <div class="header">
-            <span class="mat-display-1">{{threatReport.name}}</span>
-            <p class="mat-subheader">
-                {{threatReport.reports.length}} OBJECTS
-            </p>
-        </div>
-        <div>
-            <ul>
-                <li *ngFor="let tro of threatReport.reports">
-                    {{tro.name}}
-                </li>
-            </ul>
-        </div>
-    </div>
-    <div class="main-panel row col-md-10">
-        <div class="row">
-            <div class="col-sm-12">
-                <div>
-                    <img class='stix-icon height-30' src='assets/icon/stix-icons/svg/threat-actor-b.svg'>
-                    <h4>{{threatReport.name}}</h4>
-                </div>
+    <div class="row">
+        <div class="side-panel col-md-2">
+            <div class="header">
+                <span class="mat-display-2">{{threatReport.name}}</span>
+                <p class="mat-subheader-1">
+                    {{threatReport.reports.length}} OBJECTS
+                </p>
+            </div>
+            <div>
+                <md-menu #menu="mdMenu">
+                    <button md-menu-item disabled>
+                        <md-icon aria-hidden="true">content_copy</md-icon>
+                        <span>clone</span>
+                    </button>
+                    <button md-menu-item disabled>
+                            <md-icon aria-hidden="true">mode_edit</md-icon>
+                            <span>edit</span>
+                    </button>    
+                    <button md-menu-item disabled>
+                        <md-icon aria-hidden="true">delete</md-icon>
+                        <span>delete</span>
+                    </button>
+                </md-menu>
+                <md-list dense>
+                    <md-list-item *ngFor="let tro of threatReport.reports">
+                        <h4 md-line>
+                            {{tro.name}}
+                        </h4>
+                        <div md-line class="md-caption">
+                            {{tro.description}}
+                        </div>
+                        <button md-icon-button [mdMenuTriggerFor]="menu">
+                            <md-icon>
+                                more_vert
+                            </md-icon>
+                        </button>
+                    </md-list-item>
+                </md-list>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <p id="treeSpinner" class="flex flexItemsCenter" [style.display]="treeSpinner ? 'flex' : 'none'">
-                    <md-spinner></md-spinner>
-                </p>
-                <md-tab-group [style.opacity]="treeSpinner ? 0 : 1" id="tabGroup">
-                    <md-tab label="MATRIX">
-                        <p>Matrix!</p>
-                    </md-tab>
-                    <md-tab label="AMA" disabled="true">
-                        <p>AMA goes here!</p>
-                    </md-tab>
-                </md-tab-group>
+        <div class="main-panel col-md-10">
+            <div class="row">
+                <div class="col-sm-12">
+                    <span class="stix-icon-wrapper">
+                        <img class='stix-icon' src='assets/icon/stix-icons/svg/threat-actor-c.svg'>
+                    </span>
+                    <span class="mat-display-3 title">
+                        {{threatReport.name}}
+                    </span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <p id="treeSpinner" class="flex flexItemsCenter" [style.display]="treeSpinner ? 'flex' : 'none'">
+                        <md-spinner></md-spinner>
+                    </p>
+                    <md-tab-group [style.opacity]="treeSpinner ? 0 : 1" id="tabGroup">
+                        <md-tab label="MATRIX">
+                            <p>Matrix!</p>
+                        </md-tab>
+                        <md-tab label="AMA" disabled="true">
+                            <p>AMA goes here!</p>
+                        </md-tab>
+                    </md-tab-group>
+                </div>
             </div>
         </div>
     </div>

@@ -9,6 +9,8 @@ import { MdCheckboxModule } from '@angular/material';
 import { MdDatepickerModule } from '@angular/material';
 import { MdSelectModule } from '@angular/material';
 import { MdSlideToggleModule, MdTabsModule } from '@angular/material';
+import { MdListModule } from '@angular/material';
+import { MdMenuModule } from '@angular/material';
 
 import { routing } from './threat-dashboard-routing.module';
 
@@ -31,10 +33,12 @@ const materialModules = [
   MdDatepickerModule,
   MdInputModule,
   MdIconModule,
+  MdListModule,
   MdSelectModule,
   MdSlideToggleModule,
   MdTooltipModule,
   MdTabsModule,
+  MdMenuModule,
 ];
 
 @NgModule({

@@ -1,7 +1,19 @@
 $header_gradient_start: #0288D1;
 $header_gradient_end: #03A9F4;
 
-.container-fluid {
+.stix-icon {
+    background-color: #F44336;
+    border-radius: 50%;
+    height: 64px;
+    width: 64px;
+}
+
+.title {
+    vertical-align: middle;
+}
+
+md-list-item {
+    border-bottom: 1px solid rgba(1,1,1, .54);
 }
 
 .side-panel {
@@ -30,7 +42,7 @@ $header_gradient_end: #03A9F4;
     }
 
     .main-panel {
-        margin-left: 25%;
+        margin-left: 18%;
     }
 }
 
