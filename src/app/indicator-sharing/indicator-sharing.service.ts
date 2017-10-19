@@ -10,7 +10,7 @@ export class IndicatorSharingService {
     constructor(private genericApi: GenericApi) { }
 
     public getIndicators(filter: object = {}): Observable<any> {
-        const url = `${this.baseUrl}?filter=${encodeURIComponent(JSON.stringify(filter))}`;
+        const url = `${this.baseUrl}?filter=${encodeURIComponent(JSON.stringify(filter))}&metaproperties=true`;
         return this.genericApi.get(url);
     }
 

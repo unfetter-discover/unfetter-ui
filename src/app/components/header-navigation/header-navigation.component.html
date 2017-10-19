@@ -40,7 +40,7 @@
 
           <li dropdown class="dropdown" *ngIf="authService.loggedIn()">            
             <a dropdownToggle class="dropdown-toggle" data-toggle="user" role="button" aria-haspopup="true" aria-expanded="false">
-              <img src="{{authService.getUser().github.avatar_url}}" alt="User" id="avatar" *ngIf="authService.getUser() !== null && authService.getUser().github.avatar_url !== undefined">
+              <img src="{{authService.getUser().github.avatar_url}}" alt="User" id="avatar" *ngIf="authService.getUser() !== null && authService.getUser().github.avatar_url !== undefined" class="smallAvatar">
               <span *ngIf="authService.getUser().github.avatar_url === undefined">{{authService.getUser().userName}}</span>
               <span class="caret"></span>
             </a>

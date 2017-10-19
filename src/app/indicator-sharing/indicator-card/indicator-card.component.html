@@ -33,8 +33,20 @@
                 </div>                
             </md-tab>
 
-            <md-tab label="Comments">
-                <p>Under Construction</p>
+            <md-tab label="Comments" *ngIf="indicator.comments && indicator.comments.length > 0">
+                <div *ngFor="let comment of indicator.comments; let i = index">
+                    <div class="flex flexItemsCenter mb-5">
+                        <span>
+                            <img *ngIf="comment.user.avatar_url" src="{{ comment.user.avatar_url }}" alt="{{ comment.user.userName }} avatar" class="smallAvatar">&nbsp;
+                        </span>
+                        <span>
+                            <a><strong>{{ comment.user.userName }}</strong></a>
+                            <small class="text-muted"> &bull; {{ comment.submitted | date:'medium'}}</small>
+                        </span>
+                    </div>
+                    <p>{{ comment.comment }} </p>                    
+                    <hr *ngIf="i < (indicator.comments.length - 1)">
+                </div>
             </md-tab>
 
             <md-tab label="Attack Patterns" *ngIf="attackPatterns && attackPatterns.length > 0">
@@ -61,7 +73,7 @@
                 </button>
         <button md-button color="accent">
                     <i class="material-icons md-24">message</i>
-                    &nbsp;4
+                    <span *ngIf="indicator.comments && indicator.comments.length > 0">&nbsp;{{indicator.comments.length}}</span>
                 </button>
     </md-card-actions>
 </md-card>
