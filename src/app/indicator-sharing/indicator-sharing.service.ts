@@ -7,6 +7,8 @@ import { Constance } from '../utils/constance';
 export class IndicatorSharingService {
 
     public baseUrl = Constance.INDICATOR_URL;
+    public multiplesUrl = Constance.MULTIPLES_URL;
+
     constructor(private genericApi: GenericApi) { }
 
     public getIndicators(filter: object = {}): Observable<any> {
@@ -16,5 +18,10 @@ export class IndicatorSharingService {
 
     public getAttackPatternsByIndicator(): Observable<any> {
         return this.genericApi.get(`${this.baseUrl}/attack-patterns-by-indicator`);
+    }
+
+    public addComment(comment, id) {
+        const url = `${this.multiplesUrl}/${id}/comment`;
+        return this.genericApi.patch(url, {data: { attributes: {'comment': comment}}});
     }
 }

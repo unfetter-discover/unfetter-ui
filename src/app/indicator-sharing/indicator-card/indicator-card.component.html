@@ -34,17 +34,17 @@
             </md-tab>
 
             <md-tab label="Comments" *ngIf="indicator.comments && indicator.comments.length > 0">
-                <div *ngFor="let comment of indicator.comments; let i = index">
+                <div *ngFor="let comment of indicator.comments | sortByField: 'submitted'; let i = index">
                     <div class="flex flexItemsCenter mb-5">
                         <span>
                             <img *ngIf="comment.user.avatar_url" src="{{ comment.user.avatar_url }}" alt="{{ comment.user.userName }} avatar" class="smallAvatar">&nbsp;
                         </span>
                         <span>
-                            <a><strong>{{ comment.user.userName }}</strong></a>
+                            <a>{{ comment.user.userName }}</a>
                             <small class="text-muted"> &bull; {{ comment.submitted | date:'medium'}}</small>
                         </span>
                     </div>
-                    <p>{{ comment.comment }} </p>                    
+                    <p [innerHtml]="formatComment(comment.comment)"></p>                    
                     <hr *ngIf="i < (indicator.comments.length - 1)">
                 </div>
             </md-tab>
@@ -64,16 +64,27 @@
             </md-tab>
         </md-tab-group>
 
+        <div class="mt-20" *ngIf="showCommentTextArea">
+            <md-input-container class="full-width">
+                <textarea mdInput mdTextareaAutosize placeholder="Comment" [(ngModel)]="commentText">{{ commentText }}</textarea>
+            </md-input-container>
+            <div class="text-right">
+                <button md-button (click)="showCommentTextArea = false; commentText = ''">Cancel</button>
+                <button md-raised-button color="accent" [disabled]="commentText === ''" (click)="submitComment()">Add Comment</button>
+            </div>
+        </div>
+
     </md-card-content>
 
     <md-card-actions>
+        <button md-button disabled="true">{{ message }}</button>        
         <button md-button color="primary">
-                    <i class="material-icons md-24">thumb_up</i>
-                    &nbsp;18
-                </button>
-        <button md-button color="accent">
-                    <i class="material-icons md-24">message</i>
-                    <span *ngIf="indicator.comments && indicator.comments.length > 0">&nbsp;{{indicator.comments.length}}</span>
-                </button>
+            <i class="material-icons md-24">thumb_up</i>
+            &nbsp;18
+        </button>
+        <button md-button color="accent" (click)="showCommentTextArea = !showCommentTextArea">
+            <i class="material-icons md-24">message</i>
+            <span *ngIf="indicator.comments && indicator.comments.length > 0">&nbsp;{{indicator.comments.length}}</span>
+        </button>
     </md-card-actions>
 </md-card>
