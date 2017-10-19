@@ -1,4 +1,4 @@
-import { Component,  ViewEncapsulation } from '@angular/core';
+import { Component,  OnInit, ViewEncapsulation } from '@angular/core';
 
 import { AppState } from './app.service';
 import { AuthService } from './global/services/auth.service';
@@ -11,9 +11,14 @@ import { AuthService } from './global/services/auth.service';
   ],
   templateUrl: './app.component.html'
 })
-export class AppComponent {
-  public securityMarkingLabel = 'security marking'
-  public showBanner = SHOWBANNER ? true : false ;
+export class AppComponent implements OnInit {
+  public showBanner: boolean;
+  public securityMarkingLabel: string;
 
   constructor(public authService: AuthService) {}
+
+  public ngOnInit() {
+    this.securityMarkingLabel = BANNERTEXT;
+    this.showBanner = SHOWBANNER;
+  }
 }

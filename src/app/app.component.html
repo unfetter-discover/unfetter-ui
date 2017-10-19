@@ -1,10 +1,8 @@
-<div style="display: flex; flex-direction: column;">
-    <header-navigation></header-navigation>
-    <div class="banner security-marking-label">
-        <span class="banner-text strong">{{securityMarkingLabel}}</span>
-      </div>
+<div class="banner security-marking-label" *ngIf="showBanner">
+    <span class="banner-text strong">{{securityMarkingLabel}}</span>
+  </div>
+ <header-navigation></header-navigation>
 
-</div>
 
 <div id="routerWrapper">
     <router-outlet></router-outlet>

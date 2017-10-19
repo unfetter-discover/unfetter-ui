@@ -127,6 +127,7 @@
     "codelyzer": "~3.1.2",
     "copy-webpack-plugin": "^4.0.0",
     "css-loader": "^0.26.0",
+    "cross-env": "^5.0.0",
     "exports-loader": "^0.6.3",
     "expose-loader": "^0.7.1",
     "extract-text-webpack-plugin": "~2.0.0-rc.3",
