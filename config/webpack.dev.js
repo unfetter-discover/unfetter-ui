@@ -22,11 +22,13 @@ const ENV = process.env.ENV = process.env.NODE_ENV = 'development';
 const HOST = process.env.HOST || '0.0.0.0';
 const PORT = process.env.PORT || 80;
 const HMR = helpers.hasProcessFlag('hot');
+const SHOWBANNER = process.env.SHOW_BANNER
 const METADATA = webpackMerge(commonConfig({env: ENV}).metadata, {
   host: HOST,
   port: PORT,
   ENV: ENV,
-  HMR: HMR
+  HMR: HMR,
+  SHOWBANNER: SHOWBANNER
 });
 console.log(METADATA.baseUrl)
 
@@ -147,6 +149,7 @@ module.exports = function (options) {
       new DefinePlugin({
         'ENV': JSON.stringify(METADATA.ENV),
         'HMR': METADATA.HMR,
+        'SHOWBANNER': JSON.stringify(METADATA.SHOWBANNER),
         'process.env': {
           'ENV': JSON.stringify(METADATA.ENV),
           'NODE_ENV': JSON.stringify(METADATA.ENV),

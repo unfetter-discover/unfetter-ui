@@ -12,5 +12,8 @@ import { AuthService } from './global/services/auth.service';
   templateUrl: './app.component.html'
 })
 export class AppComponent {
+  public securityMarkingLabel = 'security marking'
+  public showBanner = SHOWBANNER ? true : false ;
+
   constructor(public authService: AuthService) {}
 }

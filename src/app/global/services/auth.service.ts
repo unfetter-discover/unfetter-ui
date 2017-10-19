@@ -17,7 +17,7 @@ export class AuthService {
         localStorage.setItem('unfetterUiToken', `Bearer ${token}`);
         this.genericApi.setAuthHeaders(`Bearer ${token}`);
     }
-    
+
     public setUser(user) {
         localStorage.removeItem('user');
         localStorage.setItem('user', JSON.stringify(user));
@@ -27,7 +27,7 @@ export class AuthService {
         let user = localStorage.getItem('user');
         if (user) {
             user = JSON.parse(user);
-        }        
+        }
         return user;
     }
 
