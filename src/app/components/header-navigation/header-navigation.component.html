@@ -27,6 +27,7 @@
            <li *ngIf="authService.loggedIn()"><a routerLink="./assessments">Assessments</a></li>
           <li *ngIf="authService.loggedIn()"><a routerLink="./intrusion-set-dashboard" >Intrusion Set Dashboard</a></li>
           <li *ngIf="authService.loggedIn()"><a routerLink="./threat-dashboard" >Threat Dashboard</a></li>
+          <li *ngIf="authService.loggedIn()"><a routerLink="./indicator-sharing/list">Analytic Hub</a></li>
           <li *ngIf="authService.loggedIn()"><a routerLink="./stix/link-explorer">Link Explorer</a></li>
           <li *ngIf="authService.loggedIn()"><a target="_blank" href="/api/explorer/">View API</a></li>
 
@@ -50,7 +51,7 @@
                 Signed in as <strong>{{ authService.getUser().userName }}</strong>
               </li>
               <li role="separator" class="divider"></li>
-              <li>
+              <!-- <li>
                 <a class="flexImportant flexItemsCenter">
                   <i class="material-icons">settings</i>
                   <span>&nbsp;&nbsp;Settings</span>
@@ -62,11 +63,11 @@
                   <span>&nbsp;&nbsp;Profile</span>
                 </a>
               </li>
-              <li role="separator" class="divider"></li>
+              <li role="separator" class="divider"></li> -->
               <li>
                 <a (click)="authService.logOut()" class="flexImportant flexItemsCenter">
                   <i class="material-icons">exit_to_app</i>
-                  <span>&nbsp;&nbsp;Logout</span>
+                  <span>&nbsp;&nbsp;Sign Out</span>
                 </a>
               </li>
             </ul>

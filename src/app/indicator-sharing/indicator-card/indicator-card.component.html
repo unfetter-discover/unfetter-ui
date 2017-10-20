@@ -2,7 +2,7 @@
     <md-card-header>
         <md-card-title>{{ indicator.name }}</md-card-title>
         <md-card-subtitle>
-            Submitted {{ indicator.created | date:'medium' }} by <a>InfosecWarriorz</a>
+            Submitted {{ indicator.created | date:'medium' }} by <a>Test Organization</a>
         </md-card-subtitle>
     </md-card-header>
 
@@ -14,7 +14,7 @@
             <md-tab label="Labels">
                 <div class="flex flexItemsCenter">
                     <md-chip-list>
-                        <md-chip *ngFor="let label of indicator.labels" [selected]="labelSelected(label)" class="cursor-pointer">{{label | capitalize}}</md-chip>
+                        <md-chip *ngFor="let label of indicator.labels" [selected]="labelSelected(label)" class="cursor-pointer chipListChip">{{label | capitalize}}</md-chip>
                     </md-chip-list>
                     <span id="addLabelWrapper" [ngClass]="{'showAddLabel': showAddLabel}" class="inlineFlex flexItemsCenter">
                         <div id="addLabelInputWrapper" class="inlineFlex flexItemsCenter">
@@ -72,7 +72,7 @@
             </md-tab>
         </md-tab-group>
 
-        <div class="mt-20" *ngIf="showCommentTextArea">
+        <div class="mt-20 overFlowHidden" [@collapseLevel]="showCommentTextArea ? 'open' : 'closed'">
             <md-input-container class="full-width">
                 <textarea mdInput mdTextareaAutosize placeholder="Comment" [(ngModel)]="commentText">{{ commentText }}</textarea>
             </md-input-container>

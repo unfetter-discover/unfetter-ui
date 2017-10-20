@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { trigger, state, transition, style, animate } from '@angular/animations';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { FormatHelpers } from '../../global/static/format-helpers';
@@ -7,6 +8,13 @@ import { AuthService } from '../../global/services/auth.service';
 @Component({
     selector: 'indicator-card',
     templateUrl: 'indicator-card.component.html',
+    animations: [
+        trigger('collapseLevel', [
+            state('open', style({ opacity: 1, height: '*' })),
+            state('closed', style({ opacity: 0, height: 0 })),
+            transition('open <=> closed', animate('200ms ease-in-out')),
+        ])
+    ],
     styleUrls: ['indicator-card.component.scss']
 })
 
@@ -70,7 +78,7 @@ export class IndicatorCardComponent implements OnInit {
         const addComment$ = this.indicatorSharingService.addComment(comment, this.indicator.id)
             .subscribe(
                 (res) => {
-                    this.indicator.labels = res.attributes.labels;
+                    this.indicator = res.attributes;
                     this.commentText = ''; 
                     this.message = 'Comment sucessfully added.';
                     setTimeout(() => this.message = '', 1500);
