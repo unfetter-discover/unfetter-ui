@@ -1,0 +1,42 @@
+#addLabelWrapper {
+    padding: 5px;
+}
+
+#addLabelInputWrapper {
+    transition: all 0.2s ease-in-out;
+    * {
+        transition: all 0.2s ease-in-out;
+    }
+    padding: 3px 15px;
+    height: 32px;
+    border-radius: 24px;
+    width: 0;
+    opacity: 0;
+    input {
+        border: none;
+        padding: 3px;
+        outline: none;
+        width: 0;
+    }
+    background-color: #e0e0e0;
+}
+
+#addLabelBtn {
+    margin-left: -30px;
+}
+
+.showAddLabel {
+    #addLabelInputWrapper {
+        width: 225px;
+        opacity: 1;
+        i {
+            margin-left: 3px;
+        }
+    }
+    input {
+        width: 152px !important;
+    }
+    #addLabelBtn i {
+        transform: rotateZ(135deg);
+    }
+}

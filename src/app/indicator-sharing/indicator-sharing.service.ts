@@ -29,4 +29,9 @@ export class IndicatorSharingService {
         const url = `${this.multiplesUrl}/${id}/like`;
         return this.genericApi.get(url);
     }
+
+    public addLabel(label, id) {
+        const url = `${this.multiplesUrl}/${id}/label`;
+        return this.genericApi.patch(url, { data: { attributes: { 'label': label } } });
+    }
 }

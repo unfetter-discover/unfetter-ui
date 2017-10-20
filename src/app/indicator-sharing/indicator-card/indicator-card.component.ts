@@ -17,7 +17,9 @@ export class IndicatorCardComponent implements OnInit {
     
     public user;
     public showCommentTextArea: boolean = false;
+    public showAddLabel: boolean = false;
     public commentText: string = '';
+    public newLabelText: string = '';
     public message = '';
     public alreadyLiked: boolean = false;
 
@@ -37,6 +39,30 @@ export class IndicatorCardComponent implements OnInit {
         return this.searchParameters.labels.length !== this.searchParameters.activeLabels.length && this.searchParameters.activeLabels.includes(label);
     }
 
+    public addLabel() {
+        if (this.newLabelText.length > 0) {
+            const newLabel = this.newLabelText;
+            this.newLabelText = '';
+            this.showAddLabel = false;
+            const addLabel$ = this.indicatorSharingService.addLabel(newLabel, this.indicator.id)
+                .subscribe(
+                    (res) => {
+                        this.indicator = res.attributes;
+                        this.message = 'Label sucessfully added.';
+                        setTimeout(() => this.message = '', 1500); 
+                    },
+                    (err) => {
+                        console.log(err);          
+                        this.message = 'Unable to add label.';
+                        setTimeout(() => this.message = '', 1500);                                    
+                    },
+                    () => {
+                        addLabel$.unsubscribe();
+                    }
+                );            
+        }       
+    }
+
     public submitComment() {
         const comment = this.commentText;
         this.showCommentTextArea = false;
@@ -44,7 +70,7 @@ export class IndicatorCardComponent implements OnInit {
         const addComment$ = this.indicatorSharingService.addComment(comment, this.indicator.id)
             .subscribe(
                 (res) => {
-                    this.indicator = res.attributes;
+                    this.indicator.labels = res.attributes.labels;
                     this.commentText = ''; 
                     this.message = 'Comment sucessfully added.';
                     setTimeout(() => this.message = '', 1500);
