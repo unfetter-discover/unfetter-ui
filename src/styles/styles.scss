@@ -137,6 +137,10 @@ label {
     display: inline-flex;
 }
 
+.inlineBlock {
+    display: inline-block;
+}
+
 .margin-top {
     margin-top: 10px;
 }
@@ -148,6 +152,10 @@ label {
 
 .margin-bottom {
     margin-bottom: 15px;
+}
+
+.overFlowHidden  {
+    overflow: hidden;
 }
 
 // Margin top & bottom helpers in increments of 3 or 5
@@ -382,6 +390,11 @@ a {
     }
 }
 
+.lightH3 {
+    font-size: 22px;
+    font-weight: 300;
+}
+
 // ~~~ Angular Material helpers, *NOT* overrides ~~~
 .buttonGrp .mat-button {
     font-size: 2.5rem;
@@ -389,7 +402,10 @@ a {
 
 .chipListChip {
     margin-top: 3px !important;
-    margin-bottom: 3px !important;
+    margin-bottom: 3px !important;    
+}
+
+.chipListChip+.chipListChip {
     margin-left: 5px !important;
 }
 

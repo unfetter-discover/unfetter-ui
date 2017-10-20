@@ -58,21 +58,25 @@ export class IndicatorSharingListComponent implements OnInit {
 
     public filterLabelChange(e) {        
         this.searchParameters.activeLabels = e.value;
-        this.filteredIndicators = this.allIndicators
-            .filter((indicator) => {
-                if (indicator.labels !== undefined && indicator.labels.length > 0) {
-                    let labelPresent = false;
-                    indicator.labels
-                        .forEach((label) => {
-                            if (this.searchParameters.activeLabels.includes(label)) {
-                                labelPresent = true;
-                            }
-                        });
-                    return labelPresent
-                } else {
-                    return false;
-                }                
-            });     
+        if (this.searchParameters.activeLabels && this.searchParameters.activeLabels.length > 0) {
+            this.filteredIndicators = this.allIndicators
+                .filter((indicator) => {
+                    if (indicator.labels !== undefined && indicator.labels.length > 0) {
+                        let labelPresent = false;
+                        indicator.labels
+                            .forEach((label) => {
+                                if (this.searchParameters.activeLabels.includes(label)) {
+                                    labelPresent = true;
+                                }
+                            });
+                        return labelPresent
+                    } else {
+                        return false;
+                    }
+                }); 
+        } else {
+            this.filteredIndicators = this.allIndicators;
+        }            
 
         this.setDisplayedIndicators();
     }
