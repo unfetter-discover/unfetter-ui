@@ -52,12 +52,11 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <p id="treeSpinner" class="flex flexItemsCenter" [style.display]="treeSpinner ? 'flex' : 'none'">
-                        <md-spinner></md-spinner>
-                    </p>
-                    <md-tab-group [style.opacity]="treeSpinner ? 0 : 1" id="tabGroup">
+                    <md-tab-group id="tabGroup">
                         <md-tab label="MATRIX">
-                            <p>Matrix!</p>
+                            <div class="matrix mb-18 mt-18 col-md-11">
+                                <kill-chain-table></kill-chain-table>
+                            </div>
                         </md-tab>
                         <md-tab label="AMA" disabled="true">
                             <p>AMA goes here!</p>

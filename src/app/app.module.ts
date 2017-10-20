@@ -9,8 +9,8 @@ import { AutoCompleteModule, CarouselModule, ProgressBarModule } from 'primeng/p
 import { ComponentModule } from './components/component.module';
 import { StixModule } from './settings/stix.module';
 // Imports for loading & configuring the in-memory web api
-import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
-import { InMemoryDataService } from './in-memory-data.service';
+// import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
+// import { InMemoryDataService } from './in-memory-data.service';
 
 /*
  * Platform and Environment providers/directives/pipes

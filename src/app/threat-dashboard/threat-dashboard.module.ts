@@ -4,22 +4,32 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { GlobalModule } from '../global/global.module';
-import { MdButtonModule, MdChipsModule, MdInputModule, MdIconModule, MdTooltipModule } from '@angular/material';
+
+import { MdButtonModule } from '@angular/material';
 import { MdCheckboxModule } from '@angular/material';
+import { MdChipsModule } from '@angular/material';
 import { MdDatepickerModule } from '@angular/material';
-import { MdSelectModule } from '@angular/material';
-import { MdSlideToggleModule, MdTabsModule } from '@angular/material';
+import { MdInputModule } from '@angular/material';
+import { MdIconModule } from '@angular/material';
 import { MdListModule } from '@angular/material';
 import { MdMenuModule } from '@angular/material';
+import { MdSelectModule } from '@angular/material';
+import { MdSlideToggleModule } from '@angular/material';
+import { MdTabsModule } from '@angular/material';
+import { MdTooltipModule } from '@angular/material';
+
+import { CarouselModule } from 'primeng/primeng';
 
 import { routing } from './threat-dashboard-routing.module';
 
 import { ThreatDashboardComponent } from './threat-dashboard.component';
 import { ThreatReportOverviewModule } from '../threat-report-overview/threat-report-overview.module';
 import { ThreatReportOverviewService } from './services/threat-report-overview.service';
+import { KillChainTableComponent } from './kill-chain-table/kill-chain-table.component';
 
 const moduleComponents = [
-  ThreatDashboardComponent
+  KillChainTableComponent,
+  ThreatDashboardComponent,
 ];
 
 const moduleServices = [
@@ -31,15 +41,17 @@ const materialModules = [
   MdCheckboxModule,
   MdChipsModule,
   MdDatepickerModule,
-  MdInputModule,
   MdIconModule,
+  MdInputModule,
   MdListModule,
+  MdMenuModule,
   MdSelectModule,
   MdSlideToggleModule,
-  MdTooltipModule,
   MdTabsModule,
-  MdMenuModule,
+  MdTooltipModule,
 ];
+
+const primengModules = [ CarouselModule ];
 
 @NgModule({
   declarations: [
@@ -51,6 +63,7 @@ const materialModules = [
     FormsModule,
     HttpClientModule,
     ...materialModules,
+    ...primengModules,
     routing,
     ThreatReportOverviewModule,
   ],
