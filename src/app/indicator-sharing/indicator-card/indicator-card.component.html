@@ -13,7 +13,10 @@
         <md-tab-group>
             <md-tab label="Labels">
                 <md-chip-list>
-                    <md-chip *ngFor="let label of indicator.labels">{{label | capitalize}}</md-chip>
+                    <md-chip 
+                        *ngFor="let label of indicator.labels" 
+                        [selected]="labelSelected(label)" 
+                        class="cursor-pointer">{{label | capitalize}}</md-chip>
                 </md-chip-list>
             </md-tab>
 
@@ -30,8 +33,20 @@
                 </div>                
             </md-tab>
 
-            <md-tab label="Comments">
-                <p>Under Construction</p>
+            <md-tab label="Comments" *ngIf="indicator.comments && indicator.comments.length > 0">
+                <div *ngFor="let comment of indicator.comments | sortByField: 'submitted'; let i = index">
+                    <div class="flex flexItemsCenter mb-5">
+                        <span>
+                            <img *ngIf="comment.user.avatar_url" src="{{ comment.user.avatar_url }}" alt="{{ comment.user.userName }} avatar" class="smallAvatar">&nbsp;
+                        </span>
+                        <span>
+                            <a>{{ comment.user.userName }}</a>
+                            <small class="text-muted"> &bull; {{ comment.submitted | date:'medium'}}</small>
+                        </span>
+                    </div>
+                    <p [innerHtml]="formatComment(comment.comment)"></p>                    
+                    <hr *ngIf="i < (indicator.comments.length - 1)">
+                </div>
             </md-tab>
 
             <md-tab label="Attack Patterns" *ngIf="attackPatterns && attackPatterns.length > 0">
@@ -49,16 +64,37 @@
             </md-tab>
         </md-tab-group>
 
+        <div class="mt-20" *ngIf="showCommentTextArea">
+            <md-input-container class="full-width">
+                <textarea mdInput mdTextareaAutosize placeholder="Comment" [(ngModel)]="commentText">{{ commentText }}</textarea>
+            </md-input-container>
+            <div class="text-right">
+                <button md-button (click)="showCommentTextArea = false; commentText = ''">
+                    <i class="material-icons md-24">arrow_back</i>
+                </button>
+                <button md-raised-button color="accent" [disabled]="commentText === ''" (click)="submitComment()">
+                    <i class="material-icons md-24">send</i>
+                </button>
+            </div>
+        </div>
+
     </md-card-content>
 
     <md-card-actions>
-        <button md-button color="primary">
-                    <i class="material-icons md-24">thumb_up</i>
-                    &nbsp;18
-                </button>
-        <button md-button color="accent">
-                    <i class="material-icons md-24">message</i>
-                    &nbsp;4
-                </button>
+        <button md-button disabled="true">{{ message }}</button>  
+
+        <button md-button color="primary" *ngIf="alreadyLiked" mdTooltip="You like this indicator">
+            <i class="material-icons md-24">thumb_up</i>
+            <span *ngIf="indicator.likes && indicator.likes.length > 0">&nbsp;{{indicator.likes.length}}</span>
+        </button>
+        <button md-button color="primary" (click)="likeIndicator()" *ngIf="!alreadyLiked">
+            <i class="material-icons md-24">thumb_up</i>
+            <span *ngIf="indicator.likes && indicator.likes.length > 0">&nbsp;{{indicator.likes.length}}</span>
+        </button>
+
+        <button md-button color="accent" (click)="showCommentTextArea = !showCommentTextArea">
+            <i class="material-icons md-24">chat_bubble_outline</i>
+            <span *ngIf="indicator.comments && indicator.comments.length > 0">&nbsp;{{indicator.comments.length}}</span>
+        </button>
     </md-card-actions>
 </md-card>
