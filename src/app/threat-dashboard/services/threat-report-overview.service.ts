@@ -87,7 +87,7 @@ export class ThreatReportOverviewService {
     }
 
     const url = this.reportsUrl;
-    const headers = this.headers;
+    const headers = this.ensureAuthHeaders(this.headers);
 
     const reports = threatReport.reports;
     const id = UUID.v4();
@@ -137,6 +137,21 @@ export class ThreatReportOverviewService {
         }
       );
     });
+  }
+
+  /**
+   * @description add auth http header is missing and it exists in local storage
+   * @param {HttpHeaders} headers 
+   * @return {HttpHeaders}
+   */
+  public ensureAuthHeaders(headers: HttpHeaders): HttpHeaders {
+    if (!headers.get('Authorization')) {
+      let token = localStorage.getItem('unfetterUiToken');
+      if (token) {
+        headers = headers.set('Authorization', token);
+      }
+    }
+    return headers;
   }
 
 }
