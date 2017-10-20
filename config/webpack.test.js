@@ -16,6 +16,8 @@ const ContextReplacementPlugin = require('webpack/lib/ContextReplacementPlugin')
  * Webpack Constants
  */
 const ENV = process.env.ENV = process.env.NODE_ENV = 'test';
+ENV.SHOWBANNER = process.env.SHOW_BANNER || false;
+ENV.BANNER_TEXT = process.env.BANNER_TEXT || '';
 
 /**
  * Webpack configuration
@@ -201,7 +203,9 @@ module.exports = function (options) {
           'ENV': JSON.stringify(ENV),
           'NODE_ENV': JSON.stringify(ENV),
           'HMR': false,
-        }
+        },
+        'SHOWBANNER': ENV.SHOWBANNER,
+        'BANNERTEXT': JSON.stringify(ENV.BANNERTEXT),
       }),
 
       /**

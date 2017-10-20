@@ -6,3 +6,18 @@
         color: rgba(255, 255, 255, 0.85);
     }
 }
+
+.banner {
+    background-color: transparent;
+    /* border-color: #faebcc; */
+    /* border: 1px solid transparent; */
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    z-index: 1031;
+    font-size: 12px;
+}
+
+.banner-text {
+    color: #effa1a;;
+}

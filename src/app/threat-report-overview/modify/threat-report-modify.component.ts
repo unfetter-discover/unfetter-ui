@@ -5,7 +5,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
 import { ThreatReportSharedService } from '../services/threat-report-shared.service';
-import { ThreatReportOverviewService } from '../services/threat-report-overview.service';
 import { ThreatReport } from '../models/threat-report.model';
 import { MdPaginator, MdSnackBar, MdDialog } from '@angular/material';
 import { ThreatReportModifyDataSource } from './threat-report-modify.datasource';
@@ -13,6 +12,7 @@ import { ThreatReportModifyDataSource } from './threat-report-modify.datasource'
 import * as UUID from 'uuid';
 import { Constance } from '../../utils/constance';
 import { ConfirmationDialogComponent } from '../../components/dialogs/confirmation/confirmation-dialog.component';
+import { ThreatReportOverviewService } from '../../threat-dashboard/services/threat-report-overview.service';
 
 @Component({
   selector: 'threat-report-modify',
@@ -36,6 +36,7 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
   public id = '';
   public inProgress = true;
   public readonly iconUrl = Constance.CAMPAIGN_ICON;
+  public readonly threatDashboard = 'threat-dashboard';
 
   private readonly subscriptions = [];
 
@@ -53,7 +54,6 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
    * @description initialize this component
    */
   public ngOnInit(): void {
-    console.log('on init');
     this.id = this.route.snapshot.paramMap.get('id');
     this.threatReport = this.sharedService.threatReportOverview;
     if (this.id && this.id.trim() !== '') {
@@ -88,7 +88,7 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
   public cancel(event: UIEvent): void {
     this.sharedService.threatReportOverview = null;
     // this.location.back();
-    this.router.navigate([`/tro`]);
+    this.router.navigate([`/${this.threatDashboard}`]);
   }
 
   /**
@@ -102,7 +102,7 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
       (reports) => {
         // console.log(`saved ${reports}`);
         // const id = (tro as any).data.id;
-        this.router.navigate([`/tro`]);
+        this.router.navigate([`/${this.threatDashboard}`]);
       },
       (err) => console.log(err),
     );

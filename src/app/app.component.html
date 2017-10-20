@@ -1,23 +1,32 @@
-<header-navigation></header-navigation>
+<div class="banner security-marking-label" *ngIf="showBanner">
+    <span class="banner-text strong">{{securityMarkingLabel}}</span>
+  </div>
+ <header-navigation></header-navigation>
+
 
 <div id="routerWrapper">
     <router-outlet></router-outlet>
 </div>
 
 <footer class="footer">
-  <div class="container-fluid">
-    <div class="col-xs-5">
-      <p> Made by <a class="white text-lighten-3" target="_blank" href="http://www.iad.gov">NSA Information Assurance</a></p>
+  <div style="display: flex; flex-direction: column;">
+    <div>
+        <div class="col-xs-5">
+            <p> Made by <a class="white text-lighten-3" target="_blank" href="http://www.iad.gov">NSA Information Assurance</a></p>
+          </div>
+          <div class="col-xs-7">
+            <p class="text-right">
+              <a routerLink="./partners">Partners</a>&emsp;|&emsp;
+              <a target="_blank" href="/api/explorer/">View API</a>
+              <span *ngIf="authService.isAdmin()">
+                &emsp;|&emsp;<a routerLink="./admin">Admin</a>
+              </span>
+            </p>
+          </div>
     </div>
-    <div class="col-xs-7">
-      <p class="text-right">
-        <a routerLink="./partners">Partners</a>&emsp;|&emsp;
-        <a target="_blank" href="/api/explorer/">View API</a>
-        <span *ngIf="authService.isAdmin()">
-          &emsp;|&emsp;<a routerLink="./admin">Admin</a>
-        </span>        
-      </p>
+    <div class="banner security-marking-label" *ngIf="showBanner">
+      <span class="banner-text strong">{{securityMarkingLabel}}</span>
     </div>
-    
+
   </div>
 </footer>

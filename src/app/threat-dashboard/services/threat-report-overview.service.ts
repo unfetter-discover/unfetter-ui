@@ -4,14 +4,12 @@ import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
+import * as UUID from 'uuid';
 
-import { ThreatReport } from '../models/threat-report.model';
-import { ThreatReportMock } from '../models/threat-report-mock.model';
 import { Constance } from '../../utils/constance';
 import { GenericApi } from '../../global/services/genericapi.service';
-import { Boundries } from '../models/boundries';
-
-import * as UUID from 'uuid';
+import { ThreatReport } from '../../threat-report-overview/models/threat-report.model';
+import { Boundries } from '../../threat-report-overview/models/boundries';
 
 @Injectable()
 export class ThreatReportOverviewService {
@@ -19,6 +17,22 @@ export class ThreatReportOverviewService {
   private readonly headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Accept': 'application/vnd.api+json' });
   private readonly reportsUrl = `${Constance.API_HOST}${Constance.REPORTS_URL}`;
   constructor(private http: HttpClient, private genericService: GenericApi) { }
+
+  /**
+   * @description pull a threat report object from the backend mongo database
+   * @param {string} id
+   */
+  public load(id: string): Observable<ThreatReport> {
+    if (!id || id.trim().length === 0) {
+      return Observable.of();
+    }
+
+    return this.loadAll()
+      .flatMap((arr) => arr)
+      .filter((el) => {
+        return el.id === id;
+      });
+  }
 
   /**
    * @description pull a list of threat report objects from the backend mongo database
@@ -73,7 +87,7 @@ export class ThreatReportOverviewService {
     }
 
     const url = this.reportsUrl;
-    const headers = this.headers;
+    const headers = this.ensureAuthHeaders(this.headers);
 
     const reports = threatReport.reports;
     const id = UUID.v4();
@@ -123,6 +137,21 @@ export class ThreatReportOverviewService {
         }
       );
     });
+  }
+
+  /**
+   * @description add auth http header is missing and it exists in local storage
+   * @param {HttpHeaders} headers 
+   * @return {HttpHeaders}
+   */
+  public ensureAuthHeaders(headers: HttpHeaders): HttpHeaders {
+    if (!headers.get('Authorization')) {
+      let token = localStorage.getItem('unfetterUiToken');
+      if (token) {
+        headers = headers.set('Authorization', token);
+      }
+    }
+    return headers;
   }
 
 }

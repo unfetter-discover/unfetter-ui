@@ -26,6 +26,7 @@
           <!-- Logged In Only -->
            <li *ngIf="authService.loggedIn()"><a routerLink="./assessments">Assessments</a></li>
           <li *ngIf="authService.loggedIn()"><a routerLink="./intrusion-set-dashboard" >Intrusion Set Dashboard</a></li>
+          <li *ngIf="authService.loggedIn()"><a routerLink="./threat-dashboard" >Threat Dashboard</a></li>
           <li *ngIf="authService.loggedIn()"><a routerLink="./stix/link-explorer">Link Explorer</a></li>
           <li *ngIf="authService.loggedIn()"><a target="_blank" href="/api/explorer/">View API</a></li>
 

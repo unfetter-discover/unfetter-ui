@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ViewChildren, QueryList, AfterViewInit, ChangeDetectorRef } from '@angular/core';
-import { ThreatReportOverviewService } from './services/threat-report-overview.service';
-import { ThreatReportOverviewDataSource } from './threat-report-overview.datasource';
-import { ThreatReport } from './models/threat-report.model';
 import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
-import { ThreatReportSharedService } from './services/threat-report-shared.service';
-import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
 import { MdDialog, MdSnackBar } from '@angular/material';
+import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
+import { ThreatReport } from './models/threat-report.model';
+import { ThreatReportSharedService } from './services/threat-report-shared.service';
+import { ThreatReportOverviewDataSource } from './threat-report-overview.datasource';
+import { ThreatReportOverviewService } from '../threat-dashboard/services/threat-report-overview.service';
 
 type troColName = keyof ThreatReport | 'actions';
 
@@ -73,7 +73,7 @@ export class ThreatReportOverviewComponent implements OnInit, AfterViewInit, OnD
    */
   public routeCreateNew(event?: UIEvent): void {
     this.sharedService.threatReportOverview = undefined;
-    this.router.navigate(['/tro/create']);
+    this.router.navigate(['/threat-dashboard/create']);
   }
 
   /**
