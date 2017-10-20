@@ -24,4 +24,9 @@ export class IndicatorSharingService {
         const url = `${this.multiplesUrl}/${id}/comment`;
         return this.genericApi.patch(url, {data: { attributes: {'comment': comment}}});
     }
+
+    public addLike(id) {
+        const url = `${this.multiplesUrl}/${id}/like`;
+        return this.genericApi.get(url);
+    }
 }

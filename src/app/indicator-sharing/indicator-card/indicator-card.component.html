@@ -69,21 +69,31 @@
                 <textarea mdInput mdTextareaAutosize placeholder="Comment" [(ngModel)]="commentText">{{ commentText }}</textarea>
             </md-input-container>
             <div class="text-right">
-                <button md-button (click)="showCommentTextArea = false; commentText = ''">Cancel</button>
-                <button md-raised-button color="accent" [disabled]="commentText === ''" (click)="submitComment()">Add Comment</button>
+                <button md-button (click)="showCommentTextArea = false; commentText = ''">
+                    <i class="material-icons md-24">arrow_back</i>
+                </button>
+                <button md-raised-button color="accent" [disabled]="commentText === ''" (click)="submitComment()">
+                    <i class="material-icons md-24">send</i>
+                </button>
             </div>
         </div>
 
     </md-card-content>
 
     <md-card-actions>
-        <button md-button disabled="true">{{ message }}</button>        
-        <button md-button color="primary">
+        <button md-button disabled="true">{{ message }}</button>  
+
+        <button md-button color="primary" *ngIf="alreadyLiked" mdTooltip="You like this indicator">
             <i class="material-icons md-24">thumb_up</i>
-            &nbsp;18
+            <span *ngIf="indicator.likes && indicator.likes.length > 0">&nbsp;{{indicator.likes.length}}</span>
         </button>
+        <button md-button color="primary" (click)="likeIndicator()" *ngIf="!alreadyLiked">
+            <i class="material-icons md-24">thumb_up</i>
+            <span *ngIf="indicator.likes && indicator.likes.length > 0">&nbsp;{{indicator.likes.length}}</span>
+        </button>
+
         <button md-button color="accent" (click)="showCommentTextArea = !showCommentTextArea">
-            <i class="material-icons md-24">message</i>
+            <i class="material-icons md-24">chat_bubble_outline</i>
             <span *ngIf="indicator.comments && indicator.comments.length > 0">&nbsp;{{indicator.comments.length}}</span>
         </button>
     </md-card-actions>

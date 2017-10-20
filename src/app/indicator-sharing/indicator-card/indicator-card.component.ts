@@ -1,7 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { FormatHelpers } from '../../global/static/format-helpers';
+import { AuthService } from '../../global/services/auth.service';
 
 @Component({
     selector: 'indicator-card',
@@ -9,16 +10,28 @@ import { FormatHelpers } from '../../global/static/format-helpers';
     styleUrls: ['indicator-card.component.scss']
 })
 
-export class IndicatorCardComponent {
+export class IndicatorCardComponent implements OnInit {
     @Input() public indicator: any;
     @Input() public attackPatterns: any;
     @Input() public searchParameters: any;
     
+    public user;
     public showCommentTextArea: boolean = false;
     public commentText: string = '';
     public message = '';
+    public alreadyLiked: boolean = false;
 
-    constructor(private indicatorSharingService: IndicatorSharingService) { }
+    constructor(private indicatorSharingService: IndicatorSharingService, private authService: AuthService) { }
+
+    public ngOnInit() {
+        this.user = this.authService.getUser();
+        if (this.indicator.likes !== undefined && this.indicator.likes.length > 0) {
+            const alreadyLiked = this.indicator.likes.find((like) => like.user.id === this.user._id);
+            if (alreadyLiked) {
+                this.alreadyLiked = true;
+            }
+        } 
+    }
 
     public labelSelected(label) {
         return this.searchParameters.labels.length !== this.searchParameters.activeLabels.length && this.searchParameters.activeLabels.includes(label);
@@ -47,5 +60,21 @@ export class IndicatorCardComponent {
 
     public formatComment(comment) {
         return FormatHelpers.whitespaceToBreak(comment);
+    }
+
+    public likeIndicator() {               
+        const addLike$ = this.indicatorSharingService.addLike(this.indicator.id)
+            .subscribe(
+                (res) => {
+                    this.indicator = res.attributes;
+                    this.alreadyLiked = true;
+                },
+                (err) => {
+                    console.log(err);                    
+                },
+                () => {
+                    addLike$.unsubscribe();
+                }
+            );
     }
 }
