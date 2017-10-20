@@ -22,10 +22,8 @@ const ENV = process.env.ENV = process.env.NODE_ENV = 'development';
 const HOST = process.env.HOST || '0.0.0.0';
 const PORT = process.env.PORT || 80;
 const HMR = helpers.hasProcessFlag('hot');
-const SHOWBANNER = process.env.SHOW_BANNER
-const BANNERTEXT = process.env.BANNER_TEXT;
-console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-console.log(BANNERTEXT)
+const SHOWBANNER = process.env.SHOW_BANNER || false;
+const BANNERTEXT = process.env.BANNER_TEXT || '';
 const METADATA = webpackMerge(commonConfig({env: ENV}).metadata, {
   host: HOST,
   port: PORT,

@@ -12,13 +12,18 @@ import { AuthService } from './global/services/auth.service';
   templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
-  public showBanner: boolean;
-  public securityMarkingLabel: string;
+  public showBanner = false;
+  public securityMarkingLabel = '';
 
   constructor(public authService: AuthService) {}
 
   public ngOnInit() {
-    this.securityMarkingLabel = BANNERTEXT;
-    this.showBanner = SHOWBANNER;
+    if (SHOWBANNER !== undefined) {
+      this.showBanner = SHOWBANNER;
+    }
+
+    if (BANNERTEXT !== undefined) {
+      this.securityMarkingLabel = BANNERTEXT;
+    }
   }
 }

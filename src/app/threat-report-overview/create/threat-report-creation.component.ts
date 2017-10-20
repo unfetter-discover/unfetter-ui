@@ -39,7 +39,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     errorMessage: 'Not a valid date'
   };
   public readonly dateFormat = this.dateFormat;
-
+  public readonly path = `threat-dashboard`;
   private readonly subscriptions = [];
 
   constructor(protected router: Router,
@@ -214,7 +214,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
   public save(event: UIEvent): void {
     this.threatReport.reports = this.reports || [];
     this.sharedService.threatReportOverview = this.threatReport;
-    this.router.navigate([`/tro/modify`, this.threatReport.id]);
+    this.router.navigate([`/${this.path}/modify`, this.threatReport.id]);
   }
 
   /**
