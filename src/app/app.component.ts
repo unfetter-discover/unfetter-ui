@@ -1,12 +1,8 @@
-/*
- * Angular 2 decorators and services
- */
-import { Component,  OnInit,  ViewEncapsulation } from '@angular/core';
+import { Component,  OnInit, ViewEncapsulation } from '@angular/core';
+
 import { AppState } from './app.service';
-/*
- * App Component
- * Top Level Component
- */
+import { AuthService } from './global/services/auth.service';
+
 @Component({
   selector: 'app',
   encapsulation: ViewEncapsulation.None,
@@ -16,6 +12,18 @@ import { AppState } from './app.service';
   templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
-  public ngOnInit() { }
+  public showBanner = false;
+  public securityMarkingLabel = '';
 
+  constructor(public authService: AuthService) {}
+
+  public ngOnInit() {
+    if (SHOWBANNER !== undefined) {
+      this.showBanner = SHOWBANNER;
+    }
+
+    if (BANNERTEXT !== undefined) {
+      this.securityMarkingLabel = BANNERTEXT;
+    }
+  }
 }

@@ -1,0 +1,108 @@
+<md-card class="indicatorCard" *ngIf="indicator">
+    <md-card-header>
+        <md-card-title>{{ indicator.name }}</md-card-title>
+        <md-card-subtitle>
+            Submitted {{ indicator.created | date:'medium' }} by <a>Test Organization</a>
+        </md-card-subtitle>
+    </md-card-header>
+
+    <md-card-content>        
+        <label>Pattern ({{ indicator.pattern_lang | capitalize }})</label>
+        <p>{{ indicator.pattern }}</p>
+
+        <md-tab-group>
+            <md-tab label="Labels">
+                <div class="flex flexItemsCenter">
+                    <md-chip-list>
+                        <md-chip *ngFor="let label of indicator.labels" [selected]="labelSelected(label)" class="cursor-pointer chipListChip">{{label | capitalize}}</md-chip>
+                    </md-chip-list>
+                    <span id="addLabelWrapper" [ngClass]="{'showAddLabel': showAddLabel}" class="inlineFlex flexItemsCenter">
+                        <div id="addLabelInputWrapper" class="inlineFlex flexItemsCenter">
+                            <input type="text" [(ngModel)]="newLabelText">
+                            <i class="material-icons md-24 cursor-pointer" (click)="addLabel()">send</i>
+                        </div>
+                        <button md-mini-fab color="accent" (click)="showAddLabel = !showAddLabel" id="addLabelBtn" class="inlineBlock">
+                            <i class="material-icons md-24">add</i>
+                        </button>
+                    </span>
+                </div>
+            </md-tab>
+
+            <md-tab label="Details">
+                <div *ngIf="indicator.description">
+                    <label>Description</label>
+                    <p>{{ indicator.description }}</p>
+                </div>
+                <div *ngIf="indicator.external_references">
+                    <label>External References</label>
+                    <md-chip-list>
+                        <md-chip *ngFor="let reference of indicator.external_references" color="accent" selected="true">{{reference.source_name | capitalize}}</md-chip>
+                    </md-chip-list>
+                </div>                
+            </md-tab>
+
+            <md-tab label="Comments" *ngIf="indicator.comments && indicator.comments.length > 0">
+                <div *ngFor="let comment of indicator.comments | sortByField: 'submitted'; let i = index">
+                    <div class="flex flexItemsCenter mb-5">
+                        <span>
+                            <img *ngIf="comment.user.avatar_url" src="{{ comment.user.avatar_url }}" alt="{{ comment.user.userName }} avatar" class="smallAvatar">&nbsp;
+                        </span>
+                        <span>
+                            <a>{{ comment.user.userName }}</a>
+                            <small class="text-muted"> &bull; {{ comment.submitted | date:'medium'}}</small>
+                        </span>
+                    </div>
+                    <p [innerHtml]="formatComment(comment.comment)"></p>                    
+                    <hr *ngIf="i < (indicator.comments.length - 1)">
+                </div>
+            </md-tab>
+
+            <md-tab label="Attack Patterns" *ngIf="attackPatterns && attackPatterns.length > 0">
+                <md-list>
+                    <md-list-item *ngFor="let ap of attackPatterns">
+                        <h4 md-line>{{ap.name}}</h4>
+                        <div md-line *ngIf="ap.kill_chain_phases">
+                            <span *ngFor="let phase of ap.kill_chain_phases; let i = index" class="text-muted">
+                                <span mdTooltip="{{ phase.kill_chain_name | capitalize }}" mdTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>
+                                <span *ngIf="i < (ap.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
+                            </span>
+                        </div>
+                    </md-list-item>
+                </md-list>
+            </md-tab>
+        </md-tab-group>
+
+        <div class="mt-20 overFlowHidden" [@collapseLevel]="showCommentTextArea ? 'open' : 'closed'">
+            <md-input-container class="full-width">
+                <textarea mdInput mdTextareaAutosize placeholder="Comment" [(ngModel)]="commentText">{{ commentText }}</textarea>
+            </md-input-container>
+            <div class="text-right">
+                <button md-button (click)="showCommentTextArea = false; commentText = ''">
+                    <i class="material-icons md-24">arrow_back</i>
+                </button>
+                <button md-raised-button color="accent" [disabled]="commentText === ''" (click)="submitComment()">
+                    <i class="material-icons md-24">send</i>
+                </button>
+            </div>
+        </div>
+
+    </md-card-content>
+
+    <md-card-actions>
+        <button md-button disabled="true">{{ message }}</button>  
+
+        <button md-button color="primary" *ngIf="alreadyLiked" mdTooltip="You like this indicator">
+            <i class="material-icons md-24">thumb_up</i>
+            <span *ngIf="indicator.likes && indicator.likes.length > 0">&nbsp;{{indicator.likes.length}}</span>
+        </button>
+        <button md-button color="primary" (click)="likeIndicator()" *ngIf="!alreadyLiked">
+            <i class="material-icons md-24">thumb_up</i>
+            <span *ngIf="indicator.likes && indicator.likes.length > 0">&nbsp;{{indicator.likes.length}}</span>
+        </button>
+
+        <button md-button color="accent" (click)="showCommentTextArea = !showCommentTextArea">
+            <i class="material-icons md-24">chat_bubble</i>
+            <span *ngIf="indicator.comments && indicator.comments.length > 0">&nbsp;{{indicator.comments.length}}</span>
+        </button>
+    </md-card-actions>
+</md-card>

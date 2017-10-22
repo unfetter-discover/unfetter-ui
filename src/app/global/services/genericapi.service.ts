@@ -8,39 +8,54 @@ export class GenericApi {
     private baseUrl = Constance.API_HOST || '';
     private data: any = null;
     private postHeaders: Headers;
+    private authHeaders: Headers;
 
     constructor(private http: Http) {
         this.postHeaders = new Headers();
         this.postHeaders.append('Content-Type', 'application/json');
         this.postHeaders.append('Accept', 'application/vnd.api+json');
+        this.authHeaders = new Headers();
+    }
+
+    public setAuthHeaders(token) {
+        this.authHeaders.set('Authorization', token);
+        this.postHeaders.set('Authorization', token);
     }
 
     public get(url: string, data?: any): Observable<any> {
         this.data = (data !== undefined && data !== null) ? '/' + data : '';
         let builtUrl = this.baseUrl + url + this.data;
-        return this.http.get(builtUrl)
+        
+        if (!this.authHeaders.get('Authorization')) {
+            let token = localStorage.getItem('unfetterUiToken');
+            if (token) {
+                this.setAuthHeaders(token);
+            }
+        }
+        
+        return this.http.get(builtUrl, {headers: this.authHeaders})
             .map(this.extractData)
             .catch(this.handleError);
     }
 
-    public post(url: string, data: any, type?: string): Observable<Response> {
+    public post(url: string, data: any, type?: string): Observable<any> {
         let builtUrl = this.baseUrl + url;
         return this.http.post(builtUrl, data, {headers: this.postHeaders})
             .map(this.extractData)
             .catch(this.handleError);
     }
 
-    public patch(url: string, data: any): Observable<Response> {
+    public patch(url: string, data: any): Observable<any> {
         let builtUrl = this.baseUrl + url;
         return this.http.patch(builtUrl, data, { headers: this.postHeaders })
             .map(this.extractData)
             .catch(this.handleError);
     }
 
-    public delete(url: string, data?: any): Observable<Response> {
+    public delete(url: string, data?: any): Observable<any> {
         this.data = (data !== undefined && data !== null) ? '/' + data : '';
         let builtUrl = this.baseUrl + url + this.data;
-        return this.http.delete(builtUrl)
+        return this.http.delete(builtUrl, {headers: this.authHeaders})
             .map(this.extractData)
             .catch(this.handleError);
     }

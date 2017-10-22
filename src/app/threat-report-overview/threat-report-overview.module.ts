@@ -3,37 +3,47 @@ import { CommonModule } from '@angular/common';
 import { ComponentModule } from '../components';
 import { GlobalModule } from '../global/global.module';
 import { routing } from './threat-report-overview-routing.module';
-import { ThreatReportOverviewComponent } from './threat-report-overview.component';
-import { ThreatReportOverviewService } from './threat-report-overview.service';
-import { ThreatReportCreationComponent } from './create/threat-report-creation.component';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
-import { MdButtonModule, MdChipsModule, MdInputModule, MdIconModule, MdAutocompleteModule } from '@angular/material';
+import { MdButtonModule, MdChipsModule, MdInputModule, MdIconModule, MdTooltipModule } from '@angular/material';
 import { MdCheckboxModule } from '@angular/material';
 import { MdDatepickerModule } from '@angular/material';
+import { MdPaginatorModule } from '@angular/material';
 import { MdSelectModule } from '@angular/material';
 import { MdSlideToggleModule } from '@angular/material';
 import { MdTableModule } from '@angular/material';
+import { MdListModule } from '@angular/material';
+
+import { ThreatReportCreationComponent } from './create/threat-report-creation.component';
+import { ThreatReportOverviewComponent } from './threat-report-overview.component';
+import { ThreatReportSharedService } from './services/threat-report-shared.service';
+import { ThreatReportModifyComponent } from './modify/threat-report-modify.component';
+import { FileUploadModule } from './file-upload/file-upload.module';
 
 const troComponents = [
   ThreatReportOverviewComponent,
-  ThreatReportCreationComponent
+  ThreatReportCreationComponent,
+  ThreatReportModifyComponent,
 ];
 
 const troServices = [
-  ThreatReportOverviewService
+  ThreatReportSharedService,
 ];
 
 const mdComponents = [
-  MdAutocompleteModule,
   MdButtonModule,
   MdCheckboxModule,
   MdChipsModule,
   MdDatepickerModule,
   MdInputModule,
+  MdIconModule,
+  MdListModule,
+  MdPaginatorModule,
   MdSelectModule,
   MdSlideToggleModule,
+  MdTooltipModule,
   MdTableModule,
-  MdIconModule,
 ]
 
 @NgModule({
@@ -44,7 +54,10 @@ const mdComponents = [
     ComponentModule,
     GlobalModule,
     CommonModule,
+    FormsModule,
+    HttpClientModule,
     ...mdComponents,
+    FileUploadModule,
     routing
   ],
   providers: [

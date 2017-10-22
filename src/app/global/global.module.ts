@@ -6,6 +6,8 @@ import { RouterModule } from '@angular/router';
 
 // Local
 import { GenericApi } from './services/genericapi.service';
+import { AuthService } from './services/auth.service';
+import { AuthGuard } from './services/auth.guard';
 import { CapitalizePipe } from './pipes/capitalize.pipe';
 import { SophisticationPipe } from './pipes/sophistication.pipe';
 import { FieldSortPipe } from './pipes/field-sort.pipe';
@@ -36,7 +38,9 @@ import { LoadingSpinnerComponent } from './components/loading-spinner/loading-sp
         LoadingSpinnerComponent
     ],
     providers: [
-        GenericApi
+        GenericApi,
+        AuthService,
+        AuthGuard
     ]
 })
 

@@ -1,0 +1,28 @@
+<div *ngIf="loading === false; else loadingBlock">
+    <md-list *ngIf="fName; else uploadBlock">
+        <md-list-item>
+            <md-icon class="paperclip md-24" md-list-icon>attachment</md-icon>
+            <h4 md-line>
+                {{ fName }}
+            </h4>
+            <p md-line>
+                {{this.numEventsParsed}} lines parsed.
+            </p>
+            <button md-icon-button class="md-24" (click)="onRemoveFile($event)">
+                <md-icon>
+                    delete_forever
+                </md-icon>
+            </button>
+        </md-list-item>
+    </md-list>
+    <ng-template #uploadBlock>
+        <button md-button md-raised-button id="uploadButton" class="" (click)="openFileUpload($event)">
+            Choose File
+        </button>
+        <input #fileUpload id="fileInput" name="file" type="file" class="hide" ([value])="fName" (change)="fileChanged($event)">
+    </ng-template>
+</div>
+
+<ng-template #loadingBlock>
+    <md-progress-bar *ngIf="loading" color="primary"  mode="indeterminate"></md-progress-bar>
+</ng-template>

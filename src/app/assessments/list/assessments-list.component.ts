@@ -28,9 +28,7 @@ export class AssessmentsListComponent implements OnInit {
     public dialog: MdDialog,
     public assessmentsService: AssessmentsService,
     public router: Router,
-    public route: ActivatedRoute) {
-        assessmentsService.url = Constance.X_UNFETTER_ASSESSMENT_URL;
-  }
+    public route: ActivatedRoute) { }
 
   public ngOnInit() {
     this.assessmentsService.load(`sort=${JSON.stringify({ 'stix.created': -1 })}`).subscribe(

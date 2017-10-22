@@ -65,7 +65,7 @@ label {
     bottom: 0;
     width: 100%;
     /* Set the fixed height of the footer here */
-    height: 30px;
+    height: auto;
     background-color: $nav-background-color;
     z-index: 1;
     padding-top: 5px;
@@ -137,12 +137,25 @@ label {
     display: inline-flex;
 }
 
+.inlineBlock {
+    display: inline-block;
+}
+
 .margin-top {
     margin-top: 10px;
 }
 
+.smallAvatar {
+    width: 26px;
+    border-radius: 15%;
+}
+
 .margin-bottom {
     margin-bottom: 15px;
+}
+
+.overFlowHidden  {
+    overflow: hidden;
 }
 
 // Margin top & bottom helpers in increments of 3 or 5
@@ -267,6 +280,10 @@ a {
     display: flex;
 }
 
+.flexImportant {
+    display: flex !important;
+}
+
 .flexItemsCenter {
     align-items: center;
 }
@@ -373,6 +390,11 @@ a {
     }
 }
 
+.lightH3 {
+    font-size: 22px;
+    font-weight: 300;
+}
+
 // ~~~ Angular Material helpers, *NOT* overrides ~~~
 .buttonGrp .mat-button {
     font-size: 2.5rem;
@@ -380,11 +402,30 @@ a {
 
 .chipListChip {
     margin-top: 3px !important;
-    margin-bottom: 3px !important;
+    margin-bottom: 3px !important;    
+}
+
+.chipListChip+.chipListChip {
     margin-left: 5px !important;
 }
 
-// ~~~ Angular Material Themes: *ALWAYS* nest in a class, *NOT* overrides ~~~
+// ~~~ Angular Material Themes: *ALWAYS* nest in a class or id, *NOT* overrides ~~~
+#indicatorSharingList {
+    .mat-card-header-text {
+        margin: 0 !important;
+        .mat-card-title {
+            font-size: 22px;
+            font-weight: 300;
+        }
+    }
+    .mat-card-actions {
+        text-align: right;
+    }
+    .mat-tab-body-content {
+        padding: 10px 3px 5px;
+    }
+}
+
 .unfetterAngularMaterialAccordion {
     .mat-expansion-panel {
         transition: box-shadow 0.3s ease-in-out;
@@ -427,3 +468,21 @@ a {
         height: 23px !important;
     }
 }
+
+// Color helpers
+.textPrimary {
+    color: $primary-color;
+}
+.textAccent {
+    color: $accent-color;
+}
+.textAccentAlt{
+    color: $accent-alt-color;
+}
+.textWarn {
+    color: $warn-color;
+}
+.textNeutral {
+    color: $neutral-color;
+}
+

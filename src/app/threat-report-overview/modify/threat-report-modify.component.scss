@@ -1,0 +1,74 @@
+.title-hr {
+    border: 2px solid rgba(1,1,1,.2);
+}
+
+md-form-field {
+    width: 100%;
+}
+
+.flex {
+    display: flex;
+}
+
+.middle {
+    // margin: 0 auto;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.title {
+    margin-bottom: 8px;
+    word-break: break-word;
+}
+
+.mb-24 {
+    margin-bottom: 24px;
+}
+
+.mat-chip-list-wrapper {
+    width: 30%;
+}
+
+.margin-chips {
+    margin-left: 0px;
+    margin-right: 4px;
+    margin-top: 16px;
+    margin-bottom: 0px;
+}
+
+.mat-column-author {
+    max-width: 115px;
+}
+
+.mat-column-actions {
+    max-width: 115px;
+}
+
+
+.mat-column-date {
+    max-width: 200px;
+}
+
+md-cell p {
+    margin-bottom: 0px;
+    margin-top: 8px;
+}
+
+md-cell a md-icon {
+    display: none;
+}
+
+h4 {
+    color: rgba(1,1,1, .54);
+}
+
+.title {
+    color: rgba(1,1,1, .54);
+}
+
+.emptyState {
+    opacity: .54;
+    text-align: center;
+    font-size: 24px;
+    color: rgba(1,1,1, .54);
+}

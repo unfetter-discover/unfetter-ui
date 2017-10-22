@@ -1,6 +1,7 @@
 #threatReportCreationComponent {
     .container {
         padding-top: 24px;
+        max-width: 960px;
     }
 
     md-form-field {
@@ -30,4 +31,9 @@
     .slideWrapper {
         margin-bottom: -8px;
     }
+
+    h2 {
+        color: rgba(1,1,1, .54);
+    }
+
 }

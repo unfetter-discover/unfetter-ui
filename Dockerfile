@@ -1,4 +1,4 @@
-FROM node:6.9.1
+FROM node:8.5-alpine
 
 LABEL MAINTAINER="UNFETTER"
 LABEL Description="UNFETTER user interface, Angular app"
@@ -30,3 +30,4 @@ RUN npm --loglevel error run build:prod && \
 # Start Application
 EXPOSE 80
 CMD [ "npm --loglevel error", "run", "server:dev:alt"]
+

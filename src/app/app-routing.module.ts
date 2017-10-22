@@ -5,18 +5,29 @@ import { HomeComponent } from './home';
 import { IntrusionSetDashboardComponent } from './intrusion-set-dashboard/intrusion-set-dashboard.component';
 import { PartnersComponent } from './partners/partners.component';
 import { NoContentComponent } from './no-content';
-
-// import { CanDeactivateGuard }       from './can-deactivate-guard.service';
-// import { AuthGuard }                from './auth-guard.service';
+import { AuthGuard } from './global/services/auth.guard';
 import { SelectivePreloadingStrategy } from './selective-preloading-strategy';
+import { UserRoles } from './global/enums/user-roles.enum'
 
 const appRoutes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
   { path: 'partners', component: PartnersComponent },
-  { path: 'intrusion-set-dashboard', component: IntrusionSetDashboardComponent },
-  { path: 'assessments', loadChildren: './assessments#AssessmentsModule' },
-  { path: 'tro', loadChildren: 'app/threat-report-overview/threat-report-overview.module#ThreatReportOverviewModule' },
+  { path: 'intrusion-set-dashboard', component: IntrusionSetDashboardComponent, canActivate: [AuthGuard] },
+  { path: 'assessments', loadChildren: './assessments#AssessmentsModule', canActivate: [AuthGuard] },
+  { path: 'threat-dashboard', loadChildren: 'app/threat-dashboard/threat-dashboard.module#ThreatDashboardModule', canActivate: [AuthGuard] },
+  { path: 'users', loadChildren: 'app/users/users.module#UsersModule' },
+  { path: 'indicator-sharing', loadChildren: 'app/indicator-sharing/indicator-sharing.module#IndicatorSharingModule' },
+  { 
+    path: 'admin', 
+    loadChildren: 'app/admin/admin.module#AdminModule',
+    canActivate: [AuthGuard],
+    data: {
+      ROLES: [
+        UserRoles.ADMIN
+      ]
+    }
+  },
   { path: '**', component: NoContentComponent },
 ];
 

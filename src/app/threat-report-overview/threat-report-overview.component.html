@@ -1,22 +1,19 @@
-<div class="container">
+<div class="container" *ngIf="!loading; loadingBlock">
     <div class="row first-line">
-        <div class="col-sm-6 mat-headline title-border">
-            <div>
-                Threat Reports Overview
-            </div>
-            <span class="mat-subheading-1">
-                View your recent workproducts or create a new one
+        <div class="col-sm-6 title-border">
+            <h2>
+                Your Work Product(s)
+            </h2>
+            <span class="subtitle">
+                View your recent work products or create a new one.  Work products contain scope, in terms of query boundries in addition to reporting references.  Work products are not shareable at this time.
             </span>
         </div>
         <div class="col-sm-4 top-right-panel">
-            <div class="mat-headline">
+            <h2>
                 Create New Product
-            </div>
-            <span class="mat-subheading-1">
-                Loreum ipsum dorat
-            </span>
+            </h2>
             <span>
-                <button color="primary" md-raised-button routerLink="./create/">NEW</button>
+                <button color="primary" md-raised-button (click)="routeCreateNew($event)">NEW</button>
             </span>
         </div>
     </div>
@@ -33,29 +30,47 @@
         <div class="col-md-12">
             <md-table class="mat-elevation-z3" #table [dataSource]="dataSource">
 
-                <ng-container mdColumnDef="id">
-                    <md-header-cell *mdHeaderCellDef> ID </md-header-cell>
-                    <md-cell *mdCellDef="let row"> {{row.id}} </md-cell>
-                </ng-container>
-
                 <ng-container mdColumnDef="name">
                     <md-header-cell *mdHeaderCellDef> Name </md-header-cell>
-                    <md-cell *mdCellDef="let row"> {{row.name}} </md-cell>
+                    <md-cell *mdCellDef="let row">
+                        {{row.name}}
+                    </md-cell>
                 </ng-container>
-            
+
                 <ng-container mdColumnDef="date">
                     <md-header-cell *mdHeaderCellDef> Modified </md-header-cell>
-                    <md-cell *mdCellDef="let row"> {{row.date}} </md-cell>
+                    <md-cell *mdCellDef="let row"> {{ row.date | date:'medium' }} </md-cell>
                 </ng-container>
-            
+
                 <ng-container mdColumnDef="author">
                     <md-header-cell *mdHeaderCellDef> Author </md-header-cell>
                     <md-cell *mdCellDef="let row"> {{row.author}} </md-cell>
                 </ng-container>
-            
+
+                <ng-container mdColumnDef='actions'>
+                    <md-header-cell *mdHeaderCellDef> </md-header-cell>
+                    <md-cell *mdCellDef="let row">
+                        <span class="buttonGrp text-right">
+                            <button color="accent" md-button routerLink="./view/{{row.id}}">
+                               <md-icon>explore</md-icon>
+                            </button>
+                            <button color="primary" md-button routerLink="./modify/{{row.id}}">
+                                <md-icon>edit</md-icon>
+                            </button>
+                                <button color="warn" md-button (click)="deleteButtonClicked(row)">
+                                <md-icon>delete</md-icon>
+                            </button>
+                        </span>
+                    </md-cell>
+                </ng-container>
+
                 <md-header-row *mdHeaderRowDef="displayCols"></md-header-row>
                 <md-row *mdRowDef="let row; columns: displayCols;"></md-row>
             </md-table>
         </div>
     </div>
 </div>
+
+<ng-template #loadingBlock>
+    <loading-spinner></loading-spinner>
+</ng-template>

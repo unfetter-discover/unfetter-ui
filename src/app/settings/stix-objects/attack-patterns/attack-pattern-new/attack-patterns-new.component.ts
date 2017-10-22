@@ -29,6 +29,7 @@ export class AttackPatternNewComponent extends AttackPatternEditComponent implem
          let sub = super.create(this.attackPattern).subscribe(
             (data) => {
                  this.location.back();
+                 this.saveCourseOfAction(data[0].id);
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
