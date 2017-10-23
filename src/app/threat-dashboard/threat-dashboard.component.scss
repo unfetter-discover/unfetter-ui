@@ -1,5 +1,7 @@
-$header_gradient_start: #0288D1;
-$header_gradient_end: #03A9F4;
+// $header_gradient_start: #0288D1;
+// $header_gradient_end: #03A9F4;
+$header_gradient_lighter: #009688;
+$header_gradient_darker: #00796B;
 
 .stix-icon {
     background-color: #F44336;
@@ -10,6 +12,7 @@ $header_gradient_end: #03A9F4;
 
 .title {
     vertical-align: middle;
+    color: $header_gradient_lighter;
 }
 
 md-list-item {
@@ -22,15 +25,20 @@ md-list-item {
     box-shadow: 3px 0 6px rgba(0,0,0,.24);
 
     .header {
-        background: linear-gradient(60deg,$header_gradient_end,  $header_gradient_start);
+        background: linear-gradient(60deg, $header_gradient_darker, $header_gradient_lighter);
         height: 150px;
         padding: 18px;
         color: rgba(255,255,255, .87);
     }
 }
 
-.main-panel {
-    padding-top: 15px;
+@media only screen and (max-width: 992px) {
+
+    .main-panel {
+        padding-top: 15px;
+        padding-left: 16px;
+    }
+    
 }
 
 @media only screen and (min-width: 992px) {
@@ -40,21 +48,28 @@ md-list-item {
         top: 0;
         overflow-y: auto;
     }
-
+    
     .main-panel {
+        padding-top: 15px;
         margin-left: 18%;
     }
+
 }
 
-#treeSpinner {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    justify-content: center;
-    flex-flow: column;
-    margin-left: -15px;
-    min-height: 70vh;
-    z-index: 100;
+.matrix { 
+    padding-left: 0px;
+}
+
+#tabGroup .carouselSubheadingRow {
+
+    .badge {
+        background-color: #ccc !important;
+    }
+
+    .kill-chain-div {
+        font-weight: bold;
+        background: $header_gradient_lighter;
+    }
 }
 
 #tabGroup {
