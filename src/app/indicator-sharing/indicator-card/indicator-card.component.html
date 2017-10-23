@@ -1,10 +1,15 @@
-<mat-card class="indicatorCard" *ngIf="indicator">
-    <mat-card-header>
-        <mat-card-title>{{ indicator.name }}</mat-card-title>
-        <mat-card-subtitle>
-            Submitted {{ indicator.created | date:'medium' }} by <a>Test Organization</a>
-        </mat-card-subtitle>
-    </mat-card-header>
+<md-card class="indicatorCard" *ngIf="indicator">
+    <md-card-header>
+        <md-card-title>{{ indicator.name }}</md-card-title>
+        <md-card-subtitle>
+            <!-- TODO add link to creator -->
+            Submitted {{ indicator.created | date:'medium' }} 
+            <span *ngIf="creator">
+                 by <a routerLink="/stix/identities/{{creator.id}}">{{creator.name}}</a>
+            </span>
+            
+        </md-card-subtitle>
+    </md-card-header>
 
     <mat-card-content>
         <label>Pattern ({{ indicator.pattern_lang | capitalize }})</label>
@@ -19,7 +24,7 @@
                     <span id="addLabelWrapper" [ngClass]="{'showAddLabel': showAddLabel}" class="inlineFlex flexItemsCenter">
                         <div id="addLabelInputWrapper" class="inlineFlex flexItemsCenter">
                             <input type="text" [(ngModel)]="newLabelText">
-                            <i class="material-icons mat-24 cursor-pointer" (click)="addLabel()">send</i>
+                            <i class="material-icons md-24 cursor-pointer" [ngClass]="{'text-muted': newLabelText.length === 0}" (click)="addLabel()" mdTooltip="Add Label">send</i>
                         </div>
                         <button mat-mini-fab color="accent" (click)="showAddLabel = !showAddLabel" id="addLabelBtn" class="inlineBlock">
                             <i class="material-icons mat-24">add</i>

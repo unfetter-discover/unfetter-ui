@@ -11,6 +11,7 @@ export class IndicatorSharingListComponent implements OnInit {
 
     public displayedIndicators: any;
     public allIndicators: any;
+    public identities: any[];
     public filteredIndicators: any;
     public DEFAULT_LENGTH: number = 5;
     public serverCallComplete: boolean = false;
@@ -23,6 +24,20 @@ export class IndicatorSharingListComponent implements OnInit {
     constructor(private indicatorSharingService: IndicatorSharingService) { }
 
     public ngOnInit() { 
+        const getIdentities$ = this.indicatorSharingService.getIdentities()
+            .subscribe(
+                (res) => {
+                    this.identities = res.map((r) => r.attributes);
+                    console.log(this.identities);                
+                },
+                (err) => {
+                    console.log(err);                
+                },
+                () => {
+                    getIdentities$.unsubscribe();
+                }
+            );
+
         const getIndicators$ = this.indicatorSharingService.getIndicators()
             .subscribe(
                 (results) => {
@@ -113,5 +128,15 @@ export class IndicatorSharingListComponent implements OnInit {
 
     public getAttackPatternsByIndicatorId(indicatorId) {
         return this.indicatorToAttackPatternMap[indicatorId] !== undefined ? this.indicatorToAttackPatternMap[indicatorId] : [];
+    }
+
+    public getIdentityNameById(createdByRef) {
+        const identityMatch = this.identities.find((identity) => identity.id === createdByRef);
+        
+        if (identityMatch && identityMatch.name !== undefined) {
+            return { id: identityMatch.id, name: identityMatch.name};
+        } else {
+            return false;
+        }
     }
 }

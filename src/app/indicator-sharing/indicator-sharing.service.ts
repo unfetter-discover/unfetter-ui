@@ -8,6 +8,7 @@ export class IndicatorSharingService {
 
     public baseUrl = Constance.INDICATOR_URL;
     public multiplesUrl = Constance.MULTIPLES_URL;
+    public identitiesUrl = Constance.IDENTITIES_URL;
 
     constructor(private genericApi: GenericApi) { }
 
@@ -34,4 +35,8 @@ export class IndicatorSharingService {
         const url = `${this.multiplesUrl}/${id}/label`;
         return this.genericApi.patch(url, { data: { attributes: { 'label': label } } });
     }
+
+    public getIdentities() {
+        return this.genericApi.get(this.identitiesUrl);
+    }    
 }
