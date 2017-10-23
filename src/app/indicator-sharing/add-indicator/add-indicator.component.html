@@ -1,0 +1,108 @@
+<div id="addIndicator">
+    <form [formGroup]="form" novalidate (ngSubmit)="submitIndicator()">
+
+        <md-form-field class="full-width mb-6">
+            <input mdInput required placeholder="Name" formControlName="name">
+            <md-error *ngIf="form.get('name').hasError('required')">
+                Name is <strong>required</strong>
+            </md-error>
+        </md-form-field>
+
+        <md-form-field class="full-width mb-6">
+            <textarea mdInput placeholder="Description" formControlName="description"></textarea>
+        </md-form-field>
+
+        <md-form-field class="full-width mb-6">
+            <input mdInput required placeholder="Pattern Language" formControlName="pattern_lang">
+            <md-error *ngIf="form.get('pattern_lang').hasError('required')">
+                Pattern Language is <strong>required</strong>
+            </md-error>
+        </md-form-field>
+
+        <md-form-field class="full-width mb-6">
+            <textarea mdInput required placeholder="Pattern" formControlName="pattern"></textarea>
+            <md-error *ngIf="form.get('pattern').hasError('required')">
+                Pattern is <strong>required</strong>
+            </md-error>
+        </md-form-field>
+
+        <span class="mb-6">
+            <md-form-field>
+                <input mdInput required [mdDatepicker]="validFromPicker" placeholder="Valid From Date" formControlName="valid_from">
+                <md-datepicker-toggle mdSuffix [for]="validFromPicker"></md-datepicker-toggle>
+                <md-datepicker #validFromPicker></md-datepicker>
+                <md-error *ngIf="form.get('valid_from').hasError('required')">
+                     Valid From is <strong>required</strong>
+                </md-error>
+            </md-form-field>
+        </span>
+        
+        <span class="mb-6" style="padding-left: 30px;">
+            <md-form-field>
+                <input mdInput [mdDatepicker]="validUntilPicker" placeholder="Valid Until" formControlName="valid_until">
+                <md-datepicker-toggle mdSuffix [for]="validUntilPicker"></md-datepicker-toggle>
+                <md-datepicker #validUntilPicker></md-datepicker>
+            </md-form-field>
+        </span>
+
+        <!-- ~~~ External References ~~~ -->
+        <h5>External References</h5>
+        <div formArrayName="external_references">
+            <div *ngFor="let extRef of form.controls.external_references.controls; let i = index" [formGroupName]="i">
+
+                <md-form-field class="full-width mb-6">
+                    <input mdInput required placeholder="Source Name" formControlName="source_name">
+                    <md-error *ngIf="extRef.get('source_name').hasError('required')">
+                        Source Name is <strong>required</strong>
+                    </md-error>
+                </md-form-field>
+
+                <md-form-field class="full-width mb-6">
+                    <input mdInput required placeholder="External ID" formControlName="external_id">
+                    <md-error *ngIf="extRef.get('external_id').hasError('required')">
+                        External ID is <strong>required</strong>
+                    </md-error>
+                </md-form-field>
+
+                <md-form-field class="full-width mb-6">
+                    <textarea mdInput placeholder="Description" formControlName="description"></textarea>
+                </md-form-field>
+
+                <md-form-field class="full-width mb-6">
+                    <input mdInput required placeholder="URL" formControlName="url">
+                </md-form-field>   
+
+            </div>
+        </div>
+        <!-- ~~~ End of External References ~~~ -->
+
+        <!-- ~~~ Kill Chain Phases ~~~ -->
+        <h5>Kill Chain Phases</h5>
+        <div formArrayName="kill_chain_phases">
+            <div *ngFor="let kill_chain of form.controls.kill_chain_phases.controls; let i = index" [formGroupName]="i">
+
+                <md-form-field class="full-width mb-6">
+                    <input mdInput required placeholder="Kill Chain Name" formControlName="kill_chain_name">
+                    <md-error *ngIf="kill_chain.get('kill_chain_name').hasError('required')">
+                         Kill Chain Name is <strong>required</strong>
+                    </md-error>
+                </md-form-field>
+
+                <md-form-field class="full-width mb-6">
+                    <input mdInput required placeholder="Phase Name" formControlName="phase_name">
+                    <md-error *ngIf="kill_chain.get('phase_name').hasError('required')">
+                         Phase Name is <strong>required</strong>
+                    </md-error>
+                </md-form-field>
+
+            </div>
+        </div>
+        <!-- ~~~ End of Kill Chain Phases ~~~ -->
+
+    </form>
+
+    <p class="text-right">
+        <button md-button md-dialog-close="false">CANCEL</button>
+        <button md-raised-button color="primary">SAVE</button>
+    </p>
+</div>

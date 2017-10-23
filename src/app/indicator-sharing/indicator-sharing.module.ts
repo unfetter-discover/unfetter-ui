@@ -12,6 +12,7 @@ import { GlobalModule } from '../global/global.module';
 import { IndicatorSharingLayoutComponent } from './indicator-sharing-layout/indicator-sharing-layout.component';
 import { IndicatorSharingListComponent } from './indicator-sharing-list/indicator-sharing-list.component';
 import { IndicatorCardComponent } from './indicator-card/indicator-card.component';
+import { AddIndicatorComponent } from './add-indicator/add-indicator.component.ts';
 
 // Services
 import { IndicatorSharingService } from './indicator-sharing.service';
@@ -39,10 +40,14 @@ const matModules = [
     declarations: [
         IndicatorSharingLayoutComponent,
         IndicatorSharingListComponent,
-        IndicatorCardComponent
+        IndicatorCardComponent,
+        AddIndicatorComponent
     ],
     providers: [
         IndicatorSharingService
     ],
+    entryComponents: [
+        AddIndicatorComponent
+    ]
 })
 export class IndicatorSharingModule { }
