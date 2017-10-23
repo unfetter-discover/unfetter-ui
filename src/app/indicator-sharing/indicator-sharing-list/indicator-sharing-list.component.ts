@@ -27,8 +27,7 @@ export class IndicatorSharingListComponent implements OnInit {
         const getIdentities$ = this.indicatorSharingService.getIdentities()
             .subscribe(
                 (res) => {
-                    this.identities = res.map((r) => r.attributes);
-                    console.log(this.identities);                
+                    this.identities = res.map((r) => r.attributes);            
                 },
                 (err) => {
                     console.log(err);                
@@ -131,7 +130,7 @@ export class IndicatorSharingListComponent implements OnInit {
     }
 
     public getIdentityNameById(createdByRef) {
-        const identityMatch = this.identities.find((identity) => identity.id === createdByRef);
+        const identityMatch = this.identities && this.identities.length > 0 ? this.identities.find((identity) => identity.id === createdByRef) : null;
         
         if (identityMatch && identityMatch.name !== undefined) {
             return { id: identityMatch.id, name: identityMatch.name};

@@ -10,6 +10,7 @@ import { GlobalModule } from '../global/global.module';
 import { LoginCallbackComponent } from './login-callback/login-callback.component';
 import { RegisterComponent } from './register/register.component';
 import { UsersService } from './users.service';
+import { ProfileComponent } from './profile/profile.component';
 
 const matModules = [
     MatCardModule,
@@ -30,7 +31,8 @@ const matModules = [
     ],
     declarations: [
         LoginCallbackComponent,
-        RegisterComponent
+        RegisterComponent,
+        ProfileComponent
     ],
     providers: [
         UsersService

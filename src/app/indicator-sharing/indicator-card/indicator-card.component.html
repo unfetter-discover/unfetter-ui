@@ -53,7 +53,7 @@
                             <img *ngIf="comment.user.avatar_url" src="{{ comment.user.avatar_url }}" alt="{{ comment.user.userName }} avatar" class="smallAvatar">&nbsp;
                         </span>
                         <span>
-                            <a>{{ comment.user.userName }}</a>
+                            <a routerLink="/users/profile/{{comment.user.id}}">{{ comment.user.userName }}</a>
                             <small class="text-muted"> &bull; {{ comment.submitted | date:'medium'}}</small>
                         </span>
                     </div>

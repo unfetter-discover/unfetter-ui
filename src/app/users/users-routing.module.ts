@@ -3,6 +3,7 @@ import { ModuleWithProviders } from '@angular/core';
 
 import { LoginCallbackComponent } from './login-callback/login-callback.component';
 import { RegisterComponent } from './register/register.component';
+import { ProfileComponent } from './profile/profile.component';
 
 const routes = [
     {
@@ -10,6 +11,9 @@ const routes = [
     },
     {
         path: 'register', component: RegisterComponent,
+    },
+    {
+        path: 'profile/:id', component: ProfileComponent
     }
 ]
 

@@ -6,8 +6,11 @@ import { Constance } from '../utils/constance';
 
 @Injectable()
 export class UsersService {
+
     private userFromTokenUrl = Constance.USER_FROM_TOKEN_URL;
     private finalizeRegistrationUrl = Constance.FINALIZE_REGISTRATION_URL;
+    private profileByIdUrl = Constance.PROFILE_BY_ID_URL;
+
     constructor(private genericApi: GenericApi) { }
 
     public getUserFromToken(): Observable<any> {
@@ -16,5 +19,9 @@ export class UsersService {
 
     public finalizeRegistration(user): Observable<any> {
         return this.genericApi.post(this.finalizeRegistrationUrl, {data: {attributes: user}});
+    }
+
+    public getUserProfileById(userId): Observable<any> {
+        return this.genericApi.get(`${this.profileByIdUrl}/${userId}`);
     }
 }
