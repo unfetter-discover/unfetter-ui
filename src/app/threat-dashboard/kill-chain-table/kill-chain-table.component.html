@@ -17,8 +17,12 @@
                     <div class="ui-grid-col-12">
                         <div class="carousel-content-wrapper">
                             <div class="ui-grid ui-grid-responsive">
-                                <div class="ui-grid-row" style="margin: 2px 0px;" *ngFor="let attack_pattern of killChainPhase.attack_patterns">
-                                    <div class="ui-grid-col-12 attack-pattern-div" [style.color]="attack_pattern.fore" [style.background]="attack_pattern.back">{{attack_pattern.name}} {{attack_pattern.color}}</div>
+                                <div class="ui-grid-row" *ngFor="let attack_pattern of killChainPhase.attack_patterns">
+                                    <div class="ui-grid-col-12 attack-pattern-div" [style.color]="attack_pattern.foregroundColor" [style.background]="attack_pattern.backgroundColor">
+                                        <div class="flexCenter">
+                                            {{attack_pattern.name}}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

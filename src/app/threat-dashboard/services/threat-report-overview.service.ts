@@ -98,6 +98,7 @@ export class ThreatReportOverviewService {
       workProduct.boundries = new Boundries();
       workProduct.boundries.startDate = threatReport.boundries.startDate;
       workProduct.boundries.endDate = threatReport.boundries.endDate;
+      // Set does not serialize well?, so this needs to be an Array
       workProduct.boundries.intrusions = Array.from(threatReport.boundries.intrusions);
       workProduct.boundries.malware = Array.from(threatReport.boundries.malware);
       workProduct.boundries.targets = Array.from(threatReport.boundries.targets);

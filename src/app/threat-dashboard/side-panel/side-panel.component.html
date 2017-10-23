@@ -1,0 +1,54 @@
+<div class="header">
+    <span class="mat-display-2">{{threatReport.name}}</span>
+    <p class="mat-subheader-1">
+        {{threatReport.reports.length}} OBJECTS
+    </p>
+    <div *ngIf="threatReport.boundries.startDate || threatReport.boundries.endDate; else dateUnspecified" class="header-details">
+        <span *ngIf="threatReport.boundries.startDate; else openEnded">
+            {{threatReport.boundries.startDate | date: 'dd/MM/yyyy' }}
+        </span>
+        <span> - </span>
+        <span *ngIf="threatReport.boundries.endDate; else openEnded">
+            {{threatReport.boundries.endDate | date: 'dd/MM/yyyy' }}
+        </span>
+        <ng-template #openEnded>
+            <span>*</span>
+        </ng-template>
+    </div>
+    <ng-template #dateUnspecified>
+        <div class="header-details">
+            No Date Specified
+        </div>
+    </ng-template>
+</div>
+<div>
+    <md-menu #menu="mdMenu">
+        <button md-menu-item disabled>
+            <md-icon aria-hidden="true">content_copy</md-icon>
+            <span>clone</span>
+        </button>
+        <button md-menu-item disabled>
+            <md-icon aria-hidden="true">mode_edit</md-icon>
+            <span>edit</span>
+        </button>
+        <button md-menu-item disabled>
+            <md-icon aria-hidden="true">delete</md-icon>
+            <span>delete</span>
+        </button>
+    </md-menu>
+    <md-list dense>
+        <md-list-item *ngFor="let tro of threatReport.reports">
+            <h4 md-line>
+                {{tro.name}}
+            </h4>
+            <div md-line class="md-caption">
+                {{tro.description}}
+            </div>
+            <button md-icon-button [mdMenuTriggerFor]="menu">
+                <md-icon>
+                    more_vert
+                </md-icon>
+            </button>
+        </md-list-item>
+    </md-list>
+</div>

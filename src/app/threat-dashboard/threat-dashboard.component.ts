@@ -26,6 +26,7 @@ export class ThreatDashboardComponent implements OnInit {
   public loading = true;
   public treeSpinner: boolean = false;
   public readonly subscriptions: Subscription[] = [];
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
