@@ -26,9 +26,11 @@ import { ThreatDashboardComponent } from './threat-dashboard.component';
 import { ThreatReportOverviewModule } from '../threat-report-overview/threat-report-overview.module';
 import { ThreatReportOverviewService } from './services/threat-report-overview.service';
 import { KillChainTableComponent } from './kill-chain-table/kill-chain-table.component';
+import { SidePanelComponent } from './side-panel/side-panel.component';
 
 const moduleComponents = [
   KillChainTableComponent,
+  SidePanelComponent,
   ThreatDashboardComponent,
 ];
 

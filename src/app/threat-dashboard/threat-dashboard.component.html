@@ -1,43 +1,7 @@
 <div class="container-fluid fadeIn" *ngIf="threatReport; else loadingBlock">
     <div class="row">
         <div class="side-panel col-md-2">
-            <div class="header">
-                <span class="mat-display-2">{{threatReport.name}}</span>
-                <p class="mat-subheader-1">
-                    {{threatReport.reports.length}} OBJECTS
-                </p>
-            </div>
-            <div>
-                <md-menu #menu="mdMenu">
-                    <button md-menu-item disabled>
-                        <md-icon aria-hidden="true">content_copy</md-icon>
-                        <span>clone</span>
-                    </button>
-                    <button md-menu-item disabled>
-                            <md-icon aria-hidden="true">mode_edit</md-icon>
-                            <span>edit</span>
-                    </button>    
-                    <button md-menu-item disabled>
-                        <md-icon aria-hidden="true">delete</md-icon>
-                        <span>delete</span>
-                    </button>
-                </md-menu>
-                <md-list dense>
-                    <md-list-item *ngFor="let tro of threatReport.reports">
-                        <h4 md-line>
-                            {{tro.name}}
-                        </h4>
-                        <div md-line class="md-caption">
-                            {{tro.description}}
-                        </div>
-                        <button md-icon-button [mdMenuTriggerFor]="menu">
-                            <md-icon>
-                                more_vert
-                            </md-icon>
-                        </button>
-                    </md-list-item>
-                </md-list>
-            </div>
+            <unf-side-panel [threatReport]="threatReport"></unf-side-panel>
         </div>
         <div class="main-panel col-md-10">
             <div class="row">
@@ -55,7 +19,7 @@
                     <md-tab-group id="tabGroup">
                         <md-tab label="MATRIX">
                             <div class="matrix mb-18 mt-18 col-md-11">
-                                <kill-chain-table></kill-chain-table>
+                                <kill-chain-table [threatReport]="threatReport"></kill-chain-table>
                             </div>
                         </md-tab>
                         <md-tab label="AMA" disabled="true">

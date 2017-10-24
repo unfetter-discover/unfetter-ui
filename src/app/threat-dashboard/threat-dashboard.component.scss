@@ -1,10 +1,13 @@
 // $header_gradient_start: #0288D1;
 // $header_gradient_end: #03A9F4;
+$red_500: #F44336;
 $header_gradient_lighter: #009688;
 $header_gradient_darker: #00796B;
+$teal_200: #80CBC4;
+$teal_100: #B2DFDB;
 
 .stix-icon {
-    background-color: #F44336;
+    background-color: $red_500;
     border-radius: 50%;
     height: 64px;
     width: 64px;
@@ -15,21 +18,10 @@ $header_gradient_darker: #00796B;
     color: $header_gradient_lighter;
 }
 
-md-list-item {
-    border-bottom: 1px solid rgba(1,1,1, .54);
-}
-
 .side-panel {
     padding: 0px;
     padding-top: 55px;
     box-shadow: 3px 0 6px rgba(0,0,0,.24);
-
-    .header {
-        background: linear-gradient(60deg, $header_gradient_darker, $header_gradient_lighter);
-        height: 150px;
-        padding: 18px;
-        color: rgba(255,255,255, .87);
-    }
 }
 
 @media only screen and (max-width: 992px) {
@@ -60,18 +52,8 @@ md-list-item {
     padding-left: 0px;
 }
 
-#tabGroup .carouselSubheadingRow {
-
-    .badge {
-        background-color: #ccc !important;
-    }
-
-    .kill-chain-div {
-        font-weight: bold;
-        background: $header_gradient_lighter;
-    }
-}
-
 #tabGroup {
     transition: opacity 0.3s ease-in-out;
 }
+
+

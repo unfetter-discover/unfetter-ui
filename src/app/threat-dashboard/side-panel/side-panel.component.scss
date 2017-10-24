@@ -1,0 +1,20 @@
+$header_gradient_lighter: #009688;
+$header_gradient_darker: #00796B;
+$red_500: #F44336;
+$teal_200: #80CBC4;
+$teal_100: #B2DFDB;
+
+.header {
+    background: linear-gradient(60deg, $header_gradient_darker, $header_gradient_lighter);
+    height: 150px;
+    padding: 18px;
+    color: rgba(255,255,255, .87);
+    
+    .mat-subheader-1, .header-details {
+        color: $teal_200;
+    }
+}
+
+md-list-item {
+    border-bottom: 1px solid rgba(1,1,1, .12);
+}
