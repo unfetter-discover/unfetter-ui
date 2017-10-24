@@ -13,6 +13,7 @@ import { StixTableComponent } from './components/stix-table/stix-table.component
 import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
 import { KillChainPhasesReactiveComponent } from './components/kill-chain-phases/kill-chain-phases.component';
 import { ExternalReferencesReactiveComponent } from './components/external-references/external-references.component';
+import { AddLabelReactiveComponent } from './components/add-label/add-label.component';
 
 // Services
 import { GenericApi } from './services/genericapi.service';
@@ -44,7 +45,8 @@ import { FieldSortPipe } from './pipes/field-sort.pipe';
         FieldSortPipe, 
         LoadingSpinnerComponent,
         KillChainPhasesReactiveComponent,
-        ExternalReferencesReactiveComponent
+        ExternalReferencesReactiveComponent,
+        AddLabelReactiveComponent
     ],
     declarations: [
         CapitalizePipe, 
@@ -54,7 +56,8 @@ import { FieldSortPipe } from './pipes/field-sort.pipe';
         FieldSortPipe, 
         LoadingSpinnerComponent,
         KillChainPhasesReactiveComponent,
-        ExternalReferencesReactiveComponent
+        ExternalReferencesReactiveComponent,
+        AddLabelReactiveComponent
     ],
     providers: [
         GenericApi,

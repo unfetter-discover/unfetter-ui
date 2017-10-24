@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { IndicatorForm } from '../../global/form-models/indicator';
+import { IndicatorSharingService } from '../indicator-sharing.service';
 
 @Component({
     selector: 'add-indicator',
@@ -13,7 +14,7 @@ export class AddIndicatorComponent implements OnInit {
 
     public form: FormGroup;
 
-    constructor() { }
+    constructor(private indicatorSharingService: IndicatorSharingService) { }    
 
     public ngOnInit() {
         this.resetForm();     
@@ -24,6 +25,58 @@ export class AddIndicatorComponent implements OnInit {
     }
 
     public submitIndicator() {
-        
+        const tempIndicator = this.buildIndicator({}, this.form.value);
+        const addIndicator$ = this.indicatorSharingService.addIndicator(tempIndicator)
+            .subscribe(
+                (res) => {
+                    console.log(res);                    
+                    this.resetForm();
+                },
+                (err) => {
+                    console.log(err);                    
+                },
+                () => {
+                    addIndicator$.unsubscribe();
+                }
+            );
+    }
+
+    private buildIndicator(tempIndicator, obj) {
+        for (let prop in obj) {
+            if (Array.isArray(obj[prop])) {
+                if (obj[prop].length > 0) {
+                    tempIndicator[prop] = [];
+                    obj[prop].forEach((item, i) => {
+                        if (item instanceof Object && !(item instanceof Date)) {
+                            tempIndicator[prop].push(this.buildIndicator({}, item));
+                        } else if (item) {
+                            tempIndicator[prop].push(item);
+                        }
+                    });
+
+                    if (tempIndicator[prop].length === 0) {
+                        delete tempIndicator[prop];
+                    }
+                }
+            } else {
+                switch ((typeof obj[prop])) {
+                    case 'object':
+                        console.log(obj[prop]);
+                        if (obj[prop] instanceof Date) {
+                            tempIndicator[prop] = obj[prop];
+                        } else if (obj[prop] && Object.keys(obj[prop]).length > 0) {
+                            tempIndicator[prop] = {};
+                            tempIndicator[prop] = this.buildIndicator({}, obj[prop]);
+                        }                        
+                        break;
+                    default:
+                        if (obj[prop]) {
+                            tempIndicator[prop] = obj[prop];
+                        }
+                        break;                    
+                }
+            }
+        }
+        return tempIndicator;
     }
 }

@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 export const IndicatorForm  = () => new FormGroup({
     name: new FormControl('', Validators.required),
     description: new FormControl(),
-    labels: new FormArray([new FormControl()]),
+    labels: new FormArray([]),
     pattern_lang: new FormControl(),
     pattern: new FormControl('', Validators.required),
     valid_from: new FormControl(new Date(), Validators.required),

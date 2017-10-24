@@ -94,10 +94,21 @@
         </div>
         <!-- ~~~ End of Kill Chain Phases ~~~ -->
 
-    </form>
+        <!-- ~~~ Labels ~~~ -->
+        <h5>Labels</h5>
+        <div class="flex flexItemsCenter" id="labelsWrapper">
+            <md-chip-list *ngIf="form.controls.labels.length > 0" class="inlineBlock">
+                <md-chip *ngFor="let label of form.controls.labels.controls" class="cursor-pointer chipListChip">{{label.value | capitalize}}</md-chip>
+            </md-chip-list>
+            <add-label-reactive [parentForm]="form"></add-label-reactive>
+        </div>
+        <!-- ~~~ End of Labels ~~~ -->
 
-    <p class="text-right">
-        <button md-button md-dialog-close="false" (click)="resetForm()">CANCEL</button>
-        <button md-raised-button color="primary" [disabled]="form.status === 'INVALID'">SAVE</button>
-    </p>
+        <p class="text-right">
+            <button md-button md-dialog-close="false" (click)="resetForm()">CANCEL</button>
+            <button md-raised-button color="primary" [disabled]="form.status === 'INVALID'" type="submit">SAVE</button>
+        </p>
+
+    </form>
+    
 </div>
