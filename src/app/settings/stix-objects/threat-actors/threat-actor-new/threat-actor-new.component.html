@@ -1,16 +1,16 @@
 
 <div class="row">
     <div class="col-md-12">
-        <md-input-container class="full-width">
-        <input mdInput placeholder="Name"  required [(ngModel)]="threatActor.attributes.name" value="{{threatActor.attributes.name}}">
-        </md-input-container>
+        <mat-input-container class="full-width">
+        <input matInput placeholder="Name"  required [(ngModel)]="threatActor.attributes.name" value="{{threatActor.attributes.name}}">
+        </mat-input-container>
     </div>
 </div>
 <div class="row">
     <div class="col-md-12">
-    <md-input-container class="full-width">
-        <input mdInput placeholder="Description" [(ngModel)]="threatActor.attributes.description" value="{{threatActor.attributes.description}}">
-        </md-input-container>
+    <mat-input-container class="full-width">
+        <input matInput placeholder="Description" [(ngModel)]="threatActor.attributes.description" value="{{threatActor.attributes.description}}">
+        </mat-input-container>
     </div>
 </div>
 
@@ -19,7 +19,7 @@
          <label>Sectors</label>
         <div class="row">
             <div class="col-md-4"  *ngFor="let item of labels">
-                    <md-checkbox class="example-margin"  (click)="addLabel(item.label)">{{item.label}}</md-checkbox>
+                    <mat-checkbox class="example-margin"  (click)="addLabel(item.label)">{{item.label}}</mat-checkbox>
             </div>
         </div>
     </div>
@@ -33,8 +33,8 @@
 <div class="row">
     <div class="col-md-12">
         <div class="button-row pull-right">
-                <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</a>
-                <a class=" " md-raised-button (click)="saveThreatActor()" [disabled]="!threatActor.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</a>
+                <a class="" mat-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</a>
+                <a class=" " mat-raised-button (click)="saveThreatActor()" [disabled]="!threatActor.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</a>
 
         </div>
     </div>

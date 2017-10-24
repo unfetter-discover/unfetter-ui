@@ -5,15 +5,15 @@
                 Link Explorer
             </h4>
     </div>
-     <div class="col-md-4" *ngIf="selectedRecord"> 
+     <div class="col-md-4" *ngIf="selectedRecord">
         <span class="text-{{selectedRecord.type}} stix-object-item-label">{{selectedRecord.attributes.name}}</span>
     </div>
 </div>
 
 <div class="row fadeIn" *ngIf="graph && forcesEnabled; else loadingBlock" >
   <div class="col-md-3">
-              <md-card class="result">
-                <md-card-content>
+              <mat-card class="result">
+                <mat-card-content>
                     <h5>Forces</h5>
                     <div class="row">
                         <div class="col-md-12" *ngIf="forcesEnabled">
@@ -23,71 +23,71 @@
                                     Option one is enabled
                                 </label>
                             </div>
-                            <!--<md-checkbox >Collide</md-checkbox>-->
-                            <!--<md-checkbox class="example-margin" (change)="onChange($event)" [checked]="forcesEnabled.column">Column</md-checkbox>
-                            <md-checkbox class="example-margin" (change)="onChange($event)" [checked]="forcesEnabled.column">Charge</md-checkbox>
-                            <md-checkbox class="example-margin" (change)="onChange($event)" [checked]="forcesEnabled.link">Link</md-checkbox>
-                            <md-checkbox class="example-margin" (change)="onChange($event)" [checked]="forcesEnabled.center">Center</md-checkbox>-->
+                            <!--<mat-checkbox >Collide</mat-checkbox>-->
+                            <!--<mat-checkbox class="example-margin" (change)="onChange($event)" [checked]="forcesEnabled.column">Column</mat-checkbox>
+                            <mat-checkbox class="example-margin" (change)="onChange($event)" [checked]="forcesEnabled.column">Charge</mat-checkbox>
+                            <mat-checkbox class="example-margin" (change)="onChange($event)" [checked]="forcesEnabled.link">Link</mat-checkbox>
+                            <mat-checkbox class="example-margin" (change)="onChange($event)" [checked]="forcesEnabled.center">Center</mat-checkbox>-->
                         </div>
                     </div>
-                 </md-card-content>
-              </md-card>
-              <md-card class="result">
-                <md-card-content>
+                 </mat-card-content>
+              </mat-card>
+              <mat-card class="result">
+                <mat-card-content>
                     <h5>Ledgend</h5>
                     <div class="row">
                         <span class="col-md-6">
                             <img class='stix-icon height-30' src='assets/icon/stix-icons/svg/indicator-b.svg'>
                             <span class="text-indicator stix-object-item-label">Indicator</span>
-                           
+
                         </span>
                          <span class="col-md-6">
                             <img class='stix-icon height-30' src='assets/icon/stix-icons/svg/attack-pattern-b.svg'>
                             <span class="text-attack-pattern stix-object-item-label">Attack Pattern</span>
-                           
+
                         </span>
                     </div>
                     <div class="row">
                         <span class="col-md-6">
                             <img class='stix-icon height-30' src='assets/icon/stix-icons/svg/course-of-action-b.svg'>
                             <span class="text-course-of-action stix-object-item-label">Course Of Action</span>
-                           
+
                         </span>
                          <span class="col-md-6">
                             <img class='stix-icon height-30' src='assets/icon/stix-icons/svg/tool-b.svg'>
                              <span class="text-tools stix-object-item-label">Tool</span>
-                          
+
                         </span>
                     </div>
                     <div class="row">
                         <span class="col-md-6">
                             <img class='stix-icon height-30' src='assets/icon/stix-icons/svg/observable-path-b.svg'>
                              <span class="text-observable-path stix-object-item-label">Observable Path</span>
-                           
+
                         </span>
                          <span class="col-md-6">
                             <img class='stix-icon height-30' src='assets/icon/stix-icons/svg/threat-actor-b.svg'>
                              <span class="text-intrusion-sets stix-object-item-label">Intrusion Set</span>
-                          
+
                         </span>
                     </div>
                     <div class="row">
                         <span class="col-md-6">
                             <img class='stix-icon height-30' src='assets/icon/stix-icons/svg/malware-b.svg'>
                              <span class="text-malware stix-object-item-label">Malware</span>
-                           
+
                         </span>
-                        
+
                     </div>
-                </md-card-content>
-              </md-card>
-       
+                </mat-card-content>
+              </mat-card>
+
   </div>
   <div class="col-md-9">
-       <link-node-graph *ngIf="graph && forcesEnabled" [config]="graph" [forcesEnabled]="forcesEnabled" (nodeMouseover)="nodeMouseover($event)" (nodeMouseout)="nodeMouseout($event)"></link-node-graph> 
+       <link-node-graph *ngIf="graph && forcesEnabled" [config]="graph" [forcesEnabled]="forcesEnabled" (nodeMouseover)="nodeMouseover($event)" (nodeMouseout)="nodeMouseout($event)"></link-node-graph>
   </div>
 </div>
 
 <ng-template #loadingBlock>
-    <div class="loading"><md-spinner></md-spinner></div>
+    <div class="loading"><mat-spinner></mat-spinner></div>
 </ng-template>

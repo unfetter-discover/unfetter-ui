@@ -1,22 +1,22 @@
 <page-header [pageTitle]="title"  [pageIcon]="pageIcon" [description]="description"></page-header>
- <!--<md-chip-list class="pull-left">
-                                <md-chip selected="true" color="accent">{{model.attributes.name}}</md-chip>
-                            </md-chip-list>-->
+ <!--<mat-chip-list class="pull-left">
+                                <mat-chip selected="true" color="accent">{{model.attributes.name}}</mat-chip>
+                            </mat-chip-list>-->
 <a style="position: relative; top: -20px;">{{model.attributes.name}}</a>
 <div class="row"  *ngFor="let key of phaseNameGroupKeys" >
     <div class="col-md-12">
-        <md-card>
-            <md-card-header style="border-bottom: 1px solid lightgray;">
-                <md-card-title><h4>{{key}}</h4></md-card-title>
-            </md-card-header>
-            <md-card-content>
+        <mat-card>
+            <mat-card-header style="border-bottom: 1px solid lightgray;">
+                <mat-card-title><h4>{{key}}</h4></mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
 
                 <div class="row">
                     <div class="col-md-4" *ngFor="let attackPattern of phaseNameGroups[key]">
-                             <md-checkbox  [checked]="isChecked(attackPattern)" (change)="update(attackPattern)">{{attackPattern.attributes.name}}</md-checkbox>
+                             <mat-checkbox  [checked]="isChecked(attackPattern)" (change)="update(attackPattern)">{{attackPattern.attributes.name}}</mat-checkbox>
                     </div>
                 </div>
-            </md-card-content>
-        </md-card>
+            </mat-card-content>
+        </mat-card>
     </div>
 </div>

@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MaterialModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { routing } from './users-routing.module';
@@ -16,7 +15,6 @@ import { UsersService } from './users.service';
         GlobalModule,
         ComponentModule,
         routing,
-        MaterialModule,
         ReactiveFormsModule
     ],
     declarations: [

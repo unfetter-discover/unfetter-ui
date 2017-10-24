@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
-import { MdDialog, MdDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
 export class BaseComponent {
 
     constructor(
         protected route: ActivatedRoute,
         protected router: Router,
-        protected dialog: MdDialog,
+        protected dialog: MatDialog,
         protected location?: Location) {
     }
     protected gotoView(command: any[]): void {

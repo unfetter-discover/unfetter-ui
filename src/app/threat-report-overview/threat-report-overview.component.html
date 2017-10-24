@@ -13,60 +13,60 @@
                 Create New Product
             </h2>
             <span>
-                <button color="primary" md-raised-button (click)="routeCreateNew($event)">NEW</button>
+                <button color="primary" mat-raised-button (click)="routeCreateNew($event)">NEW</button>
             </span>
         </div>
     </div>
     <div class="row">
-        <div class="mat-title col-md-6 mt-15">Recent Work Products</div>
-        <div class="col-md-6">
-            <md-form-field floatPlaceholder="never">
-                <input mdInput #filter placeholder="Filter Recent work products" color="primary">
-                <md-icon mdSuffix color="primary">search</md-icon>
-            </md-form-field>
+        <div class="mat-title col-mat-6 mt-15">Recent Work Products</div>
+        <div class="col-mat-6">
+            <mat-form-field floatPlaceholder="never">
+                <input matInput #filter placeholder="Filter Recent work products" color="primary">
+                <mat-icon matSuffix color="primary">search</mat-icon>
+            </mat-form-field>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
-            <md-table class="mat-elevation-z3" #table [dataSource]="dataSource">
+        <div class="col-mat-12">
+            <mat-table class="mat-elevation-z3" #table [dataSource]="dataSource">
 
-                <ng-container mdColumnDef="name">
-                    <md-header-cell *mdHeaderCellDef> Name </md-header-cell>
-                    <md-cell *mdCellDef="let row">
+                <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
                         {{row.name}}
-                    </md-cell>
+                    </mat-cell>
                 </ng-container>
 
-                <ng-container mdColumnDef="date">
-                    <md-header-cell *mdHeaderCellDef> Modified </md-header-cell>
-                    <md-cell *mdCellDef="let row"> {{ row.date | date:'medium' }} </md-cell>
+                <ng-container matColumnDef="date">
+                    <mat-header-cell *matHeaderCellDef> Modified </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{ row.date | date:'medium' }} </mat-cell>
                 </ng-container>
 
-                <ng-container mdColumnDef="author">
-                    <md-header-cell *mdHeaderCellDef> Author </md-header-cell>
-                    <md-cell *mdCellDef="let row"> {{row.author}} </md-cell>
+                <ng-container matColumnDef="author">
+                    <mat-header-cell *matHeaderCellDef> Author </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.author}} </mat-cell>
                 </ng-container>
 
-                <ng-container mdColumnDef='actions'>
-                    <md-header-cell *mdHeaderCellDef> </md-header-cell>
-                    <md-cell *mdCellDef="let row">
+                <ng-container matColumnDef='actions'>
+                    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
                         <span class="buttonGrp text-right">
-                            <button color="accent" md-button routerLink="./view/{{row.id}}">
-                               <md-icon>explore</md-icon>
+                            <button color="accent" mat-button routerLink="./view/{{row.id}}">
+                               <mat-icon>explore</mat-icon>
                             </button>
-                            <button color="primary" md-button routerLink="./modify/{{row.id}}">
-                                <md-icon>edit</md-icon>
+                            <button color="primary" mat-button routerLink="./modify/{{row.id}}">
+                                <mat-icon>edit</mat-icon>
                             </button>
-                                <button color="warn" md-button (click)="deleteButtonClicked(row)">
-                                <md-icon>delete</md-icon>
+                                <button color="warn" mat-button (click)="deleteButtonClicked(row)">
+                                <mat-icon>delete</mat-icon>
                             </button>
                         </span>
-                    </md-cell>
+                    </mat-cell>
                 </ng-container>
 
-                <md-header-row *mdHeaderRowDef="displayCols"></md-header-row>
-                <md-row *mdRowDef="let row; columns: displayCols;"></md-row>
-            </md-table>
+                <mat-header-row *matHeaderRowDef="displayCols"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayCols;"></mat-row>
+            </mat-table>
         </div>
     </div>
 </div>

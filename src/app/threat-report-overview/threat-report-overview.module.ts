@@ -6,14 +6,14 @@ import { routing } from './threat-report-overview-routing.module';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
-import { MdButtonModule, MdChipsModule, MdInputModule, MdIconModule, MdTooltipModule } from '@angular/material';
-import { MdCheckboxModule } from '@angular/material';
-import { MdDatepickerModule } from '@angular/material';
-import { MdPaginatorModule } from '@angular/material';
-import { MdSelectModule } from '@angular/material';
-import { MdSlideToggleModule } from '@angular/material';
-import { MdTableModule } from '@angular/material';
-import { MdListModule } from '@angular/material';
+import { MatButtonModule, MatChipsModule, MatInputModule, MatIconModule, MatTooltipModule } from '@angular/material';
+import { MatCheckboxModule } from '@angular/material';
+import { MatDatepickerModule } from '@angular/material';
+import { MatPaginatorModule } from '@angular/material';
+import { MatSelectModule } from '@angular/material';
+import { MatSlideToggleModule } from '@angular/material';
+import { MatTableModule } from '@angular/material';
+import { MatListModule } from '@angular/material';
 
 import { ThreatReportCreationComponent } from './create/threat-report-creation.component';
 import { ThreatReportOverviewComponent } from './threat-report-overview.component';
@@ -31,19 +31,19 @@ const troServices = [
   ThreatReportSharedService,
 ];
 
-const mdComponents = [
-  MdButtonModule,
-  MdCheckboxModule,
-  MdChipsModule,
-  MdDatepickerModule,
-  MdInputModule,
-  MdIconModule,
-  MdListModule,
-  MdPaginatorModule,
-  MdSelectModule,
-  MdSlideToggleModule,
-  MdTooltipModule,
-  MdTableModule,
+const MatComponents = [
+  MatButtonModule,
+  MatCheckboxModule,
+  MatChipsModule,
+  MatDatepickerModule,
+  MatInputModule,
+  MatIconModule,
+  MatListModule,
+  MatPaginatorModule,
+  MatSelectModule,
+  MatSlideToggleModule,
+  MatTooltipModule,
+  MatTableModule,
 ]
 
 @NgModule({
@@ -56,7 +56,7 @@ const mdComponents = [
     CommonModule,
     FormsModule,
     HttpClientModule,
-    ...mdComponents,
+    ...MatComponents,
     FileUploadModule,
     routing
   ],

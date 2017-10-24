@@ -2,46 +2,46 @@
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-12">
-                <md-input-container class="full-width">
-                <input mdInput placeholder="Name" required [(ngModel)]="courseOfAction.attributes.name" value="{{courseOfAction.attributes.name}}">
-                </md-input-container>
+                <mat-input-container class="full-width">
+                <input matInput placeholder="Name" required [(ngModel)]="courseOfAction.attributes.name" value="{{courseOfAction.attributes.name}}">
+                </mat-input-container>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-            <md-input-container class="full-width">
-                <input mdInput placeholder="Description"  [(ngModel)]="courseOfAction.attributes.description" value="{{courseOfAction.attributes.description}}">
-                </md-input-container>
+            <mat-input-container class="full-width">
+                <input matInput placeholder="Description"  [(ngModel)]="courseOfAction.attributes.description" value="{{courseOfAction.attributes.description}}">
+                </mat-input-container>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <label>Labels</label>
                 <div class="button-row">
-                    <a class=" " md-raised-button (click)="addLabelButtonClicked()"><i class="material-icons">add</i>ADD</a>
+                    <a class=" " mat-raised-button (click)="addLabelButtonClicked()"><i class="material-icons">add</i>ADD</a>
                 </div>
             </div>
         </div>
         <div class="row" >
             <div class="col-md-12">
 
-                    <md-card *ngFor="let label of courseOfAction.attributes.label_names" style="margin: 10px 0px;">
-                            <md-card-content>
+                    <mat-card *ngFor="let label of courseOfAction.attributes.label_names" style="margin: 10px 0px;">
+                            <mat-card-content>
                                 <div class="row">
                                     <div class="col-md-12">
-                                            <md-input-container class="full-width">
-                                                <input mdInput placeholder="Label"  value="{{label.name}}">
-                                            </md-input-container>
+                                            <mat-input-container class="full-width">
+                                                <input matInput placeholder="Label"  value="{{label.name}}">
+                                            </mat-input-container>
                                     </div>
 
                                 </div>
-                            </md-card-content>
-                            <md-card-actions>
+                            </mat-card-content>
+                            <mat-card-actions>
                                 <div class="button-row">
-                                    <a class="" md-raised-button (click)="removeLabelButtonClicked(label)"><i class="material-icons">delete</i>REMOVE</a>
+                                    <a class="" mat-raised-button (click)="removeLabelButtonClicked(label)"><i class="material-icons">delete</i>REMOVE</a>
                                 </div>
-                            </md-card-actions>
-                    </md-card>
+                            </mat-card-actions>
+                    </mat-card>
 
 
             </div>
@@ -51,8 +51,8 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="button-row pull-right">
-                        <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i>CANCEL</a>
-                        <a class=" " md-raised-button (click)="saveCourceOfAction()" [disabled]="!courseOfAction.attributes.name"><i class="material-icons">save</i>SAVE & CLOSE</a>
+                        <a class="" mat-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i>CANCEL</a>
+                        <a class=" " mat-raised-button (click)="saveCourceOfAction()" [disabled]="!courseOfAction.attributes.name"><i class="material-icons">save</i>SAVE & CLOSE</a>
 
                 </div>
             </div>

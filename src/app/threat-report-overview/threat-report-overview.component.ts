@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ViewChildren, QueryList, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
-import { MdDialog, MdSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
 import { ThreatReport } from './models/threat-report.model';
 import { ThreatReportSharedService } from './services/threat-report-shared.service';
@@ -23,7 +23,7 @@ export class ThreatReportOverviewComponent implements OnInit, AfterViewInit, OnD
 
   public dataSource: ThreatReportOverviewDataSource;
   public loading = true;
-  
+
   public readonly displayCols: troColName[] = ['name', 'date', 'author', 'actions'];
   private readonly subscriptions = [];
   private readonly duration = 250;
@@ -33,8 +33,8 @@ export class ThreatReportOverviewComponent implements OnInit, AfterViewInit, OnD
     protected threatReportOverviewService: ThreatReportOverviewService,
     protected router: Router,
     protected sharedService: ThreatReportSharedService,
-    protected dialog: MdDialog,
-    protected snackBar: MdSnackBar) { }
+    protected dialog: MatDialog,
+    protected snackBar: MatSnackBar) { }
 
   /**
    * @description fetch data for this component

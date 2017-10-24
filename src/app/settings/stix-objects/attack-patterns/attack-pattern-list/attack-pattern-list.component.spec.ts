@@ -11,7 +11,7 @@ import {
 } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MdDialog, MdSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { Location, LocationStrategy } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
 import { StixService } from '../../../stix.service';
@@ -46,9 +46,9 @@ describe(`AttackPatternListComponent`, () => {
           { provide: StixService, useValue: serviceMock },
           { provide: ActivatedRoute, useValue: {} },
           { provide: Router, useValue: {} },
-          { provide: MdDialog, useValue: {} },
+          { provide: MatDialog, useValue: {} },
           { provide: Location, useValue: {} },
-          { provide: MdSnackBar, useValue: {} },
+          { provide: MatSnackBar, useValue: {} },
           { provide: ChangeDetectorRef, useValue: {} },
           { provide: LocationStrategy, useValue: {} },
         ]

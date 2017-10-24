@@ -1,9 +1,9 @@
- <md-card>
-                        <!--<md-card-header>
-                            <md-card-subtitle>Name</md-card-subtitle>  
-                            <md-card-title>{{model.name}}</md-card-title>                       
-                        </md-card-header>-->
-                        <md-card-content>
+ <mat-card>
+                        <!--<mat-card-header>
+                            <mat-card-subtitle>Name</mat-card-subtitle>
+                            <mat-card-title>{{model.name}}</mat-card-title>
+                        </mat-card-header>-->
+                        <mat-card-content>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label>Name</label>
@@ -21,28 +21,28 @@
                                         <label>Labels</label>
 
 
-                                        <md-chip-list>
-                                            <md-chip *ngFor="let label of model.attributes.labels"
+                                        <mat-chip-list>
+                                            <mat-chip *ngFor="let label of model.attributes.labels"
                                                 selected="true"
                                                 color="accent">
                                                 {{label}}
-                                            </md-chip>
-                                        </md-chip-list>
+                                            </mat-chip>
+                                        </mat-chip-list>
 
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label>External References</label>
-                                        <md-chip-list>
-                                            <md-chip *ngFor="let externalReferences of model.attributes.external_references"
+                                        <mat-chip-list>
+                                            <mat-chip *ngFor="let externalReferences of model.attributes.external_references"
                                                 selected="true">
                                                 {{externalReferences.source_name}}
-                                            </md-chip>
-                                        </md-chip-list>
+                                            </mat-chip>
+                                        </mat-chip-list>
                                     </div>
                                 </div>
-                                
-                        </md-card-content>
-                    
-                    </md-card>
+
+                        </mat-card-content>
+
+                    </mat-card>

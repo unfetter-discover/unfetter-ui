@@ -2,7 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as Ps from 'perfect-scrollbar';
-import { MdDialog } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { Constance } from '../../utils/constance';
 import { AssessmentsService } from '../assessments.service';
 import { Report } from '../../models/report';
@@ -25,7 +25,7 @@ export class AssessmentsListComponent implements OnInit {
   public assessments = [];
 
   constructor(
-    public dialog: MdDialog,
+    public dialog: MatDialog,
     public assessmentsService: AssessmentsService,
     public router: Router,
     public route: ActivatedRoute) { }

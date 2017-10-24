@@ -2,34 +2,34 @@
             <div class="col-md-12">
                 <label>Kill Chain Phases</label>
                 <div class="button-row">
-                    <a id="add-kill-chain" md-raised-button (click)="addkillChainPhase()"><i class="material-icons">add</i> ADD</a>
+                    <a id="add-kill-chain" mat-raised-button (click)="addkillChainPhase()"><i class="material-icons">add</i> ADD</a>
                 </div>
             </div>
         </div>
          <div class="row">
             <div class="col-md-12">
 
-                     <md-card *ngFor="let killChainPhase of model.attributes.kill_chain_phases" style="margin: 10px 0px;">
-                            <md-card-content>
+                     <mat-card *ngFor="let killChainPhase of model.attributes.kill_chain_phases" style="margin: 10px 0px;">
+                            <mat-card-content>
                                 <div class="row">
                                     <div class="col-md-6">
-                                            <md-input-container class="full-width">
-                                                <input id="kill-chain-name" mdInput placeholder="Kill Chain Name" [(ngModel)]="killChainPhase.kill_chain_name" value="{{killChainPhase.kill_chain_name}}">
-                                            </md-input-container>
+                                            <mat-input-container class="full-width">
+                                                <input id="kill-chain-name" matInput placeholder="Kill Chain Name" [(ngModel)]="killChainPhase.kill_chain_name" value="{{killChainPhase.kill_chain_name}}">
+                                            </mat-input-container>
                                     </div>
                                     <div class="col-md-6">
-                                            <md-input-container class="full-width">
-                                                <input id="phase-name" mdInput placeholder="Phase name" [(ngModel)]="killChainPhase.phase_name" value="{{killChainPhase.phase_name}}">
-                                            </md-input-container>
+                                            <mat-input-container class="full-width">
+                                                <input id="phase-name" matInput placeholder="Phase name" [(ngModel)]="killChainPhase.phase_name" value="{{killChainPhase.phase_name}}">
+                                            </mat-input-container>
                                     </div>
                                 </div>
-                            </md-card-content>
-                            <md-card-actions>
+                            </mat-card-content>
+                            <mat-card-actions>
                                 <div class="button-row">
-                                    <a class="" md-raised-button (click)="removekillChainPhase(killChainPhase)"><i class="material-icons">delete</i> REMOVE</a>
+                                    <a class="" mat-raised-button (click)="removekillChainPhase(killChainPhase)"><i class="material-icons">delete</i> REMOVE</a>
                                 </div>
-                            </md-card-actions>
-                    </md-card>
+                            </mat-card-actions>
+                    </mat-card>
 
             </div>
         </div>

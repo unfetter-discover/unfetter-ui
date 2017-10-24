@@ -2,7 +2,7 @@ import { Component, OnInit, AfterContentInit, ChangeDetectorRef } from '@angular
 import { CheckboxModule } from 'primeng/primeng';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
-import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
+import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { BaseComponentService } from '../components/base-service.component';
 import { Constance } from '../utils/constance';
 import { IntrusionSetComponent } from '../intrusion-set/intrusion-set.component';
@@ -32,7 +32,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
 
   constructor(
     protected genericApi: GenericApi,
-    protected snackBar: MdSnackBar,
+    protected snackBar: MatSnackBar,
     protected ref: ChangeDetectorRef
   ) { }
 
@@ -68,11 +68,11 @@ export class IntrusionSetDashboardComponent implements OnInit {
         console.log('error ' + error);
       },
       () => (sub ? sub.unsubscribe() : 0)
-    );   
+    );
     this.checkboxDebouncer
       .debounceTime(500)
       .subscribe(() => {
-        console.log('Searching intrusion sets');      
+        console.log('Searching intrusion sets');
         this.searchIntrusionSets();
       },
       (e) => console.log(e));
@@ -231,12 +231,12 @@ export class IntrusionSetDashboardComponent implements OnInit {
       });
       root.children.push(child);
     });
-    this.treeData = root;        
+    this.treeData = root;
   }
 
   public treeComplete() {
     this.ref.detectChanges();
-    this.treeSpinner = false;    
+    this.treeSpinner = false;
   }
 
   public getCsc(data: any): any {

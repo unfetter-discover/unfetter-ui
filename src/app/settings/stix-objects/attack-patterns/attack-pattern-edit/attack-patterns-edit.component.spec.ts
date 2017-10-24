@@ -12,11 +12,11 @@ import {
     tick
   } from '@angular/core/testing';
 import {
-    MdDialog,
-    MdSnackBar,
+    MatDialog,
+    MatSnackBar,
     MaterialModule,
-    MdInputModule,
-    MdSelectModule
+    MatInputModule,
+    MatSelectModule
   } from '@angular/material';
 // Only implements params and part of snapshot.paramMap
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -276,7 +276,7 @@ function moduleSetup() {
    beforeEach( async(() => {
       TestBed.configureTestingModule({
         imports: [
-          GlobalModule, ComponentModule, FormsModule, NoopAnimationsModule, MdSelectModule
+          GlobalModule, ComponentModule, FormsModule, NoopAnimationsModule, MatSelectModule
         ],
         declarations: [AttackPatternEditComponent],
         schemas: [NO_ERRORS_SCHEMA],
@@ -284,9 +284,9 @@ function moduleSetup() {
           { provide: StixService, useValue: stixServiceStub},
           { provide: ActivatedRoute, useValue: activatedRoute },
           { provide: Router, useValue: {} },
-          { provide: MdDialog, useValue: {} },
+          { provide: MatDialog, useValue: {} },
           { provide: Location, useValue: {back: (): void => {} } },
-          { provide: MdSnackBar, useValue: {} },
+          { provide: MatSnackBar, useValue: {} },
           { provide: OverlayContainer, useFactory: () => {
             overlayContainerElement = document.createElement('div') as HTMLElement;
             overlayContainerElement.classList.add('cdk-overlay-container');

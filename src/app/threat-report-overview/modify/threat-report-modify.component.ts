@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { ThreatReportSharedService } from '../services/threat-report-shared.service';
 import { ThreatReport } from '../models/threat-report.model';
-import { MdPaginator, MdSnackBar, MdDialog } from '@angular/material';
+import { MatPaginator, MatSnackBar, MatDialog } from '@angular/material';
 import { ThreatReportModifyDataSource } from './threat-report-modify.datasource';
 
 import * as UUID from 'uuid';
@@ -24,7 +24,7 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
   public static readonly ROUTER_DATA_KEY = 'ThreatReportOverview';
 
   @ViewChild('paginator')
-  public paginator: MdPaginator;
+  public paginator: MatPaginator;
 
   @ViewChildren('filter')
   public filters: QueryList<ElementRef>;
@@ -46,8 +46,8 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
     protected location: Location,
     protected service: ThreatReportOverviewService,
     protected sharedService: ThreatReportSharedService,
-    protected dialog: MdDialog,
-    protected snackBar: MdSnackBar,
+    protected dialog: MatDialog,
+    protected snackBar: MatSnackBar,
     protected render: Renderer) { }
 
   /**

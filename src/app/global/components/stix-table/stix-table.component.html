@@ -1,39 +1,39 @@
 <div class="stixTableComponent">
-    <md-table #table [dataSource]="dataSource" class="unfetterAngularMaterialTable hideHeader" [class.fix-height-table]="stixData.length > 10">
+    <mat-table #table [dataSource]="dataSource" class="unfetterAngularMaterialTable hideHeader" [class.fix-height-table]="stixData.length > 10">
 
-        <ng-container mdColumnDef="stix">
-            <md-header-cell *mdHeaderCellDef>STIX</md-header-cell>
-            <md-cell *mdCellDef="let element">
+        <ng-container matColumnDef="stix">
+            <mat-header-cell *matHeaderCellDef>STIX</mat-header-cell>
+            <mat-cell *matCellDef="let element">
                 <div class="flex flexItemsCenter">
                     <span class="flex1">
                         <a routerLink="{{element.id}}">{{element.name}}</a>
-                        <md-chip-list *ngIf="element.external_references" class="inlineFlex">
-                            <md-chip *ngFor="let external_reference of element.external_references.slice(0,3)" class="chipListChip">
+                        <mat-chip-list *ngIf="element.external_references" class="inlineFlex">
+                            <mat-chip *ngFor="let external_reference of element.external_references.slice(0,3)" class="chipListChip">
                                 <a target="_blank" *ngIf="external_reference.url"> {{external_reference.source_name}}</a>
                                 <span *ngIf="!external_reference.url"> {{external_reference.source_name}}</span>
-                            </md-chip>
-                        </md-chip-list>
-                        <small *ngIf="element.external_references && element.external_references.length > 3" 
-                            class="text-muted" 
-                            mdTooltip="{{ externalReferencesToolTipGen(element.external_references.slice(3)) }}"
-                            mdTooltipPosition="after"> 
+                            </mat-chip>
+                         </mat-chip-list>
+                        <small *ngIf="element.external_references && element.external_references.length > 3"
+                            class="text-muted"
+                            matTooltip="{{ externalReferencesToolTipGen(element.external_references.slice(3)) }}"
+                            matTooltipPosition="after">
                             + {{ element.external_references.length - 3 }} more
                         </small>
                     </span>
                     <span class="buttonGrp text-right">
-                        <button class="mat-primary" md-button routerLink="edit/{{element.id}}">
+                        <button class="mat-primary" mat-button routerLink="edit/{{element.id}}">
                             <i class="material-icons">create</i>
                         </button>
-                            <button class="mat-warn" md-button (click)="deletButtonClicked(element)">
+                            <button class="mat-warn" mat-button (click)="deletButtonClicked(element)">
                             <i class="material-icons">delete</i>
                         </button>
                     </span>
-                </div>                               
-            </md-cell>
+                </div>
+            </mat-cell>
         </ng-container>
 
-        <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
-        <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
-    </md-table>
-    <md-paginator #paginator [length]="stixData.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></md-paginator>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <mat-paginator #paginator [length]="stixData.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
 </div>

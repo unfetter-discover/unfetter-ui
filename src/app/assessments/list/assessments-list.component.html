@@ -5,9 +5,9 @@
             <h5>Create Assessment</h5>
         </div>
         <div class="col-xs-12">
-            <button md-raised-button routerLink="wizard/new/indicator" class="mat-primary">Assess Indicators</button>
-            <button md-raised-button routerLink="wizard/new/mitigation" class="mat-primary">Assess Mitigations</button>
-            <button md-raised-button routerLink="wizard/new/sensor" class="mat-primary">Assess Sensors</button>            
+            <button mat-raised-button routerLink="wizard/new/indicator" class="mat-primary">Assess Indicators</button>
+            <button mat-raised-button routerLink="wizard/new/mitigation" class="mat-primary">Assess Mitigations</button>
+            <button mat-raised-button routerLink="wizard/new/sensor" class="mat-primary">Assess Sensors</button>
         </div>
 
     </div>
@@ -22,7 +22,7 @@
             <h5>View Assessment</h5>
         </div>
         <div class="col-xs-12">
-            <md-card class="mt-12 slideIn" *ngFor="let assessment of assessments; let i = index" [style.animationDelay]="(i * 0.03) + 's'">
+            <mat-card class="mt-12 slideIn" *ngFor="let assessment of assessments; let i = index" [style.animationDelay]="(i * 0.03) + 's'">
                 <div class="row">
                     <div class="col-xs-12 flex flexItemsCenter">
                         <span>
@@ -31,20 +31,20 @@
                         </span>
                         <span class="flex1"></span>
                         <span class="text-right buttonGrp">
-                            <button md-button routerLink="summary/{{assessment.id}}" class="mat-accent">
+                            <button mat-button routerLink="summary/{{assessment.id}}" class="mat-accent">
                                 <i class="material-icons">assessment</i>
                             </button>
-                                <button md-button (click)="edit(assessment)" class="mat-primary">
+                                <button mat-button (click)="edit(assessment)" class="mat-primary">
                                 <i class="material-icons">create</i>
                             </button>
-                                <button md-button (click)="delete(assessment)" class="mat-warn">
+                                <button mat-button (click)="delete(assessment)" class="mat-warn">
                                 <i class="material-icons">delete</i>
                             </button>
                         </span>
                     </div>
 
                 </div>
-            </md-card>
+            </mat-card>
         </div>
     </div>
 </div>

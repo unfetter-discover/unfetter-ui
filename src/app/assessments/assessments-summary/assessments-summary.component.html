@@ -74,11 +74,11 @@
         <br/>
         <div class="row">
             <div class="col-md-6">
-                <md-select placeholder="Select threshold" [(ngModel)]="selectedRisk" name="threshold" (change)="redrawCharts()">
-                    <md-option *ngFor="let option of thresholdOptions" [value]="option.risk">
+                <mat-select placeholder="Select threshold" [(ngModel)]="selectedRisk" name="threshold" (change)="redrawCharts()">
+                    <mat-option *ngFor="let option of thresholdOptions" [value]="option.risk">
                         {{option.name}}
-                    </md-option>
-                </md-select>
+                    </mat-option>
+                </mat-select>
             </div>
         </div>
         <br/>
@@ -106,9 +106,9 @@
                     <div class="summaryPanel">
                         <div class="summaryPanelContent">
                             <div *ngIf="techniqueBreakdown;else noTechinquesData">
-                                <techniques-chart #techniquesChart 
-                                    [riskThreshold]="selectedRisk" 
-                                    [riskLabelOptions]="thresholdOptions" 
+                                <techniques-chart #techniquesChart
+                                    [riskThreshold]="selectedRisk"
+                                    [riskLabelOptions]="thresholdOptions"
                                     [techniqueBreakdown]="techniqueBreakdown">
                                 </techniques-chart>
                             </div>
@@ -118,7 +118,7 @@
                             <h5 class="text-center">% Techniques Detected by Skill</h5>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
 
@@ -127,8 +127,8 @@
                     <div class="summaryPanel">
                         <div class="summaryPanelContent">
                             <div *ngIf="summary;else noAssessmentsChartData">
-                                    <assessment-chart #assessmentChart 
-                                    [riskThreshold]="selectedRisk" 
+                                    <assessment-chart #assessmentChart
+                                    [riskThreshold]="selectedRisk"
                                     [riskLabelOptions]="thresholdOptions"
                                     [assessmentObjects]="summary.attributes.assessment_objects"
                                     [assessmentsGroupingTotal]="assessmentsGroupingTotal"
@@ -142,7 +142,7 @@
                             <h5 class="text-center">% of assessments better than {{ getThresholdOptionName(selectedRisk) }}</h5>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
         </div>

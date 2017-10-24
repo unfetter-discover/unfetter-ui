@@ -2,8 +2,8 @@
         <div class="col-md-12">
 
             <div class="button-row">
-                <a md-raised-button class="mat-primary" routerLink="./new">NEW</a>
-                <a md-raised-button class="mat-primary" (click)="download()">DOWNLOAD</a>
+                <a mat-raised-button class="mat-primary" routerLink="./new">NEW</a>
+                <a mat-raised-button class="mat-primary" (click)="download()">DOWNLOAD</a>
             </div>
             <div class="pull-right">
                 <span class="right-align">Results: {{reports.length}}</span>
@@ -15,11 +15,11 @@
         <div class="col-md-12" *ngFor="let report of reports">
 
 
-           <md-card>
-                 <md-card-header>
-                    <md-card-title>
+           <mat-card>
+                 <mat-card-header>
+                    <mat-card-title>
 
-                    </md-card-title>
+                    </mat-card-title>
                     <div class="row full-width" >
                         <div class="col-md-9">
                             <div class="pull-left">
@@ -28,12 +28,12 @@
                             </div>
                         </div>
                          <div class="col-md-3">
-                             <a md-raised-button (click)="deleteButtonClicked(report)"><i class="material-icons">delete</i></a>
+                             <a mat-raised-button (click)="deleteButtonClicked(report)"><i class="material-icons">delete</i></a>
                         </div>
                     </div>
 
-                </md-card-header>
+                </mat-card-header>
 
-            </md-card>
+            </mat-card>
         </div>
     </div>

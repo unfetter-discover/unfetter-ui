@@ -18,10 +18,10 @@
                         <td>{{ user.lastName }}, {{ user.firstName }}</td>
                         <td>{{ user.email }}</td>
                         <td class="text-right">
-                            <button md-button class="mat-primary md-24" (click)="userAction(user, 'APPROVE_USER')">
+                            <button mat-button class="mat-primary mat-24" (click)="userAction(user, 'APPROVE_USER')">
                                 <i class="material-icons">check_circle</i>
                             </button>
-                            <button md-button class="mat-warn md-24" (click)="userAction(user, 'DENY_USER')">
+                            <button mat-button class="mat-warn mat-24" (click)="userAction(user, 'DENY_USER')">
                                 <i class="material-icons">remove_circle</i>
                             </button>
                         </td>

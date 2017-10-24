@@ -12,11 +12,11 @@ import {
     tick
   } from '@angular/core/testing';
 import {
-    MdDialog,
-    MdSnackBar,
+    MatDialog,
+    MatSnackBar,
     MaterialModule,
-    MdInputModule,
-    MdSelectModule
+    MatInputModule,
+    MatSelectModule
   } from '@angular/material';
 
 import { By } from '@angular/platform-browser';
@@ -197,7 +197,7 @@ function formFields() {
         fixture.detectChanges();
         tick(SELECT_OPEN_ANIMATION);
 
-        let option = overlayContainerElement.querySelector('md-option') as HTMLElement;
+        let option = overlayContainerElement.querySelector('mat-option') as HTMLElement;
         option.click();
         fixture.detectChanges();
         tick(SELECT_CLOSE_ANIMATION);
@@ -270,7 +270,7 @@ function moduleSetup() {
    beforeEach( async(() => {
       TestBed.configureTestingModule({
         imports: [
-          GlobalModule, ComponentModule, FormsModule, NoopAnimationsModule, MdSelectModule
+          GlobalModule, ComponentModule, FormsModule, NoopAnimationsModule, MatSelectModule
         ],
         declarations: [AttackPatternNewComponent],
         schemas: [NO_ERRORS_SCHEMA],
@@ -278,9 +278,9 @@ function moduleSetup() {
           { provide: StixService, useValue: serviceMock},
           { provide: ActivatedRoute, useValue: {} },
           { provide: Router, useValue: {} },
-          { provide: MdDialog, useValue: {} },
+          { provide: MatDialog, useValue: {} },
           { provide: Location, useValue: {back: (): void => {} } },
-          { provide: MdSnackBar, useValue: {} },
+          { provide: MatSnackBar, useValue: {} },
           {provide: OverlayContainer, useFactory: () => {
             overlayContainerElement = document.createElement('div') as HTMLElement;
             overlayContainerElement.classList.add('cdk-overlay-container');

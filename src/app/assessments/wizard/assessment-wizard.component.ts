@@ -10,7 +10,7 @@ import {
   OnDestroy
 } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { MdSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 import { Location } from '@angular/common';
 import { Measurements } from './measurements';
 import { Constance } from '../../utils/constance';
@@ -85,7 +85,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
   private tempModel = {};
   private readonly subscriptions = [];
 
-  constructor(private genericApi: GenericApi, private snackBar: MdSnackBar,
+  constructor(private genericApi: GenericApi, private snackBar: MatSnackBar,
               private location: Location, private route: ActivatedRoute) {
     super();
   }
@@ -428,7 +428,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
             const description = groupingStage.description;
             if (description) {
               groupings[phaseName] = description;
-            } 
+            }
             // else {
             //   groupings[phaseName] = phaseName;
             // }

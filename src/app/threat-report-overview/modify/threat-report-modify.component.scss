@@ -2,7 +2,7 @@
     border: 2px solid rgba(1,1,1,.2);
 }
 
-md-form-field {
+mat-form-field {
     width: 100%;
 }
 
@@ -49,12 +49,12 @@ md-form-field {
     max-width: 200px;
 }
 
-md-cell p {
+mat-cell p {
     margin-bottom: 0px;
     margin-top: 8px;
 }
 
-md-cell a md-icon {
+mat-cell a mat-icon {
     display: none;
 }
 

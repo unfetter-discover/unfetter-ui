@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NgModule, ApplicationRef } from '@angular/core';
 import { RouterModule, PreloadAllModules, Router } from '@angular/router';
-import { MaterialModule, MdDialogModule, MdSlideToggleModule, MdSliderModule, MdCardModule } from '@angular/material';
+import { MatDialogModule, MatSlideToggleModule, MatSliderModule, MatCardModule, MatCheckboxModule, MatProgressBarModule } from '@angular/material';
 import { AutoCompleteModule, CarouselModule, ProgressBarModule } from 'primeng/primeng';
 import { ComponentModule } from './components/component.module';
 import { StixModule } from './settings/stix.module';
@@ -55,10 +55,11 @@ import { GlobalModule } from './global/global.module';
     BrowserAnimationsModule,
     FormsModule,
     HttpModule,
-    MaterialModule,
     AutoCompleteModule,
     CarouselModule,
-    MdSliderModule,
+    MatSliderModule,
+    MatCheckboxModule,
+    MatProgressBarModule,
     AccordionModule,
     ProgressBarModule,
     ComponentModule,
