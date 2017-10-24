@@ -47,7 +47,14 @@
 
         <!-- ~~~ External References ~~~ -->
         <h5>External References</h5>
-        <div formArrayName="external_references">
+        <external-references-reactive [parentForm]="form"></external-references-reactive>
+        <div formArrayName="external_references" *ngIf="form.controls.external_references.controls.length > 0">
+            <div *ngFor="let extRef of form.controls.external_references.controls; let i = index" [formGroupName]="i">
+                <!-- TODO make chiplist -->
+                <p>{{ extRef.get('source_name').value }}</p>
+            </div>
+        </div>
+        <!-- <div formArrayName="external_references">
             <div *ngFor="let extRef of form.controls.external_references.controls; let i = index" [formGroupName]="i">
 
                 <md-form-field class="full-width mb-6">
@@ -72,29 +79,17 @@
                     <input mdInput required placeholder="URL" formControlName="url">
                 </md-form-field>   
 
-            </div>
-        </div>
+            </div> 
+        </div>-->
         <!-- ~~~ End of External References ~~~ -->
 
         <!-- ~~~ Kill Chain Phases ~~~ -->
         <h5>Kill Chain Phases</h5>
-        <div formArrayName="kill_chain_phases">
+        <kill-chain-phases-reactive [parentForm]="form"></kill-chain-phases-reactive>
+        <div formArrayName="kill_chain_phases" *ngIf="form.controls.kill_chain_phases.controls.length > 0">
             <div *ngFor="let kill_chain of form.controls.kill_chain_phases.controls; let i = index" [formGroupName]="i">
-
-                <md-form-field class="full-width mb-6">
-                    <input mdInput required placeholder="Kill Chain Name" formControlName="kill_chain_name">
-                    <md-error *ngIf="kill_chain.get('kill_chain_name').hasError('required')">
-                         Kill Chain Name is <strong>required</strong>
-                    </md-error>
-                </md-form-field>
-
-                <md-form-field class="full-width mb-6">
-                    <input mdInput required placeholder="Phase Name" formControlName="phase_name">
-                    <md-error *ngIf="kill_chain.get('phase_name').hasError('required')">
-                         Phase Name is <strong>required</strong>
-                    </md-error>
-                </md-form-field>
-
+                <!-- TODO make chiplist -->
+                <p>{{ kill_chain.get('kill_chain_name').value }} -- {{ kill_chain.get('phase_name').value }}</p>
             </div>
         </div>
         <!-- ~~~ End of Kill Chain Phases ~~~ -->
@@ -102,7 +97,7 @@
     </form>
 
     <p class="text-right">
-        <button md-button md-dialog-close="false">CANCEL</button>
-        <button md-raised-button color="primary">SAVE</button>
+        <button md-button md-dialog-close="false" (click)="resetForm()">CANCEL</button>
+        <button md-raised-button color="primary" [disabled]="form.status === 'INVALID'">SAVE</button>
     </p>
 </div>

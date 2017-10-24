@@ -1,0 +1,28 @@
+<div class="externalReferencesComponent well">
+    <form [formGroup]="localForm" novalidate (ngSubmit)="addToParent()">
+
+        <md-form-field class="full-width mb-6">
+            <input mdInput required placeholder="Source Name" formControlName="source_name">
+            <md-error *ngIf="localForm.get('source_name').hasError('required')">
+                Source Name is <strong>required</strong>
+            </md-error>
+        </md-form-field>
+
+        <md-form-field class="full-width mb-6">
+            <input mdInput required placeholder="External ID" formControlName="external_id">
+            <md-error *ngIf="localForm.get('external_id').hasError('required')">
+                External ID is <strong>required</strong>
+            </md-error>
+        </md-form-field>
+
+        <md-form-field class="full-width mb-6">
+            <textarea mdInput placeholder="Description" formControlName="description"></textarea>
+        </md-form-field>
+
+        <md-form-field class="full-width mb-6">
+            <input mdInput placeholder="URL" formControlName="url">
+        </md-form-field>
+
+        <button md-button color="primary" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Add External Reference</button>
+    </form>
+</div>

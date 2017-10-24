@@ -17,6 +17,10 @@ export class IndicatorSharingService {
         return this.genericApi.get(url);
     }
 
+    // public addIndicator(): Observable<any> {
+
+    // }
+
     public getAttackPatternsByIndicator(): Observable<any> {
         return this.genericApi.get(`${this.baseUrl}/attack-patterns-by-indicator`);
     }

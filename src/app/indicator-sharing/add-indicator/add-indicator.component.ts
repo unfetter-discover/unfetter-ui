@@ -16,8 +16,11 @@ export class AddIndicatorComponent implements OnInit {
     constructor() { }
 
     public ngOnInit() {
-        this.form = IndicatorForm;
-        console.log(this.form);        
+        this.resetForm();     
+    }
+
+    public resetForm() {
+        this.form = IndicatorForm();
     }
 
     public submitIndicator() {
