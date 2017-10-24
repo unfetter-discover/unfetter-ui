@@ -1,5 +1,7 @@
+@import '../../../styles/_variables.scss';
+
 #titleWrapper {
-    background: linear-gradient(60deg, #0288D1, #03A9F4);
+    background: linear-gradient(60deg, $primary-color, $primary-color-light);
     height: 150px;
     padding-top: 10px;
 
