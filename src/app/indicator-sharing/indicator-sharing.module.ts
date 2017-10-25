@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule, MatChipsModule, MatTooltipModule, MatCardModule,
-    MatTabsModule, MatInputModule, MatIconModule } from '@angular/material';
+    MatTabsModule, MatInputModule, MatIconModule, MatButtonModule } from '@angular/material';
 
 // Modules
 import { routing } from './indicator-sharing-routing.module';
@@ -16,19 +16,24 @@ import { IndicatorCardComponent } from './indicator-card/indicator-card.componen
 // Services
 import { IndicatorSharingService } from './indicator-sharing.service';
 
+const matModules = [
+    MatButtonModule,
+    MatCardModule,
+    MatChipsModule,
+    MatInputModule,
+    MatIconModule,
+    MatSelectModule,
+    MatTabsModule,
+    MatTooltipModule,
+];
+
 @NgModule({
     imports: [
         CommonModule,
         routing,
         GlobalModule,
         FormsModule,
-        MatSelectModule,
-        MatChipsModule,
-        MatTooltipModule,
-        MatCardModule,
-        MatTabsModule,
-        MatInputModule,
-        MatIconModule
+        ...matModules,
     ],
     exports: [],
     declarations: [
