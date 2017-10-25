@@ -48,56 +48,36 @@
         <!-- ~~~ External References ~~~ -->
         <h5>External References</h5>
         <external-references-reactive [parentForm]="form"></external-references-reactive>
-        <div formArrayName="external_references" *ngIf="form.controls.external_references.controls.length > 0">
+        <md-chip-list formArrayName="external_references" *ngIf="form.controls.external_references.controls.length > 0" class="chipListPadding">
+            <md-chip 
+                *ngFor="let extRef of form.controls.external_references.controls" 
+                class="cursor-pointer chipListChip" 
+                color="warn"                
+                selected="true">{{ extRef.get('source_name').value | capitalize}}</md-chip>
+        </md-chip-list>
+        <!-- <div formArrayName="external_references" *ngIf="form.controls.external_references.controls.length > 0">
             <div *ngFor="let extRef of form.controls.external_references.controls; let i = index" [formGroupName]="i">
-                <!-- TODO make chiplist -->
                 <p>{{ extRef.get('source_name').value }}</p>
             </div>
-        </div>
-        <!-- <div formArrayName="external_references">
-            <div *ngFor="let extRef of form.controls.external_references.controls; let i = index" [formGroupName]="i">
-
-                <md-form-field class="full-width mb-6">
-                    <input mdInput required placeholder="Source Name" formControlName="source_name">
-                    <md-error *ngIf="extRef.get('source_name').hasError('required')">
-                        Source Name is <strong>required</strong>
-                    </md-error>
-                </md-form-field>
-
-                <md-form-field class="full-width mb-6">
-                    <input mdInput required placeholder="External ID" formControlName="external_id">
-                    <md-error *ngIf="extRef.get('external_id').hasError('required')">
-                        External ID is <strong>required</strong>
-                    </md-error>
-                </md-form-field>
-
-                <md-form-field class="full-width mb-6">
-                    <textarea mdInput placeholder="Description" formControlName="description"></textarea>
-                </md-form-field>
-
-                <md-form-field class="full-width mb-6">
-                    <input mdInput required placeholder="URL" formControlName="url">
-                </md-form-field>   
-
-            </div> 
-        </div>-->
+        </div> -->
         <!-- ~~~ End of External References ~~~ -->
 
         <!-- ~~~ Kill Chain Phases ~~~ -->
         <h5>Kill Chain Phases</h5>
         <kill-chain-phases-reactive [parentForm]="form"></kill-chain-phases-reactive>
-        <div formArrayName="kill_chain_phases" *ngIf="form.controls.kill_chain_phases.controls.length > 0">
-            <div *ngFor="let kill_chain of form.controls.kill_chain_phases.controls; let i = index" [formGroupName]="i">
-                <!-- TODO make chiplist -->
-                <p>{{ kill_chain.get('kill_chain_name').value }} -- {{ kill_chain.get('phase_name').value }}</p>
-            </div>
-        </div>
+        <md-chip-list formArrayName="kill_chain_phases" *ngIf="form.controls.kill_chain_phases.controls.length > 0" class="chipListPadding">
+            <md-chip 
+                *ngFor="let kill_chain of form.controls.kill_chain_phases.controls" 
+                class="cursor-pointer chipListChip"
+                color="primary"
+                selected="true">{{ kill_chain.get('phase_name').value | capitalize}}</md-chip>
+        </md-chip-list>
         <!-- ~~~ End of Kill Chain Phases ~~~ -->
 
         <!-- ~~~ Labels ~~~ -->
         <h5>Labels</h5>
         <div class="flex flexItemsCenter" id="labelsWrapper">
-            <md-chip-list *ngIf="form.controls.labels.length > 0" class="inlineBlock">
+            <md-chip-list *ngIf="form.controls.labels.length > 0" class="inlineBlock" class="chipListPadding">
                 <md-chip *ngFor="let label of form.controls.labels.controls" class="cursor-pointer chipListChip">{{label.value | capitalize}}</md-chip>
             </md-chip-list>
             <add-label-reactive [parentForm]="form"></add-label-reactive>

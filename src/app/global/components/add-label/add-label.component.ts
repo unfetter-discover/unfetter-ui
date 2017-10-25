@@ -24,13 +24,13 @@ export class AddLabelReactiveComponent implements OnInit {
     }
 
     public addToParent() {
-        // this.parentForm.get('labels').push(this.localForm);
+        this.parentForm.get('labels').push(this.localForm);
         this.resetForm();
         this.showAddLabel = false;
     }
 
     public buttonClick(e) {
-        e.preventDeault();
+        e.preventDefault();
         this.showAddLabel = !this.showAddLabel;
     }
 }
