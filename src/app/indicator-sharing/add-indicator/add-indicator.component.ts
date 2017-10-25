@@ -21,7 +21,7 @@ import { MatDialogRef } from '@angular/material';
 
 export class AddIndicatorComponent implements OnInit {
 
-    public form: FormGroup;
+    public form: FormGroup | any;
     public showExternalReferences: boolean = true;
     public showKillChainPhases: boolean = true;
 
