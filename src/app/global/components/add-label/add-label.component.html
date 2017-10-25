@@ -1,0 +1,9 @@
+<span [ngClass]="{'showAddLabel': showAddLabel}" class="inlineFlex flexItemsCenter addLabelComponentWrapper">
+    <div id="addLabelInputWrapper" class="inlineFlex flexItemsCenter">
+        <input type="text" [formControl]="localForm">
+        <i class="material-icons mat-24 cursor-pointer" [ngClass]="{'text-muted': localForm.value.length === 0}" (click)="addToParent()" matTooltip="Add Label">send</i>
+    </div>
+    <button mat-mini-fab color="accent" (click)="buttonClick($event)" id="addLabelBtn" class="inlineBlock">
+        <i class="material-icons mat-24">add</i>
+    </button>
+</span>

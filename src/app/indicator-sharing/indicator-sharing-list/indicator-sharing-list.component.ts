@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { MatDialog } from '@angular/material';
+
 import { IndicatorSharingService } from '../indicator-sharing.service';
+import { AddIndicatorComponent } from '../add-indicator/add-indicator.component';
 
 @Component({
     selector: 'indicator-sharing-list',
@@ -7,10 +10,11 @@ import { IndicatorSharingService } from '../indicator-sharing.service';
     styleUrls: ['indicator-sharing-list.component.scss']
 })
 
-export class IndicatorSharingListComponent implements OnInit {
+export class IndicatorSharingListComponent implements OnInit, OnDestroy {
 
     public displayedIndicators: any;
     public allIndicators: any;
+    public identities: any[];
     public filteredIndicators: any;
     public DEFAULT_LENGTH: number = 5;
     public serverCallComplete: boolean = false;
@@ -20,9 +24,22 @@ export class IndicatorSharingListComponent implements OnInit {
         activeLabels: []
     };
 
-    constructor(private indicatorSharingService: IndicatorSharingService) { }
+    constructor(private indicatorSharingService: IndicatorSharingService, public dialog: MatDialog) { }
 
     public ngOnInit() { 
+        const getIdentities$ = this.indicatorSharingService.getIdentities()
+            .subscribe(
+                (res) => {
+                    this.identities = res.map((r) => r.attributes);            
+                },
+                (err) => {
+                    console.log(err);                
+                },
+                () => {
+                    getIdentities$.unsubscribe();
+                }
+            );
+
         const getIndicators$ = this.indicatorSharingService.getIndicators()
             .subscribe(
                 (results) => {
@@ -54,6 +71,17 @@ export class IndicatorSharingListComponent implements OnInit {
                     getAttackPatternsByIndicator$.unsubscribe();
                 }
             );
+    }
+
+    public ngOnDestroy() {
+        this.dialog.closeAll();
+    }
+
+    public openDialog() {
+        this.dialog.open(AddIndicatorComponent, {
+            width: '800px',
+            height: 'calc(100vh - 140px)'
+        });
     }
 
     public filterLabelChange(e) {        
@@ -113,5 +141,15 @@ export class IndicatorSharingListComponent implements OnInit {
 
     public getAttackPatternsByIndicatorId(indicatorId) {
         return this.indicatorToAttackPatternMap[indicatorId] !== undefined ? this.indicatorToAttackPatternMap[indicatorId] : [];
+    }
+
+    public getIdentityNameById(createdByRef) {
+        const identityMatch = this.identities && this.identities.length > 0 ? this.identities.find((identity) => identity.id === createdByRef) : null;
+        
+        if (identityMatch && identityMatch.name !== undefined) {
+            return { id: identityMatch.id, name: identityMatch.name};
+        } else {
+            return false;
+        }
     }
 }

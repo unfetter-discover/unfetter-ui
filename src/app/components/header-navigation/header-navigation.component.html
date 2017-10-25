@@ -56,14 +56,14 @@
                   <i class="material-icons">settings</i>
                   <span>&nbsp;&nbsp;Settings</span>
                 </a>
-              </li>
+              </li>-->
               <li>
-                <a class="flexImportant flexItemsCenter">
+                <a routerLink="/users/profile/{{authService.getUser()._id}}" class="flexImportant flexItemsCenter">
                   <i class="material-icons">person_outline</i>
                   <span>&nbsp;&nbsp;Profile</span>
                 </a>
               </li>
-              <li role="separator" class="divider"></li> -->
+              <li role="separator" class="divider"></li> 
               <li>
                 <a (click)="authService.logOut()" class="flexImportant flexItemsCenter">
                   <i class="material-icons">exit_to_app</i>

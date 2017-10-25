@@ -11,8 +11,15 @@
                     <mat-option value="{{label}}" *ngFor="let label of searchParameters.labels">{{ label | capitalize }}</mat-option>
                 </mat-select>
             </mat-form-field>
+            <p *ngIf="displayedIndicators && allIndicators" class="text-muted">Results: {{ filteredIndicators.length }} / {{ allIndicators.length }}</p> 
 
-            <p *ngIf="displayedIndicators && allIndicators" class="text-muted">Results: {{ filteredIndicators.length }} / {{ allIndicators.length }}</p>
+            <hr> 
+            <p class="lightH3 flexImportant flexItemsCenter">
+                <button mat-mini-fab color="primary" (click)="openDialog()">
+                    <i class="material-icons mat-24">add</i>
+                </button>
+                <span>&nbsp;Add Analytic</span>
+            </p>
         </div>
 
         <div class="col-xs-8 col-lg-7" id="indicatorListWrapper">
@@ -21,7 +28,8 @@
                 <indicator-card
                     [indicator]="indicator"
                     [attackPatterns]="getAttackPatternsByIndicatorId(indicator.id)"
-                    [searchParameters]="searchParameters"></indicator-card>
+                    [creator]="getIdentityNameById(indicator.created_by_ref)"
+                    [searchParameters]="searchParameters"></indicator-card>               
             </div>
 
             <div class="text-center mt-15 mb-20" *ngIf="displayShowMoreButton()">

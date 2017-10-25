@@ -409,6 +409,10 @@ a {
     margin-left: 5px !important;
 }
 
+.chipListPadding .mat-chip-list-wrapper {
+    padding: 0 5px;
+}
+
 // ~~~ Angular Material Themes: *ALWAYS* nest in a class or id, *NOT* overrides ~~~
 #indicatorSharingList {
     .mat-card-header-text {

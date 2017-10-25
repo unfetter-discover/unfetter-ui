@@ -8,12 +8,17 @@ export class IndicatorSharingService {
 
     public baseUrl = Constance.INDICATOR_URL;
     public multiplesUrl = Constance.MULTIPLES_URL;
+    public identitiesUrl = Constance.IDENTITIES_URL;
 
     constructor(private genericApi: GenericApi) { }
 
     public getIndicators(filter: object = {}): Observable<any> {
         const url = `${this.baseUrl}?filter=${encodeURIComponent(JSON.stringify(filter))}&metaproperties=true`;
         return this.genericApi.get(url);
+    }
+
+    public addIndicator(indicator): Observable<any> {
+        return this.genericApi.post(this.baseUrl, { data: { attributes: indicator } });
     }
 
     public getAttackPatternsByIndicator(): Observable<any> {
@@ -34,4 +39,8 @@ export class IndicatorSharingService {
         const url = `${this.multiplesUrl}/${id}/label`;
         return this.genericApi.patch(url, { data: { attributes: { 'label': label } } });
     }
+
+    public getIdentities() {
+        return this.genericApi.get(this.identitiesUrl);
+    }    
 }

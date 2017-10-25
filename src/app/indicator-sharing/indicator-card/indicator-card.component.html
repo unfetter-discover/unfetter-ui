@@ -2,7 +2,12 @@
     <mat-card-header>
         <mat-card-title>{{ indicator.name }}</mat-card-title>
         <mat-card-subtitle>
-            Submitted {{ indicator.created | date:'medium' }} by <a>Test Organization</a>
+            <!-- TODO add link to creator -->
+            Submitted {{ indicator.created | date:'medium' }} 
+            <span *ngIf="creator">
+                 by <a routerLink="/stix/identities/{{creator.id}}">{{creator.name}}</a>
+            </span>
+            
         </mat-card-subtitle>
     </mat-card-header>
 
@@ -19,7 +24,7 @@
                     <span id="addLabelWrapper" [ngClass]="{'showAddLabel': showAddLabel}" class="inlineFlex flexItemsCenter">
                         <div id="addLabelInputWrapper" class="inlineFlex flexItemsCenter">
                             <input type="text" [(ngModel)]="newLabelText">
-                            <i class="material-icons mat-24 cursor-pointer" (click)="addLabel()">send</i>
+                            <i class="material-icons mat-24 cursor-pointer" [ngClass]="{'text-muted': newLabelText.length === 0}" (click)="addLabel()" matTooltip="Add Label">send</i>
                         </div>
                         <button mat-mini-fab color="accent" (click)="showAddLabel = !showAddLabel" id="addLabelBtn" class="inlineBlock">
                             <i class="material-icons mat-24">add</i>
@@ -48,7 +53,7 @@
                             <img *ngIf="comment.user.avatar_url" src="{{ comment.user.avatar_url }}" alt="{{ comment.user.userName }} avatar" class="smallAvatar">&nbsp;
                         </span>
                         <span>
-                            <a>{{ comment.user.userName }}</a>
+                            <a routerLink="/users/profile/{{comment.user.id}}">{{ comment.user.userName }}</a>
                             <small class="text-muted"> &bull; {{ comment.submitted | date:'medium'}}</small>
                         </span>
                     </div>

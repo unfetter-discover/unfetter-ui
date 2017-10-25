@@ -1,0 +1,102 @@
+<mat-dialog-content id="addIndicator">
+    <form [formGroup]="form" novalidate (ngSubmit)="submitIndicator()">
+
+        <mat-form-field class="full-width mb-6">
+            <input matInput required placeholder="Name" formControlName="name">
+            <mat-error *ngIf="form.get('name').hasError('required')">
+                Name is <strong>required</strong>
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width mb-6">
+            <textarea matInput placeholder="Description" formControlName="description"></textarea>
+        </mat-form-field>
+
+        <mat-form-field class="full-width mb-6">
+            <input matInput required placeholder="Pattern Language" formControlName="pattern_lang">
+            <mat-error *ngIf="form.get('pattern_lang').hasError('required')">
+                Pattern Language is <strong>required</strong>
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width mb-6">
+            <textarea matInput required placeholder="Pattern" formControlName="pattern"></textarea>
+            <mat-error *ngIf="form.get('pattern').hasError('required')">
+                Pattern is <strong>required</strong>
+            </mat-error>
+        </mat-form-field>
+
+        <span class="mb-6">
+            <mat-form-field>
+                <input matInput required [matDatepicker]="validFromPicker" placeholder="Valid From" formControlName="valid_from">
+                <mat-datepicker-toggle matSuffix [for]="validFromPicker"></mat-datepicker-toggle>
+                <mat-datepicker #validFromPicker></mat-datepicker>
+                <mat-error *ngIf="form.get('valid_from').hasError('required')">
+                     Valid From is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+        </span>
+        
+        <span class="mb-6" style="padding-left: 30px;">
+            <mat-form-field>
+                <input matInput [matDatepicker]="validUntilPicker" placeholder="Valid Until" formControlName="valid_until">
+                <mat-datepicker-toggle matSuffix [for]="validUntilPicker"></mat-datepicker-toggle>
+                <mat-datepicker #validUntilPicker></mat-datepicker>
+            </mat-form-field>
+        </span>
+
+        <!-- ~~~ External References ~~~ -->
+        <h5>External References [<span class="cursor-pointer inlineBlock text-primary" (click)="showExternalReferences = !showExternalReferences" *ngIf="!showExternalReferences">&nbsp;+&nbsp;</span><span class="cursor-pointer inlineBlock text-primary" (click)="showExternalReferences = !showExternalReferences" *ngIf="showExternalReferences">&nbsp;-&nbsp;</span>]
+        </h5>
+        <div [@collapseLevel]="showExternalReferences ? 'open' : 'closed'" class="overFlowHidden">
+            <external-references-reactive [parentForm]="form"></external-references-reactive>
+        </div>
+        <mat-chip-list formArrayName="external_references" *ngIf="form.controls.external_references.controls.length > 0" class="chipListPadding">
+            <mat-chip 
+                *ngFor="let extRef of form.controls.external_references.controls" 
+                class="cursor-pointer chipListChip" 
+                color="warn"                
+                selected="true">{{ extRef.get('source_name').value | capitalize}}</mat-chip>
+        </mat-chip-list>
+        <!-- <div formArrayName="external_references" *ngIf="form.controls.external_references.controls.length > 0">
+            <div *ngFor="let extRef of form.controls.external_references.controls; let i = index" [formGroupName]="i">
+                <p>{{ extRef.get('source_name').value }}</p>
+            </div>
+        </mat-dialog-content> -->
+        <!-- ~~~ End of External References ~~~ -->
+
+        <!-- ~~~ Kill Chain Phases ~~~ -->
+        <h5>Kill Chain Phases [<span class="cursor-pointer inlineBlock text-primary" (click)="showKillChainPhases = !showKillChainPhases"
+                *ngIf="!showKillChainPhases">&nbsp;+&nbsp;</span><span class="cursor-pointer inlineBlock text-primary" (click)="showKillChainPhases = !showKillChainPhases"
+                *ngIf="showKillChainPhases">&nbsp;-&nbsp;</span>]
+        </h5>
+        <div [@collapseLevel]="showKillChainPhases ? 'open' : 'closed'" class="overFlowHidden">
+            <kill-chain-phases-reactive [parentForm]="form"></kill-chain-phases-reactive>
+        </div>
+        <mat-chip-list formArrayName="kill_chain_phases" *ngIf="form.controls.kill_chain_phases.controls.length > 0" class="chipListPadding">
+            <mat-chip 
+                *ngFor="let kill_chain of form.controls.kill_chain_phases.controls" 
+                class="cursor-pointer chipListChip"
+                color="primary"
+                selected="true">{{ kill_chain.get('phase_name').value | capitalize}}</mat-chip>
+        </mat-chip-list>
+        <!-- ~~~ End of Kill Chain Phases ~~~ -->
+
+        <!-- ~~~ Labels ~~~ -->
+        <h5>Labels</h5>
+        <div class="flex flexItemsCenter" id="labelsWrapper">
+            <mat-chip-list *ngIf="form.controls.labels.length > 0" class="inlineBlock" class="chipListPadding">
+                <mat-chip *ngFor="let label of form.controls.labels.controls" class="cursor-pointer chipListChip">{{label.value | capitalize}}</mat-chip>
+            </mat-chip-list>
+            <add-label-reactive [parentForm]="form"></add-label-reactive>
+        </div>
+        <!-- ~~~ End of Labels ~~~ -->
+
+        <p class="text-right">
+            <button mat-button mat-dialog-close (click)="resetForm($event); dialogRef.close(false);">CANCEL</button>
+            <button mat-raised-button color="primary" [disabled]="form.status === 'INVALID'" type="submit">SAVE</button>
+        </p>
+
+    </form>
+    
+</mat-dialog-content>

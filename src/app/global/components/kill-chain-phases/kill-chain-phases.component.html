@@ -1,0 +1,20 @@
+<div class="killChainPhasesComponent well">
+    <form [formGroup]="localForm" novalidate (ngSubmit)="addToParent()">     
+          
+        <mat-form-field class="full-width mb-6">
+            <input matInput required placeholder="Kill Chain Name" formControlName="kill_chain_name">
+            <mat-error *ngIf="localForm.get('kill_chain_name').hasError('required')">
+                Kill Chain Name is <strong>required</strong>
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width mb-6">
+            <input matInput required placeholder="Phase Name" formControlName="phase_name">
+            <mat-error *ngIf="localForm.get('phase_name').hasError('required')">
+                Phase Name is <strong>required</strong>
+            </mat-error>
+        </mat-form-field>   
+        
+        <button mat-button color="primary" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Add Kill Chain Phase</button>
+    </form>
+</div>

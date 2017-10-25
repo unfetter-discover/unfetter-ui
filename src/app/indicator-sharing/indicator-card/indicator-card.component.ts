@@ -22,6 +22,7 @@ export class IndicatorCardComponent implements OnInit {
     @Input() public indicator: any;
     @Input() public attackPatterns: any;
     @Input() public searchParameters: any;
+    @Input() public creator: string;
     
     public user;
     public showCommentTextArea: boolean = false;
