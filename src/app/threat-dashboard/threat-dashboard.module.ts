@@ -5,7 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { GlobalModule } from '../global/global.module';
 
-import { MatButtonModule } from '@angular/material';
+import { MatButtonModule, MatExpansionModule } from '@angular/material';
 import { MatCheckboxModule } from '@angular/material';
 import { MatChipsModule } from '@angular/material';
 import { MatDatepickerModule } from '@angular/material';
@@ -43,6 +43,7 @@ const materialModules = [
   MatCheckboxModule,
   MatChipsModule,
   MatDatepickerModule,
+  MatExpansionModule,
   MatIconModule,
   MatInputModule,
   MatListModule,
