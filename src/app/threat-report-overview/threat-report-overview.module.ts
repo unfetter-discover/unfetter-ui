@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ComponentModule } from '../components';
 import { GlobalModule } from '../global/global.module';
-import { routing } from './threat-report-overview-routing.module';
+import { routing } from './threat-report-overview.routing';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -21,17 +21,17 @@ import { ThreatReportSharedService } from './services/threat-report-shared.servi
 import { ThreatReportModifyComponent } from './modify/threat-report-modify.component';
 import { FileUploadModule } from './file-upload/file-upload.module';
 
-const troComponents = [
+const unfetterComponents = [
   ThreatReportOverviewComponent,
   ThreatReportCreationComponent,
   ThreatReportModifyComponent,
 ];
 
-const troServices = [
+const unfetterServices = [
   ThreatReportSharedService,
 ];
 
-const MatComponents = [
+const materialModules = [
   MatButtonModule,
   MatCheckboxModule,
   MatChipsModule,
@@ -48,7 +48,7 @@ const MatComponents = [
 
 @NgModule({
   declarations: [
-    ...troComponents
+    ...unfetterComponents
   ],
   imports: [
     ComponentModule,
@@ -56,12 +56,12 @@ const MatComponents = [
     CommonModule,
     FormsModule,
     HttpClientModule,
-    ...MatComponents,
+    ...materialModules,
     FileUploadModule,
     routing
   ],
   providers: [
-    ...troServices
+    ...unfetterServices
   ]
 })
 export class ThreatReportOverviewModule { }

@@ -10,7 +10,7 @@ const components = [
   FileUploadComponent,
 ];
 
-const MatComponents = [
+const materialModules = [
     MatButtonModule,
     MatCardModule,
     MatListModule,
@@ -31,7 +31,7 @@ imports: [
     CommonModule,
     FormsModule,
     HttpClientModule,
-    ...MatComponents,
+    ...materialModules,
   ],
   providers: [
     ...services

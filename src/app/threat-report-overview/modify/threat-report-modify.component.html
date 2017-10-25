@@ -32,8 +32,8 @@
             </div>
         </div>
         <div class="col-xs-12 col-md-2 flex middle">
-            <button md-button mat-raised-button routerLink="/{{threatDashboard}}/create">
-                <mat-icon class="md-24">keyboard_backspace</mat-icon>
+            <button mat-button mat-raised-button routerLink="/{{threatDashboard}}/create">
+                <mat-icon class="mat-24">keyboard_backspace</mat-icon>
                 EDIT BOUNDRIES
             </button>
         </div>
@@ -104,7 +104,7 @@
                         <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                         <mat-cell *matCellDef="let row">
                             <span class="buttonGrp text-right">
-                                <button class="mat-warn" md-button (click)="deletButtonClicked(row)">
+                                <button class="mat-warn" mat-button (click)="deletButtonClicked(row)">
                                     <i class="material-icons">delete</i>
                                 </button>
                             </span>
@@ -120,9 +120,9 @@
     </div>
     <div class="row pull-right mb-10 mt-10">
         <div class="col-md-12 col-xs-12">
-            <button color="primary" md-button (click)="cancel($event)">CANCEL</button>
+            <button color="primary" mat-button (click)="cancel($event)">CANCEL</button>
             <button mat-raised-button color="primary" [disabled]="threatReport && threatReport.isEmpty()" (click)="save($event)">
-                <mat-icon class="md-24">save</mat-icon>
+                <mat-icon class="mat-24">save</mat-icon>
                 SAVE
             </button>
         </div>

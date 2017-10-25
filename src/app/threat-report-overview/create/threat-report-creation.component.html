@@ -96,7 +96,7 @@
     </div>
     <div class="row pull-right">
         <div class="col-md-12 col-xs-12 pull-right mt-10">
-                <button color="primary" md-button (click)="cancel($event)">CANCEL</button>
+                <button color="primary" mat-button (click)="cancel($event)">CANCEL</button>
                 <button [disabled]="dateError.startDate.isError || dateError.endDate.isError || dateError.endDate.isSameOrBefore"
                     color="primary" mat-raised-button (click)="save($event)">
                     CONTINUE

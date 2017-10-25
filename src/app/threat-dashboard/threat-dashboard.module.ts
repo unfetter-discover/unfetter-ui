@@ -20,7 +20,7 @@ import { MatTooltipModule } from '@angular/material';
 
 import { CarouselModule } from 'primeng/primeng';
 
-import { routing } from './threat-dashboard-routing.module';
+import { routing } from './threat-dashboard.routing';
 
 import { ThreatDashboardComponent } from './threat-dashboard.component';
 import { ThreatReportOverviewModule } from '../threat-report-overview/threat-report-overview.module';
