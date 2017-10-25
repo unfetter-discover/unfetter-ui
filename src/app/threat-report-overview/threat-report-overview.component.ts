@@ -84,7 +84,7 @@ export class ThreatReportOverviewComponent implements OnInit, AfterViewInit, OnD
     const _self = this;
     row['attributes'] = { name: row.name };
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: row });
-    dialogRef.afterClosed().subscribe(
+    dialogRef.afterClosed().subscribe(:
       (result) => {
         if (result === 'true') {
           const sub = Observable.create((observer) => {
