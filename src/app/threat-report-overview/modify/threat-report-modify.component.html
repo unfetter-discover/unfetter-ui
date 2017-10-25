@@ -8,32 +8,32 @@
                 Boundries
             </h4>
             <div class="flex" *ngIf="threatReport">
-                <md-chip-list *ngIf="threatReport.boundries.intrusions.size > 0" class="mat-chip-list-stacked margin-chips" selectable="true">
-                    <md-chip *ngFor="let intrusion of threatReport.boundries.intrusions">
+                <mat-chip-list *ngIf="threatReport.boundries.intrusions.size > 0" class="mat-chip-list-stacked margin-chips" selectable="true">
+                    <mat-chip *ngFor="let intrusion of threatReport.boundries.intrusions">
                         <div class="flex">
                             <span class="flex1 flexNowrap">{{ intrusion }}</span>
                         </div>
-                    </md-chip>
-                </md-chip-list>
-                <md-chip-list *ngIf="threatReport.boundries.targets.size > 0" class="mat-chip-list-stacked margin-chips" selectable="true">
-                    <md-chip *ngFor="let target of threatReport.boundries.targets">
+                    </mat-chip>
+                </mat-chip-list>
+                <mat-chip-list *ngIf="threatReport.boundries.targets.size > 0" class="mat-chip-list-stacked margin-chips" selectable="true">
+                    <mat-chip *ngFor="let target of threatReport.boundries.targets">
                         <div class="flex">
                             <span class="flex1 flexNowrap">{{ target }}</span>
                         </div>
-                    </md-chip>
-                </md-chip-list>
-                <md-chip-list *ngIf="threatReport.boundries.malware.size > 0" class="mat-chip-list-stacked margin-chips" selectable="true">
-                    <md-chip *ngFor="let malware of threatReport.boundries.malware">
+                    </mat-chip>
+                </mat-chip-list>
+                <mat-chip-list *ngIf="threatReport.boundries.malware.size > 0" class="mat-chip-list-stacked margin-chips" selectable="true">
+                    <mat-chip *ngFor="let malware of threatReport.boundries.malware">
                         <div class="flex">
                             <span class="flex1 flexNowrap">{{ malware }}</span>
                         </div>
-                    </md-chip>
-                </md-chip-list>
+                    </mat-chip>
+                </mat-chip-list>
             </div>
         </div>
         <div class="col-xs-12 col-md-2 flex middle">
-            <button md-button md-raised-button routerLink="/{{threatDashboard}}/create">
-                <md-icon class="md-24">keyboard_backspace</md-icon>
+            <button mat-button mat-raised-button routerLink="/{{threatDashboard}}/create">
+                <mat-icon class="mat-24">keyboard_backspace</mat-icon>
                 EDIT BOUNDRIES
             </button>
         </div>
@@ -44,10 +44,10 @@
             <h4>
                 Include Objects
             </h4>
-            <md-form-field floatPlaceholder="never">
-                <input mdInput #filter placeholder="Include objects in work product" color="primary">
-                <md-icon mdSuffix color="primary">search</md-icon>
-            </md-form-field>
+            <mat-form-field floatPlaceholder="never">
+                <input matInput #filter placeholder="Include objects in work product" color="primary">
+                <mat-icon matSuffix color="primary">search</mat-icon>
+            </mat-form-field>
         </div>
         <div class="col-xs-3 col-md-3" *ngIf="threatReport?.boundries?.startDate">
             <h4>
@@ -69,60 +69,60 @@
     <div class="row mb-24" *ngIf="threatReport && dataSource && threatReport.reports.length > 0">
         <div class="col-xs-12 col-md-12">
             <div class="mat-elevation-z3">
-                <md-table #table [dataSource]="dataSource">
-                    <ng-container mdColumnDef="title">
-                        <md-header-cell *mdHeaderCellDef> Title </md-header-cell>
-                        <md-cell *mdCellDef="let row">
+                <mat-table #table [dataSource]="dataSource">
+                    <ng-container matColumnDef="title">
+                        <mat-header-cell *matHeaderCellDef> Title </mat-header-cell>
+                        <mat-cell *matCellDef="let row">
                             <p>
                                 <a href="{{row.data.attributes.external_references[0].external_url}}" target="_blank">
                                     {{row.data.attributes.title || row.data.attributes.name}}
-                                    <md-icon aria-hidden="true" class="md-14">launch</md-icon>
+                                    <mat-icon aria-hidden="true" class="mat-14">launch</mat-icon>
                                 </a>
                             </p>
                             <span class="mat-caption text-muted">
                                 {{row.data.attributes.description}}
                             </span>
-                        </md-cell>
+                        </mat-cell>
                     </ng-container>
-                    <ng-container mdColumnDef="author">
-                        <md-header-cell *mdHeaderCellDef> Author </md-header-cell>
-                        <md-cell *mdCellDef="let row">
+                    <ng-container matColumnDef="author">
+                        <mat-header-cell *matHeaderCellDef> Author </mat-header-cell>
+                        <mat-cell *matCellDef="let row">
                             <span class="mat-caption">
                                 {{row.data.attributes.created_by_ref}}
                             </span>
-                        </md-cell>
+                        </mat-cell>
                     </ng-container>
-                    <ng-container mdColumnDef="date">
-                        <md-header-cell *mdHeaderCellDef> Modified Date </md-header-cell>
-                        <md-cell *mdCellDef="let row" [style.color]="row.color">
+                    <ng-container matColumnDef="date">
+                        <mat-header-cell *matHeaderCellDef> Modified Date </mat-header-cell>
+                        <mat-cell *matCellDef="let row" [style.color]="row.color">
                             <span class="mat-caption">
                                 {{row.data.attributes.modified | date:'medium' }}
                             </span>
-                        </md-cell>
+                        </mat-cell>
                     </ng-container>
-                    <ng-container mdColumnDef='actions'>
-                        <md-header-cell *mdHeaderCellDef> </md-header-cell>
-                        <md-cell *mdCellDef="let row">
+                    <ng-container matColumnDef='actions'>
+                        <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                        <mat-cell *matCellDef="let row">
                             <span class="buttonGrp text-right">
-                                <button class="mat-warn" md-button (click)="deletButtonClicked(row)">
+                                <button class="mat-warn" mat-button (click)="deletButtonClicked(row)">
                                     <i class="material-icons">delete</i>
                                 </button>
                             </span>
-                        </md-cell>
+                        </mat-cell>
                     </ng-container>
-                    <md-header-row *mdHeaderRowDef="displayCols"></md-header-row>
-                    <md-row *mdRowDef="let row; columns: displayCols;"></md-row>
-                </md-table>
-                <md-paginator #paginator [length]="threatReport.reports.length" [pageIndex]="0" [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]">
-                </md-paginator>
+                    <mat-header-row *matHeaderRowDef="displayCols"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayCols;"></mat-row>
+                </mat-table>
+                <mat-paginator #paginator [length]="threatReport.reports.length" [pageIndex]="0" [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]">
+                </mat-paginator>
             </div>
         </div>
     </div>
     <div class="row pull-right mb-10 mt-10">
         <div class="col-md-12 col-xs-12">
-            <button color="primary" md-button (click)="cancel($event)">CANCEL</button>
-            <button md-raised-button color="primary" [disabled]="threatReport && threatReport.isEmpty()" (click)="save($event)">
-                <md-icon class="md-24">save</md-icon>
+            <button color="primary" mat-button (click)="cancel($event)">CANCEL</button>
+            <button mat-raised-button color="primary" [disabled]="threatReport && threatReport.isEmpty()" (click)="save($event)">
+                <mat-icon class="mat-24">save</mat-icon>
                 SAVE
             </button>
         </div>

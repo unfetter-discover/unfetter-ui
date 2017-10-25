@@ -18,11 +18,11 @@
         <ul class="nav navbar-nav">
           <!-- Logged Out only -->
           <li *ngIf="!authService.loggedIn()">
-            <a href="/api/auth/github-login/" class="mdButtonNavItem">
-              <button md-raised-button color="primary">Sign In</button>
+            <a href="/api/auth/github-login/" class="matButtonNavItem">
+              <button mat-raised-button color="primary">Sign In</button>
             </a>
           </li>
-          
+
           <!-- Logged In Only -->
            <li *ngIf="authService.loggedIn()"><a routerLink="./assessments">Assessments</a></li>
           <li *ngIf="authService.loggedIn()"><a routerLink="./intrusion-set-dashboard" >Intrusion Set Dashboard</a></li>
@@ -35,12 +35,12 @@
             <a dropdownToggle class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">STIX<span class="caret"></span></a>
             <ul  class="dropdown-menu">
               <li *ngFor="let navigation of navigations">
-                <a [routerLink]="[navigation.url]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{navigation.label}}</a>      
-              </li>        
+                <a [routerLink]="[navigation.url]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{navigation.label}}</a>
+              </li>
             </ul>
           </li>
 
-          <li dropdown class="dropdown" *ngIf="authService.loggedIn()">            
+          <li dropdown class="dropdown" *ngIf="authService.loggedIn()">
             <a dropdownToggle class="dropdown-toggle" data-toggle="user" role="button" aria-haspopup="true" aria-expanded="false">
               <img src="{{authService.getUser().github.avatar_url}}" alt="User" id="avatar" *ngIf="authService.getUser() !== null && authService.getUser().github.avatar_url !== undefined" class="smallAvatar">
               <span *ngIf="authService.getUser().github.avatar_url === undefined">{{authService.getUser().userName}}</span>

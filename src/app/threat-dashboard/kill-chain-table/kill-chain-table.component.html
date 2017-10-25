@@ -1,7 +1,7 @@
-<md-card class="margin-top" id="carouselCard">
-    <p-carousel 
-        *ngIf="intrusionSetsDashboard.killChainPhases" 
-        headerText="Kill Chain Phases Used" 
+<mat-card class="margin-top" id="carouselCard">
+    <p-carousel
+        *ngIf="intrusionSetsDashboard.killChainPhases"
+        headerText="Kill Chain Phases Used"
         [value]="intrusionSetsDashboard.killChainPhases"
         numVisible="5">
         <ng-template let-killChainPhase pTemplate="killChainPhase">
@@ -33,4 +33,4 @@
 
         </ng-template>
     </p-carousel>
-</md-card>
+</mat-card>

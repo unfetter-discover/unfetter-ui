@@ -4,8 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NgModule, ApplicationRef } from '@angular/core';
 import { RouterModule, PreloadAllModules, Router } from '@angular/router';
-import { MaterialModule, MdDialogModule, MdSlideToggleModule, MdSliderModule, MdCardModule } from '@angular/material';
-import { AutoCompleteModule, CarouselModule, ProgressBarModule } from 'primeng/primeng';
+import { MatProgressBarModule } from '@angular/material';
 import { ComponentModule } from './components/component.module';
 import { StixModule } from './settings/stix.module';
 // Imports for loading & configuring the in-memory web api
@@ -22,17 +21,14 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
 import { HomeComponent } from './home';
-import { IntrusionSetDashboardComponent } from './intrusion-set-dashboard/intrusion-set-dashboard.component';
 import { PartnersComponent } from './partners/partners.component';
 import { NoContentComponent } from './no-content';
 import '../styles/styles.scss';
 // import '../styles/app.scss';
 import '../styles/headings.css';
-import { ConceptMapComponent } from './intrusion-set-dashboard/concept-map.component';
-import { CollapsibleTreeComponent } from './intrusion-set-dashboard/collapsible-tree.component';
-import { AccordionModule } from 'primeng/components/accordion/accordion';
+// import { ConceptMapComponent } from './intrusion-set-dashboard/concept-map.component';
+// import { CollapsibleTreeComponent } from './intrusion-set-dashboard/collapsible-tree.component';
 import { AssessmentsModule } from './assessments/assessments.module';
-import { ThreatDashboardModule } from './threat-dashboard/threat-dashboard.module';
 
 import { GlobalModule } from './global/global.module';
 
@@ -43,10 +39,7 @@ import { GlobalModule } from './global/global.module';
   bootstrap: [AppComponent],
   declarations: [
     AppComponent,
-    ConceptMapComponent,
     HomeComponent,
-    IntrusionSetDashboardComponent,
-    CollapsibleTreeComponent,
     PartnersComponent,
     NoContentComponent,
   ],
@@ -55,12 +48,7 @@ import { GlobalModule } from './global/global.module';
     BrowserAnimationsModule,
     FormsModule,
     HttpModule,
-    MaterialModule,
-    AutoCompleteModule,
-    CarouselModule,
-    MdSliderModule,
-    AccordionModule,
-    ProgressBarModule,
+    MatProgressBarModule,
     ComponentModule,
     GlobalModule,
     StixModule,
@@ -68,7 +56,6 @@ import { GlobalModule } from './global/global.module';
     AppRoutingModule,
     // RouterModule.forRoot(ROUTES, { useHash: true, preloadingStrategy: PreloadAllModules })
     AssessmentsModule,
-    ThreatDashboardModule,
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS,

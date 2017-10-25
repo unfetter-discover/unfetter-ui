@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Location } from '@angular/common';
-import { MdDialog, MdDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl } from '@angular/forms';
 

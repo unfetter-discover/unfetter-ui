@@ -12,29 +12,29 @@
                                     <small>{{data.attributes.description}}</small>
                                 </div>
 
-                                <md-chip-list class="pull-left" *ngIf="showLabels">
-                                    <md-chip selected="true" color="accent" *ngFor="let label of data.attributes.labels">{{label}}</md-chip>
-                                </md-chip-list>
+                                <mat-chip-list class="pull-left" *ngIf="showLabels">
+                                    <mat-chip selected="true" color="accent" *ngFor="let label of data.attributes.labels">{{label}}</mat-chip>
+                                </mat-chip-list>
 
-                                <md-chip-list class="pull-left" *ngIf="showPattern">
-                                    <md-chip selected="true" color="accent">{{data.attributes.pattern}}</md-chip>
-                                </md-chip-list>
+                                <mat-chip-list class="pull-left" *ngIf="showPattern">
+                                    <mat-chip selected="true" color="accent">{{data.attributes.pattern}}</mat-chip>
+                                </mat-chip-list>
 
-                                <md-chip-list class="pull-left" *ngIf="showSectors">
-                                    <md-chip selected="true"  color="primary" *ngFor="let sector of data.attributes.sectors">{{sector}}</md-chip>
-                                </md-chip-list>
+                                <mat-chip-list class="pull-left" *ngIf="showSectors">
+                                    <mat-chip selected="true"  color="primary" *ngFor="let sector of data.attributes.sectors">{{sector}}</mat-chip>
+                                </mat-chip-list>
 
-                                    <md-chip-list class="pull-left" *ngIf="showKillChainPhases">
-                                    <md-chip selected="true"  color="warn"  *ngFor="let kill_chain_phase of data.attributes.kill_chain_phases">{{kill_chain_phase.phase_name}}</md-chip>
-                                </md-chip-list>
+                                    <mat-chip-list class="pull-left" *ngIf="showKillChainPhases">
+                                    <mat-chip selected="true"  color="warn"  *ngFor="let kill_chain_phase of data.attributes.kill_chain_phases">{{kill_chain_phase.phase_name}}</mat-chip>
+                                </mat-chip-list>
 
-                                <md-chip-list class="pull-left" *ngIf="showExternalReferences">
-                                    <md-chip selected="true"  color="primary" *ngFor="let external_reference of data.attributes.external_references">{{external_reference.source_name}}</md-chip>
-                                </md-chip-list>
+                                <mat-chip-list class="pull-left" *ngIf="showExternalReferences">
+                                    <mat-chip selected="true"  color="primary" *ngFor="let external_reference of data.attributes.external_references">{{external_reference.source_name}}</mat-chip>
+                                </mat-chip-list>
                             </div>
                             <div class="col-lg-3 col-xs-12">
-                                    <button md-raised-button (click)="editButtonClicked(data)"><i class="material-icons">create</i></button>
-                                    <button md-raised-button (click)="deleteButtonClicked(data)"><i class="material-icons">delete</i></button>
+                                    <button color="primary"  mat-button (click)="editButtonClicked(data)"><mat-icon class="mat-24">create</mat-icon></button>
+                                    <button color="warn" mat-button (click)="deleteButtonClicked(data)"><mat-icon class="mat-24">delete</mat-icon></button>
                             </div>
 
                         </div>

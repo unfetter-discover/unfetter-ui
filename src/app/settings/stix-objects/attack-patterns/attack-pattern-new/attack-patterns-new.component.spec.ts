@@ -1,23 +1,22 @@
 import {
-    NO_ERRORS_SCHEMA,
-    DebugElement,
-    ChangeDetectorRef
-  } from '@angular/core';
+  NO_ERRORS_SCHEMA,
+  DebugElement,
+  ChangeDetectorRef
+} from '@angular/core';
 import {
-    inject,
-    async,
-    fakeAsync,
-    TestBed,
-    ComponentFixture,
-    tick
-  } from '@angular/core/testing';
+  inject,
+  async,
+  fakeAsync,
+  TestBed,
+  ComponentFixture,
+  tick
+} from '@angular/core/testing';
 import {
-    MdDialog,
-    MdSnackBar,
-    MaterialModule,
-    MdInputModule,
-    MdSelectModule
-  } from '@angular/material';
+  MatDialog,
+  MatSnackBar,
+  MatInputModule,
+  MatSelectModule
+} from '@angular/material';
 
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -73,81 +72,81 @@ function componetInitialized() {
     createComponent();
 
     it('should be readly initialized', () => {
-        expect(fixture).toBeDefined();
-        expect(comp).toBeDefined();
+      expect(fixture).toBeDefined();
+      expect(comp).toBeDefined();
     });
   });
 }
 
 //////////////////////////////////
 function buttons() {
-    moduleSetup();
-    describe('ADD, CANCEL, and SAVE & CLOSE buttons', () => {
-      createComponent();
+  moduleSetup();
+  describe('ADD, CANCEL, and SAVE & CLOSE buttons', () => {
+    createComponent();
 
-      it('should disable save button if name field is empty', () => {
-          comp.attackPattern.attributes.name = null;
-          fixture.detectChanges(); // runs initial lifecycle hooks
-          de = fixture.debugElement.query(By.css('#save-btn'))
-          // should not create attack-pattern
-          expect(de.nativeElement.disabled).toBe(true, 'should disable save button if name field is empty');
-      });
-
-      it('should enable save button if name field is not empty', () => {
-          comp.attackPattern.attributes.name = 'Test Attack Pattern name';
-          fixture.detectChanges(); // runs initial lifecycle hooks
-          de = fixture.debugElement.query(By.css('#save-btn'))
-          // should not create attack-pattern
-          expect(de.nativeElement.disabled).toBe(false, 'should enable save button if name field is not empty');
-      });
-
-      it('should save attack pattern whenn clicked', () => {
-        const location  = fixture.debugElement.injector.get(Location);
-        const locationSpy = spyOn(location, 'back');
-
-        const stixService = fixture.debugElement.injector.get(StixService);
-        const saveSpy = spyOn(stixService, 'create').and.callThrough();
-
-        comp.attackPattern.attributes.name = 'Test Attack Pattern name';
-        fixture.detectChanges(); // runs initial lifecycle hooks
-        de = fixture.debugElement.query(By.css('#save-btn'));
-        click(de);
-        // should create attack-pattern
-        expect(saveSpy.calls.any()).toBe(true, 'StixService.create called');
-
-         // should not create attack-pattern
-        expect(locationSpy.calls.any()).toBe(true, 'should navigate back after saving');
+    it('should disable save button if name field is empty', () => {
+      comp.attackPattern.attributes.name = null;
+      fixture.detectChanges(); // runs initial lifecycle hooks
+      de = fixture.debugElement.query(By.css('#save-btn'))
+      // should not create attack-pattern
+      expect(de.nativeElement.disabled).toBe(true, 'should disable save button if name field is empty');
     });
 
-      it('should navigate back if cancel button click', () => {
-          const location  = fixture.debugElement.injector.get(Location);
-          const locationSpy = spyOn(location, 'back');
+    it('should enable save button if name field is not empty', () => {
+      comp.attackPattern.attributes.name = 'Test Attack Pattern name';
+      fixture.detectChanges(); // runs initial lifecycle hooks
+      de = fixture.debugElement.query(By.css('#save-btn'))
+      // should not create attack-pattern
+      expect(de.nativeElement.disabled).toBe(false, 'should enable save button if name field is not empty');
+    });
 
-          fixture.detectChanges(); // runs initial lifecycle hooks
-          de = fixture.debugElement.query(By.css('#canel-btn'))
-          click(de)
-          // should not create attack-pattern
-          expect(locationSpy.calls.any()).toBe(true, 'should navigate back if cancel button click');
-        });
+    it('should save attack pattern whenn clicked', () => {
+      const location = fixture.debugElement.injector.get(Location);
+      const locationSpy = spyOn(location, 'back');
 
-      it('should add kill chain when add button is clicked', () => {
-          fixture.detectChanges(); // runs initial lifecycle hooks
-          expect(comp.attackPattern.attributes.kill_chain_phases.length).toBeLessThanOrEqual(0, 'kill chain not equal zero');
-          de = fixture.debugElement.query(By.css('#add-kill-chain'))
-          click(de)
-          // attack pattern model should be updated
-          expect(comp.attackPattern.attributes.kill_chain_phases.length).toBeGreaterThan(0, 'should add kill chain when add button is clicked');
-      });
+      const stixService = fixture.debugElement.injector.get(StixService);
+      const saveSpy = spyOn(stixService, 'create').and.callThrough();
 
-      it('should add external references when add button is clicked', () => {
-          fixture.detectChanges(); // runs initial lifecycle hooks
-          expect(comp.attackPattern.attributes.external_references.length).toBeLessThanOrEqual(0, 'external references not equal zero');
-          de = fixture.debugElement.query(By.css('#add-external-references'))
-          click(de)
-          // attack pattern model should be updated
-          expect(comp.attackPattern.attributes.external_references.length).toBeGreaterThan(0, 'should add external references when add button is clicked');
-        });
-    })
+      comp.attackPattern.attributes.name = 'Test Attack Pattern name';
+      fixture.detectChanges(); // runs initial lifecycle hooks
+      de = fixture.debugElement.query(By.css('#save-btn'));
+      click(de);
+      // should create attack-pattern
+      expect(saveSpy.calls.any()).toBe(true, 'StixService.create called');
+
+      // should not create attack-pattern
+      expect(locationSpy.calls.any()).toBe(true, 'should navigate back after saving');
+    });
+
+    it('should navigate back if cancel button click', () => {
+      const location = fixture.debugElement.injector.get(Location);
+      const locationSpy = spyOn(location, 'back');
+
+      fixture.detectChanges(); // runs initial lifecycle hooks
+      de = fixture.debugElement.query(By.css('#canel-btn'))
+      click(de)
+      // should not create attack-pattern
+      expect(locationSpy.calls.any()).toBe(true, 'should navigate back if cancel button click');
+    });
+
+    it('should add kill chain when add button is clicked', () => {
+      fixture.detectChanges(); // runs initial lifecycle hooks
+      expect(comp.attackPattern.attributes.kill_chain_phases.length).toBeLessThanOrEqual(0, 'kill chain not equal zero');
+      de = fixture.debugElement.query(By.css('#add-kill-chain'))
+      click(de)
+      // attack pattern model should be updated
+      expect(comp.attackPattern.attributes.kill_chain_phases.length).toBeGreaterThan(0, 'should add kill chain when add button is clicked');
+    });
+
+    it('should add external references when add button is clicked', () => {
+      fixture.detectChanges(); // runs initial lifecycle hooks
+      expect(comp.attackPattern.attributes.external_references.length).toBeLessThanOrEqual(0, 'external references not equal zero');
+      de = fixture.debugElement.query(By.css('#add-external-references'))
+      click(de)
+      // attack pattern model should be updated
+      expect(comp.attackPattern.attributes.external_references.length).toBeGreaterThan(0, 'should add external references when add button is clicked');
+    });
+  })
 
 }
 //////////////////////////////////
@@ -158,52 +157,52 @@ function formFields() {
     createComponent();
 
     it('should add name to model', () => {
-        const testName = 'Test Attack Pattern Name';
-        fixture.detectChanges(); // runs initial lifecycle hooks
-        expect(comp.attackPattern.attributes.name).toBe('', 'model should not have name value');
+      const testName = 'Test Attack Pattern Name';
+      fixture.detectChanges(); // runs initial lifecycle hooks
+      expect(comp.attackPattern.attributes.name).toBe('', 'model should not have name value');
 
-        // simulate user entering new name into the input box
-        el = fixture.debugElement.query(By.css('#attack-pattern-name')).nativeElement;
-        el.value = testName;
+      // simulate user entering new name into the input box
+      el = fixture.debugElement.query(By.css('#attack-pattern-name')).nativeElement;
+      el.value = testName;
 
-        el.dispatchEvent(newEvent('input'));
+      el.dispatchEvent(newEvent('input'));
 
-        expect(comp.attackPattern.attributes.name).toBe(testName, 'should add name to model');
+      expect(comp.attackPattern.attributes.name).toBe(testName, 'should add name to model');
     });
 
     it('should add description to model', () => {
-        const description = 'Test Attack Pattern description';
-        fixture.detectChanges(); // runs initial lifecycle hooks
+      const description = 'Test Attack Pattern description';
+      fixture.detectChanges(); // runs initial lifecycle hooks
 
-        expect(comp.attackPattern.attributes.description).toBeUndefined('model should not have description value');
+      expect(comp.attackPattern.attributes.description).toBeUndefined('model should not have description value');
 
-        // simulate user entering new description into the text box
-        el = fixture.debugElement.query(By.css('#attack-pattern-desc')).nativeElement
-        el.value = description;
-        el.dispatchEvent(newEvent('input'));
+      // simulate user entering new description into the text box
+      el = fixture.debugElement.query(By.css('#attack-pattern-desc')).nativeElement
+      el.value = description;
+      el.dispatchEvent(newEvent('input'));
 
-        // attack pattern model description field should be updated
-        expect(comp.attackPattern.attributes.description).toBe(description, 'should add name to model');
+      // attack pattern model description field should be updated
+      expect(comp.attackPattern.attributes.description).toBe(description, 'should add name to model');
     });
 
     it('should add sophistication level to model', fakeAsync(() => {
-        const novice = comp.x_unfetter_sophistication_levels[0].id;
-        fixture.detectChanges(); // runs initial lifecycle hooks
+      const novice = comp.x_unfetter_sophistication_levels[0].id;
+      fixture.detectChanges(); // runs initial lifecycle hooks
 
-        expect(comp.attackPattern.attributes.x_unfetter_sophistication_level).toBeUndefined('model should not have sophistication value');
+      expect(comp.attackPattern.attributes.x_unfetter_sophistication_level).toBeUndefined('model should not have sophistication value');
 
-        el = fixture.debugElement.query(By.css('.mat-select-trigger')).nativeElement;
-        el.click();
-        fixture.detectChanges();
-        tick(SELECT_OPEN_ANIMATION);
+      el = fixture.debugElement.query(By.css('.mat-select-trigger')).nativeElement;
+      el.click();
+      fixture.detectChanges();
+      tick(SELECT_OPEN_ANIMATION);
 
-        let option = overlayContainerElement.querySelector('md-option') as HTMLElement;
-        option.click();
-        fixture.detectChanges();
-        tick(SELECT_CLOSE_ANIMATION);
+      let option = overlayContainerElement.querySelector('mat-option') as HTMLElement;
+      option.click();
+      fixture.detectChanges();
+      tick(SELECT_CLOSE_ANIMATION);
 
-        // attack pattern model sophistication field should be updated
-        expect(comp.attackPattern.attributes.x_unfetter_sophistication_level).toBe(novice, 'should add name to model');
+      // attack pattern model sophistication field should be updated
+      expect(comp.attackPattern.attributes.x_unfetter_sophistication_level).toBe(novice, 'should add name to model');
     }));
 
     it('should add kill chain to model', fakeAsync(() => {
@@ -266,22 +265,27 @@ function formFields() {
 }
 
 function moduleSetup() {
-   // async beforeEach
-   beforeEach( async(() => {
-      TestBed.configureTestingModule({
-        imports: [
-          GlobalModule, ComponentModule, FormsModule, NoopAnimationsModule, MdSelectModule
-        ],
-        declarations: [AttackPatternNewComponent],
-        schemas: [NO_ERRORS_SCHEMA],
-        providers: [
-          { provide: StixService, useValue: serviceMock},
-          { provide: ActivatedRoute, useValue: {} },
-          { provide: Router, useValue: {} },
-          { provide: MdDialog, useValue: {} },
-          { provide: Location, useValue: {back: (): void => {} } },
-          { provide: MdSnackBar, useValue: {} },
-          {provide: OverlayContainer, useFactory: () => {
+  const matModules = [
+    MatInputModule,
+    MatSelectModule
+  ];
+  // async beforeEach
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        GlobalModule, ComponentModule, FormsModule, NoopAnimationsModule, ...matModules
+      ],
+      declarations: [AttackPatternNewComponent],
+      schemas: [NO_ERRORS_SCHEMA],
+      providers: [
+        { provide: StixService, useValue: serviceMock },
+        { provide: ActivatedRoute, useValue: {} },
+        { provide: Router, useValue: {} },
+        { provide: MatDialog, useValue: {} },
+        { provide: Location, useValue: { back: (): void => { } } },
+        { provide: MatSnackBar, useValue: {} },
+        {
+          provide: OverlayContainer, useFactory: () => {
             overlayContainerElement = document.createElement('div') as HTMLElement;
             overlayContainerElement.classList.add('cdk-overlay-container');
 
@@ -291,11 +295,12 @@ function moduleSetup() {
             document.body.style.padding = '0';
             document.body.style.margin = '0';
 
-            return {getContainerElement: () => overlayContainerElement};
-          }},
-        ]
-      });
-    })
+            return { getContainerElement: () => overlayContainerElement };
+          }
+        },
+      ]
+    });
+  })
   );
 }
 

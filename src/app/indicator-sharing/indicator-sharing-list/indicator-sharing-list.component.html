@@ -1,49 +1,31 @@
 <div id="indicatorSharingList" class="container-fluid">
     <div class="row">
 
-        <!-- <div class="col-xs-4 col-lg-3" id="filterWrapper">
-            <md-card>
-                <md-card-header>
-                    <md-card-title class="flexImportant flexItemsCenter">
-                        <i class="material-icons">search</i>
-                        <span>Search Analytics</span>
-                    </md-card-title>
-                </md-card-header>
-
-                <md-card-content>
-                    <md-select placeholder="Labels" [multiple]="true" class="full-width mb-20" (change)="filterLabelChange($event)">
-                        <md-option value="{{label}}" *ngFor="let label of searchParameters.labels">{{ label | capitalize }}</md-option>
-                    </md-select>
-                </md-card-content>
-
-                <md-card-header *ngIf="displayedIndicators && allIndicators">
-                    <md-card-subtitle>Results: {{ filteredIndicators.length }} / {{ allIndicators.length }}</md-card-subtitle>
-                </md-card-header>
-            </md-card>
-        </div> -->
-
         <div class="col-xs-4 col-lg-3" id="filterWrapper">
             <p class="lightH3 flexImportant flexItemsCenter">
-                    <i class="material-icons">search</i>
-                    <span>Search Analytics</span>
+                <i class="material-icons">search</i>
+                <span>Search Analytics</span>
             </p>
-            <md-select placeholder="Labels" [multiple]="true" class="full-width mb-20" (change)="filterLabelChange($event)">
-                <md-option value="{{label}}" *ngFor="let label of searchParameters.labels">{{ label | capitalize }}</md-option>
-            </md-select>
-            <p *ngIf="displayedIndicators && allIndicators" class="text-muted">Results: {{ filteredIndicators.length }} / {{ allIndicators.length }}</p>        
+            <mat-form-field class="full-width mb-20">
+                <mat-select placeholder="Labels" [multiple]="true" (change)="filterLabelChange($event)">
+                    <mat-option value="{{label}}" *ngFor="let label of searchParameters.labels">{{ label | capitalize }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <p *ngIf="displayedIndicators && allIndicators" class="text-muted">Results: {{ filteredIndicators.length }} / {{ allIndicators.length }}</p>
         </div>
 
         <div class="col-xs-8 col-lg-7" id="indicatorListWrapper">
 
             <div *ngFor="let indicator of displayedIndicators" class="mb-15">
-                <indicator-card 
-                    [indicator]="indicator" 
+                <indicator-card
+                    [indicator]="indicator"
                     [attackPatterns]="getAttackPatternsByIndicatorId(indicator.id)"
-                    [searchParameters]="searchParameters"></indicator-card>               
+                    [searchParameters]="searchParameters"></indicator-card>
             </div>
 
             <div class="text-center mt-15 mb-20" *ngIf="displayShowMoreButton()">
-                <button md-button color="primary" class="full-width" (click)="showMoreIndicators()">Show More Indicators</button>
+                <button mat-button color="primary" class="full-width" (click)="showMoreIndicators()">Show More Indicators</button>
             </div>
         </div>
 

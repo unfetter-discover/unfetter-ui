@@ -4,7 +4,7 @@ import { Location, LocationStrategy, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NO_ERRORS_SCHEMA, DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
-import { MdSnackBar, MdDialog, MdInputModule } from '@angular/material';
+import { MatSnackBar, MatDialog, MatInputModule } from '@angular/material';
 import { StixService } from '../../../stix.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { newEvent, click } from '../../../../testing/index';
@@ -135,7 +135,7 @@ function moduleSetup() {
     beforeEach( async(() => {
        TestBed.configureTestingModule({
          imports: [
-            FormsModule, NoopAnimationsModule, MdInputModule
+            FormsModule, NoopAnimationsModule, MatInputModule
          ],
          declarations: [CampaignsNewComponent],
          schemas: [NO_ERRORS_SCHEMA],
@@ -143,9 +143,9 @@ function moduleSetup() {
            { provide: StixService, useValue: {}},
            { provide: ActivatedRoute, useValue: {} },
            { provide: Router, useValue: {} },
-           { provide: MdDialog, useValue: {} },
+           { provide: MatDialog, useValue: {} },
            { provide: Location, useValue: {back: (): void => {} } },
-           { provide: MdSnackBar, useValue: {} },
+           { provide: MatSnackBar, useValue: {} },
         //    { provide: OverlayContainer, useFactory: () => {
         //      overlayContainerElement = document.createElement('div') as HTMLElement;
         //      overlayContainerElement.classList.add('cdk-overlay-container');

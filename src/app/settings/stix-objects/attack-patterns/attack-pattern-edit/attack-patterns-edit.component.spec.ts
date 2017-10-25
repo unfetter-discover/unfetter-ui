@@ -1,23 +1,22 @@
 import {
-    NO_ERRORS_SCHEMA,
-    DebugElement,
-    ChangeDetectorRef
-  } from '@angular/core';
+  NO_ERRORS_SCHEMA,
+  DebugElement,
+  ChangeDetectorRef
+} from '@angular/core';
 import {
-    inject,
-    async,
-    fakeAsync,
-    TestBed,
-    ComponentFixture,
-    tick
-  } from '@angular/core/testing';
+  inject,
+  async,
+  fakeAsync,
+  TestBed,
+  ComponentFixture,
+  tick
+} from '@angular/core/testing';
 import {
-    MdDialog,
-    MdSnackBar,
-    MaterialModule,
-    MdInputModule,
-    MdSelectModule
-  } from '@angular/material';
+  MatDialog,
+  MatSnackBar,
+  MatInputModule,
+  MatSelectModule
+} from '@angular/material';
 // Only implements params and part of snapshot.paramMap
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { convertToParamMap, ParamMap } from '@angular/router';
@@ -58,13 +57,15 @@ let stixServiceStub = {
     killChainPhase.kill_chain_name = 'test kill_chain_name';
     killChainPhase.phase_name = 'test phase_name';
 
-    const data = {'id': id, attributes: {
-      name: 'Attach Pattern Name',
-      description: 'Attack pattern test desc',
-      external_references: [external],
-      kill_chain_phases: [killChainPhase],
-      x_unfetter_sophistication_level: 1
-    }};
+    const data = {
+      'id': id, attributes: {
+        name: 'Attach Pattern Name',
+        description: 'Attack pattern test desc',
+        external_references: [external],
+        kill_chain_phases: [killChainPhase],
+        x_unfetter_sophistication_level: 1
+      }
+    };
     return Observable.of(data);
   },
 
@@ -83,7 +84,7 @@ let stixServiceStub = {
 
 class ActivatedRouteStub {
   // ActivatedRoute.paramMap is Observable
-  public  subject = new BehaviorSubject(convertToParamMap(this.testParamMap));
+  public subject = new BehaviorSubject(convertToParamMap(this.testParamMap));
   public params = this.subject.asObservable();
 
   // Test parameters
@@ -104,7 +105,7 @@ class ActivatedRouteStub {
 describe('AttackPatternEditComponent', () => {
   beforeEach(() => {
     activatedRoute = new ActivatedRouteStub();
-    activatedRoute.testParamMap = { 'id': id } ;
+    activatedRoute.testParamMap = { 'id': id };
   });
   describe('Test', componetInitialized);
   describe('Test', displayInfo);
@@ -120,8 +121,8 @@ function componetInitialized() {
     createComponent();
 
     it('should be readly initialized', () => {
-          expect(fixture).toBeDefined();
-          expect(comp).toBeDefined();
+      expect(fixture).toBeDefined();
+      expect(comp).toBeDefined();
     });
   });
 }
@@ -133,21 +134,21 @@ function updating() {
     createComponent();
 
     it('should update attack pattern name', () => {
-          fixture.detectChanges(); // runs initial lifecycle hooks
-          fixture.whenStable().then(() => {
-            const oldName = comp.attackPattern.attributes.name;
+      fixture.detectChanges(); // runs initial lifecycle hooks
+      fixture.whenStable().then(() => {
+        const oldName = comp.attackPattern.attributes.name;
 
-            el = fixture.debugElement.query(By.css('.attack-pattern-name')).nativeElement;
-            expect(el.value).toBe(comp.attackPattern.attributes.name);
+        el = fixture.debugElement.query(By.css('.attack-pattern-name')).nativeElement;
+        expect(el.value).toBe(comp.attackPattern.attributes.name);
 
-            // simulate user entering new name into the text box
-            el.value = 'new attack pattern name';
-            el.dispatchEvent(newEvent('input'));
+        // simulate user entering new name into the text box
+        el.value = 'new attack pattern name';
+        el.dispatchEvent(newEvent('input'));
 
-            // attack pattern model description field should be updated
-            expect(comp.attackPattern.attributes.name).not.toEqual(oldName, 'should update attack pattern name');
-            expect(comp.attackPattern.attributes.name).toEqual(el.value, 'should update attack pattern name');
-          });
+        // attack pattern model description field should be updated
+        expect(comp.attackPattern.attributes.name).not.toEqual(oldName, 'should update attack pattern name');
+        expect(comp.attackPattern.attributes.name).toEqual(el.value, 'should update attack pattern name');
+      });
 
     });
 
@@ -188,7 +189,7 @@ function updating() {
     it('should save updated attack pattern', () => {
       fixture.detectChanges(); // runs initial lifecycle hooks
       fixture.whenStable().then(() => {
-        const location  = fixture.debugElement.injector.get(Location);
+        const location = fixture.debugElement.injector.get(Location);
         const locationSpy = spyOn(location, 'back');
 
         const stixService = fixture.debugElement.injector.get(StixService);
@@ -266,28 +267,35 @@ function displayInfo() {
   });
 }
 
-function click(e: DebugElement ) {
+function click(e: DebugElement) {
   // query for the save element selector
   e.triggerEventHandler('click', null);
 }
 
 function moduleSetup() {
-   // async beforeEach
-   beforeEach( async(() => {
-      TestBed.configureTestingModule({
-        imports: [
-          GlobalModule, ComponentModule, FormsModule, NoopAnimationsModule, MdSelectModule
-        ],
-        declarations: [AttackPatternEditComponent],
-        schemas: [NO_ERRORS_SCHEMA],
-        providers: [
-          { provide: StixService, useValue: stixServiceStub},
-          { provide: ActivatedRoute, useValue: activatedRoute },
-          { provide: Router, useValue: {} },
-          { provide: MdDialog, useValue: {} },
-          { provide: Location, useValue: {back: (): void => {} } },
-          { provide: MdSnackBar, useValue: {} },
-          { provide: OverlayContainer, useFactory: () => {
+  // async beforeEach
+  beforeEach(async(() => {
+    const matModules = [
+      MatInputModule,
+      MatSelectModule
+    ];
+
+    TestBed.configureTestingModule({
+      imports: [
+        GlobalModule, ComponentModule, FormsModule, NoopAnimationsModule, 
+        ...matModules
+      ],
+      declarations: [AttackPatternEditComponent],
+      schemas: [NO_ERRORS_SCHEMA],
+      providers: [
+        { provide: StixService, useValue: stixServiceStub },
+        { provide: ActivatedRoute, useValue: activatedRoute },
+        { provide: Router, useValue: {} },
+        { provide: MatDialog, useValue: {} },
+        { provide: Location, useValue: { back: (): void => { } } },
+        { provide: MatSnackBar, useValue: {} },
+        {
+          provide: OverlayContainer, useFactory: () => {
             overlayContainerElement = document.createElement('div') as HTMLElement;
             overlayContainerElement.classList.add('cdk-overlay-container');
 
@@ -297,11 +305,12 @@ function moduleSetup() {
             document.body.style.padding = '0';
             document.body.style.margin = '0';
 
-            return {getContainerElement: () => overlayContainerElement};
-          }},
-        ]
-      });
-    })
+            return { getContainerElement: () => overlayContainerElement };
+          }
+        },
+      ]
+    });
+  })
   );
 }
 

@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MaterialModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
+
+import { MatProgressBarModule, MatSelectModule, MatCardModule, MatInputModule, MatButtonModule } from '@angular/material';
 
 import { routing } from './users-routing.module';
 import { ComponentModule } from '../components'
@@ -10,14 +11,22 @@ import { LoginCallbackComponent } from './login-callback/login-callback.componen
 import { RegisterComponent } from './register/register.component';
 import { UsersService } from './users.service';
 
+const matModules = [
+    MatCardModule,
+    MatInputModule,
+    MatSelectModule,
+    MatProgressBarModule,
+    MatButtonModule
+];
+
 @NgModule({
     imports: [
         CommonModule,
         GlobalModule,
         ComponentModule,
         routing,
-        MaterialModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        ...matModules
     ],
     declarations: [
         LoginCallbackComponent,

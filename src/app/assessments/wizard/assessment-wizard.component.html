@@ -34,49 +34,41 @@
 
     <div class="flex1">
 
-        <md-card>
+        <mat-card>
 
             <div *ngIf="showSummarry">
-                <md-card-header>
-                    <md-card-title>Assessment Report</md-card-title>
-                </md-card-header>
-                <md-card-content>
+                <mat-card-header>
+                    <mat-card-title>Assessment Report</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
                     <!--<p>Assessment Description</p>-->
                     <div class="row mat-card-padding">
                         <div class="col-xs-8">
-                            <md-input-container class="full-width">
-                                <input mdInput placeholder="Assessment Name" name="assessment-name" [(ngModel)]="assessmentName">
-                            </md-input-container>
+                             <mat-form-field class="full-width">
+                                <input matInput placeholder="Assessment Name" name="assessment-name" [(ngModel)]="assessmentName">
+                           </mat-form-field>
                         </div>
                         <div class="col-xs-4">
-                            <!--<label>Published</label>
-                            <div>
-                                <p-calendar dateFormat="M-dd-yy" showIcon="true"></p-calendar>
-                            </div>-->
-                            <!--<md-input-container class="full-width">
-                                <input mdInput [mdDatepicker]="picker" placeholder="Published" [(ngModel)]="publishDate">
-                                <button mdSuffix [mdDatepickerToggle]="picker"></button>
-                            </md-input-container>
-                            <md-datepicker #picker></md-datepicker>-->
-                            <md-form-field class="full-width">
-                                <input mdInput [mdDatepicker]="picker" placeholder="Published" [(ngModel)]="publishDate">
-                                <md-datepicker-toggle mdSuffix [for]="picker"></md-datepicker-toggle>
-                                <md-datepicker #picker></md-datepicker>
-                            </md-form-field>
+
+                            <mat-form-field class="full-width">
+                                <input matInput [matDatepicker]="picker" placeholder="Published" [(ngModel)]="publishDate">
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            </mat-form-field>
                         </div>
                     </div>
                     <div class="row mat-card-padding">
                         <div class="col-xs-12">
-                            <md-input-container class="full-width">
-                                <textarea mdInput placeholder="Assessment Description" [(ngModel)]="assessmentDescription"></textarea>
-                            </md-input-container>
+                            <mat-form-field class="full-width">
+                                <textarea matInput placeholder="Assessment Description" [(ngModel)]="assessmentDescription"></textarea>
+                            </mat-form-field>
                         </div>
                     </div>
-                </md-card-content>
+                </mat-card-content>
             </div>
 
             <div *ngIf="currentAssessmentGroup">
-                <md-card-content>
+                <mat-card-content>
                     <div class="row margin-bottom flex-sm flexItemsCenter">
                         <div class="col-sm-3">
                             <div style="display: block">
@@ -86,7 +78,7 @@
                         </div>
                         <div class="col-sm-9">
                             <h4> {{currentAssessmentGroup.name | capitalize }}</h4>
-                            <p *ngIf="currentAssessmentGroup.description"> 
+                            <p *ngIf="currentAssessmentGroup.description">
                                 {{currentAssessmentGroup.description}}
                             </p>
                         </div>
@@ -97,7 +89,7 @@
                         </div>
                     </div>
                     <div class="row margin-bottom" *ngFor="let assessment of currentAssessmentGroup.assessments">
-                        <div class="col-xs-12">                   
+                        <div class="col-xs-12">
                             <div class="row">
                                 <div class="col-xs-12">
 
@@ -110,38 +102,31 @@
                             <div class="row" style="margin: 10px 0px;">
                                 <div class="col-xs-{{ assessment.measurements.length | columnSize}}" *ngFor="let measurement of assessment.measurements">
                                     <form>
-                                        <md-select #question name="question"  (change)="updateRisks(question, measurement, assessment)" [value]="selectedValue(assessment, measurement, question)"
-                                            class="full-width">
-                                            <md-option [value]="defaultValue"></md-option>
-                                            <md-option *ngFor="let options of measurement.options" [value]="options.risk">
-                                                {{ options.name }}
-                                            </md-option>
-                                        </md-select>
-
+                                        <mat-form-field class="full-width">
+                                            <mat-select #question name="question"  (change)="updateRisks(question, measurement, assessment)" [value]="selectedValue(assessment, measurement, question)">
+                                                <mat-option [value]="defaultValue"></mat-option>
+                                                <mat-option *ngFor="let options of measurement.options" [value]="options.risk">
+                                                    {{ options.name }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
                                     </form>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </md-card-content>
+                </mat-card-content>
             </div>
 
-            <md-card-actions class="text-right">
-                <button md-button [disabled]="page === 1" (click)="back($event)"> Back</button>
-                <button md-button (click)="next($event)" *ngIf="!(buttonLabel === 'Save' && saved)"> {{buttonLabel}}</button>
-                <button md-button disabled *ngIf="buttonLabel === 'Save' && saved">
+            <mat-card-actions class="text-right">
+                <button mat-button [disabled]="page === 1" (click)="back($event)"> Back</button>
+                <button mat-button (click)="next($event)" *ngIf="!(buttonLabel === 'Save' && saved)"> {{buttonLabel}}</button>
+                <button mat-button disabled *ngIf="buttonLabel === 'Save' && saved">
                     <i class="material-icons text-success">check</i>&nbsp;Saved
                 </button>
-            </md-card-actions>
+            </mat-card-actions>
 
-        </md-card>
+        </mat-card>
     </div>
 </div>
-
-<!--<div class="row">
-    <div class="col-xs-12 col-md-8">
-        <a md-raised-button [disabled]="page === 1" (click)="back()"> Back</a>
-        <a md-raised-button (click)="next()" [ngClass]="{'mat-primary': buttonLabel === 'Save'}"> {{buttonLabel}}</a>
-    </div>
-</div>-->
 <br><br>

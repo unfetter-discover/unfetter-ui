@@ -1,35 +1,35 @@
 
         <div class="row">
             <div class="col-md-12">
-                <md-input-container class="full-width">
-                    <input id="attack-pattern-name"  mdInput placeholder="Name" required [(ngModel)]="attackPattern.attributes.name">
-                </md-input-container>
+                <mat-input-container class="full-width">
+                    <input id="attack-pattern-name"  matInput placeholder="Name" required [(ngModel)]="attackPattern.attributes.name">
+                </mat-input-container>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-                <md-input-container class="full-width">
-                    <textarea id="attack-pattern-desc" mdInput [(ngModel)]="attackPattern.attributes.description"  placeholder="Description"></textarea>
-                </md-input-container>
+                <mat-input-container class="full-width">
+                    <textarea id="attack-pattern-desc" matInput [(ngModel)]="attackPattern.attributes.description"  placeholder="Description"></textarea>
+                </mat-input-container>
             </div>
         </div>
         <div class="row">
           <div class="col-md-12">
-              <md-input-container class="full-width">
-                  <textarea mdInput [(ngModel)]="mitigation"  placeholder="Mitigation"></textarea>
-              </md-input-container>
+              <mat-input-container class="full-width">
+                  <textarea matInput [(ngModel)]="mitigation"  placeholder="Mitigation"></textarea>
+              </mat-input-container>
           </div>
         </div>
          <div class="row">
             <div class="col-md-12">
-                <form>
-                    <md-select id="sophistication-level" name="sophistication-levels" placeholder="How sophisticated would an attacker need to be to leverage this technique?"
+                <mat-form-field class="full-width">
+                    <mat-select id="sophistication-level" name="sophistication-levels" placeholder="How sophisticated would an attacker need to be to leverage this technique?"
                     [(ngModel)]="attackPattern.attributes.x_unfetter_sophistication_level" class="full-width">
-                        <md-option *ngFor="let sophistication_levels of x_unfetter_sophistication_levels" [value]="sophistication_levels.id">
+                        <mat-option *ngFor="let sophistication_levels of x_unfetter_sophistication_levels" [value]="sophistication_levels.id">
                             {{ sophistication_levels.value }}
-                        </md-option>
-                    </md-select>
-                </form>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
             </div>
         </div>
 
@@ -39,8 +39,8 @@
           <div class="row">
             <div class="col-md-12">
                 <div class="button-row pull-right">
-                    <button  id="canel-btn"  md-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</button>
-                    <button id="save-btn" type="submit"  md-raised-button (click)="saveAttackPattern()" [disabled]="!attackPattern.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</button>
+                    <button  id="canel-btn"  mat-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</button>
+                    <button id="save-btn" type="submit"  mat-raised-button (click)="saveAttackPattern()" [disabled]="!attackPattern.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</button>
 
                 </div>
             </div>

@@ -7,7 +7,7 @@
                     <div class="col-sm-12">
                         <p-autoComplete styleClass="intrusionClass" [(ngModel)]="intrusionSet" [suggestions]="results" (completeMethod)="search($event)"
                             field="name" (onSelect)="onSelect($event)"></p-autoComplete>
-                        <button style="line-height: 30px;" md-raised-button (click)="searchIntrusionSets()">Search</button>
+                        <button style="line-height: 30px;" mat-raised-button (click)="searchIntrusionSets()">Search</button>
                     </div>
                 </div>
                 <div class="row">
@@ -21,10 +21,10 @@
                     <div class="col-sm-12 ">
                         <div class="row">
                             <div class="col-sm-6" *ngFor="let intrusionSet of intrusionSets">
-                                <md-checkbox id="{{intrusionSet.id}}" [checked]="intrusionSet.checked" class="intrusion-set-dashboard-side-panel-checkbox"
+                                <mat-checkbox id="{{intrusionSet.id}}" [checked]="intrusionSet.checked" class="intrusion-set-dashboard-side-panel-checkbox"
                                     (click)="select(intrusionSet)">
                                     <a>{{intrusionSet.attributes.name}}</a>
-                                </md-checkbox>
+                                </mat-checkbox>
                             </div>
                         </div>
                     </div>
@@ -33,7 +33,7 @@
 
             <div class="col-md-9 intrusion-set-dashboard-main-panel">
                 <div class="row">
-                    <div class="col-sm-12">                        
+                    <div class="col-sm-12">
                         <div style="float: left">
                             <img class='stix-icon height-30' src='assets/icon/stix-icons/svg/threat-actor-b.svg'>
                         </div>
@@ -52,15 +52,15 @@
                     <div class="col-sm-12">
 
                         <p id="treeSpinner" class="flex flexItemsCenter" [style.display]="treeSpinner ? 'flex' : 'none'">
-                            <md-spinner></md-spinner>
+                            <mat-spinner></mat-spinner>
                         </p>
-                        <md-tab-group [style.opacity]="treeSpinner ? 0 : 1" id="tabGroup">
-                            <md-tab id="intrusionSetsDashboard" label="Attack Patterns Used">
+                        <mat-tab-group [style.opacity]="treeSpinner ? 0 : 1" id="tabGroup">
+                            <mat-tab id="intrusionSetsDashboard" label="Attack Patterns Used">
                                 <div id="graphWrapper">
-                                    <md-card class="margin-top">
-                                        <md-card-header>
-                                            <md-card-subtitle>Attack Patterns Used Per Intrusion Set</md-card-subtitle>
-                                        </md-card-header>
+                                    <mat-card class="margin-top">
+                                        <mat-card-header>
+                                            <mat-card-subtitle>Attack Patterns Used Per Intrusion Set</mat-card-subtitle>
+                                        </mat-card-header>
                                         <div class="row mat-card-padding">
 
                                             <div class="col-xs-4 paddingBottom" *ngFor="let i of intrusionSetsDashboard.intrusionSets" [ngClass]="{'altClearFix': i !== 0 && i % 3 == 0}">
@@ -74,18 +74,18 @@
 
                                                 <div>
 
-                                                    <md-progress-bar [value]="i.attack_patterns.length" [bufferValue]="intrusionSetsDashboard.totalAttackPatterns">
-                                                    </md-progress-bar>
+                                                    <mat-progress-bar [value]="i.attack_patterns.length" [bufferValue]="intrusionSetsDashboard.totalAttackPatterns">
+                                                    </mat-progress-bar>
 
                                                 </div>
                                             </div>
                                         </div>
 
-                                    </md-card>
-                                    <md-card class="margin-top" id="carouselCard">
-                                        <!-- <md-card-header *ngIf="!intrusionSetsDashboard.killChainPhases">
-                                        <md-card-subtitle>Kill Chain Phases Used</md-card-subtitle>
-                                    </md-card-header> -->
+                                    </mat-card>
+                                    <mat-card class="margin-top" id="carouselCard">
+                                        <!-- <mat-card-header *ngIf="!intrusionSetsDashboard.killChainPhases">
+                                        <mat-card-subtitle>Kill Chain Phases Used</mat-card-subtitle>
+                                    </mat-card-header> -->
                                         <p-carousel *ngIf="intrusionSetsDashboard.killChainPhases" headerText="Kill Chain Phases Used" [value]="intrusionSetsDashboard.killChainPhases"
                                             numVisible="5">
                                             <ng-template let-killChainPhase pTemplate="killChainPhase">
@@ -113,20 +113,20 @@
 
                                             </ng-template>
                                         </p-carousel>
-                                    </md-card>
-                                    <md-card class="margin-top">
-                                        <md-card-header *ngIf="!treeData">
-                                            <md-card-subtitle>Graph</md-card-subtitle>
-                                        </md-card-header>
+                                    </mat-card>
+                                    <mat-card class="margin-top">
+                                        <mat-card-header *ngIf="!treeData">
+                                            <mat-card-subtitle>Graph</mat-card-subtitle>
+                                        </mat-card-header>
                                         <collapsible-tree *ngIf="treeData" [data]="treeData" (treeComplete)="treeComplete()"></collapsible-tree>
-                                    </md-card>
+                                    </mat-card>
                                 </div>
                                 <br>
-                            </md-tab>
-                            <md-tab label="Critical Security Controls (CSC)">
+                            </mat-tab>
+                            <mat-tab label="Critical Security Controls (CSC)">
                                 <p-accordion *ngIf="treeData">
                                     <p-accordionTab header="The following Critical Security Controls address the Attack Patterns in {{data.name}}" *ngFor="let data of treeData.children">
-                                        <md-card class="margin-top" *ngFor="let csc of getCsc(data)">
+                                        <mat-card class="margin-top" *ngFor="let csc of getCsc(data)">
                                             <div><b>{{csc.name}}</b> - <span>{{csc.description}}</span></div>
                                             <div><span>--> Mitigates {{csc.attackPatterns.length}} Attack Pattern(s):</span></div>
                                             <div>
@@ -134,13 +134,13 @@
                                                     <li *ngFor="let attackPattern of csc.attackPatterns">{{attackPattern}}</li>
                                                 </ol>
                                             </div>
-                                        </md-card>
+                                        </mat-card>
                                     </p-accordionTab>
                                 </p-accordion>
 
                                 <br>
-                            </md-tab>
-                        </md-tab-group>
+                            </mat-tab>
+                        </mat-tab-group>
                     </div>
                 </div>
             </div>

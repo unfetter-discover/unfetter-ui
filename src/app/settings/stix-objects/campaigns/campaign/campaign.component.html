@@ -1,16 +1,16 @@
     <div class="row">
        <div class="col-md-12">
             <div class="button-row">
-                <button class="mat-primary" md-raised-button (click)="editButtonClicked()"><i class="material-icons">create</i> EDIT</button>
-                <button class="mat-primary" md-raised-button (click)="deleteButtonClicked()"><i class="material-icons">delete</i> DELETE</button>
+                <button class="mat-primary" mat-raised-button (click)="editButtonClicked()"><i class="material-icons">create</i> EDIT</button>
+                <button class="mat-primary" mat-raised-button (click)="deleteButtonClicked()"><i class="material-icons">delete</i> DELETE</button>
             </div>
         </div>
     </div>
       <div class="row" style="margin-top: 15px;" *ngIf="campaign">
         <div class="col-md-12">
-            <md-card>
+            <mat-card>
 
-                <md-card-content>
+                <mat-card-content>
                         <div class="row">
                             <div class="col-md-6">
                                 <label>Name</label>
@@ -40,9 +40,9 @@
                                 <h6>{{campaign.attributes.description}}</h6>
                             </div>
                         </div>
-                </md-card-content>
+                </mat-card-content>
 
-            </md-card>
+            </mat-card>
         </div>
     </div>
 

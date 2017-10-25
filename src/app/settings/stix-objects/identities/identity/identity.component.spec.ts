@@ -2,7 +2,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { inject, async, TestBed,  ComponentFixture } from '@angular/core/testing';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MdDialog, MdSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { StixService } from '../../../stix.service';
 
 // Load the implementations that should be tested
@@ -21,9 +21,9 @@ describe(`IdentityComponent`, () => {
         {provide: StixService, useValue: {} },
         {provide: ActivatedRoute, useValue: {} },
         {provide: Router, useValue: {} },
-        {provide: MdDialog, useValue: {} },
+        {provide: MatDialog, useValue: {} },
         {provide: Location, useValue: {} },
-        {provide: MdSnackBar, useValue: {} }
+        {provide: MatSnackBar, useValue: {} }
       ]
     });
     fixture = TestBed.createComponent(IdentityComponent);

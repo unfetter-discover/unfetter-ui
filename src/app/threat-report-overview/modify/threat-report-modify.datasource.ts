@@ -3,7 +3,7 @@ import { CollectionViewer } from '@angular/cdk/collections';
 import { Observable } from 'rxjs/Observable';
 import { ThreatReportOverviewService } from './services/threat-report-overview.service';
 import { ThreatReport } from './models/threat-report.model';
-import { MdPaginator } from '@angular/material';
+import { MatPaginator } from '@angular/material';
 import { EventEmitter } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
@@ -14,7 +14,7 @@ export class ThreatReportModifyDataSource extends DataSource<{}> {
     public curDisplayLen = -1;
     protected filterChange = new BehaviorSubject('');
 
-    constructor(public csvImportData: any[], public paginator: MdPaginator) {
+    constructor(public csvImportData: any[], public paginator: MatPaginator) {
         super();
     }
 

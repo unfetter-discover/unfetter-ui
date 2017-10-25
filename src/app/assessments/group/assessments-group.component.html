@@ -1,5 +1,5 @@
 <div id="assessmentsGroup" class="container fadeIn" *ngIf="riskByAttackPattern && assessedObjects && assessment; else loadingBlock">
-                
+
     <div class="row">
         <br>
         <div class="col-sm-12">
@@ -55,7 +55,7 @@
                     <a (click)="setAttackPattern(ap.attackPatternId)">{{ ap.attackPatternName }}</a>
                 </div>
             </div>
-            
+
             <div *ngIf="unassessedAttackPatterns && unassessedAttackPatterns.length > 0">
                 <hr>
                 <h5 class="text-muted">Unassessed Attack Patterns</h5>
@@ -108,45 +108,46 @@
                     [xUnfetterSensor]="xUnfetterSensor"
                     [displayedAssessedObjects]="displayedAssessedObjects"
                     [assessedObjects]="assessedObjects"
-                    (addAssessmentEvent)="$event ? initData() : 0"
-                ></add-assessed-object>
+                    (addAssessmentEvent)="$event ? initData() : 0" ></add-assessed-object>
 
                 <div *ngIf="displayedAssessedObjects && displayedAssessedObjects.length">
                     <div *ngFor="let assessedObj of displayedAssessedObjects | sortByField: 'risk'">
-                        <md-card>
-                            <md-card-title><img src="{{ getStixIcon(assessedObj.stix.type) }}" alt=""> {{ assessedObj.stix.name }}</md-card-title>
-                            <md-card-content>
+                        <mat-card>
+                            <mat-card-title><img src="{{ getStixIcon(assessedObj.stix.type) }}" alt=""> {{ assessedObj.stix.name }}</mat-card-title>
+                            <mat-card-content>
                                 <!--<span class="text-muted">Risk Accepted &bull;</span>&nbsp;{{ getRisk(assessedObj.stix.id)
                             | percent:'2.1-1'}}-->
                                 <span class="text-muted">Risk Accepted &bull;</span>&nbsp;{{ assessedObj.risk | percent:'2.1-1'}}
-                            </md-card-content>
-                            <md-card-content>
+                            </mat-card-content>
+                            <mat-card-content>
                                 {{ assessedObj.stix.description }}
-                            </md-card-content>
+                            </mat-card-content>
 
-                            <md-card-content>
+                            <mat-card-content>
                                 <div *ngIf="assessedObj.editActive">
                                     <div *ngFor="let measurement of assessedObj.questions">
                                         <label class="mat-label">{{measurement.name | capitalize}}</label>
-                                        <md-select [(ngModel)]="measurement.risk" class="full-width mdSelectBotMargin">
-                                            <md-option *ngFor="let option of measurement.options" [value]="option.risk">
-                                                {{ option.name }}
-                                            </md-option>
-                                        </md-select>
+                                        <mat-form-field class="full-width">
+                                            <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin">
+                                                <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
+                                                    {{ option.name }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
                                     </div>
                                 </div>
 
                                 <p class="text-right" *ngIf="assessedObj.editActive">
-                                    <button md-button (click)="assessedObj.editActive = false">Cancel</button>
-                                    <button md-button (click)="editAssessedObject(assessedObj)">Save</button>
+                                    <button color="warn"  mat-button (click)="assessedObj.editActive = false"><mat-icon class="mat-24">delete</mat-icon></button>
+                                    <button color="accent"  mat-button (click)="editAssessedObject(assessedObj)"><mat-icon class="mat-24">save</mat-icon></button>
                                 </p>
 
                                 <p class="text-right" *ngIf="!assessedObj.editActive">
-                                    <button md-button (click)="assessedObj.editActive = true">Edit</button>
+                                    <button color="primary"  mat-button (click)="assessedObj.editActive = true"><mat-icon class="mat-24">create</mat-icon></button>
                                 </p>
 
-                            </md-card-content>
-                        </md-card>
+                            </mat-card-content>
+                        </mat-card>
                         <br>
                     </div>
                 </div>
@@ -157,6 +158,6 @@
 </div>
 <ng-template #loadingBlock>
     <div class="loading">
-        <md-spinner></md-spinner>
+        <mat-spinner></mat-spinner>
     </div>
 </ng-template>

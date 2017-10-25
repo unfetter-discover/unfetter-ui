@@ -1,15 +1,19 @@
+$mat-red-a400: #FF1744;
+
 .hide {
     visibility: none;
 }
 
 .paperclip {
     transform: rotateZ(90deg);
-    background-color: red;
-    color: #fafafa;
     border-radius: 50%;
 }
 
-md-list {
+.deleteBtn {
+    color: $mat-red-a400;   
+}
+
+mat-list {
     max-width: 300px;
     border: 1px dashed rgba(1,1,1, .54);
 }

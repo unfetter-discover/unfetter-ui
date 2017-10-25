@@ -1,17 +1,17 @@
 
 <div class="row">
     <div class="col-md-12">
-        <md-input-container class="full-width">
-        <input mdInput placeholder="Name" required [(ngModel)]="identity.attributes.name" value="identity.attributes.name">
-        </md-input-container>
+        <mat-input-container class="full-width">
+        <input matInput placeholder="Name" required [(ngModel)]="identity.attributes.name" value="identity.attributes.name">
+        </mat-input-container>
     </div>
 </div>
 
 <div class="row">
     <div class="col-md-12">
-       <md-input-container class="full-width">
-        <input mdInput placeholder="Description"  [(ngModel)]="identity.attributes.description" value="identity.attributes.description">
-        </md-input-container>
+       <mat-input-container class="full-width">
+        <input matInput placeholder="Description"  [(ngModel)]="identity.attributes.description" value="identity.attributes.description">
+        </mat-input-container>
     </div>
 </div>
 <div class="row">
@@ -19,11 +19,11 @@
         <label>Identity Class</label>
         <div class="row">
             <div class="col-md-12">
-                <md-radio-group class="identity-radio-group" [(ngModel)]="identity.attributes.identity_class">
-                    <md-radio-button class="identity-radio-button" *ngFor="let identityClass of identityClasses" [value]="identityClass.label">
+                <mat-radio-group class="identity-radio-group" [(ngModel)]="identity.attributes.identity_class">
+                    <mat-radio-button class="identity-radio-button" *ngFor="let identityClass of identityClasses" [value]="identityClass.label">
                         {{identityClass.label}}
-                    </md-radio-button>
-                </md-radio-group>
+                    </mat-radio-button>
+                </mat-radio-group>
             </div>
         </div>
     </div>
@@ -31,7 +31,7 @@
         <label>Sectors</label>
         <div class="row">
             <div class="col-md-4" *ngFor="let sector of sectorOptions">
-                    <md-checkbox class="identity-margin" [checked]="isChecked(sector.label)" (change)="addRemoveSector(sector.label)">{{sector.label}}</md-checkbox>
+                    <mat-checkbox class="identity-margin" [checked]="isChecked(sector.label)" (change)="addRemoveSector(sector.label)">{{sector.label}}</mat-checkbox>
             </div>
         </div>
     </div>
@@ -42,8 +42,8 @@
 <div class="row">
     <div class="col-md-12">
         <div class="button-row pull-right">
-                <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</a>
-                <a class=" " md-raised-button (click)="saveIdentity()" [disabled]="!identity.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</a>
+                <a class="" mat-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</a>
+                <a class=" " mat-raised-button (click)="saveIdentity()" [disabled]="!identity.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</a>
         </div>
     </div>
 </div>

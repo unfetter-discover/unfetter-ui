@@ -1,55 +1,55 @@
 
 <div class="row">
     <div class="col-md-6">
-        <md-input-container class="full-width">
-        <input id="campaign-name" mdInput placeholder="Name" required [(ngModel)]="campaign.attributes.name">
-        </md-input-container>
+        <mat-input-container class="full-width">
+        <input id="campaign-name" matInput placeholder="Name" required [(ngModel)]="campaign.attributes.name">
+        </mat-input-container>
     </div>
     <div class="col-md-6">
 
-        <md-form-field class="full-width">
-            <input mdInput id="campaign-first-seen" [mdDatepicker]="picker" placeholder="First Seen" [(ngModel)]="campaign.attributes.first_seen">
-            <md-datepicker-toggle mdSuffix [for]="picker"></md-datepicker-toggle>
-            <md-datepicker #picker></md-datepicker>
-        </md-form-field>
+        <mat-form-field class="full-width">
+            <input matInput id="campaign-first-seen" [matDatepicker]="picker" placeholder="First Seen" [(ngModel)]="campaign.attributes.first_seen">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
     </div>
 </div>
 <div class="row">
     <div class="col-md-12">
-        <md-input-container class="full-width">
-        <input id="objective-name"  mdInput placeholder="Objective"  [(ngModel)]="campaign.attributes.objective">
-        </md-input-container>
+        <mat-input-container class="full-width">
+        <input id="objective-name"  matInput placeholder="Objective"  [(ngModel)]="campaign.attributes.objective">
+        </mat-input-container>
     </div>
 </div>
 <div class="row">
     <div class="col-md-4">
        <select-search-field [placeholder]="'identities'" [searchUrl]="'identities'" (optionChanged)="add($event)"></select-search-field>
-        <md-chip-list class="pull-left">
-            <md-chip selected="true" color="accent" *ngFor="let identity of identities">
+        <mat-chip-list class="pull-left">
+            <mat-chip selected="true" color="accent" *ngFor="let identity of identities">
                 {{identity.attributes.name}}
                 <span class="cursor-pointer" (click)="remove(identity)"><i class="material-icons">delete</i></span>
-            </md-chip>
-        </md-chip-list>
+            </mat-chip>
+        </mat-chip-list>
     </div>
 
     <div class="col-md-4">
        <select-search-field [placeholder]="'Intrusion Sets'" [searchUrl]="'intrusion-sets'" (optionChanged)="add($event)"></select-search-field>
-       <md-chip-list class="pull-left">
-            <md-chip selected="true" color="accent" *ngFor="let intrusionSet of intrusionSets">
+       <mat-chip-list class="pull-left">
+            <mat-chip selected="true" color="accent" *ngFor="let intrusionSet of intrusionSets">
                 {{intrusionSet.attributes.name}}
                 <span class="cursor-pointer" (click)="remove(intrusionSet)"><i class="material-icons">delete</i></span>
-            </md-chip>
-        </md-chip-list>
+            </mat-chip>
+        </mat-chip-list>
     </div>
 
     <div class="col-md-4">
        <select-search-field [placeholder]="'Attack Patterns'" [searchUrl]="'attack-patterns'" (optionChanged)="add($event)"></select-search-field>
-        <md-chip-list class="pull-left">
-            <md-chip selected="true" color="accent" *ngFor="let attackPattern of attackPatterns">
+        <mat-chip-list class="pull-left">
+            <mat-chip selected="true" color="accent" *ngFor="let attackPattern of attackPatterns">
                 {{attackPattern.attributes.name}}
                <span class="cursor-pointer" (click)="remove(attackPattern)"><i class="material-icons">delete</i></span>
-            </md-chip>
-        </md-chip-list>
+            </mat-chip>
+        </mat-chip-list>
 
     </div>
 </div>
@@ -59,9 +59,9 @@
 <div class="row">
     <div class="col-md-12">
 
-        <md-input-container class="full-width">
-            <input mdInput placeholder="Description"  [(ngModel)]="campaign.attributes.description" >
-        </md-input-container>
+        <mat-input-container class="full-width">
+            <input matInput placeholder="Description"  [(ngModel)]="campaign.attributes.description" >
+        </mat-input-container>
 
     </div>
 </div>
@@ -69,8 +69,8 @@
     <div class="col-md-12">
         <div class="button-row pull-right">
 
-                 <button  id="cancel-btn" md-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</button>
-                 <button id="save-btn" type="submit"  class=" " md-raised-button (click)="saveCampaign()" [disabled]="!campaign.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</button>
+                 <button  id="cancel-btn" mat-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</button>
+                 <button id="save-btn" type="submit"  class=" " mat-raised-button (click)="saveCampaign()" [disabled]="!campaign.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</button>
 
         </div>
     </div>

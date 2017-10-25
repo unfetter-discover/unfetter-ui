@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MdDialog, MdDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BaseStixComponent } from '../../base-stix.component';
 import { StixService } from '../../stix.service';

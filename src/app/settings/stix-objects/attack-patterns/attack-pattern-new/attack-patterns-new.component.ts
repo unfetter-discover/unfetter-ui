@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
+import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { AttackPatternEditComponent } from '../attack-pattern-edit/attack-patterns-edit.component';
@@ -16,9 +16,9 @@ export class AttackPatternNewComponent extends AttackPatternEditComponent implem
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
-        public dialog: MdDialog,
+        public dialog: MatDialog,
         public location: Location,
-        public snackBar: MdSnackBar) {
+        public snackBar: MatSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
     }

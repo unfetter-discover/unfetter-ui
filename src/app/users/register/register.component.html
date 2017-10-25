@@ -9,7 +9,7 @@
     <div class="row mb-20" *ngIf="submitError">
         <div class="col-xs-12">
             <p class="flex flexItemsCenter">
-                <span class="md-24"><i class="material-icons textWarn">warning</i></span>
+                <span class="mat-24"><i class="material-icons textWarn">warning</i></span>
                 <span>&nbsp;&nbsp;An error occured processing your registration. <a routerLink="/">Return</a></span>
             </p>
         </div>
@@ -17,98 +17,102 @@
 
     <div class="row" *ngIf="!submitError">
         <div class="col-xs-12 col-lg-6 col-lg-offset-3">
-            <md-card *ngIf="form !== undefined">
+            <mat-card *ngIf="form !== undefined">
 
-                <md-card-header>
-                    <div md-card-avatar [style.background]="'url(' + userReturn.github.avatar_url + ')'" class="avatar" *ngIf="userReturn.github.avatar_url !== undefined"></div>
-                    <md-card-title class="mt-5">{{form.get('userName').value}}</md-card-title>
-                    <md-card-subtitle>{{form.get('firstName').value}}&nbsp;{{form.get('lastName').value}}</md-card-subtitle>
-                </md-card-header>
+                <mat-card-header>
+                    <div mat-card-avatar [style.background]="'url(' + userReturn.github.avatar_url + ')'" class="avatar" *ngIf="userReturn.github.avatar_url !== undefined"></div>
+                    <mat-card-title class="mt-5">{{form.get('userName').value}}</mat-card-title>
+                    <mat-card-subtitle>{{form.get('firstName').value}}&nbsp;{{form.get('lastName').value}}</mat-card-subtitle>
+                </mat-card-header>
 
-                <md-card-content>
+                <mat-card-content>
                     <br class="mt-10">
                     <form [formGroup]="form" novalidate (ngSubmit)="registerSubmit()">
 
-                        <md-form-field class="full-width mb-10">
-                            <input mdInput required placeholder="First Name" formControlName="firstName">
-                            <md-error *ngIf="form.get('firstName').hasError('required')">
+                        <mat-form-field class="full-width mb-10">
+                            <input matInput required placeholder="First Name" formControlName="firstName">
+                            <mat-error *ngIf="form.get('firstName').hasError('required')">
                                 First name is <strong>required</strong>
-                            </md-error>
-                        </md-form-field>
+                            </mat-error>
+                        </mat-form-field>
 
-                        <md-form-field class="full-width mb-10">
-                            <input mdInput required placeholder="Last Name" formControlName="lastName">
-                            <md-error *ngIf="form.get('lastName').hasError('required')">
+                        <mat-form-field class="full-width mb-10">
+                            <input matInput required placeholder="Last Name" formControlName="lastName">
+                            <mat-error *ngIf="form.get('lastName').hasError('required')">
                                 Last name is <strong>required</strong>
-                            </md-error>
-                        </md-form-field>
-                        
-                        <md-form-field class="full-width mb-10">
-                            <input mdInput required placeholder="Username" formControlName="userName">
-                            <md-error *ngIf="form.get('userName').hasError('required')">
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field class="full-width mb-10">
+                            <input matInput required placeholder="Username" formControlName="userName">
+                            <mat-error *ngIf="form.get('userName').hasError('required')">
                                 Username is <strong>required</strong>
-                            </md-error>
-                        </md-form-field>
+                            </mat-error>
+                        </mat-form-field>
 
-                        <md-form-field class="full-width mb-10">
-                            <input mdInput required placeholder="Email" formControlName="email">
-                            <md-error *ngIf="form.get('email').hasError('email') && !form.get('email').hasError('required')">
+                        <mat-form-field class="full-width mb-10">
+                            <input matInput required placeholder="Email" formControlName="email">
+                            <mat-error *ngIf="form.get('email').hasError('email') && !form.get('email').hasError('required')">
                                 Please enter a valid email address
-                            </md-error>
-                            <md-error *ngIf="form.get('email').hasError('required')">
+                            </mat-error>
+                            <mat-error *ngIf="form.get('email').hasError('required')">
                                 Email is <strong>required</strong>
-                            </md-error>
-                        </md-form-field>
+                            </mat-error>
+                        </mat-form-field>
 
-                        <!-- <md-select placeholder="Organizations" [multiple]="true" class="full-width mb-20" formControlName="organizations">
-                            <md-option value="1">Foo</md-option>
-                            <md-option value="2">Bar</md-option>
-                        </md-select> -->
+                        <!-- <mat-select placeholder="Organizations" [multiple]="true" class="full-width mb-20" formControlName="organizations">
+                            <mat-option value="1">Foo</mat-option>
+                            <mat-option value="2">Bar</mat-option>
+                        </mat-select> -->
 
                         <div id="identityForm">
                             <hr>
                             <p class="lead">STIX Identity</p>
-                            <!-- <md-radio-group formControlName="identityFormRadio" class="mb-5">
-                                <md-radio-button value="create" checked="true">Create STIX Identity</md-radio-button>&emsp;
-                                <md-radio-button value="import">Import STIX Identity</md-radio-button>
-                            </md-radio-group> -->
+                            <!-- <mat-radio-group formControlName="identityFormRadio" class="mb-5">
+                                <mat-radio-button value="create" checked="true">Create STIX Identity</mat-radio-button>&emsp;
+                                <mat-radio-button value="import">Import STIX Identity</mat-radio-button>
+                            </mat-radio-group> -->
 
                             <div formGroupName="identity">
-                                <md-form-field class="full-width mb-10">
-                                    <input mdInput required placeholder="Name" formControlName="name">
-                                    <md-error *ngIf="form.get('identity').get('name').hasError('required')">
+                                <mat-form-field class="full-width mb-10">
+                                    <input matInput required placeholder="Name" formControlName="name">
+                                    <mat-error *ngIf="form.get('identity').get('name').hasError('required')">
                                         Name is <strong>required</strong>
-                                    </md-error>
-                                </md-form-field>
+                                    </mat-error>
+                                </mat-form-field>
 
-                                <md-form-field class="full-width mb-10">
-                                    <textarea mdInput placeholder="Description" formControlName="description"></textarea>
-                                </md-form-field>
+                                <mat-form-field class="full-width mb-10">
+                                    <textarea matInput placeholder="Description" formControlName="description"></textarea>
+                                </mat-form-field>
+                                                                            
+                                <mat-form-field class="full-width mb-20">
+                                    <mat-select required placeholder="Identity Class" formControlName="identity_class">
+                                        <mat-option [value]="ic.id" *ngFor="let ic of identityClasses">{{ic.label}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>                                        
 
-                                <md-select required placeholder="Identity Class" class="full-width mb-20" formControlName="identity_class">
-                                    <md-option [value]="ic.id" *ngFor="let ic of identityClasses">{{ic.label}}</md-option>
-                                </md-select>
+                                <mat-form-field class="full-width mb-20">                                        
+                                    <mat-select placeholder="Sectors" [multiple]="true" formControlName="sectors">
+                                        <mat-option [value]="sector.id" *ngFor="let sector of identitySectors">{{sector.label}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
 
-                                <md-select placeholder="Sectors" [multiple]="true" class="full-width mb-20" formControlName="sectors">
-                                    <md-option [value]="sector.id" *ngFor="let sector of identitySectors">{{sector.label}}</md-option>
-                                </md-select>
-
-                                <md-form-field class="full-width mb-10">
-                                    <textarea mdInput placeholder="Contact Information" formControlName="contact_information"></textarea>
-                                </md-form-field>
-                            </div>                           
+                                <mat-form-field class="full-width mb-10">
+                                    <textarea matInput placeholder="Contact Information" formControlName="contact_information"></textarea>
+                                </mat-form-field>
+                            </div>
 
                         </div>
 
                         <p class="text-right mt-10">
-                            <button md-button routerLink="/">Cancel</button>
-                            <button md-raised-button color="accent" [disabled]="form.status === 'INVALID' || registrationSubmitted" type="submit">Register</button>
-                        </p>              
-                    
+                            <button mat-button routerLink="/">Cancel</button>
+                            <button mat-raised-button color="accent" [disabled]="form.status === 'INVALID' || registrationSubmitted" type="submit">Register</button>
+                        </p>
+
                     </form>
 
-                </md-card-content>
-            </md-card>
+                </mat-card-content>
+            </mat-card>
 
         </div>
     </div>

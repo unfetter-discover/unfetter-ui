@@ -2,16 +2,16 @@
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-12">
-                <md-input-container class="full-width">
-                <input mdInput placeholder="Name" required [(ngModel)]="courseOfAction.attributes.name" value="{{courseOfAction.attributes.name}}">
-                </md-input-container>
+                <mat-input-container class="full-width">
+                <input matInput placeholder="Name" required [(ngModel)]="courseOfAction.attributes.name" value="{{courseOfAction.attributes.name}}">
+                </mat-input-container>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-            <md-input-container class="full-width">
-                <input mdInput placeholder="Description" [(ngModel)]="courseOfAction.attributes.description" value="{{courseOfAction.attributes.description}}">
-                </md-input-container>
+            <mat-input-container class="full-width">
+                <input matInput placeholder="Description" [(ngModel)]="courseOfAction.attributes.description" value="{{courseOfAction.attributes.description}}">
+                </mat-input-container>
             </div>
         </div>
 
@@ -21,8 +21,8 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="button-row pull-right">
-                        <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</a>
-                        <a class=" " md-raised-button (click)="saveCourceOfAction()" [disabled]="!courseOfAction.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</a>
+                        <a class="" mat-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</a>
+                        <a class=" " mat-raised-button (click)="saveCourceOfAction()" [disabled]="!courseOfAction.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</a>
 
                 </div>
             </div>

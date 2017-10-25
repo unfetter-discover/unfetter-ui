@@ -174,7 +174,7 @@ label {
     }
 }
 
-// Used to match the padding of md-card elements
+// Used to match the padding of mat-card elements
 .mat-card-padding {
     padding-left: 8px;
     padding-right: 8px;
@@ -259,11 +259,11 @@ a {
     padding-bottom: 10px;
 }
 
-.mdSelectBotMargin {
+.matSelectBotMargin {
     margin-bottom: 0.43em;
 }
 
-.md-24 {
+.mat-24 {
     font-size: 24px;
 }
 
@@ -328,7 +328,7 @@ a {
     flex-flow: column;
 }
 
-.loading md-spinner {
+.loading mat-spinner {
     margin: auto auto;
     flex: 1 0 auto;
 }
@@ -402,7 +402,7 @@ a {
 
 .chipListChip {
     margin-top: 3px !important;
-    margin-bottom: 3px !important;    
+    margin-bottom: 3px !important;
 }
 
 .chipListChip+.chipListChip {

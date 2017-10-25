@@ -1,18 +1,18 @@
 <div class="row" *ngIf="intrusionSet">
  <div class="col-md-12">
 
-                <a class="mat-primary" md-raised-button (click)="editButtonClicked()"><i class="material-icons">create</i> EDIT</a>
-                <a class="mat-primary" md-raised-button (click)="deleteButtonClicked()"><i class="material-icons">delete</i> DELETE</a>
-                <!-- <button md-raised-button routerLink="/relationships/intrusion-uses-attack/{{intrusionSet.id}}">Intrusion Set</button> -->
+                <a class="mat-primary" mat-raised-button (click)="editButtonClicked()"><i class="material-icons">create</i> EDIT</a>
+                <a class="mat-primary" mat-raised-button (click)="deleteButtonClicked()"><i class="material-icons">delete</i> DELETE</a>
+                <!-- <button mat-raised-button routerLink="/relationships/intrusion-uses-attack/{{intrusionSet.id}}">Intrusion Set</button> -->
 
        </div>
 </div>
  <div class="row" style="margin-top: 15px;">
 
     <div class="col-md-12">
-        <md-card>
+        <mat-card>
 
-            <md-card-content>
+            <mat-card-content>
                     <div class="row">
                         <div class="col-md-12">
                             <label>Name</label>
@@ -55,9 +55,9 @@
                     </div>
 
 
-            </md-card-content>
+            </mat-card-content>
 
-        </md-card>
+        </mat-card>
     </div>
  </div>
 <relationship-list *ngIf="intrusionSet.id" [model]="intrusionSet"></relationship-list>

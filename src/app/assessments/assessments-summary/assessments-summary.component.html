@@ -1,8 +1,12 @@
 <div class="container fadeIn" *ngIf="summary && weakestAttackPatterns; else loadingBlock">
     <br>
     <ol class="breadcrumb">
-        <li><a href="#/assessments">Assessments</a></li>
-        <li class="active">{{summary?.attributes.name || 'No summary found!'}} <span *ngIf="summaryDate">({{ summaryDate | date:'dd/MM/yyyy'}})</span></li>
+        <li>
+            <a href="#/assessments">Assessments</a>
+        </li>
+        <li class="active">{{summary?.attributes.name || 'No summary found!'}}
+            <span *ngIf="summaryDate">({{ summaryDate | date:'dd/MM/yyyy'}})</span>
+        </li>
     </ol>
 
     <div *ngIf="!summary">
@@ -20,7 +24,9 @@
             <div class="col-md-6 weakestChain">
                 <h3>Assessment Report Overview</h3>
                 <div class="col-md2">
-                    <span>Overall Implementation Risk <span class="label {{riskLabelClass}}">{{totalRiskValue}}%</span></span>
+                    <span>Overall Implementation Risk
+                        <span class="label {{riskLabelClass}}">{{totalRiskValue}}%</span>
+                    </span>
                     CHART
                 </div>
 
@@ -63,7 +69,9 @@
                                 <ng-template #noObjectsDiv>
                                     No objects found!
                                 </ng-template>
-                                <td><span class="label label-warning">{{calculateRisk(risk.objects)}}</span></td>
+                                <td>
+                                    <span class="label label-warning">{{calculateRisk(risk.objects)}}</span>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -74,11 +82,13 @@
         <br/>
         <div class="row">
             <div class="col-md-6">
-                <md-select placeholder="Select threshold" [(ngModel)]="selectedRisk" name="threshold" (change)="redrawCharts()">
-                    <md-option *ngFor="let option of thresholdOptions" [value]="option.risk">
-                        {{option.name}}
-                    </md-option>
-                </md-select>
+                <mat-form-field>
+                    <mat-select placeholder="Select threshold" [(ngModel)]="selectedRisk" name="threshold" (change)="redrawCharts()">
+                        <mat-option *ngFor="let option of thresholdOptions" [value]="option.risk">
+                            {{option.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
             </div>
         </div>
         <br/>
@@ -106,10 +116,7 @@
                     <div class="summaryPanel">
                         <div class="summaryPanelContent">
                             <div *ngIf="techniqueBreakdown;else noTechinquesData">
-                                <techniques-chart #techniquesChart 
-                                    [riskThreshold]="selectedRisk" 
-                                    [riskLabelOptions]="thresholdOptions" 
-                                    [techniqueBreakdown]="techniqueBreakdown">
+                                <techniques-chart #techniquesChart [riskThreshold]="selectedRisk" [riskLabelOptions]="thresholdOptions" [techniqueBreakdown]="techniqueBreakdown">
                                 </techniques-chart>
                             </div>
                             <ng-template #noTechinquesData>No data to load chart!</ng-template>
@@ -118,7 +125,7 @@
                             <h5 class="text-center">% Techniques Detected by Skill</h5>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
 
@@ -127,13 +134,8 @@
                     <div class="summaryPanel">
                         <div class="summaryPanelContent">
                             <div *ngIf="summary;else noAssessmentsChartData">
-                                    <assessment-chart #assessmentChart 
-                                    [riskThreshold]="selectedRisk" 
-                                    [riskLabelOptions]="thresholdOptions"
-                                    [assessmentObjects]="summary.attributes.assessment_objects"
-                                    [assessmentsGroupingTotal]="assessmentsGroupingTotal"
-                                    [assessmentsGroupingFiltered]="assessmentsGroupingFiltered"
-                                    >
+                                <assessment-chart #assessmentChart [riskThreshold]="selectedRisk" [riskLabelOptions]="thresholdOptions" [assessmentObjects]="summary.attributes.assessment_objects"
+                                    [assessmentsGroupingTotal]="assessmentsGroupingTotal" [assessmentsGroupingFiltered]="assessmentsGroupingFiltered">
                                 </assessment-chart>
                             </div>
                             <ng-template #noAssessmentsChartData>No data to load chart!</ng-template>
@@ -142,11 +144,13 @@
                             <h5 class="text-center">% of assessments better than {{ getThresholdOptionName(selectedRisk) }}</h5>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
-        <br><br><br>
+        <br>
+        <br>
+        <br>
     </div>
 
     <!--<hr>

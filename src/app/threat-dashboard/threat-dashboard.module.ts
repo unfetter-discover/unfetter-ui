@@ -5,22 +5,22 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { GlobalModule } from '../global/global.module';
 
-import { MdButtonModule } from '@angular/material';
-import { MdCheckboxModule } from '@angular/material';
-import { MdChipsModule } from '@angular/material';
-import { MdDatepickerModule } from '@angular/material';
-import { MdInputModule } from '@angular/material';
-import { MdIconModule } from '@angular/material';
-import { MdListModule } from '@angular/material';
-import { MdMenuModule } from '@angular/material';
-import { MdSelectModule } from '@angular/material';
-import { MdSlideToggleModule } from '@angular/material';
-import { MdTabsModule } from '@angular/material';
-import { MdTooltipModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material';
+import { MatCheckboxModule } from '@angular/material';
+import { MatChipsModule } from '@angular/material';
+import { MatDatepickerModule } from '@angular/material';
+import { MatInputModule } from '@angular/material';
+import { MatIconModule } from '@angular/material';
+import { MatListModule } from '@angular/material';
+import { MatMenuModule } from '@angular/material';
+import { MatSelectModule } from '@angular/material';
+import { MatSlideToggleModule } from '@angular/material';
+import { MatTabsModule } from '@angular/material';
+import { MatTooltipModule } from '@angular/material';
 
 import { CarouselModule } from 'primeng/primeng';
 
-import { routing } from './threat-dashboard-routing.module';
+import { routing } from './threat-dashboard.routing';
 
 import { ThreatDashboardComponent } from './threat-dashboard.component';
 import { ThreatReportOverviewModule } from '../threat-report-overview/threat-report-overview.module';
@@ -39,18 +39,18 @@ const moduleServices = [
 ];
 
 const materialModules = [
-  MdButtonModule,
-  MdCheckboxModule,
-  MdChipsModule,
-  MdDatepickerModule,
-  MdIconModule,
-  MdInputModule,
-  MdListModule,
-  MdMenuModule,
-  MdSelectModule,
-  MdSlideToggleModule,
-  MdTabsModule,
-  MdTooltipModule,
+  MatButtonModule,
+  MatCheckboxModule,
+  MatChipsModule,
+  MatDatepickerModule,
+  MatIconModule,
+  MatInputModule,
+  MatListModule,
+  MatMenuModule,
+  MatSelectModule,
+  MatSlideToggleModule,
+  MatTabsModule,
+  MatTooltipModule,
 ];
 
 const primengModules = [ CarouselModule ];

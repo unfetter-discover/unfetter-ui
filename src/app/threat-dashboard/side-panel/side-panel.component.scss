@@ -9,12 +9,12 @@ $teal_100: #B2DFDB;
     height: 150px;
     padding: 18px;
     color: rgba(255,255,255, .87);
-    
+
     .mat-subheader-1, .header-details {
         color: $teal_200;
     }
 }
 
-md-list-item {
+mat-list-item {
     border-bottom: 1px solid rgba(1,1,1, .12);
 }
