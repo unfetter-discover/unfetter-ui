@@ -112,11 +112,13 @@
                             <mat-card-title>Add Assessed Object</mat-card-title>
                             <mat-card-content>
                                 <br>
-                                <mat-select placeholder="Choose Type" [(ngModel)]=addAssessedType class="full-width">
-                                    <mat-option value="indicator">Indicator</mat-option>
-                                    <mat-option value="course-of-action">Course of Action</mat-option>
-                                    <mat-option value="x-unfetter-sensor">Sensor</mat-option>
-                                </mat-select>
+                                <mat-form-field>
+                                    <mat-select placeholder="Choose Type" [(ngModel)]=addAssessedType class="full-width">
+                                        <mat-option value="indicator">Indicator</mat-option>
+                                        <mat-option value="course-of-action">Course of Action</mat-option>
+                                        <mat-option value="x-unfetter-sensor">Sensor</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
                             </mat-card-content>
                             <mat-card-content *ngIf="addAssessedType !== undefined">
                                 <br>
@@ -126,11 +128,13 @@
                                         <div class="row">
                                             <div *ngFor="let measurement of indicator.questions" class="col-xs-12">
                                                 <label class="mat-label">{{measurement.name | capitalize}}</label>
-                                                <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin">
-                                                    <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
-                                                        {{ option.name }}
-                                                    </mat-option>
-                                                </mat-select>
+                                                <mat-form-field>
+                                                    <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin">
+                                                        <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
+                                                            {{ option.name }}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -168,11 +172,13 @@
                                         <div class="row">
                                             <div *ngFor="let measurement of courseOfAction.questions" class="col-xs-12">
                                                 <label class="mat-label">{{measurement.name | capitalize}}</label>
-                                                <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin">
-                                                    <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
-                                                        {{ option.name }}
-                                                    </mat-option>
-                                                </mat-select>
+                                                <mat-form-field>
+                                                    <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin">
+                                                        <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
+                                                            {{ option.name }}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>                                              
                                             </div>
                                         </div>
                                         <div class="row">
@@ -203,11 +209,13 @@
                                         <div class="row">
                                             <div *ngFor="let measurement of xUnfetterSensor.questions" class="col-xs-12">
                                                 <label class="mat-label">{{measurement.name | capitalize}}</label>
-                                                <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin">
-                                                    <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
-                                                        {{ option.name }}
-                                                    </mat-option>
-                                                </mat-select>
+                                                <mat-form-field>
+                                                    <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin">
+                                                        <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
+                                                            {{ option.name }}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -254,11 +262,13 @@
                                     <div *ngIf="assessedObj.editActive">
                                         <div *ngFor="let measurement of assessedObj.questions">
                                             <label class="mat-label">{{measurement.name | capitalize}}</label>
-                                            <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin">
-                                                <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
-                                                    {{ option.name }}
-                                                </mat-option>
-                                            </mat-select>
+                                            <mat-form-field>
+                                                <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin">
+                                                    <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
+                                                        {{ option.name }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>                                            
                                         </div>
                                     </div>
 

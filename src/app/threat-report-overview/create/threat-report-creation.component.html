@@ -23,11 +23,13 @@
     </div>
     <div class="row mt-10" id="formWrapper" *ngIf="showCheckBoxes">
         <div class="col-xs-12">
-            <mat-select placeholder="Intrusion Set" color="primary" floatPlaceholder="always" (change)="addChip($event.source.selected.viewValue, 'intrusion-set')">
-                <mat-option *ngFor="let intrusion of intrusions" [value]="intrusion.value">
-                    {{ intrusion.displayValue }}
-                </mat-option>
-            </mat-select>
+            <mat-form-field floatPlaceholder="always" >
+                <mat-select placeholder="Intrusion Set" color="primary" (change)="addChip($event.source.selected.viewValue, 'intrusion-set')">
+                    <mat-option *ngFor="let intrusion of intrusions" [value]="intrusion.value">
+                        {{ intrusion.displayValue }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
             <div class="mt-18 mb-10">
                 <mat-chip-list class="mat-chip-list-stacked" selectable="true">
                     <mat-chip *ngFor="let selectedIntrusion of threatReport.boundries.intrusions" removable="true" selectable="true">
@@ -41,8 +43,9 @@
         </div>
         <div class="col-xs-12">
             <mat-form-field floatPlaceholder="always">
-                <input #startDateInput matInput [(ngModel)]="threatReport.boundries.startDate" [max]="maxStartDate" (dateChange)="startDateChanged(startDateInput.value)" [(ngModel)]="startDate"
-                    [matDatepicker]="startDatePicker" placeholder="Start Date" color="primary" floatPlaceholder="always" />
+                <input #startDateInput matInput [(ngModel)]="threatReport.boundries.startDate" [max]="maxStartDate" (dateChange)="startDateChanged(startDateInput.value)"
+                    [(ngModel)]="startDate" [matDatepicker]="startDatePicker" placeholder="Start Date" color="primary" floatPlaceholder="always"
+                />
                 <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
                 <mat-datepicker #startDatePicker></mat-datepicker>
             </mat-form-field>
@@ -50,8 +53,8 @@
         </div>
         <div class="col-xs-12">
             <mat-form-field floatPlaceholder="always">
-                <input #endDateInput matInput  [(ngModel)]="threatReport.boundries.endDate" [min]="minEndDate" (dateChange)="endDateChanged(endDateInput.value)"
-                 [matDatepicker]="endDatePicker" placeholder="End Date" color="primary" floatPlaceholder="always">
+                <input #endDateInput matInput [(ngModel)]="threatReport.boundries.endDate" [min]="minEndDate" (dateChange)="endDateChanged(endDateInput.value)"
+                    [matDatepicker]="endDatePicker" placeholder="End Date" color="primary" floatPlaceholder="always">
                 <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
                 <mat-datepicker #endDatePicker></mat-datepicker>
             </mat-form-field>
@@ -72,14 +75,16 @@
             </mat-chip-list>
         </div>
         <div class="col-xs-12">
-            <mat-select #malwareSelected placeholder="Malware" color="primary" floatPlaceholder="always" (change)="addChip($event.source.selected.viewValue, 'malware')">
-                <mat-option *ngFor="let curMalware of malware" [value]="curMalware.value">
-                    {{ curMalware.displayValue }}
-                </mat-option>
-            </mat-select>
+            <mat-form-field floatPlaceholder="always" >
+                <mat-select #malwareSelected placeholder="Malware" color="primary" (change)="addChip($event.source.selected.viewValue, 'malware')">
+                    <mat-option *ngFor="let curMalware of malware" [value]="curMalware.value">
+                        {{ curMalware.displayValue }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
             <div class="mt-18 mb-10">
                 <mat-chip-list class="mat-chip-list-stacked" selectable="true">
-                    <mat-chip  *ngFor="let malware of threatReport.boundries.malware" removable="true">
+                    <mat-chip *ngFor="let malware of threatReport.boundries.malware" removable="true">
                         <div class="flex">
                             <span class="flex1 flexNowrap">{{ malware }}</span>
                             <mat-icon matChipRemove (click)="removeChip(malware, 'malware')">cancel</mat-icon>
@@ -96,11 +101,11 @@
     </div>
     <div class="row pull-right">
         <div class="col-md-12 col-xs-12 pull-right mt-10">
-                <button color="primary" mat-button (click)="cancel($event)">CANCEL</button>
-                <button [disabled]="dateError.startDate.isError || dateError.endDate.isError || dateError.endDate.isSameOrBefore"
-                    color="primary" mat-raised-button (click)="save($event)">
-                    CONTINUE
-                </button>
+            <button color="primary" mat-button (click)="cancel($event)">CANCEL</button>
+            <button [disabled]="dateError.startDate.isError || dateError.endDate.isError || dateError.endDate.isSameOrBefore" color="primary"
+                mat-raised-button (click)="save($event)">
+                CONTINUE
+            </button>
         </div>
     </div>
 

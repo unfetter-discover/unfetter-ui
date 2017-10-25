@@ -84,14 +84,18 @@
                                 <mat-form-field class="full-width mb-10">
                                     <textarea matInput placeholder="Description" formControlName="description"></textarea>
                                 </mat-form-field>
+                                                                            
+                                <mat-form-field>
+                                    <mat-select required placeholder="Identity Class" class="full-width mb-20" formControlName="identity_class">
+                                        <mat-option [value]="ic.id" *ngFor="let ic of identityClasses">{{ic.label}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>                                        
 
-                                <mat-select required placeholder="Identity Class" class="full-width mb-20" formControlName="identity_class">
-                                    <mat-option [value]="ic.id" *ngFor="let ic of identityClasses">{{ic.label}}</mat-option>
-                                </mat-select>
-
-                                <mat-select placeholder="Sectors" [multiple]="true" class="full-width mb-20" formControlName="sectors">
-                                    <mat-option [value]="sector.id" *ngFor="let sector of identitySectors">{{sector.label}}</mat-option>
-                                </mat-select>
+                                <mat-form-field>                                        
+                                    <mat-select placeholder="Sectors" [multiple]="true" class="full-width mb-20" formControlName="sectors">
+                                        <mat-option [value]="sector.id" *ngFor="let sector of identitySectors">{{sector.label}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
 
                                 <mat-form-field class="full-width mb-10">
                                     <textarea matInput placeholder="Contact Information" formControlName="contact_information"></textarea>

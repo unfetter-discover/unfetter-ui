@@ -2,11 +2,11 @@
     <div class="col-md-12">
         <label>Source Type</label>
         <mat-form-field class="full-width">
-        <mat-select required  [(ngModel)]="sighting.attributes.sighting_of_ref" name="sourceTypes" class="full-width">
+            <mat-select required  [(ngModel)]="sighting.attributes.sighting_of_ref" name="sourceTypes" class="full-width">
                 <mat-option *ngFor="let sourceType of sourceTypes" [value]="sourceType.value">
-                     {{sourceType.label}}
+                    {{sourceType.label}}
                 </mat-option>
-        </mat-select>
+            </mat-select>
         </mat-form-field>
     </div>
 </div>

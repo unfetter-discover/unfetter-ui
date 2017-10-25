@@ -128,11 +128,11 @@
                                     <div *ngFor="let measurement of assessedObj.questions">
                                         <label class="mat-label">{{measurement.name | capitalize}}</label>
                                         <mat-form-field class="full-width">
-                                        <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin">
-                                            <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
-                                                {{ option.name }}
-                                            </mat-option>
-                                        </mat-select>
+                                            <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin">
+                                                <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
+                                                    {{ option.name }}
+                                                </mat-option>
+                                            </mat-select>
                                         </mat-form-field>
                                     </div>
                                 </div>
