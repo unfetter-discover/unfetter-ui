@@ -129,19 +129,7 @@ export class ThreatReportOverviewService {
     }
 
     const url = this.reportsUrl + '/' + id;
-    return Observable.create((observer) => {
-      const sub  = this.genericService.delete(url).subscribe(
-        (data) => {
-          observer.next(data);
-          observer.complete();
-        }, (error) => {
-          // handle errors here
-          observer.throw = '';
-        }, () => {
-          sub.unsubscribe();
-        }
-      );
-    });
+    return this.genericService.delete(url);
   }
 
   /**

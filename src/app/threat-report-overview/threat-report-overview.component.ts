@@ -27,6 +27,7 @@ export class ThreatReportOverviewComponent implements OnInit, AfterViewInit, OnD
   public readonly displayCols: troColName[] = ['name', 'date', 'author', 'actions'];
   private readonly subscriptions = [];
   private readonly duration = 250;
+  private readonly modifyRoute = '/threat-dashboard/modify';
 
   constructor(
     protected changeDetector: ChangeDetectorRef,
@@ -80,8 +81,10 @@ export class ThreatReportOverviewComponent implements OnInit, AfterViewInit, OnD
    * @description loop all reports and delete from mongo
    *  a workproduct is related to many reports
    * @param row
+   * @param {UIEvent} event optional
+   * @return {void}
    */
-  public deleteButtonClicked(row: any): void {
+  public deleteButtonClicked(row: any, event?: UIEvent): void {
     const _self = this;
     row['attributes'] = { name: row.name };
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: row });
@@ -90,7 +93,7 @@ export class ThreatReportOverviewComponent implements OnInit, AfterViewInit, OnD
         const isBool = typeof result === 'boolean';
         const isString = typeof result === 'string';
         if ((isBool && result !== true)
-            || (isString && result !== 'true')) {
+          || (isString && result !== 'true')) {
           return;
         }
 
@@ -115,6 +118,21 @@ export class ThreatReportOverviewComponent implements OnInit, AfterViewInit, OnD
           (error) => console.log(error),
           () => sub.unsubscribe());
       });
+  }
+
+  /**
+   * @description route to edit a workproduct
+   * @param {any} row with and id
+   * @param {UIEvent} event optional
+   * @return {Promise<boolean>}
+   */
+  public editButtonClicked(row: any, event?: UIEvent): Promise<boolean> {
+    this.sharedService.threatReportOverview = undefined;
+    if (!row || !row.id) {
+      return;
+    }
+
+    return this.router.navigate([`${this.modifyRoute}/${row.id}`]);
   }
 
   /**
