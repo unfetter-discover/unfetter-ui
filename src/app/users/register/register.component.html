@@ -9,7 +9,7 @@
     <div class="row mb-20" *ngIf="submitError">
         <div class="col-xs-12">
             <p class="flex flexItemsCenter">
-                <span class=mat-24"><i class="material-icons textWarn">warning</i></span>
+                <span class="mat-24"><i class="material-icons textWarn">warning</i></span>
                 <span>&nbsp;&nbsp;An error occured processing your registration. <a routerLink="/">Return</a></span>
             </p>
         </div>
@@ -20,7 +20,7 @@
             <mat-card *ngIf="form !== undefined">
 
                 <mat-card-header>
-                    <divmat-card-avatar [style.background]="'url(' + userReturn.github.avatar_url + ')'" class="avatar" *ngIf="userReturn.github.avatar_url !== undefined"></div>
+                    <div mat-card-avatar [style.background]="'url(' + userReturn.github.avatar_url + ')'" class="avatar" *ngIf="userReturn.github.avatar_url !== undefined"></div>
                     <mat-card-title class="mt-5">{{form.get('userName').value}}</mat-card-title>
                     <mat-card-subtitle>{{form.get('firstName').value}}&nbsp;{{form.get('lastName').value}}</mat-card-subtitle>
                 </mat-card-header>
@@ -85,14 +85,14 @@
                                     <textarea matInput placeholder="Description" formControlName="description"></textarea>
                                 </mat-form-field>
                                                                             
-                                <mat-form-field>
-                                    <mat-select required placeholder="Identity Class" class="full-width mb-20" formControlName="identity_class">
+                                <mat-form-field class="full-width mb-20">
+                                    <mat-select required placeholder="Identity Class" formControlName="identity_class">
                                         <mat-option [value]="ic.id" *ngFor="let ic of identityClasses">{{ic.label}}</mat-option>
                                     </mat-select>
                                 </mat-form-field>                                        
 
-                                <mat-form-field>                                        
-                                    <mat-select placeholder="Sectors" [multiple]="true" class="full-width mb-20" formControlName="sectors">
+                                <mat-form-field class="full-width mb-20">                                        
+                                    <mat-select placeholder="Sectors" [multiple]="true" formControlName="sectors">
                                         <mat-option [value]="sector.id" *ngFor="let sector of identitySectors">{{sector.label}}</mat-option>
                                     </mat-select>
                                 </mat-form-field>

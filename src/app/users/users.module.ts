@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { MatProgressBarModule, MatSelectModule, MatCardModule, MatInputModule } from '@angular/material';
+import { MatProgressBarModule, MatSelectModule, MatCardModule, MatInputModule, MatButtonModule } from '@angular/material';
 
 import { routing } from './users-routing.module';
 import { ComponentModule } from '../components'
@@ -16,6 +16,7 @@ const matModules = [
     MatInputModule,
     MatSelectModule,
     MatProgressBarModule,
+    MatButtonModule
 ];
 
 @NgModule({
