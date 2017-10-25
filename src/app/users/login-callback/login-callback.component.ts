@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+
 import { AuthService } from '../../global/services/auth.service';
 import { UsersService } from '../users.service';
+import { ConfigService } from '../../global/services/config.service';
 
 @Component({
     selector: 'login-callback',
@@ -14,7 +16,8 @@ export class LoginCallbackComponent implements OnInit {
         private route: ActivatedRoute, 
         private router: Router, 
         private authService: AuthService,
-        private usersService: UsersService
+        private usersService: UsersService,
+        private configService: ConfigService
     ) { }
 
     public ngOnInit() {
@@ -33,6 +36,7 @@ export class LoginCallbackComponent implements OnInit {
                         if (user.registered === false) {
                             this.router.navigate(['/users/register']);
                         } else {
+                            this.configService.initConfig();
                             this.authService.setUser(user);                         
                             this.router.navigate(['/']);
                         }
