@@ -101,7 +101,7 @@
                     <mat-card>
                         <mat-card-title class="pull-left">Assessed Objects</mat-card-title>
                         <mat-card-title class="pull-right">
-                            <button md-fab (click)="!addAssessedObject ? addAssessedObject = true : ''"><i class="material-icons">add</i></button>
+                            <button mat-fab (click)="!addAssessedObject ? addAssessedObject = true : ''"><i class="material-icons">add</i></button>
                         </mat-card-title>
                         <br class="altClearFix">
                     </mat-card>
@@ -161,8 +161,8 @@
 
                                         <div class="row">
                                             <p class="text-right">
-                                                <button md-button (click)="addAssessedObject ? addAssessedObject = false : ''">Cancel</button>
-                                                <button md-button [disabled]="!indicator.name" (click)="indicator.name ? createAssessedObject(indicator, currentAttackPattern) : ''">Save</button>
+                                                <button mat-button (click)="addAssessedObject ? addAssessedObject = false : ''">Cancel</button>
+                                                <button mat-button [disabled]="!indicator.name" (click)="indicator.name ? createAssessedObject(indicator, currentAttackPattern) : ''">Save</button>
                                             </p>
                                         </div>
                                     </div>
@@ -198,8 +198,8 @@
 
                                         <div class="row">
                                             <p class="text-right">
-                                                <button md-button (click)="addAssessedObject ? addAssessedObject = false : ''">Cancel</button>
-                                                <button md-button [disabled]="!courseOfAction.name" (click)="courseOfAction.name ? createAssessedObject(courseOfAction, currentAttackPattern) : ''">Save</button>
+                                                <button mat-button (click)="addAssessedObject ? addAssessedObject = false : ''">Cancel</button>
+                                                <button mat-button [disabled]="!courseOfAction.name" (click)="courseOfAction.name ? createAssessedObject(courseOfAction, currentAttackPattern) : ''">Save</button>
                                             </p>
                                         </div>
                                     </div>
@@ -234,8 +234,8 @@
                                         </div>
                                         <div class="row">
                                             <p class="text-right">
-                                                <button md-button (click)="addAssessedObject ? addAssessedObject = false : ''">Cancel</button>
-                                                <button md-button [disabled]="!xUnfetterSensor.name" (click)="xUnfetterSensor.name ? createAssessedObject(xUnfetterSensor, currentAttackPattern) : ''">Save</button>
+                                                <button mat-button (click)="addAssessedObject ? addAssessedObject = false : ''">Cancel</button>
+                                                <button mat-button [disabled]="!xUnfetterSensor.name" (click)="xUnfetterSensor.name ? createAssessedObject(xUnfetterSensor, currentAttackPattern) : ''">Save</button>
                                             </p>
                                         </div>
                                     </div>
@@ -273,12 +273,12 @@
                                     </div>
 
                                     <p class="text-right" *ngIf="assessedObj.editActive">
-                                        <button md-button (click)="assessedObj.editActive = false">Cancel</button>
-                                        <button md-button (click)="editAssessedObject(assessedObj)">Save</button>
+                                        <button mat-button (click)="assessedObj.editActive = false">Cancel</button>
+                                        <button mat-button (click)="editAssessedObject(assessedObj)">Save</button>
                                     </p>
 
                                     <p class="text-right" *ngIf="!assessedObj.editActive">
-                                        <button md-button (click)="assessedObj.editActive = true">Edit</button>
+                                        <button mat-button (click)="assessedObj.editActive = true">Edit</button>
                                     </p>
 
                                 </mat-card-content>
