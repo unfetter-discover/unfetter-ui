@@ -84,38 +84,35 @@ export class ThreatReportOverviewComponent implements OnInit, AfterViewInit, OnD
     const _self = this;
     row['attributes'] = { name: row.name };
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: row });
-    dialogRef.afterClosed().subscribe(:
+    dialogRef.afterClosed().subscribe(
       (result) => {
-        if (result === 'true') {
-          const sub = Observable.create((observer) => {
-            let count = row.reports.length;
-            row.reports.forEach(
-              (report) => {
-                const sub1 = _self.threatReportOverviewService.deleteThreatReport(report.id).subscribe(
-                  (d) => {
-                    --count;
-                  }, (err) => {
-
-                  }, () => {
-                    if (count <= 0) {
-                      observer.next(null);
-                      observer.complete();
-                    }
-                  }
-                );
-                this.subscriptions.push(sub1);
-              }
-            )
-          }).subscribe(
-            () => {
-              _self.dataSource.nextFilter();
-            }, () => {
-
-            }, () => {
-              sub.unsubscribe();
-            }
-            );
+        const isBool = typeof result === 'boolean';
+        const isString = typeof result === 'string';
+        if ((isBool && result !== true)
+            || (isString && result !== 'true')) {
+          return;
         }
+
+        const sub = Observable.create((observer) => {
+          let count = row.reports.length;
+          row.reports.forEach(
+            (report) => {
+              const sub1 = _self.threatReportOverviewService.deleteThreatReport(report.id).subscribe(
+                (d) => --count,
+                (err) => console.log(err),
+                () => {
+                  if (count <= 0) {
+                    observer.next(null);
+                    observer.complete();
+                  }
+                }
+              );
+              this.subscriptions.push(sub1);
+            });
+        }).subscribe(
+          () => _self.dataSource.nextFilter(),
+          (error) => console.log(error),
+          () => sub.unsubscribe());
       });
   }
 
