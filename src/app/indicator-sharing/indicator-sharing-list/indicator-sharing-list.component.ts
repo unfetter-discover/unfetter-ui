@@ -80,7 +80,7 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
     public openDialog() {
         this.dialog.open(AddIndicatorComponent, {
             width: '800px',
-            height: '800px'
+            height: 'calc(100vh - 140px)'
         });
     }
 

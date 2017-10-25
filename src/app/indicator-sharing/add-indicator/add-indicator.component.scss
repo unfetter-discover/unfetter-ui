@@ -1,6 +1,7 @@
 @import '../../../styles/_variables.scss';
 
-// #addIndicator {
-//     max-height: calc(100vh - #{($navbar-height * 2) + 'px'});
-//     overflow-y: auto;
-// }
+.rotate {
+    transition: 0.2s ease-in-out;
+    transform: rotateZ(45deg);
+    user-select: none;
+}

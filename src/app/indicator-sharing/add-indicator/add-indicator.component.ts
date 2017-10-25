@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 import { IndicatorForm } from '../../global/form-models/indicator';
 import { IndicatorSharingService } from '../indicator-sharing.service';
@@ -8,12 +9,21 @@ import { MatDialogRef } from '@angular/material';
 @Component({
     selector: 'add-indicator',
     templateUrl: 'add-indicator.component.html',
-    styleUrls: ['add-indicator.component.scss']
+    styleUrls: ['add-indicator.component.scss'],
+    animations: [
+        trigger('collapseLevel', [
+            state('open', style({ opacity: 1, height: '*' })),
+            state('closed', style({ opacity: 0, height: 0 })),
+            transition('open <=> closed', animate('200ms ease-in-out')),
+        ])
+    ]
 })
 
 export class AddIndicatorComponent implements OnInit {
 
     public form: FormGroup;
+    public showExternalReferences: boolean = true;
+    public showKillChainPhases: boolean = true;
 
     constructor(public dialogRef: MatDialogRef<any>, private indicatorSharingService: IndicatorSharingService) { }    
 

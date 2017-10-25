@@ -46,8 +46,11 @@
         </span>
 
         <!-- ~~~ External References ~~~ -->
-        <h5>External References</h5>
-        <external-references-reactive [parentForm]="form"></external-references-reactive>
+        <h5>External References [<span class="cursor-pointer inlineBlock text-primary" (click)="showExternalReferences = !showExternalReferences" *ngIf="!showExternalReferences">&nbsp;+&nbsp;</span><span class="cursor-pointer inlineBlock text-primary" (click)="showExternalReferences = !showExternalReferences" *ngIf="showExternalReferences">&nbsp;-&nbsp;</span>]
+        </h5>
+        <div [@collapseLevel]="showExternalReferences ? 'open' : 'closed'" class="overFlowHidden">
+            <external-references-reactive [parentForm]="form"></external-references-reactive>
+        </div>
         <mat-chip-list formArrayName="external_references" *ngIf="form.controls.external_references.controls.length > 0" class="chipListPadding">
             <mat-chip 
                 *ngFor="let extRef of form.controls.external_references.controls" 
@@ -63,8 +66,13 @@
         <!-- ~~~ End of External References ~~~ -->
 
         <!-- ~~~ Kill Chain Phases ~~~ -->
-        <h5>Kill Chain Phases</h5>
-        <kill-chain-phases-reactive [parentForm]="form"></kill-chain-phases-reactive>
+        <h5>Kill Chain Phases [<span class="cursor-pointer inlineBlock text-primary" (click)="showKillChainPhases = !showKillChainPhases"
+                *ngIf="!showKillChainPhases">&nbsp;+&nbsp;</span><span class="cursor-pointer inlineBlock text-primary" (click)="showKillChainPhases = !showKillChainPhases"
+                *ngIf="showKillChainPhases">&nbsp;-&nbsp;</span>]
+        </h5>
+        <div [@collapseLevel]="showKillChainPhases ? 'open' : 'closed'" class="overFlowHidden">
+            <kill-chain-phases-reactive [parentForm]="form"></kill-chain-phases-reactive>
+        </div>
         <mat-chip-list formArrayName="kill_chain_phases" *ngIf="form.controls.kill_chain_phases.controls.length > 0" class="chipListPadding">
             <mat-chip 
                 *ngFor="let kill_chain of form.controls.kill_chain_phases.controls" 
