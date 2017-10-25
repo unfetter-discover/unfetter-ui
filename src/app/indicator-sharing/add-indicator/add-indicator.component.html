@@ -1,94 +1,94 @@
-<div id="addIndicator">
+<mat-dialog-content id="addIndicator">
     <form [formGroup]="form" novalidate (ngSubmit)="submitIndicator()">
 
-        <md-form-field class="full-width mb-6">
-            <input mdInput required placeholder="Name" formControlName="name">
-            <md-error *ngIf="form.get('name').hasError('required')">
+        <mat-form-field class="full-width mb-6">
+            <input matInput required placeholder="Name" formControlName="name">
+            <mat-error *ngIf="form.get('name').hasError('required')">
                 Name is <strong>required</strong>
-            </md-error>
-        </md-form-field>
+            </mat-error>
+        </mat-form-field>
 
-        <md-form-field class="full-width mb-6">
-            <textarea mdInput placeholder="Description" formControlName="description"></textarea>
-        </md-form-field>
+        <mat-form-field class="full-width mb-6">
+            <textarea matInput placeholder="Description" formControlName="description"></textarea>
+        </mat-form-field>
 
-        <md-form-field class="full-width mb-6">
-            <input mdInput required placeholder="Pattern Language" formControlName="pattern_lang">
-            <md-error *ngIf="form.get('pattern_lang').hasError('required')">
+        <mat-form-field class="full-width mb-6">
+            <input matInput required placeholder="Pattern Language" formControlName="pattern_lang">
+            <mat-error *ngIf="form.get('pattern_lang').hasError('required')">
                 Pattern Language is <strong>required</strong>
-            </md-error>
-        </md-form-field>
+            </mat-error>
+        </mat-form-field>
 
-        <md-form-field class="full-width mb-6">
-            <textarea mdInput required placeholder="Pattern" formControlName="pattern"></textarea>
-            <md-error *ngIf="form.get('pattern').hasError('required')">
+        <mat-form-field class="full-width mb-6">
+            <textarea matInput required placeholder="Pattern" formControlName="pattern"></textarea>
+            <mat-error *ngIf="form.get('pattern').hasError('required')">
                 Pattern is <strong>required</strong>
-            </md-error>
-        </md-form-field>
+            </mat-error>
+        </mat-form-field>
 
         <span class="mb-6">
-            <md-form-field>
-                <input mdInput required [mdDatepicker]="validFromPicker" placeholder="Valid From Date" formControlName="valid_from">
-                <md-datepicker-toggle mdSuffix [for]="validFromPicker"></md-datepicker-toggle>
-                <md-datepicker #validFromPicker></md-datepicker>
-                <md-error *ngIf="form.get('valid_from').hasError('required')">
+            <mat-form-field>
+                <input matInput required [matDatepicker]="validFromPicker" placeholder="Valid From" formControlName="valid_from">
+                <mat-datepicker-toggle matSuffix [for]="validFromPicker"></mat-datepicker-toggle>
+                <mat-datepicker #validFromPicker></mat-datepicker>
+                <mat-error *ngIf="form.get('valid_from').hasError('required')">
                      Valid From is <strong>required</strong>
-                </md-error>
-            </md-form-field>
+                </mat-error>
+            </mat-form-field>
         </span>
         
         <span class="mb-6" style="padding-left: 30px;">
-            <md-form-field>
-                <input mdInput [mdDatepicker]="validUntilPicker" placeholder="Valid Until" formControlName="valid_until">
-                <md-datepicker-toggle mdSuffix [for]="validUntilPicker"></md-datepicker-toggle>
-                <md-datepicker #validUntilPicker></md-datepicker>
-            </md-form-field>
+            <mat-form-field>
+                <input matInput [matDatepicker]="validUntilPicker" placeholder="Valid Until" formControlName="valid_until">
+                <mat-datepicker-toggle matSuffix [for]="validUntilPicker"></mat-datepicker-toggle>
+                <mat-datepicker #validUntilPicker></mat-datepicker>
+            </mat-form-field>
         </span>
 
         <!-- ~~~ External References ~~~ -->
         <h5>External References</h5>
         <external-references-reactive [parentForm]="form"></external-references-reactive>
-        <md-chip-list formArrayName="external_references" *ngIf="form.controls.external_references.controls.length > 0" class="chipListPadding">
-            <md-chip 
+        <mat-chip-list formArrayName="external_references" *ngIf="form.controls.external_references.controls.length > 0" class="chipListPadding">
+            <mat-chip 
                 *ngFor="let extRef of form.controls.external_references.controls" 
                 class="cursor-pointer chipListChip" 
                 color="warn"                
-                selected="true">{{ extRef.get('source_name').value | capitalize}}</md-chip>
-        </md-chip-list>
+                selected="true">{{ extRef.get('source_name').value | capitalize}}</mat-chip>
+        </mat-chip-list>
         <!-- <div formArrayName="external_references" *ngIf="form.controls.external_references.controls.length > 0">
             <div *ngFor="let extRef of form.controls.external_references.controls; let i = index" [formGroupName]="i">
                 <p>{{ extRef.get('source_name').value }}</p>
             </div>
-        </div> -->
+        </mat-dialog-content> -->
         <!-- ~~~ End of External References ~~~ -->
 
         <!-- ~~~ Kill Chain Phases ~~~ -->
         <h5>Kill Chain Phases</h5>
         <kill-chain-phases-reactive [parentForm]="form"></kill-chain-phases-reactive>
-        <md-chip-list formArrayName="kill_chain_phases" *ngIf="form.controls.kill_chain_phases.controls.length > 0" class="chipListPadding">
-            <md-chip 
+        <mat-chip-list formArrayName="kill_chain_phases" *ngIf="form.controls.kill_chain_phases.controls.length > 0" class="chipListPadding">
+            <mat-chip 
                 *ngFor="let kill_chain of form.controls.kill_chain_phases.controls" 
                 class="cursor-pointer chipListChip"
                 color="primary"
-                selected="true">{{ kill_chain.get('phase_name').value | capitalize}}</md-chip>
-        </md-chip-list>
+                selected="true">{{ kill_chain.get('phase_name').value | capitalize}}</mat-chip>
+        </mat-chip-list>
         <!-- ~~~ End of Kill Chain Phases ~~~ -->
 
         <!-- ~~~ Labels ~~~ -->
         <h5>Labels</h5>
         <div class="flex flexItemsCenter" id="labelsWrapper">
-            <md-chip-list *ngIf="form.controls.labels.length > 0" class="inlineBlock" class="chipListPadding">
-                <md-chip *ngFor="let label of form.controls.labels.controls" class="cursor-pointer chipListChip">{{label.value | capitalize}}</md-chip>
-            </md-chip-list>
+            <mat-chip-list *ngIf="form.controls.labels.length > 0" class="inlineBlock" class="chipListPadding">
+                <mat-chip *ngFor="let label of form.controls.labels.controls" class="cursor-pointer chipListChip">{{label.value | capitalize}}</mat-chip>
+            </mat-chip-list>
             <add-label-reactive [parentForm]="form"></add-label-reactive>
         </div>
         <!-- ~~~ End of Labels ~~~ -->
 
         <p class="text-right">
-            <button md-button md-dialog-close="false" (click)="resetForm()">CANCEL</button>
-            <button md-raised-button color="primary" [disabled]="form.status === 'INVALID'" type="submit">SAVE</button>
+            <button mat-button mat-dialog-close (click)="resetForm($event); dialogRef.close(false);">CANCEL</button>
+            <button mat-raised-button color="primary" [disabled]="form.status === 'INVALID'" type="submit">SAVE</button>
         </p>
 
     </form>
     
-</div>
+</mat-dialog-content>

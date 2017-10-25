@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 
 import { IndicatorForm } from '../../global/form-models/indicator';
 import { IndicatorSharingService } from '../indicator-sharing.service';
+import { MatDialogRef } from '@angular/material';
 
 @Component({
     selector: 'add-indicator',
@@ -14,13 +15,16 @@ export class AddIndicatorComponent implements OnInit {
 
     public form: FormGroup;
 
-    constructor(private indicatorSharingService: IndicatorSharingService) { }    
+    constructor(public dialogRef: MatDialogRef<any>, private indicatorSharingService: IndicatorSharingService) { }    
 
     public ngOnInit() {
         this.resetForm();     
     }
 
-    public resetForm() {
+    public resetForm(e = null) {
+        if (e) {
+            e.preventDefault();
+        }
         this.form = IndicatorForm();
     }
 
@@ -31,6 +35,7 @@ export class AddIndicatorComponent implements OnInit {
                 (res) => {
                     console.log(res);                    
                     this.resetForm();
+                    this.dialogRef.close(true);
                 },
                 (err) => {
                     console.log(err);                    

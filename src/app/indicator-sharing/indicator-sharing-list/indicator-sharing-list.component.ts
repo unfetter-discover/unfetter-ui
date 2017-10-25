@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { MdDialog } from '@angular/material';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { MatDialog } from '@angular/material';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { AddIndicatorComponent } from '../add-indicator/add-indicator.component';
@@ -10,7 +10,7 @@ import { AddIndicatorComponent } from '../add-indicator/add-indicator.component'
     styleUrls: ['indicator-sharing-list.component.scss']
 })
 
-export class IndicatorSharingListComponent implements OnInit {
+export class IndicatorSharingListComponent implements OnInit, OnDestroy {
 
     public displayedIndicators: any;
     public allIndicators: any;
@@ -24,7 +24,7 @@ export class IndicatorSharingListComponent implements OnInit {
         activeLabels: []
     };
 
-    constructor(private indicatorSharingService: IndicatorSharingService, public dialog: MdDialog) { }
+    constructor(private indicatorSharingService: IndicatorSharingService, public dialog: MatDialog) { }
 
     public ngOnInit() { 
         const getIdentities$ = this.indicatorSharingService.getIdentities()
@@ -71,14 +71,16 @@ export class IndicatorSharingListComponent implements OnInit {
                     getAttackPatternsByIndicator$.unsubscribe();
                 }
             );
+    }
 
-        // TODO delete this
-        this.openDialog();
+    public ngOnDestroy() {
+        this.dialog.closeAll();
     }
 
     public openDialog() {
         this.dialog.open(AddIndicatorComponent, {
             width: '800px',
+            height: '800px'
         });
     }
 

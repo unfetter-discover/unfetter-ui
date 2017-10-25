@@ -8,19 +8,19 @@
 
     <div class="row" *ngIf="user !== undefined">
         <div class="col-xs-12 col-lg-6 col-lg-offset-3">
-            <md-card>
-                <md-card-header>
-                    <div md-card-avatar [style.background]="'url(' + user.github.avatar_url + ')'" class="avatar" *ngIf="user.github.avatar_url !== undefined"></div>
-                    <md-card-title class="mt-5">{{user.userName}}</md-card-title>
-                    <md-card-subtitle>{{user.firstName}}&nbsp;{{user.lastName}}</md-card-subtitle>
-                </md-card-header>
+            <mat-card>
+                <mat-card-header>
+                    <div mat-card-avatar [style.background]="'url(' + user.github.avatar_url + ')'" class="avatar" *ngIf="user.github.avatar_url !== undefined"></div>
+                    <mat-card-title class="mt-5">{{user.userName}}</mat-card-title>
+                    <mat-card-subtitle>{{user.firstName}}&nbsp;{{user.lastName}}</mat-card-subtitle>
+                </mat-card-header>
 
-                <md-card-content>
+                <mat-card-content>
                     <br>
                     <label>STIX Identity</label>
                     <pre>{{user.identity | json}}</pre>
-                </md-card-content>
-            </md-card>
+                </mat-card-content>
+            </mat-card>
             
         </div>
     </div>  

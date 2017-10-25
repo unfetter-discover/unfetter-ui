@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule, MatChipsModule, MatTooltipModule, MatCardModule,
-    MatTabsModule, MatInputModule, MatIconModule, MatButtonModule } from '@angular/material';
+    MatTabsModule, MatInputModule, MatIconModule, MatButtonModule, MatDatepickerModule, MatNativeDateModule } from '@angular/material';
 
 // Modules
 import { routing } from './indicator-sharing-routing.module';
@@ -26,6 +26,8 @@ const matModules = [
     MatSelectModule,
     MatTabsModule,
     MatTooltipModule,
+    MatDatepickerModule, 
+    MatNativeDateModule
 ];
 
 @NgModule({
@@ -34,6 +36,7 @@ const matModules = [
         routing,
         GlobalModule,
         FormsModule,
+        ReactiveFormsModule,
         ...matModules,
     ],
     exports: [],
