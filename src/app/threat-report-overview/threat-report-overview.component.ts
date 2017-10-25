@@ -78,6 +78,7 @@ export class ThreatReportOverviewComponent implements OnInit, AfterViewInit, OnD
 
   /**
    * @description loop all reports and delete from mongo
+   *  a workproduct is related to many reports
    * @param row
    */
   public deleteButtonClicked(row: any): void {

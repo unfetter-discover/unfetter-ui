@@ -1,13 +1,15 @@
 // $header_gradient_start: #0288D1;
 // $header_gradient_end: #03A9F4;
 $red_500: #F44336;
+$red_accent_200: #FF5252;
 $header_gradient_lighter: #009688;
 $header_gradient_darker: #00796B;
 $teal_200: #80CBC4;
 $teal_100: #B2DFDB;
+$md_sidenav_max_width: 400px;
 
 .stix-icon {
-    background-color: $red_500;
+    background-color: $red_accent_200;
     border-radius: 50%;
     height: 64px;
     width: 64px;
@@ -25,12 +27,14 @@ $teal_100: #B2DFDB;
 }
 
 @media only screen and (max-width: 992px) {
-
     .main-panel {
-        padding-top: 15px;
+        padding-top: 16px;
         padding-left: 16px;
     }
-    
+
+    .side-panel {
+        padding-top: 0px;
+    }
 }
 
 @media only screen and (min-width: 992px) {
@@ -39,11 +43,12 @@ $teal_100: #B2DFDB;
         position: fixed;
         top: 0;
         overflow-y: auto;
+        width: $md_sidenav_max_width;
     }
     
     .main-panel {
-        padding-top: 15px;
-        margin-left: 18%;
+        padding-top: 24px;
+        margin-left: $md_sidenav_max_width;
     }
 
 }

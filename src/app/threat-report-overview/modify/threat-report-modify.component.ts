@@ -69,16 +69,19 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
    * @description initalization after view children are set
    */
   public ngAfterViewInit(): void {
-    this.filters.changes.subscribe(
+    const sub$ = this.filters.changes.subscribe(
       (comps) => this.initFilter(comps.first),
       (err) => console.log(err));
+    this.subscriptions.push(sub$);
   }
 
   /**
    * @description clean up component
    */
   public ngOnDestroy(): void {
-    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+    if (this.subscriptions) {
+      this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+    }
   }
 
   /**
@@ -120,17 +123,18 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: row.data });
     dialogRef.afterClosed().subscribe(
       (result) => {
-        if (result === 'true') {
-          const sub = _self.service.deleteThreatReport(row.data.attributes.id).subscribe(
-            (d) => {
-              _self.load();
-            }, (err) => {
-
-            }, () => {
-              sub.unsubscribe();
-            }
-          );
+        if (result !== 'true') {
+          return;
         }
+
+        if (!row.data.attributes || row.data.attributes.id) {
+          return;
+        }
+
+        const sub$ = _self.service.deleteThreatReport(row.data.attributes.id).subscribe(
+          (d) => _self.load(),
+          (err) => console.log(err),
+          () => sub$.unsubscribe());
       });
   }
 
