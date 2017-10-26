@@ -31,24 +31,91 @@
             <mat-icon aria-hidden="true">mode_edit</mat-icon>
             <span>edit</span>
         </button>
-        <button mat-menu-item disabled>
+        <button mat-menu-item [disabled]="threatReport.reports.length === 1" (click)="onDeleteExternalRef($event)">
             <mat-icon aria-hidden="true">delete</mat-icon>
             <span>delete</span>
         </button>
     </mat-menu>
-    <mat-list dense>
-        <mat-list-item *ngFor="let tro of threatReport.reports">
-            <h4 mat-line>
-                {{tro.name}}
-            </h4>
-            <div mat-line class="mat-caption">
-                {{tro.description}}
-            </div>
-            <button mat-icon-button [matMenuTriggerFor]="menu">
-                <mat-icon>
-                    more_vert
-                </mat-icon>
-            </button>
-        </mat-list-item>
-    </mat-list>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <img class="stix-icon" src="assets/icon/stix-icons/svg/identity-b.svg">
+                Victims
+                <span class="">({{threatReport.boundries.targets.size}})</span>
+            </mat-panel-title>
+            <!-- <mat-panel-description class="mat-caption">
+                Victims in this campaign/report
+            </mat-panel-description> -->
+        </mat-expansion-panel-header>
+        <mat-list dense>
+            <mat-list-item *ngFor="let target of threatReport.boundries.targets">
+                {{target}}
+            </mat-list-item>
+        </mat-list>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <img class="stix-icon" src="assets/icon/stix-icons/svg/threat-actor-b.svg">
+                Intrusion Sets
+                <span class="">({{threatReport.boundries.intrusions.size}})</span>
+            </mat-panel-title>
+            <!-- <mat-panel-description class="mat-caption">
+                Intrusion Sets used in this campaign/report
+            </mat-panel-description> -->
+        </mat-expansion-panel-header>
+        <mat-list dense>
+            <mat-list-item *ngFor="let intrusion of threatReport.boundries.intrusions">
+                <div mat-line class="">
+                    {{intrusion}}
+                </div>
+            </mat-list-item>
+        </mat-list>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <img class="stix-icon" src="assets/icon/stix-icons/svg/malware-b.svg">
+                Malware
+                <span class="">({{threatReport.boundries.malware.size}})</span>
+            </mat-panel-title>
+            <!-- <mat-panel-description class="mat-caption">
+                Malware used in this campaign/report
+            </mat-panel-description> -->
+        </mat-expansion-panel-header>
+        <mat-list dense>
+            <mat-list-item *ngFor="let malware of threatReport.boundries.malware">
+                <div mat-line class="">
+                    {{malware}}
+                </div>
+            </mat-list-item>
+        </mat-list>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <img class="stix-icon" src="assets/icon/stix-icons/svg/campaign-b.svg">
+                External References
+                <span class="">({{threatReport.reports.length}})</span>
+            </mat-panel-title>
+            <!-- <mat-panel-description class="mat-caption">
+                External References supporting this report
+            </mat-panel-description> -->
+        </mat-expansion-panel-header>
+        <mat-list dense>
+            <mat-list-item *ngFor="let tro of threatReport.reports" class="list-divider">
+                <h4 mat-line>
+                    {{tro.name}}
+                </h4>
+                <div mat-line class="mat-caption">
+                    {{tro.description}}
+                </div>
+                <button mat-icon-button [matMenuTriggerFor]="menu" (click)="onOpenMenu(tro, $event)">
+                    <mat-icon>
+                        more_vert
+                    </mat-icon>
+                </button>
+            </mat-list-item>
+        </mat-list>
+    </mat-expansion-panel>
 </div>

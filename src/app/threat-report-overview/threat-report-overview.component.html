@@ -34,6 +34,9 @@
                     <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
                     <mat-cell *matCellDef="let row">
                         {{row.name}}
+                        <span class="mat-caption">
+                            ({{row.reports.length}})
+                        </span>
                     </mat-cell>
                 </ng-container>
 
@@ -54,10 +57,10 @@
                             <button color="accent" mat-button routerLink="./view/{{row.id}}">
                                <mat-icon>explore</mat-icon>
                             </button>
-                            <button color="primary" mat-button routerLink="./modify/{{row.id}}">
+                            <button color="primary" mat-button (click)="editButtonClicked(row, $event)">
                                 <mat-icon>edit</mat-icon>
                             </button>
-                                <button color="warn" mat-button (click)="deleteButtonClicked(row)">
+                                <button color="warn" mat-button (click)="deleteButtonClicked(row, $event)">
                                 <mat-icon>delete</mat-icon>
                             </button>
                         </span>

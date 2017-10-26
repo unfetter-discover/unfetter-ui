@@ -103,8 +103,8 @@
                     <ng-container matColumnDef='actions'>
                         <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                         <mat-cell *matCellDef="let row">
-                            <span class="buttonGrp text-right">
-                                <button class="mat-warn" mat-button (click)="deletButtonClicked(row)">
+                            <span  *ngIf="row.data.attributes.id" class="buttonGrp text-right">
+                                <button class="mat-warn" mat-button (click)="deletButtonClicked(row, $event)">
                                     <i class="material-icons">delete</i>
                                 </button>
                             </span>

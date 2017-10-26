@@ -7,9 +7,6 @@ import { RouterModule, PreloadAllModules, Router } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material';
 import { ComponentModule } from './components/component.module';
 import { StixModule } from './settings/stix.module';
-// Imports for loading & configuring the in-memory web api
-// import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
-// import { InMemoryDataService } from './in-memory-data.service';
 
 /*
  * Platform and Environment providers/directives/pipes
@@ -26,11 +23,10 @@ import { NoContentComponent } from './no-content';
 import '../styles/styles.scss';
 // import '../styles/app.scss';
 import '../styles/headings.css';
-// import { ConceptMapComponent } from './intrusion-set-dashboard/concept-map.component';
-// import { CollapsibleTreeComponent } from './intrusion-set-dashboard/collapsible-tree.component';
 import { AssessmentsModule } from './assessments/assessments.module';
 
 import { GlobalModule } from './global/global.module';
+import { ConfirmationDialogComponent } from './components/dialogs/confirmation/confirmation-dialog.component';
 
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process
@@ -59,6 +55,9 @@ import { GlobalModule } from './global/global.module';
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS,
+  ],
+  entryComponents: [
+    ConfirmationDialogComponent
   ]
 })
 export class AppModule {

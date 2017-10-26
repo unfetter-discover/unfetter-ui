@@ -124,20 +124,12 @@ export class ThreatReportOverviewService {
    *  @param id
    */
   public deleteThreatReport(id: string): Observable<ThreatReport[]> {
+    if (!id || id.trim().length === 0) {
+      return Observable.of([]);
+    }
+
     const url = this.reportsUrl + '/' + id;
-    return Observable.create((observer) => {
-      const sub  = this.genericService.delete(url).subscribe(
-        (data) => {
-          observer.next(data);
-          observer.complete();
-        }, (error) => {
-          // handle errors here
-          observer.throw = '';
-        }, () => {
-          sub.unsubscribe();
-        }
-      );
-    });
+    return this.genericService.delete(url);
   }
 
   /**

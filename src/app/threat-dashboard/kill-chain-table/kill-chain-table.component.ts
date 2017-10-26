@@ -24,11 +24,12 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
   public groupKillchain: KillChainEntry[];
   public readonly subscriptions: Subscription[] = [];
 
+  private readonly red500 = '#F44336';
+  private readonly redAccent200 = '#FF5252';
   private readonly defaultBackgroundColor = '#FAFAFA';
   private readonly defaultForegroundColor = '#000000';
   private readonly selectedForegroundColor = '#F5F5F5';
-  private readonly selectedBackgroundColor = '#F44336';
-  // private readonly selectedBackgroundColor = '#FFCCBC';
+  private readonly selectedBackgroundColor = this.redAccent200;
 
   constructor(
     protected router: Router,

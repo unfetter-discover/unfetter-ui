@@ -69,16 +69,19 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
    * @description initalization after view children are set
    */
   public ngAfterViewInit(): void {
-    this.filters.changes.subscribe(
+    const sub$ = this.filters.changes.subscribe(
       (comps) => this.initFilter(comps.first),
       (err) => console.log(err));
+    this.subscriptions.push(sub$);
   }
 
   /**
    * @description clean up component
    */
   public ngOnDestroy(): void {
-    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+    if (this.subscriptions) {
+      this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+    }
   }
 
   /**
@@ -112,25 +115,31 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
   /**
    * @description delete a report
    * @param report
+   * @param {UIEvent} event optional
    * @return {void}
    */
-  public deletButtonClicked(row: any): void {
+  public deletButtonClicked(row: any, event?: UIEvent): void {
     console.log(row.data)
     const _self = this;
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: row.data });
     dialogRef.afterClosed().subscribe(
       (result) => {
-        if (result === 'true') {
-          const sub = _self.service.deleteThreatReport(row.data.attributes.id).subscribe(
-            (d) => {
-              _self.load();
-            }, (err) => {
-
-            }, () => {
-              sub.unsubscribe();
-            }
-          );
+        const isBool = typeof result === 'boolean';
+        const isString = typeof result === 'string';
+        if (!result ||
+            (isBool && result !== true) ||
+            (isString && result !== 'true')) {
+          return;
         }
+
+        if (!row.data.attributes || !row.data.attributes.id) {
+          return;
+        }
+
+        const sub$ = _self.service.deleteThreatReport(row.data.attributes.id).subscribe(
+          (d) => _self.load(),
+          (err) => console.log(err),
+          () => sub$.unsubscribe());
       });
   }
 
@@ -163,29 +172,42 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
    * @return {void}
    */
   private load(): void {
+    this.inProgress = true;
     const loadId$ = this.service.loadAll()
       .flatMap((arr) => arr)
       .filter((tro) => tro.id === this.id)
-      .subscribe(
-      (tro) => {
-        if (this.threatReport) {
-          if (!this.threatReport.reports || this.threatReport.reports.length === 0) {
-            this.threatReport.reports = tro.reports;
+      .map((tro) => {
+        // map reports to right data shape for the template view
+        tro.reports = tro.reports.map((report) => {
+          if (report && report.data && report.data.attributes) {
+            return report;
           }
-        } else {
-          this.threatReport = tro;
-        }
-        this.threatReport.reports = this.threatReport.reports.map((report) => {
           const o = { data: { attributes: {} } };
-          o.data.attributes = Object.assign(o.data.attributes, report);
+          Object.assign(o.data.attributes, report);
           return o;
         });
+        return tro;
+      })
+      .do((tro) => this.threatReport = tro)
+      .do(() => { 
+        // remember to clear the shared service used by other pages
         this.sharedService.threatReportOverview = this.threatReport;
-        this.dataSource = new ThreatReportModifyDataSource(this.threatReport.reports, this.paginator);
-        this.inProgress = false;
-      },
-      (err) => console.log(err),
-      () => loadId$.unsubscribe());
+      })
+      .do(() => {
+        // signal to the datasource to show correct table
+        if (this.dataSource) {
+          this.dataSource.nextDataChange(this.threatReport.reports);
+        } else {
+          this.dataSource = new ThreatReportModifyDataSource(this.threatReport.reports, this.paginator);
+        }
+      })
+      .subscribe(
+        () => { },
+        (err) => console.log(err),
+        () => {
+          this.inProgress = false;
+          loadId$.unsubscribe()
+        });
   }
 
 }
