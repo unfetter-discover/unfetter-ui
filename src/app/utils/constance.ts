@@ -87,6 +87,8 @@ export const Constance = {
   FINALIZE_REGISTRATION_URL: 'api/auth/finalize-registration',
   PROFILE_BY_ID_URL: 'api/auth/profile',
 
+  CONFIG_URL: 'api/config',
+
   // ADMIN
   USERS_PENDING_APPROVAL_URL: 'api/admin/users-pending-approval',
   PROCESS_USER_APPROVAL_URL: 'api/admin/process-user-approval',

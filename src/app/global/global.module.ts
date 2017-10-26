@@ -19,6 +19,7 @@ import { AddLabelReactiveComponent } from './components/add-label/add-label.comp
 import { GenericApi } from './services/genericapi.service';
 import { AuthService } from './services/auth.service';
 import { AuthGuard } from './services/auth.guard';
+import { ConfigService } from './services/config.service';
 
 // Pipes
 import { CapitalizePipe } from './pipes/capitalize.pipe';
@@ -62,7 +63,8 @@ const matModules = [
     providers: [
         GenericApi,
         AuthService,
-        AuthGuard
+        AuthGuard,
+        ConfigService
     ]
 })
 
