@@ -88,10 +88,10 @@ export const Constance = {
   PROFILE_BY_ID_URL: 'api/auth/profile',
 
   CONFIG_URL: 'api/config',
+  WEB_ANALYTICS_URL: 'api/web-analytics',
 
   // ADMIN
-  USERS_PENDING_APPROVAL_URL: 'api/admin/users-pending-approval',
-  PROCESS_USER_APPROVAL_URL: 'api/admin/process-user-approval',
+  ADMIN_URL: 'api/admin',
 
   // API_HOST: process.env.HOST ? `https://${process.env.HOST}:${process.env.PORT}/` : '',
   API_HOST: '',

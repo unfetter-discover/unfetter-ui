@@ -7,16 +7,20 @@ import { Constance } from '../utils/constance';
 
 @Injectable()
 export class AdminService {
-    private usersPendingApprovalUrl = Constance.USERS_PENDING_APPROVAL_URL;
-    private processUserApprovalUrl = Constance.PROCESS_USER_APPROVAL_URL;
+    
+    private adminUrl = Constance.ADMIN_URL;
 
     constructor(private genericApi: GenericApi) { }
 
     public getUsersPendingApproval(): Observable<any> {
-        return this.genericApi.get(this.usersPendingApprovalUrl);
+        return this.genericApi.get(`${this.adminUrl}/users-pending-approval`);
+    }
+
+    public getWebsiteVisits(): Observable<any> {
+        return this.genericApi.get(`${this.adminUrl}/site-visits`);
     }
 
     public processUserApproval(user): Observable<any> {
-        return this.genericApi.post(this.processUserApprovalUrl, user);
+        return this.genericApi.post(`${this.adminUrl}/process-user-approval`, user);
     }
 }

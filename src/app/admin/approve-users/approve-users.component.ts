@@ -13,7 +13,7 @@ export class ApproveUsersComponent implements OnInit {
 
     constructor(private adminService: AdminService) { }
 
-    public ngOnInit() {
+    public ngOnInit() {        
         this.fetchUsers();
     }    
 
@@ -41,7 +41,7 @@ export class ApproveUsersComponent implements OnInit {
                     console.log(err);                    
                 },
                 () => {
-                    processUserApproval$.unsubscribe()
+                    processUserApproval$.unsubscribe();
                 }
             );        
     }
