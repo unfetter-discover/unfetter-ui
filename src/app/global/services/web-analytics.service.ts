@@ -14,7 +14,7 @@ export class WebAnalyticsService {
         const recordVisit$ = this.genericApi.get(`${this.webAnalyticsUrl}/visit`)
             .subscribe(
                 (res) => {
-                    console.log(res);                
+                    // Do nothing              
                 },
                 (err) => {
                     console.log(err);
