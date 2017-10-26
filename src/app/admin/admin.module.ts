@@ -6,7 +6,7 @@ import { GlobalModule } from '../global/global.module';
 import { AdminService } from './admin.service';
 import { ApproveUsersComponent } from './approve-users/approve-users.component';
 import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
-import { SiteUsageComponent } from './site-usage/site-usage.component'
+import { SiteUsageComponent } from './site-usage/site-usage.component';
 
 @NgModule({
     imports: [

@@ -7,7 +7,9 @@ import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import { AppState } from './app.service';
 import { AuthService } from './global/services/auth.service';
+import { ConfigService } from './global/services/config.service';
 import { GenericApi } from './global/services/genericapi.service';
+import { WebAnalyticsService } from './global/services/web-analytics.service';
 
 describe(`App`, () => {
   let comp: AppComponent;
@@ -15,11 +17,19 @@ describe(`App`, () => {
 
   // async beforeEach
   beforeEach(async(() => {
+    const services = [
+      AppState, 
+      AuthService, 
+      ConfigService, 
+      GenericApi,
+      WebAnalyticsService,
+    ];
+
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, HttpModule],
-      declarations: [ AppComponent ],
+      declarations: [AppComponent],
       schemas: [NO_ERRORS_SCHEMA],
-      providers: [AppState, AuthService, GenericApi]
+      providers: [...services]
     })
     .compileComponents(); // compile template and css
   }));
