@@ -119,7 +119,6 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
    * @return {void}
    */
   public deletButtonClicked(row: any, event?: UIEvent): void {
-    console.log(row.data)
     const _self = this;
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: row.data });
     dialogRef.afterClosed().subscribe(
@@ -137,7 +136,10 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
         }
 
         const sub$ = _self.service.deleteThreatReport(row.data.attributes.id).subscribe(
-          (d) => _self.load(),
+          (d) => {
+            this.threatReport.reports = this.threatReport.reports.filter((r) => r.data.attributes.id !== row.data.attributes.id);
+            this.dataSource.nextDataChange(this.threatReport.reports);
+          },
           (err) => console.log(err),
           () => sub$.unsubscribe());
       });
