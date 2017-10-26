@@ -90,7 +90,7 @@ export class ThreatReportOverviewService {
     const headers = this.ensureAuthHeaders(this.headers);
 
     const reports = threatReport.reports;
-    const id = UUID.v4();
+    const id = threatReport.id || UUID.v4();
     const calls = reports.map((report) => {
       const attributes = Object.assign({}, report.data.attributes);
       const meta = { work_product: {} };

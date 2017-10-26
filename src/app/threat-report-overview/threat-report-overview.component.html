@@ -18,8 +18,8 @@
         </div>
     </div>
     <div class="row">
-        <div class="mat-title col-mat-6 mt-15">Recent Work Products</div>
-        <div class="col-mat-6">
+        <div class="mat-title col-md-6 mt-15">Recent Work Products</div>
+        <div class="col-md-6">
             <mat-form-field floatPlaceholder="never">
                 <input matInput #filter placeholder="Filter Recent work products" color="primary">
                 <mat-icon matSuffix color="primary">search</mat-icon>
@@ -27,7 +27,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-mat-12">
+        <div class="col-md-12">
             <mat-table class="mat-elevation-z3" #table [dataSource]="dataSource">
 
                 <ng-container matColumnDef="name">

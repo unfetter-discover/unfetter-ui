@@ -1,7 +1,10 @@
 <div class="header">
-    <span class="mat-display-2">{{threatReport.name}}</span>
+    <div class="mat-display-2">
+        <img class='stix-icon' src='assets/icon/stix-icons/svg/attack-pattern-c.svg'>
+        {{threatReport.name || 'Threat Report Unamed'}}
+    </div>
     <p class="mat-subheader-1">
-        {{threatReport.reports.length}} OBJECTS
+        {{threatReport.reports.length || 0}} OBJECT(S)
     </p>
     <div *ngIf="threatReport.boundries.startDate || threatReport.boundries.endDate; else dateUnspecified" class="header-details">
         <span *ngIf="threatReport.boundries.startDate; else openEnded">
@@ -39,8 +42,7 @@
     <mat-expansion-panel>
         <mat-expansion-panel-header>
             <mat-panel-title>
-                <img class="stix-icon" src="assets/icon/stix-icons/svg/identity-b.svg">
-                Victims
+                <img class="stix-icon" src="assets/icon/stix-icons/svg/identity-b.svg"> Victims
                 <span class="">({{threatReport.boundries.targets.size}})</span>
             </mat-panel-title>
             <!-- <mat-panel-description class="mat-caption">
@@ -56,8 +58,7 @@
     <mat-expansion-panel>
         <mat-expansion-panel-header>
             <mat-panel-title>
-                <img class="stix-icon" src="assets/icon/stix-icons/svg/threat-actor-b.svg">
-                Intrusion Sets
+                <img class="stix-icon" src="assets/icon/stix-icons/svg/threat-actor-b.svg"> Intrusion Sets
                 <span class="">({{threatReport.boundries.intrusions.size}})</span>
             </mat-panel-title>
             <!-- <mat-panel-description class="mat-caption">
@@ -67,7 +68,9 @@
         <mat-list dense>
             <mat-list-item *ngFor="let intrusion of threatReport.boundries.intrusions">
                 <div mat-line class="">
-                    {{intrusion}}
+                    <a (click)="onNavigateToIntrusion(intrusion.value, $event)">
+                        {{intrusion?.displayValue}}
+                    </a>
                 </div>
             </mat-list-item>
         </mat-list>
@@ -75,8 +78,7 @@
     <mat-expansion-panel>
         <mat-expansion-panel-header>
             <mat-panel-title>
-                <img class="stix-icon" src="assets/icon/stix-icons/svg/malware-b.svg">
-                Malware
+                <img class="stix-icon" src="assets/icon/stix-icons/svg/malware-b.svg"> Malware
                 <span class="">({{threatReport.boundries.malware.size}})</span>
             </mat-panel-title>
             <!-- <mat-panel-description class="mat-caption">
@@ -86,7 +88,9 @@
         <mat-list dense>
             <mat-list-item *ngFor="let malware of threatReport.boundries.malware">
                 <div mat-line class="">
-                    {{malware}}
+                    <a (click)="onNavigateToMalware(malware.value, $event)">
+                        {{malware?.displayValue}}
+                    </a>
                 </div>
             </mat-list-item>
         </mat-list>
@@ -94,8 +98,7 @@
     <mat-expansion-panel>
         <mat-expansion-panel-header>
             <mat-panel-title>
-                <img class="stix-icon" src="assets/icon/stix-icons/svg/campaign-b.svg">
-                External References
+                <img class="stix-icon" src="assets/icon/stix-icons/svg/campaign-b.svg"> External References
                 <span class="">({{threatReport.reports.length}})</span>
             </mat-panel-title>
             <!-- <mat-panel-description class="mat-caption">
