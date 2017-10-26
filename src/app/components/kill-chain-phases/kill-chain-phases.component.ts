@@ -2,14 +2,21 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/startWith';
 import { KillChainPhase } from '../../models';
+import { ConfigService } from '../../global/services/config.service';
 
 @Component({
   selector: 'kill-chain-phases',
   templateUrl: './kill-chain-phases.component.html'
 })
-export class KillChainPhasesComponent {
+export class KillChainPhasesComponent implements OnInit {
 
     @Input() public model: any;
+
+    constructor(private configService: ConfigService) {}
+
+    public ngOnInit(): void {
+        // console.log(this.configService.configurations)
+    }
 
      public addkillChainPhase(): void {
         // let id = this.attackPattern.kill_chain_phases.length + 1;

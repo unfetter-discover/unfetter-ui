@@ -188,8 +188,17 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
         });
         return tro;
       })
-      .do((tro) => this.threatReport = tro)
-      .do(() => { 
+      .do((tro) => {
+        if (this.threatReport) {
+            if (!this.threatReport.reports || this.threatReport.reports.length === 0) {
+            this.threatReport.reports = tro.reports;
+            }
+        } else {
+          this.threatReport =  tro;
+        }
+
+      })
+      .do(() => {
         // remember to clear the shared service used by other pages
         this.sharedService.threatReportOverview = this.threatReport;
       })
