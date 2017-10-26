@@ -2,6 +2,7 @@ import { Component,  OnInit, ViewEncapsulation } from '@angular/core';
 
 import { AppState } from './app.service';
 import { AuthService } from './global/services/auth.service';
+import { WebAnalyticsService } from './global/services/web-analytics.service';
 
 @Component({
   selector: 'app',
@@ -15,7 +16,10 @@ export class AppComponent implements OnInit {
   public showBanner = false;
   public securityMarkingLabel = '';
 
-  constructor(public authService: AuthService) {}
+  constructor(
+    public authService: AuthService,
+    private webAnalyticsService: WebAnalyticsService
+  ) {}
 
   public ngOnInit() {
     if (SHOWBANNER !== undefined) {
@@ -25,5 +29,7 @@ export class AppComponent implements OnInit {
     if (BANNERTEXT !== undefined) {
       this.securityMarkingLabel = BANNERTEXT;
     }
+
+    this.webAnalyticsService.recordVisit();
   }
 }

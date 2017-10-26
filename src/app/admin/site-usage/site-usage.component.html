@@ -1,0 +1,31 @@
+<div id="siteUsageComponent" class="row">
+    <div class="col-xs-12">
+
+        <div *ngIf="usageData && usageData.length">
+            <h5>Site Usage Data &amp; Statistics</h5>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Registration Date</th>
+                        <th># of Days With Visits</th>
+                        <th>Last Day Visited</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let datum of usageData">
+                        <td>{{ datum.userName }}</td>
+                        <td>{{ datum.registered | date:'mediumDate'}}</td>
+                        <td>{{ datum.daysVisited }}</td>
+                        <td>{{ datum.lastVisit | date:'mediumDate'}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div *ngIf="!(usageData && usageData.length)" class="alert-alert-info">
+            There is no site usage data.
+        </div>
+
+    </div>    
+</div>

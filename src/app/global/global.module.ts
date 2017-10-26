@@ -20,6 +20,7 @@ import { GenericApi } from './services/genericapi.service';
 import { AuthService } from './services/auth.service';
 import { AuthGuard } from './services/auth.guard';
 import { ConfigService } from './services/config.service';
+import { WebAnalyticsService } from './services/web-analytics.service';
 
 // Pipes
 import { CapitalizePipe } from './pipes/capitalize.pipe';
@@ -64,7 +65,8 @@ const matModules = [
         GenericApi,
         AuthService,
         AuthGuard,
-        ConfigService
+        ConfigService,
+        WebAnalyticsService
     ]
 })
 
