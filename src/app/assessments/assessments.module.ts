@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import {  MatButtonModule, MatCardModule, MatDialogModule, MatSelectModule,
-  MatTooltipModule, MatDatepickerModule, MatIconModule, MatInputModule } from '@angular/material';
+  MatTooltipModule, MatDatepickerModule, MatIconModule, MatInputModule, MatProgressSpinnerModule } from '@angular/material';
 import { AssessmentsListComponent } from './list/assessments-list.component';
 import { ComponentModule } from '../components';
 import { AssessmentsService } from './assessments.service';
@@ -51,6 +51,7 @@ import { AssessmentsGroupComponent } from './group/assessments-group.component';
     MatIconModule,
     MatInputModule,
     MatTooltipModule,
+    MatProgressSpinnerModule,
     MatDatepickerModule,
     assessmentsRouting,
     ComponentModule,
