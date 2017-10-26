@@ -18,10 +18,11 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
 
   @Input('threatReport')
   public threatReport: ThreatReport;
-
+  @Input('attackPatterns')
   public attackPatterns: any;
-  public intrusionSetsDashboard: any = {};
-  public groupKillchain: KillChainEntry[];
+  @Input('intrusionSetsDashboard')
+  public intrusionSetsDashboard: any;
+
   public readonly subscriptions: Subscription[] = [];
 
   private readonly red500 = '#F44336';
@@ -40,19 +41,7 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
   /**
    * @description init this component
    */
-  public ngOnInit() {
-    const filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
-    const url = Constance.ATTACK_PATTERN_URL + '?' + filter;
-    const sub$ = this.genericApi.get(url).subscribe(
-      (attackPatterns) => {
-        attackPatterns = this.colorRows(attackPatterns, this.threatReport);
-        this.groupKillchain = this.groupByKillchain(attackPatterns);
-        this.intrusionSetsDashboard['killChainPhases'] = this.groupKillchain;
-      },
-      (err) => console.log(err));
-
-    this.subscriptions.push(sub$);
-  }
+  public ngOnInit() { }
 
   /**
    * @description 
@@ -61,48 +50,6 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
     if (this.subscriptions) {
       this.subscriptions.forEach((subscription) => subscription.unsubscribe());
     }
-  }
-
-  /**
-   * @description group attack patterns by kill chain phase
-   * @param attackPatterns
-   */
-  public groupByKillchain(attackPatterns: any[]): KillChainEntry[] {
-    const killChainAttackPattern = [];
-    const killChainAttackPatternGroup = {};
-    attackPatterns.forEach((attackPattern) => {
-      const killChainPhases = attackPattern.attributes.kill_chain_phases;
-
-      if (killChainPhases) {
-        killChainPhases.forEach((killChainPhase) => {
-          const phaseName = killChainPhase.phase_name;
-          let attackPatternsProxies = killChainAttackPatternGroup[phaseName];
-          if (attackPatternsProxies === undefined) {
-            attackPatternsProxies = [];
-            killChainAttackPatternGroup[phaseName] = attackPatternsProxies;
-          }
-          attackPatternsProxies.push({
-            id: attackPattern.id,
-            name: attackPattern.attributes.name,
-            foregroundColor: attackPattern.foregroundColor,
-            backgroundColor: attackPattern.backgroundColor
-          } as KillChainEntry);
-        });
-      }
-    });
-
-    Object.keys(killChainAttackPatternGroup).forEach((key) => {
-      const killchain = { name: key, attack_patterns: killChainAttackPatternGroup[key] };
-      killChainAttackPattern.push(killchain);
-    });
-
-    // sort the attack patterns w/ in a given kill chain
-    Object.keys(killChainAttackPatternGroup).forEach((key) => {
-      let arr = killChainAttackPatternGroup[key];
-      arr = arr.sort(SortHelper.sortDescByField('name'));
-    });
-
-    return killChainAttackPattern;
   }
 
   /**

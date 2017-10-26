@@ -1,0 +1,23 @@
+<mat-card class="margin-top">
+    <mat-card-header>
+        <mat-card-subtitle>Attack Patterns Used Per Intrusion Set</mat-card-subtitle>
+    </mat-card-header>
+    <div class="row mat-card-padding">
+        <div class="col-xs-4 paddingBottom" *ngFor="let i of intrusionSetsDashboard.intrusionSets" [ngClass]="{'altClearFix': i !== 0 && i % 3 == 0}">
+            <div>
+                <span [style.color]="i.color" class="greyTextShadow">
+                    <i class="material-icons">lens</i>
+                </span>&nbsp;
+                <label>{{i.name}}</label>
+                <!--<label [style.color]="i.color">{{i.name}}</label> -->
+                <small class="text-muted pull-right"> {{i.attack_patterns.length}} / {{intrusionSetsDashboard.totalAttackPatterns}}</small>
+            </div>
+
+            <div>
+                <mat-progress-bar [value]="i.attack_patterns.length" [bufferValue]="intrusionSetsDashboard.totalAttackPatterns">
+                </mat-progress-bar>
+            </div>
+        </div>
+    </div>
+
+</mat-card>

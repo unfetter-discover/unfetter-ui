@@ -7,12 +7,20 @@ $white_87: rgba(255,255,255, .87);
 
 .header {
     background: linear-gradient(60deg, $header_gradient_darker, $header_gradient_lighter);
-    height: 150px;
+    height: 250px;
     padding: 18px;
     color: $white_87;
 
     .mat-subheader-1, .header-details {
         color: $teal_200;
+    }
+
+    .stix-icon {
+        background-color: $teal_100;
+        border-radius: 50%;
+        height: 45px;
+        width: 45px;
+        // color: $white_87;
     }
 }
 

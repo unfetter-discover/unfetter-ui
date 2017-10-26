@@ -4,30 +4,39 @@
             <unf-side-panel [threatReport]="threatReport"></unf-side-panel>
         </div>
         <div class="main-panel col-md-10">
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-md-12">
                     <span class="stix-icon-wrapper">
                         <img class='stix-icon' src='assets/icon/stix-icons/svg/attack-pattern-c.svg'>
                     </span>
                     <span class="mat-display-3 title">
-                        {{threatReport.name}}
+                        {{threatReport.name || 'Threat Report Unamed'}}
                     </span>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <mat-tab-group id="tabGroup">
-                        <mat-tab label="MATRIX">
-                            <div class="matrix mb-18 mt-18 col-md-11">
-                                <kill-chain-table [threatReport]="threatReport"></kill-chain-table>
+            </div> -->
+            <div class="col-sm-12">
+                <mat-tab-group id="tabGroup">
+                    <mat-tab label="MATRIX">
+                        <!-- <attack-pattern-count [threatReport]="threatReport" [attackPatterns]="attackPatterns" [intrusionSetsDashboard]="intrusionSetsDashboard">
+                            </attack-pattern-count> -->
+                        <div class="row matrix mb-18 mt-18">
+                            <div class="col-md-11">
+                                <kill-chain-table [threatReport]="threatReport" [attackPatterns]="attackPatterns" [intrusionSetsDashboard]="intrusionSetsDashboard">
+                                </kill-chain-table>
                             </div>
-                        </mat-tab>
-                        <mat-tab label="AMA" disabled="true">
-                            <p>AMA goes here!</p>
-                        </mat-tab>
-                    </mat-tab-group>
-                </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-11">
+                                <collapsible-tree *ngIf="treeData" [data]="treeData" (treeComplete)="treeComplete()"></collapsible-tree>
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="AMA" disabled="true">
+                        <p>AMA goes here!</p>
+                    </mat-tab>
+                </mat-tab-group>
             </div>
+
         </div>
     </div>
 </div>

@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material';
 import { MatIconModule } from '@angular/material';
 import { MatListModule } from '@angular/material';
 import { MatMenuModule } from '@angular/material';
+import { MatProgressBarModule } from '@angular/material';
 import { MatSelectModule } from '@angular/material';
 import { MatSlideToggleModule } from '@angular/material';
 import { MatTabsModule } from '@angular/material';
@@ -22,13 +23,17 @@ import { CarouselModule } from 'primeng/primeng';
 
 import { routing } from './threat-dashboard.routing';
 
+import { AttackPatternCountComponent } from './attack-pattern-count/attack-pattern-count.component';
+import { CollapsibleTreeComponent } from './collapsible-tree/collapsible-tree.component';
+import { KillChainTableComponent } from './kill-chain-table/kill-chain-table.component';
+import { SidePanelComponent } from './side-panel/side-panel.component';
 import { ThreatDashboardComponent } from './threat-dashboard.component';
 import { ThreatReportOverviewModule } from '../threat-report-overview/threat-report-overview.module';
 import { ThreatReportOverviewService } from './services/threat-report-overview.service';
-import { KillChainTableComponent } from './kill-chain-table/kill-chain-table.component';
-import { SidePanelComponent } from './side-panel/side-panel.component';
 
 const moduleComponents = [
+  AttackPatternCountComponent,
+  CollapsibleTreeComponent,
   KillChainTableComponent,
   SidePanelComponent,
   ThreatDashboardComponent,
@@ -48,13 +53,14 @@ const materialModules = [
   MatInputModule,
   MatListModule,
   MatMenuModule,
+  MatProgressBarModule,
   MatSelectModule,
   MatSlideToggleModule,
   MatTabsModule,
   MatTooltipModule,
 ];
 
-const primengModules = [ CarouselModule ];
+const primengModules = [CarouselModule];
 
 @NgModule({
   declarations: [
