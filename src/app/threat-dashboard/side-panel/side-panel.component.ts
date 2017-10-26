@@ -108,6 +108,11 @@ export class SidePanelComponent implements OnInit, OnDestroy {
         this.selectedExternalRef = selected;
     }
 
+    /**
+     * @description load the overview workproduct with the given id, or return an empty Observable
+     * @param workProductId
+     * @return {Observable<ThreatReport>}
+     */
     public load(workProductId: string): Observable<ThreatReport> {
         if (!workProductId || workProductId.trim().length === 0) {
             return Observable.of();
@@ -116,4 +121,33 @@ export class SidePanelComponent implements OnInit, OnDestroy {
         return this.threatReportOverviewService.load(workProductId);
     }
 
+    /**
+     * @description navigate to the stix page relating to the given id, or noop for no id
+     * @param {string} intrustionId uuid
+     * @param {UIEvent} event optional
+     * @returns {Promise<boolean>}
+     */
+    public onNavigateToIntrusion(intrusionId: string = '', event?: UIEvent): Promise<boolean> {
+        if (!intrusionId || intrusionId.trim().length === 0) {
+            return;
+        }
+
+        const url = `/stix/intrusion-sets/`;
+        return this.router.navigate([url, intrusionId]);
+    }
+
+    /**
+     * @description navigate to the stix page relating to the given id, or noop for no id
+     * @param {string} intrustionId uuid
+     * @param {UIEvent} event optional
+     * @returns {Promise<boolean>}
+     */
+    public onNavigateToMalware(malwareId: string = '', event?: UIEvent): Promise<boolean> {
+        if (!malwareId || malwareId.trim().length === 0) {
+            return;
+        }
+
+        const url = `/stix/malwares/`;
+        return this.router.navigate([url, malwareId]);
+    }
 }

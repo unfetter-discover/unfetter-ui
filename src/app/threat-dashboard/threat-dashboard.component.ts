@@ -15,6 +15,7 @@ import { ThreatReportOverviewService } from './services/threat-report-overview.s
 import { ThreatReport } from '../threat-report-overview/models/threat-report.model';
 import { SortHelper } from '../assessments/assessments-summary/sort-helper';
 import { KillChainEntry } from './kill-chain-table/kill-chain-entry';
+import { SelectOption } from '../threat-report-overview/models/select-option';
 
 @Component({
   selector: 'threat-dashboard',
@@ -61,9 +62,9 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
       const sub$ = loadAll$.subscribe(
         (arr) => {
           // get intrusion sets, used
-          // const instrusionIds = Array.from(this.threatReport.boundries.intrusions).map((el) => el.id);
-          const intrusionNames = Array.from(this.threatReport.boundries.intrusions);
-          const intrusionIds = this.intrusionNamesToIds(intrusionNames, this.intrusionSets);
+          const intrusionIds: string[] = Array.from(this.threatReport.boundries.intrusions).map((el: SelectOption) => el.value);
+          // const intrusionNames = Array.from(this.threatReport.boundries.intrusions);
+          // const intrusionIds = this.intrusionNamesToIds(intrusionNames, this.intrusionSets);
 
           // build the collapsible tree data
           const sub2$ = this.loadIntrusionSetMapping(intrusionIds)
@@ -207,11 +208,10 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     }
 
     // get active attack patterns
-    const reports = threatReport.reports;
-    const activeAttackPatternIds = new Set<string>(
-      reports
-        .map((report) => report.object_refs)
-        .reduce((memo, cur) => memo.concat(cur), []));
+    const attackIds = threatReport.reports
+      .map((report) => report.object_refs)
+      .reduce((memo, cur) => memo.concat(cur), []);
+    const activeAttackPatternIds = new Set<string>(attackIds);
     const activeAttackPatterns = attackPatterns.filter((curAttackPattern) => activeAttackPatternIds.has(curAttackPattern.id));
 
     // set selected colors for active attack patterns
@@ -295,36 +295,6 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    */
   public treeComplete(): void {
     console.log('finished loading tree');
-  }
-
-  /**
-   * @description find intrusion set id from only names
-   * @param {string[]} instrusion set names
-   * @param {IntrusionSet[]} all intrusion set STIX objects
-   * @returns {string[]} intrusion set names
-   */
-  public intrusionNamesToIds(names: string[] = [], intrusions: IntrusionSet[] = []): string[] {
-    if (!names || !intrusions) {
-      return [];
-    }
-
-    return names
-      .map((name) => {
-        const ids = intrusions
-          // attributes and alises are defined
-          .filter((stix) => stix.attributes && stix.attributes.aliases && stix.attributes.aliases.length > 0)
-          // has an alias matching our current name
-          .filter((stix) => stix.attributes.aliases.includes(name))
-          // grab the id
-          .map((stix) => stix.id);
-        if (ids && ids.length > 0) {
-          return ids;
-        } else {
-          return [];
-        }
-      })
-      // flat map the ids
-      .reduce((memo, el) => memo.concat(el), []);
   }
 
 }

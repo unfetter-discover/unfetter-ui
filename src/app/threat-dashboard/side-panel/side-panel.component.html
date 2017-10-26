@@ -68,7 +68,9 @@
         <mat-list dense>
             <mat-list-item *ngFor="let intrusion of threatReport.boundries.intrusions">
                 <div mat-line class="">
-                    {{intrusion}}
+                    <a (click)="onNavigateToIntrusion(intrusion.value, $event)">
+                        {{intrusion?.displayValue}}
+                    </a>
                 </div>
             </mat-list-item>
         </mat-list>
@@ -86,7 +88,9 @@
         <mat-list dense>
             <mat-list-item *ngFor="let malware of threatReport.boundries.malware">
                 <div mat-line class="">
-                    {{malware}}
+                    <a (click)="onNavigateToMalware(malware.value, $event)">
+                        {{malware?.displayValue}}
+                    </a>
                 </div>
             </mat-list-item>
         </mat-list>
