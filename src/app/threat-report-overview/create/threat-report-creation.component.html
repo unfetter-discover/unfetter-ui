@@ -24,8 +24,8 @@
     <div class="row mt-10" id="formWrapper" *ngIf="showCheckBoxes">
         <div class="col-xs-12">
             <mat-form-field floatPlaceholder="always" >
-                <mat-select placeholder="Intrusion Set" color="primary" (change)="addChip($event.source.selected.viewValue, 'intrusion-set')">
-                    <mat-option *ngFor="let intrusion of intrusions" [value]="intrusion.value">
+                <mat-select placeholder="Intrusion Set" color="primary" (change)="addChip($event.source.selected.value, 'intrusion-set')">
+                    <mat-option *ngFor="let intrusion of intrusions" [value]="intrusion">
                         {{ intrusion.displayValue }}
                     </mat-option>
                 </mat-select>
@@ -34,7 +34,7 @@
                 <mat-chip-list class="mat-chip-list-stacked" selectable="true">
                     <mat-chip *ngFor="let selectedIntrusion of threatReport.boundries.intrusions" removable="true" selectable="true">
                         <div class="flex">
-                            <span class="flex1 flexNowrap">{{ selectedIntrusion }}</span>
+                            <span class="flex1 flexNowrap">{{ selectedIntrusion.displayValue }}</span>
                             <mat-icon matChipRemove (click)="removeChip(selectedIntrusion, 'intrusion-set')">cancel</mat-icon>
                         </div>
                     </mat-chip>
@@ -76,8 +76,8 @@
         </div>
         <div class="col-xs-12">
             <mat-form-field floatPlaceholder="always" >
-                <mat-select #malwareSelected placeholder="Malware" color="primary" (change)="addChip($event.source.selected.viewValue, 'malware')">
-                    <mat-option *ngFor="let curMalware of malware" [value]="curMalware.value">
+                <mat-select #malwareSelected placeholder="Malware" color="primary" (change)="addChip($event.source.selected.value, 'malware')">
+                    <mat-option *ngFor="let curMalware of malware" [value]="curMalware">
                         {{ curMalware.displayValue }}
                     </mat-option>
                 </mat-select>
@@ -86,7 +86,7 @@
                 <mat-chip-list class="mat-chip-list-stacked" selectable="true">
                     <mat-chip *ngFor="let malware of threatReport.boundries.malware" removable="true">
                         <div class="flex">
-                            <span class="flex1 flexNowrap">{{ malware }}</span>
+                            <span class="flex1 flexNowrap">{{ malware.displayValue }}</span>
                             <mat-icon matChipRemove (click)="removeChip(malware, 'malware')">cancel</mat-icon>
                         </div>
                     </mat-chip>

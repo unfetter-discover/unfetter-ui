@@ -13,6 +13,12 @@
                             <mat-card-content>
                                 <div class="row">
                                     <div class="col-md-6">
+                                            <!-- <mat-autocomplete name="autores" #autores="matAutocomplete">
+                                                    <mat-option *ngFor="let resourceLevel of resourceLevels" [value]="resourceLevel">
+                                                        <span>{{ resourceLevel }}</span>
+                                                    </mat-option>
+                                                </mat-autocomplete> -->
+
                                             <mat-input-container class="full-width">
                                                 <input id="kill-chain-name" matInput placeholder="Kill Chain Name" [(ngModel)]="killChainPhase.kill_chain_name" value="{{killChainPhase.kill_chain_name}}">
                                             </mat-input-container>

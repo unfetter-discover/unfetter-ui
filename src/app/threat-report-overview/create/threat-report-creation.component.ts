@@ -42,10 +42,11 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
   public readonly path = `threat-dashboard`;
   private readonly subscriptions = [];
 
-  constructor(protected router: Router,
-              protected location: Location,
-              protected genericApi: GenericApi,
-              protected sharedService: ThreatReportSharedService) { }
+  constructor(
+    protected router: Router,
+    protected location: Location,
+    protected genericApi: GenericApi,
+    protected sharedService: ThreatReportSharedService) { }
 
   /**
    * @description fetch data for this component
@@ -151,12 +152,12 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    * @param {string} value
    * @param {string} stixType
    */
-  public addChip(value: string, stixType: string): void {
+  public addChip(value: any, stixType: string): void {
     if (!value || !stixType) {
       return;
     }
 
-    let chips: Set<string> | undefined;
+    let chips: Set<any> | undefined;
     switch (stixType) {
       case 'intrusion-set':
         chips = this.threatReport.boundries.intrusions;
@@ -170,8 +171,18 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     }
 
     if (chips) {
-      chips = chips.add(value);
+      if (typeof value === 'string') {
+        chips = chips.add(value);
+      } else {
+        if (!this.hasValue(chips, value)) {
+          chips = chips.add(value);
+        }
+      }
     }
+  }
+
+  public hasValue(chips: Set<{ any }>, option: any) {
+    return chips.has(option.value);
   }
 
   /**
@@ -179,7 +190,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    * @param {string} stixName
    * @param {string} stixType
    */
-  public removeChip(stixName: string, stixType: string) {
+  public removeChip(stixName: any, stixType: string) {
     if (!stixName || !stixType) {
       return;
     }
@@ -197,6 +208,16 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
         break;
     }
     chips.delete(stixName);
+
+    // if (chips) {
+    //   if ( typeof stixName === 'string') {
+    //     chips.delete(stixName);
+    //   } else {
+    //     if (!this.hasValue(chips, value)){
+    //       chips = chips.add(value);
+    //     }
+    //   }
+    // }
   }
 
   /**
@@ -251,9 +272,9 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     this.reports = this.sharedService.threatReportOverview.reports || [];
     // this is needed to make sure boundries is acutally and object and not an object literal at runtime
     this.threatReport.boundries = new Boundries();
-    this.threatReport.boundries.intrusions = this.sharedService.threatReportOverview.boundries.intrusions || new Set<string>();
+    this.threatReport.boundries.intrusions = this.sharedService.threatReportOverview.boundries.intrusions || new Set<{ any }>();
     this.threatReport.boundries.targets = this.sharedService.threatReportOverview.boundries.targets || new Set<string>();
-    this.threatReport.boundries.malware = this.sharedService.threatReportOverview.boundries.malware || new Set<string>();
+    this.threatReport.boundries.malware = this.sharedService.threatReportOverview.boundries.malware || new Set<{ any }>();
     if (this.sharedService.threatReportOverview.boundries.startDate) {
       this.threatReport.boundries.startDate = new Date(this.sharedService.threatReportOverview.boundries.startDate);
     }
