@@ -131,9 +131,9 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   /**
    * @description load instrusion set mapping
    */
-  public loadIntrusionSetMapping(ids: string[] = []): Observable<any> {
+  public loadIntrusionSetMapping(ids: string[] = []): Observable<ThreatDashboard> {
     if (ids.length === 0) {
-      return Observable.of([]);
+      return Observable.of();
     }
     this.intrusionSetsDashboard.killChainPhases = null;
     const url = 'api/dashboards/intrusionSetView?intrusionSetIds=' + ids.join();

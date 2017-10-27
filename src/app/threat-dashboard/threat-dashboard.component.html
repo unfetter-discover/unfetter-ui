@@ -1,4 +1,4 @@
-<div class="container-fluid fadeIn" *ngIf="!loading && threatReport && attackPatterns && intrusionSetsDashboard; else loadingBlock">
+<div class="container-fluid fadeIn" *ngIf="!loading; else loadingBlock">
     <div class="row">
         <div class="side-panel col-md-2">
             <unf-side-panel [threatReport]="threatReport"></unf-side-panel>
