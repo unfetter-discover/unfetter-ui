@@ -30,7 +30,7 @@
 
         <span class="mb-6">
             <mat-form-field>
-                <input matInput required [matDatepicker]="validFromPicker" placeholder="Valid From" formControlName="valid_from">
+                <input matInput required [matDatepicker]="validFromPicker" [max]="form.get('valid_until').value" placeholder="Valid From" formControlName="valid_from">
                 <mat-datepicker-toggle matSuffix [for]="validFromPicker"></mat-datepicker-toggle>
                 <mat-datepicker #validFromPicker></mat-datepicker>
                 <mat-error *ngIf="form.get('valid_from').hasError('required')">
@@ -41,17 +41,18 @@
 
         <span class="mb-6" style="padding-left: 30px;">
             <mat-form-field>
-                <input matInput [matDatepicker]="validUntilPicker" placeholder="Valid Until" formControlName="valid_until">
+                <input matInput [matDatepicker]="validUntilPicker" [min]="form.get('valid_from').value" placeholder="Valid Until" formControlName="valid_until">
                 <mat-datepicker-toggle matSuffix [for]="validUntilPicker"></mat-datepicker-toggle>
                 <mat-datepicker #validUntilPicker></mat-datepicker>
             </mat-form-field>
         </span>
 
         <!-- ~~~ External References ~~~ -->
-        <h5>External References [<span class="cursor-pointer inlineBlock text-primary" (click)="showExternalReferences = !showExternalReferences"
-                *ngIf="!showExternalReferences">&nbsp;+&nbsp;</span><span class="cursor-pointer inlineBlock text-primary" (click)="showExternalReferences = !showExternalReferences"
-                *ngIf="showExternalReferences">&nbsp;-&nbsp;</span>]
-        </h5>
+        <br>
+        <div class="uf-collapsible-control mb-10" (click)="showExternalReferences = !showExternalReferences">
+            <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showExternalReferences}">chevron_right</i>
+            <span class="h5">&nbsp;External References</span>
+        </div>
         <div [@collapseLevel]="showExternalReferences ? 'open' : 'closed'" class="overFlowHidden">
             <external-references-reactive [parentForm]="form"></external-references-reactive>
         </div>
@@ -65,10 +66,10 @@
         <!-- ~~~ End of External References ~~~ -->
 
         <!-- ~~~ Kill Chain Phases ~~~ -->
-        <h5>Kill Chain Phases [<span class="cursor-pointer inlineBlock text-primary" (click)="showKillChainPhases = !showKillChainPhases"
-                *ngIf="!showKillChainPhases">&nbsp;+&nbsp;</span><span class="cursor-pointer inlineBlock text-primary" (click)="showKillChainPhases = !showKillChainPhases"
-                *ngIf="showKillChainPhases">&nbsp;-&nbsp;</span>]
-        </h5>
+        <div class="uf-collapsible-control mb-10 mt-9" (click)="showKillChainPhases = !showKillChainPhases">
+            <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showKillChainPhases}">chevron_right</i>
+            <span class="h5">&nbsp;Kill Chain Phases</span>
+        </div>
         <div [@collapseLevel]="showKillChainPhases ? 'open' : 'closed'" class="overFlowHidden">
             <kill-chain-phases-reactive [parentForm]="form"></kill-chain-phases-reactive>
         </div>
