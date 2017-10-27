@@ -15,7 +15,7 @@ import { ConfirmationDialogComponent } from '../../components/dialogs/confirmati
 import { ThreatReportOverviewService } from '../../threat-dashboard/services/threat-report-overview.service';
 
 @Component({
-  selector: 'threat-report-modify',
+  selector: 'unf-threat-report-modify',
   templateUrl: './threat-report-modify.component.html',
   styleUrls: ['threat-report-modify.component.scss']
 })

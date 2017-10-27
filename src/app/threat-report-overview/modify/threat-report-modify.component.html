@@ -39,7 +39,7 @@
         </div>
     </div>
     <hr class="title-hr">
-    <div class="row" *ngIf="threatReport && !threatReport.isEmpty(); else noBoundries">
+    <div class="row" *ngIf="threatReport && threatReport.reports.length > 1; else noBoundries">
         <div class="col-xs-6 col-md-6">
             <h4>
                 Include Objects
@@ -137,7 +137,7 @@
 
 <ng-template #noBoundries>
     <div class="emptyState">
-        You have no boundries defined or associated reports
+        Please provide at least one associated report
         <img align="middle"
         style="width: 375px; height: 400px; margin: auto; display:block; opacity: .54"
         src="{{iconUrl}}">

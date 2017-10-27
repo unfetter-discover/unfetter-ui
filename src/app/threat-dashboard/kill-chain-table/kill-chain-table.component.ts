@@ -8,9 +8,11 @@ import { GenericApi } from '../../global/services/genericapi.service';
 import { ThreatReport } from '../../threat-report-overview/models/threat-report.model';
 import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
 import { KillChainEntry } from './kill-chain-entry';
+import { AttackPattern } from '../../models/attack-pattern';
+import { ThreatDashboard } from '../models/threat-dashboard';
 
 @Component({
-  selector: 'kill-chain-table',
+  selector: 'unf-kill-chain-table',
   templateUrl: 'kill-chain-table.component.html',
   styleUrls: ['./kill-chain-table.component.scss']
 })
@@ -19,13 +21,12 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
   @Input('threatReport')
   public threatReport: ThreatReport;
   @Input('attackPatterns')
-  public attackPatterns: any;
+  public attackPatterns: AttackPattern[];
   @Input('intrusionSetsDashboard')
-  public intrusionSetsDashboard: any;
+  public intrusionSetsDashboard: ThreatDashboard;
 
   public readonly subscriptions: Subscription[] = [];
 
-  private readonly red500 = '#F44336';
   private readonly redAccent200 = '#FF5252';
   private readonly defaultBackgroundColor = '#FAFAFA';
   private readonly defaultForegroundColor = '#000000';
@@ -64,47 +65,6 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
       }
     });
     return count;
-  }
-
-  /**
-   * @description will clear and set the appropriate colors for the rows
-   *  do nothing if threat report or attack patterns are not populated
-   * @param {AttackPattern[]} attackPatterns
-   * @param {ThreatReport} threatReport
-   * @return {AttackPattern[]} the given attackpatterns set with colors
-   */
-  public colorRows(attackPatterns: any[], threatReport: ThreatReport): any[] {
-    if (!attackPatterns) {
-      return [];
-
-    }
-
-    // clear row colors to default
-    attackPatterns.forEach((attackPattern) => {
-      attackPattern.backgroundColor = this.defaultBackgroundColor;
-      attackPattern.foregroundColor = this.defaultForegroundColor;
-    });
-
-    if (!threatReport || !threatReport.reports) {
-      return attackPatterns;
-    }
-
-    // get active attack patterns
-    const reports = threatReport.reports;
-    const activeAttackPatternIds = new Set<string>(
-      reports
-        .map((report) => report.object_refs)
-        .reduce((memo, cur) => memo.concat(cur), []));
-    const activeAttackPatterns = attackPatterns.filter((curAttackPattern) => activeAttackPatternIds.has(curAttackPattern.id));
-
-    // set selected colors for active attack patterns
-    activeAttackPatterns.map((attackPattern) => {
-      attackPattern.backgroundColor = this.selectedBackgroundColor;
-      attackPattern.foregroundColor = this.selectedForegroundColor;
-      return attackPattern;
-    });
-
-    return attackPatterns;
   }
 
 }

@@ -1,36 +1,31 @@
-<mat-card class="margin-top" id="carouselCard">
-    <p-carousel
-        *ngIf="intrusionSetsDashboard.killChainPhases"
-        headerText="Kill Chain Phases Used"
-        [value]="intrusionSetsDashboard.killChainPhases"
-        numVisible="5">
-        <ng-template let-killChainPhase pTemplate="killChainPhase">
-
-            <div class="ui-grid ui-grid-responsive">
-                <div class="ui-grid-row carouselSubheadingRow">
-                    <div class="ui-grid-col-12 kill-chain-div flex">
-                        <span class="flex1 flexNowrap">{{killChainPhase.name | capitalize}}</span>
-                        <small class="badge">{{count(killChainPhase.attack_patterns)}}/{{killChainPhase.attack_patterns.length}}</small>
-                    </div>
+<p-carousel 
+    *ngIf="intrusionSetsDashboard && intrusionSetsDashboard.killChainPhases"
+    [value]="intrusionSetsDashboard.killChainPhases" 
+    headerText="Kill Chain Phases Used" 
+    numVisible="5">
+    <ng-template let-killChainPhase pTemplate="killChainPhase">
+        <div class="ui-grid ui-grid-responsive">
+            <div class="ui-grid-row carouselSubheadingRow">
+                <div class="ui-grid-col-12 kill-chain-div flex">
+                    <span class="flex1 flexNowrap">{{killChainPhase.name | capitalize}}</span>
+                    <small class="badge">{{count(killChainPhase.attack_patterns)}}/{{killChainPhase.attack_patterns.length}}</small>
                 </div>
-                <div class="ui-grid-row">
-                    <div class="ui-grid-col-12">
-                        <div class="carousel-content-wrapper">
-                            <div class="ui-grid ui-grid-responsive">
-                                <div class="ui-grid-row" *ngFor="let attack_pattern of killChainPhase.attack_patterns">
-                                    <div class="ui-grid-col-12 attack-pattern-div" [style.color]="attack_pattern.foregroundColor" [style.background]="attack_pattern.backgroundColor">
-                                        <div class="flexCenter">
-                                            {{attack_pattern.name}}
-                                        </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-12">
+                    <div class="carousel-content-wrapper">
+                        <div class="ui-grid ui-grid-responsive">
+                            <div class="ui-grid-row" *ngFor="let attack_pattern of killChainPhase.attack_patterns">
+                                <div class="ui-grid-col-12 attack-pattern-div" [style.color]="attack_pattern.foregroundColor" [style.background]="attack_pattern.backgroundColor">
+                                    <div class="flexCenter">
+                                        {{attack_pattern.name}}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
-
-        </ng-template>
-    </p-carousel>
-</mat-card>
+        </div>
+    </ng-template>
+</p-carousel>

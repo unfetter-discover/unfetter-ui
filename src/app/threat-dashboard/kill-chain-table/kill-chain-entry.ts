@@ -3,4 +3,5 @@ export interface KillChainEntry {
     name: string;
     foregroundColor: string;
     backgroundColor: string;
+    attack_patterns: any;
 };

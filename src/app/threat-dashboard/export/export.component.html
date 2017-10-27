@@ -1,0 +1,15 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>{{threatReport.name}}</mat-card-title>
+        <mat-card-subtitle>Copy and paste STIX JSON for this work product</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+        <pre>
+           {{stringify()}}
+        </pre>
+    </mat-card-content>
+    <!-- <mat-card-actions>
+        <button color="green" mat-button>Export</button>
+    </mat-card-actions> -->
+</mat-card>

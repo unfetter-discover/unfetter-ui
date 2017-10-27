@@ -3,7 +3,7 @@ import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angu
 import * as d3 from 'd3';
 
 @Component({
-    selector: 'collapsible-tree',
+    selector: 'unf-collapsible-tree',
     templateUrl: './collapsible-tree.component.html',
     styleUrls: [ './collapsible-tree.component.scss' ]
 })
