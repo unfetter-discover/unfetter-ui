@@ -21,7 +21,7 @@
             >li>a {
                 @include resetAnchorPadding;
             }
-            >li>a.mdButtonNavItem {
+            >li>a.matButtonNavItem {
                 @include resetMatButtonPadding;
             }
         }        
