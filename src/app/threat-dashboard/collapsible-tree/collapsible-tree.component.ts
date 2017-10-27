@@ -8,11 +8,15 @@ import * as d3 from 'd3';
     styleUrls: [ './collapsible-tree.component.scss' ]
 })
 export class CollapsibleTreeComponent implements OnInit, OnChanges {
-    private static readonly DEFAULT_COLOR = 'lightsteelblue';
+    private static readonly DEFAULT_COLOR = '#009688';
 
     @Input() public data: any;
     @Output() public treeComplete: EventEmitter<any> = new EventEmitter();
     private svg: any;
+
+    private readonly circleRadius = 24;
+    // tslint:disable-next-line:max-line-length
+    private readonly attackPatternSvg = `M30.1,10.7c0.4-3-1.3-8.1-5.5-7.9c-2.8,0.1-4,1.1-5-0.1c-1.2-1.5-2.8-2.9-3.4-2.6c-0.6,0.3-0.8,4.7-0.8,4.7s-6.7,2.1-7.4,5.8C7.6,12.5,0,15,0,15s0.6,5.9,1.4,6.1c0.8,0.2,1.8,0.1,1.8,0.1l-0.7,1.4L5,22.7c0,0,1.7-3.1,3-2.8c2.6,0.6,5.4-0.7,5.4-0.7S-6.1,33.2,7.1,46.3c0.4,2.7,0.6,4,0.6,4s-4.2,1.8-4.6,3.8c-0.4,2,1.1,4.1,1.1,4.1H1.5V62h28.3v-3.8h-3.1c0,0,1.6-2.1,1-4.1c-0.7-2.3-4.4-3.7-4.4-3.7l0.1-4.6c0,0,3.1-0.6,4.3-1.6c-2.3-0.6-2.9-10.9-2.6-14.9C25.3,24.9,29.6,14.2,30.1,10.7z`;
 
     // tslint:disable-next-line:no-empty
     constructor() { }
@@ -125,8 +129,16 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
                 .attr('class', 'tooltip')
                 .style('opacity', 0);
 
-            nodeEnter.append('circle')
-                .attr('r', 1e-6)
+            const iconWidth = '32';
+            const iconHeight = '32';
+            nodeEnter.append('use')
+                // .attr('r', _self.circleRadius)
+                // .attr('d', (d) => _self.attackPatternSvg)
+                .attr('xlink:href', 'assets/icon/stix-icons/svg/all-defs.svg#attackpattern')
+                // .attr('xlink:href', 'assets/icon/stix-icons/svg/attack-pattern-c.svg#attackpatternc')
+                .attr('width', iconWidth)
+                .attr('height', iconHeight)
+                .style('transform', 'scale(1)')
                 .style('fill', (d: any) => {
                     if (d.data.type === 'root') {
                         return 'transparent';
@@ -162,6 +174,8 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
                 .attr('x', (d: any) => { return d.children || d._children || d.data.type === 'intrusion-set' ? -10 : 10; })
                 .attr('dy', '.35em')
                 .attr('text-anchor', (d: any) => { return d.children || d._children || d.data.type === 'intrusion-set' ? 'end' : 'start'; })
+                // .attr('xlink:href', 'assets/icon/stix-icons/svg/attack-pattern-c.svg#attackpatternc')
+                // .attr('d', (d) => _self.attackPatternSvg)
                 .text((d: any) => d.data.name)
                 .style('fill-opacity', 1e-6)
                 .style('fill', (d: any) => {
@@ -177,8 +191,13 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
                 .duration(duration)
                 .attr('transform', (d: any) => { return 'translate(' + d.y + ',' + d.x + ')'; });
 
-            nodeUpdate.select('circle')
-                .attr('r', 4.5)
+            nodeUpdate.select('use')
+                // .attr('r', _self.circleRadius)
+                // .attr('d', (d) => _self.attackPatternSvg)
+                .attr('xlink:href', 'assets/icon/stix-icons/svg/all-defs.svg#attackpattern')
+                .attr('width', iconWidth)
+                .attr('height', iconHeight)
+                .style('transform', 'scale(1)')
                 .style('fill', (d: any) => {
                     if (d.data.type === 'root') {
                         return 'transparent';
@@ -199,6 +218,7 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
                         return d.data.color;
                     }
                 })
+                // .attr('d', (d) => _self.attackPatternSvg)
                 .style('stroke', (d: any) => {
                     if (d.data.type === 'intrusion-set') {
                         return d.data.color;
@@ -212,7 +232,7 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
                 .remove();
 
             nodeExit.select('circle')
-                .attr('r', 1e-6);
+                .attr('r', _self.circleRadius);
 
             nodeExit.select('text')
                 .style('fill-opacity', 1e-6);

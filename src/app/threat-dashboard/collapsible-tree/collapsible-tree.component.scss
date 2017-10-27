@@ -1,0 +1,132 @@
+:host {
+    $white_87: rbga(255, 255, 255, .87);
+    $black_54: rbga(0, 0, 0, .54);
+
+    svg /deep/  {
+        .node {
+            transform: scale(1);
+            fill: rbga(0,0,0, .54);
+            stroke: rbga(0,0,0, .54);
+        }
+
+        .node {
+            fill: $black_54;
+            stroke: $black_54;
+            cursor: pointer;
+        }
+
+        .node.malware {
+            fill: $black_54;
+        }
+
+        .node.threat-actor {
+            fill: $black_54;
+        }
+
+        .node.course-of-action {
+            fill: $black_54;
+        }
+
+        .node.indicator {
+            fill: $black_54;
+        }
+
+        .node.attack-pattern {
+            fill: $black_54;
+        }
+
+        .node.tool {
+            fill: $black_54;
+        }
+
+        .node.observable-path {
+            fill: $black_54;
+        }
+
+        .node.campaign {
+            fill: $black_54;
+        }
+
+        .node.unselected {
+            fill: $white_87;
+        }
+
+        .link {
+            stroke: $black_54;
+            fill: transparent;
+        }
+
+        .text-malware {
+            color: $black_54;
+            font-weight: bold;
+        }
+
+        .text-threat-actor {
+            color: $black_54;
+            font-weight: bold;
+        }
+
+        .text-course-of-action {
+            color: $black_54;
+            font-weight: bold;
+        }
+
+        .text-indicator {
+            color: $black_54;
+            font-weight: bold;
+        }
+
+        .text-attack-pattern {
+            color: $black_54;
+            font-weight: bold;
+        }
+
+        .text-tool {
+            color: $black_54;
+            font-weight: bold;
+        }
+
+        .text-observable-path {
+            color: $black_54;
+            font-weight: bold;
+        }
+
+        .text-campaign {
+            color: $black_54;
+        }
+
+        .malware-label {
+            color: $black_54;
+        }
+
+        .threat-actor-label {
+            color: $black_54;
+        }
+
+        .course-of-action-label {
+            color: $black_54;
+        }
+
+        .indicator-label {
+            color: $black_54;
+        }
+
+        .attack-pattern-label {
+            color: $black_54;
+        }
+
+        .tool-label {
+            color: $black_54;
+        }
+
+        .observable-path-label {
+            color: $black_54;
+        }
+
+        .campaign-label {
+            color: $black_54;
+        }
+
+    }
+}
+
