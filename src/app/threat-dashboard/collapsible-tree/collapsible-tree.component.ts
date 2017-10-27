@@ -152,18 +152,6 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
                 // .attr('width', iconWidth)
                 // .attr('height', iconHeight)
                 // .style('transform', 'scale(1)')
-                // .style('fill', (d: any) => {
-                //     if (d.data.type === 'root') {
-                //         return 'transparent';
-                //     }
-                //     console.log(d);
-                //     return d._children ? CollapsibleTreeComponent.DEFAULT_PARENT : CollapsibleTreeComponent.DEFAULT_LEAF;
-                // })
-                // .style('stroke', (d: any) => {
-                //     if (d.data.type === 'root') {
-                //         return 'transparent';
-                //     }
-                // })
                 .attr('class', (d: any) => {
                     if (d.data.type === 'root') {
                         return 'root-node';
@@ -173,8 +161,6 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
                 .on('mouseover', (d: any) => {
                     const mouseCoords = d3.mouse(svgEl as any);
                     const D3event = d3.event as any;
-                    // const eventX = D3event.x || D3event.pageX;
-                    // const eventY = D3event.y || D3event.pageY;
                     const eventX = mouseCoords[0];
                     const eventY = mouseCoords[1];
                     if (d.data.description) {
@@ -231,19 +217,6 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
                 // .attr('width', iconWidth)
                 // .attr('height', iconHeight)
                 // .style('transform', 'scale(1)')
-                // .style('fill', (d: any) => {
-                //     if (d.data.type === 'root') {
-                //         return 'transparent';
-                //     } else {
-                //         console.log(d);
-                //         return d._children ? CollapsibleTreeComponent.DEFAULT_PARENT : CollapsibleTreeComponent.DEFAULT_LEAF;
-                //     }
-                // })
-                // .style('stroke', (d: any) => {
-                //     if (d.data.type === 'root') {
-                //         return 'transparent';
-                //     }
-                // })
                 .attr('class', (d: any) => {
                     if (d.data.type === 'root') {
                         return 'root-node';
@@ -258,6 +231,7 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
                         return d.data.color;
                     }
                 })
+                // .attr('d', (d) => _self.attackPatternSvg)
                 .style('stroke', (d: any) => {
                     if (d.data.type === 'intrusion-set') {
                         return d.data.color;
