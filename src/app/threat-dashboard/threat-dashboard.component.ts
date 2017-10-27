@@ -16,9 +16,10 @@ import { ThreatReport } from '../threat-report-overview/models/threat-report.mod
 import { SortHelper } from '../assessments/assessments-summary/sort-helper';
 import { KillChainEntry } from './kill-chain-table/kill-chain-entry';
 import { SelectOption } from '../threat-report-overview/models/select-option';
+import { ThreatDashboard } from './models/threat-dashboard';
 
 @Component({
-  selector: 'threat-dashboard',
+  selector: 'unf-threat-dashboard',
   templateUrl: 'threat-dashboard.component.html',
   styleUrls: ['./threat-dashboard.component.scss']
 })
@@ -27,8 +28,8 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   public id = '';
   public attackPatterns: AttackPattern[];
   public intrusionSets: IntrusionSet[];
-  public intrusionSetsDashboard: any = {};
-  public groupKillchain: KillChainEntry[];
+  public intrusionSetsDashboard: ThreatDashboard = { killChainPhases: [], intrusionSets: [], totalAttackPatterns: 0, coursesOfAction: [] };
+  public groupKillchain: Array<Partial<KillChainEntry>>;
   public treeData: any;
   public loading = true;
 
@@ -53,36 +54,52 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    */
   public ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
-    if (this.id && this.id.trim() !== '') {
-      const loadReport$ = this.loadThreatReport();
-      const loadAttackPatterns$ = this.loadAttackPatterns();
-      const loadIntrusionSets$ = this.loadIntrusionSets();
-      // load the report and attackpatterns
-      const loadAll$ = Observable.forkJoin(loadReport$, loadAttackPatterns$, loadIntrusionSets$);
-      const sub$ = loadAll$.subscribe(
-        (arr) => {
-          // get intrusion sets, used
-          const intrusionIds: string[] = Array.from(this.threatReport.boundries.intrusions).map((el: SelectOption) => el.value);
-          // const intrusionNames = Array.from(this.threatReport.boundries.intrusions);
-          // const intrusionIds = this.intrusionNamesToIds(intrusionNames, this.intrusionSets);
+    if (!this.id || this.id.trim() === '') {
+      this.notifyDoneLoading();
+      return;
+    }
 
-          // build the collapsible tree data
-          const sub2$ = this.loadIntrusionSetMapping(intrusionIds)
-            .map((mappings) => this.buildTreeData())
-            .subscribe();
-          this.subscriptions.push(sub2$);
-
+    const loadReport$ = this.loadThreatReport();
+    const loadAttackPatterns$ = this.loadAttackPatterns();
+    const loadIntrusionSets$ = this.loadIntrusionSets();
+    // load the report and attackpatterns
+    const loadAll$ = Observable.forkJoin(loadReport$, loadAttackPatterns$, loadIntrusionSets$);
+    const logErr = (err) => console.log(err);
+    const noop = () => { };
+    const sub$ = loadAll$.subscribe(
+      (arr) => {
+        const buildKillChainTable = () => {
           // build the kill chain table data
           this.attackPatterns = this.colorRows(this.attackPatterns, this.threatReport);
           this.groupKillchain = this.groupByKillchain(this.attackPatterns);
           this.intrusionSetsDashboard['killChainPhases'] = this.groupKillchain;
-        },
-        (err) => console.log(err),
-        () => setTimeout(() => this.loading = false, 0));
-      this.subscriptions.push(sub$);
-    } else {
-      setTimeout(() => this.loading = false, 0);
-    }
+        };
+        // get intrusion sets, used
+        const intrusionIds: string[] = Array.from(this.threatReport.boundries.intrusions).map((el: SelectOption) => el.value);
+        if (!intrusionIds || intrusionIds.length === 0) {
+          // build the table and short circuit the tree
+          buildKillChainTable();
+          return;
+        }
+
+        // build the collapsible tree data
+        const sub2$ = this.loadIntrusionSetMapping(intrusionIds)
+          .map((mappings) => {
+            // build tree
+            this.buildTreeData();
+            // color table, NOTE: order may matter!
+            buildKillChainTable();
+          })
+          .subscribe(noop, logErr, () => this.notifyDoneLoading());
+        this.subscriptions.push(sub2$);
+      },
+      logErr,
+      () => this.notifyDoneLoading());
+    this.subscriptions.push(sub$);
+  }
+
+  public notifyDoneLoading(): void {
+    setTimeout(() => this.loading = false, 0);
   }
 
   /**
@@ -97,7 +114,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @description load attack patterns
    * @return {Observable<any>}
    */
-  public loadAttackPatterns(): Observable<any> {
+  public loadAttackPatterns(): Observable<AttackPattern[]> {
     const url = Constance.ATTACK_PATTERN_URL + '?' + this.filter;
     return this.genericApi.get(url).map((el) => this.attackPatterns = el);
   }
@@ -106,7 +123,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @description load intrusion sets
    * @return {Observable<any>}
    */
-  public loadIntrusionSets(): Observable<any> {
+  public loadIntrusionSets(): Observable<IntrusionSet[]> {
     const url = Constance.INTRUSION_SET_URL + '?' + this.filter;
     return this.genericApi.get(url).map((data) => this.intrusionSets = data);
   }
@@ -114,7 +131,10 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   /**
    * @description load instrusion set mapping
    */
-  public loadIntrusionSetMapping(ids: string[] = []): Observable<any> {
+  public loadIntrusionSetMapping(ids: string[] = []): Observable<ThreatDashboard> {
+    if (ids.length === 0) {
+      return Observable.of();
+    }
     this.intrusionSetsDashboard.killChainPhases = null;
     const url = 'api/dashboards/intrusionSetView?intrusionSetIds=' + ids.join();
     return this.genericApi.get(url).map((data) => this.intrusionSetsDashboard = data);
@@ -133,8 +153,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @description group attack patterns by kill chain phase
    * @param attackPatterns
    */
-  public groupByKillchain(attackPatterns: any[]): KillChainEntry[] {
-    const killChainAttackPattern = [];
+  public groupByKillchain(attackPatterns: any[]): Array<Partial<KillChainEntry>> {
     const killChainAttackPatternGroup = {};
     attackPatterns.forEach((attackPattern) => {
       const killChainPhases = attackPattern.attributes.kill_chain_phases;
@@ -157,17 +176,22 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
       }
     });
 
-    Object.keys(killChainAttackPatternGroup).forEach((key) => {
-      const killchain = { name: key, attack_patterns: killChainAttackPatternGroup[key] };
-      killChainAttackPattern.push(killchain);
-    });
-
     // sort the attack patterns w/ in a given kill chain
     Object.keys(killChainAttackPatternGroup).forEach((key) => {
       let arr = killChainAttackPatternGroup[key];
       arr = arr.sort(SortHelper.sortDescByField('name'));
     });
 
+    // extract the keyed attackpatterns into a single array
+    const killChainAttackPattern = [];
+    Object.keys(killChainAttackPatternGroup).forEach((key) => {
+      const killchain =
+        {
+          name: key,
+          attack_patterns: killChainAttackPatternGroup[key]
+        } as Partial<KillChainEntry>;
+      killChainAttackPattern.push(killchain);
+    });
     return killChainAttackPattern;
   }
 

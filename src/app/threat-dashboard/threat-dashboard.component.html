@@ -1,4 +1,4 @@
-<div class="container-fluid fadeIn" *ngIf="threatReport; else loadingBlock">
+<div class="container-fluid fadeIn" *ngIf="!loading; else loadingBlock">
     <div class="row">
         <div class="side-panel col-md-2">
             <unf-side-panel [threatReport]="threatReport"></unf-side-panel>
@@ -21,18 +21,25 @@
                             </attack-pattern-count> -->
                         <div class="row matrix mb-18 mt-18">
                             <div class="col-md-11">
-                                <kill-chain-table [threatReport]="threatReport" [attackPatterns]="attackPatterns" [intrusionSetsDashboard]="intrusionSetsDashboard">
-                                </kill-chain-table>
+                                <unf-kill-chain-table [threatReport]="threatReport" [attackPatterns]="attackPatterns" [intrusionSetsDashboard]="intrusionSetsDashboard">
+                                </unf-kill-chain-table>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-11">
-                                <collapsible-tree *ngIf="treeData" [data]="treeData" (treeComplete)="treeComplete()"></collapsible-tree>
+                                <unf-collapsible-tree *ngIf="treeData" [data]="treeData" (treeComplete)="treeComplete()"></unf-collapsible-tree>
                             </div>
                         </div>
                     </mat-tab>
                     <mat-tab label="AMA" disabled="true">
                         <p>AMA goes here!</p>
+                    </mat-tab>
+                    <mat-tab label="Export" disabled="false">
+                        <div class="row mb-18 mt-18">
+                            <div class="col-md-11">
+                                <unf-export-component [threatReport]="threatReport"></unf-export-component>
+                            </div>
+                        </div>
                     </mat-tab>
                 </mat-tab-group>
             </div>

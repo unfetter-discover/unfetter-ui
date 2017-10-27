@@ -29,18 +29,22 @@ $white_87: rgba(255,255,255, .87);
 }
 
 .mat-expansion-panel {
-    background-color: $white_87;
-
+    background-color: $white_87;    
+    
     .stix-icon {
         height: 24px;
         width: 24px;
         margin-right: 8px;
     }
-
-    // /deep/ .mat-list-item-content {
-    //     padding: 0px !important;
-    // }
     
+    // /deep/ .mat-list-item-content {
+        //     padding: 0px !important;
+        // }
+    
+    /deep/ .mat-list-item-content {
+        font-size: 13px;
+    }
+
     /deep/ .mat-expansion-panel-body {
         margin: 0px !important;
     }

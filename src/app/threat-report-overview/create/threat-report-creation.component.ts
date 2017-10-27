@@ -18,7 +18,7 @@ import { ThreatReportSharedService } from '../services/threat-report-shared.serv
 import { Boundries } from '../models/boundries';
 
 @Component({
-  selector: 'threat-report-creation',
+  selector: 'unf-threat-report-creation',
   templateUrl: './threat-report-creation.component.html',
   styleUrls: ['threat-report-creation.component.scss']
 })
@@ -26,7 +26,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
 
   @ViewChild('fileUpload')
   public fileUpload: FileUploadComponent;
-  public showCheckBoxes = true;
+  public shouldIncludeBoundries = false;
   public intrusions: SelectOption[];
   public malware: SelectOption[];
   public maxStartDate;
@@ -143,7 +143,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
   public boundriesToggled($event?: UIEvent): void {
     const el = $event as any;
     if (el && el.checked !== undefined) {
-      this.showCheckBoxes = el.checked;
+      this.shouldIncludeBoundries = el.checked;
     }
   }
 
@@ -234,6 +234,10 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    */
   public save(event: UIEvent): void {
     this.threatReport.reports = this.reports || [];
+    // if the boundries check box is checked, do not use boundries provided
+    if (this.isFalsey(this.shouldIncludeBoundries)) {
+      this.threatReport.boundries = new Boundries();
+    }
     this.sharedService.threatReportOverview = this.threatReport;
     this.router.navigate([`/${this.path}/modify`, this.threatReport.id]);
   }
@@ -247,6 +251,26 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     console.log(`file parsed data`, event);
     this.reports = event;
 
+  }
+
+  /**
+   * @description 
+   * @return true is string and true or boolean and true, otherwise false
+   */
+  private isTruthy(val: boolean | string = false): boolean {
+    const isBool = typeof val === 'boolean';
+    const isString = typeof val === 'string';
+    return (isBool && val === true) || (isString && val === 'true'); 
+  }
+
+  /**
+   * @description 
+   * @return true is string and false or boolean and false, otherwise true
+   */
+  private isFalsey(val: boolean | string = true): boolean {
+    const isBool = typeof val === 'boolean';
+    const isString = typeof val === 'string';
+    return (isBool && val === false) || (isString && val === 'false'); 
   }
 
   /**

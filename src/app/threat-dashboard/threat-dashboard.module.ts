@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { GlobalModule } from '../global/global.module';
 
 import { MatButtonModule, MatExpansionModule } from '@angular/material';
+import { MatCardModule } from '@angular/material';
 import { MatCheckboxModule } from '@angular/material';
 import { MatChipsModule } from '@angular/material';
 import { MatDatepickerModule } from '@angular/material';
@@ -30,10 +31,12 @@ import { SidePanelComponent } from './side-panel/side-panel.component';
 import { ThreatDashboardComponent } from './threat-dashboard.component';
 import { ThreatReportOverviewModule } from '../threat-report-overview/threat-report-overview.module';
 import { ThreatReportOverviewService } from './services/threat-report-overview.service';
+import { ExportComponent } from './export/export.component';
 
 const moduleComponents = [
   AttackPatternCountComponent,
   CollapsibleTreeComponent,
+  ExportComponent,
   KillChainTableComponent,
   SidePanelComponent,
   ThreatDashboardComponent,
@@ -45,6 +48,7 @@ const moduleServices = [
 
 const materialModules = [
   MatButtonModule,
+  MatCardModule,
   MatCheckboxModule,
   MatChipsModule,
   MatDatepickerModule,

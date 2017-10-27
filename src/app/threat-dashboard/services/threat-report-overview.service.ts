@@ -91,6 +91,7 @@ export class ThreatReportOverviewService {
 
     const reports = threatReport.reports;
     const id = threatReport.id || UUID.v4();
+    
     const calls = reports.map((report) => {
       const attributes = Object.assign({}, report.data.attributes);
       const meta = { work_product: {} };
@@ -113,7 +114,16 @@ export class ThreatReportOverviewService {
           attributes
         }
       });
-      return this.http.post<ThreatReport>(url, body, { headers });
+
+      const reportId = report.data.attributes.id || undefined;
+      if (reportId) {
+        // update and existing object
+        const updateOrAddUrl = reportId ?  `${url}/${reportId}` : url;
+        return this.http.patch<ThreatReport>(updateOrAddUrl, body, { headers });
+      } else {
+        // add new object
+        return this.http.post<ThreatReport>(url, body, { headers });
+      }
     });
 
     return Observable.forkJoin(...calls);

@@ -8,7 +8,7 @@ import { UploadService } from './upload.service';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 
 @Component({
-  selector: 'file-upload',
+  selector: 'unf-file-upload',
   templateUrl: './file-upload.component.html',
   styleUrls: ['file-upload.component.scss']
 })
