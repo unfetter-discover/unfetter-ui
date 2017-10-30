@@ -22,8 +22,8 @@ import { MatDialogRef } from '@angular/material';
 export class AddIndicatorComponent implements OnInit {
 
     public form: FormGroup | any;
-    public showExternalReferences: boolean = true;
-    public showKillChainPhases: boolean = true;
+    public showExternalReferences: boolean = false;
+    public showKillChainPhases: boolean = false;
 
     constructor(public dialogRef: MatDialogRef<any>, private indicatorSharingService: IndicatorSharingService) { }    
 
@@ -42,8 +42,7 @@ export class AddIndicatorComponent implements OnInit {
         const tempIndicator = this.buildIndicator({}, this.form.value);
         const addIndicator$ = this.indicatorSharingService.addIndicator(tempIndicator)
             .subscribe(
-                (res) => {
-                    console.log(res);                    
+                (res) => {                   
                     this.resetForm();
                     this.dialogRef.close(true);
                 },
@@ -76,7 +75,6 @@ export class AddIndicatorComponent implements OnInit {
             } else {
                 switch ((typeof obj[prop])) {
                     case 'object':
-                        console.log(obj[prop]);
                         if (obj[prop] instanceof Date) {
                             tempIndicator[prop] = obj[prop];
                         } else if (obj[prop] && Object.keys(obj[prop]).length > 0) {
