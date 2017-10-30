@@ -1,5 +1,5 @@
 
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter, OnDestroy, Renderer2 } from '@angular/core';
 import * as d3 from 'd3';
 
 @Component({
@@ -20,7 +20,7 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
     private readonly circleRadius = 10;
 
     // tslint:disable-next-line:no-empty
-    constructor() { }
+    constructor(protected renderer: Renderer2) { }
 
     /**
      * @description initialize this component
@@ -67,7 +67,7 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
         let previousNode = null;
         const margin = { top: 20, right: 120, bottom: 20, left: 0 };
         const width = 960 - margin.right - margin.left;
-        const height = 800 - margin.top - margin.bottom;
+        const height = 960 - margin.top - margin.bottom;
         let i = 0;
         const duration = 750;
         let root;
@@ -172,7 +172,7 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
                 })
                 .on('mouseover', (d: any) => {
                     const mouseCoords = d3.mouse(svgEl as any);
-                    // const D3event = d3.event as any;
+                    const D3event = d3.event as any;
                     // const eventX = D3event.x || D3event.pageX;
                     // const eventY = D3event.y || D3event.pageY;
                     const eventX = mouseCoords[0];
@@ -185,13 +185,24 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
                             .style('left', (eventX + 10) + 'px')
                             .style('top', (eventY - 10) + 'px');
                     }
+                    // const el = D3event.target;
+                    // const nativeEl = el.nativeElement;
+                    // if (nativeEl) {
+                    //     _self.renderer.addClass(nativeEl, 'node-hover');
+                    // }
                 })
                 .on('mouseout', (d: any) => {
+                    const D3event = d3.event as any;
                     if (d.data.description) {
                         tooltipDiv.transition()
                             .duration(500)
                             .style('opacity', 0);
                     }
+                    // const el = D3event.target;
+                    // const nativeEl = el.nativeElement;
+                    // if (nativeEl) {
+                    //     _self.renderer.addClass(nativeEl, 'node-hover');
+                    // }
                 });
 
             nodeEnter.append('text')
