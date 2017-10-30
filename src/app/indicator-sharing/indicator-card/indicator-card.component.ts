@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { trigger, state, transition, style, animate } from '@angular/animations';
+import { Observable } from 'rxjs/Observable';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { FormatHelpers } from '../../global/static/format-helpers';
@@ -18,7 +19,7 @@ import { AuthService } from '../../global/services/auth.service';
     styleUrls: ['indicator-card.component.scss']
 })
 
-export class IndicatorCardComponent implements OnInit {
+export class IndicatorCardComponent implements OnInit, AfterViewInit {
     @Input() public indicator: any;
     @Input() public attackPatterns: any;
     @Input() public searchParameters: any;
@@ -32,7 +33,13 @@ export class IndicatorCardComponent implements OnInit {
     public message = '';
     public alreadyLiked: boolean = false;
 
-    constructor(private indicatorSharingService: IndicatorSharingService, private authService: AuthService) { }
+    @ViewChild('card') private card: ElementRef;
+
+    constructor(
+        private indicatorSharingService: IndicatorSharingService, 
+        private authService: AuthService,
+        private renderer: Renderer2
+    ) { }
 
     public ngOnInit() {
         this.user = this.authService.getUser();
@@ -42,6 +49,13 @@ export class IndicatorCardComponent implements OnInit {
                 this.alreadyLiked = true;
             }
         } 
+    }
+
+    public ngAfterViewInit() {
+        const removeListener = this.renderer.listen(this.card.nativeElement, 'click', () => {
+            // TODO handle interaction here
+            removeListener();
+        });      
     }
 
     public labelSelected(label) {
