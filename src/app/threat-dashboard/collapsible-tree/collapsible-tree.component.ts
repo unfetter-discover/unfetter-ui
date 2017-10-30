@@ -1,5 +1,9 @@
 
+<<<<<<< 9d6a6f8706768049d87649f9f57a82aad51d725e
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter, OnDestroy, Renderer2 } from '@angular/core';
+=======
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+>>>>>>> better use of svg in threat dashboard
 import * as d3 from 'd3';
 
 @Component({
@@ -231,7 +235,6 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
                         return d.data.color;
                     }
                 })
-                // .attr('d', (d) => _self.attackPatternSvg)
                 .style('stroke', (d: any) => {
                     if (d.data.type === 'intrusion-set') {
                         return d.data.color;
