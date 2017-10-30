@@ -1,29 +1,40 @@
 
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import * as d3 from 'd3';
 
 @Component({
     selector: 'unf-collapsible-tree',
     templateUrl: './collapsible-tree.component.html',
-    styleUrls: [ './collapsible-tree.component.scss' ]
+    styleUrls: ['./collapsible-tree.component.scss']
 })
-export class CollapsibleTreeComponent implements OnInit, OnChanges {
-    private static readonly DEFAULT_COLOR = '#009688';
-
+export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
+    // private static readonly teal500 = '#009688';
+    // private static readonly teal200 = '#80CBC4';
+    // private static readonly DEFAULT_LEAF = CollapsibleTreeComponent.teal500;
+    // private static readonly DEFAULT_PARENT = CollapsibleTreeComponent.teal200;
+    
     @Input() public data: any;
     @Output() public treeComplete: EventEmitter<any> = new EventEmitter();
-    private svg: any;
-
-    private readonly circleRadius = 24;
-    // tslint:disable-next-line:max-line-length
-    private readonly attackPatternSvg = `M30.1,10.7c0.4-3-1.3-8.1-5.5-7.9c-2.8,0.1-4,1.1-5-0.1c-1.2-1.5-2.8-2.9-3.4-2.6c-0.6,0.3-0.8,4.7-0.8,4.7s-6.7,2.1-7.4,5.8C7.6,12.5,0,15,0,15s0.6,5.9,1.4,6.1c0.8,0.2,1.8,0.1,1.8,0.1l-0.7,1.4L5,22.7c0,0,1.7-3.1,3-2.8c2.6,0.6,5.4-0.7,5.4-0.7S-6.1,33.2,7.1,46.3c0.4,2.7,0.6,4,0.6,4s-4.2,1.8-4.6,3.8c-0.4,2,1.1,4.1,1.1,4.1H1.5V62h28.3v-3.8h-3.1c0,0,1.6-2.1,1-4.1c-0.7-2.3-4.4-3.7-4.4-3.7l0.1-4.6c0,0,3.1-0.6,4.3-1.6c-2.3-0.6-2.9-10.9-2.6-14.9C25.3,24.9,29.6,14.2,30.1,10.7z`;
+    private svg: any;    
+    private readonly graphId = '#graph';
+    private readonly circleRadius = 10;
 
     // tslint:disable-next-line:no-empty
     constructor() { }
 
-    // tslint:disable-next-line:no-empty
-    public ngOnInit() { }
+    /**
+     * @description initialize this component
+     */
+    public ngOnInit(): void { 
+        console.log('on init');
+    }
 
+    /**
+     * @description clean up this component
+     */
+    public ngOnDestroy(): void {
+        d3.select('body').selectAll('.tooltip').remove();
+    }
     /**
      * TODO: verify this is not called too often,
      *  as ngOnChanges can be called often and computation should not be expensive
@@ -36,7 +47,7 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
      * @memberof CollapsibleTreeComponent
      */
     public ngOnChanges(changes: any): void {
-        d3.select('#graph').selectAll('*').remove();
+        d3.select(this.graphId).selectAll('*').remove();
         this.data = changes.data.currentValue;
         this.buildGraph('graph', 'graph-info');
     }
@@ -69,7 +80,9 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
         root.x0 = height / 2;
         root.y0 = 0;
 
-        const svg = d3.select('#' + chartElementId).append('svg')
+        const svgSelect = d3.select('#' + chartElementId);
+        const svgEl = svgSelect.node();
+        const svg = svgSelect.append('svg')
             .attr('width', width + margin.right + margin.left)
             .attr('height', height + margin.top + margin.bottom)
             .append('g')
@@ -116,66 +129,75 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
 
             // Update the nodes…
             const node = svg.selectAll('g.node')
-                .data(nodes, (d: any) => { return d.id || (d.id = ++i); });
+                .data(nodes, (d: any) => d.id || (d.id = ++i));
 
             // Enter any new nodes at the parent's previous position.
             const nodeEnter = node.enter().append('g')
                 .attr('class', 'node')
-                .attr('transform', (d: any) => { return 'translate(' + source.y0 + ',' + source.x0 + ')'; })
+                .attr('transform', (d: any) => 'translate(' + source.y0 + ',' + source.x0 + ')')
                 .on('click', click);
 
             // Define the div for the tooltip
-            const div = d3.select('body').append('div')
-                .attr('class', 'tooltip')
+            const tooltipDiv = d3.select(_self.graphId).append('div')
+                .attr('class', 'tooltip mat-elevation-z3')
                 .style('opacity', 0);
 
             const iconWidth = '32';
             const iconHeight = '32';
-            nodeEnter.append('use')
-                // .attr('r', _self.circleRadius)
-                // .attr('d', (d) => _self.attackPatternSvg)
-                .attr('xlink:href', 'assets/icon/stix-icons/svg/all-defs.svg#attackpattern')
-                // .attr('xlink:href', 'assets/icon/stix-icons/svg/attack-pattern-c.svg#attackpatternc')
-                .attr('width', iconWidth)
-                .attr('height', iconHeight)
-                .style('transform', 'scale(1)')
-                .style('fill', (d: any) => {
+            nodeEnter.append('circle')
+                .attr('class', 'node')
+                .attr('r', 1e-6)
+            // nodeEnter.append('use')
+                // .attr('xlink:href', _self.generateIconPath.bind(_self))
+                // .attr('width', iconWidth)
+                // .attr('height', iconHeight)
+                // .style('transform', 'scale(1)')
+                // .style('fill', (d: any) => {
+                //     if (d.data.type === 'root') {
+                //         return 'transparent';
+                //     }
+                //     console.log(d);
+                //     return d._children ? CollapsibleTreeComponent.DEFAULT_PARENT : CollapsibleTreeComponent.DEFAULT_LEAF;
+                // })
+                // .style('stroke', (d: any) => {
+                //     if (d.data.type === 'root') {
+                //         return 'transparent';
+                //     }
+                // })
+                .attr('class', (d: any) => {
                     if (d.data.type === 'root') {
-                        return 'transparent';
+                        return 'root-node';
                     }
-
-                    return d._children ? CollapsibleTreeComponent.DEFAULT_COLOR : '#fafafa';
-                })
-                .style('stroke', (d: any) => {
-                    if (d.data.type === 'root') {
-                        return 'transparent';
-                    }
+                    return d._children ? 'full-node' : 'empty-node';
                 })
                 .on('mouseover', (d: any) => {
-                    const D3event = d3.event as any;
+                    const mouseCoords = d3.mouse(svgEl as any);
+                    // const D3event = d3.event as any;
+                    // const eventX = D3event.x || D3event.pageX;
+                    // const eventY = D3event.y || D3event.pageY;
+                    const eventX = mouseCoords[0];
+                    const eventY = mouseCoords[1];
                     if (d.data.description) {
-                        div.transition()
+                        tooltipDiv.transition()
                             .duration(200)
                             .style('opacity', .9);
-                        div.html(d.data.description)
-                            .style('left', (D3event.pageX) + 'px')
-                            .style('top', (D3event.pageY - 28) + 'px');
+                        tooltipDiv.html(d.data.description)
+                            .style('left', (eventX + 10) + 'px')
+                            .style('top', (eventY - 10) + 'px');
                     }
                 })
                 .on('mouseout', (d: any) => {
                     if (d.data.description) {
-                        div.transition()
+                        tooltipDiv.transition()
                             .duration(500)
                             .style('opacity', 0);
                     }
                 });
 
             nodeEnter.append('text')
-                .attr('x', (d: any) => { return d.children || d._children || d.data.type === 'intrusion-set' ? -10 : 10; })
+                .attr('x', (d: any) => d.children || d._children || d.data.type === 'intrusion-set' ? -10 : 10)
                 .attr('dy', '.35em')
-                .attr('text-anchor', (d: any) => { return d.children || d._children || d.data.type === 'intrusion-set' ? 'end' : 'start'; })
-                // .attr('xlink:href', 'assets/icon/stix-icons/svg/attack-pattern-c.svg#attackpatternc')
-                // .attr('d', (d) => _self.attackPatternSvg)
+                .attr('text-anchor', (d: any) => d.children || d._children || d.data.type === 'intrusion-set' ? 'end' : 'start')
                 .text((d: any) => d.data.name)
                 .style('fill-opacity', 1e-6)
                 .style('fill', (d: any) => {
@@ -189,26 +211,33 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
             // Transition nodes to their new position.
             nodeUpdate.transition()
                 .duration(duration)
-                .attr('transform', (d: any) => { return 'translate(' + d.y + ',' + d.x + ')'; });
+                .attr('transform', (d: any) => 'translate(' + d.y + ',' + d.x + ')');
 
-            nodeUpdate.select('use')
-                // .attr('r', _self.circleRadius)
-                // .attr('d', (d) => _self.attackPatternSvg)
-                .attr('xlink:href', 'assets/icon/stix-icons/svg/all-defs.svg#attackpattern')
-                .attr('width', iconWidth)
-                .attr('height', iconHeight)
-                .style('transform', 'scale(1)')
-                .style('fill', (d: any) => {
+            nodeUpdate.select('circle')
+                .attr('r', _self.circleRadius)
+            // nodeUpdate.select('use')
+                // .attr('xlink:href', _self.generateIconPath.bind(_self))
+                // .attr('width', iconWidth)
+                // .attr('height', iconHeight)
+                // .style('transform', 'scale(1)')
+                // .style('fill', (d: any) => {
+                //     if (d.data.type === 'root') {
+                //         return 'transparent';
+                //     } else {
+                //         console.log(d);
+                //         return d._children ? CollapsibleTreeComponent.DEFAULT_PARENT : CollapsibleTreeComponent.DEFAULT_LEAF;
+                //     }
+                // })
+                // .style('stroke', (d: any) => {
+                //     if (d.data.type === 'root') {
+                //         return 'transparent';
+                //     }
+                // })
+                .attr('class', (d: any) => {
                     if (d.data.type === 'root') {
-                        return 'transparent';
-                    } else {
-                        return d._children ? CollapsibleTreeComponent.DEFAULT_COLOR : '#fafafa';
+                        return 'root-node';
                     }
-                })
-                .style('stroke', (d: any) => {
-                    if (d.data.type === 'root') {
-                        return 'transparent';
-                    }
+                    return d._children ? 'full-node' : 'empty-node';
                 });
 
             nodeUpdate.select('text')
@@ -218,7 +247,6 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
                         return d.data.color;
                     }
                 })
-                // .attr('d', (d) => _self.attackPatternSvg)
                 .style('stroke', (d: any) => {
                     if (d.data.type === 'intrusion-set') {
                         return d.data.color;
@@ -228,11 +256,13 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
             // Transition exiting nodes to the parent's new position.
             const nodeExit = node.exit().transition()
                 .duration(duration)
-                .attr('transform', (d) => { return 'translate(' + source.y + ',' + source.x + ')'; })
+                .attr('transform', (d) => 'translate(' + source.y + ',' + source.x + ')')
                 .remove();
 
             nodeExit.select('circle')
-                .attr('r', _self.circleRadius);
+                .attr('r', 1e-6);
+            // nodeExit.select('use')
+            //     .attr('xlink:href', _self.generateIconPath.bind(_self));
 
             nodeExit.select('text')
                 .style('fill-opacity', 1e-6);
@@ -247,19 +277,19 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
                 .attr('d', (d) => {
                     const o = { x: source.x0, y: source.y0 };
                     return _self.diagonal(o, o);
-                })
+                });
                 // .attr('d', <any> d3.linkHorizontal()
                 //     .x((d: any) => {
                 //         return source.x0;
                 //     })
                 //     .y((d: any) => source.y0))
-                .style('stroke', (d: any) => {
-                    if (d.data.type === 'root') {
-                        return 'transparent';
-                    }
+                // .style('stroke', (d: any) => {
+                //     if (d.data.type === 'root') {
+                //         return 'transparent';
+                //     }
 
-                    return d.data.color || CollapsibleTreeComponent.DEFAULT_COLOR;
-                });
+                //     return d.data.color || CollapsibleTreeComponent.DEFAULT_PARENT;
+                // });
 
             const linkUpdate = linkEnter.merge(link);
 
@@ -298,9 +328,9 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
 
         // Toggle children on click.
         function click(d) {
-            if (previousNode && previousNode.id !== d.id && d.data.type === 'intrusion-set') {
-                click(previousNode);
-            }
+            // if (previousNode && previousNode.id !== d.id && d.data.type === 'intrusion-set') {
+            //     click(previousNode);
+            // }
             if (d.children) {
                 d._children = d.children;
                 d.children = null;
@@ -309,13 +339,54 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
                 d._children = null;
             }
             update(d);
-            if ((!previousNode || previousNode.id !== d.id) && d.data.type === 'intrusion-set') {
-                previousNode = d;
-            }
+            // if ((!previousNode || previousNode.id !== d.id) && d.data.type === 'intrusion-set') {
+            //     previousNode = d;
+            // }
 
         }
 
         this.treeComplete.emit();
+    }
+
+    /**
+     * @description determine what icon to use
+     */
+    private generateIconPath(d: any): string {
+        const svgDefs = 'assets/icon/stix-icons/svg/all-defs.svg';
+        const apIcon = `${svgDefs}#attack-pattern`;
+        const taIcon = `${svgDefs}#threat-actor`;
+        const coaIcon = `${svgDefs}#course-of-action`;
+        const circleIcon = `${svgDefs}#circle`;
+        const type = (d.data as any).type || '';
+        let icon = '';
+        switch (type) {
+            case 'intrusion-set': {
+                icon = taIcon;
+                break;
+            }
+            case 'attack-pattern': {
+                icon = apIcon;
+                break;
+            }
+            case 'kill_chain_phase': {
+                icon = apIcon;
+                break;
+            }
+            case 'course-of-action': {
+                icon = coaIcon;
+                break;
+            }
+            case 'root': {
+                icon = circleIcon;
+                break;
+            }
+            default: {
+                console.log('missing icon for ', type);
+                icon = circleIcon;
+                break;
+            }
+        }
+        return icon;
     }
 
     /**

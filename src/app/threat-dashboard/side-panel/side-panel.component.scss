@@ -3,6 +3,7 @@ $header_gradient_darker: #00796B;
 $red_500: #F44336;
 $teal_200: #80CBC4;
 $teal_100: #B2DFDB;
+$teal_50: #E0F2F1;
 $white_87: rgba(255,255,255, .87);
 
 .header {
@@ -56,12 +57,14 @@ $white_87: rgba(255,255,255, .87);
         margin-right: 8px;
     }
     
-    // /deep/ .mat-list-item-content {
-        //     padding: 0px !important;
-        // }
-    
-    /deep/ .mat-list-item-content {
+    .mat-list-item {
+        cursor: pointer;
         font-size: 13px;
+        
+    }
+
+    .list-item-hover {
+        background-color: $teal_50;
     }
 
     /deep/ .mat-expansion-panel-body {

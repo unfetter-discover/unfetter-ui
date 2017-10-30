@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ViewChild, Renderer2 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
@@ -34,6 +34,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
         protected genericApiService: GenericApi,
         protected threatReportOverviewService: ThreatReportOverviewService,
         protected dialog: MatDialog,
+        protected renderer: Renderer2,
     ) { }
 
     /**
@@ -150,4 +151,33 @@ export class SidePanelComponent implements OnInit, OnDestroy {
         const url = `/stix/malwares/`;
         return this.router.navigate([url, malwareId]);
     }
+
+    /**
+     * @description highlight background on hover, using a class
+     * @param {UIEvent} event optional
+     * @return {void}
+     */
+    public listItemMouseEnter(event: UIEvent): void {
+        if (!event) {
+            return;
+        }
+
+        const el = event.currentTarget;
+        this.renderer.addClass(el, 'list-item-hover');
+    }
+
+    /**
+     * @description remove highlight background on hover, using a class
+     * @param {UIEvent} event optional
+     * @return {void}
+     */
+    public listItemMouseLeave(event: UIEvent): void {
+        if (!event) {
+            return;
+        }
+
+        const el = event.currentTarget;
+        this.renderer.removeClass(el, 'list-item-hover');
+    }
+
 }
