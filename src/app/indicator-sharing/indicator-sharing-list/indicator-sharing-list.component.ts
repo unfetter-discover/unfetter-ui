@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { AddIndicatorComponent } from '../add-indicator/add-indicator.component';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
     selector: 'indicator-sharing-list',
@@ -17,60 +18,92 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
     public identities: any[];
     public filteredIndicators: any;
     public DEFAULT_LENGTH: number = 5;
-    public serverCallComplete: boolean = false;
     public indicatorToAttackPatternMap: any = {};
     public searchParameters: any = {
         labels: [],
         activeLabels: []
     };
+    public SERVER_CALL_COMPLETE = false;
 
     constructor(private indicatorSharingService: IndicatorSharingService, public dialog: MatDialog) { }
 
     public ngOnInit() { 
-        const getIdentities$ = this.indicatorSharingService.getIdentities()
-            .subscribe(
-                (res) => {
-                    this.identities = res.map((r) => r.attributes);            
-                },
-                (err) => {
-                    console.log(err);                
-                },
-                () => {
-                    getIdentities$.unsubscribe();
-                }
-            );
+        const getData$ = Observable.forkJoin(
+            this.indicatorSharingService.getIdentities(),
+            this.indicatorSharingService.getIndicators(),
+            this.indicatorSharingService.getAttackPatternsByIndicator()
+        ).subscribe(
+            (results) => {
+                // Identities
+                this.identities = results[0].map((r) => r.attributes); 
 
-        const getIndicators$ = this.indicatorSharingService.getIndicators()
-            .subscribe(
-                (results) => {
-                    this.filteredIndicators = this.allIndicators = results.map((res) => res.attributes);                    
-                    this.serverCallComplete = true;
+                // Indicators
+                this.filteredIndicators = this.allIndicators = results[1].map((res) => res.attributes);
 
-                    this.setDisplayedIndicators();
-                    this.setIndicatorSearchParameters();
-                },
-                (err) => {
-                    console.log(err);
-                },
-                () => {
-                    getIndicators$.unsubscribe();
-                }
-            );
+                this.setDisplayedIndicators();
+                this.setIndicatorSearchParameters();         
+                
+                // Attack patterns
+                results[2].attributes.forEach((res) => {
+                    this.indicatorToAttackPatternMap[res._id] = res.attackPatterns;
+                }); 
+            },
+            (err) => {
+                console.log(err);
+            },
+            () => {
+                this.SERVER_CALL_COMPLETE = true;
+                getData$.unsubscribe();
+            }
+        );
 
-        const getAttackPatternsByIndicator$ = this.indicatorSharingService.getAttackPatternsByIndicator()
-            .subscribe(
-                (result) => {
-                    result.attributes.forEach((res) => {
-                        this.indicatorToAttackPatternMap[res._id] = res.attackPatterns;
-                    });                              
-                },
-                (err) => {
-                    console.log(err);
-                },
-                () => {
-                    getAttackPatternsByIndicator$.unsubscribe();
-                }
-            );
+        // const getIdentities$ = this.indicatorSharingService.getIdentities()
+        //     .subscribe(
+        //         (res) => {
+        //             this.identities = res.map((r) => r.attributes);            
+        //         },
+        //         (err) => {
+        //             console.log(err);                
+        //         },
+        //         () => {
+        //             this.INIT_SERVER_CALLS--;
+        //             getIdentities$.unsubscribe();
+        //         }
+        //     );
+
+        // const getIndicators$ = this.indicatorSharingService.getIndicators()
+        //     .subscribe(
+        //         (results) => {
+        //             this.filteredIndicators = this.allIndicators = results.map((res) => res.attributes);                    
+        //             this.serverCallComplete = true;
+
+        //             this.setDisplayedIndicators();
+        //             this.setIndicatorSearchParameters();
+        //         },
+        //         (err) => {
+        //             console.log(err);
+        //         },
+        //         () => {
+        //             this.INIT_SERVER_CALLS--;
+        //             getIndicators$.unsubscribe();
+        //         }
+        //     );
+
+        // const getAttackPatternsByIndicator$ = this.indicatorSharingService.getAttackPatternsByIndicator()
+        //     .subscribe(
+        //         (result) => {
+        //             result.attributes.forEach((res) => {
+        //                 this.indicatorToAttackPatternMap[res._id] = res.attackPatterns;
+        //             });                              
+        //         },
+        //         (err) => {
+        //             console.log(err);
+        //         },
+        //         () => {
+        //             this.INIT_SERVER_CALLS--;
+        //             getAttackPatternsByIndicator$.unsubscribe();
+        //         }
+        //     );
     }
 
     public ngOnDestroy() {
@@ -132,7 +165,7 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
     }
 
     public displayShowMoreButton() {
-        if (!this.serverCallComplete || !this.displayedIndicators || this.displayedIndicators.length === 0) {
+        if (!this.SERVER_CALL_COMPLETE || !this.displayedIndicators || this.displayedIndicators.length === 0) {
             return false;
         } else {
             return (this.displayedIndicators.length + this.DEFAULT_LENGTH) < this.filteredIndicators.length;

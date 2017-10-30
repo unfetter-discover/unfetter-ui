@@ -1,4 +1,4 @@
-<div id="indicatorSharingList" class="container-fluid">
+<div id="indicatorSharingList" class="fadeIn container-fluid" *ngIf="SERVER_CALL_COMPLETE; else loadingBlock">
     <div class="row">
 
         <div class="col-xs-4 col-lg-3" id="filterWrapper">
@@ -41,3 +41,7 @@
 
     <br>
 </div>
+
+<ng-template #loadingBlock>
+    <loading-spinner></loading-spinner>
+</ng-template>
