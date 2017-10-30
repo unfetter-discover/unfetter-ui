@@ -15,13 +15,6 @@
         </mat-form-field>
 
         <mat-form-field class="full-width mb-6">
-            <input matInput required placeholder="Pattern Language" formControlName="pattern_lang">
-            <mat-error *ngIf="form.get('pattern_lang').hasError('required')">
-                Pattern Language is <strong>required</strong>
-            </mat-error>
-        </mat-form-field>
-
-        <mat-form-field class="full-width mb-6">
             <textarea matInput required placeholder="Pattern" formControlName="pattern"></textarea>
             <mat-error *ngIf="form.get('pattern').hasError('required')">
                 Pattern is <strong>required</strong>
