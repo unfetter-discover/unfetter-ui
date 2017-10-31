@@ -32,6 +32,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     public newLabelText: string = '';
     public message = '';
     public alreadyLiked: boolean = false;
+    public alreadyInteracted: boolean = false;
 
     @ViewChild('card') private card: ElementRef;
 
@@ -49,13 +50,27 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
                 this.alreadyLiked = true;
             }
         } 
+
+        if (this.indicator.interactions !== undefined && this.indicator.interactions.length > 0) {
+            const alreadyInteracted = this.indicator.interactions.find((interactions) => interactions.user.id === this.user._id);
+            if (alreadyInteracted) {
+                this.alreadyInteracted = true;
+            }
+        } 
     }
 
     public ngAfterViewInit() {
-        const removeListener = this.renderer.listen(this.card.nativeElement, 'click', () => {
-            // TODO handle interaction here
-            removeListener();
-        });      
+        // Only add listener for interactions if the user never interacted with it
+        if (!this.alreadyInteracted) {
+            const removeListener = this.renderer.listen(this.card.nativeElement, 'click', () => {
+                this.addInteraction();
+                // Remove listener after interaction
+                // NOTE renderer.listen returns a method to remove the listener, slightly counterintuitive
+                removeListener();
+            });  
+        } else {
+            console.log('User has already interacted with:  ', this.indicator.name);            
+        }            
     }
 
     public labelSelected(label) {
@@ -124,6 +139,22 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
                 () => {
                     addLike$.unsubscribe();
                 }
+            );
+    }
+
+    public addInteraction() {
+        const addLike$ = this.indicatorSharingService.addInteraction(this.indicator.id)
+            .subscribe(
+            (res) => {
+                this.indicator = res.attributes;
+                this.alreadyInteracted = true;
+            },
+            (err) => {
+                console.log(err);
+            },
+            () => {
+                addLike$.unsubscribe();
+            }
             );
     }
 }

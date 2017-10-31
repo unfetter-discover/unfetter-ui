@@ -44,6 +44,11 @@
                         <mat-chip *ngFor="let reference of indicator.external_references" color="accent" selected="true">{{reference.source_name | capitalize}}</mat-chip>
                     </mat-chip-list>
                 </div>
+                <div class="mt-3">
+                    <label>Unfetter User Interactions: </label>
+                    <span *ngIf="indicator.interactions">{{ indicator.interactions.length }}</span>
+                    <span *ngIf="!indicator.interactions">{{ 0 }}</span>
+                </div>
             </mat-tab>
 
             <mat-tab label="Comments" *ngIf="indicator.comments && indicator.comments.length > 0">

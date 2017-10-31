@@ -35,6 +35,11 @@ export class IndicatorSharingService {
         return this.genericApi.get(url);
     }
 
+    public addInteraction(id) {
+        const url = `${this.multiplesUrl}/${id}/interaction`;
+        return this.genericApi.get(url);
+    }
+
     public addLabel(label, id) {
         const url = `${this.multiplesUrl}/${id}/label`;
         return this.genericApi.patch(url, { data: { attributes: { 'label': label } } });

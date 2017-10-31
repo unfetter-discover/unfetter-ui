@@ -17,7 +17,8 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
     public allIndicators: any;
     public identities: any[];
     public filteredIndicators: any;
-    public DEFAULT_LENGTH: number = 5;
+    public DEFAULT_LENGTH: number = 10;
+    public serverCallComplete: boolean = false;
     public indicatorToAttackPatternMap: any = {};
     public searchParameters: any = {
         labels: [],
