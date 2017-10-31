@@ -68,9 +68,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
                 // NOTE renderer.listen returns a method to remove the listener, slightly counterintuitive
                 removeListener();
             });  
-        } else {
-            console.log('User has already interacted with:  ', this.indicator.name);            
-        }            
+        }           
     }
 
     public labelSelected(label) {
