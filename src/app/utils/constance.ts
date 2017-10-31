@@ -92,6 +92,7 @@ export const Constance = {
 
   // ADMIN
   ADMIN_URL: 'api/admin',
+  ORGANIZATIONS_URL: 'api/organizations',
 
   // API_HOST: process.env.HOST ? `https://${process.env.HOST}:${process.env.PORT}/` : '',
   API_HOST: '',

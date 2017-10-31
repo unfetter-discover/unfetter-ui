@@ -10,6 +10,7 @@ export class UsersService {
     private userFromTokenUrl = Constance.USER_FROM_TOKEN_URL;
     private finalizeRegistrationUrl = Constance.FINALIZE_REGISTRATION_URL;
     private profileByIdUrl = Constance.PROFILE_BY_ID_URL;
+    private identitiesUrl = Constance.IDENTITIES_URL;
 
     constructor(private genericApi: GenericApi) { }
 
@@ -23,5 +24,12 @@ export class UsersService {
 
     public getUserProfileById(userId): Observable<any> {
         return this.genericApi.get(`${this.profileByIdUrl}/${userId}`);
+    }
+
+    public getOrganizations(): Observable<any> {
+        const filter = {
+            'stix.identity_class': 'organization'
+        };
+        return this.genericApi.get(`${this.identitiesUrl}?filter=${encodeURI(JSON.stringify(filter))}`);
     }
 }

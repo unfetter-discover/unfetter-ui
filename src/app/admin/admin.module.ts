@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material';
 
 import { routing } from './admin-routing.module';
 import { GlobalModule } from '../global/global.module';
@@ -12,7 +13,8 @@ import { SiteUsageComponent } from './site-usage/site-usage.component';
     imports: [
         CommonModule,
         GlobalModule,
-        routing
+        routing,
+        MatButtonModule
     ],
     declarations: [
         ApproveUsersComponent,

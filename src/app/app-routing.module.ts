@@ -18,6 +18,17 @@ const appRoutes: Routes = [
   { path: 'threat-dashboard', loadChildren: 'app/threat-dashboard/threat-dashboard.module#ThreatDashboardModule', canActivate: [AuthGuard] },
   { path: 'users', loadChildren: 'app/users/users.module#UsersModule' },
   { path: 'indicator-sharing', loadChildren: 'app/indicator-sharing/indicator-sharing.module#IndicatorSharingModule' },
+  {
+    path: 'organizations',
+    loadChildren: 'app/organizations/organizations.module#OrganizationsModule',
+    canActivate: [AuthGuard],
+    data: {
+      ROLES: [
+        UserRoles.ORG_LEADER,
+        UserRoles.ADMIN
+      ]
+    }
+  },
   { 
     path: 'admin', 
     loadChildren: 'app/admin/admin.module#AdminModule',
