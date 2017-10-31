@@ -8,6 +8,8 @@ import { ConfigService } from './config.service';
 @Injectable()
 export class AuthService {
 
+    public runMode: string = '';
+
     constructor(
         private router: Router,
         private genericApi: GenericApi,
@@ -17,6 +19,9 @@ export class AuthService {
             console.log('Initializing configurations for returning user');            
             this.configService.initConfig();
         }   
+
+        // Set run mode to enviromental variable
+        this.runMode = RUN_MODE;        
     }
 
     public setToken(token) {
@@ -31,19 +36,36 @@ export class AuthService {
     }
 
     public getUser(): any {
-        let user = localStorage.getItem('user');
-        if (user) {
-            user = JSON.parse(user);
-        }
-        return user;
+        if (this.runMode === 'DEMO') {
+            return {
+                _id: '1234',
+                userName: 'Demo-User',
+                firstName: 'Demo',
+                lastName: 'User'
+            };
+        } else {
+            let user = localStorage.getItem('user');
+            if (user) {
+                user = JSON.parse(user);
+            }
+            return user;
+        }        
     }
 
     public loggedIn() {
-        return tokenNotExpired('unfetterUiToken') && this.getUser() !== null && this.getUser().approved === true;
+        if (this.runMode === 'DEMO') {
+            return true;
+        } else {
+            return tokenNotExpired('unfetterUiToken') && this.getUser() !== null && this.getUser().approved === true;
+        }
     }
 
     public isAdmin() {
-        return this.loggedIn() && this.getUser().role === 'ADMIN';
+        if (this.runMode === 'DEMO') {
+            return false;
+        } else {
+            return this.loggedIn() && this.getUser().role === 'ADMIN';
+        }
     }
 
     public pendingApproval() {

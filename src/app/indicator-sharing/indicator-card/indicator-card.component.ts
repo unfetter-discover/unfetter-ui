@@ -112,6 +112,8 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
                     setTimeout(() => this.message = '', 1500);
                 },
                 (err) => {
+                    this.message = 'Unable to add comment.';
+                    setTimeout(() => this.message = '', 1500); 
                     console.log(err);                    
                 },
                 () => {

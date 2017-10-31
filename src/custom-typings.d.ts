@@ -62,6 +62,7 @@ declare var HMR: boolean;
 declare var System: SystemJS;
 declare var SHOWBANNER: boolean;
 declare var BANNERTEXT: string;
+declare var RUN_MODE: string;
 
 interface SystemJS {
   import: (path?: string) => Promise<any>;
@@ -73,7 +74,8 @@ interface GlobalEnvironment {
   SystemJS: SystemJS;
   System: SystemJS;
   SHOWBANNER: boolean;
-  BANNERTEXT: string
+  BANNERTEXT: string;
+  RUN_MODE: string;
 }
 
 interface Es6PromiseLoader {
