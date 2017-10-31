@@ -1,6 +1,8 @@
 <div class="header">
     <div class="mat-display-2">
-        <img class='stix-icon' src='assets/icon/stix-icons/svg/attack-pattern-c.svg'>
+        <svg>
+            <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#attack-pattern"></use>
+        </svg>
         {{threatReport.name || 'Threat Report Unamed'}}
     </div>
     <p class="mat-subheader-1">
@@ -25,6 +27,11 @@
     </ng-template>
 </div>
 <div>
+    <div class="boundries-fab">
+        <button mat-mini-fab color="primary">
+            <mat-icon class="mat-24" aria-label="Add boundries or associated reports icon">add</mat-icon>
+        </button>
+    </div>
     <mat-menu #menu="matMenu">
         <button mat-menu-item disabled>
             <mat-icon aria-hidden="true">content_copy</mat-icon>
@@ -66,11 +73,10 @@
             </mat-panel-description> -->
         </mat-expansion-panel-header>
         <mat-list dense>
-            <mat-list-item *ngFor="let intrusion of threatReport.boundries.intrusions">
+            <mat-list-item #list *ngFor="let intrusion of threatReport.boundries.intrusions" (click)="onNavigateToIntrusion(intrusion.value, $event)"
+                (mouseenter)="listItemMouseEnter($event)" (mouseleave)="listItemMouseLeave($event)">
                 <div mat-line class="">
-                    <a (click)="onNavigateToIntrusion(intrusion.value, $event)">
-                        {{intrusion?.displayValue}}
-                    </a>
+                    <a href="#/stix/intrusion-sets/{{intrusion.value}}">{{intrusion?.displayValue}}</a>
                 </div>
             </mat-list-item>
         </mat-list>
@@ -86,11 +92,10 @@
             </mat-panel-description> -->
         </mat-expansion-panel-header>
         <mat-list dense>
-            <mat-list-item *ngFor="let malware of threatReport.boundries.malware">
+            <mat-list-item *ngFor="let malware of threatReport.boundries.malware" (click)="onNavigateToMalware(malware.value, $event)"
+                (mouseenter)="listItemMouseEnter($event)" (mouseleave)="listItemMouseLeave($event)">
                 <div mat-line class="">
-                    <a (click)="onNavigateToMalware(malware.value, $event)">
-                        {{malware?.displayValue}}
-                    </a>
+                    <a href="#/stix/malwares/{{malware.value}}">{{malware?.displayValue}}</a>
                 </div>
             </mat-list-item>
         </mat-list>

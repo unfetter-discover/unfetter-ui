@@ -3,24 +3,32 @@ $header_gradient_darker: #00796B;
 $red_500: #F44336;
 $teal_200: #80CBC4;
 $teal_100: #B2DFDB;
+$teal_50: #E0F2F1;
 $white_87: rgba(255,255,255, .87);
 
 .header {
     background: linear-gradient(60deg, $header_gradient_darker, $header_gradient_lighter);
     height: 250px;
-    padding: 18px;
+    padding: 24px;
     color: $white_87;
+
+    .mat-display-2 {
+        margin-top: 24px;
+        margin-bottom: 24px;
+    }
 
     .mat-subheader-1, .header-details {
         color: $teal_200;
     }
 
-    .stix-icon {
-        background-color: $teal_100;
-        border-radius: 50%;
+    svg {
         height: 45px;
         width: 45px;
-        // color: $white_87;
+        margin-left: -8px;
+    }
+
+    /deep/ .icon {
+        fill: $white_87;
     }
 }
 
@@ -28,21 +36,29 @@ $white_87: rgba(255,255,255, .87);
     border-bottom: 1px solid rgba(1,1,1, .12);
 }
 
+.boundries-fab {
+    margin-top: -24px;
+    position: fixed;
+    margin-left: 16px;
+}
+
 .mat-expansion-panel {
     background-color: $white_87;    
-    
+
     .stix-icon {
         height: 24px;
         width: 24px;
         margin-right: 8px;
     }
     
-    // /deep/ .mat-list-item-content {
-        //     padding: 0px !important;
-        // }
-    
-    /deep/ .mat-list-item-content {
+    .mat-list-item {
+        cursor: pointer;
         font-size: 13px;
+        
+    }
+
+    .list-item-hover {
+        background-color: $teal_50;
     }
 
     /deep/ .mat-expansion-panel-body {

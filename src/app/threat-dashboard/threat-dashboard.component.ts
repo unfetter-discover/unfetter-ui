@@ -64,7 +64,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     const loadIntrusionSets$ = this.loadIntrusionSets();
     // load the report and attackpatterns
     const loadAll$ = Observable.forkJoin(loadReport$, loadAttackPatterns$, loadIntrusionSets$);
-    const logErr = (err) => console.log(err);
+    const logErr = (err) => console.log('request err', err);
     const noop = () => { };
     const sub$ = loadAll$.subscribe(
       (arr) => {
@@ -93,7 +93,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
           .subscribe(noop, logErr, () => this.notifyDoneLoading());
         this.subscriptions.push(sub2$);
       },
-      logErr,
+      logErr.bind(this),
       () => this.notifyDoneLoading());
     this.subscriptions.push(sub$);
   }
