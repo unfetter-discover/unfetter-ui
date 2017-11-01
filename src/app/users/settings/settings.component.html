@@ -2,7 +2,7 @@
 
     <div class="row mt-20 mb-10">
         <div class="col-xs-12 col-lg-6 col-lg-offset-3">
-            <h3>Unfetter User Profile</h3>
+            <h3>Unfetter User Settings</h3>
         </div>
     </div>
 
@@ -27,6 +27,10 @@
                                 <div mat-line>
                                     <a routerLink="/stix/identities/{{org.id}}">{{ org.name }}</a>
                                     <span *ngIf="org.role === 'ORG_LEADER'">&nbsp;(Leader)</span>
+                                    <span *ngIf="org.role !== 'ORG_LEADER' && org.role !== 'ORG_LEADER_APPLICANT'">&nbsp;
+                                        <button mat-button color="primary" (click)="applyForleadership(org.id)">Request to Become Leader</button>
+                                    </span>
+                                    <span *ngIf="org.role === 'ORG_LEADER_APPLICANT'">&nbsp;Leadership requested, pending approval</span>
                                 </div>
                             </mat-list-item>
                         </mat-list>

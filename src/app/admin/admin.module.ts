@@ -8,6 +8,7 @@ import { AdminService } from './admin.service';
 import { ApproveUsersComponent } from './approve-users/approve-users.component';
 import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
 import { SiteUsageComponent } from './site-usage/site-usage.component';
+import { OrgLeaderApprovalComponent } from './org-leader-approval/org-leader-approval.component';
 
 @NgModule({
     imports: [
@@ -19,7 +20,8 @@ import { SiteUsageComponent } from './site-usage/site-usage.component';
     declarations: [
         ApproveUsersComponent,
         AdminLayoutComponent,
-        SiteUsageComponent
+        SiteUsageComponent,
+        OrgLeaderApprovalComponent
     ],
     providers: [
         AdminService

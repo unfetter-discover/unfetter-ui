@@ -11,6 +11,7 @@ export class UsersService {
     private finalizeRegistrationUrl = Constance.FINALIZE_REGISTRATION_URL;
     private profileByIdUrl = Constance.PROFILE_BY_ID_URL;
     private identitiesUrl = Constance.IDENTITIES_URL;
+    private orgUrl = Constance.ORGANIZATIONS_URL;
 
     constructor(private genericApi: GenericApi) { }
 
@@ -31,5 +32,9 @@ export class UsersService {
             'stix.identity_class': 'organization'
         };
         return this.genericApi.get(`${this.identitiesUrl}?filter=${encodeURI(JSON.stringify(filter))}`);
+    }
+
+    public requestOrgLeadership(userId, orgId): Observable<any> {
+        return this.genericApi.get(`${this.orgUrl}/request-leadership/${userId}/${orgId}`);
     }
 }
