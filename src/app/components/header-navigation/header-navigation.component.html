@@ -17,7 +17,7 @@
       <div id="navbar" class="collapse navbar-collapse navbar-right" [collapse]="collapsed">
         <ul class="nav navbar-nav">
           <!-- Logged Out only -->
-          <li *ngIf="!authService.loggedIn()">
+          <li *ngIf="!demoMode && !authService.loggedIn()">
             <a href="/api/auth/github-login/" class="matButtonNavItem">
               <button mat-raised-button color="primary">Sign In</button>
             </a>
@@ -40,7 +40,7 @@
             </ul>
           </li>
 
-          <li dropdown class="dropdown" *ngIf="authService.loggedIn()">
+          <li dropdown class="dropdown" *ngIf="!demoMode && authService.loggedIn()">
             <a dropdownToggle class="dropdown-toggle" data-toggle="user" role="button" aria-haspopup="true" aria-expanded="false">
               <img src="{{authService.getUser().github.avatar_url}}" alt="User" id="avatar" *ngIf="authService.getUser() !== null && authService.getUser().github.avatar_url !== undefined" class="smallAvatar">
               <span *ngIf="authService.getUser().github.avatar_url === undefined">{{authService.getUser().userName}}</span>

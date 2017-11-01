@@ -28,6 +28,12 @@ export class HeaderNavigationComponent {
   ];
 
   public collapsed: boolean = true;
+  public demoMode: boolean = false;
 
-  constructor(public authService: AuthService) {}
+  constructor(public authService: AuthService) {
+    const runMode = RUN_MODE;
+    if (runMode === 'DEMO') {
+      this.demoMode = true;
+    }
+  }
 }

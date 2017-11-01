@@ -54,8 +54,8 @@
             <mat-tab label="Comments" *ngIf="indicator.comments && indicator.comments.length > 0">
                 <div *ngFor="let comment of indicator.comments | sortByField: 'submitted'; let i = index">
                     <div class="flex flexItemsCenter mb-5">
-                        <span>
-                            <img *ngIf="comment.user.avatar_url" src="{{ comment.user.avatar_url }}" alt="{{ comment.user.userName }} avatar" class="smallAvatar">&nbsp;
+                        <span *ngIf="comment.user.avatar_url">
+                            <img src="{{ comment.user.avatar_url }}" alt="{{ comment.user.userName }} avatar" class="smallAvatar">&nbsp;
                         </span>
                         <span>
                             <a routerLink="/users/profile/{{comment.user.id}}">{{ comment.user.userName }}</a>

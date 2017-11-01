@@ -26,6 +26,7 @@ const HOST = process.env.HOST || 'localhost';
 const PORT = process.env.PORT || 80;
 const SHOWBANNER = process.env.SHOW_BANNER;
 const BANNER_TEXT = process.env.BANNER_TEXT;
+const RUN_MODE = process.env.RUN_MODE || 'DEMO';
 const METADATA = webpackMerge(commonConfig({
   env: ENV
 }).metadata, {
@@ -34,7 +35,8 @@ const METADATA = webpackMerge(commonConfig({
   ENV: ENV,
   HMR: false,
   SHOWBANNER: SHOWBANNER,
-  BANNER_TEXT: BANNER_TEXT
+  BANNER_TEXT: BANNER_TEXT,
+  RUN_MODE: RUN_MODE
 });
 
 module.exports = function (env) {
@@ -163,6 +165,7 @@ module.exports = function (env) {
         'HMR': METADATA.HMR,
         'SHOWBANNER': METADATA.SHOWBANNER,
         'BANNERTEXT': JSON.stringify(METADATA.BANNERTEXT),
+        'RUN_MODE': JSON.stringify(METADATA.RUN_MODE),
         'process.env': {
           'ENV': JSON.stringify(METADATA.ENV),
           'NODE_ENV': JSON.stringify(METADATA.ENV),

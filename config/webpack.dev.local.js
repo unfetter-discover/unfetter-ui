@@ -24,13 +24,15 @@ const PORT = process.env.PORT || 80;
 const HMR = helpers.hasProcessFlag('hot');
 const SHOWBANNER = process.env.SHOW_BANNER;
 const BANNER_TEXT = process.env.BANNER_TEXT;
+const RUN_MODE = process.env.RUN_MODE || 'DEMO';
 const METADATA = webpackMerge(commonConfig({env: ENV}).metadata, {
   host: HOST,
   port: PORT,
   ENV: ENV,
   HMR: HMR,
   SHOWBANNER: SHOWBANNER,
-  BANNER_TEXT: BANNER_TEXT
+  BANNER_TEXT: BANNER_TEXT,
+  RUN_MODE: RUN_MODE
 });
 
 // const DllBundlesPlugin = require('webpack-dll-bundles-plugin').DllBundlesPlugin;
@@ -151,6 +153,7 @@ module.exports = function (options) {
         'ENV': JSON.stringify(METADATA.ENV),
         'SHOWBANNER': JSON.stringify(METADATA.SHOWBANNER),
         'BANNERTEXT': JSON.stringify(METADATA.BANNERTEXT),
+        'RUN_MODE': JSON.stringify(METADATA.RUN_MODE),
         'HMR': METADATA.HMR,
         'process.env': {
           'ENV': JSON.stringify(METADATA.ENV),

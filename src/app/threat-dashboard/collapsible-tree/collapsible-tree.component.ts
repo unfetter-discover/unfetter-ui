@@ -17,7 +17,7 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
     @Output() public treeComplete: EventEmitter<any> = new EventEmitter();
     private svg: any;    
     private readonly graphId = '#graph';
-    private readonly circleRadius = 10;
+    private readonly circleRadius = 12;
 
     // tslint:disable-next-line:no-empty
     constructor(protected renderer: Renderer2) { }
@@ -65,9 +65,12 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
     public buildGraph(chartElementId, infoElementId): void {
         const _self = this;
         let previousNode = null;
-        const margin = { top: 20, right: 120, bottom: 20, left: 0 };
-        const width = 960 - margin.right - margin.left;
-        const height = 960 - margin.top - margin.bottom;
+
+        const parentEl: any = d3.select(this.graphId).node();
+        const margin = { top: 18, right: 18, bottom: 18, left: 0 };
+        const tmp = parentEl.clientWidth || 960;
+        const width = (tmp - margin.right) - margin.left;
+        const height = (tmp - margin.top) - margin.bottom;
         let i = 0;
         const duration = 750;
         let root;
@@ -152,18 +155,6 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
                 // .attr('width', iconWidth)
                 // .attr('height', iconHeight)
                 // .style('transform', 'scale(1)')
-                // .style('fill', (d: any) => {
-                //     if (d.data.type === 'root') {
-                //         return 'transparent';
-                //     }
-                //     console.log(d);
-                //     return d._children ? CollapsibleTreeComponent.DEFAULT_PARENT : CollapsibleTreeComponent.DEFAULT_LEAF;
-                // })
-                // .style('stroke', (d: any) => {
-                //     if (d.data.type === 'root') {
-                //         return 'transparent';
-                //     }
-                // })
                 .attr('class', (d: any) => {
                     if (d.data.type === 'root') {
                         return 'root-node';
@@ -173,8 +164,6 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
                 .on('mouseover', (d: any) => {
                     const mouseCoords = d3.mouse(svgEl as any);
                     const D3event = d3.event as any;
-                    // const eventX = D3event.x || D3event.pageX;
-                    // const eventY = D3event.y || D3event.pageY;
                     const eventX = mouseCoords[0];
                     const eventY = mouseCoords[1];
                     if (d.data.description) {
@@ -182,8 +171,8 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
                             .duration(200)
                             .style('opacity', .9);
                         tooltipDiv.html(d.data.description)
-                            .style('left', (eventX + 10) + 'px')
-                            .style('top', (eventY - 10) + 'px');
+                            .style('left', (eventX + 24) + 'px')
+                            .style('top', (eventY - 24) + 'px');
                     }
                     // const el = D3event.target;
                     // const nativeEl = el.nativeElement;
@@ -206,7 +195,7 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
                 });
 
             nodeEnter.append('text')
-                .attr('x', (d: any) => d.children || d._children || d.data.type === 'intrusion-set' ? -10 : 10)
+                .attr('x', (d: any) => d.children || d._children || d.data.type === 'intrusion-set' ? -18 : 18)
                 .attr('dy', '.35em')
                 .attr('text-anchor', (d: any) => d.children || d._children || d.data.type === 'intrusion-set' ? 'end' : 'start')
                 .text((d: any) => d.data.name)
@@ -231,19 +220,6 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
                 // .attr('width', iconWidth)
                 // .attr('height', iconHeight)
                 // .style('transform', 'scale(1)')
-                // .style('fill', (d: any) => {
-                //     if (d.data.type === 'root') {
-                //         return 'transparent';
-                //     } else {
-                //         console.log(d);
-                //         return d._children ? CollapsibleTreeComponent.DEFAULT_PARENT : CollapsibleTreeComponent.DEFAULT_LEAF;
-                //     }
-                // })
-                // .style('stroke', (d: any) => {
-                //     if (d.data.type === 'root') {
-                //         return 'transparent';
-                //     }
-                // })
                 .attr('class', (d: any) => {
                     if (d.data.type === 'root') {
                         return 'root-node';

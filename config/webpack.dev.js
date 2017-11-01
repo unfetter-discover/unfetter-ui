@@ -24,13 +24,15 @@ const PORT = process.env.PORT || 80;
 const HMR = helpers.hasProcessFlag('hot');
 const SHOWBANNER = process.env.SHOW_BANNER || false;
 const BANNERTEXT = process.env.BANNER_TEXT || '';
+const RUN_MODE = process.env.RUN_MODE || 'DEMO';
 const METADATA = webpackMerge(commonConfig({env: ENV}).metadata, {
   host: HOST,
   port: PORT,
   ENV: ENV,
   HMR: HMR,
   SHOWBANNER: SHOWBANNER,
-  BANNERTEXT: BANNERTEXT
+  BANNERTEXT: BANNERTEXT,
+  RUN_MODE: RUN_MODE
 });
 console.log(METADATA.baseUrl)
 
@@ -152,6 +154,7 @@ module.exports = function (options) {
         'ENV': JSON.stringify(METADATA.ENV),
         'HMR': METADATA.HMR,
         'SHOWBANNER': METADATA.SHOWBANNER,
+        'RUN_MODE': JSON.stringify(METADATA.RUN_MODE),
         'BANNERTEXT': JSON.stringify(METADATA.BANNERTEXT),
         'process.env': {
           'ENV': JSON.stringify(METADATA.ENV),
