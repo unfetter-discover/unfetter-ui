@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { trigger, state, transition, style, animate } from '@angular/animations';
+import { Observable } from 'rxjs/Observable';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { FormatHelpers } from '../../global/static/format-helpers';
@@ -18,7 +19,7 @@ import { AuthService } from '../../global/services/auth.service';
     styleUrls: ['indicator-card.component.scss']
 })
 
-export class IndicatorCardComponent implements OnInit {
+export class IndicatorCardComponent implements OnInit, AfterViewInit {
     @Input() public indicator: any;
     @Input() public attackPatterns: any;
     @Input() public searchParameters: any;
@@ -31,8 +32,15 @@ export class IndicatorCardComponent implements OnInit {
     public newLabelText: string = '';
     public message = '';
     public alreadyLiked: boolean = false;
+    public alreadyInteracted: boolean = false;
 
-    constructor(private indicatorSharingService: IndicatorSharingService, private authService: AuthService) { }
+    @ViewChild('card') private card: ElementRef;
+
+    constructor(
+        private indicatorSharingService: IndicatorSharingService, 
+        private authService: AuthService,
+        private renderer: Renderer2
+    ) { }
 
     public ngOnInit() {
         this.user = this.authService.getUser();
@@ -42,6 +50,25 @@ export class IndicatorCardComponent implements OnInit {
                 this.alreadyLiked = true;
             }
         } 
+
+        if (this.indicator.interactions !== undefined && this.indicator.interactions.length > 0) {
+            const alreadyInteracted = this.indicator.interactions.find((interactions) => interactions.user.id === this.user._id);
+            if (alreadyInteracted) {
+                this.alreadyInteracted = true;
+            }
+        } 
+    }
+
+    public ngAfterViewInit() {
+        // Only add listener for interactions if the user never interacted with it
+        if (!this.alreadyInteracted) {
+            const removeListener = this.renderer.listen(this.card.nativeElement, 'click', () => {
+                this.addInteraction();
+                // Remove listener after interaction
+                // NOTE renderer.listen returns a method to remove the listener, slightly counterintuitive
+                removeListener();
+            });  
+        }           
     }
 
     public labelSelected(label) {
@@ -110,6 +137,22 @@ export class IndicatorCardComponent implements OnInit {
                 () => {
                     addLike$.unsubscribe();
                 }
+            );
+    }
+
+    public addInteraction() {
+        const addLike$ = this.indicatorSharingService.addInteraction(this.indicator.id)
+            .subscribe(
+            (res) => {
+                this.indicator = res.attributes;
+                this.alreadyInteracted = true;
+            },
+            (err) => {
+                console.log(err);
+            },
+            () => {
+                addLike$.unsubscribe();
+            }
             );
     }
 }

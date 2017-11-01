@@ -17,7 +17,8 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
     public allIndicators: any;
     public identities: any[];
     public filteredIndicators: any;
-    public DEFAULT_LENGTH: number = 5;
+    public DEFAULT_LENGTH: number = 10;
+    public serverCallComplete: boolean = false;
     public indicatorToAttackPatternMap: any = {};
     public searchParameters: any = {
         labels: [],
@@ -56,54 +57,6 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
                 getData$.unsubscribe();
             }
         );
-
-        // const getIdentities$ = this.indicatorSharingService.getIdentities()
-        //     .subscribe(
-        //         (res) => {
-        //             this.identities = res.map((r) => r.attributes);            
-        //         },
-        //         (err) => {
-        //             console.log(err);                
-        //         },
-        //         () => {
-        //             this.INIT_SERVER_CALLS--;
-        //             getIdentities$.unsubscribe();
-        //         }
-        //     );
-
-        // const getIndicators$ = this.indicatorSharingService.getIndicators()
-        //     .subscribe(
-        //         (results) => {
-        //             this.filteredIndicators = this.allIndicators = results.map((res) => res.attributes);                    
-        //             this.serverCallComplete = true;
-
-        //             this.setDisplayedIndicators();
-        //             this.setIndicatorSearchParameters();
-        //         },
-        //         (err) => {
-        //             console.log(err);
-        //         },
-        //         () => {
-        //             this.INIT_SERVER_CALLS--;
-        //             getIndicators$.unsubscribe();
-        //         }
-        //     );
-
-        // const getAttackPatternsByIndicator$ = this.indicatorSharingService.getAttackPatternsByIndicator()
-        //     .subscribe(
-        //         (result) => {
-        //             result.attributes.forEach((res) => {
-        //                 this.indicatorToAttackPatternMap[res._id] = res.attackPatterns;
-        //             });                              
-        //         },
-        //         (err) => {
-        //             console.log(err);
-        //         },
-        //         () => {
-        //             this.INIT_SERVER_CALLS--;
-        //             getAttackPatternsByIndicator$.unsubscribe();
-        //         }
-        //     );
     }
 
     public ngOnDestroy() {
