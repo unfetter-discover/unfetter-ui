@@ -207,7 +207,7 @@ module.exports = function (options) {
         },
         'SHOWBANNER': ENV.SHOWBANNER,
         'BANNERTEXT': JSON.stringify(ENV.BANNERTEXT),
-        'RUN_MODE': JSON.stringify(METADATA.RUN_MODE),
+        'RUN_MODE': JSON.stringify(ENV.RUN_MODE),
       }),
 
       /**
