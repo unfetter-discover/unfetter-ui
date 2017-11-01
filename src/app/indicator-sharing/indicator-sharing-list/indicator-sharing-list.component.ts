@@ -64,14 +64,33 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
     }
 
     public openDialog() {
-        this.dialog.open(AddIndicatorComponent, {
+        const dialogRef = this.dialog.open(AddIndicatorComponent, {
             width: '800px',
             height: 'calc(100vh - 140px)'
         });
+
+        const dialogRefClose$ = dialogRef.afterClosed()
+            .subscribe((res) => {
+                    if (res) {
+                        this.allIndicators.push(res);
+                        this.filterIndicators();
+                    }
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    dialogRefClose$.unsubscribe();
+                }
+            );
     }
 
     public filterLabelChange(e) {        
-        this.searchParameters.activeLabels = e.value;
+        this.searchParameters.activeLabels = e.value;                 
+        this.filterIndicators();        
+    }
+
+    public filterIndicators() {
         if (this.searchParameters.activeLabels && this.searchParameters.activeLabels.length > 0) {
             this.filteredIndicators = this.allIndicators
                 .filter((indicator) => {
@@ -87,11 +106,10 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
                     } else {
                         return false;
                     }
-                }); 
+                });
         } else {
             this.filteredIndicators = this.allIndicators;
-        }            
-
+        }   
         this.setDisplayedIndicators();
     }
 

@@ -67,7 +67,7 @@ export class AddIndicatorComponent implements OnInit {
             .subscribe(
                 (res) => {                   
                     this.resetForm();
-                    this.dialogRef.close(true);
+                    this.dialogRef.close(res[0].attributes);
                 },
                 (err) => {
                     console.log(err);                    
