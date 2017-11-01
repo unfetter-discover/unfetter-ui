@@ -22,11 +22,15 @@ const ENV = process.env.ENV = process.env.NODE_ENV = 'development';
 const HOST = process.env.HOST || '0.0.0.0';
 const PORT = process.env.PORT || 80;
 const HMR = helpers.hasProcessFlag('hot');
+const SHOWBANNER = process.env.SHOW_BANNER;
+const BANNER_TEXT = process.env.BANNER_TEXT;
 const METADATA = webpackMerge(commonConfig({env: ENV}).metadata, {
   host: HOST,
   port: PORT,
   ENV: ENV,
-  HMR: HMR
+  HMR: HMR,
+  SHOWBANNER: SHOWBANNER,
+  BANNER_TEXT: BANNER_TEXT
 });
 
 // const DllBundlesPlugin = require('webpack-dll-bundles-plugin').DllBundlesPlugin;
@@ -145,6 +149,8 @@ module.exports = function (options) {
       // NOTE: when adding more properties, make sure you include them in custom-typings.d.ts
       new DefinePlugin({
         'ENV': JSON.stringify(METADATA.ENV),
+        'SHOWBANNER': JSON.stringify(METADATA.SHOWBANNER),
+        'BANNERTEXT': JSON.stringify(METADATA.BANNERTEXT),
         'HMR': METADATA.HMR,
         'process.env': {
           'ENV': JSON.stringify(METADATA.ENV),

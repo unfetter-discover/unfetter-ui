@@ -1,0 +1,53 @@
+<div class="container-fluid fadeIn" *ngIf="!loading; else loadingBlock">
+    <div class="row">
+        <div class="side-panel col-md-2">
+            <unf-side-panel [threatReport]="threatReport"></unf-side-panel>
+        </div>
+        <div class="main-panel col-md-10">
+            <!-- <div class="row">
+                <div class="col-md-12">
+                    <span class="stix-icon-wrapper">
+                        <img class='stix-icon' src='assets/icon/stix-icons/svg/attack-pattern-c.svg'>
+                    </span>
+                    <span class="mat-display-3 title">
+                        {{threatReport.name || 'Threat Report Unamed'}}
+                    </span>
+                </div>
+            </div> -->
+            <div class="col-sm-12">
+                <mat-tab-group id="tabGroup">
+                    <mat-tab label="MATRIX">
+                        <!-- <attack-pattern-count [threatReport]="threatReport" [attackPatterns]="attackPatterns" [intrusionSetsDashboard]="intrusionSetsDashboard">
+                            </attack-pattern-count> -->
+                        <div class="row matrix mb-18 mt-18">
+                            <div class="col-md-11">
+                                <unf-kill-chain-table [threatReport]="threatReport" [attackPatterns]="attackPatterns" [intrusionSetsDashboard]="intrusionSetsDashboard">
+                                </unf-kill-chain-table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-11">
+                                <unf-collapsible-tree *ngIf="treeData" [data]="treeData" (treeComplete)="treeComplete()"></unf-collapsible-tree>
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="AMA" disabled="true">
+                        <p>AMA goes here!</p>
+                    </mat-tab>
+                    <mat-tab label="Export" disabled="false">
+                        <div class="row mb-18 mt-18">
+                            <div class="col-md-11">
+                                <unf-export-component [threatReport]="threatReport"></unf-export-component>
+                            </div>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<ng-template #loadingBlock>
+    <loading-spinner></loading-spinner>
+</ng-template>

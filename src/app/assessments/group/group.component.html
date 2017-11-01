@@ -54,7 +54,7 @@
                     <a (click)="setAttackPattern(ap.attackPatternId)">{{ ap.attackPatternName }}</a>
                 </div>
             </div>
-            
+
             <div *ngIf="unassessedAttackPatterns && unassessedAttackPatterns.length > 0">
                 <hr>
                 <h5 class="text-muted">Unassessed Attack Patterns</h5>
@@ -98,27 +98,29 @@
 
                 <div id="assessedObjectsWrapper">
                     <hr>
-                    <md-card>
-                        <md-card-title class="pull-left">Assessed Objects</md-card-title>
-                        <md-card-title class="pull-right">
-                            <button md-fab (click)="!addAssessedObject ? addAssessedObject = true : ''"><i class="material-icons">add</i></button>
-                        </md-card-title>
+                    <mat-card>
+                        <mat-card-title class="pull-left">Assessed Objects</mat-card-title>
+                        <mat-card-title class="pull-right">
+                            <button mat-fab (click)="!addAssessedObject ? addAssessedObject = true : ''"><i class="material-icons">add</i></button>
+                        </mat-card-title>
                         <br class="altClearFix">
-                    </md-card>
+                    </mat-card>
                     <br>
 
                     <div *ngIf="addAssessedObject">
-                        <md-card>
-                            <md-card-title>Add Assessed Object</md-card-title>
-                            <md-card-content>
+                        <mat-card>
+                            <mat-card-title>Add Assessed Object</mat-card-title>
+                            <mat-card-content>
                                 <br>
-                                <md-select placeholder="Choose Type" [(ngModel)]=addAssessedType class="full-width">
-                                    <md-option value="indicator">Indicator</md-option>
-                                    <md-option value="course-of-action">Course of Action</md-option>
-                                    <md-option value="x-unfetter-sensor">Sensor</md-option>
-                                </md-select>
-                            </md-card-content>
-                            <md-card-content *ngIf="addAssessedType !== undefined">
+                                <mat-form-field>
+                                    <mat-select placeholder="Choose Type" [(ngModel)]=addAssessedType class="full-width">
+                                        <mat-option value="indicator">Indicator</mat-option>
+                                        <mat-option value="course-of-action">Course of Action</mat-option>
+                                        <mat-option value="x-unfetter-sensor">Sensor</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </mat-card-content>
+                            <mat-card-content *ngIf="addAssessedType !== undefined">
                                 <br>
                                 <div [ngSwitch]="addAssessedType">
 
@@ -126,39 +128,41 @@
                                         <div class="row">
                                             <div *ngFor="let measurement of indicator.questions" class="col-xs-12">
                                                 <label class="mat-label">{{measurement.name | capitalize}}</label>
-                                                <md-select [(ngModel)]="measurement.risk" class="full-width mdSelectBotMargin">
-                                                    <md-option *ngFor="let option of measurement.options" [value]="option.risk">
-                                                        {{ option.name }}
-                                                    </md-option>
-                                                </md-select>
+                                                <mat-form-field>
+                                                    <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin">
+                                                        <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
+                                                            {{ option.name }}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <md-input-container class="full-width">
-                                                    <input mdInput placeholder="Name" required [(ngModel)]="indicator.name" value="{{indicator.name}}" />
-                                                </md-input-container>
+                                                <mat-input-container class="full-width">
+                                                    <input matInput placeholder="Name" required [(ngModel)]="indicator.name" value="{{indicator.name}}" />
+                                                </mat-input-container>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <md-input-container class="full-width">
-                                                    <textarea mdInput placeholder="Description" [(ngModel)]="indicator.description" value="{{indicator.description}}"></textarea>
-                                                </md-input-container>
+                                                <mat-input-container class="full-width">
+                                                    <textarea matInput placeholder="Description" [(ngModel)]="indicator.description" value="{{indicator.description}}"></textarea>
+                                                </mat-input-container>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <md-input-container class="full-width">
-                                                    <input mdInput placeholder="Pattern" [(ngModel)]="indicator.pattern" value="{{indicator.pattern}}" />
-                                                </md-input-container>
+                                                <mat-input-container class="full-width">
+                                                    <input matInput placeholder="Pattern" [(ngModel)]="indicator.pattern" value="{{indicator.pattern}}" />
+                                                </mat-input-container>
                                             </div>
                                         </div>
 
                                         <div class="row">
                                             <p class="text-right">
-                                                <button md-button (click)="addAssessedObject ? addAssessedObject = false : ''">Cancel</button>
-                                                <button md-button [disabled]="!indicator.name" (click)="indicator.name ? createAssessedObject(indicator, currentAttackPattern) : ''">Save</button>
+                                                <button mat-button (click)="addAssessedObject ? addAssessedObject = false : ''">Cancel</button>
+                                                <button mat-button [disabled]="!indicator.name" (click)="indicator.name ? createAssessedObject(indicator, currentAttackPattern) : ''">Save</button>
                                             </p>
                                         </div>
                                     </div>
@@ -168,32 +172,34 @@
                                         <div class="row">
                                             <div *ngFor="let measurement of courseOfAction.questions" class="col-xs-12">
                                                 <label class="mat-label">{{measurement.name | capitalize}}</label>
-                                                <md-select [(ngModel)]="measurement.risk" class="full-width mdSelectBotMargin">
-                                                    <md-option *ngFor="let option of measurement.options" [value]="option.risk">
-                                                        {{ option.name }}
-                                                    </md-option>
-                                                </md-select>
+                                                <mat-form-field>
+                                                    <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin">
+                                                        <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
+                                                            {{ option.name }}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>                                              
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <md-input-container class="full-width">
-                                                    <input mdInput placeholder="Name" required [(ngModel)]="courseOfAction.name" value="{{courseOfAction.name}}">
-                                                </md-input-container>
+                                                <mat-input-container class="full-width">
+                                                    <input matInput placeholder="Name" required [(ngModel)]="courseOfAction.name" value="{{courseOfAction.name}}">
+                                                </mat-input-container>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <md-input-container class="full-width">
-                                                    <input mdInput placeholder="Description" [(ngModel)]="courseOfAction.description" value="{{courseOfAction.description}}">
-                                                </md-input-container>
+                                                <mat-input-container class="full-width">
+                                                    <input matInput placeholder="Description" [(ngModel)]="courseOfAction.description" value="{{courseOfAction.description}}">
+                                                </mat-input-container>
                                             </div>
                                         </div>
 
                                         <div class="row">
                                             <p class="text-right">
-                                                <button md-button (click)="addAssessedObject ? addAssessedObject = false : ''">Cancel</button>
-                                                <button md-button [disabled]="!courseOfAction.name" (click)="courseOfAction.name ? createAssessedObject(courseOfAction, currentAttackPattern) : ''">Save</button>
+                                                <button mat-button (click)="addAssessedObject ? addAssessedObject = false : ''">Cancel</button>
+                                                <button mat-button [disabled]="!courseOfAction.name" (click)="courseOfAction.name ? createAssessedObject(courseOfAction, currentAttackPattern) : ''">Save</button>
                                             </p>
                                         </div>
                                     </div>
@@ -203,76 +209,80 @@
                                         <div class="row">
                                             <div *ngFor="let measurement of xUnfetterSensor.questions" class="col-xs-12">
                                                 <label class="mat-label">{{measurement.name | capitalize}}</label>
-                                                <md-select [(ngModel)]="measurement.risk" class="full-width mdSelectBotMargin">
-                                                    <md-option *ngFor="let option of measurement.options" [value]="option.risk">
-                                                        {{ option.name }}
-                                                    </md-option>
-                                                </md-select>
+                                                <mat-form-field>
+                                                    <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin">
+                                                        <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
+                                                            {{ option.name }}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <md-input-container class="full-width">
-                                                    <input mdInput placeholder="Name" required [(ngModel)]="xUnfetterSensor.name" value="{{xUnfetterSensor.name}}" />
-                                                </md-input-container>
+                                                <mat-input-container class="full-width">
+                                                    <input matInput placeholder="Name" required [(ngModel)]="xUnfetterSensor.name" value="{{xUnfetterSensor.name}}" />
+                                                </mat-input-container>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <md-input-container class="full-width">
-                                                    <textarea mdInput placeholder="Description" [(ngModel)]="xUnfetterSensor.description" value="{{xUnfetterSensor.description}}"></textarea>
-                                                </md-input-container>
+                                                <mat-input-container class="full-width">
+                                                    <textarea matInput placeholder="Description" [(ngModel)]="xUnfetterSensor.description" value="{{xUnfetterSensor.description}}"></textarea>
+                                                </mat-input-container>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <p class="text-right">
-                                                <button md-button (click)="addAssessedObject ? addAssessedObject = false : ''">Cancel</button>
-                                                <button md-button [disabled]="!xUnfetterSensor.name" (click)="xUnfetterSensor.name ? createAssessedObject(xUnfetterSensor, currentAttackPattern) : ''">Save</button>
+                                                <button mat-button (click)="addAssessedObject ? addAssessedObject = false : ''">Cancel</button>
+                                                <button mat-button [disabled]="!xUnfetterSensor.name" (click)="xUnfetterSensor.name ? createAssessedObject(xUnfetterSensor, currentAttackPattern) : ''">Save</button>
                                             </p>
                                         </div>
                                     </div>
                                     <!-- End sensor -->
 
                                 </div>
-                            </md-card-content>
-                        </md-card>
+                            </mat-card-content>
+                        </mat-card>
                         <br>
                     </div>
 
                     <div *ngIf="displayedAssessedObjects && displayedAssessedObjects.length">
                         <div *ngFor="let assessedObj of displayedAssessedObjects | sortByField: 'risk'">
-                            <md-card>
-                                <md-card-title><img src="{{ getStixIcon(assessedObj.stix.type) }}" alt=""> {{ assessedObj.stix.name }}</md-card-title>
-                                <md-card-content>
+                            <mat-card>
+                                <mat-card-title><img src="{{ getStixIcon(assessedObj.stix.type) }}" alt=""> {{ assessedObj.stix.name }}</mat-card-title>
+                                <mat-card-content>
                                     <span class="text-muted">Risk Accepted &bull;</span>&nbsp;{{ assessedObj.risk | percent:'2.1-1'}}
-                                </md-card-content>
-                                <md-card-content>
+                                </mat-card-content>
+                                <mat-card-content>
                                     {{ assessedObj.stix.description }}
-                                </md-card-content>
+                                </mat-card-content>
 
-                                <md-card-content>
+                                <mat-card-content>
                                     <div *ngIf="assessedObj.editActive">
                                         <div *ngFor="let measurement of assessedObj.questions">
                                             <label class="mat-label">{{measurement.name | capitalize}}</label>
-                                            <md-select [(ngModel)]="measurement.risk" class="full-width mdSelectBotMargin">
-                                                <md-option *ngFor="let option of measurement.options" [value]="option.risk">
-                                                    {{ option.name }}
-                                                </md-option>
-                                            </md-select>
+                                            <mat-form-field>
+                                                <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin">
+                                                    <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
+                                                        {{ option.name }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>                                            
                                         </div>
                                     </div>
 
                                     <p class="text-right" *ngIf="assessedObj.editActive">
-                                        <button md-button (click)="assessedObj.editActive = false">Cancel</button>
-                                        <button md-button (click)="editAssessedObject(assessedObj)">Save</button>
+                                        <button mat-button (click)="assessedObj.editActive = false">Cancel</button>
+                                        <button mat-button (click)="editAssessedObject(assessedObj)">Save</button>
                                     </p>
 
                                     <p class="text-right" *ngIf="!assessedObj.editActive">
-                                        <button md-button (click)="assessedObj.editActive = true">Edit</button>
+                                        <button mat-button (click)="assessedObj.editActive = true">Edit</button>
                                     </p>
 
-                                </md-card-content>
-                            </md-card>
+                                </mat-card-content>
+                            </mat-card>
                             <br>
                         </div>
                     </div>
@@ -285,6 +295,6 @@
 
 <ng-template #loadingBlock>
     <div class="loading">
-        <md-spinner></md-spinner>
+        <mat-spinner></mat-spinner>
     </div>
 </ng-template>

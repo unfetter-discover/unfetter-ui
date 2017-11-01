@@ -19,7 +19,7 @@ npm-debug.log
 /.sass-cache
 /.idea
 /connect.lock
-coverage/**/*
+/coverage/**
 npm-debug.log
 
 

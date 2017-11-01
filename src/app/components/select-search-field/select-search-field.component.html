@@ -1,11 +1,12 @@
 <form>
-        <md-input-container class="full-width">
-            <input mdInput placeholder="{{placeholder}}" [mdAutocomplete]="auto"
+        <mat-form-field  class="full-width">
+            <input matInput placeholder="{{placeholder}}" [matAutocomplete]="auto"
              [formControl]="formCtrl" [value]="inputFieldValue">
-        </md-input-container>
-</form>
-        <md-autocomplete #auto="mdAutocomplete" class="full-width">
-            <md-option *ngFor="let option of filteredOptions | async" [value]="option.attributes.name" (onSelectionChange)="onOptionChanged(option)">
+
+        <mat-autocomplete #auto="matAutocomplete" class="full-width">
+            <mat-option *ngFor="let option of filteredOptions | async" [value]="option.attributes.name" (onSelectionChange)="onOptionChanged(option)">
                 {{ option.attributes.name }}
-            </md-option>
-        </md-autocomplete>
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+    </form>

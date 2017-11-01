@@ -1,16 +1,16 @@
     <div class="row">
        <div class="col-md-12">
             <div class="button-row">
-                <button class="mat-primary" md-raised-button (click)="editButtonClicked()"><i class="material-icons">create</i> EDIT</button>
-                <button class="mat-primary" md-raised-button (click)="deleteButtonClicked()"><i class="material-icons">delete</i> DELETE</button>
+                <button class="mat-primary" mat-raised-button (click)="editButtonClicked()"><i class="material-icons">create</i> EDIT</button>
+                <button class="mat-primary" mat-raised-button (click)="deleteButtonClicked()"><i class="material-icons">delete</i> DELETE</button>
             </div>
         </div>
     </div>
       <div class="row" style="margin-top: 15px;" *ngIf="sensor">
         <div class="col-md-12">
-            <md-card>
+            <mat-card>
 
-                <md-card-content>
+                <mat-card-content>
                         <div class="row">
                             <div class="col-md-12">
                                 <label>Name</label>
@@ -20,23 +20,23 @@
                         <div class="row">
                             <div class="col-md-12">
                                     <label>Kill Chain Name:</label>
-                                    <md-chip-list>
-                                        <md-chip *ngFor="let kill_chain_phase of sensor.attributes.kill_chain_phases"
+                                    <mat-chip-list>
+                                        <mat-chip *ngFor="let kill_chain_phase of sensor.attributes.kill_chain_phases"
                                             selected="true">
                                             {{kill_chain_phase.phase_name}}
-                                        </md-chip>
-                                    </md-chip-list>
+                                        </mat-chip>
+                                    </mat-chip-list>
                             </div>
                         </div>
                          <div class="row">
                             <div class="col-md-12">
                                     <label>Aliases:</label>
-                                    <md-chip-list>
-                                        <md-chip *ngFor="let aliase of sensor.attributes.aliases"
+                                    <mat-chip-list>
+                                        <mat-chip *ngFor="let aliase of sensor.attributes.aliases"
                                             selected="true">
                                             {{aliase}}
-                                        </md-chip>
-                                    </md-chip-list>
+                                        </mat-chip>
+                                    </mat-chip-list>
                             </div>
                         </div>
                         <div class="row">
@@ -45,9 +45,9 @@
                                 <h6>{{sensor.attributes.description}}</h6>
                             </div>
                         </div>
-                </md-card-content>
+                </mat-card-content>
 
-            </md-card>
+            </mat-card>
         </div>
     </div>
     <div *ngIf="sensor" class="pull-right grey-text">{{sensor.id}}</div>

@@ -11,15 +11,20 @@
     padding-left: 16px;
 }
 
-.first-line { 
+.first-line {
     min-height: 15vh;
 }
 
 .subtitle {
     font-size: 14px;
-    color: #777;
+    color: rgba(1,1,1, .87);
 }
 
-md-form-field {
+mat-form-field {
     width: 100%;
+}
+
+h2 {
+    margin-top: 0px;
+    color: rgba(1,1,1, .54);
 }

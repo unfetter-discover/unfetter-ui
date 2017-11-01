@@ -1,62 +1,70 @@
 <div class="row">
     <div class="col-md-6">
-            <form>
-            <md-select placeholder="Source Type" [(ngModel)]="selectedSource" name="sourceRef" class="full-width" (change)="onSelectedSourceChange()">
-                <md-option *ngFor="let type of types" [value]="type.id">
-                    {{type.label}}
-                </md-option>
-            </md-select>
-            </form>
+        <form>
+            <mat-form-field>
+                <mat-select placeholder="Source Type" [(ngModel)]="selectedSource" name="sourceRef" class="full-width" (change)="onSelectedSourceChange()">
+                    <mat-option *ngFor="let type of types" [value]="type.id">
+                        {{type.label}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </form>
     </div>
-     <div class="col-md-6" *ngIf="selectedSources">
-            <form>
-            <md-select placeholder="Source" [(ngModel)]="relationship.attributes.source_ref" name="sourceRef" class="full-width">
-                <md-option *ngFor="let type of types" [value]="type.id">
-                    {{type.label}}
-                </md-option>
-            </md-select>
-            </form>
+    <div class="col-md-6" *ngIf="selectedSources">
+        <form>
+            <mat-form-field>
+                <mat-select placeholder="Source" [(ngModel)]="relationship.attributes.source_ref" name="sourceRef" class="full-width">
+                    <mat-option *ngFor="let type of types" [value]="type.id">
+                        {{type.label}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </form>
     </div>
 </div>
 <div class="row">
     <div class="col-md-12">
-        <md-input-container class="full-width">
-            <input mdInput placeholder="Relationship Type"  [(ngModel)]="relationship.attributes.relationship_type">
-        </md-input-container>
+        <mat-input-container class="full-width">
+            <input matInput placeholder="Relationship Type" [(ngModel)]="relationship.attributes.relationship_type">
+        </mat-input-container>
     </div>
 </div>
 <div class="row">
     <div class="col-md-6">
-            <form>
-            <md-select placeholder="Target Type" [(ngModel)]="selectedTargetType" name="targetRef" class="full-width" (change)="onSelectedSourceChange()">
-               <md-option *ngFor="let type of types" [value]="type.id">
-                    {{type.label}}
-                </md-option>
-            </md-select>
-            </form>
+        <form>
+            <mat-form-field>
+                <mat-select placeholder="Target Type" [(ngModel)]="selectedTargetType" name="targetRef" class="full-width" (change)="onSelectedSourceChange()">
+                    <mat-option *ngFor="let type of types" [value]="type.id">
+                        {{type.label}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>            
+        </form>
     </div>
     <div class="col-md-6" *ngIf="selectedTargetTypes">
-            <form>
-                <md-select placeholder="Target" [(ngModel)]="relationship.attributes.target_ref" name="targetRef" class="full-width">
-                <md-option *ngFor="let type of selectedTargetTypes" [value]="type.id">
+        <form>
+            <mat-form-field>
+                <mat-select placeholder="Target" [(ngModel)]="relationship.attributes.target_ref" name="targetRef" class="full-width">
+                    <mat-option *ngFor="let type of selectedTargetTypes" [value]="type.id">
                         {{type.label}}
-                    </md-option>
-                </md-select>
-            </form>
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>            
+        </form>
     </div>
 </div>
 <div class="row">
     <div class="col-md-12">
-        <md-input-container class="full-width">
-        <input mdInput placeholder="Description"  [(ngModel)]="relationship.attributes.description">
-        </md-input-container>
+        <mat-input-container class="full-width">
+            <input matInput placeholder="Description" [(ngModel)]="relationship.attributes.description">
+        </mat-input-container>
     </div>
 </div>
 <div class="row">
     <div class="col-md-12">
-         <div class="button-row pull-right">
-                    <a class=" " md-raised-button (click)="saveButtonClicked()"><i class="material-icons">save</i> SAVE</a>            
-        
-            </div>
+        <div class="button-row pull-right">
+            <a class=" " mat-raised-button (click)="saveButtonClicked()">
+                <i class="material-icons">save</i> SAVE</a>
+        </div>
     </div>
 </div>

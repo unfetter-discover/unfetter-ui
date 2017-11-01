@@ -1,0 +1,113 @@
+<mat-card class="indicatorCard" *ngIf="indicator">
+    <mat-card-header>
+        <mat-card-title>{{ indicator.name }}</mat-card-title>
+        <mat-card-subtitle>
+            <!-- TODO add link to creator -->
+            Submitted {{ indicator.created | date:'medium' }} 
+            <span *ngIf="creator">
+                 by <a routerLink="/stix/identities/{{creator.id}}">{{creator.name}}</a>
+            </span>
+            
+        </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+        <label>Pattern</label>
+        <p>{{ indicator.pattern }}</p>
+
+        <mat-tab-group>
+            <mat-tab label="Labels">
+                <div class="flex flexItemsCenter">
+                    <mat-chip-list>
+                        <mat-chip *ngFor="let label of indicator.labels" [selected]="labelSelected(label)" class="cursor-pointer chipListChip">{{label | capitalize}}</mat-chip>
+                    </mat-chip-list>
+                    <span id="addLabelWrapper" [ngClass]="{'showAddLabel': showAddLabel}" class="inlineFlex flexItemsCenter">
+                        <div id="addLabelInputWrapper" class="inlineFlex flexItemsCenter">
+                            <input type="text" [(ngModel)]="newLabelText">
+                            <i class="material-icons mat-24 cursor-pointer" [ngClass]="{'text-muted': newLabelText.length === 0}" (click)="addLabel()" matTooltip="Add Label">send</i>
+                        </div>
+                        <button mat-mini-fab color="accent" (click)="showAddLabel = !showAddLabel" id="addLabelBtn" class="inlineBlock">
+                            <i class="material-icons mat-24">add</i>
+                        </button>
+                    </span>
+                </div>
+            </mat-tab>
+
+            <mat-tab label="Details">
+                <div *ngIf="indicator.description">
+                    <label>Description</label>
+                    <p>{{ indicator.description }}</p>
+                </div>
+                <div *ngIf="indicator.external_references">
+                    <label>External References</label>
+                    <mat-chip-list>
+                        <mat-chip *ngFor="let reference of indicator.external_references" color="accent" selected="true">{{reference.source_name | capitalize}}</mat-chip>
+                    </mat-chip-list>
+                </div>
+            </mat-tab>
+
+            <mat-tab label="Comments" *ngIf="indicator.comments && indicator.comments.length > 0">
+                <div *ngFor="let comment of indicator.comments | sortByField: 'submitted'; let i = index">
+                    <div class="flex flexItemsCenter mb-5">
+                        <span>
+                            <img *ngIf="comment.user.avatar_url" src="{{ comment.user.avatar_url }}" alt="{{ comment.user.userName }} avatar" class="smallAvatar">&nbsp;
+                        </span>
+                        <span>
+                            <a routerLink="/users/profile/{{comment.user.id}}">{{ comment.user.userName }}</a>
+                            <small class="text-muted"> &bull; {{ comment.submitted | date:'medium'}}</small>
+                        </span>
+                    </div>
+                    <p [innerHtml]="formatComment(comment.comment)"></p>
+                    <hr *ngIf="i < (indicator.comments.length - 1)">
+                </div>
+            </mat-tab>
+
+            <mat-tab label="Attack Patterns" *ngIf="attackPatterns && attackPatterns.length > 0">
+                <mat-list>
+                    <mat-list-item *ngFor="let ap of attackPatterns">
+                        <h4 mat-line>{{ap.name}}</h4>
+                        <div mat-line *ngIf="ap.kill_chain_phases">
+                            <span *ngFor="let phase of ap.kill_chain_phases; let i = index" class="text-muted">
+                                <span matTooltip="{{ phase.kill_chain_name | capitalize }}" matTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>
+                                <span *ngIf="i < (ap.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
+                            </span>
+                        </div>
+                    </mat-list-item>
+                </mat-list>
+            </mat-tab>
+        </mat-tab-group>
+
+        <div class="mt-20 overFlowHidden" [@collapseLevel]="showCommentTextArea ? 'open' : 'closed'">
+            <mat-form-field class="full-width">
+                <textarea matInput matTextareaAutosize placeholder="Comment" [(ngModel)]="commentText">{{ commentText }}</textarea>
+            </mat-form-field>
+            <div class="text-right">
+                <button mat-button (click)="showCommentTextArea = false; commentText = ''">
+                    <i class="material-icons mat-24">arrow_back</i>
+                </button>
+                <button mat-raised-button color="accent" [disabled]="commentText === ''" (click)="submitComment()">
+                    <i class="material-icons mat-24">send</i>
+                </button>
+            </div>
+        </div>
+
+    </mat-card-content>
+
+    <mat-card-actions>
+        <button mat-button disabled="true">{{ message }}</button>
+
+        <button mat-button color="primary" *ngIf="alreadyLiked" matTooltip="You like this indicator">
+            <i class="material-icons mat-24">thumb_up</i>
+            <span *ngIf="indicator.likes && indicator.likes.length > 0">&nbsp;{{indicator.likes.length}}</span>
+        </button>
+        <button mat-button color="primary" (click)="likeIndicator()" *ngIf="!alreadyLiked">
+            <i class="material-icons mat-24">thumb_up</i>
+            <span *ngIf="indicator.likes && indicator.likes.length > 0">&nbsp;{{indicator.likes.length}}</span>
+        </button>
+
+        <button mat-button color="accent" (click)="showCommentTextArea = !showCommentTextArea">
+            <i class="material-icons mat-24">chat_bubble</i>
+            <span *ngIf="indicator.comments && indicator.comments.length > 0">&nbsp;{{indicator.comments.length}}</span>
+        </button>
+    </mat-card-actions>
+</mat-card>

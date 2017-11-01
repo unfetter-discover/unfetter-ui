@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { Location } from '@angular/common';
-import { MdDialog, MdDialogRef, MdDialogConfig, MdSnackBar } from '@angular/material';
+import { MatDialog, MatDialogRef, MatDialogConfig, MatSnackBar } from '@angular/material';
 import { IntrusionSetComponent } from '../intrusion-set/intrusion-set.component';
 import { StixService } from '../../../stix.service';
 import { Motivation } from '../../../../models/motivation.enum';
@@ -55,9 +55,9 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
-        public dialog: MdDialog,
+        public dialog: MatDialog,
         public location: Location,
-        public snackBar: MdSnackBar) {
+        public snackBar: MatSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
         this.motivationCtrl = new FormControl();

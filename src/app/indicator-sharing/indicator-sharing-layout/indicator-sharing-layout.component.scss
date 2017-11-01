@@ -1,0 +1,19 @@
+@import '../../../styles/_variables.scss';
+
+#titleWrapper {
+    background: linear-gradient(60deg, $primary-color, $primary-color-light);
+    height: 150px;
+    padding-top: 10px;
+
+    p {
+        font-size: 50px;
+        font-weight: 300;
+        color: white;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        margin-left: calc(25% + 15px);
+    }
+}
+
+#routeWrapper {
+    margin-top: -64px;
+}

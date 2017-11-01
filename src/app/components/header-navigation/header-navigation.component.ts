@@ -1,5 +1,6 @@
 import { Component, ViewEncapsulation, Output, EventEmitter } from '@angular/core';
 import { Navigation } from '../../models/navigation';
+import { AuthService } from '../../global/services/auth.service';
 
 @Component({
   selector: 'header-navigation',
@@ -10,6 +11,7 @@ import { Navigation } from '../../models/navigation';
 export class HeaderNavigationComponent {
   @Output() public toggleSidenav = new EventEmitter<boolean>();
   public collapsed: boolean = true;
+  public demoMode: boolean = false;
 
   public navigations: Navigation[] = [
     { url: 'stix/attack-patterns', label: 'Attack Patterns' },
@@ -27,8 +29,9 @@ export class HeaderNavigationComponent {
     { url: 'stix/x-unfetter-sensors', label: 'Sensors' }
   ];
 
+  constructor(public authService: AuthService) { }
+
   public menuClicked() {
     this.toggleSidenav.emit();
-  }
-
+  }  
 }

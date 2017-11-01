@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-import { MdDialog, MdDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/startWith';
@@ -26,7 +26,7 @@ export class ListStixObjectComponent extends BaseComponent implements OnInit {
      constructor(
         public route: ActivatedRoute,
         public router: Router,
-        public dialog: MdDialog,
+        public dialog: MatDialog,
         public location: Location) {
 
         super(route, router, dialog);

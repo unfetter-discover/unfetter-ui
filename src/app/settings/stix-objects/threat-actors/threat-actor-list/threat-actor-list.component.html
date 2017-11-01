@@ -2,8 +2,8 @@
         <div class="col-md-12">
 
             <div class="button-row">
-                <a md-raised-button routerLink="./new">NEW</a>
-                <a md-raised-button (click)="download()">DOWNLOAD</a>
+                <a mat-raised-button routerLink="./new">NEW</a>
+                <a mat-raised-button (click)="download()">DOWNLOAD</a>
             </div>
             <div class="pull-right">
                 <filter-search-box  [items]="threatActors" (filterItemsChange)="onFilterItemsChange($event)"></filter-search-box>

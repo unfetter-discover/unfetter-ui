@@ -2,7 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as Ps from 'perfect-scrollbar';
-import { MdDialog } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { Constance } from '../../utils/constance';
 import { AssessmentsService } from '../assessments.service';
 import { Report } from '../../models/report';
@@ -27,12 +27,10 @@ export class AssessmentsListComponent implements OnInit {
   public assessments = [];
 
   constructor(
-    public dialog: MdDialog,
+    public dialog: MatDialog,
     public assessmentsService: AssessmentsService,
     public router: Router,
-    public route: ActivatedRoute) {
-        assessmentsService.url = Constance.X_UNFETTER_ASSESSMENT_URL;
-  }
+    public route: ActivatedRoute) { }
 
   public ngOnInit() {
     this.assessmentsService.load(`sort=${JSON.stringify({ 'stix.created': -1 })}`).subscribe(
@@ -53,7 +51,7 @@ export class AssessmentsListComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: item });
     dialogRef.afterClosed().subscribe(
         (result) => {
-        if (result === 'true') {
+        if (result === 'true' || result === true) {
              const sub  = _self.assessmentsService.delete(item).subscribe(
                (d) => {
                  this.assessments = this.assessments.filter((a) => a.id !== item.id);

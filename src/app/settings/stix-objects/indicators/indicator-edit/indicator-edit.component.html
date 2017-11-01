@@ -2,23 +2,23 @@
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-12">
-                <md-input-container class="full-width">
-                <input mdInput placeholder="Name"  [(ngModel)]="indicator.attributes.name" value="{{indicator.attributes.name}}" />
-                </md-input-container>
+                <mat-input-container class="full-width">
+                <input matInput placeholder="Name"  [(ngModel)]="indicator.attributes.name" value="{{indicator.attributes.name}}" />
+                </mat-input-container>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-            <md-input-container class="full-width">
-                <textarea mdInput placeholder="Description"  [(ngModel)]="indicator.attributes.description" value="{{indicator.attributes.description}}"></textarea>
-                </md-input-container>
+            <mat-input-container class="full-width">
+                <textarea matInput placeholder="Description"  [(ngModel)]="indicator.attributes.description" value="{{indicator.attributes.description}}"></textarea>
+                </mat-input-container>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-                <md-input-container class="full-width">
-                    <input mdInput placeholder="Pattern"  [(ngModel)]="indicator.attributes.pattern" value="{{indicator.attributes.pattern}}" />
-                </md-input-container>
+                <mat-input-container class="full-width">
+                    <input matInput placeholder="Pattern"  [(ngModel)]="indicator.attributes.pattern" value="{{indicator.attributes.pattern}}" />
+                </mat-input-container>
             </div>
         </div>
         <div class="row" >
@@ -27,30 +27,30 @@
                  <div>
                 <p-calendar [(ngModel)]="indicator.attributes.valid_from"  dateFormat="M-dd-yy" showIcon="true"></p-calendar>
                  </div> -->
-                <!--<md-input-container class="full-width">
-                    <input mdInput [mdDatepicker]="picker" placeholder="Valid From" [(ngModel)]="indicator.attributes.valid_from">
-                    <button mdSuffix [mdDatepickerToggle]="picker"></button>
-                </md-input-container>
-                <md-datepicker #picker></md-datepicker>-->
-                <md-form-field class="full-width">
-                    <input mdInput [mdDatepicker]="picker" placeholder="Valid From" [(ngModel)]="indicator.attributes.valid_from">
-                    <md-datepicker-toggle mdSuffix [for]="picker"></md-datepicker-toggle>
-                    <md-datepicker #picker></md-datepicker>
-                </md-form-field>
+                <!--<mat-input-container class="full-width">
+                    <input matInput [matDatepicker]="picker" placeholder="Valid From" [(ngModel)]="indicator.attributes.valid_from">
+                    <button matSuffix [matDatepickerToggle]="picker"></button>
+                </mat-input-container>
+                <mat-datepicker #picker></mat-datepicker>-->
+                <mat-form-field class="full-width">
+                    <input matInput [matDatepicker]="picker" placeholder="Valid From" [(ngModel)]="indicator.attributes.valid_from">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
             </div>
             <div class="col-md-6">
                 <!-- <label>Valid To</label>
                <div> -->
-                    <!--<md-input-container class="full-width">
-                        <input mdInput [mdDatepicker]="picker_to" placeholder="Valid Until" [(ngModel)]="indicator.attributes.valid_until">
-                        <button mdSuffix [mdDatepickerToggle]="picker_to"></button>
-                    </md-input-container>
-                    <md-datepicker #picker_to></md-datepicker>-->
-                        <md-form-field class="full-width">
-                            <input mdInput [mdDatepicker]="picker_to" placeholder="Valid Until" [(ngModel)]="indicator.attributes.valid_until">
-                            <md-datepicker-toggle mdSuffix [for]="picker_to"></md-datepicker-toggle>
-                            <md-datepicker #picker_to></md-datepicker>
-                        </md-form-field>
+                    <!--<mat-input-container class="full-width">
+                        <input matInput [matDatepicker]="picker_to" placeholder="Valid Until" [(ngModel)]="indicator.attributes.valid_until">
+                        <button matSuffix [matDatepickerToggle]="picker_to"></button>
+                    </mat-input-container>
+                    <mat-datepicker #picker_to></mat-datepicker>-->
+                        <mat-form-field class="full-width">
+                            <input matInput [matDatepicker]="picker_to" placeholder="Valid Until" [(ngModel)]="indicator.attributes.valid_until">
+                            <mat-datepicker-toggle matSuffix [for]="picker_to"></mat-datepicker-toggle>
+                            <mat-datepicker #picker_to></mat-datepicker>
+                        </mat-form-field>
                     <!-- <p-calendar [(ngModel)]="indicator.attributes.valid_to"  dateFormat="M-dd-yy" showIcon="true"></p-calendar> -->
                <!-- </div> -->
             </div>
@@ -62,8 +62,8 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="button-row pull-right">
-                        <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</a>
-                        <a class=" " md-raised-button (click)="saveIndicator()" [disabled]="!indicator.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</a>
+                        <a class="" mat-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</a>
+                        <a class=" " mat-raised-button (click)="saveIndicator()" [disabled]="!indicator.attributes.name"><i class="material-icons">save</i> SAVE & CLOSE</a>
                 </div>
             </div>
         </div>

@@ -37,7 +37,7 @@ export class AttackPattern {
             // created: new Date(),
             // modified: new Date(),
             // description: '',
-            // name: '',
+            name: '',
             labels: [],
             external_references: [],
             kill_chain_phases: [],

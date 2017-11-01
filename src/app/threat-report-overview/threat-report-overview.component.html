@@ -1,61 +1,79 @@
-<div class="container">
+<div class="container" *ngIf="!loading; loadingBlock">
     <div class="row first-line">
-        <div class="col-sm-6 mat-headline title-border">
-            <div>
-                Threat Reports Overview
-            </div>
-            <span class="mat-subheading-1">
-                View your recent workproducts or create a new one
+        <div class="col-sm-6 title-border">
+            <h2>
+                Your Work Product(s)
+            </h2>
+            <span class="subtitle">
+                View your recent work products or create a new one.  Work products contain scope, in terms of query boundries in addition to reporting references.  Work products are not shareable at this time.
             </span>
         </div>
         <div class="col-sm-4 top-right-panel">
-            <div class="mat-headline">
+            <h2>
                 Create New Product
-            </div>
-            <span class="mat-subheading-1">
-                Loreum ipsum dorat
-            </span>
+            </h2>
             <span>
-                <button color="primary" md-raised-button routerLink="./create/">NEW</button>
+                <button color="primary" mat-raised-button (click)="routeCreateNew($event)">NEW</button>
             </span>
         </div>
     </div>
     <div class="row">
         <div class="mat-title col-md-6 mt-15">Recent Work Products</div>
         <div class="col-md-6">
-            <md-form-field floatPlaceholder="never">
-                <input mdInput #filter placeholder="Filter Recent work products" color="primary">
-                <md-icon mdSuffix color="primary">search</md-icon>
-            </md-form-field>
+            <mat-form-field floatPlaceholder="never">
+                <input matInput #filter placeholder="Filter Recent work products" color="primary">
+                <mat-icon matSuffix color="primary">search</mat-icon>
+            </mat-form-field>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <md-table class="mat-elevation-z3" #table [dataSource]="dataSource">
+            <mat-table class="mat-elevation-z3" #table [dataSource]="dataSource">
 
-                <ng-container mdColumnDef="id">
-                    <md-header-cell *mdHeaderCellDef> ID </md-header-cell>
-                    <md-cell *mdCellDef="let row"> {{row.id}} </md-cell>
+                <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        {{row.name}}
+                        <span class="mat-caption">
+                            ({{row.reports.length}})
+                        </span>
+                    </mat-cell>
                 </ng-container>
 
-                <ng-container mdColumnDef="name">
-                    <md-header-cell *mdHeaderCellDef> Name </md-header-cell>
-                    <md-cell *mdCellDef="let row"> {{row.name}} </md-cell>
+                <ng-container matColumnDef="date">
+                    <mat-header-cell *matHeaderCellDef> Modified </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{ row.date | date:'medium' }} </mat-cell>
                 </ng-container>
-            
-                <ng-container mdColumnDef="date">
-                    <md-header-cell *mdHeaderCellDef> Modified </md-header-cell>
-                    <md-cell *mdCellDef="let row"> {{row.date}} </md-cell>
+
+                <ng-container matColumnDef="author">
+                    <mat-header-cell *matHeaderCellDef> Author </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.author}} </mat-cell>
                 </ng-container>
-            
-                <ng-container mdColumnDef="author">
-                    <md-header-cell *mdHeaderCellDef> Author </md-header-cell>
-                    <md-cell *mdCellDef="let row"> {{row.author}} </md-cell>
+
+                <ng-container matColumnDef='actions'>
+                    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        <span class="buttonGrp text-right">
+                            <button color="accent" mat-button routerLink="./view/{{row.id}}">
+                               <mat-icon>explore</mat-icon>
+                            </button>
+                            <button color="primary" mat-button (click)="editButtonClicked(row, $event)">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                                <button color="warn" mat-button (click)="deleteButtonClicked(row, $event)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </span>
+                    </mat-cell>
                 </ng-container>
-            
-                <md-header-row *mdHeaderRowDef="displayCols"></md-header-row>
-                <md-row *mdRowDef="let row; columns: displayCols;"></md-row>
-            </md-table>
+
+                <mat-header-row *matHeaderRowDef="displayCols"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayCols;"></mat-row>
+            </mat-table>
         </div>
     </div>
 </div>
+
+<ng-template #loadingBlock>
+    <loading-spinner></loading-spinner>
+</ng-template>

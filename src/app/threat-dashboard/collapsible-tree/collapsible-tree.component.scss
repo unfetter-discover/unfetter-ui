@@ -1,0 +1,175 @@
+:host /deep/ {
+    $white_87: rgba(255, 255, 255, .87);
+    $black_54: rgba(0, 0, 0, .54);
+    $black_87: rgba(0, 0, 0, .87);
+    $white: #fafafa;
+    $grey_300: #E0E0E0;
+    $grey_500: #9E9E9E;
+    $teal_100: #B2DFDB;
+    $teal_500: #009688;
+
+    .tooltip /deep/ {
+        position: absolute;
+        text-align: left;
+        width: 500px;
+        min-height: 56px;
+        padding: 5px;
+        font-size: 1.2em;
+        color: $black_87;
+        background: $teal_100;
+        border: 0px;
+        line-height: 1.5em;
+        border-radius: 8px;
+        pointer-events: none;
+        max-height: 575px;
+        overflow-y: auto;
+        z-index: 9999;
+    }
+
+    svg /deep/  {
+
+        .node /deep/ {
+            stroke: unset;
+            cursor: pointer;
+
+            text {
+                fill: $black_87;
+                font-size: 12px;
+            }
+
+            .node-hover {
+                font-size: 14px;
+            }
+        }
+
+        .root-node {
+            stroke: transparent;
+        }
+
+        .full-node {
+            fill: $teal_100;
+            stroke: $teal_500;
+            stroke-width: 2px;
+        }
+
+        .empty-node {
+            fill: $white;
+            stroke: $teal_500;
+            stroke-width: 2px;
+        }
+
+        // .node.malware {
+        //     fill: $black_54;
+        // }
+
+        // .node.threat-actor {
+        //     fill: $black_54;
+        // }
+
+        // .node.course-of-action {
+        //     fill: $black_54;
+        // }
+
+        // .node.indicator {
+        //     fill: $black_54;
+        // }
+
+        // .node.attack-pattern {
+        //     fill: $black_54;
+        // }
+
+        // .node.tool {
+        //     fill: $black_54;
+        // }
+
+        // .node.observable-path {
+        //     fill: $black_54;
+        // }
+
+        // .node.campaign {
+        //     fill: $black_54;
+        // }
+
+        // .node.unselected {
+        //     fill: $white_87;
+        // }
+
+        // .link {
+        //     stroke: $black_54;
+        //     fill: transparent;
+        // }
+
+        // .text-malware {
+        //     color: $black_54;
+        //     font-weight: bold;
+        // }
+
+        // .text-threat-actor {
+        //     color: $black_54;
+        //     font-weight: bold;
+        // }
+
+        // .text-course-of-action {
+        //     color: $black_54;
+        //     font-weight: bold;
+        // }
+
+        // .text-indicator {
+        //     color: $black_54;
+        //     font-weight: bold;
+        // }
+
+        // .text-attack-pattern {
+        //     color: $black_54;
+        //     font-weight: bold;
+        // }
+
+        // .text-tool {
+        //     color: $black_54;
+        //     font-weight: bold;
+        // }
+
+        // .text-observable-path {
+        //     color: $black_54;
+        //     font-weight: bold;
+        // }
+
+        // .text-campaign {
+        //     color: $black_54;
+        // }
+
+        // .malware-label {
+        //     color: $black_54;
+        // }
+
+        // .threat-actor-label {
+        //     color: $black_54;
+        // }
+
+        // .course-of-action-label {
+        //     color: $black_54;
+        // }
+
+        // .indicator-label {
+        //     color: $black_54;
+        // }
+
+        // .attack-pattern-label {
+        //     color: $black_54;
+        // }
+
+        // .tool-label {
+        //     color: $black_54;
+        // }
+
+        // .observable-path-label {
+        //     color: $black_54;
+        // }
+
+        // .campaign-label {
+        //     color: $black_54;
+        // }
+
+    }
+}
+

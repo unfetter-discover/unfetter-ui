@@ -1,56 +1,50 @@
 <div class="row">
     <div class="col-md-12">
         <label>Source Type</label>
-        <md-select required placeholder="Please Choose..." [(ngModel)]="sighting.attributes.sighting_of_ref" name="sourceTypes" class="full-width">
-                <md-option *ngFor="let sourceType of sourceTypes" [value]="sourceType">
+        <mat-form-field class="full-width">
+        <mat-select required placeholder="Please Choose..." [(ngModel)]="sighting.attributes.sighting_of_ref" name="sourceTypes" class="full-width">
+                <mat-option *ngFor="let sourceType of sourceTypes" [value]="sourceType">
                      {{sourceType}}
-                </md-option>
-        </md-select>
+                </mat-option>
+        </mat-select>
+        </mat-form-field>
     </div>
 </div>
 <div class="row">
     <div class="col-md-12">
-        <md-checkbox #summary_field name="summary-field" class="example-margin"  [checked]="sighting.attributes.summary" (click)="summaryClicked(summary_field)">Summary</md-checkbox>
+        <mat-checkbox #summary_field name="summary-field" class="example-margin"  [checked]="sighting.attributes.summary" (click)="summaryClicked(summary_field)">Summary</mat-checkbox>
     </div>
 </div>
 <div class="row">
     <div class="col-md-4">
-         <md-input-container class="full-width">
-                <input type="number" mdInput placeholder="Count"  [(ngModel)]="sighting.attributes.count" value="{{sighting.attributes.count}}">
-                </md-input-container>
+         <mat-input-container class="full-width">
+                <input type="number" matInput placeholder="Count"  [(ngModel)]="sighting.attributes.count" value="{{sighting.attributes.count}}">
+                </mat-input-container>
     </div>
      <div class="col-md-4">
-         <!--<md-input-container class="full-width">
-                    <input mdInput [mdDatepicker]="picker" placeholder="First Seen" [(ngModel)]="sighting.attributes.first_seen">
-                    <button mdSuffix [mdDatepickerToggle]="picker"></button>
-                </md-input-container>
-                <md-datepicker #picker></md-datepicker>-->
 
-                <md-form-field class="full-width">
-                    <input mdInput [mdDatepicker]="picker" placeholder="First Seen" [(ngModel)]="sighting.attributes.first_seen">
-                    <md-datepicker-toggle mdSuffix [for]="picker"></md-datepicker-toggle>
-                    <md-datepicker #picker></md-datepicker>
-                </md-form-field>
+
+                <mat-form-field class="full-width">
+                    <input matInput [matDatepicker]="picker" placeholder="First Seen" [(ngModel)]="sighting.attributes.first_seen">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
     </div>
      <div class="col-md-4">
-           <!--<md-input-container class="full-width">
-                    <input mdInput [mdDatepicker]="picker_last_seen" placeholder="Last Seen" [(ngModel)]="sighting.attributes.last_seen">
-                    <button mdSuffix [mdDatepickerToggle]="picker_last_seen"></button>
-                </md-input-container>
-                <md-datepicker #picker_last_seen></md-datepicker>-->
 
-                <md-form-field class="full-width">
-                    <input mdInput [mdDatepicker]="picker_last_seen" placeholder="Last Seen" [(ngModel)]="sighting.attributes.last_seen">
-                    <md-datepicker-toggle mdSuffix [for]="picker_last_seen"></md-datepicker-toggle>
-                    <md-datepicker #picker_last_seen></md-datepicker>
-                </md-form-field>
+
+                <mat-form-field class="full-width">
+                    <input matInput [matDatepicker]="picker_last_seen" placeholder="Last Seen" [(ngModel)]="sighting.attributes.last_seen">
+                    <mat-datepicker-toggle matSuffix [for]="picker_last_seen"></mat-datepicker-toggle>
+                    <mat-datepicker #picker_last_seen></mat-datepicker>
+                </mat-form-field>
     </div>
 </div>
 <div class="row">
     <div class="col-md-12">
          <div class="button-row pull-right">
-                    <a class="" md-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</a>
-                    <a class=" " md-raised-button (click)="saveButtonClicked()" [disabled]="!sighting.attributes.sighting_of_ref"><i class="material-icons">save</i> SAVE & CLOSE</a>
+                    <a class="" mat-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</a>
+                    <a class=" " mat-raised-button (click)="saveButtonClicked()" [disabled]="!sighting.attributes.sighting_of_ref"><i class="material-icons">save</i> SAVE & CLOSE</a>
 
             </div>
     </div>

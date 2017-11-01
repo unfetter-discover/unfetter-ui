@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
-import { MdDialog, MdDialogRef, MdDialogConfig, MdSnackBar } from '@angular/material';
+import { MatDialog, MatDialogRef, MatDialogConfig, MatSnackBar } from '@angular/material';
 import { BaseStixComponent } from '../../../base-stix.component';
 import { StixService } from '../../../stix.service';
 import { Sighting } from '../../../../models';
@@ -19,9 +19,9 @@ export class SightingComponent extends BaseStixComponent implements OnInit {
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
-        public dialog: MdDialog,
+        public dialog: MatDialog,
         public location: Location,
-        public snackBar: MdSnackBar) {
+        public snackBar: MatSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
         stixService.url = this.sighting.url;

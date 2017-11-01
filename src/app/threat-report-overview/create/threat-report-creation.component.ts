@@ -1,37 +1,62 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
+
+import * as moment from 'moment';
 
 import { GenericApi } from '../../global/services/genericapi.service';
 import { Constance } from '../../utils/constance';
 import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
-import { SelectOption } from './select-option';
 import { IntrusionSet } from '../../models/intrusion-set';
 import { Malware } from '../../models/malware';
+import { SelectOption } from '../models/select-option';
+import { FileUploadComponent } from '../file-upload/file-upload.component';
+import { UploadService } from '../file-upload/upload.service';
+import { ThreatReport } from '../models/threat-report.model';
+import { ThreatReportSharedService } from '../services/threat-report-shared.service';
+import { Boundries } from '../models/boundries';
 
 @Component({
-  selector: 'threat-report-creation',
+  selector: 'unf-threat-report-creation',
   templateUrl: './threat-report-creation.component.html',
   styleUrls: ['threat-report-creation.component.scss']
 })
 export class ThreatReportCreationComponent implements OnInit, OnDestroy {
 
-  public showCheckBoxes = true;
+  @ViewChild('fileUpload')
+  public fileUpload: FileUploadComponent;
+  public shouldIncludeBoundries = false;
   public intrusions: SelectOption[];
   public malware: SelectOption[];
-  public readonly selectedInstrusions = new Set<string>();
-  public readonly selectedMalware = new Set<string>();
-  public readonly selectedTargets = new Set<string>();
+  public maxStartDate;
+  public minEndDate;
+  public reports;
+  public threatReport = new ThreatReport();
+  public dateError = {
+    startDate: { isError: false },
+    endDate: { isError: false, isSameOrBefore: false, isSameOrBeforeMessage: 'End Date must be after Start Date.' },
+    errorMessage: 'Not a valid date'
+  };
+  public readonly dateFormat = this.dateFormat;
+  public readonly path = `threat-dashboard`;
   private readonly subscriptions = [];
 
-  constructor(protected router: Router,
-              protected genericApi: GenericApi) { }
+  constructor(
+    protected router: Router,
+    protected location: Location,
+    protected genericApi: GenericApi,
+    protected sharedService: ThreatReportSharedService) { }
 
   /**
    * @description fetch data for this component
    * @returns {void}
    */
   public ngOnInit(): void {
+    if (this.sharedService.threatReportOverview) {
+      // Deep Clone
+      this.clone();
+    }
     const intrusionFilter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
     const instrusionUrl = `${Constance.INTRUSION_SET_URL}?${intrusionFilter}`;
     const o1$ = this.genericApi.get(instrusionUrl);
@@ -68,97 +93,217 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * @description handle start date changed, does validation
+   * @param value
+   */
+  public startDateChanged(value: any): void {
+    if (!value) {
+      this.minEndDate = null;
+      this.dateError.startDate.isError = false;
+      this.dateError.endDate.isSameOrBefore = false;
+      this.threatReport.boundries.startDate = null;
+    } else if (moment(value, this.dateFormat).isValid()) {
+      this.threatReport.boundries.startDate = moment(value, this.dateFormat).toDate();
+      this.dateError.startDate.isError = false;
+      const date = moment(value, this.dateFormat).add(1, 'd');
+      this.minEndDate = new Date(date.year(), date.month(), date.date());
+      this.isEndDateSameOrBeforeStartDate(value);
+    } else {
+      this.threatReport.boundries.startDate = null;
+      this.dateError.startDate.isError = true;
+    }
+  }
+
+  /**
+   * @description handle end date changed, does validation
+   * @param value
+   */
+  public endDateChanged(value: any): void {
+    if (!value) {
+      this.dateError.endDate.isError = false;
+      this.dateError.endDate.isSameOrBefore = false;
+      this.threatReport.boundries.endDate = null;
+    } else if (moment(value, this.dateFormat).isValid()) {
+      this.dateError.endDate.isError = false;
+      this.threatReport.boundries.endDate = moment(value, this.dateFormat).toDate();
+      this.isEndDateSameOrBeforeStartDate(value);
+    } else {
+      this.threatReport.boundries.endDate = null;
+      this.dateError.endDate.isError = true;
+      this.dateError.endDate.isSameOrBefore = false;
+
+    }
+  }
+
+  /**
    * @description toggle the boundries checkboxes show hide state
    * @param {UIEvent} $event
    * @returns {void}
    */
   public boundriesToggled($event?: UIEvent): void {
-    console.log($event);
-
     const el = $event as any;
     if (el && el.checked !== undefined) {
-      this.showCheckBoxes = el.checked;
+      this.shouldIncludeBoundries = el.checked;
     }
-  }
-
-  /**
-   * @description add to targets, add a chip
-   * @param {UIEvent} event - optional 
-   */
-  public addTarget(event?: UIEvent): void {
-    console.log(event);
-    if (!event || !event.target) {
-      return;
-    }
-
-    let val = (event.target as any).value;
-    val = val.trim() || '';
-    if (val.length === 0) {
-      return;
-    }
-    this.selectedTargets.add(val);
-  }
-
-  /**
-   * @description add to selected set, add a chip
-   * @param {UIEvent} event - optional 
-   */
-  public addSelectedIntrusionSet(event?: UIEvent): void {
-    const ev = event as any;
-    console.log(ev);
-    if (!ev || !ev.value) {
-      return;
-    }
-
-    const id = ev.value;
-    const options = this.intrusions.filter((el) => el.value === id);
-    if (!options || options.length < 1) {
-      console.log('did not find selected option!');
-      return;
-    }
-
-    options
-      .map((el) => {
-        const v = el.displayValue;
-        this.selectedInstrusions.add(v);
-      });
   }
 
   /**
    * @description add to selected malwares, add a chip
-   * @param {UIEvent} event - optional 
+   * @param {string} value
+   * @param {string} stixType
    */
-  public addSelectedMalware(event?: UIEvent): void {
-    const ev = event as any;
-    console.log(ev);
-    if (!ev || !ev.value) {
+  public addChip(value: any, stixType: string): void {
+    if (!value || !stixType) {
       return;
     }
 
-    const id = ev.value;
-    const options = this.malware.filter((el) => el.value === id);
-    if (!options || options.length < 1) {
-      console.log('did not find selected option!');
-      return;
-    }
-
-    options
-      .map((el) => {
-        const v = el.displayValue;
-        this.selectedMalware.add(v);
-      });
-
-  }
-
-  public removeChip(stixName: string, stixType: string) {
+    let chips: Set<any> | undefined;
     switch (stixType) {
       case 'intrusion-set':
-        this.selectedInstrusions.delete(stixName);
+        chips = this.threatReport.boundries.intrusions;
         break;
       case 'malware':
-        this.selectedMalware.delete(stixName);
+        chips = this.threatReport.boundries.malware;
         break;
-    }    
+      case 'target':
+        chips = this.threatReport.boundries.targets;
+        break;
+    }
+
+    if (chips) {
+      if (typeof value === 'string') {
+        chips = chips.add(value);
+      } else {
+        if (!this.hasValue(chips, value)) {
+          chips = chips.add(value);
+        }
+      }
+    }
   }
 
+  public hasValue(chips: Set<{ any }>, option: any) {
+    return chips.has(option.value);
+  }
+
+  /**
+   * @description Remove a chip from the correct chip Set
+   * @param {string} stixName
+   * @param {string} stixType
+   */
+  public removeChip(stixName: any, stixType: string) {
+    if (!stixName || !stixType) {
+      return;
+    }
+
+    let chips;
+    switch (stixType) {
+      case 'intrusion-set':
+        chips = this.threatReport.boundries.intrusions;
+        break;
+      case 'malware':
+        chips = this.threatReport.boundries.malware;
+        break;
+      case 'target':
+        chips = this.threatReport.boundries.targets;
+        break;
+    }
+    chips.delete(stixName);
+
+    // if (chips) {
+    //   if ( typeof stixName === 'string') {
+    //     chips.delete(stixName);
+    //   } else {
+    //     if (!this.hasValue(chips, value)){
+    //       chips = chips.add(value);
+    //     }
+    //   }
+    // }
+  }
+
+  /**
+   * go back to list view
+   * @param {UIEvent} event optional
+   */
+  public cancel(event: UIEvent): void {
+    this.location.back();
+  }
+
+  /**
+   * @description
+   * @param {UIEvent} event optional
+   */
+  public save(event: UIEvent): void {
+    this.threatReport.reports = this.reports || [];
+    // if the boundries check box is checked, do not use boundries provided
+    if (this.isFalsey(this.shouldIncludeBoundries)) {
+      this.threatReport.boundries = new Boundries();
+    }
+    this.sharedService.threatReportOverview = this.threatReport;
+    this.router.navigate([`/${this.path}/modify`, this.threatReport.id]);
+  }
+
+  /**
+   * @description recieve a fileParsed event
+   * @param {UIEvent} event optional
+   * @return {void}
+   */
+  public fileParsed(event?: UIEvent): void {
+    console.log(`file parsed data`, event);
+    this.reports = event;
+
+  }
+
+  /**
+   * @description 
+   * @return true is string and true or boolean and true, otherwise false
+   */
+  private isTruthy(val: boolean | string = false): boolean {
+    const isBool = typeof val === 'boolean';
+    const isString = typeof val === 'string';
+    return (isBool && val === true) || (isString && val === 'true'); 
+  }
+
+  /**
+   * @description 
+   * @return true is string and false or boolean and false, otherwise true
+   */
+  private isFalsey(val: boolean | string = true): boolean {
+    const isBool = typeof val === 'boolean';
+    const isString = typeof val === 'string';
+    return (isBool && val === false) || (isString && val === 'false'); 
+  }
+
+  /**
+   * @description
+   * @return {void}
+   */
+  private isEndDateSameOrBeforeStartDate(value: any): void {
+    if (moment(value, this.dateFormat).isValid() && moment(this.threatReport.boundries.endDate, this.dateFormat).isSameOrBefore(moment(this.threatReport.boundries.startDate, this.dateFormat))) {
+      this.dateError.endDate.isSameOrBefore = true;
+    } else {
+      this.dateError.endDate.isSameOrBefore = false;
+    }
+  }
+
+  /**
+   * @description deep clone `this.threatReportOverview` from this components `this.sharedService`
+   * @return {void}
+   */
+  private clone(): void {
+    // remember to new up an object, otherwise object method will not exist, using just an object literal copy
+    const tmp = Object.assign(new ThreatReport(), JSON.parse(JSON.stringify(this.sharedService.threatReportOverview)));
+    this.threatReport = tmp;
+    this.reports = this.sharedService.threatReportOverview.reports || [];
+    // this is needed to make sure boundries is acutally and object and not an object literal at runtime
+    this.threatReport.boundries = new Boundries();
+    this.threatReport.boundries.intrusions = this.sharedService.threatReportOverview.boundries.intrusions || new Set<{ any }>();
+    this.threatReport.boundries.targets = this.sharedService.threatReportOverview.boundries.targets || new Set<string>();
+    this.threatReport.boundries.malware = this.sharedService.threatReportOverview.boundries.malware || new Set<{ any }>();
+    if (this.sharedService.threatReportOverview.boundries.startDate) {
+      this.threatReport.boundries.startDate = new Date(this.sharedService.threatReportOverview.boundries.startDate);
+    }
+    if (this.sharedService.threatReportOverview.boundries.endDate) {
+      this.threatReport.boundries.endDate = new Date(this.sharedService.threatReportOverview.boundries.endDate);
+    }
+  }
 }

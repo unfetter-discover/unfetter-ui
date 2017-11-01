@@ -60,6 +60,8 @@ declare module 'modern-lru' {
 declare var ENV: string;
 declare var HMR: boolean;
 declare var System: SystemJS;
+declare var SHOWBANNER: boolean;
+declare var BANNERTEXT: string;
 
 interface SystemJS {
   import: (path?: string) => Promise<any>;
@@ -70,6 +72,8 @@ interface GlobalEnvironment {
   HMR: boolean;
   SystemJS: SystemJS;
   System: SystemJS;
+  SHOWBANNER: boolean;
+  BANNERTEXT: string
 }
 
 interface Es6PromiseLoader {

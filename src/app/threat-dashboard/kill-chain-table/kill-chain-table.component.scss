@@ -1,0 +1,97 @@
+@import '../../../styles/_variables.scss';
+
+$teal_200: #80CBC4;
+$teal_50: #E0F2F1;
+$white: rgba(255, 255, 255, .87);
+$black_table_header: rgba(0,0,0, .54);
+$grey_100: #F5F5F5;
+
+:host /deep/ {
+    .ui-carousel {
+        .ui-carousel-header {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            border: none;
+            margin-right: -1px;
+            margin-left: -1px;
+            margin-top: -1px;
+            color: $white;
+            border-radius: 2px 2px 0 0;
+            padding: 16px 32px;
+            background: linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important;
+        }
+    }
+    
+    .ui-widget-content {
+        border: none;
+    }
+
+    .ui-carousel .ui-carousel-viewport .ui-carousel-items .ui-carousel-item {
+        margin: 0px;
+    }
+
+    .ui-carousel .ui-carousel-button {
+        width: 25px;
+        height: 25px;
+        background-color: $white;
+        border: none;
+        border-radius: 50%;
+        font-size: 30px;
+        color: $threat-dashboard-primary-light;
+    }
+
+    .ui-corner-all {
+        border: none;
+        border-radius: 0;
+    }
+
+    .carouselSubheadingRow {
+        // border-bottom: 1px solid $threat-dashboard-primary-light;
+        // border-right: 1px solid $threat-dashboard-primary-light;
+
+        .badge {
+            background-color: $threat-dashboard-primary;
+            color: $white;
+        }
+
+        .kill-chain-div {
+            font-weight: medium;
+            font-size: 12px;
+            color: black_table_header;
+            padding: 16px;
+            background: $teal_50;
+        }
+    }
+
+    .carousel-wrapper {
+        box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+        transition: box-shadow 280ms cubic-bezier(.4, 0, .2, 1);
+        will-change: box-shadow;
+        display: block;
+        position: relative;
+        padding: 24px;
+        border-radius: 2px;
+        font-family: 'Roboto', "Helvetica Neue", sans-serif;
+    }
+
+    .carousel-content-wrapper {
+        // height: 520px;
+        overflow-y: auto;
+        position: relative;
+    }
+
+    .ui-grid {
+        .attack-pattern-div {
+            font-size: 13px;
+            font-weight: normal;
+            margin: 0px;
+            height: 48px;
+            display: flex;
+            
+            .flexCenter {
+                margin: auto 16px;
+            }
+        }
+    }
+}

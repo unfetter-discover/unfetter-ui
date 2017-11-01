@@ -1,16 +1,33 @@
+@import 'mat-colors';
+
 $nav-background-color: #0097A7;
 $primary-color: #0097A7;
+$primary-color-light: #00BCD4;
 $accent-color: #E91E63;
 $accent-alt-color: #FFEE58;
 $warn-color: #FF5722;
 $neutral-color: #607D8B;
 
+// ~~~ Dashboard Specific Theming Template ~~~
+
+// $dashboard-name-primary: get-color($purple, 300);
+// $dashboard-name-accent: get-color($pink, 700);
+
+// Threat Dashboard
+$threat-dashboard-primary: get-color($teal, 700);
+$threat-dashboard-primary-light: get-color($teal);
+$threat-dashboard-primary-lightest: get-color($teal, 50);
+$threat-dashboard-accent: get-color($red, 500);
+
+// ~~~ Navbar sizing ~~~
+
 $navbar-height: 64;
 $footer-height: 30;
-
-
 $default-navbar-height: 50;
 $default-navbar-nav-a-padding: 15;
+$default-navbar-mat-button-padding: 7;
+
+// ~~~ Functions & Mixins ~~~
 
 @function headerFooterOffset() {
     @return ($navbar-height + $footer-height) + px;
