@@ -25,6 +25,7 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
         activeLabels: []
     };
     public SERVER_CALL_COMPLETE = false;
+    public sortBy: string = 'NEWEST';
 
     constructor(private indicatorSharingService: IndicatorSharingService, public dialog: MatDialog) { }
 
@@ -39,9 +40,9 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
                 this.identities = results[0].map((r) => r.attributes); 
 
                 // Indicators
-                this.filteredIndicators = this.allIndicators = results[1].map((res) => res.attributes);
+                this.allIndicators = results[1].map((res) => res.attributes);
 
-                this.setDisplayedIndicators();
+                this.filterIndicators();
                 this.setIndicatorSearchParameters();         
                 
                 // Attack patterns
@@ -109,7 +110,39 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
                 });
         } else {
             this.filteredIndicators = this.allIndicators;
-        }   
+        }
+        this.sortIndicators();           
+    }
+
+    public sortByArrayLengthHelper(a, b, field) {
+        if (a[field] && !b[field]) {
+            return -1;
+        } else if (!a[field] && b[field]) {
+            return 1;
+        } else if (a[field] && b[field]) {
+            return b[field].length - a[field].length;
+        }
+    }
+
+    public sortIndicators() {
+        switch (this.sortBy) {
+            case 'NEWEST':
+                this.filteredIndicators = this.filteredIndicators.sort((a, b) => {
+                    return (new Date(b.created) as any) - (new Date(a.created) as any);
+                });
+                break;
+            case 'OLDEST':
+                this.filteredIndicators = this.filteredIndicators.sort((a, b) => {
+                    return (new Date(a.created) as any) - (new Date(b.created) as any);
+                });
+                break;
+            case 'LIKES':
+                this.filteredIndicators = this.filteredIndicators.sort((a, b) => this.sortByArrayLengthHelper(a, b, 'likes'));
+                break;
+            case 'COMMENTS':
+                this.filteredIndicators = this.filteredIndicators.sort((a, b) => this.sortByArrayLengthHelper(a, b, 'comments'));
+                break;
+        }        
         this.setDisplayedIndicators();
     }
 
