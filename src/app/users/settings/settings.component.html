@@ -36,16 +36,16 @@
                         </mat-list>
                     </div>
                 </mat-card-content>
-            </mat-card>            
+            </mat-card>
         </div>
-    </div>  
+    </div>
 
     <div class="row mt-20 mb-10">
         <div class="col-xs-12 col-lg-6 col-lg-offset-3">
             <h3>Join Organizations</h3>
         </div>
     </div>
-    
+
     <div *ngIf="unaffiliatedOrganizations && unaffiliatedOrganizations.length">
         <div class="row" *ngIf="user !== undefined">
             <div class="col-xs-12 col-lg-6 col-lg-offset-3">
@@ -61,7 +61,7 @@
                                 </span>
                                 </div>
                             </mat-list-item>
-                            </mat-list>
+                        </mat-list>
                     </mat-card-content>
                 </mat-card>
             </div>
@@ -71,6 +71,6 @@
     <div *ngIf="!(unaffiliatedOrganizations && unaffiliatedOrganizations.length)">
         <div class="uf-well">There are no organizations for you to join.</div>
     </div>
-    
+
 
 </div>

@@ -6,12 +6,21 @@
                 <i class="material-icons">search</i>
                 <span>&nbsp;Search Analytics</span>
             </p>
-            <mat-form-field class="full-width mb-20">
-                <mat-select placeholder="Labels" [multiple]="true" (change)="filterLabelChange($event)">
+            <mat-form-field class="full-width mb-9">
+                <mat-select placeholder="Labels" [multiple]="true" (change)="searchDebouncer.next()" [(ngModel)]="searchParameters.activeLabels">
                     <mat-option value="{{label}}" *ngFor="let label of searchParameters.labels">{{ label | capitalize }}</mat-option>
                 </mat-select>
             </mat-form-field>
-            <p *ngIf="displayedIndicators && allIndicators" class="text-muted">Results: {{ filteredIndicators.length }} / {{ allIndicators.length }}</p> 
+            <mat-form-field class="full-width mb-12">
+                <mat-select placeholder="Organizations" [multiple]="true" (change)="searchDebouncer.next()" [(ngModel)]="searchParameters.activeIdentities">
+                    <mat-option value="{{org.id}}" *ngFor="let org of organizations">{{ org.name }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <p *ngIf="displayedIndicators && allIndicators" class="text-muted flex">
+                <span><a (click)="searchParameters.activeLabels = []; searchParameters.activeIdentities = []; filterIndicators()">Clear Filters</a></span>
+                <span class="flex1"></span>
+                <span>Results: {{ filteredIndicators.length }} / {{ allIndicators.length }}</span>    
+            </p> 
 
             <hr> 
 
@@ -20,10 +29,10 @@
                 <span>&nbsp;Sort Analytics</span>
             </p>
             <mat-radio-group [(ngModel)]="sortBy" (change)="sortIndicators()">
-                <mat-radio-button [value]="'NEWEST'">Newest</mat-radio-button><br>
-                <mat-radio-button [value]="'OLDEST'">Oldest</mat-radio-button><br>
-                <mat-radio-button [value]="'LIKES'">Likes</mat-radio-button><br>
-                <mat-radio-button [value]="'COMMENTS'">Comments</mat-radio-button>
+                <mat-radio-button [value]="'NEWEST'" color="primary">Newest</mat-radio-button><br>
+                <mat-radio-button [value]="'OLDEST'" color="primary">Oldest</mat-radio-button><br>
+                <mat-radio-button [value]="'LIKES'" color="primary">Likes</mat-radio-button><br>
+                <mat-radio-button [value]="'COMMENTS'" color="primary">Comments</mat-radio-button>
             </mat-radio-group>
 
             <hr>

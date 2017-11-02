@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { AddIndicatorComponent } from '../add-indicator/add-indicator.component';
-import { Observable } from 'rxjs/Observable';
 
 @Component({
     selector: 'indicator-sharing-list',
@@ -16,16 +17,19 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
     public displayedIndicators: any;
     public allIndicators: any;
     public identities: any[];
+    public organizations: any[];
     public filteredIndicators: any;
     public DEFAULT_LENGTH: number = 10;
     public serverCallComplete: boolean = false;
     public indicatorToAttackPatternMap: any = {};
     public searchParameters: any = {
         labels: [],
-        activeLabels: []
+        activeLabels: [],
+        activeIdentities: []
     };
     public SERVER_CALL_COMPLETE = false;
     public sortBy: string = 'NEWEST';
+    public searchDebouncer: Subject<any> = new Subject();
 
     constructor(private indicatorSharingService: IndicatorSharingService, public dialog: MatDialog) { }
 
@@ -38,6 +42,8 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
             (results) => {
                 // Identities
                 this.identities = results[0].map((r) => r.attributes); 
+
+                this.organizations = this.identities.filter((identity) => identity.identity_class === 'organization');
 
                 // Indicators
                 this.allIndicators = results[1].map((res) => res.attributes);
@@ -58,6 +64,13 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
                 getData$.unsubscribe();
             }
         );
+
+        this.searchDebouncer
+            .debounceTime(300)
+            .subscribe(() => {
+                this.filterIndicators();
+            },
+            (e) => console.log(e));
     }
 
     public ngOnDestroy() {
@@ -86,11 +99,6 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
             );
     }
 
-    public filterLabelChange(e) {        
-        this.searchParameters.activeLabels = e.value;                 
-        this.filterIndicators();        
-    }
-
     public filterIndicators() {
         if (this.searchParameters.activeLabels && this.searchParameters.activeLabels.length > 0) {
             this.filteredIndicators = this.allIndicators
@@ -110,6 +118,11 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
                 });
         } else {
             this.filteredIndicators = this.allIndicators;
+        }
+
+        if (this.searchParameters.activeIdentities && this.searchParameters.activeIdentities.length > 0) {
+            this.filteredIndicators = this.filteredIndicators
+                .filter((indicator) => indicator.created_by_ref !== undefined && this.searchParameters.activeIdentities.includes(indicator.created_by_ref));
         }
         this.sortIndicators();           
     }
@@ -159,8 +172,7 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
             .reduce((prev, cur) => prev.concat(cur), [])
             .forEach((label) => labelSet.add(label));
         
-        this.searchParameters.labels = Array.from(labelSet);        
-        this.searchParameters.activeLabels = this.searchParameters.labels.slice();
+        this.searchParameters.labels = Array.from(labelSet);
     }
 
     public showMoreIndicators() {
