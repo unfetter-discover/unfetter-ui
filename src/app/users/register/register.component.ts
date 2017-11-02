@@ -44,7 +44,6 @@ export class RegisterComponent implements OnInit {
                             identity: new FormGroup({
                                 name: new FormControl('', Validators.required),
                                 description: new FormControl(''),
-                                identity_class: new FormControl('', Validators.required),
                                 sectors: new FormControl(['']),
                                 contact_information: new FormControl(''),
                             })
