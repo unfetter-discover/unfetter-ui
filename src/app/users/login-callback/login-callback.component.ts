@@ -30,8 +30,6 @@ export class LoginCallbackComponent implements OnInit {
                 let userFromToken$ = this.usersService.getUserFromToken()
                     .subscribe(
                     (res) => {
-                        console.log('SUBMIT RES', res);
-
                         let user = res.attributes;                        
                         if (user.registered === false) {
                             this.router.navigate(['/users/register']);
@@ -47,28 +45,7 @@ export class LoginCallbackComponent implements OnInit {
                     },
                     () => {
                         userFromToken$.unsubscribe();                        
-                    });   
-                
-                // let registered = JSON.parse(params.registered);                
-                // if (!registered) {
-                //     this.router.navigate(['/users/register']);
-                // } else {
-                //     let userFromToken$ = this.usersService.getUserFromToken()
-                //         .subscribe(
-                //         (res) => {
-                //             console.log('SUBMIT RES', res);
-                            
-                //             let user = res.attributes;
-                //             this.authService.setUser(user);                                                       
-                //         },
-                //         (err) => {
-                //             console.log(err);
-                //         },
-                //         () => {
-                //             userFromToken$.unsubscribe();
-                //             this.router.navigate(['/']);
-                //         });                    
-                // }                          
+                    });                            
             },
             (err) => {
                 console.log(err);                

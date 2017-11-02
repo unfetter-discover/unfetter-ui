@@ -40,10 +40,7 @@ export class AddIndicatorComponent implements OnInit {
                     const identities = res.map((r) => r.attributes);
                     this.organizations = this.authService.getUser().organizations
                         .filter((org) => org.approved)
-                        .map((org) => identities.find((identity) => identity.id === org.id))
-                        .concat(
-                            identities.filter((identity) => identity.labels && identity.labels.length && identity.labels.includes('open-group'))
-                        );
+                        .map((org) => identities.find((identity) => identity.id === org.id));
                 },
                 (err) => {
                     console.log(err);
