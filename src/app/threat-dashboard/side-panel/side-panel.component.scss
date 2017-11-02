@@ -5,6 +5,7 @@ $teal_200: #80CBC4;
 $teal_100: #B2DFDB;
 $teal_50: #E0F2F1;
 $white_87: rgba(255,255,255, .87);
+$black_87: rgba(0, 0, 0, .87);
 
 .header {
     background: linear-gradient(60deg, $header_gradient_darker, $header_gradient_lighter);
@@ -37,9 +38,10 @@ $white_87: rgba(255,255,255, .87);
 }
 
 .boundries-fab {
-    margin-top: -24px;
-    position: fixed;
-    margin-left: 16px;
+    margin-top: -28px;
+    position: absolute;
+    right: 48px;
+    z-index: 99;
 }
 
 .mat-expansion-panel {
@@ -67,6 +69,10 @@ $white_87: rgba(255,255,255, .87);
     
     /deep/ .mat-expanded {
         margin-bottom: 2px;
+    }
+
+    a {
+        color: $black_87;
     }
 }
 

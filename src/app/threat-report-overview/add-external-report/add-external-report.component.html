@@ -1,0 +1,48 @@
+<p mat-dialog-title class="lead mb-6">Add External Report</p>
+
+<mat-dialog-content id="addReport">
+    <form [formGroup]="form" novalidate (ngSubmit)="submitReport()">
+
+        <mat-form-field class="full-width mb-6">
+            <input matInput required placeholder="Name" formControlName="name">
+            <mat-error *ngIf="form.get('name').hasError('required')">
+                Name is <strong>required</strong>
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width mb-6">
+            <input matInput required placeholder="Source" formControlName="source_name">
+            <mat-error *ngIf="form.get('source_name').hasError('required')">
+                Source is <strong>required</strong>
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width mb-6">
+            <input matInput required placeholder="External ID" formControlName="external_id">
+            <mat-error *ngIf="form.get('external_id').hasError('required')">
+                ID is <strong>required</strong>
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width mb-6">
+            <input matInput required placeholder="URL" formControlName="url">
+            <mat-error *ngIf="form.get('url').hasError('required')">
+                URL is <strong>required</strong>
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width mb-6">
+            <textarea matInput placeholder="Description" formControlName="description"></textarea>
+            <mat-error *ngIf="form.get('description').hasError('required')">
+                Description is <strong>required</strong>
+            </mat-error>
+        </mat-form-field>
+
+        <p class="text-right">
+            <button mat-button mat-dialog-close (click)="resetForm($event); dialogRef.close(false);">CANCEL</button>
+            <button mat-raised-button color="primary" [disabled]="form.status === 'INVALID'" type="submit">SAVE</button>
+        </p>
+
+    </form>
+
+</mat-dialog-content>

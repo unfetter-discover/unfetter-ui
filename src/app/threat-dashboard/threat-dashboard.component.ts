@@ -39,7 +39,8 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   private readonly redAccent200 = '#FF5252';
   private readonly defaultBackgroundColor = '#FAFAFA';
   private readonly defaultForegroundColor = '#000000';
-  private readonly selectedForegroundColor = '#F5F5F5';
+  // private readonly selectedForegroundColor = '#F5F5F5';
+  private readonly selectedForegroundColor = 'rgba(255, 255, 255, .87)';
   private readonly selectedBackgroundColor = this.redAccent200;
 
   constructor(
