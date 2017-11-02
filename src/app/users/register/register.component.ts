@@ -60,8 +60,9 @@ export class RegisterComponent implements OnInit {
             const getOrganizations$ = this.usersService.getOrganizations()
                 .subscribe(
                     (res) => {
-                        this.organizations = res.map((r) => r.attributes);
-                        console.log('ORGS', this.organizations);                                               
+                        this.organizations = res
+                            .map((r) => r.attributes)
+                            .filter((org) => org.labels === undefined || !org.labels.includes('open-group'));
                     },
                     (err) => {
                         console.log(err);                        

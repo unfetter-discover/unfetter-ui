@@ -39,17 +39,24 @@ export class SettingsComponent implements OnInit {
                     .filter((org) => org.approved)
                     .map((org) => {
                         const retVal = org;
+                        retVal.openGroup = false;
                         const matchingOrg = allOrgs.find((o) => o.id === org.id);
                         if (matchingOrg) {
                             retVal.name = matchingOrg.name;
+                            if (matchingOrg.labels !== undefined && matchingOrg.labels.includes('open-group')) {
+                                retVal.openGroup = true;
+                            }
                         } else {
                             retVal.name = 'Name Unknown';
                         }
                         return retVal;
                 });
 
+                console.log(this.approvedOrganizations);
+
                 this.unaffiliatedOrganizations = allOrgs
-                    .filter((org) => !this.approvedOrganizations.find((apOrg) => apOrg.id === org.id));
+                    .filter((org) => !this.approvedOrganizations.find((apOrg) => apOrg.id === org.id))
+                    .filter((org) => org.labels === undefined || !org.labels.includes('open-group'));
             },
             (err) => {
                 console.log(err);

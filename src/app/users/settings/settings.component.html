@@ -27,7 +27,7 @@
                                 <div mat-line>
                                     <a routerLink="/stix/identities/{{org.id}}">{{ org.name }}</a>
                                     <span *ngIf="org.role === 'ORG_LEADER'">&nbsp;(Leader)</span>
-                                    <span *ngIf="org.role !== 'ORG_LEADER' && org.role !== 'ORG_LEADER_APPLICANT'">&nbsp;
+                                    <span *ngIf="org.role !== 'ORG_LEADER' && org.role !== 'ORG_LEADER_APPLICANT' && !org.openGroup">&nbsp;
                                         <button mat-button color="primary" (click)="applyForleadership(org.id)">Request to Become Leader</button>
                                     </span>
                                     <span *ngIf="org.role === 'ORG_LEADER_APPLICANT'">&nbsp;Leadership requested, pending approval</span>
