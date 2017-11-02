@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
       this.securityMarkingLabel = BANNERTEXT;
     }
 
-    if (RUN_MODE !== undefined && RUN_MODE === 'UAC') { 
+    if (RUN_MODE !== undefined && RUN_MODE === 'UAC' && this.authService.loggedIn()) { 
       console.log('Running application in UAC mode');      
       this.webAnalyticsService.recordVisit();
     } else if (RUN_MODE !== undefined && RUN_MODE === 'DEMO') {

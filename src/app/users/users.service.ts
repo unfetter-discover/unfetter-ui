@@ -37,4 +37,8 @@ export class UsersService {
     public requestOrgLeadership(userId, orgId): Observable<any> {
         return this.genericApi.get(`${this.orgUrl}/request-leadership/${userId}/${orgId}`);
     }
+
+    public requestOrgMemebership(userId, orgId): Observable<any> {
+        return this.genericApi.get(`${this.orgUrl}/request-membership/${userId}/${orgId}`);
+    }
 }

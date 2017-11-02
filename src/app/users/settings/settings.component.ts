@@ -13,7 +13,8 @@ import { AuthService } from '../../global/services/auth.service';
 export class SettingsComponent implements OnInit {
 
     public user: any;
-    public organizations: any[];
+    public approvedOrganizations: any[];
+    public unaffiliatedOrganizations: any[];
     public userId: string;
 
     constructor(
@@ -30,21 +31,25 @@ export class SettingsComponent implements OnInit {
         const getData$ = Observable.forkJoin(
             this.usersService.getUserProfileById(this.userId),
             this.usersService.getOrganizations()
-        ).subscribe((results: any) => {
-            this.user = results[0].attributes;
-            const allOrgs = results[1].map((org) => org.attributes);
-            this.organizations = this.user.organizations
-                .filter((org) => org.approved)
-                .map((org) => {
-                    const retVal = org;
-                    const matchingOrg = allOrgs.find((o) => o.id === org.id);
-                    if (matchingOrg) {
-                        retVal.name = matchingOrg.name;
-                    } else {
-                        retVal.name = 'Name Unknown';
-                    }
-                    return retVal;
+        ).subscribe(
+            (results: any) => {
+                this.user = results[0].attributes;
+                const allOrgs = results[1].map((org) => org.attributes);
+                this.approvedOrganizations = this.user.organizations
+                    .filter((org) => org.approved)
+                    .map((org) => {
+                        const retVal = org;
+                        const matchingOrg = allOrgs.find((o) => o.id === org.id);
+                        if (matchingOrg) {
+                            retVal.name = matchingOrg.name;
+                        } else {
+                            retVal.name = 'Name Unknown';
+                        }
+                        return retVal;
                 });
+
+                this.unaffiliatedOrganizations = allOrgs
+                    .filter((org) => !this.approvedOrganizations.find((apOrg) => apOrg.id === org.id));
             },
             (err) => {
                 console.log(err);
@@ -67,5 +72,20 @@ export class SettingsComponent implements OnInit {
                     requestOrgLeadership$.unsubscribe();
                 }
             );
+    }
+
+    public applyForMembership(orgId) {
+        const requestOrgMembership$ = this.usersService.requestOrgMemebership(this.user._id, orgId)
+            .subscribe((res) => {
+                this.fetchData();
+            },
+            (err) => {
+                console.log(err);
+            },
+            () => {
+                requestOrgMembership$.unsubscribe();
+            }
+            );
+
     }
 }
