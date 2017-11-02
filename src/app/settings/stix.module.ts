@@ -5,7 +5,7 @@ import { CalendarModule, AccordionModule, DataListModule } from 'primeng/primeng
 import {
   MatButtonModule, MatListModule, MatCardModule, MatSnackBarModule, MatNativeDateModule,
   MatDialogModule, MatChipsModule, MatInputModule, MatSelectModule, MatAutocompleteModule ,
-   MatCheckboxModule, MatRadioModule, MatSlideToggleModule, MatExpansionModule, MatDatepickerModule } from '@angular/material';
+   MatCheckboxModule, MatRadioModule, MatSlideToggleModule, MatExpansionModule, MatDatepickerModule, MatIconModule } from '@angular/material';
 
 import { ComponentModule } from '../components/component.module';
 import { StixService } from './stix.service';
@@ -68,6 +68,7 @@ import { GlobalModule } from '../global/global.module';
       MatRadioModule,
       MatSlideToggleModule,
       MatDatepickerModule,
+      MatIconModule,
       ComponentModule,
       CalendarModule,
       AccordionModule,

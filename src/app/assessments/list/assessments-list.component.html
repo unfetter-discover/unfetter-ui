@@ -1,24 +1,24 @@
 <div id="fabWrapper">
     <div id="wrapperInner" [ngClass]="{'speedDial': speedDial}">
 
-        <button md-fab color="accent" id="add" (click)="speedDial = !speedDial">
-            <md-icon class="md-24" aria-label="Example icon-button with a heart icon">add</md-icon>
+        <button mat-fab color="accent" id="add" (click)="speedDial = !speedDial">
+            <mat-icon class="mat-24" aria-label="Example icon-button with a heart icon">add</mat-icon>
         </button>
 
-        <div class="mini" id="i" mdTooltip="Access Indicators" mdTooltipPosition="left">
-            <button md-mini-fab color="primary">
+        <div class="mini" id="i" matTooltip="Access Indicators" matTooltipPosition="left">
+            <button mat-mini-fab color="primary">
                 <img class="stix-icon" style="height: 23px;" src="assets/icon/stix-icons/svg/indicator-b.svg">
             </button>
         </div>
 
-        <div class="mini" id="m" mdTooltip="Access Mitigations" mdTooltipPosition="left">
-            <button md-mini-fab color="primary">
+        <div class="mini" id="m" matTooltip="Access Mitigations" matTooltipPosition="left">
+            <button mat-mini-fab color="primary">
                 <img class="stix-icon" style="height: 23px;" src="assets/icon/stix-icons/svg/course-of-action-b.svg">
             </button>
         </div>
 
-        <div class="mini" id="s" mdTooltip="Access Sensors" mdTooltipPosition="left">
-            <button md-mini-fab color="primary">
+        <div class="mini" id="s" matTooltip="Access Sensors" matTooltipPosition="left">
+            <button mat-mini-fab color="primary">
                 <img class="stix-icon" style="height: 23px;" src="assets/icon/stix-icons/svg/tool-b.svg">
             </button>
         </div>

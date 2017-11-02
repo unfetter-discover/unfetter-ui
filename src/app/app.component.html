@@ -9,10 +9,10 @@
     detailed information about how attacks are preformed. An example of an attack pattern could be 'spear fishing', 'lateral    movement', or 'exploit vulnerability'. On this page, more Attack Patterns can be created or deleted.</p>
   </div>
 </div>
-
+<header-navigation (toggleSidenav)="sidenav.toggle()"></header-navigation>
 
 <mat-sidenav-container id="sidenavContainer">
-  <mat-sidenav #sidenav id="sidenavMenu" opened="true" mode="side" class="mat-elevation-z14">
+  <mat-sidenav #sidenav id="sidenavMenu" opened="true" mode="side" class="mat-elevation-z14" fixedInViewport="true" fixedTopGap="64">
 
     <div style="height: 200px; width: 100%; background-image: url('https://s.tmimgcdn.com/blog/wp-content/uploads/2016/04/1-1.jpg?x47994'); padding: 16px; flex-direction: column; border-bottom: 3px solid #E91E63;"
       class="flex">
@@ -64,62 +64,70 @@
 
     <mat-nav-list style="padding-top: 0;">
       <mat-list-item>
-        <a matLine>Assessments</a>
+        <a mat-line routerLink="assessments">Assessments</a>
       </mat-list-item>
       <mat-list-item>
-        <a matLine>Intrusion Set Dashboard</a>
+        <a mat-line routerLink="intrusion-set-dashboard">Intrusion Set Dashboard</a>
       </mat-list-item>
       <mat-list-item>
-        <a matLine>Threat Report Overview</a>
+        <a mat-line routerLink="threat-dashboard">Threat Overview</a>
       </mat-list-item>
       <mat-list-item>
-        <a matLine>Link Explorer</a>
+        <a mat-line routerLink="indicator-sharing/list">Analytic Hub</a>
       </mat-list-item>
-      <mat-list-item>
-        <a matLine>STIX</a>
+      <mat-list-item (click)="showSubMenu = !showSubMenu">
+        <a mat-line>STIX</a>
         <button mat-icon-button (click)="showInfo(link)">
-          <mat-icon class="mat-24">keyboard_arrow_down</mat-icon>
+          <mat-icon class="mat-24 transition02" [ngClass]="{'rotate90': showSubMenu}">keyboard_arrow_right</mat-icon>
       </button>
       </mat-list-item>
     </mat-nav-list>
 
-    <div class="submenu">
+    <div class="submenu" [@collapseLevel]="showSubMenu ? 'open': 'closed'" style="overflow: hidden;">
       <mat-nav-list style="padding-top: 0;">
         <mat-list-item class="active">
-          <a matLine>Attack Patterns</a>
+          <a mat-line routerLink="stix/attack-patterns">Attack Patterns</a>
         </mat-list-item>
         <mat-list-item>
-          <a matLine>Courses of Action</a>
+          <a mat-line routerLink="stix/course-of-actions">Courses of Action</a>
         </mat-list-item>
         <mat-list-item>
-          <a matLine>Indicators</a>
+          <a mat-line routerLink="stix/indicators">Indicators</a>
         </mat-list-item>
       </mat-nav-list>
     </div>
 
+    <mat-nav-list>
+      <mat-list-item>
+        <a mat-line routerLink="indicator-sharing/list">Analytic Hub</a>
+      </mat-list-item>
+    </mat-nav-list>
+
   </mat-sidenav>
 
-  <div id="mainContent">
-    <header-navigation (toggleSidenav)="sidenav.toggle()"></header-navigation>
+  <div id="mainContent">   
 
     <div id="routerWrapper">
       <router-outlet></router-outlet>
     </div>
 
-    <footer class="footer">
-      <div class="container-fluid">
-        <div class="col-xs-5">
-          <p> Made by <a class="white text-lighten-3" target="_blank" href="http://www.iad.gov">NSA Information Assurance</a></p>
-        </div>
-        <div class="col-xs-7">
-          <p class="text-right">
-            <a routerLink="./partners">Partners</a>&emsp;|&emsp;
-            <a target="_blank" href="/api/explorer/">View API</a>
-          </p>
-        </div>
-
-      </div>
-    </footer>
+    
   </div>
 
 </mat-sidenav-container>
+
+
+<footer class="footer">
+  <div class="container-fluid">
+    <div class="col-xs-5">
+      <p> Made by <a class="white text-lighten-3" target="_blank" href="http://www.iad.gov">NSA Information Assurance</a></p>
+    </div>
+    <div class="col-xs-7">
+      <p class="text-right">
+        <a routerLink="./partners">Partners</a>&emsp;|&emsp;
+        <a target="_blank" href="/api/explorer/">View API</a>
+      </p>
+    </div>
+
+  </div>
+</footer>

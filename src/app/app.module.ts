@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { NgModule, ApplicationRef } from '@angular/core';
 import { RouterModule, PreloadAllModules, Router } from '@angular/router';
-import { MatProgressBarModule, MatSidenavModule, MatButtonModule, MatMenuModule, MatIconModule } from '@angular/material';
+import { MatProgressBarModule, MatSidenavModule, MatButtonModule, MatMenuModule, MatIconModule, MatListModule } from '@angular/material';
 import { ComponentModule } from './components/component.module';
 import { StixModule } from './settings/stix.module';
 
@@ -55,7 +55,8 @@ import { ConfirmationDialogComponent } from './components/dialogs/confirmation/c
     MatSidenavModule,
     MatButtonModule,
     MatMenuModule,
-    MatIconModule
+    MatIconModule,
+    MatListModule
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS,

@@ -2,7 +2,7 @@
     <div class="container-fluid fadeIn" *ngIf="intrusionSets; else loadingBlock">
         <div class="row ">
 
-            <div class="col-md-3  intrusion-set-dashboard-side-panel mat-elevation-z8">
+            <div class="col-md-3  intrusion-set-dashboard-side-panel mat-elevation-z8" style="width: 400px;">
                 <!-- <div class="row">
                     <div class="col-sm-12">
                         <p-autoComplete styleClass="intrusionClass" [(ngModel)]="intrusionSet" [suggestions]="results" (completeMethod)="search($event)"
@@ -12,12 +12,12 @@
                 </div> -->
                 <div class="row">
                     <div class="col-xs-12">
-                        <md-form-field class="full-width">
-                            <input mdInput placeholder="Intrusion Set" aria-label="Intrusion Set" [mdAutocomplete]="auto">
-                            <md-autocomplete #auto="mdAutocomplete">
-                                <md-option>APT123</md-option>
-                            </md-autocomplete>
-                        </md-form-field>
+                        <mat-form-field class="full-width">
+                            <input matInput placeholder="Intrustion Set" [matAutocomplete]="auto">
+                            <mat-autocomplete #auto="matAutocomplete">
+                                <mat-option>APT123</mat-option>
+                            </mat-autocomplete>
+                        </mat-form-field>
                     </div>
                 </div>
                 <div class="row">
@@ -41,7 +41,7 @@
                 </div>
             </div>
 
-            <div class="col-md-9 intrusion-set-dashboard-main-panel">
+            <div class="col-md-9 intrusion-set-dashboard-main-panel" style="width: calc(100% - 400px); margin-left: 400px;">
                 <div class="row">
                     <!-- <div class="col-sm-12">
                         <div style="float: left">

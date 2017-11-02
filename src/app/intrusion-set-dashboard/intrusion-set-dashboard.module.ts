@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 
 import { AutoCompleteModule, CarouselModule, ProgressBarModule, AccordionModule } from 'primeng/primeng';
 
-import { MatButtonModule, MatChipsModule, MatInputModule, MatIconModule, MatTooltipModule, MatCardModule, MatTabsModule, MatProgressSpinnerModule, MatProgressBarModule } from '@angular/material';
+import { MatButtonModule, MatChipsModule, MatInputModule, MatIconModule, MatTooltipModule, MatCardModule, MatTabsModule, MatProgressSpinnerModule, MatProgressBarModule, MatAutocompleteModule } from '@angular/material';
 import { MatCheckboxModule } from '@angular/material';
 import { MatSelectModule } from '@angular/material';
 
@@ -31,7 +31,8 @@ const materialModules = [
   MatTooltipModule,
   MatTabsModule,
   MatProgressBarModule,
-  MatProgressSpinnerModule
+  MatProgressSpinnerModule,
+  MatAutocompleteModule
 ];
 
 const primengModules = [

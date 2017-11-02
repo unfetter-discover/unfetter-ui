@@ -9,7 +9,7 @@
           <span class="icon-bar"></span>
         </button>
         <div class="navbar-brand" style="font-size: 250%; margin-top: 3px; cursor: pointer;" (click)="menuClicked()">
-          <button md-icon-button style="font-size: 32px;">
+          <button mat-icon-button style="font-size: 32px;">
             <i class="material-icons">menu</i>
           </button>
         </div>
@@ -29,25 +29,27 @@
           </li>
 
           <!-- Logged In Only -->
-           <li *ngIf="authService.loggedIn()"><a routerLink="./assessments">Assessments</a></li>
+           <!-- <li *ngIf="authService.loggedIn()"><a routerLink="./assessments">Assessments</a></li>
           <li *ngIf="authService.loggedIn()"><a routerLink="./intrusion-set-dashboard" >Intrusion Set Dashboard</a></li>
           <li *ngIf="authService.loggedIn()"><a routerLink="./threat-dashboard" >Threat Dashboard</a></li>
           <li *ngIf="authService.loggedIn()"><a routerLink="./indicator-sharing/list">Analytic Hub</a></li>
           <li *ngIf="authService.loggedIn()"><a routerLink="./stix/link-explorer">Link Explorer</a></li>
-          <li *ngIf="authService.loggedIn()"><a target="_blank" href="/api/explorer/">View API</a></li>
+          <li *ngIf="authService.loggedIn()"><a target="_blank" href="/api/explorer/">View API</a></li> -->
 
-          <li dropdown class="dropdown" *ngIf="authService.loggedIn()">
+          <!-- <li dropdown class="dropdown" *ngIf="authService.loggedIn()">
             <a dropdownToggle class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">STIX<span class="caret"></span></a>
             <ul  class="dropdown-menu">
               <li *ngFor="let navigation of navigations">
                 <a [routerLink]="[navigation.url]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{navigation.label}}</a>
               </li>
             </ul>
-          </li>
+          </li> -->
 
+          <li><a style="padding-bottom: 0;"><i class="material-icons mat-24">notifications</i></a></li>
           <li dropdown class="dropdown" *ngIf="authService.loggedIn()">
             <a dropdownToggle class="dropdown-toggle" data-toggle="user" role="button" aria-haspopup="true" aria-expanded="false">
               <img src="{{authService.getUser().github.avatar_url}}" alt="User" id="avatar" *ngIf="authService.getUser() !== null && authService.getUser().github.avatar_url !== undefined" class="smallAvatar">
+              <span>{{ authService.getUser().userName }}&nbsp;</span>
               <span *ngIf="authService.getUser().github.avatar_url === undefined">{{authService.getUser().userName}}</span>
               <span class="caret"></span>
             </a>
