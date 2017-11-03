@@ -5,6 +5,10 @@ export class Boundries {
     public startDate?: any;
     public endDate?: any;
 
+    public isEmpty(): boolean {
+        return this.emptyBoundries();
+    }
+
     public emptyBoundries(): boolean {
         if (this.malware.size === 0 && this.intrusions.size === 0 && this.targets.size === 0
             && this.startDate === undefined && this.endDate === undefined) {

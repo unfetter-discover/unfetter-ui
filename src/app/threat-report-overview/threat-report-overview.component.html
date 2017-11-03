@@ -26,7 +26,7 @@
             </mat-form-field>
         </div>
     </div>
-    <div class="row">
+    <div class="row" *ngIf="!error; else errorBlock">
         <div class="col-md-12">
             <mat-table class="mat-elevation-z3" #table [dataSource]="dataSource">
 
@@ -76,4 +76,8 @@
 
 <ng-template #loadingBlock>
     <loading-spinner></loading-spinner>
+</ng-template>
+
+<ng-template #errorBlock>
+    <p>Error loading page: {{errorMsg}}</p>
 </ng-template>

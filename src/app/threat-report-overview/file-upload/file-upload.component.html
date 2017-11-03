@@ -8,16 +8,16 @@
             <p mat-line>
                 {{this.numEventsParsed}} lines parsed.
             </p>
-            <button mat-icon-button class="mat-24 deleteBtn" (click)="onRemoveFile($event)">
-                <mat-icon>
+            <button mat-icon-button class="mat-24 deleteBtn" (click)="onRemoveFile($event)" matTooltip="Remove CSV records">
+                <mat-icon aria-label="remove csv records">
                     delete_forever
                 </mat-icon>
             </button>
         </mat-list-item>
     </mat-list>
     <ng-template #uploadBlock>
-        <button mat-button mat-raised-button id="uploadButton" class="" (click)="openFileUpload($event)">
-            Choose File
+        <button mat-button mat-raised-button id="uploadButton" class="" (click)="openFileUpload($event)" matTooltip="Upload and parse a CSV file">
+            Import CSV
         </button>
         <input #fileUpload id="fileInput" name="file" type="file" class="hide" ([value])="fName" (change)="fileChanged($event)">
     </ng-template>

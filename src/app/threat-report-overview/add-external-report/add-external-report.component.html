@@ -1,0 +1,94 @@
+<p mat-dialog-title class="lead mb-6">Add External Report</p>
+
+<mat-dialog-content id="addReport">
+    <form [formGroup]="form" novalidate (ngSubmit)="submitReport()">
+
+        <mat-form-field class="full-width mb-6">
+            <input matInput required placeholder="Name" formControlName="name">
+            <mat-error *ngIf="form.get('name').hasError('required')">
+                Name is
+                <strong>required</strong>
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width mb-6">
+            <textarea matInput placeholder="Description" formControlName="description"></textarea>
+        </mat-form-field>
+
+        <!-- <div class="uf-collapsible-control mb-10" (click)="showExternalReferences = !showExternalReferences">
+            <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showExternalReferences}">chevron_right</i>
+            <span class="h5">&nbsp;External References</span>
+        </div>
+        <div [@collapseLevel]="showExternalReferences ? 'open' : 'closed'" class="overFlowHidden">
+            <external-references-reactive [parentForm]="form"></external-references-reactive>
+        </div>
+        <mat-chip-list formArrayName="external_references" *ngIf="form.get('external_references').value.length > 0" class="chipListPadding">
+            <mat-chip *ngFor="let extRef of form.get('external_references').value; let i = index" class="cursor-pointer chipListChip"
+                color="warn" selected="true" removable="true">
+                <span class="flex1 flexNowrap">{{ extRef.source_name | capitalize}}</span>
+                <mat-icon matChipRemove (click)="form.get('external_references').removeAt(i)">cancel</mat-icon>
+            </mat-chip>
+        </mat-chip-list> -->
+
+        <p>
+            External Reference
+        </p>
+        <div class="uf-well">
+            <mat-form-field class="full-width mb-6">
+                <input matInput required placeholder="Name" formControlName="external_ref_name">
+                <mat-error *ngIf="form.get('external_ref_name').hasError('required')">
+                    Name is
+                    <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="full-width mb-6">
+                <input matInput required placeholder="Source" formControlName="external_ref_source_name">
+                <mat-error *ngIf="form.get('external_ref_source_name').hasError('required')">
+                    Source is
+                    <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="full-width mb-6">
+                <input matInput required placeholder="External ID" formControlName="external_ref_external_id">
+                <mat-error *ngIf="form.get('external_ref_external_id').hasError('required')">
+                    ID is
+                    <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="full-width mb-6">
+                <input matInput required placeholder="URL" formControlName="external_ref_url">
+                <mat-error *ngIf="form.get('external_ref_url').hasError('required')">
+                    URL is
+                    <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="full-width mb-6">
+                <textarea matInput placeholder="Description" formControlName="external_ref_description"></textarea>
+                <mat-error *ngIf="form.get('external_ref_description').hasError('required')">
+                    Description is
+                    <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <p>Attack Patterns</p>
+        <div class="uf-well">
+            <mat-selection-list dense class="attack-list" #attackPatternBlock>
+                <mat-list-option *ngFor="let attackPattern of attackPatterns; trackBy:trackByFn" [value]="attackPattern.id">
+                    {{attackPattern.attributes.name}}
+                </mat-list-option>
+            </mat-selection-list>
+        </div>
+
+        <p class="text-right">
+            <button mat-button mat-dialog-close (click)="resetForm($event); dialogRef.close(false);">CANCEL</button>
+            <button mat-raised-button color="primary" [disabled]="form.status === 'INVALID'" type="submit">SAVE</button>
+        </p>
+
+    </form>
+
+</mat-dialog-content>

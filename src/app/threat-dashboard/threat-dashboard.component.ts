@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 
 import { Constance } from '../utils/constance';
 import { StixService } from '../settings/stix.service';
@@ -9,8 +11,6 @@ import { GenericApi } from '../global/services/genericapi.service';
 
 import { IntrusionSetComponent } from '../intrusion-set/intrusion-set.component';
 import { IntrusionSet, AttackPattern } from '../models';
-import { Subscription } from 'rxjs';
-import { Router, ActivatedRoute } from '@angular/router';
 import { ThreatReportOverviewService } from './services/threat-report-overview.service';
 import { ThreatReport } from '../threat-report-overview/models/threat-report.model';
 import { SortHelper } from '../assessments/assessments-summary/sort-helper';
@@ -39,7 +39,8 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   private readonly redAccent200 = '#FF5252';
   private readonly defaultBackgroundColor = '#FAFAFA';
   private readonly defaultForegroundColor = '#000000';
-  private readonly selectedForegroundColor = '#F5F5F5';
+  // private readonly selectedForegroundColor = '#F5F5F5';
+  private readonly selectedForegroundColor = 'rgba(255, 255, 255, .87)';
   private readonly selectedBackgroundColor = this.redAccent200;
 
   constructor(

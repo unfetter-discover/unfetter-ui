@@ -10,6 +10,7 @@ import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
 import { ConfirmationDialogComponent } from '../../components/dialogs/confirmation/confirmation-dialog.component';
 import { MatDialog, MatMenu } from '@angular/material';
 import { ThreatReportOverviewService } from '../services/threat-report-overview.service';
+import { AddExterernalReportComponent } from '../../threat-report-overview/add-external-report/add-external-report.component';
 
 @Component({
     selector: 'unf-side-panel',
@@ -45,12 +46,13 @@ export class SidePanelComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * @description 
+     * @description clean up this component
      */
     public ngOnDestroy(): void {
         if (this.subscriptions) {
             this.subscriptions.forEach((subscription) => subscription.unsubscribe());
         }
+        this.dialog.closeAll();
     }
 
     /**
@@ -59,8 +61,6 @@ export class SidePanelComponent implements OnInit, OnDestroy {
      * @param {UIEvent} event optional 
      */
     public onDeleteExternalRef(event?: UIEvent): void {
-        console.log(event);
-        console.log(this.selectedExternalRef);
         if (!this.selectedExternalRef || !this.selectedExternalRef.id) {
             console.log(`I do not know which external ref to delete, moving on...`);
         }
@@ -88,19 +88,33 @@ export class SidePanelComponent implements OnInit, OnDestroy {
                 const load$ = this.load(workProductId).do((val) => this.threatReport = val);
                 const sub$ = Observable.concat(delete$, load$)
                     .subscribe(
-                        (val) => {
-                            console.log(val);
-                        },
-                        (err) => console.log(err)
+                    (val) => {
+                        console.log(val);
+                    },
+                    (err) => console.log(err)
                     );
                 this.subscriptions.push(sub$);
             });
     }
 
     /**
+     * @description open a report from the side nav
+     * @param {any} externalRef
+     * @param {UIEvent} event optional 
+     */
+    public onOpenExternalRef(event?: UIEvent): void {
+        const ref: any = this.selectedExternalRef;
+        const externalRefs: any[] = ref.external_references;
+        if (ref && externalRefs && externalRefs.length > 0) {
+            const url = externalRefs[0].external_url;
+            window.open(url, '_blank');
+        }
+    }
+
+    /**
      * @description on open menu event, remember the selected row
      * @param selected 
-     * @param event 
+     * @param {UIEvent} event optional 
      */
     public onOpenMenu(selected: ThreatReport, event?: UIEvent): void {
         if (!selected) {
@@ -180,4 +194,59 @@ export class SidePanelComponent implements OnInit, OnDestroy {
         this.renderer.removeClass(el, 'list-item-hover');
     }
 
+    /**
+     * @description open add external report dialog
+     * @param {UIEvent} event optional
+     * @return {void}
+     */
+    public openAddReportDialog(event?: UIEvent): void {
+        this.dialog.open(AddExterernalReportComponent, {
+            width: '800px',
+            height: 'calc(100vh - 140px)'
+        })
+            .afterClosed()
+            .subscribe((result) => {
+                const isBool = typeof result === 'boolean';
+                const isUndefined = typeof result === 'undefined';
+                if (isUndefined || isBool && !result) {
+                    return;
+                }
+
+                // add new report
+                const tro = new ThreatReport();
+                tro.boundries = this.threatReport.boundries;
+                tro.name = this.threatReport.name;
+                tro.date = this.threatReport.date;
+                tro.author = this.threatReport.author;
+                tro.id = this.threatReport.id;
+                tro.reports = [{
+                    data: {
+                        attributes: result
+                    },
+                }];
+                const add$ = this.threatReportOverviewService
+                    .saveThreatReport(tro)
+                    .subscribe(
+                    (resp) => {
+                        console.log(`saved report ${resp}`)
+                    },
+                    (err) => console.log(err),
+                    () => add$.unsubscribe()
+                    );
+
+            },
+            (err) => console.log(err)
+            );
+    }
+
+    /**
+     * @description angular 2 track by list function, uses the items id if
+     *  it exists, otherwise uses the index
+     * @param {number} index
+     * @param {item}
+     * @return {number}
+     */
+    public trackByFn(index: number, item: any): number {
+        return item.id || index;
+    }
 }

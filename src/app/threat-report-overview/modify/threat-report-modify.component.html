@@ -39,7 +39,7 @@
         </div>
     </div>
     <hr class="title-hr">
-    <div class="row" *ngIf="threatReport && threatReport.reports.length > 1; else noBoundries">
+    <div class="row" *ngIf="threatReport && threatReport.reports.length > 0; else noBoundries">
         <div class="col-xs-6 col-md-6">
             <h4>
                 Include Objects
@@ -121,7 +121,7 @@
     <div class="row pull-right mb-10 mt-10">
         <div class="col-md-12 col-xs-12">
             <button color="primary" mat-button (click)="cancel($event)">CANCEL</button>
-            <button mat-raised-button color="primary" [disabled]="threatReport && threatReport.isEmpty()" (click)="save($event)">
+            <button mat-raised-button color="primary" [disabled]="threatReport && threatReport.reports.length === 0" (click)="save($event)">
                 <mat-icon class="mat-24">save</mat-icon>
                 SAVE
             </button>

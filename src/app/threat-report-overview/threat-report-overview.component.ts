@@ -23,6 +23,8 @@ export class ThreatReportOverviewComponent implements OnInit, AfterViewInit, OnD
 
   public dataSource: ThreatReportOverviewDataSource;
   public loading = true;
+  public hasError = false;
+  public errorMsg = '';
 
   public readonly displayCols: troColName[] = ['name', 'date', 'author', 'actions'];
   private readonly subscriptions = [];
@@ -51,13 +53,20 @@ export class ThreatReportOverviewComponent implements OnInit, AfterViewInit, OnD
    */
   public ngAfterViewInit(): void {
     console.log('afterContentInit');
-    setTimeout(() => this.loading = false, 0);
     const sub$ = this.filters.changes.subscribe(
       (comps) => this.initFilter(comps.first),
-      (err) => console.log(err),
-      () => console.log('done'));
+      (err) => {
+        console.log(err);
+        this.hasError = true;
+        this.errorMsg = err;
+      },
+      () => {
+        console.log('done');
+      });
     this.subscriptions.push(sub$);
-    this.changeDetector.markForCheck();
+    // this.changeDetector.markForCheck();
+    // need to trigger a change detection, so do it on next repaint
+    requestAnimationFrame(() => this.loading = false);
   }
 
   /**
@@ -140,7 +149,7 @@ export class ThreatReportOverviewComponent implements OnInit, AfterViewInit, OnD
    * @return {void}
    */
   public initFilter(filter: ElementRef): void {
-    this.changeDetector.markForCheck();
+    // this.changeDetector.markForCheck();
     if (!filter || !filter.nativeElement) {
       console.log('filter element is undefined, cannot setup events observable, moving on...');
       return;
@@ -157,6 +166,7 @@ export class ThreatReportOverviewComponent implements OnInit, AfterViewInit, OnD
         this.dataSource.nextFilter(this.filter.nativeElement.value);
       });
     this.subscriptions.push(sub$);
-    this.changeDetector.markForCheck();
+    // this.changeDetector.markForCheck();
   }
+
 }
