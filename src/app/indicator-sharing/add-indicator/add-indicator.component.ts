@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { MatDialogRef } from '@angular/material';
+import { Observable } from 'rxjs/Observable';
 
 import { IndicatorForm } from '../../global/form-models/indicator';
 import { IndicatorSharingService } from '../indicator-sharing.service';
@@ -35,20 +36,28 @@ export class AddIndicatorComponent implements OnInit {
 
     public ngOnInit() {
         this.resetForm();
-        const getIdentities$ = this.indicatorSharingService.getIdentities()
-            .subscribe((res) => {
-                    const identities = res.map((r) => r.attributes);
-                    this.organizations = this.authService.getUser().organizations
+
+        const userId = this.authService.getUser()._id;
+        const getData$ = Observable.forkJoin(
+            this.indicatorSharingService.getIdentities(),
+            this.indicatorSharingService.getUserProfileById(userId)
+        ).subscribe(
+            (res) => {       
+                const identities = res[0].map((r) => r.attributes);
+                const userOrgs = res[1].attributes.organizations;
+                if (userOrgs && userOrgs.length) {
+                    this.organizations = userOrgs
                         .filter((org) => org.approved)
-                        .map((org) => identities.find((identity) => identity.id === org.id));
-                },
-                (err) => {
-                    console.log(err);
-                },
-                () => {
-                    getIdentities$.unsubscribe();
-                }
-            );
+                        .map((org) => identities.find((identity) => identity.id === org.id));   
+                }                      
+            },
+            (err) => {
+                console.log(err);
+            },
+            () => {
+                getData$.unsubscribe();
+            }
+        );
     }
 
     public resetForm(e = null) {

@@ -52,10 +52,8 @@ export class SettingsComponent implements OnInit {
                         return retVal;
                 });
 
-                console.log(this.approvedOrganizations);
-
                 this.unaffiliatedOrganizations = allOrgs
-                    .filter((org) => !this.approvedOrganizations.find((apOrg) => apOrg.id === org.id))
+                    .filter((org) => !this.user.organizations.find((uOrg) => uOrg.id === org.id))
                     .filter((org) => org.labels === undefined || !org.labels.includes('open-group'));
             },
             (err) => {

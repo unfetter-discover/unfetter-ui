@@ -37,7 +37,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     public alreadyLiked: boolean = false;
     public alreadyInteracted: boolean = false;
 
-    private FLASH_MSG_TIMER: number = 1500;
+    private readonly FLASH_MSG_TIMER: number = 1500;
 
     @ViewChild('card') private card: ElementRef;
 

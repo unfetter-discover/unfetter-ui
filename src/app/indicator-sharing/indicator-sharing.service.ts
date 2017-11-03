@@ -9,6 +9,7 @@ export class IndicatorSharingService {
     public baseUrl = Constance.INDICATOR_URL;
     public multiplesUrl = Constance.MULTIPLES_URL;
     public identitiesUrl = Constance.IDENTITIES_URL;
+    public profileByIdUrl = Constance.PROFILE_BY_ID_URL;
 
     constructor(private genericApi: GenericApi) { }
 
@@ -48,4 +49,8 @@ export class IndicatorSharingService {
     public getIdentities() {
         return this.genericApi.get(this.identitiesUrl);
     }    
+
+    public getUserProfileById(userId): Observable<any> {
+        return this.genericApi.get(`${this.profileByIdUrl}/${userId}`);
+    }
 }
