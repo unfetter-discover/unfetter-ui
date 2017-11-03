@@ -212,7 +212,6 @@ export class SidePanelComponent implements OnInit, OnDestroy {
                     return;
                 }
 
-                console.log(result);
                 // add new report
                 const tro = new ThreatReport();
                 tro.boundries = this.threatReport.boundries;
@@ -222,13 +221,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
                 tro.id = this.threatReport.id;
                 tro.reports = [{
                     data: {
-                        attributes: {
-                            external_references: [
-                                result
-                            ],
-                            name: result.name || 'n/a',
-                            description: result.description || ''
-                        }
+                        attributes: result
                     },
                 }];
                 const add$ = this.threatReportOverviewService
@@ -244,5 +237,16 @@ export class SidePanelComponent implements OnInit, OnDestroy {
             },
             (err) => console.log(err)
             );
+    }
+
+    /**
+     * @description angular 2 track by list function, uses the items id if
+     *  it exists, otherwise uses the index
+     * @param {number} index
+     * @param {item}
+     * @return {number}
+     */
+    public trackByFn(index: number, item: any): number {
+        return item.id || index;
     }
 }

@@ -61,4 +61,15 @@ $md_sidenav_max_width: 400px;
     transition: opacity 0.3s ease-in-out;
 }
 
+/**
+  Remove inner scroll bars 
+**/
+.mat-tab-body {
+    overflow-y: hidden;
+
+    .mat-tab-body-content {
+        overflow-y: hidden;
+    }
+}
+
 

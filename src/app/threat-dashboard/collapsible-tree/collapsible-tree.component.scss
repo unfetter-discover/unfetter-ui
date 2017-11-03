@@ -7,6 +7,14 @@
     $grey_500: #9E9E9E;
     $teal_100: #B2DFDB;
     $teal_500: #009688;
+    $teal_700: #00796b;
+
+    .header {
+        padding: 16px 16px;
+        height: 64px;
+        color: $white_87;
+        background: linear-gradient(60deg, $teal_700, $teal_500) !important;
+    }
 
     .tooltip /deep/ {
         position: absolute;

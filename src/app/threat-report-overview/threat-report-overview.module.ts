@@ -55,13 +55,13 @@ const materialModules = [
     ...unfetterComponents
   ],
   imports: [
-    ComponentModule,
-    GlobalModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
     ...materialModules,
+    ComponentModule,
+    GlobalModule,
     FileUploadModule,
     routing
   ],

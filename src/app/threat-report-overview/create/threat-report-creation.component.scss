@@ -1,3 +1,7 @@
+$red_500: #F44336;
+$orange_500: #FF5722;
+$green_500: #4CAF50;
+
 #threatReportCreationComponent {
     .container {
         padding-top: 24px;
@@ -34,6 +38,16 @@
 
     h2 {
         color: rgba(1,1,1, .54);
+    }
+
+    .error {
+        color: $orange_500;
+    }
+
+    .big-number {
+        font-size: 24px;
+        font-weight: 500;
+        color: $green_500;
     }
 
 }
