@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, Renderer2, Output, EventEmitter } from '@angular/core';
 import { trigger, state, transition, style, animate } from '@angular/animations';
 import { Observable } from 'rxjs/Observable';
 
@@ -24,15 +24,20 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     @Input() public attackPatterns: any;
     @Input() public searchParameters: any;
     @Input() public creator: string;
-    
+
+    @Output() public stateChange: EventEmitter<any> = new EventEmitter();
+
     public user;
     public showCommentTextArea: boolean = false;
     public showAddLabel: boolean = false;
     public commentText: string = '';
     public newLabelText: string = '';
     public message = '';
+    public messageTimeout: any;
     public alreadyLiked: boolean = false;
     public alreadyInteracted: boolean = false;
+
+    private readonly FLASH_MSG_TIMER: number = 1500;
 
     @ViewChild('card') private card: ElementRef;
 
@@ -83,14 +88,12 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
             const addLabel$ = this.indicatorSharingService.addLabel(newLabel, this.indicator.id)
                 .subscribe(
                     (res) => {
-                        this.indicator = res.attributes;
-                        this.message = 'Label sucessfully added.';
-                        setTimeout(() => this.message = '', 1500); 
+                        this.updateIndicatorState(res.attributes);
+                        this.flashMessage('Label sucessfully added.');
                     },
                     (err) => {
-                        console.log(err);          
-                        this.message = 'Unable to add label.';
-                        setTimeout(() => this.message = '', 1500);                                    
+                        this.flashMessage('Unable to add label.');
+                        console.log(err);                                
                     },
                     () => {
                         addLabel$.unsubscribe();
@@ -102,18 +105,16 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     public submitComment() {
         const comment = this.commentText;
         this.showCommentTextArea = false;
-        this.message = 'Comment Submitted...';
+        this.flashMessage('Comment Submitted...');
         const addComment$ = this.indicatorSharingService.addComment(comment, this.indicator.id)
             .subscribe(
                 (res) => {
-                    this.indicator = res.attributes;
+                    this.updateIndicatorState(res.attributes);
+                    this.flashMessage('Comment sucessfully added.');
                     this.commentText = ''; 
-                    this.message = 'Comment sucessfully added.';
-                    setTimeout(() => this.message = '', 1500);
                 },
                 (err) => {
-                    this.message = 'Unable to add comment.';
-                    setTimeout(() => this.message = '', 1500); 
+                    this.flashMessage('Unable to add comment.');
                     console.log(err);                    
                 },
                 () => {
@@ -130,10 +131,11 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
         const addLike$ = this.indicatorSharingService.addLike(this.indicator.id)
             .subscribe(
                 (res) => {
-                    this.indicator = res.attributes;
+                    this.updateIndicatorState(res.attributes);
                     this.alreadyLiked = true;
                 },
                 (err) => {
+                    this.flashMessage('Unable to like indicator.');
                     console.log(err);                    
                 },
                 () => {
@@ -145,16 +147,27 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     public addInteraction() {
         const addLike$ = this.indicatorSharingService.addInteraction(this.indicator.id)
             .subscribe(
-            (res) => {
-                this.indicator = res.attributes;
-                this.alreadyInteracted = true;
-            },
-            (err) => {
-                console.log(err);
-            },
-            () => {
-                addLike$.unsubscribe();
-            }
+                (res) => {
+                    this.indicator = res.attributes;
+                    this.alreadyInteracted = true;
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    addLike$.unsubscribe();
+                }
             );
+    }
+
+    private flashMessage(msg: string) {
+        this.message = msg;
+        clearTimeout(this.messageTimeout);
+        this.messageTimeout = setTimeout(() => this.message = '', this.FLASH_MSG_TIMER); 
+    }
+
+    private updateIndicatorState(newIndicatorState) {
+        this.indicator = newIndicatorState;
+        this.stateChange.emit(this.indicator);
     }
 }

@@ -70,7 +70,7 @@
             <mat-tab label="Attack Patterns" *ngIf="attackPatterns && attackPatterns.length > 0">
                 <mat-list>
                     <mat-list-item *ngFor="let ap of attackPatterns">
-                        <h4 mat-line>{{ap.name}}</h4>
+                        <h4 mat-line><a routerLink="/stix/attack-patterns/{{ap.id}}">{{ap.name}}</a></h4>
                         <div mat-line *ngIf="ap.kill_chain_phases">
                             <span *ngFor="let phase of ap.kill_chain_phases; let i = index" class="text-muted">
                                 <span matTooltip="{{ phase.kill_chain_name | capitalize }}" matTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>

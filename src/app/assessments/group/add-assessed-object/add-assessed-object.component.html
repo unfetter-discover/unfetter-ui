@@ -67,8 +67,12 @@
 
                     <div class="row">
                         <p class="text-right">
-                            <button mat-button (click)="addAssessedObject = !addAssessedObject">Cancel</button>
-                            <button mat-button [disabled]="!indicator.name" (click)="indicator.name ? createAssessedObject(indicator, currentAttackPattern) : ''">Save</button>
+                            <button mat-button (click)="addAssessedObject = !addAssessedObject" color="accent">
+                                <mat-icon class="mat-24">cancel</mat-icon>
+                            </button>
+                            <button mat-button [disabled]="!indicator.name" (click)="indicator.name ? createAssessedObject(indicator, currentAttackPattern) : ''" color="primary">
+                                <mat-icon class="mat-24">save</mat-icon>
+                            </button>
                         </p>
                     </div>
                 </div>

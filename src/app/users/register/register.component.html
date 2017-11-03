@@ -60,10 +60,11 @@
                             </mat-error>
                         </mat-form-field>
 
-                        <!-- <mat-select placeholder="Organizations" [multiple]="true" class="full-width mb-20" formControlName="organizations">
-                            <mat-option value="1">Foo</mat-option>
-                            <mat-option value="2">Bar</mat-option>
-                        </mat-select> -->
+                        <mat-form-field class="full-width mb-20" *ngIf="organizations && organizations.length">
+                            <mat-select placeholder="Organizations" [multiple]="true" formControlName="organizations">
+                                <mat-option [value]="makeOrgOptionValue(org.id)" *ngFor="let org of organizations">{{org.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
 
                         <div id="identityForm">
                             <hr>
@@ -85,11 +86,11 @@
                                     <textarea matInput placeholder="Description" formControlName="description"></textarea>
                                 </mat-form-field>
                                                                             
-                                <mat-form-field class="full-width mb-20">
+                                <!-- <mat-form-field class="full-width mb-20">
                                     <mat-select required placeholder="Identity Class" formControlName="identity_class">
                                         <mat-option [value]="ic.id" *ngFor="let ic of identityClasses">{{ic.label}}</mat-option>
                                     </mat-select>
-                                </mat-form-field>                                        
+                                </mat-form-field>                                         -->
 
                                 <mat-form-field class="full-width mb-20">                                        
                                     <mat-select placeholder="Sectors" [multiple]="true" formControlName="sectors">

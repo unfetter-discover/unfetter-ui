@@ -138,8 +138,12 @@
                                 </div>
 
                                 <p class="text-right" *ngIf="assessedObj.editActive">
-                                    <button color="warn"  mat-button (click)="assessedObj.editActive = false"><mat-icon class="mat-24">delete</mat-icon></button>
-                                    <button color="accent"  mat-button (click)="editAssessedObject(assessedObj)"><mat-icon class="mat-24">save</mat-icon></button>
+                                    <button mat-button (click)="assessedObj.editActive = false" color="accent">
+                                        <mat-icon class="mat-24">cancel</mat-icon>
+                                    </button>
+                                    <button color="primary"  mat-button (click)="editAssessedObject(assessedObj)">
+                                        <mat-icon class="mat-24">save</mat-icon>
+                                    </button>
                                 </p>
 
                                 <p class="text-right" *ngIf="!assessedObj.editActive">

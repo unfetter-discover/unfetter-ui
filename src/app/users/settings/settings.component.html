@@ -1,0 +1,76 @@
+<div id="profileComponent" class="container">
+
+    <div class="row mt-20 mb-10">
+        <div class="col-xs-12 col-lg-6 col-lg-offset-3">
+            <h3>Unfetter User Settings</h3>
+        </div>
+    </div>
+
+    <div class="row" *ngIf="user !== undefined">
+        <div class="col-xs-12 col-lg-6 col-lg-offset-3">
+            <mat-card>
+                <mat-card-header>
+                    <div mat-card-avatar [style.background]="'url(' + user.github.avatar_url + ')'" class="avatar" *ngIf="user.github.avatar_url !== undefined"></div>
+                    <mat-card-title class="mt-5">{{user.userName}}</mat-card-title>
+                    <mat-card-subtitle>{{user.firstName}}&nbsp;{{user.lastName}}</mat-card-subtitle>
+                </mat-card-header>
+
+                <mat-card-content>
+                    <br>
+                    <label>STIX Identity</label>
+                    <pre>{{user.identity | json}}</pre>
+                    <div *ngIf="approvedOrganizations && approvedOrganizations.length">
+                        <label>Organizations</label>
+                        <mat-list>
+                            <mat-list-item *ngFor="let org of approvedOrganizations">
+                                <i mat-list-icon class="material-icons">group</i>
+                                <div mat-line>
+                                    <a routerLink="/stix/identities/{{org.id}}">{{ org.name }}</a>
+                                    <span *ngIf="org.role === 'ORG_LEADER'">&nbsp;(Leader)</span>
+                                    <span *ngIf="org.role !== 'ORG_LEADER' && org.role !== 'ORG_LEADER_APPLICANT' && !org.openGroup">&nbsp;
+                                        <button mat-button color="primary" (click)="applyForleadership(org.id)">Request to Become Leader</button>
+                                    </span>
+                                    <span *ngIf="org.role === 'ORG_LEADER_APPLICANT'">&nbsp;Leadership requested, pending approval</span>
+                                </div>
+                            </mat-list-item>
+                        </mat-list>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+
+    <div class="row mt-20 mb-10">
+        <div class="col-xs-12 col-lg-6 col-lg-offset-3">
+            <h3>Join Organizations</h3>
+        </div>
+    </div>
+
+    <div *ngIf="unaffiliatedOrganizations && unaffiliatedOrganizations.length">
+        <div class="row" *ngIf="user !== undefined">
+            <div class="col-xs-12 col-lg-6 col-lg-offset-3">
+                <mat-card>
+                    <mat-card-content>
+                        <mat-list>
+                            <mat-list-item *ngFor="let org of unaffiliatedOrganizations">
+                                <i mat-list-icon class="material-icons">group</i>
+                                <div mat-line>
+                                    <a routerLink="/stix/identities/{{org.id}}">{{ org.name }}</a>
+                                    <span>&nbsp;
+                                    <button mat-button color="primary" (click)="applyForMembership(org.id)">Request Membership</button>
+                                </span>
+                                </div>
+                            </mat-list-item>
+                        </mat-list>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!(unaffiliatedOrganizations && unaffiliatedOrganizations.length)">
+        <div class="uf-well">There are no organizations for you to join.</div>
+    </div>
+
+
+</div>

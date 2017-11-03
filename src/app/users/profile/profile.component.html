@@ -19,6 +19,18 @@
                     <br>
                     <label>STIX Identity</label>
                     <pre>{{user.identity | json}}</pre>
+                    <div *ngIf="organizations && organizations.length">
+                        <label>Organizations</label>
+                        <mat-list>
+                            <mat-list-item *ngFor="let org of organizations">
+                                <i mat-list-icon class="material-icons">group</i>
+                                <div mat-line>
+                                    <a routerLink="/stix/identities/{{org.id}}">{{ org.name }}</a>
+                                    <span *ngIf="org.role === 'ORG_LEADER'">&nbsp;(Leader)</span>
+                                </div>
+                            </mat-list-item>
+                        </mat-list>
+                    </div>
                 </mat-card-content>
             </mat-card>
             

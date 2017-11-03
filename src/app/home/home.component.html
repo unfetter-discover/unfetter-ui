@@ -2,7 +2,7 @@
 
   <div class="row mt-20" *ngIf="authService.pendingApproval()">
     <div class="col-xs-12">
-      <div class="alert alert-info">
+      <div class="uf-well">
         <a (click)="authService.logOut()" class="close" data-dismiss="alert">&times;</a>
         Thank you for registrating to Unfetter. You are pending approval.
       </div>

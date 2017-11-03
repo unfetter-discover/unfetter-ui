@@ -34,6 +34,7 @@
 .navbar-inverse {
     background-color: $nav-background-color;
     border-bottom: none;
+    z-index: 800; // to put navbar under dialog
     .navbar-brand {
         color: #FFFFFF;      
         padding-top: 5px;  

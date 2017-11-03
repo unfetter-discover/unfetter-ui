@@ -51,12 +51,12 @@
                 Signed in as <strong>{{ authService.getUser().userName }}</strong>
               </li>
               <li role="separator" class="divider"></li>
-              <!-- <li>
-                <a class="flexImportant flexItemsCenter">
+              <li>
+                <a routerLink="/users/settings" class="flexImportant flexItemsCenter">
                   <i class="material-icons">settings</i>
                   <span>&nbsp;&nbsp;Settings</span>
                 </a>
-              </li>-->
+              </li>
               <li>
                 <a routerLink="/users/profile/{{authService.getUser()._id}}" class="flexImportant flexItemsCenter">
                   <i class="material-icons">person_outline</i>

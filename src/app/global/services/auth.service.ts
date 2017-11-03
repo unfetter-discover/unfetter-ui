@@ -68,6 +68,10 @@ export class AuthService {
         }
     }
 
+    public isOrgLeader() {
+        return this.loggedIn() && (this.getUser().role === 'ADMIN' || this.getUser().role === 'ORG_LEADER');
+    }
+
     public pendingApproval() {
         return tokenNotExpired('unfetterUiToken') && this.getUser() !== null && this.getUser().approved === false;
     }

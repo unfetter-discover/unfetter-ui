@@ -20,13 +20,14 @@ export class RegisterComponent implements OnInit {
 
     public identityClasses = Constance.IDENTITY_CLASSES;
     public identitySectors = Constance.IDENTITY_SECTOR_OPTIONS;
+    public organizations: any[] = [];
 
     constructor(private usersService: UsersService, private router: Router, private authService: AuthService) {  }
 
     public ngOnInit() {
         const token = localStorage.getItem('unfetterUiToken');
         if (token) {
-            let userFromToken$ = this.usersService.getUserFromToken()
+            const userFromToken$ = this.usersService.getUserFromToken()
                 .subscribe(
                     (user) => {
                         this.userReturn = user = user.attributes;
@@ -39,11 +40,10 @@ export class RegisterComponent implements OnInit {
                                 Validators.required,
                                 Validators.email
                             ]),
-                            // organizations: new FormControl(user.organizations ? user.organizations : ['']),
+                            organizations: new FormControl(user.organizations ? user.organizations : ['']),
                             identity: new FormGroup({
                                 name: new FormControl('', Validators.required),
                                 description: new FormControl(''),
-                                identity_class: new FormControl('', Validators.required),
                                 sectors: new FormControl(['']),
                                 contact_information: new FormControl(''),
                             })
@@ -54,6 +54,21 @@ export class RegisterComponent implements OnInit {
                     },
                     () => {
                         userFromToken$.unsubscribe();
+                    }
+                );
+
+            const getOrganizations$ = this.usersService.getOrganizations()
+                .subscribe(
+                    (res) => {
+                        this.organizations = res
+                            .map((r) => r.attributes)
+                            .filter((org) => org.labels === undefined || !org.labels.includes('open-group'));
+                    },
+                    (err) => {
+                        console.log(err);                        
+                    },
+                    () => {
+                        getOrganizations$.unsubscribe();
                     }
                 );
         } else {
@@ -120,5 +135,7 @@ export class RegisterComponent implements OnInit {
             );             
     }
 
-    // TODO check for token, guide them to login through github if no token
+    public makeOrgOptionValue(orgId) {
+        return {id: orgId, approved: false};
+    }
 }

@@ -21,6 +21,9 @@
               <span *ngIf="authService.isAdmin()">
                 &emsp;|&emsp;<a routerLink="./admin">Admin</a>
               </span>
+              <span *ngIf="authService.isOrgLeader()">
+                 &emsp;|&emsp;<a routerLink="./organizations">Organizations</a>
+              </span>
             </p>
           </div>
     </div>

@@ -21,6 +21,12 @@
             </mat-error>
         </mat-form-field>
 
+        <mat-form-field class="full-width mb-6">
+            <mat-select required placeholder="Submitter Organization" formControlName="created_by_ref">
+                <mat-option *ngFor="let org of organizations" [value]="org.id">{{org.name}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
         <span class="mb-6">
             <mat-form-field>
                 <input matInput required [matDatepicker]="validFromPicker" [max]="form.get('valid_until').value" placeholder="Valid From" formControlName="valid_from">
