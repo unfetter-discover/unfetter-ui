@@ -65,22 +65,35 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
             }
         );
 
-        this.searchDebouncer
+        const searchEvents$ = this.searchDebouncer
             .debounceTime(300)
-            .subscribe(() => {
-                this.filterIndicators();
-            },
-            (e) => console.log(e));
+            .subscribe(
+                () => this.filterIndicators(),
+                (e) => console.log(e),
+                () => searchEvents$.unsubscribe()
+            );
     }
 
     public ngOnDestroy() {
         this.dialog.closeAll();
     }
 
+    public updateIndicator(newIndicatorState) {
+        const indicatorIndex = this.allIndicators
+            .map((indicator) => indicator.id)
+            .indexOf(newIndicatorState.id);
+
+        if (indicatorIndex > -1) {
+            this.allIndicators[indicatorIndex] = newIndicatorState
+        } else {
+            console.log('Can not find indicator to update');
+        }
+    }
+
     public openDialog() {
         const dialogRef = this.dialog.open(AddIndicatorComponent, {
             width: '800px',
-            height: 'calc(100vh - 140px)'
+            height: 'calc(100vh - 50px)'
         });
 
         const dialogRefClose$ = dialogRef.afterClosed()

@@ -10,6 +10,11 @@ const routes = [
         component: IndicatorSharingLayoutComponent,
         children: [
             {
+                path: '',
+                redirectTo: '/indicator-sharing/list',
+                pathMatch: 'full',
+            },
+            {
                 path: 'list',
                 component: IndicatorSharingListComponent
             }
