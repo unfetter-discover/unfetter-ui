@@ -4,4 +4,5 @@ export interface KillChainEntry {
     foregroundColor: string;
     backgroundColor: string;
     attack_patterns: any;
+    isSelected: boolean;
 };

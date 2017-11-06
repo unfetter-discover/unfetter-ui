@@ -27,7 +27,12 @@
                         </div>
                         <div class="row">
                             <div class="col-md-11">
-                                <unf-collapsible-tree *ngIf="treeData" [data]="treeData" (treeComplete)="treeComplete()"></unf-collapsible-tree>
+                                <unf-collapsible-tree *ngIf="treeData" [data]="treeData" (renderComplete)="treeRendered()"></unf-collapsible-tree>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-11">
+                                <unf-radar-chart *ngIf="radarData" [data]="radarData" (renderComplete)="radarRendered()"></unf-radar-chart>
                             </div>
                         </div>
                     </mat-tab>
