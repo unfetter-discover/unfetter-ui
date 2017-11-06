@@ -24,9 +24,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
 
     public user;
     public showCommentTextArea: boolean = false;
-    public showAddLabel: boolean = false;
     public commentText: string = '';
-    public newLabelText: string = '';
     public message = '';
     public messageTimeout: any;
     public alreadyLiked: boolean = false;
@@ -78,8 +76,6 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     public addLabel(label) {
         if (label.length > 0) {
             const newLabel = label;
-            this.newLabelText = '';
-            this.showAddLabel = false;
             const addLabel$ = this.indicatorSharingService.addLabel(newLabel, this.indicator.id)
                 .subscribe(
                     (res) => {
