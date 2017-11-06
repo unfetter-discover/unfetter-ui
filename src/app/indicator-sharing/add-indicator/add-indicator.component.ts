@@ -14,18 +14,20 @@ import { AuthService } from '../../global/services/auth.service';
     styleUrls: ['add-indicator.component.scss'],
     animations: [
         trigger('collapseLevel', [
-            state('open', style({ opacity: 1, height: '*' })),
-            state('closed', style({ opacity: 0, height: 0 })),
-            transition('open <=> closed', animate('200ms ease-in-out')),
+            transition(':enter', [
+                style({ opacity: 0, height: 0, overflow: 'hidden' }),
+                animate('0.2s ease-in-out', style({ opacity: 1, height: '*' }))
+            ]),
+            transition(':leave', [
+                style({ opacity: 1, height: '*', overflow: 'hidden' }),
+                animate('0.2s ease-in-out', style({ opacity: 0, height: 0 }))
+            ])
         ])
     ]
 })
-
 export class AddIndicatorComponent implements OnInit {
 
     public form: FormGroup | any;
-    public showExternalReferences: boolean = false;
-    public showKillChainPhases: boolean = false;
     public organizations: any;
 
     constructor(
