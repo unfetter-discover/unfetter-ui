@@ -11,11 +11,11 @@ export class ConfigService {
 
     private configUrl = Constance.CONFIG_URL;
 
-    constructor(private genericApi: GenericApi, @SkipSelf() @Optional() protected parent: ConfigService) { 
-        console.log('CONFIG CONSTR');
+    constructor(private genericApi: GenericApi, @SkipSelf() @Optional() protected parent: ConfigService) {
         if (parent) {
-            throw new Error('Config service is already loaded. Import it in one module only');
+            console.log('WARNING - ConfigService was instansiated more than once');
         }
+        
     }
 
     public initConfig() {

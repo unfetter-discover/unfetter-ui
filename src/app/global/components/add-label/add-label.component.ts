@@ -68,7 +68,9 @@ export class AddLabelReactiveComponent implements OnInit {
             break;
         }
 
-        this.openVocabList = this.openVocabList.filter((ov) => !(this.parentForm.get('labels') as FormArray).value.includes(ov) && !this.currentLabels.includes(ov));
+        this.openVocabList = this.openVocabList
+            .filter((ov) => !(this.parentForm.get('labels') as FormArray).value.includes(ov) && !this.currentLabels.includes(ov))
+            .sort();
     }
 
     private resetForm() {
