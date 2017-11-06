@@ -11,14 +11,12 @@
     height: 32px;
     border-radius: 24px;
     width: 0;
-    opacity: 0;
-    input {
-        border: none;
-        padding: 3px;
-        outline: none;
-        width: 0;
-    }
-    background-color: #e0e0e0;
+    opacity: 0;    
+    background-color: #e0e0e0;    
+}
+
+.sendLabelbtn {
+    margin-right: 20px !important;
 }
 
 #addLabelBtn {
@@ -27,15 +25,15 @@
 
 .showAddLabel {
     #addLabelInputWrapper {
-        width: 225px;
+        width: 243px;
         opacity: 1;
         i {
             margin-left: 3px;
         }
     }
-    input {
-        width: 152px !important;
-    }
+    // input {
+    //     width: 152px !important;
+    // }
     #addLabelBtn i {
         transform: rotateZ(135deg);
     }

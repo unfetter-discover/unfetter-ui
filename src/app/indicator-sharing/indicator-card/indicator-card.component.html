@@ -21,7 +21,8 @@
                     <mat-chip-list>
                         <mat-chip *ngFor="let label of indicator.labels" [selected]="labelSelected(label)" class="cursor-pointer chipListChip">{{label | capitalize}}</mat-chip>
                     </mat-chip-list>
-                    <span id="addLabelWrapper" [ngClass]="{'showAddLabel': showAddLabel}" class="inlineFlex flexItemsCenter">
+                    <add-label-reactive [stixType]="'indicator'" (labelAdded)="addLabel($event)" [currentLabels]="indicator.labels"></add-label-reactive>
+                    <!-- <span id="addLabelWrapper" [ngClass]="{'showAddLabel': showAddLabel}" class="inlineFlex flexItemsCenter">
                         <div id="addLabelInputWrapper" class="inlineFlex flexItemsCenter">
                             <input type="text" [(ngModel)]="newLabelText">
                             <i class="material-icons mat-24 cursor-pointer" [ngClass]="{'text-muted': newLabelText.length === 0}" (click)="addLabel()" matTooltip="Add Label">send</i>
@@ -29,7 +30,7 @@
                         <button mat-mini-fab color="accent" (click)="showAddLabel = !showAddLabel" id="addLabelBtn" class="inlineBlock">
                             <i class="material-icons mat-24">add</i>
                         </button>
-                    </span>
+                    </span> -->
                 </div>
             </mat-tab>
 

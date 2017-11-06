@@ -2,7 +2,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { MatTooltipModule, MatTableModule, MatChipsModule, MatPaginatorModule, MatButtonModule, MatInputModule, MatProgressSpinnerModule } from '@angular/material';
+import { MatTooltipModule, MatTableModule, MatChipsModule, MatPaginatorModule, MatButtonModule, MatInputModule, MatProgressSpinnerModule, MatAutocompleteModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // ~~~ Local ~~~
@@ -28,7 +28,7 @@ import { SophisticationPipe } from './pipes/sophistication.pipe';
 import { FieldSortPipe } from './pipes/field-sort.pipe';
 
 const matModules = [
-    MatTooltipModule, MatTableModule, MatChipsModule, MatPaginatorModule, MatButtonModule, MatInputModule, MatProgressSpinnerModule
+    MatTooltipModule, MatTableModule, MatChipsModule, MatPaginatorModule, MatButtonModule, MatInputModule, MatProgressSpinnerModule, MatAutocompleteModule
 ];
 
 @NgModule({
@@ -65,7 +65,7 @@ const matModules = [
         GenericApi,
         AuthService,
         AuthGuard,
-        ConfigService,
+        // ConfigService, Move to global import
         WebAnalyticsService
     ]
 })

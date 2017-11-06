@@ -1,7 +1,15 @@
 <span [ngClass]="{'showAddLabel': showAddLabel}" class="inlineFlex flexItemsCenter addLabelComponentWrapper">
     <div id="addLabelInputWrapper" class="inlineFlex flexItemsCenter">
-        <input type="text" [formControl]="localForm">
-        <i class="material-icons mat-24 cursor-pointer" [ngClass]="{'text-muted': localForm.value.length === 0}" (click)="addToParent()" matTooltip="Add Label">send</i>
+        <mat-form-field>
+            <input type="text" matInput [formControl]="localForm" [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let ov of openVocabList" [value]="ov">
+                    {{ ov }}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+        
+        <i class="material-icons mat-24 cursor-pointer sendLabelbtn" [ngClass]="{'text-muted': localForm.status === 'INVALID'}" (click)="localForm.status === 'VALID' ? addToParent() : ''" matTooltip="Add Label">send</i>
     </div>
     <button mat-mini-fab color="accent" (click)="buttonClick($event)" id="addLabelBtn" class="inlineBlock">
         <i class="material-icons mat-24">add</i>
