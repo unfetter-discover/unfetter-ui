@@ -462,6 +462,20 @@ a {
     }
 }
 
+.addLabelComponentWrapper {
+    .mat-input-infix.mat-form-field-infix {
+        padding-bottom: 3px;
+        width: 0 !important;
+        transition: width 0.2s ease-in-out;
+    }
+}
+
+.showAddLabel {
+    .mat-input-infix.mat-form-field-infix {
+        width: 170px !important;
+    }
+}
+
 .unfetterAngularMaterialAccordion {
     .mat-expansion-panel {
         transition: box-shadow 0.3s ease-in-out;

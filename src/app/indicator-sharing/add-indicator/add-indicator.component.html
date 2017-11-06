@@ -90,7 +90,7 @@
                     <mat-icon matChipRemove (click)="form.get('labels').removeAt(i)">cancel</mat-icon>
                 </mat-chip>
             </mat-chip-list>
-            <add-label-reactive [parentForm]="form"></add-label-reactive>
+            <add-label-reactive [parentForm]="form" [stixType]="'indicator'"></add-label-reactive>
         </div>
         <!-- ~~~ End of Labels ~~~ -->
 
