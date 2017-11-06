@@ -14,7 +14,7 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
     // private static readonly DEFAULT_PARENT = CollapsibleTreeComponent.teal200;
     
     @Input() public data: any;
-    @Output() public treeComplete: EventEmitter<any> = new EventEmitter();
+    @Output() public renderComplete: EventEmitter<any> = new EventEmitter();
     private svg: any;    
     private readonly graphId = '#graph';
     private readonly circleRadius = 12;
@@ -332,7 +332,7 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
 
         }
 
-        this.treeComplete.emit();
+        this.renderComplete.emit();
     }
 
     /**

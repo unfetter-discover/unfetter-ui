@@ -16,14 +16,7 @@ import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
 @Component({
   selector: 'unf-add-external-report',
   templateUrl: './add-external-report.component.html',
-  styleUrls: ['add-external-report.component.scss'],
-  animations: [
-    trigger('collapseLevel', [
-      state('open', style({ opacity: 1, height: '*' })),
-      state('closed', style({ opacity: 0, height: 0 })),
-      transition('open <=> closed', animate('200ms ease-in-out')),
-    ])
-  ]
+  styleUrls: ['add-external-report.component.scss']
 })
 export class AddExterernalReportComponent implements OnInit, OnDestroy {
 

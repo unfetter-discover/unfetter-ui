@@ -27,6 +27,7 @@ export class ThreatReportOverviewService {
       return Observable.of();
     }
 
+    // TODO: this should be more efficient
     return this.loadAll()
       .flatMap((arr) => arr)
       .filter((el) => {

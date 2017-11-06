@@ -11,11 +11,13 @@ import { ConfirmationDialogComponent } from '../../components/dialogs/confirmati
 import { MatDialog, MatMenu } from '@angular/material';
 import { ThreatReportOverviewService } from '../services/threat-report-overview.service';
 import { AddExterernalReportComponent } from '../../threat-report-overview/add-external-report/add-external-report.component';
+import { parentFadeIn } from '../../global/animations/animations';
 
 @Component({
     selector: 'unf-side-panel',
     templateUrl: 'side-panel.component.html',
-    styleUrls: ['./side-panel.component.scss']
+    styleUrls: ['./side-panel.component.scss'],
+    animations: [parentFadeIn]
 })
 export class SidePanelComponent implements OnInit, OnDestroy {
 
@@ -228,7 +230,13 @@ export class SidePanelComponent implements OnInit, OnDestroy {
                     .saveThreatReport(tro)
                     .subscribe(
                     (resp) => {
-                        console.log(`saved report ${resp}`)
+                        console.log(`saved report ${resp}`);
+                        // flat map and unwrap the response
+                        const arr = resp
+                            .reduce((memo: any[], el: any) => memo.concat(el.data), [])
+                            .map((el) => el.attributes);
+                        // add to the list for display
+                        this.threatReport.reports = this.threatReport.reports.concat(arr);
                     },
                     (err) => console.log(err),
                     () => add$.unsubscribe()

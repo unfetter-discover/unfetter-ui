@@ -32,12 +32,14 @@ import { ThreatDashboardComponent } from './threat-dashboard.component';
 import { ThreatReportOverviewModule } from '../threat-report-overview/threat-report-overview.module';
 import { ThreatReportOverviewService } from './services/threat-report-overview.service';
 import { ExportComponent } from './export/export.component';
+import { RadarChartComponent } from './radar-chart/radar-chart.component';
 
 const moduleComponents = [
   AttackPatternCountComponent,
   CollapsibleTreeComponent,
   ExportComponent,
   KillChainTableComponent,
+  RadarChartComponent,
   SidePanelComponent,
   ThreatDashboardComponent,
 ];
