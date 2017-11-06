@@ -140,11 +140,12 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     }
 
     public addInteraction() {
+        // Set this to true immediantly to prevent errors from double clicking
+        this.alreadyInteracted = true;
         const addLike$ = this.indicatorSharingService.addInteraction(this.indicator.id)
             .subscribe(
                 (res) => {
-                    this.indicator = res.attributes;
-                    this.alreadyInteracted = true;
+                    this.indicator = res.attributes;                    
                 },
                 (err) => {
                     console.log(err);
