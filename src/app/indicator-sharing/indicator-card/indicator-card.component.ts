@@ -80,9 +80,9 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
         return this.searchParameters.labels.length !== this.searchParameters.activeLabels.length && this.searchParameters.activeLabels.includes(label);
     }
 
-    public addLabel() {
-        if (this.newLabelText.length > 0) {
-            const newLabel = this.newLabelText;
+    public addLabel(label) {
+        if (label.length > 0) {
+            const newLabel = label;
             this.newLabelText = '';
             this.showAddLabel = false;
             const addLabel$ = this.indicatorSharingService.addLabel(newLabel, this.indicator.id)

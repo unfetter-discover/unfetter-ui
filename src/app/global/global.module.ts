@@ -65,7 +65,7 @@ const matModules = [
         GenericApi,
         AuthService,
         AuthGuard,
-        ConfigService,
+        // ConfigService, Move to global import
         WebAnalyticsService
     ]
 })

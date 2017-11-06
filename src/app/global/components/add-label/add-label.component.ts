@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
 
 import { ConfigService } from '../../services/config.service';
@@ -10,8 +10,12 @@ import { ConfigService } from '../../services/config.service';
 })
 
 export class AddLabelReactiveComponent implements OnInit {
-    @Input() public parentForm: FormGroup;
+    @Input() public parentForm: FormGroup = new FormGroup({
+        labels: new FormArray([])
+    });
     @Input() public stixType: string;
+    @Input() public currentLabels: string[] = [];
+    @Output() public labelAdded: EventEmitter<string> = new EventEmitter();
 
     public localForm: FormControl;
     public showAddLabel: boolean = false;
@@ -20,14 +24,21 @@ export class AddLabelReactiveComponent implements OnInit {
     constructor(private configService: ConfigService) { }
 
     public ngOnInit() {
-        this.setStixType();
+        this.configService.getConfigPromise()
+            .then((res) => this.setStixType())
+            .catch((err) => console.log(err));
+
         this.resetForm();
     }        
 
-    public addToParent() {
+    public addToParent() {        
+        if (this.openVocabList.includes(this.localForm.value)) {
+            this.openVocabList.splice(this.openVocabList.indexOf(this.localForm.value), 1);
+        }
+        this.labelAdded.emit(this.localForm.value);
         (this.parentForm.get('labels') as FormArray).push(this.localForm);
         this.resetForm();
-        this.showAddLabel = false;
+        this.showAddLabel = false;        
     }
 
     public buttonClick(e) {
@@ -56,6 +67,8 @@ export class AddLabelReactiveComponent implements OnInit {
             this.openVocabList = this.configService.configurations.openVocab['tool-label-ov'].enum;
             break;
         }
+
+        this.openVocabList = this.openVocabList.filter((ov) => !(this.parentForm.get('labels') as FormArray).value.includes(ov) && !this.currentLabels.includes(ov));
     }
 
     private resetForm() {
