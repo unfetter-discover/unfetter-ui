@@ -1,28 +1,34 @@
-<div class="externalReferencesComponent uf-well">
-    <form [formGroup]="localForm" novalidate (ngSubmit)="addToParent()">
+<div class="externalReferencesComponent">
+    <div class="uf-collapsible-control mb-10" (click)="showExternalReferences = !showExternalReferences">
+        <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showExternalReferences}">chevron_right</i>
+        <span class="h5">&nbsp;External References</span>
+    </div>
+    <div class="uf-well" @heightCollapse *ngIf="showExternalReferences">
+        <form [formGroup]="localForm" novalidate (ngSubmit)="addToParent()">
 
-        <mat-form-field class="full-width mb-6">
-            <input matInput required placeholder="Source Name" formControlName="source_name">
-            <mat-error *ngIf="localForm.get('source_name').hasError('required')">
-                Source Name is <strong>required</strong>
-            </mat-error>
-        </mat-form-field>
+            <mat-form-field class="full-width mb-6">
+                <input matInput required placeholder="Source Name" formControlName="source_name">
+                <mat-error *ngIf="localForm.get('source_name').hasError('required')">
+                    Source Name is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
 
-        <mat-form-field class="full-width mb-6">
-            <input matInput required placeholder="External ID" formControlName="external_id">
-            <mat-error *ngIf="localForm.get('external_id').hasError('required')">
-                External ID is <strong>required</strong>
-            </mat-error>
-        </mat-form-field>
+            <mat-form-field class="full-width mb-6">
+                <input matInput required placeholder="External ID" formControlName="external_id">
+                <mat-error *ngIf="localForm.get('external_id').hasError('required')">
+                    External ID is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
 
-        <mat-form-field class="full-width mb-6">
-            <textarea matInput placeholder="Description" formControlName="description"></textarea>
-        </mat-form-field>
+            <mat-form-field class="full-width mb-6">
+                <textarea matInput placeholder="Description" formControlName="description"></textarea>
+            </mat-form-field>
 
-        <mat-form-field class="full-width mb-6">
-            <input matInput placeholder="URL" formControlName="url">
-        </mat-form-field>
+            <mat-form-field class="full-width mb-6">
+                <input matInput placeholder="URL" formControlName="url">
+            </mat-form-field>
 
-        <button mat-button color="primary" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Add External Reference</button>
-    </form>
+            <button mat-button color="primary" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Add External Reference</button>
+        </form>
+    </div>
 </div>

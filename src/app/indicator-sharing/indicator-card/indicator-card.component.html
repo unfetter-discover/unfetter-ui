@@ -83,7 +83,7 @@
             </mat-tab>
         </mat-tab-group>
 
-        <div class="mt-20 overFlowHidden" [@collapseLevel]="showCommentTextArea ? 'open' : 'closed'">
+        <div class="mt-20 overFlowHidden" @heightCollapse *ngIf="showCommentTextArea">
             <mat-form-field class="full-width">
                 <textarea matInput matTextareaAutosize placeholder="Comment" [(ngModel)]="commentText">{{ commentText }}</textarea>
             </mat-form-field>

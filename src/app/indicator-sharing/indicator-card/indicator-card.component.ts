@@ -1,21 +1,16 @@
 import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, Renderer2, Output, EventEmitter } from '@angular/core';
-import { trigger, state, transition, style, animate } from '@angular/animations';
+import { trigger, state, transition, style, animate, query } from '@angular/animations';
 import { Observable } from 'rxjs/Observable';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { FormatHelpers } from '../../global/static/format-helpers';
 import { AuthService } from '../../global/services/auth.service';
+import { heightCollapse } from '../../global/animations/height-collapse';
 
 @Component({
     selector: 'indicator-card',
     templateUrl: 'indicator-card.component.html',
-    animations: [
-        trigger('collapseLevel', [
-            state('open', style({ opacity: 1, height: '*' })),
-            state('closed', style({ opacity: 0, height: 0 })),
-            transition('open <=> closed', animate('200ms ease-in-out')),
-        ])
-    ],
+    animations: [heightCollapse],
     styleUrls: ['indicator-card.component.scss']
 })
 
@@ -99,7 +94,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
                         addLabel$.unsubscribe();
                     }
                 );            
-        }       
+        }      
     }
 
     public submitComment() {
