@@ -35,7 +35,7 @@
         </p>
         <div class="uf-well">
             <mat-form-field class="full-width mb-6">
-                <input matInput required placeholder="Name" formControlName="external_ref_name">
+                <input matInput placeholder="Name" formControlName="external_ref_name">
                 <mat-error *ngIf="form.get('external_ref_name').hasError('required')">
                     Name is
                     <strong>required</strong>
@@ -51,7 +51,7 @@
             </mat-form-field>
 
             <mat-form-field class="full-width mb-6">
-                <input matInput required placeholder="External ID" formControlName="external_ref_external_id">
+                <input matInput placeholder="External ID" formControlName="external_ref_external_id">
                 <mat-error *ngIf="form.get('external_ref_external_id').hasError('required')">
                     ID is
                     <strong>required</strong>
@@ -59,7 +59,7 @@
             </mat-form-field>
 
             <mat-form-field class="full-width mb-6">
-                <input matInput required placeholder="URL" formControlName="external_ref_url">
+                <input matInput placeholder="URL" formControlName="external_ref_url">
                 <mat-error *ngIf="form.get('external_ref_url').hasError('required')">
                     URL is
                     <strong>required</strong>

@@ -1,13 +1,13 @@
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 
 export const ExternalReportForm = () => new FormGroup({
-    external_ref_name: new FormControl('', Validators.required),
-    external_ref_source_name: new FormControl('', Validators.required),
-    external_ref_external_id: new FormControl('', Validators.required),
-    external_ref_description: new FormControl(),
-    external_ref_url: new FormControl('', Validators.required),
+    external_ref_name: new FormControl(''),
+    external_ref_source_name: new FormControl('opensource', Validators.required),
+    external_ref_external_id: new FormControl(''),
+    external_ref_description: new FormControl(''),
+    external_ref_url: new FormControl(''),
     name: new FormControl('', Validators.required),
-    description: new FormControl(),
+    description: new FormControl(''),
     granular_markings: new FormArray([]),
     external_references: new FormArray([]),
     kill_chain_phases: new FormArray([]),
