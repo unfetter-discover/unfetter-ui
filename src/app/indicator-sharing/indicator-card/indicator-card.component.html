@@ -29,7 +29,10 @@
                     <label>Kill Chain Phases</label>
                     <p>
                         <span *ngFor="let phase of indicator.kill_chain_phases; let i = index" class="text-muted">
-                            <span matTooltip="{{ phase.kill_chain_name | capitalize }}" matTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>
+                            <span 
+                                [ngClass]="{'uf-highlight': highlightPhase(phase.phase_name)}"
+                                matTooltip="{{ phase.kill_chain_name | capitalize }}" 
+                                matTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>
                             <span *ngIf="i < (indicator.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
                         </span>
                     </p>

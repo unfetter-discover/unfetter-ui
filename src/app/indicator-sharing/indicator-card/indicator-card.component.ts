@@ -69,6 +69,10 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
         }           
     }
 
+    public highlightPhase(phase) {
+        return this.searchParameters.activeKillChainPhases.length && this.searchParameters.activeKillChainPhases.includes(phase);
+    }
+
     public labelSelected(label) {
         return this.searchParameters.labels.length !== this.searchParameters.activeLabels.length && this.searchParameters.activeLabels.includes(label);
     }
