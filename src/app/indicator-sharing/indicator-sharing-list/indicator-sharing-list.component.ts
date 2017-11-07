@@ -5,6 +5,7 @@ import { Subject } from 'rxjs/Subject';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { AddIndicatorComponent } from '../add-indicator/add-indicator.component';
+import { ConfigService } from '../../global/services/config.service';
 
 @Component({
     selector: 'indicator-sharing-list',
@@ -25,13 +26,19 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
     public searchParameters: any = {
         labels: [],
         activeLabels: [],
-        activeIdentities: []
+        activeIdentities: [],
+        killChainPhases: [],
+        activeKillChainPhases: []
     };
     public SERVER_CALL_COMPLETE = false;
     public sortBy: string = 'NEWEST';
     public searchDebouncer: Subject<any> = new Subject();
 
-    constructor(private indicatorSharingService: IndicatorSharingService, public dialog: MatDialog) { }
+    constructor(
+        private indicatorSharingService: IndicatorSharingService, 
+        public dialog: MatDialog,
+        private configService: ConfigService
+    ) { }
 
     public ngOnInit() { 
         const getData$ = Observable.forkJoin(
@@ -64,6 +71,15 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
                 getData$.unsubscribe();
             }
         );
+
+        this.configService.getConfigPromise()
+            .then((res) => {
+                const attackKillchain = res.killChains.find((kc) => kc.name === 'mitre-attack');
+                this.searchParameters.killChainPhases = attackKillchain.phase_names;
+            })
+            .catch((err) => {
+                console.log(err);
+            });
 
         const searchEvents$ = this.searchDebouncer
             .debounceTime(300)
@@ -137,6 +153,21 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
             this.filteredIndicators = this.filteredIndicators
                 .filter((indicator) => indicator.created_by_ref !== undefined && this.searchParameters.activeIdentities.includes(indicator.created_by_ref));
         }
+
+        if (this.searchParameters.activeKillChainPhases && this.searchParameters.activeKillChainPhases.length > 0) {
+            this.filteredIndicators = this.filteredIndicators
+                .filter((indicator) => !!indicator.kill_chain_phases)
+                .filter((indicator) => {
+                    let found = false;
+                    indicator.kill_chain_phases.map((e) => e.phase_name).forEach((phase) => {
+                        if (this.searchParameters.activeKillChainPhases.includes(phase)) {
+                            found = true;
+                        }
+                    });
+                    return found;
+                });
+        }
+
         this.sortIndicators();           
     }
 

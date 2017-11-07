@@ -24,9 +24,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
 
     public user;
     public showCommentTextArea: boolean = false;
-    public showAddLabel: boolean = false;
     public commentText: string = '';
-    public newLabelText: string = '';
     public message = '';
     public messageTimeout: any;
     public alreadyLiked: boolean = false;
@@ -71,6 +69,10 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
         }           
     }
 
+    public highlightPhase(phase) {
+        return this.searchParameters.activeKillChainPhases.length && this.searchParameters.activeKillChainPhases.includes(phase);
+    }
+
     public labelSelected(label) {
         return this.searchParameters.labels.length !== this.searchParameters.activeLabels.length && this.searchParameters.activeLabels.includes(label);
     }
@@ -78,8 +80,6 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     public addLabel(label) {
         if (label.length > 0) {
             const newLabel = label;
-            this.newLabelText = '';
-            this.showAddLabel = false;
             const addLabel$ = this.indicatorSharingService.addLabel(newLabel, this.indicator.id)
                 .subscribe(
                     (res) => {
@@ -140,11 +140,12 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     }
 
     public addInteraction() {
+        // Set this to true immediantly to prevent errors from double clicking
+        this.alreadyInteracted = true;
         const addLike$ = this.indicatorSharingService.addInteraction(this.indicator.id)
             .subscribe(
                 (res) => {
-                    this.indicator = res.attributes;
-                    this.alreadyInteracted = true;
+                    this.indicator = res.attributes;                    
                 },
                 (err) => {
                     console.log(err);

@@ -16,8 +16,13 @@
                     <mat-option value="{{org.id}}" *ngFor="let org of organizations">{{ org.name }}</mat-option>
                 </mat-select>
             </mat-form-field>
+            <mat-form-field class="full-width mb-12">
+                <mat-select placeholder="Kill Chain Phases" [multiple]="true" (change)="searchDebouncer.next()" [(ngModel)]="searchParameters.activeKillChainPhases">
+                    <mat-option value="{{phase}}" *ngFor="let phase of searchParameters.killChainPhases">{{ phase | capitalize }}</mat-option>
+                </mat-select>
+            </mat-form-field>
             <p *ngIf="displayedIndicators && allIndicators" class="text-muted flex">
-                <span><a (click)="searchParameters.activeLabels = []; searchParameters.activeIdentities = []; filterIndicators()">Clear Filters</a></span>
+                <span><a (click)="searchParameters.activeLabels = []; searchParameters.activeIdentities = []; searchParameters.activeKillChainPhases = []; filterIndicators()">Clear Filters</a></span>
                 <span class="flex1"></span>
                 <span>Results: {{ filteredIndicators.length }} / {{ allIndicators.length }}</span>    
             </p> 

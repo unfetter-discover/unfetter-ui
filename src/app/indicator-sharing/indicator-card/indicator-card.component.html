@@ -2,7 +2,6 @@
     <mat-card-header>
         <mat-card-title>{{ indicator.name }}</mat-card-title>
         <mat-card-subtitle>
-            <!-- TODO add link to creator -->
             Submitted {{ indicator.created | date:'medium' }} 
             <span *ngIf="creator">
                  by <a routerLink="/stix/identities/{{creator.id}}">{{creator.name}}</a>
@@ -22,19 +21,22 @@
                         <mat-chip *ngFor="let label of indicator.labels" [selected]="labelSelected(label)" class="cursor-pointer chipListChip">{{label | capitalize}}</mat-chip>
                     </mat-chip-list>
                     <add-label-reactive [stixType]="'indicator'" (labelAdded)="addLabel($event)" [currentLabels]="indicator.labels"></add-label-reactive>
-                    <!-- <span id="addLabelWrapper" [ngClass]="{'showAddLabel': showAddLabel}" class="inlineFlex flexItemsCenter">
-                        <div id="addLabelInputWrapper" class="inlineFlex flexItemsCenter">
-                            <input type="text" [(ngModel)]="newLabelText">
-                            <i class="material-icons mat-24 cursor-pointer" [ngClass]="{'text-muted': newLabelText.length === 0}" (click)="addLabel()" matTooltip="Add Label">send</i>
-                        </div>
-                        <button mat-mini-fab color="accent" (click)="showAddLabel = !showAddLabel" id="addLabelBtn" class="inlineBlock">
-                            <i class="material-icons mat-24">add</i>
-                        </button>
-                    </span> -->
                 </div>
             </mat-tab>
 
             <mat-tab label="Details">
+                <div *ngIf="indicator.kill_chain_phases">
+                    <label>Kill Chain Phases</label>
+                    <p>
+                        <span *ngFor="let phase of indicator.kill_chain_phases; let i = index" class="text-muted">
+                            <span 
+                                [ngClass]="{'uf-highlight': highlightPhase(phase.phase_name)}"
+                                matTooltip="{{ phase.kill_chain_name | capitalize }}" 
+                                matTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>
+                            <span *ngIf="i < (indicator.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
+                        </span>
+                    </p>
+                </div>
                 <div *ngIf="indicator.description">
                     <label>Description</label>
                     <p>{{ indicator.description }}</p>
@@ -69,7 +71,7 @@
             </mat-tab>
 
             <mat-tab label="Attack Patterns" *ngIf="attackPatterns && attackPatterns.length > 0">
-                <mat-list>
+                <mat-list dense>
                     <mat-list-item *ngFor="let ap of attackPatterns">
                         <h4 mat-line><a routerLink="/stix/attack-patterns/{{ap.id}}">{{ap.name}}</a></h4>
                         <div mat-line *ngIf="ap.kill_chain_phases">
