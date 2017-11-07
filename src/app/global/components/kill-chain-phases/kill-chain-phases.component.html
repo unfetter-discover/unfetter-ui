@@ -1,20 +1,28 @@
-<div class="killChainPhasesComponent uf-well">
-    <form [formGroup]="localForm" novalidate (ngSubmit)="addToParent()">     
-          
-        <mat-form-field class="full-width mb-6">
-            <input matInput required placeholder="Kill Chain Name" formControlName="kill_chain_name">
-            <mat-error *ngIf="localForm.get('kill_chain_name').hasError('required')">
-                Kill Chain Name is <strong>required</strong>
-            </mat-error>
-        </mat-form-field>
+<div class="killChainPhasesComponent">
 
-        <mat-form-field class="full-width mb-6">
-            <input matInput required placeholder="Phase Name" formControlName="phase_name">
-            <mat-error *ngIf="localForm.get('phase_name').hasError('required')">
-                Phase Name is <strong>required</strong>
-            </mat-error>
-        </mat-form-field>   
-        
-        <button mat-button color="primary" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Add Kill Chain Phase</button>
-    </form>
+    <div class="uf-collapsible-control mb-10 mt-9" (click)="showKillChainPhases = !showKillChainPhases">
+        <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showKillChainPhases}">chevron_right</i>
+        <span class="h5">&nbsp;Kill Chain Phases</span>
+    </div>
+
+    <div class="uf-well" @heightCollapse *ngIf="showKillChainPhases">
+        <form [formGroup]="localForm" novalidate (ngSubmit)="addToParent()">     
+            
+            <mat-form-field class="full-width mb-6">
+                <input matInput required placeholder="Kill Chain Name" formControlName="kill_chain_name">
+                <mat-error *ngIf="localForm.get('kill_chain_name').hasError('required')">
+                    Kill Chain Name is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+            
+            <mat-form-field class="full-width mb-6">
+                <input matInput required placeholder="Phase Name" formControlName="phase_name">
+                <mat-error *ngIf="localForm.get('phase_name').hasError('required')">
+                    Phase Name is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>   
+            
+            <button mat-button color="primary" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Add Kill Chain Phase</button>
+        </form>
+    </div>
 </div>

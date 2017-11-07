@@ -48,37 +48,29 @@
 
         <!-- ~~~ External References ~~~ -->
         <br>
-        <div class="uf-collapsible-control mb-10" (click)="showExternalReferences = !showExternalReferences">
-            <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showExternalReferences}">chevron_right</i>
-            <span class="h5">&nbsp;External References</span>
-        </div>
-        <div [@collapseLevel]="showExternalReferences ? 'open' : 'closed'" class="overFlowHidden">
+        <div>
             <external-references-reactive [parentForm]="form"></external-references-reactive>
+            <mat-chip-list formArrayName="external_references" *ngIf="form.get('external_references').value.length > 0" class="chipListPadding">
+                <mat-chip *ngFor="let extRef of form.get('external_references').value; let i = index" class="cursor-pointer chipListChip"
+                    color="warn" selected="true" removable="true">
+                    <span class="flex1 flexNowrap">{{ extRef.source_name | capitalize}}</span>
+                    <mat-icon matChipRemove (click)="form.get('external_references').removeAt(i)">cancel</mat-icon>
+                </mat-chip>
+            </mat-chip-list>
         </div>
-        <mat-chip-list formArrayName="external_references" *ngIf="form.get('external_references').value.length > 0" class="chipListPadding">
-            <mat-chip *ngFor="let extRef of form.get('external_references').value; let i = index" class="cursor-pointer chipListChip"
-                color="warn" selected="true" removable="true">
-                <span class="flex1 flexNowrap">{{ extRef.source_name | capitalize}}</span>
-                <mat-icon matChipRemove (click)="form.get('external_references').removeAt(i)">cancel</mat-icon>
-            </mat-chip>
-        </mat-chip-list>
         <!-- ~~~ End of External References ~~~ -->
 
         <!-- ~~~ Kill Chain Phases ~~~ -->
-        <div class="uf-collapsible-control mb-10 mt-9" (click)="showKillChainPhases = !showKillChainPhases">
-            <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showKillChainPhases}">chevron_right</i>
-            <span class="h5">&nbsp;Kill Chain Phases</span>
-        </div>
-        <div [@collapseLevel]="showKillChainPhases ? 'open' : 'closed'" class="overFlowHidden">
+        <div>
             <kill-chain-phases-reactive [parentForm]="form"></kill-chain-phases-reactive>
+            <mat-chip-list formArrayName="kill_chain_phases" *ngIf="form.get('kill_chain_phases').value.length > 0" class="chipListPadding">
+                <mat-chip *ngFor="let kill_chain of form.get('kill_chain_phases').value; let i = index" class="cursor-pointer chipListChip"
+                    color="primary" selected="true" removable="true">
+                    <span class="flex1 flexNowrap">{{ kill_chain.phase_name | capitalize}}</span>
+                    <mat-icon matChipRemove (click)="form.get('kill_chain_phases').removeAt(i)">cancel</mat-icon>
+                </mat-chip>
+            </mat-chip-list>
         </div>
-        <mat-chip-list formArrayName="kill_chain_phases" *ngIf="form.get('kill_chain_phases').value.length > 0" class="chipListPadding">
-            <mat-chip *ngFor="let kill_chain of form.get('kill_chain_phases').value; let i = index" class="cursor-pointer chipListChip"
-                color="primary" selected="true" removable="true">
-                <span class="flex1 flexNowrap">{{ kill_chain.phase_name | capitalize}}</span>
-                <mat-icon matChipRemove (click)="form.get('kill_chain_phases').removeAt(i)">cancel</mat-icon>
-            </mat-chip>
-        </mat-chip-list>
         <!-- ~~~ End of Kill Chain Phases ~~~ -->
 
         <!-- ~~~ Labels ~~~ -->

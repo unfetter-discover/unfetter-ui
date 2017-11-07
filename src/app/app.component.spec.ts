@@ -10,6 +10,7 @@ import { AuthService } from './global/services/auth.service';
 import { ConfigService } from './global/services/config.service';
 import { GenericApi } from './global/services/genericapi.service';
 import { WebAnalyticsService } from './global/services/web-analytics.service';
+import { AppModule } from './app.module';
 
 describe(`App`, () => {
   let comp: AppComponent;
@@ -20,8 +21,8 @@ describe(`App`, () => {
     const services = [
       AppState, 
       AuthService, 
-      ConfigService, 
       GenericApi,
+      ConfigService,
       WebAnalyticsService,
     ];
 

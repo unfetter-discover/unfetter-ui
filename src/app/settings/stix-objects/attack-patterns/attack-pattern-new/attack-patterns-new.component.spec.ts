@@ -32,6 +32,7 @@ import { newEvent, click } from '../../../../testing/index';
 
 // Load the implementations that should be tested
 import { AttackPatternNewComponent } from './attack-patterns-new.component';
+import { ConfigService } from '../../../../global/services/config.service';
 
 /** Duration of the select opening animation. */
 const SELECT_OPEN_ANIMATION = 200;
@@ -101,7 +102,7 @@ function buttons() {
     });
 
     it('should save attack pattern whenn clicked', () => {
-      const location = fixture.debugElement.injector.get(Location);
+      const location: Location = fixture.debugElement.injector.get(Location);
       const locationSpy = spyOn(location, 'back');
 
       const stixService = fixture.debugElement.injector.get(StixService);
@@ -119,7 +120,7 @@ function buttons() {
     });
 
     it('should navigate back if cancel button click', () => {
-      const location = fixture.debugElement.injector.get(Location);
+      const location: Location = fixture.debugElement.injector.get(Location);
       const locationSpy = spyOn(location, 'back');
 
       fixture.detectChanges(); // runs initial lifecycle hooks
@@ -298,6 +299,7 @@ function moduleSetup() {
             return { getContainerElement: () => overlayContainerElement };
           }
         },
+        ConfigService
       ]
     });
   })
