@@ -36,8 +36,15 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
     }
 
     public ngOnInit() {
-        let filter = 'sort=' + encodeURIComponent(JSON.stringify({ 'stix.name': '1' }));
-        let subscription = super.load(filter).subscribe(
+        const sortObj = { 'stix.name': '1' };
+        const projectObj = {
+            'stix.name': 1,
+            'stix.external_references': 1,
+            'stix.kill_chain_phases': 1,
+            'stix.id': 1
+        };
+        const filter = `sort=${JSON.stringify(sortObj)}&project=${JSON.stringify(projectObj)}`;
+        const subscription = super.load(filter).subscribe(
             (data) => {
                 this.attackPatterns = data as AttackPattern[];
                 this.getPhaseNameAttackPatterns();
