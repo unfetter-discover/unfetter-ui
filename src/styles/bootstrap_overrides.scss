@@ -50,6 +50,11 @@
     background-color: $primary-color !important;
 }
 
+code {
+    color: inherit;
+    background-color: rgba($primary-color, 0.15);
+}
+
 // WARNING if the primary color is not blue, delete this
 a {
     color: $primary-color;

@@ -12,7 +12,9 @@
 
     <mat-card-content #card>
         <label>Pattern</label>
-        <p>{{ indicator.pattern }}</p>
+        <p>
+            <code>{{ indicator.pattern }}</code>
+        </p>
 
         <mat-tab-group>
             <mat-tab label="Labels">
@@ -44,7 +46,9 @@
                 <div *ngIf="indicator.external_references">
                     <label>External References</label>
                     <mat-chip-list>
-                        <mat-chip *ngFor="let reference of indicator.external_references" color="accent" selected="true">{{reference.source_name | capitalize}}</mat-chip>
+                        <mat-chip *ngFor="let reference of indicator.external_references" color="accent" selected="true">
+                            {{reference.source_name | capitalize}}
+                        </mat-chip>
                     </mat-chip-list>
                 </div>
                 <div class="mt-3">
@@ -75,10 +79,27 @@
                     <mat-list-item *ngFor="let ap of attackPatterns">
                         <h4 mat-line><a routerLink="/stix/attack-patterns/{{ap.id}}">{{ap.name}}</a></h4>
                         <div mat-line *ngIf="ap.kill_chain_phases">
-                            <span *ngFor="let phase of ap.kill_chain_phases; let i = index" class="text-muted">
-                                <span matTooltip="{{ phase.kill_chain_name | capitalize }}" matTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>
+                            <label>Kill Chain Phases</label>
+                            <p>
+                                <span *ngFor="let phase of ap.kill_chain_phases; let i = index" class="text-muted">
+                                    <span
+                                        [ngClass]="{'uf-highlight': highlightPhase(phase.phase_name)}" 
+                                        matTooltip="{{ phase.kill_chain_name | capitalize }}" 
+                                        matTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>
+                                    <span *ngIf="i < (ap.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
+                                </span>
+                            </p>
+                        </div>
+                        <div mat-line *ngIf="ap.x_mitre_platforms">
+                            <label>Platforms Effected:&nbsp;</label>
+                            <span *ngFor="let platform of ap.x_mitre_platforms; let i = index" class="text-muted">
+                                <span>{{ platform }}</span>
                                 <span *ngIf="i < (ap.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
                             </span>
+                        </div>
+                        <div mat-line *ngIf="ap.x_unfetter_sophistication_level">
+                            <label>Sophistication Level:&nbsp;</label>
+                            <span>{{ ap.x_unfetter_sophistication_level }}</span>
                         </div>
                     </mat-list-item>
                 </mat-list>
