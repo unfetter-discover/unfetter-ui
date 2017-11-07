@@ -31,7 +31,15 @@ export class AssessmentsListComponent implements OnInit {
     public route: ActivatedRoute) { }
 
   public ngOnInit() {
-    this.assessmentsService.load(`sort=${JSON.stringify({ 'stix.created': -1 })}`).subscribe(
+    const sortObj = { 
+      'stix.created': -1 
+    };
+    const projectObj = { 
+      'stix.name': 1, 
+      'stix.id': 1, 
+      'stix.created': 1 
+    };
+    this.assessmentsService.load(`sort=${JSON.stringify(sortObj)}&project=${JSON.stringify(projectObj)}`).subscribe(
       (data) => {
          this.assessments = data;
       }
