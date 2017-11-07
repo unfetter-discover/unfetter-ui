@@ -37,6 +37,7 @@ import { AttackPatternEditComponent } from './attack-patterns-edit.component';
 import { AttackPattern } from '../../../../models/attack-pattern';
 import { ExternalReference } from '../../../../models/externalReference';
 import { KillChainPhase } from '../../../../models/kill-chain-phase';
+import { ConfigService } from '../../../../global/services/config.service';
 
 ////// Testing Vars //////
 const id = 'attack-pattern-9999999'
@@ -189,7 +190,7 @@ function updating() {
     it('should save updated attack pattern', () => {
       fixture.detectChanges(); // runs initial lifecycle hooks
       fixture.whenStable().then(() => {
-        const location = fixture.debugElement.injector.get(Location);
+        const location: Location = fixture.debugElement.injector.get(Location);
         const locationSpy = spyOn(location, 'back');
 
         const stixService = fixture.debugElement.injector.get(StixService);
@@ -308,6 +309,7 @@ function moduleSetup() {
             return { getContainerElement: () => overlayContainerElement };
           }
         },
+        ConfigService
       ]
     });
   })
