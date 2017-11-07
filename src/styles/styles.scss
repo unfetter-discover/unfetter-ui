@@ -39,6 +39,18 @@ $my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
     font-style: italic;
 }
 
+.mat-drawer {
+    display: flex !important;
+    flex-direction: column;
+}
+.mat-list-item {
+    transition: color 0.2s ease-in-out;
+}
+
+.mat-list-item:hover {
+    color: $accent-color !important;
+}
+
 // // Using the $theme variable from the pre-built theme you can call the theming function
 //@include calendar-theme($theme);
 // body {

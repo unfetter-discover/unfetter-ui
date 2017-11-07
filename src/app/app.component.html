@@ -14,10 +14,11 @@
 <mat-sidenav-container id="sidenavContainer">
   <mat-sidenav #sidenav id="sidenavMenu" opened="true" mode="side" class="mat-elevation-z14" fixedInViewport="true" fixedTopGap="64">
 
-    <div style="height: 200px; width: 100%; background-image: url('https://s.tmimgcdn.com/blog/wp-content/uploads/2016/04/1-1.jpg?x47994'); padding: 16px; flex-direction: column; border-bottom: 3px solid #E91E63;"
-      class="flex">
-      <div style="border: none; border-radius: 50%; width: 100px; height: 100px; overflow: hidden;" class="mb-5">
-        <img src="http://www.upplanet.com/bighero/outlay-demo/img/avatars/avatar2.png" height="100px" width="100px">
+    <br>
+
+    <!-- <div class="flex avatarWrapper">
+      <div class="mb-5 imgWrapper">
+        <img src="http://www.upplanet.com/bighero/outlay-demo/img/avatars/avatar2.png">
       </div>
       <div class="mb-5 whiteText" style="font-size: 120%; font-weight: 300;">Unfetter User</div>
 
@@ -46,7 +47,7 @@
         </span>
       </div>
 
-    </div>
+    </div> -->
 
     <!-- <button mat-button style="width: 100%; text-align: left;">Assessments</button>
     <button mat-button style="width: 100%; text-align: left;">Intrusion Set Dashboard</button>
@@ -63,16 +64,16 @@
     </button> -->
 
     <mat-nav-list style="padding-top: 0;">
-      <mat-list-item>
+      <mat-list-item [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:false}">
         <a mat-line routerLink="assessments">Assessments</a>
       </mat-list-item>
-      <mat-list-item>
+      <mat-list-item [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:false}">
         <a mat-line routerLink="intrusion-set-dashboard">Intrusion Set Dashboard</a>
       </mat-list-item>
-      <mat-list-item>
+      <mat-list-item [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:false}">
         <a mat-line routerLink="threat-dashboard">Threat Overview</a>
       </mat-list-item>
-      <mat-list-item>
+      <mat-list-item [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:false}">
         <a mat-line routerLink="indicator-sharing/list">Analytic Hub</a>
       </mat-list-item>
       <mat-list-item (click)="showSubMenu = !showSubMenu">
@@ -85,23 +86,32 @@
 
     <div class="submenu" [@collapseLevel]="showSubMenu ? 'open': 'closed'" style="overflow: hidden;">
       <mat-nav-list style="padding-top: 0;">
-        <mat-list-item class="active">
+        <mat-list-item [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:false}">
           <a mat-line routerLink="stix/attack-patterns">Attack Patterns</a>
         </mat-list-item>
-        <mat-list-item>
+        <mat-list-item [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:false}">
           <a mat-line routerLink="stix/course-of-actions">Courses of Action</a>
         </mat-list-item>
-        <mat-list-item>
+        <mat-list-item [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:false}">
           <a mat-line routerLink="stix/indicators">Indicators</a>
         </mat-list-item>
       </mat-nav-list>
     </div>
 
+    <div class="flex1">&nbsp;</div>
+    <hr>
+
     <mat-nav-list>
+      <mat-list-item [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:false}">
+        <a mat-line routerLink="./partners">Partners</a>
+      </mat-list-item>
       <mat-list-item>
-        <a mat-line routerLink="indicator-sharing/list">Analytic Hub</a>
+        <a mat-line target="_blank" href="/api/explorer/">View API</a>
       </mat-list-item>
     </mat-nav-list>
+    <div id="navFooter">
+      <p>By <a class="white text-lighten-3" target="_blank" href="http://www.iad.gov">NSA Information Assurance</a></p>
+    </div>
 
   </mat-sidenav>
 
@@ -116,8 +126,7 @@
 
 </mat-sidenav-container>
 
-
-<footer class="footer">
+<!-- <footer class="footer">
   <div class="container-fluid">
     <div class="col-xs-5">
       <p> Made by <a class="white text-lighten-3" target="_blank" href="http://www.iad.gov">NSA Information Assurance</a></p>
@@ -130,4 +139,4 @@
     </div>
 
   </div>
-</footer>
+</footer> -->
