@@ -57,7 +57,7 @@
                         <mat-tab-group [style.opacity]="treeSpinner ? 0 : 1" id="tabGroup">
                             <mat-tab id="intrusionSetsDashboard" label="Attack Patterns Used">
                                 <div id="graphWrapper">
-                                    <mat-card class="margin-top">
+                                    <mat-card class="margin-top cardHoverShadow">
                                         <mat-card-header>
                                             <mat-card-subtitle>Attack Patterns Used Per Intrusion Set</mat-card-subtitle>
                                         </mat-card-header>
@@ -82,7 +82,7 @@
                                         </div>
 
                                     </mat-card>
-                                    <mat-card class="margin-top" id="carouselCard">
+                                    <mat-card class="margin-top cardHoverShadow" id="carouselCard">
                                         <!-- <mat-card-header *ngIf="!intrusionSetsDashboard.killChainPhases">
                                         <mat-card-subtitle>Kill Chain Phases Used</mat-card-subtitle>
                                     </mat-card-header> -->
@@ -114,7 +114,7 @@
                                             </ng-template>
                                         </p-carousel>
                                     </mat-card>
-                                    <mat-card class="margin-top">
+                                    <mat-card class="margin-top cardHoverShadow">
                                         <mat-card-header *ngIf="!treeData">
                                             <mat-card-subtitle>Graph</mat-card-subtitle>
                                         </mat-card-header>
