@@ -52,26 +52,14 @@
 
             <mat-form-field class="full-width mb-6">
                 <input matInput placeholder="External ID" formControlName="external_ref_external_id">
-                <mat-error *ngIf="form.get('external_ref_external_id').hasError('required')">
-                    ID is
-                    <strong>required</strong>
-                </mat-error>
             </mat-form-field>
 
             <mat-form-field class="full-width mb-6">
                 <input matInput placeholder="URL" formControlName="external_ref_url">
-                <mat-error *ngIf="form.get('external_ref_url').hasError('required')">
-                    URL is
-                    <strong>required</strong>
-                </mat-error>
             </mat-form-field>
 
             <mat-form-field class="full-width mb-6">
                 <textarea matInput placeholder="Description" formControlName="external_ref_description"></textarea>
-                <mat-error *ngIf="form.get('external_ref_description').hasError('required')">
-                    Description is
-                    <strong>required</strong>
-                </mat-error>
             </mat-form-field>
         </div>
 

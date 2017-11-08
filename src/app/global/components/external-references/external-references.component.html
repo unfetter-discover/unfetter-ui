@@ -14,10 +14,7 @@
             </mat-form-field>
 
             <mat-form-field class="full-width mb-6">
-                <input matInput required placeholder="External ID" formControlName="external_id">
-                <mat-error *ngIf="localForm.get('external_id').hasError('required')">
-                    External ID is <strong>required</strong>
-                </mat-error>
+                <input matInput placeholder="External ID" formControlName="external_id">
             </mat-form-field>
 
             <mat-form-field class="full-width mb-6">
