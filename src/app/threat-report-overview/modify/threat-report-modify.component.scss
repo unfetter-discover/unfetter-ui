@@ -1,3 +1,6 @@
+
+@import '../../../styles/_variables.scss';
+
 .title-hr {
     border: 2px solid rgba(1,1,1,.2);
 }
@@ -59,16 +62,16 @@ mat-cell a mat-icon {
 }
 
 h4 {
-    color: rgba(1,1,1, .54);
+    color: $black_54;
 }
 
 .title {
-    color: rgba(1,1,1, .54);
+    color: $black_54;
 }
 
 .emptyState {
     opacity: .54;
     text-align: center;
     font-size: 24px;
-    color: rgba(1,1,1, .54);
+    color: $black_54;
 }

@@ -1,23 +1,10 @@
-// $header_gradient_start: #0288D1;
-// $header_gradient_end: #03A9F4;
-$red_500: #F44336;
-$red_accent_200: #FF5252;
-$header_gradient_lighter: #009688;
-$header_gradient_darker: #00796B;
-$teal_200: #80CBC4;
-$teal_100: #B2DFDB;
-$md_sidenav_max_width: 400px;
+@import '../../styles/_variables.scss';
 
-// .stix-icon {
-//     background-color: $red_accent_200;
-//     border-radius: 50%;
-//     height: 64px;
-//     width: 82px;
-// }
+$md_sidenav_max_width: 400px;
 
 .title {
     vertical-align: middle;
-    color: $header_gradient_lighter;
+    color: $threat-dashboard-primary-light;
 }
 
 .side-panel {

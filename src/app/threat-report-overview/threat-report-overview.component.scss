@@ -1,3 +1,5 @@
+@import '../../styles/_variables.scss';
+
 .container {
     padding-top: 24px;
 }
@@ -17,7 +19,7 @@
 
 .subtitle {
     font-size: 14px;
-    color: rgba(1,1,1, .87);
+    color: $black_87;
 }
 
 mat-form-field {
@@ -26,5 +28,5 @@ mat-form-field {
 
 h2 {
     margin-top: 0px;
-    color: rgba(1,1,1, .54);
+    color: $black_54;
 }

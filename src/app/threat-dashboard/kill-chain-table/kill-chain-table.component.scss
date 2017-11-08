@@ -1,11 +1,5 @@
 @import '../../../styles/_variables.scss';
 
-$teal_200: #80CBC4;
-$teal_50: #E0F2F1;
-$white: rgba(255, 255, 255, .87);
-$black_table_header: rgba(0,0,0, .54);
-$grey_100: #F5F5F5;
-
 :host /deep/ {
     .ui-carousel {
         .ui-carousel-header {
@@ -16,7 +10,7 @@ $grey_100: #F5F5F5;
             margin-right: -1px;
             margin-left: -1px;
             margin-top: -1px;
-            color: $white;
+            color: $white_87;
             border-radius: 2px 2px 0 0;
             padding: 16px 32px;
             background: linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important;
@@ -34,7 +28,7 @@ $grey_100: #F5F5F5;
     .ui-carousel .ui-carousel-button {
         width: 25px;
         height: 25px;
-        background-color: $white;
+        background-color: $white_87;
         border: none;
         border-radius: 50%;
         font-size: 30px;
@@ -52,15 +46,15 @@ $grey_100: #F5F5F5;
 
         .badge {
             background-color: $threat-dashboard-primary;
-            color: $white;
+            color: $white_87;
         }
 
         .kill-chain-div {
             font-weight: medium;
             font-size: 12px;
-            color: black_table_header;
+            color: $black_54;
             padding: 16px;
-            background: $teal_50;
+            background: $threat-dashboard-primary-lightest;
         }
     }
 

@@ -1,3 +1,5 @@
+@import '../../../styles/_variables.scss';
+
 $white_87: rgba(255, 255, 255, .87);
 $black_54: rgba(0, 0, 0, .54);
 $black_87: rgba(0, 0, 0, .87);
@@ -15,7 +17,7 @@ $teal_700: #00796b;
         padding: 16px 16px;
         height: 64px;
         color: $white_87;
-        background: linear-gradient(60deg, $teal_700, $teal_500) !important;
+        background: linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important;
     }
     
     // .tooltip /deep/ {

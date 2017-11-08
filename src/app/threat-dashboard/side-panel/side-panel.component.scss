@@ -1,14 +1,7 @@
-$header_gradient_lighter: #009688;
-$header_gradient_darker: #00796B;
-$red_500: #F44336;
-$teal_200: #80CBC4;
-$teal_100: #B2DFDB;
-$teal_50: #E0F2F1;
-$white_87: rgba(255,255,255, .87);
-$black_87: rgba(0, 0, 0, .87);
+@import '../../../styles/_variables.scss';
 
 .header {
-    background: linear-gradient(60deg, $header_gradient_darker, $header_gradient_lighter);
+    background: linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light);
     height: 250px;
     padding: 24px;
     color: $white_87;
@@ -19,7 +12,7 @@ $black_87: rgba(0, 0, 0, .87);
     }
 
     .mat-subheader-1, .header-details {
-        color: $teal_200;
+        color: $threat-dashboard-primary-lighter;
     }
 
     svg {
@@ -63,7 +56,7 @@ $black_87: rgba(0, 0, 0, .87);
     }
 
     .list-item-hover {
-        background-color: $teal_50;
+        background-color: $threat-dashboard-primary-lightest;
     }
 
     /deep/ .mat-expansion-panel-body {
