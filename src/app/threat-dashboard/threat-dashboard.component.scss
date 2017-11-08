@@ -1,13 +1,10 @@
 @import '../../styles/_variables.scss';
 
-$header_gradient_lighter: #009688;
 $md_sidenav_max_width: 400px;
-
-// $threat-dashboard-primary, $threat-dashboard-primary-light
 
 .title {
     vertical-align: middle;
-    color: $header_gradient_lighter;
+    color: $threat-dashboard-primary-light;
 }
 
 .side-panel {

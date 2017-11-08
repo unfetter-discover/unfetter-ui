@@ -1,16 +1,9 @@
 @import '../../../styles/_variables.scss';
 
-$header_gradient_lighter: #009688;
-$header_gradient_darker: #00796B;
-$red_500: get-color($red, 500);
 $teal_200: get-color($teal, 200);
-$teal_100: get-color($teal, 100);
-$teal_50: get-color($teal, 50);
-$white_87: rgba(255,255,255, .87);
-$black_87: rgba(0, 0, 0, .87);
 
 .header {
-    background: linear-gradient(60deg, $header_gradient_darker, $header_gradient_lighter);
+    background: linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light);
     height: 250px;
     padding: 24px;
     color: $white_87;
@@ -65,7 +58,7 @@ $black_87: rgba(0, 0, 0, .87);
     }
 
     .list-item-hover {
-        background-color: $teal_50;
+        background-color: $threat-dashboard-primary-lightest;
     }
 
     /deep/ .mat-expansion-panel-body {
