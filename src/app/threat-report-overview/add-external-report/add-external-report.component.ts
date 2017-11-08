@@ -92,7 +92,7 @@ export class AddExterernalReportComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description angular 2 track by list function, uses the items id if
+   * @description angular track by list function, uses the items id if
    *  it exists, otherwise uses the index
    * @param {number} index
    * @param {item}
