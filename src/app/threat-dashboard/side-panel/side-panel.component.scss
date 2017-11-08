@@ -1,9 +1,11 @@
+@import '../../../styles/_variables.scss';
+
 $header_gradient_lighter: #009688;
 $header_gradient_darker: #00796B;
-$red_500: #F44336;
-$teal_200: #80CBC4;
-$teal_100: #B2DFDB;
-$teal_50: #E0F2F1;
+$red_500: get-color($red, 500);
+$teal_200: get-color($teal, 200);
+$teal_100: get-color($teal, 100);
+$teal_50: get-color($teal, 50);
 $white_87: rgba(255,255,255, .87);
 $black_87: rgba(0, 0, 0, .87);
 

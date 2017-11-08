@@ -1,6 +1,4 @@
-$red_500: #F44336;
-$orange_500: #FF5722;
-$green_500: #4CAF50;
+@import '../../../styles/_variables.scss';
 
 #threatReportCreationComponent {
     .container {
@@ -41,13 +39,13 @@ $green_500: #4CAF50;
     }
 
     .error {
-        color: $orange_500;
+        color: get-color($orange, 500);
     }
 
     .big-number {
         font-size: 24px;
         font-weight: 500;
-        color: $green_500;
+        color: get-color($green, 500);
     }
 
 }

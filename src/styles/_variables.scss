@@ -11,6 +11,10 @@ $accent-alt-color: get-color($green, 300);
 $warn-color: get-color($deep-orange);
 $neutral-color: get-color($blue-grey);
 
+$black_87: rgba(0, 0, 0, 0.87);
+$black_54 : rgba(1,1,1, .54);
+$white_87: rgba(255, 255, 255, .87);
+$white_54 : rgba(255, 255, 255, .54);
 // ~~~ Dashboard Specific Theming Template ~~~
 
 // $dashboard-name-primary: get-color($purple, 300);
