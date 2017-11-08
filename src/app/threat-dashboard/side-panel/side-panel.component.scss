@@ -1,7 +1,5 @@
 @import '../../../styles/_variables.scss';
 
-$teal_200: get-color($teal, 200);
-
 .header {
     background: linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light);
     height: 250px;
@@ -14,7 +12,7 @@ $teal_200: get-color($teal, 200);
     }
 
     .mat-subheader-1, .header-details {
-        color: $teal_200;
+        color: $threat-dashboard-primary-lighter;
     }
 
     svg {
