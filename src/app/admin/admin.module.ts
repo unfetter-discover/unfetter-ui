@@ -9,13 +9,15 @@ import { ApproveUsersComponent } from './approve-users/approve-users.component';
 import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
 import { SiteUsageComponent } from './site-usage/site-usage.component';
 import { OrgLeaderApprovalComponent } from './org-leader-approval/org-leader-approval.component';
+import { ChartsModule } from 'ng2-charts';
 
 @NgModule({
     imports: [
         CommonModule,
         GlobalModule,
         routing,
-        MatButtonModule
+        MatButtonModule,
+        ChartsModule
     ],
     declarations: [
         ApproveUsersComponent,

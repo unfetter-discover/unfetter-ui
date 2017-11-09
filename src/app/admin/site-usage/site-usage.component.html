@@ -1,8 +1,16 @@
 <div id="siteUsageComponent" class="row">
     <div class="col-xs-12">
-
+        <h5>Site Usage Data &amp; Statistics</h5>
+        <div *ngIf="showGraph">
+            <canvas baseChart 
+                [datasets]="lineChartData" 
+                [labels]="lineChartLabels" 
+                [options]="lineChartOptions"
+                [colors]="lineChartColors" 
+                [legend]="lineChartLegend" 
+                [chartType]="lineChartType"></canvas>
+        </div>
         <div *ngIf="usageData && usageData.length">
-            <h5>Site Usage Data &amp; Statistics</h5>
             <table class="table table-striped">
                 <thead>
                     <tr>
