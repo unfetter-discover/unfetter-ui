@@ -59,7 +59,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
 
     public ngAfterViewInit() {
         // Only add listener for interactions if the user never interacted with it
-        if (!this.alreadyInteracted) {
+        if (!this.alreadyInteracted && RUN_MODE !== undefined && RUN_MODE === 'UAC') {
             const removeListener = this.renderer.listen(this.card.nativeElement, 'click', () => {
                 this.addInteraction();
                 // Remove listener after interaction
