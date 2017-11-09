@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { GenericApi } from '../global/services/genericapi.service';
 import { Observable } from 'rxjs/Rx';
+
+import { GenericApi } from '../global/services/genericapi.service';
 import { Constance } from '../utils/constance';
+import { AuthService } from '../global/services/auth.service';
 
 @Injectable()
 export class IndicatorSharingService {
@@ -11,7 +13,10 @@ export class IndicatorSharingService {
     public identitiesUrl = Constance.IDENTITIES_URL;
     public profileByIdUrl = Constance.PROFILE_BY_ID_URL;
 
-    constructor(private genericApi: GenericApi) { }
+    constructor(
+        private genericApi: GenericApi,
+        private authService: AuthService
+    ) { }
 
     public getIndicators(filter: object = {}): Observable<any> {
         const url = `${this.baseUrl}?filter=${encodeURIComponent(JSON.stringify(filter))}&metaproperties=true`;
@@ -51,6 +56,11 @@ export class IndicatorSharingService {
     }    
 
     public getUserProfileById(userId): Observable<any> {
-        return this.genericApi.get(`${this.profileByIdUrl}/${userId}`);
+        if (RUN_MODE !== undefined && RUN_MODE === 'DEMO') {
+            console.log('~~~~ ', this.authService.getUser());
+            return Observable.of({ 'attributes': this.authService.getUser()});
+        } else {
+            return this.genericApi.get(`${this.profileByIdUrl}/${userId}`);
+        }
     }
 }
