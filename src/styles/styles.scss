@@ -1,46 +1,22 @@
-/* this file will be extracted to main dist folder and is imported in index.html */
-
-
-/* This file is for setting global styles  */
-
 @import 'variables';
 @import 'bootstrap_overrides';
 @import 'primeng_overrides';
-// // Import a pre-built theme
-// @import "~@angular/material/prebuilt-themes/deeppurple-amber";
-// @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 @import '~@angular/material/theming';
+
+// Font Imports
+@import '../assets/fonts/Roboto/Roboto-Light.ttf';
+@import '../assets/fonts/Roboto/Roboto-Regular.ttf';
+@import '../assets/fonts/Roboto/Roboto-Bold.ttf';
+@import '../assets/fonts/Roboto/Roboto-Italic.ttf';
+
+// Angular Material themeing
 @include mat-core();
 $my-app-primary: mat-palette($mat-light-blue, 800);
 $my-app-accent: mat-palette($mat-amber, A200, A100, A400);
 $my-app-warn: mat-palette($mat-deep-orange);
 $my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
 @include angular-material-theme($my-app-theme);
-// // Import your custom input theme file so you can call the custom-input-theme function
-//@import '~angular-material-datepicker/src/datepicker/calendar.component.scss';
-@font-face {
-    font-family: 'Roboto';
-    src: url('https://localhost/assets/fonts/Roboto/Roboto-Regular.ttf');
-    font-weight: normal;
-    font-style: normal;
-}
 
-@font-face {
-    font-family: 'Roboto';
-    src: url('https://localhost/assets/fonts/Roboto/Roboto-Bold.ttf');
-    font-weight: bold;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Roboto';
-    src: url('https://localhost/assets/fonts/Roboto/Roboto-Italic.ttf');
-    font-weight: normal;
-    font-style: italic;
-}
-
-// // Using the $theme variable from the pre-built theme you can call the theming function
-//@include calendar-theme($theme);
 body {
     font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
@@ -96,16 +72,6 @@ label {
     height: 100%;
 }
 
-
-/* Custom page CSS
--------------------------------------------------- */
-
-
-/* Not required for template or sticky footer method. */
-
-// body > .container {
-//   padding: 60px 15px 0;
-// }
 .container .text-muted {
     margin: 20px 0;
 }
@@ -115,22 +81,6 @@ label {
     padding-left: 15px;
 }
 
-// ~~~~~~~~~~ Pinned for deletion
-// ~~~~~~~~~~ These do not seem like appropiate global overrides.  If these are component specific please make a class
-// code {
-//   font-size: 80%;
-// }
-// .mat-list .mat-list-item .mat-list-item-content, .mat-nav-list .mat-list-item .mat-list-item-content {
-//     height: auto !important;
-// }
-// .mat-tab-body {
-//     padding: 5px;
-// }
-// .mat-tab-body-content {
-//     height: inherit !important;
-//     overflow: hidden !important;
-// }
-// ~~~~~~~~~~ End pinned for deletion
 .cursor-pointer {
     cursor: pointer;
 }
