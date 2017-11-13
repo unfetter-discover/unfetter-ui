@@ -1,0 +1,66 @@
+@import '../../../styles/_variables.scss';
+
+:host /deep/ {
+    $white: #fafafa;
+
+    .header {
+        padding: 16px 16px;
+        height: 64px;
+        color: $white_87;
+        background: linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important;
+    }
+
+    .tooltip /deep/ {
+        position: absolute;
+        text-align: left;
+        width: 500px;
+        min-height: 56px;
+        padding: 5px;
+        font-size: 14px;
+        color: $black_87;
+        background: $threat-dashboard-primary-lightest;
+        border: 0px;
+        line-height: 1.5em;
+        border-radius: 8px;
+        pointer-events: none;
+        max-height: 575px;
+        overflow-y: auto;
+        z-index: 9999;
+        box-shadow: 0 3px 1px -2px rgba(0,0,0,.2),0 2px 2px 0 rgba(0,0,0,.14),0 1px 5px 0 rgba(0,0,0,.12);
+    }
+
+    svg /deep/  {
+
+        .node /deep/ {
+            stroke: unset;
+            cursor: pointer;
+
+            text {
+                fill: $black_87;
+                font-size: 12px;
+            }
+
+            .node-hover {
+                font-size: 14px;
+            }
+        }
+
+        .root-node {
+            stroke: transparent;
+        }
+
+        .full-node {
+            fill: $threat-dashboard-primary-lightest;
+            stroke: $threat-dashboard-primary-light;
+            stroke-width: 2px;
+        }
+
+        .empty-node {
+            fill: $white;
+            stroke: $threat-dashboard-primary-light;
+            stroke-width: 2px;
+        }
+
+    }
+}
+

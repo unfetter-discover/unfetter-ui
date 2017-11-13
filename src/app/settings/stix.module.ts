@@ -3,8 +3,9 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { CalendarModule, AccordionModule, DataListModule } from 'primeng/primeng';
 import {
-  MaterialModule, MdButtonModule, MdListModule, MdCardModule, MdSnackBarModule, MdNativeDateModule,
-  MdDialogModule, MdChipsModule, MdInputModule, MdSelectModule, MdAutocompleteModule , MdCheckboxModule, MdRadioModule, MdSlideToggleModule } from '@angular/material';
+  MatButtonModule, MatListModule, MatCardModule, MatSnackBarModule, MatNativeDateModule,
+  MatDialogModule, MatChipsModule, MatInputModule, MatSelectModule, MatAutocompleteModule ,
+   MatCheckboxModule, MatRadioModule, MatSlideToggleModule, MatExpansionModule, MatDatepickerModule } from '@angular/material';
 
 import { ComponentModule } from '../components/component.module';
 import { StixService } from './stix.service';
@@ -53,19 +54,20 @@ import { GlobalModule } from '../global/global.module';
       CommonModule,
       FormsModule,
       ReactiveFormsModule,
-      MaterialModule,
-      MdSnackBarModule,
-      MdButtonModule,
-      MdListModule,
-      MdCardModule,
-      MdChipsModule,
-      MdInputModule,
-      MdSelectModule,
-      MdAutocompleteModule,
-      MdNativeDateModule,
-      MdCheckboxModule,
-      MdRadioModule,
-      MdSlideToggleModule,
+      MatSnackBarModule,
+      MatButtonModule,
+      MatListModule,
+      MatCardModule,
+      MatChipsModule,
+      MatInputModule,
+      MatSelectModule,
+      MatAutocompleteModule,
+      MatNativeDateModule,
+      MatCheckboxModule,
+      MatExpansionModule,
+      MatRadioModule,
+      MatSlideToggleModule,
+      MatDatepickerModule,
       ComponentModule,
       CalendarModule,
       AccordionModule,

@@ -3,15 +3,15 @@
             <div class="row">
             <div class="col-md-12">
                     <div class="button-row">
-                        <a class="mat-primary" md-raised-button (click)="editButtonClicked()"><i class="material-icons">create</i> EDIT</a>
-                        <a class="mat-primary" md-raised-button (click)="deleteButtonClicked()"><i class="material-icons">delete</i> DELETE</a>
+                        <a class="mat-primary" mat-raised-button (click)="editButtonClicked()"><i class="material-icons">create</i> EDIT</a>
+                        <a class="mat-primary" mat-raised-button (click)="deleteButtonClicked()"><i class="material-icons">delete</i> DELETE</a>
                     </div>
                 </div>
             </div>
             <div class="row" style="margin-top: 15px;">
                 <div class="col-md-12">
-                    <md-card>
-                             <md-card-content>
+                    <mat-card>
+                             <mat-card-content>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label>Name:</label>
@@ -27,51 +27,51 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div><label>Pattern:</label></div>
-                                        <md-chip selected="true" color="accent">{{indicator.attributes.pattern}}</md-chip>
+                                        <mat-chip selected="true" color="accent">{{indicator.attributes.pattern}}</mat-chip>
                                     </div>
                                 </div>
                                 <div class="row" >
                                     <div class="col-md-6">
                                         <label>Valid From:</label>
                                         <p>{{indicator.attributes.valid_from | date:'medium' }}</p>
-                                        <!--<md-input-container class="full-width">
-                                            <input readonly mdInput placeholder="Valid From:" value="{{indicator.attributes.valid_from | date:'medium' }}" />
-                                        </md-input-container>-->
+                                        <!--<mat-input-container class="full-width">
+                                            <input readonly matInput placeholder="Valid From:" value="{{indicator.attributes.valid_from | date:'medium' }}" />
+                                        </mat-input-container>-->
                                     </div>
                                     <div class="col-md-6">
                                         <label>Valid Until:</label>
                                         <p>{{indicator.attributes.valid_until | date:'medium' }}</p>
-                                        <!--<md-input-container class="full-width">
-                                            <input readonly mdInput placeholder="Valid Until:" value="{{indicator.attributes.valid_until | date:'medium' }}" />
-                                            </md-input-container>-->
+                                        <!--<mat-input-container class="full-width">
+                                            <input readonly matInput placeholder="Valid Until:" value="{{indicator.attributes.valid_until | date:'medium' }}" />
+                                            </mat-input-container>-->
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label>Kill Chain Name:</label>
-                                        <md-chip-list>
-                                            <md-chip *ngFor="let kill_chain_phase of indicator.attributes.kill_chain_phases"
+                                        <mat-chip-list>
+                                            <mat-chip *ngFor="let kill_chain_phase of indicator.attributes.kill_chain_phases"
                                                 selected="true">
                                                 {{kill_chain_phase.phase_name}}
-                                            </md-chip>
-                                        </md-chip-list>
+                                            </mat-chip>
+                                        </mat-chip-list>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label>External References:</label>
-                                        <md-chip-list>
-                                            <md-chip *ngFor="let externalReferences of indicator.attributes.external_references"
+                                        <mat-chip-list>
+                                            <mat-chip *ngFor="let externalReferences of indicator.attributes.external_references"
                                                 selected="true">
                                                 {{externalReferences.source_name}}
-                                            </md-chip>
-                                        </md-chip-list>
+                                            </mat-chip>
+                                        </mat-chip-list>
                                     </div>
                                 </div>
 
-                        </md-card-content>
+                        </mat-card-content>
 
-                    </md-card>
+                    </mat-card>
                 </div>
             </div>
        </div>

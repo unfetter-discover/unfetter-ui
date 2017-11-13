@@ -1,0 +1,16 @@
+<div id="organizationsLayout" class="container">
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h2>Organization Management</h2>
+            <ul class="nav nav-pills">
+                <li *ngFor="let navigation of navigations" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:false}">
+                    <a [routerLink]="[navigation.url]">{{navigation.label}}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <br>
+    <router-outlet></router-outlet>
+</div>

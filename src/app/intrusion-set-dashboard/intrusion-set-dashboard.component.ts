@@ -1,7 +1,8 @@
-import { Component, OnInit, AfterContentInit } from '@angular/core';
+import { Component, OnInit, AfterContentInit, ChangeDetectorRef } from '@angular/core';
 import { CheckboxModule } from 'primeng/primeng';
 import { Observable } from 'rxjs/Observable';
-import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
+import { Subject } from 'rxjs/Subject';
+import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { BaseComponentService } from '../components/base-service.component';
 import { Constance } from '../utils/constance';
 import { IntrusionSetComponent } from '../intrusion-set/intrusion-set.component';
@@ -26,45 +27,56 @@ export class IntrusionSetDashboardComponent implements OnInit {
   public treeData: any;
   public duration = 3000;
   public groupKillchain: any[];
+  public treeSpinner: boolean = false;
+  public checkboxDebouncer: Subject<any> = new Subject();
 
   constructor(
     protected genericApi: GenericApi,
-    protected snackBar: MdSnackBar
+    protected snackBar: MatSnackBar,
+    protected ref: ChangeDetectorRef
   ) { }
 
   public ngOnInit() {
-    let filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
-    let url = Constance.INTRUSION_SET_URL + '?' + filter;
-    const sub = this.genericApi.get(url).subscribe(
-      (data) => {
-        this.intrusionSets = data;
-        filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
-        url = Constance.ATTACK_PATTERN_URL + '?' + filter;
-        const subscription = this.genericApi.get(url).subscribe(
-          (attackPatterns) => {
-            this.groupKillchain = this.groupByKillchain(attackPatterns);
-            this.intrusionSetsDashboard[
-              'killChainPhases'
-            ] = this.groupKillchain;
-          },
-          (error) => {
-            // handle errors here
-            console.log('error ' + error);
-          },
-          () => {
-            // prevent memory links
-            if (subscription) {
-              subscription.unsubscribe();
-            }
-          }
-        );
+    const ISsortObj = { 'stix.name': '1' };
+    const ISprojectObj = {
+      'stix.name': 1,
+      'stix.id': 1
+    };
+    const ISfilter = encodeURI(`sort=${JSON.stringify(ISsortObj)}&project=${JSON.stringify(ISprojectObj)}`);
+
+    const APsortObj = { 'stix.name': '1' };
+    const APprojectObj = {
+      'stix.name': 1,
+      'stix.kill_chain_phases': 1,
+      'stix.id': 1
+    };
+    const APfilter = encodeURI(`sort=${JSON.stringify(APsortObj)}&project=${JSON.stringify(APprojectObj)}`);
+
+    const initData$ = Observable.forkJoin(
+      this.genericApi.get(`${Constance.INTRUSION_SET_URL}?${ISfilter}`),
+      this.genericApi.get(`${Constance.ATTACK_PATTERN_URL}?${APfilter}`)
+    )
+    .subscribe((results) => {
+        this.intrusionSets = results[0];
+        const attackPatterns = results[1];
+        this.groupKillchain = this.groupByKillchain(attackPatterns);
+        this.intrusionSetsDashboard['killChainPhases'] = this.groupKillchain;
       },
-      (error) => {
-        // handle errors here
-        console.log('error ' + error);
+      (err) => {
+        console.log(err);
       },
-      () => (sub ? sub.unsubscribe() : 0)
+      () => {
+        initData$.unsubscribe();
+      }
     );
+
+    this.checkboxDebouncer
+      .debounceTime(500)
+      .subscribe(() => {
+        console.log('Searching intrusion sets');
+        this.searchIntrusionSets();
+      },
+      (e) => console.log(e));
   }
 
   public count(attack_patterns: any): number {
@@ -123,7 +135,8 @@ export class IntrusionSetDashboardComponent implements OnInit {
       this.selectedIntrusionSet.push(intrusionSet);
     }
     if (this.selectedIntrusionSet.length > 0) {
-      this.searchIntrusionSets();
+      // this.searchIntrusionSets();
+      this.checkboxDebouncer.next();
     } else {
       this.intrusionSetsDashboard.intrusionSets = null;
       this.intrusionSetsDashboard.killChainPhases = this.groupKillchain;
@@ -132,6 +145,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
   }
 
   public searchIntrusionSets(): void {
+    this.treeSpinner = true;
     if (this.selectedIntrusionSet.length === 0) {
       return;
     }
@@ -219,6 +233,11 @@ export class IntrusionSetDashboardComponent implements OnInit {
       root.children.push(child);
     });
     this.treeData = root;
+  }
+
+  public treeComplete() {
+    this.ref.detectChanges();
+    this.treeSpinner = false;
   }
 
   public getCsc(data: any): any {

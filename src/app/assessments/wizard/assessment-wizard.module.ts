@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { StepsModule, MenuItem } from 'primeng/primeng';
-import { MaterialModule, MdButtonModule, MdCardModule, MdDialogModule, MdSnackBarModule, MdNativeDateModule } from '@angular/material';
+import { MatButtonModule, MatCardModule, MatDialogModule, MatSnackBarModule, MatNativeDateModule, MatDatepickerModule, MatSelectModule, MatInputModule } from '@angular/material';
 import { ChartsModule } from 'ng2-charts';
 import { CalendarModule } from 'primeng/primeng';
 import { PipesModule } from '../../pipes';
@@ -27,18 +27,20 @@ const routes = [
   imports: [
     CommonModule,
     FormsModule,
-    MaterialModule,
-    MdCardModule,
-    MdDialogModule,
-    MdButtonModule,
-    MdSnackBarModule,
+    MatCardModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatDatepickerModule,
+    MatSnackBarModule,
+    MatSelectModule,
+    MatInputModule,
     ComponentModule,
     CalendarModule,
     ChartsModule,
     StepsModule,
 
     PipesModule,
-    MdNativeDateModule,
+    MatNativeDateModule,
     GlobalModule,
     RouterModule.forChild(routes)
   ],

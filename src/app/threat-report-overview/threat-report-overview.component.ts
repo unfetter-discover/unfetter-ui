@@ -1,27 +1,43 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { ThreatReportOverviewService } from './threat-report-overview.service';
-import { ThreatReportOverviewDataSource } from './threat-report-overview.datasource';
-import { ThreatReportOverview } from './threat-report-overview.model';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ViewChildren, QueryList, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import { Router } from '@angular/router';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
+import { ThreatReport } from './models/threat-report.model';
+import { ThreatReportSharedService } from './services/threat-report-shared.service';
+import { ThreatReportOverviewDataSource } from './threat-report-overview.datasource';
+import { ThreatReportOverviewService } from '../threat-dashboard/services/threat-report-overview.service';
 
-type troColName = keyof ThreatReportOverview;
+type troColName = keyof ThreatReport | 'actions';
 
 @Component({
-   selector: 'threat-report-overview',
-   templateUrl: './threat-report-overview.component.html',
-   styleUrls: ['threat-report-overview.component.scss']
+  selector: 'threat-report-overview',
+  templateUrl: './threat-report-overview.component.html',
+  styleUrls: ['threat-report-overview.component.scss']
 })
-export class ThreatReportOverviewComponent implements OnInit, OnDestroy {
+export class ThreatReportOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  @ViewChild('filter')
+  @ViewChildren('filter')
+  public filters: QueryList<ElementRef>;
   public filter: ElementRef;
 
-  public displayCols: troColName[] = ['id', 'name', 'date', 'author'];
   public dataSource: ThreatReportOverviewDataSource;
+  public loading = true;
+  public hasError = false;
+  public errorMsg = '';
 
+  public readonly displayCols: troColName[] = ['name', 'date', 'author', 'actions'];
   private readonly subscriptions = [];
+  private readonly duration = 250;
+  private readonly modifyRoute = '/threat-dashboard/modify';
 
-  constructor(protected threatReportOverviewService: ThreatReportOverviewService) { }
+  constructor(
+    protected changeDetector: ChangeDetectorRef,
+    protected threatReportOverviewService: ThreatReportOverviewService,
+    protected router: Router,
+    protected sharedService: ThreatReportSharedService,
+    protected dialog: MatDialog,
+    protected snackBar: MatSnackBar) { }
 
   /**
    * @description fetch data for this component
@@ -29,8 +45,119 @@ export class ThreatReportOverviewComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     this.dataSource = new ThreatReportOverviewDataSource(this.threatReportOverviewService);
-    Observable.fromEvent(this.filter.nativeElement, 'keyup')
-      .debounceTime(150)
+  }
+
+  /**
+   * @description setup keyhandlers after viewchild components exists
+   * @return {void}
+   */
+  public ngAfterViewInit(): void {
+    console.log('afterContentInit');
+    const sub$ = this.filters.changes.subscribe(
+      (comps) => this.initFilter(comps.first),
+      (err) => {
+        console.log(err);
+        this.hasError = true;
+        this.errorMsg = err;
+      },
+      () => {
+        console.log('done');
+      });
+    this.subscriptions.push(sub$);
+    // this.changeDetector.markForCheck();
+    // need to trigger a change detection, so do it on next repaint
+    requestAnimationFrame(() => this.loading = false);
+  }
+
+  /**
+   * @description clean up this component
+   * @return {void}
+   */
+  public ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+  }
+
+  /**
+   * @description clear state and route to create new form
+   * @param event
+   */
+  public routeCreateNew(event?: UIEvent): void {
+    this.sharedService.threatReportOverview = undefined;
+    this.router.navigate(['/threat-dashboard/create']);
+  }
+
+  /**
+   * @description loop all reports and delete from mongo
+   *  a workproduct is related to many reports
+   * @param row
+   * @param {UIEvent} event optional
+   * @return {void}
+   */
+  public deleteButtonClicked(row: any, event?: UIEvent): void {
+    const _self = this;
+    row['attributes'] = { name: row.name };
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: row });
+    dialogRef.afterClosed().subscribe(
+      (result) => {
+        const isBool = typeof result === 'boolean';
+        const isString = typeof result === 'string';
+        if ((isBool && result !== true)
+          || (isString && result !== 'true')) {
+          return;
+        }
+
+        const sub = Observable.create((observer) => {
+          let count = row.reports.length;
+          row.reports.forEach(
+            (report) => {
+              const sub1 = _self.threatReportOverviewService.deleteThreatReport(report.id).subscribe(
+                (d) => --count,
+                (err) => console.log(err),
+                () => {
+                  if (count <= 0) {
+                    observer.next(null);
+                    observer.complete();
+                  }
+                }
+              );
+              this.subscriptions.push(sub1);
+            });
+        }).subscribe(
+          () => _self.dataSource.nextFilter(),
+          (error) => console.log(error),
+          () => sub.unsubscribe());
+      });
+  }
+
+  /**
+   * @description route to edit a workproduct
+   * @param {any} row with and id
+   * @param {UIEvent} event optional
+   * @return {Promise<boolean>}
+   */
+  public editButtonClicked(row: any, event?: UIEvent): Promise<boolean> {
+    this.sharedService.threatReportOverview = undefined;
+    if (!row || !row.id) {
+      return;
+    }
+
+    return this.router.navigate([`${this.modifyRoute}/${row.id}`]);
+  }
+
+  /**
+   * @description setup filterbox events
+   * @return {void}
+   */
+  public initFilter(filter: ElementRef): void {
+    // this.changeDetector.markForCheck();
+    if (!filter || !filter.nativeElement) {
+      console.log('filter element is undefined, cannot setup events observable, moving on...');
+      return;
+    }
+
+    this.filter = filter;
+    const sub$ = Observable.fromEvent(this.filter.nativeElement, 'keyup')
+      .debounceTime(this.duration)
       .distinctUntilChanged()
       .subscribe(() => {
         if (!this.dataSource) {
@@ -38,17 +165,8 @@ export class ThreatReportOverviewComponent implements OnInit, OnDestroy {
         }
         this.dataSource.nextFilter(this.filter.nativeElement.value);
       });
-    // const sub$ = this.threatReportOverviewService
-    //   .load()
-    //   .subscribe((threatReports) => {
-    //     this.threatReports = threatReports;
-    //   },
-    //   (err) => console.log(err),
-    //   () => console.log('done'))
-
+    this.subscriptions.push(sub$);
+    // this.changeDetector.markForCheck();
   }
 
-  public ngOnDestroy(): void {
-    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
-  }
 }

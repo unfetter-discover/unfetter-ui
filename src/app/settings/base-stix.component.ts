@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
-import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
+import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
 import { BaseStixService } from './base-stix.service';
@@ -14,9 +14,9 @@ export class BaseStixComponent {
         public service: BaseStixService,
         public route: ActivatedRoute,
         public router: Router,
-        public dialog: MdDialog,
+        public dialog: MatDialog,
         public location: Location,
-        public snackBar?: MdSnackBar) {
+        public snackBar?: MatSnackBar) {
     }
 
      public load(filter?: any): Observable<any[]> {
@@ -88,7 +88,7 @@ export class BaseStixComponent {
             const dialogRef = _self.dialog.open(ConfirmationDialogComponent, { data: item });
             dialogRef.afterClosed().subscribe(
                 (result) => {
-                    if (result === 'true') {
+                    if (result === 'true' || result === true) {
                         _self.deleteItem(item, observer);
                     }
             });
@@ -153,10 +153,12 @@ export class BaseStixComponent {
                 (stixObject) => {
                     observer.next(stixObject);
                     observer.complete();
-                    this.snackBar.open(item.attributes.name + ' has been successfully deleted', '', {
-                        duration: this.duration,
-                        extraClasses: ['snack-bar-background-success']
-                    });
+                    if (item.attributes.name) {
+                        this.snackBar.open(item.attributes.name + ' has been successfully deleted', '', {
+                            duration: this.duration,
+                            extraClasses: ['snack-bar-background-success']
+                        });
+                    }
                 }, (error) => {
                     // handle errors here
                     this.snackBar.open('Error ' + error , '', {
@@ -175,10 +177,12 @@ export class BaseStixComponent {
             (data) => {
                 observer.next(data);
                 observer.complete();
-                this.snackBar.open(item.attributes.name + ' has been successfully saved', '', {
-                    duration: this.duration,
-                    extraClasses: ['snack-bar-background-success']
-                });
+                if (item.attributes.name) {
+                    this.snackBar.open(item.attributes.name + ' has been successfully saved', '', {
+                        duration: this.duration,
+                        extraClasses: ['snack-bar-background-success']
+                    });
+                }
                 // data.url = item.url;
                 // let sub = this.service.update(data).subscribe(
                 //     (resullts) => {
@@ -223,10 +227,12 @@ export class BaseStixComponent {
             (data) => {
                 observer.next(data);
                 observer.complete();
-                this.snackBar.open(item.attributes.name + ' has been successfully save', '', {
-                    duration: this.duration,
-                    extraClasses: ['snack-bar-background-success']
-                });
+                if (item.attributes.name) {
+                    this.snackBar.open(item.attributes.name + ' has been successfully saved', '', {
+                        duration: this.duration,
+                        extraClasses: ['snack-bar-background-success']
+                    });
+                }
             }, (error) => {
                 // handle errors here
                 this.snackBar.open('Error ' + error , '', {

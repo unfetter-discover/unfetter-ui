@@ -10,7 +10,7 @@ import {
   OnDestroy
 } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { MdSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 import { Location } from '@angular/common';
 import { Measurements } from './measurements';
 import { Constance } from '../../utils/constance';
@@ -85,7 +85,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
   private tempModel = {};
   private readonly subscriptions = [];
 
-  constructor(private genericApi: GenericApi, private snackBar: MdSnackBar,
+  constructor(private genericApi: GenericApi, private snackBar: MatSnackBar,
               private location: Location, private route: ActivatedRoute) {
     super();
   }
@@ -140,7 +140,9 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         assessment.risk = assessmentObject.risk;
         assessment.measurements.forEach((m) => {
           const question = assessmentObject.questions.find((q) => q.name === m.name);
-          m.risk = question ? question.risk : 1;
+          if (question) {
+            m.risk = question.risk;
+          }
         });
 
       });
@@ -178,7 +180,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
    * @returns {void}
    */
 
-  public updateRisks(option: any, measurement: any, assessment: any): void {
+   public updateRisks(option: any, measurement: any, assessment: any): void {
     const newRisk = option.selected.value ;
     // update measurement value in assessments
     const assessmentMeasurementToUpdate = assessment.measurements.find((assMes) => assMes.name === measurement.name);
@@ -204,7 +206,7 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
     // can not have negative. if new newRisk is < 0
     // set assessmentMeasurementToUpdate.risk to 1
     if (newRisk < 0) {
-      assessmentMeasurementToUpdate.risk = 1;
+      assessmentMeasurementToUpdate.risk = -1;
     }
     // calculate risk of all measurements
     assessment.risk = this.calculateMeasurementsAvgRisk(assessment.measurements);
@@ -226,19 +228,26 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
           }
         };
         this.model.attributes.assessment_objects.push(assessment_object);
-     }
-      let question = assessment_object.questions.find((q) => q.name === measurement.name);
-      if (!question) {
-        question = measurement;
-        assessment_object.questions.push(question);
+     } else {
+      if (newRisk < 0) {
+        assessment_object.questions = assessment_object.questions.filter((q) => { return q.name !== measurement.name } );
+        if (assessment_object.questions.length === 0) {
+          assessment_object.risk = newRisk;
+        }
       } else {
-        this.updateQuestionRisk(question, newRisk);
+        let question = assessment_object.questions.find((q) => q.name === measurement.name);
+        if (!question) {
+          question = measurement;
+          assessment_object.questions.push(question);
+        } else {
+          this.updateQuestionRisk(question, newRisk);
+        }
+        assessment_object.risk = assessment.risk;
       }
-      assessment_object.risk = assessment.risk;
     }
-    this.updateChart();
   }
-
+    this.updateChart();
+}
   /**
    * @description clicked back a page
    * @param {UIEvent} event optional
@@ -408,10 +417,10 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
       const groupingStages = stixObject.groupings;
       if (!groupingStages) {
         const phaseName = 'unknown';
-        if (!groupings[phaseName]) {
-          const description = 'unknown description';
-          groupings[phaseName] = description;
-        }
+        // if (!groupings[phaseName]) {
+        //   const description = 'unknown description';
+        //   groupings[phaseName] = description;
+        // }
       } else {
         groupingStages.forEach((groupingStage) => {
           const phaseName = groupingStage.groupingValue;
@@ -419,9 +428,10 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
             const description = groupingStage.description;
             if (description) {
               groupings[phaseName] = description;
-            } else {
-              groupings[phaseName] = phaseName;
             }
+            // else {
+            //   groupings[phaseName] = phaseName;
+            // }
           }
         });
       }

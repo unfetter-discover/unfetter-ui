@@ -4,8 +4,8 @@ import { HttpModule } from '@angular/http';
 import { NgModule,  ApplicationRef } from '@angular/core';
 import { RouterModule,  PreloadAllModules } from '@angular/router';
 import { CalendarModule, AccordionModule, DataListModule, CheckboxModule } from 'primeng/primeng';
-import { MaterialModule, MdButtonModule, MdListModule, MdCardModule,
-  MdDialogModule, MdChipsModule, MdInputModule, MdSelectModule, MdAutocompleteModule, MdCheckboxModule } from '@angular/material';
+import { MatButtonModule, MatListModule, MatCardModule,
+  MatDialogModule, MatChipsModule, MatInputModule, MatSelectModule, MatAutocompleteModule, MatCheckboxModule, MatIconModule } from '@angular/material';
 import { HeaderNavigationComponent } from './header-navigation/header-navigation.component';
 import { PageHeaderComponent } from './page/page-header.component';
 import { ConfirmationDialogComponent } from './dialogs/confirmation/confirmation-dialog.component';
@@ -25,6 +25,7 @@ import { LinkNodeGraphComponent } from './link-node-graph/link-node-graph.compon
 import { LabelComponent } from './labels/label.component';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { GlobalModule } from '../global/global.module';
 @NgModule({
   declarations: [
     // Components / Directives/ Pipes
@@ -51,18 +52,19 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
     ReactiveFormsModule,
     HttpModule,
     RouterModule,
-    MaterialModule,
-    MdSelectModule,
-    MdInputModule,
-    MdAutocompleteModule,
-    MdButtonModule,
-    MdCardModule,
-    MdChipsModule,
+    MatSelectModule,
+    MatIconModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatCardModule,
+    MatChipsModule,
     DataListModule,
     CheckboxModule,
-    MdCheckboxModule,
+    MatCheckboxModule,
     BsDropdownModule.forRoot(),
-    CollapseModule.forRoot()
+    CollapseModule.forRoot(),
+    GlobalModule
   ],
   exports: [
     PageHeaderComponent,

@@ -1,46 +1,22 @@
-/* this file will be extracted to main dist folder and is imported in index.html */
-
-
-/* This file is for setting global styles  */
-
 @import 'variables';
 @import 'bootstrap_overrides';
 @import 'primeng_overrides';
-// // Import a pre-built theme
-// @import "~@angular/material/prebuilt-themes/deeppurple-amber";
-// @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 @import '~@angular/material/theming';
+
+// Font Imports
+@import '../assets/fonts/Roboto/Roboto-Light.ttf';
+@import '../assets/fonts/Roboto/Roboto-Regular.ttf';
+@import '../assets/fonts/Roboto/Roboto-Bold.ttf';
+@import '../assets/fonts/Roboto/Roboto-Italic.ttf';
+
+// Angular Material themeing
 @include mat-core();
 $my-app-primary: mat-palette($mat-light-blue, 800);
 $my-app-accent: mat-palette($mat-amber, A200, A100, A400);
 $my-app-warn: mat-palette($mat-deep-orange);
 $my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
 @include angular-material-theme($my-app-theme);
-// // Import your custom input theme file so you can call the custom-input-theme function
-//@import '~angular-material-datepicker/src/datepicker/calendar.component.scss';
-@font-face {
-    font-family: 'Roboto';
-    src: url('https://localhost/assets/fonts/Roboto/Roboto-Regular.ttf');
-    font-weight: normal;
-    font-style: normal;
-}
 
-@font-face {
-    font-family: 'Roboto';
-    src: url('https://localhost/assets/fonts/Roboto/Roboto-Bold.ttf');
-    font-weight: bold;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Roboto';
-    src: url('https://localhost/assets/fonts/Roboto/Roboto-Italic.ttf');
-    font-weight: normal;
-    font-style: italic;
-}
-
-// // Using the $theme variable from the pre-built theme you can call the theming function
-//@include calendar-theme($theme);
 body {
     font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
@@ -54,6 +30,27 @@ label {
     color: #9e9e9e;
 }
 
+.uf-collapsible-control {
+    display: inline-flex;
+    align-items: center;
+    background: #eee;
+    padding-left: 5px;
+    padding-right: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+    .h5 {
+        margin: 0;
+    }
+    i {
+        color: $primary-color;
+    }
+}
+
+.transition02 {
+    transition: all 0.2s ease-in-out;
+}
+
 // Compensate header/footer padding
 #routerWrapper {
     padding-top: $navbar-height + px;
@@ -65,7 +62,7 @@ label {
     bottom: 0;
     width: 100%;
     /* Set the fixed height of the footer here */
-    height: 30px;
+    height: auto;
     background-color: $nav-background-color;
     z-index: 1;
     padding-top: 5px;
@@ -75,16 +72,6 @@ label {
     height: 100%;
 }
 
-
-/* Custom page CSS
--------------------------------------------------- */
-
-
-/* Not required for template or sticky footer method. */
-
-// body > .container {
-//   padding: 60px 15px 0;
-// }
 .container .text-muted {
     margin: 20px 0;
 }
@@ -94,22 +81,6 @@ label {
     padding-left: 15px;
 }
 
-// ~~~~~~~~~~ Pinned for deletion
-// ~~~~~~~~~~ These do not seem like appropiate global overrides.  If these are component specific please make a class
-// code {
-//   font-size: 80%;
-// }
-// .mat-list .mat-list-item .mat-list-item-content, .mat-nav-list .mat-list-item .mat-list-item-content {
-//     height: auto !important;
-// }
-// .mat-tab-body {
-//     padding: 5px;
-// }
-// .mat-tab-body-content {
-//     height: inherit !important;
-//     overflow: hidden !important;
-// }
-// ~~~~~~~~~~ End pinned for deletion
 .cursor-pointer {
     cursor: pointer;
 }
@@ -137,12 +108,25 @@ label {
     display: inline-flex;
 }
 
+.inlineBlock {
+    display: inline-block;
+}
+
 .margin-top {
     margin-top: 10px;
 }
 
+.smallAvatar {
+    width: 26px;
+    border-radius: 15%;
+}
+
 .margin-bottom {
     margin-bottom: 15px;
+}
+
+.overFlowHidden  {
+    overflow: hidden;
 }
 
 // Margin top & bottom helpers in increments of 3 or 5
@@ -161,16 +145,16 @@ label {
     }
 }
 
-// Used to match the padding of md-card elements
+// Used to match the padding of mat-card elements
 .mat-card-padding {
     padding-left: 8px;
     padding-right: 8px;
 }
 
-.attack-pattern-div {
-    font-size: .9em;
-    padding: 5px; // background: pink;
-}
+// .attack-pattern-div {
+//     font-size: .9em;
+//     padding: 5px; // background: pink;
+// }
 
 .snack-bar-background-success {
     background: $accent-alt-color !important;
@@ -246,11 +230,11 @@ a {
     padding-bottom: 10px;
 }
 
-.mdSelectBotMargin {
+.matSelectBotMargin {
     margin-bottom: 0.43em;
 }
 
-.md-24 {
+.mat-24 {
     font-size: 24px;
 }
 
@@ -261,10 +245,38 @@ a {
     margin-top: 2px;
 }
 
+.uf-well {
+    padding: 19px;
+    margin-bottom: 10px;
+    background-color: rgba($primary-color, 0.05);
+    border-left: 8px solid $primary-color;
+}
+
+.uf-highlight {
+    color: $primary-text-contrast-color;
+    background-color: $primary-color;
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+.cardHoverShadow:hover {
+    box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2),
+    0px 5px 8px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 14px 0px rgba(0, 0, 0, 0.12) !important;
+}
+
+.rotate90 {
+    transform: rotateZ(90deg);
+}
+
 // ~~~ Flex Helpers ~~~
 
 .flex {
     display: flex;
+}
+
+.flexImportant {
+    display: flex !important;
 }
 
 .flexItemsCenter {
@@ -285,13 +297,33 @@ a {
     min-width: 0;
 }
 
+@media screen and (min-width: 768px) {
+    .flex-sm {
+        display: flex;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .flex-md {
+        display: flex;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .flex-lg {
+        display: flex;
+    }
+}
+
+// ~~~ Loading classes ~~~
+
 .loading {
     height: calc(100vh - #{headerFooterOffset()}); // width: 100vw;
     display: flex;
     flex-flow: column;
 }
 
-.loading md-spinner {
+.loading mat-spinner {
     margin: auto auto;
     flex: 1 0 auto;
 }
@@ -353,6 +385,11 @@ a {
     }
 }
 
+.lightH3 {
+    font-size: 22px;
+    font-weight: 300;
+}
+
 // ~~~ Angular Material helpers, *NOT* overrides ~~~
 .buttonGrp .mat-button {
     font-size: 2.5rem;
@@ -361,10 +398,47 @@ a {
 .chipListChip {
     margin-top: 3px !important;
     margin-bottom: 3px !important;
+}
+
+.chipListChip+.chipListChip {
     margin-left: 5px !important;
 }
 
-// ~~~ Angular Material Themes: *ALWAYS* nest in a class, *NOT* overrides ~~~
+.chipListPadding .mat-chip-list-wrapper {
+    padding: 0 5px;
+}
+
+// ~~~ Angular Material Themes: *ALWAYS* nest in a class or id, *NOT* overrides ~~~
+#indicatorSharingList {
+    .mat-card-header-text {
+        margin: 0 !important;
+        .mat-card-title {
+            font-size: 22px;
+            font-weight: 300;
+        }
+    }
+    .mat-card-actions {
+        text-align: right;
+    }
+    .mat-tab-body-content {
+        padding: 10px 3px 5px;
+    }
+}
+
+.addLabelComponentWrapper {
+    .mat-input-infix.mat-form-field-infix {
+        padding-bottom: 3px;
+        width: 0 !important;
+        transition: width 0.2s ease-in-out;
+    }
+}
+
+.showAddLabel {
+    .mat-input-infix.mat-form-field-infix {
+        width: 170px !important;
+    }
+}
+
 .unfetterAngularMaterialAccordion {
     .mat-expansion-panel {
         transition: box-shadow 0.3s ease-in-out;
@@ -407,3 +481,21 @@ a {
         height: 23px !important;
     }
 }
+
+// Color helpers
+.textPrimary {
+    color: $primary-color;
+}
+.textAccent {
+    color: $accent-color;
+}
+.textAccentAlt{
+    color: $accent-alt-color;
+}
+.textWarn {
+    color: $warn-color;
+}
+.textNeutral {
+    color: $neutral-color;
+}
+

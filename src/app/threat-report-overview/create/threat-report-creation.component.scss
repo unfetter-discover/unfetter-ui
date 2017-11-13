@@ -1,17 +1,20 @@
+@import '../../../styles/_variables.scss';
+
 #threatReportCreationComponent {
     .container {
         padding-top: 24px;
+        max-width: 960px;
     }
 
-    md-form-field {
+    mat-form-field {
         width: 100%;
     }
 
-    md-select {
+    mat-select {
         width: 100%;
     }
 
-    md-chip {
+    mat-chip {
         max-width: 200px;
     }
 
@@ -26,8 +29,23 @@
             }
         }
     }
- 
+
     .slideWrapper {
         margin-bottom: -8px;
     }
+
+    h2 {
+        color: rgba(1,1,1, .54);
+    }
+
+    .error {
+        color: get-color($orange, 500);
+    }
+
+    .big-number {
+        font-size: 24px;
+        font-weight: 500;
+        color: get-color($green, 500);
+    }
+
 }

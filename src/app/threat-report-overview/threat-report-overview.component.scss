@@ -1,3 +1,5 @@
+@import '../../styles/_variables.scss';
+
 .container {
     padding-top: 24px;
 }
@@ -11,15 +13,20 @@
     padding-left: 16px;
 }
 
-.first-line { 
+.first-line {
     min-height: 15vh;
 }
 
 .subtitle {
     font-size: 14px;
-    color: #777;
+    color: $black_87;
 }
 
-md-form-field {
+mat-form-field {
     width: 100%;
+}
+
+h2 {
+    margin-top: 0px;
+    color: $black_54;
 }

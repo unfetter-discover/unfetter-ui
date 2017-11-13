@@ -311,7 +311,7 @@ export class AssessmentsGroupComponent implements OnInit, AfterViewInit {
   }
 
   public whitespaceToBreak(inputString: string): string {
-    return FormatHelpers.mitreCitationsToHtml(FormatHelpers.whitespaceToBreak(inputString));
+    return FormatHelpers.formatAll(inputString);
   }
 }
 

@@ -1,15 +1,15 @@
  <div class="row" *ngIf="tool">
        <div class="col-md-12">
             <div class="button-row">
-                <a class="mat-primary" md-raised-button (click)="editButtonClicked()"><i class="material-icons">create</i> EDIT</a>
-                <a class="mat-primary" md-raised-button (click)="deleteButtonClicked()"><i class="material-icons">delete</i> DELETE</a>
+                <a class="mat-primary" mat-raised-button (click)="editButtonClicked()"><i class="material-icons">create</i> EDIT</a>
+                <a class="mat-primary" mat-raised-button (click)="deleteButtonClicked()"><i class="material-icons">delete</i> DELETE</a>
             </div>
         </div>
 </div>
 <div class="row" style="margin-top: 15px;">
     <div class="col-md-12">
-        <md-card>
-            <md-card-content>
+        <mat-card>
+            <mat-card-content>
                     <div class="row">
                         <div class="col-md-12">
                             <label>Name</label>
@@ -19,11 +19,11 @@
                     <div class="row">
                         <div class="col-md-12">
                             <label>Aliases</label>
-                            <md-chip-list>
-                                <md-chip *ngFor="let aliase of tool.attributes.aliases" selected="true">
+                            <mat-chip-list>
+                                <mat-chip *ngFor="let aliase of tool.attributes.aliases" selected="true">
                                     {{aliase}}
-                                </md-chip>
-                            </md-chip-list>
+                                </mat-chip>
+                            </mat-chip-list>
                         </div>
                     </div>
                     <div class="row">
@@ -35,43 +35,43 @@
                     <div class="row">
                         <div class="col-md-12">
                             <label>Kill Chain Phases</label>
-                            <md-chip-list>
-                                <md-chip *ngFor="let kill_chain_phase of tool.attributes.kill_chain_phases"
+                            <mat-chip-list>
+                                <mat-chip *ngFor="let kill_chain_phase of tool.attributes.kill_chain_phases"
                                     selected="true">
                                     {{kill_chain_phase.phase_name}}
-                                </md-chip>
-                            </md-chip-list>
+                                </mat-chip>
+                            </mat-chip-list>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-12">
                             <label>Labels</label>
-                            <md-chip-list>
-                                <md-chip *ngFor="let label of tool.attributes.labels"
+                            <mat-chip-list>
+                                <mat-chip *ngFor="let label of tool.attributes.labels"
                                     selected="true"
                                     color="accent">
                                     {{label}}
-                                </md-chip>
-                            </md-chip-list>
+                                </mat-chip>
+                            </mat-chip-list>
 
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
                             <label>External References</label>
-                            <md-chip-list>
-                                <md-chip *ngFor="let externalReferences of tool.attributes.external_references"
+                            <mat-chip-list>
+                                <mat-chip *ngFor="let externalReferences of tool.attributes.external_references"
                                     selected="true">
                                     {{externalReferences.source_name}}
-                                </md-chip>
-                            </md-chip-list>
+                                </mat-chip>
+                            </mat-chip-list>
                         </div>
                     </div>
 
-            </md-card-content>
+            </mat-card-content>
 
-        </md-card>
+        </mat-card>
     </div>
 </div>
 

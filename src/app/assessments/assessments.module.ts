@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
-import { MaterialModule, MdButtonModule, MdCardModule, MdDialogModule } from '@angular/material';
+import {  MatButtonModule, MatCardModule, MatDialogModule, MatSelectModule,
+  MatTooltipModule, MatDatepickerModule, MatIconModule, MatInputModule, MatProgressSpinnerModule } from '@angular/material';
 import { AssessmentsListComponent } from './list/assessments-list.component';
 import { ComponentModule } from '../components';
 import { AssessmentsService } from './assessments.service';
@@ -43,10 +44,15 @@ import { AssessmentsGroupComponent } from './group/assessments-group.component';
     ChartsModule,
     CommonModule,
     FormsModule,
-    MaterialModule,
-    MdCardModule,
-    MdDialogModule,
-    MdButtonModule,
+    MatCardModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatIconModule,
+    MatInputModule,
+    MatTooltipModule,
+    MatProgressSpinnerModule,
+    MatDatepickerModule,
     assessmentsRouting,
     ComponentModule,
     GlobalModule

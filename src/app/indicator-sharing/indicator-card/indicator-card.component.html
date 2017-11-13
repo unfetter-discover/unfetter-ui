@@ -1,0 +1,142 @@
+<mat-card class="indicatorCard cardHoverShadow" *ngIf="indicator">
+    <mat-card-header>
+        <mat-card-title>{{ indicator.name }}</mat-card-title>
+        <mat-card-subtitle>
+            Submitted {{ indicator.created | date:'medium' }} 
+            <span *ngIf="creator">
+                 by <a routerLink="/stix/identities/{{creator.id}}">{{creator.name}}</a>
+            </span>
+            
+        </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content #card>
+        <label>Pattern</label>
+        <p>
+            <code>{{ indicator.pattern }}</code>
+        </p>
+
+        <mat-tab-group>
+            <mat-tab label="Labels">
+                <div class="flex flexItemsCenter">
+                    <mat-chip-list>
+                        <mat-chip *ngFor="let label of indicator.labels" [selected]="labelSelected(label)" class="cursor-pointer chipListChip">{{label | capitalize}}</mat-chip>
+                    </mat-chip-list>
+                    <add-label-reactive [stixType]="'indicator'" (labelAdded)="addLabel($event)" [currentLabels]="indicator.labels"></add-label-reactive>
+                </div>
+            </mat-tab>
+
+            <mat-tab label="Details">
+                <div *ngIf="indicator.kill_chain_phases">
+                    <label>Kill Chain Phases</label>
+                    <p>
+                        <span *ngFor="let phase of indicator.kill_chain_phases; let i = index" class="text-muted">
+                            <span 
+                                [ngClass]="{'uf-highlight': highlightPhase(phase.phase_name)}"
+                                matTooltip="{{ phase.kill_chain_name | capitalize }}" 
+                                matTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>
+                            <span *ngIf="i < (indicator.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
+                        </span>
+                    </p>
+                </div>
+                <div *ngIf="indicator.description">
+                    <label>Description</label>
+                    <p>{{ indicator.description }}</p>
+                </div>
+                <div *ngIf="indicator.external_references">
+                    <label>External References</label>
+                    <mat-chip-list>
+                        <mat-chip *ngFor="let reference of indicator.external_references" color="accent" selected="true">
+                            {{reference.source_name | capitalize}}
+                        </mat-chip>
+                    </mat-chip-list>
+                </div>
+                <div class="mt-3">
+                    <label>Unfetter User Interactions: </label>
+                    <span *ngIf="indicator.interactions">{{ indicator.interactions.length }}</span>
+                    <span *ngIf="!indicator.interactions">{{ 0 }}</span>
+                </div>
+            </mat-tab>
+
+            <mat-tab label="Comments" *ngIf="indicator.comments && indicator.comments.length > 0">
+                <div *ngFor="let comment of indicator.comments | sortByField: 'submitted'; let i = index">
+                    <div class="flex flexItemsCenter mb-5">
+                        <span *ngIf="comment.user.avatar_url">
+                            <img src="{{ comment.user.avatar_url }}" alt="{{ comment.user.userName }} avatar" class="smallAvatar">&nbsp;
+                        </span>
+                        <span>
+                            <a routerLink="/users/profile/{{comment.user.id}}">{{ comment.user.userName }}</a>
+                            <small class="text-muted"> &bull; {{ comment.submitted | date:'medium'}}</small>
+                        </span>
+                    </div>
+                    <p [innerHtml]="formatComment(comment.comment)"></p>
+                    <hr *ngIf="i < (indicator.comments.length - 1)">
+                </div>
+            </mat-tab>
+
+            <mat-tab label="Attack Patterns" *ngIf="attackPatterns && attackPatterns.length > 0">
+                <mat-list dense>
+                    <mat-list-item *ngFor="let ap of attackPatterns">
+                        <h4 mat-line><a routerLink="/stix/attack-patterns/{{ap.id}}">{{ap.name}}</a></h4>
+                        <div mat-line *ngIf="ap.kill_chain_phases">
+                            <label>Kill Chain Phases</label>
+                            <p>
+                                <span *ngFor="let phase of ap.kill_chain_phases; let i = index" class="text-muted">
+                                    <span
+                                        [ngClass]="{'uf-highlight': highlightPhase(phase.phase_name)}" 
+                                        matTooltip="{{ phase.kill_chain_name | capitalize }}" 
+                                        matTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>
+                                    <span *ngIf="i < (ap.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
+                                </span>
+                            </p>
+                        </div>
+                        <div mat-line *ngIf="ap.x_mitre_platforms">
+                            <label>Platforms Effected:&nbsp;</label>
+                            <span *ngFor="let platform of ap.x_mitre_platforms; let i = index" class="text-muted">
+                                <span>{{ platform }}</span>
+                                <span *ngIf="i < (ap.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
+                            </span>
+                        </div>
+                        <div mat-line *ngIf="ap.x_unfetter_sophistication_level">
+                            <label>Sophistication Level:&nbsp;</label>
+                            <span>{{ ap.x_unfetter_sophistication_level }}</span>
+                        </div>
+                    </mat-list-item>
+                </mat-list>
+            </mat-tab>
+        </mat-tab-group>
+
+        <div class="mt-20 overFlowHidden" @heightCollapse *ngIf="showCommentTextArea">
+            <mat-form-field class="full-width">
+                <textarea matInput matTextareaAutosize placeholder="Comment" [(ngModel)]="commentText">{{ commentText }}</textarea>
+            </mat-form-field>
+            <div class="text-right">
+                <button mat-button (click)="showCommentTextArea = false; commentText = ''">
+                    <i class="material-icons mat-24">arrow_back</i>
+                </button>
+                <button mat-raised-button color="accent" [disabled]="commentText === ''" (click)="submitComment()">
+                    <i class="material-icons mat-24">send</i>
+                </button>
+            </div>
+        </div>
+
+    </mat-card-content>
+
+    <mat-card-actions>
+        <button mat-button disabled="true">{{ message }}</button>
+
+        <button mat-button color="primary" *ngIf="alreadyLiked" matTooltip="You like this indicator">
+            <i class="material-icons mat-24">thumb_up</i>
+            <span *ngIf="indicator.likes && indicator.likes.length > 0">&nbsp;{{indicator.likes.length}}</span>
+        </button>
+        <button mat-button color="primary" (click)="likeIndicator()" *ngIf="!alreadyLiked">
+            <i class="material-icons mat-24">thumb_up</i>
+            <span *ngIf="indicator.likes && indicator.likes.length > 0">&nbsp;{{indicator.likes.length}}</span>
+        </button>
+
+        <button mat-button color="accent" (click)="showCommentTextArea = !showCommentTextArea">
+            <i class="material-icons mat-24">chat_bubble</i>
+            <span *ngIf="indicator.comments && indicator.comments.length > 0">&nbsp;{{indicator.comments.length}}</span>
+        </button>
+    </mat-card-actions>
+</mat-card>

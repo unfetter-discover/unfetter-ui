@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
+import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ThreatActorsComponent } from '../threat-actor/threat-actors.component';
@@ -18,9 +18,9 @@ export class ThreatActorListComponent extends ThreatActorsComponent implements O
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
-        public dialog: MdDialog,
+        public dialog: MatDialog,
         public location: Location,
-        public snackBar: MdSnackBar) {
+        public snackBar: MatSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
         this.url = stixService.url;

@@ -1,0 +1,62 @@
+@import '../../styles/_variables.scss';
+
+$md_sidenav_max_width: 400px;
+
+.title {
+    vertical-align: middle;
+    color: $threat-dashboard-primary-light;
+}
+
+.side-panel {
+    padding: 0px;
+    padding-top: 55px;
+    box-shadow: 3px 0 6px rgba(0,0,0,.24);
+}
+
+@media only screen and (max-width: 992px) {
+    .main-panel {
+        padding-top: 16px;
+        padding-left: 16px;
+    }
+
+    .side-panel {
+        padding-top: 0px;
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    .side-panel {
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        overflow-y: auto;
+        width: $md_sidenav_max_width;
+    }
+    
+    .main-panel {
+        padding-top: 24px;
+        margin-left: $md_sidenav_max_width;
+    }
+
+}
+
+.matrix { 
+    padding-left: 0px;
+}
+
+#tabGroup {
+    transition: opacity 0.3s ease-in-out;
+}
+
+/**
+  Remove inner scroll bars 
+**/
+.mat-tab-body {
+    overflow-y: hidden;
+
+    .mat-tab-body-content {
+        overflow-y: hidden;
+    }
+}
+
+

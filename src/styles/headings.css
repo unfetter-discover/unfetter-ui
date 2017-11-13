@@ -140,7 +140,7 @@ li:last-child div.list-item-row {
     height: 30px;
 }
 
-.fill-height-or-more > md-slide-toggle {
+.fill-height-or-more > mat-slide-toggle {
   /* these are the flex items */
   flex: 1;
 }

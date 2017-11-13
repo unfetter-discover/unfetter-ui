@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
+import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { Location } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -7,6 +7,7 @@ import { BaseStixComponent } from '../../../base-stix.component';
 import { StixService } from '../../../stix.service';
 import { CourseOfAction } from '../../../../models';
 import { Constance } from '../../../../utils/constance';
+import { FormatHelpers } from '../../../../global/static/format-helpers';
 
 @Component({
     selector: 'course-of-action',
@@ -21,9 +22,9 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
         public stixService: StixService,
         public route: ActivatedRoute,
         public router: Router,
-        public dialog: MdDialog,
+        public dialog: MatDialog,
         public location: Location,
-        public snackBar: MdSnackBar) {
+        public snackBar: MatSnackBar) {
 
         super(stixService, route, router, dialog, location, snackBar);
         stixService.url = Constance.COURSE_OF_ACTION_URL;
@@ -85,5 +86,9 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
                 }
             }
         );
+    }
+
+    public formatText(inputString): string {
+        return FormatHelpers.formatAll(inputString);
     }
 }

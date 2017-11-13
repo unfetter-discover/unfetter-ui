@@ -1,7 +1,7 @@
 <div class="riskBreakdown">
-    <div *ngFor="let category of categories" 
-        class="riskCategory" 
-        [style.flexBasis]="(riskBreakdown[category] * 100) + '%'" 
+    <div *ngFor="let category of categories"
+        class="riskCategory"
+        [style.flexBasis]="(riskBreakdown[category] * 100) + '%'"
         [style.background]="getColor(category)"
-        mdTooltip="{{ category | capitalize }} &bull; {{ riskBreakdown[category] | percent:'2.1-1' }}"></div>
+        matTooltip="{{ category | capitalize }} &bull; {{ riskBreakdown[category] | percent:'2.1-1' }}"></div>
 </div>
