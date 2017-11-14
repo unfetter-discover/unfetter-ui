@@ -28,6 +28,6 @@ RUN npm --loglevel error run build:prod && \
     rm -rf /tmp/*
 
 # Start Application
-EXPOSE 80
-CMD [ "npm --loglevel error", "run", "server:dev:alt"]
+# EXPOSE 80
+# CMD [ "npm --loglevel error", "run", "server:dev:alt"]
 
