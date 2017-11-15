@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 
-import { GenericApi } from '../global/services/genericapi.service';
+import { GenericApi } from '../core/services/genericapi.service';
 import { Constance } from '../utils/constance';
-import { AuthService } from '../global/services/auth.service';
+import { AuthService } from '../core/services/auth.service';
 
 @Injectable()
 export class IndicatorSharingService {

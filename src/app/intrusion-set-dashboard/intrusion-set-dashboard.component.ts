@@ -10,7 +10,7 @@ import { StixService } from '../settings/stix.service';
 import { BaseStixService } from '../settings/base-stix.service';
 import { IntrusionSet } from '../models';
 import * as Ps from 'perfect-scrollbar';
-import { GenericApi } from '../global/services/genericapi.service';
+import { GenericApi } from '../core/services/genericapi.service';
 
 @Component({
   selector: 'intrusion-set-dashboard',

@@ -32,7 +32,7 @@ import { newEvent, click } from '../../../../testing/index';
 
 // Load the implementations that should be tested
 import { AttackPatternNewComponent } from './attack-patterns-new.component';
-import { ConfigService } from '../../../../global/services/config.service';
+import { ConfigService } from '../../../../core/services/config.service';
 
 /** Duration of the select opening animation. */
 const SELECT_OPEN_ANIMATION = 200;

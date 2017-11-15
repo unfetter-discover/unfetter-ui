@@ -106,7 +106,7 @@ import {
   SensorNewComponent
 } from './stix-objects/sensors';
 
-import { AuthGuard } from '../global/services/auth.guard';
+import { AuthGuard } from '../core/services/auth.guard';
 
 const stixRoutes: Routes = [{
     path: 'stix',

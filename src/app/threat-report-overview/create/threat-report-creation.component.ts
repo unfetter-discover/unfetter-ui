@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 
 import * as moment from 'moment';
 
-import { GenericApi } from '../../global/services/genericapi.service';
+import { GenericApi } from '../../core/services/genericapi.service';
 import { Constance } from '../../utils/constance';
 import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
 import { IntrusionSet } from '../../models/intrusion-set';

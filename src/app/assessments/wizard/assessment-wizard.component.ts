@@ -15,7 +15,7 @@ import { Location } from '@angular/common';
 import { Measurements } from './measurements';
 import { Constance } from '../../utils/constance';
 import { AssessmentsService } from '../assessments.service';
-import { GenericApi } from '../../global/services/genericapi.service';
+import { GenericApi } from '../../core/services/genericapi.service';
 import { MenuItem } from 'primeng/primeng';
 
 @Component({

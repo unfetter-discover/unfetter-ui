@@ -1,8 +1,8 @@
 import { Component,  OnInit, ViewEncapsulation } from '@angular/core';
 
 import { AppState } from './app.service';
-import { AuthService } from './global/services/auth.service';
-import { WebAnalyticsService } from './global/services/web-analytics.service';
+import { AuthService } from './core/services/auth.service';
+import { WebAnalyticsService } from './core/services/web-analytics.service';
 
 @Component({
   selector: 'app',

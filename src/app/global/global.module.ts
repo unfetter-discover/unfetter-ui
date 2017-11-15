@@ -15,13 +15,6 @@ import { KillChainPhasesReactiveComponent } from './components/kill-chain-phases
 import { ExternalReferencesReactiveComponent } from './components/external-references/external-references.component';
 import { AddLabelReactiveComponent } from './components/add-label/add-label.component';
 
-// Services
-import { GenericApi } from './services/genericapi.service';
-import { AuthService } from './services/auth.service';
-import { AuthGuard } from './services/auth.guard';
-import { ConfigService } from './services/config.service';
-import { WebAnalyticsService } from './services/web-analytics.service';
-
 // Pipes
 import { CapitalizePipe } from './pipes/capitalize.pipe';
 import { SophisticationPipe } from './pipes/sophistication.pipe';
@@ -61,13 +54,7 @@ const matModules = [
         ExternalReferencesReactiveComponent,
         AddLabelReactiveComponent
     ],
-    providers: [
-        GenericApi,
-        AuthService,
-        AuthGuard,
-        // ConfigService, Move to global import
-        WebAnalyticsService
-    ]
+    providers: []
 })
 
 export class GlobalModule {}

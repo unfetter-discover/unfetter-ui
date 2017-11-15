@@ -37,7 +37,7 @@ import { AttackPatternEditComponent } from './attack-patterns-edit.component';
 import { AttackPattern } from '../../../../models/attack-pattern';
 import { ExternalReference } from '../../../../models/externalReference';
 import { KillChainPhase } from '../../../../models/kill-chain-phase';
-import { ConfigService } from '../../../../global/services/config.service';
+import { ConfigService } from '../../../../core/services/config.service';
 
 ////// Testing Vars //////
 const id = 'attack-pattern-9999999'
