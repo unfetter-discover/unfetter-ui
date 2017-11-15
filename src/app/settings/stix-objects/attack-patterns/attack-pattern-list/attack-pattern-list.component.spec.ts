@@ -19,6 +19,7 @@ import { StixService } from '../../../stix.service';
 // Load the implementations that should be tested
 import { AttackPatternListComponent } from './attack-pattern-list.component';
 import { GlobalModule } from '../../../../global/global.module';
+import { CoreModule } from '../../../../core/core.module';
 
 describe(`AttackPatternListComponent`, () => {
   let comp: AttackPatternListComponent;
@@ -38,7 +39,7 @@ describe(`AttackPatternListComponent`, () => {
     async(() => {
       TestBed.configureTestingModule({
         imports: [
-          GlobalModule
+          GlobalModule, CoreModule
         ],
         declarations: [AttackPatternListComponent],
         schemas: [NO_ERRORS_SCHEMA],

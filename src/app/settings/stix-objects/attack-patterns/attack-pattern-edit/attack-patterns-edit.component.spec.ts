@@ -38,6 +38,7 @@ import { AttackPattern } from '../../../../models/attack-pattern';
 import { ExternalReference } from '../../../../models/externalReference';
 import { KillChainPhase } from '../../../../models/kill-chain-phase';
 import { ConfigService } from '../../../../core/services/config.service';
+import { CoreModule } from '../../../../core/core.module';
 
 ////// Testing Vars //////
 const id = 'attack-pattern-9999999'
@@ -283,7 +284,7 @@ function moduleSetup() {
 
     TestBed.configureTestingModule({
       imports: [
-        GlobalModule, ComponentModule, FormsModule, NoopAnimationsModule, 
+        GlobalModule, CoreModule, ComponentModule, FormsModule, NoopAnimationsModule, 
         ...matModules
       ],
       declarations: [AttackPatternEditComponent],
