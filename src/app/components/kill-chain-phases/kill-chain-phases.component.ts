@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/startWith';
 import { KillChainPhase } from '../../models';
-import { ConfigService } from '../../global/services/config.service';
+import { ConfigService } from '../../core/services/config.service';
 
 @Component({
   selector: 'kill-chain-phases',

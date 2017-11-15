@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, EventEmitter, Outp
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
-import { GenericApi } from '../../global/services/genericapi.service';
+import { GenericApi } from '../../core/services/genericapi.service';
 import { Constance } from '../../utils/constance';
 import { UploadService } from './upload.service';
 import { HttpEventType, HttpResponse } from '@angular/common/http';

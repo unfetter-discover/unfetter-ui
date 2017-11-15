@@ -7,7 +7,7 @@ import { ExternalReportForm } from './external-report-form';
 import { MatDialogRef, MatSelectionList } from '@angular/material';
 import { ThreatReportOverviewService } from '../../threat-dashboard/services/threat-report-overview.service';
 import { ExternalReference } from '../../models/externalReference';
-import { GenericApi } from '../../global/services/genericapi.service';
+import { GenericApi } from '../../core/services/genericapi.service';
 import { AttackPattern } from '../../models/attack-pattern';
 import { Constance } from '../../utils/constance';
 import { Subscription } from 'rxjs';

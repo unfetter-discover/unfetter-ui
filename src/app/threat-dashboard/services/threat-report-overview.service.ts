@@ -7,7 +7,7 @@ import 'rxjs/add/operator/map';
 import * as UUID from 'uuid';
 
 import { Constance } from '../../utils/constance';
-import { GenericApi } from '../../global/services/genericapi.service';
+import { GenericApi } from '../../core/services/genericapi.service';
 import { ThreatReport } from '../../threat-report-overview/models/threat-report.model';
 import { Boundries } from '../../threat-report-overview/models/boundries';
 
