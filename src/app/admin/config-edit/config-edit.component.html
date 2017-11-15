@@ -1,0 +1,20 @@
+<div id="approveUsers" class="row">
+    <div class="col-xs-12">
+
+        <div class="alert alert-info" *ngIf="message">{{message}}</div>
+
+        <div *ngIf="configData && configData.length">
+            <h5>Config Data</h5>
+              <li *ngFor="let data of configData">
+                {{ data.configKey }}
+                    <p *ngFor="let val of data.configValue">
+                      {{ val | json}}
+                    </p>
+              </li>
+        </div>
+        <div *ngIf="!(configData && configData.length)" class="alert-alert-info">
+            There is no configuration data stored.
+        </div>
+
+    </div>
+</div>
