@@ -25,8 +25,8 @@ export class ConfigEditComponent implements OnInit {
                 if (res && res.length) {
                     for (let currRes of res) {
                         let currData = {};
-                        currData.configKey = currRes.attributes.configKey;
-                        currData.configValue = currRes.attributes.configValue;
+                        currData['configKey'] = currRes.attributes.configKey;
+                        currData['configValue'] = currRes.attributes.configValue;
                         this.configData.push(currData);
                     }
                 } else {

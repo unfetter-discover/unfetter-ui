@@ -7,9 +7,14 @@
             <h5>Config Data</h5>
               <li *ngFor="let data of configData">
                 {{ data.configKey }}
-                    <p *ngFor="let val of data.configValue">
-                      {{ val | json}}
-                    </p>
+                    <div *ngIf="data.configKey === 'killChains'">
+                        <p *ngFor="let val of data.configValue">
+                          {{ val | json}}
+                        </p>
+                    </div>
+                    <div *ngIf="data.configKey === 'openVocab'">
+
+                    </div>
               </li>
         </div>
         <div *ngIf="!(configData && configData.length)" class="alert-alert-info">
