@@ -16,7 +16,7 @@ import { UploadService } from '../file-upload/upload.service';
 import { ThreatReport } from '../models/threat-report.model';
 import { ThreatReportSharedService } from '../services/threat-report-shared.service';
 import { Boundries } from '../models/boundries';
-import { AddExterernalReportComponent } from '../add-external-report/add-external-report.component';
+import { AddExternalReportComponent } from '../add-external-report/add-external-report.component';
 import { MatDialog } from '@angular/material';
 
 @Component({
@@ -274,7 +274,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
       height: 'calc(100vh - 140px)'
     };
     this.dialog
-      .open(AddExterernalReportComponent, opts)
+      .open(AddExternalReportComponent, opts)
       .afterClosed()
       .subscribe((result) => {
         if (this.isFalsey(result)) {

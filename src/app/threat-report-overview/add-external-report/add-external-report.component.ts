@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, EventEmitter, Output, trigger, state, animate, transition, style } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, EventEmitter, Output, trigger, state, animate, transition, style, Inject } from '@angular/core';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { FormGroup } from '@angular/forms';
 import { ExternalReportForm } from './external-report-form';
-import { MatDialogRef, MatSelectionList } from '@angular/material';
+import { MatDialogRef, MatSelectionList, MAT_DIALOG_DATA } from '@angular/material';
 import { ThreatReportOverviewService } from '../../threat-dashboard/services/threat-report-overview.service';
 import { ExternalReference } from '../../models/externalReference';
 import { GenericApi } from '../../core/services/genericapi.service';
@@ -18,7 +18,7 @@ import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
   templateUrl: './add-external-report.component.html',
   styleUrls: ['add-external-report.component.scss']
 })
-export class AddExterernalReportComponent implements OnInit, OnDestroy {
+export class AddExternalReportComponent implements OnInit, OnDestroy {
 
   @ViewChild('attackPatternBlock')
   public attackPatternEl: MatSelectionList;
@@ -33,6 +33,7 @@ export class AddExterernalReportComponent implements OnInit, OnDestroy {
     protected router: Router,
     protected genericApiService: GenericApi,
     public dialogRef: MatDialogRef<any>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) { }
 
   /**
@@ -40,6 +41,10 @@ export class AddExterernalReportComponent implements OnInit, OnDestroy {
    * @returns {void}
    */
   public ngOnInit(): void {
+    if (this.data && this.data.attackPatterns) {
+      this.attackPatterns = this.data.attackPatterns;
+    }
+
     this.loading = true;
     this.resetForm();
     const sub$ = this.loadAttackPatterns()
@@ -66,6 +71,10 @@ export class AddExterernalReportComponent implements OnInit, OnDestroy {
    * @return {Observable<any>}
    */
   public loadAttackPatterns(): Observable<AttackPattern[]> {
+    if (this.attackPatterns && this.attackPatterns.length > 0) {
+      return Observable.of(this.attackPatterns);
+    }
+
     const filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
     const url = Constance.ATTACK_PATTERN_URL + '?' + filter;
     return this.genericApiService.get(url).map((el) => this.attackPatterns = el);

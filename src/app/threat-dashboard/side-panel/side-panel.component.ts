@@ -10,8 +10,9 @@ import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
 import { ConfirmationDialogComponent } from '../../components/dialogs/confirmation/confirmation-dialog.component';
 import { MatDialog, MatMenu } from '@angular/material';
 import { ThreatReportOverviewService } from '../services/threat-report-overview.service';
-import { AddExterernalReportComponent } from '../../threat-report-overview/add-external-report/add-external-report.component';
+import { AddExternalReportComponent } from '../../threat-report-overview/add-external-report/add-external-report.component';
 import { parentFadeIn } from '../../global/animations/animations';
+import { AttackPattern } from '../../models/attack-pattern';
 
 @Component({
     selector: 'unf-side-panel',
@@ -23,6 +24,9 @@ export class SidePanelComponent implements OnInit, OnDestroy {
 
     @Input('threatReport')
     public threatReport: ThreatReport;
+
+    @Input('attackPatterns')
+    public attackPatterns: AttackPattern[];
 
     @ViewChild('menu')
     public menu: MatMenu;
@@ -202,10 +206,16 @@ export class SidePanelComponent implements OnInit, OnDestroy {
      * @return {void}
      */
     public openAddReportDialog(event?: UIEvent): void {
-        this.dialog.open(AddExterernalReportComponent, {
+        const config: any = {
             width: '800px',
-            height: 'calc(100vh - 140px)'
-        })
+            height: 'calc(100vh - 140px)',
+            data: { },
+        };
+        if (this.attackPatterns) {
+            config.data.attackPatterns = this.attackPatterns;
+        }
+
+        this.dialog.open(AddExternalReportComponent, config)
             .afterClosed()
             .subscribe((result) => {
                 const isBool = typeof result === 'boolean';

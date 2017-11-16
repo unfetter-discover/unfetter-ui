@@ -34,6 +34,8 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   public treeData: any;
   public radarData: RadarChartDataPoint[][];
   public loading = true;
+  public uniqChainNames: string[] = [];
+  public selectedChain = '';
 
   private readonly filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
   private readonly subscriptions: Subscription[] = [];
@@ -72,13 +74,12 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     const sub$ = loadAll$.subscribe(
       (arr) => {
         const buildKillChainTable = () => {
-          // build the kill chain table data
           this.attackPatterns = this.colorRows(this.attackPatterns, this.threatReport);
           this.groupKillchain = this.groupByKillchain(this.attackPatterns);
           this.intrusionSetsDashboard['killChainPhases'] = this.groupKillchain;
         };
         // get intrusion sets, used
-        const intrusionIds: string[] = Array.from(this.threatReport.boundries.intrusions).map((el: SelectOption) => el.value);
+        const intrusionIds = Array.from(this.threatReport.boundries.intrusions).map((el: SelectOption) => el.value);
         if (!intrusionIds || intrusionIds.length === 0) {
           // build the table and short circuit the rest of the visualizations
           buildKillChainTable();
@@ -123,7 +124,13 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
       'stix.kill_chain_phases': 1,
       'stix.id': 1
     }));
-    return this.genericApi.get(url).map((el) => this.attackPatterns = el);
+    return this.genericApi.get(url)
+          .map((el) => this.attackPatterns = el)
+          .do(() => {
+            this.uniqChainNames = this.generateUniqChainNames(this.attackPatterns);
+            this.selectedChain = this.determineFilter(this.uniqChainNames);
+            this.attackPatterns = this.filterAttackPatterns(this.attackPatterns, this.selectedChain);
+          });
   }
 
   /**
@@ -328,17 +335,6 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
         return dataPoint;
       });
 
-    // const arr = [
-    //   [
-    //     { 'area': 'Central ', 'value': 80 },
-    //     { 'area': 'Kirkdale', 'value': 40 },
-    //     { 'area': 'Kensington ', 'value': 40 },
-    //     { 'area': 'Everton ', 'value': 90 },
-    //     { 'area': 'Picton ', 'value': 60 },
-    //     { 'area': 'Riverside ', 'value': 80 }
-    //   ]
-    // ];
-
     return [dataPoints];
   }
 
@@ -352,6 +348,55 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
 
   public radarRendered(): void {
     console.log('radar rendered');
+  }
+
+  /**
+   * @description filter attack patterns
+   * @param {AttackPattern[]} attackPatterns
+   * @param {string} filterChainName
+   * @return {AttackPattern[]} filtered list of attack patterns or empty array
+   */
+  public filterAttackPatterns(attackPatterns: AttackPattern[], filterChainName = ''): AttackPattern[] {
+    if (!attackPatterns) {
+      return [];
+    }
+
+    const noFilter = filterChainName === '';
+    return attackPatterns.filter((el) => {
+      if (noFilter) {
+        return el;
+      }
+      const names = el.attributes.kill_chain_phases.map((chain) => chain.kill_chain_name);
+      return names.includes(filterChainName);
+    });
+  }
+
+  /**
+   * @description unique kill chain names
+   * @param {AttackPattern[]}
+   * @return {string[]} uniq list of names
+   */
+  public generateUniqChainNames(attackPatterns: AttackPattern[], filter = ''): string[] {
+    if (!attackPatterns) {
+      return [];
+    }
+
+    const names = attackPatterns
+      .map((el) => {
+        return el.attributes.kill_chain_phases.map((chain) => chain.kill_chain_name);
+      })
+      .reduce((memo, el) => memo.concat(el), []);
+    const uniqNames = new Set(names); 
+    return Array.from(uniqNames);
+  }
+
+  /**
+   * @description
+   */
+  public determineFilter(names = []): string {
+    const mitreLast = 'mitre-attack';
+    const name = names.find((el) => el !== mitreLast);
+    return name;
   }
 
   /**
