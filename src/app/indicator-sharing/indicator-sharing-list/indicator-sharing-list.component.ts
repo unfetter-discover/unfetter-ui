@@ -5,7 +5,7 @@ import { Subject } from 'rxjs/Subject';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { AddIndicatorComponent } from '../add-indicator/add-indicator.component';
-import { ConfigService } from '../../global/services/config.service';
+import { ConfigService } from '../../core/services/config.service';
 
 @Component({
     selector: 'indicator-sharing-list',

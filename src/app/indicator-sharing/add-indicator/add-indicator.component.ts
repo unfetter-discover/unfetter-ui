@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { IndicatorForm } from '../../global/form-models/indicator';
 import { IndicatorSharingService } from '../indicator-sharing.service';
-import { AuthService } from '../../global/services/auth.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
     selector: 'add-indicator',

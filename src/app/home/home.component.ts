@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { AuthService } from '../global/services/auth.service';
+import { AuthService } from '../core/services/auth.service';
 
 @Component({
   selector: 'home',

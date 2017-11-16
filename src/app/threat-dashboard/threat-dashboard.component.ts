@@ -7,7 +7,7 @@ import { Constance } from '../utils/constance';
 import { StixService } from '../settings/stix.service';
 import { BaseStixService } from '../settings/base-stix.service';
 import { BaseComponentService } from '../components/base-service.component';
-import { GenericApi } from '../global/services/genericapi.service';
+import { GenericApi } from '../core/services/genericapi.service';
 
 import { IntrusionSetComponent } from '../intrusion-set/intrusion-set.component';
 import { IntrusionSet, AttackPattern } from '../models';

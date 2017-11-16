@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { AuthService } from '../../global/services/auth.service';
+import { AuthService } from '../../core/services/auth.service';
 import { UsersService } from '../users.service';
-import { ConfigService } from '../../global/services/config.service';
+import { ConfigService } from '../../core/services/config.service';
 
 @Component({
     selector: 'login-callback',
