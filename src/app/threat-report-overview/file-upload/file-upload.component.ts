@@ -23,6 +23,7 @@ export class FileUploadComponent implements OnInit {
     public fName = '';
     public numEventsParsed = -1;
     public loading = false;
+    public errMsg;
     private readonly subscriptions = [];
 
   constructor(protected router: Router,
@@ -83,7 +84,12 @@ export class FileUploadComponent implements OnInit {
         this.fileParsedEvent.emit(resp as any);
         // }
       },
-      (err) => console.log(err),
+      (err) => {
+        console.log(err);
+        this.errMsg = err;
+        this.loading = false;
+        this.fName = undefined;
+      },
       () => this.loading = false);
     this.subscriptions.push(s$);
   }
