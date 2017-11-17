@@ -42,12 +42,19 @@
                                         <label>External References</label>
                                         <mat-chip-list>
                                             <mat-chip *ngFor="let externalReferences of courseOfAction.attributes.external_references"
-                                                selected="true">
+                                            selected="true" (click)="getChipInfo(externalReferences)">
                                                 {{externalReferences.source_name}}
                                             </mat-chip>
                                         </mat-chip-list>
                                     </div>
                                 </div>
+                                <div class="row">
+                                        <div class="col-md-12">
+                                            <div *ngIf="selectedExternal != NULl">
+                                                    <strong>{{selectedExternal.external_id}}</strong> of {{selectedExternal.source_name}} at <a href="{{selectedExternal.url}}" target="_blank">{{selectedExternal.url}}</a> 
+                                            </div>                                        
+                                        </div>
+                                    </div>s                                
 
                         </mat-card-content>
 

@@ -34,7 +34,9 @@ export class SensorComponent extends BaseStixComponent implements OnInit {
         super(stixService, route, router, dialog, location, snackBar);
         stixService.url = Constance.X_UNFETTER_SENSOR_URL;
     }
-
+    public getChipInfo(chipInfo): void {
+        this.selectedExternal = chipInfo;
+    }
     public ngOnInit() {
         this.loadSensor();
     }
