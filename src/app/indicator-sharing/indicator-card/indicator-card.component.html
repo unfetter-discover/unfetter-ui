@@ -51,6 +51,10 @@
                         </mat-chip>
                     </mat-chip-list>
                 </div>
+                <div *ngIf="indicator.observedData && indicator.observedData.length">
+                    <label>Observed Data</label>
+                    <p *ngFor="let observedDatum of indicator.observedData">{{ observedDatum.name | capitalize }} &bull; {{ observedDatum.action | capitalize }} &bull; {{ observedDatum.property | capitalize }}</p>
+                </div>
                 <div class="mt-3">
                     <label>Unfetter User Interactions: </label>
                     <span *ngIf="indicator.interactions">{{ indicator.interactions.length }}</span>

@@ -1,0 +1,36 @@
+<div class="obsDataTreeComponent" *ngIf="observableDataTypes && observableDataTypes.length">
+    <div class="uf-collapsible-control mb-10" (click)="showTree = !showTree">
+        <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showTree}">chevron_right</i>
+        <span class="h5">&nbsp;Observable Data</span>
+    </div>
+
+    <div @heightCollapse *ngIf="showTree" class="treePaddingLeft">
+        <div *ngFor="let observableDataType of observableDataTypes">
+        
+            <div class="uf-collapsible-control mb-10" (click)="observableDataType.showActions = !observableDataType.showActions">
+                <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': observableDataType.showActions}">chevron_right</i>
+                <span class="h5">&nbsp;{{ observableDataType.name | capitalize }}</span>
+            </div>
+        
+            <div @heightCollapse *ngIf="observableDataType.showActions" class="treePaddingLeft">
+                <div *ngFor="let action of observableDataType.actions">
+                    <div class="uf-collapsible-control mb-10" (click)="showPropertyTree[observableDataType.name][action] = !showPropertyTree[observableDataType.name][action]">
+                        <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showPropertyTree[observableDataType.name][action]}">chevron_right</i>
+                        <span class="h5">&nbsp;{{ action | capitalize }}</span>
+                    </div>
+        
+                    <div @heightCollapse *ngIf="showPropertyTree[observableDataType.name][action]" class="treePaddingLeft mb-10">
+                        <div *ngFor="let prop of observableDataType.properties">
+                            <mat-checkbox 
+                                [(ngModel)]="checkboxModel[observableDataType.name][action][prop]" 
+                                (change)="checkBoxChange($event, observableDataType.name, action, prop)">{{ prop }}</mat-checkbox>
+                        </div>
+                    </div>
+        
+                </div>
+            </div>
+        
+        </div>
+    </div>
+    
+</div>
