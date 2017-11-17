@@ -30,6 +30,7 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
     public resourceLevels = new Set(ResourceLevel.values().map((el) => el.toString()).sort(SortHelper.sortDesc()));
     public motivationCtrl: FormControl;
     public resourceLevelCtrl: FormControl;
+    public goalText: string = '';
 
     public labels = [
         {label: 'activist'},
@@ -66,6 +67,11 @@ export class IntrusionSetEditComponent extends IntrusionSetComponent implements 
 
     public ngOnInit() {
        super.loadIntrusionSet();
+    }
+
+    public addGoalToArray() {
+        this.intrusionSet.attributes.goals.push(this.goalText);
+        this.goalText = '';
     }
 
     public isChecked(label: string): boolean {

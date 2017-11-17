@@ -59,3 +59,7 @@ $default-navbar-mat-button-padding: 7;
     -moz-osx-font-smoothing: grayscale;
     font-feature-settings: 'liga';
 }
+
+@function rgba-to-rgb($rgba, $background: #fff) {
+        @return mix(rgb(red($rgba), green($rgba), blue($rgba)), $background, alpha($rgba) * 100%)
+}

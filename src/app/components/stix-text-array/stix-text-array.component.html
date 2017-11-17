@@ -1,0 +1,28 @@
+  <div class="row">
+    <div class="col-md-12">
+        <label>{{ propertyName | capitalize }}</label>
+        <div class="button-row">
+            <a mat-raised-button (click)="addItemToArray()"><i class="material-icons">add</i> ADD</a>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+            <mat-card *ngFor="let item of model.attributes[propertyName]; let i = index; trackBy:trackByIndex;" style="margin: 10px 0px;">
+                    <mat-card-content>
+                        <div class="row">
+                            <div class="col-md-12">
+                                    <mat-input-container class="full-width">
+                                        <input matInput placeholder="{{ makePlaceholder(propertyName) }}" [(ngModel)]="model.attributes[propertyName][i]">
+                                    </mat-input-container>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                    <mat-card-actions>
+                        <div class="button-row">
+                            <a class="" mat-raised-button (click)="removeItemFromArray(i)"><i class="material-icons">delete</i> REMOVE</a>
+                        </div>
+                    </mat-card-actions>
+            </mat-card>
+        </div>
+</div>

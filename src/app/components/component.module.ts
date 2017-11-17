@@ -26,6 +26,8 @@ import { LabelComponent } from './labels/label.component';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { GlobalModule } from '../global/global.module';
+import { StixTextArrayComponent } from './stix-text-array/stix-text-array.component';
+
 @NgModule({
   declarations: [
     // Components / Directives/ Pipes
@@ -44,7 +46,8 @@ import { GlobalModule } from '../global/global.module';
     MitigateListComponent,
     ButtonsFilterComponent,
     LinkNodeGraphComponent,
-    LabelComponent
+    LabelComponent,
+    StixTextArrayComponent
   ],
   imports: [
     CommonModule,
@@ -82,7 +85,8 @@ import { GlobalModule } from '../global/global.module';
     FilterSearchBoxComponent,
     ButtonsFilterComponent,
     LinkNodeGraphComponent,
-    LabelComponent
+    LabelComponent,
+    StixTextArrayComponent
   ],
   providers: [BaseComponentService],
   entryComponents: [ConfirmationDialogComponent]
