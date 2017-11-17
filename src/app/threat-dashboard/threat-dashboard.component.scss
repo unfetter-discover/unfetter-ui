@@ -17,6 +17,7 @@ $md_sidenav_max_width: 400px;
     .main-panel {
         padding-top: 16px;
         padding-left: 16px;
+        width: 100%;
     }
 
     .side-panel {
@@ -35,13 +36,15 @@ $md_sidenav_max_width: 400px;
     
     .main-panel {
         padding-top: 24px;
+        padding-left: 16px;
         margin-left: $md_sidenav_max_width;
+        width: calc(100% - 416px);
+        
+        .matrix { 
+            padding-left: 0px;
+        }
     }
 
-}
-
-.matrix { 
-    padding-left: 0px;
 }
 
 #tabGroup {
