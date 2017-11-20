@@ -19,7 +19,7 @@ export class IntrusionSetNewComponent extends IntrusionSetEditComponent {
                 public location: Location, public snackBar: MatSnackBar) {
         super(stixService, route, router, dialog, location, snackBar);
     }
-
+    
     public saveButtonClicked(): Observable<any> {
         const observable = super.create(this.intrusionSet);
         const sub = observable
