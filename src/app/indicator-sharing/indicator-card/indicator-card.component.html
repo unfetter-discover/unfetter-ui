@@ -53,7 +53,33 @@
                 </div>
                 <div *ngIf="indicator.observedData && indicator.observedData.length">
                     <label>Observed Data</label>
-                    <p *ngFor="let observedDatum of indicator.observedData">{{ observedDatum.name | capitalize }} &bull; {{ observedDatum.action | capitalize }} &bull; {{ observedDatum.property | capitalize }}</p>
+                    <!-- <mat-list dense>
+                        <ng-template ngFor let-observedDatum [ngForOf]="mapObservedData(indicator.observedData)">
+                            <h4 mat-subheader>{{ observedDatum.name | capitalize }}</h4>
+                            <mat-list-item *ngFor="let action of observedDatum.actions">
+                                <mat-icon mat-list-icon>insert_drive_file</mat-icon> 
+                                <h4 mat-line>{{ action.actionName | capitalize }} </h4>
+                                <p mat-line>
+                                    <span *ngFor="let property of action.properties; let i = index">
+                                        {{ property }}
+                                        <span *ngIf="i < (action.properties.length -1)"> &bull; </span>
+                                    </span>
+                                </p>
+                            </mat-list-item>
+                        </ng-template>
+                    </mat-list> -->
+                    <div *ngFor="let observedDatum of mapObservedData(indicator.observedData)">
+                        <h5>{{ observedDatum.name | capitalize }}</h5>
+                        <ul>
+                            <li *ngFor="let action of observedDatum.actions">
+                                <strong>{{ action.actionName | capitalize }}:</strong>&nbsp;
+                                <span *ngFor="let property of action.properties; let i = index">
+                                    {{ property }}
+                                    <span *ngIf="i < (action.properties.length -1)"> &bull; </span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="mt-3">
                     <label>Unfetter User Interactions: </label>
@@ -79,7 +105,7 @@
             </mat-tab>
 
             <mat-tab label="Attack Patterns" *ngIf="attackPatterns && attackPatterns.length > 0">
-                <mat-list dense>
+                <mat-list>
                     <mat-list-item *ngFor="let ap of attackPatterns">
                         <h4 mat-line><a routerLink="/stix/attack-patterns/{{ap.id}}">{{ap.name}}</a></h4>
                         <div mat-line *ngIf="ap.kill_chain_phases">

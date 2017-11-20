@@ -4,7 +4,7 @@
         <span class="h5">&nbsp;Observable Data</span>
     </div>
 
-    <div @heightCollapse *ngIf="showTree" class="treePaddingLeft">
+    <div @heightCollapse *ngIf="showTree" class="uf-well pb-9">
         <div *ngFor="let observableDataType of observableDataTypes">
         
             <div class="uf-collapsible-control mb-10" (click)="observableDataType.showActions = !observableDataType.showActions">
