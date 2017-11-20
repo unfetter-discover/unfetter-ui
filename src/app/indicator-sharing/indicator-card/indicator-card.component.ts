@@ -139,6 +139,10 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
             );
     }
 
+    public navigate(url) {
+        window.open(url);
+    }
+
     public addInteraction() {
         // Set this to true immediantly to prevent errors from double clicking
         this.alreadyInteracted = true;

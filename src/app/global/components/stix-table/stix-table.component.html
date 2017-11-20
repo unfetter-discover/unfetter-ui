@@ -9,7 +9,7 @@
                         <a routerLink="{{element.id}}">{{element.name}}</a>
                         <mat-chip-list *ngIf="element.external_references" class="inlineFlex">
                             <mat-chip *ngFor="let external_reference of element.external_references.slice(0,3)" class="chipListChip">
-                                <a target="_blank" *ngIf="external_reference.url"> {{external_reference.source_name}}</a>
+                                <a (click)="navigate(external_reference.url)" *ngIf="external_reference.url"> {{external_reference.source_name}}</a>
                                 <span *ngIf="!external_reference.url"> {{external_reference.source_name}}</span>
                             </mat-chip>
                          </mat-chip-list>

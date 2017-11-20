@@ -47,7 +47,8 @@
                     <label>External References</label>
                     <mat-chip-list>
                         <mat-chip *ngFor="let reference of indicator.external_references" color="accent" selected="true">
-                            {{reference.source_name | capitalize}}
+                            <a (click)="navigate(reference.url)" *ngIf="reference.url"> {{reference.source_name}}</a>
+                            <span *ngIf="!reference.url"> {{reference.source_name}}</span>
                         </mat-chip>
                     </mat-chip-list>
                 </div>

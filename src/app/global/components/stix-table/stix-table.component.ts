@@ -36,6 +36,10 @@ export class StixTableComponent implements OnInit {
         });
     }
 
+    public navigate(url) {
+        window.open(url);
+    }
+
     public externalReferencesToolTipGen(externalReferences): string {
         return externalReferences
             .filter((er) => er.source_name !== undefined)
