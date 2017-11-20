@@ -1,25 +1,38 @@
-<div id="approveUsers" class="row">
-    <div class="col-xs-12">
-
-        <div class="alert alert-info" *ngIf="message">{{message}}</div>
-
+<div class="row">
+    <div class="col-md-12">
         <div *ngIf="configData && configData.length">
-            <h5>Config Data</h5>
-              <li *ngFor="let data of configData">
-                {{ data.configKey }}
-                    <div *ngIf="data.configKey === 'killChains'">
-                        <p *ngFor="let val of data.configValue">
-                          {{ val | json}}
-                        </p>
+              <div *ngFor="let data of configData; let i = index">
+                    <br>
+                    <div>
+                        <h3>{{configData[i].attributes.configKey}}</h3>
+                            <mat-input-container class="full-width">
+                                <textarea matInput matTextareaAutosize value="configData[i].attributes.configValue" [(ngModel)]="configData[i].attributes.configValue">{{configData[i].configValue}}</textarea>
+                            </mat-input-container>
+                            <div *ngIf="message[i]" class="alert alert-info">{{message[i]}}</div>
+                            <button type="submit"  class="mat-primary" mat-raised-button (click)="changeData(configData[i], i)"><i class="material-icons">save</i> SAVE {{ configData[i].attributes.configKey }}</button>
+                            <button type="submit"  class="mat-primary" mat-raised-button (click)="fetchSingleConfig(configData[i].attributes.id, i)"><i class="material-icons">save</i> UNDO EDITS</button>
                     </div>
-                    <div *ngIf="data.configKey === 'openVocab'">
-
-                    </div>
-              </li>
+                    <!--<div *ngIf="configData[i].configKey === 'x_mitre_data_sources'">
+                        <div class="alert alert-info" *ngIf="messageType === 'x_mitre_data_sources'">{{message}}</div>
+                        <h3>Edit Data Sources</h3>
+                            <mat-input-container class="full-width">
+                                <textarea matInput matTextareaAutosize value="configData[i].configValue" [(ngModel)]="configData[i].configValue">{{data.configValue}}</textarea>
+                            </mat-input-container>
+                            <button type="submit"  class="mat-primary" mat-raised-button (click)="changeData(configData[i])"><i class="material-icons">save</i> SAVE DATA SOURCES</button>
+                    </div>-->
+                    <!--<div *ngIf="configData[i].configKey === 'tactics'">
+                        <div class="alert alert-info" *ngIf="messageType === 'tactics'">{{message}}</div>
+                        <h3>Edit Tactics</h3>
+                            <mat-input-container class="full-width">
+                                <textarea matInput matTextareaAutosize value="configData[i].configValue" [(ngModel)]="configData[i].configValue">{{data.configValue}}</textarea>
+                            </mat-input-container>
+                            <button type="submit"  class="mat-primary" mat-raised-button (click)="changeData(configData[i])"><i class="material-icons">save</i> SAVE TACTICS</button>
+                    </div>-->
+              </div>
+              <br>
         </div>
         <div *ngIf="!(configData && configData.length)" class="alert-alert-info">
             There is no configuration data stored.
         </div>
-
+      </div>
     </div>
-</div>

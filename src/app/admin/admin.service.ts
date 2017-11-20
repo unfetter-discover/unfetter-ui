@@ -37,7 +37,15 @@ export class AdminService {
     public getConfig(): Observable<any> {
         return this.genericApi.get(`${this.configUrl}`);
     }
-    
+
+    public getSingleConfig(id): Observable<any> {
+        return this.genericApi.get(`${this.configUrl}/${id}`)
+    }
+
+    public processChangedData(data, id): Observable<any> {
+        return this.genericApi.patch(`${this.configUrl}/${id}`, data);
+    }
+
     public getOrganizations(): Observable<any> {
         const filter = {
             'stix.identity_class': 'organization'
