@@ -18,11 +18,13 @@ import { KillChainEntry } from './kill-chain-table/kill-chain-entry';
 import { SelectOption } from '../threat-report-overview/models/select-option';
 import { ThreatDashboard } from './models/threat-dashboard';
 import { RadarChartDataPoint } from './radar-chart/radar-chart-datapoint';
+import { simpleFadeIn } from '../global/animations/animations';
 
 @Component({
   selector: 'unf-threat-dashboard',
   templateUrl: 'threat-dashboard.component.html',
-  styleUrls: ['./threat-dashboard.component.scss']
+  styleUrls: ['./threat-dashboard.component.scss'],
+  animations: [simpleFadeIn]
 })
 export class ThreatDashboardComponent implements OnInit, OnDestroy {
   public threatReport: ThreatReport;
@@ -73,37 +75,58 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     const noop = () => { };
     const sub$ = loadAll$.subscribe(
       (arr) => {
-        const buildKillChainTable = () => {
-          this.attackPatterns = this.colorRows(this.attackPatterns, this.threatReport);
-          this.groupKillchain = this.groupByKillchain(this.attackPatterns);
-          this.intrusionSetsDashboard['killChainPhases'] = this.groupKillchain;
-        };
         // get intrusion sets, used
         const intrusionIds = Array.from(this.threatReport.boundries.intrusions).map((el: SelectOption) => el.value);
         if (!intrusionIds || intrusionIds.length === 0) {
-          // build the table and short circuit the rest of the visualizations
-          buildKillChainTable();
+          this.refresh();
+          this.notifyDoneLoading();
           return;
         }
 
         // build and render the visualizations
         const sub2$ = this.loadIntrusionSetMapping(intrusionIds)
           .map((mappings) => {
-            // NOTE: order matters!
-            this.treeData = this.buildTreeData();
-            buildKillChainTable();
-            this.radarData = this.buildRadarData();
+            // finish load and render something so the svg has a size to work from
+            this.notifyDoneLoading();
+            this.refresh();
           })
-          .subscribe(noop, logErr, () => this.notifyDoneLoading());
+          .subscribe(noop, logErr.bind(this));
         this.subscriptions.push(sub2$);
       },
-      logErr.bind(this),
-      () => this.notifyDoneLoading());
+      logErr.bind(this));
     this.subscriptions.push(sub$);
   }
 
+  public buildKillChainTable(): void {
+    this.attackPatterns = this.colorRows(this.attackPatterns, this.threatReport);
+    this.groupKillchain = this.groupByKillchain(this.attackPatterns);
+    this.intrusionSetsDashboard.killChainPhases = this.groupKillchain;
+  }
+
+  public refresh(): void {
+    // get intrusion sets, used
+    const intrusionIds = Array.from(this.threatReport.boundries.intrusions).map((el: SelectOption) => el.value);
+    if (!intrusionIds || intrusionIds.length === 0) {
+      // build the table and short circuit the rest of the visualizations
+      this.buildKillChainTable();
+      return;
+    }
+
+    // NOTE: order matters!
+    this.buildKillChainTable();
+    requestAnimationFrame(() => {
+      this.treeData = this.buildTreeData();
+      this.radarData = this.buildRadarData();
+    });
+  }
+
+  public onBoundriesModified(event: any): void {
+    console.log(event);
+    this.refresh();
+  }
+
   public notifyDoneLoading(): void {
-    setTimeout(() => this.loading = false, 0);
+    requestAnimationFrame(() => this.loading = false);
   }
 
   /**
@@ -125,12 +148,12 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
       'stix.id': 1
     }));
     return this.genericApi.get(url)
-          .map((el) => this.attackPatterns = el)
-          .do(() => {
-            this.uniqChainNames = this.generateUniqChainNames(this.attackPatterns);
-            this.selectedChain = this.determineFilter(this.uniqChainNames);
-            this.attackPatterns = this.filterAttackPatterns(this.attackPatterns, this.selectedChain);
-          });
+      .map((el) => this.attackPatterns = el)
+      .do(() => {
+        this.uniqChainNames = this.generateUniqChainNames(this.attackPatterns);
+        this.selectedChain = this.determineFilter(this.uniqChainNames);
+        this.attackPatterns = this.filterAttackPatterns(this.attackPatterns, this.selectedChain);
+      });
   }
 
   /**
@@ -257,17 +280,18 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    */
   public buildTreeData(): any {
     const root = { name: '', type: 'root', children: [] };
-    this.intrusionSetsDashboard['intrusionSets'].forEach((intrusionSet) => {
+    this.intrusionSetsDashboard.intrusionSets.forEach((intrusionSet) => {
       const child = {
         name: intrusionSet.name,
         type: intrusionSet.type,
         color: intrusionSet.color,
         description: intrusionSet.description
       };
-      this.intrusionSetsDashboard['killChainPhases'].forEach((killChainPhase) => {
+      this.intrusionSetsDashboard.killChainPhases.forEach((killChainPhase) => {
         let killChainPhaseChild = null;
-        killChainPhase.attack_patterns.forEach((attack_pattern) => {
-          attack_pattern.intrusion_sets.forEach((intrusion_set) => {
+        killChainPhase.attack_patterns.forEach((attackPattern) => {
+          const intrusions = attackPattern.intrusion_sets || [];
+          intrusions.forEach((intrusion_set) => {
             if (intrusionSet.name === intrusion_set.name) {
               killChainPhaseChild = killChainPhaseChild
                 ? killChainPhaseChild
@@ -279,16 +303,16 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
                 };
               const attackPatternChild = {
                 type: 'attack-pattern',
-                name: attack_pattern.name,
+                name: attackPattern.name,
                 color: intrusionSet.color,
-                description: attack_pattern.description
+                description: attackPattern.description
               };
               killChainPhaseChild.children.push(attackPatternChild);
               this.intrusionSetsDashboard[
                 'coursesOfAction'
               ].forEach((coursesOfAction) => {
                 const found = coursesOfAction.attack_patterns.find((attack) => {
-                  return attack._id === attack_pattern._id;
+                  return attack._id === attackPattern._id;
                 });
                 if (found) {
                   const coursesOfActionChild = {
@@ -386,7 +410,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
         return el.attributes.kill_chain_phases.map((chain) => chain.kill_chain_name);
       })
       .reduce((memo, el) => memo.concat(el), []);
-    const uniqNames = new Set(names); 
+    const uniqNames = new Set(names);
     return Array.from(uniqNames);
   }
 

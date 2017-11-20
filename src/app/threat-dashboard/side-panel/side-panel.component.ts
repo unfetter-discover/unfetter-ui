@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, ViewChild, Renderer2 } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ViewChild, Renderer2, Output, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
@@ -11,14 +11,14 @@ import { ConfirmationDialogComponent } from '../../components/dialogs/confirmati
 import { MatDialog, MatMenu } from '@angular/material';
 import { ThreatReportOverviewService } from '../services/threat-report-overview.service';
 import { AddExternalReportComponent } from '../../threat-report-overview/add-external-report/add-external-report.component';
-import { parentFadeIn } from '../../global/animations/animations';
+import { parentFadeIn, slideInOutAnimation } from '../../global/animations/animations';
 import { AttackPattern } from '../../models/attack-pattern';
 
 @Component({
     selector: 'unf-side-panel',
     templateUrl: 'side-panel.component.html',
     styleUrls: ['./side-panel.component.scss'],
-    animations: [parentFadeIn]
+    animations: [parentFadeIn, slideInOutAnimation]
 })
 export class SidePanelComponent implements OnInit, OnDestroy {
 
@@ -27,6 +27,9 @@ export class SidePanelComponent implements OnInit, OnDestroy {
 
     @Input('attackPatterns')
     public attackPatterns: AttackPattern[];
+
+    @Output() 
+    public modifiedBoundries: EventEmitter<any> = new EventEmitter();
 
     @ViewChild('menu')
     public menu: MatMenu;
@@ -96,6 +99,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
                     .subscribe(
                     (val) => {
                         console.log(val);
+                        this.modifiedBoundries.emit(val);
                     },
                     (err) => console.log(err)
                     );
@@ -209,7 +213,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
         const config: any = {
             width: '800px',
             height: 'calc(100vh - 140px)',
-            data: { },
+            data: {},
         };
         if (this.attackPatterns) {
             config.data.attackPatterns = this.attackPatterns;
@@ -247,6 +251,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
                             .map((el) => el.attributes);
                         // add to the list for display
                         this.threatReport.reports = this.threatReport.reports.concat(arr);
+                        this.modifiedBoundries.emit(arr);
                     },
                     (err) => console.log(err),
                     () => add$.unsubscribe()

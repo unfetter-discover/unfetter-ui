@@ -1,9 +1,9 @@
-<div class="container-fluid fadeIn" *ngIf="!loading; else loadingBlock">
+<div [@simpleFadeIn] class="container-fluid" *ngIf="!loading; else loadingBlock">
     <div class="row">
         <div class="side-panel col-md-2">
-            <unf-side-panel [threatReport]="threatReport" [attackPatterns]="attackPatterns"></unf-side-panel>
+            <unf-side-panel [threatReport]="threatReport" [attackPatterns]="attackPatterns" (modifiedBoundries)="onBoundriesModified($event)"></unf-side-panel>
         </div>
-        <div class="main-panel col-md-10">
+        <div class="main-panel">
             <!-- <div class="row">
                 <div class="col-md-12">
                     <span class="stix-icon-wrapper">
@@ -14,41 +14,30 @@
                     </span>
                 </div>
             </div> -->
-            <div class="col-sm-12">
-                <mat-tab-group id="tabGroup">
-                    <mat-tab label="MATRIX">
-                        <!-- <attack-pattern-count [threatReport]="threatReport" [attackPatterns]="attackPatterns" [intrusionSetsDashboard]="intrusionSetsDashboard">
+            <mat-tab-group id="tabGroup">
+                <mat-tab label="MATRIX">
+                    <!-- <attack-pattern-count [threatReport]="threatReport" [attackPatterns]="attackPatterns" [intrusionSetsDashboard]="intrusionSetsDashboard">
                             </attack-pattern-count> -->
-                        <div class="row matrix mb-18 mt-18">
-                            <div class="col-md-11">
-                                <unf-kill-chain-table [threatReport]="threatReport" [attackPatterns]="attackPatterns" [intrusionSetsDashboard]="intrusionSetsDashboard">
-                                </unf-kill-chain-table>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-11">
-                                <unf-collapsible-tree *ngIf="treeData" [data]="treeData" (renderComplete)="treeRendered()"></unf-collapsible-tree>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-11">
-                                <unf-radar-chart *ngIf="radarData" [data]="radarData" (renderComplete)="radarRendered()"></unf-radar-chart>
-                            </div>
-                        </div>
-                    </mat-tab>
-                    <mat-tab label="Mitigations" disabled="true">
-                        <p>Mitigations goes here!</p>
-                    </mat-tab>
-                    <mat-tab label="Export" disabled="false">
-                        <div class="row mb-18 mt-18">
-                            <div class="col-md-11">
-                                <unf-export-component [threatReport]="threatReport"></unf-export-component>
-                            </div>
-                        </div>
-                    </mat-tab>
-                </mat-tab-group>
-            </div>
-
+                    <div class="matrix mb-18 mt-18">
+                        <unf-kill-chain-table [threatReport]="threatReport" [attackPatterns]="attackPatterns" [intrusionSetsDashboard]="intrusionSetsDashboard">
+                        </unf-kill-chain-table>
+                    </div>
+                    <div class="">
+                        <unf-collapsible-tree *ngIf="treeData" [data]="treeData" (renderComplete)="treeRendered()"></unf-collapsible-tree>
+                    </div>
+                    <div class="">
+                        <unf-radar-chart *ngIf="radarData" [data]="radarData" (renderComplete)="radarRendered()"></unf-radar-chart>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Mitigations" disabled="true">
+                    <p>Mitigations goes here!</p>
+                </mat-tab>
+                <mat-tab label="Export" disabled="false">
+                    <div class="mb-18 mt-18">
+                        <unf-export-component [threatReport]="threatReport"></unf-export-component>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
         </div>
     </div>
 </div>

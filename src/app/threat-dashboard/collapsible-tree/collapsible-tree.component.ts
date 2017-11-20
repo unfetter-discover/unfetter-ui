@@ -68,7 +68,7 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
 
         const parentEl: any = d3.select(this.graphId).node();
         const margin = { top: 18, right: 18, bottom: 18, left: 0 };
-        const tmp = parentEl.clientWidth || 960;
+        const tmp = (parentEl && parentEl.clientWidth) ?  parentEl.clientWidth : 960;
         const width = (tmp - margin.right) - margin.left;
         const height = (tmp - margin.top) - margin.bottom;
         let i = 0;
