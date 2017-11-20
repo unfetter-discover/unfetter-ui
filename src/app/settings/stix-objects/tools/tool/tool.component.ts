@@ -27,7 +27,9 @@ export class ToolComponent extends BaseStixComponent implements OnInit {
         super(stixService, route, router, dialog, location, snackBar);
         stixService.url = Constance.TOOL_URL;
     }
-
+    public getChipInfo(chipInfo): void {
+        this.selectedExternal = chipInfo;
+    }
     public ngOnInit() {
       this.loadTool();
     }

@@ -26,7 +26,9 @@ export class IntrusionSetComponent extends BaseStixComponent implements OnInit {
         super(stixService, route, router, dialog, location, snackBar);
         stixService.url = Constance.INTRUSION_SET_URL;
     }
-
+    public getChipInfo(chipInfo): void {
+        this.selectedExternal = chipInfo;
+    }
     public ngOnInit() {
         this.loadIntrusionSet();
     }

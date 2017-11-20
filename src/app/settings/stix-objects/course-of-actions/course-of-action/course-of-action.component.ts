@@ -34,7 +34,9 @@ export class CourseOfActionComponent extends BaseStixComponent implements OnInit
 
         this.loadCourseOfAction();
     }
-
+    public getChipInfo(chipInfo): void {
+        this.selectedExternal = chipInfo;
+    }
     public editButtonClicked(): void {
         let link = ['../edit', this.courseOfAction.id];
         super.gotoView(link);
