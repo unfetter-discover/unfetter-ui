@@ -73,6 +73,10 @@
         </div>
         <!-- ~~~ End of Kill Chain Phases ~~~ -->
 
+        <div class="mt-10">
+            <observable-data-tree [parentForm]="form"></observable-data-tree>
+        </div>
+
         <!-- ~~~ Labels ~~~ -->
         <h5>Labels</h5>
         <div class="flex flexItemsCenter" id="labelsWrapper">
@@ -84,7 +88,7 @@
             </mat-chip-list>
             <add-label-reactive [parentForm]="form" [stixType]="'indicator'"></add-label-reactive>
         </div>
-        <!-- ~~~ End of Labels ~~~ -->
+        <!-- ~~~ End of Labels ~~~ -->        
 
         <p class="text-right">
             <button mat-button mat-dialog-close (click)="resetForm($event); dialogRef.close(false);">CANCEL</button>

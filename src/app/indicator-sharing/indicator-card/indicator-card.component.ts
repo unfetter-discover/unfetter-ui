@@ -160,6 +160,40 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
             );
     }
 
+    public mapObservedData(observedData: [{
+        name: string, 
+        action: string, 
+        property: string}
+    ]) {
+        const retVal = [];
+        for (let observedDatum of observedData) {
+            let nameFound = retVal.find((item) => item.name === observedDatum.name);
+            if (!nameFound) {
+                let temp = {
+                    name: observedDatum.name,
+                    actions: [
+                        {
+                            actionName: observedDatum.action,
+                            properties: [observedDatum.property]
+                        }
+                    ]
+                };
+                retVal.push(temp);
+            } else {
+                let actionFound = nameFound.actions.find((item) => item.actionName === observedDatum.action);
+                if (!actionFound) {
+                    nameFound.actions.push({
+                        actionName: observedDatum.action,
+                        properties: [observedDatum.property]
+                    });
+                } else {
+                    actionFound.properties.push(observedDatum.property)
+                }
+            }
+        }
+        return retVal;
+    }
+
     private flashMessage(msg: string) {
         this.message = msg;
         clearTimeout(this.messageTimeout);
