@@ -69,10 +69,8 @@
                         <div id="identityForm">
                             <hr>
                             <p class="lead">STIX Identity</p>
-                            <!-- <mat-radio-group formControlName="identityFormRadio" class="mb-5">
-                                <mat-radio-button value="create" checked="true">Create STIX Identity</mat-radio-button>&emsp;
-                                <mat-radio-button value="import">Import STIX Identity</mat-radio-button>
-                            </mat-radio-group> -->
+                             
+                            <!-- TODO add option to import identity -->
 
                             <div formGroupName="identity">
                                 <mat-form-field class="full-width mb-10">
@@ -84,17 +82,11 @@
 
                                 <mat-form-field class="full-width mb-10">
                                     <textarea matInput placeholder="Description" formControlName="description"></textarea>
-                                </mat-form-field>
-                                                                            
-                                <!-- <mat-form-field class="full-width mb-20">
-                                    <mat-select required placeholder="Identity Class" formControlName="identity_class">
-                                        <mat-option [value]="ic.id" *ngFor="let ic of identityClasses">{{ic.label}}</mat-option>
-                                    </mat-select>
-                                </mat-form-field>                                         -->
+                                </mat-form-field>                            
 
                                 <mat-form-field class="full-width mb-20">                                        
                                     <mat-select placeholder="Sectors" [multiple]="true" formControlName="sectors">
-                                        <mat-option [value]="sector.id" *ngFor="let sector of identitySectors">{{sector.label}}</mat-option>
+                                        <mat-option [value]="sector" *ngFor="let sector of identitySectors">{{ sector | capitalize }}</mat-option>
                                     </mat-select>
                                 </mat-form-field>
 

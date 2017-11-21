@@ -68,8 +68,10 @@
         </div>
     </div>
 
-    <div *ngIf="!(unaffiliatedOrganizations && unaffiliatedOrganizations.length)">
-        <div class="uf-well">There are no organizations for you to join.</div>
+    <div *ngIf="!(unaffiliatedOrganizations && unaffiliatedOrganizations.length)" class="row">
+        <div class="col-xs-12 col-lg-6 col-lg-offset-3">
+            <div class="uf-well">There are no organizations for you to join.</div>
+        </div>
     </div>
 
 
