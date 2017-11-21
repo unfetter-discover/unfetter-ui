@@ -74,20 +74,20 @@ export class IdentityComponent extends BaseStixComponent implements OnInit {
 
     public saveButtonClicked(): Observable<any> {
         return Observable.create((observer) => {
-               let subscription = super.save(this.identity).subscribe(
-                    (data) => {
-                        observer.next(data);
-                        observer.complete();
-                    }, (error) => {
-                        // handle errors here
-                        console.log('error ' + error);
-                    }, () => {
-                        // prevent memory links
-                        if (subscription) {
-                            subscription.unsubscribe();
-                        }
+            let subscription = super.save(this.identity).subscribe(
+                (data) => {
+                    observer.next(data);
+                    observer.complete();
+                }, (error) => {
+                    // handle errors here
+                    console.log('error ' + error);
+                }, () => {
+                    // prevent memory links
+                    if (subscription) {
+                        subscription.unsubscribe();
                     }
-                );
+                }
+            );
         });
     }
 

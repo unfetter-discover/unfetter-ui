@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UsersService } from '../users.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Constance } from '../../utils/constance';
+import { ConfigService } from '../../core/services/config.service';
 
 @Component({
     selector: 'register',
@@ -18,11 +19,16 @@ export class RegisterComponent implements OnInit {
     public registrationSubmitted: boolean = false;
     public submitError: boolean = false;
 
-    public identityClasses = Constance.IDENTITY_CLASSES;
-    public identitySectors = Constance.IDENTITY_SECTOR_OPTIONS;
+    public identityClasses: string[] = [];
+    public identitySectors: string[] = [];
     public organizations: any[] = [];
 
-    constructor(private usersService: UsersService, private router: Router, private authService: AuthService) {  }
+    constructor(
+        private usersService: UsersService, 
+        private router: Router, 
+        private authService: AuthService,
+        private configService: ConfigService
+    ) {  }
 
     public ngOnInit() {
         const token = localStorage.getItem('unfetterUiToken');
@@ -71,6 +77,14 @@ export class RegisterComponent implements OnInit {
                         getOrganizations$.unsubscribe();
                     }
                 );
+
+            this.configService.getConfigPromise()
+                .then((res) => {
+                    this.identitySectors = res['openVocab']['industry-sector-ov'].enum;
+                    this.identityClasses = res['openVocab']['identity-class-ov'].enum;
+                })
+                .catch((err) => console.log(err));
+                
         } else {
             console.log('User token not set');            
         }

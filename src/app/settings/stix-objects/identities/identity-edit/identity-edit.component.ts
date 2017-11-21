@@ -7,6 +7,7 @@ import { IdentityComponent } from '../identity/identity.component';
 import { StixService } from '../../../stix.service';
 import { Identity } from '../../../../models';
 import { Constance } from '../../../../utils/constance'
+import { ConfigService } from '../../../../core/services/config.service';
 
 @Component({
     selector: 'identity-edit',
@@ -19,9 +20,9 @@ import { Constance } from '../../../../utils/constance'
 })
 export class IdentityEditComponent extends IdentityComponent implements OnInit {
 
-    public identityClasses = Constance.IDENTITY_CLASSES;
+    public identityClasses: string[] = [];
 
-    public sectorOptions = Constance.IDENTITY_SECTOR_OPTIONS;
+    public sectorOptions: string[] = [];
 
     constructor(
         public stixService: StixService,
@@ -29,13 +30,24 @@ export class IdentityEditComponent extends IdentityComponent implements OnInit {
         public router: Router,
         public dialog: MatDialog,
         public location: Location,
-        public snackBar: MatSnackBar) {
-
-        super(stixService, route, router, dialog, location, snackBar);
+        public snackBar: MatSnackBar,
+        public configService: ConfigService
+    ) {
+        super(stixService, route, router, dialog, location, snackBar);    
+        this.loadConfig();  
+    }
+    
+    public ngOnInit() {
+        this.loadIdentity(); 
     }
 
-    public ngOnInit() {
-        this.loadIdentity();
+    public loadConfig() {
+        this.configService.getConfigPromise()
+            .then((res) => {
+                this.sectorOptions = res['openVocab']['industry-sector-ov'].enum;
+                this.identityClasses = res['openVocab']['identity-class-ov'].enum;
+            })
+            .catch((err) => console.log(err));
     }
 
     public isChecked(sector: string): boolean {

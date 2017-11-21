@@ -27,7 +27,7 @@
                                  <div class="row">
                                     <div class="col-md-12">
                                         <label>Identity Class:</label>
-                                        <h6>{{identity.attributes.identity_class}}</h6>
+                                        <h6>{{ identity.attributes.identity_class | capitalize }}</h6>
                                     </div>
                                 </div>
                                  <div class="row">
@@ -36,7 +36,7 @@
                                         <mat-chip-list>
                                             <mat-chip *ngFor="let sector of identity.attributes.sectors"
                                                 selected="true">
-                                                {{sector}}
+                                                {{ sector | capitalize }}
                                             </mat-chip>
                                         </mat-chip-list>
                                     </div>
