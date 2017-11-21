@@ -7,18 +7,7 @@
                 <div class="flex flexItemsCenter">
                     <span class="flex1">
                         <a routerLink="{{element.id}}">{{element.name}}</a>
-                        <mat-chip-list *ngIf="element.external_references" class="inlineFlex">
-                            <mat-chip *ngFor="let external_reference of element.external_references.slice(0,3)" class="chipListChip">
-                                <a (click)="navigate(external_reference.url)" *ngIf="external_reference.url"> {{external_reference.source_name}}</a>
-                                <span *ngIf="!external_reference.url"> {{external_reference.source_name}}</span>
-                            </mat-chip>
-                         </mat-chip-list>
-                        <small *ngIf="element.external_references && element.external_references.length > 3"
-                            class="text-muted"
-                            matTooltip="{{ externalReferencesToolTipGen(element.external_references.slice(3)) }}"
-                            matTooltipPosition="after">
-                            + {{ element.external_references.length - 3 }} more
-                        </small>
+                        <chip-links [data]="element.external_references" maxChips="3" nameField="source_name" urlField="url"></chip-links>
                     </span>
                     <span class="buttonGrp text-right">
                         <button class="mat-primary" mat-button routerLink="edit/{{element.id}}">

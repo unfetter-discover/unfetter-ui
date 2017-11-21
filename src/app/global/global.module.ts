@@ -20,6 +20,7 @@ import { KillChainPhasesReactiveComponent } from './components/kill-chain-phases
 import { ExternalReferencesReactiveComponent } from './components/external-references/external-references.component';
 import { AddLabelReactiveComponent } from './components/add-label/add-label.component';
 import { ObservableDataTreeComponent } from './components/observable-data-tree/observable-data-tree.component';
+import { ChipLinksComponent } from './components/chip-links/chip-links.component';
 
 const matModules = [
     MatTooltipModule, MatTableModule, MatChipsModule, MatPaginatorModule, MatButtonModule, MatInputModule, MatProgressSpinnerModule, MatAutocompleteModule, MatCheckboxModule
@@ -43,7 +44,8 @@ const matModules = [
         KillChainPhasesReactiveComponent,
         ExternalReferencesReactiveComponent,
         AddLabelReactiveComponent,
-        ObservableDataTreeComponent
+        ObservableDataTreeComponent,
+        ChipLinksComponent
     ],
     declarations: [
         CapitalizePipe, 
@@ -55,7 +57,8 @@ const matModules = [
         KillChainPhasesReactiveComponent,
         ExternalReferencesReactiveComponent,
         AddLabelReactiveComponent,
-        ObservableDataTreeComponent
+        ObservableDataTreeComponent,
+        ChipLinksComponent
     ],
     providers: []
 })
