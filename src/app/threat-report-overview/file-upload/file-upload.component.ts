@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, EventEmitter, Outp
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
-import { GenericApi } from '../../global/services/genericapi.service';
+import { GenericApi } from '../../core/services/genericapi.service';
 import { Constance } from '../../utils/constance';
 import { UploadService } from './upload.service';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
@@ -23,6 +23,7 @@ export class FileUploadComponent implements OnInit {
     public fName = '';
     public numEventsParsed = -1;
     public loading = false;
+    public errMsg;
     private readonly subscriptions = [];
 
   constructor(protected router: Router,
@@ -83,7 +84,12 @@ export class FileUploadComponent implements OnInit {
         this.fileParsedEvent.emit(resp as any);
         // }
       },
-      (err) => console.log(err),
+      (err) => {
+        console.log(err);
+        this.errMsg = err;
+        this.loading = false;
+        this.fName = undefined;
+      },
       () => this.loading = false);
     this.subscriptions.push(s$);
   }

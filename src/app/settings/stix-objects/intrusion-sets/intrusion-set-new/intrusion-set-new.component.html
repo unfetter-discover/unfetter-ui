@@ -54,13 +54,15 @@
 
     </div>
 </div>
-<div class="row">
+
+<!-- <div class="row">
     <div class="col-md-12">
        <mat-input-container class="full-width">
         <input matInput placeholder="Goals"  [(ngModel)]="intrusionSet.attributes.goals" value="">
         </mat-input-container>
     </div>
-</div>
+</div> -->
+
 <div class="row selectRow">
     <div class="col-md-12">
          <form>
@@ -104,10 +106,6 @@
     </div>
 </div>
 
-
-
-
-<!--<external-reference [(model)]="intrusionSet"></external-reference>-->
 <div class="row">
     <div class="col-md-12">
         <mat-input-container class="full-width">
@@ -116,6 +114,8 @@
     </div>
 </div>
 
+<!--<external-reference [(model)]="intrusionSet"></external-reference>-->
+<stix-text-array [(model)]="intrusionSet" [propertyName]="'goals'"></stix-text-array>
 
 <div class="row">
     <div class="col-md-12">
@@ -125,3 +125,4 @@
         </div>
     </div>
 </div>
+

@@ -2,10 +2,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { MatTooltipModule, MatTableModule, MatChipsModule, MatPaginatorModule, MatButtonModule, MatInputModule, MatProgressSpinnerModule, MatAutocompleteModule } from '@angular/material';
+import { MatTooltipModule, MatTableModule, MatChipsModule, MatPaginatorModule, MatButtonModule, MatInputModule, MatProgressSpinnerModule, MatAutocompleteModule, MatCheckboxModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // ~~~ Local ~~~
+
+// Pipes
+import { CapitalizePipe } from './pipes/capitalize.pipe';
+import { SophisticationPipe } from './pipes/sophistication.pipe';
+import { FieldSortPipe } from './pipes/field-sort.pipe';
 
 // Components
 import { RiskIconComponent } from './components/risk-icon/risk-icon.component';
@@ -14,21 +19,11 @@ import { LoadingSpinnerComponent } from './components/loading-spinner/loading-sp
 import { KillChainPhasesReactiveComponent } from './components/kill-chain-phases/kill-chain-phases.component';
 import { ExternalReferencesReactiveComponent } from './components/external-references/external-references.component';
 import { AddLabelReactiveComponent } from './components/add-label/add-label.component';
-
-// Services
-import { GenericApi } from './services/genericapi.service';
-import { AuthService } from './services/auth.service';
-import { AuthGuard } from './services/auth.guard';
-import { ConfigService } from './services/config.service';
-import { WebAnalyticsService } from './services/web-analytics.service';
-
-// Pipes
-import { CapitalizePipe } from './pipes/capitalize.pipe';
-import { SophisticationPipe } from './pipes/sophistication.pipe';
-import { FieldSortPipe } from './pipes/field-sort.pipe';
+import { ObservableDataTreeComponent } from './components/observable-data-tree/observable-data-tree.component';
+import { ChipLinksComponent } from './components/chip-links/chip-links.component';
 
 const matModules = [
-    MatTooltipModule, MatTableModule, MatChipsModule, MatPaginatorModule, MatButtonModule, MatInputModule, MatProgressSpinnerModule, MatAutocompleteModule
+    MatTooltipModule, MatTableModule, MatChipsModule, MatPaginatorModule, MatButtonModule, MatInputModule, MatProgressSpinnerModule, MatAutocompleteModule, MatCheckboxModule
 ];
 
 @NgModule({
@@ -48,7 +43,9 @@ const matModules = [
         LoadingSpinnerComponent,
         KillChainPhasesReactiveComponent,
         ExternalReferencesReactiveComponent,
-        AddLabelReactiveComponent
+        AddLabelReactiveComponent,
+        ObservableDataTreeComponent,
+        ChipLinksComponent
     ],
     declarations: [
         CapitalizePipe, 
@@ -59,15 +56,11 @@ const matModules = [
         LoadingSpinnerComponent,
         KillChainPhasesReactiveComponent,
         ExternalReferencesReactiveComponent,
-        AddLabelReactiveComponent
+        AddLabelReactiveComponent,
+        ObservableDataTreeComponent,
+        ChipLinksComponent
     ],
-    providers: [
-        GenericApi,
-        AuthService,
-        AuthGuard,
-        // ConfigService, Move to global import
-        WebAnalyticsService
-    ]
+    providers: []
 })
 
 export class GlobalModule {}

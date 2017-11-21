@@ -7,7 +7,7 @@ import { Constance } from '../utils/constance';
 import { StixService } from '../settings/stix.service';
 import { BaseStixService } from '../settings/base-stix.service';
 import { BaseComponentService } from '../components/base-service.component';
-import { GenericApi } from '../global/services/genericapi.service';
+import { GenericApi } from '../core/services/genericapi.service';
 
 import { IntrusionSetComponent } from '../intrusion-set/intrusion-set.component';
 import { IntrusionSet, AttackPattern } from '../models';
@@ -18,11 +18,13 @@ import { KillChainEntry } from './kill-chain-table/kill-chain-entry';
 import { SelectOption } from '../threat-report-overview/models/select-option';
 import { ThreatDashboard } from './models/threat-dashboard';
 import { RadarChartDataPoint } from './radar-chart/radar-chart-datapoint';
+import { simpleFadeIn } from '../global/animations/animations';
 
 @Component({
   selector: 'unf-threat-dashboard',
   templateUrl: 'threat-dashboard.component.html',
-  styleUrls: ['./threat-dashboard.component.scss']
+  styleUrls: ['./threat-dashboard.component.scss'],
+  animations: [simpleFadeIn]
 })
 export class ThreatDashboardComponent implements OnInit, OnDestroy {
   public threatReport: ThreatReport;
@@ -34,6 +36,8 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   public treeData: any;
   public radarData: RadarChartDataPoint[][];
   public loading = true;
+  public uniqChainNames: string[] = [];
+  public selectedChain = '';
 
   private readonly filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
   private readonly subscriptions: Subscription[] = [];
@@ -71,38 +75,58 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     const noop = () => { };
     const sub$ = loadAll$.subscribe(
       (arr) => {
-        const buildKillChainTable = () => {
-          // build the kill chain table data
-          this.attackPatterns = this.colorRows(this.attackPatterns, this.threatReport);
-          this.groupKillchain = this.groupByKillchain(this.attackPatterns);
-          this.intrusionSetsDashboard['killChainPhases'] = this.groupKillchain;
-        };
         // get intrusion sets, used
-        const intrusionIds: string[] = Array.from(this.threatReport.boundries.intrusions).map((el: SelectOption) => el.value);
+        const intrusionIds = Array.from(this.threatReport.boundries.intrusions).map((el: SelectOption) => el.value);
         if (!intrusionIds || intrusionIds.length === 0) {
-          // build the table and short circuit the rest of the visualizations
-          buildKillChainTable();
+          this.refresh();
+          this.notifyDoneLoading();
           return;
         }
 
         // build and render the visualizations
         const sub2$ = this.loadIntrusionSetMapping(intrusionIds)
           .map((mappings) => {
-            // NOTE: order matters!
-            this.treeData = this.buildTreeData();
-            buildKillChainTable();
-            this.radarData = this.buildRadarData();
+            // finish load and render something so the svg has a size to work from
+            this.notifyDoneLoading();
+            this.refresh();
           })
-          .subscribe(noop, logErr, () => this.notifyDoneLoading());
+          .subscribe(noop, logErr.bind(this));
         this.subscriptions.push(sub2$);
       },
-      logErr.bind(this),
-      () => this.notifyDoneLoading());
+      logErr.bind(this));
     this.subscriptions.push(sub$);
   }
 
+  public buildKillChainTable(): void {
+    this.attackPatterns = this.colorRows(this.attackPatterns, this.threatReport);
+    this.groupKillchain = this.groupByKillchain(this.attackPatterns);
+    this.intrusionSetsDashboard.killChainPhases = this.groupKillchain;
+  }
+
+  public refresh(): void {
+    // get intrusion sets, used
+    const intrusionIds = Array.from(this.threatReport.boundries.intrusions).map((el: SelectOption) => el.value);
+    if (!intrusionIds || intrusionIds.length === 0) {
+      // build the table and short circuit the rest of the visualizations
+      this.buildKillChainTable();
+      return;
+    }
+
+    // NOTE: order matters!
+    this.buildKillChainTable();
+    requestAnimationFrame(() => {
+      this.treeData = this.buildTreeData();
+      this.radarData = this.buildRadarData();
+    });
+  }
+
+  public onBoundriesModified(event: any): void {
+    console.log(event);
+    this.refresh();
+  }
+
   public notifyDoneLoading(): void {
-    setTimeout(() => this.loading = false, 0);
+    requestAnimationFrame(() => this.loading = false);
   }
 
   /**
@@ -123,7 +147,13 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
       'stix.kill_chain_phases': 1,
       'stix.id': 1
     }));
-    return this.genericApi.get(url).map((el) => this.attackPatterns = el);
+    return this.genericApi.get(url)
+      .map((el) => this.attackPatterns = el)
+      .do(() => {
+        this.uniqChainNames = this.generateUniqChainNames(this.attackPatterns);
+        this.selectedChain = this.determineFilter(this.uniqChainNames);
+        this.attackPatterns = this.filterAttackPatterns(this.attackPatterns, this.selectedChain);
+      });
   }
 
   /**
@@ -250,17 +280,18 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    */
   public buildTreeData(): any {
     const root = { name: '', type: 'root', children: [] };
-    this.intrusionSetsDashboard['intrusionSets'].forEach((intrusionSet) => {
+    this.intrusionSetsDashboard.intrusionSets.forEach((intrusionSet) => {
       const child = {
         name: intrusionSet.name,
         type: intrusionSet.type,
         color: intrusionSet.color,
         description: intrusionSet.description
       };
-      this.intrusionSetsDashboard['killChainPhases'].forEach((killChainPhase) => {
+      this.intrusionSetsDashboard.killChainPhases.forEach((killChainPhase) => {
         let killChainPhaseChild = null;
-        killChainPhase.attack_patterns.forEach((attack_pattern) => {
-          attack_pattern.intrusion_sets.forEach((intrusion_set) => {
+        killChainPhase.attack_patterns.forEach((attackPattern) => {
+          const intrusions = attackPattern.intrusion_sets || [];
+          intrusions.forEach((intrusion_set) => {
             if (intrusionSet.name === intrusion_set.name) {
               killChainPhaseChild = killChainPhaseChild
                 ? killChainPhaseChild
@@ -272,16 +303,16 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
                 };
               const attackPatternChild = {
                 type: 'attack-pattern',
-                name: attack_pattern.name,
+                name: attackPattern.name,
                 color: intrusionSet.color,
-                description: attack_pattern.description
+                description: attackPattern.description
               };
               killChainPhaseChild.children.push(attackPatternChild);
               this.intrusionSetsDashboard[
                 'coursesOfAction'
               ].forEach((coursesOfAction) => {
                 const found = coursesOfAction.attack_patterns.find((attack) => {
-                  return attack._id === attack_pattern._id;
+                  return attack._id === attackPattern._id;
                 });
                 if (found) {
                   const coursesOfActionChild = {
@@ -328,17 +359,6 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
         return dataPoint;
       });
 
-    // const arr = [
-    //   [
-    //     { 'area': 'Central ', 'value': 80 },
-    //     { 'area': 'Kirkdale', 'value': 40 },
-    //     { 'area': 'Kensington ', 'value': 40 },
-    //     { 'area': 'Everton ', 'value': 90 },
-    //     { 'area': 'Picton ', 'value': 60 },
-    //     { 'area': 'Riverside ', 'value': 80 }
-    //   ]
-    // ];
-
     return [dataPoints];
   }
 
@@ -352,6 +372,55 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
 
   public radarRendered(): void {
     console.log('radar rendered');
+  }
+
+  /**
+   * @description filter attack patterns
+   * @param {AttackPattern[]} attackPatterns
+   * @param {string} filterChainName
+   * @return {AttackPattern[]} filtered list of attack patterns or empty array
+   */
+  public filterAttackPatterns(attackPatterns: AttackPattern[], filterChainName = ''): AttackPattern[] {
+    if (!attackPatterns) {
+      return [];
+    }
+
+    const noFilter = filterChainName === '';
+    return attackPatterns.filter((el) => {
+      if (noFilter) {
+        return el;
+      }
+      const names = el.attributes.kill_chain_phases.map((chain) => chain.kill_chain_name);
+      return names.includes(filterChainName);
+    });
+  }
+
+  /**
+   * @description unique kill chain names
+   * @param {AttackPattern[]}
+   * @return {string[]} uniq list of names
+   */
+  public generateUniqChainNames(attackPatterns: AttackPattern[], filter = ''): string[] {
+    if (!attackPatterns) {
+      return [];
+    }
+
+    const names = attackPatterns
+      .map((el) => {
+        return el.attributes.kill_chain_phases.map((chain) => chain.kill_chain_name);
+      })
+      .reduce((memo, el) => memo.concat(el), []);
+    const uniqNames = new Set(names);
+    return Array.from(uniqNames);
+  }
+
+  /**
+   * @description
+   */
+  public determineFilter(names = []): string {
+    const mitreLast = 'mitre-attack';
+    const name = names.find((el) => el !== mitreLast);
+    return name;
   }
 
   /**

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { FormatHelpers } from '../../global/static/format-helpers';
-import { AuthService } from '../../global/services/auth.service';
+import { AuthService } from '../../core/services/auth.service';
 import { heightCollapse } from '../../global/animations/height-collapse';
 
 @Component({
@@ -137,7 +137,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
                     addLike$.unsubscribe();
                 }
             );
-    }
+    }    
 
     public addInteraction() {
         // Set this to true immediantly to prevent errors from double clicking
@@ -154,6 +154,40 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
                     addLike$.unsubscribe();
                 }
             );
+    }
+
+    public mapObservedData(observedData: [{
+        name: string, 
+        action: string, 
+        property: string}
+    ]) {
+        const retVal = [];
+        for (let observedDatum of observedData) {
+            let nameFound = retVal.find((item) => item.name === observedDatum.name);
+            if (!nameFound) {
+                let temp = {
+                    name: observedDatum.name,
+                    actions: [
+                        {
+                            actionName: observedDatum.action,
+                            properties: [observedDatum.property]
+                        }
+                    ]
+                };
+                retVal.push(temp);
+            } else {
+                let actionFound = nameFound.actions.find((item) => item.actionName === observedDatum.action);
+                if (!actionFound) {
+                    nameFound.actions.push({
+                        actionName: observedDatum.action,
+                        properties: [observedDatum.property]
+                    });
+                } else {
+                    actionFound.properties.push(observedDatum.property)
+                }
+            }
+        }
+        return retVal;
     }
 
     private flashMessage(msg: string) {

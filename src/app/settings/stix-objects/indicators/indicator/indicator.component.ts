@@ -27,7 +27,9 @@ export class IndicatorComponent extends BaseStixComponent implements OnInit {
         super(stixService, route, router, dialog, location, snackBar);
         stixService.url = Constance.INDICATOR_URL;
     }
-
+    public getChipInfo(chipInfo): void {
+        this.selectedExternal = chipInfo;
+    }
     public ngOnInit() {
         console.log('Initial IndicatorComponent');
         this.loadIndicator();

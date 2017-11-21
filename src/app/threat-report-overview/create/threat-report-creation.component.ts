@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 
 import * as moment from 'moment';
 
-import { GenericApi } from '../../global/services/genericapi.service';
+import { GenericApi } from '../../core/services/genericapi.service';
 import { Constance } from '../../utils/constance';
 import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
 import { IntrusionSet } from '../../models/intrusion-set';
@@ -16,7 +16,7 @@ import { UploadService } from '../file-upload/upload.service';
 import { ThreatReport } from '../models/threat-report.model';
 import { ThreatReportSharedService } from '../services/threat-report-shared.service';
 import { Boundries } from '../models/boundries';
-import { AddExterernalReportComponent } from '../add-external-report/add-external-report.component';
+import { AddExternalReportComponent } from '../add-external-report/add-external-report.component';
 import { MatDialog } from '@angular/material';
 
 @Component({
@@ -234,7 +234,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    * go back to list view
    * @param {UIEvent} event optional
    */
-  public cancel(event: UIEvent): void {
+  public onCancel(event: UIEvent): void {
     this.location.back();
   }
 
@@ -242,16 +242,23 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    * @description
    * @param {UIEvent} event optional
    */
-  public save(event: UIEvent): void {
-    const currentReports = this.threatReport.reports || [];
-    const attachedReports = this.csvReports || [];
-    this.threatReport.reports = currentReports.concat(attachedReports);
+  public onContinue(event: UIEvent): void {
+    this.threatReport.reports = this.appendCsvReports(this.threatReport.reports, this.csvReports);
     // if the boundries check box is checked, do not use boundries provided
     if (this.isFalsey(this.shouldIncludeBoundries)) {
       this.threatReport.boundries = new Boundries();
     }
     this.sharedService.threatReportOverview = this.threatReport;
     this.router.navigate([`/${this.path}/modify`, this.threatReport.id]);
+  }
+
+  /**
+   * @description append / concat only new non saved reports
+   * @return {any[]}
+   */
+  public appendCsvReports(current: any[] = [], updates: any[] = []): any[] {
+    current = current.concat(updates);
+    return current;
   }
 
   /**
@@ -274,7 +281,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
       height: 'calc(100vh - 140px)'
     };
     this.dialog
-      .open(AddExterernalReportComponent, opts)
+      .open(AddExternalReportComponent, opts)
       .afterClosed()
       .subscribe((result) => {
         if (this.isFalsey(result)) {
@@ -335,7 +342,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     // remember to new up an object, otherwise object method will not exist, using just an object literal copy
     const tmp = Object.assign(new ThreatReport(), JSON.parse(JSON.stringify(this.sharedService.threatReportOverview)));
     this.threatReport = tmp;
-    this.csvReports = this.sharedService.threatReportOverview.reports || [];
+    this.csvReports = [];
     // this is needed to make sure boundries is acutally and object and not an object literal at runtime
     this.threatReport.boundries = new Boundries();
     this.threatReport.boundries.intrusions = this.sharedService.threatReportOverview.boundries.intrusions || new Set<{ any }>();

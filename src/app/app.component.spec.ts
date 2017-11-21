@@ -6,10 +6,10 @@ import { HttpModule } from '@angular/http';
 // Load the implementations that should be tested
 import { AppComponent } from './app.component';
 import { AppState } from './app.service';
-import { AuthService } from './global/services/auth.service';
-import { ConfigService } from './global/services/config.service';
-import { GenericApi } from './global/services/genericapi.service';
-import { WebAnalyticsService } from './global/services/web-analytics.service';
+import { AuthService } from './core/services/auth.service';
+import { ConfigService } from './core/services/config.service';
+import { GenericApi } from './core/services/genericapi.service';
+import { WebAnalyticsService } from './core/services/web-analytics.service';
 import { AppModule } from './app.module';
 
 describe(`App`, () => {

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule, MatChipsModule, MatTooltipModule, MatCardModule,
-    MatTabsModule, MatInputModule, MatIconModule, MatButtonModule, MatDatepickerModule, MatNativeDateModule, MatRadioModule } from '@angular/material';
+    MatTabsModule, MatInputModule, MatIconModule, MatButtonModule, MatDatepickerModule, MatNativeDateModule, MatRadioModule, MatListModule } from '@angular/material';
 
 // Modules
 import { routing } from './indicator-sharing-routing.module';
@@ -28,7 +28,8 @@ const matModules = [
     MatTooltipModule,
     MatDatepickerModule, 
     MatNativeDateModule,
-    MatRadioModule
+    MatRadioModule, 
+    MatListModule
 ];
 
 @NgModule({

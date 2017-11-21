@@ -60,8 +60,8 @@
                 Victims in this campaign/report
             </mat-panel-description> -->
         </mat-expansion-panel-header>
-        <mat-list dense>
-            <mat-list-item class="fadeIn" *ngFor="let target of threatReport.boundries.targets; trackBy:trackByFn">
+        <mat-list dense [@parentFadeIn]>
+            <mat-list-item class="staggerIn" *ngFor="let target of threatReport.boundries.targets; trackBy:trackByFn">
                 {{target}}
             </mat-list-item>
         </mat-list>
@@ -76,8 +76,8 @@
                 Intrusion Sets used in this campaign/report
             </mat-panel-description> -->
         </mat-expansion-panel-header>
-        <mat-list dense>
-            <mat-list-item class="fadeIn clickable" #list *ngFor="let intrusion of threatReport.boundries.intrusions; trackBy:trackByFn" (click)="onNavigateToIntrusion(intrusion.value, $event)"
+        <mat-list dense [@parentFadeIn]>
+            <mat-list-item class="staggerIn clickable" #list *ngFor="let intrusion of threatReport.boundries.intrusions; trackBy:trackByFn" (click)="onNavigateToIntrusion(intrusion.value, $event)"
                 (mouseenter)="listItemMouseEnter($event)" (mouseleave)="listItemMouseLeave($event)">
                 <div mat-line class="">
                     <a href="#/stix/intrusion-sets/{{intrusion.value}}">{{intrusion?.displayValue}}</a>
@@ -95,8 +95,10 @@
                 Malware used in this campaign/report
             </mat-panel-description> -->
         </mat-expansion-panel-header>
-        <mat-list dense>
-            <mat-list-item class="fadeIn clickable" *ngFor="let malware of threatReport.boundries.malware; trackBy:trackByFn" (click)="onNavigateToMalware(malware.value, $event)"
+        <mat-list dense [@parentFadeIn]>
+            <mat-list-item [@slideInOutAnimation] 
+                class="staggerIn clickable" 
+                *ngFor="let malware of threatReport.boundries.malware; trackBy:trackByFn" (click)="onNavigateToMalware(malware.value, $event)"
                 (mouseenter)="listItemMouseEnter($event)" (mouseleave)="listItemMouseLeave($event)">
                 <div mat-line class="">
                     <a href="#/stix/malwares/{{malware.value}}">{{malware?.displayValue}}</a>
@@ -115,7 +117,7 @@
             </mat-panel-description> -->
         </mat-expansion-panel-header>
         <mat-list dense [@parentFadeIn]>
-            <mat-list-item *ngFor="let tro of threatReport.reports; trackBy:trackByFn" class="fadeIn list-divider">
+            <mat-list-item *ngFor="let tro of threatReport.reports; trackBy:trackByFn" class="staggerIn list-divider">
                 <h4 mat-line>
                     <a *ngIf="(tro.external_references && tro.external_references.length > 0 && tro?.external_references[0]?.external_url); else noLink" href="{{tro?.external_references[0]?.external_url}}">{{tro.name}}</a>
                     <ng-template #noLink>{{tro.name}}</ng-template>

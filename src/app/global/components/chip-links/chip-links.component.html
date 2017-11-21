@@ -1,0 +1,19 @@
+<div class="chipLinksComponent" class="inlineFlex flexItemsCenter">
+    <mat-chip-list class="inlineFlex">
+        <mat-chip 
+            *ngFor="let datum of data.slice(0,maxChips)"
+            color="{{chipColor}}"
+            selected="true"
+            class="cursor-pointer"
+            (click)="datum[urlField] ? navigate(datum[urlField]) : ''"
+            matTooltip="{{ datum[urlField] }}"
+            [matTooltipDisabled]="!datum[urlField]">
+                <span *ngIf="datum[urlField]"> {{ datum[nameField] }}</span>
+                <span *ngIf="!datum[urlField]"> {{ datum[nameField] }}</span>
+        </mat-chip>
+    </mat-chip-list>
+    <small *ngIf="data.length > maxChips" class="text-muted" matTooltip="{{ toolTipGen(data.slice(maxChips)) }}"
+        matTooltipPosition="after">
+        &nbsp;+ {{ data.length - maxChips }} more
+    </small>
+</div>

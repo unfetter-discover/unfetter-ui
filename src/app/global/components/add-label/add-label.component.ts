@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
 
-import { ConfigService } from '../../services/config.service';
+import { ConfigService } from '../../../core/services/config.service';
 
 @Component({
     selector: 'add-label-reactive',

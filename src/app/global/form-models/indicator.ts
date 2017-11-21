@@ -10,4 +10,7 @@ export const IndicatorForm  = () => new FormGroup({
     valid_until: new FormControl(),
     external_references: new FormArray([]),
     kill_chain_phases: new FormArray([]),
+    metaProperties: new FormGroup({
+        observedData: new FormArray([])
+    })
 });

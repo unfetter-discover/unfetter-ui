@@ -1,4 +1,5 @@
 <div *ngIf="loading === false; else loadingBlock">
+    <mat-error *ngIf="errMsg">{{errMsg}}</mat-error>
     <mat-list *ngIf="fName; else uploadBlock">
         <mat-list-item>
             <mat-icon class="paperclip mat-24" mat-list-icon>attachment</mat-icon>

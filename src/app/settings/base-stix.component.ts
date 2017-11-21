@@ -8,6 +8,7 @@ import { BaseStixService } from './base-stix.service';
 
 export class BaseStixComponent {
     public filteredItems: any[];
+    public selectedExternal: any;
     private duration = 3000;
 
     constructor(

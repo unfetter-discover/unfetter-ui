@@ -13,8 +13,12 @@ export class ExternalReferenceComponent {
 
      public addExternalReferenceButtonClicked(): void {
         let externalReference = new ExternalReference();
-        externalReference.external_id = '' + Math.random();
-        this.model.attributes.external_references.unshift(externalReference);
+//        externalReference.external_id = '' + Math.random();
+        if (this.model.attributes.hasOwnProperty('external_references')) {
+            this.model.attributes.external_references.unshift(externalReference);
+        } else {
+            this.model.attributes.external_references = [externalReference];
+        }
     }
 
     public removeExternalReferenceButtonClicked(externalReference: ExternalReference): void {

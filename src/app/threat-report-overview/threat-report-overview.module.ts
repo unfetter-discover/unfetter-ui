@@ -15,7 +15,7 @@ import { MatSlideToggleModule } from '@angular/material';
 import { MatTableModule } from '@angular/material';
 import { MatListModule } from '@angular/material';
 
-import { AddExterernalReportComponent } from './add-external-report/add-external-report.component';
+import { AddExternalReportComponent } from './add-external-report/add-external-report.component';
 import { ThreatReportCreationComponent } from './create/threat-report-creation.component';
 import { ThreatReportOverviewComponent } from './threat-report-overview.component';
 import { ThreatReportSharedService } from './services/threat-report-shared.service';
@@ -24,7 +24,7 @@ import { FileUploadModule } from './file-upload/file-upload.module';
 import { ThreatReportOverviewService } from '../threat-dashboard/services/threat-report-overview.service';
 
 const unfetterComponents = [
-  AddExterernalReportComponent,
+  AddExternalReportComponent,
   ThreatReportOverviewComponent,
   ThreatReportCreationComponent,
   ThreatReportModifyComponent,
@@ -68,6 +68,6 @@ const materialModules = [
   providers: [
     ...unfetterServices
   ],
-  entryComponents: [AddExterernalReportComponent]
+  entryComponents: [AddExternalReportComponent]
 })
 export class ThreatReportOverviewModule { }

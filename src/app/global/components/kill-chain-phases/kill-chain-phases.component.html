@@ -9,14 +9,22 @@
         <form [formGroup]="localForm" novalidate (ngSubmit)="addToParent()">     
             
             <mat-form-field class="full-width mb-6">
-                <input matInput required placeholder="Kill Chain Name" formControlName="kill_chain_name">
+                <input matInput required placeholder="Kill Chain Name" formControlName="kill_chain_name" [matAutocomplete]="killChainNamesAuto">
+                <mat-autocomplete #killChainNamesAuto="matAutocomplete">
+                    <mat-option *ngFor="let killChainName of killChainNames" [value]="killChainName">{{killChainName | capitalize}}
+                    </mat-option>
+                </mat-autocomplete>
                 <mat-error *ngIf="localForm.get('kill_chain_name').hasError('required')">
                     Kill Chain Name is <strong>required</strong>
                 </mat-error>
             </mat-form-field>
             
             <mat-form-field class="full-width mb-6">
-                <input matInput required placeholder="Phase Name" formControlName="phase_name">
+                <input matInput required placeholder="Phase Name" formControlName="phase_name" [matAutocomplete]="killChainPhasesAuto">
+                <mat-autocomplete #killChainPhasesAuto="matAutocomplete">
+                    <mat-option *ngFor="let phase of getDisplayedKillchains()" [value]="phase">{{phase | capitalize}}
+                    </mat-option>
+                </mat-autocomplete>
                 <mat-error *ngIf="localForm.get('phase_name').hasError('required')">
                     Phase Name is <strong>required</strong>
                 </mat-error>

@@ -2,17 +2,19 @@ import { trigger, state, stagger, style, transition, keyframes, animate, query, 
 
 export const simpleFadeIn = trigger('simpleFadeIn', [
     transition('* => *', [
-            style({ opacity: 0 }),
-            animate(2000, style({ opacity: 1 }))
+        style({ opacity: 0 }),
+        animate(400, style({ opacity: 1 }))
     ])
 ]);
 
 export const parentFadeIn = trigger('parentFadeIn', [
     transition('* => *', [
-        query('.fadeIn', [
-            style({ opacity: 0 }),
-            animate(500, style({ opacity: 1 }))
-        ], { optional: true }),
+        query('.staggerIn',
+            [
+                style({ opacity: 0 }),
+                animate(500, style({ opacity: 1 }))
+            ],
+            { optional: true }),
         query('@slideInOutAnimation', [
             stagger('300ms', [
                 animateChild()

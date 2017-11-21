@@ -82,7 +82,7 @@ label {
 }
 
 .cursor-pointer {
-    cursor: pointer;
+    cursor: pointer !important;
 }
 
 .btn,
@@ -142,6 +142,18 @@ label {
     }
     .mb-#{$i * 3} {
         margin-bottom: $i * 3px;
+    }
+    .pt-#{$i * 5} {
+        padding-top: $i * 5px !important;
+    }
+    .pb-#{$i * 5} {
+        padding-bottom: $i * 5px !important;
+    }
+    .pt-#{$i * 3} {
+        padding-top: $i * 3px !important;
+    }
+    .pb-#{$i * 3} {
+        padding-bottom: $i * 3px !important;
     }
 }
 

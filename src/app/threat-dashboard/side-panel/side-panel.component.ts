@@ -1,28 +1,35 @@
-import { Component, OnInit, Input, OnDestroy, ViewChild, Renderer2 } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ViewChild, Renderer2, Output, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 
 import { Constance } from '../../utils/constance';
-import { GenericApi } from '../../global/services/genericapi.service';
+import { GenericApi } from '../../core/services/genericapi.service';
 import { ThreatReport } from '../../threat-report-overview/models/threat-report.model';
 import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
 import { ConfirmationDialogComponent } from '../../components/dialogs/confirmation/confirmation-dialog.component';
 import { MatDialog, MatMenu } from '@angular/material';
 import { ThreatReportOverviewService } from '../services/threat-report-overview.service';
-import { AddExterernalReportComponent } from '../../threat-report-overview/add-external-report/add-external-report.component';
-import { parentFadeIn } from '../../global/animations/animations';
+import { AddExternalReportComponent } from '../../threat-report-overview/add-external-report/add-external-report.component';
+import { parentFadeIn, slideInOutAnimation } from '../../global/animations/animations';
+import { AttackPattern } from '../../models/attack-pattern';
 
 @Component({
     selector: 'unf-side-panel',
     templateUrl: 'side-panel.component.html',
     styleUrls: ['./side-panel.component.scss'],
-    animations: [parentFadeIn]
+    animations: [parentFadeIn, slideInOutAnimation]
 })
 export class SidePanelComponent implements OnInit, OnDestroy {
 
     @Input('threatReport')
     public threatReport: ThreatReport;
+
+    @Input('attackPatterns')
+    public attackPatterns: AttackPattern[];
+
+    @Output() 
+    public modifiedBoundries: EventEmitter<any> = new EventEmitter();
 
     @ViewChild('menu')
     public menu: MatMenu;
@@ -92,6 +99,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
                     .subscribe(
                     (val) => {
                         console.log(val);
+                        this.modifiedBoundries.emit(val);
                     },
                     (err) => console.log(err)
                     );
@@ -202,10 +210,16 @@ export class SidePanelComponent implements OnInit, OnDestroy {
      * @return {void}
      */
     public openAddReportDialog(event?: UIEvent): void {
-        this.dialog.open(AddExterernalReportComponent, {
+        const config: any = {
             width: '800px',
-            height: 'calc(100vh - 140px)'
-        })
+            height: 'calc(100vh - 140px)',
+            data: {},
+        };
+        if (this.attackPatterns) {
+            config.data.attackPatterns = this.attackPatterns;
+        }
+
+        this.dialog.open(AddExternalReportComponent, config)
             .afterClosed()
             .subscribe((result) => {
                 const isBool = typeof result === 'boolean';
@@ -237,6 +251,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
                             .map((el) => el.attributes);
                         // add to the list for display
                         this.threatReport.reports = this.threatReport.reports.concat(arr);
+                        this.modifiedBoundries.emit(arr);
                     },
                     (err) => console.log(err),
                     () => add$.unsubscribe()
