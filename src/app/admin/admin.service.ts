@@ -42,6 +42,14 @@ export class AdminService {
         return this.genericApi.get(`${this.configUrl}/${id}`)
     }
 
+    public deleteSingleConfig(id): Observable<any> {
+        return this.genericApi.delete(`${this.configUrl}/${id}`)
+    }
+
+    public addConfig(data): Observable<any> {
+        return this.genericApi.post(`${this.configUrl}`, data)
+    }
+
     public processChangedData(data, id): Observable<any> {
         return this.genericApi.patch(`${this.configUrl}/${id}`, data);
     }
