@@ -1,21 +1,18 @@
-<p mat-dialog-title class="lead mb-6">Add External Report</p>
+<form [formGroup]="form" novalidate (ngSubmit)="submitReport()">
 
-<mat-dialog-content id="addReport">
-    <form [formGroup]="form" novalidate (ngSubmit)="submitReport()">
+    <mat-form-field class="full-width mb-6">
+        <input matInput required placeholder="Name" formControlName="name">
+        <mat-error *ngIf="form.get('name').hasError('required')">
+            Name is
+            <strong>required</strong>
+        </mat-error>
+    </mat-form-field>
 
-        <mat-form-field class="full-width mb-6">
-            <input matInput required placeholder="Name" formControlName="name">
-            <mat-error *ngIf="form.get('name').hasError('required')">
-                Name is
-                <strong>required</strong>
-            </mat-error>
-        </mat-form-field>
+    <mat-form-field class="full-width mb-6">
+        <textarea matInput placeholder="Description" formControlName="description"></textarea>
+    </mat-form-field>
 
-        <mat-form-field class="full-width mb-6">
-            <textarea matInput placeholder="Description" formControlName="description"></textarea>
-        </mat-form-field>
-
-        <!-- <div class="uf-collapsible-control mb-10" (click)="showExternalReferences = !showExternalReferences">
+    <!-- <div class="uf-collapsible-control mb-10" (click)="showExternalReferences = !showExternalReferences">
             <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showExternalReferences}">chevron_right</i>
             <span class="h5">&nbsp;External References</span>
         </div>
@@ -30,53 +27,51 @@
             </mat-chip>
         </mat-chip-list> -->
 
-        <p>
-            External Reference
-        </p>
-        <div class="uf-well">
-            <mat-form-field class="full-width mb-6">
-                <input matInput placeholder="Name" formControlName="external_ref_name">
-                <mat-error *ngIf="form.get('external_ref_name').hasError('required')">
-                    Name is
-                    <strong>required</strong>
-                </mat-error>
-            </mat-form-field>
+    <p>
+        External Reference
+    </p>
+    <div class="uf-well">
+        <mat-form-field class="full-width mb-6">
+            <input matInput placeholder="Name" formControlName="external_ref_name">
+            <mat-error *ngIf="form.get('external_ref_name').hasError('required')">
+                Name is
+                <strong>required</strong>
+            </mat-error>
+        </mat-form-field>
 
-            <mat-form-field class="full-width mb-6">
-                <input matInput required placeholder="Source" formControlName="external_ref_source_name">
-                <mat-error *ngIf="form.get('external_ref_source_name').hasError('required')">
-                    Source is
-                    <strong>required</strong>
-                </mat-error>
-            </mat-form-field>
+        <mat-form-field class="full-width mb-6">
+            <input matInput required placeholder="Source" formControlName="external_ref_source_name">
+            <mat-error *ngIf="form.get('external_ref_source_name').hasError('required')">
+                Source is
+                <strong>required</strong>
+            </mat-error>
+        </mat-form-field>
 
-            <mat-form-field class="full-width mb-6">
-                <input matInput placeholder="External ID" formControlName="external_ref_external_id">
-            </mat-form-field>
+        <mat-form-field class="full-width mb-6">
+            <input matInput placeholder="External ID" formControlName="external_ref_external_id">
+        </mat-form-field>
 
-            <mat-form-field class="full-width mb-6">
-                <input matInput placeholder="URL" formControlName="external_ref_url">
-            </mat-form-field>
+        <mat-form-field class="full-width mb-6">
+            <input matInput placeholder="URL" formControlName="external_ref_url">
+        </mat-form-field>
 
-            <mat-form-field class="full-width mb-6">
-                <textarea matInput placeholder="Description" formControlName="external_ref_description"></textarea>
-            </mat-form-field>
-        </div>
+        <mat-form-field class="full-width mb-6">
+            <textarea matInput placeholder="Description" formControlName="external_ref_description"></textarea>
+        </mat-form-field>
+    </div>
 
-        <p>Attack Patterns</p>
-        <div class="uf-well">
-            <mat-selection-list dense class="attack-list" #attackPatternBlock>
-                <mat-list-option *ngFor="let attackPattern of attackPatterns; trackBy:trackByFn" [value]="attackPattern.id">
-                    {{attackPattern.attributes.name}}
-                </mat-list-option>
-            </mat-selection-list>
-        </div>
+    <p>Attack Patterns</p>
+    <div class="uf-well">
+        <mat-selection-list dense class="attack-list" #attackPatternBlock>
+            <mat-list-option *ngFor="let attackPattern of attackPatterns; trackBy:trackByFn" [value]="attackPattern.id">
+                {{attackPattern.attributes.name}}
+            </mat-list-option>
+        </mat-selection-list>
+    </div>
 
-        <p class="text-right">
-            <button mat-button mat-dialog-close (click)="resetForm($event); dialogRef.close(false);">CANCEL</button>
-            <button mat-raised-button color="primary" [disabled]="form.status === 'INVALID'" type="submit">SAVE</button>
-        </p>
+    <p class="text-right">
+        <button mat-button mat-dialog-close (click)="resetFormAndClose($event);">CANCEL</button>
+        <button mat-raised-button color="primary" [disabled]="form.status === 'INVALID'" type="submit">SAVE AND CLOSE</button>
+    </p>
 
-    </form>
-
-</mat-dialog-content>
+</form>

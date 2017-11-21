@@ -28,7 +28,7 @@
 </div>
 <div>
     <div class="boundries-fab">
-        <button mat-fab color="accent" (click)="openAddReportDialog($event)" matTooltip="Add associated reports">
+        <button mat-fab color="accent" (click)="openAddReportDialog($event)" matTooltip="Modify Threat Report">
             <mat-icon class="mat-24" aria-label="Add associated reports icon">add</mat-icon>
         </button>
     </div>
@@ -88,7 +88,8 @@
     <mat-expansion-panel>
         <mat-expansion-panel-header>
             <mat-panel-title>
-                <img class="stix-icon" src="assets/icon/stix-icons/svg/malware-b.svg"> Malware
+                <img class="stix-icon" src="assets/icon/stix-icons/svg/malware-b.svg"> 
+                Malware
                 <span class="">({{threatReport.boundries.malware.size}})</span>
             </mat-panel-title>
             <!-- <mat-panel-description class="mat-caption">
@@ -109,7 +110,8 @@
     <mat-expansion-panel>
         <mat-expansion-panel-header>
             <mat-panel-title>
-                <img class="stix-icon" src="assets/icon/stix-icons/svg/campaign-b.svg"> External References
+                <img class="stix-icon" src="assets/icon/stix-icons/svg/campaign-b.svg">
+                <span>Threat Reports</span>
                 <span class="">({{threatReport.reports.length}})</span>
             </mat-panel-title>
             <!-- <mat-panel-description class="mat-caption">

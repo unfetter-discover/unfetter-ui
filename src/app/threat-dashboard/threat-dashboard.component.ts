@@ -13,12 +13,12 @@ import { IntrusionSetComponent } from '../intrusion-set/intrusion-set.component'
 import { IntrusionSet, AttackPattern } from '../models';
 import { ThreatReportOverviewService } from './services/threat-report-overview.service';
 import { ThreatReport } from '../threat-report-overview/models/threat-report.model';
-import { SortHelper } from '../assessments/assessments-summary/sort-helper';
 import { KillChainEntry } from './kill-chain-table/kill-chain-entry';
 import { SelectOption } from '../threat-report-overview/models/select-option';
 import { ThreatDashboard } from './models/threat-dashboard';
 import { RadarChartDataPoint } from './radar-chart/radar-chart-datapoint';
 import { simpleFadeIn } from '../global/animations/animations';
+import { SortHelper } from '../global/static/sort-helper';
 
 @Component({
   selector: 'unf-threat-dashboard',

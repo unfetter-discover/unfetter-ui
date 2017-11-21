@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { MatDialog } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 
 import * as moment from 'moment';
 
 import { GenericApi } from '../../core/services/genericapi.service';
 import { Constance } from '../../utils/constance';
-import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
 import { IntrusionSet } from '../../models/intrusion-set';
 import { Malware } from '../../models/malware';
 import { SelectOption } from '../models/select-option';
@@ -16,8 +16,8 @@ import { UploadService } from '../file-upload/upload.service';
 import { ThreatReport } from '../models/threat-report.model';
 import { ThreatReportSharedService } from '../services/threat-report-shared.service';
 import { Boundries } from '../models/boundries';
-import { AddExternalReportComponent } from '../add-external-report/add-external-report.component';
-import { MatDialog } from '@angular/material';
+import { SortHelper } from '../../global/static/sort-helper';
+import { ModifyReportDialogComponent } from '../modify-report-dialog/modify-report-dialog.component';
 
 @Component({
   selector: 'unf-threat-report-creation',
@@ -218,16 +218,6 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
         break;
     }
     chips.delete(stixName);
-
-    // if (chips) {
-    //   if ( typeof stixName === 'string') {
-    //     chips.delete(stixName);
-    //   } else {
-    //     if (!this.hasValue(chips, value)){
-    //       chips = chips.add(value);
-    //     }
-    //   }
-    // }
   }
 
   /**
@@ -281,7 +271,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
       height: 'calc(100vh - 140px)'
     };
     this.dialog
-      .open(AddExternalReportComponent, opts)
+      .open(ModifyReportDialogComponent, opts)
       .afterClosed()
       .subscribe((result) => {
         if (this.isFalsey(result)) {

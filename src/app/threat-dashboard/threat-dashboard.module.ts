@@ -33,6 +33,7 @@ import { ThreatReportOverviewModule } from '../threat-report-overview/threat-rep
 import { ThreatReportOverviewService } from './services/threat-report-overview.service';
 import { ExportComponent } from './export/export.component';
 import { RadarChartComponent } from './radar-chart/radar-chart.component';
+import { ModifyReportDialogComponent } from '../threat-report-overview/modify-report-dialog/modify-report-dialog.component';
 
 const moduleComponents = [
   AttackPatternCountComponent,
