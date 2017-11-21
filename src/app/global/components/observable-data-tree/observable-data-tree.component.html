@@ -1,10 +1,11 @@
 <div class="obsDataTreeComponent" *ngIf="observableDataTypes && observableDataTypes.length">
-    <div class="uf-collapsible-control mb-10" (click)="showTree = !showTree">
+    <!-- <div class="uf-collapsible-control mb-10" (click)="showTree = !showTree">
         <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showTree}">chevron_right</i>
         <span class="h5">&nbsp;Observable Data</span>
-    </div>
+    </div> -->
 
-    <div @heightCollapse *ngIf="showTree" class="uf-well pb-9">
+    <!-- <div @heightCollapse *ngIf="showTree" class="uf-well pb-9"> -->
+    <div class="uf-well pb-9">
         <div *ngFor="let observableDataType of observableDataTypes">
         
             <div class="uf-collapsible-control mb-10" (click)="observableDataType.showActions = !observableDataType.showActions">
