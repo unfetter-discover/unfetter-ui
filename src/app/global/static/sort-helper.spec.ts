@@ -2,6 +2,24 @@ import { SortHelper } from './sort-helper';
 
 describe('Sort Helper Spec', () => {
 
+  /**
+   * @description ensure all the elements are >= then previous
+   * @param arr
+   * @return {boolean} true if all elements >= otherwise false
+   */
+  const ensureAllGtEqPrev = (arr: any[]) => {
+    if (!arr) {
+      return true;
+    }
+
+    let prev = arr[0];
+    return arr.every((el) => {
+      const gtOrEq = el >= prev;
+      prev = el;
+      return gtOrEq ? true : false;
+    });
+  };
+
   const strArr = ['c', 'b', '1', 'a'];
   const numberArr = [100, 200, 1, 40];
   const objectArr = [
@@ -92,21 +110,4 @@ describe('Sort Helper Spec', () => {
     expect(sorted).toBeFalsy();
   });
 
-  /**
-   * @description ensure all the elements are >= then previous
-   * @param arr
-   * @return {boolean} true if all elements >= otherwise false
-   */
-  const ensureAllGtEqPrev = (arr: any[]) => {
-    if (!arr) {
-      return true;
-    }
-
-    let prev = arr[0];
-    return arr.every((el) => {
-      const gtOrEq = el >= prev;
-      prev = el;
-      return gtOrEq ? true : false;
-    });
-  }
 });

@@ -7,7 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpModule, Http } from '@angular/http';
 import { MatButtonModule, MatInputModule, MatIconModule, MatSelectModule, MatTooltipModule, MatFormFieldModule, MatListModule, MatDialogModule, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
-import { AddExternalReportComponent } from '../add-external-report/add-external-report.component';
+import { AddExternalReportComponent } from './add-external-report/add-external-report.component';
 import { ModifyReportDialogComponent } from './modify-report-dialog.component';
 import { ModifyIntrusionsComponent } from './modify-intrusions/modify-intrusions.component';
 import { ModifyMalwaresComponent } from './modify-malwares/modify-malwares.component';

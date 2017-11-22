@@ -274,8 +274,8 @@ export class SidePanelComponent implements OnInit, OnDestroy {
                         console.log(`saved report ${resp}`);
                         const innerSub$ = this.threatReportOverviewService
                             .load(this.threatReport.id)
-                            .subscribe((threatReport) => {
-                                this.threatReport = threatReport;
+                            .subscribe((innerThreatReport) => {
+                                this.threatReport = innerThreatReport;
                                 this.modifiedBoundries.emit(this.threatReport);
                             },
                             (err) => console.log(err),
