@@ -29,6 +29,7 @@ export class AddIndicatorComponent implements OnInit {
 
     public form: FormGroup | any;
     public organizations: any;
+    public attackPatterns: any[] = [];
 
     constructor(
         public dialogRef: MatDialogRef<any>,
@@ -42,11 +43,13 @@ export class AddIndicatorComponent implements OnInit {
         const userId = this.authService.getUser()._id;
         const getData$ = Observable.forkJoin(
             this.indicatorSharingService.getIdentities(),
-            this.indicatorSharingService.getUserProfileById(userId)
+            this.indicatorSharingService.getUserProfileById(userId),
+            this.indicatorSharingService.getAttackPatterns()
         ).subscribe(
             (res) => {       
                 const identities = res[0].map((r) => r.attributes);
                 const userOrgs = res[1].attributes.organizations;
+                this.attackPatterns = res[2].map((r) => r.attributes);
                 if (userOrgs && userOrgs.length) {
                     this.organizations = userOrgs
                         .filter((org) => org.approved)

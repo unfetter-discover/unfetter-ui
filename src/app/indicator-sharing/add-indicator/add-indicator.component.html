@@ -6,7 +6,7 @@
         <mat-vertical-stepper>
 
             <mat-step label="STIX Data">
-                <mat-form-field class="full-width mb-6">
+                <mat-form-field class="full-width mb-6 mt-10">
                     <input matInput required placeholder="Name" formControlName="name">
                     <mat-error *ngIf="form.get('name').hasError('required')">
                         Name is <strong>required</strong>
@@ -94,12 +94,16 @@
             </mat-step>
             
             <mat-step label="STIX Relationships">
-                <mat-form-field class="full-width mb-6">
-                    <input matInput placeholder="Attack Patterns">
-                </mat-form-field>
-                <div class="mt-6">
-                    <button mat-button matStepperPrevious type="button" color="primary">Back</button>
-                    <button mat-button matStepperNext type="button" color="primary">Continue</button>
+                <div formGroupName="metaProperties">
+                    <mat-form-field class="full-width mt-10">
+                        <mat-select placeholder="Indicated Attack Patterns" [multiple]="true" formControlName="relationships">
+                            <mat-option [value]="ap.id" *ngFor="let ap of attackPatterns">{{ ap.name }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <div class="mt-6">
+                        <button mat-button matStepperPrevious type="button" color="primary">Back</button>
+                        <button mat-button matStepperNext type="button" color="primary">Continue</button>
+                    </div>
                 </div>
             </mat-step>
             
