@@ -7,6 +7,7 @@ import { StixService } from '../../../stix.service';
 
 // Load the implementations that should be tested
 import { IdentityComponent } from './identity.component';
+import { GlobalModule } from '../../../../global/global.module';
 
 describe(`IdentityComponent`, () => {
   let comp: IdentityComponent;
@@ -16,6 +17,7 @@ describe(`IdentityComponent`, () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ IdentityComponent ],
+      imports: [ GlobalModule ],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
         {provide: StixService, useValue: {} },

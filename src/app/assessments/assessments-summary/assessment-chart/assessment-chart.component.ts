@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Constance } from '../../../utils/constance';
 import { AssessmentsCalculationService } from '../assessments-calculation.service';
-import { SortHelper } from '../sort-helper';
+import { AssessmentsSortHelper } from '../assessments-sort-helper';
 import { ChartData } from '../chart-data';
 
 @Component({
@@ -112,7 +112,7 @@ export class AssessmentChartComponent implements OnInit {
         const uniqGroups = Array.from(new Set(
             Array.from(Object.keys(this.assessmentsGroupingTotal))
                 .map((el) => el.toLowerCase())))
-            .sort(SortHelper.sortDesc());
+            .sort(AssessmentsSortHelper.sortDesc());
 
         // init data array
         const size = uniqGroups.length;

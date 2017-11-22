@@ -35,6 +35,7 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
     public ngOnDestroy(): void {
         d3.select('body').selectAll('.tooltip').remove();
     }
+
     /**
      * TODO: verify this is not called too often,
      *  as ngOnChanges can be called often and computation should not be expensive

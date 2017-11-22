@@ -74,7 +74,7 @@
                         <mat-header-cell *matHeaderCellDef> Title </mat-header-cell>
                         <mat-cell *matCellDef="let row">
                             <p>
-                                <a href="{{row.data.attributes.external_references[0].external_url}}" target="_blank">
+                                <a href="{{row.data.attributes.external_references[0].url}}" target="_blank">
                                     {{row.data.attributes.title || row.data.attributes.name}}
                                     <mat-icon aria-hidden="true" class="mat-14">launch</mat-icon>
                                 </a>

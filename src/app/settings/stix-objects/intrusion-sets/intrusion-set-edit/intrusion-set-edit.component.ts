@@ -3,23 +3,17 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { Location } from '@angular/common';
 import { MatDialog, MatDialogRef, MatDialogConfig, MatSnackBar } from '@angular/material';
-import { IntrusionSetComponent } from '../intrusion-set/intrusion-set.component';
-import { StixService } from '../../../stix.service';
-import { Motivation } from '../../../../models/motivation.enum';
-import { ResourceLevel } from '../../../../models/resource-level.enum';
-import { SortHelper } from '../../../../assessments/assessments-summary/sort-helper';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/map';
 
-import {
-  IntrusionSet,
-  AttackPattern,
-  Identity,
-  ThreatActor,
-  Relationship
-} from '../../../../models';
+import { IntrusionSetComponent } from '../intrusion-set/intrusion-set.component';
+import { StixService } from '../../../stix.service';
+import { Motivation } from '../../../../models/motivation.enum';
+import { ResourceLevel } from '../../../../models/resource-level.enum';
+import { IntrusionSet, AttackPattern, Identity, ThreatActor, Relationship } from '../../../../models';
 import { Constance } from '../../../../utils/constance';
+import { SortHelper } from '../../../../global/static/sort-helper';
 
 @Component({
   selector: 'intrusion-set-edit',

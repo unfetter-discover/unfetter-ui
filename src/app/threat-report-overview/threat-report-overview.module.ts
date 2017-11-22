@@ -6,25 +6,32 @@ import { routing } from './threat-report-overview.routing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
-import { MatButtonModule, MatChipsModule, MatInputModule, MatIconModule, MatTooltipModule } from '@angular/material';
+import { MatButtonModule, MatChipsModule, MatInputModule, MatIconModule, MatTooltipModule, MatFormFieldModule } from '@angular/material';
 import { MatCheckboxModule } from '@angular/material';
 import { MatDatepickerModule } from '@angular/material';
 import { MatPaginatorModule } from '@angular/material';
 import { MatSelectModule } from '@angular/material';
 import { MatSlideToggleModule } from '@angular/material';
+import { MatStepperModule } from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material';
 import { MatListModule } from '@angular/material';
 
-import { AddExternalReportComponent } from './add-external-report/add-external-report.component';
+import { AddExternalReportComponent } from './modify-report-dialog/add-external-report/add-external-report.component';
+import { FileUploadModule } from './file-upload/file-upload.module';
+import { ModifyReportDialogComponent } from './modify-report-dialog/modify-report-dialog.component';
+import { ModifyIntrusionsComponent } from './modify-report-dialog/modify-intrusions/modify-intrusions.component';
+import { ModifyMalwaresComponent } from './modify-report-dialog/modify-malwares/modify-malwares.component';
 import { ThreatReportCreationComponent } from './create/threat-report-creation.component';
 import { ThreatReportOverviewComponent } from './threat-report-overview.component';
 import { ThreatReportSharedService } from './services/threat-report-shared.service';
 import { ThreatReportModifyComponent } from './modify/threat-report-modify.component';
-import { FileUploadModule } from './file-upload/file-upload.module';
 import { ThreatReportOverviewService } from '../threat-dashboard/services/threat-report-overview.service';
 
 const unfetterComponents = [
   AddExternalReportComponent,
+  ModifyReportDialogComponent,
+  ModifyIntrusionsComponent,
+  ModifyMalwaresComponent,
   ThreatReportOverviewComponent,
   ThreatReportCreationComponent,
   ThreatReportModifyComponent,
@@ -40,15 +47,17 @@ const materialModules = [
   MatCheckboxModule,
   MatChipsModule,
   MatDatepickerModule,
+  MatFormFieldModule,
   MatInputModule,
   MatIconModule,
   MatListModule,
   MatPaginatorModule,
   MatSelectModule,
   MatSlideToggleModule,
+  MatStepperModule,
   MatTooltipModule,
   MatTableModule,
-]
+];
 
 @NgModule({
   declarations: [
@@ -65,9 +74,10 @@ const materialModules = [
     FileUploadModule,
     routing
   ],
+  exports: [...unfetterComponents],
   providers: [
     ...unfetterServices
   ],
-  entryComponents: [AddExternalReportComponent]
+  entryComponents: [ModifyReportDialogComponent]
 })
 export class ThreatReportOverviewModule { }

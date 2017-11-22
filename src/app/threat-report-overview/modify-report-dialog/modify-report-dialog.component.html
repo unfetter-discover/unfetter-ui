@@ -1,0 +1,19 @@
+<p mat-dialog-title class="lead mb-6">Modify Threat Report</p>
+
+<mat-dialog-content id="modify-report-dialog">
+    <mat-horizontal-stepper linear="false">
+        <mat-step *ngIf="showReportStep">
+            <ng-template matStepLabel>Add threat report</ng-template>
+            <unf-add-external-report [attackPatterns]="attackPatterns" (onFormSubmit)="onFormSubmit($event)">
+            </unf-add-external-report>
+        </mat-step>
+        <mat-step *ngIf="showMalwareStep">
+            <ng-template matStepLabel>Modify Intrusions</ng-template>
+            <unf-modify-intrusions [threatReport]="threatReport" (onFormSubmit)="onFormSubmit($event)"></unf-modify-intrusions>
+        </mat-step>
+        <mat-step *ngIf="showIntrusionStep">
+            <ng-template matStepLabel>Modify  Malwares</ng-template>
+            <unf-modify-malwares [threatReport]="threatReport" (onFormSubmit)="onFormSubmit($event)"></unf-modify-malwares>
+        </mat-step>
+    </mat-horizontal-stepper>
+</mat-dialog-content>
