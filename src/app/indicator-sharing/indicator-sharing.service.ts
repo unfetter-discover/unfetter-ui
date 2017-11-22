@@ -33,7 +33,11 @@ export class IndicatorSharingService {
     }
 
     public getAttackPatterns(): Observable<any> {
-        return this.genericApi.get(this.attackPatternsUrl);
+        const projectObj = {
+            'stix.name': 1,
+            'stix.id': 1
+        };
+        return this.genericApi.get(`${this.attackPatternsUrl}?project=${JSON.stringify(projectObj)}`);
     }
 
     public addComment(comment, id) {
