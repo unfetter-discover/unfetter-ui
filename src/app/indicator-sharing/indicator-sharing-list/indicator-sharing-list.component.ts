@@ -28,7 +28,8 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
         activeLabels: [],
         activeIdentities: [],
         killChainPhases: [],
-        activeKillChainPhases: []
+        activeKillChainPhases: [],
+        indicatorName: ''
     };
     public SERVER_CALL_COMPLETE = false;
     public sortBy: string = 'NEWEST';
@@ -166,6 +167,12 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
                     });
                     return found;
                 });
+        }
+        
+        if (this.searchParameters.indicatorName && this.searchParameters.indicatorName !== '') {
+            this.filteredIndicators = this.filteredIndicators
+                .filter((indicator) => !!indicator.name)
+                .filter((indicator) => indicator.name.toLowerCase().indexOf(this.searchParameters.indicatorName.toLowerCase()) === 0);
         }
 
         this.sortIndicators();           

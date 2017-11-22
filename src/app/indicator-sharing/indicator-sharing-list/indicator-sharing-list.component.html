@@ -7,6 +7,9 @@
                 <span>&nbsp;Search Analytics</span>
             </p>
             <mat-form-field class="full-width mb-9">
+                <input matInput placeholder="Indicator Name" [(ngModel)]="searchParameters.indicatorName" (keyup)="searchDebouncer.next()">
+            </mat-form-field>
+            <mat-form-field class="full-width mb-9">
                 <mat-select placeholder="Labels" [multiple]="true" (change)="searchDebouncer.next()" [(ngModel)]="searchParameters.activeLabels">
                     <mat-option value="{{label}}" *ngFor="let label of searchParameters.labels">{{ label | capitalize }}</mat-option>
                 </mat-select>
