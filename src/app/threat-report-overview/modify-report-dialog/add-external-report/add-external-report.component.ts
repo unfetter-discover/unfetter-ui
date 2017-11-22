@@ -1,18 +1,17 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, EventEmitter, Output, Inject, Input } from '@angular/core';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
-import { Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
 import { MatSelectionList } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { ExternalReportForm } from './external-report-form';
-import { ThreatReportOverviewService } from '../../threat-dashboard/services/threat-report-overview.service';
-import { ExternalReference } from '../../models/externalReference';
-import { GenericApi } from '../../core/services/genericapi.service';
-import { AttackPattern } from '../../models/attack-pattern';
-import { Constance } from '../../utils/constance';
-import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
-import { ThreatReport } from '../models/threat-report.model';
+import { ThreatReportOverviewService } from '../../../threat-dashboard/services/threat-report-overview.service';
+import { ExternalReference } from '../../../models/externalReference';
+import { GenericApi } from '../../../core/services/genericapi.service';
+import { AttackPattern } from '../../../models/attack-pattern';
+import { Constance } from '../../../utils/constance';
+import { ThreatReport } from '../../models/threat-report.model';
+import { Report } from '../../../models/report';
 
 @Component({
   selector: 'unf-add-external-report',
@@ -25,7 +24,7 @@ export class AddExternalReportComponent implements OnInit, OnDestroy {
   public attackPatterns: AttackPattern[];
 
   @Output()
-  public onFormSubmit = new EventEmitter<Partial<ThreatReport> | boolean>();
+  public onFormSubmit = new EventEmitter<Partial<Report> | boolean>();
 
   @ViewChild('attackPatternBlock')
   public attackPatternEl: MatSelectionList;
@@ -36,7 +35,6 @@ export class AddExternalReportComponent implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription[] = [];
 
   constructor(
-    protected router: Router,
     protected genericApiService: GenericApi,
   ) { }
 
@@ -105,18 +103,22 @@ export class AddExternalReportComponent implements OnInit, OnDestroy {
   /**
    * @description submit a report
    */
-  public submitReport(): Partial<ThreatReport> {
+  public submitReport(): Partial<Report> {
     const formData = this.buildReport(this.form.value);
     this.resetForm();
-    const data =
-      {
-        reports:
-          [{
-            data: {
-              attributes: formData
-            },
-          }]
-      } as Partial<ThreatReport>;
+    // const data =
+    //   {
+    //     reports:
+    //       [{
+    //         data: {
+    //           attributes: formData
+    //         },
+    //       }]
+    //   } as Partial<ThreatReport>;
+    const data = {
+      attributes: formData
+    } as Partial<Report>;
+    console.log('emitting newly created report', data);
     this.onFormSubmit.emit(data);
     return data;
   }
@@ -152,14 +154,14 @@ export class AddExternalReportComponent implements OnInit, OnDestroy {
     const source_name = form.external_ref_source_name;
     const external_id = form.external_ref_external_id;
     const description = form.external_ref_description;
-    const external_url = form.external_ref_url;
+    const url = form.external_ref_url;
     const externalRefs = [];
     const externalRef = {
       description,
       external_id,
       name,
       source_name,
-      external_url
+      url
     };
     externalRefs.push(externalRef);
     ref.external_references = externalRefs;
@@ -169,23 +171,6 @@ export class AddExternalReportComponent implements OnInit, OnDestroy {
     ref.object_refs = apIds;
     return ref;
   }
-
-  /**
-   * @description change nested form names to their database names
-   * @param form
-   * @return form
-   */
-  // private fixNames(form: any): any {
-  //   form.name = form.external_ref_name;
-  //   form.source_name = form.external_ref_source_name;
-  //   form.external_id = form.external_ref_external_id;
-  //   form.description = form.external_ref_description;
-  //   form.external_url = form.external_ref_url;
-  //   const cleanup = [ 'external_ref_name', 'external_ref_url',
-  //      'external_ref_description', 'external_ref_source_name', 'external_ref_external_id'];
-  //   cleanup.forEach((attr) => delete form[attr]);
-  //   return form;
-  // }
 
   /**
    * @description create a function to sort attackpatterns by name

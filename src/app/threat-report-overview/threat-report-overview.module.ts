@@ -16,7 +16,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material';
 import { MatListModule } from '@angular/material';
 
-import { AddExternalReportComponent } from './add-external-report/add-external-report.component';
+import { AddExternalReportComponent } from './modify-report-dialog/add-external-report/add-external-report.component';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { ModifyReportDialogComponent } from './modify-report-dialog/modify-report-dialog.component';
 import { ModifyIntrusionsComponent } from './modify-report-dialog/modify-intrusions/modify-intrusions.component';

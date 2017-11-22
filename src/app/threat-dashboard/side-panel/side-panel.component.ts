@@ -13,6 +13,7 @@ import { ThreatReport } from '../../threat-report-overview/models/threat-report.
 import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
 import { ModifyReportDialogComponent } from '../../threat-report-overview/modify-report-dialog/modify-report-dialog.component';
 import { ThreatReportOverviewService } from '../services/threat-report-overview.service';
+import { Report } from '../../models/report';
 
 @Component({
     selector: 'unf-side-panel',
@@ -29,7 +30,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
     public attackPatterns: AttackPattern[];
 
     @Output()
-    public modifiedBoundries: EventEmitter<any> = new EventEmitter();
+    public modifiedBoundries: EventEmitter<ThreatReport> = new EventEmitter();
 
     @ViewChild('menu')
     public menu: MatMenu;
@@ -97,12 +98,8 @@ export class SidePanelComponent implements OnInit, OnDestroy {
                 const load$ = this.load(workProductId).do((val) => this.threatReport = val);
                 const sub$ = Observable.concat(delete$, load$)
                     .subscribe(
-                    (val) => {
-                        console.log(val);
-                        this.modifiedBoundries.emit(val);
-                    },
-                    (err) => console.log(err)
-                    );
+                    (val) => this.modifiedBoundries.emit(this.threatReport),
+                    (err) => console.log(err));
                 this.subscriptions.push(sub$);
             });
     }
@@ -116,7 +113,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
         const ref: any = this.selectedExternalRef;
         const externalRefs: any[] = ref.external_references;
         if (ref && externalRefs && externalRefs.length > 0) {
-            const url = externalRefs[0].external_url;
+            const url = externalRefs[0].url;
             window.open(url, '_blank');
         }
     }
@@ -213,8 +210,8 @@ export class SidePanelComponent implements OnInit, OnDestroy {
         const config = {
             width: '800px',
             height: 'calc(100vh - 140px)',
-            data: {} as { 
-                attackPatterns: any, 
+            data: {} as {
+                attackPatterns: any,
                 threatReport: any,
                 showMalwareStep: boolean,
                 showIntrusionStep: boolean,
@@ -230,7 +227,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
 
         this.dialog.open(ModifyReportDialogComponent, config)
             .afterClosed()
-            .subscribe((result: Partial<ThreatReport> | boolean) => {
+            .subscribe((result: Partial<ThreatReport> | Partial<Report> | boolean) => {
                 const isBool = typeof result === 'boolean';
                 const isUndefined = typeof result === 'undefined';
                 if (isUndefined || isBool && !result) {
@@ -244,29 +241,31 @@ export class SidePanelComponent implements OnInit, OnDestroy {
                 tro.date = this.threatReport.date;
                 tro.author = this.threatReport.author;
                 tro.id = this.threatReport.id;
-                result = result as Partial<ThreatReport>;
-                if (result && !isBool && !result.reports) {
-                    // if this is not a report update, 
-                    //      grab the existing reports and prepare them for the save to db operation
-                    tro.reports = this.threatReport.reports || [];
-                    tro.reports = tro.reports.map((report) => {
-                        return {
-                            data: {
-                                attributes: report
-                            },
-                        };
-                    });
-                    // check if we have any boundries copy them over to save to db
-                    if (result.boundries) {
-                        const boundries = result.boundries;
-                        Object.keys(boundries)
-                            .filter((key) => boundries[key] !== undefined)
-                            .forEach((key) => tro.boundries[key] = boundries[key]);
-                    }
-                } else if (result && result.reports) {
+                tro.reports = this.threatReport.reports || [];
+                const threatReport = result as Partial<ThreatReport>;
+                if (threatReport && !isBool && threatReport.boundries) {
+                    // this is a boundries update,
+                    //  copy over boundries to save to db
+                    const boundries = threatReport.boundries;
+                    Object.keys(boundries)
+                        .filter((key) => boundries[key] !== undefined)
+                        .forEach((key) => tro.boundries[key] = boundries[key]);
+                } else if (result) {
                     // this is an update single report operation
-                    tro.reports = result.reports;
+                    tro.reports = tro.reports.concat({ data: result });
                 }
+                // prepare reports for the save to db operation
+                //  wrap in data if needed 
+                tro.reports = tro.reports.map((report) => {
+                    if (report.data) {
+                        return report;
+                    }
+                    return {
+                        data: {
+                            attributes: report
+                        },
+                    };
+                });
 
                 const add$ = this.threatReportOverviewService
                     .saveThreatReport(tro)

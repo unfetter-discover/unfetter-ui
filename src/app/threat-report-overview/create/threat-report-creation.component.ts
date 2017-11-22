@@ -18,6 +18,7 @@ import { ThreatReportSharedService } from '../services/threat-report-shared.serv
 import { Boundries } from '../models/boundries';
 import { SortHelper } from '../../global/static/sort-helper';
 import { ModifyReportDialogComponent } from '../modify-report-dialog/modify-report-dialog.component';
+import { Report } from '../../models/report';
 
 @Component({
   selector: 'unf-threat-report-creation',
@@ -273,16 +274,13 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     this.dialog
       .open(ModifyReportDialogComponent, opts)
       .afterClosed()
-      .subscribe((result) => {
+      .subscribe((result: Partial<Report> | boolean) => {
         if (this.isFalsey(result)) {
           return;
         }
-        console.log(result);
-        // add new report
+        // add new report, wrap in the expect data attribute, cause you know, jsonschema
         const report = {
-          data: {
-            attributes: result
-          },
+          data: result
         };
         this.threatReport.reports.push(report);
       },
@@ -304,7 +302,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    * @description 
    * @return true is string and false or boolean and false, otherwise true
    */
-  private isFalsey(val: boolean | string | undefined): boolean {
+  private isFalsey(val: boolean | string | Partial<Report> | undefined): boolean {
     const isUndefined = typeof val === 'undefined';
     const isBool = typeof val === 'boolean';
     const isString = typeof val === 'string';

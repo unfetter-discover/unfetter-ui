@@ -19,6 +19,7 @@ import { ThreatDashboard } from './models/threat-dashboard';
 import { RadarChartDataPoint } from './radar-chart/radar-chart-datapoint';
 import { simpleFadeIn } from '../global/animations/animations';
 import { SortHelper } from '../global/static/sort-helper';
+import { RadarChartComponent } from './radar-chart/radar-chart.component';
 
 @Component({
   selector: 'unf-threat-dashboard',
@@ -65,7 +66,15 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
       this.notifyDoneLoading();
       return;
     }
+    this.fetchDataAndRender();
+  }
 
+  /**
+   * @description fetch data and render components
+   * @return {void}
+   */
+  public fetchDataAndRender(): void {
+    this.loading = true;
     const loadReport$ = this.loadThreatReport();
     const loadAttackPatterns$ = this.loadAttackPatterns();
     const loadIntrusionSets$ = this.loadIntrusionSets();
@@ -74,36 +83,41 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     const logErr = (err) => console.log('request err', err);
     const noop = () => { };
     const sub$ = loadAll$.subscribe(
-      (arr) => {
-        // get intrusion sets, used
-        const intrusionIds = Array.from(this.threatReport.boundries.intrusions).map((el: SelectOption) => el.value);
-        if (!intrusionIds || intrusionIds.length === 0) {
-          this.refresh();
-          this.notifyDoneLoading();
-          return;
-        }
-
-        // build and render the visualizations
-        const sub2$ = this.loadIntrusionSetMapping(intrusionIds)
-          .map((mappings) => {
-            // finish load and render something so the svg has a size to work from
-            this.notifyDoneLoading();
-            this.refresh();
-          })
-          .subscribe(noop, logErr.bind(this));
-        this.subscriptions.push(sub2$);
-      },
+      (arr) => this.fetchIntrusionSetsAndRender(),
       logErr.bind(this));
     this.subscriptions.push(sub$);
   }
 
-  public buildKillChainTable(): void {
-    this.attackPatterns = this.colorRows(this.attackPatterns, this.threatReport);
-    this.groupKillchain = this.groupByKillchain(this.attackPatterns);
-    this.intrusionSetsDashboard.killChainPhases = this.groupKillchain;
+  /**
+   * @description fetch just the intrusions and render components
+   */
+  public fetchIntrusionSetsAndRender(): void {
+    this.intrusionSetsDashboard = { killChainPhases: [], intrusionSets: [], totalAttackPatterns: 0, coursesOfAction: [] };
+    const logErr = (err) => console.log('request err', err);
+    const noop = () => { };
+    // get intrusion sets, used
+    const intrusionIds = Array.from(this.threatReport.boundries.intrusions).map((el: SelectOption) => el.value);
+    if (!intrusionIds || intrusionIds.length === 0) {
+      this.renderVisualizations();
+      this.notifyDoneLoading();
+      return;
+    }
+
+    // build and render the visualizations
+    const sub2$ = this.loadIntrusionSetMapping(intrusionIds)
+      .map((mappings) => {
+        // finish load and render something so the svg has a size to work from
+        this.notifyDoneLoading();
+        this.renderVisualizations();
+      })
+      .subscribe(noop, logErr.bind(this));
+    this.subscriptions.push(sub2$);
   }
 
-  public refresh(): void {
+  /**
+   * @description with out fetching data, render the components
+   */
+  public renderVisualizations(): void {
     // get intrusion sets, used
     const intrusionIds = Array.from(this.threatReport.boundries.intrusions).map((el: SelectOption) => el.value);
     if (!intrusionIds || intrusionIds.length === 0) {
@@ -120,11 +134,30 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onBoundriesModified(event: any): void {
-    console.log(event);
-    this.refresh();
+  /**
+   * @description build a kill chain table
+   * @return {void}
+   */
+  public buildKillChainTable(): void {
+    this.attackPatterns = this.colorRows(this.attackPatterns, this.threatReport);
+    this.groupKillchain = this.groupByKillchain(this.attackPatterns);
+    this.intrusionSetsDashboard.killChainPhases = this.groupKillchain;
   }
 
+  /**
+   * @description the boundries have been modified, refresh this component
+   * @param event
+   */
+  public onBoundriesModified(event: ThreatReport): void {
+    console.log(event);
+    this.threatReport = event;
+    this.fetchIntrusionSetsAndRender();
+  }
+
+  /**
+   * @description trigger a change detection and set loading to false to turn off spinner
+   * @return {void}
+   */
   public notifyDoneLoading(): void {
     requestAnimationFrame(() => this.loading = false);
   }
@@ -172,7 +205,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     if (ids.length === 0) {
       return Observable.of();
     }
-    this.intrusionSetsDashboard.killChainPhases = null;
+    this.intrusionSetsDashboard.killChainPhases = undefined;
     const url = 'api/dashboards/intrusionSetView?intrusionSetIds=' + ids.join();
     return this.genericApi.get(url).map((data) => this.intrusionSetsDashboard = data);
   }
