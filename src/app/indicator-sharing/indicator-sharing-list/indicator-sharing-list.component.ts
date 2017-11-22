@@ -116,7 +116,22 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
         const dialogRefClose$ = dialogRef.afterClosed()
             .subscribe((res) => {
                     if (res) {
-                        this.allIndicators.push(res);
+                        this.allIndicators.push(res.indicator);
+                        if (res.newRelationships) {
+                            const getPatterns$ = this.indicatorSharingService.getAttackPatternsByIndicator()
+                                .subscribe((patternsRes) => {
+                                    patternsRes.attributes.forEach((e) => {
+                                        this.indicatorToAttackPatternMap[e._id] = e.attackPatterns;
+                                    });
+                                },
+                                (err) => {
+                                    console.log(err);
+                                },
+                                () => {
+                                    getPatterns$.unsubscribe();
+                                }
+                                );
+                        }                        
                         this.filterIndicators();
                     }
                 },

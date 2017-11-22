@@ -12,6 +12,7 @@ export class IndicatorSharingService {
     public multiplesUrl = Constance.MULTIPLES_URL;
     public identitiesUrl = Constance.IDENTITIES_URL;
     public profileByIdUrl = Constance.PROFILE_BY_ID_URL;
+    public attackPatternsUrl = Constance.ATTACK_PATTERN_URL;
 
     constructor(
         private genericApi: GenericApi,
@@ -29,6 +30,14 @@ export class IndicatorSharingService {
 
     public getAttackPatternsByIndicator(): Observable<any> {
         return this.genericApi.get(`${this.baseUrl}/attack-patterns-by-indicator`);
+    }
+
+    public getAttackPatterns(): Observable<any> {
+        const projectObj = {
+            'stix.name': 1,
+            'stix.id': 1
+        };
+        return this.genericApi.get(`${this.attackPatternsUrl}?project=${JSON.stringify(projectObj)}`);
     }
 
     public addComment(comment, id) {
