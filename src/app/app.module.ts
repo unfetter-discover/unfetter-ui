@@ -7,6 +7,9 @@ import { RouterModule, PreloadAllModules, Router } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material';
 import { ComponentModule } from './components/component.module';
 import { StixModule } from './settings/stix.module';
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 /*
  * Platform and Environment providers/directives/pipes
@@ -28,6 +31,7 @@ import { AssessmentsModule } from './assessments/assessments.module';
 import { GlobalModule } from './global/global.module';
 import { ConfirmationDialogComponent } from './components/dialogs/confirmation/confirmation-dialog.component';
 import { CoreModule } from './core/core.module';
+import { reducers } from './root-store/app.reducers';
 
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process
@@ -53,7 +57,10 @@ import { CoreModule } from './core/core.module';
     AppRoutingModule,
     // RouterModule.forRoot(ROUTES, { useHash: true, preloadingStrategy: PreloadAllModules })
     AssessmentsModule,
-    CoreModule
+    CoreModule,
+    StoreRouterConnectingModule,
+    StoreDevtoolsModule.instrument(), // TODO modify so its only used in dev mode,
+    StoreModule.forRoot(reducers)
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS
