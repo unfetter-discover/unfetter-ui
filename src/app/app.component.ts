@@ -19,8 +19,6 @@ import * as configActions from './root-store/config/config.actions';
 export class AppComponent implements OnInit {
   public showBanner = false;
   public securityMarkingLabel = '';
-  public deleteMe$; 
-  public deleteMe2$;
 
   constructor(
     public authService: AuthService,
@@ -29,8 +27,6 @@ export class AppComponent implements OnInit {
   ) {}
 
   public ngOnInit() {
-    this.deleteMe$ = this.store.select('users');
-    this.deleteMe2$ = this.store.select('config');
     if (SHOWBANNER !== undefined) {
       this.showBanner = SHOWBANNER;
     }
@@ -39,9 +35,11 @@ export class AppComponent implements OnInit {
       this.securityMarkingLabel = BANNERTEXT;
     }
 
-    if (RUN_MODE !== undefined && RUN_MODE === 'UAC' && this.authService.loggedIn()) { 
-      console.log('Running application in UAC mode');      
-      this.webAnalyticsService.recordVisit();
+    if (RUN_MODE !== undefined && RUN_MODE === 'UAC') { 
+      console.log('Running application in UAC mode');   
+      if (this.authService.loggedIn()) {
+        this.webAnalyticsService.recordVisit();
+      }   
     } else if (RUN_MODE !== undefined && RUN_MODE === 'DEMO') {
       console.log('Running application in DEMO mode');      
     }

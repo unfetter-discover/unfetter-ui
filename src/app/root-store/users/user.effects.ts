@@ -11,7 +11,6 @@ import * as userActions from '../../root-store/users/user.actions';
 import * as configActions from '../../root-store/config/config.actions';
 import { UsersService } from '../../users/users.service';
 import { AuthService } from '../../core/services/auth.service';
-import { ConfigService } from '../../core/services/config.service';
 
 @Injectable()
 export class UserEffects {
@@ -60,7 +59,6 @@ export class UserEffects {
         private actions$: Actions,
         private router: Router,
         private usersService: UsersService,
-        private authService: AuthService,
-        private configService: ConfigService
+        private authService: AuthService
     ) { }
 }

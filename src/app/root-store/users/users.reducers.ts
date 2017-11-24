@@ -21,8 +21,7 @@ export function usersReducer(state = initialState, action: userActions.UserActio
     console.log('Current state: ', state);
     switch (action.type) {
         case userActions.LOGIN_USER:
-            console.log('OLD STATE ', state);
-            const newState = {
+            return {
                 ...state,
                 userProfile: action.payload.userData,
                 token: action.payload.token,
@@ -30,8 +29,6 @@ export function usersReducer(state = initialState, action: userActions.UserActio
                 approved: action.payload.userData.approved,
                 authenticated: true
             };
-            console.log('NEW STATE', newState);
-            return newState;
         case userActions.UPDATE_USER_DATA:
             return {
                 ...state,

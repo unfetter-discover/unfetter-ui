@@ -1,7 +1,9 @@
 import { Component, ViewEncapsulation } from '@angular/core';
+import { Store } from '@ngrx/store';
 
 import { Navigation } from '../../models/navigation';
 import { AuthService } from '../../core/services/auth.service';
+import * as fromApp from '../../root-store/app.reducers';
 
 @Component({
   selector: 'header-navigation',
@@ -29,8 +31,13 @@ export class HeaderNavigationComponent {
 
   public collapsed: boolean = true;
   public demoMode: boolean = false;
+  public user$;
 
-  constructor(public authService: AuthService) {
+  constructor(
+    public authService: AuthService,
+    private store: Store<fromApp.AppState>
+  ) {
+    this.user$ = this.store.select('users');
     const runMode = RUN_MODE;
     if (runMode === 'DEMO') {
       this.demoMode = true;
