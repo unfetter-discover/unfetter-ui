@@ -33,6 +33,7 @@ import { ConfirmationDialogComponent } from './components/dialogs/confirmation/c
 import { CoreModule } from './core/core.module';
 import { reducers } from './root-store/app.reducers';
 import { UserEffects } from './root-store/users/user.effects';
+import { ConfigEffects } from './root-store/config/config.effects';
 
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process
@@ -61,7 +62,8 @@ import { UserEffects } from './root-store/users/user.effects';
     CoreModule,
     StoreModule.forRoot(reducers),
     EffectsModule.forRoot([
-      UserEffects
+      UserEffects,
+      ConfigEffects
     ]),
     StoreDevtoolsModule.instrument() // TODO modify so its only used in dev mode,
   ],

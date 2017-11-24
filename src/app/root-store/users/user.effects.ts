@@ -8,6 +8,7 @@ import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/mergeMap';
 
 import * as userActions from '../../root-store/users/user.actions';
+import * as configActions from '../../root-store/config/config.actions';
 import { UsersService } from '../../users/users.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ConfigService } from '../../core/services/config.service';
@@ -19,6 +20,11 @@ export class UserEffects {
     public fetchUser = this.actions$
         .ofType(userActions.FETCH_USER)
         .pluck('payload')
+        .do((token) => {
+            localStorage.clear();
+            // Token must be set before getUserFromToken api call
+            this.authService.setToken(token);
+        })
         .switchMap((token) => {
             return Observable.forkJoin(
                 Observable.of(token), 
@@ -26,24 +32,29 @@ export class UserEffects {
                     .pluck('attributes')
             );
         })      
-        .do(([token, userData]: [string, any]) => {
-            localStorage.clear();
-            this.authService.setToken(token);
+        .do(([token, userData]: [string, any]) => {            
             if (userData.registered) {
-                this.configService.initConfig();
+                // TODO move this to utilities
                 this.authService.setUser(userData);
                 this.router.navigate(['/']);
             } else {
                 this.router.navigate(['/users/register']);
             }
         })
-        .map(([token, userData]: [string, any]) => ({
-            type: userActions.LOGIN_USER,
-            payload: {
-                userData,
-                token
-            }
-        }));
+        .mergeMap(([token, userData]: [string, any]) => { 
+            return [
+                {
+                    type: userActions.LOGIN_USER,
+                    payload: {
+                        userData,
+                        token
+                    }
+                },
+                {
+                    type: configActions.FETCH_CONFIG
+                }
+            ]
+        });
 
     constructor(
         private actions$: Actions,
