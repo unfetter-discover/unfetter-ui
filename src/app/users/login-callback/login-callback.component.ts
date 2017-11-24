@@ -27,30 +27,31 @@ export class LoginCallbackComponent implements OnInit {
     public ngOnInit() {
         let params$ = this.route.params
             .subscribe((params) => {
+                
+                this.store.dispatch(new userActions.FetchUser(params.token));   
 
                 // Set token and headers
-                localStorage.clear();
-                this.authService.setToken(params.token);    
-                let userFromToken$ = this.usersService.getUserFromToken()
-                    .subscribe(
-                    (res) => {
-                        let user = res.attributes;                        
-                        if (user.registered === false) {
-                            this.router.navigate(['/users/register']);
-                        } else {
-                            this.configService.initConfig();
-                            this.authService.setUser(user);
-                            this.store.dispatch(new userActions.AddUserData({ userData: user}));                         
-                            this.router.navigate(['/']);
-                        }
-                    },
-                    (err) => {
-                        console.log(err);
-                        this.router.navigate(['/']);
-                    },
-                    () => {
-                        userFromToken$.unsubscribe();                        
-                    });                            
+                // localStorage.clear();
+                // this.authService.setToken(params.token);
+                // let userFromToken$ = this.usersService.getUserFromToken()
+                //     .subscribe(
+                //     (res) => {
+                //         let user = res.attributes;                        
+                //         if (user.registered === false) {
+                //             this.router.navigate(['/users/register']);
+                //         } else {
+                //             this.configService.initConfig();
+                //             this.authService.setUser(user);     
+                //             this.router.navigate(['/']);
+                //         }
+                //     },
+                //     (err) => {
+                //         console.log(err);
+                //         this.router.navigate(['/']);
+                //     },
+                //     () => {
+                //         userFromToken$.unsubscribe();                        
+                //     });                            
             },
             (err) => {
                 console.log(err);                

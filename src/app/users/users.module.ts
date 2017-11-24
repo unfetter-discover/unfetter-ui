@@ -9,7 +9,6 @@ import { ComponentModule } from '../components'
 import { GlobalModule } from '../global/global.module';
 import { LoginCallbackComponent } from './login-callback/login-callback.component';
 import { RegisterComponent } from './register/register.component';
-import { UsersService } from './users.service';
 import { ProfileComponent } from './profile/profile.component';
 import { SettingsComponent } from './settings/settings.component';
 
@@ -38,7 +37,6 @@ const matModules = [
         SettingsComponent
     ],
     providers: [
-        UsersService
     ]
 })
 export class UsersModule { }
