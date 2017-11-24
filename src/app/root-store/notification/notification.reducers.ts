@@ -1,9 +1,9 @@
 import * as notificationActions from './notification.actions';
 
-import { Notification } from './notification.model';
+import { AppNotification } from './notification.model';
 
 export interface NotificationState {
-    notifications: Notification[]
+    notifications: AppNotification[]
 }
 
 const initialState: NotificationState = {
@@ -12,6 +12,13 @@ const initialState: NotificationState = {
             read: false,
             type: 'COMMENT',
             heading: 'This is a test',
+            body: 'Lorem Ipsum',
+            submitted: new Date()
+        },
+        {
+            read: false,
+            type: 'COMMENT',
+            heading: 'Yet another test',
             body: 'Lorem Ipsum',
             submitted: new Date()
         }
@@ -29,12 +36,16 @@ export function notificationReducer(state = initialState, action: notificationAc
                 ]
             };
         case notificationActions.UPDATE_NOTIFCATION:
+            const notificationToUpdate = state.notifications[action.payload.index];
+            const updatedNotification = {
+                ...notificationToUpdate,
+                ...action.payload.notification
+            };
+            const iNotifications = [...state.notifications];
+            iNotifications[action.payload.index] = updatedNotification;
             return {
                 ...state,
-                notifications: [
-                    ...state.notifications,
-                    action.payload
-                ]
+                notifications: iNotifications
             };
         case notificationActions.DELETE_NOTIFCATION:
             return {

@@ -1,4 +1,4 @@
-export interface Notification {
+export interface AppNotification {
     read: boolean,
     type: string,
     heading: string,
