@@ -27,6 +27,8 @@ export class DeleteNotification implements Action {
 
 export class MarkAllAsRead implements Action {
     public type = MARK_ALL_AS_READ;
+
+    constructor(public payload = null) { }
 }
 
 export type NotificationActions =
