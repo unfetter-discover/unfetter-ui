@@ -17,8 +17,6 @@ const initialState: UserState = {
 }
 
 export function usersReducer(state = initialState, action: userActions.UserActions) {
-    console.log('Incoming action to usersReducer: ', action);
-    console.log('Current state: ', state);
     switch (action.type) {
         case userActions.LOGIN_USER:
             return {

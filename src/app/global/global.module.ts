@@ -11,6 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CapitalizePipe } from './pipes/capitalize.pipe';
 import { SophisticationPipe } from './pipes/sophistication.pipe';
 import { FieldSortPipe } from './pipes/field-sort.pipe';
+import { TimeAgoPipe } from './pipes/time-ago.pipe';
 
 // Components
 import { RiskIconComponent } from './components/risk-icon/risk-icon.component';
@@ -37,6 +38,7 @@ const matModules = [
     exports: [
         CapitalizePipe, 
         SophisticationPipe, 
+        TimeAgoPipe,
         RiskIconComponent, 
         StixTableComponent, 
         FieldSortPipe, 
@@ -50,6 +52,7 @@ const matModules = [
     declarations: [
         CapitalizePipe, 
         SophisticationPipe, 
+        TimeAgoPipe,
         RiskIconComponent, 
         StixTableComponent, 
         FieldSortPipe, 

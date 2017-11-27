@@ -6,23 +6,23 @@ export interface NotificationState {
     notifications: AppNotification[]
 }
 
-// TODO delete the fake notifications
+// Uncomment the fake notifications to test
 const initialState: NotificationState = {
     notifications: [
-        {
-            read: false,
-            type: 'COMMENT',
-            heading: 'This is a test',
-            body: 'Lorem Ipsum',
-            submitted: new Date()
-        },
-        {
-            read: false,
-            type: 'COMMENT',
-            heading: 'Yet another test',
-            body: 'Lorem Ipsum',
-            submitted: new Date()
-        }
+        // {
+        //     read: false,
+        //     type: 'COMMENT',
+        //     heading: 'This is a test',
+        //     body: 'Lorem Ipsum',
+        //     submitted: new Date()
+        // },
+        // {
+        //     read: false,
+        //     type: 'COMMENT',
+        //     heading: 'Yet another test',
+        //     body: 'Lorem Ipsum',
+        //     submitted: new Date()
+        // }
     ]
 };
 

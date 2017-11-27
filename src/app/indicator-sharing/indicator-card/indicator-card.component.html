@@ -77,7 +77,7 @@
                         </span>
                         <span>
                             <a routerLink="/users/profile/{{comment.user.id}}">{{ comment.user.userName }}</a>
-                            <small class="text-muted"> &bull; {{ comment.submitted | date:'medium'}}</small>
+                            <small class="text-muted"> &bull; {{ comment.submitted | timeAgo }}</small>
                         </span>
                     </div>
                     <p [innerHtml]="formatComment(comment.comment)"></p>

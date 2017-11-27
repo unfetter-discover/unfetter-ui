@@ -9,8 +9,6 @@ const initialState: ConfigState = {
 }
 
 export function configReducer(state = initialState, action: configActions.ConfigActions) {
-    console.log('Incoming action to configReducer: ', action);
-    console.log('Current state: ', state);
     switch (action.type) {
         case configActions.ADD_CONFIG:
             return {
