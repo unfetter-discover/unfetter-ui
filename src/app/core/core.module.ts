@@ -5,7 +5,7 @@ import { AuthGuard } from './services/auth.guard';
 import { AuthService } from './services/auth.service';
 import { WebAnalyticsService } from './services/web-analytics.service';
 import { ConfigService } from './services/config.service';
-import { UsersService } from '../users/users.service';
+import { UsersService } from './services/users.service';
 
 @NgModule({
     providers: [

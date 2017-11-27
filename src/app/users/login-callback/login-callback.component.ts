@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 
 import { AuthService } from '../../core/services/auth.service';
-import { UsersService } from '../users.service';
+import { UsersService } from '../../core/services/users.service';
 import { ConfigService } from '../../core/services/config.service';
 import * as fromApp from '../../root-store/app.reducers';
 import * as userActions from '../../root-store/users/user.actions';

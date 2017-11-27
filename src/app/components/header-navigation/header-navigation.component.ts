@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, HostListener, ElementRef } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { Navigation } from '../../models/navigation';
@@ -13,7 +13,7 @@ import { AppNotification } from '../../root-store/notification/notification.mode
   encapsulation: ViewEncapsulation.None,
   styleUrls: ['./header-navigation.component.scss'],
   templateUrl: './header-navigation.component.html',
-  animations: [topRightSlide]
+  animations: [topRightSlide],
 })
 export class HeaderNavigationComponent {  
 
@@ -41,13 +41,20 @@ export class HeaderNavigationComponent {
 
   constructor(
     public authService: AuthService,
-    private store: Store<fromApp.AppState>
+    private store: Store<fromApp.AppState>,
+    private el: ElementRef
   ) {
     this.user$ = this.store.select('users');
     this.notifications$ = this.store.select('notifications');
     const runMode = RUN_MODE;
     if (runMode === 'DEMO') {
       this.demoMode = true;
+    }
+  }
+
+  @HostListener('document:click', ['$event']) public clickedOutside(event) {
+    if (this.showNotificationBar && !this.el.nativeElement.contains(event.target)) {
+      this.showNotificationBar = false;
     }
   }
 

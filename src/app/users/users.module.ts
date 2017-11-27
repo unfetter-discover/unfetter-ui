@@ -35,8 +35,6 @@ const matModules = [
         RegisterComponent,
         ProfileComponent,
         SettingsComponent
-    ],
-    providers: [
     ]
 })
 export class UsersModule { }

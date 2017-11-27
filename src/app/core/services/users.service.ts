@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
-import { GenericApi } from '../core/services/genericapi.service';
-import { Constance } from '../utils/constance';
+import { GenericApi } from './genericapi.service';
+import { Constance } from '../../utils/constance';
 
 @Injectable()
 export class UsersService {

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { AdminService } from '../admin.service';
-import { UsersService } from '../../users/users.service';
+import { UsersService } from '../../core/services/users.service';
 
 @Component({
     selector: 'org-leader-approval',

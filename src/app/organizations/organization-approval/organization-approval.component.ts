@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { OrganizationsService } from '../organizations.service';
-import { UsersService } from '../../users/users.service';
+import { UsersService } from '../../core/services/users.service';
 
 @Component({
     selector: 'organization-approval',

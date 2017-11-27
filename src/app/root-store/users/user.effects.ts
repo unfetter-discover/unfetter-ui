@@ -9,7 +9,7 @@ import 'rxjs/add/operator/mergeMap';
 
 import * as userActions from '../../root-store/users/user.actions';
 import * as configActions from '../../root-store/config/config.actions';
-import { UsersService } from '../../users/users.service';
+import { UsersService } from '../../core/services/users.service';
 import { AuthService } from '../../core/services/auth.service';
 
 @Injectable()
