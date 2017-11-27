@@ -30,10 +30,14 @@ export class AuthService {
         this.genericApi.setAuthHeaders(`Bearer ${token}`);
     }
 
+    public getToken() {
+        return localStorage.getItem('unfetterUiToken');
+    }
+
     public setUser(user) {
         localStorage.removeItem('user');
         localStorage.setItem('user', JSON.stringify(user));
-    }
+    }    
 
     public getUser(): any {
         if (this.runMode === 'DEMO') {

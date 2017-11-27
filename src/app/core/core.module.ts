@@ -5,6 +5,7 @@ import { AuthGuard } from './services/auth.guard';
 import { AuthService } from './services/auth.service';
 import { WebAnalyticsService } from './services/web-analytics.service';
 import { ConfigService } from './services/config.service';
+import { UsersService } from './services/users.service';
 
 @NgModule({
     providers: [
@@ -12,7 +13,8 @@ import { ConfigService } from './services/config.service';
         AuthGuard,
         AuthService,
         WebAnalyticsService,
-        ConfigService
+        ConfigService,
+        UsersService
     ]
 })
 export class CoreModule { }
