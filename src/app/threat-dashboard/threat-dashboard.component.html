@@ -22,11 +22,11 @@
                         <unf-kill-chain-table [threatReport]="threatReport" [attackPatterns]="attackPatterns" [intrusionSetsDashboard]="intrusionSetsDashboard">
                         </unf-kill-chain-table>
                     </div>
-                    <div class="">
+                    <div>
                         <unf-collapsible-tree *ngIf="treeData" [data]="treeData" (renderComplete)="treeRendered()"></unf-collapsible-tree>
                     </div>
-                    <div class="">
-                        <unf-radar-chart *ngIf="radarData" [data]="radarData" (renderComplete)="radarRendered()"></unf-radar-chart>
+                    <div>
+                        <unf-radar-chart #radarChart *ngIf="radarData" [data]="radarData" (renderComplete)="radarRendered()"></unf-radar-chart>
                     </div>
                 </mat-tab>
                 <mat-tab label="Mitigations" disabled="true">

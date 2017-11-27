@@ -28,7 +28,8 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
         activeLabels: [],
         activeIdentities: [],
         killChainPhases: [],
-        activeKillChainPhases: []
+        activeKillChainPhases: [],
+        indicatorName: ''
     };
     public SERVER_CALL_COMPLETE = false;
     public sortBy: string = 'NEWEST';
@@ -115,7 +116,22 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
         const dialogRefClose$ = dialogRef.afterClosed()
             .subscribe((res) => {
                     if (res) {
-                        this.allIndicators.push(res);
+                        this.allIndicators.push(res.indicator);
+                        if (res.newRelationships) {
+                            const getPatterns$ = this.indicatorSharingService.getAttackPatternsByIndicator()
+                                .subscribe((patternsRes) => {
+                                    patternsRes.attributes.forEach((e) => {
+                                        this.indicatorToAttackPatternMap[e._id] = e.attackPatterns;
+                                    });
+                                },
+                                (err) => {
+                                    console.log(err);
+                                },
+                                () => {
+                                    getPatterns$.unsubscribe();
+                                }
+                                );
+                        }                        
                         this.filterIndicators();
                     }
                 },
@@ -166,6 +182,12 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
                     });
                     return found;
                 });
+        }
+        
+        if (this.searchParameters.indicatorName && this.searchParameters.indicatorName !== '') {
+            this.filteredIndicators = this.filteredIndicators
+                .filter((indicator) => !!indicator.name)
+                .filter((indicator) => indicator.name.toLowerCase().indexOf(this.searchParameters.indicatorName.toLowerCase()) === 0);
         }
 
         this.sortIndicators();           

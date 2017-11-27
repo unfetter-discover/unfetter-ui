@@ -1,17 +1,17 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, EventEmitter, Output, trigger, state, animate, transition, style, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, EventEmitter, Output, Inject, Input } from '@angular/core';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
 import { FormGroup } from '@angular/forms';
+import { MatSelectionList } from '@angular/material';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { ExternalReportForm } from './external-report-form';
-import { MatDialogRef, MatSelectionList, MAT_DIALOG_DATA } from '@angular/material';
-import { ThreatReportOverviewService } from '../../threat-dashboard/services/threat-report-overview.service';
-import { ExternalReference } from '../../models/externalReference';
-import { GenericApi } from '../../core/services/genericapi.service';
-import { AttackPattern } from '../../models/attack-pattern';
-import { Constance } from '../../utils/constance';
-import { Subscription } from 'rxjs';
-import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
+import { ThreatReportOverviewService } from '../../../threat-dashboard/services/threat-report-overview.service';
+import { ExternalReference } from '../../../models/externalReference';
+import { GenericApi } from '../../../core/services/genericapi.service';
+import { AttackPattern } from '../../../models/attack-pattern';
+import { Constance } from '../../../utils/constance';
+import { ThreatReport } from '../../models/threat-report.model';
+import { Report } from '../../../models/report';
 
 @Component({
   selector: 'unf-add-external-report',
@@ -20,20 +20,22 @@ import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
 })
 export class AddExternalReportComponent implements OnInit, OnDestroy {
 
+  @Input('attackPatterns')
+  public attackPatterns: AttackPattern[];
+
+  @Output()
+  public onFormSubmit = new EventEmitter<Partial<Report> | boolean>();
+
   @ViewChild('attackPatternBlock')
   public attackPatternEl: MatSelectionList;
 
   public form: FormGroup | any;
   public loading = false;
   public showExternalReferences = false;
-  public attackPatterns = [];
   private readonly subscriptions: Subscription[] = [];
 
   constructor(
-    protected router: Router,
     protected genericApiService: GenericApi,
-    public dialogRef: MatDialogRef<any>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
   ) { }
 
   /**
@@ -41,10 +43,6 @@ export class AddExternalReportComponent implements OnInit, OnDestroy {
    * @returns {void}
    */
   public ngOnInit(): void {
-    if (this.data && this.data.attackPatterns) {
-      this.attackPatterns = this.data.attackPatterns;
-    }
-
     this.loading = true;
     this.resetForm();
     const sub$ = this.loadAttackPatterns()
@@ -82,22 +80,47 @@ export class AddExternalReportComponent implements OnInit, OnDestroy {
 
   /**
    * @description reset the form controls
+   * @param {UIEvent} event optional
    * @return {void}
    */
-  public resetForm(e = null): void {
-    if (e) {
-      e.preventDefault();
+  public resetForm(event?: UIEvent): void {
+    if (event) {
+      event.preventDefault();
     }
     this.form = ExternalReportForm();
   }
 
   /**
+   * @description reset this components form and emit a close event
+   * @param event 
+   * @return {void}
+   */
+  public resetFormAndClose(event?: UIEvent): void {
+    this.resetForm(event);
+    this.onFormSubmit.emit(false);
+  }
+
+  /**
    * @description submit a report
    */
-  public submitReport(): void {
-    const tmp = this.buildReport(this.form.value);
+  public submitReport(): Partial<Report> {
+    const formData = this.buildReport(this.form.value);
     this.resetForm();
-    this.dialogRef.close(tmp);
+    // const data =
+    //   {
+    //     reports:
+    //       [{
+    //         data: {
+    //           attributes: formData
+    //         },
+    //       }]
+    //   } as Partial<ThreatReport>;
+    const data = {
+      attributes: formData
+    } as Partial<Report>;
+    console.log('emitting newly created report', data);
+    this.onFormSubmit.emit(data);
+    return data;
   }
 
   /**
@@ -125,20 +148,20 @@ export class AddExternalReportComponent implements OnInit, OnDestroy {
     ref.created = new Date();
     ref.title = ref.name;
     // TODO: assign create_by_ref as current user if one exists
-    
+
     // add external refs
     const name = form.external_ref_name;
     const source_name = form.external_ref_source_name;
     const external_id = form.external_ref_external_id;
     const description = form.external_ref_description;
-    const external_url = form.external_ref_url;
+    const url = form.external_ref_url;
     const externalRefs = [];
-    const externalRef =  {
+    const externalRef = {
       description,
       external_id,
       name,
       source_name,
-      external_url
+      url
     };
     externalRefs.push(externalRef);
     ref.external_references = externalRefs;
@@ -148,23 +171,6 @@ export class AddExternalReportComponent implements OnInit, OnDestroy {
     ref.object_refs = apIds;
     return ref;
   }
-
-  /**
-   * @description change nested form names to their database names
-   * @param form
-   * @return form
-   */
-  // private fixNames(form: any): any {
-  //   form.name = form.external_ref_name;
-  //   form.source_name = form.external_ref_source_name;
-  //   form.external_id = form.external_ref_external_id;
-  //   form.description = form.external_ref_description;
-  //   form.external_url = form.external_ref_url;
-  //   const cleanup = [ 'external_ref_name', 'external_ref_url',
-  //      'external_ref_description', 'external_ref_source_name', 'external_ref_external_id'];
-  //   cleanup.forEach((attr) => delete form[attr]);
-  //   return form;
-  // }
 
   /**
    * @description create a function to sort attackpatterns by name

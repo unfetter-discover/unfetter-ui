@@ -1,5 +1,5 @@
 
-import { Component, OnInit, Input, OnDestroy, EventEmitter, Output, Renderer2 } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, EventEmitter, Output, Renderer2, OnChanges } from '@angular/core';
 import * as d3 from 'd3';
 import { Subscription } from 'rxjs';
 import { RadarChartDataPoint } from './radar-chart-datapoint';
@@ -9,7 +9,7 @@ import { RadarChartDataPoint } from './radar-chart-datapoint';
     templateUrl: 'radar-chart.component.html',
     styleUrls: ['./radar-chart.component.scss']
 })
-export class RadarChartComponent implements OnInit, OnDestroy {
+export class RadarChartComponent implements OnInit, OnDestroy, OnChanges {
     @Input()
     public data: RadarChartDataPoint[][];
     public loading = true;
@@ -38,6 +38,23 @@ export class RadarChartComponent implements OnInit, OnDestroy {
         if (this.subscriptions) {
             this.subscriptions.forEach((sub) => sub.unsubscribe());
         }
+    }
+
+    /**
+     * TODO: verify this is not called too often,
+     *  as ngOnChanges can be called often and computation should not be expensive
+     * @description
+     *  updates this components graph on change
+     *
+     * @param changes
+     * @return {void}
+     *
+     * @memberof RadarChartComponent
+     */
+    public ngOnChanges(changes: any): void {
+        d3.select(this.graphId).selectAll('*').remove();
+        this.data = changes.data.currentValue;
+        this.buildGraph();
     }
 
     /**

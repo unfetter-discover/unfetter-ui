@@ -3,98 +3,125 @@
 <mat-dialog-content id="addIndicator">
     <form [formGroup]="form" novalidate (ngSubmit)="submitIndicator()">
 
-        <mat-form-field class="full-width mb-6">
-            <input matInput required placeholder="Name" formControlName="name">
-            <mat-error *ngIf="form.get('name').hasError('required')">
-                Name is <strong>required</strong>
-            </mat-error>
-        </mat-form-field>
+        <mat-vertical-stepper>
 
-        <mat-form-field class="full-width mb-6">
-            <textarea matInput placeholder="Description" formControlName="description"></textarea>
-        </mat-form-field>
+            <mat-step label="STIX Data">
+                <mat-form-field class="full-width mb-6 mt-10">
+                    <input matInput required placeholder="Name" formControlName="name">
+                    <mat-error *ngIf="form.get('name').hasError('required')">
+                        Name is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
 
-        <mat-form-field class="full-width mb-6">
-            <textarea matInput required placeholder="Pattern" formControlName="pattern"></textarea>
-            <mat-error *ngIf="form.get('pattern').hasError('required')">
-                Pattern is <strong>required</strong>
-            </mat-error>
-        </mat-form-field>
+                <mat-form-field class="full-width mb-6">
+                    <textarea matInput placeholder="Description" formControlName="description"></textarea>
+                </mat-form-field>
 
-        <mat-form-field class="full-width mb-6">
-            <mat-select required placeholder="Submitter Organization" formControlName="created_by_ref">
-                <mat-option *ngFor="let org of organizations" [value]="org.id">{{org.name}}</mat-option>
-            </mat-select>
-        </mat-form-field>
+                <mat-form-field class="full-width mb-6">
+                    <textarea matInput required placeholder="Pattern" formControlName="pattern"></textarea>
+                    <mat-error *ngIf="form.get('pattern').hasError('required')">
+                        Pattern is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
 
-        <span class="mb-6">
-            <mat-form-field>
-                <input matInput required [matDatepicker]="validFromPicker" [max]="form.get('valid_until').value" placeholder="Valid From" formControlName="valid_from">
-                <mat-datepicker-toggle matSuffix [for]="validFromPicker"></mat-datepicker-toggle>
-                <mat-datepicker #validFromPicker></mat-datepicker>
-                <mat-error *ngIf="form.get('valid_from').hasError('required')">
-                     Valid From is <strong>required</strong>
-                </mat-error>
-            </mat-form-field>
-        </span>
+                <mat-form-field class="full-width mb-6">
+                    <mat-select required placeholder="Submitter Organization" formControlName="created_by_ref">
+                        <mat-option *ngFor="let org of organizations" [value]="org.id">{{org.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
 
-        <span class="mb-6" style="padding-left: 30px;">
-            <mat-form-field>
-                <input matInput [matDatepicker]="validUntilPicker" [min]="form.get('valid_from').value" placeholder="Valid Until" formControlName="valid_until">
-                <mat-datepicker-toggle matSuffix [for]="validUntilPicker"></mat-datepicker-toggle>
-                <mat-datepicker #validUntilPicker></mat-datepicker>
-            </mat-form-field>
-        </span>
+                <span class="mb-6">
+                    <mat-form-field>
+                        <input matInput required [matDatepicker]="validFromPicker" [max]="form.get('valid_until').value" placeholder="Valid From" formControlName="valid_from">
+                        <mat-datepicker-toggle matSuffix [for]="validFromPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #validFromPicker></mat-datepicker>
+                        <mat-error *ngIf="form.get('valid_from').hasError('required')">
+                            Valid From is <strong>required</strong>
+                        </mat-error>
+                    </mat-form-field>
+                </span>
 
-        <!-- ~~~ External References ~~~ -->
-        <br>
-        <div>
-            <external-references-reactive [parentForm]="form"></external-references-reactive>
-            <mat-chip-list formArrayName="external_references" *ngIf="form.get('external_references').value.length > 0" class="chipListPadding">
-                <mat-chip *ngFor="let extRef of form.get('external_references').value; let i = index" class="cursor-pointer chipListChip"
-                    color="warn" selected="true" removable="true">
-                    <span class="flex1 flexNowrap">{{ extRef.source_name | capitalize}}</span>
-                    <mat-icon matChipRemove (click)="form.get('external_references').removeAt(i)">cancel</mat-icon>
-                </mat-chip>
-            </mat-chip-list>
-        </div>
-        <!-- ~~~ End of External References ~~~ -->
+                <span class="mb-6" style="padding-left: 30px;">
+                    <mat-form-field>
+                        <input matInput [matDatepicker]="validUntilPicker" [min]="form.get('valid_from').value" placeholder="Valid Until" formControlName="valid_until">
+                        <mat-datepicker-toggle matSuffix [for]="validUntilPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #validUntilPicker></mat-datepicker>
+                    </mat-form-field>
+                </span>
 
-        <!-- ~~~ Kill Chain Phases ~~~ -->
-        <div>
-            <kill-chain-phases-reactive [parentForm]="form"></kill-chain-phases-reactive>
-            <mat-chip-list formArrayName="kill_chain_phases" *ngIf="form.get('kill_chain_phases').value.length > 0" class="chipListPadding">
-                <mat-chip *ngFor="let kill_chain of form.get('kill_chain_phases').value; let i = index" class="cursor-pointer chipListChip"
-                    color="primary" selected="true" removable="true">
-                    <span class="flex1 flexNowrap">{{ kill_chain.phase_name | capitalize}}</span>
-                    <mat-icon matChipRemove (click)="form.get('kill_chain_phases').removeAt(i)">cancel</mat-icon>
-                </mat-chip>
-            </mat-chip-list>
-        </div>
-        <!-- ~~~ End of Kill Chain Phases ~~~ -->
+                <!-- ~~~ External References ~~~ -->
+                <br>
+                <div>
+                    <external-references-reactive [parentForm]="form"></external-references-reactive>
+                    <mat-chip-list formArrayName="external_references" *ngIf="form.get('external_references').value.length > 0" class="chipListPadding">
+                        <mat-chip *ngFor="let extRef of form.get('external_references').value; let i = index" class="cursor-pointer chipListChip"
+                            color="warn" selected="true" removable="true">
+                            <span class="flex1 flexNowrap">{{ extRef.source_name | capitalize}}</span>
+                            <mat-icon matChipRemove (click)="form.get('external_references').removeAt(i)">cancel</mat-icon>
+                        </mat-chip>
+                    </mat-chip-list>
+                </div>
+                <!-- ~~~ End of External References ~~~ -->
 
-        <div class="mt-10">
-            <observable-data-tree [parentForm]="form"></observable-data-tree>
-        </div>
+                <!-- ~~~ Kill Chain Phases ~~~ -->
+                <div>
+                    <kill-chain-phases-reactive [parentForm]="form"></kill-chain-phases-reactive>
+                    <mat-chip-list formArrayName="kill_chain_phases" *ngIf="form.get('kill_chain_phases').value.length > 0" class="chipListPadding">
+                        <mat-chip *ngFor="let kill_chain of form.get('kill_chain_phases').value; let i = index" class="cursor-pointer chipListChip"
+                            color="primary" selected="true" removable="true">
+                            <span class="flex1 flexNowrap">{{ kill_chain.phase_name | capitalize}}</span>
+                            <mat-icon matChipRemove (click)="form.get('kill_chain_phases').removeAt(i)">cancel</mat-icon>
+                        </mat-chip>
+                    </mat-chip-list>
+                </div>
+                <!-- ~~~ End of Kill Chain Phases ~~~ -->
 
-        <!-- ~~~ Labels ~~~ -->
-        <h5>Labels</h5>
-        <div class="flex flexItemsCenter" id="labelsWrapper">
-            <mat-chip-list *ngIf="form.get('labels').value.length > 0" class="inlineBlock" class="chipListPadding">
-                <mat-chip *ngFor="let label of form.get('labels').value; let i = index" class="cursor-pointer chipListChip" removable="true">
-                    <span class="flex1 flexNowrap">{{label | capitalize}}</span>
-                    <mat-icon matChipRemove (click)="form.get('labels').removeAt(i)">cancel</mat-icon>
-                </mat-chip>
-            </mat-chip-list>
-            <add-label-reactive [parentForm]="form" [stixType]="'indicator'"></add-label-reactive>
-        </div>
-        <!-- ~~~ End of Labels ~~~ -->        
+                <!-- ~~~ Labels ~~~ -->
+                <h5>Labels</h5>
+                <div class="flex flexItemsCenter" id="labelsWrapper">
+                    <mat-chip-list *ngIf="form.get('labels').value.length > 0" class="inlineBlock" class="chipListPadding">
+                        <mat-chip *ngFor="let label of form.get('labels').value; let i = index" class="cursor-pointer chipListChip" removable="true">
+                            <span class="flex1 flexNowrap">{{label | capitalize}}</span>
+                            <mat-icon matChipRemove (click)="form.get('labels').removeAt(i)">cancel</mat-icon>
+                        </mat-chip>
+                    </mat-chip-list>
+                    <add-label-reactive [parentForm]="form" [stixType]="'indicator'"></add-label-reactive>
+                </div>
+                <!-- ~~~ End of Labels ~~~ -->
+                <div class="mt-6">
+                    <button mat-button matStepperNext type="button" color="primary">Continue</button>
+                </div>
+            </mat-step>
+            
+            <mat-step label="STIX Relationships">
+                <div formGroupName="metaProperties">
+                    <mat-form-field class="full-width mt-10">
+                        <mat-select placeholder="Indicated Attack Patterns" [multiple]="true" formControlName="relationships">
+                            <mat-option [value]="ap.id" *ngFor="let ap of attackPatterns">{{ ap.name }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <div class="mt-6">
+                        <button mat-button matStepperPrevious type="button" color="primary">Back</button>
+                        <button mat-button matStepperNext type="button" color="primary">Continue</button>
+                    </div>
+                </div>
+            </mat-step>
+            
+            <mat-step label="Observable Data">
+                <div class="mt-10">
+                    <observable-data-tree [parentForm]="form"></observable-data-tree>
+                </div>
+                <div class="mt-6">
+                    <button mat-button matStepperPrevious type="button" color="primary">Back</button>
+                </div>
+            </mat-step>
+            
+        </mat-vertical-stepper>
 
         <p class="text-right">
             <button mat-button mat-dialog-close (click)="resetForm($event); dialogRef.close(false);">CANCEL</button>
             <button mat-raised-button color="primary" [disabled]="form.status === 'INVALID'" type="submit">SAVE</button>
         </p>
-
     </form>
 
 </mat-dialog-content>
