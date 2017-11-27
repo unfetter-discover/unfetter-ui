@@ -10,6 +10,6 @@ export class AdminLayoutComponent {
         { url: 'approve-users', label: 'Users Pending Approval' },
         { url: 'site-usage', label: 'Site Usage Data' },
         { url: 'organization-leader-approval', label: 'Organization Leader Approval' },
-        { url: 'config-edit', label: 'Edit Configurations'}
+        { url: 'config-edit', label: 'Edit Configurations' }
     ];
 }
