@@ -15,6 +15,11 @@
 #avatar {    
     margin: -5px auto;
 }
+#notificationBadge {
+    position: absolute;
+    top: 13px;
+    right: 10px;
+}
 
 #notificationBellWrapper { 
     user-select: none;
@@ -46,7 +51,7 @@
 #notificiationRowWrapper .notificationRow:not(:last-child) {
     border-bottom: 2px solid #eee;
 }
-#notificationHeader {
+.notificationHeader {
     .title {
         font-size: 20px;
         font-weight: 300;
@@ -54,7 +59,7 @@
 }
 
 #markAllAsRead,
-#notificationHeader {
+.notificationHeader {
     background-color: #eee;
     padding: 10px;
     p {

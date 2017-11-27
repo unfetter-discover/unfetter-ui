@@ -60,7 +60,6 @@ export class HeaderNavigationComponent {
   }
 
   public markAsRead(notification: AppNotification, index: number) {
-    console.log('in markasread');
     const updatedNotitifcation = {
       ...notification,
       read: true
@@ -68,4 +67,11 @@ export class HeaderNavigationComponent {
     this.store.dispatch(new notificationActions.UpdateNotification({ notification: updatedNotitifcation, index }));
   }
 
+  public markAllAsRead() {
+    this.store.dispatch(new notificationActions.MarkAllAsRead());
+  }
+
+  public deleteNotification(i) {
+    this.store.dispatch(new notificationActions.DeleteNotification(i));
+  }
 }

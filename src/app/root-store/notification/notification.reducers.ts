@@ -6,6 +6,7 @@ export interface NotificationState {
     notifications: AppNotification[]
 }
 
+// TODO delete the fake notifications
 const initialState: NotificationState = {
     notifications: [
         {
@@ -27,7 +28,7 @@ const initialState: NotificationState = {
 
 export function notificationReducer(state = initialState, action: notificationActions.NotificationActions) {
     switch (action.type) {
-        case notificationActions.ADD_NOTIFCATION:
+        case notificationActions.ADD_NOTIFCATION: 
             return {
                 ...state,
                 notifications: [
@@ -48,12 +49,18 @@ export function notificationReducer(state = initialState, action: notificationAc
                 notifications: iNotifications
             };
         case notificationActions.DELETE_NOTIFCATION:
+            const notificationsCopy = [...state.notifications];
+            notificationsCopy.splice(action.payload, 1);
             return {
                 ...state,
-                notifications: [
-                    ...state.notifications,
-                    action.payload
-                ]
+                notifications: notificationsCopy
+            };
+        case notificationActions.MARK_ALL_AS_READ:
+            const updatedNotifications = state.notifications
+                .map((notification) => ({ ...notification, read: true}));
+            return {
+                ...state,
+                notifications: updatedNotifications
             };
         default: 
             return state;

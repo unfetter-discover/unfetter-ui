@@ -43,11 +43,13 @@
           <li *ngIf="authService.loggedIn()" id="notificationLi">
             <a id="notificationBellWrapper" (click)="showNotificationBar = !showNotificationBar">
               <i class="material-icons">notifications_none</i>
+              <span class="badge bg-accent" id="notificationBadge" *ngIf="getNumUnreadNotifications((notifications$ | async).notifications)">{{ getNumUnreadNotifications((notifications$ | async).notifications) }}</span>
             </a>
-            <div id="notificationBoxWrapper" *ngIf="showNotificationBar" class="mat-elevation-z8" @topRightSlide>
 
+            <div id="notificationBoxWrapper" *ngIf="showNotificationBar" class="mat-elevation-z8" @topRightSlide>
+            
               <div *ngIf="(notifications$ | async).notifications.length">
-                <div id="notificationHeader">
+                <div class="notificationHeader">
                   <div class="flex flexItemsCenter">
                     <span>
                       <p class="title">Notifications</p>
@@ -64,24 +66,45 @@
                   </div>
                 </div>
                 <div id="notificiationRowWrapper">
-                  <div 
-                    *ngFor="let notification of (notifications$ | async).notifications; let i = index" 
-                    class="notificationRow"
-                    [ngClass]="{'readNotication': notification.read}"
+                  <div *ngFor="let notification of (notifications$ | async).notifications; let i = index" class="notificationRow flex flexItemsCenter" [ngClass]="{'readNotication': notification.read}"
                     (mouseenter)="!notification.read ? markAsRead(notification, i) : ''">
+                    <span>
                       <p class="lead">{{ notification.heading }}</p>
                       <p>
                         <small class="text-muted">{{ notification.submitted | date:'medium' }}</small>
                       </p>
+                    </span>
+                    <span class="flex1"></span>
+                    <span>
+                      <i class="material-icons mat-24 cursor-pointer" (click)="deleteNotification(i)">close</i>
+                    </span>
                   </div>
                 </div>
                 <div id="markAllAsRead" class="text-center">
-                  <p class="cursor-pointer">Mark all as read</p>
+                  <p class="cursor-pointer" (click)="markAllAsRead()">Mark all as read</p>
                 </div>
               </div>
-
-              <div *ngIf="!(notifications$ | async).notifications.length">You have no notifications.</div>
+            
+              <div *ngIf="!(notifications$ | async).notifications.length">
+                <div class="notificationHeader">
+                  <div class="flex flexItemsCenter">
+                    <span>
+                      <p class="title">Notifications</p>
+                      <p>
+                        <small class="text-muted">
+                          You have no notifications.
+                        </small>
+                      </p>
+                    </span>
+                    <span class="flex1">&nbsp;</span>
+                    <span class="mat-24 lh-24">
+                      <i class="material-icons">settings</i>
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
+
           </li>
 
           <li dropdown class="dropdown" *ngIf="!demoMode && authService.loggedIn()">

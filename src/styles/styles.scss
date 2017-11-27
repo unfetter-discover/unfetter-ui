@@ -100,6 +100,16 @@ label {
     background-color: #F44336 !important
 }
 
+.bg-accent {
+    background-color: $accent-color;
+    color: $accent-text-contrast-color;
+}
+
+.bg-primary {
+    background-color: $primary-color;
+    color: $primary-text-contrast-color;
+}
+
 .full-width {
     width: 100%;
 }
@@ -455,19 +465,20 @@ a {
     }
 }
 
+.uf-badge {
+    color: white;
+    background: $neutral-color;
+    padding: 2.5px 8px;
+    border-radius: 11px;
+    font-size: 12px;
+}
+
 .unfetterAngularMaterialAccordion {
     .mat-expansion-panel {
         transition: box-shadow 0.3s ease-in-out;
     }
     .mat-expansion-panel-header-title {
-        align-items: center;
-        .mat-badge {
-            color: white;
-            background: $neutral-color;
-            padding: 2.5px 8px;
-            border-radius: 11px;
-            font-size: 12px;
-        }
+        align-items: center;        
     }
     .mat-expanded {
         &.mat-expansion-panel {

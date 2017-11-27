@@ -19,8 +19,8 @@
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         {{key | capitalize }}&nbsp;
-                        <span *ngIf="attackPatternByPhaseMap[key] !== undefined" class="mat-badge">{{attackPatternByPhaseMap[key].length}}</span>
-                        <span *ngIf="attackPatternByPhaseMap[key] === undefined || !attackPatternByPhaseMap[key].length" class="mat-badge">0</span>
+                        <span *ngIf="attackPatternByPhaseMap[key] !== undefined" class="uf-badge">{{attackPatternByPhaseMap[key].length}}</span>
+                        <span *ngIf="attackPatternByPhaseMap[key] === undefined || !attackPatternByPhaseMap[key].length" class="uf-badge">0</span>
                     </mat-panel-title>
                 </mat-expansion-panel-header>
 
