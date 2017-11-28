@@ -13,7 +13,7 @@ const initialState: NotificationState = {
         //     read: false,
         //     type: 'COMMENT',
         //     heading: 'This is a test',
-        //     body: 'Lorem Ipsum',
+        //     body: 'Lorem ipsum dolor sit amet, duo eirmod discere scripserit at. Sea hinc nostrud delicata te, vide harum sea ad, at per discere argumentum. Quo sanctus fabellas deseruisse ad. Sit ei fuisset abhorreant. Malorum lucilius mea at, hinc vituperata qui ea.',
         //     submitted: new Date()
         // },
         // {
