@@ -55,11 +55,11 @@ export class ThreatReportOverviewService {
       .reduce((memo, el) => {
         // map threat reports to a key, this reduce performs a grouping by like reports
         const report: any = el.attributes;
-        const name = report.work_product.name;
-        const author = report.work_product.author || '';
-        const date = report.work_product.date || '';
-        const id = report.work_product.id || -1;
-        let key = report.work_product.id;
+        const name = report.metaProperties.work_product.name;
+        const author = report.metaProperties.work_product.author || '';
+        const date = report.metaProperties.work_product.date || '';
+        const id = report.metaProperties.work_product.id || -1;
+        let key = report.metaProperties.work_product.id;
         if (!key) {
           key = name + author + date;
         }
@@ -71,7 +71,7 @@ export class ThreatReportOverviewService {
         tr.name = name;
         tr.author = author;
         tr.id = id;
-        const srcBoundries = report.work_product.boundries;
+        const srcBoundries = report.metaProperties.work_product.boundries;
         tr.boundries = new Boundries();
         tr.boundries.startDate = srcBoundries.startDate;
         tr.boundries.endDate = srcBoundries.endDate;

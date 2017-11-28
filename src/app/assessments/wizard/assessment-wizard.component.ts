@@ -365,7 +365,11 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         assessment.created = new Date();
 
         assessment.measurements = [];
-        assessment.groupings = assessedObject.attributes.groupings;
+
+        if (assessedObject.attributes.metaProperties && assessedObject.attributes.metaProperties.groupings) {
+          assessment.groupings = assessedObject.attributes.metaProperties.groupings;
+        }
+        
         assessment.id = assessedObject.id;
         assessment.name = assessedObject.attributes.name;
         assessment.description = assessedObject.attributes.description;

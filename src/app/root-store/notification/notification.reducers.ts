@@ -9,20 +9,20 @@ export interface NotificationState {
 // Uncomment the fake notifications to test
 const initialState: NotificationState = {
     notifications: [
-        // {
-        //     read: false,
-        //     type: 'COMMENT',
-        //     heading: 'This is a test',
-        //     body: 'Lorem ipsum dolor sit amet, duo eirmod discere scripserit at. Sea hinc nostrud delicata te, vide harum sea ad, at per discere argumentum. Quo sanctus fabellas deseruisse ad. Sit ei fuisset abhorreant. Malorum lucilius mea at, hinc vituperata qui ea.',
-        //     submitted: new Date()
-        // },
-        // {
-        //     read: false,
-        //     type: 'COMMENT',
-        //     heading: 'Yet another test',
-        //     body: 'Lorem Ipsum',
-        //     submitted: new Date()
-        // }
+        {
+            read: false,
+            type: 'COMMENT',
+            heading: 'This is a test',
+            body: 'Lorem Ipsum',
+            submitted: new Date()
+        },
+        {
+            read: false,
+            type: 'COMMENT',
+            heading: 'Yet another test',
+            body: 'Lorem Ipsum',
+            submitted: new Date()
+        }
     ]
 };
 
