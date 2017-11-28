@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, HostListener, ElementRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ViewEncapsulation, HostListener, ElementRef } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { Navigation } from '../../models/navigation';
@@ -13,8 +13,7 @@ import { AppNotification } from '../../root-store/notification/notification.mode
   encapsulation: ViewEncapsulation.None,
   styleUrls: ['./header-navigation.component.scss'],
   templateUrl: './header-navigation.component.html',
-  animations: [topRightSlide],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  animations: [topRightSlide]
 })
 export class HeaderNavigationComponent {  
 
