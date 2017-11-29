@@ -139,6 +139,23 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
             );
     }    
 
+    public unlikeIndicator() {
+        const unLike$ = this.indicatorSharingService.unlike(this.indicator.id)
+            .subscribe(
+                (res) => {
+                    this.updateIndicatorState(res.attributes);
+                    this.alreadyLiked = false;
+                },
+                (err) => {
+                    this.flashMessage('Unable to unlike indicator.');
+                    console.log(err);
+                },
+                () => {
+                    unLike$.unsubscribe();
+                }
+            );
+    }
+
     public addInteraction() {
         // Set this to true immediantly to prevent errors from double clicking
         this.alreadyInteracted = true;

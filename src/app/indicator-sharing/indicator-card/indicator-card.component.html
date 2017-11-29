@@ -136,11 +136,11 @@
     <mat-card-actions>
         <button mat-button disabled="true">{{ message }}</button>
 
-        <button mat-button color="primary" *ngIf="alreadyLiked" matTooltip="You like this indicator">
+        <button mat-button color="primary" (click)="unlikeIndicator()" *ngIf="alreadyLiked" matTooltip="Click to unlike">
             <i class="material-icons mat-24">thumb_up</i>
             <span *ngIf="indicator.likes && indicator.likes.length > 0">&nbsp;{{indicator.likes.length}}</span>
         </button>
-        <button mat-button color="primary" (click)="likeIndicator()" *ngIf="!alreadyLiked">
+        <button mat-button color="primary" (click)="likeIndicator()" *ngIf="!alreadyLiked" matTooltip="Click to like">
             <i class="material-icons mat-24">thumb_up</i>
             <span *ngIf="indicator.likes && indicator.likes.length > 0">&nbsp;{{indicator.likes.length}}</span>
         </button>

@@ -24,7 +24,6 @@ export class HeaderNavigationComponent {
     { url: 'stix/indicators', label: 'Indicators' },
     { url: 'stix/identities', label: 'Identities' },
     { url: 'stix/malwares', label: 'Malware' },
-    // {url: 'stix/relationships', label: 'Relationships'},
     { url: 'stix/sightings', label: 'Sightings' },
     { url: 'stix/tools', label: 'Tools' },
     { url: 'stix/threat-actors', label: 'Threat Actors' },
@@ -78,7 +77,11 @@ export class HeaderNavigationComponent {
     this.store.dispatch(new notificationActions.MarkAllAsRead());
   }
 
-  public deleteNotification(i) {
+  public deleteNotification(i, event?: UIEvent) {
+    if (event) {
+      event.stopPropagation();
+    }
+    
     this.store.dispatch(new notificationActions.DeleteNotification(i));
   }
 }

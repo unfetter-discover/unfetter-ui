@@ -70,13 +70,14 @@
                     (mouseenter)="!notification.read ? markAsRead(notification, i) : ''">
                     <span>
                       <p class="lead">{{ notification.heading }}</p>
+                      <p class="notificationBody flexNowrap">{{ notification.body }}</p>
                       <p>
                         <small class="text-muted">{{ notification.submitted | timeAgo }}</small>
                       </p>
                     </span>
                     <span class="flex1"></span>
-                    <span>
-                      <i class="material-icons mat-24 cursor-pointer" (click)="deleteNotification(i)">close</i>
+                    <span (click)="deleteNotification(i, $event)">
+                      <i class="material-icons mat-24 cursor-pointer">close</i>
                     </span>
                   </div>
                 </div>

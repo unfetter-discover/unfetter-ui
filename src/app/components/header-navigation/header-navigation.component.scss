@@ -43,6 +43,10 @@
     transform-origin: right;
     z-index: -1;
 }
+.notificationBody {
+    width: 430px;
+    margin-bottom: 3px;
+}
 .readNotication {
     p, small, .text-muted {
         color: #999 !important;

@@ -50,6 +50,11 @@ export class IndicatorSharingService {
         return this.genericApi.get(url);
     }
 
+    public unlike(id) {
+        const url = `${this.multiplesUrl}/${id}/unlike`;
+        return this.genericApi.get(url);
+    }
+
     public addInteraction(id) {
         const url = `${this.multiplesUrl}/${id}/interaction`;
         return this.genericApi.get(url);
