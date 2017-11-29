@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+
 import { AdminService } from '../admin.service';
+import * as fromApp from '../../root-store/app.reducers';
+import * as configActions from '../../root-store/config/config.actions';
 
 @Component({
     selector: 'config-edit',
@@ -14,7 +18,7 @@ export class ConfigEditComponent implements OnInit {
     public newConfig: any = {};
     public addNewMessage: string = '';
 
-    constructor(private adminService: AdminService) { }
+    constructor(private adminService: AdminService, private store: Store<fromApp.AppState>) { }
 
     public ngOnInit() {
         this.fetchConfig();
@@ -45,6 +49,10 @@ export class ConfigEditComponent implements OnInit {
                     this.addConfig = false;
                     this.addNewMessage = `${res.attributes.configKey} has been added.`;
                     this.fetchConfig();
+                    
+                    const configObj = {};
+                    configObj[this.newConfig.configKey] = this.newConfig.configValue; 
+                    this.store.dispatch(new configActions.AddConfig(configObj));
                 },
                 (err) => {
                     console.log(err);
@@ -75,6 +83,8 @@ export class ConfigEditComponent implements OnInit {
                 } else {
                     this.message[0] = `Successfully deleted ${this.configData[i].attributes.configKey}.`;
                 }
+
+                this.store.dispatch(new configActions.DeleteConfig(this.configData[i].attributes.configKey));
                 this.fetchConfig();
             },
             (err) => {
@@ -101,6 +111,10 @@ export class ConfigEditComponent implements OnInit {
                     this.addNewMessage = '';
                     this.message[i] = `${res.attributes.configKey} has been saved.`;
                     this.fetchSingleConfig(this.configData[i].attributes.id, i, true);
+
+                    const configObj = {};
+                    configObj[currDataConfig.attributes.configKey] = currDataConfig.attributes.configValue;
+                    this.store.dispatch(new configActions.UpdateConfig(configObj));
                 },
                 (err) => {
                     this.addNewMessage = '';

@@ -27,6 +27,13 @@ export function configReducer(state = initialState, action: configActions.Config
                 }
             };
         case configActions.DELETE_CONFIG:
+            const configCopy = { ...state.configurations };
+            delete configCopy[action.payload];
+            return {
+                ...state,
+                configurations: configCopy
+            };
+        case configActions.CLEAR_CONFIG:
             return {
                 ...state,
                 ...initialState
