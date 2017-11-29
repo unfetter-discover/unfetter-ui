@@ -25,7 +25,7 @@
                 </mat-select>
             </mat-form-field>
             <p *ngIf="displayedIndicators && allIndicators" class="text-muted flex">
-                <span><a (click)="searchParameters.activeLabels = []; searchParameters.activeIdentities = []; searchParameters.activeKillChainPhases = []; filterIndicators()">Clear Filters</a></span>
+                <span><a (click)="searchParameters.activeLabels = []; searchParameters.activeIdentities = []; searchParameters.activeKillChainPhases = []; searchParameters.indicatorName = ''; filterIndicators()">Clear Filters</a></span>
                 <span class="flex1"></span>
                 <span>Results: {{ filteredIndicators.length }} / {{ allIndicators.length }}</span>    
             </p> 

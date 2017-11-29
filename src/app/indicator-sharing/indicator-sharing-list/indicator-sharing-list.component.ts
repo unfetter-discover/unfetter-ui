@@ -187,7 +187,7 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
         if (this.searchParameters.indicatorName && this.searchParameters.indicatorName !== '') {
             this.filteredIndicators = this.filteredIndicators
                 .filter((indicator) => !!indicator.name)
-                .filter((indicator) => indicator.name.toLowerCase().indexOf(this.searchParameters.indicatorName.toLowerCase()) === 0);
+                .filter((indicator) => indicator.name.toLowerCase().indexOf(this.searchParameters.indicatorName.toLowerCase()) > -1);
         }
 
         this.sortIndicators();           
