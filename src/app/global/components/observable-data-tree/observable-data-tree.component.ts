@@ -14,6 +14,8 @@ import { heightCollapse } from '../../animations/height-collapse';
 
 export class ObservableDataTreeComponent implements OnInit {
     @Input() public parentForm: FormGroup;
+    @Input() public observedDataPath: any[];
+
     public observableDataTypes: [{
         name: string, 
         actions: string[], 
@@ -33,26 +35,59 @@ export class ObservableDataTreeComponent implements OnInit {
     }
 
     public checkBoxChange(e, name, action, property) {
-        const observedDataForm = this.parentForm.get('metaProperties').get('observedData') as FormArray;
-        if (e.checked) {
-            const newForm = ObservedDataForm();
-            newForm.get('name').setValue(name);
-            newForm.get('action').setValue(action);
-            newForm.get('property').setValue(property);
-            observedDataForm.push(newForm);
-        } else {
-            let index = -1;
-            observedDataForm.controls.forEach((control, i) => {
-                if (control.value.name === name && control.value.action === action && control.value.property === property) {
-                    index = i;
-                }
-            });
-            if (index > -1) {
-                observedDataForm.removeAt(index);
+
+        // If input is reactive
+        if (this.parentForm) {
+
+            const observedDataForm = this.parentForm.get('metaProperties').get('observedData') as FormArray;
+            if (e.checked) {
+                const newForm = ObservedDataForm();
+                newForm.get('name').setValue(name);
+                newForm.get('action').setValue(action);
+                newForm.get('property').setValue(property);
+                observedDataForm.push(newForm);
             } else {
-                console.log('Could not find element in observedData form');
+                let index = -1;
+                observedDataForm.controls.forEach((control, i) => {
+                    if (control.value.name === name && control.value.action === action && control.value.property === property) {
+                        index = i;
+                    }
+                });
+                if (index > -1) {
+                    observedDataForm.removeAt(index);
+                } else {
+                    console.log('Could not find element in observedData form');
+                }
             }
+
+        // If input is standard array
+        } else if (this.observedDataPath) {
+
+            if (e.checked) {
+                this.observedDataPath.push({
+                    name,
+                    action,
+                    property
+                });              
+            } else {
+                let index = -1;
+                this.observedDataPath.forEach((obs, i) => {
+                    if (obs.name === name && obs.action === action && obs.property === property) {
+                        index = i;
+                    }
+                });
+
+                if (index > -1) {
+                    this.observedDataPath.splice(index, 1);
+                } else {
+                    console.log('Could not find element in observedDataPath');
+                }
+            }
+
+        } else {
+            console.log('There is nothing to add observable data to, please use a componenant input');
         }
+        
     }
 
     private buildTree() {
