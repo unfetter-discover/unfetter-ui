@@ -30,7 +30,13 @@ export class ObservableDataTreeComponent implements OnInit {
 
     public ngOnInit() {
         this.configService.getConfigPromise()
-            .then((res) => this.buildTree())
+            .then((res) => {
+                if (this.observedDataPath && this.observedDataPath.length) {
+                    this.buildTree(true);
+                } else {
+                    this.buildTree();
+                }
+            })
             .catch((err) => console.log(err));
     }
 
@@ -90,7 +96,7 @@ export class ObservableDataTreeComponent implements OnInit {
         
     }
 
-    private buildTree() {
+    private buildTree(observedDataPathPresent?: boolean) {
         this.observableDataTypes = this.configService.configurations.observableDataTypes;
         this.observableDataTypes.forEach((item) => {
             item.showActions = false;
@@ -100,7 +106,14 @@ export class ObservableDataTreeComponent implements OnInit {
                 this.showPropertyTree[item.name][action] = false;
                 this.checkboxModel[item.name][action] = {};
 
-                item.properties.forEach((prop) => this.checkboxModel[item.name][action][prop] = false);
+                if (observedDataPathPresent) {
+                    item.properties.forEach((prop) => {
+                        const findObs = this.observedDataPath.find((obsPath) => obsPath.name === item.name && obsPath.action === action && obsPath.property === prop);                        
+                        this.checkboxModel[item.name][action][prop] = findObs ? true : false;
+                    });
+                } else {
+                    item.properties.forEach((prop) => this.checkboxModel[item.name][action][prop] = false);
+                }
             });
         });
     }
