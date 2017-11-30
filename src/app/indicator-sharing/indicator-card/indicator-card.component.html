@@ -64,12 +64,12 @@
                 </div>
                 <div class="mt-3">
                     <label>Unfetter User Interactions: </label>
-                    <span *ngIf="indicator.metaProperties.interactions">{{ indicator.metaProperties.interactions.length }}</span>
-                    <span *ngIf="!indicator.metaProperties.interactions">{{ 0 }}</span>
+                    <span *ngIf="indicator.metaProperties && indicator.metaProperties.interactions">{{ indicator.metaProperties.interactions.length }}</span>
+                    <span *ngIf="!indicator.metaProperties || !indicator.metaProperties.interactions">{{ 0 }}</span>
                 </div>
             </mat-tab>
 
-            <mat-tab label="Comments" *ngIf="indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">
+            <mat-tab label="Comments" *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">
                 <div *ngFor="let comment of indicator.metaProperties.comments | sortByField: 'submitted'; let i = index">
                     <div class="flex flexItemsCenter mb-5">
                         <span *ngIf="comment.user.avatar_url">
@@ -138,16 +138,16 @@
 
         <button mat-button color="primary" (click)="unlikeIndicator()" *ngIf="alreadyLiked" matTooltip="Click to unlike">
             <i class="material-icons mat-24">thumb_up</i>
-            <span *ngIf="indicator.metaProperties.likes && indicator.metaProperties.likes.length > 0">&nbsp;{{indicator.metaProperties.likes.length}}</span>
+            <span *ngIf="indicator.metaProperties && indicator.metaProperties.likes && indicator.metaProperties.likes.length > 0">&nbsp;{{indicator.metaProperties.likes.length}}</span>
         </button>
         <button mat-button color="primary" (click)="likeIndicator()" *ngIf="!alreadyLiked" matTooltip="Click to like">
             <i class="material-icons mat-24">thumb_up</i>
-            <span *ngIf="indicator.metaProperties.likes && indicator.metaProperties.likes.length > 0">&nbsp;{{indicator.metaProperties.likes.length}}</span>
+            <span *ngIf="indicator.metaProperties && indicator.metaProperties.likes && indicator.metaProperties.likes.length > 0">&nbsp;{{indicator.metaProperties.likes.length}}</span>
         </button>
 
         <button mat-button color="accent" (click)="showCommentTextArea = !showCommentTextArea">
             <i class="material-icons mat-24">chat_bubble</i>
-            <span *ngIf="indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">&nbsp;{{indicator.metaProperties.comments.length}}</span>
+            <span *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">&nbsp;{{indicator.metaProperties.comments.length}}</span>
         </button>
     </mat-card-actions>
 </mat-card>
