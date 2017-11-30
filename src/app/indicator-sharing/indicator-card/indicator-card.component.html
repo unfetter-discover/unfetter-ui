@@ -103,10 +103,12 @@
                         </div>
                         <div mat-line *ngIf="ap.x_mitre_platforms">
                             <label>Platforms Effected:&nbsp;</label>
-                            <span *ngFor="let platform of ap.x_mitre_platforms; let i = index" class="text-muted">
-                                <span>{{ platform }}</span>
-                                <span *ngIf="i < (ap.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
-                            </span>
+                            <p class="whiteSpaceNormal">
+                                <span *ngFor="let platform of ap.x_mitre_platforms; let i = index" class="text-muted">
+                                    <span>{{ platform }}</span>
+                                    <span *ngIf="i < (ap.x_mitre_platforms.length - 1)">&nbsp;&bull;&nbsp;</span>
+                                </span>
+                            </p>
                         </div>
                         <div mat-line *ngIf="ap.x_unfetter_sophistication_level">
                             <label>Sophistication Level:&nbsp;</label>

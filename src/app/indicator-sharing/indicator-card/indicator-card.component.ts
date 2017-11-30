@@ -42,14 +42,14 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
 
     public ngOnInit() {
         this.user = this.authService.getUser();
-        if (this.indicator.metaProperties.likes !== undefined && this.indicator.metaProperties.likes.length > 0) {
+        if (this.indicator.metaProperties !== undefined && this.indicator.metaProperties.likes !== undefined && this.indicator.metaProperties.likes.length > 0) {
             const alreadyLiked = this.indicator.metaProperties.likes.find((like) => like.user.id === this.user._id);
             if (alreadyLiked) {
                 this.alreadyLiked = true;
             }
         } 
 
-        if (this.indicator.metaProperties.interactions !== undefined && this.indicator.metaProperties.interactions.length > 0) {
+        if (this.indicator.metaProperties !== undefined && this.indicator.metaProperties.interactions !== undefined && this.indicator.metaProperties.interactions.length > 0) {
             const alreadyInteracted = this.indicator.metaProperties.interactions.find((interactions) => interactions.user.id === this.user._id);
             if (alreadyInteracted) {
                 this.alreadyInteracted = true;
