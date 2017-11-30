@@ -22,6 +22,7 @@ import { ExternalReferencesReactiveComponent } from './components/external-refer
 import { AddLabelReactiveComponent } from './components/add-label/add-label.component';
 import { ObservableDataTreeComponent } from './components/observable-data-tree/observable-data-tree.component';
 import { ChipLinksComponent } from './components/chip-links/chip-links.component';
+import { ObservableDataSummaryComponent } from './components/observable-data-summary/observable-data-summary.component';
 
 const matModules = [
     MatTooltipModule, MatTableModule, MatChipsModule, MatPaginatorModule, MatButtonModule, MatInputModule, MatProgressSpinnerModule, MatAutocompleteModule, MatCheckboxModule
@@ -47,7 +48,8 @@ const matModules = [
         ExternalReferencesReactiveComponent,
         AddLabelReactiveComponent,
         ObservableDataTreeComponent,
-        ChipLinksComponent
+        ChipLinksComponent,
+        ObservableDataSummaryComponent
     ],
     declarations: [
         CapitalizePipe, 
@@ -61,7 +63,8 @@ const matModules = [
         ExternalReferencesReactiveComponent,
         AddLabelReactiveComponent,
         ObservableDataTreeComponent,
-        ChipLinksComponent
+        ChipLinksComponent,
+        ObservableDataSummaryComponent
     ],
     providers: []
 })

@@ -45,6 +45,12 @@
                                 <h6>{{sensor.attributes.description}}</h6>
                             </div>
                         </div>
+                        <div class="row" *ngIf="sensor.attributes.metaProperties && sensor.attributes.metaProperties.observedData && sensor.attributes.metaProperties.observedData.length">
+                            <div class="col-xs-12">
+                                <label>Observed Data</label>
+                                <observable-data-summary [observedData]="sensor.attributes.metaProperties.observedData"></observable-data-summary>
+                            </div>
+                        </div>
                 </mat-card-content>
 
             </mat-card>

@@ -47,20 +47,9 @@
                     <label>External References</label><br>
                     <chip-links [data]="indicator.external_references" chipColor="accent" nameField="source_name" urlField="url"></chip-links>
                 </div>
-                <div *ngIf="indicator.observedData && indicator.observedData.length">
+                <div *ngIf="indicator.metaProperties && indicator.metaProperties.observedData && indicator.metaProperties.observedData.length">
                     <label>Observed Data</label>
-                    <div *ngFor="let observedDatum of mapObservedData(indicator.observedData)">
-                        <span>{{ observedDatum.name | capitalize }}</span>
-                        <ul>
-                            <li *ngFor="let action of observedDatum.actions">
-                                <span>{{ action.actionName | capitalize }}:</span>&nbsp;
-                                <span *ngFor="let property of action.properties; let i = index" class="text-muted">
-                                    {{ property }}
-                                    <span *ngIf="i < (action.properties.length -1)"> &bull; </span>
-                                </span>
-                            </li>
-                        </ul>
-                    </div>
+                    <observable-data-summary [observedData]="indicator.metaProperties.observedData"></observable-data-summary>
                 </div>
                 <div class="mt-3">
                     <label>Unfetter User Interactions: </label>
