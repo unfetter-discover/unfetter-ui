@@ -1,0 +1,12 @@
+<div *ngFor="let observedDatum of mapObservedData(observedData)" class="observedDataSummaryComponent">
+    <span>{{ observedDatum.name | capitalize }}</span>
+    <ul>
+        <li *ngFor="let action of observedDatum.actions">
+            <span>{{ action.actionName | capitalize }}:</span>&nbsp;
+            <span *ngFor="let property of action.properties; let i = index" class="text-muted">
+                {{ property }}
+                <span *ngIf="i < (action.properties.length -1)"> &bull; </span>
+            </span>
+        </li>
+    </ul>
+</div>

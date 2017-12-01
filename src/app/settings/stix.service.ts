@@ -16,7 +16,7 @@ export class StixService implements BaseStixService {
     }
 
     public get(id: string): Observable<any> {
-        const url = `${this.url}/${id}`;
+        const url = `${this.url}/${id}?metaproperties=true`;
         return this.genericApi.get(url);
     }
 

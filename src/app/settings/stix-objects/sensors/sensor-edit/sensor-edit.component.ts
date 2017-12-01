@@ -13,6 +13,8 @@ import { Constance } from '../../../../utils/constance';
 
 export class SensorEditComponent extends SensorComponent implements OnInit {
 
+    public stixFetchComplete: boolean = false;
+
     constructor(
         public stixService: StixService,
         public route: ActivatedRoute,
@@ -27,6 +29,7 @@ export class SensorEditComponent extends SensorComponent implements OnInit {
        let sub = super.get().subscribe(
         (data) => {
             this.sensor =  data;
+            this.stixFetchComplete = true;
         }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
