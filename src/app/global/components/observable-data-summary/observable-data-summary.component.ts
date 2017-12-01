@@ -11,13 +11,7 @@ export class ObservableDataSummaryComponent {
 
     constructor() { }
 
-    public mapObservedData(observedDataParam: [
-        {
-            name: string,
-            action: string,
-            property: string
-        }
-    ]) {
+    public mapObservedData(observedDataParam: any[]) {
         const retVal = [];
         for (let observedDatum of observedDataParam) {
             let nameFound = retVal.find((item) => item.name === observedDatum.name);

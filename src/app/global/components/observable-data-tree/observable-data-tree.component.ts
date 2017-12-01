@@ -16,12 +16,7 @@ export class ObservableDataTreeComponent implements OnInit {
     @Input() public parentForm: FormGroup;
     @Input() public observedDataPath: any[];
 
-    public observableDataTypes: [{
-        name: string, 
-        actions: string[], 
-        properties: string[], 
-        showActions: boolean
-    }];
+    public observableDataTypes: any[];
     public showPropertyTree: any = {};
     public showTree: boolean = false;
     public checkboxModel: any = {};
