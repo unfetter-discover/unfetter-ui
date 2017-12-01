@@ -29,6 +29,12 @@ export class SensorEditComponent extends SensorComponent implements OnInit {
        let sub = super.get().subscribe(
         (data) => {
             this.sensor =  data;
+            if (!this.sensor.attributes.metaProperties) {
+                this.sensor.attributes.metaProperties = {};
+            }
+            if (!this.sensor.attributes.metaProperties.observedData) {
+                this.sensor.attributes.metaProperties.observedData = [];
+            }
             this.stixFetchComplete = true;
         }, (error) => {
                 // handle errors here
