@@ -1,11 +1,13 @@
 
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter, OnDestroy, Renderer2 } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter, OnDestroy, Renderer2, ChangeDetectionStrategy } from '@angular/core';
 import * as d3 from 'd3';
 
 @Component({
     selector: 'unf-collapsible-tree',
     templateUrl: './collapsible-tree.component.html',
-    styleUrls: ['./collapsible-tree.component.scss']
+    styleUrls: ['./collapsible-tree.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    
 })
 export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
     // private static readonly teal500 = '#009688';

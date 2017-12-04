@@ -2,6 +2,10 @@
 
 $md_sidenav_max_width: 400px;
 
+.flex {
+    display: flex;
+}
+
 .title {
     vertical-align: middle;
     color: $threat-dashboard-primary-light;
@@ -9,8 +13,15 @@ $md_sidenav_max_width: 400px;
 
 .side-panel {
     padding: 0px;
-    padding-top: 55px;
-    box-shadow: 3px 0 6px rgba(0,0,0,.24);
+    // padding-top: 55px;
+    // box-shadow: 3px 0 6px rgba(0,0,0,.24);
+}
+
+.minimizeControls {
+    position: absolute;
+    z-index: 5;
+    background-color: $threat-dashboard-primary-light;
+    flex: 0 0 auto;
 }
 
 @media only screen and (max-width: 992px) {
@@ -18,30 +29,35 @@ $md_sidenav_max_width: 400px;
         padding-top: 16px;
         padding-left: 16px;
         width: 100%;
+        flex: 0 0 auto;
     }
 
     .side-panel {
         padding-top: 0px;
+        flex: 0 0 auto;
     }
 }
 
 @media only screen and (min-width: 992px) {
     .side-panel {
         height: 100vh;
-        position: fixed;
-        top: 0;
+        // position: fixed;
+        // top: 0;
         overflow-y: auto;
-        width: $md_sidenav_max_width;
+        max-width: $md_sidenav_max_width;
+        flex: 0 0 auto;
     }
     
     .main-panel {
         padding-top: 24px;
         padding-left: 16px;
-        margin-left: $md_sidenav_max_width;
-        width: calc(100% - 416px);
-        
+        // margin-left: $md_sidenav_max_width;
+        // width: calc(100% - 416px);
+        flex: 0 0 auto;
+
         .matrix { 
             padding-left: 0px;
+            display: block;
         }
     }
 

@@ -9,7 +9,7 @@ export const ExternalReportForm = () => new FormGroup({
     name: new FormControl('', Validators.required),
     description: new FormControl(''),
     granular_markings: new FormArray([]),
-    external_references: new FormArray([]),
+    // external_references: new FormArray([]),
     kill_chain_phases: new FormArray([]),
     object_refs: new FormArray([])
 });

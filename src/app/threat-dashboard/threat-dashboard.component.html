@@ -1,9 +1,14 @@
 <div [@simpleFadeIn] class="container-fluid" *ngIf="!loading; else loadingBlock">
-    <div class="row">
-        <div class="side-panel col-md-2">
+    <div class="row flex">
+        <div class="side-panel" *ngIf="minimize !== true; else minimizedBlock" (mouseover)="showMinimizeBtn = true" (mouseleave)="showMinimizeBtn = false">
+            <div class="minimizeControls" [style.display]="showMinimizeBtn ? 'block': 'none'">
+                <button mat-icon-button (click)="minimize = true">
+                    <mat-icon class="mat-24" aria-hidden="true" aria-label="Minimize side panel" #minimizeBtn>chevron_left</mat-icon>
+                </button>
+            </div>
             <unf-side-panel [threatReport]="threatReport" [attackPatterns]="attackPatterns" (modifiedBoundries)="onBoundriesModified($event)"></unf-side-panel>
         </div>
-        <div class="main-panel">
+        <div class="main-panel mat-elevation-z3 cardHoverShadow">
             <!-- <div class="row">
                 <div class="col-md-12">
                     <span class="stix-icon-wrapper">
@@ -22,18 +27,18 @@
                         <unf-kill-chain-table [threatReport]="threatReport" [attackPatterns]="attackPatterns" [intrusionSetsDashboard]="intrusionSetsDashboard">
                         </unf-kill-chain-table>
                     </div>
-                    <div>
+                    <div class="mt-18">
                         <unf-collapsible-tree *ngIf="treeData" [data]="treeData" (renderComplete)="treeRendered()"></unf-collapsible-tree>
                     </div>
-                    <div>
+                    <div class="mt-18">
                         <unf-radar-chart #radarChart *ngIf="radarData" [data]="radarData" (renderComplete)="radarRendered()"></unf-radar-chart>
                     </div>
                 </mat-tab>
-                <mat-tab label="Mitigations" disabled="true">
+                <mat-tab label="MITIGATIONS" disabled="true">
                     <p>Mitigations goes here!</p>
                 </mat-tab>
-                <mat-tab label="Export" disabled="false">
-                    <div class="mb-18 mt-18">
+                <mat-tab label="EXPORT" disabled="false">
+                    <div class="mb-18 mt-18 mat-card cardHoverShadow">
                         <unf-export-component [threatReport]="threatReport"></unf-export-component>
                     </div>
                 </mat-tab>
@@ -44,4 +49,10 @@
 
 <ng-template #loadingBlock>
     <loading-spinner></loading-spinner>
+</ng-template>
+
+<ng-template #minimizedBlock>
+    <div class="col-md-1" (click)="minimize=false">
+        yeahs!
+    </div>
 </ng-template>

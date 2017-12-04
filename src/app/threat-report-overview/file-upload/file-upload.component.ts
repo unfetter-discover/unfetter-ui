@@ -1,16 +1,17 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
 import { GenericApi } from '../../core/services/genericapi.service';
 import { Constance } from '../../utils/constance';
 import { UploadService } from './upload.service';
-import { HttpEventType, HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'unf-file-upload',
   templateUrl: './file-upload.component.html',
-  styleUrls: ['file-upload.component.scss']
+  styleUrls: ['file-upload.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FileUploadComponent implements OnInit {
 
@@ -56,7 +57,6 @@ export class FileUploadComponent implements OnInit {
    */
   public fileChanged(event?: UIEvent): void {
     console.log(event);
-    // event.srcElement.files
     const files: FileList = this.fileUploadEl.nativeElement.files;
     console.log(`files: `, files);
     if (!event || !files || files.length < 1) {

@@ -12,6 +12,7 @@ import { AttackPattern } from '../../../models/attack-pattern';
 import { Constance } from '../../../utils/constance';
 import { ThreatReport } from '../../models/threat-report.model';
 import { Report } from '../../../models/report';
+import { Stix } from '../../../threat-dashboard/models/adapter/stix';
 
 @Component({
   selector: 'unf-add-external-report',
@@ -22,7 +23,7 @@ export class AddExternalReportComponent implements OnInit, OnDestroy {
 
   @Input('attackPatterns')
   public attackPatterns: AttackPattern[];
-
+  
   @Output()
   public onFormSubmit = new EventEmitter<Partial<Report> | boolean>();
 
@@ -80,14 +81,29 @@ export class AddExternalReportComponent implements OnInit, OnDestroy {
 
   /**
    * @description reset the form controls
-   * @param {UIEvent} event optional
+   * @param {Stix} stix optional
    * @return {void}
    */
-  public resetForm(event?: UIEvent): void {
-    if (event) {
-      event.preventDefault();
+  public resetForm(stixReport?: Stix): void {
+    const report = stixReport;
+    if (this.form && report) {
+      this.form.setValue({
+        external_ref_name: report.external_references[0].external_id,
+        external_ref_external_id: report.external_references[0].external_id,
+        external_ref_description: report.external_references[0].description,
+        external_ref_url:  report.external_references[0].url,
+        external_ref_source_name: 'opensource',
+        name: report.name || '',
+        description: report.description,
+        granular_markings: report.granular_markings,
+        external_references: [],
+        kill_chain_phases: [],
+        object_refs: []
+      });
+    } else {
+      const form = ExternalReportForm();
+      this.form = form;
     }
-    this.form = ExternalReportForm();
   }
 
   /**
@@ -96,7 +112,10 @@ export class AddExternalReportComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public resetFormAndClose(event?: UIEvent): void {
-    this.resetForm(event);
+    if (event) {
+      event.preventDefault();
+    }
+    this.resetForm();
     this.onFormSubmit.emit(false);
   }
 

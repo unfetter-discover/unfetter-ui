@@ -36,7 +36,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
     public menu: MatMenu;
 
     public selectedExternalRef: ThreatReport;
-
+    public showMinimizeBtn = false;
     public readonly subscriptions: Subscription[] = [];
 
     constructor(
