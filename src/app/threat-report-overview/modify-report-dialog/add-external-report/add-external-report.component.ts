@@ -87,18 +87,21 @@ export class AddExternalReportComponent implements OnInit, OnDestroy {
   public resetForm(stixReport?: Stix): void {
     const report = stixReport;
     if (this.form && report) {
-      this.form.setValue({
-        external_ref_name: report.external_references[0].external_id,
-        external_ref_external_id: report.external_references[0].external_id,
-        external_ref_description: report.external_references[0].description,
-        external_ref_url:  report.external_references[0].url,
-        external_ref_source_name: 'opensource',
-        name: report.name || '',
-        description: report.description,
-        granular_markings: report.granular_markings,
-        external_references: [],
-        kill_chain_phases: [],
-        object_refs: []
+      // trigger a change detection
+      requestAnimationFrame(() => {
+        this.form.setValue({
+          external_ref_name: report.external_references[0].external_id,
+          external_ref_external_id: report.external_references[0].external_id,
+          external_ref_description: report.external_references[0].description,
+          external_ref_url:  report.external_references[0].url,
+          external_ref_source_name: 'opensource',
+          name: report.name || '',
+          description: report.description,
+          granular_markings: report.granular_markings,
+          external_references: [],
+          kill_chain_phases: [],
+          object_refs: []
+        });
       });
     } else {
       const form = ExternalReportForm();

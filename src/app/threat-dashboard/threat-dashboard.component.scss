@@ -24,6 +24,25 @@ $md_sidenav_max_width: 400px;
     flex: 0 0 auto;
 }
 
+.small-side-panel {
+    transition: width 2s, height 2s, background-color 2s;
+    width: 70px;
+    background-color: $threat-dashboard-primary-light;
+    color: $white_87;
+    cursor: pointer;
+
+    svg {
+        width: 24px;
+        height: 24px;
+        fill: $white_87;
+    }
+    
+    div {
+        text-align: center;
+        padding: 16px;
+    }
+}
+
 @media only screen and (max-width: 992px) {
     .main-panel {
         padding-top: 16px;
@@ -52,8 +71,8 @@ $md_sidenav_max_width: 400px;
         padding-top: 24px;
         padding-left: 16px;
         // margin-left: $md_sidenav_max_width;
-        // width: calc(100% - 416px);
-        flex: 0 0 auto;
+        max-width: calc(100% - 400px);
+        flex: 1 0 auto;
 
         .matrix { 
             padding-left: 0px;

@@ -52,7 +52,31 @@
 </ng-template>
 
 <ng-template #minimizedBlock>
-    <div class="col-md-1" (click)="minimize=false">
-        yeahs!
+    <div class="small-side-panel" (click)="minimize=false">
+        <div matTooltip="{{threatReport.name || '' }}">
+            <svg>
+                <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#attack-pattern"></use>
+            </svg>
+        </div>
+        <div matTooltip="{{threatReport.boundries.targets.size || 0 }} victim(s)">
+            <svg>
+                <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#identity"></use>
+            </svg>
+        </div>
+        <div matTooltip="{{threatReport.boundries.intrusions.size || 0 }} intrusion set(s)">
+            <svg>
+                <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#threat-actor"></use>
+            </svg>
+        </div>
+        <div matTooltip="{{threatReport.boundries.malware.size || 0 }} malware">
+            <svg>
+                <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#malware"></use>
+            </svg>
+        </div>
+        <div matTooltip="{{threatReport.reports.length || 0 }} report(s)">
+            <svg>
+                <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#campaign"></use>
+            </svg>
+        </div>
     </div>
 </ng-template>
