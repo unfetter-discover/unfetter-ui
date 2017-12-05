@@ -43,3 +43,26 @@ export const slideInOutAnimation =
             )
         ])
     ]);
+
+export const inOutAnimation =
+    trigger('inOutAnimation', [
+        transition(':enter', [
+            style({
+                transform: 'translateX(-400%)',
+                opacity: 0,
+            }),
+            animate('.3s ease-in-out',
+                style({
+                    transform: 'translateX(0)',
+                    opacity: 1,
+                })),
+        ]),
+        transition(':leave', [
+            animate('.1s ease-in-out',
+                style({
+                    transform: 'translateX(-400%)',
+                    opacity: 0,
+                })
+            )
+        ])
+    ]);

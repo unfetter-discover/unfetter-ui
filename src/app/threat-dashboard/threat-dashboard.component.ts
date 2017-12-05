@@ -17,7 +17,7 @@ import { KillChainEntry } from './kill-chain-table/kill-chain-entry';
 import { SelectOption } from '../threat-report-overview/models/select-option';
 import { ThreatDashboard } from './models/threat-dashboard';
 import { RadarChartDataPoint } from './radar-chart/radar-chart-datapoint';
-import { simpleFadeIn } from '../global/animations/animations';
+import { simpleFadeIn, inOutAnimation } from '../global/animations/animations';
 import { SortHelper } from '../global/static/sort-helper';
 import { RadarChartComponent } from './radar-chart/radar-chart.component';
 
@@ -25,7 +25,7 @@ import { RadarChartComponent } from './radar-chart/radar-chart.component';
   selector: 'unf-threat-dashboard',
   templateUrl: 'threat-dashboard.component.html',
   styleUrls: ['./threat-dashboard.component.scss'],
-  animations: [simpleFadeIn]
+  animations: [simpleFadeIn, inOutAnimation]
 })
 export class ThreatDashboardComponent implements OnInit, OnDestroy {
 

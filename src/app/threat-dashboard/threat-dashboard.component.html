@@ -1,6 +1,6 @@
 <div [@simpleFadeIn] class="container-fluid" *ngIf="!loading; else loadingBlock">
     <div class="row flex">
-        <div class="side-panel" *ngIf="minimize !== true; else minimizedBlock" (mouseover)="showMinimizeBtn = true" (mouseleave)="showMinimizeBtn = false">
+        <div class="side-panel" [@inOutAnimation] *ngIf="minimize !== true; else minimizedBlock" (mouseover)="showMinimizeBtn = true" (mouseleave)="showMinimizeBtn = false">
             <div class="minimizeControls" [style.display]="showMinimizeBtn ? 'block': 'none'">
                 <button mat-icon-button (click)="minimize = true">
                     <mat-icon class="mat-24" aria-hidden="true" aria-label="Minimize side panel" #minimizeBtn>chevron_left</mat-icon>
@@ -52,7 +52,7 @@
 </ng-template>
 
 <ng-template #minimizedBlock>
-    <div class="small-side-panel" (click)="minimize=false">
+    <div [@inOutAnimation] class="small-side-panel" (click)="minimize=false">
         <div matTooltip="{{threatReport.name || '' }}">
             <svg>
                 <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#attack-pattern"></use>
