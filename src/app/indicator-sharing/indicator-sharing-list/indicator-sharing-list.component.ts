@@ -29,6 +29,7 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
         activeIdentities: [],
         killChainPhases: [],
         activeKillChainPhases: [],
+        activeSensorIds: [],
         indicatorName: ''
     };
     public SERVER_CALL_COMPLETE = false;
@@ -195,6 +196,15 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
             this.filteredIndicators = this.filteredIndicators
                 .filter((indicator) => !!indicator.name)
                 .filter((indicator) => indicator.name.toLowerCase().indexOf(this.searchParameters.indicatorName.toLowerCase()) > -1);
+        }
+
+        if (this.searchParameters.activeSensorIds && this.searchParameters.activeSensorIds.length > 0) {
+            this.filteredIndicators = this.filteredIndicators
+                .filter((indicator) => indicator.metaProperties && indicator.metaProperties.observedData && Object.keys(this.indicatorToSensorMap).includes(indicator.id))
+                .filter((indicator) => this.indicatorToSensorMap[indicator.id]
+                    .map((sensor) => sensor.id)
+                    .filter((sensorId) => this.searchParameters.activeSensorIds.includes(sensorId)).length > 0
+                );
         }
 
         this.sortIndicators();           
