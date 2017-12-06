@@ -1,35 +1,39 @@
 <div class="banner security-marking-label" *ngIf="showBanner">
-    <span class="banner-text strong">{{securityMarkingLabel}}</span>
-  </div>
- <header-navigation></header-navigation>
+  <span class="banner-text strong">{{securityMarkingLabel}}</span>
+</div>
 
+<header-navigation></header-navigation>
 
 <div id="routerWrapper">
-    <router-outlet></router-outlet>
+  <router-outlet></router-outlet>
 </div>
 
 <footer class="footer">
   <div style="display: flex; flex-direction: column;">
-    <div>
-        <div class="col-xs-5">
-            <p> Made by <a class="white text-lighten-3" target="_blank" href="http://www.iad.gov">NSA Information Assurance</a></p>
-          </div>
-          <div class="col-xs-7">
-            <p class="text-right">
-              <a routerLink="./partners">Partners</a>&emsp;|&emsp;
-              <a target="_blank" href="/api/explorer/">View API</a>
-              <span *ngIf="authService.isAdmin()">
-                &emsp;|&emsp;<a routerLink="./admin">Admin</a>
-              </span>
-              <span *ngIf="authService.isOrgLeader()">
-                 &emsp;|&emsp;<a routerLink="./organizations">Organizations</a>
-              </span>
-            </p>
-          </div>
+    <div class="flex flexItemsCenter" id="footerMain">
+      <span>
+        <p> Made by
+          <a class="white text-lighten-3" target="_blank" href="http://www.iad.gov">NSA Information Assurance</a>
+        </p>
+      </span>
+      <span class="flex1">&nbsp;</span>
+      <span>
+        <p class="text-right">
+          <a routerLink="./partners">Partners</a>&emsp;|&emsp;
+          <a target="_blank" href="/api/explorer/">View API</a>
+          <span *ngIf="authService.isAdmin()">
+            &emsp;|&emsp;
+            <a routerLink="./admin">Admin</a>
+          </span>
+          <span *ngIf="authService.isOrgLeader()">
+            &emsp;|&emsp;
+            <a routerLink="./organizations">Organizations</a>
+          </span>
+        </p>
+      </span>
     </div>
     <div class="banner security-marking-label" *ngIf="showBanner">
       <span class="banner-text strong">{{securityMarkingLabel}}</span>
     </div>
-
   </div>
 </footer>
