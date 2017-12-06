@@ -286,13 +286,9 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
     }
 
     private buildIndicatorToSensorMap() {
-        console.log('~~~~', this.allIndicators, '~~~~~', this.sensors);
         const indicatorsWithObservedData = this.allIndicators.filter((indicator) => indicator.metaProperties && indicator.metaProperties.observedData);
-        console.log('&&&', indicatorsWithObservedData);
 
         indicatorsWithObservedData.forEach((indicator) => {   
-
-            // let matchingSensors = [];
             const matchingSensorsSet = new Set();
 
             indicator.metaProperties.observedData.forEach((obsData) => {
@@ -311,13 +307,10 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
             });
 
             const matchingSensors = Array.from(matchingSensorsSet);
-            console.log('####', matchingSensors);
 
             if (matchingSensors.length) {
                 this.indicatorToSensorMap[indicator.id] = matchingSensors;
             }
         });
-
-        console.log('*****', this.indicatorToSensorMap);
     }
 }
