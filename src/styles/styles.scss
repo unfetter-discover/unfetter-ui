@@ -57,28 +57,8 @@ label {
     padding-bottom: $footer-height + px;
 }
 
-.footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    /* Set the fixed height of the footer here */
-    height: auto;
-    background-color: $nav-background-color;
-    z-index: 1;
-    padding-top: 5px;
-}
-
 .height-100-percent {
     height: 100%;
-}
-
-.container .text-muted {
-    margin: 20px 0;
-}
-
-.footer>.container {
-    padding-right: 15px;
-    padding-left: 15px;
 }
 
 .cursor-pointer {

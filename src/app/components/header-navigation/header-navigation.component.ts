@@ -35,6 +35,7 @@ export class HeaderNavigationComponent {
   public collapsed: boolean = true;
   public demoMode: boolean = false;
   public showNotificationBar: boolean = false;
+  public topPx = '0px';
   public user$;
   public notifications$;
 
@@ -48,6 +49,9 @@ export class HeaderNavigationComponent {
     const runMode = RUN_MODE;
     if (runMode === 'DEMO') {
       this.demoMode = true;
+    }
+    if (SHOWBANNER !== undefined && SHOWBANNER === true) {
+      this.topPx = '17px';
     }
   }
 
