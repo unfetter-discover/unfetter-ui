@@ -14,6 +14,8 @@ import { Constance } from '../../../../utils/constance';
 })
 export class IndicatorComponent extends BaseStixComponent implements OnInit {
 
+    public stixFetchComplete: boolean = false;
+
    public indicator: Indicator = new Indicator();
 
     constructor(
@@ -39,6 +41,15 @@ export class IndicatorComponent extends BaseStixComponent implements OnInit {
         const subscription =  super.get().subscribe(
             (data) => {
                 this.indicator =  new Indicator(data);
+                if (!this.indicator.attributes.metaProperties) {
+                    this.indicator.attributes.metaProperties = {
+                        observedData: []
+                    };
+                }
+                if (!this.indicator.attributes.metaProperties.observedData) {
+                    this.indicator.attributes.metaProperties.observedData = [];
+                }
+                this.stixFetchComplete = true;
             }, (error) => {
                 // handle errors here
                  console.log('error ' + error);
