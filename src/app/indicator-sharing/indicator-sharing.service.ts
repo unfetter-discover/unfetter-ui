@@ -13,6 +13,7 @@ export class IndicatorSharingService {
     public identitiesUrl = Constance.IDENTITIES_URL;
     public profileByIdUrl = Constance.PROFILE_BY_ID_URL;
     public attackPatternsUrl = Constance.ATTACK_PATTERN_URL;
+    public sensorsUrl = Constance.X_UNFETTER_SENSOR_URL;
 
     constructor(
         private genericApi: GenericApi,
@@ -76,5 +77,19 @@ export class IndicatorSharingService {
         } else {
             return this.genericApi.get(`${this.profileByIdUrl}/${userId}`);
         }
+    }
+
+    public getSensors(): Observable<any> {
+        const projectObj = {
+            'stix.name': 1,
+            'stix.id': 1,
+            'metaProperties.observedData': 1
+        };
+        const filterObj = {
+            'metaProperties.observedData': { 
+                '$exists': 1 
+            }
+        };
+        return this.genericApi.get(`${this.sensorsUrl}?project=${JSON.stringify(projectObj)}&filter=${JSON.stringify(filterObj)}&metaproperties=true`);
     }
 }

@@ -106,6 +106,12 @@
                     </mat-list-item>
                 </mat-list>
             </mat-tab>
+
+            <mat-tab label="Sensors" *ngIf="sensors && sensors.length > 0">
+                <!-- TODO -->
+                <p>{{sensors|json}}</p>
+            </mat-tab>
+
         </mat-tab-group>
 
         <div class="mt-20 overFlowHidden" @heightCollapse *ngIf="showCommentTextArea">

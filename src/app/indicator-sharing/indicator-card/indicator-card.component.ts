@@ -19,6 +19,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     @Input() public attackPatterns: any;
     @Input() public searchParameters: any;
     @Input() public creator: string;
+    @Input() public sensors: any;
 
     @Output() public stateChange: EventEmitter<any> = new EventEmitter();
 
