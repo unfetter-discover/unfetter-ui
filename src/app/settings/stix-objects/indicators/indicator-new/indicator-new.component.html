@@ -59,6 +59,11 @@
 
         <external-reference [(model)]="indicator"></external-reference>
 
+        <div>
+            <label class="mb-5">Observable Data Path</label>
+            <observable-data-tree [observedDataPath]="indicator.attributes.metaProperties.observedData"></observable-data-tree>
+        </div>
+
         <div class="row">
             <div class="col-md-12">
                 <div class="button-row pull-right">
