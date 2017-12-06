@@ -23,7 +23,7 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
     public DEFAULT_LENGTH: number = 10;
     public serverCallComplete: boolean = false;
     public indicatorToAttackPatternMap: any = {};
-    public searchParameters: any = {
+    public searchParametersInitialState: any = {
         labels: [],
         activeLabels: [],
         activeIdentities: [],
@@ -32,6 +32,7 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
         activeSensorIds: [],
         indicatorName: ''
     };
+    public searchParameters: any = { ...this.searchParametersInitialState };
     public SERVER_CALL_COMPLETE = false;
     public sortBy: string = 'NEWEST';
     public searchDebouncer: Subject<any> = new Subject();
@@ -285,6 +286,15 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
         } else {
             return false;
         }
+    }
+
+    public clearSearchParamaters() {
+        this.searchParameters.activeLabels = []; 
+        this.searchParameters.activeIdentities = []; 
+        this.searchParameters.activeKillChainPhases = [];
+        this.searchParameters.activeSensorIds = [];
+        this.searchParameters.indicatorName = '';
+        this.filterIndicators();
     }
 
     public getSensorsByIndicatorId(indicatorId) {
