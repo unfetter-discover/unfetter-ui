@@ -53,27 +53,27 @@
 
 <ng-template #minimizedBlock>
     <div [@inOutAnimation] class="small-side-panel" (click)="minimize=false">
-        <div matTooltip="{{threatReport.name || '' }}">
+        <div matTooltip="{{threatReport.name || '' }}" matTooltipPosition="right">
             <svg>
                 <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#attack-pattern"></use>
             </svg>
         </div>
-        <div matTooltip="{{threatReport.boundries.targets.size || 0 }} victim(s)">
+        <div matTooltip="{{threatReport.boundries.targets.size || 0 }} victim(s)" matTooltipPosition="right">
             <svg>
                 <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#identity"></use>
             </svg>
         </div>
-        <div matTooltip="{{threatReport.boundries.intrusions.size || 0 }} intrusion set(s)">
+        <div matTooltip="{{threatReport.boundries.intrusions.size || 0 }} intrusion set(s)" matTooltipPosition="right">
             <svg>
                 <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#threat-actor"></use>
             </svg>
         </div>
-        <div matTooltip="{{threatReport.boundries.malware.size || 0 }} malware">
+        <div matTooltip="{{threatReport.boundries.malware.size || 0 }} malware" matTooltipPosition="right">
             <svg>
                 <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#malware"></use>
             </svg>
         </div>
-        <div matTooltip="{{threatReport.reports.length || 0 }} report(s)">
+        <div matTooltip="{{threatReport.reports.length || 0 }} report(s)" matTooltipPosition="right">
             <svg>
                 <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#campaign"></use>
             </svg>

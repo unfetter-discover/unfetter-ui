@@ -45,8 +45,8 @@ $md_sidenav_max_width: 400px;
 
 @media only screen and (max-width: 992px) {
     .main-panel {
-        padding-top: 16px;
-        padding-left: 16px;
+        padding-left: 8px;
+        padding-right: 8px;
         width: 100%;
         flex: 0 0 auto;
     }
@@ -69,7 +69,8 @@ $md_sidenav_max_width: 400px;
     
     .main-panel {
         padding-top: 24px;
-        padding-left: 16px;
+        padding-left: 8px;
+        padding-right: 8px;
         // margin-left: $md_sidenav_max_width;
         max-width: calc(100% - 400px);
         flex: 1 0 auto;
