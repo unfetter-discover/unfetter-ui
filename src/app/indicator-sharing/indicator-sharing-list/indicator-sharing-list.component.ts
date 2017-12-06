@@ -194,12 +194,14 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
     }
 
     public sortByArrayLengthHelper(a, b, field) {
-        if (a[field] && !b[field]) {
+        if (a.metaProperties && a.metaProperties[field] && (!b.metaProperties[field] || !b.metaProperties)) {
             return -1;
-        } else if (!a[field] && b[field]) {
+        } else if ((!a.metaProperties || !a.metaProperties[field]) && b.metaProperties && b.metaProperties[field]) {
             return 1;
-        } else if (a[field] && b[field]) {
-            return b[field].length - a[field].length;
+        } else if (a.metaProperties && a.metaProperties[field] && b.metaProperties && b.metaProperties[field]) {
+            return b.metaProperties[field].length - a.metaProperties[field].length;
+        } else {
+            return 0;
         }
     }
 
