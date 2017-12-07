@@ -263,7 +263,6 @@ export class SidePanelComponent implements OnInit, OnDestroy {
             tro.reports = tro.reports.concat({ data: result });
         }
 
-
         this.saveAndLoadThreatReport(tro);
     }
 

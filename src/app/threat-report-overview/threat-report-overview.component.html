@@ -34,14 +34,14 @@
                 <ng-container matColumnDef="name">
                     <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
                     <mat-cell *matCellDef="let row" class="center-cell">
+                        <span class="cell-lock">
+                            <mat-icon aria-hidden="true" aria-label="Report Lock">{{row.published === true ? 'lock': 'lock_open'}}</mat-icon>
+                        </span>
                         <span>
                             {{row.name}}
                         </span>
                         <span class="mat-caption">
                             ({{row.reports.length}})
-                        </span>
-                        <span class="cell-lock">
-                            <mat-icon aria-hidden="true" aria-label="Report Lock">{{row.published === true ? 'lock': 'lock_open'}}</mat-icon>
                         </span>
                     </mat-cell>
                 </ng-container>

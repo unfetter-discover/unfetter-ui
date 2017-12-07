@@ -2,12 +2,12 @@
 
 .header {
     background: linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light);
-    height: 250px;
     padding-left: 24px;
     padding-top: 24px;
     padding-right: 8px;
     padding-bottom: 0px;
     color: $white_87;
+    max-height: 300px;
 
     .mat-display-2 {
         margin-top: 24px;
@@ -28,7 +28,7 @@
     position: relative;
     left: 270px;
     width: 56px;
-    bottom: -52px;
+    bottom: -28px;
     height: 56px;
     z-index: 99;
     margin: 0px;
