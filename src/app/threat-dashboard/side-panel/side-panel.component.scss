@@ -3,7 +3,10 @@
 .header {
     background: linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light);
     height: 250px;
-    padding: 24px;
+    padding-left: 24px;
+    padding-top: 24px;
+    padding-right: 8px;
+    padding-bottom: 0px;
     color: $white_87;
 
     .mat-display-2 {
@@ -13,16 +16,6 @@
 
     .mat-subheader-1, .header-details {
         color: $threat-dashboard-primary-lighter;
-    }
-
-    svg {
-        height: 45px;
-        width: 45px;
-        margin-left: -8px;
-    }
-
-    /deep/ .icon {
-        fill: $white_87;
     }
 
 }
@@ -35,6 +28,7 @@
     position: relative;
     left: 270px;
     width: 56px;
+    bottom: -52px;
     height: 56px;
     z-index: 99;
     margin: 0px;
@@ -44,11 +38,15 @@
 .mat-expansion-panel {
     background-color: $white_87;
 
-    .stix-icon {
+    svg {
         height: 24px;
         width: 24px;
         margin-right: 8px;
+        /deep/ .icon {
+            fill: $black_87;
+        }
     }
+    
     
     .mat-list-item {
         font-size: 13px;
@@ -74,6 +72,12 @@
     a {
         color: $black_87;
     }
+}
+
+.mat-45 {
+    width: 45px;
+    height: 45px;
+    font-size: 45px;
 }
 
 

@@ -227,65 +227,84 @@ export class SidePanelComponent implements OnInit, OnDestroy {
 
         this.dialog.open(ModifyReportDialogComponent, config)
             .afterClosed()
-            .subscribe((result: Partial<ThreatReport> | Partial<Report> | boolean) => {
-                const isBool = typeof result === 'boolean';
-                const isUndefined = typeof result === 'undefined';
-                if (isUndefined || isBool && !result) {
-                    return;
-                }
+            .subscribe(
+            this.addReport.bind(this),
+            (err) => console.log(err));
+    }
 
-                // add new report
-                let tro = new ThreatReport();
-                tro.boundries = this.threatReport.boundries;
-                tro.name = this.threatReport.name;
-                tro.date = this.threatReport.date;
-                tro.author = this.threatReport.author;
-                tro.id = this.threatReport.id;
-                tro.reports = this.threatReport.reports || [];
-                const threatReport = result as Partial<ThreatReport>;
-                if (threatReport && !isBool && threatReport.boundries) {
-                    // this is a boundries update,
-                    //  copy over boundries to save to db
-                    const boundries = threatReport.boundries;
-                    Object.keys(boundries)
-                        .filter((key) => boundries[key] !== undefined)
-                        .forEach((key) => tro.boundries[key] = boundries[key]);
-                } else if (result) {
-                    // this is an update single report operation
-                    tro.reports = tro.reports.concat({ data: result });
-                }
-                // prepare reports for the save to db operation
-                //  wrap in data if needed 
-                tro.reports = tro.reports.map((report) => {
-                    if (report.data) {
-                        return report;
-                    }
-                    return {
-                        data: {
-                            attributes: report
-                        },
-                    };
-                });
+    /**
+     * @description add new report
+     */
+    public addReport(result: Partial<ThreatReport> | Partial<Report> | boolean): void {
+        const isBool = typeof result === 'boolean';
+        const isUndefined = typeof result === 'undefined';
+        if (isUndefined || isBool && !result) {
+            return;
+        }
 
-                const add$ = this.threatReportOverviewService
-                    .saveThreatReport(tro)
-                    .subscribe(
-                    (resp) => {
-                        console.log(`saved report ${resp}`);
-                        const innerSub$ = this.threatReportOverviewService
-                            .load(this.threatReport.id)
-                            .subscribe((innerThreatReport) => {
-                                this.threatReport = innerThreatReport;
-                                this.modifiedBoundries.emit(this.threatReport);
-                            },
-                            (err) => console.log(err),
-                            () => innerSub$.unsubscribe());
+        // add new report
+        let tro = new ThreatReport();
+        tro.boundries = this.threatReport.boundries;
+        tro.name = this.threatReport.name;
+        tro.date = this.threatReport.date;
+        tro.author = this.threatReport.author;
+        tro.id = this.threatReport.id;
+        tro.reports = this.threatReport.reports || [];
+        const threatReport = result as Partial<ThreatReport>;
+        if (threatReport && !isBool && threatReport.boundries) {
+            // this is a boundries update,
+            //  copy over boundries to save to db
+            const boundries = threatReport.boundries;
+            Object.keys(boundries)
+                .filter((key) => boundries[key] !== undefined)
+                .forEach((key) => tro.boundries[key] = boundries[key]);
+        } else if (result) {
+            // this is an update single report operation
+            tro.reports = tro.reports.concat({ data: result });
+        }
+
+
+        this.saveAndLoadThreatReport(tro);
+    }
+
+    /**
+     * @description save a threat report and reload this components data
+     * @param threatReport
+     */
+    public saveAndLoadThreatReport(threatReport: ThreatReport): void {
+        if (!threatReport) {
+            return;
+        }
+
+        // prepare reports for the save to db operation
+        //  wrap in data if needed 
+        threatReport.reports = threatReport.reports.map((report) => {
+            if (report.data) {
+                return report;
+            }
+            return {
+                data: {
+                    attributes: report
+                },
+            };
+        });
+
+        const add$ = this.threatReportOverviewService
+            .saveThreatReport(threatReport)
+            .subscribe(
+            (resp) => {
+                console.log(`saved report ${resp}`);
+                const innerSub$ = this.threatReportOverviewService
+                    .load(this.threatReport.id)
+                    .subscribe((innerThreatReport) => {
+                        this.threatReport = innerThreatReport;
+                        this.modifiedBoundries.emit(this.threatReport);
                     },
                     (err) => console.log(err),
-                    () => add$.unsubscribe());
-
+                    () => innerSub$.unsubscribe());
             },
-            (err) => console.log(err));
+            (err) => console.log(err),
+            () => add$.unsubscribe());
     }
 
     /**
@@ -297,5 +316,16 @@ export class SidePanelComponent implements OnInit, OnDestroy {
      */
     public trackByFn(index: number, item: any): number {
         return item.id || index;
+    }
+
+    /**
+     * @description
+     */
+    public toggleLock(event?: UIEvent): void {
+        if (event) {
+            console.log(event);
+        }
+        this.threatReport.published = !this.threatReport.published;
+        this.saveAndLoadThreatReport(this.threatReport);
     }
 }

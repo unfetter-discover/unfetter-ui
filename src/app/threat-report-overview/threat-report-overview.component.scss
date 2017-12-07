@@ -30,3 +30,12 @@ h2 {
     margin-top: 0px;
     color: $black_54;
 }
+
+.center-cell {
+    margin: auto 0;
+
+    .cell-lock {
+        width: 14px;
+        height: 14px;
+    }
+}

@@ -5,7 +5,8 @@
                 Your Work Product(s)
             </h2>
             <span class="subtitle">
-                View your recent work products or create a new one.  Work products contain scope, in terms of query boundries in addition to reporting references.  Work products are not shareable at this time.
+                View your recent work products or create a new one. Work products contain scope, in terms of query boundries in addition
+                to reporting references. Work products are not shareable at this time.
             </span>
         </div>
         <div class="col-sm-4 top-right-panel">
@@ -32,10 +33,15 @@
 
                 <ng-container matColumnDef="name">
                     <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-                    <mat-cell *matCellDef="let row">
-                        {{row.name}}
+                    <mat-cell *matCellDef="let row" class="center-cell">
+                        <span>
+                            {{row.name}}
+                        </span>
                         <span class="mat-caption">
                             ({{row.reports.length}})
+                        </span>
+                        <span class="cell-lock">
+                            <mat-icon aria-hidden="true" aria-label="Report Lock">{{row.published === true ? 'lock': 'lock_open'}}</mat-icon>
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -55,12 +61,12 @@
                     <mat-cell *matCellDef="let row">
                         <span class="buttonGrp text-right">
                             <button color="accent" mat-button routerLink="./view/{{row.id}}">
-                               <mat-icon>explore</mat-icon>
+                                <mat-icon>explore</mat-icon>
                             </button>
                             <button color="primary" mat-button (click)="editButtonClicked(row, $event)">
                                 <mat-icon>edit</mat-icon>
                             </button>
-                                <button color="warn" mat-button (click)="deleteButtonClicked(row, $event)">
+                            <button color="warn" mat-button (click)="deleteButtonClicked(row, $event)">
                                 <mat-icon>delete</mat-icon>
                             </button>
                         </span>

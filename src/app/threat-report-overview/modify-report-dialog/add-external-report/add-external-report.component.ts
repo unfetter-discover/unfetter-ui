@@ -23,7 +23,7 @@ export class AddExternalReportComponent implements OnInit, OnDestroy {
 
   @Input('attackPatterns')
   public attackPatterns: AttackPattern[];
-  
+
   @Output()
   public onFormSubmit = new EventEmitter<Partial<Report> | boolean>();
 
@@ -93,7 +93,7 @@ export class AddExternalReportComponent implements OnInit, OnDestroy {
           external_ref_name: report.external_references[0].external_id,
           external_ref_external_id: report.external_references[0].external_id,
           external_ref_description: report.external_references[0].description,
-          external_ref_url:  report.external_references[0].url,
+          external_ref_url: report.external_references[0].url,
           external_ref_source_name: 'opensource',
           name: report.name || '',
           description: report.description,

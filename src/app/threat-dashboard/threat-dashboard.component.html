@@ -2,7 +2,7 @@
     <div class="row flex">
         <div class="side-panel" [@inOutAnimation] *ngIf="minimize !== true; else minimizedBlock" (mouseover)="showMinimizeBtn = true" (mouseleave)="showMinimizeBtn = false">
             <div class="minimizeControls" [style.display]="showMinimizeBtn ? 'block': 'none'">
-                <button mat-icon-button (click)="minimize = true">
+                <button mat-icon-button (click)="minimize = true" matTooltip="Minimize" matTooltipPosition="right">
                     <mat-icon class="mat-24" aria-hidden="true" aria-label="Minimize side panel" #minimizeBtn>chevron_left</mat-icon>
                 </button>
             </div>

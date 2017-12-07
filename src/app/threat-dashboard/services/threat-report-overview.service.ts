@@ -58,6 +58,7 @@ export class ThreatReportOverviewService {
         const name = report.metaProperties.work_product.name;
         const author = report.metaProperties.work_product.author || '';
         const date = report.metaProperties.work_product.date || '';
+        const published = report.metaProperties.work_product.published;
         const id = report.metaProperties.work_product.id || -1;
         let key = report.metaProperties.work_product.id;
         if (!key) {
@@ -70,6 +71,7 @@ export class ThreatReportOverviewService {
         }
         tr.name = name;
         tr.author = author;
+        tr.published = published;
         tr.id = id;
         const srcBoundries = report.metaProperties.work_product.boundries;
         tr.boundries = new Boundries();
@@ -117,6 +119,7 @@ export class ThreatReportOverviewService {
       workProduct.name = threatReport.name;
       workProduct.date = threatReport.date;
       workProduct.author = threatReport.author;
+      workProduct.published = threatReport.published;
       workProduct.id = id;
       attributes.metaProperties = meta;
       const body = JSON.stringify({
@@ -129,7 +132,7 @@ export class ThreatReportOverviewService {
       const reportId = report.data.attributes.id || undefined;
       if (reportId) {
         // update and existing object
-        const updateOrAddUrl = reportId ? `${url}/${reportId}` : url;
+        const updateOrAddUrl = `${url}/${reportId}`;
         return this.http.patch<ThreatReport>(updateOrAddUrl, body, { headers });
       } else {
         // add new object
