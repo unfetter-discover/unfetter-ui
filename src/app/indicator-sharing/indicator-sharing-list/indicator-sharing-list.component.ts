@@ -23,17 +23,21 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
     public DEFAULT_LENGTH: number = 10;
     public serverCallComplete: boolean = false;
     public indicatorToAttackPatternMap: any = {};
-    public searchParameters: any = {
+    public searchParametersInitialState: any = {
         labels: [],
         activeLabels: [],
         activeIdentities: [],
         killChainPhases: [],
         activeKillChainPhases: [],
+        activeSensorIds: [],
         indicatorName: ''
     };
+    public searchParameters: any = { ...this.searchParametersInitialState };
     public SERVER_CALL_COMPLETE = false;
     public sortBy: string = 'NEWEST';
     public searchDebouncer: Subject<any> = new Subject();
+    public sensors: any[];
+    public indicatorToSensorMap: any = {};
 
     constructor(
         private indicatorSharingService: IndicatorSharingService, 
@@ -45,7 +49,8 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
         const getData$ = Observable.forkJoin(
             this.indicatorSharingService.getIdentities(),
             this.indicatorSharingService.getIndicators(),
-            this.indicatorSharingService.getAttackPatternsByIndicator()
+            this.indicatorSharingService.getAttackPatternsByIndicator(),
+            this.indicatorSharingService.getSensors()
         ).subscribe(
             (results) => {
                 // Identities
@@ -63,6 +68,10 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
                 results[2].attributes.forEach((res) => {
                     this.indicatorToAttackPatternMap[res._id] = res.attackPatterns;
                 }); 
+
+                // Sensors with observed data paths
+                this.sensors = results[3].map((r) => r.attributes)
+                this.buildIndicatorToSensorMap();
             },
             (err) => {
                 console.log(err);
@@ -89,7 +98,7 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
                 (e) => console.log(e),
                 () => searchEvents$.unsubscribe()
             );
-    }
+    }    
 
     public ngOnDestroy() {
         this.dialog.closeAll();
@@ -119,19 +128,20 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
                         this.allIndicators.push(res.indicator);
                         if (res.newRelationships) {
                             const getPatterns$ = this.indicatorSharingService.getAttackPatternsByIndicator()
-                                .subscribe((patternsRes) => {
-                                    patternsRes.attributes.forEach((e) => {
-                                        this.indicatorToAttackPatternMap[e._id] = e.attackPatterns;
-                                    });
-                                },
-                                (err) => {
-                                    console.log(err);
-                                },
-                                () => {
-                                    getPatterns$.unsubscribe();
-                                }
+                                    .subscribe((patternsRes) => {
+                                        patternsRes.attributes.forEach((e) => {
+                                            this.indicatorToAttackPatternMap[e._id] = e.attackPatterns;
+                                        });
+                                    },
+                                    (err) => {
+                                        console.log(err);
+                                    },
+                                    () => {
+                                        getPatterns$.unsubscribe();
+                                    }
                                 );
                         }                        
+                        this.buildIndicatorToSensorMap();
                         this.filterIndicators();
                     }
                 },
@@ -188,6 +198,15 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
             this.filteredIndicators = this.filteredIndicators
                 .filter((indicator) => !!indicator.name)
                 .filter((indicator) => indicator.name.toLowerCase().indexOf(this.searchParameters.indicatorName.toLowerCase()) > -1);
+        }
+
+        if (this.searchParameters.activeSensorIds && this.searchParameters.activeSensorIds.length > 0) {
+            this.filteredIndicators = this.filteredIndicators
+                .filter((indicator) => indicator.metaProperties && indicator.metaProperties.observedData && Object.keys(this.indicatorToSensorMap).includes(indicator.id))
+                .filter((indicator) => this.indicatorToSensorMap[indicator.id]
+                    .map((sensor) => sensor.id)
+                    .filter((sensorId) => this.searchParameters.activeSensorIds.includes(sensorId)).length > 0
+                );
         }
 
         this.sortIndicators();           
@@ -268,5 +287,51 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
         } else {
             return false;
         }
+    }
+
+    public clearSearchParamaters() {
+        this.searchParameters.activeLabels = []; 
+        this.searchParameters.activeIdentities = []; 
+        this.searchParameters.activeKillChainPhases = [];
+        this.searchParameters.activeSensorIds = [];
+        this.searchParameters.indicatorName = '';
+        this.filterIndicators();
+    }
+
+    public getSensorsByIndicatorId(indicatorId) {
+        if (Object.keys(this.indicatorToSensorMap).includes(indicatorId)) {
+            return this.indicatorToSensorMap[indicatorId];
+        } else {
+            return null;
+        }
+    }
+
+    private buildIndicatorToSensorMap() {
+        const indicatorsWithObservedData = this.allIndicators.filter((indicator) => indicator.metaProperties && indicator.metaProperties.observedData);
+
+        indicatorsWithObservedData.forEach((indicator) => {   
+            const matchingSensorsSet = new Set();
+
+            indicator.metaProperties.observedData.forEach((obsData) => {
+
+                const sensorsFilter = this.sensors
+                    .filter((sensor) => {
+                        let retVal = false;
+                        sensor.metaProperties.observedData.forEach((sensorObsData) => {
+                            if (sensorObsData.name === obsData.name && sensorObsData.action === obsData.action && sensorObsData.property === obsData.property) {
+                                retVal = true;
+                            }
+                        });
+                        return retVal;
+                    })
+                    .forEach((sensor) => matchingSensorsSet.add(sensor));
+            });
+
+            const matchingSensors = Array.from(matchingSensorsSet);
+
+            if (matchingSensors.length) {
+                this.indicatorToSensorMap[indicator.id] = matchingSensors;
+            }
+        });
     }
 }

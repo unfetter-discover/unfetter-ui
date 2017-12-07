@@ -14,18 +14,23 @@
                     <mat-option value="{{label}}" *ngFor="let label of searchParameters.labels">{{ label | capitalize }}</mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field class="full-width mb-12">
+            <mat-form-field class="full-width mb-9">
                 <mat-select placeholder="Organizations" [multiple]="true" (change)="searchDebouncer.next()" [(ngModel)]="searchParameters.activeIdentities">
                     <mat-option value="{{org.id}}" *ngFor="let org of organizations">{{ org.name }}</mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field class="full-width mb-12">
+            <mat-form-field class="full-width mb-9">
                 <mat-select placeholder="Kill Chain Phases" [multiple]="true" (change)="searchDebouncer.next()" [(ngModel)]="searchParameters.activeKillChainPhases">
                     <mat-option value="{{phase}}" *ngFor="let phase of searchParameters.killChainPhases">{{ phase | capitalize }}</mat-option>
                 </mat-select>
             </mat-form-field>
+            <mat-form-field class="full-width mb-12" *ngIf="sensors && sensors.length">
+                <mat-select placeholder="Sensors" [multiple]="true" (change)="searchDebouncer.next()" [(ngModel)]="searchParameters.activeSensorIds">
+                    <mat-option value="{{sensor.id}}" *ngFor="let sensor of sensors">{{ sensor.name | capitalize }}</mat-option>
+                </mat-select>
+            </mat-form-field>
             <p *ngIf="displayedIndicators && allIndicators" class="text-muted flex">
-                <span><a (click)="searchParameters.activeLabels = []; searchParameters.activeIdentities = []; searchParameters.activeKillChainPhases = []; searchParameters.indicatorName = ''; filterIndicators()">Clear Filters</a></span>
+                <span><a (click)="clearSearchParamaters()">Clear Filters</a></span>
                 <span class="flex1"></span>
                 <span>Results: {{ filteredIndicators.length }} / {{ allIndicators.length }}</span>    
             </p> 
@@ -59,9 +64,10 @@
                 <indicator-card
                     [indicator]="indicator"
                     [attackPatterns]="getAttackPatternsByIndicatorId(indicator.id)"
+                    [sensors]="getSensorsByIndicatorId(indicator.id)"
                     [creator]="getIdentityNameById(indicator.created_by_ref)"
                     [searchParameters]="searchParameters"
-                    (stateChange)="updateIndicator($event)"></indicator-card>               
+                    (stateChange)="updateIndicator($event)"></indicator-card>              
             </div>
 
             <div class="text-center mt-15 mb-20" *ngIf="displayShowMoreButton()">

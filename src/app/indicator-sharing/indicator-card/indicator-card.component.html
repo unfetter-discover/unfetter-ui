@@ -106,6 +106,19 @@
                     </mat-list-item>
                 </mat-list>
             </mat-tab>
+
+            <mat-tab label="Sensors" *ngIf="sensors && sensors.length > 0">     
+                <div *ngFor="let sensor of sensors">
+                    <h4 class="fw400">
+                        <a routerLink="/stix/x-unfetter-sensors/{{sensor.id}}">{{sensor.name}}</a>
+                    </h4> 
+                    <p>
+                        <label>Observed Data</label>
+                        <observable-data-summary [observedData]="sensor.metaProperties.observedData"></observable-data-summary>
+                    </p>        
+                </div>         
+            </mat-tab>
+
         </mat-tab-group>
 
         <div class="mt-20 overFlowHidden" @heightCollapse *ngIf="showCommentTextArea">
