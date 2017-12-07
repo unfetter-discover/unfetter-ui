@@ -24,6 +24,7 @@
     /deep/ .icon {
         fill: $white_87;
     }
+
 }
 
 .list-divider {
@@ -31,10 +32,13 @@
 }
 
 .boundries-fab {
-    margin-top: -28px;
-    position: absolute;
-    right: 48px;
+    position: relative;
+    left: 270px;
+    width: 56px;
+    height: 56px;
     z-index: 99;
+    margin: 0px;
+    padding: 0px;
 }
 
 .mat-expansion-panel {

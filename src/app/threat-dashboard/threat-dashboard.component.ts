@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
@@ -17,7 +17,7 @@ import { KillChainEntry } from './kill-chain-table/kill-chain-entry';
 import { SelectOption } from '../threat-report-overview/models/select-option';
 import { ThreatDashboard } from './models/threat-dashboard';
 import { RadarChartDataPoint } from './radar-chart/radar-chart-datapoint';
-import { simpleFadeIn } from '../global/animations/animations';
+import { simpleFadeIn, inOutAnimation } from '../global/animations/animations';
 import { SortHelper } from '../global/static/sort-helper';
 import { RadarChartComponent } from './radar-chart/radar-chart.component';
 
@@ -25,9 +25,14 @@ import { RadarChartComponent } from './radar-chart/radar-chart.component';
   selector: 'unf-threat-dashboard',
   templateUrl: 'threat-dashboard.component.html',
   styleUrls: ['./threat-dashboard.component.scss'],
-  animations: [simpleFadeIn]
+  animations: [simpleFadeIn, inOutAnimation]
 })
 export class ThreatDashboardComponent implements OnInit, OnDestroy {
+
+  @Input('minimize')
+  public minimize: boolean;
+  public showMinimizeBtn = false;
+
   public threatReport: ThreatReport;
   public id = '';
   public attackPatterns: AttackPattern[];
@@ -61,6 +66,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @description init this component
    */
   public ngOnInit() {
+    this.minimize = false;
     this.id = this.route.snapshot.paramMap.get('id');
     if (!this.id || this.id.trim() === '') {
       this.notifyDoneLoading();
@@ -253,16 +259,16 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
       arr = arr.sort(SortHelper.sortDescByField('name'));
     });
 
-    // extract the keyed attackpatterns into a single array
-    const killChainAttackPattern = [];
-    Object.keys(killChainAttackPatternGroup).forEach((key) => {
-      const killchain =
-        {
-          name: key,
-          attack_patterns: killChainAttackPatternGroup[key]
-        } as Partial<KillChainEntry>;
-      killChainAttackPattern.push(killchain);
-    });
+    // extract the keyed attackpatterns into a single flat array
+    const killChainAttackPattern =
+      Object.keys(killChainAttackPatternGroup).map((key) => {
+        const killchain =
+          {
+            name: key,
+            attack_patterns: killChainAttackPatternGroup[key]
+          } as Partial<KillChainEntry>;
+        return killchain;
+      });
     return killChainAttackPattern;
   }
 

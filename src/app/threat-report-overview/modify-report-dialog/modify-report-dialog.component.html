@@ -1,19 +1,32 @@
 <p mat-dialog-title class="lead mb-6">Modify Threat Report</p>
 
 <mat-dialog-content id="modify-report-dialog">
-    <mat-horizontal-stepper linear="false">
+    <mat-vertical-stepper linear="false">
+        <mat-step *ngIf="showReportByUrlStep">
+            <ng-template matStepLabel>Load Report By URL</ng-template>
+            <form novalidate>
+                <mat-form-field class="wide">
+                    <input #urlInput matInput placeholder="Enter Report URL" (keyup.enter)="onLoadReportByUrl(urlInput.value);">
+                </mat-form-field>
+                <button mat-button mat-dialog-close (click)="closeDialog($event);">CANCEL</button>
+                <button #nextToReportFormBtn mat-button matStepperNext color="primary" (click)="onLoadReportByUrl(urlInput.value);">Next</button>
+            </form>
+            <mat-error *ngIf="urlTranslationError">
+                {{urlTranslationError}}
+            </mat-error>
+        </mat-step>
         <mat-step *ngIf="showReportStep">
-            <ng-template matStepLabel>Add threat report</ng-template>
-            <unf-add-external-report [attackPatterns]="attackPatterns" (onFormSubmit)="onFormSubmit($event)">
+            <ng-template matStepLabel>Manually Add Report</ng-template>
+            <unf-add-external-report #reportForm [attackPatterns]="attackPatterns" (onFormSubmit)="closeDialog($event)">
             </unf-add-external-report>
         </mat-step>
         <mat-step *ngIf="showMalwareStep">
             <ng-template matStepLabel>Modify Intrusions</ng-template>
-            <unf-modify-intrusions [threatReport]="threatReport" (onFormSubmit)="onFormSubmit($event)"></unf-modify-intrusions>
+            <unf-modify-intrusions [threatReport]="threatReport" (onFormSubmit)="closeDialog($event)"></unf-modify-intrusions>
         </mat-step>
         <mat-step *ngIf="showIntrusionStep">
-            <ng-template matStepLabel>Modify  Malwares</ng-template>
-            <unf-modify-malwares [threatReport]="threatReport" (onFormSubmit)="onFormSubmit($event)"></unf-modify-malwares>
+            <ng-template matStepLabel>Modify Malwares</ng-template>
+            <unf-modify-malwares [threatReport]="threatReport" (onFormSubmit)="closeDialog($event)"></unf-modify-malwares>
         </mat-step>
-    </mat-horizontal-stepper>
+    </mat-vertical-stepper>
 </mat-dialog-content>

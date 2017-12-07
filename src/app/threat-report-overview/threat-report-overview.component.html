@@ -28,7 +28,7 @@
     </div>
     <div class="row" *ngIf="!error; else errorBlock">
         <div class="col-md-12">
-            <mat-table class="mat-elevation-z3" #table [dataSource]="dataSource">
+            <mat-table class="mat-elevation-z3 cardHoverShadow" #table [dataSource]="dataSource">
 
                 <ng-container matColumnDef="name">
                     <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>

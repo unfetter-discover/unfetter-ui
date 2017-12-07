@@ -19,6 +19,7 @@ import { Boundries } from '../models/boundries';
 import { SortHelper } from '../../global/static/sort-helper';
 import { ModifyReportDialogComponent } from '../modify-report-dialog/modify-report-dialog.component';
 import { Report } from '../../models/report';
+import { PACKAGE_ROOT_URL } from '@angular/core/src/application_tokens';
 
 @Component({
   selector: 'unf-threat-report-creation',
@@ -258,6 +259,15 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public fileParsed(event?: any[]): void {
+    if (event) {
+      // TODO: turn dates into ISO Date format or backend will complain on validation
+      event = event.map((e) => {
+        if (e && e.data && e.data.attributes && e.data.attributes.created) {
+          e.data.attributes.created = undefined;
+        }
+        return e;
+      });
+    }
     this.csvReports = event;
   }
 

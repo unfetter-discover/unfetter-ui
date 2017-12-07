@@ -25,13 +25,13 @@
             No Date Specified
         </div>
     </ng-template>
-</div>
-<div>
     <div class="boundries-fab">
         <button mat-fab color="accent" (click)="openAddReportDialog($event)" matTooltip="Modify Threat Report">
             <mat-icon class="mat-24" aria-label="Add associated reports icon">add</mat-icon>
         </button>
     </div>
+</div>
+<div>
     <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="onOpenExternalRef($event)">
             <mat-icon aria-hidden="true">open_in_new</mat-icon>
