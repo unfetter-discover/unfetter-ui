@@ -1,4 +1,4 @@
-<div *ngIf="loading === false; else loadingBlock">
+<div *ngIf="!loading; else loadingBlock">
     <mat-error *ngIf="errMsg">{{errMsg}}</mat-error>
     <mat-list *ngIf="fName; else uploadBlock">
         <mat-list-item>
@@ -25,5 +25,5 @@
 </div>
 
 <ng-template #loadingBlock>
-    <mat-progress-bar *ngIf="loading" color="primary"  mode="indeterminate"></mat-progress-bar>
+    <mat-progress-spinner color="primary"  mode="indeterminate"></mat-progress-spinner>
 </ng-template>

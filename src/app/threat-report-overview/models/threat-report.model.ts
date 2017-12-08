@@ -5,6 +5,7 @@ export class ThreatReport {
     public name: string;
     public date = new Date();
     public author = '';
+    public published = false;
 
     public boundries = new Boundries();
     public reports = [];

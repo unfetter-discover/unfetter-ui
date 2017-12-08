@@ -65,11 +65,11 @@ export class ModifyReportDialogComponent implements OnInit, OnDestroy {
             this.showMalwareStep = this.data.showMalwareStep || this.showMalwareStep;
             this.showIntrusionStep = this.data.showIntrusionStep || this.showIntrusionStep;
 
-            const configs = this.configService.getConfigPromise();
-            configs.then((resp) => {
-                console.log(resp);
-                // TODO: filter out systemNames, distinct and sorted
-            })
+            // const configs = this.configService.getConfigPromise();
+            // configs.then((resp) => {
+            //     console.log(resp);
+            //     // TODO: filter out systemNames, distinct and sorted
+            // })
 
         }
     }
