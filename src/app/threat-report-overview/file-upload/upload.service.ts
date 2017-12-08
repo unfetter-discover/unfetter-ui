@@ -75,14 +75,16 @@ export class UploadService {
     /**
      * @description throws an observable error with jsons error message
      */
-    private handleError(error: any) {
-        let errMsg: string;
-        if (error instanceof Response) {
-            const body = error.json() || '';
-            const err = body.error || JSON.stringify(body);
-            errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-        } else {
-            errMsg = error.message ? error.message : error.toString();
+    private handleError(errResp: any): Observable<any> {
+        if (!errResp) {
+            return Observable.throw('unknown error');
+        }
+        const err = errResp.error;
+        const detail = err && err.detail && err.detail.message
+            ? err.detail.message : '';
+        let errMsg = detail ? detail : errResp.message;
+        if (!errMsg) {
+            errMsg = errResp;
         }
         return Observable.throw(errMsg);
     }
