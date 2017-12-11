@@ -6,7 +6,7 @@
     </div>
 
     <div class="uf-well" @heightCollapse *ngIf="showKillChainPhases">
-        <form [formGroup]="localForm" novalidate (ngSubmit)="addToParent()">     
+        <form [formGroup]="localForm" novalidate (ngSubmit)="addToParent()" *ngIf="formResetComplete">     
             
             <mat-form-field class="full-width mb-6">
                 <input matInput required placeholder="Kill Chain Name" formControlName="kill_chain_name" [matAutocomplete]="killChainNamesAuto">

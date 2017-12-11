@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 
 import { KillChainPhasesForm } from '../../form-models/kill-chain-phases';
@@ -21,8 +21,9 @@ export class KillChainPhasesReactiveComponent implements OnInit {
     public killChainRaw: any[] = []
     public killChainNames: string[] = [];
     public distinctKillChainPhases: string[] = [];
+    public formResetComplete = true;
 
-    constructor(private configService: ConfigService) { }
+    constructor(private configService: ConfigService, private changeDetectorRef: ChangeDetectorRef) { }
 
     public ngOnInit() {
         this.resetForm();
@@ -53,6 +54,9 @@ export class KillChainPhasesReactiveComponent implements OnInit {
 
     public addToParent() {
         this.parentForm.get('kill_chain_phases').push(this.localForm);
+        this.formResetComplete = false;
         this.resetForm();
+        this.changeDetectorRef.detectChanges(); // To force rerender of angular material inputs
+        this.formResetComplete = true;  
     }
 }

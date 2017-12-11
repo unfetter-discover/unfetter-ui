@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { ExternalReferencesForm } from '../../form-models/external-references';
@@ -16,8 +16,9 @@ export class ExternalReferencesReactiveComponent implements OnInit {
 
     public localForm: FormGroup; 
     public showExternalReferences: boolean = false;
+    public formResetComplete = true;
 
-    constructor() { }
+    constructor(private changeDetectorRef: ChangeDetectorRef) { }
 
     public ngOnInit() {
         this.resetForm();
@@ -29,6 +30,10 @@ export class ExternalReferencesReactiveComponent implements OnInit {
 
     public addToParent() {
         this.parentForm.get('external_references').push(this.localForm);
+
+        this.formResetComplete = false;
         this.resetForm();
+        this.changeDetectorRef.detectChanges(); // To force rerender of angular material inputs
+        this.formResetComplete = true;   
     }
 }
