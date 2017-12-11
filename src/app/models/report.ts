@@ -18,6 +18,9 @@ export class Report {
         object_refs: string[]
         external_references: ExternalReference[];
         kill_chain_phases: KillChainPhase[];
+
+        metaProperties?: any;
+        id?: string;
     };
 
      constructor() {

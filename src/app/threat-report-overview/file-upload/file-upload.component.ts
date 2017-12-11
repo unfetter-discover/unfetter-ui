@@ -21,10 +21,14 @@ export class FileUploadComponent implements OnInit {
   @Output('fileParsedEvent')
   public fileParsedEvent = new EventEmitter<any[]>();
 
+  @Output('fileUploadFailed')
+  public fileUploadFailed = new EventEmitter<string>();
+
+  public success = false;
   public fName = '';
   public numEventsParsed = -1;
   public loading = false;
-  public errMsg;
+  // public errMsg;
   private readonly subscriptions = [];
 
   constructor(
@@ -67,9 +71,11 @@ export class FileUploadComponent implements OnInit {
     }
 
     const file = files[0];
-    this.fName = file.name;
+    this.numEventsParsed = 0;
+    // this.fName = file.name;
     this.loading = true;
-    this.errMsg = undefined;
+    this.success = false;
+    // this.errMsg = undefined;
     const s$ = this.uploadService.post(file)
       .subscribe((resp: any) => {
         console.log('upload service response ', resp);
@@ -91,23 +97,33 @@ export class FileUploadComponent implements OnInit {
           }
         }
 
-        this.numEventsParsed = (resp as any).length || -1;
-        this.fileParsedEvent.emit(resp as any);
-        // }
+        requestAnimationFrame(() => {
+          this.numEventsParsed = (resp as any).length || -1;
+          this.loading = false;
+          this.success = true;  
+          this.fileParsedEvent.emit(resp as any);
+          setTimeout(() => {
+            this.success = false;
+            this.numEventsParsed = 0;
+            this.loading = false;
+          }, 2300);
+        });
       },
       (err) => {
         this.setErrorState(err);
       },
-      () => this.loading = false
-      );
+      () => {
+        this.loading = false;
+      });
     this.subscriptions.push(s$);
   }
 
   public setErrorState(err: string): void {
     console.log(err);
     this.fName = undefined;
-    this.errMsg = err;
+    // this.errMsg = err;
     this.loading = false;
+    this.fileUploadFailed.emit(err);
   }
 
   /**
@@ -115,7 +131,7 @@ export class FileUploadComponent implements OnInit {
    */
   public onRemoveFile(event: UIEvent): void {
     this.fName = '';
-    this.errMsg = undefined;
+    // this.errMsg = undefined;
     this.numEventsParsed = -1;
     this.fileParsedEvent.emit([]);
   }

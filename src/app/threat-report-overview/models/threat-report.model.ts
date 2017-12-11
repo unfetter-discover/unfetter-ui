@@ -1,4 +1,5 @@
 import { Boundries } from './boundries';
+import { Report } from '../../models/report';
 
 export class ThreatReport {
     public id = '';
@@ -8,7 +9,7 @@ export class ThreatReport {
     public published = false;
 
     public boundries = new Boundries();
-    public reports = [];
+    public reports: Report[] = [];
 
     public isEmpty(): boolean {
         return this.boundries.emptyBoundries() && this.reports.length === 0;

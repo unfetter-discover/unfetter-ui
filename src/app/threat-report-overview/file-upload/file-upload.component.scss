@@ -19,3 +19,18 @@ mat-list {
     max-width: 300px;
     border: 1px dashed rgba(1,1,1, .54);
 }
+
+.icon-container {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    
+    * {
+        margin: auto auto;
+    }
+
+    mat-icon {
+        color: get-color($green, 400);
+    }
+
+}

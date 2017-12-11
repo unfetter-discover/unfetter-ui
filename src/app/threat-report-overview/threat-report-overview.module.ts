@@ -6,7 +6,7 @@ import { routing } from './threat-report-overview.routing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
-import { MatButtonModule, MatChipsModule, MatInputModule, MatIconModule, MatTooltipModule, MatFormFieldModule } from '@angular/material';
+import { MatButtonModule, MatChipsModule, MatInputModule, MatIconModule, MatTooltipModule, MatFormFieldModule, MatSnackBarModule } from '@angular/material';
 import { MatCheckboxModule } from '@angular/material';
 import { MatDatepickerModule } from '@angular/material';
 import { MatPaginatorModule } from '@angular/material';
@@ -53,6 +53,7 @@ const materialModules = [
   MatListModule,
   MatPaginatorModule,
   MatSelectModule,
+  MatSnackBarModule,
   MatSlideToggleModule,
   MatStepperModule,
   MatTooltipModule,

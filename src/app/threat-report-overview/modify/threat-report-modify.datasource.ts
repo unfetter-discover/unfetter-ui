@@ -1,62 +1,68 @@
+import { EventEmitter } from '@angular/core';
 import { DataSource } from '@angular/cdk/table';
 import { CollectionViewer } from '@angular/cdk/collections';
+import { MatPaginator, PageEvent } from '@angular/material';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
+
 import { ThreatReportOverviewService } from './services/threat-report-overview.service';
 import { ThreatReport } from './models/threat-report.model';
-import { MatPaginator } from '@angular/material';
-import { EventEmitter } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Report } from '../../models/report';
 
 /**
  * @description handles filter events from the UI sent to the datasource, in this case a service call
  */
-export class ThreatReportModifyDataSource extends DataSource<{}> {
-    public curDisplayLen = -1;
-    protected dataChange: BehaviorSubject<any[]>;
-    protected readonly filterChange = new BehaviorSubject('');
+export class ThreatReportModifyDataSource extends DataSource<Report> {
+    public displayLenSubject$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+    public curDisplayLen$: Observable<number> = this.displayLenSubject$.asObservable();
+    protected readonly dataChange$: BehaviorSubject<Report[]> = new BehaviorSubject([]);
+    protected readonly filterChange$ = new BehaviorSubject('');
+    protected readonly pageChange$ = new BehaviorSubject<PageEvent>(undefined);
 
-    constructor(public csvImportData: any[], public paginator: MatPaginator) {
+    constructor(public reports$: Observable<Report[]>, public paginator?: MatPaginator) {
         super();
-        this.dataChange = new BehaviorSubject<any[]>(this.csvImportData);
+        // this.dataChange = new BehaviorSubject<Report[]>(this.reports);
+        // this.nextDataChange(reports);
+        const co = reports$.multicast(this.dataChange$);
+        co.connect();
     }
 
     /**
      * @description listens to filter events and fetch/filters data accordingly
      * @param collectionViewer
      */
-    public connect(collectionViewer: CollectionViewer): Observable<any[]> {
+    public connect(collectionViewer: CollectionViewer): Observable<Report[]> {
 
         const changes: Array<Observable<any>> = [
-            this.dataChange,
-            this.filterChange
+            this.dataChange$,
+            this.filterChange$,
+            this.pageChange$,
         ];
 
-        if (this.paginator) {
-            changes.push(this.paginator.page);
-        }
-
         return Observable.merge(...changes).map(() => {
-            let data = this.dataChange.value;
-            const value = this.filterChange.value.toLowerCase();
+            let data = this.dataChange$.value;
+            const value = this.filterChange$.value.toLowerCase();
             if (value || value.trim().length > 0) {
                 data = data.filter((d) => {
                     let title;
                     let descrip;
-                    if (d.data) {
-                        title = d.data.attributes.name;
-                        descrip = d.data.attributes.description;
-                    } else {
-                        title = d.name;
-                        descrip = d.description;
-                    }
+                    title = d.attributes.name;
+                    descrip = d.attributes.description;
                     return title.toLowerCase().includes(value) || descrip.toLowerCase().includes(value);
                 });
             }
-            const pageIndex = (this.paginator && this.paginator.pageIndex) ? this.paginator.pageIndex : 0;
-            const pageSize = (this.paginator && this.paginator.pageSize) ? this.paginator.pageSize : 25;
+
+            if (!data) {
+                this.displayLenSubject$.next(0);
+                return [];
+            }
+
+            const pageEvent = this.pageChange$.value;
+            const pageIndex = (pageEvent && pageEvent.pageIndex) ? pageEvent.pageIndex : 0;
+            const pageSize = (pageEvent && pageEvent.pageSize) ? pageEvent.pageSize : 25;
             const startIndex = pageIndex * pageSize;
             const display = data.slice(startIndex, pageSize);
-            this.curDisplayLen = display.length;
+            this.displayLenSubject$.next(display.length);
             return display;
         });
     }
@@ -66,21 +72,29 @@ export class ThreatReportModifyDataSource extends DataSource<{}> {
     }
 
     /**
-     * @description trigger a filter event
+     * @description trigger a filter for reports event
      */
     public nextFilter(filter?: string): void {
         filter = filter || '';
         filter = filter.trim();
-        this.filterChange.next(filter);
+        this.filterChange$.next(filter);
     }
 
     /**
-     * @description trigger an event signaling a change to the csv table data
+     * @description trigger a reports array change event
      * @param data
      * @return {void}
      */
-    public nextDataChange(data: any[]): void {
-        this.dataChange.next(data);
+    public nextDataChange(data: Report[]): void {
+        this.dataChange$.next(data);
+    }
+
+    /**
+     * @description trigger a page reports event
+     * @param event
+     */
+    public nextPageChange(event: PageEvent): void {
+        this.pageChange$.next(event);
     }
 
 }

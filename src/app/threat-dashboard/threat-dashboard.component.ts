@@ -297,7 +297,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
 
     // get active attack patterns
     const attackIds = threatReport.reports
-      .map((report) => report.object_refs)
+      .map((report) => report.attributes.object_refs)
       .reduce((memo, cur) => memo.concat(cur), []);
     const activeAttackPatternIds = new Set<string>(attackIds);
     const activeAttackPatterns = attackPatterns.filter((curAttackPattern) => activeAttackPatternIds.has(curAttackPattern.id));

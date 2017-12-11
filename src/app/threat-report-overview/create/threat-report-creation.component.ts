@@ -11,7 +11,6 @@ import { Constance } from '../../utils/constance';
 import { IntrusionSet } from '../../models/intrusion-set';
 import { Malware } from '../../models/malware';
 import { SelectOption } from '../models/select-option';
-import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { UploadService } from '../file-upload/upload.service';
 import { ThreatReport } from '../models/threat-report.model';
 import { ThreatReportSharedService } from '../services/threat-report-shared.service';
@@ -28,14 +27,11 @@ import { PACKAGE_ROOT_URL } from '@angular/core/src/application_tokens';
 })
 export class ThreatReportCreationComponent implements OnInit, OnDestroy {
 
-  @ViewChild('fileUpload')
-  public fileUpload: FileUploadComponent;
   public shouldIncludeBoundries = false;
   public intrusions: SelectOption[];
   public malware: SelectOption[];
   public maxStartDate;
   public minEndDate;
-  public csvReports: any[];
   public threatReport = new ThreatReport();
   public dateError = {
     startDate: { isError: false },
@@ -235,7 +231,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    * @param {UIEvent} event optional
    */
   public onContinue(event: UIEvent): void {
-    this.threatReport.reports = this.appendCsvReports(this.threatReport.reports, this.csvReports);
+    // this.threatReport.reports = this.appendReports(this.threatReport.reports, this.csvReports);
     // if the boundries check box is checked, do not use boundries provided
     if (this.isFalsey(this.shouldIncludeBoundries)) {
       this.threatReport.boundries = new Boundries();
@@ -248,28 +244,28 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    * @description append / concat only new non saved reports
    * @return {any[]}
    */
-  public appendCsvReports(current: any[] = [], updates: any[] = []): any[] {
-    current = current.concat(updates);
-    return current;
-  }
+  // public appendReports(current: any[] = [], updates: any[] = []): any[] {
+  //   current = current.concat(updates);
+  //   return current;
+  // }
 
   /**
    * @description recieve a fileParsed event
    * @param {any[]} event optional
    * @return {void}
    */
-  public fileParsed(event?: any[]): void {
-    if (event) {
-      // TODO: turn dates into ISO Date format or backend will complain on validation
-      event = event.map((e) => {
-        if (e && e.data && e.data.attributes && e.data.attributes.created) {
-          e.data.attributes.created = undefined;
-        }
-        return e;
-      });
-    }
-    this.csvReports = event;
-  }
+  // public fileParsed(event?: any[]): void {
+  //   if (event) {
+  //     // TODO: turn dates into ISO Date format or backend will complain on validation
+  //     event = event.map((e) => {
+  //       if (e && e.data && e.data.attributes && e.data.attributes.created) {
+  //         e.data.attributes.created = undefined;
+  //       }
+  //       return e;
+  //     });
+  //   }
+  //   this.csvReports = event;
+  // }
 
   /**
    * @description open add external report dialog
@@ -289,9 +285,10 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
           return;
         }
         // add new report, wrap in the expect data attribute, cause you know, jsonschema
-        const report = {
-          data: result
-        };
+        // const report = {
+        //   data: result
+        // };
+        const report = result as Report;
         this.threatReport.reports.push(report);
       },
       (err) => console.log(err)
@@ -340,7 +337,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     // remember to new up an object, otherwise object method will not exist, using just an object literal copy
     const tmp = Object.assign(new ThreatReport(), JSON.parse(JSON.stringify(this.sharedService.threatReportOverview)));
     this.threatReport = tmp;
-    this.csvReports = [];
+    // this.csvReports = [];
     // this is needed to make sure boundries is acutally and object and not an object literal at runtime
     this.threatReport.boundries = new Boundries();
     this.threatReport.boundries.intrusions = this.sharedService.threatReportOverview.boundries.intrusions || new Set<{ any }>();

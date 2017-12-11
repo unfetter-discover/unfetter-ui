@@ -28,7 +28,7 @@ export class ThreatReportOverviewService {
       return Observable.of();
     }
 
-    const query = {'stix.type': 'report', 'metaProperties.work_product.id': id };
+    const query = { 'stix.type': 'report', 'metaProperties.work_product.id': id };
     const url = `${this.reportsUrl}?extendedproperties=true&metaproperties=true&filter=${encodeURI(JSON.stringify(query))}`;
     const reports$: Observable<Report[]> = this.genericService.get(url);
     const threatReports$ = this.aggregateReportsToThreatReports(reports$).flatMap((el) => el);
@@ -40,8 +40,18 @@ export class ThreatReportOverviewService {
    */
   public loadAll(): Observable<ThreatReport[]> {
     const url = this.reportsUrl + '?extendedproperties=true&metaproperties=true';
-    const reports$: Observable<Report[]> =  this.genericService.get(url);
+    const reports$: Observable<Report[]> = this.genericService.get(url);
     return this.aggregateReportsToThreatReports(reports$);
+  }
+
+  /**
+   * @description pull a list of STIX report objects from the backend mongo database
+   */
+  public loadAllReports(): Observable<Report[]> {
+    const query = { 'stix.type': 'report' };
+    const url = `${this.reportsUrl}?extendedproperties=true&metaproperties=true&filter=${encodeURI(JSON.stringify(query))}`;
+    const reports$: Observable<Report[]> = this.genericService.get(url);
+    return reports$;
   }
 
   /**
@@ -90,13 +100,39 @@ export class ThreatReportOverviewService {
       });
   }
 
+  public saveReports(reports: Report[]): Observable<Report[]> {
+    if (!reports) {
+      return Observable.empty();
+    }
+
+    const url = this.reportsUrl;
+    const headers = this.ensureAuthHeaders(this.headers);
+    const calls = reports.map((report) => {
+      const id = report.id || UUID.v4();
+      const attributes = Object.assign({}, report.attributes);
+      report.id = id;
+      report.attributes.id = id;
+      const body = JSON.stringify({
+        data: {
+          type: report.type || 'report',
+          attributes
+        }
+      });
+
+      // add new object
+      return this.http.post<Report>(url, body, { headers });
+    });
+
+    return Observable.forkJoin(...calls);
+  }
+
   /**
    * @description save a threat report to the mongo backend database
    * @param threatReport
    */
   public saveThreatReport(threatReport: ThreatReport): Observable<ThreatReport[]> {
     if (!threatReport) {
-      return Observable.of();
+      return Observable.empty();
     }
 
     const url = this.reportsUrl;
@@ -106,7 +142,7 @@ export class ThreatReportOverviewService {
     const id = threatReport.id || UUID.v4();
 
     const calls = reports.map((report) => {
-      const attributes = Object.assign({}, report.data.attributes);
+      const attributes = Object.assign({}, report.attributes);
       const meta = { work_product: {} };
       const workProduct: any = meta.work_product;
       workProduct.boundries = new Boundries();
@@ -124,12 +160,12 @@ export class ThreatReportOverviewService {
       attributes.metaProperties = meta;
       const body = JSON.stringify({
         data: {
-          type: report.data.type || 'report',
+          type: report.type || 'report',
           attributes
         }
       });
 
-      const reportId = report.data.attributes.id || undefined;
+      const reportId = report.attributes.id || undefined;
       if (reportId) {
         // update and existing object
         const updateOrAddUrl = `${url}/${reportId}`;
