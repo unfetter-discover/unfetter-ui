@@ -65,17 +65,18 @@ export class ThreatReportOverviewService {
       .flatMap((el) => el)
       .filter((el) => el !== undefined)
       // if the report does not have a workproduct we cant aggregate it now can we?
-      .filter((report: any) => report.attributes
+      .filter((report) => report.attributes
         && report.attributes.metaProperties && report.attributes.metaProperties.work_product)
       .reduce((memo, el) => {
         // map threat reports to a key, this reduce performs a grouping by like reports
-        const report: any = el.attributes;
-        const name = report.metaProperties.work_product.name;
-        const author = report.metaProperties.work_product.author || '';
-        const date = report.metaProperties.work_product.date || '';
-        const published = report.metaProperties.work_product.published;
-        const id = report.metaProperties.work_product.id || -1;
-        let key = report.metaProperties.work_product.id;
+        const report = el;
+        const attribs = report.attributes;
+        const name = attribs.metaProperties.work_product.name;
+        const author = attribs.metaProperties.work_product.author || '';
+        const date = attribs.metaProperties.work_product.date || '';
+        const published = attribs.metaProperties.work_product.published;
+        const id = attribs.metaProperties.work_product.id || -1;
+        let key = attribs.metaProperties.work_product.id;
         if (!key) {
           key = name + author + date;
         }
@@ -88,7 +89,7 @@ export class ThreatReportOverviewService {
         tr.author = author;
         tr.published = published;
         tr.id = id;
-        const srcBoundries = report.metaProperties.work_product.boundries;
+        const srcBoundries = attribs.metaProperties.work_product.boundries;
         tr.boundries = new Boundries();
         tr.boundries.startDate = srcBoundries.startDate;
         tr.boundries.endDate = srcBoundries.endDate;
@@ -171,7 +172,7 @@ export class ThreatReportOverviewService {
           type: report.type || 'report',
           attributes
         }
-      });
+      } as JsonSchema<Report>);
 
       const reportId = report.attributes.id || undefined;
       if (reportId) {

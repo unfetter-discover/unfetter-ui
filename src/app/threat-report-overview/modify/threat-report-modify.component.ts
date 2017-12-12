@@ -38,7 +38,7 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
   public filters: QueryList<ElementRef>;
   public filter: ElementRef;
 
-  public displayCols = ['title', 'date', 'author', 'actions'];
+  public displayCols = ['actions', 'title', 'date', 'author'];
   public threatReport: ThreatReport;
   public dataSource: ThreatReportModifyDataSource;
   public curDisplayLen$: Observable<number>;
@@ -65,15 +65,22 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
    */
   public ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
-    this.threatReport = this.sharedService.threatReportOverview || new ThreatReport();
-    const loadReports$ = this.load();
+    const loadReports$ = this.load(this.id);
+    // this.threatReport = this.sharedService.threatReportOverview;
+    // if (this.id && this.id.trim() !== '') {
+    //   const loadReports$ = this.load(this.id);
+    // } else {
+    //   this.threatReport = this.sharedService.threatReportOverview || new ThreatReport();
+    //   this.dataSource = new ThreatReportModifyDataSource(
+    //     Observable.of(this.threatReport.reports), this.paginator);
+    //   requestAnimationFrame(() => this.inProgress = false);
+    // }
   }
 
   /**
    * @description initalization after view children are set
    */
   public ngAfterViewInit(): void {
-    console.log('after view init');
     const sub$ = this.filters.changes.subscribe(
       (comps) => this.initFilter(comps.first),
       (err) => console.log(err));
@@ -90,10 +97,10 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
   }
 
   /**
-   * go back to list view
+   * @description go back to list view
    * @param {UIEvent} event optional
    */
-  public cancel(event: UIEvent): void {
+  public cancel(event?: UIEvent): void {
     this.sharedService.threatReportOverview = null;
     // this.location.back();
     this.router.navigate([`/${this.threatDashboard}`]);
@@ -132,10 +139,6 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
         if (this.isFalsey(result)) {
           return;
         }
-        // add new report, wrap in the expect data attribute, cause you know, jsonschema
-        // const report = {
-        //   data: result
-        // };
         const report = result as Report;
         this.threatReport.reports.push(report);
       },
@@ -144,66 +147,95 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
   }
 
   /**
-   * @description delete a report
-   * @param report
-   * @param {UIEvent} event optional
+   * @description add a report to the threat report
+   * @param {Report} report include this report in the current workproduct
    * @return {void}
    */
-  // public deletButtonClicked(row: any, event?: UIEvent): void {
-  //   const _self = this;
-  //   const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: row.data });
-  //   dialogRef.afterClosed().subscribe(
-  //     (result) => {
-  //       const isBool = typeof result === 'boolean';
-  //       const isString = typeof result === 'string';
-  //       if (!result ||
-  //           (isBool && result !== true) ||
-  //           (isString && result !== 'true')) {
-  //         return;
-  //       }
-
-  //       if (!row.data.attributes || !row.data.attributes.id) {
-  //         return;
-  //       }
-
-  //       const sub$ = _self.service.deleteThreatReport(row.data.attributes.id).subscribe(
-  //         (d) => {
-  //           this.threatReport.reports = this.threatReport.reports.filter((r) => r.data.attributes.id !== row.data.attributes.id);
-  //           this.dataSource.nextDataChange(this.threatReport.reports);
-  //         },
-  //         (err) => console.log(err),
-  //         () => sub$.unsubscribe());
-  //     });
-  // }
-
-  public onFileParsed(event: Report[]): void {
-    if (event) {
-      // turn dates into ISO Date format or backend will complain on validation
-      const reports = event.map((e) => {
-        if (e && e.attributes && e.attributes.created) {
-          // turn to required ISO8601 format or clear the date because we cant use it
-          e.attributes.created = DateHelper.getISOOrUndefined(e.attributes.created);
-        }
-        return e;
-      });
-
-      const sub$ = this.service.saveReports(reports)
-        .subscribe(() => {
-          this.load();
-        },
-        (err) => console.log(err),
-        () => sub$.unsubscribe());
-    };
-  }
-
-  public onFileUploadFail(event: string): void {
-    if (event) {
-      this.snackBar.open(event, 'Close', {
-        duration: 2000,
-      });
+  public onIncludeReport(report: Report, event?: UIEvent): void {
+    if (!report || !this.threatReport) {
+      return;
     }
+
+    console.log(report);
+    console.log(this.threatReport);
+    this.threatReport.reports = this.threatReport.reports.concat(report);
+    const sub$ = this.service.saveThreatReport(this.threatReport).subscribe(
+      (tro) => {
+        console.log(tro);
+      },
+      (err) => console.log(err),
+      () => sub$.unsubscribe());
   }
 
+  /**
+   * @description exclude a report from this threat report
+   * @param {Report} report include this report in the current workproduct
+   * @return {void}
+   */
+  public onExcludeReport(report: Report, event?: UIEvent): void {
+    if (!report || !this.threatReport) {
+      return;
+    }
+
+    console.log(report);
+    console.log(this.threatReport);
+    this.threatReport.reports = this.threatReport
+      .reports.filter((el) => el.attributes.id !== report.attributes.id);
+
+    // TODO: call backend
+    // const sub$ = this.service.saveThreatReport(this.threatReport).subscribe(
+    //   (tro) => {
+    //     console.log(tro);
+    //   },
+    //   (err) => console.log(err),
+    //   () => sub$.unsubscribe());
+  }
+
+  /**
+   * @description handle when a csv file is parsed into reports
+   * @param {Report[]} event
+   * @return {void}
+   */
+  public onFileParsed(event?: Report[]): void {
+    if (!event) {
+      return;
+    }
+    // turn dates into ISO Date format or backend will complain on validation
+    const reports = event.map((e) => {
+      if (e && e.attributes && e.attributes.created) {
+        // turn to required ISO8601 format or clear the date because we cant use it
+        e.attributes.created = DateHelper.getISOOrUndefined(e.attributes.created);
+      }
+      return e;
+    });
+
+    const sub$ = this.service.saveReports(reports)
+      .subscribe(() => {
+        this.load(this.threatReport.id);
+      },
+      (err) => console.log(err),
+      () => sub$.unsubscribe());
+  }
+
+  /**
+   * @description notify user of any upload or parse errors
+   * @param {string} event optional
+   */
+  public onFileUploadFail(event?: string): void {
+    if (!event) {
+      return;
+    }
+
+    // notify the user of the error
+    this.snackBar.open(event, 'Close', {
+      duration: 2000,
+    });
+  }
+
+  /**
+   * @description trigger an event in the datasource, because the user paged
+   * @param {PageEvent} event optional
+   */
   public onPage(event?: PageEvent): void {
     this.dataSource.nextPageChange(event);
   }
@@ -212,7 +244,7 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
    * @description initialize the filter input box
    * @param {ElementRef} filter
    */
-  protected initFilter(filter: ElementRef): void {
+  public initFilter(filter: ElementRef): void {
     if (!filter || !filter.nativeElement) {
       console.log('filter nativeElement is not initialized, cannot setup observable, moving on...')
       return;
@@ -232,13 +264,38 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
   }
 
   /**
-   * @description load workproducts, setup this comoponents datasource
-   * @return {void}
+   * @description load workproducts, setup this components datasource
+   * @param {string} optional threat report id
+   * @return {Observable<Report[]>}
    */
-  private load(): Observable<Report[]> {
+  public load(threatReportId?: string): Observable<Report[]> {
     this.inProgress = true;
-    const loadReports$ = this.service.loadAllReports()
-      .map((reports) => this.reports = reports)
+
+    let loadAll$;
+    const loadReports$ = this.service.loadAllReports();
+    if (!threatReportId) {
+      // this may be an unsaved threat report
+      loadAll$ = Observable.combineLatest(loadReports$)
+        .withLatestFrom((results) => {
+          this.reports = results[0];
+          return this.reports;
+        })
+        // get any inprogress threat reports, or create a new one
+        .do(() => this.threatReport = this.sharedService.threatReportOverview || new ThreatReport());
+    } else {
+      // this may be an unsaved threat report
+      const loadThreatReport$ = this.service.load(threatReportId);
+      loadAll$ = Observable.combineLatest(loadThreatReport$, loadReports$)
+        .withLatestFrom((results) => {
+          this.threatReport = results[0];
+          this.reports = results[1];
+          return this.reports;
+        })
+        // clear out an inprogress threat reports we were creating
+        .do(() => this.sharedService.threatReportOverview = this.threatReport);
+    }
+
+    loadAll$ = loadAll$
       .do(() => {
         // removing spinner, put on change queue
         requestAnimationFrame(() => {
@@ -253,23 +310,32 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
         });
       })
       .do(() => {
+        // have to set pager after the table is rendered, pager is used by 
+        //  datasource to calculate what to display
         if (this.paginator && this.dataSource && !this.dataSource.paginator) {
           console.log('setting paginator');
           this.dataSource.paginator = this.paginator;
         }
       });
-    // .do(() => {
-    //   // remember to clear the shared service used by other pages
-    //   this.sharedService.threatReportOverview = this.threatReport;
-    // })
 
-    this.dataSource = new ThreatReportModifyDataSource(loadReports$, this.paginator);
+    this.dataSource = new ThreatReportModifyDataSource(loadAll$, this.paginator);
     return loadReports$;
   }
 
   /**
+   * @description
+   */
+  public isIncludedReport(reportId: string): boolean {
+    if (!reportId) {
+      return false;
+    }
+
+    return this.threatReport.reports.find((report) => report.id === reportId) !== undefined;
+  }
+
+  /**
    * @description 
-   * @return true is string and true or boolean and true, otherwise false
+   * @return {boolean} returns true iff string and true or boolean and true, otherwise false
    */
   private isTruthy(val: boolean | string = false): boolean {
     const isBool = typeof val === 'boolean';
@@ -279,7 +345,7 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
 
   /**
    * @description 
-   * @return true is string and false or boolean and false, otherwise true
+   * @return returns true iff string and false or boolean and false, otherwise true
    */
   private isFalsey(val: boolean | string | Partial<Report> | undefined): boolean {
     const isUndefined = typeof val === 'undefined';

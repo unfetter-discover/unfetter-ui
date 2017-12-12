@@ -42,7 +42,7 @@
     <div class="row" *ngIf="threatReport">
         <div class="col-xs-6 col-md-6">
             <h4>
-                Include Reports
+                Included Reports ({{threatReport.reports.length}})
             </h4>
             <mat-form-field floatPlaceholder="never">
                 <input matInput #filter placeholder="Reference reports in this work product" color="primary">
@@ -78,6 +78,27 @@
         <div class="col-xs-12 col-md-12">
             <div class="mat-elevation-z3 cardHoverShadow">
                 <mat-table #table [dataSource]="dataSource">
+                    <ng-container matColumnDef='actions'>
+                        <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                        <mat-cell *matCellDef="let row">
+                            <span *ngIf="!!isIncludedReport(row.id); else includeReportBlock">
+                                <button mat-icon-button color="warn" class="mat-24" matTooltip="Exclude Report" (click)="onExcludeReport(row, $event)">
+                                    <mat-icon aria-label="exclude report in workproduct">
+                                        remove_circle
+                                    </mat-icon>
+                                </button>
+                            </span>
+                            <ng-template #includeReportBlock>
+                                <span>
+                                    <button mat-icon-button color="accent" class="mat-24" matTooltip="Include Report" (click)="onIncludeReport(row, $event)">
+                                        <mat-icon aria-label="include report in workproduct">
+                                            add_circle_outline
+                                        </mat-icon>
+                                    </button>
+                                </span>
+                            </ng-template>
+                        </mat-cell>
+                    </ng-container>
                     <ng-container matColumnDef="title">
                         <mat-header-cell *matHeaderCellDef> Title </mat-header-cell>
                         <mat-cell *matCellDef="let row">
@@ -105,16 +126,6 @@
                         <mat-cell *matCellDef="let row" [style.color]="row.color">
                             <span class="mat-caption">
                                 {{row.attributes.modified | date:'medium' }}
-                            </span>
-                        </mat-cell>
-                    </ng-container>
-                    <ng-container matColumnDef='actions'>
-                        <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-                        <mat-cell *matCellDef="let row">
-                            <span *ngIf="row.attributes.id" class="buttonGrp text-right">
-                                <button class="mat-warn" mat-button (click)="0">
-                                    <i class="material-icons">delete</i>
-                                </button>
                             </span>
                         </mat-cell>
                     </ng-container>

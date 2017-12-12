@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ViewChildren, QueryList, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
@@ -32,7 +32,6 @@ export class ThreatReportOverviewComponent implements OnInit, AfterViewInit, OnD
   private readonly modifyRoute = '/threat-dashboard/modify';
 
   constructor(
-    protected changeDetector: ChangeDetectorRef,
     protected threatReportOverviewService: ThreatReportOverviewService,
     protected router: Router,
     protected sharedService: ThreatReportSharedService,
@@ -149,7 +148,6 @@ export class ThreatReportOverviewComponent implements OnInit, AfterViewInit, OnD
    * @return {void}
    */
   public initFilter(filter: ElementRef): void {
-    // this.changeDetector.markForCheck();
     if (!filter || !filter.nativeElement) {
       console.log('filter element is undefined, cannot setup events observable, moving on...');
       return;
@@ -166,7 +164,6 @@ export class ThreatReportOverviewComponent implements OnInit, AfterViewInit, OnD
         this.dataSource.nextFilter(this.filter.nativeElement.value);
       });
     this.subscriptions.push(sub$);
-    // this.changeDetector.markForCheck();
   }
 
 }
