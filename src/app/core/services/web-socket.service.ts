@@ -3,29 +3,41 @@ import * as io from 'socket.io-client';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs';
 import { WSMessageTypes } from '../../global/enums/ws-message-types.enum';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class WebsocketService {
     private socket;
     private connected: boolean = false;
     private socketSubject: Subject<MessageEvent>;
+    // TODO change this
     private url = 'https://localhost:3000';
 
-    constructor() {
+    constructor(private authService: AuthService) {
         this.initConnection();
     }
 
     public initConnection(): void {
-        this.socket = io(this.url, { secure: true });
+        // TODO don't get token like this
+        const token = this.authService.getToken();
+        this.socket = io(this.url, {     
+            secure: true,
+            query: `token=${token}`
+        });
 
         this.socket.on('connect', () => {
             console.log('Successfully connected to socket server');
             this.connected = true;
         });
 
+        this.socket.on('error', (err) => {
+            console.log('An error occured: ', err);
+            this.connected = true;
+        });
+
         const observable = new Observable((socketObserver: any) => {
             this.socket.on('message', (data) => {
-                console.log('Received message from Websocket Server')
+                console.log('Received message from Websocket Server', data);
                 socketObserver.next(data);
             });
             return () => {

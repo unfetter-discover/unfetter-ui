@@ -10,6 +10,7 @@ import * as configActions from './root-store/config/config.actions';
 import { environment } from '../environments/environment';
 import * as notificationsActions from './root-store/notification/notification.actions';
 import { WebsocketService } from './core/services/web-socket.service';
+import { WSMessageTypes } from './global/enums/ws-message-types.enum';
 
 @Component({
   selector: 'app',
@@ -48,7 +49,7 @@ export class AppComponent implements OnInit {
       this.store.dispatch(new configActions.FetchConfig());
       this.store.dispatch(new notificationsActions.StartNotificationStream());
 
-      const socketSub$ = this.websocketService.connect()
+      const socketSub$ = this.websocketService.connect(WSMessageTypes.SYSTEM)
         .subscribe(
           (res) => {
             console.log(res);
@@ -61,6 +62,5 @@ export class AppComponent implements OnInit {
           }
       );
     }
-
   }
 }

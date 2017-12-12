@@ -17,9 +17,6 @@ export class NotificationEffects {
     public startNotificationStream = this.actions$
         .ofType(notificationActions.START_NOTIFICATION_STREAM)
         .switchMap(() => this.websocketService.connect(WSMessageTypes.NOTIFICATION))
-        .do((notification) => {
-            console.log('INCOMING notification: ', notification);
-        })
         .map((notification) => ({
             type: notificationActions.ADD_NOTIFCATION,
             payload: notification
