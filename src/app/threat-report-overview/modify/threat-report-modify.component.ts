@@ -17,6 +17,7 @@ import { ThreatReportOverviewService } from '../../threat-dashboard/services/thr
 import { Report } from '../../models/report';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { ModifyReportDialogComponent } from '../modify-report-dialog/modify-report-dialog.component';
+import { DateHelper } from '../../global/static/date-helper';
 
 @Component({
   selector: 'unf-threat-report-modify',
@@ -175,17 +176,18 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
   //     });
   // }
 
-  public onFileParsed(event: any): void {
+  public onFileParsed(event: Report[]): void {
     if (event) {
-      // TODO: turn dates into ISO Date format or backend will complain on validation
-      event = event.map((e) => {
-        console.log(e);
+      // turn dates into ISO Date format or backend will complain on validation
+      const reports = event.map((e) => {
         if (e && e.attributes && e.attributes.created) {
-          e.attributes.created = undefined;
+          // turn to required ISO8601 format or clear the date because we cant use it
+          e.attributes.created = DateHelper.getISOOrUndefined(e.attributes.created);
         }
         return e;
       });
-      const sub$ = this.service.saveReports(event)
+
+      const sub$ = this.service.saveReports(reports)
         .subscribe(() => {
           this.load();
         },

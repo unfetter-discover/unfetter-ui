@@ -61,8 +61,10 @@ export class ThreatReportModifyDataSource extends DataSource<Report> {
             const pageIndex = (pageEvent && pageEvent.pageIndex) ? pageEvent.pageIndex : 0;
             const pageSize = (pageEvent && pageEvent.pageSize) ? pageEvent.pageSize : 25;
             const startIndex = pageIndex * pageSize;
-            const display = data.slice(startIndex, pageSize);
-            this.displayLenSubject$.next(display.length);
+            const dataLen = (pageEvent && pageEvent.length) ? pageEvent.length : data.length;
+            const stopIndex = (startIndex + pageSize) <= dataLen ? (startIndex + pageSize) : dataLen;
+            const display = data.slice(startIndex, stopIndex);
+            this.displayLenSubject$.next(data.length);
             return display;
         });
     }

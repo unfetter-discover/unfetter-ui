@@ -11,6 +11,7 @@ import { GenericApi } from '../../core/services/genericapi.service';
 import { ThreatReport } from '../../threat-report-overview/models/threat-report.model';
 import { Boundries } from '../../threat-report-overview/models/boundries';
 import { Report } from '../../models/report';
+import { JsonSchema } from '../../models/json-schema';
 
 @Injectable()
 export class ThreatReportOverviewService {
@@ -62,6 +63,10 @@ export class ThreatReportOverviewService {
   public aggregateReportsToThreatReports(reports: Observable<Report[]>): Observable<ThreatReport[]> {
     return reports
       .flatMap((el) => el)
+      .filter((el) => el !== undefined)
+      // if the report does not have a workproduct we cant aggregate it now can we?
+      .filter((report: any) => report.attributes
+        && report.attributes.metaProperties && report.attributes.metaProperties.work_product)
       .reduce((memo, el) => {
         // map threat reports to a key, this reduce performs a grouping by like reports
         const report: any = el.attributes;
@@ -117,10 +122,13 @@ export class ThreatReportOverviewService {
           type: report.type || 'report',
           attributes
         }
-      });
+      } as JsonSchema<Report>);
 
       // add new object
-      return this.http.post<Report>(url, body, { headers });
+      return this.http
+        .post<JsonSchema<Report>>(url, body, { headers })
+        // unwrap the json scheam
+        .map((jsonSchema) => jsonSchema.data);
     });
 
     return Observable.forkJoin(...calls);
