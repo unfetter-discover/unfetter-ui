@@ -28,6 +28,7 @@ import { reducers } from './root-store/app.reducers';
 import { UserEffects } from './root-store/users/user.effects';
 import { ConfigEffects } from './root-store/config/config.effects';
 import { UtilityEffects } from './root-store/utility/utility.effects';
+import { NotificationEffects } from './root-store/notification/notification.effects';
 
 /**
  * `AppModule` is the main entry point into Angular's bootstraping process
@@ -55,7 +56,8 @@ import { UtilityEffects } from './root-store/utility/utility.effects';
     EffectsModule.forRoot([
       UserEffects,
       ConfigEffects,
-      UtilityEffects
+      UtilityEffects,
+      NotificationEffects
     ]),
     StoreDevtoolsModule.instrument() // TODO modify so its only used in dev mode,
   ],

@@ -9,6 +9,7 @@ import 'rxjs/add/operator/mergeMap';
 
 import * as userActions from '../../root-store/users/user.actions';
 import * as configActions from '../../root-store/config/config.actions';
+import * as notificationActions from '../../root-store/notification/notification.actions';
 import { UsersService } from '../../core/services/users.service';
 import { AuthService } from '../../core/services/auth.service';
 
@@ -49,9 +50,12 @@ export class UserEffects {
                         token
                     }
                 },
-                {
-                    type: configActions.FETCH_CONFIG
-                }
+                // {
+                //     type: configActions.FETCH_CONFIG
+                // },
+                // {
+                //     type: notificationActions.START_NOTIFICATION_STREAM
+                // }
             ]
         });
 

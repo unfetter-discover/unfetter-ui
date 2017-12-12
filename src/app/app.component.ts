@@ -8,6 +8,8 @@ import * as fromApp from './root-store/app.reducers';
 import * as userActions from './root-store/users/user.actions';
 import * as configActions from './root-store/config/config.actions';
 import { environment } from '../environments/environment';
+import * as notificationsActions from './root-store/notification/notification.actions';
+import { WebsocketService } from './core/services/web-socket.service';
 
 @Component({
   selector: 'app',
@@ -25,7 +27,8 @@ export class AppComponent implements OnInit {
   constructor(
     public authService: AuthService,
     private webAnalyticsService: WebAnalyticsService,
-    private store: Store<fromApp.AppState>
+    private store: Store<fromApp.AppState>,
+    private websocketService: WebsocketService
   ) {}
 
   public ngOnInit() {
@@ -43,6 +46,20 @@ export class AppComponent implements OnInit {
       const token = this.authService.getToken();
       this.store.dispatch(new userActions.LoginUser({ userData: user, token }));
       this.store.dispatch(new configActions.FetchConfig());
+      this.store.dispatch(new notificationsActions.StartNotificationStream());
+
+      const socketSub$ = this.websocketService.connect()
+        .subscribe(
+          (res) => {
+            console.log(res);
+          },
+          (err) => {
+            console.log(err);
+          },
+          () => {
+            socketSub$.unsubscribe();
+          }
+      );
     }
 
   }
