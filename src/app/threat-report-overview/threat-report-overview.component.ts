@@ -93,39 +93,36 @@ export class ThreatReportOverviewComponent implements OnInit, AfterViewInit, OnD
    * @return {void}
    */
   public deleteButtonClicked(row: any, event?: UIEvent): void {
-    const _self = this;
+    if (!row || !row.id) {
+      return;
+    }
+
     row['attributes'] = { name: row.name };
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: row });
     dialogRef.afterClosed().subscribe(
       (result) => {
         const isBool = typeof result === 'boolean';
         const isString = typeof result === 'string';
-        if ((isBool && result !== true)
-          || (isString && result !== 'true')) {
+        if (!result ||
+          (isBool && result !== true) ||
+          (isString && result !== 'true')) {
           return;
         }
 
-        // TODO: fix this
-        const sub = Observable.create((observer) => {
-          let count = row.reports.length;
-          row.reports.forEach(
-            (report) => {
-              const sub1 = _self.threatReportOverviewService.deleteThreatReport(report.id).subscribe(
-                (d) => --count,
-                (err) => console.log(err),
-                () => {
-                  if (count <= 0) {
-                    observer.next(null);
-                    observer.complete();
-                  }
-                }
-              );
-              this.subscriptions.push(sub1);
-            });
-        }).subscribe(
-          () => _self.dataSource.nextFilter(),
-          (error) => console.log(error),
-          () => sub.unsubscribe());
+        const sub$ = this.threatReportOverviewService.deleteThreatReport(row.id).subscribe(
+          (resp) => {
+            console.log(resp);
+            const s$ = resp.subscribe(
+              (reports) => {
+                console.log('modified ', reports);
+                this.dataSource.nextDataChange(reports);
+              },
+              (err) => console.log(err)
+            );
+            this.subscriptions.push(s$);
+          },
+          (err) => console.log(err));
+        this.subscriptions.push(sub$);
       });
   }
 

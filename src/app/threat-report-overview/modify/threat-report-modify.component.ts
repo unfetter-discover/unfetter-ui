@@ -65,16 +65,14 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
    */
   public ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
-    const loadReports$ = this.load(this.id);
-    // this.threatReport = this.sharedService.threatReportOverview;
-    // if (this.id && this.id.trim() !== '') {
-    //   const loadReports$ = this.load(this.id);
-    // } else {
-    //   this.threatReport = this.sharedService.threatReportOverview || new ThreatReport();
-    //   this.dataSource = new ThreatReportModifyDataSource(
-    //     Observable.of(this.threatReport.reports), this.paginator);
-    //   requestAnimationFrame(() => this.inProgress = false);
-    // }
+    this.threatReport = this.sharedService.threatReportOverview;
+    if (this.threatReport) {
+      // load just reports, so dont give an id
+      this.load();
+    } else {
+      // we need reports, and the threat report use the id
+      this.load(this.id);
+    }
   }
 
   /**
@@ -160,14 +158,18 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
       event.preventDefault();
     }
 
+    this.threatReport.reports = this.threatReport.reports.concat(report);
     console.log(report);
     console.log(this.threatReport);
-    this.threatReport.reports = this.threatReport.reports.concat(report);
-    const sub$ = this.service.saveThreatReport(this.threatReport).subscribe(
+    if (!this.threatReport.id) {
+      // this threat report is in progress so do not save to db until they hit save
+      return;
+    }
+
+    const sub$ = this.service.upsertReports([report], this.threatReport)
+      .subscribe(
       (tro) => {
         console.log(tro);
-        // assign id, in case this was a newly minted threat report ie first report included
-        this.threatReport.id = tro.id;
       },
       (err) => console.log(err),
       () => sub$.unsubscribe());
@@ -191,14 +193,18 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
     console.log(this.threatReport);
     this.threatReport.reports = this.threatReport
       .reports.filter((el) => el.attributes.id !== report.attributes.id);
+    if (!this.threatReport.id) {
+      // this threat report is in progress so do not save to db until they hit save
+      return;
+    }
 
-    // TODO: call backend
-    // const sub$ = this.service.saveThreatReport(this.threatReport).subscribe(
-    //   (tro) => {
-    //     console.log(tro);
-    //   },
-    //   (err) => console.log(err),
-    //   () => sub$.unsubscribe());
+    const sub$ = this.service.removeReport(report, this.threatReport)
+      .subscribe(
+      (tro) => {
+        console.log(tro);
+      },
+      (err) => console.log(err),
+      () => sub$.unsubscribe());
   }
 
   /**
@@ -219,8 +225,9 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
       return e;
     });
 
-    const sub$ = this.service.saveReports(reports)
+    const sub$ = this.service.upsertReports(reports)
       .subscribe(() => {
+        console.log('saved reports, reloading');
         this.load(this.threatReport.id);
       },
       (err) => console.log(err),
@@ -297,7 +304,7 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
       const loadThreatReport$ = this.service.load(threatReportId);
       loadAll$ = Observable.combineLatest(loadThreatReport$, loadReports$)
         .withLatestFrom((results) => {
-          this.threatReport = results[0];
+          this.threatReport = results[0] as ThreatReport;
           this.reports = results[1];
           return this.reports;
         })

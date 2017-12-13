@@ -231,7 +231,6 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    * @param {UIEvent} event optional
    */
   public onContinue(event: UIEvent): void {
-    // this.threatReport.reports = this.appendReports(this.threatReport.reports, this.csvReports);
     // if the boundries check box is checked, do not use boundries provided
     if (this.isFalsey(this.shouldIncludeBoundries)) {
       this.threatReport.boundries = new Boundries();
@@ -241,59 +240,32 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description append / concat only new non saved reports
-   * @return {any[]}
-   */
-  // public appendReports(current: any[] = [], updates: any[] = []): any[] {
-  //   current = current.concat(updates);
-  //   return current;
-  // }
-
-  /**
-   * @description recieve a fileParsed event
-   * @param {any[]} event optional
-   * @return {void}
-   */
-  // public fileParsed(event?: any[]): void {
-  //   if (event) {
-  //     // TODO: turn dates into ISO Date format or backend will complain on validation
-  //     event = event.map((e) => {
-  //       if (e && e.data && e.data.attributes && e.data.attributes.created) {
-  //         e.data.attributes.created = undefined;
-  //       }
-  //       return e;
-  //     });
-  //   }
-  //   this.csvReports = event;
-  // }
-
-  /**
    * @description open add external report dialog
    * @param {UIEvent} event optional
    * @return {void}
    */
-  public openAddReportDialog(event?: UIEvent): void {
-    const opts = {
-      width: '800px',
-      height: 'calc(100vh - 140px)'
-    };
-    this.dialog
-      .open(ModifyReportDialogComponent, opts)
-      .afterClosed()
-      .subscribe((result: Partial<Report> | boolean) => {
-        if (this.isFalsey(result)) {
-          return;
-        }
-        // add new report, wrap in the expect data attribute, cause you know, jsonschema
-        // const report = {
-        //   data: result
-        // };
-        const report = result as Report;
-        this.threatReport.reports.push(report);
-      },
-      (err) => console.log(err)
-      );
-  }
+  // public openAddReportDialog(event?: UIEvent): void {
+  //   const opts = {
+  //     width: '800px',
+  //     height: 'calc(100vh - 140px)'
+  //   };
+  //   this.dialog
+  //     .open(ModifyReportDialogComponent, opts)
+  //     .afterClosed()
+  //     .subscribe((result: Partial<Report> | boolean) => {
+  //       if (this.isFalsey(result)) {
+  //         return;
+  //       }
+  //       // add new report, wrap in the expect data attribute, cause you know, jsonschema
+  //       // const report = {
+  //       //   data: result
+  //       // };
+  //       const report = result as Report;
+  //       this.threatReport.reports.push(report);
+  //     },
+  //     (err) => console.log(err)
+  //     );
+  // }
 
   /**
    * @description 

@@ -92,8 +92,8 @@ export class SidePanelComponent implements OnInit, OnDestroy {
                 }
 
                 const delete$ = this.threatReportOverviewService
-                    .deleteThreatReport(reportId);
-                const load$ = this.load(workProductId).do((val) => this.threatReport = val);
+                    .removeReport(this.selectedExternalRef as Report, this.threatReport);
+                const load$ = this.load(workProductId).do((val) => this.threatReport = val as ThreatReport);
                 const sub$ = Observable.concat(delete$, load$)
                     .subscribe(
                     (val) => this.modifiedBoundries.emit(this.threatReport),
@@ -139,9 +139,9 @@ export class SidePanelComponent implements OnInit, OnDestroy {
      * @param workProductId
      * @return {Observable<ThreatReport>}
      */
-    public load(workProductId: string): Observable<ThreatReport> {
+    public load(workProductId: string): Observable<Partial<ThreatReport>> {
         if (!workProductId || workProductId.trim().length === 0) {
-            return Observable.of();
+            return Observable.empty();
         }
 
         return this.threatReportOverviewService.load(workProductId);
@@ -301,7 +301,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
                 const innerSub$ = this.threatReportOverviewService
                     .load(this.threatReport.id)
                     .subscribe((innerThreatReport) => {
-                        this.threatReport = innerThreatReport;
+                        this.threatReport = innerThreatReport as ThreatReport;
                         this.modifiedBoundries.emit(this.threatReport);
                     },
                     (err) => console.log(err),

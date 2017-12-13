@@ -173,7 +173,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @return {Obsevable<ThreatReport}
    */
   public loadThreatReport(): Observable<ThreatReport> {
-    return this.threatReportService.load(this.id).map((el) => this.threatReport = el);
+    return this.threatReportService.load(this.id).map((el) => this.threatReport = el as ThreatReport);
   }
 
   /**
