@@ -49,18 +49,18 @@ export class AppComponent implements OnInit {
       this.store.dispatch(new configActions.FetchConfig());
       this.store.dispatch(new notificationsActions.StartNotificationStream());
 
-      const socketSub$ = this.websocketService.connect(WSMessageTypes.SYSTEM)
+      const systemSub$ = this.websocketService.connect(WSMessageTypes.SYSTEM)        
         .subscribe(
           (res) => {
-            console.log(res);
+            console.log('System message', res);
           },
           (err) => {
             console.log(err);
           },
           () => {
-            socketSub$.unsubscribe();
+            systemSub$.unsubscribe();
           }
-      );
+        );
     }
   }
 }

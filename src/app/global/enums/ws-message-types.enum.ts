@@ -1,4 +1,5 @@
 export const enum WSMessageTypes {
     NOTIFICATION = 'NOTIFICATION',
-    STIX = 'STIX'
+    STIX = 'STIX',
+    SYSTEM = 'SYSTEM'
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
 import { WSMessageTypes } from '../../global/enums/ws-message-types.enum';
 import { AuthService } from './auth.service';
 
@@ -20,7 +20,8 @@ export class WebsocketService {
     public initConnection(): void {
         // TODO don't get token like this
         const token = this.authService.getToken();
-        this.socket = io(this.url, {     
+        this.socket = io(this.url, {
+            path: '/socket',  
             secure: true,
             query: `token=${token}`
         });
@@ -32,7 +33,7 @@ export class WebsocketService {
 
         this.socket.on('error', (err) => {
             console.log('An error occured: ', err);
-            this.connected = true;
+            this.connected = false;
         });
 
         const observable = new Observable((socketObserver: any) => {
@@ -51,7 +52,7 @@ export class WebsocketService {
             },
         };
 
-        this.socketSubject = Subject.create(observer, observable);
+        this.socketSubject = Subject.create(observer, observable).share();
     }
 
     public connect(messageType: WSMessageTypes): Observable<any> {
