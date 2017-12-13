@@ -35,7 +35,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
     @ViewChild('menu')
     public menu: MatMenu;
 
-    public selectedExternalRef: ThreatReport;
+    public selectedExternalRef: Partial<Report>;
     public showMinimizeBtn = false;
     public readonly subscriptions: Subscription[] = [];
 
@@ -77,9 +77,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
 
         const reportId = this.selectedExternalRef.id;
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-            data: {
-                attributes: this.selectedExternalRef
-            }
+            data: this.selectedExternalRef
         });
         const workProductId = this.threatReport.id;
 
@@ -110,8 +108,8 @@ export class SidePanelComponent implements OnInit, OnDestroy {
      * @param {UIEvent} event optional 
      */
     public onOpenExternalRef(event?: UIEvent): void {
-        const ref: any = this.selectedExternalRef;
-        const externalRefs: any[] = ref.external_references;
+        const ref = this.selectedExternalRef;
+        const externalRefs = ref.attributes.external_references;
         if (ref && externalRefs && externalRefs.length > 0) {
             const url = externalRefs[0].url;
             window.open(url, '_blank');
@@ -120,13 +118,19 @@ export class SidePanelComponent implements OnInit, OnDestroy {
 
     /**
      * @description on open menu event, remember the selected row
-     * @param selected 
+     * @param {Partial<Report>} selected 
      * @param {UIEvent} event optional 
      */
-    public onOpenMenu(selected: ThreatReport, event?: UIEvent): void {
+    public onOpenMenu(selected: Partial<Report>, event?: UIEvent): void {
         if (!selected) {
             return;
         }
+
+        if (event) {
+            event.stopImmediatePropagation();
+            event.preventDefault();
+        }
+
         this.selectedExternalRef = selected;
     }
 
@@ -238,7 +242,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
     public addReport(result: Partial<ThreatReport> | Partial<Report> | boolean): void {
         const isBool = typeof result === 'boolean';
         const isUndefined = typeof result === 'undefined';
-        if (isUndefined || isBool && !result) {
+        if (isUndefined || isBool && !!result) {
             return;
         }
 
@@ -260,7 +264,8 @@ export class SidePanelComponent implements OnInit, OnDestroy {
                 .forEach((key) => tro.boundries[key] = boundries[key]);
         } else if (result) {
             // this is an update single report operation
-            tro.reports = tro.reports.concat({ data: result });
+            const report = result as Report;
+            tro.reports = tro.reports.concat(report);
         }
 
         this.saveAndLoadThreatReport(tro);
@@ -277,16 +282,16 @@ export class SidePanelComponent implements OnInit, OnDestroy {
 
         // prepare reports for the save to db operation
         //  wrap in data if needed 
-        threatReport.reports = threatReport.reports.map((report) => {
-            if (report.data) {
-                return report;
-            }
-            return {
-                data: {
-                    attributes: report
-                },
-            };
-        });
+        // threatReport.reports = threatReport.reports.map((report) => {
+        //     if (report.data) {
+        //         return report;
+        //     }
+        //     return {
+        //         data: {
+        //             attributes: report
+        //         },
+        //     };
+        // });
 
         const add$ = this.threatReportOverviewService
             .saveThreatReport(threatReport)

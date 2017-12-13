@@ -156,12 +156,18 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
       return;
     }
 
+    if (event) {
+      event.preventDefault();
+    }
+
     console.log(report);
     console.log(this.threatReport);
     this.threatReport.reports = this.threatReport.reports.concat(report);
     const sub$ = this.service.saveThreatReport(this.threatReport).subscribe(
       (tro) => {
         console.log(tro);
+        // assign id, in case this was a newly minted threat report ie first report included
+        this.threatReport.id = tro.id;
       },
       (err) => console.log(err),
       () => sub$.unsubscribe());
@@ -175,6 +181,10 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
   public onExcludeReport(report: Report, event?: UIEvent): void {
     if (!report || !this.threatReport) {
       return;
+    }
+
+    if (event) {
+      event.preventDefault();
     }
 
     console.log(report);
@@ -228,7 +238,7 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
 
     // notify the user of the error
     this.snackBar.open(event, 'Close', {
-      duration: 2000,
+      duration: 3400,
     });
   }
 

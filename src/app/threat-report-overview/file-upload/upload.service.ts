@@ -6,7 +6,7 @@ import { HttpRequest, HttpHeaders, HttpEvent, HttpEventType } from '@angular/com
 import { Observable } from 'rxjs/Rx';
 import { Constance } from '../../utils/constance';
 import { Report } from '../../models/report';
-import { JsonSchema } from '../../models/json-schema';
+import { JsonApiObject } from '../../threat-dashboard/models/adapter/json-api-object';
 
 @Injectable()
 export class UploadService {
@@ -37,7 +37,7 @@ export class UploadService {
             reportProgress: true,
             headers
         });
-        return this.http.request<Array<JsonSchema<Report>>>(req)
+        return this.http.request<Array<JsonApiObject<Report>>>(req)
             .map((event) => {
                 if (event.type === HttpEventType.UploadProgress) {
                     const percentDone = Math.round(100 * event.loaded / event.total);

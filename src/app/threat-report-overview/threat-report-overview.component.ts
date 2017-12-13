@@ -105,6 +105,7 @@ export class ThreatReportOverviewComponent implements OnInit, AfterViewInit, OnD
           return;
         }
 
+        // TODO: fix this
         const sub = Observable.create((observer) => {
           let count = row.reports.length;
           row.reports.forEach(

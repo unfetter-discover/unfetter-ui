@@ -28,7 +28,6 @@ export class FileUploadComponent implements OnInit {
   public fName = '';
   public numEventsParsed = -1;
   public loading = false;
-  // public errMsg;
   private readonly subscriptions = [];
 
   constructor(
@@ -75,7 +74,6 @@ export class FileUploadComponent implements OnInit {
     // this.fName = file.name;
     this.loading = true;
     this.success = false;
-    // this.errMsg = undefined;
     const s$ = this.uploadService.post(file)
       .subscribe((resp: any) => {
         console.log('upload service response ', resp);
@@ -90,24 +88,25 @@ export class FileUploadComponent implements OnInit {
         // if (resp instanceof HttpResponse) {
         if (resp && resp.length > 0) {
           const el = resp[0];
-          if (el && el.data && el.data.error) {
-            console.log('file upload error' , el.data.error);
-            this.setErrorState(el.data.error);
+          if (el && el.error) {
+            console.log('file upload error', el.error);
+            this.setErrorState(el.error);
             return;
+          } else {
+            requestAnimationFrame(() => {
+              this.numEventsParsed = (resp as any).length || -1;
+              this.loading = false;
+              this.success = true;
+              this.fileParsedEvent.emit(resp as any);
+              setTimeout(() => {
+                this.success = false;
+                this.numEventsParsed = 0;
+                this.loading = false;
+              }, 3400);
+            });
           }
         }
 
-        requestAnimationFrame(() => {
-          this.numEventsParsed = (resp as any).length || -1;
-          this.loading = false;
-          this.success = true;  
-          this.fileParsedEvent.emit(resp as any);
-          setTimeout(() => {
-            this.success = false;
-            this.numEventsParsed = 0;
-            this.loading = false;
-          }, 2300);
-        });
       },
       (err) => {
         this.setErrorState(err);
@@ -121,18 +120,9 @@ export class FileUploadComponent implements OnInit {
   public setErrorState(err: string): void {
     console.log(err);
     this.fName = undefined;
-    // this.errMsg = err;
+    this.success = false;
     this.loading = false;
     this.fileUploadFailed.emit(err);
   }
 
-  /**
-   * @description event handler to remove an uploaded file
-   */
-  public onRemoveFile(event: UIEvent): void {
-    this.fName = '';
-    // this.errMsg = undefined;
-    this.numEventsParsed = -1;
-    this.fileParsedEvent.emit([]);
-  }
 }

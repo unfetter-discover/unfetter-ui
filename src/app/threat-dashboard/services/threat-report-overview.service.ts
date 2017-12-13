@@ -11,7 +11,7 @@ import { GenericApi } from '../../core/services/genericapi.service';
 import { ThreatReport } from '../../threat-report-overview/models/threat-report.model';
 import { Boundries } from '../../threat-report-overview/models/boundries';
 import { Report } from '../../models/report';
-import { JsonSchema } from '../../models/json-schema';
+import { JsonApiObject } from '../models/adapter/json-api-object';
 
 @Injectable()
 export class ThreatReportOverviewService {
@@ -29,10 +29,16 @@ export class ThreatReportOverviewService {
       return Observable.of();
     }
 
-    const query = { 'stix.type': 'report', 'metaProperties.work_product.id': id };
+    const query = { 'stix.type': 'report', 'metaProperties.work_products.id': id };
     const url = `${this.reportsUrl}?extendedproperties=true&metaproperties=true&filter=${encodeURI(JSON.stringify(query))}`;
     const reports$: Observable<Report[]> = this.genericService.get(url);
-    const threatReports$ = this.aggregateReportsToThreatReports(reports$).flatMap((el) => el);
+    const threatReports$ = this
+      .aggregateReportsToThreatReports(reports$)
+      .filter((arr) => {
+        const filtered = arr.find((el) => el.id === id) !== undefined;
+        return filtered;
+      })
+      // .flatMap((el) => el);
     return threatReports$;
   }
 
@@ -66,17 +72,31 @@ export class ThreatReportOverviewService {
       .filter((el) => el !== undefined)
       // if the report does not have a workproduct we cant aggregate it now can we?
       .filter((report) => report.attributes
-        && report.attributes.metaProperties && report.attributes.metaProperties.work_product)
+        && report.attributes.metaProperties && report.attributes.metaProperties.work_products)
+      // flatten (report * <=> * workproduct) relationship into (report * <=> 1 workproduct)
+      .flatMap((report) => {
+        console.log(report.attributes.metaProperties.work_products);
+        const arr = report.attributes.metaProperties.work_products.map((wp) => {
+          const tmpReport = Object.assign(new Report(), report);
+          tmpReport.attributes = Object.assign({}, report.attributes);
+          tmpReport.attributes.metaProperties = Object.assign({}, report.attributes.metaProperties);
+          tmpReport.attributes.metaProperties.work_products = [wp];
+          return tmpReport;
+        }) as Array<Partial<Report>>;
+        return arr;
+      })
       .reduce((memo, el) => {
         // map threat reports to a key, this reduce performs a grouping by like reports
         const report = el;
         const attribs = report.attributes;
-        const name = attribs.metaProperties.work_product.name;
-        const author = attribs.metaProperties.work_product.author || '';
-        const date = attribs.metaProperties.work_product.date || '';
-        const published = attribs.metaProperties.work_product.published;
-        const id = attribs.metaProperties.work_product.id || -1;
-        let key = attribs.metaProperties.work_product.id;
+        // we are ensured only on workproduct due filter and flatMaps above, ...riggghht?
+        const workProduct = attribs.metaProperties.work_products[0];
+        const name = workProduct.name;
+        const author = workProduct.author || '';
+        const date = workProduct.date || '';
+        const published = workProduct.published;
+        const id = workProduct.id || -1;
+        let key = workProduct.id;
         if (!key) {
           key = name + author + date;
         }
@@ -88,8 +108,9 @@ export class ThreatReportOverviewService {
         tr.name = name;
         tr.author = author;
         tr.published = published;
+        tr.date = date;
         tr.id = id;
-        const srcBoundries = attribs.metaProperties.work_product.boundries;
+        const srcBoundries = workProduct.boundries;
         tr.boundries = new Boundries();
         tr.boundries.startDate = srcBoundries.startDate;
         tr.boundries.endDate = srcBoundries.endDate;
@@ -100,12 +121,19 @@ export class ThreatReportOverviewService {
         return memo;
       }, {} as { [key: string]: ThreatReport })
       .map((obj) => {
-        // map from object of keys back to an array, grouped correctly
+        // map from object of keys back to an array of workproducts, 
+        //  with each workproducts reports grouped correctly
+        console.log(obj);
         const keys = Object.keys(obj);
         return keys.map((key) => obj[key]);
       });
   }
 
+  /**
+   * @description save Stix Reports not necessarily associated with any threat reports (ie workproducts)
+   * @param reports
+   * @return {Observable<Report[]>}
+   */
   public saveReports(reports: Report[]): Observable<Report[]> {
     if (!reports) {
       return Observable.empty();
@@ -123,12 +151,12 @@ export class ThreatReportOverviewService {
           type: report.type || 'report',
           attributes
         }
-      } as JsonSchema<Report>);
+      } as JsonApiObject<Report>);
 
       // add new object
       return this.http
-        .post<JsonSchema<Report>>(url, body, { headers })
-        // unwrap the json scheam
+        .post<JsonApiObject<Report>>(url, body, { headers })
+        // unwrap the json api object
         .map((jsonSchema) => jsonSchema.data);
     });
 
@@ -136,10 +164,37 @@ export class ThreatReportOverviewService {
   }
 
   /**
-   * @description save a threat report to the mongo backend database
-   * @param threatReport
+   * @description copy constuct a threat report suitable to save to the database
+   * @param {string} id threat report id
+   * @param {Partial<ThreatReport>} threatReport 
    */
-  public saveThreatReport(threatReport: ThreatReport): Observable<ThreatReport[]> {
+  public copyThreatReportForSave(id: string, threatReport: Partial<ThreatReport>): Partial<ThreatReport> {
+    const meta = { work_products: [{}] };
+    const workProduct: any = meta.work_products[0];
+    workProduct.boundries = new Boundries();
+    workProduct.boundries.startDate = threatReport.boundries.startDate;
+    workProduct.boundries.endDate = threatReport.boundries.endDate;
+    // Set does not serialize well?, so this needs to be an Array
+    workProduct.boundries.intrusions = Array.from(threatReport.boundries.intrusions || []);
+    workProduct.boundries.malware = Array.from(threatReport.boundries.malware || []);
+    workProduct.boundries.targets = Array.from(threatReport.boundries.targets || []);
+    workProduct.name = threatReport.name;
+    workProduct.date = threatReport.date;
+    workProduct.author = threatReport.author;
+    workProduct.published = threatReport.published;
+    workProduct.id = id;
+    return workProduct;
+  }
+
+  /**
+   * @description save a threat report to the mongo backend database
+   *  a threat report (ie workproduct) will contain many stix reports
+   *  every stix report containing the workproduct information in its metaproperties
+   *  this is a many to many relationship and will probably be refactored in the future
+   * @param {Partial<ThreatReport>} threatReport
+   * @return {Observable<Partial<ThreatReport>>}
+   */
+  public saveThreatReport(threatReport: Partial<ThreatReport>): Observable<Partial<ThreatReport>> {
     if (!threatReport) {
       return Observable.empty();
     }
@@ -147,64 +202,63 @@ export class ThreatReportOverviewService {
     const url = this.reportsUrl;
     const headers = this.ensureAuthHeaders(this.headers);
 
-    const reports = threatReport.reports;
     const id = threatReport.id || UUID.v4();
-
+    threatReport.id = id;
+    const reports = threatReport.reports;
     const calls = reports.map((report) => {
       const attributes = Object.assign({}, report.attributes);
-      const meta = { work_product: {} };
-      const workProduct: any = meta.work_product;
-      workProduct.boundries = new Boundries();
-      workProduct.boundries.startDate = threatReport.boundries.startDate;
-      workProduct.boundries.endDate = threatReport.boundries.endDate;
-      // Set does not serialize well?, so this needs to be an Array
-      workProduct.boundries.intrusions = Array.from(threatReport.boundries.intrusions || []);
-      workProduct.boundries.malware = Array.from(threatReport.boundries.malware || []);
-      workProduct.boundries.targets = Array.from(threatReport.boundries.targets || []);
-      workProduct.name = threatReport.name;
-      workProduct.date = threatReport.date;
-      workProduct.author = threatReport.author;
-      workProduct.published = threatReport.published;
-      workProduct.id = id;
+      const meta = {
+        work_products: []
+      };
+      if (report.attributes.metaProperties && report.attributes.metaProperties.work_products) {
+        const associatedWorkProducts = report.attributes.metaProperties.work_products.filter((wp) => wp.id !== id);
+        meta.work_products = [...associatedWorkProducts];
+      }
+      const updatedThreatReport = this.copyThreatReportForSave(id, threatReport);
+      meta.work_products = meta.work_products.concat(updatedThreatReport);
       attributes.metaProperties = meta;
       const body = JSON.stringify({
         data: {
           type: report.type || 'report',
           attributes
         }
-      } as JsonSchema<Report>);
+      } as JsonApiObject<Report>);
 
       const reportId = report.attributes.id || undefined;
       if (reportId) {
-        // update and existing object
+        // update an existing object
         const updateOrAddUrl = `${url}/${reportId}`;
-        return this.http.patch<ThreatReport>(updateOrAddUrl, body, { headers });
+        return this.http.patch<Report>(updateOrAddUrl, body, { headers });
       } else {
         // add new object
-        return this.http.post<ThreatReport>(url, body, { headers });
+        return this.http.post<Report>(url, body, { headers });
       }
     });
 
-    return Observable.forkJoin(...calls);
+    const saveReports$ = Observable.forkJoin(...calls).map((arr) => threatReport);
+    // return this.aggregateReportsToThreatReports(saveReports$).flatMap((el) => el);
+    return saveReports$;
   }
 
   /**
-   *  @description delete a threat report from the mongo backend database
-   *  @param id
+   * TODO: This is really delete a STIX Report, not a ThreatReport/WorkProduct
+   *  rename when I get back here
+   * @description delete a threat report from the mongo backend database
+   * @param {string} id of the threat report to delete
+   * @return {Observable<ThreatReport[]>}
    */
   public deleteThreatReport(id: string): Observable<ThreatReport[]> {
     if (!id || id.trim().length === 0) {
       return Observable.of([]);
     }
 
-    // return this.genericService.delete(url);
     const url = this.reportsUrl + '/' + id;
     const headers = this.ensureAuthHeaders(this.headers);
     return this.http.delete<ThreatReport[]>(url, { headers });
   }
 
   /**
-   * @description add auth http header is missing and it exists in local storage
+   * @description add an auth http header if it is missing and it exists in local storage
    * @param {HttpHeaders} headers 
    * @return {HttpHeaders}
    */
