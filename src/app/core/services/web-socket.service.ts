@@ -11,7 +11,7 @@ export class WebsocketService {
     private connected: boolean = false;
     private socketSubject: Subject<MessageEvent>;
     // TODO change this
-    private url = 'https://localhost:3000';
+    private url = '/';
 
     constructor(private authService: AuthService) {
         this.initConnection();
@@ -21,7 +21,7 @@ export class WebsocketService {
         // TODO don't get token like this
         const token = this.authService.getToken();
         this.socket = io(this.url, {
-            path: '/socket',  
+            path: '/socketserver/socket',  
             secure: true,
             query: `token=${token}`
         });
