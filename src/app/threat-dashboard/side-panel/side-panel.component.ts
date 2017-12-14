@@ -253,6 +253,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
         tro.date = this.threatReport.date;
         tro.author = this.threatReport.author;
         tro.id = this.threatReport.id;
+        tro.published = this.threatReport.published;
         tro.reports = this.threatReport.reports || [];
         const threatReport = result as Partial<ThreatReport>;
         if (threatReport && !isBool && threatReport.boundries) {
@@ -263,8 +264,10 @@ export class SidePanelComponent implements OnInit, OnDestroy {
                 .filter((key) => boundries[key] !== undefined)
                 .forEach((key) => tro.boundries[key] = boundries[key]);
         } else if (result) {
+            // TODO: more efficiently, save this report and update the page
             // this is an update single report operation
-            const report = result as Report;
+            const report = new Report();
+            report.attributes = (result as any).attributes;
             tro.reports = tro.reports.concat(report);
         }
 
@@ -279,33 +282,25 @@ export class SidePanelComponent implements OnInit, OnDestroy {
         if (!threatReport) {
             return;
         }
-
-        // prepare reports for the save to db operation
-        //  wrap in data if needed 
-        // threatReport.reports = threatReport.reports.map((report) => {
-        //     if (report.data) {
-        //         return report;
-        //     }
-        //     return {
-        //         data: {
-        //             attributes: report
-        //         },
-        //     };
-        // });
-
+        
+        const self = this;
         const add$ = this.threatReportOverviewService
             .saveThreatReport(threatReport)
             .subscribe(
             (resp) => {
                 console.log(`saved report ${resp}`);
-                const innerSub$ = this.threatReportOverviewService
-                    .load(this.threatReport.id)
-                    .subscribe((innerThreatReport) => {
-                        this.threatReport = innerThreatReport as ThreatReport;
-                        this.modifiedBoundries.emit(this.threatReport);
-                    },
-                    (err) => console.log(err),
-                    () => innerSub$.unsubscribe());
+                // TODO: fix this, the resp does not have the id of the newly save report,
+                //   thus a delete operation will fail if the page is not refreshed first
+                self.threatReport = resp as ThreatReport;
+                self.modifiedBoundries.emit(self.threatReport);
+                // const innerSub$ = this.threatReportOverviewService
+                //     .load(resp.id)
+                //     .subscribe((innerThreatReport) => {
+                //         self.threatReport = innerThreatReport as ThreatReport;
+                //         self.modifiedBoundries.emit(self.threatReport);
+                //     },
+                //     (err) => console.log(err),
+                //     () => innerSub$.unsubscribe());
             },
             (err) => console.log(err),
             () => add$.unsubscribe());

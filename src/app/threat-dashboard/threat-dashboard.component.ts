@@ -256,7 +256,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     // sort the attack patterns w/ in a given kill chain
     Object.keys(killChainAttackPatternGroup).forEach((key) => {
       let arr = killChainAttackPatternGroup[key];
-      arr = arr.sort(SortHelper.sortDescByField('name'));
+      arr = arr.sort(SortHelper.sortDescByField<any, 'name'>('name'));
     });
 
     // extract the keyed attackpatterns into a single flat array

@@ -22,6 +22,11 @@ export class ThreatReportOverviewService {
   private readonly reportsUrl = `${Constance.API_HOST}${Constance.REPORTS_URL}`;
   constructor(private http: HttpClient, private genericService: GenericApi) { }
 
+  public setGenericApiService(service: GenericApi): ThreatReportOverviewService {
+    this.genericService = service;
+    return this;
+  }
+
   /**
    * @description pull a threat report object from the backend mongo database
    * NOTE: notice the `Partial<ThreatReport>`, as not all data may be returned,please double check
@@ -115,7 +120,6 @@ export class ThreatReportOverviewService {
           && report.attributes.metaProperties && report.attributes.metaProperties.work_products)
         // flatten (report * <=> * workproduct) relationship into (report * <=> 1 workproduct)
         .flatMap((report) => {
-          console.log(report.attributes.metaProperties.work_products);
           const arr = report.attributes.metaProperties.work_products.map((wp) => {
             const tmpReport = Object.assign(new Report(), report);
             tmpReport.attributes = Object.assign({}, report.attributes);
@@ -163,7 +167,6 @@ export class ThreatReportOverviewService {
         .map((obj) => {
           // map from object of keys back to an array of workproducts, 
           //  with each workproducts reports grouped correctly
-          console.log(obj);
           const keys = Object.keys(obj);
           return keys.map((key) => obj[key]);
         });
@@ -189,18 +192,17 @@ export class ThreatReportOverviewService {
     let [insert$, updates$] = Observable.from(reports).partition((report) => report.id === undefined);
     updates$ = updates$.mergeMap((report) => this.loadReport(report.id));
     // pull fresh copies of the reports
-    // const reports$ = reports.map((report) => this.loadReport(report.id));
-    // const updateReports$ = Observable.forkJoin(...reports$);
     const updateReports$ = Observable
       .merge(insert$, updates$)
       .mergeMap((el) => {
-            //     // I cant explain why this an array of single element arrays
-    //     //  but lets unwrap
+        // I cant explain why this an array of single element arrays
+        //  but lets unwrap
         if (el instanceof Array) {
           el = el[0];
         }
         return this.upsertReport(el, threatReportMeta);
-      });
+      })
+    // .exhaustMap((val) => val)
     // return updateReports$
     //   // unroll fetch for latest reports
     //   .mergeMap((latestReports) => {
@@ -310,7 +312,9 @@ export class ThreatReportOverviewService {
     const id = threatReport.id || UUID.v4();
     threatReport.id = id;
     const reports = threatReport.reports;
-    const saveReports$ = this.upsertReports(reports as Report[], threatReport).map((arr) => threatReport);
+    const saveReports$ = this.upsertReports(reports as Report[], threatReport)
+      .reduce((acc, val) => acc.concat(val), [])
+      .map((el) => threatReport);
     return saveReports$;
   }
 

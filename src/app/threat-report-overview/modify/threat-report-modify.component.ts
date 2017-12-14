@@ -137,8 +137,14 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
         if (this.isFalsey(result)) {
           return;
         }
-        const report = result as Report;
-        this.threatReport.reports.push(report);
+        const report = this.fixReportDateBeforeSave(result as Report);
+        const sub$ = this.service.upsertReport(report)
+          .subscribe(() => {
+            console.log('saved report, reloading');
+            this.load(this.threatReport.id);
+          },
+          (err) => console.log(err),
+          () => sub$.unsubscribe());
       },
       (err) => console.log(err)
       );
@@ -217,14 +223,7 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
       return;
     }
     // turn dates into ISO Date format or backend will complain on validation
-    const reports = event.map((e) => {
-      if (e && e.attributes && e.attributes.created) {
-        // turn to required ISO8601 format or clear the date because we cant use it
-        e.attributes.created = DateHelper.getISOOrUndefined(e.attributes.created);
-      }
-      return e;
-    });
-
+    const reports = this.fixReportDatesBeforeSave(event);
     const sub$ = this.service.upsertReports(reports)
       .subscribe(() => {
         console.log('saved reports, reloading');
@@ -369,5 +368,20 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
     const isBool = typeof val === 'boolean';
     const isString = typeof val === 'string';
     return isUndefined || (isBool && val === false) || (isString && val === 'false');
+  }
+
+  private fixReportDatesBeforeSave(reports: Report[]): Report[] {
+    // turn dates into ISO Date format or backend will complain on validation
+    return reports.map((e) => this.fixReportDateBeforeSave(e));
+  }
+
+  private fixReportDateBeforeSave(report: Report): Report {
+    const e = report;
+    // turn dates into ISO Date format or backend will complain on validation
+    if (e && e.attributes && e.attributes.created) {
+      // turn to required ISO8601 format or clear the date because we cant use it
+      e.attributes.created = DateHelper.getISOOrUndefined(e.attributes.created);
+    }
+    return e;
   }
 }
