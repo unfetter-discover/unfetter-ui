@@ -1,61 +1,49 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Favicons -->
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicons/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="96x96" href="/assets/images/favicons/favicon-96x96.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicons/favicon-16x16.png">
-  <link rel="icon" type="image/x-icon" href="/assets/images/favicons/favicon.ico">
-
-  <title><%= htmlWebpackPlugin.options.title %></title>
-
-  <meta name="description" content="<%= htmlWebpackPlugin.options.title %>">
-
-  <% if (webpackConfig.htmlElements.headTags) { %>
-  <!-- Configured Head Tags  -->
-  <%= webpackConfig.htmlElements.headTags %>
-  <% } %>
-
-  <!-- base url -->
-  <base href="<%= htmlWebpackPlugin.options.metadata.baseUrl %>">
-
-
-
-    <style>
-       @keyframes fadeIn { 
-                    from {  
-                      opacity: .5; 
-                      transform: translateY(-20px);
-                    } 
-                    to { 
-                      opacity: 1; 
-                      transform: translateY(5px);
-                    }  
-                  }
-      html {
-        background: #fafafa;
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="assets/images/favicons/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicons/favicon-16x16.png">
+  <link rel="icon" type="image/x-icon" href="assets/images/favicons/favicon.ico">
+  <title>UnfetterUi</title>
+  <base href="/">
+  <style>
+    @keyframes fadeIn {
+      from {
+        opacity: .5;
+        transform: translateY(-20px);
       }
-    </style>
+      to {
+        opacity: 1;
+        transform: translateY(5px);
+      }
+    }
+
+    html {
+      background: #fafafa;
+    }
+  </style>
+  <!-- <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/theme.css">
+    <link rel="stylesheet" href="/assets/css/primeng.min.css"> -->
+  <link rel="stylesheet" href="/assets/css/vendor.css">
 </head>
 
 <body>
 
   <app>
-    <div style="animation: 1.2s ease-in fadeIn;">
-      <img align="middle" 
-            style="width: 375px; height: 100vh; margin: auto; display:block" 
-            src="<%= htmlWebpackPlugin.options.metadata.baseUrl === '/' ? './' : htmlWebpackPlugin.options.metadata.baseUrl %>assets/icon/unfetter-shield.svg">
+    <div style="animation: .4s ease-in fadeIn;">
+      <img align="middle" style="width: 375px; height: 100vh; margin: auto; display:block" src="assets/icon/unfetter-shield.svg">
     </div>
   </app>
 
-  <% if (htmlWebpackPlugin.options.metadata.isDevServer && htmlWebpackPlugin.options.metadata.HMR !== true) { %>
-  <!-- Webpack Dev Server reload -->
-  <script src="/webpack-dev-server.js"></script>
-  <% } %>
 
 </body>
+
 </html>
