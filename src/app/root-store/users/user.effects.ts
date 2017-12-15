@@ -31,7 +31,7 @@ export class UserEffects {
                     .pluck('attributes')
             );
         })      
-        .do(([token, userData]: [string, any]) => {            
+        .do(([token, userData]: any) => {            
             if (userData.registered) {
                 // TODO move this to utilities
                 this.authService.setUser(userData);
@@ -39,7 +39,7 @@ export class UserEffects {
             } else {
                 this.router.navigate(['/users/register']);
             }
-        })
+        }, (e) => console.log(e), () => {})
         .mergeMap(([token, userData]: [string, any]) => { 
             return [
                 {
