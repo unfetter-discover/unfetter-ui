@@ -9,6 +9,7 @@ import 'rxjs/add/operator/mergeMap';
 import * as notificationActions from '../../root-store/notification/notification.actions';
 import { WebsocketService } from '../../core/services/web-socket.service';
 import { WSMessageTypes } from '../../global/enums/ws-message-types.enum';
+import { GenericApi } from '../../core/services/genericapi.service';
 
 @Injectable()
 export class NotificationEffects {
@@ -22,8 +23,15 @@ export class NotificationEffects {
             payload: notification
         }));
 
+    @Effect({dispatch: false})
+    public notificationStore = this.actions$
+        .ofType(notificationActions.START_NOTIFICATION_STREAM)
+        .switchMap(() => this.genericApi.get('api/notification-store'))
+        .do((notifications) => console.log(notifications));
+
     constructor(
         private actions$: Actions,
-        private websocketService: WebsocketService
+        private websocketService: WebsocketService,
+        private genericApi: GenericApi
     ) { }
 }

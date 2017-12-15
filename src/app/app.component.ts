@@ -49,6 +49,9 @@ export class AppComponent implements OnInit {
       this.store.dispatch(new configActions.FetchConfig());
       this.store.dispatch(new notificationsActions.StartNotificationStream());
 
+      // TODO delete
+      this.store.dispatch(new notificationsActions.FetchNotificationStore());
+
       const systemSub$ = this.websocketService.connect(WSMessageTypes.SYSTEM)        
         .subscribe(
           (res) => {

@@ -7,6 +7,7 @@ export const UPDATE_NOTIFCATION = '[Notification] Update Notification';
 export const DELETE_NOTIFCATION = '[Notification] Delete Notification';
 export const MARK_ALL_AS_READ = '[Notification] Mark All As Read';
 export const START_NOTIFICATION_STREAM = '[Notification] Start Notification Stream';
+export const FETCH_NOTIFICATION_STORE = '[Notification] Fetch Notification Store';
 
 export class AddNotification implements Action {
     public readonly type = ADD_NOTIFCATION;
@@ -36,9 +37,14 @@ export class StartNotificationStream implements Action {
     public readonly type = START_NOTIFICATION_STREAM;
 }
 
+export class FetchNotificationStore implements Action {
+    public readonly type = FETCH_NOTIFICATION_STORE;
+}
+
 export type NotificationActions =
     AddNotification |
     UpdateNotification |
     DeleteNotification |
     MarkAllAsRead |
-    StartNotificationStream;
+    StartNotificationStream |
+    FetchNotificationStore;
