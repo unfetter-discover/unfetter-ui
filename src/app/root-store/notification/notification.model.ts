@@ -4,5 +4,6 @@ export interface AppNotification {
     heading: string,
     body: string,
     submitted: Date,
+    _id: string
     link?: string
 }

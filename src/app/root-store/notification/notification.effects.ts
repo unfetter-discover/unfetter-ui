@@ -23,11 +23,20 @@ export class NotificationEffects {
             payload: notification
         }));
 
-    @Effect({dispatch: false})
+    @Effect()
     public notificationStore = this.actions$
         .ofType(notificationActions.START_NOTIFICATION_STREAM)
-        .switchMap(() => this.genericApi.get('api/notification-store'))
-        .do((notifications) => console.log(notifications));
+        .switchMap(() => this.genericApi.get('api/notification-store/user-notifications'))
+        .do((notifications) => console.log(notifications))
+        .mergeMap((notifications) => {
+            return notifications.map((notification: any) => ({
+                type: notificationActions.ADD_NOTIFCATION,
+                payload: { 
+                    ...notification.attributes.messageContent,
+                    _id: notification.attributes._id
+                } 
+            }));
+        });
 
     constructor(
         private actions$: Actions,

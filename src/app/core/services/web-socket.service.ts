@@ -58,6 +58,15 @@ export class WebsocketService {
     public connect(messageType: WSMessageTypes): Observable<any> {
         return this.socketSubject
             .filter((message: any) => message.messageType === messageType)
-            .pluck('messageContent');
+            .map((message) => {
+                if (message._id) {
+                    return {
+                        ...message.messageContent,
+                        _id: message._id
+                    };
+                } else {
+                    return message.messageContent;
+                }
+            });
     }
 }
