@@ -20,6 +20,9 @@ export class Indicator {
         pattern: string;
         valid_from: any;
         valid_until: any;
+        metaProperties: {
+            observedData: any[]
+        }
     };
 
     constructor(data?: Indicator) {
@@ -48,6 +51,9 @@ export class Indicator {
             labels: [],
             external_references: [],
             kill_chain_phases: [],
+            metaProperties: {
+                observedData: []
+            },
             // name: '',
             // description: '',
             // pattern_lang: '',

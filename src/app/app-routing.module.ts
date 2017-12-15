@@ -5,7 +5,7 @@ import { HomeComponent } from './home';
 import { IntrusionSetDashboardComponent } from './intrusion-set-dashboard/intrusion-set-dashboard.component';
 import { PartnersComponent } from './partners/partners.component';
 import { NoContentComponent } from './no-content';
-import { AuthGuard } from './global/services/auth.guard';
+import { AuthGuard } from './core/services/auth.guard';
 import { SelectivePreloadingStrategy } from './selective-preloading-strategy';
 import { UserRoles } from './global/enums/user-roles.enum'
 

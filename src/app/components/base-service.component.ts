@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
-import { GenericApi } from '../global/services/genericapi.service';
+import { GenericApi } from '../core/services/genericapi.service';
 
 @Injectable()
 export class BaseComponentService {

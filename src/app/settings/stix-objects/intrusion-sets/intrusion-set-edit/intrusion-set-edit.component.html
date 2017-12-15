@@ -59,13 +59,13 @@
         </mat-input-container> -->
     </div>
 </div>
-<div class="row">
+<!-- <div class="row">
     <div class="col-md-12">
        <mat-input-container class="full-width">
         <input matInput placeholder="Goals"  [(ngModel)]="intrusionSet.attributes.goals" value="{{intrusionSet.attributes.goals}}">
         </mat-input-container>
     </div>
-</div>
+</div> -->
 <div class="row">
     <div class="col-md-12">
          <form>
@@ -131,7 +131,7 @@
         </mat-input-container>
     </div>
 </div>
-
+<stix-text-array [(model)]="intrusionSet" [propertyName]="'goals'"></stix-text-array>
 
 <div class="row">
     <div class="col-md-12">

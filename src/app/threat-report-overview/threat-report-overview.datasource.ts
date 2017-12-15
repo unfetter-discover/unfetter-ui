@@ -1,7 +1,7 @@
 import { DataSource } from '@angular/cdk/table';
 import { CollectionViewer } from '@angular/cdk/collections';
 import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { ThreatReport } from './models/threat-report.model';
 import { ThreatReportOverviewService } from '../threat-dashboard/services/threat-report-overview.service';
@@ -11,19 +11,22 @@ import { ThreatReportOverviewService } from '../threat-dashboard/services/threat
  */
 export class ThreatReportOverviewDataSource extends DataSource<ThreatReport> {
     protected filterChange = new BehaviorSubject('');
+    protected dataChange = new BehaviorSubject(undefined);
 
     constructor(protected service: ThreatReportOverviewService) {
         super();
     }
 
     /**
-     * @description listens to filter events and fetch/filters data accordingly
+     * @description connect interface for datasource, listens to filter events and fetch/filters data accordingly
      * @param collectionViewer
      */
     public connect(collectionViewer: CollectionViewer): Observable<ThreatReport[]> {
-        return this.filterChange
-            .switchMap((val) => {
-                console.log('filter on val', val);
+        const arr = [this.filterChange, this.dataChange];
+        return Observable.merge(...arr)
+            .switchMap(() => {
+                console.log('rebuilding table');
+                const val = this.filterChange.getValue();
                 const filterVal = val.trim().toLowerCase() || '';
                 const products$ = this.service.loadAll();
                 if (!filterVal || filterVal.length === 0) {
@@ -38,6 +41,10 @@ export class ThreatReportOverviewDataSource extends DataSource<ThreatReport> {
             });
     }
 
+    /**
+     * @description disconnect interface for datasource
+     * @param collectionViewer 
+     */
     public disconnect(collectionViewer: CollectionViewer): void {
         console.log('disconnect from datasource');
     }
@@ -49,5 +56,12 @@ export class ThreatReportOverviewDataSource extends DataSource<ThreatReport> {
         filter = filter || '';
         filter = filter.trim();
         this.filterChange.next(filter);
+    }
+
+    /**
+     * @description trigger a data change event
+     */
+    public nextDataChange(event: any): void {
+        this.dataChange.next(undefined);
     }
 }

@@ -57,32 +57,12 @@ label {
     padding-bottom: $footer-height + px;
 }
 
-.footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    /* Set the fixed height of the footer here */
-    height: auto;
-    background-color: $nav-background-color;
-    z-index: 1;
-    padding-top: 5px;
-}
-
 .height-100-percent {
     height: 100%;
 }
 
-.container .text-muted {
-    margin: 20px 0;
-}
-
-.footer>.container {
-    padding-right: 15px;
-    padding-left: 15px;
-}
-
 .cursor-pointer {
-    cursor: pointer;
+    cursor: pointer !important;
 }
 
 .btn,
@@ -100,6 +80,16 @@ label {
     background-color: #F44336 !important
 }
 
+.bg-accent {
+    background-color: $accent-color;
+    color: $accent-text-contrast-color;
+}
+
+.bg-primary {
+    background-color: $primary-color;
+    color: $primary-text-contrast-color;
+}
+
 .full-width {
     width: 100%;
 }
@@ -110,6 +100,10 @@ label {
 
 .inlineBlock {
     display: inline-block;
+}
+
+.whiteSpaceNormal {
+    white-space: normal;
 }
 
 .margin-top {
@@ -143,6 +137,25 @@ label {
     .mb-#{$i * 3} {
         margin-bottom: $i * 3px;
     }
+    .pt-#{$i * 5} {
+        padding-top: $i * 5px !important;
+    }
+    .pb-#{$i * 5} {
+        padding-bottom: $i * 5px !important;
+    }
+    .pt-#{$i * 3} {
+        padding-top: $i * 3px !important;
+    }
+    .pb-#{$i * 3} {
+        padding-bottom: $i * 3px !important;
+    }
+}
+
+.fw400 {
+    font-weight: 400;
+}
+.fw300 {
+    font-weight: 300;
 }
 
 // Used to match the padding of mat-card elements
@@ -243,6 +256,10 @@ a {
     font-weight: normal;
     font-size: 12px;
     margin-top: 2px;
+}
+
+.lh-24 {
+    line-height: 24px;
 }
 
 .uf-well {
@@ -439,19 +456,20 @@ a {
     }
 }
 
+.uf-badge {
+    color: white;
+    background: $neutral-color;
+    padding: 2.5px 8px;
+    border-radius: 11px;
+    font-size: 12px;
+}
+
 .unfetterAngularMaterialAccordion {
     .mat-expansion-panel {
         transition: box-shadow 0.3s ease-in-out;
     }
     .mat-expansion-panel-header-title {
-        align-items: center;
-        .mat-badge {
-            color: white;
-            background: $neutral-color;
-            padding: 2.5px 8px;
-            border-radius: 11px;
-            font-size: 12px;
-        }
+        align-items: center;        
     }
     .mat-expanded {
         &.mat-expansion-panel {

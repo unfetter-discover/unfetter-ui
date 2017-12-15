@@ -27,7 +27,7 @@
                                  <div class="row">
                                     <div class="col-md-12">
                                         <label>Identity Class:</label>
-                                        <h6>{{identity.attributes.identity_class}}</h6>
+                                        <h6>{{ identity.attributes.identity_class | capitalize }}</h6>
                                     </div>
                                 </div>
                                  <div class="row">
@@ -36,7 +36,7 @@
                                         <mat-chip-list>
                                             <mat-chip *ngFor="let sector of identity.attributes.sectors"
                                                 selected="true">
-                                                {{sector}}
+                                                {{ sector | capitalize }}
                                             </mat-chip>
                                         </mat-chip-list>
                                     </div>
@@ -46,12 +46,19 @@
                                         <label>External References:</label>
                                         <mat-chip-list>
                                             <mat-chip *ngFor="let externalReferences of identity.attributes.external_references"
-                                                selected="true">
+                                            selected="true" (click)="getChipInfo(externalReferences)">
                                                 {{externalReferences.source_name}}
                                             </mat-chip>
                                         </mat-chip-list>
                                     </div>
                                 </div>
+                                <div class="row">
+                                        <div class="col-md-12">
+                                            <div *ngIf="selectedExternal != null">
+                                                    <strong>{{selectedExternal.external_id}}</strong> of {{selectedExternal.source_name}} at <a href="{{selectedExternal.url}}" target="_blank">{{selectedExternal.url}}</a> 
+                                            </div>                                        
+                                        </div>
+                                    </div>                                
 
                         </mat-card-content>
 

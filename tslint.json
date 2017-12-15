@@ -11,6 +11,7 @@
     "interface-name": [false, "always-prefix"],
     // Angular 2
     "component-class-suffix": true,
+    "max-classes-per-file": false, // Set this to false for NGRX
     // "component-selector": [true, "element", "my", "kebab-case"],
     "directive-class-suffix": true,
     // "directive-selector": [true, "attribute", "my", "camelCase"],

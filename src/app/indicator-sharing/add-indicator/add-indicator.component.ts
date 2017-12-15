@@ -1,34 +1,24 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { trigger, state, style, transition, animate } from '@angular/animations';
 import { MatDialogRef } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 
 import { IndicatorForm } from '../../global/form-models/indicator';
 import { IndicatorSharingService } from '../indicator-sharing.service';
-import { AuthService } from '../../global/services/auth.service';
+import { AuthService } from '../../core/services/auth.service';
+import { heightCollapse } from '../../global/animations/height-collapse';
 
 @Component({
     selector: 'add-indicator',
     templateUrl: 'add-indicator.component.html',
     styleUrls: ['add-indicator.component.scss'],
-    animations: [
-        trigger('collapseLevel', [
-            transition(':enter', [
-                style({ opacity: 0, height: 0, overflow: 'hidden' }),
-                animate('0.2s ease-in-out', style({ opacity: 1, height: '*' }))
-            ]),
-            transition(':leave', [
-                style({ opacity: 1, height: '*', overflow: 'hidden' }),
-                animate('0.2s ease-in-out', style({ opacity: 0, height: 0 }))
-            ])
-        ])
-    ]
+    animations: [heightCollapse]
 })
 export class AddIndicatorComponent implements OnInit {
 
     public form: FormGroup | any;
     public organizations: any;
+    public attackPatterns: any[] = [];
 
     constructor(
         public dialogRef: MatDialogRef<any>,
@@ -42,11 +32,13 @@ export class AddIndicatorComponent implements OnInit {
         const userId = this.authService.getUser()._id;
         const getData$ = Observable.forkJoin(
             this.indicatorSharingService.getIdentities(),
-            this.indicatorSharingService.getUserProfileById(userId)
+            this.indicatorSharingService.getUserProfileById(userId),
+            this.indicatorSharingService.getAttackPatterns()
         ).subscribe(
             (res) => {       
                 const identities = res[0].map((r) => r.attributes);
                 const userOrgs = res[1].attributes.organizations;
+                this.attackPatterns = res[2].map((r) => r.attributes);
                 if (userOrgs && userOrgs.length) {
                     this.organizations = userOrgs
                         .filter((org) => org.approved)
@@ -75,7 +67,10 @@ export class AddIndicatorComponent implements OnInit {
             .subscribe(
                 (res) => {                   
                     this.resetForm();
-                    this.dialogRef.close(res[0].attributes);
+                    this.dialogRef.close({
+                        'indicator': res[0].attributes,
+                        'newRelationships': (tempIndicator.metaProperties !== undefined && tempIndicator.metaProperties.relationships !== undefined)
+                    });
                 },
                 (err) => {
                     console.log(err);                    

@@ -5,6 +5,7 @@ import { MatDialog, MatDialogRef, MatDialogConfig, MatSnackBar } from '@angular/
 import { IdentityEditComponent } from '../identity-edit/identity-edit.component';
 import { StixService } from '../../../stix.service';
 import { Identity } from '../../../../models';
+import { ConfigService } from '../../../../core/services/config.service';
 
 @Component({
   selector: 'identity-new',
@@ -23,9 +24,10 @@ export class IdentityNewComponent extends IdentityEditComponent implements OnIni
         public router: Router,
         public dialog: MatDialog,
         public location: Location,
-        public snackBar: MatSnackBar) {
-
-        super(stixService, route, router, dialog, location, snackBar);
+        public snackBar: MatSnackBar,
+        public configService: ConfigService
+    ) {
+        super(stixService, route, router, dialog, location, snackBar, configService);
     }
 
     public ngOnInit() {

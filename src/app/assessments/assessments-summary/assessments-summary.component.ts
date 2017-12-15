@@ -1,17 +1,18 @@
 import { Component, OnInit, ViewChild, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
+
 import { AttackPattern } from '../../models/attack-pattern';
-import { Constance } from '../../utils/constance';
 import { AssessmentChartComponent } from './assessment-chart/assessment-chart.component';
 import { AssessmentsCalculationService } from './assessments-calculation.service';
 import { AssessmentsSummaryService } from './assessments-summary.service';
+import { AssessmentsSortHelper } from './assessments-sort-helper';
 import { AverageRisk } from './average-risk';
+import { Constance } from '../../utils/constance';
 import { Risk } from './risk';
-import { SortHelper } from './sort-helper';
-import { ThresholdOption } from './threshold-option';
 import { TechniquesChartComponent } from './techniques-chart/techniques-chart.component';
-import { Subscription } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
+import { ThresholdOption } from './threshold-option';
 
 @Component({
     selector: 'assessments-summary',
@@ -235,11 +236,11 @@ export class AssessmentsSummaryComponent implements OnInit, AfterViewInit {
     public killChainRespHandler(res): void {
         this.riskPerKillChain = res;
         const risks: Risk[] = this.retrieveAssessmentRisks(this.riskPerKillChain);
-        this.sortedRisks = risks.sort(SortHelper.sortByRiskDesc());
+        this.sortedRisks = risks.sort(AssessmentsSortHelper.sortByRiskDesc());
         this.sortedRisks = this.sortedRisks.slice(0, this.topNRisks);
         this.sortedRisks.forEach((el) => {
             const objects = el.objects || [];
-            el.objects = objects.sort(SortHelper.sortByRiskDesc());
+            el.objects = objects.sort(AssessmentsSortHelper.sortByRiskDesc());
             el.objects = el.objects.slice(0, this.topNRisks);
         });
     }
@@ -247,7 +248,7 @@ export class AssessmentsSummaryComponent implements OnInit, AfterViewInit {
     public attackPatternResponseHandler(res): void {
         this.riskByAttackPattern = res;
         const phases: AverageRisk[] = this.riskByAttackPattern.phases;
-        const weakestPhaseId = phases.sort(SortHelper.sortByAvgRiskDesc())[0]._id || '';
+        const weakestPhaseId = phases.sort(AssessmentsSortHelper.sortByAvgRiskDesc())[0]._id || '';
         const attackPatternsByKillChain = res.attackPatternsByKillChain;
         const riskiestAttackPattern = attackPatternsByKillChain.find((el) => el._id === weakestPhaseId);
         if (!riskiestAttackPattern) {
@@ -255,7 +256,7 @@ export class AssessmentsSummaryComponent implements OnInit, AfterViewInit {
             return;
         }
         const attackPatterns = riskiestAttackPattern.attackPatterns;
-        this.weakestAttackPatterns = attackPatterns.sort(SortHelper.sortBySophisticationLevelAsc()) || [];
+        this.weakestAttackPatterns = attackPatterns.sort(AssessmentsSortHelper.sortBySophisticationLevelAsc()) || [];
         this.weakestAttackPatterns = this.weakestAttackPatterns.slice(0, 1);
     }
 

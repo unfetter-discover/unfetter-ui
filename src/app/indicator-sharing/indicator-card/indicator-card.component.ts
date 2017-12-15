@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { FormatHelpers } from '../../global/static/format-helpers';
-import { AuthService } from '../../global/services/auth.service';
+import { AuthService } from '../../core/services/auth.service';
 import { heightCollapse } from '../../global/animations/height-collapse';
 
 @Component({
@@ -19,6 +19,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     @Input() public attackPatterns: any;
     @Input() public searchParameters: any;
     @Input() public creator: string;
+    @Input() public sensors: any;
 
     @Output() public stateChange: EventEmitter<any> = new EventEmitter();
 
@@ -42,15 +43,15 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
 
     public ngOnInit() {
         this.user = this.authService.getUser();
-        if (this.indicator.likes !== undefined && this.indicator.likes.length > 0) {
-            const alreadyLiked = this.indicator.likes.find((like) => like.user.id === this.user._id);
+        if (this.indicator.metaProperties !== undefined && this.indicator.metaProperties.likes !== undefined && this.indicator.metaProperties.likes.length > 0) {
+            const alreadyLiked = this.indicator.metaProperties.likes.find((like) => like.user.id === this.user._id);
             if (alreadyLiked) {
                 this.alreadyLiked = true;
             }
         } 
 
-        if (this.indicator.interactions !== undefined && this.indicator.interactions.length > 0) {
-            const alreadyInteracted = this.indicator.interactions.find((interactions) => interactions.user.id === this.user._id);
+        if (this.indicator.metaProperties !== undefined && this.indicator.metaProperties.interactions !== undefined && this.indicator.metaProperties.interactions.length > 0) {
+            const alreadyInteracted = this.indicator.metaProperties.interactions.find((interactions) => interactions.user.id === this.user._id);
             if (alreadyInteracted) {
                 this.alreadyInteracted = true;
             }
@@ -135,6 +136,23 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
                 },
                 () => {
                     addLike$.unsubscribe();
+                }
+            );
+    }    
+
+    public unlikeIndicator() {
+        const unLike$ = this.indicatorSharingService.unlike(this.indicator.id)
+            .subscribe(
+                (res) => {
+                    this.updateIndicatorState(res.attributes);
+                    this.alreadyLiked = false;
+                },
+                (err) => {
+                    this.flashMessage('Unable to unlike indicator.');
+                    console.log(err);
+                },
+                () => {
+                    unLike$.unsubscribe();
                 }
             );
     }

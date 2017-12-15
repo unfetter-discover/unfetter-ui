@@ -1,9 +1,14 @@
-<div class="container-fluid fadeIn" *ngIf="!loading; else loadingBlock">
-    <div class="row">
-        <div class="side-panel col-md-2">
-            <unf-side-panel [threatReport]="threatReport"></unf-side-panel>
+<div [@simpleFadeIn] class="container-fluid" *ngIf="!loading; else loadingBlock">
+    <div class="row flex">
+        <div class="side-panel" [@inOutAnimation] *ngIf="minimize !== true; else minimizedBlock" (mouseover)="showMinimizeBtn = true" (mouseleave)="showMinimizeBtn = false">
+            <div class="minimizeControls" [style.display]="showMinimizeBtn ? 'block': 'none'">
+                <button mat-icon-button (click)="minimize = true" matTooltip="Minimize" matTooltipPosition="right">
+                    <mat-icon class="mat-24" aria-hidden="true" aria-label="Minimize side panel" #minimizeBtn>chevron_left</mat-icon>
+                </button>
+            </div>
+            <unf-side-panel [threatReport]="threatReport" [attackPatterns]="attackPatterns" (modifiedBoundries)="onBoundriesModified($event)"></unf-side-panel>
         </div>
-        <div class="main-panel col-md-10">
+        <div class="main-panel mat-elevation-z3 cardHoverShadow">
             <!-- <div class="row">
                 <div class="col-md-12">
                     <span class="stix-icon-wrapper">
@@ -14,45 +19,64 @@
                     </span>
                 </div>
             </div> -->
-            <div class="col-sm-12">
-                <mat-tab-group id="tabGroup">
-                    <mat-tab label="MATRIX">
-                        <!-- <attack-pattern-count [threatReport]="threatReport" [attackPatterns]="attackPatterns" [intrusionSetsDashboard]="intrusionSetsDashboard">
+            <mat-tab-group id="tabGroup">
+                <mat-tab label="MATRIX">
+                    <!-- <attack-pattern-count [threatReport]="threatReport" [attackPatterns]="attackPatterns" [intrusionSetsDashboard]="intrusionSetsDashboard">
                             </attack-pattern-count> -->
-                        <div class="row matrix mb-18 mt-18">
-                            <div class="col-md-11">
-                                <unf-kill-chain-table [threatReport]="threatReport" [attackPatterns]="attackPatterns" [intrusionSetsDashboard]="intrusionSetsDashboard">
-                                </unf-kill-chain-table>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-11">
-                                <unf-collapsible-tree *ngIf="treeData" [data]="treeData" (renderComplete)="treeRendered()"></unf-collapsible-tree>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-11">
-                                <unf-radar-chart *ngIf="radarData" [data]="radarData" (renderComplete)="radarRendered()"></unf-radar-chart>
-                            </div>
-                        </div>
-                    </mat-tab>
-                    <mat-tab label="Mitigations" disabled="true">
-                        <p>Mitigations goes here!</p>
-                    </mat-tab>
-                    <mat-tab label="Export" disabled="false">
-                        <div class="row mb-18 mt-18">
-                            <div class="col-md-11">
-                                <unf-export-component [threatReport]="threatReport"></unf-export-component>
-                            </div>
-                        </div>
-                    </mat-tab>
-                </mat-tab-group>
-            </div>
-
+                    <div class="matrix mb-18 mt-18">
+                        <unf-kill-chain-table [threatReport]="threatReport" [attackPatterns]="attackPatterns" [intrusionSetsDashboard]="intrusionSetsDashboard">
+                        </unf-kill-chain-table>
+                    </div>
+                    <div class="mt-18">
+                        <unf-collapsible-tree *ngIf="treeData" [data]="treeData" (renderComplete)="treeRendered()"></unf-collapsible-tree>
+                    </div>
+                    <div class="mt-18">
+                        <unf-radar-chart #radarChart *ngIf="radarData" [data]="radarData" (renderComplete)="radarRendered()"></unf-radar-chart>
+                    </div>
+                </mat-tab>
+                <mat-tab label="MITIGATIONS" disabled="true">
+                    <p>Mitigations goes here!</p>
+                </mat-tab>
+                <mat-tab label="EXPORT" disabled="false">
+                    <div class="mb-18 mt-18 mat-card cardHoverShadow">
+                        <unf-export-component [threatReport]="threatReport"></unf-export-component>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
         </div>
     </div>
 </div>
 
 <ng-template #loadingBlock>
     <loading-spinner></loading-spinner>
+</ng-template>
+
+<ng-template #minimizedBlock>
+    <div [@inOutAnimation] class="small-side-panel" (click)="minimize=false">
+        <div matTooltip="{{threatReport.name || '' }}" matTooltipPosition="right">
+            <svg>
+                <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#attack-pattern"></use>
+            </svg>
+        </div>
+        <div matTooltip="{{threatReport.boundries.targets.size || 0 }} victim(s)" matTooltipPosition="right">
+            <svg>
+                <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#identity"></use>
+            </svg>
+        </div>
+        <div matTooltip="{{threatReport.boundries.intrusions.size || 0 }} intrusion set(s)" matTooltipPosition="right">
+            <svg>
+                <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#threat-actor"></use>
+            </svg>
+        </div>
+        <div matTooltip="{{threatReport.boundries.malware.size || 0 }} malware" matTooltipPosition="right">
+            <svg>
+                <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#malware"></use>
+            </svg>
+        </div>
+        <div matTooltip="{{threatReport.reports.length || 0 }} report(s)" matTooltipPosition="right">
+            <svg>
+                <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#campaign"></use>
+            </svg>
+        </div>
+    </div>
 </ng-template>

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
 import { BaseStixService } from './base-stix.service';
-import { GenericApi } from '../global/services/genericapi.service';
+import { GenericApi } from '../core/services/genericapi.service';
 
 @Injectable()
 export class StixService implements BaseStixService {
@@ -16,7 +16,7 @@ export class StixService implements BaseStixService {
     }
 
     public get(id: string): Observable<any> {
-        const url = `${this.url}/${id}`;
+        const url = `${this.url}/${id}?metaproperties=true`;
         return this.genericApi.get(url);
     }
 

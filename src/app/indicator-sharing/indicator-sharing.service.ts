@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 
-import { GenericApi } from '../global/services/genericapi.service';
+import { GenericApi } from '../core/services/genericapi.service';
 import { Constance } from '../utils/constance';
-import { AuthService } from '../global/services/auth.service';
+import { AuthService } from '../core/services/auth.service';
 
 @Injectable()
 export class IndicatorSharingService {
@@ -12,6 +12,8 @@ export class IndicatorSharingService {
     public multiplesUrl = Constance.MULTIPLES_URL;
     public identitiesUrl = Constance.IDENTITIES_URL;
     public profileByIdUrl = Constance.PROFILE_BY_ID_URL;
+    public attackPatternsUrl = Constance.ATTACK_PATTERN_URL;
+    public sensorsUrl = Constance.X_UNFETTER_SENSOR_URL;
 
     constructor(
         private genericApi: GenericApi,
@@ -31,6 +33,14 @@ export class IndicatorSharingService {
         return this.genericApi.get(`${this.baseUrl}/attack-patterns-by-indicator`);
     }
 
+    public getAttackPatterns(): Observable<any> {
+        const projectObj = {
+            'stix.name': 1,
+            'stix.id': 1
+        };
+        return this.genericApi.get(`${this.attackPatternsUrl}?project=${JSON.stringify(projectObj)}`);
+    }
+
     public addComment(comment, id) {
         const url = `${this.multiplesUrl}/${id}/comment`;
         return this.genericApi.patch(url, {data: { attributes: {'comment': comment}}});
@@ -38,6 +48,11 @@ export class IndicatorSharingService {
 
     public addLike(id) {
         const url = `${this.multiplesUrl}/${id}/like`;
+        return this.genericApi.get(url);
+    }
+
+    public unlike(id) {
+        const url = `${this.multiplesUrl}/${id}/unlike`;
         return this.genericApi.get(url);
     }
 
@@ -62,5 +77,19 @@ export class IndicatorSharingService {
         } else {
             return this.genericApi.get(`${this.profileByIdUrl}/${userId}`);
         }
+    }
+
+    public getSensors(): Observable<any> {
+        const projectObj = {
+            'stix.name': 1,
+            'stix.id': 1,
+            'metaProperties.observedData': 1
+        };
+        const filterObj = {
+            'metaProperties.observedData': { 
+                '$exists': 1 
+            }
+        };
+        return this.genericApi.get(`${this.sensorsUrl}?project=${JSON.stringify(projectObj)}&filter=${JSON.stringify(filterObj)}&metaproperties=true`);
     }
 }

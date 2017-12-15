@@ -6,11 +6,13 @@ import { HttpModule } from '@angular/http';
 // Load the implementations that should be tested
 import { AppComponent } from './app.component';
 import { AppState } from './app.service';
-import { AuthService } from './global/services/auth.service';
-import { ConfigService } from './global/services/config.service';
-import { GenericApi } from './global/services/genericapi.service';
-import { WebAnalyticsService } from './global/services/web-analytics.service';
+import { AuthService } from './core/services/auth.service';
+import { ConfigService } from './core/services/config.service';
+import { GenericApi } from './core/services/genericapi.service';
+import { WebAnalyticsService } from './core/services/web-analytics.service';
 import { AppModule } from './app.module';
+import { StoreModule } from '@ngrx/store';
+import { reducers } from './root-store/app.reducers';
 
 describe(`App`, () => {
   let comp: AppComponent;
@@ -27,7 +29,11 @@ describe(`App`, () => {
     ];
 
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, HttpModule],
+      imports: [
+        RouterTestingModule, 
+        HttpModule, 
+        StoreModule.forRoot(reducers)
+      ],
       declarations: [AppComponent],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [...services]

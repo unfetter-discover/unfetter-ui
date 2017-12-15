@@ -1,32 +1,39 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, EventEmitter, Output, ChangeDetectionStrategy, Renderer2 } from '@angular/core';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
-import { GenericApi } from '../../global/services/genericapi.service';
 import { Constance } from '../../utils/constance';
 import { UploadService } from './upload.service';
-import { HttpEventType, HttpResponse } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Component({
   selector: 'unf-file-upload',
   templateUrl: './file-upload.component.html',
-  styleUrls: ['file-upload.component.scss']
+  styleUrls: ['file-upload.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class FileUploadComponent implements OnInit {
 
-    @ViewChild('fileUpload')
-    public fileUploadEl: ElementRef;
+  @ViewChild('fileUpload')
+  public fileUploadEl: ElementRef;
 
-    @Output('fileParsedEvent')
-    public fileParsedEvent = new EventEmitter<any[]>();
+  @Output('fileParsedEvent')
+  public fileParsedEvent = new EventEmitter<any[]>();
 
-    public fName = '';
-    public numEventsParsed = -1;
-    public loading = false;
-    private readonly subscriptions = [];
+  @Output('fileUploadFailed')
+  public fileUploadFailed = new EventEmitter<string>();
 
-  constructor(protected router: Router,
-              protected uploadService: UploadService) { }
+  public success = false;
+  public fName = '';
+  public numEventsParsed = -1;
+  public loading = false;
+  private readonly subscriptions = [];
+
+  constructor(
+    private renderer: Renderer2,
+    protected router: Router,
+    protected uploadService: UploadService) { }
 
   /**
    * @description
@@ -55,7 +62,6 @@ export class FileUploadComponent implements OnInit {
    */
   public fileChanged(event?: UIEvent): void {
     console.log(event);
-    // event.srcElement.files
     const files: FileList = this.fileUploadEl.nativeElement.files;
     console.log(`files: `, files);
     if (!event || !files || files.length < 1) {
@@ -64,8 +70,10 @@ export class FileUploadComponent implements OnInit {
     }
 
     const file = files[0];
-    this.fName = file.name;
+    this.numEventsParsed = 0;
+    // this.fName = file.name;
     this.loading = true;
+    this.success = false;
     const s$ = this.uploadService.post(file)
       .subscribe((resp: any) => {
         console.log('upload service response ', resp);
@@ -78,22 +86,43 @@ export class FileUploadComponent implements OnInit {
         //   console.log(`File is ${percentDone}% uploaded.`);
         // }
         // if (resp instanceof HttpResponse) {
-        console.log('File is completely uploaded!');
-        this.numEventsParsed = (resp as any).length || -1;
-        this.fileParsedEvent.emit(resp as any);
-        // }
+        if (resp && resp.length > 0) {
+          const el = resp[0];
+          if (el && el.error) {
+            console.log('file upload error', el.error);
+            this.setErrorState(el.error);
+            return;
+          } else {
+            requestAnimationFrame(() => {
+              this.numEventsParsed = (resp as any).length || -1;
+              this.loading = false;
+              this.success = true;
+              this.fileParsedEvent.emit(resp as any);
+              setTimeout(() => {
+                this.success = false;
+                this.numEventsParsed = 0;
+                this.loading = false;
+              }, 3400);
+            });
+          }
+        }
+
       },
-      (err) => console.log(err),
-      () => this.loading = false);
+      (err) => {
+        this.setErrorState(err);
+      },
+      () => {
+        this.loading = false;
+      });
     this.subscriptions.push(s$);
   }
 
-  /**
-   * @description event handler to remove an uploaded file
-   */
-  public onRemoveFile(event: UIEvent): void {
-    this.fName = '';
-    this.numEventsParsed = -1;
-    this.fileParsedEvent.emit([]);
+  public setErrorState(err: string): void {
+    console.log(err);
+    this.fName = undefined;
+    this.success = false;
+    this.loading = false;
+    this.fileUploadFailed.emit(err);
   }
+
 }

@@ -32,7 +32,8 @@ import { newEvent, click } from '../../../../testing/index';
 
 // Load the implementations that should be tested
 import { AttackPatternNewComponent } from './attack-patterns-new.component';
-import { ConfigService } from '../../../../global/services/config.service';
+import { ConfigService } from '../../../../core/services/config.service';
+import { CoreModule } from '../../../../core/core.module';
 
 /** Duration of the select opening animation. */
 const SELECT_OPEN_ANIMATION = 200;
@@ -274,7 +275,7 @@ function moduleSetup() {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        GlobalModule, ComponentModule, FormsModule, NoopAnimationsModule, ...matModules
+        GlobalModule, CoreModule, ComponentModule, FormsModule, NoopAnimationsModule, ...matModules
       ],
       declarations: [AttackPatternNewComponent],
       schemas: [NO_ERRORS_SCHEMA],

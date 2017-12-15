@@ -1,10 +1,10 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 
 import { Constance } from '../../utils/constance';
-import { GenericApi } from '../../global/services/genericapi.service';
+import { GenericApi } from '../../core/services/genericapi.service';
 import { ThreatReport } from '../../threat-report-overview/models/threat-report.model';
 import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
 import { KillChainEntry } from './kill-chain-entry';
@@ -14,7 +14,8 @@ import { ThreatDashboard } from '../models/threat-dashboard';
 @Component({
   selector: 'unf-kill-chain-table',
   templateUrl: 'kill-chain-table.component.html',
-  styleUrls: ['./kill-chain-table.component.scss']
+  styleUrls: ['./kill-chain-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KillChainTableComponent implements OnInit, OnDestroy {
 

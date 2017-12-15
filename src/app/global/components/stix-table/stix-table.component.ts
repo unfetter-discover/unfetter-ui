@@ -15,7 +15,7 @@ import { StixTableDataSource } from './stix-table.datasource';
 })
 export class StixTableComponent implements OnInit {
 
-    @Input('stixData') public stixData: any[];
+    @Input() public stixData: any[];
     @Output() public delete: EventEmitter<any> = new EventEmitter();
     @ViewChild('paginator') public paginator: MatPaginator;
 
@@ -35,12 +35,4 @@ export class StixTableComponent implements OnInit {
             attributes: stixElement
         });
     }
-
-    public externalReferencesToolTipGen(externalReferences): string {
-        return externalReferences
-            .filter((er) => er.source_name !== undefined)
-            .map((er) => er.source_name)
-            .join(', ');
-    }
-
 }

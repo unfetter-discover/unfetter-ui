@@ -16,7 +16,7 @@ export class IntrusionSet {
         aliases: string[];
         first_seen: any;
         last_seen: any;
-        goals: string;
+        goals: string[];
         resource_level: string;
         primary_motivation: string;
         secondary_motivation: string[ ],
@@ -53,7 +53,7 @@ export class IntrusionSet {
             // description: '',
             first_seen: new Date(),
             last_seen: new Date(),
-            // goals: '',
+            goals: [],
             // resource_level: '',
             // primary_motivation: '',
             secondary_motivation: [ ],

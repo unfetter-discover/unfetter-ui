@@ -48,6 +48,10 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
        this.loadAttackPattern();
     }
 
+    public getChipInfo(chipInfo): void {
+        this.selectedExternal = chipInfo;
+    }
+
     public editButtonClicked(): void {
         let link = ['../edit', this.attackPattern.id];
         super.gotoView(link);

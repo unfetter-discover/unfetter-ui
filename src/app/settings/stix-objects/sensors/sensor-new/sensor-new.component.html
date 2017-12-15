@@ -19,7 +19,10 @@
 
 <aliases  *ngIf="sensor" [(model)]="sensor"></aliases>
 
-
+<div>
+    <label class="mb-5">Observable Data Path</label>
+    <observable-data-tree [observedDataPath]="sensor.attributes.metaProperties.observedData"></observable-data-tree>
+</div>
 
 <div  *ngIf="sensor" class="row">
     <div class="col-md-12">

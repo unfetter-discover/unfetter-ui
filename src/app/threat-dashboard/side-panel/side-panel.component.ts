@@ -1,34 +1,42 @@
-import { Component, OnInit, Input, OnDestroy, ViewChild, Renderer2 } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ViewChild, Renderer2, Output, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { MatDialog, MatMenu } from '@angular/material';
+import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
+import { parentFadeIn, slideInOutAnimation } from '../../global/animations/animations';
 
+import { AttackPattern } from '../../models/attack-pattern';
 import { Constance } from '../../utils/constance';
-import { GenericApi } from '../../global/services/genericapi.service';
+import { ConfirmationDialogComponent } from '../../components/dialogs/confirmation/confirmation-dialog.component';
+import { GenericApi } from '../../core/services/genericapi.service';
 import { ThreatReport } from '../../threat-report-overview/models/threat-report.model';
 import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
-import { ConfirmationDialogComponent } from '../../components/dialogs/confirmation/confirmation-dialog.component';
-import { MatDialog, MatMenu } from '@angular/material';
+import { ModifyReportDialogComponent } from '../../threat-report-overview/modify-report-dialog/modify-report-dialog.component';
 import { ThreatReportOverviewService } from '../services/threat-report-overview.service';
-import { AddExterernalReportComponent } from '../../threat-report-overview/add-external-report/add-external-report.component';
-import { parentFadeIn } from '../../global/animations/animations';
+import { Report } from '../../models/report';
 
 @Component({
     selector: 'unf-side-panel',
     templateUrl: 'side-panel.component.html',
     styleUrls: ['./side-panel.component.scss'],
-    animations: [parentFadeIn]
+    animations: [parentFadeIn, slideInOutAnimation]
 })
 export class SidePanelComponent implements OnInit, OnDestroy {
 
     @Input('threatReport')
     public threatReport: ThreatReport;
 
+    @Input('attackPatterns')
+    public attackPatterns: AttackPattern[];
+
+    @Output()
+    public modifiedBoundries: EventEmitter<ThreatReport> = new EventEmitter();
+
     @ViewChild('menu')
     public menu: MatMenu;
 
-    public selectedExternalRef: ThreatReport;
-
+    public selectedExternalRef: Partial<Report>;
+    public showMinimizeBtn = false;
     public readonly subscriptions: Subscription[] = [];
 
     constructor(
@@ -69,9 +77,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
 
         const reportId = this.selectedExternalRef.id;
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-            data: {
-                attributes: this.selectedExternalRef
-            }
+            data: this.selectedExternalRef
         });
         const workProductId = this.threatReport.id;
 
@@ -86,15 +92,12 @@ export class SidePanelComponent implements OnInit, OnDestroy {
                 }
 
                 const delete$ = this.threatReportOverviewService
-                    .deleteThreatReport(reportId);
-                const load$ = this.load(workProductId).do((val) => this.threatReport = val);
+                    .removeReport(this.selectedExternalRef as Report, this.threatReport);
+                const load$ = this.load(workProductId).do((val) => this.threatReport = val as ThreatReport);
                 const sub$ = Observable.concat(delete$, load$)
                     .subscribe(
-                    (val) => {
-                        console.log(val);
-                    },
-                    (err) => console.log(err)
-                    );
+                    (val) => this.modifiedBoundries.emit(this.threatReport),
+                    (err) => console.log(err));
                 this.subscriptions.push(sub$);
             });
     }
@@ -105,23 +108,29 @@ export class SidePanelComponent implements OnInit, OnDestroy {
      * @param {UIEvent} event optional 
      */
     public onOpenExternalRef(event?: UIEvent): void {
-        const ref: any = this.selectedExternalRef;
-        const externalRefs: any[] = ref.external_references;
+        const ref = this.selectedExternalRef;
+        const externalRefs = ref.attributes.external_references;
         if (ref && externalRefs && externalRefs.length > 0) {
-            const url = externalRefs[0].external_url;
+            const url = externalRefs[0].url;
             window.open(url, '_blank');
         }
     }
 
     /**
      * @description on open menu event, remember the selected row
-     * @param selected 
+     * @param {Partial<Report>} selected 
      * @param {UIEvent} event optional 
      */
-    public onOpenMenu(selected: ThreatReport, event?: UIEvent): void {
+    public onOpenMenu(selected: Partial<Report>, event?: UIEvent): void {
         if (!selected) {
             return;
         }
+
+        if (event) {
+            event.stopImmediatePropagation();
+            event.preventDefault();
+        }
+
         this.selectedExternalRef = selected;
     }
 
@@ -130,9 +139,9 @@ export class SidePanelComponent implements OnInit, OnDestroy {
      * @param workProductId
      * @return {Observable<ThreatReport>}
      */
-    public load(workProductId: string): Observable<ThreatReport> {
+    public load(workProductId: string): Observable<Partial<ThreatReport>> {
         if (!workProductId || workProductId.trim().length === 0) {
-            return Observable.of();
+            return Observable.empty();
         }
 
         return this.threatReportOverviewService.load(workProductId);
@@ -202,53 +211,103 @@ export class SidePanelComponent implements OnInit, OnDestroy {
      * @return {void}
      */
     public openAddReportDialog(event?: UIEvent): void {
-        this.dialog.open(AddExterernalReportComponent, {
+        const config = {
             width: '800px',
-            height: 'calc(100vh - 140px)'
-        })
-            .afterClosed()
-            .subscribe((result) => {
-                const isBool = typeof result === 'boolean';
-                const isUndefined = typeof result === 'undefined';
-                if (isUndefined || isBool && !result) {
-                    return;
-                }
-
-                // add new report
-                const tro = new ThreatReport();
-                tro.boundries = this.threatReport.boundries;
-                tro.name = this.threatReport.name;
-                tro.date = this.threatReport.date;
-                tro.author = this.threatReport.author;
-                tro.id = this.threatReport.id;
-                tro.reports = [{
-                    data: {
-                        attributes: result
-                    },
-                }];
-                const add$ = this.threatReportOverviewService
-                    .saveThreatReport(tro)
-                    .subscribe(
-                    (resp) => {
-                        console.log(`saved report ${resp}`);
-                        // flat map and unwrap the response
-                        const arr = resp
-                            .reduce((memo: any[], el: any) => memo.concat(el.data), [])
-                            .map((el) => el.attributes);
-                        // add to the list for display
-                        this.threatReport.reports = this.threatReport.reports.concat(arr);
-                    },
-                    (err) => console.log(err),
-                    () => add$.unsubscribe()
-                    );
-
+            height: 'calc(100vh - 140px)',
+            data: {} as {
+                attackPatterns: any,
+                threatReport: any,
+                showMalwareStep: boolean,
+                showIntrusionStep: boolean,
             },
-            (err) => console.log(err)
-            );
+        };
+
+        if (this.attackPatterns) {
+            config.data.attackPatterns = this.attackPatterns;
+        }
+        config.data.threatReport = this.threatReport;
+        config.data.showMalwareStep = true;
+        config.data.showIntrusionStep = true;
+
+        this.dialog.open(ModifyReportDialogComponent, config)
+            .afterClosed()
+            .subscribe(
+            this.addReport.bind(this),
+            (err) => console.log(err));
     }
 
     /**
-     * @description angular 2 track by list function, uses the items id if
+     * @description add new report
+     */
+    public addReport(result: Partial<ThreatReport> | Partial<Report> | boolean): void {
+        const isBool = typeof result === 'boolean';
+        const isUndefined = typeof result === 'undefined';
+        if (isUndefined || isBool && !!result) {
+            return;
+        }
+
+        // add new report
+        let tro = new ThreatReport();
+        tro.boundries = this.threatReport.boundries;
+        tro.name = this.threatReport.name;
+        tro.date = this.threatReport.date;
+        tro.author = this.threatReport.author;
+        tro.id = this.threatReport.id;
+        tro.published = this.threatReport.published;
+        tro.reports = this.threatReport.reports || [];
+        const threatReport = result as Partial<ThreatReport>;
+        if (threatReport && !isBool && threatReport.boundries) {
+            // this is a boundries update,
+            //  copy over boundries to save to db
+            const boundries = threatReport.boundries;
+            Object.keys(boundries)
+                .filter((key) => boundries[key] !== undefined)
+                .forEach((key) => tro.boundries[key] = boundries[key]);
+        } else if (result) {
+            // TODO: more efficiently, save this report and update the page
+            // this is an update single report operation
+            const report = new Report();
+            report.attributes = (result as any).attributes;
+            tro.reports = tro.reports.concat(report);
+        }
+
+        this.saveAndLoadThreatReport(tro);
+    }
+
+    /**
+     * @description save a threat report and reload this components data
+     * @param threatReport
+     */
+    public saveAndLoadThreatReport(threatReport: ThreatReport): void {
+        if (!threatReport) {
+            return;
+        }
+        
+        const self = this;
+        const add$ = this.threatReportOverviewService
+            .saveThreatReport(threatReport)
+            .subscribe(
+            (resp) => {
+                console.log(`saved report ${resp}`);
+                // TODO: fix this, the resp does not have the id of the newly save report,
+                //   thus a delete operation will fail if the page is not refreshed first
+                self.threatReport = resp as ThreatReport;
+                self.modifiedBoundries.emit(self.threatReport);
+                // const innerSub$ = this.threatReportOverviewService
+                //     .load(resp.id)
+                //     .subscribe((innerThreatReport) => {
+                //         self.threatReport = innerThreatReport as ThreatReport;
+                //         self.modifiedBoundries.emit(self.threatReport);
+                //     },
+                //     (err) => console.log(err),
+                //     () => innerSub$.unsubscribe());
+            },
+            (err) => console.log(err),
+            () => add$.unsubscribe());
+    }
+
+    /**
+     * @description angular track by list function, uses the items id if
      *  it exists, otherwise uses the index
      * @param {number} index
      * @param {item}
@@ -256,5 +315,16 @@ export class SidePanelComponent implements OnInit, OnDestroy {
      */
     public trackByFn(index: number, item: any): number {
         return item.id || index;
+    }
+
+    /**
+     * @description
+     */
+    public toggleLock(event?: UIEvent): void {
+        if (event) {
+            console.log(event);
+        }
+        this.threatReport.published = !this.threatReport.published;
+        this.saveAndLoadThreatReport(this.threatReport);
     }
 }

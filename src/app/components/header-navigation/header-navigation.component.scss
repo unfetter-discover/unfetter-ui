@@ -1,3 +1,5 @@
+@import '../../../styles/_variables.scss';
+
 @media screen and (max-width: 768px) {
     #navbar {
         overflow: auto !important;
@@ -12,6 +14,68 @@
 
 #avatar {    
     margin: -5px auto;
+}
+#notificationBadge {
+    position: absolute;
+    top: 13px;
+    right: 10px;
+}
+
+#notificationBellWrapper { 
+    user-select: none;
+    padding-top: 19px;
+    padding-bottom: 14px;
+    > .material-icons {
+        font-size: 26px;
+    }
+}
+#notificationLi {
+    position: relative;
+}
+
+#notificationBoxWrapper {
+    position: absolute;
+    top: $navbar-height + 0px;
+    right: 0;
+    display: block;
+    width: 500px;
+    background: $app-background-color;
+    transform-origin: right;
+    z-index: -1;
+}
+.notificationBody {
+    width: 430px;
+    margin-bottom: 3px;
+}
+.readNotication {
+    p, small, .text-muted {
+        color: #999 !important;
+    }
+}
+#notificiationRowWrapper .notificationRow:not(:last-child) {
+    border-bottom: 2px solid #eee;
+}
+.notificationHeader {
+    .title {
+        font-size: 20px;
+        font-weight: 300;
+    }
+}
+
+#markAllAsRead,
+.notificationHeader {
+    background-color: #eee;
+    padding: 10px;
+    p {
+        margin: 0;
+    }
+}
+
+.notificationRow {
+    padding: 10px;
+    .lead {
+        margin-bottom: 2px;
+    }    
 }
 
 .dropdown-toggle .caret {

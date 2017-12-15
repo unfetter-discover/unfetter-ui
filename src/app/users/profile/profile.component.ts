@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
-import { UsersService } from '../users.service';
+import { UsersService } from '../../core/services/users.service';
+import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 
 @Component({
     selector: 'profile',
@@ -27,9 +28,10 @@ export class ProfileComponent implements OnInit {
                 const getData$ = Observable.forkJoin(
                     this.usersService.getUserProfileById(routeId),
                     this.usersService.getOrganizations()
-                ).subscribe((results: any) => {
-                        this.user = results[0].attributes;
-                        const allOrgs = results[1].map((org) => org.attributes);
+                )
+                .map(RxjsHelpers.mapArrayAttributes)
+                .subscribe(([userResults, allOrgs]) => {
+                        this.user = userResults;
 
                         this.organizations = this.user.organizations
                             .filter((org) => org.approved)
@@ -43,8 +45,6 @@ export class ProfileComponent implements OnInit {
                                 }
                                 return retVal
                             });
-
-                        console.log(this.organizations);
                     },
                     (err) => {
                         console.log(err);

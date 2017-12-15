@@ -1,23 +1,24 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { MatDialog } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 
 import * as moment from 'moment';
 
-import { GenericApi } from '../../global/services/genericapi.service';
+import { GenericApi } from '../../core/services/genericapi.service';
 import { Constance } from '../../utils/constance';
-import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
 import { IntrusionSet } from '../../models/intrusion-set';
 import { Malware } from '../../models/malware';
 import { SelectOption } from '../models/select-option';
-import { FileUploadComponent } from '../file-upload/file-upload.component';
 import { UploadService } from '../file-upload/upload.service';
 import { ThreatReport } from '../models/threat-report.model';
 import { ThreatReportSharedService } from '../services/threat-report-shared.service';
 import { Boundries } from '../models/boundries';
-import { AddExterernalReportComponent } from '../add-external-report/add-external-report.component';
-import { MatDialog } from '@angular/material';
+import { SortHelper } from '../../global/static/sort-helper';
+import { ModifyReportDialogComponent } from '../modify-report-dialog/modify-report-dialog.component';
+import { Report } from '../../models/report';
+import { PACKAGE_ROOT_URL } from '@angular/core/src/application_tokens';
 
 @Component({
   selector: 'unf-threat-report-creation',
@@ -26,14 +27,11 @@ import { MatDialog } from '@angular/material';
 })
 export class ThreatReportCreationComponent implements OnInit, OnDestroy {
 
-  @ViewChild('fileUpload')
-  public fileUpload: FileUploadComponent;
   public shouldIncludeBoundries = false;
   public intrusions: SelectOption[];
   public malware: SelectOption[];
   public maxStartDate;
   public minEndDate;
-  public csvReports: any[];
   public threatReport = new ThreatReport();
   public dateError = {
     startDate: { isError: false },
@@ -218,23 +216,13 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
         break;
     }
     chips.delete(stixName);
-
-    // if (chips) {
-    //   if ( typeof stixName === 'string') {
-    //     chips.delete(stixName);
-    //   } else {
-    //     if (!this.hasValue(chips, value)){
-    //       chips = chips.add(value);
-    //     }
-    //   }
-    // }
   }
 
   /**
    * go back to list view
    * @param {UIEvent} event optional
    */
-  public cancel(event: UIEvent): void {
+  public onCancel(event: UIEvent): void {
     this.location.back();
   }
 
@@ -242,10 +230,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    * @description
    * @param {UIEvent} event optional
    */
-  public save(event: UIEvent): void {
-    const currentReports = this.threatReport.reports || [];
-    const attachedReports = this.csvReports || [];
-    this.threatReport.reports = currentReports.concat(attachedReports);
+  public onContinue(event: UIEvent): void {
     // if the boundries check box is checked, do not use boundries provided
     if (this.isFalsey(this.shouldIncludeBoundries)) {
       this.threatReport.boundries = new Boundries();
@@ -255,43 +240,32 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description recieve a fileParsed event
-   * @param {any[]} event optional
-   * @return {void}
-   */
-  public fileParsed(event?: any[]): void {
-    this.csvReports = event;
-  }
-
-  /**
    * @description open add external report dialog
    * @param {UIEvent} event optional
    * @return {void}
    */
-  public openAddReportDialog(event?: UIEvent): void {
-    const opts = {
-      width: '800px',
-      height: 'calc(100vh - 140px)'
-    };
-    this.dialog
-      .open(AddExterernalReportComponent, opts)
-      .afterClosed()
-      .subscribe((result) => {
-        if (this.isFalsey(result)) {
-          return;
-        }
-        console.log(result);
-        // add new report
-        const report = {
-          data: {
-            attributes: result
-          },
-        };
-        this.threatReport.reports.push(report);
-      },
-      (err) => console.log(err)
-      );
-  }
+  // public openAddReportDialog(event?: UIEvent): void {
+  //   const opts = {
+  //     width: '800px',
+  //     height: 'calc(100vh - 140px)'
+  //   };
+  //   this.dialog
+  //     .open(ModifyReportDialogComponent, opts)
+  //     .afterClosed()
+  //     .subscribe((result: Partial<Report> | boolean) => {
+  //       if (this.isFalsey(result)) {
+  //         return;
+  //       }
+  //       // add new report, wrap in the expect data attribute, cause you know, jsonschema
+  //       // const report = {
+  //       //   data: result
+  //       // };
+  //       const report = result as Report;
+  //       this.threatReport.reports.push(report);
+  //     },
+  //     (err) => console.log(err)
+  //     );
+  // }
 
   /**
    * @description 
@@ -307,7 +281,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    * @description 
    * @return true is string and false or boolean and false, otherwise true
    */
-  private isFalsey(val: boolean | string | undefined): boolean {
+  private isFalsey(val: boolean | string | Partial<Report> | undefined): boolean {
     const isUndefined = typeof val === 'undefined';
     const isBool = typeof val === 'boolean';
     const isString = typeof val === 'string';
@@ -335,7 +309,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     // remember to new up an object, otherwise object method will not exist, using just an object literal copy
     const tmp = Object.assign(new ThreatReport(), JSON.parse(JSON.stringify(this.sharedService.threatReportOverview)));
     this.threatReport = tmp;
-    this.csvReports = this.sharedService.threatReportOverview.reports || [];
+    // this.csvReports = [];
     // this is needed to make sure boundries is acutally and object and not an object literal at runtime
     this.threatReport.boundries = new Boundries();
     this.threatReport.boundries.intrusions = this.sharedService.threatReportOverview.boundries.intrusions || new Set<{ any }>();

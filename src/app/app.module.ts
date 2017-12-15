@@ -7,6 +7,9 @@ import { RouterModule, PreloadAllModules, Router } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material';
 import { ComponentModule } from './components/component.module';
 import { StixModule } from './settings/stix.module';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { EffectsModule } from '@ngrx/effects';
 
 /*
  * Platform and Environment providers/directives/pipes
@@ -27,7 +30,11 @@ import { AssessmentsModule } from './assessments/assessments.module';
 
 import { GlobalModule } from './global/global.module';
 import { ConfirmationDialogComponent } from './components/dialogs/confirmation/confirmation-dialog.component';
-import { ConfigService } from './global/services/config.service';
+import { CoreModule } from './core/core.module';
+import { reducers } from './root-store/app.reducers';
+import { UserEffects } from './root-store/users/user.effects';
+import { ConfigEffects } from './root-store/config/config.effects';
+import { UtilityEffects } from './root-store/utility/utility.effects';
 
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process
@@ -53,10 +60,17 @@ import { ConfigService } from './global/services/config.service';
     AppRoutingModule,
     // RouterModule.forRoot(ROUTES, { useHash: true, preloadingStrategy: PreloadAllModules })
     AssessmentsModule,
+    CoreModule,
+    StoreModule.forRoot(reducers),
+    EffectsModule.forRoot([
+      UserEffects,
+      ConfigEffects,
+      UtilityEffects
+    ]),
+    StoreDevtoolsModule.instrument() // TODO modify so its only used in dev mode,
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
-    ENV_PROVIDERS,
-    ConfigService
+    ENV_PROVIDERS
   ],
   entryComponents: [
     ConfirmationDialogComponent

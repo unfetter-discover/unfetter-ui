@@ -1,4 +1,4 @@
-FROM node:8.5-alpine
+FROM node:9.2-alpine
 
 LABEL MAINTAINER="UNFETTER"
 LABEL Description="UNFETTER user interface, Angular app"
@@ -7,6 +7,12 @@ LABEL Description="UNFETTER user interface, Angular app"
 ENV WORKING_DIRECTORY /usr/share/unfetter-ui
 RUN mkdir -p $WORKING_DIRECTORY
 WORKDIR $WORKING_DIRECTORY
+
+COPY docker/set-linux-repo.sh $WORKING_DIRECTORY
+COPY docker/set-npm-repo.sh $WORKING_DIRECTORY
+RUN chmod 700 $WORKING_DIRECTORY/*.sh
+RUN $WORKING_DIRECTORY/set-linux-repo.sh
+RUN $WORKING_DIRECTORY/set-npm-repo.sh
 
 # Install Dependencies
 # COPY package-lock.json $WORKING_DIRECTORY

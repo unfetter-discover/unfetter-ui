@@ -1,11 +1,13 @@
 
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter, OnDestroy, Renderer2 } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter, OnDestroy, Renderer2, ChangeDetectionStrategy } from '@angular/core';
 import * as d3 from 'd3';
 
 @Component({
     selector: 'unf-collapsible-tree',
     templateUrl: './collapsible-tree.component.html',
-    styleUrls: ['./collapsible-tree.component.scss']
+    styleUrls: ['./collapsible-tree.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    
 })
 export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
     // private static readonly teal500 = '#009688';
@@ -35,6 +37,7 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
     public ngOnDestroy(): void {
         d3.select('body').selectAll('.tooltip').remove();
     }
+
     /**
      * TODO: verify this is not called too often,
      *  as ngOnChanges can be called often and computation should not be expensive
@@ -68,7 +71,7 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
 
         const parentEl: any = d3.select(this.graphId).node();
         const margin = { top: 18, right: 18, bottom: 18, left: 0 };
-        const tmp = parentEl.clientWidth || 960;
+        const tmp = (parentEl && parentEl.clientWidth) ?  parentEl.clientWidth : 960;
         const width = (tmp - margin.right) - margin.left;
         const height = (tmp - margin.top) - margin.bottom;
         let i = 0;

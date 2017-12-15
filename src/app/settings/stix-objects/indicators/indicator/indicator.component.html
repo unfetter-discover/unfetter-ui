@@ -11,7 +11,7 @@
             <div class="row" style="margin-top: 15px;">
                 <div class="col-md-12">
                     <mat-card>
-                             <mat-card-content>
+                             <mat-card-content>                                 
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label>Name:</label>
@@ -62,12 +62,25 @@
                                         <label>External References:</label>
                                         <mat-chip-list>
                                             <mat-chip *ngFor="let externalReferences of indicator.attributes.external_references"
-                                                selected="true">
+                                            selected="true" (click)="getChipInfo(externalReferences)">
                                                 {{externalReferences.source_name}}
                                             </mat-chip>
                                         </mat-chip-list>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div *ngIf="selectedExternal != null">
+                                                <strong>{{selectedExternal.external_id}}</strong> of {{selectedExternal.source_name}} at <a href="{{selectedExternal.url}}" target="_blank">{{selectedExternal.url}}</a> 
+                                        </div>                                        
+                                    </div>
+                                </div>
+                                <div class="row" *ngIf="indicator.attributes.metaProperties && indicator.attributes.metaProperties.observedData && indicator.attributes.metaProperties.observedData.length">
+                                    <div class="col-xs-12">
+                                        <label>Observed Data:</label>
+                                        <observable-data-summary [observedData]="indicator.attributes.metaProperties.observedData"></observable-data-summary>
+                                    </div>
+                                </div>                                
 
                         </mat-card-content>
 

@@ -15,7 +15,7 @@ import { Location } from '@angular/common';
 import { Measurements } from './measurements';
 import { Constance } from '../../utils/constance';
 import { AssessmentsService } from '../assessments.service';
-import { GenericApi } from '../../global/services/genericapi.service';
+import { GenericApi } from '../../core/services/genericapi.service';
 import { MenuItem } from 'primeng/primeng';
 
 @Component({
@@ -365,7 +365,11 @@ export class AssessmentComponent extends Measurements implements OnInit, OnDestr
         assessment.created = new Date();
 
         assessment.measurements = [];
-        assessment.groupings = assessedObject.attributes.groupings;
+
+        if (assessedObject.attributes.metaProperties && assessedObject.attributes.metaProperties.groupings) {
+          assessment.groupings = assessedObject.attributes.metaProperties.groupings;
+        }
+        
         assessment.id = assessedObject.id;
         assessment.name = assessedObject.attributes.name;
         assessment.description = assessedObject.attributes.description;

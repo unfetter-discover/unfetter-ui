@@ -1,5 +1,6 @@
-<div *ngIf="loading === false; else loadingBlock">
-    <mat-list *ngIf="fName; else uploadBlock">
+<div *ngIf="!loading; else loadingBlock">
+    <!-- <mat-error *ngIf="errMsg">{{errMsg}}</mat-error> -->
+    <!-- <mat-list *ngIf="fName; else uploadBlock">
         <mat-list-item>
             <mat-icon class="paperclip mat-24" mat-list-icon>attachment</mat-icon>
             <h4 mat-line>
@@ -14,15 +15,25 @@
                 </mat-icon>
             </button>
         </mat-list-item>
-    </mat-list>
+    </mat-list> -->
+    <div *ngIf="success === true; else uploadBlock">
+        <mat-icon aria-label="">done</mat-icon>
+        <mat-icon aria-label="">add</mat-icon>
+        {{numEventsParsed}} rows!
+    </div>
     <ng-template #uploadBlock>
-        <button mat-button mat-raised-button id="uploadButton" class="" (click)="openFileUpload($event)" matTooltip="Upload and parse a CSV file">
-            Import CSV
+        <button mat-icon-button class="mat-24" id="uploadButton" (click)="openFileUpload($event)" matTooltip="Upload new reports from CSV file">
+            <mat-icon aria-label="upload new reports">
+                playlist_add
+            </mat-icon>
         </button>
+
         <input #fileUpload id="fileInput" name="file" type="file" class="hide" ([value])="fName" (change)="fileChanged($event)">
     </ng-template>
 </div>
 
 <ng-template #loadingBlock>
-    <mat-progress-bar *ngIf="loading" color="primary"  mode="indeterminate"></mat-progress-bar>
+    <div class="icon-container">
+        <mat-progress-spinner [diameter]="24" [strokeWidth]="2" color="primary" mode="indeterminate"></mat-progress-spinner>
+    </div>
 </ng-template>
