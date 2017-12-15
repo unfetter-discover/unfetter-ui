@@ -35,7 +35,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
     @ViewChild('menu')
     public menu: MatMenu;
 
-    public selectedExternalRef: ThreatReport;
+    public selectedExternalRef: Partial<Report>;
     public showMinimizeBtn = false;
     public readonly subscriptions: Subscription[] = [];
 
@@ -77,9 +77,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
 
         const reportId = this.selectedExternalRef.id;
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-            data: {
-                attributes: this.selectedExternalRef
-            }
+            data: this.selectedExternalRef
         });
         const workProductId = this.threatReport.id;
 
@@ -94,8 +92,8 @@ export class SidePanelComponent implements OnInit, OnDestroy {
                 }
 
                 const delete$ = this.threatReportOverviewService
-                    .deleteThreatReport(reportId);
-                const load$ = this.load(workProductId).do((val) => this.threatReport = val);
+                    .removeReport(this.selectedExternalRef as Report, this.threatReport);
+                const load$ = this.load(workProductId).do((val) => this.threatReport = val as ThreatReport);
                 const sub$ = Observable.concat(delete$, load$)
                     .subscribe(
                     (val) => this.modifiedBoundries.emit(this.threatReport),
@@ -110,8 +108,8 @@ export class SidePanelComponent implements OnInit, OnDestroy {
      * @param {UIEvent} event optional 
      */
     public onOpenExternalRef(event?: UIEvent): void {
-        const ref: any = this.selectedExternalRef;
-        const externalRefs: any[] = ref.external_references;
+        const ref = this.selectedExternalRef;
+        const externalRefs = ref.attributes.external_references;
         if (ref && externalRefs && externalRefs.length > 0) {
             const url = externalRefs[0].url;
             window.open(url, '_blank');
@@ -120,13 +118,19 @@ export class SidePanelComponent implements OnInit, OnDestroy {
 
     /**
      * @description on open menu event, remember the selected row
-     * @param selected 
+     * @param {Partial<Report>} selected 
      * @param {UIEvent} event optional 
      */
-    public onOpenMenu(selected: ThreatReport, event?: UIEvent): void {
+    public onOpenMenu(selected: Partial<Report>, event?: UIEvent): void {
         if (!selected) {
             return;
         }
+
+        if (event) {
+            event.stopImmediatePropagation();
+            event.preventDefault();
+        }
+
         this.selectedExternalRef = selected;
     }
 
@@ -135,9 +139,9 @@ export class SidePanelComponent implements OnInit, OnDestroy {
      * @param workProductId
      * @return {Observable<ThreatReport>}
      */
-    public load(workProductId: string): Observable<ThreatReport> {
+    public load(workProductId: string): Observable<Partial<ThreatReport>> {
         if (!workProductId || workProductId.trim().length === 0) {
-            return Observable.of();
+            return Observable.empty();
         }
 
         return this.threatReportOverviewService.load(workProductId);
@@ -238,7 +242,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
     public addReport(result: Partial<ThreatReport> | Partial<Report> | boolean): void {
         const isBool = typeof result === 'boolean';
         const isUndefined = typeof result === 'undefined';
-        if (isUndefined || isBool && !result) {
+        if (isUndefined || isBool && !!result) {
             return;
         }
 
@@ -249,6 +253,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
         tro.date = this.threatReport.date;
         tro.author = this.threatReport.author;
         tro.id = this.threatReport.id;
+        tro.published = this.threatReport.published;
         tro.reports = this.threatReport.reports || [];
         const threatReport = result as Partial<ThreatReport>;
         if (threatReport && !isBool && threatReport.boundries) {
@@ -259,8 +264,11 @@ export class SidePanelComponent implements OnInit, OnDestroy {
                 .filter((key) => boundries[key] !== undefined)
                 .forEach((key) => tro.boundries[key] = boundries[key]);
         } else if (result) {
+            // TODO: more efficiently, save this report and update the page
             // this is an update single report operation
-            tro.reports = tro.reports.concat({ data: result });
+            const report = new Report();
+            report.attributes = (result as any).attributes;
+            tro.reports = tro.reports.concat(report);
         }
 
         this.saveAndLoadThreatReport(tro);
@@ -274,33 +282,25 @@ export class SidePanelComponent implements OnInit, OnDestroy {
         if (!threatReport) {
             return;
         }
-
-        // prepare reports for the save to db operation
-        //  wrap in data if needed 
-        threatReport.reports = threatReport.reports.map((report) => {
-            if (report.data) {
-                return report;
-            }
-            return {
-                data: {
-                    attributes: report
-                },
-            };
-        });
-
+        
+        const self = this;
         const add$ = this.threatReportOverviewService
             .saveThreatReport(threatReport)
             .subscribe(
             (resp) => {
                 console.log(`saved report ${resp}`);
-                const innerSub$ = this.threatReportOverviewService
-                    .load(this.threatReport.id)
-                    .subscribe((innerThreatReport) => {
-                        this.threatReport = innerThreatReport;
-                        this.modifiedBoundries.emit(this.threatReport);
-                    },
-                    (err) => console.log(err),
-                    () => innerSub$.unsubscribe());
+                // TODO: fix this, the resp does not have the id of the newly save report,
+                //   thus a delete operation will fail if the page is not refreshed first
+                self.threatReport = resp as ThreatReport;
+                self.modifiedBoundries.emit(self.threatReport);
+                // const innerSub$ = this.threatReportOverviewService
+                //     .load(resp.id)
+                //     .subscribe((innerThreatReport) => {
+                //         self.threatReport = innerThreatReport as ThreatReport;
+                //         self.modifiedBoundries.emit(self.threatReport);
+                //     },
+                //     (err) => console.log(err),
+                //     () => innerSub$.unsubscribe());
             },
             (err) => console.log(err),
             () => add$.unsubscribe());

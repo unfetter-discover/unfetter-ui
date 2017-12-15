@@ -21,10 +21,13 @@ export class FileUploadComponent implements OnInit {
   @Output('fileParsedEvent')
   public fileParsedEvent = new EventEmitter<any[]>();
 
+  @Output('fileUploadFailed')
+  public fileUploadFailed = new EventEmitter<string>();
+
+  public success = false;
   public fName = '';
   public numEventsParsed = -1;
   public loading = false;
-  public errMsg;
   private readonly subscriptions = [];
 
   constructor(
@@ -67,9 +70,10 @@ export class FileUploadComponent implements OnInit {
     }
 
     const file = files[0];
-    this.fName = file.name;
+    this.numEventsParsed = 0;
+    // this.fName = file.name;
     this.loading = true;
-    this.errMsg = undefined;
+    this.success = false;
     const s$ = this.uploadService.post(file)
       .subscribe((resp: any) => {
         console.log('upload service response ', resp);
@@ -84,39 +88,41 @@ export class FileUploadComponent implements OnInit {
         // if (resp instanceof HttpResponse) {
         if (resp && resp.length > 0) {
           const el = resp[0];
-          if (el && el.data && el.data.error) {
-            console.log('file upload error' , el.data.error);
-            this.setErrorState(el.data.error);
+          if (el && el.error) {
+            console.log('file upload error', el.error);
+            this.setErrorState(el.error);
             return;
+          } else {
+            requestAnimationFrame(() => {
+              this.numEventsParsed = (resp as any).length || -1;
+              this.loading = false;
+              this.success = true;
+              this.fileParsedEvent.emit(resp as any);
+              setTimeout(() => {
+                this.success = false;
+                this.numEventsParsed = 0;
+                this.loading = false;
+              }, 3400);
+            });
           }
         }
 
-        this.numEventsParsed = (resp as any).length || -1;
-        this.fileParsedEvent.emit(resp as any);
-        // }
       },
       (err) => {
         this.setErrorState(err);
       },
-      () => this.loading = false
-      );
+      () => {
+        this.loading = false;
+      });
     this.subscriptions.push(s$);
   }
 
   public setErrorState(err: string): void {
     console.log(err);
     this.fName = undefined;
-    this.errMsg = err;
+    this.success = false;
     this.loading = false;
+    this.fileUploadFailed.emit(err);
   }
 
-  /**
-   * @description event handler to remove an uploaded file
-   */
-  public onRemoveFile(event: UIEvent): void {
-    this.fName = '';
-    this.errMsg = undefined;
-    this.numEventsParsed = -1;
-    this.fileParsedEvent.emit([]);
-  }
 }

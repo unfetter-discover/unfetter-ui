@@ -123,16 +123,16 @@
             </mat-panel-title>
         </mat-expansion-panel-header>
         <mat-list dense>
-            <mat-list-item [@slideInOutAnimation] *ngFor="let tro of threatReport.reports; trackBy:trackByFn" class="list-divider">
+            <mat-list-item [@slideInOutAnimation] *ngFor="let report of threatReport.reports; trackBy:trackByFn" class="list-divider">
                 <h4 mat-line>
-                    <a *ngIf="(tro.external_references && tro.external_references.length > 0 && tro?.external_references[0]?.url); else noLink"
-                        href="{{tro?.external_references[0]?.url}}">{{tro.name}}</a>
-                    <ng-template #noLink>{{tro.name}}</ng-template>
+                    <a *ngIf="(report.attributes.external_references && report.attributes.external_references.length > 0 && report.attributes?.external_references[0]?.url); else noLink"
+                        href="{{report.attributes?.external_references[0]?.url}}">{{report.attributes.name}}</a>
+                    <ng-template #noLink>{{report.attributes.name}}</ng-template>
                 </h4>
                 <div mat-line class="mat-caption">
-                    {{tro.description}}
+                    {{report.attributes.description}}
                 </div>
-                <button mat-icon-button [matMenuTriggerFor]="menu" (click)="onOpenMenu(tro, $event)">
+                <button mat-icon-button [matMenuTriggerFor]="menu" (click)="onOpenMenu(report, $event)">
                     <mat-icon>
                         more_vert
                     </mat-icon>

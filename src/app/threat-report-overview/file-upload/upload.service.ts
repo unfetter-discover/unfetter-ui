@@ -5,6 +5,8 @@ import { HttpResponse } from '@angular/common/http';
 import { HttpRequest, HttpHeaders, HttpEvent, HttpEventType } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 import { Constance } from '../../utils/constance';
+import { Report } from '../../models/report';
+import { JsonApiObject } from '../../threat-dashboard/models/adapter/json-api-object';
 
 @Injectable()
 export class UploadService {
@@ -24,9 +26,9 @@ export class UploadService {
     /**
      * @description upload a file
      * @param {File} file
-     * @return {Observable<any[]>}
+     * @return {Observable<Report[]>}
      */
-    public post(file: File): Observable<any[]> {
+    public post(file: File): Observable<Report[]> {
         const headers = this.headers;
         const formData: FormData = new FormData();
         formData.append('upfile', file, file.name);
@@ -35,7 +37,7 @@ export class UploadService {
             reportProgress: true,
             headers
         });
-        return this.http.request(req)
+        return this.http.request<Array<JsonApiObject<Report>>>(req)
             .map((event) => {
                 if (event.type === HttpEventType.UploadProgress) {
                     const percentDone = Math.round(100 * event.loaded / event.total);
@@ -45,13 +47,8 @@ export class UploadService {
                     return event;
                 }
             })
-            .map((event) => {
-                if (event instanceof HttpResponse) {
-                    return event.body;
-                } else {
-                    return [];
-                }
-            })
+            .map((event) => (event instanceof HttpResponse) ? event.body : [])
+            .map((reports) => reports.map((report) => report.data))
             .catch(this.handleError);
     }
 

@@ -173,7 +173,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @return {Obsevable<ThreatReport}
    */
   public loadThreatReport(): Observable<ThreatReport> {
-    return this.threatReportService.load(this.id).map((el) => this.threatReport = el);
+    return this.threatReportService.load(this.id).map((el) => this.threatReport = el as ThreatReport);
   }
 
   /**
@@ -256,7 +256,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     // sort the attack patterns w/ in a given kill chain
     Object.keys(killChainAttackPatternGroup).forEach((key) => {
       let arr = killChainAttackPatternGroup[key];
-      arr = arr.sort(SortHelper.sortDescByField('name'));
+      arr = arr.sort(SortHelper.sortDescByField<any, 'name'>('name'));
     });
 
     // extract the keyed attackpatterns into a single flat array
@@ -297,7 +297,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
 
     // get active attack patterns
     const attackIds = threatReport.reports
-      .map((report) => report.object_refs)
+      .map((report) => report.attributes.object_refs)
       .reduce((memo, cur) => memo.concat(cur), []);
     const activeAttackPatternIds = new Set<string>(attackIds);
     const activeAttackPatterns = attackPatterns.filter((curAttackPattern) => activeAttackPatternIds.has(curAttackPattern.id));

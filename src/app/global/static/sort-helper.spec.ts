@@ -71,7 +71,7 @@ describe('Sort Helper Spec', () => {
 
   it('sort helper should sort object[] descending by field, requires a field name', () => {
     try {
-      const sortDescFunc = SortHelper.sortDescByField(undefined);
+      const sortDescFunc = SortHelper.sortDescByField<{ key1: string }, 'key1'>(undefined);
       throw new Error('sort desc by field should throw an error on undefined');
     } catch (e) {
       expect(e).toBeDefined();
@@ -80,8 +80,7 @@ describe('Sort Helper Spec', () => {
 
   it('sort helper should sort object[] descending by field', () => {
     const field = 'key1';
-    const sortDescFunc = SortHelper.sortDescByField(field);
-    const sortedArr = objectArr.sort(sortDescFunc);
+    const sortedArr = objectArr.sort(SortHelper.sortDescByField(field));
     expect(sortedArr).toBeDefined();
     expect(sortedArr.length).toEqual(objectArr.length);
 
@@ -96,8 +95,7 @@ describe('Sort Helper Spec', () => {
 
   it('sort helper should sort object[] ascending by field', () => {
     const field = 'key1';
-    const sortAscendingFunc = SortHelper.sortAscByField(field);
-    const sortedArr = objectArr.sort(sortAscendingFunc);
+    const sortedArr = objectArr.sort(SortHelper.sortAscByField(field));
     expect(sortedArr).toBeDefined();
     expect(sortedArr.length).toEqual(objectArr.length);
 
