@@ -7,6 +7,7 @@ import { WebAnalyticsService } from './core/services/web-analytics.service';
 import * as fromApp from './root-store/app.reducers';
 import * as userActions from './root-store/users/user.actions';
 import * as configActions from './root-store/config/config.actions';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app',
@@ -17,8 +18,9 @@ import * as configActions from './root-store/config/config.actions';
   templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
-  public showBanner = false;
-  public securityMarkingLabel = '';
+  public readonly showBanner = environment.showBanner || false;
+  public readonly securityMarkingLabel = environment.bannerText || '';
+  public readonly runMode = environment.runMode;
 
   constructor(
     public authService: AuthService,
@@ -27,20 +29,12 @@ export class AppComponent implements OnInit {
   ) {}
 
   public ngOnInit() {
-    if (SHOWBANNER !== undefined) {
-      this.showBanner = SHOWBANNER;
-    }
-
-    if (BANNERTEXT !== undefined) {
-      this.securityMarkingLabel = BANNERTEXT;
-    }
-
-    if (RUN_MODE !== undefined && RUN_MODE === 'UAC') { 
+    if (this.runMode && this.runMode === 'UAC') { 
       console.log('Running application in UAC mode');   
       if (this.authService.loggedIn()) {
         this.webAnalyticsService.recordVisit();
       }   
-    } else if (RUN_MODE !== undefined && RUN_MODE === 'DEMO') {
+    } else if (this.runMode && this.runMode === 'DEMO') {
       console.log('Running application in DEMO mode');      
     }
 

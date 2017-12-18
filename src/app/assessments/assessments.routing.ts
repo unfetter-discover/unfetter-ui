@@ -11,8 +11,8 @@ const routes = [
         path: '', component: AssessmentsLayoutComponent,
         children: [
             { path: '', component: AssessmentsListComponent },
-            { path: 'wizard/new/:type', loadChildren: 'app/assessments/wizard#AssessmentModule' },
-            { path: 'wizard/edit/:type/:id', loadChildren: 'app/assessments/wizard#AssessmentModule' },
+            { path: 'wizard/new/:type', loadChildren: 'app/assessments/wizard/assessment-wizard.module#AssessmentWizardModule' },
+            { path: 'wizard/edit/:type/:id', loadChildren: 'app/assessments/wizard/assessment-wizard.module#AssessmentWizardModule' },
             // { path: 'indicators',  loadChildren: './new/indicators#IndicatorsModule' },
             // { path: 'mitigations', loadChildren: './new/mitigations#MitigationsModule' },
             // { path: 'sensors',  loadChildren: './new/sensors#SensorsModule' }

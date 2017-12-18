@@ -1,6 +1,7 @@
 export const environment = {
     production: false,
-    showBanner: true,
+    showBanner: false,
     bannerText: '',
-    RUN_MODE: 'TEST'
+    runMode: 'TEST',
+    hmr: true
 };

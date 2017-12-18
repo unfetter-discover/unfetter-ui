@@ -32,8 +32,3 @@ RUN npm --loglevel error run build:prod && \
     find / -name "cb-never*.tgz" -delete && \
     rm -rf /usr/share/man && \
     rm -rf /tmp/*
-
-# Start Application
-EXPOSE 80
-CMD [ "npm --loglevel error", "run", "server:dev:alt"]
-

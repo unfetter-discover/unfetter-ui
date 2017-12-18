@@ -1,7 +1,8 @@
 
 import { Component, OnInit, Input, OnDestroy, EventEmitter, Output, Renderer2, OnChanges, ChangeDetectionStrategy } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
 import * as d3 from 'd3';
-import { Subscription } from 'rxjs';
+
 import { RadarChartDataPoint } from './radar-chart-datapoint';
 
 @Component({

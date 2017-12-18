@@ -7,6 +7,7 @@ import * as fromApp from '../../root-store/app.reducers';
 import * as notificationActions from '../../root-store/notification/notification.actions';
 import { topRightSlide } from '../../global/animations/top-right-slide';
 import { AppNotification } from '../../root-store/notification/notification.model';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'header-navigation',
@@ -32,6 +33,8 @@ export class HeaderNavigationComponent {
     { url: 'stix/x-unfetter-sensors', label: 'Sensors' }
   ];
 
+  public readonly runMode = environment.runMode;
+  public readonly showBanner = environment.showBanner;
   public collapsed: boolean = true;
   public demoMode: boolean = false;
   public showNotificationBar: boolean = false;
@@ -46,11 +49,10 @@ export class HeaderNavigationComponent {
   ) {
     this.user$ = this.store.select('users');
     this.notifications$ = this.store.select('notifications');
-    const runMode = RUN_MODE;
-    if (runMode === 'DEMO') {
+    if (this.runMode && this.runMode === 'DEMO') {
       this.demoMode = true;
     }
-    if (SHOWBANNER !== undefined && SHOWBANNER === true) {
+    if (this.showBanner && this.showBanner === true) {
       this.topPx = '17px';
     }
   }

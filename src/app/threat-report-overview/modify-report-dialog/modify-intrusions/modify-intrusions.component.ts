@@ -1,7 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, EventEmitter, Output, Inject, Input } from '@angular/core';
-import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { FormControl } from '@angular/forms';
-
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 

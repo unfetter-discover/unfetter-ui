@@ -5,6 +5,7 @@
 export const environment = {
     production: false,
     showBanner: true,
-    bannerText: '',
-    RUN_MODE: 'DEMO'
+    bannerText: 'EMPLOYEES ONLY',
+    runMode: 'DEMO',
+    hmr: true
 };
