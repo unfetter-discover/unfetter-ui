@@ -8,11 +8,7 @@
     },
     "/socketserver": {
         "target": "https://localhost",
-<<<<<<< 0c3b3da5af7451e785a9f4aca0647358be406dbf
-        "secure": "false"
-=======
         "secure": false,
         "ws": true
->>>>>>> notification read
     }
 }

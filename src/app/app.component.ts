@@ -7,7 +7,6 @@ import { WebAnalyticsService } from './core/services/web-analytics.service';
 import * as fromApp from './root-store/app.reducers';
 import * as userActions from './root-store/users/user.actions';
 import * as configActions from './root-store/config/config.actions';
-import { environment } from '../environments/environment';
 import * as notificationsActions from './root-store/notification/notification.actions';
 import { WebsocketService } from './core/services/web-socket.service';
 import { WSMessageTypes } from './global/enums/ws-message-types.enum';
