@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { FileUploadComponent } from './file-upload.component';
 import { UploadService } from './upload.service';
 import { MatIconModule, MatInputModule, MatButtonModule, MatProgressBarModule, MatListModule, MatTooltipModule, MatProgressSpinnerModule } from '@angular/material';
@@ -30,7 +29,6 @@ const services = [
 imports: [
     CommonModule,
     FormsModule,
-    HttpClientModule,
     ...materialModules,
   ],
   providers: [

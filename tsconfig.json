@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "outDir": "dist",
     "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
@@ -13,20 +14,11 @@
     "strictNullChecks": false,
     "lib": [
       "dom",
-      "es6",
+      "es2017",
       "es2016.array.include"
     ],
     "typeRoots": [
       "node_modules/@types"
-    ],
-    "types": [
-      "hammerjs",
-      "jasmine",
-      "node",
-      "source-map",
-      "uglify-js",
-      "webpack",
-      "d3"
     ]
   },
   "exclude": [

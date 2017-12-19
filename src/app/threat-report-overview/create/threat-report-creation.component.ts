@@ -18,7 +18,6 @@ import { Boundries } from '../models/boundries';
 import { SortHelper } from '../../global/static/sort-helper';
 import { ModifyReportDialogComponent } from '../modify-report-dialog/modify-report-dialog.component';
 import { Report } from '../../models/report';
-import { PACKAGE_ROOT_URL } from '@angular/core/src/application_tokens';
 
 @Component({
   selector: 'unf-threat-report-creation',

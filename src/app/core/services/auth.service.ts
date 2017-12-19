@@ -4,11 +4,12 @@ import { tokenNotExpired } from 'angular2-jwt';
 
 import { GenericApi } from './genericapi.service';
 import { ConfigService } from './config.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class AuthService {
 
-    public runMode: string = '';
+    public readonly runMode = environment.runMode;
 
     constructor(
         private router: Router,
@@ -20,8 +21,6 @@ export class AuthService {
             this.configService.initConfig();
         }   
 
-        // Set run mode to enviromental variable
-        this.runMode = RUN_MODE;        
     }
 
     public setToken(token) {

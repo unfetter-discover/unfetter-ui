@@ -11,22 +11,15 @@ import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
 
-/*
- * Platform and Environment providers/directives/pipes
- */
-import { ENV_PROVIDERS } from './environment';
-import { ROUTES } from './app.routes';
 // App is our top level component
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
+import '../rxjs-operators';
+
 import { HomeComponent } from './home';
 import { PartnersComponent } from './partners/partners.component';
 import { NoContentComponent } from './no-content';
-import '../styles/styles.scss';
-// import '../styles/app.scss';
-import '../styles/headings.css';
-import { AssessmentsModule } from './assessments/assessments.module';
 
 import { GlobalModule } from './global/global.module';
 import { ConfirmationDialogComponent } from './components/dialogs/confirmation/confirmation-dialog.component';
@@ -37,7 +30,7 @@ import { ConfigEffects } from './root-store/config/config.effects';
 import { UtilityEffects } from './root-store/utility/utility.effects';
 
 /**
- * `AppModule` is the main entry point into Angular2's bootstraping process
+ * `AppModule` is the main entry point into Angular's bootstraping process
  */
 @NgModule({
   bootstrap: [AppComponent],
@@ -50,16 +43,13 @@ import { UtilityEffects } from './root-store/utility/utility.effects';
   imports: [ // import Angular's modules
     BrowserModule,
     BrowserAnimationsModule,
-    FormsModule,
     HttpModule,
-    MatProgressBarModule,
     ComponentModule,
     GlobalModule,
     StixModule,
     // InMemoryWebApiModule.forRoot(InMemoryDataService),
     AppRoutingModule,
     // RouterModule.forRoot(ROUTES, { useHash: true, preloadingStrategy: PreloadAllModules })
-    AssessmentsModule,
     CoreModule,
     StoreModule.forRoot(reducers),
     EffectsModule.forRoot([
@@ -68,9 +58,6 @@ import { UtilityEffects } from './root-store/utility/utility.effects';
       UtilityEffects
     ]),
     StoreDevtoolsModule.instrument() // TODO modify so its only used in dev mode,
-  ],
-  providers: [ // expose our Services and Providers into Angular's dependency injection
-    ENV_PROVIDERS
   ],
   entryComponents: [
     ConfirmationDialogComponent

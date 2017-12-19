@@ -6,6 +6,7 @@ import { IndicatorSharingService } from '../indicator-sharing.service';
 import { FormatHelpers } from '../../global/static/format-helpers';
 import { AuthService } from '../../core/services/auth.service';
 import { heightCollapse } from '../../global/animations/height-collapse';
+import { environment } from '../../../environments/environment';
 
 @Component({
     selector: 'indicator-card',
@@ -23,6 +24,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
 
     @Output() public stateChange: EventEmitter<any> = new EventEmitter();
 
+    public readonly runMode = environment.runMode;
     public user;
     public showCommentTextArea: boolean = false;
     public commentText: string = '';
@@ -60,7 +62,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
 
     public ngAfterViewInit() {
         // Only add listener for interactions if the user never interacted with it
-        if (!this.alreadyInteracted && RUN_MODE !== undefined && RUN_MODE === 'UAC') {
+        if (!this.alreadyInteracted && this.runMode && this.runMode === 'UAC') {
             const removeListener = this.renderer.listen(this.card.nativeElement, 'click', () => {
                 this.addInteraction();
                 // Remove listener after interaction

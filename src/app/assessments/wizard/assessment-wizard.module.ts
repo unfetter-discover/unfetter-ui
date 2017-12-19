@@ -7,13 +7,13 @@ import { MatButtonModule, MatCardModule, MatDialogModule, MatSnackBarModule, Mat
 import { ChartsModule } from 'ng2-charts';
 import { CalendarModule } from 'primeng/primeng';
 import { PipesModule } from '../../pipes';
-import { AssessmentComponent } from './assessment-wizard.component';
+import { AssessmentWizardComponent } from './assessment-wizard.component';
 import { ComponentModule } from '../../components';
 import { AssessmentsService } from '../assessments.service';
 import { GlobalModule } from '../../global/global.module';
 
 const routes = [
-   { path: '', component: AssessmentComponent  }
+  { path: '', component: AssessmentWizardComponent }
 ];
 
 @NgModule({
@@ -21,7 +21,7 @@ const routes = [
     /**
      * Components / Directives/ Pipes
      */
-    AssessmentComponent,
+    AssessmentWizardComponent,
   ],
 
   imports: [
@@ -45,11 +45,11 @@ const routes = [
     RouterModule.forChild(routes)
   ],
   exports: [
-    AssessmentComponent,
+    AssessmentWizardComponent,
   ],
 
   providers: [
     AssessmentsService
   ]
 })
-export class AssessmentModule {}
+export class AssessmentWizardModule { }

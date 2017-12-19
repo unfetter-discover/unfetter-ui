@@ -24,7 +24,7 @@ import { MenuItem } from 'primeng/primeng';
   // encapsulation: ViewEncapsulation.None,
   styleUrls: [`./assessment-wizard.component.scss`]
 })
-export class AssessmentComponent extends Measurements implements OnInit, OnDestroy {
+export class AssessmentWizardComponent extends Measurements implements OnInit, OnDestroy {
   public model: any;
   public assessmentDescription = '';
   public saved = false;

@@ -12,10 +12,10 @@ import { GlobalModule } from '../global/global.module';
 import { IndicatorSharingLayoutComponent } from './indicator-sharing-layout/indicator-sharing-layout.component';
 import { IndicatorSharingListComponent } from './indicator-sharing-list/indicator-sharing-list.component';
 import { IndicatorCardComponent } from './indicator-card/indicator-card.component';
-import { AddIndicatorComponent } from './add-indicator/add-indicator.component.ts';
 
 // Services
 import { IndicatorSharingService } from './indicator-sharing.service';
+import { AddIndicatorComponent } from './add-indicator/add-indicator.component';
 
 const matModules = [
     MatButtonModule,
@@ -47,7 +47,7 @@ const matModules = [
         IndicatorSharingLayoutComponent,
         IndicatorSharingListComponent,
         IndicatorCardComponent,
-        AddIndicatorComponent
+        AddIndicatorComponent,
     ],
     providers: [
         IndicatorSharingService

@@ -1,9 +1,10 @@
 import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
+
 import { AttackPattern } from '../../models/attack-pattern';
 import { AssessmentsDashboardService } from '../../assessments-dashboard/assessments-dashboard.service';
 import { Constance } from '../../../utils/constance';
-import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'add-assessed-object',
