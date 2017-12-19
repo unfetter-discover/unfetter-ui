@@ -54,6 +54,16 @@ export class NotificationEffects {
             });
         });
 
+    @Effect({ dispatch: false })
+    public deleteNotification = this.actions$
+        .ofType(notificationActions.EMIT_DELETE_NOTIFCATION)
+        .do((action: { type: string, payload: AppNotification }) => {
+            this.websocketService.sendMessage({
+                messageType: 'DELETE_NOTIFICATION',
+                messageContent: action.payload
+            });
+        });
+
     constructor(
         private actions$: Actions,
         private websocketService: WebsocketService,

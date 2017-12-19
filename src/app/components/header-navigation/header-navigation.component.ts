@@ -84,11 +84,12 @@ export class HeaderNavigationComponent {
     this.store.dispatch(new notificationActions.MarkAllAsRead());
   }
 
-  public deleteNotification(i, event?: UIEvent) {
+  public deleteNotification(i, notificationId, event?: UIEvent) {
     if (event) {
       event.stopPropagation();
     }
     
     this.store.dispatch(new notificationActions.DeleteNotification(i));
+    this.store.dispatch(new notificationActions.EmitDeleteNotification(notificationId));
   }
 }
