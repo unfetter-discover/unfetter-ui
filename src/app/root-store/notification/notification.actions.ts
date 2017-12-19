@@ -42,9 +42,11 @@ export class FetchNotificationStore implements Action {
     public readonly type = FETCH_NOTIFICATION_STORE;
 }
 
-// export class EmitReadNotification implements Action {
+export class EmitReadNotification implements Action {
+    public readonly type = EMIT_READ_NOTIFCATION;
 
-// }
+    constructor(public payload: AppNotification) { }
+}
 
 export type NotificationActions =
     AddNotification |
@@ -52,4 +54,5 @@ export type NotificationActions =
     DeleteNotification |
     MarkAllAsRead |
     StartNotificationStream |
-    FetchNotificationStore;
+    FetchNotificationStore |
+    EmitReadNotification;

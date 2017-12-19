@@ -14,7 +14,7 @@ export class WebsocketService {
     private url = '/';
 
     constructor(private authService: AuthService) {
-        this.initConnection();
+        this.initConnection();    
     }
 
     public initConnection(): void {

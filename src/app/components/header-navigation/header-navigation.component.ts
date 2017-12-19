@@ -77,6 +77,7 @@ export class HeaderNavigationComponent {
       read: true
     };
     this.store.dispatch(new notificationActions.UpdateNotification({ notification: updatedNotitifcation, index }));
+    this.store.dispatch(new notificationActions.EmitReadNotification(notification));
   }
 
   public markAllAsRead() {

@@ -11,6 +11,7 @@ import { environment } from '../environments/environment';
 import * as notificationsActions from './root-store/notification/notification.actions';
 import { WebsocketService } from './core/services/web-socket.service';
 import { WSMessageTypes } from './global/enums/ws-message-types.enum';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app',
@@ -47,7 +48,6 @@ export class AppComponent implements OnInit {
       const token = this.authService.getToken();
       this.store.dispatch(new userActions.LoginUser({ userData: user, token }));
       this.store.dispatch(new configActions.FetchConfig());
-      // this.store.dispatch(new notificationsActions.StartNotificationStream());
 
       this.store.dispatch(new notificationsActions.FetchNotificationStore());
 

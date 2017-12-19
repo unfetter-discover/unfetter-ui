@@ -10,6 +10,7 @@ import * as notificationActions from '../../root-store/notification/notification
 import { WebsocketService } from '../../core/services/web-socket.service';
 import { WSMessageTypes } from '../../global/enums/ws-message-types.enum';
 import { GenericApi } from '../../core/services/genericapi.service';
+import { AppNotification } from './notification.model';
 
 @Injectable()
 export class NotificationEffects {
@@ -33,13 +34,24 @@ export class NotificationEffects {
                 type: notificationActions.ADD_NOTIFCATION,
                 payload: { 
                     ...notification.attributes.messageContent,
-                    _id: notification.attributes._id
+                    _id: notification.attributes._id,
+                    read: notification.attributes.read
                 } 
             }));
             dispath.push({
                 type: notificationActions.START_NOTIFICATION_STREAM
             });
             return dispath;
+        });
+
+    @Effect({ dispatch: false })
+    public readNotification = this.actions$
+        .ofType(notificationActions.EMIT_READ_NOTIFCATION)
+        .do((action: {type: string, payload: AppNotification}) => {
+            this.websocketService.sendMessage({
+                messageType: 'READ_NOTIFICATION',
+                messageContent: action.payload._id
+            });
         });
 
     constructor(
