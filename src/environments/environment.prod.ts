@@ -2,6 +2,6 @@ export const environment = {
     production: true,
     showBanner: false,
     bannerText: '',
-    runMode: 'UAC',
+    runMode: 'DEMO',
     hmr: false
 };
