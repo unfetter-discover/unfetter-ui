@@ -5,5 +5,9 @@
         "logLevel": "debug",
         "ignorePath": false,
         "changeOrigin": true
+    },
+    "/socketserver": {
+        "target": "https://localhost",
+        "secure": "false"
     }
 }
