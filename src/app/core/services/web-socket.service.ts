@@ -47,8 +47,8 @@ export class WebsocketService {
         });
 
         const observer = {
-            next: (data: any) => {
-                this.socket.emit('message', JSON.stringify(data));
+            next: (messageEvent: MessageEvent) => {
+                this.socket.emit('message', messageEvent.data);
             },
         };
 
@@ -68,5 +68,11 @@ export class WebsocketService {
                     return message.messageContent;
                 }
             });
+    }
+
+    public sendMessage(data: {}) {
+        this.socketSubject.next(new MessageEvent('message', {
+            data
+        }));
     }
 }

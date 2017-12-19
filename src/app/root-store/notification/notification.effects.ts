@@ -25,17 +25,21 @@ export class NotificationEffects {
 
     @Effect()
     public notificationStore = this.actions$
-        .ofType(notificationActions.START_NOTIFICATION_STREAM)
+        .ofType(notificationActions.FETCH_NOTIFICATION_STORE)
         .switchMap(() => this.genericApi.get('api/notification-store/user-notifications'))
         .do((notifications) => console.log(notifications))
         .mergeMap((notifications) => {
-            return notifications.map((notification: any) => ({
+            const dispath: any[] = notifications.map((notification: any) => ({
                 type: notificationActions.ADD_NOTIFCATION,
                 payload: { 
                     ...notification.attributes.messageContent,
                     _id: notification.attributes._id
                 } 
             }));
+            dispath.push({
+                type: notificationActions.START_NOTIFICATION_STREAM
+            });
+            return dispath;
         });
 
     constructor(
