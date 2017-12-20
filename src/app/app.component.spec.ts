@@ -9,6 +9,7 @@ import { AppState } from './app.service';
 import { AuthService } from './core/services/auth.service';
 import { ConfigService } from './core/services/config.service';
 import { GenericApi } from './core/services/genericapi.service';
+import { WebsocketService } from './core/services/web-socket.service';
 import { WebAnalyticsService } from './core/services/web-analytics.service';
 import { AppModule } from './app.module';
 import { StoreModule } from '@ngrx/store';
@@ -26,6 +27,7 @@ describe(`App`, () => {
       GenericApi,
       ConfigService,
       WebAnalyticsService,
+      WebsocketService,
     ];
 
     TestBed.configureTestingModule({
