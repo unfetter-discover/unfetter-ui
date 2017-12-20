@@ -8,6 +8,7 @@
     },
     "/socketserver": {
         "target": "https://localhost",
-        "secure": "false"
+        "secure": false,
+        "ws": true
     }
 }

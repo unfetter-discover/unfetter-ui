@@ -6,6 +6,7 @@ import { AuthService } from './services/auth.service';
 import { WebAnalyticsService } from './services/web-analytics.service';
 import { ConfigService } from './services/config.service';
 import { UsersService } from './services/users.service';
+import { WebsocketService } from './services/web-socket.service';
 
 @NgModule({
     providers: [
@@ -14,7 +15,8 @@ import { UsersService } from './services/users.service';
         AuthService,
         WebAnalyticsService,
         ConfigService,
-        UsersService
+        UsersService,
+        WebsocketService
     ]
 })
 export class CoreModule { }

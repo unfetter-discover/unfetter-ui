@@ -7,6 +7,9 @@ import { WebAnalyticsService } from './core/services/web-analytics.service';
 import * as fromApp from './root-store/app.reducers';
 import * as userActions from './root-store/users/user.actions';
 import * as configActions from './root-store/config/config.actions';
+import * as notificationsActions from './root-store/notification/notification.actions';
+import { WebsocketService } from './core/services/web-socket.service';
+import { WSMessageTypes } from './global/enums/ws-message-types.enum';
 import { environment } from '../environments/environment';
 
 @Component({
@@ -25,7 +28,8 @@ export class AppComponent implements OnInit {
   constructor(
     public authService: AuthService,
     private webAnalyticsService: WebAnalyticsService,
-    private store: Store<fromApp.AppState>
+    private store: Store<fromApp.AppState>,
+    private websocketService: WebsocketService
   ) {}
 
   public ngOnInit() {
@@ -43,7 +47,21 @@ export class AppComponent implements OnInit {
       const token = this.authService.getToken();
       this.store.dispatch(new userActions.LoginUser({ userData: user, token }));
       this.store.dispatch(new configActions.FetchConfig());
-    }
 
+      this.store.dispatch(new notificationsActions.FetchNotificationStore());
+
+      const systemSub$ = this.websocketService.connect(WSMessageTypes.SYSTEM)        
+        .subscribe(
+          (res) => {
+            console.log('System message', res);
+          },
+          (err) => {
+            console.log(err);
+          },
+          () => {
+            systemSub$.unsubscribe();
+          }
+        );
+    }
   }
 }

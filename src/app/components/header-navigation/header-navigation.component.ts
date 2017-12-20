@@ -11,7 +11,7 @@ import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'header-navigation',
-  encapsulation: ViewEncapsulation.None,
+  // encapsulation: ViewEncapsulation.None,
   styleUrls: ['./header-navigation.component.scss'],
   templateUrl: './header-navigation.component.html',
   animations: [topRightSlide]
@@ -67,27 +67,33 @@ export class HeaderNavigationComponent {
     if (notifications.length) {
       return notifications.filter((notification) => !notification.read).length;
     } else {
-      return 0
+      return 0;
     }
   }
 
-  public markAsRead(notification: AppNotification, index: number) {
+  public markAsRead(notification: AppNotification) {
     const updatedNotitifcation = {
       ...notification,
       read: true
     };
-    this.store.dispatch(new notificationActions.UpdateNotification({ notification: updatedNotitifcation, index }));
-  }
+    this.store.dispatch(new notificationActions.EmitReadNotification(notification));
+  }  
 
-  public markAllAsRead() {
-    this.store.dispatch(new notificationActions.MarkAllAsRead());
-  }
-
-  public deleteNotification(i, event?: UIEvent) {
+  public deleteNotification(notificationId, event?: UIEvent) {
     if (event) {
       event.stopPropagation();
     }
-    
-    this.store.dispatch(new notificationActions.DeleteNotification(i));
+    this.store.dispatch(new notificationActions.EmitDeleteNotification(notificationId));
+  }
+
+  public markAllAsRead() {
+    this.store.dispatch(new notificationActions.EmitReadAllNotifications());
+  }
+
+  public deleteAll(event?: UIEvent) {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.store.dispatch(new notificationActions.EmitDeleteAllNotifications());
   }
 }

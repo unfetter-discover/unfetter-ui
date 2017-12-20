@@ -8,22 +8,7 @@ export interface NotificationState {
 
 // Uncomment the fake notifications to test
 const initialState: NotificationState = {
-    notifications: [
-        // {
-        //     read: false,
-        //     type: 'COMMENT',
-        //     heading: 'This is a test',
-        //     body: 'Lorem Ipsum',
-        //     submitted: new Date()
-        // },
-        // {
-        //     read: false,
-        //     type: 'COMMENT',
-        //     heading: 'Yet another test',
-        //     body: 'Lorem Ipsum',
-        //     submitted: new Date()
-        // }
-    ]
+    notifications: []
 };
 
 export function notificationReducer(state = initialState, action: notificationActions.NotificationActions) {
@@ -37,23 +22,35 @@ export function notificationReducer(state = initialState, action: notificationAc
                 ]
             };
         case notificationActions.UPDATE_NOTIFCATION:
-            const notificationToUpdate = state.notifications[action.payload.index];
-            const updatedNotification = {
-                ...notificationToUpdate,
-                ...action.payload.notification
-            };
-            const iNotifications = [...state.notifications];
-            iNotifications[action.payload.index] = updatedNotification;
-            return {
-                ...state,
-                notifications: iNotifications
-            };
+            const notificationToUpdateIndex = state.notifications.findIndex((notification) => notification._id === action.payload._id);
+            if (notificationToUpdateIndex > -1) {
+                const notificationToUpdate = state.notifications[notificationToUpdateIndex];
+                const iNotifications = [...state.notifications];
+                iNotifications[notificationToUpdateIndex] = action.payload;
+                return {
+                    ...state,
+                    notifications: iNotifications
+                };
+            } else {
+                return state;
+            }
+            
         case notificationActions.DELETE_NOTIFCATION:
-            const notificationsCopy = [...state.notifications];
-            notificationsCopy.splice(action.payload, 1);
+            const notificationToDeleteIndex = state.notifications.findIndex((notification) => notification._id === action.payload);
+            if (notificationToDeleteIndex > -1) {
+                const notificationsCopy = [...state.notifications];
+                notificationsCopy.splice(notificationToDeleteIndex, 1);
+                return {
+                    ...state,
+                    notifications: notificationsCopy
+                };
+            } else {
+                return state;
+            }
+        case notificationActions.DELETE_ALL_NOTIFCATIONS:
             return {
                 ...state,
-                notifications: notificationsCopy
+                notifications: []
             };
         case notificationActions.MARK_ALL_AS_READ:
             const updatedNotifications = state.notifications

@@ -9,6 +9,7 @@ import 'rxjs/add/operator/mergeMap';
 
 import * as userActions from '../../root-store/users/user.actions';
 import * as configActions from '../../root-store/config/config.actions';
+import * as notificationActions from '../../root-store/notification/notification.actions';
 import { UsersService } from '../../core/services/users.service';
 import { AuthService } from '../../core/services/auth.service';
 
@@ -39,19 +40,15 @@ export class UserEffects {
             } else {
                 this.router.navigate(['/users/register']);
             }
-        }, (e) => console.log(e), () => {})
-        .mergeMap(([token, userData]: [string, any]) => { 
+        })
+        .mergeMap(([token, userData]: [string, any]) => {
             return [
-                {
-                    type: userActions.LOGIN_USER,
-                    payload: {
+                new userActions.LoginUser({
                         userData,
                         token
-                    }
-                },
-                {
-                    type: configActions.FETCH_CONFIG
-                }
+                }),
+                new configActions.FetchConfig(),
+                new notificationActions.StartNotificationStream()
             ]
         });
 
