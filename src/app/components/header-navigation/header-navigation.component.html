@@ -82,7 +82,12 @@
                   </div>
                 </div>
                 <div id="markAllAsRead" class="text-center">
-                  <p class="cursor-pointer" (click)="markAllAsRead()">Mark all as read</p>
+                  <p>
+                    <span class="cursor-pointer" (click)="markAllAsRead()">Mark all as read</span>
+                    &bull;
+                    <span class="cursor-pointer" (click)="deleteAll()">Delete all</span>
+                  </p>
+                  
                 </div>
               </div>
             

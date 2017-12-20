@@ -76,20 +76,26 @@ export class HeaderNavigationComponent {
       ...notification,
       read: true
     };
-    this.store.dispatch(new notificationActions.UpdateNotification({ notification: updatedNotitifcation, index }));
+    this.store.dispatch(new notificationActions.UpdateNotification({ notification: updatedNotitifcation, index })); // TODO move this to effects
     this.store.dispatch(new notificationActions.EmitReadNotification(notification));
-  }
-
-  public markAllAsRead() {
-    this.store.dispatch(new notificationActions.MarkAllAsRead());
-  }
+  }  
 
   public deleteNotification(i, notificationId, event?: UIEvent) {
     if (event) {
       event.stopPropagation();
     }
     
-    this.store.dispatch(new notificationActions.DeleteNotification(i));
+    this.store.dispatch(new notificationActions.DeleteNotification(i)); // TODO move this to effects
     this.store.dispatch(new notificationActions.EmitDeleteNotification(notificationId));
+  }
+
+  public markAllAsRead() {
+    this.store.dispatch(new notificationActions.MarkAllAsRead()); // TODO move this to effects
+    this.store.dispatch(new notificationActions.EmitReadAllNotifications());
+  }
+
+  public deleteAll() {
+    this.store.dispatch(new notificationActions.EmitDeleteAllNotifications());
+    // TODO update in UI
   }
 }

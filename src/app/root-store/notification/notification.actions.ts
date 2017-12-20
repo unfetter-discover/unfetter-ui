@@ -10,6 +10,8 @@ export const START_NOTIFICATION_STREAM = '[Notification] Start Notification Stre
 export const FETCH_NOTIFICATION_STORE = '[Notification] Fetch Notification Store';
 export const EMIT_READ_NOTIFCATION = '[Notification] Emit Read Notification';
 export const EMIT_DELETE_NOTIFCATION = '[Notification] Emit Delete Notification';
+export const EMIT_READ_ALL_NOTIFCATIONS = '[Notification] Emit Read All Notifications';
+export const EMIT_DELETE_ALL_NOTIFCATIONS = '[Notification] Emit Delete All Notifications';
 
 export class AddNotification implements Action {
     public readonly type = ADD_NOTIFCATION;
@@ -55,6 +57,14 @@ export class EmitDeleteNotification implements Action {
     constructor(public payload: string) { }
 }
 
+export class EmitReadAllNotifications implements Action {
+    public readonly type = EMIT_READ_ALL_NOTIFCATIONS;
+}
+
+export class EmitDeleteAllNotifications implements Action {
+    public readonly type = EMIT_DELETE_ALL_NOTIFCATIONS;
+}
+
 export type NotificationActions =
     AddNotification |
     UpdateNotification |
@@ -63,4 +73,6 @@ export type NotificationActions =
     StartNotificationStream |
     FetchNotificationStore |
     EmitReadNotification |
-    EmitDeleteNotification;
+    EmitDeleteNotification |
+    EmitReadAllNotifications |
+    EmitDeleteAllNotifications;

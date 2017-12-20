@@ -10,7 +10,7 @@ import * as notificationActions from '../../root-store/notification/notification
 import { WebsocketService } from '../../core/services/web-socket.service';
 import { WSMessageTypes } from '../../global/enums/ws-message-types.enum';
 import { GenericApi } from '../../core/services/genericapi.service';
-import { AppNotification } from './notification.model';
+import { AppNotification, NotificationEmitTypes } from './notification.model';
 
 @Injectable()
 export class NotificationEffects {
@@ -49,7 +49,7 @@ export class NotificationEffects {
         .ofType(notificationActions.EMIT_READ_NOTIFCATION)
         .do((action: {type: string, payload: AppNotification}) => {
             this.websocketService.sendMessage({
-                messageType: 'READ_NOTIFICATION',
+                messageType: NotificationEmitTypes.READ_NOTIFICATION,
                 messageContent: action.payload._id
             });
         });
@@ -59,8 +59,26 @@ export class NotificationEffects {
         .ofType(notificationActions.EMIT_DELETE_NOTIFCATION)
         .do((action: { type: string, payload: AppNotification }) => {
             this.websocketService.sendMessage({
-                messageType: 'DELETE_NOTIFICATION',
+                messageType: NotificationEmitTypes.DELETE_NOTIFICATION,
                 messageContent: action.payload
+            });
+        });
+
+    @Effect({ dispatch: false })
+    public readAllNotifications = this.actions$
+        .ofType(notificationActions.EMIT_READ_ALL_NOTIFCATIONS)
+        .do((action: { type: string, payload: AppNotification }) => {
+            this.websocketService.sendMessage({
+                messageType: NotificationEmitTypes.READ_ALL_NOTIFICATIONS
+            });
+        });
+
+    @Effect({ dispatch: false })
+    public deleteAllNotifications = this.actions$
+        .ofType(notificationActions.EMIT_DELETE_ALL_NOTIFCATIONS)
+        .do((action: { type: string, payload: AppNotification }) => {
+            this.websocketService.sendMessage({
+                messageType: NotificationEmitTypes.DELETE_ALL_NOTIFICATIONS
             });
         });
 
