@@ -64,23 +64,25 @@ export class NotificationEffects {
             });
         });
 
-    @Effect({ dispatch: false })
+    @Effect()
     public readAllNotifications = this.actions$
         .ofType(notificationActions.EMIT_READ_ALL_NOTIFCATIONS)
         .do((action: { type: string, payload: AppNotification }) => {
             this.websocketService.sendMessage({
                 messageType: NotificationEmitTypes.READ_ALL_NOTIFICATIONS
             });
-        });
+        })
+        .map(() => new notificationActions.MarkAllAsRead());
 
-    @Effect({ dispatch: false })
+    @Effect()
     public deleteAllNotifications = this.actions$
         .ofType(notificationActions.EMIT_DELETE_ALL_NOTIFCATIONS)
         .do((action: { type: string, payload: AppNotification }) => {
             this.websocketService.sendMessage({
                 messageType: NotificationEmitTypes.DELETE_ALL_NOTIFICATIONS
             });
-        });
+        })
+        .map(() => new notificationActions.DeleteAllNotifications());
 
     constructor(
         private actions$: Actions,

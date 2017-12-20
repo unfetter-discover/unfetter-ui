@@ -40,6 +40,11 @@ export function notificationReducer(state = initialState, action: notificationAc
                 ...state,
                 notifications: notificationsCopy
             };
+        case notificationActions.DELETE_ALL_NOTIFCATIONS:
+            return {
+                ...state,
+                notifications: []
+            };
         case notificationActions.MARK_ALL_AS_READ:
             const updatedNotifications = state.notifications
                 .map((notification) => ({ ...notification, read: true}));

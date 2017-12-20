@@ -67,7 +67,7 @@ export class HeaderNavigationComponent {
     if (notifications.length) {
       return notifications.filter((notification) => !notification.read).length;
     } else {
-      return 0
+      return 0;
     }
   }
 
@@ -90,12 +90,10 @@ export class HeaderNavigationComponent {
   }
 
   public markAllAsRead() {
-    this.store.dispatch(new notificationActions.MarkAllAsRead()); // TODO move this to effects
     this.store.dispatch(new notificationActions.EmitReadAllNotifications());
   }
 
   public deleteAll() {
     this.store.dispatch(new notificationActions.EmitDeleteAllNotifications());
-    // TODO update in UI
   }
 }

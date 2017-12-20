@@ -5,6 +5,7 @@ import { AppNotification } from './notification.model';
 export const ADD_NOTIFCATION = '[Notification] Add Notification';
 export const UPDATE_NOTIFCATION = '[Notification] Update Notification';
 export const DELETE_NOTIFCATION = '[Notification] Delete Notification';
+export const DELETE_ALL_NOTIFCATIONS = '[Notification] Delete All Notifications';
 export const MARK_ALL_AS_READ = '[Notification] Mark All As Read';
 export const START_NOTIFICATION_STREAM = '[Notification] Start Notification Stream';
 export const FETCH_NOTIFICATION_STORE = '[Notification] Fetch Notification Store';
@@ -29,6 +30,10 @@ export class DeleteNotification implements Action {
     public readonly type = DELETE_NOTIFCATION;
 
     constructor(public payload: number) { }
+}
+
+export class DeleteAllNotifications implements Action {
+    public readonly type = DELETE_ALL_NOTIFCATIONS;
 }
 
 export class MarkAllAsRead implements Action {
@@ -69,6 +74,7 @@ export type NotificationActions =
     AddNotification |
     UpdateNotification |
     DeleteNotification |
+    DeleteAllNotifications |
     MarkAllAsRead |
     StartNotificationStream |
     FetchNotificationStore |
