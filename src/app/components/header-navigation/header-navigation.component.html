@@ -67,7 +67,7 @@
                 </div>
                 <div id="notificiationRowWrapper">
                   <div *ngFor="let notification of (notifications$ | async).notifications | sortByField:'submitted'; let i = index" class="notificationRow flex flexItemsCenter" [ngClass]="{'readNotication': notification.read}"
-                    (mouseenter)="!notification.read ? markAsRead(notification, i) : ''">
+                    (mouseenter)="!notification.read ? markAsRead(notification) : ''">
                     <span>
                       <p class="lead">{{ notification.heading }}</p>
                       <p class="notificationBody flexNowrap">{{ notification.body }}</p>
@@ -76,7 +76,7 @@
                       </p>
                     </span>
                     <span class="flex1"></span>
-                    <span (click)="deleteNotification(i, notification._id, $event)">
+                    <span (click)="deleteNotification(notification._id, $event)">
                       <i class="material-icons mat-24 cursor-pointer">close</i>
                     </span>
                   </div>
@@ -85,7 +85,7 @@
                   <p>
                     <span class="cursor-pointer" (click)="markAllAsRead()">Mark all as read</span>
                     &nbsp;&bull;&nbsp;
-                    <span class="cursor-pointer" (click)="deleteAll()">Delete all</span>
+                    <span class="cursor-pointer" (click)="deleteAll($event)">Delete all</span>
                   </p>                  
                 </div>
               </div>

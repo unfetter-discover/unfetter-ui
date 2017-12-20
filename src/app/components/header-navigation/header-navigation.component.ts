@@ -11,7 +11,7 @@ import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'header-navigation',
-  encapsulation: ViewEncapsulation.None,
+  // encapsulation: ViewEncapsulation.None,
   styleUrls: ['./header-navigation.component.scss'],
   templateUrl: './header-navigation.component.html',
   animations: [topRightSlide]
@@ -71,21 +71,18 @@ export class HeaderNavigationComponent {
     }
   }
 
-  public markAsRead(notification: AppNotification, index: number) {
+  public markAsRead(notification: AppNotification) {
     const updatedNotitifcation = {
       ...notification,
       read: true
     };
-    this.store.dispatch(new notificationActions.UpdateNotification({ notification: updatedNotitifcation, index })); // TODO move this to effects
     this.store.dispatch(new notificationActions.EmitReadNotification(notification));
   }  
 
-  public deleteNotification(i, notificationId, event?: UIEvent) {
+  public deleteNotification(notificationId, event?: UIEvent) {
     if (event) {
       event.stopPropagation();
     }
-    
-    this.store.dispatch(new notificationActions.DeleteNotification(i)); // TODO move this to effects
     this.store.dispatch(new notificationActions.EmitDeleteNotification(notificationId));
   }
 
@@ -93,7 +90,10 @@ export class HeaderNavigationComponent {
     this.store.dispatch(new notificationActions.EmitReadAllNotifications());
   }
 
-  public deleteAll() {
+  public deleteAll(event?: UIEvent) {
+    if (event) {
+      event.stopPropagation();
+    }
     this.store.dispatch(new notificationActions.EmitDeleteAllNotifications());
   }
 }

@@ -23,13 +23,13 @@ export class AddNotification implements Action {
 export class UpdateNotification implements Action {
     public readonly type = UPDATE_NOTIFCATION;
 
-    constructor(public payload: { notification: AppNotification, index: number}) { }
+    constructor(public payload: AppNotification) { }
 }
 
 export class DeleteNotification implements Action {
     public readonly type = DELETE_NOTIFCATION;
 
-    constructor(public payload: number) { }
+    constructor(public payload: string) { }
 }
 
 export class DeleteAllNotifications implements Action {

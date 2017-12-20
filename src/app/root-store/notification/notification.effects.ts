@@ -44,7 +44,7 @@ export class NotificationEffects {
             return dispath;
         });
 
-    @Effect({ dispatch: false })
+    @Effect()
     public readNotification = this.actions$
         .ofType(notificationActions.EMIT_READ_NOTIFCATION)
         .do((action: {type: string, payload: AppNotification}) => {
@@ -52,9 +52,14 @@ export class NotificationEffects {
                 messageType: NotificationEmitTypes.READ_NOTIFICATION,
                 messageContent: action.payload._id
             });
+        })
+        .map((action: { type: string, payload: AppNotification }) => {
+            const readNotification = action.payload;
+            readNotification.read = true;
+            return new notificationActions.UpdateNotification(readNotification);
         });
 
-    @Effect({ dispatch: false })
+    @Effect()
     public deleteNotification = this.actions$
         .ofType(notificationActions.EMIT_DELETE_NOTIFCATION)
         .do((action: { type: string, payload: AppNotification }) => {
@@ -62,7 +67,8 @@ export class NotificationEffects {
                 messageType: NotificationEmitTypes.DELETE_NOTIFICATION,
                 messageContent: action.payload
             });
-        });
+        })
+        .map((action: { type: string, payload: string }) => new notificationActions.DeleteNotification(action.payload));
 
     @Effect()
     public readAllNotifications = this.actions$
