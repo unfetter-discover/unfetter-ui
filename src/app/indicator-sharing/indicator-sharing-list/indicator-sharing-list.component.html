@@ -2,60 +2,14 @@
     <div class="row">
 
         <div class="col-xs-4 col-lg-3" id="filterWrapper">
-            <p class="lightH3 flexImportant flexItemsCenter">
-                <i class="material-icons">search</i>
-                <span>&nbsp;Search Analytics</span>
-            </p>
-            <mat-form-field class="full-width mb-9">
-                <input matInput placeholder="Indicator Name" [(ngModel)]="searchParameters.indicatorName" (keyup)="searchDebouncer.next()">
-            </mat-form-field>
-            <mat-form-field class="full-width mb-9">
-                <mat-select placeholder="Labels" [multiple]="true" (change)="searchDebouncer.next()" [(ngModel)]="searchParameters.activeLabels">
-                    <mat-option value="{{label}}" *ngFor="let label of searchParameters.labels">{{ label | capitalize }}</mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field class="full-width mb-9">
-                <mat-select placeholder="Organizations" [multiple]="true" (change)="searchDebouncer.next()" [(ngModel)]="searchParameters.activeIdentities">
-                    <mat-option value="{{org.id}}" *ngFor="let org of organizations">{{ org.name }}</mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field class="full-width mb-9">
-                <mat-select placeholder="Kill Chain Phases" [multiple]="true" (change)="searchDebouncer.next()" [(ngModel)]="searchParameters.activeKillChainPhases">
-                    <mat-option value="{{phase}}" *ngFor="let phase of searchParameters.killChainPhases">{{ phase | capitalize }}</mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-form-field class="full-width mb-12" *ngIf="sensors && sensors.length">
-                <mat-select placeholder="Sensors" [multiple]="true" (change)="searchDebouncer.next()" [(ngModel)]="searchParameters.activeSensorIds">
-                    <mat-option value="{{sensor.id}}" *ngFor="let sensor of sensors">{{ sensor.name | capitalize }}</mat-option>
-                </mat-select>
-            </mat-form-field>
-            <p *ngIf="displayedIndicators && allIndicators" class="text-muted flex">
-                <span><a (click)="clearSearchParamaters()">Clear Filters</a></span>
-                <span class="flex1"></span>
-                <span>Results: {{ filteredIndicators.length }} / {{ allIndicators.length }}</span>    
-            </p> 
-
-            <hr> 
-
-            <p class="lightH3 flexImportant flexItemsCenter">
-                <i class="material-icons">sort</i>
-                <span>&nbsp;Sort Analytics</span>
-            </p>
-            <mat-radio-group [(ngModel)]="sortBy" (change)="sortIndicators()">
-                <mat-radio-button [value]="'NEWEST'" color="primary">Newest</mat-radio-button><br>
-                <mat-radio-button [value]="'OLDEST'" color="primary">Oldest</mat-radio-button><br>
-                <mat-radio-button [value]="'LIKES'" color="primary">Likes</mat-radio-button><br>
-                <mat-radio-button [value]="'COMMENTS'" color="primary">Comments</mat-radio-button>
-            </mat-radio-group>
-
+            <indicator-sharing-search></indicator-sharing-search>
             <hr>
-
             <p class="lightH3 flexImportant flexItemsCenter">
                 <button mat-mini-fab color="primary" (click)="openDialog()">
                     <i class="material-icons mat-24">add</i>
                 </button>
                 <span>&nbsp;Add Analytic</span>
-            </p>
+            </p> 
         </div>
 
         <div class="col-xs-8 col-lg-7" id="indicatorListWrapper">

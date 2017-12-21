@@ -2,6 +2,7 @@ import { Action } from '@ngrx/store';
 
 import { AppNotification } from './notification.model';
 
+export const SET_NOTIFCATIONS = '[Notification] Set Notifications';
 export const ADD_NOTIFCATION = '[Notification] Add Notification';
 export const UPDATE_NOTIFCATION = '[Notification] Update Notification';
 export const DELETE_NOTIFCATION = '[Notification] Delete Notification';
@@ -13,6 +14,12 @@ export const EMIT_READ_NOTIFCATION = '[Notification] Emit Read Notification';
 export const EMIT_DELETE_NOTIFCATION = '[Notification] Emit Delete Notification';
 export const EMIT_READ_ALL_NOTIFCATIONS = '[Notification] Emit Read All Notifications';
 export const EMIT_DELETE_ALL_NOTIFCATIONS = '[Notification] Emit Delete All Notifications';
+
+export class SetNotifications implements Action {
+    public readonly type = SET_NOTIFCATIONS;
+
+    constructor(public payload: AppNotification[]) { }
+}
 
 export class AddNotification implements Action {
     public readonly type = ADD_NOTIFCATION;
@@ -71,6 +78,7 @@ export class EmitDeleteAllNotifications implements Action {
 }
 
 export type NotificationActions =
+    SetNotifications |
     AddNotification |
     UpdateNotification |
     DeleteNotification |
