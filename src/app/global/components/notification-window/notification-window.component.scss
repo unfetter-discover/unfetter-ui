@@ -21,13 +21,12 @@ $notification-row-height: 106;
 #notificationBadge {
     position: absolute;
     top: 13px;
-    left: 10px;
+    right: 10px;
 }
 
 #notificationBellWrapper {
     user-select: none;
-    padding-top: 19px;
-    padding-bottom: 14px;
+    padding: 19px 15px 14px;
     line-height: 20px;
     color: #ffffff;
     position: relative;

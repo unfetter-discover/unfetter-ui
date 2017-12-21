@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, Renderer2, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, Renderer2, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { trigger, state, transition, style, animate, query } from '@angular/animations';
 import { Observable } from 'rxjs/Observable';
 
@@ -12,7 +12,8 @@ import { environment } from '../../../environments/environment';
     selector: 'indicator-card',
     templateUrl: 'indicator-card.component.html',
     animations: [heightCollapse],
-    styleUrls: ['indicator-card.component.scss']
+    styleUrls: ['indicator-card.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class IndicatorCardComponent implements OnInit, AfterViewInit {

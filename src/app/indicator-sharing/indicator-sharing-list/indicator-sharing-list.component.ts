@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
@@ -14,7 +14,8 @@ import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 @Component({
     selector: 'indicator-sharing-list',
     templateUrl: 'indicator-sharing-list.component.html',
-    styleUrls: ['indicator-sharing-list.component.scss']
+    styleUrls: ['indicator-sharing-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class IndicatorSharingListComponent implements OnInit, OnDestroy {
@@ -34,7 +35,9 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
         private indicatorSharingService: IndicatorSharingService, 
         public dialog: MatDialog,
         private configService: ConfigService,
-        public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>
+        public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>,
+        // Used for SERVER_CALL_COMPLETE, this should be moved to ngrx
+        private changeDetectorRef: ChangeDetectorRef
     ) { }
 
     public ngOnInit() { 
@@ -128,6 +131,7 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
             },
             () => {
                 this.SERVER_CALL_COMPLETE = true;
+                this.changeDetectorRef.detectChanges();
                 getData$.unsubscribe();
             }
         );
