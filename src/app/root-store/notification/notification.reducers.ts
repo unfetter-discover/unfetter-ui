@@ -13,6 +13,11 @@ const initialState: NotificationState = {
 
 export function notificationReducer(state = initialState, action: notificationActions.NotificationActions) {
     switch (action.type) {
+        case notificationActions.SET_NOTIFCATIONS:
+            return {
+                ...state,
+                notifications: action.payload
+            };
         case notificationActions.ADD_NOTIFCATION: 
             return {
                 ...state,
