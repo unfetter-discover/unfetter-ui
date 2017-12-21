@@ -37,63 +37,19 @@ export class HeaderNavigationComponent {
   public readonly showBanner = environment.showBanner;
   public collapsed: boolean = true;
   public demoMode: boolean = false;
-  public showNotificationBar: boolean = false;
   public topPx = '0px';
   public user$;
-  public notifications$;
 
   constructor(
     public authService: AuthService,
-    private store: Store<fromApp.AppState>,
-    private el: ElementRef
+    private store: Store<fromApp.AppState>
   ) {
     this.user$ = this.store.select('users');
-    this.notifications$ = this.store.select('notifications');
     if (this.runMode && this.runMode === 'DEMO') {
       this.demoMode = true;
     }
     if (this.showBanner && this.showBanner === true) {
       this.topPx = '17px';
     }
-  }
-
-  @HostListener('document:click', ['$event']) public clickedOutside(event) {
-    if (this.showNotificationBar && !this.el.nativeElement.contains(event.target)) {
-      this.showNotificationBar = false;
-    }
-  }
-
-  public getNumUnreadNotifications(notifications: AppNotification[]): number {
-    if (notifications.length) {
-      return notifications.filter((notification) => !notification.read).length;
-    } else {
-      return 0;
-    }
-  }
-
-  public markAsRead(notification: AppNotification) {
-    const updatedNotitifcation = {
-      ...notification,
-      read: true
-    };
-    this.store.dispatch(new notificationActions.EmitReadNotification(notification));
-  }  
-
-  public deleteNotification(notificationId, event?: UIEvent) {
-    if (event) {
-      event.stopPropagation();
-    }
-    this.store.dispatch(new notificationActions.EmitDeleteNotification(notificationId));
-  }
-
-  public markAllAsRead() {
-    this.store.dispatch(new notificationActions.EmitReadAllNotifications());
-  }
-
-  public deleteAll(event?: UIEvent) {
-    if (event) {
-      event.stopPropagation();
-    }
-    this.store.dispatch(new notificationActions.EmitDeleteAllNotifications());
   }
 }
