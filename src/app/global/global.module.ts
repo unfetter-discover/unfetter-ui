@@ -26,6 +26,7 @@ import { ObservableDataTreeComponent } from './components/observable-data-tree/o
 import { ChipLinksComponent } from './components/chip-links/chip-links.component';
 import { ObservableDataSummaryComponent } from './components/observable-data-summary/observable-data-summary.component';
 import { HeaderNavigationComponent } from './components/header-navigation/header-navigation.component';
+import { NotificationWindowComponent } from './components/notification-window/notification-window.component';
 
 const matModules = [
     MatTooltipModule, MatTableModule, MatChipsModule, MatPaginatorModule, MatButtonModule, MatInputModule, MatProgressSpinnerModule, MatAutocompleteModule, MatCheckboxModule
@@ -55,7 +56,8 @@ const matModules = [
         ObservableDataTreeComponent,
         ChipLinksComponent,
         ObservableDataSummaryComponent,
-        HeaderNavigationComponent
+        HeaderNavigationComponent,
+        NotificationWindowComponent
     ],
     declarations: [
         CapitalizePipe, 
@@ -71,7 +73,8 @@ const matModules = [
         ObservableDataTreeComponent,
         ChipLinksComponent,
         ObservableDataSummaryComponent,
-        HeaderNavigationComponent
+        HeaderNavigationComponent,
+        NotificationWindowComponent
     ],
     providers: []
 })
