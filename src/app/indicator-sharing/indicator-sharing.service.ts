@@ -9,13 +9,13 @@ import { environment } from '../../environments/environment';
 @Injectable()
 export class IndicatorSharingService {
 
+    public baseUrl = Constance.INDICATOR_URL;
+    public multiplesUrl = Constance.MULTIPLES_URL;
+    public identitiesUrl = Constance.IDENTITIES_URL;
+    public profileByIdUrl = Constance.PROFILE_BY_ID_URL;
+    public attackPatternsUrl = Constance.ATTACK_PATTERN_URL;
+    public sensorsUrl = Constance.X_UNFETTER_SENSOR_URL;
     public readonly runMode = environment.runMode;
-    public readonly baseUrl = Constance.INDICATOR_URL;
-    public readonly multiplesUrl = Constance.MULTIPLES_URL;
-    public readonly identitiesUrl = Constance.IDENTITIES_URL;
-    public readonly profileByIdUrl = Constance.PROFILE_BY_ID_URL;
-    public readonly attackPatternsUrl = Constance.ATTACK_PATTERN_URL;
-    public readonly sensorsUrl = Constance.X_UNFETTER_SENSOR_URL;
 
     constructor(
         private genericApi: GenericApi,
@@ -73,7 +73,7 @@ export class IndicatorSharingService {
     }    
 
     public getUserProfileById(userId): Observable<any> {
-        if (this.runMode && this.runMode === 'DEMO') {
+        if (this.runMode !== undefined && this.runMode === 'DEMO') {
             console.log('~~~~ ', this.authService.getUser());
             return Observable.of({ 'attributes': this.authService.getUser()});
         } else {

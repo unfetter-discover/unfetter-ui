@@ -1,0 +1,59 @@
+<div id="indicatorSharingSearch">
+
+    <p class="lightH3 flexImportant flexItemsCenter">
+        <i class="material-icons">search</i>
+        <span>&nbsp;Search Analytics</span>
+    </p>
+
+    <form [formGroup]="searchForm" novalidate>
+        <mat-form-field class="full-width mb-9">
+            <input matInput placeholder="Indicator Name" formControlName="indicatorName">
+        </mat-form-field>
+        <mat-form-field class="full-width mb-9">
+            <mat-select placeholder="Labels" [multiple]="true" formControlName="labels">
+                <mat-option value="{{label}}" *ngFor="let label of labels$ | async">{{ label | capitalize }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field class="full-width mb-9">
+            <mat-select placeholder="Organizations" [multiple]="true" formControlName="organizations">
+                <mat-option value="{{org.id}}" *ngFor="let org of store.select('indicatorSharing').pluck('identities') | async">{{ org.name }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field class="full-width mb-9">
+            <mat-select placeholder="Kill Chain Phases" [multiple]="true" formControlName="killChainPhases">
+                <mat-option value="{{phase}}" *ngFor="let phase of killChainPhases$ | async">{{ phase | capitalize }}</mat-option>
+            </mat-select>
+        </mat-form-field> 
+        <mat-form-field class="full-width mb-12">
+            <mat-select placeholder="Sensors" [multiple]="true" formControlName="sensors">
+                <mat-option value="{{sensor.id}}" *ngFor="let sensor of store.select('indicatorSharing').pluck('sensors') | async">{{ sensor.name | capitalize }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </form>    
+    
+    
+    <p class="text-muted flex">
+        <span>
+            <a (click)="clearSearchParamaters()">Clear Filters</a>
+        </span>
+        <span class="flex1"></span>
+        <span>Results: {{ (store.select('indicatorSharing').pluck('filteredIndicators') | async).length }} / {{ (store.select('indicatorSharing').pluck('indicators') | async).length }}</span>
+    </p>
+    
+    <hr> 
+    
+    <p class="lightH3 flexImportant flexItemsCenter">
+        <i class="material-icons">sort</i>
+        <span>&nbsp;Sort Analytics</span>
+    </p>
+    <mat-radio-group [(ngModel)]="sortBy" (change)="sortIndicators()">
+        <mat-radio-button [value]="sortTypes.NEWEST" color="primary">Newest</mat-radio-button>
+        <br>
+        <mat-radio-button [value]="sortTypes.OLDEST" color="primary">Oldest</mat-radio-button>
+        <br>
+        <mat-radio-button [value]="sortTypes.LIKES" color="primary">Likes</mat-radio-button>
+        <br>
+        <mat-radio-button [value]="sortTypes.COMMENTS" color="primary">Comments</mat-radio-button>
+    </mat-radio-group>
+
+</div>

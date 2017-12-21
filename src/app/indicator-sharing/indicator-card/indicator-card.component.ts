@@ -24,7 +24,6 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
 
     @Output() public stateChange: EventEmitter<any> = new EventEmitter();
 
-    public readonly runMode = environment.runMode;
     public user;
     public showCommentTextArea: boolean = false;
     public commentText: string = '';
@@ -32,6 +31,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     public messageTimeout: any;
     public alreadyLiked: boolean = false;
     public alreadyInteracted: boolean = false;
+    public readonly runMode = environment.runMode;
 
     private readonly FLASH_MSG_TIMER: number = 1500;
 
@@ -62,7 +62,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
 
     public ngAfterViewInit() {
         // Only add listener for interactions if the user never interacted with it
-        if (!this.alreadyInteracted && this.runMode && this.runMode === 'UAC') {
+        if (!this.alreadyInteracted && this.runMode !== undefined && this.runMode === 'UAC') {
             const removeListener = this.renderer.listen(this.card.nativeElement, 'click', () => {
                 this.addInteraction();
                 // Remove listener after interaction
@@ -73,11 +73,11 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     }
 
     public highlightPhase(phase) {
-        return this.searchParameters.activeKillChainPhases.length && this.searchParameters.activeKillChainPhases.includes(phase);
+        return this.searchParameters.killChainPhases.length > 0 && this.searchParameters.killChainPhases.includes(phase);
     }
 
     public labelSelected(label) {
-        return this.searchParameters.labels.length !== this.searchParameters.activeLabels.length && this.searchParameters.activeLabels.includes(label);
+        return this.searchParameters.labels.length > 0 && this.searchParameters.labels.includes(label);
     }
 
     public addLabel(label) {
@@ -165,7 +165,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
         const addLike$ = this.indicatorSharingService.addInteraction(this.indicator.id)
             .subscribe(
                 (res) => {
-                    this.indicator = res.attributes;                    
+                    this.indicator = res.attributes;                   
                 },
                 (err) => {
                     console.log(err);
