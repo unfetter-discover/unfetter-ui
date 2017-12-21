@@ -6,7 +6,6 @@ import { RouterModule,  PreloadAllModules } from '@angular/router';
 import { CalendarModule, AccordionModule, DataListModule, CheckboxModule } from 'primeng/primeng';
 import { MatButtonModule, MatListModule, MatCardModule,
   MatDialogModule, MatChipsModule, MatInputModule, MatSelectModule, MatAutocompleteModule, MatCheckboxModule, MatIconModule } from '@angular/material';
-import { HeaderNavigationComponent } from './header-navigation/header-navigation.component';
 import { PageHeaderComponent } from './page/page-header.component';
 import { ConfirmationDialogComponent } from './dialogs/confirmation/confirmation-dialog.component';
 import { IndicatorPatternFieldComponent } from './indicator-pattern-field/indicator-pattern-field.component';
@@ -23,8 +22,6 @@ import { BaseComponentService } from './base-service.component';
 import { ButtonsFilterComponent } from './buttons-filter/buttons-filter.component';
 import { LinkNodeGraphComponent } from './link-node-graph/link-node-graph.component';
 import { LabelComponent } from './labels/label.component';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { GlobalModule } from '../global/global.module';
 import { StixTextArrayComponent } from './stix-text-array/stix-text-array.component';
 
@@ -32,7 +29,6 @@ import { StixTextArrayComponent } from './stix-text-array/stix-text-array.compon
   declarations: [
     // Components / Directives/ Pipes
     PageHeaderComponent,
-    HeaderNavigationComponent,
     ConfirmationDialogComponent,
     IndicatorPatternFieldComponent,
     SelectSearchFieldComponent,
@@ -65,14 +61,11 @@ import { StixTextArrayComponent } from './stix-text-array/stix-text-array.compon
     DataListModule,
     CheckboxModule,
     MatCheckboxModule,
-    BsDropdownModule.forRoot(),
-    CollapseModule.forRoot(),
     GlobalModule
   ],
   exports: [
     PageHeaderComponent,
     ConfirmationDialogComponent,
-    HeaderNavigationComponent,
     IndicatorPatternFieldComponent,
     SelectSearchFieldComponent,
     ExternalReferenceComponent,

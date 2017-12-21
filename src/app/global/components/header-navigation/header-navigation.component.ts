@@ -1,13 +1,13 @@
 import { Component, ViewEncapsulation, HostListener, ElementRef } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import { Navigation } from '../../models/navigation';
-import { AuthService } from '../../core/services/auth.service';
-import * as fromApp from '../../root-store/app.reducers';
-import * as notificationActions from '../../root-store/notification/notification.actions';
-import { topRightSlide } from '../../global/animations/top-right-slide';
-import { AppNotification } from '../../root-store/notification/notification.model';
-import { environment } from '../../../environments/environment';
+import { Navigation } from '../../../models/navigation';
+import { AuthService } from '../../../core/services/auth.service';
+import * as fromApp from '../../../root-store/app.reducers';
+import * as notificationActions from '../../../root-store/notification/notification.actions';
+import { topRightSlide } from '../../global/../animations/top-right-slide';
+import { AppNotification } from '../../../root-store/notification/notification.model';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'header-navigation',

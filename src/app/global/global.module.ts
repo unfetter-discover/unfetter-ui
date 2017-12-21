@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatTooltipModule, MatTableModule, MatChipsModule, MatPaginatorModule, MatButtonModule, MatInputModule, MatProgressSpinnerModule, MatAutocompleteModule, MatCheckboxModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
 
 // ~~~ Local ~~~
 
@@ -23,6 +25,7 @@ import { AddLabelReactiveComponent } from './components/add-label/add-label.comp
 import { ObservableDataTreeComponent } from './components/observable-data-tree/observable-data-tree.component';
 import { ChipLinksComponent } from './components/chip-links/chip-links.component';
 import { ObservableDataSummaryComponent } from './components/observable-data-summary/observable-data-summary.component';
+import { HeaderNavigationComponent } from './components/header-navigation/header-navigation.component';
 
 const matModules = [
     MatTooltipModule, MatTableModule, MatChipsModule, MatPaginatorModule, MatButtonModule, MatInputModule, MatProgressSpinnerModule, MatAutocompleteModule, MatCheckboxModule
@@ -34,6 +37,8 @@ const matModules = [
         RouterModule,
         FormsModule,
         ReactiveFormsModule,
+        BsDropdownModule.forRoot(),
+        CollapseModule.forRoot(),
         ...matModules
     ],
     exports: [
@@ -49,7 +54,8 @@ const matModules = [
         AddLabelReactiveComponent,
         ObservableDataTreeComponent,
         ChipLinksComponent,
-        ObservableDataSummaryComponent
+        ObservableDataSummaryComponent,
+        HeaderNavigationComponent
     ],
     declarations: [
         CapitalizePipe, 
@@ -64,7 +70,8 @@ const matModules = [
         AddLabelReactiveComponent,
         ObservableDataTreeComponent,
         ChipLinksComponent,
-        ObservableDataSummaryComponent
+        ObservableDataSummaryComponent,
+        HeaderNavigationComponent
     ],
     providers: []
 })
