@@ -1,6 +1,5 @@
 @import 'variables';
 
-
 @function calculateNewPadding($default-padding) {
     @return $default-padding +(($navbar-height - $default-navbar-height) / 2);
 }

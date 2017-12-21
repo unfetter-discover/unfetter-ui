@@ -1,13 +1,5 @@
 @import 'variables';
-@import 'bootstrap_overrides';
-@import 'primeng_overrides';
 @import '~@angular/material/theming';
-
-// Font Imports
-@import '../assets/fonts/Roboto/Roboto-Light.ttf';
-@import '../assets/fonts/Roboto/Roboto-Regular.ttf';
-@import '../assets/fonts/Roboto/Roboto-Bold.ttf';
-@import '../assets/fonts/Roboto/Roboto-Italic.ttf';
 
 // Angular Material themeing
 @include mat-core();
