@@ -1,4 +1,7 @@
 @import '../../../../styles/_variables.scss';
+
+$notification-row-height: 106;
+
 @media screen and (max-width: 768px) {
     #navbar {
         overflow: auto !important;
@@ -58,12 +61,21 @@
     p,
     small,
     .text-muted {
-        color: #999 !important;
+        color: rgba(0, 0, 0, 0.57) !important;
     }
+}
+
+#notificiationRowWrapper {
+    max-height: ($notification-row-height * 4) + px;
+    overflow-y: auto;
 }
 
 #notificiationRowWrapper .notificationRow:not(:last-child) {
     border-bottom: 2px solid #eee;
+}
+
+.notificationRow {
+    height: $notification-row-height + px;
 }
 
 .notificationHeader {
