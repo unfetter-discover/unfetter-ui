@@ -10,7 +10,6 @@ import { Constance } from '../../utils/constance';
 import { ConfirmationDialogComponent } from '../../components/dialogs/confirmation/confirmation-dialog.component';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { ThreatReport } from '../../threat-report-overview/models/threat-report.model';
-import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
 import { ModifyReportDialogComponent } from '../../threat-report-overview/modify-report-dialog/modify-report-dialog.component';
 import { ThreatReportOverviewService } from '../services/threat-report-overview.service';
 import { Report } from '../../models/report';
@@ -41,7 +40,6 @@ export class SidePanelComponent implements OnInit, OnDestroy {
 
     constructor(
         protected router: Router,
-        protected route: ActivatedRoute,
         protected genericApiService: GenericApi,
         protected threatReportOverviewService: ThreatReportOverviewService,
         protected dialog: MatDialog,

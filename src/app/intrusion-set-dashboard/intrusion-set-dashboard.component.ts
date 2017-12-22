@@ -5,7 +5,6 @@ import { Subject } from 'rxjs/Subject';
 import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { BaseComponentService } from '../components/base-service.component';
 import { Constance } from '../utils/constance';
-import { IntrusionSetComponent } from '../intrusion-set/intrusion-set.component';
 import { StixService } from '../settings/stix.service';
 import { BaseStixService } from '../settings/base-stix.service';
 import { IntrusionSet } from '../models';

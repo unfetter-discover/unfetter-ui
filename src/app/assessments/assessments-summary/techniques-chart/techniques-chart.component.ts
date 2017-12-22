@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Constance } from '../../../utils/constance';
-import { SortHelper } from '../sort-helper';
 import { AssessmentsCalculationService } from '../assessments-calculation.service';
 import { ChartData } from '../chart-data';
 

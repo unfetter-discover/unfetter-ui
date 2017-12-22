@@ -1,10 +1,8 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
-
-import * as moment from 'moment';
 
 import { GenericApi } from '../../core/services/genericapi.service';
 import { Constance } from '../../utils/constance';

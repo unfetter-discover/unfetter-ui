@@ -9,7 +9,6 @@ import { BaseStixService } from '../settings/base-stix.service';
 import { BaseComponentService } from '../components/base-service.component';
 import { GenericApi } from '../core/services/genericapi.service';
 
-import { IntrusionSetComponent } from '../intrusion-set/intrusion-set.component';
 import { IntrusionSet, AttackPattern } from '../models';
 import { ThreatReportOverviewService } from './services/threat-report-overview.service';
 import { ThreatReport } from '../threat-report-overview/models/threat-report.model';

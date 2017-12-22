@@ -1,6 +1,5 @@
 import { ExternalReference, KillChainPhase } from '.';
 import { Constance } from '../utils/constance';
-import * as moment from 'moment';
 
 export class Campaign {
     public url = Constance.CAMPAIGN_URL;
@@ -30,8 +29,8 @@ export class Campaign {
     }
 
     public formatDate(): void {
-       this.attributes.first_seen =  this.attributes.first_seen ?
-           new Date(this.attributes.first_seen) : new Date();
+        this.attributes.first_seen = this.attributes.first_seen ?
+            new Date(this.attributes.first_seen) : new Date();
     }
 
     private createAttributes(): any {

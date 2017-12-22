@@ -6,8 +6,6 @@ import { Observable } from 'rxjs/Observable';
 import { Constance } from '../../utils/constance';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { ThreatReport } from '../../threat-report-overview/models/threat-report.model';
-import { SortHelper } from '../../assessments/assessments-summary/sort-helper';
-import { KillChainEntry } from './kill-chain-entry';
 
 @Component({
   selector: 'attack-pattern-count',

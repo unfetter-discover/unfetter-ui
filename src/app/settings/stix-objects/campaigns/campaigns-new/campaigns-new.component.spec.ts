@@ -57,7 +57,7 @@ function buttons() {
         });
 
         it('should navigate back if cancel button click', () => {
-            const location  = fixture.debugElement.injector.get(Location);
+            const location: Location  = fixture.debugElement.injector.get(Location);
             const locationSpy = spyOn(location, 'back');
 
             fixture.detectChanges(); // runs initial lifecycle hooks
