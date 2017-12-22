@@ -3,8 +3,6 @@ import { Response } from '@angular/http';
 import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/startWith';
 import * as UUID from 'uuid';
 
 import { Constance } from '../../utils/constance';

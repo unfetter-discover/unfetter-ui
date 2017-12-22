@@ -6,7 +6,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpModule, Http } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
-import { MatButtonModule, MatInputModule, MatIconModule, MatSelectModule, MatTooltipModule, MatFormFieldModule, MatListModule, MatDialogModule, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatButtonModule } from '@angular/material';
+import { MatInputModule } from '@angular/material';
+import { MatIconModule } from '@angular/material';
+import { MatTooltipModule } from '@angular/material';
+import { MatFormFieldModule } from '@angular/material';
+import { MatListModule } from '@angular/material';
+import { MatDialogModule } from '@angular/material';
+import { MatSelectModule } from '@angular/material';
+import { MatStepperModule } from '@angular/material';
 
 import { AddExternalReportComponent } from './add-external-report/add-external-report.component';
 import { ModifyReportDialogComponent } from './modify-report-dialog.component';
@@ -31,6 +40,7 @@ describe('Modify Report Dialog Component', () => {
             MatIconModule,
             MatListModule,
             MatSelectModule,
+            MatStepperModule,
             MatFormFieldModule,
             MatTooltipModule,
         ];
@@ -44,7 +54,7 @@ describe('Modify Report Dialog Component', () => {
                 ReportTranslationService,
                 { provide: MAT_DIALOG_DATA, useValue: {} },
                 { provide: MatDialogRef, useValue: {} },
-                { provide: Http, useValue: { } }
+                { provide: Http, useValue: {} }
             ]
         });
 

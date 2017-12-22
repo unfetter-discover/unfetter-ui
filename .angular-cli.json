@@ -1,5 +1,5 @@
 {
-"$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "project": {
     "name": "unfetter-ui"
   },
@@ -30,7 +30,8 @@
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.slim.min.js",
-        "../node_modules/bootstrap/dist/js/bootstrap.min.js"
+        "../node_modules/bootstrap/dist/js/bootstrap.min.js",
+        "../node_modules/moment/min/moment.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
@@ -66,11 +67,7 @@
     }
   },
   "defaults": {
-    "styleExt": "scss",
-    "class": {
-      "spec": false
-    },
-    "component": {
-    }
+    "styleExt": "css",
+    "component": {}
   }
 }

@@ -1,6 +1,5 @@
 import { ExternalReference, KillChainPhase, Label } from '.';
 import { Constance } from '../utils/constance';
-import * as moment from 'moment';
 
 export class CourseOfAction {
     public url = Constance.COURSE_OF_ACTION_URL;

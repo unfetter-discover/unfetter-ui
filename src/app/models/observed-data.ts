@@ -1,6 +1,5 @@
 import { ExternalReference, KillChainPhase } from '.';
 import { Constance } from '../utils/constance';
-import * as moment from 'moment';
 
 export class ObservedData {
     public url = Constance.OBSERVED_DATA_TYPE;

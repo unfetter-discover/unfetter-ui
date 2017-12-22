@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
 import { Location } from '@angular/common';
-import * as moment from 'moment';
+import { Router, ActivatedRoute } from '@angular/router';
+import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
+import { Observable } from 'rxjs/Observable';
+
 import { Constance } from '../../../../utils/constance';
 import { BaseStixComponent } from '../../../base-stix.component';
 import { StixService } from '../../../stix.service';

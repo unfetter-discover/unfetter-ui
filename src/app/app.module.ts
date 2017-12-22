@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule, ApplicationRef } from '@angular/core';
 import { RouterModule, PreloadAllModules, Router } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material';
@@ -16,6 +17,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
 import '../rxjs-operators';
+import 'hammerjs';
 
 import { HomeComponent } from './home';
 import { PartnersComponent } from './partners/partners.component';
@@ -45,6 +47,7 @@ import { NotificationEffects } from './root-store/notification/notification.effe
     BrowserModule,
     BrowserAnimationsModule,
     HttpModule,
+    HttpClientModule,
     ComponentModule,
     GlobalModule,
     StixModule,

@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule, MatChipsModule, MatTooltipModule, MatCardModule,
-    MatTabsModule, MatInputModule, MatIconModule, MatButtonModule, MatDatepickerModule, MatNativeDateModule, MatRadioModule, MatListModule, MatStepperModule } from '@angular/material';
+    MatTabsModule, MatInputModule, MatIconModule, MatButtonModule, MatDatepickerModule, MatNativeDateModule, MatRadioModule, MatListModule, MatStepperModule, MatDialogModule } from '@angular/material';
 import { StoreModule } from '@ngrx/store';
 
 // Modules
@@ -20,23 +20,24 @@ import { indicatorSharingReducer } from './store/indicator-sharing.reducers';
 import { IndicatorSharingLayoutComponent } from './indicator-sharing-layout/indicator-sharing-layout.component';
 import { IndicatorSharingListComponent } from './indicator-sharing-list/indicator-sharing-list.component';
 import { IndicatorCardComponent } from './indicator-card/indicator-card.component';
-import { AddIndicatorComponent } from './add-indicator/add-indicator.component.ts';
 import { IndicatorSharingSearchComponent } from './indicator-sharing-search/indicator-sharing-search.component';
+import { AddIndicatorComponent } from './add-indicator/add-indicator.component';
 
 const matModules = [
     MatButtonModule,
     MatCardModule,
     MatChipsModule,
+    MatDatepickerModule, 
+    MatDialogModule,
     MatInputModule,
     MatIconModule,
-    MatSelectModule,
-    MatTabsModule,
-    MatTooltipModule,
-    MatDatepickerModule, 
+    MatListModule,
     MatNativeDateModule,
     MatRadioModule, 
-    MatListModule,
-    MatStepperModule
+    MatSelectModule,
+    MatStepperModule,
+    MatTabsModule,
+    MatTooltipModule,
 ];
 
 @NgModule({

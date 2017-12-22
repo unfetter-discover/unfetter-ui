@@ -1,6 +1,5 @@
 import { ExternalReference, KillChainPhase } from '.';
 import { Constance } from '../utils/constance';
-import * as moment from 'moment';
 
 export class Relationship {
     public url = Constance.RELATIONSHIPS_URL;

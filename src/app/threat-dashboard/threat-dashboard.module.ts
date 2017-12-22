@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 
 import { GlobalModule } from '../global/global.module';
 
@@ -79,7 +78,6 @@ const primengModules = [CarouselModule];
     GlobalModule,
     CommonModule,
     FormsModule,
-    HttpClientModule,
     ...materialModules,
     ...primengModules,
     routing,

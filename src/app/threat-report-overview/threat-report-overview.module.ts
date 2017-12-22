@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { ComponentModule } from '../components';
 import { GlobalModule } from '../global/global.module';
 import { routing } from './threat-report-overview.routing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 
-import { MatButtonModule, MatChipsModule, MatInputModule, MatIconModule, MatTooltipModule, MatFormFieldModule, MatSnackBarModule } from '@angular/material';
+import { MatButtonModule, MatChipsModule, MatInputModule, MatIconModule, MatTooltipModule, MatFormFieldModule, MatSnackBarModule, MatDialogModule } from '@angular/material';
 import { MatCheckboxModule } from '@angular/material';
 import { MatDatepickerModule } from '@angular/material';
 import { MatPaginatorModule } from '@angular/material';
@@ -47,6 +47,7 @@ const materialModules = [
   MatCheckboxModule,
   MatChipsModule,
   MatDatepickerModule,
+  MatDialogModule,
   MatFormFieldModule,
   MatInputModule,
   MatIconModule,
@@ -68,7 +69,6 @@ const materialModules = [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule,
     ...materialModules,
     ComponentModule,
     GlobalModule,

@@ -5,8 +5,6 @@ import { MatPaginator, PageEvent } from '@angular/material';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 
-import { ThreatReportOverviewService } from './services/threat-report-overview.service';
-import { ThreatReport } from './models/threat-report.model';
 import { Report } from '../../models/report';
 
 /**
