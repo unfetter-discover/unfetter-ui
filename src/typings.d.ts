@@ -13,5 +13,3 @@ interface NodeModule {
  */
 // moment
 declare var moment: any;
-// socket.io websockets
-declare var io: any;
