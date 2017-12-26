@@ -1,0 +1,42 @@
+// Both animations and animation-related helpers
+
+.transition02 {
+  transition: all 0.2s ease-in-out;
+}
+
+.rotate90 {
+  transform: rotateZ(90deg);
+}
+
+.fadeIn {
+  animation-name: opacity01;
+  animation-duration: 0.4s;
+}
+
+@keyframes opacity01 {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.slideIn {
+  animation: slideInLR 0.2s forwards;
+  opacity: 0;
+}
+
+@keyframes slideInLR {
+  0% {
+    opacity: 0;
+    transform: translateX(-2%);
+  }
+  90% {
+    transform: translateX(0.2%);
+  }
+  100% {
+    transform: translateX(0%);
+    opacity: 1;
+  }
+}

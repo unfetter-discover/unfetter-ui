@@ -1,12 +1,11 @@
 @import '../../../styles/_variables.scss';
 
 .header {
-    background: linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light);
+    @include set-colors($threat-dashboard-primary-text, linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important);
     padding-left: 24px;
     padding-top: 24px;
     padding-right: 8px;
     padding-bottom: 0px;
-    color: $white_87;
     max-height: 300px;
 
     .mat-display-2 {

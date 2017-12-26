@@ -16,8 +16,7 @@ $teal_700: #00796b;
     .header {
         padding: 16px 16px;
         height: 64px;
-        color: $white_87;
-        background: linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important;
+        @include set-colors($threat-dashboard-primary-text, linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important);
     }
     
     // .tooltip /deep/ {

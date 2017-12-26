@@ -28,6 +28,7 @@ $threat-dashboard-primary-light: get-color($teal);
 $threat-dashboard-primary-lighter: get-color($teal, 200);
 $threat-dashboard-primary-lightest: get-color($teal, 50);
 $threat-dashboard-accent: get-color($red, 500);
+$threat-dashboard-primary-text: rgba(255, 255, 255, .87);
 
 // ~~~ Navbar sizing ~~~
 
@@ -64,4 +65,9 @@ $default-navbar-mat-button-padding: 7;
 
 @function rgba-to-rgb($rgba, $background: #fff) {
         @return mix(rgb(red($rgba), green($rgba), blue($rgba)), $background, alpha($rgba) * 100%)
+}
+
+@mixin set-colors ($text-color, $background) {
+    color: $text-color;
+    background: $background;
 }
