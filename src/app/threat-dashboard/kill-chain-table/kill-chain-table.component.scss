@@ -1,6 +1,6 @@
 @import '../../../styles/_variables.scss';
 
-:host /deep/ {
+:host ::ng-deep {
     .ui-carousel {
         .ui-carousel-header {
             @include set-colors($threat-dashboard-primary-text, linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important);

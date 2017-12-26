@@ -41,7 +41,7 @@
         height: 24px;
         width: 24px;
         margin-right: 8px;
-        /deep/ .icon {
+        ::ng-deep .icon {
             fill: $black_87;
         }
     }
@@ -60,11 +60,11 @@
         background-color: $threat-dashboard-primary-lightest;
     }
 
-    /deep/ .mat-expansion-panel-body {
+    ::ng-deep .mat-expansion-panel-body {
         margin: 0px !important;
     }
     
-    /deep/ .mat-expanded {
+    ::ng-deep .mat-expanded {
         margin-bottom: 2px;
     }
 
