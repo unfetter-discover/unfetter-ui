@@ -509,3 +509,52 @@ a {
     color: $neutral-color;
 }
 
+/**
+ * STIX Icons
+ *
+ */
+
+.stix-object-icon {
+  height: 30px;
+  width: 30px;
+  pointer-events: none;
+}
+
+.stix-object-icon-sm {
+  height: 20px;
+  width: 20px;
+}
+
+.stix-object-icon-switch {
+  cursor: pointer;
+}
+
+.stix-object-icon-switch.unchecked {
+  opacity: 0.2;
+}
+
+.label-unchecked {
+  opacity: 0.2;
+}
+
+span.stix-object-item-label {
+  margin-left: 5px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+.stix-icon {
+  height: 30px;
+  width: 30px;
+}
+
+.stix-icon-header {
+  height: 30px;
+  width: 30px;
+}
+
+.stix-icon-mini {
+  height: 20px;
+  width: 20px;
+}
+
