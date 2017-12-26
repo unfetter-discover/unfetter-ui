@@ -1,3 +1,7 @@
 .wide {
     width: 98%;
 }
+
+:host ::ng-deep #modify-report-dialog {
+    max-height: initial !important;
+}

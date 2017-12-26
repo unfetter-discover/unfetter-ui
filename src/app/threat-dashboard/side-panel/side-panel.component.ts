@@ -210,8 +210,8 @@ export class SidePanelComponent implements OnInit, OnDestroy {
      */
     public openAddReportDialog(event?: UIEvent): void {
         const config = {
-            width: '800px',
-            height: 'calc(100vh - 140px)',
+            width: Constance.DIALOG_WIDTH_MEDIUM,
+            height: Constance.DIALOG_HEIGHT_TALL,
             data: {} as {
                 attackPatterns: any,
                 threatReport: any,
