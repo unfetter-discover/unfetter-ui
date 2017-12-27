@@ -1,0 +1,52 @@
+@import 'variables';
+
+// ~~~ Flex Helpers ~~~
+
+.flex {
+  display: flex;
+}
+
+.flexImportant {
+  display: flex !important;
+}
+
+.flexItemsCenter {
+  align-items: center;
+}
+
+.flex1 {
+  flex: 1;
+}
+
+.flexAuto {
+  flex: auto;
+}
+
+.inlineFlex {
+  display: inline-flex;
+}
+
+.flexNowrap {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  min-width: 0;
+}
+
+@media screen and (min-width: 768px) {
+  .flex-sm {
+    display: flex;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .flex-md {
+    display: flex;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .flex-lg {
+    display: flex;
+  }
+}
