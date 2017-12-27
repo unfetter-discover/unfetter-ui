@@ -1,19 +1,10 @@
 @import '../../../styles/_variables.scss';
 
-:host /deep/ {
+:host ::ng-deep {
     .ui-carousel {
         .ui-carousel-header {
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            border: none;
-            margin-right: -1px;
-            margin-left: -1px;
-            margin-top: -1px;
-            color: $white_87;
-            border-radius: 2px 2px 0 0;
-            padding: 16px 32px;
-            background: linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important;
+            @include set-colors($threat-dashboard-primary-text, linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important);
+            font-weight: 500;
         }
     }
     
@@ -26,13 +17,7 @@
     }
 
     .ui-carousel .ui-carousel-button {
-        width: 25px;
-        height: 25px;
-        background-color: $white_87;
-        border: none;
-        border-radius: 50%;
-        font-size: 30px;
-        color: $threat-dashboard-primary-light;
+        @include set-colors($threat-dashboard-primary-light, $threat-dashboard-primary-text);
     }
 
     .ui-corner-all {
@@ -46,7 +31,8 @@
 
         .badge {
             background-color: $threat-dashboard-primary;
-            color: $white_87;
+            color: $threat-dashboard-primary-text;
+
         }
 
         .kill-chain-div {

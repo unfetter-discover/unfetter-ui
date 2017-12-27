@@ -1,0 +1,48 @@
+// For custom unfetter elements not related to a vendor library
+@import 'variables';
+
+.uf-collapsible-control {
+  display: inline-flex;
+  align-items: center;
+  background: #eee;
+  padding-left: 5px;
+  padding-right: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  .h5 {
+    margin: 0;
+  }
+  i {
+    color: $primary-color;
+  }
+}
+
+.uf-well {
+  padding: 19px;
+  margin-bottom: 10px;
+  background-color: rgba($primary-color, 0.05);
+  border-left: 8px solid $primary-color;
+}
+
+.uf-highlight {
+  color: $primary-text-contrast-color;
+  background-color: $primary-color;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.mat-label {
+  color: rgba(0, 0, 0, 0.38);
+  font-weight: normal;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.uf-badge {
+  color: white;
+  background: $neutral-color;
+  padding: 2.5px 8px;
+  border-radius: 11px;
+  font-size: 12px;
+}

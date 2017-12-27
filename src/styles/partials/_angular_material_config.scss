@@ -1,0 +1,106 @@
+// WARNING do *NOT* override Angular material classes globally
+
+@import 'variables';
+@import '~@angular/material/theming';
+
+// Angular Material theming
+
+@include mat-core();
+$my-app-primary: mat-palette($mat-light-blue, 800);
+$my-app-accent: mat-palette($mat-amber, A200, A100, A400);
+$my-app-warn: mat-palette($mat-deep-orange);
+$my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
+@include angular-material-theme($my-app-theme);
+
+// Angular Material Themes: *ALWAYS* nest in a class or id, *NOT* overrides
+
+#indicatorSharingList {
+  .mat-card-header-text {
+    margin: 0 !important;
+    .mat-card-title {
+      font-size: 22px;
+      font-weight: 300;
+    }
+  }
+  .mat-card-actions {
+    text-align: right;
+  }
+  .mat-tab-body-content {
+    padding: 10px 3px 5px;
+  }
+}
+
+.addLabelComponentWrapper {
+  .mat-input-infix.mat-form-field-infix {
+    padding-bottom: 3px;
+    width: 0 !important;
+    transition: width 0.2s ease-in-out;
+  }
+}
+
+.unfetterAngularMaterialAccordion {
+  .mat-expansion-panel {
+    transition: box-shadow 0.3s ease-in-out;
+  }
+  .mat-expansion-panel-header-title {
+    align-items: center;
+  }
+  .mat-expanded {
+    &.mat-expansion-panel {
+      box-shadow: 0px 6px 7px -4px rgba(0, 0, 0, 0.2), 0px 11px 15px 1px rgba(0, 0, 0, 0.14), 0px 4px 20px 3px rgba(0, 0, 0, 0.12) !important;
+    }
+    .mat-expansion-panel-header {
+      background: $primary-color !important;
+      transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+      .mat-expansion-panel-header-title,
+      .mat-expansion-indicator::after {
+        color: white !important;
+      }
+    }
+  }
+}
+
+.unfetterAngularMaterialTable {
+  &.hideHeader {
+    .mat-header-row {
+      display: none !important;
+    }
+  }
+}
+
+#threatReportCreationComponent {
+  .mat-select-trigger {
+    height: 23px !important;
+  }
+}
+
+.buttonGrp .mat-button {
+  font-size: 2.5rem;
+}
+
+.chipListChip {
+  margin-top: 3px !important;
+  margin-bottom: 3px !important;
+}
+
+.chipListChip+.chipListChip {
+  margin-left: 5px !important;
+}
+
+.chipListPadding .mat-chip-list-wrapper {
+  padding: 0 5px;
+}
+
+.showAddLabel {
+  .mat-input-infix.mat-form-field-infix {
+    width: 170px !important;
+  }
+}
+
+.snack-bar-background-success {
+  background: $accent-alt-color !important;
+}
+
+.snack-bar-background-error {
+  background: $warn-color !important;
+}

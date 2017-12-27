@@ -22,15 +22,9 @@
         "../node_modules/bootstrap/dist/css/bootstrap.min.css",
         "../node_modules/primeng/resources/primeng.min.css",
         "../node_modules/primeng/resources/themes/omega/theme.scss",
-        "styles/app.scss",
-        "styles/headings.css",
-        "styles/styles.scss",
-        "styles/bootstrap_overrides.scss",
-        "styles/primeng_overrides.scss"
+        "styles/main.scss"
       ],
       "scripts": [
-        "../node_modules/jquery/dist/jquery.slim.min.js",
-        "../node_modules/bootstrap/dist/js/bootstrap.min.js",
         "../node_modules/moment/min/moment.min.js"
       ],
       "environmentSource": "environments/environment.ts",

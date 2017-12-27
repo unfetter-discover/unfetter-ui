@@ -5,3 +5,8 @@
     transform: rotateZ(45deg);
     user-select: none;
 }
+
+:host ::ng-deep #addIndicator {
+  max-height: initial !important;
+}
+

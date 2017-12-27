@@ -1,56 +1,59 @@
-.link-node-graph {
-    width: 100%;
-    height: 100vh;
-}
+:host ::ng-deep {
+    .link-node-graph {
 
-.link-node-graph-md {
-    width: 50%;
-    height: 200px;
-}
+        width: 100%;
+        height: 100vh;
+    }
 
-.node {
-    fill: lightgrey;
-    stroke: darkgrey;
-    cursor: pointer;
-}
+    .link-node-graph-md {
+        width: 50%;
+        height: 200px;
+    }
 
-.node.malware {
-    fill: rgb(146, 11, 11);
-}
+    .node {
+        fill: lightgrey;
+        stroke: darkgrey;
+        cursor: pointer;
+    }
 
-.node.threat-actor {
-    fill: rgb(193, 39, 44);
-}
+    .node.malware {
+        fill: rgb(146, 11, 11);
+    }
 
-.node.course-of-action {
-    fill: rgb(57, 181, 73);
-}
+    .node.threat-actor {
+        fill: rgb(193, 39, 44);
+    }
 
-.node.indicator {
-    fill: rgb(190, 177, 19);
-}
+    .node.course-of-action {
+        fill: rgb(57, 181, 73);
+    }
 
-.node.attack-pattern {
-    fill: rgb(35, 159, 221);
-}
+    .node.indicator {
+        fill: rgb(190, 177, 19);
+    }
 
-.node.tool {
-    fill: rgb(104, 5, 6);
-}
+    .node.attack-pattern {
+        fill: rgb(35, 159, 221);
+    }
 
-.node.observable-path {
-    fill: #00897b;
-}
+    .node.tool {
+        fill: rgb(104, 5, 6);
+    }
 
-.node.campaign {
-    fill: #006699;
-}
+    .node.observable-path {
+        fill: #00897b;
+    }
 
-.node.unselected {
-    fill: #eeeeee;
-}
+    .node.campaign {
+        fill: #006699;
+    }
 
-.link {
-    stroke: #cccccc;
-    fill: transparent;
+    .node.unselected {
+        fill: #eeeeee;
+    }
+
+    .link {
+        stroke: #cccccc;
+        fill: transparent;
+    }
 }

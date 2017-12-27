@@ -10,6 +10,7 @@ import { AddIndicatorComponent } from '../add-indicator/add-indicator.component'
 import { ConfigService } from '../../core/services/config.service';
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
+import { Constance } from '../../utils/constance';
 
 @Component({
     selector: 'indicator-sharing-list',
@@ -148,8 +149,8 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
 
     public openDialog() {
         const dialogRef = this.dialog.open(AddIndicatorComponent, {
-            width: '800px',
-            height: 'calc(100vh - 50px)'
+            width: Constance.DIALOG_WIDTH_MEDIUM,
+            height: Constance.DIALOG_HEIGHT_TALL
         });
 
         const dialogRefClose$ = dialogRef.afterClosed()

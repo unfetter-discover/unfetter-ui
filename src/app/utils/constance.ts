@@ -479,5 +479,7 @@ export const Constance = {
         'all critical systems covered'
       ]
     }
-  }
+  },
+  DIALOG_WIDTH_MEDIUM: '800px',
+  DIALOG_HEIGHT_TALL: 'calc(100vh - 50px)'
 };
