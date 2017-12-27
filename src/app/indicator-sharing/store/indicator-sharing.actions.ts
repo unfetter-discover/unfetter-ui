@@ -3,6 +3,7 @@ import { Action } from '@ngrx/store';
 // For effects
 export const FETCH_INDICATORS = '[Indicator Sharing] FETCH_INDICATORS';
 export const STORE_INDICATOR = '[Indicator Sharing] STORE_INDICATORS';
+export const START_SOCIAL_STREAM = '[Indicator Sharing] START_SOCIAL_STREAM';
 
 // For reducers
 export const SET_INDICATORS = '[Indicator Sharing] SET_INDICATORS';
@@ -18,6 +19,7 @@ export const CLEAR_DATA = '[Indicator Sharing] CLEAR_DATA';
 export const SET_SEARCH_PARAMETERS = '[Indicator Sharing] SET_SEARCH_PARAMETERS';
 export const CLEAR_SEARCH_PARAMETERS = '[Indicator Sharing] CLEAR_SEARCH_PARAMETERS';
 export const SHOW_MORE_INDICATORS = '[Indicator Sharing] SHOW_MORE_INDICATORS';
+export const UPDATE_SOCIAL = '[Indicator Sharing] UPDATE_SOCIAL';
 
 export class SetIndicators implements Action {
     public readonly type = SET_INDICATORS;
@@ -67,6 +69,8 @@ export class SetIdentities implements Action {
 
 export class ClearData implements Action {
     public readonly type = CLEAR_DATA;
+
+    constructor(public payload = null) { }
 }
 
 export class SetSearchParameters implements Action {
@@ -83,6 +87,18 @@ export class ShowMoreIndicators implements Action {
     public readonly type = SHOW_MORE_INDICATORS;
 }
 
+export class StartSocialStream implements Action {
+    public readonly type = START_SOCIAL_STREAM;
+
+    constructor(public payload: string) { }
+}
+
+export class UpdateSocial implements Action {
+    public readonly type = UPDATE_SOCIAL;
+
+    constructor(public payload: any) { }
+}
+
 export type IndicatorSharingActions = 
     SetIndicators |
     FilterIndicators |
@@ -95,4 +111,6 @@ export type IndicatorSharingActions =
     ClearData |
     SetSearchParameters |
     ClearSearchParameters |
-    ShowMoreIndicators;
+    ShowMoreIndicators |
+    StartSocialStream |
+    UpdateSocial;

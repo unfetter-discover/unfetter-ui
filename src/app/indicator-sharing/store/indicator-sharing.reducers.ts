@@ -142,7 +142,52 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
             return {
                 ...state,
                 displayedIndicators
-            };           
+            };
+        case indicatorSharingActions.UPDATE_SOCIAL:        
+            const indicatorIndex = state.indicators.findIndex((indicator) => indicator.id === action.payload.stixId);
+            if (indicatorIndex > -1) {
+                const iIndicators = [...state.indicators];
+
+                let updatedIndicator = iIndicators[indicatorIndex];
+                if (!updatedIndicator.metaProperties) {
+                    updatedIndicator.metaProperties = {};
+                }
+                switch (action.payload.type) {
+                    case 'COMMENT':
+                        if (!updatedIndicator.metaProperties.comments) {
+                            updatedIndicator.metaProperties.comments = [];
+                        }
+                        updatedIndicator.metaProperties.comments.unshift(action.payload.body);
+                        break;
+                }
+
+                iIndicators[indicatorIndex] = updatedIndicator;
+                const retVal = {
+                    ...state,
+                    indicators: iIndicators
+                };
+
+                // update in filteredIndicators
+                const filteredIndicatorToUpdateIndex = state.filteredIndicators.findIndex((indicator) => indicator.id === updatedIndicator.id);
+                if (filteredIndicatorToUpdateIndex > -1) {
+                    const fIndicators = [...state.filteredIndicators];
+                    fIndicators[filteredIndicatorToUpdateIndex] = updatedIndicator;
+                    retVal.filteredIndicators = fIndicators;
+                }
+
+                // update in displayed indicators
+                const displayedIndicatorToUpdateIndex = state.displayedIndicators.findIndex((indicator) => indicator.id === updatedIndicator.id);
+                if (displayedIndicatorToUpdateIndex > -1) {
+                    const dIndicators = [...state.displayedIndicators];
+                    dIndicators[displayedIndicatorToUpdateIndex] = updatedIndicator;
+                    retVal.displayedIndicators = dIndicators;
+                }
+
+                return retVal;
+            } else {
+                console.log('Did not find indicator to update;');
+                return state;
+            } 
         default:
             return state;
     }

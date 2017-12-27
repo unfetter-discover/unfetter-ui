@@ -126,6 +126,25 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
                 this.sensors = results[3].map((r) => r.attributes);
                 this.store.dispatch(new indicatorSharingActions.SetSensors(this.sensors));
                 // this.buildIndicatorToSensorMap();
+
+
+                const getUser$ = this.store.select('users')
+                    .take(1)
+                    .subscribe(
+                        (users: any) => {
+                            console.log(users);
+                            this.store.dispatch(new indicatorSharingActions.StartSocialStream(users.userProfile._id));
+                        },
+                        (err) => {
+                            console.log(err);
+                        },
+                        () => {
+                            if (getUser$) {
+                                getUser$.unsubscribe();
+                            }
+                        }
+                    );
+                
             },
             (err) => {
                 console.log(err);
