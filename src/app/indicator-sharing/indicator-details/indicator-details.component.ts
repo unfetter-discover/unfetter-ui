@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 
@@ -13,14 +13,14 @@ import { IndicatorBase } from '../models/indicator-base-class';
 export class IndicatorDetailsComponent extends IndicatorBase implements OnInit {
 
   public indicator: any;
-  public SERVER_CALL_COMPLETE: boolean = false;
   private id: string;
 
   constructor(
     private route: ActivatedRoute,
-    public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>
+    public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>,
+    protected changeDetectorRef: ChangeDetectorRef
   ) { 
-    super(store);
+    super(store, changeDetectorRef);
   }
 
   public ngOnInit() {
@@ -54,8 +54,6 @@ export class IndicatorDetailsComponent extends IndicatorBase implements OnInit {
           const findIndicator = indicators.find((indicator) => indicator.id === this.id);
           if (findIndicator) {
             this.indicator = findIndicator;
-            this.SERVER_CALL_COMPLETE = true;
-            console.log(this.indicator);
           }
         },
         (err) => {

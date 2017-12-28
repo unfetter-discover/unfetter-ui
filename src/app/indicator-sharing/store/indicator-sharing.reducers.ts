@@ -16,6 +16,7 @@ export interface IndicatorSharingState {
     searchParameters: {},
     indicatorToSensorMap: {},
     indicatorToApMap: {},
+    serverCallComplete: boolean,
     sortBy: string
 }
 
@@ -36,6 +37,7 @@ const initialState: IndicatorSharingState = {
     searchParameters: { ...initialSearchParameters },
     indicatorToSensorMap: {},
     indicatorToApMap: {},
+    serverCallComplete: false,
     sortBy: SortTypes.NEWEST
 };
 
@@ -195,6 +197,11 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
                 console.log('Did not find indicator to update;');
                 return state;
             } 
+        case indicatorSharingActions.SET_SERVER_CALL_COMPLETE:
+            return {
+                ...state,
+                serverCallComplete: action.payload
+            };
         default:
             return state;
     }

@@ -51,7 +51,8 @@ export class IndicatorSharingEffects {
             new indicatorSharingActions.SetIdentities(identities),
             new indicatorSharingActions.SetIndicators(indicators),
             new indicatorSharingActions.SetIndicatorToApMap(indicatorToApMap),
-            new indicatorSharingActions.SetSensors(sensors)
+            new indicatorSharingActions.SetSensors(sensors),
+            new indicatorSharingActions.SetServerCallComplete(true)
         ]);
 
     constructor(

@@ -14,7 +14,8 @@ $my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
 
 // Angular Material Themes: *ALWAYS* nest in a class or id, *NOT* overrides
 
-#indicatorSharingList {
+#indicatorSharingList,
+#indicatorDetails {
   .mat-card-header-text {
     margin: 0 !important;
     .mat-card-title {

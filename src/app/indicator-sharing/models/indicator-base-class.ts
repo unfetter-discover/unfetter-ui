@@ -2,13 +2,18 @@ import { Store } from '@ngrx/store';
 
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
+import { ChangeDetectorRef } from '@angular/core';
 
 export abstract class IndicatorBase {
     public indicatorToAttackPatternMap = {};
     public identities = [];
     public indicatorToSensorMap = {};
+    public SERVER_CALL_COMPLETE = false;
 
-    constructor(public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>) { }
+    constructor(
+        public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>,
+        protected changeDetectorRef: ChangeDetectorRef
+    ) { }
 
     protected initBaseData() {
         const getIdentities$ = this.store.select('indicatorSharing')
@@ -49,17 +54,37 @@ export abstract class IndicatorBase {
             .pluck('indicatorToApMap')
             .distinctUntilChanged()
             .subscribe(
-            (indicatorToAttackPatternMap) => {
-                this.indicatorToAttackPatternMap = indicatorToAttackPatternMap;
-            },
-            (err) => {
-                console.log(err);
-            },
-            () => {
-                if (getIndicatorToAttackPatternMap$) {
-                    getIndicatorToAttackPatternMap$.unsubscribe();
+                (indicatorToAttackPatternMap) => {
+                    this.indicatorToAttackPatternMap = indicatorToAttackPatternMap;
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    if (getIndicatorToAttackPatternMap$) {
+                        getIndicatorToAttackPatternMap$.unsubscribe();
+                    }
                 }
-            }
+            );
+
+        const getServerCallComplete$ = this.store.select('indicatorSharing')
+            .pluck('serverCallComplete')
+            .distinctUntilChanged()
+            .subscribe(
+                (serverCallComplete: boolean) => {
+                    this.SERVER_CALL_COMPLETE = serverCallComplete;
+                    if (this.SERVER_CALL_COMPLETE) {
+                        this.changeDetectorRef.detectChanges();
+                    }
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    if (getServerCallComplete$) {
+                        getServerCallComplete$.unsubscribe();
+                    }
+                }
             );
     }
 
