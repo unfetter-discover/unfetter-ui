@@ -43,7 +43,7 @@ const initialState: IndicatorSharingState = {
 
 const DEFAULT_DISPLAYED_LENGTH: number = 10;
 
-export function indicatorSharingReducer(state = initialState, action: indicatorSharingActions.IndicatorSharingActions) {
+export function indicatorSharingReducer(state = initialState, action: indicatorSharingActions.IndicatorSharingActions): IndicatorSharingState {
     switch (action.type) {
         case indicatorSharingActions.SET_INDICATORS:
             return sortIndicators({
@@ -52,6 +52,11 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
                 filteredIndicators: action.payload,
                 displayedIndicators: initDisplauyedIndicators(action.payload)
             }, state.sortBy);
+        case indicatorSharingActions.FETCH_DATA:
+            return {
+                ...state,
+                serverCallComplete: false
+            };
         case indicatorSharingActions.FILTER_INDICATORS:
             return sortIndicators(filterIndicators(state, state.searchParameters), state.sortBy);
         case indicatorSharingActions.SORT_INDICATORS:

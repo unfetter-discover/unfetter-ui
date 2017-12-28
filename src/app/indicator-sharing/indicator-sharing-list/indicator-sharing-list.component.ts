@@ -7,7 +7,6 @@ import 'rxjs/add/operator/pluck';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { AddIndicatorComponent } from '../add-indicator/add-indicator.component';
-import { ConfigService } from '../../core/services/config.service';
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { Constance } from '../../utils/constance';
@@ -25,13 +24,11 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     public displayedIndicators: any[];
     public filteredIndicators: any[];
     public DEFAULT_LENGTH: number = 10;
-    public sensors: any[];
     public searchParameters;
 
     constructor(
         private indicatorSharingService: IndicatorSharingService, 
         public dialog: MatDialog,
-        private configService: ConfigService,
         public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>,
         // Used for SERVER_CALL_COMPLETE, this should be moved to ngrx
         protected changeDetectorRef: ChangeDetectorRef
