@@ -72,8 +72,9 @@ export abstract class IndicatorBase {
             .distinctUntilChanged()
             .subscribe(
                 (serverCallComplete: boolean) => {
-                    this.SERVER_CALL_COMPLETE = serverCallComplete;
-                    if (this.SERVER_CALL_COMPLETE) {
+                    // This is to check that it was only assigned once, to avoid change detection errors                    
+                    if (!this.SERVER_CALL_COMPLETE && serverCallComplete) {
+                        this.SERVER_CALL_COMPLETE = serverCallComplete;
                         this.changeDetectorRef.detectChanges();
                     }
                 },
