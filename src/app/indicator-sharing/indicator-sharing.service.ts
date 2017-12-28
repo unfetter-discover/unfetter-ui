@@ -27,6 +27,11 @@ export class IndicatorSharingService {
         return this.genericApi.get(url);
     }
 
+    public getIndicator(id, filter: object = {}): Observable<any> {
+        const url = `${this.baseUrl}/${id}?filter=${encodeURIComponent(JSON.stringify(filter))}&metaproperties=true`;
+        return this.genericApi.get(url);
+    } 
+
     public addIndicator(indicator): Observable<any> {
         return this.genericApi.post(this.baseUrl, { data: { attributes: indicator } });
     }

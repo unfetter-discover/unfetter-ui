@@ -15,6 +15,7 @@ export interface IndicatorSharingState {
     identities: any[],
     searchParameters: {},
     indicatorToSensorMap: {},
+    indicatorToApMap: {},
     sortBy: string
 }
 
@@ -34,6 +35,7 @@ const initialState: IndicatorSharingState = {
     identities: [],
     searchParameters: { ...initialSearchParameters },
     indicatorToSensorMap: {},
+    indicatorToApMap: {},
     sortBy: SortTypes.NEWEST
 };
 
@@ -118,6 +120,11 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
             return {
                 ...state,
                 identities: action.payload
+            };
+        case indicatorSharingActions.SET_INDICATOR_TO_AP_MAP:
+            return {
+                ...state,
+                indicatorToApMap: action.payload
             };
 
         case indicatorSharingActions.SET_SEARCH_PARAMETERS:

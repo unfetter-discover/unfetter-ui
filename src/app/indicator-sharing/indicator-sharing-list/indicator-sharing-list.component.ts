@@ -159,7 +159,8 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
 
     public ngOnDestroy() {
         this.dialog.closeAll();
-        this.store.dispatch(new indicatorSharingActions.ClearData());
+        // Moved to layout
+        // this.store.dispatch(new indicatorSharingActions.ClearData());
     }
 
     public updateIndicator(newIndicatorState) {
