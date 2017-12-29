@@ -13,7 +13,7 @@
     <mat-card-content #card>
         <label>Pattern</label>
         <p>
-            <code>{{ indicator.pattern }}</code>
+            <code [innerHtml]="whitespaceToBreak(indicator.pattern)" class="inlineBlock"></code>
         </p>
 
         <mat-tab-group>
@@ -72,7 +72,7 @@
                             <small class="text-muted"> &bull; {{ comment.submitted | timeAgo }}</small>
                         </span>
                     </div>
-                    <p [innerHtml]="formatComment(comment.comment)"></p>
+                    <p [innerHtml]="whitespaceToBreak(comment.comment)"></p>
                     <hr *ngIf="i < (indicator.metaProperties.comments.length - 1)">
                 </div>
             </mat-tab>
