@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, Response } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { Constance } from '../../utils/constance';
 
@@ -7,33 +7,19 @@ import { Constance } from '../../utils/constance';
 export class GenericApi {
     private baseUrl = Constance.API_HOST || '';
     private data: any = null;
-    private postHeaders: Headers;
-    private authHeaders: Headers;
+    private postHeaders: HttpHeaders;
 
-    constructor(private http: Http) {
-        this.postHeaders = new Headers();
+    constructor(private http: HttpClient) {
+        this.postHeaders = new HttpHeaders();
         this.postHeaders.append('Content-Type', 'application/json');
         this.postHeaders.append('Accept', 'application/vnd.api+json');
-        this.authHeaders = new Headers();
-    }
-
-    public setAuthHeaders(token) {
-        this.authHeaders.set('Authorization', token);
-        this.postHeaders.set('Authorization', token);
     }
 
     public get(url: string, data?: any): Observable<any> {
         this.data = (data !== undefined && data !== null) ? '/' + data : '';
         let builtUrl = this.baseUrl + url + this.data;
         
-        if (!this.authHeaders.get('Authorization')) {
-            let token = localStorage.getItem('unfetterUiToken');
-            if (token) {
-                this.setAuthHeaders(token);
-            }
-        }
-        
-        return this.http.get(builtUrl, {headers: this.authHeaders})
+        return this.http.get(builtUrl)
             .map(this.extractData)
             .catch(this.handleError);
     }
@@ -55,28 +41,16 @@ export class GenericApi {
     public delete(url: string, data?: any): Observable<any> {
         this.data = (data !== undefined && data !== null) ? '/' + data : '';
         let builtUrl = this.baseUrl + url + this.data;
-        return this.http.delete(builtUrl, {headers: this.authHeaders})
+        return this.http.delete(builtUrl)
             .map(this.extractData)
             .catch(this.handleError);
     }
 
-    private extractData(res: Response) {
-        let body = res.json();
-        if (body['data'] !== undefined) {
-            return body['data'] as any[];
-        }
-        return ({});
+    private extractData(res: any) {
+        return res.data || {};
     }
 
     private handleError(error: any) {
-        let errMsg: string;
-        if (error instanceof Response) {
-            const body = error.json() || '';
-            const err = body.error || JSON.stringify(body);
-            errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-        } else {
-            errMsg = error.message ? error.message : error.toString();
-        }
-        return Observable.throw(errMsg);
+        return Observable.throw(error);
     }
 }

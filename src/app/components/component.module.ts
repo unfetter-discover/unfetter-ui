@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { NgModule,  ApplicationRef } from '@angular/core';
 import { RouterModule,  PreloadAllModules } from '@angular/router';
 import { CalendarModule, AccordionModule, DataListModule, CheckboxModule } from 'primeng/primeng';
@@ -49,7 +48,6 @@ import { StixTextArrayComponent } from './stix-text-array/stix-text-array.compon
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpModule,
     RouterModule,
     MatSelectModule,
     MatIconModule,

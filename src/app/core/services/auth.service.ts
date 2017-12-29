@@ -25,8 +25,7 @@ export class AuthService {
 
     public setToken(token) {
         localStorage.removeItem('unfetterUiToken');
-        localStorage.setItem('unfetterUiToken', `Bearer ${token}`);
-        this.genericApi.setAuthHeaders(`Bearer ${token}`);
+        localStorage.setItem('unfetterUiToken', token);
     }
 
     public getToken() {
@@ -66,7 +65,11 @@ export class AuthService {
         if (this.runMode === 'DEMO') {
             return true;
         } else {
-            return tokenNotExpired('unfetterUiToken') && this.getUser() !== null && this.getUser().approved === true;
+            let tokenExpiried: boolean = true;
+            try {
+                tokenExpiried = tokenNotExpired('unfetterUiToken');
+            } catch (e) { }
+            return tokenExpiried && this.getUser() !== null && this.getUser().approved === true;
         }
     }
 

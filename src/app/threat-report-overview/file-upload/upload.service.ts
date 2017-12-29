@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Headers, Response } from '@angular/http';
-import { HttpClient } from '@angular/common/http';
-import { HttpResponse } from '@angular/common/http';
-import { HttpRequest, HttpHeaders, HttpEvent, HttpEventType } from '@angular/common/http';
+import { HttpRequest, HttpHeaders, HttpEvent, HttpEventType, HttpResponse, HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { Constance } from '../../utils/constance';
 import { Report } from '../../models/report';
