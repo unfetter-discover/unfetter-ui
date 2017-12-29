@@ -5,6 +5,7 @@ import { Navigation } from '../../../models/navigation';
 import { AuthService } from '../../../core/services/auth.service';
 import * as fromApp from '../../../root-store/app.reducers';
 import * as notificationActions from '../../../root-store/notification/notification.actions';
+import * as userActions from '../../../root-store/users/user.actions';
 import { topRightSlide } from '../../global/../animations/top-right-slide';
 import { AppNotification } from '../../../root-store/notification/notification.model';
 import { environment } from '../../../../environments/environment';
@@ -51,5 +52,9 @@ export class HeaderNavigationComponent {
     if (this.showBanner && this.showBanner === true) {
       this.topPx = '17px';
     }
+  }
+
+  public logoutStore() {
+    this.store.dispatch(new userActions.LogoutUser());
   }
 }

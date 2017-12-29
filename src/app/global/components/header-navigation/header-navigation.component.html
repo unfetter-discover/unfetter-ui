@@ -69,7 +69,7 @@
               </li>
               <li role="separator" class="divider"></li> 
               <li>
-                <a (click)="authService.logOut()" class="flexImportant flexItemsCenter">
+                <a (click)="authService.logOut(); logoutStore()" class="flexImportant flexItemsCenter">
                   <i class="material-icons">exit_to_app</i>
                   <span>&nbsp;&nbsp;Sign Out</span>
                 </a>
