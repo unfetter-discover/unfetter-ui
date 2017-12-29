@@ -27,10 +27,11 @@ export class IndicatorDetailsComponent extends IndicatorBase implements OnInit {
 
   public ngOnInit() {
     const getId$ = this.route.params
-      .take(1)
       .pluck('id')
       .subscribe(
         (id: string) => {
+          this.errorMessage = null;
+          this.indicator = null;
           this.id = id;
           this.initBaseData();
           this.initData();
@@ -60,6 +61,10 @@ export class IndicatorDetailsComponent extends IndicatorBase implements OnInit {
             // If data isn't found, reload data, but only try it once
           } else if (this.retryFetch) {
             this.store.dispatch(new indicatorSharingActions.FetchData());
+
+            // Still not found after retry
+          } else if (!this.retryFetch && this.SERVER_CALL_COMPLETE) {
+            this.errorMessage = 'Can not find analytic.';
           }
           this.retryFetch = false;
         },

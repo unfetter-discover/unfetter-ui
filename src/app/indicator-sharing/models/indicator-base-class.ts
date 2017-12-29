@@ -5,6 +5,7 @@ import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { ChangeDetectorRef } from '@angular/core';
 
 export abstract class IndicatorBase {
+    public errorMessage: string = null;
     public indicatorToAttackPatternMap = {};
     public identities = [];
     public indicatorToSensorMap = {};

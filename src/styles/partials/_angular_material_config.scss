@@ -14,8 +14,7 @@ $my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
 
 // Angular Material Themes: *ALWAYS* nest in a class or id, *NOT* overrides
 
-#indicatorSharingList,
-#indicatorDetails {
+.uf-mat-card {
   .mat-card-header-text {
     margin: 0 !important;
     .mat-card-title {
@@ -28,6 +27,9 @@ $my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
   }
   .mat-tab-body-content {
     padding: 10px 3px 5px;
+  }
+  &.mat-card:hover {
+    @include mat-elevation(5);
   }
 }
 
@@ -48,7 +50,7 @@ $my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
   }
   .mat-expanded {
     &.mat-expansion-panel {
-      box-shadow: 0px 6px 7px -4px rgba(0, 0, 0, 0.2), 0px 11px 15px 1px rgba(0, 0, 0, 0.14), 0px 4px 20px 3px rgba(0, 0, 0, 0.12) !important;
+      @include mat-elevation(11);
     }
     .mat-expansion-panel-header {
       background: $primary-color !important;
