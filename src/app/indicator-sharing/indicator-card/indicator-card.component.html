@@ -56,9 +56,9 @@
                     <span *ngIf="indicator.metaProperties && indicator.metaProperties.interactions">{{ indicator.metaProperties.interactions.length }}</span>
                     <span *ngIf="!indicator.metaProperties || !indicator.metaProperties.interactions">{{ 0 }}</span>
                 </div>                
-                <p>
+                <!-- <p>
                     <a routerLink="/indicator-sharing/single/{{indicator.id}}">View Alone</a>
-                </p>
+                </p> -->
             </mat-tab>
 
             <mat-tab label="Comments" *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">

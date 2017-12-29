@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
+import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { IndicatorBase } from '../models/indicator-base-class';
 
 @Component({
@@ -14,6 +15,7 @@ export class IndicatorDetailsComponent extends IndicatorBase implements OnInit {
 
   public indicator: any;
   private id: string;
+  private retryFetch: boolean = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -54,7 +56,12 @@ export class IndicatorDetailsComponent extends IndicatorBase implements OnInit {
           const findIndicator = indicators.find((indicator) => indicator.id === this.id);
           if (findIndicator) {
             this.indicator = findIndicator;
+
+            // If data isn't found, reload data, but only try it once
+          } else if (this.retryFetch) {
+            this.store.dispatch(new indicatorSharingActions.FetchData());
           }
+          this.retryFetch = false;
         },
         (err) => {
           console.log(err);
