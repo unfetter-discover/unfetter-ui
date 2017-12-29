@@ -9,13 +9,11 @@ import { JsonApiObject } from '../../threat-dashboard/models/adapter/json-api-ob
 export class UploadService {
     private data: any = null;
     private headers: HttpHeaders;
-    private readonly authStorageKey = 'unfetterUiToken';
-    private readonly authHeaderKey = 'Authorization';
     private readonly baseUrl = Constance.API_HOST || '';
     private readonly path = `/api/ctf/upload`;
 
     constructor(private http: HttpClient) {
-        this.headers = this.genHeadersWithAuth();
+        this.headers = new HttpHeaders();
         this.headers.append('Content-Type', 'multipart/form-data');
         this.headers.append('Accept', 'application/json');
     }
@@ -47,23 +45,6 @@ export class UploadService {
             .map((event) => (event instanceof HttpResponse) ? event.body : [])
             .map((reports) => reports.map((report) => report.data))
             .catch(this.handleError);
-    }
-
-    /**
-     * @description sets the authorization token in the header, 
-     *  iff is it not already set in the header and it exists in localstorage
-     * 
-     * @return {void}
-     */
-    private genHeadersWithAuth(headers = new HttpHeaders()): HttpHeaders {
-        if (!headers.get(this.authHeaderKey)) {
-            const token = localStorage.getItem(this.authStorageKey);
-            if (token) {
-                return headers.set(this.authHeaderKey, token);
-            }
-        }
-
-        return headers;
     }
 
     /**
