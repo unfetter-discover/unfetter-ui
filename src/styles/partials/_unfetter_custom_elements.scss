@@ -18,11 +18,21 @@
   }
 }
 
-.uf-well {
+@mixin uf-well-base {
   padding: 19px;
   margin-bottom: 10px;
-  background-color: rgba($primary-color, 0.05);
+}
+
+.uf-well {
+  @include uf-well-base;
+  background-color: rgba-to-rgb(rgba($primary-color, 0.05));
   border-left: 8px solid $primary-color;
+}
+
+.uf-well-warn {
+  @include uf-well-base;
+  background-color: rgba-to-rgb(rgba($warn-color, 0.05));
+  border-left: 8px solid $warn-color;
 }
 
 .uf-highlight {
@@ -32,7 +42,7 @@
   border-radius: 3px;
 }
 
-.mat-label {
+.mat-label, .uf-label {
   color: rgba(0, 0, 0, 0.38);
   font-weight: normal;
   font-size: 12px;

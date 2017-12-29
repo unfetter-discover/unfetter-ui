@@ -7,10 +7,10 @@ import 'rxjs/add/operator/pluck';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { AddIndicatorComponent } from '../add-indicator/add-indicator.component';
-import { ConfigService } from '../../core/services/config.service';
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { Constance } from '../../utils/constance';
+import { IndicatorBase } from '../models/indicator-base-class';
 
 @Component({
     selector: 'indicator-sharing-list',
@@ -19,151 +19,110 @@ import { Constance } from '../../utils/constance';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class IndicatorSharingListComponent implements OnInit, OnDestroy {
+export class IndicatorSharingListComponent extends IndicatorBase implements OnInit, OnDestroy {
 
     public displayedIndicators: any[];
-    public identities: any[];
     public filteredIndicators: any[];
     public DEFAULT_LENGTH: number = 10;
-    public serverCallComplete: boolean = false;
-    public indicatorToAttackPatternMap: any = {};
-    public indicatorToSensorMap: any = {};
-    public SERVER_CALL_COMPLETE = false;
-    public sensors: any[];
     public searchParameters;
 
     constructor(
         private indicatorSharingService: IndicatorSharingService, 
         public dialog: MatDialog,
-        private configService: ConfigService,
         public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>,
         // Used for SERVER_CALL_COMPLETE, this should be moved to ngrx
-        private changeDetectorRef: ChangeDetectorRef
-    ) { }
+        protected changeDetectorRef: ChangeDetectorRef
+    ) { 
+        super(store, changeDetectorRef);
+    }
 
     public ngOnInit() { 
-        const getData$ = Observable.forkJoin(
-            this.indicatorSharingService.getIdentities(),
-            this.indicatorSharingService.getIndicators(),
-            this.indicatorSharingService.getAttackPatternsByIndicator(),
-            this.indicatorSharingService.getSensors()
-        )
-        .subscribe(
-            (results) => {
-                // Identities
-                this.identities = results[0].map((r) => r.attributes); 
-                this.store.dispatch(new indicatorSharingActions.SetIdentities(this.identities));
+        this.initBaseData();
 
-                // Indicators
-                this.store.dispatch(new indicatorSharingActions.SetIndicators(results[1].map((res) => res.attributes)));
+        const filteredIndicatorSub$ = this.store.select('indicatorSharing')
+            .pluck('filteredIndicators')
+            .distinctUntilChanged()
+            .subscribe(
+                (res: any[]) => {
+                    this.filteredIndicators = res;
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    filteredIndicatorSub$.unsubscribe();
+                }
+            );
+        
+        const displayedIndicatorSub$ = this.store.select('indicatorSharing')
+            .pluck('displayedIndicators')
+            .distinctUntilChanged()
+            .subscribe(
+                (res: any[]) => {
+                    this.displayedIndicators = res;
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    filteredIndicatorSub$.unsubscribe();
+                }
+            );
 
-                const filteredIndicatorSub$ = this.store.select('indicatorSharing')
-                    .pluck('filteredIndicators')
-                    .distinctUntilChanged()
-                    .subscribe(
-                        (res: any[]) => {
-                            this.filteredIndicators = res;
-                        },
-                        (err) => {
-                            console.log(err);
-                        },
-                        () => {
-                            filteredIndicatorSub$.unsubscribe();
-                        }
-                    );
-                
-                const displayedIndicatorSub$ = this.store.select('indicatorSharing')
-                    .pluck('displayedIndicators')
-                    .distinctUntilChanged()
-                    .subscribe(
-                        (res: any[]) => {
-                            this.displayedIndicators = res;
-                        },
-                        (err) => {
-                            console.log(err);
-                        },
-                        () => {
-                            filteredIndicatorSub$.unsubscribe();
-                        }
-                    );
+        const searchParametersSub$ = this.store.select('indicatorSharing')
+            .pluck('searchParameters')
+            .distinctUntilChanged()
+            .subscribe(
+                (res) => {
+                    this.searchParameters = res;
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    searchParametersSub$.unsubscribe();
+                }
+            );
 
-                const searchParametersSub$ = this.store.select('indicatorSharing')
-                    .pluck('searchParameters')
-                    .distinctUntilChanged()
-                    .subscribe(
-                        (res) => {
-                            this.searchParameters = res;
-                        },
-                        (err) => {
-                            console.log(err);
-                        },
-                        () => {
-                            searchParametersSub$.unsubscribe();
-                        }
-                    );
-
-                const indicatorToSensorMap$ = this.store.select('indicatorSharing')
-                    .pluck('indicatorToSensorMap')
-                    .distinctUntilChanged()
-                    .subscribe(
-                        (res) => {
-                            this.indicatorToSensorMap = res;
-                        },
-                        (err) => {
-                            console.log(err);
-                        },
-                        () => {
-                            searchParametersSub$.unsubscribe();
-                        }
-                    );
-                
-                // Attack patterns
-                results[2].attributes.forEach((res) => {
-                    this.indicatorToAttackPatternMap[res._id] = res.attackPatterns;
-                });
-
-                // Sensors with observed data paths
-                this.sensors = results[3].map((r) => r.attributes);
-                this.store.dispatch(new indicatorSharingActions.SetSensors(this.sensors));
-                // this.buildIndicatorToSensorMap();
+        const indicatorToSensorMap$ = this.store.select('indicatorSharing')
+            .pluck('indicatorToSensorMap')
+            .distinctUntilChanged()
+            .subscribe(
+                (res) => {
+                    this.indicatorToSensorMap = res;
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    searchParametersSub$.unsubscribe();
+                }
+            );
 
 
-                const getUser$ = this.store.select('users')
-                    .take(1)
-                    .subscribe(
-                        (users: any) => {
-                            console.log(users);
-                            this.store.dispatch(new indicatorSharingActions.StartSocialStream(users.userProfile._id));
-                        },
-                        (err) => {
-                            console.log(err);
-                        },
-                        () => {
-                            if (getUser$) {
-                                getUser$.unsubscribe();
-                            }
-                        }
-                    );
-                
-            },
-            (err) => {
-                console.log(err);
-            },
-            () => {
-                this.SERVER_CALL_COMPLETE = true;
-                this.changeDetectorRef.detectChanges();
-                getData$.unsubscribe();
-            }
-        );
+        const getUser$ = this.store.select('users')
+            .take(1)
+            .subscribe(
+                (users: any) => {
+                    console.log(users);
+                    this.store.dispatch(new indicatorSharingActions.StartSocialStream(users.userProfile._id));
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    if (getUser$) {
+                        getUser$.unsubscribe();
+                    }
+                }
+            );
+
     }    
 
     public ngOnDestroy() {
         this.dialog.closeAll();
-        this.store.dispatch(new indicatorSharingActions.ClearData());
-    }
-
-    public updateIndicator(newIndicatorState) {
-        this.store.dispatch(new indicatorSharingActions.UpdateIndicator(newIndicatorState));
+        // Moved to layout
+        // this.store.dispatch(new indicatorSharingActions.ClearData());
     }
 
     public openDialog() {
@@ -215,28 +174,6 @@ export class IndicatorSharingListComponent implements OnInit, OnDestroy {
             return false;
         } else {
             return this.displayedIndicators.length < this.filteredIndicators.length;
-        }
-    }
-
-    public getAttackPatternsByIndicatorId(indicatorId) {
-        return this.indicatorToAttackPatternMap[indicatorId] !== undefined ? this.indicatorToAttackPatternMap[indicatorId] : [];
-    }
-
-    public getIdentityNameById(createdByRef) {
-        const identityMatch = this.identities && this.identities.length > 0 ? this.identities.find((identity) => identity.id === createdByRef) : null;
-        
-        if (identityMatch && identityMatch.name !== undefined) {
-            return { id: identityMatch.id, name: identityMatch.name};
-        } else {
-            return false;
-        }
-    }
-
-    public getSensorsByIndicatorId(indicatorId) {
-        if (Object.keys(this.indicatorToSensorMap).includes(indicatorId)) {
-            return this.indicatorToSensorMap[indicatorId];
-        } else {
-            return null;
         }
     }
 }

@@ -3,6 +3,7 @@ import { ModuleWithProviders } from '@angular/core';
 
 import { IndicatorSharingLayoutComponent } from './indicator-sharing-layout/indicator-sharing-layout.component';
 import { IndicatorSharingListComponent } from './indicator-sharing-list/indicator-sharing-list.component';
+import { IndicatorDetailsComponent } from './indicator-details/indicator-details.component';
 
 const routes = [
     {
@@ -17,6 +18,10 @@ const routes = [
             {
                 path: 'list',
                 component: IndicatorSharingListComponent
+            },
+            {
+                path: 'single/:id',
+                component: IndicatorDetailsComponent
             }
         ]
     }

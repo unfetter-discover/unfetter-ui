@@ -1,9 +1,10 @@
 import { Action } from '@ngrx/store';
 
 // For effects
-export const FETCH_INDICATORS = '[Indicator Sharing] FETCH_INDICATORS';
-export const STORE_INDICATOR = '[Indicator Sharing] STORE_INDICATORS';
+// export const FETCH_INDICATORS = '[Indicator Sharing] FETCH_INDICATORS';
+// export const STORE_INDICATOR = '[Indicator Sharing] STORE_INDICATORS';
 export const START_SOCIAL_STREAM = '[Indicator Sharing] START_SOCIAL_STREAM';
+export const FETCH_DATA = '[Indicator Sharing] FETCH_DATA';
 
 // For reducers
 export const SET_INDICATORS = '[Indicator Sharing] SET_INDICATORS';
@@ -15,11 +16,17 @@ export const DELETE_INDICATOR = '[Indicator Sharing] DELETE_INDICATOR';
 
 export const SET_SENSORS = '[Indicator Sharing] SET_SENSORS';
 export const SET_IDENTITIES = '[Indicator Sharing] SET_IDENTITIES';
+export const SET_INDICATOR_TO_AP_MAP = '[Indicator Sharing] SET_INDICATOR_TO_AP_MAP';
 export const CLEAR_DATA = '[Indicator Sharing] CLEAR_DATA';
 export const SET_SEARCH_PARAMETERS = '[Indicator Sharing] SET_SEARCH_PARAMETERS';
 export const CLEAR_SEARCH_PARAMETERS = '[Indicator Sharing] CLEAR_SEARCH_PARAMETERS';
 export const SHOW_MORE_INDICATORS = '[Indicator Sharing] SHOW_MORE_INDICATORS';
 export const UPDATE_SOCIAL = '[Indicator Sharing] UPDATE_SOCIAL';
+export const SET_SERVER_CALL_COMPLETE = '[Indicator Sharing] SET_SERVER_CALL_COMPLETE';
+
+export class FetchData implements Action {
+    public readonly type = FETCH_DATA;
+}
 
 export class SetIndicators implements Action {
     public readonly type = SET_INDICATORS;
@@ -67,6 +74,12 @@ export class SetIdentities implements Action {
     constructor(public payload: any[]) { }
 }
 
+export class SetIndicatorToApMap implements Action {
+    public readonly type = SET_INDICATOR_TO_AP_MAP;
+
+    constructor(public payload: {}) { }
+}
+
 export class ClearData implements Action {
     public readonly type = CLEAR_DATA;
 
@@ -99,7 +112,14 @@ export class UpdateSocial implements Action {
     constructor(public payload: any) { }
 }
 
-export type IndicatorSharingActions = 
+export class SetServerCallComplete implements Action {
+    public readonly type = SET_SERVER_CALL_COMPLETE;
+
+    constructor(public payload: boolean) { }
+}
+
+export type IndicatorSharingActions =
+    FetchData |
     SetIndicators |
     FilterIndicators |
     SortIndicators |
@@ -108,9 +128,11 @@ export type IndicatorSharingActions =
     DeleteIndicator |
     SetSensors |
     SetIdentities |
+    SetIndicatorToApMap |
     ClearData |
     SetSearchParameters |
     ClearSearchParameters |
     ShowMoreIndicators |
     StartSocialStream |
-    UpdateSocial;
+    UpdateSocial |
+    SetServerCallComplete;

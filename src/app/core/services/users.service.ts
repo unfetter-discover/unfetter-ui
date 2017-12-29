@@ -41,4 +41,8 @@ export class UsersService {
     public requestOrgMemebership(userId, orgId): Observable<any> {
         return this.genericApi.get(`${this.orgUrl}/request-membership/${userId}/${orgId}`);
     }
+    
+    public changeOrgSubscription(userId: string, orgId: string, subscribe: boolean): Observable<any> {
+        return this.genericApi.get(`${this.orgUrl}/subscription/${userId}/${orgId}/${subscribe}`);
+    }
 }

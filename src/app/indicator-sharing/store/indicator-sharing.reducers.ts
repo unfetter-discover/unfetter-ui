@@ -15,6 +15,8 @@ export interface IndicatorSharingState {
     identities: any[],
     searchParameters: {},
     indicatorToSensorMap: {},
+    indicatorToApMap: {},
+    serverCallComplete: boolean,
     sortBy: string
 }
 
@@ -34,12 +36,14 @@ const initialState: IndicatorSharingState = {
     identities: [],
     searchParameters: { ...initialSearchParameters },
     indicatorToSensorMap: {},
+    indicatorToApMap: {},
+    serverCallComplete: false,
     sortBy: SortTypes.NEWEST
 };
 
 const DEFAULT_DISPLAYED_LENGTH: number = 10;
 
-export function indicatorSharingReducer(state = initialState, action: indicatorSharingActions.IndicatorSharingActions) {
+export function indicatorSharingReducer(state = initialState, action: indicatorSharingActions.IndicatorSharingActions): IndicatorSharingState {
     switch (action.type) {
         case indicatorSharingActions.SET_INDICATORS:
             return sortIndicators({
@@ -48,6 +52,11 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
                 filteredIndicators: action.payload,
                 displayedIndicators: initDisplauyedIndicators(action.payload)
             }, state.sortBy);
+        case indicatorSharingActions.FETCH_DATA:
+            return {
+                ...state,
+                serverCallComplete: false
+            };
         case indicatorSharingActions.FILTER_INDICATORS:
             return sortIndicators(filterIndicators(state, state.searchParameters), state.sortBy);
         case indicatorSharingActions.SORT_INDICATORS:
@@ -119,6 +128,11 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
                 ...state,
                 identities: action.payload
             };
+        case indicatorSharingActions.SET_INDICATOR_TO_AP_MAP:
+            return {
+                ...state,
+                indicatorToApMap: action.payload
+            };
 
         case indicatorSharingActions.SET_SEARCH_PARAMETERS:
             return {
@@ -188,6 +202,11 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
                 console.log('Did not find indicator to update;');
                 return state;
             } 
+        case indicatorSharingActions.SET_SERVER_CALL_COMPLETE:
+            return {
+                ...state,
+                serverCallComplete: action.payload
+            };
         default:
             return state;
     }

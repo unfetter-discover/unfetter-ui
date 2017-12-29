@@ -32,6 +32,9 @@
                                     </span>
                                     <span *ngIf="org.role === 'ORG_LEADER_APPLICANT'">&nbsp;Leadership requested, pending approval</span>
                                 </div>
+                                <div mat-line *ngIf="org.id !== unfetterOpenId">
+                                   <mat-checkbox [(ngModel)]="org.subscribed" (change)="changeSubscription($event, org.id)">Recieve Notifications</mat-checkbox>
+                                </div>
                             </mat-list-item>
                         </mat-list>
                     </div>
