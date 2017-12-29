@@ -16,6 +16,7 @@ export class SettingsComponent implements OnInit {
     public approvedOrganizations: any[];
     public unaffiliatedOrganizations: any[];
     public userId: string;
+    public unfetterOpenId: string = 'identity--e240b257-5c42-402e-a0e8-7b81ecc1c09a';
 
     constructor(
         private usersService: UsersService,
@@ -48,6 +49,9 @@ export class SettingsComponent implements OnInit {
                             }
                         } else {
                             retVal.name = 'Name Unknown';
+                        }
+                        if (!org.subscribed) {
+                            retVal.subscribed = false;
                         }
                         return retVal;
                 });
@@ -92,5 +96,21 @@ export class SettingsComponent implements OnInit {
             }
             );
 
+    }
+
+    public changeSubscription(event, orgId) {
+        const { checked } = event;
+        const changeSubscription$ = this.usersService.changeOrgSubscription(this.user._id, orgId, checked)
+            .subscribe(
+                (res) => {
+                    console.log('#####', res);                    
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    changeSubscription$.unsubscribe();
+                }
+            );
     }
 }

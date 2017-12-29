@@ -15,6 +15,7 @@ $my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
 // Angular Material Themes: *ALWAYS* nest in a class or id, *NOT* overrides
 
 .uf-mat-card {
+  transition: box-shadow 0.2s ease-in-out;
   .mat-card-header-text {
     margin: 0 !important;
     .mat-card-title {
