@@ -6,7 +6,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModifyIntrusionsComponent } from './modify-intrusions.component';
 import { MatButtonModule, MatInputModule, MatIconModule, MatSelectModule, MatTooltipModule, MatFormFieldModule } from '@angular/material';
 import { GenericApi } from '../../../core/services/genericapi.service';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('Modify Intrusions Component', () => {
 
@@ -27,8 +28,8 @@ describe('Modify Intrusions Component', () => {
 
         TestBed.configureTestingModule({
             declarations: [ModifyIntrusionsComponent],
-            imports: [ReactiveFormsModule, FormsModule, HttpModule, ...materialModules],
-            providers: [GenericApi]
+            imports: [ReactiveFormsModule, FormsModule, HttpClientModule, HttpClientTestingModule, ...materialModules],
+            providers: [GenericApi, { provide: HttpClient, useValue: {} }]
         });
 
         fixture = TestBed.createComponent(ModifyIntrusionsComponent);

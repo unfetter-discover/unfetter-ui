@@ -1,7 +1,6 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { inject, async, TestBed,  ComponentFixture } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpModule } from '@angular/http';
 
 // Load the implementations that should be tested
 import { AppComponent } from './app.component';
@@ -9,11 +8,11 @@ import { AppState } from './app.service';
 import { AuthService } from './core/services/auth.service';
 import { ConfigService } from './core/services/config.service';
 import { GenericApi } from './core/services/genericapi.service';
-import { WebsocketService } from './core/services/web-socket.service';
 import { WebAnalyticsService } from './core/services/web-analytics.service';
 import { AppModule } from './app.module';
 import { StoreModule } from '@ngrx/store';
 import { reducers } from './root-store/app.reducers';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe(`App`, () => {
   let comp: AppComponent;
@@ -27,13 +26,12 @@ describe(`App`, () => {
       GenericApi,
       ConfigService,
       WebAnalyticsService,
-      WebsocketService,
     ];
 
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule, 
-        HttpModule, 
+        HttpClientTestingModule,
         StoreModule.forRoot(reducers)
       ],
       declarations: [AppComponent],

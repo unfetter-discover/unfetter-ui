@@ -41,6 +41,11 @@ export function usersReducer(state = initialState, action: userActions.UserActio
                 ...state,
                 ...initialState
             };
+        case userActions.SET_TOKEN:
+            return {
+                ...state,
+                token: action.payload
+            };
         default:
             return state;
     }

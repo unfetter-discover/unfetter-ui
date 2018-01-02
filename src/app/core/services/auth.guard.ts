@@ -1,41 +1,53 @@
 import { Injectable } from '@angular/core';
-import { 
-    Router, 
-    CanActivate, 
-    ActivatedRouteSnapshot, 
-    RouterStateSnapshot
-} from '@angular/router';
+import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { tokenNotExpired } from 'angular2-jwt';
+import { Observable } from 'rxjs/Observable';
 
-import { AuthService } from './auth.service';
+import * as fromUsers from '../../root-store/users/users.reducers';
+import * as fromApp from '../../root-store/app.reducers';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
 
-    constructor(private authService: AuthService, private router: Router) {}   
+    constructor(
+        private router: Router,
+        private store: Store<fromApp.AppState>
+    ) { }
 
-    public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        
-        const requiredRoles = route.data['ROLES'];
+    public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+        const allowedRoles = route.data['ROLES'];
+        return this.store.select('users')
+            .take(1)
+            .map((userState: fromUsers.UserState) => {               
+                if (allowedRoles !== undefined && allowedRoles.length) {
 
-        if (requiredRoles !== undefined && requiredRoles.length) {
+                    if (this.loggedIn(userState) && this.hasRole(allowedRoles, userState.role)) {
+                        return true;
+                    } else {
+                        this.router.navigate(['/']);
+                        return false;
+                    }
 
-            if (this.authService.loggedIn() && this.authService.hasRole(requiredRoles)) {
-                return true;
-            } else {
-                this.router.navigate(['/']);
-                return false;
-            }
+                    // No specific role is required
+                } else {
 
-        // No specific role is required
-        } else {
+                    if (this.loggedIn(userState)) {
+                        return true;
+                    } else {
+                        this.router.navigate(['/']);
+                        return false;
+                    }
 
-            if (this.authService.loggedIn()) {
-                return true;
-            } else {
-                this.router.navigate(['/']);
-                return false;
-            }
+                }   
+            });
+    }
 
-        }             
+    private loggedIn(userState: fromUsers.UserState) {
+        return userState.approved && userState.authenticated && tokenNotExpired('unfetterUiToken');
+    }
+
+    private hasRole(allowedRoles: string[], userRole: string): boolean {
+        return allowedRoles.find((role: string) => role === userRole) !== undefined;
     }
 }

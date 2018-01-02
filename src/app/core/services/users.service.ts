@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Response } from '@angular/http';
+
 import { Observable } from 'rxjs/Observable';
 import { GenericApi } from './genericapi.service';
 import { Constance } from '../../utils/constance';

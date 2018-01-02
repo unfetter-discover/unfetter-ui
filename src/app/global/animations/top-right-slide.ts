@@ -3,7 +3,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 export const topRightSlide = trigger('topRightSlide', [
     transition(':enter', [
         style({
-            transform: 'translateY(-110%) scale(0.7)',
+            transform: 'translateY(-200px) scale(0.5)',
             transformOrigin: 'right'
         }),
         animate('0.2s ease-in-out', style({
@@ -17,7 +17,7 @@ export const topRightSlide = trigger('topRightSlide', [
             transformOrigin: 'right'
         }),
         animate('0.2s ease-in-out', style({
-            transform: 'translateY(-110%) scale(0.7)',
+            transform: 'translateY(-200px) scale(0.5)',
             transformOrigin: 'right'
         }))
     ])

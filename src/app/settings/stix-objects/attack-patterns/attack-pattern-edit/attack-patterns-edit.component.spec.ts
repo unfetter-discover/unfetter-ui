@@ -39,6 +39,10 @@ import { ExternalReference } from '../../../../models/externalReference';
 import { KillChainPhase } from '../../../../models/kill-chain-phase';
 import { ConfigService } from '../../../../core/services/config.service';
 import { CoreModule } from '../../../../core/core.module';
+import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { StoreModule } from '@ngrx/store';
+import { reducers } from '../../../../root-store/app.reducers';
 
 ////// Testing Vars //////
 const id = 'attack-pattern-9999999'
@@ -284,7 +288,7 @@ function moduleSetup() {
 
     TestBed.configureTestingModule({
       imports: [
-        GlobalModule, CoreModule, ComponentModule, FormsModule, NoopAnimationsModule, 
+        GlobalModule, CoreModule, ComponentModule, FormsModule, NoopAnimationsModule, HttpClientModule, HttpClientTestingModule, StoreModule.forRoot(reducers),
         ...matModules
       ],
       declarations: [AttackPatternEditComponent],

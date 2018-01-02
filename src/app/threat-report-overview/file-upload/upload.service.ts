@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Headers, Response } from '@angular/http';
-import { HttpClient } from '@angular/common/http';
-import { HttpResponse } from '@angular/common/http';
-import { HttpRequest, HttpHeaders, HttpEvent, HttpEventType } from '@angular/common/http';
+import { HttpRequest, HttpHeaders, HttpEvent, HttpEventType, HttpResponse, HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { Constance } from '../../utils/constance';
 import { Report } from '../../models/report';
@@ -12,13 +9,11 @@ import { JsonApiObject } from '../../threat-dashboard/models/adapter/json-api-ob
 export class UploadService {
     private data: any = null;
     private headers: HttpHeaders;
-    private readonly authStorageKey = 'unfetterUiToken';
-    private readonly authHeaderKey = 'Authorization';
     private readonly baseUrl = Constance.API_HOST || '';
     private readonly path = `/api/ctf/upload`;
 
     constructor(private http: HttpClient) {
-        this.headers = this.genHeadersWithAuth();
+        this.headers = new HttpHeaders();
         this.headers.append('Content-Type', 'multipart/form-data');
         this.headers.append('Accept', 'application/json');
     }
@@ -50,23 +45,6 @@ export class UploadService {
             .map((event) => (event instanceof HttpResponse) ? event.body : [])
             .map((reports) => reports.map((report) => report.data))
             .catch(this.handleError);
-    }
-
-    /**
-     * @description sets the authorization token in the header, 
-     *  iff is it not already set in the header and it exists in localstorage
-     * 
-     * @return {void}
-     */
-    private genHeadersWithAuth(headers = new HttpHeaders()): HttpHeaders {
-        if (!headers.get(this.authHeaderKey)) {
-            const token = localStorage.getItem(this.authStorageKey);
-            if (token) {
-                return headers.set(this.authHeaderKey, token);
-            }
-        }
-
-        return headers;
     }
 
     /**

@@ -20,6 +20,10 @@ import { StixService } from '../../../stix.service';
 import { AttackPatternListComponent } from './attack-pattern-list.component';
 import { GlobalModule } from '../../../../global/global.module';
 import { CoreModule } from '../../../../core/core.module';
+import { StoreModule } from '@ngrx/store';
+import { reducers } from '../../../../root-store/app.reducers';
+import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe(`AttackPatternListComponent`, () => {
   let comp: AttackPatternListComponent;
@@ -39,7 +43,7 @@ describe(`AttackPatternListComponent`, () => {
     async(() => {
       TestBed.configureTestingModule({
         imports: [
-          GlobalModule, CoreModule
+          GlobalModule, CoreModule, HttpClientModule, HttpClientTestingModule, StoreModule.forRoot(reducers)
         ],
         declarations: [AttackPatternListComponent],
         schemas: [NO_ERRORS_SCHEMA],

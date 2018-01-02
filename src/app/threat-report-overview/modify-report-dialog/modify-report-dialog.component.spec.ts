@@ -4,8 +4,7 @@ import { DebugElement } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpModule, Http } from '@angular/http';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { MatButtonModule } from '@angular/material';
 import { MatInputModule } from '@angular/material';
@@ -47,14 +46,13 @@ describe('Modify Report Dialog Component', () => {
 
         TestBed.configureTestingModule({
             declarations: [ModifyReportDialogComponent, AddExternalReportComponent, ModifyIntrusionsComponent, ModifyMalwaresComponent],
-            imports: [RouterTestingModule, HttpModule, HttpClientModule, ReactiveFormsModule, FormsModule, ...materialModules],
+            imports: [RouterTestingModule, HttpClientTestingModule, ReactiveFormsModule, FormsModule, ...materialModules],
             providers: [
                 ConfigService,
                 GenericApi,
                 ReportTranslationService,
                 { provide: MAT_DIALOG_DATA, useValue: {} },
                 { provide: MatDialogRef, useValue: {} },
-                { provide: Http, useValue: {} }
             ]
         });
 

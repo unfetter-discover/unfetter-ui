@@ -122,7 +122,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
             );        
     }
 
-    public formatComment(comment) {
+    public whitespaceToBreak(comment) {
         return FormatHelpers.whitespaceToBreak(comment);
     }
 

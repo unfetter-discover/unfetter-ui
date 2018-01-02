@@ -1,5 +1,4 @@
 import { HttpClientModule } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
 import { TestBed } from '@angular/core/testing';
 import { inject } from '@angular/core/testing';
 import { fakeAsync } from '@angular/core/testing';
@@ -12,6 +11,7 @@ import { ThreatReportOverviewService } from './threat-report-overview.service';
 import { ReportMock } from '../../models/report-mock.model';
 import { ThreatReportMock } from '../../threat-report-overview/models/threat-report-mock.model';
 import { ThreatReport } from '../../threat-report-overview/models/threat-report.model';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('Threat Report Overview Spec', () => {
 
@@ -19,7 +19,10 @@ describe('Threat Report Overview Spec', () => {
   beforeEach(() => {
     subscriptions = [];
     TestBed.configureTestingModule({
-      imports: [HttpClientModule, HttpModule],
+      imports: [
+        HttpClientModule,
+        HttpClientTestingModule
+      ],
       providers: [ThreatReportOverviewService, GenericApi]
     });
   });

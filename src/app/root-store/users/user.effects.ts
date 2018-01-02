@@ -19,12 +19,7 @@ export class UserEffects {
     @Effect()
     public fetchUser = this.actions$
         .ofType(userActions.FETCH_USER)
-        .pluck('payload')
-        .do((token) => {
-            localStorage.clear();
-            // Token must be set before getUserFromToken api call
-            this.authService.setToken(token);
-        })
+        .pluck('payload')        
         .switchMap((token) => {
             return Observable.forkJoin(
                 Observable.of(token), 
@@ -50,6 +45,14 @@ export class UserEffects {
                 new configActions.FetchConfig(),
                 new notificationActions.StartNotificationStream()
             ]
+        });
+
+    @Effect({ dispatch: false })
+    public setToken = this.actions$
+        .ofType(userActions.SET_TOKEN)
+        .pluck('payload') 
+        .do((token: string) => {
+            this.authService.setToken(token);
         });
 
     constructor(

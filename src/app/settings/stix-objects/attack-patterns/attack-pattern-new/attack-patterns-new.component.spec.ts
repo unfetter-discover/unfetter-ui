@@ -34,6 +34,10 @@ import { newEvent, click } from '../../../../testing/index';
 import { AttackPatternNewComponent } from './attack-patterns-new.component';
 import { ConfigService } from '../../../../core/services/config.service';
 import { CoreModule } from '../../../../core/core.module';
+import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { StoreModule } from '@ngrx/store';
+import { reducers } from '../../../../root-store/app.reducers';
 
 /** Duration of the select opening animation. */
 const SELECT_OPEN_ANIMATION = 200;
@@ -275,7 +279,7 @@ function moduleSetup() {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        GlobalModule, CoreModule, ComponentModule, FormsModule, NoopAnimationsModule, ...matModules
+        GlobalModule, CoreModule, ComponentModule, FormsModule, NoopAnimationsModule, HttpClientModule, HttpClientTestingModule, StoreModule.forRoot(reducers), ...matModules
       ],
       declarations: [AttackPatternNewComponent],
       schemas: [NO_ERRORS_SCHEMA],

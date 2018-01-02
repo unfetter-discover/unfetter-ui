@@ -1,5 +1,5 @@
 
-import { Component, OnDestroy, ViewChild, OnInit, ElementRef, AfterViewInit, Renderer, AfterContentInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnDestroy, ViewChild, OnInit, ElementRef, AfterViewInit, AfterContentInit, QueryList, ViewChildren } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatPaginator, MatSnackBar, MatDialog, PageEvent } from '@angular/material';
@@ -57,8 +57,7 @@ export class ThreatReportModifyComponent implements OnInit, AfterViewInit, OnDes
     protected service: ThreatReportOverviewService,
     protected sharedService: ThreatReportSharedService,
     protected dialog: MatDialog,
-    protected snackBar: MatSnackBar,
-    protected render: Renderer) { }
+    protected snackBar: MatSnackBar) { }
 
   /**
    * @description initialize this component
