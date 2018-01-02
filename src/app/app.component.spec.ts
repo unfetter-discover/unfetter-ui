@@ -13,7 +13,6 @@ import { WebAnalyticsService } from './core/services/web-analytics.service';
 import { AppModule } from './app.module';
 import { StoreModule } from '@ngrx/store';
 import { reducers } from './root-store/app.reducers';
-import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe(`App`, () => {
@@ -34,7 +33,6 @@ describe(`App`, () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule, 
-        HttpClientModule,
         HttpClientTestingModule,
         StoreModule.forRoot(reducers)
       ],

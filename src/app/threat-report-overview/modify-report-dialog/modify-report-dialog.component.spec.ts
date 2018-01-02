@@ -4,7 +4,7 @@ import { DebugElement } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { MatButtonModule } from '@angular/material';
 import { MatInputModule } from '@angular/material';
@@ -23,7 +23,6 @@ import { ModifyMalwaresComponent } from './modify-malwares/modify-malwares.compo
 import { GenericApi } from '../../core/services/genericapi.service';
 import { ReportTranslationService } from '../../threat-dashboard/services/report-translation.service';
 import { ConfigService } from '../../core/services/config.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('Modify Report Dialog Component', () => {
 
@@ -47,14 +46,13 @@ describe('Modify Report Dialog Component', () => {
 
         TestBed.configureTestingModule({
             declarations: [ModifyReportDialogComponent, AddExternalReportComponent, ModifyIntrusionsComponent, ModifyMalwaresComponent],
-            imports: [RouterTestingModule, HttpClientModule, HttpClientTestingModule, ReactiveFormsModule, FormsModule, ...materialModules],
+            imports: [RouterTestingModule, HttpClientTestingModule, ReactiveFormsModule, FormsModule, ...materialModules],
             providers: [
                 ConfigService,
                 GenericApi,
                 ReportTranslationService,
                 { provide: MAT_DIALOG_DATA, useValue: {} },
                 { provide: MatDialogRef, useValue: {} },
-                { provide: HttpClient, useValue: {} }
             ]
         });
 
