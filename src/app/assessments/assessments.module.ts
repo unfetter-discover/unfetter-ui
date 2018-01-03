@@ -9,6 +9,7 @@ import { AssessmentsService } from './assessments.service';
 import { AssessmentsLayoutComponent } from './assessments-layout.component';
 import { AssessmentsDashboardComponent } from './assessments-dashboard/assessments-dashboard.component';
 import { AssessmentsDashboardService } from './assessments-dashboard/assessments-dashboard.service';
+import { MockAssessmentsDashboardService } from './assessments-dashboard/mock-assessments-dashboard.service'
 import { PhaseListComponent } from './assessments-dashboard/phase-list/phase-list.component';
 import { ChartsModule } from 'ng2-charts';
 import { RiskBreakdownComponent } from './assessments-dashboard/risk-breakdown/risk-breakdown.component';
@@ -60,6 +61,7 @@ import { AssessmentsGroupComponent } from './group/assessments-group.component';
   providers: [
     AssessmentsService,
     AssessmentsDashboardService,
+    MockAssessmentsDashboardService,
     AssessmentsSummaryService,
     AssessmentsCalculationService
   ]

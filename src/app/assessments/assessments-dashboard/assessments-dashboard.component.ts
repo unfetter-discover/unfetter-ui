@@ -88,6 +88,24 @@ export class AssessmentsDashboardComponent implements OnInit {
             );
     }
 
+    public populatePhaseRiskTree(phase) {
+        const riskTree = {};
+
+        // Assessed Objects per phase
+        if (phase !== undefined && phase.assessedObjects !== undefined) {
+            phase.assessedObjects.forEach((assessedObject) => {
+                // Questions per assessed object
+                assessedObject.questions.forEach((question) => {
+                    if (riskTree[question.name] === undefined) {
+                        riskTree[question.name] = [];
+                    }
+                    riskTree[question.name].push(question.risk);
+                });
+            });
+        }
+        return riskTree;
+    }
+
     public calculateRiskBreakdown() {
         const phases = this.riskByAttackPattern.phases;
         const assessedByAttackPattern = this.riskByAttackPattern.assessedByAttackPattern;
@@ -98,18 +116,7 @@ export class AssessmentsDashboardComponent implements OnInit {
 
             // Group data by kill chain phase, then question => set value array of risk values
             phases.forEach((phase) => {
-                riskTree[phase._id] = {};
-
-                // Assessed Objects per phase
-                phase.assessedObjects.forEach((assessedObject) => {
-                    // Questions per assessed object
-                    assessedObject.questions.forEach((question) => {
-                        if (riskTree[phase._id][question.name] === undefined) {
-                            riskTree[phase._id][question.name] = [];
-                        }
-                        riskTree[phase._id][question.name].push(question.risk);
-                    });
-                });
+                riskTree[phase._id] = this.populatePhaseRiskTree(phase);
             });
 
             // Calcuate average risk per question
