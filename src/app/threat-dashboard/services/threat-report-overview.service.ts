@@ -187,11 +187,20 @@ export class ThreatReportOverviewService {
       id = threatReportMeta.id;
     }
 
-    let [insert$, updates$] = Observable.from(reports).partition((report) => report.id === undefined);
-    updates$ = updates$.mergeMap((report) => this.loadReport(report.id));
+    let [inserts$, updates$] = Observable.from(reports).partition((report) => report.id === undefined);
     // pull fresh copies of the reports
+    updates$ = updates$.mergeMap((report) => this.loadReport(report.id));
+    // assign the correct workproduct to these new reports
+    inserts$ = inserts$.map((report) => {
+      if (threatReportMeta) {
+        report.attributes.metaProperties = report.attributes.metaProperties || {};
+        report.attributes.metaProperties.work_products = report.attributes.metaProperties.work_products || [];
+        report.attributes.metaProperties.work_products = report.attributes.metaProperties.work_products.concat({ ...threatReportMeta });
+      }
+      return report;
+    });
     const updateReports$ = Observable
-      .merge(insert$, updates$)
+      .merge(inserts$, updates$)
       .mergeMap((el) => {
         // I cant explain why this an array of single element arrays
         //  but lets unwrap

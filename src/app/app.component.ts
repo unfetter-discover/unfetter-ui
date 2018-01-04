@@ -13,7 +13,7 @@ import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app',
-  encapsulation: ViewEncapsulation.None,
+  // encapsulation: ViewEncapsulation.None,
   styleUrls: [
     './app.component.scss'
   ],

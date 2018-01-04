@@ -1,7 +1,12 @@
 @import '../../../styles/_variables.scss';
 
+$white: #FFFFFF;
 :host ::ng-deep {
+
+    background-color: $white;
     .ui-carousel {
+        @include set-colors($white_87, $white);
+
         .ui-carousel-header {
             @include set-colors($threat-dashboard-primary-text, linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important);
             font-weight: 500;
@@ -72,6 +77,37 @@
             .flexCenter {
                 margin: auto 16px;
             }
+        }
+    }
+
+    .toolbox-btn {
+        position: absolute;
+        z-index: 2;
+        top: 32px;
+        right: 120px;
+        color: $threat-dashboard-primary;
+        border-radius: 50%;
+        background-color: $threat-dashboard-primary-lightest;
+
+
+    }
+
+    .mat-24 {
+        font-size: 24px;
+    }
+
+    .toolbox {
+        position: absolute;
+        z-index: 9;
+        top: 64px;
+        right: 120px;
+        color: $threat-dashboard-primary;
+        background-color: $white;
+        height: 64px;
+        width: 180px;
+
+        button {
+            margin: auto auto;
         }
     }
 }

@@ -9,12 +9,14 @@ import { ThreatReport } from '../../threat-report-overview/models/threat-report.
 import { KillChainEntry } from './kill-chain-entry';
 import { AttackPattern } from '../../models/attack-pattern';
 import { ThreatDashboard } from '../models/threat-dashboard';
+import { topRightSlide } from '../../global/animations/top-right-slide';
 
 @Component({
   selector: 'unf-kill-chain-table',
   templateUrl: 'kill-chain-table.component.html',
   styleUrls: ['./kill-chain-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [topRightSlide]
 })
 export class KillChainTableComponent implements OnInit, OnDestroy {
 
@@ -25,14 +27,10 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
   @Input('intrusionSetsDashboard')
   public intrusionSetsDashboard: ThreatDashboard;
 
-  public readonly subscriptions: Subscription[] = [];
+  public undoToolboxOp: Partial<KillChainEntry>[] = undefined;
+  public showToolbox = false;
 
-  // private readonly redAccent200 = '#FF5252';
-  private readonly defaultBackgroundColor = '#FAFAFA';
-  // private readonly defaultForegroundColor = '#000000';
-  // // private readonly selectedForegroundColor = '#F5F5F5';
-  // private readonly selectedForegroundColor = 'rbga(255, 255, 255, .87);'
-  // private readonly selectedBackgroundColor = this.redAccent200;
+  public readonly subscriptions: Subscription[] = [];
 
   constructor(
     protected router: Router,
@@ -43,7 +41,9 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
   /**
    * @description init this component
    */
-  public ngOnInit() { }
+  public ngOnInit() {
+    this.undoToolboxOp = this.copyState(this.intrusionSetsDashboard.killChainPhases);
+  }
 
   /**
    * @description 
@@ -55,17 +55,79 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * @description
+   */
+  public copyState(killChainPhases: Partial<KillChainEntry>[]): Partial<KillChainEntry>[] {
+    return [
+      ...killChainPhases.map((phases) => {
+        const copy = {
+          ...phases,
+        };
+        copy.attack_patterns = [...phases.attack_patterns];
+        return copy;
+      })
+    ];
+  }
+
+  /**
    * @description tally the number of attackpatterns highlighted
    * @return {number}
    */
-  public count(attack_patterns: KillChainEntry[]): number {
+  public count(attackPatterns: KillChainEntry[]): number {
     let count = 0;
-    attack_patterns.forEach((attack_pattern) => {
-      if (attack_pattern.backgroundColor && attack_pattern.backgroundColor !== this.defaultBackgroundColor) {
+    if (!attackPatterns) {
+      return count;
+    }
+    attackPatterns.forEach((attackPattern) => {
+      if (attackPattern.isSelected === true) {
         count = count + 1;
       }
     });
     return count;
+  }
+
+  /**
+   * @description
+   * @param {UIEvent} event
+   */
+  public onToggleShowToolbox(event?: UIEvent): void {
+    this.showToolbox = !this.showToolbox;
+  }
+
+  /**
+   * @description
+   * @param {UIEvent} event 
+   */
+  public onCompressColumns(event?: UIEvent): void {
+    const filtered = this.intrusionSetsDashboard.killChainPhases.filter((phase) => {
+      return this.count(phase.attack_patterns) > 0;
+    });
+    this.intrusionSetsDashboard.killChainPhases = filtered;
+  }
+
+  /**
+   * @description
+   * @param {UIEvent} event
+   */
+  public onCompressRows(event?: UIEvent): void {
+    const filtered = this.intrusionSetsDashboard.killChainPhases.map((phases) => {
+      phases.attack_patterns = phases.attack_patterns
+        .filter((attackPattern) => attackPattern.isSelected === true);
+      return phases;
+    });
+    this.intrusionSetsDashboard.killChainPhases = filtered;
+  }
+
+  /**
+   * @description
+   * @param {UIEvent} event optional
+   */
+  public onResetFilters(event?: UIEvent): void {
+    if (!this.undoToolboxOp) {
+      return;
+    }
+    this.intrusionSetsDashboard.killChainPhases = this.undoToolboxOp;
+    this.undoToolboxOp = this.copyState(this.undoToolboxOp);
   }
 
 }

@@ -34,6 +34,28 @@
     padding: 0px;
 }
 
+.mat-accordion {
+    ::ng-deep .mat-expanded {
+        .mat-expansion-panel-header {
+            background: linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important;
+            
+            .mat-expansion-panel-header-title, .mat-expansion-indicator::after {
+              color: $white_87 !important;
+            }
+    
+            svg {
+                ::ng-deep .icon {
+                    fill: $white_87; 
+                }
+            }
+        }
+
+        .mat-expansion-panel-body {
+            padding: 0px 0px 0px 16px;
+        }
+    }
+}
+
 .mat-expansion-panel {
     background-color: $white_87;
 
@@ -46,7 +68,6 @@
         }
     }
     
-    
     .mat-list-item {
         font-size: 13px;
         
@@ -58,14 +79,6 @@
 
     .list-item-hover {
         background-color: $threat-dashboard-primary-lightest;
-    }
-
-    ::ng-deep .mat-expansion-panel-body {
-        margin: 0px !important;
-    }
-    
-    ::ng-deep .mat-expanded {
-        margin-bottom: 2px;
     }
 
     a {
