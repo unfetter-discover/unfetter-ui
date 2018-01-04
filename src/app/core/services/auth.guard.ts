@@ -12,7 +12,7 @@ export class AuthGuard implements CanActivate {
 
     constructor(
         private router: Router,
-        private store: Store<fromApp.AppState>
+        public store: Store<fromApp.AppState>
     ) { }
 
     public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
@@ -43,7 +43,7 @@ export class AuthGuard implements CanActivate {
             });
     }
 
-    private loggedIn(userState: fromUsers.UserState) {
+    public loggedIn(userState: fromUsers.UserState) {
         return userState.approved && userState.authenticated && tokenNotExpired('unfetterUiToken');
     }
 
