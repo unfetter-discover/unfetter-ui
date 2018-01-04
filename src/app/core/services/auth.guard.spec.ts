@@ -79,7 +79,7 @@ describe('Auth guard should', () => {
     });
 
     it('Return false when user is logged out', async () => {
-        spy = spyOn(authGuard, 'loggedIn').and.returnValue(true);
+        spy = spyOn(authGuard, 'loggedIn').and.returnValue(false);
         userStore.dispatch(new userActions.LogoutUser());
         authGuard.canActivate({ data: { ROLES: ['STANDARD_USER'] } } as ActivatedRouteSnapshot | any, null)
             .take(1)
