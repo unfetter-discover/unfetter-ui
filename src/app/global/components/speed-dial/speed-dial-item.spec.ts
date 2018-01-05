@@ -18,7 +18,7 @@ describe('SpeedDialComponent', () => {
   });
 
   it('should set svgIcons', () => {
-    const svgIconName = 'campagin';
+    const svgIconName = 'campaign';
     const svgItem = new SpeedDialItem('add', undefined, true, svgIconName);
     expect(svgItem).toBeDefined();
     expect(svgItem.name).toEqual('add');
