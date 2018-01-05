@@ -1,0 +1,63 @@
+@import '../../../../styles/_variables.scss';
+
+#fabWrapper {
+    position: fixed;
+    bottom: 50px;
+    right: 20px;
+    #wrapperInner {
+        position: relative;
+        .mini {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            transition: top 0.2s ease-in-out;
+
+
+            svg {
+                height: 24px;
+                width: 24px;
+                ::ng-deep use {
+                    fill: $white_87;
+                }
+            }
+        }
+    }
+
+    #firstIcon {
+        z-index: 100;
+        transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)
+    }
+
+    .speedDial {
+
+        #firstIcon {
+            transform: rotateZ(135deg);
+        }
+
+        #fab1 {
+           z-index: 99;
+            top: -50px;
+        }
+        
+        #fab2 {
+            z-index: 98;
+            top: -100px;
+        }
+        
+        #fab3 {
+            z-index: 97;
+            top: -150px;
+        }
+        
+        #fab4 {
+            z-index: 96;
+            top: -200px;
+        }
+        
+        #fab5 {
+            z-index: 95;
+            top: -250px;
+        }
+    }
+}
+

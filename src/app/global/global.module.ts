@@ -2,7 +2,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { MatTooltipModule, MatTableModule, MatChipsModule, MatPaginatorModule, MatButtonModule, MatInputModule, MatProgressSpinnerModule, MatAutocompleteModule, MatCheckboxModule } from '@angular/material';
+
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
@@ -27,9 +38,38 @@ import { ChipLinksComponent } from './components/chip-links/chip-links.component
 import { ObservableDataSummaryComponent } from './components/observable-data-summary/observable-data-summary.component';
 import { HeaderNavigationComponent } from './components/header-navigation/header-navigation.component';
 import { NotificationWindowComponent } from './components/notification-window/notification-window.component';
+import { SpeedDialComponent } from './components/speed-dial/speed-dial.component';
 
 const matModules = [
-    MatTooltipModule, MatTableModule, MatChipsModule, MatPaginatorModule, MatButtonModule, MatInputModule, MatProgressSpinnerModule, MatAutocompleteModule, MatCheckboxModule
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatChipsModule,
+    MatPaginatorModule,
+    MatInputModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatTableModule,
+    MatProgressSpinnerModule,
+];
+
+const unfetterComponents = [
+    CapitalizePipe,
+    SophisticationPipe,
+    TimeAgoPipe,
+    RiskIconComponent,
+    StixTableComponent,
+    FieldSortPipe,
+    LoadingSpinnerComponent,
+    KillChainPhasesReactiveComponent,
+    ExternalReferencesReactiveComponent,
+    AddLabelReactiveComponent,
+    ObservableDataTreeComponent,
+    ChipLinksComponent,
+    ObservableDataSummaryComponent,
+    HeaderNavigationComponent,
+    NotificationWindowComponent,
+    SpeedDialComponent
 ];
 
 @NgModule({
@@ -43,40 +83,13 @@ const matModules = [
         ...matModules
     ],
     exports: [
-        CapitalizePipe, 
-        SophisticationPipe, 
-        TimeAgoPipe,
-        RiskIconComponent, 
-        StixTableComponent, 
-        FieldSortPipe, 
-        LoadingSpinnerComponent,
-        KillChainPhasesReactiveComponent,
-        ExternalReferencesReactiveComponent,
-        AddLabelReactiveComponent,
-        ObservableDataTreeComponent,
-        ChipLinksComponent,
-        ObservableDataSummaryComponent,
-        HeaderNavigationComponent,
-        NotificationWindowComponent
+        ...unfetterComponents,
+        ...matModules,
     ],
     declarations: [
-        CapitalizePipe, 
-        SophisticationPipe, 
-        TimeAgoPipe,
-        RiskIconComponent, 
-        StixTableComponent, 
-        FieldSortPipe, 
-        LoadingSpinnerComponent,
-        KillChainPhasesReactiveComponent,
-        ExternalReferencesReactiveComponent,
-        AddLabelReactiveComponent,
-        ObservableDataTreeComponent,
-        ChipLinksComponent,
-        ObservableDataSummaryComponent,
-        HeaderNavigationComponent,
-        NotificationWindowComponent
+        ...unfetterComponents
     ],
     providers: []
 })
 
-export class GlobalModule {}
+export class GlobalModule { }
