@@ -10,14 +10,22 @@
         
             <div class="uf-collapsible-control mb-10" (click)="observableDataType.showActions = !observableDataType.showActions">
                 <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': observableDataType.showActions}">chevron_right</i>
-                <span class="h5">&nbsp;{{ observableDataType.name | capitalize }}</span>
+                <span class="h5">&nbsp;{{ observableDataType.name | capitalize }}&nbsp;
+                    <span *ngIf="nameChecked(observableDataType.name)">
+                        <i class="material-icons checkIcon">check</i>
+                    </span>
+                </span>
             </div>
         
             <div @heightCollapse *ngIf="observableDataType.showActions" class="treePaddingLeft">
                 <div *ngFor="let action of observableDataType.actions">
                     <div class="uf-collapsible-control mb-10" (click)="showPropertyTree[observableDataType.name][action] = !showPropertyTree[observableDataType.name][action]">
                         <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showPropertyTree[observableDataType.name][action]}">chevron_right</i>
-                        <span class="h5">&nbsp;{{ action | capitalize }}</span>
+                        <span class="h5">&nbsp;{{ action | capitalize }}&nbsp;
+                            <span *ngIf="actionChecked(observableDataType.name, action)">
+                                <i class="material-icons checkIcon">check</i>
+                            </span>
+                        </span>
                     </div>
         
                     <div @heightCollapse *ngIf="showPropertyTree[observableDataType.name][action]" class="treePaddingLeft mb-10">

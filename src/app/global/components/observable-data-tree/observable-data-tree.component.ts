@@ -91,6 +91,17 @@ export class ObservableDataTreeComponent implements OnInit {
         
     }
 
+    public actionChecked(name: string, action: string): boolean {
+        return Object.values(this.checkboxModel[name][action]).includes(true);
+    }
+
+    public nameChecked(name: string): boolean {
+        return Object.values(this.checkboxModel[name])
+            .map(Object.values)
+            .reduce((prev: boolean[], cur: boolean[]) => prev.concat(cur), [])
+            .includes(true);
+    }
+
     private buildTree(observedDataPathPresent?: boolean) {
         this.observableDataTypes = this.configService.configurations.observableDataTypes;
         this.observableDataTypes.forEach((item) => {
