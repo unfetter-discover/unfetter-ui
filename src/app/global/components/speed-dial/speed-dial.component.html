@@ -1,0 +1,30 @@
+<div id="fabWrapper">
+    <div id="wrapperInner" [ngClass]="{'speedDial': open}">
+        <ng-container *ngFor="let item of items; let i = index; let first = first; trackBy: trackByFn">
+            <ng-container *ngIf="first === true; else innerBlock">
+                <button mat-fab color="accent" id="firstIcon" (click)="onToggle($event)">
+                    <ng-container *ngIf="item.isMatIcon === true; else svgIcon">
+                        <mat-icon class="mat-24">{{item.matIcon}}</mat-icon>
+                    </ng-container>
+                    <ng-template #svgIcon>
+                        <img class="stix-icon" style="height: 23px;" src="{{item.svgIconPath}}">
+                    </ng-template>
+                </button>
+            </ng-container>
+            <ng-template #innerBlock>
+                <div id="fab{{i}}" class="mini" matTooltip="{{item.tooltip}}" matTooltipPosition="left">
+                    <button mat-mini-fab color="primary" (click)="onMiniFabClick(item, $event)">
+                        <ng-container *ngIf="item.isMatIcon === true; else svgIcon">
+                            <mat-icon class="mat-24">{{item.matIcon}}</mat-icon>
+                        </ng-container>
+                        <ng-template #svgIcon>
+                            <svg>
+                                <use class="icon" attr.xlink:href="assets/icon/stix-icons/svg/all-defs.svg#{{item.svgIconName}}"></use>
+                            </svg>
+                        </ng-template>
+                    </button>
+                </div>
+            </ng-template>
+        </ng-container>
+    </div>
+</div>
