@@ -241,7 +241,14 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
             attackPatternsProxies = [];
             killChainAttackPatternGroup[phaseName] = attackPatternsProxies;
           }
-          attackPatternsProxies.push({ ...attackPattern } as KillChainEntry);
+          attackPatternsProxies.push({
+            id: attackPattern.id,
+            name: attackPattern.attributes.name,
+            foregroundColor: attackPattern.foregroundColor,
+            backgroundColor: attackPattern.backgroundColor,
+            isSelected: attackPattern.isSelected
+          } as KillChainEntry);
+          
         });
       }
     });
