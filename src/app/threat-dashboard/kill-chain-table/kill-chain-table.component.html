@@ -1,8 +1,5 @@
-<p-carousel 
-    *ngIf="intrusionSetsDashboard && intrusionSetsDashboard.killChainPhases"
-    [value]="intrusionSetsDashboard.killChainPhases" 
-    headerText="Kill Chain Phases Used" 
-    numVisible="5">
+<p-carousel *ngIf="intrusionSetsDashboard && intrusionSetsDashboard.killChainPhases" [value]="intrusionSetsDashboard.killChainPhases"
+    headerText="Kill Chain Phases Used" numVisible="5">
     <ng-template let-killChainPhase pTemplate="killChainPhase">
         <div class="ui-grid ui-grid-responsive">
             <div class="ui-grid-row carouselSubheadingRow">
@@ -16,7 +13,7 @@
                     <div class="carousel-content-wrapper">
                         <div class="ui-grid ui-grid-responsive">
                             <div class="ui-grid-row" *ngFor="let attack_pattern of killChainPhase.attack_patterns">
-                                <div class="ui-grid-col-12 attack-pattern-div" [style.color]="attack_pattern.foregroundColor" [style.background]="attack_pattern.backgroundColor">
+                                <div class="ui-grid-col-12 attack-pattern-div" [style.color]="attack_pattern.foregroundColor" [style.background-color]="attack_pattern.backgroundColor">
                                     <div class="flexCenter">
                                         {{attack_pattern.name}}
                                     </div>
@@ -29,3 +26,20 @@
         </div>
     </ng-template>
 </p-carousel>
+<div class="toolbox-btn">
+    <button mat-icon-button (click)="onToggleShowToolbox($event)">
+        <mat-icon class="mat-24" aria-hidden="true" aria-label="apply filters">zoom_out_map</mat-icon>
+    </button>
+</div>
+
+<div class="toolbox mat-elevation-z5" [style.display]="showToolbox === true ? 'flex': 'none'" [@topRightSlide]>
+    <button mat-icon-button matTooltip="Compress rows" (click)="onCompressRows($event)">
+        <mat-icon class="mat-24" aria-hidden="true" aria-label="view compact rows">format_line_spacing</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Compress columns" (click)="onCompressColumns($event)">
+        <mat-icon class="mat-24" aria-hidden="true" aria-label="view compact columns">view_compact</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Rest to full table" (click)="onResetFilters($event)">
+        <mat-icon class="mat-24" aria-hidden="true" aria-label="view full table">view_comfy</mat-icon>
+    </button>
+</div>

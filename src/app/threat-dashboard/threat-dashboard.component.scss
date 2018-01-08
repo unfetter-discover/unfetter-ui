@@ -12,9 +12,14 @@ $md_sidenav_max_width: 400px;
 }
 
 .side-panel {
+    background-color: #FFFFFF;
     padding: 0px;
     // padding-top: 55px;
     // box-shadow: 3px 0 6px rgba(0,0,0,.24);
+}
+
+.main-panel {
+    background-color: #F1F1F1;
 }
 
 .minimizeControls {
@@ -60,12 +65,12 @@ $md_sidenav_max_width: 400px;
 
 @media only screen and (min-width: 992px) {
     .side-panel {
-        height: 100vh;
+        // height: 100vh;
         // position: fixed;
         // top: 0;
         overflow-y: auto;
         max-width: $md_sidenav_max_width;
-        flex: 0 0 auto;
+        flex: 1 0 auto;
     }
     
     .main-panel {
@@ -97,6 +102,14 @@ $md_sidenav_max_width: 400px;
     .mat-tab-body-content {
         overflow-y: hidden;
     }
+}
+
+.ml-16 {
+    margin-left: 16px;
+}
+
+.mr-16 {
+    margin-right: 16px;
 }
 
 

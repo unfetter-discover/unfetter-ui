@@ -48,7 +48,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription[] = [];
   private readonly red500 = '#F44336';
   private readonly redAccent200 = '#FF5252';
-  private readonly defaultBackgroundColor = '#FAFAFA';
+  private readonly defaultBackgroundColor = '#FFFFFF';
   private readonly defaultForegroundColor = '#000000';
   // private readonly selectedForegroundColor = '#F5F5F5';
   private readonly selectedForegroundColor = 'rgba(255, 255, 255, .87)';
@@ -248,6 +248,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
             backgroundColor: attackPattern.backgroundColor,
             isSelected: attackPattern.isSelected
           } as KillChainEntry);
+          
         });
       }
     });
