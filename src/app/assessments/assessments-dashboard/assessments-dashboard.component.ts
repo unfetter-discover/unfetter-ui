@@ -57,6 +57,7 @@ export class AssessmentsDashboardComponent implements OnInit {
     public riskByAttackPattern: any;
     public unassessedPhases: any[];
     public riskBreakdown: any;
+    public riskBreakdownTemp: any;
     public processingComplete: boolean = false;
 
     constructor(
@@ -88,6 +89,64 @@ export class AssessmentsDashboardComponent implements OnInit {
             );
     }
 
+    public populatePhaseRiskTree(phase: any) {
+        const riskTree = {};
+
+        // Assessed Objects per phase
+        if (phase !== undefined && phase.assessedObjects !== undefined) {
+            phase.assessedObjects.forEach((assessedObject) => {
+                // Questions per assessed object
+                assessedObject.questions.forEach((question) => {
+                    if (riskTree[question.name] === undefined) {
+                        riskTree[question.name] = [];
+                    }
+                    riskTree[question.name].push(question.risk);
+                });
+            });
+        }
+        return riskTree;
+    }
+
+    public calculateRiskBreakdownByQuestionForPhase(phaseRiskTree: any, questions: Set<string>) {
+        const riskBreakdownPhase = {};
+        if (questions !== undefined && phaseRiskTree !== undefined) {
+            for (let question in phaseRiskTree) {
+                questions.add(question);
+                /* Average risk for each question-category,
+                then multiply it by 1 / the number of question-categories.
+                This will show how much each question contributes to absolute overall risk. */
+                riskBreakdownPhase[question] = (phaseRiskTree[question]
+                    .reduce((prev, cur) => prev += cur, 0)
+                    / phaseRiskTree[question].length) * (1 / Object.keys(phaseRiskTree).length);
+            }
+        }
+        return riskBreakdownPhase;
+    }
+
+    public populateRiskBreakdownByQuestionForAssessedQuestions(assessment: any, existingQuestions: Set<string>) {
+        if (existingQuestions !== undefined && assessment !== undefined && assessment.questions !== undefined) {
+            for (let question of assessment.questions) {
+                existingQuestions.add(question.name);
+                if (this.riskBreakdownTemp[question.name] === undefined) {
+                    this.riskBreakdownTemp[question.name] = [];
+                }
+                this.riskBreakdownTemp[question.name].push(question.risk);
+            }
+        }
+    }
+
+    public calculateAverageRiskBreakdownForQuestion(risks: ReadonlyArray<number>, totalNumberOfQuestions: number) {
+        let averageRiskBreakdown = 0;
+        
+        if (risks !== undefined && risks.length > 0 && totalNumberOfQuestions > 0) {
+            const aggregateRisk = risks.reduce((total, current) => total += current, 0);
+            
+            averageRiskBreakdown = aggregateRisk / risks.length * (1 / totalNumberOfQuestions);
+        }
+
+        return averageRiskBreakdown;
+    }
+
     public calculateRiskBreakdown() {
         const phases = this.riskByAttackPattern.phases;
         const assessedByAttackPattern = this.riskByAttackPattern.assessedByAttackPattern;
@@ -98,60 +157,30 @@ export class AssessmentsDashboardComponent implements OnInit {
 
             // Group data by kill chain phase, then question => set value array of risk values
             phases.forEach((phase) => {
-                riskTree[phase._id] = {};
-
-                // Assessed Objects per phase
-                phase.assessedObjects.forEach((assessedObject) => {
-                    // Questions per assessed object
-                    assessedObject.questions.forEach((question) => {
-                        if (riskTree[phase._id][question.name] === undefined) {
-                            riskTree[phase._id][question.name] = [];
-                        }
-                        riskTree[phase._id][question.name].push(question.risk);
-                    });
-                });
+                riskTree[phase._id] = this.populatePhaseRiskTree(phase);
             });
 
-            // Calcuate average risk per question
+            // Calculate average risk per question
             // TODO delete this
             const questionSet: any = new Set();
             this.riskBreakdown = {};
             for (let phase in riskTree) {
-                this.riskBreakdown[phase] = {};
-                for (let question in riskTree[phase]) {
-                    questionSet.add(question);
-                    /* Average risk for each question-category,
-                     then multiply it by 1 / the number of question-categories.
-                     This will show how much each question contributes to absolute overall risk. */
-                    this.riskBreakdown[phase][question] = (riskTree[phase][question]
-                        .reduce((prev, cur) => prev += cur, 0)
-                        / riskTree[phase][question].length) * (1 / Object.keys(riskTree[phase]).length);
-                }
+                this.riskBreakdown[phase] = this.calculateRiskBreakdownByQuestionForPhase(riskTree[phase], questionSet);
             }
 
-            const riskBreakdownTemp = {};
+            this.riskBreakdownTemp = {};
 
             for (let assessedObject of this.assessment.attributes.assessment_objects) {
-                for (let question of assessedObject.questions) {
-                    questionSet.add(question.name);
-                    if (riskBreakdownTemp[question.name] === undefined) {
-                        riskBreakdownTemp[question.name] = [];
-                    }
-
-                    riskBreakdownTemp[question.name].push(question.risk);
-                }
+                this.populateRiskBreakdownByQuestionForAssessedQuestions(assessedObject, questionSet);
             }
 
             let totalRisk = 0;
             const riskBreakdownAvg = {};
 
-            for (let question in riskBreakdownTemp) {
-                riskBreakdownAvg[question] = (riskBreakdownTemp[question]
-                    .reduce((prev, cur) => prev += cur, 0)
-                    / riskBreakdownTemp[question].length) * (1 / questionSet.size);
+            for (let question in this.riskBreakdownTemp) {
+                riskBreakdownAvg[question] = this.calculateAverageRiskBreakdownForQuestion(this.riskBreakdownTemp[question], questionSet.size);
                 totalRisk += riskBreakdownAvg[question];
             }
-
             this.doughnutChartData[0].data = [totalRisk, 1 - totalRisk];
 
             // Setup riskBreakdownChart & calculate average risk per question regardless of phase
