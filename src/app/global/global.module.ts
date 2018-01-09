@@ -13,6 +13,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatToolbarModule } from '@angular/material';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -51,6 +52,7 @@ const matModules = [
     MatTooltipModule,
     MatTableModule,
     MatProgressSpinnerModule,
+    MatToolbarModule
 ];
 
 const unfetterComponents = [

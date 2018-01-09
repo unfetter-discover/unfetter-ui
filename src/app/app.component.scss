@@ -1,41 +1,57 @@
 @import '../styles/_variables.scss';
 
 .footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: auto;
-    background-color: $nav-background-color;
-    z-index: 1;
-    padding-top: 5px;
-    >.container {
-        padding-right: 15px;
-        padding-left: 15px;
-    }
-    a {
-        color: #2faee1;
-    }
-    p {
-        color: rgba(255, 255, 255, 0.85);
-    }
-}
-#topBanner {
-    position: fixed;
-}
-.banner {
-    background-color: #777;
-    text-align: center;
-    width: 100%;
-    z-index: 1031;
-    font-size: 12px;
-}
-.banner-text {
-    color: #effa1a;
-}
-#footerMain {
-    padding-left: 15px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+  background-color: $nav-background-color;
+  z-index: 1;
+  padding-top: 5px;
+  >.container {
     padding-right: 15px;
-    p {
-        margin-bottom: 5px;
-    }
+    padding-left: 15px;
+  }
+  a {
+    color: #2faee1;
+  }
+  p {
+    color: rgba(255, 255, 255, 0.85);
+  }
+}
+
+#topBanner {
+  position: fixed;
+}
+
+.banner {
+  background-color: #777;
+  text-align: center;
+  width: 100%;
+  z-index: 1031;
+  font-size: 12px;
+}
+
+.banner-text {
+  color: #effa1a;
+}
+
+#footerMain {
+  padding-left: 15px;
+  padding-right: 15px;
+  p {
+    margin-bottom: 5px;
+  }
+}
+
+// Compensate header/footer padding
+#routerWrapper {
+  padding-top: $navbar-height + px;
+  padding-bottom: $footer-height + px;
+}
+
+@media screen and (max-width: 600px) {
+  #routerWrapper {
+    padding-top: 56px;
+  }
 }

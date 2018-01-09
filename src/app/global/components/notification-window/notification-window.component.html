@@ -1,9 +1,11 @@
-<div>
+<span id="notificationWindowComponent">
 
-  <a id="notificationBellWrapper" (click)="showNotificationBar = !showNotificationBar">
-    <i class="material-icons">notifications_none</i>
+  <span id="notificationBellWrapper">
+    <button mat-icon-button (click)="showNotificationBar = !showNotificationBar">
+      <mat-icon class="mat-24">notifications_none</mat-icon>
+    </button>
     <span class="badge bg-accent" id="notificationBadge" *ngIf="getNumUnreadNotifications((notifications$ | async).notifications)">{{ getNumUnreadNotifications((notifications$ | async).notifications) }}</span>
-  </a>
+  </span>
 
   <div id="notificationBoxWrapper" *ngIf="showNotificationBar" class="mat-elevation-z8" @topRightSlide>
     <div *ngIf="(notifications$ | async).notifications.length">
@@ -33,7 +35,7 @@
               </span>{{ notification.heading }}
             </p>
             <p class="notificationBody flexNowrap">{{ notification.body }}</p>
-            <p>
+            <p class="notificationFooter">
               <small class="text-muted">{{ notification.submitted | timeAgo }}</small>
             </p>
           </span>
@@ -73,4 +75,4 @@
 
   </div>
 
-</div>
+</span>

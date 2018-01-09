@@ -13,12 +13,6 @@ label {
     color: #9e9e9e;
 }
 
-// Compensate header/footer padding
-#routerWrapper {
-    padding-top: $navbar-height + px;
-    padding-bottom: $footer-height + px;
-}
-
 .height-100-percent {
     height: 100%;
 }

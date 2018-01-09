@@ -22,3 +22,16 @@
 .navbar {
     min-height: 64px;
 }
+
+#navComponent {
+    position: fixed;
+    z-index: 800;
+}
+
+.navButton {
+    margin-right: 10px;
+}
+
+#notificationContainer {
+    position: relative;
+}
