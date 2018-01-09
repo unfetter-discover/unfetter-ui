@@ -111,7 +111,7 @@ export class ModifyIntrusionsComponent implements OnInit, OnDestroy {
     const formData = this.form.value;
     this.resetForm();
     const data = {
-      boundries: {
+      boundaries: {
         intrusions: new Set(formData)
       },
     } as Partial<ThreatReport>;

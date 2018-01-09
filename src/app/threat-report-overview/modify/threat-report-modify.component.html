@@ -4,26 +4,26 @@
             {{ threatReport.name || 'Threat Report Unamed' }}
         </div>
         <div class="col-xs-5 col-md-5">
-            <h4 *ngIf="threatReport.boundries.intrusions.size > 0 || threatReport.boundries.malware.size > 0 || threatReport.boundries.targets.size > 0">
-                Boundries
+            <h4 *ngIf="threatReport.boundaries.intrusions.size > 0 || threatReport.boundaries.malware.size > 0 || threatReport.boundaries.targets.size > 0">
+                boundaries
             </h4>
             <div class="flex" *ngIf="threatReport">
-                <mat-chip-list *ngIf="threatReport.boundries.intrusions.size > 0" class="mat-chip-list-stacked margin-chips" selectable="true">
-                    <mat-chip *ngFor="let intrusion of threatReport.boundries.intrusions">
+                <mat-chip-list *ngIf="threatReport.boundaries.intrusions.size > 0" class="mat-chip-list-stacked margin-chips" selectable="true">
+                    <mat-chip *ngFor="let intrusion of threatReport.boundaries.intrusions">
                         <div class="flex">
                             <span class="flex1 flexNowrap">{{ intrusion.displayValue }}</span>
                         </div>
                     </mat-chip>
                 </mat-chip-list>
-                <mat-chip-list *ngIf="threatReport.boundries.targets.size > 0" class="mat-chip-list-stacked margin-chips" selectable="true">
-                    <mat-chip *ngFor="let target of threatReport.boundries.targets">
+                <mat-chip-list *ngIf="threatReport.boundaries.targets.size > 0" class="mat-chip-list-stacked margin-chips" selectable="true">
+                    <mat-chip *ngFor="let target of threatReport.boundaries.targets">
                         <div class="flex">
                             <span class="flex1 flexNowrap">{{ target }}</span>
                         </div>
                     </mat-chip>
                 </mat-chip-list>
-                <mat-chip-list *ngIf="threatReport.boundries.malware.size > 0" class="mat-chip-list-stacked margin-chips" selectable="true">
-                    <mat-chip *ngFor="let malware of threatReport.boundries.malware">
+                <mat-chip-list *ngIf="threatReport.boundaries.malware.size > 0" class="mat-chip-list-stacked margin-chips" selectable="true">
+                    <mat-chip *ngFor="let malware of threatReport.boundaries.malware">
                         <div class="flex">
                             <span class="flex1 flexNowrap">{{ malware.displayValue }}</span>
                         </div>
@@ -34,7 +34,7 @@
         <div class="col-xs-2 col-md-2 flex middle">
             <button mat-button mat-raised-button routerLink="/{{threatDashboard}}/create">
                 <mat-icon class="mat-24">keyboard_backspace</mat-icon>
-                EDIT BOUNDRIES
+                EDIT BOUNDARIES
             </button>
         </div>
     </div>
@@ -49,20 +49,20 @@
                 <mat-icon matSuffix color="primary">search</mat-icon>
             </mat-form-field>
         </div>
-        <div class="col-xs-2 col-md-2" *ngIf="threatReport?.boundries?.startDate">
+        <div class="col-xs-2 col-md-2" *ngIf="threatReport?.boundaries?.startDate">
             <h4>
                 Start Date
             </h4>
-            <span *ngIf="threatReport?.boundries?.startDate; else nonDefined">
-                {{ threatReport?.boundries?.startDate | date:'medium' }}
+            <span *ngIf="threatReport?.boundaries?.startDate; else nonDefined">
+                {{ threatReport?.boundaries?.startDate | date:'medium' }}
             </span>
         </div>
-        <div class="col-xs-2 col-md-2" *ngIf="threatReport?.boundries?.endDate">
+        <div class="col-xs-2 col-md-2" *ngIf="threatReport?.boundaries?.endDate">
             <h4>
                 End Date
             </h4>
-            <span *ngIf="threatReport?.boundries?.endDate; else nonDefined">
-                {{ threatReport?.boundries?.endDate | date:'medium' }}
+            <span *ngIf="threatReport?.boundaries?.endDate; else nonDefined">
+                {{ threatReport?.boundaries?.endDate | date:'medium' }}
             </span>
         </div>
         <div class="col-xs-2 col-md-2 pull-right actions">

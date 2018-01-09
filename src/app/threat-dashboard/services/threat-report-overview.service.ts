@@ -8,7 +8,7 @@ import * as UUID from 'uuid';
 import { Constance } from '../../utils/constance';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { ThreatReport } from '../../threat-report-overview/models/threat-report.model';
-import { Boundries } from '../../threat-report-overview/models/boundries';
+import { Boundaries } from '../../threat-report-overview/models/boundaries';
 import { Report } from '../../models/report';
 import { JsonApiObject } from '../models/adapter/json-api-object';
 import { SortHelper } from '../../global/static/sort-helper';
@@ -152,13 +152,13 @@ export class ThreatReportOverviewService {
           tr.published = published;
           tr.date = date;
           tr.id = id;
-          const srcBoundries = workProduct.boundries;
-          tr.boundries = new Boundries();
-          tr.boundries.startDate = srcBoundries.startDate;
-          tr.boundries.endDate = srcBoundries.endDate;
-          tr.boundries.intrusions = new Set(Array.from(srcBoundries.intrusions));
-          tr.boundries.malware = new Set(Array.from(srcBoundries.malware));
-          tr.boundries.targets = new Set(Array.from(srcBoundries.targets));
+          const srcBoundries = workProduct.boundaries;
+          tr.boundaries = new Boundaries();
+          tr.boundaries.startDate = srcBoundries.startDate;
+          tr.boundaries.endDate = srcBoundries.endDate;
+          tr.boundaries.intrusions = new Set(Array.from(srcBoundries.intrusions));
+          tr.boundaries.malware = new Set(Array.from(srcBoundries.malware));
+          tr.boundaries.targets = new Set(Array.from(srcBoundries.targets));
           tr.reports.push(report);
           return memo;
         }, {} as { [key: string]: ThreatReport })
@@ -285,13 +285,13 @@ export class ThreatReportOverviewService {
   public deepCopyThreatReportForSave(id: string, threatReport: Partial<ThreatReport>): Partial<ThreatReport> {
     const meta = { work_products: [{}] };
     const workProduct: any = meta.work_products[0];
-    workProduct.boundries = new Boundries();
-    workProduct.boundries.startDate = threatReport.boundries.startDate;
-    workProduct.boundries.endDate = threatReport.boundries.endDate;
+    workProduct.boundaries = new Boundaries();
+    workProduct.boundaries.startDate = threatReport.boundaries.startDate;
+    workProduct.boundaries.endDate = threatReport.boundaries.endDate;
     // Set does not serialize well?, so this needs to be an Array
-    workProduct.boundries.intrusions = Array.from(threatReport.boundries.intrusions || []);
-    workProduct.boundries.malware = Array.from(threatReport.boundries.malware || []);
-    workProduct.boundries.targets = Array.from(threatReport.boundries.targets || []);
+    workProduct.boundaries.intrusions = Array.from(threatReport.boundaries.intrusions || []);
+    workProduct.boundaries.malware = Array.from(threatReport.boundaries.malware || []);
+    workProduct.boundaries.targets = Array.from(threatReport.boundaries.targets || []);
     workProduct.name = threatReport.name;
     workProduct.date = threatReport.date;
     workProduct.author = threatReport.author;

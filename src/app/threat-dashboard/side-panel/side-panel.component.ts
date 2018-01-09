@@ -246,7 +246,7 @@ export class SidePanelComponent implements OnInit, OnDestroy {
 
         // add new report
         let tro = new ThreatReport();
-        tro.boundries = this.threatReport.boundries;
+        tro.boundaries = this.threatReport.boundaries;
         tro.name = this.threatReport.name;
         tro.date = this.threatReport.date;
         tro.author = this.threatReport.author;
@@ -254,13 +254,13 @@ export class SidePanelComponent implements OnInit, OnDestroy {
         tro.published = this.threatReport.published;
         tro.reports = this.threatReport.reports || [];
         const threatReport = result as Partial<ThreatReport>;
-        if (threatReport && !isBool && threatReport.boundries) {
-            // this is a boundries update,
-            //  copy over boundries to save to db
-            const boundries = threatReport.boundries;
-            Object.keys(boundries)
-                .filter((key) => boundries[key] !== undefined)
-                .forEach((key) => tro.boundries[key] = boundries[key]);
+        if (threatReport && !isBool && threatReport.boundaries) {
+            // this is a boundaries update,
+            //  copy over boundaries to save to db
+            const boundaries = threatReport.boundaries;
+            Object.keys(boundaries)
+                .filter((key) => boundaries[key] !== undefined)
+                .forEach((key) => tro.boundaries[key] = boundaries[key]);
         } else if (result) {
             // TODO: more efficiently, save this report and update the page
             // this is an update single report operation

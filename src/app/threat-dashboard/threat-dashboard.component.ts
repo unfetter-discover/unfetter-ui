@@ -101,7 +101,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     const logErr = (err) => console.log('request err', err);
     const noop = () => { };
     // get intrusion sets, used
-    const intrusionIds = Array.from(this.threatReport.boundries.intrusions).map((el: SelectOption) => el.value);
+    const intrusionIds = Array.from(this.threatReport.boundaries.intrusions).map((el: SelectOption) => el.value);
     if (!intrusionIds || intrusionIds.length === 0) {
       this.renderVisualizations();
       this.notifyDoneLoading();
@@ -124,7 +124,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    */
   public renderVisualizations(): void {
     // get intrusion sets, used
-    const intrusionIds = Array.from(this.threatReport.boundries.intrusions).map((el: SelectOption) => el.value);
+    const intrusionIds = Array.from(this.threatReport.boundaries.intrusions).map((el: SelectOption) => el.value);
     if (!intrusionIds || intrusionIds.length === 0) {
       // build the table and short circuit the rest of the visualizations
       this.buildKillChainTable();
@@ -150,7 +150,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description the boundries have been modified, refresh this component
+   * @description the boundaries have been modified, refresh this component
    * @param event
    */
   public onBoundriesModified(event: ThreatReport): void {

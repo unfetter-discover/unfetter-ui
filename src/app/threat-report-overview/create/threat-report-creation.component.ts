@@ -12,7 +12,7 @@ import { SelectOption } from '../models/select-option';
 import { UploadService } from '../file-upload/upload.service';
 import { ThreatReport } from '../models/threat-report.model';
 import { ThreatReportSharedService } from '../services/threat-report-shared.service';
-import { Boundries } from '../models/boundries';
+import { Boundaries } from '../models/boundaries';
 import { SortHelper } from '../../global/static/sort-helper';
 import { ModifyReportDialogComponent } from '../modify-report-dialog/modify-report-dialog.component';
 import { Report } from '../../models/report';
@@ -24,7 +24,7 @@ import { Report } from '../../models/report';
 })
 export class ThreatReportCreationComponent implements OnInit, OnDestroy {
 
-  public shouldIncludeBoundries = false;
+  public shouldIncludeBoundaries = false;
   public intrusions: SelectOption[];
   public malware: SelectOption[];
   public maxStartDate;
@@ -54,7 +54,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     if (this.sharedService.threatReportOverview) {
       // Deep Clone
       this.clone();
-      this.shouldIncludeBoundries = !this.threatReport.boundries.isEmpty();
+      this.shouldIncludeBoundaries = !this.threatReport.boundaries.isEmpty();
     }
     const intrusionFilter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
     const instrusionUrl = `${Constance.INTRUSION_SET_URL}?${intrusionFilter}`;
@@ -100,15 +100,15 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
       this.minEndDate = null;
       this.dateError.startDate.isError = false;
       this.dateError.endDate.isSameOrBefore = false;
-      this.threatReport.boundries.startDate = null;
+      this.threatReport.boundaries.startDate = null;
     } else if (moment(value, this.dateFormat).isValid()) {
-      this.threatReport.boundries.startDate = moment(value, this.dateFormat).toDate();
+      this.threatReport.boundaries.startDate = moment(value, this.dateFormat).toDate();
       this.dateError.startDate.isError = false;
       const date = moment(value, this.dateFormat).add(1, 'd');
       this.minEndDate = new Date(date.year(), date.month(), date.date());
       this.isEndDateSameOrBeforeStartDate(value);
     } else {
-      this.threatReport.boundries.startDate = null;
+      this.threatReport.boundaries.startDate = null;
       this.dateError.startDate.isError = true;
     }
   }
@@ -121,13 +121,13 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     if (!value) {
       this.dateError.endDate.isError = false;
       this.dateError.endDate.isSameOrBefore = false;
-      this.threatReport.boundries.endDate = null;
+      this.threatReport.boundaries.endDate = null;
     } else if (moment(value, this.dateFormat).isValid()) {
       this.dateError.endDate.isError = false;
-      this.threatReport.boundries.endDate = moment(value, this.dateFormat).toDate();
+      this.threatReport.boundaries.endDate = moment(value, this.dateFormat).toDate();
       this.isEndDateSameOrBeforeStartDate(value);
     } else {
-      this.threatReport.boundries.endDate = null;
+      this.threatReport.boundaries.endDate = null;
       this.dateError.endDate.isError = true;
       this.dateError.endDate.isSameOrBefore = false;
 
@@ -135,14 +135,14 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description toggle the boundries checkboxes show hide state
+   * @description toggle the boundaries checkboxes show hide state
    * @param {UIEvent} $event
    * @returns {void}
    */
-  public boundriesToggled($event?: UIEvent): void {
+  public boundariesToggled($event?: UIEvent): void {
     const el = $event as any;
     if (el && el.checked !== undefined) {
-      this.shouldIncludeBoundries = el.checked;
+      this.shouldIncludeBoundaries = el.checked;
     }
   }
 
@@ -159,13 +159,13 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     let chips: Set<any> | undefined;
     switch (stixType) {
       case 'intrusion-set':
-        chips = this.threatReport.boundries.intrusions;
+        chips = this.threatReport.boundaries.intrusions;
         break;
       case 'malware':
-        chips = this.threatReport.boundries.malware;
+        chips = this.threatReport.boundaries.malware;
         break;
       case 'target':
-        chips = this.threatReport.boundries.targets;
+        chips = this.threatReport.boundaries.targets;
         break;
     }
 
@@ -203,13 +203,13 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     let chips;
     switch (stixType) {
       case 'intrusion-set':
-        chips = this.threatReport.boundries.intrusions;
+        chips = this.threatReport.boundaries.intrusions;
         break;
       case 'malware':
-        chips = this.threatReport.boundries.malware;
+        chips = this.threatReport.boundaries.malware;
         break;
       case 'target':
-        chips = this.threatReport.boundries.targets;
+        chips = this.threatReport.boundaries.targets;
         break;
     }
     chips.delete(stixName);
@@ -228,9 +228,9 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    * @param {UIEvent} event optional
    */
   public onContinue(event: UIEvent): void {
-    // if the boundries check box is checked, do not use boundries provided
-    if (this.isFalsey(this.shouldIncludeBoundries)) {
-      this.threatReport.boundries = new Boundries();
+    // if the boundaries check box is checked, do not use boundaries provided
+    if (this.isFalsey(this.shouldIncludeBoundaries)) {
+      this.threatReport.boundaries = new Boundaries();
     }
     this.sharedService.threatReportOverview = this.threatReport;
     this.router.navigate([`/${this.path}/modify`, this.threatReport.id]);
@@ -291,7 +291,7 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
    */
   private isEndDateSameOrBeforeStartDate(value: any): void {
     if (moment(value, this.dateFormat).isValid() &&
-      moment(this.threatReport.boundries.endDate, this.dateFormat).isSameOrBefore(moment(this.threatReport.boundries.startDate, this.dateFormat))) {
+      moment(this.threatReport.boundaries.endDate, this.dateFormat).isSameOrBefore(moment(this.threatReport.boundaries.startDate, this.dateFormat))) {
       this.dateError.endDate.isSameOrBefore = true;
     } else {
       this.dateError.endDate.isSameOrBefore = false;
@@ -307,16 +307,16 @@ export class ThreatReportCreationComponent implements OnInit, OnDestroy {
     const tmp = Object.assign(new ThreatReport(), JSON.parse(JSON.stringify(this.sharedService.threatReportOverview)));
     this.threatReport = tmp;
     // this.csvReports = [];
-    // this is needed to make sure boundries is acutally and object and not an object literal at runtime
-    this.threatReport.boundries = new Boundries();
-    this.threatReport.boundries.intrusions = this.sharedService.threatReportOverview.boundries.intrusions || new Set<{ any }>();
-    this.threatReport.boundries.targets = this.sharedService.threatReportOverview.boundries.targets || new Set<string>();
-    this.threatReport.boundries.malware = this.sharedService.threatReportOverview.boundries.malware || new Set<{ any }>();
-    if (this.sharedService.threatReportOverview.boundries.startDate) {
-      this.threatReport.boundries.startDate = new Date(this.sharedService.threatReportOverview.boundries.startDate);
+    // this is needed to make sure boundaries is acutally and object and not an object literal at runtime
+    this.threatReport.boundaries = new Boundaries();
+    this.threatReport.boundaries.intrusions = this.sharedService.threatReportOverview.boundaries.intrusions || new Set<{ any }>();
+    this.threatReport.boundaries.targets = this.sharedService.threatReportOverview.boundaries.targets || new Set<string>();
+    this.threatReport.boundaries.malware = this.sharedService.threatReportOverview.boundaries.malware || new Set<{ any }>();
+    if (this.sharedService.threatReportOverview.boundaries.startDate) {
+      this.threatReport.boundaries.startDate = new Date(this.sharedService.threatReportOverview.boundaries.startDate);
     }
-    if (this.sharedService.threatReportOverview.boundries.endDate) {
-      this.threatReport.boundries.endDate = new Date(this.sharedService.threatReportOverview.boundries.endDate);
+    if (this.sharedService.threatReportOverview.boundaries.endDate) {
+      this.threatReport.boundaries.endDate = new Date(this.sharedService.threatReportOverview.boundaries.endDate);
     }
   }
 }

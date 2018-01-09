@@ -39,7 +39,7 @@ export class ExportComponent implements OnInit, OnDestroy {
   /**
    * @description
    */
-  public stringify(): string {
+  public generateJson(): string {
     return JSON.stringify(this.threatReport, undefined, 2);
   }
 
