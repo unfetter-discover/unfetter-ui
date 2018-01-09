@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed} from '@angular/core/testing';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { MatTooltipModule, MatProgressSpinnerModule } from '@angular/material';
+import { MatTooltipModule, MatProgressSpinnerModule, MatCardModule } from '@angular/material';
 import { ChartsModule } from 'ng2-charts';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
@@ -23,7 +23,8 @@ describe('AssessmentsDashboardComponent', () => {
   
   const materialModules = [
     MatTooltipModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatCardModule
   ];
 
   const mockService = {
