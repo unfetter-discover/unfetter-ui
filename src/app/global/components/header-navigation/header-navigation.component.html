@@ -22,15 +22,15 @@
       <mat-icon class="mat-24">apps</mat-icon>
     </button>
     <div id="appMenuTriangle" *ngIf="showAppMenu" @fadeInOut>&nbsp;</div>
-    <div *ngIf="showAppMenu" id="appMenuWindow" class="mat-elevation-z3" @fadeInOut>
-      <ul id="appList">
-        <li *ngFor="let appItem of appList" class="appLinkLi">
+    <div *ngIf="showAppMenu" id="appMenuWindow" class="mat-elevation-z4" @fadeInOut>
+      <div id="appList" class="flex">
+        <span *ngFor="let appItem of appList" class="appLinkWrapper">
           <a routerLink="./{{ appItem.url }}" class="appLink">
             <img src="{{ appItem.icon }}" class="appItemImg">
             <div class="appItemText">{{ appItem.title }}</div>
           </a>
-        </li>
-      </ul>      
+        </span>
+      </div>      
     </div>
   </span>
 

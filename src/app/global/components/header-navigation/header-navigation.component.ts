@@ -39,18 +39,30 @@ export class HeaderNavigationComponent {
     {
       url: 'threat-dashboard',
       title: 'Threat Dashboard',
-      icon: Constance.LOGO_IMG_THREAT_DASHBOARD,
+      icon: Constance.LOGO_IMG_THREAT_DASHBOARD
     },
     {
       url: 'indicator-sharing/list',
       title: 'Analytic Hub',
-      icon: Constance.LOGO_IMG_ANALYTIC_HUB,
+      icon: Constance.LOGO_IMG_ANALYTIC_HUB
     },
     {
       url: 'assessments',
       title: 'Assessments',
-      icon: Constance.LOGO_IMG_ASSESSMENTS,
-    },    
+      icon: Constance.LOGO_IMG_ASSESSMENTS
+    },
+    {
+      url: 'intrusion-set-dashboard',
+      title: 'Intrusion Set Dashboard',
+      // Placeholder icon
+      icon: Constance.LOGO_IMG_THREAT_DASHBOARD
+    },
+    {
+      url: 'partners',
+      title: 'Partners',
+      // Placeholder icon
+      icon: Constance.LOGO_IMG_THREAT_DASHBOARD
+    },
   ];
 
   public readonly runMode = environment.runMode;
@@ -63,7 +75,8 @@ export class HeaderNavigationComponent {
 
   constructor(
     public authService: AuthService,
-    private store: Store<fromApp.AppState>
+    private store: Store<fromApp.AppState>,
+    private el: ElementRef
   ) {
     this.user$ = this.store.select('users');
     if (this.runMode && this.runMode === 'DEMO') {
@@ -71,6 +84,12 @@ export class HeaderNavigationComponent {
     }
     if (this.showBanner && this.showBanner === true) {
       this.topPx = '17px';
+    }
+  }
+
+  @HostListener('document:click', ['$event']) public clickedOutside(event) {
+    if (this.showAppMenu && !this.el.nativeElement.querySelector('#appMenuWrapper').contains(event.target)) {
+      this.showAppMenu = false;
     }
   }
 

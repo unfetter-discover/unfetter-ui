@@ -86,15 +86,15 @@
 }
 
 #appList {
-    list-style: none;
     padding: 0;
+    flex-wrap: wrap;
 }
 
-.appLinkLi {
-    width: 88px;
+.appLinkWrapper {
+    flex-basis: 33.3333%;
     padding: 1px;
     text-align: center;
-    display: inline-block;
+    display: inline-flex;    
 }
 
 .appLink {
@@ -105,9 +105,8 @@
     text-decoration: none !important;
     display: inline-block;
     width: 84px;
-    height: 84px;
+    height: 87px;
     border: 1px solid transparent;
-    // font-weight: 300;
     line-height: 13px;
     white-space: normal;
     &:hover {
@@ -118,10 +117,11 @@
 .appItemImg {
     height: 50px;
     display: block;
-    margin: 3px auto 0;
+    margin: 4px auto 0;
 }
 
 .appItemText {
+    margin-top: 3px;
     width: 84px;
     height: 26px;
 }
