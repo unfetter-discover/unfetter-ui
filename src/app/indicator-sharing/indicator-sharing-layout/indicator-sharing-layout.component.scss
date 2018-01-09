@@ -1,7 +1,8 @@
 @import '../../../styles/_variables.scss';
 
 #titleWrapper {
-    background: linear-gradient(60deg, $primary-color, $primary-color-light);
+    // background: linear-gradient(60deg, $primary-color, $primary-color-light);
+    background-color: $analytic-hub-primary-light;
     height: 150px;
     padding-top: 10px;
 

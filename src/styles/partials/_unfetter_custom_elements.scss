@@ -35,6 +35,14 @@
   border-left: 8px solid $warn-color;
 }
 
+.analyticHubTheme {
+  .uf-well {
+    background-color: rgba-to-rgb(rgba($analytic-hub-primary, 0.05));
+    border-left: 8px solid $analytic-hub-primary;
+  }
+}
+
+
 .uf-highlight {
   color: $primary-text-contrast-color;
   background-color: $primary-color;

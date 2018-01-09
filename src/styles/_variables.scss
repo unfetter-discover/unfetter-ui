@@ -2,13 +2,15 @@
 
 // ~~~ Global Theming Colors ~~~
 
+$dark-text-default: rgba(0, 0, 0, 0.87);
+
 $app-background-color: #fafafa;
 $nav-background-color: #17375e;
 $primary-color: get-color($light-blue, 800);
 $primary-text-contrast-color: #ffffff;
 $primary-color-light: get-color($light-blue);
 $accent-color: get-color($amber, 'A400');
-$accent-text-contrast-color: rgba(0,0,0,0.87);
+$accent-text-contrast-color: $dark-text-default;
 $accent-alt-color: get-color($green, 300);
 $warn-color: get-color($deep-orange);
 $neutral-color: get-color($blue-grey);
@@ -17,10 +19,8 @@ $black_87: rgba(0, 0, 0, 0.87);
 $black_54 : rgba(1,1,1, .54);
 $white_87: rgba(255, 255, 255, .87);
 $white_54 : rgba(255, 255, 255, .54);
-// ~~~ Dashboard Specific Theming Template ~~~
 
-// $dashboard-name-primary: get-color($purple, 300);
-// $dashboard-name-accent: get-color($pink, 700);
+// ~~~ Dashboard Specific Theming Template ~~~
 
 // Threat Dashboard
 $threat-dashboard-primary: get-color($teal, 700);
@@ -29,6 +29,12 @@ $threat-dashboard-primary-lighter: get-color($teal, 200);
 $threat-dashboard-primary-lightest: get-color($teal, 50);
 $threat-dashboard-accent: get-color($red, 500);
 $threat-dashboard-primary-text: rgba(255, 255, 255, .87);
+
+// Analytic Hub
+$analytic-hub-primary: get-color($cyan, 600);
+$analytic-hub-primary-light: get-color($cyan, 300);
+$analytic-hub-accent: get-color($orange, A200);
+$analytic-hub-primary-text: $dark-text-default;
 
 // ~~~ Navbar sizing ~~~
 

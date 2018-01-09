@@ -10,6 +10,8 @@ import * as configActions from './root-store/config/config.actions';
 import * as notificationsActions from './root-store/notification/notification.actions';
 import { WSMessageTypes } from './global/enums/ws-message-types.enum';
 import { environment } from '../environments/environment';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { Themes } from './global/enums/themes.enum';
 
 @Component({
   selector: 'app',
@@ -23,11 +25,16 @@ export class AppComponent implements OnInit {
   public readonly showBanner = environment.showBanner || false;
   public readonly securityMarkingLabel = environment.bannerText || '';
   public readonly runMode = environment.runMode;
+  public theme: Themes = Themes.DEFAULT;
+  public title;
 
   constructor(
     public authService: AuthService,
     private webAnalyticsService: WebAnalyticsService,
-    private store: Store<fromApp.AppState>
+    private store: Store<fromApp.AppState>,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+
   ) {}
 
   public ngOnInit() {
@@ -46,6 +53,35 @@ export class AppComponent implements OnInit {
       this.store.dispatch(new userActions.LoginUser({ userData: user, token }));
       this.store.dispatch(new configActions.FetchConfig());
       this.store.dispatch(new notificationsActions.FetchNotificationStore());
+    }
+
+    this.router.events
+      .filter((event) => event instanceof NavigationEnd)
+      .map(() => this.activatedRoute)
+      .subscribe((event: ActivatedRoute) => {
+        const url = ((event as any)._routerState.snapshot.url.split('/'))[1];
+        this.setTheme(url);
+        if (url === 'indicator-sharing') {
+          this.title = 'Analytic Hub';
+        } else {
+          this.title = url;
+        }
+      });
+  }
+
+  private setTheme(url: string) {
+    switch (url) {
+      case 'indicator-sharing':
+        this.theme = Themes.ANALYTIC_HUB;
+        break;
+      case 'threat-dashboard':
+        this.theme = Themes.THREAT_DASHBOARD;
+        break;
+      case 'assessments':
+        this.theme = Themes.ASSESSMENTS;
+        break;
+      default:
+        this.theme = Themes.DEFAULT;
     }
   }
 }

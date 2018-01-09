@@ -3,11 +3,11 @@
     <img src="assets/icon/brand-logo.png">
   </a>
   <!-- TODO change this to actual nav-->
-  <span>
+  <span *ngIf="title">
     <span style="width: 23px;" class="inlineBlock">&nbsp;</span>
     <span style="font-size: 24px; font-weight: 300;">|</span>
     <span style="width: 20px;" class="inlineBlock">&nbsp;</span>
-    <span style="font-size: 24px; font-weight: 300;">Analytic Hub</span>
+    <span style="font-size: 24px; font-weight: 300;">{{ title | capitalize }}</span>
   </span>
 
   <!-- Spacer between left and right -->
