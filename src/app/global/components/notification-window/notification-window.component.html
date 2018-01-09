@@ -7,7 +7,8 @@
     <span class="badge bg-accent" id="notificationBadge" *ngIf="getNumUnreadNotifications((notifications$ | async).notifications)">{{ getNumUnreadNotifications((notifications$ | async).notifications) }}</span>
   </span>
 
-  <div id="notificationBoxWrapper" *ngIf="showNotificationBar" class="mat-elevation-z8" @topRightSlide>
+  <div id="notificationBoxTriangle" *ngIf="showNotificationBar" @fadeInOut>&nbsp;</div>
+  <div id="notificationBoxWrapper" *ngIf="showNotificationBar" class="mat-elevation-z8" @fadeInOut>
     <div *ngIf="(notifications$ | async).notifications.length">
       <div class="notificationHeader">
         <div class="flex flexItemsCenter">

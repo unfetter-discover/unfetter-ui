@@ -47,8 +47,9 @@ $notification-row-height: 106;
 
 #notificationBoxWrapper {
     position: absolute;
-    top: $navbar-height - 12px;
-    right: 0;
+    // top: $navbar-height - 12px;
+    top: 46px;
+    right: -40px;
     display: block;
     width: 500px;
     background: $app-background-color;
@@ -56,11 +57,11 @@ $notification-row-height: 106;
     z-index: -1;
 }
 
-@media screen and (max-width: 600px) {
-    #notificationBoxWrapper {
-        top: $navbar-mobile-height - 8px;
-    }
-}
+// @media screen and (max-width: 600px) {
+//     #notificationBoxWrapper {
+//         top: $navbar-mobile-height - 8px;
+//     }
+// }
 
 .notificationBody {
     width: 430px;
@@ -73,6 +74,19 @@ $notification-row-height: 106;
     .text-muted {
         color: rgba(0, 0, 0, 0.57) !important;
     }
+}
+
+#notificationBoxTriangle {
+    border-color: transparent;
+    border-style: dashed dashed solid;
+    border-width: 0 8.5px 8.5px;
+    position: absolute;
+    left: 11px;
+    z-index: 1;
+    height: 0;
+    width: 0;
+    border-bottom-color: #eee;
+    top: 37px;
 }
 
 #notificiationRowWrapper {

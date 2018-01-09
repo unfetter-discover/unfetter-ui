@@ -30,6 +30,18 @@
             <div class="appItemText">{{ appItem.title }}</div>
           </a>
         </span>
+        <span class="appLinkWrapper" *ngIf="authService.isOrgLeader()">
+          <a routerLink="./organizations" class="appLink">
+            <img src="{{ orgLeaderIcon }}" class="appItemImg">
+            <div class="appItemText">Organizations</div>
+          </a>
+        </span>
+        <span class="appLinkWrapper" *ngIf="authService.isAdmin()">
+          <a routerLink="./admin" class="appLink">
+            <img src="{{ adminIcon }}" class="appItemImg">
+            <div class="appItemText">Admin</div>
+          </a>
+        </span>
       </div>      
     </div>
   </span>

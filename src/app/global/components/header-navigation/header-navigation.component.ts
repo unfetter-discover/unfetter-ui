@@ -72,6 +72,8 @@ export class HeaderNavigationComponent {
   public showAppMenu: boolean = false;
   public topPx = '0px';
   public user$;
+  public orgLeaderIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD;
+  public adminIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD;
 
   constructor(
     public authService: AuthService,

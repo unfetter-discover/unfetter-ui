@@ -8,13 +8,14 @@ import * as notificationActions from '../../../root-store/notification/notificat
 import { topRightSlide } from '../../global/../animations/top-right-slide';
 import { AppNotification } from '../../../root-store/notification/notification.model';
 import { environment } from '../../../../environments/environment';
+import { fadeInOut } from '../../animations/fade-in-out';
 
 @Component({
   selector: 'notification-window',
   templateUrl: './notification-window.component.html',
   styleUrls: ['./notification-window.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [topRightSlide]
+  animations: [topRightSlide, fadeInOut]
 })
 export class NotificationWindowComponent {
 
