@@ -2,21 +2,66 @@
   <a [routerLink]=" ['./'] " routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
     <img src="assets/icon/brand-logo.png">
   </a>
+  <!-- TODO change this to actual nav-->
   <span>
     <span style="width: 23px;" class="inlineBlock">&nbsp;</span>
     <span style="font-size: 24px; font-weight: 300;">|</span>
     <span style="width: 20px;" class="inlineBlock">&nbsp;</span>
     <span style="font-size: 24px; font-weight: 300;">Analytic Hub</span>
   </span>
+
+  <!-- Spacer between left and right -->
   <span class="flex1"></span>
-  <button mat-icon-button class="navButton">
+
+  <a href="/api/auth/github-login/" *ngIf="!demoMode && !authService.loggedIn()">
+    <button mat-raised-button>Sign In</button>
+  </a>
+
+  <button mat-icon-button class="navButton" *ngIf="authService.loggedIn()">
     <mat-icon class="mat-24">apps</mat-icon>
   </button>
   <span *ngIf="authService.loggedIn()" id="notificationContainer" class="navButton">
     <notification-window></notification-window>
   </span>
-  <button mat-icon-button class="navButton">
+  <!-- <button mat-icon-button class="navButton" *ngIf="authService.loggedIn()">
     <mat-icon class="mat-24">account_circle</mat-icon>
-  </button>
+  </button> -->
+  <span dropdown class="dropdown navButton" *ngIf="!demoMode && authService.loggedIn()">
+    <a dropdownToggle class="dropdown-toggle" data-toggle="user" role="button" aria-haspopup="true" aria-expanded="false">
+      <img src="{{ (user$ | async).userProfile.github.avatar_url }}" alt="User" id="avatar" *ngIf="(user$ | async).userProfile !== null && (user$ | async).userProfile.github.avatar_url !== undefined"
+        class="smallAvatar">
+      <span *ngIf="(user$ | async).userProfile.github.avatar_url === undefined">{{(user$ | async).userProfile.userName}}</span>
+      <!-- <span class="caret"></span> -->
+      <i class="material-icons">arrow_drop_down</i>
+    </a>
+    <ul *dropdownMenu class="dropdown-menu">
+      <li class="dropdown-header" *ngIf="(user$ | async).userProfile !== null">
+        Signed in as
+        <strong>{{ (user$ | async).userProfile.userName }}</strong>
+      </li>
+      <li role="separator" class="divider"></li>
+      <li>
+        <a routerLink="/users/settings" class="flexImportant flexItemsCenter">
+          <i class="material-icons">settings</i>
+          <span>&nbsp;&nbsp;Settings</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/users/profile/{{(user$ | async).userProfile._id}}" class="flexImportant flexItemsCenter">
+          <i class="material-icons">person_outline</i>
+          <span>&nbsp;&nbsp;Profile</span>
+        </a>
+      </li>
+      <li role="separator" class="divider"></li>
+      <li>
+        <a (click)="authService.logOut(); logoutStore()" class="flexImportant flexItemsCenter">
+          <i class="material-icons">exit_to_app</i>
+          <span>&nbsp;&nbsp;Sign Out</span>
+        </a>
+      </li>
+    </ul>
+  </span>
+
+  
 </mat-toolbar>
 

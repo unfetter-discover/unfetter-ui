@@ -35,3 +35,16 @@
 #notificationContainer {
     position: relative;
 }
+
+.dropdown-toggle {
+    color: #fff !important;
+    &:focus, &:hover {
+        text-decoration: none;
+    }
+}
+
+.dropdown-menu {
+    right: 0;
+    top: 140%;
+    left: initial;
+}

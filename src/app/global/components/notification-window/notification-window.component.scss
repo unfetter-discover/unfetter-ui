@@ -47,7 +47,7 @@ $notification-row-height: 106;
 
 #notificationBoxWrapper {
     position: absolute;
-    top: $navbar-height - 10px;
+    top: $navbar-height - 12px;
     right: 0;
     display: block;
     width: 500px;
@@ -58,7 +58,7 @@ $notification-row-height: 106;
 
 @media screen and (max-width: 600px) {
     #notificationBoxWrapper {
-        top: $navbar-mobile-height - 10px;
+        top: $navbar-mobile-height - 8px;
     }
 }
 
