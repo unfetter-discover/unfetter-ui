@@ -1,4 +1,4 @@
-export class Boundries {
+export class Boundaries {
     public malware = new Set<any>();
     public intrusions = new Set<any>();
     public targets = new Set<string>();

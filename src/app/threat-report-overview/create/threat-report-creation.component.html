@@ -14,14 +14,14 @@
     <div class="row mt-18">
         <div class="col-xs-12 flex flexItemsCenter">
             <span class="flex flexItemsCenter">
-                <span>Include Boundries&nbsp;</span>
+                <span>Include boundaries&nbsp;</span>
                 <span class="slideWrapper">
-                    <mat-slide-toggle matTooltip="Include/Exclude Boundries" color="primary" (change)="boundriesToggled($event)" [checked]="shouldIncludeBoundries"></mat-slide-toggle>
+                    <mat-slide-toggle matTooltip="Include/Exclude Boundaries" color="primary" (change)="boundariesToggled($event)" [checked]="shouldIncludeBoundaries"></mat-slide-toggle>
                 </span>
             </span>
         </div>
     </div>
-    <div class="row mt-18" id="formWrapper" *ngIf="shouldIncludeBoundries">
+    <div class="row mt-18" id="formWrapper" *ngIf="shouldIncludeBoundaries">
         <div class="col-xs-12">
             <mat-form-field floatPlaceholder="always" >
                 <mat-select placeholder="Intrusion Set" color="primary" (change)="addChip($event.source.selected.value, 'intrusion-set')">
@@ -32,7 +32,7 @@
             </mat-form-field>
             <div class="mt-18 mb-10">
                 <mat-chip-list class="mat-chip-list-stacked" selectable="true">
-                    <mat-chip *ngFor="let selectedIntrusion of threatReport.boundries.intrusions" removable="true" selectable="true">
+                    <mat-chip *ngFor="let selectedIntrusion of threatReport.boundaries.intrusions" removable="true" selectable="true">
                         <div class="flex">
                             <span class="flex1 flexNowrap">{{ selectedIntrusion.displayValue }}</span>
                             <mat-icon matChipRemove (click)="removeChip(selectedIntrusion, 'intrusion-set')">cancel</mat-icon>
@@ -43,7 +43,7 @@
         </div>
         <div class="col-xs-12">
             <mat-form-field floatPlaceholder="always">
-                <input #startDateInput matInput [(ngModel)]="threatReport.boundries.startDate" [max]="maxStartDate" (dateChange)="startDateChanged(startDateInput.value)"
+                <input #startDateInput matInput [(ngModel)]="threatReport.boundaries.startDate" [max]="maxStartDate" (dateChange)="startDateChanged(startDateInput.value)"
                     [(ngModel)]="startDate" [matDatepicker]="startDatePicker" placeholder="Start Date" color="primary" floatPlaceholder="always"
                 />
                 <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
@@ -53,7 +53,7 @@
         </div>
         <div class="col-xs-12">
             <mat-form-field floatPlaceholder="always">
-                <input #endDateInput matInput [(ngModel)]="threatReport.boundries.endDate" [min]="minEndDate" (dateChange)="endDateChanged(endDateInput.value)"
+                <input #endDateInput matInput [(ngModel)]="threatReport.boundaries.endDate" [min]="minEndDate" (dateChange)="endDateChanged(endDateInput.value)"
                     [matDatepicker]="endDatePicker" placeholder="End Date" color="primary" floatPlaceholder="always">
                 <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
                 <mat-datepicker #endDatePicker></mat-datepicker>
@@ -66,7 +66,7 @@
                 <input matInput #targetSelected placeholder="Target" color="primary" floatPlaceholder="always" (keyup.enter)="addChip(targetSelected.value, 'target')">
             </mat-form-field>
             <mat-chip-list class="mat-chip-list-stacked" selectable="true">
-                <mat-chip *ngFor="let target of threatReport.boundries.targets" removable="true">
+                <mat-chip *ngFor="let target of threatReport.boundaries.targets" removable="true">
                     <div class="flex">
                         <span class="flex1 flexNowrap">{{ target }}</span>
                         <mat-icon matChipRemove (click)="removeChip(target, 'target')">cancel</mat-icon>
@@ -84,7 +84,7 @@
             </mat-form-field>
             <div class="mt-18 mb-10">
                 <mat-chip-list class="mat-chip-list-stacked" selectable="true">
-                    <mat-chip *ngFor="let malware of threatReport.boundries.malware" removable="true">
+                    <mat-chip *ngFor="let malware of threatReport.boundaries.malware" removable="true">
                         <div class="flex">
                             <span class="flex1 flexNowrap">{{ malware.displayValue }}</span>
                             <mat-icon matChipRemove (click)="removeChip(malware, 'malware')">cancel</mat-icon>

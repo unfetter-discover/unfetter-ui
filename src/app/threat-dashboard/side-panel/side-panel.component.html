@@ -11,13 +11,13 @@
     <p class="mat-subheader-1">
         {{threatReport.reports.length || 0}} REPORTS(S)
     </p>
-    <div *ngIf="threatReport.boundries.startDate || threatReport.boundries.endDate; else dateUnspecified" class="header-details">
-        <span *ngIf="threatReport.boundries.startDate; else openEnded">
-            {{threatReport.boundries.startDate | date: 'dd/MM/yyyy'}}
+    <div *ngIf="threatReport.boundaries.startDate || threatReport.boundaries.endDate; else dateUnspecified" class="header-details">
+        <span *ngIf="threatReport.boundaries.startDate; else openEnded">
+            {{threatReport.boundaries.startDate | date: 'dd/MM/yyyy'}}
         </span>
         <span> - </span>
-        <span *ngIf="threatReport.boundries.endDate; else openEnded">
-            {{threatReport.boundries.endDate | date: 'dd/MM/yyyy'}}
+        <span *ngIf="threatReport.boundaries.endDate; else openEnded">
+            {{threatReport.boundaries.endDate | date: 'dd/MM/yyyy'}}
         </span>
         <ng-template #openEnded>
             <span>*</span>
@@ -28,7 +28,7 @@
             No Date Specified
         </div>
     </ng-template>
-    <div class="boundries-fab">
+    <div class="boundaries-fab">
         <button mat-fab color="accent" (click)="openAddReportDialog($event)" matTooltip="Modify Threat Report">
             <mat-icon class="mat-24" aria-label="Add associated reports icon">add</mat-icon>
         </button>
@@ -82,7 +82,7 @@
                 </mat-list-item>
             </mat-list>
         </mat-expansion-panel>
-        <mat-expansion-panel [disabled]="threatReport.boundries.targets.size === 0">
+        <mat-expansion-panel [disabled]="threatReport.boundaries.targets.size === 0">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     <svg>
@@ -91,16 +91,16 @@
                     <span>
                         Victims
                     </span>
-                    <span>({{threatReport.boundries.targets.size}})</span>
+                    <span>({{threatReport.boundaries.targets.size}})</span>
                 </mat-panel-title>
             </mat-expansion-panel-header>
             <mat-list dense>
-                <mat-list-item [@slideInOutAnimation] *ngFor="let target of threatReport.boundries.targets; trackBy:trackByFn">
+                <mat-list-item [@slideInOutAnimation] *ngFor="let target of threatReport.boundaries.targets; trackBy:trackByFn">
                     {{target}}
                 </mat-list-item>
             </mat-list>
         </mat-expansion-panel>
-        <mat-expansion-panel [disabled]="threatReport.boundries.intrusions.size === 0">
+        <mat-expansion-panel [disabled]="threatReport.boundaries.intrusions.size === 0">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     <svg>
@@ -109,11 +109,11 @@
                     <span>
                         Intrusion Sets
                     </span>
-                    <span class="">({{threatReport.boundries.intrusions.size}})</span>
+                    <span class="">({{threatReport.boundaries.intrusions.size}})</span>
                 </mat-panel-title>
             </mat-expansion-panel-header>
             <mat-list dense>
-                <mat-list-item [@slideInOutAnimation] class="clickable" *ngFor="let intrusion of threatReport.boundries.intrusions; trackBy:trackByFn"
+                <mat-list-item [@slideInOutAnimation] class="clickable" *ngFor="let intrusion of threatReport.boundaries.intrusions; trackBy:trackByFn"
                     (click)="onNavigateToIntrusion(intrusion.value, $event)" (mouseenter)="listItemMouseEnter($event)" (mouseleave)="listItemMouseLeave($event)">
                     <div mat-line class="">
                         <a href="#/stix/intrusion-sets/{{intrusion.value}}">{{intrusion?.displayValue}}</a>
@@ -121,7 +121,7 @@
                 </mat-list-item>
             </mat-list>
         </mat-expansion-panel>
-        <mat-expansion-panel [disabled]="threatReport.boundries.malware.size === 0">
+        <mat-expansion-panel [disabled]="threatReport.boundaries.malware.size === 0">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     <svg>
@@ -130,11 +130,11 @@
                     <span>
                         Malware
                     </span>
-                    <span class="">({{threatReport.boundries.malware.size}})</span>
+                    <span class="">({{threatReport.boundaries.malware.size}})</span>
                 </mat-panel-title>
             </mat-expansion-panel-header>
             <mat-list dense>
-                <mat-list-item [@slideInOutAnimation] class="clickable" *ngFor="let malware of threatReport.boundries.malware; trackBy:trackByFn"
+                <mat-list-item [@slideInOutAnimation] class="clickable" *ngFor="let malware of threatReport.boundaries.malware; trackBy:trackByFn"
                     (click)="onNavigateToMalware(malware.value, $event)" (mouseenter)="listItemMouseEnter($event)" (mouseleave)="listItemMouseLeave($event)">
                     <div mat-line class="">
                         <a href="#/stix/malwares/{{malware.value}}">{{malware?.displayValue}}</a>

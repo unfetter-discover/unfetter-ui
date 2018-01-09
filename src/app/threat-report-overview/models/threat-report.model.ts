@@ -1,4 +1,4 @@
-import { Boundries } from './boundries';
+import { Boundaries } from './boundaries';
 import { Report } from '../../models/report';
 
 export class ThreatReport {
@@ -8,10 +8,10 @@ export class ThreatReport {
     public author = '';
     public published = false;
 
-    public boundries = new Boundries();
+    public boundaries = new Boundaries();
     public reports: Array<Partial<Report>> = [];
 
     public isEmpty(): boolean {
-        return this.boundries.emptyBoundries() && this.reports.length === 0;
+        return this.boundaries.emptyBoundries() && this.reports.length === 0;
     }
 }
