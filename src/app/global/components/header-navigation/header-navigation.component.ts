@@ -6,16 +6,17 @@ import { AuthService } from '../../../core/services/auth.service';
 import * as fromApp from '../../../root-store/app.reducers';
 import * as notificationActions from '../../../root-store/notification/notification.actions';
 import * as userActions from '../../../root-store/users/user.actions';
-import { topRightSlide } from '../../global/../animations/top-right-slide';
 import { AppNotification } from '../../../root-store/notification/notification.model';
 import { environment } from '../../../../environments/environment';
+import { fadeInOut } from '../../animations/fade-in-out';
+import { Constance } from '../../../utils/constance';
 
 @Component({
   selector: 'header-navigation',
   // encapsulation: ViewEncapsulation.None,
   styleUrls: ['./header-navigation.component.scss'],
   templateUrl: './header-navigation.component.html',
-  animations: [topRightSlide]
+  animations: [fadeInOut]
 })
 export class HeaderNavigationComponent {  
 
@@ -34,10 +35,29 @@ export class HeaderNavigationComponent {
     { url: 'stix/x-unfetter-sensors', label: 'Sensors' }
   ];
 
+  public appList = [
+    {
+      url: 'threat-dashboard',
+      title: 'Threat Dashboard',
+      icon: Constance.LOGO_IMG_THREAT_DASHBOARD,
+    },
+    {
+      url: 'indicator-sharing/list',
+      title: 'Analytic Hub',
+      icon: Constance.LOGO_IMG_ANALYTIC_HUB,
+    },
+    {
+      url: 'assessments',
+      title: 'Assessments',
+      icon: Constance.LOGO_IMG_ASSESSMENTS,
+    },    
+  ];
+
   public readonly runMode = environment.runMode;
   public readonly showBanner = environment.showBanner;
   public collapsed: boolean = true;
   public demoMode: boolean = false;
+  public showAppMenu: boolean = false;
   public topPx = '0px';
   public user$;
 

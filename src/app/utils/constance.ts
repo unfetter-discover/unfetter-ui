@@ -98,6 +98,10 @@ export const Constance = {
   // API_HOST: process.env.HOST ? `https://${process.env.HOST}:${process.env.PORT}/` : '',
   API_HOST: '',
 
+  LOGO_IMG_ANALYTIC_HUB: 'assets/icon/dashboard-logos/icon-Analytic_Hub.png',
+  LOGO_IMG_ASSESSMENTS: 'assets/icon/dashboard-logos/icon-Assessments.png',
+  LOGO_IMG_THREAT_DASHBOARD: 'assets/icon/dashboard-logos/icon-Threat_Dashboard.png',
+
   COLORS: {
     green: '#4CAF50',
     darkGreen: '#2E7D32',

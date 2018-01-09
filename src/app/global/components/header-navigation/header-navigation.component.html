@@ -17,22 +17,33 @@
     <button mat-raised-button>Sign In</button>
   </a>
 
-  <button mat-icon-button class="navButton" *ngIf="authService.loggedIn()">
-    <mat-icon class="mat-24">apps</mat-icon>
-  </button>
+  <span id="appMenuWrapper">
+    <button mat-icon-button class="navButton" *ngIf="authService.loggedIn()" (click)="showAppMenu = !showAppMenu">
+      <mat-icon class="mat-24">apps</mat-icon>
+    </button>
+    <div id="appMenuTriangle" *ngIf="showAppMenu" @fadeInOut>&nbsp;</div>
+    <div *ngIf="showAppMenu" id="appMenuWindow" class="mat-elevation-z3" @fadeInOut>
+      <ul id="appList">
+        <li *ngFor="let appItem of appList" class="appLinkLi">
+          <a routerLink="./{{ appItem.url }}" class="appLink">
+            <img src="{{ appItem.icon }}" class="appItemImg">
+            <div class="appItemText">{{ appItem.title }}</div>
+          </a>
+        </li>
+      </ul>      
+    </div>
+  </span>
+
   <span *ngIf="authService.loggedIn()" id="notificationContainer" class="navButton">
     <notification-window></notification-window>
   </span>
-  <!-- <button mat-icon-button class="navButton" *ngIf="authService.loggedIn()">
-    <mat-icon class="mat-24">account_circle</mat-icon>
-  </button> -->
-  <span dropdown class="dropdown navButton" *ngIf="!demoMode && authService.loggedIn()">
+
+  <span dropdown class="dropdown navButton" id="accountWrapper" *ngIf="!demoMode && authService.loggedIn()">
     <a dropdownToggle class="dropdown-toggle" data-toggle="user" role="button" aria-haspopup="true" aria-expanded="false">
       <img src="{{ (user$ | async).userProfile.github.avatar_url }}" alt="User" id="avatar" *ngIf="(user$ | async).userProfile !== null && (user$ | async).userProfile.github.avatar_url !== undefined"
         class="smallAvatar">
       <span *ngIf="(user$ | async).userProfile.github.avatar_url === undefined">{{(user$ | async).userProfile.userName}}</span>
-      <!-- <span class="caret"></span> -->
-      <i class="material-icons">arrow_drop_down</i>
+      <i class="material-icons" id="accountCaret">arrow_drop_down</i>
     </a>
     <ul *dropdownMenu class="dropdown-menu">
       <li class="dropdown-header" *ngIf="(user$ | async).userProfile !== null">

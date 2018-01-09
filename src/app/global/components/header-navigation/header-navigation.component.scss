@@ -48,3 +48,81 @@
     top: 140%;
     left: initial;
 }
+
+#accountWrapper {
+    margin-left: 6px;
+}
+
+#accountCaret {
+    position: absolute;
+    top: 8px;
+}
+
+#appMenuWrapper {
+    position: relative;
+}
+
+#appMenuTriangle {
+    border-color: transparent;
+    border-style: dashed dashed solid;
+    border-width: 0 8.5px 8.5px;
+    position: absolute;
+    left: 11px;
+    z-index: 1;
+    height: 0;
+    width: 0;
+    border-bottom-color: #fff;
+    top: 37px;
+}
+
+#appMenuWindow {
+    position: absolute;
+    background: #fff;
+    top: 46px;
+    width: 320px;
+    right: -80px;
+    color: rgba(0,0,0,0.87);
+    padding: 25px;
+}
+
+#appList {
+    list-style: none;
+    padding: 0;
+}
+
+.appLinkLi {
+    width: 88px;
+    padding: 1px;
+    text-align: center;
+    display: inline-block;
+}
+
+.appLink {
+    margin: 8px 2px;
+    font-size: 12px;
+    color: #444444;
+    letter-spacing: -0.02px;
+    text-decoration: none !important;
+    display: inline-block;
+    width: 84px;
+    height: 84px;
+    border: 1px solid transparent;
+    // font-weight: 300;
+    line-height: 13px;
+    white-space: normal;
+    &:hover {
+        border: 1px solid rgb(229, 229, 229);
+    }
+}
+
+.appItemImg {
+    height: 50px;
+    display: block;
+    margin: 3px auto 0;
+}
+
+.appItemText {
+    width: 84px;
+    height: 26px;
+}
+
