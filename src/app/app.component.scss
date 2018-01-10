@@ -47,7 +47,7 @@
 // Compensate header/footer padding
 #routerWrapper {
   padding-top: $navbar-height + px;
-  padding-bottom: $footer-height + px;
+  // padding-bottom: $footer-height + px;
 }
 
 @media screen and (max-width: 600px) {
@@ -55,3 +55,13 @@
     padding-top: 56px;
   }
 }
+
+#appComponent {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  #routerWrapper {
+    flex: 1;
+  }
+}
+

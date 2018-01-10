@@ -40,6 +40,8 @@ import { ObservableDataSummaryComponent } from './components/observable-data-sum
 import { HeaderNavigationComponent } from './components/header-navigation/header-navigation.component';
 import { NotificationWindowComponent } from './components/notification-window/notification-window.component';
 import { SpeedDialComponent } from './components/speed-dial/speed-dial.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { LandingPageComponent } from './components/landing-page/landing-page.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -71,7 +73,9 @@ const unfetterComponents = [
     ObservableDataSummaryComponent,
     HeaderNavigationComponent,
     NotificationWindowComponent,
-    SpeedDialComponent
+    SpeedDialComponent,
+    FooterComponent,
+    LandingPageComponent
 ];
 
 @NgModule({
@@ -89,7 +93,7 @@ const unfetterComponents = [
         ...matModules,
     ],
     declarations: [
-        ...unfetterComponents
+        ...unfetterComponents        
     ],
     providers: []
 })

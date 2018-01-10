@@ -8,10 +8,11 @@ import { NoContentComponent } from './no-content';
 import { AuthGuard } from './core/services/auth.guard';
 import { SelectivePreloadingStrategy } from './selective-preloading-strategy';
 import { UserRoles } from './global/enums/user-roles.enum'
+import { LandingPageComponent } from './global/components/landing-page/landing-page.component';
 
 const appRoutes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'home', component: HomeComponent },
+  { path: '', component: LandingPageComponent },
+  { path: 'home', component: LandingPageComponent },
   { path: 'partners', component: PartnersComponent },
   { path: 'intrusion-set-dashboard', loadChildren: 'app/intrusion-set-dashboard/intrusion-set-dashboard.module#IntrusionSetDashboardModule', canActivate: [AuthGuard] },
   { path: 'assessments', loadChildren: 'app/assessments/assessments.module#AssessmentsModule', canActivate: [AuthGuard] },
