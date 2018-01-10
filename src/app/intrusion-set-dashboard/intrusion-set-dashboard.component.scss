@@ -1,3 +1,5 @@
+@import '../../styles/variables';
+
 .intrusion-set-dashboard-side-panel {
     padding-top: 27px;    
     padding-bottom: 30px;
@@ -42,3 +44,13 @@
 #tabGroup {
     transition: opacity 0.3s ease-in-out;
 }
+
+.intrusion-set-dashboard-side-panel {
+  background-color: $primary-color-dark;
+}
+
+.ui-autocomplete {
+  background-color: $primary-color-dark;
+  margin-top: 5px;
+}
+

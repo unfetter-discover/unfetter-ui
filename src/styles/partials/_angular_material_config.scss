@@ -8,7 +8,7 @@
 @include mat-core();
 
 $default-theme-primary: mat-palette($mat-indigo, 700);
-$default-theme-accent: mat-palette($mat-cyan, A200, A100, A400);
+$default-theme-accent: mat-palette($mat-cyan, A400, A200, A700);
 $default-theme-warn: mat-palette($mat-deep-orange);
 $default-theme: mat-light-theme($default-theme-primary, $default-theme-accent, $default-theme-warn);
 @include angular-material-theme($default-theme);

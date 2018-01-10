@@ -44,6 +44,10 @@
     }
 }
 
+.nav-pills>li:not(.active)>a {
+    color: $primary-color !important;
+}
+
 .nav-pills>li.active>a,
 .nav-pills>li.active>a:focus,
 .nav-pills>li.active>a:hover {

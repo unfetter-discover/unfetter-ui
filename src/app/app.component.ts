@@ -55,12 +55,15 @@ export class AppComponent implements OnInit {
       this.store.dispatch(new notificationsActions.FetchNotificationStore());
     }
 
+    const bodyElement: HTMLElement = document.getElementsByTagName('body')[0];
+    console.log('~~~', bodyElement);
+
     this.router.events
       .filter((event) => event instanceof NavigationEnd)
       .map(() => this.activatedRoute)
       .subscribe((event: ActivatedRoute) => {
         const url = ((event as any)._routerState.snapshot.url.split('/'))[1];
-        this.setTheme(url);
+        this.setTheme(url, bodyElement);
         if (url === 'indicator-sharing') {
           this.title = 'Analytic Hub';
         } else {
@@ -69,7 +72,7 @@ export class AppComponent implements OnInit {
       });
   }
 
-  private setTheme(url: string) {
+  private setTheme(url: string, bodyElement: HTMLElement) {
     switch (url) {
       case 'indicator-sharing':
         this.theme = Themes.ANALYTIC_HUB;
@@ -83,5 +86,6 @@ export class AppComponent implements OnInit {
       default:
         this.theme = Themes.DEFAULT;
     }
+    bodyElement.className = this.theme;
   }
 }
