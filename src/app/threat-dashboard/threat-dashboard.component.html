@@ -1,6 +1,7 @@
 <div [@simpleFadeIn] class="container-fluid" *ngIf="!loading; else loadingBlock">
     <div class="row flex">
-        <div class="side-panel" [@inOutAnimation] *ngIf="minimize !== true; else minimizedBlock" (mouseover)="showMinimizeBtn = true" (mouseleave)="showMinimizeBtn = false">
+        <div class="side-panel" [@inOutAnimation] *ngIf="minimize !== true; else minimizedBlock" (mouseover)="showMinimizeBtn = true"
+            (mouseleave)="showMinimizeBtn = false">
             <div class="minimizeControls" [style.display]="showMinimizeBtn ? 'block': 'none'">
                 <button mat-icon-button (click)="minimize = true" matTooltip="Minimize" matTooltipPosition="right">
                     <mat-icon class="mat-24" aria-hidden="true" aria-label="Minimize side panel" #minimizeBtn>chevron_left</mat-icon>
@@ -23,6 +24,10 @@
                 <mat-tab label="MATRIX">
                     <!-- <attack-pattern-count [threatReport]="threatReport" [attackPatterns]="attackPatterns" [intrusionSetsDashboard]="intrusionSetsDashboard">
                             </attack-pattern-count> -->
+                    <div class="matrix mb-18 mt-18 ml-16 mr-16 mat-elevation-z3 cardHoverShadow">
+                        <unf-bar-chart *ngIf="barChartData" [data]="barChartData" (renderComplete)="barChartRendered()">
+                        </unf-bar-chart>
+                    </div>
                     <div class="matrix mb-18 mt-18 ml-16 mr-16 mat-elevation-z3 cardHoverShadow">
                         <unf-kill-chain-table [threatReport]="threatReport" [attackPatterns]="attackPatterns" [intrusionSetsDashboard]="intrusionSetsDashboard">
                         </unf-kill-chain-table>

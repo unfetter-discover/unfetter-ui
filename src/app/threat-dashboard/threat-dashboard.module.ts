@@ -34,9 +34,11 @@ import { ExportComponent } from './export/export.component';
 import { RadarChartComponent } from './radar-chart/radar-chart.component';
 import { ModifyReportDialogComponent } from '../threat-report-overview/modify-report-dialog/modify-report-dialog.component';
 import { ReportTranslationService } from './services/report-translation.service';
+import { BarChartComponent } from './bar-chart/bar-chart.component';
 
 const moduleComponents = [
   AttackPatternCountComponent,
+  BarChartComponent,
   CollapsibleTreeComponent,
   ExportComponent,
   KillChainTableComponent,
@@ -72,7 +74,7 @@ const primengModules = [CarouselModule];
 
 @NgModule({
   declarations: [
-    ...moduleComponents
+    ...moduleComponents,
   ],
   imports: [
     GlobalModule,

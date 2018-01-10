@@ -13,7 +13,7 @@
     "analyze:dev": "npm run clean && npm run build:dev -- --stats-json && npm run analyze",
     "analyze:prod": "npm run clean && npm run build:prod -- --stats-json && npm run analyze",
     "ng": "ng",
-    "clean": "rimraf compiled dist coverage out-tsc",
+    "clean": "rimraf compiled dist tsdocs coverage out-tsc",
     "start": "ng version && ng serve --ssl -o",
     "start:dev": "ng version && ng serve --ssl --disable-host-check --host 0.0.0.0 --port 80",
     "serve:local:prod:demo": "ng version && ng serve -v -w --prod --sourcemap --hmr --open --ssl --port 9443 --proxy-config proxy.conf.json",
@@ -30,7 +30,7 @@
     "test": "ng test --single-run",
     "coverage": "ng test --code-coverage --single-run",
     "lint": "ng lint",
-    "doc": "typedoc --out docs src",
+    "doc": "typedoc --out tsdocs --ignoreCompilerErrors src/",
     "checkup": "concurrently -k \"npm run lint\"  \"npm run doc\" \"npm run build:prod\" \"npm run test\" \"npm run coverage\"",
     "e2e": "ng e2e"
   },

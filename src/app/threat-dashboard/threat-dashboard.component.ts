@@ -19,6 +19,7 @@ import { RadarChartDataPoint } from './radar-chart/radar-chart-datapoint';
 import { simpleFadeIn, inOutAnimation } from '../global/animations/animations';
 import { SortHelper } from '../global/static/sort-helper';
 import { RadarChartComponent } from './radar-chart/radar-chart.component';
+import { BarChartItem } from './bar-chart/bar-chart-item';
 
 @Component({
   selector: 'unf-threat-dashboard',
@@ -40,7 +41,11 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   public groupKillchain: Array<Partial<KillChainEntry>>;
   public treeData: any;
   public radarData: RadarChartDataPoint[][];
+  public barChartData: BarChartItem[];
   public loading = true;
+  public treeLoading = true;
+  public radarLoading = true;
+  public barLoading = true;
   public uniqChainNames: string[] = [];
   public selectedChain = '';
 
@@ -134,8 +139,15 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     // NOTE: order matters!
     this.buildKillChainTable();
     requestAnimationFrame(() => {
+      this.treeLoading = true;
+      this.radarLoading = true;
+      this.barLoading = true;
       this.treeData = this.buildTreeData();
       this.radarData = this.buildRadarData();
+      this.barChartData = this.buildBarChartData();
+      this.treeLoading = false;
+      this.radarLoading = false;
+      this.barLoading = false;
     });
   }
 
@@ -248,7 +260,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
             backgroundColor: attackPattern.backgroundColor,
             isSelected: attackPattern.isSelected
           } as KillChainEntry);
-          
+
         });
       }
     });
@@ -402,15 +414,45 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * @description dummy data
+   * @return {BarChartItem[]}
+   */
+  public buildBarChartData(): BarChartItem[] {
+    const phases = this.intrusionSetsDashboard.killChainPhases;
+    const dataPoints = phases
+      .map((phase) => {
+        const total = phase.attack_patterns.length || 0;
+        const selectedAttackPatterns = phase
+          .attack_patterns
+          .filter((attackPattern) => this.isTruthy(attackPattern.isSelected));
+        const frequency = Math.round((selectedAttackPatterns.length / total) * 100);
+        const dataPoint = new BarChartItem(phase.name, frequency);
+        return dataPoint;
+      });
+
+    return dataPoints;
+  }
+
+  /**
    * @description callback to signal d3 has finished loading the tree
    * @returns {void}
    */
   public treeRendered(): void {
     console.log('finished loading tree');
+    this.treeLoading = false;
   }
 
   public radarRendered(): void {
     console.log('radar rendered');
+    this.radarLoading = false;
+  }
+
+  /**
+   * @description
+   */
+  public barChartRendered(): void {
+    console.log('bar chart rendered');
+    this.barLoading = false;
   }
 
   /**

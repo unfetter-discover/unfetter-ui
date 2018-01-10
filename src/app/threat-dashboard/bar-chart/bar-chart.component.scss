@@ -1,0 +1,26 @@
+@import '../../../styles/_variables.scss';
+
+.header {
+  padding: 16px 16px;
+  height: 64px;
+  @include set-colors($threat-dashboard-primary-text, linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important);
+  margin-bottom: 0px;
+}
+
+#barChart {
+    padding-top: 32px;
+    padding-left: 32px;
+    background-color: #FFFFFF ;
+}
+
+::ng-deep .bar {
+  fill: $threat-dashboard-primary-light;
+
+  &:hover {
+    fill: $threat-dashboard-primary;
+  }
+}
+
+.axis--x path {
+  display: none;
+}
