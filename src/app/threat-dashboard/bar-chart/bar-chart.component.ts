@@ -72,7 +72,7 @@ export class BarChartComponent implements OnInit, OnDestroy, OnChanges {
      * @param options
      */
     public draw(id: string, data: BarChartItem[]): void {
-
+        data = data || [];
         d3.select(id).select('svg').remove();
 
         const margin = { top: 8, right: 20, bottom: 30, left: 40 };

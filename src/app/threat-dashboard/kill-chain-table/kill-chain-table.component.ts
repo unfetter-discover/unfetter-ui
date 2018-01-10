@@ -110,7 +110,6 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
    * @param {UIEvent} event
    */
   public onToggleShowToolbox(event?: UIEvent): void {
-    console.log(this.showToolbox);
     this.showToolbox = !this.showToolbox;
   }
 

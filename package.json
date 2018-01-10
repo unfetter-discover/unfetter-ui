@@ -26,8 +26,8 @@
     "build:prod": "ng version && ng build --prod --env=prod",
     "build:prod:noclean": "npm run build:prod -- --no-delete-output-path --vendor-chunk=true",
     "build:dev": "ng version && ng build",
-    "watch:test": "ng test --watch",
-    "test": "ng test --single-run",
+    "watch:test": "ng test --watch --source=false",
+    "test": "ng test --single-run --source=false",
     "coverage": "ng test --code-coverage --single-run",
     "lint": "ng lint",
     "doc": "typedoc --out tsdocs --ignoreCompilerErrors src/",
@@ -64,7 +64,7 @@
     "zone.js": "^0.8.14"
   },
   "devDependencies": {
-    "@angular/cli": "1.6.1",
+    "@angular/cli": "1.6.3",
     "@angular/compiler-cli": "^5.0.0",
     "@angular/language-service": "^5.0.0",
     "@angularclass/hmr": "^2.1.3",
@@ -76,7 +76,7 @@
     "@types/jquery": "~3.2.17",
     "codelyzer": "^4.0.1",
     "concurrently": "^3.5.1",
-    "jasmine-core": "~2.6.2",
+    "jasmine-core": "~2.5.2",
     "jasmine-spec-reporter": "~4.1.0",
     "karma": "~1.7.0",
     "karma-chrome-launcher": "~2.1.1",
@@ -89,7 +89,7 @@
     "typedoc": "^0.9.0",
     "ts-node": "~3.2.0",
     "tslint": "~5.7.0",
-    "typescript": "~2.4.2",
+    "typescript": "~2.5.2",
     "webpack-bundle-analyzer": "^2.9.1"
   },
   "repository": {
