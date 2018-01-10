@@ -1,0 +1,46 @@
+@import 'variables';
+
+@mixin themePrimaryColors ($properties...) {
+
+    @each $property in $properties {
+        .analyticHubTheme & {
+          #{$property}: $analytic-hub-primary;
+        }
+
+        .threatDashboardTheme & {
+          #{$property}: $threat-dashboard-primary;
+        }
+
+        .assessmentsTheme {
+          #{$property}: $assessments-primary;
+        }
+        #{$property}: $primary-color;
+    }    
+}
+
+@mixin lightenPrimaryColors ($property, $percent) {
+    .analyticHubTheme & {
+        #{$property}: rgba-to-rgb(rgba($analytic-hub-primary, $percent));
+    }
+    .threatDashboardTheme & {
+        #{$property}: rgba-to-rgb(rgba($threat-dashboard-primary, $percent));
+    }
+    .assessmentsTheme {
+        #{$property}: rgba-to-rgb(rgba($assessments-primary, $percent));
+    }
+    #{$property}: rgba-to-rgb(rgba($primary-color, $percent)); 
+}
+
+@mixin themePrimaryColorsWithModifiedValue ($property, $modification) {
+  .analyticHubTheme & {
+    #{$property}: #{$modification} $analytic-hub-primary;
+  }
+  .threatDashboardTheme & {
+    #{$property}: #{$modification} $threat-dashboard-primary;
+  }
+  .assessmentsTheme {
+    #{$property}: #{$modification} $assessments-primary;
+  }
+  #{$property}: #{$modification} $primary-color;
+}
+

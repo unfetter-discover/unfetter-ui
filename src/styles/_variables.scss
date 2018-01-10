@@ -3,15 +3,18 @@
 // ~~~ Global Theming Colors ~~~
 
 $dark-text-default: rgba(0, 0, 0, 0.87);
+$light-text-default: #ffffff;
 
 $app-background-color: #fafafa;
 $nav-background-color: #17375e;
-$primary-color: get-color($light-blue, 800);
-$primary-text-contrast-color: #ffffff;
-$primary-color-light: get-color($light-blue);
-$accent-color: get-color($amber, 'A400');
+$primary-color: get-color($indigo, 700);
+$primary-text-contrast-color: $light-text-default;
+$primary-color-light: get-color($indigo, 400);
+$primary-color-dark: get-color($indigo, 900);
+$accent-color: get-color($cyan, 'A400');
 $accent-text-contrast-color: $dark-text-default;
-$accent-alt-color: get-color($green, 300);
+$accent-alt-color: get-color($teal, 300);
+$accent-alt-color-dark: get-color($teal, 600);
 $warn-color: get-color($deep-orange);
 $neutral-color: get-color($blue-grey);
 
@@ -23,18 +26,24 @@ $white_54 : rgba(255, 255, 255, .54);
 // ~~~ Dashboard Specific Theming Template ~~~
 
 // Threat Dashboard
-$threat-dashboard-primary: get-color($teal, 700);
-$threat-dashboard-primary-light: get-color($teal);
-$threat-dashboard-primary-lighter: get-color($teal, 200);
-$threat-dashboard-primary-lightest: get-color($teal, 50);
-$threat-dashboard-accent: get-color($red, 500);
+$threat-dashboard-primary: get-color($blue, 600);
+$threat-dashboard-primary-light: get-color($blue, 500);
+$threat-dashboard-primary-lighter: get-color($blue, 100);
+$threat-dashboard-primary-lightest: get-color($blue, 50);
+$threat-dashboard-accent: get-color($red, 'A200');
 $threat-dashboard-primary-text: rgba(255, 255, 255, .87);
 
 // Analytic Hub
 $analytic-hub-primary: get-color($cyan, 600);
 $analytic-hub-primary-light: get-color($cyan, 300);
 $analytic-hub-accent: get-color($orange, A200);
-$analytic-hub-primary-text: $dark-text-default;
+$analytic-hub-primary-text: $light-text-default;
+
+// Assessments
+$assessments-primary: get-color($blue-grey, 400);
+$assessments-primary-light: get-color($blue-grey, 200);
+$assessments-accent: get-color($indigo, A400);
+$assessments-primary-text: $dark-text-default;
 
 // ~~~ Navbar sizing ~~~
 

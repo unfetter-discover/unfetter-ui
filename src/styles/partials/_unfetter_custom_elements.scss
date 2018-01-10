@@ -1,5 +1,6 @@
 // For custom unfetter elements not related to a vendor library
 @import 'variables';
+@import '../modules/mixins';
 
 .uf-collapsible-control {
   display: inline-flex;
@@ -14,7 +15,7 @@
     margin: 0;
   }
   i {
-    color: $primary-color;
+    @include themePrimaryColors('color');
   }
 }
 
@@ -25,7 +26,9 @@
 
 .uf-well {
   @include uf-well-base;
-  background-color: rgba-to-rgb(rgba($primary-color, 0.05));
+  // background-color: rgba-to-rgb(rgba($primary-color, 0.05));
+  @include lightenPrimaryColors('background-color', 0.05);
+  @include themePrimaryColorsWithModifiedValue('border-left', '8px solid');
   border-left: 8px solid $primary-color;
 }
 
@@ -35,17 +38,10 @@
   border-left: 8px solid $warn-color;
 }
 
-.analyticHubTheme {
-  .uf-well {
-    background-color: rgba-to-rgb(rgba($analytic-hub-primary, 0.05));
-    border-left: 8px solid $analytic-hub-primary;
-  }
-}
-
-
 .uf-highlight {
+  @include themePrimaryColors('background-color');
   color: $primary-text-contrast-color;
-  background-color: $primary-color;
+  // background-color: $primary-color;
   padding: 1px 4px;
   border-radius: 3px;
 }
