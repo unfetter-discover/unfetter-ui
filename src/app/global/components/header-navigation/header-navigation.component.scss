@@ -51,6 +51,7 @@
 
 #accountWrapper {
     margin-left: 6px;
+    margin-right: 15px;
 }
 
 #accountCaret {
@@ -115,6 +116,23 @@
     }
 }
 
+// Title
+#spacer1 {
+    width: 23px;
+}
+#spacer2 {
+    width: 20px;
+}
+#bar {
+    font-size: 24px;
+    font-weight: 300;
+}
+#titleText {
+    font-size: 21px;
+    font-weight: 300;
+}
+
+
 .appItemImg {
     height: 50px;
     display: block;
@@ -127,3 +145,6 @@
     height: 26px;
 }
 
+.logo {
+    height: 35px;
+}
