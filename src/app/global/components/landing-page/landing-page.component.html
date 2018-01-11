@@ -40,11 +40,20 @@
       </p>
     </div>
   </div> -->
-  <div class="row mb-5">
+  <div class="row">
     <div class="col-xs-12">
       <p class="landingPageText text-center">
         Visit <a href="https://iadgov.github.io/unfetter/" target="_blank">unfetter.io</a> for more information.
       </p>
     </div>
   </div>
+  <div class="row" *ngIf="!authService.loggedIn()">
+    <div class="col-xs-6 col-xs-offset-3">
+      <br>
+      <p class="landingPageText uf-well">
+        To get started, click the <strong>Sign In</strong> button and sign in through GitHub.  If you are new to Unfetter, you will be taken a registration page upon signing in.
+      </p>
+    </div>
+  </div>
+  <br>
 </div>
