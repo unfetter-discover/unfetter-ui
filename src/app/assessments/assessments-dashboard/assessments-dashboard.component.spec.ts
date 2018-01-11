@@ -2,7 +2,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatTooltipModule, MatProgressSpinnerModule, MatCardModule } from '@angular/material';
 import { ChartsModule } from 'ng2-charts';
-import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable'
 
@@ -16,21 +15,6 @@ import { RiskBreakdownComponent } from './risk-breakdown/risk-breakdown.componen
 import { LoadingSpinnerComponent } from '../../global/components/loading-spinner/loading-spinner.component';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { AssessmentsDashboardService } from './assessments-dashboard.service';
-
-
-class MockPhaseRiskTree {
-  public static mockUndefined(): any { return undefined; }
-
-  public static mockEmpty(): any { return []; }
-
-  public static mockQuestionsAndRisks(questionName: ReadonlyArray<string> = ['question_name'], risk: ReadonlyArray<number> = [.11]) {
-    const mock = {};
-    for (let i = 0; i < questionName.length; i++) {
-      mock[questionName[i]] = risk;
-    }
-    return mock;
-  }
-}
 
 class MockPhase {
   public static mockUndefined(): any { return undefined; }
@@ -79,6 +63,20 @@ class MockPhase {
       attackPatternsByKillChain: mockApbkc,
       assessedByAttackPattern: mockAbap
     };
+  }
+}
+
+class MockPhaseRiskTree {
+  public static mockUndefined(): any { return undefined; }
+
+  public static mockEmpty(): any { return []; }
+
+  public static mockQuestionsAndRisks(questionName: ReadonlyArray<string> = ['question_name'], risk: ReadonlyArray<number> = [.11]) {
+    const mock = {};
+    for (let i = 0; i < questionName.length; i++) {
+      mock[questionName[i]] = risk;
+    }
+    return mock;
   }
 }
 
@@ -177,24 +175,33 @@ describe('AssessmentsDashboardComponent', () => {
     let expectedRiskTree: any = {};
     expect(component.populatePhaseRiskTree(MockPhase.mockUndefined)).toEqual(expectedRiskTree);
 
+    // Empty phase
     expectedRiskTree = {};
     expect(component.populatePhaseRiskTree(MockPhase.mockEmpty)).toEqual(expectedRiskTree);
 
+    // Phase with empty questions & risks
     let currentQuestions: ReadonlyArray<string> = [];
     let currentRisks: ReadonlyArray<number> = [];
     expectedRiskTree = {};
     expect(component.populatePhaseRiskTree(MockPhase.mockQuestionsAndRisks(currentQuestions, currentRisks))).toEqual(expectedRiskTree);
 
+    // Phase with no questions object in an assessedObject
+    expectedRiskTree = {};
+    expect(component.populatePhaseRiskTree({ assessedObjects: [{}] })).toEqual(expectedRiskTree);
+
+    // Phase with 1 question, 2 risks
     currentQuestions = [questionName[0]];
     currentRisks = [risk[0], risk[1]];
     expectedRiskTree = { [questionName[0]]: [risk[0], risk[1]] };
     expect(component.populatePhaseRiskTree(MockPhase.mockQuestionsAndRisks(currentQuestions, currentRisks))).toEqual(expectedRiskTree);
 
+    // Phase with 2 questions, 2 risks
     currentQuestions = [questionName[0], questionName[1]];
     currentRisks = [risk[0], risk[1]];
     expectedRiskTree = { [questionName[0]]: [risk[0], risk[1]], [questionName[1]]: [risk[0], risk[1]] };
     expect(component.populatePhaseRiskTree(MockPhase.mockQuestionsAndRisks(currentQuestions, currentRisks))).toEqual(expectedRiskTree);
 
+    // Phase with all questions, all risks
     currentQuestions = questionName;
     currentRisks = risk;
     expectedRiskTree = {};
@@ -228,7 +235,7 @@ describe('AssessmentsDashboardComponent', () => {
     expect(component.calculateRiskBreakdownByQuestionForPhase(MockPhaseRiskTree.mockEmpty(), questionSet))
       .toEqual(emptyRiskBreakdown);
 
-    // 1 question, 1 risk
+    // Phase risk tree with 1 question, 1 risk
     questionSet = new Set<string>();
     let currentQuestions: ReadonlyArray<string> = [questionName[0]];
     let currentRisks: ReadonlyArray<number> = [risk[0]];
@@ -238,7 +245,7 @@ describe('AssessmentsDashboardComponent', () => {
       .toEqual(expectedRiskBreakdown);
     expect(questionSet).toContain(currentQuestions[0]);
 
-    // 1 question, 2 risks
+    // Phase risk tree with 1 question, 2 risks
     questionSet = new Set<string>();
     currentQuestions = [questionName[0]];
     currentRisks = [risk[0], risk[1]];
@@ -248,7 +255,7 @@ describe('AssessmentsDashboardComponent', () => {
       .toEqual(expectedRiskBreakdown);
     expect(questionSet).toContain(currentQuestions[0]);
 
-    // 1 question, full array of risks
+    // Phase risk tree with 1 question, full array of risks
     questionSet = new Set<string>();
     currentQuestions = [questionName[0]];
     currentRisks = risk;
@@ -258,7 +265,7 @@ describe('AssessmentsDashboardComponent', () => {
       .toEqual(expectedRiskBreakdown);
     expect(questionSet).toContain(currentQuestions[0]);
 
-    // 2 questions, 1 risk
+    // Phase risk tree with 2 questions, 1 risk
     questionSet = new Set<string>();
     currentQuestions = [questionName[0], questionName[1]];
     currentRisks = [risk[0]];
@@ -269,7 +276,7 @@ describe('AssessmentsDashboardComponent', () => {
     expect(questionSet).toContain(currentQuestions[0]);
     expect(questionSet).toContain(currentQuestions[1]);
 
-    // 2 questions, 2 risks
+    // Phase risk tree with 2 questions, 2 risks
     questionSet = new Set<string>();
     currentQuestions = [questionName[0], questionName[1]];
     currentRisks = [risk[0], risk[1]];
@@ -280,7 +287,7 @@ describe('AssessmentsDashboardComponent', () => {
     expect(questionSet).toContain(currentQuestions[0]);
     expect(questionSet).toContain(currentQuestions[1]);
 
-    // Full array of questions, full array of risks
+    // Phase risk tree with full array of questions, full array of risks
     questionSet = new Set<string>();
     currentQuestions = questionName;
     currentRisks = risk;
@@ -330,7 +337,7 @@ describe('AssessmentsDashboardComponent', () => {
     expect(component.riskBreakdownTemp).toEqual(expectedRiskBreakdown);
     expect(questionSet).toEqual(new Set<string>());
 
-    // 1 question, 1 risk
+    // AssessmentObject with 1 question, 1 risk
     questionSet = new Set<string>();
     currentQuestions = [questionName[0]];
     currentRisks = [risk[0]];
@@ -341,7 +348,7 @@ describe('AssessmentsDashboardComponent', () => {
     expect(component.riskBreakdownTemp).toEqual(expectedRiskBreakdown);
     expect(questionSet).toContain(currentQuestions[0]);
 
-    // 2 questions, 1 risk
+    // AssessmentObject with 2 questions, 1 risk
     questionSet = new Set<string>();
     currentQuestions = [questionName[0], questionName[1]];
     currentRisks = [risk[0]];
@@ -353,7 +360,7 @@ describe('AssessmentsDashboardComponent', () => {
     expect(questionSet).toContain(currentQuestions[0]);
     expect(questionSet).toContain(currentQuestions[1]);
 
-    // 2 questions, 2 risks
+    // AssessmentObject with 2 questions, 2 risks
     questionSet = new Set<string>();
     currentQuestions = [questionName[0], questionName[1]];
     currentRisks = [risk[0], risk[1]];
@@ -365,7 +372,7 @@ describe('AssessmentsDashboardComponent', () => {
     expect(questionSet).toContain(currentQuestions[0]);
     expect(questionSet).toContain(currentQuestions[1]);
 
-    // Full array of questions, full array of risks
+    // AssessmentObject with full array of questions, full array of risks
     questionSet = new Set<string>();
     currentQuestions = questionName;
     currentRisks = risk;
