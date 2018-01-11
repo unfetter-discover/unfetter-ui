@@ -54,6 +54,12 @@ $default-navbar-height: 50;
 $default-navbar-nav-a-padding: 15;
 $default-navbar-mat-button-padding: 7;
 
+
+// ~~~ Material navbar settings ~~~
+
+$navbar-triangle-offset: 37;
+$navbar-window-offset: 46;
+
 // ~~~ Functions & Mixins ~~~
 
 @function headerFooterOffset() {
