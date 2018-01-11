@@ -1,3 +1,40 @@
-<p>
-  sidepanel works!
-</p>
+<mat-sidenav id="unfetter-side-panel" mode="side" opened="true">
+
+    <div class="side-panel" [@inOutAnimation] *ngIf="!isMinimized(); else minimizedBlock"
+            [style.width] = "getWidth()" (mouseover)="isCollapsible() && !isMinimized()" (mouseleave)="isCollapsible()">
+
+        <div class="minimizeControls" [style.display]="isCollapsible() ? 'block': 'none'">
+            <button mat-icon-button (click)="contract()" matTooltip="Minimize" matTooltipPosition="right">
+                <mat-icon class="mat-24" aria-hidden="true" aria-label="Minimize side panel"
+                    #minimizeBtn>chevron_left</mat-icon>
+            </button>
+        </div>
+
+        <div class="header">
+            <div class="mat-display-2">
+                <span>
+                    {{threatReport.name || 'Threat Report Unamed'}}
+                </span>
+            </div>
+            <div class="sidepanel-fab">
+                <button mat-fab color="accent" (click)="openAddReportDialog($event)" matTooltip="Modify Threat Report">
+                    <mat-icon class="mat-24" aria-label="Add associated reports icon">add</mat-icon>
+                </button>
+            </div>
+        </div>
+
+        <div>
+            <ng-content select="[side-panel-list]"></ng-content>
+        </div>
+
+      </div>
+
+    <ng-template #minimizedBlock>
+        <div [@inOutAnimation] class="small-side-panel" (click)="expand()">
+            <div *ngFor="let route of routes" (matTooltip)="route.tooltip" matTooltipPosition="right">
+                <svg><use class="icon" (xlink:href)="route.href"></use></svg>
+            </div>
+        </div>
+    </ng-template>
+
+</mat-sidenav>

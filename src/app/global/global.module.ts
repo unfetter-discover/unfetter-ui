@@ -13,7 +13,11 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
+<<<<<<< HEAD
 import { MatToolbarModule } from '@angular/material';
+=======
+import { MatSidenavModule } from '@angular/material/sidenav';
+>>>>>>> interim
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -53,7 +57,11 @@ const matModules = [
     MatTooltipModule,
     MatTableModule,
     MatProgressSpinnerModule,
+<<<<<<< HEAD
     MatToolbarModule
+=======
+    MatSidenavModule,
+>>>>>>> interim
 ];
 
 const unfetterComponents = [
@@ -74,7 +82,8 @@ const unfetterComponents = [
     NotificationWindowComponent,
     SpeedDialComponent,
     FooterComponent,
-    LandingPageComponent
+    LandingPageComponent,
+    SidepanelComponent
 ];
 
 @NgModule({
@@ -90,8 +99,7 @@ const unfetterComponents = [
         ...matModules,
     ],
     declarations: [
-        ...unfetterComponents,
-        SidepanelComponent
+        ...unfetterComponents
     ],
     providers: []
 })
