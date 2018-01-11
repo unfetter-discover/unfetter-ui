@@ -18,6 +18,7 @@ stats.json
 # misc
 npm-debug.log
 /bower_components
+src/.DS_Store
 
 # misc
 /.sass-cache
