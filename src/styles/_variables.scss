@@ -12,7 +12,7 @@ $primary-text-contrast-color: $light-text-default;
 $primary-color-light: get-color($indigo, 400);
 $primary-color-dark: get-color($indigo, 900);
 $accent-color: get-color($cyan, 'A400');
-$accent-text-contrast-color: $dark-text-default;
+$accent-text: $dark-text-default;
 $accent-alt-color: get-color($teal, 300);
 $accent-alt-color-dark: get-color($teal, 600);
 $warn-color: get-color($deep-orange);
@@ -31,18 +31,21 @@ $threat-dashboard-primary-light: get-color($blue, 500);
 $threat-dashboard-primary-lighter: get-color($blue, 100);
 $threat-dashboard-primary-lightest: get-color($blue, 50);
 $threat-dashboard-accent: get-color($red, 'A200');
+$threat-dashboard-accent-text: $light-text-default;
 $threat-dashboard-primary-text: rgba(255, 255, 255, .87);
 
 // Analytic Hub
 $analytic-hub-primary: get-color($cyan, 600);
 $analytic-hub-primary-light: get-color($cyan, 300);
 $analytic-hub-accent: get-color($orange, A200);
+$analytic-hub-accent-text: $dark-text-default;
 $analytic-hub-primary-text: $light-text-default;
 
 // Assessments
 $assessments-primary: get-color($blue-grey, 400);
 $assessments-primary-light: get-color($blue-grey, 200);
 $assessments-accent: get-color($indigo, A400);
+$assessments-accent-text: $light-text-default;
 $assessments-primary-text: $dark-text-default;
 
 // ~~~ Navbar sizing ~~~

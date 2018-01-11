@@ -86,6 +86,11 @@ export class AppComponent implements OnInit {
       default:
         this.theme = Themes.DEFAULT;
     }
-    bodyElement.className = this.theme;
+
+    if (url === 'intrusion-set-dashboard') {
+      bodyElement.className = `${this.theme} hideFooter`;
+    } else {
+      bodyElement.className = this.theme;
+    }
   }
 }

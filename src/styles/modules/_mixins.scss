@@ -11,11 +11,44 @@
           #{$property}: $threat-dashboard-primary;
         }
 
-        .assessmentsTheme {
+        .assessmentsTheme & {
           #{$property}: $assessments-primary;
         }
         #{$property}: $primary-color;
     }    
+}
+
+@mixin themeAccentColors ($properties...) {
+
+    @each $property in $properties {
+        .analyticHubTheme & {
+          #{$property}: $analytic-hub-accent;
+        }
+
+        .threatDashboardTheme & {
+          #{$property}: $threat-dashboard-accent;
+        }
+
+        .assessmentsTheme & {
+          #{$property}: $assessments-accent;
+        }
+        #{$property}: $accent-color;
+    }    
+}
+
+@mixin themeAccentText () {
+  .analyticHubTheme & {
+    color: $analytic-hub-accent-text;
+  }
+
+  .threatDashboardTheme & {
+    color: $threat-dashboard-accent-text;
+  }
+
+  .assessmentsTheme & {
+    color: $assessments-accent-text;
+  }
+  color: $accent-text;  
 }
 
 @mixin lightenPrimaryColors ($property, $percent) {
@@ -25,7 +58,7 @@
     .threatDashboardTheme & {
         #{$property}: rgba-to-rgb(rgba($threat-dashboard-primary, $percent));
     }
-    .assessmentsTheme {
+    .assessmentsTheme & {
         #{$property}: rgba-to-rgb(rgba($assessments-primary, $percent));
     }
     #{$property}: rgba-to-rgb(rgba($primary-color, $percent)); 
@@ -38,7 +71,7 @@
   .threatDashboardTheme & {
     #{$property}: #{$modification} $threat-dashboard-primary;
   }
-  .assessmentsTheme {
+  .assessmentsTheme & {
     #{$property}: #{$modification} $assessments-primary;
   }
   #{$property}: #{$modification} $primary-color;

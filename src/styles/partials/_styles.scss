@@ -21,6 +21,10 @@ label {
     cursor: pointer !important;
 }
 
+.hideFooter .footer {
+    display: none;
+}
+
 .btn,
 .btn-large {
     text-decoration: none;
@@ -37,8 +41,9 @@ label {
 }
 
 .bg-accent {
-    background-color: $accent-color;
-    color: $accent-text-contrast-color;
+    // color: $accent-text;
+    @include themeAccentText;
+    @include themeAccentColors('background-color');
 }
 
 .bg-primary {
