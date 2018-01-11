@@ -4,6 +4,7 @@
 /dist
 /out-tsc
 /docs
+/tsdocs
 /coverage
 /tmp
 /.awcache/*

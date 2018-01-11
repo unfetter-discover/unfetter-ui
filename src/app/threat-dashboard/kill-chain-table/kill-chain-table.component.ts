@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
@@ -27,6 +27,12 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
   @Input('intrusionSetsDashboard')
   public intrusionSetsDashboard: ThreatDashboard;
 
+  @ViewChild('toolboxBtn')
+  public toolboxBtn: ElementRef;
+  @ViewChild('toolbox')
+  public toolbox: ElementRef;
+
+
   public undoToolboxOp: Partial<KillChainEntry>[] = undefined;
   public showToolbox = false;
 
@@ -35,13 +41,13 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
-    protected genericApi: GenericApi
+    protected genericApi: GenericApi,
   ) { }
 
   /**
    * @description init this component
    */
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.undoToolboxOp = this.copyState(this.intrusionSetsDashboard.killChainPhases);
   }
 
@@ -51,6 +57,19 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     if (this.subscriptions) {
       this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+    }
+  }
+
+  /**
+   * @description close toolbox if clicked outside
+   * @param event 
+   */
+  @HostListener('document:click', ['$event'])
+  public clickedOutside(event: UIEvent) {
+    const clickedInToolboxBtn = this.toolboxBtn && this.toolboxBtn.nativeElement.contains(event.target);
+    const clickedInToolbox = this.toolbox && this.toolbox.nativeElement.contains(event.target);
+    if (this.showToolbox && !(clickedInToolbox || clickedInToolboxBtn)) {
+      this.showToolbox = false;
     }
   }
 

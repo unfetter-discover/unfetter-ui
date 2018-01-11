@@ -22,7 +22,6 @@ export class RadarChartComponent implements OnInit, OnDestroy, OnChanges {
     private svg: any;
     private readonly graphId = '#radarChart';
 
-    // tslint:disable-next-line:no-empty
     constructor(protected renderer: Renderer2) { }
 
     /**
@@ -75,11 +74,11 @@ export class RadarChartComponent implements OnInit, OnDestroy, OnChanges {
             ExtraWidthX: 300
         };
 
-        const svg = d3.select(this.graphId)
-            .selectAll('svg')
-            .append('svg')
-            .attr('width', width)
-            .attr('height', height);
+        // const svg = d3.select(this.graphId)
+        //     .selectAll('svg')
+        //     .append('svg')
+        //     .attr('width', width)
+        //     .attr('height', height);
 
         this.draw(this.graphId, this.data, config);
     }

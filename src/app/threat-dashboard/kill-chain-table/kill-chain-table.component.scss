@@ -80,16 +80,22 @@ $white: #FFFFFF;
         }
     }
 
+    .positionWrapper {
+        position: relative;
+    }
+
     .toolbox-btn {
         position: absolute;
-        z-index: 2;
-        top: 32px;
-        right: 120px;
+        z-index: 90;
+        right: 152px;
+        top: 12px;
+        margin: 0px;
+        padding: 0px;
+        width: 40px;
+        height: 40px;
         color: $threat-dashboard-primary;
         border-radius: 50%;
         background-color: $threat-dashboard-primary-lightest;
-
-
     }
 
     .mat-24 {
@@ -98,9 +104,9 @@ $white: #FFFFFF;
 
     .toolbox {
         position: absolute;
-        z-index: 9;
-        top: 64px;
-        right: 120px;
+        z-index: 99;
+        right: 152px;
+        top: 20px;
         color: $threat-dashboard-primary;
         background-color: $white;
         height: 64px;
