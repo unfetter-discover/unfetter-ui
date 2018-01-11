@@ -1,0 +1,36 @@
+<div class="layout">
+    <div class="titleWrapper">
+        <span class="title mat-title">
+            {{assessment.title}}
+        </span>
+    </div>
+    <div class="fadeIn flex contentWrapper">
+        <div class="center">
+            <div class="mb-18 unf-mat-card assess-create-card">
+                <mat-card>
+                    <mat-card-content>
+                        <form class="assess-form" [formGroup]="form" novalidate>
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Title" formControlName="TITLE">
+                                <mat-error *ngIf="form.get('title').hasError('required')">
+                                    Title is
+                                    <strong>required</strong>
+                                </mat-error>
+                            </mat-form-field>
+                            <mat-form-field class="full-width" formControlName="description">
+                                <textarea matInput placeholder="Description"></textarea>
+                            </mat-form-field>
+                        </form>
+                        <div>
+                            <span class="mat-title">Compile Catagories to Assess*</span>
+                        </div>
+                    </mat-card-content>
+                    <mat-card-actions>
+                        <button mat-button>CANCEL</button>
+                        <button mat-raised-button color="primary">CONTINUE</button>
+                    </mat-card-actions>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+</div>

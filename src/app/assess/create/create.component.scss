@@ -1,0 +1,45 @@
+@import '../../../styles/_variables.scss';
+
+// assess
+$assess-primary: get-color($blue-grey, 700);
+$assess-primary-light: get-color($blue-grey);
+$assess-primary-lighter: get-color($blue-grey, 200);
+$assess-primary-lightest: get-color($blue-grey, 50);
+$assess-accent: get-color($red, 500);
+$assess-primary-text: $white_87;
+
+.titleWrapper {
+    background: $assess-primary-light;
+    height: 128px;
+    position: relative;
+}
+
+.contentWrapper {
+    margin-top: -64px;
+}
+
+.flex {
+    display: flex;
+}
+
+.center {
+    margin: 0 auto;
+}
+
+.mb-18 {
+    margin-bottom: 18px;
+}
+
+.title {
+    position: absolute;
+    margin-top: 24px;
+    margin-left: 56px;
+}
+
+.assess-create-card {
+    width: 835px;
+}
+
+.full-width {
+    width: 100%;
+}
