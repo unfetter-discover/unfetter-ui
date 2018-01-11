@@ -40,6 +40,7 @@ import { NotificationWindowComponent } from './components/notification-window/no
 import { SpeedDialComponent } from './components/speed-dial/speed-dial.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
+import { SidepanelComponent } from './components/sidepanel/sidepanel.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -89,7 +90,8 @@ const unfetterComponents = [
         ...matModules,
     ],
     declarations: [
-        ...unfetterComponents        
+        ...unfetterComponents,
+        SidepanelComponent
     ],
     providers: []
 })
