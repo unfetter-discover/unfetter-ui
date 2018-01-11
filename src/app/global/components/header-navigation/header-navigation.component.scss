@@ -1,4 +1,5 @@
 @import '../../../../styles/_variables.scss';
+@import '../../../../styles/modules/_mixins.scss';
 
 @media screen and (max-width: 768px) {
     #navbar {
@@ -45,7 +46,7 @@
 
 .dropdown-menu {
     right: 0;
-    top: 140%;
+    top: $navbar-window-offset+px;
     left: initial;
 }
 
@@ -64,22 +65,15 @@
 }
 
 #appMenuTriangle {
-    border-color: transparent;
-    border-style: dashed dashed solid;
-    border-width: 0 8.5px 8.5px;
-    position: absolute;
+    @include makeTriangle(#fff);
     left: 11px;
-    z-index: 1;
-    height: 0;
-    width: 0;
-    border-bottom-color: #fff;
-    top: 37px;
+    top: $navbar-triangle-offset+px;
 }
 
 #appMenuWindow {
     position: absolute;
     background: #fff;
-    top: 46px;
+    top: $navbar-window-offset+px;
     width: 320px;
     right: -98px;
     color: rgba(0,0,0,0.87);

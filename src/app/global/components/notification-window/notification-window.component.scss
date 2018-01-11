@@ -1,4 +1,5 @@
 @import '../../../../styles/_variables.scss';
+@import '../../../../styles/modules/_mixins.scss';
 
 $notification-row-height: 106;
 
@@ -31,14 +32,9 @@ $notification-row-height: 106;
 
 #notificationBellWrapper {
     user-select: none;
-    // padding: 19px 15px 14px;
-    // line-height: 20px;
     color: #ffffff;
     position: relative;
     display: block;
-    // >.material-icons {
-    //     font-size: 26px;
-    // }
 }
 
 #notificationLi {
@@ -47,8 +43,7 @@ $notification-row-height: 106;
 
 #notificationBoxWrapper {
     position: absolute;
-    // top: $navbar-height - 12px;
-    top: 46px;
+    top: $navbar-window-offset + px;
     right: -58px;
     display: block;
     width: 500px;
@@ -56,12 +51,6 @@ $notification-row-height: 106;
     transform-origin: right;
     z-index: -1;
 }
-
-// @media screen and (max-width: 600px) {
-//     #notificationBoxWrapper {
-//         top: $navbar-mobile-height - 8px;
-//     }
-// }
 
 .notificationBody {
     width: 430px;
@@ -77,16 +66,9 @@ $notification-row-height: 106;
 }
 
 #notificationBoxTriangle {
-    border-color: transparent;
-    border-style: dashed dashed solid;
-    border-width: 0 8.5px 8.5px;
-    position: absolute;
+    @include makeTriangle(#eee);
     left: 11px;
-    z-index: 1;
-    height: 0;
-    width: 0;
-    border-bottom-color: #eee;
-    top: 37px;
+    top: $navbar-triangle-offset+px;
 }
 
 #notificiationRowWrapper {
