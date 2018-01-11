@@ -96,12 +96,14 @@ export class AssessmentsDashboardComponent implements OnInit {
         if (phase !== undefined && phase.assessedObjects !== undefined) {
             phase.assessedObjects.forEach((assessedObject) => {
                 // Questions per assessed object
-                assessedObject.questions.forEach((question) => {
-                    if (riskTree[question.name] === undefined) {
-                        riskTree[question.name] = [];
-                    }
-                    riskTree[question.name].push(question.risk);
-                });
+                if (assessedObject.questions !== undefined) {
+                    assessedObject.questions.forEach((question) => {
+                        if (riskTree[question.name] === undefined) {
+                            riskTree[question.name] = [];
+                        }
+                        riskTree[question.name].push(question.risk);
+                    });
+                }
             });
         }
         return riskTree;
