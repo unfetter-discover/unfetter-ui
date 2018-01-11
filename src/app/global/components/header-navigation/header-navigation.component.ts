@@ -76,6 +76,7 @@ export class HeaderNavigationComponent {
   public collapsed: boolean = true;
   public demoMode: boolean = false;
   public showAppMenu: boolean = false;
+  public showAccountMenu: boolean = false;
   public topPx = '0px';
   public user$;
   public orgLeaderIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD;
@@ -99,6 +100,10 @@ export class HeaderNavigationComponent {
   @HostListener('document:click', ['$event']) public clickedOutside(event) {
     if (this.showAppMenu && !this.el.nativeElement.querySelector('#appMenuWrapper').contains(event.target)) {
       this.showAppMenu = false;
+    }
+
+    if (this.showAccountMenu && !this.el.nativeElement.querySelector('#accountWrapper').contains(event.target)) {
+      this.showAccountMenu = false;
     }
   }
 

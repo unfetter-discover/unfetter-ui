@@ -50,45 +50,44 @@
     </div>
   </span>
 
-  <span *ngIf="authService.loggedIn()" id="notificationContainer" class="navButton">
+  <span id="notificationContainer" class="navButton" *ngIf="authService.loggedIn()">
     <notification-window></notification-window>
   </span>
 
-  <span dropdown class="dropdown navButton" id="accountWrapper" *ngIf="!demoMode && authService.loggedIn()">
-    <a dropdownToggle class="dropdown-toggle" data-toggle="user" role="button" aria-haspopup="true" aria-expanded="false">
-      <img src="{{ (user$ | async).userProfile.github.avatar_url }}" alt="User" id="avatar" *ngIf="(user$ | async).userProfile !== null && (user$ | async).userProfile.github.avatar_url !== undefined"
-        class="smallAvatar">
-      <span *ngIf="(user$ | async).userProfile.github.avatar_url === undefined">{{(user$ | async).userProfile.userName}}</span>
+  <span id="accountWrapper" class="navButton" *ngIf="authService.loggedIn()">
+    <div class="cursor-pointer" (click)="showAccountMenu = !showAccountMenu">
+      <img src="{{ (user$ | async).userProfile.github.avatar_url }}" alt="User" id="avatar" *ngIf="(user$ | async).userProfile !== null && (user$ | async).userProfile.github.avatar_url !== undefined" class="smallAvatar">
+      <button mat-icon-button *ngIf="(user$ | async).userProfile.github.avatar_url === undefined" id="accountBtn">
+        <mat-icon class="mat-24">account_circle</mat-icon>
+      </button>
       <i class="material-icons" id="accountCaret">arrow_drop_down</i>
-    </a>
-    <ul *dropdownMenu class="dropdown-menu">
-      <li class="dropdown-header" *ngIf="(user$ | async).userProfile !== null">
-        Signed in as
+    </div>    
+    <div *ngIf="showAccountMenu" id="accountMenuTriangle" @fadeInOut>&nbsp;</div>
+    <div *ngIf="showAccountMenu" id="accountMenuWindow" class="mat-elevation-z6" @fadeInOut>    
+      <div *ngIf="(user$ | async).userProfile !== null">
         <strong>{{ (user$ | async).userProfile.userName }}</strong>
-      </li>
-      <li role="separator" class="divider"></li>
-      <li>
+      </div>
+      <hr>
+      <div class="accountMenuLine">
         <a routerLink="/users/settings" class="flexImportant flexItemsCenter">
           <i class="material-icons">settings</i>
           <span>&nbsp;&nbsp;Settings</span>
         </a>
-      </li>
-      <li>
+      </div>
+      <div class="accountMenuLine">
         <a routerLink="/users/profile/{{(user$ | async).userProfile._id}}" class="flexImportant flexItemsCenter">
           <i class="material-icons">person_outline</i>
           <span>&nbsp;&nbsp;Profile</span>
         </a>
-      </li>
-      <li role="separator" class="divider"></li>
-      <li>
+      </div>
+      <hr>
+      <div class="accountMenuLine">
         <a (click)="authService.logOut(); logoutStore()" class="flexImportant flexItemsCenter">
           <i class="material-icons">exit_to_app</i>
           <span>&nbsp;&nbsp;Sign Out</span>
         </a>
-      </li>
-    </ul>
-  </span>
+      </div>     
+    </div>
 
-  
+  </span>  
 </mat-toolbar>
-

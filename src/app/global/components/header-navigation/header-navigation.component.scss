@@ -57,7 +57,7 @@
 
 #accountCaret {
     position: absolute;
-    top: 8px;
+    top: 23px;
 }
 
 #appMenuWrapper {
@@ -76,8 +76,38 @@
     top: $navbar-window-offset+px;
     width: 320px;
     right: -98px;
-    color: rgba(0,0,0,0.87);
+    color: $dark-text-default;
     padding: 25px;
+}
+
+#accountMenuTriangle {
+    @include makeTriangle(#fff);
+    right: 45px;
+    top: $navbar-triangle-offset+11+px;
+}
+
+#accountMenuWindow {
+    position: absolute;
+    background: #fff;
+    top: $navbar-window-offset+11+px;
+    width: 180px;
+    right: 24px;
+    color: $dark-text-default;
+    padding: 14px;
+    font-size: 14px;
+    font-weight: 400;
+    hr {
+        margin: 1px -14px;
+    }
+    a {
+        color: $dark-text-default;
+        &:hover, &:focus {
+            text-decoration: none;
+        }
+        i {
+            font-size: 18px;
+        }
+    }
 }
 
 #appList {
@@ -108,6 +138,15 @@
     &:hover {
         border: 1px solid rgb(229, 229, 229);
     }
+}
+
+#accountBtn {
+    margin-left: -8px;
+    margin-right: -6px;
+}
+
+.accountMenuLine:hover {
+    font-weight: bold;
 }
 
 // Title
