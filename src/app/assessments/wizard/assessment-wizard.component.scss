@@ -1,3 +1,5 @@
+@import '../../../styles/_variables.scss';
+
 .btn-wrapper {
     padding-top: 1%;
 }
@@ -87,7 +89,7 @@
 
 .stepper li.active a .circle,
 .stepper li.completed a .circle {
-    background-color: #4285F4!important
+    background-color: $assessments-accent !important;
 }
 
 .stepper-vertical li a .circle {

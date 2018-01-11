@@ -1,4 +1,5 @@
 @import '../../../../styles/_variables.scss';
+@import '../../../../styles/modules/_mixins.scss';
 
 @media screen and (max-width: 768px) {
     #navbar {
@@ -21,4 +22,163 @@
 }
 .navbar {
     min-height: 64px;
+}
+
+#navComponent {
+    position: fixed;
+    z-index: 800;
+}
+
+.navButton {
+    margin-right: 10px;
+}
+
+#notificationContainer {
+    position: relative;
+}
+
+.dropdown-toggle {
+    color: #fff !important;
+    &:focus, &:hover {
+        text-decoration: none;
+    }
+}
+
+.dropdown-menu {
+    right: 0;
+    top: $navbar-window-offset+px;
+    left: initial;
+}
+
+#accountWrapper {
+    margin-left: 6px;
+    margin-right: 24px;
+}
+
+#accountCaret {
+    position: absolute;
+    top: 23px;
+}
+
+#appMenuWrapper {
+    position: relative;
+}
+
+#appMenuTriangle {
+    @include makeTriangle(#fff);
+    left: 11px;
+    top: $navbar-triangle-offset+px;
+}
+
+#appMenuWindow {
+    position: absolute;
+    background: #fff;
+    top: $navbar-window-offset+px;
+    width: 320px;
+    right: -98px;
+    color: $dark-text-default;
+    padding: 25px;
+}
+
+#accountMenuTriangle {
+    @include makeTriangle(#fff);
+    right: 45px;
+    top: $navbar-triangle-offset+11+px;
+}
+
+#accountMenuWindow {
+    position: absolute;
+    background: #fff;
+    top: $navbar-window-offset+11+px;
+    width: 180px;
+    right: 24px;
+    color: $dark-text-default;
+    padding: 14px;
+    font-size: 14px;
+    font-weight: 400;
+    hr {
+        margin: 1px -14px;
+    }
+    a {
+        color: $dark-text-default;
+        &:hover, &:focus {
+            text-decoration: none;
+        }
+        i {
+            font-size: 18px;
+        }
+    }
+}
+
+#appList {
+    padding: 0;
+    flex-wrap: wrap;
+}
+
+.appLinkWrapper {
+    flex-basis: 33.3333%;
+    padding: 1px;
+    text-align: center;
+    display: inline-flex;    
+}
+
+.appLink {
+    margin: 8px 2px;
+    font-size: 12px;
+    color: #444444;
+    letter-spacing: -0.02px;
+    text-decoration: none !important;
+    display: inline-block;
+    width: 84px;
+    height: 87px;
+    border: 1px solid transparent;
+    line-height: 13px;
+    white-space: normal;
+    font-weight: 400;
+    &:hover {
+        border: 1px solid rgb(229, 229, 229);
+    }
+}
+
+#accountBtn {
+    margin-left: -8px;
+    margin-right: -6px;
+}
+
+.accountMenuLine:hover {
+    font-weight: bold;
+}
+
+// Title
+#spacer1 {
+    width: 23px;
+}
+#spacer2 {
+    width: 20px;
+}
+#bar {
+    font-size: 24px;
+    font-weight: 300;
+}
+#titleText {
+    font-size: 21px;
+    font-weight: 300;
+}
+
+
+.appItemImg {
+    height: 50px;
+    display: block;
+    margin: 4px auto 0;
+}
+
+.appItemText {
+    margin-top: 3px;
+    width: 84px;
+    height: 26px;
+}
+
+.logo {
+    height: 35px;
+    margin-left: 9px;
 }

@@ -1,4 +1,5 @@
 @import '../../../../styles/_variables.scss';
+@import '../../../../styles/modules/_mixins.scss';
 
 $notification-row-height: 106;
 
@@ -14,26 +15,26 @@ $notification-row-height: 106;
     }
 }
 
+#notificationWindowComponent {
+    color: rgba(0, 0, 0, 0.87);
+    font-size: 14px;
+}
+
 #avatar {
     margin: -5px auto;
 }
 
 #notificationBadge {
     position: absolute;
-    top: 13px;
-    right: 10px;
+    top: 2px;
+    right: 2px;
 }
 
 #notificationBellWrapper {
     user-select: none;
-    padding: 19px 15px 14px;
-    line-height: 20px;
     color: #ffffff;
     position: relative;
     display: block;
-    >.material-icons {
-        font-size: 26px;
-    }
 }
 
 #notificationLi {
@@ -42,8 +43,8 @@ $notification-row-height: 106;
 
 #notificationBoxWrapper {
     position: absolute;
-    top: $navbar-height + 0px;
-    right: 0;
+    top: $navbar-window-offset + px;
+    right: -58px;
     display: block;
     width: 500px;
     background: $app-background-color;
@@ -53,7 +54,7 @@ $notification-row-height: 106;
 
 .notificationBody {
     width: 430px;
-    margin-bottom: 3px;
+    margin-bottom: 0;
 }
 
 .readNotication {
@@ -62,6 +63,12 @@ $notification-row-height: 106;
     .text-muted {
         color: rgba(0, 0, 0, 0.57) !important;
     }
+}
+
+#notificationBoxTriangle {
+    @include makeTriangle(#eee);
+    left: 11px;
+    top: $navbar-triangle-offset+px;
 }
 
 #notificiationRowWrapper {
@@ -82,6 +89,10 @@ $notification-row-height: 106;
         font-size: 20px;
         font-weight: 300;
     }
+}
+
+.notificationFooter {
+    margin-bottom: 0;
 }
 
 #markAllAsRead,
@@ -110,4 +121,8 @@ $notification-row-height: 106;
 
 .navbar {
     min-height: 64px;
+}
+
+#settingsIcon {
+    color: $dark-text-default !important;
 }

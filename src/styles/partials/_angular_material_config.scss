@@ -6,11 +6,42 @@
 // Angular Material theming
 
 @include mat-core();
-$my-app-primary: mat-palette($mat-light-blue, 800);
-$my-app-accent: mat-palette($mat-amber, A200, A100, A400);
-$my-app-warn: mat-palette($mat-deep-orange);
-$my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
-@include angular-material-theme($my-app-theme);
+
+$default-theme-primary: mat-palette($mat-indigo, 700);
+$default-theme-accent: mat-palette($mat-cyan, A400, A200, A700);
+$default-theme-warn: mat-palette($mat-deep-orange);
+$default-theme: mat-light-theme($default-theme-primary, $default-theme-accent, $default-theme-warn);
+@include angular-material-theme($default-theme);
+
+// See themes.enum.ts for the css selectors of themes
+
+$analytic-hub-theme-primary: mat-palette($mat-cyan, 600);
+$analytic-hub-theme-accent: mat-palette($mat-orange, A200, A100, A400);
+$analytic-hub-theme-warn: mat-palette($mat-deep-orange);
+$analytic-hub-theme: mat-light-theme($analytic-hub-theme-primary, $analytic-hub-theme-accent, $analytic-hub-theme-warn);
+
+.analyticHubTheme {
+  @include angular-material-theme($analytic-hub-theme);
+}
+
+$threat-dashboard-theme-primary: mat-palette($mat-blue, 600);
+$threat-dashboard-theme-accent: mat-palette($mat-red, A200, A100, A400);
+$threat-dashboard-theme-warn: mat-palette($mat-deep-orange);
+$threat-dashboard-theme: mat-light-theme($threat-dashboard-theme-primary, $threat-dashboard-theme-accent, $threat-dashboard-theme-warn);
+
+.threatDashboardTheme {
+  @include angular-material-theme($threat-dashboard-theme);
+}
+
+$assessments-theme-primary: mat-palette($mat-blue-grey, 400);
+$assessments-theme-accent: mat-palette($mat-indigo, A200, A100, A400);
+$assessments-theme-warn: mat-palette($mat-deep-orange);
+$assessments-theme: mat-light-theme($assessments-theme-primary, $assessments-theme-accent, $assessments-theme-warn);
+
+.assessmentsTheme {
+  @include angular-material-theme($assessments-theme);
+}
+
 
 // Angular Material Themes: *ALWAYS* nest in a class or id, *NOT* overrides
 

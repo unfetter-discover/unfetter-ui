@@ -1,0 +1,24 @@
+@import '../../../../styles/variables';
+
+#heroElement {
+    background: url('/assets/images/backgrounds/unfetter_header3_sm_bkgd.png') center / auto 100% no-repeat;
+    width: 100%;
+    padding-top: 50px;
+}
+
+#logoImg {
+    max-width: 350px;
+    padding: 24px;
+    margin-top: 30px;
+}
+
+#descHeading {
+    color: $primary-color;
+    font-weight: 300;
+    font-size: 40px;
+}
+
+.landingPageText {
+    color: #6A6A6A;
+    font-size: 21px;
+}

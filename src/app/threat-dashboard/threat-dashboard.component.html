@@ -9,7 +9,7 @@
             </div>
             <unf-side-panel [threatReport]="threatReport" [attackPatterns]="attackPatterns" (modifiedBoundries)="onBoundriesModified($event)"></unf-side-panel>
         </div>
-        <div class="main-panel">
+        <div class="main-panel pb-10">
             <!-- <div class="row">
                 <div class="col-md-12">
                     <span class="stix-icon-wrapper">
@@ -35,7 +35,7 @@
                     <div class="mt-18 mb-18 ml-16 mr-16 mat-elevation-z3 cardHoverShadow">
                         <unf-collapsible-tree *ngIf="treeData" [data]="treeData" (renderComplete)="treeRendered()"></unf-collapsible-tree>
                     </div>
-                    <div class="mt-18 ml-16 mr-16 mat-elevation-z3 cardHoverShadow">
+                    <div class="mt-18 ml-16 mr-16 mb-5 mat-elevation-z3 cardHoverShadow">
                         <unf-radar-chart #radarChart *ngIf="radarData" [data]="radarData" (renderComplete)="radarRendered()"></unf-radar-chart>
                     </div>
                 </mat-tab>

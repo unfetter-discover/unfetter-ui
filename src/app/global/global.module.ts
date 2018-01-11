@@ -13,6 +13,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatToolbarModule } from '@angular/material';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -39,6 +40,8 @@ import { ObservableDataSummaryComponent } from './components/observable-data-sum
 import { HeaderNavigationComponent } from './components/header-navigation/header-navigation.component';
 import { NotificationWindowComponent } from './components/notification-window/notification-window.component';
 import { SpeedDialComponent } from './components/speed-dial/speed-dial.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { LandingPageComponent } from './components/landing-page/landing-page.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -51,6 +54,7 @@ const matModules = [
     MatTooltipModule,
     MatTableModule,
     MatProgressSpinnerModule,
+    MatToolbarModule
 ];
 
 const unfetterComponents = [
@@ -69,7 +73,9 @@ const unfetterComponents = [
     ObservableDataSummaryComponent,
     HeaderNavigationComponent,
     NotificationWindowComponent,
-    SpeedDialComponent
+    SpeedDialComponent,
+    FooterComponent,
+    LandingPageComponent
 ];
 
 @NgModule({
@@ -87,7 +93,7 @@ const unfetterComponents = [
         ...matModules,
     ],
     declarations: [
-        ...unfetterComponents
+        ...unfetterComponents        
     ],
     providers: []
 })

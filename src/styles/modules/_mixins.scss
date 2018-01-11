@@ -1,0 +1,89 @@
+@import '../variables';
+
+@mixin themePrimaryColors ($properties...) {
+
+    @each $property in $properties {
+        .analyticHubTheme & {
+          #{$property}: $analytic-hub-primary;
+        }
+
+        .threatDashboardTheme & {
+          #{$property}: $threat-dashboard-primary;
+        }
+
+        .assessmentsTheme & {
+          #{$property}: $assessments-primary;
+        }
+        #{$property}: $primary-color;
+    }    
+}
+
+@mixin themeAccentColors ($properties...) {
+
+    @each $property in $properties {
+        .analyticHubTheme & {
+          #{$property}: $analytic-hub-accent;
+        }
+
+        .threatDashboardTheme & {
+          #{$property}: $threat-dashboard-accent;
+        }
+
+        .assessmentsTheme & {
+          #{$property}: $assessments-accent;
+        }
+        #{$property}: $accent-color;
+    }    
+}
+
+@mixin themeAccentText () {
+  .analyticHubTheme & {
+    color: $analytic-hub-accent-text;
+  }
+
+  .threatDashboardTheme & {
+    color: $threat-dashboard-accent-text;
+  }
+
+  .assessmentsTheme & {
+    color: $assessments-accent-text;
+  }
+  color: $accent-text;  
+}
+
+@mixin lightenPrimaryColors ($property, $percent) {
+    .analyticHubTheme & {
+        #{$property}: rgba-to-rgb(rgba($analytic-hub-primary, $percent));
+    }
+    .threatDashboardTheme & {
+        #{$property}: rgba-to-rgb(rgba($threat-dashboard-primary, $percent));
+    }
+    .assessmentsTheme & {
+        #{$property}: rgba-to-rgb(rgba($assessments-primary, $percent));
+    }
+    #{$property}: rgba-to-rgb(rgba($primary-color, $percent)); 
+}
+
+@mixin themePrimaryColorsWithModifiedValue ($property, $modification) {
+  .analyticHubTheme & {
+    #{$property}: #{$modification} $analytic-hub-primary;
+  }
+  .threatDashboardTheme & {
+    #{$property}: #{$modification} $threat-dashboard-primary;
+  }
+  .assessmentsTheme & {
+    #{$property}: #{$modification} $assessments-primary;
+  }
+  #{$property}: #{$modification} $primary-color;
+}
+
+@mixin makeTriangle($color) {
+  border-color: transparent;
+  border-style: dashed dashed solid;
+  border-width: 0 8.5px 8.5px;
+  position: absolute;
+  z-index: 1;
+  height: 0;
+  width: 0;
+  border-bottom-color: $color;
+}
