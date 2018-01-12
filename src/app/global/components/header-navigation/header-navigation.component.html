@@ -26,7 +26,7 @@
       <mat-icon class="mat-24">apps</mat-icon>
     </button>
     <div id="appMenuTriangle" *ngIf="showAppMenu" @fadeInOut>&nbsp;</div>
-    <div *ngIf="showAppMenu" id="appMenuWindow" class="mat-elevation-z6" @fadeInOut>
+    <div *ngIf="showAppMenu" id="appMenuWindow" class="uf-nav-popup" @fadeInOut>
       <div id="appList" class="flex">
         <span *ngFor="let appItem of appList" class="appLinkWrapper">
           <a routerLink="./{{ appItem.url }}" class="appLink">
@@ -63,7 +63,7 @@
       <i class="material-icons" id="accountCaret">arrow_drop_down</i>
     </div>    
     <div *ngIf="showAccountMenu" id="accountMenuTriangle" @fadeInOut>&nbsp;</div>
-    <div *ngIf="showAccountMenu" id="accountMenuWindow" class="mat-elevation-z6" @fadeInOut>    
+    <div *ngIf="showAccountMenu" id="accountMenuWindow" class="uf-nav-popup" @fadeInOut>    
       <div *ngIf="(user$ | async).userProfile !== null">
         <strong>{{ (user$ | async).userProfile.userName }}</strong>
       </div>

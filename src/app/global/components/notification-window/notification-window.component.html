@@ -8,7 +8,7 @@
   </span>
 
   <div id="notificationBoxTriangle" *ngIf="showNotificationBar" @fadeInOut>&nbsp;</div>
-  <div id="notificationBoxWrapper" *ngIf="showNotificationBar" class="mat-elevation-z6" @fadeInOut>
+  <div id="notificationBoxWrapper" *ngIf="showNotificationBar" class="uf-nav-popup" @fadeInOut>
     <div *ngIf="(notifications$ | async).notifications.length">
       <div class="notificationHeader">
         <div class="flex flexItemsCenter">

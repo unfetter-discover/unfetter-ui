@@ -64,6 +64,20 @@
     #{$property}: rgba-to-rgb(rgba($primary-color, $percent)); 
 }
 
+@mixin darkenPrimaryColors ($property, $percent) {
+  .analyticHubTheme & {
+    #{$property}: darken($analytic-hub-primary, $percent);
+  }
+  .threatDashboardTheme & {
+    #{$property}: darken($threat-dashboard-primary, $percent);
+  }
+  .assessmentsTheme & {
+    #{$property}: darken($assessments-primary, $percent);
+  }
+  #{$property}: darken($primary-color, $percent);
+}
+
+
 @mixin themePrimaryColorsWithModifiedValue ($property, $modification) {
   .analyticHubTheme & {
     #{$property}: #{$modification} $analytic-hub-primary;

@@ -16,8 +16,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatToolbarModule } from '@angular/material';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { CollapseModule } from 'ngx-bootstrap/collapse';
 
 // ~~~ Local ~~~
 
@@ -84,8 +82,6 @@ const unfetterComponents = [
         RouterModule,
         FormsModule,
         ReactiveFormsModule,
-        BsDropdownModule.forRoot(),
-        CollapseModule.forRoot(),
         ...matModules
     ],
     exports: [
