@@ -60,13 +60,13 @@
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let row">
                         <span class="buttonGrp text-right">
-                            <button color="accent" mat-button routerLink="./view/{{row.id}}">
+                            <button mat-button routerLink="./view/{{row.id}}">
                                 <mat-icon>explore</mat-icon>
                             </button>
-                            <button color="primary" mat-button (click)="editButtonClicked(row, $event)">
+                            <button mat-button (click)="editButtonClicked(row, $event)">
                                 <mat-icon>edit</mat-icon>
                             </button>
-                            <button color="warn" mat-button (click)="deleteButtonClicked(row, $event)">
+                            <button mat-button (click)="deleteButtonClicked(row, $event)">
                                 <mat-icon>delete</mat-icon>
                             </button>
                         </span>

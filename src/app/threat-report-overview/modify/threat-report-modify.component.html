@@ -46,7 +46,7 @@
             </h4>
             <mat-form-field floatPlaceholder="never">
                 <input matInput #filter placeholder="Reference reports in this work product" color="primary">
-                <mat-icon matSuffix color="primary">search</mat-icon>
+                <mat-icon matSuffix>search</mat-icon>
             </mat-form-field>
         </div>
         <div class="col-xs-2 col-md-2" *ngIf="threatReport?.boundaries?.startDate">
@@ -82,7 +82,7 @@
                         <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                         <mat-cell *matCellDef="let row">
                             <span *ngIf="!!isIncludedReport(row.id); else includeReportBlock">
-                                <button mat-icon-button color="warn" class="mat-24" matTooltip="Exclude Report" (click)="onExcludeReport(row, $event)">
+                                <button mat-icon-button class="mat-24" matTooltip="Exclude Report" (click)="onExcludeReport(row, $event)">
                                     <mat-icon aria-label="exclude report in workproduct">
                                         remove_circle
                                     </mat-icon>
@@ -90,7 +90,7 @@
                             </span>
                             <ng-template #includeReportBlock>
                                 <span>
-                                    <button mat-icon-button color="accent" class="mat-24" matTooltip="Include Report" (click)="onIncludeReport(row, $event)">
+                                    <button mat-icon-button class="mat-24" matTooltip="Include Report" (click)="onIncludeReport(row, $event)">
                                         <mat-icon aria-label="include report in workproduct">
                                             add_circle_outline
                                         </mat-icon>
@@ -139,7 +139,7 @@
     </div>
     <div class="row pull-right mb-10 mt-10">
         <div class="col-md-12 col-xs-12">
-            <button color="primary" mat-button (click)="cancel($event)">CANCEL</button>
+            <button mat-button (click)="cancel($event)">CANCEL</button>
             <button mat-raised-button color="primary" [disabled]="threatReport && threatReport.reports.length === 0" (click)="save($event)">
                 SAVE
             </button>

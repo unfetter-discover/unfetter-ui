@@ -10,10 +10,10 @@
                         <chip-links [data]="element.external_references" maxChips="3" nameField="source_name" urlField="url"></chip-links>
                     </span>
                     <span class="buttonGrp text-right">
-                        <button class="mat-primary" mat-button routerLink="edit/{{element.id}}">
+                        <button mat-button routerLink="edit/{{element.id}}">
                             <i class="material-icons">create</i>
                         </button>
-                            <button class="mat-warn" mat-button (click)="deletButtonClicked(element)">
+                            <button mat-button (click)="deletButtonClicked(element)">
                             <i class="material-icons">delete</i>
                         </button>
                     </span>

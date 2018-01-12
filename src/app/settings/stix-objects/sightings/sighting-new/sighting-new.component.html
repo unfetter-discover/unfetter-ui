@@ -41,8 +41,8 @@
 <div class="row">
     <div class="col-md-12">
          <div class="button-row pull-right">
-                    <a class="" mat-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</a>
-                    <a class=" " mat-raised-button (click)="saveButtonClicked()" [disabled]="!sighting.attributes.sighting_of_ref"><i class="material-icons">save</i> SAVE & CLOSE</a>
+                    <a class="" mat-button (click)="cancelButtonClicked()">CANCEL</a>
+                    <a class=" " mat-raised-button (click)="saveButtonClicked()" [disabled]="!sighting.attributes.sighting_of_ref" color="primary">SAVE</a>
 
             </div>
     </div>

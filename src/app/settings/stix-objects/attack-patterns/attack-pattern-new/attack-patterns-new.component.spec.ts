@@ -87,7 +87,7 @@ function componetInitialized() {
 //////////////////////////////////
 function buttons() {
   moduleSetup();
-  describe('ADD, CANCEL, and SAVE & CLOSE buttons', () => {
+  describe('ADD, CANCEL, and SAVE buttons', () => {
     createComponent();
 
     it('should disable save button if name field is empty', () => {

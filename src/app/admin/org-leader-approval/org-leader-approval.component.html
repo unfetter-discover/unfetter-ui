@@ -20,10 +20,10 @@
                         <td>{{ user.email }}</td>
                         <td>{{ getOrgName(user.organizations.id) }}</td>
                         <td class="text-right">
-                            <button mat-button class="mat-primary mat-24" (click)="userAction(user, 'APPROVE_USER')">
+                            <button mat-button class="mat-24" (click)="userAction(user, 'APPROVE_USER')">
                                 <i class="material-icons">check_circle</i>
                             </button>
-                            <button mat-button class="mat-warn mat-24" (click)="userAction(user, 'DENY_USER')">
+                            <button mat-button class="mat-24" (click)="userAction(user, 'DENY_USER')">
                                 <i class="material-icons">remove_circle</i>
                             </button>
                         </td>

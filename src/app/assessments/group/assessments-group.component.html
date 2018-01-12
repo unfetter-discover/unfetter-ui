@@ -138,16 +138,12 @@
                                 </div>
 
                                 <p class="text-right" *ngIf="assessedObj.editActive">
-                                    <button mat-button (click)="assessedObj.editActive = false" color="accent">
-                                        <mat-icon class="mat-24">cancel</mat-icon>
-                                    </button>
-                                    <button color="primary"  mat-button (click)="editAssessedObject(assessedObj)">
-                                        <mat-icon class="mat-24">save</mat-icon>
-                                    </button>
+                                    <button mat-button (click)="assessedObj.editActive = false">CANCEL</button>
+                                    <button mat-raised-button color="accent" (click)="editAssessedObject(assessedObj)">SAVE</button>
                                 </p>
 
                                 <p class="text-right" *ngIf="!assessedObj.editActive">
-                                    <button color="primary"  mat-button (click)="assessedObj.editActive = true"><mat-icon class="mat-24">create</mat-icon></button>
+                                    <button mat-button (click)="assessedObj.editActive = true"><mat-icon class="mat-24">create</mat-icon></button>
                                 </p>
 
                             </mat-card-content>

@@ -67,12 +67,9 @@
 
                     <div class="row">
                         <p class="text-right">
-                            <button mat-button (click)="addAssessedObject = !addAssessedObject" color="accent">
-                                <mat-icon class="mat-24">cancel</mat-icon>
+                            <button mat-button (click)="addAssessedObject = !addAssessedObject">CANCEL
                             </button>
-                            <button mat-button [disabled]="!indicator.name" (click)="indicator.name ? createAssessedObject(indicator, currentAttackPattern) : ''" color="primary">
-                                <mat-icon class="mat-24">save</mat-icon>
-                            </button>
+                            <button mat-raised-button color="accent" [disabled]="!indicator.name" (click)="indicator.name ? createAssessedObject(indicator, currentAttackPattern) : ''">SAVE</button>
                         </p>
                     </div>
                 </div>
@@ -109,13 +106,8 @@
 
                     <div class="row">
                         <p class="text-right">
-                            <button color="accent"  mat-button (click)="addAssessedObject = !addAssessedObject">
-                                    <mat-icon class="mat-24">cancel</mat-icon>
-                            </button>
-                            <button color="primary"  mat-button [disabled]="!courseOfAction.name" (click)="courseOfAction.name ? createAssessedObject(courseOfAction, currentAttackPattern) : ''">
-                                    <mat-icon class="mat-24">save</mat-icon>
-
-                            </button>
+                            <button mat-button (click)="addAssessedObject = !addAssessedObject">CANCEL</button>
+                            <button color="accent"  mat-raised-button [disabled]="!courseOfAction.name" (click)="courseOfAction.name ? createAssessedObject(courseOfAction, currentAttackPattern) : ''">SAVE</button>
                         </p>
                     </div>
                 </div>
@@ -151,13 +143,8 @@
                     </div>
                     <div class="row">
                         <p class="text-right">
-                            <button color="accent"  mat-button (click)="addAssessedObject = !addAssessedObject">
-                                    <mat-icon class="mat-24">cancel</mat-icon>
-                            </button>
-                            <button color="primary"  mat-button [disabled]="!xUnfetterSensor.name" (click)="xUnfetterSensor.name ? createAssessedObject(xUnfetterSensor, currentAttackPattern) : ''">
-
-                                    <mat-icon class="mat-24">save</mat-icon>
-                            </button>
+                            <button mat-button (click)="addAssessedObject = !addAssessedObject">CANCEL</button>
+                            <button color="accent" mat-raised-button [disabled]="!xUnfetterSensor.name" (click)="xUnfetterSensor.name ? createAssessedObject(xUnfetterSensor, currentAttackPattern) : ''">SAVE</button>
                         </p>
                     </div>
                 </div>
