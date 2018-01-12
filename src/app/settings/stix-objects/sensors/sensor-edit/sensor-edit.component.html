@@ -27,7 +27,7 @@
 <div  *ngIf="sensor" class="row">
     <div class="col-md-12">
         <div class="button-row pull-right">
-                <a class="" mat-button (click)="cancelButtonClicked()">CANCEL</a>
+                <button class="" mat-button (click)="cancelButtonClicked()">CANCEL</button>
                 <a class=" " mat-raised-button (click)="saveSensor()" [disabled]="!sensor.attributes.name" color="primary">SAVE</a>
         </div>
     </div>

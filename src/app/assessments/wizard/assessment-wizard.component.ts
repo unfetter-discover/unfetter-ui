@@ -29,7 +29,7 @@ export class AssessmentWizardComponent extends Measurements implements OnInit, O
   public assessmentDescription = '';
   public saved = false;
   public publishDate = new Date();
-  public buttonLabel = 'Next';
+  public buttonLabel = 'CONTINUE';
   public navigations = [];
   public item: MenuItem[];
   public doughnutChartLabels = ['Risk Accepted', 'Risk Addressed'];
@@ -262,7 +262,7 @@ export class AssessmentWizardComponent extends Measurements implements OnInit, O
       return;
     }
     this.page = this.page - 1;
-    this.buttonLabel = 'Next';
+    this.buttonLabel = 'CONTINUE';
     this.showSummarry = false;
     this.currentAssessmentGroup = this.assessmentGroup;
     this.pageTitle = this.splitTitle();
@@ -280,7 +280,7 @@ export class AssessmentWizardComponent extends Measurements implements OnInit, O
       event.preventDefault();
     }
 
-    if (this.buttonLabel === 'Save') {
+    if (this.buttonLabel === 'SAVE') {
       this.saveAssessments();
     } else {
       if (this.page + 1 > this.assessmentGroups.length) {
@@ -288,7 +288,7 @@ export class AssessmentWizardComponent extends Measurements implements OnInit, O
         this.pageTitle = ' Assessment Summary';
         this.currentAssessmentGroup = null;
         this.showSummarry = true;
-        this.buttonLabel = 'Save';
+        this.buttonLabel = 'SAVE';
         if (this.model) {
           this.assessmentName = this.model.attributes.name;
           this.assessmentDescription = this.model.attributes.description;

@@ -47,8 +47,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="button-row pull-right">
-                         <button  class="" mat-raised-button (click)="cancelButtonClicked()"><i class="material-icons">keyboard_arrow_left</i> CANCEL</button>
-                         <button type="submit"  id="save-btn" mat-raised-button (click)="saveAttackPattern()" [disabled]="!attackPattern.attributes.name"><i class="material-icons">save</i> SAVE</button>
+                         <button  class="" mat-button (click)="cancelButtonClicked()">CANCEL</button>
+                         <button type="submit"  id="save-btn" color="primary" mat-raised-button (click)="saveAttackPattern()" [disabled]="!attackPattern.attributes.name">SAVE</button>
 
                     </div>
                 </div>

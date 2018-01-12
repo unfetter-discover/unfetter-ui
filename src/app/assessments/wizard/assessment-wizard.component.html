@@ -119,8 +119,8 @@
             </div>
 
             <mat-card-actions class="text-right">
-                <button mat-button [disabled]="page === 1" (click)="back($event)"> Back</button>
-                <button mat-button (click)="next($event)" *ngIf="!(buttonLabel === 'Save' && saved)"> {{buttonLabel}}</button>
+                <button mat-button (click)="back($event)" *ngIf="page !== 1">BACK</button>
+                <button mat-raised-button color="accent" (click)="next($event)" *ngIf="!(buttonLabel === 'SAVE' && saved)"> {{buttonLabel}}</button>
                 <button mat-button disabled *ngIf="buttonLabel === 'Save' && saved">
                     <i class="material-icons text-success">check</i>&nbsp;Saved
                 </button>
