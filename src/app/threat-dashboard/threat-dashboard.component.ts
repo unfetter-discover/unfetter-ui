@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
@@ -10,6 +10,7 @@ import { BaseComponentService } from '../components/base-service.component';
 import { GenericApi } from '../core/services/genericapi.service';
 
 import { IntrusionSet, AttackPattern } from '../models';
+import { MatDialog, MatMenu } from '@angular/material';
 import { ThreatReportOverviewService } from './services/threat-report-overview.service';
 import { ThreatReport } from '../threat-report-overview/models/threat-report.model';
 import { KillChainEntry } from './kill-chain-table/kill-chain-entry';
@@ -17,21 +18,28 @@ import { SelectOption } from '../threat-report-overview/models/select-option';
 import { ThreatDashboard } from './models/threat-dashboard';
 import { RadarChartDataPoint } from './radar-chart/radar-chart-datapoint';
 import { simpleFadeIn, inOutAnimation } from '../global/animations/animations';
+import { parentFadeIn, slideInOutAnimation } from '../global/animations/animations';
 import { SortHelper } from '../global/static/sort-helper';
 import { RadarChartComponent } from './radar-chart/radar-chart.component';
 import { BarChartItem } from './bar-chart/bar-chart-item';
+import { SidepanelComponent } from '../global/components/sidepanel';
+import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
+import { Report } from '../models/report';
 
 @Component({
   selector: 'unf-threat-dashboard',
   templateUrl: 'threat-dashboard.component.html',
   styleUrls: ['./threat-dashboard.component.scss'],
-  animations: [simpleFadeIn, inOutAnimation]
+  animations: [simpleFadeIn, inOutAnimation, parentFadeIn, slideInOutAnimation]
 })
 export class ThreatDashboardComponent implements OnInit, OnDestroy {
 
   @Input('minimize')
   public minimize: boolean;
   public showMinimizeBtn = false;
+
+  @Output()
+  public modifiedBoundaries: EventEmitter<ThreatReport> = new EventEmitter();
 
   public threatReport: ThreatReport;
   public id = '';
@@ -48,6 +56,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   public barLoading = true;
   public uniqChainNames: string[] = [];
   public selectedChain = '';
+  public selectedExternalRef: Partial<Report>;
 
   private readonly filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
   private readonly subscriptions: Subscription[] = [];
@@ -63,6 +72,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     protected router: Router,
     protected route: ActivatedRoute,
     protected genericApi: GenericApi,
+    protected dialog: MatDialog,
     protected threatReportService: ThreatReportOverviewService
   ) { }
 
@@ -513,6 +523,87 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     const isUndefined = 'undefined' === typeof val;
     const isBool = 'boolean' === typeof val;
     return !isUndefined && isBool && val === true;
+  }
+
+  /**
+   * @description on open menu event, remember the selected row
+   * @param {Partial<Report>} selected 
+   * @param {UIEvent} event optional 
+   */
+  public onOpenMenu(selected: Partial<Report>, event?: UIEvent): void {
+    if (!selected) {
+      return;
+    }
+
+    if (event) {
+      event.stopImmediatePropagation();
+      event.preventDefault();
+    }
+
+    this.selectedExternalRef = selected;
+  }
+
+  /**
+   * @description open a report from the side nav
+   * @param {any} externalRef
+   * @param {UIEvent} event optional 
+   */
+  public onOpenExternalRef(event?: UIEvent): void {
+    const ref = this.selectedExternalRef;
+    const externalRefs = ref.attributes.external_references;
+    if (ref && externalRefs && externalRefs.length > 0) {
+      const url = externalRefs[0].url;
+      window.open(url, '_blank');
+    }
+  }
+
+  /**
+   * @description delete a report from the side nav
+   * @param {any} externalRef
+   * @param {UIEvent} event optional 
+   */
+  public onDeleteExternalRef(event?: UIEvent): void {
+    if (!this.selectedExternalRef || !this.selectedExternalRef.id) {
+      console.log(`I do not know which external ref to delete, moving on...`);
+    }
+
+    const reportId = this.selectedExternalRef.id;
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: this.selectedExternalRef
+    });
+    const workProductId = this.threatReport.id;
+
+    dialogRef.afterClosed().subscribe(
+      (result) => {
+        const isBool = typeof result === 'boolean';
+        const isString = typeof result === 'string';
+        if (!result ||
+            (isBool && result !== true) ||
+            (isString && result !== 'true')) {
+          return;
+        }
+
+        const delete$ = this.threatReportService
+          .removeReport(this.selectedExternalRef as Report, this.threatReport);
+        const load$ = this.load(workProductId).do((val) => this.threatReport = val as ThreatReport);
+        const sub$ = Observable.concat(delete$, load$)
+          .subscribe(
+            (val) => this.modifiedBoundaries.emit(this.threatReport),
+            (err) => console.log(err));
+            this.subscriptions.push(sub$);
+      });
+  }
+
+  /**
+   * @description load the overview workproduct with the given id, or return an empty Observable
+   * @param workProductId
+   * @return {Observable<ThreatReport>}
+   */
+  public load(workProductId: string): Observable<Partial<ThreatReport>> {
+    if (!workProductId || workProductId.trim().length === 0) {
+        return Observable.empty();
+    }
+    return this.threatReportService.load(workProductId);
   }
 
 }

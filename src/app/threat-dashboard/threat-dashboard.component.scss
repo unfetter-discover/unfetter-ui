@@ -1,7 +1,5 @@
 @import '../../styles/_variables.scss';
 
-$md_sidenav_max_width: 400px;
-
 .flex {
     display: flex;
 }
@@ -11,42 +9,8 @@ $md_sidenav_max_width: 400px;
     color: $threat-dashboard-primary-light;
 }
 
-.side-panel {
-    background-color: #FFFFFF;
-    padding: 0px;
-    // padding-top: 55px;
-    // box-shadow: 3px 0 6px rgba(0,0,0,.24);
-}
-
 .main-panel {
     background-color: #F1F1F1;
-}
-
-.minimizeControls {
-    position: absolute;
-    z-index: 5;
-    background-color: $threat-dashboard-primary-light;
-    flex: 0 0 auto;
-    color: $white_87;
-}
-
-.small-side-panel {
-    transition: width 2s, height 2s, background-color 2s;
-    width: 70px;
-    background-color: $threat-dashboard-primary-light;
-    color: $white_87;
-    cursor: pointer;
-
-    svg {
-        width: 24px;
-        height: 24px;
-        fill: $white_87;
-    }
-    
-    div {
-        text-align: center;
-        padding: 16px;
-    }
 }
 
 @media only screen and (max-width: 992px) {
@@ -56,23 +20,9 @@ $md_sidenav_max_width: 400px;
         width: 100%;
         flex: 0 0 auto;
     }
-
-    .side-panel {
-        padding-top: 0px;
-        flex: 0 0 auto;
-    }
 }
 
 @media only screen and (min-width: 992px) {
-    .side-panel {
-        // height: 100vh;
-        // position: fixed;
-        // top: 0;
-        overflow-y: auto;
-        width: $md_sidenav_max_width;
-        flex: 1 0 auto;
-    }
-    
     .main-panel {
         padding-top: 24px;
         padding-left: 8px;
@@ -112,4 +62,80 @@ $md_sidenav_max_width: 400px;
     margin-right: 16px;
 }
 
+.small-side-panel {
+    @include set-colors($threat-dashboard-primary-text,
+        linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important);
+    width: 70px;
+    cursor: pointer;
+    color: $white_87;
+    transition: width 2s, height 2s, background-color 2s;
 
+    svg {
+        width: 24px;
+        height: 24px;
+        fill: $white_87;
+    }
+    
+    div {
+        padding: 16px;
+        text-align: center;
+    }
+}
+
+.mat-accordion {
+    ::ng-deep .mat-expanded {
+        .mat-expansion-panel-header {
+            background: linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important;
+            
+            .mat-expansion-panel-header-title, .mat-expansion-indicator::after {
+              color: $white_87 !important;
+            }
+    
+            svg {
+                ::ng-deep .icon {
+                    fill: $white_87; 
+                }
+            }
+        }
+
+        .mat-expansion-panel-body {
+            padding: 0px 0px 0px 16px;
+        }
+    }
+}
+
+.mat-expansion-panel {
+    background-color: $white_87;
+
+    svg {
+        height: 24px;
+        width: 24px;
+        margin-right: 8px;
+        ::ng-deep .icon {
+            fill: $black_87;
+        }
+    }
+    
+    .mat-list-item {
+        font-size: 13px;
+        
+    }
+    
+    .clickable {
+        cursor: pointer;
+    }
+
+    .list-item-hover {
+        background-color: $threat-dashboard-primary-lightest;
+    }
+
+    a {
+        color: $black_87;
+    }
+}
+
+.mat-45 {
+    width: 45px;
+    height: 45px;
+    font-size: 45px;
+}

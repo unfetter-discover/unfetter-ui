@@ -9,15 +9,14 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-<<<<<<< HEAD
-import { MatToolbarModule } from '@angular/material';
-=======
 import { MatSidenavModule } from '@angular/material/sidenav';
->>>>>>> interim
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -45,6 +44,7 @@ import { SpeedDialComponent } from './components/speed-dial/speed-dial.component
 import { FooterComponent } from './components/footer/footer.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { SidepanelComponent } from './components/sidepanel/sidepanel.component';
+import { MatDialog } from '@angular/material';
 
 const matModules = [
     MatAutocompleteModule,
@@ -54,14 +54,13 @@ const matModules = [
     MatPaginatorModule,
     MatInputModule,
     MatIconModule,
+    MatMenuModule,
+    MatToolbarModule,
     MatTooltipModule,
     MatTableModule,
     MatProgressSpinnerModule,
-<<<<<<< HEAD
-    MatToolbarModule
-=======
     MatSidenavModule,
->>>>>>> interim
+    MatDialogModule,
 ];
 
 const unfetterComponents = [

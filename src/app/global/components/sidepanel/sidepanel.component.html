@@ -1,39 +1,57 @@
 <mat-sidenav id="unfetter-side-panel" mode="side" opened="true">
 
-    <div class="side-panel" [@inOutAnimation] *ngIf="!isMinimized(); else minimizedBlock"
-            [style.width] = "getWidth()" (mouseover)="isCollapsible() && !isMinimized()" (mouseleave)="isCollapsible()">
+    <div class="side-panel" [@inOutAnimation] *ngIf="!minimized; else minimizedBlock" [style.width] = "getWidth()"
+            (mouseover)="showMinimizeButton = isCollapsible() && !minimized"
+            (mouseleave)="showMinimizeButton = false">
 
-        <div class="minimizeControls" [style.display]="isCollapsible() ? 'block': 'none'">
-            <button mat-icon-button (click)="contract()" matTooltip="Minimize" matTooltipPosition="right">
+        <div class="minimize-control" [style.display]="showMinimizeButton ? 'block': 'none'">
+            <button mat-icon-button (click)="minimized = true" matTooltip="Minimize" matTooltipPosition="right">
                 <mat-icon class="mat-24" aria-hidden="true" aria-label="Minimize side panel"
-                    #minimizeBtn>chevron_left</mat-icon>
+                        #minimizeBtn>chevron_left</mat-icon>
             </button>
         </div>
 
-        <div class="header">
-            <div class="mat-display-2">
+        <div class="header" [style.background]="headerBackground">
+
+            <mat-toolbar id="options-toolbar">
+                <span class="push-right"></span>
                 <span>
-                    {{threatReport.name || 'Threat Report Unamed'}}
+                    <button mat-icon-button [matMenuTriggerFor]="optionsMenu" matTooltip="Options Menu">
+                        <mat-icon class="mat-24 options-toggle"
+                                aria-hidden="false" aria-label="Options Menu">more_vert</mat-icon>
+                    </button>
+                    <mat-menu #optionsMenu="matMenu" xPosition="before">
+                        <ng-content select=".options-list"></ng-content>
+                    </mat-menu>
                 </span>
-            </div>
-            <div class="sidepanel-fab">
-                <button mat-fab color="accent" (click)="openAddReportDialog($event)" matTooltip="Modify Threat Report">
-                    <mat-icon class="mat-24" aria-label="Add associated reports icon">add</mat-icon>
-                </button>
-            </div>
+            </mat-toolbar>
+
+            <mat-toolbar id="item-toolbar">
+                <span class="push-right mat-display-2"> {{item.name || 'Unnamed'}} </span>
+                <!-- TODO change to a dialog??? -->
+                <span dropdown class="dropdown">
+                    <a dropdownToggle class="dropdown-toggle" data-toggle="master-list"
+                            role="button" aria-haspopup="true" aria-expanded="false">
+                        <mat-icon class="mat-24 master-list-toggle"
+                                aria-hidden="false" aria-label="Master List">arrow_drop_down</mat-icon>
+                    </a>
+                    <div class="dropdown-menu">
+                        <ng-content select=".master-list"></ng-content>
+                    </div>
+                </span>
+            </mat-toolbar>
+
         </div>
 
         <div>
-            <ng-content select="[side-panel-list]"></ng-content>
+            <ng-content select=".side-panel-items"></ng-content>
         </div>
 
-      </div>
+    </div>
 
     <ng-template #minimizedBlock>
-        <div [@inOutAnimation] class="small-side-panel" (click)="expand()">
-            <div *ngFor="let route of routes" (matTooltip)="route.tooltip" matTooltipPosition="right">
-                <svg><use class="icon" (xlink:href)="route.href"></use></svg>
-            </div>
+        <div [@inOutAnimation] class="small-side-panel" (click)="minimized = false">
+            <ng-content select=".side-panel-minis"></ng-content>
         </div>
     </ng-template>
 
