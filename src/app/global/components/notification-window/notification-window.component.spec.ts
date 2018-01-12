@@ -12,7 +12,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { ConfigService } from '../../../core/services/config.service';
 import { reducers } from '../../../root-store/app.reducers';
 
-fdescribe('NotificationWindowComponent', () => {
+describe('NotificationWindowComponent', () => {
   let component: NotificationWindowComponent;
   let fixture: ComponentFixture<NotificationWindowComponent>;
 
