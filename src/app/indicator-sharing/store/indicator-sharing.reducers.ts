@@ -44,6 +44,7 @@ const initialState: IndicatorSharingState = {
 const DEFAULT_DISPLAYED_LENGTH: number = 10;
 
 export function indicatorSharingReducer(state = initialState, action: indicatorSharingActions.IndicatorSharingActions): IndicatorSharingState {
+
     switch (action.type) {
         case indicatorSharingActions.SET_INDICATORS:
             return sortIndicators({

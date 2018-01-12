@@ -1,15 +1,7 @@
 @import '../../../styles/_variables.scss';
 
-// assess
-$assess-primary: get-color($blue-grey, 700);
-$assess-primary-light: get-color($blue-grey);
-$assess-primary-lighter: get-color($blue-grey, 200);
-$assess-primary-lightest: get-color($blue-grey, 50);
-$assess-accent: get-color($red, 500);
-$assess-primary-text: $white_87;
-
 .titleWrapper {
-    background: $assess-primary-light;
+    background: $assessments-primary-light;
     height: 128px;
     position: relative;
 }
@@ -20,6 +12,10 @@ $assess-primary-text: $white_87;
 
 .flex {
     display: flex;
+}
+
+.flex-cols {
+    flex-direction: column;
 }
 
 .center {
