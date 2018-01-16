@@ -2,7 +2,8 @@
     <mat-card-header>
         <mat-card-title>{{ indicator.name }}</mat-card-title>
         <mat-card-subtitle>
-            Submitted {{ indicator.created | date:'medium' }} 
+            Published
+            <span matTooltip="{{ indicator.created | date:'medium' }}">{{ indicator.created | timeAgo }}</span> 
             <span *ngIf="creator">
                  by <a routerLink="/stix/identities/{{creator.id}}">{{creator.name}}</a>
             </span>
@@ -16,15 +17,23 @@
             <code [innerHtml]="whitespaceToBreak(indicator.pattern)" class="inlineBlock"></code>
         </p>
 
+        <label>Labels</label>
+        <div class="flex flexItemsCenter">
+            <mat-chip-list>
+                <mat-chip *ngFor="let label of indicator.labels" [selected]="labelSelected(label)" class="cursor-pointer chipListChip">{{label | capitalize}}</mat-chip>
+            </mat-chip-list>
+            <add-label-reactive [stixType]="'indicator'" (labelAdded)="addLabel($event)" [currentLabels]="indicator.labels"></add-label-reactive>
+        </div>
+
         <mat-tab-group>
-            <mat-tab label="Labels">
+            <!-- <mat-tab label="Labels">
                 <div class="flex flexItemsCenter">
                     <mat-chip-list>
                         <mat-chip *ngFor="let label of indicator.labels" [selected]="labelSelected(label)" class="cursor-pointer chipListChip">{{label | capitalize}}</mat-chip>
                     </mat-chip-list>
                     <add-label-reactive [stixType]="'indicator'" (labelAdded)="addLabel($event)" [currentLabels]="indicator.labels"></add-label-reactive>
                 </div>
-            </mat-tab>
+            </mat-tab> -->
 
             <mat-tab label="Details">
                 <div *ngIf="indicator.kill_chain_phases">
@@ -61,7 +70,7 @@
                 </p> -->
             </mat-tab>
 
-            <mat-tab label="Comments" *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">
+            <!-- <mat-tab label="Comments" *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">
                 <div *ngFor="let comment of indicator.metaProperties.comments | sortByField: 'submitted'; let i = index">
                     <div class="flex flexItemsCenter mb-5">
                         <span *ngIf="comment.user.avatar_url">
@@ -75,7 +84,7 @@
                     <p [innerHtml]="whitespaceToBreak(comment.comment)"></p>
                     <hr *ngIf="i < (indicator.metaProperties.comments.length - 1)">
                 </div>
-            </mat-tab>
+            </mat-tab> -->
 
             <mat-tab label="Attack Patterns" *ngIf="attackPatterns && attackPatterns.length > 0">
                 <div *ngFor="let ap of attackPatterns">
@@ -129,6 +138,23 @@
             <div class="text-right">
                 <button mat-button (click)="showCommentTextArea = false; commentText = ''">CANCEL</button>
                 <button mat-raised-button color="primary" [disabled]="commentText === ''" (click)="submitComment()">SAVE</button>
+            </div>
+            <div label="Comments" *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">
+                <hr>
+                <div *ngFor="let comment of indicator.metaProperties.comments | sortByField: 'submitted'; let i = index">
+                    <div class="flex flexItemsCenter mb-5">
+                        <span *ngIf="comment.user.avatar_url">
+                            <img src="{{ comment.user.avatar_url }}" alt="{{ comment.user.userName }} avatar" class="smallAvatar">&nbsp;
+                        </span>
+                        <span>
+                            <a routerLink="/users/profile/{{comment.user.id}}">{{ comment.user.userName }}</a>
+                            <small class="text-muted"> &bull; {{ comment.submitted | timeAgo }}</small>
+                        </span>
+                    </div>
+                    <p [innerHtml]="whitespaceToBreak(comment.comment)"></p>
+                    <hr *ngIf="i < (indicator.metaProperties.comments.length - 1)">
+                </div>
+                <hr>
             </div>
         </div>
 
