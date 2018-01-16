@@ -107,7 +107,6 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
             .take(1)
             .subscribe(
                 (users: any) => {
-                    console.log(users);
                     this.store.dispatch(new indicatorSharingActions.StartSocialStream(users.userProfile._id));
                 },
                 (err) => {

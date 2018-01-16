@@ -137,7 +137,10 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
         case indicatorSharingActions.SET_SEARCH_PARAMETERS:
             return {
                 ...state,
-                searchParameters: action.payload
+                searchParameters: {
+                    ...state.searchParameters,
+                    ...action.payload
+                }
             };
         case indicatorSharingActions.CLEAR_SEARCH_PARAMETERS:
             return {

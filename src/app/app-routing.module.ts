@@ -18,7 +18,7 @@ const appRoutes: Routes = [
   { path: 'assessments', loadChildren: 'app/assessments/assessments.module#AssessmentsModule', canActivate: [AuthGuard] },
   { path: 'threat-dashboard', loadChildren: 'app/threat-dashboard/threat-dashboard.module#ThreatDashboardModule', canActivate: [AuthGuard] },
   { path: 'users', loadChildren: 'app/users/users.module#UsersModule' },
-  { path: 'indicator-sharing', loadChildren: 'app/indicator-sharing/indicator-sharing.module#IndicatorSharingModule' },
+  { path: 'indicator-sharing', loadChildren: 'app/indicator-sharing/indicator-sharing.module#IndicatorSharingModule', canActivate: [AuthGuard] },
   {
     path: 'organizations',
     loadChildren: 'app/organizations/organizations.module#OrganizationsModule',

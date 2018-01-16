@@ -18,8 +18,15 @@ export class IndicatorSharingFiltersComponent implements OnInit {
   public killChainPhases$: Observable<any>;
   public labels$: Observable<any>;
 
-  constructor(public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>, @Inject(FormBuilder) fb: FormBuilder) {
-    this.searchForm = fb.group(fromIndicatorSharing.initialSearchParameters);
+  constructor(
+    public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>, 
+    private fb: FormBuilder
+  ) {
+    const params = { ...fromIndicatorSharing.initialSearchParameters };
+    if (params.indicatorName) {
+      delete params.indicatorName;
+    }
+    this.searchForm = fb.group(params);
     this.searchForm.setValue(fromIndicatorSharing.initialSearchParameters);
   }
 
@@ -28,16 +35,16 @@ export class IndicatorSharingFiltersComponent implements OnInit {
       .debounceTime(300)
       .distinctUntilChanged()
       .subscribe(
-      (searchParams: SearchParameters) => {
-        this.store.dispatch(new indicatorSharingActions.SetSearchParameters(searchParams));
-        this.store.dispatch(new indicatorSharingActions.FilterIndicators());
-      },
-      (err) => {
-        console.log(err);
-      },
-      () => {
-        searchChanges$.unsubscribe();
-      }
+        (searchParams: SearchParameters) => {
+          this.store.dispatch(new indicatorSharingActions.SetSearchParameters(searchParams));
+          this.store.dispatch(new indicatorSharingActions.FilterIndicators());
+        },
+        (err) => {
+          console.log(err);
+        },
+        () => {
+          searchChanges$.unsubscribe();
+        }
       );
 
     this.killChainPhases$ = this.store.select('config')
