@@ -22,8 +22,10 @@ export function assessmentReducer(state = initialState, action: assessmentAction
                 ...state,
             };
         case assessmentActions.START_ASSESSMENT:
+            const assessment = new Assessment();
+            assessment.assessmentMeta = { ...action.payload };
             return {
-                assessment: { ...action.payload },  
+                assessment: assessment,
             };
         default:
             return state;
