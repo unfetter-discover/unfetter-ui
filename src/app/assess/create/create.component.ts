@@ -6,7 +6,7 @@ import * as assessActions from '../store/assess.actions';
 import * as assessReducers from '../store/assess.reducers';
 
 import { AssessForm } from '../../global/form-models/assess';
-import { Assessment } from '../../models/assess/assessment';
+import { AssessmentMeta } from '../../models/assess/assessment-meta';
 
 @Component({
   selector: 'unf-assess-create',
@@ -15,7 +15,7 @@ import { Assessment } from '../../models/assess/assessment';
 })
 export class CreateComponent implements OnInit {
 
-  public assessment: Assessment;
+  public assessment: AssessmentMeta;
   public form: FormGroup;
 
   constructor(
@@ -28,7 +28,7 @@ export class CreateComponent implements OnInit {
    * @description
    */
   ngOnInit(): void {
-    this.assessment = new Assessment();
+    this.assessment = new AssessmentMeta();
     this.resetForm();
   }
 
@@ -74,8 +74,8 @@ export class CreateComponent implements OnInit {
    * @description
    * @param form 
    */
-  public formToAssessment(form: FormGroup): Assessment {
-    const assessment = Object.assign(new Assessment(), form.value);
+  public formToAssessment(form: FormGroup): AssessmentMeta {
+    const assessment = Object.assign(new AssessmentMeta(), form.value);
     return assessment;
   }
 }

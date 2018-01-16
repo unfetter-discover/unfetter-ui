@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Assessment } from '../../models/assess/assessment';
+import { AssessmentMeta } from '../../models/assess/assessment-meta';
 
 // For effects
 export const START_ASSESSMENT = '[Assess] START_ASSESSMENT';
@@ -12,7 +12,7 @@ export const ANSWER_QUESTION = '[Assess] ANSWER_QUESTION';
 export class StartAssessment implements Action {
     public readonly type = START_ASSESSMENT;
 
-    constructor(public payload: Assessment) { }
+    constructor(public payload: AssessmentMeta) { }
 }
 
 export class SaveAssessment implements Action {
