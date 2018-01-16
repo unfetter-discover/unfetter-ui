@@ -45,6 +45,9 @@ import { FooterComponent } from './components/footer/footer.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { SidepanelComponent } from './components/sidepanel/sidepanel.component';
 import { MatDialog } from '@angular/material';
+import { OptionMenuItemComponent } from './components/sidepanel/option-menu-item.component';
+import { SimpleNavItemComponent } from './components/sidepanel/simple-nav-item.component';
+import { ExpansionNavItemComponent } from './components/sidepanel/expansion-nav-item.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -82,7 +85,10 @@ const unfetterComponents = [
     SpeedDialComponent,
     FooterComponent,
     LandingPageComponent,
-    SidepanelComponent
+    SidepanelComponent,
+    OptionMenuItemComponent,
+    ExpansionNavItemComponent,
+    SimpleNavItemComponent,
 ];
 
 @NgModule({
@@ -98,7 +104,7 @@ const unfetterComponents = [
         ...matModules,
     ],
     declarations: [
-        ...unfetterComponents
+        ...unfetterComponents,
     ],
     providers: []
 })

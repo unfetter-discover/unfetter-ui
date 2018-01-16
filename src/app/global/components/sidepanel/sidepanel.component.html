@@ -21,7 +21,7 @@
                                 aria-hidden="false" aria-label="Options Menu">more_vert</mat-icon>
                     </button>
                     <mat-menu #optionsMenu="matMenu" xPosition="before">
-                        <ng-content select=".options-list"></ng-content>
+                        <ng-content select="[optionMenuItem]"></ng-content>
                     </mat-menu>
                 </span>
             </mat-toolbar>
@@ -43,9 +43,9 @@
 
         </div>
 
-        <div>
-            <ng-content select=".side-panel-items"></ng-content>
-        </div>
+        <mat-accordion multi="true" displayMode="flat" class="accordion side-panel-items">
+            <ng-content select="[side-panel-item]"></ng-content>
+        </mat-accordion>
 
     </div>
 
