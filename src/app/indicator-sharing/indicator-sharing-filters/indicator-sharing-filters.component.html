@@ -1,0 +1,36 @@
+<div id="indicatorSharingFilters">
+  
+  <form [formGroup]="searchForm" novalidate>
+    <mat-form-field class="full-width mb-9">
+      <mat-select placeholder="Labels" [multiple]="true" formControlName="labels">
+        <mat-option value="{{label}}" *ngFor="let label of labels$ | async">{{ label | capitalize }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="full-width mb-9">
+      <mat-select placeholder="Organizations" [multiple]="true" formControlName="organizations">
+        <mat-option value="{{org.id}}" *ngFor="let org of store.select('indicatorSharing').pluck('identities') | async">{{ org.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="full-width mb-9">
+      <mat-select placeholder="Kill Chain Phases" [multiple]="true" formControlName="killChainPhases">
+        <mat-option value="{{phase}}" *ngFor="let phase of killChainPhases$ | async">{{ phase | capitalize }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="full-width mb-12">
+      <mat-select placeholder="Sensors" [multiple]="true" formControlName="sensors">
+        <mat-option value="{{sensor.id}}" *ngFor="let sensor of store.select('indicatorSharing').pluck('sensors') | async">{{ sensor.name | capitalize }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+
+
+  <p class="text-muted flex">
+    <span>
+      <a (click)="clearSearchParamaters()">Clear Filters</a>
+    </span>
+    <span class="flex1"></span>
+    <span>Results: {{ (store.select('indicatorSharing').pluck('filteredIndicators') | async).length }} / {{ (store.select('indicatorSharing').pluck('indicators')
+      | async).length }}</span>
+  </p>
+
+</div>

@@ -37,6 +37,7 @@ $threat-dashboard-primary-text: rgba(255, 255, 255, .87);
 // Analytic Hub
 $analytic-hub-primary: get-color($cyan, 600);
 $analytic-hub-primary-light: get-color($cyan, 300);
+$analytic-hub-primary-lighter: get-color($cyan, 200);
 $analytic-hub-accent: get-color($orange, A200);
 $analytic-hub-accent-text: $dark-text-default;
 $analytic-hub-primary-text: $light-text-default;

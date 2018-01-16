@@ -3,41 +3,60 @@
         <i class="material-icons mat-24">add</i>
     </button>
 
-    <div id="searchWrapper">
-        <div class="container-fluid height-100-percent">
-            <div class="row height-100-percent flex flexItemsCenter">
-                <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
-                    <search-bar></search-bar>
+    <mat-sidenav-container>
+        <mat-sidenav #filterContainer id="filterContainer" opened="false" mode="side" class="mat-elevation-z8" (openedStart)="openedStart()" (closedStart)="closedStart()">
+            <div id="filterTitle" class="flex flexItemsCenter">
+                <button mat-button (click)="filterContainer.close()">
+                    <h5 class="inlineBlock">FILTERS&nbsp;&nbsp;</h5>
+                    <i class="material-icons mat-24">filter_list</i>
+                </button>
+            </div>
+            <indicator-sharing-filters></indicator-sharing-filters>
+        </mat-sidenav>
+
+        <div id="mainWindow">
+            <button mat-button (click)="filterContainer.open()" id="showFiltersButton" *ngIf="!filterOpen" @fadeInOut>
+                <h5 class="inlineBlock">FILTERS&nbsp;&nbsp;</h5>
+                <i class="material-icons mat-24">filter_list</i>
+            </button>
+            <div id="searchWrapper" [ngClass]="{'filterOpen': filterOpen}">
+                <div class="container-fluid height-100-percent">
+                    <div class="row height-100-percent flex flexItemsCenter">
+                        <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-10 col-sm-10 col-sm-offset-10 col-xs-12">
+                            <search-bar></search-bar>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>    
-
-    <div class="container-fluid">
-
-        <div class="row">
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-12">
-                <indicator-sharing-sort></indicator-sharing-sort>
+            
+            <div class="container-fluid">
+            
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12">
+                        <indicator-sharing-sort></indicator-sharing-sort>
+                    </div>
+                </div>
+            
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12" id="indicatorListWrapper">
+            
+                        <div *ngFor="let indicator of displayedIndicators" class="mb-15">
+                            <indicator-card [indicator]="indicator" [attackPatterns]="getAttackPatternsByIndicatorId(indicator.id)" [sensors]="getSensorsByIndicatorId(indicator.id)"
+                                [creator]="getIdentityNameById(indicator.created_by_ref)" [searchParameters]="searchParameters" (stateChange)="updateIndicator($event)"></indicator-card>
+                        </div>
+            
+                        <div class="text-center mt-15 mb-20" *ngIf="displayShowMoreButton()">
+                            <button mat-button color="primary" class="full-width" (click)="showMoreIndicators()">Show More Indicators</button>
+                        </div>
+                    </div>
+                </div>
+            
             </div>
-        </div>
-
-        <div class="row">        
-            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-12" id="indicatorListWrapper">
-        
-                <div *ngFor="let indicator of displayedIndicators" class="mb-15">
-                    <indicator-card [indicator]="indicator" [attackPatterns]="getAttackPatternsByIndicatorId(indicator.id)" [sensors]="getSensorsByIndicatorId(indicator.id)"
-                        [creator]="getIdentityNameById(indicator.created_by_ref)" [searchParameters]="searchParameters" (stateChange)="updateIndicator($event)"></indicator-card>
-                </div>
-        
-                <div class="text-center mt-15 mb-20" *ngIf="displayShowMoreButton()">
-                    <button mat-button color="primary" class="full-width" (click)="showMoreIndicators()">Show More Indicators</button>
-                </div>
-            </div>        
+            
+            <br>
         </div>
         
-    </div>
-
-    <br>
+    </mat-sidenav-container>
 </div>
 
 <ng-template #loadingBlock>
