@@ -1,6 +1,6 @@
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 
-import { AssessmentMeta } from '../../models/asssess/assessment-meta';
+import { AssessmentMeta } from '../../models/assess/assessment-meta';
 
 export const AssessForm = (assessment?: AssessmentMeta) => {
     if (!assessment) {

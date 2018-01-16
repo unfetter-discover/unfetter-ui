@@ -6,7 +6,7 @@ import * as assessActions from '../store/assess.actions';
 import * as assessReducers from '../store/assess.reducers';
 
 import { AssessForm } from '../../global/form-models/assess';
-import { Assessment } from '../../models/asssess/assessment';
+import { Assessment } from '../../models/assess/assessment';
 
 @Component({
   selector: 'unf-assess-create',
