@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
-import { GenericApi } from '../core/services/genericapi.service';
-import { Constance } from '../utils/constance';
-import { Assessment } from '../models/assess/assessment';
+import { Assessment } from '../../models/assess/assessment';
+import { Constance } from '../../utils/constance';
+import { GenericApi } from '../../core/services/genericapi.service';
 
 @Injectable()
 export class AssessService {

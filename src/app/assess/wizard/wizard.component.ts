@@ -1,21 +1,16 @@
-import {
-  Component,
-  ViewChild,
-  Input,
-  OnInit,
-  SimpleChanges,
-  ChangeDetectorRef,
-  ViewEncapsulation,
-  ElementRef,
-  OnDestroy
-} from '@angular/core';
+import { Component, ChangeDetectorRef, ElementRef, ViewChild, Input, OnInit, SimpleChanges, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
 import { Location } from '@angular/common';
-import { Measurements } from './measurements';
-import { Constance } from '../../utils/constance';
+
+import { MatSnackBar } from '@angular/material';
+import { Observable } from 'rxjs/Observable';
+
 import { AssessmentsService } from '../assessments.service';
+import { AssessStateService } from '../services/assess-state.service';
+import { AssessmentMeta } from '../../models/assess/assessment-meta';
+import { Constance } from '../../utils/constance';
 import { GenericApi } from '../../core/services/genericapi.service';
+import { Measurements } from './measurements';
 import { MenuItem } from 'primeng/primeng';
 
 @Component({
@@ -69,7 +64,6 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
   Unfetter Discover will use the survey to help you understand your gaps, how important they are and which should be addressed.
   You may create multiple reports to see how your risk is changed when implementing different security processes.`;
   public pageIcon = Constance.REPORTS_ICON;
-  public pageTitle = 'Assessments';
   public showSummarry = false;
   public assessmentName = '';
   public currentAssessmentGroup = {} as any;
@@ -84,8 +78,13 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
   private tempModel = {};
   private readonly subscriptions = [];
 
-  constructor(private genericApi: GenericApi, private snackBar: MatSnackBar,
-              private location: Location, private route: ActivatedRoute) {
+  constructor(
+    private genericApi: GenericApi,
+    private snackBar: MatSnackBar,
+    private location: Location,
+    private route: ActivatedRoute,
+    private assessStateService: AssessStateService,
+  ) {
     super();
   }
 
@@ -94,6 +93,14 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    *  initializes this component, fetchs data to build page
    */
   public ngOnInit(): void {
+    console.log('in wizard');
+    // TODO: if no id is given in url, then load in progress assessment
+    this.loadInProgressAssessment()
+      .do((meta) => this.assessStateService.publishPageTitle(meta.title))
+      .subscribe((meta) => {
+        console.log('loaded', meta);
+      },
+      (err) => console.log(err));
     // const type = this.route.snapshot.paramMap.get('type');
     // const id = this.route.snapshot.paramMap.get('id');
     // this.url = this.generateUrl(type) + '?metaproperties=true';
@@ -117,6 +124,10 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     //   }, logErr);
 
     // this.subscriptions.push(sub1);
+  }
+
+  public loadInProgressAssessment(): Observable<AssessmentMeta> {
+    return this.assessStateService.metaData$;
   }
 
   /**
@@ -179,19 +190,19 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @returns {void}
    */
 
-   public updateRisks(option: any, measurement: any, assessment: any): void {
-    const newRisk = option.selected.value ;
+  public updateRisks(option: any, measurement: any, assessment: any): void {
+    const newRisk = option.selected.value;
     // update measurement value in assessments
     const assessmentMeasurementToUpdate = assessment.measurements.find((assMes) => assMes.name === measurement.name);
     this.updateQuestionRisk(assessmentMeasurementToUpdate, newRisk);
     // we need a temp model to hold selected question
     if (!this.model) {
       if (!this.tempModel[assessment.id]) {
-        this.tempModel[assessment.id] = {assessment: '', measurements: []};
+        this.tempModel[assessment.id] = { assessment: '', measurements: [] };
       }
       this.tempModel[assessment.id].assessment = assessment;
       this.tempModel[assessment.id].measurements = this.tempModel[assessment.id].measurements.filter((m) => {
-          return m.name !== assessmentMeasurementToUpdate.name;
+        return m.name !== assessmentMeasurementToUpdate.name;
       });
       // only add if question is selected
       if (newRisk >= 0) {
@@ -227,26 +238,26 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
           }
         };
         this.model.attributes.assessment_objects.push(assessment_object);
-     } else {
-      if (newRisk < 0) {
-        assessment_object.questions = assessment_object.questions.filter((q) => { return q.name !== measurement.name } );
-        if (assessment_object.questions.length === 0) {
-          assessment_object.risk = newRisk;
-        }
       } else {
-        let question = assessment_object.questions.find((q) => q.name === measurement.name);
-        if (!question) {
-          question = measurement;
-          assessment_object.questions.push(question);
+        if (newRisk < 0) {
+          assessment_object.questions = assessment_object.questions.filter((q) => { return q.name !== measurement.name });
+          if (assessment_object.questions.length === 0) {
+            assessment_object.risk = newRisk;
+          }
         } else {
-          this.updateQuestionRisk(question, newRisk);
+          let question = assessment_object.questions.find((q) => q.name === measurement.name);
+          if (!question) {
+            question = measurement;
+            assessment_object.questions.push(question);
+          } else {
+            this.updateQuestionRisk(question, newRisk);
+          }
+          assessment_object.risk = assessment.risk;
         }
-        assessment_object.risk = assessment.risk;
       }
     }
-  }
     this.updateChart();
-}
+  }
   /**
    * @description clicked back a page
    * @param {UIEvent} event optional
@@ -264,7 +275,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     this.buttonLabel = 'Next';
     this.showSummarry = false;
     this.currentAssessmentGroup = this.assessmentGroup;
-    this.pageTitle = this.splitTitle();
+    // this.pageTitle = this.splitTitle();
     this.selectedRiskValue = null;
     this.updateChart();
   }
@@ -284,7 +295,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     } else {
       if (this.page + 1 > this.assessmentGroups.length) {
         this.page = this.page + 1;
-        this.pageTitle = ' Assessment Summary';
+        // this.pageTitle = ' Assessment Summary';
         this.currentAssessmentGroup = null;
         this.showSummarry = true;
         this.buttonLabel = 'Save';
@@ -295,7 +306,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       } else {
         this.page = this.page + 1;
         this.currentAssessmentGroup = this.assessmentGroup;
-        this.pageTitle = this.splitTitle();
+        // this.pageTitle = this.splitTitle();
         this.selectedRiskValue = null;
         this.updateChart();
       }
@@ -335,7 +346,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     if (data) {
       this.assessmentGroups = this.createAssessmentGroups(data);
       this.currentAssessmentGroup = this.assessmentGroup;
-      this.pageTitle = this.splitTitle();
+      // this.pageTitle = this.splitTitle();
       this.updateChart();
     }
   }
@@ -368,7 +379,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         if (assessedObject.attributes.metaProperties && assessedObject.attributes.metaProperties.groupings) {
           assessment.groupings = assessedObject.attributes.metaProperties.groupings;
         }
-        
+
         assessment.id = assessedObject.id;
         assessment.name = assessedObject.attributes.name;
         assessment.description = assessedObject.attributes.description;
@@ -533,8 +544,8 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
           });
         }
         temp.risk = temp.questions
-        .map((question) => question.risk)
-        .reduce((prev, cur) => (prev += cur), 0) / temp.questions.length;
+          .map((question) => question.risk)
+          .reduce((prev, cur) => (prev += cur), 0) / temp.questions.length;
 
         assessmentSet.add(JSON.stringify(temp));
 
@@ -595,16 +606,16 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         (assessment_object) => {
           let filter = false;
           assessment_object.questions.forEach((question) => {
-             if ( question.risk >= 0 ) {
-               filter = true;
-             }
+            if (question.risk >= 0) {
+              filter = true;
+            }
           });
           return filter;
         }
       );
       if (retVal.assessment_objects) {
         retVal.assessment_objects.forEach((assessment_object) => {
-            assessment_object.questions = assessment_object.questions.filter((question) => {
+          assessment_object.questions = assessment_object.questions.filter((question) => {
             return question.risk >= 0
           });
         });

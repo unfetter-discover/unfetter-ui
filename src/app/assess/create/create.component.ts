@@ -7,6 +7,7 @@ import * as assessReducers from '../store/assess.reducers';
 
 import { AssessForm } from '../../global/form-models/assess';
 import { AssessmentMeta } from '../../models/assess/assessment-meta';
+import { AssessStateService } from '../services/assess-state.service';
 
 @Component({
   selector: 'unf-assess-create',
@@ -17,19 +18,29 @@ export class CreateComponent implements OnInit {
 
   public assessment: AssessmentMeta;
   public form: FormGroup;
+  public title = '';
 
   constructor(
     private formBuilder: FormBuilder,
     public store: Store<assessReducers.AssessState>,
-  ) {
-  }
-  
+    public stateService: AssessStateService,
+  ) { }
+
   /**
    * @description
    */
   ngOnInit(): void {
     this.assessment = new AssessmentMeta();
+    this.stateService.publishPageTitle(this.assessment.title);
     this.resetForm();
+
+    // listen for a change to wizard page event
+    this.store.select('assessment')
+      .subscribe((resp) => {
+        console.log('assessment subscribe', resp);
+      },
+      (err) => console.log(err),
+      () => console.log('done'));
   }
 
   /**
