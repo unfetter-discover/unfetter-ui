@@ -21,37 +21,27 @@
                                 aria-hidden="false" aria-label="Options Menu">more_vert</mat-icon>
                     </button>
                     <mat-menu #optionsMenu="matMenu" xPosition="before">
-                        <ng-content select="[optionMenuItem]"></ng-content>
+                        <ng-content select="sidepanel-option-item"></ng-content>
                     </mat-menu>
                 </span>
             </mat-toolbar>
 
             <mat-toolbar id="item-toolbar">
                 <span class="push-right mat-display-2"> {{item.name || 'Unnamed'}} </span>
-                <!-- TODO change to a dialog??? -->
-                <span dropdown class="dropdown">
-                    <a dropdownToggle class="dropdown-toggle" data-toggle="master-list"
-                            role="button" aria-haspopup="true" aria-expanded="false">
-                        <mat-icon class="mat-24 master-list-toggle"
-                                aria-hidden="false" aria-label="Master List">arrow_drop_down</mat-icon>
-                    </a>
-                    <div class="dropdown-menu">
-                        <ng-content select=".master-list"></ng-content>
-                    </div>
-                </span>
+                <ng-content select="sidepanel-master-list-trigger"></ng-content>
             </mat-toolbar>
 
         </div>
 
-        <mat-accordion multi="true" displayMode="flat" class="accordion side-panel-items">
-            <ng-content select="[side-panel-item]"></ng-content>
+        <mat-accordion multi="true" displayMode="flat" class="accordion">
+            <ng-content select="sidepanel-list-item"></ng-content>
         </mat-accordion>
 
     </div>
 
     <ng-template #minimizedBlock>
         <div [@inOutAnimation] class="small-side-panel" (click)="minimized = false">
-            <ng-content select=".side-panel-minis"></ng-content>
+            <ng-content select="[sidepanel-mini-item]"></ng-content>
         </div>
     </ng-template>
 

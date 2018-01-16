@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, Renderer2 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
@@ -73,6 +73,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     protected route: ActivatedRoute,
     protected genericApi: GenericApi,
     protected dialog: MatDialog,
+    protected renderer: Renderer2,
     protected threatReportService: ThreatReportOverviewService
   ) { }
 
@@ -563,35 +564,36 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @param {UIEvent} event optional 
    */
   public onDeleteExternalRef(event?: UIEvent): void {
-    if (!this.selectedExternalRef || !this.selectedExternalRef.id) {
-      console.log(`I do not know which external ref to delete, moving on...`);
-    }
+    console.log(`TODO! we need a way to connect selected list items to the options menu! ABORTING.`);
+    // if (!this.selectedExternalRef || !this.selectedExternalRef.id) {
+    //   console.log(`I do not know which external ref to delete, moving on...`);
+    // }
 
-    const reportId = this.selectedExternalRef.id;
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      data: this.selectedExternalRef
-    });
-    const workProductId = this.threatReport.id;
+    // const reportId = this.selectedExternalRef.id;
+    // const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+    //   data: this.selectedExternalRef
+    // });
+    // const workProductId = this.threatReport.id;
 
-    dialogRef.afterClosed().subscribe(
-      (result) => {
-        const isBool = typeof result === 'boolean';
-        const isString = typeof result === 'string';
-        if (!result ||
-            (isBool && result !== true) ||
-            (isString && result !== 'true')) {
-          return;
-        }
+    // dialogRef.afterClosed().subscribe(
+    //   (result) => {
+    //     const isBool = typeof result === 'boolean';
+    //     const isString = typeof result === 'string';
+    //     if (!result ||
+    //         (isBool && result !== true) ||
+    //         (isString && result !== 'true')) {
+    //       return;
+    //     }
 
-        const delete$ = this.threatReportService
-          .removeReport(this.selectedExternalRef as Report, this.threatReport);
-        const load$ = this.load(workProductId).do((val) => this.threatReport = val as ThreatReport);
-        const sub$ = Observable.concat(delete$, load$)
-          .subscribe(
-            (val) => this.modifiedBoundaries.emit(this.threatReport),
-            (err) => console.log(err));
-            this.subscriptions.push(sub$);
-      });
+    //     const delete$ = this.threatReportService
+    //       .removeReport(this.selectedExternalRef as Report, this.threatReport);
+    //     const load$ = this.load(workProductId).do((val) => this.threatReport = val as ThreatReport);
+    //     const sub$ = Observable.concat(delete$, load$)
+    //       .subscribe(
+    //         (val) => this.modifiedBoundaries.emit(this.threatReport),
+    //         (err) => console.log(err));
+    //         this.subscriptions.push(sub$);
+    // });
   }
 
   /**
@@ -604,6 +606,74 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
         return Observable.empty();
     }
     return this.threatReportService.load(workProductId);
+  }
+
+  public getReportURL(report: Report): string {
+    if (report
+        && report.attributes
+        && report.attributes.external_references
+        && report.attributes.external_references.length > 0) {
+      return report.attributes.external_references[0].url;
+    }
+    return '';
+  }
+
+  /**
+   * @description navigate to the stix page relating to the given id, or noop for no id
+   * @param {string} intrustionId uuid
+   * @param {UIEvent} event optional
+   * @returns {Promise<boolean>}
+   */
+  public onNavigateToIntrusion(intrusionId: string = '', event?: UIEvent): Promise<boolean> {
+      if (!intrusionId || intrusionId.trim().length === 0) {
+          return;
+      }
+      const url = `/stix/intrusion-sets/`;
+      return this.router.navigate([url, intrusionId]);
+  }
+
+  /**
+   * @description navigate to the stix page relating to the given id, or noop for no id
+   * @param {string} intrustionId uuid
+   * @param {UIEvent} event optional
+   * @returns {Promise<boolean>}
+   */
+  public onNavigateToMalware(malwareId: string = '', event?: UIEvent): Promise<boolean> {
+      if (!malwareId || malwareId.trim().length === 0) {
+          return;
+      }
+      const url = `/stix/malwares/`;
+      return this.router.navigate([url, malwareId]);
+  }
+
+  /**
+   * @description highlight background on hover, using a class
+   * @param {UIEvent} event optional
+   * @return {void}
+   */
+  public listItemMouseEnter(event: UIEvent): void {
+      if (!event) {
+          return;
+      }
+      const el = event.currentTarget;
+      this.renderer.addClass(el, 'list-item-hover');
+  }
+
+  /**
+   * @description remove highlight background on hover, using a class
+   * @param {UIEvent} event optional
+   * @return {void}
+   */
+  public listItemMouseLeave(event: UIEvent): void {
+      if (!event) {
+          return;
+      }
+      const el = event.currentTarget;
+      this.renderer.removeClass(el, 'list-item-hover');
+  }
+
+  public showMasterList(): void {
+    console.log('Master List trigger clicked!');
   }
 
 }

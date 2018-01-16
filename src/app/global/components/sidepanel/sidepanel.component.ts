@@ -5,6 +5,7 @@ import { parentFadeIn, slideInOutAnimation } from '../../animations/animations';
 interface NamedItem {
   name: string;
 }
+
 interface Option {
   label: string;
   icon: string;

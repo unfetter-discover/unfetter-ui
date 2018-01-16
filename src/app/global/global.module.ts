@@ -3,12 +3,14 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
+import { MatExpansionModule } from '@angular/material';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -45,11 +47,13 @@ import { FooterComponent } from './components/footer/footer.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { SidepanelComponent } from './components/sidepanel/sidepanel.component';
 import { MatDialog } from '@angular/material';
-import { OptionMenuItemComponent } from './components/sidepanel/option-menu-item.component';
-import { SimpleNavItemComponent } from './components/sidepanel/simple-nav-item.component';
-import { ExpansionNavItemComponent } from './components/sidepanel/expansion-nav-item.component';
+import { SidepanelListItemComponent } from './components/sidepanel/sidepanel-list-item.component';
+import { SidepanelOptionItemComponent } from './components/sidepanel/sidepanel-option-item.component';
+import { SidepanelMiniItemComponent } from './components/sidepanel/sidepanel-mini-item.component';
+import { SidepanelMasterListTriggerComponent } from './components/sidepanel/sidepanel-master-list-trigger.component';
 
 const matModules = [
+    MatExpansionModule,
     MatAutocompleteModule,
     MatButtonModule,
     MatCheckboxModule,
@@ -57,6 +61,7 @@ const matModules = [
     MatPaginatorModule,
     MatInputModule,
     MatIconModule,
+    MatListModule,
     MatMenuModule,
     MatToolbarModule,
     MatTooltipModule,
@@ -86,9 +91,10 @@ const unfetterComponents = [
     FooterComponent,
     LandingPageComponent,
     SidepanelComponent,
-    OptionMenuItemComponent,
-    ExpansionNavItemComponent,
-    SimpleNavItemComponent,
+    SidepanelListItemComponent,
+    SidepanelOptionItemComponent,
+    SidepanelMiniItemComponent,
+    SidepanelMasterListTriggerComponent,
 ];
 
 @NgModule({

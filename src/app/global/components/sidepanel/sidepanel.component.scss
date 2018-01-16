@@ -32,20 +32,10 @@ $sidenav_max_width: 400px;
     @include set-colors($threat-dashboard-primary-text,
         linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important);
     width: 70px;
+    height: 100%;
     cursor: pointer;
     color: $white_87;
     transition: width 2s, height 2s, background-color 2s;
-
-    svg {
-        width: 24px;
-        height: 24px;
-        fill: $white_87;
-    }
-    
-    div {
-        padding: 16px;
-        text-align: center;
-    }
 }
 
 .header {
@@ -104,40 +94,4 @@ $sidenav_max_width: 400px;
             padding: 0px 0px 0px 16px;
         }
     }
-}
-
-.mat-expansion-panel {
-    background-color: $white_87;
-
-    svg {
-        height: 24px;
-        width: 24px;
-        margin-right: 8px;
-        ::ng-deep .icon {
-            fill: $black_87;
-        }
-    }
-    
-    .mat-list-item {
-        font-size: 13px;
-        
-    }
-    
-    .clickable {
-        cursor: pointer;
-    }
-
-    .list-item-hover {
-        background-color: $threat-dashboard-primary-lightest;
-    }
-
-    a {
-        color: $black_87;
-    }
-}
-
-.mat-45 {
-    width: 45px;
-    height: 45px;
-    font-size: 45px;
 }
