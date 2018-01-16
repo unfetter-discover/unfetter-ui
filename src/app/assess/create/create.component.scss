@@ -1,35 +1,11 @@
 @import '../../../styles/_variables.scss';
 
-.titleWrapper {
-    background: $assessments-primary-light;
-    height: 128px;
-    position: relative;
-}
-
-.contentWrapper {
-    margin-top: -64px;
-}
-
-.flex {
-    display: flex;
-}
-
 .flex-cols {
     flex-direction: column;
 }
 
-.center {
-    margin: 0 auto;
-}
-
 .mb-18 {
     margin-bottom: 18px;
-}
-
-.title {
-    position: absolute;
-    margin-top: 24px;
-    margin-left: 56px;
 }
 
 .assess-create-card {

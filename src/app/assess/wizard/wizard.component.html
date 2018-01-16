@@ -1,122 +1,116 @@
-<page-header [pageTitle]="pageTitle" [pageIcon]="pageIcon" [description]="description"></page-header>
-<div class="flex">
-
+<div class="card">
   <div>
-    <div>
-      <!-- Stepers Wrapper -->
-      <ul class="stepper stepper-vertical">
+    <!-- Stepers Wrapper -->
+    <ul class="stepper stepper-vertical">
 
-        <!-- First Step -->
-        <li [class.active]="navigation.page === page" *ngFor="let navigation of navigations">
-          <!--Section Title -->
-          <a href (click)="navigationClicked(navigation.page, $event)">
-            <span class="circle">
-              <!--{{navigation.page}}-->&nbsp;
-            </span>
-            <span class="label">{{navigation.label}}</span>
-          </a>
+      <!-- First Step -->
+      <li [class.active]="navigation.page === page" *ngFor="let navigation of navigations">
+        <!--Section Title -->
+        <a href (click)="navigationClicked(navigation.page, $event)">
+          <span class="circle">
+            <!--{{navigation.page}}-->&nbsp;
+          </span>
+          <span class="label">{{navigation.label}}</span>
+        </a>
 
-        </li>
-      </ul>
-      <!-- /.Stepers Wrapper -->
-    </div>
-  </div>
-
-  <div class="flex1">
-
-    <mat-card>
-
-      <div *ngIf="showSummarry">
-        <mat-card-header>
-          <mat-card-title>Assessment Report</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <!--<p>Assessment Description</p>-->
-          <div class="row mat-card-padding">
-            <div class="col-xs-8">
-              <mat-form-field class="full-width">
-                <input matInput placeholder="Assessment Name" name="assessment-name" [(ngModel)]="assessmentName">
-              </mat-form-field>
-            </div>
-            <div class="col-xs-4">
-
-              <mat-form-field class="full-width">
-                <input matInput [matDatepicker]="picker" placeholder="Published" [(ngModel)]="publishDate">
-                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-              </mat-form-field>
-            </div>
-          </div>
-          <div class="row mat-card-padding">
-            <div class="col-xs-12">
-              <mat-form-field class="full-width">
-                <textarea matInput placeholder="Assessment Description" [(ngModel)]="assessmentDescription"></textarea>
-              </mat-form-field>
-            </div>
-          </div>
-        </mat-card-content>
-      </div>
-
-      <div *ngIf="currentAssessmentGroup">
-        <mat-card-content>
-          <div class="row margin-bottom flex-sm flexItemsCenter">
-            <div class="col-sm-3">
-              <div style="display: block">
-                <canvas baseChart [datasets]="doughnutChartData" [labels]="doughnutChartLabels" [chartType]="doughnutChartType" [colors]="doughnutChartColors"
-                  [options]="chartOptions"></canvas>
-              </div>
-            </div>
-            <div class="col-sm-9">
-              <h4> {{currentAssessmentGroup.name | capitalize }}</h4>
-              <p *ngIf="currentAssessmentGroup.description">
-                {{currentAssessmentGroup.description}}
-              </p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-12">
-              <hr>
-            </div>
-          </div>
-          <div class="row margin-bottom" *ngFor="let assessment of currentAssessmentGroup.assessments">
-            <div class="col-xs-12">
-              <div class="row">
-                <div class="col-xs-12">
-
-                  <!-- <p>Risk: {{ assessment.risk }} * Delete me</p> -->
-                  <risk-icon [risk]="assessment.risk" [showTooltip]="true"></risk-icon>
-                  <strong>{{assessment.name}} -- {{assessment.description | firstSentence}}</strong> {{assessment.description | restSentence}}
-                </div>
-              </div>
-              <div class="row" style="margin: 10px 0px;">
-                <div class="col-xs-{{ assessment.measurements.length | columnSize}}" *ngFor="let measurement of assessment.measurements">
-                  <form>
-                    <mat-form-field class="full-width">
-                      <mat-select #question name="question" (change)="updateRisks(question, measurement, assessment)" [value]="selectedValue(assessment, measurement, question)">
-                        <mat-option [value]="defaultValue"></mat-option>
-                        <mat-option *ngFor="let options of measurement.options" [value]="options.risk">
-                          {{ options.name }}
-                        </mat-option>
-                      </mat-select>
-                    </mat-form-field>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        </mat-card-content>
-      </div>
-
-      <mat-card-actions class="text-right">
-        <button mat-button [disabled]="page === 1" (click)="back($event)"> Back</button>
-        <button mat-button (click)="next($event)" *ngIf="!(buttonLabel === 'Save' && saved)"> {{buttonLabel}}</button>
-        <button mat-button disabled *ngIf="buttonLabel === 'Save' && saved">
-          <i class="material-icons text-success">check</i>&nbsp;Saved
-        </button>
-      </mat-card-actions>
-
-    </mat-card>
+      </li>
+    </ul>
+    <!-- /.Stepers Wrapper -->
   </div>
 </div>
-<br>
-<br>
+
+<div class="flex1">
+
+  <mat-card>
+
+    <div *ngIf="showSummarry">
+      <mat-card-header>
+        <mat-card-title>Assessment Report</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <!--<p>Assessment Description</p>-->
+        <div class="row mat-card-padding">
+          <div class="col-xs-8">
+            <mat-form-field class="full-width">
+              <input matInput placeholder="Assessment Name" name="assessment-name" [(ngModel)]="assessmentName">
+            </mat-form-field>
+          </div>
+          <div class="col-xs-4">
+
+            <mat-form-field class="full-width">
+              <input matInput [matDatepicker]="picker" placeholder="Published" [(ngModel)]="publishDate">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row mat-card-padding">
+          <div class="col-xs-12">
+            <mat-form-field class="full-width">
+              <textarea matInput placeholder="Assessment Description" [(ngModel)]="assessmentDescription"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card-content>
+    </div>
+
+    <div *ngIf="currentAssessmentGroup">
+      <mat-card-content>
+        <div class="row margin-bottom flex-sm flexItemsCenter">
+          <div class="col-sm-3">
+            <div style="display: block">
+              <canvas baseChart [datasets]="doughnutChartData" [labels]="doughnutChartLabels" [chartType]="doughnutChartType" [colors]="doughnutChartColors"
+                [options]="chartOptions"></canvas>
+            </div>
+          </div>
+          <div class="col-sm-9">
+            <h4> {{currentAssessmentGroup.name | capitalize }}</h4>
+            <p *ngIf="currentAssessmentGroup.description">
+              {{currentAssessmentGroup.description}}
+            </p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <hr>
+          </div>
+        </div>
+        <div class="row margin-bottom" *ngFor="let assessment of currentAssessmentGroup.assessments">
+          <div class="col-xs-12">
+            <div class="row">
+              <div class="col-xs-12">
+
+                <!-- <p>Risk: {{ assessment.risk }} * Delete me</p> -->
+                <risk-icon [risk]="assessment.risk" [showTooltip]="true"></risk-icon>
+                <strong>{{assessment.name}} -- {{assessment.description | firstSentence}}</strong> {{assessment.description | restSentence}}
+              </div>
+            </div>
+            <div class="row" style="margin: 10px 0px;">
+              <div class="col-xs-{{ assessment.measurements.length | columnSize}}" *ngFor="let measurement of assessment.measurements">
+                <form>
+                  <mat-form-field class="full-width">
+                    <mat-select #question name="question" (change)="updateRisks(question, measurement, assessment)" [value]="selectedValue(assessment, measurement, question)">
+                      <mat-option [value]="defaultValue"></mat-option>
+                      <mat-option *ngFor="let options of measurement.options" [value]="options.risk">
+                        {{ options.name }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </div>
+
+    <mat-card-actions class="text-right">
+      <button mat-button [disabled]="page === 1" (click)="back($event)"> Back</button>
+      <button mat-button (click)="next($event)" *ngIf="!(buttonLabel === 'Save' && saved)"> {{buttonLabel}}</button>
+      <button mat-button disabled *ngIf="buttonLabel === 'Save' && saved">
+        <i class="material-icons text-success">check</i>&nbsp;Saved
+      </button>
+    </mat-card-actions>
+
+  </mat-card>
+</div>
