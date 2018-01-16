@@ -32,7 +32,7 @@ export class AssessEffects {
     public startAssessment = this.actions$
         .ofType(assessActions.START_ASSESSMENT)
         .map((el) => {
-            console.log('in effectes for ', assessActions.START_ASSESSMENT);
+            console.log('in effects for ', assessActions.START_ASSESSMENT, el);
             return el;
         });
 //         @Effect({ dispatch: false })

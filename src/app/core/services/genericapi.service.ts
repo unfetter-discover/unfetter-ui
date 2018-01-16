@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { Constance } from '../../utils/constance';
-import { JsonApi } from '../../models/jsonapi';
-import { JsonApiData } from '../../models/jsonapi-data';
+import { JsonApiData } from '../../models/json/jsonapi-data';
+import { JsonApi } from '../../models/json/jsonapi';
 
 @Injectable()
 export class GenericApi {

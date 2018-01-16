@@ -94,29 +94,29 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    *  initializes this component, fetchs data to build page
    */
   public ngOnInit(): void {
-    const type = this.route.snapshot.paramMap.get('type');
-    const id = this.route.snapshot.paramMap.get('id');
-    this.url = this.generateUrl(type) + '?metaproperties=true';
-    const logErr = (err) => console.log(err);
-    const sub1 = this.genericApi.get(this.url)
-      .subscribe((data) => {
-        this.build(data);
-        if (id) {
-          this.url = 'api/x-unfetter-assessments';
-          const sub2 = this.genericApi.get(this.url, id)
-            .subscribe((res) => {
-              this.model = res;
-              if (this.model.attributes.created !== undefined) {
-                this.publishDate = new Date(this.model.attributes.created);
-              }
-              this.selectedRiskValue = null;
-              this.updateChart();
-            }, logErr);
-          this.subscriptions.push(sub2);
-        }
-      }, logErr);
+    // const type = this.route.snapshot.paramMap.get('type');
+    // const id = this.route.snapshot.paramMap.get('id');
+    // this.url = this.generateUrl(type) + '?metaproperties=true';
+    // const logErr = (err) => console.log(err);
+    // const sub1 = this.genericApi.get(this.url)
+    //   .subscribe((data) => {
+    //     this.build(data);
+    //     if (id) {
+    //       this.url = 'api/x-unfetter-assessments';
+    //       const sub2 = this.genericApi.get(this.url, id)
+    //         .subscribe((res) => {
+    //           this.model = res;
+    //           if (this.model.attributes.created !== undefined) {
+    //             this.publishDate = new Date(this.model.attributes.created);
+    //           }
+    //           this.selectedRiskValue = null;
+    //           this.updateChart();
+    //         }, logErr);
+    //       this.subscriptions.push(sub2);
+    //     }
+    //   }, logErr);
 
-    this.subscriptions.push(sub1);
+    // this.subscriptions.push(sub1);
   }
 
   /**
