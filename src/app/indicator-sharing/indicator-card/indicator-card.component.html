@@ -1,13 +1,28 @@
 <mat-card class="indicatorCard uf-mat-card" *ngIf="indicator">
     <mat-card-header>
-        <mat-card-title>{{ indicator.name }}</mat-card-title>
+        <mat-card-title>
+            <span>{{ indicator.name }}</span>
+            <span class="flex1">&nbsp;</span>
+            <button mat-icon-button [matMenuTriggerFor]="menu" class="mat-24">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item routerLink="/stix/indicators/edit/{{ indicator.id }}">
+                    <mat-icon>create</mat-icon>
+                    <span>Edit</span>
+                </button>
+                <button mat-menu-item>
+                    <mat-icon>delete</mat-icon>
+                    <span>Delete</span>
+                </button>
+            </mat-menu>
+        </mat-card-title>
         <mat-card-subtitle>
             Published
             <span matTooltip="{{ indicator.created | date:'medium' }}">{{ indicator.created | timeAgo }}</span> 
             <span *ngIf="creator">
                  by <a routerLink="/stix/identities/{{creator.id}}">{{creator.name}}</a>
             </span>
-            
         </mat-card-subtitle>
     </mat-card-header>
 
@@ -172,7 +187,7 @@
             <span *ngIf="indicator.metaProperties && indicator.metaProperties.likes && indicator.metaProperties.likes.length > 0">&nbsp;{{indicator.metaProperties.likes.length}}</span>
         </button>
 
-        <button mat-button (click)="showCommentTextArea = !showCommentTextArea">
+        <button mat-button color="{{ alreadyCommented ? 'primary' : '' }}" (click)="showCommentTextArea = !showCommentTextArea">
             <i class="material-icons mat-24">chat_bubble</i>
             <span *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">&nbsp;{{indicator.metaProperties.comments.length}}</span>
         </button>

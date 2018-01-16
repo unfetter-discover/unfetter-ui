@@ -40,3 +40,13 @@
         transform: rotateZ(135deg);
     }
 }
+
+:host ::ng-deep {
+    .mat-card-header-text {
+        width: 100%;
+        .mat-card-title {
+            display: flex;
+            align-items: center;
+        }
+    }
+}
