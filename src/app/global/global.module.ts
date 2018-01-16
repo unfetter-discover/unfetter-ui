@@ -3,22 +3,21 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
-import { MatExpansionModule } from '@angular/material';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatListModule } from '@angular/material';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatExpansionModule } from '@angular/material';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatDialogModule } from '@angular/material/dialog';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -53,7 +52,6 @@ import { SidepanelMiniItemComponent } from './components/sidepanel/sidepanel-min
 import { SidepanelMasterListTriggerComponent } from './components/sidepanel/sidepanel-master-list-trigger.component';
 
 const matModules = [
-    MatExpansionModule,
     MatAutocompleteModule,
     MatButtonModule,
     MatCheckboxModule,
@@ -61,14 +59,14 @@ const matModules = [
     MatPaginatorModule,
     MatInputModule,
     MatIconModule,
-    MatListModule,
-    MatMenuModule,
-    MatToolbarModule,
     MatTooltipModule,
     MatTableModule,
     MatProgressSpinnerModule,
+    MatToolbarModule,
+    MatListModule,
+    MatMenuModule,
     MatSidenavModule,
-    MatDialogModule,
+    MatExpansionModule,
 ];
 
 const unfetterComponents = [
@@ -110,7 +108,7 @@ const unfetterComponents = [
         ...matModules,
     ],
     declarations: [
-        ...unfetterComponents,
+        ...unfetterComponents
     ],
     providers: []
 })
