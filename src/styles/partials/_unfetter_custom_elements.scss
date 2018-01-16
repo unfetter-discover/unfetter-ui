@@ -1,6 +1,7 @@
 // For custom unfetter elements not related to a vendor library
 @import 'variables';
 @import '../modules/mixins';
+@import '~@angular/material/theming';
 
 .uf-collapsible-control {
   display: inline-flex;
@@ -26,7 +27,6 @@
 
 .uf-well {
   @include uf-well-base;
-  // background-color: rgba-to-rgb(rgba($primary-color, 0.05));
   @include lightenPrimaryColors('background-color', 0.05);
   @include themePrimaryColorsWithModifiedValue('border-left', '8px solid');
   border-left: 8px solid $primary-color;
@@ -41,9 +41,13 @@
 .uf-highlight {
   @include themePrimaryColors('background-color');
   color: $primary-text-contrast-color;
-  // background-color: $primary-color;
   padding: 1px 4px;
   border-radius: 3px;
+}
+
+.uf-nav-popup {
+  border-radius: $nav-popup-radius+px;
+  @include mat-elevation(5);
 }
 
 .mat-label, .uf-label {

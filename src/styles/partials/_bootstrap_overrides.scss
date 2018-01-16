@@ -1,62 +1,9 @@
 @import 'variables';
 @import '../modules/mixins';
 
-@function calculateNewPadding($default-padding) {
-    @return $default-padding +(($navbar-height - $default-navbar-height) / 2);
-}
-
-@mixin resetAnchorPadding {
-    padding-top: calculateNewPadding($default-navbar-nav-a-padding)+px;
-    padding-bottom: calculateNewPadding($default-navbar-nav-a-padding)+px;
-}
-
-@mixin resetMatButtonPadding {
-    padding-top: calculateNewPadding($default-navbar-mat-button-padding)+px;
-    padding-bottom: calculateNewPadding($default-navbar-mat-button-padding)+px;
-}
-
-@media (min-width: 768px) {
-    .navbar {
-        .navbar-nav {
-            >li>a {
-                @include resetAnchorPadding;
-            }
-            >li>a.matButtonNavItem {
-                @include resetMatButtonPadding;
-            }
-        }        
-        .navbar-brand {
-            padding-top: 12px !important;
-        }        
-    }
-}
-
-.navbar-inverse {
-    background-color: $nav-background-color;
-    border-bottom: none;
-    z-index: 800; // to put navbar under dialog
-    .navbar-brand {
-        color: #FFFFFF;      
-        padding-top: 5px;
-    }
-    .navbar-nav>li>a {
-        color: #FFFFFF;
-    }
-}
-
-.nav-pills>li:not(.active)>a {
-    color: $primary-color !important;
-}
-
-.nav-pills>li.active>a,
-.nav-pills>li.active>a:focus,
-.nav-pills>li.active>a:hover {
-    background-color: $primary-color !important;
-}
-
 code {
-    color: inherit;
     @include lightenPrimaryColors('background-color', 0.15);
+    @include darkenPrimaryColors('color', 18%);
 }
 
 // NOTE use this when primary color is blue

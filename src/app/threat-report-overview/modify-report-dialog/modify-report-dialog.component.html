@@ -8,8 +8,8 @@
                 <mat-form-field class="wide">
                     <input #urlInput matInput placeholder="Enter Report URL" (keyup.enter)="onLoadReportByUrl(urlInput.value);">
                 </mat-form-field>
+                <button #nextToReportFormBtn mat-raised-button matStepperNext color="primary" (click)="onLoadReportByUrl(urlInput.value);">CONTINUE</button>
                 <button mat-button mat-dialog-close (click)="closeDialog($event);">CANCEL</button>
-                <button #nextToReportFormBtn mat-button matStepperNext color="primary" (click)="onLoadReportByUrl(urlInput.value);">Next</button>
             </form>
             <mat-error *ngIf="urlTranslationError">
                 {{urlTranslationError}}

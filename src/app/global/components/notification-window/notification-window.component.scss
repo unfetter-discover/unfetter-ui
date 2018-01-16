@@ -85,6 +85,8 @@ $notification-row-height: 106;
 }
 
 .notificationHeader {
+    border-top-left-radius: $nav-popup-radius+px;
+    border-top-right-radius: $nav-popup-radius+px;
     .title {
         font-size: 20px;
         font-weight: 300;
@@ -93,6 +95,11 @@ $notification-row-height: 106;
 
 .notificationFooter {
     margin-bottom: 0;
+}
+
+#markAllAsRead {
+    border-bottom-left-radius: $nav-popup-radius+px;
+    border-bottom-right-radius: $nav-popup-radius+px;
 }
 
 #markAllAsRead,

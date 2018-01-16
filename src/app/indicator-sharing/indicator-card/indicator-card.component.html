@@ -127,12 +127,8 @@
                 <textarea matInput matTextareaAutosize placeholder="Comment" [(ngModel)]="commentText">{{ commentText }}</textarea>
             </mat-form-field>
             <div class="text-right">
-                <button mat-button (click)="showCommentTextArea = false; commentText = ''">
-                    <i class="material-icons mat-24">arrow_back</i>
-                </button>
-                <button mat-raised-button color="accent" [disabled]="commentText === ''" (click)="submitComment()">
-                    <i class="material-icons mat-24">send</i>
-                </button>
+                <button mat-button (click)="showCommentTextArea = false; commentText = ''">CANCEL</button>
+                <button mat-raised-button color="primary" [disabled]="commentText === ''" (click)="submitComment()">SAVE</button>
             </div>
         </div>
 
@@ -145,12 +141,12 @@
             <i class="material-icons mat-24">thumb_up</i>
             <span *ngIf="indicator.metaProperties && indicator.metaProperties.likes && indicator.metaProperties.likes.length > 0">&nbsp;{{indicator.metaProperties.likes.length}}</span>
         </button>
-        <button mat-button color="primary" (click)="likeIndicator()" *ngIf="!alreadyLiked" matTooltip="Click to like">
+        <button mat-button (click)="likeIndicator()" *ngIf="!alreadyLiked" matTooltip="Click to like">
             <i class="material-icons mat-24">thumb_up</i>
             <span *ngIf="indicator.metaProperties && indicator.metaProperties.likes && indicator.metaProperties.likes.length > 0">&nbsp;{{indicator.metaProperties.likes.length}}</span>
         </button>
 
-        <button mat-button color="accent" (click)="showCommentTextArea = !showCommentTextArea">
+        <button mat-button (click)="showCommentTextArea = !showCommentTextArea">
             <i class="material-icons mat-24">chat_bubble</i>
             <span *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">&nbsp;{{indicator.metaProperties.comments.length}}</span>
         </button>
