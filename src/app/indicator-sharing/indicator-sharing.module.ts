@@ -25,6 +25,8 @@ import { IndicatorCardComponent } from './indicator-card/indicator-card.componen
 import { IndicatorSharingSearchComponent } from './indicator-sharing-search/indicator-sharing-search.component';
 import { AddIndicatorComponent } from './add-indicator/add-indicator.component';
 import { IndicatorDetailsComponent } from './indicator-details/indicator-details.component';
+import { SearchBarComponent } from './search-bar/search-bar.component';
+import { IndicatorSharingSortComponent } from './indicator-sharing-sort/indicator-sharing-sort.component';
 
 const matModules = [
     MatButtonModule,
@@ -63,7 +65,9 @@ const matModules = [
         IndicatorCardComponent,
         AddIndicatorComponent,
         IndicatorSharingSearchComponent,
-        IndicatorDetailsComponent
+        IndicatorDetailsComponent,
+        SearchBarComponent,
+        IndicatorSharingSortComponent
     ],
     providers: [
         IndicatorSharingService

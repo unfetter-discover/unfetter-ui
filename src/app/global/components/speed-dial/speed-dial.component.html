@@ -1,4 +1,4 @@
-<div id="fabWrapper">
+<div id="fabWrapper" class="bottomRightFab">
     <div id="wrapperInner" [ngClass]="{'speedDial': open}">
         <ng-container *ngFor="let item of items; let i = index; let first = first; trackBy: trackByFn">
             <ng-container *ngIf="first === true; else innerBlock">

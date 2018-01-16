@@ -1,9 +1,6 @@
 @import '../../../../styles/_variables.scss';
 
-#fabWrapper {
-    position: fixed;
-    bottom: 50px;
-    right: 20px;
+#fabWrapper {    
     #wrapperInner {
         position: relative;
         .mini {

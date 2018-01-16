@@ -56,7 +56,6 @@ export class AppComponent implements OnInit {
     }
 
     const bodyElement: HTMLElement = document.getElementsByTagName('body')[0];
-    console.log('~~~', bodyElement);
 
     this.router.events
       .filter((event) => event instanceof NavigationEnd)
