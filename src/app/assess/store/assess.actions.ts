@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Assessment } from '../../models/asssess/assessment';
+import { Assessment } from '../../models/assess/assessment';
 
 // For effects
 export const START_ASSESSMENT = '[Assess] START_ASSESSMENT';

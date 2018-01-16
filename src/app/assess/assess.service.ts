@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { GenericApi } from '../core/services/genericapi.service';
 import { Constance } from '../utils/constance';
-import { Assessment } from '../models/asssess/assessment';
+import { Assessment } from '../models/assess/assessment';
 
 @Injectable()
 export class AssessService {

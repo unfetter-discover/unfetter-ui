@@ -1,6 +1,6 @@
 import * as assessmentActions from './assess.actions';
 import * as fromApp from '../../root-store/app.reducers'
-import { Assessment } from '../../models/asssess/assessment';
+import { Assessment } from '../../models/assess/assessment';
 
 export interface AssessFeatureState extends fromApp.AppState {
     assessment: Assessment
