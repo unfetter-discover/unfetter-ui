@@ -22,7 +22,7 @@ export class SidepanelComponent implements OnInit {
 
     @Input() public width = 400;
 
-    @Input() public collapsible = true;
+    /* @Input() */ public collapsible = false;
 
     @Input() public minimized = false;
 
@@ -39,10 +39,6 @@ export class SidepanelComponent implements OnInit {
     constructor() {}
 
     ngOnInit() {
-    }
-
-    isCollapsible() {
-      return this.collapsible;
     }
 
     getWidth() {
