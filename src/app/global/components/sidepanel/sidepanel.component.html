@@ -1,6 +1,6 @@
 <mat-sidenav id="unfetter-side-panel" mode="side" opened="true">
 
-    <div class="side-panel" [@inOutAnimation] *ngIf="!minimized; else minimizedBlock" [style.width] = "getWidth()"
+    <div class="side-panel" [@inOutAnimation] [style.width] = "getWidth()"
             (mouseover)="showMinimizeButton = collapsible && !minimized" (mouseleave)="showMinimizeButton = false">
 
 <!--
