@@ -13,7 +13,11 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatToolbarModule } from '@angular/material';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatListModule } from '@angular/material';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatExpansionModule } from '@angular/material';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -40,6 +44,12 @@ import { NotificationWindowComponent } from './components/notification-window/no
 import { SpeedDialComponent } from './components/speed-dial/speed-dial.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
+import { SidepanelComponent } from './components/sidepanel/sidepanel.component';
+import { MatDialog } from '@angular/material';
+import { SidepanelListItemComponent } from './components/sidepanel/sidepanel-list-item.component';
+import { SidepanelOptionItemComponent } from './components/sidepanel/sidepanel-option-item.component';
+import { SidepanelMiniItemComponent } from './components/sidepanel/sidepanel-mini-item.component';
+import { SidepanelMasterListTriggerComponent } from './components/sidepanel/sidepanel-master-list-trigger.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -52,7 +62,11 @@ const matModules = [
     MatTooltipModule,
     MatTableModule,
     MatProgressSpinnerModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatListModule,
+    MatMenuModule,
+    MatSidenavModule,
+    MatExpansionModule,
 ];
 
 const unfetterComponents = [
@@ -73,7 +87,12 @@ const unfetterComponents = [
     NotificationWindowComponent,
     SpeedDialComponent,
     FooterComponent,
-    LandingPageComponent
+    LandingPageComponent,
+    SidepanelComponent,
+    SidepanelListItemComponent,
+    SidepanelOptionItemComponent,
+    SidepanelMiniItemComponent,
+    SidepanelMasterListTriggerComponent,
 ];
 
 @NgModule({
@@ -89,7 +108,7 @@ const unfetterComponents = [
         ...matModules,
     ],
     declarations: [
-        ...unfetterComponents        
+        ...unfetterComponents
     ],
     providers: []
 })

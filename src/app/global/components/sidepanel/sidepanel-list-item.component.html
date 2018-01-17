@@ -1,0 +1,12 @@
+<mat-expansion-panel [disabled]="getCount() === 0">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <svg><use class="icon" attr.xlink:href="{{icon}}"></use></svg>
+            <span>{{label}}</span>
+            <span>({{getCount()}})</span>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-list dense>
+        <ng-content select="mat-list-item"></ng-content>
+    </mat-list>
+</mat-expansion-panel>

@@ -1,25 +1,67 @@
 <div [@simpleFadeIn] class="container-fluid" *ngIf="!loading; else loadingBlock">
+
     <div class="row flex">
-        <div class="side-panel" [@inOutAnimation] *ngIf="minimize !== true; else minimizedBlock" (mouseover)="showMinimizeBtn = true"
-            (mouseleave)="showMinimizeBtn = false">
-            <div class="minimizeControls" [style.display]="showMinimizeBtn ? 'block': 'none'">
-                <button mat-icon-button (click)="minimize = true" matTooltip="Minimize" matTooltipPosition="right">
-                    <mat-icon class="mat-24" aria-hidden="true" aria-label="Minimize side panel" #minimizeBtn>chevron_left</mat-icon>
-                </button>
-            </div>
-            <unf-side-panel [threatReport]="threatReport" [attackPatterns]="attackPatterns" (modifiedBoundries)="onBoundriesModified($event)"></unf-side-panel>
-        </div>
+
+        <unfetter-side-panel [item]="threatReport" collapsible="false" width="320">
+
+            <sidepanel-option-item label="Edit" icon="mode_edit" disabled="true"></sidepanel-option-item>
+            <sidepanel-option-item label="Share" icon="'share'" disabled="true"></sidepanel-option-item>
+            <sidepanel-option-item label="Delete" icon="'delete'" disabled="true"
+                    (click)="onDeleteExternalRef($event)"></sidepanel-option-item>
+
+            <sidepanel-master-list-trigger (click)="showMasterList($event)"></sidepanel-master-list-trigger>
+
+            <sidepanel-list-item label="Threat Reports" icon="assets/icon/stix-icons/svg/all-defs.svg#campaign"
+                    [items]="threatReport.reports" expandable="true">
+                <mat-list-item *ngFor="let item of threatReport.reports; trackBy:trackByFn"
+                        class="list-divider" [@slideInOutAnimation]>
+                    <h4 mat-line *ngIf="getReportURL(item) as url">
+                        <a *ngIf="url; else noLink" href="{{url}}">{{item.attributes.name}}</a>
+                        <ng-template #noLink>{{item.attributes.name}}</ng-template>
+                    </h4>
+                    <div mat-line class="mat-caption"> {{item.attributes.description}} </div>
+                </mat-list-item>
+            </sidepanel-list-item>
+            <sidepanel-list-item label="Victims" icon="assets/icon/stix-icons/svg/all-defs.svg#identity"
+                    [items]="threatReport.boundaries.targets" expandable="true">
+                <mat-list-item *ngFor="let item of threatReport.boundaries.targets; trackBy:trackByFn"
+                        class="list-divider" [@slideInOutAnimation]> {{item}} </mat-list-item>
+            </sidepanel-list-item>
+            <sidepanel-list-item label="Intrusion Sets" icon="assets/icon/stix-icons/svg/all-defs.svg#threat-actor"
+                    [items]="threatReport.boundaries.intrusions" expandable="true">
+                <mat-list-item *ngFor="let item of threatReport.boundaries.intrusions; trackBy:trackByFn"
+                        class="list-divider" [@slideInOutAnimation]
+                        (click)="onNavigateToIntrusion(intrusion.value, $event)"
+                        (mouseenter)="listItemMouseEnter($event)" (mouseleave)="listItemMouseLeave($event)">
+                    <div mat-line><a href="#/stix/intrusion-sets/{{item.value}}">{{item?.displayValue}}</a></div>
+                </mat-list-item>
+            </sidepanel-list-item>
+            <sidepanel-list-item label="Malware" icon="assets/icon/stix-icons/svg/all-defs.svg#malware"
+                    [items]="threatReport.boundaries.malware" expandable="true">
+                <mat-list-item *ngFor="let item of threatReport.boundaries.malware; trackBy:trackByFn"
+                        class="list-divider" [@slideInOutAnimation]
+                        (click)="onNavigateToMalware(malware.value, $event)"
+                        (mouseenter)="listItemMouseEnter($event)" (mouseleave)="listItemMouseLeave($event)">
+                    <div mat-line><a href="#/stix/malwares/{{item.value}}">{{item?.displayValue}}</a></div>
+                </mat-list-item>
+            </sidepanel-list-item>
+
+<!--
+            <sidepanel-mini-item tooltip="{{threatReport.name || ''}}"
+                    icon="assets/icon/stix-icons/svg/all-defs.svg#attack-pattern"></sidepanel-mini-item>
+            <sidepanel-mini-item tooltip="{{threatReport.boundaries.targets.size || 0}} victim(s)"
+                    icon="assets/icon/stix-icons/svg/all-defs.svg#identity"></sidepanel-mini-item>
+            <sidepanel-mini-item tooltip="{{threatReport.boundaries.intrusions.size || 0}} intrusion set(s)"
+                    icon="assets/icon/stix-icons/svg/all-defs.svg#threat-actor"></sidepanel-mini-item>
+            <sidepanel-mini-item tooltip="{{threatReport.boundaries.malware.size || 0}} malware"
+                    icon="assets/icon/stix-icons/svg/all-defs.svg#malware"></sidepanel-mini-item>
+            <sidepanel-mini-item tooltip="{{threatReport.reports.length || 0}} report(s)"
+                    icon="assets/icon/stix-icons/svg/all-defs.svg#campaign"></sidepanel-mini-item>
+-->
+
+        </unfetter-side-panel>
+
         <div class="main-panel pb-10">
-            <!-- <div class="row">
-                <div class="col-md-12">
-                    <span class="stix-icon-wrapper">
-                        <img class='stix-icon' src='assets/icon/stix-icons/svg/attack-pattern-c.svg'>
-                    </span>
-                    <span class="mat-display-3 title">
-                        {{threatReport.name || 'Threat Report Unamed'}}
-                    </span>
-                </div>
-            </div> -->
             <mat-tab-group id="tabGroup">
                 <mat-tab label="MATRIX">
                     <!-- <attack-pattern-count [threatReport]="threatReport" [attackPatterns]="attackPatterns" [intrusionSetsDashboard]="intrusionSetsDashboard">
@@ -49,39 +91,11 @@
                 </mat-tab>
             </mat-tab-group>
         </div>
+
     </div>
+
 </div>
 
 <ng-template #loadingBlock>
     <loading-spinner></loading-spinner>
-</ng-template>
-
-<ng-template #minimizedBlock>
-    <div [@inOutAnimation] class="small-side-panel" (click)="minimize=false">
-        <div matTooltip="{{threatReport.name || '' }}" matTooltipPosition="right">
-            <svg>
-                <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#attack-pattern"></use>
-            </svg>
-        </div>
-        <div matTooltip="{{threatReport.boundaries.targets.size || 0 }} victim(s)" matTooltipPosition="right">
-            <svg>
-                <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#identity"></use>
-            </svg>
-        </div>
-        <div matTooltip="{{threatReport.boundaries.intrusions.size || 0 }} intrusion set(s)" matTooltipPosition="right">
-            <svg>
-                <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#threat-actor"></use>
-            </svg>
-        </div>
-        <div matTooltip="{{threatReport.boundaries.malware.size || 0 }} malware" matTooltipPosition="right">
-            <svg>
-                <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#malware"></use>
-            </svg>
-        </div>
-        <div matTooltip="{{threatReport.reports.length || 0 }} report(s)" matTooltipPosition="right">
-            <svg>
-                <use class="icon" xlink:href="assets/icon/stix-icons/svg/all-defs.svg#campaign"></use>
-            </svg>
-        </div>
-    </div>
 </ng-template>

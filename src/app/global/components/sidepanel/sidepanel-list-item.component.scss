@@ -1,0 +1,48 @@
+@import '../../../../styles/_variables.scss';
+
+.mat-expansion-panel {
+    background-color: $white_87;
+
+    svg {
+        width: 16px;
+        height: 18px;
+        margin-right: 8px;
+
+        ::ng-deep .icon {
+            fill: $black_54 !important;
+        }
+    }
+    
+    .mat-list-item {
+        font-size: 13px;
+        
+    }
+    
+    .clickable {
+        cursor: pointer;
+    }
+
+    .list-item-hover {
+        background-color: $threat-dashboard-primary-lightest;
+    }
+
+    a {
+        color: $black_87 !important;
+    }
+
+    .mat-expansion-panel-header.mat-expanded {
+        background: $white_87 !important;
+
+        .mat-expansion-panel-header-title {
+            color: $black_87 !important;
+        }
+
+        ::ng-deep .mat-expansion-indicator {
+            color: $black_87 !important;
+        }
+
+        ::ng-deep .mat-expansion-indicator::after {
+            color: $black_87 !important;
+        }
+    }
+}

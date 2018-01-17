@@ -1,0 +1,97 @@
+@import '../../../../styles/_variables.scss';
+
+$sidenav_max_width: 400px;
+
+.side-panel {
+    padding: 0px;
+    background-color: #FFFFFF;
+}
+@media only screen and (max-width: 992px) {
+    .side-panel {
+        padding-top: 0px;
+        flex: 0 0 auto;
+    }
+}
+@media only screen and (min-width: 992px) {
+    .side-panel {
+        overflow-y: auto;
+        flex: 1 0 auto;
+        max-width: $sidenav_max_width;
+    }
+}
+
+.minimize-control {
+    position: absolute;
+    z-index: 5;
+    flex: 0 0 auto;
+    color: $white_87;
+    background-color: $threat-dashboard-primary-light;
+}
+
+.small-side-panel {
+    @include set-colors($threat-dashboard-primary-text,
+        linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important);
+    width: 70px;
+    height: 100%;
+    cursor: pointer;
+    color: $white_87;
+    transition: width 2s, height 2s, background-color 2s;
+}
+
+.header {
+    @include set-colors($threat-dashboard-primary-text,
+        linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important);
+    padding: 8px;
+    padding-bottom: 0px;
+    height: 180px;
+
+    .mat-toolbar {
+        background: transparent;
+        color: $white_87;
+    }
+    .push-right {
+        flex: 1 1 auto;
+    }
+    #options-toolbar {
+        padding: 0;
+    }
+    #item-toolbar {
+        height: 80px;
+        margin-top: 20px;
+        padding: 0 8px;
+        .mat-display-2 {
+            margin: 0;
+            font-size: 34px;
+            line-height: 40px;
+            white-space: normal;
+        }
+        .dropdown {
+            top: 30px;
+        }
+        .master-list-toggle {
+            color: $white_87;
+        }
+    }
+}
+
+.mat-accordion {
+    ::ng-deep .mat-expanded {
+        .mat-expansion-panel-header {
+            background: linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important;
+            
+            .mat-expansion-panel-header-title, .mat-expansion-indicator::after {
+              color: $white_87 !important;
+            }
+    
+            svg {
+                ::ng-deep .icon {
+                    fill: $white_87; 
+                }
+            }
+        }
+
+        .mat-expansion-panel-body {
+            padding: 0px 0px 0px 16px;
+        }
+    }
+}
