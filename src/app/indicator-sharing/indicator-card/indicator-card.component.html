@@ -1,12 +1,28 @@
 <mat-card class="indicatorCard uf-mat-card" *ngIf="indicator">
     <mat-card-header>
-        <mat-card-title>{{ indicator.name }}</mat-card-title>
+        <mat-card-title>
+            <span>{{ indicator.name }}</span>
+            <span class="flex1">&nbsp;</span>
+            <button mat-icon-button [matMenuTriggerFor]="menu" class="mat-24">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item routerLink="/stix/indicators/edit/{{ indicator.id }}">
+                    <mat-icon>create</mat-icon>
+                    <span>Edit</span>
+                </button>
+                <button mat-menu-item (click)="deleteIndicator()">
+                    <mat-icon>delete</mat-icon>
+                    <span>Delete</span>
+                </button>
+            </mat-menu>
+        </mat-card-title>
         <mat-card-subtitle>
-            Submitted {{ indicator.created | date:'medium' }} 
+            Published
+            <span matTooltip="{{ indicator.created | date:'medium' }}">{{ indicator.created | timeAgo }}</span> 
             <span *ngIf="creator">
                  by <a routerLink="/stix/identities/{{creator.id}}">{{creator.name}}</a>
             </span>
-            
         </mat-card-subtitle>
     </mat-card-header>
 
@@ -16,15 +32,23 @@
             <code [innerHtml]="whitespaceToBreak(indicator.pattern)" class="inlineBlock"></code>
         </p>
 
+        <label>Labels</label>
+        <div class="flex flexItemsCenter">
+            <mat-chip-list>
+                <mat-chip *ngFor="let label of indicator.labels" [selected]="labelSelected(label)" class="cursor-pointer chipListChip">{{label | capitalize}}</mat-chip>
+            </mat-chip-list>
+            <add-label-reactive [stixType]="'indicator'" (labelAdded)="addLabel($event)" [currentLabels]="indicator.labels"></add-label-reactive>
+        </div>
+
         <mat-tab-group>
-            <mat-tab label="Labels">
+            <!-- <mat-tab label="Labels">
                 <div class="flex flexItemsCenter">
                     <mat-chip-list>
                         <mat-chip *ngFor="let label of indicator.labels" [selected]="labelSelected(label)" class="cursor-pointer chipListChip">{{label | capitalize}}</mat-chip>
                     </mat-chip-list>
                     <add-label-reactive [stixType]="'indicator'" (labelAdded)="addLabel($event)" [currentLabels]="indicator.labels"></add-label-reactive>
                 </div>
-            </mat-tab>
+            </mat-tab> -->
 
             <mat-tab label="Details">
                 <div *ngIf="indicator.kill_chain_phases">
@@ -45,7 +69,7 @@
                 </div>
                 <div *ngIf="indicator.external_references">
                     <label>External References</label><br>
-                    <chip-links [data]="indicator.external_references" chipColor="accent" nameField="source_name" urlField="url"></chip-links>
+                    <chip-links [data]="indicator.external_references" nameField="source_name" urlField="url"></chip-links>
                 </div>
                 <div *ngIf="indicator.metaProperties && indicator.metaProperties.observedData && indicator.metaProperties.observedData.length">
                     <label>Observed Data</label>
@@ -61,7 +85,7 @@
                 </p> -->
             </mat-tab>
 
-            <mat-tab label="Comments" *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">
+            <!-- <mat-tab label="Comments" *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">
                 <div *ngFor="let comment of indicator.metaProperties.comments | sortByField: 'submitted'; let i = index">
                     <div class="flex flexItemsCenter mb-5">
                         <span *ngIf="comment.user.avatar_url">
@@ -75,7 +99,7 @@
                     <p [innerHtml]="whitespaceToBreak(comment.comment)"></p>
                     <hr *ngIf="i < (indicator.metaProperties.comments.length - 1)">
                 </div>
-            </mat-tab>
+            </mat-tab> -->
 
             <mat-tab label="Attack Patterns" *ngIf="attackPatterns && attackPatterns.length > 0">
                 <div *ngFor="let ap of attackPatterns">
@@ -124,11 +148,27 @@
 
         <div class="mt-20 overFlowHidden" @heightCollapse *ngIf="showCommentTextArea">
             <mat-form-field class="full-width">
-                <textarea matInput matTextareaAutosize placeholder="Comment" [(ngModel)]="commentText">{{ commentText }}</textarea>
+                <textarea matInput placeholder="Comment" [(ngModel)]="commentText">{{ commentText }}</textarea>
             </mat-form-field>
             <div class="text-right">
                 <button mat-button (click)="showCommentTextArea = false; commentText = ''">CANCEL</button>
                 <button mat-raised-button color="primary" [disabled]="commentText === ''" (click)="submitComment()">SAVE</button>
+            </div>
+            <div label="Comments" *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">
+                <hr>
+                <div *ngFor="let comment of indicator.metaProperties.comments | sortByField: 'submitted'; let i = index">
+                    <div class="flex flexItemsCenter mb-5">
+                        <span *ngIf="comment.user.avatar_url">
+                            <img src="{{ comment.user.avatar_url }}" alt="{{ comment.user.userName }} avatar" class="smallAvatar">&nbsp;
+                        </span>
+                        <span>
+                            <a routerLink="/users/profile/{{comment.user.id}}">{{ comment.user.userName }}</a>
+                            <small class="text-muted"> &bull; {{ comment.submitted | timeAgo }}</small>
+                        </span>
+                    </div>
+                    <p [innerHtml]="whitespaceToBreak(comment.comment)"></p>
+                    <hr>
+                </div>
             </div>
         </div>
 
@@ -146,7 +186,7 @@
             <span *ngIf="indicator.metaProperties && indicator.metaProperties.likes && indicator.metaProperties.likes.length > 0">&nbsp;{{indicator.metaProperties.likes.length}}</span>
         </button>
 
-        <button mat-button (click)="showCommentTextArea = !showCommentTextArea">
+        <button mat-button color="{{ alreadyCommented ? 'primary' : '' }}" (click)="showCommentTextArea = !showCommentTextArea">
             <i class="material-icons mat-24">chat_bubble</i>
             <span *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">&nbsp;{{indicator.metaProperties.comments.length}}</span>
         </button>

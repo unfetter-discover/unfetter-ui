@@ -139,3 +139,10 @@ $assessments-theme: mat-light-theme($assessments-theme-primary, $assessments-the
 .snack-bar-background-error {
   background: $warn-color !important;
 }
+
+.bottomRightFab {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  z-index: 900 !important;
+}

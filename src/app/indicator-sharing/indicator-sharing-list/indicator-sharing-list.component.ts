@@ -11,11 +11,14 @@ import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { Constance } from '../../utils/constance';
 import { IndicatorBase } from '../models/indicator-base-class';
+import { fadeInOut } from '../../global/animations/fade-in-out';
+import { ConfirmationDialogComponent } from '../../components/dialogs/confirmation/confirmation-dialog.component';
 
 @Component({
     selector: 'indicator-sharing-list',
     templateUrl: 'indicator-sharing-list.component.html',
     styleUrls: ['indicator-sharing-list.component.scss'],
+    animations: [fadeInOut],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
@@ -25,6 +28,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     public filteredIndicators: any[];
     public DEFAULT_LENGTH: number = 10;
     public searchParameters;
+    public filterOpen: boolean = false;
 
     constructor(
         private indicatorSharingService: IndicatorSharingService, 
@@ -104,7 +108,6 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
             .take(1)
             .subscribe(
                 (users: any) => {
-                    console.log(users);
                     this.store.dispatch(new indicatorSharingActions.StartSocialStream(users.userProfile._id));
                 },
                 (err) => {
@@ -175,5 +178,29 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
         } else {
             return this.displayedIndicators.length < this.filteredIndicators.length;
         }
+    }
+
+    public openedStart() {
+        this.filterOpen = true;
+    }
+
+    public closedStart() {
+        this.filterOpen = false;
+    }
+
+    public deleteIndicator(indicator: any) {
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: { attributes: { name: indicator.name } } });
+        const closeDialog$ = dialogRef.afterClosed()
+            .subscribe(
+                (confirmed) => {
+                    if (confirmed) {
+                        this.store.dispatch(new indicatorSharingActions.StartDeleteIndicator(indicator.id));
+                    }
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => closeDialog$.unsubscribe()
+            );
     }
 }

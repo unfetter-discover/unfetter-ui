@@ -1,4 +1,32 @@
-#filterWrapper {
-    padding-right: 0;
-    padding-top: 80px;
+@import '../../../styles/_variables.scss';
+
+#filterTitle {
+  height: 64px;
+  background: $analytic-hub-primary-lighter;
+  padding-left: 7px;
 }
+
+#mainWindow {
+  min-height: calc(100vh - #{$navbar-height}px);
+}
+
+#filterContainer {
+  width: 360px;
+}
+
+#searchWrapper {
+  background-color: $analytic-hub-primary-light;
+  height: 128px;
+  transition: height 0.2s ease-in-out;
+}
+
+.filterOpen {
+  height: 64px !important;
+}
+
+#showFiltersButton {
+  position: absolute;
+  top: 13px;
+  left: 7px;
+}
+

@@ -24,6 +24,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     @Input() public sensors: any;
 
     @Output() public stateChange: EventEmitter<any> = new EventEmitter();
+    @Output() public indicatorDeleted: EventEmitter<any> = new EventEmitter();
 
     public user;
     public showCommentTextArea: boolean = false;
@@ -32,6 +33,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     public messageTimeout: any;
     public alreadyLiked: boolean = false;
     public alreadyInteracted: boolean = false;
+    public alreadyCommented: boolean = false;
     public readonly runMode = environment.runMode;
 
     private readonly FLASH_MSG_TIMER: number = 1500;
@@ -57,6 +59,13 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
             const alreadyInteracted = this.indicator.metaProperties.interactions.find((interactions) => interactions.user.id === this.user._id);
             if (alreadyInteracted) {
                 this.alreadyInteracted = true;
+            }
+        } 
+
+        if (this.indicator.metaProperties !== undefined && this.indicator.metaProperties.comments !== undefined && this.indicator.metaProperties.comments.length > 0) {
+            const alreadyCommented = this.indicator.metaProperties.comments.find((comment) => comment.user.id === this.user._id);
+            if (alreadyCommented) {
+                this.alreadyCommented = true;
             }
         } 
     }
@@ -175,6 +184,10 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
                     addLike$.unsubscribe();
                 }
             );
+    }
+
+    public deleteIndicator() {
+        this.indicatorDeleted.emit(this.indicator);
     }
 
     private flashMessage(msg: string) {

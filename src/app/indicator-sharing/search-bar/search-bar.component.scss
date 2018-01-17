@@ -1,0 +1,26 @@
+@import '../../../styles/_variables.scss';
+
+#searchBarComponent {
+    padding: 0 !important;
+    &:before {
+      display: block;
+      content: "search";
+      top: 10px;
+      left: 10px;
+      font-size: 24px;
+      position: absolute;
+      @include material-icons;
+      color: #4F5B62;
+    }
+
+}
+
+#searchInput {
+    width: 100%;
+    padding: 8px 13px;
+    text-indent: 25px;
+    font-size: 16px;
+    &:focus {
+        outline: none;
+    }    
+}

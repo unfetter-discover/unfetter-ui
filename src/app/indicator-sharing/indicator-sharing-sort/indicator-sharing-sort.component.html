@@ -1,0 +1,9 @@
+<div id="indicatorSharingSortComponent">
+  <label id="sortByLabel">Sort By:&nbsp;</label>
+  <mat-radio-group [(ngModel)]="sortBy" (change)="sortIndicators()">
+    <mat-radio-button [value]="sortTypes.NEWEST" color="primary">Newest</mat-radio-button>
+    <mat-radio-button [value]="sortTypes.OLDEST" color="primary">Oldest</mat-radio-button>
+    <mat-radio-button [value]="sortTypes.LIKES" color="primary">Likes</mat-radio-button>
+    <mat-radio-button [value]="sortTypes.COMMENTS" color="primary">Comments</mat-radio-button>
+  </mat-radio-group>
+</div>
