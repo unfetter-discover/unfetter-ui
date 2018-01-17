@@ -7,7 +7,7 @@ import { AssessmentMeta } from './assessment-meta';
  * @description
  */
 export class Assessment {
-    public assessmentMeta: AssessmentMeta;
+    public assessmentMeta = new AssessmentMeta();
     public assessment_objects = [] as AssessmentObject[];
     public create_by_ref?: string;
     public description: string;

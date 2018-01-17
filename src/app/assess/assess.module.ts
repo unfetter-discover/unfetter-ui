@@ -38,7 +38,7 @@ const materialModules = [
     ReactiveFormsModule,
     ...materialModules,
     routing,
-    StoreModule.forFeature('assess', assessmentReducer),
+    StoreModule.forFeature('assessment', assessmentReducer),
     EffectsModule.forFeature([AssessEffects])
   ],
   declarations: [
