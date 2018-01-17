@@ -24,7 +24,6 @@ export class CreateComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     public store: Store<assessReducers.AssessState>,
-    public stateService: AssessStateService,
   ) { }
 
   /**
@@ -34,13 +33,6 @@ export class CreateComponent implements OnInit {
     this.assessMeta = new AssessmentMeta();
     this.resetForm();
     this.store.dispatch(new UpdatePageTitle(this.assessMeta.title));
-    // // listen for a change to wizard page event
-    // this.store.select('assessment')
-    //   .subscribe((resp) => {
-    //     console.log('assessment subscribe', resp);
-    //   },
-    //   (err) => console.log(err),
-    //   () => console.log('done'));
   }
 
   /**
@@ -63,22 +55,6 @@ export class CreateComponent implements OnInit {
     this.assessMeta = this.formToAssessment(this.form);
     console.log('submit form', this.assessMeta);
     this.store.dispatch(new assessActions.StartAssessment(this.assessMeta));
-    // const getIdentities$ = this.store.select('indicatorSharing')
-    // .pluck('identities')
-    // .distinctUntilChanged()
-    // .subscribe(
-    //     (identities: any[]) => {
-    //         this.identities = identities;
-    //     },
-    //     (err) => {
-    //         console.log(err);
-    //     },
-    //     () => {
-    //         if (getIdentities$) {
-    //             getIdentities$.unsubscribe();
-    //         }
-    //     }
-    // );
   }
 
   /**

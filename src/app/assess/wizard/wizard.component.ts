@@ -15,6 +15,7 @@ import { Constance } from '../../utils/constance';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { Measurements } from './measurements';
 import { MenuItem } from 'primeng/primeng';
+import { LoadAssessmentWizardData } from '../store/assess.actions';
 
 @Component({
   selector: 'unf-assess-wizard',
@@ -99,8 +100,16 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     console.log('in wizard');
     // TODO: if no id is given in url, then load in progress assessment
 
-    const sub = this.store.select('assessment')
-      .subscribe((meta) => {
+    const sub = this.store
+      .select('assessment')
+      .pluck('assessment')
+      .pluck('assessmentMeta')
+      .map((meta: AssessmentMeta) => {
+        console.log('loaded', meta);
+        this.store.dispatch(new LoadAssessmentWizardData(meta));
+        return meta;
+      })
+      .subscribe((meta: AssessmentMeta) => {
         console.log('loaded', meta);
       },
       (err) => console.log(err));
@@ -654,32 +663,32 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * @description
-   *  take a stix object type and determine url to fetch data
-   * @param {string} type
-   *  string in the form of a url path
-   */
-  private generateUrl(type = ''): string {
-    let url = '';
-    switch (type) {
-      case 'indicator': {
-        url = Constance.INDICATOR_URL;
-        break;
-      }
-      case 'mitigation': {
-        url = Constance.COURSE_OF_ACTION_URL;
-        break;
-      }
-      case 'course-of-action': {
-        url = Constance.COURSE_OF_ACTION_URL;
-        break;
-      }
-      default: {
-        url = 'api/x-unfetter-sensors';
-      }
-    }
-    return url;
-  }
+  // /**
+  //  * @description
+  //  *  take a stix object type and determine url to fetch data
+  //  * @param {string} type
+  //  *  string in the form of a url path
+  //  */
+  // private generateUrl(type = ''): string {
+  //   let url = '';
+  //   switch (type) {
+  //     case 'indicator': {
+  //       url = Constance.INDICATOR_URL;
+  //       break;
+  //     }
+  //     case 'mitigation': {
+  //       url = Constance.COURSE_OF_ACTION_URL;
+  //       break;
+  //     }
+  //     case 'course-of-action': {
+  //       url = Constance.COURSE_OF_ACTION_URL;
+  //       break;
+  //     }
+  //     default: {
+  //       url = 'api/x-unfetter-sensors';
+  //     }
+  //   }
+  //   return url;
+  // }
 
 }
