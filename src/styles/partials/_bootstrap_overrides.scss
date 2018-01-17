@@ -14,3 +14,13 @@ code {
 .lead {
     font-weight: 300 !important;
 }
+
+.nav-pills>li:not(.active)>a {
+    @include themePrimaryColors('color');
+}
+
+.nav-pills>li.active>a,
+.nav-pills>li.active>a:focus,
+.nav-pills>li.active>a:hover {
+    @include themePrimaryColors('background-color');
+}
