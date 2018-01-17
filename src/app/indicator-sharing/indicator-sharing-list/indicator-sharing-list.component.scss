@@ -7,7 +7,7 @@
 }
 
 #mainWindow {
-  min-height: 90vh;
+  min-height: calc(100vh - #{$navbar-height}px);
 }
 
 #filterContainer {
