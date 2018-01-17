@@ -20,15 +20,15 @@ interface Option {
 })
 export class SidepanelComponent implements OnInit {
 
-    @Input() private width = 320;
+    @Input() public width = 400;
 
-    @Input() private collapsible = true;
+    @Input() public collapsible = true;
 
     @Input() public minimized = false;
 
     @Input() public headerBackground = '';
 
-    @Input() private item: NamedItem;
+    @Input() public item: NamedItem;
 
     public showMinimizeButton = false;
 

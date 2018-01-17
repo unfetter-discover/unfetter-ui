@@ -608,6 +608,17 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     return this.threatReportService.load(workProductId);
   }
 
+  /**
+   * @description angular track by list function, uses the items id if
+   *  it exists, otherwise uses the index
+   * @param {number} index
+   * @param {item}
+   * @return {number}
+   */
+  public trackByFn(index: number, item: any): number {
+      return item.id || index;
+  }
+
   public getReportURL(report: Report): string {
     if (report
         && report.attributes
