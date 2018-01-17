@@ -4,9 +4,12 @@ import { Location } from '@angular/common';
 
 import { MatSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
+
+import * as assessActions from '../store/assess.actions';
+import * as assessReducers from '../store/assess.reducers';
 
 import { AssessmentsService } from '../assessments.service';
-import { AssessStateService } from '../services/assess-state.service';
 import { AssessmentMeta } from '../../models/assess/assessment-meta';
 import { Constance } from '../../utils/constance';
 import { GenericApi } from '../../core/services/genericapi.service';
@@ -83,7 +86,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private location: Location,
     private route: ActivatedRoute,
-    private assessStateService: AssessStateService,
+    private store: Store<assessReducers.AssessState>,
   ) {
     super();
   }
@@ -95,12 +98,14 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
   public ngOnInit(): void {
     console.log('in wizard');
     // TODO: if no id is given in url, then load in progress assessment
-    this.loadInProgressAssessment()
-      .do((meta) => this.assessStateService.publishPageTitle(meta.title))
+
+    const sub = this.store.select('assessment')
       .subscribe((meta) => {
         console.log('loaded', meta);
       },
       (err) => console.log(err));
+    this.subscriptions.push(sub);
+
     // const type = this.route.snapshot.paramMap.get('type');
     // const id = this.route.snapshot.paramMap.get('id');
     // this.url = this.generateUrl(type) + '?metaproperties=true';
@@ -110,7 +115,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     //     this.build(data);
     //     if (id) {
     //       this.url = 'api/x-unfetter-assessments';
-    //       const sub2 = this.genericApi.get(this.url, id)
+    //       const sub2 = this.g`enericApi.get(this.url, id)
     //         .subscribe((res) => {
     //           this.model = res;
     //           if (this.model.attributes.created !== undefined) {
@@ -124,10 +129,6 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     //   }, logErr);
 
     // this.subscriptions.push(sub1);
-  }
-
-  public loadInProgressAssessment(): Observable<AssessmentMeta> {
-    return this.assessStateService.metaData$;
   }
 
   /**

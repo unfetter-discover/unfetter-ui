@@ -8,7 +8,14 @@ export const SAVE_ASSESSMENT = '[Assess] SAVE_ASSESSMENT';
 export const FETCH_ASSESSMENT = '[Assess] FETCH_ASSESSMENT';
 
 // For reducers
+export const UPDATE_PAGE_TITLE = '[Assess] UPDATE_PAGE_TITLE';
 export const ANSWER_QUESTION = '[Assess] ANSWER_QUESTION';
+
+export class UpdatePageTitle implements Action {
+    public readonly type = UPDATE_PAGE_TITLE;
+
+    constructor(public payload?: string) { }
+}
 
 export class StartAssessment implements Action {
     public readonly type = START_ASSESSMENT;
@@ -39,6 +46,7 @@ export class AnswerQuestion implements Action {
 }
 
 export type AssessmentActions =
+    UpdatePageTitle |
     StartAssessment |
     StartAssessmentSuccess |
     SaveAssessment |

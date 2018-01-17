@@ -8,6 +8,7 @@ import * as assessReducers from '../store/assess.reducers';
 import { AssessForm } from '../../global/form-models/assess';
 import { AssessmentMeta } from '../../models/assess/assessment-meta';
 import { AssessStateService } from '../services/assess-state.service';
+import { UpdatePageTitle } from '../store/assess.actions';
 
 @Component({
   selector: 'unf-assess-create',
@@ -16,7 +17,7 @@ import { AssessStateService } from '../services/assess-state.service';
 })
 export class CreateComponent implements OnInit {
 
-  public assessment: AssessmentMeta;
+  public assessMeta: AssessmentMeta;
   public form: FormGroup;
   public title = '';
 
@@ -30,17 +31,16 @@ export class CreateComponent implements OnInit {
    * @description
    */
   ngOnInit(): void {
-    this.assessment = new AssessmentMeta();
-    this.stateService.publishPageTitle(this.assessment.title);
+    this.assessMeta = new AssessmentMeta();
     this.resetForm();
-
-    // listen for a change to wizard page event
-    this.store.select('assessment')
-      .subscribe((resp) => {
-        console.log('assessment subscribe', resp);
-      },
-      (err) => console.log(err),
-      () => console.log('done'));
+    this.store.dispatch(new UpdatePageTitle(this.assessMeta.title));
+    // // listen for a change to wizard page event
+    // this.store.select('assessment')
+    //   .subscribe((resp) => {
+    //     console.log('assessment subscribe', resp);
+    //   },
+    //   (err) => console.log(err),
+    //   () => console.log('done'));
   }
 
   /**
@@ -60,9 +60,9 @@ export class CreateComponent implements OnInit {
    * @return {void}
    */
   public submitForm(): void {
-    this.assessment = this.formToAssessment(this.form);
-    console.log('submit form', this.assessment);
-    this.store.dispatch(new assessActions.StartAssessment(this.assessment));
+    this.assessMeta = this.formToAssessment(this.form);
+    console.log('submit form', this.assessMeta);
+    this.store.dispatch(new assessActions.StartAssessment(this.assessMeta));
     // const getIdentities$ = this.store.select('indicatorSharing')
     // .pluck('identities')
     // .distinctUntilChanged()
