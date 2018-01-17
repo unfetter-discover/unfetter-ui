@@ -11,7 +11,7 @@
                     <mat-icon>create</mat-icon>
                     <span>Edit</span>
                 </button>
-                <button mat-menu-item>
+                <button mat-menu-item (click)="deleteIndicator()">
                     <mat-icon>delete</mat-icon>
                     <span>Delete</span>
                 </button>
@@ -148,7 +148,7 @@
 
         <div class="mt-20 overFlowHidden" @heightCollapse *ngIf="showCommentTextArea">
             <mat-form-field class="full-width">
-                <textarea matInput matTextareaAutosize placeholder="Comment" [(ngModel)]="commentText">{{ commentText }}</textarea>
+                <textarea matInput placeholder="Comment" [(ngModel)]="commentText">{{ commentText }}</textarea>
             </mat-form-field>
             <div class="text-right">
                 <button mat-button (click)="showCommentTextArea = false; commentText = ''">CANCEL</button>
@@ -167,9 +167,8 @@
                         </span>
                     </div>
                     <p [innerHtml]="whitespaceToBreak(comment.comment)"></p>
-                    <hr *ngIf="i < (indicator.metaProperties.comments.length - 1)">
+                    <hr>
                 </div>
-                <hr>
             </div>
         </div>
 

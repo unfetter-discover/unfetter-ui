@@ -11,9 +11,12 @@ import { WebsocketService } from '../../core/services/web-socket.service';
 import { WSMessageTypes } from '../../global/enums/ws-message-types.enum';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { IndicatorSharingService } from '../indicator-sharing.service';
+import { Constance } from '../../utils/constance';
 
 @Injectable()
 export class IndicatorSharingEffects {
+
+    public indicatorUrl = Constance.INDICATOR_URL;
 
     // NOTE can/does this unscribe when not in the hub?
     @Effect()
@@ -53,6 +56,20 @@ export class IndicatorSharingEffects {
             new indicatorSharingActions.SetIndicatorToApMap(indicatorToApMap),
             new indicatorSharingActions.SetSensors(sensors),
             new indicatorSharingActions.SetServerCallComplete(true)
+        ]);
+
+    @Effect()
+    public deleteIndicator = this.actions$
+        .ofType(indicatorSharingActions.START_DELETE_INDICATOR)
+        .switchMap((action: { type: string, payload: string }) => {
+            return Observable.forkJoin(
+                Observable.of(action.payload),
+                this.genericApi.delete(`${this.indicatorUrl}/${action.payload}`)
+            );
+        })
+        .mergeMap(([indicatorId, deleteResponse]: [string, any]) => [
+            new indicatorSharingActions.DeleteIndicator(indicatorId),
+            new indicatorSharingActions.FilterIndicators()
         ]);
 
     constructor(

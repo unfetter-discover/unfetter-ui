@@ -12,6 +12,7 @@ import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { Constance } from '../../utils/constance';
 import { IndicatorBase } from '../models/indicator-base-class';
 import { fadeInOut } from '../../global/animations/fade-in-out';
+import { ConfirmationDialogComponent } from '../../components/dialogs/confirmation/confirmation-dialog.component';
 
 @Component({
     selector: 'indicator-sharing-list',
@@ -185,5 +186,21 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
 
     public closedStart() {
         this.filterOpen = false;
+    }
+
+    public deleteIndicator(indicator: any) {
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: { attributes: { name: indicator.name } } });
+        const closeDialog$ = dialogRef.afterClosed()
+            .subscribe(
+                (confirmed) => {
+                    if (confirmed) {
+                        this.store.dispatch(new indicatorSharingActions.StartDeleteIndicator(indicator.id));
+                    }
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => closeDialog$.unsubscribe()
+            );
     }
 }

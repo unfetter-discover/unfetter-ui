@@ -110,8 +110,13 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
                 return state;
             }            
         case indicatorSharingActions.DELETE_INDICATOR:
+            // const indicatorsCopy = [...state.indicators];
+            // indicatorsCopy.splice(action.payload, 1);
             const indicatorsCopy = [...state.indicators];
-            indicatorsCopy.splice(action.payload, 1);
+            const deleteIndex = indicatorsCopy.findIndex((indicator) => indicator.id === action.payload);
+            if (deleteIndex > -1) {
+                indicatorsCopy.splice(deleteIndex, 1);
+            }
             return {
                 ...state,
                 indicators: indicatorsCopy

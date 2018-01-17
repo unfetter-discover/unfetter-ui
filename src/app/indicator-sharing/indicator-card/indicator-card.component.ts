@@ -24,6 +24,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     @Input() public sensors: any;
 
     @Output() public stateChange: EventEmitter<any> = new EventEmitter();
+    @Output() public indicatorDeleted: EventEmitter<any> = new EventEmitter();
 
     public user;
     public showCommentTextArea: boolean = false;
@@ -183,6 +184,10 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
                     addLike$.unsubscribe();
                 }
             );
+    }
+
+    public deleteIndicator() {
+        this.indicatorDeleted.emit(this.indicator);
     }
 
     private flashMessage(msg: string) {

@@ -1,10 +1,9 @@
 import { Action } from '@ngrx/store';
 
 // For effects
-// export const FETCH_INDICATORS = '[Indicator Sharing] FETCH_INDICATORS';
-// export const STORE_INDICATOR = '[Indicator Sharing] STORE_INDICATORS';
 export const START_SOCIAL_STREAM = '[Indicator Sharing] START_SOCIAL_STREAM';
 export const FETCH_DATA = '[Indicator Sharing] FETCH_DATA';
+export const START_DELETE_INDICATOR = '[Indicator Sharing] START_DELETE_INDICATOR';
 
 // For reducers
 export const SET_INDICATORS = '[Indicator Sharing] SET_INDICATORS';
@@ -26,6 +25,12 @@ export const SET_SERVER_CALL_COMPLETE = '[Indicator Sharing] SET_SERVER_CALL_COM
 
 export class FetchData implements Action {
     public readonly type = FETCH_DATA;
+}
+
+export class StartDeleteIndicator implements Action {
+    public readonly type = START_DELETE_INDICATOR;
+
+    constructor(public payload: string) { }
 }
 
 export class SetIndicators implements Action {
@@ -59,7 +64,7 @@ export class UpdateIndicator implements Action {
 export class DeleteIndicator implements Action {
     public readonly type = DELETE_INDICATOR;
 
-    constructor(public payload: number) { }
+    constructor(public payload: string) { }
 }
 
 export class SetSensors implements Action {
@@ -120,6 +125,7 @@ export class SetServerCallComplete implements Action {
 
 export type IndicatorSharingActions =
     FetchData |
+    StartDeleteIndicator |
     SetIndicators |
     FilterIndicators |
     SortIndicators |

@@ -44,8 +44,14 @@
                     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12" id="indicatorListWrapper">
             
                         <div *ngFor="let indicator of displayedIndicators" class="mb-15">
-                            <indicator-card [indicator]="indicator" [attackPatterns]="getAttackPatternsByIndicatorId(indicator.id)" [sensors]="getSensorsByIndicatorId(indicator.id)"
-                                [creator]="getIdentityNameById(indicator.created_by_ref)" [searchParameters]="searchParameters" (stateChange)="updateIndicator($event)"></indicator-card>
+                            <indicator-card 
+                                [indicator]="indicator" 
+                                [attackPatterns]="getAttackPatternsByIndicatorId(indicator.id)" 
+                                [sensors]="getSensorsByIndicatorId(indicator.id)"
+                                [creator]="getIdentityNameById(indicator.created_by_ref)" 
+                                [searchParameters]="searchParameters" 
+                                (stateChange)="updateIndicator($event)"
+                                (indicatorDeleted)="deleteIndicator($event)"></indicator-card>
                         </div>
             
                         <div class="text-center mt-15 mb-20" *ngIf="displayShowMoreButton()">
