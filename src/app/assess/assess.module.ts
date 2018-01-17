@@ -45,7 +45,6 @@ const materialModules = [
     ...moduleComponents,
   ],
   exports: [
-    ...moduleComponents,
   ],
   providers: [
     AssessService,
