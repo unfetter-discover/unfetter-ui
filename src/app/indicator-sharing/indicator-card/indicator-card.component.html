@@ -69,7 +69,7 @@
                 </div>
                 <div *ngIf="indicator.external_references">
                     <label>External References</label><br>
-                    <chip-links [data]="indicator.external_references" chipColor="accent" nameField="source_name" urlField="url"></chip-links>
+                    <chip-links [data]="indicator.external_references" nameField="source_name" urlField="url"></chip-links>
                 </div>
                 <div *ngIf="indicator.metaProperties && indicator.metaProperties.observedData && indicator.metaProperties.observedData.length">
                     <label>Observed Data</label>
