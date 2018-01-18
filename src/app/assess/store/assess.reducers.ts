@@ -31,7 +31,8 @@ const genAssessState = (state?: Partial<AssessState>) => {
 const initialState: AssessState = genAssessState();
 
 export function assessmentReducer(state = initialState, action: assessmentActions.AssessmentActions): AssessState {
-    console.log('in assess reducer', state, action);
+    // NOTE This is causing too much spam
+    // console.log('in assess reducer', state, action);
     switch (action.type) {
         case assessmentActions.FETCH_ASSESSMENT:
             return genAssessState({
