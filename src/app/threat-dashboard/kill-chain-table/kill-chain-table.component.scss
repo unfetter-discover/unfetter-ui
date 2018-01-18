@@ -5,7 +5,7 @@ $white: #FFFFFF;
 
     background-color: $white;
     .ui-carousel {
-        @include set-colors($white_87, $white);
+        @include set-colors($threat-dashboard-primary-text, $white);
 
         .ui-carousel-header {
             @include set-colors($threat-dashboard-primary-text, linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important);
@@ -43,7 +43,7 @@ $white: #FFFFFF;
         .kill-chain-div {
             font-weight: medium;
             font-size: 12px;
-            color: $black_54;
+            color: $dark-text-dimmed;
             padding: 16px;
             background: $threat-dashboard-primary-lightest;
         }

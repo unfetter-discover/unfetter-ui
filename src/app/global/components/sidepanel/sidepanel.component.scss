@@ -24,7 +24,7 @@ $sidenav_max_width: 400px;
     position: absolute;
     z-index: 5;
     flex: 0 0 auto;
-    color: $white_87;
+    color: $light-text-slightly-dimmed;
     background-color: $threat-dashboard-primary-light;
 }
 
@@ -34,7 +34,7 @@ $sidenav_max_width: 400px;
     width: 70px;
     height: 100%;
     cursor: pointer;
-    color: $white_87;
+    color: $light-text-slightly-dimmed;
     transition: width 2s, height 2s, background-color 2s;
 }
 
@@ -47,7 +47,7 @@ $sidenav_max_width: 400px;
 
     .mat-toolbar {
         background: transparent;
-        color: $white_87;
+        color: $light-text-slightly-dimmed;
     }
     .push-right {
         flex: 1 1 auto;
@@ -69,7 +69,7 @@ $sidenav_max_width: 400px;
             top: 30px;
         }
         .master-list-toggle {
-            color: $white_87;
+            color: $light-text-slightly-dimmed;
         }
     }
 }
@@ -80,12 +80,12 @@ $sidenav_max_width: 400px;
             background: linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important;
             
             .mat-expansion-panel-header-title, .mat-expansion-indicator::after {
-              color: $white_87 !important;
+              color: $light-text-slightly-dimmed !important;
             }
     
             svg {
                 ::ng-deep .icon {
-                    fill: $white_87; 
+                    fill: $light-text-slightly-dimmed; 
                 }
             }
         }
