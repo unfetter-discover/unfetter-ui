@@ -30,6 +30,16 @@ export class AssessStateService {
 
     /**
      * @description
+     * @param {void}
+     * @return {Observable<AssessmentMeta>}
+     */
+    public currentMeta(): Observable<AssessmentMeta> {
+        return this.metaData$.last();
+    }
+
+
+    /**
+     * @description
      * @param {string} title to show on the page
      * @return {Observable<AssessmentMeta>}
      */

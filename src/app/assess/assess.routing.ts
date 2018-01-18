@@ -9,7 +9,7 @@ const routes = [
         component: AssessLayoutComponent,
         children: [
             { path: 'create', component: CreateComponent },
-            { path: 'wizard/new', loadChildren: 'app/assess/wizard/wizard.module#WizardModule' },
+            { path: 'wizard/new/indicators/:includesIndicators/mitigations/:includesMitigations/sensors/:includesSensors', loadChildren: 'app/assess/wizard/wizard.module#WizardModule' },
             // { path: 'wizard/edit/:type/:id', loadChildren: 'app/assess/wizard/wizard.module#WizardModule' },
         ]
     },

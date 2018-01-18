@@ -49,7 +49,7 @@ export class FetchAssessment implements Action {
 export class LoadAssessmentWizardData implements Action {
     public readonly type = LOAD_ASSESSMENT_WIZARD_DATA;
 
-    constructor(public payload: AssessmentMeta) { }
+    constructor(public payload: Partial<AssessmentMeta>) { }
 }
 
 export class IndicatorsLoaded implements Action {
@@ -84,8 +84,9 @@ export class AnswerQuestion implements Action {
 export type AssessmentActions =
     AnswerQuestion |
     FetchAssessment |
-    LoadAssessmentWizardData |
+    FinishedLoading |
     IndicatorsLoaded |
+    LoadAssessmentWizardData |
     MitigationsLoaded |
     SensorsLoaded |
     StartAssessment |

@@ -16,6 +16,9 @@ import { GenericApi } from '../../core/services/genericapi.service';
 import { Measurements } from './measurements';
 import { MenuItem } from 'primeng/primeng';
 import { LoadAssessmentWizardData } from '../store/assess.actions';
+import { Assessment } from '../../models/assess/assessment';
+import { Stix } from '../../models/stix/stix';
+import { Indicator } from '../../models/stix/indicator';
 
 @Component({
   selector: 'unf-assess-wizard',
@@ -74,6 +77,11 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
   public selectedRisk = '1';
   public defaultValue = -1;
   public page = 1;
+
+  public sensors: Stix[];
+  public indicators: Indicator[];
+  public mitigations: Stix[];
+
   private assessments = [];
   private groupings = [];
   private assessmentGroups: any;
@@ -97,26 +105,57 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    *  initializes this component, fetchs data to build page
    */
   public ngOnInit(): void {
-    console.log('in wizard');
+    console.log('in wizard component');
     // TODO: if no id is given in url, then load in progress assessment
 
-    const sub = this.store
+    const isTrue = (val: number) => val === 1;
+    const includesIndicators = isTrue(+this.route.snapshot.paramMap.get('includesIndicators'));
+    const includesMitigations = isTrue(+this.route.snapshot.paramMap.get('includesMitigations'));
+    const includesSensors = isTrue(+this.route.snapshot.paramMap.get('includesSensors'));
+    let meta: Partial<AssessmentMeta> = new AssessmentMeta();
+    meta = {
+      includesIndicators,
+      includesMitigations,
+      includesSensors,
+    };
+
+    this.store.dispatch(new LoadAssessmentWizardData(meta));
+
+    const sub1 = this.store
       .select('assessment')
-      .pluck('assessment')
-      .pluck('assessmentMeta')
-      .map((meta: AssessmentMeta) => {
-        console.log('loaded', meta);
-        this.store.dispatch(new LoadAssessmentWizardData(meta));
-        return meta;
-      })
-      .subscribe((meta: AssessmentMeta) => {
-        console.log('loaded', meta);
+      .pluck('indicators')
+      .distinctUntilChanged()
+      .subscribe((arr: Indicator[]) => {
+        console.log('setting indicators', arr);
+        this.indicators = arr;
+      });
+
+    const sub2 = this.store
+      .select('assessment')
+      .pluck('mitigations')
+      .distinctUntilChanged()
+      .subscribe((arr: Stix[]) => this.mitigations = arr);
+
+    const sub3 = this.store
+      .select('assessment')
+      .pluck('sensors')
+      .distinctUntilChanged()
+      .subscribe((arr: Stix[]) => this.sensors = arr);
+
+    const sub4 = this.store
+      .select('assessment')
+      .pluck('finishedLoading')
+      .distinctUntilChanged()
+      .filter((loaded: boolean) => loaded && loaded === true)
+      .subscribe((loaded: boolean) => {
+        console.log('loaded', loaded, this.sensors, this.indicators, this.mitigations);
+        const d1 = this.indicators;
+        this.build(d1);
       },
       (err) => console.log(err));
-    this.subscriptions.push(sub);
 
-    // const type = this.route.snapshot.paramMap.get('type');
-    // const id = this.route.snapshot.paramMap.get('id');
+    this.subscriptions.push(sub1, sub2, sub3, sub4);
+
     // this.url = this.generateUrl(type) + '?metaproperties=true';
     // const logErr = (err) => console.log(err);
     // const sub1 = this.genericApi.get(this.url)
@@ -124,20 +163,19 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     //     this.build(data);
     //     if (id) {
     //       this.url = 'api/x-unfetter-assessments';
-    //       const sub2 = this.g`enericApi.get(this.url, id)
+    //       const sub2 = this.genericApi.get(this.url, id)
     //         .subscribe((res) => {
     //           this.model = res;
     //           if (this.model.attributes.created !== undefined) {
     //             this.publishDate = new Date(this.model.attributes.created);
     //           }
-    //           this.selectedRiskValue = null;
+    //           this.setSelectedRiskValue(null);
     //           this.updateChart();
     //         }, logErr);
     //       this.subscriptions.push(sub2);
     //     }
     //   }, logErr);
 
-    // this.subscriptions.push(sub1);
   }
 
   /**
@@ -148,7 +186,12 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  public set selectedRiskValue(measurement: any) {
+  /**
+   * @description
+   * @param measurement
+   * @return {void}
+   */
+  public setSelectedRiskValue(measurement: any): void {
     if (this.model) {
       this.currentAssessmentGroup.assessments.forEach((assessment) => {
         const assessmentObject = this.model
@@ -284,9 +327,9 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     this.page = this.page - 1;
     this.buttonLabel = 'Next';
     this.showSummarry = false;
-    this.currentAssessmentGroup = this.assessmentGroup;
+    this.currentAssessmentGroup = this.getAssessmentGroup();
     // this.pageTitle = this.splitTitle();
-    this.selectedRiskValue = null;
+    this.setSelectedRiskValue(null);
     this.updateChart();
   }
 
@@ -315,9 +358,9 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         }
       } else {
         this.page = this.page + 1;
-        this.currentAssessmentGroup = this.assessmentGroup;
+        this.currentAssessmentGroup = this.getAssessmentGroup();
         // this.pageTitle = this.splitTitle();
-        this.selectedRiskValue = null;
+        this.setSelectedRiskValue(null);
         this.updateChart();
       }
     }
@@ -352,16 +395,26 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     }
   }
 
-  private build(data: any): void {
+  /**
+   * @description build page and refresh chart
+   * @param data 
+   * @return {void}
+   */
+  private build(data?: Stix[]): void {
     if (data) {
       this.assessmentGroups = this.createAssessmentGroups(data);
-      this.currentAssessmentGroup = this.assessmentGroup;
+      this.currentAssessmentGroup = this.getAssessmentGroup();
       // this.pageTitle = this.splitTitle();
       this.updateChart();
     }
   }
 
-  private get assessmentGroup(): any {
+  /**
+   * @description
+   * @param {void}
+   * @return {any}
+   */
+  private getAssessmentGroup(): any {
     let index = 0;
     if (this.page) {
       index = this.page - 1;
@@ -604,6 +657,11 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return retVal;
   }
 
+  /**
+   * @description save an assessment object to the database
+   * @param {void}
+   * @return {void}
+   */
   private saveAssessments(): void {
     this.url = 'api/x-unfetter-assessments';
     if (this.model) {
@@ -662,33 +720,5 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       );
     }
   }
-
-  // /**
-  //  * @description
-  //  *  take a stix object type and determine url to fetch data
-  //  * @param {string} type
-  //  *  string in the form of a url path
-  //  */
-  // private generateUrl(type = ''): string {
-  //   let url = '';
-  //   switch (type) {
-  //     case 'indicator': {
-  //       url = Constance.INDICATOR_URL;
-  //       break;
-  //     }
-  //     case 'mitigation': {
-  //       url = Constance.COURSE_OF_ACTION_URL;
-  //       break;
-  //     }
-  //     case 'course-of-action': {
-  //       url = Constance.COURSE_OF_ACTION_URL;
-  //       break;
-  //     }
-  //     default: {
-  //       url = 'api/x-unfetter-sensors';
-  //     }
-  //   }
-  //   return url;
-  // }
 
 }

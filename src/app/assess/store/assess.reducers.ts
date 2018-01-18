@@ -14,12 +14,14 @@ export interface AssessState {
     indicators?: Indicator[];
     sensors?: Stix[];
     mitigations?: Stix[];
+    finishedLoading: boolean;
 };
 
 const genAssessState = (state?: Partial<AssessState>) => {
     const tmp = {
         assessment: new Assessment(),
         backButton: false,
+        finishedLoading: false,
     };
     if (state) {
         Object.assign(tmp, state);
@@ -51,17 +53,22 @@ export function assessmentReducer(state = initialState, action: assessmentAction
         case assessmentActions.SET_INDICATORS:
             return genAssessState({
                 ...state,
-                indicators: action.payload,
+                indicators: [...action.payload],
             });
         case assessmentActions.SET_MITIGATONS:
             return genAssessState({
                 ...state,
-                mitigations: action.payload,
+                mitigations: [...action.payload],
             });
         case assessmentActions.SET_SENSORS:
             return genAssessState({
                 ...state,
-                sensors: action.payload,
+                sensors: [...action.payload],
+            });
+        case assessmentActions.FINISHED_LOADING:
+            return genAssessState({
+                ...state,
+                finishedLoading: action.payload
             });
         default:
             return state;

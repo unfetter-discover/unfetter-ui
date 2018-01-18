@@ -34,7 +34,7 @@ export class AssessEffects {
     public fetchAssessmentWizardData = this.actions$
         .ofType(assessActions.LOAD_ASSESSMENT_WIZARD_DATA)
         .pluck('payload')
-        .switchMap((meta: AssessmentMeta) => {
+        .switchMap((meta: Partial<AssessmentMeta>) => {
             const urlTemplate = this.template`${0}?metaproperties=true`;
             const observables = new Array<Observable<Array<Stix>>>();
             if (meta.includesIndicators) {
@@ -44,22 +44,25 @@ export class AssessEffects {
             }
             if (meta.includesMitigations) {
                 const url = urlTemplate(this.generateUrl('mitigation'));
-                console.log(url);
                 const mitigations$ = this.genericServiceApi.getAs<Stix[]>(url);
+                observables.push(mitigations$);
             }
             if (meta.includesSensors) {
                 const url = urlTemplate(this.generateUrl('sensor'));
                 const sensors$ = this.genericServiceApi.getAs<Stix[]>(url);
+                observables.push(sensors$);
             }
 
             return Observable.forkJoin(...observables);
         })
-        .mergeMap(([indicators, mitigations, sensors]) => [
-            new assessActions.IndicatorsLoaded(indicators as Indicator[]),
-            new assessActions.MitigationsLoaded(mitigations),
-            new assessActions.SensorsLoaded(sensors),
-            new assessActions.FinishedLoading(true)
-        ]);
+        .mergeMap(([indicators, mitigations, sensors]) => {
+            return [
+                new assessActions.IndicatorsLoaded(indicators as Indicator[] || []),
+                new assessActions.MitigationsLoaded(mitigations || []),
+                new assessActions.SensorsLoaded(sensors || []),
+                new assessActions.FinishedLoading(true)
+            ];
+        });
 
     @Effect()
     public fetchAssessment = this.actions$
@@ -72,12 +75,16 @@ export class AssessEffects {
         .ofType(assessActions.START_ASSESSMENT)
         .pluck('payload')
         .map((el: AssessmentMeta) => {
-            console.log('in assess effects ', assessActions.START_ASSESSMENT, el);
-            return this.assessStateService.saveCurrent(el);
+            this.assessStateService.saveCurrent(el);
+            return el;
         })
-        .do(() => {
-            console.log('routing to new wizard');
-            this.router.navigate(['/assess/wizard/new']);
+        .do((el: AssessmentMeta) => {
+            this.router.navigate([
+                '/assess/wizard/new', 
+                'indicators', el.includesIndicators === true ? 1 : 0, 
+                'mitigations', el.includesMitigations === true ? 1 : 0, 
+                'sensors', el.includesSensors === true ? 1 : 0
+            ]);
         })
         // required to send an empty element on non dispatched effects
         .switchMap(() => Observable.of({}));
