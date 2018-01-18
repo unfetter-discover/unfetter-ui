@@ -2,7 +2,7 @@
     <div class="col-md-12">
               <div *ngIf="addNewMessage" class="alert alert-info">{{addNewMessage}}</div>
                     <div *ngIf="!addConfig" class="button-row">
-                          <a class=" " mat-raised-button (click)="createConfigObject()"><i class="material-icons">add</i> ADD NEW CONFIGURATION</a>
+                          <button mat-raised-button (click)="createConfigObject()"><i class="material-icons">add</i> ADD NEW CONFIGURATION</button>
                     </div>
                <div class="row">
                   <div class="col-md-12">

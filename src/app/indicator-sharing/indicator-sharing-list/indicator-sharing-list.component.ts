@@ -29,6 +29,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     public DEFAULT_LENGTH: number = 10;
     public searchParameters;
     public filterOpen: boolean = false;
+    public firstSearch: boolean = false;
 
     constructor(
         private indicatorSharingService: IndicatorSharingService, 
