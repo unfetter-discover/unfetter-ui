@@ -44,7 +44,7 @@ describe('WizardComponent', () => {
         RouterTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          'assess': combineReducers(assessmentReducer)
+          'assessment': combineReducers(assessmentReducer)
         }),
       ],
       providers: [ GenericApi ],

@@ -31,7 +31,7 @@
     "coverage": "ng test --code-coverage --single-run",
     "lint": "ng lint",
     "doc": "typedoc --out tsdocs --ignoreCompilerErrors src/",
-    "checkup": "concurrently -k \"npm run lint\"  \"npm run doc\" \"npm run build:prod\" \"npm run test\" \"npm run coverage\"",
+    "checkup": "npm run lint && npm run doc && npm run test && npm run coverage && npm run build:prod",
     "e2e": "ng e2e"
   },
   "dependencies": {
