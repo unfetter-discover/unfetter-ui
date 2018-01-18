@@ -1,4 +1,4 @@
-import { Component,  OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Renderer2 } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { AppState } from './app.service';
@@ -14,8 +14,7 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Themes } from './global/enums/themes.enum';
 
 @Component({
-  selector: 'app',
-  // encapsulation: ViewEncapsulation.None,
+  selector: 'unf-app',
   styleUrls: [
     './app.component.scss'
   ],
@@ -34,17 +33,17 @@ export class AppComponent implements OnInit {
     private store: Store<fromApp.AppState>,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-
-  ) {}
+    private renderer: Renderer2,
+  ) { }
 
   public ngOnInit() {
-    if (this.runMode && this.runMode === 'UAC') { 
-      console.log('Running application in UAC mode');   
+    if (this.runMode && this.runMode === 'UAC') {
+      console.log('Running application in UAC mode');
       if (this.authService.loggedIn()) {
         this.webAnalyticsService.recordVisit();
-      }   
+      }
     } else if (this.runMode && this.runMode === 'DEMO') {
-      console.log('Running application in DEMO mode');      
+      console.log('Running application in DEMO mode');
     }
 
     if (this.authService.loggedIn()) {
@@ -80,6 +79,9 @@ export class AppComponent implements OnInit {
         this.theme = Themes.THREAT_DASHBOARD;
         break;
       case 'assessments':
+        this.theme = Themes.ASSESSMENTS;
+        break;
+      case 'assess':
         this.theme = Themes.ASSESSMENTS;
         break;
       default:

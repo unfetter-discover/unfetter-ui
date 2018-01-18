@@ -83,7 +83,7 @@ export class ThreatReportOverviewService {
 
     const query = { 'stix.type': 'report', 'stix.id': id };
     const url = `${this.reportsUrl}?extendedproperties=true&metaproperties=true&filter=${encodeURI(JSON.stringify(query))}`;
-    const reports$ = this.genericService.get(url);
+    const reports$ = this.genericService.getAs<Report>(url);
     return reports$.first();
   }
 

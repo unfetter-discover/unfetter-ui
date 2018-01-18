@@ -2,10 +2,6 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/pluck';
-import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/mergeMap';
 
 import * as userActions from '../../root-store/users/user.actions';
 import * as configActions from '../../root-store/config/config.actions';
