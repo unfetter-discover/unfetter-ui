@@ -1,40 +1,46 @@
-<div id="indicatorDetails" class="fadeIn container-fluid" *ngIf="SERVER_CALL_COMPLETE && (indicator || errorMessage); else loadingBlock">
+<div id="indicatorDetails" class="fadeIn" *ngIf="SERVER_CALL_COMPLETE && (indicator || errorMessage); else loadingBlock">
 
-  <div class="row" *ngIf="errorMessage">
-    <div class="col-xs-8 col-lg-7 col-xs-offset-4 col-lg-offset-3">
-      <mat-card class="uf-mat-card">
-        <mat-card-header>
-          <mat-card-title>An Error Occured</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <label>Error Message</label>
-          <p class="uf-well-warn">{{ errorMessage }}</p>
-        </mat-card-content>
-      </mat-card>
+  <div id="titleWrapper"></div>
+
+  <div class="container-fluid mt-15">    
+
+    <div class="row" *ngIf="errorMessage">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12">
+        <mat-card class="uf-mat-card">
+          <mat-card-header>
+            <mat-card-title>An Error Occured</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <label>Error Message</label>
+            <p class="uf-well-warn">{{ errorMessage }}</p>
+          </mat-card-content>
+        </mat-card>
+      </div>
     </div>
-  </div>
-
-  <div class="row" *ngIf="indicator">
-    <div class="col-xs-8 col-lg-7 col-xs-offset-4 col-lg-offset-3">
+    
+    <div class="row" *ngIf="indicator">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12">
         <p>
           <indicator-card 
-            [indicator]="indicator"
-            [attackPatterns]="getAttackPatternsByIndicatorId(indicator.id)"
-            [creator]="getIdentityNameById(indicator.created_by_ref)"
-            [sensors]="getSensorsByIndicatorId(indicator.id)"
-            [searchParameters]="store.select('indicatorSharing').pluck('searchParameters') | async"
-            (stateChange)="updateIndicator($event)"></indicator-card>
+          [indicator]="indicator"
+          [attackPatterns]="getAttackPatternsByIndicatorId(indicator.id)"
+          [creator]="getIdentityNameById(indicator.created_by_ref)"
+          [sensors]="getSensorsByIndicatorId(indicator.id)"
+          [searchParameters]="store.select('indicatorSharing').pluck('searchParameters') | async"
+          (stateChange)="updateIndicator($event)"></indicator-card>
         </p>
+      </div>
     </div>
-  </div>
+    
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12">
+        <br>
+        <p>
+          <a routerLink="/indicator-sharing/list">Return to Analytic Hub Home</a>
+        </p>
+      </div>
+    </div>
 
-  <div class="row">
-    <div class="col-xs-8 col-lg-7 col-xs-offset-4 col-lg-offset-3">
-      <br>
-      <p>
-        <a routerLink="/indicator-sharing/list">Return to Analytic Hub Home</a>
-      </p>
-    </div>
   </div>
 
 </div>

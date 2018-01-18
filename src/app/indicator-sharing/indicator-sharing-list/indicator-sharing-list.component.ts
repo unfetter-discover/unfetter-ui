@@ -83,6 +83,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
             .subscribe(
                 (res) => {
                     if (!this.filterOpened && JSON.stringify(res) !== JSON.stringify(initialSearchParameters)) {
+                        // Open container on first valid search if it wasn't already opened
                         this.filterContainer.open();
                     }
                     this.searchParameters = res;

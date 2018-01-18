@@ -32,6 +32,12 @@ export class IndicatorDetailsComponent extends IndicatorBase implements OnInit {
         (id: string) => {
           this.errorMessage = null;
           this.indicator = null;
+
+          // Reset retryFetch if new ID
+          if (this.id && id !== this.id) {
+            this.retryFetch = true;
+          }
+          
           this.id = id;
           this.initBaseData();
           this.initData();
