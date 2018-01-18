@@ -18,7 +18,7 @@
             <div class="col-md-12">
                 <label>Labels</label>
                 <div class="button-row">
-                    <a class=" " mat-raised-button (click)="addLabelButtonClicked()"><i class="material-icons">add</i>ADD</a>
+                    <button mat-raised-button (click)="addLabelButtonClicked()"><i class="material-icons">add</i>ADD</button>
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
                             </mat-card-content>
                             <mat-card-actions>
                                 <div class="button-row">
-                                    <a class="" mat-raised-button (click)="removeLabelButtonClicked(label)"><i class="material-icons">delete</i>REMOVE</a>
+                                    <a mat-raised-button (click)="removeLabelButtonClicked(label)"><i class="material-icons">delete</i>REMOVE</a>
                                 </div>
                             </mat-card-actions>
                     </mat-card>
@@ -51,8 +51,8 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="button-row pull-right">
-                        <button class="" mat-button (click)="cancelButtonClicked()">CANCEL</button>
-                        <a class=" " mat-raised-button (click)="saveCourceOfAction()" [disabled]="!courseOfAction.attributes.name" color="primary">SAVE</a>
+                        <button mat-button (click)="cancelButtonClicked()">CANCEL</button>
+                        <button mat-raised-button (click)="saveCourceOfAction()" [disabled]="!courseOfAction.attributes.name" color="primary">SAVE</button>
 
                 </div>
             </div>

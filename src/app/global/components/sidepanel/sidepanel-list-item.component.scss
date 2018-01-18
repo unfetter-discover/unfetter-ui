@@ -1,7 +1,7 @@
 @import '../../../../styles/_variables.scss';
 
 .mat-expansion-panel {
-    background-color: $white_87;
+    background-color: $light-text-slightly-dimmed;
 
     svg {
         width: 16px;
@@ -9,7 +9,7 @@
         margin-right: 8px;
 
         ::ng-deep .icon {
-            fill: $black_54 !important;
+            fill: $dark-text-dimmed !important;
         }
     }
     
@@ -27,22 +27,22 @@
     }
 
     a {
-        color: $black_87 !important;
+        color: $dark-text-default !important;
     }
 
     .mat-expansion-panel-header.mat-expanded {
-        background: $white_87 !important;
+        background: $light-text-slightly-dimmed !important;
 
         .mat-expansion-panel-header-title {
-            color: $black_87 !important;
+            color: $dark-text-default !important;
         }
 
         ::ng-deep .mat-expansion-indicator {
-            color: $black_87 !important;
+            color: $dark-text-default !important;
         }
 
         ::ng-deep .mat-expansion-indicator::after {
-            color: $black_87 !important;
+            color: $dark-text-default !important;
         }
     }
 }

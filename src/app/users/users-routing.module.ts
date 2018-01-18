@@ -5,6 +5,7 @@ import { LoginCallbackComponent } from './login-callback/login-callback.componen
 import { RegisterComponent } from './register/register.component';
 import { ProfileComponent } from './profile/profile.component';
 import { SettingsComponent } from './settings/settings.component';
+import { AuthGuard } from '../core/services/auth.guard';
 
 const routes = [
     {
@@ -14,10 +15,14 @@ const routes = [
         path: 'register', component: RegisterComponent,
     },
     {
-        path: 'profile/:id', component: ProfileComponent
+        path: 'profile/:id', 
+        component: ProfileComponent,
+        canActivate: [AuthGuard]
     },
     {
-        path: 'settings', component: SettingsComponent
+        path: 'settings', 
+        component: SettingsComponent,
+        canActivate: [AuthGuard]
     }
 ]
 

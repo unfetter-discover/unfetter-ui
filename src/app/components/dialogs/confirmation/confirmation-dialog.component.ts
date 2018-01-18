@@ -4,6 +4,7 @@ import { MatDialog, MatDialogRef, MatDialogConfig, MAT_DIALOG_DATA } from '@angu
 @Component({
   selector: 'confirmation-dialog',
   templateUrl: './confirmation-dialog.html',
+  styleUrls: ['./confirmation-dialog.component.scss']
 })
 export class ConfirmationDialogComponent {
   public deleteObject: any;

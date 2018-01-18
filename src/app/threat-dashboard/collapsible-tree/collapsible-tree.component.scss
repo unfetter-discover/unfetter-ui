@@ -5,7 +5,7 @@ $white: #FFFFFF;
 .header {
   padding: 16px 16px;
   height: 64px;
-  color: $white_87;
+  color: $threat-dashboard-primary-text;
   background: linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important;
   margin-bottom: 0px;
 }
@@ -27,7 +27,7 @@ $white: #FFFFFF;
         min-height: 56px;
         padding: 5px;
         font-size: 14px;
-        color: $black_87;
+        color: $dark-text-default;
         background: $threat-dashboard-primary-lightest;
         border: 0px;
         line-height: 1.5em;
@@ -46,7 +46,7 @@ $white: #FFFFFF;
             cursor: pointer;
 
             text {
-                fill: $black_87;
+                fill: $dark-text-default;
                 font-size: 12px;
             }
 

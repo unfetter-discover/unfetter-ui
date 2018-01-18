@@ -3,10 +3,12 @@
 // ~~~ Global Theming Colors ~~~
 
 $dark-text-default: rgba(0, 0, 0, 0.87);
+$dark-text-dimmed: rgba(1, 1, 1, .54);
 $light-text-default: #ffffff;
+$light-text-slightly-dimmed: rgba(255, 255, 255, .87);
+$light-text-dimmed: rgba(255, 255, 255, .54);
 
 $app-background-color: #fafafa;
-$nav-background-color: #17375e;
 $primary-color: get-color($indigo, 700);
 $primary-text-contrast-color: $light-text-default;
 $primary-color-light: get-color($indigo, 400);
@@ -18,11 +20,6 @@ $accent-alt-color-dark: get-color($teal, 600);
 $warn-color: get-color($deep-orange);
 $neutral-color: get-color($blue-grey);
 
-$black_87: rgba(0, 0, 0, 0.87);
-$black_54 : rgba(1,1,1, .54);
-$white_87: rgba(255, 255, 255, .87);
-$white_54 : rgba(255, 255, 255, .54);
-
 // ~~~ Dashboard Specific Theming Template ~~~
 
 // Threat Dashboard
@@ -31,8 +28,8 @@ $threat-dashboard-primary-light: get-color($blue, 500);
 $threat-dashboard-primary-lighter: get-color($blue, 100);
 $threat-dashboard-primary-lightest: get-color($blue, 50);
 $threat-dashboard-accent: get-color($red, 'A200');
-$threat-dashboard-accent-text: $light-text-default;
-$threat-dashboard-primary-text: rgba(255, 255, 255, .87);
+$threat-dashboard-accent-text: $light-text-slightly-dimmed;
+$threat-dashboard-primary-text: $light-text-slightly-dimmed;
 
 // Analytic Hub
 $analytic-hub-primary: get-color($cyan, 600);
@@ -58,10 +55,6 @@ $navbar-triangle-offset: 37;
 $navbar-window-offset: 46;
 
 // ~~~ Functions & Mixins ~~~
-
-@function headerFooterOffset() {
-    @return ($navbar-height + $footer-height) + px;
-}
 
 @mixin material-icons {
     font-family: 'Material Icons';

@@ -79,7 +79,6 @@ export class IndicatorSharingService {
 
     public getUserProfileById(userId): Observable<any> {
         if (this.runMode !== undefined && this.runMode === 'DEMO') {
-            console.log('~~~~ ', this.authService.getUser());
             return Observable.of({ 'attributes': this.authService.getUser()});
         } else {
             return this.genericApi.get(`${this.profileByIdUrl}/${userId}`);

@@ -42,6 +42,14 @@ $assessments-theme: mat-light-theme($assessments-theme-primary, $assessments-the
   @include angular-material-theme($assessments-theme);
 }
 
+$utility-theme-primary: mat-palette($mat-blue, 600);
+$utility-theme-accent: mat-palette($mat-red, A200, A100, A400);
+$utility-theme-warn: mat-palette($mat-deep-orange);
+$utility-theme: mat-light-theme($utility-theme-primary, $utility-theme-accent, $utility-theme-warn);
+
+.utilityTheme {
+  @include angular-material-theme($utility-theme);
+}
 
 // Angular Material Themes: *ALWAYS* nest in a class or id, *NOT* overrides
 

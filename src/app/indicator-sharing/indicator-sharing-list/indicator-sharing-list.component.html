@@ -32,11 +32,13 @@
             <div class="container-fluid">
             
                 <div class="row">
-                    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12 flex flexItemsCenter">
-                        <indicator-sharing-sort></indicator-sharing-sort>
-                        <span class="flex1">&nbsp;</span>
-                        <label class="mb-0">Results: {{ (store.select('indicatorSharing').pluck('filteredIndicators') | async).length }} / {{ (store.select('indicatorSharing').pluck('indicators')
-                            | async).length }}</label>
+                    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12">
+                        <div class="pl-24 pr-24 flex flexItemsCenter">
+                            <indicator-sharing-sort></indicator-sharing-sort>
+                            <span class="flex1">&nbsp;</span>
+                            <label class="mb-0">Results: {{ (store.select('indicatorSharing').pluck('filteredIndicators') | async).length }} / {{ (store.select('indicatorSharing').pluck('indicators')
+                                | async).length }}</label>
+                         </div>
                     </div>
                 </div>
             

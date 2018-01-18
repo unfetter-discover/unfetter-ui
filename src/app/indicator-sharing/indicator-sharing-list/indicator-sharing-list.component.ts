@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { MatDialog, MatSidenav } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/distinctUntilChanged';
@@ -13,6 +13,7 @@ import { Constance } from '../../utils/constance';
 import { IndicatorBase } from '../models/indicator-base-class';
 import { fadeInOut } from '../../global/animations/fade-in-out';
 import { ConfirmationDialogComponent } from '../../components/dialogs/confirmation/confirmation-dialog.component';
+import { initialSearchParameters } from '../store/indicator-sharing.reducers';
 
 @Component({
     selector: 'indicator-sharing-list',
@@ -29,6 +30,9 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     public DEFAULT_LENGTH: number = 10;
     public searchParameters;
     public filterOpen: boolean = false;
+    public filterOpened: boolean = false;
+
+    @ViewChild('filterContainer') public filterContainer: MatSidenav;
 
     constructor(
         private indicatorSharingService: IndicatorSharingService, 
@@ -78,6 +82,10 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
             .distinctUntilChanged()
             .subscribe(
                 (res) => {
+                    if (!this.filterOpened && JSON.stringify(res) !== JSON.stringify(initialSearchParameters)) {
+                        // Open container on first valid search if it wasn't already opened
+                        this.filterContainer.open();
+                    }
                     this.searchParameters = res;
                 },
                 (err) => {
@@ -92,7 +100,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
             .pluck('indicatorToSensorMap')
             .distinctUntilChanged()
             .subscribe(
-                (res) => {
+                (res) => {                    
                     this.indicatorToSensorMap = res;
                 },
                 (err) => {
@@ -119,7 +127,6 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                     }
                 }
             );
-
     }    
 
     public ngOnDestroy() {
@@ -181,6 +188,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     }
 
     public openedStart() {
+        this.filterOpened = true;
         this.filterOpen = true;
     }
 
