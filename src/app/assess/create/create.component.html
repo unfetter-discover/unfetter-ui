@@ -1,0 +1,30 @@
+<div class="center">
+    <div class="mb-18 unf-mat-card assess-create-card">
+        <mat-card>
+            <form class="assess-form" [formGroup]="form" novalidate (ngSubmit)="submitForm()">
+                <mat-card-content>
+                    <mat-form-field class="full-width">
+                        <input matInput placeholder="Title" [value]="assessMeta.title" formControlName="title">
+                        <mat-error *ngIf="form.get('title').hasError('required')">
+                            Title is
+                            <strong>required</strong>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="full-width">
+                        <textarea matInput placeholder="Description" [value]="assessMeta.description" formControlName="description"></textarea>
+                    </mat-form-field>
+                    <div class="flex flex-cols">
+                        <span class="mat-title">Compile Catagories to Assess*</span>
+                        <mat-checkbox class="" [value]="assessMeta.includesIndicators" color="primary" formControlName="includesIndicators">Indicators</mat-checkbox>
+                        <mat-checkbox class="" [value]="assessMeta.includesMitigations" color="primary" formControlName="includesMitigations">Mitigations</mat-checkbox>
+                        <mat-checkbox class="" [value]="assessMeta.includesSensors" color="primary" formControlName="includesSensors">Sensors</mat-checkbox>
+                    </div>
+                </mat-card-content>
+                <mat-card-actions>
+                    <button mat-button>CANCEL</button>
+                    <button mat-raised-button color="primary" [disabled]="form.status === 'INVALID'" type="submit">CONTINUE</button>
+                </mat-card-actions>
+            </form>
+        </mat-card>
+    </div>
+</div>
