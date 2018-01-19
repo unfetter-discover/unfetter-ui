@@ -4,45 +4,47 @@
 
         <unfetter-side-panel [item]="threatReport" collapsible="false" width="320">
 
-            <sidepanel-option-item label="Edit" icon="mode_edit" disabled="true"></sidepanel-option-item>
-            <sidepanel-option-item label="Share" icon="'share'" disabled="true"></sidepanel-option-item>
-            <sidepanel-option-item label="Delete" icon="'delete'" disabled="true"
-                    (click)="onDeleteExternalRef($event)"></sidepanel-option-item>
+            <sidepanel-option-item label="Edit" icon="mode_edit"
+                    (click)="editButtonClicked($event)"></sidepanel-option-item>
+            <sidepanel-option-item label="Share" icon="share" disabled="true"
+                    (click)="shareButtonClicked($event)"></sidepanel-option-item>
+            <sidepanel-option-item label="Delete" icon="delete"
+                    (click)="deleteButtonClicked($event)"></sidepanel-option-item>
 
             <sidepanel-master-list-trigger (click)="showMasterList($event)"></sidepanel-master-list-trigger>
 
             <sidepanel-list-item label="Threat Reports" icon="assets/icon/stix-icons/svg/all-defs.svg#campaign"
                     [items]="threatReport.reports" expandable="true">
-                <mat-list-item *ngFor="let item of threatReport.reports; trackBy:trackByFn"
+                <mat-list-item *ngFor="let report of threatReport.reports; trackBy:trackByFn"
                         class="list-divider" [@slideInOutAnimation]>
-                    <h4 mat-line *ngIf="getReportURL(item) as url">
-                        <a *ngIf="url; else noLink" href="{{url}}">{{item.attributes.name}}</a>
-                        <ng-template #noLink>{{item.attributes.name}}</ng-template>
+                    <h4 mat-line *ngIf="getReportURL(report) as url">
+                        <a *ngIf="url; else noLink" href="{{url}}">{{report.attributes.name}}</a>
+                        <ng-template #noLink>{{report.attributes.name}}</ng-template>
                     </h4>
-                    <div mat-line class="mat-caption"> {{item.attributes.description}} </div>
+                    <div mat-line class="mat-caption"> {{report.attributes.description}} </div>
                 </mat-list-item>
             </sidepanel-list-item>
             <sidepanel-list-item label="Victims" icon="assets/icon/stix-icons/svg/all-defs.svg#identity"
                     [items]="threatReport.boundaries.targets" expandable="true">
-                <mat-list-item *ngFor="let item of threatReport.boundaries.targets; trackBy:trackByFn"
-                        class="list-divider" [@slideInOutAnimation]> {{item}} </mat-list-item>
+                <mat-list-item *ngFor="let target of threatReport.boundaries.targets; trackBy:trackByFn"
+                        class="list-divider" [@slideInOutAnimation]> {{target}} </mat-list-item>
             </sidepanel-list-item>
             <sidepanel-list-item label="Intrusion Sets" icon="assets/icon/stix-icons/svg/all-defs.svg#threat-actor"
                     [items]="threatReport.boundaries.intrusions" expandable="true">
-                <mat-list-item *ngFor="let item of threatReport.boundaries.intrusions; trackBy:trackByFn"
+                <mat-list-item *ngFor="let intrusion of threatReport.boundaries.intrusions; trackBy:trackByFn"
                         class="list-divider" [@slideInOutAnimation]
                         (click)="onNavigateToIntrusion(intrusion.value, $event)"
                         (mouseenter)="listItemMouseEnter($event)" (mouseleave)="listItemMouseLeave($event)">
-                    <div mat-line><a href="#/stix/intrusion-sets/{{item.value}}">{{item?.displayValue}}</a></div>
+                    <div mat-line><a href="#/stix/intrusion-sets/{{intrusion.value}}">{{intrusion?.displayValue}}</a></div>
                 </mat-list-item>
             </sidepanel-list-item>
             <sidepanel-list-item label="Malware" icon="assets/icon/stix-icons/svg/all-defs.svg#malware"
                     [items]="threatReport.boundaries.malware" expandable="true">
-                <mat-list-item *ngFor="let item of threatReport.boundaries.malware; trackBy:trackByFn"
+                <mat-list-item *ngFor="let malware of threatReport.boundaries.malware; trackBy:trackByFn"
                         class="list-divider" [@slideInOutAnimation]
                         (click)="onNavigateToMalware(malware.value, $event)"
                         (mouseenter)="listItemMouseEnter($event)" (mouseleave)="listItemMouseLeave($event)">
-                    <div mat-line><a href="#/stix/malwares/{{item.value}}">{{item?.displayValue}}</a></div>
+                    <div mat-line><a href="#/stix/malwares/{{malware.value}}">{{malware?.displayValue}}</a></div>
                 </mat-list-item>
             </sidepanel-list-item>
 

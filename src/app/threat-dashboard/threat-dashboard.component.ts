@@ -11,14 +11,15 @@ import { GenericApi } from '../core/services/genericapi.service';
 
 import { IntrusionSet, AttackPattern } from '../models';
 import { MatDialog, MatMenu } from '@angular/material';
+import { ThreatReportSharedService } from '../threat-report-overview/services/threat-report-shared.service';
+import { ThreatReportOverviewDataSource } from '../threat-report-overview/threat-report-overview.datasource';
 import { ThreatReportOverviewService } from './services/threat-report-overview.service';
 import { ThreatReport } from '../threat-report-overview/models/threat-report.model';
 import { KillChainEntry } from './kill-chain-table/kill-chain-entry';
 import { SelectOption } from '../threat-report-overview/models/select-option';
 import { ThreatDashboard } from './models/threat-dashboard';
 import { RadarChartDataPoint } from './radar-chart/radar-chart-datapoint';
-import { simpleFadeIn, inOutAnimation } from '../global/animations/animations';
-import { parentFadeIn, slideInOutAnimation } from '../global/animations/animations';
+import { simpleFadeIn, slideInOutAnimation } from '../global/animations/animations';
 import { SortHelper } from '../global/static/sort-helper';
 import { RadarChartComponent } from './radar-chart/radar-chart.component';
 import { BarChartItem } from './bar-chart/bar-chart-item';
@@ -30,13 +31,9 @@ import { Report } from '../models/report';
   selector: 'unf-threat-dashboard',
   templateUrl: 'threat-dashboard.component.html',
   styleUrls: ['./threat-dashboard.component.scss'],
-  animations: [simpleFadeIn, inOutAnimation, parentFadeIn, slideInOutAnimation]
+  animations: [simpleFadeIn, slideInOutAnimation]
 })
 export class ThreatDashboardComponent implements OnInit, OnDestroy {
-
-  @Input('minimize')
-  public minimize: boolean;
-  public showMinimizeBtn = false;
 
   @Output()
   public modifiedBoundaries: EventEmitter<ThreatReport> = new EventEmitter();
@@ -56,7 +53,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   public barLoading = true;
   public uniqChainNames: string[] = [];
   public selectedChain = '';
-  public selectedExternalRef: Partial<Report>;
+  public dataSource: ThreatReportOverviewDataSource;
 
   private readonly filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
   private readonly subscriptions: Subscription[] = [];
@@ -67,6 +64,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   // private readonly selectedForegroundColor = '#F5F5F5';
   private readonly selectedForegroundColor = 'rgba(255, 255, 255, .87)';
   private readonly selectedBackgroundColor = this.redAccent200;
+  private readonly modifyRoute = '/threat-dashboard/modify';
 
   constructor(
     protected router: Router,
@@ -74,14 +72,14 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     protected genericApi: GenericApi,
     protected dialog: MatDialog,
     protected renderer: Renderer2,
-    protected threatReportService: ThreatReportOverviewService
+    protected threatReportService: ThreatReportOverviewService,
+    protected sharedService: ThreatReportSharedService,
   ) { }
 
   /**
    * @description init this component
    */
   public ngOnInit() {
-    this.minimize = false;
     this.id = this.route.snapshot.paramMap.get('id');
     if (!this.id || this.id.trim() === '') {
       this.notifyDoneLoading();
@@ -176,7 +174,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @description the boundaries have been modified, refresh this component
    * @param event
    */
-  public onBoundriesModified(event: ThreatReport): void {
+  public onBoundariesModified(event: ThreatReport): void {
     console.log(event);
     this.threatReport = event;
     this.fetchIntrusionSetsAndRender();
@@ -527,76 +525,6 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description on open menu event, remember the selected row
-   * @param {Partial<Report>} selected 
-   * @param {UIEvent} event optional 
-   */
-  public onOpenMenu(selected: Partial<Report>, event?: UIEvent): void {
-    if (!selected) {
-      return;
-    }
-
-    if (event) {
-      event.stopImmediatePropagation();
-      event.preventDefault();
-    }
-
-    this.selectedExternalRef = selected;
-  }
-
-  /**
-   * @description open a report from the side nav
-   * @param {any} externalRef
-   * @param {UIEvent} event optional 
-   */
-  public onOpenExternalRef(event?: UIEvent): void {
-    const ref = this.selectedExternalRef;
-    const externalRefs = ref.attributes.external_references;
-    if (ref && externalRefs && externalRefs.length > 0) {
-      const url = externalRefs[0].url;
-      window.open(url, '_blank');
-    }
-  }
-
-  /**
-   * @description delete a report from the side nav
-   * @param {any} externalRef
-   * @param {UIEvent} event optional 
-   */
-  public onDeleteExternalRef(event?: UIEvent): void {
-    console.log(`TODO! we need a way to connect selected list items to the options menu! ABORTING.`);
-    // if (!this.selectedExternalRef || !this.selectedExternalRef.id) {
-    //   console.log(`I do not know which external ref to delete, moving on...`);
-    // }
-
-    // const reportId = this.selectedExternalRef.id;
-    // const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-    //   data: this.selectedExternalRef
-    // });
-    // const workProductId = this.threatReport.id;
-
-    // dialogRef.afterClosed().subscribe(
-    //   (result) => {
-    //     const isBool = typeof result === 'boolean';
-    //     const isString = typeof result === 'string';
-    //     if (!result ||
-    //         (isBool && result !== true) ||
-    //         (isString && result !== 'true')) {
-    //       return;
-    //     }
-
-    //     const delete$ = this.threatReportService
-    //       .removeReport(this.selectedExternalRef as Report, this.threatReport);
-    //     const load$ = this.load(workProductId).do((val) => this.threatReport = val as ThreatReport);
-    //     const sub$ = Observable.concat(delete$, load$)
-    //       .subscribe(
-    //         (val) => this.modifiedBoundaries.emit(this.threatReport),
-    //         (err) => console.log(err));
-    //         this.subscriptions.push(sub$);
-    // });
-  }
-
-  /**
    * @description load the overview workproduct with the given id, or return an empty Observable
    * @param workProductId
    * @return {Observable<ThreatReport>}
@@ -685,6 +613,62 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
 
   public showMasterList(): void {
     console.log('Master List trigger clicked!');
+  }
+
+  /**
+   * @description route to edit a workproduct
+   * @param {UIEvent} event optional
+   * @return {Promise<boolean>}
+   */
+  public editButtonClicked(event?: UIEvent): Promise<boolean> {
+      this.sharedService.threatReportOverview = undefined;
+      return this.router.navigate([`${this.modifyRoute}/${this.id}`]);
+  }
+
+  /**
+   * @description route to share a workproduct; not yet implemented
+   * @param {UIEvent} event optional
+   * @return {Promise<boolean>}
+   */
+  public shareButtonClicked(event?: UIEvent): Promise<boolean> {
+      return;
+  }
+
+  /**
+   * @description loop all reports and delete from mongo
+   *  a workproduct is related to many reports
+   * @param {UIEvent} event optional
+   * @return {void}
+   */
+  public deleteButtonClicked(event?: UIEvent): void {
+      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {data: {attributes: this.threatReport}});
+      dialogRef.afterClosed().subscribe(
+          (result) => {
+              const isBool = typeof result === 'boolean';
+              const isString = typeof result === 'string';
+              if (!result ||
+                 (isBool && result !== true) ||
+                 (isString && result !== 'true')) {
+                  return;
+              }
+
+              const sub$ = this.threatReportService.deleteThreatReport(this.id).subscribe(
+                  (resp) => {
+                      console.log(resp);
+                      const s$ = resp.subscribe(
+                          (reports) => {
+                              console.log('modified ', reports);
+                              this.dataSource.nextDataChange(reports);
+                          },
+                          (err) => console.log(err)
+                      );
+                      this.subscriptions.push(s$);
+                  },
+                  (err) => console.log(err)
+              );
+              this.subscriptions.push(sub$);
+          }
+      );
   }
 
 }
