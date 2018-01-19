@@ -24,6 +24,7 @@ export class AddIndicatorComponent implements OnInit {
         carSplunk: true,
         cimSplunk: false
     };
+    public stepOneControl: FormGroup | any;
 
     constructor(
         public dialogRef: MatDialogRef<any>,
@@ -64,6 +65,10 @@ export class AddIndicatorComponent implements OnInit {
             e.preventDefault();
         }
         this.form = IndicatorForm(this.indicatorSharingService, true);
+        this.stepOneControl = new FormGroup({
+            name: this.form.get('name'),
+            created_by_ref: this.form.get('created_by_ref')
+        });
     }
 
     public submitIndicator() {

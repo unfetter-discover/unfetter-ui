@@ -3,31 +3,63 @@
 <mat-dialog-content id="addIndicator">
     <form [formGroup]="form" novalidate (ngSubmit)="submitIndicator()">
 
-        <mat-vertical-stepper>
+        <mat-vertical-stepper [linear]="true">
 
-            <mat-step label="STIX Data">
+            <mat-step label="Base Data" [stepControl]="stepOneControl">
                 <mat-form-field class="full-width mb-6 mt-10">
                     <input matInput required placeholder="Name" formControlName="name">
                     <mat-error *ngIf="form.get('name').hasError('required')">
                         Name is <strong>required</strong>
                     </mat-error>
                 </mat-form-field>
-
+                
+                <mat-form-field class="full-width mb-6">
+                    <mat-select required placeholder="Submitter Organization" formControlName="created_by_ref">
+                        <mat-option *ngFor="let org of organizations" [value]="org.id">{{org.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
                 <mat-form-field class="full-width mb-6">
                     <textarea matInput placeholder="Description" formControlName="description"></textarea>
                 </mat-form-field>
 
+
+                <span class="mb-6">
+                    <mat-form-field>
+                        <input matInput required [matDatepicker]="validFromPicker" [max]="form.get('valid_until').value" placeholder="Valid From" formControlName="valid_from">
+                        <mat-datepicker-toggle matSuffix [for]="validFromPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #validFromPicker></mat-datepicker>
+                        <mat-error *ngIf="form.get('valid_from').hasError('required')">
+                            Valid From is <strong>required</strong>
+                        </mat-error>
+                    </mat-form-field>
+                </span>
+
+                <span class="mb-6" style="padding-left: 30px;">
+                    <mat-form-field>
+                        <input matInput [matDatepicker]="validUntilPicker" [min]="form.get('valid_from').value" placeholder="Valid Until" formControlName="valid_until">
+                        <mat-datepicker-toggle matSuffix [for]="validUntilPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #validUntilPicker></mat-datepicker>
+                    </mat-form-field>
+                </span>
+                
+                <div class="mt-6">
+                    <button mat-raised-button matStepperNext type="button" color="primary" [disabled]="stepOneControl.status !== 'VALID'">CONTINUE</button>
+                </div>
+            </mat-step>
+
+            <mat-step label="Pattern" [stepControl]="form.get('pattern')">
                 <mat-form-field class="full-width mb-6">
                     <textarea matInput required placeholder="Pattern" formControlName="pattern"></textarea>
                     <mat-error *ngIf="form.get('pattern').hasError('required')">
-                        Pattern is <strong>required</strong>
+                        Pattern is
+                        <strong>required</strong>
                     </mat-error>
                     <mat-error *ngIf="form.get('pattern').hasError('invalidPattern')">
                         Pattern is
                         <strong>invalid</strong>
                     </mat-error>
                 </mat-form-field>
-
+                
                 <div class="mb-6 uf-well">
                     <h5>Pattern Translations</h5>
                     <div formGroupName="metaProperties">
@@ -58,34 +90,15 @@
                             </div>
                         </div>
                     </div>
-                 
                 </div>
 
-                <mat-form-field class="full-width mb-6">
-                    <mat-select required placeholder="Submitter Organization" formControlName="created_by_ref">
-                        <mat-option *ngFor="let org of organizations" [value]="org.id">{{org.name}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
+                <div class="mt-6">
+                    <button mat-raised-button matStepperNext type="button" color="primary" [disabled]="form.get('pattern').status !== 'VALID'">CONTINUE</button>
+                    <button mat-button matStepperPrevious type="button">BACK</button>
+                </div>
+            </mat-step>
 
-                <span class="mb-6">
-                    <mat-form-field>
-                        <input matInput required [matDatepicker]="validFromPicker" [max]="form.get('valid_until').value" placeholder="Valid From" formControlName="valid_from">
-                        <mat-datepicker-toggle matSuffix [for]="validFromPicker"></mat-datepicker-toggle>
-                        <mat-datepicker #validFromPicker></mat-datepicker>
-                        <mat-error *ngIf="form.get('valid_from').hasError('required')">
-                            Valid From is <strong>required</strong>
-                        </mat-error>
-                    </mat-form-field>
-                </span>
-
-                <span class="mb-6" style="padding-left: 30px;">
-                    <mat-form-field>
-                        <input matInput [matDatepicker]="validUntilPicker" [min]="form.get('valid_from').value" placeholder="Valid Until" formControlName="valid_until">
-                        <mat-datepicker-toggle matSuffix [for]="validUntilPicker"></mat-datepicker-toggle>
-                        <mat-datepicker #validUntilPicker></mat-datepicker>
-                    </mat-form-field>
-                </span>
-
+            <mat-step label="Associated Data">
                 <!-- ~~~ External References ~~~ -->
                 <br>
                 <div>
@@ -99,7 +112,7 @@
                     </mat-chip-list>
                 </div>
                 <!-- ~~~ End of External References ~~~ -->
-
+                
                 <!-- ~~~ Kill Chain Phases ~~~ -->
                 <div>
                     <kill-chain-phases-reactive [parentForm]="form"></kill-chain-phases-reactive>
@@ -112,7 +125,7 @@
                     </mat-chip-list>
                 </div>
                 <!-- ~~~ End of Kill Chain Phases ~~~ -->
-
+                
                 <!-- ~~~ Labels ~~~ -->
                 <h5>Labels</h5>
                 <div class="flex flexItemsCenter" id="labelsWrapper">
@@ -127,10 +140,11 @@
                 <!-- ~~~ End of Labels ~~~ -->
                 <div class="mt-6">
                     <button mat-raised-button matStepperNext type="button" color="primary">CONTINUE</button>
+                    <button mat-button matStepperPrevious type="button">BACK</button>
                 </div>
             </mat-step>
             
-            <mat-step label="STIX Relationships">
+            <mat-step label="Relationships">
                 <div formGroupName="metaProperties">
                     <mat-form-field class="full-width mt-10">
                         <mat-select placeholder="Indicated Attack Patterns" [multiple]="true" formControlName="relationships">
