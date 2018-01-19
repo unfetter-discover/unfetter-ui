@@ -17,6 +17,7 @@ import { Constance } from '../../utils/constance';
 import { Indicator } from '../../models/stix/indicator';
 import { Sensor } from '../../models/unfetter/sensor';
 import { Stix } from '../../models/stix/stix';
+import { JsonApiData } from '../../models/json/jsonapi-data';
 
 @Injectable()
 export class AssessEffects {
@@ -36,30 +37,33 @@ export class AssessEffects {
         .pluck('payload')
         .switchMap((meta: Partial<AssessmentMeta>) => {
             const urlTemplate = this.template`${0}?metaproperties=true`;
-            const observables = new Array<Observable<Array<Stix>>>();
-            if (meta.includesIndicators) {
-                const url = urlTemplate(this.generateUrl('indicator'));
-                const indicators$ = this.genericServiceApi.getAs<Indicator[]>(url);
-                observables.push(indicators$);
-            }
-            if (meta.includesMitigations) {
-                const url = urlTemplate(this.generateUrl('mitigation'));
-                const mitigations$ = this.genericServiceApi.getAs<Stix[]>(url);
-                observables.push(mitigations$);
-            }
-            if (meta.includesSensors) {
-                const url = urlTemplate(this.generateUrl('sensor'));
-                const sensors$ = this.genericServiceApi.getAs<Stix[]>(url);
-                observables.push(sensors$);
-            }
+            const observables = new Array<Observable<Array<JsonApiData<Stix>>>>();
+
+            let url = urlTemplate(this.generateUrl('indicator'));
+            const indicators$ = meta.includesIndicators ?
+                this.genericServiceApi.getAs<JsonApiData<Indicator>[]>(url) :
+                Observable.of<JsonApiData<Indicator>[]>([]);
+            observables.push(indicators$);
+
+            url = urlTemplate(this.generateUrl('mitigation'));
+            const mitigations$ = meta.includesMitigations ?
+                this.genericServiceApi.getAs<JsonApiData<Stix>[]>(url) :
+                Observable.of<JsonApiData<Stix>[]>([]);
+            observables.push(mitigations$);
+
+            url = urlTemplate(this.generateUrl('sensor'));
+            const sensors$ = meta.includesSensors ?
+                this.genericServiceApi.getAs<JsonApiData<Stix>[]>(url) :
+                Observable.of<JsonApiData<Stix>[]>([]);
+            observables.push(sensors$);
 
             return Observable.forkJoin(...observables);
         })
         .mergeMap(([indicators, mitigations, sensors]) => {
             return [
-                new assessActions.IndicatorsLoaded(indicators as Indicator[] || []),
-                new assessActions.MitigationsLoaded(mitigations || []),
-                new assessActions.SensorsLoaded(sensors || []),
+                new assessActions.IndicatorsLoaded(indicators as JsonApiData<Indicator>[]),
+                new assessActions.MitigationsLoaded(mitigations),
+                new assessActions.SensorsLoaded(sensors),
                 new assessActions.FinishedLoading(true)
             ];
         });
@@ -80,9 +84,9 @@ export class AssessEffects {
         })
         .do((el: AssessmentMeta) => {
             this.router.navigate([
-                '/assess/wizard/new', 
-                'indicators', el.includesIndicators === true ? 1 : 0, 
-                'mitigations', el.includesMitigations === true ? 1 : 0, 
+                '/assess/wizard/new',
+                'indicators', el.includesIndicators === true ? 1 : 0,
+                'mitigations', el.includesMitigations === true ? 1 : 0,
                 'sensors', el.includesSensors === true ? 1 : 0
             ]);
         })

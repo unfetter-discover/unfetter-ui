@@ -4,6 +4,7 @@ import { Location } from '@angular/common';
 
 import { MatSnackBar } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { Store } from '@ngrx/store';
 
 import * as assessActions from '../store/assess.actions';
@@ -19,6 +20,7 @@ import { LoadAssessmentWizardData } from '../store/assess.actions';
 import { Assessment } from '../../models/assess/assessment';
 import { Stix } from '../../models/stix/stix';
 import { Indicator } from '../../models/stix/indicator';
+import { JsonApiData } from '../../models/json/jsonapi-data';
 
 @Component({
   selector: 'unf-assess-wizard',
@@ -26,7 +28,7 @@ import { Indicator } from '../../models/stix/indicator';
   styleUrls: ['./wizard.component.scss']
 })
 export class WizardComponent extends Measurements implements OnInit, OnDestroy {
-  public model: any;
+  public model: JsonApiData<Assessment>;
   public assessmentDescription = '';
   public saved = false;
   public publishDate = new Date();
@@ -78,9 +80,13 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
   public defaultValue = -1;
   public page = 1;
 
-  public sensors: Stix[];
-  public indicators: Indicator[];
-  public mitigations: Stix[];
+  public indicators: JsonApiData<Indicator>[];
+  public sensors: JsonApiData<Stix>[];
+  public mitigations: JsonApiData<Stix>[];
+
+  public readonly sidePanelCollapseHeight = '32px';
+  public readonly sidePanelExpandedHeight = '32px';
+  public openedSidePanel;
 
   private assessments = [];
   private groupings = [];
@@ -88,7 +94,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
   private defaultMeasurement = 'Nothing';
   private url: string;
   private tempModel = {};
-  private readonly subscriptions = [];
+  private readonly subscriptions: Subscription[] = [];
 
   constructor(
     private genericApi: GenericApi,
@@ -125,22 +131,19 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       .select('assessment')
       .pluck('indicators')
       .distinctUntilChanged()
-      .subscribe((arr: Indicator[]) => {
-        console.log('setting indicators', arr);
-        this.indicators = arr;
-      });
+      .subscribe((arr: JsonApiData<Indicator>[]) => this.indicators = arr);
 
     const sub2 = this.store
       .select('assessment')
       .pluck('mitigations')
       .distinctUntilChanged()
-      .subscribe((arr: Stix[]) => this.mitigations = arr);
+      .subscribe((arr: JsonApiData<Stix>[]) => this.mitigations = arr);
 
     const sub3 = this.store
       .select('assessment')
       .pluck('sensors')
       .distinctUntilChanged()
-      .subscribe((arr: Stix[]) => this.sensors = arr);
+      .subscribe((arr: JsonApiData<Stix>[]) => this.sensors = arr);
 
     const sub4 = this.store
       .select('assessment')
@@ -149,6 +152,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       .filter((loaded: boolean) => loaded && loaded === true)
       .subscribe((loaded: boolean) => {
         console.log('loaded', loaded, this.sensors, this.indicators, this.mitigations);
+        this.openedSidePanel = this.determineFirstOpenSidePanel();
         const d1 = this.indicators;
         this.build(d1);
       },
@@ -188,14 +192,27 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
 
   /**
    * @description
-   * @param measurement
+   * @return {string}
+   */
+  public determineFirstOpenSidePanel(): string {
+    if (this.indicators) {
+      return 'indicators';
+    } else if (this.mitigations) {
+      return 'mitigations';
+    } else if (this.sensors) {
+      return 'sensors';
+    }
+  }
+
+  /**
+   * @description
    * @return {void}
    */
-  public setSelectedRiskValue(measurement: any): void {
+  public setSelectedRiskValue(): void {
     if (this.model) {
       this.currentAssessmentGroup.assessments.forEach((assessment) => {
         const assessmentObject = this.model
-          .attributes.assessment_objects.find((el) => assessment.id === el.stix.id);
+          .attributes.assessment_objects.find((el: any) => assessment.id === el.stix.id);
         if (!assessmentObject) {
           console.warn(`assessmentObject not found! id: ${assessment.id}, moving on...`);
           return;
@@ -288,7 +305,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
             description: assessment.description,
             type: assessment.type,
             name: assessment.name
-          }
+          } as Stix
         };
         this.model.attributes.assessment_objects.push(assessment_object);
       } else {
@@ -329,7 +346,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     this.showSummarry = false;
     this.currentAssessmentGroup = this.getAssessmentGroup();
     // this.pageTitle = this.splitTitle();
-    this.setSelectedRiskValue(null);
+    this.setSelectedRiskValue();
     this.updateChart();
   }
 
@@ -360,13 +377,20 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         this.page = this.page + 1;
         this.currentAssessmentGroup = this.getAssessmentGroup();
         // this.pageTitle = this.splitTitle();
-        this.setSelectedRiskValue(null);
+        this.setSelectedRiskValue();
         this.updateChart();
       }
     }
   }
 
-  public selectedValue(assessment: any, measurement: any, option: any): number {
+  /**
+   * @description
+   * @param measurement 
+   * @param option 
+   * @param {Assessment} assessment - optional
+   * @return {number}
+   */
+  public selectedValue(measurement: any, option: any, assessment?: Assessment): number {
     if (!this.model) {
       if (this.tempModel) {
         if (this.tempModel[assessment.id]) {
@@ -400,7 +424,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @param data 
    * @return {void}
    */
-  private build(data?: Stix[]): void {
+  private build(data?: JsonApiData<Stix>[]): void {
     if (data) {
       this.assessmentGroups = this.createAssessmentGroups(data);
       this.currentAssessmentGroup = this.getAssessmentGroup();
@@ -425,7 +449,12 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return this.assessmentGroups[index];
   }
 
-  private createAssessmentGroups(assessedObjects: any[]): any[] {
+  /**
+   * @description
+   * @param {JsonApiData<Stix>[]}
+   * @return {any[]}
+   */
+  private createAssessmentGroups(assessedObjects: JsonApiData<Stix>[]): any[] {
     const assessmentGroups = [];
     const self = this;
     if (assessedObjects) {
@@ -488,6 +517,11 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return assessmentGroups;
   }
 
+  /**
+   * @description
+   * @param stixObjects
+   * @return {any} 
+   */
   private buildGrouping(stixObjects): any {
     const groupings = [];
     stixObjects.forEach((stixObject) => {
@@ -516,6 +550,11 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return groupings;
   }
 
+  /**
+   * @description
+   * @param stixObjects
+   * @return {any}
+   */
   private doObjectGroupings(stixObjects): any {
     const hash = {};
     stixObjects.forEach((stixObject) => {
@@ -549,6 +588,10 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return hash;
   }
 
+  /**
+   * @description
+   * @return {number}
+   */
   private calculateGroupRisk(): number {
     const groupRisk = this.calculateRisk(this.currentAssessmentGroup.assessments);
     const riskArray = [];
@@ -559,12 +602,21 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return groupRisk;
   }
 
+  /**
+   * @description update the chart data
+   * @return {void}
+   */
   private updateChart(): void {
     const chartData = this.doughnutChartData.slice();
     chartData[0].data = this.currentAssessmentGroup.riskArray;
     this.doughnutChartData = chartData;
   }
 
+  /**
+   * @description
+   * @param title
+   * @return {string}
+   */
   private splitTitle(title?: string): string {
     const split = title
       ? title.split('-')
@@ -577,9 +629,13 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return split.join(' ');
   }
 
-  private generateXUnfetterAssessment(assessmentsGroups: any) {
-    const retVal: any = {};
-    retVal.type = 'x-unfetter-assessment';
+  /**
+   * @description
+   * @param {any}
+   * @return {Assessment}
+   */
+  private generateXUnfetterAssessment(assessmentsGroups: any): Assessment {
+    const retVal = new Assessment();
     retVal.name = this.assessmentName;
     retVal.description = this.assessmentDescription;
     retVal.created = this.publishDate.toISOString();
@@ -613,44 +669,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         assessmentSet.add(JSON.stringify(temp));
 
       }
-    )
-
-    // assessmentsGroups.forEach((assessmentsGroup) => {
-    //   if (assessmentsGroup.assessments !== undefined) {
-    //     assessmentsGroup.assessments.forEach((assessment) => {
-    //       if (assessment.risk < 0) {
-    //         return;
-    //       }
-    //       const temp: any = {};
-    //       temp.stix = {};
-    //       temp.stix.id = assessment.id;
-    //       temp.stix.type = assessment.type;
-    //       temp.stix.description = assessment.description || '';
-    //       temp.stix.name = assessment.name;
-
-    //       temp.questions = [];
-    //       if (assessment.measurements !== undefined) {
-    //         assessment.measurements.forEach((measurement) => {
-    //           if (measurement.selected_value.risk < 0) {
-    //             return;
-    //           }
-    //           temp.questions.push(measurement);
-    //         });
-    //       } else {
-    //         return { error: 'No measurements/questions on assessment' };
-    //       }
-
-    //       temp.risk = temp.questions
-    //           .map((question) => question.risk)
-    //           .reduce((prev, cur) => (prev += cur), 0) / temp.questions.length;
-
-    //       assessmentSet.add(JSON.stringify(temp));
-
-    //     });
-    //   } else {
-    //     return { error: 'No assessments in group' };
-    //   }
-    // });
+    );
 
     retVal['assessment_objects'] = Array.from(assessmentSet)
       .map((dat) => JSON.parse(dat));

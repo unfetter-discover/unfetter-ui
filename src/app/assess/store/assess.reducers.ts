@@ -3,6 +3,7 @@ import * as fromApp from '../../root-store/app.reducers'
 import { Assessment } from '../../models/assess/assessment';
 import { Indicator } from '../../models/stix/indicator';
 import { Stix } from '../../models/stix/stix';
+import { JsonApiData } from '../../models/json/jsonapi-data';
 
 export interface AssessFeatureState extends fromApp.AppState {
     assessment: Assessment
@@ -11,9 +12,9 @@ export interface AssessFeatureState extends fromApp.AppState {
 export interface AssessState {
     assessment: Assessment;
     backButton: boolean;
-    indicators?: Indicator[];
-    sensors?: Stix[];
-    mitigations?: Stix[];
+    indicators?: JsonApiData<Indicator>[];
+    sensors?: JsonApiData<Stix>[];
+    mitigations?: JsonApiData<Stix>[];
     finishedLoading: boolean;
 };
 

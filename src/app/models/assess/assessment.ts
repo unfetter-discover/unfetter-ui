@@ -9,6 +9,7 @@ import { AssessmentMeta } from './assessment-meta';
 export class Assessment {
     public assessmentMeta = new AssessmentMeta();
     public assessment_objects = [] as AssessmentObject[];
+    public created = new Date().toISOString();
     public create_by_ref?: string;
     public description: string;
     public id?: string;

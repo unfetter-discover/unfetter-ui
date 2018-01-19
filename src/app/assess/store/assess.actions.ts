@@ -2,6 +2,7 @@ import { Action } from '@ngrx/store';
 import { AssessmentMeta } from '../../models/assess/assessment-meta';
 import { Stix } from '../../models/stix/stix';
 import { Indicator } from '../../models/stix/indicator';
+import { JsonApiData } from '../../models/json/jsonapi-data';
 
 // For effects
 export const START_ASSESSMENT = '[Assess] START_ASSESSMENT';
@@ -55,19 +56,19 @@ export class LoadAssessmentWizardData implements Action {
 export class IndicatorsLoaded implements Action {
     public readonly type = SET_INDICATORS;
 
-    constructor(public payload: Indicator[]) { }
+    constructor(public payload: JsonApiData<Indicator>[]) { }
 }
 
 export class MitigationsLoaded implements Action {
     public readonly type = SET_MITIGATONS;
 
-    constructor(public payload: Stix[]) { }
+    constructor(public payload: JsonApiData<Stix>[]) { }
 }
 
 export class SensorsLoaded implements Action {
     public readonly type = SET_SENSORS;
 
-    constructor(public payload: Stix[]) { }
+    constructor(public payload: JsonApiData<Stix>[]) { }
 }
 
 export class FinishedLoading implements Action {

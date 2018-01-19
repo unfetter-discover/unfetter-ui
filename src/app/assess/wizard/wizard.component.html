@@ -1,34 +1,70 @@
 <div class="sidenav">
-  <!-- Stepers Wrapper -->
-  <ul class="stepper stepper-vertical">
-
-    <!-- First Step -->
-    <li [class.active]="navigation.page === page" *ngFor="let navigation of navigations">
-      <!--Section Title -->
-      <a href (click)="navigationClicked(navigation.page, $event)">
-        <span class="circle">
-          <!--{{navigation.page}}-->&nbsp;
-        </span>
-        <span class="label">{{navigation.label}}</span>
-      </a>
-
-    </li>
-  </ul>
-  <!-- /.Stepers Wrapper -->
+  <div *ngIf="currentAssessmentGroup" class="flex-col mt-18 mb-12">
+    <div class="center chart-header">
+      Overall Rating
+    </div>
+    <div style="display: block">
+      <canvas baseChart [datasets]="doughnutChartData" [labels]="doughnutChartLabels" [chartType]="doughnutChartType" [colors]="doughnutChartColors"
+        [options]="chartOptions"></canvas>
+    </div>
+  </div>
+  <mat-accordion displayMode="flat" multi="false">
+    <mat-expansion-panel *ngIf="indicators && indicators.length > 0" hideToggle="true" [expanded]="openedSidePanel === 'indicators'">
+      <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
+        <mat-panel-title>
+          INDICATORS
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <ul class="stepper stepper-vertical">
+        <li [class.active]="navigation.page === page" *ngFor="let navigation of navigations">
+          <a href (click)="navigationClicked(navigation.page, $event)">
+            <span class="circle">&nbsp;</span>
+            <span class="label">{{navigation.label}}</span>
+          </a>
+        </li>
+      </ul>
+    </mat-expansion-panel>
+    <mat-expansion-panel *ngIf="mitigations && mitigations.length > 0" hideToggle="true" [expanded]="openedSidePanel === 'mitigations'">
+      <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
+        <mat-panel-title>
+          MITIGATIONS
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <ul class="stepper stepper-vertical">
+        <li [class.active]="navigation.page === page" *ngFor="let navigation of navigations">
+          <a href (click)="navigationClicked(navigation.page, $event)">
+            <span class="circle">&nbsp;</span>
+            <span class="label">{{navigation.label}}</span>
+          </a>
+        </li>
+      </ul>
+    </mat-expansion-panel>
+    <mat-expansion-panel *ngIf="sensors && sensors.length > 0" hideToggle="true" [expanded]="openedSidePanel === 'sensors'">
+      <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
+        <mat-panel-title>
+          SENSORS
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <ul class="stepper stepper-vertical">
+        <li [class.active]="navigation.page === page" *ngFor="let navigation of navigations">
+          <a href (click)="navigationClicked(navigation.page, $event)">
+            <span class="circle">&nbsp;</span>
+            <span class="label">{{navigation.label}}</span>
+          </a>
+        </li>
+      </ul>
+    </mat-expansion-panel>
+  </mat-accordion>
 </div>
 
 <div class="center">
-
   <div class="card flex1">
-
     <mat-card>
-
       <div *ngIf="showSummarry">
         <mat-card-header>
           <mat-card-title>Assessment Report</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <!--<p>Assessment Description</p>-->
           <div class="row mat-card-padding">
             <div class="col-xs-8">
               <mat-form-field class="full-width">
@@ -56,31 +92,22 @@
 
       <div *ngIf="currentAssessmentGroup">
         <mat-card-content>
-          <div class="row margin-bottom flex-sm flexItemsCenter">
-            <div class="col-sm-3">
-              <div style="display: block">
-                <canvas baseChart [datasets]="doughnutChartData" [labels]="doughnutChartLabels" [chartType]="doughnutChartType" [colors]="doughnutChartColors"
-                  [options]="chartOptions"></canvas>
-              </div>
-            </div>
-            <div class="col-sm-9">
-              <h4> {{currentAssessmentGroup.name | capitalize }}</h4>
-              <p *ngIf="currentAssessmentGroup.description">
-                {{currentAssessmentGroup.description}}
-              </p>
+          <div class="row top-row">
+            <div class="col-xs-12">
+              Progress
+              <mat-progress-bar>
+              </mat-progress-bar>
             </div>
           </div>
-          <div class="row">
-            <div class="col-xs-12">
-              <hr>
+          <div class="row margin-bottom flex-sm flexItemsCenter">
+            <div class="col-sm-9 group-name">
+              {{currentAssessmentGroup.name | capitalize }}
             </div>
           </div>
           <div class="row margin-bottom" *ngFor="let assessment of currentAssessmentGroup.assessments">
             <div class="col-xs-12">
               <div class="row">
                 <div class="col-xs-12">
-
-                  <!-- <p>Risk: {{ assessment.risk }} * Delete me</p> -->
                   <risk-icon [risk]="assessment.risk" [showTooltip]="true"></risk-icon>
                   <strong>{{assessment.name}} -- {{assessment.description | firstSentence}}</strong> {{assessment.description | restSentence}}
                 </div>
