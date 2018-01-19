@@ -3,7 +3,7 @@
 <mat-dialog-content id="addIndicator">
     <form [formGroup]="form" novalidate (ngSubmit)="submitIndicator()">
 
-        <mat-vertical-stepper [linear]="true">
+        <mat-vertical-stepper>
 
             <mat-step label="Base Data" [stepControl]="stepOneControl">
                 <mat-form-field class="full-width mb-6 mt-10">
