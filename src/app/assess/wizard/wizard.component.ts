@@ -318,7 +318,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     if (this.model) {
       this.currentAssessmentGroup.assessments.forEach((assessment) => {
         const assessmentObject = this.model
-          .attributes.assessment_objects.find((el) => assessment.id === el.stix.id);
+          .attributes.assessment_objects.find((el: any) => assessment.id === el.stix.id);
         if (!assessmentObject) {
           console.warn(`assessmentObject not found! id: ${assessment.id}, moving on...`);
           return;
