@@ -163,7 +163,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         this.openedSidePanel = this.determineFirstOpenSidePanel();
         this.refreshToOpenedAssessmentType();
       },
-      (err) => console.log(err));
+        (err) => console.log(err));
 
     this.subscriptions.push(sub1, sub2, sub3, sub4);
 
@@ -261,7 +261,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @description
    */
   @HostListener('window:keyup', ['$event'])
-  keyEvent(event: KeyboardEvent) {
+  public keyEvent(event: KeyboardEvent) {
     console.log(event);
     if (this.insertMode === true) {
       const validOptions = [
@@ -315,27 +315,28 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @return {void}
    */
   public setSelectedRiskValue(): void {
-    if (this.model) {
-      this.currentAssessmentGroup.assessments.forEach((assessment) => {
-        const assessmentObject = this.model
-          .attributes.assessment_objects.find((el: any) => assessment.id === el.stix.id);
-        if (!assessmentObject) {
-          console.warn(`assessmentObject not found! id: ${assessment.id}, moving on...`);
-          return;
-        }
-        assessment.risk = assessmentObject.risk;
-        assessment.measurements.forEach((m) => {
-          const question = assessmentObject.questions.find((q) => q.name === m.name);
-          if (question) {
-            m.risk = question.risk;
-          }
-        });
-
-      });
+    if (!this.model) {
       this.calculateGroupRisk();
-    } else {
-      this.calculateGroupRisk();
+      return;
     }
+
+    this.currentAssessmentGroup.assessments.forEach((assessment) => {
+      const assessmentObject = this.model
+        .attributes.assessment_objects.find((el: any) => assessment.id === el.stix.id);
+      if (!assessmentObject) {
+        console.warn(`assessmentObject not found! id: ${assessment.id}, moving on...`);
+        return;
+      }
+      assessment.risk = assessmentObject.risk;
+      assessment.measurements.forEach((m) => {
+        const question = assessmentObject.questions.find((q) => q.name === m.name);
+        if (question) {
+          m.risk = question.risk;
+        }
+      });
+
+    });
+    this.calculateGroupRisk();
   }
 
   /**
