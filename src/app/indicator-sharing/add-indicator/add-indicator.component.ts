@@ -67,7 +67,8 @@ export class AddIndicatorComponent implements OnInit {
         this.form = IndicatorForm(this.indicatorSharingService, true);
         this.stepOneControl = new FormGroup({
             name: this.form.get('name'),
-            created_by_ref: this.form.get('created_by_ref')
+            created_by_ref: this.form.get('created_by_ref'),
+            valid_from: this.form.get('valid_from')
         });
     }
 
