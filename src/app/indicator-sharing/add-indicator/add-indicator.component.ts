@@ -7,7 +7,6 @@ import { IndicatorForm } from '../../global/form-models/indicator';
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { AuthService } from '../../core/services/auth.service';
 import { heightCollapse } from '../../global/animations/height-collapse';
-import { PatternHandlerTranslateAll } from '../../global/models/pattern-handlers';
 
 @Component({
     selector: 'add-indicator',
@@ -20,14 +19,6 @@ export class AddIndicatorComponent implements OnInit {
     public form: FormGroup | any;
     public organizations: any;
     public attackPatterns: any[] = [];
-    public patternValid: boolean = false;
-    public initialRatternHandlerResponse: PatternHandlerTranslateAll = {
-        pattern: null,
-        validated: false,
-        'car-elastic': null,
-        'car-splunk': null,
-        'cim-splunk': null
-    };
     public includeQueries = {
         carElastic: true,
         carSplunk: true,
@@ -66,70 +57,20 @@ export class AddIndicatorComponent implements OnInit {
                 getData$.unsubscribe();
             }
         );
-
-        const patternChanges$ = this.form.get('pattern').valueChanges
-            .debounceTime(300)
-            .distinctUntilChanged()
-            .switchMap((pattern: string) => {
-                if (pattern.length > 0) {
-                    return this.indicatorSharingService.translateAllPatterns(pattern);
-                } else {
-                    return Observable.of({ attributes: this.initialRatternHandlerResponse });
-                }
-            })
-            .pluck('attributes')
-            .subscribe(
-                (res: PatternHandlerTranslateAll) => {
-                    this.patternValid = res.validated;
-                    this.form.get('metaProperties').get('queries').get('carElastic').patchValue({ 
-                        query: res['car-elastic']
-                    });
-                    this.form.get('metaProperties').get('queries').get('carSplunk').patchValue({
-                        query: res['car-splunk']
-                    });
-                    this.form.get('metaProperties').get('queries').get('cimSplunk').patchValue({
-                        query: res['cim-splunk']
-                    });
-                },
-                (err) => {
-                    console.log(err);
-                },
-                () => {
-                    patternChanges$.unsubscribe();
-                }
-            );
     }
 
     public resetForm(e = null) {
         if (e) {
             e.preventDefault();
         }
-        this.form = IndicatorForm();
+        this.form = IndicatorForm(this.indicatorSharingService, true);
     }
 
     public submitIndicator() {
         const tempIndicator = this.buildIndicator({}, this.form.value);
-        if (!this.patternValid) {
-            try {
-                delete tempIndicator.metaProperties.queries;
-            } catch (e) { }
-        } else {
-            if (!tempIndicator.metaProperties.queries.carElastic.include) {
-                try {
-                    delete tempIndicator.metaProperties.queries.carElastic;
-                } catch (e) { }
-            }
-            if (!tempIndicator.metaProperties.queries.carSplunk.include) {
-                try {
-                    delete tempIndicator.metaProperties.queries.carSplunk;
-                } catch (e) { }
-            }
-            if (!tempIndicator.metaProperties.queries.cimSplunk.include) {
-                try {
-                    delete tempIndicator.metaProperties.queries.cimSplunk;
-                } catch (e) { }
-            }
-        }
+
+        this.pruneQueries(tempIndicator);        
+
         const addIndicator$ = this.indicatorSharingService.addIndicator(tempIndicator)
             .subscribe(
                 (res) => {                   
@@ -184,5 +125,31 @@ export class AddIndicatorComponent implements OnInit {
             }
         }
         return tempIndicator;
+    }
+
+    private pruneQueries(tempIndicator) {
+        if (!tempIndicator.metaProperties.queries.carElastic.include || !tempIndicator.metaProperties.queries.carElastic.query || tempIndicator.metaProperties.queries.carElastic.query.length === 0) {
+            try {
+                delete tempIndicator.metaProperties.queries.carElastic;
+            } catch (e) { }
+        }
+
+        if (!tempIndicator.metaProperties.queries.carSplunk.include || !tempIndicator.metaProperties.queries.carSplunk.query || tempIndicator.metaProperties.queries.carSplunk.query.length === 0) {
+            try {
+                delete tempIndicator.metaProperties.queries.carSplunk;
+            } catch (e) { }
+        }
+
+        if (!tempIndicator.metaProperties.queries.cimSplunk.include || !tempIndicator.metaProperties.queries.cimSplunk.query || tempIndicator.metaProperties.queries.cimSplunk.query.length === 0) {
+            try {
+                delete tempIndicator.metaProperties.queries.cimSplunk;
+            } catch (e) { }
+        }
+
+        if (Object.keys(tempIndicator.metaProperties.queries).length === 0) {
+            try {
+                delete tempIndicator.metaProperties.queries;
+            } catch (e) { }
+        }      
     }
 }
