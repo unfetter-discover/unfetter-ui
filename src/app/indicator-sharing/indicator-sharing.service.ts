@@ -15,6 +15,7 @@ export class IndicatorSharingService {
     public profileByIdUrl = Constance.PROFILE_BY_ID_URL;
     public attackPatternsUrl = Constance.ATTACK_PATTERN_URL;
     public sensorsUrl = Constance.X_UNFETTER_SENSOR_URL;
+    public patternHandlerUrl = Constance.PATTERN_HANDLER_URL;
     public readonly runMode = environment.runMode;
 
     constructor(
@@ -97,5 +98,10 @@ export class IndicatorSharingService {
             }
         };
         return this.genericApi.get(`${this.sensorsUrl}?project=${JSON.stringify(projectObj)}&filter=${JSON.stringify(filterObj)}&metaproperties=true`);
+    }
+
+    public translateAllPatterns(pattern: string): Observable<any> {
+        const body = { data: { pattern } };
+        return this.genericApi.post(`${this.patternHandlerUrl}/translate-all`, body);
     }
 }

@@ -24,6 +24,45 @@
                     </mat-error>
                 </mat-form-field>
 
+                <div class="mb-6">
+                    <h5>Pattern Status</h5>
+                    <p>
+                        <span *ngIf="patternValid">Valid</span>
+                        <span *ngIf="!patternValid">Invalid</span>
+                    </p>
+                    <div class="uf-well">
+                        <h5>Pattern Translations</h5>
+                        <div formGroupName="metaProperties">
+                            <div formGroupName="queries">
+                                <div formGroupName="carElastic" class="mb-6">
+                                    <mat-form-field class="full-width">
+                                        <textarea matInput matTextareaAutosize placeholder="Elastic Search" formControlName="query"></textarea>
+                                    </mat-form-field>
+                                    <div>
+                                        <mat-checkbox formControlName="include">Include</mat-checkbox>
+                                    </div>
+                                </div>
+                                <div formGroupName="carSplunk" class="mb-6">
+                                    <mat-form-field class="full-width">
+                                        <textarea matInput matTextareaAutosize placeholder="Splunk (Cyber Analytic Repository)" formControlName="query"></textarea>
+                                    </mat-form-field>
+                                    <div>
+                                        <mat-checkbox formControlName="include">Include</mat-checkbox>
+                                    </div>
+                                </div>
+                                <div formGroupName="cimSplunk" class="mb-6">
+                                    <mat-form-field class="full-width">
+                                        <textarea matInput matTextareaAutosize placeholder="Splunk (Common Information Model)" formControlName="query"></textarea>
+                                    </mat-form-field>
+                                    <div>
+                                        <mat-checkbox formControlName="include">Include</mat-checkbox>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <mat-form-field class="full-width mb-6">
                     <mat-select required placeholder="Submitter Organization" formControlName="created_by_ref">
                         <mat-option *ngFor="let org of organizations" [value]="org.id">{{org.name}}</mat-option>

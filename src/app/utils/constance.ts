@@ -89,6 +89,7 @@ export const Constance = {
 
   CONFIG_URL: 'api/config',
   WEB_ANALYTICS_URL: 'api/web-analytics',
+  PATTERN_HANDLER_URL: 'api/pattern-handler',
 
   // ADMIN
   ADMIN_URL: 'api/admin',

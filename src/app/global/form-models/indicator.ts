@@ -1,4 +1,4 @@
-import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray, ValidatorFn } from '@angular/forms';
 
 export const IndicatorForm  = () => new FormGroup({
     name: new FormControl('', Validators.required),
@@ -12,6 +12,20 @@ export const IndicatorForm  = () => new FormGroup({
     kill_chain_phases: new FormArray([]),
     metaProperties: new FormGroup({
         observedData: new FormArray([]),
-        relationships: new FormControl([])
+        relationships: new FormControl([]),
+        queries: new FormGroup({
+            carElastic: new FormGroup({ 
+                query: new FormControl(''),
+                include: new FormControl(true)
+            }),
+            carSplunk: new FormGroup({ 
+                query: new FormControl(''),
+                include: new FormControl(true)
+            }),
+            cimSplunk: new FormGroup({ 
+                query: new FormControl(''),
+                include: new FormControl(true)
+            })
+        })
     })
 });
