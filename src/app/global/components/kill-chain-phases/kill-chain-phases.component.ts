@@ -17,7 +17,7 @@ export class KillChainPhasesReactiveComponent implements OnInit {
     @Input() public parentForm: any;
 
     public localForm: FormGroup;
-    public showKillChainPhases: boolean = false;
+    public showKillChainPhases: boolean = true;
     public killChainRaw: any[] = []
     public killChainNames: string[] = [];
     public distinctKillChainPhases: string[] = [];

@@ -29,7 +29,6 @@
   @include uf-well-base;
   @include lightenPrimaryColors('background-color', 0.05);
   @include themePrimaryColorsWithModifiedValue('border-left', '8px solid');
-  border-left: 8px solid $primary-color;
 }
 
 .uf-well-warn {

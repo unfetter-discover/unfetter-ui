@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { MatDialogRef } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 
@@ -19,6 +19,12 @@ export class AddIndicatorComponent implements OnInit {
     public form: FormGroup | any;
     public organizations: any;
     public attackPatterns: any[] = [];
+    public includeQueries = {
+        carElastic: true,
+        carSplunk: true,
+        cimSplunk: false
+    };
+    public stepOneControl: FormGroup | any;
 
     constructor(
         public dialogRef: MatDialogRef<any>,
@@ -58,11 +64,19 @@ export class AddIndicatorComponent implements OnInit {
         if (e) {
             e.preventDefault();
         }
-        this.form = IndicatorForm();
+        this.form = IndicatorForm(this.indicatorSharingService, true);
+        this.stepOneControl = new FormGroup({
+            name: this.form.get('name'),
+            created_by_ref: this.form.get('created_by_ref'),
+            valid_from: this.form.get('valid_from')
+        });
     }
 
     public submitIndicator() {
         const tempIndicator = this.buildIndicator({}, this.form.value);
+
+        this.pruneQueries(tempIndicator);        
+
         const addIndicator$ = this.indicatorSharingService.addIndicator(tempIndicator)
             .subscribe(
                 (res) => {                   
@@ -117,5 +131,31 @@ export class AddIndicatorComponent implements OnInit {
             }
         }
         return tempIndicator;
+    }
+
+    private pruneQueries(tempIndicator) {
+        if (!tempIndicator.metaProperties.queries.carElastic.include || !tempIndicator.metaProperties.queries.carElastic.query || tempIndicator.metaProperties.queries.carElastic.query.length === 0) {
+            try {
+                delete tempIndicator.metaProperties.queries.carElastic;
+            } catch (e) { }
+        }
+
+        if (!tempIndicator.metaProperties.queries.carSplunk.include || !tempIndicator.metaProperties.queries.carSplunk.query || tempIndicator.metaProperties.queries.carSplunk.query.length === 0) {
+            try {
+                delete tempIndicator.metaProperties.queries.carSplunk;
+            } catch (e) { }
+        }
+
+        if (!tempIndicator.metaProperties.queries.cimSplunk.include || !tempIndicator.metaProperties.queries.cimSplunk.query || tempIndicator.metaProperties.queries.cimSplunk.query.length === 0) {
+            try {
+                delete tempIndicator.metaProperties.queries.cimSplunk;
+            } catch (e) { }
+        }
+
+        if (Object.keys(tempIndicator.metaProperties.queries).length === 0) {
+            try {
+                delete tempIndicator.metaProperties.queries;
+            } catch (e) { }
+        }      
     }
 }

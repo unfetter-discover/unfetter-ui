@@ -15,7 +15,7 @@ export class ExternalReferencesReactiveComponent implements OnInit {
     @Input() public parentForm: any;
 
     public localForm: FormGroup; 
-    public showExternalReferences: boolean = false;
+    public showExternalReferences: boolean = true;
     public formResetComplete = true;
 
     constructor(private changeDetectorRef: ChangeDetectorRef) { }

@@ -41,16 +41,11 @@
         </div>
 
         <mat-tab-group>
-            <!-- <mat-tab label="Labels">
-                <div class="flex flexItemsCenter">
-                    <mat-chip-list>
-                        <mat-chip *ngFor="let label of indicator.labels" [selected]="labelSelected(label)" class="cursor-pointer chipListChip">{{label | capitalize}}</mat-chip>
-                    </mat-chip-list>
-                    <add-label-reactive [stixType]="'indicator'" (labelAdded)="addLabel($event)" [currentLabels]="indicator.labels"></add-label-reactive>
-                </div>
-            </mat-tab> -->
-
             <mat-tab label="Details">
+                <div *ngIf="indicator.description">
+                    <label>Description</label>
+                    <p>{{ indicator.description }}</p>
+                </div>
                 <div *ngIf="indicator.kill_chain_phases">
                     <label>Kill Chain Phases</label>
                     <p>
@@ -62,10 +57,6 @@
                             <span *ngIf="i < (indicator.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
                         </span>
                     </p>
-                </div>
-                <div *ngIf="indicator.description">
-                    <label>Description</label>
-                    <p>{{ indicator.description }}</p>
                 </div>
                 <div *ngIf="indicator.external_references">
                     <label>External References</label><br>
@@ -79,27 +70,29 @@
                     <label>Unfetter User Interactions: </label>
                     <span *ngIf="indicator.metaProperties && indicator.metaProperties.interactions">{{ indicator.metaProperties.interactions.length }}</span>
                     <span *ngIf="!indicator.metaProperties || !indicator.metaProperties.interactions">{{ 0 }}</span>
-                </div>                
-                <!-- <p>
-                    <a routerLink="/indicator-sharing/single/{{indicator.id}}">View Alone</a>
-                </p> -->
+                </div>
             </mat-tab>
 
-            <!-- <mat-tab label="Comments" *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">
-                <div *ngFor="let comment of indicator.metaProperties.comments | sortByField: 'submitted'; let i = index">
-                    <div class="flex flexItemsCenter mb-5">
-                        <span *ngIf="comment.user.avatar_url">
-                            <img src="{{ comment.user.avatar_url }}" alt="{{ comment.user.userName }} avatar" class="smallAvatar">&nbsp;
-                        </span>
-                        <span>
-                            <a routerLink="/users/profile/{{comment.user.id}}">{{ comment.user.userName }}</a>
-                            <small class="text-muted"> &bull; {{ comment.submitted | timeAgo }}</small>
-                        </span>
+            <mat-tab label="Scripts" *ngIf="indicator.metaProperties && indicator.metaProperties.queries">
+                <div *ngIf="indicator.metaProperties.queries.carElastic && indicator.metaProperties.queries.carElastic.query">
+                    <label>Elastic Search</label>
+                    <div class="mb-6">
+                        <code>{{ indicator.metaProperties.queries.carElastic.query }}</code>
                     </div>
-                    <p [innerHtml]="whitespaceToBreak(comment.comment)"></p>
-                    <hr *ngIf="i < (indicator.metaProperties.comments.length - 1)">
                 </div>
-            </mat-tab> -->
+                <div *ngIf="indicator.metaProperties.queries.carSplunk && indicator.metaProperties.queries.carSplunk.query">
+                    <label>Splunk (Cyber Analytic Repository)</label>
+                    <div class="mb-6">
+                        <code>{{ indicator.metaProperties.queries.carSplunk.query }}</code>
+                    </div>
+                </div>
+                <div *ngIf="indicator.metaProperties.queries.cimSplunk && indicator.metaProperties.queries.cimSplunk.query">
+                    <label>Splunk (Common Information Model)</label>
+                    <div class="mb-6">
+                        <code>{{ indicator.metaProperties.queries.cimSplunk.query }}</code>
+                    </div>
+                </div>
+            </mat-tab>
 
             <mat-tab label="Attack Patterns" *ngIf="attackPatterns && attackPatterns.length > 0">
                 <div *ngFor="let ap of attackPatterns">
