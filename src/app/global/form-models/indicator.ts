@@ -42,6 +42,8 @@ class IndicatorValidator {
             })
             .pluck('validated')
             .map((validated: boolean) => validated ? null : { 'invalidPattern': true });
+            // TODO uncomment this if you wish to NOT enforce valid STIX pattern
+            // .map((_) => null);
     }
 }
 

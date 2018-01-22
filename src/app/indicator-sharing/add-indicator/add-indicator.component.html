@@ -60,30 +60,42 @@
                     </mat-error>
                 </mat-form-field>
                 
-                <div class="mb-6 uf-well">
-                    <h5>Pattern Translations</h5>
+                <div class="mb-6 uf-well queriesContainer">
+                    <h5>Generated Pattern Translations</h5>
                     <div formGroupName="metaProperties">
                         <div formGroupName="queries">
                             <div formGroupName="carElastic" class="mb-6">
-                                <mat-form-field class="full-width">
+                                <!-- <mat-form-field class="full-width">
                                     <textarea matInput matTextareaAutosize placeholder="Elastic Search" formControlName="query"></textarea>
-                                </mat-form-field>
+                                </mat-form-field> -->
+                                <div class="mb-5">
+                                    <label>Elastic Search</label><br>
+                                    <code>{{ form.get('metaProperties').get('queries').get('carElastic').get('query').value }}</code>
+                                </div>
                                 <div>
                                     <mat-checkbox formControlName="include">Include</mat-checkbox>
                                 </div>
                             </div>
                             <div formGroupName="carSplunk" class="mb-6">
-                                <mat-form-field class="full-width">
+                                <!-- <mat-form-field class="full-width">
                                     <textarea matInput matTextareaAutosize placeholder="Splunk (Cyber Analytic Repository)" formControlName="query"></textarea>
-                                </mat-form-field>
+                                </mat-form-field> -->
+                                <div class="mb-5">
+                                    <label>Splunk (Cyber Analytic Repository)</label><br>
+                                    <code>{{ form.get('metaProperties').get('queries').get('carSplunk').get('query').value }}</code>
+                                </div>
                                 <div>
                                     <mat-checkbox formControlName="include">Include</mat-checkbox>
                                 </div>
                             </div>
                             <div formGroupName="cimSplunk" class="mb-6">
-                                <mat-form-field class="full-width">
+                                <!-- <mat-form-field class="full-width">
                                     <textarea matInput matTextareaAutosize placeholder="Splunk (Common Information Model)" formControlName="query"></textarea>
-                                </mat-form-field>
+                                </mat-form-field> -->
+                                <div class="mb-5">
+                                    <label>Splunk (Common Information Model)</label><br>
+                                    <code>{{ form.get('metaProperties').get('queries').get('cimSplunk').get('query').value }}</code>
+                                </div>
                                 <div>
                                     <mat-checkbox formControlName="include">Include</mat-checkbox>
                                 </div>
@@ -93,6 +105,7 @@
                 </div>
 
                 <div class="mt-6">
+                    <!-- TODO change to `[disabled]="form.get('pattern').status !== 'VALID'"` if using pattern validation -->
                     <button mat-raised-button matStepperNext type="button" color="primary" [disabled]="form.get('pattern').status !== 'VALID'">CONTINUE</button>
                     <button mat-button matStepperPrevious type="button">BACK</button>
                 </div>
@@ -171,6 +184,7 @@
 
         <p class="text-right mt-6">
             <button mat-button mat-dialog-close (click)="resetForm($event); dialogRef.close(false);">CANCEL</button>
+            <!-- TODO change to `form.status !== 'VALID'` if using pattern validation -->
             <button mat-raised-button color="primary" [disabled]="form.status !== 'VALID'" type="submit">SAVE</button>
         </p>
     </form>
