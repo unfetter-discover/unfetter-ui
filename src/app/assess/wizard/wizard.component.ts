@@ -163,7 +163,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         this.openedSidePanel = this.determineFirstOpenSidePanel();
         this.refreshToOpenedAssessmentType();
       },
-        (err) => console.log(err));
+      (err) => console.log(err));
 
     this.subscriptions.push(sub1, sub2, sub3, sub4);
 
@@ -230,13 +230,31 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     const data = this[this.openedSidePanel];
     if (data) {
       this.navigations = [];
-      // todo : update ratioOfQuestionsAnswered
+      this.updateRatioOfAnswerQuestions();
       this.build(data);
     }
   }
 
+  /**
+   * @description
+   * @return {void}
+   */
   public updateRatioOfAnswerQuestions(): void {
-    // this.assessments;
+    if (this.assessmentGroups) {
+      const allQuestions = this.assessmentGroups
+        // flat map assessments across groups
+        .map((groups) => groups.assessments)
+        .reduce((assessments, memo) => memo.concat(assessments), [])
+        // flat map across questions
+        .map((assessments) => assessments.measurements)
+        .reduce((measurements, memo) => memo.concat(measurements), []);
+      const numQuestions = allQuestions.length;
+      const answeredQuestions = allQuestions.filter((el) => el.risk > -1).length;
+      if (answeredQuestions > 0) {
+        const ratio = answeredQuestions / numQuestions;
+        this.ratioOfQuestionsAnswered = Math.round(ratio * 100);
+      }
+    }
   }
 
   /**
@@ -288,6 +306,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       // assessment.risk = this.calculateMeasurementsAvgRisk(assessment.measurements);
       // const groupRisk = this.calculateGroupRisk();
       // this.updateChart();
+      this.updateRatioOfAnswerQuestions();
     });
   }
 
@@ -296,28 +315,27 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @return {void}
    */
   public setSelectedRiskValue(): void {
-    if (!this.model) {
-      this.calculateGroupRisk();
-      return;
-    }
-
-    this.currentAssessmentGroup.assessments.forEach((assessment) => {
-      const assessmentObject = this.model
-        .attributes.assessment_objects.find((el: any) => assessment.id === el.stix.id);
-      if (!assessmentObject) {
-        console.warn(`assessmentObject not found! id: ${assessment.id}, moving on...`);
-        return;
-      }
-      assessment.risk = assessmentObject.risk;
-      assessment.measurements.forEach((m) => {
-        const question = assessmentObject.questions.find((q) => q.name === m.name);
-        if (question) {
-          m.risk = question.risk;
+    if (this.model) {
+      this.currentAssessmentGroup.assessments.forEach((assessment) => {
+        const assessmentObject = this.model
+          .attributes.assessment_objects.find((el) => assessment.id === el.stix.id);
+        if (!assessmentObject) {
+          console.warn(`assessmentObject not found! id: ${assessment.id}, moving on...`);
+          return;
         }
-      });
+        assessment.risk = assessmentObject.risk;
+        assessment.measurements.forEach((m) => {
+          const question = assessmentObject.questions.find((q) => q.name === m.name);
+          if (question) {
+            m.risk = question.risk;
+          }
+        });
 
-    });
-    this.calculateGroupRisk();
+      });
+      this.calculateGroupRisk();
+    } else {
+      this.calculateGroupRisk();
+    }
   }
 
   /**
@@ -415,6 +433,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       }
     }
     this.updateChart();
+    this.updateRatioOfAnswerQuestions();
   }
 
   /**
@@ -548,57 +567,56 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     const assessmentGroups = [];
     const self = this;
 
-    if (!assessedObjects) {
-      const laststep = this.navigations.length + 1;
-      this.navigations.push({ label: 'Summary', page: laststep });
-      return assessmentGroups;
+    if (assessedObjects) {
+      // Go through and build each assessment
+      // We do this so we can just save all the assessments later.
+      this.assessments = assessedObjects
+        .map((el) => el.attributes)
+        .map((assessedObject) => {
+          const assessment = new WizardAssessment();
+          if (assessedObject.metaProperties && assessedObject.metaProperties.groupings) {
+            assessment.groupings = assessedObject.metaProperties.groupings;
+          }
+          assessment.id = assessedObject.id;
+          assessment.name = assessedObject.name;
+          assessment.description = assessedObject.description;
+          assessment.measurements = this.buildMeasurements(assessedObject.id);
+          assessment.type = assessedObject.type;
+          const risk = this.getRisk(assessment.measurements);
+          assessment.risk = -1;
+          return assessment;
+        });
+      this.groupings = this.buildGrouping(this.assessments);
+
+      const assessmentObjectsGroups = this.doObjectGroupings(this.assessments);
+      const keys = Object.keys(assessmentObjectsGroups).sort();
+      keys.forEach((phaseName, index) => {
+        // TODO - Need to remove the 'courseOfAction' name
+        const courseOfActionGroup = assessmentObjectsGroups[phaseName];
+
+        // This is the x-unfetter-control-assessments
+        const assessmentGroup: any = {};
+        assessmentGroup.name = phaseName;
+        const step = index + 1;
+        this.navigations.push({
+          label: this.splitTitle(phaseName),
+          page: step
+        });
+        this.item = this.navigations;
+        // TODO: Need to get description somehow from the key phase information
+        assessmentGroup.description = this.groupings[phaseName];
+        assessmentGroup.assessments = courseOfActionGroup;
+        assessmentGroup.risk = 1;
+        const riskArray = [1, 0];
+        assessmentGroup.riskArray = riskArray;
+        const riskArrayLabels = ['Risk Accepted', 'Risk Addressed'];
+        assessmentGroup.riskArrayLabels = riskArrayLabels;
+        assessmentGroups.push(assessmentGroup);
+      });
     }
 
-    // Go through and build each assessment
-    // We do this so we can just save all the assessments later.
-    this.assessments = assessedObjects
-      .map((el) => el.attributes)
-      .map((assessedObject) => {
-        const assessment = new WizardAssessment();
-        if (assessedObject.metaProperties && assessedObject.metaProperties.groupings) {
-          assessment.groupings = assessedObject.metaProperties.groupings;
-        }
-        assessment.id = assessedObject.id;
-        assessment.name = assessedObject.name;
-        assessment.description = assessedObject.description;
-        assessment.measurements = this.buildMeasurements(assessedObject.id);
-        assessment.type = assessedObject.type;
-        const risk = this.getRisk(assessment.measurements);
-        assessment.risk = -1;
-        return assessment;
-      });
-    this.groupings = this.buildGrouping(this.assessments);
-
-    const assessmentObjectsGroups = this.doObjectGroupings(this.assessments);
-    const keys = Object.keys(assessmentObjectsGroups).sort();
-    keys.forEach((phaseName, index) => {
-      // TODO - Need to remove the 'courseOfAction' name
-      const courseOfActionGroup = assessmentObjectsGroups[phaseName];
-
-      // This is the x-unfetter-control-assessments
-      const assessmentGroup: any = {};
-      assessmentGroup.name = phaseName;
-      const step = index + 1;
-      this.navigations.push({
-        label: this.splitTitle(phaseName),
-        page: step
-      });
-      this.item = this.navigations;
-      // TODO: Need to get description somehow from the key phase information
-      assessmentGroup.description = this.groupings[phaseName];
-      assessmentGroup.assessments = courseOfActionGroup;
-      assessmentGroup.risk = 1;
-      const riskArray = [1, 0];
-      assessmentGroup.riskArray = riskArray;
-      const riskArrayLabels = ['Risk Accepted', 'Risk Addressed'];
-      assessmentGroup.riskArrayLabels = riskArrayLabels;
-      assessmentGroups.push(assessmentGroup);
-    });
+    const laststep = this.navigations.length + 1;
+    this.navigations.push({ label: 'Summary', page: laststep });
     return assessmentGroups;
   }
 
@@ -607,7 +625,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @param stixObjects
    * @return {any} 
    */
-  private buildGrouping(stixObjects): any {
+  private buildGrouping(stixObjects: WizardAssessment[]): any {
     const groupings = [];
     stixObjects.forEach((stixObject) => {
       const groupingStages = stixObject.groupings;
