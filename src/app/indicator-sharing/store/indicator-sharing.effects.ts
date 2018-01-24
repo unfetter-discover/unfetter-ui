@@ -68,6 +68,13 @@ export class IndicatorSharingEffects {
             new indicatorSharingActions.FilterIndicators()
         ]);
 
+    @Effect()
+    public addIndicator = this.actions$
+        .ofType(indicatorSharingActions.ADD_INDICATOR)
+        .switchMap((_) => this.indicatorSharingService.getSensors())
+        .map((sensorRes) => sensorRes.map((sensor) => sensor.attributes))
+        .map((sensors) => new indicatorSharingActions.SetSensors(sensors));
+
     constructor(
         private actions$: Actions,
         private websocketService: WebsocketService,

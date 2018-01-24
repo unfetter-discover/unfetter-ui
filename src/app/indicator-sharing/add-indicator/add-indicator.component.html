@@ -5,7 +5,7 @@
 
         <mat-vertical-stepper>
 
-            <mat-step label="Base Data" [stepControl]="stepOneControl">
+            <mat-step label="Base Data {{ stepOneControl.status !== 'VALID' ? '(Required Fields Remaining)' : '' }}" [stepControl]="stepOneControl">
                 <mat-form-field class="full-width mb-6 mt-10">
                     <input matInput required placeholder="Name" formControlName="name">
                     <mat-error *ngIf="form.get('name').hasError('required')">
@@ -47,7 +47,7 @@
                 </div>
             </mat-step>
 
-            <mat-step label="Pattern" [stepControl]="form.get('pattern')">
+            <mat-step label="Pattern {{ form.get('pattern').status !== 'VALID' ? '(Required Fields Remaining)' : '' }}" [stepControl]="form.get('pattern')">
                 <help-window [helpHtml]="patternHelpHtml"></help-window>
 
                 <mat-form-field class="full-width mb-6">
