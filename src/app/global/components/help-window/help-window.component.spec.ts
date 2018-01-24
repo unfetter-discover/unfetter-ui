@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { HelpWindowComponent } from './help-window.component';
+import { MatIconModule, MatButtonModule } from '@angular/material';
 
 describe('HelpWindowComponent', () => {
   let component: HelpWindowComponent;
@@ -8,7 +8,11 @@ describe('HelpWindowComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HelpWindowComponent ]
+      declarations: [ HelpWindowComponent ],
+      imports: [
+        MatIconModule,
+        MatButtonModule
+      ]
     })
     .compileComponents();
   }));
