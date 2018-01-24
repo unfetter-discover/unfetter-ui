@@ -64,6 +64,20 @@
     #{$property}: rgba-to-rgb(rgba($primary-color, $percent)); 
 }
 
+@mixin lightenAccentColors ($property, $percent) {
+  .analyticHubTheme & {
+    #{$property}: rgba-to-rgb(rgba($analytic-hub-accent, $percent));
+  }
+  .threatDashboardTheme & {
+    #{$property}: rgba-to-rgb(rgba($threat-dashboard-accent, $percent));
+  }
+  .assessmentsTheme & {
+    #{$property}: rgba-to-rgb(rgba($assessments-accent, $percent));
+  }
+  #{$property}: rgba-to-rgb(rgba($accent-color, $percent));
+}
+
+
 @mixin darkenPrimaryColors ($property, $percent) {
   .analyticHubTheme & {
     #{$property}: darken($analytic-hub-primary, $percent);
@@ -90,6 +104,20 @@
   }
   #{$property}: #{$modification} $primary-color;
 }
+
+@mixin themeAccentColorsWithModifiedValue ($property, $modification) {
+  .analyticHubTheme & {
+    #{$property}: #{$modification} $analytic-hub-accent;
+  }
+  .threatDashboardTheme & {
+    #{$property}: #{$modification} $threat-dashboard-accent;
+  }
+  .assessmentsTheme & {
+    #{$property}: #{$modification} $assessments-accent;
+  }
+  #{$property}: #{$modification} $accent-color;
+}
+
 
 @mixin makeTriangle($color) {
   border-color: transparent;

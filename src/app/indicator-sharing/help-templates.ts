@@ -12,3 +12,9 @@ export const patternHelp = `
     <h4>Additional Queries</h4>
     <p class="mb-0">Additional queries allows you to add queries in a language and format of your choosing.</p>
 `;
+
+export const observableDataHelp = `
+    <h4>Observed Data</h4>
+    <p>Observed data follows the <strong>Object, Action, Field</strong> structure of the <a href="https://car.mitre.org/wiki/Data_Model" target=_blank>CAR Data Model</a>.  
+    It is applied to both analytics and sensors to help determine which sensors are capable of running an analytic.</p>
+`;

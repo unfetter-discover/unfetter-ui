@@ -3,7 +3,7 @@
         <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showExternalReferences}">chevron_right</i>
         <span class="h5">&nbsp;External References</span>
     </div>
-    <div class="uf-well" @heightCollapse *ngIf="showExternalReferences">
+    <div class="uf-well-accent" @heightCollapse *ngIf="showExternalReferences">
         <form [formGroup]="localForm" novalidate (ngSubmit)="addToParent()" *ngIf="formResetComplete">
 
             <mat-form-field class="full-width mb-6">
@@ -25,7 +25,7 @@
                 <input matInput placeholder="URL" formControlName="url">
             </mat-form-field>
 
-            <button mat-button color="primary" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Add External Reference</button>
+            <button mat-button color="accent" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Add External Reference</button>
         </form>
     </div>
 </div>

@@ -3,7 +3,7 @@
     <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showForm}">chevron_right</i>
     <span class="h5">&nbsp;Additional Queries</span>
   </div>
-  <div class="uf-well" @heightCollapse *ngIf="showForm">
+  <div class="uf-well-accent" @heightCollapse *ngIf="showForm">
     <form [formGroup]="localForm" novalidate (ngSubmit)="addToParent()" *ngIf="formResetComplete">
 
       <mat-form-field class="full-width mb-6">
@@ -20,7 +20,7 @@
         </mat-error>
       </mat-form-field>
 
-      <button mat-button color="primary" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Add Additional Query</button>
+      <button mat-button color="accent" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Add Additional Query</button>
     </form>
   </div>
 </div>

@@ -181,6 +181,7 @@
             </mat-step>
             
             <mat-step label="Observable Data">
+                <help-window [helpHtml]="observableDataHelpHtml"></help-window>
                 <div class="mt-10">
                     <observable-data-tree [parentForm]="form"></observable-data-tree>
                 </div>

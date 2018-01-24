@@ -8,7 +8,7 @@ import { IndicatorSharingService } from '../indicator-sharing.service';
 import { AuthService } from '../../core/services/auth.service';
 import { heightCollapse } from '../../global/animations/height-collapse';
 import { PatternHandlerTranslateAll } from '../../global/models/pattern-handlers';
-import { patternHelp } from '../help-templates';
+import { patternHelp, observableDataHelp } from '../help-templates';
 
 @Component({
     selector: 'add-indicator',
@@ -31,6 +31,7 @@ export class AddIndicatorComponent implements OnInit {
     };
     public stepOneControl: FormGroup | any;
     public patternHelpHtml: string = patternHelp;
+    public observableDataHelpHtml: string = observableDataHelp;
 
     private initialRatternHandlerResponse: PatternHandlerTranslateAll = {
         pattern: null,
