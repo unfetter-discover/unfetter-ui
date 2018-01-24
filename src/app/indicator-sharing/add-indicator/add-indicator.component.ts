@@ -7,6 +7,7 @@ import { IndicatorForm } from '../../global/form-models/indicator';
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { AuthService } from '../../core/services/auth.service';
 import { heightCollapse } from '../../global/animations/height-collapse';
+import { PatternHandlerTranslateAll } from '../../global/models/pattern-handlers';
 
 @Component({
     selector: 'add-indicator',
@@ -19,12 +20,22 @@ export class AddIndicatorComponent implements OnInit {
     public form: FormGroup | any;
     public organizations: any;
     public attackPatterns: any[] = [];
+    public patternValid: boolean = false;
+    public showPatternTranslations: boolean = false;
     public includeQueries = {
         carElastic: true,
         carSplunk: true,
         cimSplunk: false
     };
     public stepOneControl: FormGroup | any;
+
+    private initialRatternHandlerResponse: PatternHandlerTranslateAll = {
+        pattern: null,
+        validated: false,
+        'car-elastic': null,
+        'car-splunk': null,
+        'cim-splunk': null
+    };
 
     constructor(
         public dialogRef: MatDialogRef<any>,
@@ -58,13 +69,50 @@ export class AddIndicatorComponent implements OnInit {
                 getData$.unsubscribe();
             }
         );
+
+        const patternChange$ = (this.form.get('pattern') as FormControl).valueChanges
+            .debounceTime(100)
+            .distinctUntilChanged()
+            .switchMap((pattern: string) => {
+                if (pattern && pattern.length > 0) {
+                    return this.indicatorSharingService.translateAllPatterns(pattern);
+                } else {
+                    return Observable.of({ attributes: this.initialRatternHandlerResponse });
+                }
+            })
+            .pluck('attributes')
+            .subscribe(
+                (res: PatternHandlerTranslateAll) => {
+                    this.patternValid = res.validated;
+                    console.log('~~~~', this.patternValid);
+                    this.form.get('metaProperties').get('queries').get('carElastic').patchValue({
+                        query: res['car-elastic']
+                    });
+                    this.form.get('metaProperties').get('queries').get('carSplunk').patchValue({
+                        query: res['car-splunk']
+                    });
+                    this.form.get('metaProperties').get('queries').get('cimSplunk').patchValue({
+                        query: res['cim-splunk']
+                    });
+
+                    if (res['car-elastic'] || res['car-splunk'] || res['cim-splunk']) {
+                        this.showPatternTranslations = true;
+                    }
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    patternChange$.unsubscribe();
+                }
+            );
     }
 
     public resetForm(e = null) {
         if (e) {
             e.preventDefault();
         }
-        this.form = IndicatorForm(this.indicatorSharingService, true);
+        this.form = IndicatorForm();
         this.stepOneControl = new FormGroup({
             name: this.form.get('name'),
             created_by_ref: this.form.get('created_by_ref'),

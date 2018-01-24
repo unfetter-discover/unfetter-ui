@@ -51,17 +51,21 @@
                 <mat-form-field class="full-width mb-6">
                     <textarea matInput required placeholder="Pattern" formControlName="pattern"></textarea>
                     <mat-error *ngIf="form.get('pattern').hasError('required')">
-                        Pattern is
-                        <strong>required</strong>
-                    </mat-error>
-                    <mat-error *ngIf="form.get('pattern').hasError('invalidPattern')">
-                        Pattern is
-                        <strong>invalid</strong>
+                        Pattern is <strong>required</strong>
                     </mat-error>
                 </mat-form-field>
+
+                <p id="patternWarning" 
+                    [style.opacity]="form.get('pattern').dirty && !patternValid && form.get('pattern').value.length > 0 ? 1 : 0" 
+                    [style.marginTop]="!form.get('pattern').hasError('required') ? '-20px' : '-5px'" 
+                    [style.marginBottom]="!form.get('pattern').hasError('required') ? '15px' : '0px'">(Warning) Pattern is <strong>invalid</strong></p>
                 
-                <div class="mb-6 uf-well queriesContainer">
-                    <h5>Generated Pattern Translations</h5>
+                <div class="uf-collapsible-control mb-10" (click)="showPatternTranslations = !showPatternTranslations">
+                    <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showPatternTranslations}">chevron_right</i>
+                    <span class="h5">&nbsp;Generated Pattern Translations</span>
+                </div>
+                <div class="mb-6 uf-well queriesContainer" *ngIf="showPatternTranslations" @heightCollapse>
+                    <!-- <h5>Generated Pattern Translations</h5> -->
                     <div formGroupName="metaProperties">
                         <div formGroupName="queries">
                             <div formGroupName="carElastic" class="mb-6">
@@ -69,8 +73,8 @@
                                     <textarea matInput matTextareaAutosize placeholder="Elastic Search" formControlName="query"></textarea>
                                 </mat-form-field> -->
                                 <div class="mb-5">
-                                    <label>Elastic Search</label><br>
-                                    <code>{{ form.get('metaProperties').get('queries').get('carElastic').get('query').value }}</code>
+                                    <label>Elastic Search (Cyber Analytic Repository)</label><br>
+                                    <code>{{ form.get('metaProperties').get('queries').get('carElastic').get('query').value }}&nbsp;</code>
                                 </div>
                                 <div>
                                     <mat-checkbox formControlName="include">Include</mat-checkbox>
@@ -82,7 +86,7 @@
                                 </mat-form-field> -->
                                 <div class="mb-5">
                                     <label>Splunk (Cyber Analytic Repository)</label><br>
-                                    <code>{{ form.get('metaProperties').get('queries').get('carSplunk').get('query').value }}</code>
+                                    <code>{{ form.get('metaProperties').get('queries').get('carSplunk').get('query').value }}&nbsp;</code>
                                 </div>
                                 <div>
                                     <mat-checkbox formControlName="include">Include</mat-checkbox>
@@ -94,7 +98,7 @@
                                 </mat-form-field> -->
                                 <div class="mb-5">
                                     <label>Splunk (Common Information Model)</label><br>
-                                    <code>{{ form.get('metaProperties').get('queries').get('cimSplunk').get('query').value }}</code>
+                                    <code>{{ form.get('metaProperties').get('queries').get('cimSplunk').get('query').value }}&nbsp;</code>
                                 </div>
                                 <div>
                                     <mat-checkbox formControlName="include">Include</mat-checkbox>
