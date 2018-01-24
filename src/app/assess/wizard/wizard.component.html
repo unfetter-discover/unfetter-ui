@@ -115,7 +115,7 @@
               <div class="col-xs-{{ assessment.measurements.length | columnSize}}" *ngFor="let measurement of assessment.measurements">
                 <form>
                   <mat-form-field class="full-width">
-                    <mat-select #question name="question" (change)="updateRisks(question, measurement, assessment)" [value]="selectedValue(assessment, measurement, question)">
+                    <mat-select #question name="question" (change)="updateRisks(question, measurement, assessment)" [value]="selectedValue(question, measurement, assessment)">
                       <mat-option [value]="defaultValue"></mat-option>
                       <mat-option *ngFor="let options of measurement.options" [value]="options.risk">
                         {{ options.name }}
