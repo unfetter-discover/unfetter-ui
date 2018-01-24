@@ -48,6 +48,8 @@
             </mat-step>
 
             <mat-step label="Pattern" [stepControl]="form.get('pattern')">
+                <help-window [helpHtml]="patternHelpHtml"></help-window>
+
                 <mat-form-field class="full-width mb-6">
                     <textarea matInput required placeholder="Pattern" formControlName="pattern"></textarea>
                     <mat-error *ngIf="form.get('pattern').hasError('required')">
@@ -60,56 +62,61 @@
                     [style.marginTop]="!form.get('pattern').hasError('required') ? '-20px' : '-5px'" 
                     [style.marginBottom]="!form.get('pattern').hasError('required') ? '15px' : '0px'">(Warning) Pattern is <strong>invalid</strong></p>
                 
-                <div class="uf-collapsible-control mb-10" (click)="showPatternTranslations = !showPatternTranslations">
-                    <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showPatternTranslations}">chevron_right</i>
-                    <span class="h5">&nbsp;Generated Pattern Translations</span>
-                </div>
-                <div class="mb-6 uf-well queriesContainer" *ngIf="showPatternTranslations" @heightCollapse>
-                    <!-- <h5>Generated Pattern Translations</h5> -->
-                    <div formGroupName="metaProperties">
-                        <div formGroupName="queries">
-                            <div formGroupName="carElastic" class="mb-6">
-                                <!-- <mat-form-field class="full-width">
-                                    <textarea matInput matTextareaAutosize placeholder="Elastic Search" formControlName="query"></textarea>
-                                </mat-form-field> -->
-                                <div class="mb-5">
-                                    <label>Elastic Search (Cyber Analytic Repository)</label><br>
-                                    <code>{{ form.get('metaProperties').get('queries').get('carElastic').get('query').value }}&nbsp;</code>
+                <div class="mb-6">
+                    <div class="uf-collapsible-control mb-10" (click)="showPatternTranslations = !showPatternTranslations">
+                        <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showPatternTranslations}">chevron_right</i>
+                        <span class="h5">&nbsp;Generated Pattern Translations</span>
+                    </div>
+                    <div class="uf-well queriesContainer" *ngIf="showPatternTranslations" @heightCollapse>
+                        <div formGroupName="metaProperties">
+                            <div formGroupName="queries">
+                                <div formGroupName="carElastic" class="mb-6">
+                                    <div class="mb-5">
+                                        <label>Elastic Search (Cyber Analytic Repository)</label>
+                                        <br>
+                                        <code>{{ form.get('metaProperties').get('queries').get('carElastic').get('query').value }}&nbsp;</code>
+                                    </div>
+                                    <div>
+                                        <mat-checkbox formControlName="include">Include</mat-checkbox>
+                                    </div>
                                 </div>
-                                <div>
-                                    <mat-checkbox formControlName="include">Include</mat-checkbox>
+                                <div formGroupName="carSplunk" class="mb-6">
+                                    <div class="mb-5">
+                                        <label>Splunk (Cyber Analytic Repository)</label>
+                                        <br>
+                                        <code>{{ form.get('metaProperties').get('queries').get('carSplunk').get('query').value }}&nbsp;</code>
+                                    </div>
+                                    <div>
+                                        <mat-checkbox formControlName="include">Include</mat-checkbox>
+                                    </div>
                                 </div>
-                            </div>
-                            <div formGroupName="carSplunk" class="mb-6">
-                                <!-- <mat-form-field class="full-width">
-                                    <textarea matInput matTextareaAutosize placeholder="Splunk (Cyber Analytic Repository)" formControlName="query"></textarea>
-                                </mat-form-field> -->
-                                <div class="mb-5">
-                                    <label>Splunk (Cyber Analytic Repository)</label><br>
-                                    <code>{{ form.get('metaProperties').get('queries').get('carSplunk').get('query').value }}&nbsp;</code>
-                                </div>
-                                <div>
-                                    <mat-checkbox formControlName="include">Include</mat-checkbox>
-                                </div>
-                            </div>
-                            <div formGroupName="cimSplunk" class="mb-6">
-                                <!-- <mat-form-field class="full-width">
-                                    <textarea matInput matTextareaAutosize placeholder="Splunk (Common Information Model)" formControlName="query"></textarea>
-                                </mat-form-field> -->
-                                <div class="mb-5">
-                                    <label>Splunk (Common Information Model)</label><br>
-                                    <code>{{ form.get('metaProperties').get('queries').get('cimSplunk').get('query').value }}&nbsp;</code>
-                                </div>
-                                <div>
-                                    <mat-checkbox formControlName="include">Include</mat-checkbox>
+                                <div formGroupName="cimSplunk" class="mb-6">
+                                    <div class="mb-5">
+                                        <label>Splunk (Common Information Model)</label>
+                                        <br>
+                                        <code>{{ form.get('metaProperties').get('queries').get('cimSplunk').get('query').value }}&nbsp;</code>
+                                    </div>
+                                    <div>
+                                        <mat-checkbox formControlName="include">Include</mat-checkbox>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                 
+                <div class="mb-6" formGroupName="metaProperties">                
+                    <additional-queries [parentForm]="form"></additional-queries>
+                    <mat-chip-list formArrayName="additional_queries" *ngIf="form.get('metaProperties').get('additional_queries').value.length > 0" class="chipListPadding">
+                        <mat-chip *ngFor="let query of form.get('metaProperties').get('additional_queries').value; let i = index" class="cursor-pointer chipListChip"
+                            color="primary" selected="true" removable="true">
+                            <span class="flex1 flexNowrap">{{ query.name | capitalize}}</span>
+                            <mat-icon matChipRemove (click)="form.get('metaProperties').get('additional_queries').removeAt(i)">cancel</mat-icon>
+                        </mat-chip>
+                    </mat-chip-list>               
+                </div>
 
                 <div class="mt-6">
-                    <!-- TODO change to `[disabled]="form.get('pattern').status !== 'VALID'"` if using pattern validation -->
                     <button mat-raised-button matStepperNext type="button" color="primary" [disabled]="form.get('pattern').status !== 'VALID'">CONTINUE</button>
                     <button mat-button matStepperPrevious type="button">BACK</button>
                 </div>
@@ -128,7 +135,6 @@
                         </mat-chip>
                     </mat-chip-list>
                 </div>
-                <!-- ~~~ End of External References ~~~ -->
                 
                 <!-- ~~~ Kill Chain Phases ~~~ -->
                 <div>
@@ -141,7 +147,6 @@
                         </mat-chip>
                     </mat-chip-list>
                 </div>
-                <!-- ~~~ End of Kill Chain Phases ~~~ -->
                 
                 <!-- ~~~ Labels ~~~ -->
                 <h5>Labels</h5>
@@ -154,7 +159,7 @@
                     </mat-chip-list>
                     <add-label-reactive [parentForm]="form" [stixType]="'indicator'"></add-label-reactive>
                 </div>
-                <!-- ~~~ End of Labels ~~~ -->
+
                 <div class="mt-6">
                     <button mat-raised-button matStepperNext type="button" color="primary">CONTINUE</button>
                     <button mat-button matStepperPrevious type="button">BACK</button>
@@ -188,7 +193,6 @@
 
         <p class="text-right mt-6">
             <button mat-button mat-dialog-close (click)="resetForm($event); dialogRef.close(false);">CANCEL</button>
-            <!-- TODO change to `form.status !== 'VALID'` if using pattern validation -->
             <button mat-raised-button color="primary" [disabled]="form.status !== 'VALID'" type="submit">SAVE</button>
         </p>
     </form>

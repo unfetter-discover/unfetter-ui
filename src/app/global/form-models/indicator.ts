@@ -57,6 +57,7 @@ export const IndicatorForm = () => {
         kill_chain_phases: new FormArray([]),
         metaProperties: new FormGroup({
             observedData: new FormArray([]),
+            additional_queries: new FormArray([]),
             relationships: new FormControl([]),
             queries: new FormGroup({
                 carElastic: new FormGroup({

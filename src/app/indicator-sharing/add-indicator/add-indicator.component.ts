@@ -8,6 +8,7 @@ import { IndicatorSharingService } from '../indicator-sharing.service';
 import { AuthService } from '../../core/services/auth.service';
 import { heightCollapse } from '../../global/animations/height-collapse';
 import { PatternHandlerTranslateAll } from '../../global/models/pattern-handlers';
+import { patternHelp } from '../help-templates';
 
 @Component({
     selector: 'add-indicator',
@@ -22,12 +23,14 @@ export class AddIndicatorComponent implements OnInit {
     public attackPatterns: any[] = [];
     public patternValid: boolean = false;
     public showPatternTranslations: boolean = false;
+    public showAdditionalQueries: boolean = true;
     public includeQueries = {
         carElastic: true,
         carSplunk: true,
         cimSplunk: false
     };
     public stepOneControl: FormGroup | any;
+    public patternHelpHtml: string = patternHelp;
 
     private initialRatternHandlerResponse: PatternHandlerTranslateAll = {
         pattern: null,
@@ -84,7 +87,6 @@ export class AddIndicatorComponent implements OnInit {
             .subscribe(
                 (res: PatternHandlerTranslateAll) => {
                     this.patternValid = res.validated;
-                    console.log('~~~~', this.patternValid);
                     this.form.get('metaProperties').get('queries').get('carElastic').patchValue({
                         query: res['car-elastic']
                     });

@@ -50,6 +50,8 @@ import { SidepanelListItemComponent } from './components/sidepanel/sidepanel-lis
 import { SidepanelOptionItemComponent } from './components/sidepanel/sidepanel-option-item.component';
 import { SidepanelMiniItemComponent } from './components/sidepanel/sidepanel-mini-item.component';
 import { SidepanelMasterListTriggerComponent } from './components/sidepanel/sidepanel-master-list-trigger.component';
+import { HelpWindowComponent } from './components/help-window/help-window.component';
+import { AdditionalQueriesComponent } from './components/additional-queries/additional-queries.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -93,6 +95,8 @@ const unfetterComponents = [
     SidepanelOptionItemComponent,
     SidepanelMiniItemComponent,
     SidepanelMasterListTriggerComponent,
+    HelpWindowComponent,
+    AdditionalQueriesComponent
 ];
 
 @NgModule({
@@ -108,7 +112,7 @@ const unfetterComponents = [
         ...matModules,
     ],
     declarations: [
-        ...unfetterComponents
+        ...unfetterComponents,        
     ],
     providers: []
 })

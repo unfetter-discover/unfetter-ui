@@ -1,0 +1,26 @@
+<div class="additionalQueriesComponent">
+  <div class="uf-collapsible-control mb-10" (click)="showForm = !showForm">
+    <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showForm}">chevron_right</i>
+    <span class="h5">&nbsp;Additional Queries</span>
+  </div>
+  <div class="uf-well" @heightCollapse *ngIf="showForm">
+    <form [formGroup]="localForm" novalidate (ngSubmit)="addToParent()" *ngIf="formResetComplete">
+
+      <mat-form-field class="full-width mb-6">
+        <input matInput required placeholder="Name" formControlName="name">
+        <mat-error *ngIf="localForm.get('name').hasError('required')">
+          Name is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="full-width mb-6">
+        <textarea matInput required placeholder="Query" formControlName="query"></textarea>
+        <mat-error *ngIf="localForm.get('query').hasError('required')">
+          Query is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+
+      <button mat-button color="primary" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Add Additional Query</button>
+    </form>
+  </div>
+</div>
