@@ -19,6 +19,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { assessmentReducer } from './store/assess.reducers';
 import { AssessLayoutComponent } from './layout/assess-layout.component';
+import { ResultModule } from './result/result.module';
 
 const moduleComponents = [
   AssessLayoutComponent,
@@ -36,6 +37,7 @@ const materialModules = [
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    ResultModule,
     ...materialModules,
     routing,
     StoreModule.forFeature('assessment', assessmentReducer),

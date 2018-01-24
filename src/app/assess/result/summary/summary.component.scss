@@ -1,0 +1,9 @@
+@import '../../../../styles/_variables.scss';
+
+#sidePanel {
+    width: 320px;
+}
+
+#mainWindow {
+    min-height: calc(100vh - #{$navbar-height}px);
+}

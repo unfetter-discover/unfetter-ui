@@ -41,7 +41,8 @@ $analytic-hub-primary-text: $light-text-default;
 
 // Assessments
 $assessments-primary: get-color($blue-grey, 400);
-$assessments-primary-light: get-color($blue-grey, 200);
+$assessments-primary-light: get-color($blue-grey, 300);
+$assessments-primary-lighter: get-color($blue-grey, 200);
 $assessments-accent: get-color($indigo, A400);
 $assessments-accent-text: $light-text-default;
 $assessments-primary-text: $dark-text-default;

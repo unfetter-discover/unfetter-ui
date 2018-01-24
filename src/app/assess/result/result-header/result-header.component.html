@@ -1,0 +1,18 @@
+<div id="tabWrapper">
+  <div class="container-fluid height-100-percent">
+    <div class="row height-100-percent flex flexRow">
+      <div class="row height-100-percent flex flexColumn">
+        <div class="flex1"></div>
+        <nav mat-tab-nav-bar class="indent">
+          <a class="noUnderline" mat-tab-link [routerLink]="['../../summary/', 'l']" routerLinkActive #summary="routerLinkActive" [active]="summary.isActive">SUMMARY</a>
+          <a class="noUnderline" mat-tab-link [routerLink]="['../../full/', 'l']" routerLinkActive #full="routerLinkActive" [active]="full.isActive">FULL RESULTS</a>
+        </nav>
+      </div>
+      <div class="flex1"></div>
+      <div class="row height-100-percent flex flexColumn">
+        <div class="flex1"></div>
+        <button mat-raised-button id="publishButton">PUBLISH</button>
+      </div>
+    </div>
+  </div>
+</div>
