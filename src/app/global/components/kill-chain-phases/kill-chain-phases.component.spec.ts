@@ -1,6 +1,6 @@
 import { ChangeDetectorRef } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormGroup, FormArray } from '@angular/forms';
 import { MatButtonModule, MatInputModule, MatAutocompleteModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -38,10 +38,23 @@ describe('KillChainPhasesReactiveComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(KillChainPhasesReactiveComponent);
         component = fixture.componentInstance;
+        component.parentForm = new FormGroup({
+            kill_chain_phases: new FormArray([])
+        })
         fixture.detectChanges();
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should add kill chains to the parent form', () => {
+        fixture.detectChanges();
+        component.localForm.setValue({
+            kill_chain_name: 'mitre-attack',
+            phase_name: 'persistence'
+        });
+        component.addToParent();
+        expect(component.parentForm.get('kill_chain_phases').value.length).toBeTruthy();
     });
 });
