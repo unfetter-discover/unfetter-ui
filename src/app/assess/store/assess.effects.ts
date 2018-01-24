@@ -18,6 +18,10 @@ import { Indicator } from '../../models/stix/indicator';
 import { Sensor } from '../../models/unfetter/sensor';
 import { Stix } from '../../models/stix/stix';
 import { JsonApiData } from '../../models/json/jsonapi-data';
+import { Assessment } from '../../models/assess/assessment';
+import { JsonApi } from '../../models/json/jsonapi';
+
+type URL_TYPE = 'course-of-action' | 'indicator' | 'mitigation' | 'sensor';
 
 @Injectable()
 export class AssessEffects {
@@ -94,14 +98,35 @@ export class AssessEffects {
         .switchMap(() => Observable.of({}));
 
 
+    @Effect()
+    public saveAssessment = this.actions$
+        .ofType(assessActions.SAVE_ASSESSMENT)
+        .pluck('payload')
+        .switchMap((assessments: Assessment[]) => {
+            const observables = assessments.map((assessment) => {
+                const json = { 'data': { 'attributes': assessment } } as JsonApi<JsonApiData<Assessment>>;
+                let url = 'api/x-unfetter-assessments';
+                if (assessment.id) {
+                    url = `${url}/${assessment.id}`;
+                    return this.genericServiceApi.patch(url, json);
+                } else {
+                    return this.genericServiceApi.post(url, json);
+                }
+            });
+            return Observable.forkJoin(...observables);
+        })
+        .map((arr) => {
+            return new assessActions.FinishedSaving(true);
+        });
+
+
     /**
     * @description
     *  take a stix object type and determine url to fetch data
     * @param {string} type
     *  string in the form of a url path
-    *  [keyof { 'course-of-action', 'indicator', 'mitigation', 'sensor'}]
     */
-    private generateUrl(type = ''): string {
+    private generateUrl(type: URL_TYPE): string {
         let url = '';
         switch (type) {
             case 'indicator': {

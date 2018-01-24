@@ -16,6 +16,9 @@ export interface AssessState {
     sensors?: JsonApiData<Stix>[];
     mitigations?: JsonApiData<Stix>[];
     finishedLoading: boolean;
+    saved: boolean;
+    showSummary: boolean;
+    page: number;
 };
 
 const genAssessState = (state?: Partial<AssessState>) => {
@@ -23,6 +26,9 @@ const genAssessState = (state?: Partial<AssessState>) => {
         assessment: new Assessment(),
         backButton: false,
         finishedLoading: false,
+        saved: false,
+        showSummary: false,
+        page: 0,
     };
     if (state) {
         Object.assign(tmp, state);
@@ -32,8 +38,6 @@ const genAssessState = (state?: Partial<AssessState>) => {
 const initialState: AssessState = genAssessState();
 
 export function assessmentReducer(state = initialState, action: assessmentActions.AssessmentActions): AssessState {
-    // NOTE This is causing too much spam
-    // console.log('in assess reducer', state, action);
     switch (action.type) {
         case assessmentActions.FETCH_ASSESSMENT:
             return genAssessState({
@@ -71,6 +75,19 @@ export function assessmentReducer(state = initialState, action: assessmentAction
             return genAssessState({
                 ...state,
                 finishedLoading: action.payload
+            });
+        case assessmentActions.FINISHED_SAVING:
+            return genAssessState({
+                ...state,
+                saved: action.payload
+            });
+        case assessmentActions.WIZARD_PAGE:
+            return genAssessState({
+                ...state,
+            });
+        case assessmentActions.SAVE_ASSESSMENT:
+            return genAssessState({
+                ...state,
             });
         default:
             return state;

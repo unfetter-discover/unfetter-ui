@@ -4,7 +4,7 @@ import { StixLabelEnum } from '../stix/stix-label.enum';
 import { AssessmentMeta } from './assessment-meta';
 
 /**
- * @description
+ * @description an assessment of a single type ie, indicator, mitigation, sensor
  */
 export class Assessment {
     public assessmentMeta = new AssessmentMeta();
@@ -16,4 +16,5 @@ export class Assessment {
     public modified: string;
     public name: string;
     public type = StixLabelEnum.ASSESSMENT;
+    public rollupId?: string;
 }
