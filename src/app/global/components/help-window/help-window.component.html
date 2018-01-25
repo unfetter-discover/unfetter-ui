@@ -1,0 +1,9 @@
+<div class="helpWindowComponent transition02 mt-3" [ngClass]="{'uf-well': showHelp}">
+  <div class="text-right helpIconWrapper">
+    <button mat-icon-button type="button" color="primary" (click)="showHelp = !showHelp">
+      <mat-icon aria-label="Click for more information" class="mat-24">help</mat-icon>
+    </button>
+  </div>
+
+  <div *ngIf="showHelp" @heightCollapse [innerHtml]="helpHtml"></div>
+</div>

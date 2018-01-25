@@ -31,6 +31,12 @@
   @include themePrimaryColorsWithModifiedValue('border-left', '8px solid');
 }
 
+.uf-well-accent {
+  @include uf-well-base;
+  @include lightenAccentColors('background-color', 0.05);
+  @include themeAccentColorsWithModifiedValue('border-left', '8px solid');
+}
+
 .uf-well-warn {
   @include uf-well-base;
   background-color: rgba-to-rgb(rgba($warn-color, 0.05));

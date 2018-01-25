@@ -5,7 +5,7 @@
         <span class="h5">&nbsp;Kill Chain Phases</span>
     </div>
 
-    <div class="uf-well" @heightCollapse *ngIf="showKillChainPhases">
+    <div class="uf-well-accent" @heightCollapse *ngIf="showKillChainPhases">
         <form [formGroup]="localForm" novalidate (ngSubmit)="addToParent()" *ngIf="formResetComplete">     
             
             <mat-form-field class="full-width mb-6">
@@ -30,7 +30,7 @@
                 </mat-error>
             </mat-form-field>   
             
-            <button mat-button color="primary" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Add Kill Chain Phase</button>
+            <button mat-button color="accent" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Add Kill Chain Phase</button>
         </form>
     </div>
 </div>
