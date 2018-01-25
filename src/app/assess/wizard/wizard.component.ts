@@ -7,6 +7,8 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { Store } from '@ngrx/store';
 
+import { Key } from 'ts-keycode-enum';
+
 import * as assessActions from '../store/assess.actions';
 import * as assessReducers from '../store/assess.reducers';
 
@@ -304,8 +306,8 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     console.log(event);
     if (this.insertMode === true) {
       const validOptions = [
-        KEY_CODE.ZERO, KEY_CODE.ONE, KEY_CODE.TWO,
-        KEY_CODE.THREE, KEY_CODE.FOUR, KEY_CODE.FIVE
+        Key.Zero, Key.One, Key.Two,
+        Key.Three, Key.Four, Key.Five
       ];
       const index = validOptions.indexOf(event.keyCode);
       if (index > -1) {
@@ -313,7 +315,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         this.updateAllQuestions(index);
       }
       this.insertMode = false;
-    } else if (event.keyCode === KEY_CODE.BACKTICK) {
+    } else if (event.keyCode === Key.GraveAccent) {
       this.insertMode = true;
       console.log(this.insertMode);
     }
