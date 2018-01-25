@@ -1,39 +1,45 @@
-  <div class="row">
-            <div class="col-md-12">
-                <label>External References</label>
-                <div class="button-row">
-                    <a id="add-external-references" mat-raised-button (click)="addExternalReferenceButtonClicked()"><i class="material-icons">add</i> ADD</a>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
+<div class="row">
+  <div class="col-md-12">
+    <label>External References</label>
+    <div class="button-row">
+      <a id="add-external-references" mat-raised-button (click)="addExternalReferenceButtonClicked()">
+        <i class="material-icons">add</i> ADD</a>
+    </div>
+  </div>
+</div>
 
-                    <mat-card *ngFor="let externalReference of model.attributes.external_references" style="margin: 10px 0px;">
-                            <mat-card-content>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                            <mat-input-container class="full-width">
-                                                <input id="externalReference-external-id" matInput placeholder="External Id" [(ngModel)]="externalReference.external_id" value="{{externalReference.external_id}}">
-                                            </mat-input-container>
-                                    </div>
-                                    <div class="col-md-4">
-                                            <mat-input-container class="full-width">
-                                                <input id="externalReference-source-name" matInput placeholder="Source name" [(ngModel)]="externalReference.source_name" value="{{externalReference.source_name}}">
-                                            </mat-input-container>
-                                    </div>
-                                    <div class="col-md-4">
-                                            <mat-input-container class="full-width">
-                                                <input id="externalReference-url" matInput placeholder="URL" [(ngModel)]="externalReference.url" value="{{externalReference.url}}">
-                                            </mat-input-container>
-                                    </div>
-                                </div>
-                            </mat-card-content>
-                            <mat-card-actions>
-                                <div class="button-row">
-                                    <a mat-raised-button (click)="removeExternalReferenceButtonClicked(externalReference)"><i class="material-icons">delete</i> REMOVE</a>
-                                </div>
-                            </mat-card-actions>
-                    </mat-card>
-                </div>
+<div class="row">
+  <div class="col-md-12">
+
+    <mat-card *ngFor="let externalReference of model.attributes.external_references" style="margin: 10px 0px;">        
+      <mat-card-content>
+        <div class="row">
+          <div class="col-md-4">
+            <mat-input-container class="full-width">
+              <input id="externalReference-external-id" matInput placeholder="External Id" [(ngModel)]="externalReference.external_id"
+                value="{{externalReference.external_id}}">
+            </mat-input-container>
+          </div>
+          <div class="col-md-4">
+            <mat-input-container class="full-width">
+              <input id="externalReference-source-name" matInput placeholder="Source name" [(ngModel)]="externalReference.source_name"
+                value="{{externalReference.source_name}}">
+            </mat-input-container>
+          </div>
+          <div class="col-md-4">
+            <mat-input-container class="full-width">
+              <input id="externalReference-url" matInput placeholder="URL" [(ngModel)]="externalReference.url" value="{{externalReference.url}}">
+            </mat-input-container>
+          </div>
         </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <div class="button-row">
+          <a mat-raised-button (click)="removeExternalReferenceButtonClicked(externalReference)">
+            <i class="material-icons">delete</i> REMOVE</a>
+        </div>
+      </mat-card-actions>
+    </mat-card>
+
+  </div>
+</div>
