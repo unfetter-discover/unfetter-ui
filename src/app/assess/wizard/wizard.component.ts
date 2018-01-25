@@ -27,6 +27,9 @@ import { KEY_CODE } from './key-code.enum';
 import { AssessmentObject } from '../../models/assess/assessment-object';
 import { AssessmentQuestion } from '../../models/assess/assessment-question';
 import { WizardAssessment } from './wizard-assessment';
+import { Dictionary } from '../../models/json/dictionary';
+
+type SidePanelName = 'indicators' | 'mitigations' | 'sensors';
 
 @Component({
   selector: 'unf-assess-wizard',
@@ -85,7 +88,6 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
   public showSummary = false;
   public assessmentName = '';
   public currentAssessmentGroup = {} as any;
-  public selectedRisk = '1';
   public defaultValue = -1;
   public page = 1;
 
@@ -96,7 +98,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
 
   public readonly sidePanelCollapseHeight = '32px';
   public readonly sidePanelExpandedHeight = '32px';
-  public openedSidePanel: string;
+  public openedSidePanel: SidePanelName;
   public insertMode = false;
 
   private assessments: WizardAssessment[] = [];
@@ -104,7 +106,9 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
   private assessmentGroups: any;
   private defaultMeasurement = 'Nothing';
   private tempModel: { [index: string]: { assessment: Assessment, measurements: AssessmentQuestion[] } } = {};
+  private assessmentTypeGroups: Dictionary<any> = {};
   private readonly subscriptions: Subscription[] = [];
+  private readonly sidePanelOrder: SidePanelName[] = ['indicators', 'mitigations', 'sensors'];
 
   constructor(
     private genericApi: GenericApi,
@@ -164,29 +168,29 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         this.openedSidePanel = this.determineFirstOpenSidePanel();
         this.refreshToOpenedAssessmentType();
       },
-        (err) => console.log(err));
+      (err) => console.log(err));
 
     const sub5 = this.store
       .select('assessment')
       .pluck('page')
       .distinctUntilChanged()
       .subscribe(
-        (page: number) => this.page = page,
-        (err) => console.log(err),
-        () => sub5.unsubscribe());
+      (page: number) => this.page = page,
+      (err) => console.log(err),
+      () => sub5.unsubscribe());
 
     const sub6 = this.store
       .select('assessment')
       .pluck('saved')
       .distinctUntilChanged()
       .subscribe(
-        (saved: boolean) => {
-          this.saved = saved;
-          // TODO: route the page
-          // this.location.back();
-        },
-        (err) => console.log(err),
-        () => sub6.unsubscribe());
+      (saved: boolean) => {
+        this.saved = saved;
+        // TODO: route the page
+        // this.location.back();
+      },
+      (err) => console.log(err),
+      () => sub6.unsubscribe());
 
     this.subscriptions.push(sub1, sub2, sub3, sub4);
 
@@ -224,28 +228,38 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @description
    * @return {string} name of first open side panel
    */
-  public determineFirstOpenSidePanel(): string {
-    if (this.indicators && this.indicators.length > 0) {
-      return 'indicators';
-    } else if (this.mitigations && this.mitigations.length > 0) {
-      return 'mitigations';
-    } else if (this.sensors && this.sensors.length > 0) {
-      return 'sensors';
-    }
+  public determineFirstOpenSidePanel(): SidePanelName {
+    const panels = [...this.sidePanelOrder];
+    const hasContents = panels.filter((name) => {
+      return this[name] && this[name].length > 0;
+    });
+    // return first panel w/ data
+    return hasContents[0];
   }
 
   /**
    * @description
    * @return {string} name of last listed side panel
    */
-  public determineLastSidePanelName(): string {
-    if (this.sensors && this.sensors.length > 0) {
-      return 'sensors';
-    } else if (this.mitigations && this.mitigations.length > 0) {
-      return 'mitigations';
-    } else if (this.indicators && this.indicators.length > 0) {
-      return 'indicators';
-    }
+  public determineNextSidePanel(): SidePanelName {
+    const panels = [...this.sidePanelOrder];
+    const openedIndex = panels.findIndex((el) => el === this.openedSidePanel);
+    const nextPanels = panels.slice(openedIndex + 1, panels.length);
+    // first panel after the currently opened
+    return nextPanels[0];
+  }
+
+  /**
+   * @description
+   * @return {string} name of last listed side panel
+   */
+  public determineLastSidePanel(): SidePanelName {
+    const panels = [...this.sidePanelOrder].reverse();
+    const hasContents = panels.filter((name) => {
+      return this[name] && this[name].length > 0;
+    });
+    // return last panel w/ data
+    return hasContents[0];
   }
 
   /**
@@ -254,9 +268,20 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @param {UIEvent} event
    * @return {void}
    */
-  public onOpenSidePanel(panelName: string, event?: UIEvent): void {
+  public onOpenSidePanel(panelName: SidePanelName, event?: UIEvent): void {
+    if (panelName && this.assessmentGroups) {
+      // save current state, if needed
+      this.assessmentTypeGroups[panelName] = this.assessmentGroups;
+    }
+
+    // switch to new open panel
     this.openedSidePanel = panelName;
+    // reload questions
     this.refreshToOpenedAssessmentType();
+    if (this.openedSidePanel && this.assessmentTypeGroups[this.openedSidePanel]) {
+      // reload previous state for given type/panel if it exists
+      this.assessmentGroups = this.assessmentTypeGroups[this.openedSidePanel];
+    }
   }
 
   /**
@@ -265,10 +290,6 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    */
   public refreshToOpenedAssessmentType(): void {
     const data = this[this.openedSidePanel];
-    // const data = ['indicators', 'sensors', 'mitigations']
-    //   .reduce((memo, key) => {
-    //     return memo.concat(this[key]);
-    //   }, []);
     if (data) {
       this.navigations = [];
       this.updateRatioOfAnswerQuestions();
@@ -507,11 +528,22 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     }
 
     if (this.buttonLabel === 'Save') {
+      // we came from the Save page
+      //  save every of the things
       this.saveAssessments();
-    } else {
-      if (this.page + 1 > this.assessmentGroups.length) {
+      return;
+    }
+
+    if (this.page + 1 > this.assessmentGroups.length) {
+      const nextPanel = this.determineNextSidePanel();
+      const lastPanel = this.determineLastSidePanel();
+      if (nextPanel !== lastPanel) {
+        // advance the assessment type
+        this.onOpenSidePanel(nextPanel);
+      } else {
+        // this is the last page of the last assessment type
+        //  show Save page
         this.page = this.page + 1;
-        // this.pageTitle = ' Assessment Summary';
         this.currentAssessmentGroup = null;
         this.showSummary = true;
         this.buttonLabel = 'Save';
@@ -519,13 +551,13 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
           this.assessmentName = this.model.attributes.name;
           this.assessmentDescription = this.model.attributes.description;
         }
-      } else {
-        this.page = this.page + 1;
-        this.currentAssessmentGroup = this.getAssessmentGroup();
-        // this.pageTitle = this.splitTitle();
-        this.setSelectedRiskValue();
-        this.updateChart();
       }
+    } else {
+      // advance to next section within a given assessment type
+      this.page = this.page + 1;
+      this.currentAssessmentGroup = this.getAssessmentGroup();
+      this.setSelectedRiskValue();
+      this.updateChart();
     }
   }
 
@@ -653,7 +685,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       });
     }
 
-    if (this.openedSidePanel === this.determineLastSidePanelName()) {
+    if (this.openedSidePanel === this.determineLastSidePanel()) {
       const laststep = this.navigations.length + 1;
       this.navigations.push({ label: 'Summary', page: laststep });
     }
@@ -837,8 +869,11 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       }
       this.store.dispatch(new SaveAssessment([assessment]));
     } else {
-      const assessment = this.generateXUnfetterAssessment(this.assessmentGroups);
-      this.store.dispatch(new SaveAssessment([assessment]));
+      const assessments = this.sidePanelOrder
+        .map((name) => this.assessmentTypeGroups[name])
+        .filter((groups) => groups !== undefined)
+        .map((assessmentGroups) => this.generateXUnfetterAssessment(assessmentGroups))
+      this.store.dispatch(new SaveAssessment(assessments));
     }
   }
 
