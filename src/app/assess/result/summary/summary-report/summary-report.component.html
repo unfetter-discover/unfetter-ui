@@ -1,0 +1,63 @@
+<div id="report">
+  <div class="container-fluid">
+    <summary-header></summary-header>
+    <div id="summaryTitle">
+      <span>Assessment Report Overview</span>
+    </div>
+    <div class="row">
+      <div class="flex flexItemsCenter">
+        <mat-card color="primary" class="card" id="riskCard">
+          <mat-card-title>Overall Implementation Risk {{totalRiskValue}}%</mat-card-title>
+          <mat-card-subtitle>Weaknesses</mat-card-subtitle>
+          <mat-card-content>
+            <ul *ngIf="weakestAttackPatterns && weakestAttackPatterns.length > 0; else noWeakestAttackPatterns">
+              <li *ngFor="let attackPattern of weakestAttackPatterns">
+                {{attackPattern.description}}
+              </li>
+            </ul>
+            <ng-template #noWeakestAttackPatterns>
+              No Weaknesses found? Either we messed up or you are good!
+            </ng-template>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="card" id="vulnerabilityCard">
+          <mat-card-title>Test</mat-card-title>
+          <mat-card-content>Test</mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+    <div class="row">
+      <div class="flex">
+        <span>Mitigation Sophistication Threshold</span>
+      </div>
+      <div class="flex flexItemsCenter">
+        <div class="flex flexItemsCenter" id="sliderContainer">
+          <mat-icon color="primary" class="mat-24" aria-hidden="false" aria-label="Least sophisticated mitigation">favorite_border</mat-icon>
+          <mat-slider min="0" max="4" step="1" value="2" id="sophisticationSlider" color="primary">
+          </mat-slider>
+          <mat-icon color="primary" class="mat-24" aria-hidden="false" aria-label="Most sophisticated mitigation">favorite</mat-icon>
+        </div>
+        <div class="flex1">&nbsp;</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="flex flexItemsCenter">
+        <mat-card class="card" id="riskCard">
+          <mat-card-title>Test</mat-card-title>
+          <mat-card-content>Test</mat-card-content>
+        </mat-card>
+        <mat-card class="card" id="vulnerabilityCard">
+          <mat-card-title>Test</mat-card-title>
+          <mat-card-content>Test</mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+    <div class="row">
+      <div class="flex flexItemsCenter">
+        <mat-card class="card flex1">
+          <mat-card-title>Test</mat-card-title>
+          <mat-card-content>Test</mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>

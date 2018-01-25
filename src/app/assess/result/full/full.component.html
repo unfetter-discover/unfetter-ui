@@ -1,0 +1,18 @@
+<!-- TODO full -->
+<div id="newAssessmentsSummary" *ngIf="assessment; else loadingBlock" class="fadeIn">
+  <mat-sidenav-container>
+    <mat-sidenav id="sidePanel" mode="side" opened="true">
+      Unfetter Side Panel
+      <!-- <unfetter-side-panel></unfetter-side-panel> -->
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <div id="mainWindow">
+        <result-header></result-header>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
+
+<ng-template #loadingBlock>
+  <loading-spinner></loading-spinner>
+</ng-template>

@@ -1,0 +1,47 @@
+@import '../../../../../styles/_variables.scss';
+
+#report {
+    margin-left: 24px;
+    margin-right: 24px;
+}
+
+#summaryTitle {
+    font-size: 20px;
+    font-weight: lighter;
+    min-height: 24px;
+    margin-top: 11px;
+    margin-bottom: 14px;
+}
+
+#sliderContainer {
+    min-width: 50%;
+    padding-right: 10px;
+}
+
+#sophisticationSlider {
+    flex-grow: 1;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+.card {
+    transition: all 0.3s ease-in-out;
+    min-height: 315px;
+    margin-bottom: 20px;
+    width: 50%;
+    min-width: 215px;
+}
+
+#riskCard {
+    flex-grow: .5;
+    margin-right: 10px;
+}
+
+#vulnerabilityCard {
+    flex-grow: .5;
+    margin-left: 10px;
+}
