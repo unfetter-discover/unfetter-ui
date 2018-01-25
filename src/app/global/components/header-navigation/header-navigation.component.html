@@ -29,19 +29,19 @@
     <div *ngIf="showAppMenu" id="appMenuWindow" class="uf-nav-popup" @fadeInOut>
       <div id="appList" class="flex">
         <span *ngFor="let appItem of appList" class="appLinkWrapper">
-          <a routerLink="./{{ appItem.url }}" class="appLink">
+          <a routerLink="./{{ appItem.url }}" class="appLink" (click)="showAppMenu = false">
             <img src="{{ appItem.icon }}" class="appItemImg">
             <div class="appItemText">{{ appItem.title }}</div>
           </a>
         </span>
         <span class="appLinkWrapper" *ngIf="authService.isOrgLeader()">
-          <a routerLink="./organizations" class="appLink">
+          <a routerLink="./organizations" class="appLink" (click)="showAppMenu = false">
             <img src="{{ orgLeaderIcon }}" class="appItemImg">
             <div class="appItemText">Organizations</div>
           </a>
         </span>
         <span class="appLinkWrapper" *ngIf="authService.isAdmin()">
-          <a routerLink="./admin" class="appLink">
+          <a routerLink="./admin" class="appLink" (click)="showAppMenu = false">
             <img src="{{ adminIcon }}" class="appItemImg">
             <div class="appItemText">Admin</div>
           </a>
