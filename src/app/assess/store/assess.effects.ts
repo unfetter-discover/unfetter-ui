@@ -5,6 +5,7 @@ import { Location } from '@angular/common';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 
+import * as UUID from 'uuid';
 import * as assessActions from './assess.actions';
 
 import { FetchAssessment, StartAssessment } from './assess.actions';
@@ -103,16 +104,34 @@ export class AssessEffects {
         .ofType(assessActions.SAVE_ASSESSMENT)
         .pluck('payload')
         .switchMap((assessments: Assessment[]) => {
-            const observables = assessments.map((assessment) => {
-                const json = { 'data': { 'attributes': assessment } } as JsonApi<JsonApiData<Assessment>>;
-                let url = 'api/x-unfetter-assessments';
-                if (assessment.id) {
-                    url = `${url}/${assessment.id}`;
-                    return this.genericServiceApi.patch(url, json);
-                } else {
-                    return this.genericServiceApi.post(url, json);
-                }
-            });
+            const rollupIds = assessments
+                .map((assessment) => assessment.metaProperties)
+                .filter((el) => el !== undefined)
+                .map((meta) => meta.rollupId)
+                .filter((el) => el !== undefined);
+            let rollupId = '';
+            if (rollupIds.length > 0) {
+                rollupId = rollupIds[0];
+            } else {
+                rollupId = UUID.v4();
+            }
+
+            const observables = assessments
+                .map((assessment) => {
+                    assessment.metaProperties = assessment.metaProperties || {};
+                    assessment.metaProperties.rollupId = rollupId;
+                    return assessment;
+                })
+                .map((assessment) => {
+                    const json = { 'data': { 'attributes': assessment } } as JsonApi<JsonApiData<Assessment>>;
+                    let url = 'api/x-unfetter-assessments';
+                    if (assessment.id) {
+                        url = `${url}/${assessment.id}`;
+                        return this.genericServiceApi.patch(url, json);
+                    } else {
+                        return this.genericServiceApi.post(url, json);
+                    }
+                });
             return Observable.forkJoin(...observables);
         })
         .map((arr) => {

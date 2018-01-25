@@ -31,6 +31,13 @@ import { Dictionary } from '../../models/json/dictionary';
 
 type SidePanelName = 'indicators' | 'mitigations' | 'sensors';
 
+interface TempModel {
+  [index: string]: {
+    assessment: Assessment,
+    measurements: AssessmentQuestion[]
+  }
+};
+
 @Component({
   selector: 'unf-assess-wizard',
   templateUrl: './wizard.component.html',
@@ -41,8 +48,12 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
   @ViewChildren('question')
   public questions: QueryList<MatSelect>;
 
+  public readonly defaultValue = -1;
+  public readonly defaultMeasurement = 'Nothing';
+  public readonly sidePanelCollapseHeight = '32px';
+  public readonly sidePanelExpandedHeight = '32px';
+
   public model: JsonApiData<Assessment>;
-  public assessmentDescription = '';
   public saved = false;
   public publishDate = new Date();
   public buttonLabel = 'Next';
@@ -81,32 +92,26 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       }
     }
   };
-  public description = `An Assessment is your evaluation of the implementations of your network.  You will rate your environment
-  ' to the best of your ability. On the final page of the survey, you will be asked to enter a name for the report and a description.
-  Unfetter Discover will use the survey to help you understand your gaps, how important they are and which should be addressed.
-  You may create multiple reports to see how your risk is changed when implementing different security processes.`;
+  // public description = `An Assessment is your evaluation of the implementations of your network.  You will rate your environment
+  // ' to the best of your ability. On the final page of the survey, you will be asked to enter a name for the report and a description.
+  // Unfetter Discover will use the survey to help you understand your gaps, how important they are and which should be addressed.
+  // You may create multiple reports to see how your risk is changed when implementing different security processes.`;
   public showSummary = false;
-  public assessmentName = '';
   public currentAssessmentGroup = {} as any;
-  public defaultValue = -1;
   public page = 1;
-
+  public meta = new AssessmentMeta();
   public indicators: JsonApiData<Indicator>[];
   public sensors: JsonApiData<Stix>[];
   public mitigations: JsonApiData<Stix>[];
   public ratioOfQuestionsAnswered = 0;
-
-  public readonly sidePanelCollapseHeight = '32px';
-  public readonly sidePanelExpandedHeight = '32px';
   public openedSidePanel: SidePanelName;
   public insertMode = false;
-
   private assessments: WizardAssessment[] = [];
   private groupings = [];
-  private assessmentGroups: any;
-  private defaultMeasurement = 'Nothing';
-  private tempModel: { [index: string]: { assessment: Assessment, measurements: AssessmentQuestion[] } } = {};
-  private assessmentTypeGroups: Dictionary<any> = {};
+  private assessmentGroups: any[];
+  private tempModel: TempModel = {} as TempModel;
+  private assessmentTypeGroups: Dictionary<{ tempModel: TempModel, assessmentsGroups: any[] }> = {};
+
   private readonly subscriptions: Subscription[] = [];
   private readonly sidePanelOrder: SidePanelName[] = ['indicators', 'mitigations', 'sensors'];
 
@@ -192,6 +197,16 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       (err) => console.log(err),
       () => sub6.unsubscribe());
 
+    const sub7 = this.store
+      .select('assessment')
+      .pluck('assessment')
+      .pluck('assessmentMeta')
+      .distinctUntilChanged()
+      .subscribe(
+      (assessmentMeta: AssessmentMeta) => this.meta = assessmentMeta,
+      (err) => console.log(err),
+      () => sub7.unsubscribe());
+
     this.subscriptions.push(sub1, sub2, sub3, sub4);
 
     // this.url = this.generateUrl(type) + '?metaproperties=true';
@@ -225,14 +240,23 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
   }
 
   /**
-   * @description
-   * @return {string} name of first open side panel
+   * @description find panel names with data
+   * @return {SidePanelName[]}
    */
-  public determineFirstOpenSidePanel(): SidePanelName {
+  public determinePanelsWithData(): SidePanelName[] {
     const panels = [...this.sidePanelOrder];
     const hasContents = panels.filter((name) => {
       return this[name] && this[name].length > 0;
     });
+    return hasContents;
+  }
+
+  /**
+   * @description
+   * @return {string} name of first open side panel
+   */
+  public determineFirstOpenSidePanel(): SidePanelName {
+    const hasContents = this.determinePanelsWithData();
     // return first panel w/ data
     return hasContents[0];
   }
@@ -254,12 +278,9 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @return {string} name of last listed side panel
    */
   public determineLastSidePanel(): SidePanelName {
-    const panels = [...this.sidePanelOrder].reverse();
-    const hasContents = panels.filter((name) => {
-      return this[name] && this[name].length > 0;
-    });
+    const hasContents = this.determinePanelsWithData();
     // return last panel w/ data
-    return hasContents[0];
+    return hasContents.reverse()[0];
   }
 
   /**
@@ -269,19 +290,27 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @return {void}
    */
   public onOpenSidePanel(panelName: SidePanelName, event?: UIEvent): void {
-    if (panelName && this.assessmentGroups) {
+    if (this.openedSidePanel && this.assessmentGroups) {
       // save current state, if needed
-      this.assessmentTypeGroups[panelName] = this.assessmentGroups;
+      this.assessmentTypeGroups[this.openedSidePanel] = { tempModel: undefined, assessmentsGroups: undefined };
+      this.assessmentTypeGroups[this.openedSidePanel].assessmentsGroups = [...this.assessmentGroups];
+      this.assessmentTypeGroups[this.openedSidePanel].tempModel = { ...this.tempModel };
     }
 
+    // clear out state
+    this.tempModel = { };
+    this.page = 1;
     // switch to new open panel
     this.openedSidePanel = panelName;
     // reload questions
     this.refreshToOpenedAssessmentType();
     if (this.openedSidePanel && this.assessmentTypeGroups[this.openedSidePanel]) {
       // reload previous state for given type/panel if it exists
-      this.assessmentGroups = this.assessmentTypeGroups[this.openedSidePanel];
+      this.assessmentGroups = [...this.assessmentTypeGroups[this.openedSidePanel].assessmentsGroups];
+      this.tempModel = { ...this.assessmentTypeGroups[this.openedSidePanel].tempModel };
     }
+    // reset progress bar
+    this.updateRatioOfAnswerQuestions();
   }
 
   /**
@@ -324,7 +353,6 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    */
   @HostListener('window:keyup', ['$event'])
   public keyEvent(event: KeyboardEvent) {
-    console.log(event);
     if (this.insertMode === true) {
       const validOptions = [
         Key.Zero, Key.One, Key.Two,
@@ -512,7 +540,6 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     this.buttonLabel = 'Next';
     this.showSummary = false;
     this.currentAssessmentGroup = this.getAssessmentGroup();
-    // this.pageTitle = this.splitTitle();
     this.setSelectedRiskValue();
     this.updateChart();
   }
@@ -534,11 +561,13 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       return;
     }
 
+    // last page for this assessment type
     if (this.page + 1 > this.assessmentGroups.length) {
-      const nextPanel = this.determineNextSidePanel();
       const lastPanel = this.determineLastSidePanel();
-      if (nextPanel !== lastPanel) {
-        // advance the assessment type
+      if (this.openedSidePanel !== lastPanel) {
+        // last page but not last assessment type
+        //  advance the assessment type
+        const nextPanel = this.determineNextSidePanel();
         this.onOpenSidePanel(nextPanel);
       } else {
         // this is the last page of the last assessment type
@@ -547,10 +576,6 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         this.currentAssessmentGroup = null;
         this.showSummary = true;
         this.buttonLabel = 'Save';
-        if (this.model) {
-          this.assessmentName = this.model.attributes.name;
-          this.assessmentDescription = this.model.attributes.description;
-        }
       }
     } else {
       // advance to next section within a given assessment type
@@ -810,16 +835,17 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @param {any}
    * @return {Assessment}
    */
-  private generateXUnfetterAssessment(assessmentsGroups: any): Assessment {
-    const retVal = new Assessment();
-    retVal.name = this.assessmentName;
-    retVal.description = this.assessmentDescription;
-    retVal.created = this.publishDate.toISOString();
+  private generateXUnfetterAssessment(tempModel: TempModel, assessmentMeta: AssessmentMeta): Assessment {
+    const assessment = new Assessment();
+    assessment.assessmentMeta = assessmentMeta;
+    assessment.name = this.meta.title;
+    assessment.description = this.meta.description;
+    assessment.created = this.publishDate.toISOString();
     const assessmentSet = new Set<AssessmentObject>();
 
-    Object.keys(this.tempModel)
+    Object.keys(tempModel)
       .forEach((assessmentId) => {
-        const assessmentObj = this.tempModel[assessmentId];
+        const assessmentObj = tempModel[assessmentId];
         const temp = new AssessmentObject();
         const stix = new Stix();
         stix.id = assessmentObj.assessment.id;
@@ -840,8 +866,8 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         assessmentSet.add(temp);
       });
 
-    retVal['assessment_objects'] = Array.from(assessmentSet);
-    return retVal;
+    assessment['assessment_objects'] = Array.from(assessmentSet);
+    return assessment;
   }
 
   /**
@@ -852,9 +878,10 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
   private saveAssessments(): void {
     if (this.model) {
       const assessment = new Assessment();
+      assessment.assessmentMeta = this.meta;
       assessment.created = this.publishDate.toISOString();
-      assessment.name = this.assessmentName;
-      assessment.description = this.assessmentDescription;
+      assessment.name = this.meta.title;
+      assessment.description = this.meta.description;
       assessment.assessment_objects = this.model.attributes
         .assessment_objects
         // grab and only save objects that have an answered question
@@ -871,8 +898,10 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     } else {
       const assessments = this.sidePanelOrder
         .map((name) => this.assessmentTypeGroups[name])
-        .filter((groups) => groups !== undefined)
-        .map((assessmentGroups) => this.generateXUnfetterAssessment(assessmentGroups))
+        .filter((el) => el !== undefined)
+        .map((el) => el.tempModel)
+        .filter((el) => el !== undefined)
+        .map((el) => this.generateXUnfetterAssessment(el, this.meta))
       this.store.dispatch(new SaveAssessment(assessments));
     }
   }
