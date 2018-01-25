@@ -405,7 +405,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     const newRisk = option.selected.value;
     // update measurement value in assessments
     const assessmentMeasurementToUpdate = assessment.measurements
-      .find((measure) => measure.name === measure.name);
+      .find((measure) => measure.name === measurement.name);
     this.updateQuestionRisk(assessmentMeasurementToUpdate, newRisk);
     // we need a temp model to hold selected question
     if (!this.model) {
