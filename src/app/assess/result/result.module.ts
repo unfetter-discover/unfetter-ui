@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { MatSidenavModule, MatProgressSpinnerModule, MatTabsModule, MatCardModule, MatSliderModule } from '@angular/material';
+import { MatSidenavModule, MatProgressSpinnerModule, MatTabsModule, MatCardModule, MatSliderModule, MatTableModule } from '@angular/material';
 
 import { GlobalModule } from '../../global/global.module';
 
@@ -20,6 +20,7 @@ import { SummaryReportComponent } from './summary/summary-report/summary-report.
     MatTabsModule,
     MatCardModule,
     MatSliderModule,
+    MatTableModule,
     GlobalModule,
   ],
   declarations: [SummaryComponent, FullComponent, ResultHeaderComponent, SummaryHeaderComponent, SummaryReportComponent]
