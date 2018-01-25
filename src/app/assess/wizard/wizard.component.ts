@@ -162,29 +162,29 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         this.openedSidePanel = this.determineFirstOpenSidePanel();
         this.refreshToOpenedAssessmentType();
       },
-      (err) => console.log(err));
+        (err) => console.log(err));
 
     const sub5 = this.store
       .select('assessment')
       .pluck('page')
       .distinctUntilChanged()
       .subscribe(
-      (page: number) => this.page = page,
-      (err) => console.log(err),
-      () => sub5.unsubscribe());
+        (page: number) => this.page = page,
+        (err) => console.log(err),
+        () => sub5.unsubscribe());
 
     const sub6 = this.store
       .select('assessment')
       .pluck('saved')
       .distinctUntilChanged()
       .subscribe(
-      (saved: boolean) => {
-        this.saved = saved;
-        // TODO: route the page
-        // this.location.back();
-      },
-      (err) => console.log(err),
-      () => sub6.unsubscribe());
+        (saved: boolean) => {
+          this.saved = saved;
+          // TODO: route the page
+          // this.location.back();
+        },
+        (err) => console.log(err),
+        () => sub6.unsubscribe());
 
     this.subscriptions.push(sub1, sub2, sub3, sub4);
 
@@ -341,7 +341,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         });
         this.selectedValue(measurement, option, assessment);
       });
-      // // calculate risk of all measurements
+      // calculate risk of all measurements
       this.updateRatioOfAnswerQuestions();
     });
   }
@@ -749,7 +749,8 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    */
   private updateChart(): void {
     const chartData = this.doughnutChartData.slice();
-    chartData[0].data = this.currentAssessmentGroup.riskArray;
+    chartData[0].data = this.currentAssessmentGroup
+      ? this.currentAssessmentGroup.riskArray : [];
     this.doughnutChartData = chartData;
   }
 
