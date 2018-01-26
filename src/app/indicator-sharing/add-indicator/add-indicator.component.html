@@ -182,35 +182,9 @@
             
             <mat-step label="Observable Data">
                 <help-window [helpHtml]="observableDataHelpHtml"></help-window>
-                <div *ngIf="patternObjs && patternObjs.length" class="uf-well-accent mt-10">
+                <!-- <div *ngIf="patternObjs && patternObjs.length" class="uf-well-accent mt-10">
                     <generated-observed-data [patternObjects]="patternObjs" [parentForm]="form"></generated-observed-data>
-                    <!-- <h4 class="fw400">Generated Observed Data</h4>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <h5>Object</h5>
-                        </div>
-                        <div class="col-md-4">
-                            <h5>Action</h5>
-                        </div>
-                        <div class="col-md-4">
-                            <h5>Field</h5>
-                        </div>
-                    </div>
-                    <div *ngFor="let patternObj of patternObjs" class="row mb-6">
-                        <div class="col-md-4">{{ patternObj.name }}</div>
-                        <div class="col-md-4">
-                            <mat-form-field class="full-width">
-                                <mat-select placeholder="Actions" [multiple]="true" formControlName="relationships">
-                                    <mat-option [value]="ap.id" *ngFor="let ap of attackPatterns | sortByField:'name':'ascending'">{{ ap.name }}</mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-md-4">{{ patternObj.property }}</div>                        
-                    </div>
-                    <button mat-button color="accent" type="button" class="mb-3">Attach Observed Data to Analytic</button>
-                    <hr>
-                    <p>{{ patternObjs | json }}</p> -->
-                </div>
+                </div> -->
                 <div class="mt-10">
                     <observable-data-tree [parentForm]="form"></observable-data-tree>
                 </div>

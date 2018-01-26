@@ -13,10 +13,10 @@ import * as fromRoot from '../../root-store/app.reducers';
 export class GeneratedObservedDataComponent implements OnInit {
 
   @Input() public patternObjects: PatternHandlerPatternObject[] = [];
-  @Input() public filteredPatternObjects: PatternHandlerPatternObject[] = [];
   @Input() public parentForm: FormGroup | any;
-
-  public observableDataTypes: any[] = [];
+  
+  public filteredPatternObjects: any[] = [];
+  public obsData: any[] = [];
 
   constructor(private store: Store<fromRoot.AppState>) { }
 
@@ -26,24 +26,30 @@ export class GeneratedObservedDataComponent implements OnInit {
     .pluck('configurations')
     .filter((configurations: any) => configurations.observableDataTypes)
     .pluck('observableDataTypes')
-    .subscribe((observableDataTypes: any[]) => {
-          this.filteredPatternObjects = this.patternObjects.filter((patternObject) => {
-            const actions = observableDataTypes.map((observableDataType) => observableDataType.name);
+    .subscribe(
+      (observableDataTypes: any[]) => {
+        const tempObservableDataTypes = [ ...observableDataTypes ];   
+        this.filteredPatternObjects = this.patternObjects
+          .filter((patternObject) => {
+            const actions = tempObservableDataTypes.map((observableDataType) => observableDataType.name);
             return actions.includes(patternObject.name);
           });
-          this.observableDataTypes = observableDataTypes;
-        },
-        (err) => {
-          console.log(err);
-        },
-        () => {
-          config$.unsubscribe();
-        }
-      );
+
+        this.filteredPatternObjects
+          .forEach((patternObject) => patternObject.actions = []);
+        this.obsData = tempObservableDataTypes;
+      },
+      (err) => {
+        console.log(err);
+      },
+      () => {
+        config$.unsubscribe();
+      }
+    );
   }
 
   public getActions(dataObject) {
-    const obsData = this.observableDataTypes.find((obs) => obs.name = dataObject);
+    const obsData = this.obsData.find((obs) => obs.name = dataObject);
     return obsData.actions || [];
   }
 }
