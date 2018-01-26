@@ -182,6 +182,7 @@
             
             <mat-step label="Observable Data">
                 <help-window [helpHtml]="observableDataHelpHtml"></help-window>
+                <!-- TODO figure out why this is breaking observable data tree -->
                 <!-- <div *ngIf="patternObjs && patternObjs.length" class="uf-well-accent mt-10">
                     <generated-observed-data [patternObjects]="patternObjs" [parentForm]="form"></generated-observed-data>
                 </div> -->

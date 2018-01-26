@@ -1,9 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
+import { Store } from '@ngrx/store';
 
-import { ConfigService } from '../../../core/services/config.service';
 import { ObservedDataForm } from '../../form-models/observed-data';
 import { heightCollapse } from '../../animations/height-collapse';
+import * as fromRoot from '../../../root-store/app.reducers';
 
 @Component({
     selector: 'observable-data-tree',
@@ -21,18 +22,31 @@ export class ObservableDataTreeComponent implements OnInit {
     public showTree: boolean = false;
     public checkboxModel: any = {};
     
-    constructor(private configService: ConfigService) { }
+    constructor(
+        private store: Store<fromRoot.AppState>
+    ) { }
 
     public ngOnInit() {
-        this.configService.getConfigPromise()
-            .then((res) => {
+        const config$ = this.store.select('config')
+            .pluck('configurations')
+            .filter((configurations: any) => configurations.observableDataTypes)
+            .pluck('observableDataTypes')
+            .subscribe(
+            (observableDataTypes: any[]) => {
+                this.observableDataTypes = observableDataTypes;
                 if (this.observedDataPath && this.observedDataPath.length) {
                     this.buildTree(true);
                 } else {
                     this.buildTree();
                 }
-            })
-            .catch((err) => console.log(err));
+            },
+            (err) => {
+                console.log(err);
+            },
+            () => {
+                config$.unsubscribe();
+            }
+            );
     }
 
     public checkBoxChange(e, name, action, property) {
@@ -103,7 +117,6 @@ export class ObservableDataTreeComponent implements OnInit {
     }
 
     private buildTree(observedDataPathPresent?: boolean) {
-        this.observableDataTypes = this.configService.configurations.observableDataTypes;
         this.observableDataTypes.forEach((item) => {
             item.showActions = false;
             this.showPropertyTree[item.name] = {};
