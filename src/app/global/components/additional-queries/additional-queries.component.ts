@@ -13,9 +13,10 @@ import { heightCollapse } from '../../animations/height-collapse';
 export class AdditionalQueriesComponent implements OnInit {
 
   @Input() public parentForm: any;
+  @Input() public parentDocumentType: string = 'analytic';
 
   public localForm: FormGroup;
-  public showForm: boolean = true;
+  public showForm: boolean = false;
   public formResetComplete = true;
 
   constructor(private changeDetectorRef: ChangeDetectorRef) { }

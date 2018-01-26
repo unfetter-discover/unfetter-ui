@@ -15,9 +15,10 @@ import { ConfigService } from '../../../core/services/config.service';
 export class KillChainPhasesReactiveComponent implements OnInit {
 
     @Input() public parentForm: any;
+    @Input() public parentDocumentType: string = 'analytic';
 
     public localForm: FormGroup;
-    public showKillChainPhases: boolean = true;
+    public showKillChainPhases: boolean = false;
     public killChainRaw: any[] = []
     public killChainNames: string[] = [];
     public distinctKillChainPhases: string[] = [];

@@ -13,9 +13,10 @@ import { heightCollapse } from '../../animations/height-collapse';
 
 export class ExternalReferencesReactiveComponent implements OnInit {
     @Input() public parentForm: any;
+    @Input() public parentDocumentType: string = 'analytic';
 
     public localForm: FormGroup; 
-    public showExternalReferences: boolean = true;
+    public showExternalReferences: boolean = false;
     public formResetComplete = true;
 
     constructor(private changeDetectorRef: ChangeDetectorRef) { }

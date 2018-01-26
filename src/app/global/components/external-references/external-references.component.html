@@ -1,7 +1,7 @@
 <div class="externalReferencesComponent">
     <div class="uf-collapsible-control mb-10" (click)="showExternalReferences = !showExternalReferences">
         <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showExternalReferences}">chevron_right</i>
-        <span class="h5">&nbsp;External References</span>
+        <span class="h5">&nbsp;Add External References</span>
     </div>
     <div class="uf-well-accent" @heightCollapse *ngIf="showExternalReferences">
         <form [formGroup]="localForm" novalidate (ngSubmit)="addToParent()" *ngIf="formResetComplete">
@@ -25,7 +25,7 @@
                 <input matInput placeholder="URL" formControlName="url">
             </mat-form-field>
 
-            <button mat-button color="accent" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Add External Reference</button>
+            <button mat-button color="accent" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Attach External Reference to {{ parentDocumentType | capitalize }}</button>
         </form>
     </div>
 </div>
