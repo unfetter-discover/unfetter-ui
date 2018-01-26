@@ -1,6 +1,7 @@
-<div [@simpleFadeIn] *ngIf="!loading; else loadingBlock">
-            <mat-sidenav-container>
-                    <mat-sidenav class="side-container" mode="side" opened="true">
+<div [@simpleFadeIn] class="container-fluid" *ngIf="!loading; else loadingBlock">
+
+    <div class="row flex">
+
         <unfetter-side-panel class="side-panel" [item]="threatReport" collapsible="false" width="320">
 
             <sidepanel-option-item label="Edit" icon="mode_edit"
