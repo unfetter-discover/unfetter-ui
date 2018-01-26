@@ -36,6 +36,6 @@ export class SummaryEffects {
         .ofType(LOAD_ASSESSMENT_SUMMARY_DATA)
         .pluck('payload')
         .switchMap((rollupId: string) => this.assessmentSummaryService.getByRollupId(rollupId))
-        .map((data) => [ ...data.map((el) => el.attributes))
+        .map((data) => [ ...data.map((el) => el.attributes)])
         .mergeMap((data: Assessment[]) => [ new SetAssessments(data), new FinishedLoading(true)])
 }
