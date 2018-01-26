@@ -94,7 +94,10 @@ export class IndicatorSharingService {
         };
         const filterObj = {
             'metaProperties.observedData': { 
-                '$exists': 1 
+                '$exists': 1,
+                '$not': {
+                    '$size': 0
+                }
             }
         };
         return this.genericApi.get(`${this.sensorsUrl}?project=${JSON.stringify(projectObj)}&filter=${JSON.stringify(filterObj)}&metaproperties=true`);
