@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HttpClientModule } from '@angular/common/http';
-import { MatButtonModule, MatCardModule, MatDatepickerModule, MatDialogModule, MatSnackBarModule, MatSelectModule, MatInputModule } from '@angular/material';
+import { MatButtonModule, MatCardModule, MatDatepickerModule, MatDialogModule, MatSnackBarModule, MatSelectModule, MatInputModule, MatExpansionModule, MatProgressBarModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 import { StoreModule, combineReducers } from '@ngrx/store';
 
@@ -26,9 +26,11 @@ describe('WizardComponent', () => {
       MatCardModule,
       MatDatepickerModule,
       MatDialogModule,
+      MatExpansionModule,
       MatSnackBarModule,
       MatSelectModule,
       MatInputModule,
+      MatProgressBarModule
     ];
 
     TestBed.configureTestingModule({

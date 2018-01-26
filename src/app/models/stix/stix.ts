@@ -26,5 +26,5 @@ export class Stix {
     public labels: string[];
     public modified: string;
     public created = new Date().toISOString();
-    public metaProperties: MetaProps
+    public metaProperties: MetaProps;
 }

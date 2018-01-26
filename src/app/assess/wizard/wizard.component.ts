@@ -1,10 +1,13 @@
-import { Component, ChangeDetectorRef, ElementRef, ViewChild, Input, OnInit, SimpleChanges, ViewEncapsulation, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectorRef, ElementRef, ViewChild, Input, OnInit, SimpleChanges, ViewEncapsulation, OnDestroy, HostListener, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatSelect } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { Store } from '@ngrx/store';
+
+import { Key } from 'ts-keycode-enum';
 
 import * as assessActions from '../store/assess.actions';
 import * as assessReducers from '../store/assess.reducers';
@@ -15,10 +18,25 @@ import { Constance } from '../../utils/constance';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { Measurements } from './measurements';
 import { MenuItem } from 'primeng/primeng';
-import { LoadAssessmentWizardData } from '../store/assess.actions';
+import { LoadAssessmentWizardData, SaveAssessment } from '../store/assess.actions';
 import { Assessment } from '../../models/assess/assessment';
 import { Stix } from '../../models/stix/stix';
 import { Indicator } from '../../models/stix/indicator';
+import { JsonApiData } from '../../models/json/jsonapi-data';
+import { KEY_CODE } from './key-code.enum';
+import { AssessmentObject } from '../../models/assess/assessment-object';
+import { AssessmentQuestion } from '../../models/assess/assessment-question';
+import { WizardAssessment } from './wizard-assessment';
+import { Dictionary } from '../../models/json/dictionary';
+
+type SidePanelName = 'indicators' | 'mitigations' | 'sensors';
+
+interface TempModel {
+  [index: string]: {
+    assessment: Assessment,
+    measurements: AssessmentQuestion[]
+  }
+};
 
 @Component({
   selector: 'unf-assess-wizard',
@@ -26,12 +44,20 @@ import { Indicator } from '../../models/stix/indicator';
   styleUrls: ['./wizard.component.scss']
 })
 export class WizardComponent extends Measurements implements OnInit, OnDestroy {
-  public model: any;
-  public assessmentDescription = '';
+
+  @ViewChildren('question')
+  public questions: QueryList<MatSelect>;
+
+  public readonly defaultValue = -1;
+  public readonly defaultMeasurement = 'Nothing';
+  public readonly sidePanelCollapseHeight = '32px';
+  public readonly sidePanelExpandedHeight = '32px';
+
+  public model: JsonApiData<Assessment>;
   public saved = false;
   public publishDate = new Date();
   public buttonLabel = 'Next';
-  public navigations = [];
+  public navigations: { label: string, page: number }[] = [];
   public item: MenuItem[];
   public doughnutChartLabels = ['Risk Accepted', 'Risk Addressed'];
   public doughnutChartData = [
@@ -66,29 +92,28 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       }
     }
   };
-  public description = `An Assessment is your evaluation of the implementations of your network.  You will rate your environment
-  ' to the best of your ability. On the final page of the survey, you will be asked to enter a name for the report and a description.
-  Unfetter Discover will use the survey to help you understand your gaps, how important they are and which should be addressed.
-  You may create multiple reports to see how your risk is changed when implementing different security processes.`;
-  public pageIcon = Constance.REPORTS_ICON;
-  public showSummarry = false;
-  public assessmentName = '';
+  // public description = `An Assessment is your evaluation of the implementations of your network.  You will rate your environment
+  // ' to the best of your ability. On the final page of the survey, you will be asked to enter a name for the report and a description.
+  // Unfetter Discover will use the survey to help you understand your gaps, how important they are and which should be addressed.
+  // You may create multiple reports to see how your risk is changed when implementing different security processes.`;
+  public showSummary = false;
   public currentAssessmentGroup = {} as any;
-  public selectedRisk = '1';
-  public defaultValue = -1;
   public page = 1;
-
-  public sensors: Stix[];
-  public indicators: Indicator[];
-  public mitigations: Stix[];
-
-  private assessments = [];
+  public meta = new AssessmentMeta();
+  public indicators: JsonApiData<Indicator>[];
+  public sensors: JsonApiData<Stix>[];
+  public mitigations: JsonApiData<Stix>[];
+  public ratioOfQuestionsAnswered = 0;
+  public openedSidePanel: SidePanelName;
+  public insertMode = false;
+  private assessments: WizardAssessment[] = [];
   private groupings = [];
-  private assessmentGroups: any;
-  private defaultMeasurement = 'Nothing';
-  private url: string;
-  private tempModel = {};
-  private readonly subscriptions = [];
+  private assessmentGroups: any[];
+  private tempModel: TempModel = {} as TempModel;
+  private assessmentTypeGroups: Dictionary<{ tempModel: TempModel, assessmentsGroups: any[] }> = {};
+
+  private readonly subscriptions: Subscription[] = [];
+  private readonly sidePanelOrder: SidePanelName[] = ['indicators', 'mitigations', 'sensors'];
 
   constructor(
     private genericApi: GenericApi,
@@ -125,22 +150,19 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       .select('assessment')
       .pluck('indicators')
       .distinctUntilChanged()
-      .subscribe((arr: Indicator[]) => {
-        console.log('setting indicators', arr);
-        this.indicators = arr;
-      });
+      .subscribe((arr: JsonApiData<Indicator>[]) => this.indicators = arr);
 
     const sub2 = this.store
       .select('assessment')
       .pluck('mitigations')
       .distinctUntilChanged()
-      .subscribe((arr: Stix[]) => this.mitigations = arr);
+      .subscribe((arr: JsonApiData<Stix>[]) => this.mitigations = arr);
 
     const sub3 = this.store
       .select('assessment')
       .pluck('sensors')
       .distinctUntilChanged()
-      .subscribe((arr: Stix[]) => this.sensors = arr);
+      .subscribe((arr: JsonApiData<Stix>[]) => this.sensors = arr);
 
     const sub4 = this.store
       .select('assessment')
@@ -148,11 +170,42 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       .distinctUntilChanged()
       .filter((loaded: boolean) => loaded && loaded === true)
       .subscribe((loaded: boolean) => {
-        console.log('loaded', loaded, this.sensors, this.indicators, this.mitigations);
-        const d1 = this.indicators;
-        this.build(d1);
+        this.openedSidePanel = this.determineFirstOpenSidePanel();
+        this.refreshToOpenedAssessmentType();
       },
       (err) => console.log(err));
+
+    const sub5 = this.store
+      .select('assessment')
+      .pluck('page')
+      .distinctUntilChanged()
+      .subscribe(
+      (page: number) => this.page = page,
+      (err) => console.log(err),
+      () => sub5.unsubscribe());
+
+    const sub6 = this.store
+      .select('assessment')
+      .pluck('saved')
+      .distinctUntilChanged()
+      .subscribe(
+      (saved: boolean) => {
+        this.saved = saved;
+        // TODO: route the page
+        // this.location.back();
+      },
+      (err) => console.log(err),
+      () => sub6.unsubscribe());
+
+    const sub7 = this.store
+      .select('assessment')
+      .pluck('assessment')
+      .pluck('assessmentMeta')
+      .distinctUntilChanged()
+      .subscribe(
+      (assessmentMeta: AssessmentMeta) => this.meta = assessmentMeta,
+      (err) => console.log(err),
+      () => sub7.unsubscribe());
 
     this.subscriptions.push(sub1, sub2, sub3, sub4);
 
@@ -187,11 +240,168 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
   }
 
   /**
+   * @description find panel names with data
+   * @return {SidePanelName[]}
+   */
+  public determinePanelsWithData(): SidePanelName[] {
+    const panels = [...this.sidePanelOrder];
+    const hasContents = panels.filter((name) => {
+      return this[name] && this[name].length > 0;
+    });
+    return hasContents;
+  }
+
+  /**
    * @description
-   * @param measurement
+   * @return {string} name of first open side panel
+   */
+  public determineFirstOpenSidePanel(): SidePanelName {
+    const hasContents = this.determinePanelsWithData();
+    // return first panel w/ data
+    return hasContents[0];
+  }
+
+  /**
+   * @description
+   * @return {string} name of last listed side panel
+   */
+  public determineNextSidePanel(): SidePanelName {
+    const panels = [...this.sidePanelOrder];
+    const openedIndex = panels.findIndex((el) => el === this.openedSidePanel);
+    const nextPanels = panels.slice(openedIndex + 1, panels.length);
+    // first panel after the currently opened
+    return nextPanels[0];
+  }
+
+  /**
+   * @description
+   * @return {string} name of last listed side panel
+   */
+  public determineLastSidePanel(): SidePanelName {
+    const hasContents = this.determinePanelsWithData();
+    // return last panel w/ data
+    return hasContents.reverse()[0];
+  }
+
+  /**
+   * @description
+   * @param {string} panel name
+   * @param {UIEvent} event
    * @return {void}
    */
-  public setSelectedRiskValue(measurement: any): void {
+  public onOpenSidePanel(panelName: SidePanelName, event?: UIEvent): void {
+    if (this.openedSidePanel && this.assessmentGroups) {
+      // save current state, if needed
+      this.assessmentTypeGroups[this.openedSidePanel] = { tempModel: undefined, assessmentsGroups: undefined };
+      this.assessmentTypeGroups[this.openedSidePanel].assessmentsGroups = [...this.assessmentGroups];
+      this.assessmentTypeGroups[this.openedSidePanel].tempModel = { ...this.tempModel };
+    }
+
+    // clear out state
+    this.tempModel = { };
+    this.page = 1;
+    // switch to new open panel
+    this.openedSidePanel = panelName;
+    // reload questions
+    this.refreshToOpenedAssessmentType();
+    if (this.openedSidePanel && this.assessmentTypeGroups[this.openedSidePanel]) {
+      // reload previous state for given type/panel if it exists
+      this.assessmentGroups = [...this.assessmentTypeGroups[this.openedSidePanel].assessmentsGroups];
+      this.tempModel = { ...this.assessmentTypeGroups[this.openedSidePanel].tempModel };
+    }
+    // reset progress bar
+    this.updateRatioOfAnswerQuestions();
+  }
+
+  /**
+   * @description refresh the questions and graphs to the currently open assessment type
+   * @return {void}
+   */
+  public refreshToOpenedAssessmentType(): void {
+    const data = this[this.openedSidePanel];
+    if (data) {
+      this.navigations = [];
+      this.updateRatioOfAnswerQuestions();
+      this.build(data);
+    }
+  }
+
+  /**
+   * @description
+   * @return {void}
+   */
+  public updateRatioOfAnswerQuestions(): void {
+    if (this.assessmentGroups) {
+      const allQuestions = this.assessmentGroups
+        // flat map assessments across groups
+        .map((groups) => groups.assessments)
+        .reduce((assessments, memo) => memo.concat(assessments), [])
+        // flat map across questions
+        .map((assessments) => assessments.measurements)
+        .reduce((measurements, memo) => memo.concat(measurements), []);
+      const numQuestions = allQuestions.length;
+      const answeredQuestions = allQuestions.filter((el) => el.risk > -1).length;
+      if (answeredQuestions > 0) {
+        const ratio = answeredQuestions / numQuestions;
+        this.ratioOfQuestionsAnswered = Math.round(ratio * 100);
+      }
+    }
+  }
+
+  /**
+   * @description
+   */
+  @HostListener('window:keyup', ['$event'])
+  public keyEvent(event: KeyboardEvent) {
+    if (this.insertMode === true) {
+      const validOptions = [
+        Key.Zero, Key.One, Key.Two,
+        Key.Three, Key.Four, Key.Five
+      ];
+      const index = validOptions.indexOf(event.keyCode);
+      if (index > -1) {
+        console.log('setting all questions to ', index);
+        this.updateAllQuestions(index);
+      }
+      this.insertMode = false;
+    } else if (event.keyCode === Key.GraveAccent) {
+      this.insertMode = true;
+      console.log(this.insertMode);
+    }
+  }
+
+  /**
+   * @description
+   * @param {answerIndex}
+   * @return {void}
+   */
+  public updateAllQuestions(answerIndex: number): void {
+    if (!this.currentAssessmentGroup) {
+      return;
+    }
+
+    this.currentAssessmentGroup.assessments.forEach((assessment) => {
+      const measurements = assessment.measurements;
+      measurements.forEach((measurement: AssessmentQuestion) => {
+        const options = measurement.options;
+        const index = answerIndex < options.length ? answerIndex : 0;
+        const option = options[index];
+        this.updateRisks({ selected: { value: option.risk } }, measurement, assessment);
+        this.questions.forEach((question) => {
+          question.value = option.risk;
+        });
+        this.selectedValue(measurement, option, assessment);
+      });
+      // calculate risk of all measurements
+      this.updateRatioOfAnswerQuestions();
+    });
+  }
+
+  /**
+   * @description
+   * @return {void}
+   */
+  public setSelectedRiskValue(): void {
     if (this.model) {
       this.currentAssessmentGroup.assessments.forEach((assessment) => {
         const assessmentObject = this.model
@@ -242,16 +452,16 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @param assessment
    * @returns {void}
    */
-
-  public updateRisks(option: any, measurement: any, assessment: any): void {
+  public updateRisks(option: any, measurement: AssessmentQuestion, assessment: any): void {
     const newRisk = option.selected.value;
     // update measurement value in assessments
-    const assessmentMeasurementToUpdate = assessment.measurements.find((assMes) => assMes.name === measurement.name);
+    const assessmentMeasurementToUpdate = assessment.measurements
+      .find((measure) => measure.name === measurement.name);
     this.updateQuestionRisk(assessmentMeasurementToUpdate, newRisk);
     // we need a temp model to hold selected question
     if (!this.model) {
       if (!this.tempModel[assessment.id]) {
-        this.tempModel[assessment.id] = { assessment: '', measurements: [] };
+        this.tempModel[assessment.id] = { assessment: new Assessment(), measurements: [] };
       }
       this.tempModel[assessment.id].assessment = assessment;
       this.tempModel[assessment.id].measurements = this.tempModel[assessment.id].measurements.filter((m) => {
@@ -288,8 +498,8 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
             description: assessment.description,
             type: assessment.type,
             name: assessment.name
-          }
-        };
+          } as Stix
+        } as AssessmentObject;
         this.model.attributes.assessment_objects.push(assessment_object);
       } else {
         if (newRisk < 0) {
@@ -310,7 +520,9 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       }
     }
     this.updateChart();
+    this.updateRatioOfAnswerQuestions();
   }
+
   /**
    * @description clicked back a page
    * @param {UIEvent} event optional
@@ -326,10 +538,9 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     }
     this.page = this.page - 1;
     this.buttonLabel = 'Next';
-    this.showSummarry = false;
+    this.showSummary = false;
     this.currentAssessmentGroup = this.getAssessmentGroup();
-    // this.pageTitle = this.splitTitle();
-    this.setSelectedRiskValue(null);
+    this.setSelectedRiskValue();
     this.updateChart();
   }
 
@@ -344,29 +555,45 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     }
 
     if (this.buttonLabel === 'Save') {
+      // we came from the Save page
+      //  save every of the things
       this.saveAssessments();
-    } else {
-      if (this.page + 1 > this.assessmentGroups.length) {
-        this.page = this.page + 1;
-        // this.pageTitle = ' Assessment Summary';
-        this.currentAssessmentGroup = null;
-        this.showSummarry = true;
-        this.buttonLabel = 'Save';
-        if (this.model) {
-          this.assessmentName = this.model.attributes.name;
-          this.assessmentDescription = this.model.attributes.description;
-        }
+      return;
+    }
+
+    // last page for this assessment type
+    if (this.page + 1 > this.assessmentGroups.length) {
+      const lastPanel = this.determineLastSidePanel();
+      if (this.openedSidePanel !== lastPanel) {
+        // last page but not last assessment type
+        //  advance the assessment type
+        const nextPanel = this.determineNextSidePanel();
+        this.onOpenSidePanel(nextPanel);
       } else {
+        // this is the last page of the last assessment type
+        //  show Save page
         this.page = this.page + 1;
-        this.currentAssessmentGroup = this.getAssessmentGroup();
-        // this.pageTitle = this.splitTitle();
-        this.setSelectedRiskValue(null);
-        this.updateChart();
+        this.currentAssessmentGroup = null;
+        this.showSummary = true;
+        this.buttonLabel = 'Save';
       }
+    } else {
+      // advance to next section within a given assessment type
+      this.page = this.page + 1;
+      this.currentAssessmentGroup = this.getAssessmentGroup();
+      this.setSelectedRiskValue();
+      this.updateChart();
     }
   }
 
-  public selectedValue(assessment: any, measurement: any, option: any): number {
+  /**
+   * @description
+   * @param measurement 
+   * @param option 
+   * @param {Assessment} assessment - optional
+   * @return {number}
+   */
+  public selectedValue(measurement: any, option: any, assessment?: Assessment): number {
     if (!this.model) {
       if (this.tempModel) {
         if (this.tempModel[assessment.id]) {
@@ -400,13 +627,14 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @param data 
    * @return {void}
    */
-  private build(data?: Stix[]): void {
-    if (data) {
-      this.assessmentGroups = this.createAssessmentGroups(data);
-      this.currentAssessmentGroup = this.getAssessmentGroup();
-      // this.pageTitle = this.splitTitle();
-      this.updateChart();
+  private build(data?: JsonApiData<Stix>[]): void {
+    if (!data) {
+      return;
     }
+
+    this.assessmentGroups = this.createAssessmentGroups(data);
+    this.currentAssessmentGroup = this.getAssessmentGroup();
+    this.updateChart();
   }
 
   /**
@@ -425,39 +653,37 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return this.assessmentGroups[index];
   }
 
-  private createAssessmentGroups(assessedObjects: any[]): any[] {
+  /**
+   * @description
+   * @param {JsonApiData<Stix>[]}
+   * @return {any[]}
+   */
+  private createAssessmentGroups(assessedObjects: JsonApiData<Stix>[]): any[] {
     const assessmentGroups = [];
     const self = this;
+
     if (assessedObjects) {
-      // Go through and build each item
-      const assessments: any = [];
-      assessedObjects.forEach((assessedObject) => {
-        const assessment: any = {};
-        assessment.version = '1';
-        assessment.modified = new Date();
-        assessment.created = new Date();
-
-        assessment.measurements = [];
-
-        if (assessedObject.attributes.metaProperties && assessedObject.attributes.metaProperties.groupings) {
-          assessment.groupings = assessedObject.attributes.metaProperties.groupings;
-        }
-
-        assessment.id = assessedObject.id;
-        assessment.name = assessedObject.attributes.name;
-        assessment.description = assessedObject.attributes.description;
-        assessment.measurements = this.buildMeasurements(assessedObject.id);
-        assessment.type = assessedObject.type;
-
-        const risk = this.getRisk(assessment.measurements);
-        assessment.risk = -1;
-        assessments.push(assessment);
-      });
+      // Go through and build each assessment
       // We do this so we can just save all the assessments later.
-      this.assessments = assessments;
-      this.groupings = this.buildGrouping(assessments);
+      this.assessments = assessedObjects
+        .map((el) => el.attributes)
+        .map((assessedObject) => {
+          const assessment = new WizardAssessment();
+          if (assessedObject.metaProperties && assessedObject.metaProperties.groupings) {
+            assessment.groupings = assessedObject.metaProperties.groupings;
+          }
+          assessment.id = assessedObject.id;
+          assessment.name = assessedObject.name;
+          assessment.description = assessedObject.description;
+          assessment.measurements = this.buildMeasurements(assessedObject.id);
+          assessment.type = assessedObject.type;
+          const risk = this.getRisk(assessment.measurements);
+          assessment.risk = -1;
+          return assessment;
+        });
+      this.groupings = this.buildGrouping(this.assessments);
 
-      const assessmentObjectsGroups = this.doObjectGroupings(assessments);
+      const assessmentObjectsGroups = this.doObjectGroupings(this.assessments);
       const keys = Object.keys(assessmentObjectsGroups).sort();
       keys.forEach((phaseName, index) => {
         // TODO - Need to remove the 'courseOfAction' name
@@ -483,12 +709,20 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         assessmentGroups.push(assessmentGroup);
       });
     }
-    const laststep = this.navigations.length + 1;
-    this.navigations.push({ label: 'Summary', page: laststep });
+
+    if (this.openedSidePanel === this.determineLastSidePanel()) {
+      const laststep = this.navigations.length + 1;
+      this.navigations.push({ label: 'Summary', page: laststep });
+    }
     return assessmentGroups;
   }
 
-  private buildGrouping(stixObjects): any {
+  /**
+   * @description
+   * @param stixObjects
+   * @return {any} 
+   */
+  private buildGrouping(stixObjects: WizardAssessment[]): any {
     const groupings = [];
     stixObjects.forEach((stixObject) => {
       const groupingStages = stixObject.groupings;
@@ -516,6 +750,11 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return groupings;
   }
 
+  /**
+   * @description
+   * @param stixObjects
+   * @return {any}
+   */
   private doObjectGroupings(stixObjects): any {
     const hash = {};
     stixObjects.forEach((stixObject) => {
@@ -549,6 +788,10 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return hash;
   }
 
+  /**
+   * @description
+   * @return {number}
+   */
   private calculateGroupRisk(): number {
     const groupRisk = this.calculateRisk(this.currentAssessmentGroup.assessments);
     const riskArray = [];
@@ -559,12 +802,22 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return groupRisk;
   }
 
+  /**
+   * @description update the chart data
+   * @return {void}
+   */
   private updateChart(): void {
     const chartData = this.doughnutChartData.slice();
-    chartData[0].data = this.currentAssessmentGroup.riskArray;
+    chartData[0].data = this.currentAssessmentGroup
+      ? this.currentAssessmentGroup.riskArray : [];
     this.doughnutChartData = chartData;
   }
 
+  /**
+   * @description
+   * @param title
+   * @return {string}
+   */
   private splitTitle(title?: string): string {
     const split = title
       ? title.split('-')
@@ -577,84 +830,44 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return split.join(' ');
   }
 
-  private generateXUnfetterAssessment(assessmentsGroups: any) {
-    const retVal: any = {};
-    retVal.type = 'x-unfetter-assessment';
-    retVal.name = this.assessmentName;
-    retVal.description = this.assessmentDescription;
-    retVal.created = this.publishDate.toISOString();
-    // retVal.assessment_objects = [];
-    const assessmentSet = new Set();
+  /**
+   * @description
+   * @param {any}
+   * @return {Assessment}
+   */
+  private generateXUnfetterAssessment(tempModel: TempModel, assessmentMeta: AssessmentMeta): Assessment {
+    const assessment = new Assessment();
+    assessment.assessmentMeta = assessmentMeta;
+    assessment.name = this.meta.title;
+    assessment.description = this.meta.description;
+    assessment.created = this.publishDate.toISOString();
+    const assessmentSet = new Set<AssessmentObject>();
 
-    Object.keys(this.tempModel).forEach(
-
-      (assessmentId) => {
-        const assessmentObj = this.tempModel[assessmentId];
-        const temp: any = {};
-        temp.stix = {};
-        temp.stix.id = assessmentObj.assessment.id;
-        temp.stix.type = assessmentObj.assessment.type;
-        temp.stix.description = assessmentObj.assessment.description || '';
-        temp.stix.name = assessmentObj.assessment.name;
-
+    Object.keys(tempModel)
+      .forEach((assessmentId) => {
+        const assessmentObj = tempModel[assessmentId];
+        const temp = new AssessmentObject();
+        const stix = new Stix();
+        stix.id = assessmentObj.assessment.id;
+        stix.type = assessmentObj.assessment.type;
+        stix.description = assessmentObj.assessment.description || '';
+        stix.name = assessmentObj.assessment.name;
+        temp.stix = stix;
         temp.questions = [];
         if (assessmentObj.measurements !== undefined) {
-          assessmentObj.measurements.forEach((measurement) => {
-            if (!measurement.selected_value || measurement.selected_value.risk < 0) {
-              return;
-            }
-            temp.questions.push(measurement);
-          });
+          temp.questions = assessmentObj.measurements
+            .filter((measurement) => {
+              return measurement.selected_value && measurement.selected_value.risk >= 0;
+            });
         }
         temp.risk = temp.questions
           .map((question) => question.risk)
           .reduce((prev, cur) => (prev += cur), 0) / temp.questions.length;
+        assessmentSet.add(temp);
+      });
 
-        assessmentSet.add(JSON.stringify(temp));
-
-      }
-    )
-
-    // assessmentsGroups.forEach((assessmentsGroup) => {
-    //   if (assessmentsGroup.assessments !== undefined) {
-    //     assessmentsGroup.assessments.forEach((assessment) => {
-    //       if (assessment.risk < 0) {
-    //         return;
-    //       }
-    //       const temp: any = {};
-    //       temp.stix = {};
-    //       temp.stix.id = assessment.id;
-    //       temp.stix.type = assessment.type;
-    //       temp.stix.description = assessment.description || '';
-    //       temp.stix.name = assessment.name;
-
-    //       temp.questions = [];
-    //       if (assessment.measurements !== undefined) {
-    //         assessment.measurements.forEach((measurement) => {
-    //           if (measurement.selected_value.risk < 0) {
-    //             return;
-    //           }
-    //           temp.questions.push(measurement);
-    //         });
-    //       } else {
-    //         return { error: 'No measurements/questions on assessment' };
-    //       }
-
-    //       temp.risk = temp.questions
-    //           .map((question) => question.risk)
-    //           .reduce((prev, cur) => (prev += cur), 0) / temp.questions.length;
-
-    //       assessmentSet.add(JSON.stringify(temp));
-
-    //     });
-    //   } else {
-    //     return { error: 'No assessments in group' };
-    //   }
-    // });
-
-    retVal['assessment_objects'] = Array.from(assessmentSet)
-      .map((dat) => JSON.parse(dat));
-    return retVal;
+    assessment['assessment_objects'] = Array.from(assessmentSet);
+    return assessment;
   }
 
   /**
@@ -663,61 +876,33 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @return {void}
    */
   private saveAssessments(): void {
-    this.url = 'api/x-unfetter-assessments';
     if (this.model) {
-      const retVal: any = {};
-      retVal.created = this.publishDate.toISOString();
-      retVal.type = 'x-unfetter-assessment';
-      retVal.name = this.assessmentName;
-      retVal.description = this.assessmentDescription;
-      retVal.assessment_objects = this.model.attributes.assessment_objects.filter(
-        (assessment_object) => {
-          let filter = false;
-          assessment_object.questions.forEach((question) => {
-            if (question.risk >= 0) {
-              filter = true;
-            }
-          });
-          return filter;
-        }
-      );
-      if (retVal.assessment_objects) {
-        retVal.assessment_objects.forEach((assessment_object) => {
-          assessment_object.questions = assessment_object.questions.filter((question) => {
-            return question.risk >= 0
-          });
+      const assessment = new Assessment();
+      assessment.assessmentMeta = this.meta;
+      assessment.created = this.publishDate.toISOString();
+      assessment.name = this.meta.title;
+      assessment.description = this.meta.description;
+      assessment.assessment_objects = this.model.attributes
+        .assessment_objects
+        // grab and only save objects that have an answered question
+        .filter((assessment_object) => {
+          return assessment_object.questions.findIndex((question) => question.risk >= 0) > -1;
+        });
+      if (assessment.assessment_objects) {
+        assessment.assessment_objects.forEach((assessment_object) => {
+          assessment_object.questions = assessment_object.questions
+            .filter((question) => question.risk >= 0);
         });
       }
-
-      this.url = this.url + '/' + this.model.id;
-      const sub = this.genericApi.patch(this.url, { 'data': { 'attributes': retVal } }).subscribe(
-        (res) => {
-          this.saved = true;
-          this.location.back();
-        },
-        (err) => {
-          console.log(err);
-        },
-        () => {
-          sub.unsubscribe();
-        }
-      );
+      this.store.dispatch(new SaveAssessment([assessment]));
     } else {
-      const xUnfetterAssessment = this.generateXUnfetterAssessment(
-        this.assessmentGroups
-      );
-      const sub = this.genericApi.post(this.url, { 'data': { 'attributes': xUnfetterAssessment } }).subscribe(
-        (res) => {
-          this.saved = true;
-          this.location.back();
-        },
-        (err) => {
-          console.log(err);
-        },
-        () => {
-          sub.unsubscribe();
-        }
-      );
+      const assessments = this.sidePanelOrder
+        .map((name) => this.assessmentTypeGroups[name])
+        .filter((el) => el !== undefined)
+        .map((el) => el.tempModel)
+        .filter((el) => el !== undefined)
+        .map((el) => this.generateXUnfetterAssessment(el, this.meta))
+      this.store.dispatch(new SaveAssessment(assessments));
     }
   }
 

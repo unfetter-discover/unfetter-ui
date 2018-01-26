@@ -5,6 +5,7 @@ import { Location } from '@angular/common';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 
+import * as UUID from 'uuid';
 import * as assessActions from './assess.actions';
 
 import { FetchAssessment, StartAssessment } from './assess.actions';
@@ -17,6 +18,11 @@ import { Constance } from '../../utils/constance';
 import { Indicator } from '../../models/stix/indicator';
 import { Sensor } from '../../models/unfetter/sensor';
 import { Stix } from '../../models/stix/stix';
+import { JsonApiData } from '../../models/json/jsonapi-data';
+import { Assessment } from '../../models/assess/assessment';
+import { JsonApi } from '../../models/json/jsonapi';
+
+type URL_TYPE = 'course-of-action' | 'indicator' | 'mitigation' | 'sensor';
 
 @Injectable()
 export class AssessEffects {
@@ -36,30 +42,33 @@ export class AssessEffects {
         .pluck('payload')
         .switchMap((meta: Partial<AssessmentMeta>) => {
             const urlTemplate = this.template`${0}?metaproperties=true`;
-            const observables = new Array<Observable<Array<Stix>>>();
-            if (meta.includesIndicators) {
-                const url = urlTemplate(this.generateUrl('indicator'));
-                const indicators$ = this.genericServiceApi.getAs<Indicator[]>(url);
-                observables.push(indicators$);
-            }
-            if (meta.includesMitigations) {
-                const url = urlTemplate(this.generateUrl('mitigation'));
-                const mitigations$ = this.genericServiceApi.getAs<Stix[]>(url);
-                observables.push(mitigations$);
-            }
-            if (meta.includesSensors) {
-                const url = urlTemplate(this.generateUrl('sensor'));
-                const sensors$ = this.genericServiceApi.getAs<Stix[]>(url);
-                observables.push(sensors$);
-            }
+            const observables = new Array<Observable<Array<JsonApiData<Stix>>>>();
+
+            let url = urlTemplate(this.generateUrl('indicator'));
+            const indicators$ = meta.includesIndicators ?
+                this.genericServiceApi.getAs<JsonApiData<Indicator>[]>(url) :
+                Observable.of<JsonApiData<Indicator>[]>([]);
+            observables.push(indicators$);
+
+            url = urlTemplate(this.generateUrl('mitigation'));
+            const mitigations$ = meta.includesMitigations ?
+                this.genericServiceApi.getAs<JsonApiData<Stix>[]>(url) :
+                Observable.of<JsonApiData<Stix>[]>([]);
+            observables.push(mitigations$);
+
+            url = urlTemplate(this.generateUrl('sensor'));
+            const sensors$ = meta.includesSensors ?
+                this.genericServiceApi.getAs<JsonApiData<Stix>[]>(url) :
+                Observable.of<JsonApiData<Stix>[]>([]);
+            observables.push(sensors$);
 
             return Observable.forkJoin(...observables);
         })
         .mergeMap(([indicators, mitigations, sensors]) => {
             return [
-                new assessActions.IndicatorsLoaded(indicators as Indicator[] || []),
-                new assessActions.MitigationsLoaded(mitigations || []),
-                new assessActions.SensorsLoaded(sensors || []),
+                new assessActions.IndicatorsLoaded(indicators as JsonApiData<Indicator>[]),
+                new assessActions.MitigationsLoaded(mitigations),
+                new assessActions.SensorsLoaded(sensors),
                 new assessActions.FinishedLoading(true)
             ];
         });
@@ -80,9 +89,9 @@ export class AssessEffects {
         })
         .do((el: AssessmentMeta) => {
             this.router.navigate([
-                '/assess/wizard/new', 
-                'indicators', el.includesIndicators === true ? 1 : 0, 
-                'mitigations', el.includesMitigations === true ? 1 : 0, 
+                '/assess/wizard/new',
+                'indicators', el.includesIndicators === true ? 1 : 0,
+                'mitigations', el.includesMitigations === true ? 1 : 0,
                 'sensors', el.includesSensors === true ? 1 : 0
             ]);
         })
@@ -90,14 +99,53 @@ export class AssessEffects {
         .switchMap(() => Observable.of({}));
 
 
+    @Effect()
+    public saveAssessment = this.actions$
+        .ofType(assessActions.SAVE_ASSESSMENT)
+        .pluck('payload')
+        .switchMap((assessments: Assessment[]) => {
+            const rollupIds = assessments
+                .map((assessment) => assessment.metaProperties)
+                .filter((el) => el !== undefined)
+                .map((meta) => meta.rollupId)
+                .filter((el) => el !== undefined);
+            let rollupId = '';
+            if (rollupIds.length > 0) {
+                rollupId = rollupIds[0];
+            } else {
+                rollupId = UUID.v4();
+            }
+
+            const observables = assessments
+                .map((assessment) => {
+                    assessment.metaProperties = assessment.metaProperties || {};
+                    assessment.metaProperties.rollupId = rollupId;
+                    return assessment;
+                })
+                .map((assessment) => {
+                    const json = { 'data': { 'attributes': assessment } } as JsonApi<JsonApiData<Assessment>>;
+                    let url = 'api/x-unfetter-assessments';
+                    if (assessment.id) {
+                        url = `${url}/${assessment.id}`;
+                        return this.genericServiceApi.patch(url, json);
+                    } else {
+                        return this.genericServiceApi.post(url, json);
+                    }
+                });
+            return Observable.forkJoin(...observables);
+        })
+        .map((arr) => {
+            return new assessActions.FinishedSaving(true);
+        });
+
+
     /**
     * @description
     *  take a stix object type and determine url to fetch data
     * @param {string} type
     *  string in the form of a url path
-    *  [keyof { 'course-of-action', 'indicator', 'mitigation', 'sensor'}]
     */
-    private generateUrl(type = ''): string {
+    private generateUrl(type: URL_TYPE): string {
         let url = '';
         switch (type) {
             case 'indicator': {

@@ -167,8 +167,6 @@ export class Measurements {
     }
 
     protected calculateMeasurementsAvgRisk(measurements: any[]) {
-        console.log(measurements);
-        
         let validMeasurements = measurements.filter((measurement) => measurement.risk !== -1);
         if (validMeasurements && validMeasurements.length) { 
             return validMeasurements
@@ -181,8 +179,6 @@ export class Measurements {
     }
 
     protected updateQuestionRisk(question, risk) {
-        console.log(question, risk);
-        
         if (question.selected_value === undefined) {
             question.selected_value = {};
         }
