@@ -1,0 +1,26 @@
+<div id="generatedObservedData" *ngIf="filteredPatternObjects && filteredPatternObjects.length">
+  <h4 class="fw400">Generated Observed Data</h4>
+  <div class="flex flexItemsCenter">
+    <div class="flex1">
+      <h5>Object</h5>
+    </div>
+    <div class="flex1">
+      <h5>Action</h5>
+    </div>
+    <div class="flex1">
+      <h5>Field</h5>
+    </div>
+  </div>
+  <div *ngFor="let patternObj of filteredPatternObjects" class="flex flexItemsCenter mb-6">
+    <div class="flex1">{{ patternObj.name }}</div>
+    <div class="flex1">
+      <mat-form-field class="full-width">
+        <mat-select placeholder="Actions" [multiple]="true">
+          <mat-option [value]="action" *ngFor="let action of getActions(patternObj.name)">{{ action }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="flex1">{{ patternObj.property }}</div>
+  </div>
+  <button mat-button color="accent" type="button" class="mb-3">Attach Observed Data to Analytic</button>
+</div>

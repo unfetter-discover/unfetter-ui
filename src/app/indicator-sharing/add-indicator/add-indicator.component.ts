@@ -33,6 +33,7 @@ export class AddIndicatorComponent implements OnInit {
     public stepOneControl: FormGroup | any;
     public patternHelpHtml: string = patternHelp;
     public observableDataHelpHtml: string = observableDataHelp;
+    public patternObjs: PatternHandlerPatternObject[] = [];
 
     private initialPatternHandlerResponse: PatternHandlerTranslateAll = {
         pattern: null,
@@ -122,8 +123,8 @@ export class AddIndicatorComponent implements OnInit {
                     const patternObjSet: Set<string> = new Set(
                         objects.object.map((o: PatternHandlerPatternObject): string => JSON.stringify(o))
                     );
-                    const patternObjs: PatternHandlerPatternObject[] = Array.from(patternObjSet)
-                        .map((s: string): PatternHandlerPatternObject => JSON.parse(s));
+                    this.patternObjs = Array.from(patternObjSet)
+                        .map((s: string): PatternHandlerPatternObject => JSON.parse(s)) || [];
                 },
                 (err) => {
                     console.log(err);

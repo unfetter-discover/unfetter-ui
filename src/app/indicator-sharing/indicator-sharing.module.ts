@@ -27,6 +27,7 @@ import { IndicatorDetailsComponent } from './indicator-details/indicator-details
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { IndicatorSharingSortComponent } from './indicator-sharing-sort/indicator-sharing-sort.component';
 import { IndicatorSharingFiltersComponent } from './indicator-sharing-filters/indicator-sharing-filters.component';
+import { GeneratedObservedDataComponent } from './generated-observed-data/generated-observed-data.component';
 
 const matModules = [
     MatButtonModule,
@@ -69,7 +70,8 @@ const matModules = [
         IndicatorDetailsComponent,
         SearchBarComponent,
         IndicatorSharingSortComponent,
-        IndicatorSharingFiltersComponent
+        IndicatorSharingFiltersComponent,
+        GeneratedObservedDataComponent
     ],
     providers: [
         IndicatorSharingService

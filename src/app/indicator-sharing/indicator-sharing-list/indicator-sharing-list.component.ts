@@ -131,8 +131,6 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
 
     public ngOnDestroy() {
         this.dialog.closeAll();
-        // Moved to layout
-        // this.store.dispatch(new indicatorSharingActions.ClearData());
     }
 
     public openDialog() {
