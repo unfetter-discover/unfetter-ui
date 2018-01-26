@@ -21,8 +21,25 @@
           </mat-card-content>
         </mat-card>
         <mat-card class="card" id="vulnerabilityCard">
-          <mat-card-title>Test</mat-card-title>
-          <mat-card-content>Test</mat-card-content>
+          <mat-card-title>Where you are most vulnerable</mat-card-title>
+          <mat-card-content>
+            <mat-table #table>
+              <ng-container matColumnDef="kca">
+                <mat-header-cell *matHeaderCellDef>KILL CHAIN AFFECTED</mat-header-cell>
+                <mat-cell *matCellDef>I am a KCA</mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="item">
+                <mat-header-cell *matHeaderCellDef>ASSESSED ITEM</mat-header-cell>
+                <mat-cell *matCellDef>I am an item</mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="risk">
+                <mat-header-cell *matHeaderCellDef>RISK</mat-header-cell>
+                <mat-cell *matCellDef>Risk Value</mat-cell>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="['kca','item','risk']"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: ['kca','item','risk'];"></mat-row>
+            </mat-table>
+          </mat-card-content>
         </mat-card>
       </div>
     </div>
@@ -32,10 +49,10 @@
       </div>
       <div class="flex flexItemsCenter">
         <div class="flex flexItemsCenter" id="sliderContainer">
-          <mat-icon color="primary" class="mat-24" aria-hidden="false" aria-label="Least sophisticated mitigation">favorite_border</mat-icon>
+          <mat-icon color="primary" class="mat-24 icon-people-1" aria-hidden="false" aria-label="Least sophisticated mitigation"></mat-icon>
           <mat-slider min="0" max="4" step="1" value="2" id="sophisticationSlider" color="primary">
           </mat-slider>
-          <mat-icon color="primary" class="mat-24" aria-hidden="false" aria-label="Most sophisticated mitigation">favorite</mat-icon>
+          <mat-icon color="primary" class="mat-24 icon-people" aria-hidden="false" aria-label="Most sophisticated mitigation"></mat-icon>
         </div>
         <div class="flex1">&nbsp;</div>
       </div>
@@ -43,11 +60,11 @@
     <div class="row">
       <div class="flex flexItemsCenter">
         <mat-card class="card" id="riskCard">
-          <mat-card-title>Test</mat-card-title>
+          <mat-card-title>Sophistication Breakdown</mat-card-title>
           <mat-card-content>Test</mat-card-content>
         </mat-card>
         <mat-card class="card" id="vulnerabilityCard">
-          <mat-card-title>Test</mat-card-title>
+          <mat-card-title>% Techniques Detected by Skill</mat-card-title>
           <mat-card-content>Test</mat-card-content>
         </mat-card>
       </div>
@@ -55,7 +72,7 @@
     <div class="row">
       <div class="flex flexItemsCenter">
         <mat-card class="card flex1">
-          <mat-card-title>Test</mat-card-title>
+          <mat-card-title>% of Assessments Better than Mitigation Threshold</mat-card-title>
           <mat-card-content>Test</mat-card-content>
         </mat-card>
       </div>
