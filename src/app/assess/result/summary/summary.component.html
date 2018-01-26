@@ -1,5 +1,5 @@
 <!-- TODO summary && weakestAttackPatterns -->
-<div id="newAssessmentsSummary" *ngIf="summary; else loadingBlock" class="fadeIn">
+<div id="newAssessmentsSummary" *ngIf="summary && finishedLoading === true; else loadingBlock" class="fadeIn">
   <mat-sidenav-container>
     <mat-sidenav id="sidePanel" mode="side" opened="true">
       Unfetter Side Panel
