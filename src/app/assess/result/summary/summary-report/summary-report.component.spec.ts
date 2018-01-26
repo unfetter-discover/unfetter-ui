@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { MatTableModule } from '@angular/material';
 
 import { SummaryReportComponent } from './summary-report.component';
 
@@ -10,7 +11,8 @@ describe('SummaryReportComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      declarations: [SummaryReportComponent]
+      declarations: [SummaryReportComponent],
+      imports: [MatTableModule]
     })
       .compileComponents();
   }));
