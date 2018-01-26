@@ -1,7 +1,8 @@
 import * as userActions from './user.actions';
+import { User } from '../../models/user/user';
 
 export interface UserState {
-    userProfile: object,
+    userProfile: User,
     token: string,
     authenticated: boolean,
     approved: boolean,

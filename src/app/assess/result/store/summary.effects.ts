@@ -5,8 +5,8 @@ import { Location } from '@angular/common';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 
+import { AssessmentSummaryService } from '../../services/assessment-summary.service';
 
-import { AssessmentsSummaryService } from '../summary/assessments-summary.service';
 import { LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA, LOAD_ASSESSMENT_SUMMARY_DATA, FinishedLoading, SetAssessments } from './summary.actions';
 import { Assessment } from '../../../models/assess/assessment';
 import { GenericApi } from '../../../core/services/genericapi.service';
@@ -21,7 +21,7 @@ export class SummaryEffects {
         private location: Location,
         private actions$: Actions,
         protected genericServiceApi: GenericApi,
-        protected assessmentSummaryService: AssessmentsSummaryService,
+        protected assessmentSummaryService: AssessmentSummaryService,
     ) { }
 
     @Effect()
@@ -29,13 +29,12 @@ export class SummaryEffects {
         .ofType(LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA)
         .pluck('payload')
         .switchMap((assessmentId: string) => this.assessmentSummaryService.getById(assessmentId))
-        .map((data: JsonApiData<Assessment>) => new SetAssessments([data.attributes]))
+        .map((data: Assessment) => new SetAssessments([data]))
 
     @Effect()
     public fetchAssessmentSummaryData = this.actions$
         .ofType(LOAD_ASSESSMENT_SUMMARY_DATA)
         .pluck('payload')
         .switchMap((rollupId: string) => this.assessmentSummaryService.getByRollupId(rollupId))
-        .map((data) => [ ...data.map((el) => el.attributes)])
         .mergeMap((data: Assessment[]) => [ new SetAssessments(data), new FinishedLoading(true)])
 }

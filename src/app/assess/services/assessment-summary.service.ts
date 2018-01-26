@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
-
-import { Assessment } from '../../../models/assess/assessment';
-import { Constance } from '../../../utils/constance';
-import { GenericApi } from '../../../core/services/genericapi.service';
-import { JsonApiData } from '../../../models/json/jsonapi-data';
+import { Constance } from '../../utils/constance';
+import { GenericApi } from '../../core/services/genericapi.service';
+import { JsonApiData } from '../../models/json/jsonapi-data';
+import { Assessment } from '../../models/assess/assessment';
 
 @Injectable()
-export class AssessmentsSummaryService {
+export class AssessmentSummaryService {
     public readonly baseUrl = Constance.X_UNFETTER_ASSESSMENT_URL;
 
     constructor(private genericApi: GenericApi) { }
@@ -16,11 +15,13 @@ export class AssessmentsSummaryService {
     /**
      * @description
      * @param {string} id
-     * @return {Observable<Assessment>}
+     * @return {Observable<Assessment> }
      */
-    public getById(id: string, includeMeta = true): Observable<JsonApiData<Assessment>> {
+    public getById(id: string, includeMeta = true): Observable<Assessment> {
         const url = `${this.baseUrl}/${id}?metaproperties=${includeMeta}`;
-        return this.genericApi.getAs<JsonApiData<Assessment>>(url);
+        return this.genericApi
+            .getAs<JsonApiData<Assessment>>(url)
+            .map((data) => data.attributes);
     }
 
     /**
@@ -28,12 +29,14 @@ export class AssessmentsSummaryService {
      * @param {string} id
      * @return {Observable<Assessment>}
      */
-    public getByRollupId(id: string, includeMeta = true): Observable<JsonApiData<Assessment>[]> {
+    public getByRollupId(id: string, includeMeta = true): Observable<Assessment[]> {
         const filter = {
             'metaProperties.rollupId': id
         };
         const url = `${this.baseUrl}?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
-        return this.genericApi.getAs<JsonApiData<Assessment>[]>(url);
+        return this.genericApi
+            .getAs<JsonApiData<Assessment>[]>(url)
+            .map((data) => data.map((el) => el.attributes));
     }
 
     /**
@@ -77,4 +80,20 @@ export class AssessmentsSummaryService {
         const url = `api/x-unfetter-assessments/${id}/summary-aggregations`;
         return this.genericApi.get(url);
     }
+
+    /**
+     * @description
+     * @param {string} userId, creator mongo user id, not stix identity
+     * @return {Observable<Assessment[]>}
+     */
+    public getAssessmentsByUser(userId: string, includeMeta = true): Observable<Assessment[]> {
+        const filter = {
+            'creator': userId,
+        };
+        const url = `${this.baseUrl}?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
+        return this.genericApi
+            .getAs<JsonApiData<Assessment>[]>(url)
+            .map((data) => data.map((el) => el.attributes));
+    }
+
 }
