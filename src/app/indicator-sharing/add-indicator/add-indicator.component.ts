@@ -7,8 +7,9 @@ import { IndicatorForm } from '../../global/form-models/indicator';
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { AuthService } from '../../core/services/auth.service';
 import { heightCollapse } from '../../global/animations/height-collapse';
-import { PatternHandlerTranslateAll, PatternHandlerGetObjects } from '../../global/models/pattern-handlers';
+import { PatternHandlerTranslateAll, PatternHandlerGetObjects, PatternHandlerPatternObject } from '../../global/models/pattern-handlers';
 import { patternHelp, observableDataHelp } from '../help-templates';
+import { cleanObjectProperties } from '../../global/static/clean-object-properties';
 
 @Component({
     selector: 'add-indicator',
@@ -97,6 +98,8 @@ export class AddIndicatorComponent implements OnInit {
             })
             .subscribe(
                 ([translatations, objects]: [PatternHandlerTranslateAll, PatternHandlerGetObjects]) => {
+
+                    // ~~~ Pattern Translations ~~~
                     this.patternValid = translatations.validated;
                     this.form.get('metaProperties').get('queries').get('carElastic').patchValue({
                         query: translatations['car-elastic']
@@ -111,12 +114,16 @@ export class AddIndicatorComponent implements OnInit {
                     if (translatations['car-elastic'] || translatations['car-splunk'] || translatations['cim-splunk']) {
                         this.showPatternTranslations = true;
                     }
-
-                    // TODO process objects
+                    
+                    // ~~~ Pattern Objects ~~~
                     if (!objects.object) {
                         objects.object = [];
                     }
-                    // objects.object.forEach(console.log);
+                    const patternObjSet: Set<string> = new Set(
+                        objects.object.map((o: PatternHandlerPatternObject): string => JSON.stringify(o))
+                    );
+                    const patternObjs: PatternHandlerPatternObject[] = Array.from(patternObjSet)
+                        .map((s: string): PatternHandlerPatternObject => JSON.parse(s));
                 },
                 (err) => {
                     console.log(err);
@@ -140,7 +147,7 @@ export class AddIndicatorComponent implements OnInit {
     }
 
     public submitIndicator() {
-        const tempIndicator = this.buildIndicator({}, this.form.value);
+        const tempIndicator: any = cleanObjectProperties({}, this.form.value);
 
         this.pruneQueries(tempIndicator);        
 
@@ -162,58 +169,20 @@ export class AddIndicatorComponent implements OnInit {
             );
     }
 
-    private buildIndicator(tempIndicator, obj) {
-        for (let prop in obj) {
-            if (Array.isArray(obj[prop])) {
-                if (obj[prop].length > 0) {
-                    tempIndicator[prop] = [];
-                    obj[prop].forEach((item, i) => {
-                        if (item instanceof Object && !(item instanceof Date)) {
-                            tempIndicator[prop].push(this.buildIndicator({}, item));
-                        } else if (item) {
-                            tempIndicator[prop].push(item);
-                        }
-                    });
-
-                    if (tempIndicator[prop].length === 0) {
-                        delete tempIndicator[prop];
-                    }
-                }
-            } else {
-                switch ((typeof obj[prop])) {
-                    case 'object':
-                        if (obj[prop] instanceof Date) {
-                            tempIndicator[prop] = obj[prop];
-                        } else if (obj[prop] && Object.keys(obj[prop]).length > 0) {
-                            tempIndicator[prop] = {};
-                            tempIndicator[prop] = this.buildIndicator({}, obj[prop]);
-                        }                        
-                        break;
-                    default:
-                        if (obj[prop]) {
-                            tempIndicator[prop] = obj[prop];
-                        }
-                        break;                    
-                }
-            }
-        }
-        return tempIndicator;
-    }
-
     private pruneQueries(tempIndicator) {
-        if (!tempIndicator.metaProperties.queries.carElastic.include || !tempIndicator.metaProperties.queries.carElastic.query || tempIndicator.metaProperties.queries.carElastic.query.length === 0) {
+        if (!tempIndicator.metaProperties.queries.carElastic.query || tempIndicator.metaProperties.queries.carElastic.query.length === 0) {
             try {
                 delete tempIndicator.metaProperties.queries.carElastic;
             } catch (e) { }
         }
 
-        if (!tempIndicator.metaProperties.queries.carSplunk.include || !tempIndicator.metaProperties.queries.carSplunk.query || tempIndicator.metaProperties.queries.carSplunk.query.length === 0) {
+        if (!tempIndicator.metaProperties.queries.carSplunk.query || tempIndicator.metaProperties.queries.carSplunk.query.length === 0) {
             try {
                 delete tempIndicator.metaProperties.queries.carSplunk;
             } catch (e) { }
         }
 
-        if (!tempIndicator.metaProperties.queries.cimSplunk.include || !tempIndicator.metaProperties.queries.cimSplunk.query || tempIndicator.metaProperties.queries.cimSplunk.query.length === 0) {
+        if (!tempIndicator.metaProperties.queries.cimSplunk.query || tempIndicator.metaProperties.queries.cimSplunk.query.length === 0) {
             try {
                 delete tempIndicator.metaProperties.queries.cimSplunk;
             } catch (e) { }

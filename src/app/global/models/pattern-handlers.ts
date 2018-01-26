@@ -6,11 +6,13 @@ export interface PatternHandlerTranslateAll {
     'cim-splunk': string;
 }
 
+export interface PatternHandlerPatternObject {
+    name: string;
+    property: string;
+}
+
 export interface PatternHandlerGetObjects {
     pattern: string;
     validated: boolean;
-    object?: {
-        name: string;
-        property: string;
-    }[]
+    object?: PatternHandlerPatternObject[]
 }

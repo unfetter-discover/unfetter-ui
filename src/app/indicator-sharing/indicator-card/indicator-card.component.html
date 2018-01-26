@@ -76,19 +76,19 @@
             <mat-tab label="Scripts" *ngIf="indicator.metaProperties && (indicator.metaProperties.queries || indicator.metaProperties.additional_queries)">
                 <div *ngIf="indicator.metaProperties.queries">
                     <h4 class="fw400">Generated Pattern Translations</h4>
-                    <div *ngIf="indicator.metaProperties.queries.carElastic && indicator.metaProperties.queries.carElastic.query">
+                    <div *ngIf="indicator.metaProperties.queries.carElastic && indicator.metaProperties.queries.carElastic.include && indicator.metaProperties.queries.carElastic.query">
                         <label>Elastic Search</label>
                         <div class="mb-6">
                             <code>{{ indicator.metaProperties.queries.carElastic.query }}</code>
                         </div>
                     </div>
-                    <div *ngIf="indicator.metaProperties.queries.carSplunk && indicator.metaProperties.queries.carSplunk.query">
+                    <div *ngIf="indicator.metaProperties.queries.carSplunk && indicator.metaProperties.queries.carSplunk.include && indicator.metaProperties.queries.carSplunk.query">
                         <label>Splunk (Cyber Analytic Repository)</label>
                         <div class="mb-6">
                             <code>{{ indicator.metaProperties.queries.carSplunk.query }}</code>
                         </div>
                     </div>
-                    <div *ngIf="indicator.metaProperties.queries.cimSplunk && indicator.metaProperties.queries.cimSplunk.query">
+                    <div *ngIf="indicator.metaProperties.queries.cimSplunk && indicator.metaProperties.queries.cimSplunk.include && indicator.metaProperties.queries.cimSplunk.query">
                         <label>Splunk (Common Information Model)</label>
                         <div class="mb-6">
                             <code>{{ indicator.metaProperties.queries.cimSplunk.query }}</code>
