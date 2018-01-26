@@ -7,7 +7,7 @@ import { IndicatorForm } from '../../global/form-models/indicator';
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { AuthService } from '../../core/services/auth.service';
 import { heightCollapse } from '../../global/animations/height-collapse';
-import { PatternHandlerTranslateAll } from '../../global/models/pattern-handlers';
+import { PatternHandlerTranslateAll, PatternHandlerGetObjects } from '../../global/models/pattern-handlers';
 import { patternHelp, observableDataHelp } from '../help-templates';
 
 @Component({
@@ -33,12 +33,17 @@ export class AddIndicatorComponent implements OnInit {
     public patternHelpHtml: string = patternHelp;
     public observableDataHelpHtml: string = observableDataHelp;
 
-    private initialRatternHandlerResponse: PatternHandlerTranslateAll = {
+    private initialPatternHandlerResponse: PatternHandlerTranslateAll = {
         pattern: null,
         validated: false,
         'car-elastic': null,
         'car-splunk': null,
         'cim-splunk': null
+    };
+
+    private initialGetObjectsResponse: PatternHandlerGetObjects = {
+        pattern: null,
+        validated: false
     };
 
     constructor(
@@ -77,30 +82,41 @@ export class AddIndicatorComponent implements OnInit {
         const patternChange$ = (this.form.get('pattern') as FormControl).valueChanges
             .debounceTime(100)
             .distinctUntilChanged()
-            .switchMap((pattern: string) => {
+            .switchMap((pattern: any): Observable<[PatternHandlerTranslateAll, PatternHandlerGetObjects]> => {
                 if (pattern && pattern.length > 0) {
-                    return this.indicatorSharingService.translateAllPatterns(pattern);
+                    return Observable.forkJoin(
+                        this.indicatorSharingService.translateAllPatterns(pattern).pluck('attributes'),
+                        this.indicatorSharingService.patternHandlerObjects(pattern).pluck('attributes')
+                    );
                 } else {
-                    return Observable.of({ attributes: this.initialRatternHandlerResponse });
+                    return Observable.forkJoin(
+                        Observable.of(this.initialPatternHandlerResponse),
+                        Observable.of(this.initialGetObjectsResponse)
+                    );
                 }
             })
-            .pluck('attributes')
             .subscribe(
-                (res: PatternHandlerTranslateAll) => {
-                    this.patternValid = res.validated;
+                ([translatations, objects]: [PatternHandlerTranslateAll, PatternHandlerGetObjects]) => {
+                    this.patternValid = translatations.validated;
                     this.form.get('metaProperties').get('queries').get('carElastic').patchValue({
-                        query: res['car-elastic']
+                        query: translatations['car-elastic']
                     });
                     this.form.get('metaProperties').get('queries').get('carSplunk').patchValue({
-                        query: res['car-splunk']
+                        query: translatations['car-splunk']
                     });
                     this.form.get('metaProperties').get('queries').get('cimSplunk').patchValue({
-                        query: res['cim-splunk']
+                        query: translatations['cim-splunk']
                     });
 
-                    if (res['car-elastic'] || res['car-splunk'] || res['cim-splunk']) {
+                    if (translatations['car-elastic'] || translatations['car-splunk'] || translatations['cim-splunk']) {
                         this.showPatternTranslations = true;
                     }
+
+                    // TODO process objects
+                    if (!objects.object) {
+                        objects.object = [];
+                    }
+                    // objects.object.forEach(console.log);
                 },
                 (err) => {
                     console.log(err);

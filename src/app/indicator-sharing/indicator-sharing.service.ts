@@ -107,4 +107,9 @@ export class IndicatorSharingService {
         const body = { data: { pattern } };
         return this.genericApi.post(`${this.patternHandlerUrl}/translate-all`, body);
     }
+
+    public patternHandlerObjects(pattern: string): Observable<any> {
+        const body = { data: { pattern } };
+        return this.genericApi.post(`${this.patternHandlerUrl}/get-objects`, body);
+    }
 }

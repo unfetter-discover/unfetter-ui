@@ -334,7 +334,7 @@ function buildIndicatorToSensorMap(indicators, sensors): object {
         // OR logic
         // indicator.metaProperties.observedData.forEach((obsData) => {
 
-        //     const sensorsFilter = sensors
+        //     sensors
         //         .filter((sensor) => {
         //             let retVal = false;
         //             sensor.metaProperties.observedData.forEach((sensorObsData) => {

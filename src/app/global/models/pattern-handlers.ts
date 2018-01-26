@@ -5,3 +5,12 @@ export interface PatternHandlerTranslateAll {
     'car-splunk': string;
     'cim-splunk': string;
 }
+
+export interface PatternHandlerGetObjects {
+    pattern: string;
+    validated: boolean;
+    object?: {
+        name: string;
+        property: string;
+    }[]
+}
