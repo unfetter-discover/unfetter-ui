@@ -31,7 +31,6 @@ export class AddIndicatorComponent implements OnInit {
         carSplunk: true,
         cimSplunk: false
     };
-    public stepOneControl: FormGroup | any;
     public patternHelpHtml: string = patternHelp;
     public observableDataHelpHtml: string = observableDataHelp;
     public patternObjs: PatternHandlerPatternObject[] = [];
@@ -148,11 +147,10 @@ export class AddIndicatorComponent implements OnInit {
             e.preventDefault();
         }
         this.form = IndicatorForm();
-        this.stepOneControl = new FormGroup({
-            name: this.form.get('name'),
-            created_by_ref: this.form.get('created_by_ref'),
-            valid_from: this.form.get('valid_from')
-        });
+    }
+
+    public stepOneInvalid(): boolean {
+        return this.form.get('name').status !== 'VALID' || this.form.get('created_by_ref').status !== 'VALID' || this.form.get('valid_from').status !== 'VALID';
     }
 
     public submitIndicator() {
