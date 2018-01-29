@@ -1,0 +1,18 @@
+<div id="noContentComponent">
+    <br>
+    <div class="container">
+        <div class="row" *ngIf="errorMessage">
+            <div class="col-xs-10 col-xs-offset-1">
+                <mat-card class="uf-mat-card mt-15">
+                    <mat-card-header>
+                        <mat-card-title>An Error Occured</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <label>Error Message</label>
+                        <p class="uf-well-warn">{{ errorMessage }}</p>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+</div>
