@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule, ApplicationRef } from '@angular/core';
 import { RouterModule, PreloadAllModules, Router } from '@angular/router';
-import { MatProgressBarModule, MatCardModule } from '@angular/material';
 import { ComponentModule } from './components/component.module';
 import { StixModule } from './settings/stix.module';
 import { StoreModule } from '@ngrx/store';
@@ -43,7 +42,6 @@ import { NotificationEffects } from './root-store/notification/notification.effe
     NoContentComponent,
   ],
   imports: [ // import Angular's modules
-    MatCardModule,
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
