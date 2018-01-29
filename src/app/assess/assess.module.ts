@@ -21,7 +21,6 @@ import { StoreModule } from '@ngrx/store';
 import { assessmentReducer } from './store/assess.reducers';
 import { AssessLayoutComponent } from './layout/assess-layout.component';
 import { ResultModule } from './result/result.module';
-import { EmptyComponent } from './empty/empty.component';
 import { AssessmentSummaryService } from './services/assessment-summary.service';
 
 const moduleComponents = [
@@ -48,7 +47,6 @@ const materialModules = [
   ],
   declarations: [
     ...moduleComponents,
-    EmptyComponent,
   ],
   exports: [
   ],
