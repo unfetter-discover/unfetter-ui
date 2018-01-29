@@ -9,6 +9,7 @@ export interface PatternHandlerTranslateAll {
 export interface PatternHandlerPatternObject {
     name: string;
     property: string;
+    action?: string;
 }
 
 export interface PatternHandlerGetObjects {

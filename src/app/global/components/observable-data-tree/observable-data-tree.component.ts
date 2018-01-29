@@ -1,10 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { Subject } from 'rxjs/Subject';
 
 import { ObservedDataForm } from '../../form-models/observed-data';
 import { heightCollapse } from '../../animations/height-collapse';
 import * as fromRoot from '../../../root-store/app.reducers';
+import { PatternHandlerPatternObject } from '../../models/pattern-handlers';
 
 @Component({
     selector: 'observable-data-tree',
@@ -16,15 +18,21 @@ import * as fromRoot from '../../../root-store/app.reducers';
 export class ObservableDataTreeComponent implements OnInit {
     @Input() public parentForm: FormGroup;
     @Input() public observedDataPath: any[];
+    @Input() public patternObjSubject: Subject<PatternHandlerPatternObject[]>;
 
     public observableDataTypes: any[];
     public showPropertyTree: any = {};
     public showTree: boolean = false;
     public checkboxModel: any = {};
+
+    private oldPatternObjs: PatternHandlerPatternObject[];
+    private currentPatternObjs: PatternHandlerPatternObject[];
     
     constructor(
         private store: Store<fromRoot.AppState>
-    ) { }
+    ) { 
+        this.patternExists = this.patternExists.bind(this); 
+    }
 
     public ngOnInit() {
         const config$ = this.store.select('config')
@@ -47,10 +55,13 @@ export class ObservableDataTreeComponent implements OnInit {
                 config$.unsubscribe();
             }
             );
+
+        if (this.patternObjSubject) {
+            this.initPatternSub();
+        }
     }
 
     public checkBoxChange(e, name, action, property) {
-
         // If input is reactive
         if (this.parentForm) {
 
@@ -102,7 +113,7 @@ export class ObservableDataTreeComponent implements OnInit {
         } else {
             console.log('There is nothing to add observable data to, please use a componenant input');
         }
-        
+        console.log('!!!!!!', this.parentForm.get('metaProperties').get('observedData').value);
     }
 
     public actionChecked(name: string, action: string): boolean {
@@ -135,5 +146,44 @@ export class ObservableDataTreeComponent implements OnInit {
                 }
             });
         });
+    }
+
+    private initPatternSub() {
+        const getPattern$ = this.patternObjSubject
+            .subscribe(
+                (patternObjs: PatternHandlerPatternObject[]) => {
+                    if (this.currentPatternObjs) {
+                        // Uncheck old patterns
+                        this.oldPatternObjs = [ ...this.currentPatternObjs ];
+                        this.oldPatternObjs
+                            .filter(this.patternExists)
+                            .forEach((oldPattern: PatternHandlerPatternObject) => {
+                                this.updateModels(oldPattern, false);
+                            });
+                    }
+                    // Check current patterns
+                    this.currentPatternObjs = patternObjs
+                    this.currentPatternObjs
+                        .filter(this.patternExists)
+                        .forEach((curPattern: PatternHandlerPatternObject) => {
+                            this.updateModels(curPattern, true);
+                        });
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    getPattern$.unsubscribe();
+                }
+            );
+    }
+
+    private patternExists(patterObj: PatternHandlerPatternObject): boolean {
+        return this.checkboxModel[patterObj.name] && this.checkboxModel[patterObj.name][patterObj.action] && this.checkboxModel[patterObj.name][patterObj.action][patterObj.property] !== undefined;
+    }
+
+    private updateModels(patterObj: PatternHandlerPatternObject, checked: boolean): void {
+        this.checkboxModel[patterObj.name][patterObj.action][patterObj.property] = checked;
+        this.checkBoxChange({ checked }, patterObj.name, patterObj.action, patterObj.property);
     }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MatDialogRef } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
 import { IndicatorForm } from '../../global/form-models/indicator';
 import { IndicatorSharingService } from '../indicator-sharing.service';
@@ -34,6 +35,7 @@ export class AddIndicatorComponent implements OnInit {
     public patternHelpHtml: string = patternHelp;
     public observableDataHelpHtml: string = observableDataHelp;
     public patternObjs: PatternHandlerPatternObject[] = [];
+    public patternObjSubject: Subject<PatternHandlerPatternObject[]> = new Subject();
 
     private initialPatternHandlerResponse: PatternHandlerTranslateAll = {
         pattern: null,
@@ -121,10 +123,16 @@ export class AddIndicatorComponent implements OnInit {
                         objects.object = [];
                     }
                     const patternObjSet: Set<string> = new Set(
-                        objects.object.map((o: PatternHandlerPatternObject): string => JSON.stringify(o))
+                        objects.object.map((patternObj: PatternHandlerPatternObject): string => JSON.stringify(patternObj))
                     );
                     this.patternObjs = Array.from(patternObjSet)
-                        .map((s: string): PatternHandlerPatternObject => JSON.parse(s)) || [];
+                        .map((patternString: string): PatternHandlerPatternObject => JSON.parse(patternString))
+                        .map((patternObj: PatternHandlerPatternObject) => {
+                            patternObj.action = '*';
+                            return patternObj;
+                        }) || [];                    
+                  
+                    this.patternObjSubject.next(this.patternObjs);                
                 },
                 (err) => {
                     console.log(err);
