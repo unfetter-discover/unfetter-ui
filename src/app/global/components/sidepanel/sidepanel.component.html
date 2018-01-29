@@ -28,7 +28,7 @@
             </mat-toolbar>
 
             <mat-toolbar id="item-toolbar">
-                <span class="push-right mat-display-2"> {{item.name || 'Unnamed'}} </span>
+                <span class="push-right mat-display-2"> {{item?.name || 'Unnamed'}} </span>
                 <ng-content select="master-list-dialog-trigger"></ng-content>
             </mat-toolbar>
 

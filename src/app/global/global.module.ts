@@ -98,7 +98,7 @@ const unfetterComponents = [
     SidepanelOptionItemComponent,
     SidepanelMiniItemComponent,
     HelpWindowComponent,
-    AdditionalQueriesComponent
+    AdditionalQueriesComponent,
     MasterListDialogTriggerComponent,
     MasterListDialogComponent,
 ];

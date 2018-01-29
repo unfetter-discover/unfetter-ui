@@ -120,7 +120,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public fetchDataAndRender(): void {
-    this.loading = true;
+    requestAnimationFrame(() => this.loading = true);
     const loadReport$ = this.loadThreatReport();
     const loadAttackPatterns$ = this.loadAttackPatterns();
     const loadIntrusionSets$ = this.loadIntrusionSets();
@@ -664,7 +664,6 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @return {Promise<boolean>}
    */
   public cellSelected(report: any): Promise<boolean> {
-    console.log('trying to navigate to ', `${this.masterListOptions.displayRoute}/${report.id}`);
     return this.router.navigate([`${this.masterListOptions.displayRoute}/${report.id}`]);
   }
 
