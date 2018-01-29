@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 
 import { CreateComponent } from './create/create.component';
 
@@ -33,6 +34,7 @@ const materialModules = [
   MatButtonModule,
   MatCheckboxModule,
   MatInputModule,
+  MatIconModule,
 ]
 
 @NgModule({
