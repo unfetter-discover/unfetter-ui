@@ -4,6 +4,7 @@ import { MatButtonModule, MatInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ExternalReferencesReactiveComponent } from './external-references.component';
+import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 
 describe('ExternalReferencesReactiveComponent', () => {
   let component: ExternalReferencesReactiveComponent;
@@ -11,7 +12,10 @@ describe('ExternalReferencesReactiveComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ExternalReferencesReactiveComponent ],
+      declarations: [ 
+        ExternalReferencesReactiveComponent,
+        CapitalizePipe 
+      ],
       imports: [
         FormsModule,
         ReactiveFormsModule,
