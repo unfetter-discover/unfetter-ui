@@ -5,6 +5,4 @@ import { Component } from '@angular/core';
   templateUrl: 'no-content.component.html',
   styleUrls: ['no-content.component.scss']
 })
-export class NoContentComponent {
-  public errorMessage: string = '404: Page Not Found';
-}
+export class NoContentComponent { }
