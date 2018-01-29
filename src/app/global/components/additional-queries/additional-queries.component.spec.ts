@@ -4,6 +4,7 @@ import { MatButtonModule, MatInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AdditionalQueriesComponent } from './additional-queries.component';
+import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 
 describe('AdditionalQueriesComponent', () => {
   let component: AdditionalQueriesComponent;
@@ -11,7 +12,10 @@ describe('AdditionalQueriesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AdditionalQueriesComponent ],
+      declarations: [ 
+        AdditionalQueriesComponent,
+        CapitalizePipe 
+      ],
       imports: [
         FormsModule,
         ReactiveFormsModule,

@@ -1,9 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { Subject } from 'rxjs/Subject';
 
-import { ConfigService } from '../../../core/services/config.service';
 import { ObservedDataForm } from '../../form-models/observed-data';
 import { heightCollapse } from '../../animations/height-collapse';
+import * as fromRoot from '../../../root-store/app.reducers';
+import { PatternHandlerPatternObject } from '../../models/pattern-handlers';
 
 @Component({
     selector: 'observable-data-tree',
@@ -15,28 +18,50 @@ import { heightCollapse } from '../../animations/height-collapse';
 export class ObservableDataTreeComponent implements OnInit {
     @Input() public parentForm: FormGroup;
     @Input() public observedDataPath: any[];
+    @Input() public patternObjSubject: Subject<PatternHandlerPatternObject[]>;
 
     public observableDataTypes: any[];
     public showPropertyTree: any = {};
     public showTree: boolean = false;
     public checkboxModel: any = {};
+
+    private oldPatternObjs: PatternHandlerPatternObject[];
+    private currentPatternObjs: PatternHandlerPatternObject[];
     
-    constructor(private configService: ConfigService) { }
+    constructor(
+        private store: Store<fromRoot.AppState>
+    ) { 
+        this.patternExists = this.patternExists.bind(this); 
+    }
 
     public ngOnInit() {
-        this.configService.getConfigPromise()
-            .then((res) => {
+        const config$ = this.store.select('config')
+            .pluck('configurations')
+            .filter((configurations: any) => configurations.observableDataTypes)
+            .pluck('observableDataTypes')
+            .subscribe(
+            (observableDataTypes: any[]) => {
+                this.observableDataTypes = observableDataTypes;
                 if (this.observedDataPath && this.observedDataPath.length) {
                     this.buildTree(true);
                 } else {
                     this.buildTree();
                 }
-            })
-            .catch((err) => console.log(err));
+            },
+            (err) => {
+                console.log(err);
+            },
+            () => {
+                config$.unsubscribe();
+            }
+            );
+
+        if (this.patternObjSubject) {
+            this.initPatternSub();
+        }
     }
 
     public checkBoxChange(e, name, action, property) {
-
         // If input is reactive
         if (this.parentForm) {
 
@@ -88,22 +113,21 @@ export class ObservableDataTreeComponent implements OnInit {
         } else {
             console.log('There is nothing to add observable data to, please use a componenant input');
         }
-        
+        console.log('!!!!!!', this.parentForm.get('metaProperties').get('observedData').value);
     }
 
     public actionChecked(name: string, action: string): boolean {
-        return Object.values(this.checkboxModel[name][action]).includes(true);
+        return Object.values(this.checkboxModel[name][action] || {}).includes(true);
     }
 
     public nameChecked(name: string): boolean {
-        return Object.values(this.checkboxModel[name])
+        return Object.values(this.checkboxModel[name] || {})
             .map(Object.values)
             .reduce((prev: boolean[], cur: boolean[]) => prev.concat(cur), [])
             .includes(true);
     }
 
     private buildTree(observedDataPathPresent?: boolean) {
-        this.observableDataTypes = this.configService.configurations.observableDataTypes;
         this.observableDataTypes.forEach((item) => {
             item.showActions = false;
             this.showPropertyTree[item.name] = {};
@@ -122,5 +146,44 @@ export class ObservableDataTreeComponent implements OnInit {
                 }
             });
         });
+    }
+
+    private initPatternSub() {
+        const getPattern$ = this.patternObjSubject
+            .subscribe(
+                (patternObjs: PatternHandlerPatternObject[]) => {
+                    if (this.currentPatternObjs) {
+                        // Uncheck old patterns
+                        this.oldPatternObjs = [ ...this.currentPatternObjs ];
+                        this.oldPatternObjs
+                            .filter(this.patternExists)
+                            .forEach((oldPattern: PatternHandlerPatternObject) => {
+                                this.updateModels(oldPattern, false);
+                            });
+                    }
+                    // Check current patterns
+                    this.currentPatternObjs = patternObjs
+                    this.currentPatternObjs
+                        .filter(this.patternExists)
+                        .forEach((curPattern: PatternHandlerPatternObject) => {
+                            this.updateModels(curPattern, true);
+                        });
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    getPattern$.unsubscribe();
+                }
+            );
+    }
+
+    private patternExists(patterObj: PatternHandlerPatternObject): boolean {
+        return this.checkboxModel[patterObj.name] && this.checkboxModel[patterObj.name][patterObj.action] && this.checkboxModel[patterObj.name][patterObj.action][patterObj.property] !== undefined;
+    }
+
+    private updateModels(patterObj: PatternHandlerPatternObject, checked: boolean): void {
+        this.checkboxModel[patterObj.name][patterObj.action][patterObj.property] = checked;
+        this.checkBoxChange({ checked }, patterObj.name, patterObj.action, patterObj.property);
     }
 }

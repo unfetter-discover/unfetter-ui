@@ -1,7 +1,7 @@
 <div class="additionalQueriesComponent">
   <div class="uf-collapsible-control mb-10" (click)="showForm = !showForm">
     <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showForm}">chevron_right</i>
-    <span class="h5">&nbsp;Additional Queries</span>
+    <span class="h5">&nbsp;Add Additional Queries</span>
   </div>
   <div class="uf-well-accent" @heightCollapse *ngIf="showForm">
     <form [formGroup]="localForm" novalidate (ngSubmit)="addToParent()" *ngIf="formResetComplete">
@@ -20,7 +20,7 @@
         </mat-error>
       </mat-form-field>
 
-      <button mat-button color="accent" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Add Additional Query</button>
+      <button mat-button color="accent" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Attach Query to {{ parentDocumentType | capitalize }}</button>
     </form>
   </div>
 </div>

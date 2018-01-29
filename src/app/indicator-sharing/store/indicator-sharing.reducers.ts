@@ -326,25 +326,46 @@ function sortIndicators(state, sortBy) {
 
 function buildIndicatorToSensorMap(indicators, sensors): object {
     const indicatorToSensorMap = {};
-    const indicatorsWithObservedData = indicators.filter((indicator) => indicator.metaProperties && indicator.metaProperties.observedData);
+    const indicatorsWithObservedData = indicators.filter((indicator) => indicator.metaProperties && indicator.metaProperties.observedData && indicator.metaProperties.observedData.length);
 
     indicatorsWithObservedData.forEach((indicator) => {
         const matchingSensorsSet = new Set();
 
-        indicator.metaProperties.observedData.forEach((obsData) => {
+        // OR logic
+        // indicator.metaProperties.observedData.forEach((obsData) => {
 
-            const sensorsFilter = sensors
-                .filter((sensor) => {
-                    let retVal = false;
+        //     sensors
+        //         .filter((sensor) => {
+        //             let retVal = false;
+        //             sensor.metaProperties.observedData.forEach((sensorObsData) => {
+        //                 if (sensorObsData.name === obsData.name && sensorObsData.action === obsData.action && sensorObsData.property === obsData.property) {
+        //                     retVal = true;
+        //                 }
+        //             });
+        //             return retVal;
+        //         })
+        //         .forEach((sensor) => matchingSensorsSet.add(sensor));
+        // });
+
+        // AND logic
+        sensors
+            .filter((sensor) => {
+                let retVal = true;
+                indicator.metaProperties.observedData.forEach((obsData) => {
+                    let sensorMatch = false;
                     sensor.metaProperties.observedData.forEach((sensorObsData) => {
                         if (sensorObsData.name === obsData.name && sensorObsData.action === obsData.action && sensorObsData.property === obsData.property) {
-                            retVal = true;
+                            sensorMatch = true;
                         }
                     });
-                    return retVal;
-                })
-                .forEach((sensor) => matchingSensorsSet.add(sensor));
-        });
+                    if (!sensorMatch) {
+                        retVal = false;
+                    }
+                });                
+                return retVal;
+            })
+            .forEach((sensor) => matchingSensorsSet.add(sensor));
+    
 
         const matchingSensors = Array.from(matchingSensorsSet);
 

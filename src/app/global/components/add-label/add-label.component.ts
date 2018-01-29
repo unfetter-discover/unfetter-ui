@@ -15,6 +15,7 @@ export class AddLabelReactiveComponent implements OnInit {
     });
     @Input() public stixType: string;
     @Input() public currentLabels: string[] = [];
+    @Input() public parentDocumentType: string = 'analytic';
     @Output() public labelAdded: EventEmitter<string> = new EventEmitter();
 
     public localForm: FormControl;

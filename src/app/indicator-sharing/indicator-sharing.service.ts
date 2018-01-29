@@ -94,7 +94,10 @@ export class IndicatorSharingService {
         };
         const filterObj = {
             'metaProperties.observedData': { 
-                '$exists': 1 
+                '$exists': 1,
+                '$not': {
+                    '$size': 0
+                }
             }
         };
         return this.genericApi.get(`${this.sensorsUrl}?project=${JSON.stringify(projectObj)}&filter=${JSON.stringify(filterObj)}&metaproperties=true`);
@@ -103,5 +106,10 @@ export class IndicatorSharingService {
     public translateAllPatterns(pattern: string): Observable<any> {
         const body = { data: { pattern } };
         return this.genericApi.post(`${this.patternHandlerUrl}/translate-all`, body);
+    }
+
+    public patternHandlerObjects(pattern: string): Observable<any> {
+        const body = { data: { pattern } };
+        return this.genericApi.post(`${this.patternHandlerUrl}/get-objects`, body);
     }
 }

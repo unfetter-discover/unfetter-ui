@@ -2,13 +2,15 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MatDialogRef } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
 import { IndicatorForm } from '../../global/form-models/indicator';
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { AuthService } from '../../core/services/auth.service';
 import { heightCollapse } from '../../global/animations/height-collapse';
-import { PatternHandlerTranslateAll } from '../../global/models/pattern-handlers';
+import { PatternHandlerTranslateAll, PatternHandlerGetObjects, PatternHandlerPatternObject } from '../../global/models/pattern-handlers';
 import { patternHelp, observableDataHelp } from '../help-templates';
+import { cleanObjectProperties } from '../../global/static/clean-object-properties';
 
 @Component({
     selector: 'add-indicator',
@@ -32,13 +34,20 @@ export class AddIndicatorComponent implements OnInit {
     public stepOneControl: FormGroup | any;
     public patternHelpHtml: string = patternHelp;
     public observableDataHelpHtml: string = observableDataHelp;
+    public patternObjs: PatternHandlerPatternObject[] = [];
+    public patternObjSubject: Subject<PatternHandlerPatternObject[]> = new Subject();
 
-    private initialRatternHandlerResponse: PatternHandlerTranslateAll = {
+    private initialPatternHandlerResponse: PatternHandlerTranslateAll = {
         pattern: null,
         validated: false,
         'car-elastic': null,
         'car-splunk': null,
         'cim-splunk': null
+    };
+
+    private initialGetObjectsResponse: PatternHandlerGetObjects = {
+        pattern: null,
+        validated: false
     };
 
     constructor(
@@ -77,30 +86,53 @@ export class AddIndicatorComponent implements OnInit {
         const patternChange$ = (this.form.get('pattern') as FormControl).valueChanges
             .debounceTime(100)
             .distinctUntilChanged()
-            .switchMap((pattern: string) => {
+            .switchMap((pattern: any): Observable<[PatternHandlerTranslateAll, PatternHandlerGetObjects]> => {
                 if (pattern && pattern.length > 0) {
-                    return this.indicatorSharingService.translateAllPatterns(pattern);
+                    return Observable.forkJoin(
+                        this.indicatorSharingService.translateAllPatterns(pattern).pluck('attributes'),
+                        this.indicatorSharingService.patternHandlerObjects(pattern).pluck('attributes')
+                    );
                 } else {
-                    return Observable.of({ attributes: this.initialRatternHandlerResponse });
+                    return Observable.forkJoin(
+                        Observable.of(this.initialPatternHandlerResponse),
+                        Observable.of(this.initialGetObjectsResponse)
+                    );
                 }
             })
-            .pluck('attributes')
             .subscribe(
-                (res: PatternHandlerTranslateAll) => {
-                    this.patternValid = res.validated;
+                ([translatations, objects]: [PatternHandlerTranslateAll, PatternHandlerGetObjects]) => {
+
+                    // ~~~ Pattern Translations ~~~
+                    this.patternValid = translatations.validated;
                     this.form.get('metaProperties').get('queries').get('carElastic').patchValue({
-                        query: res['car-elastic']
+                        query: translatations['car-elastic']
                     });
                     this.form.get('metaProperties').get('queries').get('carSplunk').patchValue({
-                        query: res['car-splunk']
+                        query: translatations['car-splunk']
                     });
                     this.form.get('metaProperties').get('queries').get('cimSplunk').patchValue({
-                        query: res['cim-splunk']
+                        query: translatations['cim-splunk']
                     });
 
-                    if (res['car-elastic'] || res['car-splunk'] || res['cim-splunk']) {
+                    if (translatations['car-elastic'] || translatations['car-splunk'] || translatations['cim-splunk']) {
                         this.showPatternTranslations = true;
                     }
+                    
+                    // ~~~ Pattern Objects ~~~
+                    if (!objects.object) {
+                        objects.object = [];
+                    }
+                    const patternObjSet: Set<string> = new Set(
+                        objects.object.map((patternObj: PatternHandlerPatternObject): string => JSON.stringify(patternObj))
+                    );
+                    this.patternObjs = Array.from(patternObjSet)
+                        .map((patternString: string): PatternHandlerPatternObject => JSON.parse(patternString))
+                        .map((patternObj: PatternHandlerPatternObject) => {
+                            patternObj.action = '*';
+                            return patternObj;
+                        }) || [];                    
+                  
+                    this.patternObjSubject.next(this.patternObjs);                
                 },
                 (err) => {
                     console.log(err);
@@ -124,7 +156,7 @@ export class AddIndicatorComponent implements OnInit {
     }
 
     public submitIndicator() {
-        const tempIndicator = this.buildIndicator({}, this.form.value);
+        const tempIndicator: any = cleanObjectProperties({}, this.form.value);
 
         this.pruneQueries(tempIndicator);        
 
@@ -146,58 +178,20 @@ export class AddIndicatorComponent implements OnInit {
             );
     }
 
-    private buildIndicator(tempIndicator, obj) {
-        for (let prop in obj) {
-            if (Array.isArray(obj[prop])) {
-                if (obj[prop].length > 0) {
-                    tempIndicator[prop] = [];
-                    obj[prop].forEach((item, i) => {
-                        if (item instanceof Object && !(item instanceof Date)) {
-                            tempIndicator[prop].push(this.buildIndicator({}, item));
-                        } else if (item) {
-                            tempIndicator[prop].push(item);
-                        }
-                    });
-
-                    if (tempIndicator[prop].length === 0) {
-                        delete tempIndicator[prop];
-                    }
-                }
-            } else {
-                switch ((typeof obj[prop])) {
-                    case 'object':
-                        if (obj[prop] instanceof Date) {
-                            tempIndicator[prop] = obj[prop];
-                        } else if (obj[prop] && Object.keys(obj[prop]).length > 0) {
-                            tempIndicator[prop] = {};
-                            tempIndicator[prop] = this.buildIndicator({}, obj[prop]);
-                        }                        
-                        break;
-                    default:
-                        if (obj[prop]) {
-                            tempIndicator[prop] = obj[prop];
-                        }
-                        break;                    
-                }
-            }
-        }
-        return tempIndicator;
-    }
-
     private pruneQueries(tempIndicator) {
-        if (!tempIndicator.metaProperties.queries.carElastic.include || !tempIndicator.metaProperties.queries.carElastic.query || tempIndicator.metaProperties.queries.carElastic.query.length === 0) {
+        if (!tempIndicator.metaProperties.queries.carElastic.query || tempIndicator.metaProperties.queries.carElastic.query.length === 0) {
             try {
                 delete tempIndicator.metaProperties.queries.carElastic;
             } catch (e) { }
         }
 
-        if (!tempIndicator.metaProperties.queries.carSplunk.include || !tempIndicator.metaProperties.queries.carSplunk.query || tempIndicator.metaProperties.queries.carSplunk.query.length === 0) {
+        if (!tempIndicator.metaProperties.queries.carSplunk.query || tempIndicator.metaProperties.queries.carSplunk.query.length === 0) {
             try {
                 delete tempIndicator.metaProperties.queries.carSplunk;
             } catch (e) { }
         }
 
-        if (!tempIndicator.metaProperties.queries.cimSplunk.include || !tempIndicator.metaProperties.queries.cimSplunk.query || tempIndicator.metaProperties.queries.cimSplunk.query.length === 0) {
+        if (!tempIndicator.metaProperties.queries.cimSplunk.query || tempIndicator.metaProperties.queries.cimSplunk.query.length === 0) {
             try {
                 delete tempIndicator.metaProperties.queries.cimSplunk;
             } catch (e) { }

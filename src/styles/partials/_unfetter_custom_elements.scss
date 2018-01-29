@@ -72,7 +72,6 @@
 
 .uf-master-list-dialog .mat-dialog-container {
   padding: 0;
-
   .mat-dialog-title {
     .mat-tab-label {
       font-size: small;
@@ -90,6 +89,39 @@
     .mat-input-underline {
       height: 2px;
       bottom: -2px;
+    }
+  }
+}
+
+.uf-table {
+  width: 100%;
+  max-width: 100%;
+  th {
+    color: $dark-text-dimmed;
+    font-weight: 500;
+  }
+  tr {
+    *:first-child {
+      padding-left: 24px;
+    }
+    *:last-child {
+      padding-right: 24px;
+    }
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  }
+  td {
+    padding-top: $table-padding;
+    padding-bottom: $table-padding;
+  }
+  thead {
+    th {      
+      padding-bottom: $table-padding;
+      vertical-align: bottom;
+    }
+  }
+  tbody {
+    tr {
+      align-items: center;
     }
   }
 }

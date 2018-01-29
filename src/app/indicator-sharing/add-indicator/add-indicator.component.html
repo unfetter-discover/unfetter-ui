@@ -149,7 +149,7 @@
                 </div>
                 
                 <!-- ~~~ Labels ~~~ -->
-                <h5>Labels</h5>
+                <h5>Add Labels</h5>
                 <div class="flex flexItemsCenter" id="labelsWrapper">
                     <mat-chip-list *ngIf="form.get('labels').value.length > 0" class="inlineBlock" class="chipListPadding">
                         <mat-chip *ngFor="let label of form.get('labels').value; let i = index" class="cursor-pointer chipListChip" removable="true">
@@ -182,8 +182,12 @@
             
             <mat-step label="Observable Data">
                 <help-window [helpHtml]="observableDataHelpHtml"></help-window>
+                <!-- TODO figure out why this is breaking observable data tree -->
+                <!-- <div *ngIf="patternObjs && patternObjs.length" class="uf-well-accent mt-10">
+                    <generated-observed-data [patternObjects]="patternObjs" [parentForm]="form"></generated-observed-data>
+                </div> -->
                 <div class="mt-10">
-                    <observable-data-tree [parentForm]="form"></observable-data-tree>
+                    <observable-data-tree [parentForm]="form" [patternObjSubject]="patternObjSubject"></observable-data-tree>
                 </div>
                 <div class="mt-6">
                     <button mat-button matStepperPrevious type="button">BACK</button>
