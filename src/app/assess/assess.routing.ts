@@ -8,9 +8,12 @@ import { AssessGuard } from './assess.guard';
 
 const routes = [
     {
+        path: 'navigate',
+        canActivate: [AssessGuard],
+    },
+    {
         path: '',
         component: AssessLayoutComponent,
-        canActivate: [AssessGuard],
         children: [
             { path: 'create', component: CreateComponent },
             { path: 'wizard/new/indicators/:includesIndicators/mitigations/:includesMitigations/sensors/:includesSensors', loadChildren: 'app/assess/wizard/wizard.module#WizardModule' },

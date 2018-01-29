@@ -36,7 +36,7 @@ export class HeaderNavigationComponent {
       icon: Constance.LOGO_IMG_ASSESSMENTS
     },
     {
-      url: 'assess',
+      url: 'assess/navigate',
       title: 'Assessments 2.0',
       icon: Constance.LOGO_IMG_ASSESSMENTS
     },
