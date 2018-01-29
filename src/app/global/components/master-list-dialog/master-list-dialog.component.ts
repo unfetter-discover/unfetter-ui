@@ -39,99 +39,6 @@ export class MasterListDialogTableHeaders {
     }
 }
 
-/*
- * Displays the UI component that pops up the master list dialog.
- */
-@Component({
-    selector: 'master-list-dialog-trigger',
-    templateUrl: './master-list-dialog-trigger.component.html',
-    styleUrls: ['./master-list-dialog-trigger.component.scss']
-})
-export class MasterListDialogTriggerComponent implements OnDestroy {
-
-    @Input() private title: string = 'Product Choices';
-
-    @Input() private width = Constance.DIALOG_WIDTH_MEDIUM;
-
-    @Input() private height = Constance.DIALOG_HEIGHT_TALL;
-
-    /*
-     * The datasource retrieves and displays the table content for the master-list.
-     * The default behavior is to return nothing.
-     */
-    @Input() private dataSource: DataSource<any>;
-
-    @Input() private columns: MasterListDialogTableHeaders = new MasterListDialogTableHeaders();
-
-    /*
-     * The master-list dialog has yours/shared tabs that will trigger this handler.
-     * This behavior is currently disabled.
-     */
-    @Output() private tabChange = new EventEmitter<number>();
-
-    /*
-     * The master-list dialog has a create-new button that will trigger this handler.
-     * The default behavior is to do nothing.
-     */
-    @Output() private create = new EventEmitter<UIEvent>();
-
-    /*
-     * Each table row will have selectable cells that will trigger this handler.
-     * The default behavior is to do nothing.
-     */
-    @Output() private select = new EventEmitter<any>();
-
-    /*
-     * Each table row will have an edit button that will trigger this handler.
-     * The default behavior is to do nothing.
-     */
-    @Output() private edit = new EventEmitter<any>();
-
-    /*
-     * The master-list dialog has a delete button that will trigger this handler.
-     * The default behavior is to do nothing.
-     */
-    @Output() private delete = new EventEmitter<any>();
-
-    /*
-     * After closing the master-list dialog, this handler will be called.
-     * The default behavior is to do nothing.
-     */
-    @Output() private close = new EventEmitter<UIEvent>();
-
-    constructor(public dialog: MatDialog) {}
-
-    /**
-     * @description clean up this component
-     * @return {void}
-     */
-    public ngOnDestroy(): void {
-        this.dialog.closeAll();
-    }
-
-    openDialog(): void {
-        let dialogRef = this.dialog.open(MasterListDialogComponent, {
-            width: this.width,
-            height: this.height,
-            panelClass: 'uf-master-list-dialog',
-            data: {
-                title: this.title,
-                dataSource: this.dataSource,
-                columns: this.columns,
-                create: this.create,
-                select: this.select,
-                edit: this.edit,
-                delete: this.delete,
-                tabChange: this.tabChange,
-            }
-        });
-        dialogRef.afterClosed().subscribe((res) => {
-            this.close.emit();
-        });
-    }
-
-}
-
 @Component({
     selector: 'master-list-dialog',
     templateUrl: 'master-list-dialog.component.html',
@@ -242,6 +149,99 @@ export class MasterListDialogComponent implements AfterViewInit, OnDestroy {
     onDelete(row: any, event?: UIEvent): void {
         // invoker of the master list dialog needs to display a confirmation dialog for deleting the selected row
         this.data.delete.emit(row);
+    }
+
+}
+
+/*
+ * Displays the UI component that pops up the master list dialog.
+ */
+@Component({
+    selector: 'master-list-dialog-trigger',
+    templateUrl: './master-list-dialog-trigger.component.html',
+    styleUrls: ['./master-list-dialog-trigger.component.scss']
+})
+export class MasterListDialogTriggerComponent implements OnDestroy {
+
+    @Input() private title: string = 'Product Choices';
+
+    @Input() private width = Constance.DIALOG_WIDTH_MEDIUM;
+
+    @Input() private height = Constance.DIALOG_HEIGHT_TALL;
+
+    /*
+     * The datasource retrieves and displays the table content for the master-list.
+     * The default behavior is to return nothing.
+     */
+    @Input() private dataSource: DataSource<any>;
+
+    @Input() private columns: MasterListDialogTableHeaders = new MasterListDialogTableHeaders();
+
+    /*
+     * The master-list dialog has yours/shared tabs that will trigger this handler.
+     * This behavior is currently disabled.
+     */
+    @Output() private tabChange = new EventEmitter<number>();
+
+    /*
+     * The master-list dialog has a create-new button that will trigger this handler.
+     * The default behavior is to do nothing.
+     */
+    @Output() private create = new EventEmitter<UIEvent>();
+
+    /*
+     * Each table row will have selectable cells that will trigger this handler.
+     * The default behavior is to do nothing.
+     */
+    @Output() private select = new EventEmitter<any>();
+
+    /*
+     * Each table row will have an edit button that will trigger this handler.
+     * The default behavior is to do nothing.
+     */
+    @Output() private edit = new EventEmitter<any>();
+
+    /*
+     * The master-list dialog has a delete button that will trigger this handler.
+     * The default behavior is to do nothing.
+     */
+    @Output() private delete = new EventEmitter<any>();
+
+    /*
+     * After closing the master-list dialog, this handler will be called.
+     * The default behavior is to do nothing.
+     */
+    @Output() private close = new EventEmitter<UIEvent>();
+
+    constructor(public dialog: MatDialog) {}
+
+    /**
+     * @description clean up this component
+     * @return {void}
+     */
+    public ngOnDestroy(): void {
+        this.dialog.closeAll();
+    }
+
+    openDialog(): void {
+        let dialogRef = this.dialog.open(MasterListDialogComponent, {
+            width: this.width,
+            height: this.height,
+            panelClass: 'uf-master-list-dialog',
+            data: {
+                title: this.title,
+                dataSource: this.dataSource,
+                columns: this.columns,
+                create: this.create,
+                select: this.select,
+                edit: this.edit,
+                delete: this.delete,
+                tabChange: this.tabChange,
+            }
+        });
+        dialogRef.afterClosed().subscribe((res) => {
+            this.close.emit();
+        });
     }
 
 }
