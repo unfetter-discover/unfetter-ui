@@ -8,10 +8,6 @@
         margin: 10px 0;
         color: #444;
     }
-
-    div.master-list-search {
-        font-size: smaller;
-    }
 }
 
 mat-dialog-content {
@@ -37,6 +33,17 @@ mat-dialog-content {
 
         mat-header-cell {
             padding: 0 16px;
+        }
+
+        .master-list-item {
+            display: flex;
+            .master-list-item-name {
+                flex: 1;
+            }
+            .master-list-item-arrow {
+                margin-right: 16px;
+                font-size: large;
+            }
         }
 
         .mat-column-actions {

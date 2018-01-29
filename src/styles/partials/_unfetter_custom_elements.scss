@@ -78,17 +78,36 @@
       min-width: 0;
     }
 
+    .master-list-search {
+      height: 49px;
+      font-size: 1.4rem;
+    }
+
+    .mat-form-field {
+      margin: 10px 4px 4px 4px;
+      padding: 2px 8px;
+      background: rgba(1, 1, 1, .12);
+      color: rgba(1, 1, 1, .67);
+    }
+
     .mat-form-field-wrapper {
       padding-bottom: 0 !important;
     }
 
-    .master-list-search {
-      height: 49px;
+    .mat-form-field-flex {
+      align-items: center;
+    }
+
+    .mat-input-prefix {
+      padding-right: 8px;
+    }
+
+    .mat-form-field-infix {
+      border-top: none;
     }
 
     .mat-input-underline {
-      height: 2px;
-      bottom: -2px;
+      display: none;
     }
   }
 }
