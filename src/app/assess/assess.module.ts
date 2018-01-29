@@ -11,9 +11,9 @@ import { MatInputModule } from '@angular/material/input';
 
 import { CreateComponent } from './create/create.component';
 
+import { AssessGuard } from './assess.guard';
 import { AssessService } from './services/assess.service';
 import { AssessStateService } from './services/assess-state.service';
-import { AssessmentsSummaryService } from '../assessments/assessments-summary/assessments-summary.service';
 
 import { AssessEffects } from './store/assess.effects';
 import { EffectsModule } from '@ngrx/effects';
@@ -22,6 +22,7 @@ import { assessmentReducer } from './store/assess.reducers';
 import { AssessLayoutComponent } from './layout/assess-layout.component';
 import { ResultModule } from './result/result.module';
 import { EmptyComponent } from './empty/empty.component';
+import { AssessmentSummaryService } from './services/assessment-summary.service';
 
 const moduleComponents = [
   AssessLayoutComponent,
@@ -52,9 +53,10 @@ const materialModules = [
   exports: [
   ],
   providers: [
+    AssessGuard,
     AssessService,
     AssessStateService,
-    AssessmentsSummaryService,
+    AssessmentSummaryService,
   ]
 })
 export class AssessModule { }

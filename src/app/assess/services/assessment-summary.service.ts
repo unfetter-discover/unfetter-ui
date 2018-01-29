@@ -5,6 +5,8 @@ import { Constance } from '../../utils/constance';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { JsonApiData } from '../../models/json/jsonapi-data';
 import { Assessment } from '../../models/assess/assessment';
+import { LastModifiedAssessment } from '../models/last-modified-assessment';
+import { JsonApi } from '../../models/json/jsonapi';
 
 @Injectable()
 export class AssessmentSummaryService {
@@ -82,18 +84,39 @@ export class AssessmentSummaryService {
     }
 
     /**
-     * @description
-     * @param {string} userId, creator mongo user id, not stix identity
+     * @description retrieve full assessments for given creator
+     * @param {string} creatorId, creator mongo user id, not stix identity
      * @return {Observable<Assessment[]>}
      */
-    public getAssessmentsByUser(userId: string, includeMeta = true): Observable<Assessment[]> {
+    public getAssessmentsByCreatorId(creatorId: string, includeMeta = true): Observable<Assessment[]> {
         const filter = {
-            'creator': userId,
+            'creator': creatorId,
         };
         const url = `${this.baseUrl}?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
         return this.genericApi
             .getAs<JsonApiData<Assessment>[]>(url)
             .map((data) => data.map((el) => el.attributes));
+    }
+
+    /**
+     * @description retrieve <i>partial assessments</i>, for all creators/users in system
+     * @return {Observable<Partial<LastModifiedAssessment>[]>}
+     */
+    public getLatestAssessments(): Observable<Partial<LastModifiedAssessment>[]> {
+        const url = `${this.baseUrl}/latest`;
+        return this.genericApi
+            .getAs<Partial<LastModifiedAssessment>[]>(url);
+    }
+
+    /**
+     * @description retrieve <i>partial assessments</i> for given creator
+     * @param {string} userId, creator mongo user id, not stix identity
+     * @return {Observable<Partial<LastModifiedAssessment>[]>}
+     */
+    public getLatestAssessmentsByCreatorId(creatorId: string, includeMeta = true): Observable<Partial<LastModifiedAssessment>[]> {
+        const url = `${this.baseUrl}/latest/${creatorId}`;
+        return this.genericApi
+            .getAs<Partial<LastModifiedAssessment>[]>(url);
     }
 
 }

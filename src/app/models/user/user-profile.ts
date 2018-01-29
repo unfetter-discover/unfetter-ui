@@ -7,6 +7,7 @@ import { OrganizationIdentity } from './organization-identity';
  * 
  */
 export class UserProfile {
+    public _id: string;
     public email: string;
     public userName: string;
     public lastName: string;
