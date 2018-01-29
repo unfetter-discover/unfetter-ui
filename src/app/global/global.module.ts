@@ -14,7 +14,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatListModule, MatDialog } from '@angular/material';
+import { MatListModule, MatDialog, MatCardModule } from '@angular/material';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatExpansionModule } from '@angular/material';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -53,6 +53,7 @@ import { SidepanelMiniItemComponent } from './components/sidepanel/sidepanel-min
 import { HelpWindowComponent } from './components/help-window/help-window.component';
 import { AdditionalQueriesComponent } from './components/additional-queries/additional-queries.component';
 import { MasterListDialogComponent, MasterListDialogTriggerComponent } from './components/master-list-dialog/master-list-dialog.component';
+import { ErrorCardComponent } from './components/error-card/error-card.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -72,6 +73,7 @@ const matModules = [
     MatExpansionModule,
     MatDialogModule,
     MatTabsModule,
+    MatCardModule
 ];
 
 const unfetterComponents = [
@@ -101,6 +103,7 @@ const unfetterComponents = [
     AdditionalQueriesComponent,
     MasterListDialogTriggerComponent,
     MasterListDialogComponent,
+    ErrorCardComponent
 ];
 
 @NgModule({
@@ -116,7 +119,7 @@ const unfetterComponents = [
         ...matModules,
     ],
     declarations: [
-        ...unfetterComponents,
+        ...unfetterComponents
     ],
     providers: [],
     entryComponents: [MasterListDialogComponent]

@@ -6,15 +6,7 @@
 
     <div class="row" *ngIf="errorMessage">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12">
-        <mat-card class="uf-mat-card">
-          <mat-card-header>
-            <mat-card-title>An Error Occured</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <label>Error Message</label>
-            <p class="uf-well-warn">{{ errorMessage }}</p>
-          </mat-card-content>
-        </mat-card>
+        <error-card errorTitle="An Error Occured" [errorBody]="errorMessage"></error-card>
       </div>
     </div>
     
