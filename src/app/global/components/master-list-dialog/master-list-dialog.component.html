@@ -1,0 +1,73 @@
+<div mat-dialog-title>
+    <div class="first-line">
+        <div class="col-md-4 title-border">
+            <h2 class="lead"> {{data.title}} </h2>
+        </div>
+        <div class="col-md-4">
+            <mat-tab-group (focusChange)="onFilterChange(tab)">
+                <mat-tab label="YOURS"></mat-tab>
+                <mat-tab label="SHARED" disabled></mat-tab>
+            </mat-tab-group>
+        </div>
+        <div class="col-md-4 master-list-search">
+            <mat-form-field floatPlaceholder="never">
+                <input matInput #filter placeholder="Search">
+                <mat-icon matPrefix>search</mat-icon>
+            </mat-form-field>
+        </div>
+    </div>
+</div>
+
+<mat-dialog-content id="master-list">
+
+    <div class="container col-md-12" *ngIf="!loading; loadingBlock">
+        <div *ngIf="!hasError; else errorBlock">
+            <div class="col-md-12 master-list-table">
+                <mat-table #table [dataSource]="data.dataSource" *ngIf="data.columns as dx">
+                    <ng-container *ngIf="dx.id as id" matColumnDef='{{id.ref}}'>
+                        <mat-header-cell *matHeaderCellDef> {{id.header}} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" (click)="id.selectable && onSelect(row, id.ref, $event)">
+                            <span> {{$any(id).format(row[id.ref])}} </span>
+                            <mat-icon>chevron_right</mat-icon>
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container *ngIf="dx.edition as ed" matColumnDef='{{ed.ref}}'>
+                        <mat-header-cell *matHeaderCellDef> {{ed.header}} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" (click)="ed.selectable && onSelect(row, ed.ref, $event)">
+                            <span> {{ $any(ed).format(row[ed.ref]) }} </span>
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef='{{dx.actions.ref}}'>
+                        <mat-header-cell *matHeaderCellDef> {{dx.actions.header}} </mat-header-cell>
+                        <!-- Note that these actions are hard-wired at this time -->
+                        <mat-cell *matCellDef="let row">
+                            <div class="buttonGrp text-right">
+                                <button mat-button (click)="onEdit(row, $event)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <button mat-button (click)="onDelete(row, $event)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="data.columns.getColumns()"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: data.columns.getColumns();"></mat-row>
+                </mat-table>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #loadingBlock>
+        <loading-spinner></loading-spinner>
+    </ng-template>
+
+    <ng-template #errorBlock>
+        <p>Error loading page: {{errorMsg}}</p>
+    </ng-template>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-button mat-dialog-close color="primary" (click)="onCreate($event)">CREATE</button>
+</mat-dialog-actions>

@@ -14,10 +14,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatListModule } from '@angular/material';
+import { MatListModule, MatDialog } from '@angular/material';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatExpansionModule } from '@angular/material';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatTabsModule } from '@angular/material/tabs';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -45,13 +47,12 @@ import { SpeedDialComponent } from './components/speed-dial/speed-dial.component
 import { FooterComponent } from './components/footer/footer.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { SidepanelComponent } from './components/sidepanel/sidepanel.component';
-import { MatDialog } from '@angular/material';
 import { SidepanelListItemComponent } from './components/sidepanel/sidepanel-list-item.component';
 import { SidepanelOptionItemComponent } from './components/sidepanel/sidepanel-option-item.component';
 import { SidepanelMiniItemComponent } from './components/sidepanel/sidepanel-mini-item.component';
-import { SidepanelMasterListTriggerComponent } from './components/sidepanel/sidepanel-master-list-trigger.component';
 import { HelpWindowComponent } from './components/help-window/help-window.component';
 import { AdditionalQueriesComponent } from './components/additional-queries/additional-queries.component';
+import { MasterListDialogComponent, MasterListDialogTriggerComponent } from './components/master-list-dialog/master-list-dialog.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -69,6 +70,8 @@ const matModules = [
     MatMenuModule,
     MatSidenavModule,
     MatExpansionModule,
+    MatDialogModule,
+    MatTabsModule,
 ];
 
 const unfetterComponents = [
@@ -94,9 +97,10 @@ const unfetterComponents = [
     SidepanelListItemComponent,
     SidepanelOptionItemComponent,
     SidepanelMiniItemComponent,
-    SidepanelMasterListTriggerComponent,
     HelpWindowComponent,
     AdditionalQueriesComponent
+    MasterListDialogTriggerComponent,
+    MasterListDialogComponent,
 ];
 
 @NgModule({
@@ -112,9 +116,10 @@ const unfetterComponents = [
         ...matModules,
     ],
     declarations: [
-        ...unfetterComponents,        
+        ...unfetterComponents,
     ],
-    providers: []
+    providers: [],
+    entryComponents: [MasterListDialogComponent]
 })
 
 export class GlobalModule { }

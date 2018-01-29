@@ -29,6 +29,8 @@ export class ThreatReportOverviewDataSource extends DataSource<ThreatReport> {
                 const val = this.filterChange.getValue();
                 const filterVal = val.trim().toLowerCase() || '';
                 const products$ = this.service.loadAll();
+//                console.log('products: ', products$);
+//                products$.forEach(value => console.log(value));
                 if (!filterVal || filterVal.length === 0) {
                     return products$;
                 }

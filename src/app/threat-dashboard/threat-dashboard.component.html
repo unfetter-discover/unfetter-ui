@@ -11,7 +11,16 @@
             <sidepanel-option-item label="Delete" icon="delete"
                     (click)="deleteButtonClicked($event)"></sidepanel-option-item>
 
-            <sidepanel-master-list-trigger (click)="showMasterList($event)"></sidepanel-master-list-trigger>
+            <master-list-dialog-trigger
+                    title="Work Products" width="750px" height="400px"
+                    [dataSource]="masterListOptions.dataSource"
+                    [columns]="masterListOptions.columns"
+                    (tabChange)="filterTabChanged($event)"
+                    (create)="createButtonClicked($event)"
+                    (select)="cellSelected($event)"
+                    (edit)="editButtonClicked($event)"
+                    (delete)="deleteButtonClicked($event)"
+            ></master-list-dialog-trigger>
 
             <sidepanel-list-item label="Threat Reports" icon="assets/icon/stix-icons/svg/all-defs.svg#campaign"
                     [items]="threatReport.reports" expandable="true">
