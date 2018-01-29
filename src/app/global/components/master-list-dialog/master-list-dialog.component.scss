@@ -1,0 +1,59 @@
+@import '../../../../styles/_variables.scss';
+
+.mat-dialog-title {
+    margin-bottom: 0px;
+
+    h2.lead {
+        font-weight: 400 !important;
+        margin: 10px 0;
+        color: #444;
+    }
+
+    div.master-list-search {
+        font-size: smaller;
+    }
+}
+
+mat-dialog-content {
+    width: 100%;
+    height: calc(100% - 100px);
+    margin: 0;
+    padding: 0;
+    border: 1px solid #dcdcdc;
+    border-width: 1px 0;
+    overflow-y: auto;
+
+    .container {
+        padding: 0px;
+    }
+
+    div.master-list-table {
+        padding: 0;
+
+        mat-header-row {
+            padding: 6px 0;
+            min-height: 0;
+        }
+
+        mat-header-cell {
+            padding: 0 16px;
+        }
+
+        .mat-column-actions {
+            text-align: right !important;
+
+            .mat-button {
+                min-width: 0;
+            }
+        }
+
+        .mat-column-name, .mat-column-date {
+            flex: 2;
+        }
+    }
+}
+
+mat-dialog-actions {
+    justify-content: flex-end;
+    padding: 6px 0;
+}

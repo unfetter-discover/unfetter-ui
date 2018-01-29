@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, Renderer2 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { MatDialog, MatMenu } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -10,7 +11,6 @@ import { BaseComponentService } from '../components/base-service.component';
 import { GenericApi } from '../core/services/genericapi.service';
 
 import { IntrusionSet, AttackPattern } from '../models';
-import { MatDialog, MatMenu } from '@angular/material';
 import { ThreatReportSharedService } from '../threat-report-overview/services/threat-report-shared.service';
 import { ThreatReportOverviewDataSource } from '../threat-report-overview/threat-report-overview.datasource';
 import { ThreatReportOverviewService } from './services/threat-report-overview.service';
@@ -26,6 +26,9 @@ import { BarChartItem } from './bar-chart/bar-chart-item';
 import { SidepanelComponent } from '../global/components/sidepanel';
 import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
 import { Report } from '../models/report';
+import { MasterListDialogTableHeaders } from '../global/components/master-list-dialog/master-list-dialog.component';
+
+type troColName = keyof ThreatReport | 'actions';
 
 @Component({
   selector: 'unf-threat-dashboard',
@@ -53,7 +56,6 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   public barLoading = true;
   public uniqChainNames: string[] = [];
   public selectedChain = '';
-  public dataSource: ThreatReportOverviewDataSource;
 
   private readonly filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
   private readonly subscriptions: Subscription[] = [];
@@ -64,7 +66,13 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   // private readonly selectedForegroundColor = '#F5F5F5';
   private readonly selectedForegroundColor = 'rgba(255, 255, 255, .87)';
   private readonly selectedBackgroundColor = this.redAccent200;
-  private readonly modifyRoute = '/threat-dashboard/modify';
+
+  public masterListOptions = {
+      dataSource: null,
+      columns: new MasterListDialogTableHeaders('date', 'Modified'),
+      displayRoute: '/threat-dashboard/view',
+      modifyRoute: '/threat-dashboard/modify',
+  };
 
   constructor(
     protected router: Router,
@@ -80,12 +88,31 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @description init this component
    */
   public ngOnInit() {
-    this.id = this.route.snapshot.paramMap.get('id');
-    if (!this.id || this.id.trim() === '') {
-      this.notifyDoneLoading();
-      return;
-    }
-    this.fetchDataAndRender();
+    this.masterListOptions.dataSource = new ThreatReportOverviewDataSource(this.threatReportService);
+    const getId$ = this.route.params
+      .pluck('id')
+      .subscribe(
+        (id: string) => {
+          this.threatReport = null;
+          if (!id || id.trim() === '') {
+            this.notifyDoneLoading();
+          } else {
+            id = id.trim();
+            if (!this.id || (id !== this.id)) {
+              this.id = id.trim();
+              this.fetchDataAndRender();
+            }
+          }
+        },
+        (err) => {
+          console.log(err);
+        },
+        () => {
+          if (getId$) {
+            getId$.unsubscribe();
+          }
+        }
+      );
   }
 
   /**
@@ -93,7 +120,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public fetchDataAndRender(): void {
-    this.loading = true;
+    requestAnimationFrame(() => this.loading = true);
     const loadReport$ = this.loadThreatReport();
     const loadAttackPatterns$ = this.loadAttackPatterns();
     const loadIntrusionSets$ = this.loadIntrusionSets();
@@ -611,37 +638,61 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
       this.renderer.removeClass(el, 'list-item-hover');
   }
 
-  public showMasterList(): void {
-    console.log('Master List trigger clicked!');
+  /**
+   * @description user clicks tab above master list table to change filtering from "yours" to "shared";
+   *              not yet implemented
+   * @param {number} tab the tab they clicked on
+   * @return {void} not yet defined
+   */
+  public filterTabChanged(tab: number): void {
+      console.log('Filter tab clicked. ', tab);
+  }
+
+  /**
+   * @description route to create a workproduct
+   * @param {UIEvent} event optional
+   * @return {Promise<boolean>}
+   */
+  public createButtonClicked(event?: UIEvent): Promise<boolean> {
+      this.sharedService.threatReportOverview = undefined;
+      return this.router.navigate(['/threat-dashboard/create']);
+  }
+
+  /**
+   * @description route to display a workproduct
+   * @param {ThreatReport} report the report to display
+   * @return {Promise<boolean>}
+   */
+  public cellSelected(report: any): Promise<boolean> {
+    return this.router.navigate([`${this.masterListOptions.displayRoute}/${report.id}`]);
   }
 
   /**
    * @description route to edit a workproduct
-   * @param {UIEvent} event optional
+   * @param {ThreatReport} report the report to edit
    * @return {Promise<boolean>}
    */
-  public editButtonClicked(event?: UIEvent): Promise<boolean> {
+  public editButtonClicked(report: ThreatReport): Promise<boolean> {
       this.sharedService.threatReportOverview = undefined;
-      return this.router.navigate([`${this.modifyRoute}/${this.id}`]);
+      return this.router.navigate([`${this.masterListOptions.modifyRoute}/${report.id}`]);
   }
 
   /**
    * @description route to share a workproduct; not yet implemented
-   * @param {UIEvent} event optional
+   * @param {ThreatReport} report the report to share
    * @return {Promise<boolean>}
    */
-  public shareButtonClicked(event?: UIEvent): Promise<boolean> {
+  public shareButtonClicked(report: ThreatReport): Promise<boolean> {
       return;
   }
 
   /**
-   * @description loop all reports and delete from mongo
-   *  a workproduct is related to many reports
-   * @param {UIEvent} event optional
+   * @description loop all reports and delete from mongo a workproduct is related to many reports
+   * @param {ThreatReport} report the UUID of the report to delete
    * @return {void}
    */
-  public deleteButtonClicked(event?: UIEvent): void {
-      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {data: {attributes: this.threatReport}});
+  public deleteButtonClicked(report: ThreatReport): void {
+      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {data: {attributes: report}});
       dialogRef.afterClosed().subscribe(
           (result) => {
               const isBool = typeof result === 'boolean';
@@ -652,13 +703,13 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
                   return;
               }
 
-              const sub$ = this.threatReportService.deleteThreatReport(this.id).subscribe(
+              const sub$ = this.threatReportService.deleteThreatReport(report.id).subscribe(
                   (resp) => {
                       console.log(resp);
                       const s$ = resp.subscribe(
                           (reports) => {
                               console.log('modified ', reports);
-                              this.dataSource.nextDataChange(reports);
+                              this.masterListOptions.dataSource.nextDataChange(reports);
                           },
                           (err) => console.log(err)
                       );

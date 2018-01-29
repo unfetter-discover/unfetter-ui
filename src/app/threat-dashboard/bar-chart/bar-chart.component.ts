@@ -73,20 +73,20 @@ export class BarChartComponent implements OnInit, OnDestroy, OnChanges {
      */
     public draw(id: string, data: BarChartItem[]): void {
         data = data || [];
-        d3.select(id).select('svg').remove();
+        const graphElement = d3.select(id);
+        if (graphElement.empty()) {
+            return;
+        }
+        graphElement.select('svg').remove();
 
         const margin = { top: 8, right: 20, bottom: 30, left: 40 };
         let width = 1024;
         let height = 200;
-        d3.select(id)
-            .append('svg')
+        graphElement.append('svg')
             .attr('width', width)
             .attr('height', height);
 
-        const svg = d3
-            .select(id)
-            .select('svg');
-
+        const svg = graphElement.select('svg');
         width = +svg.attr('width') - margin.left - margin.right;
         height = +svg.attr('height') - margin.top - margin.bottom;
         const x = d3.scaleBand().rangeRound([0, width]).padding(0.1);
@@ -95,13 +95,14 @@ export class BarChartComponent implements OnInit, OnDestroy, OnChanges {
         const g = svg.append('g')
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
+        let normalized = [];
         data.forEach((el) => {
             // normalize frequency ratio to float
-            el.frequency = +el.frequency / 100;
+            normalized.push({'name': el.name, 'frequency': +el.frequency / 100});
         });
 
-        x.domain(data.map((d) => d.name));
-        y.domain([0, d3.max(data, (d) => d.frequency)]);
+        x.domain(normalized.map((d) => d.name));
+        y.domain([0, d3.max(normalized, (d) => d.frequency)]);
 
         g.append('g')
             .attr('class', 'axis axis--x')
@@ -119,7 +120,7 @@ export class BarChartComponent implements OnInit, OnDestroy, OnChanges {
             .text('Phase');
 
         g.selectAll('.bar')
-            .data(data)
+            .data(normalized)
             .enter().append('rect')
             .attr('class', 'bar')
             .attr('x', (d) => x(d.name))
