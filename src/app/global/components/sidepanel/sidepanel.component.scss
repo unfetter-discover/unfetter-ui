@@ -1,5 +1,4 @@
 @import '../../../../styles/_variables.scss';
-@import '../../../../styles/modules/_mixins.scss';
 
 $sidenav_max_width: 400px;
 
@@ -33,9 +32,8 @@ $sidenav_max_width: 400px;
     transition: width 2s, height 2s, background-color 2s;
 }
 
+
 .side-panel-header {
-    padding: 8px;
-    padding-bottom: 0px;
     height: 180px;
     margin-bottom: 15.8px;
 
@@ -59,5 +57,11 @@ $sidenav_max_width: 400px;
             line-height: 40px;
             white-space: normal;
         }
+    }
+    #master-list-toolbar {
+        margin-top: -15px;
+        height: 33px;
+        padding: 0;
+        padding-right: 8px;
     }
 }

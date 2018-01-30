@@ -52,6 +52,10 @@ label {
     @include themePrimaryText();
 }
 
+.theme-fill-primary {
+    @include themePrimaryTextProp('fill');
+}
+
 .theme-color-accent {
     @include themeAccentText();
 }
