@@ -18,6 +18,7 @@ import { Constance } from '../../../utils/constance';
 interface MasterListColumn {
     readonly ref: string;
     readonly header: string;
+    classes?: string;
     readonly selectable?: boolean;
     format?(value: string): string;
 }
