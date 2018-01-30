@@ -1,9 +1,11 @@
 @import '../../../../styles/_variables.scss';
 
-#sidePanel {
+.side-panel {
     width: 320px;
+    background-color: white;
 }
 
-#mainWindow {
+.main-panel {
     min-height: calc(100vh - #{$navbar-height}px);
+    background-color: #F1F1F1;
 }

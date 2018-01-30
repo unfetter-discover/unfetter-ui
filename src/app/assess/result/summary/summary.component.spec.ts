@@ -1,10 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
-import { SummaryComponent } from './summary.component';
 import { StoreModule, ActionReducerMap } from '@ngrx/store';
+
+import { AssessmentSummaryService } from '../../services/assessment-summary.service';
 import { GenericApi } from '../../../core/services/genericapi.service';
+import { SummaryComponent } from './summary.component';
 import { summaryReducer } from '../store/summary.reducers';
 
 describe('SummaryComponent', () => {
@@ -23,20 +26,21 @@ describe('SummaryComponent', () => {
 
       imports: [
         RouterTestingModule,
+        HttpClientTestingModule,
         StoreModule.forRoot(mockReducer),
       ],
-    providers: [GenericApi],
+      providers: [GenericApi, AssessmentSummaryService],
     })
-  .compileComponents();
+      .compileComponents();
   }));
 
-beforeEach(() => {
-  fixture = TestBed.createComponent(SummaryComponent);
-  component = fixture.componentInstance;
-  fixture.detectChanges();
-});
+  beforeEach(() => {
+    fixture = TestBed.createComponent(SummaryComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-it('should create', () => {
-  expect(component).toBeTruthy();
-});
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });
