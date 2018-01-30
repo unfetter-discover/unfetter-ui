@@ -1,66 +1,113 @@
 @import '../../../../styles/_variables.scss';
 
-.mat-dialog-title {
-    margin-bottom: 0px;
-
-    h2.lead {
-        font-weight: 400 !important;
-        margin: 10px 0;
-        color: #444;
-    }
-}
-
-mat-dialog-content {
-    width: 100%;
-    height: calc(100% - 100px);
-    margin: 0;
+::ng-deep .uf-master-list-dialog .mat-dialog-container {
     padding: 0;
-    border: 1px solid #dcdcdc;
-    border-width: 1px 0;
-    overflow-y: auto;
 
-    .container {
-        padding: 0px;
+    .mat-dialog-title {
+        margin-bottom: 0px;
+
+        h2.lead {
+            font-weight: 400 !important;
+            margin: 10px 0;
+            color: #444;
+        }
+
+        .mat-tab-label {
+            font-size: small;
+            min-width: 0;
+        }
+
+        .master-list-search {
+            height: 49px;
+            font-size: 1.4rem;
+        }
+
+        .mat-form-field {
+            margin: 10px 4px 4px 4px;
+            padding: 2px 8px;
+            background: rgba(1, 1, 1, .12);
+            color: rgba(1, 1, 1, .67);
+        }
+
+        .mat-form-field-wrapper {
+            padding-bottom: 0 !important;
+        }
+
+        .mat-form-field-flex {
+            align-items: center;
+        }
+
+        .mat-input-prefix {
+            padding-right: 8px;
+        }
+
+        .mat-form-field-infix {
+            border-top: none;
+        }
+
+        .mat-input-underline {
+            display: none;
+        }
     }
 
-    div.master-list-table {
+    mat-dialog-content {
+        width: 100%;
+        height: calc(100% - 100px);
+        margin: 0;
         padding: 0;
+        border: 1px solid #dcdcdc;
+        border-width: 1px 0;
+        overflow-y: auto;
 
-        mat-header-row {
-            padding: 6px 0;
-            min-height: 0;
+        .container {
+            padding: 0px;
         }
 
-        mat-header-cell {
-            padding: 0 16px;
-        }
+        div.master-list-table {
+            padding: 0;
 
-        .master-list-item {
-            display: flex;
-            .master-list-item-name {
-                flex: 1;
+            mat-header-row {
+                padding: 6px 24px;
+                min-height: 0;
             }
-            .master-list-item-arrow {
-                margin-right: 16px;
-                font-size: large;
+
+            .master-list-item-header, .master-list-edition-header {
+                flex: 2;
             }
-        }
 
-        .mat-column-actions {
-            text-align: right !important;
+            .master-list-item {
+                display: flex;
+                flex: 2;
+                align-items: center;
 
-            .mat-button {
-                min-width: 0;
+                .master-list-item-name {
+                    flex: 1;
+                }
+
+                .master-list-item-arrow {
+                    margin-right: 8px;
+                    font-size: 24px;
+                }
             }
-        }
 
-        .mat-column-name, .mat-column-date {
-            flex: 2;
+            .master-list-edition {
+                display: flex;
+                flex: 2;
+                align-items: center;
+            }
+
+            .mat-column-actions {
+                text-align: right !important;
+
+                .mat-button {
+                    min-width: 0;
+                }
+            }
         }
     }
-}
 
-mat-dialog-actions {
-    justify-content: flex-end;
-    padding: 6px 0;
+    mat-dialog-actions {
+        justify-content: flex-end;
+        padding: 6px 0;
+    }
 }

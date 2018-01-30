@@ -67,3 +67,7 @@
     height: 45px;
     font-size: 45px;
 }
+
+::ng-deep .master-list-work-product {
+    cursor: pointer;
+}

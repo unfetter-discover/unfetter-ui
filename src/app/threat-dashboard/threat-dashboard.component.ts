@@ -89,6 +89,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    */
   public ngOnInit() {
     this.masterListOptions.dataSource = new ThreatReportOverviewDataSource(this.threatReportService);
+    this.masterListOptions.columns.id.classes = 'master-list-work-product';
     const getId$ = this.route.params
       .pluck('id')
       .subscribe(
