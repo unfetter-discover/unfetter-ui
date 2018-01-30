@@ -11,6 +11,7 @@ import { SiteUsageComponent } from './site-usage/site-usage.component';
 import { ConfigEditComponent } from './config-edit/config-edit.component';
 import { OrgLeaderApprovalComponent } from './org-leader-approval/org-leader-approval.component';
 import { ChartsModule } from 'ng2-charts';
+import { HeartbeatComponent } from './heartbeat/heartbeat.component';
 
 @NgModule({
     imports: [
@@ -27,7 +28,8 @@ import { ChartsModule } from 'ng2-charts';
         AdminLayoutComponent,
         SiteUsageComponent,
         OrgLeaderApprovalComponent,
-        ConfigEditComponent
+        ConfigEditComponent,
+        HeartbeatComponent
     ],
     providers: [
         AdminService
