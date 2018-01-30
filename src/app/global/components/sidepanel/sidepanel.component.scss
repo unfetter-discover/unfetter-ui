@@ -1,5 +1,4 @@
 @import '../../../../styles/_variables.scss';
-@import '../../../../styles/modules/_mixins.scss';
 
 $sidenav_max_width: 400px;
 
@@ -15,7 +14,6 @@ $sidenav_max_width: 400px;
 }
 @media only screen and (min-width: 992px) {
     .side-panel {
-        overflow-y: auto;
         flex: 1 0 auto;
         max-width: $sidenav_max_width;
     }
@@ -34,10 +32,10 @@ $sidenav_max_width: 400px;
     transition: width 2s, height 2s, background-color 2s;
 }
 
+
 .side-panel-header {
-    padding: 8px;
-    padding-bottom: 0px;
     height: 180px;
+    margin-bottom: 15.8px;
 
     .mat-toolbar {
         background: transparent;
@@ -47,16 +45,23 @@ $sidenav_max_width: 400px;
     }
     #options-toolbar {
         padding: 0;
+        height: 67px;
+        padding-right: 8px;
+        margin-top: -12px;
     }
     #item-toolbar {
         height: 80px;
-        margin-top: 20px;
-        padding: 0 8px;
         .mat-display-2 {
             margin: 0;
             font-size: 34px;
             line-height: 40px;
             white-space: normal;
         }
+    }
+    #master-list-toolbar {
+        margin-top: -15px;
+        height: 33px;
+        padding: 0;
+        padding-right: 8px;
     }
 }

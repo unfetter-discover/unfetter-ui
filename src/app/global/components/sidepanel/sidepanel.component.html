@@ -28,6 +28,10 @@
 
             <mat-toolbar class="theme-color-primary" id="item-toolbar">
                 <span class="push-right mat-display-2"> {{item?.name || 'Unnamed'}} </span>
+            </mat-toolbar>
+
+            <mat-toolbar class="theme-color-primary" id="master-list-toolbar">
+                <span class="push-right mat-display-2"></span>
                 <ng-content select="master-list-dialog-trigger"></ng-content>
             </mat-toolbar>
 
