@@ -27,7 +27,9 @@ export class HeartbeatComponent implements OnInit {
           console.log(err);
         },
         () => {
-          heartbeat$.unsubscribe();
+          if (heartbeat$) {
+            heartbeat$.unsubscribe();
+          }
         }
       );
   }
