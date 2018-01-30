@@ -35,7 +35,6 @@ export class GenericApi {
 
     /**
      * @description fetch data with weak types, for older code
-     * @deprecated
      * @param url
      * @param data
      * @return {Observable<any>} 
@@ -64,7 +63,6 @@ export class GenericApi {
 
     /**
      * @description
-     * @deprecated
      * TODO: remove this when things are ported over to postAs
      * @see postAs for better typing
      * @param {string} url
@@ -97,7 +95,6 @@ export class GenericApi {
      * @description
      * TODO: remove this after porting to patchAs
      * @see patchAs for better typings
-     * @deprecated
      * @param url
      * @param data
      */

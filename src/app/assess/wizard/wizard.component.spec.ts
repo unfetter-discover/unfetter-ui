@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { MatButtonModule, MatCardModule, MatDatepickerModule, MatDialogModule, MatSnackBarModule, MatSelectModule, MatInputModule, MatExpansionModule, MatProgressBarModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
@@ -36,6 +37,7 @@ describe('WizardComponent', () => {
     TestBed.configureTestingModule({
       declarations: [WizardComponent],
       imports: [
+        NoopAnimationsModule,
         HttpClientModule,
         ...matModules,
         ComponentModule,
