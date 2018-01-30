@@ -16,7 +16,7 @@ interface Option {
   selector: 'unfetter-side-panel',
   templateUrl: './sidepanel.component.html',
   styleUrls: ['./sidepanel.component.scss'],
-  animations: [simpleFadeIn, inOutAnimation, parentFadeIn, slideInOutAnimation]
+  // animations: [simpleFadeIn, inOutAnimation, parentFadeIn, slideInOutAnimation]
 })
 export class SidepanelComponent implements OnInit {
 

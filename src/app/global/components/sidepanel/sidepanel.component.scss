@@ -1,10 +1,12 @@
 @import '../../../../styles/_variables.scss';
+@import '../../../../styles/modules/_mixins.scss';
 
 $sidenav_max_width: 400px;
 
 .side-panel {
     padding: 0px;
 }
+
 @media only screen and (max-width: 992px) {
     .side-panel {
         padding-top: 0px;
@@ -23,30 +25,22 @@ $sidenav_max_width: 400px;
     position: absolute;
     z-index: 5;
     flex: 0 0 auto;
-    color: $light-text-slightly-dimmed;
-    background-color: $threat-dashboard-primary-light;
 }
 
 .small-side-panel {
-    @include set-colors($threat-dashboard-primary-text,
-        linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important);
     width: 70px;
     height: 100%;
     cursor: pointer;
-    color: $light-text-slightly-dimmed;
     transition: width 2s, height 2s, background-color 2s;
 }
 
-.header {
-    @include set-colors($threat-dashboard-primary-text,
-        linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important);
+.side-panel-header {
     padding: 8px;
     padding-bottom: 0px;
     height: 180px;
 
     .mat-toolbar {
         background: transparent;
-        color: $light-text-slightly-dimmed;
     }
     .push-right {
         flex: 1 1 auto;
@@ -63,34 +57,6 @@ $sidenav_max_width: 400px;
             font-size: 34px;
             line-height: 40px;
             white-space: normal;
-        }
-        .dropdown {
-            top: 30px;
-        }
-        .master-list-toggle {
-            color: $light-text-slightly-dimmed;
-        }
-    }
-}
-
-.mat-accordion {
-    ::ng-deep .mat-expanded {
-        .mat-expansion-panel-header {
-            background: linear-gradient(60deg, $threat-dashboard-primary, $threat-dashboard-primary-light) !important;
-            
-            .mat-expansion-panel-header-title, .mat-expansion-indicator::after {
-              color: $light-text-slightly-dimmed !important;
-            }
-    
-            svg {
-                ::ng-deep .icon {
-                    fill: $light-text-slightly-dimmed; 
-                }
-            }
-        }
-
-        .mat-expansion-panel-body {
-            padding: 0px 0px 0px 16px;
         }
     }
 }

@@ -9,6 +9,10 @@
     color: $threat-dashboard-primary-light;
 }
 
+.side-container {
+    width: 320px;
+}
+
 .side-panel {
     background-color: white;
 }
@@ -32,7 +36,7 @@
         padding-left: 8px;
         padding-right: 8px;
         // margin-left: $md_sidenav_max_width;
-        width: calc(100% - 400px);
+        width: 100%;
         flex: 1 0 auto;
 
         .matrix { 

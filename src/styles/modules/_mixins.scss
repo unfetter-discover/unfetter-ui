@@ -18,6 +18,60 @@
     }    
 }
 
+@mixin themePrimaryLightColors ($properties...) {
+
+  @each $property in $properties {
+      .analyticHubTheme & {
+        #{$property}: $analytic-hub-primary-light;
+      }
+
+      .threatDashboardTheme & {
+        #{$property}: $threat-dashboard-primary-light;
+      }
+
+      .assessmentsTheme & {
+        #{$property}: $assessments-primary-light;
+      }
+      #{$property}: $primary-color-light;
+  }    
+}
+
+@mixin themePrimaryLighterColors ($properties...) {
+
+  @each $property in $properties {
+      .analyticHubTheme & {
+        #{$property}: $analytic-hub-primary-lighter;
+      }
+
+      .threatDashboardTheme & {
+        #{$property}: $threat-dashboard-primary-lighter;
+      }
+
+      .assessmentsTheme & {
+        #{$property}: $assessments-primary-lighter;
+      }
+      #{$property}: $primary-color-lighter;
+  }    
+}
+
+@mixin themePrimaryLightestColors ($properties...) {
+
+  @each $property in $properties {
+      .analyticHubTheme & {
+        #{$property}: $analytic-hub-primary-lightest;
+      }
+
+      .threatDashboardTheme & {
+        #{$property}: $threat-dashboard-primary-lightest;
+      }
+
+      .assessmentsTheme & {
+        #{$property}: $assessments-primary-lightest;
+      }
+      #{$property}: $primary-color-lightest;
+  }    
+}
+
 @mixin themeAccentColors ($properties...) {
 
     @each $property in $properties {
@@ -36,6 +90,36 @@
     }    
 }
 
+@mixin themePrimaryText () {
+  .analyticHubTheme & {
+    color: $analytic-hub-primary-text;
+  }
+
+  .threatDashboardTheme & {
+    color: $threat-dashboard-primary-text;
+  }
+
+  .assessmentsTheme & {
+    color: $assessments-primary-text;
+  }
+  color: $primary-text-default; 
+}
+
+@mixin themePrimaryTextProp ($property) {
+  .analyticHubTheme & {
+    #{$property}: $analytic-hub-primary-text;
+  }
+
+  .threatDashboardTheme & {
+    #{$property}: $threat-dashboard-primary-text;
+  }
+
+  .assessmentsTheme & {
+    #{$property}: $assessments-primary-text;
+  }
+  #{$property}: $primary-text-default; 
+}
+
 @mixin themeAccentText () {
   .analyticHubTheme & {
     color: $analytic-hub-accent-text;
@@ -48,7 +132,7 @@
   .assessmentsTheme & {
     color: $assessments-accent-text;
   }
-  color: $accent-text;  
+  color: $primary-text-contrast-color;
 }
 
 @mixin lightenPrimaryColors ($property, $percent) {

@@ -1,4 +1,5 @@
 @import '../../../../styles/_variables.scss';
+@import '../../../../styles/modules/_mixins.scss';
 
 .mat-expansion-panel {
     svg {
@@ -7,7 +8,7 @@
         margin-right: 8px;
 
         ::ng-deep .icon {
-            fill: $dark-text-dimmed !important;
+            @include themePrimaryTextProp('fill');
         }
     }
     
@@ -21,26 +22,30 @@
     }
 
     .list-item-hover {
-        background-color: $threat-dashboard-primary-lightest;
+        @include themePrimaryLightestColors('background-color');
     }
 
     a {
-        color: $dark-text-default !important;
+        @include themePrimaryText();
     }
 
-    .mat-expansion-panel-header.mat-expanded {
-        background: $light-text-slightly-dimmed !important;
-
-        .mat-expansion-panel-header-title {
-            color: $dark-text-default !important;
+    ::ng-deep .mat-expanded {
+        .mat-expansion-panel-header {
+            @include themePrimaryLightColors('background-color');
+            
+            .mat-expansion-panel-header-title, .mat-expansion-indicator::after {
+                @include themePrimaryText();
+            }
+    
+            svg {
+                ::ng-deep .icon {
+                    @include themePrimaryTextProp('fill');
+                }
+            }
         }
 
-        ::ng-deep .mat-expansion-indicator {
-            color: $dark-text-default !important;
-        }
-
-        ::ng-deep .mat-expansion-indicator::after {
-            color: $dark-text-default !important;
+        .mat-expansion-panel-body {
+            padding: 0px 0px 0px 16px;
         }
     }
 }
