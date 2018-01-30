@@ -10,7 +10,8 @@
 #barChart {
     padding-top: 32px;
     padding-left: 32px;
-    background-color: #FFFFFF ;
+    background-color: #FFFFFF;
+    overflow-y: auto;
 }
 
 ::ng-deep .bar {
