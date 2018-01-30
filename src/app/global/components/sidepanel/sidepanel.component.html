@@ -1,10 +1,10 @@
-<mat-sidenav id="unfetter-side-panel" mode="side" opened="true">
+<div id="unfetter-side-panel">
 
-    <div class="side-panel" [@inOutAnimation] [style.width] = "getWidth()"
-            (mouseover)="showMinimizeButton = collapsible && !minimized" (mouseleave)="showMinimizeButton = false">
+    <div class="side-panel" [@inOutAnimation] [style.width]="getWidth()" (mouseover)="showMinimizeButton = collapsible && !minimized"
+        (mouseleave)="showMinimizeButton = false">
 
-<!--
-        <div class="minimize-control" [style.display]="showMinimizeButton ? 'block': 'none'">
+        <!--
+        <div class="theme-color-accent theme-bg-primary minimize-control" [style.display]="showMinimizeButton ? 'block': 'none'">
             <button mat-icon-button (click)="minimized = true" matTooltip="Minimize" matTooltipPosition="right">
                 <mat-icon class="mat-24" aria-hidden="true" aria-label="Minimize side panel"
                         #minimizeBtn>chevron_left</mat-icon>
@@ -12,14 +12,13 @@
         </div>
 -->
 
-        <div class="header" [style.background]="headerBackground">
+        <div class="theme-color-primary theme-bg-primary side-panel-header">
 
-            <mat-toolbar id="options-toolbar">
+            <mat-toolbar class="theme-color-primary" id="options-toolbar">
                 <span class="push-right"></span>
                 <span>
                     <button mat-icon-button [matMenuTriggerFor]="optionsMenu" matTooltip="Options Menu">
-                        <mat-icon class="mat-24 options-toggle"
-                                aria-hidden="false" aria-label="Options Menu">more_vert</mat-icon>
+                        <mat-icon class="mat-24 options-toggle" aria-hidden="false" aria-label="Options Menu">more_vert</mat-icon>
                     </button>
                     <mat-menu #optionsMenu="matMenu" xPosition="before">
                         <ng-content select="sidepanel-option-item"></ng-content>
@@ -27,8 +26,12 @@
                 </span>
             </mat-toolbar>
 
-            <mat-toolbar id="item-toolbar">
+            <mat-toolbar class="theme-color-primary" id="item-toolbar">
                 <span class="push-right mat-display-2"> {{item?.name || 'Unnamed'}} </span>
+            </mat-toolbar>
+
+            <mat-toolbar class="theme-color-primary" id="master-list-toolbar">
+                <span class="push-right mat-display-2"></span>
                 <ng-content select="master-list-dialog-trigger"></ng-content>
             </mat-toolbar>
 
@@ -40,12 +43,12 @@
 
     </div>
 
-<!--
+    <!--
     <ng-template #minimizedBlock>
-        <div [@inOutAnimation] class="small-side-panel" (click)="minimized = false">
+        <div [@inOutAnimation] class="theme-color-primary theme-bg-primary-lighter small-side-panel" (click)="minimized = false">
             <ng-content select="[sidepanel-mini-item]"></ng-content>
         </div>
     </ng-template>
 -->
 
-</mat-sidenav>
+</div>

@@ -40,6 +40,26 @@ label {
     background-color: #F44336 !important
 }
 
+.theme-bg-primary {
+    @include themePrimaryColors('background-color');
+}
+
+.theme-bg-primary-lighter {
+    @include themePrimaryLighterColors('background-color');
+}
+
+.theme-color-primary {
+    @include themePrimaryText();
+}
+
+.theme-fill-primary {
+    @include themePrimaryTextProp('fill');
+}
+
+.theme-color-accent {
+    @include themeAccentText();
+}
+
 .bg-accent {
     // color: $accent-text;
     @include themeAccentText;
@@ -47,7 +67,7 @@ label {
 }
 
 .bg-primary {
-    background-color: $primary-color;
+    @include themePrimaryColors('background-color');
     color: $primary-text-contrast-color;
 }
 

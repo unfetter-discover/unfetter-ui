@@ -1,6 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { MatMenuModule } from '@angular/material';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { SidepanelComponent } from './sidepanel.component';
+
 
 describe('SidepanelComponent', () => {
   let component: SidepanelComponent;
@@ -8,7 +12,9 @@ describe('SidepanelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SidepanelComponent ]
+      imports: [ MatMenuModule, NoopAnimationsModule ],
+      declarations: [ SidepanelComponent ],
+      schemas: [ NO_ERRORS_SCHEMA ]
     })
     .compileComponents();
   }));
@@ -19,7 +25,7 @@ describe('SidepanelComponent', () => {
     fixture.detectChanges();
   });
 
-  // it('should create', () => {
-  //   expect(component).toBeTruthy();
-  // });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

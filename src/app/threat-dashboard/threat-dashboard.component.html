@@ -1,8 +1,7 @@
-<div [@simpleFadeIn] class="container-fluid" *ngIf="!loading; else loadingBlock">
-
-    <div class="row flex">
-
-        <unfetter-side-panel [item]="threatReport" collapsible="false" width="320">
+<div [@simpleFadeIn] *ngIf="!loading; else loadingBlock">
+            <mat-sidenav-container>
+                    <mat-sidenav class="side-container" mode="side" opened="true">
+        <unfetter-side-panel class="side-panel" [item]="threatReport" collapsible="false" width="320">
 
             <sidepanel-option-item label="Edit" icon="mode_edit"
                     (click)="editButtonClicked($event)"></sidepanel-option-item>
@@ -73,7 +72,8 @@
 -->
 
         </unfetter-side-panel>
-
+        </mat-sidenav>
+<mat-sidenav-content>
         <div class="main-panel pb-10">
             <mat-tab-group id="tabGroup">
                 <mat-tab label="MATRIX">
@@ -108,9 +108,8 @@
                 </mat-tab>
             </mat-tab-group>
         </div>
-
-    </div>
-
+        </mat-sidenav-content>
+</mat-sidenav-container>
 </div>
 
 <ng-template #loadingBlock>
