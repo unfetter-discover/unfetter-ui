@@ -6,6 +6,7 @@ import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
 import { SiteUsageComponent } from './site-usage/site-usage.component';
 import { OrgLeaderApprovalComponent } from './org-leader-approval/org-leader-approval.component';
 import { ConfigEditComponent } from './config-edit/config-edit.component';
+import { HeartbeatComponent } from './heartbeat/heartbeat.component';
 
 const routes = [
     {
@@ -32,7 +33,11 @@ const routes = [
             {
                 path: 'config-edit',
                 component: ConfigEditComponent
-            }
+            },
+            {
+                path: 'heartbeat',
+                component: HeartbeatComponent
+            },
         ]
     }
 ]

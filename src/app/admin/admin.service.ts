@@ -64,4 +64,8 @@ export class AdminService {
     public processOrgApplicant(userId, organization): Observable<any> {
         return this.genericApi.post(`${this.adminUrl}/process-organization-applicant/${userId}`, organization);
     }
+
+    public getHeartbeat(): Observable<any> {
+        return this.genericApi.get(`${this.adminUrl}/heartbeat`);
+    }
 }

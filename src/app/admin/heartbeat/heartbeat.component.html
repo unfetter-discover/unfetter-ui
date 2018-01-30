@@ -1,0 +1,27 @@
+<div id="heartBeatComponet" *ngIf="heartbeats && heartbeats.length; else loadingBlock">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Service</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let heartbeat of heartbeats">
+        <td>{{ heartbeat.service | capitalize }}</td>
+        <td>
+          <div class="flex flexItemsCenter">
+            <span>
+              <i class="material-icons" [style.color]="getStatusColor(heartbeat.status)">lens</i>
+            </span>
+            <span>&nbsp;{{ heartbeat.status }}</span>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<ng-template #loadingBlock>
+  <loading-spinner></loading-spinner>
+</ng-template>
