@@ -1,4 +1,5 @@
 @import '../../../../styles/_variables.scss';
+@import '../../../../styles/modules/_mixins.scss';
 
 
 div {
@@ -9,4 +10,5 @@ div {
 svg {
     width: 24px;
     height: 24px;
+    @include themePrimaryTextProp('fill');
 }

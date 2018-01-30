@@ -1,4 +1,5 @@
 @import '../../../../styles/_variables.scss';
+@import '../../../../styles/modules/_mixins.scss';
 
 .mat-expansion-panel:not([class*=mat-elevation-z]) {
     box-shadow: 0 -3px 4px -3px rgba(0,0,0,.2), 0 3px 4px -3px rgba(0,0,0,.2);
@@ -9,7 +10,10 @@
         width: 16px;
         height: 18px;
         margin-right: 8px;
-        fill: $dark-text-dimmed; // Would like theme's primary text, but Threat uses a light color
+
+        ::ng-deep .icon {
+            @include themePrimaryTextProp('fill');
+        }
     }
     
     .mat-list-item {
@@ -20,11 +24,28 @@
         cursor: pointer;
     }
 
-    .mat-expansion-panel-header {
-        padding: 0 23px 0 26px;
+    .list-item-hover {
+        @include themePrimaryLightestColors('background-color');
+    }
+
+    a {
+        @include themePrimaryText();
     }
 
     ::ng-deep .mat-expanded {
+        .mat-expansion-panel-header {
+            @include themePrimaryLightColors('background-color');
+            
+            .mat-expansion-panel-header-title, .mat-expansion-indicator::after {
+                @include themePrimaryText();
+            }
+    
+            svg {
+                ::ng-deep .icon {
+                    @include themePrimaryTextProp('fill');
+                }
+            }
+        }
 
         .mat-expansion-panel-body {
             padding: 0px 0px 0px 16px;
