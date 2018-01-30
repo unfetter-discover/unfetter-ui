@@ -16,6 +16,7 @@ import { AssessStateService } from '../services/assess-state.service';
 })
 export class AssessLayoutComponent implements OnInit {
   public title: Observable<string>;
+  public showBackButton: Observable<boolean>;
 
   public constructor(
     private store: Store<assessReducers.AssessState>,
@@ -32,6 +33,11 @@ export class AssessLayoutComponent implements OnInit {
       .pluck('assessment')
       .pluck('assessmentMeta')
       .pluck('title');
+
+    this.showBackButton = this.store
+      .select('assessment')
+      .filter((el) => el !== undefined)
+      .pluck('backButton');
   }
 
   /**

@@ -16,7 +16,7 @@ export interface AssessState {
     sensors?: JsonApiData<Stix>[];
     mitigations?: JsonApiData<Stix>[];
     finishedLoading: boolean;
-    saved: boolean;
+    saved: { saved: boolean, rollupId: string };
     showSummary: boolean;
     page: number;
 };
@@ -26,7 +26,7 @@ const genAssessState = (state?: Partial<AssessState>) => {
         assessment: new Assessment(),
         backButton: false,
         finishedLoading: false,
-        saved: false,
+        saved: { saved: false, rollupId: '' },
         showSummary: false,
         page: 0,
     };
@@ -74,12 +74,16 @@ export function assessmentReducer(state = initialState, action: assessmentAction
         case assessmentActions.FINISHED_LOADING:
             return genAssessState({
                 ...state,
-                finishedLoading: action.payload
+                finishedLoading: action.payload,
+                backButton: true
             });
         case assessmentActions.FINISHED_SAVING:
             return genAssessState({
                 ...state,
-                saved: action.payload
+                saved: {
+                    saved: action.payload.finished,
+                    rollupId: action.payload.rollupId,
+                }
             });
         case assessmentActions.WIZARD_PAGE:
             return genAssessState({
