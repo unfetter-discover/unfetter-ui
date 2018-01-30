@@ -8,9 +8,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 
 import { CreateComponent } from './create/create.component';
 
+import { AssessGuard } from './assess.guard';
 import { AssessService } from './services/assess.service';
 import { AssessStateService } from './services/assess-state.service';
 
@@ -20,6 +22,7 @@ import { StoreModule } from '@ngrx/store';
 import { assessmentReducer } from './store/assess.reducers';
 import { AssessLayoutComponent } from './layout/assess-layout.component';
 import { ResultModule } from './result/result.module';
+import { AssessmentSummaryService } from './services/assessment-summary.service';
 
 const moduleComponents = [
   AssessLayoutComponent,
@@ -31,6 +34,7 @@ const materialModules = [
   MatButtonModule,
   MatCheckboxModule,
   MatInputModule,
+  MatIconModule,
 ]
 
 @NgModule({
@@ -49,8 +53,10 @@ const materialModules = [
   exports: [
   ],
   providers: [
+    AssessGuard,
     AssessService,
     AssessStateService,
+    AssessmentSummaryService,
   ]
 })
 export class AssessModule { }

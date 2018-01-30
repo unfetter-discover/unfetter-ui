@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
+import { Location } from '@angular/common';
 
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
@@ -18,6 +19,7 @@ export class AssessLayoutComponent implements OnInit {
 
   public constructor(
     private store: Store<assessReducers.AssessState>,
+    private location: Location,
   ) { }
 
   /**
@@ -30,6 +32,14 @@ export class AssessLayoutComponent implements OnInit {
       .pluck('assessment')
       .pluck('assessmentMeta')
       .pluck('title');
+  }
+
+  /**
+   * @description go back
+   * @param event
+   */
+  onBack(event: UIEvent): void {
+    this.location.back();
   }
 
 }

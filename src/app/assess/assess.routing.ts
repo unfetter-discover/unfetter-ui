@@ -4,8 +4,13 @@ import { CreateComponent } from './create/create.component';
 import { AssessLayoutComponent } from './layout/assess-layout.component';
 import { SummaryComponent } from './result/summary/summary.component';
 import { FullComponent } from './result/full/full.component';
+import { AssessGuard } from './assess.guard';
 
 const routes = [
+    {
+        path: 'navigate',
+        canActivate: [AssessGuard],
+    },
     {
         path: '',
         component: AssessLayoutComponent,

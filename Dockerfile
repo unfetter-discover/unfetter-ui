@@ -28,7 +28,6 @@ RUN npm --loglevel error install && \
 COPY . $WORKING_DIRECTORY
 
 # The NPM package depends on TAR package, which has a test directory with an encrypted tgz file, that gets blocked by some antivirus scanners. Removing it.
-RUN npm --loglevel error run build:prod && \
-    find / -name "cb-never*.tgz" -delete && \
+RUN find / -name "cb-never*.tgz" -delete && \
     rm -rf /usr/share/man && \
     rm -rf /tmp/*
