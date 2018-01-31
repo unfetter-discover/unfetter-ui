@@ -20,7 +20,7 @@ export const SET_MITIGATONS = '[Assess] SET_MITIGATIONS';
 export const SET_SENSORS = '[Assess] SET_SENSORS';
 export const FINISHED_LOADING = '[Assess] FINISHED_LOADING';
 export const FINISHED_SAVING = '[Assess] FINISHED_SAVING';
-export const WIZARD_PAGE = '[Asses]] WIZARD_PAGE';
+export const WIZARD_PAGE = '[Asses] WIZARD_PAGE';
 
 export class UpdatePageTitle implements Action {
     public readonly type = UPDATE_PAGE_TITLE;
@@ -85,7 +85,7 @@ export class FinishedLoading implements Action {
 export class FinishedSaving implements Action {
     public readonly type = FINISHED_SAVING;
 
-    constructor(public payload: boolean) { }
+    constructor(public payload: { finished: boolean, rollupId: string }) { }
 }
 
 export class AnswerQuestion implements Action {

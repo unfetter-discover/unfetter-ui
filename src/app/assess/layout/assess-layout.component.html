@@ -1,7 +1,7 @@
 <div class="layout">
   <div class="titleWrapper">
     <span class="title mat-title">
-      <button mat-icon-button class="mat-24" (click)="onBack($event)">
+      <button *ngIf="showBackButton|async" mat-icon-button class="mat-24" (click)="onBack($event)">
         <mat-icon>keyboard_backspace</mat-icon>
       </button>
       {{title|async}}

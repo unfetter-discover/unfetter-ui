@@ -1,12 +1,19 @@
-<!-- TODO summary && weakestAttackPatterns -->
 <div id="newAssessmentsSummary" *ngIf="summary && finishedLoading === true; else loadingBlock" class="fadeIn">
   <mat-sidenav-container>
-    <mat-sidenav id="sidePanel" mode="side" opened="true">
-      Unfetter Side Panel
-      <!-- <unfetter-side-panel></unfetter-side-panel> -->
+    <mat-sidenav class="side-panel" mode="side" opened="true">
+      <unfetter-side-panel class="side-panel" [item]="{ name: assessmentName|async }" collapsible="false" width="320">
+
+        <sidepanel-option-item label="Edit" icon="mode_edit" (click)="onEdit($event)"></sidepanel-option-item>
+        <sidepanel-option-item label="Share" icon="share" disabled="true" (click)="onShare($event)"></sidepanel-option-item>
+        <sidepanel-option-item label="Delete" icon="delete" (click)="onDelete($event)"></sidepanel-option-item>
+
+        <master-list-dialog-trigger title="Assessments" width="750px" height="400px" [dataSource]="masterListOptions.dataSource"
+          [columns]="masterListOptions.columns" (tabChange)="onFilterTabChanged($event)" (create)="onCreate($event)"
+          (select)="onCellSelected($event)" (edit)="onEdit($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
+      </unfetter-side-panel>
     </mat-sidenav>
     <mat-sidenav-content>
-      <div id="mainWindow">
+      <div class="main-panel">
         <result-header></result-header>
         <summary-report></summary-report>
       </div>

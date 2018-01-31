@@ -127,16 +127,17 @@ export class AssessEffects {
                     let url = 'api/x-unfetter-assessments';
                     if (assessment.id) {
                         url = `${url}/${assessment.id}`;
-                        return this.genericServiceApi.patch(url, json);
+                        return this.genericServiceApi.patchAs<JsonApiData<Assessment>[]>(url, json);
                     } else {
-                        return this.genericServiceApi.post(url, json);
+                        return this.genericServiceApi.postAs<JsonApiData<Assessment>[]>(url, json);
                     }
                 });
             return Observable.forkJoin(...observables);
         })
+        .flatMap((arr) => arr)
         .map((arr) => {
-            return new assessActions.FinishedSaving(true);
-        });
+            return new assessActions.FinishedSaving({ finished: true, rollupId: arr[0].attributes.metaProperties.rollupId });
+        })
 
 
     /**

@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
 import { SummaryState } from '../store/summary.reducers';
 import { LoadAssessmentSummaryData } from '../store/summary.actions';
-import { Assessment } from '../../../models/assess/assessment';
-import { AppState } from '../../../root-store/app.reducers';
-import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 
+import { AppState } from '../../../root-store/app.reducers';
+import { Assessment } from '../../../models/assess/assessment';
+import { MasterListDialogTableHeaders } from '../../../global/components/master-list-dialog/master-list-dialog.component';
+import { AssessmentSummaryService } from '../../services/assessment-summary.service';
+import { SummaryDataSource } from './summary.datasource';
 
 @Component({
   selector: 'summary',
@@ -17,18 +20,26 @@ import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
   styleUrls: ['./summary.component.scss']
 })
 export class SummaryComponent implements OnInit, OnDestroy {
+
+  assessmentName: Observable<string>;
   id: string;
   summaries: Assessment[];
   summary: Assessment;
   finishedLoading = false;
-  user: object;
+  masterListOptions = {
+    dataSource: null,
+    columns: new MasterListDialogTableHeaders('date', 'Modified'),
+    displayRoute: '/assess/view',
+    modifyRoute: '/assess/xxxx',
+  };
 
   private readonly subscriptions: Subscription[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private store: Store<SummaryState>,
-    public userStore: Store<AppState>,
+    private userStore: Store<AppState>,
+    private assessmentSummaryService: AssessmentSummaryService,
   ) { }
 
   /**
@@ -38,7 +49,9 @@ export class SummaryComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.id = this.route.snapshot.params['id'] || '';
 
-    const sub1 = this.store
+    this.masterListOptions.dataSource = new SummaryDataSource(this.assessmentSummaryService);
+
+    const sub1$ = this.store
       .select('summary')
       .pluck('summaries')
       .distinctUntilChanged()
@@ -48,24 +61,31 @@ export class SummaryComponent implements OnInit, OnDestroy {
       },
       (err) => console.log(err));
 
-    const sub2 = this.store
+    const sub2$ = this.store
       .select('summary')
       .pluck('finishedLoading')
       .distinctUntilChanged()
       .subscribe((done: boolean) => this.finishedLoading = done,
       (err) => console.log(err));
 
-    const sub3 = this.userStore
+    const sub3$ = this.userStore
       .select('users')
       .pluck('userProfile')
       .take(1)
       .subscribe((user: object) => {
-        this.user = user;
         this.store.dispatch(new LoadAssessmentSummaryData(this.id));
       },
       (err) => console.log(err));
 
-    this.subscriptions.push(sub1, sub2, sub3);
+    this.assessmentName = this.store
+      .select('summary')
+      .pluck('summaries')
+      .distinctUntilChanged()
+      .map((summaries: Assessment[]) => {
+        return summaries[0].name;
+      });
+
+    this.subscriptions.push(sub1$, sub2$, sub3$);
   }
 
   /**
@@ -77,5 +97,29 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .filter((el) => el !== undefined)
       .filter((el) => !el.closed)
       .forEach((sub) => sub.unsubscribe());
+  }
+
+  public onCreate(event?: UIEvent): void {
+    console.log('noop');
+  }
+
+  public onEdit(event?: UIEvent): void {
+    console.log('noop');
+  }
+
+  public onShare(event?: UIEvent): void {
+    console.log('noop');
+  }
+
+  public onDelete(event?: UIEvent): void {
+    console.log('noop');
+  }
+
+  public onCellSelected(event?: UIEvent): void {
+    console.log('noop');
+  }
+
+  public onFilterTabChanged($event?: UIEvent): void {
+    console.log('noop');
   }
 }

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { Constance } from '../../utils/constance';
 import { JsonApiData } from '../../models/json/jsonapi-data';
 import { JsonApi } from '../../models/json/jsonapi';
+import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 
 @Injectable()
 export class GenericApi {
@@ -26,7 +27,7 @@ export class GenericApi {
     public getAs<T = JsonApiData>(url: string, data?: any): Observable<T> {
         this.data = (data !== undefined && data !== null) ? '/' + data : '';
         let builtUrl = this.baseUrl + url + this.data;
-        
+
         return this.http.get<JsonApi<T>>(builtUrl)
             .map(this.extractData)
             .catch(this.handleError);
@@ -36,24 +37,67 @@ export class GenericApi {
      * @description fetch data with weak types, for older code
      * @param url
      * @param data
-     * @return {Observable<T>} 
+     * @return {Observable<any>} 
      */
     public get(url: string, data?: any): Observable<any> {
         this.data = (data !== undefined && data !== null) ? '/' + data : '';
         let builtUrl = this.baseUrl + url + this.data;
-        
+
         return this.http.get(builtUrl)
             .map(this.extractData)
             .catch(this.handleError);
     }
 
-    public post(url: string, data: any, type?: string): Observable<any> {
-        let builtUrl = this.baseUrl + url;
-        return this.http.post(builtUrl, data, {headers: this.postHeaders})
+    /**
+     * @description fetch data of type T
+     * @param url
+     * @param data
+     * @return {Observable<T>} 
+     */
+    public postAs<T = JsonApiData>(url: string, data?: any): Observable<T> {
+        const builtUrl = this.baseUrl + url;
+        return this.http.post<JsonApi<T>>(builtUrl, data, { headers: this.postHeaders })
             .map(this.extractData)
             .catch(this.handleError);
     }
 
+    /**
+     * @description
+     * TODO: remove this when things are ported over to postAs
+     * @see postAs for better typing
+     * @param {string} url
+     * @param {any} data
+     * @param {type} string optional
+     * @return {Observable<any>}
+     */
+    public post(url: string, data: any, type?: string): Observable<any> {
+        let builtUrl = this.baseUrl + url;
+        return this.http.post(builtUrl, data, { headers: this.postHeaders })
+            .map(this.extractData)
+            .catch(this.handleError);
+    }
+
+    /**
+     * @description fetch data of type T
+     * @param url
+     * @param data
+     * @return {Observable<T>} 
+     */
+    public patchAs<T = JsonApiData>(url: string, data?: any): Observable<T> {
+        const builtUrl = this.baseUrl + url;
+        return this.http.patch<JsonApi<T>>(builtUrl, data, { headers: this.postHeaders })
+            .map(this.extractData)
+            .catch(this.handleError);
+
+    }
+
+    /**
+     * @description
+     * TODO: remove this after porting to patchAs
+     * @see patchAs for better typings
+     * @param url
+     * @param data
+     */
     public patch(url: string, data: any): Observable<any> {
         let builtUrl = this.baseUrl + url;
         return this.http.patch(builtUrl, data, { headers: this.postHeaders })
@@ -69,11 +113,20 @@ export class GenericApi {
             .catch(this.handleError);
     }
 
+    /**
+     * @description unwrap the data element from JsonApi
+     * @param res
+     * @return {T}
+     */
     private extractData<T>(res: JsonApi<T>): T {
         return res.data || {} as T;
     }
 
-    private handleError(error: any) {
+    /**
+     * @description throw error
+     * @param error
+     */
+    private handleError(error: any): ErrorObservable {
         return Observable.throw(error);
     }
 }

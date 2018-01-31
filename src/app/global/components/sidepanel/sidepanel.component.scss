@@ -51,6 +51,8 @@ $sidenav_max_width: 400px;
     }
     #item-toolbar {
         height: 80px;
+        overflow-y: hidden;
+        align-items: flex-start;
         .mat-display-2 {
             margin: 0;
             font-size: 34px;
