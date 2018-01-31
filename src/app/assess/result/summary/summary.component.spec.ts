@@ -9,6 +9,7 @@ import { AssessmentSummaryService } from '../../services/assessment-summary.serv
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { SummaryComponent } from './summary.component';
 import { summaryReducer } from '../store/summary.reducers';
+import { MatDialogModule } from '@angular/material';
 
 describe('SummaryComponent', () => {
   let component: SummaryComponent;
@@ -20,6 +21,10 @@ describe('SummaryComponent', () => {
   };
 
   beforeEach(async(() => {
+    const matModules = [
+      MatDialogModule,
+    ];
+
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       declarations: [SummaryComponent],
@@ -27,6 +32,7 @@ describe('SummaryComponent', () => {
       imports: [
         RouterTestingModule,
         HttpClientTestingModule,
+        ...matModules,
         StoreModule.forRoot(mockReducer),
       ],
       providers: [GenericApi, AssessmentSummaryService],
