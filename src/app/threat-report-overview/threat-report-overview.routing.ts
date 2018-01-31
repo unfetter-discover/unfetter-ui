@@ -3,19 +3,20 @@ import { ModuleWithProviders } from '@angular/core';
 import { ThreatReportOverviewComponent } from './threat-report-overview.component';
 import { ThreatReportCreationComponent } from './create/threat-report-creation.component';
 import { ThreatReportModifyComponent } from './modify/threat-report-modify.component';
+import { ThreatReportEditorComponent } from './editor/threat-report-editor.component';
 
 const routes = [
         {
             path: '', component: ThreatReportOverviewComponent,
         },
         {
-            path: 'create', component: ThreatReportCreationComponent
+            path: 'create', component: ThreatReportEditorComponent
         },
         {
-            path: 'modify', component: ThreatReportModifyComponent
+            path: 'modify', component: ThreatReportEditorComponent
         },
         {
-            path: 'modify/:id', component: ThreatReportModifyComponent
+            path: 'modify/:id', component: ThreatReportEditorComponent
         }
 ];
 
