@@ -1,7 +1,7 @@
 <div id="landingPageComponent" class="container-fluid">
   <div class="row mt-20" *ngIf="authService.pendingApproval()">
-    <div class="col-xs-12">
-      <div class="uf-well">
+    <div class="col-xs-6 col-xs-offset-3">
+      <div class="uf-well-accent">
         <a (click)="authService.logOut()" class="close" data-dismiss="alert">&times;</a>
         Thank you for registrating to Unfetter. You are pending approval.
       </div>
@@ -42,7 +42,7 @@
   </div> -->
   <div class="row">
     <div class="col-xs-12">
-      <p class="landingPageText text-center">
+      <p class="text-center">
         Visit <a href="https://iadgov.github.io/unfetter/" target="_blank">unfetter.io</a> for more information.
       </p>
     </div>
@@ -50,7 +50,7 @@
   <div class="row" *ngIf="!authService.loggedIn()">
     <div class="col-xs-6 col-xs-offset-3">
       <br>
-      <p class="landingPageText uf-well">
+      <p class="uf-well">
         To get started, click the <strong>Sign In</strong> button and sign in through GitHub.  If you are new to Unfetter, you will be taken a registration page upon signing in.
       </p>
     </div>
