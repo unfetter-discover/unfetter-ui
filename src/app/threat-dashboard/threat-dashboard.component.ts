@@ -89,7 +89,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    */
   public ngOnInit() {
     this.masterListOptions.dataSource = new ThreatReportOverviewDataSource(this.threatReportService);
-    this.masterListOptions.columns.id.classes = 'master-list-work-product';
+    this.masterListOptions.columns.id.classes = 'cursor-pointer';
     const getId$ = this.route.params
       .pluck('id')
       .subscribe(
@@ -706,7 +706,6 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
 
               const sub$ = this.threatReportService.deleteThreatReport(report.id).subscribe(
                   (resp) => {
-                      console.log(resp);
                       const s$ = resp.subscribe(
                           (reports) => {
                               console.log('modified ', reports);
