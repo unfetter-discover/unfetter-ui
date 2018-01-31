@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Assessment } from '../../../models/assess/assessment';
 import { AssessmentSummaryService } from '../../services/assessment-summary.service';
 import { LastModifiedAssessment } from '../../models/last-modified-assessment';
+import { Dictionary } from '../../../models/json/dictionary';
 
 /**
  * @description handles filter events from the UI sent to the datasource, in this case a service call
@@ -15,7 +16,7 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment
     protected filterChange = new BehaviorSubject('');
     protected dataChange = new BehaviorSubject(undefined);
 
-    constructor(protected service: AssessmentSummaryService) {
+    constructor(protected assessmentSummaryService: AssessmentSummaryService, protected creatorId?: string) {
         super();
     }
 
@@ -29,7 +30,7 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment
             .switchMap(() => {
                 const val = this.filterChange.getValue();
                 const filterVal = val.trim().toLowerCase() || '';
-                const products$ = this.service.getLatestAssessments();
+                const products$ = this.fetchAssessments().let(this.dedupByRollupId);
                 if (!filterVal || filterVal.length === 0) {
                     return products$;
                 }
@@ -63,5 +64,52 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment
      */
     public nextDataChange(event: any): void {
         this.dataChange.next(undefined);
+    }
+
+    /**
+     * @description given objects with duplicate names, dedup the names by rollupId
+     * @param {Observable<Partial<LastModifiedAssessment>[]>} o$
+     * @return {Observable<Partial<LastModifiedAssessment>[]>}
+     */
+    public dedupByRollupId(o$: Observable<Partial<LastModifiedAssessment>[]>): Observable<Partial<LastModifiedAssessment>[]> {
+        return o$.map((val) => {
+            const uniqIds = Array.from(new Set(val.map((el) => el.rollupId)));
+            const uniq = uniqIds
+                .map((key) => {
+                    return val.find((el) => el.rollupId === key);
+                });
+            return uniq;
+        });
+    }
+
+    /**
+     * @description fetch the last modified summary for this user or the system as necessary
+     * @return {Observable<Partial<LastModifiedAssessment>[]>}
+     */
+    public fetchAssessments(): Observable<Partial<LastModifiedAssessment>[]> {
+        if (this.creatorId && this.creatorId.trim() !== '') {
+            return this.fetchWithCreatorId(this.creatorId);
+        } else {
+            return this.fetchWithNoCreatorId();
+        }
+    }
+
+    /**
+     * @description route to a create page or the last modified summary for this user
+     * @param {string} creatorId
+     * @return {Observable<Partial<LastModifiedAssessment>[]>}
+     */
+    public fetchWithCreatorId(creatorId: string): Observable<Partial<LastModifiedAssessment>[]> {
+        return this.assessmentSummaryService
+            .getLatestAssessmentsByCreatorId(creatorId);
+    }
+
+    /**
+     * @description route to a create page or the last modified summary in the system
+     * @return {Observable<Partial<LastModifiedAssessment>[]>}
+     */
+    public fetchWithNoCreatorId(): Observable<Partial<LastModifiedAssessment>[]> {
+        return this.assessmentSummaryService
+            .getLatestAssessments();
     }
 }

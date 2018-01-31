@@ -27,9 +27,10 @@ export class AssessmentSummaryService {
     }
 
     /**
-     * @description
+     * @description return multiple assessment type associated with given rollup id
      * @param {string} id
-     * @return {Observable<Assessment>}
+     * @param {boolean} includeMeta
+     * @return {Observable<Assessment[]>}
      */
     public getByRollupId(id: string, includeMeta = true): Observable<Assessment[]> {
         const filter = {
@@ -44,6 +45,35 @@ export class AssessmentSummaryService {
     /**
      * @description
      * @param {string} id
+     * @return {Observable<any>}
+     */
+    public deleteByRollupId(id: string): Observable<any> {
+        if (!id || id.trim().length === 0) {
+            return Observable.empty();
+        }
+        const url = `${this.baseUrl}`;
+        const loadAll$ = this.getByRollupId(id);
+        const deleteAssociated$ = (assessments: Assessment[]) => {
+            console.log(assessments);
+            // with associated assessment types
+            const calls = assessments
+                .map((assessment) => {
+                    const deleteUrl = `${url}/${assessment.id}`;
+                    return this.genericApi.delete(deleteUrl);
+                });
+            return Observable.forkJoin(...calls);
+        };
+
+        return Observable
+            .zip(loadAll$, deleteAssociated$)
+            .mergeMap((val) => {
+                return val;
+            });
+    }
+
+    /**
+     * @description
+     * @param {string} id
      * @return {Observable}
      */
     public getRiskPerKillChain(id: string): Observable<any> {
@@ -51,7 +81,7 @@ export class AssessmentSummaryService {
             return Observable.empty();
         }
 
-        const url = `api/x-unfetter-assessments/${id}/risk-per-kill-chain`;
+        const url = `${this.baseUrl}/${id}/risk-per-kill-chain`;
         return this.genericApi.get(url);
     }
 
@@ -65,7 +95,7 @@ export class AssessmentSummaryService {
             return Observable.empty();
         }
 
-        const url = `api/x-unfetter-assessments/${id}/risk-by-attack-pattern`;
+        const url = `${this.baseUrl}/${id}/risk-by-attack-pattern`;
         return this.genericApi.get(url);
     }
 
@@ -79,7 +109,7 @@ export class AssessmentSummaryService {
             return Observable.empty();
         }
 
-        const url = `api/x-unfetter-assessments/${id}/summary-aggregations`;
+        const url = `${this.baseUrl}/${id}/summary-aggregations`;
         return this.genericApi.get(url);
     }
 
