@@ -44,7 +44,7 @@
       }
 
       .threatDashboardTheme & {
-        #{$property}: $threat-dashboard-primary-lighter;
+        #{$property}: $threat-dashboard-primary-light; // When threat dash is reworked this should be fixed
       }
 
       .assessmentsTheme & {

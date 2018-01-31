@@ -12,9 +12,9 @@
         </div>
 -->
 
-        <div class="theme-color-primary theme-bg-primary side-panel-header">
+        <div class="theme-color-primary theme-bg-primary-lighter side-panel-header">
 
-            <mat-toolbar class="theme-color-primary" id="options-toolbar">
+            <mat-toolbar class="theme-color-accent" id="options-toolbar">
                 <span class="push-right"></span>
                 <span>
                     <button mat-icon-button [matMenuTriggerFor]="optionsMenu" matTooltip="Options Menu">
@@ -30,7 +30,7 @@
                 <span class="push-right mat-display-2"> {{item?.name || 'Unnamed'}} </span>
             </mat-toolbar>
 
-            <mat-toolbar class="theme-color-primary" id="master-list-toolbar">
+            <mat-toolbar class="theme-color-accent" id="master-list-toolbar">
                 <span class="push-right mat-display-2"></span>
                 <ng-content select="master-list-dialog-trigger"></ng-content>
             </mat-toolbar>
