@@ -1,21 +1,27 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  MatButtonModule,
+  MatCheckboxModule,
+  MatChipsModule,
+  MatDatepickerModule,
+  MatDialogModule,
+  MatFormFieldModule,
+  MatIconModule,
+  MatInputModule,
+  MatListModule,
+  MatPaginatorModule,
+  MatSelectModule,
+  MatSlideToggleModule,
+  MatSnackBarModule,
+  MatStepperModule,
+  MatTableModule,
+  MatTooltipModule } from '@angular/material';
 
 import { ComponentModule } from '../components';
 import { GlobalModule } from '../global/global.module';
 import { routing } from './threat-report-overview.routing';
-
-import { MatButtonModule, MatChipsModule, MatInputModule, MatIconModule, MatTooltipModule, MatFormFieldModule, MatSnackBarModule, MatDialogModule } from '@angular/material';
-import { MatCheckboxModule } from '@angular/material';
-import { MatDatepickerModule } from '@angular/material';
-import { MatPaginatorModule } from '@angular/material';
-import { MatSelectModule } from '@angular/material';
-import { MatSlideToggleModule } from '@angular/material';
-import { MatStepperModule } from '@angular/material/stepper';
-import { MatTableModule } from '@angular/material';
-import { MatListModule } from '@angular/material';
-
 import { AddExternalReportComponent } from './modify-report-dialog/add-external-report/add-external-report.component';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { ModifyReportDialogComponent } from './modify-report-dialog/modify-report-dialog.component';
@@ -26,6 +32,26 @@ import { ThreatReportOverviewComponent } from './threat-report-overview.componen
 import { ThreatReportSharedService } from './services/threat-report-shared.service';
 import { ThreatReportModifyComponent } from './modify/threat-report-modify.component';
 import { ThreatReportOverviewService } from '../threat-dashboard/services/threat-report-overview.service';
+import { ThreatReportEditorComponent } from './editor/threat-report-editor.component';
+
+const materialModules = [
+  MatButtonModule,
+  MatCheckboxModule,
+  MatChipsModule,
+  MatDatepickerModule,
+  MatDialogModule,
+  MatFormFieldModule,
+  MatIconModule,
+  MatInputModule,
+  MatListModule,
+  MatPaginatorModule,
+  MatSelectModule,
+  MatSlideToggleModule,
+  MatSnackBarModule,
+  MatStepperModule,
+  MatTableModule,
+  MatTooltipModule,
+];
 
 const unfetterComponents = [
   AddExternalReportComponent,
@@ -35,6 +61,7 @@ const unfetterComponents = [
   ThreatReportOverviewComponent,
   ThreatReportCreationComponent,
   ThreatReportModifyComponent,
+  ThreatReportEditorComponent,
 ];
 
 const unfetterServices = [
@@ -42,28 +69,9 @@ const unfetterServices = [
   ThreatReportOverviewService,
 ];
 
-const materialModules = [
-  MatButtonModule,
-  MatCheckboxModule,
-  MatChipsModule,
-  MatDatepickerModule,
-  MatDialogModule,
-  MatFormFieldModule,
-  MatInputModule,
-  MatIconModule,
-  MatListModule,
-  MatPaginatorModule,
-  MatSelectModule,
-  MatSnackBarModule,
-  MatSlideToggleModule,
-  MatStepperModule,
-  MatTooltipModule,
-  MatTableModule,
-];
-
 @NgModule({
   declarations: [
-    ...unfetterComponents
+    ...unfetterComponents,
   ],
   imports: [
     CommonModule,
@@ -76,9 +84,7 @@ const materialModules = [
     routing
   ],
   exports: [...unfetterComponents],
-  providers: [
-    ...unfetterServices
-  ],
+  providers: [...unfetterServices],
   entryComponents: [ModifyReportDialogComponent]
 })
 export class ThreatReportOverviewModule { }
