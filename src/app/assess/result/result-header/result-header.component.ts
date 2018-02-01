@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'result-header',
@@ -7,8 +7,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ResultHeaderComponent implements OnInit {
 
+  @Input()
+  public rollupId: string;
+  public summaryLink: string;
+  public resultsLink: string;
+
   constructor() { }
 
-  ngOnInit() {
+  /**
+   * @description on init
+   * @return {void}
+   */
+  public ngOnInit(): void {
+    this.summaryLink = `../../summary/${this.rollupId}`;
+    this.resultsLink = `../../full/${this.rollupId}`;
   }
+
 }

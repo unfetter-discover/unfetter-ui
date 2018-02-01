@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, ElementRef, ViewChild, Input, OnInit, SimpleChanges, ViewEncapsulation, OnDestroy, HostListener, QueryList, ViewChildren } from '@angular/core';
+import { Component, ChangeDetectorRef, ElementRef, Input, OnInit, SimpleChanges, ViewEncapsulation, OnDestroy, HostListener, QueryList, ViewChildren, Renderer2 } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -121,6 +121,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     private location: Location,
     private route: ActivatedRoute,
     private router: Router,
+    private renderer: Renderer2,
     private store: Store<assessReducers.AssessState>,
   ) {
     super();
@@ -289,10 +290,6 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     // clear out state
     this.tempModel = {};
     this.page = 1;
-    // if (this.openedSidePanel === 'summary') {
-    //   this.buttonLabel = 'Next';
-    //   this.showSummary = false;
-    // }
 
     // switch to new open panel
     this.openedSidePanel = panelName;
@@ -301,8 +298,8 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     if (this.openedSidePanel && this.assessmentTypeGroups[this.openedSidePanel]) {
       // reload previous state for given type/panel if it exists
       this.assessmentGroups = [...this.assessmentTypeGroups[this.openedSidePanel].assessmentsGroups];
-      this.currentAssessmentGroup = this.getCurrentAssessmentGroup();
-      this.tempModel = { ...this.assessmentTypeGroups[this.openedSidePanel].tempModel };
+    this.currentAssessmentGroup = this.getCurrentAssessmentGroup()  ;
+      this.tempModel = {...this.assessmentTypeGroups[this.openedSidePanel].tempModel};
     }
     // reset progress bar
     this.updateRatioOfAnswerQuestions();
@@ -319,10 +316,13 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       this.navigations = [];
       this.updateRatioOfAnswerQuestions();
       this.build(data);
+      
+      // set focus to current submit button
+      // const btn = this.renderer.('#submitBtn');
+      // if (btn) {
+        // btn.focus();
+      // }
     }
-
-    console.log(this.assessmentGroups);
-    console.log(this.currentAssessmentGroup);
   }
 
   /**
@@ -359,13 +359,11 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       ];
       const index = validOptions.indexOf(event.keyCode);
       if (index > -1) {
-        console.log('setting all questions to ', index);
         this.updateAllQuestions(index);
       }
       this.insertMode = false;
     } else if (event.keyCode === Key.GraveAccent) {
       this.insertMode = true;
-      console.log(this.insertMode);
     }
   }
 
