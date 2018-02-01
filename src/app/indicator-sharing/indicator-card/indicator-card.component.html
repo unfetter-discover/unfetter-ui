@@ -7,6 +7,10 @@
                 <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="exportIndicator()">
+                    <mat-icon>file_download</mat-icon>
+                    <span>Download</span>
+                </button>
                 <button mat-menu-item routerLink="/stix/indicators/edit/{{ indicator.id }}">
                     <mat-icon>create</mat-icon>
                     <span>Edit</span>

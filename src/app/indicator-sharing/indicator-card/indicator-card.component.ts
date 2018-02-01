@@ -7,6 +7,7 @@ import { FormatHelpers } from '../../global/static/format-helpers';
 import { AuthService } from '../../core/services/auth.service';
 import { heightCollapse } from '../../global/animations/height-collapse';
 import { environment } from '../../../environments/environment';
+import { downloadBundle } from '../../global/static/stix-bundle';
 
 @Component({
     selector: 'indicator-card',
@@ -188,6 +189,44 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
 
     public deleteIndicator() {
         this.indicatorDeleted.emit(this.indicator);
+    }
+
+    public exportIndicator() {
+        let enhancements: any = {};
+        const indicatorCopy = { ...this.indicator };
+
+        if (indicatorCopy.metaProperties) {
+            delete indicatorCopy.metaProperties;
+        }
+
+        if (this.indicator.metaProperties && this.indicator.metaProperties.queries) {
+            const generatedQueries = { ...this.indicator.metaProperties.queries };
+            const queryArr = [];
+            for (let name in generatedQueries) {
+                queryArr.push({ name, query: generatedQueries[name].query });
+            }
+
+            enhancements.x_unfetter_generated_queries = queryArr;
+        }
+
+        if (this.indicator.metaProperties && this.indicator.metaProperties.additional_queries) {
+            enhancements.x_unfetter_user_queries = [ ...this.indicator.metaProperties.additional_queries ];
+        }
+
+        if (this.sensors && this.sensors.length) {
+            enhancements.x_unfetter_related_sensors = [ ...this.sensors ];
+        }
+
+        if (this.attackPatterns && this.attackPatterns.length) {
+            enhancements.x_unfetter_related_attack_patterns = [ ...this.attackPatterns ];
+        }
+
+        const exportObj = {
+            ...indicatorCopy,
+            ...enhancements
+        };
+
+        downloadBundle([exportObj], `${this.indicator.name}-enhanced-bundle`);
     }
 
     private flashMessage(msg: string) {
