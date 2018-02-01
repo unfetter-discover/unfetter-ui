@@ -6,6 +6,7 @@ import { MatSelectModule, MatChipsModule, MatTooltipModule, MatCardModule,
     MatTabsModule, MatInputModule, MatIconModule, MatButtonModule, MatDatepickerModule, MatNativeDateModule, MatRadioModule, MatListModule, MatStepperModule, MatDialogModule, MatSidenavModule, MatMenuModule } from '@angular/material';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
+import { ClipboardModule } from 'ngx-clipboard';
 
 // Modules
 import { routing } from './indicator-sharing-routing.module';
@@ -56,6 +57,7 @@ const matModules = [
         FormsModule,
         ReactiveFormsModule,
         ...matModules,
+        ClipboardModule,
         StoreModule.forFeature('indicatorSharing', indicatorSharingReducer),
         EffectsModule.forFeature([
             IndicatorSharingEffects
