@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, Renderer2, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { trigger, state, transition, style, animate, query } from '@angular/animations';
 import { Observable } from 'rxjs/Observable';
+import { MatTooltip } from '@angular/material';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { FormatHelpers } from '../../global/static/format-helpers';
@@ -35,6 +36,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     public alreadyLiked: boolean = false;
     public alreadyInteracted: boolean = false;
     public alreadyCommented: boolean = false;
+    public readonly copyText: string = 'Copied';
     public readonly runMode = environment.runMode;
 
     private readonly FLASH_MSG_TIMER: number = 1500;
@@ -227,6 +229,11 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
         };
 
         downloadBundle([exportObj], `${this.indicator.name}-enhanced-bundle`);
+    }
+
+    public flashTooltip(toolTip: MatTooltip) {
+        toolTip.show();
+        setTimeout(() => toolTip.hide(), 500);
     }
 
     private flashMessage(msg: string) {
