@@ -1,10 +1,10 @@
-import { generateGuid } from './generate-guid';
 import { GenerateDownloads } from './generate-downloads';
+import { generateUUID } from './generate-uuid';
 
 export function generateBundle(objects: any[]) {
     return {
         type: 'bundle',
-        id: `bundle--${generateGuid()}`,
+        id: `bundle--${generateUUID()}`,
         spec_version: '2.0',
         objects
     }
