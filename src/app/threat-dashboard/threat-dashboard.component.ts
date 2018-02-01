@@ -68,10 +68,10 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   private readonly selectedBackgroundColor = this.redAccent200;
 
   public masterListOptions = {
-      dataSource: null,
-      columns: new MasterListDialogTableHeaders('date', 'Modified'),
-      displayRoute: '/threat-dashboard/view',
-      modifyRoute: '/threat-dashboard/modify',
+    dataSource: null,
+    columns: new MasterListDialogTableHeaders('date', 'Modified'),
+    displayRoute: '/threat-dashboard/view',
+    modifyRoute: '/threat-dashboard/modify',
   };
 
   constructor(
@@ -93,26 +93,26 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     const getId$ = this.route.params
       .pluck('id')
       .subscribe(
-        (id: string) => {
-          this.threatReport = null;
-          if (!id || id.trim() === '') {
-            this.notifyDoneLoading();
-          } else {
-            id = id.trim();
-            if (!this.id || (id !== this.id)) {
-              this.id = id.trim();
-              this.fetchDataAndRender();
-            }
-          }
-        },
-        (err) => {
-          console.log(err);
-        },
-        () => {
-          if (getId$) {
-            getId$.unsubscribe();
+      (id: string) => {
+        this.threatReport = null;
+        if (!id || id.trim() === '') {
+          this.notifyDoneLoading();
+        } else {
+          id = id.trim();
+          if (!this.id || (id !== this.id)) {
+            this.id = id.trim();
+            this.fetchDataAndRender();
           }
         }
+      },
+      (err) => {
+        console.log(err);
+      },
+      () => {
+        if (getId$) {
+          getId$.unsubscribe();
+        }
+      }
       );
   }
 
@@ -559,7 +559,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    */
   public load(workProductId: string): Observable<Partial<ThreatReport>> {
     if (!workProductId || workProductId.trim().length === 0) {
-        return Observable.empty();
+      return Observable.empty();
     }
     return this.threatReportService.load(workProductId);
   }
@@ -572,14 +572,14 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @return {number}
    */
   public trackByFn(index: number, item: any): number {
-      return item.id || index;
+    return item.id || index;
   }
 
   public getReportURL(report: Report): string {
     if (report
-        && report.attributes
-        && report.attributes.external_references
-        && report.attributes.external_references.length > 0) {
+      && report.attributes
+      && report.attributes.external_references
+      && report.attributes.external_references.length > 0) {
       return report.attributes.external_references[0].url;
     }
     return '';
@@ -592,11 +592,11 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @returns {Promise<boolean>}
    */
   public onNavigateToIntrusion(intrusionId: string = '', event?: UIEvent): Promise<boolean> {
-      if (!intrusionId || intrusionId.trim().length === 0) {
-          return;
-      }
-      const url = `/stix/intrusion-sets/`;
-      return this.router.navigate([url, intrusionId]);
+    if (!intrusionId || intrusionId.trim().length === 0) {
+      return;
+    }
+    const url = `/stix/intrusion-sets/`;
+    return this.router.navigate([url, intrusionId]);
   }
 
   /**
@@ -606,11 +606,11 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @returns {Promise<boolean>}
    */
   public onNavigateToMalware(malwareId: string = '', event?: UIEvent): Promise<boolean> {
-      if (!malwareId || malwareId.trim().length === 0) {
-          return;
-      }
-      const url = `/stix/malwares/`;
-      return this.router.navigate([url, malwareId]);
+    if (!malwareId || malwareId.trim().length === 0) {
+      return;
+    }
+    const url = `/stix/malwares/`;
+    return this.router.navigate([url, malwareId]);
   }
 
   /**
@@ -619,11 +619,11 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public listItemMouseEnter(event: UIEvent): void {
-      if (!event) {
-          return;
-      }
-      const el = event.currentTarget;
-      this.renderer.addClass(el, 'list-item-hover');
+    if (!event) {
+      return;
+    }
+    const el = event.currentTarget;
+    this.renderer.addClass(el, 'list-item-hover');
   }
 
   /**
@@ -632,11 +632,11 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public listItemMouseLeave(event: UIEvent): void {
-      if (!event) {
-          return;
-      }
-      const el = event.currentTarget;
-      this.renderer.removeClass(el, 'list-item-hover');
+    if (!event) {
+      return;
+    }
+    const el = event.currentTarget;
+    this.renderer.removeClass(el, 'list-item-hover');
   }
 
   /**
@@ -646,7 +646,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @return {void} not yet defined
    */
   public filterTabChanged(tab: number): void {
-      console.log('Filter tab clicked. ', tab);
+    console.log('Filter tab clicked. ', tab);
   }
 
   /**
@@ -655,8 +655,8 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @return {Promise<boolean>}
    */
   public createButtonClicked(event?: UIEvent): Promise<boolean> {
-      this.sharedService.threatReportOverview = undefined;
-      return this.router.navigate(['/threat-dashboard/create']);
+    this.sharedService.threatReportOverview = undefined;
+    return this.router.navigate(['/threat-dashboard/create']);
   }
 
   /**
@@ -674,8 +674,8 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @return {Promise<boolean>}
    */
   public editButtonClicked(report: ThreatReport): Promise<boolean> {
-      this.sharedService.threatReportOverview = undefined;
-      return this.router.navigate([`${this.masterListOptions.modifyRoute}/${report.id}`]);
+    this.sharedService.threatReportOverview = undefined;
+    return this.router.navigate([`${this.masterListOptions.modifyRoute}/${report.id}`]);
   }
 
   /**
@@ -684,7 +684,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @return {Promise<boolean>}
    */
   public shareButtonClicked(report: ThreatReport): Promise<boolean> {
-      return;
+    return;
   }
 
   /**
@@ -693,33 +693,35 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public deleteButtonClicked(report: ThreatReport): void {
-      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {data: {attributes: report}});
-      dialogRef.afterClosed().subscribe(
-          (result) => {
-              const isBool = typeof result === 'boolean';
-              const isString = typeof result === 'string';
-              if (!result ||
-                 (isBool && result !== true) ||
-                 (isString && result !== 'true')) {
-                  return;
-              }
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: { attributes: report } });
+    const dialogSub$ = dialogRef.afterClosed()
+      .subscribe(
+      (result) => {
+        const isBool = typeof result === 'boolean';
+        const isString = typeof result === 'string';
+        if (!result ||
+          (isBool && result !== true) ||
+          (isString && result !== 'true')) {
+          return;
+        }
 
-              const sub$ = this.threatReportService.deleteThreatReport(report.id).subscribe(
-                  (resp) => {
-                      const s$ = resp.subscribe(
-                          (reports) => {
-                              console.log('modified ', reports);
-                              this.masterListOptions.dataSource.nextDataChange(reports);
-                          },
-                          (err) => console.log(err)
-                      );
-                      this.subscriptions.push(s$);
-                  },
-                  (err) => console.log(err)
-              );
-              this.subscriptions.push(sub$);
-          }
-      );
+        const sub$ = this.threatReportService.deleteThreatReport(report.id).subscribe(
+          (resp) => {
+            const s$ = resp.subscribe(
+              (reports) => {
+                console.log('modified ', reports);
+                this.masterListOptions.dataSource.nextDataChange(reports);
+              },
+              (err) => console.log(err)
+            );
+            this.subscriptions.push(s$);
+          },
+          (err) => console.log(err)
+        );
+        this.subscriptions.push(sub$);
+      },
+      (err) => console.log(err),
+      () => dialogSub$.unsubscribe());
   }
 
 }

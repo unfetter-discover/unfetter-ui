@@ -216,7 +216,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
           .subscribe(
           (resp) => this.masterListOptions.dataSource.nextDataChange(resp),
           (err) => console.log(err),
-          () => { 
+          () => {
             if (sub$) {
               sub$.unsubscribe();
             }
