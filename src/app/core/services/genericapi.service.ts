@@ -5,6 +5,8 @@ import { Constance } from '../../utils/constance';
 import { JsonApiData } from '../../models/json/jsonapi-data';
 import { JsonApi } from '../../models/json/jsonapi';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
+import { LastModifiedStix } from '../../global/models/last-modified-stix';
+import { StixLabelEnum } from '../../models/stix/stix-label.enum';
 
 @Injectable()
 export class GenericApi {
@@ -109,6 +111,43 @@ export class GenericApi {
         this.data = (data !== undefined && data !== null) ? '/' + data : '';
         let builtUrl = this.baseUrl + url + this.data;
         return this.http.delete(builtUrl)
+            .map(this.extractData)
+            .catch(this.handleError);
+    }
+
+    /**
+     * @description retrieve <i>partial last modified stix objects</i>, for all creators/users in system
+     * @return {Observable<Partial<LastModifiedStix>[]>}
+     */
+    public getLatestByType(stixType: StixLabelEnum): Observable<Partial<LastModifiedStix>[]> {
+        if (!stixType || stixType.trim() === '') {
+            return Observable.of([]);
+        }
+
+        const url = `${this.baseUrl}/latest/type/${stixType}`;
+        return this.http
+            .get<JsonApi<Partial<LastModifiedStix>[]>>(url)
+            .map(this.extractData)
+            .catch(this.handleError);
+    }
+
+    /**
+     * @description retrieve <i>partial last modified stix objects</i> for given creator
+     * @param {string} userId, creator mongo user id, not stix identity
+     * @return {Observable<Partial<LastModifiedStix>[]>}
+     */
+    public getLatestByTypeAndCreatorId(stixType: StixLabelEnum, creatorId: string): Observable<Partial<LastModifiedStix>[]> {
+        if (!stixType || stixType.trim() === '') {
+            return Observable.of([]);
+        }
+
+        if (!creatorId || creatorId.trim() === '') {
+            return this.getLatestByType(stixType);
+        }
+
+        const url = `${this.baseUrl}/latest/type/${stixType}/creator/${creatorId}`;
+        return this.http
+            .get<JsonApi<Partial<LastModifiedStix>[]>>(url)
             .map(this.extractData)
             .catch(this.handleError);
     }

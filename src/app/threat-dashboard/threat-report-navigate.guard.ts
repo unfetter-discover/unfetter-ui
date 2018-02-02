@@ -5,18 +5,17 @@ import { Observable } from 'rxjs/Observable';
 
 import { AppState } from '../root-store/app.reducers';
 import { UserState } from '../root-store/users/users.reducers';
-import { AssessmentSummaryService } from './services/assessment-summary.service';
 import { UserProfile } from '../models/user/user-profile';
-import { Assessment } from '../models/assess/assessment';
-import { LastModifiedAssessment } from './models/last-modified-assessment';
+import { ThreatReportOverviewService } from './services/threat-report-overview.service';
+import { LastModifiedThreatReport } from './models/last-modified-threat-report';
 
 @Injectable()
-export class AssessGuard implements CanActivate {
+export class ThreatReportNavigateGuard implements CanActivate {
 
     constructor(
         private router: Router,
-        public store: Store<AppState>,
-        public assessmentSummaryService: AssessmentSummaryService,
+        private store: Store<AppState>,
+        private service: ThreatReportOverviewService,
     ) { }
 
     /**
@@ -29,7 +28,7 @@ export class AssessGuard implements CanActivate {
             .take(1)
             .pluck('userProfile')
             .switchMap((user: UserProfile) => {
-                let o$;
+                let o$: Observable<Partial<LastModifiedThreatReport>[]>;
                 if (user && user._id) {
                     o$ = this.fetchWithCreatorId(user._id);
                 } else {
@@ -39,14 +38,14 @@ export class AssessGuard implements CanActivate {
                 return o$.
                     map((data) => {
                         if (data === undefined || data.length === 0) {
-                            // no assessments found, navigate to creation page
-                            this.router.navigate(['assess/create']);
+                            // nothing found, navigate to creation page
+                            this.router.navigate(['/threat-dashboard/create']);
                             return false;
                         } else {
-                            // has assessments,
+                            // has results,
                             //  navigate to the last modified
-                            const lastModAssessment = data[0];
-                            this.router.navigate(['assess/result/summary', lastModAssessment.rollupId]);
+                            const lastMod = data[0];
+                            this.router.navigate(['/threat-dashboard/view', lastMod.workproductId]);
                             return true;
                         }
                     });
@@ -54,22 +53,20 @@ export class AssessGuard implements CanActivate {
     }
 
     /**
-     * @description route to a create page or the last modified summary for this user
+     * @description route to a create page or the last modified report for this user
      * @param {string} creatorId
-     * @return {Observable<Partial<LastModifiedAssessment>[]> }
+     * @return {Observable<Partial<LastModifiedThreatReport>[]> }
      */
-    public fetchWithCreatorId(creatorId: string): Observable<Partial<LastModifiedAssessment>[]> {
+    public fetchWithCreatorId(creatorId: string): Observable<Partial<LastModifiedThreatReport>[]> {
         const id = creatorId;
-        return this.assessmentSummaryService
-            .getLatestAssessmentsByCreatorId(id);
+        return this.service.getLatestReportsByCreatorId(creatorId);
     }
 
     /**
-     * @description route to a create page or the last modified summary in the system
-     * @return {Observable<Partial<LastModifiedAssessment>[]>}
+     * @description route to a create page or the last modified report in the system
+     * @return {Observable<Partial<LastModifiedThreatReport>[]>}
      */
-    public routeNoCreatorId(): Observable<Partial<LastModifiedAssessment>[]> {
-        return this.assessmentSummaryService
-            .getLatestAssessments();
+    public routeNoCreatorId(): Observable<Partial<LastModifiedThreatReport>[]> {
+        return this.service.getLatestReports();
     }
 }

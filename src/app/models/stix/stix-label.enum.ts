@@ -5,6 +5,7 @@ export enum StixLabelEnum {
     IDENTITY = 'identity',
     INDICATOR = 'indicator',
     MALWARE = 'malware',
+    REPORT = 'report',
     OBSERVED_DATA = 'observed-data',
     THREAT_REPORT = 'threat-report',
     THREAT_ACTOR = 'threat-actor',

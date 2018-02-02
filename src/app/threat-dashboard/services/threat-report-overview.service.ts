@@ -12,6 +12,10 @@ import { Boundaries } from '../../threat-report-overview/models/boundaries';
 import { Report } from '../../models/report';
 import { JsonApiObject } from '../models/adapter/json-api-object';
 import { SortHelper } from '../../global/static/sort-helper';
+import { LastModifiedAssessment } from '../../assess/models/last-modified-assessment';
+import { StixLabelEnum } from '../../models/stix/stix-label.enum';
+import { LastModifiedThreatReport } from '../models/last-modified-threat-report';
+import { JsonApi } from '../../models/json/jsonapi';
 
 @Injectable()
 export class ThreatReportOverviewService {
@@ -451,6 +455,32 @@ export class ThreatReportOverviewService {
 
     const o$ = Observable.zip(loadAll$, modifyAll);
     return o$;
+  }
+
+  /**
+   * @description fetch latest threat reports regardless of creatorid
+   * @param {string} id of the workproduct
+   * @return {Observable<Partial<LastModifiedThreatReport>[]>} reports modified
+   */
+  public getLatestReports(): Observable<Partial<LastModifiedThreatReport>[]> {
+    const url = Constance.API_HOST + `/latest/threat-report`;
+    const headers = this.ensureAuthHeaders(this.headers);
+    return this.http
+      .get<JsonApi<Partial<LastModifiedThreatReport>[]>>(url, { headers })
+      .map((resp) => resp.data);
+  }
+
+  /**
+   * @description fetch latest threat reports by creatorId
+   * @param {string} id of the workproduct
+   * @return {Observable<Partial<LastModifiedAssessment>[]>} reports modified
+   */
+  public getLatestReportsByCreatorId(creatorId: string): Observable<Partial<LastModifiedAssessment>[]> {
+    const url = Constance.API_HOST + `/latest/threat-report/creator/${creatorId}`;
+    const headers = this.ensureAuthHeaders(this.headers);
+    return this.http
+      .get<JsonApi<Partial<LastModifiedThreatReport>[]>>(url, { headers })
+      .map((resp) => resp.data);
   }
 
   /**
