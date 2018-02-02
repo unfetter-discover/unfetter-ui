@@ -62,11 +62,24 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
         // if we are given a report already, the user wants to modify it
         if (this.data) {
             if (this.data.report) {
-                this.report = this.data.report;
-                if (this.report.attributes && this.report.attributes.external_references &&
-                        (this.report.attributes.external_references.length > 0)) {
-                    this.references = this.report.attributes.external_references[0];
-                }
+                this.report.attributes.id = this.data.report.attributes.id;
+                this.report.attributes.name = this.data.report.attributes.name;
+                this.report.attributes.description = this.data.report.attributes.description;
+                this.report.attributes.created = this.data.report.attributes.created;
+                this.report.attributes.modified = this.data.report.attributes.modified;
+                this.report.attributes.published = this.data.report.attributes.published;
+                this.data.report.attributes.labels.forEach((label) => this.report.attributes.labels.push(label));
+                this.data.report.attributes.object_refs
+                    .forEach((attackPattern) => this.report.attributes.object_refs.push(attackPattern));
+                this.data.report.attributes.external_references.forEach((ref) => {
+                    this.report.attributes.external_references.push({
+                        source_name: ref.source_name,
+                        external_id: ref.external_id,
+                        description: ref.description,
+                        url: ref.url,
+                    });
+                });
+                this.references = this.report.attributes.external_references[0];
                 this.title = 'Modify';
                 this.editing = true;
             }

@@ -34,11 +34,10 @@
 
             <div class="">
                 <mat-form-field floatPlaceholder="always">
-                    <input matInput #targetSelected class="target-input"
+                    <input matInput #targetSelected class="target-input" [(ngModel)]="target"
                             color="primary" placeholder="Target" floatPlaceholder="always" spellcheck="false"
                             matTooltip="Enter the name of the target of the threat"
-                            aria-label="Enter the name of the target of the threat"
-                            (blur)="addChip(targetSelected.value, 'target')">
+                            aria-label="Enter the name of the target of the threat">
                 </mat-form-field>
             </div>
 

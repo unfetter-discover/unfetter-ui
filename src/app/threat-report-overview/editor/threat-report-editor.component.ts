@@ -36,6 +36,8 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
 
     public threatReport = new ThreatReport();
 
+    public target: string = '';
+
     public intrusions: SelectOption[];
 
     public malware: SelectOption[];
@@ -60,7 +62,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
 
     public readonly dateFormat = this.dateFormat;
 
-    public readonly viewPath = `threat-dashboard`;
+    public readonly viewPath = `threat-dashboard/view`;
 
     private readonly subscriptions = [];
 
@@ -139,6 +141,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
                 .subscribe(
                     (data) => {
                         this.threatReport = data as ThreatReport;
+                        this.threatReport.boundaries.targets.forEach((target) => this.target = target);
                         this.reportsDataSource = new MatTableDataSource(this.threatReport.reports);
                         // clear out an inprogress threat reports we were creating
                         this.sharedService.threatReportOverview = this.threatReport;
@@ -260,9 +263,9 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
             case 'malware':
                 chips = this.threatReport.boundaries.malware;
                 break;
-            case 'target':
-                chips = this.threatReport.boundaries.targets;
-                break;
+            // case 'target':
+            //     chips = this.threatReport.boundaries.targets;
+            //     break;
         }
 
         if (chips) {
@@ -304,9 +307,9 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
             case 'malware':
                 chips = this.threatReport.boundaries.malware;
                 break;
-            case 'target':
-                chips = this.threatReport.boundaries.targets;
-                break;
+            // case 'target':
+            //     chips = this.threatReport.boundaries.targets;
+            //     break;
         }
         chips.delete(stixName);
     }
@@ -345,7 +348,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
     public onCancel(event?: UIEvent): void {
         if (this.title === 'Modify') {
             this.sharedService.threatReportOverview = null;
-            this.router.navigate([`/${this.viewPath}/view/${this.id}`]);
+            this.router.navigate([`/${this.viewPath}/${this.id}`]);
         } else {
             this.location.back();
         }
@@ -360,11 +363,13 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
             console.log('A threat report with no reports cannot be persisted.');
             return;
         }
+        this.threatReport.boundaries.targets.clear();
+        this.threatReport.boundaries.targets.add(this.target);
         const sub$ = this.service.saveThreatReport(this.threatReport)
             .subscribe(
                 (reports) => {
                     console.log('saved ', reports);
-                    this.router.navigate([`/${this.viewPath}/view/${this.id}`]);
+                    this.router.navigate([`/${this.viewPath}/${this.id}`]);
                 },
                 (err) => console.log(err),
             );
@@ -438,7 +443,12 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
                         return;
                     }
                     const report = this.fixReportDateBeforeSave(result as Report);
-                    this.threatReport.reports.push(report);
+                    let index = this.threatReport.reports.findIndex((rep) => this.areSameReport(rep, report));
+                    if (index >= 0) {
+                        this.threatReport.reports[index] = report;
+                    } else {
+                        this.threatReport.reports.push(report);
+                    }
                     this.reportsDataSource.data = this.threatReport.reports; // update the table
                 },
                 (err) => console.log(err)
@@ -459,23 +469,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
             event.preventDefault();
         }
 
-        if (report.attributes.id) {
-            this.threatReport.reports =
-                    this.threatReport.reports.filter((el) => el.attributes.id !== report.attributes.id);
-        } else {
-            /*
-             * If the report has no ID, it is brand new. If we delete all the reports with no ID, as would happen
-             * in the previous condition, then we would remove all the brand new reports, instead of just the one
-             * the user clicked on. So now we count on all the required data matching instead.
-             */
-            this.threatReport.reports =
-                    this.threatReport.reports.filter((el) =>
-                        el.attributes.name !== report.attributes.name &&
-                        el.attributes.external_references[0].url !== report.attributes.external_references[0].url &&
-                        el.attributes.external_references[0].source_name !==
-                                report.attributes.external_references[0].source_name
-                    );
-        }
+        this.threatReport.reports = this.threatReport.reports.filter((el) => !this.areSameReport(el, report));
         this.reportsDataSource.data = this.threatReport.reports; // update the table
         if (!this.threatReport.id) {
             // this threat report is in progress so do not save to db until they hit save
@@ -542,6 +536,22 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
             item.attributes.created = DateHelper.getISOOrUndefined(item.attributes.created);
         }
         return item;
+    }
+
+    private areSameReport(report1: Partial<Report>, report2: Partial<Report>): boolean {
+        if (report1.attributes.id) {
+            return report1.attributes.id === report2.attributes.id;
+        }
+        /*
+         * If the report has no ID, it is brand new. If we delete all the reports with no ID, as would happen
+         * in the previous condition, then we would remove all the brand new reports, instead of just the one
+         * the user clicked on. So now we count on all the required data matching instead.
+         */
+        return report1.attributes.name !== report2.attributes.name &&
+                report1.attributes.external_references[0].url !==
+                        report2.attributes.external_references[0].url &&
+                report1.attributes.external_references[0].source_name !==
+                        report2.attributes.external_references[0].source_name
     }
 
 }
