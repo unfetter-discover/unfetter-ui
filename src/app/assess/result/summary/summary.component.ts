@@ -17,25 +17,28 @@ import { UserProfile } from '../../../models/user/user-profile';
 import { LastModifiedAssessment } from '../../models/last-modified-assessment';
 import { MatDialog } from '@angular/material';
 import { ConfirmationDialogComponent } from '../../../components/dialogs/confirmation/confirmation-dialog.component';
+import { slideInOutAnimation } from '../../../global/animations/animations';
 
 @Component({
   selector: 'summary',
   templateUrl: './summary.component.html',
-  styleUrls: ['./summary.component.scss']
+  styleUrls: ['./summary.component.scss'],
+  animations: [slideInOutAnimation],
 })
 export class SummaryComponent implements OnInit, OnDestroy {
 
+  readonly baseAssessUrl = '/assess';
   assessmentName: Observable<string>;
-  id: string;
+  rollupId: string;
   summaries: Assessment[];
   summary: Assessment;
   finishedLoading = false;
   masterListOptions = {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Modified'),
-    displayRoute: '/assess/result/summary',
-    modifyRoute: '/assess',
-    createRoute: '/assess/create',
+    displayRoute: this.baseAssessUrl + '/result/summary',
+    modifyRoute: this.baseAssessUrl,
+    createRoute: this.baseAssessUrl + '/create',
   };
 
   private readonly subscriptions: Subscription[] = [];
@@ -54,14 +57,42 @@ export class SummaryComponent implements OnInit, OnDestroy {
    *  initialize this component, fetching data from backend
    */
   public ngOnInit(): void {
-    this.id = this.route.snapshot.params['id'] || '';
+    const idParamSub$ = this.route.params
+      .pluck('id')
+      .subscribe((id: string) => {
+        this.rollupId = id || '';
+        this.listenForDataChanges();
+        const sub$ = this.userStore
+          .select('users')
+          .pluck('userProfile')
+          .take(1)
+          .subscribe((user: UserProfile) => {
+            const creatorId = user._id;
+            this.requestData(this.rollupId, creatorId);
+          },
+          (err) => console.log(err));
+        this.subscriptions.push(sub$);
+      },
+      (err) => console.log(err),
+      () => idParamSub$.unsubscribe());
+  }
 
-
+  /**
+   * @description setup subscriptions and observables for data changes
+   * @return {void}
+   */
+  public listenForDataChanges(): void {
     const sub1$ = this.store
       .select('summary')
       .pluck('summaries')
       .distinctUntilChanged()
       .subscribe((arr: Assessment[]) => {
+        if (!arr || arr.length === 0) {
+          this.summary = undefined;
+          this.summaries = [];
+          return;
+        }
+
         this.summaries = [...arr];
         this.summary = { ...arr[0] };
       },
@@ -74,27 +105,28 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .subscribe((done: boolean) => this.finishedLoading = done,
       (err) => console.log(err));
 
-    const sub3$ = this.userStore
-      .select('users')
-      .pluck('userProfile')
-      .take(1)
-      .subscribe((user: UserProfile) => {
-        const creatorId = user._id;
-        this.masterListOptions.dataSource = new SummaryDataSource(this.assessmentSummaryService, creatorId);
-        this.masterListOptions.columns.id.classes = 'cursor-pointer';
-        this.store.dispatch(new LoadAssessmentSummaryData(this.id));
-      },
-      (err) => console.log(err));
-
     this.assessmentName = this.store
       .select('summary')
       .pluck('summaries')
       .distinctUntilChanged()
       .map((summaries: Assessment[]) => {
+        if (!summaries || summaries.length === 0) {
+          return '';
+        }
         return summaries[0].name;
       });
 
-    this.subscriptions.push(sub1$, sub2$, sub3$);
+    this.subscriptions.push(sub1$, sub2$);
+  }
+
+  /**
+   * @description
+   * @param {string} creatorId - optional
+   */
+  public requestData(rollupId: string, creatorId?: string): void {
+    this.masterListOptions.dataSource = new SummaryDataSource(this.assessmentSummaryService, creatorId);
+    this.masterListOptions.columns.id.classes = 'cursor-pointer';
+    this.store.dispatch(new LoadAssessmentSummaryData(rollupId));
   }
 
   /**
@@ -102,6 +134,13 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public ngOnDestroy(): void {
+    this.cleanSubscriptions();
+  }
+
+  /**
+   * @description for any subscriptions, unsubscribe and clean out the list
+   */
+  public cleanSubscriptions(): void {
     this.subscriptions
       .filter((el) => el !== undefined)
       .filter((el) => !el.closed)
@@ -111,37 +150,58 @@ export class SummaryComponent implements OnInit, OnDestroy {
   /**
    * @description router to the create page
    * @param {event} UIEvent - optional 
-   * @return {void}
+   * @return {Promise<boolean>}
    */
-  public onCreate(event?: UIEvent): void {
-    this.router.navigateByUrl(this.masterListOptions.createRoute);
+  public onCreate(event?: UIEvent): Promise<boolean> {
+    return this.router.navigateByUrl(this.masterListOptions.createRoute);
   }
 
   /**
    * @description
    * @param {LastModifiedAssessment} assessment - optional
-   * @return {void}
+   * @return {Promise<boolean>}
    */
-  public onEdit(assessment: LastModifiedAssessment): void {
-    this.router.navigateByUrl(this.masterListOptions.modifyRoute);
+  public onEdit(assessment: LastModifiedAssessment): Promise<boolean> {
+    return this.router.navigateByUrl(this.masterListOptions.modifyRoute);
   }
 
   /**
    * @description noop
-   * @return {void}
+   * @return {Promise<boolean>}
    */
-  public onShare(event?: UIEvent): void {
+  public onShare(event?: UIEvent): Promise<boolean> {
     console.log('noop');
+    return Promise.resolve(false);
   }
 
   /**
-   * @description loop thru all assessments related to the given rollupId - and delete them - ask for confirmation first
+   * @description clicked currently viewed assessment, confirm delete
+   * @return {void}
+   */
+  public onDeleteCurrent(): void {
+    const id = this.rollupId;
+    this.confirmDelete({ name: this.summary.name, rollupId: id });
+  }
+
+  /**
+   * @description clicked master list cell, confirm delete
    * @param {LastModifiedAssessment} assessment
    * @return {void}
    */
   public onDelete(assessment: LastModifiedAssessment): void {
+    this.confirmDelete({ name: assessment.name, rollupId: assessment.rollupId });
+  }
+
+  /**
+   * @description confirmation to delete
+   *  loop thru all assessments related to the given rollupId - and delete them
+   * @param {LastModifiedAssessment} assessment
+   * @return {void}
+   */
+  public confirmDelete(assessment: { name: string, rollupId: string }): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: { attributes: assessment } });
-    dialogRef.afterClosed().subscribe(
+    const dialogSub$ = dialogRef.afterClosed()
+      .subscribe(
       (result) => {
         const isBool = typeof result === 'boolean';
         const isString = typeof result === 'string';
@@ -154,32 +214,53 @@ export class SummaryComponent implements OnInit, OnDestroy {
         const sub$ = this.assessmentSummaryService
           .deleteByRollupId(assessment.rollupId)
           .subscribe(
-            (resp) => this.masterListOptions.dataSource.nextDataChange(resp),
-            (err) => console.log(err)
-          );
-        this.subscriptions.push(sub$);
-      }
-    );
+          (resp) => this.masterListOptions.dataSource.nextDataChange(resp),
+          (err) => console.log(err),
+          () => {
+            if (sub$) {
+              sub$.unsubscribe();
+            }
+
+            // we deleted the current assessment
+            if (this.rollupId === assessment.rollupId) {
+              return this.router.navigateByUrl(this.baseAssessUrl + '/navigate');
+            }
+          });
+      },
+      (err) => console.log(err),
+      () => dialogSub$.unsubscribe());
   }
 
   /**
    * @description
    * @param {LastModifiedAssessment} assessment - optional
-   * @return {void}
+   * @return {Promise<boolean>}
    */
-  public onCellSelected(assessment: LastModifiedAssessment): void {
+  public onCellSelected(assessment: LastModifiedAssessment): Promise<boolean> {
     if (!assessment || !assessment.rollupId) {
       return;
     }
 
-    this.router.navigate([this.masterListOptions.displayRoute, assessment.rollupId]);
+    return this.router.navigate([this.masterListOptions.displayRoute, assessment.rollupId]);
   }
 
   /**
    * @description noop
-   * @return {void}
+   * @return {Promise<boolean>}
    */
-  public onFilterTabChanged($event?: UIEvent): void {
+  public onFilterTabChanged($event?: UIEvent): Promise<boolean> {
     console.log('noop');
+    return Promise.resolve(false);
+  }
+
+  /**
+   * @description angular track by list function, uses the items id if
+   *  it exists, otherwise uses the index
+   * @param {number} index
+   * @param {item}
+   * @return {number}
+   */
+  public trackByFn(index: number, item: any): number {
+    return item.id || index;
   }
 }

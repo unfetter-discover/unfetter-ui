@@ -4,8 +4,8 @@
       <div class="row height-100-percent flex flexColumn">
         <div class="flex1"></div>
         <nav mat-tab-nav-bar class="indent">
-          <a class="noUnderline" mat-tab-link [routerLink]="['../../summary/', 'l']" routerLinkActive #summary="routerLinkActive" [active]="summary.isActive">SUMMARY</a>
-          <a class="noUnderline" mat-tab-link [routerLink]="['../../full/', 'l']" routerLinkActive #full="routerLinkActive" [active]="full.isActive">FULL RESULTS</a>
+          <a class="noUnderline" mat-tab-link [routerLink]="summaryLink" routerLinkActive #summary="routerLinkActive" [active]="summary.isActive">SUMMARY</a>
+          <a class="noUnderline" mat-tab-link [routerLink]="resultsLink" routerLinkActive #full="routerLinkActive" [active]="full.isActive">FULL RESULTS</a>
         </nav>
       </div>
       <div class="flex1"></div>
