@@ -19,6 +19,7 @@ import { ThreatReportSharedService } from '../services/threat-report-shared.serv
 import { GenericApi } from '../../core/services/genericapi.service';
 import { SortHelper } from '../../global/static/sort-helper';
 import { DateHelper } from '../../global/static/date-helper';
+import { ReportEditorComponent } from './report-editor/report-editor.component';
 
 @Component({
     selector: 'threat-report-editor',
@@ -49,7 +50,11 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
 
     public readonly dateError = {
         startDate: { isError: false },
-        endDate: { isError: false, isSameOrBefore: false, isSameOrBeforeMessage: 'End Date must be after Start Date.' },
+        endDate: {
+            isError: false,
+            isSameOrBefore: false,
+            isSameOrBeforeMessage: 'End Date must be after Start Date.'
+        },
         errorMessage: 'Not a valid date'
     };
 
@@ -76,6 +81,8 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
             this.reportsDataSource = new MatTableDataSource(this.threatReport.reports);
             if (this.sharedService.threatReportOverview) {
                 this.clone();
+            } else {
+                this.sharedService.threatReportOverview = this.threatReport;
             }
             this.title = 'Create';
             this.loading = false;
@@ -119,11 +126,11 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      */
     public load(threatReportId?: string): void {
         this.loading = true;
-
         if (!threatReportId) {
             // get any inprogress threat reports, or create a new one
             this.threatReport = this.sharedService.threatReportOverview || new ThreatReport();
             this.reportsDataSource = new MatTableDataSource(this.threatReport.reports);
+            this.sharedService.threatReportOverview = this.threatReport;
             this.title = 'Create';
             this.loading = false;
         } else {
@@ -157,23 +164,24 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
         const malwareUrl = `${Constance.MALWARE_URL}?${malwareFilter}`;
         const o2$ = this.genericApi.get(malwareUrl);
 
-        const sub1$ = Observable.combineLatest(o1$, o2$, (s1, s2) => [s1, s2]).subscribe(
-            (data) => {
-                const intrusions: IntrusionSet[] = data[0];
-                const malware: Malware[] = data[1];
-                this.intrusions = intrusions
-                    .map((el) => {
-                        return { value: el.id, displayValue: el.attributes.name } as SelectOption;
-                    })
-                    .sort(SortHelper.sortDescByField('displayValue'));
-                this.malware = malware
-                    .map((el) => {
-                        return { value: el.id, displayValue: el.attributes.name } as SelectOption;
-                    })
-                    .sort(SortHelper.sortDescByField('displayValue'));
-            },
-            (err) => console.log(err),
-            () => console.log('fetch complete'));
+        const sub1$ = Observable.combineLatest(o1$, o2$, (s1, s2) => [s1, s2])
+            .subscribe(
+                (data) => {
+                    const intrusions: IntrusionSet[] = data[0];
+                    const malware: Malware[] = data[1];
+                    this.intrusions = intrusions
+                        .map((el) => {
+                            return { value: el.id, displayValue: el.attributes.name } as SelectOption;
+                        })
+                        .sort(SortHelper.sortDescByField('displayValue'));
+                    this.malware = malware
+                        .map((el) => {
+                            return { value: el.id, displayValue: el.attributes.name } as SelectOption;
+                        })
+                        .sort(SortHelper.sortDescByField('displayValue'));
+                },
+                (err) => console.log(err),
+                () => console.log('fetch complete'));
         this.subscriptions.push(sub1$);
     }
 
@@ -326,7 +334,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      * @description determines if the form is safe for submitting
      */
     public isValid(): boolean {
-        return this.threatReport.name && !this.dateError.startDate.isError
+        return !!this.threatReport.name && (this.threatReport.reports.length > 0) && !this.dateError.startDate.isError
                 && !this.dateError.endDate.isError && !this.dateError.endDate.isSameOrBefore;
     }
 
@@ -348,13 +356,18 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      * @param {UIEvent} event optional
      */
     public onSave(event?: UIEvent): void {
+        if (this.threatReport.reports.length === 0) {
+            console.log('A threat report with no reports cannot be persisted.');
+            return;
+        }
         const sub$ = this.service.saveThreatReport(this.threatReport)
             .subscribe(
                 (reports) => {
-                    this.router.navigate([`/${this.viewPath}`]);
+                    console.log('saved ', reports);
+                    this.router.navigate([`/${this.viewPath}/view/${this.id}`]);
                 },
-            (err) => console.log(err),
-        );
+                (err) => console.log(err),
+            );
         this.subscriptions.push(sub$);
     }
 
@@ -363,80 +376,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      * @param {UIEvent} event optional
      */
     public onCreateReport(event?: UIEvent): void {
-        const opts = {
-            width: '800px',
-            height: 'calc(100vh - 140px)'
-        };
-        this.dialog
-            .open(ModifyReportDialogComponent, opts)
-            .afterClosed()
-            .subscribe((result: Partial<Report> | boolean) => {
-                if (this.isFalsey(result)) {
-                    return;
-                }
-                const report = this.fixReportDateBeforeSave(result as Report);
-                const sub$ = this.service.upsertReport(report)
-                    .subscribe(() => {
-                        console.log('saved report, reloading');
-                        this.load(this.threatReport.id);
-                    },
-                    (err) => console.log(err),
-                    () => sub$.unsubscribe());
-                },
-                (err) => console.log(err)
-            );
-    }
-
-    /**
-     * @description handle when a csv file is parsed into reports
-     * @param {Report[]} event
-     */
-    public onFileParsed(event?: Report[]): void {
-        if (!event) {
-            return;
-        }
-
-        const reports = this.fixReportDatesBeforeSave(event);
-        const sub$ = this.service.upsertReports(reports)
-            .subscribe(() => {
-                console.log('saved reports, reloading');
-                this.load(this.threatReport.id);
-            },
-            (err) => console.log(err),
-            () => sub$.unsubscribe());
-    }
-
-    /**
-     * @description notify user of any upload or parse errors
-     * @param {string} event optional
-     */
-    public onFileUploadFail(event?: string): void {
-        if (!event) {
-            return;
-        }
-        // notify the user of the error
-        this.snackBar.open(event, 'Close', {
-            duration: 3400,
-        });
-    }
-
-    /**
-     * @description turn dates into ISO Date format or backend will complain on validation
-     */
-    private fixReportDatesBeforeSave(reports: Report[]): Report[] {
-        return reports.map((report) => this.fixReportDateBeforeSave(report));
-    }
-
-    /**
-     * @description turn dates into ISO Date format or backend will complain on validation
-     */
-    private fixReportDateBeforeSave(report: Report): Report {
-        const item = report;
-        if (item && item.attributes && item.attributes.created) {
-            // turn to required ISO8601 format or clear the date because we cant use it
-            item.attributes.created = DateHelper.getISOOrUndefined(item.attributes.created);
-        }
-        return item;
+        this.createReportDialog({});
     }
 
     /**
@@ -483,7 +423,26 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      * @param {UIEvent} event optional
      */
     public onModifyReport(report: Report, event?: UIEvent): void {
+        this.createReportDialog({data: {report: report}});
+    }
 
+    private createReportDialog(options: any): void {
+        options.width = '800px';
+        options.height = 'calc(100vh - 240px)';
+        this.dialog
+            .open(ReportEditorComponent, options)
+            .afterClosed()
+            .subscribe(
+                (result: Partial<Report> | boolean) => {
+                    if (this.isFalsey(result)) {
+                        return;
+                    }
+                    const report = this.fixReportDateBeforeSave(result as Report);
+                    this.threatReport.reports.push(report);
+                    this.reportsDataSource.data = this.threatReport.reports; // update the table
+                },
+                (err) => console.log(err)
+            );
     }
 
     /**
@@ -500,10 +459,24 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
             event.preventDefault();
         }
 
-        console.log(report);
-        console.log(this.threatReport);
-        this.threatReport.reports =
-                this.threatReport.reports.filter((el) => el.attributes.id !== report.attributes.id);
+        if (report.attributes.id) {
+            this.threatReport.reports =
+                    this.threatReport.reports.filter((el) => el.attributes.id !== report.attributes.id);
+        } else {
+            /*
+             * If the report has no ID, it is brand new. If we delete all the reports with no ID, as would happen
+             * in the previous condition, then we would remove all the brand new reports, instead of just the one
+             * the user clicked on. So now we count on all the required data matching instead.
+             */
+            this.threatReport.reports =
+                    this.threatReport.reports.filter((el) =>
+                        el.attributes.name !== report.attributes.name &&
+                        el.attributes.external_references[0].url !== report.attributes.external_references[0].url &&
+                        el.attributes.external_references[0].source_name !==
+                                report.attributes.external_references[0].source_name
+                    );
+        }
+        this.reportsDataSource.data = this.threatReport.reports; // update the table
         if (!this.threatReport.id) {
             // this threat report is in progress so do not save to db until they hit save
             return;
@@ -514,6 +487,61 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
                 (tro) => console.log(tro),
                 (err) => console.log(err),
                 () => sub$.unsubscribe());
+    }
+
+    /**
+     * UNUSED UNTIL WE ADD IMPORT FUNCTIONALITY
+     * @description handle when a csv file is parsed into reports
+     * @param {Report[]} event
+     */
+    public onFileParsed(event?: Report[]): void {
+        if (!event) {
+            return;
+        }
+
+        const reports = this.fixReportDatesBeforeSave(event);
+        const sub$ = this.service.upsertReports(reports)
+            .subscribe(
+                () => {
+                    console.log('saved reports, reloading');
+                    this.load(this.threatReport.id);
+                },
+                (err) => console.log(err),
+                () => sub$.unsubscribe());
+    }
+
+    /**
+     * UNUSED UNTIL WE ADD IMPORT FUNCTIONALITY
+     * @description notify user of any upload or parse errors
+     * @param {string} event optional
+     */
+    public onFileUploadFail(event?: string): void {
+        if (!event) {
+            return;
+        }
+        // notify the user of the error
+        this.snackBar.open(event, 'Close', {
+            duration: 3400,
+        });
+    }
+
+    /**
+     * @description turn dates into ISO Date format or backend will complain on validation
+     */
+    private fixReportDatesBeforeSave(reports: Report[]): Report[] {
+        return reports.map((report) => this.fixReportDateBeforeSave(report));
+    }
+
+    /**
+     * @description turn dates into ISO Date format or backend will complain on validation
+     */
+    private fixReportDateBeforeSave(report: Report): Report {
+        const item = report;
+        if (item && item.attributes && item.attributes.created) {
+            // turn to required ISO8601 format or clear the date because we cant use it
+            item.attributes.created = DateHelper.getISOOrUndefined(item.attributes.created);
+        }
+        return item;
     }
 
 }

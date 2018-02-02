@@ -1,0 +1,60 @@
+@import '../../../../styles/_variables.scss';
+
+.edit-title-row {
+    align-items: center;
+}
+
+.edit-title {
+    font-size: 34px;
+    color: $dark-text-default;
+}
+
+.edit-title-buttons {
+    margin-right: 15px;
+}
+
+.edit-close-button {
+    margin-left: -30px;
+    margin-right: 5px;
+}
+
+.edit-cancel-button {
+
+}
+
+.edit-saveAs-button {
+
+}
+
+.edit-save-button {
+
+}
+
+#report-name,
+#report-description,
+#reference-name,
+#reference-source,
+#reference-external-id,
+#reference-description,
+#attack-patterns {
+    display: block;
+}
+
+.details-title {
+    color: #444444;
+    font-size: 20px;
+    padding: 0 15px;
+}
+
+.source-block {
+    padding-left: 0px;
+}
+
+.extId-block {
+    padding-right: 0px;
+}
+
+mat-chip.attack-pattern {
+    display: inline-block !important;
+    margin: 0px 8px 8px 0px !important;
+}
