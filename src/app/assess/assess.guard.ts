@@ -13,6 +13,8 @@ import { LastModifiedAssessment } from './models/last-modified-assessment';
 @Injectable()
 export class AssessGuard implements CanActivate {
 
+    private readonly CREATE_URL = 'assess/create';
+
     constructor(
         private router: Router,
         public store: Store<AppState>,
@@ -40,7 +42,7 @@ export class AssessGuard implements CanActivate {
                     map((data) => {
                         if (data === undefined || data.length === 0) {
                             // no assessments found, navigate to creation page
-                            this.router.navigate(['assess/create']);
+                            this.router.navigate([this.CREATE_URL]);
                             return false;
                         } else {
                             // has assessments,
@@ -49,6 +51,11 @@ export class AssessGuard implements CanActivate {
                             this.router.navigate(['assess/result/summary', lastModAssessment.rollupId]);
                             return true;
                         }
+                    })
+                    .catch((err) => {
+                        console.log('error in route gaurd, routing to create page', err);
+                        this.router.navigate([this.CREATE_URL]);
+                        return Observable.of(false);
                     });
             });
     }

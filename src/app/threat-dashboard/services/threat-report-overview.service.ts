@@ -16,6 +16,7 @@ import { LastModifiedAssessment } from '../../assess/models/last-modified-assess
 import { StixLabelEnum } from '../../models/stix/stix-label.enum';
 import { LastModifiedThreatReport } from '../models/last-modified-threat-report';
 import { JsonApi } from '../../models/json/jsonapi';
+import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 
 @Injectable()
 export class ThreatReportOverviewService {
@@ -463,11 +464,12 @@ export class ThreatReportOverviewService {
    * @return {Observable<Partial<LastModifiedThreatReport>[]>} reports modified
    */
   public getLatestReports(): Observable<Partial<LastModifiedThreatReport>[]> {
-    const url = Constance.API_HOST + `/latest/threat-report`;
+    const url = Constance.API_HOST + Constance.LATEST_THREAT_REPORTS_URL;
     const headers = this.ensureAuthHeaders(this.headers);
     return this.http
       .get<JsonApi<Partial<LastModifiedThreatReport>[]>>(url, { headers })
-      .map((resp) => resp.data);
+      .map((resp) => resp.data)
+      .catch(this.handleError);
   }
 
   /**
@@ -476,11 +478,12 @@ export class ThreatReportOverviewService {
    * @return {Observable<Partial<LastModifiedAssessment>[]>} reports modified
    */
   public getLatestReportsByCreatorId(creatorId: string): Observable<Partial<LastModifiedAssessment>[]> {
-    const url = Constance.API_HOST + `/latest/threat-report/creator/${creatorId}`;
+    const url = Constance.API_HOST + Constance.LATEST_THREAT_REPORTS_URL + `/creator/${creatorId}`;
     const headers = this.ensureAuthHeaders(this.headers);
     return this.http
       .get<JsonApi<Partial<LastModifiedThreatReport>[]>>(url, { headers })
-      .map((resp) => resp.data);
+      .map((resp) => resp.data)
+      .catch(this.handleError);
   }
 
   /**
@@ -496,6 +499,15 @@ export class ThreatReportOverviewService {
       }
     }
     return headers;
+  }
+
+  /**
+  * @description throw error
+  * @param error
+  */
+  private handleError(error: any): ErrorObservable {
+    console.log(error);
+    return Observable.throw(error);
   }
 
 }

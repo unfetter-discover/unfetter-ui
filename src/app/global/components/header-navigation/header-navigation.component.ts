@@ -21,7 +21,7 @@ export class HeaderNavigationComponent {
 
   public appList = [
     {
-      url: 'threat-dashboard',
+      url: 'threat-dashboard/navigate',
       title: 'Threat Dashboard',
       icon: Constance.LOGO_IMG_THREAT_DASHBOARD
     },

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Location } from '@angular/common';
 
 import { Store } from '@ngrx/store';
 import * as assessActions from '../store/assess.actions';
@@ -23,6 +24,7 @@ export class CreateComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
+    private location: Location,
     public store: Store<assessReducers.AssessState>,
   ) { }
 
@@ -64,5 +66,12 @@ export class CreateComponent implements OnInit {
   public formToAssessment(form: FormGroup): AssessmentMeta {
     const assessment = Object.assign(new AssessmentMeta(), form.value);
     return assessment;
+  }
+
+  /**
+   * @description on cancel, go back a step in window history
+   */
+  public onCancel(): void {
+    this.location.back();
   }
 }

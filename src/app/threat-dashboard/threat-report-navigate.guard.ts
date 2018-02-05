@@ -12,6 +12,8 @@ import { LastModifiedThreatReport } from './models/last-modified-threat-report';
 @Injectable()
 export class ThreatReportNavigateGuard implements CanActivate {
 
+    private readonly CREATE_URL = '/threat-dashboard/create';
+
     constructor(
         private router: Router,
         private store: Store<AppState>,
@@ -39,7 +41,7 @@ export class ThreatReportNavigateGuard implements CanActivate {
                     map((data) => {
                         if (data === undefined || data.length === 0) {
                             // nothing found, navigate to creation page
-                            this.router.navigate(['/threat-dashboard/create']);
+                            this.router.navigate([this.CREATE_URL]);
                             return false;
                         } else {
                             // has results,
@@ -48,6 +50,11 @@ export class ThreatReportNavigateGuard implements CanActivate {
                             this.router.navigate(['/threat-dashboard/view', lastMod.workproductId]);
                             return true;
                         }
+                    })
+                    .catch((err) => {
+                        console.log('error in route gaurd, routing to create page', err);
+                        this.router.navigate([this.CREATE_URL]);
+                        return Observable.of(false);
                     });
             });
     }

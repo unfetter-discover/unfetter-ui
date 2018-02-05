@@ -60,6 +60,8 @@ export const Constance = {
   SIGHTING_TYPE: 'sighting',
   SIGHTING_ICON: 'assets/icon/stix-icons/svg/campaign-b.svg',
 
+  LATEST_THREAT_REPORTS_URL: `api/latest/threat-reports`,
+
   MALWARE_URL: 'api/malwares',
   MALWARE_TYPE: 'malware',
   MALWARE_ICON: 'assets/icon/stix-icons/svg/malware-b.svg',
