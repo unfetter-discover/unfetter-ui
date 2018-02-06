@@ -285,7 +285,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      * @param {{ value: any}} option
      * @return {boolean} true if found, otherwise false
      */
-    public hasValue(chips: Set<any>, option: { value: any }): boolean {
+    private hasValue(chips: Set<any>, option: { value: any }): boolean {
         return chips.has(option.value);
     }
 
@@ -369,7 +369,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
             .subscribe(
                 (reports) => {
                     console.log('saved ', reports);
-                    this.router.navigate([`/${this.viewPath}/${this.id}`]);
+                    this.router.navigate([`/${this.viewPath}/${reports.id}`]);
                 },
                 (err) => console.log(err),
             );
@@ -438,21 +438,23 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
             .open(ReportEditorComponent, options)
             .afterClosed()
             .subscribe(
-                (result: Partial<Report> | boolean) => {
-                    if (this.isFalsey(result)) {
-                        return;
-                    }
-                    const report = this.fixReportDateBeforeSave(result as Report);
-                    let index = this.threatReport.reports.findIndex((rep) => this.areSameReport(rep, report));
-                    if (index >= 0) {
-                        this.threatReport.reports[index] = report;
-                    } else {
-                        this.threatReport.reports.push(report);
-                    }
-                    this.reportsDataSource.data = this.threatReport.reports; // update the table
-                },
+                (result: Partial<Report> | boolean) => this.insertReport(result),
                 (err) => console.log(err)
             );
+    }
+
+    public insertReport(report: Partial<Report> | boolean): void {
+        if (this.isFalsey(report)) {
+            return;
+        }
+        const modified = this.fixReportDateBeforeSave(report as Report);
+        let index = this.threatReport.reports.findIndex((rep) => this.areSameReport(rep, modified));
+        if (index >= 0) {
+            this.threatReport.reports[index] = modified;
+        } else {
+            this.threatReport.reports.push(modified);
+        }
+        this.reportsDataSource.data = this.threatReport.reports; // update the table
     }
 
     /**
@@ -471,7 +473,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
 
         this.threatReport.reports = this.threatReport.reports.filter((el) => !this.areSameReport(el, report));
         this.reportsDataSource.data = this.threatReport.reports; // update the table
-        if (!this.threatReport.id) {
+        if (!this.threatReport.id || !report.attributes.id) {
             // this threat report is in progress so do not save to db until they hit save
             return;
         }
@@ -547,10 +549,10 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
          * in the previous condition, then we would remove all the brand new reports, instead of just the one
          * the user clicked on. So now we count on all the required data matching instead.
          */
-        return report1.attributes.name !== report2.attributes.name &&
-                report1.attributes.external_references[0].url !==
+        return report1.attributes.name === report2.attributes.name &&
+                report1.attributes.external_references[0].url ===
                         report2.attributes.external_references[0].url &&
-                report1.attributes.external_references[0].source_name !==
+                report1.attributes.external_references[0].source_name ===
                         report2.attributes.external_references[0].source_name
     }
 

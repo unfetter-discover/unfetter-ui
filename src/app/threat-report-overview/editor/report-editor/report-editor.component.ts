@@ -59,37 +59,7 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
             );
         this.subscriptions.push(sub$);
 
-        // if we are given a report already, the user wants to modify it
-        if (this.data) {
-            if (this.data.report) {
-                this.report.attributes.id = this.data.report.attributes.id;
-                this.report.attributes.name = this.data.report.attributes.name;
-                this.report.attributes.description = this.data.report.attributes.description;
-                this.report.attributes.created = this.data.report.attributes.created;
-                this.report.attributes.modified = this.data.report.attributes.modified;
-                this.report.attributes.published = this.data.report.attributes.published;
-                this.data.report.attributes.labels.forEach((label) => this.report.attributes.labels.push(label));
-                this.data.report.attributes.object_refs
-                    .forEach((attackPattern) => this.report.attributes.object_refs.push(attackPattern));
-                this.data.report.attributes.external_references.forEach((ref) => {
-                    this.report.attributes.external_references.push({
-                        source_name: ref.source_name,
-                        external_id: ref.external_id,
-                        description: ref.description,
-                        url: ref.url,
-                    });
-                });
-                this.references = this.report.attributes.external_references[0];
-                this.title = 'Modify';
-                this.editing = true;
-            }
-        }
-
-        // ensure we have a valid report object
-        this.report.attributes.external_references = [this.references];
-        if (!this.report.attributes.object_refs) {
-            this.report.attributes.object_refs = [];
-        }
+        this.initializeReport(this.data);
     }
 
     /**
@@ -102,6 +72,38 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
         const filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
         const url = Constance.ATTACK_PATTERN_URL + '?' + filter;
         return this.genericApiService.get(url).map((el) => this.attackPatterns = el);
+    }
+
+    public initializeReport(data: any) {
+        // if we are given a report already, the user wants to modify it
+        if (data && data.report) {
+            this.report.attributes.id = data.report.attributes.id;
+            this.report.attributes.name = data.report.attributes.name;
+            this.report.attributes.description = data.report.attributes.description;
+            this.report.attributes.created = data.report.attributes.created;
+            this.report.attributes.modified = data.report.attributes.modified;
+            this.report.attributes.published = data.report.attributes.published;
+            data.report.attributes.labels.forEach((label) => this.report.attributes.labels.push(label));
+            data.report.attributes.object_refs
+                .forEach((attackPattern) => this.report.attributes.object_refs.push(attackPattern));
+            data.report.attributes.external_references.forEach((ref) => {
+                this.report.attributes.external_references.push({
+                    source_name: ref.source_name,
+                    external_id: ref.external_id,
+                    description: ref.description,
+                    url: ref.url,
+                });
+            });
+            this.references = this.report.attributes.external_references[0];
+            this.title = 'Modify';
+            this.editing = true;
+        }
+
+        // ensure we have a valid report object
+        this.report.attributes.external_references = [this.references];
+        if (!this.report.attributes.object_refs) {
+            this.report.attributes.object_refs = [];
+        }
     }
 
     /**
@@ -194,7 +196,6 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
             }
 
             // return it
-            console.log('dialog closing with report ', this.report);
             this.dialogRef.close(this.report);
         }
     }
