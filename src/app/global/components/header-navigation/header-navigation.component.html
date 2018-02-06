@@ -34,6 +34,12 @@
             <div class="appItemText">{{ appItem.title }}</div>
           </a>
         </span>
+        <span class="appLinkWrapper">
+          <a href="/explorer?token={{ encodedToken }}" target=_blank class="appLink">
+            <img src="{{ apiDocsIcon }}" class="appItemImg">
+            <div class="appItemText">API Docs</div>
+          </a>
+        </span>
         <span class="appLinkWrapper" *ngIf="authService.isOrgLeader()">
           <a routerLink="./organizations" class="appLink" (click)="showAppMenu = false">
             <img src="{{ orgLeaderIcon }}" class="appItemImg">
