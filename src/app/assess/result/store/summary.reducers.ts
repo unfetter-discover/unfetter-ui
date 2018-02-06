@@ -1,13 +1,5 @@
 import * as summaryActions from './summary.actions';
-import * as fromApp from '../../root-store/app.reducers'
-import { Indicator } from '../../models/stix/indicator';
-import { Stix } from '../../models/stix/stix';
-import { JsonApiData } from '../../models/json/jsonapi-data';
 import { Assessment } from '../../../models/assess/assessment';
-
-// export interface SummaryFeatureState extends fromApp.AppState {
-//     summary: Assessment
-// };
 
 export interface SummaryState {
     summary: Assessment;

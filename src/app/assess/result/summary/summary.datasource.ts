@@ -5,9 +5,9 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { Assessment } from '../../../models/assess/assessment';
-import { AssessmentSummaryService } from '../../services/assessment-summary.service';
-import { LastModifiedAssessment } from '../../models/last-modified-assessment';
+import { AssessService } from '../../services/assess.service';
 import { Dictionary } from '../../../models/json/dictionary';
+import { LastModifiedAssessment } from '../../models/last-modified-assessment';
 
 /**
  * @description handles filter events from the UI sent to the datasource, in this case a service call
@@ -16,7 +16,7 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment
     protected filterChange = new BehaviorSubject('');
     protected dataChange = new BehaviorSubject(undefined);
 
-    constructor(protected assessmentSummaryService: AssessmentSummaryService, protected creatorId?: string) {
+    constructor(protected assessService: AssessService, protected creatorId?: string) {
         super();
     }
 
@@ -100,7 +100,7 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment
      * @return {Observable<Partial<LastModifiedAssessment>[]>}
      */
     public fetchWithCreatorId(creatorId: string): Observable<Partial<LastModifiedAssessment>[]> {
-        return this.assessmentSummaryService
+        return this.assessService
             .getLatestAssessmentsByCreatorId(creatorId);
     }
 
@@ -109,7 +109,7 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment
      * @return {Observable<Partial<LastModifiedAssessment>[]>}
      */
     public fetchWithNoCreatorId(): Observable<Partial<LastModifiedAssessment>[]> {
-        return this.assessmentSummaryService
+        return this.assessService
             .getLatestAssessments();
     }
 }

@@ -1,9 +1,37 @@
 @import '../../../../styles/_variables.scss';
 
-#sidePanel {
+.side-panel {
     width: 320px;
+
+    .side-panel-risks {
+        margin-left: 24px;
+        margin-right: 24px;
+        font-size: 14px;
+    }
+
+    .risk-header {
+        border-bottom: 1px solid $assessments-primary-lightest;
+        padding-bottom: 4px;
+        margin-bottom: 4px;
+
+        .align-right {
+            text-align: right;
+        }
+    }
+
+    .phase-name {
+        font-weight: 500;
+    }
 }
 
-#mainWindow {
+.main-panel {
     min-height: calc(100vh - #{$navbar-height}px);
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-grow {
+    flex: 1 1 auto;
 }

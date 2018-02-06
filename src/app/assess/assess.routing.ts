@@ -21,7 +21,8 @@ const routes = [
         ]
     },
     { path: 'result/summary/:id', component: SummaryComponent },
-    { path: 'result/full/:id', component: FullComponent }
+    { path: 'result/full/:id', component: FullComponent },
+    // { path: 'result/group/:id/:phase', component: AssessmentsGroupComponent },
 ];
 
 export const routing = RouterModule.forChild(routes);

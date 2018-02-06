@@ -1,7 +1,4 @@
 import { Action } from '@ngrx/store';
-import { AssessmentMeta } from '../../models/assess/assessment-meta';
-import { Stix } from '../../models/stix/stix';
-import { JsonApiData } from '../../../models/json/jsonapi-data';
 import { Assessment } from '../../../models/assess/assessment';
 
 // For effects

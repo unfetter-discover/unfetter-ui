@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { AppState } from '../root-store/app.reducers';
 import { UserState } from '../root-store/users/users.reducers';
-import { AssessmentSummaryService } from './services/assessment-summary.service';
+import { AssessService } from './services/assess.service';
 import { UserProfile } from '../models/user/user-profile';
 import { Assessment } from '../models/assess/assessment';
 import { LastModifiedAssessment } from './models/last-modified-assessment';
@@ -18,7 +18,7 @@ export class AssessGuard implements CanActivate {
     constructor(
         private router: Router,
         public store: Store<AppState>,
-        public assessmentSummaryService: AssessmentSummaryService,
+        public assessService: AssessService,
     ) { }
 
     /**
@@ -67,7 +67,7 @@ export class AssessGuard implements CanActivate {
      */
     public fetchWithCreatorId(creatorId: string): Observable<Partial<LastModifiedAssessment>[]> {
         const id = creatorId;
-        return this.assessmentSummaryService
+        return this.assessService
             .getLatestAssessmentsByCreatorId(id);
     }
 
@@ -76,7 +76,7 @@ export class AssessGuard implements CanActivate {
      * @return {Observable<Partial<LastModifiedAssessment>[]>}
      */
     public routeNoCreatorId(): Observable<Partial<LastModifiedAssessment>[]> {
-        return this.assessmentSummaryService
+        return this.assessService
             .getLatestAssessments();
     }
 }
