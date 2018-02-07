@@ -20,7 +20,7 @@ import { GenericApi } from '../../../core/services/genericapi.service';
 import { AttackPattern } from '../../../models/attack-pattern';
 import { compile } from 'handlebars';
 
-fdescribe('ReportEditorComponent', () => {
+describe('ReportEditorComponent', () => {
 
     let component: ReportEditorComponent;
     let fixture: ComponentFixture<ReportEditorComponent>;
