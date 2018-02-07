@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { SummaryCalculationService } from '../summary-calculation.service';
+
 @Component({
   selector: 'summary-report',
   templateUrl: './summary-report.component.html',
@@ -7,15 +9,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SummaryReportComponent implements OnInit {
 
-  totalRiskValue: number;
-  // TODO fix
-  weakestAttackPatterns: any;
+  totalRiskValue: string;
+  weakness: string;
 
-  constructor() {
+  constructor(private summaryCalculationService: SummaryCalculationService) {
   }
 
   ngOnInit() {
-    // TODO fix
-    this.totalRiskValue = 78;
+    this.totalRiskValue = this.summaryCalculationService.getRiskText();
+    this.weakness = this.summaryCalculationService.weakness;
   }
 }

@@ -1,26 +1,24 @@
 <div id="report">
   <div class="container-fluid">
     <summary-header></summary-header>
-    <div id="summaryTitle">
+    <div class="row" id="summaryTitle">
       <span>Assessment Report Overview</span>
     </div>
     <div class="row">
-      <div class="flex flexItemsCenter">
-        <mat-card color="primary" class="card uf-mat-card" id="riskCard">
+      <div class="flex matchHeight">
+        <mat-card color="primary" class="uf-mat-card card" id="riskCard">
           <mat-card-title>Overall Implementation Risk {{totalRiskValue}}%</mat-card-title>
-          <mat-card-subtitle>Weaknesses</mat-card-subtitle>
+          <mat-card-subtitle>Weakness</mat-card-subtitle>
           <mat-card-content>
-            <ul *ngIf="weakestAttackPatterns && weakestAttackPatterns.length > 0; else noWeakestAttackPatterns">
-              <li *ngFor="let attackPattern of weakestAttackPatterns">
-                {{attackPattern.description}}
-              </li>
-            </ul>
+            <p *ngIf="weakness && weakness.length > 0; else noWeakestAttackPatterns">
+                {{weakness}}
+            </p>
             <ng-template #noWeakestAttackPatterns>
               No Weaknesses found? Either we messed up or you are good!
             </ng-template>
           </mat-card-content>
         </mat-card>
-        <mat-card class="card uf-mat-card" id="vulnerabilityCard">
+        <mat-card class="uf-mat-card card" id="vulnerabilityCard">
           <mat-card-title>Where you are most vulnerable</mat-card-title>
           <mat-card-content>
             <mat-table #table>
@@ -58,12 +56,12 @@
       </div>
     </div>
     <div class="row">
-      <div class="flex flexItemsCenter">
-        <mat-card class="card uf-mat-card" id="riskCard">
+      <div class="flex matchHeight">
+        <mat-card class="uf-mat-card card" id="riskCard">
           <mat-card-title>Sophistication Breakdown</mat-card-title>
           <mat-card-content>Test</mat-card-content>
         </mat-card>
-        <mat-card class="card uf-mat-card" id="vulnerabilityCard">
+        <mat-card class="uf-mat-card card" id="vulnerabilityCard">
           <mat-card-title>% Techniques Detected by Skill</mat-card-title>
           <mat-card-content>Test</mat-card-content>
         </mat-card>
@@ -71,7 +69,7 @@
     </div>
     <div class="row">
       <div class="flex flexItemsCenter">
-        <mat-card class="card uf-mat-card flex1">
+        <mat-card class="uf-mat-card card flex1">
           <mat-card-title>% of Assessments Better than Mitigation Threshold</mat-card-title>
           <mat-card-content>Test</mat-card-content>
         </mat-card>

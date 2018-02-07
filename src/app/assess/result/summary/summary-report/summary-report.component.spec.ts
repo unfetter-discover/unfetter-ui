@@ -3,16 +3,24 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatTableModule } from '@angular/material';
 
 import { SummaryReportComponent } from './summary-report.component';
+import { SummaryCalculationService } from '../summary-calculation.service';
 
 describe('SummaryReportComponent', () => {
   let component: SummaryReportComponent;
   let fixture: ComponentFixture<SummaryReportComponent>;
 
+  const serviceMock = {weakness: 'weeeeeeeak', getRiskText: string => 'risk'};
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       declarations: [SummaryReportComponent],
-      imports: [MatTableModule]
+      imports: [MatTableModule],
+      providers: [
+        {
+          provide: SummaryCalculationService,
+          useValue: serviceMock
+        }
+      ]
     })
       .compileComponents();
   }));

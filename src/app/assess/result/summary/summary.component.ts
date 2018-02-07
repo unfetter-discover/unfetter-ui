@@ -8,7 +8,8 @@ import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
 import { SummaryState } from '../store/summary.reducers';
-import { LoadAssessmentSummaryData } from '../store/summary.actions';
+import { RiskByAttackPatternState } from '../store/riskbyattackpattern.reducers';
+import { LoadAssessmentSummaryData, LoadSingleAssessmentSummaryData, LoadSingleRiskPerKillChainData } from '../store/summary.actions';
 
 import { AppState } from '../../../root-store/app.reducers';
 import { Assessment } from '../../../models/assess/assessment';
@@ -20,6 +21,12 @@ import { slideInOutAnimation } from '../../../global/animations/animations';
 import { Constance } from '../../../utils/constance';
 import { UserProfile } from '../../../models/user/user-profile';
 import { SummaryDataSource } from './summary.datasource';
+import { SummaryCalculationService } from './summary-calculation.service';
+import { AssessmentObject } from '../../../models/assess/assessment-object';
+import { AssessmentsDashboardService } from '../../../assessments/assessments-dashboard/assessments-dashboard.service';
+import { RiskByAttack } from '../../../models/assess/risk-by-attack';
+import { LoadAssessmentRiskByAttackPatternData, LoadSingleAssessmentRiskByAttackPatternData } from '../store/riskbyattackpattern.actions';
+import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
 
 @Component({
   selector: 'summary',
@@ -34,7 +41,13 @@ export class SummaryComponent implements OnInit, OnDestroy {
   rollupId: string;
   summaries: Assessment[];
   summary: Assessment;
+  riskByAttacks: RiskByAttack[];
+  riskByAttack: RiskByAttack;
+  riskByKillChains: RiskByKillChain[];
+  riskByKillChain: RiskByKillChain;
   finishedLoading = false;
+  finishedLoadingRBAP = false;
+  finishedLoadingKCD = false;
   masterListOptions = {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Modified'),
@@ -50,8 +63,10 @@ export class SummaryComponent implements OnInit, OnDestroy {
     private router: Router,
     private dialog: MatDialog,
     private store: Store<SummaryState>,
+    private riskByAttackPatternStore: Store<RiskByAttackPatternState>,
     private userStore: Store<AppState>,
     private assessService: AssessService,
+    private summaryCalculationService: SummaryCalculationService
   ) { }
 
   /**
@@ -104,8 +119,66 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .select('summary')
       .pluck('finishedLoading')
       .distinctUntilChanged()
-      .subscribe((done: boolean) => this.finishedLoading = done,
-        (err) => console.log(err));
+      .subscribe((done: boolean) => {
+        this.finishedLoading = done;
+        if (done) {
+          this.transformSummary()
+        }
+      }, (err) => console.log(err));
+
+    const sub3$ = this.riskByAttackPatternStore
+      .select('riskByAttackPattern')
+      .pluck('riskByAttackPatterns')
+      .distinctUntilChanged()
+      .subscribe((arr: RiskByAttack[]) => {
+        if (!arr || arr.length === 0) {
+          this.riskByAttack = undefined;
+          this.riskByAttacks = [];
+          return;
+        }
+
+        this.riskByAttacks = [...arr];
+        this.riskByAttack = { ...arr[0] };
+      },
+      (err) => console.log(err));
+
+    const sub4$ = this.riskByAttackPatternStore
+      .select('riskByAttackPattern')
+      .pluck('finishedLoading')
+      .distinctUntilChanged()
+      .subscribe((done: boolean) => {
+        this.finishedLoadingRBAP = done;
+        if (done) {
+          this.transformRBAP();
+        }
+      },
+      (err) => console.log(err));
+
+    const sub5$ = this.store
+      .select('summary')
+      .pluck('killChainData')
+      .distinctUntilChanged()
+      .subscribe((arr: RiskByKillChain[]) => {
+        if (!arr || arr.length === 0) {
+          this.riskByKillChain = undefined;
+          this.riskByKillChains = [];
+          return;
+        }
+
+        this.riskByKillChain = { ...arr[0] };
+        this.riskByKillChains = [...arr];
+      })
+
+    const sub6$ = this.store
+      .select('summary')
+      .pluck('finishedLoadingKillChainData')
+      .distinctUntilChanged()
+      .subscribe((done: boolean) => {
+        this.finishedLoadingKCD = done;
+        if (done) {
+          this.transformKCD();
+        }
+      }, (err) => console.log(err));
 
     this.assessmentName = this.store
       .select('summary')
@@ -118,7 +191,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
         return summaries[0].name;
       });
 
-    this.subscriptions.push(sub1$, sub2$);
+    this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$);
   }
 
   /**
@@ -128,8 +201,14 @@ export class SummaryComponent implements OnInit, OnDestroy {
   public requestData(rollupId: string, creatorId?: string): void {
     this.masterListOptions.dataSource = new SummaryDataSource(this.assessService, creatorId);
     this.masterListOptions.columns.id.classes = 'cursor-pointer';
-    this.store.dispatch(new LoadAssessmentSummaryData(rollupId));
+    // TODO fix
+    this.store.dispatch(new LoadSingleAssessmentSummaryData(rollupId));
+    this.riskByAttackPatternStore.dispatch(new LoadSingleAssessmentRiskByAttackPatternData(rollupId));
+    // TODO this.store.dispatch(new LoadAssessmentSummaryData(rollupId));
+    this.store.dispatch(new LoadSingleRiskPerKillChainData(rollupId));
+    // TODO this.store.dispatch(new LoadRiskPerKillChainData(rollupId))
   }
+
 
   /**
    * @description close open subscriptions, clean up resources when we destroy this component
@@ -270,5 +349,32 @@ export class SummaryComponent implements OnInit, OnDestroy {
    */
   public trackByFn(index: number, item: any): number {
     return item.id || index;
+  }
+
+  public transformSummary() {
+    // single
+    this.summaryCalculationService.setAverageRiskPerAssessedObject(this.summary.assessment_objects);
+    // all
+    // let allAssessmentObjects: Array<AssessmentObject> = []; 
+    // for (let assessment of this.summaries) {
+    //   allAssessmentObjects = allAssessmentObjects.concat(assessment.assessment_objects);
+    // }
+    // this.summaryCalculationService.setAverageRiskPerAssessedObject(allAssessmentObjects);
+  }
+
+  public transformRBAP() {
+    // single
+    this.summaryCalculationService.calculateWeakness(this.riskByAttack);
+    // all
+    // let allRiskByAttackObjects: Array<RiskByAttack> = [];
+    // for (let riskByAttack of this.riskByAttacks) {
+    //  allRiskByAttackObjects = allRiskByAttackObjects.concat(riskByAttack);
+    // }
+    // this.summaryCalculationService.calculateWeakness(allRiskByAttackObjects);
+  }
+
+  public transformKCD() {
+    // single
+
   }
 }
