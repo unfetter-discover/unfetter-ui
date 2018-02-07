@@ -1,29 +1,29 @@
 @import '../../../styles/_variables.scss';
 
-#threatReportCreationComponent {
-    .create-title-row {
+#threatReportEditor {
+    .edit-title-row {
         align-items: center;
     }
 
-    .create-title {
+    .edit-title {
         font-size: 34px;
         color: $dark-text-default;
     }
 
-    .create-title-buttons {
+    .edit-title-buttons {
         margin-right: 15px;
     }
 
-    .create-close-button {
+    .edit-close-button {
         margin-left: -35px;
         margin-right: 10px;
     }
 
-    .create-cancel-button {
+    .edit-cancel-button {
         // no styles at this time
     }
 
-    .create-save-button {
+    .edit-save-button {
 
     }
 
@@ -41,10 +41,6 @@
         flex-direction: column;
         align-items: stretch;
         padding-right: 10px;
-
-        .target-input {
-            height: 24px;
-        }
     }
 
     .malware-fieldset {

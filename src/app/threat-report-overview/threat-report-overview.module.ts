@@ -33,6 +33,7 @@ import { ThreatReportSharedService } from './services/threat-report-shared.servi
 import { ThreatReportModifyComponent } from './modify/threat-report-modify.component';
 import { ThreatReportOverviewService } from '../threat-dashboard/services/threat-report-overview.service';
 import { ThreatReportEditorComponent } from './editor/threat-report-editor.component';
+import { ReportEditorComponent } from './editor/report-editor/report-editor.component';
 
 const materialModules = [
   MatButtonModule,
@@ -72,6 +73,7 @@ const unfetterServices = [
 @NgModule({
   declarations: [
     ...unfetterComponents,
+    ReportEditorComponent,
   ],
   imports: [
     CommonModule,
@@ -85,6 +87,6 @@ const unfetterServices = [
   ],
   exports: [...unfetterComponents],
   providers: [...unfetterServices],
-  entryComponents: [ModifyReportDialogComponent]
+  entryComponents: [ModifyReportDialogComponent, ReportEditorComponent]
 })
 export class ThreatReportOverviewModule { }
