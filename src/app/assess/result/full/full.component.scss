@@ -1,37 +1,45 @@
 @import '../../../../styles/_variables.scss';
+@import './_assess.common.scss';
 
 .side-panel {
     width: 320px;
+    font-size: 12px;
 
     .side-panel-risks {
-        margin-left: 24px;
-        margin-right: 24px;
-        font-size: 14px;
-    }
-
-    .risk-header {
-        border-bottom: 1px solid $assessments-primary-lightest;
-        padding-bottom: 4px;
-        margin-bottom: 4px;
-
-        .align-right {
-            text-align: right;
+        .phase-name {
+            font-size: 14px;
         }
     }
 
-    .phase-name {
-        font-weight: 500;
+    .risk-header-wrapper {
+        border-bottom: 1px solid $assessments-primary-lightest;
+
+        .risk-header {
+            @include with-margin-centered();
+            padding-bottom: 4px;
+            margin-bottom: 4px;
+    
+            .align-right {
+                text-align: right;
+            }
+        }
     }
+
+    .phases-list {
+        @include with-margin-centered();
+
+        .phases-list-item {
+            padding-top: 8px;
+            padding-bottom: 16px;
+            height: 76px;
+        }
+
+    }
+
+    
 }
 
 .main-panel {
     min-height: calc(100vh - #{$navbar-height}px);
 }
 
-.flex {
-    display: flex;
-}
-
-.flex-grow {
-    flex: 1 1 auto;
-}

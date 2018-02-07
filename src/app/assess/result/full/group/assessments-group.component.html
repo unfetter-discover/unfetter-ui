@@ -1,26 +1,24 @@
-<div id="assessmentsGroup" class="container fadeIn" *ngIf="riskByAttackPattern && assessedObjects && assessment; else loadingBlock">
-
-    <div class="row">
-
-        <div class="col-sm-3">
-            <div>{{ activePhase | capitalize }}</div>
-            <div *ngIf="attackPatternsByPhase && attackPatternsByPhase.length">
+<div class="main" *ngIf="riskByAttackPattern && assessedObjects && assessment; else loadingBlock">
+    <div class="flex">
+        <div class="flex-fixed margin-centered">
+            <div class="phase-header">{{activePhase | capitalize}}</div>
+            <div class="divider" *ngIf="attackPatternsByPhase && attackPatternsByPhase.length">
+                <span class="fs-12">Attack Patterns</span>
                 <div *ngFor="let ap of attackPatternsByPhase" class="attackPatternListItem">
                     <risk-icon [risk]="getRiskByAttackPatternId(ap.attackPatternId)" [showTooltip]="true"></risk-icon>&nbsp;
-                    <a (click)="setAttackPattern(ap.attackPatternId)">{{ ap.attackPatternName }}</a>
+                    <span class="cursor-pointer" (click)="setAttackPattern(ap.attackPatternId)">{{ ap.attackPatternName }}</span>
                 </div>
             </div>
 
             <div *ngIf="unassessedAttackPatterns && unassessedAttackPatterns.length > 0">
-                <hr>
-                <h5 class="text-muted">Unassessed Attack Patterns</h5>
+                <span class="fs-12">Unassessed Attack Patterns</span>
                 <div *ngFor="let unassessedAttackPattern of unassessedAttackPatterns" class="attackPatternListItem">
-                    <a (click)="setAttackPattern(unassessedAttackPattern.id)">{{ unassessedAttackPattern.attributes.name }}</a>
+                    <span class="cursor-pointer" (click)="setAttackPattern(unassessedAttackPattern.id)">{{ unassessedAttackPattern.attributes.name }}</span>
                 </div>
             </div>
         </div>
 
-        <div class="col-sm-6">
+        <div class="flex-grow margin-centered">
             <div *ngIf="currentAttackPattern">
                 <div>{{ currentAttackPattern.name }}</div>
                 <div>

@@ -1,6 +1,40 @@
+@import '../_assess.common.scss';
+
 .attackPatternListItem {
     margin-top: 0.4rem;
 }
+
 br.altClearFix {
     height: 0;
+}
+
+.main {
+    margin-top: 24px;
+    font-size: 14px;
+    
+    .fs-12 {
+        font-size: 12px;
+        line-height: 2.2em;
+    }
+    
+    .divider {
+        border-bottom: 1px solid #9B9B9B;
+    }
+}
+
+.margin-centered {
+    @include with-margin-centered();
+}
+
+.flex {
+    .flex-fixed {
+        flex: 0 0 auto;
+        width: 320px;
+
+        .phase-header {
+            font-size: 20px;
+            font-weight: lighter;
+            margin-bottom: 24px;
+        }
+    }
 }
