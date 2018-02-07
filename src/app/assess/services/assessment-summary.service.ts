@@ -7,6 +7,8 @@ import { JsonApiData } from '../../models/json/jsonapi-data';
 import { Assessment } from '../../models/assess/assessment';
 import { LastModifiedAssessment } from '../models/last-modified-assessment';
 import { JsonApi } from '../../models/json/jsonapi';
+import { RiskByAttack } from '../../models/assess/risk-by-attack';
+import { RiskByKillChain } from '../../models/assess/risk-by-kill-chain';
 
 @Injectable()
 export class AssessmentSummaryService {
@@ -82,23 +84,57 @@ export class AssessmentSummaryService {
         }
 
         const url = `${this.baseUrl}/${id}/risk-per-kill-chain`;
+        return this.genericApi.getAs<RiskByKillChain>(url);
+    }
+
+        /**
+     * @description
+     * @param {string} id
+     * @return {Observable}
+     */
+    public getRiskPerKillChainByRollupId(id: string): Observable<any> {
+        if (!id) {
+            return Observable.empty();
+        }
+
+        const url = `${this.baseUrl}/${id}/risk-per-kill-chain`;
         return this.genericApi.get(url);
     }
 
     /**
      * @description
      * @param {string} id
-     * @return {Observable}
+     * @return {Observable<RiskByAttack>}
      */
-    public getRiskPerAttackPattern(id: string): Observable<any> {
+    public getRiskPerAttackPattern(id: string, includeMeta = true): Observable<RiskByAttack> {
         if (!id) {
             return Observable.empty();
         }
-
-        const url = `${this.baseUrl}/${id}/risk-by-attack-pattern`;
-        return this.genericApi.get(url);
+        const url = `${this.baseUrl}/${id}/risk-by-attack-pattern?metaproperties=${includeMeta}`;
+        return this.genericApi
+            .getAs<RiskByAttack>(url);
     }
 
+
+    /**
+     * @description
+     * @param {string} id
+     * @return {Observable}
+     */
+    public getRiskPerAttackPatternByRollupId(id: string, includeMeta = true): Observable<RiskByAttack[]> {
+        if (!id) {
+            return Observable.empty();
+        }
+        const filter = {
+            'metaProperties.rollupId': id
+        };
+
+        const url = `${this.baseUrl}/${id}/risk-by-attack-pattern?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
+        return this.genericApi
+            .getAs<JsonApiData<RiskByAttack>[]>(url)
+            .map((data) => data.map((el) => el.attributes));
+    }
+    
     /**
      * @description
      * @param {string} id

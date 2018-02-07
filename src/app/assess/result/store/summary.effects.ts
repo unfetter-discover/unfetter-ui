@@ -7,11 +7,12 @@ import { Observable } from 'rxjs/Observable';
 
 import { AssessmentSummaryService } from '../../services/assessment-summary.service';
 
-import { LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA, LOAD_ASSESSMENT_SUMMARY_DATA, FinishedLoading, SetAssessments } from './summary.actions';
+import { LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA, LOAD_ASSESSMENT_SUMMARY_DATA, FinishedLoading, SetAssessments, LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA, LOAD_RISK_PER_KILL_CHAIN_DATA, FinishedLoadingKillChainData, SetKillChainData } from './summary.actions';
 import { Assessment } from '../../../models/assess/assessment';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { JsonApi } from '../../models/json/jsonapi';
 import { JsonApiData } from '../../../models/json/jsonapi-data';
+import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
 
 @Injectable()
 export class SummaryEffects {
@@ -29,7 +30,7 @@ export class SummaryEffects {
         .ofType(LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA)
         .pluck('payload')
         .switchMap((assessmentId: string) => this.assessmentSummaryService.getById(assessmentId))
-        .map((data: Assessment) => new SetAssessments([data]))
+        .mergeMap((data: Assessment) => [new SetAssessments([data]), new FinishedLoading(true)])
 
     @Effect()
     public fetchAssessmentSummaryData = this.actions$
@@ -37,4 +38,18 @@ export class SummaryEffects {
         .pluck('payload')
         .switchMap((rollupId: string) => this.assessmentSummaryService.getByRollupId(rollupId))
         .mergeMap((data: Assessment[]) => [ new SetAssessments(data), new FinishedLoading(true)])
+
+    @Effect()
+    public fetchSingleRiskPerKillChainData = this.actions$
+        .ofType(LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA)
+        .pluck('payload')
+        .switchMap((assessmentId: string) => this.assessmentSummaryService.getRiskPerKillChain(assessmentId))
+        .mergeMap((data: RiskByKillChain) => [new SetKillChainData([data]), new FinishedLoadingKillChainData(true)])
+
+    @Effect()
+    public fetchRiskPerKillChainData = this.actions$
+        .ofType(LOAD_RISK_PER_KILL_CHAIN_DATA)
+        .pluck('payload')
+        .switchMap((rollupId: string) => this.assessmentSummaryService.getRiskPerKillChainByRollupId(rollupId))
+        .mergeMap((data: RiskByKillChain[]) => [ new SetKillChainData(data), new FinishedLoadingKillChainData(true)])
 }

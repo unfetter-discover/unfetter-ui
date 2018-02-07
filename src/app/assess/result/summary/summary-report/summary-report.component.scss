@@ -24,16 +24,33 @@
     margin-left: 8px;
 }
 
-.card:hover {
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+.matchHeight {
+    align-items: stretch;
+    -webkit-box-align: stretch;
+    -ms-flex-align: stretch;
 }
 
 .card {
-    transition: all 0.3s ease-in-out;
-    min-height: 315px;
+    min-height: 289px;
     margin-bottom: 20px;
     width: 50%;
     min-width: 215px;
+    padding-top: 25px;
+    padding-left: 15px;
+    padding-right: 18px;
+    padding-bottom: 6px;
+
+    .mat-card-subtitle {
+        color: black;
+        font-size: 20px;
+        font-weight: 500;
+        margin-bottom: 6px;
+    }
+
+    .mat-card-content {
+        overflow-y: auto;
+        max-height: 162px;
+    }
 }
 
 #riskCard {
@@ -60,7 +77,6 @@
 [class^="icon-"], [class*=" icon-"] {
     /* use !important to prevent issues with browser extensions that change fonts */
     font-family: 'icomoon' !important;
-    speak: none;
     font-style: normal;
     font-weight: normal;
     font-variant: normal;

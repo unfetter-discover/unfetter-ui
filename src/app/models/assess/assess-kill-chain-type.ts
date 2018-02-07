@@ -1,12 +1,11 @@
 import { AssessmentQuestion } from './assessment-question';
-import { Stix } from '../stix/stix';
 
 /**
  * @description
  */
-export class AssessmentObject<T extends Partial<Stix> = Stix> {
+export class AssessKillChainType {
     public risk: number;
     public questions = [] as AssessmentQuestion[];
-    public stix?: T;
-    public assId?: string;
+    public objects = [] as Array<any>;
+    public phaseName: string;
 }
