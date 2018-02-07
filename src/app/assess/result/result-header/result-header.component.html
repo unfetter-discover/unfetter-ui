@@ -11,7 +11,7 @@
       <div class="flex1"></div>
       <div class="row height-100-percent flex flexColumn">
         <div class="flex1"></div>
-        <div *ngIf="created; else notPublished">
+        <div *ngIf="created; else notPublished" class="publishText">
           Published &bull; {{ created | date:'medium' }}
         </div>
         <ng-template #notPublished>

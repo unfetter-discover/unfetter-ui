@@ -1,29 +1,23 @@
+@import '../../../../../styles/_variables.scss';
 @import '../_assess.common.scss';
 
-.attackPatternListItem {
-    margin-top: 0.4rem;
+.ap-list-item {
+    line-height: 1.9em;
 }
 
-br.altClearFix {
-    height: 0;
+.centered {
+    padding-left: 24px;
+    padding-right: 24px;
 }
 
-.main {
-    margin-top: 24px;
-    font-size: 14px;
-    
-    .fs-12 {
-        font-size: 12px;
-        line-height: 2.2em;
-    }
-    
-    .divider {
-        border-bottom: 1px solid #9B9B9B;
-    }
+@mixin space-top() {
+    padding-top: 24px;
 }
 
-.margin-centered {
-    @include with-margin-centered();
+@mixin section-header() {
+    font-size: 20px;
+    font-weight: lighter;
+    margin-bottom: 24px;
 }
 
 .flex {
@@ -32,9 +26,36 @@ br.altClearFix {
         width: 320px;
 
         .phase-header {
-            font-size: 20px;
-            font-weight: lighter;
-            margin-bottom: 24px;
+            @include section-header();
         }
+    }
+
+    .ap-header {
+        @include section-header();
+    }
+}
+
+.main {
+    font-size: 14px;
+    
+    .fs-12 {
+        font-size: 12px;
+        line-height: 1.9em;
+    }
+    
+    .divider {
+        border-bottom: 1px solid #9B9B9B;
+        margin-top: 2px;
+        margin-bottom: 18px;
+    }
+    
+    .phase-section {
+        @include space-top();
+        background-color: $assessments-primary-lighter;
+    }
+
+    .ap-section {
+        @include space-top();
+        background-color: $assessments-primary-subtle;  
     }
 }
