@@ -99,21 +99,21 @@ export class AddIndicatorComponent implements OnInit {
                 }
             })
             .subscribe(
-                ([translatations, objects]: [PatternHandlerTranslateAll, PatternHandlerGetObjects]) => {
+                ([translations, objects]: [PatternHandlerTranslateAll, PatternHandlerGetObjects]) => {
 
                     // ~~~ Pattern Translations ~~~
-                    this.patternValid = translatations.validated;
+                    this.patternValid = translations.validated;
                     this.form.get('metaProperties').get('queries').get('carElastic').patchValue({
-                        query: translatations['car-elastic']
+                        query: translations['car-elastic']
                     });
                     this.form.get('metaProperties').get('queries').get('carSplunk').patchValue({
-                        query: translatations['car-splunk']
+                        query: translations['car-splunk']
                     });
                     this.form.get('metaProperties').get('queries').get('cimSplunk').patchValue({
-                        query: translatations['cim-splunk']
+                        query: translations['cim-splunk']
                     });
 
-                    if (translatations['car-elastic'] || translatations['car-splunk'] || translatations['cim-splunk']) {
+                    if (translations['car-elastic'] || translations['car-splunk'] || translations['cim-splunk']) {
                         this.showPatternTranslations = true;
                     }
                     
