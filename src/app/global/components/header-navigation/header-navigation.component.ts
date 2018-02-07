@@ -68,8 +68,10 @@ export class HeaderNavigationComponent {
   public showAccountMenu: boolean = false;
   public topPx = '0px';
   public user$;
+  public apiDocsIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD;
   public orgLeaderIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD;
   public adminIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD;
+  public encodedToken: string = '';
   @Input() public title;
 
   constructor(
@@ -84,6 +86,22 @@ export class HeaderNavigationComponent {
     if (this.showBanner && this.showBanner === true) {
       this.topPx = '17px';
     }
+
+    this.user$
+      .filter((user) => user.token)
+      .pluck('token')
+      .take(1)
+      .subscribe(
+        (token) => {
+          this.encodedToken = encodeURI(token);
+        },
+        (err) => {
+          console.log(err);
+        },
+        () => {
+          // .unsubscribe();
+        }
+      );
   }
 
   @HostListener('document:click', ['$event']) public clickedOutside(event) {
