@@ -99,7 +99,7 @@ export class HeaderNavigationComponent {
           console.log(err);
         },
         () => {
-          //.unsubscribe();
+          // .unsubscribe();
         }
       );
   }
