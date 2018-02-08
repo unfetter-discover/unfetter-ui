@@ -6,12 +6,12 @@ import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 
 import { AssessService } from '../../services/assess.service';
+import { LOAD_ASSESSMENT_RESULT_DATA, SetAssessments, FinishedLoading } from './full-result.actions';
 
-import { LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA, LOAD_ASSESSMENT_SUMMARY_DATA, FinishedLoading, SetAssessments } from './summary.actions';
 import { Assessment } from '../../../models/assess/assessment';
 
 @Injectable()
-export class SummaryEffects {
+export class FullResultEffects {
 
     public constructor(
         private router: Router,
@@ -21,17 +21,9 @@ export class SummaryEffects {
     ) { }
 
     @Effect()
-    public fetchSingleAssessmentSummaryData = this.actions$
-        .ofType(LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA)
-        .pluck('payload')
-        .switchMap((assessmentId: string) => this.assessService.getById(assessmentId))
-        .map((data: Assessment) => new SetAssessments([data]));
-
-    @Effect()
-    public fetchAssessmentSummaryData = this.actions$
-        .ofType(LOAD_ASSESSMENT_SUMMARY_DATA)
+    public fetchAssessmentResultData = this.actions$
+        .ofType(LOAD_ASSESSMENT_RESULT_DATA)
         .pluck('payload')
         .switchMap((rollupId: string) => this.assessService.getByRollupId(rollupId))
         .mergeMap((data: Assessment[]) => [new SetAssessments(data), new FinishedLoading(true)]);
-
 }

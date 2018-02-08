@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { MatDialog } from '@angular/material';
+
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
@@ -10,15 +12,14 @@ import { LoadAssessmentSummaryData } from '../store/summary.actions';
 
 import { AppState } from '../../../root-store/app.reducers';
 import { Assessment } from '../../../models/assess/assessment';
-import { MasterListDialogTableHeaders } from '../../../global/components/master-list-dialog/master-list-dialog.component';
-import { AssessmentSummaryService } from '../../services/assessment-summary.service';
-import { SummaryDataSource } from './summary.datasource';
-import { UserProfile } from '../../../models/user/user-profile';
-import { LastModifiedAssessment } from '../../models/last-modified-assessment';
-import { MatDialog } from '@angular/material';
+import { AssessService } from '../../services/assess.service';
 import { ConfirmationDialogComponent } from '../../../components/dialogs/confirmation/confirmation-dialog.component';
+import { MasterListDialogTableHeaders } from '../../../global/components/master-list-dialog/master-list-dialog.component';
+import { LastModifiedAssessment } from '../../models/last-modified-assessment';
 import { slideInOutAnimation } from '../../../global/animations/animations';
 import { Constance } from '../../../utils/constance';
+import { UserProfile } from '../../../models/user/user-profile';
+import { SummaryDataSource } from './summary.datasource';
 
 @Component({
   selector: 'summary',
@@ -50,7 +51,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private store: Store<SummaryState>,
     private userStore: Store<AppState>,
-    private assessmentSummaryService: AssessmentSummaryService,
+    private assessService: AssessService,
   ) { }
 
   /**
@@ -125,7 +126,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @param {string} creatorId - optional
    */
   public requestData(rollupId: string, creatorId?: string): void {
-    this.masterListOptions.dataSource = new SummaryDataSource(this.assessmentSummaryService, creatorId);
+    this.masterListOptions.dataSource = new SummaryDataSource(this.assessService, creatorId);
     this.masterListOptions.columns.id.classes = 'cursor-pointer';
     this.store.dispatch(new LoadAssessmentSummaryData(rollupId));
   }
@@ -218,7 +219,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
           }
           
           const isCurrentlyViewed = assessment.rollupId === this.rollupId ? true : false;
-          const sub$ = this.assessmentSummaryService
+          const sub$ = this.assessService
             .deleteByRollupId(assessment.rollupId)
             .subscribe(
               (resp) => {

@@ -9,6 +9,10 @@ export class ResultHeaderComponent implements OnInit {
 
   @Input()
   public rollupId: string;
+
+  @Input()
+  public created: Date;
+
   public summaryLink: string;
   public resultsLink: string;
 

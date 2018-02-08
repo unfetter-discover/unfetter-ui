@@ -10,6 +10,7 @@ import { GenericApi } from '../../../core/services/genericapi.service';
 import { SummaryComponent } from './summary.component';
 import { summaryReducer } from '../store/summary.reducers';
 import { MatDialogModule } from '@angular/material';
+import { AssessService } from '../../services/assess.service';
 
 describe('SummaryComponent', () => {
   let component: SummaryComponent;
@@ -35,7 +36,7 @@ describe('SummaryComponent', () => {
         ...matModules,
         StoreModule.forRoot(mockReducer),
       ],
-      providers: [GenericApi, AssessmentSummaryService],
+      providers: [GenericApi, AssessService],
     })
       .compileComponents();
   }));

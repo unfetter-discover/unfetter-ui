@@ -11,7 +11,12 @@
       <div class="flex1"></div>
       <div class="row height-100-percent flex flexColumn">
         <div class="flex1"></div>
-        <button mat-raised-button id="publishButton">PUBLISH</button>
+        <div *ngIf="created; else notPublished" class="publishText">
+          Published &bull; {{ created | date:'medium' }}
+        </div>
+        <ng-template #notPublished>
+            <button mat-raised-button id="publishButton">PUBLISH</button>
+        </ng-template>
       </div>
     </div>
   </div>
