@@ -12,14 +12,13 @@ import { Malware } from '../../models/malware';
 import { IntrusionSet } from '../../models/intrusion-set';
 import { SelectOption } from '../models/select-option';
 import { ThreatReport } from '../models/threat-report.model';
-import { ModifyReportDialogComponent } from '../modify-report-dialog/modify-report-dialog.component';
 import { ThreatReportOverviewService } from '../../threat-dashboard/services/threat-report-overview.service';
-import { ThreatReportModifyDataSource } from '../modify/threat-report-modify.datasource';
 import { ThreatReportSharedService } from '../services/threat-report-shared.service';
+import { ReportEditorComponent } from './report-editor/report-editor.component';
+import { ReportImporterComponent } from './report-importer/report-importer.component';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { SortHelper } from '../../global/static/sort-helper';
 import { DateHelper } from '../../global/static/date-helper';
-import { ReportEditorComponent } from './report-editor/report-editor.component';
 
 @Component({
     selector: 'threat-report-editor',
@@ -60,7 +59,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
         errorMessage: 'Not a valid date'
     };
 
-    public readonly dateFormat = this.dateFormat;
+    public readonly dateFormat = 'D/M/YYYY';
 
     public readonly viewPath = `threat-dashboard/view`;
 
@@ -184,7 +183,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
                         .sort(SortHelper.sortDescByField('displayValue'));
                 },
                 (err) => console.log(err),
-                () => console.log('fetch complete'));
+                () => {});
         this.subscriptions.push(sub1$);
     }
 
@@ -192,7 +191,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      * @description clean up component
      */
     public ngOnDestroy(): void {
-        this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+        this.subscriptions.forEach(subscription => subscription.unsubscribe());
     }
 
     /**
@@ -342,6 +341,151 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * @description Create a new report to be added to this work product.
+     * @param {UIEvent} event optional
+     */
+    public onCreateReport(event?: UIEvent): void {
+        this.createReportDialog({});
+    }
+
+    /**
+     * @description Edit the given report's information.
+     * @param {report} Report the name of a report on the work product that the user wants to change
+     * @param {UIEvent} event optional
+     */
+    public onModifyReport(report: Report, event?: UIEvent): void {
+        this.createReportDialog({data: {report: report}});
+    }
+
+    private createReportDialog(options: any): void {
+        options.width = '800px';
+        options.height = 'calc(100vh - 240px)';
+        this.dialog
+            .open(ReportEditorComponent, options)
+            .afterClosed()
+            .subscribe(
+                (result: Partial<Report> | boolean) => this.insertReport(result),
+                (err) => console.log(err)
+            );
+    }
+
+    /**
+     * @description Add an existing report to this work product.
+     * @param {UIEvent} event optional
+     */
+    public onImportReport(event?: UIEvent): void {
+        this.dialog
+            .open(ReportImporterComponent, {
+                width: '800px',
+                height: 'calc(100vh - 240px)',
+                data: {
+                    reports: this.reportsDataSource.data,
+                }
+            })
+            .afterClosed()
+            .subscribe(
+                (result: Array<Partial<Report>> | boolean) => {
+                    if (result === false) {
+                        return;
+                    }
+                    this.importReport(result as Array<Partial<Report>>);
+                },
+                (err) => console.log(err)
+            );
+    }
+
+    public importReport(reports: Array<Partial<Report>>): void {
+        reports.forEach(report => this.insertReport(report));
+        this.threatReport.reports.forEach(report => {
+            if (report.attributes.id && (reports.findIndex(rep => this.areSameReport(rep, report)) < 0)) {
+                this.onRemoveReport(report as Report);
+            }
+        });
+    }
+
+    public insertReport(report: Partial<Report> | boolean): void {
+        if (this.isFalsey(report)) {
+            return;
+        }
+        const modified = this.fixReportDateBeforeSave(report as Report);
+        let index = this.threatReport.reports.findIndex((rep) => this.areSameReport(rep, modified));
+        if (index >= 0) {
+            this.threatReport.reports[index] = modified;
+        } else {
+            this.threatReport.reports.push(modified);
+        }
+        this.reportsDataSource.data = this.threatReport.reports; // update the table
+    }
+
+    /**
+     * @description Share the given personal report. Not yet implemented.
+     * @param {report} Report name of a personal report that the user wants to change to a shared report
+     * @param {UIEvent} event optional
+     */
+    public onShareReport(report: Report, event?: UIEvent): void {
+        // Not yet implemented
+    }
+
+    /**
+     * @description Remove the given report from this work product.
+     * @param {report} Report a report name that the user wants to remove from this work product
+     * @param {UIEvent} event optional
+     */
+    public onRemoveReport(report: Report, event?: UIEvent): void {
+        if (!report || !this.threatReport) {
+            return;
+        }
+
+        if (event) {
+            event.preventDefault();
+        }
+
+        this.threatReport.reports = this.threatReport.reports.filter((el) => !this.areSameReport(el, report));
+        this.reportsDataSource.data = this.threatReport.reports; // update the table
+        if (!this.threatReport.id || !report.attributes.id) {
+            // this threat report is in progress so do not save to db until they hit save
+            return;
+        }
+
+        const sub$ = this.service.removeReport(report, this.threatReport)
+            .subscribe(
+                (tro) => console.log(tro),
+                (err) => console.log(err),
+                () => sub$.unsubscribe());
+    }
+
+    /**
+     * @description turn dates into ISO Date format or backend will complain on validation
+     */
+    private fixReportDateBeforeSave(report: Report): Report {
+        const item = report;
+        if (item && item.attributes && item.attributes.created) {
+            // turn to required ISO8601 format or clear the date because we cant use it
+            item.attributes.created = DateHelper.getISOOrUndefined(item.attributes.created);
+        }
+        return item;
+    }
+
+    private areSameReport(report1: Partial<Report>, report2: Partial<Report>): boolean {
+        if (report1 === report2) {
+            return true;
+        }
+        if (report1.attributes.id) {
+            return report1.attributes.id === report2.attributes.id;
+        }
+        /*
+         * If the report has no ID, it is brand new. If we delete all the reports with no ID, as would happen
+         * in the previous condition, then we would remove all the brand new reports, instead of just the one
+         * the user clicked on. So now we count on all the required data matching instead.
+         */
+        return report1.attributes.name === report2.attributes.name &&
+                report1.attributes.external_references[0].url ===
+                        report2.attributes.external_references[0].url &&
+                report1.attributes.external_references[0].source_name ===
+                        report2.attributes.external_references[0].source_name
+    }
+
+    /**
      * @description go back to list view
      * @param {UIEvent} event optional
      */
@@ -374,186 +518,6 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
                 (err) => console.log(err),
             );
         this.subscriptions.push(sub$);
-    }
-
-    /**
-     * @description Create a new report to be added to this work product.
-     * @param {UIEvent} event optional
-     */
-    public onCreateReport(event?: UIEvent): void {
-        this.createReportDialog({});
-    }
-
-    /**
-     * @description Add an existing report to this work product.
-     * @param {report} Report include this report in the current workproduct
-     * @param {UIEvent} event optional
-     */
-    public onImportReport(report: Report, event?: UIEvent): void {
-        if (!report || !this.threatReport) {
-            return;
-        }
-
-        if (event) {
-            event.preventDefault();
-        }
-
-        this.threatReport.reports = this.threatReport.reports.concat(report);
-        console.log(report);
-        console.log(this.threatReport);
-        if (!this.threatReport.id) {
-            // this threat report is in progress so do not save to db until they hit save
-            return;
-        }
-
-        const sub$ = this.service.upsertReports([report], this.threatReport)
-            .subscribe(
-                (tro) => console.log(tro),
-                (err) => console.log(err),
-                () => sub$.unsubscribe());
-    }
-
-    /**
-     * @description Share the given personal report. Not yet implemented.
-     * @param {report} Report name of a personal report that the user wants to change to a shared report
-     * @param {UIEvent} event optional
-     */
-    public onShareReport(report: Report, event?: UIEvent): void {
-        // Not yet implemented
-    }
-
-    /**
-     * @description Edit the given report's information.
-     * @param {report} Report the name of a report on the work product that the user wants to change
-     * @param {UIEvent} event optional
-     */
-    public onModifyReport(report: Report, event?: UIEvent): void {
-        this.createReportDialog({data: {report: report}});
-    }
-
-    private createReportDialog(options: any): void {
-        options.width = '800px';
-        options.height = 'calc(100vh - 240px)';
-        this.dialog
-            .open(ReportEditorComponent, options)
-            .afterClosed()
-            .subscribe(
-                (result: Partial<Report> | boolean) => this.insertReport(result),
-                (err) => console.log(err)
-            );
-    }
-
-    public insertReport(report: Partial<Report> | boolean): void {
-        if (this.isFalsey(report)) {
-            return;
-        }
-        const modified = this.fixReportDateBeforeSave(report as Report);
-        let index = this.threatReport.reports.findIndex((rep) => this.areSameReport(rep, modified));
-        if (index >= 0) {
-            this.threatReport.reports[index] = modified;
-        } else {
-            this.threatReport.reports.push(modified);
-        }
-        this.reportsDataSource.data = this.threatReport.reports; // update the table
-    }
-
-    /**
-     * @description Remove the given report from this work product.
-     * @param {report} Report a report name that the user wants to remove from this work product
-     * @param {UIEvent} event optional
-     */
-    public onRemoveReport(report: Report, event?: UIEvent): void {
-        if (!report || !this.threatReport) {
-            return;
-        }
-
-        if (event) {
-            event.preventDefault();
-        }
-
-        this.threatReport.reports = this.threatReport.reports.filter((el) => !this.areSameReport(el, report));
-        this.reportsDataSource.data = this.threatReport.reports; // update the table
-        if (!this.threatReport.id || !report.attributes.id) {
-            // this threat report is in progress so do not save to db until they hit save
-            return;
-        }
-
-        const sub$ = this.service.removeReport(report, this.threatReport)
-            .subscribe(
-                (tro) => console.log(tro),
-                (err) => console.log(err),
-                () => sub$.unsubscribe());
-    }
-
-    /**
-     * UNUSED UNTIL WE ADD IMPORT FUNCTIONALITY
-     * @description handle when a csv file is parsed into reports
-     * @param {Report[]} event
-     */
-    public onFileParsed(event?: Report[]): void {
-        if (!event) {
-            return;
-        }
-
-        const reports = this.fixReportDatesBeforeSave(event);
-        const sub$ = this.service.upsertReports(reports)
-            .subscribe(
-                () => {
-                    console.log('saved reports, reloading');
-                    this.load(this.threatReport.id);
-                },
-                (err) => console.log(err),
-                () => sub$.unsubscribe());
-    }
-
-    /**
-     * UNUSED UNTIL WE ADD IMPORT FUNCTIONALITY
-     * @description notify user of any upload or parse errors
-     * @param {string} event optional
-     */
-    public onFileUploadFail(event?: string): void {
-        if (!event) {
-            return;
-        }
-        // notify the user of the error
-        this.snackBar.open(event, 'Close', {
-            duration: 3400,
-        });
-    }
-
-    /**
-     * @description turn dates into ISO Date format or backend will complain on validation
-     */
-    private fixReportDatesBeforeSave(reports: Report[]): Report[] {
-        return reports.map((report) => this.fixReportDateBeforeSave(report));
-    }
-
-    /**
-     * @description turn dates into ISO Date format or backend will complain on validation
-     */
-    private fixReportDateBeforeSave(report: Report): Report {
-        const item = report;
-        if (item && item.attributes && item.attributes.created) {
-            // turn to required ISO8601 format or clear the date because we cant use it
-            item.attributes.created = DateHelper.getISOOrUndefined(item.attributes.created);
-        }
-        return item;
-    }
-
-    private areSameReport(report1: Partial<Report>, report2: Partial<Report>): boolean {
-        if (report1.attributes.id) {
-            return report1.attributes.id === report2.attributes.id;
-        }
-        /*
-         * If the report has no ID, it is brand new. If we delete all the reports with no ID, as would happen
-         * in the previous condition, then we would remove all the brand new reports, instead of just the one
-         * the user clicked on. So now we count on all the required data matching instead.
-         */
-        return report1.attributes.name === report2.attributes.name &&
-                report1.attributes.external_references[0].url ===
-                        report2.attributes.external_references[0].url &&
-                report1.attributes.external_references[0].source_name ===
-                        report2.attributes.external_references[0].source_name
     }
 
 }

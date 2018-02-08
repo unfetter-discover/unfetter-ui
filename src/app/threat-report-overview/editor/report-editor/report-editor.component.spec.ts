@@ -13,12 +13,11 @@ import {
         MatSelectModule,
     } from '@angular/material';
 
-import { ReportEditorComponent } from './report-editor.component';
 import { Report } from '../../../models/report';
 import { ExternalReference } from '../../../models/stix/external_reference';
-import { GenericApi } from '../../../core/services/genericapi.service';
 import { AttackPattern } from '../../../models/attack-pattern';
-import { compile } from 'handlebars';
+import { ReportEditorComponent } from './report-editor.component';
+import { GenericApi } from '../../../core/services/genericapi.service';
 
 describe('ReportEditorComponent', () => {
 
