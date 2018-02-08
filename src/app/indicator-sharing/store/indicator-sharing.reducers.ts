@@ -12,6 +12,7 @@ export interface IndicatorSharingState {
     filteredIndicators: any[],
     displayedIndicators: any[]
     sensors: any[],
+    attackPatterns: any[],
     identities: any[],
     searchParameters: {},
     indicatorToSensorMap: {},
@@ -33,6 +34,7 @@ const initialState: IndicatorSharingState = {
     filteredIndicators: [],
     displayedIndicators: [],
     sensors: [],
+    attackPatterns: [],
     identities: [],
     searchParameters: { ...initialSearchParameters },
     indicatorToSensorMap: {},
@@ -128,6 +130,11 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
                 ...state,
                 sensors: action.payload,
                 indicatorToSensorMap
+            };
+        case indicatorSharingActions.SET_ATTACK_PATTERNS:
+            return {
+                ...state,
+                attackPatterns: action.payload
             };
         case indicatorSharingActions.SET_IDENTITIES:
             return {

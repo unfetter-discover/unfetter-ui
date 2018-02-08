@@ -29,6 +29,7 @@ import { SearchBarComponent } from './search-bar/search-bar.component';
 import { IndicatorSharingSortComponent } from './indicator-sharing-sort/indicator-sharing-sort.component';
 import { IndicatorSharingFiltersComponent } from './indicator-sharing-filters/indicator-sharing-filters.component';
 import { GeneratedObservedDataComponent } from './generated-observed-data/generated-observed-data.component';
+import { AddAttackPatternComponent } from './add-attack-pattern/add-attack-pattern.component';
 
 const matModules = [
     MatButtonModule,
@@ -73,7 +74,8 @@ const matModules = [
         SearchBarComponent,
         IndicatorSharingSortComponent,
         IndicatorSharingFiltersComponent,
-        GeneratedObservedDataComponent
+        GeneratedObservedDataComponent,
+        AddAttackPatternComponent
     ],
     providers: [
         IndicatorSharingService
