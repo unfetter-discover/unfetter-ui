@@ -36,6 +36,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     public alreadyLiked: boolean = false;
     public alreadyInteracted: boolean = false;
     public alreadyCommented: boolean = false;
+    public showAttackPatternDetails: boolean = false;
     public readonly copyText: string = 'Copied';
     public readonly runMode = environment.runMode;
 

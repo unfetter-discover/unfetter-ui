@@ -16,6 +16,7 @@ export class AddAttackPatternComponent implements OnInit {
   @Input() public existingAttackPatterns: any[] = [];
   public selectedAttackPatterns: any[] = [];
   public displayedAttackPatterns$: any;
+  public filteredAttackPatterns: any[];
   public showAddAp: boolean = false;
 
   constructor(private store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>) { }
@@ -30,6 +31,23 @@ export class AddAttackPatternComponent implements OnInit {
               .find((existingAttackPattern: any) => existingAttackPattern.id === attackPattern.id) === undefined;
           });
       });
+    const getFilteredAp$ = this.store.select('indicatorSharing')
+      .pluck('searchParameters')
+      .pluck('attackPatterns')
+      .distinctUntilChanged()
+      .subscribe(
+        (filteredAttackPatterns: any[]) => {
+          this.filteredAttackPatterns = filteredAttackPatterns;
+        },
+        (err) => {
+          console.log(err);
+        },
+        () => {
+          if (getFilteredAp$) {
+            getFilteredAp$.unsubscribe();
+          }
+        }
+      );
   }
 
   public saveRelationsips() {
@@ -39,5 +57,9 @@ export class AddAttackPatternComponent implements OnInit {
         this.store.dispatch(new indicatorSharingActions.CreateIndicatorToApRelationship({ indicatorId: this.indicatorId, attackPatternId }))
       })
     this.selectedAttackPatterns = [];
+  }
+
+  public apSelected(apId): boolean {
+    return this.filteredAttackPatterns.includes(apId);
   }
 }
