@@ -1,16 +1,14 @@
-# docker compose file to only start up the new UI
-version: '2'
+version: '2.0'
 services:
-  unfetter-ui:
-    build: ../unfetter-ui
-    image: unfetter-ui
-    volumes:
-    - ../unfetter-ui/src:/usr/share/unfetter-ui/src
-    - ../unfetter-ui/dist:/usr/share/unfetter-ui/dist
-    - ../unfetter-ui/config:/usr/share/unfetter-ui/config
-    ports:
-    - "443:443"
-    entrypoint:
-    - npm
-    - run
-    - build:prod:noclean
+  
+    unfetter-ui:
+      build: ./
+      image: unfetter-ui
+      container_name: unfetter-ui
+      volumes:
+      - ./src:/usr/share/unfetter-ui/src
+      - ./config:/usr/share/unfetter-ui/config
+      entrypoint:
+      - npm
+      - run
+      - build:prod:noclean
