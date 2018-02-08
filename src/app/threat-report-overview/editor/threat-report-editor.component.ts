@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
+import * as clone from 'clone';
 
 import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
 
@@ -81,7 +82,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
             this.threatReport = new ThreatReport();
             this.reportsDataSource = new MatTableDataSource(this.threatReport.reports);
             if (this.sharedService.threatReportOverview) {
-                this.clone();
+                this.cloneThreatReport();
             } else {
                 this.sharedService.threatReportOverview = this.threatReport;
             }
@@ -98,11 +99,9 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
     /**
      * @description deep clone `this.threatReportOverview` from this components `this.sharedService`
      */
-    private clone(): void {
+    public cloneThreatReport(): void {
         // remember to new up an object, otherwise object method will not exist, using just an object literal copy
-        const tmp = Object.assign(new ThreatReport(),
-                JSON.parse(JSON.stringify(this.sharedService.threatReportOverview)));
-        this.threatReport = tmp;
+        this.threatReport = clone(this.sharedService.threatReportOverview);
 
         // this is needed to make sure boundaries is acutally and object and not an object literal at runtime
         this.threatReport.boundaries = new Boundaries();

@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
 import * as UUID from 'uuid';
+import * as clone from 'clone';
 
 import { FormsModule } from '@angular/forms';
 import {
@@ -45,7 +46,7 @@ describe('ThreatReportEditorComponent', () => {
     let component: ThreatReportEditorComponent;
     let fixture: ComponentFixture<ThreatReportEditorComponent>;
 
-    const mockService = {
+    const mockThreatReportService = {
         load: (id: string): Observable<any> => {
             return Observable.of(MockThreatReport.byId(id));
         },
@@ -92,7 +93,25 @@ describe('ThreatReportEditorComponent', () => {
             attributes.metaProperties = meta;
             return Observable.from([report]);
         },
-    }
+    };
+
+    const mockReference = new ExternalReference();
+    mockReference.url = 'https://www.hotoffthepress.com/fakenews.tv';
+    mockReference.source_name = 'The Fake News Network';
+
+    const mockReport = new Report();
+    mockReport.id = mockReport.attributes.id = UUID.v4();
+    mockReport.url = 'https://www.hotoffthepress.com/fakenews.tv';
+    mockReport.attributes.name = 'Bad Thing Happened';
+    mockReport.attributes.external_references.push(mockReference);
+
+    const mockSharedService = {
+        threatReportOverview: new ThreatReport()
+    };
+    mockSharedService.threatReportOverview.id = UUID.v4();
+    mockSharedService.threatReportOverview.name = 'A Shared Threat Report';
+    mockSharedService.threatReportOverview.boundaries.targets.add('SomePoorSoul');
+    mockSharedService.threatReportOverview.reports.push(mockReport);
 
     beforeEach(() => {
         const materialModules = [
@@ -114,10 +133,11 @@ describe('ThreatReportEditorComponent', () => {
                 GenericApi,
                 {
                     provide: ThreatReportOverviewService,
-                    useValue: mockService
-                },
-                ThreatReportSharedService,
-                {
+                    useValue: mockThreatReportService
+                }, {
+                    provide: ThreatReportSharedService,
+                    useValue: mockSharedService
+                }, {
                     provide: ActivatedRoute,
                     useValue: {
                         snapshot: { params: { id: 'test_id' } }
@@ -136,8 +156,30 @@ describe('ThreatReportEditorComponent', () => {
         expect(component).toBeTruthy();
     });
 
+    it('should be able to safely deep clone a threat report', () => {
+        // for circular reference test wrt cloning, adding a parent reference here
+        mockReport.attributes.metaProperties = {
+            parent: mockSharedService.threatReportOverview
+        };
+
+        component.cloneThreatReport();
+        expect(component.threatReport).not.toBe(mockSharedService.threatReportOverview);
+        expect(component.threatReport.id).toEqual(mockSharedService.threatReportOverview.id);
+        expect(component.threatReport.name).toEqual(mockSharedService.threatReportOverview.name);
+        expect(component.threatReport.reports[0].id).toEqual(mockSharedService.threatReportOverview.reports[0].id);
+        expect(component.threatReport.boundaries).not.toBe(mockSharedService.threatReportOverview.boundaries);
+        component.threatReport.boundaries.targets.forEach(tgt => {
+            expect(mockSharedService.threatReportOverview.boundaries.targets.has(tgt)).toBeTruthy()
+        });
+        expect(component.threatReport.reports[0].attributes.metaProperties.parent).toBe(component.threatReport);
+    });
+
     it('should load a work product', () => {
         component.load();
+        expect(component.threatReport).toBe(mockSharedService.threatReportOverview);
+
+        component.threatReport = new ThreatReport();
+        mockSharedService.threatReportOverview = undefined;
         expect(component.threatReport.id).toBeFalsy();
 
         const someRandomThreatID = 'a0123456789';
