@@ -1,0 +1,54 @@
+@import '../../../../styles/_variables.scss';
+
+.import-title-row {
+    align-items: center;
+}
+
+.import-title {
+    font-size: 34px;
+    color: $dark-text-default;
+}
+
+.import-title-buttons {
+    margin-right: 15px;
+}
+
+.import-close-button {
+    margin-left: -30px;
+    margin-right: 5px;
+}
+
+.import-cancel-button {
+
+}
+
+.imports-save-button {
+
+}
+
+.imports-title {
+    border-top: 1px solid #aaa;
+    padding-top: 8px;
+    font-size: 20px;
+    color: #444444;
+}
+
+#imported-reports-table, #current-reports-table {
+    .mat-header-row, .mat-row {
+        min-height: 0;
+        padding: 0 6px;
+    }
+    .mat-column-title {
+        flex: 2;
+        .report-name {
+            display: block;
+            margin-bottom: 6px;
+        }
+    }
+    .mat-column-date {
+        text-align: center;
+    }
+    .mat-column-actions {
+        text-align: right;
+    }
+}

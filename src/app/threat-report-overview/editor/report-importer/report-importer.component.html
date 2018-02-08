@@ -1,0 +1,117 @@
+<mat-dialog-content id="reportImporterDialog">
+
+  <div class="col-xs-12 col-sm-12 mt-10 flex import-title-row">
+        <mat-icon class="mat-24 import-close-button" matTooltip="Cancel" aria-label="Cancel"
+                (click)="onCancel($event)">close</mat-icon>
+        <div class="flex1 import-title">Import Report(s)</div>
+        <div class="import-title-buttons">
+            <button mat-button class="import-cancel-button" matTooltip="Cancel" aria-label="Cancel"
+                    (click)="onCancel($event)">CANCEL</button>
+            <button mat-raised-button class="imports-save-button" color="primary"
+                    matTooltip="Save the selected reports and attach them to this work product"
+                    aria-label="Save the selected reports and attach them to this work product"
+                    (click)="onSave($event)">SAVE</button>
+        </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-12 mt-18 imports-title"> Option 1: Upload New Report(s) </div>
+
+    <div class="col-xs-12 col-sm-12 flex">
+        <button mat-icon-button id="uploadButton" class="mat-24" matTooltip="Upload new reports from CSV file"
+                (click)="openFileUpload($event)">
+            <mat-icon aria-label="upload new reports">playlist_add</mat-icon>
+        </button>
+        <input #fileUpload id="fileInput" name="file" type="file" class="hide"
+                ([value])="fName" (change)="fileChanged($event)">
+    </div>
+
+    <div class="col-xs-12 col-sm-12" *ngIf="imports.data.length">
+        <mat-table #table id="imported-reports-table" [dataSource]="imports">
+            <ng-container matColumnDef="title">
+                <mat-header-cell *matHeaderCellDef> Title </mat-header-cell>
+                <mat-cell *matCellDef="let report">
+                    <a href="{{report.attributes.external_references[0].url}}" class="report-name" target="_blank">
+                        {{report.attributes.title || report.attributes.name}}
+                    </a>
+                    <span class="mat-caption text-muted"> {{report.attributes.description}} </span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="author">
+                <mat-header-cell *matHeaderCellDef> Author </mat-header-cell>
+                <mat-cell *matCellDef="let report">
+                    <span class="mat-caption"> {{report.attributes.created_by_ref}} </span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="date">
+                <mat-header-cell *matHeaderCellDef> Modified Date </mat-header-cell>
+                <mat-cell *matCellDef="let report" [style.color]="report.color">
+                    <span class="mat-caption"> {{report.attributes.modified | date:'medium' }} </span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef='actions'>
+                <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                <mat-cell *matCellDef="let report">
+                    <button mat-icon-button class="mat-24" color="warn" matTooltip="Drop Report"
+                            (click)="onDropReport(report, $event)">
+                        <mat-icon aria-label="exclude report from work product">remove_circle</mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>
+            <mat-row *matRowDef="let report; columns: displayColumns;"></mat-row>
+        </mat-table>
+    </div>
+
+    <div class="col-xs-12 col-sm-12 mt-30 mb-6 imports-title"> Option 2: Select Existing Report(s) </div>
+
+    <div class="col-xs-12 col-sm-12" *ngIf="!reportsLoading; else loadingBlock">
+        <mat-table #table id="current-reports-table" [dataSource]="currents">
+            <ng-container matColumnDef="title">
+                <mat-header-cell *matHeaderCellDef> Title </mat-header-cell>
+                <mat-cell *matCellDef="let report">
+                    <a href="{{report.attributes.external_references[0].url}}" class="report-name" target="_blank">
+                        {{report.attributes.title || report.attributes.name}}
+                    </a>
+                    <span class="mat-caption text-muted"> {{report.attributes.description}} </span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="author">
+                <mat-header-cell *matHeaderCellDef> Author </mat-header-cell>
+                <mat-cell *matCellDef="let report">
+                    <span class="mat-caption"> {{report.attributes.created_by_ref}} </span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="date">
+                <mat-header-cell *matHeaderCellDef> Modified Date </mat-header-cell>
+                <mat-cell *matCellDef="let report" [style.color]="report.color">
+                    <span class="mat-caption"> {{report.attributes.modified | date:'medium' }} </span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef='actions'>
+                <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                <mat-cell *matCellDef="let report">
+                    <button mat-icon-button *ngIf="!isReportSelected(report)"
+                            class="mat-24" color="primary" matTooltip="Select Report"
+                            (click)="onSelectReport(report, $event)">
+                        <mat-icon aria-label="include report in work product">add_circle</mat-icon>
+                    </button>
+                    <button mat-icon-button *ngIf="isReportSelected(report)"
+                            class="mat-24" color="warn" matTooltip="Deselect Report"
+                            (click)="onDeselectReport(report, $event)">
+                        <mat-icon aria-label="exclude report from work product">remove_circle</mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>
+            <mat-row *matRowDef="let report; columns: displayColumns;"></mat-row>
+            <mat-paginator #paginator [length]="curDisplayLen | async" [pageIndex]="0"
+                    [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" (page)="onPage($event)">
+            </mat-paginator>
+        </mat-table>
+    </div>
+
+    <ng-template #loadingBlock>
+        <loading-spinner></loading-spinner>
+    </ng-template>
+
+</mat-dialog-content>
