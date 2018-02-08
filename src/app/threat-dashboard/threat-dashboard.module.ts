@@ -34,6 +34,7 @@ import { RadarChartComponent } from './radar-chart/radar-chart.component';
 import { ModifyReportDialogComponent } from '../threat-report-overview/modify-report-dialog/modify-report-dialog.component';
 import { ReportTranslationService } from './services/report-translation.service';
 import { BarChartComponent } from './bar-chart/bar-chart.component';
+import { ThreatReportNavigateGuard } from './threat-report-navigate.guard';
 
 const moduleComponents = [
   AttackPatternCountComponent,
@@ -84,7 +85,8 @@ const primengModules = [CarouselModule];
     ThreatReportOverviewModule,
   ],
   providers: [
-    ...moduleServices
+    ...moduleServices,
+    ThreatReportNavigateGuard,
   ]
 })
 export class ThreatDashboardModule { }

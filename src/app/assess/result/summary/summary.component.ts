@@ -18,6 +18,7 @@ import { LastModifiedAssessment } from '../../models/last-modified-assessment';
 import { MatDialog } from '@angular/material';
 import { ConfirmationDialogComponent } from '../../../components/dialogs/confirmation/confirmation-dialog.component';
 import { slideInOutAnimation } from '../../../global/animations/animations';
+import { Constance } from '../../../utils/constance';
 
 @Component({
   selector: 'summary',
@@ -70,11 +71,11 @@ export class SummaryComponent implements OnInit, OnDestroy {
             const creatorId = user._id;
             this.requestData(this.rollupId, creatorId);
           },
-          (err) => console.log(err));
+            (err) => console.log(err));
         this.subscriptions.push(sub$);
       },
-      (err) => console.log(err),
-      () => idParamSub$.unsubscribe());
+        (err) => console.log(err),
+        () => idParamSub$.unsubscribe());
   }
 
   /**
@@ -96,14 +97,14 @@ export class SummaryComponent implements OnInit, OnDestroy {
         this.summaries = [...arr];
         this.summary = { ...arr[0] };
       },
-      (err) => console.log(err));
+        (err) => console.log(err));
 
     const sub2$ = this.store
       .select('summary')
       .pluck('finishedLoading')
       .distinctUntilChanged()
       .subscribe((done: boolean) => this.finishedLoading = done,
-      (err) => console.log(err));
+        (err) => console.log(err));
 
     this.assessmentName = this.store
       .select('summary')
@@ -199,36 +200,49 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public confirmDelete(assessment: { name: string, rollupId: string }): void {
+    if (!assessment || !assessment.name || !assessment.rollupId) {
+      console.log('confirm delete requires a name and id');
+      return;
+    }
+
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: { attributes: assessment } });
     const dialogSub$ = dialogRef.afterClosed()
-      .subscribe(
+    .subscribe(
       (result) => {
         const isBool = typeof result === 'boolean';
         const isString = typeof result === 'string';
         if (!result ||
           (isBool && result !== true) ||
           (isString && result !== 'true')) {
-          return;
-        }
+            return;
+          }
+          
+          const isCurrentlyViewed = assessment.rollupId === this.rollupId ? true : false;
+          const sub$ = this.assessmentSummaryService
+            .deleteByRollupId(assessment.rollupId)
+            .subscribe(
+              (resp) => {
+                if (isCurrentlyViewed === true) {
+                  // deleted currently viewed, route to next in last mod, or create page
+                  this.router.navigate([Constance.X_UNFETTER_ASSESSMENT_NAVIGATE_URL]);
+                } else {
+                  this.masterListOptions.dataSource.nextDataChange(resp)
+                }
+              },
+              (err) => console.log(err),
+              () => {
+                if (sub$) {
+                  sub$.unsubscribe();
+                }
 
-        const sub$ = this.assessmentSummaryService
-          .deleteByRollupId(assessment.rollupId)
-          .subscribe(
-          (resp) => this.masterListOptions.dataSource.nextDataChange(resp),
-          (err) => console.log(err),
-          () => {
-            if (sub$) {
-              sub$.unsubscribe();
-            }
-
-            // we deleted the current assessment
-            if (this.rollupId === assessment.rollupId) {
-              return this.router.navigateByUrl(this.baseAssessUrl + '/navigate');
-            }
-          });
-      },
-      (err) => console.log(err),
-      () => dialogSub$.unsubscribe());
+                // we deleted the current assessment
+                if (this.rollupId === assessment.rollupId) {
+                  return this.router.navigateByUrl(this.baseAssessUrl + '/navigate');
+                }
+              });
+        },
+        (err) => console.log(err),
+        () => dialogSub$.unsubscribe());
   }
 
   /**

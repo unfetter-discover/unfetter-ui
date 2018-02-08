@@ -60,6 +60,9 @@ export const Constance = {
   SIGHTING_TYPE: 'sighting',
   SIGHTING_ICON: 'assets/icon/stix-icons/svg/campaign-b.svg',
 
+  THREAT_DASHBOARD_NAVIGATE_URL: 'threat-dashboard/navigate',
+  LATEST_THREAT_REPORTS_URL: `api/latest/threat-reports`,
+
   MALWARE_URL: 'api/malwares',
   MALWARE_TYPE: 'malware',
   MALWARE_ICON: 'assets/icon/stix-icons/svg/malware-b.svg',
@@ -78,6 +81,7 @@ export const Constance = {
   // TODO change icon
   X_UNFETTER_SENSOR_ICON: 'assets/icon/stix-icons/svg/tool-b.svg',
 
+  X_UNFETTER_ASSESSMENT_NAVIGATE_URL: 'assess/navigate',
   X_UNFETTER_ASSESSMENT_URL: 'api/x-unfetter-assessments',
   X_UNFETTER_ASSESSMENT_TYPE: 'x-unfetter-assessment',
   // TODO change icon

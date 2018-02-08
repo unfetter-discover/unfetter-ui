@@ -8,7 +8,7 @@
             <sidepanel-option-item label="Share" icon="share" disabled="true"
                     (click)="shareButtonClicked($event)"></sidepanel-option-item>
             <sidepanel-option-item label="Delete" icon="delete"
-                    (click)="deleteButtonClicked($event)"></sidepanel-option-item>
+                    (click)="onDeleteCurrent()"></sidepanel-option-item>
 
             <master-list-dialog-trigger
                     title="Work Products" width="750px" height="400px"
@@ -18,7 +18,7 @@
                     (create)="createButtonClicked($event)"
                     (select)="cellSelected($event)"
                     (edit)="editButtonClicked($event)"
-                    (delete)="deleteButtonClicked($event)"
+                    (delete)="onDelete($event)"
             ></master-list-dialog-trigger>
 
             <sidepanel-list-item label="Threat Reports" icon="assets/icon/stix-icons/svg/all-defs.svg#campaign"

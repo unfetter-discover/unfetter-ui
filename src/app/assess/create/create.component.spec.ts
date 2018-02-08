@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { MatCardModule, MatButtonModule, MatCheckboxModule, MatInputModule } from '@angular/material';
 import { StoreModule, combineReducers } from '@ngrx/store';
@@ -25,6 +26,7 @@ describe('CreateComponent', () => {
       declarations: [CreateComponent],
       imports: [
         NoopAnimationsModule,
+        RouterTestingModule,
         ReactiveFormsModule,
         ...materialModules,
         StoreModule.forRoot({
