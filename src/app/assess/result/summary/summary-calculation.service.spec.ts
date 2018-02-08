@@ -68,6 +68,18 @@ fdescribe('SummaryCalculationService', () => {
     service.calculateWeakness({ assessedByAttackPattern: null, attackPatternsByKillChain: [{attackPatterns: [{description: null, external_references: null, id: null, kill_chain_phases: null, name: null}],
       _id: 'description'}], phases: [{assessedObjects: null, attackPatterns: null, _id: 'description'}]});
     expect(service.weakness).toEqual('');
+    service.calculateWeakness({ assessedByAttackPattern: null, attackPatternsByKillChain: [{attackPatterns: [{description: null, external_references: null, id: null, kill_chain_phases: null, name: null}],
+      _id: 'description'}], phases: [{assessedObjects: null, attackPatterns: null, _id: 'description'}]});
+    expect(service.weakness).toEqual('');
+    service.calculateWeakness({ assessedByAttackPattern: null, attackPatternsByKillChain: [{attackPatterns: [{description: undefined, external_references: null, id: null, kill_chain_phases: null, name: null}],
+      _id: 'description'}], phases: [{assessedObjects: null, attackPatterns: null, _id: 'description'}]});
+    expect(service.weakness).toEqual('');
+    service.calculateWeakness({ assessedByAttackPattern: null, attackPatternsByKillChain: [{attackPatterns: [{description: '', external_references: null, id: null, kill_chain_phases: null, name: null}],
+      _id: 'description'}], phases: [{assessedObjects: null, attackPatterns: null, _id: 'description'}]});
+    expect(service.weakness).toEqual('');
+    service.calculateWeakness({ assessedByAttackPattern: null, attackPatternsByKillChain: [{attackPatterns: [{description: 'apple', external_references: null, id: null, kill_chain_phases: null, name: null}],
+      _id: 'description'}], phases: [{assessedObjects: null, attackPatterns: null, _id: 'description'}]});
+    expect(service.weakness).toEqual('apple');
 
   }));
 

@@ -77,11 +77,9 @@ export class SummaryCalculationService {
       const riskiestAttackPattern = attackPatternsByKillChain.find((el) => el._id === weakestPhaseId);
       if (riskiestAttackPattern && riskiestAttackPattern.attackPatterns && riskiestAttackPattern.attackPatterns.length > 0) {
         const attackPatterns = riskiestAttackPattern.attackPatterns;
-        let weakestAttackPatterns: AssessAttackPattern[] = attackPatterns.sort(SummarySortHelper.sortBySophisticationAsc()) || [];
-        weakestAttackPatterns = weakestAttackPatterns.slice(0, 1);
-        weakness = weakestAttackPatterns[0].description;
-        if (!weakness || weakness.length === 0) {
-          weakness = '';
+        const weakestAttackPatternDescription: string = attackPatterns.sort(SummarySortHelper.sortBySophisticationAsc())[0].description || '';
+        if (weakestAttackPatternDescription && weakestAttackPatternDescription.length > 0) {
+          weakness = weakestAttackPatternDescription;
         }
       }
     }
