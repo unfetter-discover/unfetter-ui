@@ -17,6 +17,11 @@
           <mat-option value="{{phase}}" *ngFor="let phase of killChainPhases$ | async">{{ phase | capitalize }}</mat-option>
         </mat-select>
       </mat-form-field>
+      <mat-form-field class="full-width mb-9">
+        <mat-select placeholder="Attack Patterns" [multiple]="true" formControlName="attackPatterns">
+          <mat-option value="{{ap.id}}" *ngFor="let ap of (store.select('indicatorSharing').pluck('attackPatterns') | async) | sortByField:'name':'ascending'">{{ ap.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
       <mat-form-field class="full-width mb-12">
         <mat-select placeholder="Sensors" [multiple]="true" formControlName="sensors">
           <mat-option value="{{sensor.id}}" *ngFor="let sensor of store.select('indicatorSharing').pluck('sensors') | async">{{ sensor.name | capitalize }}</mat-option>
