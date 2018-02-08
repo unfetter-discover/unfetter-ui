@@ -41,6 +41,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     public readonly runMode = environment.runMode;
 
     private readonly FLASH_MSG_TIMER: number = 1500;
+    private readonly FLASH_TOOLTIP_TIMER: number = 500;
 
     @ViewChild('card') private card: ElementRef;
 
@@ -234,7 +235,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
 
     public flashTooltip(toolTip: MatTooltip) {
         toolTip.show();
-        setTimeout(() => toolTip.hide(), 500);
+        setTimeout(() => toolTip.hide(), this.FLASH_TOOLTIP_TIMER);
     }
 
     private flashMessage(msg: string) {
