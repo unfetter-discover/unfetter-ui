@@ -688,11 +688,35 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description loop all reports and delete from mongo a workproduct is related to many reports
-   * @param {ThreatReport} report the UUID of the report to delete
+   * @description clicked currently viewed assessment, confirm delete
    * @return {void}
    */
-  public deleteButtonClicked(report: ThreatReport): void {
+  public onDeleteCurrent(): void {
+    this.confirmDelete({ name: this.threatReport.name, id: this.id });
+  }
+
+  /**
+   * @description clicked master list cell, confirm delete
+   * @param {LastModifiedAssessment} assessment
+   * @return {void}
+   */
+  public onDelete(report: ThreatReport): void {
+    this.confirmDelete(report);
+  }
+  
+  /**
+   * @description loop all reports and delete from mongo a workproduct is related to many reports
+   * @param {ThreatReport} report the UUID of the report to delete
+   * @param {UIEvent} optional event
+   * @return {void}
+   */
+  public confirmDelete(report: { name: string, id: string }, event?: UIEvent): void {
+    if (!report || !report.id || !report.name) {
+      console.log('no report or id given to delete');
+      return;
+    }
+
+    const isCurrentlyViewed = report.id === this.id ? true : false;
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: { attributes: report } });
     const dialogSub$ = dialogRef.afterClosed()
       .subscribe(
@@ -709,8 +733,12 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
           (resp) => {
             const s$ = resp.subscribe(
               (reports) => {
-                console.log('modified ', reports);
-                this.masterListOptions.dataSource.nextDataChange(reports);
+                if (isCurrentlyViewed === true) {
+                  // deleted currently viewed, route to next in last mod, or create page
+                  this.router.navigate([Constance.THREAT_DASHBOARD_NAVIGATE_URL]);
+                } else {
+                  this.masterListOptions.dataSource.nextDataChange(reports);
+                }
               },
               (err) => console.log(err)
             );
