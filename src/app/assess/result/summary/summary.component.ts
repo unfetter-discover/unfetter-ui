@@ -360,13 +360,18 @@ export class SummaryComponent implements OnInit, OnDestroy {
     // all
     // let allRiskByAttackObjects: Array<RiskByAttack> = [];
     // for (let riskByAttack of this.riskByAttacks) {
-    //  allRiskByAttackObjects = allRiskByAttackObjects.concat(riskByAttack);
+    //   allRiskByAttackObjects = allRiskByAttackObjects.concat(riskByAttack);
     // }
     // this.summaryCalculationService.calculateWeakness(allRiskByAttackObjects);
   }
 
   public transformKCD() {
     // single
-
+    this.summaryCalculationService.calculateTopRisks(this.riskByKillChain);
+    // all
+    // let allRiskByKillChainObjects: Array<RiskByKillChain> = [];
+    // for (let riskByKillChain of this.riskByKillChains) {
+    //   allRiskByKillChainObjects = allRiskByKillChainObjects.concat(riskByKillChain);
+    // }
   }
 }

@@ -94,4 +94,26 @@ fdescribe('SummaryCalculationService', () => {
     expect(service.calculateAvgRiskPerPhase({assessedObjects: [{questions: null, risk: 0}], attackPatterns: null, _id: null})).toEqual(0);
     expect(service.calculateAvgRiskPerPhase({assessedObjects: [{questions: null, risk: 1}], attackPatterns: null, _id: null})).toEqual(1);
   }));
+
+  it('should calculate default top risks for kill chains', inject([SummaryCalculationService], (service: SummaryCalculationService) => {
+    service.calculateTopRisks(null);
+    expect(service.topRisks).toEqual([]);
+    service.calculateTopRisks(undefined)
+    expect(service.topRisks).toEqual([]);
+    service.calculateTopRisks({courseOfActions: null, indicators: null, sensors: null});
+    expect(service.topRisks).toEqual([]);
+    service.calculateTopRisks({courseOfActions: [], indicators: [], sensors: []});
+    expect(service.topRisks).toEqual([]);
+    service.calculateTopRisks({courseOfActions: [{risk: null, questions: null, objects: null, phaseName: null}], indicators: null, sensors: null});
+    expect(service.topRisks).toEqual([]);
+    service.calculateTopRisks({courseOfActions: [{risk: .7324, questions: null, objects: null, phaseName: null}], indicators: null, sensors: null});
+    expect(service.topRisks).toEqual([{risk: .7324, questions: null, objects: null, phaseName: null}]);
+
+  }));
+
+  it('should retrieve all risks from a kill chain object', inject([SummaryCalculationService], (service: SummaryCalculationService) => {
+    expect(service.retrieveAssessmentRisks(null)).toEqual([]);
+    
+
+  }));
 });
