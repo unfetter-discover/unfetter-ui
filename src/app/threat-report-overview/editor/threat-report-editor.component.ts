@@ -324,11 +324,13 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
     /**
      * @return true is string and false or boolean and false, otherwise true
      */
-    private isFalsey(val: boolean | string | Partial<Report> | undefined): boolean {
+    private isFalsey(val: boolean | string | Partial<Report> | Array<Partial<Report>>| undefined): boolean {
         const isUndefined = typeof val === 'undefined';
         const isBool = typeof val === 'boolean';
         const isString = typeof val === 'string';
-        return isUndefined || (isBool && val === false) || (isString && val === 'false');
+        const isArray = Array.isArray(val);
+        return isUndefined || (isBool && val === false) || (isString && val === 'false')
+                || (isArray && (val as Array<any>).length === 0);
     }
 
     /**
@@ -357,8 +359,8 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
     }
 
     private createReportDialog(options: any): void {
-        options.width = '800px';
-        options.height = 'calc(100vh - 240px)';
+        options.width = '100%';
+        options.height = 'calc(100vh - 160px)';
         this.dialog
             .open(ReportEditorComponent, options)
             .afterClosed()
@@ -375,8 +377,8 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
     public onImportReport(event?: UIEvent): void {
         this.dialog
             .open(ReportImporterComponent, {
-                width: '800px',
-                height: 'calc(100vh - 240px)',
+                width: '100%',
+                height: 'calc(100vh - 160px)',
                 data: {
                     reports: this.reportsDataSource.data,
                 }
@@ -384,7 +386,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
             .afterClosed()
             .subscribe(
                 (result: Array<Partial<Report>> | boolean) => {
-                    if (result === false) {
+                    if (this.isFalsey(result)) {
                         return;
                     }
                     this.importReport(result as Array<Partial<Report>>);
