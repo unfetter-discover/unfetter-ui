@@ -145,23 +145,8 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                         this.store.dispatch(new indicatorSharingActions.AddIndicator(res.indicator));
                         this.store.dispatch(new indicatorSharingActions.FilterIndicators());
                         if (res.newRelationships) {
-                            const getPatterns$ = this.indicatorSharingService.getAttackPatternsByIndicator()
-                                    .subscribe((patternsRes) => {
-                                        patternsRes.attributes.forEach((e) => {
-                                            this.indicatorToAttackPatternMap[e._id] = e.attackPatterns;
-                                        });
-                                    },
-                                    (err) => {
-                                        console.log(err);
-                                    },
-                                    () => {
-                                        getPatterns$.unsubscribe();
-                                    }
-                                );
-                        }                        
-                        // this.buildIndicatorToSensorMap();
-                        // TODO handle update in ngrx
-                        // this.filterIndicators();
+                            this.store.dispatch(new indicatorSharingActions.RefreshApMap());
+                        } 
                     }
                 },
                 (err) => {

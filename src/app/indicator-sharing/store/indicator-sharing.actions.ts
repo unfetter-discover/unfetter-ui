@@ -5,6 +5,7 @@ export const START_SOCIAL_STREAM = '[Indicator Sharing] START_SOCIAL_STREAM';
 export const FETCH_DATA = '[Indicator Sharing] FETCH_DATA';
 export const START_DELETE_INDICATOR = '[Indicator Sharing] START_DELETE_INDICATOR';
 export const CREATE_IND_TO_AP_RELATIONSHIP = '[Indicator Sharing] CREATE_IND_TO_AP_RELATIONSHIP';
+export const REFRESH_AP_MAP = '[Indicator Sharing] REFRESH_AP_MAP';
 
 // For reducers
 export const SET_INDICATORS = '[Indicator Sharing] SET_INDICATORS';
@@ -33,6 +34,10 @@ export class CreateIndicatorToApRelationship implements Action {
     public readonly type = CREATE_IND_TO_AP_RELATIONSHIP;
     
     constructor(public payload: { indicatorId: string, attackPatternId: string } ) { }
+}
+
+export class RefreshApMap implements Action {
+    public readonly type = REFRESH_AP_MAP;
 }
 
 export class StartDeleteIndicator implements Action {
@@ -139,6 +144,8 @@ export class SetServerCallComplete implements Action {
 
 export type IndicatorSharingActions =
     FetchData |
+    CreateIndicatorToApRelationship |
+    RefreshApMap |
     StartDeleteIndicator |
     SetIndicators |
     SetAttackPatterns |
