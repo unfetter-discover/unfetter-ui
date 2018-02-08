@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { SummaryCalculationService } from '../summary-calculation.service';
+import { AssessKillChainType } from '../../../../models/assess/assess-kill-chain-type';
 
 @Component({
   selector: 'summary-report',
@@ -8,9 +9,10 @@ import { SummaryCalculationService } from '../summary-calculation.service';
   styleUrls: ['./summary-report.component.scss']
 })
 export class SummaryReportComponent implements OnInit {
-
   totalRiskValue: string;
   weakness: string;
+  topRisks: AssessKillChainType[];
+
 
   constructor(private summaryCalculationService: SummaryCalculationService) {
   }
@@ -18,5 +20,6 @@ export class SummaryReportComponent implements OnInit {
   ngOnInit() {
     this.totalRiskValue = this.summaryCalculationService.getRiskText();
     this.weakness = this.summaryCalculationService.weakness;
+    this.topRisks = this.summaryCalculationService.topRisks;
   }
 }
