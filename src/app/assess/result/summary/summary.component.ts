@@ -18,6 +18,8 @@ import { MasterListDialogTableHeaders } from '../../../global/components/master-
 import { LastModifiedAssessment } from '../../models/last-modified-assessment';
 import { slideInOutAnimation } from '../../../global/animations/animations';
 import { Constance } from '../../../utils/constance';
+import { UserProfile } from '../../../models/user/user-profile';
+import { SummaryDataSource } from './summary.datasource';
 
 @Component({
   selector: 'summary',
@@ -217,7 +219,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
           }
           
           const isCurrentlyViewed = assessment.rollupId === this.rollupId ? true : false;
-          const sub$ = this.assessmentSummaryService
+          const sub$ = this.assessService
             .deleteByRollupId(assessment.rollupId)
             .subscribe(
               (resp) => {
