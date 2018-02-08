@@ -10,7 +10,7 @@
   <div *ngIf="showAddAp" @heightCollapse>
     <div class="uf-well-accent">
       <mat-form-field class="full-width">
-        <mat-select placeholder="Indicated Attack Patterns" [multiple]="true" [(ngModel)]="selectedAttackPatterns">
+        <mat-select placeholder="Attack Patterns" [multiple]="true" [(ngModel)]="selectedAttackPatterns">
           <mat-option [value]="ap.id" *ngFor="let ap of (displayedAttackPatterns$ | async) | sortByField:'name':'ascending'">{{ ap.name }}</mat-option>
         </mat-select>
       </mat-form-field>
