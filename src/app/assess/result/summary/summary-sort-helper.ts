@@ -1,7 +1,20 @@
 import { Phase } from '../../../models/assess/phase';
 import { AssessAttackPattern } from '../../../models/assess/assess-attack-pattern';
+import { AssessKillChainType } from '../../../models/assess/assess-kill-chain-type';
 
 export class SummarySortHelper {
+    public static sortByRiskDesc(): (a: AssessKillChainType, b: AssessKillChainType) => number {
+        const sorter = (a: AssessKillChainType, b: AssessKillChainType) => {
+            if ((!b.risk && a.risk) || (a.risk > b.risk)) {
+                return -1;
+            } else if ((!a.risk && b.risk) || (a.risk < b.risk)) {
+                return 1;
+            }
+            return 0;
+        };
+        return sorter;
+    }
+    
     public static sortByAvgRiskDesc(): (a: Phase, b: Phase) => number {
         const sorter = (a: Phase, b: Phase) => {
             if ((!b.avgRisk && a.avgRisk) || (a.avgRisk > b.avgRisk)) {

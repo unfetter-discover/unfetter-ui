@@ -14,7 +14,7 @@ export class SummaryCalculationService {
   public readonly topNRisks: number;
   numericRiskValue: number;
   weaknessValue: string;
-  topRisksValue: AssessKillChainType [];
+  topRisksValue: AssessKillChainType[];
 
   constructor() {
     this.numericRisk = 0;
@@ -30,7 +30,7 @@ export class SummaryCalculationService {
     this.weaknessValue = newWeakness;
   }
 
-  public set topRisks(newTopRisks: AssessKillChainType []) {
+  public set topRisks(newTopRisks: AssessKillChainType[]) {
     this.topRisksValue = newTopRisks;
   }
 
@@ -42,7 +42,7 @@ export class SummaryCalculationService {
     return this.weaknessValue;
   }
 
-  public get topRisks(): AssessKillChainType [] {
+  public get topRisks(): AssessKillChainType[] {
     return this.topRisksValue;
   }
 
@@ -100,23 +100,32 @@ export class SummaryCalculationService {
   }
 
   public calculateTopRisks(riskByKillChain: RiskByKillChain): void {
-    let topRisks: AssessKillChainType [] = [];
-    const risks: AssessKillChainType [] = this.retrieveAssessmentRisks(riskByKillChain);
+    let topRisks: AssessKillChainType[] = [];
+    const risks: AssessKillChainType[] = this.retrieveAssessmentRisks(riskByKillChain);
     this.topRisks = risks; // .sort(SummarySortHelper.sortByRiskDesc());
     this.topRisks = this.topRisks.slice(0, this.topNRisks);
     this.topRisks.forEach((el) => {
-        const objects = el.objects || [];
-        el.objects = objects; // .sort(SummarySortHelper.sortByRiskDesc());
-        el.objects = el.objects.slice(0, this.topNRisks);
+      const objects = el.objects || [];
+      el.objects = objects; // .sort(SummarySortHelper.sortByRiskDesc());
+      el.objects = el.objects.slice(0, this.topNRisks);
     });
 
     this.topRisks = topRisks;
   }
 
-  public retrieveAssessmentRisks(riskByKillChain: RiskByKillChain[]): AssessKillChainType[] {
-    let risks: AssessKillChainType [] = [];
-    
-
+  public retrieveAssessmentRisks(riskByKillChain: RiskByKillChain): AssessKillChainType[] {
+    let risks: AssessKillChainType[] = [];
+    if (riskByKillChain) {
+      if (riskByKillChain.courseOfActions && riskByKillChain.courseOfActions.length > 0) {
+        risks = risks.concat(riskByKillChain.courseOfActions);
+      }
+      if (riskByKillChain.indicators && riskByKillChain.indicators.length > 0) {
+        risks = risks.concat(riskByKillChain.indicators);
+      }
+      if (riskByKillChain.sensors && riskByKillChain.sensors.length > 0) {
+        risks = risks.concat(riskByKillChain.sensors);
+      }
+    }
     return risks;
   }
 }
