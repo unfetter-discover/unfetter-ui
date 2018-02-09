@@ -1,7 +1,7 @@
 <div id="approveUsers" class="row">
     <div class="col-xs-12">
 
-        <div class="alert alert-info" *ngIf="message">{{message}}</div>
+        <div class="uf-well" *ngIf="message">{{message}}</div>
 
         <div *ngIf="users && users.length">
             <h5>Approve / Deny Users</h5>
@@ -30,7 +30,7 @@
             </table>
         </div>
 
-        <div *ngIf="!(users && users.length)" class="alert-alert-info">
+        <div *ngIf="!(users && users.length)" class="uf-well">
             There are no users pending approval.
         </div>
 

@@ -154,3 +154,7 @@ $utility-theme: mat-light-theme($utility-theme-primary, $utility-theme-accent, $
   right: 24px !important;
   z-index: 900 !important;
 }
+
+.mat-toolbar {
+  transition: background 0.1s ease-in-out;
+}
