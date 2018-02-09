@@ -41,22 +41,22 @@ export class AssessEffects {
         .ofType(assessActions.LOAD_ASSESSMENT_WIZARD_DATA)
         .pluck('payload')
         .switchMap((meta: Partial<AssessmentMeta>) => {
-            const urlTemplate = this.template`${0}?metaproperties=true`;
+            const includeMeta = `?metaproperties=true`;
+            let url = `${this.generateUrl('indicator')}${includeMeta}`;
             const observables = new Array<Observable<Array<JsonApiData<Stix>>>>();
 
-            let url = urlTemplate(this.generateUrl('indicator'));
             const indicators$ = meta.includesIndicators ?
                 this.genericServiceApi.getAs<JsonApiData<Indicator>[]>(url) :
                 Observable.of<JsonApiData<Indicator>[]>([]);
             observables.push(indicators$);
 
-            url = urlTemplate(this.generateUrl('mitigation'));
+            url = `${this.generateUrl('mitigation')}${includeMeta}`;
             const mitigations$ = meta.includesMitigations ?
                 this.genericServiceApi.getAs<JsonApiData<Stix>[]>(url) :
                 Observable.of<JsonApiData<Stix>[]>([]);
             observables.push(mitigations$);
 
-            url = urlTemplate(this.generateUrl('sensor'));
+            url = `${this.generateUrl('sensor')}${includeMeta}`;
             const sensors$ = meta.includesSensors ?
                 this.genericServiceApi.getAs<JsonApiData<Stix>[]>(url) :
                 Observable.of<JsonApiData<Stix>[]>([]);
@@ -172,20 +172,4 @@ export class AssessEffects {
         return url;
     }
 
-    /**
-     * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
-     * @param strings 
-     * @param keys 
-     */
-    private template(strings, ...keys) {
-        return ((...values) => {
-            const dict = values[values.length - 1] || {};
-            const result = [strings[0]];
-            keys.forEach((key, i) => {
-                const value = Number.isInteger(key) ? values[key] : dict[key];
-                result.push(value, strings[i + 1]);
-            });
-            return result.join('');
-        });
-    }
 }

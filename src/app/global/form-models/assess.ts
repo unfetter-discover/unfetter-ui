@@ -8,7 +8,7 @@ export const AssessForm = (assessment?: AssessmentMeta) => {
     }
 
     return new FormGroup({
-        title: new FormControl(assessment.title || ''),
+        title: new FormControl(assessment.title || '', Validators.required),
         description: new FormControl(assessment.description || ''),
         includesIndicators: new FormControl(assessment.includesIndicators),
         includesMitigations: new FormControl(assessment.includesMitigations),

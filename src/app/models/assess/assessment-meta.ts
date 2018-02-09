@@ -1,6 +1,6 @@
 
 export class AssessmentMeta {
-    public title = 'Untitled Assessment';
+    public title = '';
     public description = '';
     public includesIndicators = false;
     public includesMitigations = false;

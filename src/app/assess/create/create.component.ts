@@ -20,7 +20,6 @@ export class CreateComponent implements OnInit {
 
   public assessMeta: AssessmentMeta;
   public form: FormGroup;
-  public title = '';
 
   constructor(
     private formBuilder: FormBuilder,
