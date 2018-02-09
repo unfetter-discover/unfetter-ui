@@ -177,37 +177,6 @@
                 </div>
             </mat-tab>
 
-            <!-- <mat-tab label="Attack Patterns" *ngIf="attackPatterns && attackPatterns.length > 0">
-                <div *ngFor="let ap of attackPatterns">
-                    <h4 class="fw400">
-                        <a routerLink="/stix/attack-patterns/{{ap.id}}">{{ap.name}}</a>
-                    </h4>
-                    <div *ngIf="ap.kill_chain_phases">
-                        <label>Kill Chain Phases</label>
-                        <p>
-                            <span *ngFor="let phase of ap.kill_chain_phases; let i = index" class="text-muted">
-                            <span [ngClass]="{'uf-highlight': highlightPhase(phase.phase_name)}" matTooltip="{{ phase.kill_chain_name | capitalize }}"
-                                matTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>
-                            <span *ngIf="i < (ap.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
-                            </span>
-                        </p>
-                    </div>
-                    <div *ngIf="ap.x_mitre_platforms">
-                        <label>Platforms Effected:&nbsp;</label>
-                        <p class="whiteSpaceNormal">
-                            <span *ngFor="let platform of ap.x_mitre_platforms; let i = index" class="text-muted">
-                            <span>{{ platform }}</span>
-                            <span *ngIf="i < (ap.x_mitre_platforms.length - 1)">&nbsp;&bull;&nbsp;</span>
-                            </span>
-                        </p>
-                    </div>
-                    <div *ngIf="ap.x_unfetter_sophistication_level">
-                        <label>Sophistication Level:&nbsp;</label>
-                        <span>{{ ap.x_unfetter_sophistication_level }}</span>
-                    </div>
-                </div>
-            </mat-tab> -->
-
             <mat-tab label="Sensors" *ngIf="sensors && sensors.length > 0">     
                 <div *ngFor="let sensor of sensors">
                     <h4 class="fw400">

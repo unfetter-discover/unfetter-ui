@@ -1,5 +1,7 @@
+@import '../../../styles/variables';
+
 i {
-    transition: transform 0.2s ease-in-out;
+    transition: transform 0.3s $elastic-transition;
     &.showAddAp {
       transform: rotateZ(135deg);
     }
