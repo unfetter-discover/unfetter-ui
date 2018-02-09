@@ -2,36 +2,84 @@ import { SummarySortHelper } from './summary-sort-helper';
 import { Phase } from '../../../models/assess/phase';
 import { AttackPattern } from '../../../models/attack-pattern';
 import { AssessAttackPattern } from '../../../models/assess/assess-attack-pattern';
+import { AssessKillChainType } from '../../../models/assess/assess-kill-chain-type';
 
-describe('SummarySortHelper', () => {
+fdescribe('SummarySortHelper', () => {
   it('should create an instance', () => {
     expect(new SummarySortHelper()).toBeTruthy();
+  });
+
+  it('should sort killchain risk objects by risk decending', () => {
+    let riskObjects: AssessKillChainType[] = [];
+    let expected: AssessKillChainType[] = [];
+    riskObjects.sort(SummarySortHelper.sortByRiskDesc());
+    expect(JSON.stringify(riskObjects)).toEqual(JSON.stringify(expected));
+
+    riskObjects = [{ risk: null, questions: null, objects: null, phaseName: null }];
+    expected = [{ risk: null, questions: null, objects: null, phaseName: null }];
+    riskObjects.sort(SummarySortHelper.sortByRiskDesc());
+    expect(JSON.stringify(riskObjects)).toEqual(JSON.stringify(expected));
+
+    riskObjects = [{ risk: 1, questions: null, objects: null, phaseName: null }, { risk: .5, questions: null, objects: null, phaseName: null }];
+    expected = [{ risk: 1, questions: null, objects: null, phaseName: null }, { risk: .5, questions: null, objects: null, phaseName: null }];
+    riskObjects.sort(SummarySortHelper.sortByRiskDesc());
+    expect(JSON.stringify(riskObjects)).toEqual(JSON.stringify(expected));
+
+    riskObjects = [{ risk: .5, questions: null, objects: null, phaseName: null }, { risk: 1, questions: null, objects: null, phaseName: null }];
+    expected = [{ risk: 1, questions: null, objects: null, phaseName: null }, { risk: .5, questions: null, objects: null, phaseName: null }];
+    riskObjects.sort(SummarySortHelper.sortByRiskDesc());
+    expect(JSON.stringify(riskObjects)).toEqual(JSON.stringify(expected));
+
+    riskObjects = [{ risk: null, questions: null, objects: null, phaseName: null }, { risk: 1, questions: null, objects: null, phaseName: null }];
+    expected = [{ risk: 1, questions: null, objects: null, phaseName: null }, { risk: null, questions: null, objects: null, phaseName: null }];
+    riskObjects.sort(SummarySortHelper.sortByRiskDesc());
+    expect(JSON.stringify(riskObjects)).toEqual(JSON.stringify(expected));
+
+    riskObjects = [{ risk: null, questions: null, objects: null, phaseName: null },
+    { risk: .5, questions: null, objects: null, phaseName: null },
+    { risk: .5, questions: null, objects: null, phaseName: null },
+    { risk: 1, questions: null, objects: null, phaseName: null },
+    { risk: null, questions: null, objects: null, phaseName: null },
+    { risk: 1, questions: null, objects: null, phaseName: null }];
+    expected = [{ risk: 1, questions: null, objects: null, phaseName: null },
+    { risk: 1, questions: null, objects: null, phaseName: null },
+    { risk: .5, questions: null, objects: null, phaseName: null },
+    { risk: .5, questions: null, objects: null, phaseName: null },
+    { risk: null, questions: null, objects: null, phaseName: null },
+    { risk: null, questions: null, objects: null, phaseName: null }];
+    riskObjects.sort(SummarySortHelper.sortByRiskDesc());
+    expect(JSON.stringify(riskObjects)).toEqual(JSON.stringify(expected));
   });
 
   it('should sort phases by average risk decending', () => {
     let phases: Phase[] = [];
     let expected: Phase[] = [];
-    phases.sort(SummarySortHelper.sortByAvgRiskDesc())
+    phases.sort(SummarySortHelper.sortByAvgRiskDesc());
     expect(JSON.stringify(phases)).toEqual(JSON.stringify(expected));
 
     phases = [{ assessedObjects: null, attackPatterns: null, _id: null, avgRisk: null }];
     expected = [{ assessedObjects: null, attackPatterns: null, _id: null, avgRisk: null }];
-    phases.sort(SummarySortHelper.sortByAvgRiskDesc())
+    phases.sort(SummarySortHelper.sortByAvgRiskDesc());
     expect(JSON.stringify(phases)).toEqual(JSON.stringify(expected));
 
     phases = [{ assessedObjects: null, attackPatterns: null, _id: null, avgRisk: undefined }];
     expected = [{ assessedObjects: null, attackPatterns: null, _id: null, avgRisk: undefined }];
-    phases.sort(SummarySortHelper.sortByAvgRiskDesc())
+    phases.sort(SummarySortHelper.sortByAvgRiskDesc());
+    expect(JSON.stringify(phases)).toEqual(JSON.stringify(expected));
+
+    phases = [{ assessedObjects: null, attackPatterns: null, _id: null, avgRisk: 1 }, { assessedObjects: null, attackPatterns: null, _id: null, avgRisk: .5 }];
+    expected = [{ assessedObjects: null, attackPatterns: null, _id: null, avgRisk: 1 }, { assessedObjects: null, attackPatterns: null, _id: null, avgRisk: .5 }];
+    phases.sort(SummarySortHelper.sortByAvgRiskDesc());
     expect(JSON.stringify(phases)).toEqual(JSON.stringify(expected));
 
     phases = [{ assessedObjects: null, attackPatterns: null, _id: null, avgRisk: .5 }, { assessedObjects: null, attackPatterns: null, _id: null, avgRisk: 1 }];
     expected = [{ assessedObjects: null, attackPatterns: null, _id: null, avgRisk: 1 }, { assessedObjects: null, attackPatterns: null, _id: null, avgRisk: .5 }];
-    phases.sort(SummarySortHelper.sortByAvgRiskDesc())
+    phases.sort(SummarySortHelper.sortByAvgRiskDesc());
     expect(JSON.stringify(phases)).toEqual(JSON.stringify(expected));
 
     phases = [{ assessedObjects: null, attackPatterns: null, _id: null, avgRisk: null }, { assessedObjects: null, attackPatterns: null, _id: null, avgRisk: 1 }];
     expected = [{ assessedObjects: null, attackPatterns: null, _id: null, avgRisk: 1 }, { assessedObjects: null, attackPatterns: null, _id: null, avgRisk: null }];
-    phases.sort(SummarySortHelper.sortByAvgRiskDesc())
+    phases.sort(SummarySortHelper.sortByAvgRiskDesc());
     expect(JSON.stringify(phases)).toEqual(JSON.stringify(expected));
 
     phases = [{ assessedObjects: null, attackPatterns: null, _id: null, avgRisk: null },
@@ -46,7 +94,7 @@ describe('SummarySortHelper', () => {
     { assessedObjects: null, attackPatterns: null, _id: null, avgRisk: .5 },
     { assessedObjects: null, attackPatterns: null, _id: null, avgRisk: null },
     { assessedObjects: null, attackPatterns: null, _id: null, avgRisk: null }];
-    phases.sort(SummarySortHelper.sortByAvgRiskDesc())
+    phases.sort(SummarySortHelper.sortByAvgRiskDesc());
     expect(JSON.stringify(phases)).toEqual(JSON.stringify(expected));
 
     phases = [{ assessedObjects: null, attackPatterns: null, _id: null, avgRisk: null },
@@ -62,7 +110,7 @@ describe('SummarySortHelper', () => {
     { assessedObjects: null, attackPatterns: null, _id: null, avgRisk: null },
     { assessedObjects: null, attackPatterns: null, _id: null },
     { assessedObjects: null, attackPatterns: null, _id: null, avgRisk: null }];
-    phases.sort(SummarySortHelper.sortByAvgRiskDesc())
+    phases.sort(SummarySortHelper.sortByAvgRiskDesc());
     expect(JSON.stringify(phases)).toEqual(JSON.stringify(expected));
   });
 
@@ -89,6 +137,13 @@ describe('SummarySortHelper', () => {
 
     patterns = [{ description: null, external_references: null, id: null, kill_chain_phases: null, name: null, x_unfetter_sophistication_level: 1 },
     { description: null, external_references: null, id: null, kill_chain_phases: null, name: null, x_unfetter_sophistication_level: 0 }];
+    expected = [{ description: null, external_references: null, id: null, kill_chain_phases: null, name: null, x_unfetter_sophistication_level: 0 },
+    { description: null, external_references: null, id: null, kill_chain_phases: null, name: null, x_unfetter_sophistication_level: 1 }];
+    patterns.sort(SummarySortHelper.sortBySophisticationAsc());
+    expect(JSON.stringify(patterns)).toEqual(JSON.stringify(expected));
+
+    patterns = [{ description: null, external_references: null, id: null, kill_chain_phases: null, name: null, x_unfetter_sophistication_level: 0 },
+    { description: null, external_references: null, id: null, kill_chain_phases: null, name: null, x_unfetter_sophistication_level: 1 }];
     expected = [{ description: null, external_references: null, id: null, kill_chain_phases: null, name: null, x_unfetter_sophistication_level: 0 },
     { description: null, external_references: null, id: null, kill_chain_phases: null, name: null, x_unfetter_sophistication_level: 1 }];
     patterns.sort(SummarySortHelper.sortBySophisticationAsc());
