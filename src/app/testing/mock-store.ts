@@ -38,11 +38,20 @@ export const mockIndicators = [
     {
         name: 'fake',
         pattern: '[process:pid=3]',
-        labels: ['fake']
+        labels: ['fake'],
+        id: 'fake123'
+    }
+];
+
+export const mockAttackPatterns = [
+    {
+        name: 'fake',
+        id: 'fake123'
     }
 ];
 
 export function makeMockIndicatorSharingStore(store: Store<fromRoot.AppState>) {
     store.dispatch(new indicatorSharingActions.SetIndicators(mockIndicators));
+    store.dispatch(new indicatorSharingActions.SetAttackPatterns(mockAttackPatterns));
     store.dispatch(new indicatorSharingActions.FilterIndicators());
 }

@@ -19,7 +19,7 @@ export class AddAttackPatternComponent implements OnInit {
   public filteredAttackPatterns: any[];
   public showAddAp: boolean = false;
 
-  constructor(private store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>) { }
+  constructor(public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>) { }
 
   ngOnInit() {
     this.displayedAttackPatterns$ = this.store.select('indicatorSharing')
