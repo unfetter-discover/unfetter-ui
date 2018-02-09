@@ -44,6 +44,45 @@
             <add-label-reactive [stixType]="'indicator'" (labelAdded)="addLabel($event)" [currentLabels]="indicator.labels"></add-label-reactive>
         </div>
 
+        <label>Indicated Attack Patterns</label>
+        <add-attack-pattern [existingAttackPatterns]="attackPatterns" [indicatorId]="indicator.id"></add-attack-pattern>
+        <div *ngIf="attackPatterns && attackPatterns.length > 0">
+            <div class="uf-collapsible-control mb-10 mt-6" (click)="showAttackPatternDetails = !showAttackPatternDetails">
+                <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showAttackPatternDetails}">chevron_right</i>
+                <span class="h5">&nbsp;Indicated Attack Pattern Details</span>
+            </div>
+            <div *ngIf="showAttackPatternDetails" class="uf-well" @heightCollapse>
+                <div *ngFor="let ap of attackPatterns">
+                    <h4 class="fw400">
+                        <a routerLink="/stix/attack-patterns/{{ap.id}}">{{ap.name}}</a>
+                    </h4>
+                    <div *ngIf="ap.kill_chain_phases">
+                        <label>Kill Chain Phases</label>
+                        <p>
+                            <span *ngFor="let phase of ap.kill_chain_phases; let i = index" class="text-muted">
+                                <span [ngClass]="{'uf-highlight': highlightPhase(phase.phase_name)}" matTooltip="{{ phase.kill_chain_name | capitalize }}"
+                                    matTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>
+                                <span *ngIf="i < (ap.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
+                            </span>
+                        </p>
+                    </div>
+                    <div *ngIf="ap.x_mitre_platforms">
+                        <label>Platforms Effected:&nbsp;</label>
+                        <p class="whiteSpaceNormal">
+                            <span *ngFor="let platform of ap.x_mitre_platforms; let i = index" class="text-muted">
+                                <span>{{ platform }}</span>
+                                <span *ngIf="i < (ap.x_mitre_platforms.length - 1)">&nbsp;&bull;&nbsp;</span>
+                            </span>
+                        </p>
+                    </div>
+                    <div *ngIf="ap.x_unfetter_sophistication_level">
+                        <label>Sophistication Level:&nbsp;</label>
+                        <span>{{ ap.x_unfetter_sophistication_level }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <mat-tab-group>
             <mat-tab label="Details">
                 <div *ngIf="indicator.description">
@@ -74,7 +113,7 @@
                     <label>Unfetter User Interactions: </label>
                     <span *ngIf="indicator.metaProperties && indicator.metaProperties.interactions">{{ indicator.metaProperties.interactions.length }}</span>
                     <span *ngIf="!indicator.metaProperties || !indicator.metaProperties.interactions">{{ 0 }}</span>
-                </div>
+                </div>                
             </mat-tab>
 
             <mat-tab label="Scripts" *ngIf="indicator.metaProperties && (indicator.metaProperties.queries || indicator.metaProperties.additional_queries)">
@@ -138,7 +177,7 @@
                 </div>
             </mat-tab>
 
-            <mat-tab label="Attack Patterns" *ngIf="attackPatterns && attackPatterns.length > 0">
+            <!-- <mat-tab label="Attack Patterns" *ngIf="attackPatterns && attackPatterns.length > 0">
                 <div *ngFor="let ap of attackPatterns">
                     <h4 class="fw400">
                         <a routerLink="/stix/attack-patterns/{{ap.id}}">{{ap.name}}</a>
@@ -167,7 +206,7 @@
                         <span>{{ ap.x_unfetter_sophistication_level }}</span>
                     </div>
                 </div>
-            </mat-tab>
+            </mat-tab> -->
 
             <mat-tab label="Sensors" *ngIf="sensors && sensors.length > 0">     
                 <div *ngFor="let sensor of sensors">

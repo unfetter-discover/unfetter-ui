@@ -16,6 +16,7 @@ export class IndicatorSharingService {
     public attackPatternsUrl = Constance.ATTACK_PATTERN_URL;
     public sensorsUrl = Constance.X_UNFETTER_SENSOR_URL;
     public patternHandlerUrl = Constance.PATTERN_HANDLER_URL;
+    public relationshipUrl = Constance.RELATIONSHIPS_URL;
     public readonly runMode = environment.runMode;
 
     constructor(
@@ -111,5 +112,19 @@ export class IndicatorSharingService {
     public patternHandlerObjects(pattern: string): Observable<any> {
         const body = { data: { pattern } };
         return this.genericApi.post(`${this.patternHandlerUrl}/get-objects`, body);
+    }
+
+    public createIndToApRelationship(indicatorId: string, attackPatternId: string): Observable<any> {
+        const body = {
+            data: {
+                attributes: {
+                    source_ref: indicatorId,
+                    target_ref: attackPatternId,
+                    relationship_type: 'indicates'
+                }
+            }
+        };
+
+        return this.genericApi.post(this.relationshipUrl, body);
     }
 }

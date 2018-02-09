@@ -4,6 +4,8 @@ import { Action } from '@ngrx/store';
 export const START_SOCIAL_STREAM = '[Indicator Sharing] START_SOCIAL_STREAM';
 export const FETCH_DATA = '[Indicator Sharing] FETCH_DATA';
 export const START_DELETE_INDICATOR = '[Indicator Sharing] START_DELETE_INDICATOR';
+export const CREATE_IND_TO_AP_RELATIONSHIP = '[Indicator Sharing] CREATE_IND_TO_AP_RELATIONSHIP';
+export const REFRESH_AP_MAP = '[Indicator Sharing] REFRESH_AP_MAP';
 
 // For reducers
 export const SET_INDICATORS = '[Indicator Sharing] SET_INDICATORS';
@@ -15,6 +17,7 @@ export const DELETE_INDICATOR = '[Indicator Sharing] DELETE_INDICATOR';
 
 export const SET_SENSORS = '[Indicator Sharing] SET_SENSORS';
 export const SET_IDENTITIES = '[Indicator Sharing] SET_IDENTITIES';
+export const SET_ATTACK_PATTERNS = '[Indicator Sharing] SET_ATTACK_PATTERNS';
 export const SET_INDICATOR_TO_AP_MAP = '[Indicator Sharing] SET_INDICATOR_TO_AP_MAP';
 export const CLEAR_DATA = '[Indicator Sharing] CLEAR_DATA';
 export const SET_SEARCH_PARAMETERS = '[Indicator Sharing] SET_SEARCH_PARAMETERS';
@@ -27,6 +30,16 @@ export class FetchData implements Action {
     public readonly type = FETCH_DATA;
 }
 
+export class CreateIndicatorToApRelationship implements Action {
+    public readonly type = CREATE_IND_TO_AP_RELATIONSHIP;
+    
+    constructor(public payload: { indicatorId: string, attackPatternId: string } ) { }
+}
+
+export class RefreshApMap implements Action {
+    public readonly type = REFRESH_AP_MAP;
+}
+
 export class StartDeleteIndicator implements Action {
     public readonly type = START_DELETE_INDICATOR;
 
@@ -35,6 +48,12 @@ export class StartDeleteIndicator implements Action {
 
 export class SetIndicators implements Action {
     public readonly type = SET_INDICATORS;
+
+    constructor(public payload: any[]) { }
+}
+
+export class SetAttackPatterns implements Action {
+    public readonly type = SET_ATTACK_PATTERNS;
 
     constructor(public payload: any[]) { }
 }
@@ -125,8 +144,11 @@ export class SetServerCallComplete implements Action {
 
 export type IndicatorSharingActions =
     FetchData |
+    CreateIndicatorToApRelationship |
+    RefreshApMap |
     StartDeleteIndicator |
     SetIndicators |
+    SetAttackPatterns |
     FilterIndicators |
     SortIndicators |
     AddIndicator |

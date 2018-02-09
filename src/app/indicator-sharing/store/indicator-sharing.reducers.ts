@@ -12,6 +12,7 @@ export interface IndicatorSharingState {
     filteredIndicators: any[],
     displayedIndicators: any[]
     sensors: any[],
+    attackPatterns: any[],
     identities: any[],
     searchParameters: {},
     indicatorToSensorMap: {},
@@ -25,7 +26,8 @@ export const initialSearchParameters: SearchParameters = {
     killChainPhases: [],
     labels: [],
     organizations: [],
-    sensors: []
+    sensors: [],
+    attackPatterns: []
 };
 
 const initialState: IndicatorSharingState = {
@@ -33,6 +35,7 @@ const initialState: IndicatorSharingState = {
     filteredIndicators: [],
     displayedIndicators: [],
     sensors: [],
+    attackPatterns: [],
     identities: [],
     searchParameters: { ...initialSearchParameters },
     indicatorToSensorMap: {},
@@ -129,6 +132,11 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
                 sensors: action.payload,
                 indicatorToSensorMap
             };
+        case indicatorSharingActions.SET_ATTACK_PATTERNS:
+            return {
+                ...state,
+                attackPatterns: action.payload
+            };
         case indicatorSharingActions.SET_IDENTITIES:
             return {
                 ...state,
@@ -221,7 +229,7 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
     }
 }
 
-function filterIndicators(state, searchParameters) {
+function filterIndicators(state: IndicatorSharingState, searchParameters) {
     const allIndicators = [...state.indicators];
     let filteredIndicators;
     if (searchParameters.labels.length) {
@@ -278,6 +286,21 @@ function filterIndicators(state, searchParameters) {
             );
     }
 
+    if (searchParameters.attackPatterns.length) {
+        filteredIndicators = filteredIndicators
+            .filter((indicator) => Object.keys(state.indicatorToApMap).includes(indicator.id) && state.indicatorToApMap[indicator.id].length)
+            .filter((indicator) => {
+                let found: boolean = false;
+                for (let presentAttackpattern of state.indicatorToApMap[indicator.id]) {
+                    if (searchParameters.attackPatterns.includes(presentAttackpattern.id)) {
+                        found = true;
+                        break;
+                    }
+                }
+                return found;
+            })
+    }
+
     return {
         ...state,
         filteredIndicators
@@ -331,23 +354,6 @@ function buildIndicatorToSensorMap(indicators, sensors): object {
     indicatorsWithObservedData.forEach((indicator) => {
         const matchingSensorsSet = new Set();
 
-        // OR logic
-        // indicator.metaProperties.observedData.forEach((obsData) => {
-
-        //     sensors
-        //         .filter((sensor) => {
-        //             let retVal = false;
-        //             sensor.metaProperties.observedData.forEach((sensorObsData) => {
-        //                 if (sensorObsData.name === obsData.name && sensorObsData.action === obsData.action && sensorObsData.property === obsData.property) {
-        //                     retVal = true;
-        //                 }
-        //             });
-        //             return retVal;
-        //         })
-        //         .forEach((sensor) => matchingSensorsSet.add(sensor));
-        // });
-
-        // AND logic
         sensors
             .filter((sensor) => {
                 let retVal = true;

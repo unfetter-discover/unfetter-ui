@@ -3,5 +3,6 @@ export interface SearchParameters {
     killChainPhases: string[],
     labels: string[],
     organizations: string[],
-    sensors: string[]
+    sensors: string[],
+    attackPatterns: string[]
 }

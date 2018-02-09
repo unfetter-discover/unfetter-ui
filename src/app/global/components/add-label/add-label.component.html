@@ -7,8 +7,7 @@
                     {{ ov }}
                 </mat-option>
             </mat-autocomplete>
-        </mat-form-field>
-        
+        </mat-form-field>        
         <i class="material-icons mat-24 cursor-pointer sendLabelbtn" [ngClass]="{'text-muted': localForm.status === 'INVALID'}" (click)="localForm.status === 'VALID' ? addToParent() : ''" matTooltip="Attach Label to {{ parentDocumentType | capitalize }}">send</i>
     </div>
     <button mat-mini-fab color="accent" (click)="buttonClick($event)" id="addLabelBtn" class="inlineBlock">
