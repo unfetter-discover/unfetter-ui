@@ -4,9 +4,9 @@
             <div class="phase-header">{{activePhase | capitalize}}</div>
             <div *ngIf="attackPatternsByPhase && attackPatternsByPhase.length">
                 <span class="fs-12">Attack Patterns</span>
-                <div *ngFor="let ap of attackPatternsByPhase" class="ap-list-item">
-                    <risk-icon [risk]="getRiskByAttackPatternId(ap.attackPatternId)" [showTooltip]="true"></risk-icon>&nbsp;
-                    <span class="cursor-pointer" (click)="setAttackPattern(ap.attackPatternId)">{{ ap.attackPatternName }}</span>
+                <div *ngFor="let ap of attackPatternsByPhase" class="ap-list-item cursor-pointer" [ngClass]="{'highlightAp': isCurrentAp(ap.attackPatternId) }" (click)="setAttackPattern(ap.attackPatternId)">
+                    <risk-icon [risk]="getRiskByAttackPatternId(ap.attackPatternId)" [showTooltip]="true" showTextShadow="false"></risk-icon>&nbsp;
+                    <span>{{ ap.attackPatternName }}</span>
                 </div>
             </div>
             <div class="divider">
@@ -14,8 +14,9 @@
             </div>
             <div *ngIf="unassessedAttackPatterns && unassessedAttackPatterns.length > 0">
                 <span class="fs-12">Unassessed Attack Patterns</span>
-                <div *ngFor="let unassessedAttackPattern of unassessedAttackPatterns" class="ap-list-item">
-                    <span class="cursor-pointer" (click)="setAttackPattern(unassessedAttackPattern.id)">{{ unassessedAttackPattern.attributes.name }}</span>
+                <div *ngFor="let unassessedAttackPattern of unassessedAttackPatterns" class="ap-list-item cursor-pointer" (click)="setAttackPattern(unassessedAttackPattern.id)" [ngClass]="{'highlightAp': isCurrentAp(unassessedAttackPattern.id)
+                }">
+                    <span>{{ unassessedAttackPattern.attributes.name }}</span>
                 </div>
             </div>
         </div>
@@ -65,7 +66,7 @@
 
                 <div *ngIf="displayedAssessedObjects && displayedAssessedObjects.length">
                     <div *ngFor="let assessedObj of displayedAssessedObjects | sortByField: 'risk'">
-                        <mat-card>
+                        <mat-card class="uf-mat-card">
                             <mat-card-title><img src="{{ getStixIcon(assessedObj.stix.type) }}" alt=""> {{ assessedObj.stix.name }}</mat-card-title>
                             <mat-card-content>
                                 <!--<span class="text-muted">Risk Accepted &bull;</span>&nbsp;{{ getRisk(assessedObj.stix.id)

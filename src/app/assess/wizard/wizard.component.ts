@@ -30,7 +30,7 @@ import { WizardAssessment } from './wizard-assessment';
 import { Dictionary } from '../../models/json/dictionary';
 
 type SidePanelName = 'indicators' | 'mitigations' | 'sensors' | 'summary';
-type ButtonLabel = 'Save' | 'Next';
+type ButtonLabel = 'SAVE' | 'CONTINUE';
 
 interface TempModel {
   [index: string]: {
@@ -56,7 +56,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
 
   public model: JsonApiData<Assessment>;
   public publishDate = new Date();
-  public buttonLabel: ButtonLabel = 'Next';
+  public buttonLabel: ButtonLabel = 'CONTINUE';
   public navigations: { label: string, page: number }[] = [];
   public item: MenuItem[];
   public doughnutChartLabels = ['Risk Accepted', 'Risk Addressed'];
@@ -543,7 +543,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       return;
     }
     this.page = this.page - 1;
-    this.buttonLabel = 'Next';
+    this.buttonLabel = 'CONTINUE';
     this.currentAssessmentGroup = this.getCurrentAssessmentGroup();
     this.showSummary = false;
     this.setSelectedRiskValue();
@@ -572,7 +572,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     }
 
     this.showSummary = false;
-    this.buttonLabel = 'Next';
+    this.buttonLabel = 'CONTINUE';
 
     // last page for this assessment type
     if (this.page + 1 > this.assessmentGroups.length) {
@@ -604,7 +604,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     //  set show summary to show save page
     this.currentAssessmentGroup = {};
     this.showSummary = true;
-    this.buttonLabel = 'Save';
+    this.buttonLabel = 'SAVE';
   }
 
   /**
