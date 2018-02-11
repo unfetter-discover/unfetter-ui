@@ -4,7 +4,7 @@
             <form class="assess-form" [formGroup]="form" novalidate (ngSubmit)="submitForm()">
                 <mat-card-content>
                     <mat-form-field class="full-width">
-                        <input matInput placeholder="Title" [value]="assessMeta.title" formControlName="title">
+                        <input matInput placeholder="Title" [value]="assessMeta.title" formControlName="title" (blur)="onTitleBlur($event)">
                         <mat-error *ngIf="form.get('title').hasError('required')">
                             Title is
                             <strong>required</strong>
@@ -21,7 +21,7 @@
                     </div>
                 </mat-card-content>
                 <mat-card-actions>
-                    <button mat-button (click)="onCancel()">CANCEL</button>
+                    <button mat-button (click)="onCancel($event)">CANCEL</button>
                     <button mat-raised-button color="primary" [disabled]="form.status === 'INVALID'" type="submit">CONTINUE</button>
                 </mat-card-actions>
             </form>

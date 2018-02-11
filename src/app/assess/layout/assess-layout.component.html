@@ -4,7 +4,7 @@
       <button *ngIf="showBackButton|async" mat-icon-button class="mat-24" (click)="onBack($event)">
         <mat-icon>keyboard_backspace</mat-icon>
       </button>
-      {{title|async}}
+      {{(title | async) || 'Untitled Assessment'}}
     </span>
   </div>
   <div class="fadeIn flex contentWrapper">

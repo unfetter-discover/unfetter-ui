@@ -100,9 +100,9 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
   public currentAssessmentGroup = {} as any;
   public page = 1;
   public meta = new AssessmentMeta();
-  public indicators: JsonApiData<Indicator>[];
-  public sensors: JsonApiData<Stix>[];
-  public mitigations: JsonApiData<Stix>[];
+  public indicators: Indicator[];
+  public sensors: Stix[];
+  public mitigations: Stix[];
   public ratioOfQuestionsAnswered = 0;
   public openedSidePanel: SidePanelName;
   public insertMode = false;
@@ -152,19 +152,25 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       .select('assessment')
       .pluck('indicators')
       .distinctUntilChanged()
-      .subscribe((arr: JsonApiData<Indicator>[]) => this.indicators = arr);
+      .filter((el) => el !== undefined)
+      .map((arr: JsonApiData<Indicator>[]) => arr.map((el) => el.attributes))
+      .subscribe((arr: Indicator[]) => this.indicators = arr);
 
     const sub2$ = this.store
       .select('assessment')
       .pluck('mitigations')
       .distinctUntilChanged()
-      .subscribe((arr: JsonApiData<Stix>[]) => this.mitigations = arr);
+      .filter((el) => el !== undefined)
+      .map((arr: JsonApiData<Stix>[]) => arr.map((el) => el.attributes))
+      .subscribe((arr: Stix[]) => this.mitigations = arr);
 
     const sub3$ = this.store
       .select('assessment')
       .pluck('sensors')
       .distinctUntilChanged()
-      .subscribe((arr: JsonApiData<Stix>[]) => this.sensors = arr);
+      .filter((el) => el !== undefined)
+      .map((arr: JsonApiData<Stix>[]) => arr.map((el) => el.attributes))
+      .subscribe((arr: Stix[]) => this.sensors = arr);
 
     const sub4$ = this.store
       .select('assessment')
@@ -175,15 +181,15 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         this.openedSidePanel = this.determineFirstOpenSidePanel();
         this.refreshToOpenedAssessmentType();
       },
-      (err) => console.log(err));
+        (err) => console.log(err));
 
     const sub5$ = this.store
       .select('assessment')
       .pluck('page')
       .distinctUntilChanged()
       .subscribe(
-      (page: number) => this.page = page,
-      (err) => console.log(err));
+        (page: number) => this.page = page,
+        (err) => console.log(err));
 
     interface SavedState { saved: boolean, rollupId: string };
     const sub6$ = this.store
@@ -192,11 +198,11 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       .distinctUntilChanged()
       .filter((el: SavedState) => el.saved === true)
       .subscribe(
-      (saved: SavedState) => {
-        const rollupId = saved.rollupId;
-        this.router.navigate(['assess/result/summary', rollupId]);
-      },
-      (err) => console.log(err));
+        (saved: SavedState) => {
+          const rollupId = saved.rollupId;
+          this.router.navigate(['assess/result/summary', rollupId]);
+        },
+        (err) => console.log(err));
 
     const sub7$ = this.store
       .select('assessment')
@@ -204,8 +210,8 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       .pluck('assessmentMeta')
       .distinctUntilChanged()
       .subscribe(
-      (assessmentMeta: AssessmentMeta) => this.meta = assessmentMeta,
-      (err) => console.log(err));
+        (assessmentMeta: AssessmentMeta) => this.meta = assessmentMeta,
+        (err) => console.log(err));
 
     this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$, sub7$);
 
@@ -252,7 +258,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
   }
 
   /**
-   * @description
+   * @description name of first side panel with data
    * @return {string} name of first open side panel
    */
   public determineFirstOpenSidePanel(): SidePanelName {
@@ -262,14 +268,14 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
   }
 
   /**
-   * @description
-   * @return {string} name of last listed side panel
+   * @description first panel with data, after the currently opened
+   * @return {string} name of last listed side panel with data
    */
   public determineNextSidePanel(): SidePanelName {
-    const panels = [...this.sidePanelOrder];
+    const panels: SidePanelName[] = [...this.determinePanelsWithData(), 'summary'];
     const openedIndex = panels.findIndex((el) => el === this.openedSidePanel);
     const nextPanels = panels.slice(openedIndex + 1, panels.length);
-    // first panel after the currently opened
+    // first panel with data, after the currently opened
     return nextPanels[0];
   }
 
@@ -290,6 +296,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     // clear out state
     this.tempModel = {};
     this.page = 1;
+    this.showSummary = false;
 
     // switch to new open panel
     this.openedSidePanel = panelName;
@@ -298,8 +305,8 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     if (this.openedSidePanel && this.assessmentTypeGroups[this.openedSidePanel]) {
       // reload previous state for given type/panel if it exists
       this.assessmentGroups = [...this.assessmentTypeGroups[this.openedSidePanel].assessmentsGroups];
-    this.currentAssessmentGroup = this.getCurrentAssessmentGroup()  ;
-      this.tempModel = {...this.assessmentTypeGroups[this.openedSidePanel].tempModel};
+      this.currentAssessmentGroup = this.getCurrentAssessmentGroup();
+      this.tempModel = { ...this.assessmentTypeGroups[this.openedSidePanel].tempModel };
     }
     // reset progress bar
     this.updateRatioOfAnswerQuestions();
@@ -316,11 +323,11 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       this.navigations = [];
       this.updateRatioOfAnswerQuestions();
       this.build(data);
-      
+
       // set focus to current submit button
       // const btn = this.renderer.('#submitBtn');
       // if (btn) {
-        // btn.focus();
+      // btn.focus();
       // }
     }
   }
@@ -343,6 +350,8 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       if (answeredQuestions > 0) {
         const ratio = answeredQuestions / numQuestions;
         this.ratioOfQuestionsAnswered = Math.round(ratio * 100);
+      } else {
+        this.ratioOfQuestionsAnswered = 0;
       }
     }
   }
@@ -593,7 +602,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    */
   public showSummarySavePage(): void {
     //  set show summary to show save page
-    this.currentAssessmentGroup = [];
+    this.currentAssessmentGroup = {};
     this.showSummary = true;
     this.buttonLabel = 'Save';
   }
@@ -635,11 +644,36 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
   }
 
   /**
+   * @description
+   * @return {boolean} true if first page of first side panel otherwise false
+   */
+  public isFirstPageOfFirstSidePanel(): boolean {
+    const isFirstPanel = this.openedSidePanel === this.determineFirstOpenSidePanel();
+    return isFirstPanel && this.isFirstPage();
+  }
+
+  /**
+   * @description
+   * @return {boolean} true if first page of first side panel otherwise false
+   */
+  public isFirstPage(): boolean {
+    return this.page <= 1;
+  }
+
+  /**
+   * @description
+   * @return {boolean} true if title is empty otherwise false
+   */
+  public isTitleEmpty(): boolean {
+    return !this.meta.title || this.meta.title.trim() === '';
+  }
+
+  /**
    * @description build page and refresh chart
    * @param data 
    * @return {void}
    */
-  private build(data?: JsonApiData<Stix>[]): void {
+  private build(data?: Stix[]): void {
     if (!data) {
       return;
     }
@@ -667,10 +701,10 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
 
   /**
    * @description
-   * @param {JsonApiData<Stix>[]}
+   * @param {Stix[]}
    * @return {any[]}
    */
-  private createAssessmentGroups(assessedObjects: JsonApiData<Stix>[]): any[] {
+  private createAssessmentGroups(assessedObjects: Stix[]): any[] {
     const assessmentGroups = [];
     const self = this;
 
@@ -678,7 +712,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       // Go through and build each assessment
       // We do this so we can just save all the assessments later.
       this.assessments = assessedObjects
-        .map((el) => el.attributes)
+        // .map((el) => el.attributes)
         .map((assessedObject) => {
           const assessment = new WizardAssessment();
           if (assessedObject.metaProperties && assessedObject.metaProperties.groupings) {

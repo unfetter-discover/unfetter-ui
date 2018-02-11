@@ -20,6 +20,7 @@ import { FullAssessmentResultState } from '../store/full-result.reducers';
 import { AssessedByAttackPattern } from './group/models/assessed-by-attack-pattern';
 import { GroupAttackPattern } from './group/models/group-attack-pattern';
 import { GroupPhase } from './group/models/group-phase';
+import { Constance } from '../../../utils/constance';
 
 @Component({
   selector: 'unf-assess-full',
@@ -71,11 +72,11 @@ export class FullComponent implements OnInit, OnDestroy {
             const creatorId = user._id;
             this.requestData(this.rollupId, creatorId);
           },
-          (err) => console.log(err));
+            (err) => console.log(err));
         this.subscriptions.push(sub$);
       },
-      (err) => console.log(err),
-      () => idParamSub$.unsubscribe());
+        (err) => console.log(err),
+        () => idParamSub$.unsubscribe());
   }
 
   /**
@@ -97,14 +98,14 @@ export class FullComponent implements OnInit, OnDestroy {
         this.assessmentTypes = [...arr];
         this.assessment = { ...arr[0] };
       },
-      (err) => console.log(err));
+        (err) => console.log(err));
 
     const sub2$ = this.store
       .select('fullAssessment')
       .pluck('finishedLoading')
       .distinctUntilChanged()
       .subscribe((done: boolean) => this.finishedLoading = done,
-      (err) => console.log(err));
+        (err) => console.log(err));
 
     this.assessmentName = this.store
       .select('fullAssessment')
@@ -196,33 +197,34 @@ export class FullComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: { attributes: assessment } });
     const dialogSub$ = dialogRef.afterClosed()
       .subscribe(
-      (result) => {
-        const isBool = typeof result === 'boolean';
-        const isString = typeof result === 'string';
-        if (!result ||
-          (isBool && result !== true) ||
-          (isString && result !== 'true')) {
-          return;
-        }
+        (result) => {
+          const isBool = typeof result === 'boolean';
+          const isString = typeof result === 'string';
+          if (!result ||
+            (isBool && result !== true) ||
+            (isString && result !== 'true')) {
+            return;
+          }
 
-        const sub$ = this.assessService
-          .deleteByRollupId(assessment.rollupId)
-          .subscribe(
-          (resp) => this.masterListOptions.dataSource.nextDataChange(resp),
-          (err) => console.log(err),
-          () => {
-            if (sub$) {
-              sub$.unsubscribe();
-            }
+          const isCurrentlyViewed = assessment.rollupId === this.rollupId ? true : false;
+          const sub$ = this.assessService
+            .deleteByRollupId(assessment.rollupId)
+            .subscribe(
+              (resp) => this.masterListOptions.dataSource.nextDataChange(resp),
+              (err) => console.log(err),
+              () => {
+                if (sub$) {
+                  sub$.unsubscribe();
+                }
 
-            // we deleted the current assessment
-            if (this.rollupId === assessment.rollupId) {
-              return this.router.navigateByUrl(this.baseAssessUrl + '/navigate');
-            }
-          });
-      },
-      (err) => console.log(err),
-      () => dialogSub$.unsubscribe());
+                // we deleted the current assessment
+                if (isCurrentlyViewed) {
+                  return this.router.navigate([Constance.X_UNFETTER_ASSESSMENT_NAVIGATE_URL]);
+                }
+              });
+        },
+        (err) => console.log(err),
+        () => dialogSub$.unsubscribe());
   }
 
   /**
