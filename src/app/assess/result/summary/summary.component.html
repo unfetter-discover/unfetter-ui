@@ -15,9 +15,9 @@
           expandable="true">
           <mat-list-item *ngFor="let summary of summaries; trackBy:trackByFn" class="list-divider" [@slideInOutAnimation]>
             <h4 mat-line>
-              {{summary.name}}
+              {{summary?.name}}
             </h4>
-            <div mat-line class="mat-caption"> {{summary.assessment_objects[0].stix.type}} </div>
+            <div mat-line class="mat-caption"> {{summary?.assessment_objects[0]?.stix?.type}} </div>
           </mat-list-item>
         </sidepanel-list-item>
 

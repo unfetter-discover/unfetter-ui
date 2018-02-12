@@ -222,23 +222,16 @@ export class SummaryComponent implements OnInit, OnDestroy {
           const sub$ = this.assessService
             .deleteByRollupId(assessment.rollupId)
             .subscribe(
-              (resp) => {
-                if (isCurrentlyViewed === true) {
-                  // deleted currently viewed, route to next in last mod, or create page
-                  this.router.navigate([Constance.X_UNFETTER_ASSESSMENT_NAVIGATE_URL]);
-                } else {
-                  this.masterListOptions.dataSource.nextDataChange(resp)
-                }
-              },
+              (resp) => this.masterListOptions.dataSource.nextDataChange(resp),
               (err) => console.log(err),
               () => {
                 if (sub$) {
                   sub$.unsubscribe();
                 }
-
+                
                 // we deleted the current assessment
-                if (this.rollupId === assessment.rollupId) {
-                  return this.router.navigateByUrl(this.baseAssessUrl + '/navigate');
+                if (isCurrentlyViewed) {
+                  return this.router.navigate([Constance.X_UNFETTER_ASSESSMENT_NAVIGATE_URL]);
                 }
               });
         },

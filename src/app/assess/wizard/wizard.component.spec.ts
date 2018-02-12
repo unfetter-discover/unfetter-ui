@@ -16,6 +16,10 @@ import { PipesModule } from '../../pipes/pipes.module';
 import { GlobalModule } from '../../global/global.module';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Indicator } from '../../models/stix/indicator';
+import { Observable } from 'rxjs/Observable';
+import { CourseOfAction } from '../../models/stix/course-of-action';
+import { Sensor } from '../../models/unfetter/sensor';
 
 describe('WizardComponent', () => {
   let component: WizardComponent;
@@ -65,4 +69,61 @@ describe('WizardComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should know the first side panel with data, if it is indicators', () => {
+    const indicators = [new Indicator()];
+    const coa = [new CourseOfAction()];
+    component.indicators = indicators;
+    component.mitigations = coa;
+    expect(component).toBeTruthy();
+    const firstPanel = component.determineFirstOpenSidePanel();
+    expect(firstPanel).toBeDefined();
+    expect(firstPanel).toEqual('indicators');
+  });
+
+  it('should know the first side panel with data, if it is mitigations', () => {
+    const coa = [new CourseOfAction()];
+    component.mitigations = coa;
+    expect(component).toBeTruthy();
+    const firstPanel = component.determineFirstOpenSidePanel();
+    expect(firstPanel).toBeDefined();
+    expect(firstPanel).toEqual('mitigations');
+  });
+
+  it('should know the next side panel with data, case 1', () => {
+    const indicators = [new Indicator()];
+    const coa = [new CourseOfAction()];
+    component.indicators = indicators;
+    component.mitigations = coa;
+    component.openedSidePanel = 'indicators';
+    expect(component).toBeTruthy();
+    const nextPanel = component.determineNextSidePanel();
+    expect(nextPanel).toBeDefined();
+    expect(nextPanel).toEqual('mitigations');
+  });
+
+  it('should know the next side panel with data, case 2', () => {
+    const indicators = [new Indicator()];
+    const sensors = [new Sensor()];
+    component.indicators = indicators;
+    component.sensors = sensors;
+    component.openedSidePanel = 'indicators';
+    expect(component).toBeTruthy();
+    const nextPanel = component.determineNextSidePanel();
+    expect(nextPanel).toBeDefined();
+    expect(nextPanel).toEqual('sensors');
+  });
+
+  it('should know the next side panel with data, case 3', () => {
+    const indicators = [new Indicator()];
+    const sensors = [new Sensor()];
+    component.indicators = indicators;
+    component.sensors = sensors;
+    component.openedSidePanel = 'sensors';
+    expect(component).toBeTruthy();
+    const nextPanel = component.determineNextSidePanel();
+    expect(nextPanel).toBeDefined();
+    expect(nextPanel).toEqual('summary');
+  });
+
 });

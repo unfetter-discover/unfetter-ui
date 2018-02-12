@@ -20,7 +20,6 @@ export class CreateComponent implements OnInit {
 
   public assessMeta: AssessmentMeta;
   public form: FormGroup;
-  public title = '';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -70,8 +69,19 @@ export class CreateComponent implements OnInit {
 
   /**
    * @description on cancel, go back a step in window history
+   * @param {UIEvnent} optional event
+   * @return {void}
    */
-  public onCancel(): void {
+  public onCancel(event?: UIEvent): void {
     this.location.back();
+  }
+
+  /**
+   * @description on title field blur update the assessment name
+   * @param {UIEvnent} optional event
+   * @return {void}
+   */
+  public onTitleBlur(event?: UIEvent): void {
+    this.store.dispatch(new UpdatePageTitle(this.form.value.title));
   }
 }

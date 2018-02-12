@@ -28,7 +28,7 @@ const genAssessState = (state?: Partial<AssessState>) => {
         finishedLoading: false,
         saved: { saved: false, rollupId: '' },
         showSummary: false,
-        page: 0,
+        page: 1,
     };
     if (state) {
         Object.assign(tmp, state);
