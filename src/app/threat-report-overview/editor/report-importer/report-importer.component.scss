@@ -40,10 +40,7 @@
     }
     .mat-column-title {
         flex: 2;
-        .report-name {
-            display: block;
-            margin-bottom: 6px;
-        }
+        margin: 8px 2px;
     }
     .text-fadeable {
         position: relative;
@@ -58,7 +55,7 @@
         top: 20px;
         width: 70%;
         height: 20px;
-        background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 80%);
+        background: linear-gradient(to right, rgba(255, 255, 255, 0), $light-text-slightly-dimmed 100%);
     }
     .mat-column-date {
         text-align: center;
