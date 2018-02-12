@@ -48,6 +48,8 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
 
     public reportsDataSource: MatTableDataSource<Partial<Report>>;
 
+    public reportRemovals = new Set<Partial<Report>>();
+
     public readonly displayColumns = ['name', 'actions'];
 
     public readonly dateError = {
@@ -233,6 +235,9 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * @description Determine if the current end date is invalid against the current start date.
+     */
     private isEndDateSameOrBeforeStartDate(value: any): void {
         if (moment(value, this.dateFormat).isValid() &&
                 moment(this.threatReport.boundaries.endDate, this.dateFormat).isSameOrBefore(
@@ -389,21 +394,15 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
                     if (this.isFalsey(result)) {
                         return;
                     }
-                    this.importReport(result as Array<Partial<Report>>);
+                    (result as Array<Partial<Report>>).forEach(report => this.insertReport(report));
                 },
                 (err) => console.log(err)
             );
     }
 
-    public importReport(reports: Array<Partial<Report>>): void {
-        reports.forEach(report => this.insertReport(report));
-        this.threatReport.reports.forEach(report => {
-            if (report.attributes.id && (reports.findIndex(rep => this.areSameReport(rep, report)) < 0)) {
-                this.onRemoveReport(report as Report);
-            }
-        });
-    }
-
+    /**
+     * @description add the given report to this work product, preventing duplications
+     */
     public insertReport(report: Partial<Report> | boolean): void {
         if (this.isFalsey(report)) {
             return;
@@ -441,18 +440,12 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
             event.preventDefault();
         }
 
-        this.threatReport.reports = this.threatReport.reports.filter((el) => !this.areSameReport(el, report));
-        this.reportsDataSource.data = this.threatReport.reports; // update the table
-        if (!this.threatReport.id || !report.attributes.id) {
-            // this threat report is in progress so do not save to db until they hit save
-            return;
+        if (report.attributes.id) {
+            this.reportRemovals.add(report);
         }
 
-        const sub$ = this.service.removeReport(report, this.threatReport)
-            .subscribe(
-                (tro) => console.log(tro),
-                (err) => console.log(err),
-                () => sub$.unsubscribe());
+        this.threatReport.reports = this.threatReport.reports.filter((el) => !this.areSameReport(el, report));
+        this.reportsDataSource.data = this.threatReport.reports; // update the table
     }
 
     /**
@@ -510,7 +503,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
         }
         this.threatReport.boundaries.targets.clear();
         this.threatReport.boundaries.targets.add(this.target);
-        const sub$ = this.service.saveThreatReport(this.threatReport)
+        const saveSub$ = this.service.saveThreatReport(this.threatReport)
             .subscribe(
                 (reports) => {
                     console.log('saved ', reports);
@@ -518,7 +511,15 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
                 },
                 (err) => console.log(err),
             );
-        this.subscriptions.push(sub$);
+        this.subscriptions.push(saveSub$);
+
+        this.reportRemovals.forEach(report => {
+            const sub$ = this.service.removeReport(report as Report, this.threatReport)
+                .subscribe(
+                    (tro) => console.log(tro),
+                    (err) => console.log(err),
+                    () => sub$.unsubscribe());
+        });
     }
 
 }
