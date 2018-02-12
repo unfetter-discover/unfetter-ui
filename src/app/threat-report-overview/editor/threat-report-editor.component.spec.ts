@@ -436,29 +436,6 @@ describe('ThreatReportEditorComponent', () => {
         expect(component.threatReport.reports[0]).toBe(newReport);
     });
 
-    it('should import reports', () => {
-        if (!component.reportsDataSource) {
-            component.reportsDataSource = new MatTableDataSource([]);
-            component.reportsDataSource.data = [];
-        }
-
-        // import a report
-        const newReport = new Report();
-        newReport.attributes.id = '1';
-        newReport.attributes.name = 'new report';
-        component.importReport([newReport]);
-        expect(component.threatReport.reports.length).toBe(1);
-        expect(component.threatReport.reports[0]).toBe(newReport);
-
-        // import another but leave out the first
-        const newerReport = new Report();
-        newerReport.attributes.name = 'newer report';
-        component.importReport([newerReport]);
-        expect(newReport.attributes.created).toBeTruthy();
-        expect(component.threatReport.reports.length).toBe(1);
-        expect(component.threatReport.reports[0]).toBe(newerReport);
-    });
-
     it('should share reports', () => {
         // Not yet implemented
     });
