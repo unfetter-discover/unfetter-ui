@@ -6,9 +6,11 @@ import { Observable } from 'rxjs/Observable';
 
 import * as fromUsers from '../../root-store/users/users.reducers';
 import * as fromApp from '../../root-store/app.reducers';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
+    private readonly demoMode: boolean = (environment.runMode === 'DEMO');
 
     constructor(
         private router: Router,
@@ -19,27 +21,31 @@ export class AuthGuard implements CanActivate {
         const allowedRoles = route.data['ROLES'];
         return this.store.select('users')
             .take(1)
-            .map((userState: fromUsers.UserState) => {               
-                if (allowedRoles !== undefined && allowedRoles.length) {
-
-                    if (this.loggedIn(userState) && this.hasRole(allowedRoles, userState.role)) {
-                        return true;
-                    } else {
-                        this.router.navigate(['/']);
-                        return false;
-                    }
-
-                    // No specific role is required
+            .map((userState: fromUsers.UserState) => { 
+                if (this.demoMode) {
+                    return true;
                 } else {
+                    if (allowedRoles !== undefined && allowedRoles.length) {
 
-                    if (this.loggedIn(userState)) {
-                        return true;
+                        if (this.loggedIn(userState) && this.hasRole(allowedRoles, userState.role)) {
+                            return true;
+                        } else {
+                            this.router.navigate(['/']);
+                            return false;
+                        }
+
+                        // No specific role is required
                     } else {
-                        this.router.navigate(['/']);
-                        return false;
-                    }
 
-                }   
+                        if (this.loggedIn(userState)) {
+                            return true;
+                        } else {
+                            this.router.navigate(['/']);
+                            return false;
+                        }
+
+                    } 
+                }             
             });
     }
 

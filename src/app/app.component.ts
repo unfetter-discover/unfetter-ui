@@ -24,6 +24,7 @@ export class AppComponent implements OnInit {
   public readonly showBanner = environment.showBanner || false;
   public readonly securityMarkingLabel = environment.bannerText || '';
   public readonly runMode = environment.runMode;
+  public readonly demoMode: boolean = (environment.runMode === 'DEMO');
   public theme: Themes = Themes.DEFAULT;
   public title;
 
@@ -47,11 +48,28 @@ export class AppComponent implements OnInit {
     }
 
     if (this.authService.loggedIn()) {
-      const user = this.authService.getUser();
-      const token = this.authService.getToken();
-      this.store.dispatch(new userActions.LoginUser({ userData: user, token }));
-      this.store.dispatch(new configActions.FetchConfig());
-      this.store.dispatch(new notificationsActions.FetchNotificationStore());
+      if (!this.demoMode) {
+        const user = this.authService.getUser();
+        const token = this.authService.getToken();
+        this.store.dispatch(new userActions.LoginUser({ userData: user, token }));
+        this.store.dispatch(new notificationsActions.FetchNotificationStore());
+      } else {
+        this.store.dispatch(new userActions.LoginUser({
+          userData: {
+            _id: '1234',
+            userName: 'Demo-User',
+            firstName: 'Demo',
+            lastName: 'User',
+            organizations: [
+              {
+                'id': 'identity--e240b257-5c42-402e-a0e8-7b81ecc1c09a',
+                'approved': true,
+                'role': 'STANDARD_USER'
+              }
+            ],
+          }, token: '1234' }));
+      }
+      this.store.dispatch(new configActions.FetchConfig());      
     }
 
     const bodyElement: HTMLElement = document.getElementsByTagName('body')[0];

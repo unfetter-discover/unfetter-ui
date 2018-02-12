@@ -62,8 +62,8 @@ export class HeaderNavigationComponent {
 
   public readonly runMode = environment.runMode;
   public readonly showBanner = environment.showBanner;
+  public readonly demoMode: boolean = (environment.runMode === 'DEMO');
   public collapsed: boolean = true;
-  public demoMode: boolean = false;
   public showAppMenu: boolean = false;
   public showAccountMenu: boolean = false;
   public topPx = '0px';
@@ -80,9 +80,7 @@ export class HeaderNavigationComponent {
     private el: ElementRef
   ) {
     this.user$ = this.store.select('users');
-    if (this.runMode && this.runMode === 'DEMO') {
-      this.demoMode = true;
-    }
+    
     if (this.showBanner && this.showBanner === true) {
       this.topPx = '17px';
     }

@@ -8,10 +8,12 @@ import { UserState } from '../root-store/users/users.reducers';
 import { UserProfile } from '../models/user/user-profile';
 import { ThreatReportOverviewService } from './services/threat-report-overview.service';
 import { LastModifiedThreatReport } from './models/last-modified-threat-report';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class ThreatReportNavigateGuard implements CanActivate {
 
+    public readonly demoMode: boolean = (environment.runMode === 'DEMO');
     private readonly CREATE_URL = '/threat-dashboard/create';
 
     constructor(
@@ -31,7 +33,7 @@ export class ThreatReportNavigateGuard implements CanActivate {
             .pluck('userProfile')
             .switchMap((user: UserProfile) => {
                 let o$: Observable<Partial<LastModifiedThreatReport>[]>;
-                if (user && user._id) {
+                if (!this.demoMode && user && user._id) {
                     o$ = this.fetchWithCreatorId(user._id);
                 } else {
                     o$ = this.routeNoCreatorId();
