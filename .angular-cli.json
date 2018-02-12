@@ -32,7 +32,8 @@
         "dev": "environments/environment.ts",
         "prod": "environments/environment.prod.ts",
         "uac": "environments/environment.uac.ts",
-        "test": "environments/environment.test.ts"
+        "test": "environments/environment.test.ts",
+        "dockerhub": "environments/environment.dockerhub.ts"
       }
     }
   ],
