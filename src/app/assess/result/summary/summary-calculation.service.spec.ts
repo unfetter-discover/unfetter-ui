@@ -124,11 +124,85 @@ fdescribe('SummaryCalculationService', () => {
     expect(service.topRisks).toEqual([]);
     service.calculateTopRisks({ courseOfActions: [], indicators: [], sensors: [] });
     expect(service.topRisks).toEqual([]);
-    service.calculateTopRisks({ courseOfActions: [{ risk: null, questions: null, objects: null, phaseName: null }], indicators: null, sensors: null });
-    expect(service.topRisks).toEqual([]);
-    service.calculateTopRisks({ courseOfActions: [{ risk: .7324, questions: null, objects: null, phaseName: null }], indicators: null, sensors: null });
-    // expect(service.topRisks).toEqual([{risk: .7324, questions: null, objects: null, phaseName: null}]);
+  }));
 
+  it('should calculate top risks for kill chains', inject([SummaryCalculationService], (service: SummaryCalculationService) => {
+    service.calculateTopRisks({ courseOfActions: [{ risk: null, questions: null, objects: null, phaseName: null }], indicators: null, sensors: null });
+    expect(service.topRisks).toEqual([{ risk: null, questions: null, objects: [], phaseName: null }]);
+    service.calculateTopRisks({ courseOfActions: [{ risk: .7324, questions: null, objects: null, phaseName: null }], indicators: null, sensors: null });
+    expect(service.topRisks).toEqual([{ risk: .7324, questions: null, objects: [], phaseName: null }]);
+    service.calculateTopRisks({ courseOfActions: [{ risk: .7324, questions: null, objects: [], phaseName: null }], indicators: null, sensors: null });
+    expect(service.topRisks).toEqual([{ risk: .7324, questions: null, objects: [], phaseName: null }]);
+    service.calculateTopRisks({ courseOfActions: [{ risk: .7324, questions: null, objects: [{}], phaseName: null }], indicators: null, sensors: null });
+    expect(service.topRisks).toEqual([{ risk: .7324, questions: null, objects: [{}], phaseName: null }]);
+    service.calculateTopRisks({ courseOfActions: [{ risk: .7324, questions: null, objects: [{ risk: null }], phaseName: null }], indicators: null, sensors: null });
+    expect(service.topRisks).toEqual([{ risk: .7324, questions: null, objects: [{ risk: null }], phaseName: null }]);
+    service.calculateTopRisks({ courseOfActions: [{ risk: .7324, questions: null, objects: [{ risk: 1 }], phaseName: null }], indicators: null, sensors: null });
+    expect(service.topRisks).toEqual([{ risk: .7324, questions: null, objects: [{ risk: 1 }], phaseName: null }]);
+    service.calculateTopRisks({ courseOfActions: [{ risk: .7324, questions: null, objects: [{ risk: 1 }, { risk: null }], phaseName: null }], indicators: null, sensors: null });
+    expect(service.topRisks).toEqual([{ risk: .7324, questions: null, objects: [{ risk: 1 }, { risk: null }], phaseName: null }]);
+    service.calculateTopRisks({ courseOfActions: [{ risk: .7324, questions: null, objects: [{ risk: null }, { risk: 1 }], phaseName: null }], indicators: null, sensors: null });
+    expect(service.topRisks).toEqual([{ risk: .7324, questions: null, objects: [{ risk: 1 }, { risk: null }], phaseName: null }]);
+    service.calculateTopRisks({ courseOfActions: [{ risk: .7324, questions: null, objects: [{ risk: 1 }, { risk: 0 }, {}], phaseName: null }], indicators: null, sensors: null });
+    expect(service.topRisks).toEqual([{ risk: .7324, questions: null, objects: [{ risk: 1 }, { risk: 0 }, {}], phaseName: null }]);
+    service.calculateTopRisks({ courseOfActions: [{ risk: .7324, questions: null, objects: [{ risk: 1 }, { risk: 0 }, { risk: 2 }], phaseName: null }], indicators: null, sensors: null });
+    expect(service.topRisks).toEqual([{ risk: .7324, questions: null, objects: [{ risk: 2 }, { risk: 1 }, { risk: 0 }], phaseName: null }]);
+    service.calculateTopRisks({ courseOfActions: [{ risk: .7324, questions: null, objects: [{ risk: 1 }, { risk: 5 }, { risk: 2 }, { risk: 0 }, { risk: 1 }], phaseName: null }], indicators: null, sensors: null });
+    expect(service.topRisks).toEqual([{ risk: .7324, questions: null, objects: [{ risk: 5 }, { risk: 2 }, { risk: 1 }], phaseName: null }]);
+    service.calculateTopRisks({ courseOfActions: null, indicators: [{ risk: .7324, questions: null, objects: [{ risk: 1 }], phaseName: null }], sensors: null });
+    expect(service.topRisks).toEqual([{ risk: .7324, questions: null, objects: [{ risk: 1 }], phaseName: null }]);
+    service.calculateTopRisks({ courseOfActions: null, indicators: null, sensors: [{ risk: .7324, questions: null, objects: [{ risk: 1 }], phaseName: null }] });
+    expect(service.topRisks).toEqual([{ risk: .7324, questions: null, objects: [{ risk: 1 }], phaseName: null }]);
+    service.calculateTopRisks(
+      {
+        courseOfActions: [{ risk: .7324, questions: null, objects: [{ risk: 1 }], phaseName: null }],
+        indicators: [{ risk: .7324, questions: null, objects: [{ risk: 1 }], phaseName: null }],
+        sensors: [{ risk: .7324, questions: null, objects: [{ risk: 1 }], phaseName: null }]
+      }
+    );
+    expect(service.topRisks).toEqual(
+      [{ risk: .7324, questions: null, objects: [{ risk: 1 }], phaseName: null },
+      { risk: .7324, questions: null, objects: [{ risk: 1 }], phaseName: null },
+      { risk: .7324, questions: null, objects: [{ risk: 1 }], phaseName: null }]);
+    service.calculateTopRisks(
+      {
+        courseOfActions:
+          [{ risk: .7324, questions: null, objects: [{ risk: 1 }], phaseName: null },
+          { risk: .32, questions: null, objects: [{ risk: 1 }], phaseName: null }],
+        indicators: [{ risk: .7324, questions: null, objects: [{ risk: 1 }], phaseName: null }],
+        sensors: [{ risk: .7324, questions: null, objects: [{ risk: 1 }], phaseName: null }]
+      }
+    );
+    expect(service.topRisks).toEqual(
+      [{ risk: .7324, questions: null, objects: [{ risk: 1 }], phaseName: null },
+      { risk: .7324, questions: null, objects: [{ risk: 1 }], phaseName: null },
+      { risk: .7324, questions: null, objects: [{ risk: 1 }], phaseName: null }]);
+    service.calculateTopRisks(
+      {
+        courseOfActions:
+          [{ risk: .7324, questions: null, objects: [{ risk: 1 }, { risk: .3 }, { risk: .2 }, { risk: 0 }], phaseName: null },
+          { risk: .32, questions: null, objects: [{ risk: 1 }], phaseName: null }],
+        indicators: [{ risk: .7321, questions: null, objects: [{ risk: 1 }], phaseName: null }],
+        sensors: [{ risk: .7320, questions: null, objects: [{ risk: 1 }], phaseName: null }]
+      }
+    );
+    expect(service.topRisks).toEqual(
+      [{ risk: .7324, questions: null, objects: [{ risk: 1 }, { risk: .3 }, { risk: .2 }], phaseName: null },
+      { risk: .7321, questions: null, objects: [{ risk: 1 }], phaseName: null },
+      { risk: .7320, questions: null, objects: [{ risk: 1 }], phaseName: null }]);
+    service.calculateTopRisks(
+      {
+        courseOfActions:
+          [{ risk: .7324, questions: null, objects: [{ risk: 1 }, { risk: .3 }, { risk: .2 }, { risk: 0 }], phaseName: null },
+          { risk: .32, questions: null, objects: [{ risk: 1 }], phaseName: null }],
+        indicators: [{ risk: .7321, questions: null, objects: [{ risk: .1 }, { risk: .2 }, { risk: 0 }, { risk: .3 }], phaseName: null }],
+        sensors: [{ risk: .7320, questions: null, objects: [{ risk: 1 }, { risk: .3 }, { risk: .2 }, { risk: 0 }], phaseName: null }]
+      }
+    );
+    expect(service.topRisks).toEqual(
+      [{ risk: .7324, questions: null, objects: [{ risk: 1 }, { risk: .3 }, { risk: .2 }], phaseName: null },
+      { risk: .7321, questions: null, objects: [{ risk: .3 }, { risk: .2 }, { risk: .1 }], phaseName: null },
+      { risk: .7320, questions: null, objects: [{ risk: 1 }, { risk: .3 }, { risk: .2 }], phaseName: null }]);
   }));
 
   it('should retrieve default risk objects from a kill chain object', inject([SummaryCalculationService], (service: SummaryCalculationService) => {

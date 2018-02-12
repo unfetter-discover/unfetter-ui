@@ -13,7 +13,6 @@ export class SummaryReportComponent implements OnInit {
   weakness: string;
   topRisks: AssessKillChainType[];
 
-
   constructor(private summaryCalculationService: SummaryCalculationService) {
   }
 
@@ -21,5 +20,17 @@ export class SummaryReportComponent implements OnInit {
     this.totalRiskValue = this.summaryCalculationService.getRiskText();
     this.weakness = this.summaryCalculationService.weakness;
     this.topRisks = this.summaryCalculationService.topRisks;
+  }
+  public calculateRisk(riskArr: any[]): string {
+    const risk = this.summaryCalculationService.calculateAvgRiskPerAssessedObject(riskArr);
+    return this.formatRisk(risk);
+  }
+
+  /**
+   * @param risk
+   * @return {string} formatted
+   */
+  public formatRisk(risk: number): string {
+    return Number((risk) * 100).toFixed(2);
   }
 }

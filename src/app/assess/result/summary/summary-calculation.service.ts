@@ -102,11 +102,11 @@ export class SummaryCalculationService {
   public calculateTopRisks(riskByKillChain: RiskByKillChain): void {
     let topRisks: AssessKillChainType[] = [];
     const risks: AssessKillChainType[] = this.retrieveAssessmentRisks(riskByKillChain);
-    this.topRisks = risks; // .sort(SummarySortHelper.sortByRiskDesc());
-    this.topRisks = this.topRisks.slice(0, this.topNRisks);
-    this.topRisks.forEach((el) => {
+    risks.sort(SummarySortHelper.sortByRiskDesc())
+    topRisks = risks.slice(0, this.topNRisks);
+    topRisks.forEach((el) => {
       const objects = el.objects || [];
-      el.objects = objects; // .sort(SummarySortHelper.sortByRiskDesc());
+      el.objects = objects.sort(SummarySortHelper.sortByRiskDesc());
       el.objects = el.objects.slice(0, this.topNRisks);
     });
 
