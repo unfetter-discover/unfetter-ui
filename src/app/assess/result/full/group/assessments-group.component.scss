@@ -3,6 +3,14 @@
 
 .ap-list-item {
     line-height: 1.9em;
+    margin-left: -24px;
+    margin-right: -24px;
+    padding-left: 24px;
+    padding-right: 24px;
+    transition: background-color 0.1s ease-in-out;
+    &:hover {
+        background-color: $assessments-primary;
+    }
 }
 
 .centered {
@@ -58,4 +66,8 @@
         @include space-top();
         background-color: $assessments-primary-subtle;  
     }
+}
+
+.highlightAp {
+    background-color: $assessments-primary-subtle !important;
 }

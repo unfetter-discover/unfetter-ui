@@ -24,12 +24,7 @@
     margin-left: 8px;
 }
 
-.card:hover {
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-}
-
 .card {
-    transition: all 0.3s ease-in-out;
     min-height: 315px;
     margin-bottom: 20px;
     width: 50%;

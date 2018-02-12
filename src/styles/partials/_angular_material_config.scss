@@ -57,10 +57,10 @@ $utility-theme: mat-light-theme($utility-theme-primary, $utility-theme-accent, $
   transition: box-shadow 0.2s ease-in-out;
   .mat-card-header-text {
     margin: 0 !important;
-    .mat-card-title {
-      font-size: 22px;
-      font-weight: 300;
-    }
+  }
+  .mat-card-title {
+    font-size: 22px;
+    font-weight: 300;
   }
   .mat-card-actions {
     text-align: right;

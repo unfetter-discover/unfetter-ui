@@ -341,4 +341,8 @@ export class AssessGroupComponent implements OnInit, AfterViewInit {
   public whitespaceToBreak(inputString: string): string {
     return FormatHelpers.formatAll(inputString);
   }
+
+  public isCurrentAp(attackPatternId: string): boolean {
+    return this.currentAttackPattern ? this.currentAttackPattern.id === attackPatternId : false;
+  }
 }
