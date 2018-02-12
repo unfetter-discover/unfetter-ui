@@ -23,86 +23,108 @@
 
         <div class="flex-grow centered ap-section">
             <div *ngIf="currentAttackPattern">
-                <div class="ap-header">{{ currentAttackPattern.name }}</div>
-                <div>
-                    <p><strong>Risk Level</strong></p>
-                    <p>{{ getRiskByAttackPatternId(currentAttackPattern.id) | percent:'2.1-1' }}</p>
+                <div id="ap-details">
+                    <div class="ap-header">{{ currentAttackPattern.name }}</div>
+
+                    <div class="row">
+                        <div class="col-lg-4 col-md-12">
+                            <p>
+                                <strong>Risk Level</strong>
+                            </p>
+                            <p>{{ getRiskByAttackPatternId(currentAttackPattern.id) | percent:'2.1-1' }}</p>
+                        </div>
+                        <div class="col-lg-4 col-md-12">
+                            <div *ngIf=" currentAttackPattern.kill_chain_phases && currentAttackPattern.kill_chain_phases.length> 0">
+                                <p>
+                                    <strong>Kill Chain Phases</strong>
+                                </p>
+                                <p *ngFor="let killchain of currentAttackPattern.kill_chain_phases">{{ killchain.kill_chain_name | capitalize }} &bull;
+                                    <span class="text-muted">{{ killchain.phase_name | capitalize }}</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-12">
+                            <div *ngIf="currentAttackPattern.x_unfetter_sophistication_level !== undefined && currentAttackPattern.x_unfetter_sophistication_level !== null">
+                                <p>
+                                    <strong>Sophistication Level</strong>
+                                </p>
+                                <p>{{ currentAttackPattern.x_unfetter_sophistication_level | sophistication }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    
+                    
+                    <div *ngIf="currentAttackPattern.description">
+                        <p>
+                            <strong>Description</strong>
+                        </p>
+                        <p [innerHTML]="whitespaceToBreak(currentAttackPattern.description)"></p>
+                    </div>
+                    
+                    <div *ngIf="currentAttackPattern.external_references">
+                        <p>
+                            <strong>External References</strong>
+                        </p>
+                        <p *ngFor="let ref of currentAttackPattern.external_references">
+                            <a href="{{ ref.url }}" target="_blank">{{ ref.source_name }}
+                                <span *ngIf="ref.external_id">&bull; {{ ref.external_id }}</span>
+                            </a>
+                        </p>
+                    </div>
                 </div>
 
-                <div *ngIf=" currentAttackPattern.kill_chain_phases && currentAttackPattern.kill_chain_phases.length> 0">
-                    <p><strong>Kill Chain Phases</strong></p>
-                    <p *ngFor="let killchain of currentAttackPattern.kill_chain_phases">{{ killchain.kill_chain_name | capitalize }} &bull; <span class="text-muted">{{ killchain.phase_name | capitalize }}</span></p>
-                </div>
-
-                <div *ngIf="currentAttackPattern.x_unfetter_sophistication_level !== undefined && currentAttackPattern.x_unfetter_sophistication_level !== null">
-                    <p><strong>Sophistication Level</strong></p>
-                    <p>{{ currentAttackPattern.x_unfetter_sophistication_level | sophistication }}</p>
-                </div>
-
-                <div *ngIf="currentAttackPattern.description">
-                    <p><strong>Description</strong></p>
-                    <p [innerHTML]="whitespaceToBreak(currentAttackPattern.description)"></p>
-                </div>
-
-                <div *ngIf="currentAttackPattern.external_references">
-                    <p><strong>External References</strong></p>
-                    <p *ngFor="let ref of currentAttackPattern.external_references">
-                        <a href="{{ ref.url }}" target="_blank">{{ ref.source_name }} <span *ngIf="ref.external_id">&bull; {{ ref.external_id }}</span></a>
-                    </p>
-                </div>
-
-                <unf-add-assessed-object #addAssessedObjectComponent
-                    *ngIf="assessment"
-                    [assessment]="assessment"
-                    [addAssessedObject]="addAssessedObject"
-                    [addAssessedType]="addAssessedType"
-                    [currentAttackPattern]="currentAttackPattern"
-                    [indicator]="indicator"
-                    [courseOfAction]="courseOfAction"
-                    [xUnfetterSensor]="xUnfetterSensor"
-                    [displayedAssessedObjects]="displayedAssessedObjects"
-                    [assessedObjects]="assessedObjects"
-                    (addAssessmentEvent)="$event ? initData() : 0" ></unf-add-assessed-object>
-
-                <div *ngIf="displayedAssessedObjects && displayedAssessedObjects.length">
-                    <div *ngFor="let assessedObj of displayedAssessedObjects | sortByField: 'risk'">
-                        <mat-card class="uf-mat-card">
-                            <mat-card-title><img src="{{ getStixIcon(assessedObj.stix.type) }}" alt=""> {{ assessedObj.stix.name }}</mat-card-title>
-                            <mat-card-content>
-                                <!--<span class="text-muted">Risk Accepted &bull;</span>&nbsp;{{ getRisk(assessedObj.stix.id)
-                            | percent:'2.1-1'}}-->
-                                <span class="text-muted">Risk Accepted &bull;</span>&nbsp;{{ assessedObj.risk | percent:'2.1-1'}}
-                            </mat-card-content>
-                            <mat-card-content>
-                                {{ assessedObj.stix.description }}
-                            </mat-card-content>
-
-                            <mat-card-content>
-                                <div *ngIf="assessedObj.editActive">
-                                    <div *ngFor="let measurement of assessedObj.questions">
-                                        <label class="mat-label">{{measurement.name | capitalize}}</label>
-                                        <mat-form-field class="full-width">
-                                            <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin">
-                                                <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
-                                                    {{ option.name }}
-                                                </mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
+                <div id="assessmentObjects">
+                    <unf-add-assessed-object #addAssessedObjectComponent *ngIf="assessment" [assessment]="assessment" [addAssessedObject]="addAssessedObject"
+                        [addAssessedType]="addAssessedType" [currentAttackPattern]="currentAttackPattern" [indicator]="indicator" [courseOfAction]="courseOfAction"
+                        [xUnfetterSensor]="xUnfetterSensor" [displayedAssessedObjects]="displayedAssessedObjects" [assessedObjects]="assessedObjects"
+                        (addAssessmentEvent)="$event ? initData() : 0"></unf-add-assessed-object>
+                    
+                    <div *ngIf="displayedAssessedObjects && displayedAssessedObjects.length">
+                        <div *ngFor="let assessedObj of displayedAssessedObjects | sortByField: 'risk'">
+                            <mat-card class="uf-mat-card">
+                                <mat-card-title>
+                                    <img src="{{ getStixIcon(assessedObj.stix.type) }}" alt=""> {{ assessedObj.stix.name }}</mat-card-title>
+                                <mat-card-content>
+                                    <!--<span class="text-muted">Risk Accepted &bull;</span>&nbsp;{{ getRisk(assessedObj.stix.id)
+                                                | percent:'2.1-1'}}-->
+                                    <span class="text-muted">Risk Accepted &bull;</span>&nbsp;{{ assessedObj.risk | percent:'2.1-1'}}
+                                </mat-card-content>
+                                <mat-card-content>
+                                    {{ assessedObj.stix.description }}
+                                </mat-card-content>
+                    
+                                <mat-card-content>
+                                    <div *ngIf="assessedObj.editActive">
+                                        <div *ngFor="let measurement of assessedObj.questions">
+                                            <label class="mat-label">{{measurement.name | capitalize}}</label>
+                                            <mat-form-field class="full-width">
+                                                <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin">
+                                                    <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
+                                                        {{ option.name }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
                                     </div>
-                                </div>
-
-                                <p class="text-right" *ngIf="assessedObj.editActive">
-                                    <button mat-button (click)="assessedObj.editActive = false">CANCEL</button>
-                                    <button mat-raised-button color="accent" (click)="editAssessedObject(assessedObj)">SAVE</button>
-                                </p>
-
-                                <p class="text-right" *ngIf="!assessedObj.editActive">
-                                    <button mat-button (click)="assessedObj.editActive = true"><mat-icon class="mat-24">create</mat-icon></button>
-                                </p>
-
-                            </mat-card-content>
-                        </mat-card>
-                        <br>
+                    
+                                    <p class="text-right" *ngIf="assessedObj.editActive">
+                                        <button mat-button (click)="assessedObj.editActive = false">CANCEL</button>
+                                        <button mat-raised-button color="accent" (click)="editAssessedObject(assessedObj)">SAVE</button>
+                                    </p>
+                    
+                                    <p class="text-right" *ngIf="!assessedObj.editActive">
+                                        <button mat-button (click)="assessedObj.editActive = true">
+                                            <mat-icon class="mat-24">create</mat-icon>
+                                        </button>
+                                    </p>
+                    
+                                </mat-card-content>
+                            </mat-card>
+                            <br>
+                        </div>
                     </div>
                 </div>
 
