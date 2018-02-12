@@ -43,6 +43,7 @@ describe('Auth guard should', () => {
     // synchronous beforeEach
     beforeEach(() => {
         authGuard = TestBed.get(AuthGuard);
+        authGuard.demoMode = false;
         userStore = authGuard.store.select('users');
     });
 

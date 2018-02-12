@@ -6,6 +6,7 @@
   <header-navigation [title]="title"></header-navigation>
   
   <div id="routerWrapper">
+    <div *ngIf="showBanner" id="showBannerSpacer"></div>
     <router-outlet></router-outlet>
   </div>
   

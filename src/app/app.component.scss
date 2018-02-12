@@ -29,6 +29,10 @@
   padding-top: $navbar-height + px;
 }
 
+#showBannerSpacer {
+  height: 17px;
+}
+
 @media screen and (max-width: 600px) {
   #routerWrapper {
     padding-top: 56px;

@@ -78,6 +78,10 @@
     right: -98px;
     color: $dark-text-default;
     padding: 25px;
+
+    .demoMode & {
+        right: 10px !important;
+    }
 }
 
 #accountMenuTriangle {

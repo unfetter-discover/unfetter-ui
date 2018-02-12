@@ -1,4 +1,4 @@
-<mat-toolbar color="primary" id="navComponent" class="mat-elevation-z4">
+<mat-toolbar color="primary" id="navComponent" class="mat-elevation-z4" [ngClass]="{ 'demoMode': demoMode === true }" [style.top]="topPx">
   <a [routerLink]=" ['./'] " routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="flex">
     <div [ngSwitch]="title">
       <img src="assets/icon/logos/unfetter_mini_logo-assessments.svg" alt="Unfetter Logo" class="logo" *ngSwitchCase="'assessments'">
@@ -56,11 +56,11 @@
     </div>
   </span>
 
-  <span id="notificationContainer" class="navButton" *ngIf="authService.loggedIn()">
+  <span id="notificationContainer" class="navButton" *ngIf="!demoMode && authService.loggedIn()">
     <notification-window></notification-window>
   </span>
 
-  <span id="accountWrapper" class="navButton" *ngIf="authService.loggedIn()">
+  <span id="accountWrapper" class="navButton" *ngIf="!demoMode && authService.loggedIn()">
     <div class="cursor-pointer" (click)="showAccountMenu = !showAccountMenu">
       <img src="{{ (user$ | async).userProfile.github.avatar_url }}" alt="User" id="avatar" *ngIf="(user$ | async).userProfile !== null && (user$ | async).userProfile.github.avatar_url !== undefined" class="smallAvatar">
       <button mat-icon-button *ngIf="(user$ | async).userProfile.github.avatar_url === undefined" id="accountBtn">
