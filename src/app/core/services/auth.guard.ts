@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-    private readonly demoMode: boolean = (environment.runMode === 'DEMO');
+    public demoMode: boolean = (environment.runMode === 'DEMO');
 
     constructor(
         private router: Router,
