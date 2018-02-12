@@ -4,6 +4,9 @@
     background: url('/assets/images/backgrounds/unfetter_header3_sm_bkgd.png') center / auto 100% no-repeat;
     width: 100%;
     padding-top: 50px;
+    img {
+        max-width: 100%;
+    }
 }
 
 #logoImg {
