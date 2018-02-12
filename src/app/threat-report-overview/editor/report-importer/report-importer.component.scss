@@ -45,6 +45,21 @@
             margin-bottom: 6px;
         }
     }
+    .text-fadeable {
+        position: relative;
+        max-height: 40px;
+    }
+    .text-fadeable:after {
+        content: "";
+        text-align: right;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        top: 20px;
+        width: 70%;
+        height: 20px;
+        background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 80%);
+    }
     .mat-column-date {
         text-align: center;
     }
