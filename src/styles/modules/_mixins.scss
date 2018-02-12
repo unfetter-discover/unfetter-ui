@@ -175,6 +175,19 @@
   #{$property}: darken($primary-color, $percent);
 }
 
+@mixin darkenAccentColors ($property, $percent) {
+  .analyticHubTheme & {
+    #{$property}: darken($analytic-hub-accent, $percent);
+  }
+  .threatDashboardTheme & {
+    #{$property}: darken($threat-dashboard-accent, $percent);
+  }
+  .assessmentsTheme & {
+    #{$property}: darken($assessments-accent, $percent);
+  }
+  #{$property}: darken($accent-color, $percent);
+}
+
 
 @mixin themePrimaryColorsWithModifiedValue ($property, $modification) {
   .analyticHubTheme & {
