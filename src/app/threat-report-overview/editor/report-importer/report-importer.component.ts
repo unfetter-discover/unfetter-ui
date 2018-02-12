@@ -77,7 +77,11 @@ export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy
         const loadReports$ = this.service.loadAllReports();
         let loadAll$ = Observable.combineLatest(loadReports$)
             .withLatestFrom((results) => {
-                return results[0];
+                let filter = [];
+                if (this.data && this.data.reports) {
+                    filter = this.data.reports;
+                }
+                return results[0].filter(report => !filter.some(have => this.areSameReport(have, report)));
             });
         loadAll$ = loadAll$
             .do(() => {
