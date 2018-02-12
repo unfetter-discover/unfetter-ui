@@ -20,11 +20,32 @@ export class AssessService {
      * @description call generic api GET request, with given route
      * @param route
      */
-    public genericGet(route: string) {
+    public genericGet(route = '') {
         if (!route) {
             return Observable.empty();
         }
         return this.genericApi.get(route);
+    }
+
+    /**
+     * @description
+     * @param {string} url
+     * @return {Observable<T>}
+     */
+    public getAs<T>(url = ''): Observable<T|T[]> {
+        if (!url) {
+            return Observable.empty();
+        }
+
+        return this.genericApi
+            .getAs<JsonApiData<T>>(url)
+            .map((data) => {
+                if (Array.isArray(data)) {
+                    return data.map((el) => el.attributes);
+                } else {
+                    return data.attributes;
+                }
+            });
     }
 
     /**

@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, QueryList, ViewChildren, AfterViewInit, ChangeDetectorRef, Input } from '@angular/core';
+import { Component, ViewChild, OnInit, QueryList, ViewChildren, AfterViewInit, ChangeDetectorRef, Input, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
@@ -7,13 +7,16 @@ import { Subscription } from 'rxjs/Subscription';
 import { AddAssessedObjectComponent } from './add-assessed-object/add-assessed-object.component';
 import { AssessService } from '../../../services/assess.service';
 import { AssessedByAttackPattern } from './models/assessed-by-attack-pattern';
+import { Assessment } from '../../../../models/assess/assessment';
+import { AssessmentObject } from '../../../../models/assess/assessment-object';
+import { AttackPattern } from '../../../../models/attack-pattern';
 import { Constance } from '../../../../utils/constance';
+import { DisplayedAssessmentObject } from './models/displayed-assessment-object';
 import { GroupAttackPattern } from './models/group-attack-pattern';
 import { GroupPhase } from './models/group-phase';
 import { FormatHelpers } from '../../../../global/static/format-helpers';
-import { AssessmentObject } from '../../../../models/assess/assessment-object';
-import { DisplayedAssessmentObject } from './models/displayed-assessment-object';
-import { Assessment } from '../../../../models/assess/assessment';
+import { Stix } from '../../../../models/stix/stix';
+import { SortHelper } from '../../../../global/static/sort-helper';
 
 @Component({
   selector: 'unf-assess-group',
@@ -28,8 +31,8 @@ export class AssessGroupComponent implements OnInit, AfterViewInit {
   @Input()
   public assessmentId: string;
 
-  @Input()
-  public currentPhase: string;
+  @Output('phaseChanged')
+  public phaseChanged = new EventEmitter<string>();
 
   @ViewChildren('addAssessedObjectComponent')
   public addAssessedObjectComponents: QueryList<AddAssessedObjectComponent>;
@@ -46,7 +49,7 @@ export class AssessGroupComponent implements OnInit, AfterViewInit {
   public unassessedPhases: string[];
   public currentAttackPattern: any;
   public displayedAssessedObjects: DisplayedAssessmentObject[];
-  public unassessedAttackPatterns: any[];
+  public unassessedAttackPatterns: Stix[];
   public attackPatternsByPhase: any[];
   public addAssessedObject: boolean;
   public addAssessedType: string;
@@ -76,19 +79,19 @@ export class AssessGroupComponent implements OnInit, AfterViewInit {
   public ngAfterViewInit(): void {
     const sub = this.addAssessedObjectComponents.changes
       .subscribe(
-      (comps: QueryList<AddAssessedObjectComponent>) => {
-        this.addAssessedObjectComponent = comps.first;
-        this.resetNewAssessmentObjects();
-        // When binding to a child component,
-        //  and updating that binding in a parent ngInit method
-        //  and in development mode, ie enableProdMode() not called
-        // one may encounter the
-        //  "expression changed after it was checked"
-        // this is one fix for that state
-        this.changeDetector.detectChanges();
-      },
-      (err) => console.log(err),
-      () => sub.unsubscribe());
+        (comps: QueryList<AddAssessedObjectComponent>) => {
+          this.addAssessedObjectComponent = comps.first;
+          this.resetNewAssessmentObjects();
+          // When binding to a child component,
+          //  and updating that binding in a parent ngInit method
+          //  and in development mode, ie enableProdMode() not called
+          // one may encounter the
+          //  "expression changed after it was checked"
+          // this is one fix for that state
+          this.changeDetector.detectChanges();
+        },
+        (err) => console.log(err),
+        () => sub.unsubscribe());
   }
 
   /**
@@ -107,16 +110,17 @@ export class AssessGroupComponent implements OnInit, AfterViewInit {
     const sub$ = Observable
       .forkJoin(getAssessedObjects$, getRiskByAttackPattern$)
       .subscribe(
-      ([assessedObjects, risks]) => {
-        // this.assessment = assessment;
-        this.assessedObjects = assessedObjects;
-        this.riskByAttackPattern = risks || {};
-        this.populateUnassessedPhases();
-        this.activePhase = this.activePhase || this.currentPhase || this.riskByAttackPattern.phases[0]._id;
-        this.setPhase(this.activePhase, curApIndex);
-      },
-      (err) => console.log(err),
-      () => sub$.unsubscribe());
+        ([assessedObjects, risks]) => {
+          this.assessedObjects = assessedObjects;
+          this.riskByAttackPattern = risks || {};
+          this.populateUnassessedPhases();
+          // active phase is either the current active phase, 
+          //  the first assess attack pattern, or the first unassessed pattern
+          const activePhase = this.activePhase || this.riskByAttackPattern.phases[0]._id || this.unassessedPhases[0];
+          this.setPhase(activePhase, curApIndex);
+        },
+        (err) => console.log(err),
+        () => sub$.unsubscribe());
   }
 
   public resetNewAssessmentObjects(): void {
@@ -151,12 +155,19 @@ export class AssessGroupComponent implements OnInit, AfterViewInit {
       .filter((phase) => assessedPhases.indexOf(phase) < 0);
   }
 
-  public setPhase(phaseName, curApIndex: number = 0) {
+  public setPhase(phaseName: string, curApIndex: number = 0) {
     this.resetNewAssessmentObjects();
     this.activePhase = phaseName;
     this.attackPatternsByPhase = this.getAttackPatternsByPhase(this.activePhase);
-    const currentAttackPatternId: any = this.attackPatternsByPhase.length > 0 ? this.attackPatternsByPhase[curApIndex].attackPatternId : -1;
+    let currentAttackPatternId = '';
+    if (this.attackPatternsByPhase.length > 0) {
+      currentAttackPatternId = this.attackPatternsByPhase[curApIndex].attackPatternId;
+    } 
+    // else if (this.unassessedAttackPatterns.length > 0) {
+    //   currentAttackPatternId = this.unassessedAttackPatterns[0].id;
+    // }
     this.setAttackPattern(currentAttackPatternId);
+    this.phaseChanged.emit(this.activePhase);
   }
 
   public getAttackPatternsByPhase(phaseName) {
@@ -188,60 +199,69 @@ export class AssessGroupComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public setAttackPattern(attackPatternId): void {
+  /**
+   * @description
+   * @param attackPatternId
+   * @return {void}
+   */
+  public setAttackPattern(attackPatternId = ''): void {
     this.resetNewAssessmentObjects();
 
-    if (attackPatternId !== -1) {
+    if (attackPatternId !== '') {
       // Get attack pattern details
-      this.assessService
-        .genericGet(`${Constance.ATTACK_PATTERN_URL}/${attackPatternId}`)
+      const s$ = this.assessService
+        .getAs<Stix>(`${Constance.ATTACK_PATTERN_URL}/${attackPatternId}`)
         .subscribe(
-        (res) => {
-          const dat: any = res;
-          this.currentAttackPattern = dat.attributes;
-        },
-        (err) => console.log(err)
+          (attackPattern) => this.currentAttackPattern = attackPattern,
+          (err) => console.log(err)
         );
+      this.subscriptions.push(s$);
 
       // Get relationships for attack pattern, link to assessed objects
-      this.assessService
+      const s0$ = this.assessService
         .getAttackPatternRelationships(attackPatternId)
         .subscribe(
-        (res) => {
-          const assessmentCanidates = res.map(
-            (relationship) => relationship.attributes.source_ref
-          );
-          this.displayedAssessedObjects = this.assessedObjects
-            .filter((assessedObj) => assessmentCanidates.indexOf(assessedObj.stix.id) > -1)
-            .map((assessedObj) => {
-              const retObj = Object.assign(new DisplayedAssessmentObject(), assessedObj);
-              retObj.risk = this.getRisk(assessedObj.stix.id);
-              retObj.editActive = false;
-              retObj.questions = this.getQuestions(assessedObj.stix.id);
-              return retObj;
-            });
-        },
-        (err) => console.log(err)
+          (res) => {
+            const assessmentCanidates = res.map(
+              (relationship) => relationship.attributes.source_ref
+            );
+            this.displayedAssessedObjects = this.assessedObjects
+              .filter((assessedObj) => assessmentCanidates.indexOf(assessedObj.stix.id) > -1)
+              .map((assessedObj) => {
+                const retObj = Object.assign(new DisplayedAssessmentObject(), assessedObj);
+                retObj.risk = this.getRisk(assessedObj.stix.id);
+                retObj.editActive = false;
+                retObj.questions = this.getQuestions(assessedObj.stix.id);
+                return retObj;
+              });
+          },
+          (err) => console.log(err)
         );
+      this.subscriptions.push(s0$);
     }
 
-    // Get unassessed attack patterns
     const assessedAps = this.getAttackPatternsByPhase(this.activePhase)
       .map((ap) => ap.attackPatternId);
 
     const query = { 'stix.kill_chain_phases.phase_name': this.activePhase };
-    this.assessService
-      .genericGet(`${Constance.ATTACK_PATTERN_URL}?filter=${encodeURI(JSON.stringify(query))}`)
+    const s1$ = this.assessService.
+      getAs<Stix>(`${Constance.ATTACK_PATTERN_URL}?filter=${encodeURI(JSON.stringify(query))}`)
       .subscribe(
-      (res) => {
-        const dat: any = res;
-        this.unassessedAttackPatterns =
-          dat.filter((ap) => !assessedAps.includes(ap.id));
-      },
-      (err) => console.log(err)
+        (data: Stix[]) => {
+          // Get unassessed attack patterns
+          this.unassessedAttackPatterns = data
+            .filter((ap) => !assessedAps.includes(ap.id))
+            .sort(SortHelper.sortDescByField('name'));
+        },
+        (err) => console.log(err)
       );
+    this.subscriptions.push(s1$);
   }
 
+  /**
+   * @description
+   * @param stixType 
+   */
   public getStixIcon(stixType) {
     const convertedStixType = stixType
       .replace(/-/g, '_')
@@ -321,14 +341,14 @@ export class AssessGroupComponent implements OnInit, AfterViewInit {
     const s$ = this.assessService
       .genericPatch(`${Constance.X_UNFETTER_ASSESSMENT_URL}/${this.assessment.id}`, this.assessment)
       .subscribe(
-      (assessmentRes) => {
-        // refresh data
-        const indexOfCurAp = this.attackPatternsByPhase
-          .findIndex((el) => el.attackPatternId === this.currentAttackPattern.id);
-        this.resetNewAssessmentObjects();
-        this.initData(indexOfCurAp);
-      },
-      (assessmentErr) => console.log(assessmentErr));
+        (assessmentRes) => {
+          // refresh data
+          const indexOfCurAp = this.attackPatternsByPhase
+            .findIndex((el) => el.attackPatternId === this.currentAttackPattern.id);
+          this.resetNewAssessmentObjects();
+          this.initData(indexOfCurAp);
+        },
+        (assessmentErr) => console.log(assessmentErr));
 
     this.subscriptions.push(s$);
   }
@@ -342,7 +362,14 @@ export class AssessGroupComponent implements OnInit, AfterViewInit {
     return FormatHelpers.formatAll(inputString);
   }
 
-  public isCurrentAp(attackPatternId: string): boolean {
+  /**
+   * @description determines if this components current attackpattern is the same as the given attackpattern
+   *  Used to highlight the selected attackpattern
+   * @param {string} attackPatternId
+   * @return {boolean} true if the given attack pattern is selected
+   */
+  public isCurrentAttackPattern(attackPatternId = ''): boolean {
     return this.currentAttackPattern ? this.currentAttackPattern.id === attackPatternId : false;
   }
+
 }
