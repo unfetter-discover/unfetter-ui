@@ -158,3 +158,12 @@ $utility-theme: mat-light-theme($utility-theme-primary, $utility-theme-accent, $
 .mat-toolbar {
   transition: background 0.1s ease-in-out;
 }
+
+.uf-tabs-borderless {
+  &.mat-tab-nav-bar, .mat-tab-header {
+    border-bottom: none !important;
+  }
+  .mat-tab-header .mat-tab-label {
+    height: 49px;
+  }
+}
