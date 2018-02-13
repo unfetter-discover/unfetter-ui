@@ -6,6 +6,8 @@ import { MatSidenavModule, MatProgressSpinnerModule, MatTabsModule, MatCardModul
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 
+import { ChartsModule } from 'ng2-charts';
+
 import { GlobalModule } from '../../global/global.module';
 
 import { SummaryEffects } from './store/summary.effects';
@@ -18,6 +20,7 @@ import { ResultHeaderComponent } from './result-header/result-header.component';
 import { SummaryHeaderComponent } from './summary/summary-header/summary-header.component';
 import { SummaryReportComponent } from './summary/summary-report/summary-report.component';
 import { SummaryCalculationService } from './summary/summary-calculation.service';
+import { SophisticationBreakdownComponent } from './summary/summary-report/sophistication-breakdown/sophistication-breakdown.component';
 
 
 @NgModule({
@@ -30,13 +33,14 @@ import { SummaryCalculationService } from './summary/summary-calculation.service
     MatCardModule,
     MatSliderModule,
     MatTableModule,
+    ChartsModule,
     GlobalModule,
     StoreModule.forFeature('summary', summaryReducer),
     StoreModule.forFeature('riskByAttackPattern', riskByAttackPatternReducer),
     EffectsModule.forFeature([SummaryEffects]),
     EffectsModule.forFeature([RiskByAttackPatternEffects])
   ],
-  declarations: [SummaryComponent, FullComponent, ResultHeaderComponent, SummaryHeaderComponent, SummaryReportComponent],
+  declarations: [SummaryComponent, FullComponent, ResultHeaderComponent, SummaryHeaderComponent, SummaryReportComponent, SophisticationBreakdownComponent],
   providers: [SummaryCalculationService]
 })
 export class ResultModule { }

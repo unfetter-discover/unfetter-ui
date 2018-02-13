@@ -113,7 +113,6 @@ export class AssessmentsSummaryComponent implements OnInit, AfterViewInit {
     public populateTechniqueBreakdown(): void {
         // Total assessed objects to calculated risk
         const assessedRiskMapping = this.summaryAggregation.assessedAttackPatternCountBySophisicationLevel;
-
         const includedIds = this.filterOnRisk();
         const attackPatternSet = new Set();
         // Find assessed-objects-to-attack-patterns maps that meet those Ids

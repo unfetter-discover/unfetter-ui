@@ -7,12 +7,17 @@ import { Observable } from 'rxjs/Observable';
 
 import { AssessmentSummaryService } from '../../services/assessment-summary.service';
 
-import { LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA, LOAD_ASSESSMENT_SUMMARY_DATA, FinishedLoading, SetAssessments, LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA, LOAD_RISK_PER_KILL_CHAIN_DATA, FinishedLoadingKillChainData, SetKillChainData } from './summary.actions';
+import {
+    LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA, LOAD_ASSESSMENT_SUMMARY_DATA, FinishedLoading, SetAssessments, LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA,
+    LOAD_RISK_PER_KILL_CHAIN_DATA, FinishedLoadingKillChainData, SetKillChainData, LOAD_SINGLE_SUMMARY_AGGREGATION_DATA, SetSummaryAggregationData,
+    FinishedLoadingSummaryAggregationData, LOAD_SUMMARY_AGGREGATION_DATA
+} from './summary.actions';
 import { Assessment } from '../../../models/assess/assessment';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { JsonApi } from '../../models/json/jsonapi';
 import { JsonApiData } from '../../../models/json/jsonapi-data';
 import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
+import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
 
 @Injectable()
 export class SummaryEffects {
@@ -37,7 +42,7 @@ export class SummaryEffects {
         .ofType(LOAD_ASSESSMENT_SUMMARY_DATA)
         .pluck('payload')
         .switchMap((rollupId: string) => this.assessmentSummaryService.getByRollupId(rollupId))
-        .mergeMap((data: Assessment[]) => [ new SetAssessments(data), new FinishedLoading(true)])
+        .mergeMap((data: Assessment[]) => [new SetAssessments(data), new FinishedLoading(true)])
 
     @Effect()
     public fetchSingleRiskPerKillChainData = this.actions$
@@ -51,5 +56,19 @@ export class SummaryEffects {
         .ofType(LOAD_RISK_PER_KILL_CHAIN_DATA)
         .pluck('payload')
         .switchMap((rollupId: string) => this.assessmentSummaryService.getRiskPerKillChainByRollupId(rollupId))
-        .mergeMap((data: RiskByKillChain[]) => [ new SetKillChainData(data), new FinishedLoadingKillChainData(true)])
+        .mergeMap((data: RiskByKillChain[]) => [new SetKillChainData(data), new FinishedLoadingKillChainData(true)])
+
+    @Effect()
+    public fetchSingleSummaryAggregationData = this.actions$
+        .ofType(LOAD_SINGLE_SUMMARY_AGGREGATION_DATA)
+        .pluck('payload')
+        .switchMap((assessmentId: string) => this.assessmentSummaryService.getSummaryAggregation(assessmentId))
+        .mergeMap((data: SummaryAggregation) => [new SetSummaryAggregationData([data]), new FinishedLoadingSummaryAggregationData(true)])
+
+    @Effect()
+    public fetchSummaryAggregationData = this.actions$
+        .ofType(LOAD_SUMMARY_AGGREGATION_DATA)
+        .pluck('payload')
+        .switchMap((rollupId: string) => this.assessmentSummaryService.getSummaryAggregationByRollup(rollupId))
+        .mergeMap((data: SummaryAggregation[]) => [new SetSummaryAggregationData(data), new FinishedLoadingSummaryAggregationData(true)])
 }

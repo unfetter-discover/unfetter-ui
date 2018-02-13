@@ -8,6 +8,8 @@ import { SummarySortHelper } from './summary-sort-helper';
 import { Stix } from '../../../models/stix/stix';
 import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
 import { AssessKillChainType } from '../../../models/assess/assess-kill-chain-type';
+import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
+import { Constance } from '../../../utils/constance';
 
 @Injectable()
 export class SummaryCalculationService {
@@ -15,11 +17,21 @@ export class SummaryCalculationService {
   numericRiskValue: number;
   weaknessValue: string;
   topRisksValue: AssessKillChainType[];
+  summaryAggregationValue: SummaryAggregation;
+  barColorsValue: any[];
 
   constructor() {
     this.numericRisk = 0;
     this.weakness = '';
     this.topNRisks = 3;
+    this.barColors = [
+      {
+          backgroundColor: Constance.MAT_COLORS['lightblue']['800']
+      },
+      {
+          backgroundColor: Constance.MAT_COLORS['lightblue']['100']
+      }
+  ];
   }
 
   public set numericRisk(newRisk: number) {
@@ -34,6 +46,14 @@ export class SummaryCalculationService {
     this.topRisksValue = newTopRisks;
   }
 
+  public set summaryAggregation (newSummaryAggregation: SummaryAggregation) {
+    this.summaryAggregationValue = newSummaryAggregation;
+  }
+
+  public set barColors(newBarColors: any[]) {
+    this.barColorsValue = newBarColors;
+  }
+
   public get numericRisk(): number {
     return this.numericRiskValue;
   }
@@ -44,6 +64,13 @@ export class SummaryCalculationService {
 
   public get topRisks(): AssessKillChainType[] {
     return this.topRisksValue;
+  }
+  public get barColors(): any[] {
+    return this.barColorsValue;
+  }
+
+  public get summaryAggregation() {
+    return this.summaryAggregationValue;
   }
 
   public getRiskText(): string {
@@ -128,4 +155,24 @@ export class SummaryCalculationService {
     }
     return risks;
   }
+
+  public sophisticationNumberToWord(num: string): string {
+    const val = parseInt(num, 10);
+    return this.sophisticationValueToWord(val);
+}
+
+public sophisticationValueToWord(num: number): string {
+    switch (num) {
+        case 0:
+            return 'Novice';
+        case 1:
+            return 'Practitioner';
+        case 2:
+            return 'Expert';
+        case 3:
+            return 'Innovator';
+        default:
+            return num.toString();
+    }
+}
 }

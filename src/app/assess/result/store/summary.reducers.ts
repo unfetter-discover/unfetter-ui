@@ -5,14 +5,16 @@ import { Stix } from '../../models/stix/stix';
 import { JsonApiData } from '../../models/json/jsonapi-data';
 import { Assessment } from '../../../models/assess/assessment';
 import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
+import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
 
 export interface SummaryState {
     summary: Assessment;
     summaries: Assessment[];
     finishedLoading: boolean;
-    killChainDatum: RiskByKillChain;
     killChainData: RiskByKillChain[];
     finishedLoadingKillChainData: boolean;
+    summaryAggregations: SummaryAggregation[];
+    finishedLoadingSummaryAggregationData: boolean;
 };
 
 
@@ -22,9 +24,10 @@ const genState = (state?: Partial<SummaryState>) => {
         summary: new Assessment(),
         summaries: [],
         finishedLoading: false,
-        killChainDatum: new RiskByKillChain(),
         killChainData: [],
         finishedLoadingKillChainData: false,
+        summaryAggregations: [],
+        finishedLoadingSummaryAggregationData: false
     };
     if (state) {
         Object.assign(tmp, state);
@@ -70,6 +73,25 @@ export function summaryReducer(state = initialState, action: summaryActions.Summ
             return genState({
                 ...state,
                 killChainData: [...action.payload],
+            });
+        case summaryActions.LOAD_SINGLE_SUMMARY_AGGREGATION_DATA:
+
+            return genState({
+                ...state,
+            });
+        case summaryActions.LOAD_SUMMARY_AGGREGATION_DATA:
+            return genState({
+                ...state,
+            });
+        case summaryActions.FINISHED_LOADING_SUMMARY_AGGREGATION_DATA:
+            return genState({
+                ...state,
+                finishedLoadingSummaryAggregationData: action.payload,
+            });
+        case summaryActions.SET_SUMMARY_AGGREGATION_DATA:
+            return genState({
+                ...state,
+                summaryAggregations: [...action.payload],
             });
         default:
             return state;
