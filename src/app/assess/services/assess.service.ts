@@ -6,6 +6,7 @@ import { Constance } from '../../utils/constance';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { JsonApiData } from '../../models/json/jsonapi-data';
 import { LastModifiedAssessment } from '../models/last-modified-assessment';
+import { AssessmentObject } from '../../models/assess/assessment-object';
 
 @Injectable()
 export class AssessService {
@@ -223,12 +224,12 @@ export class AssessService {
      * @param {string} id
      * @return {Observable<any>}
      */
-    public getAssessedObjects(id: string): Observable<any> {
+    public getAssessedObjects(id: string): Observable<AssessmentObject[]> {
         if (!id) {
             return Observable.empty();
         }
 
-        return this.genericApi.get(`${this.assessBaseUrl}/${id}/assessed-objects`);
+        return this.genericApi.getAs<AssessmentObject[]>(`${this.assessBaseUrl}/${id}/assessed-objects`);
     }
 
     /**

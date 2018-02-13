@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, QueryList, ViewChildren, AfterViewInit, ChangeDetectorRef, Input, Output, EventEmitter } from '@angular/core';
+import { Component, ViewChild, OnInit, QueryList, ViewChildren, AfterViewInit, ChangeDetectorRef, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
@@ -17,13 +17,17 @@ import { GroupPhase } from './models/group-phase';
 import { FormatHelpers } from '../../../../global/static/format-helpers';
 import { Stix } from '../../../../models/stix/stix';
 import { SortHelper } from '../../../../global/static/sort-helper';
+import { FullAssessmentResultState } from '../../store/full-result.reducers';
+import { Store } from '@ngrx/store';
+import { RiskByAttackPattern } from './models/risk-by-attack-pattern';
+import { LoadGroupData, LoadGroupCurrentAttackPattern } from '../../store/full-result.actions';
 
 @Component({
   selector: 'unf-assess-group',
   templateUrl: './assessments-group.component.html',
   styleUrls: ['./assessments-group.component.scss']
 })
-export class AssessGroupComponent implements OnInit, AfterViewInit {
+export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input()
   public assessment: Assessment;
@@ -44,10 +48,10 @@ export class AssessGroupComponent implements OnInit, AfterViewInit {
 
   public activePhase: string;
 
-  public riskByAttackPattern: { assessedByAttackPattern: AssessedByAttackPattern[], attackPatternsByKillChain: GroupAttackPattern[], phases: GroupPhase[] };
+  public riskByAttackPattern: RiskByAttackPattern;
   public assessedObjects: AssessmentObject[];
   public unassessedPhases: string[];
-  public currentAttackPattern: any;
+  public currentAttackPattern: Stix;
   public displayedAssessedObjects: DisplayedAssessmentObject[];
   public unassessedAttackPatterns: Stix[];
   public attackPatternsByPhase: any[];
@@ -59,18 +63,23 @@ export class AssessGroupComponent implements OnInit, AfterViewInit {
   constructor(
     private assessService: AssessService,
     private route: ActivatedRoute,
-    private changeDetector: ChangeDetectorRef) { }
+    private changeDetector: ChangeDetectorRef,
+    private store: Store<FullAssessmentResultState>) { }
 
   /**
    * @description init before childern are initialized
    */
   public ngOnInit(): void {
-    // this.currentId = this.route.snapshot.params['id']
-    //   ? this.route.snapshot.params['id'] : '';
-    // this.currentPhase = this.route.snapshot.params['phase']
-    //   ? this.route.snapshot.params['phase'] : '';
     this.assessmentId = this.assessment.id || '';
     this.initData();
+  }
+
+  /**
+   * @description
+   * @return {void}
+   */
+  public ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
   /**
@@ -98,29 +107,57 @@ export class AssessGroupComponent implements OnInit, AfterViewInit {
    * @description
    *  fetch data to populate this page
    *
+   * @param {number} attackPatternIndex
    * @returns {void}
    */
-  public initData(curApIndex: number = 0): void {
+  public initData(attackPatternIndex: number = 0): void {
     this.assessment = new Assessment();
+    this.listenForDataChanges(attackPatternIndex);
+    // request for initial data changes
+    this.store.dispatch(new LoadGroupData(this.assessmentId));
+  }
 
-    // const getById$ = this.assessService.getById(this.assessmentId);
-    const getAssessedObjects$ = this.assessService.getAssessedObjects(this.assessmentId);
-    const getRiskByAttackPattern$ = this.assessService.getRiskPerAttackPattern(this.assessmentId);
-
-    const sub$ = Observable
-      .forkJoin(getAssessedObjects$, getRiskByAttackPattern$)
+  /**
+   * @description setup subscriptions and observables for data changes
+   * @param {number} attackPatternIndex
+   * @return {void}
+   */
+  public listenForDataChanges(attackPatternIndex: number = 0): void {
+    const sub1$ = this.store
+      .select('fullAssessment')
+      .pluck('group')
+      .distinctUntilChanged()
+      .filter((group: any) => group.finishedLoadingGroupData === true)
       .subscribe(
-        ([assessedObjects, risks]) => {
-          this.assessedObjects = assessedObjects;
-          this.riskByAttackPattern = risks || {};
+        (group: any) => {
+          this.assessedObjects = group.assessedObjects || [];
+          this.riskByAttackPattern = group.riskByAttackPattern || {};
           this.populateUnassessedPhases();
           // active phase is either the current active phase, 
-          //  the first assess attack pattern, or the first unassessed pattern
-          const activePhase = this.activePhase || this.riskByAttackPattern.phases[0]._id || this.unassessedPhases[0];
-          this.setPhase(activePhase, curApIndex);
+          let activePhase;
+          if (!activePhase && this.riskByAttackPattern && this.riskByAttackPattern.phases.length > 0) {
+            //  the first assess attack pattern, 
+            activePhase = this.riskByAttackPattern.phases[0]._id;
+          } else if (!activePhase && this.unassessedPhases && this.unassessedPhases.length > 0) {
+            // or the first unassessed pattern
+            activePhase = this.unassessedPhases[0];
+          }
+          this.setPhase(activePhase, attackPatternIndex);
         },
-        (err) => console.log(err),
-        () => sub$.unsubscribe());
+        (err) => console.log(err));
+
+    const sub2$ = this.store
+      .select('fullAssessment')
+      .pluck('group')
+      .pluck('currentAttackPattern')
+      .distinctUntilChanged()
+      .subscribe(
+        (currentAttackPattern: Stix) => {
+          this.currentAttackPattern = currentAttackPattern;
+        },
+        (err) => console.log(err));
+
+    this.subscriptions.push(sub1$, sub2$);
   }
 
   public resetNewAssessmentObjects(): void {
@@ -155,17 +192,19 @@ export class AssessGroupComponent implements OnInit, AfterViewInit {
       .filter((phase) => assessedPhases.indexOf(phase) < 0);
   }
 
-  public setPhase(phaseName: string, curApIndex: number = 0) {
+  /**
+   * @description reload page with the phase and attack pattern
+   * @param {string} phaseName
+   * @param {number} attackPatternIndex
+   */
+  public setPhase(phaseName: string, attackPatternIndex: number = 0) {
     this.resetNewAssessmentObjects();
     this.activePhase = phaseName;
     this.attackPatternsByPhase = this.getAttackPatternsByPhase(this.activePhase);
     let currentAttackPatternId = '';
     if (this.attackPatternsByPhase.length > 0) {
-      currentAttackPatternId = this.attackPatternsByPhase[curApIndex].attackPatternId;
+      currentAttackPatternId = this.attackPatternsByPhase[attackPatternIndex].attackPatternId;
     } 
-    // else if (this.unassessedAttackPatterns.length > 0) {
-    //   currentAttackPatternId = this.unassessedAttackPatterns[0].id;
-    // }
     this.setAttackPattern(currentAttackPatternId);
     this.phaseChanged.emit(this.activePhase);
   }
@@ -209,13 +248,14 @@ export class AssessGroupComponent implements OnInit, AfterViewInit {
 
     if (attackPatternId !== '') {
       // Get attack pattern details
-      const s$ = this.assessService
-        .getAs<Stix>(`${Constance.ATTACK_PATTERN_URL}/${attackPatternId}`)
-        .subscribe(
-          (attackPattern) => this.currentAttackPattern = attackPattern,
-          (err) => console.log(err)
-        );
-      this.subscriptions.push(s$);
+      this.store.dispatch(new LoadGroupCurrentAttackPattern(attackPatternId));
+      // const s$ = this.assessService
+      //   .getAs<Stix>(`${Constance.ATTACK_PATTERN_URL}/${attackPatternId}`)
+      //   .subscribe(
+      //     (attackPattern) => this.currentAttackPattern = attackPattern,
+      //     (err) => console.log(err)
+      //   );
+      // this.subscriptions.push(s$);
 
       // Get relationships for attack pattern, link to assessed objects
       const s0$ = this.assessService
