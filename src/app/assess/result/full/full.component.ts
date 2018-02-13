@@ -34,6 +34,8 @@ export class FullComponent implements OnInit, OnDestroy {
   assessment: Assessment;
   assessmentName: Observable<string>;
   rollupId: string;
+  phase: string;
+  attackPatternId: string;
   finishedLoading = false;
   masterListOptions = {
     dataSource: null,
@@ -61,9 +63,11 @@ export class FullComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     const idParamSub$ = this.route.params
-      .pluck('id')
-      .subscribe((id: string) => {
-        this.rollupId = id || '';
+      .subscribe((params) => {
+        this.rollupId = params.rollupId || '';
+        this.phase = params.phase || '';
+        this.attackPatternId = params.attackPatternId || '';
+
         this.listenForDataChanges();
         const sub$ = this.userStore
           .select('users')
