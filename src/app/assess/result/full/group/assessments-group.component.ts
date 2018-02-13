@@ -249,13 +249,6 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     if (attackPatternId !== '') {
       // Get attack pattern details
       this.store.dispatch(new LoadGroupCurrentAttackPattern(attackPatternId));
-      // const s$ = this.assessService
-      //   .getAs<Stix>(`${Constance.ATTACK_PATTERN_URL}/${attackPatternId}`)
-      //   .subscribe(
-      //     (attackPattern) => this.currentAttackPattern = attackPattern,
-      //     (err) => console.log(err)
-      //   );
-      // this.subscriptions.push(s$);
 
       // Get relationships for attack pattern, link to assessed objects
       const s0$ = this.assessService
