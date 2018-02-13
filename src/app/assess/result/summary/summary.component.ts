@@ -9,7 +9,7 @@ import { Store } from '@ngrx/store';
 
 import { SummaryState } from '../store/summary.reducers';
 import { RiskByAttackPatternState } from '../store/riskbyattackpattern.reducers';
-import { LoadAssessmentSummaryData, LoadSingleAssessmentSummaryData, LoadSingleRiskPerKillChainData } from '../store/summary.actions';
+import { LoadAssessmentSummaryData, LoadSingleAssessmentSummaryData, LoadSingleRiskPerKillChainData, LoadSingleSummaryAggregationData } from '../store/summary.actions';
 
 import { AppState } from '../../../root-store/app.reducers';
 import { Assessment } from '../../../models/assess/assessment';
@@ -27,6 +27,7 @@ import { AssessmentsDashboardService } from '../../../assessments/assessments-da
 import { RiskByAttack } from '../../../models/assess/risk-by-attack';
 import { LoadAssessmentRiskByAttackPatternData, LoadSingleAssessmentRiskByAttackPatternData } from '../store/riskbyattackpattern.actions';
 import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
+import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
 
 @Component({
   selector: 'summary',
@@ -45,9 +46,12 @@ export class SummaryComponent implements OnInit, OnDestroy {
   riskByAttack: RiskByAttack;
   riskByKillChains: RiskByKillChain[];
   riskByKillChain: RiskByKillChain;
+  summaryAggregation: SummaryAggregation;
+  summaryAggregations: SummaryAggregation[];
   finishedLoading = false;
   finishedLoadingRBAP = false;
   finishedLoadingKCD = false;
+  finishedLoadingSAD = false;
   masterListOptions = {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Modified'),
@@ -55,6 +59,11 @@ export class SummaryComponent implements OnInit, OnDestroy {
     modifyRoute: this.baseAssessUrl,
     createRoute: this.baseAssessUrl + '/create',
   };
+
+  public assessmentsGroupingTotal: any; // TODO specify
+  public assessmentsGroupingFiltered: any; // TODO specify
+  public selectedRisk: number;
+  public techniqueBreakdown: any; // TODO specify
 
   private readonly subscriptions: Subscription[] = [];
 
@@ -74,6 +83,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
    *  initialize this component, fetching data from backend
    */
   public ngOnInit(): void {
+    this.selectedRisk = 0.5;
     const idParamSub$ = this.route.params
       .pluck('rollupId')
       .subscribe((id: string) => {
@@ -140,7 +150,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
         this.riskByAttacks = [...arr];
         this.riskByAttack = { ...arr[0] };
       },
-      (err) => console.log(err));
+        (err) => console.log(err));
 
     const sub4$ = this.riskByAttackPatternStore
       .select('riskByAttackPattern')
@@ -152,7 +162,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
           this.transformRBAP();
         }
       },
-      (err) => console.log(err));
+        (err) => console.log(err));
 
     const sub5$ = this.store
       .select('summary')
@@ -180,6 +190,32 @@ export class SummaryComponent implements OnInit, OnDestroy {
         }
       }, (err) => console.log(err));
 
+    const sub7$ = this.store
+      .select('summary')
+      .pluck('summaryAggregations')
+      .distinctUntilChanged()
+      .subscribe((arr: SummaryAggregation[]) => {
+        if (!arr || arr.length === 0) {
+          this.summaryAggregation = undefined;
+          this.summaryAggregations = [];
+          return;
+        }
+
+        this.summaryAggregation = { ...arr[0] };
+        this.summaryAggregations = [...arr];
+      })
+
+    const sub8$ = this.store
+      .select('summary')
+      .pluck('finishedLoadingSummaryAggregationData')
+      .distinctUntilChanged()
+      .subscribe((done: boolean) => {
+        this.finishedLoadingSAD = done;
+        if (done) {
+          this.transformSAD();
+        }
+      }, (err) => console.log(err));
+
     this.assessmentName = this.store
       .select('summary')
       .pluck('summaries')
@@ -191,7 +227,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
         return summaries[0].name;
       });
 
-    this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$);
+    this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$, sub7$, sub8$);
   }
 
   /**
@@ -206,7 +242,9 @@ export class SummaryComponent implements OnInit, OnDestroy {
     this.riskByAttackPatternStore.dispatch(new LoadSingleAssessmentRiskByAttackPatternData(rollupId));
     // TODO this.store.dispatch(new LoadAssessmentSummaryData(rollupId));
     this.store.dispatch(new LoadSingleRiskPerKillChainData(rollupId));
-    // TODO this.store.dispatch(new LoadRiskPerKillChainData(rollupId))
+    // TODO this.store.dispatch(new LoadRiskPerKillChainData(rollupId));
+    this.store.dispatch(new LoadSingleSummaryAggregationData(rollupId));
+    // TODO this.store.dispatch(new LoadAssessmentSummaryData(rollupId));
   }
 
 
@@ -359,6 +397,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     // for (let assessment of this.summaries) {
     //   allAssessmentObjects = allAssessmentObjects.concat(assessment.assessment_objects);
     // }
+    // // this.summary.assessment_objects = allAssessmentObjects; // Maybe??
     // this.summaryCalculationService.setAverageRiskPerAssessedObject(allAssessmentObjects);
   }
 
@@ -370,6 +409,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     // for (let riskByAttack of this.riskByAttacks) {
     //   allRiskByAttackObjects = allRiskByAttackObjects.concat(riskByAttack);
     // }
+    // // this.riskByAttack = allRiskByAttackObjects // Maybe??
     // this.summaryCalculationService.calculateWeakness(allRiskByAttackObjects);
   }
 
@@ -377,9 +417,109 @@ export class SummaryComponent implements OnInit, OnDestroy {
     // single
     this.summaryCalculationService.calculateTopRisks(this.riskByKillChain);
     // all
-    // let allRiskByKillChainObjects: Array<RiskByKillChain> = [];
+    // let allRiskByKillChains: Array<RiskByKillChain> = [];
     // for (let riskByKillChain of this.riskByKillChains) {
-    //   allRiskByKillChainObjects = allRiskByKillChainObjects.concat(riskByKillChain);
+    //   allRiskByKillChains = allRiskByKillChainObjects.concat(riskByKillChain);
     // }
+    // // this.riskByKillChain = allRiskByKillChains; // Maybe??
+    // this.summaryCalculationService.calculateTopRisks(allRiskByKillChains);
+  }
+
+  public transformSAD() {
+    // single
+    this.summaryCalculationService.summaryAggregation = this.summaryAggregation;
+    // all
+    // let allSummaryAggregations: Array<SummaryAggregation> = [];
+    // for (let eachSummaryAggregation of this.summaryAggregations) {
+    //   allSummaryAggregations = allSummaryAggregations.concat(eachSummaryAggregation);
+    // }
+    // // this.summaryAggregation = allSummaryAggregations; // Maybe??
+    // this.summaryCalculationService.setSummaryAggregation(allSummaryAggregations);
+    this.populateAssessmentsGrouping();
+    this.populateTechniqueBreakdown();
+  }
+  /**
+   * @description
+   *  populate kill chain grouping and assessment object tallies for assessment grouping chart
+   * @returns {void}
+   */
+  public populateAssessmentsGrouping(): void {
+    const includedIds = this.filterOnRisk();
+    const killChainTotal = {};
+    const killChainFiltered = {};
+
+    const tally = (tallyObject: object) => {
+      return (assessedObject) => {
+        // flat map kill chain names
+        const killChainNames = assessedObject.attackPatterns
+          .reduce((memo, pattern) => memo.concat(pattern['kill_chain_phases']), []);
+        const names: string[] = killChainNames.map((chain) => chain['phase_name'].toLowerCase() as string);
+        const uniqNames: string[] = Array.from(new Set(names));
+        names.forEach((name) => tallyObject[name] = tallyObject[name] ? tallyObject[name] + 1 : 1);
+        return assessedObject;
+      };
+    };
+
+    // Find assessed-objects to kill chain maps grouping
+    this.summaryAggregation.attackPatternsByAssessedObject
+      // tally totals
+      .map(tally(killChainTotal))
+      .filter((aoToApMap) => includedIds.includes(aoToApMap._id))
+      // tally filtered objects
+      .map(tally(killChainFiltered));
+
+    this.assessmentsGroupingTotal = killChainTotal;
+    this.assessmentsGroupingFiltered = killChainFiltered;
+  }
+
+  /**
+ * @description
+ *  Find IDs that meet risk threshold
+ *  TODO should be <= risk or < risk?
+ * @returns {string[]}
+ */
+  public filterOnRisk(): string[] {
+    const includedIds: string[] = this.summary.assessment_objects // TODO fix...or active...or this is a roll-up?
+      .filter((ao) => ao.risk <= this.selectedRisk)
+      .map((ao) => ao.stix.id);
+    return includedIds;
+  }
+
+  /**
+ * @description
+ *  populate grouping and assessment object tallies for technique by skill chart
+ * @returns {void}
+ */
+  public populateTechniqueBreakdown(): void {
+    // Total assessed objects to calculated risk
+    const assessedRiskMapping = this.summaryAggregation.assessedAttackPatternCountBySophisicationLevel;
+    const includedIds = this.filterOnRisk();
+    const attackPatternSet = new Set();
+    // Find assessed-objects-to-attack-patterns maps that meet those Ids
+    this.summaryAggregation.attackPatternsByAssessedObject
+      .filter((aoToApMap) => includedIds.includes(aoToApMap._id))
+      .forEach((aoToApMap) => {
+        aoToApMap.attackPatterns.forEach((ap) => {
+          attackPatternSet.add(JSON.stringify(ap));
+        });
+      });
+
+    const attackPatternSetMap = {};
+    attackPatternSet.forEach((ap) => {
+      const curAp = JSON.parse(ap);
+      if (attackPatternSetMap[curAp['x_unfetter_sophistication_level']] === undefined) {
+        attackPatternSetMap[curAp['x_unfetter_sophistication_level']] = 0;
+      }
+      ++attackPatternSetMap[curAp['x_unfetter_sophistication_level']];
+    });
+
+    this.techniqueBreakdown = {};
+    for (const prop in Object.keys(assessedRiskMapping)) {
+      if (attackPatternSetMap[prop] === undefined) {
+        this.techniqueBreakdown[prop] = 0;
+      } else {
+        this.techniqueBreakdown[prop] = attackPatternSetMap[prop] / (assessedRiskMapping[prop]);
+      }
+    }
   }
 }

@@ -2,18 +2,19 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatTableModule } from '@angular/material';
 
+import { CapitalizePipe } from '../../../../global/pipes/capitalize.pipe';
 import { SummaryReportComponent } from './summary-report.component';
 import { SummaryCalculationService } from '../summary-calculation.service';
 
-describe('SummaryReportComponent', () => {
+fdescribe('SummaryReportComponent', () => {
   let component: SummaryReportComponent;
   let fixture: ComponentFixture<SummaryReportComponent>;
 
-  const serviceMock = {weakness: 'weeeeeeeak', getRiskText: string => 'risk'};
+  const serviceMock = { weakness: 'weeeeeeeak', getRiskText: string => 'risk', calculateAvgRiskPerAssessedObject: number => .33 };
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      declarations: [SummaryReportComponent],
+      declarations: [SummaryReportComponent, CapitalizePipe],
       imports: [MatTableModule],
       providers: [
         {
@@ -33,5 +34,16 @@ describe('SummaryReportComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should format a risk value appropriately for the summary report component', () => {
+    expect(component.formatRisk(null)).toBe('0.00');
+    expect(component.formatRisk(undefined)).toBe('0.00');
+    expect(component.formatRisk(3 / 0)).toBe('100.00');
+  });
+
+  it('should calculate average risk per object and format the result', () => {
+    expect(component.calculateRisk(null)).toBe('0.00');
+    expect(component.calculateRisk([{ risk: .33 }, { risk: .33 }, { risk: .33 }])).toBe('33.00');
   });
 });

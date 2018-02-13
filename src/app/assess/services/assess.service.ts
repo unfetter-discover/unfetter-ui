@@ -10,6 +10,8 @@ import { AssessmentObject } from '../../models/assess/assessment-object';
 import { JsonApi } from '../../models/json/jsonapi';
 import { RiskByAttack } from '../../models/assess/risk-by-attack';
 import { RiskByKillChain } from '../../models/assess/risk-by-kill-chain';
+import { SummaryAggregation } from '../../models/assess/summary-aggregation';
+import { JsonApiObject } from '../../threat-dashboard/models/adapter/json-api-object';
 
 @Injectable()
 export class AssessService {
@@ -172,11 +174,11 @@ export class AssessService {
         return this.genericApi.getAs<RiskByKillChain>(url);
     }
 
-        /**
-     * @description
-     * @param {string} id
-     * @return {Observable}
-     */
+    /**
+ * @description
+ * @param {string} id
+ * @return {Observable}
+ */
     public getRiskPerKillChainByRollupId(id: string): Observable<any> {
         if (!id) {
             return Observable.empty();
@@ -219,20 +221,40 @@ export class AssessService {
             .getAs<JsonApiData<RiskByAttack>[]>(url)
             .map((data) => data.map((el) => el.attributes));
     }
-    
+
     /**
      * @description
      * @param {string} id
      * @return {Observable}
      */
-    public getSummaryAggregation(id: string): Observable<any> {
+    public getSummaryAggregation(id: string): Observable<SummaryAggregation> {
         if (!id) {
             return Observable.empty();
         }
 
         const url = `${this.assessBaseUrl}/${id}/summary-aggregations`;
-        return this.genericApi.get(url);
+        return this.genericApi.getAs<SummaryAggregation>(url);
     }
+
+    /**
+     * @description
+     * @param {string} id
+     * @return {Observable}
+     */
+    public getSummaryAggregationByRollup(id: string, includeMeta = true): Observable<SummaryAggregation[]> {
+        if (!id) {
+            return Observable.empty();
+        }
+        const filter = {
+            'metaProperties.rollupId': id
+        };
+
+        const url = `${this.assessBaseUrl}/${id}/summary-aggregations?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
+        return this.genericApi
+            .getAs<JsonApiData<SummaryAggregation>[]>(url)
+            .map((data) => data.map((el) => el.attributes));
+    }
+
 
     /**
      * @description retrieve full assessments for given creator

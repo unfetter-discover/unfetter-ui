@@ -7,6 +7,8 @@ import { MatProgressSpinnerModule, MatTabsModule, MatCardModule, MatSliderModule
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 
+import { ChartsModule } from 'ng2-charts';
+
 import { GlobalModule } from '../../global/global.module';
 
 import { SummaryEffects } from './store/summary.effects';
@@ -24,6 +26,7 @@ import { fullAssessmentResultReducer } from './store/full-result.reducers';
 import { AssessGroupComponent } from './full/group/assessments-group.component';
 import { AddAssessedObjectComponent } from './full/group/add-assessed-object/add-assessed-object.component';
 import { SummaryCalculationService } from './summary/summary-calculation.service';
+import { SophisticationBreakdownComponent } from './summary/summary-report/sophistication-breakdown/sophistication-breakdown.component';
 
 const materialModules = [
   MatCardModule,
@@ -49,13 +52,24 @@ const moduleComponents = [
     CommonModule,
     FormsModule,
     RouterModule,
+<<<<<<< HEAD
     ...materialModules,
+=======
+    MatSidenavModule,
+    MatProgressSpinnerModule,
+    MatTabsModule,
+    MatCardModule,
+    MatSliderModule,
+    MatTableModule,
+    ChartsModule,
+>>>>>>> still working, 1/3 of charts works, but only for a single assessment, slider does not yet work
     GlobalModule,
     StoreModule.forFeature('summary', summaryReducer),
     StoreModule.forFeature('fullAssessment', fullAssessmentResultReducer),
     StoreModule.forFeature('riskByAttackPattern', riskByAttackPatternReducer),
     EffectsModule.forFeature([SummaryEffects, FullResultEffects, RiskByAttackPatternEffects]),
   ],
+<<<<<<< HEAD
   declarations: [
     ...moduleComponents,
     SummaryComponent,
@@ -63,6 +77,9 @@ const moduleComponents = [
     ResultHeaderComponent,
     SummaryHeaderComponent,
     SummaryReportComponent],
+=======
+  declarations: [SummaryComponent, FullComponent, ResultHeaderComponent, SummaryHeaderComponent, SummaryReportComponent, SophisticationBreakdownComponent],
+>>>>>>> still working, 1/3 of charts works, but only for a single assessment, slider does not yet work
   providers: [SummaryCalculationService]
 })
 export class ResultModule { }

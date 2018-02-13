@@ -6,8 +6,8 @@
     </div>
     <div class="row">
       <div class="flex matchHeight">
-        <mat-card color="primary" class="uf-mat-card card" id="riskCard">
-          <mat-card-title>Overall Implementation Risk {{totalRiskValue}}%</mat-card-title>
+        <mat-card color="primary" class="uf-mat-card card left-card" id="riskCard">
+          <mat-card-title>Overall implementation risk: {{totalRiskValue}}%</mat-card-title>
           <mat-card-subtitle>Weakness</mat-card-subtitle>
           <mat-card-content>
             <p *ngIf="weakness && weakness.length > 0; else noWeakestAttackPatterns">
@@ -18,15 +18,15 @@
             </ng-template>
           </mat-card-content>
         </mat-card>
-        <mat-card class="uf-mat-card card" id="vulnerabilityCard">
+        <mat-card class="uf-mat-card card right-card" id="vulnerabilityCard">
           <mat-card-title>Where you are most vulnerable</mat-card-title>
           <mat-card-content>
             <mat-table #table [dataSource]="topRisks">
-              <ng-container matColumnDef="kca">
+              <ng-container matColumnDef="{{columnIds[0]}}">
                 <mat-header-cell *matHeaderCellDef>KILL CHAIN AFFECTED</mat-header-cell>
                 <mat-cell *matCellDef="let risk">{{risk.phaseName | capitalize }}</mat-cell>
               </ng-container>
-              <ng-container matColumnDef="item">
+              <ng-container matColumnDef="{{columnIds[1]}}">
                 <mat-header-cell *matHeaderCellDef>ASSESSED ITEM</mat-header-cell>
                 <mat-cell *matCellDef="let risk">
                   <ul *ngIf="risk.objects; else noObjects">
@@ -38,16 +38,15 @@
                     No objects found!
                   </ng-template>
                 </mat-cell>
-                <!-- ; else noObjects"> -->
               </ng-container>
-              <ng-container matColumnDef="risk">
+              <ng-container matColumnDef="{{columnIds[2]}}">
                 <mat-header-cell *matHeaderCellDef>RISK</mat-header-cell>
                 <mat-cell *matCellDef="let risk">
                   <span class="label label-warning">{{calculateRisk(risk.objects)}}</span>
                 </mat-cell>
               </ng-container>
-              <mat-header-row *matHeaderRowDef="['kca','item','risk']"></mat-header-row>
-              <mat-row *matRowDef="let row; columns: ['kca','item','risk'];"></mat-row>
+              <mat-header-row class="table-header-row" *matHeaderRowDef="columnIds"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: columnIds;"></mat-row>
             </mat-table>
           </mat-card-content>
         </mat-card>
@@ -69,11 +68,16 @@
     </div>
     <div class="row">
       <div class="flex matchHeight">
-        <mat-card class="uf-mat-card card" id="riskCard">
+        <mat-card class="uf-mat-card card left-card" id="sophisticationCard">
           <mat-card-title>Sophistication Breakdown</mat-card-title>
-          <mat-card-content>Test</mat-card-content>
+          <mat-card-content>
+            <div *ngIf="summaryAggregation && summaryAggregation.assessedAttackPatternCountBySophisicationLevel && summaryAggregation.totalAttackPatternCountBySophisicationLevel; else noSophisticationData">
+              <sophistication-breakdown [assessedAttackPatterns]="summaryAggregation.assessedAttackPatternCountBySophisicationLevel" [allAttackPatterns]="summaryAggregation.totalAttackPatternCountBySophisicationLevel"></sophistication-breakdown>
+            </div>
+            <ng-template #noSophisticationData>No data to load chart!</ng-template>
+          </mat-card-content>
         </mat-card>
-        <mat-card class="uf-mat-card card" id="vulnerabilityCard">
+        <mat-card class="uf-mat-card card right-card">
           <mat-card-title>% Techniques Detected by Skill</mat-card-title>
           <mat-card-content>Test</mat-card-content>
         </mat-card>

@@ -13,7 +13,7 @@ import { MatDialogModule } from '@angular/material';
 import { AssessService } from '../../services/assess.service';
 import { SummaryCalculationService } from './summary-calculation.service';
 
-describe('SummaryComponent', () => {
+fdescribe('SummaryComponent', () => {
   let component: SummaryComponent;
   let fixture: ComponentFixture<SummaryComponent>;
 

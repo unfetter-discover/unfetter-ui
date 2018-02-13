@@ -43,24 +43,76 @@
     .mat-card-subtitle {
         color: black;
         font-size: 20px;
-        font-weight: 500;
+        font-weight: 600;
         margin-bottom: 6px;
     }
 
     .mat-card-content {
         overflow-y: auto;
-        max-height: 162px;
+        max-height: 192px;
     }
 }
 
-#riskCard {
+.mat-column-kca {
+    min-width: 57%;
+}
+
+.mat-column-item {
+    min-width: 32%;
+    ul {
+        list-style-type: none;
+        -webkit-padding-start: 0px;
+    }
+}
+
+.table-header-row {
+    min-height: 0px;
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-top-color: rgba(0, 0, 0, 0.12);
+    padding: 0px;
+
+    .mat-header-cell {
+        color: black;
+        font-weight: 600;
+    }
+}
+
+.left-card {
     flex-grow: .5;
     margin-right: 10px;
 }
 
-#vulnerabilityCard {
+.right-card {
     flex-grow: .5;
     margin-left: 10px;
+}
+
+#riskCard {
+    .mat-card-content {
+        max-height: 162px;
+    }
+}
+
+#sophisticationCard {
+    .mat-card-title {
+        margin-bottom: 6px;
+    }
+
+    .mat-card-content {
+        max-height: 198px;
+    }
+}
+
+#vulnerabilityCard {
+    .mat-row {
+        padding: 0px;
+        align-items: normal;
+
+        .mat-cell {
+            font-size: 11px;
+        }
+    }
 }
 
 @font-face {
