@@ -462,11 +462,10 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     const dataPoints = phases
       .map((phase) => {
         const total = phase.attack_patterns.length || 0;
-        const selectedAttackPatterns = phase
-          .attack_patterns
+        const selectedAttackPatterns = phase.attack_patterns
           .filter((attackPattern) => this.isTruthy(attackPattern.isSelected));
         const frequency = Math.round((selectedAttackPatterns.length / total) * 100);
-        const dataPoint = new BarChartItem(phase.name, frequency);
+        const dataPoint = new BarChartItem(phase.name, frequency, selectedAttackPatterns);
         return dataPoint;
       });
 
