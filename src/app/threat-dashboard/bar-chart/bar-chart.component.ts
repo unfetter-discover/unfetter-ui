@@ -1,4 +1,14 @@
-import { Component, OnInit, ChangeDetectionStrategy, Renderer2, EventEmitter, Output, Input, OnDestroy, OnChanges } from '@angular/core';
+import {
+        Component,
+        OnInit,
+        ChangeDetectionStrategy,
+        Renderer2,
+        EventEmitter,
+        Output,
+        Input,
+        OnDestroy,
+        OnChanges,
+    } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
 import * as d3 from 'd3';
@@ -21,7 +31,9 @@ export class BarChartComponent implements OnInit, OnDestroy, OnChanges {
     private readonly subscriptions: Subscription[] = [];
     private readonly graphId = '#barChart';
 
-    constructor(protected renderer: Renderer2) { }
+    constructor(
+        protected renderer: Renderer2,
+    ) { }
 
     /**
      * @description initialize this component
@@ -91,14 +103,18 @@ export class BarChartComponent implements OnInit, OnDestroy, OnChanges {
         height = +svg.attr('height') - margin.top - margin.bottom;
         const x = d3.scaleBand().rangeRound([0, width]).padding(0.1);
         const y = d3.scaleLinear().rangeRound([height, 0]);
+        const bottom = graphElement.property('offsetHeight') + margin.bottom;
 
         const g = svg.append('g')
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
         let normalized = [];
+        let tooltipDiv = graphElement.append('div').attr('class', 'bar-chart-tooltip')
+            .style('max-height', height + 'px');
+
         data.forEach((el) => {
             // normalize frequency ratio to float
-            normalized.push({'name': el.name, 'frequency': +el.frequency / 100});
+            normalized.push({'name': el.name, 'frequency': +el.frequency / 100, 'patterns': el.patterns});
         });
 
         x.domain(normalized.map((d) => d.name));
@@ -127,10 +143,22 @@ export class BarChartComponent implements OnInit, OnDestroy, OnChanges {
             .attr('y', (d) => y(d.frequency))
             .attr('width', x.bandwidth())
             .attr('height', (d) => {
-                // position bottom of bar to base line height
-                // bars grow top down
+                // position bottom of bar to base line height bars grow top down
                 const yVal = y(d.frequency);
                 return height - yVal;
+            })
+            .on('mouseover', function(d) {
+                tooltipDiv.html('<ul style="max-height: ' + (height - 10) + 'px;">'
+                        + d.patterns.map(pattern => '<li>' + pattern.name + '</li>').join('') + '</ul>');
+                const ht: number = parseInt(tooltipDiv.style('height'), 10);
+                const widthOffset = 2 * x.bandwidth() - 15;
+                const scrollOffset = graphElement.property('scrollLeft');
+                tooltipDiv.transition().duration(200).style('opacity', .9)
+                    .style('left', (x(d.name) + widthOffset - scrollOffset) + 'px')
+                    .style('top', (bottom - ht) + 'px');
+            })
+            .on('mouseout', function(d) {
+                tooltipDiv.transition().duration(500).style('opacity', 0);
             });
 
     }

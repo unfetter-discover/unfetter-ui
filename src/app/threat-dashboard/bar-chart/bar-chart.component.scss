@@ -12,6 +12,20 @@
     padding-left: 32px;
     background-color: #FFFFFF;
     overflow-y: auto;
+
+    ::ng-deep .bar-chart-tooltip {
+        opacity: 0;
+        position: absolute;
+        padding: 4px;
+        border: 1px solid lightgray;
+        background: #f0f0f0;
+        overflow: hidden;
+        ul {
+          margin-bottom: 0;
+          padding-left: 20px;
+          overflow: hidden;
+        }
+    }
 }
 
 ::ng-deep .bar {
