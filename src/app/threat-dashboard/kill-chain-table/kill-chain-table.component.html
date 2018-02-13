@@ -25,7 +25,8 @@
                                     <div class="ui-grid-col-12 attack-pattern-div"
                                             [style.color]="attack_pattern.foregroundColor"
                                             [style.background-color]="attack_pattern.backgroundColor">
-                                        <div class="flexCenter" (click)="showAttackPatternTooltip(attack_pattern, $event)">
+                                        <div class="flexCenter attack-pattern-clicker"
+                                                (click)="showAttackPatternTooltip(attack_pattern, $event)">
                                             {{attack_pattern.name}}
                                         </div>
                                     </div>
