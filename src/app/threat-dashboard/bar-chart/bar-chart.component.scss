@@ -18,7 +18,13 @@
         position: absolute;
         padding: 4px;
         border: 1px solid lightgray;
-        background: white;
+        background: #f0f0f0;
+        overflow: hidden;
+        ul {
+          margin-bottom: 0;
+          padding-left: 20px;
+          overflow: hidden;
+        }
     }
 }
 

@@ -103,13 +103,14 @@ export class BarChartComponent implements OnInit, OnDestroy, OnChanges {
         height = +svg.attr('height') - margin.top - margin.bottom;
         const x = d3.scaleBand().rangeRound([0, width]).padding(0.1);
         const y = d3.scaleLinear().rangeRound([height, 0]);
-        const bottom = graphElement.property('offsetHeight') + margin.top + margin.bottom;
+        const bottom = graphElement.property('offsetHeight') + margin.bottom;
 
         const g = svg.append('g')
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
         let normalized = [];
-        let tooltipDiv = graphElement.append('div').attr('class', 'bar-chart-tooltip');
+        let tooltipDiv = graphElement.append('div').attr('class', 'bar-chart-tooltip')
+            .style('max-height', height + 'px');
 
         data.forEach((el) => {
             // normalize frequency ratio to float
@@ -147,14 +148,17 @@ export class BarChartComponent implements OnInit, OnDestroy, OnChanges {
                 return height - yVal;
             })
             .on('mouseover', function(d) {
-                tooltipDiv.html(d.patterns.map(pattern => '<li>' + pattern.name + '</li>').join(''));
+                tooltipDiv.html('<ul style="max-height: ' + (height - 10) + 'px;">'
+                        + d.patterns.map(pattern => '<li>' + pattern.name + '</li>').join('') + '</ul>');
                 const ht: number = parseInt(tooltipDiv.style('height'), 10);
                 const widthOffset = 2 * x.bandwidth() - 15;
+                const scrollOffset = graphElement.property('scrollLeft');
                 tooltipDiv.transition().duration(200).style('opacity', .9)
-                    .style('left', (x(d.name) + widthOffset) + 'px').style('top', (bottom - ht) + 'px');
+                    .style('left', (x(d.name) + widthOffset - scrollOffset) + 'px')
+                    .style('top', (bottom - ht) + 'px');
             })
             .on('mouseout', function(d) {
-                // div.transition().duration(500).style('opacity', 0);
+                tooltipDiv.transition().duration(500).style('opacity', 0);
             });
 
     }
