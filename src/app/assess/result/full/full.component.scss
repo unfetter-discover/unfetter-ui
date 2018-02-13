@@ -1,6 +1,16 @@
 @import '../../../../styles/_variables.scss';
 @import './_assess.common.scss';
 
+@mixin with-divider() {
+    border-bottom: 1px solid $assessments-primary-lightest;
+}
+
+@mixin header() {
+    @include with-margin-centered();
+    padding-bottom: 4px;
+    margin-bottom: 4px;
+}
+
 .side-panel {
     width: 320px;
     font-size: 12px;
@@ -11,23 +21,23 @@
         }
     }
 
+    .align-right {
+        text-align: right;
+    }
+
+    .divider-wrapper {
+        @include with-divider();
+    }
+
     .risk-header-wrapper {
-        border-bottom: 1px solid $assessments-primary-lightest;
+        @include with-divider();
 
         .risk-header {
-            @include with-margin-centered();
-            padding-bottom: 4px;
-            margin-bottom: 4px;
-    
-            .align-right {
-                text-align: right;
-            }
+            @include header();
         }
     }
 
     .phases-list {
-        @include with-margin-centered();
-
         .phases-list-item {
             padding-top: 8px;
             padding-bottom: 16px;
@@ -36,7 +46,28 @@
 
     }
 
-    
+    .header {
+        @include header();
+        margin-top: 8px;
+    }
+
+    .item-content {
+        @include with-margin-centered();
+    }
+
+    .unassessed-phases-list {
+        margin-bottom: 12px;
+        
+        .unassessed-phases-list-item {
+            padding-top: 8px;
+            height: 36px;
+        }
+
+    }
+
+    .highlightPhase {
+        background-color: $assessments-primary-subtle !important;
+    }
 }
 
 .main-panel {

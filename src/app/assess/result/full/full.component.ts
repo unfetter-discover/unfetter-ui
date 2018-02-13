@@ -42,6 +42,7 @@ export class FullComponent implements OnInit, OnDestroy {
     modifyRoute: this.baseAssessUrl,
     createRoute: this.baseAssessUrl + '/create',
   };
+  activePhase: string;
 
   private readonly subscriptions: Subscription[] = [];
 
@@ -258,5 +259,29 @@ export class FullComponent implements OnInit, OnDestroy {
    */
   public trackByFn(index: number, item: any): number {
     return item.id || index;
+  }
+
+  /**
+   * @description the child component assessments group contains the current phase, capture a change to phases
+   *  so we can highlight the currently selected
+   * @param {string} event optional
+   * @return {void}
+   */
+  public onPhaseChanged(event?: string): void {
+    if (!event) {
+      return;
+    }
+
+    this.activePhase = event;
+  }
+
+  /**
+   * @description determines if this components current phase is the same as the given phase
+   *  Used to highlight the selected phase
+   * @param {string} phase
+   * @return {boolean} true if the given phase is selected
+   */
+  public isCurrentPhase(phase = ''): boolean {
+    return this.activePhase ? this.activePhase === phase : false;
   }
 }

@@ -23,29 +23,33 @@
           </div>
         </div>
         <div class="phases-list">
-          <mat-list-item *ngFor="let phase of assessGroupMain.riskByAttackPattern.phases; trackBy:trackByFn">
-            <div class="phases-list-item">
-              <span class="flex">
-                <span class="phase-name cursor-pointer flex-grow" (click)="assessGroupMain.setPhase(phase._id)">
-                  <b>
-                    {{phase._id | capitalize}}
-                  </b>
-                </span>
-                <span class="align-right">{{assessGroupMain.getRiskByPhase(phase._id) | percent:'2.1-1'}}</span>
+          <div class="phases-list-item cursor-pointer" 
+            *ngFor="let phase of assessGroupMain.riskByAttackPattern.phases; trackBy:trackByFn" 
+            [ngClass]="{'highlightPhase': isCurrentPhase(phase._id)}"
+            (click)="assessGroupMain.setPhase(phase._id)">
+            <div class="item-content flex">
+              <span class="phase-name flex-grow">
+                <b>{{phase._id | capitalize}}</b>
               </span>
-              <span>Attack Patterns {{ phase.attackPatterns.length }}/{{ assessGroupMain.getNumAttackPatterns(phase._id) }}
-              </span>
+              <span class="align-right">{{assessGroupMain.getRiskByPhase(phase._id) | percent:'2.1-1'}}</span>
             </div>
-          </mat-list-item>
-          <div *ngIf="assessGroupMain.unassessedPhases && assessGroupMain.unassessedPhases.length > 0">
-            <hr>
-            <h5 class="text-muted">
-              <small>Unassessed Kill Chain Phases</small>
-            </h5>
-            <div class="attackPatternListItem" *ngFor="let unassessedPhase of assessGroupMain.unassessedPhases">
-              <small>
-                <a (click)="assessGroupMain.setPhase(unassessedPhase)">{{unassessedPhase | capitalize}}</a>
-              </small>
+            <div class="item-content">Attack Patterns {{ phase.attackPatterns.length }}/{{ assessGroupMain.getNumAttackPatterns(phase._id) }}</div>
+          </div>
+        </div>
+        <div class="divider-wrapper">
+        </div>
+        <div *ngIf="assessGroupMain.unassessedPhases && assessGroupMain.unassessedPhases.length > 0">
+          <div class="header">Unassessed Kill Chain Phases</div>
+          <div class="unassessed-phases-list">
+            <div class="unassessed-phases-list-item cursor-pointer" 
+              *ngFor="let phase of assessGroupMain.unassessedPhases; trackBy:trackByFn"
+              [ngClass]="{'highlightPhase': isCurrentPhase(phase)}"
+              (click)="assessGroupMain.setPhase(phase)">
+              <div class="item-content">
+                <span class="phase-name">
+                  <b>{{phase | capitalize}}</b>
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -54,7 +58,7 @@
     <mat-sidenav-content>
       <div class="main-panel">
         <result-header [rollupId]="rollupId" [created]="assessment?.created"></result-header>
-        <unf-assess-group #assessGroupMain [assessment]="assessment"></unf-assess-group>
+        <unf-assess-group #assessGroupMain [assessment]="assessment" (phaseChanged)="onPhaseChanged($event)"></unf-assess-group>
       </div>
     </mat-sidenav-content>
   </mat-sidenav-container>
