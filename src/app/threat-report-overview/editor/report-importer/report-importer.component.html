@@ -71,10 +71,12 @@
                 <ng-container matColumnDef="title">
                     <mat-header-cell *matHeaderCellDef> Title </mat-header-cell>
                     <mat-cell *matCellDef="let report">
-                        <a href="{{report.attributes.external_references[0].url}}" class="report-name" target="_blank">
-                            {{report.attributes.title || report.attributes.name}}
-                        </a>
-                        <span class="mat-caption text-muted"> {{report.attributes.description}} </span>
+                        <div>
+                            <a href="{{report.attributes.external_references[0].url}}" target="_blank">
+                                {{report.attributes.title || report.attributes.name}}
+                            </a>
+                        </div>
+                        <div class="mat-caption text-muted text-fadeable"> {{report.attributes.description}} </div>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="author">
