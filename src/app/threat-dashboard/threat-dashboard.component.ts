@@ -231,7 +231,10 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   public loadAttackPatterns(): Observable<AttackPattern[]> {
     const url = Constance.ATTACK_PATTERN_URL + '?' + this.filter + '&project=' + encodeURI(JSON.stringify({
       'stix.name': 1,
+      'stix.description': 1,
       'stix.kill_chain_phases': 1,
+      'extendedProperties.x_mitre_data_sources': 1,
+      'extendedProperties.x_mitre_platforms': 1,
       'stix.id': 1
     }));
     return this.genericApi.get(url)
