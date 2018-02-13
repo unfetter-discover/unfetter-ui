@@ -4,7 +4,7 @@
             <h2 class="lead"> {{data.title}} </h2>
         </div>
         <div class="col-md-4">
-            <mat-tab-group (focusChange)="onFilterChange($event)">
+            <mat-tab-group (focusChange)="onFilterChange($event)" class="uf-tabs-borderless">
                 <mat-tab label="YOURS"></mat-tab>
                 <mat-tab label="SHARED" disabled></mat-tab>
             </mat-tab-group>
