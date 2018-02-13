@@ -26,7 +26,7 @@
     "serve:coverage": "live-server coverage/html",
     "build:prod": "ng version && ng build --prod --env=prod",
     "build:prod:noclean": "npm run build:prod -- --no-delete-output-path --vendor-chunk=true",
-    "build:demo": "ng version && ng build --prod --env=dockerhub",
+    "build:demo:noclean": "ng version && ng build --prod --no-delete-output-path --vendor-chunk=true --env=dockerhub",
     "build:dev": "ng version && ng build",
     "watch:test": "ng test --watch --source=false",
     "test": "ng test --single-run --source=false",
