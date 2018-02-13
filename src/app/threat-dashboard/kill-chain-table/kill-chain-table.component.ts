@@ -1,4 +1,17 @@
-import { Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy, ElementRef, ViewChild, HostListener } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Input,
+    OnDestroy,
+    ChangeDetectionStrategy,
+    ElementRef,
+    ViewChild,
+    HostListener,
+    TemplateRef,
+    ViewContainerRef
+  } from '@angular/core';
+import { Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { TemplatePortal } from '@angular/cdk/portal';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
@@ -32,6 +45,10 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
   @ViewChild('toolbox')
   public toolbox: ElementRef;
 
+  @ViewChild('apTooltipTemplate') apTooltipTemplate: TemplateRef<any>;
+  public attackPattern: AttackPattern;
+  private overlayRef: OverlayRef;
+  private portal: TemplatePortal<any>;
 
   public undoToolboxOp: Partial<KillChainEntry>[] = undefined;
   public showToolbox = false;
@@ -42,6 +59,8 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
     protected router: Router,
     protected route: ActivatedRoute,
     protected genericApi: GenericApi,
+    private overlay: Overlay,
+    private vcr: ViewContainerRef,
   ) { }
 
   /**
@@ -149,4 +168,58 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
     this.undoToolboxOp = this.copyState(this.undoToolboxOp);
   }
 
+  public showAttackPatternTooltip(killChain: KillChainEntry, event?: UIEvent): void {
+    if (killChain && this.attackPattern && (this.attackPattern.attributes.name === killChain.name)) {
+      return;
+    }
+
+    this.attackPattern = this.attackPatterns.find(pattern => pattern.attributes.name === killChain.name);
+
+    if (!this.overlayRef) {
+      const elem = new ElementRef(event.target);
+      console.log('Trying to display tooltip for ', this.attackPattern, ' on ', elem);
+
+      const positionStrategy = this.overlay.position()
+        .connectedTo(elem,
+          {originX: 'center', originY: 'bottom'},
+          {overlayX: 'start', overlayY: 'top'})
+        .withFallbackPosition(
+          {originX: 'center', originY: 'top'},
+          {overlayX: 'start', overlayY: 'bottom'})
+        .withFallbackPosition(
+          {originX: 'center', originY: 'bottom'},
+          {overlayX: 'end', overlayY: 'top'})
+        .withFallbackPosition(
+          {originX: 'center', originY: 'bottom'},
+          {overlayX: 'end', overlayY: 'bottom'});
+
+      this.overlayRef = this.overlay.create({
+        minWidth: 300,
+        maxWidth: 500,
+        hasBackdrop: true,
+        positionStrategy,
+        scrollStrategy: this.overlay.scrollStrategies.reposition()
+      });
+
+      const sub$ = this.overlayRef.backdropClick().subscribe(
+        () => this.hideAttackPatternTooltip(this.attackPattern),
+        (err) => console.log(err),
+        () => sub$.unsubscribe());
+
+      this.portal = new TemplatePortal(this.apTooltipTemplate, this.vcr);
+    }
+
+    this.overlayRef.attach(this.portal);
+  }
+
+  public hideAttackPatternTooltip(attackPattern: AttackPattern, event?: UIEvent): void {
+    if (!attackPattern || !this.attackPattern
+        || (this.attackPattern.attributes.name !== attackPattern.attributes.name)) {
+      return;
+    }
+    this.attackPattern = null;
+    this.overlayRef.detach();
+    this.overlayRef.dispose();
+    this.overlayRef = null;
+  }
 }

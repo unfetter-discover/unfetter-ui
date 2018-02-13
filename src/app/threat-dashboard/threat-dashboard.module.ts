@@ -18,6 +18,8 @@ import { MatSelectModule } from '@angular/material';
 import { MatSlideToggleModule } from '@angular/material';
 import { MatTabsModule } from '@angular/material';
 import { MatTooltipModule } from '@angular/material';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { PlatformModule } from '@angular/cdk/platform';
 
 import { CarouselModule } from 'primeng/primeng';
 
@@ -67,6 +69,8 @@ const materialModules = [
   MatSlideToggleModule,
   MatTabsModule,
   MatTooltipModule,
+  OverlayModule,
+  PlatformModule,
 ];
 
 const primengModules = [CarouselModule];
