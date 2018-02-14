@@ -48,7 +48,7 @@ export class AssessGuard implements CanActivate {
                             // has assessments,
                             //  navigate to the last modified
                             const lastModAssessment = data[0];
-                            this.router.navigate(['assess/result/summary', lastModAssessment.rollupId]);
+                            this.router.navigate(['assess/result/summary', lastModAssessment.id]);
                             return true;
                         }
                     })
