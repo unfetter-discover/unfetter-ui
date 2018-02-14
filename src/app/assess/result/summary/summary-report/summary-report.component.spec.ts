@@ -6,7 +6,7 @@ import { CapitalizePipe } from '../../../../global/pipes/capitalize.pipe';
 import { SummaryReportComponent } from './summary-report.component';
 import { SummaryCalculationService } from '../summary-calculation.service';
 
-fdescribe('SummaryReportComponent', () => {
+describe('SummaryReportComponent', () => {
   let component: SummaryReportComponent;
   let fixture: ComponentFixture<SummaryReportComponent>;
 

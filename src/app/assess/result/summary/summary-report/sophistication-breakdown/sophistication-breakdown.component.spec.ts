@@ -14,7 +14,7 @@ class TestHostComponent {
   totalAttackPatternCountBySophisticationLevel = {0: 29, 1: 30, 2: 34, 3: 4};
 }
 
-fdescribe('SophisticationBreakdownComponent', () => {
+describe('SophisticationBreakdownComponent', () => {
   let component: SophisticationBreakdownComponent;
   let fixture: ComponentFixture<SophisticationBreakdownComponent>;
   let hostFixture: ComponentFixture<TestHostComponent>;

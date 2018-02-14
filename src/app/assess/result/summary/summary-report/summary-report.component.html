@@ -59,7 +59,7 @@
       <div class="flex flexItemsCenter">
         <div class="flex flexItemsCenter" id="sliderContainer">
           <mat-icon color="primary" class="mat-24 icon-people-1" aria-hidden="false" aria-label="Least sophisticated mitigation"></mat-icon>
-          <mat-slider min="0" max="4" step="1" value="2" id="sophisticationSlider" color="primary">
+          <mat-slider disabled min="0" max="4" step="1" value="2" id="sophisticationSlider" color="primary">
           </mat-slider>
           <mat-icon color="primary" class="mat-24 icon-people" aria-hidden="false" aria-label="Most sophisticated mitigation"></mat-icon>
         </div>
@@ -81,11 +81,12 @@
         <mat-card class="uf-mat-card card right-card">
           <mat-card-title>% Techniques Detected by Skill</mat-card-title>
           <mat-card-content>
-            <div *ngIf="summaryCalculationService.techniqueBreakdown;else noTechinquesData">
-              <!-- <techniques-chart #techniquesChart [riskThreshold]="selectedRisk" [riskLabelOptions]="thresholdOptions" [techniqueBreakdown]="techniqueBreakdown">
-              </techniques-chart> -->
+            <div *ngIf="summaryCalculationService.techniqueBreakdown;else noTechniquesData">
+              <!-- [riskLabelOptions]="thresholdOptions" -->
+              <techniques-chart #techniquesChart [riskThreshold]="summaryCalculationService.selectedRisk" [techniqueBreakdown]="summaryCalculationService.techniqueBreakdown">
+              </techniques-chart>
             </div>
-            <ng-template #noTechinquesData>No data to load chart!</ng-template>
+            <ng-template #noTechniquesData>No data to load chart!</ng-template>
           </mat-card-content>
         </mat-card>
       </div>
@@ -94,7 +95,7 @@
       <div class="flex flexItemsCenter">
         <mat-card class="uf-mat-card card flex1">
           <mat-card-title>% of Assessments Better than Mitigation Threshold</mat-card-title>
-          <mat-card-content>Test</mat-card-content>
+          <mat-card-content>COMING SOON</mat-card-content>
         </mat-card>
       </div>
     </div>
