@@ -60,7 +60,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     const idParamSub$ = this.route.params
-      .pluck('id')
+      .pluck('rollupId')
       .subscribe((id: string) => {
         this.rollupId = id || '';
         this.listenForDataChanges();

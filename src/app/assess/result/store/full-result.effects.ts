@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { Assessment } from '../../../models/assess/assessment';
 import { AssessService } from '../../services/assess.service';
-import { LOAD_ASSESSMENT_RESULT_DATA, SetAssessments, FinishedLoading, SetGroupAssessedObjects, SetGroupRiskByAttackPattern, SetGroupData, LOAD_GROUP_DATA, LOAD_GROUP_CURRENT_ATTACK_PATTERN, SetGroupCurrentAttackPattern } from './full-result.actions';
+import { LOAD_ASSESSMENT_RESULT_DATA, SetAssessments, FinishedLoading, SetGroupAssessedObjects, SetGroupRiskByAttackPattern, SetGroupData, LOAD_GROUP_DATA, LOAD_GROUP_CURRENT_ATTACK_PATTERN, SetGroupCurrentAttackPattern, PUSH_URL, DonePushUrl } from './full-result.actions';
 import { fullAssessmentResultReducer } from './full-result.reducers';
 import { Constance } from '../../../utils/constance';
 import { Stix } from '../../../models/stix/stix';
@@ -44,15 +44,31 @@ export class FullResultEffects {
             return new SetGroupData({ assessedObjects, riskByAttackPattern });
         });
 
-        @Effect()
-        public loadGroupCurrentAttackPattern = this.actions$
-            .ofType(LOAD_GROUP_CURRENT_ATTACK_PATTERN)
-            .pluck('payload')
-            .switchMap((attackPatternId: string ) => {
-                return this.assessService.getAs<Stix>(`${Constance.ATTACK_PATTERN_URL}/${attackPatternId}`);
-            })
-            .map((data: Stix) => {
-                return new SetGroupCurrentAttackPattern({ currentAttackPattern: data });
-            });
+    @Effect()
+    public loadGroupCurrentAttackPattern = this.actions$
+        .ofType(LOAD_GROUP_CURRENT_ATTACK_PATTERN)
+        .pluck('payload')
+        .switchMap((attackPatternId: string) => {
+            return this.assessService.getAs<Stix>(`${Constance.ATTACK_PATTERN_URL}/${attackPatternId}`);
+        })
+        .map((data: Stix) => {
+            return new SetGroupCurrentAttackPattern({ currentAttackPattern: data });
+        });
+
+    @Effect()
+    public pushUrlState = this.actions$
+        .ofType(PUSH_URL)
+        .pluck('payload')
+        .filter((payload) => payload !== undefined)
+        .do((payload: any) => {
+            const rollupId = payload.rollupId;
+            const assessmentId = payload.assessmentId;
+            const phase = payload.phase;
+            const attackPattern = payload.attackPattern;
+            // const url = `${Constance.API_HOST}/assess/result/full/${rollupId}/${assessmentId}/phase/${phase}/attackPattern/${attackPattern}`;
+            const url = `${Constance.API_HOST}/assess/result/full/${rollupId}/${assessmentId}/phase/${phase}`;
+            this.location.replaceState(url);
+        })
+        .switchMap(() => Observable.of(new DonePushUrl()));
 
 }

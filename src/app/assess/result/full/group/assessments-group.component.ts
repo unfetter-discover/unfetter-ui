@@ -20,7 +20,7 @@ import { SortHelper } from '../../../../global/static/sort-helper';
 import { FullAssessmentResultState } from '../../store/full-result.reducers';
 import { Store } from '@ngrx/store';
 import { RiskByAttackPattern } from './models/risk-by-attack-pattern';
-import { LoadGroupData, LoadGroupCurrentAttackPattern } from '../../store/full-result.actions';
+import { LoadGroupData, LoadGroupCurrentAttackPattern, PushUrl } from '../../store/full-result.actions';
 
 @Component({
   selector: 'unf-assess-group',
@@ -35,6 +35,15 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input()
   public assessmentId: string;
 
+  @Input()
+  public rollupId: string;
+
+  @Input()
+  public activePhase: string;
+
+  @Input()
+  public initialAttackPatternId: string;
+
   @Output('phaseChanged')
   public phaseChanged = new EventEmitter<string>();
 
@@ -45,8 +54,6 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   public indicator: any;
   public courseOfAction: any;
   public xUnfetterSensor: any;
-
-  public activePhase: string;
 
   public riskByAttackPattern: RiskByAttackPattern;
   public assessedObjects: AssessmentObject[];
@@ -71,6 +78,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public ngOnInit(): void {
     this.assessmentId = this.assessment.id || '';
+    // TODO: translate the initialAttackPatternId to and index
     this.initData();
   }
 
@@ -134,7 +142,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
           this.riskByAttackPattern = group.riskByAttackPattern || {};
           this.populateUnassessedPhases();
           // active phase is either the current active phase, 
-          let activePhase;
+          let activePhase = this.activePhase;
           if (!activePhase && this.riskByAttackPattern && this.riskByAttackPattern.phases.length > 0) {
             //  the first assess attack pattern, 
             activePhase = this.riskByAttackPattern.phases[0]._id;
@@ -204,9 +212,27 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     let currentAttackPatternId = '';
     if (this.attackPatternsByPhase.length > 0) {
       currentAttackPatternId = this.attackPatternsByPhase[attackPatternIndex].attackPatternId;
-    } 
+    }
     this.setAttackPattern(currentAttackPatternId);
+
     this.phaseChanged.emit(this.activePhase);
+    this.updateUrlIfNeeded();
+  }
+
+  /** 
+   * @description if this component has the correct settings, update the url with out rerouting
+   * @return {void}
+   */
+  public updateUrlIfNeeded(): void {
+    const rollupId = this.rollupId || '';
+    const assessmentId = this.assessmentId || '';
+    const phase = this.activePhase || '';
+    const attackPattern = (this.currentAttackPattern && this.currentAttackPattern.id)
+      ? this.currentAttackPattern.id : '';
+
+    if (rollupId && assessmentId && phase && attackPattern) {
+      this.store.dispatch(new PushUrl({ rollupId, assessmentId, phase, attackPattern }));
+    }
   }
 
   public getAttackPatternsByPhase(phaseName) {

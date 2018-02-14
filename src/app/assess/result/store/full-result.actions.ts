@@ -16,6 +16,7 @@ export const SET_GROUP_ASSESSMENT_OBJECTS = '[Assess Result Group] SET_GROUP_ASS
 export const SET_GROUP_RISK_BY_ATTACK_PATTERN = '[Assess Result Group] SET_RISK_BY_ATTACK_PATTERN';
 export const SET_GROUP_CURRENT_ATTACK_PATTERN = '[Assess Result Group] SET_GROUP_CURRENT_ATTACK_PATTERN';
 export const LOAD_GROUP_CURRENT_ATTACK_PATTERN = '[Assess Result Group] LOAD_GROUP_CURRENT_ATTACK_PATTERN';
+export const PUSH_URL = '[Assess Result] PUSH_URL';
 
 export const FINISHED_LOADING = '[Assess Result] FINISHED_LOADING';
 
@@ -72,6 +73,18 @@ export class SetGroupData implements Action {
     constructor(public payload: { assessedObjects: AssessmentObject[], riskByAttackPattern: RiskByAttackPattern }) { }
 }
 
+export class PushUrl implements Action {
+    public readonly type = PUSH_URL;
+
+    constructor(public payload: { rollupId: string, assessmentId: string, phase: string, attackPattern: string }) { }
+}
+
+export class DonePushUrl implements Action {
+    public readonly type = PUSH_URL;
+
+    constructor() { }
+}
+
 export type FullAssessmentResultActions =
     SetAssessments |
     SetGroupData |
@@ -80,5 +93,6 @@ export type FullAssessmentResultActions =
     SetGroupCurrentAttackPattern |
     LoadAssessmentResultData |
     LoadGroupData |
+    PushUrl |
     FinishedLoading;
 

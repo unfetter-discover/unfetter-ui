@@ -1,6 +1,25 @@
 @import '../../../../../styles/_variables.scss';
 @import '../_assess.common.scss';
 
+@media screen and (min-width: 1800px) {
+    .ap-section {
+        display: flex;
+    }
+
+    .ap-details {
+        flex-basis: 55%;
+        margin-right: 24px;
+    }
+
+    .assessment-objects {
+        flex-basis: 45%;
+    }
+}
+
+.ap-section {
+    min-height: calc(100vh - #{$navbar-height}px);
+}
+    
 .ap-list-item {
     line-height: 1.9em;
     margin-left: -24px;
@@ -8,6 +27,7 @@
     padding-left: 24px;
     padding-right: 24px;
     transition: background-color 0.1s ease-in-out;
+
     &:hover {
         background-color: $assessments-primary;
     }

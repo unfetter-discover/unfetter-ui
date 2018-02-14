@@ -6,6 +6,11 @@ code {
     @include darkenPrimaryColors('color', 18%);
 }
 
+.assessmentsTheme code {
+   @include lightenAccentColors('background-color', 0.15);
+   @include darkenAccentColors('color', 18%);
+}
+
 // NOTE use this when primary color is blue
 .threatDashboardTheme a {
     color: $threat-dashboard-primary;
