@@ -2,7 +2,7 @@ import { TestBed, inject } from '@angular/core/testing';
 
 import { SummaryCalculationService } from './summary-calculation.service';
 
-fdescribe('SummaryCalculationService', () => {
+describe('SummaryCalculationService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [SummaryCalculationService]

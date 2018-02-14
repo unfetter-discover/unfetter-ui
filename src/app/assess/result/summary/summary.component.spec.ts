@@ -12,7 +12,7 @@ import { summaryReducer } from '../store/summary.reducers';
 import { MatDialogModule } from '@angular/material';
 import { SummaryCalculationService } from './summary-calculation.service';
 
-fdescribe('SummaryComponent', () => {
+describe('SummaryComponent', () => {
   let component: SummaryComponent;
   let fixture: ComponentFixture<SummaryComponent>;
 
