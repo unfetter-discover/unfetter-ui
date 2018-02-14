@@ -46,7 +46,6 @@ export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy
 
     @ViewChild('fileUpload') public fileUpload: ElementRef;
 
-    @ViewChild('paginator') public paginator: MatPaginator;
     public curDisplayLen: Observable<number>;
 
     @ViewChildren('filter') public filters: QueryList<ElementRef>;
@@ -64,7 +63,22 @@ export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy
     ) { }
 
     ngOnInit() {
+    }
+
+    /**
+     * @description initalization after view children are set
+     */
+    public ngAfterViewInit(): void {
         this.load();
+
+        if (this.data && this.data.reports) {
+            this.data.reports.forEach((report) => this.onSelectReport(report));
+        }
+
+        const sub$ = this.filters.changes.subscribe(
+            (comps) => this.initFilter(comps.first),
+            (err) => console.log(err));
+        this.subscriptions.push(sub$);
     }
 
     /**
@@ -95,32 +109,10 @@ export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy
                 requestAnimationFrame(() => {
                     this.curDisplayLen = this.currents.curDisplayLen$;
                 });
-            })
-            .do(() => {
-                // have to set pager after the table is rendered, pager is used by
-                // datasource to calculate what to display
-                if (this.paginator && this.currents && !this.currents.paginator) {
-                    console.log('setting paginator');
-                    this.currents.paginator = this.paginator;
-                }
             });
 
-        this.currents = new ReportsDataSource(loadAll$, this.paginator);
+        this.currents = new ReportsDataSource(loadAll$);
         return loadReports$;
-    }
-
-    /**
-     * @description initalization after view children are set
-     */
-    public ngAfterViewInit(): void {
-        if (this.data && this.data.reports) {
-            this.data.reports.forEach((report) => this.onSelectReport(report));
-        }
-
-        const sub$ = this.filters.changes.subscribe(
-            (comps) => this.initFilter(comps.first),
-            (err) => console.log(err));
-        this.subscriptions.push(sub$);
     }
 
     /**

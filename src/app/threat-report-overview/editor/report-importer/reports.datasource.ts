@@ -20,12 +20,13 @@ export class ReportsDataSource extends DataSource<Report> {
 
     protected readonly filterChange$ = new BehaviorSubject('');
 
-    protected readonly pageChange$ = new BehaviorSubject<PageEvent>(undefined);
+    protected readonly pageChange$ = new BehaviorSubject<PageEvent>({
+        pageIndex: 0,
+        pageSize: 5,
+        length: 0
+    });
 
-    constructor(
-            public reports$: Observable<Report[]>,
-            public paginator?: MatPaginator
-    ) {
+    constructor(public reports$: Observable<Report[]>) {
         super();
         const co = reports$.multicast(this.dataChange$);
         co.connect();

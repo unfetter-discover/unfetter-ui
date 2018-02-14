@@ -383,7 +383,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
         this.dialog
             .open(ReportImporterComponent, {
                 width: '100%',
-                height: 'calc(100vh - 160px)',
+                height: '70vh',
                 data: {
                     reports: this.reportsDataSource.data,
                 }
