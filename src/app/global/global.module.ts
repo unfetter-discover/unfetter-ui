@@ -54,6 +54,7 @@ import { HelpWindowComponent } from './components/help-window/help-window.compon
 import { AdditionalQueriesComponent } from './components/additional-queries/additional-queries.component';
 import { MasterListDialogComponent, MasterListDialogTriggerComponent } from './components/master-list-dialog/master-list-dialog.component';
 import { ErrorCardComponent } from './components/error-card/error-card.component';
+import { RiskBreakdownComponent } from './components/risk-breakdown/risk-breakdown.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -103,7 +104,8 @@ const unfetterComponents = [
     AdditionalQueriesComponent,
     MasterListDialogTriggerComponent,
     MasterListDialogComponent,
-    ErrorCardComponent
+    ErrorCardComponent,
+    RiskBreakdownComponent
 ];
 
 @NgModule({

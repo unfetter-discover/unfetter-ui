@@ -34,6 +34,9 @@
               <span class="align-right">{{assessGroupMain.getRiskByPhase(phase._id) | percent:'2.1-1'}}</span>
             </div>
             <div class="item-content">Attack Patterns {{ phase.attackPatterns.length }}/{{ assessGroupMain.getNumAttackPatterns(phase._id) }}</div>
+            <div class="item-content" *ngIf="riskBreakdown">
+              <risk-breakdown [riskBreakdown]="riskBreakdown[phase._id]"></risk-breakdown>
+            </div>
           </div>
         </div>
         <div class="divider-wrapper">
@@ -58,7 +61,7 @@
     <mat-sidenav-content>
       <div class="main-panel">
         <result-header [assessmentId]="assessmentId" [rollupId]="rollupId" [created]="assessment?.created"></result-header>
-        <unf-assess-group #assessGroupMain [activePhase]="phase" [rollupId]="rollupId" [assessment]="assessment" (phaseChanged)="onPhaseChanged($event)"></unf-assess-group>
+        <unf-assess-group #assessGroupMain [activePhase]="phase" [rollupId]="rollupId" [assessment]="assessment" (phaseChanged)="onPhaseChanged($event)" (riskByAttackPatternChanged)="calculateRiskBreakdown($event)"></unf-assess-group>
       </div>
     </mat-sidenav-content>
   </mat-sidenav-container>

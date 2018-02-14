@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { MatDialog } from '@angular/material';
@@ -19,6 +19,7 @@ import { UserProfile } from '../../../models/user/user-profile';
 import { FullAssessmentResultState } from '../store/full-result.reducers';
 import { AssessedByAttackPattern } from './group/models/assessed-by-attack-pattern';
 import { Constance } from '../../../utils/constance';
+import { RiskByAttackPattern } from './group/models/risk-by-attack-pattern';
 
 @Component({
   selector: 'unf-assess-full',
@@ -44,6 +45,7 @@ export class FullComponent implements OnInit, OnDestroy {
     createRoute: this.baseAssessUrl + '/create',
   };
   activePhase: string;
+  public riskBreakdown: any;
 
   private readonly subscriptions: Subscription[] = [];
 
@@ -287,5 +289,70 @@ export class FullComponent implements OnInit, OnDestroy {
    */
   public isCurrentPhase(phase = ''): boolean {
     return this.activePhase ? this.activePhase === phase : false;
+  }
+
+  public calculateRiskBreakdown(riskByAttackPattern: RiskByAttackPattern) {
+
+    if (!riskByAttackPattern || !Object.keys(riskByAttackPattern).length) {
+      return;
+    }
+    
+    const phases = riskByAttackPattern.phases;
+    const assessedByAttackPattern = riskByAttackPattern.assessedByAttackPattern;
+
+    const riskTree = {};
+
+    if (phases !== undefined && assessedByAttackPattern !== undefined) {
+
+      // Group data by kill chain phase, then question => set value array of risk values
+      phases.forEach((phase) => {
+        riskTree[phase._id] = this.populatePhaseRiskTree(phase);
+      });
+
+      // Calculate average risk per question
+      // TODO delete this
+      const questionSet: any = new Set();
+      this.riskBreakdown = {};
+      for (let phase in riskTree) {
+        this.riskBreakdown[phase] = this.calculateRiskBreakdownByQuestionForPhase(riskTree[phase], questionSet);
+      }
+    }
+
+  }
+
+  public populatePhaseRiskTree(phase: any) {
+    const riskTree = {};
+
+    // Assessed Objects per phase
+    if (phase !== undefined && phase.assessedObjects !== undefined) {
+      phase.assessedObjects.forEach((assessedObject) => {
+        // Questions per assessed object
+        if (assessedObject.questions !== undefined) {
+          assessedObject.questions.forEach((question) => {
+            if (riskTree[question.name] === undefined) {
+              riskTree[question.name] = [];
+            }
+            riskTree[question.name].push(question.risk);
+          });
+        }
+      });
+    }
+    return riskTree;
+  }
+
+  public calculateRiskBreakdownByQuestionForPhase(phaseRiskTree: any, questions: Set<string>) {
+    const riskBreakdownPhase = {};
+    if (questions !== undefined && phaseRiskTree !== undefined) {
+      for (let question in phaseRiskTree) {
+        questions.add(question);
+        /* Average risk for each question-category,
+        then multiply it by 1 / the number of question-categories.
+        This will show how much each question contributes to absolute overall risk. */
+        riskBreakdownPhase[question] = (phaseRiskTree[question]
+          .reduce((prev, cur) => prev += cur, 0)
+          / phaseRiskTree[question].length) * (1 / Object.keys(phaseRiskTree).length);
+      }
+    }
+    return riskBreakdownPhase;
   }
 }
