@@ -108,10 +108,12 @@
                 </ng-container>
                 <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>
                 <mat-row *matRowDef="let report; columns: displayColumns;"></mat-row>
-                <mat-paginator #paginator [length]="curDisplayLen | async" [pageIndex]="0"
-                        [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" (page)="onPage($event)">
-                </mat-paginator>
             </mat-table>
+            <!-- [showFirstLastButtons]="true" property caused error in tests and webapp? is this a new property and our lib is old? --> 
+            <mat-paginator #paginator [length]="curDisplayLen | async" [pageIndex]="0"
+                    [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"
+                    (page)="onPage($event)">
+            </mat-paginator>
         </div>
 
         <ng-template #loadingBlock>
