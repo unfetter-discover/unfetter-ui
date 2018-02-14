@@ -20,6 +20,7 @@ import { FullAssessmentResultState } from '../store/full-result.reducers';
 import { AssessedByAttackPattern } from './group/models/assessed-by-attack-pattern';
 import { Constance } from '../../../utils/constance';
 import { RiskByAttackPattern } from './group/models/risk-by-attack-pattern';
+import { RiskByAttack } from '../../../models/assess/risk-by-attack';
 
 @Component({
   selector: 'unf-assess-full',
@@ -114,6 +115,24 @@ export class FullComponent implements OnInit, OnDestroy {
       .subscribe((done: boolean) => this.finishedLoading = done,
         (err) => console.log(err));
 
+    const sub3$ = this.store
+      .select('fullAssessment')
+      .pluck('group')
+      .distinctUntilChanged()
+      .filter((group: any) => group.finishedLoadingGroupData === true)
+      .subscribe(
+        (group: any) => {
+          const riskByAttackPattern = group.riskByAttackPattern || {};
+          // active phase is either the current active phase, 
+          let activePhase = this.activePhase;
+          if (!activePhase && riskByAttackPattern && riskByAttackPattern.phases.length > 0) {
+            //  the first assess attack pattern, 
+            activePhase = riskByAttackPattern.phases[0]._id;
+          }
+          this.activePhase = activePhase;
+        },
+        (err) => console.log(err));
+
     this.assessmentName = this.store
       .select('fullAssessment')
       .pluck('assessmentTypes')
@@ -125,7 +144,7 @@ export class FullComponent implements OnInit, OnDestroy {
         return arr[0].name;
       });
 
-    this.subscriptions.push(sub1$, sub2$);
+    this.subscriptions.push(sub1$, sub2$, sub3$);
   }
 
   /**
@@ -244,6 +263,12 @@ export class FullComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.activePhase = undefined;
+    this.rollupId = undefined;
+    this.assessment = undefined;
+    this.assessmentTypes = undefined;
+    this.attackPatternId = undefined;
+    // TODO: clear the ngrx store
     return this.router.navigate([this.masterListOptions.displayRoute, assessment.rollupId, assessment.id]);
   }
 
@@ -268,20 +293,6 @@ export class FullComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description the child component assessments group contains the current phase, capture a change to phases
-   *  so we can highlight the currently selected
-   * @param {string} event optional
-   * @return {void}
-   */
-  public onPhaseChanged(event?: string): void {
-    if (!event) {
-      return;
-    }
-
-    this.activePhase = event;
-  }
-
-  /**
    * @description determines if this components current phase is the same as the given phase
    *  Used to highlight the selected phase
    * @param {string} phase
@@ -291,12 +302,12 @@ export class FullComponent implements OnInit, OnDestroy {
     return this.activePhase ? this.activePhase === phase : false;
   }
 
-  public calculateRiskBreakdown(riskByAttackPattern: RiskByAttackPattern) {
+  public calculateRiskBreakdown(riskByAttackPattern: RiskByAttack) {
 
     if (!riskByAttackPattern || !Object.keys(riskByAttackPattern).length) {
       return;
     }
-    
+
     const phases = riskByAttackPattern.phases;
     const assessedByAttackPattern = riskByAttackPattern.assessedByAttackPattern;
 

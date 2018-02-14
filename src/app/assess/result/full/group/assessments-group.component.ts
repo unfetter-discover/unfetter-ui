@@ -42,9 +42,6 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input()
   public initialAttackPatternId: string;
 
-  @Output('phaseChanged')
-  public phaseChanged = new EventEmitter<string>();
-
   @Output('riskByAttackPatternChanged')
   public riskByAttackPatternChanged = new EventEmitter<RiskByAttackPattern>();
 
@@ -217,7 +214,6 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.setAttackPattern(currentAttackPatternId);
 
-    this.phaseChanged.emit(this.activePhase);
     this.updateUrlIfNeeded();
   }
 

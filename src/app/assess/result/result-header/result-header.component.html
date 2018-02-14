@@ -1,7 +1,7 @@
 <div id="tabWrapper">
-  <div class="container-fluid height-100-percent">
-    <div class="row height-100-percent flex flexRow">
-      <div class="row height-100-percent flex flexColumn">
+  <div class="height-100-percent">
+    <div class="height-100-percent flex flexRow">
+      <div class="height-100-percent flex flexColumn">
         <div class="flex1"></div>
         <nav mat-tab-nav-bar class="indent uf-tabs-borderless">
           <a class="noUnderline" mat-tab-link [routerLink]="summaryLink" routerLinkActive #summary="routerLinkActive" [active]="summary.isActive">SUMMARY</a>
@@ -9,7 +9,7 @@
         </nav>
       </div>
       <div class="flex1"></div>
-      <div class="row height-100-percent flex flexColumn">
+      <div class="height-100-percent flex flexColumn">
         <div class="flex1"></div>
         <div *ngIf="created; else notPublished" class="publishText">
           Published &bull; {{ created | date:'medium' }}

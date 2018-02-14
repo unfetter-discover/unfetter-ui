@@ -26,7 +26,7 @@
           <div class="phases-list-item cursor-pointer" 
             *ngFor="let phase of assessGroupMain.riskByAttackPattern.phases; trackBy:trackByFn" 
             [ngClass]="{'highlightPhase': isCurrentPhase(phase._id)}"
-            (click)="assessGroupMain.setPhase(phase._id)">
+            (click)="assessGroupMain.setPhase(phase._id); activePhase = phase._id">
             <div class="item-content flex">
               <span class="phase-name flex-grow">
                 <b>{{phase._id | capitalize}}</b>
@@ -61,7 +61,7 @@
     <mat-sidenav-content>
       <div class="main-panel">
         <result-header [assessmentId]="assessmentId" [rollupId]="rollupId" [created]="assessment?.created"></result-header>
-        <unf-assess-group #assessGroupMain [activePhase]="phase" [rollupId]="rollupId" [assessment]="assessment" (phaseChanged)="onPhaseChanged($event)" (riskByAttackPatternChanged)="calculateRiskBreakdown($event)"></unf-assess-group>
+        <unf-assess-group #assessGroupMain [activePhase]="phase" [rollupId]="rollupId" [assessment]="assessment" (riskByAttackPatternChanged)="calculateRiskBreakdown($event)"></unf-assess-group>
       </div>
     </mat-sidenav-content>
   </mat-sidenav-container>
