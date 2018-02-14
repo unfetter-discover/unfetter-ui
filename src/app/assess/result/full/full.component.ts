@@ -18,8 +18,6 @@ import { SummaryDataSource } from '../summary/summary.datasource';
 import { UserProfile } from '../../../models/user/user-profile';
 import { FullAssessmentResultState } from '../store/full-result.reducers';
 import { AssessedByAttackPattern } from './group/models/assessed-by-attack-pattern';
-import { GroupAttackPattern } from './group/models/group-attack-pattern';
-import { GroupPhase } from './group/models/group-phase';
 import { Constance } from '../../../utils/constance';
 
 @Component({

@@ -5,7 +5,7 @@ import { Location } from '@angular/common';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 
-import { AssessmentSummaryService } from '../../services/assessment-summary.service';
+import { AssessService } from '../../services/assess.service';
 
 import { LOAD_SINGLE_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA, LOAD_RISK_BY_ATTACK_PATTERN_DATA, FinishedLoading, SetRiskByAttackPattern } from './riskbyattackpattern.actions';
 import { GenericApi } from '../../../core/services/genericapi.service';
@@ -21,20 +21,20 @@ export class RiskByAttackPatternEffects {
         private location: Location,
         private actions$: Actions,
         protected genericServiceApi: GenericApi,
-        protected assessmentSummaryService: AssessmentSummaryService,
+        protected assessService: AssessService,
     ) { }
 
     @Effect()
     public fetchSingleAssessmentRiskByAttackPatternData = this.actions$
         .ofType(LOAD_SINGLE_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA)
         .pluck('payload')
-        .switchMap((assessmentId: string) => this.assessmentSummaryService.getRiskPerAttackPattern(assessmentId))
+        .switchMap((assessmentId: string) => this.assessService.getRiskPerAttackPattern(assessmentId))
         .mergeMap((data: RiskByAttack) => [new SetRiskByAttackPattern([data]), new FinishedLoading(true)])
 
     @Effect()
     public fetchAssessmentRiskByAttackPatternData = this.actions$
         .ofType(LOAD_RISK_BY_ATTACK_PATTERN_DATA)
         .pluck('payload')
-        .switchMap((rollupId: string) => this.assessmentSummaryService.getRiskPerAttackPatternByRollupId(rollupId))
+        .switchMap((rollupId: string) => this.assessService.getRiskPerAttackPatternByRollupId(rollupId))
         .mergeMap((data: RiskByAttack[]) => [ new SetRiskByAttackPattern(data), new FinishedLoading(true)])
 }
