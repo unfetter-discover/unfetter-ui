@@ -26,7 +26,6 @@
     margin-right: -24px;
     padding-left: 24px;
     padding-right: 24px;
-    transition: background-color 0.1s ease-in-out;
 
     &:hover {
         background-color: $assessments-primary;
@@ -79,7 +78,7 @@
     
     .phase-section {
         @include space-top();
-        background-color: $assessments-primary-lighter;
+        background-color: $assessments-primary-lightest;
     }
 
     .ap-section {
