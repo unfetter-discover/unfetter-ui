@@ -42,8 +42,10 @@
             padding-top: 8px;
             padding-bottom: 16px;
             height: 76px;
+            &:hover {
+              background-color: $assessments-primary;
+            }
         }
-
     }
 
     .header {
@@ -66,7 +68,7 @@
     }
 
     .highlightPhase {
-        background-color: $assessments-primary-subtle !important;
+        background-color: $assessments-primary-lightest !important;
     }
 }
 
