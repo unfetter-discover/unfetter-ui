@@ -10,7 +10,11 @@ fdescribe('SummaryReportComponent', () => {
   let component: SummaryReportComponent;
   let fixture: ComponentFixture<SummaryReportComponent>;
 
-  const serviceMock = { weakness: 'weeeeeeeak', getRiskText: string => 'risk', calculateAvgRiskPerAssessedObject: number => .33 };
+  const serviceMock = { weakness: 'weeeeeeeak', getRiskText: string => 'risk', calculateAvgRiskPerAssessedObject: number => .33,
+                        summaryAggregation: { assessedAttackPatternCountBySophisicationLevel: {0: 16, 1: 13, 2: 16, 3: 2},
+                        totalAttackPatternCountBySophisicationLevel: {0: 29, 1: 30, 2: 34, 3: 4} },
+                        techniqueBreakdown: {},
+                        isSummaryAggregationValid: boolean => true};
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],

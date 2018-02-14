@@ -19,6 +19,10 @@ export class SummaryCalculationService {
   topRisksValue: AssessKillChainType[];
   summaryAggregationValue: SummaryAggregation;
   barColorsValue: any[];
+  selectedRiskValue: number;
+  assessmentsGroupingTotalValue: any; // TODO specify
+  assessmentsGroupingFilteredValue: any; // TODO specify
+  techniqueBreakdownValue: any; // TODO specify
 
   constructor() {
     this.numericRisk = 0;
@@ -26,12 +30,13 @@ export class SummaryCalculationService {
     this.topNRisks = 3;
     this.barColors = [
       {
-          backgroundColor: Constance.MAT_COLORS['lightblue']['800']
+        backgroundColor: Constance.MAT_COLORS['lightblue']['800']
       },
       {
-          backgroundColor: Constance.MAT_COLORS['lightblue']['100']
+        backgroundColor: Constance.MAT_COLORS['lightblue']['100']
       }
-  ];
+    ];
+    this.selectedRisk = 0.5;
   }
 
   public set numericRisk(newRisk: number) {
@@ -46,12 +51,28 @@ export class SummaryCalculationService {
     this.topRisksValue = newTopRisks;
   }
 
-  public set summaryAggregation (newSummaryAggregation: SummaryAggregation) {
+  public set summaryAggregation(newSummaryAggregation: SummaryAggregation) {
     this.summaryAggregationValue = newSummaryAggregation;
   }
 
   public set barColors(newBarColors: any[]) {
     this.barColorsValue = newBarColors;
+  }
+
+  public set selectedRisk(newSelectedRisk: number) {
+    this.selectedRiskValue = newSelectedRisk;
+  }
+
+  public set assessmentsGroupingTotal(newAssessmentsGroupingTotal: any) {
+    this.assessmentsGroupingTotalValue = newAssessmentsGroupingTotal;
+  }
+
+  public set assessmentsGroupingFiltered(newAssessmentsGroupingFiltered: any) {
+    this.assessmentsGroupingFilteredValue = newAssessmentsGroupingFiltered;
+  }
+
+  public set techniqueBreakdown(newTechniqueBreakdown: any) {
+    this.techniqueBreakdownValue = newTechniqueBreakdown;
   }
 
   public get numericRisk(): number {
@@ -71,6 +92,22 @@ export class SummaryCalculationService {
 
   public get summaryAggregation() {
     return this.summaryAggregationValue;
+  }
+
+  public get selectedRisk() {
+    return this.selectedRiskValue;
+  }
+
+  public get assessmentsGroupingTotal(): any {
+    return this.assessmentsGroupingTotalValue;
+  }
+
+  public get assessmentsGroupingFiltered(): any {
+    return this.assessmentsGroupingFilteredValue;
+  }
+
+  public get techniqueBreakdown(): any {
+    return this.techniqueBreakdownValue;
   }
 
   public getRiskText(): string {
@@ -156,23 +193,118 @@ export class SummaryCalculationService {
     return risks;
   }
 
+  /**
+ * @description
+ *  populate kill chain grouping and assessment object tallies for assessment grouping chart
+ * @returns {void}
+ */
+  public populateAssessmentsGrouping(assessmentObjects: AssessmentObject[]): void {
+    const includedIds = this.filterOnRisk(assessmentObjects);
+    const killChainTotal = {};
+    const killChainFiltered = {};
+
+    const tally = (tallyObject: object) => {
+      return (assessedObject) => {
+        // flat map kill chain names
+        const killChainNames = assessedObject.attackPatterns
+          .reduce((memo, pattern) => memo.concat(pattern['kill_chain_phases']), []);
+        const names: string[] = killChainNames.map((chain) => chain['phase_name'].toLowerCase() as string);
+        const uniqNames: string[] = Array.from(new Set(names));
+        names.forEach((name) => tallyObject[name] = tallyObject[name] ? tallyObject[name] + 1 : 1);
+        return assessedObject;
+      };
+    };
+
+    // Find assessed-objects to kill chain maps grouping
+    this.summaryAggregation.attackPatternsByAssessedObject
+      // tally totals
+      .map(tally(killChainTotal))
+      .filter((aoToApMap) => includedIds.includes(aoToApMap._id))
+      // tally filtered objects
+      .map(tally(killChainFiltered));
+
+    this.assessmentsGroupingTotal = killChainTotal;
+    this.assessmentsGroupingFiltered = killChainFiltered;
+  }
+
+  /**
+   * @description
+   *  populate grouping and assessment object tallies for technique by skill chart
+   * @returns {void}
+   */
+  public populateTechniqueBreakdown(assessmentObjects: AssessmentObject[]): void {
+    // Total assessed objects to calculated risk
+    const assessedRiskMapping = this.summaryAggregation.assessedAttackPatternCountBySophisicationLevel;
+    const includedIds = this.filterOnRisk(assessmentObjects);
+    const attackPatternSet = new Set();
+    // Find assessed-objects-to-attack-patterns maps that meet those Ids
+    this.summaryAggregation.attackPatternsByAssessedObject
+      .filter((aoToApMap) => includedIds.includes(aoToApMap._id))
+      .forEach((aoToApMap) => {
+        aoToApMap.attackPatterns.forEach((ap) => {
+          attackPatternSet.add(JSON.stringify(ap));
+        });
+      });
+
+    const attackPatternSetMap = {};
+    attackPatternSet.forEach((ap) => {
+      const curAp = JSON.parse(ap);
+      if (attackPatternSetMap[curAp['x_unfetter_sophistication_level']] === undefined) {
+        attackPatternSetMap[curAp['x_unfetter_sophistication_level']] = 0;
+      }
+      ++attackPatternSetMap[curAp['x_unfetter_sophistication_level']];
+    });
+
+    this.techniqueBreakdown = {};
+    for (const prop in Object.keys(assessedRiskMapping)) {
+      if (attackPatternSetMap[prop] === undefined) {
+        this.techniqueBreakdown[prop] = 0;
+      } else {
+        this.techniqueBreakdown[prop] = attackPatternSetMap[prop] / (assessedRiskMapping[prop]);
+      }
+    }
+  }
+
+  /**
+   * @description
+   *  Find IDs that meet risk threshold
+   *  TODO should be <= risk or < risk?
+   * @returns {string[]}
+   */
+  public filterOnRisk(assessment_objects: AssessmentObject[]): string[] {
+    const includedIds: string[] = assessment_objects // TODO fix...or active...or this is a roll-up?
+      .filter((ao) => ao.risk <= this.selectedRisk)
+      .map((ao) => ao.stix.id);
+    return includedIds;
+  }
+
   public sophisticationNumberToWord(num: string): string {
     const val = parseInt(num, 10);
     return this.sophisticationValueToWord(val);
-}
+  }
 
-public sophisticationValueToWord(num: number): string {
+  public sophisticationValueToWord(num: number): string {
     switch (num) {
-        case 0:
-            return 'Novice';
-        case 1:
-            return 'Practitioner';
-        case 2:
-            return 'Expert';
-        case 3:
-            return 'Innovator';
-        default:
-            return num.toString();
+      case 0:
+        return 'Novice';
+      case 1:
+        return 'Practitioner';
+      case 2:
+        return 'Expert';
+      case 3:
+        return 'Innovator';
+      default:
+        return num.toString();
     }
-}
+  }
+
+  public isSummaryAggregationValid(): boolean {
+    let valid = false;
+    if (this.summaryAggregation &&
+      this.summaryAggregation.assessedAttackPatternCountBySophisicationLevel &&
+      this.summaryAggregation.totalAttackPatternCountBySophisicationLevel) {
+      valid = true;
+    }
+    return valid;
+  }
 }

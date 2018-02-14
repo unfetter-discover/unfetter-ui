@@ -27,6 +27,7 @@ import { AssessGroupComponent } from './full/group/assessments-group.component';
 import { AddAssessedObjectComponent } from './full/group/add-assessed-object/add-assessed-object.component';
 import { SummaryCalculationService } from './summary/summary-calculation.service';
 import { SophisticationBreakdownComponent } from './summary/summary-report/sophistication-breakdown/sophistication-breakdown.component';
+import { TechniquesChartComponent } from './summary/summary-report/techniques-chart/techniques-chart.component';
 
 const materialModules = [
   MatCardModule,
@@ -52,34 +53,23 @@ const moduleComponents = [
     CommonModule,
     FormsModule,
     RouterModule,
-<<<<<<< HEAD
     ...materialModules,
-=======
-    MatSidenavModule,
-    MatProgressSpinnerModule,
-    MatTabsModule,
-    MatCardModule,
-    MatSliderModule,
-    MatTableModule,
-    ChartsModule,
->>>>>>> still working, 1/3 of charts works, but only for a single assessment, slider does not yet work
     GlobalModule,
+    ChartsModule,
     StoreModule.forFeature('summary', summaryReducer),
     StoreModule.forFeature('fullAssessment', fullAssessmentResultReducer),
     StoreModule.forFeature('riskByAttackPattern', riskByAttackPatternReducer),
     EffectsModule.forFeature([SummaryEffects, FullResultEffects, RiskByAttackPatternEffects]),
   ],
-<<<<<<< HEAD
   declarations: [
     ...moduleComponents,
     SummaryComponent,
     FullComponent,
     ResultHeaderComponent,
     SummaryHeaderComponent,
-    SummaryReportComponent],
-=======
-  declarations: [SummaryComponent, FullComponent, ResultHeaderComponent, SummaryHeaderComponent, SummaryReportComponent, SophisticationBreakdownComponent],
->>>>>>> still working, 1/3 of charts works, but only for a single assessment, slider does not yet work
+    SummaryReportComponent,
+    SophisticationBreakdownComponent,
+    TechniquesChartComponent],
   providers: [SummaryCalculationService]
 })
 export class ResultModule { }
