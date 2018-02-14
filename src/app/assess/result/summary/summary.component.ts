@@ -58,11 +58,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
     createRoute: this.baseAssessUrl + '/create',
   };
 
-  public assessmentsGroupingTotal: any; // TODO specify
-  public assessmentsGroupingFiltered: any; // TODO specify
-  public selectedRisk: number;
-  public techniqueBreakdown: any; // TODO specify
-
   private readonly subscriptions: Subscription[] = [];
 
   constructor(
@@ -81,7 +76,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
    *  initialize this component, fetching data from backend
    */
   public ngOnInit(): void {
-    this.selectedRisk = 0.5;
     const idParamSub$ = this.route.params
       .pluck('id')
       .subscribe((id: string) => {
@@ -427,91 +421,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     // }
     // // this.summaryAggregation = allSummaryAggregations; // Maybe??
     // this.summaryCalculationService.setSummaryAggregation(allSummaryAggregations);
-    this.populateAssessmentsGrouping();
-    this.populateTechniqueBreakdown();
-  }
-  /**
-   * @description
-   *  populate kill chain grouping and assessment object tallies for assessment grouping chart
-   * @returns {void}
-   */
-  public populateAssessmentsGrouping(): void {
-    const includedIds = this.filterOnRisk();
-    const killChainTotal = {};
-    const killChainFiltered = {};
-
-    const tally = (tallyObject: object) => {
-      return (assessedObject) => {
-        // flat map kill chain names
-        const killChainNames = assessedObject.attackPatterns
-          .reduce((memo, pattern) => memo.concat(pattern['kill_chain_phases']), []);
-        const names: string[] = killChainNames.map((chain) => chain['phase_name'].toLowerCase() as string);
-        const uniqNames: string[] = Array.from(new Set(names));
-        names.forEach((name) => tallyObject[name] = tallyObject[name] ? tallyObject[name] + 1 : 1);
-        return assessedObject;
-      };
-    };
-
-    // Find assessed-objects to kill chain maps grouping
-    this.summaryAggregation.attackPatternsByAssessedObject
-      // tally totals
-      .map(tally(killChainTotal))
-      .filter((aoToApMap) => includedIds.includes(aoToApMap._id))
-      // tally filtered objects
-      .map(tally(killChainFiltered));
-
-    this.assessmentsGroupingTotal = killChainTotal;
-    this.assessmentsGroupingFiltered = killChainFiltered;
-  }
-
-  /**
- * @description
- *  Find IDs that meet risk threshold
- *  TODO should be <= risk or < risk?
- * @returns {string[]}
- */
-  public filterOnRisk(): string[] {
-    const includedIds: string[] = this.summary.assessment_objects // TODO fix...or active...or this is a roll-up?
-      .filter((ao) => ao.risk <= this.selectedRisk)
-      .map((ao) => ao.stix.id);
-    return includedIds;
-  }
-
-  /**
- * @description
- *  populate grouping and assessment object tallies for technique by skill chart
- * @returns {void}
- */
-  public populateTechniqueBreakdown(): void {
-    // Total assessed objects to calculated risk
-    const assessedRiskMapping = this.summaryAggregation.assessedAttackPatternCountBySophisicationLevel;
-    const includedIds = this.filterOnRisk();
-    const attackPatternSet = new Set();
-    // Find assessed-objects-to-attack-patterns maps that meet those Ids
-    this.summaryAggregation.attackPatternsByAssessedObject
-      .filter((aoToApMap) => includedIds.includes(aoToApMap._id))
-      .forEach((aoToApMap) => {
-        aoToApMap.attackPatterns.forEach((ap) => {
-          attackPatternSet.add(JSON.stringify(ap));
-        });
-      });
-
-    const attackPatternSetMap = {};
-    attackPatternSet.forEach((ap) => {
-      const curAp = JSON.parse(ap);
-      if (attackPatternSetMap[curAp['x_unfetter_sophistication_level']] === undefined) {
-        attackPatternSetMap[curAp['x_unfetter_sophistication_level']] = 0;
-      }
-      ++attackPatternSetMap[curAp['x_unfetter_sophistication_level']];
-    });
-
-    this.techniqueBreakdown = {};
-    for (const prop in Object.keys(assessedRiskMapping)) {
-      if (attackPatternSetMap[prop] === undefined) {
-        this.techniqueBreakdown[prop] = 0;
-      } else {
-        this.techniqueBreakdown[prop] = attackPatternSetMap[prop] / (assessedRiskMapping[prop]);
-      }
-    }
+    this.summaryCalculationService.populateAssessmentsGrouping(this.summary.assessment_objects);
+    this.summaryCalculationService.populateTechniqueBreakdown(this.summary.assessment_objects);
   }
 }

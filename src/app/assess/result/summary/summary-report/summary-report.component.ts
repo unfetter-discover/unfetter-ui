@@ -10,21 +10,13 @@ import { SummaryAggregation } from '../../../../models/assess/summary-aggregatio
   styleUrls: ['./summary-report.component.scss']
 })
 export class SummaryReportComponent implements OnInit {
-  totalRiskValue: string;
-  weakness: string;
-  topRisks: AssessKillChainType[];
   readonly columnIds: string[];
-  summaryAggregation: SummaryAggregation;
 
-  constructor(private summaryCalculationService: SummaryCalculationService) {
+  constructor(public summaryCalculationService: SummaryCalculationService) {
     this.columnIds = ['kca', 'item', 'risk'];
   }
 
   ngOnInit() {
-    this.totalRiskValue = this.summaryCalculationService.getRiskText();
-    this.weakness = this.summaryCalculationService.weakness;
-    this.topRisks = this.summaryCalculationService.topRisks;
-    this.summaryAggregation = this.summaryCalculationService.summaryAggregation;
   }
   public calculateRisk(riskArr: any[]): string {
     let risk = 0;

@@ -21,6 +21,7 @@ import { SummaryHeaderComponent } from './summary/summary-header/summary-header.
 import { SummaryReportComponent } from './summary/summary-report/summary-report.component';
 import { SummaryCalculationService } from './summary/summary-calculation.service';
 import { SophisticationBreakdownComponent } from './summary/summary-report/sophistication-breakdown/sophistication-breakdown.component';
+import { TechniquesChartComponent } from './summary/summary-report/techniques-chart/techniques-chart.component';
 
 
 @NgModule({
@@ -40,7 +41,7 @@ import { SophisticationBreakdownComponent } from './summary/summary-report/sophi
     EffectsModule.forFeature([SummaryEffects]),
     EffectsModule.forFeature([RiskByAttackPatternEffects])
   ],
-  declarations: [SummaryComponent, FullComponent, ResultHeaderComponent, SummaryHeaderComponent, SummaryReportComponent, SophisticationBreakdownComponent],
+  declarations: [SummaryComponent, FullComponent, ResultHeaderComponent, SummaryHeaderComponent, SummaryReportComponent, SophisticationBreakdownComponent, TechniquesChartComponent],
   providers: [SummaryCalculationService]
 })
 export class ResultModule { }
