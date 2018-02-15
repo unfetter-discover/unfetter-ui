@@ -8,7 +8,7 @@
     background-color: $assessments-nav-background;
     height: 128px;
     padding-right: 16px;
-    padding-left: 16px;
+    // padding-left: 16px;
   }
 
 #publishButton {
@@ -31,4 +31,21 @@
 
 .flexColumn {
     flex-direction: column;
+}
+
+.banner-wrapper {
+    position: absolute;
+    background-color: #4F5B62;
+    height: 48px;
+    width: 100%;
+    color: $dark-text-default;
+    font-size: 14px;
+
+    .flex {
+        height: 100%;
+        width: 100%;
+        .banner {
+            margin: auto auto;
+        }
+    }
 }
