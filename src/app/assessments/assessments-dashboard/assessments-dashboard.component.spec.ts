@@ -11,10 +11,10 @@ import { AssessmentsDashboardComponent } from './assessments-dashboard.component
 import { CapitalizePipe } from '../../global/pipes/capitalize.pipe';
 import { RiskIconComponent } from '../../global/components/risk-icon/risk-icon.component';
 import { PhaseListComponent } from './phase-list/phase-list.component';
-import { RiskBreakdownComponent } from './risk-breakdown/risk-breakdown.component';
 import { LoadingSpinnerComponent } from '../../global/components/loading-spinner/loading-spinner.component';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { AssessmentsDashboardService } from './assessments-dashboard.service';
+import { RiskBreakdownComponent } from '../../global/components/risk-breakdown/risk-breakdown.component';
 
 class MockPhase {
   public static mockUndefined(): any { return undefined; }

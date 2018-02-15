@@ -672,28 +672,29 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
 
   /**
    * @description route to edit a workproduct
-   * @param {ThreatReport} report the report to edit
+   * @param {UIEvent} event optional
    * @return {Promise<boolean>}
    */
-  public editButtonClicked(report: ThreatReport): Promise<boolean> {
-    this.sharedService.threatReportOverview = undefined;
-    return this.router.navigate([`${this.masterListOptions.modifyRoute}/${report.id}`]);
+  public editButtonClicked(event?: UIEvent): Promise<boolean> {
+    this.sharedService.threatReportOverview = this.threatReport;
+    return this.router.navigate([`${this.masterListOptions.modifyRoute}/${this.id}`]);
   }
 
   /**
    * @description route to share a workproduct; not yet implemented
-   * @param {ThreatReport} report the report to share
+   * @param {UIEvent} event optional
    * @return {Promise<boolean>}
    */
-  public shareButtonClicked(report: ThreatReport): Promise<boolean> {
+  public shareButtonClicked(event?: UIEvent): Promise<boolean> {
     return;
   }
 
   /**
    * @description clicked currently viewed assessment, confirm delete
+   * @param {UIEvent} event optional
    * @return {void}
    */
-  public onDeleteCurrent(): void {
+  public onDeleteCurrent(event?: UIEvent): void {
     this.confirmDelete({ name: this.threatReport.name, id: this.id });
   }
 

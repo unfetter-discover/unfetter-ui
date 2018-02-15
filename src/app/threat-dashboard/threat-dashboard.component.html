@@ -1,115 +1,122 @@
 <div [@simpleFadeIn] *ngIf="!loading; else loadingBlock">
-            <mat-sidenav-container>
-                    <mat-sidenav class="side-container" mode="side" opened="true">
-        <unfetter-side-panel class="side-panel" [item]="threatReport" collapsible="false" width="320">
 
-            <sidepanel-option-item label="Edit" icon="mode_edit"
-                    (click)="editButtonClicked($event)"></sidepanel-option-item>
-            <sidepanel-option-item label="Share" icon="share" disabled="true"
-                    (click)="shareButtonClicked($event)"></sidepanel-option-item>
-            <sidepanel-option-item label="Delete" icon="delete"
-                    (click)="onDeleteCurrent()"></sidepanel-option-item>
+    <mat-sidenav-container>
 
-            <master-list-dialog-trigger
-                    title="Work Products" width="750px" height="400px"
-                    [dataSource]="masterListOptions.dataSource"
-                    [columns]="masterListOptions.columns"
-                    (tabChange)="filterTabChanged($event)"
-                    (create)="createButtonClicked($event)"
-                    (select)="cellSelected($event)"
-                    (edit)="editButtonClicked($event)"
-                    (delete)="onDelete($event)"
-            ></master-list-dialog-trigger>
+        <mat-sidenav class="side-container" mode="side" opened="true">
 
-            <sidepanel-list-item label="Threat Reports" icon="assets/icon/stix-icons/svg/all-defs.svg#campaign"
-                    [items]="threatReport?.reports" expandable="true">
-                <mat-list-item *ngFor="let report of threatReport?.reports; trackBy:trackByFn"
-                        class="list-divider" [@slideInOutAnimation]>
-                    <h4 mat-line *ngIf="getReportURL(report) as url">
-                        <a *ngIf="url; else noLink" href="{{url}}">{{report?.attributes.name}}</a>
-                        <ng-template #noLink>{{report?.attributes.name}}</ng-template>
-                    </h4>
-                    <div mat-line class="mat-caption"> {{report?.attributes.description}} </div>
-                </mat-list-item>
-            </sidepanel-list-item>
-            <sidepanel-list-item label="Victims" icon="assets/icon/stix-icons/svg/all-defs.svg#identity"
-                    [items]="threatReport?.boundaries.targets" expandable="true">
-                <mat-list-item *ngFor="let target of threatReport?.boundaries.targets; trackBy:trackByFn"
-                        class="list-divider" [@slideInOutAnimation]> {{target}} </mat-list-item>
-            </sidepanel-list-item>
-            <sidepanel-list-item label="Intrusion Sets" icon="assets/icon/stix-icons/svg/all-defs.svg#threat-actor"
-                    [items]="threatReport?.boundaries.intrusions" expandable="true">
-                <mat-list-item *ngFor="let intrusion of threatReport?.boundaries.intrusions; trackBy:trackByFn"
-                        class="list-divider" [@slideInOutAnimation]
-                        (click)="onNavigateToIntrusion(intrusion.value, $event)"
-                        (mouseenter)="listItemMouseEnter($event)" (mouseleave)="listItemMouseLeave($event)">
-                    <div mat-line>
-                        <a href="#/stix/intrusion-sets/{{intrusion.value}}">{{intrusion?.displayValue}}</a>
-                    </div>
-                </mat-list-item>
-            </sidepanel-list-item>
-            <sidepanel-list-item label="Malware" icon="assets/icon/stix-icons/svg/all-defs.svg#malware"
-                    [items]="threatReport?.boundaries.malware" expandable="true">
-                <mat-list-item *ngFor="let malware of threatReport?.boundaries.malware; trackBy:trackByFn"
-                        class="list-divider" [@slideInOutAnimation]
-                        (click)="onNavigateToMalware(malware.value, $event)"
-                        (mouseenter)="listItemMouseEnter($event)" (mouseleave)="listItemMouseLeave($event)">
-                    <div mat-line><a href="#/stix/malwares/{{malware.value}}">{{malware?.displayValue}}</a></div>
-                </mat-list-item>
-            </sidepanel-list-item>
+            <unfetter-side-panel class="side-panel" [item]="threatReport" collapsible="false" width="320">
+
+                <sidepanel-option-item label="Edit" icon="mode_edit"
+                        (click)="editButtonClicked($event)"></sidepanel-option-item>
+                <sidepanel-option-item label="Share" icon="share" disabled="true"
+                        (click)="shareButtonClicked($event)"></sidepanel-option-item>
+                <sidepanel-option-item label="Delete" icon="delete"
+                        (click)="onDeleteCurrent($event)"></sidepanel-option-item>
+
+                <master-list-dialog-trigger
+                        title="Work Products" width="750px" height="400px"
+                        [dataSource]="masterListOptions.dataSource"
+                        [columns]="masterListOptions.columns"
+                        (tabChange)="filterTabChanged($event)"
+                        (create)="createButtonClicked($event)"
+                        (select)="cellSelected($event)"
+                        (edit)="editButtonClicked($event)"
+                        (delete)="onDelete($event)"
+                ></master-list-dialog-trigger>
+
+                <sidepanel-list-item label="Threat Reports" icon="assets/icon/stix-icons/svg/all-defs.svg#campaign"
+                        [items]="threatReport?.reports" expandable="true">
+                    <mat-list-item *ngFor="let report of threatReport?.reports; trackBy:trackByFn"
+                            class="list-divider" [@slideInOutAnimation]>
+                        <h4 mat-line *ngIf="getReportURL(report) as url">
+                            <a *ngIf="url; else noLink" href="{{url}}" target="_blank">{{report?.attributes.name}}</a>
+                            <ng-template #noLink>{{report?.attributes.name}}</ng-template>
+                        </h4>
+                        <div mat-line class="mat-caption"> {{report?.attributes.description}} </div>
+                    </mat-list-item>
+                </sidepanel-list-item>
+                <sidepanel-list-item label="Victims" icon="assets/icon/stix-icons/svg/all-defs.svg#identity"
+                        [items]="threatReport?.boundaries.targets" expandable="true">
+                    <mat-list-item *ngFor="let target of threatReport?.boundaries.targets; trackBy:trackByFn"
+                            class="list-divider" [@slideInOutAnimation]> {{target}} </mat-list-item>
+                </sidepanel-list-item>
+                <sidepanel-list-item label="Intrusion Sets" icon="assets/icon/stix-icons/svg/all-defs.svg#threat-actor"
+                        [items]="threatReport?.boundaries.intrusions" expandable="true">
+                    <mat-list-item *ngFor="let intrusion of threatReport?.boundaries.intrusions; trackBy:trackByFn"
+                            class="list-divider" [@slideInOutAnimation]
+                            (click)="onNavigateToIntrusion(intrusion.value, $event)"
+                            (mouseenter)="listItemMouseEnter($event)" (mouseleave)="listItemMouseLeave($event)">
+                        <div mat-line>
+                            <a href="#/stix/intrusion-sets/{{intrusion.value}}">{{intrusion?.displayValue}}</a>
+                        </div>
+                    </mat-list-item>
+                </sidepanel-list-item>
+                <sidepanel-list-item label="Malware" icon="assets/icon/stix-icons/svg/all-defs.svg#malware"
+                        [items]="threatReport?.boundaries.malware" expandable="true">
+                    <mat-list-item *ngFor="let malware of threatReport?.boundaries.malware; trackBy:trackByFn"
+                            class="list-divider" [@slideInOutAnimation]
+                            (click)="onNavigateToMalware(malware.value, $event)"
+                            (mouseenter)="listItemMouseEnter($event)" (mouseleave)="listItemMouseLeave($event)">
+                        <div mat-line><a href="#/stix/malwares/{{malware.value}}">{{malware?.displayValue}}</a></div>
+                    </mat-list-item>
+                </sidepanel-list-item>
 
 <!--
-            <sidepanel-mini-item tooltip="{{threatReport.name || ''}}"
-                    icon="assets/icon/stix-icons/svg/all-defs.svg#attack-pattern"></sidepanel-mini-item>
-            <sidepanel-mini-item tooltip="{{threatReport.boundaries.targets.size || 0}} victim(s)"
-                    icon="assets/icon/stix-icons/svg/all-defs.svg#identity"></sidepanel-mini-item>
-            <sidepanel-mini-item tooltip="{{threatReport.boundaries.intrusions.size || 0}} intrusion set(s)"
-                    icon="assets/icon/stix-icons/svg/all-defs.svg#threat-actor"></sidepanel-mini-item>
-            <sidepanel-mini-item tooltip="{{threatReport.boundaries.malware.size || 0}} malware"
-                    icon="assets/icon/stix-icons/svg/all-defs.svg#malware"></sidepanel-mini-item>
-            <sidepanel-mini-item tooltip="{{threatReport.reports.length || 0}} report(s)"
-                    icon="assets/icon/stix-icons/svg/all-defs.svg#campaign"></sidepanel-mini-item>
+                <sidepanel-mini-item tooltip="{{threatReport.name || ''}}"
+                        icon="assets/icon/stix-icons/svg/all-defs.svg#attack-pattern"></sidepanel-mini-item>
+                <sidepanel-mini-item tooltip="{{threatReport.boundaries.targets.size || 0}} victim(s)"
+                        icon="assets/icon/stix-icons/svg/all-defs.svg#identity"></sidepanel-mini-item>
+                <sidepanel-mini-item tooltip="{{threatReport.boundaries.intrusions.size || 0}} intrusion set(s)"
+                        icon="assets/icon/stix-icons/svg/all-defs.svg#threat-actor"></sidepanel-mini-item>
+                <sidepanel-mini-item tooltip="{{threatReport.boundaries.malware.size || 0}} malware"
+                        icon="assets/icon/stix-icons/svg/all-defs.svg#malware"></sidepanel-mini-item>
+                <sidepanel-mini-item tooltip="{{threatReport.reports.length || 0}} report(s)"
+                        icon="assets/icon/stix-icons/svg/all-defs.svg#campaign"></sidepanel-mini-item>
 -->
 
-        </unfetter-side-panel>
+            </unfetter-side-panel>
+
         </mat-sidenav>
-<mat-sidenav-content>
-        <div class="main-panel pb-10">
-            <mat-tab-group id="tabGroup">
-                <mat-tab label="MATRIX">
-                    <!-- <attack-pattern-count [threatReport]="threatReport" [attackPatterns]="attackPatterns"
-                            [intrusionSetsDashboard]="intrusionSetsDashboard">
-                    </attack-pattern-count> -->
-                    <div class="matrix mb-18 mt-18 ml-16 mr-16 mat-elevation-z3 cardHoverShadow">
-                        <unf-bar-chart *ngIf="barChartData" [data]="barChartData"
-                                (renderComplete)="barChartRendered()"></unf-bar-chart>
-                    </div>
-                    <div class="matrix mb-18 mt-18 ml-16 mr-16 mat-elevation-z3 cardHoverShadow">
-                        <unf-kill-chain-table [threatReport]="threatReport" [attackPatterns]="attackPatterns"
+
+        <mat-sidenav-content>
+            <div class="main-panel pb-10">
+                <mat-tab-group id="tabGroup">
+                    <mat-tab label="MATRIX">
+                        <!-- <attack-pattern-count [threatReport]="threatReport" [attackPatterns]="attackPatterns"
                                 [intrusionSetsDashboard]="intrusionSetsDashboard">
-                        </unf-kill-chain-table>
-                    </div>
-                    <div class="mt-18 mb-18 ml-16 mr-16 mat-elevation-z3 cardHoverShadow">
-                        <unf-collapsible-tree *ngIf="treeData" [data]="treeData"
-                                (renderComplete)="treeRendered()"></unf-collapsible-tree>
-                    </div>
-                    <div class="mt-18 ml-16 mr-16 mb-5 mat-elevation-z3 cardHoverShadow">
-                        <unf-radar-chart #radarChart *ngIf="radarData" [data]="radarData"
-                                (renderComplete)="radarRendered()"></unf-radar-chart>
-                    </div>
-                </mat-tab>
-                <mat-tab label="MITIGATIONS" disabled="true">
-                    <p>Mitigations goes here!</p>
-                </mat-tab>
-                <mat-tab label="EXPORT" disabled="false">
-                    <div class="mb-18 mt-18 ml-16 mr-16 mat-card cardHoverShadow">
-                        <unf-export-component [threatReport]="threatReport"></unf-export-component>
-                    </div>
-                </mat-tab>
-            </mat-tab-group>
-        </div>
+                        </attack-pattern-count> -->
+                        <div class="matrix mb-18 mt-18 ml-16 mr-16 mat-elevation-z3 cardHoverShadow">
+                            <unf-bar-chart *ngIf="barChartData" [data]="barChartData"
+                                    (renderComplete)="barChartRendered()"></unf-bar-chart>
+                        </div>
+                        <div class="matrix mb-18 mt-18 ml-16 mr-16 mat-elevation-z3 cardHoverShadow">
+                            <unf-kill-chain-table [threatReport]="threatReport" [attackPatterns]="attackPatterns"
+                                    [intrusionSetsDashboard]="intrusionSetsDashboard">
+                            </unf-kill-chain-table>
+                        </div>
+                        <div class="mt-18 mb-18 ml-16 mr-16 mat-elevation-z3 cardHoverShadow">
+                            <unf-collapsible-tree *ngIf="treeData" [data]="treeData"
+                                    (renderComplete)="treeRendered()"></unf-collapsible-tree>
+                        </div>
+                        <div class="mt-18 ml-16 mr-16 mb-5 mat-elevation-z3 cardHoverShadow">
+                            <unf-radar-chart #radarChart *ngIf="radarData" [data]="radarData"
+                                    (renderComplete)="radarRendered()"></unf-radar-chart>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="MITIGATIONS" disabled="true">
+                        <p>Mitigations goes here!</p>
+                    </mat-tab>
+                    <mat-tab label="EXPORT" disabled="false">
+                        <div class="mb-18 mt-18 ml-16 mr-16 mat-card cardHoverShadow">
+                            <unf-export-component [threatReport]="threatReport"></unf-export-component>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
         </mat-sidenav-content>
-</mat-sidenav-container>
+
+    </mat-sidenav-container>
+
 </div>
 
 <ng-template #loadingBlock>
