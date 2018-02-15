@@ -47,7 +47,7 @@
             <div class="unassessed-phases-list-item cursor-pointer" 
               *ngFor="let phase of assessGroupMain.unassessedPhases; trackBy:trackByFn"
               [ngClass]="{'highlightPhase': isCurrentPhase(phase)}"
-              (click)="assessGroupMain.setPhase(phase)">
+              (click)="assessGroupMain.setPhase(phase); activePhase = phase">
               <div class="item-content">
                 <span class="phase-name">
                   <b>{{phase | capitalize}}</b>
