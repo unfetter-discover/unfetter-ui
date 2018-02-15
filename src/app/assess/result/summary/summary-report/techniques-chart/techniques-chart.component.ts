@@ -20,7 +20,6 @@ export class TechniquesChartComponent implements OnInit {
   public showLegend: boolean;
   public readonly showLegendDefault = true;
   public barChartData: ChartData[] = [
-    { data: [], label: '', borderWidth: 0 },
     { data: [], label: '', borderWidth: 0 }
   ];
   public barChartLabels: string[] = [];
@@ -33,7 +32,7 @@ export class TechniquesChartComponent implements OnInit {
         stacked: true
       }],
       yAxes: [{
-        stacked: true,
+        // stacked: true,
         ticks: {
           suggestedMin: 0,
           suggestedMax: 100,
@@ -87,9 +86,7 @@ export class TechniquesChartComponent implements OnInit {
     let index = 0;
     breakdown.forEach((key) => {
       const val = this.techniqueBreakdown[key];
-      const complement = 1.0 - val;
       this.barChartData[0].data[index] = Math.round(val * 100);
-      this.barChartData[1].data[index] = Math.round(complement * 100);
       index = index + 1;
     });
   }
@@ -106,13 +103,11 @@ export class TechniquesChartComponent implements OnInit {
    */
   public renderLegend(): void {
     this.barChartData[0].label = 'At Or Above Mitigation Threshold';
-    this.barChartData[1].label = 'Below Mitigation Threshold';
     // TODO
     // if (this.riskLabelOptions) {
     //   const option = this.riskLabelOptions.find((opt) => opt.risk === this.riskThreshold);
     //   const name = option.name;
     //   this.barChartData[0].label = 'At Or Above ' + name;
-    //   this.barChartData[1].label = 'Below ' + name;
     // }
   }
 
@@ -120,10 +115,8 @@ export class TechniquesChartComponent implements OnInit {
     const size = this.barChartLabels.length || 0;
     // init data array
     this.barChartData[0].data = [];
-    this.barChartData[1].data = [];
     for (let i = 0; i < size; i++) {
       this.barChartData[0].data[i] = 0;
-      this.barChartData[1].data[i] = 0;
     }
   }
 
