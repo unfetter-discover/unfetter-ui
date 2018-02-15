@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { MatDialog } from '@angular/material';
@@ -19,6 +19,8 @@ import { UserProfile } from '../../../models/user/user-profile';
 import { FullAssessmentResultState } from '../store/full-result.reducers';
 import { AssessedByAttackPattern } from './group/models/assessed-by-attack-pattern';
 import { Constance } from '../../../utils/constance';
+import { RiskByAttackPattern } from './group/models/risk-by-attack-pattern';
+import { RiskByAttack } from '../../../models/assess/risk-by-attack';
 
 @Component({
   selector: 'unf-assess-full',
@@ -39,11 +41,12 @@ export class FullComponent implements OnInit, OnDestroy {
   masterListOptions = {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Modified'),
-    displayRoute: this.baseAssessUrl + '/result/summary',
+    displayRoute: this.baseAssessUrl + '/result/full',
     modifyRoute: this.baseAssessUrl,
     createRoute: this.baseAssessUrl + '/create',
   };
   activePhase: string;
+  public riskBreakdown: any;
 
   private readonly subscriptions: Subscription[] = [];
 
@@ -112,6 +115,24 @@ export class FullComponent implements OnInit, OnDestroy {
       .subscribe((done: boolean) => this.finishedLoading = done,
         (err) => console.log(err));
 
+    const sub3$ = this.store
+      .select('fullAssessment')
+      .pluck('group')
+      .distinctUntilChanged()
+      .filter((group: any) => group.finishedLoadingGroupData === true)
+      .subscribe(
+        (group: any) => {
+          const riskByAttackPattern = group.riskByAttackPattern || {};
+          // active phase is either the current active phase, 
+          let activePhase = this.activePhase;
+          if (!activePhase && riskByAttackPattern && riskByAttackPattern.phases.length > 0) {
+            //  the first assess attack pattern, 
+            activePhase = riskByAttackPattern.phases[0]._id;
+          }
+          this.activePhase = activePhase;
+        },
+        (err) => console.log(err));
+
     this.assessmentName = this.store
       .select('fullAssessment')
       .pluck('assessmentTypes')
@@ -123,7 +144,7 @@ export class FullComponent implements OnInit, OnDestroy {
         return arr[0].name;
       });
 
-    this.subscriptions.push(sub1$, sub2$);
+    this.subscriptions.push(sub1$, sub2$, sub3$);
   }
 
   /**
@@ -162,7 +183,9 @@ export class FullComponent implements OnInit, OnDestroy {
    * @return {Promise<boolean>}
    */
   public onEdit(assessment: LastModifiedAssessment): Promise<boolean> {
-    return this.router.navigateByUrl(this.masterListOptions.modifyRoute);
+    // return this.router.navigateByUrl(this.masterListOptions.modifyRoute);
+    console.log('noop');
+    return Promise.resolve(false);
   }
 
   /**
@@ -242,6 +265,12 @@ export class FullComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.activePhase = undefined;
+    this.rollupId = undefined;
+    this.assessment = undefined;
+    this.assessmentTypes = undefined;
+    this.attackPatternId = undefined;
+    // TODO: clear the ngrx store
     return this.router.navigate([this.masterListOptions.displayRoute, assessment.rollupId, assessment.id]);
   }
 
@@ -266,20 +295,6 @@ export class FullComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description the child component assessments group contains the current phase, capture a change to phases
-   *  so we can highlight the currently selected
-   * @param {string} event optional
-   * @return {void}
-   */
-  public onPhaseChanged(event?: string): void {
-    if (!event) {
-      return;
-    }
-
-    this.activePhase = event;
-  }
-
-  /**
    * @description determines if this components current phase is the same as the given phase
    *  Used to highlight the selected phase
    * @param {string} phase
@@ -287,5 +302,70 @@ export class FullComponent implements OnInit, OnDestroy {
    */
   public isCurrentPhase(phase = ''): boolean {
     return this.activePhase ? this.activePhase === phase : false;
+  }
+
+  public calculateRiskBreakdown(riskByAttackPattern: RiskByAttack) {
+
+    if (!riskByAttackPattern || !Object.keys(riskByAttackPattern).length) {
+      return;
+    }
+
+    const phases = riskByAttackPattern.phases;
+    const assessedByAttackPattern = riskByAttackPattern.assessedByAttackPattern;
+
+    const riskTree = {};
+
+    if (phases !== undefined && assessedByAttackPattern !== undefined) {
+
+      // Group data by kill chain phase, then question => set value array of risk values
+      phases.forEach((phase) => {
+        riskTree[phase._id] = this.populatePhaseRiskTree(phase);
+      });
+
+      // Calculate average risk per question
+      // TODO delete this
+      const questionSet: any = new Set();
+      this.riskBreakdown = {};
+      for (let phase in riskTree) {
+        this.riskBreakdown[phase] = this.calculateRiskBreakdownByQuestionForPhase(riskTree[phase], questionSet);
+      }
+    }
+
+  }
+
+  public populatePhaseRiskTree(phase: any) {
+    const riskTree = {};
+
+    // Assessed Objects per phase
+    if (phase !== undefined && phase.assessedObjects !== undefined) {
+      phase.assessedObjects.forEach((assessedObject) => {
+        // Questions per assessed object
+        if (assessedObject.questions !== undefined) {
+          assessedObject.questions.forEach((question) => {
+            if (riskTree[question.name] === undefined) {
+              riskTree[question.name] = [];
+            }
+            riskTree[question.name].push(question.risk);
+          });
+        }
+      });
+    }
+    return riskTree;
+  }
+
+  public calculateRiskBreakdownByQuestionForPhase(phaseRiskTree: any, questions: Set<string>) {
+    const riskBreakdownPhase = {};
+    if (questions !== undefined && phaseRiskTree !== undefined) {
+      for (let question in phaseRiskTree) {
+        questions.add(question);
+        /* Average risk for each question-category,
+        then multiply it by 1 / the number of question-categories.
+        This will show how much each question contributes to absolute overall risk. */
+        riskBreakdownPhase[question] = (phaseRiskTree[question]
+          .reduce((prev, cur) => prev += cur, 0)
+          / phaseRiskTree[question].length) * (1 / Object.keys(phaseRiskTree).length);
+      }
+    }
+    return riskBreakdownPhase;
   }
 }

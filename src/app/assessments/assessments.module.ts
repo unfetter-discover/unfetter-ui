@@ -11,7 +11,6 @@ import { AssessmentsDashboardComponent } from './assessments-dashboard/assessmen
 import { AssessmentsDashboardService } from './assessments-dashboard/assessments-dashboard.service';
 import { PhaseListComponent } from './assessments-dashboard/phase-list/phase-list.component';
 import { ChartsModule } from 'ng2-charts';
-import { RiskBreakdownComponent } from './assessments-dashboard/risk-breakdown/risk-breakdown.component';
 import { AssessmentsSummaryComponent } from './assessments-summary/assessments-summary.component';
 import { AssessmentsSummaryService } from './assessments-summary/assessments-summary.service';
 import { assessmentsRouting } from './assessments.routing';
@@ -36,7 +35,6 @@ import { AssessmentsGroupComponent } from './group/assessments-group.component';
     AssessmentsSummaryComponent,
     AssessmentChartComponent,
     PhaseListComponent,
-    RiskBreakdownComponent,
     SophisticationBreakdownComponent,
     TechniquesChartComponent
   ],

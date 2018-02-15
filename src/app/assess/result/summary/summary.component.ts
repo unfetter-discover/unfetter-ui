@@ -276,7 +276,9 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {Promise<boolean>}
    */
   public onEdit(assessment: LastModifiedAssessment): Promise<boolean> {
-    return this.router.navigateByUrl(this.masterListOptions.modifyRoute);
+    // return this.router.navigateByUrl(this.masterListOptions.modifyRoute);
+    console.log('noop');
+    return Promise.resolve(false);
   }
 
   /**

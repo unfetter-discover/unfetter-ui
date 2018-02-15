@@ -6,7 +6,6 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { AddAssessedObjectComponent } from './add-assessed-object/add-assessed-object.component';
 import { AssessService } from '../../../services/assess.service';
-import { AssessedByAttackPattern } from './models/assessed-by-attack-pattern';
 import { Assessment } from '../../../../models/assess/assessment';
 import { AssessmentObject } from '../../../../models/assess/assessment-object';
 import { AttackPattern } from '../../../../models/attack-pattern';
@@ -42,8 +41,8 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input()
   public initialAttackPatternId: string;
 
-  @Output('phaseChanged')
-  public phaseChanged = new EventEmitter<string>();
+  @Output('riskByAttackPatternChanged')
+  public riskByAttackPatternChanged = new EventEmitter<RiskByAttack>();
 
   @ViewChildren('addAssessedObjectComponent')
   public addAssessedObjectComponents: QueryList<AddAssessedObjectComponent>;
@@ -149,6 +148,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
             activePhase = this.unassessedPhases[0];
           }
           this.setPhase(activePhase, attackPatternIndex);
+          this.riskByAttackPatternChanged.emit(this.riskByAttackPattern);
         },
         (err) => console.log(err));
 
@@ -213,7 +213,6 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.setAttackPattern(currentAttackPatternId);
 
-    this.phaseChanged.emit(this.activePhase);
     this.updateUrlIfNeeded();
   }
 
