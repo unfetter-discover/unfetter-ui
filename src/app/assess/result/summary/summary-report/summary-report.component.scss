@@ -45,12 +45,12 @@
         font-size: 20px;
         font-weight: 600;
         margin-bottom: 6px;
-    }
+    }  
+}
 
-    .mat-card-content {
-        overflow-y: auto;
-        max-height: 192px;
-    }
+.mat-card-scroll-content .mat-card-content {
+  overflow-y: auto;
+  max-height: 192px;
 }
 
 .mat-column-kca {
