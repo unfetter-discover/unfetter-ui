@@ -383,7 +383,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @return {void}
    */
   public updateAllQuestions(answerIndex: number): void {
-    if (!this.currentAssessmentGroup) {
+    if (!this.currentAssessmentGroup || !this.currentAssessmentGroup.assessments) {
       return;
     }
 
