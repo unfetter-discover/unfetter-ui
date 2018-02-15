@@ -41,7 +41,7 @@ export class FullComponent implements OnInit, OnDestroy {
   masterListOptions = {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Modified'),
-    displayRoute: this.baseAssessUrl + '/result/summary',
+    displayRoute: this.baseAssessUrl + '/result/full',
     modifyRoute: this.baseAssessUrl,
     createRoute: this.baseAssessUrl + '/create',
   };
@@ -183,7 +183,9 @@ export class FullComponent implements OnInit, OnDestroy {
    * @return {Promise<boolean>}
    */
   public onEdit(assessment: LastModifiedAssessment): Promise<boolean> {
-    return this.router.navigateByUrl(this.masterListOptions.modifyRoute);
+    // return this.router.navigateByUrl(this.masterListOptions.modifyRoute);
+    console.log('noop');
+    return Promise.resolve(false);
   }
 
   /**
