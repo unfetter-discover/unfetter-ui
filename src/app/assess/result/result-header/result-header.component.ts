@@ -8,7 +8,9 @@ import { Component, OnInit, Input } from '@angular/core';
 export class ResultHeaderComponent implements OnInit {
 
   @Input()
-  public rollupId: string;
+  rollupId: string;
+  @Input()
+  assessmentId: string;
 
   @Input()
   public created: Date;
@@ -23,8 +25,9 @@ export class ResultHeaderComponent implements OnInit {
    * @return {void}
    */
   public ngOnInit(): void {
-    this.summaryLink = `../../summary/${this.rollupId}`;
-    this.resultsLink = `../../full/${this.rollupId}`;
+    const base = '/assess/result/';
+    this.summaryLink = `${base}/summary/${this.rollupId}/${this.assessmentId}`;
+    this.resultsLink = `${base}/full/${this.rollupId}/${this.assessmentId}`;
   }
 
 }

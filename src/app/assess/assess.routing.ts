@@ -20,8 +20,9 @@ const routes = [
             // { path: 'wizard/edit/:type/:id', loadChildren: 'app/assess/wizard/wizard.module#WizardModule' },
         ]
     },
-    { path: 'result/summary/:rollupId', component: SummaryComponent },
-    { path: 'result/full/:rollupId', component: FullComponent },
+    // { path: 'result/summary/:rollupId', component: SummaryComponent },
+    { path: 'result/summary/:rollupId/:assessmentId', component: SummaryComponent },
+    // { path: 'result/full/:rollupId', component: FullComponent },
     { path: 'result/full/:rollupId/:assessmentId', component: FullComponent },
     { path: 'result/full/:rollupId/:assessmentId/phase/:phase', component: FullComponent },
     { path: 'result/full/:rollupId/:assessmentId/phase/:phase/attackPattern/:attackPattern', component: FullComponent },

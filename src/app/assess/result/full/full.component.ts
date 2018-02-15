@@ -32,6 +32,7 @@ export class FullComponent implements OnInit, OnDestroy {
   assessment: Assessment;
   assessmentName: Observable<string>;
   rollupId: string;
+  assessmentId: string;
   phase: string;
   attackPatternId: string;
   finishedLoading = false;
@@ -63,6 +64,7 @@ export class FullComponent implements OnInit, OnDestroy {
     const idParamSub$ = this.route.params
       .subscribe((params) => {
         this.rollupId = params.rollupId || '';
+        this.assessmentId = params.assessmentId || '';
         this.phase = params.phase || '';
         this.attackPatternId = params.attackPatternId || '';
 
@@ -240,7 +242,7 @@ export class FullComponent implements OnInit, OnDestroy {
       return;
     }
 
-    return this.router.navigate([this.masterListOptions.displayRoute, assessment.rollupId]);
+    return this.router.navigate([this.masterListOptions.displayRoute, assessment.rollupId, assessment.id]);
   }
 
   /**

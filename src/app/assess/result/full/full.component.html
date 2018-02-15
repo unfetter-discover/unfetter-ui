@@ -57,7 +57,7 @@
     </mat-sidenav>
     <mat-sidenav-content>
       <div class="main-panel">
-        <result-header [rollupId]="rollupId" [created]="assessment?.created"></result-header>
+        <result-header [assessmentId]="assessmentId" [rollupId]="rollupId" [created]="assessment?.created"></result-header>
         <unf-assess-group #assessGroupMain [activePhase]="phase" [rollupId]="rollupId" [assessment]="assessment" (phaseChanged)="onPhaseChanged($event)"></unf-assess-group>
       </div>
     </mat-sidenav-content>

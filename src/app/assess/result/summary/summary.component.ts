@@ -40,6 +40,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
   readonly baseAssessUrl = '/assess';
   assessmentName: Observable<string>;
   rollupId: string;
+  assessmentId: string;
   summaries: Assessment[];
   summary: Assessment;
   riskByAttacks: RiskByAttack[];
@@ -79,9 +80,9 @@ export class SummaryComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     const idParamSub$ = this.route.params
-      .pluck('rollupId')
-      .subscribe((id: string) => {
-        this.rollupId = id || '';
+      .subscribe((params) => {
+        this.rollupId = params.rollupId || '';
+        this.assessmentId = params.assessmentId || '';
         this.listenForDataChanges();
         const sub$ = this.userStore
           .select('users')
@@ -89,7 +90,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
           .take(1)
           .subscribe((user: UserProfile) => {
             const creatorId = user._id;
-            this.requestData(this.rollupId, creatorId);
+            this.requestData(this.assessmentId, creatorId);
           },
             (err) => console.log(err));
         this.subscriptions.push(sub$);
@@ -360,7 +361,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       return;
     }
 
-    return this.router.navigate([this.masterListOptions.displayRoute, assessment.rollupId]);
+    return this.router.navigate([this.masterListOptions.displayRoute, assessment.rollupId, assessment.id]);
   }
 
   /**
