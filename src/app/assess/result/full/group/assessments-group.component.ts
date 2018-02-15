@@ -6,7 +6,6 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { AddAssessedObjectComponent } from './add-assessed-object/add-assessed-object.component';
 import { AssessService } from '../../../services/assess.service';
-import { AssessedByAttackPattern } from './models/assessed-by-attack-pattern';
 import { Assessment } from '../../../../models/assess/assessment';
 import { AssessmentObject } from '../../../../models/assess/assessment-object';
 import { AttackPattern } from '../../../../models/attack-pattern';
@@ -43,7 +42,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   public initialAttackPatternId: string;
 
   @Output('riskByAttackPatternChanged')
-  public riskByAttackPatternChanged = new EventEmitter<RiskByAttackPattern>();
+  public riskByAttackPatternChanged = new EventEmitter<RiskByAttack>();
 
   @ViewChildren('addAssessedObjectComponent')
   public addAssessedObjectComponents: QueryList<AddAssessedObjectComponent>;
