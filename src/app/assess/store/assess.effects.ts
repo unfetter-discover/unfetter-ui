@@ -136,7 +136,11 @@ export class AssessEffects {
         })
         .flatMap((arr) => arr)
         .map((arr) => {
-            return new assessActions.FinishedSaving({ finished: true, rollupId: arr[0].attributes.metaProperties.rollupId });
+            return new assessActions.FinishedSaving({ 
+                finished: true, 
+                rollupId: arr[0].attributes.metaProperties.rollupId,
+                id: arr[0].attributes.id,
+            });
         })
 
 

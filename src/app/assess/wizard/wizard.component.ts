@@ -191,16 +191,17 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         (page: number) => this.page = page,
         (err) => console.log(err));
 
-    interface SavedState { saved: boolean, rollupId: string };
+    interface SavedState { finished: boolean, rollupId: string, id: string };
     const sub6$ = this.store
       .select('assessment')
       .pluck('saved')
       .distinctUntilChanged()
-      .filter((el: SavedState) => el.saved === true)
+      .filter((el: SavedState) => el.finished === true)
       .subscribe(
         (saved: SavedState) => {
           const rollupId = saved.rollupId;
-          this.router.navigate(['assess/result/summary', rollupId]);
+          const id = saved.id;
+          this.router.navigate(['/assess/result/summary', rollupId, id]);
         },
         (err) => console.log(err));
 

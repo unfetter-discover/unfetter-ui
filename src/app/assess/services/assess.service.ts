@@ -7,6 +7,11 @@ import { GenericApi } from '../../core/services/genericapi.service';
 import { JsonApiData } from '../../models/json/jsonapi-data';
 import { LastModifiedAssessment } from '../models/last-modified-assessment';
 import { AssessmentObject } from '../../models/assess/assessment-object';
+import { JsonApi } from '../../models/json/jsonapi';
+import { RiskByAttack } from '../../models/assess/risk-by-attack';
+import { RiskByKillChain } from '../../models/assess/risk-by-kill-chain';
+import { SummaryAggregation } from '../../models/assess/summary-aggregation';
+import { JsonApiObject } from '../../threat-dashboard/models/adapter/json-api-object';
 
 @Injectable()
 export class AssessService {
@@ -166,7 +171,55 @@ export class AssessService {
         }
 
         const url = `${this.assessBaseUrl}/${id}/risk-per-kill-chain`;
+        return this.genericApi.getAs<RiskByKillChain>(url);
+    }
+
+    /**
+ * @description
+ * @param {string} id
+ * @return {Observable}
+ */
+    public getRiskPerKillChainByRollupId(id: string): Observable<any> {
+        if (!id) {
+            return Observable.empty();
+        }
+
+        const url = `${this.assessBaseUrl}/${id}/risk-per-kill-chain`;
         return this.genericApi.get(url);
+    }
+
+    /**
+     * @description
+     * @param {string} id
+     * @return {Observable<RiskByAttack>}
+     */
+    public getRiskPerAttackPattern(id: string, includeMeta = true): Observable<RiskByAttack> {
+        if (!id) {
+            return Observable.empty();
+        }
+        const url = `${this.assessBaseUrl}/${id}/risk-by-attack-pattern?metaproperties=${includeMeta}`;
+        return this.genericApi
+            .getAs<RiskByAttack>(url);
+    }
+
+
+    /**
+     * @description
+     * @param {string} id
+     * @return {Observable}
+     */
+    public getRiskPerAttackPatternByRollupId(id: string, includeMeta = true): Observable<RiskByAttack[]> {
+        if (!id) {
+            return Observable.empty();
+        }
+        const filter = {
+            'metaProperties.rollupId': id
+        };
+
+        const url = `${this.assessBaseUrl}/${id}/risk-by-attack-pattern?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
+        return this.genericApi
+            .getAs<JsonApiData<RiskByAttack>[]>(url)
+            .map((data) => data.map((el) => el.attributes));
     }
 
     /**
@@ -174,20 +227,40 @@ export class AssessService {
      * @param {string} id
      * @return {Observable}
      */
-    public getRiskPerAttackPattern(id: string): Observable<any> {
+    public getSummaryAggregation(id: string): Observable<SummaryAggregation> {
         if (!id) {
             return Observable.empty();
         }
 
-        const url = `${this.assessBaseUrl}/${id}/risk-by-attack-pattern`;
-        return this.genericApi.get(url);
+        const url = `${this.assessBaseUrl}/${id}/summary-aggregations`;
+        return this.genericApi.getAs<SummaryAggregation>(url);
     }
 
     /**
- * @description retrieve full assessments for given creator
- * @param {string} creatorId, creator mongo user id, not stix identity
- * @return {Observable<Assessment[]>}
- */
+     * @description
+     * @param {string} id
+     * @return {Observable}
+     */
+    public getSummaryAggregationByRollup(id: string, includeMeta = true): Observable<SummaryAggregation[]> {
+        if (!id) {
+            return Observable.empty();
+        }
+        const filter = {
+            'metaProperties.rollupId': id
+        };
+
+        const url = `${this.assessBaseUrl}/${id}/summary-aggregations?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
+        return this.genericApi
+            .getAs<JsonApiData<SummaryAggregation>[]>(url)
+            .map((data) => data.map((el) => el.attributes));
+    }
+
+
+    /**
+     * @description retrieve full assessments for given creator
+     * @param {string} creatorId, creator mongo user id, not stix identity
+     * @return {Observable<Assessment[]>}
+     */
     public getAssessmentsByCreatorId(creatorId: string, includeMeta = true): Observable<Assessment[]> {
         const filter = {
             'creator': creatorId,

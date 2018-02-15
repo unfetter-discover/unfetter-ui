@@ -11,6 +11,8 @@ import { LOAD_ASSESSMENT_RESULT_DATA, SetAssessments, FinishedLoading, SetGroupA
 import { fullAssessmentResultReducer } from './full-result.reducers';
 import { Constance } from '../../../utils/constance';
 import { Stix } from '../../../models/stix/stix';
+import { RiskByAttack } from '../../../models/assess/risk-by-attack';
+// import { RiskByAttackPattern } from '../full/group/models/risk-by-attack-pattern';
 
 
 @Injectable()
@@ -40,7 +42,7 @@ export class FullResultEffects {
             return Observable.forkJoin(getAssessedObjects$, getRiskByAttackPattern$);
         })
         .map(([assessedObjects, riskByAttackPattern]) => {
-            riskByAttackPattern = riskByAttackPattern || {};
+            riskByAttackPattern = riskByAttackPattern || new RiskByAttack;
             return new SetGroupData({ assessedObjects, riskByAttackPattern });
         });
 

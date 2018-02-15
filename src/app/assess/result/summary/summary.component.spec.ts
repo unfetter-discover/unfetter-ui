@@ -11,6 +11,7 @@ import { SummaryComponent } from './summary.component';
 import { summaryReducer } from '../store/summary.reducers';
 import { MatDialogModule } from '@angular/material';
 import { AssessService } from '../../services/assess.service';
+import { SummaryCalculationService } from './summary-calculation.service';
 
 describe('SummaryComponent', () => {
   let component: SummaryComponent;
@@ -20,6 +21,8 @@ describe('SummaryComponent', () => {
   let mockReducer: ActionReducerMap<any> = {
     summary: summaryReducer
   };
+
+  const mockService = {};
 
   beforeEach(async(() => {
     const matModules = [
@@ -36,7 +39,11 @@ describe('SummaryComponent', () => {
         ...matModules,
         StoreModule.forRoot(mockReducer),
       ],
-      providers: [GenericApi, AssessService],
+      providers: [GenericApi, AssessService,
+        {
+          provide: SummaryCalculationService,
+          use: mockService
+        }],
     })
       .compileComponents();
   }));

@@ -12,15 +12,13 @@ import { AssessmentObject } from '../../../../models/assess/assessment-object';
 import { AttackPattern } from '../../../../models/attack-pattern';
 import { Constance } from '../../../../utils/constance';
 import { DisplayedAssessmentObject } from './models/displayed-assessment-object';
-import { GroupAttackPattern } from './models/group-attack-pattern';
-import { GroupPhase } from './models/group-phase';
 import { FormatHelpers } from '../../../../global/static/format-helpers';
 import { Stix } from '../../../../models/stix/stix';
 import { SortHelper } from '../../../../global/static/sort-helper';
 import { FullAssessmentResultState } from '../../store/full-result.reducers';
 import { Store } from '@ngrx/store';
-import { RiskByAttackPattern } from './models/risk-by-attack-pattern';
 import { LoadGroupData, LoadGroupCurrentAttackPattern, PushUrl } from '../../store/full-result.actions';
+import { RiskByAttack } from '../../../../models/assess/risk-by-attack';
 
 @Component({
   selector: 'unf-assess-group',
@@ -55,7 +53,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   public courseOfAction: any;
   public xUnfetterSensor: any;
 
-  public riskByAttackPattern: RiskByAttackPattern;
+  public riskByAttackPattern: RiskByAttack;
   public assessedObjects: AssessmentObject[];
   public unassessedPhases: string[];
   public currentAttackPattern: Stix;

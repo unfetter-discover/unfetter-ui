@@ -4,9 +4,8 @@ import { AssessmentObject } from '../../../models/assess/assessment-object';
 import { AssessedByAttackPattern } from '../full/group/models/assessed-by-attack-pattern';
 import { DisplayedAssessmentObject } from '../full/group/models/displayed-assessment-object';
 import { FullAssessmentResultActions, LOAD_ASSESSMENT_RESULT_DATA } from './full-result.actions';
-import { GroupAttackPattern } from '../full/group/models/group-attack-pattern';
-import { GroupPhase } from '../full/group/models/group-phase';
 import { Stix } from '../../../models/stix/stix';
+import { RiskByAttack } from '../../../models/assess/risk-by-attack';
 
 export interface FullAssessmentResultState {
     fullAssessment: Assessment;
@@ -18,11 +17,7 @@ export interface FullAssessmentResultState {
 export interface FullAssessmentGroupState {
     finishedLoadingGroupData: boolean;
     currentAttackPattern: Stix;
-    riskByAttackPattern: {
-        assessedByAttackPattern: AssessedByAttackPattern[],
-        attackPatternsByKillChain: GroupAttackPattern[],
-        phases: GroupPhase[],
-    };
+    riskByAttackPattern: RiskByAttack;
     assessedObjects: AssessmentObject[];
     unassessedPhases: string[];
     displayedAssessedObjects: DisplayedAssessmentObject[];

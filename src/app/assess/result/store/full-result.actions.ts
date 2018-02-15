@@ -2,8 +2,8 @@ import { Action } from '@ngrx/store';
 
 import { Assessment } from '../../../models/assess/assessment';
 import { AssessmentObject } from '../../../models/assess/assessment-object';
-import { RiskByAttackPattern } from '../full/group/models/risk-by-attack-pattern';
 import { Stix } from '../../../models/stix/stix';
+import { RiskByAttack } from '../../../models/assess/risk-by-attack';
 
 // For effects
 export const LOAD_ASSESSMENT_RESULT_DATA = '[Assess Result] LOAD_ASSESSMENT_RESULT_DATA';
@@ -55,7 +55,7 @@ export class SetGroupRiskByAttackPattern implements Action {
     public readonly type = SET_GROUP_RISK_BY_ATTACK_PATTERN;
 
     // individual assessment id, ie not the rollup
-    constructor(public payload: RiskByAttackPattern) { }
+    constructor(public payload: RiskByAttack) { }
 }
 
 export class LoadGroupCurrentAttackPattern implements Action {
@@ -70,7 +70,7 @@ export class SetGroupCurrentAttackPattern implements Action {
 export class SetGroupData implements Action {
     public readonly type = SET_GROUP_DATA;
 
-    constructor(public payload: { assessedObjects: AssessmentObject[], riskByAttackPattern: RiskByAttackPattern }) { }
+    constructor(public payload: { assessedObjects: AssessmentObject[], riskByAttackPattern: RiskByAttack }) { }
 }
 
 export class PushUrl implements Action {

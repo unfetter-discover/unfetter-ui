@@ -18,8 +18,6 @@ import { SummaryDataSource } from '../summary/summary.datasource';
 import { UserProfile } from '../../../models/user/user-profile';
 import { FullAssessmentResultState } from '../store/full-result.reducers';
 import { AssessedByAttackPattern } from './group/models/assessed-by-attack-pattern';
-import { GroupAttackPattern } from './group/models/group-attack-pattern';
-import { GroupPhase } from './group/models/group-phase';
 import { Constance } from '../../../utils/constance';
 
 @Component({
@@ -34,6 +32,7 @@ export class FullComponent implements OnInit, OnDestroy {
   assessment: Assessment;
   assessmentName: Observable<string>;
   rollupId: string;
+  assessmentId: string;
   phase: string;
   attackPatternId: string;
   finishedLoading = false;
@@ -65,6 +64,7 @@ export class FullComponent implements OnInit, OnDestroy {
     const idParamSub$ = this.route.params
       .subscribe((params) => {
         this.rollupId = params.rollupId || '';
+        this.assessmentId = params.assessmentId || '';
         this.phase = params.phase || '';
         this.attackPatternId = params.attackPatternId || '';
 
@@ -242,7 +242,7 @@ export class FullComponent implements OnInit, OnDestroy {
       return;
     }
 
-    return this.router.navigate([this.masterListOptions.displayRoute, assessment.rollupId]);
+    return this.router.navigate([this.masterListOptions.displayRoute, assessment.rollupId, assessment.id]);
   }
 
   /**
