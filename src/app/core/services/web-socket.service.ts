@@ -8,9 +8,11 @@ import { WSMessageTypes } from '../../global/enums/ws-message-types.enum';
 import { AuthService } from './auth.service';
 import * as fromApp from '../../root-store/app.reducers';
 import * as fromUser from '../../root-store/users/users.reducers';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class WebsocketService {
+    private readonly demoMode: boolean = (environment.runMode === 'DEMO');
     private socket;
     private connected: boolean = false;
     private socketSubject: Subject<MessageEvent>;
@@ -21,7 +23,11 @@ export class WebsocketService {
         private authService: AuthService,
         private store: Store<fromApp.AppState>
     ) {
-        this.initConnection();    
+        if (!this.demoMode) {
+            this.initConnection();    
+        } else {
+            this.socketSubject = new Subject();
+        }
     }
 
     public initConnection(): void {
