@@ -23,11 +23,11 @@ export class IndicatorSharingFiltersComponent implements OnInit {
     private fb: FormBuilder
   ) {
     const params = { ...fromIndicatorSharing.initialSearchParameters };
-    if (params.indicatorName) {
+    try {
       delete params.indicatorName;
-    }
+    } catch (e) { }
     this.searchForm = fb.group(params);
-    this.searchForm.setValue(fromIndicatorSharing.initialSearchParameters);
+    this.searchForm.setValue(params);
   }
 
   public ngOnInit() {
