@@ -83,7 +83,7 @@ export class AppComponent implements OnInit {
         if (url === 'indicator-sharing') {
           this.title = 'Analytic Hub';
         } else if (url === 'assess') {
-          this.title = 'assessments';
+          this.title = 'assessments 2.0 (beta)';
         } else {
           this.title = url;
         }

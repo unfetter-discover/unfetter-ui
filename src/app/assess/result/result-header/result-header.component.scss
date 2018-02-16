@@ -1,4 +1,5 @@
 @import '../../../../styles/_variables.scss';
+@import '../../_assess.common.scss';
 
 .noUnderline {
     text-decoration: none;
@@ -31,21 +32,4 @@
 
 .flexColumn {
     flex-direction: column;
-}
-
-.banner-wrapper {
-    position: absolute;
-    background-color: #4F5B62;
-    height: 48px;
-    width: 100%;
-    color: $dark-text-default;
-    font-size: 14px;
-
-    .flex {
-        height: 100%;
-        width: 100%;
-        .banner {
-            margin: auto auto;
-        }
-    }
 }
