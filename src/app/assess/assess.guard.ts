@@ -4,15 +4,16 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 
 import { AppState } from '../root-store/app.reducers';
-import { UserState } from '../root-store/users/users.reducers';
-import { AssessService } from './services/assess.service';
-import { UserProfile } from '../models/user/user-profile';
 import { Assessment } from '../models/assess/assessment';
+import { AssessService } from './services/assess.service';
+import { environment } from '../../environments/environment';
 import { LastModifiedAssessment } from './models/last-modified-assessment';
+import { UserState } from '../root-store/users/users.reducers';
+import { UserProfile } from '../models/user/user-profile';
 
 @Injectable()
 export class AssessGuard implements CanActivate {
-
+    public readonly demoMode: boolean = (environment.runMode === 'DEMO');
     private readonly CREATE_URL = 'assess/create';
 
     constructor(
@@ -32,7 +33,7 @@ export class AssessGuard implements CanActivate {
             .pluck('userProfile')
             .switchMap((user: UserProfile) => {
                 let o$;
-                if (user && user._id) {
+                if (!this.demoMode && user && user._id) {
                     o$ = this.fetchWithCreatorId(user._id);
                 } else {
                     o$ = this.routeNoCreatorId();
