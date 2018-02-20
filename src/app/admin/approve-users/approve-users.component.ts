@@ -31,7 +31,7 @@ export class ApproveUsersComponent implements OnInit {
                 return;
         }
         let processUserApproval$ = this.adminService
-            .processUserApproval({ data: { attributes: tempUser } })
+            .changeUserStatus({ data: { attributes: tempUser } })
             .subscribe(
             (res) => {
                 this.fetchUsers();

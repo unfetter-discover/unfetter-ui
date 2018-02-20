@@ -5,6 +5,7 @@ import { tokenNotExpired } from 'angular2-jwt';
 import { GenericApi } from './genericapi.service';
 import { ConfigService } from './config.service';
 import { environment } from '../../../environments/environment';
+import { Constance } from '../../utils/constance';
 
 @Injectable()
 export class AuthService {
@@ -46,7 +47,7 @@ export class AuthService {
                 lastName: 'User',
                 organizations : [
                     {
-                        'id': 'identity--e240b257-5c42-402e-a0e8-7b81ecc1c09a',
+                        'id': Constance.UNFETTER_OPEN_ID,
                         'approved': true,
                         'role': 'STANDARD_USER'
                     }
@@ -85,8 +86,12 @@ export class AuthService {
         return this.loggedIn() && (this.getUser().role === 'ADMIN' || this.getUser().role === 'ORG_LEADER');
     }
 
-    public pendingApproval() {
-        return tokenNotExpired('unfetterUiToken') && this.getUser() !== null && this.getUser().approved === false;
+    public pendingApproval(): boolean {
+        return tokenNotExpired('unfetterUiToken') && this.getUser() !== null && this.getUser().approved === false && this.getUser().locked === false;
+    }
+
+    public userLocked(): boolean {
+        return tokenNotExpired('unfetterUiToken') && this.getUser() !== null && this.getUser().locked === true;
     }
 
     public logOut() {
