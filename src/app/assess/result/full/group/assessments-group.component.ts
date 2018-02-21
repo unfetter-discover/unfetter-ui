@@ -16,8 +16,9 @@ import { Stix } from '../../../../models/stix/stix';
 import { SortHelper } from '../../../../global/static/sort-helper';
 import { FullAssessmentResultState } from '../../store/full-result.reducers';
 import { Store } from '@ngrx/store';
-import { LoadGroupData, LoadGroupCurrentAttackPattern, PushUrl } from '../../store/full-result.actions';
+import { LoadGroupData, LoadGroupCurrentAttackPattern, PushUrl, LoadGroupAttackPatternRelationships } from '../../store/full-result.actions';
 import { RiskByAttack } from '../../../../models/assess/risk-by-attack';
+import { Relationship } from '../../../../models';
 
 @Component({
   selector: 'unf-assess-group',
@@ -116,7 +117,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
    * @returns {void}
    */
   public initData(attackPatternIndex: number = 0): void {
-    this.assessment = new Assessment();
+    this.assessment = this.assessment || new Assessment();
     this.listenForDataChanges(attackPatternIndex);
     // request for initial data changes
     this.store.dispatch(new LoadGroupData(this.assessmentId));
@@ -132,7 +133,12 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
       .select('fullAssessment')
       .pluck('group')
       .distinctUntilChanged()
-      .filter((group: any) => group.finishedLoadingGroupData === true)
+      .filter((group: any) => {
+        // TODO: stop an infinite loop of network requests
+        //  figure out a better way to short circuit
+        return group.finishedLoadingGroupData === true
+          && !this.displayedAssessedObjects;
+      })
       .subscribe(
         (group: any) => {
           this.assessedObjects = group.assessedObjects || [];
@@ -163,7 +169,30 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
         },
         (err) => console.log(err));
 
-    this.subscriptions.push(sub1$, sub2$);
+    const sub3$ = this.store
+      .select('fullAssessment')
+      .pluck('group')
+      .filter((group: any) => group.finishedLoadingGroupData === true)
+      .pluck('attackPatternRelationships')
+      .distinctUntilChanged()
+      .subscribe(
+        (relationships: Relationship[]) => {
+          const assessmentCandidates = relationships
+            .map((el) => el.attributes)
+            .map((relationship) => relationship.source_ref);
+          this.displayedAssessedObjects = this.assessedObjects
+            .filter((assessedObj) => assessmentCandidates.indexOf(assessedObj.stix.id) > -1)
+            .map((assessedObj) => {
+              const retObj = Object.assign(new DisplayedAssessmentObject(), assessedObj);
+              retObj.risk = this.getRisk(assessedObj.stix.id);
+              retObj.editActive = false;
+              retObj.questions = this.getQuestions(assessedObj.stix.id);
+              return retObj;
+            });
+        },
+        (err) => console.log(err));
+
+    this.subscriptions.push(sub1$, sub2$, sub3$);
   }
 
   public resetNewAssessmentObjects(): void {
@@ -272,36 +301,16 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     if (attackPatternId !== '') {
       // Get attack pattern details
       this.store.dispatch(new LoadGroupCurrentAttackPattern(attackPatternId));
-
       // Get relationships for attack pattern, link to assessed objects
-      const s0$ = this.assessService
-        .getAttackPatternRelationships(attackPatternId)
-        .subscribe(
-          (res) => {
-            const assessmentCanidates = res.map(
-              (relationship) => relationship.attributes.source_ref
-            );
-            this.displayedAssessedObjects = this.assessedObjects
-              .filter((assessedObj) => assessmentCanidates.indexOf(assessedObj.stix.id) > -1)
-              .map((assessedObj) => {
-                const retObj = Object.assign(new DisplayedAssessmentObject(), assessedObj);
-                retObj.risk = this.getRisk(assessedObj.stix.id);
-                retObj.editActive = false;
-                retObj.questions = this.getQuestions(assessedObj.stix.id);
-                return retObj;
-              });
-          },
-          (err) => console.log(err)
-        );
-      this.subscriptions.push(s0$);
+      this.store.dispatch(new LoadGroupAttackPatternRelationships(attackPatternId));
     }
 
     const assessedAps = this.getAttackPatternsByPhase(this.activePhase)
       .map((ap) => ap.attackPatternId);
 
     const query = { 'stix.kill_chain_phases.phase_name': this.activePhase };
-    const s1$ = this.assessService.
-      getAs<Stix>(`${Constance.ATTACK_PATTERN_URL}?filter=${encodeURI(JSON.stringify(query))}`)
+    const s1$ = this.assessService
+      .getAs<Stix>(`${Constance.ATTACK_PATTERN_URL}?filter=${encodeURI(JSON.stringify(query))}`)
       .subscribe(
         (data: Stix[]) => {
           // Get unassessed attack patterns
@@ -344,7 +353,8 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     const assessObj = this.assessment.assessment_objects
       .filter((el) => el.stix !== undefined)
       .find((el) => el.stix.id === id);
-    return assessObj && assessObj.risk ? assessObj.risk : defaultRisk;
+    return assessObj && !Number.isNaN(assessObj.risk)
+      ? assessObj.risk : defaultRisk;
   }
 
   /**
