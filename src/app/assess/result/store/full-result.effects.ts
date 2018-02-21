@@ -7,12 +7,17 @@ import { Observable } from 'rxjs/Observable';
 
 import { Assessment } from '../../../models/assess/assessment';
 import { AssessService } from '../../services/assess.service';
-import { LOAD_ASSESSMENT_RESULT_DATA, SetAssessments, FinishedLoading, SetGroupAssessedObjects, SetGroupRiskByAttackPattern, SetGroupData, LOAD_GROUP_DATA, LOAD_GROUP_CURRENT_ATTACK_PATTERN, SetGroupCurrentAttackPattern, PUSH_URL, DonePushUrl } from './full-result.actions';
+import {
+    LOAD_ASSESSMENT_RESULT_DATA, SetAssessments,
+    FinishedLoading, SetGroupAssessedObjects, SetGroupRiskByAttackPattern,
+    SetGroupData, LOAD_GROUP_DATA, LOAD_GROUP_CURRENT_ATTACK_PATTERN, SetGroupCurrentAttackPattern,
+    PUSH_URL, DonePushUrl, LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS, SetGroupAttackPatternRelationships
+} from './full-result.actions';
 import { fullAssessmentResultReducer } from './full-result.reducers';
 import { Constance } from '../../../utils/constance';
 import { Stix } from '../../../models/stix/stix';
 import { RiskByAttack } from '../../../models/assess/risk-by-attack';
-// import { RiskByAttackPattern } from '../full/group/models/risk-by-attack-pattern';
+import { Relationship } from '../../../models';
 
 
 @Injectable()
@@ -55,6 +60,20 @@ export class FullResultEffects {
         })
         .map((data: Stix) => {
             return new SetGroupCurrentAttackPattern({ currentAttackPattern: data });
+        });
+
+    @Effect()
+    public loadGroupAttackPatternRelationships = this.actions$
+        .ofType(LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS)
+        .pluck('payload')
+        .switchMap((attackPatternId: string) => {
+            return this.assessService.getAttackPatternRelationships(attackPatternId);
+        })
+        .mergeMap((relationships: Relationship[]) => {
+            return [
+                new SetGroupAttackPatternRelationships(relationships),
+                new FinishedLoading(true),
+            ];
         });
 
     @Effect()

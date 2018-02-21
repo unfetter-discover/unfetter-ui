@@ -12,7 +12,7 @@ import { Assessment } from '../../../models/assess/assessment';
 import { AssessService } from '../../services/assess.service';
 import { ConfirmationDialogComponent } from '../../../components/dialogs/confirmation/confirmation-dialog.component';
 import { LastModifiedAssessment } from '../../models/last-modified-assessment';
-import { LoadAssessmentResultData } from '../store/full-result.actions';
+import { LoadAssessmentResultData, CleanAssessmentResultData } from '../store/full-result.actions';
 import { MasterListDialogTableHeaders } from '../../../global/components/master-list-dialog/master-list-dialog.component';
 import { SummaryDataSource } from '../summary/summary.datasource';
 import { UserProfile } from '../../../models/user/user-profile';
@@ -65,6 +65,7 @@ export class FullComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     const idParamSub$ = this.route.params
+      .distinctUntilChanged()
       .subscribe((params) => {
         this.rollupId = params.rollupId || '';
         this.assessmentId = params.assessmentId || '';
@@ -166,6 +167,7 @@ export class FullComponent implements OnInit, OnDestroy {
       .filter((el) => el !== undefined)
       .filter((el) => !el.closed)
       .forEach((sub) => sub.unsubscribe());
+    this.store.dispatch(new CleanAssessmentResultData());
   }
 
   /**
@@ -265,12 +267,12 @@ export class FullComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.activePhase = undefined;
-    this.rollupId = undefined;
-    this.assessment = undefined;
-    this.assessmentTypes = undefined;
-    this.attackPatternId = undefined;
-    // TODO: clear the ngrx store
+    // this.activePhase = undefined;
+    // this.rollupId = undefined;
+    // this.assessment = undefined;
+    // this.assessmentTypes = undefined;
+    // this.attackPatternId = undefined;
+    // this.store.dispatch(new CleanAssessmentResultData());
     return this.router.navigate([this.masterListOptions.displayRoute, assessment.rollupId, assessment.id]);
   }
 
