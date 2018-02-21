@@ -60,6 +60,7 @@ export class HeaderNavigationComponent {
     },
   ];
 
+  public readonly swaggerUrl = Constance.SWAGGER_URL;
   public readonly runMode = environment.runMode;
   public readonly showBanner = environment.showBanner;
   public readonly demoMode: boolean = (environment.runMode === 'DEMO');
