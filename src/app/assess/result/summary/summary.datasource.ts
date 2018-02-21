@@ -33,7 +33,7 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment
             .switchMap(() => {
                 const val = this.filterChange.getValue();
                 const filterVal = val.trim().toLowerCase() || '';
-                const products$ = this.fetchAssessments().let(this.dedupByRollupId);
+                const products$ = this.fetchAssessments(); // .let(this.dedupByRollupId);
                 if (!filterVal || filterVal.length === 0) {
                     return products$;
                 }

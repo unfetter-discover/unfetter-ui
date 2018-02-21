@@ -28,6 +28,7 @@ import { RiskByAttack } from '../../../models/assess/risk-by-attack';
 import { LoadAssessmentRiskByAttackPatternData, LoadSingleAssessmentRiskByAttackPatternData } from '../store/riskbyattackpattern.actions';
 import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
 import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
+import { CleanAssessmentResultData } from '../store/full-result.actions';
 
 @Component({
   selector: 'summary',
@@ -259,6 +260,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .filter((el) => el !== undefined)
       .filter((el) => !el.closed)
       .forEach((sub) => sub.unsubscribe());
+    this.store.dispatch(new CleanAssessmentResultData());
   }
 
   /**
@@ -322,16 +324,16 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: { attributes: assessment } });
     const dialogSub$ = dialogRef.afterClosed()
-    .subscribe(
-      (result) => {
-        const isBool = typeof result === 'boolean';
-        const isString = typeof result === 'string';
-        if (!result ||
-          (isBool && result !== true) ||
-          (isString && result !== 'true')) {
+      .subscribe(
+        (result) => {
+          const isBool = typeof result === 'boolean';
+          const isString = typeof result === 'string';
+          if (!result ||
+            (isBool && result !== true) ||
+            (isString && result !== 'true')) {
             return;
           }
-          
+
           const isCurrentlyViewed = assessment.rollupId === this.rollupId ? true : false;
           const sub$ = this.assessService
             .deleteByRollupId(assessment.rollupId)
@@ -342,7 +344,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
                 if (sub$) {
                   sub$.unsubscribe();
                 }
-                
+
                 // we deleted the current assessment
                 if (isCurrentlyViewed) {
                   return this.router.navigate([Constance.X_UNFETTER_ASSESSMENT_NAVIGATE_URL]);
@@ -363,6 +365,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.store.dispatch(new CleanAssessmentResultData());
     return this.router.navigate([this.masterListOptions.displayRoute, assessment.rollupId, assessment.id]);
   }
 
