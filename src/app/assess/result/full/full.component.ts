@@ -272,7 +272,7 @@ export class FullComponent implements OnInit, OnDestroy {
     // this.assessment = undefined;
     // this.assessmentTypes = undefined;
     // this.attackPatternId = undefined;
-    // this.store.dispatch(new CleanAssessmentResultData());
+    this.store.dispatch(new CleanAssessmentResultData());
     return this.router.navigate([this.masterListOptions.displayRoute, assessment.rollupId, assessment.id]);
   }
 
