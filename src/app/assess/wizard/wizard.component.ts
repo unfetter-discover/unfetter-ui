@@ -290,13 +290,13 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
           assessment.metaProperties.rollupId = rollupId;
         }
       }
-      if (summary.assessment_objects.every(el => el.stix.type === 'indicator')) {
+      if (assessment.assessment_objects.every(el => el.stix.type === 'indicator')) {
         typedAssessments[this.sidePanelOrder[0]] = assessment;
         meta.includesIndicators = true;
-      } else if (summary.assessment_objects.every(el => el.stix.type === 'course-of-action')) {
+      } else if (assessment.assessment_objects.every(el => el.stix.type === 'course-of-action')) {
         typedAssessments[this.sidePanelOrder[1]] = assessment;
         meta.includesMitigations = true;
-      } else if (summary.assessment_objects.every(el => el.stix.type === 'x-unfetter-sensor')) {
+      } else if (assessment.assessment_objects.every(el => el.stix.type === 'x-unfetter-sensor')) {
         typedAssessments[this.sidePanelOrder[2]] = assessment;
         meta.includesSensors = true;
       } else {
