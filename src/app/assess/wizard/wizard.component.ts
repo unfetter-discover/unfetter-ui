@@ -196,11 +196,6 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
           const panel = this.determineFirstOpenSidePanel();
           if (panel) {
             this.onOpenSidePanel(panel);
-            if (this.currentAssessmentGroup) {
-              this.setSelectedRiskValue();
-              this.changeDetection.detectChanges();
-              this.updateChart();
-            }
           }
         },
         (err) => console.log(err));
@@ -390,7 +385,11 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       this.currentAssessmentGroup = this.getCurrentAssessmentGroup();
       this.tempModel = { ...this.assessmentTypeGroups[this.openedSidePanel].tempModel };
     }
+
     // reset progress bar
+    this.setSelectedRiskValue();
+    this.changeDetection.detectChanges();
+    this.updateChart();
     this.updateRatioOfAnswerQuestions();
   }
 
@@ -634,6 +633,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     this.showSummary = false;
     this.setSelectedRiskValue();
     this.updateChart();
+    this.updateRatioOfAnswerQuestions();
   }
 
   /*
@@ -680,6 +680,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       this.setSelectedRiskValue();
       this.updateChart();
     }
+    this.updateRatioOfAnswerQuestions();
   }
 
   /*
