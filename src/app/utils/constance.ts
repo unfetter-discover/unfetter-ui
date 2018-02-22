@@ -491,5 +491,6 @@ export const Constance = {
     }
   },
   DIALOG_WIDTH_MEDIUM: '800px',
-  DIALOG_HEIGHT_TALL: 'calc(100vh - 50px)'
+  DIALOG_HEIGHT_TALL: 'calc(100vh - 50px)',
+  UNFETTER_OPEN_ID: 'identity--e240b257-5c42-402e-a0e8-7b81ecc1c09a'
 };

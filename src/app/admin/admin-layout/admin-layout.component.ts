@@ -11,6 +11,7 @@ export class AdminLayoutComponent {
         { url: 'site-usage', label: 'Site Usage Data' },
         { url: 'organization-leader-approval', label: 'Organization Leader Approval' },
         { url: 'config-edit', label: 'Edit Configurations' },
-        { url: 'heartbeat', label: 'Server Status' }
+        { url: 'heartbeat', label: 'Server Status' },
+        { url: 'current-users', label: 'Current Users' },
     ];
 }

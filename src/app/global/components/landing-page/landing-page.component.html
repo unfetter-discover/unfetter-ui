@@ -7,6 +7,14 @@
       </div>
     </div>
   </div>
+  <div class="row mt-20" *ngIf="authService.userLocked()">
+    <div class="col-xs-6 col-xs-offset-3">
+      <div class="uf-well-warn">
+        <a (click)="authService.logOut()" class="close" data-dismiss="alert">&times;</a>
+        Your access to Unfetter has been revoked.
+      </div>
+    </div>
+  </div>
   <div class="row">
     <div id="logoWrapper" class="text-center col-xs-12">
       <img src="assets/icon/unfetter_black_lg.png" alt="Unfetter Logo" id="logoImg">

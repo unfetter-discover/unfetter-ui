@@ -3,6 +3,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { UsersService } from '../../core/services/users.service';
 import { AuthService } from '../../core/services/auth.service';
+import { Constance } from '../../utils/constance';
 
 @Component({
     selector: 'settings',
@@ -16,7 +17,7 @@ export class SettingsComponent implements OnInit {
     public approvedOrganizations: any[];
     public unaffiliatedOrganizations: any[];
     public userId: string;
-    public unfetterOpenId: string = 'identity--e240b257-5c42-402e-a0e8-7b81ecc1c09a';
+    public unfetterOpenId: string = Constance.UNFETTER_OPEN_ID;
 
     constructor(
         private usersService: UsersService,
