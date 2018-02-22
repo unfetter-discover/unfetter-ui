@@ -16,8 +16,11 @@ export class AdminService {
 
     constructor(private genericApi: GenericApi) { }
 
-    public getUsersPendingApproval(): Observable<any> {
-        return this.genericApi.get(`${this.adminUrl}/users-pending-approval`);
+    public getUsersPendingApproval(): Observable<UserProfile[]> {
+        return this.genericApi.getAs<JsonApiData<UserProfile>[]>(`${this.adminUrl}/users-pending-approval`)
+            .map((usersData: JsonApiData<UserProfile>[]) => {
+                return usersData.map((userData: JsonApiData<UserProfile>) => userData.attributes);
+            });
     }
 
     public getCurrentUsers(): Observable<UserProfile[]> {
