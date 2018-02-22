@@ -58,7 +58,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Modified'),
     displayRoute: this.baseAssessUrl + '/result/summary',
-    modifyRoute: this.baseAssessUrl,
+    modifyRoute: this.baseAssessUrl + '/wizard/edit',
     createRoute: this.baseAssessUrl + '/create',
   };
 
@@ -115,7 +115,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
           this.summaries = [];
           return;
         }
-
         this.summaries = [...arr];
         this.summary = { ...arr[0] };
       },
@@ -196,7 +195,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
           this.summaryAggregations = [];
           return;
         }
-
         this.summaryAggregation = { ...arr[0] };
         this.summaryAggregations = [...arr];
       })
@@ -274,13 +272,12 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
   /**
    * @description
-   * @param {LastModifiedAssessment} assessment - optional
-   * @return {Promise<boolean>}
    */
-  public onEdit(assessment: LastModifiedAssessment): Promise<boolean> {
-    // return this.router.navigateByUrl(this.masterListOptions.modifyRoute);
-    console.log('noop');
-    return Promise.resolve(false);
+  public onEdit(event?: any): Promise<boolean> {
+    if (!event || (event instanceof UIEvent)) {
+      return this.router.navigate([this.masterListOptions.modifyRoute, this.rollupId]);
+    }
+    return this.router.navigate([this.masterListOptions.modifyRoute, event.rollupId]);
   }
 
   /**

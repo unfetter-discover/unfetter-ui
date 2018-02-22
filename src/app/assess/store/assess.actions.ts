@@ -25,7 +25,7 @@ export const WIZARD_PAGE = '[Asses] WIZARD_PAGE';
 export class UpdatePageTitle implements Action {
     public readonly type = UPDATE_PAGE_TITLE;
 
-    constructor(public payload?: string) { }
+    constructor(public payload?: string | Object) { }
 }
 
 export class StartAssessment implements Action {

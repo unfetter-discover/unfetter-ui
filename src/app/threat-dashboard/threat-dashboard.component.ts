@@ -677,6 +677,9 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    */
   public editButtonClicked(event?: UIEvent): Promise<boolean> {
     this.sharedService.threatReportOverview = this.threatReport;
+    if (event instanceof ThreatReport) {
+      return this.router.navigate([`${this.masterListOptions.modifyRoute}/${event.id}`]);
+    }
     return this.router.navigate([`${this.masterListOptions.modifyRoute}/${this.id}`]);
   }
 
