@@ -200,7 +200,6 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
               this.setSelectedRiskValue();
               this.changeDetection.detectChanges();
               this.updateChart();
-              // setTimeout(() => this.updateChart(), 0, this); // stoopid chart fix
             }
           }
         },
