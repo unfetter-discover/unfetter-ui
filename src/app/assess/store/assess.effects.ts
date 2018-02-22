@@ -132,14 +132,25 @@ export class AssessEffects {
                         return this.genericServiceApi.postAs<JsonApiData<Assessment>[]>(url, json);
                     }
                 });
-            return Observable.forkJoin(...observables);
+            return Observable.forkJoin(...observables)
+                .map((arr: any) => {
+                    if (Array.isArray(arr[0])) {
+                        return arr;
+                    } else {
+                        // stoopid hack to handle the fact that update returns a single object, not an array, and drops the metadata
+                        arr[0].attributes.metaProperties = { rollupId: rollupId };
+                        return [arr];
+                    }
+                });
         })
-        .flatMap((arr) => arr)
+        .flatMap((arr: JsonApiData<Assessment>[][]) => arr)
         .map((arr) => {
+            const hasAttributes = arr && arr[0] && arr[0].attributes;
+            const hasMetadata = hasAttributes && arr[0].attributes.metaProperties;
             return new assessActions.FinishedSaving({ 
                 finished: true, 
-                rollupId: arr[0].attributes.metaProperties.rollupId,
-                id: arr[0].attributes.id,
+                rollupId: hasMetadata ? arr[0].attributes.metaProperties.rollupId : '',
+                id: hasAttributes ? arr[0].attributes.id : '',
             });
         })
 

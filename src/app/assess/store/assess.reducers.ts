@@ -51,7 +51,11 @@ export function assessmentReducer(state = initialState, action: assessmentAction
             });
         case assessmentActions.UPDATE_PAGE_TITLE:
             const a1 = new Assessment();
-            a1.assessmentMeta.title = action.payload;
+            if (typeof action.payload === 'string') {
+                a1.assessmentMeta.title = action.payload;
+            } else {
+                Object.assign(a1.assessmentMeta, action.payload);
+            }
             const s1 = genAssessState({
                 assessment: a1,
             });

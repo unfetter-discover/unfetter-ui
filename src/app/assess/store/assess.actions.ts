@@ -19,13 +19,14 @@ export const SET_INDICATORS = '[Assess] SET_INDICATORS';
 export const SET_MITIGATONS = '[Assess] SET_MITIGATIONS';
 export const SET_SENSORS = '[Assess] SET_SENSORS';
 export const FINISHED_LOADING = '[Assess] FINISHED_LOADING';
+export const FINISHED_RENDERING = '[Assess] FINISHED_RENDERING';
 export const FINISHED_SAVING = '[Assess] FINISHED_SAVING';
 export const WIZARD_PAGE = '[Asses] WIZARD_PAGE';
 
 export class UpdatePageTitle implements Action {
     public readonly type = UPDATE_PAGE_TITLE;
 
-    constructor(public payload?: string) { }
+    constructor(public payload?: string | Object) { }
 }
 
 export class StartAssessment implements Action {
