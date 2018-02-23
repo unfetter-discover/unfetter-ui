@@ -108,6 +108,7 @@
     .mat-row {
         padding: 0px;
         align-items: normal;
+        min-height: 10px;
 
         .mat-cell {
             font-size: 11px;
