@@ -21,12 +21,7 @@
         <mat-card class="uf-mat-card card right-card" id="vulnerabilityCard">
           <mat-card-title>Where you are most vulnerable</mat-card-title>
           <mat-card-content>
-            <div style="display:flex; height: 192px;">
-              <div class="text-muted" style="margin: auto auto">
-                Coming soon...
-              </div>
-            </div>
-            <!-- <mat-table #table [dataSource]="summaryCalculationService.topRisks">
+            <mat-table #table [dataSource]="summaryCalculationService.topRisks">
               <ng-container matColumnDef="{{columnIds[0]}}">
                 <mat-header-cell *matHeaderCellDef>KILL CHAIN AFFECTED</mat-header-cell>
                 <mat-cell *matCellDef="let risk">{{risk.phaseName | capitalize }}</mat-cell>
@@ -34,25 +29,25 @@
               <ng-container matColumnDef="{{columnIds[1]}}">
                 <mat-header-cell *matHeaderCellDef>ASSESSED ITEM</mat-header-cell>
                 <mat-cell *matCellDef="let risk">
-                  <ul *ngIf="risk.objects; else noObjects">
+                  <ul *ngIf="risk.objects && risk.objects.length; else noObjects">
                     <li *ngFor="let obj of risk.objects">
                       <a href="#stix/{{obj.type}}s/{{obj.id}}">{{obj.name}}</a>
                     </li>
                   </ul>
                   <ng-template #noObjects>
-                    No objects found!
+                    No assessed vulnerabilities found
                   </ng-template>
                 </mat-cell>
               </ng-container>
               <ng-container matColumnDef="{{columnIds[2]}}">
                 <mat-header-cell *matHeaderCellDef>RISK</mat-header-cell>
                 <mat-cell *matCellDef="let risk">
-                  <span class="label label-warning">{{calculateRisk(risk.objects)}}</span>
+                  <span *ngIf="risk.objects && risk.objects.length" class="label label-warning">{{calculateRisk(risk.objects)}}</span>
                 </mat-cell>
               </ng-container>
               <mat-header-row class="table-header-row" *matHeaderRowDef="columnIds"></mat-header-row>
               <mat-row *matRowDef="let row; columns: columnIds;"></mat-row>
-            </mat-table> -->
+            </mat-table>
           </mat-card-content>
         </mat-card>
       </div>
