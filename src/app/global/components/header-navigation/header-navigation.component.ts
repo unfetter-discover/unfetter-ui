@@ -27,7 +27,7 @@ export class HeaderNavigationComponent {
     },
     {
       url: 'indicator-sharing/list',
-      title: 'Analytic Hub',
+      title: 'Analytic Exchange',
       icon: Constance.LOGO_IMG_ANALYTIC_HUB
     },
     {
