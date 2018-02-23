@@ -4,7 +4,7 @@
 
     @each $property in $properties {
         .analyticHubTheme & {
-          #{$property}: $analytic-hub-primary;
+          #{$property}: $analytic-exchange-primary;
         }
 
         .threatDashboardTheme & {
@@ -22,7 +22,7 @@
 
   @each $property in $properties {
       .analyticHubTheme & {
-        #{$property}: $analytic-hub-primary-light;
+        #{$property}: $analytic-exchange-primary-light;
       }
 
       .threatDashboardTheme & {
@@ -40,7 +40,7 @@
 
   @each $property in $properties {
       .analyticHubTheme & {
-        #{$property}: $analytic-hub-primary-lighter;
+        #{$property}: $analytic-exchange-primary-lighter;
       }
 
       .threatDashboardTheme & {
@@ -58,7 +58,7 @@
 
   @each $property in $properties {
       .analyticHubTheme & {
-        #{$property}: $analytic-hub-primary-lightest;
+        #{$property}: $analytic-exchange-primary-lightest;
       }
 
       .threatDashboardTheme & {
@@ -76,7 +76,7 @@
 
     @each $property in $properties {
         .analyticHubTheme & {
-          #{$property}: $analytic-hub-accent;
+          #{$property}: $analytic-exchange-accent;
         }
 
         .threatDashboardTheme & {
@@ -92,7 +92,7 @@
 
 @mixin themePrimaryText () {
   .analyticHubTheme & {
-    color: $analytic-hub-primary-text;
+    color: $analytic-exchange-primary-text;
   }
 
   .threatDashboardTheme & {
@@ -107,7 +107,7 @@
 
 @mixin themePrimaryTextProp ($property) {
   .analyticHubTheme & {
-    #{$property}: $analytic-hub-primary-text;
+    #{$property}: $analytic-exchange-primary-text;
   }
 
   .threatDashboardTheme & {
@@ -122,7 +122,7 @@
 
 @mixin themeAccentText () {
   .analyticHubTheme & {
-    color: $analytic-hub-accent-text;
+    color: $analytic-exchange-accent-text;
   }
 
   .threatDashboardTheme & {
@@ -137,7 +137,7 @@
 
 @mixin lightenPrimaryColors ($property, $percent) {
     .analyticHubTheme & {
-        #{$property}: rgba-to-rgb(rgba($analytic-hub-primary, $percent));
+        #{$property}: rgba-to-rgb(rgba($analytic-exchange-primary, $percent));
     }
     .threatDashboardTheme & {
         #{$property}: rgba-to-rgb(rgba($threat-dashboard-primary, $percent));
@@ -150,7 +150,7 @@
 
 @mixin lightenAccentColors ($property, $percent) {
   .analyticHubTheme & {
-    #{$property}: rgba-to-rgb(rgba($analytic-hub-accent, $percent));
+    #{$property}: rgba-to-rgb(rgba($analytic-exchange-accent, $percent));
   }
   .threatDashboardTheme & {
     #{$property}: rgba-to-rgb(rgba($threat-dashboard-accent, $percent));
@@ -164,7 +164,7 @@
 
 @mixin darkenPrimaryColors ($property, $percent) {
   .analyticHubTheme & {
-    #{$property}: darken($analytic-hub-primary, $percent);
+    #{$property}: darken($analytic-exchange-primary, $percent);
   }
   .threatDashboardTheme & {
     #{$property}: darken($threat-dashboard-primary, $percent);
@@ -177,7 +177,7 @@
 
 @mixin darkenAccentColors ($property, $percent) {
  .analyticHubTheme & {
-   #{$property}: darken($analytic-hub-accent, $percent);
+   #{$property}: darken($analytic-exchange-accent, $percent);
  }
  .threatDashboardTheme & {
    #{$property}: darken($threat-dashboard-accent, $percent);
@@ -190,7 +190,7 @@
 
 @mixin themePrimaryColorsWithModifiedValue ($property, $modification) {
   .analyticHubTheme & {
-    #{$property}: #{$modification} $analytic-hub-primary;
+    #{$property}: #{$modification} $analytic-exchange-primary;
   }
   .threatDashboardTheme & {
     #{$property}: #{$modification} $threat-dashboard-primary;
@@ -203,7 +203,7 @@
 
 @mixin themeAccentColorsWithModifiedValue ($property, $modification) {
   .analyticHubTheme & {
-    #{$property}: #{$modification} $analytic-hub-accent;
+    #{$property}: #{$modification} $analytic-exchange-accent;
   }
   .threatDashboardTheme & {
     #{$property}: #{$modification} $threat-dashboard-accent;

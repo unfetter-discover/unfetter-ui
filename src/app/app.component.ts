@@ -82,7 +82,7 @@ export class AppComponent implements OnInit {
         const url = ((event as any)._routerState.snapshot.url.split('/'))[1];
         this.setTheme(url, bodyElement);
         if (url === 'indicator-sharing') {
-          this.title = 'Analytic Hub';
+          this.title = 'Analytic Exchange';
         } else if (url === 'assess') {
           this.title = 'assessments 2.0 (beta)';
         } else {

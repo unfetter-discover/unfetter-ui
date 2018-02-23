@@ -15,13 +15,13 @@ $default-theme: mat-light-theme($default-theme-primary, $default-theme-accent, $
 
 // See themes.enum.ts for the css selectors of themes
 
-$analytic-hub-theme-primary: mat-palette($mat-cyan, 600);
-$analytic-hub-theme-accent: mat-palette($mat-orange, A200, A100, A400);
-$analytic-hub-theme-warn: mat-palette($mat-deep-orange);
-$analytic-hub-theme: mat-light-theme($analytic-hub-theme-primary, $analytic-hub-theme-accent, $analytic-hub-theme-warn);
+$analytic-exchange-theme-primary: mat-palette($mat-cyan, 600);
+$analytic-exchange-theme-accent: mat-palette($mat-orange, A200, A100, A400);
+$analytic-exchange-theme-warn: mat-palette($mat-deep-orange);
+$analytic-exchange-theme: mat-light-theme($analytic-exchange-theme-primary, $analytic-exchange-theme-accent, $analytic-exchange-theme-warn);
 
 .analyticHubTheme {
-  @include angular-material-theme($analytic-hub-theme);
+  @include angular-material-theme($analytic-exchange-theme);
 }
 
 $threat-dashboard-theme-primary: mat-palette($mat-blue, 600);
