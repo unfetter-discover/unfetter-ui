@@ -125,7 +125,7 @@ describe(`App`, () => {
             { path: 'partners', title: 'partners', theme: Themes.DEFAULT },
             { path: 'intrusion-set-dashboard', title: 'intrusion-set-dashboard', theme: Themes.DEFAULT },
             { path: 'assessments', title: 'assessments', theme: Themes.ASSESSMENTS },
-            { path: 'assess', title: 'assessments', theme: Themes.ASSESSMENTS },
+            { path: 'assess', title: 'assessments 2.0 (beta)', theme: Themes.ASSESSMENTS },
             { path: 'threat-dashboard', title: 'threat-dashboard', theme: Themes.THREAT_DASHBOARD },
             { path: 'users', title: 'users', theme: Themes.DEFAULT },
             { path: 'indicator-sharing', title: 'Analytic Hub', theme: Themes.ANALYTIC_HUB },
