@@ -3,11 +3,14 @@ import { ActivatedRoute } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import { Store } from '@ngrx/store';
 
 import { AddAssessedObjectComponent } from './add-assessed-object/add-assessed-object.component';
-import { AssessService } from '../../../services/assess.service';
 import { Assessment } from '../../../../models/assess/assessment';
+import { AssessAttackPatternMeta } from '../../../../models/assess/assess-attack-pattern-meta';
 import { AssessmentObject } from '../../../../models/assess/assessment-object';
+import { AssessmentQuestion } from '../../../../models/assess/assessment-question';
+import { AssessService } from '../../../services/assess.service';
 import { AttackPattern } from '../../../../models/attack-pattern';
 import { Constance } from '../../../../utils/constance';
 import { DisplayedAssessmentObject } from './models/displayed-assessment-object';
@@ -15,7 +18,6 @@ import { FormatHelpers } from '../../../../global/static/format-helpers';
 import { Stix } from '../../../../models/stix/stix';
 import { SortHelper } from '../../../../global/static/sort-helper';
 import { FullAssessmentResultState } from '../../store/full-result.reducers';
-import { Store } from '@ngrx/store';
 import { LoadGroupData, LoadGroupCurrentAttackPattern, PushUrl, LoadGroupAttackPatternRelationships } from '../../store/full-result.actions';
 import { RiskByAttack } from '../../../../models/assess/risk-by-attack';
 import { Relationship } from '../../../../models';
@@ -261,38 +263,56 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  public getAttackPatternsByPhase(phaseName) {
+  /**
+   * @description
+   * @param {string} phaseName
+   * @returns {AssessAttackPatternMeta[]}
+   */
+  public getAttackPatternsByPhase(phaseName: string): AssessAttackPatternMeta[] {
     const phase = this.riskByAttackPattern.phases.find((el) => el._id === phaseName);
     return phase && phase.attackPatterns ? phase.attackPatterns : [];
   }
 
-  public getRiskByAttackPatternId(attackPatternId) {
-    for (const ap of this.riskByAttackPattern.assessedByAttackPattern) {
-      if (ap._id === attackPatternId) {
-        return ap.risk;
-      }
-    }
-    return 1;
-  }
-
-  public getRiskByPhase(phaseName) {
-    const phaseObj = this.riskByAttackPattern.phases.find((phase) => phase._id === phaseName);
-    if (phaseObj) {
-      let sum = 0;
-      let count = 0;
-      for (const ao of phaseObj.assessedObjects) {
-        sum += ao.risk;
-        count++;
-      }
-      return sum / count;
-    } else {
-      return 1;
-    }
+  /**
+   * @description finds given attack pattern in risk by attack pattern collection 
+   *  returns the current risk if found other wise returns 1
+   * @param {string} attackPatternId
+   * @returns {number} 0 - 1 based on risk
+   */
+  public getRiskByAttackPatternId(attackPatternId: string): number {
+    const risk = this.riskByAttackPattern
+      .assessedByAttackPattern
+      .filter((ap) => ap._id === attackPatternId)
+      .filter((ap) => ap && ap.risk)
+      .map((ap) => ap.risk)[0] || 1;
+    return risk;
   }
 
   /**
    * @description
-   * @param attackPatternId
+   * @param {string} phaseName
+   * @returns {number}
+   */
+  public getRiskByPhase(phaseName: string): number {
+    const defaultRisk = 1;
+    const phaseObj = this.riskByAttackPattern.phases.find((phase) => phase._id === phaseName);
+    if (phaseObj) {
+      let count = 0;
+      const sum = phaseObj.assessedObjects
+        .map((ao) => ao.risk)
+        .reduce((currentSum, risk) => {
+          count++;
+          return currentSum + risk;
+        }, 0);
+      return (count !== 0) ? (sum / count) : defaultRisk;
+    } else {
+      return defaultRisk;
+    }
+  }
+
+  /**
+   * @description load the data for given attack pattern, update page
+   * @param {string} attackPatternId
    * @return {void}
    */
   public setAttackPattern(attackPatternId = ''): void {
@@ -327,7 +347,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
    * @description
    * @param stixType 
    */
-  public getStixIcon(stixType) {
+  public getStixIcon(stixType: string): string {
     const convertedStixType = stixType
       .replace(/-/g, '_')
       .toUpperCase()
@@ -360,9 +380,9 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * @description the questions of the assessment object with the given id, otherwise -1
    * @param {string} id
-   * @return {[]} questions
+   * @return {AssessmentQuestion[]} questions
    */
-  public getQuestions(id: string): any[] {
+  public getQuestions(id: string): AssessmentQuestion[] {
     const defaultQuestions = [];
     if (!id) {
       return defaultQuestions;

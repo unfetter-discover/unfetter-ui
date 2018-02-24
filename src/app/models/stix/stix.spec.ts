@@ -1,4 +1,5 @@
 import { Stix } from './stix';
+import { StixMockFactory } from './stix-mock';
 
 /**
  * @see https://stixproject.github.io/
@@ -8,11 +9,7 @@ describe('stix model', () => {
     let stix: Stix;
 
     beforeEach(() => {
-        stix = new Stix();
-        stix.description = 'description';
-        stix.name = 'stixname';
-        stix.object_refs = [ 'ref1', 'ref2' ];
-        stix.created_by_ref = 'author';
+        stix = StixMockFactory.mockOne();
     });
 
     it('should have a constructor', () => {
