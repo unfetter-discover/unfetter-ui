@@ -21,7 +21,7 @@ import { RiskByAttackPatternMockFactory } from '../../../../models/assess/risk-b
 import { SummaryCalculationService } from '../../summary/summary-calculation.service';
 import { AssessmentObjectMockFactory } from '../../../../models/assess/assessment-object.mock';
 
-fdescribe('AssessGroupComponent', () => {
+describe('AssessGroupComponent', () => {
   let component: AssessGroupComponent;
   let fixture: ComponentFixture<AssessGroupComponent>;
 
