@@ -11,7 +11,7 @@ import {
     LOAD_ASSESSMENT_RESULT_DATA, SetAssessments,
     FinishedLoading, SetGroupAssessedObjects, SetGroupRiskByAttackPattern,
     SetGroupData, LOAD_GROUP_DATA, LOAD_GROUP_CURRENT_ATTACK_PATTERN, SetGroupCurrentAttackPattern,
-    PUSH_URL, DonePushUrl, LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS, SetGroupAttackPatternRelationships
+    PUSH_URL, DonePushUrl, LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS, SetGroupAttackPatternRelationships, ReloadAfterAssessmentObjectUpdate, UPDATE_ASSESSMENT_OBJECT, LoadGroupData
 } from './full-result.actions';
 import { fullAssessmentResultReducer } from './full-result.reducers';
 import { Constance } from '../../../utils/constance';
@@ -92,4 +92,21 @@ export class FullResultEffects {
         })
         .switchMap(() => Observable.of(new DonePushUrl()));
 
+    @Effect()
+    public updateAssesmentObject = this.actions$
+        .ofType(UPDATE_ASSESSMENT_OBJECT)
+        .pluck('payload')
+        .filter((payload: Assessment) => payload && payload.id !== undefined)
+        .switchMap((assessment: Assessment) => {
+            const id = assessment.id;
+            const o1$ = this.assessService
+                .genericPatch(`${Constance.X_UNFETTER_ASSESSMENT_URL}/${id}`, assessment)
+                .map((resp) => new LoadGroupData(id))
+                .catch((err) => {
+                    // TODO: better error handling action
+                    console.log(err);
+                    return Observable.empty();
+                });
+            return o1$;
+        })
 }

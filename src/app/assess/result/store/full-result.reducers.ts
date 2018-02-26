@@ -29,7 +29,7 @@ export interface FullAssessmentGroupState {
     attackPatternRelationships: Relationship[];
 }
 
-const genGroupState = (state?: Partial<FullAssessmentGroupState>) => {
+export const genGroupState = (state?: Partial<FullAssessmentGroupState>) => {
     const tmp = {
         finishedLoadingGroupData: false,
         currentAttackPattern: new Stix(),
@@ -54,7 +54,7 @@ const genGroupState = (state?: Partial<FullAssessmentGroupState>) => {
     return tmp;
 };
 
-const genState = (state?: Partial<FullAssessmentResultState>) => {
+export const genState = (state?: Partial<FullAssessmentResultState>) => {
     const tmp = {
         fullAssessment: new Assessment(),
         assessmentTypes: [],
@@ -93,6 +93,9 @@ export function fullAssessmentResultReducer(state = initialState, action: FullAs
                 group: {
                     ...state.group,
                     ...action.payload,
+                    // riskByAttackPattern: {
+                    //     ...action.payload.riskByAttackPattern,
+                    // },
                     finishedLoadingGroupData: true,
                 },
             };
