@@ -57,7 +57,7 @@
                         <a routerLink="/stix/attack-patterns/{{ap.id}}">{{ap.name}}</a>
                     </h4>
                     <div *ngIf="ap.kill_chain_phases">
-                        <label>Kill Chain Phases</label>
+                        <label>Tactics</label>
                         <p>
                             <span *ngFor="let phase of ap.kill_chain_phases; let i = index" class="text-muted">
                                 <span [ngClass]="{'uf-highlight': highlightPhase(phase.phase_name)}" matTooltip="{{ phase.kill_chain_name | capitalize }}"
@@ -90,7 +90,7 @@
                     <p>{{ indicator.description }}</p>
                 </div>
                 <div *ngIf="indicator.kill_chain_phases">
-                    <label>Kill Chain Phases</label>
+                    <label>Tactics</label>
                     <p>
                         <span *ngFor="let phase of indicator.kill_chain_phases; let i = index" class="text-muted">
                             <span 

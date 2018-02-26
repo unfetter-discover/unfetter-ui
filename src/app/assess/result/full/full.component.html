@@ -15,7 +15,7 @@
         <div class="risk-header-wrapper">
           <div class="flex risk-header">
             <span class="flex-grow">
-              Kill Chain Phase
+              Tactic
             </span>
             <span class="align-right">
               Risk Level
@@ -42,7 +42,7 @@
         <div class="divider-wrapper">
         </div>
         <div *ngIf="assessGroupMain.unassessedPhases && assessGroupMain.unassessedPhases.length > 0">
-          <div class="header">Unassessed Kill Chain Phases</div>
+          <div class="header">Unassessed Tactics</div>
           <div class="unassessed-phases-list">
             <div class="unassessed-phases-list-item cursor-pointer" 
               *ngFor="let phase of assessGroupMain.unassessedPhases; trackBy:trackByFn"

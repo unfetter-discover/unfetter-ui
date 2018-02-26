@@ -13,7 +13,7 @@
         </mat-select>
       </mat-form-field>
       <mat-form-field class="full-width mb-9">
-        <mat-select placeholder="Kill Chain Phases" [multiple]="true" formControlName="killChainPhases">
+        <mat-select placeholder="Tactics" [multiple]="true" formControlName="killChainPhases">
           <mat-option value="{{phase}}" *ngFor="let phase of killChainPhases$ | async">{{ phase | capitalize }}</mat-option>
         </mat-select>
       </mat-form-field>
