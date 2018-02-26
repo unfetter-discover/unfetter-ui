@@ -2,35 +2,35 @@
 
     <div class="uf-collapsible-control mb-10 mt-9" (click)="showKillChainPhases = !showKillChainPhases">
         <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showKillChainPhases}">chevron_right</i>
-        <span class="h5">&nbsp;Add Kill Chain Phases</span>
+        <span class="h5">&nbsp;Add Tactics</span>
     </div>
 
     <div class="uf-well-accent" @heightCollapse *ngIf="showKillChainPhases">
         <form [formGroup]="localForm" novalidate (ngSubmit)="addToParent()" *ngIf="formResetComplete">     
             
             <mat-form-field class="full-width mb-6">
-                <input matInput required placeholder="Kill Chain Name" formControlName="kill_chain_name" [matAutocomplete]="killChainNamesAuto">
+                <input matInput required placeholder="Framework" formControlName="kill_chain_name" [matAutocomplete]="killChainNamesAuto">
                 <mat-autocomplete #killChainNamesAuto="matAutocomplete">
                     <mat-option *ngFor="let killChainName of killChainNames" [value]="killChainName">{{killChainName | capitalize}}
                     </mat-option>
                 </mat-autocomplete>
                 <mat-error *ngIf="localForm.get('kill_chain_name').hasError('required')">
-                    Kill Chain Name is <strong>required</strong>
+                     Framework is <strong>required</strong>
                 </mat-error>
             </mat-form-field>
             
             <mat-form-field class="full-width mb-6">
-                <input matInput required placeholder="Phase Name" formControlName="phase_name" [matAutocomplete]="killChainPhasesAuto">
+                <input matInput required placeholder="Tactic" formControlName="phase_name" [matAutocomplete]="killChainPhasesAuto">
                 <mat-autocomplete #killChainPhasesAuto="matAutocomplete">
                     <mat-option *ngFor="let phase of getDisplayedKillchains()" [value]="phase">{{phase | capitalize}}
                     </mat-option>
                 </mat-autocomplete>
                 <mat-error *ngIf="localForm.get('phase_name').hasError('required')">
-                    Phase Name is <strong>required</strong>
+                     Tactic is <strong>required</strong>
                 </mat-error>
             </mat-form-field>   
             
-            <button mat-button color="accent" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Attach Kill Chain Phase to {{ parentDocumentType | capitalize }}</button>
+            <button mat-button color="accent" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Attach Tactic to {{ parentDocumentType | capitalize }}</button>
         </form>
     </div>
 </div>
