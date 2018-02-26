@@ -1,14 +1,15 @@
 version: '2.0'
-services:
-  
+services:  
     unfetter-ui:
       build: ./
       image: unfetter-ui
-      container_name: unfetter-ui
+      container_name: unfetter-ui-build
       volumes:
       - ./src:/usr/share/unfetter-ui/src
       - ./config:/usr/share/unfetter-ui/config
       entrypoint:
       - npm
       - run
-      - build:prod:noclean
+      - build:demo:noclean
+      volumes:
+      - ./dist:/usr/share/unfetter-ui/dist
