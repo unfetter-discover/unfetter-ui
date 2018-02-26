@@ -7,7 +7,7 @@ export class PhaseMock extends Mock<Phase> {
     public mockOne(): Phase {
         const tmp = new Phase();
         tmp._id = 'phase-' + this.genId();
-        tmp.attackPatterns = AssessAttackPatternMetaMockFactory.mockMany(10);
+        tmp.attackPatterns = AssessAttackPatternMetaMockFactory.mockMany(4);
         return tmp;
     }
 }
