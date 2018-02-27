@@ -7,6 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import { HeartbeatStatus } from '../../global/models/heartbeat';
 import { CapitalizePipe } from '../../global/pipes/capitalize.pipe';
 import { LoadingSpinnerComponent } from '../../global/components/loading-spinner/loading-spinner.component';
+import { Constance } from '../../utils/constance';
 
 describe('HeartbeatComponent', () => {
     let component: HeartbeatComponent;
@@ -58,4 +59,21 @@ describe('HeartbeatComponent', () => {
         const services = component.heartbeats;
         expect(services.length > 0).toBeTruthy();
     });
+
+    it(`should handle all heartbeat status values`, () => {
+        const statuses = [{
+            value: HeartbeatStatus.DOWN,
+            color: Constance.COLORS.red
+        }, {
+            value: HeartbeatStatus.RUNNING,
+            color: Constance.COLORS.green
+        }, {
+            value: HeartbeatStatus.UNKNOWN,
+            color: Constance.COLORS.yellow
+        }];
+        statuses.forEach(status => {
+            expect(component.getStatusColor(status.value)).toBe(status.color);
+        });
+    });
+
 });
