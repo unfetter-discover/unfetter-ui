@@ -128,7 +128,7 @@ describe(`App`, () => {
             { path: 'assess', title: 'assessments 2.0 (beta)', theme: Themes.ASSESSMENTS },
             { path: 'threat-dashboard', title: 'threat-dashboard', theme: Themes.THREAT_DASHBOARD },
             { path: 'users', title: 'users', theme: Themes.DEFAULT },
-            { path: 'indicator-sharing', title: 'Analytic Hub', theme: Themes.ANALYTIC_HUB },
+            { path: 'indicator-sharing', title: 'Analytic Exchange', theme: Themes.ANALYTIC_HUB },
             { path: 'organizations', title: 'organizations', theme: Themes.DEFAULT },
             { path: 'admin', title: 'admin', theme: Themes.DEFAULT },
             { path: 'non-existent-page', title: 'non-existent-page', theme: Themes.DEFAULT },
