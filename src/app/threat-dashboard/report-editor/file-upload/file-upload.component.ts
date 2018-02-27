@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { Constance } from '../../utils/constance';
+import { Constance } from '../../../utils/constance';
 import { UploadService } from './upload.service';
 
 @Component({

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHeaders, HttpEvent, HttpEventType, HttpResponse, HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import { Constance } from '../../utils/constance';
-import { Report } from '../../models/report';
-import { JsonApiObject } from '../../threat-dashboard/models/adapter/json-api-object';
+import { Constance } from '../../../utils/constance';
+import { Report } from '../../../models/report';
+import { JsonApiObject } from '../../models/adapter/json-api-object';
 
 @Injectable()
 export class UploadService {

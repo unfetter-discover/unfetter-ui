@@ -11,12 +11,12 @@ import { BaseComponentService } from '../components/base-service.component';
 import { GenericApi } from '../core/services/genericapi.service';
 
 import { IntrusionSet, AttackPattern } from '../models';
-import { ThreatReportSharedService } from '../threat-report-overview/services/threat-report-shared.service';
-import { ThreatReportOverviewDataSource } from '../threat-report-overview/threat-report-overview.datasource';
+import { ThreatReportSharedService } from './services/threat-report-shared.service';
+import { ThreatReportOverviewDataSource } from './threat-report-overview.datasource';
 import { ThreatReportOverviewService } from './services/threat-report-overview.service';
-import { ThreatReport } from '../threat-report-overview/models/threat-report.model';
+import { ThreatReport } from './models/threat-report.model';
 import { KillChainEntry } from './kill-chain-table/kill-chain-entry';
-import { SelectOption } from '../threat-report-overview/models/select-option';
+import { SelectOption } from './models/select-option';
 import { ThreatDashboard } from './models/threat-dashboard';
 import { RadarChartDataPoint } from './radar-chart/radar-chart-datapoint';
 import { simpleFadeIn, slideInOutAnimation } from '../global/animations/animations';
@@ -129,9 +129,8 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     const loadAll$ = Observable.forkJoin(loadReport$, loadAttackPatterns$, loadIntrusionSets$);
     const logErr = (err) => console.log('request err', err);
     const noop = () => { };
-    const sub$ = loadAll$.subscribe(
-      (arr) => this.fetchIntrusionSetsAndRender(),
-      logErr.bind(this));
+    const sub$ = loadAll$.finally(() => this.fetchIntrusionSetsAndRender())
+      .subscribe(noop, logErr.bind(this));
     this.subscriptions.push(sub$);
   }
 
@@ -139,10 +138,16 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @description fetch just the intrusions and render components
    */
   public fetchIntrusionSetsAndRender(): void {
+    console.log('fetching intrustion sets');
     this.intrusionSetsDashboard = { killChainPhases: [], intrusionSets: [], totalAttackPatterns: 0, coursesOfAction: [] };
+    if (!this.threatReport) {
+      this.notifyDoneLoading();
+      return;
+    }
+
+    // get intrusion sets, used
     const logErr = (err) => console.log('request err', err);
     const noop = () => { };
-    // get intrusion sets, used
     const intrusionIds = Array.from(this.threatReport.boundaries.intrusions).map((el: SelectOption) => el.value);
     if (!intrusionIds || intrusionIds.length === 0) {
       this.renderVisualizations();
