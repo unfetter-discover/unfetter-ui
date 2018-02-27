@@ -1,12 +1,12 @@
 export const patternHelp = `
     <h4>Pattern (Required)</h4>
-    <p>Pattern accepts a 
-        <a href="http://docs.oasis-open.org/cti/stix/v2.0/stix-v2.0-part5-stix-patterning.html" target=_blank>STIX 2.0 pattern</a>
-        as an input.  Pattern input will be validated as STIX 2.0 patterns, but invalid patterns may still be submitted to Unfetter.
+    <p>A pattern is pseudocode that describes the analytic.  Any format of pseudocode is acceptable, however Unfetter will check patterns as valid 
+        <a href="http://docs.oasis-open.org/cti/stix/v2.0/stix-v2.0-part5-stix-patterning.html" target=_blank>STIX 2 Patterning Language</a>.  Valid
+        STIX 2 patterns will yield additional benefits in Unfetter.
     </p>
     <h4>Generated Pattern Translations</h4>
-    <p>As you type a pattern, Unfetter will attempt to translate the STIX 2.0 pattern into ElasticSearch query strings and Splunk queries.
-        It is optional to include these translations in your submission.  Not all valid STIX 2.0 patterns will have translations automatically generated.  The queries follow the <a href="https://car.mitre.org/wiki/Data_Model" target=_blank>CAR Data Model</a> 
+    <p>If a valid STIX 2 pattern is entered, Unfetter will attempt to translate the STIX 2 pattern into ElasticSearch query strings and Splunk queries.
+        It is optional to include these translations in your submission.  Not all valid STIX 2 patterns will have translations automatically generated.  The queries follow the <a href="https://car.mitre.org/wiki/Data_Model" target=_blank>MITRE Cyber Analytics Repository Data Model</a> 
         and the <a href="http://docs.splunk.com/Documentation/CIM/4.9.1/User/Overview" target=_blank>Splunk Common Information Model</a>.
     </p>
     <h4>Additional Queries</h4>
