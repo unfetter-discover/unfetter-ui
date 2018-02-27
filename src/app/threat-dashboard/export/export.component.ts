@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 
 import { Constance } from '../../utils/constance';
-import { ThreatReport } from '../../threat-report-overview/models/threat-report.model';
+import { ThreatReport } from '../models/threat-report.model';
 
 @Component({
   selector: 'unf-export-component',

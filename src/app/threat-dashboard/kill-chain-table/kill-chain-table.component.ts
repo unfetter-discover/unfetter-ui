@@ -18,7 +18,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { Constance } from '../../utils/constance';
 import { GenericApi } from '../../core/services/genericapi.service';
-import { ThreatReport } from '../../threat-report-overview/models/threat-report.model';
+import { ThreatReport } from '../models/threat-report.model';
 import { KillChainEntry } from './kill-chain-entry';
 import { AttackPattern } from '../../models/attack-pattern';
 import { ThreatDashboard } from '../models/threat-dashboard';
