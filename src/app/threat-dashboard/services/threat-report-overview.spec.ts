@@ -9,9 +9,9 @@ import { Subscription } from 'rxjs/Subscription';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { ThreatReportOverviewService } from './threat-report-overview.service';
 import { ReportMock } from '../../models/report-mock.model';
-import { ThreatReportMock } from '../../threat-report-overview/models/threat-report-mock.model';
-import { ThreatReport } from '../../threat-report-overview/models/threat-report.model';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ThreatReportMock } from '../models/threat-report-mock.model';
+import { ThreatReport } from '../models/threat-report.model';
 
 describe('Threat Report Overview Spec', () => {
 
