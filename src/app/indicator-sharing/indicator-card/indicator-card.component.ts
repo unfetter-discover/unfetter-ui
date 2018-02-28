@@ -194,6 +194,19 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
             );
     }
 
+    public editIndicator() {
+        const indicatorToEdit: any = {
+            ...this.indicator
+        };
+        if (this.attackPatterns && this.attackPatterns.length) {
+            if (!indicatorToEdit.metaProperties) {
+                indicatorToEdit.metaProperties = {};
+            }
+            indicatorToEdit.metaProperties.relationships = this.attackPatterns.map((ap) => ap.id);
+        }
+        this.indicatorEdit.emit(indicatorToEdit)
+    }
+
     public deleteIndicator() {
         this.indicatorDeleted.emit(this.indicator);
     }

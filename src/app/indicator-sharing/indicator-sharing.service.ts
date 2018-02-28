@@ -39,6 +39,10 @@ export class IndicatorSharingService {
         return this.genericApi.post(this.baseUrl, { data: { attributes: indicator } });
     }
 
+    public updateIndicator(indicator): Observable<any> {
+        return this.genericApi.patch(`${this.baseUrl}/${indicator.id}`, { data: { _id: indicator.id, type: 'indicator', attributes: indicator } });
+    }
+
     public getAttackPatternsByIndicator(): Observable<any> {
         return this.genericApi.get(`${this.baseUrl}/attack-patterns-by-indicator`);
     }

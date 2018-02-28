@@ -72,6 +72,18 @@ export class IndicatorSharingEffects {
         ]);
 
     @Effect()
+    public updateIndicator = this.actions$
+        .ofType(indicatorSharingActions.START_UPDATE_INDICATOR)
+        .pluck('payload')
+        .switchMap((indicator: any) => {
+            return this.indicatorSharingService.updateIndicator(indicator)
+        })
+        .mergeMap((_) => [
+            new indicatorSharingActions.FilterIndicators(),
+            new indicatorSharingActions.RefreshApMap()
+        ]);
+
+    @Effect()
     public addIndicator = this.actions$
         .ofType(indicatorSharingActions.ADD_INDICATOR)
         .switchMap((_) => this.indicatorSharingService.getSensors())
@@ -81,7 +93,6 @@ export class IndicatorSharingEffects {
     @Effect()
     public createIndicatorToAttackPatternRelationship = this.actions$
         .ofType(indicatorSharingActions.CREATE_IND_TO_AP_RELATIONSHIP)
-        .do((d) => console.log(d))
         .pluck('payload')
         .switchMap((payload: { indicatorId: string, attackPatternId: string }) => {
             return this.indicatorSharingService.createIndToApRelationship(payload.indicatorId, payload.attackPatternId);

@@ -144,13 +144,17 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
         const dialogRef = this.dialog.open(AddIndicatorComponent, configObj);
 
         const dialogRefClose$ = dialogRef.afterClosed()
-            .subscribe((res) => {
-                    if (res) {
+            .subscribe(
+                (res) => {
+                    if (res && !res.editMode) {
                         this.store.dispatch(new indicatorSharingActions.AddIndicator(res.indicator));
                         this.store.dispatch(new indicatorSharingActions.FilterIndicators());
                         if (res.newRelationships) {
                             this.store.dispatch(new indicatorSharingActions.RefreshApMap());
                         } 
+                    } else if (res && res.editMode) {
+                        console.log('EDIT~!!!', res);
+                        this.store.dispatch(new indicatorSharingActions.StartUpdateIndicator(res.indicator));
                     }
                 },
                 (err) => {

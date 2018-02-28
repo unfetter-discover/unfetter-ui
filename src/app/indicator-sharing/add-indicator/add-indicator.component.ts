@@ -37,6 +37,7 @@ export class AddIndicatorComponent implements OnInit {
     public observableDataHelpHtml: string = observableDataHelp;
     public patternObjs: PatternHandlerPatternObject[] = [];
     public patternObjSubject: Subject<PatternHandlerPatternObject[]> = new Subject();
+    public editMode: boolean = false;
 
     private initialPatternHandlerResponse: PatternHandlerTranslateAll = {
         pattern: null,
@@ -61,6 +62,7 @@ export class AddIndicatorComponent implements OnInit {
     public ngOnInit() {
         this.resetForm();
         if (this.editData) {
+            this.editMode = true;
             this.setEditValues();
         }
 
@@ -162,24 +164,35 @@ export class AddIndicatorComponent implements OnInit {
     public submitIndicator() {
         const tempIndicator: any = cleanObjectProperties({}, this.form.value);
 
-        this.pruneQueries(tempIndicator);        
+        this.pruneQueries(tempIndicator);
+        
+        if (this.editMode) {
+            tempIndicator.id = this.editData.id;
+            this.dialogRef.close({
+                'indicator': tempIndicator,
+                'newRelationships': (tempIndicator.metaProperties !== undefined && tempIndicator.metaProperties.relationships !== undefined),
+                editMode: this.editMode
+            });
+        } else {
+            const addIndicator$ = this.indicatorSharingService.addIndicator(tempIndicator)
+                .subscribe(
+                    (res) => {                   
+                        this.resetForm();
+                        this.dialogRef.close({
+                            'indicator': res[0].attributes,
+                            'newRelationships': (tempIndicator.metaProperties !== undefined && tempIndicator.metaProperties.relationships !== undefined),
+                            editMode: this.editMode
+                        });
+                    },
+                    (err) => {
+                        console.log(err);                    
+                    },
+                    () => {
+                        addIndicator$.unsubscribe();
+                    }
+                );
+        }
 
-        const addIndicator$ = this.indicatorSharingService.addIndicator(tempIndicator)
-            .subscribe(
-                (res) => {                   
-                    this.resetForm();
-                    this.dialogRef.close({
-                        'indicator': res[0].attributes,
-                        'newRelationships': (tempIndicator.metaProperties !== undefined && tempIndicator.metaProperties.relationships !== undefined)
-                    });
-                },
-                (err) => {
-                    console.log(err);                    
-                },
-                () => {
-                    addIndicator$.unsubscribe();
-                }
-            );
     }
 
     private setEditValues() {
@@ -216,9 +229,6 @@ export class AddIndicatorComponent implements OnInit {
             }
 
             if (this.editData.metaProperties.observedData) {
-                this.editData.metaProperties.observedData.forEach((observedDatum) => {
-                    (this.form.get('metaProperties').get('observedData') as FormArray).push(new FormControl(observedDatum));
-                });
                 requestAnimationFrame(() => this.patternObjSubject.next(this.editData.metaProperties.observedData));
             }
         }
