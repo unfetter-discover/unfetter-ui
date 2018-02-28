@@ -53,7 +53,8 @@
                                 [creator]="getIdentityNameById(indicator.created_by_ref)" 
                                 [searchParameters]="searchParameters" 
                                 (stateChange)="updateIndicator($event)"
-                                (indicatorDeleted)="deleteIndicator($event)"></indicator-card>
+                                (indicatorDeleted)="deleteIndicator($event)"
+                                (indicatorEdit)="editIndicator($event)"></indicator-card>
                         </div>
             
                         <div class="text-center mt-15 mb-20" *ngIf="displayShowMoreButton()">

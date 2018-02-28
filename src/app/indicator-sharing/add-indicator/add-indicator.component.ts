@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
-import { MatDialogRef } from '@angular/material';
+import { FormGroup, FormControl, FormArray } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
@@ -11,6 +11,8 @@ import { heightCollapse } from '../../global/animations/height-collapse';
 import { PatternHandlerTranslateAll, PatternHandlerGetObjects, PatternHandlerPatternObject } from '../../global/models/pattern-handlers';
 import { patternHelp, observableDataHelp } from '../help-templates';
 import { cleanObjectProperties } from '../../global/static/clean-object-properties';
+import { ExternalReferencesForm } from '../../global/form-models/external-references';
+import { KillChainPhasesForm } from '../../global/form-models/kill-chain-phases';
 
 @Component({
     selector: 'add-indicator',
@@ -51,12 +53,16 @@ export class AddIndicatorComponent implements OnInit {
 
     constructor(
         public dialogRef: MatDialogRef<any>,
+        @Inject(MAT_DIALOG_DATA) public editData: any,
         private indicatorSharingService: IndicatorSharingService,
         private authService: AuthService
     ) { }    
 
     public ngOnInit() {
         this.resetForm();
+        if (this.editData) {
+            this.setEditValues();
+        }
 
         const userId = this.authService.getUser()._id;
         const getData$ = Observable.forkJoin(
@@ -174,6 +180,51 @@ export class AddIndicatorComponent implements OnInit {
                     addIndicator$.unsubscribe();
                 }
             );
+    }
+
+    private setEditValues() {
+
+        this.form.patchValue(this.editData);
+
+        if (this.editData.external_references) {
+            this.editData.external_references.forEach((extRef) => {
+                const extRefCtrl = ExternalReferencesForm();
+                extRefCtrl.patchValue(extRef);
+                (this.form.get('external_references') as FormArray).push(extRefCtrl);
+            });
+        }
+
+        if (this.editData.kill_chain_phases) {
+            this.editData.kill_chain_phases.forEach((killchain) => {
+                const kcCtrl = KillChainPhasesForm();
+                kcCtrl.patchValue(killchain);
+                (this.form.get('kill_chain_phases') as FormArray).push(kcCtrl);
+            });
+        }
+
+        if (this.editData.labels) {
+            this.editData.labels.forEach((label) => {
+                (this.form.get('labels') as FormArray).push(new FormControl(label));
+            });
+        }
+
+        if (this.editData.metaProperties) {
+            if (this.editData.metaProperties.additional_queries) {
+                this.editData.metaProperties.additional_queries.forEach((query) => {
+                    (this.form.get('metaProperties').get('additional_queries') as FormArray).push(new FormControl(query));
+                });
+            }
+
+            if (this.editData.metaProperties.observedData) {
+                this.editData.metaProperties.observedData.forEach((observedDatum) => {
+                    (this.form.get('metaProperties').get('observedData') as FormArray).push(new FormControl(observedDatum));
+                });
+                requestAnimationFrame(() => this.patternObjSubject.next(this.editData.metaProperties.observedData));
+            }
+        }
+
+        console.log('~ Form value ~', this.form.value);
+        console.log('~ Edit data ~', this.editData);
     }
 
     private pruneQueries(tempIndicator) {

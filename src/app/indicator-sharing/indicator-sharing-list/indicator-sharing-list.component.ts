@@ -133,11 +133,15 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
         this.dialog.closeAll();
     }
 
-    public openDialog() {
-        const dialogRef = this.dialog.open(AddIndicatorComponent, {
+    public openDialog(data?: any) {
+        const configObj = {
             width: Constance.DIALOG_WIDTH_MEDIUM,
             height: Constance.DIALOG_HEIGHT_TALL
-        });
+        };
+        if (data) {
+            configObj['data'] = data;
+        }
+        const dialogRef = this.dialog.open(AddIndicatorComponent, configObj);
 
         const dialogRefClose$ = dialogRef.afterClosed()
             .subscribe((res) => {
@@ -193,5 +197,9 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                 },
                 () => closeDialog$.unsubscribe()
             );
+    }
+
+    public editIndicator(indicatorToEdit: any) {
+        this.openDialog(indicatorToEdit);
     }
 }

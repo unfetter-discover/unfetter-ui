@@ -11,7 +11,11 @@
                     <mat-icon>file_download</mat-icon>
                     <span>Download</span>
                 </button>
-                <button mat-menu-item routerLink="/stix/indicators/edit/{{ indicator.id }}">
+                <!-- <button mat-menu-item routerLink="/stix/indicators/edit/{{ indicator.id }}">
+                    <mat-icon>create</mat-icon>
+                    <span>Edit</span>
+                </button> -->
+                <button mat-menu-item (click)="indicatorEdit.emit(indicator)">
                     <mat-icon>create</mat-icon>
                     <span>Edit</span>
                 </button>

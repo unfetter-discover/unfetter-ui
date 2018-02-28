@@ -29,6 +29,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
 
     @Output() public stateChange: EventEmitter<any> = new EventEmitter();
     @Output() public indicatorDeleted: EventEmitter<any> = new EventEmitter();
+    @Output() public indicatorEdit: EventEmitter<any> = new EventEmitter();
 
     public user;
     public showCommentTextArea: boolean = false;
