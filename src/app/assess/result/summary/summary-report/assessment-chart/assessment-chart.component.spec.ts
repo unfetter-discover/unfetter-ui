@@ -4,7 +4,7 @@ import { ChartsModule } from 'ng2-charts';
 import { AssessmentChartComponent } from './assessment-chart.component';
 import { SummaryCalculationService } from '../../summary-calculation.service';
 
-fdescribe('AssessmentChartComponent', () => {
+describe('AssessmentChartComponent', () => {
   let component: AssessmentChartComponent;
   let fixture: ComponentFixture<AssessmentChartComponent>;
 
