@@ -16,7 +16,7 @@ export class SophisticationBreakdownComponent implements OnInit {
   public barChartOptions: any;
   public barChartLegend: any;
   public readonly barChartType: string;
-  public colors: any; // TODO specify? Prob not
+  public colors: any;
   constructor(private summaryCalculationService: SummaryCalculationService) {
     this.barChartData = [
       {

@@ -203,25 +203,27 @@ export class SummaryCalculationService {
     const killChainTotal = {};
     const killChainFiltered = {};
 
-    const tally = (tallyObject: object) => {
-      return (assessedObject) => {
-        // flat map kill chain names
-        const killChainNames = assessedObject.attackPatterns
-          .reduce((memo, pattern) => memo.concat(pattern['kill_chain_phases']), []);
-        const names: string[] = killChainNames.map((chain) => chain['phase_name'].toLowerCase() as string);
-        const uniqNames: string[] = Array.from(new Set(names));
-        names.forEach((name) => tallyObject[name] = tallyObject[name] ? tallyObject[name] + 1 : 1);
-        return assessedObject;
+    if (this.summaryAggregation) {
+      const tally = (tallyObject: object) => {
+        return (assessedObject) => {
+          // flat map kill chain names
+          const killChainNames = assessedObject.attackPatterns
+            .reduce((memo, pattern) => memo.concat(pattern['kill_chain_phases']), []);
+          const names: string[] = killChainNames.map((chain) => chain['phase_name'].toLowerCase() as string);
+          const uniqNames: string[] = Array.from(new Set(names));
+          names.forEach((name) => tallyObject[name] = tallyObject[name] ? tallyObject[name] + 1 : 1);
+          return assessedObject;
+        };
       };
-    };
 
-    // Find assessed-objects to kill chain maps grouping
-    this.summaryAggregation.attackPatternsByAssessedObject
-      // tally totals
-      .map(tally(killChainTotal))
-      .filter((aoToApMap) => includedIds.includes(aoToApMap._id))
-      // tally filtered objects
-      .map(tally(killChainFiltered));
+      // Find assessed-objects to kill chain maps grouping
+      this.summaryAggregation.attackPatternsByAssessedObject
+        // tally totals
+        .map(tally(killChainTotal))
+        .filter((aoToApMap) => includedIds.includes(aoToApMap._id))
+        // tally filtered objects
+        .map(tally(killChainFiltered));
+    }
 
     this.assessmentsGroupingTotal = killChainTotal;
     this.assessmentsGroupingFiltered = killChainFiltered;
@@ -272,10 +274,14 @@ export class SummaryCalculationService {
    * @returns {string[]}
    */
   public filterOnRisk(assessment_objects: AssessmentObject[]): string[] {
-    const includedIds: string[] = assessment_objects // TODO fix...or active...or this is a roll-up?
-      .filter((ao) => ao.risk <= this.selectedRisk)
-      .map((ao) => ao.stix.id);
-    return includedIds;
+    let filteredIds: string[] = [];
+    if (assessment_objects) {
+      const includedIds: string[] = assessment_objects // TODO fix...or active...or this is a roll-up?
+        .filter((ao) => ao.risk <= this.selectedRisk)
+        .map((ao) => ao.stix.id);
+      filteredIds = includedIds;
+    }
+    return filteredIds;
   }
 
   public sophisticationNumberToWord(num: string): string {

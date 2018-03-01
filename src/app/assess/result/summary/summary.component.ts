@@ -75,6 +75,10 @@ export class SummaryComponent implements OnInit, OnDestroy {
     private summaryCalculationService: SummaryCalculationService
   ) { }
 
+  public getDialog(): MatDialog {
+    return this.dialog;
+  }
+
   /**
    * @description
    *  initialize this component, fetching data from backend
@@ -358,7 +362,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {Promise<boolean>}
    */
   public onCellSelected(assessment: LastModifiedAssessment): Promise<boolean> {
-    if (!assessment || !assessment.rollupId) {
+    if (!assessment || !assessment.rollupId || !assessment.id) {
       return;
     }
 
