@@ -14,7 +14,7 @@ export class IndicatorSharingEffects {
 
     public indicatorUrl = Constance.INDICATOR_URL;
 
-    // NOTE can/does this unscribe when not in the hub?
+    // NOTE can/does this unsubscribe when leaving the module?
     @Effect()
     public startNotificationStream = this.actions$
         .ofType(indicatorSharingActions.START_SOCIAL_STREAM)
@@ -76,9 +76,19 @@ export class IndicatorSharingEffects {
         .ofType(indicatorSharingActions.START_UPDATE_INDICATOR)
         .pluck('payload')
         .switchMap((indicator: any) => {
-            return this.indicatorSharingService.updateIndicator(indicator)
+            return Observable.forkJoin(
+                this.indicatorSharingService.updateIndicator(indicator),
+                Observable.of(indicator)
+            );
         })
-        .mergeMap((_) => [
+        .map(([apiResponse, indicator]) => {
+            return {
+                ...apiResponse.attributes,
+                ...indicator
+            };
+        })
+        .mergeMap((indicator: any) => [
+            new indicatorSharingActions.UpdateIndicator(indicator),
             new indicatorSharingActions.FilterIndicators(),
             new indicatorSharingActions.RefreshApMap()
         ]);
