@@ -168,6 +168,9 @@ export class AddIndicatorComponent implements OnInit {
         
         if (this.editMode) {
             tempIndicator.id = this.editData.id;
+            if (this.editData.metaProperties && this.editData.metaProperties.interactions) {
+                tempIndicator.metaProperties.interactions = this.editData.metaProperties.interactions;
+            }
             this.dialogRef.close({
                 'indicator': tempIndicator,
                 'newRelationships': (tempIndicator.metaProperties !== undefined && tempIndicator.metaProperties.relationships !== undefined),
