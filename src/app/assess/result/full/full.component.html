@@ -3,7 +3,7 @@
     <mat-sidenav class="side-panel" mode="side" opened="true">
       <unfetter-side-panel class="side-panel" [item]="{ name: assessmentName|async }" collapsible="false" width="320">
 
-        <sidepanel-option-item label="Edit" icon="mode_edit" disabled="true" (click)="onEdit($event)"></sidepanel-option-item>
+        <sidepanel-option-item label="Edit" icon="mode_edit" (click)="onEdit($event)"></sidepanel-option-item>
         <sidepanel-option-item label="Share" icon="share" disabled="true" (click)="onShare($event)"></sidepanel-option-item>
         <sidepanel-option-item label="Delete" icon="delete" (click)="onDeleteCurrent($event)"></sidepanel-option-item>
 
@@ -15,7 +15,7 @@
         <div class="risk-header-wrapper">
           <div class="flex risk-header">
             <span class="flex-grow">
-              Kill Chain Phase
+              Tactic
             </span>
             <span class="align-right">
               Risk Level
@@ -42,7 +42,7 @@
         <div class="divider-wrapper">
         </div>
         <div *ngIf="assessGroupMain.unassessedPhases && assessGroupMain.unassessedPhases.length > 0">
-          <div class="header">Unassessed Kill Chain Phases</div>
+          <div class="header">Unassessed Tactics</div>
           <div class="unassessed-phases-list">
             <div class="unassessed-phases-list-item cursor-pointer" 
               *ngFor="let phase of assessGroupMain.unassessedPhases; trackBy:trackByFn"

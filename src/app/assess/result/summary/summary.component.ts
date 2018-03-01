@@ -28,6 +28,7 @@ import { RiskByAttack } from '../../../models/assess/risk-by-attack';
 import { LoadAssessmentRiskByAttackPatternData, LoadSingleAssessmentRiskByAttackPatternData } from '../store/riskbyattackpattern.actions';
 import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
 import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
+import { CleanAssessmentResultData } from '../store/full-result.actions';
 
 @Component({
   selector: 'summary',
@@ -57,7 +58,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Modified'),
     displayRoute: this.baseAssessUrl + '/result/summary',
-    modifyRoute: this.baseAssessUrl,
+    modifyRoute: this.baseAssessUrl + '/wizard/edit',
     createRoute: this.baseAssessUrl + '/create',
   };
 
@@ -73,6 +74,10 @@ export class SummaryComponent implements OnInit, OnDestroy {
     private assessService: AssessService,
     private summaryCalculationService: SummaryCalculationService
   ) { }
+
+  public getDialog(): MatDialog {
+    return this.dialog;
+  }
 
   /**
    * @description
@@ -114,7 +119,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
           this.summaries = [];
           return;
         }
-
         this.summaries = [...arr];
         this.summary = { ...arr[0] };
       },
@@ -195,7 +199,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
           this.summaryAggregations = [];
           return;
         }
-
         this.summaryAggregation = { ...arr[0] };
         this.summaryAggregations = [...arr];
       })
@@ -259,6 +262,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .filter((el) => el !== undefined)
       .filter((el) => !el.closed)
       .forEach((sub) => sub.unsubscribe());
+    this.store.dispatch(new CleanAssessmentResultData());
   }
 
   /**
@@ -272,13 +276,12 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
   /**
    * @description
-   * @param {LastModifiedAssessment} assessment - optional
-   * @return {Promise<boolean>}
    */
-  public onEdit(assessment: LastModifiedAssessment): Promise<boolean> {
-    // return this.router.navigateByUrl(this.masterListOptions.modifyRoute);
-    console.log('noop');
-    return Promise.resolve(false);
+  public onEdit(event?: any): Promise<boolean> {
+    if (!event || (event instanceof UIEvent)) {
+      return this.router.navigate([this.masterListOptions.modifyRoute, this.rollupId]);
+    }
+    return this.router.navigate([this.masterListOptions.modifyRoute, event.rollupId]);
   }
 
   /**
@@ -322,16 +325,16 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: { attributes: assessment } });
     const dialogSub$ = dialogRef.afterClosed()
-    .subscribe(
-      (result) => {
-        const isBool = typeof result === 'boolean';
-        const isString = typeof result === 'string';
-        if (!result ||
-          (isBool && result !== true) ||
-          (isString && result !== 'true')) {
+      .subscribe(
+        (result) => {
+          const isBool = typeof result === 'boolean';
+          const isString = typeof result === 'string';
+          if (!result ||
+            (isBool && result !== true) ||
+            (isString && result !== 'true')) {
             return;
           }
-          
+
           const isCurrentlyViewed = assessment.rollupId === this.rollupId ? true : false;
           const sub$ = this.assessService
             .deleteByRollupId(assessment.rollupId)
@@ -342,7 +345,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
                 if (sub$) {
                   sub$.unsubscribe();
                 }
-                
+
                 // we deleted the current assessment
                 if (isCurrentlyViewed) {
                   return this.router.navigate([Constance.X_UNFETTER_ASSESSMENT_NAVIGATE_URL]);
@@ -359,10 +362,11 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {Promise<boolean>}
    */
   public onCellSelected(assessment: LastModifiedAssessment): Promise<boolean> {
-    if (!assessment || !assessment.rollupId) {
+    if (!assessment || !assessment.rollupId || !assessment.id) {
       return;
     }
 
+    this.store.dispatch(new CleanAssessmentResultData());
     return this.router.navigate([this.masterListOptions.displayRoute, assessment.rollupId, assessment.id]);
   }
 

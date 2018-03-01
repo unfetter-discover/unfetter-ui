@@ -6,6 +6,13 @@
         "ignorePath": false,
         "changeOrigin": true
     },
+    "/explorer": {
+        "target": "https://localhost",
+        "secure": false,
+        "logLevel": "debug",
+        "ignorePath": false,
+        "changeOrigin": true
+    },
     "/socketserver": {
         "target": "https://localhost",
         "secure": false,

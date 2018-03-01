@@ -31,7 +31,7 @@ export class ApproveUsersComponent implements OnInit {
                 return;
         }
         let processUserApproval$ = this.adminService
-            .processUserApproval({ data: { attributes: tempUser } })
+            .changeUserStatus({ data: { attributes: tempUser } })
             .subscribe(
             (res) => {
                 this.fetchUsers();
@@ -49,12 +49,8 @@ export class ApproveUsersComponent implements OnInit {
     private fetchUsers() {
         let getUsersPendingApproval$ = this.adminService.getUsersPendingApproval()
             .subscribe(
-            (res) => {
-                if (res.attributes && res.attributes.length) {
-                    this.users = res.attributes;
-                } else {
-                    this.users = [];
-                }
+            (users) => {
+                this.users = users;
             },
             (err) => {
                 console.log(err);

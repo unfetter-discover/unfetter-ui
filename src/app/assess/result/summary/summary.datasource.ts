@@ -7,12 +7,15 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Assessment } from '../../../models/assess/assessment';
 import { AssessService } from '../../services/assess.service';
 import { Dictionary } from '../../../models/json/dictionary';
+import { environment } from '../../../../environments/environment';
 import { LastModifiedAssessment } from '../../models/last-modified-assessment';
 
 /**
  * @description handles filter events from the UI sent to the datasource, in this case a service call
  */
 export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment>> {
+    
+    public readonly demoMode: boolean = (environment.runMode === 'DEMO');
     protected filterChange = new BehaviorSubject('');
     protected dataChange = new BehaviorSubject(undefined);
 
@@ -30,7 +33,7 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment
             .switchMap(() => {
                 const val = this.filterChange.getValue();
                 const filterVal = val.trim().toLowerCase() || '';
-                const products$ = this.fetchAssessments().let(this.dedupByRollupId);
+                const products$ = this.fetchAssessments(); // .let(this.dedupByRollupId);
                 if (!filterVal || filterVal.length === 0) {
                     return products$;
                 }
@@ -87,7 +90,7 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment
      * @return {Observable<Partial<LastModifiedAssessment>[]>}
      */
     public fetchAssessments(): Observable<Partial<LastModifiedAssessment>[]> {
-        if (this.creatorId && this.creatorId.trim() !== '') {
+        if (!this.demoMode && this.creatorId && this.creatorId.trim() !== '') {
             return this.fetchWithCreatorId(this.creatorId);
         } else {
             return this.fetchWithNoCreatorId();

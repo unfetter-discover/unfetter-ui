@@ -1,5 +1,5 @@
 @import '../../../../styles/_variables.scss';
-@import './_assess.common.scss';
+@import '../../_assess.common.scss';
 
 @mixin with-divider() {
     border-bottom: 1px solid $assessments-primary-lightest;

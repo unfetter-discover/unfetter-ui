@@ -79,9 +79,12 @@
                 display: flex;
                 flex: 2;
                 align-items: center;
+                overflow: hidden;
 
                 .master-list-item-name {
                     flex: 1;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
 
                 .master-list-item-arrow {

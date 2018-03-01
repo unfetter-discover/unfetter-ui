@@ -1,0 +1,33 @@
+@mixin with-margin-centered() {
+    margin-left: 24px;
+    margin-right: 24px; 
+}
+
+.flex {
+    display: flex;
+
+    .flex-grow {
+        flex: 1 1 auto;
+    }
+}
+
+.flex-cols {
+    flex-direction: column;
+}
+
+.banner-wrapper {
+    position: absolute;
+    background-color: #4F5B62;
+    height: 48px;
+    width: 100%;
+    color: $light-text-default;
+    font-size: 14px;
+
+    .flex {
+        height: 100%;
+        width: 100%;
+        .banner {
+            margin: auto auto;
+        }
+    }
+}

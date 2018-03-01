@@ -4,6 +4,8 @@ import { Observable } from 'rxjs/Observable';
 
 import { GenericApi } from '../core/services/genericapi.service';
 import { Constance } from '../utils/constance';
+import { JsonApiData } from '../models/json/jsonapi-data';
+import { UserProfile } from '../models/user/user-profile';
 
 @Injectable()
 export class AdminService {
@@ -14,8 +16,19 @@ export class AdminService {
 
     constructor(private genericApi: GenericApi) { }
 
-    public getUsersPendingApproval(): Observable<any> {
-        return this.genericApi.get(`${this.adminUrl}/users-pending-approval`);
+    public getUsersPendingApproval(): Observable<UserProfile[]> {
+        return this.genericApi.getAs<JsonApiData<UserProfile>[]>(`${this.adminUrl}/users-pending-approval`)
+            .map((usersData: JsonApiData<UserProfile>[]) => {
+                return usersData.map((userData: JsonApiData<UserProfile>) => userData.attributes);
+            });
+    }
+
+    public getCurrentUsers(): Observable<UserProfile[]> {
+        return this.genericApi
+            .getAs<JsonApiData<UserProfile>[]>(`${this.adminUrl}/current-users`)
+            .map((usersData: JsonApiData<UserProfile>[]) => {
+                return usersData.map((userData: JsonApiData<UserProfile>) => userData.attributes);
+            });
     }
 
     public getOrgLeaderApplicants(): Observable<any> {
@@ -30,8 +43,8 @@ export class AdminService {
         return this.genericApi.get(`${this.adminUrl}/site-visits-graph/${numDays}`);
     }
 
-    public processUserApproval(user): Observable<any> {
-        return this.genericApi.post(`${this.adminUrl}/process-user-approval`, user);
+    public changeUserStatus(user): Observable<any> {
+        return this.genericApi.post(`${this.adminUrl}/change-user-status`, user);
     }
 
     public getConfig(): Observable<any> {

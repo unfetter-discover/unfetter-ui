@@ -6,6 +6,7 @@ import { DisplayedAssessmentObject } from '../full/group/models/displayed-assess
 import { FullAssessmentResultActions, LOAD_ASSESSMENT_RESULT_DATA } from './full-result.actions';
 import { Stix } from '../../../models/stix/stix';
 import { RiskByAttack } from '../../../models/assess/risk-by-attack';
+import { Relationship } from '../../../models';
 
 export interface FullAssessmentResultState {
     fullAssessment: Assessment;
@@ -25,9 +26,10 @@ export interface FullAssessmentGroupState {
     attackPatternsByPhase: any[];
     addAssessedObject: boolean;
     addAssessedType: string;
+    attackPatternRelationships: Relationship[];
 }
 
-const genGroupState = (state?: Partial<FullAssessmentGroupState>) => {
+export const genGroupState = (state?: Partial<FullAssessmentGroupState>) => {
     const tmp = {
         finishedLoadingGroupData: false,
         currentAttackPattern: new Stix(),
@@ -43,6 +45,7 @@ const genGroupState = (state?: Partial<FullAssessmentGroupState>) => {
         attackPatternsByPhase: [],
         addAssessedObject: false,
         addAssessedType: '',
+        attackPatternRelationships: [],
     };
 
     if (state) {
@@ -51,7 +54,7 @@ const genGroupState = (state?: Partial<FullAssessmentGroupState>) => {
     return tmp;
 };
 
-const genState = (state?: Partial<FullAssessmentResultState>) => {
+export const genState = (state?: Partial<FullAssessmentResultState>) => {
     const tmp = {
         fullAssessment: new Assessment(),
         assessmentTypes: [],
@@ -68,30 +71,54 @@ const initialState: FullAssessmentResultState = genState();
 
 export function fullAssessmentResultReducer(state = initialState, action: FullAssessmentResultActions): FullAssessmentResultState {
     switch (action.type) {
+        case fullAssessmentResultActions.CLEAN_ASSESSMENT_RESULT_DATA:
+            return genState();
         case LOAD_ASSESSMENT_RESULT_DATA:
-            return genState({
+            return {
                 ...state,
-            });
+            };
         case fullAssessmentResultActions.SET_ASSESSMENTS:
-            return genState({
+            return {
                 ...state,
                 assessmentTypes: [...action.payload],
-            });
+            };
         case fullAssessmentResultActions.FINISHED_LOADING:
-            return genState({
+            return {
                 ...state,
                 finishedLoading: action.payload
-            });
+            };
         case fullAssessmentResultActions.SET_GROUP_DATA:
-            return genState({
+            return {
                 ...state,
-                group: genGroupState({ ...action.payload, finishedLoadingGroupData: true })
-            });
+                group: {
+                    ...state.group,
+                    ...action.payload,
+                    // riskByAttackPattern: {
+                    //     ...action.payload.riskByAttackPattern,
+                    // },
+                    finishedLoadingGroupData: true,
+                },
+            };
         case fullAssessmentResultActions.SET_GROUP_CURRENT_ATTACK_PATTERN:
-            return genState({
+            return {
                 ...state,
-                group: genGroupState({ ...action.payload })
-            });
+                group: {
+                    ...state.group,
+                    ...action.payload,
+                }
+            };
+        case fullAssessmentResultActions.SET_GROUP_ATTACK_PATTERN_RELATIONSHIPS:
+            return {
+                ...state,
+                group: {
+                    ...state.group,
+                    attackPatternRelationships: [...action.payload],
+                }
+            };
+        case fullAssessmentResultActions.DONE_PUSH_URL:
+            return {
+                ...state,
+            }
         default:
             return state;
     }
