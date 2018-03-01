@@ -28,6 +28,7 @@ import { AddAssessedObjectComponent } from './full/group/add-assessed-object/add
 import { SummaryCalculationService } from './summary/summary-calculation.service';
 import { SophisticationBreakdownComponent } from './summary/summary-report/sophistication-breakdown/sophistication-breakdown.component';
 import { TechniquesChartComponent } from './summary/summary-report/techniques-chart/techniques-chart.component';
+import { AssessmentChartComponent } from './summary/summary-report/assessment-chart/assessment-chart.component';
 
 const materialModules = [
   MatCardModule,
@@ -69,7 +70,8 @@ const moduleComponents = [
     SummaryHeaderComponent,
     SummaryReportComponent,
     SophisticationBreakdownComponent,
-    TechniquesChartComponent],
+    TechniquesChartComponent,
+    AssessmentChartComponent],
   providers: [SummaryCalculationService]
 })
 export class ResultModule { }

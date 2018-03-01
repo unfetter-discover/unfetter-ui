@@ -242,4 +242,13 @@ describe('SummaryCalculationService', () => {
       { risk: .3, questions: null, objects: null, phaseName: null }, { risk: .4, questions: null, objects: null, phaseName: null },
       { risk: .5, questions: null, objects: null, phaseName: null }, { risk: .6, questions: null, objects: null, phaseName: null }]);
   }));
+
+  it('should filter assessment objects based on selected risk', inject([SummaryCalculationService], (service: SummaryCalculationService) => {
+    expect(service.filterOnRisk(null)).toEqual([]);
+  }));
+
+  it('should populate assessments grouping given an array of asssesment objects', inject([SummaryCalculationService], (service: SummaryCalculationService) => {
+    service.populateAssessmentsGrouping(null);
+    expect(service.assessmentsGroupingTotal).toEqual({});
+  }));
 });

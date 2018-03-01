@@ -68,7 +68,7 @@
     </div>
     <div class="row">
       <div class="flex matchHeight">
-        <mat-card class="uf-mat-card card left-card" id="sophisticationCard">
+        <mat-card class="uf-mat-card card chart left-card" id="sophisticationCard">
           <mat-card-title>Sophistication Breakdown</mat-card-title>
           <mat-card-content>
             <div *ngIf="summaryCalculationService.isSummaryAggregationValid(); else noSophisticationData">
@@ -78,11 +78,11 @@
             <ng-template #noSophisticationData>No data to load chart!</ng-template>
           </mat-card-content>
         </mat-card>
-        <mat-card class="uf-mat-card card right-card">
+        <mat-card class="uf-mat-card card chart right-card">
           <mat-card-title>% Techniques Detected by Skill</mat-card-title>
           <mat-card-content>
             <div *ngIf="summaryCalculationService.techniqueBreakdown;else noTechniquesData">
-              <!-- [riskLabelOptions]="thresholdOptions" -->
+              <!-- TODO [riskLabelOptions]="thresholdOptions" -->
               <techniques-chart #techniquesChart [riskThreshold]="summaryCalculationService.selectedRisk" [techniqueBreakdown]="summaryCalculationService.techniqueBreakdown">
               </techniques-chart>
             </div>
@@ -93,9 +93,15 @@
     </div>
     <div class="row">
       <div class="flex flexItemsCenter">
-        <mat-card class="uf-mat-card card flex1">
+        <mat-card class="uf-mat-card card chart flex1" id="assessmentCard">
           <mat-card-title>% of Assessments Better than Mitigation Threshold</mat-card-title>
-          <mat-card-content>COMING SOON</mat-card-content>
+          <mat-card-content>
+            <div *ngIf="!summary;else noAssessmentsChartData">
+              <!-- TODO [riskLabelOptions]="thresholdOptions" -->
+              <assessment-chart></assessment-chart>
+            </div>
+            <ng-template #noAssessmentsChartData>No data to load chart!</ng-template>
+          </mat-card-content>
         </mat-card>
       </div>
     </div>
