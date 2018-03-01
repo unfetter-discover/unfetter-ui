@@ -5,6 +5,7 @@ import { GenericApi } from '../core/services/genericapi.service';
 import { Constance } from '../utils/constance';
 import { AuthService } from '../core/services/auth.service';
 import { environment } from '../../environments/environment';
+import { RxjsHelpers } from '../global/static/rxjs-helpers';
 
 @Injectable()
 export class IndicatorSharingService {
@@ -126,5 +127,40 @@ export class IndicatorSharingService {
         };
 
         return this.genericApi.post(this.relationshipUrl, body);
+    }
+
+    public getDownloadData(indicatorId: string, attackPatternIds: string[], sensorIds: string[]): Observable<any[]> {
+        const relFilterObj = {
+            $and: [
+                {
+                    $or: [
+                        { 'stix.source_ref': indicatorId },
+                        { 'stix.target_ref': indicatorId }
+                    ]
+                },
+                {
+                    $or: [
+                        { 'stix.source_ref': { $regex: '^attack-pattern--' } },
+                        { 'stix.target_ref': { $regex: '^attack-pattern--' } }
+                    ]
+                }
+            ]
+        };
+
+        const apFilter = {
+            _id: { $in: attackPatternIds }
+        };
+
+        const sensorFilter = {
+            _id: { $in: sensorIds }
+        };
+
+        return Observable
+            .forkJoin(
+                this.genericApi.get(`${this.relationshipUrl}?filter=${encodeURI(JSON.stringify(relFilterObj))}`).map(RxjsHelpers.mapArrayAttributes),
+                this.genericApi.get(`${this.attackPatternsUrl}?filter=${encodeURI(JSON.stringify(apFilter))}`).map(RxjsHelpers.mapArrayAttributes),
+                this.genericApi.get(`${this.sensorsUrl}?filter=${encodeURI(JSON.stringify(sensorFilter))}`).map(RxjsHelpers.mapArrayAttributes)
+            )
+            .map((results: [any[], any[], any[]]): any[] => results.reduce((prev, cur) => prev.concat(cur), []));
     }
 }
