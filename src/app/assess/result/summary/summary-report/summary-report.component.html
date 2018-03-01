@@ -96,7 +96,7 @@
         <mat-card class="uf-mat-card card chart flex1" id="assessmentCard">
           <mat-card-title>% of Assessments Better than Mitigation Threshold</mat-card-title>
           <mat-card-content>
-            <div *ngIf="!summary;else noAssessmentsChartData">
+            <div *ngIf="summaryCalculationService.assessmentsGroupingTotal;else noAssessmentsChartData">
               <!-- TODO [riskLabelOptions]="thresholdOptions" -->
               <assessment-chart></assessment-chart>
             </div>
