@@ -232,9 +232,6 @@ export class AddIndicatorComponent implements OnInit {
                 requestAnimationFrame(() => this.patternObjSubject.next(this.editData.metaProperties.observedData));
             }
         }
-
-        console.log('~ Form value ~', this.form.value);
-        console.log('~ Edit data ~', this.editData);
     }
 
     private pruneQueries(tempIndicator) {

@@ -153,7 +153,6 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                             this.store.dispatch(new indicatorSharingActions.RefreshApMap());
                         } 
                     } else if (res && res.editMode) {
-                        console.log('EDIT~!!!', res);
                         this.store.dispatch(new indicatorSharingActions.StartUpdateIndicator(res.indicator));
                     }
                 },
