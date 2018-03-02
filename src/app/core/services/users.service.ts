@@ -12,6 +12,7 @@ export class UsersService {
     private profileByIdUrl = Constance.PROFILE_BY_ID_URL;
     private identitiesUrl = Constance.IDENTITIES_URL;
     private orgUrl = Constance.ORGANIZATIONS_URL;
+    private refreshTokenUrl = Constance.REFRESH_TOKEN_URL;
 
     constructor(private genericApi: GenericApi) { }
 
@@ -44,5 +45,11 @@ export class UsersService {
     
     public changeOrgSubscription(userId: string, orgId: string, subscribe: boolean): Observable<any> {
         return this.genericApi.get(`${this.orgUrl}/subscription/${userId}/${orgId}/${subscribe}`);
+    }
+
+    public refreshToken(): Observable<string> {
+        return this.genericApi.get(this.refreshTokenUrl)
+            .pluck('attributes')
+            .pluck('token');
     }
 }

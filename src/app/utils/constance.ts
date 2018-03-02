@@ -90,6 +90,7 @@ export const Constance = {
   USER_FROM_TOKEN_URL: 'api/auth/user-from-token',
   FINALIZE_REGISTRATION_URL: 'api/auth/finalize-registration',
   PROFILE_BY_ID_URL: 'api/auth/profile',
+  REFRESH_TOKEN_URL: 'api/auth/refreshtoken',
 
   CONFIG_URL: 'api/config',
   WEB_ANALYTICS_URL: 'api/web-analytics',

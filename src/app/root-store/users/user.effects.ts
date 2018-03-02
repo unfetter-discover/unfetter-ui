@@ -6,11 +6,17 @@ import { Observable } from 'rxjs/Observable';
 import * as userActions from '../../root-store/users/user.actions';
 import * as configActions from '../../root-store/config/config.actions';
 import * as notificationActions from '../../root-store/notification/notification.actions';
+import * as utilityActions from '../../root-store/utility/utility.actions';
 import { UsersService } from '../../core/services/users.service';
 import { AuthService } from '../../core/services/auth.service';
+import { Store } from '@ngrx/store';
+import { AppState } from '../app.reducers';
 
 @Injectable()
 export class UserEffects {
+
+    // Initial token refresh delay until configuration is loaded
+    private refreshTokenDelay: number = 10000;
     
     @Effect()
     public fetchUser = this.actions$
@@ -43,18 +49,63 @@ export class UserEffects {
             ]
         });
 
-    @Effect({ dispatch: false })
+    @Effect()
     public setToken = this.actions$
         .ofType(userActions.SET_TOKEN)
-        .pluck('payload') 
-        .do((token: string) => {
+        .pluck('payload')
+        .withLatestFrom(this.store) 
+        .do(([token, store]: [string, AppState]) => {
             this.authService.setToken(token);
+            
+        })
+        .switchMap(([token, store]: [string, AppState]) => {
+            if (store.config.configurations && store.config.configurations.jwtDurationSeconds) {
+                this.refreshTokenDelay = store.config.configurations.jwtDurationSeconds * 1000;
+            }
+            return Observable.of([token, store])
+                .delay(this.refreshTokenDelay);
+        })
+        .map(([token, store]: [string, AppState]) => new userActions.RefreshToken());
+
+    @Effect()
+    public refreshToken = this.actions$
+        .ofType(userActions.REFRESH_TOKEN)
+        .switchMap((_) => {
+            return this.usersService.refreshToken()
+                .map((token: string) => {
+                    return {
+                        success: true,
+                        token
+                    };
+                })
+                .catch((err, caught) => {
+                    return Observable.of({
+                        success: false,
+                        token: null
+                    });
+                })
+        })
+        .map(({success, token}: { success: boolean, token: string }) => {
+            console.log('~~~~');
+            if (success) {
+                return new userActions.SetToken(token);
+            } else {
+                console.log('Failed to refesh token');
+                return new userActions.LogoutUser();
+            }
         });
+
+    @Effect()
+    public logoutUser = this.actions$
+        .ofType(userActions.LOGOUT_USER)
+        .do(() => localStorage.clear())
+        .map(() => new utilityActions.Navigate(['/']));
 
     constructor(
         private actions$: Actions,
         private router: Router,
         private usersService: UsersService,
-        private authService: AuthService
+        private authService: AuthService,
+        private store: Store<AppState>
     ) { }
 }
