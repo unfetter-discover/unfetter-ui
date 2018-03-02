@@ -171,7 +171,8 @@
                 </div>
             </mat-step>
             
-            <mat-step label="Relationships">
+            <!-- TODO remove ngif once edit mode can update relationships -->
+            <mat-step label="Relationships" *ngIf="!editMode">
                 <div formGroupName="metaProperties">
                     <mat-form-field class="full-width mt-10">
                         <mat-select placeholder="Indicated Attack Patterns" [multiple]="true" formControlName="relationships">

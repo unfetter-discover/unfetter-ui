@@ -14,7 +14,7 @@ export class IndicatorSharingEffects {
 
     public indicatorUrl = Constance.INDICATOR_URL;
 
-    // NOTE can/does this unscribe when not in the hub?
+    // NOTE can/does this unsubscribe when leaving the module?
     @Effect()
     public startNotificationStream = this.actions$
         .ofType(indicatorSharingActions.START_SOCIAL_STREAM)
@@ -72,6 +72,28 @@ export class IndicatorSharingEffects {
         ]);
 
     @Effect()
+    public updateIndicator = this.actions$
+        .ofType(indicatorSharingActions.START_UPDATE_INDICATOR)
+        .pluck('payload')
+        .switchMap((indicator: any) => {
+            return Observable.forkJoin(
+                this.indicatorSharingService.updateIndicator(indicator),
+                Observable.of(indicator)
+            );
+        })
+        .map(([apiResponse, indicator]) => {
+            return {
+                ...apiResponse.attributes,
+                ...indicator
+            };
+        })
+        .mergeMap((indicator: any) => [
+            new indicatorSharingActions.UpdateIndicator(indicator),
+            new indicatorSharingActions.FilterIndicators(),
+            new indicatorSharingActions.RefreshApMap()
+        ]);
+
+    @Effect()
     public addIndicator = this.actions$
         .ofType(indicatorSharingActions.ADD_INDICATOR)
         .switchMap((_) => this.indicatorSharingService.getSensors())
@@ -81,7 +103,6 @@ export class IndicatorSharingEffects {
     @Effect()
     public createIndicatorToAttackPatternRelationship = this.actions$
         .ofType(indicatorSharingActions.CREATE_IND_TO_AP_RELATIONSHIP)
-        .do((d) => console.log(d))
         .pluck('payload')
         .switchMap((payload: { indicatorId: string, attackPatternId: string }) => {
             return this.indicatorSharingService.createIndToApRelationship(payload.indicatorId, payload.attackPatternId);

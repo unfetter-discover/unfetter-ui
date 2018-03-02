@@ -29,6 +29,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
 
     @Output() public stateChange: EventEmitter<any> = new EventEmitter();
     @Output() public indicatorDeleted: EventEmitter<any> = new EventEmitter();
+    @Output() public indicatorEdit: EventEmitter<any> = new EventEmitter();
 
     public user;
     public showCommentTextArea: boolean = false;
@@ -191,6 +192,19 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
                     addLike$.unsubscribe();
                 }
             );
+    }
+
+    public editIndicator() {
+        const indicatorToEdit: any = {
+            ...this.indicator
+        };
+        if (this.attackPatterns && this.attackPatterns.length) {
+            if (!indicatorToEdit.metaProperties) {
+                indicatorToEdit.metaProperties = {};
+            }
+            indicatorToEdit.metaProperties.relationships = this.attackPatterns.map((ap) => ap.id);
+        }
+        this.indicatorEdit.emit(indicatorToEdit)
     }
 
     public deleteIndicator() {

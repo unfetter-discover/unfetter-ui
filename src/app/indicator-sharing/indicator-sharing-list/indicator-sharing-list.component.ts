@@ -133,20 +133,27 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
         this.dialog.closeAll();
     }
 
-    public openDialog() {
-        const dialogRef = this.dialog.open(AddIndicatorComponent, {
+    public openDialog(data?: any) {
+        const configObj = {
             width: Constance.DIALOG_WIDTH_MEDIUM,
             height: Constance.DIALOG_HEIGHT_TALL
-        });
+        };
+        if (data) {
+            configObj['data'] = data;
+        }
+        const dialogRef = this.dialog.open(AddIndicatorComponent, configObj);
 
         const dialogRefClose$ = dialogRef.afterClosed()
-            .subscribe((res) => {
-                    if (res) {
+            .subscribe(
+                (res) => {
+                    if (res && !res.editMode) {
                         this.store.dispatch(new indicatorSharingActions.AddIndicator(res.indicator));
                         this.store.dispatch(new indicatorSharingActions.FilterIndicators());
                         if (res.newRelationships) {
                             this.store.dispatch(new indicatorSharingActions.RefreshApMap());
                         } 
+                    } else if (res && res.editMode) {
+                        this.store.dispatch(new indicatorSharingActions.StartUpdateIndicator(res.indicator));
                     }
                 },
                 (err) => {
@@ -193,5 +200,9 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                 },
                 () => closeDialog$.unsubscribe()
             );
+    }
+
+    public editIndicator(indicatorToEdit: any) {
+        this.openDialog(indicatorToEdit);
     }
 }
