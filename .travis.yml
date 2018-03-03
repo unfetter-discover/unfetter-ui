@@ -5,6 +5,7 @@ lanugage: node_js
 node_js:
   - "io.js"
   - "9"
+  
 addons:
   chrome: stable
 before_install:
