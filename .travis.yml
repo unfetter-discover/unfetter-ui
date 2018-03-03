@@ -5,7 +5,9 @@ node_js:
   - "io.js"
   - "9"
 
-
+branches:
+  only:
+    - develop
 
 addons:
   chrome: stable
