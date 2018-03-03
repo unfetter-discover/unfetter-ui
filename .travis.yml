@@ -1,5 +1,4 @@
 # Use Ubuntu 'trusty' distribution
-sudo: required
 dist: trusty
 lanugage: node_js
 node_js:
@@ -7,7 +6,7 @@ node_js:
   - "9"
 
 
-  
+
 addons:
   chrome: stable
 before_install:
