@@ -16,6 +16,7 @@ export class Campaign {
         first_seen: any;
         objective: string;
         timestamp_precision: string;
+        created_by_ref: string;
     };
     constructor(data?: Campaign) {
         this.type = Constance.CAMPAIGN_TYPE;

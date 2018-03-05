@@ -19,6 +19,7 @@ export class Indicator {
         pattern: string;
         valid_from: any;
         valid_until: any;
+        created_by_ref: string;
         metaProperties: {
             observedData: any[]
         }

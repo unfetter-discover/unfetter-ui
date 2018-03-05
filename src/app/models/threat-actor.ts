@@ -16,6 +16,7 @@ export class ThreatActor {
         external_references: ExternalReference[];
         kill_chain_phases: KillChainPhase[];
         name: string;
+        created_by_ref: string;
     };
      constructor(data?: ThreatActor) {
         this.type = Constance.THREAT_ACTORS_TYPE;
