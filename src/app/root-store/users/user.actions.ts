@@ -5,6 +5,7 @@ export const LOGIN_USER = '[User] Login User';
 export const UPDATE_USER_DATA = '[User] Add User Data';
 export const LOGOUT_USER = '[User] Logout User';
 export const SET_TOKEN = '[User] Set Token';
+export const REFRESH_TOKEN = '[User] Refresh Token';
 
 export class FetchUser implements Action {
     public readonly type = FETCH_USER;
@@ -34,9 +35,14 @@ export class SetToken implements Action {
     constructor(public payload: string) { }
 }
 
+export class RefreshToken implements Action {
+    public readonly type = REFRESH_TOKEN;
+}
+
 export type UserActions = 
     FetchUser |
     LoginUser |
     UpdateUserData |
     LogoutUser |
-    SetToken;
+    SetToken |
+    RefreshToken;

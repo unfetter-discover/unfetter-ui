@@ -63,8 +63,8 @@
 
   <span id="accountWrapper" class="navButton" *ngIf="!demoMode && authService.loggedIn()">
     <div class="cursor-pointer" (click)="showAccountMenu = !showAccountMenu">
-      <img src="{{ (user$ | async).userProfile.github.avatar_url }}" alt="User" id="avatar" *ngIf="(user$ | async).userProfile !== null && (user$ | async).userProfile.github.avatar_url !== undefined" class="smallAvatar">
-      <button mat-icon-button *ngIf="(user$ | async).userProfile.github.avatar_url === undefined" id="accountBtn">
+      <img src="{{ (user$ | async).userProfile.github.avatar_url }}" alt="User" id="avatar" *ngIf="(user$ | async).userProfile && (user$ | async).userProfile.github.avatar_url" class="smallAvatar">
+      <button mat-icon-button *ngIf="!(user$ | async).userProfile || (user$ | async).userProfile.github.avatar_url === undefined" id="accountBtn">
         <mat-icon class="mat-24">account_circle</mat-icon>
       </button>
       <i class="material-icons" id="accountCaret">arrow_drop_down</i>

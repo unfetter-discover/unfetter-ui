@@ -52,6 +52,7 @@ export class AppComponent implements OnInit {
       if (!this.demoMode) {
         const user = this.authService.getUser();
         const token = this.authService.getToken();
+        this.store.dispatch(new userActions.SetToken(token));
         this.store.dispatch(new userActions.LoginUser({ userData: user, token }));
         this.store.dispatch(new notificationsActions.FetchNotificationStore());
       } else {

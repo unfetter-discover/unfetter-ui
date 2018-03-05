@@ -7,6 +7,7 @@ import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/mergeMap';
 
 import * as utilityActions from './utility.actions';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class UtilityEffects {
@@ -41,7 +42,15 @@ export class UtilityEffects {
             localStorage.removeItem(itemKey);
         });
 
+    // TODO add navigate effect
+    @Effect({ dispatch: false })
+    public navigate = this.actions$
+        .ofType(utilityActions.NAVIGATE)
+        .pluck('payload')
+        .do((route: any[]) => this.router.navigate(route))
+
     constructor(
-        private actions$: Actions
+        private actions$: Actions,
+        private router: Router
     ) { }
 }
