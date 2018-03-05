@@ -1,4 +1,13 @@
 <div class="row" *ngIf="indicator">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="row">
+                <div class="col-xs-12">
+                    <created-by-ref [model]="indicator"></created-by-ref>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-12">
@@ -17,7 +26,7 @@
         <div class="row">
             <div class="col-md-12">
                 <mat-input-container class="full-width">
-                    <input matInput placeholder="Pattern"  [(ngModel)]="indicator.attributes.pattern" value="{{indicator.attributes.pattern}}" />
+                    <input matInput placeholder="Pattern"  [(ngModel)]="indicator.attributes.pattern" value="{{indicator.attributes.pattern}}" required />
                 </mat-input-container>
             </div>
         </div>

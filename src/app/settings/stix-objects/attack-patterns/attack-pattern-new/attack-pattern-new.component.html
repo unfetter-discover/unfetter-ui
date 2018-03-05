@@ -1,6 +1,7 @@
 
         <div class="row">
             <div class="col-md-12">
+                <created-by-ref [model]="attackPattern"></created-by-ref>
                 <mat-input-container class="full-width">
                     <input id="attack-pattern-name"  matInput placeholder="Name" required [(ngModel)]="attackPattern.attributes.name">
                 </mat-input-container>
