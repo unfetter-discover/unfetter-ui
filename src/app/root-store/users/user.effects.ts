@@ -16,7 +16,9 @@ import { AppState } from '../app.reducers';
 export class UserEffects {
 
     // Initial token refresh delay until configuration is loaded
-    private refreshTokenDelay: number = 10000;
+    private refreshTokenDelayMS: number = 10000;
+    // The buffer between a token expiring and refresh attempts being made
+    private refreshBufferPercent: number = 0.3;
     
     @Effect()
     public fetchUser = this.actions$
@@ -56,14 +58,15 @@ export class UserEffects {
         .withLatestFrom(this.store) 
         .do(([token, store]: [string, AppState]) => {
             this.authService.setToken(token);
-            
         })
         .switchMap(([token, store]: [string, AppState]) => {
             if (store.config.configurations && store.config.configurations.jwtDurationSeconds) {
-                this.refreshTokenDelay = store.config.configurations.jwtDurationSeconds * 1000;
+                this.refreshTokenDelayMS = store.config.configurations.jwtDurationSeconds * 1000;
+                this.refreshTokenDelayMS = this.refreshTokenDelayMS - (this.refreshTokenDelayMS * this.refreshBufferPercent);
+                this.refreshTokenDelayMS = Math.floor(this.refreshTokenDelayMS);
             }
             return Observable.of([token, store])
-                .delay(this.refreshTokenDelay);
+                .delay(this.refreshTokenDelayMS);
         })
         .map(([token, store]: [string, AppState]) => new userActions.RefreshToken());
 
@@ -86,8 +89,8 @@ export class UserEffects {
                 })
         })
         .map(({success, token}: { success: boolean, token: string }) => {
-            console.log('~~~~');
             if (success) {
+                console.log('Token successfully refreshed');
                 return new userActions.SetToken(token);
             } else {
                 console.log('Failed to refesh token');
