@@ -19,7 +19,7 @@ export class CreatedByRefComponent implements OnInit {
     public userOrgs$: Observable<any[]>;
 
     constructor(
-        private store: Store<fromRoot.AppState>,
+        public store: Store<fromRoot.AppState>,
         private baseService: BaseComponentService
     ) { }
 
