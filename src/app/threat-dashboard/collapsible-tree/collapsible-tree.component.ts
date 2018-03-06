@@ -7,19 +7,14 @@ import * as d3 from 'd3';
     templateUrl: './collapsible-tree.component.html',
     styleUrls: ['./collapsible-tree.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    
+
 })
 export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
-    // private static readonly teal500 = '#009688';
-    // private static readonly teal200 = '#80CBC4';
-    // private static readonly DEFAULT_LEAF = CollapsibleTreeComponent.teal500;
-    // private static readonly DEFAULT_PARENT = CollapsibleTreeComponent.teal200;
-    
     @Input() public data: any;
     @Output() public renderComplete: EventEmitter<any> = new EventEmitter();
-    private svg: any;    
+    private svg: any;
     private readonly graphId = '#graph';
-    private readonly circleRadius = 12;
+    private readonly circleRadius = 9;
 
     // tslint:disable-next-line:no-empty
     constructor(protected renderer: Renderer2) { }
@@ -27,7 +22,7 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
     /**
      * @description initialize this component
      */
-    public ngOnInit(): void { 
+    public ngOnInit(): void {
         console.log('on init');
     }
 
@@ -35,7 +30,15 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
      * @description clean up this component
      */
     public ngOnDestroy(): void {
-        d3.select('body').selectAll('.tooltip').remove();
+        this.cleanToolTips();
+    }
+
+    /**
+     * @description destroy all the tooltips
+     * @returns {void}
+     */
+    public cleanToolTips(): void {
+        d3.select(this.graphId).selectAll('.tooltip').remove();
     }
 
     /**
@@ -51,6 +54,7 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
      */
     public ngOnChanges(changes: any): void {
         d3.select(this.graphId).selectAll('*').remove();
+        this.cleanToolTips();
         this.data = changes.data.currentValue;
         this.buildGraph('graph', 'graph-info');
     }
@@ -71,7 +75,7 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
 
         const parentEl: any = d3.select(this.graphId).node();
         const margin = { top: 18, right: 18, bottom: 18, left: 0 };
-        const tmp = (parentEl && parentEl.clientWidth) ?  parentEl.clientWidth : 960;
+        const tmp = (parentEl && parentEl.clientWidth) ? parentEl.clientWidth : 960;
         const width = (tmp - margin.right) - margin.left;
         const height = (tmp - margin.top) - margin.bottom;
         let i = 0;
@@ -93,6 +97,11 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
             .attr('height', height + margin.top + margin.bottom)
             .append('g')
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+        // Define the div for the tooltip
+        const tooltipDiv = d3.select(_self.graphId).append('div')
+            .attr('class', 'tooltip mat-elevation-z3')
+            .style('opacity', 0);
 
         function collapse(d) {
             if (d.children) {
@@ -143,17 +152,13 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
                 .attr('transform', (d: any) => 'translate(' + source.y0 + ',' + source.x0 + ')')
                 .on('click', click);
 
-            // Define the div for the tooltip
-            const tooltipDiv = d3.select(_self.graphId).append('div')
-                .attr('class', 'tooltip mat-elevation-z3')
-                .style('opacity', 0);
 
-            const iconWidth = '32';
-            const iconHeight = '32';
+            const iconWidth = '24';
+            const iconHeight = '24';
             nodeEnter.append('circle')
                 .attr('class', 'node')
                 .attr('r', 1e-6)
-            // nodeEnter.append('use')
+                // nodeEnter.append('use')
                 // .attr('xlink:href', _self.generateIconPath.bind(_self))
                 // .attr('width', iconWidth)
                 // .attr('height', iconHeight)
@@ -165,6 +170,8 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
                     return d._children ? 'full-node' : 'empty-node';
                 })
                 .on('mouseover', (d: any) => {
+                    // TODO: fix tooltip across browsers with 
+                    //  this.getScreenCTM()
                     const mouseCoords = d3.mouse(svgEl as any);
                     const D3event = d3.event as any;
                     const eventX = mouseCoords[0];
@@ -218,7 +225,7 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
 
             nodeUpdate.select('circle')
                 .attr('r', _self.circleRadius)
-            // nodeUpdate.select('use')
+                // nodeUpdate.select('use')
                 // .attr('xlink:href', _self.generateIconPath.bind(_self))
                 // .attr('width', iconWidth)
                 // .attr('height', iconHeight)
@@ -268,18 +275,18 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
                     const o = { x: source.x0, y: source.y0 };
                     return _self.diagonal(o, o);
                 });
-                // .attr('d', <any> d3.linkHorizontal()
-                //     .x((d: any) => {
-                //         return source.x0;
-                //     })
-                //     .y((d: any) => source.y0))
-                // .style('stroke', (d: any) => {
-                //     if (d.data.type === 'root') {
-                //         return 'transparent';
-                //     }
+            // .attr('d', <any> d3.linkHorizontal()
+            //     .x((d: any) => {
+            //         return source.x0;
+            //     })
+            //     .y((d: any) => source.y0))
+            // .style('stroke', (d: any) => {
+            //     if (d.data.type === 'root') {
+            //         return 'transparent';
+            //     }
 
-                //     return d.data.color || CollapsibleTreeComponent.DEFAULT_PARENT;
-                // });
+            //     return d.data.color || CollapsibleTreeComponent.DEFAULT_PARENT;
+            // });
 
             const linkUpdate = linkEnter.merge(link);
 
