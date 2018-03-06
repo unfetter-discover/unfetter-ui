@@ -53,6 +53,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
   @ViewChildren('question')
   public questions: QueryList<MatSelect>;
 
+  public currentUser: UserProfile;
   public readonly defaultValue = -1;
   public readonly defaultMeasurement = 'Nothing';
   public readonly sidePanelCollapseHeight = '32px';
@@ -231,7 +232,16 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         (assessmentMeta: AssessmentMeta) => this.meta = assessmentMeta,
         (err) => console.log(err));
 
-    this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$, sub7$);
+    const sub8$ = this.userStore
+      .select('users')
+      .pluck('userProfile')
+      .distinctUntilChanged()
+      .take(1)
+      .subscribe(
+        (user: UserProfile) => this.currentUser = user,
+        (err) => console.log(err));
+
+    this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$, sub7$, sub8$);
   }
 
   public loadExistingAssessment(rollupId: string, meta: Partial<AssessmentMeta>) {
@@ -241,7 +251,6 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       .take(1)
       .subscribe(
         (user: UserProfile) => {
-          const creatorId = user._id;
           const sub1$ = this.assessStore
             .select('fullAssessment')
             .pluck('assessmentTypes')
@@ -249,6 +258,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
             .subscribe(
               (arr: Assessment[]) => this.loadAssessments(rollupId, arr, meta),
               (err) => console.log(err));
+          this.subscriptions.push(sub1$);
         },
         (err) => console.log(err));
     this.subscriptions.push(sub$);
@@ -296,7 +306,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         meta.includesSensors = true;
       } else {
         console.log('We got a weird assessment document that is not all of one category, or has unknown categories',
-            assessment);
+          assessment);
       }
     });
 
@@ -965,11 +975,16 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @return {Assessment}
    */
   private generateXUnfetterAssessment(tempModel: TempModel, assessmentMeta: AssessmentMeta): Assessment {
+    let createdById;
+    if (this.currentUser && this.currentUser.organizations && this.currentUser.organizations.length > 0) {
+      createdById = this.currentUser.organizations[0].id;
+    }
     const assessment = new Assessment();
     assessment.assessmentMeta = assessmentMeta;
     assessment.name = this.meta.title;
     assessment.description = this.meta.description;
     assessment.created = this.publishDate.toISOString();
+    assessment.created_by_ref = createdById;
     const assessmentSet = new Set<AssessmentObject>();
 
     Object.keys(tempModel)
@@ -981,6 +996,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         stix.type = assessmentObj.assessment.type;
         stix.description = assessmentObj.assessment.description || '';
         stix.name = assessmentObj.assessment.name;
+        stix.created_by_ref = createdById;
         temp.stix = stix;
         temp.questions = [];
         if (assessmentObj.measurements !== undefined) {
