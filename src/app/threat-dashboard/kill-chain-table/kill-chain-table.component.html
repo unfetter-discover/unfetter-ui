@@ -52,34 +52,61 @@
         </button>
     </div>
 
-    <ng-template #apTooltipTemplate>
-        <div class="col-md-12 attack-pattern-tooltip">
-            <mat-card>
-                <mat-card-subtitle>
-                    <div class="flex1"><label>{{attackPattern.attributes.name}}</label></div>
-                    <div>
-                        <button mat-button type="button" class="mat-primary">
-                            <a target="_blank" href="/#/stix/attack-patterns/{{attackPattern.id}}">Details</a>
-                        </button>
-                        <button mat-button type="button" (click)="hideAttackPatternTooltip(attackPattern)">Close</button>
-                    </div>
-                </mat-card-subtitle>
-                <mat-card-content>
-                    <div class="row">
-                        <div class="col-md-3"><label>Description</label></div>
-                        <div class="col-md-8 attack-pattern-desc" [innerHTML]="attackPattern.attributes.description"></div>
-                    </div>
-                    <div class="row" *ngIf="attackPattern.attributes.x_mitre_data_sources">
-                        <div class="col-md-3"><label>Data Sources</label></div>
-                        <div class="col-md-9 attack-pattern-sources">{{attackPattern.attributes.x_mitre_data_sources.join(', ')}}</div>
-                    </div>
-                    <div class="row" *ngIf="attackPattern.attributes.x_mitre_platforms">
-                        <div class="col-md-3"><label>Platforms</label></div>
-                        <div class="col-md-9 attack-pattern-platforms">{{attackPattern.attributes.x_mitre_platforms.join(', ')}}</div>
-                    </div>
-                </mat-card-content>
-            </mat-card>
-        </div>
-    </ng-template>
-
 </div>
+
+<div class="positionWrapper" style="margin:10px 0;">
+    <h3 class="mat-title" style="height:64px; margin:0; padding:16px 16px 0 16px; color:#ffffffde; background:linear-gradient(60deg, #1e88e5, #2196f3) !important;">Attack Patterns Used (Google)</h3>
+    <div #google_treemap class="col-xs-12" style="height:400px; margin:0; padding:0; background:white;"></div>
+</div>
+
+<div class="positionWrapper" style="margin:10px 0; clear:both;">
+    <h3 class="mat-title" style="height:64px; margin:0; padding:16px 16px 0 16px; color:#ffffffde; background:linear-gradient(60deg, #1e88e5, #2196f3) !important;">Attack Patterns Used (d3-hierarchy)</h3>
+    <div #d3_treemap class="col-xs-12 d3-treemap" style="width:100%; height:400px; margin:0; padding:0; background:white;"></div>
+</div>
+
+<div class="positionWrapper" style="margin:10px 0; clear:both;">
+    <h3 class="mat-title" style="height:64px; margin:0; padding:16px 16px 0 16px; color:#ffffffde; background:linear-gradient(60deg, #1e88e5, #2196f3) !important;">Attack Patterns Used (Google heat map)</h3>
+    <div #google_heatmap class="col-xs-12" style="height:400px; margin:0; padding:0; background:white;"></div>
+</div>
+    
+<div class="positionWrapper" style="margin:10px 0; clear:both;">
+    <h3 class="mat-title" style="height:64px; margin:0; padding:16px 16px 0 16px; color:#ffffffde; background:linear-gradient(60deg, #1e88e5, #2196f3) !important;">Attack Patterns Used (d3, zoomable heat map)</h3>
+    <div #d3_heatmap class="col-xs-1 d3-heatmap" style="width:100%; height:400px; margin:0; padding:0; background:white;"></div>
+</div>
+
+<div class="positionWrapper" style="margin:10px 0; clear:both;">
+</div>
+
+<ng-template #apTooltipTemplate>
+    <div class="col-md-12 attack-pattern-tooltip">
+        <mat-card>
+            <mat-card-subtitle>
+                <div class="flex1"><label>{{attackPattern.attributes.name}}</label></div>
+                <div>
+                    <button mat-button type="button" class="mat-primary">
+                        <a target="_blank" href="/#/stix/attack-patterns/{{attackPattern.id}}">Details</a>
+                    </button>
+                    <button mat-button type="button" (click)="hideAttackPatternTooltip(attackPattern)">Close</button>
+                </div>
+            </mat-card-subtitle>
+            <mat-card-content>
+                <div class="row">
+                    <div class="col-md-3"><label>Description</label></div>
+                    <div class="col-md-8 attack-pattern-desc" [innerHTML]="attackPattern.attributes.description"></div>
+                </div>
+                <div class="row" *ngIf="attackPattern.attributes.x_mitre_data_sources">
+                    <div class="col-md-3"><label>Data Sources</label></div>
+                    <div class="col-md-9 attack-pattern-sources">{{attackPattern.attributes.x_mitre_data_sources.join(', ')}}</div>
+                </div>
+                <div class="row" *ngIf="attackPattern.attributes.x_mitre_platforms">
+                    <div class="col-md-3"><label>Platforms</label></div>
+                    <div class="col-md-9 attack-pattern-platforms">{{attackPattern.attributes.x_mitre_platforms.join(', ')}}</div>
+                </div>
+                <div class="row" *ngIf="attackPhases">
+                    <div class="col-md-3"><label>Phases</label></div>
+                    <div class="col-md-9 attack-pattern-phases">{{attackPhases.join(', ')}}</div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</ng-template>
