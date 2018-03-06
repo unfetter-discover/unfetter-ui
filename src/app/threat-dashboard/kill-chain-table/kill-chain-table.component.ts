@@ -9,7 +9,9 @@ import {
     HostListener,
     TemplateRef,
     ViewContainerRef,
-    AfterViewInit
+    AfterViewInit,
+    ChangeDetectorRef,
+    Renderer2,
   } from '@angular/core';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
@@ -31,9 +33,8 @@ import { KillChainPhase } from '../../models';
 
 interface HeatMapData {
   phase: string,
-  index: number,
-  name: string,
-  active: boolean
+  count: number,
+  columns: Array<Array<{name: string, active: boolean}>>
 }
 
 @Component({
@@ -43,7 +44,7 @@ interface HeatMapData {
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [topRightSlide]
 })
-export class KillChainTableComponent implements OnInit, AfterViewInit, OnDestroy {
+export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input('threatReport')
   public threatReport: ThreatReport;
@@ -62,16 +63,15 @@ export class KillChainTableComponent implements OnInit, AfterViewInit, OnDestroy
   public attackPhases: string[];
   private overlayRef: OverlayRef;
   private portal: TemplatePortal<any>;
+  public hoverTooltip: boolean;
 
   @ViewChild('google_treemap') googleTreeMapView: ElementRef;
   public googleTreeMapData: Array<any> = [];
-  @ViewChild('d3_treemap') d3TreeMapView: ElementRef;
-  public d3TreeMapData: any = {};
+  public showTreeMap = false;
 
-  @ViewChild('google_heatmap') googleHeatMapView: ElementRef;
-  public googleHeatMapData: Array<any> = [];
   @ViewChild('d3_heatmap') d3HeatMapView: ElementRef;
-  public d3HeatMapData: Array<Array<HeatMapData>> = [];
+  public d3HeatMapData: Array<HeatMapData> = [];
+  public showHeatMap = true;
 
   public undoToolboxOp: Partial<KillChainEntry>[] = undefined;
   public showToolbox = false;
@@ -84,6 +84,8 @@ export class KillChainTableComponent implements OnInit, AfterViewInit, OnDestroy
     protected genericApi: GenericApi,
     private overlay: Overlay,
     private vcr: ViewContainerRef,
+    private renderer: Renderer2,
+    private changeDetector: ChangeDetectorRef,
   ) { }
 
   /**
@@ -94,10 +96,13 @@ export class KillChainTableComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   public ngAfterViewInit(): void {
-    this.createGoogleAttackPatternTreeMap();
-    this.createD3AttackPatternTreeMap();
-    this.createGoogleAttackPatternHeatMap();
-    this.createD3AttackPatternHeatMap();
+    requestAnimationFrame(() => {
+      this.createD3AttackPatternHeatMap();
+      this.showTreeMap = false;
+      this.showHeatMap = false;
+      this.changeDetector.detectChanges();
+      this.d3HeatMapView.nativeElement.click();
+    });
   }
 
   private createGoogleAttackPatternTreeMap() {
@@ -129,19 +134,6 @@ export class KillChainTableComponent implements OnInit, AfterViewInit, OnDestroy
             attackData[attackPattern].count, attackData[attackPattern].phases]);
       }
     }
-    // TODO for grins though, let's make this a more busy map for display
-    this.googleTreeMapData = [
-      ['Attack Patterns Used', '', '# times used', 'Tactics Used In'],
-      ['Attack Patterns', '', 0, []],
-      ['Account Discovery', 'Attack Patterns', 2, ['Discovery']],
-      ['Process Discovery', 'Attack Patterns', 2, ['Discovery']],
-      ['.bash_profile and .bashrc', 'Attack Patterns', 2, ['Persistence']],
-      ['Accessibility Features', 'Attack Patterns', 3, ['Persistence', 'Privilege Escalation']],
-      ['Exploitation of Vulnerability', 'Attack Patterns', 5, ['Privilege Escalation', 'Credential Access', 'Defense Evasion', 'Lateral Movement']],
-      ['Bypass User Account Control', 'Attack Patterns', 3, ['Privilege Escalation', 'Defense Evasion']],
-      ['Scheduled Task', 'Attack Patterns', 4, ['Persistence', 'Privilege Escalation', 'Execution']],
-      ['Web Shell', 'Attack Patterns', 1, []],
-    ];
 
     GoogleCharts.load(() => {
       const data = GoogleCharts.api.visualization.arrayToDataTable(this.googleTreeMapData.map(arr => arr.slice(0, 3)));
@@ -160,240 +152,167 @@ export class KillChainTableComponent implements OnInit, AfterViewInit, OnDestroy
         minHighlightColor: '#ff9',
         midHighlightColor: '#ff9',
         maxHighlightColor: '#ff9',
-        showTooltips: true,
-        generateTooltip: (row, size, value) => {
-          const index = row + 1;
-          if (row && this.googleTreeMapData[index][3]) {
-            const attackPattern: Partial<AttackPattern> =
-                this.attackPatterns.find(pattern => pattern.attributes.name === this.googleTreeMapData[index][0]) ||
-                {
-                  id: undefined,
-                  attributes: {
-                    version:  '',
-                    name: this.googleTreeMapData[index][0],
-                    description: '',
-                    created: new Date(),
-                    modified: new Date(),
-                    labels: [],
-                    external_references: [],
-                    kill_chain_phases: [],
-                    x_unfetter_sophistication_level: 0,
-                  }
-                };
-            const dataSources = attackPattern.attributes['x_mitre_data_sources'] || null;
-            const platforms = attackPattern.attributes['x_mitre_platforms'] || null;
-            const phases = Object.values(this.googleTreeMapData[index][3]).map(phase => '<li>' + phase + '</li>');
+        showTooltips: false
+      });
 
-            let tooltip = `
-                  <div class="col-md-12" style="min-width:300px; max-width:400px; padding:6px; color:#666; background:#f0f0f0; box-shadow:0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);">
-                    <div style="display:flex; align-items:center; margin:0;">
-                      <div class="flex1"><label style="color:#666;">${attackPattern.attributes.name}</label></div>
-              `;
-            if (attackPattern.id) {
-              tooltip += `
-                      <div>
-                        <button type="button" class="mat-button mat-primary">
-                          <a target="_blank" href="/#/stix/attack-patterns/${attackPattern.id}">Details</a>
-                        </button>
-                      </div>
-                `;
-            }
-            tooltip += `
-                    </div>
-                    <div class="mat-card-content">
-              `;
-            if (attackPattern.attributes.description) {
-              tooltip += `
-                      <div class="row">
-                        <div class="col-md-3"><label style="color:#666;">Description</label></div>
-                        <div class="col-md-8 goog-attack-pattern-desc">${attackPattern.attributes.description}</div>
-                      </div>
-                `;
-            }
-            if (dataSources) {
-              tooltip += `
-                      <div class="row">
-                        <div class="col-md-3"><label style="color:#666;">Data Sources</label></div>
-                        <div class="col-md-9 attack-pattern-sources">${dataSources.join(', ')}</div>
-                      </div>
-                `;
-            }
-            if (platforms) {
-              tooltip += `
-                      <div class="row">
-                        <div class="col-md-3"><label style="color:#666;">Platforms</label></div>
-                        <div class="col-md-9 goog-attack-pattern-platforms">${platforms.join(', ')}</div>
-                      </div>
-                `;
-            }
-            tooltip += `
-                      <div class="row">
-                        <div class="col-md-3"><label style="color:#666;">Phases</label></div>
-                        <div class="col-md-9 goog-attack-pattern-phases">${this.googleTreeMapData[index][3].join(', ')}</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              `;
-            return tooltip;
+      GoogleCharts.api.visualization.events.addListener(chart, 'onmouseover', (event) => {
+        if (!event || !event.row) {
+          return;
+        }
+        let selectedPattern: string = data.getValue(event.row, 0);
+        let nodePhases = this.googleTreeMapData.filter(row => row[0] === selectedPattern)[0][3];
+        let attackPattern;
+        this.intrusionSetsDashboard.killChainPhases.forEach(phase => {
+          const p = phase.attack_patterns.find(pattern => pattern && pattern.name === selectedPattern);
+          if (p) {
+            attackPattern = p;
+            return false;
           }
+        });
+        if (attackPattern) {
+          const ev = {
+            target: this.googleTreeMapView.nativeElement,
+            preventDefault: () => {},
+            stopPropagation: () => {}
+          } as UIEvent;
+          this.showAttackPatternTooltip(attackPattern, ev, nodePhases, true);
         }
       });
+      GoogleCharts.api.visualization.events.addListener(chart, 'onmouseout',
+          () => this.hideAttackPatternTooltip(this.attackPattern));
     }, 'treemap');
   }
 
-  private createD3AttackPatternTreeMap() {
-    this.d3TreeMapData = {
-      id: 'Attack Patterns Used',
-      children: [
-        {id: 'Account Discovery', value: 1, phases: ['Discovery']},
-        {id: 'Process Discovery', value: 1, phases: ['Discovery']},
-        {id: '.bash_profile and .bashrc', value: 1, phases: ['Persistence']},
-        {id: 'Accessibility Features', value: 2, phases: ['Persistence', 'Privilege Escalation']},
-        {id: 'Exploitation of Vulnerability', value: 4, phases: ['Privilege Escalation', 'Credential Access', 'Defense Evasion', 'Lateral Movement']},
-        {id: 'Bypass User Account Control', value: 2, phases: ['Privilege Escalation', 'Defense Evasion']},
-        {id: 'Scheduled Task', value: 3, phases: ['Persistence', 'Privilege Escalation', 'Execution']},
-        {id: 'Web Shell', value: 0, phases: []},
-      ]
-    };
-
-    const color = d3.scaleLinear<d3.RGBColor, string>()
-      .domain([2, 5]).interpolate(d3.interpolateHcl).range([d3.rgb('#db9'), d3.rgb('#e66')]);
-    const root = d3.hierarchy(this.d3TreeMapData).sum(d => d.value + 1).sort((a, b) => b.value - a.value);
-    const graphElement = d3.select('.d3-treemap');
-    const rect = (graphElement.node() as any).getBoundingClientRect();
-    const treemap = d3.treemap().size([rect.width, rect.height]).padding(5).round(true);
-    treemap(root);
-    graphElement.on('mouseout', () => this.hideAttackPatternTooltip(this.attackPattern));
-    const showTooltip = (div, node) => {
-      let attackPattern;
-      this.intrusionSetsDashboard.killChainPhases.forEach(phase => {
-        const p = phase.attack_patterns.find(pattern => pattern && pattern.name === node.data.id);
-        if (p) {
-          attackPattern = p;
-          return false;
-        }
-      });
-      if (attackPattern) {
-        this.showAttackPatternTooltip(attackPattern, d3.event, node.data.phases, true);
-      }
-    };
-    root.leaves().forEach((node: any) => {
-      const div = graphElement.append('div').attr('class', 'd3apNode')
-          .style('left', `${node.x0}px`).style('top', `${node.y0}px`)
-          .style('width', `${node.x1 - node.x0}px`).style('height', `${Math.max(node.y1 - node.y0, 20)}px`)
-          .style('display', 'flex').style('position', 'absolute').style('align-items', 'center')
-          .style('box-sizing', 'border-box').style('overflow', 'hidden')
-          .style('background', (node.value === 1) ? '#999' : color(node.value))
-          .on('mouseover', () => showTooltip(div, node))
-          // .on('mouseout', () => this.hideAttackPatternTooltip(this.attackPattern))
-        .append('div').text(node.data.id).style('flex', '1')
-          .style('text-align', 'center').style('font-size', '16px').style('pointer-events', 'none');
-    });
-  }
-
-  private createGoogleAttackPatternHeatMap() {
-
-  }
-
   private createD3AttackPatternHeatMap() {
-    const padding = {top: 30, left: 30, right: 0, bottom: 5, between: 0};
-    const graphElement = d3.select('.d3-heatmap');
-    const rect = (graphElement.node() as any).getBoundingClientRect();
-    const width = rect.width - padding.left - padding.right;
-    const height = rect.height - padding.top - padding.bottom;
-
-    let data = {}, phases = [], maxPatterns = 0;
-    console.log('loading attack patterns');
+    // Collect the data.
+    let rawData = {}, columns = 0, maxPatterns = 0;
     this.intrusionSetsDashboard.killChainPhases.forEach(phase => {
       let index = 0;
       if (phase && phase.name && phase.attack_patterns) {
-        data[phase.name] = {phase: phase.name, count: phase.attack_patterns.length, columns: [[]]};
-        let patterns = 0;
+        let d = rawData[phase.name] = {
+          phase: phase.name.replace(/\-/g, ' ').split(/\s+/).map(w => w[0].toUpperCase() + w.slice(1)).join(' '),
+          count: 0,
+          columns: []
+        };
         phase.attack_patterns.forEach(attackPattern => {
           if (attackPattern.name) {
-            patterns++;
-            data[phase.name].columns[0].push({
-              phase: phase.name,
-              index: index++,
+            d.count++;
+            d.columns.push({
               name: attackPattern.name,
               active: attackPattern.isSelected
             });
           }
         });
-        maxPatterns = Math.max(maxPatterns, data[phase.name].count);
+        maxPatterns = Math.max(maxPatterns, d.count);
+        columns++;
       }
     });
-    const originalData = data;
 
-    // now create more columns until we fit nicely in the bounding box
-    let cellHeight, splitPasses = 1, newMaxPatterns = maxPatterns;
-    console.log(`max patterns is `, maxPatterns);
-    for (cellHeight = rect.height / newMaxPatterns; cellHeight < 24; cellHeight = rect.height / newMaxPatterns) {
-      console.log(`cell height too small (${cellHeight}), trying for more columns.`)
-      // take the largest column (most attack patterns) and split it, then max the other columns the same.
-      newMaxPatterns = Math.ceil(maxPatterns / ++splitPasses), data = [];
-      console.log(`max patterns now `, newMaxPatterns, splitPasses);
-      Object.values(originalData).forEach((d: any) => {
-        if (d.count <= newMaxPatterns) {
-          data[d.phase] = d;
-        } else {
-          // going to make the patterns go down, then start new column, rather than balancing... we can change it
-          data[d.phase] = {phase: d.phase, count: d.count, columns: [[]]};
-          let cols = data[d.phase].columns;
-          for (let index = 0, col = 0; index < d.count; index++) {
-            if (cols[col].length === newMaxPatterns - 1) {
-              cols.push([]);
-              col++;
-            }
-            cols[col].push(d.columns[0][index]);
+    // Now determine how much space we currently have, and create multiple columns to get it to fit
+    const padding = {top: 24, left: 1, right: 1, bottom: 0, between: 0};
+    const graphElement = d3.select('.heat-map');
+    const rect = (graphElement.node() as any).getBoundingClientRect();
+    const width = rect.width - padding.left - padding.right;
+    const height = rect.height - padding.top - padding.bottom;
+
+    let cellHeight, cellWidth, splitPasses = 0, passCount;
+    do {
+      ++splitPasses;
+      passCount = Math.ceil(maxPatterns / splitPasses);
+      columns = 0;
+      Object.values(rawData).forEach((d: any) => columns += Math.ceil(d.count / passCount));
+      cellWidth = Math.floor(width / columns);
+      let extra = width - (columns * cellWidth);
+      padding.between = Math.min(extra / (columns - 1), 4);
+      cellWidth = Math.floor((width - (columns - 1) * padding.between) / columns);
+      cellWidth -= cellWidth % 2;
+      cellHeight = Math.floor(height / passCount - 2);
+    } while ((width !== 0) && (cellHeight < cellWidth / 2));
+    maxPatterns = Math.ceil(maxPatterns / splitPasses);
+
+    // Normalize the data.
+    let data = [];
+    Object.values(rawData).forEach((d: any) => {
+      if (d.count <= maxPatterns) {
+        data.push({phase: d.phase, count: d.count, columns: [d.columns]});
+      } else {
+        // going to make the patterns go down, then start new column, rather than balancing... we can change it
+        let phase: HeatMapData = {phase: d.phase, count: d.count, columns: [[]]}, col = 0;
+        // TODO shouldn't there be an easier way to split the array?
+        d.columns.forEach(p => {
+          if (phase.columns[col].length === maxPatterns) {
+            phase.columns.push([]);
+            col++;
           }
-        }
-      });
-      console.log('interim data: ', data);
-    }
-    // normalize it
-    let temp = [];
-    Object.values(data).forEach((d: any) => {
-      temp.push(...d.columns);
-      phases.push(d.phase);
+          phase.columns[col].push(p);
+        });
+        data.push(phase);
+      }
     });
-    this.d3HeatMapData = temp;
-    maxPatterns = newMaxPatterns;
+    this.d3HeatMapData = data;
 
-    console.log('resulting data: ', this.d3HeatMapData);
-    let columns = this.d3HeatMapData.length;
-    let cellWidth = rect.width / columns; // fully zoomed-out width, and no padding between columns
-    if (cellWidth > cellHeight) {
-      let extra = rect.width - (columns * cellHeight);
-      padding.between = Math.min(extra / (columns - 1), 10);
-      cellWidth = (rect.width - (columns - 1) * padding.between) / columns;
-    }
-    console.log('heat map scales: ', 'rect', rect, '# columns', columns, '# patterns', maxPatterns,
-        'columns', columns, 'cell width', cellWidth, 'cell height', cellHeight, 'w', width, 'h', height,
-        `padding`, padding);
-
-    let xScale = d3.scaleBand().domain(phases).range([0, width]);
-    let xAxis = d3.axisTop(xScale).tickFormat(d => d);
+    // Time to draw.
+    let xScale = d3.scaleLinear().domain([0, columns]).range([0, width]);
+    let xAxis = d3.axisTop(xScale).tickSize(0).tickFormat(() => '');
     let yScale = d3.scaleLinear().domain([0, maxPatterns]).range([0, height]);
-    let yAxis = d3.axisLeft(yScale).tickFormat(d => `${d}`);
+    let yAxis = d3.axisLeft(yScale).tickSize(0).tickFormat(() => '');
+    let headerColors = [['#db9', '#fff'], ['#f0f0f0', '#f0f0f0']];
 
     let svg = graphElement
       .append('svg').attr('width', rect.width).attr('height', rect.height)
       .append('g').attr('transform', `translate(${padding.left}, ${padding.top})`);
-    this.d3HeatMapData.forEach((phase, index) => {
-      console.log(`phase`, phase);
-      phase.forEach((d, row) => {
-        console.log(`pattern`, d);
-        svg.append('g').append('rect').attr('class', 'cell')
-          .attr('width', cellWidth).attr('height', cellHeight).style('padding-right', padding.between)
-          .attr('x', xScale(d.phase)).attr('y', yScale(d.index)).attr('fill', d.active ? '#e66' : '#ccc');
+    let header = svg.append('g').attr('class', 'x axis').call(xAxis)
+      .attr('transform', `translate(0, -${padding.top})`);
+    header.selectAll('.tick, .domain').remove();
+
+    let colIndex = 0;
+    this.d3HeatMapData.forEach(phase => {
+      let firstX = xScale(colIndex);
+      let phaseColor = headerColors.shift();
+      let phaseWidth = cellWidth * phase.columns.length + (phase.columns.length - 1) - 2;
+
+      svg.append('rect')
+        .attr('width', phaseWidth).attr('height', '100%')
+        .attr('x', firstX).attr('y', yScale(0)).attr('fill', phaseColor[1]);
+      phase.columns.forEach((patterns, column) => {
+        let x = xScale(colIndex);
+        patterns.forEach((d, index) => {
+          let cell = svg.append('rect').attr('class', 'cell')
+            .attr('width', cellWidth - 1).attr('height', cellHeight - 1).style('padding-right', padding.between)
+            .attr('x', x).attr('y', yScale(index) + 1).attr('fill', d.active ? '#e66' : '#ccc')
+            .attr('aria-label', d.name)
+            .on('mouseover', p => {
+              let attackPattern;
+              this.intrusionSetsDashboard.killChainPhases.forEach(ph => {
+                const ptn = ph.attack_patterns.find(pattern => pattern && pattern.name === d.name);
+                if (ptn) {
+                  attackPattern = ptn;
+                  return false;
+                }
+              });
+              if (attackPattern) {
+                this.showAttackPatternTooltip(attackPattern, d3.event, [phase.phase], true);
+              }
+            })
+            .on('mouseout', () => this.hideAttackPatternTooltip(this.attackPattern));
+        });
+        colIndex++;
       });
+
+      // Let's try to write the phase name on the x-axis over the column(s)
+      let phaseHeader = header.append('svg')
+        .attr('x', firstX + 1).attr('y', 1).attr('width', phaseWidth).attr('height', padding.top)
+        .style('overflow', 'hidden');
+      phaseHeader.append('rect').attr('x', 0).attr('rx', 6).attr('width', phaseWidth)
+        .attr('y', 0).attr('ry', 6).attr('height', padding.top + 6).attr('fill', phaseColor[0]);
+      let text = phaseHeader.append('text').attr('x', phaseWidth / 2).attr('y', padding.top - 10).attr('dy', '.35em')
+        .attr('text-anchor', 'middle').attr('fill', '#333').text(phase.phase).attr('aria-label', phase.phase);
+      for (let done = false, size = 14; !done && (size > 9); size--) {
+        text.attr('text-anchor', 'middle').attr('font-size', `${size}px`);
+        done = (text.node() as any).getComputedTextLength() <= phaseWidth;
+      }
+      headerColors.push(phaseColor);
     });
-    svg.append('g').attr('class', 'y axis').call(yAxis);
-    svg.append('g').attr('class', 'x axis').call(xAxis)
-        .selectAll('text').attr('font-weight', 'normal').style('text-anchor', 'start')
-          .attr('dx', '.8em').attr('dy', '.5em').attr('transform', 'rotate(-65)');
 }
 
   /**
@@ -467,6 +386,7 @@ export class KillChainTableComponent implements OnInit, AfterViewInit, OnDestroy
       return this.count(phase.attack_patterns) > 0;
     });
     this.intrusionSetsDashboard.killChainPhases = filtered;
+    this.showHeatMap = this.showTreeMap = false;
   }
 
   /**
@@ -480,6 +400,7 @@ export class KillChainTableComponent implements OnInit, AfterViewInit, OnDestroy
       return phases;
     });
     this.intrusionSetsDashboard.killChainPhases = filtered;
+    this.showHeatMap = this.showTreeMap = false;
   }
 
   /**
@@ -492,21 +413,46 @@ export class KillChainTableComponent implements OnInit, AfterViewInit, OnDestroy
     }
     this.intrusionSetsDashboard.killChainPhases = this.undoToolboxOp;
     this.undoToolboxOp = this.copyState(this.undoToolboxOp);
+    this.showHeatMap = this.showTreeMap = false;
   }
 
-  public showAttackPatternTooltip(killChain: Partial<KillChainEntry>, event?: UIEvent, phases?: string[], asTooltip: boolean = false): void {
-    if (event) {
-      console.log(`stopping event`);
-      event.preventDefault();
-      event.stopPropagation();
+  /**
+   * @description
+   * @param {UIEvent} event optional
+   */
+  public onTreeMap(event?: UIEvent): void {
+    requestAnimationFrame(() => {
+      this.showHeatMap = false;
+      this.showTreeMap = true;
+    });
+    if (!this.googleTreeMapData.length) {
+      this.createGoogleAttackPatternTreeMap();
     }
+  }
 
-    if (killChain && this.attackPattern && (this.attackPattern.attributes.name === killChain.name)) {
+  /**
+   * @description
+   * @param {UIEvent} event optional
+   */
+  public onHeatMap(event?: UIEvent): void {
+    requestAnimationFrame(() => {
+      this.showTreeMap = false;
+      this.showHeatMap = true;
+    });
+    if (!this.d3HeatMapData.length) {
+      this.createD3AttackPatternHeatMap();
+    }
+  }
+
+  public showAttackPatternTooltip(tactic: Partial<KillChainEntry>, event?: UIEvent,
+      phases?: string[], asTooltip: boolean = false): void {
+    if (tactic && this.attackPattern && (this.attackPattern.attributes.name === tactic.name)) {
       return;
     }
 
-    this.attackPattern = this.attackPatterns.find(pattern => pattern.attributes.name === killChain.name);
+    this.attackPattern = this.attackPatterns.find(pattern => pattern.attributes.name === tactic.name);
     this.attackPhases = phases || null;
+    this.hoverTooltip = asTooltip;
 
     if (!this.overlayRef) {
       const elem = new ElementRef(event.target);
