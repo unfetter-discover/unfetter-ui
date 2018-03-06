@@ -5,12 +5,15 @@ import { StoreModule, ActionReducerMap } from '@ngrx/store';
 
 import { IndicatorSharingSortComponent } from './indicator-sharing-sort.component';
 import { indicatorSharingReducer } from '../store/indicator-sharing.reducers';
+import * as indicatorSharingActions from '../store/indicator-sharing.actions';
+import { makeMockIndicatorSharingStore } from '../../testing/mock-store';
+import { By } from '@angular/platform-browser';
 
 describe('IndicatorSharingSortComponent', () => {
   let component: IndicatorSharingSortComponent;
   let fixture: ComponentFixture<IndicatorSharingSortComponent>;
+  let store;
 
-  // TODO verify this mocking strategy works
   let mockReducer: ActionReducerMap<any> = {
     indicatorSharing: indicatorSharingReducer
   };
@@ -30,10 +33,35 @@ describe('IndicatorSharingSortComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(IndicatorSharingSortComponent);
     component = fixture.componentInstance;
+    store = component.store;
+    makeMockIndicatorSharingStore(store);
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should sort by number of comments', () => { 
+    const commentRadio = fixture.debugElement.query(By.css('#sortComments label')).nativeElement as HTMLElement;
+    commentRadio.click();
+    fixture.detectChanges();
+
+    const displayInd$ = component.store.select('indicatorSharing')
+      .pluck('displayedIndicators')
+      .subscribe(
+        (indicators) => {
+          expect(indicators[0].metaProperties.comments.length).toEqual(2);
+        },
+        (err) => {
+          console.log(err);
+        },
+        () => {
+          if (displayInd$) {
+            displayInd$.unsubscribe();
+          }
+        }
+      );
+  });
+
 });
