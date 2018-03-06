@@ -26,7 +26,7 @@
                 <mat-form-field class="full-width">
                     <mat-select id="sophistication-level" name="sophistication-levels" placeholder="How sophisticated would an attacker need to be to leverage this technique?"
                     [(ngModel)]="attackPattern.attributes.x_unfetter_sophistication_level" class="full-width">
-                        <mat-option *ngFor="let sophistication_levels of x_unfetter_sophistication_levels" [value]="sophistication_levels.id">
+                        <mat-option *ngFor="let sophistication_levels of x_unfetter_sophistication_levels" [value]="sophistication_levels.id" class="sophistication-option">
                             {{ sophistication_levels.value }}
                         </mat-option>
                     </mat-select>
