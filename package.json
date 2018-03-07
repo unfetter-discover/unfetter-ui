@@ -30,6 +30,7 @@
     "build:dev": "ng version && ng build",
     "watch:test": "ng test --watch --source=false",
     "test": "ng test --single-run --source=false",
+    "test:headless": "ng test --browsers ChromeHeadless",
     "coverage": "ng test --code-coverage --single-run",
     "lint": "ng lint",
     "doc": "typedoc --out tsdocs --ignoreCompilerErrors src/",
