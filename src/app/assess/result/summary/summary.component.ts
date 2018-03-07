@@ -100,7 +100,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
           .pluck('userProfile')
           .take(1)
           .subscribe((user: UserProfile) => {
-            // const creatorId = user._id;
+            const creatorId = user._id;
             const createdById = user.organizations[0].id;
             this.requestData(this.assessmentId, createdById);
           },

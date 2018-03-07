@@ -67,12 +67,11 @@ export class FullComponent implements OnInit, OnDestroy {
     const idParamSub$ = this.route.params
       .distinctUntilChanged()
       .subscribe((params) => {
+        console.log('router params changed, updating component id state');
         this.rollupId = params.rollupId || '';
         this.assessmentId = params.assessmentId || '';
         this.phase = params.phase || '';
         this.attackPatternId = params.attackPatternId || '';
-
-        this.listenForDataChanges();
         const sub$ = this.userStore
           .select('users')
           .pluck('userProfile')
@@ -87,6 +86,8 @@ export class FullComponent implements OnInit, OnDestroy {
       },
         (err) => console.log(err),
         () => idParamSub$.unsubscribe());
+
+    this.listenForDataChanges();
   }
 
   /**
@@ -106,7 +107,10 @@ export class FullComponent implements OnInit, OnDestroy {
         }
 
         this.assessmentTypes = [...arr];
-        this.assessment = { ...arr[0] };
+        this.assessment = this.assessmentTypes
+          .filter((el) => el !== undefined && el.id)
+          .filter((el) => el.id === this.assessmentId)
+          .pop();
       },
         (err) => console.log(err));
 
