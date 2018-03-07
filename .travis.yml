@@ -18,5 +18,4 @@ addons:
 #  - "sleep 3"
 before_install:
   - npm install
-  - npm run test:headless
-  # - google-chrome-stable --headless --disable-gpu http://localhost &
+  - npm run checkup &
