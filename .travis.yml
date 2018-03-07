@@ -18,4 +18,4 @@ addons:
 #  - "sleep 3"
 before_install:
   - npm install
-  - npm run checkup &
+  - npm run checkup
