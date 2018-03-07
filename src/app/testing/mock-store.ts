@@ -1,6 +1,7 @@
 import { Store } from '@ngrx/store';
 
 import * as fromRoot from '../root-store/app.reducers';
+import * as fromIndicatorSharing from '../indicator-sharing/store/indicator-sharing.reducers';
 import * as configActions from '../root-store/config/config.actions';
 import * as indicatorSharingActions from '../indicator-sharing/store/indicator-sharing.actions';
 import * as userActions from '../root-store/users/user.actions';
@@ -82,7 +83,26 @@ export const mockIndicators = [
         name: 'fake',
         pattern: '[process:pid=3]',
         labels: ['fake'],
-        id: 'fake123'
+        id: 'fake123',
+        metaProperties: {
+            comments: [ {} ]
+        }
+    },
+    {
+        name: 'mfake',
+        pattern: '[process:pid=3]',
+        labels: ['mfake'],
+        id: 'mfake123',
+        metaProperties: {
+            comments: [ {}, {} ]
+        }
+    },
+    {
+        name: 'zfake',
+        pattern: '[process:pid=3]',
+        labels: ['zfake'],
+        id: 'zfake123',
+        metaProperties: {}
     }
 ];
 
@@ -93,7 +113,7 @@ export const mockAttackPatterns = [
     }
 ];
 
-export function makeMockIndicatorSharingStore(store: Store<fromRoot.AppState>) {
+export function makeMockIndicatorSharingStore(store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>) {
     store.dispatch(new indicatorSharingActions.SetIndicators(mockIndicators));
     store.dispatch(new indicatorSharingActions.SetAttackPatterns(mockAttackPatterns));
     store.dispatch(new indicatorSharingActions.FilterIndicators());
