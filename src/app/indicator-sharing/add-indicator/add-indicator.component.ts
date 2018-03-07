@@ -80,7 +80,13 @@ export class AddIndicatorComponent implements OnInit {
                     this.organizations = userOrgs
                         .filter((org) => org.approved)
                         .map((org) => identities.find((identity) => identity.id === org.id));   
-                }                      
+                }
+
+                try {
+                    if (this.organizations.length === 1) {
+                        this.form.get('created_by_ref').patchValue(this.organizations[0].id);
+                    }
+                } catch (error) { }
             },
             (err) => {
                 console.log(err);

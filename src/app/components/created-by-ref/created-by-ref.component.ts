@@ -16,6 +16,7 @@ import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 export class CreatedByRefComponent implements OnInit {
 
     @Input() public model: any;
+    public selected: string;
     public userOrgs$: Observable<any[]>;
 
     constructor(
@@ -56,6 +57,11 @@ export class CreatedByRefComponent implements OnInit {
                         };
                     }
                 });
+            })
+            .do((organizations) => {
+                if (organizations.length === 1) {
+                    this.selected = organizations[0].id;
+                }
             });
     }
 
