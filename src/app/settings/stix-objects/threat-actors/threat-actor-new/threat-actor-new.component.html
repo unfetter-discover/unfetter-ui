@@ -1,5 +1,10 @@
 
 <div class="row">
+    <div class="col-xs-12">
+        <created-by-ref [model]="threatActor"></created-by-ref>
+    </div>
+</div>
+<div class="row">
     <div class="col-md-12">
         <mat-input-container class="full-width">
         <input matInput placeholder="Name"  required [(ngModel)]="threatActor.attributes.name" value="{{threatActor.attributes.name}}">

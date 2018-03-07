@@ -1,0 +1,7 @@
+<div class="createdByRefComponent">
+    <mat-form-field class="full-width">
+        <mat-select placeholder="Submitter Organization" (selectionChange)="updateOrg($event)" required>
+            <mat-option *ngFor="let org of userOrgs$ | async" [value]="org.id">{{ org.name }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>

@@ -23,6 +23,7 @@ export class IntrusionSet {
         timestamp_precision: string;
         external_references: ExternalReference[];
         kill_chain_phases: KillChainPhase[];
+        created_by_ref: string;
     };
 
     constructor(data?: IntrusionSet) {
