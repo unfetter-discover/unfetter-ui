@@ -30,10 +30,12 @@
     "build:dev": "ng version && ng build",
     "watch:test": "ng test --watch --source=false",
     "test": "ng test --single-run --source=false",
+    "headless:test": "ng test --single-run --browsers ChromeHeadless",
     "coverage": "ng test --code-coverage --single-run",
+    "headless:coverage": "ng test --code-coverage --single-run --browsers ChromeHeadless",
     "lint": "ng lint",
     "doc": "typedoc --out tsdocs --ignoreCompilerErrors src/",
-    "checkup": "npm run lint && npm run doc && npm run test && npm run coverage && npm run build:prod",
+    "checkup": "npm run lint && npm run doc && npm run headless:test && npm run headless:coverage && npm run build:prod",
     "e2e": "ng e2e"
   },
   "dependencies": {

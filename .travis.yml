@@ -17,4 +17,5 @@ addons:
 #  - "sh -e /etc/init.d/xvfb start"
 #  - "sleep 3"
 before_install:
-  - google-chrome-stable --headless --disable-gpu http://localhost &
+  - npm install
+  - npm run checkup
