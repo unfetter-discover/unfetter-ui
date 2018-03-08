@@ -23,3 +23,4 @@ script:
   - npm run lint
   - npm run headless:test
   - npm run headless:coverage
+  - npm run build:prod
