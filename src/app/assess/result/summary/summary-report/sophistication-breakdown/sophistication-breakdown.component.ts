@@ -33,6 +33,20 @@ export class SophisticationBreakdownComponent implements OnInit {
     this.barChartType = 'bar';
   }
 
+  public static generateTooltipLabel(tooltipItem, data) {
+    let label = 0;
+    if (tooltipItem && data && data.datasets && (tooltipItem.datasetIndex || tooltipItem.datasetIndex === 0)) {
+      const dataset = data.datasets[tooltipItem.datasetIndex];
+      if (dataset && dataset.data && (tooltipItem.index || tooltipItem.index === 0)) {
+        let value = dataset.data[tooltipItem.index];
+        if (value || value === 0) {
+          label = value;
+        }
+      }
+    }
+    return label;
+  }
+
   ngOnInit() {
     this.barChartLabels = [];
     this.barChartOptions = {
@@ -49,10 +63,7 @@ export class SophisticationBreakdownComponent implements OnInit {
       tooltips: {
         mode: 'index',
         callbacks: {
-          label: (tooltipItem, data) => {
-            const dataset = data.datasets[tooltipItem.datasetIndex];
-            return dataset.data[tooltipItem.index] || 0;
-          }
+          label: SophisticationBreakdownComponent.generateTooltipLabel,
         }
       },
       legend: {
@@ -77,5 +88,4 @@ export class SophisticationBreakdownComponent implements OnInit {
       this.barChartData[1].data.push(this.allAttackPatterns[prop]);
     }
   }
-
 }

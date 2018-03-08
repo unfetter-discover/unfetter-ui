@@ -59,7 +59,7 @@
       <div class="flex flexItemsCenter">
         <div class="flex flexItemsCenter" id="sliderContainer">
           <mat-icon color="primary" class="mat-24 icon-people-1" aria-hidden="false" aria-label="Least sophisticated mitigation"></mat-icon>
-          <mat-slider disabled min="0" max="4" step="1" value="2" id="sophisticationSlider" color="primary">
+          <mat-slider min="0" max="1" invert="true" step=".25" tick-interval="1" id="sophisticationSlider" color="primary" [(ngModel)]="summaryCalculationService.selectedRisk">
           </mat-slider>
           <mat-icon color="primary" class="mat-24 icon-people" aria-hidden="false" aria-label="Most sophisticated mitigation"></mat-icon>
         </div>
@@ -83,7 +83,7 @@
           <mat-card-content>
             <div *ngIf="summaryCalculationService.techniqueBreakdown;else noTechniquesData">
               <!-- TODO [riskLabelOptions]="thresholdOptions" -->
-              <techniques-chart #techniquesChart [riskThreshold]="summaryCalculationService.selectedRisk" [techniqueBreakdown]="summaryCalculationService.techniqueBreakdown">
+              <techniques-chart #techniquesChart [riskThreshold]="summaryCalculationService.selectedRisk">
               </techniques-chart>
             </div>
             <ng-template #noTechniquesData>No data to load chart!</ng-template>

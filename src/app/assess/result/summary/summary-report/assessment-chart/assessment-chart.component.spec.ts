@@ -3,6 +3,7 @@ import { ChartsModule } from 'ng2-charts';
 
 import { AssessmentChartComponent } from './assessment-chart.component';
 import { SummaryCalculationService } from '../../summary-calculation.service';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 describe('AssessmentChartComponent', () => {
   let component: AssessmentChartComponent;
@@ -11,7 +12,10 @@ describe('AssessmentChartComponent', () => {
   let serviceMock;
 
   beforeEach(async(() => {
-    serviceMock = { barColors: ['color'], assessmentsGroupingFiltered: { a: 'be' }, assessmentsGroupingTotal: { a: 'be' } };
+    serviceMock = {
+      barColors: ['color'], assessmentsGroupingFiltered: { a: 'be' }, assessmentsGroupingTotal: { a: 'be' }, riskSub: new BehaviorSubject<number>(null),
+      convertLabels: (unconvertedLabels: string[]) => { return unconvertedLabels; }, renderLegend: () => 'legend here',
+    };
 
     TestBed.configureTestingModule({
 
@@ -69,19 +73,6 @@ describe('AssessmentChartComponent', () => {
     expect(component.getPercentageString({ datasetIndex: 1, index: 1 }, { datasets: [{ data: [1] }, { data: [null, 80] }] })).toBe('80%');
   });
 
-  it('should capitalize all words except for and, or, and the', () => {
-    expect(component.capitalizeWithExceptions(null, null, null)).toBe(null);
-    expect(component.capitalizeWithExceptions('and', null, null)).toBe('and');
-    expect(component.capitalizeWithExceptions('', null, null)).toBe('');
-    expect(component.capitalizeWithExceptions('apple', null, null)).toBe('apple');
-    expect(component.capitalizeWithExceptions(null, null, 'apple')).toBe(null);
-    expect(component.capitalizeWithExceptions(null, 'a', null)).toBe('A');
-    expect(component.capitalizeWithExceptions('the', 'a', null)).toBe('the');
-    expect(component.capitalizeWithExceptions(null, 'a', 'pple')).toBe('Apple');
-    expect(component.capitalizeWithExceptions('or', 'a', 'pple')).toBe('or');
-    expect(component.capitalizeWithExceptions('apple', 'a', 'pple')).toBe('Apple');
-  });
-
   it('should calculate data for the chart', () => {
     expect(component.calculateData(null, null)).toBe(0);
     expect(component.calculateData(null, 1)).toBe(0);
@@ -91,11 +82,8 @@ describe('AssessmentChartComponent', () => {
   });
 
   it('should convert labels to formatted text for display', () => {
-    expect(component.convertLabels(null, null)).toEqual([]);
-    expect(component.convertLabels(null, false)).toEqual([]);
     expect(component.convertLabels(['apple-jacks'], false)).toEqual([]);
-    expect(component.convertLabels(['apple-jacks'], true)).toEqual(['Apple Jacks']);
-    expect(component.convertLabels(['apple-jacks', null, ''], true)).toEqual(['Apple Jacks', '', '']);
+    expect(component.convertLabels(['apple-jacks'], true)).toEqual(['apple-jacks']); // mock value;this is truly tested in the calculate service
   });
 
 });

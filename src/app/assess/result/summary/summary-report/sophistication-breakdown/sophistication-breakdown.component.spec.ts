@@ -44,4 +44,23 @@ describe('SophisticationBreakdownComponent', () => {
   it('should create', () => {
     expect(testHostComponent).toBeTruthy();
   });
+
+  it('should generate a relevant tooltip', () => {
+    expect(SophisticationBreakdownComponent.generateTooltipLabel(null, null)).toBe(0);
+    expect(SophisticationBreakdownComponent.generateTooltipLabel({}, null)).toBe(0);
+    expect(SophisticationBreakdownComponent.generateTooltipLabel({}, {})).toBe(0);
+    expect(SophisticationBreakdownComponent.generateTooltipLabel({datasetIndex: null}, {})).toBe(0);
+    expect(SophisticationBreakdownComponent.generateTooltipLabel({datasetIndex: ''}, {})).toBe(0);
+    expect(SophisticationBreakdownComponent.generateTooltipLabel({datasetIndex: 0}, {})).toBe(0);
+    expect(SophisticationBreakdownComponent.generateTooltipLabel({datasetIndex: 0}, {datasets: null})).toBe(0);
+    expect(SophisticationBreakdownComponent.generateTooltipLabel({datasetIndex: 0}, {datasets: []})).toBe(0);
+    expect(SophisticationBreakdownComponent.generateTooltipLabel({datasetIndex: 0}, {datasets: [{data: null}]})).toBe(0);
+    expect(SophisticationBreakdownComponent.generateTooltipLabel({datasetIndex: 0, index: 0}, {datasets: [{data: null}]})).toBe(0);
+    expect(SophisticationBreakdownComponent.generateTooltipLabel({datasetIndex: 0, index: 0}, {datasets: [{data: []}]})).toBe(0);
+    expect(SophisticationBreakdownComponent.generateTooltipLabel({datasetIndex: 0, index: 0}, {datasets: [{data: [null]}]})).toBe(0);
+    expect(SophisticationBreakdownComponent.generateTooltipLabel({datasetIndex: 0, index: 0}, {datasets: [{data: [0]}]})).toBe(0);
+    expect(SophisticationBreakdownComponent.generateTooltipLabel({datasetIndex: 0, index: 0}, {datasets: [{data: [1]}]})).toBe(1);
+    expect(SophisticationBreakdownComponent.generateTooltipLabel({datasetIndex: 2, index: 2}, {datasets: [{data: null}, {data: null}, {data: [1, 2, 3]}]})).toBe(3);
+  })
+
 });

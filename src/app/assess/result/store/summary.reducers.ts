@@ -34,6 +34,8 @@ const initialState: SummaryState = genState();
 
 export function summaryReducer(state = initialState, action: summaryActions.SummaryActions): SummaryState {
     switch (action.type) {
+        case summaryActions.CLEAN_ASSESSMENT_RESULT_DATA:
+            return genState();
         case summaryActions.LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA:
             return genState({
                 ...state,

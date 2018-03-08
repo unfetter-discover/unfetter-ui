@@ -28,7 +28,7 @@ import { RiskByAttack } from '../../../models/assess/risk-by-attack';
 import { LoadAssessmentRiskByAttackPatternData, LoadSingleAssessmentRiskByAttackPatternData } from '../store/riskbyattackpattern.actions';
 import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
 import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
-import { CleanAssessmentResultData } from '../store/full-result.actions';
+import { CleanAssessmentResultData } from '../store/summary.actions';
 
 @Component({
   selector: 'summary',
@@ -79,12 +79,18 @@ export class SummaryComponent implements OnInit, OnDestroy {
     return this.dialog;
   }
 
+  // For testing only
+  public getSummaryCalculationService(): SummaryCalculationService {
+    return this.summaryCalculationService;
+  }
+
   /**
    * @description
    *  initialize this component, fetching data from backend
    */
   public ngOnInit(): void {
     const idParamSub$ = this.route.params
+      .distinctUntilChanged()
       .subscribe((params) => {
         this.rollupId = params.rollupId || '';
         this.assessmentId = params.assessmentId || '';
@@ -232,19 +238,14 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @description
    * @param {string} creatorId - optional
    */
-  public requestData(rollupId: string, creatorId?: string): void {
+  public requestData(assessmentId: string, creatorId?: string): void {
     this.masterListOptions.dataSource = new SummaryDataSource(this.assessService, creatorId);
     this.masterListOptions.columns.id.classes = 'cursor-pointer';
-    // TODO fix
-    this.store.dispatch(new LoadSingleAssessmentSummaryData(rollupId));
-    this.riskByAttackPatternStore.dispatch(new LoadSingleAssessmentRiskByAttackPatternData(rollupId));
-    // TODO this.store.dispatch(new LoadAssessmentSummaryData(rollupId));
-    this.store.dispatch(new LoadSingleRiskPerKillChainData(rollupId));
-    // TODO this.store.dispatch(new LoadRiskPerKillChainData(rollupId));
-    this.store.dispatch(new LoadSingleSummaryAggregationData(rollupId));
-    // TODO this.store.dispatch(new LoadAssessmentSummaryData(rollupId));
+    this.store.dispatch(new LoadSingleAssessmentSummaryData(assessmentId));
+    this.riskByAttackPatternStore.dispatch(new LoadSingleAssessmentRiskByAttackPatternData(assessmentId));
+    this.store.dispatch(new LoadSingleRiskPerKillChainData(assessmentId));
+    this.store.dispatch(new LoadSingleSummaryAggregationData(assessmentId));
   }
-
 
   /**
    * @description close open subscriptions, clean up resources when we destroy this component
@@ -276,6 +277,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
   /**
    * @description
+   * @return {Promise<boolean>}
    */
   public onEdit(event?: any): Promise<boolean> {
     if (!event || (event instanceof UIEvent)) {
@@ -387,55 +389,32 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {number}
    */
   public trackByFn(index: number, item: any): number {
-    return item.id || index;
+    let value = index;
+    if (item && (item.id || item.id === 0)) {
+      value = item.id || index;
+    }
+    return value
   }
 
   public transformSummary() {
-    // single
-    this.summaryCalculationService.setAverageRiskPerAssessedObject(this.summary.assessment_objects);
-    // all
-    // let allAssessmentObjects: Array<AssessmentObject> = []; 
-    // for (let assessment of this.summaries) {
-    //   allAssessmentObjects = allAssessmentObjects.concat(assessment.assessment_objects);
-    // }
-    // // this.summary.assessment_objects = allAssessmentObjects; // Maybe??
-    // this.summaryCalculationService.setAverageRiskPerAssessedObject(allAssessmentObjects);
+    if (this.summary && this.summary.assessment_objects) {
+      this.summaryCalculationService.setAverageRiskPerAssessedObject(this.summary.assessment_objects);
+      if (this.summary.assessment_objects[0] && this.summary.assessment_objects[0].questions && this.summary.assessment_objects[0].questions[0]) {
+        this.summaryCalculationService.calculateThresholdOptionNames(this.summary.assessment_objects[0].questions[0])
+      }
+    }
   }
 
   public transformRBAP() {
-    // single
     this.summaryCalculationService.calculateWeakness(this.riskByAttack);
-    // all
-    // let allRiskByAttackObjects: Array<RiskByAttack> = [];
-    // for (let riskByAttack of this.riskByAttacks) {
-    //   allRiskByAttackObjects = allRiskByAttackObjects.concat(riskByAttack);
-    // }
-    // // this.riskByAttack = allRiskByAttackObjects // Maybe??
-    // this.summaryCalculationService.calculateWeakness(allRiskByAttackObjects);
   }
 
   public transformKCD() {
-    // single
     this.summaryCalculationService.calculateTopRisks(this.riskByKillChain);
-    // all
-    // let allRiskByKillChains: Array<RiskByKillChain> = [];
-    // for (let riskByKillChain of this.riskByKillChains) {
-    //   allRiskByKillChains = allRiskByKillChainObjects.concat(riskByKillChain);
-    // }
-    // // this.riskByKillChain = allRiskByKillChains; // Maybe??
-    // this.summaryCalculationService.calculateTopRisks(allRiskByKillChains);
   }
 
   public transformSAD() {
-    // single
     this.summaryCalculationService.summaryAggregation = this.summaryAggregation;
-    // all
-    // let allSummaryAggregations: Array<SummaryAggregation> = [];
-    // for (let eachSummaryAggregation of this.summaryAggregations) {
-    //   allSummaryAggregations = allSummaryAggregations.concat(eachSummaryAggregation);
-    // }
-    // // this.summaryAggregation = allSummaryAggregations; // Maybe??
-    // this.summaryCalculationService.setSummaryAggregation(allSummaryAggregations);
     this.summaryCalculationService.populateAssessmentsGrouping(this.summary.assessment_objects);
     this.summaryCalculationService.populateTechniqueBreakdown(this.summary.assessment_objects);
   }
