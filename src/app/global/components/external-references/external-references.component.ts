@@ -22,7 +22,7 @@ export class ExternalReferencesReactiveComponent implements OnInit {
     constructor(private changeDetectorRef: ChangeDetectorRef) { }
 
     public ngOnInit() {
-        this.resetForm();
+        this.resetForm();     
     }
 
     public resetForm() {
