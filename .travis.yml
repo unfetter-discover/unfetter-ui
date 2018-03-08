@@ -24,4 +24,3 @@ script:
   - npm run headless:test
   - npm run headless:coverage
   - npm run build:prod
-s
