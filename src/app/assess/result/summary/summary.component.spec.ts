@@ -31,7 +31,11 @@ describe('SummaryComponent', () => {
     user: usersReducer
   };
 
-  const mockService = {};
+  const mockService = {
+    summaryAggregation: null, populateAssessmentsGrouping: () => null, populateTechniqueBreakdown: () => null,
+    calculateTopRisks: () => null, calculateWeakness: () => null, calculateThresholdOptionNames: () => null,
+    setAverageRiskPerAssessedObject: () => null
+  };
   const mockAssessService = { deleteByRollupId: () => { } };
 
   beforeEach(async(() => {
@@ -51,17 +55,21 @@ describe('SummaryComponent', () => {
         ComponentModule,
         StoreModule.forRoot(mockReducer),
       ],
-      providers: [GenericApi, AssessService,
-        {
-          provide: SummaryCalculationService,
-          use: mockService
-        },
-        {
-          provide: AssessService,
-          use: mockAssessService
-        }],
+    }).overrideComponent(SummaryComponent, {
+      set: {
+        providers: [GenericApi,
+          {
+            provide: SummaryCalculationService,
+            useValue: mockService
+          },
+          {
+            provide: AssessService,
+            useValue: mockAssessService
+          }]
+      }
     })
       .compileComponents();
+
   }));
 
   beforeEach(() => {
@@ -145,6 +153,110 @@ describe('SummaryComponent', () => {
 
     component.onCellSelected({ _id: null, id: 'id', name: null, type: null, modified: null, rollupId: 'rollupId' });
     expect(store.dispatch).toHaveBeenCalled();
+  });
+
+  it('should tranform Summary data', () => {
+    const service = component.getSummaryCalculationService();
+    spyOn(service, 'calculateThresholdOptionNames');
+    spyOn(service, 'setAverageRiskPerAssessedObject');
+
+    component.summary = null;
+    component.transformSummary();
+    expect(service.setAverageRiskPerAssessedObject).not.toHaveBeenCalled();
+    expect(service.calculateThresholdOptionNames).not.toHaveBeenCalled();
+
+    component.summary = {
+      assessmentMeta: null, created: null, description: null, modified: null, name: null, type: null, version: null, external_references: null,
+      granular_markings: null, pattern: null, kill_chain_phases: null, created_by_ref: null, valid_from: null, labels: null, metaProperties: null, assessment_objects: null
+    }
+    component.transformSummary();
+    expect(service.setAverageRiskPerAssessedObject).not.toHaveBeenCalled();
+    expect(service.calculateThresholdOptionNames).not.toHaveBeenCalled();
+
+    component.summary = {
+      assessmentMeta: null, created: null, description: null, modified: null, name: null, type: null, version: null, external_references: null,
+      granular_markings: null, pattern: null, kill_chain_phases: null, created_by_ref: null, valid_from: null, labels: null, metaProperties: null, assessment_objects: []
+    }
+    component.transformSummary();
+    expect(service.setAverageRiskPerAssessedObject).toHaveBeenCalled();
+    expect(service.calculateThresholdOptionNames).not.toHaveBeenCalled();
+
+    component.summary = {
+      assessmentMeta: null, created: null, description: null, modified: null, name: null, type: null, version: null, external_references: null,
+      granular_markings: null, pattern: null, kill_chain_phases: null, created_by_ref: null, valid_from: null, labels: null, metaProperties: null, 
+      assessment_objects: [{risk: null, questions: null}]
+    }
+    component.transformSummary();
+    expect(service.setAverageRiskPerAssessedObject).toHaveBeenCalled();
+    expect(service.calculateThresholdOptionNames).not.toHaveBeenCalled();
+
+    component.summary = {
+      assessmentMeta: null, created: null, description: null, modified: null, name: null, type: null, version: null, external_references: null,
+      granular_markings: null, pattern: null, kill_chain_phases: null, created_by_ref: null, valid_from: null, labels: null, metaProperties: null, 
+      assessment_objects: [{risk: null, questions: []}]
+    }
+    component.transformSummary();
+    expect(service.setAverageRiskPerAssessedObject).toHaveBeenCalled();
+    expect(service.calculateThresholdOptionNames).not.toHaveBeenCalled();
+
+    component.summary = {
+      assessmentMeta: null, created: null, description: null, modified: null, name: null, type: null, version: null, external_references: null,
+      granular_markings: null, pattern: null, kill_chain_phases: null, created_by_ref: null, valid_from: null, labels: null, metaProperties: null, 
+      assessment_objects: [{risk: null, questions: [{name: null, risk: null, options: null, selected_value: null}]}]
+    }
+    component.transformSummary();
+    expect(service.setAverageRiskPerAssessedObject).toHaveBeenCalled();
+    expect(service.calculateThresholdOptionNames).toHaveBeenCalled();
+
+  });
+
+  it('should transform Summary Aggregation Data (SAD)', () => {
+    const service = component.getSummaryCalculationService();
+    spyOn(service, 'populateAssessmentsGrouping');
+    spyOn(service, 'populateTechniqueBreakdown');
+    component.summaryAggregation = {
+      assessedAttackPatternCountBySophisicationLevel: null,
+      attackPatternsByAssessedObject: null,
+      totalAttackPatternCountBySophisicationLevel: null
+    };
+    component.summary = {
+      assessmentMeta: null, created: null, description: null, modified: null, name: null, type: null, version: null, external_references: null,
+      granular_markings: null, pattern: null, kill_chain_phases: null, created_by_ref: null, valid_from: null, labels: null, metaProperties: null, assessment_objects: []
+    }
+
+    component.transformSAD();
+    expect(component.getSummaryCalculationService().summaryAggregation).toEqual({
+      assessedAttackPatternCountBySophisicationLevel: null,
+      attackPatternsByAssessedObject: null,
+      totalAttackPatternCountBySophisicationLevel: null
+    });
+    expect(service.populateAssessmentsGrouping).toHaveBeenCalled();
+    expect(service.populateTechniqueBreakdown).toHaveBeenCalled();
+  });
+
+  it('should transform Kill Chain Data (KCD)', () => {
+    const service = component.getSummaryCalculationService();
+    spyOn(service, 'calculateTopRisks');
+    component.transformKCD();
+    expect(service.calculateTopRisks).toHaveBeenCalled();
+  });
+
+  it('should transform Risk By Attack Pattern (RBAP) data', () => {
+    const service = component.getSummaryCalculationService();
+    spyOn(service, 'calculateWeakness');
+    component.transformRBAP();
+    expect(service.calculateWeakness).toHaveBeenCalled();
+  });
+
+  it('should be able to track by an id or an index', () => {
+    expect(component.trackByFn(null, null)).toBe(null);
+    expect(component.trackByFn(null, {id: null})).toBe(null);
+    expect(component.trackByFn(null, {id: 3})).toBe(3);
+    // This seems off...
+    expect(component.trackByFn(null, {id: 0})).toBe(null);
+    // This seems off...
+    expect(component.trackByFn(3, {id: 0})).toBe(3);
+
   });
 
 });

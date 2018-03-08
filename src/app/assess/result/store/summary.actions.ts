@@ -18,6 +18,7 @@ export const SET_KILL_CHAIN_DATA = '[Assess Summary] SET_KILL_CHAIN_DATA';
 export const FINISHED_LOADING_KILL_CHAIN_DATA = '[Assess Summary] FINISHED_LOADING_KILL_CHAIN_DATA';
 export const SET_SUMMARY_AGGREGATION_DATA = '[Assess Summary] SET_SUMMARY_AGGREGATION_DATA';
 export const FINISHED_LOADING_SUMMARY_AGGREGATION_DATA = '[Assess Summary] FINISHED_LOADING_SUMMARY_AGGREGATION_DATA';
+export const CLEAN_ASSESSMENT_RESULT_DATA = '[Assess Result Group] CLEAN_ASSESSMENT_RESULT_DATA';
 
 
 export class LoadSingleAssessmentSummaryData implements Action {
@@ -98,7 +99,14 @@ export class FinishedLoadingSummaryAggregationData implements Action {
     constructor(public payload: boolean) { }
 }
 
+export class CleanAssessmentResultData {
+    public readonly type = CLEAN_ASSESSMENT_RESULT_DATA;
+
+    constructor() { }
+}
+
 export type SummaryActions =
+    CleanAssessmentResultData |
     SetAssessments |
     LoadAssessmentSummaryData |
     LoadSingleAssessmentSummaryData |
