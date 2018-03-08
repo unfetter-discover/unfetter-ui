@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Subject } from 'rxjs/Subject';
 
 import { ExternalReferencesForm } from '../../form-models/external-references';
 import { heightCollapse } from '../../animations/height-collapse';
