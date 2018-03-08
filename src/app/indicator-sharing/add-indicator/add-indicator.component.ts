@@ -1,8 +1,9 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatStep } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
 import { IndicatorForm } from '../../global/form-models/indicator';
 import { IndicatorSharingService } from '../indicator-sharing.service';
@@ -39,6 +40,10 @@ export class AddIndicatorComponent implements OnInit {
     public patternObjSubject: Subject<PatternHandlerPatternObject[]> = new Subject();
     public editMode: boolean = false;
 
+    @ViewChild('associatedDataStep') 
+    public associatedDataStep: MatStep;
+
+    private readonly ASSOCIATED_DATA_STEPPER_INDEX = 2;
     private initialPatternHandlerResponse: PatternHandlerTranslateAll = {
         pattern: null,
         validated: false,
@@ -202,6 +207,13 @@ export class AddIndicatorComponent implements OnInit {
                 );
         }
 
+    }
+
+    public stepperChanged(event: StepperSelectionEvent) {
+        if (event.selectedIndex === this.ASSOCIATED_DATA_STEPPER_INDEX) {
+            // This is to prevent external reference and kill chain forms from showing errors if already visited
+            this.associatedDataStep.interacted = false;
+        }
     }
 
     private setEditValues() {

@@ -3,7 +3,7 @@
 <mat-dialog-content id="addIndicator">
     <form [formGroup]="form" novalidate (ngSubmit)="submitIndicator()">
 
-        <mat-vertical-stepper>
+        <mat-vertical-stepper (selectionChange)="stepperChanged($event)">
 
             <mat-step label="Base Data {{ stepOneInvalid() ? '(Required Fields Remaining)' : '' }}">
                 <mat-form-field class="full-width mb-6 mt-10">
@@ -127,7 +127,7 @@
                 </div>
             </mat-step>
 
-            <mat-step label="Associated Data">
+            <mat-step label="Associated Data" #associatedDataStep>
                 <!-- ~~~ External References ~~~ -->
                 <br>
                 <div>
