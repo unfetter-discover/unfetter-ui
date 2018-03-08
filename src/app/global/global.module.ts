@@ -55,6 +55,8 @@ import { AdditionalQueriesComponent } from './components/additional-queries/addi
 import { MasterListDialogComponent, MasterListDialogTriggerComponent } from './components/master-list-dialog/master-list-dialog.component';
 import { ErrorCardComponent } from './components/error-card/error-card.component';
 import { RiskBreakdownComponent } from './components/risk-breakdown/risk-breakdown.component';
+import { TreemapComponent } from './components/treemap/treemap.component';
+import { HeatmapComponent } from './components/heatmap/heatmap.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -121,7 +123,9 @@ const unfetterComponents = [
         ...matModules,
     ],
     declarations: [
-        ...unfetterComponents
+        ...unfetterComponents,
+        TreemapComponent,
+        HeatmapComponent
     ],
     providers: [],
     entryComponents: [MasterListDialogComponent]
