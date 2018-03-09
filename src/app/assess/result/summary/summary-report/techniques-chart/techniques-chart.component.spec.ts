@@ -10,7 +10,7 @@ describe('TechniquesChartComponent', () => {
   let fixture: ComponentFixture<TechniquesChartComponent>;
 
   const serviceMock = {
-    barColors: ['color'], sophisticationNumberToWord: number => 'word', riskSub: new BehaviorSubject<number>(null), techniqueBreakdown: { a: 'b', c: 'd' },
+    barColors: ['color'], sophisticationNumberToWord: number => 'word', riskSub: new BehaviorSubject<number>(null), techniqueBreakdown: { a: '1', c: '.33' },
     renderLegend: () => 'legend stuff'
   };
   beforeEach(async(() => {
@@ -36,4 +36,9 @@ describe('TechniquesChartComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should generate appropriate values', () => {
+    expect(component.barChartData[0].data[0]).toBe(100);
+    expect(component.barChartData[0].data[1]).toBe(33);
+  })
 });
