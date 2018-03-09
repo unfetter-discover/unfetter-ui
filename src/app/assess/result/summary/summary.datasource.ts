@@ -14,7 +14,7 @@ import { LastModifiedAssessment } from '../../models/last-modified-assessment';
  * @description handles filter events from the UI sent to the datasource, in this case a service call
  */
 export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment>> {
-    
+
     public readonly demoMode: boolean = (environment.runMode === 'DEMO');
     protected filterChange = new BehaviorSubject('');
     protected dataChange = new BehaviorSubject(undefined);
@@ -98,13 +98,21 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment
     }
 
     /**
-     * @description route to a create page or the last modified summary for this user
+     * @description
+     *  route user to their own assessments, then fallback and show a group assessment if needed
      * @param {string} creatorId
      * @return {Observable<Partial<LastModifiedAssessment>[]>}
      */
     public fetchWithCreatorId(creatorId: string): Observable<Partial<LastModifiedAssessment>[]> {
         return this.assessService
-            .getLatestAssessmentsByCreatorId(creatorId);
+            .getLatestAssessmentsByCreatorId(creatorId)
+            .switchMap((data: any[]) => {
+                if (!data || data.length < 1) {
+                    return this.fetchWithNoCreatorId();
+                } else {
+                    return Observable.of(data);
+                }
+            });
     }
 
     /**

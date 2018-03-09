@@ -101,7 +101,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
           .take(1)
           .subscribe((user: UserProfile) => {
             const creatorId = user._id;
-            this.requestData(this.assessmentId, creatorId);
+            const createdById = user.organizations[0].id;
+            this.requestData(this.assessmentId, createdById);
           },
             (err) => console.log(err));
         this.subscriptions.push(sub$);

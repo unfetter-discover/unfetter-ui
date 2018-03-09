@@ -12,7 +12,6 @@ export class Assessment extends Stix {
     public assessmentMeta = new AssessmentMeta();
     public assessment_objects = [] as AssessmentObject[];
     public created = new Date().toISOString();
-    public create_by_ref?: string;
     public description: string;
     public id?: string;
     public modified: string;
