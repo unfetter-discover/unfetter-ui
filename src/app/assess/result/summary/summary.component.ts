@@ -120,14 +120,13 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .select('summary')
       .pluck('summaries')
       .distinctUntilChanged()
+      .filter((arr: Assessment[]) => arr && arr.length > 0)
       .subscribe((arr: Assessment[]) => {
-        if (!arr || arr.length === 0) {
-          this.summary = undefined;
-          this.summaries = [];
-          return;
-        }
         this.summaries = [...arr];
         this.summary = { ...arr[0] };
+        this.riskByAttackPatternStore.dispatch(new LoadSingleAssessmentRiskByAttackPatternData(this.assessmentId));
+        this.store.dispatch(new LoadSingleRiskPerKillChainData(this.assessmentId));
+        this.store.dispatch(new LoadSingleSummaryAggregationData(this.assessmentId));
       },
         (err) => console.log(err));
 
@@ -135,9 +134,12 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .select('summary')
       .pluck('finishedLoading')
       .distinctUntilChanged()
+      .filter((el) => el === true)
       .subscribe((done: boolean) => {
         this.finishedLoading = done;
-        if (done) {
+        if (this.summary === undefined) {
+          this.setLoadingToDone();
+        } else {
           this.transformSummary()
         }
       }, (err) => console.log(err));
@@ -243,9 +245,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
     this.masterListOptions.dataSource = new SummaryDataSource(this.assessService, creatorId);
     this.masterListOptions.columns.id.classes = 'cursor-pointer';
     this.store.dispatch(new LoadSingleAssessmentSummaryData(assessmentId));
-    this.riskByAttackPatternStore.dispatch(new LoadSingleAssessmentRiskByAttackPatternData(assessmentId));
-    this.store.dispatch(new LoadSingleRiskPerKillChainData(assessmentId));
-    this.store.dispatch(new LoadSingleSummaryAggregationData(assessmentId));
   }
 
   /**
@@ -414,11 +413,29 @@ export class SummaryComponent implements OnInit, OnDestroy {
     this.summaryCalculationService.calculateTopRisks(this.riskByKillChain);
   }
 
-  public transformSAD() {
+  /**
+   * @description
+   * @returns {void}
+   */
+  public transformSAD(): void {
+    if (!this.summary) {
+      return;
+    }
     this.summaryCalculationService.summaryAggregation = this.summaryAggregation;
     if (this.summary) {
       this.summaryCalculationService.populateAssessmentsGrouping(this.summary.assessment_objects);
       this.summaryCalculationService.populateTechniqueBreakdown(this.summary.assessment_objects);
     }
+  }
+
+  /**
+   * @description set all the flags to finsihd loadin
+   * @returns {void}
+   */
+  public setLoadingToDone(): void {
+    this.finishedLoadingKCD = true;
+    this.finishedLoadingRBAP = true;
+    this.finishedLoadingSAD = true;
+    this.finishedLoading = true;
   }
 }

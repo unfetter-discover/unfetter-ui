@@ -1,4 +1,4 @@
-<div id="newAssessmentsSummary" *ngIf="finishedLoading && finishedLoadingRBAP && finishedLoadingKCD && finishedLoadingSAD === true; else loadingBlock" class="fadeIn">
+<div id="newAssessmentsSummary" *ngIf="finishedLoading === true; else loadingBlock" class="fadeIn">
   <mat-sidenav-container *ngIf="summary !== undefined; else notFound">
     <mat-sidenav class="side-panel" mode="side" opened="true">
       <unfetter-side-panel class="side-panel" [item]="{ name: assessmentName|async }" collapsible="false" width="320">
