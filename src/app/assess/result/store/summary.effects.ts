@@ -39,7 +39,6 @@ export class SummaryEffects {
                 .catch((ex) => Observable.of({}));
         })
         .mergeMap((data: Assessment) => {
-            console.log(data);
             const actions = [new FinishedLoading(true)];
             if (!data || !data.id) {
                 return actions

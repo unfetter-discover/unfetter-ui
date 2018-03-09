@@ -25,7 +25,7 @@ import { SummaryCalculationService } from './summary-calculation.service';
 import { AssessmentObject } from '../../../models/assess/assessment-object';
 import { AssessmentsDashboardService } from '../../../assessments/assessments-dashboard/assessments-dashboard.service';
 import { RiskByAttack } from '../../../models/assess/risk-by-attack';
-import { LoadAssessmentRiskByAttackPatternData, LoadSingleAssessmentRiskByAttackPatternData } from '../store/riskbyattackpattern.actions';
+import { LoadAssessmentRiskByAttackPatternData, LoadSingleAssessmentRiskByAttackPatternData, CleanAssessmentRiskByAttackPatternData } from '../store/riskbyattackpattern.actions';
 import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
 import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
 import { CleanAssessmentResultData } from '../store/summary.actions';
@@ -92,9 +92,16 @@ export class SummaryComponent implements OnInit, OnDestroy {
     const idParamSub$ = this.route.params
       .distinctUntilChanged()
       .subscribe((params) => {
+        console.log('router params changed, updating component id state');
         this.rollupId = params.rollupId || '';
         this.assessmentId = params.assessmentId || '';
-        this.listenForDataChanges();
+        this.summary = undefined;
+        this.summaries = undefined;
+        this.finishedLoading = false;
+        this.riskByAttack = undefined;
+        this.riskByAttacks = undefined;
+        this.store.dispatch(new CleanAssessmentResultData());
+        this.riskByAttackPatternStore.dispatch(new CleanAssessmentRiskByAttackPatternData());
         const sub$ = this.userStore
           .select('users')
           .pluck('userProfile')
@@ -109,6 +116,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       },
         (err) => console.log(err),
         () => idParamSub$.unsubscribe());
+    this.listenForDataChanges();
   }
 
   /**
@@ -136,25 +144,21 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .distinctUntilChanged()
       .filter((el) => el === true)
       .subscribe((done: boolean) => {
-        this.finishedLoading = done;
         if (this.summary === undefined) {
+          // fetching the summary failed, set all flags to done
           this.setLoadingToDone();
-        } else {
-          this.transformSummary()
+          return;
         }
+        this.finishedLoading = done;
+        this.transformSummary()
       }, (err) => console.log(err));
 
     const sub3$ = this.riskByAttackPatternStore
       .select('riskByAttackPattern')
       .pluck('riskByAttackPatterns')
       .distinctUntilChanged()
+      .filter((arr: Assessment[]) => arr && arr.length > 0)
       .subscribe((arr: RiskByAttack[]) => {
-        if (!arr || arr.length === 0) {
-          this.riskByAttack = undefined;
-          this.riskByAttacks = [];
-          return;
-        }
-
         this.riskByAttacks = [...arr];
         this.riskByAttack = { ...arr[0] };
       },
@@ -252,18 +256,12 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public ngOnDestroy(): void {
-    this.cleanSubscriptions();
-  }
-
-  /**
-   * @description for any subscriptions, unsubscribe and clean out the list
-   */
-  public cleanSubscriptions(): void {
     this.subscriptions
       .filter((el) => el !== undefined)
       .filter((el) => !el.closed)
       .forEach((sub) => sub.unsubscribe());
     this.store.dispatch(new CleanAssessmentResultData());
+    this.riskByAttackPatternStore.dispatch(new CleanAssessmentRiskByAttackPatternData());
   }
 
   /**
