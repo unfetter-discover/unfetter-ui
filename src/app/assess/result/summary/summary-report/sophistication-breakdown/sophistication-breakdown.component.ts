@@ -79,13 +79,22 @@ export class SophisticationBreakdownComponent implements OnInit {
     this.colors = this.summaryCalculationService.barColors;
     this.barChartLabels = Object.keys(this.allAttackPatterns)
       .map((level) => this.summaryCalculationService.sophisticationNumberToWord(level));
+    this.calculateData();
+  }
 
-    for (const prop in Object.keys(this.assessedAttackPatterns)) {
-      this.barChartData[0].data.push(this.assessedAttackPatterns[prop]);
-    }
+  public calculateData() {
+    let assessedAttackPatternKeys = Object.keys(this.assessedAttackPatterns);
+    let allAttackPatternKeys = Object.keys(this.allAttackPatterns);
 
-    for (const prop in Object.keys(this.allAttackPatterns)) {
-      this.barChartData[1].data.push(this.allAttackPatterns[prop]);
+    this.barChartData[0].data = [];
+    this.barChartData[1].data = [];
+    for (let index = 0; index < allAttackPatternKeys.length; index++) {
+      let assessed = 0;
+      if (assessedAttackPatternKeys.includes(index.toString())) {
+        assessed = this.assessedAttackPatterns[index];
+      }
+      this.barChartData[0].data.push(assessed);
+      this.barChartData[1].data.push(this.allAttackPatterns[index] - assessed);
     }
   }
 }

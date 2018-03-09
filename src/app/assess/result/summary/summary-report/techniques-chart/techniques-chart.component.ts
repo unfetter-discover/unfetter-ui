@@ -90,11 +90,10 @@ export class TechniquesChartComponent implements OnInit {
     this.renderLabels();
     this.barChartData[0].label = this.summaryCalculationService.renderLegend();
     this.initDataArray();
-
     const breakdown = Object.keys(this.summaryCalculationService.techniqueBreakdown);
     let index = 0;
     breakdown.forEach((key) => {
-      const val = this.summaryCalculationService.techniqueBreakdown[key];
+      const val: number = this.summaryCalculationService.techniqueBreakdown[key];
       this.barChartData[0].data[index] = Math.round(val * 100);
       index = index + 1;
     });

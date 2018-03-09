@@ -415,7 +415,9 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
   public transformSAD() {
     this.summaryCalculationService.summaryAggregation = this.summaryAggregation;
-    this.summaryCalculationService.populateAssessmentsGrouping(this.summary.assessment_objects);
-    this.summaryCalculationService.populateTechniqueBreakdown(this.summary.assessment_objects);
+    if (this.summary) {
+      this.summaryCalculationService.populateAssessmentsGrouping(this.summary.assessment_objects);
+      this.summaryCalculationService.populateTechniqueBreakdown(this.summary.assessment_objects);
+    }
   }
 }

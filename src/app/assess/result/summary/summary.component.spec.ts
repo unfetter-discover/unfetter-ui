@@ -183,8 +183,8 @@ describe('SummaryComponent', () => {
 
     component.summary = {
       assessmentMeta: null, created: null, description: null, modified: null, name: null, type: null, version: null, external_references: null,
-      granular_markings: null, pattern: null, kill_chain_phases: null, created_by_ref: null, valid_from: null, labels: null, metaProperties: null, 
-      assessment_objects: [{risk: null, questions: null}]
+      granular_markings: null, pattern: null, kill_chain_phases: null, created_by_ref: null, valid_from: null, labels: null, metaProperties: null,
+      assessment_objects: [{ risk: null, questions: null }]
     }
     component.transformSummary();
     expect(service.setAverageRiskPerAssessedObject).toHaveBeenCalled();
@@ -192,8 +192,8 @@ describe('SummaryComponent', () => {
 
     component.summary = {
       assessmentMeta: null, created: null, description: null, modified: null, name: null, type: null, version: null, external_references: null,
-      granular_markings: null, pattern: null, kill_chain_phases: null, created_by_ref: null, valid_from: null, labels: null, metaProperties: null, 
-      assessment_objects: [{risk: null, questions: []}]
+      granular_markings: null, pattern: null, kill_chain_phases: null, created_by_ref: null, valid_from: null, labels: null, metaProperties: null,
+      assessment_objects: [{ risk: null, questions: [] }]
     }
     component.transformSummary();
     expect(service.setAverageRiskPerAssessedObject).toHaveBeenCalled();
@@ -201,8 +201,8 @@ describe('SummaryComponent', () => {
 
     component.summary = {
       assessmentMeta: null, created: null, description: null, modified: null, name: null, type: null, version: null, external_references: null,
-      granular_markings: null, pattern: null, kill_chain_phases: null, created_by_ref: null, valid_from: null, labels: null, metaProperties: null, 
-      assessment_objects: [{risk: null, questions: [{name: null, risk: null, options: null, selected_value: null}]}]
+      granular_markings: null, pattern: null, kill_chain_phases: null, created_by_ref: null, valid_from: null, labels: null, metaProperties: null,
+      assessment_objects: [{ risk: null, questions: [{ name: null, risk: null, options: null, selected_value: null }] }]
     }
     component.transformSummary();
     expect(service.setAverageRiskPerAssessedObject).toHaveBeenCalled();
@@ -230,8 +230,13 @@ describe('SummaryComponent', () => {
       attackPatternsByAssessedObject: null,
       totalAttackPatternCountBySophisicationLevel: null
     });
-    expect(service.populateAssessmentsGrouping).toHaveBeenCalled();
-    expect(service.populateTechniqueBreakdown).toHaveBeenCalled();
+    expect(service.populateAssessmentsGrouping).toHaveBeenCalledTimes(1);
+    expect(service.populateTechniqueBreakdown).toHaveBeenCalledTimes(1);
+
+    component.summary = null;
+    component.transformSAD();
+    expect(service.populateAssessmentsGrouping).toHaveBeenCalledTimes(1);
+    expect(service.populateTechniqueBreakdown).toHaveBeenCalledTimes(1);
   });
 
   it('should transform Kill Chain Data (KCD)', () => {
@@ -250,12 +255,12 @@ describe('SummaryComponent', () => {
 
   it('should be able to track by an id or an index', () => {
     expect(component.trackByFn(null, null)).toBe(null);
-    expect(component.trackByFn(null, {id: null})).toBe(null);
-    expect(component.trackByFn(null, {id: 3})).toBe(3);
+    expect(component.trackByFn(null, { id: null })).toBe(null);
+    expect(component.trackByFn(null, { id: 3 })).toBe(3);
     // This seems off...
-    expect(component.trackByFn(null, {id: 0})).toBe(null);
+    expect(component.trackByFn(null, { id: 0 })).toBe(null);
     // This seems off...
-    expect(component.trackByFn(3, {id: 0})).toBe(3);
+    expect(component.trackByFn(3, { id: 0 })).toBe(3);
 
   });
 
