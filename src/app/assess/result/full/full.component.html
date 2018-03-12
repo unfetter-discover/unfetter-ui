@@ -1,5 +1,5 @@
-<div *ngIf="finishedLoading === true; else loadingBlock" class="fadeIn">
-  <mat-sidenav-container *ngIf="assessment !== undefined; else notFound">
+<div *ngIf="(finishedLoading|async) === true; else loadingBlock" class="fadeIn">
+  <mat-sidenav-container *ngIf="(assessment|async) !== undefined; else notFound">
     <mat-sidenav class="side-panel" mode="side" opened="true">
       <unfetter-side-panel class="side-panel" [item]="{ name: assessmentName|async }" collapsible="false" width="320">
 
@@ -60,8 +60,8 @@
     </mat-sidenav>
     <mat-sidenav-content>
       <div class="main-panel">
-        <result-header [assessmentId]="assessmentId" [rollupId]="rollupId" [created]="assessment?.created"></result-header>
-        <unf-assess-group #assessGroupMain [activePhase]="phase" [rollupId]="rollupId" [assessment]="assessment" (riskByAttackPatternChanged)="calculateRiskBreakdown($event)"></unf-assess-group>
+        <result-header [assessmentId]="assessmentId" [rollupId]="rollupId" [created]="(assessment|async)?.created"></result-header>
+        <unf-assess-group #assessGroupMain [activePhase]="phase" [rollupId]="rollupId" [assessment]="(assessment|async)" (riskByAttackPatternChanged)="calculateRiskBreakdown($event)"></unf-assess-group>
       </div>
     </mat-sidenav-content>
   </mat-sidenav-container>

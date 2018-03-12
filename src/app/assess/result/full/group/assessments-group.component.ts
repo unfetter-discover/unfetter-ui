@@ -121,7 +121,15 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     this.assessment = this.assessment || new Assessment();
     this.listenForDataChanges(attackPatternIndex);
     // request for initial data changes
-    this.store.dispatch(new LoadGroupData(this.assessmentId));
+    this.requestDataLoad(this.assessmentId);
+  }
+  
+  /**
+   * @description request data
+   * @returns {void}
+   */
+  public requestDataLoad(assessmentId: string): void {
+    this.store.dispatch(new LoadGroupData(assessmentId));
   }
 
   /**

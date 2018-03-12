@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { MatDialog } from '@angular/material';
@@ -25,19 +25,20 @@ import { RiskByAttack } from '../../../models/assess/risk-by-attack';
 @Component({
   selector: 'unf-assess-full',
   templateUrl: './full.component.html',
-  styleUrls: ['./full.component.scss']
+  styleUrls: ['./full.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FullComponent implements OnInit, OnDestroy {
 
   readonly baseAssessUrl = '/assess';
-  assessmentTypes: Assessment[];
-  assessment: Assessment;
+  assessmentTypes: Observable<Assessment[]>;
+  assessment: Observable<Assessment>;
   assessmentName: Observable<string>;
   rollupId: string;
   assessmentId: string;
   phase: string;
   attackPatternId: string;
-  finishedLoading = false;
+  finishedLoading: Observable<boolean>;
   masterListOptions = {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Modified'),
@@ -57,6 +58,7 @@ export class FullComponent implements OnInit, OnDestroy {
     private store: Store<FullAssessmentResultState>,
     private userStore: Store<AppState>,
     private assessService: AssessService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
   /**
@@ -95,39 +97,33 @@ export class FullComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public listenForDataChanges(): void {
-    const sub1$ = this.store
+
+    this.assessmentTypes = this.store
       .select('fullAssessment')
-      .pluck('assessmentTypes')
+      .pluck<object, Assessment[]>('assessmentTypes')
       .distinctUntilChanged()
-      .subscribe((arr: Assessment[]) => {
-        if (!arr || arr.length === 0) {
-          this.assessment = undefined;
-          this.assessmentTypes = [];
-          return;
-        }
+      .filter((arr) => arr && arr.length > 0);
 
-        this.assessmentTypes = [...arr];
-        this.assessment = this.assessmentTypes
-          .filter((el) => el !== undefined && el.id)
-          .filter((el) => el.id === this.assessmentId)
-          .pop();
-      },
-        (err) => console.log(err));
-
-    const sub2$ = this.store
+    this.assessment = this.store
       .select('fullAssessment')
-      .pluck('finishedLoading')
+      .pluck<object, Assessment[]>('assessmentTypes')
       .distinctUntilChanged()
-      .subscribe((done: boolean) => this.finishedLoading = done,
-        (err) => console.log(err));
+      .filter((arr) => arr && arr.length > 0)
+      .map((arr) => arr[0])
 
-    const sub3$ = this.store
+    this.finishedLoading = this.store
+      .select('fullAssessment')
+      .pluck<Assessment, boolean>('finishedLoading')
+      .distinctUntilChanged();
+
+    const sub$ = this.store
       .select('fullAssessment')
       .pluck('group')
       .distinctUntilChanged()
       .filter((group: any) => group.finishedLoadingGroupData === true)
       .subscribe(
         (group: any) => {
+          console.log('refreshing group information at full component top level');
           const riskByAttackPattern = group.riskByAttackPattern || {};
           // active phase is either the current active phase, 
           let activePhase = this.activePhase;
@@ -136,6 +132,7 @@ export class FullComponent implements OnInit, OnDestroy {
             activePhase = riskByAttackPattern.phases[0]._id;
           }
           this.activePhase = activePhase;
+          this.changeDetectorRef.markForCheck();
         },
         (err) => console.log(err));
 
@@ -169,7 +166,7 @@ export class FullComponent implements OnInit, OnDestroy {
         }
       });
 
-    this.subscriptions.push(sub1$, sub2$, sub3$);
+    this.subscriptions.push(sub$);
   }
 
   /**
@@ -227,9 +224,9 @@ export class FullComponent implements OnInit, OnDestroy {
    * @description clicked currently viewed assessment, confirm delete
    * @return {void}
    */
-  public onDeleteCurrent(): void {
+  public onDeleteCurrent(assessment: LastModifiedAssessment): void {
     const id = this.rollupId;
-    this.confirmDelete({ name: this.assessment.name, rollupId: id });
+    this.confirmDelete({ name: assessment.name, rollupId: id });
   }
 
   /**
