@@ -235,7 +235,27 @@ export class SummaryComponent implements OnInit, OnDestroy {
         if (!summaries || summaries.length === 0) {
           return '';
         }
-        return summaries[0].name;
+        console.log(summaries);
+        if (summaries[0].assessment_objects && summaries[0].assessment_objects.length) {
+          let retVal = summaries[0].name + ' - ';
+          const assessedType = summaries[0].assessment_objects[0].stix.type;
+          // NOTE this is a temporary fix for naming in rollupId
+          // TODO remove this when a better fix is in place
+          switch (assessedType) {
+            case 'course-of-action':
+              retVal += 'Mitigations';
+              break;
+            case 'indicator':
+              retVal += 'Indicators';
+              break;
+            case 'x-unfetter-sensor':
+              retVal += 'Sensors';
+              break;
+          }
+          return retVal;
+        } else {
+          return summaries[0].name;
+        }
       });
 
     this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$, sub7$, sub8$);
