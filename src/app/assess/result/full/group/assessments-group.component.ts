@@ -43,6 +43,9 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input()
   public initialAttackPatternId: string;
 
+  @Input()
+  public assessmentGroup: Observable<any>;
+
   @Output('riskByAttackPatternChanged')
   public riskByAttackPatternChanged = new EventEmitter<RiskByAttack>();
 
@@ -132,15 +135,19 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     this.store.dispatch(new LoadGroupData(assessmentId));
   }
 
+  public onAddAssessment(): void {
+    // clear objects for the observable will detect a change
+    this.displayedAssessedObjects = undefined;
+    this.requestDataLoad(this.assessmentId);
+  }
+
   /**
    * @description setup subscriptions and observables for data changes
    * @param {number} attackPatternIndex
    * @returns {void}
    */
   public listenForDataChanges(attackPatternIndex: number = 0): void {
-    const sub1$ = this.store
-      .select('fullAssessment')
-      .pluck('group')
+    const sub1$ = this.assessmentGroup
       .distinctUntilChanged()
       .filter((group: any) => {
         // TODO: stop an infinite loop of network requests
@@ -150,7 +157,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
       })
       .subscribe((group: FullAssessmentGroupState) => {
         // initialize the displayed assessed objects, 
-        //  used also to stop lopp of network calls
+        //  used also to stop loop of network calls
         this.displayedAssessedObjects = [];
         this.assessedObjects = group.assessedObjects || [];
         this.riskByAttackPattern = group.riskByAttackPattern || new RiskByAttack();
@@ -158,17 +165,13 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
       },
         (err) => console.log(err));
 
-    const sub2$ = this.store
-      .select('fullAssessment')
-      .pluck('group')
+    const sub2$ = this.assessmentGroup
       .pluck('currentAttackPattern')
       .distinctUntilChanged()
       .subscribe((currentAttackPattern: Stix) => this.currentAttackPattern = currentAttackPattern,
         (err) => console.log(err));
 
-    const sub3$ = this.store
-      .select('fullAssessment')
-      .pluck('group')
+    const sub3$ = this.assessmentGroup
       .filter((group: any) => group.finishedLoadingGroupData === true)
       .pluck('attackPatternRelationships')
       .distinctUntilChanged()

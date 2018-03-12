@@ -61,7 +61,7 @@
     <mat-sidenav-content>
       <div class="main-panel">
         <result-header [assessmentId]="assessmentId" [rollupId]="rollupId" [created]="(assessment|async)?.created"></result-header>
-        <unf-assess-group #assessGroupMain [activePhase]="phase" [rollupId]="rollupId" [assessment]="(assessment|async)" (riskByAttackPatternChanged)="calculateRiskBreakdown($event)"></unf-assess-group>
+        <unf-assess-group #assessGroupMain [assessmentGroup]="assessmentGroup" [activePhase]="phase" [rollupId]="rollupId" [assessment]="(assessment|async)" (riskByAttackPatternChanged)="calculateRiskBreakdown($event)"></unf-assess-group>
       </div>
     </mat-sidenav-content>
   </mat-sidenav-container>

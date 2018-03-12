@@ -34,6 +34,7 @@ export class FullComponent implements OnInit, OnDestroy {
   assessmentTypes: Observable<Assessment[]>;
   assessment: Observable<Assessment>;
   assessmentName: Observable<string>;
+  assessmentGroup: Observable<any>;
   rollupId: string;
   assessmentId: string;
   phase: string;
@@ -109,11 +110,16 @@ export class FullComponent implements OnInit, OnDestroy {
       .pluck<object, Assessment[]>('assessmentTypes')
       .distinctUntilChanged()
       .filter((arr) => arr && arr.length > 0)
-      .map((arr) => arr[0])
+      .map((arr) => arr[0]);
 
     this.finishedLoading = this.store
       .select('fullAssessment')
       .pluck<Assessment, boolean>('finishedLoading')
+      .distinctUntilChanged();
+
+    this.assessmentGroup = this.store
+      .select('fullAssessment')
+      .pluck('group')
       .distinctUntilChanged();
 
     const sub$ = this.store
@@ -138,12 +144,10 @@ export class FullComponent implements OnInit, OnDestroy {
 
     this.assessmentName = this.store
       .select('fullAssessment')
-      .pluck('assessmentTypes')
+      .pluck<object, Assessment[]>('assessmentTypes')
+      .filter((arr) => arr && arr.length > 0)
       .distinctUntilChanged()
       .map((arr: Assessment[]) => {
-        if (!arr || arr.length === 0) {
-          return '';
-        }
         if (arr[0].assessment_objects && arr[0].assessment_objects.length) {
           let retVal = arr[0].name + ' - ';
           const assessedType = arr[0].assessment_objects[0].stix.type;
