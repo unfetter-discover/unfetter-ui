@@ -46,6 +46,7 @@ describe('ResultHeaderComponent', () => {
   it('should have a disabled PUBLISH button (for now) and a tooltip explaining', () => {
     const publishButton = fixture.debugElement.query(By.css('#publishButton')).nativeElement;
     expect(publishButton.disabled).toBe(true);
-    expect(publishButton.title).toBe('Future Assessment Functionality');
+    const publishDiv = fixture.debugElement.query(By.css('#publishWrapper')).nativeElement;
+    expect(publishDiv.getAttribute('mattooltip')).toBe('Future Assessment Functionality');
   });
 });
