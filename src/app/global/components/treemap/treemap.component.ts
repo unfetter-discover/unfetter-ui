@@ -58,6 +58,7 @@ export class TreemapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
     private treeMapChart: any;
 
     private selected: any[];
+    private tooltipDelay: number;
     @Output() private onTooltip = new EventEmitter<{row: any[], target?: UIEvent}>();
 
     // 
@@ -165,16 +166,22 @@ export class TreemapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
             GoogleCharts.api.visualization.events.addListener(this.treeMapChart,
                 'onmouseover', (event) => {
                     if (event && event.row) {
-                        let index: string = this.treeMapTable.getValue(event.row, 0);
-                        const selected = this.treeMapData.filter(row => row[0] === index)[0];
-                        if (selected && (!this.selected || (selected[0] !== this.selected[0]))) {
-                            this.selected = selected;
-                            this.onTooltip.emit({row: this.selected, target: this.treeMapView.nativeElement});
-                        }
+                        window.clearTimeout(this.tooltipDelay);
+                        this.tooltipDelay = window.setTimeout(() => {
+                            let index: string = this.treeMapTable.getValue(event.row, 0);
+                            const selected = this.treeMapData.filter(row => row[0] === index)[0];
+                            if (selected && (!this.selected || (selected[0] !== this.selected[0]))) {
+                                this.selected = selected;
+                                this.onTooltip.emit({row: this.selected, target: this.treeMapView.nativeElement});
+                            }
+                        }, 500);
                     }
                 });
             GoogleCharts.api.visualization.events.addListener(this.treeMapChart,
-                'onmouseout', () => this.onTooltip.emit(this.selected = null));
+                'onmouseout', () => {
+                    window.clearTimeout(this.tooltipDelay);
+                    this.onTooltip.emit(this.selected = null)
+                });
         }, 'treemap');
     }
 

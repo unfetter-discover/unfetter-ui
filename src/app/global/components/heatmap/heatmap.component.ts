@@ -111,6 +111,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
      */
     @Input() public showText: boolean = false;
 
+    private tooltipDelay: number;
     @Output() private onTooltip = new EventEmitter<{row: BatchData, event?: UIEvent}>();
 
     private readonly subscriptions: Subscription[] = [];
@@ -357,8 +358,17 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
                 .append('g')
                     .attr('class', 'cell')
                     .attr('aria-label', d.batch)
-                    .on('mouseover', p => this.onTooltip.emit({row: d, event: d3.event}))
-                    .on('mouseout', () => this.onTooltip.emit(null));
+                    .on('mouseover', p => {
+                        window.clearTimeout(this.tooltipDelay);
+                        const ev = d3.event;
+                        this.tooltipDelay = window.setTimeout(() => {
+                            this.onTooltip.emit({row: d, event: ev});
+                        }, 500);
+                    })
+                    .on('mouseout', () => {
+                        window.clearTimeout(this.tooltipDelay);
+                        this.onTooltip.emit(null);
+                    });
             cell
                 .append('rect')
                     .attr('x', x)

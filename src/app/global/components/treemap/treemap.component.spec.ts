@@ -9,7 +9,7 @@ import { TreemapComponent } from './treemap.component';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { By } from '@angular/platform-browser';
 
-fdescribe('TreemapComponent', () => {
+describe('TreemapComponent', () => {
 
     let component: TreemapComponent;
     let fixture: ComponentFixture<TreemapComponent>;
@@ -44,7 +44,7 @@ fdescribe('TreemapComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    fit('should accept input treemap data', async() => {
+    it('should accept input treemap data', async() => {
         component.treeMapData = [
             [ 'Countries', 'Continents', '# Medals' ],
             [ 'Country', '', 0 ],
