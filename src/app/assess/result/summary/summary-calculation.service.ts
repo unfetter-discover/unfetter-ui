@@ -278,7 +278,8 @@ export class SummaryCalculationService {
    */
   public populateTechniqueBreakdown(assessmentObjects: AssessmentObject[]): void {
 
-    if (assessmentObjects && this.summaryAggregation) {
+    this.techniqueBreakdown = {};
+    if (assessmentObjects && this.summaryAggregation && this.summaryAggregation.attackPatternsByAssessedObject && this.summaryAggregation.assessedAttackPatternCountBySophisicationLevel) {
       this.assessmentObjects = assessmentObjects;
       // Total assessed objects to calculated risk
       const assessedRiskMapping = this.summaryAggregation.assessedAttackPatternCountBySophisicationLevel;
@@ -302,7 +303,6 @@ export class SummaryCalculationService {
         ++attackPatternSetMap[curAp['x_unfetter_sophistication_level']];
       });
 
-      this.techniqueBreakdown = {};
       for (const prop in Object.keys(assessedRiskMapping)) {
         if (attackPatternSetMap[prop] === undefined) {
           this.techniqueBreakdown[prop] = 0;

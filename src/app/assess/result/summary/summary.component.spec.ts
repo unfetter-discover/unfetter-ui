@@ -261,7 +261,14 @@ describe('SummaryComponent', () => {
     expect(component.trackByFn(null, { id: 0 })).toBe(null);
     // This seems off...
     expect(component.trackByFn(3, { id: 0 })).toBe(3);
+  });
 
+  it('should set all loading flags to done', () => {
+    component.setLoadingToDone();
+    expect(component.finishedLoading).toBe(true);
+    expect(component.finishedLoadingKCD).toBe(true);
+    expect(component.finishedLoadingRBAP).toBe(true);
+    expect(component.finishedLoadingSAD).toBe(true);
   });
 
 });

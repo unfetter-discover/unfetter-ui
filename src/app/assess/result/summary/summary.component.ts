@@ -416,9 +416,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @returns {void}
    */
   public transformSAD(): void {
-    if (!this.summary) {
-      return;
-    }
     this.summaryCalculationService.summaryAggregation = this.summaryAggregation;
     if (this.summary) {
       this.summaryCalculationService.populateAssessmentsGrouping(this.summary.assessment_objects);
@@ -427,7 +424,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description set all the flags to finsihd loadin
+   * @description set all the flags to finished loading
    * @returns {void}
    */
   public setLoadingToDone(): void {
