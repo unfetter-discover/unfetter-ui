@@ -33,8 +33,18 @@ export class SummaryEffects {
     public fetchSingleAssessmentSummaryData = this.actions$
         .ofType(LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA)
         .pluck('payload')
-        .switchMap((assessmentId: string) => this.assessService.getById(assessmentId))
-        .mergeMap((data: Assessment) => [new SetAssessments([data]), new FinishedLoading(true)])
+        .switchMap((assessmentId: string) => {
+            return this.assessService
+                .getById(assessmentId)
+                .catch((ex) => Observable.of({}));
+        })
+        .mergeMap((data: Assessment) => {
+            const actions = [new FinishedLoading(true)];
+            if (!data || !data.id) {
+                return actions
+            }
+            return [new SetAssessments([data]), ...actions];
+        });
 
     @Effect()
     public fetchAssessmentSummaryData = this.actions$

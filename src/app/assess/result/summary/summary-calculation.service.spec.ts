@@ -351,6 +351,54 @@ describe('SummaryCalculationService', () => {
     expect(service.assessmentsGroupingTotal).toEqual({ 'happy camper': 2 });
   }));
 
+  it('should populate technique breakdown groupings given an array of asssesment objects', inject([SummaryCalculationService], (service: SummaryCalculationService) => {
+    service.summaryAggregation = null;
+    service.populateTechniqueBreakdown(null);
+    expect(service.techniqueBreakdown).toEqual({});
+    service.populateTechniqueBreakdown([]);
+    expect(service.techniqueBreakdown).toEqual({});
+    service.populateTechniqueBreakdown([{ risk: null, questions: null }]);
+    expect(service.techniqueBreakdown).toEqual({});
+    service.summaryAggregation = { assessedAttackPatternCountBySophisicationLevel: null, attackPatternsByAssessedObject: null, totalAttackPatternCountBySophisicationLevel: null };
+    service.populateTechniqueBreakdown([]);
+    expect(service.techniqueBreakdown).toEqual({});
+    service.populateTechniqueBreakdown([{ risk: null, questions: null }]);
+    expect(service.techniqueBreakdown).toEqual({});
+    service.summaryAggregation = { assessedAttackPatternCountBySophisicationLevel: null, attackPatternsByAssessedObject: [{ _id: null, attackPatterns: null }], totalAttackPatternCountBySophisicationLevel: null };
+    service.populateTechniqueBreakdown([]);
+    expect(service.techniqueBreakdown).toEqual({});
+    service.populateTechniqueBreakdown([{ risk: null, questions: null }]);
+    expect(service.techniqueBreakdown).toEqual({});
+    service.summaryAggregation = { assessedAttackPatternCountBySophisicationLevel: { index: null, count: null }, attackPatternsByAssessedObject: [{ _id: null, attackPatterns: null }], totalAttackPatternCountBySophisicationLevel: null };
+    service.populateTechniqueBreakdown([]);
+    expect(service.techniqueBreakdown).toEqual({ 0: 0, 1: 0 });
+    service.populateTechniqueBreakdown([{ risk: null, questions: null }]);
+    expect(service.techniqueBreakdown).toEqual({ 0: 0, 1: 0 });
+    service.summaryAggregation = {
+      assessedAttackPatternCountBySophisicationLevel: { index: null, count: null },
+      attackPatternsByAssessedObject: [{ _id: 'an id', attackPatterns: [{ kill_chain_phases: [{ kill_chain_name: null, phase_name: 'happy camper' }] }] }], totalAttackPatternCountBySophisicationLevel: null
+    };
+    service.populateTechniqueBreakdown([{
+      risk: .25, questions: null, stix: {
+        id: 'an id', metaProperties: null, created: null, modified: null, version: null, external_references: null,
+        granular_markings: null, name: null, description: null, pattern: null, kill_chain_phases: [{ kill_chain_name: null, phase_name: 'happy camper' }], created_by_ref: null, type: null, valid_from: null, labels: null
+      }
+    }]);
+    expect(service.techniqueBreakdown).toEqual({ 0: 0, 1: 0 });
+    service.summaryAggregation = {
+      assessedAttackPatternCountBySophisicationLevel: { index: 0, count: 3 },
+      attackPatternsByAssessedObject: [{ _id: 'an id', attackPatterns: [{ kill_chain_phases: [{ kill_chain_name: null, phase_name: 'happy camper' }] }] }], totalAttackPatternCountBySophisicationLevel: null
+    };
+    service.populateTechniqueBreakdown([{
+      risk: .25, questions: null, stix: {
+        id: 'an id', metaProperties: null, created: null, modified: null, version: null, external_references: null,
+        granular_markings: null, name: null, description: null, pattern: null, kill_chain_phases: [{ kill_chain_name: null, phase_name: 'happy camper' }], created_by_ref: null, type: null, valid_from: null, labels: null
+      }
+    }]);
+    expect(service.techniqueBreakdown).toEqual({ 0: 0, 1: 0 });
+
+  }));
+
   it('should capitalize all words except for and, or, of, on, and the', inject([SummaryCalculationService], (service: SummaryCalculationService) => {
     expect(service.capitalizeWithExceptions(null, null, null)).toBe(null);
     expect(service.capitalizeWithExceptions('and', null, null)).toBe('and');

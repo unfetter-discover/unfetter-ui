@@ -92,10 +92,11 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
         // Uploaded indicator, COA, or sensor
         const sub = this.assessService
             .genericPost(`api/${convertedObj.type}s`, convertedObj)
+            .map((assessments) => assessments.map((el) => el.attributes))
             .subscribe(
             (assessedRes) => {
-                const newId = assessedRes[0].attributes.id;
-                const createdObj = assessedRes[0].attributes;
+                const newId = assessedRes[0].id;
+                const createdObj = assessedRes[0];
 
                 // create relationship
                 const relationshipObj: any = { type: 'relationship' };
@@ -137,10 +138,10 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
                         .map((question) => question.risk)
                         .reduce((prev, cur) => (prev += cur), 0) / questions.length;
 
-                this.assessment.attributes.assessment_objects.push(
+                this.assessment.assessment_objects.push(
                     tempAssessmentObject
                 );
-                const assessmentToUpload: any = this.assessment.attributes;
+                const assessmentToUpload: any = this.assessment;
                 assessmentToUpload.modified = new Date().toISOString();
                 const sub2 = this.assessService
                     .genericPatch(`${Constance.X_UNFETTER_ASSESSMENT_URL}/${this.assessment.id}`, assessmentToUpload)
