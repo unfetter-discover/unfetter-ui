@@ -110,12 +110,42 @@ $white: #FFFFFF;
         color: $threat-dashboard-primary;
         background-color: $white;
         height: 64px;
-        width: 180px;
+        width: 200px;
 
         button {
             margin: auto auto;
         }
     }
+}
+
+h3.tree-map-header {
+    height: 64px;
+    margin: 0;
+    padding: 16px 16px 0 16px;
+    color: #ffffffde;
+    background: linear-gradient(60deg, #1e88e5, #2196f3) !important;
+}
+div.tree-map {
+    width: 100%;
+    height: 400px;
+    margin: 0;
+    padding: 0;
+    background: white;
+}
+
+h3.heat-map-header {
+    height: 64px;
+    margin: 0;
+    padding: 16px 16px 0 16px;
+    color: #ffffffde;
+    background: linear-gradient(60deg, #1e88e5, #2196f3) !important;
+}
+div.heat-map {
+    width: 100%;
+    height: 400px;
+    margin: 0;
+    padding: 0;
+    background: white;
 }
 
 .attack-pattern-clicker:hover {
