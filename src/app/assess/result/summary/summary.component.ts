@@ -235,7 +235,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
         if (!summaries || summaries.length === 0) {
           return '';
         }
-        console.log(summaries);
         if (summaries[0].assessment_objects && summaries[0].assessment_objects.length) {
           let retVal = summaries[0].name + ' - ';
           const assessedType = summaries[0].assessment_objects[0].stix.type;
