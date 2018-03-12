@@ -107,7 +107,9 @@ const unfetterComponents = [
     MasterListDialogTriggerComponent,
     MasterListDialogComponent,
     ErrorCardComponent,
-    RiskBreakdownComponent
+    RiskBreakdownComponent,
+    TreemapComponent,
+    HeatmapComponent,
 ];
 
 @NgModule({
@@ -124,8 +126,6 @@ const unfetterComponents = [
     ],
     declarations: [
         ...unfetterComponents,
-        TreemapComponent,
-        HeatmapComponent
     ],
     providers: [],
     entryComponents: [MasterListDialogComponent]
