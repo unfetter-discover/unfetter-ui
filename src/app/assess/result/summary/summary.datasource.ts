@@ -33,14 +33,14 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment
             .switchMap(() => {
                 const val = this.filterChange.getValue();
                 const filterVal = val.trim().toLowerCase() || '';
-                const products$ = this.fetchAssessments(); // .let(this.dedupByRollupId);
+                const assessments$ = this.fetchAssessments(); // .let(this.dedupByRollupId);
                 if (!filterVal || filterVal.length === 0) {
-                    return products$;
+                    return assessments$;
                 }
 
-                return products$
+                return assessments$
                     .map((el) => {
-                        return el.filter((tro) => tro.name.trim().toLowerCase().includes(filterVal));
+                        return el.filter((_) => _.name.trim().toLowerCase().includes(filterVal));
                     });
             });
     }
@@ -99,7 +99,7 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment
 
     /**
      * @description
-     *  route user to their own assessments, then fallback and show a group assessment if needed
+     *  fetch assessments by their owner, then fallback and show a group assessment if needed
      * @param {string} creatorId
      * @return {Observable<Partial<LastModifiedAssessment>[]>}
      */
@@ -116,7 +116,7 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment
     }
 
     /**
-     * @description route to a create page or the last modified summary in the system
+     * @description show last modified group assessments
      * @return {Observable<Partial<LastModifiedAssessment>[]>}
      */
     public fetchWithNoCreatorId(): Observable<Partial<LastModifiedAssessment>[]> {

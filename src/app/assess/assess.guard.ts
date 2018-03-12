@@ -36,7 +36,7 @@ export class AssessGuard implements CanActivate {
                 if (!this.demoMode && user && user._id) {
                     o$ = this.fetchWithCreatorId(user._id);
                 } else {
-                    o$ = this.routeNoCreatorId();
+                    o$ = this.fetchWithNoCreatorId();
                 }
 
                 return o$.
@@ -62,21 +62,28 @@ export class AssessGuard implements CanActivate {
     }
 
     /**
-     * @description route to a create page or the last modified summary for this user
+     * @description
+     *  fetch assessments by their owner, then fallback and show a group assessment if needed
      * @param {string} creatorId
-     * @return {Observable<Partial<LastModifiedAssessment>[]> }
+     * @return {Observable<Partial<LastModifiedAssessment>[]>}
      */
     public fetchWithCreatorId(creatorId: string): Observable<Partial<LastModifiedAssessment>[]> {
-        const id = creatorId;
         return this.assessService
-            .getLatestAssessmentsByCreatorId(id);
+            .getLatestAssessmentsByCreatorId(creatorId)
+            .switchMap((data: any[]) => {
+                if (!data || data.length < 1) {
+                    return this.fetchWithNoCreatorId();
+                } else {
+                    return Observable.of(data);
+                }
+            });
     }
 
     /**
-     * @description route to a create page or the last modified summary in the system
+     * @description show last modified group assessments
      * @return {Observable<Partial<LastModifiedAssessment>[]>}
      */
-    public routeNoCreatorId(): Observable<Partial<LastModifiedAssessment>[]> {
+    public fetchWithNoCreatorId(): Observable<Partial<LastModifiedAssessment>[]> {
         return this.assessService
             .getLatestAssessments();
     }
