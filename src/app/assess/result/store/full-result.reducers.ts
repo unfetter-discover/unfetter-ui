@@ -7,29 +7,16 @@ import { FullAssessmentResultActions, LOAD_ASSESSMENT_RESULT_DATA } from './full
 import { Stix } from '../../../models/stix/stix';
 import { RiskByAttack } from '../../../models/assess/risk-by-attack';
 import { Relationship } from '../../../models';
+import { FullAssessmentGroup } from '../full/group/models/full-assessment-group';
 
 export interface FullAssessmentResultState {
     fullAssessment: Assessment;
     assessmentTypes: Assessment[];
     finishedLoading: boolean;
-    group: FullAssessmentGroupState;
+    group: FullAssessmentGroup;
 };
 
-export interface FullAssessmentGroupState {
-    finishedLoadingGroupData: boolean;
-    currentAttackPattern: Stix;
-    riskByAttackPattern: RiskByAttack;
-    assessedObjects: AssessmentObject[];
-    unassessedPhases: string[];
-    displayedAssessedObjects: DisplayedAssessmentObject[];
-    unassessedAttackPatterns: Stix[];
-    attackPatternsByPhase: any[];
-    addAssessedObject: boolean;
-    addAssessedType: string;
-    attackPatternRelationships: Relationship[];
-}
-
-export const genGroupState = (state?: Partial<FullAssessmentGroupState>) => {
+export const genGroupState = (state?: Partial<FullAssessmentGroup>) => {
     const tmp = {
         finishedLoadingGroupData: false,
         currentAttackPattern: new Stix(),

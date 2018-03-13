@@ -21,6 +21,7 @@ import { AssessedByAttackPattern } from './group/models/assessed-by-attack-patte
 import { Constance } from '../../../utils/constance';
 import { RiskByAttackPattern } from './group/models/risk-by-attack-pattern';
 import { RiskByAttack } from '../../../models/assess/risk-by-attack';
+import { FullAssessmentGroup } from './group/models/full-assessment-group';
 
 @Component({
   selector: 'unf-assess-full',
@@ -34,7 +35,7 @@ export class FullComponent implements OnInit, OnDestroy {
   assessmentTypes: Observable<Assessment[]>;
   assessment: Observable<Assessment>;
   assessmentName: Observable<string>;
-  assessmentGroup: Observable<any>;
+  assessmentGroup: Observable<FullAssessmentGroup>;
   rollupId: string;
   assessmentId: string;
   phase: string;
@@ -119,7 +120,7 @@ export class FullComponent implements OnInit, OnDestroy {
 
     this.assessmentGroup = this.store
       .select('fullAssessment')
-      .pluck('group')
+      .pluck<object, FullAssessmentGroup>('group')
       .distinctUntilChanged();
 
     const sub$ = this.store

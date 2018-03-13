@@ -3,23 +3,26 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { MatDialogModule } from '@angular/material';
 import { StoreModule, ActionReducerMap } from '@ngrx/store';
+
+import { GenericApi } from '../../../../core/services/genericapi.service';
+import { GlobalModule } from '../../../../global/global.module';
+import { FullAssessmentResultState, fullAssessmentResultReducer, genState } from '../../store/full-result.reducers';
 
 import { Assessment } from '../../../../models/assess/assessment';
 import { AssessAttackPatternMeta } from '../../../../models/assess/assess-attack-pattern-meta';
 import { AssessAttackPatternMetaMockFactory } from '../../../../models/assess/assess-attack-pattern-meta.mock';
 import { AssessGroupComponent } from './assessments-group.component';
 import { AssessService } from '../../../services/assess.service';
-
-import { FullAssessmentResultState, fullAssessmentResultReducer, genState } from '../../store/full-result.reducers';
-import { GenericApi } from '../../../../core/services/genericapi.service';
-import { GlobalModule } from '../../../../global/global.module';
+import { AddAssessedObjectComponent } from './add-assessed-object/add-assessed-object.component';
+import { AssessmentObjectMockFactory } from '../../../../models/assess/assessment-object.mock';
 import { Phase } from '../../../../models/assess/phase';
 import { RiskByAttack } from '../../../../models/assess/risk-by-attack';
 import { RiskByAttackPatternMockFactory } from '../../../../models/assess/risk-by-attack-pattern.mock';
 import { SummaryCalculationService } from '../../summary/summary-calculation.service';
-import { AssessmentObjectMockFactory } from '../../../../models/assess/assessment-object.mock';
+import { FullAssessmentGroupMockFactory } from './models/full-assessment-group.mock';
 
 describe('AssessGroupComponent', () => {
   let component: AssessGroupComponent;
@@ -36,8 +39,10 @@ describe('AssessGroupComponent', () => {
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      declarations: [AssessGroupComponent],
-
+      declarations: [
+        AddAssessedObjectComponent,
+        AssessGroupComponent
+      ],
       imports: [
         RouterTestingModule,
         HttpClientTestingModule,
@@ -59,6 +64,7 @@ describe('AssessGroupComponent', () => {
     fixture = TestBed.createComponent(AssessGroupComponent);
     component = fixture.componentInstance;
     component.assessment = new Assessment();
+    component.assessmentGroup = new BehaviorSubject(FullAssessmentGroupMockFactory.mockOne()).asObservable();
     fixture.detectChanges();
   });
 
