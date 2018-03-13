@@ -18,7 +18,7 @@ import { Constance } from '../../utils/constance';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { Measurements } from './measurements';
 import { MenuItem } from 'primeng/primeng';
-import { LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle } from '../store/assess.actions';
+import { LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle, CleanAssessmentWizardData } from '../store/assess.actions';
 import { Assessment } from '../../models/assess/assessment';
 import { Stix } from '../../models/stix/stix';
 import { Indicator } from '../../models/stix/indicator';
@@ -140,8 +140,6 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    *  initializes this component, fetchs data to build page
    */
   public ngOnInit(): void {
-    console.log('in wizard component');
-
     const idParamSub$ = this.route.params
       .subscribe(
         (params) => {
@@ -329,6 +327,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    *  cleans up this component, unsubscribes to data
    */
   public ngOnDestroy(): void {
+    this.wizardStore.dispatch(new CleanAssessmentWizardData());
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 

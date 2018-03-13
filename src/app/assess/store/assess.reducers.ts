@@ -39,6 +39,8 @@ const initialState: AssessState = genAssessState();
 
 export function assessmentReducer(state = initialState, action: assessmentActions.AssessmentActions): AssessState {
     switch (action.type) {
+        case assessmentActions.CLEAN_ASSESSMENT_WIZARD_DATA:
+            return genAssessState();
         case assessmentActions.FETCH_ASSESSMENT:
             return genAssessState({
                 ...state,
