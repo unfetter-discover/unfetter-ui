@@ -8,7 +8,10 @@ import {
     ViewChild,
     HostListener,
     TemplateRef,
-    ViewContainerRef
+    ViewContainerRef,
+    AfterViewInit,
+    ChangeDetectorRef,
+    Renderer2,
   } from '@angular/core';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
@@ -23,6 +26,13 @@ import { KillChainEntry } from './kill-chain-entry';
 import { AttackPattern } from '../../models/attack-pattern';
 import { ThreatDashboard } from '../models/threat-dashboard';
 import { topRightSlide } from '../../global/animations/top-right-slide';
+import { KillChainPhase } from '../../models';
+
+interface HeatMapData {
+  phase: string,
+  count: number,
+  columns: Array<Array<{name: string, active: boolean}>>
+}
 
 @Component({
   selector: 'unf-kill-chain-table',
@@ -31,7 +41,7 @@ import { topRightSlide } from '../../global/animations/top-right-slide';
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [topRightSlide]
 })
-export class KillChainTableComponent implements OnInit, OnDestroy {
+export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input('threatReport')
   public threatReport: ThreatReport;
@@ -47,8 +57,17 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
 
   @ViewChild('apTooltipTemplate') apTooltipTemplate: TemplateRef<any>;
   public attackPattern: AttackPattern;
+  public attackPhases: string[];
   private overlayRef: OverlayRef;
   private portal: TemplatePortal<any>;
+  public hoverTooltip: boolean;
+
+  public rawTreeMapData: Array<any> = [];
+  public googleTreeMapData: Array<any> = [];
+  public showTreeMap = false;
+
+  public d3HeatMapData: Array<HeatMapData> = [];
+  public showHeatMap = false;
 
   public undoToolboxOp: Partial<KillChainEntry>[] = undefined;
   public showToolbox = false;
@@ -61,6 +80,8 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
     protected genericApi: GenericApi,
     private overlay: Overlay,
     private vcr: ViewContainerRef,
+    private renderer: Renderer2,
+    private changeDetector: ChangeDetectorRef,
   ) { }
 
   /**
@@ -68,6 +89,9 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     this.undoToolboxOp = this.copyState(this.intrusionSetsDashboard.killChainPhases);
+  }
+
+  public ngAfterViewInit(): void {
   }
 
   /**
@@ -141,6 +165,7 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
       return this.count(phase.attack_patterns) > 0;
     });
     this.intrusionSetsDashboard.killChainPhases = filtered;
+    this.showHeatMap = this.showTreeMap = false;
   }
 
   /**
@@ -154,6 +179,7 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
       return phases;
     });
     this.intrusionSetsDashboard.killChainPhases = filtered;
+    this.showHeatMap = this.showTreeMap = false;
   }
 
   /**
@@ -166,18 +192,153 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
     }
     this.intrusionSetsDashboard.killChainPhases = this.undoToolboxOp;
     this.undoToolboxOp = this.copyState(this.undoToolboxOp);
+    this.showHeatMap = this.showTreeMap = false;
   }
 
-  public showAttackPatternTooltip(killChain: KillChainEntry, event?: UIEvent): void {
-    if (killChain && this.attackPattern && (this.attackPattern.attributes.name === killChain.name)) {
+  /**
+   * @description
+   * @param {UIEvent} event optional
+   */
+  public onTreeMap(event?: UIEvent): void {
+    this.createGoogleAttackPatternTreeMap();
+    requestAnimationFrame(() => {
+      this.showHeatMap = false;
+      this.showTreeMap = true;
+    });
+  }
+
+  /**
+   * @description
+   * @param {UIEvent} event optional
+   */
+  public onHeatMap(event?: UIEvent): void {
+    this.createD3AttackPatternHeatMap();
+    requestAnimationFrame(() => {
+      this.showTreeMap = false;
+      this.showHeatMap = true;
+    });
+  }
+
+  /**
+   * @description creates a treemap of our _active_ tactics, counting each time the tactic is seen.
+   */
+  private createGoogleAttackPatternTreeMap() {
+    const attackData = {};
+    this.intrusionSetsDashboard.killChainPhases.forEach(phase => {
+      if (phase.attack_patterns) {
+        phase.attack_patterns.forEach(attackPattern => {
+          if (!attackData[attackPattern.name]) {
+            attackData[attackPattern.name] = {
+              count: 0,
+              phases: []
+            };
+          }
+          if (attackPattern.isSelected) {
+            attackData[attackPattern.name].count++;
+            attackData[attackPattern.name].phases.push(phase.name);
+          }
+        });
+      }
+    });
+
+    this.rawTreeMapData = [
+      ['Attack Patterns Used', '', '# times used', 'Tactics Used In'],
+      ['Attack Patterns', '', 0, []],
+      ['Unused Patterns', 'Attack Patterns', 0, []],
+    ];
+    for (let attackPattern in attackData) {
+      if (attackData[attackPattern].count > 0) {
+        this.rawTreeMapData.push([attackPattern, 'Attack Patterns',
+            attackData[attackPattern].count, attackData[attackPattern].phases]);
+      }
+    }
+    this.googleTreeMapData = this.rawTreeMapData.map(arr => arr.slice(0, 3));
+  }
+
+  /**
+   * @description Display a tooltip on the treemap for the tactic we are hovering over.
+   */
+  public showTreeMapTooltip(selectedPattern: any) {
+    if (!selectedPattern) {
+      this.hideAttackPatternTooltip(this.attackPattern);
+    } else {
+      const patternName: string = selectedPattern.row[0];
+      const rawSelection: any[] = this.rawTreeMapData.filter(row => row[0] === patternName)[0];
+      let attackPattern = null;
+      this.intrusionSetsDashboard.killChainPhases.forEach(phase => {
+        attackPattern = attackPattern || phase.attack_patterns.find(pattern => pattern && pattern.name === patternName);
+      });
+      if (attackPattern && (!this.attackPattern || this.attackPattern.id !== attackPattern.id)) {
+        this.attackPhases = rawSelection[3] || null;
+        this.showAttackPatternTooltip(attackPattern, selectedPattern, this.attackPhases, true);
+      } else {
+        this.hideAttackPatternTooltip(this.attackPattern);
+      }
+    }
+  }
+
+  /**
+   * @description Create a heatmap chart of all the tactics. This looks like a version of the carousel, but shrunken
+   *              in order to fit within the viewport.
+   */
+  private createD3AttackPatternHeatMap() {
+    // Collect the data.
+    let data = [];
+    this.intrusionSetsDashboard.killChainPhases.forEach(phase => {
+      let index = 0;
+      if (phase && phase.name && phase.attack_patterns) {
+        const d = {
+          batch: phase.name.replace(/\-/g, ' ').split(/\s+/).map(w => w[0].toUpperCase() + w.slice(1)).join(' '),
+          active: null,
+          columns: [[]]
+        };
+        phase.attack_patterns.forEach(attackPattern => {
+          if (attackPattern.name) {
+            d.columns[0].push({
+              batch: attackPattern.name,
+              active: attackPattern.isSelected
+            });
+          }
+        });
+        data.push(d);
+      }
+    });
+    this.d3HeatMapData = data;
+  }
+
+  /**
+   * @description Display a tooltip on the heatmap for the tactic we are hovering over.
+   */
+  public showHeatMapTooltip(selectedPattern: any) {
+    if (!selectedPattern) {
+      this.hideAttackPatternTooltip(this.attackPattern);
+    } else {
+      const patternName: string = selectedPattern.row.batch;
+      const rawSelection: any[] = this.rawTreeMapData.filter(row => row[0] === patternName)[0];
+      let attackPattern = null;
+      this.intrusionSetsDashboard.killChainPhases.forEach(phase => {
+        attackPattern = attackPattern || phase.attack_patterns.find(pattern => pattern && pattern.name === patternName);
+      });
+      if (attackPattern && (!this.attackPattern || this.attackPattern.id !== attackPattern.id)) {
+        this.showAttackPatternTooltip(attackPattern, selectedPattern.event, [], true);
+      } else {
+        this.hideAttackPatternTooltip(this.attackPattern);
+      }
+    }
+  }
+
+  public showAttackPatternTooltip(tactic: Partial<KillChainEntry>, event?: UIEvent,
+      phases?: string[], asTooltip: boolean = false): void {
+    if (tactic && this.attackPattern && (this.attackPattern.id === tactic.id)) {
       return;
     }
 
-    this.attackPattern = this.attackPatterns.find(pattern => pattern.attributes.name === killChain.name);
+    this.attackPattern = this.attackPatterns.find(pattern => pattern.id === tactic.id);
+    this.attackPhases = phases || null;
+    this.hoverTooltip = asTooltip;
 
     if (!this.overlayRef) {
       const elem = new ElementRef(event.target);
-      console.log('Trying to display tooltip for ', this.attackPattern, ' on ', elem);
 
       const positionStrategy = this.overlay.position()
         .connectedTo(elem,
@@ -196,7 +357,7 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
       this.overlayRef = this.overlay.create({
         minWidth: 300,
         maxWidth: 500,
-        hasBackdrop: true,
+        hasBackdrop: !asTooltip,
         positionStrategy,
         scrollStrategy: this.overlay.scrollStrategies.reposition()
       });
@@ -218,6 +379,7 @@ export class KillChainTableComponent implements OnInit, OnDestroy {
       return;
     }
     this.attackPattern = null;
+    this.attackPhases = null;
     this.overlayRef.detach();
     this.overlayRef.dispose();
     this.overlayRef = null;

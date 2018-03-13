@@ -45,6 +45,7 @@ import { KillChainTableComponent } from './kill-chain-table/kill-chain-table.com
 import { RadarChartComponent } from './radar-chart/radar-chart.component';
 import { BarChartComponent } from './bar-chart/bar-chart.component';
 import { ExportComponent } from './export/export.component';
+import { TreemapComponent } from '../global/components/treemap/treemap.component';
 
 const moduleComponents = [
   BarChartComponent,
