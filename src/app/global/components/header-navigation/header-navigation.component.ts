@@ -86,10 +86,9 @@ export class HeaderNavigationComponent {
       this.topPx = '17px';
     }
 
-    this.user$
+    const getToken$ = this.user$
       .filter((user) => user.token)
       .pluck('token')
-      .take(1)
       .subscribe(
         (token) => {
           this.encodedToken = encodeURI(token);
@@ -98,7 +97,9 @@ export class HeaderNavigationComponent {
           console.log(err);
         },
         () => {
-          // .unsubscribe();
+          if (getToken$) {
+            getToken$.unsubscribe();
+          }
         }
       );
   }
