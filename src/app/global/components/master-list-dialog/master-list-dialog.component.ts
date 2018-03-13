@@ -15,18 +15,29 @@ import { Constance } from '../../../utils/constance';
  * needing to export the MasterListColumn interface. The id and actions properties, however, are consistent
  * throughout the UI, however, so it really shouldn't be necessary.
  */
+type ClassSelector = (row: any) => string;
+type Selectable = (row: any) => boolean;
+
 interface MasterListColumn {
     readonly ref: string;
+
     readonly header: string;
-    classes?: string;
-    readonly selectable?: boolean;
+
+    classes?: string | ClassSelector;
+
+    selectable?: boolean | Selectable;
+
     format?(value: string): string;
 }
+
 export class MasterListDialogTableHeaders {
+
     id: MasterListColumn = {ref: 'name', header: 'Name', selectable: true};
     edition: MasterListColumn;
     actions: MasterListColumn = {ref: 'actions', header: ''};
+
     private dateFormat = new DatePipe('en-US');
+
     constructor(editionColumn: string = 'date', editionHeader: string = 'Date', selectable: boolean = false,
             editionFormat?: (value: string) => string) {
         this.id.format = (value) => {return value};
@@ -35,9 +46,31 @@ export class MasterListDialogTableHeaders {
         }
         this.edition = {ref: editionColumn, header: editionHeader, selectable: selectable, format: editionFormat};
     }
+
     public getColumns(): string[] {
         return [this.id.ref, this.edition.ref, this.actions.ref];
     }
+
+    public rowClass(row: any, column: MasterListColumn, ): string {
+        if (!column.classes) {
+            return '';
+        }
+        if (typeof column.classes === 'string') {
+            return column.classes;
+        }
+        return column.classes(row);
+    }
+
+    public canSelect(row: any, column: MasterListColumn): boolean {
+        if (!column.classes) {
+            return false;
+        }
+        if (typeof column.selectable === 'boolean') {
+            return column.selectable;
+        }
+        return column.selectable(row);
+    }
+
 }
 
 @Component({
