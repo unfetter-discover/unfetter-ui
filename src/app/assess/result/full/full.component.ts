@@ -177,7 +177,7 @@ export class FullComponent implements OnInit, OnDestroy {
    * @param {string} creatorId - optional
    */
   public requestData(rollupId: string, creatorId?: string): void {
-    const isSameAssessment = (row: any) => row && (row.rollupId === this.rollupId);
+    const isSameAssessment = (row: any) => row && (row.id === this.assessmentId);
     this.masterListOptions.dataSource = new SummaryDataSource(this.assessService, creatorId);
     this.masterListOptions.columns.id.classes =
       (row: any) => isSameAssessment(row) ? 'current-item' : 'cursor-pointer';

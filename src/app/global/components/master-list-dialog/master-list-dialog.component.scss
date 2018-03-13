@@ -108,7 +108,7 @@
             }
 
             .current-item {
-                cursor: not-allowed;
+                cursor: default;
                 font-style: italic;
                 color: $primary-color
             }
