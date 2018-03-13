@@ -106,6 +106,12 @@
                     min-width: 0;
                 }
             }
+
+            .current-item {
+                cursor: not-allowed;
+                font-style: italic;
+                color: $primary-color
+            }
         }
     }
 

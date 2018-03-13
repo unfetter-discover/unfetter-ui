@@ -93,8 +93,12 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @description init this component
    */
   public ngOnInit() {
+    const isSameThreatReport = (row: any) => row && this.threatReport && (row.id === this.threatReport.id);
     this.masterListOptions.dataSource = new ThreatReportOverviewDataSource(this.threatReportService);
-    this.masterListOptions.columns.id.classes = 'cursor-pointer';
+    this.masterListOptions.columns.id.classes =
+      (row: any) => isSameThreatReport(row) ? 'current-item' : 'cursor-pointer';
+    this.masterListOptions.columns.id.selectable = (row: any) => !isSameThreatReport(row);
+
     const getId$ = this.route.params
       .pluck('id')
       .subscribe(
