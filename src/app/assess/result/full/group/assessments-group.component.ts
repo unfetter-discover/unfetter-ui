@@ -16,10 +16,11 @@ import { DisplayedAssessmentObject } from './models/displayed-assessment-object'
 import { FormatHelpers } from '../../../../global/static/format-helpers';
 import { Stix } from '../../../../models/stix/stix';
 import { SortHelper } from '../../../../global/static/sort-helper';
-import { FullAssessmentResultState, FullAssessmentGroupState } from '../../store/full-result.reducers';
+import { FullAssessmentResultState } from '../../store/full-result.reducers';
 import { LoadGroupData, LoadGroupCurrentAttackPattern, PushUrl, LoadGroupAttackPatternRelationships, UpdateAssessmentObject } from '../../store/full-result.actions';
 import { RiskByAttack } from '../../../../models/assess/risk-by-attack';
 import { Relationship } from '../../../../models';
+import { FullAssessmentGroup } from './models/full-assessment-group';
 
 @Component({
   selector: 'unf-assess-group',
@@ -42,6 +43,9 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input()
   public initialAttackPatternId: string;
+
+  @Input()
+  public assessmentGroup: Observable<FullAssessmentGroup>;
 
   @Output('riskByAttackPatternChanged')
   public riskByAttackPatternChanged = new EventEmitter<RiskByAttack>();
@@ -121,7 +125,21 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     this.assessment = this.assessment || new Assessment();
     this.listenForDataChanges(attackPatternIndex);
     // request for initial data changes
-    this.store.dispatch(new LoadGroupData(this.assessmentId));
+    this.requestDataLoad(this.assessmentId);
+  }
+  
+  /**
+   * @description request data
+   * @returns {void}
+   */
+  public requestDataLoad(assessmentId: string): void {
+    this.store.dispatch(new LoadGroupData(assessmentId));
+  }
+
+  public onAddAssessment(): void {
+    // clear objects for the observable will detect a change
+    this.displayedAssessedObjects = undefined;
+    this.requestDataLoad(this.assessmentId);
   }
 
   /**
@@ -130,19 +148,17 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
    * @returns {void}
    */
   public listenForDataChanges(attackPatternIndex: number = 0): void {
-    const sub1$ = this.store
-      .select('fullAssessment')
-      .pluck('group')
+    const sub1$ = this.assessmentGroup
       .distinctUntilChanged()
-      .filter((group: any) => {
+      .filter((group: FullAssessmentGroup) => {
         // TODO: stop an infinite loop of network requests
         //  figure out a better way to short circuit
         return group.finishedLoadingGroupData === true
           && this.displayedAssessedObjects === undefined;
       })
-      .subscribe((group: FullAssessmentGroupState) => {
+      .subscribe((group: FullAssessmentGroup) => {
         // initialize the displayed assessed objects, 
-        //  used also to stop lopp of network calls
+        //  used also to stop loop of network calls
         this.displayedAssessedObjects = [];
         this.assessedObjects = group.assessedObjects || [];
         this.riskByAttackPattern = group.riskByAttackPattern || new RiskByAttack();
@@ -150,18 +166,14 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
       },
         (err) => console.log(err));
 
-    const sub2$ = this.store
-      .select('fullAssessment')
-      .pluck('group')
+    const sub2$ = this.assessmentGroup
       .pluck('currentAttackPattern')
       .distinctUntilChanged()
       .subscribe((currentAttackPattern: Stix) => this.currentAttackPattern = currentAttackPattern,
         (err) => console.log(err));
 
-    const sub3$ = this.store
-      .select('fullAssessment')
-      .pluck('group')
-      .filter((group: any) => group.finishedLoadingGroupData === true)
+    const sub3$ = this.assessmentGroup
+      .filter((group: FullAssessmentGroup) => group.finishedLoadingGroupData === true)
       .pluck('attackPatternRelationships')
       .distinctUntilChanged()
       .subscribe((relationships: Relationship[]) => {
