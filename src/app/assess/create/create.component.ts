@@ -84,4 +84,13 @@ export class CreateComponent implements OnInit {
   public onTitleBlur(event?: UIEvent): void {
     this.store.dispatch(new UpdatePageTitle(this.form.value.title));
   }
+
+  /**
+   * @description updates created_by_ref upon org selection changes
+   * @param {orgId} string
+   * @return {void}
+   */
+  public orgSelected(orgId: string): void {
+    this.form.get('created_by_ref').patchValue(orgId);
+  }
 }

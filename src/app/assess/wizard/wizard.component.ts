@@ -976,16 +976,12 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @return {Assessment}
    */
   private generateXUnfetterAssessment(tempModel: TempModel, assessmentMeta: AssessmentMeta): Assessment {
-    let createdById;
-    if (this.currentUser && this.currentUser.organizations && this.currentUser.organizations.length > 0) {
-      createdById = this.currentUser.organizations[0].id;
-    }
     const assessment = new Assessment();
     assessment.assessmentMeta = assessmentMeta;
     assessment.name = this.meta.title;
     assessment.description = this.meta.description;
     assessment.created = this.publishDate.toISOString();
-    assessment.created_by_ref = createdById;
+    assessment.created_by_ref = this.meta.created_by_ref;
     const assessmentSet = new Set<AssessmentObject>();
 
     Object.keys(tempModel)
@@ -997,7 +993,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         stix.type = assessmentObj.assessment.type;
         stix.description = assessmentObj.assessment.description || '';
         stix.name = assessmentObj.assessment.name;
-        stix.created_by_ref = createdById;
+        stix.created_by_ref = assessmentObj.assessment.created_by_ref;
         temp.stix = stix;
         temp.questions = [];
         if (assessmentObj.measurements !== undefined) {
