@@ -92,7 +92,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
     const idParamSub$ = this.route.params
       .distinctUntilChanged()
       .subscribe((params) => {
-        console.log('router params changed, updating component id state');
         this.rollupId = params.rollupId || '';
         this.assessmentId = params.assessmentId || '';
         this.summary = undefined;
@@ -114,9 +113,9 @@ export class SummaryComponent implements OnInit, OnDestroy {
             (err) => console.log(err));
         this.subscriptions.push(sub$);
       },
-        (err) => console.log(err),
-        () => idParamSub$.unsubscribe());
+        (err) => console.log(err));
     this.listenForDataChanges();
+    this.subscriptions.push(idParamSub$);
   }
 
   /**
@@ -280,7 +279,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.subscriptions
       .filter((el) => el !== undefined)
-      .filter((el) => !el.closed)
       .forEach((sub) => sub.unsubscribe());
     this.store.dispatch(new CleanAssessmentResultData());
     this.riskByAttackPatternStore.dispatch(new CleanAssessmentRiskByAttackPatternData());
@@ -300,10 +298,15 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {Promise<boolean>}
    */
   public onEdit(event?: any): Promise<boolean> {
+    let routePromise: Promise<boolean>;
     if (!event || (event instanceof UIEvent)) {
-      return this.router.navigate([this.masterListOptions.modifyRoute, this.rollupId]);
+      routePromise = this.router.navigate([this.masterListOptions.modifyRoute, this.rollupId]);
+    } else {
+      routePromise = this.router.navigate([this.masterListOptions.modifyRoute, event.rollupId]);
     }
-    return this.router.navigate([this.masterListOptions.modifyRoute, event.rollupId]);
+
+    routePromise.catch((e) => console.log(e));
+    return routePromise;
   }
 
   /**
