@@ -1,5 +1,5 @@
 <div class="sidenav">
-  <div *ngIf="currentAssessmentGroup" class="flex-col mt-18 mb-12">
+  <div *ngIf="currentAssessmentGroup; else noChart" @heightCollapse class="flex-col mt-18 mb-12">
     <div class="center chart-header">
       Phase Rating
     </div>
@@ -8,6 +8,7 @@
         [options]="chartOptions"></canvas>
     </div>
   </div>
+  <ng-template #noChart>&nbsp;</ng-template>
   <mat-accordion displayMode="flat" multi="false">
     <mat-expansion-panel *ngIf="indicators && indicators.length > 0" hideToggle="true" [expanded]="openedSidePanel === 'indicators'"
       (opened)="onOpenSidePanel('indicators', $event)">
