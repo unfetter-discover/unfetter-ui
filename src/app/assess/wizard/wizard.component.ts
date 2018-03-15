@@ -247,8 +247,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       console.log('questions changed, focus on first', questionElements);
       const firstQuestion = questionElements.first;
       if (firstQuestion) {
-        console.log(firstQuestion);
         firstQuestion.focus();
+        this.changeDetection.detectChanges();
       }
     });
   }
