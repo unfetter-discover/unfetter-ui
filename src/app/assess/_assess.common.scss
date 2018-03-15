@@ -14,20 +14,3 @@
 .flex-cols {
     flex-direction: column;
 }
-
-.banner-wrapper {
-    position: absolute;
-    background-color: #4F5B62;
-    height: 48px;
-    width: 100%;
-    color: $light-text-default;
-    font-size: 14px;
-
-    .flex {
-        height: 100%;
-        width: 100%;
-        .banner {
-            margin: auto auto;
-        }
-    }
-}
