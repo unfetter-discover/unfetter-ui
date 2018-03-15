@@ -5,14 +5,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreModule, Store } from '@ngrx/store';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { Observable } from 'rxjs/Observable';
-
-import * as fromRoot from '../../root-store/app.reducers';
-import { makeRootMockStore } from '../../testing/mock-store';
-import { CreatedByRefComponent } from './created-by-ref.component';
-import { BaseComponentService } from '../base-service.component';
-import { mockOrganizations } from '../../testing/mock-organizations';
-import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 import { By } from '@angular/platform-browser';
+
+import * as fromRoot from '../../../root-store/app.reducers';
+import { CreatedByRefComponent } from './created-by-ref.component';
+import { mockOrganizations } from '../../../testing/mock-organizations';
+import { BaseComponentService } from '../../../components/base-service.component';
+import { makeRootMockStore } from '../../../testing/mock-store';
 
 describe('CreatedByRefComponent', () => {
     let component: CreatedByRefComponent;

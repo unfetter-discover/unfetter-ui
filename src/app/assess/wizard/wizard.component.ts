@@ -289,6 +289,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       summary.modified = assessment.modified;
       summary.assessmentMeta = assessment.assessmentMeta;
       summary.assessment_objects = summary.assessment_objects.concat(assessment.assessment_objects);
+      summary.created_by_ref = meta.created_by_ref = assessment.created_by_ref;
       if (!assessment.metaProperties) {
         assessment.metaProperties = {};
         if (!assessment.metaProperties.rollupId) {
@@ -976,16 +977,12 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @return {Assessment}
    */
   private generateXUnfetterAssessment(tempModel: TempModel, assessmentMeta: AssessmentMeta): Assessment {
-    let createdById;
-    if (this.currentUser && this.currentUser.organizations && this.currentUser.organizations.length > 0) {
-      createdById = this.currentUser.organizations[0].id;
-    }
     const assessment = new Assessment();
     assessment.assessmentMeta = assessmentMeta;
     assessment.name = this.meta.title;
     assessment.description = this.meta.description;
     assessment.created = this.publishDate.toISOString();
-    assessment.created_by_ref = createdById;
+    assessment.created_by_ref = this.meta.created_by_ref;
     const assessmentSet = new Set<AssessmentObject>();
 
     Object.keys(tempModel)
@@ -997,7 +994,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         stix.type = assessmentObj.assessment.type;
         stix.description = assessmentObj.assessment.description || '';
         stix.name = assessmentObj.assessment.name;
-        stix.created_by_ref = createdById;
+        stix.created_by_ref = assessmentObj.assessment.created_by_ref;
         temp.stix = stix;
         temp.questions = [];
         if (assessmentObj.measurements !== undefined) {
@@ -1022,11 +1019,14 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @return {void}
    */
   private saveAssessments(): void {
-    if (this.model) {
+    if (this.model) {      
       const assessments = Object.values(this.model.relationships);
       assessments.forEach(assessment => {
         assessment.modified = this.publishDate.toISOString();
         assessment.description = this.meta.description;
+        if (this.meta.created_by_ref) {
+          assessment.created_by_ref = this.meta.created_by_ref;
+        }
       });
       this.wizardStore.dispatch(new SaveAssessment(assessments));
     } else {

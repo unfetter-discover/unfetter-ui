@@ -10,6 +10,7 @@ import * as fromRoot from 'app/root-store/app.reducers';
 import { assessmentReducer } from '../store/assess.reducers';
 
 import { CreateComponent } from './create.component';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('CreateComponent', () => {
   let component: CreateComponent;
@@ -34,6 +35,7 @@ describe('CreateComponent', () => {
           'assess': combineReducers(assessmentReducer)
         }),
       ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
       .compileComponents();
   }));

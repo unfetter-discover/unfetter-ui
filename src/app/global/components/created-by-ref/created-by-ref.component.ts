@@ -1,12 +1,13 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { MatSelectChange } from '@angular/material';
 import { Store } from '@ngrx/store';
 
-import * as fromRoot from '../../root-store/app.reducers';
-import { Constance } from '../../utils/constance';
-import { BaseComponentService } from '../base-service.component';
-import { RxjsHelpers } from '../../global/static/rxjs-helpers';
+import * as fromRoot from '../../../root-store/app.reducers';
+import { Constance } from '../../../utils/constance';
+import { BaseComponentService } from '../../../components/base-service.component';
+import { RxjsHelpers } from '../../static/rxjs-helpers';
+import { AssessmentMeta } from '../../../models/assess/assessment-meta';
 
 @Component({
     selector: 'created-by-ref',
@@ -16,6 +17,8 @@ import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 export class CreatedByRefComponent implements OnInit {
 
     @Input() public model: any;
+    @Input() public assessmentMeta: AssessmentMeta;
+    @Output() public orgSelected: EventEmitter<String> = new EventEmitter<String>();
     public selected: string;
     public userOrgs$: Observable<any[]>;
 
@@ -63,9 +66,21 @@ export class CreatedByRefComponent implements OnInit {
                     this.selected = organizations[0].id;
                 }
             });
+            
+        if (this.assessmentMeta && this.assessmentMeta.created_by_ref && this.assessmentMeta.created_by_ref !== '') {
+            this.selected = this.assessmentMeta.created_by_ref;
+        }
     }
 
     public updateOrg(selectEvent: MatSelectChange) {
-        this.model.attributes.created_by_ref = selectEvent.value; 
+        if (this.model) {
+            this.model.attributes.created_by_ref = selectEvent.value; 
+        }
+
+        if (this.assessmentMeta) {
+            this.assessmentMeta.created_by_ref = selectEvent.value;
+        }
+
+        this.orgSelected.emit(selectEvent.value)
     }
 }

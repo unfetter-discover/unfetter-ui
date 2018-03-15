@@ -23,6 +23,7 @@ import { assessmentReducer } from './store/assess.reducers';
 import { AssessLayoutComponent } from './layout/assess-layout.component';
 import { ResultModule } from './result/result.module';
 import { AssessSummaryService } from './services/assess-summary.service';
+import { GlobalModule } from '../global/global.module';
 
 const moduleComponents = [
   AssessLayoutComponent,
@@ -42,6 +43,7 @@ const materialModules = [
     CommonModule,
     ReactiveFormsModule,
     ResultModule,
+    GlobalModule,
     ...materialModules,
     routing,
     StoreModule.forFeature('assessment', assessmentReducer),
