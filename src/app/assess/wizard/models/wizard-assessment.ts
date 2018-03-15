@@ -1,5 +1,5 @@
-import { StixLabelEnum } from '../../models/stix/stix-label.enum';
-import { AssessmentQuestion } from '../../models/assess/assessment-question';
+import { StixLabelEnum } from '../../../models/stix/stix-label.enum';
+import { AssessmentQuestion } from '../../../models/assess/assessment-question';
 
 /**
  * @description assessment as shown on the wizard
