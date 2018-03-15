@@ -386,6 +386,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     this.tempModel = {};
     this.page = 1;
     this.showSummary = false;
+    this.buttonLabel = 'CONTINUE';
 
     // switch to new open panel
     this.openedSidePanel = panelName;
@@ -933,13 +934,16 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @description
    * @return {number}
    */
-  private calculateGroupRisk(): number {
-    const groupRisk = this.calculateRisk(this.currentAssessmentGroup.assessments);
-    const riskArray = [];
-    riskArray.push(groupRisk);
-    riskArray.push(1 - groupRisk);
-    this.currentAssessmentGroup.risk = groupRisk;
-    this.currentAssessmentGroup.riskArray = riskArray;
+  public calculateGroupRisk(): number {
+    let groupRisk = 0; // based on the default value from the calculateRisk function below
+    if (this.currentAssessmentGroup && this.currentAssessmentGroup.assessments && this.currentAssessmentGroup.assessments.length > 0) {
+      groupRisk = this.calculateRisk(this.currentAssessmentGroup.assessments);
+      const riskArray = [];
+      riskArray.push(groupRisk);
+      riskArray.push(1 - groupRisk);
+      this.currentAssessmentGroup.risk = groupRisk;
+      this.currentAssessmentGroup.riskArray = riskArray;
+    }
     return groupRisk;
   }
 
@@ -1039,5 +1043,4 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       this.wizardStore.dispatch(new SaveAssessment(assessments));
     }
   }
-
 }
