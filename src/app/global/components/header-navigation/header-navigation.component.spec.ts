@@ -68,7 +68,6 @@ describe('HeaderNavigationComponent', () => {
         const tests = [
             {title: '', logo: /.*logo\-default\.svg/, text: undefined},
             {title: 'assessments', logo: /.*logo\-assessments\.svg/, text: /assessments/i},
-            {title: 'assessments 2.0 (beta)', logo: /.*logo\-assessments\.svg/, text: /assessments 2\.0 \(beta\)/i},
             {title: 'threat-dashboard', logo: /.*logo\-threat\-dashboard\.svg/, text: /threat dashboard/i},
             {title: 'Analytic Exchange', logo: /.*logo\-indicator\-sharing\.svg/, text: /analytic exchange/i},
         ];

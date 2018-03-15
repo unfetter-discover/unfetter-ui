@@ -31,13 +31,8 @@ export class HeaderNavigationComponent {
       icon: Constance.LOGO_IMG_ANALYTIC_HUB
     },
     {
-      url: 'assessments',
-      title: 'Assessments',
-      icon: Constance.LOGO_IMG_ASSESSMENTS
-    },
-    {
       url: Constance.X_UNFETTER_ASSESSMENT_NAVIGATE_URL,
-      title: 'Assessments 2.0 (beta)',
+      title: 'Assessments',
       icon: Constance.LOGO_IMG_ASSESSMENTS
     },
     {
