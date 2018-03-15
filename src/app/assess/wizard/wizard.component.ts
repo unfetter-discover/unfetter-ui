@@ -32,6 +32,7 @@ import { AppState } from '../../root-store/app.reducers';
 import { UserProfile } from '../../models/user/user-profile';
 import { FullAssessmentResultState } from '../result/store/full-result.reducers';
 import { LoadAssessmentResultData } from '../result/store/full-result.actions';
+import { heightCollapse } from '../../global/animations/height-collapse';
 
 type SidePanelName = 'indicators' | 'mitigations' | 'sensors' | 'summary';
 type ButtonLabel = 'SAVE' | 'CONTINUE';
@@ -46,7 +47,8 @@ interface TempModel {
 @Component({
   selector: 'unf-assess-wizard',
   templateUrl: './wizard.component.html',
-  styleUrls: ['./wizard.component.scss']
+  styleUrls: ['./wizard.component.scss'],
+  animations: [heightCollapse],
 })
 export class WizardComponent extends Measurements implements OnInit, OnDestroy {
 
@@ -698,7 +700,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    */
   public showSummarySavePage(): void {
     //  set show summary to show save page
-    this.currentAssessmentGroup = {};
+    this.currentAssessmentGroup = null;
     this.showSummary = true;
     this.buttonLabel = 'SAVE';
   }
