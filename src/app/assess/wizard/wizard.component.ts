@@ -289,6 +289,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       summary.modified = assessment.modified;
       summary.assessmentMeta = assessment.assessmentMeta;
       summary.assessment_objects = summary.assessment_objects.concat(assessment.assessment_objects);
+      summary.created_by_ref = meta.created_by_ref = assessment.created_by_ref;
       if (!assessment.metaProperties) {
         assessment.metaProperties = {};
         if (!assessment.metaProperties.rollupId) {
@@ -1018,11 +1019,14 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @return {void}
    */
   private saveAssessments(): void {
-    if (this.model) {
+    if (this.model) {      
       const assessments = Object.values(this.model.relationships);
       assessments.forEach(assessment => {
         assessment.modified = this.publishDate.toISOString();
         assessment.description = this.meta.description;
+        if (this.meta.created_by_ref) {
+          assessment.created_by_ref = this.meta.created_by_ref;
+        }
       });
       this.wizardStore.dispatch(new SaveAssessment(assessments));
     } else {
