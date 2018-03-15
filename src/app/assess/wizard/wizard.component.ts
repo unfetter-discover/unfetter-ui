@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, ElementRef, Input, OnInit, SimpleChanges, ViewEncapsulation, OnDestroy, HostListener, QueryList, ViewChildren, Renderer2 } from '@angular/core';
+import { Component, ChangeDetectorRef, ElementRef, Input, OnInit, SimpleChanges, ViewEncapsulation, OnDestroy, HostListener, QueryList, ViewChildren, Renderer2, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -12,37 +12,31 @@ import { Key } from 'ts-keycode-enum';
 import * as assessActions from '../store/assess.actions';
 import * as assessReducers from '../store/assess.reducers';
 
+import { AppState } from '../../root-store/app.reducers';
+import { Assessment } from '../../models/assess/assessment';
 import { AssessmentsService } from '../assessments.service';
 import { AssessmentMeta } from '../../models/assess/assessment-meta';
+import { AssessmentObject } from '../../models/assess/assessment-object';
+import { AssessmentQuestion } from '../../models/assess/assessment-question';
 import { Constance } from '../../utils/constance';
+import { Dictionary } from '../../models/json/dictionary';
 import { GenericApi } from '../../core/services/genericapi.service';
-import { Measurements } from './measurements';
+import { Measurements } from './models/measurements';
 import { MenuItem } from 'primeng/primeng';
 import { LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle, CleanAssessmentWizardData } from '../store/assess.actions';
-import { Assessment } from '../../models/assess/assessment';
 import { Stix } from '../../models/stix/stix';
 import { Indicator } from '../../models/stix/indicator';
 import { JsonApiData } from '../../models/json/jsonapi-data';
 import { KEY_CODE } from './key-code.enum';
-import { AssessmentObject } from '../../models/assess/assessment-object';
-import { AssessmentQuestion } from '../../models/assess/assessment-question';
-import { WizardAssessment } from './wizard-assessment';
-import { Dictionary } from '../../models/json/dictionary';
-import { AppState } from '../../root-store/app.reducers';
 import { UserProfile } from '../../models/user/user-profile';
 import { FullAssessmentResultState } from '../result/store/full-result.reducers';
 import { LoadAssessmentResultData } from '../result/store/full-result.actions';
 import { heightCollapse } from '../../global/animations/height-collapse';
+import { WizardAssessment } from './models/wizard-assessment';
+import { TempModel } from './models/temp-model';
+import { SidePanelName } from './models/side-panel-name.enum';
 
-type SidePanelName = 'indicators' | 'mitigations' | 'sensors' | 'summary';
 type ButtonLabel = 'SAVE' | 'CONTINUE';
-
-interface TempModel {
-  [index: string]: {
-    assessment: Assessment,
-    measurements: AssessmentQuestion[]
-  }
-};
 
 @Component({
   selector: 'unf-assess-wizard',
@@ -50,7 +44,7 @@ interface TempModel {
   styleUrls: ['./wizard.component.scss'],
   animations: [heightCollapse],
 })
-export class WizardComponent extends Measurements implements OnInit, OnDestroy {
+export class WizardComponent extends Measurements implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChildren('question')
   public questions: QueryList<MatSelect>;
@@ -242,6 +236,21 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         (err) => console.log(err));
 
     this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$, sub7$, sub8$);
+  }
+
+  /**
+   * @description
+   * @returns {void}
+   */
+  public ngAfterViewInit(): void {
+    this.questions.changes.subscribe((questionElements: QueryList<MatSelect>) => {
+      console.log('questions changed, focus on first', questionElements);
+      const firstQuestion = questionElements.first;
+      if (firstQuestion) {
+        firstQuestion.focus();
+        this.changeDetection.detectChanges();
+      }
+    });
   }
 
   public loadExistingAssessment(rollupId: string, meta: Partial<AssessmentMeta>) {
@@ -768,6 +777,16 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return !this.meta.title || this.meta.title.trim() === '';
   }
 
+  /**
+   * @description
+   * @param index
+   * @param item
+   * @returns {number}
+   */
+  public trackByFn(index, item) {
+    return index;
+  }
+
   /*
    * @description build page and refresh chart
    * @param data 
@@ -1023,7 +1042,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
    * @return {void}
    */
   private saveAssessments(): void {
-    if (this.model) {      
+    if (this.model) {
       const assessments = Object.values(this.model.relationships);
       assessments.forEach(assessment => {
         assessment.modified = this.publishDate.toISOString();
