@@ -9,6 +9,8 @@ import { AuthService } from '../../core/services/auth.service';
 import { heightCollapse } from '../../global/animations/height-collapse';
 import { environment } from '../../../environments/environment';
 import { downloadBundle } from '../../global/static/stix-bundle';
+import { generateStixRelationship } from '../../global/static/stix-relationship';
+import { StixRelationshipTypes } from '../../global/enums/stix-relationship-types.enum';
 
 @Component({
     selector: 'indicator-card',
@@ -27,6 +29,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
 
     @Output() public stateChange: EventEmitter<any> = new EventEmitter();
     @Output() public indicatorDeleted: EventEmitter<any> = new EventEmitter();
+    @Output() public indicatorEdit: EventEmitter<any> = new EventEmitter();
 
     public user;
     public showCommentTextArea: boolean = false;
@@ -191,12 +194,28 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
             );
     }
 
+    public editIndicator() {
+        const indicatorToEdit: any = {
+            ...this.indicator
+        };
+        if (this.attackPatterns && this.attackPatterns.length) {
+            if (!indicatorToEdit.metaProperties) {
+                indicatorToEdit.metaProperties = {};
+            }
+            indicatorToEdit.metaProperties.relationships = this.attackPatterns.map((ap) => ap.id);
+        }
+        this.indicatorEdit.emit(indicatorToEdit)
+    }
+
     public deleteIndicator() {
         this.indicatorDeleted.emit(this.indicator);
     }
 
     public exportIndicator() {
         let enhancements: any = {};
+        let attackPatternIds: string[] = [];
+        let sensorIds: string[] = [];
+        let sensorRelationships: any[] = [];
         const indicatorCopy = { ...this.indicator };
 
         if (indicatorCopy.metaProperties) {
@@ -218,11 +237,14 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
         }
 
         if (this.sensors && this.sensors.length) {
-            enhancements.x_unfetter_related_sensors = [ ...this.sensors ];
+            sensorIds = this.sensors.map((sensor) => sensor.id);
+            sensorIds.forEach((sensorId) => {
+                sensorRelationships.push(generateStixRelationship(sensorId, this.indicator.id, StixRelationshipTypes.X_UNFETTER_CAN_RUN));
+            });
         }
 
         if (this.attackPatterns && this.attackPatterns.length) {
-            enhancements.x_unfetter_related_attack_patterns = [ ...this.attackPatterns ];
+            attackPatternIds = this.attackPatterns.map((ap) => ap.id);
         }
 
         const exportObj = {
@@ -230,7 +252,19 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
             ...enhancements
         };
 
-        downloadBundle([exportObj], `${this.indicator.name}-enhanced-bundle`);
+        const downloadData$ = this.indicatorSharingService.getDownloadData(indicatorCopy.id, attackPatternIds, sensorIds)
+            .subscribe(
+                (downloadData) => {
+                    downloadBundle([exportObj, ...sensorRelationships, ...downloadData ], `${this.indicator.name}-enhanced-bundle`);
+                },
+                (err) => {
+                    this.flashMessage('Unable to generate download.');
+                },
+                () => {
+                    downloadData$.unsubscribe();
+                }
+            );
+
     }
 
     public flashTooltip(toolTip: MatTooltip) {

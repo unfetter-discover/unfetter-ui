@@ -10,6 +10,7 @@ export const LOAD_SINGLE_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA = '[Assess Risk 
 // For reducers
 export const SET_RISK_BY_ATTACK_PATTERNS = '[Assess Risk By Attack Pattern] SET_RISK_BY_ATTACK_PATTERN_DATA';
 export const FINISHED_LOADING = '[Assess Risk By Attack Pattern] FINISHED_LOADING';
+export const CLEAN_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA = '[Assess Risk By Attack Pattern] CLEAN_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA';
 
 export class LoadSingleAssessmentRiskByAttackPatternData implements Action {
     public readonly type = LOAD_SINGLE_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA;
@@ -37,7 +38,13 @@ export class FinishedLoading implements Action {
     constructor(public payload: boolean) { }
 }
 
+export class CleanAssessmentRiskByAttackPatternData implements Action {
+    // CLEAN_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA
+    public readonly type = CLEAN_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA;
+}
+
 export type RiskByAttackPatternActions =
+    CleanAssessmentRiskByAttackPatternData |
     SetRiskByAttackPattern |
     LoadAssessmentRiskByAttackPatternData |
     LoadSingleAssessmentRiskByAttackPatternData |

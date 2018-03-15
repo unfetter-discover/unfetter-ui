@@ -39,6 +39,8 @@ const initialState: AssessState = genAssessState();
 
 export function assessmentReducer(state = initialState, action: assessmentActions.AssessmentActions): AssessState {
     switch (action.type) {
+        case assessmentActions.CLEAN_ASSESSMENT_WIZARD_DATA:
+            return genAssessState();
         case assessmentActions.FETCH_ASSESSMENT:
             return genAssessState({
                 ...state,
@@ -51,7 +53,11 @@ export function assessmentReducer(state = initialState, action: assessmentAction
             });
         case assessmentActions.UPDATE_PAGE_TITLE:
             const a1 = new Assessment();
-            a1.assessmentMeta.title = action.payload;
+            if (typeof action.payload === 'string') {
+                a1.assessmentMeta.title = action.payload;
+            } else {
+                Object.assign(a1.assessmentMeta, action.payload);
+            }
             const s1 = genAssessState({
                 assessment: a1,
             });

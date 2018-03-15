@@ -12,6 +12,7 @@ import { ConfigEditComponent } from './config-edit/config-edit.component';
 import { OrgLeaderApprovalComponent } from './org-leader-approval/org-leader-approval.component';
 import { ChartsModule } from 'ng2-charts';
 import { HeartbeatComponent } from './heartbeat/heartbeat.component';
+import { CurrentUsersComponent } from './current-users/current-users.component';
 
 @NgModule({
     imports: [
@@ -29,7 +30,8 @@ import { HeartbeatComponent } from './heartbeat/heartbeat.component';
         SiteUsageComponent,
         OrgLeaderApprovalComponent,
         ConfigEditComponent,
-        HeartbeatComponent
+        HeartbeatComponent,
+        CurrentUsersComponent
     ],
     providers: [
         AdminService

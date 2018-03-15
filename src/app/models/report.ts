@@ -17,6 +17,7 @@ export class Report {
         object_refs: string[]
         external_references: ExternalReference[];
         kill_chain_phases: KillChainPhase[];
+        created_by_ref: string;
 
         type?: string;
         metaProperties?: any;
@@ -26,6 +27,7 @@ export class Report {
      constructor() {
         this.type = Constance.REPORTS_TYPE;
         this.attributes = {
+            created_by_ref: '',
             version: '',
             created: new Date(),
             modified: new Date(),

@@ -40,20 +40,20 @@ export class ObservableDataTreeComponent implements OnInit {
             .filter((configurations: any) => configurations.observableDataTypes)
             .pluck('observableDataTypes')
             .subscribe(
-            (observableDataTypes: any[]) => {
-                this.observableDataTypes = observableDataTypes;
-                if (this.observedDataPath && this.observedDataPath.length) {
-                    this.buildTree(true);
-                } else {
-                    this.buildTree();
+                (observableDataTypes: any[]) => {
+                    this.observableDataTypes = observableDataTypes;
+                    if (this.observedDataPath && this.observedDataPath.length) {
+                        this.buildTree(true);
+                    } else {
+                        this.buildTree();
+                    }
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    config$.unsubscribe();
                 }
-            },
-            (err) => {
-                console.log(err);
-            },
-            () => {
-                config$.unsubscribe();
-            }
             );
 
         if (this.patternObjSubject) {

@@ -14,7 +14,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatListModule, MatDialog, MatCardModule } from '@angular/material';
+import { MatListModule, MatDialog, MatCardModule, MatSelectModule } from '@angular/material';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatExpansionModule } from '@angular/material';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -55,6 +55,9 @@ import { AdditionalQueriesComponent } from './components/additional-queries/addi
 import { MasterListDialogComponent, MasterListDialogTriggerComponent } from './components/master-list-dialog/master-list-dialog.component';
 import { ErrorCardComponent } from './components/error-card/error-card.component';
 import { RiskBreakdownComponent } from './components/risk-breakdown/risk-breakdown.component';
+import { TreemapComponent } from './components/treemap/treemap.component';
+import { HeatmapComponent } from './components/heatmap/heatmap.component';
+import { CreatedByRefComponent } from './components/created-by-ref/created-by-ref.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -74,7 +77,8 @@ const matModules = [
     MatExpansionModule,
     MatDialogModule,
     MatTabsModule,
-    MatCardModule
+    MatCardModule,
+    MatSelectModule
 ];
 
 const unfetterComponents = [
@@ -105,7 +109,10 @@ const unfetterComponents = [
     MasterListDialogTriggerComponent,
     MasterListDialogComponent,
     ErrorCardComponent,
-    RiskBreakdownComponent
+    RiskBreakdownComponent,
+    TreemapComponent,
+    HeatmapComponent,
+    CreatedByRefComponent,
 ];
 
 @NgModule({
@@ -121,7 +128,7 @@ const unfetterComponents = [
         ...matModules,
     ],
     declarations: [
-        ...unfetterComponents
+        ...unfetterComponents,
     ],
     providers: [],
     entryComponents: [MasterListDialogComponent]

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, ElementRef, Input, OnInit, SimpleChanges, ViewEncapsulation, OnDestroy, HostListener, QueryList, ViewChildren, Renderer2 } from '@angular/core';
+import { Component, ChangeDetectorRef, ElementRef, Input, OnInit, SimpleChanges, ViewEncapsulation, OnDestroy, HostListener, QueryList, ViewChildren, Renderer2, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -12,49 +12,50 @@ import { Key } from 'ts-keycode-enum';
 import * as assessActions from '../store/assess.actions';
 import * as assessReducers from '../store/assess.reducers';
 
+import { AppState } from '../../root-store/app.reducers';
+import { Assessment } from '../../models/assess/assessment';
 import { AssessmentsService } from '../assessments.service';
 import { AssessmentMeta } from '../../models/assess/assessment-meta';
+import { AssessmentObject } from '../../models/assess/assessment-object';
+import { AssessmentQuestion } from '../../models/assess/assessment-question';
 import { Constance } from '../../utils/constance';
+import { Dictionary } from '../../models/json/dictionary';
 import { GenericApi } from '../../core/services/genericapi.service';
-import { Measurements } from './measurements';
+import { Measurements } from './models/measurements';
 import { MenuItem } from 'primeng/primeng';
-import { LoadAssessmentWizardData, SaveAssessment } from '../store/assess.actions';
-import { Assessment } from '../../models/assess/assessment';
+import { LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle, CleanAssessmentWizardData } from '../store/assess.actions';
 import { Stix } from '../../models/stix/stix';
 import { Indicator } from '../../models/stix/indicator';
 import { JsonApiData } from '../../models/json/jsonapi-data';
 import { KEY_CODE } from './key-code.enum';
-import { AssessmentObject } from '../../models/assess/assessment-object';
-import { AssessmentQuestion } from '../../models/assess/assessment-question';
-import { WizardAssessment } from './wizard-assessment';
-import { Dictionary } from '../../models/json/dictionary';
+import { UserProfile } from '../../models/user/user-profile';
+import { FullAssessmentResultState } from '../result/store/full-result.reducers';
+import { LoadAssessmentResultData } from '../result/store/full-result.actions';
+import { heightCollapse } from '../../global/animations/height-collapse';
+import { WizardAssessment } from './models/wizard-assessment';
+import { TempModel } from './models/temp-model';
+import { SidePanelName } from './models/side-panel-name.enum';
 
-type SidePanelName = 'indicators' | 'mitigations' | 'sensors' | 'summary';
 type ButtonLabel = 'SAVE' | 'CONTINUE';
-
-interface TempModel {
-  [index: string]: {
-    assessment: Assessment,
-    measurements: AssessmentQuestion[]
-  }
-};
 
 @Component({
   selector: 'unf-assess-wizard',
   templateUrl: './wizard.component.html',
-  styleUrls: ['./wizard.component.scss']
+  styleUrls: ['./wizard.component.scss'],
+  animations: [heightCollapse],
 })
-export class WizardComponent extends Measurements implements OnInit, OnDestroy {
+export class WizardComponent extends Measurements implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChildren('question')
   public questions: QueryList<MatSelect>;
 
+  public currentUser: UserProfile;
   public readonly defaultValue = -1;
   public readonly defaultMeasurement = 'Nothing';
   public readonly sidePanelCollapseHeight = '32px';
   public readonly sidePanelExpandedHeight = '32px';
 
-  public model: JsonApiData<Assessment>;
+  public model: JsonApiData<Assessment, Dictionary<Assessment>>;
   public publishDate = new Date();
   public buttonLabel: ButtonLabel = 'CONTINUE';
   public navigations: { label: string, page: number }[] = [];
@@ -122,33 +123,41 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private renderer: Renderer2,
-    private store: Store<assessReducers.AssessState>,
+    private userStore: Store<AppState>,
+    private assessStore: Store<FullAssessmentResultState>,
+    private wizardStore: Store<assessReducers.AssessState>,
+    private changeDetection: ChangeDetectorRef
   ) {
     super();
   }
 
-  /**
+  /*
    * @description
    *  initializes this component, fetchs data to build page
    */
   public ngOnInit(): void {
-    console.log('in wizard component');
-    // TODO: if no id is given in url, then load in progress assessment
+    const idParamSub$ = this.route.params
+      .subscribe(
+        (params) => {
+          const isTrue = (val: number) => val === 1;
+          const includesIndicators = isTrue(+this.route.snapshot.paramMap.get('includesIndicators'));
+          const includesMitigations = isTrue(+this.route.snapshot.paramMap.get('includesMitigations'));
+          const includesSensors = isTrue(+this.route.snapshot.paramMap.get('includesSensors'));
+          let meta: Partial<AssessmentMeta> = {
+            includesIndicators,
+            includesMitigations,
+            includesSensors,
+          };
+          let rollupId = params.rollupId || '';
+          if (rollupId) {
+            this.loadExistingAssessment(rollupId, meta);
+          }
+          this.wizardStore.dispatch(new LoadAssessmentWizardData(meta));
+        },
+        (err) => console.log(err),
+        () => idParamSub$.unsubscribe());
 
-    const isTrue = (val: number) => val === 1;
-    const includesIndicators = isTrue(+this.route.snapshot.paramMap.get('includesIndicators'));
-    const includesMitigations = isTrue(+this.route.snapshot.paramMap.get('includesMitigations'));
-    const includesSensors = isTrue(+this.route.snapshot.paramMap.get('includesSensors'));
-    let meta: Partial<AssessmentMeta> = new AssessmentMeta();
-    meta = {
-      includesIndicators,
-      includesMitigations,
-      includesSensors,
-    };
-
-    this.store.dispatch(new LoadAssessmentWizardData(meta));
-
-    const sub1$ = this.store
+    const sub1$ = this.wizardStore
       .select('assessment')
       .pluck('indicators')
       .distinctUntilChanged()
@@ -156,7 +165,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       .map((arr: JsonApiData<Indicator>[]) => arr.map((el) => el.attributes))
       .subscribe((arr: Indicator[]) => this.indicators = arr);
 
-    const sub2$ = this.store
+    const sub2$ = this.wizardStore
       .select('assessment')
       .pluck('mitigations')
       .distinctUntilChanged()
@@ -164,7 +173,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       .map((arr: JsonApiData<Stix>[]) => arr.map((el) => el.attributes))
       .subscribe((arr: Stix[]) => this.mitigations = arr);
 
-    const sub3$ = this.store
+    const sub3$ = this.wizardStore
       .select('assessment')
       .pluck('sensors')
       .distinctUntilChanged()
@@ -172,18 +181,21 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       .map((arr: JsonApiData<Stix>[]) => arr.map((el) => el.attributes))
       .subscribe((arr: Stix[]) => this.sensors = arr);
 
-    const sub4$ = this.store
+    const sub4$ = this.wizardStore
       .select('assessment')
       .pluck('finishedLoading')
       .distinctUntilChanged()
       .filter((loaded: boolean) => loaded && loaded === true)
-      .subscribe((loaded: boolean) => {
-        this.openedSidePanel = this.determineFirstOpenSidePanel();
-        this.refreshToOpenedAssessmentType();
-      },
+      .subscribe(
+        (loaded: boolean) => {
+          const panel = this.determineFirstOpenSidePanel();
+          if (panel) {
+            this.onOpenSidePanel(panel);
+          }
+        },
         (err) => console.log(err));
 
-    const sub5$ = this.store
+    const sub5$ = this.wizardStore
       .select('assessment')
       .pluck('page')
       .distinctUntilChanged()
@@ -192,7 +204,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         (err) => console.log(err));
 
     interface SavedState { finished: boolean, rollupId: string, id: string };
-    const sub6$ = this.store
+    const sub6$ = this.wizardStore
       .select('assessment')
       .pluck('saved')
       .distinctUntilChanged()
@@ -205,7 +217,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         },
         (err) => console.log(err));
 
-    const sub7$ = this.store
+    const sub7$ = this.wizardStore
       .select('assessment')
       .pluck('assessment')
       .pluck('assessmentMeta')
@@ -214,39 +226,124 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         (assessmentMeta: AssessmentMeta) => this.meta = assessmentMeta,
         (err) => console.log(err));
 
-    this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$, sub7$);
+    const sub8$ = this.userStore
+      .select('users')
+      .pluck('userProfile')
+      .distinctUntilChanged()
+      .take(1)
+      .subscribe(
+        (user: UserProfile) => this.currentUser = user,
+        (err) => console.log(err));
 
-    // this.url = this.generateUrl(type) + '?metaproperties=true';
-    // const logErr = (err) => console.log(err);
-    // const sub1 = this.genericApi.get(this.url)
-    //   .subscribe((data) => {
-    //     this.build(data);
-    //     if (id) {
-    //       this.url = 'api/x-unfetter-assessments';
-    //       const sub2 = this.genericApi.get(this.url, id)
-    //         .subscribe((res) => {
-    //           this.model = res;
-    //           if (this.model.attributes.created !== undefined) {
-    //             this.publishDate = new Date(this.model.attributes.created);
-    //           }
-    //           this.setSelectedRiskValue(null);
-    //           this.updateChart();
-    //         }, logErr);
-    //       this.subscriptions.push(sub2);
-    //     }
-    //   }, logErr);
-
+    this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$, sub7$, sub8$);
   }
 
   /**
    * @description
+   * @returns {void}
+   */
+  public ngAfterViewInit(): void {
+    this.questions.changes.subscribe((questionElements: QueryList<MatSelect>) => {
+      console.log('questions changed, focus on first', questionElements);
+      const firstQuestion = questionElements.first;
+      if (firstQuestion) {
+        firstQuestion.focus();
+        this.changeDetection.detectChanges();
+      }
+    });
+  }
+
+  public loadExistingAssessment(rollupId: string, meta: Partial<AssessmentMeta>) {
+    const sub$ = this.userStore
+      .select('users')
+      .pluck('userProfile')
+      .take(1)
+      .subscribe(
+        (user: UserProfile) => {
+          const sub1$ = this.assessStore
+            .select('fullAssessment')
+            .pluck('assessmentTypes')
+            .distinctUntilChanged()
+            .subscribe(
+              (arr: Assessment[]) => this.loadAssessments(rollupId, arr, meta),
+              (err) => console.log(err));
+          this.subscriptions.push(sub1$);
+        },
+        (err) => console.log(err));
+    this.subscriptions.push(sub$);
+    this.assessStore.dispatch(new LoadAssessmentResultData(rollupId));
+  }
+
+  public loadAssessments(rollupId: string, arr: Array<Assessment>, meta: Partial<AssessmentMeta>) {
+    if (!arr || arr.length === 0) {
+      return;
+    }
+
+    meta.includesIndicators = false;
+    meta.includesMitigations = false;
+    meta.includesSensors = false;
+
+    /*
+     * making the model a collection of all the assessments matching the given rollup id, plus a summary of all the
+     * assessed objects to make it easier to use the existing code to display the questions and existing answers
+     */
+    const summary = new Assessment();
+    const typedAssessments = {};
+    arr.forEach(assessment => {
+      summary.id = assessment.id;
+      summary.type = assessment.type;
+      summary.name = assessment.name;
+      summary.description = assessment.description;
+      summary.created = assessment.created;
+      summary.modified = assessment.modified;
+      summary.assessmentMeta = assessment.assessmentMeta;
+      summary.assessment_objects = summary.assessment_objects.concat(assessment.assessment_objects);
+      summary.created_by_ref = meta.created_by_ref = assessment.created_by_ref;
+      if (!assessment.metaProperties) {
+        assessment.metaProperties = {};
+        if (!assessment.metaProperties.rollupId) {
+          assessment.metaProperties.rollupId = rollupId;
+        }
+      }
+      if (assessment.assessment_objects.every(el => el.stix.type === 'indicator')) {
+        typedAssessments[this.sidePanelOrder[0]] = assessment;
+        meta.includesIndicators = true;
+      } else if (assessment.assessment_objects.every(el => el.stix.type === 'course-of-action')) {
+        typedAssessments[this.sidePanelOrder[1]] = assessment;
+        meta.includesMitigations = true;
+      } else if (assessment.assessment_objects.every(el => el.stix.type === 'x-unfetter-sensor')) {
+        typedAssessments[this.sidePanelOrder[2]] = assessment;
+        meta.includesSensors = true;
+      } else {
+        console.log('We got a weird assessment document that is not all of one category, or has unknown categories',
+          assessment);
+      }
+    });
+
+    this.model = {
+      id: summary.id,
+      type: summary.type,
+      attributes: summary,
+      relationships: typedAssessments,
+      links: undefined
+    };
+
+    meta.title = summary.name;
+    meta.description = summary.description;
+    this.wizardStore.dispatch(new LoadAssessmentWizardData(meta));
+    this.wizardStore.dispatch(new UpdatePageTitle(meta));
+  }
+
+  /*
+   * @description
    *  cleans up this component, unsubscribes to data
    */
   public ngOnDestroy(): void {
+    this.wizardStore.dispatch(new CleanAssessmentWizardData());
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  /**
+  /*
    * @description find panel names with data
    * @return {SidePanelName[]}
    */
@@ -258,7 +355,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return hasContents;
   }
 
-  /**
+  /*
    * @description name of first side panel with data
    * @return {string} name of first open side panel
    */
@@ -268,7 +365,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return hasContents[0];
   }
 
-  /**
+  /*
    * @description first panel with data, after the currently opened
    * @return {string} name of last listed side panel with data
    */
@@ -280,7 +377,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return nextPanels[0];
   }
 
-  /**
+  /*
    * @description
    * @param {string} panel name
    * @param {UIEvent} event
@@ -298,6 +395,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     this.tempModel = {};
     this.page = 1;
     this.showSummary = false;
+    this.buttonLabel = 'CONTINUE';
 
     // switch to new open panel
     this.openedSidePanel = panelName;
@@ -309,12 +407,15 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       this.currentAssessmentGroup = this.getCurrentAssessmentGroup();
       this.tempModel = { ...this.assessmentTypeGroups[this.openedSidePanel].tempModel };
     }
-    // reset progress bar
-    this.updateRatioOfAnswerQuestions();
 
+    // reset progress bar
+    this.setSelectedRiskValue();
+    this.changeDetection.detectChanges();
+    this.updateChart();
+    this.updateRatioOfAnswerQuestions();
   }
 
-  /**
+  /*
    * @description refresh the questions and graphs to the currently open assessment type
    * @return {void}
    */
@@ -324,16 +425,10 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       this.navigations = [];
       this.updateRatioOfAnswerQuestions();
       this.build(data);
-
-      // set focus to current submit button
-      // const btn = this.renderer.('#submitBtn');
-      // if (btn) {
-      // btn.focus();
-      // }
     }
   }
 
-  /**
+  /*
    * @description
    * @return {void}
    */
@@ -357,7 +452,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     }
   }
 
-  /**
+  /*
    * @description
    */
   @HostListener('window:keyup', ['$event'])
@@ -377,7 +472,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     }
   }
 
-  /**
+  /*
    * @description
    * @param {answerIndex}
    * @return {void}
@@ -404,35 +499,35 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     });
   }
 
-  /**
+  /*
    * @description
    * @return {void}
    */
   public setSelectedRiskValue(): void {
     if (this.model) {
-      this.currentAssessmentGroup.assessments.forEach((assessment) => {
-        const assessmentObject = this.model
-          .attributes.assessment_objects.find((el) => assessment.id === el.stix.id);
-        if (!assessmentObject) {
-          console.warn(`assessmentObject not found! id: ${assessment.id}, moving on...`);
-          return;
-        }
-        assessment.risk = assessmentObject.risk;
-        assessment.measurements.forEach((m) => {
-          const question = assessmentObject.questions.find((q) => q.name === m.name);
-          if (question) {
-            m.risk = question.risk;
-          }
-        });
-
-      });
+      this.currentAssessmentGroup.assessments.forEach(assessment => this.collectModelAssessments(assessment));
       this.calculateGroupRisk();
     } else {
       this.calculateGroupRisk();
     }
   }
 
-  /**
+  private collectModelAssessments(assessment: any) {
+    const assessmentObject = this.model.attributes.assessment_objects.find(obj => assessment.id === obj.stix.id);
+    if (!assessmentObject) {
+      console.warn(`assessmentObject not found! id: ${assessment.id}, moving on...`);
+      return;
+    }
+    assessment.risk = assessmentObject.risk;
+    assessment.measurements.forEach((m) => {
+      const question = assessmentObject.questions.find((q) => q.name === m.name);
+      if (question) {
+        m.risk = question.risk;
+      }
+    });
+  }
+
+  /*
    * @description clicked a stepper
    * @param {number} step
    * @param {UIEvent} event optional
@@ -452,7 +547,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     }
   }
 
-  /**
+  /*
    * @description update riskss
    * @param option
    * @param measurement
@@ -508,6 +603,17 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
           } as Stix
         } as AssessmentObject;
         this.model.attributes.assessment_objects.push(assessment_object);
+        switch (assessment.type) {
+          case 'indicator':
+            this.model.relationships[this.sidePanelOrder[0]].assessment_objects.push(assessment_object);
+            break;
+          case 'course-of-action':
+            this.model.relationships[this.sidePanelOrder[1]].assessment_objects.push(assessment_object);
+            break;
+          case 'x-unfetter-sensor':
+            this.model.relationships[this.sidePanelOrder[2]].assessment_objects.push(assessment_object);
+            break;
+        }
       } else {
         if (newRisk < 0) {
           assessment_object.questions = assessment_object.questions.filter((q) => { return q.name !== measurement.name });
@@ -530,7 +636,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     this.updateRatioOfAnswerQuestions();
   }
 
-  /**
+  /*
    * @description clicked back a page
    * @param {UIEvent} event optional
    * @returns {void}
@@ -549,9 +655,10 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     this.showSummary = false;
     this.setSelectedRiskValue();
     this.updateChart();
+    this.updateRatioOfAnswerQuestions();
   }
 
-  /**
+  /*
    * @description
    * @param {UIEvent} event optional
    */
@@ -562,7 +669,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     this.saveAssessments();
   }
 
-  /**
+  /*
    * @description clicked next page
    * @param {UIEvent} event optional
    * @return {void}
@@ -595,20 +702,21 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
       this.setSelectedRiskValue();
       this.updateChart();
     }
+    this.updateRatioOfAnswerQuestions();
   }
 
-  /**
+  /*
    * @description
    * @return {void}
    */
   public showSummarySavePage(): void {
     //  set show summary to show save page
-    this.currentAssessmentGroup = {};
+    this.currentAssessmentGroup = null;
     this.showSummary = true;
     this.buttonLabel = 'SAVE';
   }
 
-  /**
+  /*
    * @description
    * @param measurement 
    * @param option 
@@ -644,7 +752,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     }
   }
 
-  /**
+  /*
    * @description
    * @return {boolean} true if first page of first side panel otherwise false
    */
@@ -653,7 +761,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return isFirstPanel && this.isFirstPage();
   }
 
-  /**
+  /*
    * @description
    * @return {boolean} true if first page of first side panel otherwise false
    */
@@ -661,7 +769,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return this.page <= 1;
   }
 
-  /**
+  /*
    * @description
    * @return {boolean} true if title is empty otherwise false
    */
@@ -670,6 +778,16 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
   }
 
   /**
+   * @description
+   * @param index
+   * @param item
+   * @returns {number}
+   */
+  public trackByFn(index, item) {
+    return index;
+  }
+
+  /*
    * @description build page and refresh chart
    * @param data 
    * @return {void}
@@ -684,7 +802,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     this.updateChart();
   }
 
-  /**
+  /*
    * @description
    * @param {void}
    * @return {any}
@@ -700,7 +818,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return this.assessmentGroups[index];
   }
 
-  /**
+  /*
    * @description
    * @param {Stix[]}
    * @return {any[]}
@@ -760,7 +878,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return assessmentGroups;
   }
 
-  /**
+  /*
    * @description
    * @param stixObjects
    * @return {any} 
@@ -793,7 +911,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return groupings;
   }
 
-  /**
+  /*
    * @description
    * @param stixObjects
    * @return {any}
@@ -831,21 +949,24 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return hash;
   }
 
-  /**
+  /*
    * @description
    * @return {number}
    */
-  private calculateGroupRisk(): number {
-    const groupRisk = this.calculateRisk(this.currentAssessmentGroup.assessments);
-    const riskArray = [];
-    riskArray.push(groupRisk);
-    riskArray.push(1 - groupRisk);
-    this.currentAssessmentGroup.risk = groupRisk;
-    this.currentAssessmentGroup.riskArray = riskArray;
+  public calculateGroupRisk(): number {
+    let groupRisk = 0; // based on the default value from the calculateRisk function below
+    if (this.currentAssessmentGroup && this.currentAssessmentGroup.assessments && this.currentAssessmentGroup.assessments.length > 0) {
+      groupRisk = this.calculateRisk(this.currentAssessmentGroup.assessments);
+      const riskArray = [];
+      riskArray.push(groupRisk);
+      riskArray.push(1 - groupRisk);
+      this.currentAssessmentGroup.risk = groupRisk;
+      this.currentAssessmentGroup.riskArray = riskArray;
+    }
     return groupRisk;
   }
 
-  /**
+  /*
    * @description update the chart data
    * @return {void}
    */
@@ -856,7 +977,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     this.doughnutChartData = chartData;
   }
 
-  /**
+  /*
    * @description
    * @param title
    * @return {string}
@@ -873,7 +994,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return split.join(' ');
   }
 
-  /**
+  /*
    * @description
    * @param {any}
    * @return {Assessment}
@@ -884,6 +1005,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     assessment.name = this.meta.title;
     assessment.description = this.meta.description;
     assessment.created = this.publishDate.toISOString();
+    assessment.created_by_ref = this.meta.created_by_ref;
     const assessmentSet = new Set<AssessmentObject>();
 
     Object.keys(tempModel)
@@ -895,6 +1017,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         stix.type = assessmentObj.assessment.type;
         stix.description = assessmentObj.assessment.description || '';
         stix.name = assessmentObj.assessment.name;
+        stix.created_by_ref = assessmentObj.assessment.created_by_ref;
         temp.stix = stix;
         temp.questions = [];
         if (assessmentObj.measurements !== undefined) {
@@ -913,31 +1036,22 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
     return assessment;
   }
 
-  /**
+  /*
    * @description save an assessment object to the database
    * @param {void}
    * @return {void}
    */
   private saveAssessments(): void {
     if (this.model) {
-      const assessment = new Assessment();
-      assessment.assessmentMeta = this.meta;
-      assessment.created = this.publishDate.toISOString();
-      assessment.name = this.meta.title;
-      assessment.description = this.meta.description;
-      assessment.assessment_objects = this.model.attributes
-        .assessment_objects
-        // grab and only save objects that have an answered question
-        .filter((assessment_object) => {
-          return assessment_object.questions.findIndex((question) => question.risk >= 0) > -1;
-        });
-      if (assessment.assessment_objects) {
-        assessment.assessment_objects.forEach((assessment_object) => {
-          assessment_object.questions = assessment_object.questions
-            .filter((question) => question.risk >= 0);
-        });
-      }
-      this.store.dispatch(new SaveAssessment([assessment]));
+      const assessments = Object.values(this.model.relationships);
+      assessments.forEach(assessment => {
+        assessment.modified = this.publishDate.toISOString();
+        assessment.description = this.meta.description;
+        if (this.meta.created_by_ref) {
+          assessment.created_by_ref = this.meta.created_by_ref;
+        }
+      });
+      this.wizardStore.dispatch(new SaveAssessment(assessments));
     } else {
       const assessments = this.sidePanelOrder
         .map((name) => this.assessmentTypeGroups[name])
@@ -945,8 +1059,7 @@ export class WizardComponent extends Measurements implements OnInit, OnDestroy {
         .map((el) => el.tempModel)
         .filter((el) => el !== undefined)
         .map((el) => this.generateXUnfetterAssessment(el, this.meta))
-      this.store.dispatch(new SaveAssessment(assessments));
+      this.wizardStore.dispatch(new SaveAssessment(assessments));
     }
   }
-
 }

@@ -35,7 +35,7 @@
 
                 <div *ngIf=" currentAttackPattern.kill_chain_phases && currentAttackPattern.kill_chain_phases.length> 0">
                     <p>
-                        <strong>Kill Chain Phases</strong>
+                        <strong>Tactics</strong>
                     </p>
                     <p *ngFor="let killchain of currentAttackPattern.kill_chain_phases">{{ killchain.kill_chain_name | capitalize }} &bull;
                         <span class="text-muted">{{ killchain.phase_name | capitalize }}</span>
@@ -72,7 +72,7 @@
                 <unf-add-assessed-object #addAssessedObjectComponent *ngIf="assessment" [assessment]="assessment" [addAssessedObject]="addAssessedObject"
                     [addAssessedType]="addAssessedType" [currentAttackPattern]="currentAttackPattern" [indicator]="indicator"
                     [courseOfAction]="courseOfAction" [xUnfetterSensor]="xUnfetterSensor" [displayedAssessedObjects]="displayedAssessedObjects"
-                    [assessedObjects]="assessedObjects" (addAssessmentEvent)="$event ? initData() : 0"></unf-add-assessed-object>
+                    [assessedObjects]="assessedObjects" (addAssessmentEvent)="$event ? onAddAssessment(assessmentId) : 0"></unf-add-assessed-object>
 
                 <div *ngIf="displayedAssessedObjects && displayedAssessedObjects.length">
                     <div *ngFor="let assessedObj of displayedAssessedObjects | sortByField: 'risk'">
@@ -80,8 +80,6 @@
                             <mat-card-title>
                                 <img src="{{ getStixIcon(assessedObj.stix.type) }}" alt=""> {{ assessedObj.stix.name }}</mat-card-title>
                             <mat-card-content>
-                                <!--<span class="text-muted">Risk Accepted &bull;</span>&nbsp;{{ getRisk(assessedObj.stix.id)
-                                | percent:'2.1-1'}}-->
                                 <span class="text-muted">Risk Accepted &bull;</span>&nbsp;{{ assessedObj.risk | percent:'2.1-1'}}
                             </mat-card-content>
                             <mat-card-content>

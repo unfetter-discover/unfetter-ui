@@ -16,7 +16,7 @@ export class SophisticationBreakdownComponent implements OnInit {
   public barChartOptions: any;
   public barChartLegend: any;
   public readonly barChartType: string;
-  public colors: any; // TODO specify? Prob not
+  public colors: any;
   constructor(private summaryCalculationService: SummaryCalculationService) {
     this.barChartData = [
       {
@@ -31,6 +31,20 @@ export class SophisticationBreakdownComponent implements OnInit {
       }
     ]
     this.barChartType = 'bar';
+  }
+
+  public static generateTooltipLabel(tooltipItem, data) {
+    let label = 0;
+    if (tooltipItem && data && data.datasets && (tooltipItem.datasetIndex || tooltipItem.datasetIndex === 0)) {
+      const dataset = data.datasets[tooltipItem.datasetIndex];
+      if (dataset && dataset.data && (tooltipItem.index || tooltipItem.index === 0)) {
+        let value = dataset.data[tooltipItem.index];
+        if (value || value === 0) {
+          label = value;
+        }
+      }
+    }
+    return label;
   }
 
   ngOnInit() {
@@ -49,10 +63,7 @@ export class SophisticationBreakdownComponent implements OnInit {
       tooltips: {
         mode: 'index',
         callbacks: {
-          label: (tooltipItem, data) => {
-            const dataset = data.datasets[tooltipItem.datasetIndex];
-            return dataset.data[tooltipItem.index] || 0;
-          }
+          label: SophisticationBreakdownComponent.generateTooltipLabel,
         }
       },
       legend: {
@@ -68,14 +79,22 @@ export class SophisticationBreakdownComponent implements OnInit {
     this.colors = this.summaryCalculationService.barColors;
     this.barChartLabels = Object.keys(this.allAttackPatterns)
       .map((level) => this.summaryCalculationService.sophisticationNumberToWord(level));
-
-    for (const prop in Object.keys(this.assessedAttackPatterns)) {
-      this.barChartData[0].data.push(this.assessedAttackPatterns[prop]);
-    }
-
-    for (const prop in Object.keys(this.allAttackPatterns)) {
-      this.barChartData[1].data.push(this.allAttackPatterns[prop]);
-    }
+    this.calculateData();
   }
 
+  public calculateData() {
+    let assessedAttackPatternKeys = Object.keys(this.assessedAttackPatterns);
+    let allAttackPatternKeys = Object.keys(this.allAttackPatterns);
+
+    this.barChartData[0].data = [];
+    this.barChartData[1].data = [];
+    for (let index = 0; index < allAttackPatternKeys.length; index++) {
+      let assessed = 0;
+      if (assessedAttackPatternKeys.includes(index.toString())) {
+        assessed = this.assessedAttackPatterns[index];
+      }
+      this.barChartData[0].data.push(assessed);
+      this.barChartData[1].data.push(this.allAttackPatterns[index] - assessed);
+    }
+  }
 }

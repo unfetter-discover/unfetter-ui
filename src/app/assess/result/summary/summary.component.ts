@@ -25,9 +25,10 @@ import { SummaryCalculationService } from './summary-calculation.service';
 import { AssessmentObject } from '../../../models/assess/assessment-object';
 import { AssessmentsDashboardService } from '../../../assessments/assessments-dashboard/assessments-dashboard.service';
 import { RiskByAttack } from '../../../models/assess/risk-by-attack';
-import { LoadAssessmentRiskByAttackPatternData, LoadSingleAssessmentRiskByAttackPatternData } from '../store/riskbyattackpattern.actions';
+import { LoadAssessmentRiskByAttackPatternData, LoadSingleAssessmentRiskByAttackPatternData, CleanAssessmentRiskByAttackPatternData } from '../store/riskbyattackpattern.actions';
 import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
 import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
+import { CleanAssessmentResultData } from '../store/summary.actions';
 
 @Component({
   selector: 'summary',
@@ -57,7 +58,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Modified'),
     displayRoute: this.baseAssessUrl + '/result/summary',
-    modifyRoute: this.baseAssessUrl,
+    modifyRoute: this.baseAssessUrl + '/wizard/edit',
     createRoute: this.baseAssessUrl + '/create',
   };
 
@@ -74,29 +75,47 @@ export class SummaryComponent implements OnInit, OnDestroy {
     private summaryCalculationService: SummaryCalculationService
   ) { }
 
+  public getDialog(): MatDialog {
+    return this.dialog;
+  }
+
+  // For testing only
+  public getSummaryCalculationService(): SummaryCalculationService {
+    return this.summaryCalculationService;
+  }
+
   /**
    * @description
    *  initialize this component, fetching data from backend
    */
   public ngOnInit(): void {
     const idParamSub$ = this.route.params
+      .distinctUntilChanged()
       .subscribe((params) => {
         this.rollupId = params.rollupId || '';
         this.assessmentId = params.assessmentId || '';
-        this.listenForDataChanges();
+        this.summary = undefined;
+        this.summaries = undefined;
+        this.finishedLoading = false;
+        this.riskByAttack = undefined;
+        this.riskByAttacks = undefined;
+        this.store.dispatch(new CleanAssessmentResultData());
+        this.riskByAttackPatternStore.dispatch(new CleanAssessmentRiskByAttackPatternData());
         const sub$ = this.userStore
           .select('users')
           .pluck('userProfile')
           .take(1)
           .subscribe((user: UserProfile) => {
             const creatorId = user._id;
-            this.requestData(this.assessmentId, creatorId);
+            const createdById = user.organizations[0].id;
+            this.requestData(this.assessmentId, createdById);
           },
             (err) => console.log(err));
         this.subscriptions.push(sub$);
       },
-        (err) => console.log(err),
-        () => idParamSub$.unsubscribe());
+        (err) => console.log(err));
+    this.listenForDataChanges();
+    this.subscriptions.push(idParamSub$);
   }
 
   /**
@@ -108,15 +127,13 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .select('summary')
       .pluck('summaries')
       .distinctUntilChanged()
+      .filter((arr: Assessment[]) => arr && arr.length > 0)
       .subscribe((arr: Assessment[]) => {
-        if (!arr || arr.length === 0) {
-          this.summary = undefined;
-          this.summaries = [];
-          return;
-        }
-
         this.summaries = [...arr];
         this.summary = { ...arr[0] };
+        this.riskByAttackPatternStore.dispatch(new LoadSingleAssessmentRiskByAttackPatternData(this.assessmentId));
+        this.store.dispatch(new LoadSingleRiskPerKillChainData(this.assessmentId));
+        this.store.dispatch(new LoadSingleSummaryAggregationData(this.assessmentId));
       },
         (err) => console.log(err));
 
@@ -124,24 +141,23 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .select('summary')
       .pluck('finishedLoading')
       .distinctUntilChanged()
+      .filter((el) => el === true)
       .subscribe((done: boolean) => {
-        this.finishedLoading = done;
-        if (done) {
-          this.transformSummary()
+        if (this.summary === undefined) {
+          // fetching the summary failed, set all flags to done
+          this.setLoadingToDone();
+          return;
         }
+        this.finishedLoading = done;
+        this.transformSummary()
       }, (err) => console.log(err));
 
     const sub3$ = this.riskByAttackPatternStore
       .select('riskByAttackPattern')
       .pluck('riskByAttackPatterns')
       .distinctUntilChanged()
+      .filter((arr: Assessment[]) => arr && arr.length > 0)
       .subscribe((arr: RiskByAttack[]) => {
-        if (!arr || arr.length === 0) {
-          this.riskByAttack = undefined;
-          this.riskByAttacks = [];
-          return;
-        }
-
         this.riskByAttacks = [...arr];
         this.riskByAttack = { ...arr[0] };
       },
@@ -195,7 +211,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
           this.summaryAggregations = [];
           return;
         }
-
         this.summaryAggregation = { ...arr[0] };
         this.summaryAggregations = [...arr];
       })
@@ -219,7 +234,26 @@ export class SummaryComponent implements OnInit, OnDestroy {
         if (!summaries || summaries.length === 0) {
           return '';
         }
-        return summaries[0].name;
+        if (summaries[0].assessment_objects && summaries[0].assessment_objects.length) {
+          let retVal = summaries[0].name + ' - ';
+          const assessedType = summaries[0].assessment_objects[0].stix.type;
+          // NOTE this is a temporary fix for naming in rollupId
+          // TODO remove this when a better fix is in place
+          switch (assessedType) {
+            case 'course-of-action':
+              retVal += 'Mitigations';
+              break;
+            case 'indicator':
+              retVal += 'Indicators';
+              break;
+            case 'x-unfetter-sensor':
+              retVal += 'Sensors';
+              break;
+          }
+          return retVal;
+        } else {
+          return summaries[0].name;
+        }
       });
 
     this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$, sub7$, sub8$);
@@ -229,36 +263,25 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @description
    * @param {string} creatorId - optional
    */
-  public requestData(rollupId: string, creatorId?: string): void {
+  public requestData(assessmentId: string, creatorId?: string): void {
+    const isSameAssessment = (row: any) => row && (row.id === this.assessmentId);
     this.masterListOptions.dataSource = new SummaryDataSource(this.assessService, creatorId);
-    this.masterListOptions.columns.id.classes = 'cursor-pointer';
-    // TODO fix
-    this.store.dispatch(new LoadSingleAssessmentSummaryData(rollupId));
-    this.riskByAttackPatternStore.dispatch(new LoadSingleAssessmentRiskByAttackPatternData(rollupId));
-    // TODO this.store.dispatch(new LoadAssessmentSummaryData(rollupId));
-    this.store.dispatch(new LoadSingleRiskPerKillChainData(rollupId));
-    // TODO this.store.dispatch(new LoadRiskPerKillChainData(rollupId));
-    this.store.dispatch(new LoadSingleSummaryAggregationData(rollupId));
-    // TODO this.store.dispatch(new LoadAssessmentSummaryData(rollupId));
+    this.masterListOptions.columns.id.classes =
+      (row: any) => isSameAssessment(row) ? 'current-item' : 'cursor-pointer';
+    this.masterListOptions.columns.id.selectable = (row: any) => !isSameAssessment(row);
+    this.store.dispatch(new LoadSingleAssessmentSummaryData(assessmentId));
   }
-
 
   /**
    * @description close open subscriptions, clean up resources when we destroy this component
    * @return {void}
    */
   public ngOnDestroy(): void {
-    this.cleanSubscriptions();
-  }
-
-  /**
-   * @description for any subscriptions, unsubscribe and clean out the list
-   */
-  public cleanSubscriptions(): void {
     this.subscriptions
       .filter((el) => el !== undefined)
-      .filter((el) => !el.closed)
       .forEach((sub) => sub.unsubscribe());
+    this.store.dispatch(new CleanAssessmentResultData());
+    this.riskByAttackPatternStore.dispatch(new CleanAssessmentRiskByAttackPatternData());
   }
 
   /**
@@ -272,13 +295,18 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
   /**
    * @description
-   * @param {LastModifiedAssessment} assessment - optional
    * @return {Promise<boolean>}
    */
-  public onEdit(assessment: LastModifiedAssessment): Promise<boolean> {
-    // return this.router.navigateByUrl(this.masterListOptions.modifyRoute);
-    console.log('noop');
-    return Promise.resolve(false);
+  public onEdit(event?: any): Promise<boolean> {
+    let routePromise: Promise<boolean>;
+    if (!event || (event instanceof UIEvent)) {
+      routePromise = this.router.navigate([this.masterListOptions.modifyRoute, this.rollupId]);
+    } else {
+      routePromise = this.router.navigate([this.masterListOptions.modifyRoute, event.rollupId]);
+    }
+
+    routePromise.catch((e) => console.log(e));
+    return routePromise;
   }
 
   /**
@@ -322,16 +350,16 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: { attributes: assessment } });
     const dialogSub$ = dialogRef.afterClosed()
-    .subscribe(
-      (result) => {
-        const isBool = typeof result === 'boolean';
-        const isString = typeof result === 'string';
-        if (!result ||
-          (isBool && result !== true) ||
-          (isString && result !== 'true')) {
+      .subscribe(
+        (result) => {
+          const isBool = typeof result === 'boolean';
+          const isString = typeof result === 'string';
+          if (!result ||
+            (isBool && result !== true) ||
+            (isString && result !== 'true')) {
             return;
           }
-          
+
           const isCurrentlyViewed = assessment.rollupId === this.rollupId ? true : false;
           const sub$ = this.assessService
             .deleteByRollupId(assessment.rollupId)
@@ -342,7 +370,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
                 if (sub$) {
                   sub$.unsubscribe();
                 }
-                
+
                 // we deleted the current assessment
                 if (isCurrentlyViewed) {
                   return this.router.navigate([Constance.X_UNFETTER_ASSESSMENT_NAVIGATE_URL]);
@@ -359,10 +387,11 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {Promise<boolean>}
    */
   public onCellSelected(assessment: LastModifiedAssessment): Promise<boolean> {
-    if (!assessment || !assessment.rollupId) {
+    if (!assessment || !assessment.rollupId || !assessment.id) {
       return;
     }
 
+    this.store.dispatch(new CleanAssessmentResultData());
     return this.router.navigate([this.masterListOptions.displayRoute, assessment.rollupId, assessment.id]);
   }
 
@@ -383,56 +412,50 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {number}
    */
   public trackByFn(index: number, item: any): number {
-    return item.id || index;
+    let value = index;
+    if (item && (item.id || item.id === 0)) {
+      value = item.id || index;
+    }
+    return value
   }
 
   public transformSummary() {
-    // single
-    this.summaryCalculationService.setAverageRiskPerAssessedObject(this.summary.assessment_objects);
-    // all
-    // let allAssessmentObjects: Array<AssessmentObject> = []; 
-    // for (let assessment of this.summaries) {
-    //   allAssessmentObjects = allAssessmentObjects.concat(assessment.assessment_objects);
-    // }
-    // // this.summary.assessment_objects = allAssessmentObjects; // Maybe??
-    // this.summaryCalculationService.setAverageRiskPerAssessedObject(allAssessmentObjects);
+    if (this.summary && this.summary.assessment_objects) {
+      this.summaryCalculationService.setAverageRiskPerAssessedObject(this.summary.assessment_objects);
+      if (this.summary.assessment_objects[0] && this.summary.assessment_objects[0].questions && this.summary.assessment_objects[0].questions[0]) {
+        this.summaryCalculationService.calculateThresholdOptionNames(this.summary.assessment_objects[0].questions[0])
+      }
+    }
   }
 
   public transformRBAP() {
-    // single
     this.summaryCalculationService.calculateWeakness(this.riskByAttack);
-    // all
-    // let allRiskByAttackObjects: Array<RiskByAttack> = [];
-    // for (let riskByAttack of this.riskByAttacks) {
-    //   allRiskByAttackObjects = allRiskByAttackObjects.concat(riskByAttack);
-    // }
-    // // this.riskByAttack = allRiskByAttackObjects // Maybe??
-    // this.summaryCalculationService.calculateWeakness(allRiskByAttackObjects);
   }
 
   public transformKCD() {
-    // single
     this.summaryCalculationService.calculateTopRisks(this.riskByKillChain);
-    // all
-    // let allRiskByKillChains: Array<RiskByKillChain> = [];
-    // for (let riskByKillChain of this.riskByKillChains) {
-    //   allRiskByKillChains = allRiskByKillChainObjects.concat(riskByKillChain);
-    // }
-    // // this.riskByKillChain = allRiskByKillChains; // Maybe??
-    // this.summaryCalculationService.calculateTopRisks(allRiskByKillChains);
   }
 
-  public transformSAD() {
-    // single
+  /**
+   * @description
+   * @returns {void}
+   */
+  public transformSAD(): void {
     this.summaryCalculationService.summaryAggregation = this.summaryAggregation;
-    // all
-    // let allSummaryAggregations: Array<SummaryAggregation> = [];
-    // for (let eachSummaryAggregation of this.summaryAggregations) {
-    //   allSummaryAggregations = allSummaryAggregations.concat(eachSummaryAggregation);
-    // }
-    // // this.summaryAggregation = allSummaryAggregations; // Maybe??
-    // this.summaryCalculationService.setSummaryAggregation(allSummaryAggregations);
-    this.summaryCalculationService.populateAssessmentsGrouping(this.summary.assessment_objects);
-    this.summaryCalculationService.populateTechniqueBreakdown(this.summary.assessment_objects);
+    if (this.summary) {
+      this.summaryCalculationService.populateAssessmentsGrouping(this.summary.assessment_objects);
+      this.summaryCalculationService.populateTechniqueBreakdown(this.summary.assessment_objects);
+    }
+  }
+
+  /**
+   * @description set all the flags to finished loading
+   * @returns {void}
+   */
+  public setLoadingToDone(): void {
+    this.finishedLoadingKCD = true;
+    this.finishedLoadingRBAP = true;
+    this.finishedLoadingSAD = true;
+    this.finishedLoading = true;
   }
 }

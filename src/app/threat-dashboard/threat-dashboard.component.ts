@@ -11,12 +11,12 @@ import { BaseComponentService } from '../components/base-service.component';
 import { GenericApi } from '../core/services/genericapi.service';
 
 import { IntrusionSet, AttackPattern } from '../models';
-import { ThreatReportSharedService } from '../threat-report-overview/services/threat-report-shared.service';
-import { ThreatReportOverviewDataSource } from '../threat-report-overview/threat-report-overview.datasource';
+import { ThreatReportSharedService } from './services/threat-report-shared.service';
+import { ThreatReportOverviewDataSource } from './threat-report-overview.datasource';
 import { ThreatReportOverviewService } from './services/threat-report-overview.service';
-import { ThreatReport } from '../threat-report-overview/models/threat-report.model';
+import { ThreatReport } from './models/threat-report.model';
 import { KillChainEntry } from './kill-chain-table/kill-chain-entry';
-import { SelectOption } from '../threat-report-overview/models/select-option';
+import { SelectOption } from './models/select-option';
 import { ThreatDashboard } from './models/threat-dashboard';
 import { RadarChartDataPoint } from './radar-chart/radar-chart-datapoint';
 import { simpleFadeIn, slideInOutAnimation } from '../global/animations/animations';
@@ -27,6 +27,11 @@ import { SidepanelComponent } from '../global/components/sidepanel';
 import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
 import { Report } from '../models/report';
 import { MasterListDialogTableHeaders } from '../global/components/master-list-dialog/master-list-dialog.component';
+import { AttackPatternChild } from './collapsible-tree/attack-pattern-child';
+import { KillChainPhaseChild } from './collapsible-tree/kill-chain-phase-child';
+import { CourseOfActionChild } from './collapsible-tree/course-of-action-child';
+import { TreeNode } from './collapsible-tree/tree-node';
+import { ThreatDashboardIntrusion } from './models/threat-dashboard-intrusion';
 
 type troColName = keyof ThreatReport | 'actions';
 
@@ -88,31 +93,35 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @description init this component
    */
   public ngOnInit() {
+    const isSameThreatReport = (row: any) => row && this.threatReport && (row.id === this.threatReport.id);
     this.masterListOptions.dataSource = new ThreatReportOverviewDataSource(this.threatReportService);
-    this.masterListOptions.columns.id.classes = 'cursor-pointer';
+    this.masterListOptions.columns.id.classes =
+      (row: any) => isSameThreatReport(row) ? 'current-item' : 'cursor-pointer';
+    this.masterListOptions.columns.id.selectable = (row: any) => !isSameThreatReport(row);
+
     const getId$ = this.route.params
       .pluck('id')
       .subscribe(
-      (id: string) => {
-        this.threatReport = null;
-        if (!id || id.trim() === '') {
-          this.notifyDoneLoading();
-        } else {
-          id = id.trim();
-          if (!this.id || (id !== this.id)) {
-            this.id = id.trim();
-            this.fetchDataAndRender();
+        (id: string) => {
+          this.threatReport = null;
+          if (!id || id.trim() === '') {
+            this.notifyDoneLoading();
+          } else {
+            id = id.trim();
+            if (!this.id || (id !== this.id)) {
+              this.id = id.trim();
+              this.fetchDataAndRender();
+            }
+          }
+        },
+        (err) => {
+          console.log(err);
+        },
+        () => {
+          if (getId$) {
+            getId$.unsubscribe();
           }
         }
-      },
-      (err) => {
-        console.log(err);
-      },
-      () => {
-        if (getId$) {
-          getId$.unsubscribe();
-        }
-      }
       );
   }
 
@@ -129,9 +138,8 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     const loadAll$ = Observable.forkJoin(loadReport$, loadAttackPatterns$, loadIntrusionSets$);
     const logErr = (err) => console.log('request err', err);
     const noop = () => { };
-    const sub$ = loadAll$.subscribe(
-      (arr) => this.fetchIntrusionSetsAndRender(),
-      logErr.bind(this));
+    const sub$ = loadAll$.finally(() => this.fetchIntrusionSetsAndRender())
+      .subscribe(noop, logErr.bind(this));
     this.subscriptions.push(sub$);
   }
 
@@ -139,10 +147,16 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @description fetch just the intrusions and render components
    */
   public fetchIntrusionSetsAndRender(): void {
+    console.log('fetching intrustion sets');
     this.intrusionSetsDashboard = { killChainPhases: [], intrusionSets: [], totalAttackPatterns: 0, coursesOfAction: [] };
+    if (!this.threatReport) {
+      this.notifyDoneLoading();
+      return;
+    }
+
+    // get intrusion sets, used
     const logErr = (err) => console.log('request err', err);
     const noop = () => { };
-    // get intrusion sets, used
     const intrusionIds = Array.from(this.threatReport.boundaries.intrusions).map((el: SelectOption) => el.value);
     if (!intrusionIds || intrusionIds.length === 0) {
       this.renderVisualizations();
@@ -367,69 +381,85 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
 
   /**
    * @description take the instrusion set dashbaord and build a d3 tree
-   * @return {void}
+   * @return {TreeNode}
    */
-  public buildTreeData(): any {
-    const root = { name: '', type: 'root', children: [] };
-    this.intrusionSetsDashboard.intrusionSets.forEach((intrusionSet) => {
-      const child = {
-        name: intrusionSet.name,
-        type: intrusionSet.type,
-        color: intrusionSet.color,
-        description: intrusionSet.description
-      };
-      this.intrusionSetsDashboard.killChainPhases.forEach((killChainPhase) => {
-        let killChainPhaseChild = null;
-        killChainPhase.attack_patterns.forEach((attackPattern) => {
-          const intrusions = attackPattern.intrusion_sets || [];
-          intrusions.forEach((intrusion_set) => {
-            if (intrusionSet.name === intrusion_set.name) {
-              killChainPhaseChild = killChainPhaseChild
-                ? killChainPhaseChild
-                : {
-                  name: killChainPhase.name,
-                  type: 'kill_chain_phase',
-                  color: intrusionSet.color,
-                  children: []
-                };
-              const attackPatternChild = {
-                type: 'attack-pattern',
-                name: attackPattern.name,
-                color: intrusionSet.color,
-                description: attackPattern.description
-              };
-              killChainPhaseChild.children.push(attackPatternChild);
-              this.intrusionSetsDashboard[
-                'coursesOfAction'
-              ].forEach((coursesOfAction) => {
-                const found = coursesOfAction.attack_patterns.find((attack) => {
-                  return attack._id === attackPattern._id;
-                });
-                if (found) {
-                  const coursesOfActionChild = {
-                    type: 'course-of-action',
-                    name: coursesOfAction.name,
-                    description: coursesOfAction.description,
-                    color: intrusionSet.color
-                  };
-                  if (!attackPatternChild['children']) {
-                    attackPatternChild['children'] = [];
-                  }
-                  attackPatternChild['children'].push(coursesOfActionChild);
-                }
-              });
-            }
-          });
-        });
-        if (killChainPhaseChild) {
-          child['children'] = child['children'] ? child['children'] : [];
-          child['children'].push(killChainPhaseChild);
-        }
-      });
-      root.children.push(child);
-    });
-
+  public buildTreeData(): TreeNode {
+    const root = new TreeNode('', '', '', [], 'root');
+    root.children = this.buildIntrusionSetTreeNodes(this.intrusionSetsDashboard.intrusionSets);
     return root;
+  }
+
+  /**
+   * @description
+   * @param { ThreatDashboardIntrusion[]}
+   * @return {TreeNode[]}
+   */
+  public buildIntrusionSetTreeNodes(intrusions: ThreatDashboardIntrusion[]): TreeNode[] {
+    return intrusions
+      .map((intrusionSet) => {
+        const intrusionSetNode = new TreeNode(intrusionSet.name, intrusionSet.color, intrusionSet.description, [], intrusionSet.type);
+        intrusionSetNode.children = this.buildPhaseTreeNodes(intrusionSet);
+        return intrusionSetNode;
+      })
+      .filter((el: TreeNode) => (el.children && el.children.length > 0))
+      .sort(SortHelper.sortDescByField('name'));
+  }
+
+  public buildPhaseTreeNodes(intrusionSet: ThreatDashboardIntrusion): TreeNode[] {
+    const seenAttackPatternIds = this.attackPatternsToIdSet((intrusionSet as any).attack_patterns);
+    return this.intrusionSetsDashboard.killChainPhases
+      // does this phase have any attack patterns the user selected?  
+      .filter((curPhase) => {
+        return curPhase.attack_patterns
+          .map((el) => el.id)
+          .some((el) => seenAttackPatternIds.has(el));
+      })
+      // map relevant phases, and build children nodes for it
+      .map((killChainPhase) => {
+        // const attackPatterns = (intrusionSet as any).attack_patterns;
+        // killChainPhase.attack_patterns.forEach((attackPattern) => {
+        const attackPatterns = killChainPhase.attack_patterns || [];
+        // set the intrusion sets, because they did not come over on the one network call
+        attackPatterns.forEach((attackPattern) => {
+          const intrusions = (intrusionSet as any).attack_patterns
+            .find((el) => el.id = attackPattern.id).intrusion_sets || [];
+          attackPattern.intrusion_sets = intrusions;
+        })
+        const killChainPhaseChild = new KillChainPhaseChild(killChainPhase.name, intrusionSet.color);
+        killChainPhaseChild.children = this.buildAttackPatternTreeNodes(attackPatterns, intrusionSet);
+        return killChainPhaseChild;
+      })
+      .filter((el: TreeNode) => (el.children && el.children.length > 0))
+      .sort(SortHelper.sortDescByField('name'));
+  }
+
+  public buildAttackPatternTreeNodes(attackPatterns: any[], intrusionSet: ThreatDashboardIntrusion): TreeNode[] {
+    return attackPatterns
+      .map((attackPattern) => {
+        const apIntrusions = attackPattern.intrusion_sets || [];
+        const attackPatternChild = new AttackPatternChild(attackPattern.name, intrusionSet.color, attackPattern.description);
+        // set courses of actions for this attack pattern node
+        apIntrusions
+          .filter((curIntrusionSet) => intrusionSet.name === curIntrusionSet.name)
+          .forEach((curIntrusionSet) => {
+            const coas = this.intrusionSetsDashboard.coursesOfAction
+              // find relevant courses of action to this attack pattern node
+              .filter((coa) => {
+                return coa.attack_patterns
+                  .findIndex((curAttackPattern) => curAttackPattern.id && curAttackPattern.id === attackPattern.id) > -1;
+              })
+              .map((coa) => new CourseOfActionChild(coa.name, intrusionSet.color, coa.description))
+              .sort(SortHelper.sortDescByField('name'));
+            attackPatternChild.children = coas;
+          });
+        return attackPatternChild;
+      })
+      .filter((el: TreeNode) => (el.children && el.children.length > 0))
+      .sort(SortHelper.sortDescByField('name'));
+  }
+
+  public attackPatternsToIdSet(attackPatterns: AttackPattern[]): Set<string> {
+    return new Set(attackPatterns.map((el) => el.id));
   }
 
   /**
@@ -677,6 +707,9 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    */
   public editButtonClicked(event?: UIEvent): Promise<boolean> {
     this.sharedService.threatReportOverview = this.threatReport;
+    if (event instanceof ThreatReport) {
+      return this.router.navigate([`${this.masterListOptions.modifyRoute}/${event.id}`]);
+    }
     return this.router.navigate([`${this.masterListOptions.modifyRoute}/${this.id}`]);
   }
 
@@ -706,7 +739,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   public onDelete(report: ThreatReport): void {
     this.confirmDelete(report);
   }
-  
+
   /**
    * @description loop all reports and delete from mongo a workproduct is related to many reports
    * @param {ThreatReport} report the UUID of the report to delete
@@ -723,36 +756,36 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: { attributes: report } });
     const dialogSub$ = dialogRef.afterClosed()
       .subscribe(
-      (result) => {
-        const isBool = typeof result === 'boolean';
-        const isString = typeof result === 'string';
-        if (!result ||
-          (isBool && result !== true) ||
-          (isString && result !== 'true')) {
-          return;
-        }
+        (result) => {
+          const isBool = typeof result === 'boolean';
+          const isString = typeof result === 'string';
+          if (!result ||
+            (isBool && result !== true) ||
+            (isString && result !== 'true')) {
+            return;
+          }
 
-        const sub$ = this.threatReportService.deleteThreatReport(report.id).subscribe(
-          (resp) => {
-            const s$ = resp.subscribe(
-              (reports) => {
-                if (isCurrentlyViewed === true) {
-                  // deleted currently viewed, route to next in last mod, or create page
-                  this.router.navigate([Constance.THREAT_DASHBOARD_NAVIGATE_URL]);
-                } else {
-                  this.masterListOptions.dataSource.nextDataChange(reports);
-                }
-              },
-              (err) => console.log(err)
-            );
-            this.subscriptions.push(s$);
-          },
-          (err) => console.log(err)
-        );
-        this.subscriptions.push(sub$);
-      },
-      (err) => console.log(err),
-      () => dialogSub$.unsubscribe());
+          const sub$ = this.threatReportService.deleteThreatReport(report.id).subscribe(
+            (resp) => {
+              const s$ = resp.subscribe(
+                (reports) => {
+                  if (isCurrentlyViewed === true) {
+                    // deleted currently viewed, route to next in last mod, or create page
+                    this.router.navigate([Constance.THREAT_DASHBOARD_NAVIGATE_URL]);
+                  } else {
+                    this.masterListOptions.dataSource.nextDataChange(reports);
+                  }
+                },
+                (err) => console.log(err)
+              );
+              this.subscriptions.push(s$);
+            },
+            (err) => console.log(err)
+          );
+          this.subscriptions.push(sub$);
+        },
+        (err) => console.log(err),
+        () => dialogSub$.unsubscribe());
   }
 
 }

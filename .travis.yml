@@ -1,24 +1,26 @@
 # Use Ubuntu 'trusty' distribution
+dist: trusty
 sudo: required
+lanugage: node_js
+node_js:
+  - "io.js"
+  - "9"
 
-services:
-  - docker
+branches:
+  only:
+    - develop
 
-env:
-  - DOCKER_COMPOSE_VERSION=1.18.0
-
-before_script:
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
-  - docker-compose -f docker-compose.ui.yml up --build -d
-
-  
-
+addons:
+  chrome: stable
+#before_script:
+#  - "export DISPLAY=:99.0"
+#  - "sh -e /etc/init.d/xvfb start"
+#  - "sleep 3"
+install:
+  - npm install
 script:
-  - docker exec -it unfetter-ui npm run lint --prefix /usr/share/unfetter-ui
-
-after_script:
-  - docker-compose -f docker-compose.ui.yml down
-...
+  - npm run lint
+  - npm run headless:test
+  - npm run headless:coverage
+  - npm run build:prod
+  - npm run doc

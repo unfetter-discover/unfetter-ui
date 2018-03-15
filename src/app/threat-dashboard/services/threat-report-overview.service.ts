@@ -7,8 +7,8 @@ import * as UUID from 'uuid';
 
 import { Constance } from '../../utils/constance';
 import { GenericApi } from '../../core/services/genericapi.service';
-import { ThreatReport } from '../../threat-report-overview/models/threat-report.model';
-import { Boundaries } from '../../threat-report-overview/models/boundaries';
+import { ThreatReport } from '../models/threat-report.model';
+import { Boundaries } from '../models/boundaries';
 import { Report } from '../../models/report';
 import { JsonApiObject } from '../models/adapter/json-api-object';
 import { SortHelper } from '../../global/static/sort-helper';

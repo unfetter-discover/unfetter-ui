@@ -25,7 +25,7 @@
     <div class="row" *ngIf="riskByAttackPattern && riskByAttackPattern.phases && riskByAttackPattern.phases.length" id="phaseListWrapper">
 
         <div class="col-sm-3">
-            <h4>Kill Chain Phases</h4><br>
+            <h4>Tactics</h4><br>
             <div *ngFor="let phase of riskByAttackPattern.phases">
                 <p>
                     <!--Get avg risk per phase-->
@@ -37,7 +37,7 @@
             <div *ngIf="unassessedPhases && unassessedPhases.length > 0">
                 <hr>
                 <h5 class="text-muted">
-                    <small>Unassessed Kill Chain Phases</small>
+                    <small>Unassessed Tactics</small>
                 </h5>
                 <div class="attackPatternListItem" *ngFor="let unassessedPhase of unassessedPhases">
                     <small><a (click)="setPhase(unassessedPhase)">{{unassessedPhase | capitalize }}</a></small>
@@ -74,7 +74,7 @@
                 </div>
 
                 <div *ngIf=" currentAttackPattern.kill_chain_phases && currentAttackPattern.kill_chain_phases.length> 0">
-                    <p><strong>Kill Chain Phases</strong></p>
+                    <p><strong>Tactics</strong></p>
                     <p *ngFor="let killchain of currentAttackPattern.kill_chain_phases">{{ killchain.kill_chain_name }} &bull; <span class="text-muted">{{ killchain.phase_name }}</span></p>
                 </div>
 

@@ -1,5 +1,5 @@
 <div class="sidenav">
-  <div *ngIf="currentAssessmentGroup" class="flex-col mt-18 mb-12">
+  <div *ngIf="currentAssessmentGroup; else noChart" @heightCollapse class="flex-col mt-18 mb-12">
     <div class="center chart-header">
       Phase Rating
     </div>
@@ -8,6 +8,7 @@
         [options]="chartOptions"></canvas>
     </div>
   </div>
+  <ng-template #noChart>&nbsp;</ng-template>
   <mat-accordion displayMode="flat" multi="false">
     <mat-expansion-panel *ngIf="indicators && indicators.length > 0" hideToggle="true" [expanded]="openedSidePanel === 'indicators'"
       (opened)="onOpenSidePanel('indicators', $event)">
@@ -90,7 +91,7 @@
             {{currentAssessmentGroup.name | capitalize }}
           </div>
         </div>
-        <div class="row margin-bottom" *ngFor="let assessment of currentAssessmentGroup?.assessments">
+        <div class="row margin-bottom" *ngFor="let assessment of currentAssessmentGroup?.assessments; trackBy: trackByFn">
           <div class="col-xs-12">
             <div class="row">
               <div class="col-xs-12">
@@ -99,7 +100,7 @@
               </div>
             </div>
             <div class="row" style="margin: 10px 0px;">
-              <div class="col-xs-{{ assessment.measurements.length | columnSize}}" *ngFor="let measurement of assessment.measurements">
+              <div class="col-xs-{{assessment.measurements.length | columnSize}}" *ngFor="let measurement of assessment.measurements; trackBy: trackByFn">
                 <form>
                   <mat-form-field class="full-width">
                     <mat-select #question name="question" (change)="updateRisks(question, measurement, assessment)" [value]="selectedValue(measurement, question, assessment)">
@@ -138,6 +139,11 @@
             <mat-form-field class="full-width">
               <textarea matInput placeholder="Assessment Description" [(ngModel)]="meta.description"></textarea>
             </mat-form-field>
+          </div>
+        </div>
+        <div class="row mat-card-padding">
+          <div class="col-xs-12">
+            <created-by-ref [assessmentMeta]="meta"></created-by-ref>
           </div>
         </div>
       </mat-card-content>

@@ -29,6 +29,7 @@ import { UserEffects } from './root-store/users/user.effects';
 import { ConfigEffects } from './root-store/config/config.effects';
 import { UtilityEffects } from './root-store/utility/utility.effects';
 import { NotificationEffects } from './root-store/notification/notification.effects';
+import { environment } from '../environments/environment';
 
 /**
  * `AppModule` is the main entry point into Angular's bootstraping process
@@ -59,7 +60,7 @@ import { NotificationEffects } from './root-store/notification/notification.effe
       UtilityEffects,
       NotificationEffects
     ]),
-    StoreDevtoolsModule.instrument() // TODO modify so its only used in dev mode,
+    (!environment.production && environment.runMode !== 'DEMO') ? StoreDevtoolsModule.instrument() : []
   ],
   entryComponents: [
     ConfirmationDialogComponent

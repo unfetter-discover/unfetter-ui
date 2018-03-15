@@ -1,8 +1,9 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
-import { MatDialogRef } from '@angular/material';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { FormGroup, FormControl, FormArray } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA, MatStep } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
 import { IndicatorForm } from '../../global/form-models/indicator';
 import { IndicatorSharingService } from '../indicator-sharing.service';
@@ -11,6 +12,8 @@ import { heightCollapse } from '../../global/animations/height-collapse';
 import { PatternHandlerTranslateAll, PatternHandlerGetObjects, PatternHandlerPatternObject } from '../../global/models/pattern-handlers';
 import { patternHelp, observableDataHelp } from '../help-templates';
 import { cleanObjectProperties } from '../../global/static/clean-object-properties';
+import { ExternalReferencesForm } from '../../global/form-models/external-references';
+import { KillChainPhasesForm } from '../../global/form-models/kill-chain-phases';
 
 @Component({
     selector: 'add-indicator',
@@ -35,7 +38,12 @@ export class AddIndicatorComponent implements OnInit {
     public observableDataHelpHtml: string = observableDataHelp;
     public patternObjs: PatternHandlerPatternObject[] = [];
     public patternObjSubject: Subject<PatternHandlerPatternObject[]> = new Subject();
+    public editMode: boolean = false;
 
+    @ViewChild('associatedDataStep') 
+    public associatedDataStep: MatStep;
+
+    private readonly ASSOCIATED_DATA_STEPPER_INDEX = 2;
     private initialPatternHandlerResponse: PatternHandlerTranslateAll = {
         pattern: null,
         validated: false,
@@ -51,12 +59,17 @@ export class AddIndicatorComponent implements OnInit {
 
     constructor(
         public dialogRef: MatDialogRef<any>,
+        @Inject(MAT_DIALOG_DATA) public editData: any,
         private indicatorSharingService: IndicatorSharingService,
         private authService: AuthService
     ) { }    
 
     public ngOnInit() {
         this.resetForm();
+        if (this.editData) {
+            this.editMode = true;
+            this.setEditValues();
+        }
 
         const userId = this.authService.getUser()._id;
         const getData$ = Observable.forkJoin(
@@ -72,7 +85,13 @@ export class AddIndicatorComponent implements OnInit {
                     this.organizations = userOrgs
                         .filter((org) => org.approved)
                         .map((org) => identities.find((identity) => identity.id === org.id));   
-                }                      
+                }
+
+                try {
+                    if (this.organizations.length === 1) {
+                        this.form.get('created_by_ref').patchValue(this.organizations[0].id);
+                    }
+                } catch (error) { }
             },
             (err) => {
                 console.log(err);
@@ -156,24 +175,84 @@ export class AddIndicatorComponent implements OnInit {
     public submitIndicator() {
         const tempIndicator: any = cleanObjectProperties({}, this.form.value);
 
-        this.pruneQueries(tempIndicator);        
+        this.pruneQueries(tempIndicator);
+        
+        if (this.editMode) {
+            tempIndicator.id = this.editData.id;
+            if (this.editData.metaProperties && this.editData.metaProperties.interactions) {
+                tempIndicator.metaProperties.interactions = this.editData.metaProperties.interactions;
+            }
+            this.dialogRef.close({
+                'indicator': tempIndicator,
+                'newRelationships': (tempIndicator.metaProperties !== undefined && tempIndicator.metaProperties.relationships !== undefined),
+                editMode: this.editMode
+            });
+        } else {
+            const addIndicator$ = this.indicatorSharingService.addIndicator(tempIndicator)
+                .subscribe(
+                    (res) => {                   
+                        this.resetForm();
+                        this.dialogRef.close({
+                            'indicator': res[0].attributes,
+                            'newRelationships': (tempIndicator.metaProperties !== undefined && tempIndicator.metaProperties.relationships !== undefined),
+                            editMode: this.editMode
+                        });
+                    },
+                    (err) => {
+                        console.log(err);                    
+                    },
+                    () => {
+                        addIndicator$.unsubscribe();
+                    }
+                );
+        }
 
-        const addIndicator$ = this.indicatorSharingService.addIndicator(tempIndicator)
-            .subscribe(
-                (res) => {                   
-                    this.resetForm();
-                    this.dialogRef.close({
-                        'indicator': res[0].attributes,
-                        'newRelationships': (tempIndicator.metaProperties !== undefined && tempIndicator.metaProperties.relationships !== undefined)
-                    });
-                },
-                (err) => {
-                    console.log(err);                    
-                },
-                () => {
-                    addIndicator$.unsubscribe();
-                }
-            );
+    }
+
+    public stepperChanged(event: StepperSelectionEvent) {
+        if (event.selectedIndex === this.ASSOCIATED_DATA_STEPPER_INDEX) {
+            // This is to prevent external reference and kill chain forms from showing errors if already visited
+            this.associatedDataStep.interacted = false;
+        }
+    }
+
+    private setEditValues() {
+
+        this.form.patchValue(this.editData);
+
+        if (this.editData.external_references) {
+            this.editData.external_references.forEach((extRef) => {
+                const extRefCtrl = ExternalReferencesForm();
+                extRefCtrl.patchValue(extRef);
+                (this.form.get('external_references') as FormArray).push(extRefCtrl);
+            });
+        }
+
+        if (this.editData.kill_chain_phases) {
+            this.editData.kill_chain_phases.forEach((killchain) => {
+                const kcCtrl = KillChainPhasesForm();
+                kcCtrl.patchValue(killchain);
+                (this.form.get('kill_chain_phases') as FormArray).push(kcCtrl);
+            });
+        }
+
+        if (this.editData.labels) {
+            this.editData.labels.forEach((label) => {
+                (this.form.get('labels') as FormArray).push(new FormControl(label));
+            });
+        }
+
+        if (this.editData.metaProperties) {
+            if (this.editData.metaProperties.additional_queries) {
+                this.editData.metaProperties.additional_queries.forEach((query) => {
+                    (this.form.get('metaProperties').get('additional_queries') as FormArray).push(new FormControl(query));
+                });
+            }
+
+            if (this.editData.metaProperties.observedData) {
+                requestAnimationFrame(() => this.patternObjSubject.next(this.editData.metaProperties.observedData));
+            }
+        }
     }
 
     private pruneQueries(tempIndicator) {

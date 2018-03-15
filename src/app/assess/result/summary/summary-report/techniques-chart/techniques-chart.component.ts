@@ -9,20 +9,19 @@ import { SummaryCalculationService } from '../../summary-calculation.service';
 })
 export class TechniquesChartComponent implements OnInit {
   @Input()
-  public riskThreshold: number;
-  public readonly riskThresholdDefault = 0.0;
-  @Input()
-  public techniqueBreakdown: number[];
-  @Input()
   public showLabels: boolean;
   public readonly showLabelsDefault = true;
+
   @Input()
   public showLegend: boolean;
   public readonly showLegendDefault = true;
-  public barChartData: ChartData[] = [
-    { data: [], label: '', borderWidth: 0 }
-  ];
-  public barChartLabels: string[] = [];
+
+  @Input()
+  public riskThreshold: number;
+  public readonly riskThresholdDefault = 0.0;
+
+  @Input()
+  public riskLabelOptions = '';
 
   public readonly barChartOptions: any = {
     scaleShowVerticalLines: false,
@@ -32,7 +31,6 @@ export class TechniquesChartComponent implements OnInit {
         stacked: true
       }],
       yAxes: [{
-        // stacked: true,
         ticks: {
           suggestedMin: 0,
           suggestedMax: 100,
@@ -59,56 +57,51 @@ export class TechniquesChartComponent implements OnInit {
       }
     }
   };
+  public barChartLabels: string[] = [];
   public readonly barChartType: string = 'bar';
+  public barChartData: ChartData[] = [
+    { data: [], label: '', borderWidth: 0 }
+  ];
   public colors: any[];
-  @Input()
-  public riskLabelOptions = '';
 
   public constructor(private summaryCalculationService: SummaryCalculationService) { }
-
-  ngOnInit() {
+  /**
+   * @description
+   *  initialize this class member, calls render when finished
+   */
+  public ngOnInit(): void {
     this.colors = this.summaryCalculationService.barColors;
     this.showLabels = this.showLabels || this.showLabelsDefault;
     this.showLegend = this.showLegend || this.showLegendDefault;
-    this.riskThreshold = this.riskThreshold || this.riskThresholdDefault;
+    this.riskThreshold = this.riskThresholdDefault
+    this.summaryCalculationService.riskSub.subscribe((value: number) => this.renderChart());
+    this.barChartData[0].label = 'At Or Above Mitigation Threshold';
     this.renderChart();
   }
 
+  /**
+   * @description
+   *  renders the chart components, based on applied threshold
+   */
   public renderChart(selectedRisk?: number): void {
     if (selectedRisk) {
       this.riskThreshold = selectedRisk;
     }
     this.renderLabels();
-    this.renderLegend();
+    this.barChartData[0].label = this.summaryCalculationService.renderLegend();
     this.initDataArray();
-
-    const breakdown = Object.keys(this.techniqueBreakdown);
+    const breakdown = Object.keys(this.summaryCalculationService.techniqueBreakdown);
     let index = 0;
     breakdown.forEach((key) => {
-      const val = this.techniqueBreakdown[key];
+      const val: number = this.summaryCalculationService.techniqueBreakdown[key];
       this.barChartData[0].data[index] = Math.round(val * 100);
       index = index + 1;
     });
   }
 
   public renderLabels(): void {
-    this.barChartLabels = Object.keys(this.techniqueBreakdown)
+    this.barChartLabels = Object.keys(this.summaryCalculationService.techniqueBreakdown)
       .map((level) => this.summaryCalculationService.sophisticationNumberToWord(level));
-  }
-
-  /**
-   * @description
-   *  render legend at top of graph
-   * @returns {void}
-   */
-  public renderLegend(): void {
-    this.barChartData[0].label = 'At Or Above Mitigation Threshold';
-    // TODO
-    // if (this.riskLabelOptions) {
-    //   const option = this.riskLabelOptions.find((opt) => opt.risk === this.riskThreshold);
-    //   const name = option.name;
-    //   this.barChartData[0].label = 'At Or Above ' + name;
-    // }
   }
 
   protected initDataArray(): void {
@@ -119,5 +112,4 @@ export class TechniquesChartComponent implements OnInit {
       this.barChartData[0].data[i] = 0;
     }
   }
-
 }

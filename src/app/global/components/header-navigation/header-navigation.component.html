@@ -2,9 +2,8 @@
   <a [routerLink]=" ['./'] " routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="flex">
     <div [ngSwitch]="title">
       <img src="assets/icon/logos/unfetter_mini_logo-assessments.svg" alt="Unfetter Logo" class="logo" *ngSwitchCase="'assessments'">
-      <img src="assets/icon/logos/unfetter_mini_logo-assessments.svg" alt="Unfetter Logo" class="logo" *ngSwitchCase="'assessments 2.0 (beta)'">
       <img src="assets/icon/logos/unfetter_mini_logo-threat-dashboard.svg" alt="Unfetter Logo" class="logo" *ngSwitchCase="'threat-dashboard'">
-      <img src="assets/icon/logos/unfetter_mini_logo-indicator-sharing.svg" alt="Unfetter Logo" class="logo" *ngSwitchCase="'Analytic Hub'">
+      <img src="assets/icon/logos/unfetter_mini_logo-indicator-sharing.svg" alt="Unfetter Logo" class="logo" *ngSwitchCase="'Analytic Exchange'">
       <img src="assets/icon/logos/unfetter_mini_logo-default.svg" alt="Unfetter Logo" class="logo" *ngSwitchDefault>
     </div>
   </a>
@@ -36,9 +35,9 @@
           </a>
         </span>
         <span class="appLinkWrapper">
-          <a href="/explorer?token={{ encodedToken }}" target=_blank class="appLink">
+          <a href="{{ swaggerUrl }}?token={{ encodedToken }}&RUN_MODE={{ runMode }}" target=_blank class="appLink">
             <img src="{{ apiDocsIcon }}" class="appItemImg">
-            <div class="appItemText">API Docs</div>
+            <div class="appItemText">API Explorer</div>
           </a>
         </span>
         <span class="appLinkWrapper" *ngIf="authService.isOrgLeader()">
@@ -63,8 +62,8 @@
 
   <span id="accountWrapper" class="navButton" *ngIf="!demoMode && authService.loggedIn()">
     <div class="cursor-pointer" (click)="showAccountMenu = !showAccountMenu">
-      <img src="{{ (user$ | async).userProfile.github.avatar_url }}" alt="User" id="avatar" *ngIf="(user$ | async).userProfile !== null && (user$ | async).userProfile.github.avatar_url !== undefined" class="smallAvatar">
-      <button mat-icon-button *ngIf="(user$ | async).userProfile.github.avatar_url === undefined" id="accountBtn">
+      <img src="{{ (user$ | async).userProfile.github.avatar_url }}" alt="User" id="avatar" *ngIf="(user$ | async).userProfile && (user$ | async).userProfile.github.avatar_url" class="smallAvatar">
+      <button mat-icon-button *ngIf="!(user$ | async).userProfile || (user$ | async).userProfile.github.avatar_url === undefined" id="accountBtn">
         <mat-icon class="mat-24">account_circle</mat-icon>
       </button>
       <i class="material-icons" id="accountCaret">arrow_drop_down</i>

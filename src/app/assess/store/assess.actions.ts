@@ -10,6 +10,7 @@ export const START_ASSESSMENT = '[Assess] START_ASSESSMENT';
 export const START_ASSESSMENT_SUCCESS = '[Assess] START_ASSESSMENT_SUCCESS';
 export const SAVE_ASSESSMENT = '[Assess] SAVE_ASSESSMENT';
 export const LOAD_ASSESSMENT_WIZARD_DATA = '[Assess] LOAD_ASSESSMENT_WIZARD_DATA';
+export const CLEAN_ASSESSMENT_WIZARD_DATA = '[Assess] CLEAN_ASSESSMENT_WIZARD_DATA';
 export const FETCH_ASSESSMENT = '[Assess] FETCH_ASSESSMENT';
 
 // For reducers
@@ -25,7 +26,7 @@ export const WIZARD_PAGE = '[Asses] WIZARD_PAGE';
 export class UpdatePageTitle implements Action {
     public readonly type = UPDATE_PAGE_TITLE;
 
-    constructor(public payload?: string) { }
+    constructor(public payload?: string | Object) { }
 }
 
 export class StartAssessment implements Action {
@@ -98,8 +99,15 @@ export class WizardPage implements Action {
     constructor(public payload: number) { }
 }
 
+export class CleanAssessmentWizardData {
+    public readonly type = CLEAN_ASSESSMENT_WIZARD_DATA;
+
+    constructor() { }
+}
+
 export type AssessmentActions =
     AnswerQuestion |
+    CleanAssessmentWizardData |
     FetchAssessment |
     FinishedLoading |
     FinishedSaving |

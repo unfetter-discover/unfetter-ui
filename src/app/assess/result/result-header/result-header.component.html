@@ -1,9 +1,4 @@
 <div id="tabWrapper">
-  <div class="banner-wrapper">
-      <div class="flex">
-        <div class="banner">ASSESSMENTS 2.0 is currently a beta. Some functionality does not work.</div>
-      </div>
-  </div>
   <div class="height-100-percent">
     <div class="height-100-percent flex flexRow">
       <div class="height-100-percent flex flexColumn">
@@ -20,7 +15,9 @@
           Published &bull; {{ created | date:'medium' }}
         </div>
         <ng-template #notPublished>
-            <button id="publishButton" mat-raised-button>PUBLISH</button>
+          <div id="publishWrapper" matTooltip="Future Assessment Functionality">
+            <button id="publishButton" disabled mat-raised-button>PUBLISH</button>
+          </div>
         </ng-template>
       </div>
     </div>

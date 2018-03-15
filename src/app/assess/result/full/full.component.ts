@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { MatDialog } from '@angular/material';
@@ -12,7 +12,7 @@ import { Assessment } from '../../../models/assess/assessment';
 import { AssessService } from '../../services/assess.service';
 import { ConfirmationDialogComponent } from '../../../components/dialogs/confirmation/confirmation-dialog.component';
 import { LastModifiedAssessment } from '../../models/last-modified-assessment';
-import { LoadAssessmentResultData } from '../store/full-result.actions';
+import { LoadAssessmentResultData, CleanAssessmentResultData } from '../store/full-result.actions';
 import { MasterListDialogTableHeaders } from '../../../global/components/master-list-dialog/master-list-dialog.component';
 import { SummaryDataSource } from '../summary/summary.datasource';
 import { UserProfile } from '../../../models/user/user-profile';
@@ -21,28 +21,31 @@ import { AssessedByAttackPattern } from './group/models/assessed-by-attack-patte
 import { Constance } from '../../../utils/constance';
 import { RiskByAttackPattern } from './group/models/risk-by-attack-pattern';
 import { RiskByAttack } from '../../../models/assess/risk-by-attack';
+import { FullAssessmentGroup } from './group/models/full-assessment-group';
 
 @Component({
   selector: 'unf-assess-full',
   templateUrl: './full.component.html',
-  styleUrls: ['./full.component.scss']
+  styleUrls: ['./full.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FullComponent implements OnInit, OnDestroy {
 
   readonly baseAssessUrl = '/assess';
-  assessmentTypes: Assessment[];
-  assessment: Assessment;
+  assessmentTypes: Observable<Assessment[]>;
+  assessment: Observable<Assessment>;
   assessmentName: Observable<string>;
+  assessmentGroup: Observable<FullAssessmentGroup>;
   rollupId: string;
   assessmentId: string;
   phase: string;
   attackPatternId: string;
-  finishedLoading = false;
+  finishedLoading: Observable<boolean>;
   masterListOptions = {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Modified'),
     displayRoute: this.baseAssessUrl + '/result/full',
-    modifyRoute: this.baseAssessUrl,
+    modifyRoute: this.baseAssessUrl + '/wizard/edit',
     createRoute: this.baseAssessUrl + '/create',
   };
   activePhase: string;
@@ -57,6 +60,7 @@ export class FullComponent implements OnInit, OnDestroy {
     private store: Store<FullAssessmentResultState>,
     private userStore: Store<AppState>,
     private assessService: AssessService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
   /**
@@ -65,26 +69,28 @@ export class FullComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     const idParamSub$ = this.route.params
+      .distinctUntilChanged()
       .subscribe((params) => {
         this.rollupId = params.rollupId || '';
         this.assessmentId = params.assessmentId || '';
         this.phase = params.phase || '';
         this.attackPatternId = params.attackPatternId || '';
-
-        this.listenForDataChanges();
         const sub$ = this.userStore
           .select('users')
           .pluck('userProfile')
           .take(1)
           .subscribe((user: UserProfile) => {
-            const creatorId = user._id;
-            this.requestData(this.rollupId, creatorId);
+            // const creatorId = user._id;
+            const createdById = user.organizations[0].id;
+            this.requestData(this.rollupId, createdById);
           },
             (err) => console.log(err));
         this.subscriptions.push(sub$);
       },
-        (err) => console.log(err),
-        () => idParamSub$.unsubscribe());
+        (err) => console.log(err));
+
+    this.listenForDataChanges();
+    this.subscriptions.push(idParamSub$);
   }
 
   /**
@@ -92,36 +98,38 @@ export class FullComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public listenForDataChanges(): void {
-    const sub1$ = this.store
+
+    this.assessmentTypes = this.store
       .select('fullAssessment')
-      .pluck('assessmentTypes')
+      .pluck<object, Assessment[]>('assessmentTypes')
       .distinctUntilChanged()
-      .subscribe((arr: Assessment[]) => {
-        if (!arr || arr.length === 0) {
-          this.assessment = undefined;
-          this.assessmentTypes = [];
-          return;
-        }
+      .filter((arr) => arr && arr.length > 0);
 
-        this.assessmentTypes = [...arr];
-        this.assessment = { ...arr[0] };
-      },
-        (err) => console.log(err));
-
-    const sub2$ = this.store
+    this.assessment = this.store
       .select('fullAssessment')
-      .pluck('finishedLoading')
+      .pluck<object, Assessment[]>('assessmentTypes')
       .distinctUntilChanged()
-      .subscribe((done: boolean) => this.finishedLoading = done,
-        (err) => console.log(err));
+      .filter((arr) => arr && arr.length > 0)
+      .map((arr) => arr[0]);
 
-    const sub3$ = this.store
+    this.finishedLoading = this.store
+      .select('fullAssessment')
+      .pluck<Assessment, boolean>('finishedLoading')
+      .distinctUntilChanged();
+
+    this.assessmentGroup = this.store
+      .select('fullAssessment')
+      .pluck<object, FullAssessmentGroup>('group')
+      .distinctUntilChanged();
+
+    const sub$ = this.store
       .select('fullAssessment')
       .pluck('group')
       .distinctUntilChanged()
       .filter((group: any) => group.finishedLoadingGroupData === true)
       .subscribe(
         (group: any) => {
+          console.log('refreshing group information at full component top level');
           const riskByAttackPattern = group.riskByAttackPattern || {};
           // active phase is either the current active phase, 
           let activePhase = this.activePhase;
@@ -130,21 +138,39 @@ export class FullComponent implements OnInit, OnDestroy {
             activePhase = riskByAttackPattern.phases[0]._id;
           }
           this.activePhase = activePhase;
+          this.changeDetectorRef.markForCheck();
         },
         (err) => console.log(err));
 
     this.assessmentName = this.store
       .select('fullAssessment')
-      .pluck('assessmentTypes')
+      .pluck<object, Assessment[]>('assessmentTypes')
+      .filter((arr) => arr && arr.length > 0)
       .distinctUntilChanged()
       .map((arr: Assessment[]) => {
-        if (!arr || arr.length === 0) {
-          return '';
+        if (arr[0].assessment_objects && arr[0].assessment_objects.length) {
+          let retVal = arr[0].name + ' - ';
+          const assessedType = arr[0].assessment_objects[0].stix.type;
+          // NOTE this is a temporary fix for naming in rollupId
+          // TODO remove this when a better fix is in place
+          switch (assessedType) {
+            case 'course-of-action':
+              retVal += 'Mitigations';
+              break;
+            case 'indicator':
+              retVal += 'Indicators';
+              break;
+            case 'x-unfetter-sensor':
+              retVal += 'Sensors';
+              break;
+          }
+          return retVal;
+        } else {
+          return arr[0].name;
         }
-        return arr[0].name;
       });
 
-    this.subscriptions.push(sub1$, sub2$, sub3$);
+    this.subscriptions.push(sub$);
   }
 
   /**
@@ -152,8 +178,11 @@ export class FullComponent implements OnInit, OnDestroy {
    * @param {string} creatorId - optional
    */
   public requestData(rollupId: string, creatorId?: string): void {
+    const isSameAssessment = (row: any) => row && (row.id === this.assessmentId);
     this.masterListOptions.dataSource = new SummaryDataSource(this.assessService, creatorId);
-    this.masterListOptions.columns.id.classes = 'cursor-pointer';
+    this.masterListOptions.columns.id.classes =
+      (row: any) => isSameAssessment(row) ? 'current-item' : 'cursor-pointer';
+    this.masterListOptions.columns.id.selectable = (row: any) => !isSameAssessment(row);
     this.store.dispatch(new LoadAssessmentResultData(rollupId));
   }
 
@@ -164,8 +193,8 @@ export class FullComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.subscriptions
       .filter((el) => el !== undefined)
-      .filter((el) => !el.closed)
       .forEach((sub) => sub.unsubscribe());
+    this.store.dispatch(new CleanAssessmentResultData());
   }
 
   /**
@@ -179,13 +208,18 @@ export class FullComponent implements OnInit, OnDestroy {
 
   /**
    * @description
-   * @param {LastModifiedAssessment} assessment - optional
    * @return {Promise<boolean>}
    */
-  public onEdit(assessment: LastModifiedAssessment): Promise<boolean> {
-    // return this.router.navigateByUrl(this.masterListOptions.modifyRoute);
-    console.log('noop');
-    return Promise.resolve(false);
+  public onEdit(event?: any): Promise<boolean> {
+    let routePromise: Promise<boolean>;
+    if (!event || (event instanceof UIEvent)) {
+      routePromise = this.router.navigate([this.masterListOptions.modifyRoute, this.rollupId]);
+    } else {
+      routePromise = this.router.navigate([this.masterListOptions.modifyRoute, event.rollupId]);
+    }
+
+    routePromise.catch((e) => console.log(e));
+    return routePromise;
   }
 
   /**
@@ -201,9 +235,9 @@ export class FullComponent implements OnInit, OnDestroy {
    * @description clicked currently viewed assessment, confirm delete
    * @return {void}
    */
-  public onDeleteCurrent(): void {
+  public onDeleteCurrent(assessment: LastModifiedAssessment): void {
     const id = this.rollupId;
-    this.confirmDelete({ name: this.assessment.name, rollupId: id });
+    this.confirmDelete({ name: assessment.name, rollupId: id });
   }
 
   /**
@@ -261,16 +295,16 @@ export class FullComponent implements OnInit, OnDestroy {
    * @return {Promise<boolean>}
    */
   public onCellSelected(assessment: LastModifiedAssessment): Promise<boolean> {
-    if (!assessment || !assessment.rollupId) {
+    if (!assessment || !assessment.rollupId || (this.rollupId === assessment.rollupId)) {
       return;
     }
 
-    this.activePhase = undefined;
-    this.rollupId = undefined;
-    this.assessment = undefined;
-    this.assessmentTypes = undefined;
-    this.attackPatternId = undefined;
-    // TODO: clear the ngrx store
+    // this.activePhase = undefined;
+    // this.rollupId = undefined;
+    // this.assessment = undefined;
+    // this.assessmentTypes = undefined;
+    // this.attackPatternId = undefined;
+    this.store.dispatch(new CleanAssessmentResultData());
     return this.router.navigate([this.masterListOptions.displayRoute, assessment.rollupId, assessment.id]);
   }
 

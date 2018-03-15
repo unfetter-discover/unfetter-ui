@@ -17,6 +17,7 @@ export class ObservedData {
         numbered_observed: 0,
         objects: {}
         external_references: ExternalReference[];
+        created_by_ref: string;
     };
 
     constructor(data?: ObservedData) {

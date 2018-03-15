@@ -19,6 +19,7 @@ export class AttackPattern {
         external_references: ExternalReference[];
         kill_chain_phases: KillChainPhase[];
         x_unfetter_sophistication_level: number;
+        created_by_ref: string;
     };
 
     constructor(data?: AttackPattern) {

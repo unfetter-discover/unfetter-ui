@@ -23,6 +23,8 @@ const initialState: RiskByAttackPatternState = genState();
 
 export function riskByAttackPatternReducer(state = initialState, action: riskByAttackPatternActions.RiskByAttackPatternActions): RiskByAttackPatternState {
     switch (action.type) {
+        case riskByAttackPatternActions.CLEAN_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA:
+            return genState();
         case riskByAttackPatternActions.LOAD_SINGLE_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA:
             return genState({
                 ...state,

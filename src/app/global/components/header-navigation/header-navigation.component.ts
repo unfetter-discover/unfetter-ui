@@ -27,17 +27,12 @@ export class HeaderNavigationComponent {
     },
     {
       url: 'indicator-sharing/list',
-      title: 'Analytic Hub',
+      title: 'Analytic Exchange',
       icon: Constance.LOGO_IMG_ANALYTIC_HUB
     },
     {
-      url: 'assessments',
-      title: 'Assessments',
-      icon: Constance.LOGO_IMG_ASSESSMENTS
-    },
-    {
       url: Constance.X_UNFETTER_ASSESSMENT_NAVIGATE_URL,
-      title: 'Assessments 2.0 (beta)',
+      title: 'Assessments',
       icon: Constance.LOGO_IMG_ASSESSMENTS
     },
     {
@@ -60,6 +55,7 @@ export class HeaderNavigationComponent {
     },
   ];
 
+  public readonly swaggerUrl = Constance.SWAGGER_URL;
   public readonly runMode = environment.runMode;
   public readonly showBanner = environment.showBanner;
   public readonly demoMode: boolean = (environment.runMode === 'DEMO');
@@ -85,10 +81,9 @@ export class HeaderNavigationComponent {
       this.topPx = '17px';
     }
 
-    this.user$
+    const getToken$ = this.user$
       .filter((user) => user.token)
       .pluck('token')
-      .take(1)
       .subscribe(
         (token) => {
           this.encodedToken = encodeURI(token);
@@ -97,7 +92,9 @@ export class HeaderNavigationComponent {
           console.log(err);
         },
         () => {
-          // .unsubscribe();
+          if (getToken$) {
+            getToken$.unsubscribe();
+          }
         }
       );
   }

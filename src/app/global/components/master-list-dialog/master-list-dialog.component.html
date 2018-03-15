@@ -26,31 +26,32 @@
 
             <div class="col-md-12 master-list-table">
 
-                <mat-table #table [dataSource]="data.dataSource" *ngIf="data.columns as dx">
+                <mat-table #table [dataSource]="data.dataSource" *ngIf="data.columns as cdefs">
 
-                    <ng-container *ngIf="dx.id as id" matColumnDef='{{id.ref}}'>
+                    <ng-container *ngIf="cdefs.id as id" matColumnDef='{{id.ref}}'>
                         <mat-header-cell *matHeaderCellDef
                                 class="master-list-item-header"> {{id.header}} </mat-header-cell>
-                        <mat-cell class="master-list-item {{id.classes}}" *matCellDef="let row"
-                                (click)="id.selectable && onSelect(row, id.ref, $event)">
+                        <mat-cell *matCellDef="let row" class="master-list-item {{cdefs.rowClass(row, id)}}"
+                                (click)="cdefs.canSelect(row, id) && onSelect(row, id.ref, $event)">
                             <span class="master-list-item-name"> {{$any(id).format(row[id.ref])}} </span>
                             <mat-icon class="master-list-item-arrow">chevron_right</mat-icon>
                         </mat-cell>
                     </ng-container>
 
-                    <ng-container *ngIf="dx.edition as ed" matColumnDef='{{ed.ref}}'>
+                    <ng-container *ngIf="cdefs.edition as ed" matColumnDef='{{ed.ref}}'>
                         <mat-header-cell *matHeaderCellDef
                                 class="master-list-edition-header"> {{ed.header}} </mat-header-cell>
-                        <mat-cell *matCellDef="let row" class="master-list-edition {{ed.classes}}"
-                                (click)="ed.selectable && onSelect(row, ed.ref, $event)">
+                        <mat-cell *matCellDef="let row" class="master-list-edition {{cdefs.rowClass(row, ed)}}"
+                                (click)="cdefs.canSelect(row, ed) && onSelect(row, ed.ref, $event)">
                             <span> {{ $any(ed).format(row[ed.ref]) }} </span>
                         </mat-cell>
                     </ng-container>
 
-                    <ng-container matColumnDef='{{dx.actions.ref}}'>
-                        <mat-header-cell *matHeaderCellDef> {{dx.actions.header}} </mat-header-cell>
+                    <ng-container *ngIf="cdefs.actions as acts" matColumnDef='{{acts.ref}}'>
+                        <mat-header-cell *matHeaderCellDef
+                                class="master-list-actions-header"> {{acts.header}} </mat-header-cell>
                         <!-- Note that these actions are hard-wired at this time -->
-                        <mat-cell *matCellDef="let row">
+                        <mat-cell *matCellDef="let row" class="master-list-actions {{cdefs.rowClass(row, acts)}}">
                             <div class="buttonGrp">
                                 <button mat-button (click)="onEdit(row, $event)">
                                     <mat-icon>edit</mat-icon>

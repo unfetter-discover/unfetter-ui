@@ -12,6 +12,7 @@ import { WSMessageTypes } from './global/enums/ws-message-types.enum';
 import { environment } from '../environments/environment';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Themes } from './global/enums/themes.enum';
+import { Constance } from './utils/constance';
 
 @Component({
   selector: 'unf-app',
@@ -51,6 +52,7 @@ export class AppComponent implements OnInit {
       if (!this.demoMode) {
         const user = this.authService.getUser();
         const token = this.authService.getToken();
+        this.store.dispatch(new userActions.SetToken(token));
         this.store.dispatch(new userActions.LoginUser({ userData: user, token }));
         this.store.dispatch(new notificationsActions.FetchNotificationStore());
       } else {
@@ -62,7 +64,7 @@ export class AppComponent implements OnInit {
             lastName: 'User',
             organizations: [
               {
-                'id': 'identity--e240b257-5c42-402e-a0e8-7b81ecc1c09a',
+                'id': Constance.UNFETTER_OPEN_ID,
                 'approved': true,
                 'role': 'STANDARD_USER'
               }
@@ -81,9 +83,9 @@ export class AppComponent implements OnInit {
         const url = ((event as any)._routerState.snapshot.url.split('/'))[1];
         this.setTheme(url, bodyElement);
         if (url === 'indicator-sharing') {
-          this.title = 'Analytic Hub';
+          this.title = 'Analytic Exchange';
         } else if (url === 'assess') {
-          this.title = 'assessments 2.0 (beta)';
+          this.title = 'assessments';
         } else {
           this.title = url;
         }

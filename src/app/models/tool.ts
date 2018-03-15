@@ -18,6 +18,7 @@ export class Tool {
         external_references: ExternalReference[];
         kill_chain_phases: KillChainPhase[];
         tool_version: string;
+        created_by_ref: string;
     };
 
     constructor(data?: Tool) {

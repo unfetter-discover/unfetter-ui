@@ -21,12 +21,7 @@
         <mat-card class="uf-mat-card card right-card" id="vulnerabilityCard">
           <mat-card-title>Where you are most vulnerable</mat-card-title>
           <mat-card-content>
-            <div style="display:flex; height: 192px;">
-              <div class="text-muted" style="margin: auto auto">
-                Coming soon...
-              </div>
-            </div>
-            <!-- <mat-table #table [dataSource]="summaryCalculationService.topRisks">
+            <mat-table #table [dataSource]="summaryCalculationService.topRisks">
               <ng-container matColumnDef="{{columnIds[0]}}">
                 <mat-header-cell *matHeaderCellDef>KILL CHAIN AFFECTED</mat-header-cell>
                 <mat-cell *matCellDef="let risk">{{risk.phaseName | capitalize }}</mat-cell>
@@ -34,25 +29,25 @@
               <ng-container matColumnDef="{{columnIds[1]}}">
                 <mat-header-cell *matHeaderCellDef>ASSESSED ITEM</mat-header-cell>
                 <mat-cell *matCellDef="let risk">
-                  <ul *ngIf="risk.objects; else noObjects">
+                  <ul *ngIf="risk.objects && risk.objects.length; else noObjects">
                     <li *ngFor="let obj of risk.objects">
                       <a href="#stix/{{obj.type}}s/{{obj.id}}">{{obj.name}}</a>
                     </li>
                   </ul>
                   <ng-template #noObjects>
-                    No objects found!
+                    No assessed vulnerabilities found
                   </ng-template>
                 </mat-cell>
               </ng-container>
               <ng-container matColumnDef="{{columnIds[2]}}">
                 <mat-header-cell *matHeaderCellDef>RISK</mat-header-cell>
                 <mat-cell *matCellDef="let risk">
-                  <span class="label label-warning">{{calculateRisk(risk.objects)}}</span>
+                  <span *ngIf="risk.objects && risk.objects.length" class="label label-warning">{{calculateRisk(risk.objects)}}</span>
                 </mat-cell>
               </ng-container>
               <mat-header-row class="table-header-row" *matHeaderRowDef="columnIds"></mat-header-row>
               <mat-row *matRowDef="let row; columns: columnIds;"></mat-row>
-            </mat-table> -->
+            </mat-table>
           </mat-card-content>
         </mat-card>
       </div>
@@ -64,7 +59,7 @@
       <div class="flex flexItemsCenter">
         <div class="flex flexItemsCenter" id="sliderContainer">
           <mat-icon color="primary" class="mat-24 icon-people-1" aria-hidden="false" aria-label="Least sophisticated mitigation"></mat-icon>
-          <mat-slider disabled min="0" max="4" step="1" value="2" id="sophisticationSlider" color="primary">
+          <mat-slider min="0" max="1" invert="true" step=".25" tick-interval="1" id="sophisticationSlider" color="primary" [(ngModel)]="summaryCalculationService.selectedRisk">
           </mat-slider>
           <mat-icon color="primary" class="mat-24 icon-people" aria-hidden="false" aria-label="Most sophisticated mitigation"></mat-icon>
         </div>
@@ -73,7 +68,7 @@
     </div>
     <div class="row">
       <div class="flex matchHeight">
-        <mat-card class="uf-mat-card card left-card" id="sophisticationCard">
+        <mat-card class="uf-mat-card card chart left-card" id="sophisticationCard">
           <mat-card-title>Sophistication Breakdown</mat-card-title>
           <mat-card-content>
             <div *ngIf="summaryCalculationService.isSummaryAggregationValid(); else noSophisticationData">
@@ -83,12 +78,12 @@
             <ng-template #noSophisticationData>No data to load chart!</ng-template>
           </mat-card-content>
         </mat-card>
-        <mat-card class="uf-mat-card card right-card">
+        <mat-card class="uf-mat-card card chart right-card">
           <mat-card-title>% Techniques Detected by Skill</mat-card-title>
           <mat-card-content>
             <div *ngIf="summaryCalculationService.techniqueBreakdown;else noTechniquesData">
-              <!-- [riskLabelOptions]="thresholdOptions" -->
-              <techniques-chart #techniquesChart [riskThreshold]="summaryCalculationService.selectedRisk" [techniqueBreakdown]="summaryCalculationService.techniqueBreakdown">
+              <!-- TODO [riskLabelOptions]="thresholdOptions" -->
+              <techniques-chart #techniquesChart [riskThreshold]="summaryCalculationService.selectedRisk">
               </techniques-chart>
             </div>
             <ng-template #noTechniquesData>No data to load chart!</ng-template>
@@ -98,9 +93,15 @@
     </div>
     <div class="row">
       <div class="flex flexItemsCenter">
-        <mat-card class="uf-mat-card card flex1">
+        <mat-card class="uf-mat-card card chart flex1" id="assessmentCard">
           <mat-card-title>% of Assessments Better than Mitigation Threshold</mat-card-title>
-          <mat-card-content>COMING SOON</mat-card-content>
+          <mat-card-content>
+            <div *ngIf="summaryCalculationService.assessmentsGroupingTotal;else noAssessmentsChartData">
+              <!-- TODO [riskLabelOptions]="thresholdOptions" -->
+              <assessment-chart></assessment-chart>
+            </div>
+            <ng-template #noAssessmentsChartData>No data to load chart!</ng-template>
+          </mat-card-content>
         </mat-card>
       </div>
     </div>

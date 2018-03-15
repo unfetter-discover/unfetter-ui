@@ -75,14 +75,7 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
                     action.payload
                 ]
             };
-        case indicatorSharingActions.UPDATE_INDICATOR:            
-            // const indicatorToUpdate = state.indicators[action.payload.index];
-            // const updatedIndicator = {
-            //     ...indicatorToUpdate,
-            //     ...action.payload.indicator
-            // };
-            // const iIndicators = [...state.indicators];
-            // iIndicators[action.payload.index] = updatedIndicator;
+        case indicatorSharingActions.UPDATE_INDICATOR:
             const indicatorToUpdateIndex = state.indicators.findIndex((indicator) => indicator.id === action.payload.id);
             if (indicatorToUpdateIndex > -1) {
                 const iIndicators = [...state.indicators];

@@ -13,8 +13,9 @@
                     <mat-form-field class="full-width">
                         <textarea matInput placeholder="Description" [value]="assessMeta.description" formControlName="description"></textarea>
                     </mat-form-field>
+                    <created-by-ref (orgSelected)="orgSelected($event)"></created-by-ref>
                     <div class="flex flex-cols">
-                        <span class="mat-title">Compile Catagories to Assess*</span>
+                        <span class="mat-title">Compile Categories to Assess*</span>
                         <mat-checkbox class="" [value]="assessMeta.includesIndicators" color="primary" formControlName="includesIndicators">Indicators</mat-checkbox>
                         <mat-checkbox class="" [value]="assessMeta.includesMitigations" color="primary" formControlName="includesMitigations">Mitigations</mat-checkbox>
                         <mat-checkbox class="" [value]="assessMeta.includesSensors" color="primary" formControlName="includesSensors">Sensors</mat-checkbox>

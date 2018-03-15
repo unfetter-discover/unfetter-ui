@@ -18,6 +18,7 @@ export class Relationship {
         relationship_type: string;
         source_ref: string;
         target_ref: string;
+        created_by_ref: string;
     };
 
     constructor(data?: any) {

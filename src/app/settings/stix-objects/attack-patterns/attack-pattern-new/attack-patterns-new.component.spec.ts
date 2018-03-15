@@ -197,12 +197,11 @@ function formFields() {
 
       expect(comp.attackPattern.attributes.x_unfetter_sophistication_level).toBeUndefined('model should not have sophistication value');
 
-      el = fixture.debugElement.query(By.css('.mat-select-trigger')).nativeElement;
+      el = fixture.debugElement.query(By.css('#sophistication-level .mat-select-trigger')).nativeElement;
       el.click();
       fixture.detectChanges();
       tick(SELECT_OPEN_ANIMATION);
-
-      let option = overlayContainerElement.querySelector('mat-option') as HTMLElement;
+      let option = overlayContainerElement.querySelector('.sophistication-option') as HTMLElement;
       option.click();
       fixture.detectChanges();
       tick(SELECT_CLOSE_ANIMATION);

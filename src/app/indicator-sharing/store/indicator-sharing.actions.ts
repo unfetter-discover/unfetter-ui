@@ -4,6 +4,7 @@ import { Action } from '@ngrx/store';
 export const START_SOCIAL_STREAM = '[Indicator Sharing] START_SOCIAL_STREAM';
 export const FETCH_DATA = '[Indicator Sharing] FETCH_DATA';
 export const START_DELETE_INDICATOR = '[Indicator Sharing] START_DELETE_INDICATOR';
+export const START_UPDATE_INDICATOR = '[Indicator Sharing] START_UPDATE_INDICATOR';
 export const CREATE_IND_TO_AP_RELATIONSHIP = '[Indicator Sharing] CREATE_IND_TO_AP_RELATIONSHIP';
 export const REFRESH_AP_MAP = '[Indicator Sharing] REFRESH_AP_MAP';
 
@@ -44,6 +45,12 @@ export class StartDeleteIndicator implements Action {
     public readonly type = START_DELETE_INDICATOR;
 
     constructor(public payload: string) { }
+}
+
+export class StartUpdateIndicator implements Action {
+    public readonly type = START_UPDATE_INDICATOR;
+
+    constructor(public payload: any) { }
 }
 
 export class SetIndicators implements Action {
@@ -147,6 +154,7 @@ export type IndicatorSharingActions =
     CreateIndicatorToApRelationship |
     RefreshApMap |
     StartDeleteIndicator |
+    StartUpdateIndicator |
     SetIndicators |
     SetAttackPatterns |
     FilterIndicators |

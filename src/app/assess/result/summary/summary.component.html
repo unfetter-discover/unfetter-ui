@@ -1,9 +1,9 @@
-<div id="newAssessmentsSummary" *ngIf="finishedLoading && finishedLoadingRBAP && finishedLoadingKCD && finishedLoadingSAD === true; else loadingBlock" class="fadeIn">
+<div id="newAssessmentsSummary" *ngIf="finishedLoading === true; else loadingBlock" class="fadeIn">
   <mat-sidenav-container *ngIf="summary !== undefined; else notFound">
     <mat-sidenav class="side-panel" mode="side" opened="true">
       <unfetter-side-panel class="side-panel" [item]="{ name: assessmentName|async }" collapsible="false" width="320">
 
-        <sidepanel-option-item label="Edit" icon="mode_edit" disabled="true" (click)="onEdit($event)"></sidepanel-option-item>
+        <sidepanel-option-item label="Edit" icon="mode_edit" (click)="onEdit($event)"></sidepanel-option-item>
         <sidepanel-option-item label="Share" icon="share" disabled="true" (click)="onShare($event)"></sidepanel-option-item>
         <sidepanel-option-item label="Delete" icon="delete" (click)="onDeleteCurrent($event)"></sidepanel-option-item>
 
@@ -11,8 +11,7 @@
           [columns]="masterListOptions.columns" (tabChange)="onFilterTabChanged($event)" (create)="onCreate($event)" (select)="onCellSelected($event)"
           (edit)="onEdit($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
 
-        <sidepanel-list-item label="{{summaries[0].name}}" [items]="summaries"
-          expandable="true">
+        <sidepanel-list-item label="{{summaries[0].name}}" [items]="summaries" expandable="true">
           <mat-list-item *ngFor="let summary of summaries; trackBy:trackByFn" class="list-divider" [@slideInOutAnimation]>
             <h4 mat-line>
               {{summary?.name}}
@@ -25,7 +24,7 @@
     </mat-sidenav>
     <mat-sidenav-content>
       <div class="main-panel">
-        <result-header [assessmentId]="assessmentId" [rollupId]="rollupId"></result-header>
+        <result-header [assessmentId]="assessmentId" [rollupId]="rollupId" [created]="summary?.created"></result-header>
         <summary-report></summary-report>
       </div>
     </mat-sidenav-content>
@@ -37,11 +36,11 @@
 </ng-template>
 
 <ng-template #notFound>
-    <div class="container">
-        <div class="row mt-15">
-            <div class="col-xs-10 col-xs-offset-1">
-                <error-card errorTitle="Assessment Not Found" errorBody="404: The request URL was not found in the application."></error-card>
-            </div>
-        </div>
+  <div class="container">
+    <div class="row mt-15">
+      <div class="col-xs-10 col-xs-offset-1">
+        <error-card errorTitle="Assessment Not Found" errorBody="404: The request URL was not found in the application."></error-card>
+      </div>
     </div>
+  </div>
 </ng-template>
