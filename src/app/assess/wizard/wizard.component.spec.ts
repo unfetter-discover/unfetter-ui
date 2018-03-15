@@ -60,7 +60,7 @@ describe('WizardComponent', () => {
           'assessment': combineReducers(assessmentReducer)
         }),
       ],
-      providers: [ GenericApi ],
+      providers: [GenericApi],
     })
       .compileComponents();
   }));
@@ -131,6 +131,53 @@ describe('WizardComponent', () => {
     expect(nextPanel).toEqual('summary');
   });
 
+  it('should calculate risk robustly', () => {
+    component.currentAssessmentGroup = null;
+    expect(component.calculateGroupRisk()).toBe(0);
+
+    component.currentAssessmentGroup = {};
+    expect(component.calculateGroupRisk()).toBe(0);
+
+    component.currentAssessmentGroup = { assessments: null };
+    expect(component.calculateGroupRisk()).toBe(0);
+
+    component.currentAssessmentGroup = { assessments: [] };
+    expect(component.calculateGroupRisk()).toBe(0);
+
+    component.currentAssessmentGroup = { assessments: [{}] };
+    expect(component.calculateGroupRisk()).toBe(0);
+
+    component.currentAssessmentGroup = { assessments: [{ risk: null }] };
+    expect(component.calculateGroupRisk()).toBe(0);
+
+    component.currentAssessmentGroup = { assessments: [{ risk: 0 }] };
+    expect(component.calculateGroupRisk()).toBe(0);
+
+    component.currentAssessmentGroup = { assessments: [{ risk: 1 }] };
+    expect(component.calculateGroupRisk()).toBe(1);
+
+    component.currentAssessmentGroup = { assessments: [{ risk: 1 }, { risk: 1 }] };
+    expect(component.calculateGroupRisk()).toBe(1);
+
+    component.currentAssessmentGroup = { assessments: [{ risk: 1 }, { risk: .5 }] };
+    expect(component.calculateGroupRisk()).toBe(.75);
+
+  });
+
+  it('should have an appropriate button label when a heading on the left nav bar is opened', () => {
+    component.buttonLabel = 'SAVE';
+    component.onOpenSidePanel(null);
+    expect(component.buttonLabel).toEqual('CONTINUE');
+
+    component.buttonLabel = 'SAVE';
+    component.onOpenSidePanel('sensors');
+    expect(component.buttonLabel).toEqual('CONTINUE');
+
+    component.buttonLabel = 'SAVE';
+    component.onOpenSidePanel('summary');
+    expect(component.buttonLabel).toEqual('SAVE');
+  });
+
   it(`can load existing data`, () => {
     const meta: Partial<AssessmentMeta> = {
       includesIndicators: false,
@@ -145,29 +192,29 @@ describe('WizardComponent', () => {
     const indicators = new Assessment();
     indicators.id = id + '-1';
     indicators.type = StixLabelEnum.ASSESSMENT;
-    indicators.metaProperties = {rollupId: rollup};
+    indicators.metaProperties = { rollupId: rollup };
     indicators.name = name;
     indicators.description = desc;
     indicators.created = indicators.modified = time;
-    indicators.assessment_objects.push({risk: -1, stix: {type: 'indicator'}} as AssessmentObject<Stix>);
+    indicators.assessment_objects.push({ risk: -1, stix: { type: 'indicator' } } as AssessmentObject<Stix>);
 
     const mitigations = new Assessment();
     mitigations.id = id + '-2';
     mitigations.type = StixLabelEnum.ASSESSMENT;
-    mitigations.metaProperties = {rollupId: rollup};
+    mitigations.metaProperties = { rollupId: rollup };
     mitigations.name = name;
     mitigations.description = desc;
     mitigations.created = indicators.modified = time;
-    mitigations.assessment_objects.push({risk: -1, stix: {type: 'course-of-action'}} as AssessmentObject<Stix>);
+    mitigations.assessment_objects.push({ risk: -1, stix: { type: 'course-of-action' } } as AssessmentObject<Stix>);
 
     const sensors = new Assessment();
     sensors.id = id + '-3';
     sensors.type = StixLabelEnum.ASSESSMENT;
-    sensors.metaProperties = {rollupId: rollup};
+    sensors.metaProperties = { rollupId: rollup };
     sensors.name = name;
     sensors.description = desc;
     sensors.created = indicators.modified = time;
-    sensors.assessment_objects.push({risk: -1, stix: {type: 'x-unfetter-sensor'}} as AssessmentObject<Stix>);
+    sensors.assessment_objects.push({ risk: -1, stix: { type: 'x-unfetter-sensor' } } as AssessmentObject<Stix>);
 
     component.loadAssessments('0123456789abcdef', [indicators, mitigations, sensors], meta);
 
