@@ -99,7 +99,7 @@
                 </div>
                 <div class="row" *ngIf="attackPhases">
                     <div class="col-md-3"><label>Phases</label></div>
-                    <div class="col-md-9 attack-pattern-phases">{{attackPhases.join(', ')}}</div>
+                    <div class="col-md-9 attack-pattern-phases">{{attackPhases.join(', ') | capitalize}}</div>
                 </div>
             </mat-card-content>
         </mat-card>
