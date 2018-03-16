@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/pluck';
-import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/mergeMap';
+import { Router } from '@angular/router';
 
 import * as utilityActions from './utility.actions';
-import { Router } from '@angular/router';
+import { Constance } from '../../utils/constance';
+import { GenericApi } from '../../core/services/genericapi.service';
 
 @Injectable()
 export class UtilityEffects {
+
+    private webAnalyticsUrl = Constance.WEB_ANALYTICS_URL;
 
     @Effect({ dispatch: false })
     public clearLocalStorageEffect = this.actions$
@@ -42,15 +42,22 @@ export class UtilityEffects {
             localStorage.removeItem(itemKey);
         });
 
-    // TODO add navigate effect
     @Effect({ dispatch: false })
     public navigate = this.actions$
         .ofType(utilityActions.NAVIGATE)
         .pluck('payload')
         .do((route: any[]) => this.router.navigate(route))
 
+    @Effect({ dispatch: false })
+    public recordVisit = this.actions$
+        .ofType(utilityActions.RECORD_VISIT)
+            .do((_) => console.log('VISIT ENTER'))
+            .switchMap((_) => this.genericApi.get(`${this.webAnalyticsUrl}/visit`))
+            .do((_) => console.log('VISIT RECORDED'));
+
     constructor(
         private actions$: Actions,
-        private router: Router
+        private router: Router,
+        private genericApi: GenericApi
     ) { }
 }
