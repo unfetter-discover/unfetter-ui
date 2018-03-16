@@ -77,16 +77,17 @@ describe('HeatmapComponent', () => {
         component.ngOnInit();
         fixture.detectChanges();
 
-        let cells: NodeList = fixture.nativeElement.querySelectorAll('.heat-map svg g.cell');
-        console.log(cells);
+        let cells: NodeList = fixture.nativeElement.querySelectorAll('.heat-map svg g.heat-map-cell');
+        console.log('cells', cells);
         expect(cells).toBeTruthy();
         expect(cells.length).toEqual(21);
         expect(Array.from(cells).every(cell => cell.childNodes.length === 1)).toBeTruthy();
 
-        let rects: NodeList = fixture.nativeElement.querySelectorAll('.heat-map svg g.cell rect');
-        console.log(rects);
+        let rects: NodeList = fixture.nativeElement.querySelectorAll('.heat-map svg g.heat-map-cell rect');
+        console.log('rects', rects);
         expect(Array.from(rects)
-            .filter(rect => rect.attributes['fill'].nodeValue === component.heatColors['true'].bg).length).toEqual(9);
+            .filter(rect => rect.attributes['fill'].nodeValue ===
+                    component.options.heatColors['true'].bg).length).toEqual(9);
     });
 
 });
