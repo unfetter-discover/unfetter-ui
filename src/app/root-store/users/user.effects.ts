@@ -43,11 +43,13 @@ export class UserEffects {
         .mergeMap(([token, userData]: [string, any]) => {
             return [
                 new userActions.LoginUser({
-                        userData,
-                        token
+                    userData,
+                    token
                 }),
                 new configActions.FetchConfig(),
-                new notificationActions.StartNotificationStream()
+                new notificationActions.FetchNotificationStore(),
+                new notificationActions.StartNotificationStream(),
+                new utilityActions.RecordVisit()
             ]
         });
 

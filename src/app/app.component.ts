@@ -3,11 +3,9 @@ import { Store } from '@ngrx/store';
 
 import { AppState } from './app.service';
 import { AuthService } from './core/services/auth.service';
-import { WebAnalyticsService } from './core/services/web-analytics.service';
 import * as fromApp from './root-store/app.reducers';
 import * as userActions from './root-store/users/user.actions';
 import * as configActions from './root-store/config/config.actions';
-import * as notificationsActions from './root-store/notification/notification.actions';
 import { WSMessageTypes } from './global/enums/ws-message-types.enum';
 import { environment } from '../environments/environment';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
@@ -31,7 +29,6 @@ export class AppComponent implements OnInit {
 
   constructor(
     public authService: AuthService,
-    private webAnalyticsService: WebAnalyticsService,
     private store: Store<fromApp.AppState>,
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -41,20 +38,14 @@ export class AppComponent implements OnInit {
   public ngOnInit() {
     if (this.runMode && this.runMode === 'UAC') {
       console.log('Running application in UAC mode');
-      if (this.authService.loggedIn()) {
-        this.webAnalyticsService.recordVisit();
-      }
     } else if (this.runMode && this.runMode === 'DEMO') {
       console.log('Running application in DEMO mode');
     }
 
     if (this.authService.loggedIn()) {
       if (!this.demoMode) {
-        const user = this.authService.getUser();
         const token = this.authService.getToken();
-        this.store.dispatch(new userActions.SetToken(token));
-        this.store.dispatch(new userActions.LoginUser({ userData: user, token }));
-        this.store.dispatch(new notificationsActions.FetchNotificationStore());
+        this.store.dispatch(new userActions.FetchUser(token));
       } else {
         this.store.dispatch(new userActions.LoginUser({
           userData: {

@@ -14,7 +14,6 @@ import { AppComponent } from './app.component';
 import { AuthService } from './core/services/auth.service';
 import { ConfigService } from './core/services/config.service';
 import { GenericApi } from './core/services/genericapi.service';
-import { WebAnalyticsService } from './core/services/web-analytics.service';
 import { environment } from '../environments/environment';
 import { reducers } from './root-store/app.reducers';
 import { Themes } from './global/enums/themes.enum';
@@ -71,7 +70,6 @@ describe(`App`, () => {
             { provide: AuthService, useValue: mockAuthService },
             GenericApi,
             ConfigService,
-            WebAnalyticsService,
         ];
 
         TestBed.configureTestingModule({
