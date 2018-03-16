@@ -244,7 +244,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    */
   public ngAfterViewInit(): void {
     this.questions.changes.subscribe((questionElements: QueryList<MatSelect>) => {
-      console.log('questions changed, focus on first', questionElements);
       const firstQuestion = questionElements.first;
       if (firstQuestion) {
         firstQuestion.focus();

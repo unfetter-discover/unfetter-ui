@@ -129,7 +129,6 @@ export class FullComponent implements OnInit, OnDestroy {
       .filter((group: any) => group.finishedLoadingGroupData === true)
       .subscribe(
         (group: any) => {
-          console.log('refreshing group information at full component top level');
           const riskByAttackPattern = group.riskByAttackPattern || {};
           // active phase is either the current active phase, 
           let activePhase = this.activePhase;
