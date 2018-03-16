@@ -19,7 +19,6 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { Subscription } from 'rxjs/Subscription';
 import * as d3 from 'd3';
-import { Heatmap } from 'd3-heatmap';
 
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { Dictionary } from '../../../models/json/dictionary';
@@ -46,6 +45,7 @@ class DrawingBounds {
     cellWidth = 0;
     splitPasses = 0;
     passCount = 0;
+    xPosition = 0;
     constructor(private bounds: DOMRect, public padding: any, public largestBatch: number) {
         this.viewWidth = bounds.width;
         this.viewHeight = bounds.height;
@@ -56,15 +56,58 @@ class DrawingBounds {
     }
 }
 
-interface HeatColor {
-    bg: string,
+export interface HeatColor {
+    bg: string, // can be a color or a class name starting with '.'
     fg: string,
 }
-interface BatchColor {
+export interface BatchColor {
     header: HeatColor,
     body: HeatColor,
+    border?: string,
 }
-type HeatColors = Dictionary<HeatColor>;
+export type HeatColors = Dictionary<HeatColor>;
+
+export interface HeatMapOptions {
+    /**
+     * This array colors the batches and their headers. The list of colors rotates for each batch (not each column).
+     * The defaults are reddish-brown header on white background, and very light gray on very light gray.
+     */
+    batchColors?: Array<BatchColor>,
+
+    /**
+     * This array colors the batches and their headers. The property names correspond to the value of the 'active'
+     * property in the heatmap data, which can just be any string or boolean value. So you can have 'active' values
+     * of true/false, or strings like 'S', 'M', 'L', etc. Be sure your data has colors for all the possible values.
+     */
+    heatColors?: HeatColors,
+
+    /**
+     * Default color when no heat value matches.
+     */
+    noColor?: HeatColor,
+
+    /**
+     * A color to highlight the background of a cell when the mouse hovers over it.
+     */
+    hoverColor?: HeatColor,
+
+    /**
+     * Whether to display the value of each cell in the body. The default is false, because the body is displayed as
+     * HTML, and overrides its own body colors, which we cannot override. Thus, it can choke off the color of the cell.
+     */
+    showText?: boolean,
+
+    /**
+     * Whether to allow the text to be split on multiple lines if it can fit within the cell or header.
+     */
+    allowSplit?: boolean,
+
+    /**
+     * Whether to hyphenate the text in the cells if there is no room to fully write it. Currently only applies to the
+     * headers, since it can just make the cells look bad. Defaults to true.
+     */
+    hyphenate?: boolean,
+}
 
 type D3Selection = d3.Selection<d3.BaseType, {}, HTMLElement, any>;
 
@@ -86,33 +129,26 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
     @ViewChild('heatmap') heatMapView: ElementRef; // the viewport
     private heatMapBounds: DOMRect; // used to detect when the viewport size changes
 
-    /**
-     * This array colors the batches and their headers. The list of colors rotates for each batch (not each column).
-     * The defaults are brown header on white background, and very light gray on very light gray.
-     */
-    @Input() public batchColors: Array<BatchColor> = [
-        {header: {bg: '#e3f2fd', fg: '#333'}, body: {bg: '#e3f2fd', fg: 'black'}},
-        {header: {bg: 'transparent', fg: '#333'}, body: {bg: 'transparent', fg: 'black'}},
-    ];
-
-    /**
-     * This array colors the batches and their headers. The property names correspond to the value of the 'active'
-     * property in the heatmap data, which can just be any string or boolean value. So you can have 'active' values
-     * of true/false, or strings like 'S', 'M', 'L', etc. Be sure your data has colors for all the possible values
-     */
-    @Input() public heatColors: HeatColors = {
-        'true': {bg: '#e66', fg: 'black'},
-        'false': {bg: '#ccc', fg: 'black'},
+    @Input() public options: HeatMapOptions;
+    private defaultOptions: HeatMapOptions = {
+        batchColors: [
+            {header: {bg: '#e3f2fd', fg: '#333'}, body: {bg: '#e3f2fd', fg: 'black'}},
+            {header: {bg: 'transparent', fg: '#333'}, body: {bg: 'transparent', fg: 'black'}},
+        ],
+        heatColors: {
+            'true': {bg: '#e66', fg: 'black'},
+            'false': {bg: '#ccc', fg: 'black'},
+        },
+        noColor: {bg: 'transparent', fg: 'black'},
+        hoverColor: {bg: '#f0f099', fg: 'black'},
+        showText: false,
+        hyphenate: true,
     };
-
-    /**
-     * Whether to display the value of each cell in the body. The default is false, because the body is displayed as
-     * HTML, and overrides its own body colors, which we cannot override. Thus, it can choke off the color of the cell.
-     */
-    @Input() public showText: boolean = false;
 
     private tooltipDelay: number;
     @Output() private onTooltip = new EventEmitter<{row: BatchData, event?: UIEvent}>();
+
+    @Output() private onClick = new EventEmitter<{row: BatchData, event?: UIEvent}>();
 
     private readonly subscriptions: Subscription[] = [];
 
@@ -129,6 +165,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
      * @description init this component
      */
     public ngOnInit(): void {
+        this.options = Object.assign({}, this.defaultOptions, this.options);
     }
 
     /**
@@ -184,7 +221,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
 
                 const largestBatch = this.heatMapData
                     .reduce((max, batch) => max = Math.max(max, batch.columns[0].length), 0);
-                const padding = {top: 24, left: 1, right: 1, bottom: 0, between: 0};
+                const padding = {top: 48, left: 1, right: 1, bottom: 0, between: 0};
                 const bounds = new DrawingBounds(this.heatMapBounds, padding, largestBatch);
 
                 const batches: Dictionary<BatchData> = this.batchHeatMapData();
@@ -224,28 +261,40 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
      *              the data inside the viewport
      */
     private sizeHeatMap(batches: Dictionary<BatchData>, bounds: DrawingBounds) {
+        const batchList = Object.values(batches);
+        const minPadding = batchList.length * 3 - 1;
+        const availableWidth = bounds.bodyWidth - minPadding;
+        let tempBatchData;
+
         do {
             bounds.splitPasses++;
             bounds.passCount = Math.ceil(bounds.largestBatch / bounds.splitPasses);
 
-            // count how many columns we need for this pass
-            bounds.columns = 0;
-            Object.values(batches)
-                .forEach((d: any) => bounds.columns += Math.ceil(d.columns[0].length / bounds.passCount));
-
-            // determine what the cell width would be for this many columns
-            bounds.cellWidth = Math.floor(bounds.bodyWidth / bounds.columns);
-            const extra = bounds.bodyWidth - (bounds.columns * bounds.cellWidth);
-            bounds.padding.between = Math.min(extra / (bounds.columns - 1), 4);
-            bounds.cellWidth =
-                    Math.floor((bounds.bodyWidth - (bounds.columns - 1) * bounds.padding.between) / bounds.columns);
-            bounds.cellWidth -= bounds.cellWidth % 2;
-
             // how tall would each cell be, with the max number of rows this many columns would generate?
             bounds.cellHeight = Math.floor(bounds.bodyHeight / bounds.passCount - 2);
+
+            // count how many columns we need for this pass
+            tempBatchData = [];
+            bounds.columns = batchList.reduce(
+                (count, d: any) => {
+                    const columns = Math.ceil(d.columns[0].length / bounds.passCount);
+                    tempBatchData.push({columns: columns, width: 0});
+                    return count + columns;
+                }, 0);
+
+            // determine what the cell width would be for this many columns
+            bounds.cellWidth = Math.floor(availableWidth / bounds.columns);
         } while ((bounds.bodyWidth !== 0) && (bounds.cellHeight < bounds.cellWidth / 2));
 
-        // recalculate the largest number of rows that a batch will have
+        // recalculate the width that a batch will need
+        const [usedCellWidth, insideColumns] = tempBatchData.reduce(([width, columns], batch) => {
+            batch.width = bounds.cellWidth * batch.columns;
+            return [width + batch.width, columns + batch.columns - 1];
+        }, [0, 0]);
+        bounds.padding.between = Math.min(availableWidth - usedCellWidth / insideColumns, 1);
+
+        const totalUsedWidth = usedCellWidth + minPadding + bounds.padding.between * insideColumns;
+        bounds.padding.left += Math.floor((bounds.viewWidth - totalUsedWidth) / 2);
         bounds.largestBatch = Math.ceil(bounds.largestBatch / bounds.splitPasses);
     }
 
@@ -274,16 +323,13 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
      * @description draw the heatmap chart on our viewport
      */
     private drawHeatMap(data: Array<BatchData>, bounds: DrawingBounds, graphElement: D3Selection) {
-        const xScale = d3.scaleLinear().domain([0, bounds.columns]).range([0, bounds.headerWidth]);
-        const yScale = d3.scaleLinear().domain([0, bounds.largestBatch]).range([0, bounds.bodyHeight]);
-        const width = bounds.bodyWidth, height = bounds.bodyHeight;
-
         // erase anything we previously drew
         graphElement.select('svg').remove();
 
         // create the canvas
-        const view = graphElement
+        const canvas = graphElement
             .append('svg')
+                .attr('class', 'heat-map-canvas')
                 .attr('width', bounds.viewWidth)
                 .attr('height', bounds.viewHeight)
                 .call(d3.zoom().scaleExtent([1, 4]).on('zoom',
@@ -291,73 +337,116 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
                         const ev = d3.event.transform;
                         const tx = Math.min(0, Math.max(ev.x, bounds.viewWidth - bounds.viewWidth * ev.k));
                         const ty = Math.min(0, Math.max(ev.y, bounds.viewHeight - bounds.viewHeight * ev.k));
-                        view.attr('transform', `translate(${[tx, ty]}) scale(${ev.k})`);
+                        canvas.attr('transform', `translate(${[tx, ty]}) scale(${ev.k})`);
                     }))
             .append('g');
 
-        // create the individual table body component
-        const body = view
+        // create the top x-axis, but without any ticks
+        const header = canvas
             .append('g')
+                .attr('class', 'heat-map-headers')
+                .attr('transform', `translate(${bounds.padding.left - 1}, 0)`);
+
+        // create the individual table body component
+        const body = canvas
+            .append('g')
+                .attr('class', 'heat-map-grid')
                 .attr('transform', `translate(${bounds.padding.left}, ${bounds.padding.top})`);
 
-        // draw the top x-axis, but without any ticks
-        const xAxis = d3.axisTop(xScale).tickSize(0).tickFormat(() => '');
-        const header = view
-            .append('g')
-                .call(xAxis);
-        header.selectAll('.tick, .domain').remove();
-
-        bounds.passCount = 0;
-        data.forEach(batch => this.drawBatch(batch, bounds, body, header, xScale, yScale));
+        bounds.passCount = bounds.xPosition = 0;
+        data.forEach(batch => this.drawBatch(batch, bounds, body, header));
     }
 
     /**
      * @description draw just the given batch on the heatmap
      */
-    private drawBatch(batch: BatchData, bounds: DrawingBounds, svg: D3Selection, header: D3Selection,
-            xScale: d3.ScaleLinear<number, number>, yScale: d3.ScaleLinear<number, number>) {
-        const firstColumn = xScale(bounds.passCount);
-        const batchColor = this.batchColors.shift();
-        const batchWidth = bounds.cellWidth * batch.columns.length + (batch.columns.length - 1) - 2;
+    private drawBatch(batch: BatchData, bounds: DrawingBounds, svg: D3Selection, header: D3Selection) {
+        const batchColor = this.options.batchColors.shift();
+        const batchWidth = bounds.cellWidth * batch.columns.length
+                + (batch.columns.length - 1) * bounds.padding.between + 2;
 
         // batch canvas, to group all the cells into
-        svg.append('rect')
-            .attr('x', firstColumn)
-            .attr('y', yScale(0))
-            .attr('width', batchWidth)
-            .attr('height', '100%')
-            .attr('fill', batchColor.body.bg);
+        const batchView = svg.append('g')
+            .attr('class', 'heat-map-batch');
 
-        // draw the batch's columns
-        batch.columns.forEach(column => this.drawBatchColumn(column, bounds, svg, xScale, yScale));
+        const batchRect = batchView
+            .append('rect')
+                .attr('x', bounds.xPosition)
+                .attr('y', 0)
+                .attr('width', batchWidth)
+                .attr('height', bounds.bodyHeight);
+        if (batchColor.body.bg.startsWith('.')) {
+            batchRect.attr('class', batchColor.body.bg.substring(1));
+        } else {
+            batchRect.attr('fill', batchColor.body.bg);
+        }
 
         // draw the batch header over all the columns
-        this.drawBatchHeader(batch, header, bounds, firstColumn, batchWidth, batchColor);
+        this.drawBatchHeader(batch, header, bounds, bounds.xPosition, batchWidth, batchColor);
+
+        // draw the batch's columns
+        batch.columns.forEach((column, index) => {
+            bounds.xPosition += (index === 0) ? 1 : bounds.padding.between;
+            this.drawBatchColumn(column, bounds, batchView);
+            bounds.xPosition += bounds.cellWidth;
+        });
 
         // rotate the color back onto the list
-        this.batchColors.push(batchColor);
+        this.options.batchColors.push(batchColor);
+
+        bounds.xPosition += 2;
+    }
+
+    /**
+     * @description draw the given batch's header
+     */
+    private drawBatchHeader(batch: BatchData, header: D3Selection,
+            bounds: DrawingBounds, x: number, width: number, batchColor: BatchColor) {
+        // bounding box and "tab"
+        const batchHeader = header
+            .append('g')
+                .attr('class', 'heat-map-header')
+                .attr('aria-label', batch.batch)
+                .style('overflow', 'hidden');
+
+        const batchRect = batchHeader
+            .append('rect')
+                .attr('x', x + 1)
+                .attr('rx', 6)
+                .attr('width', width)
+                .attr('y', 1)
+                .attr('ry', 6)
+                .attr('height', bounds.padding.top + 5);
+        if (batchColor.header.bg.startsWith('.')) {
+            batchRect.attr('class', batchColor.header.bg.substring(1));
+        } else {
+            batchRect.attr('fill', batchColor.header.bg);
+        }
+
+        // add the batch name and make it fit in the box
+        this.drawCellText(batch.batch, batchHeader, x, 1, width, bounds.padding.top,
+                14, batchColor.header.fg, true, this.options.hyphenate);
     }
 
     /**
      * @description draw just the given batch column on the heatmap
      */
-    private drawBatchColumn(column: Array<BatchData>, bounds: DrawingBounds, svg: D3Selection,
-            xScale: d3.ScaleLinear<number, number>, yScale: d3.ScaleLinear<number, number>) {
-        const x = xScale(bounds.passCount);
-
-        const defaultColor: HeatColor = {bg: 'transparent', fg: 'inherit'};
+    private drawBatchColumn(column: Array<BatchData>, bounds: DrawingBounds, view: D3Selection) {
+        let y = 0;
 
         // draw each cell
-        column.forEach((d, index) => {
+        column.forEach(d => {
             // determine fill color of this cell
-            const y = yScale(index);
-            let fill = (d.active != null) ? this.heatColors[d.active.toString()] : null;
+            let fill = ((d.active != null) ? this.options.heatColors[d.active.toString()] : null) || this.options.noColor;
 
             // draw the cell
-            const cell = svg
+            const cell = view
                 .append('g')
-                    .attr('class', 'cell')
+                    .attr('class', 'heat-map-cell')
                     .attr('aria-label', d.batch)
+                    .on('click', p => {
+                        this.onClick.emit({row: d, event: d3.event});
+                    })
                     .on('mouseover', p => {
                         window.clearTimeout(this.tooltipDelay);
                         const ev = d3.event;
@@ -369,18 +458,36 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
                         window.clearTimeout(this.tooltipDelay);
                         this.onTooltip.emit(null);
                     });
-            cell
-                .append('rect')
-                    .attr('x', x)
-                    .attr('y', y + 1)
-                    .attr('width', bounds.cellWidth - 1)
-                    .attr('height', bounds.cellHeight - 1)
-                    .style('padding-right', bounds.padding.between)
-                    .attr('fill', (fill || defaultColor).bg);
 
-            if (this.showText) {
-                this.drawCellText(d.batch, cell, x, y, bounds.cellWidth, bounds.cellHeight, (fill || defaultColor).fg);
+            const rect = cell
+                .append('rect')
+                    .attr('x', bounds.xPosition)
+                    .attr('y', y)
+                    .attr('width', bounds.cellWidth)
+                    .attr('height', bounds.cellHeight)
+                    .style('padding-right', bounds.padding.between)
+                    .attr('fill', fill.bg)
+                    .on('mouseover', ev => {
+                        if (this.options.hoverColor.bg.startsWith('.')) {
+                            d3.event.target.setAttribute('class', this.options.hoverColor.bg);
+                        } else {
+                            d3.event.target.setAttribute('fill', this.options.hoverColor.bg);
+                        }
+                    })
+                    .on('mouseout', ev => {
+                        if (fill.bg.startsWith('.')) {
+                            d3.event.target.setAttribute('class', fill.bg);
+                        } else {
+                            d3.event.target.setAttribute('fill', fill.bg);
+                        }
+                    });
+
+            if (this.options.showText) {
+                this.drawCellText(d.batch, cell, bounds.xPosition, y, bounds.cellWidth, bounds.cellHeight,
+                        6, fill.fg, bounds.cellHeight > 18, false);
             }
+
+            y += bounds.cellHeight + 2;
         });
 
         // increment horizontal X column
@@ -390,88 +497,76 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
     /**
      * @description Try to draw the text of the cell.
      */
-    private drawCellText(text: string, cell: D3Selection,
-            x: number, y: number, width: number, height: number, color: string) {
-        let textNode = cell
-            .append('text')
-                .attr('x', x + width / 2)
-                .attr('y', y + height / 2)
-                .attr('dy', '.35em')
-                .attr('fill', color)
-                .attr('text-anchor', 'middle')
-                .attr('font-size', '6px')
-                .text(text);
+    private drawCellText(text: string, cell: D3Selection, x: number, y: number, width: number, height: number,
+            fontSize: number, color: string, allowSplit: boolean, allowHyphenation: boolean) {
+        let textNode = this.createTextCell(cell, x + width / 2, y + height / 2, fontSize, color).text(text);
+
+        let workingText = text;
+
         let textWidth = () => (textNode.node() as any).getComputedTextLength() + 4;
-        if (textWidth() > width) {
-            for (let done = false, splitIndex = text.lastIndexOf(' '); !done && (splitIndex > 0);
-                    textNode.text(text), splitIndex = text.lastIndexOf(' ', splitIndex - 1)) {
-                let newtext = text.substring(0, splitIndex);
+
+        // Try to fit the text within the block, first by splitting on any spaces.
+        if (allowSplit) {
+            for (let done = false, split = this.splitText(text, undefined, false); !done && (split.index > 0);
+                    split = this.splitText(text, split.index - 1, false)) {
+                let newtext = text.substring(0, split.index);
                 textNode.text(newtext);
                 if (textWidth() < width) {
                     textNode.attr('y', y + height / 3)
-                    text = text.substr(splitIndex + 1);
-                    textNode = cell
-                        .append('text')
-                            .attr('x', x + width / 2)
-                            .attr('y', y + height / 3 * 2)
-                            .attr('dy', '.35em')
-                            .attr('fill', color)
-                            .attr('text-anchor', 'middle')
-                            .attr('font-size', '6px')
-                            .text(text);
+                    workingText = text.substr(split.index + 1);
+                    textNode = this.createTextCell(cell, x + width / 2, y + height / 3 * 2, fontSize, color)
+                            .text(workingText);
                     done = true;
                 }
             }
+
+            if ((textWidth() > width) && allowHyphenation && (text === workingText)) {
+                for (let done = false, split = this.splitText(text, undefined, true); !done && (split.index > 0);
+                        split = this.splitText(text, split.index - 1, true)) {
+                    let newtext = text.substring(0, split.index) + (split.hyphenated ? '-' : '');
+                    textNode.text(newtext);
+                    if (textWidth() < width) {
+                        textNode.attr('y', y + height / 3)
+                        workingText = text.substr(split.index + (split.hyphenated ? 0 : 1));
+                        textNode = this.createTextCell(cell, x + width / 2, y + height / 3 * 2, fontSize, color)
+                                .text(workingText);
+                        done = true;
+                    }
+                }
+            }
         }
-        for (let textlen = text.length - 3; (textlen > 4) && (textWidth() > width); textlen--) {
-            textNode.text(`${text.substring(0, textlen)}...`);
-        }
-        if (textWidth() > width) {
-            textNode.text('...');
+
+        // If the text still doesn't fit, whether we were allowed to split or not, ellipsicatify the text (bummer)
+        for (let textlen = workingText.length - 3; (textlen > 4) && (textWidth() > width); textlen--) {
+            textNode.text(`${workingText.substring(0, textlen)}...`);
+            cell.attr('aria-label', text);
         }
     }
 
-    /**
-     * @description draw the given batch's header
-     */
-    private drawBatchHeader(batch: BatchData, header: D3Selection,
-            bounds: DrawingBounds, x: number, width: number, batchColor: BatchColor) {
-        // bounding box and "tab"
-        const phaseHeader = header.append('svg')
-            .attr('x', x + 1)
-            .attr('y', 1)
-            .attr('width', width)
-            .attr('height', bounds.padding.top)
-            .attr('aria-label', batch.batch)
-            .style('overflow', 'hidden');
-
-        phaseHeader
-            .append('rect')
-                .attr('x', 0)
-                .attr('rx', 6)
-                .attr('width', width)
-                .attr('y', 0)
-                .attr('ry', 6)
-                .attr('height', bounds.padding.top + 6)
-                .attr('fill', batchColor.header.bg);
-
-        // add the batch name and make it fit in the box
-        const text = phaseHeader
+    private createTextCell(cell: D3Selection, x: number, y: number, fontSize: number, color: string) {
+        let textNode = cell
             .append('text')
-                .attr('x', width / 2)
-                .attr('y', bounds.padding.top - 10)
+                .attr('x', x)
+                .attr('y', y)
                 .attr('dy', '.35em')
-                .attr('fill', batchColor.header.fg)
                 .attr('text-anchor', 'middle')
-                .attr('font-size', '14px')
-                .text(batch.batch);
-        let textWidth = () => (text.node() as any).getComputedTextLength();
-        for (let fontsize = 13; (textWidth() > width) && (fontsize > 9); fontsize--) {
-            text.attr('font-size', `${fontsize}px`);
+                .attr('font-size', `${fontSize}px`);
+        if (color.startsWith('.')) {
+            textNode.attr('class', color);
+        } else {
+            textNode.attr('fill', color);
         }
-        if (textWidth() > width) {
-            text.text('...');
+        return textNode;
+    }
+
+    private splitText(text: string, fromIndex: number, allowHyphenation: boolean): {index: number, hyphenated: boolean} {
+        const spaceIndex = text.lastIndexOf(' ', fromIndex);
+        for (let index = fromIndex || (text.length - 1); allowHyphenation && (index > spaceIndex + 2); index--) {
+            if ('bcdfghjklmnpqrstvwxz'.includes(text.charAt(index))) {
+                return {index: index, hyphenated: true};
+            }
         }
+        return {index: spaceIndex, hyphenated: false};
     }
 
     /**
@@ -481,12 +576,6 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
         event.preventDefault();
         event.stopPropagation();
     }
-
-    /**
-     * @todo Add zooming ability to the heat map. As we pan in, we want:
-     *       a) headers that were shrunk or truncated to fit in their box to grow and fit better, go bold if we can,
-     *       b) add the text of the individual cells into their box
-     */
 
     /**
      * @todo Add ability to display multiple heat maps. This will cause cells with "multiple active values"

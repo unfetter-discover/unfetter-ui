@@ -42,12 +42,14 @@
 
     <div [hidden]="!showTreeMap">
         <h3 class="mat-title tree-map-header">Attack Patterns Used (Tree Map View)</h3>
-        <unf-treemap [treeMapData]="googleTreeMapData" (onTooltip)="showTreeMapTooltip($event)"></unf-treemap>
+        <unf-treemap [treeMapData]="treeMapData" (onTooltip)="showTreeMapTooltip($event)"></unf-treemap>
     </div>
 
     <div [hidden]="!showHeatMap">
         <h3 class="mat-title heat-map-header">Attack Patterns Used (HeatMap Chart View)</h3>
-        <unf-heatmap [heatMapData]="d3HeatMapData" [showText]="true" (onTooltip)="showHeatMapTooltip($event)"></unf-heatmap>
+        <unf-heatmap [heatMapData]="heatMapData" [options]="heatMapOptions"
+                (onTooltip)="showHeatMapTooltip($event, true)"
+                (onClick)="showHeatMapTooltip($event, false)"></unf-heatmap>
     </div>
 
     <div #toolbox class="toolbox mat-elevation-z5" [style.display]="showToolbox === true ? 'flex': 'none'" [@topRightSlide]>
