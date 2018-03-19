@@ -1,0 +1,14 @@
+<div id="summaryStatisticsComponent" *ngIf="serverCallComplete">
+
+  <label>Most Contributions</label>
+  <p>{{ mostIndicators.org }}: {{ mostIndicators.number }}</p>
+
+  <label>Most Views</label>
+  <p>{{ mostViewed.org }}: {{ mostViewed.number }}</p>
+
+  <label>Most Likes Recieved</label>
+  <p>{{ mostLiked.org }}: {{ mostLiked.number }}</p>
+
+  <label>Most Comments Recieved</label>
+  <p>{{ mostComments.org }}: {{ mostComments.number }}</p>
+</div>
