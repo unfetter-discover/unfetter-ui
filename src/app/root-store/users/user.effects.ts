@@ -19,6 +19,8 @@ export class UserEffects {
     private refreshTokenDelayMS: number = 10000;
     // The buffer between a token expiring and refresh attempts being made
     private refreshBufferPercent: number = 0.3;
+    private tokenInitialized: boolean = false;
+    private doRefreshToken: boolean = false;
     
     @Effect()
     public fetchUser = this.actions$
@@ -46,6 +48,7 @@ export class UserEffects {
                     userData,
                     token
                 }),
+                new userActions.SetToken(token),
                 new configActions.FetchConfig(),
                 new notificationActions.FetchNotificationStore(),
                 new notificationActions.StartNotificationStream(),
@@ -67,36 +70,54 @@ export class UserEffects {
                 this.refreshTokenDelayMS = this.refreshTokenDelayMS - (this.refreshTokenDelayMS * this.refreshBufferPercent);
                 this.refreshTokenDelayMS = Math.floor(this.refreshTokenDelayMS);
             }
-            return Observable.of([token, store])
+            this.doRefreshToken = store.users.authenticated || !this.tokenInitialized;
+            if (!this.tokenInitialized) {
+                this.tokenInitialized = true;
+            }
+            return Observable.of(null)
                 .delay(this.refreshTokenDelayMS);
         })
-        .map(([token, store]: [string, AppState]) => new userActions.RefreshToken());
+        .map((_) => new userActions.RefreshToken());
 
     @Effect()
     public refreshToken = this.actions$
         .ofType(userActions.REFRESH_TOKEN)
-        .switchMap((_) => {
-            return this.usersService.refreshToken()
-                .map((token: string) => {
-                    return {
-                        success: true,
-                        token
-                    };
-                })
-                .catch((err, caught) => {
-                    return Observable.of({
-                        success: false,
-                        token: null
-                    });
-                })
+        .withLatestFrom(this.store)
+        .switchMap(([_, store]: [any, AppState]) => {
+            this.doRefreshToken = store.users.authenticated || !this.tokenInitialized;
+            if (this.doRefreshToken) {
+                return this.usersService.refreshToken()
+                    .map((token: string) => {
+                        return {
+                            success: true,
+                            token
+                        };
+                    })
+                    .catch((err, caught) => {
+                        return Observable.of({
+                            success: false,
+                            token: null
+                        });
+                    })
+            } else {
+                return Observable.of({
+                    success: false,
+                    token: null
+                });
+            }
         })
         .map(({success, token}: { success: boolean, token: string }) => {
-            if (success) {
-                console.log('Token successfully refreshed');
-                return new userActions.SetToken(token);
+            if (!this.doRefreshToken) {
+                console.log('User logged out, stopping refresh cycle');
+                return new utilityActions.NullAction();
             } else {
-                console.log('Failed to refesh token');
-                return new userActions.LogoutUser();
+                if (success) {
+                    console.log('Token successfully refreshed');
+                    return new userActions.SetToken(token);
+                } else {
+                    console.log('Failed to refesh token');
+                    return new userActions.LogoutUser();
+                }
             }
         });
 
