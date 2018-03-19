@@ -48,7 +48,7 @@ export class IndicatorHeatMapComponent implements OnInit {
      * @description "indicators" is the old reference to "analytics" used in this page
      */
     private indicators: any[];
-    private displayIndicators: any[];
+    public displayIndicators: any[];
     private indicatorsToAttackPatternMap: any;
 
     @ViewChild('tooltipTemplate') tooltipTemplate: TemplateRef<any>;
@@ -81,7 +81,11 @@ export class IndicatorHeatMapComponent implements OnInit {
             .select('indicatorSharing')
             .pluck('indicatorToApMap')
             .distinctUntilChanged()
-            .finally(() => getIndicatorToAttackPatternMap$.unsubscribe())
+            .finally(() => {
+                if (getIndicatorToAttackPatternMap$) {
+                    getIndicatorToAttackPatternMap$.unsubscribe();
+                }
+            })
             .subscribe(
                 (indicatorToAttackPatternMap) => this.indicatorsToAttackPatternMap = indicatorToAttackPatternMap,
                 (err) => console.log(err)
@@ -103,9 +107,14 @@ export class IndicatorHeatMapComponent implements OnInit {
         };
         const filter = encodeURI(`sort=${JSON.stringify(sort)}&project=${JSON.stringify(project)}`);
         const initData$ = this.genericApi.get(`${Constance.ATTACK_PATTERN_URL}?${filter}`)
-            .finally(() => initData$.unsubscribe())
+            .finally(() => {
+                if (initData$) {
+                    initData$.unsubscribe();
+                }
+            })
             .subscribe(
                 (results: any[]) => {
+                    console.log('incoming data', results, this.indicators, this.indicatorsToAttackPatternMap);
                     const indicators = this.groupIndicatorsByAttackPatterns();
                     const collects = {attackPatterns: {}, phases: {}};
                     this.attackPatterns = results.reduce(
@@ -261,19 +270,14 @@ export class IndicatorHeatMapComponent implements OnInit {
      * @description when clicked, highlight the analytics targeting the attack pattern
      */
     public highlightAttackPatternAnalytics(clicked?: any) {
-        console.log('clicked', clicked, this.indicatorsGrid.nativeElement);
         if (clicked && clicked.row) {
             const index = this.selectedPatterns.findIndex(pattern => pattern.id === clicked.row.id);
-            console.log('pattern index', index);
             if (index < 0) {
                 // pattern was not previously selected; select it
                 this.selectedPatterns.push(clicked.row);
                 if (clicked.event && clicked.event.path && clicked.event.path.length) {
-                    console.log('event path', clicked.event.path);
                     const rect = clicked.event.path.find(node => node && (node.localName === 'rect'));
-                    console.log('event rect', rect);
-                    if (rect && rect.attributes) {
-                        console.log('rect attrs', rect.attributes, rect.attributes.getNamedItem('class'));
+                    if (rect) {
                         const cls = document.createAttribute('class');
                         cls.value = 'selected';
                         rect.attributes.setNamedItem(cls);
@@ -284,27 +288,23 @@ export class IndicatorHeatMapComponent implements OnInit {
                 this.selectedPatterns.splice(index, 1);
                 if (event && clicked.event.path && clicked.event.path.length) {
                     const rect = clicked.event.path.find(node => node && (node.localName === 'rect'));
-                    console.log('event rect', rect);
-                    if (rect && rect.attributes) {
-                        console.log('rect attrs', rect.attributes, rect.attributes.getNamedItem('class'));
+                    if (rect) {
                         rect.attributes.removeNamedItem('class');
                     }
                 }
             }
 
             // update the analytics list
-            console.log('selected patterns', this.selectedPatterns);
             if (this.selectedPatterns.length === 0) {
-                requestAnimationFrame(() => this.displayIndicators = this.indicators);
+                this.displayIndicators = this.indicators;
             } else {
                 const selectedIndicators = this.selectedPatterns.reduce(
                     (indicators, pattern) => {
                         indicators.push(...pattern.indicators);
                         return indicators;
                     }, []);
-                console.log('selected indicators', selectedIndicators);
-                requestAnimationFrame(() => this.displayIndicators =
-                        this.indicators.filter(indicator => selectedIndicators.includes(indicator.id)));
+                this.displayIndicators =
+                        this.indicators.filter(indicator => selectedIndicators.includes(indicator.id));
             }
         }
     }
