@@ -105,8 +105,6 @@ export class MasterListDialogComponent implements AfterViewInit, OnDestroy {
      * @return {void}
      */
     public ngAfterViewInit(): void {
-        console.log('afterContentInit');
-
         const sub$ = this.filters.changes.subscribe(
             (comps) => this.initFilter(comps.first),
             (err) => {
