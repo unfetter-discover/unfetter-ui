@@ -14,6 +14,7 @@ import { IndicatorBase } from '../models/indicator-base-class';
 import { fadeInOut } from '../../global/animations/fade-in-out';
 import { ConfirmationDialogComponent } from '../../components/dialogs/confirmation/confirmation-dialog.component';
 import { initialSearchParameters } from '../store/indicator-sharing.reducers';
+import { IndicatorHeatMapComponent } from '../indicator-heat-map/indicator-heat-map.component';
 
 @Component({
     selector: 'indicator-sharing-list',
@@ -61,7 +62,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                     filteredIndicatorSub$.unsubscribe();
                 }
             );
-        
+
         const displayedIndicatorSub$ = this.store.select('indicatorSharing')
             .pluck('displayedIndicators')
             .distinctUntilChanged()
@@ -110,7 +111,6 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                     searchParametersSub$.unsubscribe();
                 }
             );
-
 
         const getUser$ = this.store.select('users')
             .take(1)
@@ -205,4 +205,20 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     public editIndicator(indicatorToEdit: any) {
         this.openDialog(indicatorToEdit);
     }
+
+    /**
+     * @description Displays a popup that shows the user a heat map of all attack patterns used by all the
+     *              currently-filtered analytics.
+     */
+    public viewHeatMapDialog(ev?: UIEvent) {
+        this.dialog.open(IndicatorHeatMapComponent, {
+            width: 'calc(100vw - 150px)',
+            height: 'calc(100vh - 100px)',
+            data: {
+                indicators: this.filteredIndicators,
+                indicatorsToAttackPatternMap: this.indicatorToAttackPatternMap,
+            }
+        });
+    }
+
 }

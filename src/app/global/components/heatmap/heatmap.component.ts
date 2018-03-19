@@ -291,7 +291,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
             batch.width = bounds.cellWidth * batch.columns;
             return [width + batch.width, columns + batch.columns - 1];
         }, [0, 0]);
-        bounds.padding.between = Math.min(availableWidth - usedCellWidth / insideColumns, 1);
+        bounds.padding.between = Math.min(availableWidth - usedCellWidth / Math.max(insideColumns, 1), 1);
 
         const totalUsedWidth = usedCellWidth + minPadding + bounds.padding.between * insideColumns;
         bounds.padding.left += Math.floor((bounds.viewWidth - totalUsedWidth) / 2);

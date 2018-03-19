@@ -107,14 +107,22 @@ export const mockIndicators = [
 ];
 
 export const mockAttackPatterns = [
-    {
-        name: 'fake',
-        id: 'fake123'
-    }
+    { name: 'AP1', id: 'ap1' },
+    { name: 'AP2', id: 'ap2' },
 ];
+
+export const indicatorToApMap = {
+    'fake123': [{id: mockAttackPatterns[0].id, name: mockAttackPatterns[0].name}],
+    'mfake123': [
+        {id: mockAttackPatterns[0].id, name: mockAttackPatterns[0].name},
+        {id: mockAttackPatterns[1].id, name: mockAttackPatterns[1].name},
+    ],
+    'zfake123': [{id: mockAttackPatterns[1].id, name: mockAttackPatterns[1].name}],
+};
 
 export function makeMockIndicatorSharingStore(store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>) {
     store.dispatch(new indicatorSharingActions.SetIndicators(mockIndicators));
     store.dispatch(new indicatorSharingActions.SetAttackPatterns(mockAttackPatterns));
+    store.dispatch(new indicatorSharingActions.SetIndicatorToApMap(indicatorToApMap));
     store.dispatch(new indicatorSharingActions.FilterIndicators());
 }

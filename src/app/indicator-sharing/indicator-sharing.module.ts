@@ -2,8 +2,24 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatSelectModule, MatChipsModule, MatTooltipModule, MatCardModule,
-    MatTabsModule, MatInputModule, MatIconModule, MatButtonModule, MatDatepickerModule, MatNativeDateModule, MatRadioModule, MatListModule, MatStepperModule, MatDialogModule, MatSidenavModule, MatMenuModule } from '@angular/material';
+import {
+        MatSelectModule,
+        MatChipsModule,
+        MatTooltipModule,
+        MatCardModule,
+        MatTabsModule,
+        MatInputModule,
+        MatIconModule,
+        MatButtonModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatRadioModule,
+        MatListModule,
+        MatStepperModule,
+        MatDialogModule,
+        MatSidenavModule,
+        MatMenuModule,
+    } from '@angular/material';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { ClipboardModule } from 'ngx-clipboard';
@@ -30,6 +46,7 @@ import { IndicatorSharingSortComponent } from './indicator-sharing-sort/indicato
 import { IndicatorSharingFiltersComponent } from './indicator-sharing-filters/indicator-sharing-filters.component';
 import { GeneratedObservedDataComponent } from './generated-observed-data/generated-observed-data.component';
 import { AddAttackPatternComponent } from './add-attack-pattern/add-attack-pattern.component';
+import { IndicatorHeatMapComponent } from './indicator-heat-map/indicator-heat-map.component';
 
 const matModules = [
     MatButtonModule,
@@ -75,13 +92,15 @@ const matModules = [
         IndicatorSharingSortComponent,
         IndicatorSharingFiltersComponent,
         GeneratedObservedDataComponent,
-        AddAttackPatternComponent
+        AddAttackPatternComponent,
+        IndicatorHeatMapComponent,
     ],
     providers: [
         IndicatorSharingService
     ],
     entryComponents: [
-        AddIndicatorComponent
+        AddIndicatorComponent,
+        IndicatorHeatMapComponent,
     ]
 })
 export class IndicatorSharingModule { }
