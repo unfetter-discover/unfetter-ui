@@ -14,7 +14,7 @@ import { indicatorSharingReducer } from '../store/indicator-sharing.reducers';
 import { CapitalizePipe } from '../../global/pipes/capitalize.pipe';
 import { GenericApi } from '../../core/services/genericapi.service';
 
-fdescribe('IndicatorHeatMapComponent', () => {
+describe('IndicatorHeatMapComponent', () => {
 
     let fixture: ComponentFixture<IndicatorHeatMapComponent>;
     let component: IndicatorHeatMapComponent;
