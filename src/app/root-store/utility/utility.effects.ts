@@ -51,9 +51,7 @@ export class UtilityEffects {
     @Effect({ dispatch: false })
     public recordVisit = this.actions$
         .ofType(utilityActions.RECORD_VISIT)
-            .do((_) => console.log('VISIT ENTER'))
-            .switchMap((_) => this.genericApi.get(`${this.webAnalyticsUrl}/visit`))
-            .do((_) => console.log('VISIT RECORDED'));
+        .switchMap((_) => this.genericApi.get(`${this.webAnalyticsUrl}/visit`));
 
     constructor(
         private actions$: Actions,

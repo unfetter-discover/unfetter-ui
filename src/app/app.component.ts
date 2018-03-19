@@ -45,6 +45,7 @@ export class AppComponent implements OnInit {
     if (this.authService.loggedIn()) {
       if (!this.demoMode) {
         const token = this.authService.getToken();
+        this.store.dispatch(new userActions.SetToken(token));
         this.store.dispatch(new userActions.FetchUser(token));
       } else {
         this.store.dispatch(new userActions.LoginUser({
