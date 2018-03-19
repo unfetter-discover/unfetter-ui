@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { ComponentFixture, TestBed, async, fakeAsync, tick } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 import { ActionReducerMap, StoreModule } from '@ngrx/store';
@@ -14,7 +14,7 @@ import { indicatorSharingReducer } from '../store/indicator-sharing.reducers';
 import { CapitalizePipe } from '../../global/pipes/capitalize.pipe';
 import { GenericApi } from '../../core/services/genericapi.service';
 
-describe('IndicatorHeatMapComponent', () => {
+fdescribe('IndicatorHeatMapComponent', () => {
 
     let fixture: ComponentFixture<IndicatorHeatMapComponent>;
     let component: IndicatorHeatMapComponent;
@@ -101,6 +101,29 @@ describe('IndicatorHeatMapComponent', () => {
         expect(component.displayIndicators.length).toBe(3);
     }));
 
+    it('should allow hover tooltips', fakeAsync(() => {
+        expect(component.attackPattern).toBeNull();
+
+        const first = fixture.nativeElement.querySelector('g.heat-map-cell');
+        component.onTooltip({
+            row: component.heatmap[0].columns[0][0],
+            event: {target: first}
+        });
+        tick(1000); // skip a second into the future to spawn the tooltip
+        fixture.detectChanges();
+        expect(component.attackPattern).not.toBeNull();
+        expect(component.attackPattern.id).toEqual(component.heatmap[0].columns[0][0].id);
+
+        // now simulate moving off the attack pattern
+        component.onTooltip({
+            row: null,
+            event: {target: first}
+        });
+        tick(1000); // skip a second into the future to spawn the tooltip
+        fixture.detectChanges();
+        expect(component.attackPattern).toBeNull();
+    }));
+
     it('should filter analytics', async(() => {
         const first = fixture.nativeElement.querySelector('g.heat-map-cell rect');
         // TODO i'd rather invoke a mouseclick event on the above rect object, but can't seem to tell angular to do that
@@ -111,6 +134,15 @@ describe('IndicatorHeatMapComponent', () => {
         fixture.detectChanges();
         expect(component.selectedPatterns.length).toBe(1);
         expect(component.displayIndicators.length).toBe(2);
+
+        // click it again to see that it handle deselects
+        component.highlightAttackPatternAnalytics({
+            row: component.heatmap[0].columns[0][0],
+            event: {path: [first]}
+        });
+        fixture.detectChanges();
+        expect(component.selectedPatterns.length).toBe(0);
+        expect(component.displayIndicators.length).toBe(3);
     }));
 
 });

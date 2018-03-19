@@ -286,7 +286,7 @@ export class IndicatorHeatMapComponent implements OnInit {
             } else {
                 // remove the pattern from our selection list
                 this.selectedPatterns.splice(index, 1);
-                if (event && clicked.event.path && clicked.event.path.length) {
+                if (clicked.event && clicked.event.path && clicked.event.path.length) {
                     const rect = clicked.event.path.find(node => node && (node.localName === 'rect'));
                     if (rect) {
                         rect.attributes.removeNamedItem('class');
