@@ -15,12 +15,13 @@ import { fadeInOut } from '../../global/animations/fade-in-out';
 import { ConfirmationDialogComponent } from '../../components/dialogs/confirmation/confirmation-dialog.component';
 import { initialSearchParameters } from '../store/indicator-sharing.reducers';
 import { IndicatorHeatMapComponent } from '../indicator-heat-map/indicator-heat-map.component';
+import { heightCollapse } from '../../global/animations/height-collapse';
 
 @Component({
     selector: 'indicator-sharing-list',
     templateUrl: 'indicator-sharing-list.component.html',
     styleUrls: ['indicator-sharing-list.component.scss'],
-    animations: [fadeInOut],
+    animations: [ fadeInOut, heightCollapse ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
@@ -32,6 +33,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     public searchParameters;
     public filterOpen: boolean = false;
     public filterOpened: boolean = false;
+    public showSummaryStats: boolean = false;
 
     @ViewChild('filterContainer') public filterContainer: MatSidenav;
 
