@@ -10,7 +10,6 @@
       <canvas *ngIf="showSummary === false; else summaryChart" baseChart [datasets]="doughnutChartData" [labels]="doughnutChartLabels"
         [chartType]="doughnutChartType" [colors]="doughnutChartColors" [options]="chartOptions"></canvas>
       <ng-template #summaryChart>
-        <span>CHART HERE</span>
         <canvas baseChart [datasets]="summaryDoughnutChartData" [labels]="summaryDoughnutChartLabels"
           [chartType]="summaryDoughnutChartType" [colors]="summaryDoughnutChartColors" [options]="chartOptions" id="summary-chart"></canvas>
       </ng-template>

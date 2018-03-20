@@ -26,7 +26,7 @@ import { AssessmentObject } from '../../models/assess/assessment-object';
 import { Stix } from '../../models/stix/stix';
 import { StixLabelEnum } from '../../models/stix/stix-label.enum';
 
-fdescribe('WizardComponent', () => {
+describe('WizardComponent', () => {
   let component: WizardComponent;
   let fixture: ComponentFixture<WizardComponent>;
 
@@ -193,6 +193,41 @@ fdescribe('WizardComponent', () => {
     title = fixture.debugElement.query(By.css('#summary-chart-title'));
     expect(title).toBeFalsy();
 
+  });
+
+  fit('should add each element in a risk array to current value at corresponding location in a total risk array', () => {
+    expect(component.riskReduction(null, null)).toEqual([]);
+  });
+
+  fit('should update the summary chart appropriately', () => {
+    component.summaryDoughnutChartData = null;
+    component.setAssessmentGroups(null);
+    component.updateSummaryChart();
+    expect(component.summaryDoughnutChartData[0].data).toEqual([]);
+
+    component.summaryDoughnutChartData = [{data: null, backgroundColor: null, hoverBackgroundColor: null}];
+    component.updateSummaryChart();
+    expect(component.summaryDoughnutChartData[0].data).toEqual([]);
+
+    component.summaryDoughnutChartData = [{data: [1, 3, 5], backgroundColor: null, hoverBackgroundColor: null}];
+    component.updateSummaryChart();
+    expect(component.summaryDoughnutChartData[0].data).toEqual([1, 3, 5]);
+
+    component.setAssessmentGroups([]);
+    component.updateSummaryChart();
+    expect(component.summaryDoughnutChartData[0].data).toEqual([1, 3, 5]);
+
+    component.setAssessmentGroups([{}]);
+    component.updateSummaryChart();
+    expect(component.summaryDoughnutChartData[0].data).toEqual([1, 3, 5]);
+
+    component.setAssessmentGroups([{assessments: null}]);
+    component.updateSummaryChart();
+    expect(component.summaryDoughnutChartData[0].data).toEqual([1, 3, 5]);
+
+    component.setAssessmentGroups([{assessments: []}]);
+    component.updateSummaryChart();
+    expect(component.summaryDoughnutChartData[0].data).toEqual([1, 3, 5]);
   });
 
   it(`can load existing data`, () => {

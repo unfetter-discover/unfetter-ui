@@ -434,9 +434,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     }
 
     // reset progress 
+    this.setSelectedRiskValue();
+    this.changeDetection.detectChanges();
     if (panelName !== 'summary') {
-      this.setSelectedRiskValue();
-      this.changeDetection.detectChanges();
       this.updateChart();
     }
     this.updateRatioOfAnswerQuestions();
@@ -741,6 +741,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.currentAssessmentGroup = null;
     this.showSummary = true;
     this.buttonLabel = 'SAVE';
+    this.updateSummaryChart();
   }
 
   /*
@@ -843,6 +844,22 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       index = 0;
     }
     return this.assessmentGroups[index];
+  }
+
+  /* 
+   * For testing only
+   * @return {any[]}
+   */
+  public getAssessmentGroups(): any[] {
+    return this.assessmentGroups;
+  }
+
+  /* 
+   * For testing only
+   * @return {any[]}
+   */
+  public setAssessmentGroups(newAssessementGroups: any[]): void {
+    this.assessmentGroups = newAssessementGroups;
   }
 
   /*
@@ -1003,7 +1020,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     chartData[0].data = this.currentAssessmentGroup
       ? this.currentAssessmentGroup.riskArray : [];
     this.doughnutChartData = chartData;
-    this.updateSummaryChart();
   }
 
   /*
@@ -1011,33 +1027,42 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
  * @return {void}
  */
   public updateSummaryChart(): void {
-    const chartData = this.summaryDoughnutChartData.slice();
-    if (this.assessmentGroups) {
-      this.assessmentGroups.forEach(element => this.calculateGroupRisk(element));
-      console.log(`this.assessmentGroups.riskArrays: ${JSON.stringify(this.assessmentGroups.map((group) => group.riskArray))}`);
-      console.log(`this.assessmentGroups.riskArrays.eachvalue? : ${JSON.stringify(this.assessmentGroups.map((group) => group.riskArray).map((risk) => risk[0]))}`);
-      console.log(`this.assessmentGroups.riskArrays.eachvalue reduced : ${JSON.stringify(this.assessmentGroups
-        .map((group) => group.riskArray)
-        .reduce((currentTotalRisk: number, currentRisk: number) => {console.log('ctr: ' + currentTotalRisk); console.log('cr: ' + currentRisk); currentTotalRisk[0] += currentRisk[0]; currentTotalRisk[1] += currentRisk[1]; return currentTotalRisk; }, [0, 0]))}`);
-      const totalRiskArray: number[] = this.assessmentGroups
-        .map((groups) => groups.riskArray)
-        .reduce((currentTotalRisk: number, currentRisk: number) => { currentTotalRisk[0] += currentRisk[0]; currentTotalRisk[1] += currentRisk[1]; return currentTotalRisk; }, [0, 0])
-        .map((riskSum) => riskSum / this.assessmentGroups.length);
-        // .map((risk) => riskArray), [];
-        // const allQuestions = this.assessmentGroups
-        // // flat map assessments across groups
-        // .map((groups) => groups.assessments)
-        // .reduce((assessments, memo) => memo.concat(assessments), [])
-        // // flat map across questions
-        // .map((assessments) => assessments.measurements)
-        // .reduce((measurements, memo) => memo.concat(measurements), []);
-      console.log(JSON.stringify(totalRiskArray));
-      chartData[0].data = totalRiskArray;
+    // default for problematic data
+    let chartData = [{ data: [], backgroundColor: [], hoverBackgroundColor: [] }];
+    if (this.summaryDoughnutChartData && this.summaryDoughnutChartData[0].data) {
+      chartData = this.summaryDoughnutChartData.slice();
+      if (this.assessmentGroups && this.assessmentGroups.length > 0) {
+        this.assessmentGroups.forEach(element => {
+          if (element.assessments) {
+            element.assessments.forEach(assessment => this.collectModelAssessments(assessment))
+          }
+          this.calculateGroupRisk(element)
+        });
+        console.log(`this.assessmentGroups.riskArrays: ${JSON.stringify(this.assessmentGroups.map((group) => group.riskArray))}`);
+        // console.log(`this.assessmentGroups.riskArrays.eachvalue? : ${JSON.stringify(this.assessmentGroups.map((group) => group.riskArray).map((risk) => { if (risk) { return risk[0]; }} ))}`);
+        console.log(`this.assessmentGroups.riskArrays.eachvalue reduced : ${JSON.stringify(this.assessmentGroups
+          .map((group) => group.riskArray)
+          .reduce(this.riskReduction, [0, 0]))}`);
+        const totalRiskArray: number[] = this.assessmentGroups
+          .map((groups) => groups.riskArray)
+          .reduce(this.riskReduction, [0, 0])
+          .map((riskSum) => riskSum / this.assessmentGroups.length);
+        console.log(JSON.stringify(totalRiskArray));
+        chartData[0].data = totalRiskArray;
+      }
     }
     this.summaryDoughnutChartData = chartData;
     console.log(`summary: ${JSON.stringify(this.summaryDoughnutChartData)}`);
     console.log(`current: ${JSON.stringify(this.doughnutChartData)}`);
     console.log(`length: ${this.summaryDoughnutChartData[0].data.length}`);
+  }
+
+  public riskReduction(currentTotalRisk: number[], currentRisk: number[]): number[] {
+    let result: number[] = [];
+    if (currentRisk) {
+      result = currentTotalRisk.map((riskValue, index) => riskValue += currentRisk[index]);
+    }
+    return result;
   }
 
   /*
