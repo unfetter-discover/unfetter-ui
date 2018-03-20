@@ -1,7 +1,7 @@
 <div id="indicatorSharingList" class="fadeIn" *ngIf="SERVER_CALL_COMPLETE; else loadingBlock">
     <button mat-fab color="primary" class="bottomRightFab" (click)="openDialog()">
         <i class="material-icons mat-24">add</i>
-    </button>
+    </button>   
 
     <mat-sidenav-container>
         <mat-sidenav #filterContainer id="filterContainer" opened="false" mode="side" class="mat-elevation-z8" (openedStart)="openedStart()" (closedStart)="closedStart()">
@@ -30,20 +30,30 @@
             </div>
             
             <div class="container-fluid">
-            
-                <div class="row">
+
+                <div class="row" id="listControls">
                     <div class="col-lg-8 col-lg-offset-2 col-md-12">
                         <div class="pl-24 pr-24 flex flexItemsCenter">
                             <indicator-sharing-sort></indicator-sharing-sort>
-                            <span class="flex1">&nbsp;</span>
-                            <button mat-button id="showAttackPatternHeatMap" (click)="viewHeatMapDialog($event)"
-                                    matTooltip="Display an Attack Pattern Heat Map of all Analytics">
-                                <i class="material-icons mat-24">view_comfy</i>
-                            </button>
-                            <span class="flex1">&nbsp;</span>
+                            <label class="spacer" id="spacer1">&nbsp;|&nbsp;</label>
                             <label class="mb-0">Results: {{ (store.select('indicatorSharing').pluck('filteredIndicators') | async).length }} / {{ (store.select('indicatorSharing').pluck('indicators')
                                 | async).length }}</label>
+                            <label class="spacer" id="spacer2">&nbsp;|&nbsp;</label>
+                            <button mat-icon-button id="showAttackPatternHeatMap" (click)="viewHeatMapDialog($event)" matTooltip="Show Heat Map">
+                                <i class="material-icons mat-24 labelColor" >view_comfy</i>
+                            </button>
+                            <button mat-icon-button matTooltip="{{ showSummaryStats ? 'Hide' : 'Show' }} Statistics" (click)="showSummaryStats = !showSummaryStats">
+                                <i class="material-icons mat-24" [ngClass]="{'labelColor': !showSummaryStats}">equalizer</i>
+                            </button>
                          </div>
+                    </div>
+                </div>
+
+                <div class="row" id="summaryStatsWrapper" @heightCollapse *ngIf="showSummaryStats">
+                    <div class="col-lg-8 col-lg-offset-2 col-md-12">
+                        <div class="pl-24 pr-24">
+                            <indicator-sharing-summary-statistics></indicator-sharing-summary-statistics>
+                        </div>
                     </div>
                 </div>
             

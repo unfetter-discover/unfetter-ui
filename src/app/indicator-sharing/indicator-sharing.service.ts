@@ -6,6 +6,7 @@ import { Constance } from '../utils/constance';
 import { AuthService } from '../core/services/auth.service';
 import { environment } from '../../environments/environment';
 import { RxjsHelpers } from '../global/static/rxjs-helpers';
+import { IndicatorSharingSummaryStatistics } from './models/summary-statistics';
 
 @Injectable()
 export class IndicatorSharingService {
@@ -166,5 +167,9 @@ export class IndicatorSharingService {
                 this.genericApi.get(`${this.sensorsUrl}?filter=${encodeURI(JSON.stringify(sensorFilter))}`).map(RxjsHelpers.mapArrayAttributes)
             )
             .map((results: [any[], any[], any[]]): any[] => results.reduce((prev, cur) => prev.concat(cur), []));
+    }
+
+    public getSummaryStatistics(): Observable<IndicatorSharingSummaryStatistics[]> {
+        return this.genericApi.get(`${this.baseUrl}/summary-statistics`).pluck('attributes');
     }
 }

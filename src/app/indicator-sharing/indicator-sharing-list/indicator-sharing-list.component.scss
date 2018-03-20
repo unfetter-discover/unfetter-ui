@@ -30,6 +30,21 @@
   left: 7px;
 }
 
-#showAttackPatternHeatMap {
-  color: #9e9e9e;
+#listControls {
+  label {
+    margin-bottom: 0;
+  }
+}
+
+#indicatorSharingList {
+  .spacer {
+    font-size: 28px;
+  }
+  #spacer1 {
+    margin-right: 13px;
+  }
+  #spacer2 {
+    margin-left: 14px;
+    margin-right: 6px;
+  }
 }
