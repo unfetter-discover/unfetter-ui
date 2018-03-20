@@ -1,14 +1,21 @@
 <div class="sidenav">
-  <div *ngIf="currentAssessmentGroup; else noChart" @heightCollapse class="flex-col mt-18 mb-12">
+  <div @heightCollapse class="flex-col mt-18 mb-12">
     <div class="center chart-header">
-      Phase Rating
+      <span *ngIf="showSummary === false; else summaryChartTitle">Phase Rating</span>
+      <ng-template #summaryChartTitle>
+        <span id="summary-chart-title">Overall Rating</span>
+      </ng-template>
     </div>
     <div style="display: block">
-      <canvas baseChart [datasets]="doughnutChartData" [labels]="doughnutChartLabels" [chartType]="doughnutChartType" [colors]="doughnutChartColors"
-        [options]="chartOptions"></canvas>
+      <canvas *ngIf="showSummary === false; else summaryChart" baseChart [datasets]="doughnutChartData" [labels]="doughnutChartLabels"
+        [chartType]="doughnutChartType" [colors]="doughnutChartColors" [options]="chartOptions"></canvas>
+      <ng-template #summaryChart>
+        <span>CHART HERE</span>
+        <canvas baseChart [datasets]="summaryDoughnutChartData" [labels]="summaryDoughnutChartLabels"
+          [chartType]="summaryDoughnutChartType" [colors]="summaryDoughnutChartColors" [options]="chartOptions" id="summary-chart"></canvas>
+      </ng-template>
     </div>
   </div>
-  <ng-template #noChart>&nbsp;</ng-template>
   <mat-accordion displayMode="flat" multi="false">
     <mat-expansion-panel *ngIf="indicators && indicators.length > 0" hideToggle="true" [expanded]="openedSidePanel === 'indicators'"
       (opened)="onOpenSidePanel('indicators', $event)">

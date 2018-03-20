@@ -54,25 +54,27 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public readonly defaultMeasurement = 'Nothing';
   public readonly sidePanelCollapseHeight = '32px';
   public readonly sidePanelExpandedHeight = '32px';
+  public readonly CHART_TYPE: string;
+  public readonly DEFAULT_CHART_COLORS: any[];
+  public readonly CHART_LABELS: string[];
+  public readonly CHART_BG_COLORS: any[];
+  public readonly CHART_HOVER_BG_COLORS: any[];
+
 
   public model: JsonApiData<Assessment, Dictionary<Assessment>>;
   public publishDate = new Date();
   public buttonLabel: ButtonLabel = 'CONTINUE';
   public navigations: { label: string, page: number }[] = [];
   public item: MenuItem[];
-  public doughnutChartLabels = ['Risk Accepted', 'Risk Addressed'];
-  public doughnutChartData = [
-    {
-      data: [],
-      backgroundColor: [Constance.COLORS.red, Constance.COLORS.green],
-      hoverBackgroundColor: [
-        Constance.COLORS.darkRed,
-        Constance.COLORS.darkGreen
-      ]
-    }
-  ];
-  public doughnutChartType: string = 'doughnut';
-  public doughnutChartColors = [{}];
+  public doughnutChartLabels: string[];
+  public doughnutChartData: { data: any[], backgroundColor: any[], hoverBackgroundColor: any[] }[];
+  public doughnutChartType: string = this.CHART_TYPE;
+  public doughnutChartColors: any[] = this.DEFAULT_CHART_COLORS;
+
+  public summaryDoughnutChartLabels: string[] = this.CHART_LABELS;
+  public summaryDoughnutChartData: { data: any[], backgroundColor: any[], hoverBackgroundColor: any[] }[];
+  public summaryDoughnutChartType: string = this.CHART_TYPE;
+  public summaryDoughnutChartColors = this.DEFAULT_CHART_COLORS;
   public chartOptions = {
     legend: {
       display: false
@@ -129,6 +131,11 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     private changeDetection: ChangeDetectorRef
   ) {
     super();
+    this.CHART_TYPE = 'doughnut';
+    this.DEFAULT_CHART_COLORS = [{}];
+    this.CHART_LABELS = ['Risk Accepted', 'Risk Addressed'];
+    this.CHART_BG_COLORS = [Constance.COLORS.red, Constance.COLORS.green];
+    this.CHART_HOVER_BG_COLORS = [Constance.COLORS.darkRed, Constance.COLORS.darkGreen];
   }
 
   /*
@@ -136,6 +143,25 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    *  initializes this component, fetchs data to build page
    */
   public ngOnInit(): void {
+    this.doughnutChartColors = this.DEFAULT_CHART_COLORS;
+    this.doughnutChartData = [{
+      data: [],
+      backgroundColor: this.CHART_BG_COLORS,
+      hoverBackgroundColor: this.CHART_HOVER_BG_COLORS,
+    }
+    ];
+    this.doughnutChartLabels = this.CHART_LABELS;
+    this.doughnutChartType = this.CHART_TYPE;
+    this.summaryDoughnutChartColors = this.DEFAULT_CHART_COLORS;
+    this.summaryDoughnutChartData = [{
+      data: [],
+      backgroundColor: this.CHART_BG_COLORS,
+      hoverBackgroundColor: this.CHART_HOVER_BG_COLORS,
+    }
+    ];
+    this.summaryDoughnutChartLabels = this.CHART_LABELS;
+    this.summaryDoughnutChartType = this.CHART_TYPE;
+
     const idParamSub$ = this.route.params
       .subscribe(
         (params) => {
@@ -407,10 +433,12 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       this.tempModel = { ...this.assessmentTypeGroups[this.openedSidePanel].tempModel };
     }
 
-    // reset progress bar
-    this.setSelectedRiskValue();
-    this.changeDetection.detectChanges();
-    this.updateChart();
+    // reset progress 
+    if (panelName !== 'summary') {
+      this.setSelectedRiskValue();
+      this.changeDetection.detectChanges();
+      this.updateChart();
+    }
     this.updateRatioOfAnswerQuestions();
   }
 
@@ -950,17 +978,18 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
   /*
    * @description
+   * @param {any} assessmentGroup 
    * @return {number}
    */
-  public calculateGroupRisk(): number {
+  public calculateGroupRisk(assessmentGroup: any = this.currentAssessmentGroup): number {
     let groupRisk = 0; // based on the default value from the calculateRisk function below
-    if (this.currentAssessmentGroup && this.currentAssessmentGroup.assessments && this.currentAssessmentGroup.assessments.length > 0) {
-      groupRisk = this.calculateRisk(this.currentAssessmentGroup.assessments);
+    if (assessmentGroup && assessmentGroup.assessments && assessmentGroup.assessments.length > 0) {
+      groupRisk = this.calculateRisk(assessmentGroup.assessments);
       const riskArray = [];
       riskArray.push(groupRisk);
       riskArray.push(1 - groupRisk);
-      this.currentAssessmentGroup.risk = groupRisk;
-      this.currentAssessmentGroup.riskArray = riskArray;
+      assessmentGroup.risk = groupRisk;
+      assessmentGroup.riskArray = riskArray;
     }
     return groupRisk;
   }
@@ -974,6 +1003,41 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     chartData[0].data = this.currentAssessmentGroup
       ? this.currentAssessmentGroup.riskArray : [];
     this.doughnutChartData = chartData;
+    this.updateSummaryChart();
+  }
+
+  /*
+ * @description update the summary chart data
+ * @return {void}
+ */
+  public updateSummaryChart(): void {
+    const chartData = this.summaryDoughnutChartData.slice();
+    if (this.assessmentGroups) {
+      this.assessmentGroups.forEach(element => this.calculateGroupRisk(element));
+      console.log(`this.assessmentGroups.riskArrays: ${JSON.stringify(this.assessmentGroups.map((group) => group.riskArray))}`);
+      console.log(`this.assessmentGroups.riskArrays.eachvalue? : ${JSON.stringify(this.assessmentGroups.map((group) => group.riskArray).map((risk) => risk[0]))}`);
+      console.log(`this.assessmentGroups.riskArrays.eachvalue reduced : ${JSON.stringify(this.assessmentGroups
+        .map((group) => group.riskArray)
+        .reduce((currentTotalRisk: number, currentRisk: number) => {console.log('ctr: ' + currentTotalRisk); console.log('cr: ' + currentRisk); currentTotalRisk[0] += currentRisk[0]; currentTotalRisk[1] += currentRisk[1]; return currentTotalRisk; }, [0, 0]))}`);
+      const totalRiskArray: number[] = this.assessmentGroups
+        .map((groups) => groups.riskArray)
+        .reduce((currentTotalRisk: number, currentRisk: number) => { currentTotalRisk[0] += currentRisk[0]; currentTotalRisk[1] += currentRisk[1]; return currentTotalRisk; }, [0, 0])
+        .map((riskSum) => riskSum / this.assessmentGroups.length);
+        // .map((risk) => riskArray), [];
+        // const allQuestions = this.assessmentGroups
+        // // flat map assessments across groups
+        // .map((groups) => groups.assessments)
+        // .reduce((assessments, memo) => memo.concat(assessments), [])
+        // // flat map across questions
+        // .map((assessments) => assessments.measurements)
+        // .reduce((measurements, memo) => memo.concat(measurements), []);
+      console.log(JSON.stringify(totalRiskArray));
+      chartData[0].data = totalRiskArray;
+    }
+    this.summaryDoughnutChartData = chartData;
+    console.log(`summary: ${JSON.stringify(this.summaryDoughnutChartData)}`);
+    console.log(`current: ${JSON.stringify(this.doughnutChartData)}`);
+    console.log(`length: ${this.summaryDoughnutChartData[0].data.length}`);
   }
 
   /*

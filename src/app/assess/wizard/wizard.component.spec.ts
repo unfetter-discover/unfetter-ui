@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { MatButtonModule, MatCardModule, MatDatepickerModule, MatDialogModule, MatSnackBarModule, MatSelectModule, MatInputModule, MatExpansionModule, MatProgressBarModule } from '@angular/material';
@@ -26,7 +26,7 @@ import { AssessmentObject } from '../../models/assess/assessment-object';
 import { Stix } from '../../models/stix/stix';
 import { StixLabelEnum } from '../../models/stix/stix-label.enum';
 
-describe('WizardComponent', () => {
+fdescribe('WizardComponent', () => {
   let component: WizardComponent;
   let fixture: ComponentFixture<WizardComponent>;
 
@@ -175,7 +175,24 @@ describe('WizardComponent', () => {
 
     component.buttonLabel = 'SAVE';
     component.onOpenSidePanel('summary');
+    component.showSummarySavePage();
     expect(component.buttonLabel).toEqual('SAVE');
+  });
+
+  it('should have a summary rollup chart when on the summary page', () => {
+    component.onOpenSidePanel('summary');
+    component.showSummarySavePage();
+    fixture.detectChanges();
+    let title = fixture.debugElement.query(By.css('#summary-chart-title'));
+    let chart = fixture.debugElement.query(By.css('#summary-chart'));
+    expect(title).toBeTruthy();
+    expect(chart).toBeTruthy();
+
+    component.onOpenSidePanel('sensors');
+    fixture.detectChanges();
+    title = fixture.debugElement.query(By.css('#summary-chart-title'));
+    expect(title).toBeFalsy();
+
   });
 
   it(`can load existing data`, () => {
