@@ -219,15 +219,15 @@ describe('WizardComponent', () => {
 
     component.setAssessmentGroups([{}]);
     component.updateSummaryChart();
-    expect(component.summaryDoughnutChartData[0].data).toEqual([1, 3, 5]);
+    expect(component.summaryDoughnutChartData[0].data).toEqual([]);
 
     component.setAssessmentGroups([{assessments: null}]);
     component.updateSummaryChart();
-    expect(component.summaryDoughnutChartData[0].data).toEqual([1, 3, 5]);
+    expect(component.summaryDoughnutChartData[0].data).toEqual([]);
 
     component.setAssessmentGroups([{assessments: []}]);
     component.updateSummaryChart();
-    expect(component.summaryDoughnutChartData[0].data).toEqual([1, 3, 5]);
+    expect(component.summaryDoughnutChartData[0].data).toEqual([]);
   });
 
   it(`can load existing data`, () => {
