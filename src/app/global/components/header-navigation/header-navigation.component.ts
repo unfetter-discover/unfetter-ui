@@ -100,11 +100,11 @@ export class HeaderNavigationComponent {
   }
 
   @HostListener('document:click', ['$event']) public clickedOutside(event) {
-    if (this.showAppMenu && !this.el.nativeElement.querySelector('#appMenuWrapper').contains(event.target)) {
+    if (this.showAppMenu && this.el.nativeElement.querySelector('#appMenuWrapper') && !this.el.nativeElement.querySelector('#appMenuWrapper').contains(event.target)) {
       this.showAppMenu = false;
     }
 
-    if (this.showAccountMenu && !this.el.nativeElement.querySelector('#accountWrapper').contains(event.target)) {
+    if (this.showAccountMenu && this.el.nativeElement.querySelector('#accountWrapper') && !this.el.nativeElement.querySelector('#accountWrapper').contains(event.target)) {
       this.showAccountMenu = false;
     }
   }
