@@ -539,19 +539,27 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     }
   }
 
-  private collectModelAssessments(assessment: any) {
-    const assessmentObject = this.model.attributes.assessment_objects.find(obj => assessment.id === obj.stix.id);
-    if (!assessmentObject) {
-      console.warn(`assessmentObject not found! id: ${assessment.id}, moving on...`);
-      return;
-    }
-    assessment.risk = assessmentObject.risk;
-    assessment.measurements.forEach((m) => {
-      const question = assessmentObject.questions.find((q) => q.name === m.name);
-      if (question) {
-        m.risk = question.risk;
+  public collectModelAssessments(assessment: any) {
+    if (this.model && this.model.attributes && this.model.attributes.assessment_objects
+      && this.model.attributes.assessment_objects.length > 0 && assessment && assessment.id) {
+      const assessmentObject = this.model.attributes.assessment_objects.find(obj => obj.stix ? assessment.id === obj.stix.id : false);
+      if (!assessmentObject) {
+        console.warn(`assessmentObject not found! id: ${assessment.id}, moving on...`);
+        return;
       }
-    });
+      assessment.risk = assessmentObject.risk ? assessmentObject.risk : 0;
+      if (assessment.measurements && assessmentObject.questions) {
+        assessment.measurements.forEach((m) => {
+          const question = assessmentObject.questions.find((q) => q.name === m.name);
+          if (question) {
+            m.risk = question.risk ? question.risk : 0;
+          }
+        });
+      }
+    } else {
+      console.error(`unable to execute collection of model assessments ${JSON.stringify(this.model)}`);
+    }
+
   }
 
   /*

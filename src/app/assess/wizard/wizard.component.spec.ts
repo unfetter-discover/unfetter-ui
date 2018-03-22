@@ -26,6 +26,36 @@ import { AssessmentObject } from '../../models/assess/assessment-object';
 import { Stix } from '../../models/stix/stix';
 import { StixLabelEnum } from '../../models/stix/stix-label.enum';
 
+class MockModel {
+  attributes: any;
+  type: any;
+  relationships: any;
+  links: any;
+
+  constructor() {
+    this.attributes = {
+      assessmentMeta: null, assessment_objects: [
+        {
+          stix:
+            {
+              version: null, external_references: null, granular_markings: null, name: null,
+              description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
+              type: null, valid_from: null, labels: null, modified: null, created: null,
+              metaProperties: null, id: 'happyjack'
+            },
+          risk: .25, questions: [{ name: 'sandychapsticks', risk: 3, options: null, selected_value: null }]
+        }],
+      created: null,
+      description: null, modified: null, name: null, type: null, version: null,
+      external_references: null, granular_markings: null, pattern: null, kill_chain_phases: null,
+      created_by_ref: null, valid_from: null, labels: null, metaProperties: null
+    }
+    this.type = null;
+    this.relationships = null;
+    this.links = null;
+  }
+}
+
 describe('WizardComponent', () => {
   let component: WizardComponent;
   let fixture: ComponentFixture<WizardComponent>;
@@ -199,17 +229,158 @@ describe('WizardComponent', () => {
     expect(component.riskReduction(null, null)).toEqual([]);
   });
 
+  fit('should collect model assessments robustly', () => {
+    component.model = null;
+    spyOn(console, 'error');
+    spyOn(console, 'warn');
+    let assessment: any = null;
+    component.collectModelAssessments(assessment);
+    expect(console.error).toHaveBeenCalledTimes(1);
+
+    component.model = { attributes: null, type: null, relationships: null, links: null };
+    component.collectModelAssessments(assessment);
+    expect(console.error).toHaveBeenCalledTimes(2);
+
+    component.model = new MockModel();
+    component.model.attributes.assessment_objects = null;
+    component.collectModelAssessments(assessment);
+    expect(console.error).toHaveBeenCalledTimes(3);
+
+    component.model = new MockModel();
+    component.model.attributes.assessment_objects = [];
+    component.collectModelAssessments(assessment);
+    expect(console.error).toHaveBeenCalledTimes(4);
+
+    component.model = new MockModel();
+    component.model.attributes.assessment_objects = [{ risk: null, questions: null }];
+    component.collectModelAssessments(assessment);
+    expect(console.error).toHaveBeenCalledTimes(5);
+
+    component.model = new MockModel();
+    assessment = {};
+    component.collectModelAssessments(assessment);
+    expect(console.error).toHaveBeenCalledTimes(6);
+
+    component.model = new MockModel();
+    assessment = { id: null };
+    component.collectModelAssessments(assessment);
+    expect(console.error).toHaveBeenCalledTimes(7);
+
+    component.model = new MockModel();
+    component.model.attributes.assessment_objects = [{ stix: null, risk: null, questions: null }];
+    assessment = { id: 'happyjack' };
+    component.collectModelAssessments(assessment);
+    expect(console.warn).toHaveBeenCalledTimes(1);
+
+    component.model = new MockModel();
+    component.model.attributes.assessment_objects[0] = {
+      stix: {
+        version: null, external_references: null, granular_markings: null, name: null, description: null,
+        pattern: null, kill_chain_phases: null, created_by_ref: null, type: null, valid_from: null, labels: null,
+        modified: null, created: null, metaProperties: null
+      }, risk: null, questions: null
+    };
+    component.collectModelAssessments(assessment);
+    expect(console.warn).toHaveBeenCalledTimes(2);
+
+    component.model = new MockModel();
+    component.model.attributes.assessment_objects[0] = {
+      stix: {
+        version: null, external_references: null, granular_markings: null, name: null, description: null,
+        pattern: null, kill_chain_phases: null, created_by_ref: null, type: null, valid_from: null, labels: null,
+        modified: null, created: null, metaProperties: null, id: null
+      }, risk: null, questions: null
+    };
+    component.collectModelAssessments(assessment);
+    expect(console.warn).toHaveBeenCalledTimes(3);
+
+    component.model = new MockModel();
+    component.model.attributes.assessment_objects[0].risk = null;
+    component.model.attributes.assessment_objects[0].questions = null;
+    component.collectModelAssessments(assessment);
+    expect(assessment.risk).toEqual(0);
+    expect(console.warn).toHaveBeenCalledTimes(3);
+
+    component.model = new MockModel();
+    component.model.attributes.assessment_objects[0].questions = null;
+    component.collectModelAssessments(assessment);
+    expect(assessment.risk).toEqual(.25);
+
+    component.model = new MockModel();
+    assessment = { id: 'happyjack', measurements: null };
+    component.collectModelAssessments(assessment);
+    expect(assessment.measurements).toEqual(null);
+
+    component.model = new MockModel();
+    assessment = { id: 'happyjack', measurements: [] };
+    component.collectModelAssessments(assessment);
+    expect(assessment.measurements).toEqual([]);
+
+    component.model = new MockModel();
+    component.model.attributes.assessment_objects[0].questions = null;
+    assessment = { id: 'happyjack', measurements: [{}] };
+    component.collectModelAssessments(assessment);
+    expect(assessment.measurements).toEqual([{}]);
+
+    component.model = new MockModel();
+    component.model.attributes.assessment_objects[0].questions = [{ name: null, risk: null, options: null, selected_value: null }];
+    component.collectModelAssessments(assessment);
+    expect(assessment.measurements).toEqual([{}]);
+
+    component.model = new MockModel();
+    component.model.attributes.assessment_objects[0].questions = [{ name: null, risk: null, options: null, selected_value: null }];
+    assessment = { id: 'happyjack', measurements: [{ name: null }] };
+    component.collectModelAssessments(assessment);
+    expect(assessment.measurements[0].name).toEqual(null);
+    expect(assessment.measurements[0].risk).toEqual(0);
+
+    component.model = new MockModel();
+    component.model.attributes.assessment_objects[0].questions = [{ name: 'sandychapsticks', risk: null, options: null, selected_value: null }];
+    assessment = { id: 'happyjack', measurements: [{ name: null }] };
+    component.collectModelAssessments(assessment);
+    expect(assessment.measurements[0].name).toEqual(null);
+
+    component.model = new MockModel();
+    component.model.attributes.assessment_objects[0].questions = [{ name: 'sandychapsticks', risk: null, options: null, selected_value: null }];
+    assessment = { id: 'happyjack', measurements: [{ name: 'applesauce' }] };
+    component.collectModelAssessments(assessment);
+    expect(assessment.measurements[0].name).toEqual('applesauce');
+    expect(assessment.measurements[0].risk).toBe(undefined);
+
+    component.model = new MockModel();
+    component.model.attributes.assessment_objects[0].questions = [{ name: 'sandychapsticks', risk: null, options: null, selected_value: null }];
+    assessment = { id: 'happyjack', measurements: [{ name: 'sandychapsticks' }] };
+    component.collectModelAssessments(assessment);
+    expect(assessment.measurements[0].name).toEqual('sandychapsticks');
+    expect(assessment.measurements[0].risk).toBe(0);
+
+    component.model = new MockModel();
+    assessment = { id: 'happyjack', measurements: [{ name: 'sandychapsticks' }] };
+    component.collectModelAssessments(assessment);
+    expect(assessment.measurements[0].risk).toBe(3);
+
+  });
+
   fit('should update the summary chart appropriately', () => {
+    // this.model = {
+    //   id: summary.id,
+    //   type: summary.type,
+    //   attributes: summary,
+    //   relationships: typedAssessments,
+    //   links: undefined
+    // };
+
+    component.model = null;
     component.summaryDoughnutChartData = null;
     component.setAssessmentGroups(null);
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([]);
 
-    component.summaryDoughnutChartData = [{data: null, backgroundColor: null, hoverBackgroundColor: null}];
+    component.summaryDoughnutChartData = [{ data: null, backgroundColor: null, hoverBackgroundColor: null }];
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([]);
 
-    component.summaryDoughnutChartData = [{data: [1, 3, 5], backgroundColor: null, hoverBackgroundColor: null}];
+    component.summaryDoughnutChartData = [{ data: [1, 3, 5], backgroundColor: null, hoverBackgroundColor: null }];
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([1, 3, 5]);
 
@@ -221,13 +392,17 @@ describe('WizardComponent', () => {
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([]);
 
-    component.setAssessmentGroups([{assessments: null}]);
+    component.setAssessmentGroups([{ assessments: null }]);
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([]);
 
-    component.setAssessmentGroups([{assessments: []}]);
+    component.setAssessmentGroups([{ assessments: [] }]);
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([]);
+
+    // component.setAssessmentGroups([{assessments: [{id: null}]}]);
+    // component.updateSummaryChart();
+    // expect(component.summaryDoughnutChartData[0].data).toEqual([]);
   });
 
   it(`can load existing data`, () => {
