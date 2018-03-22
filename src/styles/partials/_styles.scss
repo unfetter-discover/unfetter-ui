@@ -158,29 +158,6 @@ label {
 //     padding: 5px; // background: pink;
 // }
 
-// ~~~ Intrusion Set Dashboard ~~~
-#intrusionSetDashboard {
-    .node {
-        cursor: pointer;
-    }
-    .node circle {
-        fill: #fff;
-        stroke: $neutral-color;
-        stroke-width: 1.5px;
-    }
-    .node text {
-        font: 12px sans-serif;
-    }
-    .link {
-        fill: none;
-        stroke: #ccc;
-        stroke-width: 1.5px;
-    }
-    .intrusion-set-dashboard-side-panel-checkbox>.mat-checkbox-layout>.mat-checkbox-inner-container>.mat-checkbox-frame {
-        border-color: $neutral-color;
-    }
-}
-
 .ui-progressbar {
     height: 1.2em;
     text-align: left;

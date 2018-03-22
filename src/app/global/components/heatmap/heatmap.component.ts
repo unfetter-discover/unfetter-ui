@@ -23,7 +23,7 @@ import * as d3 from 'd3';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { Dictionary } from '../../../models/json/dictionary';
 
-interface BatchData {
+export interface BatchData {
     batch: string,
     active: string | boolean,
     columns?: Array<Array<BatchData>>,
@@ -183,17 +183,18 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
      * @description handle changes to the data or the viewport size
      */
     public ngDoCheck() {
-        const rect: DOMRect = (d3.select('.heat-map').node() as any).getBoundingClientRect();
-        if (!rect || !rect.width || !rect.height) {
+        const node: any = d3.select('.heat-map').node();
+        const rect: DOMRect = node ? node.getBoundingClientRect() : null;
+        if (!node || !rect || !rect.width || !rect.height) {
             return;
         } else if (this.heatMapData !== this.previousHeatMapData) {
-            console.log('heatmap data change detected');
+            console.log(new Date().toISOString(), 'heatmap data change detected');
             this.changeDetector.markForCheck();
             this.createHeatMap();
             this.previousHeatMapData = this.heatMapData;
         } else if (this.heatMapBounds &&
                 ((this.heatMapBounds.width !== rect.width) || (this.heatMapBounds.height !== rect.height))) {
-            console.log('heatmap viewport change detected');
+            console.log(new Date().toISOString(), 'heatmap viewport change detected');
             this.changeDetector.markForCheck();
             this.createHeatMap();
         }
@@ -468,14 +469,16 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
                     .style('padding-right', bounds.padding.between)
                     .attr('fill', fill.bg)
                     .on('mouseover', ev => {
-                        if (this.options.hoverColor.bg.startsWith('.')) {
+                        if (!this.options.hoverColor) {
+                        } else if (this.options.hoverColor.bg.startsWith('.')) {
                             d3.event.target.setAttribute('class', this.options.hoverColor.bg);
                         } else {
                             d3.event.target.setAttribute('fill', this.options.hoverColor.bg);
                         }
                     })
                     .on('mouseout', ev => {
-                        if (fill.bg.startsWith('.')) {
+                        if (!this.options.hoverColor) {
+                        } else if (fill.bg.startsWith('.')) {
                             d3.event.target.setAttribute('class', fill.bg);
                         } else {
                             d3.event.target.setAttribute('fill', fill.bg);

@@ -1,0 +1,14 @@
+<p-accordion *ngIf="treeData">
+    <p-accordionTab *ngFor="let data of treeData.children"
+            header="The following Critical Security Controls address the Attack Patterns in {{data.name}}">
+        <mat-card class="margin-top" *ngFor="let csc of getCriticalSecurityControls(data)">
+            <div><b>{{csc.name}}</b> - <span>{{csc.description}}</span></div>
+            <div><span>--> Mitigates {{csc.attackPatterns.length}} Attack Pattern(s):</span></div>
+            <div>
+                <ol style="color:blue;">
+                    <li *ngFor="let attackPattern of csc.attackPatterns">{{attackPattern}}</li>
+                </ol>
+            </div>
+        </mat-card>
+    </p-accordionTab>
+</p-accordion>

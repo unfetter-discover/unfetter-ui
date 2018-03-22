@@ -1,0 +1,43 @@
+<div class="col-md-3 intrusion-sets-panel">
+
+    <ng-container *ngIf="intrusionSets; else loadingBlock">
+
+        <div class="row">
+            <div id="search-fieldset" class="col-sm-12">
+                <p-autoComplete styleClass="intrusionClass"
+                        [(ngModel)]="intrusionSet" [suggestions]="intrusionSetSuggestions" field="name"
+                        (completeMethod)="onAutoCompleteSearch($event)"
+                        (onSelect)="onAutoCompleteSelect($event)">
+                </p-autoComplete>
+                <button id="search-button" mat-raised-button (click)="triggerSearch()">Search</button>
+            </div>
+        </div>
+    
+        <div class="row">
+            <div id="results-fieldset" class="col-sm-12">
+                <span class="text-muted">Results ({{selectedIntrusionSets.length}}) Intrusion Sets</span>
+                <a id="clear-button" *ngIf="selectedIntrusionSets.length" (click)="onClear($event)">Clear Filters</a>
+                <hr />
+            </div>
+        </div>
+    
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-sm-6" *ngFor="let intrusionSet of intrusionSets">
+                        <mat-checkbox id="{{intrusionSet.id}}" class="intrusion-sets-panel-checkbox"
+                                [(ngModel)]="intrusionSet.checked" (click)="onSelect(intrusionSet)">
+                            <a>{{intrusionSet.attributes.name}}</a>
+                        </mat-checkbox>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </ng-container>
+
+    <ng-template #loadingBlock>
+        <loading-spinner></loading-spinner>
+    </ng-template>
+
+</div>

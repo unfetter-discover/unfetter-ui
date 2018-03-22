@@ -1,0 +1,61 @@
+@import '../../../styles/variables';
+
+.intrusion-sets-panel {
+    padding-top: 27px;    
+    padding-bottom: 30px;
+    z-index: 700;
+    background-color: $primary-color-dark;
+}
+
+@media only screen and (min-width: 992px) {
+    .intrusion-sets-panel {
+        height: 100vh;
+        padding-top: 91px;
+        padding-bottom: 100px;
+        position: fixed;
+        top: 0;
+        overflow-y: auto;
+    }
+}
+
+#search-fieldset {
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 10px;
+}
+
+p-autocomplete {
+    flex: 1;
+}
+:host ::ng-deep {
+    .ui-autocomplete {
+        width: 100%;
+        background-color: $primary-color-dark;
+        input {
+            width: 100%;
+        }
+        .ui-widget-content {
+            background: white;
+        }
+    }
+}
+
+#search-button {
+    margin-left: 20px;
+    line-height: 30px;
+}
+
+#results-fieldset {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+#clear-button {
+    float: right;
+}
+
+:host ::ng-deep {
+    .intrusion-sets-panel-checkbox > .mat-checkbox-layout > .mat-checkbox-inner-container > .mat-checkbox-frame {
+        border-color: $neutral-color;
+    }
+}
