@@ -16,6 +16,7 @@ const appRoutes: Routes = [
   { path: 'partners', component: PartnersComponent },
   { path: 'intrusion-set-dashboard', loadChildren: 'app/intrusion-set-dashboard/intrusion-set-dashboard.module#IntrusionSetDashboardModule', canActivate: [AuthGuard] },
   { path: 'assessments', loadChildren: 'app/assessments/assessments.module#AssessmentsModule', canActivate: [AuthGuard] },
+  { path: 'assessments3', loadChildren: 'app/assessments3/assessments3.module#Assessments3Module', canActivate: [AuthGuard] },
   { path: 'assess', loadChildren: 'app/assess/assess.module#AssessModule', canActivate: [AuthGuard] },
   { path: 'threat-dashboard', loadChildren: 'app/threat-dashboard/threat-dashboard.module#ThreatDashboardModule', canActivate: [AuthGuard] },
   { path: 'users', loadChildren: 'app/users/users.module#UsersModule' },

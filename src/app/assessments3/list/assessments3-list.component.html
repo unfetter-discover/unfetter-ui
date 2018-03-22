@@ -1,0 +1,58 @@
+<div class="container" id="assessmentList">
+    <page-header [pageTitle]="pageTitle" [pageIcon]="pageIcon" [description]="description"></page-header>
+    <div class="row">
+        <div class="col-xs-12">
+            <h5>Create Assessment</h5>
+        </div>
+        <div class="col-xs-12">
+            <button mat-raised-button routerLink="wizard/new/indicator" class="mat-primary">Assess Indicators</button>
+            <button mat-raised-button routerLink="wizard/new/mitigation" class="mat-primary">Assess Mitigations</button>
+            <button mat-raised-button routerLink="wizard/new/sensor" class="mat-primary">Assess Sensors</button>
+        </div>
+
+    </div>
+    <br>
+    <hr>
+    <br>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="pull-right">
+                <span class="right-align">Results: {{assessments.length}}</span>
+            </div>
+            <h5>View Assessment</h5>
+        </div>
+        <div class="col-xs-12">
+            <mat-card class="mt-12 slideIn cardHoverShadow" *ngFor="let assessment of assessments; let i = index" [style.animationDelay]="(i * 0.03) + 's'">
+                <mat-list>
+                    <mat-list-item>
+                      <h3 mat-line>{{assessment.attributes.name}}</h3>
+                      <p mat-line>
+                        <span>{{ assessment.attributes.created  | date:'medium'}}</span>
+                      </p>
+                    </mat-list-item>
+                </mat-list>
+                <!--div class="row">
+                    <div class="col-xs-12 flex flexItemsCenter">
+                        <span>
+                            <a routerLink="dashboard/{{assessment.id}}">{{assessment.attributes.name}}</a><br>
+                            <small class="text-muted">{{ assessment.attributes.created  | date:'medium'}}</small>
+                        </span>
+                        <span class="flex1"></span>
+                        <span class="text-right buttonGrp">
+                            <button mat-button routerLink="summary/{{assessment.id}}">
+                                <i class="material-icons">assessment</i>
+                            </button>
+                                <button mat-button (click)="edit(assessment)">
+                                <i class="material-icons">create</i>
+                            </button>
+                                <button mat-button (click)="delete(assessment)">
+                                <i class="material-icons">delete</i>
+                            </button>
+                        </span>
+                    </div>
+
+                </div-->
+            </mat-card>
+        </div>
+    </div>
+</div>

@@ -36,6 +36,11 @@ export class HeaderNavigationComponent {
       icon: Constance.LOGO_IMG_ASSESSMENTS
     },
     {
+      url: Constance.X_UNFETTER_ASSESSMENT3_NAVIGATE_URL,
+      title: 'Assessments 3.0',
+      icon: Constance.LOGO_IMG_ASSESSMENTS
+    },
+    {
       url: 'intrusion-set-dashboard',
       title: 'Intrusion Set Dashboard',
       // Placeholder icon
@@ -52,7 +57,7 @@ export class HeaderNavigationComponent {
       title: 'Partners',
       // Placeholder icon
       icon: Constance.LOGO_IMG_THREAT_DASHBOARD
-    },
+    }
   ];
 
   public readonly swaggerUrl = Constance.SWAGGER_URL;
