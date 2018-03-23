@@ -58,6 +58,7 @@ import { RiskBreakdownComponent } from './components/risk-breakdown/risk-breakdo
 import { TreemapComponent } from './components/treemap/treemap.component';
 import { HeatmapComponent } from './components/heatmap/heatmap.component';
 import { CreatedByRefComponent } from './components/created-by-ref/created-by-ref.component';
+import { RelatationshipGeneratorComponent } from './components/relatationship-generator/relatationship-generator.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -113,6 +114,7 @@ const unfetterComponents = [
     TreemapComponent,
     HeatmapComponent,
     CreatedByRefComponent,
+    RelatationshipGeneratorComponent,
 ];
 
 @NgModule({
