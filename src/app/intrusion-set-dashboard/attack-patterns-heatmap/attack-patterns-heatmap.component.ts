@@ -5,10 +5,14 @@ import {
         Input,
         ViewChild,
         Renderer2,
+        ElementRef,
+        TemplateRef,
         ViewContainerRef,
         ChangeDetectorRef,
     } from '@angular/core';
-import { Overlay } from '@angular/cdk/overlay';
+import { Observable } from 'rxjs/Observable';
+
+import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 
 import {
         HeatmapComponent,
@@ -16,8 +20,11 @@ import {
         BatchData,
         HeatColor,
     } from '../../global/components/heatmap/heatmap.component';
-import { Dictionary } from '../../models/json/dictionary';
 import { AttackPatternHighlighterService } from '../attack-pattern-highlighter.service';
+import { TemplatePortal } from '@angular/cdk/portal';
+import { GenericApi } from '../../core/services/genericapi.service';
+import { Dictionary } from '../../models/json/dictionary';
+import { Constance } from '../../utils/constance';
 
 @Component({
     selector: 'attack-patterns-heatmap',
@@ -34,7 +41,6 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
         ],
         heatColors: {'false': this.noColor},
         noColor: this.noColor,
-        hoverColor: null,
         showText: true,
     };
     public showHeatMap = false;
@@ -43,9 +49,15 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
 
     @Input() public killChainPhases: any[];
     private previousKillChainPhases = [];
-    private attackPatternPhases: Dictionary<Array<string>> = {};
+    private attackPatterns: Dictionary<any> = {};
 
+    @ViewChild('apTooltipTemplate') apTooltipTemplate: TemplateRef<any>;
+    private attackPattern: any;
+    private overlayRef: OverlayRef;
+    private portal: TemplatePortal<any>;
+  
     constructor(
+        private genericApi: GenericApi,
         private overlay: Overlay,
         private vcr: ViewContainerRef,
         private renderer: Renderer2,
@@ -55,34 +67,82 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
 
     ngOnInit() {
         this.showHeatMap = (this.killChainPhases && (this.killChainPhases.length > 0));
+        this.loadData();
+    }
+
+    /**
+     * @description retrieve the attack patterns and their tactics phases from the backend database
+     */
+    private loadData() {
+        const apSort = { 'stix.name': '1' };
+        const apProperties = {
+            'stix.name': 1,
+            'stix.description': 1,
+            'stix.kill_chain_phases': 1,
+            'extendedProperties.x_mitre_data_sources': 1,
+            'extendedProperties.x_mitre_platforms': 1,
+            'stix.id': 1,
+        };
+        const apQuery = encodeURI(`sort=${JSON.stringify(apSort)}&project=${JSON.stringify(apProperties)}`);
+        const initAttackPatterns$ = this.genericApi.get(`${Constance.ATTACK_PATTERN_URL}?${apQuery}`)
+
+        const intrusionsProperties = {
+            'stix.name': 1,
+            'stix.id': 1
+        };
+        const intrusionsFilter = encodeURI(`project=${JSON.stringify(intrusionsProperties)}`);
+        const initIntrusions$ = this.genericApi.get(`${Constance.INTRUSION_SET_URL}?${intrusionsFilter}`);
+
+        const relFilter = {
+            'stix.relationship_type': 'uses',
+            'stix.source_ref': {'$regex': '^intrusion\-set\-\-'},
+            'stix.target_ref': {'$regex': '^attack\-pattern\-\-'},
+        };
+        const relQuery = encodeURI(`filter=${JSON.stringify(relFilter)}`);
+        const initRelationships$ = this.genericApi.get(`${Constance.RELATIONSHIPS_URL}?${relQuery}`)
+
+        const initData$ = Observable.forkJoin(initAttackPatterns$, initIntrusions$, initRelationships$)
+            .finally(() => initData$ && initData$.unsubscribe())
+            .subscribe(
+                ([attackPatterns, intrusionSets, relationships]) => {
+                    attackPatterns.forEach(ap => {
+                        if (ap && ap.attributes) {
+                            const pattern = this.attackPatterns[ap.attributes.id] = ap.attributes;
+                            pattern.phases = pattern.kill_chain_phases.map(phase => phase.phase_name);
+                            pattern.intrusion_sets = [];
+                        };
+                    });
+                    console.log('intrusions', intrusionSets);
+                    const intrusions = {};
+                    intrusionSets.forEach(intrusion => {
+                        if (intrusion && intrusion.attributes) {
+                            intrusions[intrusion.attributes.id] = intrusion.attributes;
+                        }
+                    })
+                    relationships.forEach(rel => {
+                        if (rel && rel.attributes && rel.attributes.source_ref && rel.attributes.target_ref) {
+                            const ap = this.attackPatterns[rel.attributes.target_ref];
+                            const is = intrusions[rel.attributes.source_ref];
+                            if (ap && is) {
+                                ap.intrusion_sets.push(is);
+                            }
+                        }
+                    });
+                    console.log('resulting patterns', this.attackPatterns);
+                },
+                (err) => console.log(new Date().toISOString(), err)
+            );
     }
 
     ngDoCheck() {
         if (this.killChainPhases !== this.previousKillChainPhases) {
             this.changeDetector.markForCheck();
             if (this.killChainPhases) {
-                this.collectAttackPatternPhases();
                 this.createAttackPatternHeatMap();
             }
             this.previousKillChainPhases = this.killChainPhases;
             this.showHeatMap = (this.killChainPhases && (this.killChainPhases.length > 0));
         }
-    }
-
-    /**
-     * @description Collects the phases (kill chains? tactics?) used by each attack pattern.
-     */
-    private collectAttackPatternPhases() {
-        this.killChainPhases.forEach(phase => {
-            if (phase.attack_patterns) {
-                phase.attack_patterns.forEach(attackPattern => {
-                    if (!this.attackPatternPhases[attackPattern.name]) {
-                        this.attackPatternPhases[attackPattern.name] = [];
-                    }
-                    this.attackPatternPhases[attackPattern.name].push(phase.name);
-                });
-            }
-        });
     }
 
     /**
@@ -96,13 +156,7 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
         this.killChainPhases.forEach(phase => {
             let index = 0;
             if (phase && phase.name && phase.attack_patterns) {
-                const name = phase.name
-                    .replace(/\-/g, ' ')
-                    .split(/\s+/)
-                    .map(w => w[0].toUpperCase() + w.slice(1))
-                    .join(' ')
-                    .replace(/\sAnd\s/g, ' and ')
-                    ;
+                const name = this.normalizePhaseName(phase.name);
                 const d = {
                     batch: name,
                     active: null,
@@ -134,9 +188,86 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
         this.heatMapView.options.heatColors = this.heatMapOptions.heatColors;
     }
 
-    public highlightAttackPattern(event: any) {
-        console.log('hover triggered', event);
-        this.highlighter.setActiveAttackPattern(event);
+    public normalizePhaseName(phase: string): string {
+        return phase
+            .replace(/\-/g, ' ')
+            .split(/\s+/)
+            .map(w => w[0].toUpperCase() + w.slice(1))
+            .join(' ')
+            .replace(/\sAnd\s/g, ' and ')
+            ;
     }
 
+    public highlightAttackPattern(selection: any) {
+        if (!selection || !selection.row) {
+            this.hideAttackPatternTooltip(this.attackPattern);
+        } else {
+            selection.attackPattern = Object.values(this.attackPatterns).find(ptn => ptn.name === selection.row.batch);
+            if (!selection.attackPattern) {
+                this.hideAttackPatternTooltip(this.attackPattern);
+            } else {
+                this.showAttackPatternTooltip(selection.attackPattern, selection.event);
+                this.highlighter.highlightAttackPattern(selection.attackPattern);
+            }
+        }
+    }
+
+    public showAttackPatternTooltip(tactic: any, event?: UIEvent): void {
+        if (tactic && this.attackPattern && (this.attackPattern.id === tactic.id)) {
+            return;
+        }
+  
+        this.attackPattern = tactic;
+  
+        if (!this.overlayRef) {
+            const elem = new ElementRef(event.target);
+
+            const positionStrategy = this.overlay.position()
+                .connectedTo(elem,
+                    {originX: 'center', originY: 'bottom'},
+                    {overlayX: 'start', overlayY: 'top'})
+                .withFallbackPosition(
+                    {originX: 'center', originY: 'top'},
+                    {overlayX: 'start', overlayY: 'bottom'})
+                .withFallbackPosition(
+                    {originX: 'center', originY: 'bottom'},
+                    {overlayX: 'end', overlayY: 'top'})
+                .withFallbackPosition(
+                    {originX: 'center', originY: 'bottom'},
+                    {overlayX: 'end', overlayY: 'bottom'});
+
+            this.overlayRef = this.overlay.create({
+                minWidth: 300,
+                maxWidth: 500,
+                hasBackdrop: true,
+                positionStrategy,
+                scrollStrategy: this.overlay.scrollStrategies.reposition()
+            });
+
+            const sub$ = this.overlayRef.backdropClick().subscribe(
+                () => this.hideAttackPatternTooltip(this.attackPattern),
+                (err) => console.log(new Date().toISOString(), err),
+                () => sub$.unsubscribe());
+    
+            this.portal = new TemplatePortal(this.apTooltipTemplate, this.vcr);
+        }
+
+        this.overlayRef.attach(this.portal);
+    }
+
+    public getIntrusionSetNames(attackPattern: any): string {
+        return attackPattern.intrusion_sets.map(is => is.name).join(', ');
+    }
+  
+    public hideAttackPatternTooltip(attackPattern: any, event?: UIEvent): void {
+      if (!attackPattern || !this.attackPattern || (this.attackPattern.name !== attackPattern.name)) {
+        return;
+      }
+      this.attackPattern = null;
+      this.overlayRef.detach();
+      this.overlayRef.dispose();
+      this.overlayRef = null;
+      this.highlighter.highlightAttackPattern(null);
+    }
+  
 }

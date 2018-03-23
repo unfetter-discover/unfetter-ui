@@ -92,6 +92,11 @@ export interface HeatMapOptions {
     hoverColor?: HeatColor,
 
     /**
+     * How long to wait, in milliseconds, before firing a hover event over one of the cells. Defaults to 500ms.
+     */
+    hoverDelay?: number,
+
+    /**
      * Whether to display the value of each cell in the body. The default is false, because the body is displayed as
      * HTML, and overrides its own body colors, which we cannot override. Thus, it can choke off the color of the cell.
      */
@@ -141,12 +146,13 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
         },
         noColor: {bg: 'transparent', fg: 'black'},
         hoverColor: {bg: '#f0f099', fg: 'black'},
+        hoverDelay: 500,
         showText: false,
         hyphenate: true,
     };
 
-    private tooltipDelay: number;
-    @Output() private onTooltip = new EventEmitter<{row: BatchData, event?: UIEvent}>();
+    @Output() private onHover = new EventEmitter<{row: BatchData, event?: UIEvent}>();
+    private hoverTimeout: number;
 
     @Output() private onClick = new EventEmitter<{row: BatchData, event?: UIEvent}>();
 
@@ -435,66 +441,48 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
     private drawBatchColumn(column: Array<BatchData>, bounds: DrawingBounds, view: D3Selection) {
         let y = 0;
 
-        // draw each cell
-        column.forEach(d => {
+        column.forEach(data => {
             // determine fill color of this cell
-            let fill = ((d.active != null) ? this.options.heatColors[d.active.toString()] : null) || this.options.noColor;
+            let fill = (data.active != null) ? this.options.heatColors[data.active.toString()] : null;
+            fill = fill || this.options.noColor;
 
             // draw the cell
-            const cell = view
-                .append('g')
-                    .attr('class', 'heat-map-cell')
-                    .attr('aria-label', d.batch)
-                    .on('click', p => {
-                        this.onClick.emit({row: d, event: d3.event});
-                    })
-                    .on('mouseover', p => {
-                        window.clearTimeout(this.tooltipDelay);
-                        const ev = d3.event;
-                        this.tooltipDelay = window.setTimeout(() => {
-                            this.onTooltip.emit({row: d, event: ev});
-                        }, 500);
-                    })
-                    .on('mouseout', () => {
-                        window.clearTimeout(this.tooltipDelay);
-                        this.onTooltip.emit(null);
-                    });
-
-            const rect = cell
-                .append('rect')
-                    .attr('x', bounds.xPosition)
-                    .attr('y', y)
-                    .attr('width', bounds.cellWidth)
-                    .attr('height', bounds.cellHeight)
-                    .style('padding-right', bounds.padding.between)
-                    .attr('fill', fill.bg)
-                    .on('mouseover', ev => {
-                        if (!this.options.hoverColor) {
-                        } else if (this.options.hoverColor.bg.startsWith('.')) {
-                            d3.event.target.setAttribute('class', this.options.hoverColor.bg);
-                        } else {
-                            d3.event.target.setAttribute('fill', this.options.hoverColor.bg);
-                        }
-                    })
-                    .on('mouseout', ev => {
-                        if (!this.options.hoverColor) {
-                        } else if (fill.bg.startsWith('.')) {
-                            d3.event.target.setAttribute('class', fill.bg);
-                        } else {
-                            d3.event.target.setAttribute('fill', fill.bg);
-                        }
-                    });
-
-            if (this.options.showText) {
-                this.drawCellText(d.batch, cell, bounds.xPosition, y, bounds.cellWidth, bounds.cellHeight,
-                        6, fill.fg, bounds.cellHeight > 18, false);
-            }
+            this.drawCell(data, fill, bounds, y, view);
 
             y += bounds.cellHeight + 2;
         });
 
         // increment horizontal X column
         bounds.passCount++;
+    }
+
+    /**
+     * @description draw the given cell
+     */
+    private drawCell(data: BatchData, color: HeatColor, bounds: DrawingBounds, y: number, view: D3Selection) {
+        const cell = view
+            .append('g')
+                .attr('class', 'heat-map-cell')
+                .attr('aria-label', data.batch)
+                .on('click', p => this.onClick.emit({row: data, event: d3.event}))
+                .on('mouseover', p => this.onCellHover(data))
+                .on('mouseout', () => this.offCellHover());
+
+        const rect = cell
+            .append('rect')
+                .attr('x', bounds.xPosition)
+                .attr('y', y)
+                .attr('width', bounds.cellWidth)
+                .attr('height', bounds.cellHeight)
+                .style('padding-right', bounds.padding.between)
+                .attr('fill', color.bg)
+                .on('mouseover', ev => this.onRectHover())
+                .on('mouseout', ev => this.offRectHover(color.bg));
+
+        if (this.options.showText) {
+            this.drawCellText(data.batch, cell, bounds.xPosition, y, bounds.cellWidth, bounds.cellHeight,
+                    6, color.fg, bounds.cellHeight > 18, false);
+        }
     }
 
     /**
@@ -506,15 +494,13 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
 
         let workingText = text;
 
-        let textWidth = () => (textNode.node() as any).getComputedTextLength() + 4;
-
-        // Try to fit the text within the block, first by splitting on any spaces.
         if (allowSplit) {
+            // Try to fit the text within the block, first by splitting on any spaces.
             for (let done = false, split = this.splitText(text, undefined, false); !done && (split.index > 0);
                     split = this.splitText(text, split.index - 1, false)) {
                 let newtext = text.substring(0, split.index);
                 textNode.text(newtext);
-                if (textWidth() < width) {
+                if (this.textWidth(textNode) < width) {
                     textNode.attr('y', y + height / 3)
                     workingText = text.substr(split.index + 1);
                     textNode = this.createTextCell(cell, x + width / 2, y + height / 3 * 2, fontSize, color)
@@ -523,12 +509,12 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
                 }
             }
 
-            if ((textWidth() > width) && allowHyphenation && (text === workingText)) {
+            if ((this.textWidth(textNode) > width) && allowHyphenation && (text === workingText)) {
                 for (let done = false, split = this.splitText(text, undefined, true); !done && (split.index > 0);
                         split = this.splitText(text, split.index - 1, true)) {
                     let newtext = text.substring(0, split.index) + (split.hyphenated ? '-' : '');
                     textNode.text(newtext);
-                    if (textWidth() < width) {
+                    if (this.textWidth(textNode) < width) {
                         textNode.attr('y', y + height / 3)
                         workingText = text.substr(split.index + (split.hyphenated ? 0 : 1));
                         textNode = this.createTextCell(cell, x + width / 2, y + height / 3 * 2, fontSize, color)
@@ -540,7 +526,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
         }
 
         // If the text still doesn't fit, whether we were allowed to split or not, ellipsicatify the text (bummer)
-        for (let textlen = workingText.length - 3; (textlen > 4) && (textWidth() > width); textlen--) {
+        for (let textlen = workingText.length - 3; (textlen > 4) && (this.textWidth(textNode) > width); textlen--) {
             textNode.text(`${workingText.substring(0, textlen)}...`);
             cell.attr('aria-label', text);
         }
@@ -570,6 +556,41 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
             }
         }
         return {index: spaceIndex, hyphenated: false};
+    }
+
+    private textWidth(textNode: D3Selection): number {
+        return (textNode.node() as any).getComputedTextLength() + 4;
+    }
+
+    private onCellHover(cellData: BatchData) {
+        window.clearTimeout(this.hoverTimeout);
+        const ev = d3.event;
+        this.hoverTimeout = window.setTimeout(
+            () => this.onHover.emit({row: cellData, event: ev}),
+            this.options.hoverDelay);
+    }
+
+    private offCellHover() {
+        window.clearTimeout(this.hoverTimeout);
+        this.onHover.emit(null);
+    }
+
+    private onRectHover() {
+        if (!this.options.hoverColor) {
+        } else if (this.options.hoverColor.bg.startsWith('.')) {
+            d3.event.target.setAttribute('class', this.options.hoverColor.bg);
+        } else {
+            d3.event.target.setAttribute('fill', this.options.hoverColor.bg);
+        }
+    }
+
+    private offRectHover(bg: string) {
+        if (!this.options.hoverColor) {
+        } else if (bg.startsWith('.')) {
+            d3.event.target.setAttribute('class', bg);
+        } else {
+            d3.event.target.setAttribute('fill', bg);
+        }
     }
 
     /**

@@ -55,7 +55,34 @@ p-autocomplete {
 }
 
 :host ::ng-deep {
+    .intrusion-set-cell {
+        margin-bottom: 4px;
+    }
+    .intrusion-set {
+        padding: 0 6px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+
     .intrusion-sets-panel-checkbox > .mat-checkbox-layout > .mat-checkbox-inner-container > .mat-checkbox-frame {
         border-color: $neutral-color;
+    }
+
+    [highlight] {
+        background-color: rgba(255, 255, 99, .7);
+        box-shadow: 3px 3px 0 0 black;
+        animation-name: flash-highlight;
+        animation-duration: 4s;
+    }
+
+    @keyframes flash-highlight {
+         0% {background-color: transparent;}
+        10% {background-color: rgba(255, 255, 99, .7);}
+        20% {background-color: transparent;}
+        30% {background-color: rgba(255, 255, 99, .7);}
+        40% {background-color: transparent;}
+        50% {background-color: rgba(255, 255, 99, .7);}
+        60% {background-color: transparent;}
+        70% {background-color: rgba(255, 255, 99, .7);}
     }
 }

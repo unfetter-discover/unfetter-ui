@@ -29,8 +29,8 @@ export class IntrusionSetDashboardComponent implements OnInit {
     
     public graphMetaData = {
         ditems: [],
-        killChainPhase: [],
         themes: [],
+        killChainPhase: [],
     };
 
     public treeData: any;

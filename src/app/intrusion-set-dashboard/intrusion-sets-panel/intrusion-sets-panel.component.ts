@@ -3,6 +3,8 @@ import {
         OnInit,
         AfterContentInit,
         Output,
+        ViewChild,
+        ElementRef,
         EventEmitter,
         ChangeDetectorRef,
     } from '@angular/core';
@@ -22,6 +24,8 @@ export class IntrusionSetsPanelComponent implements OnInit {
     public intrusionSets = [];
     public selectedIntrusionSets = [];
     public intrusionSetSuggestions = [];
+
+    @ViewChild('intrusion_sets_list') listElement: ElementRef;
 
     private updateDebouncer: Subject<any> = new Subject();
     @Output() private onChange = new EventEmitter<any[]>();
@@ -57,10 +61,20 @@ export class IntrusionSetsPanelComponent implements OnInit {
                 (err) => console.log(new Date().toISOString(), err),
             );
 
-        this.highlighter.getActiveAttackPattern()
+        this.highlighter.attackPattern
+            .distinctUntilChanged()
             .subscribe(
                 (attackPattern) => {
-                    console.log('saw highlight event', attackPattern);
+                    const highlighted: NodeList = this.listElement.nativeElement.querySelectorAll('[highlight]');
+                    Array.from(highlighted).forEach((node: Element) => node.removeAttribute('highlight'));
+                    if (attackPattern && attackPattern.intrusion_sets) {
+                        attackPattern.intrusion_sets.forEach(intrusion => {
+                            const target = this.listElement.nativeElement.querySelector(`#${intrusion.id}`);
+                            if (target) {
+                                target.attributes.setNamedItem(document.createAttribute('highlight'));
+                            }
+                        });
+                    }
                 }
             );
     }

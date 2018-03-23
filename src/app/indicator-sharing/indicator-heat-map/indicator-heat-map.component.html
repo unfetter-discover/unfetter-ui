@@ -3,7 +3,7 @@
     <div id="indicator-heat-map">
 
         <unf-heatmap [heatMapData]="heatmap" [options]="heatmapOptions"
-                (onTooltip)="onTooltip($event)" (onClick)="highlightAttackPatternAnalytics($event)"></unf-heatmap>
+                (onHover)="onTooltip($event)" (onClick)="highlightAttackPatternAnalytics($event)"></unf-heatmap>
 
         <ng-template #tooltipTemplate>
             <div class="col-md-12 attack-pattern-tooltip">

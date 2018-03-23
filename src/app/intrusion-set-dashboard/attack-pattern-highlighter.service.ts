@@ -1,19 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class AttackPatternHighlighterService {
 
-    private attackPattern: any;
+    public attackPattern = new Subject<any>();
 
     constructor() { }
 
-    public getActiveAttackPattern(): Observable<any> {
-        return Observable.of(this.attackPattern);
-    }
-
-    public setActiveAttackPattern(attackPattern: any) {
-        this.attackPattern = attackPattern;
+    public highlightAttackPattern(attackPattern: any) {
+        this.attackPattern.next(attackPattern);
     }
 
 }
