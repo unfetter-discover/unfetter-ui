@@ -41,7 +41,7 @@
             <div class="col-md-12">
                 <div class="button-row pull-right">
                     <button  id="canel-btn"  mat-button (click)="cancelButtonClicked()">CANCEL</button>
-                    <button id="save-btn" type="submit"  color="primary" mat-raised-button (click)="saveAttackPattern()" [disabled]="!attackPattern.attributes.name">SAVE</button>
+                    <button id="save-btn" type="submit"  color="primary" mat-raised-button (click)="saveAttackPattern()" [disabled]="!attackPattern.attributes.name || !attackPattern.attributes.created_by_ref">SAVE</button>
 
                 </div>
             </div>
