@@ -1,8 +1,6 @@
-<mat-card id="heatmapCard" class="margin-top cardHoverShadow" [hidden]="!showHeatMap">
-    <mat-card-title>Tactics Used (HeatMap Chart View)</mat-card-title>
-    <unf-heatmap #heatmap [heatMapData]="heatMapData" [options]="heatMapOptions"
-            (onClick)="highlightAttackPattern($event)"></unf-heatmap>
-</mat-card>
+<unf-heatmap #heatmap [heatMapData]="heatMapData" [options]="heatMapOptions"
+        (onHover)="highlightAttackPattern($event, true)"
+        (onClick)="highlightAttackPattern($event)"></unf-heatmap>
 
 <ng-template #apTooltipTemplate>
     <div class="col-md-12 attack-pattern-tooltip">

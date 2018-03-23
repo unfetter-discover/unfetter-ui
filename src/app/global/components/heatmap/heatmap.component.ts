@@ -476,12 +476,12 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
                 .attr('height', bounds.cellHeight)
                 .style('padding-right', bounds.padding.between)
                 .attr('fill', color.bg)
-                .on('mouseover', ev => this.onRectHover())
-                .on('mouseout', ev => this.offRectHover(color.bg));
+                .on('mouseover', ev => this.onRectHover(d3.event.target))
+                .on('mouseout', ev => this.offRectHover(d3.event.target, color.bg));
 
         if (this.options.showText) {
-            this.drawCellText(data.batch, cell, bounds.xPosition, y, bounds.cellWidth, bounds.cellHeight,
-                    6, color.fg, bounds.cellHeight > 18, false);
+            this.drawCellText(data.batch, cell, bounds.xPosition, y,
+                    bounds.cellWidth, bounds.cellHeight, 6, color.fg, bounds.cellHeight > 18, false);
         }
     }
 
@@ -539,7 +539,8 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
                 .attr('y', y)
                 .attr('dy', '.35em')
                 .attr('text-anchor', 'middle')
-                .attr('font-size', `${fontSize}px`);
+                .attr('font-size', `${fontSize}px`)
+                .style('pointer-events', 'none');
         if (color.startsWith('.')) {
             textNode.attr('class', color);
         } else {
@@ -549,8 +550,8 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
     }
 
     private splitText(text: string, fromIndex: number, allowHyphenation: boolean): {index: number, hyphenated: boolean} {
-        const spaceIndex = text.lastIndexOf(' ', fromIndex);
-        for (let index = fromIndex || (text.length - 1); allowHyphenation && (index > spaceIndex + 2); index--) {
+        const spaceIndex = Math.max(text.lastIndexOf(' ', fromIndex), text.lastIndexOf('/', fromIndex));
+        for (let index = fromIndex || (text.length - 2); allowHyphenation && (index > spaceIndex + 2); index--) {
             if ('bcdfghjklmnpqrstvwxz'.includes(text.charAt(index))) {
                 return {index: index, hyphenated: true};
             }
@@ -575,21 +576,21 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
         this.onHover.emit(null);
     }
 
-    private onRectHover() {
+    private onRectHover(rect: any) {
         if (!this.options.hoverColor) {
         } else if (this.options.hoverColor.bg.startsWith('.')) {
-            d3.event.target.setAttribute('class', this.options.hoverColor.bg);
+            rect.setAttribute('class', this.options.hoverColor.bg);
         } else {
-            d3.event.target.setAttribute('fill', this.options.hoverColor.bg);
+            rect.setAttribute('fill', this.options.hoverColor.bg);
         }
     }
 
-    private offRectHover(bg: string) {
+    private offRectHover(rect: any, bg: string) {
         if (!this.options.hoverColor) {
         } else if (bg.startsWith('.')) {
-            d3.event.target.setAttribute('class', bg);
+            rect.setAttribute('class', bg);
         } else {
-            d3.event.target.setAttribute('fill', bg);
+            rect.setAttribute('fill', bg);
         }
     }
 

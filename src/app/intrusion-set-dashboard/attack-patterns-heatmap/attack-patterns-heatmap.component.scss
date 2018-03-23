@@ -2,9 +2,11 @@
 
 $white: #FFFFFF;
 
-.attack-pattern-clicker:hover {
-    cursor: pointer;
-    text-decoration: underline;
+:host ::ng-deep {
+    unf-heatmap div.heat-map {
+        height: 500px;
+        background: $white;
+    }
 }
 
 .attack-pattern-tooltip {

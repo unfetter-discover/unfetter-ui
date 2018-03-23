@@ -1,4 +1,12 @@
-import { Component, OnInit, AfterContentInit, ChangeDetectorRef, ViewChild } from '@angular/core';
+import {
+        Component,
+        OnInit,
+        AfterContentInit,
+        ViewChild,
+        ElementRef,
+        HostListener,
+        ChangeDetectorRef,
+    } from '@angular/core';
 
 import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import * as Ps from 'perfect-scrollbar';
@@ -7,6 +15,7 @@ import { Constance } from '../utils/constance';
 import { StixService } from '../settings/stix.service';
 import { BaseStixService } from '../settings/base-stix.service';
 import { BaseComponentService } from '../components/base-service.component';
+import { topRightSlide } from '../global/animations/top-right-slide';
 import { GenericApi } from '../core/services/genericapi.service';
 import { AttackPatternHighlighterService } from './attack-pattern-highlighter.service';
 
@@ -14,7 +23,8 @@ import { AttackPatternHighlighterService } from './attack-pattern-highlighter.se
     selector: 'intrusion-set-dashboard',
     templateUrl: 'intrusion-set-dashboard.component.html',
     styleUrls: ['./intrusion-set-dashboard.component.scss'],
-    providers: [AttackPatternHighlighterService]
+    providers: [AttackPatternHighlighterService],
+    animations: [topRightSlide],
 })
 export class IntrusionSetDashboardComponent implements OnInit {
 
@@ -22,7 +32,12 @@ export class IntrusionSetDashboardComponent implements OnInit {
 
     public groupKillchain: any[];
     public killChainPhases: any[];
+    public showHeatMap = true;
 
+    public showToolbox = false;
+    @ViewChild('toolboxBtn') private toolboxBtn: ElementRef;
+    @ViewChild('toolbox') private toolbox: ElementRef;
+  
     public coursesOfAction: any[];
 
     public totalAttackPatterns: number;
@@ -91,6 +106,25 @@ export class IntrusionSetDashboardComponent implements OnInit {
             killChainAttackPattern.push(killchain);
         });
         return killChainAttackPattern;
+    }
+
+    /**
+     * @description
+     */
+    public toggleShowToolbox(event?: UIEvent) {
+        this.showToolbox = !this.showToolbox;
+    }
+
+    /**
+     * @description close toolbox if clicked outside
+     */
+    @HostListener('document:click', ['$event'])
+    public clickedOutside(event: UIEvent) {
+        const clickedInToolboxBtn = this.toolboxBtn && this.toolboxBtn.nativeElement.contains(event.target);
+        const clickedInToolbox = this.toolbox && this.toolbox.nativeElement.contains(event.target);
+        if (this.showToolbox && !clickedInToolboxBtn) {
+            this.showToolbox = false;
+        }
     }
 
     /**

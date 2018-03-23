@@ -33,3 +33,47 @@
 #graphWrapper {
     padding: 0 0.4rem;
 }
+
+.toolbox-btn {
+    position: absolute;
+    z-index: 90;
+    right: 120px;
+    top: 14px;
+    margin: 0px;
+    padding: 0px;
+    width: 40px;
+    height: 40px;
+    color: $primary-color;
+    border-radius: 50%;
+    background-color: $primary-color-lightest;
+}
+
+.toolbox {
+    position: absolute;
+    z-index: 99;
+    right: 120px;
+    top: 20px;
+    color: $primary-color;
+    background-color: white;
+    height: 64px;
+    width: 100px;
+
+    button {
+        margin: auto auto;
+    }
+}
+
+#tactics-view {
+    padding: 4px;
+
+    .mat-card-title {
+        display: flex;
+        align-items: center;
+        margin-bottom: 4px;
+        padding: 16px 32px;
+        background: #303f9f;
+        color: white;
+        font-size: 20px;
+        font-weight: 300;
+    }
+}

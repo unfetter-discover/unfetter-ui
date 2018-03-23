@@ -34,7 +34,7 @@ import { Constance } from '../../utils/constance';
 export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
 
     public heatMapData: Array<BatchData> = [];
-    private noColor: HeatColor = {bg: 'transparent', fg: 'black'};
+    private noColor: HeatColor = {bg: '#ccc', fg: 'black'};
     public readonly heatMapOptions: HeatMapOptions = {
         batchColors: [
             {header: {bg: '#4db6ac', fg: 'black'}, body: {bg: 'white', fg: 'black'}},
@@ -52,6 +52,7 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
     private attackPatterns: Dictionary<any> = {};
 
     @ViewChild('apTooltipTemplate') apTooltipTemplate: TemplateRef<any>;
+    private backdropped = false;
     private attackPattern: any;
     private overlayRef: OverlayRef;
     private portal: TemplatePortal<any>;
@@ -112,7 +113,6 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
                             pattern.intrusion_sets = [];
                         };
                     });
-                    console.log('intrusions', intrusionSets);
                     const intrusions = {};
                     intrusionSets.forEach(intrusion => {
                         if (intrusion && intrusion.attributes) {
@@ -128,7 +128,6 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
                             }
                         }
                     });
-                    console.log('resulting patterns', this.attackPatterns);
                 },
                 (err) => console.log(new Date().toISOString(), err)
             );
@@ -198,7 +197,10 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
             ;
     }
 
-    public highlightAttackPattern(selection: any) {
+    public highlightAttackPattern(selection: any, hover: boolean = false) {
+        if (this.backdropped) {
+            return;
+        }
         if (!selection || !selection.row) {
             this.hideAttackPatternTooltip(this.attackPattern);
         } else {
@@ -206,13 +208,13 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
             if (!selection.attackPattern) {
                 this.hideAttackPatternTooltip(this.attackPattern);
             } else {
-                this.showAttackPatternTooltip(selection.attackPattern, selection.event);
+                this.showAttackPatternTooltip(selection.attackPattern, selection.event, hover);
                 this.highlighter.highlightAttackPattern(selection.attackPattern);
             }
         }
     }
 
-    public showAttackPatternTooltip(tactic: any, event?: UIEvent): void {
+    public showAttackPatternTooltip(tactic: any, event: UIEvent, hover: boolean = false): void {
         if (tactic && this.attackPattern && (this.attackPattern.id === tactic.id)) {
             return;
         }
@@ -239,7 +241,7 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
             this.overlayRef = this.overlay.create({
                 minWidth: 300,
                 maxWidth: 500,
-                hasBackdrop: true,
+                hasBackdrop: !hover,
                 positionStrategy,
                 scrollStrategy: this.overlay.scrollStrategies.reposition()
             });
@@ -250,24 +252,29 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
                 () => sub$.unsubscribe());
     
             this.portal = new TemplatePortal(this.apTooltipTemplate, this.vcr);
+            this.backdropped = !hover;
+        } else {
+            this.overlayRef.detach();
+            this.overlayRef.getConfig().hasBackdrop = !hover;
         }
 
         this.overlayRef.attach(this.portal);
-    }
-
-    public getIntrusionSetNames(attackPattern: any): string {
-        return attackPattern.intrusion_sets.map(is => is.name).join(', ');
     }
   
     public hideAttackPatternTooltip(attackPattern: any, event?: UIEvent): void {
       if (!attackPattern || !this.attackPattern || (this.attackPattern.name !== attackPattern.name)) {
         return;
       }
+      this.backdropped = false;
       this.attackPattern = null;
       this.overlayRef.detach();
       this.overlayRef.dispose();
       this.overlayRef = null;
       this.highlighter.highlightAttackPattern(null);
+    }
+
+    public getIntrusionSetNames(attackPattern: any): string {
+        return attackPattern.intrusion_sets.map(is => is.name).join(', ');
     }
   
 }
