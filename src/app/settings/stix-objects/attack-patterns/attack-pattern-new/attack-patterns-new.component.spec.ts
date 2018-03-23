@@ -98,8 +98,9 @@ function buttons() {
       expect(de.nativeElement.disabled).toBe(true, 'should disable save button if name field is empty');
     });
 
-    it('should enable save button if name field is not empty', () => {
+    it('should enable save button if name and created_by_ref fields are not empty', () => {
       comp.attackPattern.attributes.name = 'Test Attack Pattern name';
+      comp.attackPattern.attributes.created_by_ref = 'identity-1234';
       fixture.detectChanges(); // runs initial lifecycle hooks
       de = fixture.debugElement.query(By.css('#save-btn'))
       // should not create attack-pattern
