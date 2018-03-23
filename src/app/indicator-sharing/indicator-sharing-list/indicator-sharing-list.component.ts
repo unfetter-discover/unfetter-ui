@@ -208,6 +208,11 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
         this.openDialog(indicatorToEdit);
     }
 
+    public toggleShowStatistics() {
+        this.showSummaryStats = !this.showSummaryStats;
+        this.changeDetectorRef.detectChanges();
+    }
+
     /**
      * @description Displays a popup that shows the user a heat map of all attack patterns used by all the
      *              currently-filtered analytics.
