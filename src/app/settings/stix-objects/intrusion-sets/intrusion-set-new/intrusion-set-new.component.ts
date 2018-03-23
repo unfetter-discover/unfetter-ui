@@ -12,13 +12,15 @@ import { Observable } from 'rxjs/Observable';
     templateUrl: './intrusion-set-new.component.html',
     styleUrls: ['./intrusion-set-new.component.scss']
 })
-export class IntrusionSetNewComponent extends IntrusionSetEditComponent {
+export class IntrusionSetNewComponent extends IntrusionSetEditComponent implements OnInit {
 
     constructor(public stixService: StixService, public route: ActivatedRoute,
                 public router: Router, public dialog: MatDialog,
                 public location: Location, public snackBar: MatSnackBar) {
         super(stixService, route, router, dialog, location, snackBar);
     }
+
+    public ngOnInit() { }
     
     public saveButtonClicked(): Observable<any> {
         const observable = super.create(this.intrusionSet);
