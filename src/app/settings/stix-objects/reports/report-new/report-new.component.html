@@ -15,6 +15,11 @@
     </div>
 </div>
 <div class="row">
+    <div class="col-xs-12">
+        <created-by-ref [model]="report"></created-by-ref>
+    </div>
+</div>
+<div class="row">
     <div class="col-md-12">
         <mat-input-container class="full-width">
         <textarea matInput placeholder="Description"  [(ngModel)]="report.attributes.description" value="{{report.attributes.description}}"></textarea>
