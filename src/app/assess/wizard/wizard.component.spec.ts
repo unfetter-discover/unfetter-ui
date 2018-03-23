@@ -225,11 +225,45 @@ describe('WizardComponent', () => {
 
   });
 
-  fit('should add each element in a risk array to current value at corresponding location in a total risk array', () => {
+  it('should add each element in a risk array to current value at corresponding location in a total risk array', () => {
     expect(component.riskReduction(null, null)).toEqual([]);
   });
 
-  fit('should collect model assessments robustly', () => {
+  fit('should generate summary data for a single assessment type', () => {
+    expect(component.generateSummaryChartDataForAnAssessmentType(null)).toEqual([]);
+
+    expect(component.generateSummaryChartDataForAnAssessmentType([])).toEqual([]);
+
+    expect(component.generateSummaryChartDataForAnAssessmentType([{}])).toEqual([]);
+
+    expect(component.generateSummaryChartDataForAnAssessmentType([{ assessments: null }])).toEqual([]);
+
+    expect(component.generateSummaryChartDataForAnAssessmentType([{ assessments: [] }])).toEqual([]);
+
+    expect(component.generateSummaryChartDataForAnAssessmentType([{ assessments: [{ id: null }] }])).toEqual([]);
+
+    expect(component.generateSummaryChartDataForAnAssessmentType([{ assessments: [{ id: null }, { id: null }, { id: null }] }, { assessments: [{ id: null }] }])).toEqual([]);
+  });
+
+  fit('should create assessment groups robustly', () => {
+    let assessment = { version: null, external_references: null, granular_markings: null, name: null, description: null, pattern: null, kill_chain_phases: null,
+      created_by_ref: null, type: null, valid_from: null, labels: null, modified: null, created: null, metaProperties: null };
+    expect(component.createAssessmentGroups(null)).toEqual([]);
+    expect(component.createAssessmentGroups([])).toEqual([]);
+    expect(component.createAssessmentGroups([assessment])).toEqual([]);
+    assessment.metaProperties = {};
+    expect(component.createAssessmentGroups([assessment])).toEqual([]);
+    assessment.metaProperties = {groupings: null};
+    expect(component.createAssessmentGroups([assessment])).toEqual([]);
+    assessment.metaProperties = {groupings: []};
+    expect(component.createAssessmentGroups([assessment])).toEqual([]);
+    assessment.metaProperties = {groupings: [{groupingValue: 'group1'}]};
+    expect(component.createAssessmentGroups([assessment]).length).toEqual(1);
+    assessment.metaProperties = {groupings: [{groupingValue: 'group1'}, {groupingValue: 'group2'}]};
+    expect(component.createAssessmentGroups([assessment]).length).toEqual(2);
+  });
+
+  it('should collect model assessments robustly', () => {
     component.model = null;
     spyOn(console, 'error');
     spyOn(console, 'warn');
@@ -361,15 +395,7 @@ describe('WizardComponent', () => {
 
   });
 
-  fit('should update the summary chart appropriately', () => {
-    // this.model = {
-    //   id: summary.id,
-    //   type: summary.type,
-    //   attributes: summary,
-    //   relationships: typedAssessments,
-    //   links: undefined
-    // };
-
+  it('should update the summary chart appropriately', () => {
     component.model = null;
     component.summaryDoughnutChartData = null;
     component.setAssessmentGroups(null);
@@ -390,7 +416,7 @@ describe('WizardComponent', () => {
 
     component.setAssessmentGroups([{}]);
     component.updateSummaryChart();
-    expect(component.summaryDoughnutChartData[0].data).toEqual([]);
+    expect(component.summaryDoughnutChartData[0].data).toEqual([1, 3, 5]);
 
     component.setAssessmentGroups([{ assessments: null }]);
     component.updateSummaryChart();
@@ -400,9 +426,13 @@ describe('WizardComponent', () => {
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([]);
 
-    // component.setAssessmentGroups([{assessments: [{id: null}]}]);
-    // component.updateSummaryChart();
-    // expect(component.summaryDoughnutChartData[0].data).toEqual([]);
+    component.setAssessmentGroups([{ assessments: [{ id: null }] }]);
+    component.updateSummaryChart();
+    expect(component.summaryDoughnutChartData[0].data).toEqual([0, 1]);
+
+    component.setAssessmentGroups([{ assessments: [{ id: null }, { id: null }, { id: null }] }, { assessments: [{ id: null }] }]);
+    component.updateSummaryChart();
+    expect(component.summaryDoughnutChartData[0].data).toEqual([0, 1]);
   });
 
   it(`can load existing data`, () => {

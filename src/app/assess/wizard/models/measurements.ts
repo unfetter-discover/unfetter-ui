@@ -67,7 +67,7 @@ export class Measurements {
             measurements.push(this.createMeasurement('policy', -1, indicatorOption));
 
         } else {
-            // Then, assuming its an indicator
+            // Then, assuming its a sensor
             const indicatorOption = ['no coverage',
                 'some coverage',
                 'half coverage',
