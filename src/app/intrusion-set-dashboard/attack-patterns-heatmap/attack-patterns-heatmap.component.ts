@@ -20,7 +20,7 @@ import {
         BatchData,
         HeatColor,
     } from '../../global/components/heatmap/heatmap.component';
-import { AttackPatternHighlighterService } from '../attack-pattern-highlighter.service';
+import { IntrusionSetHighlighterService } from '../intrusion-set-highlighter.service';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { Dictionary } from '../../models/json/dictionary';
@@ -63,7 +63,7 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
         private vcr: ViewContainerRef,
         private renderer: Renderer2,
         private changeDetector: ChangeDetectorRef,
-        private highlighter: AttackPatternHighlighterService,
+        private highlighter: IntrusionSetHighlighterService,
     ) { }
 
     ngOnInit() {
@@ -209,7 +209,7 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
                 this.hideAttackPatternTooltip(this.attackPattern);
             } else {
                 this.showAttackPatternTooltip(selection.attackPattern, selection.event, hover);
-                this.highlighter.highlightAttackPattern(selection.attackPattern);
+                this.highlighter.highlightIntrusionSets(selection.attackPattern);
             }
         }
     }
@@ -270,7 +270,7 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
       this.overlayRef.detach();
       this.overlayRef.dispose();
       this.overlayRef = null;
-      this.highlighter.highlightAttackPattern(null);
+      this.highlighter.highlightIntrusionSets(null);
     }
 
     public getIntrusionSetNames(attackPattern: any): string {

@@ -12,7 +12,7 @@ import { Subject } from 'rxjs/Subject';
 
 import { Constance } from '../../utils/constance';
 import { GenericApi } from '../../core/services/genericapi.service';
-import { AttackPatternHighlighterService } from '../attack-pattern-highlighter.service';
+import { IntrusionSetHighlighterService } from '../intrusion-set-highlighter.service';
 
 @Component({
     selector: 'intrusion-sets-panel',
@@ -33,7 +33,7 @@ export class IntrusionSetsPanelComponent implements OnInit {
     constructor(
         protected genericApi: GenericApi,
         protected ref: ChangeDetectorRef,
-        private highlighter: AttackPatternHighlighterService,
+        private highlighter: IntrusionSetHighlighterService,
     ) { }
 
     /**
@@ -61,14 +61,14 @@ export class IntrusionSetsPanelComponent implements OnInit {
                 (err) => console.log(new Date().toISOString(), err),
             );
 
-        this.highlighter.attackPattern
+        this.highlighter.intrusionSet
             .distinctUntilChanged()
             .subscribe(
-                (attackPattern) => {
+                (event) => {
                     const highlighted: NodeList = this.listElement.nativeElement.querySelectorAll('[highlight]');
                     Array.from(highlighted).forEach((node: Element) => node.removeAttribute('highlight'));
-                    if (attackPattern && attackPattern.intrusion_sets) {
-                        attackPattern.intrusion_sets.forEach(intrusion => {
+                    if (event && event.intrusion_sets) {
+                        event.intrusion_sets.forEach(intrusion => {
                             const target = this.listElement.nativeElement.querySelector(`#${intrusion.id}`);
                             if (target) {
                                 target.attributes.setNamedItem(document.createAttribute('highlight'));

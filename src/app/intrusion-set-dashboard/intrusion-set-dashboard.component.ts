@@ -17,13 +17,13 @@ import { BaseStixService } from '../settings/base-stix.service';
 import { BaseComponentService } from '../components/base-service.component';
 import { topRightSlide } from '../global/animations/top-right-slide';
 import { GenericApi } from '../core/services/genericapi.service';
-import { AttackPatternHighlighterService } from './attack-pattern-highlighter.service';
+import { IntrusionSetHighlighterService } from './intrusion-set-highlighter.service';
 
 @Component({
     selector: 'intrusion-set-dashboard',
     templateUrl: 'intrusion-set-dashboard.component.html',
     styleUrls: ['./intrusion-set-dashboard.component.scss'],
-    providers: [AttackPatternHighlighterService],
+    providers: [IntrusionSetHighlighterService],
     animations: [topRightSlide],
 })
 export class IntrusionSetDashboardComponent implements OnInit {
