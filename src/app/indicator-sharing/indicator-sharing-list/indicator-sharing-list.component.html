@@ -42,7 +42,7 @@
                             <button mat-icon-button id="showAttackPatternHeatMap" (click)="viewHeatMapDialog($event)" matTooltip="Show Heat Map">
                                 <i class="material-icons mat-24 labelColor" >view_comfy</i>
                             </button>
-                            <button mat-icon-button matTooltip="{{ showSummaryStats ? 'Hide' : 'Show' }} Statistics" (click)="showSummaryStats = !showSummaryStats">
+                            <button mat-icon-button matTooltip="{{ showSummaryStats ? 'Hide' : 'Show' }} Statistics" (click)="toggleShowStatistics()">
                                 <i class="material-icons mat-24" [ngClass]="{'labelColor': !showSummaryStats}">equalizer</i>
                             </button>
                          </div>

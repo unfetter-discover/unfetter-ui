@@ -1,0 +1,7 @@
+<div class="relationshipGeneratorComponent" class="mt-3 mb-3" *ngIf="canidateObjs.length">
+  <mat-form-field class="full-width">
+    <mat-select [multiple]="true" class="full-width" placeholder="Related {{ relatedObjectType | capitalize }}s" [(ngModel)]="model.attributes.metaProperties.relationships">
+      <mat-option *ngFor="let canidateObj of canidateObjs | sortByField:'name':'ascending'" [value]="canidateObj.id">{{ canidateObj.name }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>

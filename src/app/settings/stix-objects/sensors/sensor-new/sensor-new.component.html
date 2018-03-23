@@ -24,6 +24,8 @@
 
 <aliases  *ngIf="sensor" [(model)]="sensor"></aliases>
 
+<relatationship-generator [(model)]="sensor"></relatationship-generator>
+
 <div>
     <label class="mb-5">Observable Data Path</label>
     <observable-data-tree [observedDataPath]="sensor.attributes.metaProperties.observedData"></observable-data-tree>
