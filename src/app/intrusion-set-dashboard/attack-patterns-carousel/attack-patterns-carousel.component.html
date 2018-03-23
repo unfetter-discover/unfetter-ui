@@ -1,0 +1,38 @@
+<mat-card id="carouselCard" class="margin-top cardHoverShadow">
+    <!--
+    <mat-card-header *ngIf="!intrusionSetsDashboard.killChainPhases">
+        <mat-card-subtitle>Tactics Used</mat-card-subtitle>
+    </mat-card-header>
+      -->
+    <p-carousel *ngIf="killChainPhases" headerText="Tactics Used"
+            [value]="killChainPhases" numVisible="5" responsive="true">
+        <ng-template let-killChainPhase pTemplate="killChainPhase">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row carouselSubheadingRow">
+                    <div class="ui-grid-col-12 kill-chain-div flex">
+                        <span class="flex1 flexNowrap">{{killChainPhase.name | capitalize}}</span>
+                        <small class="badge">
+                            {{count(killChainPhase.attack_patterns)}}/{{killChainPhase.attack_patterns.length}}
+                        </small>
+                    </div>
+                </div>
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <div class="carousel-content-wrapper">
+                            <div class="ui-grid ui-grid-responsive">
+                                <div class="ui-grid-row" style="margin:2px 0px;"
+                                        *ngFor="let attack_pattern of killChainPhase.attack_patterns">
+                                    <div class="ui-grid-col-12 attack-pattern-div"
+                                            [style.color]="attack_pattern.fore"
+                                            [style.background]="attack_pattern.back">
+                                        {{attack_pattern.name}} {{attack_pattern.color}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-carousel>
+</mat-card>

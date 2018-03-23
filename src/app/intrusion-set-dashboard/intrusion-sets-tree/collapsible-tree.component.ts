@@ -1,10 +1,9 @@
-
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 import * as d3 from 'd3';
 
 @Component({
   selector: 'collapsible-tree',
-  template: `<div id='graph' class='conceptmap' ></div><div id='graph-info'></div>`
+  template: `<div id='graph' class='conceptmap'></div><div id='graph-info'></div>`
 })
 export class CollapsibleTreeComponent implements OnInit, OnChanges {
     private static readonly DEFAULT_COLOR = 'lightsteelblue';

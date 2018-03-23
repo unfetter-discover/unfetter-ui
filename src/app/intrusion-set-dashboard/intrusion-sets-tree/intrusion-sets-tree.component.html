@@ -1,0 +1,6 @@
+<mat-card class="margin-top cardHoverShadow">
+    <mat-card-header *ngIf="!treeData">
+        <mat-card-subtitle>Graph</mat-card-subtitle>
+    </mat-card-header>
+    <collapsible-tree *ngIf="treeData" [data]="treeData" (treeComplete)="treeComplete()"></collapsible-tree>
+</mat-card>

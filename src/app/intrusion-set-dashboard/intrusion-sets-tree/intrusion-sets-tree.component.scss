@@ -1,0 +1,25 @@
+@import '../../../styles/variables';
+
+:host ::ng-deep {
+
+    .node {
+        cursor: pointer;
+    }
+
+    .node circle {
+        fill: #fff;
+        stroke: $neutral-color;
+        stroke-width: 1.5px;
+    }
+
+    .node text {
+        font: 12px sans-serif;
+    }
+
+    .link {
+        fill: none;
+        stroke: #ccc;
+        stroke-width: 1.5px;
+    }
+
+}
