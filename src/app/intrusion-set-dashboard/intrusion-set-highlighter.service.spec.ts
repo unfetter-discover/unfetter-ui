@@ -2,7 +2,7 @@ import { TestBed, inject } from '@angular/core/testing';
 
 import { IntrusionSetHighlighterService } from './intrusion-set-highlighter.service';
 
-describe('AttackPatternHighlighterService', () => {
+describe('IntrusionSetHighlighterService', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
