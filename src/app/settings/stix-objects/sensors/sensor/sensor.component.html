@@ -56,4 +56,5 @@
             </mat-card>
         </div>
     </div>
+    <relationship-list *ngIf="sensor.id" [model]="sensor"></relationship-list>
     <div *ngIf="sensor" class="pull-right grey-text">{{sensor.id}}</div>
