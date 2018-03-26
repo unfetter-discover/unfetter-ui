@@ -51,7 +51,6 @@ export class UserEffects {
                 new userActions.SetToken(token),
                 new configActions.FetchConfig(),
                 new notificationActions.FetchNotificationStore(),
-                new notificationActions.StartNotificationStream(),
                 new utilityActions.RecordVisit()
             ]
         });
