@@ -62,7 +62,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
         errorMessage: 'Not a valid date'
     };
 
-    public readonly dateFormat = 'D/M/YYYY';
+    public readonly dateFormat = 'M/D/YYYY';
 
     public readonly viewPath = `threat-dashboard/view`;
 
@@ -239,9 +239,10 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      * @description Determine if the current end date is invalid against the current start date.
      */
     private isEndDateSameOrBeforeStartDate(value: any): void {
-        if (moment(value, this.dateFormat).isValid() &&
-                moment(this.threatReport.boundaries.endDate, this.dateFormat).isSameOrBefore(
-                        moment(this.threatReport.boundaries.startDate, this.dateFormat))) {
+        const dateValue = moment(value, this.dateFormat);
+        const endDate = moment(this.threatReport.boundaries.endDate, this.dateFormat);
+        const startDate = moment(this.threatReport.boundaries.startDate, this.dateFormat);
+        if (dateValue.isValid() && endDate.isSameOrBefore(startDate)) {
             this.dateError.endDate.isSameOrBefore = true;
         } else {
             this.dateError.endDate.isSameOrBefore = false;
