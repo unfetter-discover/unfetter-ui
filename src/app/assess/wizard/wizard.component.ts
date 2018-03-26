@@ -460,14 +460,14 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {void}
    */
   public updateRatioOfAnswerQuestions(): void {
-    if (this.assessmentGroups) {
+    if (this.assessmentGroups && this.assessmentGroups.length > 1) {
       const allQuestions = this.assessmentGroups
         // flat map assessments across groups
         .map((groups) => groups.assessments)
-        .reduce((assessments, memo) => memo.concat(assessments), [])
+        .reduce((assessments, memo) => memo ? memo.concat(assessments) : assessments, [])
         // flat map across questions
         .map((assessments) => assessments.measurements)
-        .reduce((measurements, memo) => memo.concat(measurements), []);
+        .reduce((measurements, memo) => memo ? memo.concat(measurements) : measurements, []);
       const numQuestions = allQuestions.length;
       const answeredQuestions = allQuestions.filter((el) => el.risk > -1).length;
       if (answeredQuestions > 0) {
@@ -531,7 +531,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {void}
    */
   public setSelectedRiskValue(): void {
-    if (this.model) {
+    if (this.model && this.currentAssessmentGroup) {
       this.currentAssessmentGroup.assessments.forEach(assessment => this.collectModelAssessments(assessment));
       this.calculateGroupRisk();
     } else {
@@ -879,7 +879,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     const assessmentGroups = [];
     const self = this;
 
-    console.log(`assessedObjects ${JSON.stringify(assessedObjects)}`);
     if (assessedObjects) {
       // Go through and build each assessment
       // We do this so we can just save all the assessments later.
@@ -902,7 +901,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       this.groupings = this.buildGrouping(this.assessments);
 
       const assessmentObjectsGroups = this.doObjectGroupings(this.assessments);
-      console.log(`assessmentObjectGroups: ${JSON.stringify(assessmentObjectsGroups)}`);
+      // console.log(`assessmentObjectGroups: ${JSON.stringify(assessmentObjectsGroups)}`);
       const keys = Object.keys(assessmentObjectsGroups).sort();
       keys.forEach((phaseName, index) => {
         // TODO - Need to remove the 'courseOfAction' name
@@ -1040,25 +1039,17 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     let result: number[] = [];
 
     if (assessmentData) {
-      // this.updateRatioOfAnswerQuestions();
-      let singleAssessmentGroups: any[] = this.createAssessmentGroups(assessmentData);
-      if (singleAssessmentGroups && singleAssessmentGroups.length > 0) {
-        singleAssessmentGroups.forEach(element => {
+      if (this.assessmentGroups && this.assessmentGroups.length > 0) {
+        this.assessmentGroups.forEach(element => {
           if (element.assessments) {
             element.assessments.forEach(assessment => this.collectModelAssessments(assessment))
           }
           this.calculateGroupRisk(element);
         });
-        console.log(`singleAssessmentGroups.riskArrays: ${JSON.stringify(singleAssessmentGroups.map((group) => group.riskArray))}`);
-        // console.log(`singleAssessmentGroups.riskArrays.eachvalue? : ${JSON.stringify(singleAssessmentGroups.map((group) => group.riskArray).map((risk) => { if (risk) { return risk[0]; }} ))}`);
-        console.log(`singleAssessmentGroups.riskArrays.eachvalue reduced : ${JSON.stringify(singleAssessmentGroups
-          .map((group) => group.riskArray)
-          .reduce(this.riskReduction, [0, 0]))}`);
-        const singleAssessmentRiskArray: number[] = singleAssessmentGroups
+        const singleAssessmentRiskArray: number[] = this.assessmentGroups
           .map((groups) => groups.riskArray)
           .reduce(this.riskReduction, [0, 0])
-          .map((riskSum) => riskSum / singleAssessmentGroups.length);
-        console.log(JSON.stringify(singleAssessmentRiskArray));
+          .map((riskSum) => riskSum / this.assessmentGroups.length);
         result = singleAssessmentRiskArray;
       }
     }
@@ -1072,20 +1063,39 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public updateSummaryChart(): void {
     // default for problematic data
     let chartData = [{ data: [], backgroundColor: [], hoverBackgroundColor: [] }];
-    console.log(`THIS IS mitigations: ${JSON.stringify(this['mitigations'])}`);
-    console.log(`THIS IS sensors: ${JSON.stringify(this['sensors'])}`);
-    console.log(`THIS IS indicators: ${JSON.stringify(this['indicators'])}`);
+    const assessmentData: number[][] = [];
     if (this.summaryDoughnutChartData && this.summaryDoughnutChartData[0].data) {
       chartData = this.summaryDoughnutChartData.slice();
+      const assessmentTypes: string[] = ['mitigations', 'sensors', 'indicators'];
+      assessmentTypes.forEach((element, index) => {
+        if (this[element] && this[element].length > 0) {
+          this.openedSidePanel = element as SidePanelName;
+          // reload questions
+          this.refreshToOpenedAssessmentType();
+          if (this.openedSidePanel && this.assessmentTypeGroups[this.openedSidePanel]) {
+            // reload previous state for given type/panel if it exists
+            this.assessmentGroups = [...this.assessmentTypeGroups[this.openedSidePanel].assessmentsGroups];
+            this.currentAssessmentGroup = this.getCurrentAssessmentGroup();
+            this.tempModel = { ...this.assessmentTypeGroups[this.openedSidePanel].tempModel };
+          }
 
-      let singleAssessmentData = this.generateSummaryChartDataForAnAssessmentType(this['indicators']);
-      console.log(`singleAssessmentData: ${JSON.stringify(singleAssessmentData)}`);
-      if (singleAssessmentData && singleAssessmentData.length > 0) {
-        chartData[0].data = singleAssessmentData;
+          // reset progress 
+          this.setSelectedRiskValue();
+          this.updateRatioOfAnswerQuestions();
+
+          const singleAssessmentData = this.generateSummaryChartDataForAnAssessmentType(this.currentAssessmentGroup);
+          if (singleAssessmentData && singleAssessmentData.length > 0) {
+            assessmentData.push(singleAssessmentData);
+          }
+        }
+      });
+      if (assessmentData && assessmentData.length > 0) {
+        chartData[0].data = assessmentData.reduce(this.riskReduction, [0, 0])
+          .map((riskSum) => riskSum / this.assessmentGroups.length);
       }
     }
     this.summaryDoughnutChartData = chartData;
-    console.log(`summary: ${JSON.stringify(this.summaryDoughnutChartData)}`);
+    this.openedSidePanel = 'summary';
   }
 
   public riskReduction(currentTotalRisk: number[], currentRisk: number[]): number[] {

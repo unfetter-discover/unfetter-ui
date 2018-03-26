@@ -56,7 +56,7 @@ class MockModel {
   }
 }
 
-describe('WizardComponent', () => {
+fdescribe('WizardComponent', () => {
   let component: WizardComponent;
   let fixture: ComponentFixture<WizardComponent>;
 
@@ -229,7 +229,7 @@ describe('WizardComponent', () => {
     expect(component.riskReduction(null, null)).toEqual([]);
   });
 
-  fit('should generate summary data for a single assessment type', () => {
+  it('should generate summary data for a single assessment type', () => {
     expect(component.generateSummaryChartDataForAnAssessmentType(null)).toEqual([]);
 
     expect(component.generateSummaryChartDataForAnAssessmentType([])).toEqual([]);
@@ -245,21 +245,23 @@ describe('WizardComponent', () => {
     expect(component.generateSummaryChartDataForAnAssessmentType([{ assessments: [{ id: null }, { id: null }, { id: null }] }, { assessments: [{ id: null }] }])).toEqual([]);
   });
 
-  fit('should create assessment groups robustly', () => {
-    let assessment = { version: null, external_references: null, granular_markings: null, name: null, description: null, pattern: null, kill_chain_phases: null,
-      created_by_ref: null, type: null, valid_from: null, labels: null, modified: null, created: null, metaProperties: null };
+  it('should create assessment groups robustly', () => {
+    let assessment = {
+      version: null, external_references: null, granular_markings: null, name: null, description: null, pattern: null, kill_chain_phases: null,
+      created_by_ref: null, type: null, valid_from: null, labels: null, modified: null, created: null, metaProperties: null
+    };
     expect(component.createAssessmentGroups(null)).toEqual([]);
     expect(component.createAssessmentGroups([])).toEqual([]);
     expect(component.createAssessmentGroups([assessment])).toEqual([]);
     assessment.metaProperties = {};
     expect(component.createAssessmentGroups([assessment])).toEqual([]);
-    assessment.metaProperties = {groupings: null};
+    assessment.metaProperties = { groupings: null };
     expect(component.createAssessmentGroups([assessment])).toEqual([]);
-    assessment.metaProperties = {groupings: []};
+    assessment.metaProperties = { groupings: [] };
     expect(component.createAssessmentGroups([assessment])).toEqual([]);
-    assessment.metaProperties = {groupings: [{groupingValue: 'group1'}]};
+    assessment.metaProperties = { groupings: [{ groupingValue: 'group1' }] };
     expect(component.createAssessmentGroups([assessment]).length).toEqual(1);
-    assessment.metaProperties = {groupings: [{groupingValue: 'group1'}, {groupingValue: 'group2'}]};
+    assessment.metaProperties = { groupings: [{ groupingValue: 'group1' }, { groupingValue: 'group2' }] };
     expect(component.createAssessmentGroups([assessment]).length).toEqual(2);
   });
 
@@ -395,10 +397,12 @@ describe('WizardComponent', () => {
 
   });
 
-  it('should update the summary chart appropriately', () => {
+  fit('should update the summary chart appropriately', () => {
     component.model = null;
     component.summaryDoughnutChartData = null;
-    component.setAssessmentGroups(null);
+    component.mitigations = null;
+    component.indicators = null;
+    component.sensors = null;
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([]);
 
@@ -410,29 +414,53 @@ describe('WizardComponent', () => {
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([1, 3, 5]);
 
-    component.setAssessmentGroups([]);
+    component.mitigations = [];
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([1, 3, 5]);
 
-    component.setAssessmentGroups([{}]);
+    component.mitigations = [{
+      metaProperties: null, created: null, modified: null, labels: null, valid_from: null, type: null, created_by_ref: null,
+      kill_chain_phases: null, pattern: null, description: null, version: null, external_references: null,
+      granular_markings: null, name: null
+    }];
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([1, 3, 5]);
 
-    component.setAssessmentGroups([{ assessments: null }]);
+    component.mitigations[0].metaProperties = { groupings: [{ groupingValue: 'group1' }] };
     component.updateSummaryChart();
-    expect(component.summaryDoughnutChartData[0].data).toEqual([]);
+    expect(component.summaryDoughnutChartData[0].data).toEqual([1, 0]);
 
-    component.setAssessmentGroups([{ assessments: [] }]);
     component.updateSummaryChart();
-    expect(component.summaryDoughnutChartData[0].data).toEqual([]);
+    expect(component.summaryDoughnutChartData[0].data).toEqual([1, 0]);
 
-    component.setAssessmentGroups([{ assessments: [{ id: null }] }]);
+    component.model = new MockModel();
+    component.mitigations[0].id = null;
     component.updateSummaryChart();
-    expect(component.summaryDoughnutChartData[0].data).toEqual([0, 1]);
+    expect(component.summaryDoughnutChartData[0].data).toEqual([1, 0]);
 
-    component.setAssessmentGroups([{ assessments: [{ id: null }, { id: null }, { id: null }] }, { assessments: [{ id: null }] }]);
+    component.mitigations = [{
+      metaProperties: null, created: null, modified: null, labels: null, valid_from: null, type: null, created_by_ref: null,
+      kill_chain_phases: null, pattern: null, description: null, version: null, external_references: null,
+      granular_markings: null, name: null, id: null
+    }, {
+      metaProperties: null, created: null, modified: null, labels: null, valid_from: null, type: null, created_by_ref: null,
+      kill_chain_phases: null, pattern: null, description: null, version: null, external_references: null,
+      granular_markings: null, name: null, id: null
+    }, {
+      metaProperties: null, created: null, modified: null, labels: null, valid_from: null, type: null, created_by_ref: null,
+      kill_chain_phases: null, pattern: null, description: null, version: null, external_references: null,
+      granular_markings: null, name: null, id: null
+    }];
     component.updateSummaryChart();
-    expect(component.summaryDoughnutChartData[0].data).toEqual([0, 1]);
+    expect(component.summaryDoughnutChartData[0].data).toEqual([1, 0]);
+
+    component.mitigations = [{
+      metaProperties: null, created: null, modified: null, labels: null, valid_from: null, type: null, created_by_ref: null,
+      kill_chain_phases: null, pattern: null, description: null, version: null, external_references: null,
+      granular_markings: null, name: null, id: 'happyjack',
+    }];
+    component.updateSummaryChart();
+    expect(component.summaryDoughnutChartData[0].data).toEqual([1, 0]);
   });
 
   it(`can load existing data`, () => {
