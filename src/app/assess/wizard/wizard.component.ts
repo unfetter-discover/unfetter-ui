@@ -557,7 +557,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         });
       }
     } else {
-      console.error(`unable to execute collection of model assessments ${JSON.stringify(this.model)}`);
+      console.warn(`unable to execute collection of model assessments; moving on... model: ${JSON.stringify(this.model)}`);
     }
 
   }
