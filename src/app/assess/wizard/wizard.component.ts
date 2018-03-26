@@ -1067,7 +1067,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     if (this.summaryDoughnutChartData && this.summaryDoughnutChartData[0].data) {
       chartData = this.summaryDoughnutChartData.slice();
       const assessmentTypes: string[] = ['mitigations', 'sensors', 'indicators'];
-      assessmentTypes.forEach((element, index) => {
+      assessmentTypes.forEach((element) => {
         if (this[element] && this[element].length > 0) {
           this.openedSidePanel = element as SidePanelName;
           // reload questions
@@ -1091,7 +1091,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       });
       if (assessmentData && assessmentData.length > 0) {
         chartData[0].data = assessmentData.reduce(this.riskReduction, [0, 0])
-          .map((riskSum) => riskSum / this.assessmentGroups.length);
+          .map((riskSum) => riskSum / assessmentData.length);
       }
     }
     this.summaryDoughnutChartData = chartData;

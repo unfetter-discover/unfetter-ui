@@ -44,6 +44,26 @@ class MockModel {
               metaProperties: null, id: 'happyjack'
             },
           risk: .25, questions: [{ name: 'sandychapsticks', risk: 3, options: null, selected_value: null }]
+        },
+        {
+          stix:
+            {
+              version: null, external_references: null, granular_markings: null, name: null,
+              description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
+              type: null, valid_from: null, labels: null, modified: null, created: null,
+              metaProperties: null, id: 'bellystaple'
+            },
+          risk: 0, questions: [{ name: 'sandychapsticks', risk: 3, options: null, selected_value: null }]
+        },
+        {
+          stix:
+            {
+              version: null, external_references: null, granular_markings: null, name: null,
+              description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
+              type: null, valid_from: null, labels: null, modified: null, created: null,
+              metaProperties: null, id: 'jumpyflashpan'
+            },
+          risk: .75, questions: [{ name: 'sandychapsticks', risk: 3, options: null, selected_value: null }]
         }],
       created: null,
       description: null, modified: null, name: null, type: null, version: null,
@@ -56,7 +76,7 @@ class MockModel {
   }
 }
 
-fdescribe('WizardComponent', () => {
+describe('WizardComponent', () => {
   let component: WizardComponent;
   let fixture: ComponentFixture<WizardComponent>;
 
@@ -397,7 +417,7 @@ fdescribe('WizardComponent', () => {
 
   });
 
-  fit('should update the summary chart appropriately', () => {
+  it('should update the summary chart appropriately', () => {
     component.model = null;
     component.summaryDoughnutChartData = null;
     component.mitigations = null;
@@ -461,6 +481,56 @@ fdescribe('WizardComponent', () => {
     }];
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([1, 0]);
+
+    component.mitigations[0].metaProperties = { groupings: [{ groupingValue: 'group1' }] };
+    component.updateSummaryChart();
+    expect(component.summaryDoughnutChartData[0].data).toEqual([.25, .75]);
+
+    component.indicators = [{
+      metaProperties: { groupings: [{ groupingValue: 'group1' }] }, created: null, modified: null, labels: null, valid_from: null, type: null, created_by_ref: null,
+      kill_chain_phases: null, pattern: null, description: null, version: null, external_references: null,
+      granular_markings: null, name: null, id: 'happyjack', pattern_lang: null, valid_until: null, formatDate: null
+    }];
+    component.updateSummaryChart();
+    expect(component.summaryDoughnutChartData[0].data).toEqual([.25, .75]);
+
+    component.sensors = [{
+      metaProperties: { groupings: [{ groupingValue: 'group1' }] }, created: null, modified: null, labels: null, valid_from: null, type: null, created_by_ref: null,
+      kill_chain_phases: null, pattern: null, description: null, version: null, external_references: null,
+      granular_markings: null, name: null, id: 'happyjack',
+    }];
+    component.updateSummaryChart();
+    expect(component.summaryDoughnutChartData[0].data).toEqual([.25, .75]);
+
+    component.indicators[0].id = 'bellystaple';
+    component.sensors[0].id = 'jumpyflashpan';
+    component.model.attributes.assessment_objects.push({
+      stix:
+        {
+          version: null, external_references: null, granular_markings: null, name: null,
+          description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
+          type: null, valid_from: null, labels: null, modified: null, created: null,
+          metaProperties: null, id: 'bellystaple'
+        },
+      risk: 0, questions: [{ name: 'sandychapsticks', risk: 3, options: null, selected_value: null }]
+    });
+    component.model.attributes.assessment_objects.push({
+      stix:
+        {
+          version: null, external_references: null, granular_markings: null, name: null,
+          description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
+          type: null, valid_from: null, labels: null, modified: null, created: null,
+          metaProperties: null, id: 'jumpyflashpan'
+        },
+      risk: .75, questions: [{ name: 'sandychapsticks', risk: 3, options: null, selected_value: null }]
+    });
+    component.updateSummaryChart();
+    expect(component.summaryDoughnutChartData[0].data).toEqual([(.25 + 0 + .75) / 3, (.75 + 1 + .25) / 3]);
+
+    component.model.attributes.assessment_objects[1].risk = .25;
+    component.model.attributes.assessment_objects[2].risk = .25;
+    component.updateSummaryChart();
+    expect(component.summaryDoughnutChartData[0].data).toEqual([(.25 + .25 + .25) / 3, (.75 + .75 + .75) / 3]);
   });
 
   it(`can load existing data`, () => {
