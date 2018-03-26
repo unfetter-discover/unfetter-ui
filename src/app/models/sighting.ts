@@ -23,7 +23,8 @@ export class Sighting {
         where_sighted_refs: [
           string
         ];
-        summary: boolean
+        summary: boolean;
+        created_by_ref: string;
     };
 
      constructor(data?: Sighting) {
