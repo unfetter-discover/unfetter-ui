@@ -31,23 +31,23 @@ export class Assessments3ListComponent implements OnInit {
     public route: ActivatedRoute) { }
 
   public ngOnInit() {
-    const sortObj = { 
-      'stix.created': -1 
-    };
-    const projectObj = { 
-      'stix.name': 1, 
-      'stix.id': 1,
-      'stix.created': 1,
-      'stix.assessment_objects': { 
-        '$slice': 1
-      },
-      'stix.assessment_objects.stix.type': 1
-    };
-    this.assessments3Service.load(`sort=${JSON.stringify(sortObj)}&project=${JSON.stringify(projectObj)}`).subscribe(
-      (data) => {
-         this.assessments = data;
-      }
-    );
+    // const sortObj = { 
+    //   'stix.created': -1 
+    // };
+    // const projectObj = { 
+    //   'stix.name': 1, 
+    //   'stix.id': 1,
+    //   'stix.created': 1,
+    //   'stix.assessment_objects': { 
+    //     '$slice': 1
+    //   },
+    //   'stix.assessment_objects.stix.type': 1
+    // };
+    // this.assessments3Service.load(`sort=${JSON.stringify(sortObj)}&project=${JSON.stringify(projectObj)}`).subscribe(
+    //   (data) => {
+    //      this.assessments = data;
+    //   }
+    // );
   }
 
   public edit(item: any): void {

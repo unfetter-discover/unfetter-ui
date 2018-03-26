@@ -87,7 +87,7 @@ export const Constance = {
   // TODO change icon
   X_UNFETTER_ASSESSMENT_ICON: 'assets/icon/stix-icons/svg/report-b.svg',
 
-  X_UNFETTER_ASSESSMENT3_NAVIGATE_URL: 'assessments3/playground',
+  X_UNFETTER_ASSESSMENT3_NAVIGATE_URL: 'assess3/navigate',
   X_UNFETTER_ASSESSMENT3_URL: 'api/x-unfetter-object-assessments',
   X_UNFETTER_ASSESSMENT3_TYPE: 'x-unfetter-object-assessment',
 
