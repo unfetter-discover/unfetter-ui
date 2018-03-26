@@ -234,7 +234,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       .select('assessment')
       .pluck('saved')
       .distinctUntilChanged()
-      .filter((el: SavedState) => el.finished === true)
+      .filter((el: SavedState) => el && el.finished === true)
       .subscribe(
         (saved: SavedState) => {
           const rollupId = saved.rollupId;

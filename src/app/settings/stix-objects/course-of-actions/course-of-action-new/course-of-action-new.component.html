@@ -28,7 +28,7 @@
             <div class="col-md-12">
                 <div class="button-row pull-right">
                         <button mat-button (click)="cancelButtonClicked()">CANCEL</button>
-                        <button mat-raised-button (click)="saveCourceOfAction()" [disabled]="!courseOfAction.attributes.name" color="primary">SAVE</button>
+                        <button mat-raised-button (click)="saveCourceOfAction()" [disabled]="!courseOfAction.attributes.name || !courseOfAction.attributes.created_by_ref" color="primary">SAVE</button>
 
                 </div>
             </div>
