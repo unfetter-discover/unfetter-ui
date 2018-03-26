@@ -50,7 +50,12 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   public id = '';
   public attackPatterns: AttackPattern[];
   public intrusionSets: IntrusionSet[];
-  public intrusionSetsDashboard: ThreatDashboard = { killChainPhases: [], intrusionSets: [], totalAttackPatterns: 0, coursesOfAction: [] };
+  public intrusionSetsDashboard: ThreatDashboard = {
+    killChainPhases: [],
+    intrusionSets: [],
+    totalAttackPatterns: 0,
+    coursesOfAction: []
+  };
   public groupKillchain: Array<Partial<KillChainEntry>>;
   public treeData: any;
   public radarData: RadarChartDataPoint[][];
@@ -148,7 +153,12 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    */
   public fetchIntrusionSetsAndRender(): void {
     console.log('fetching intrustion sets');
-    this.intrusionSetsDashboard = { killChainPhases: [], intrusionSets: [], totalAttackPatterns: 0, coursesOfAction: [] };
+    this.intrusionSetsDashboard = {
+      killChainPhases: [],
+      intrusionSets: [],
+      totalAttackPatterns: 0,
+      coursesOfAction: []
+    };
     if (!this.threatReport) {
       this.notifyDoneLoading();
       return;
@@ -366,7 +376,8 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
       .map((report) => report.attributes.object_refs)
       .reduce((memo, cur) => memo.concat(cur), []);
     const activeAttackPatternIds = new Set<string>(attackIds);
-    const activeAttackPatterns = attackPatterns.filter((curAttackPattern) => activeAttackPatternIds.has(curAttackPattern.id));
+    const activeAttackPatterns = attackPatterns.filter(
+      (curAttackPattern) => activeAttackPatternIds.has(curAttackPattern.id));
 
     // set selected colors for active attack patterns
     activeAttackPatterns.map((attackPattern: any) => {
@@ -437,7 +448,8 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     return attackPatterns
       .map((attackPattern) => {
         const apIntrusions = attackPattern.intrusion_sets || [];
-        const attackPatternChild = new AttackPatternChild(attackPattern.name, intrusionSet.color, attackPattern.description);
+        const attackPatternChild =
+            new AttackPatternChild(attackPattern.name, intrusionSet.color, attackPattern.description);
         // set courses of actions for this attack pattern node
         apIntrusions
           .filter((curIntrusionSet) => intrusionSet.name === curIntrusionSet.name)
@@ -445,8 +457,8 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
             const coas = this.intrusionSetsDashboard.coursesOfAction
               // find relevant courses of action to this attack pattern node
               .filter((coa) => {
-                return coa.attack_patterns
-                  .findIndex((curAttackPattern) => curAttackPattern.id && curAttackPattern.id === attackPattern.id) > -1;
+                return coa.attack_patterns.findIndex(
+                  (curAttackPattern) => curAttackPattern.id && curAttackPattern.id === attackPattern.id) > -1;
               })
               .map((coa) => new CourseOfActionChild(coa.name, intrusionSet.color, coa.description))
               .sort(SortHelper.sortDescByField('name'));
