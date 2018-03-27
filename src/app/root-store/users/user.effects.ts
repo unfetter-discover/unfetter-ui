@@ -43,7 +43,6 @@ export class UserEffects {
             }
         })
         .mergeMap(([token, userData]: [string, any]) => {
-            // NOTE this is wip for registered but unapproved users 
             if (!userData.approved) {
                 return[
                     new userActions.LoginUser({

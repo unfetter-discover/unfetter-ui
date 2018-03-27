@@ -1,8 +1,10 @@
 import { Injectable, SkipSelf, Optional } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
 
 import { GenericApi } from './genericapi.service';
 import { Constance } from '../../utils/constance';
+import { AppState } from '../../root-store/app.reducers';
 
 @Injectable()
 export class ConfigService {
@@ -13,7 +15,11 @@ export class ConfigService {
     private configUrl = Constance.CONFIG_URL;
     private publicConfigUrl = Constance.PUBLIC_CONFIG_URL;
 
-    constructor(private genericApi: GenericApi, @SkipSelf() @Optional() protected parent: ConfigService) {
+    constructor(
+        private genericApi: GenericApi,
+        private store: Store<AppState>,
+        @SkipSelf() @Optional() protected parent: ConfigService
+    ) {
         if (parent) {
             console.log('WARNING - ConfigService was instansiated more than once');
         }        
@@ -34,36 +40,29 @@ export class ConfigService {
     }
 
     public getConfigPromise(publicConfig: boolean = true): Promise<any> {
-        // TODO change this to NGRX
-        if (this.configSet && Object.keys(this.configurations).length) {
+        if (this.configSet && Object.keys(this.configurations).length) {        
             return Promise.resolve(this.configurations);
         } else {
             return new Promise((resolve, reject) => {
-                let getConfig$;
-
-                if (publicConfig) {
-                    getConfig$ = this.getPublicConfig();
-                } else {
-                    getConfig$ = this.getConfig();
-                }
-
-                const configSub$ = getConfig$.subscribe(
-                    (res) => {
-                        for (let config of res) {
-                            this.configurations[config.attributes.configKey] = config.attributes.configValue;
+                const getConfig$ = this.store.select('config')
+                    .pluck('configurations')
+                    .filter((configurations: any) => Object.keys(configurations).length > 0)
+                    .take(1)
+                    .subscribe(
+                        (configurations) => {
+                            this.configurations = configurations;
+                            this.configSet = true;
+                            resolve(configurations);
+                        },
+                        (err) => {
+                            reject(err);
+                        },
+                        () => {
+                            if (getConfig$) {
+                                getConfig$.unsubscribe();
+                            }
                         }
-                        this.configSet = true;
-                        resolve(this.configurations);
-                    },
-                    (err) => {
-                        reject(err);
-                    },
-                    () => {
-                        if (configSub$) {
-                            configSub$.unsubscribe();
-                        } 
-                    }
-                );
+                    );
             });
         }
     }
