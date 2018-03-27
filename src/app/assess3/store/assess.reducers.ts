@@ -11,8 +11,8 @@ export interface AssessFeatureState extends fromApp.AppState {
 export interface AssessState {
     assessment: Assessment3;
     backButton: boolean;
-    //TODO: add attack pattern array
-    //attackPatterns?: JsonApiData<AttackPattern>[];
+    // TODO: add attack pattern array
+    // attackPatterns?: JsonApiData<AttackPattern>[];
     finishedLoading: boolean;
     saved: { finished: boolean, rollupId: string, id: string };
     showSummary: boolean;

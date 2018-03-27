@@ -57,7 +57,7 @@ export class HeaderNavigationComponent {
       title: 'Partners',
       // Placeholder icon
       icon: Constance.LOGO_IMG_THREAT_DASHBOARD
-    }
+    },
   ];
 
   public readonly swaggerUrl = Constance.SWAGGER_URL;

@@ -31,7 +31,6 @@ export class Assess3LayoutComponent implements OnInit, AfterViewInit {
    * @returns {void}
    */
   public ngOnInit(): void {
-    console.log('&&&&&&&&&& Got to assess3 Assess3LayoutComponent!');
   }
 
   /**

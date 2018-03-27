@@ -27,7 +27,6 @@ export class Assess3Guard implements CanActivate {
      * @param state 
      */
     public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-        console.log('&&&&&&&&&& Got to assess3 guard.canActivate()!');
         return this.store.select('users')
             .take(1)
             .pluck('userProfile')

@@ -149,7 +149,7 @@ export class AssessService {
      */
     public getLatestAssessmentsByCreatorId(creatorId: string, includeMeta = true): Observable<Partial<LastModifiedAssessment3>[]> {
         const url = `${this.assessBaseUrl}`;
-        //const url = `${this.assessBaseUrl}/latest/${creatorId}`;
+        // const url = `${this.assessBaseUrl}/latest/${creatorId}`;
         return this.genericApi
             .getAs<Partial<LastModifiedAssessment3>[]>(url);
     }

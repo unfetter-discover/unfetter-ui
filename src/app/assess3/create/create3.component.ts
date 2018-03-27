@@ -31,7 +31,6 @@ export class Create3Component implements OnInit {
    * @description
    */
   ngOnInit(): void {
-    console.log('&&&&&&&&&& Got to assess3 Create!');
     this.assessMeta = new AssessmentMeta();
     this.resetForm();
     this.store.dispatch(new UpdatePageTitle(this.assessMeta.title));
