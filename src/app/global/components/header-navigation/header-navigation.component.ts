@@ -45,13 +45,7 @@ export class HeaderNavigationComponent {
       title: 'Intrusion Set Dashboard',
       // Placeholder icon
       icon: Constance.LOGO_IMG_THREAT_DASHBOARD
-    },
-    {
-      url: 'stix/attack-patterns',
-      title: 'STIX',
-      // Placeholder icon
-      icon: Constance.LOGO_IMG_THREAT_DASHBOARD
-    },
+    },    
     {
       url: 'partners',
       title: 'Partners',
@@ -72,6 +66,7 @@ export class HeaderNavigationComponent {
   public apiDocsIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD;
   public orgLeaderIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD;
   public adminIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD;
+  public stixIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD;
   public encodedToken: string = '';
   @Input() public title;
 
