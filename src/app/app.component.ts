@@ -78,6 +78,8 @@ export class AppComponent implements OnInit {
           this.title = 'Analytic Exchange';
         } else if (url === 'assess') {
           this.title = 'assessments';
+        } else if (url === 'assess3') {
+          this.title = 'assessments3';
         } else {
           this.title = url;
         }
@@ -93,9 +95,9 @@ export class AppComponent implements OnInit {
         this.theme = Themes.THREAT_DASHBOARD;
         break;
       case 'assessments':
-        this.theme = Themes.ASSESSMENTS;
-        break;
+      case 'assessments3':
       case 'assess':
+      case 'assess3':
         this.theme = Themes.ASSESSMENTS;
         break;
       default:
