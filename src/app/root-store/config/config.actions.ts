@@ -8,6 +8,8 @@ export const CLEAR_CONFIG = '[Config] Clear Config';
 
 export class FetchConfig implements Action {
     public readonly type = FETCH_CONFIG;
+
+    constructor(public payload: boolean) { }
 }
 
 export class AddConfig implements Action {

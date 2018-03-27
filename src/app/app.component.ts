@@ -63,7 +63,7 @@ export class AppComponent implements OnInit {
             ],
           }, token: '1234' }));
       }
-      this.store.dispatch(new configActions.FetchConfig());      
+      this.store.dispatch(new configActions.FetchConfig(false));      
     }
 
     const bodyElement: HTMLElement = document.getElementsByTagName('body')[0];

@@ -6,6 +6,7 @@ import { UsersService } from '../../core/services/users.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Constance } from '../../utils/constance';
 import { ConfigService } from '../../core/services/config.service';
+import { cleanObjectProperties } from '../../global/static/clean-object-properties';
 
 @Component({
     selector: 'register',
@@ -21,7 +22,6 @@ export class RegisterComponent implements OnInit {
 
     public identityClasses: string[] = [];
     public identitySectors: string[] = [];
-    public organizations: any[] = [];
 
     constructor(
         private usersService: UsersService, 
@@ -39,20 +39,25 @@ export class RegisterComponent implements OnInit {
                         this.userReturn = user = user.attributes;
                         
                         this.form = new FormGroup({
-                            firstName: new FormControl(user.firstName ? user.firstName : '', Validators.required),
-                            lastName: new FormControl(user.lastName ? user.lastName : '', Validators.required),
-                            userName: new FormControl(user.userName ? user.userName : user.github.userName ? user.github.userName : '', Validators.required),
-                            email: new FormControl(user.email ? user.email : '', [
-                                Validators.required,
-                                Validators.email
-                            ]),
-                            organizations: new FormControl(user.organizations ? user.organizations : ['']),
+                            unfetterInformation: new FormGroup({
+                                firstName: new FormControl(user.firstName ? user.firstName : '', Validators.required),
+                                lastName: new FormControl(user.lastName ? user.lastName : '', Validators.required),
+                                userName: new FormControl(user.userName ? user.userName : user.github.userName ? user.github.userName : '', Validators.required),
+                                email: new FormControl(user.email ? user.email : '', [
+                                    Validators.required,
+                                    Validators.email
+                                ]),
+                            }),
+                            registrationInformation: new FormGroup({
+                                applicationNote: new FormControl(''),
+                                requestedOrganization: new FormControl(''),
+                            }),
                             identity: new FormGroup({
                                 name: new FormControl('', Validators.required),
                                 description: new FormControl(''),
                                 sectors: new FormControl(['']),
                                 contact_information: new FormControl(''),
-                            })
+                            }),
                         }); 
                     },
                     (err) => {
@@ -60,21 +65,6 @@ export class RegisterComponent implements OnInit {
                     },
                     () => {
                         userFromToken$.unsubscribe();
-                    }
-                );
-
-            const getOrganizations$ = this.usersService.getOrganizations()
-                .subscribe(
-                    (res) => {
-                        this.organizations = res
-                            .map((r) => r.attributes)
-                            .filter((org) => org.labels === undefined || !org.labels.includes('open-group'));
-                    },
-                    (err) => {
-                        console.log(err);                        
-                    },
-                    () => {
-                        getOrganizations$.unsubscribe();
                     }
                 );
 
@@ -92,39 +82,25 @@ export class RegisterComponent implements OnInit {
 
     public registerSubmit() {
         this.registrationSubmitted = true;
-        for (let control in this.form.controls) {
-            if (control === 'identity') {
-                continue;
-            } else if (this.form.controls[control].value && this.form.controls[control].value !== '') {
-                if (this.form.controls[control].value instanceof Array) {                    
-                    let validValues = this.form.controls[control].value.filter((el) => el && el !== '');
+
+        const unfetterInformation = this.form.get('unfetterInformation').value;
+        for (let control in unfetterInformation) {
+            if (unfetterInformation[control] && unfetterInformation[control] !== '') {
+                if (unfetterInformation[control] instanceof Array) {                    
+                    let validValues = unfetterInformation[control].filter((el) => el && el !== '');
                     if (validValues && validValues.length) {
                         this.userReturn[control] = validValues;
                     }
                 } else {
-                    this.userReturn[control] = this.form.controls[control].value;
+                    this.userReturn[control] = unfetterInformation[control];
                 }
             }            
         }  
 
-        let identity = this.form.get('identity').value;           
-        let temp = {};
-
-        for (let control in identity) {
-            if (identity[control] && identity[control] !== '') {
-                if (identity[control] instanceof Array) {
-                    let validValues = identity[control].filter((el) => el && el !== '');
-                    if (validValues && validValues.length) {
-                        temp[control] = validValues;
-                    }
-                } else {
-                    temp[control] = identity[control];
-                }
-            }
-        } 
-        this.userReturn.identity = temp;
-             
-        let submitRegistration$ = this.usersService.finalizeRegistration(this.userReturn)
+        this.userReturn.identity = cleanObjectProperties({}, { ...this.form.get('identity').value });
+        this.userReturn.registrationInformation = cleanObjectProperties({}, { ...this.form.get('registrationInformation').value });
+        
+        const submitRegistration$ = this.usersService.finalizeRegistration(this.userReturn)
             .subscribe(
                 (res) => {
                     console.log('SUBMIT RES', res);
@@ -144,12 +120,10 @@ export class RegisterComponent implements OnInit {
                     this.submitError = true;
                 },
                 () => {
-                    submitRegistration$.unsubscribe();
+                    if (submitRegistration$) {
+                        submitRegistration$.unsubscribe();
+                    }
                 }
             );             
-    }
-
-    public makeOrgOptionValue(orgId) {
-        return {id: orgId, approved: false};
     }
 }
