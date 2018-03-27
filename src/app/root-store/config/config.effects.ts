@@ -15,7 +15,8 @@ export class ConfigEffects {
     @Effect()
     public configUser = this.actions$
         .ofType(configActions.FETCH_CONFIG)
-        .switchMap(() => Observable.fromPromise(this.configService.getConfigPromise()))
+        .pluck('payload')
+        .switchMap((getPublicConfig: boolean) => Observable.fromPromise(this.configService.getConfigPromise(getPublicConfig)))
         .map((config) => ({
             type: configActions.ADD_CONFIG,
             payload: config

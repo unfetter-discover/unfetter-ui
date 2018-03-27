@@ -21,7 +21,6 @@ export class RegisterComponent implements OnInit {
 
     public identityClasses: string[] = [];
     public identitySectors: string[] = [];
-    public organizations: any[] = [];
 
     constructor(
         private usersService: UsersService, 
@@ -46,7 +45,6 @@ export class RegisterComponent implements OnInit {
                                 Validators.required,
                                 Validators.email
                             ]),
-                            organizations: new FormControl(user.organizations ? user.organizations : ['']),
                             identity: new FormGroup({
                                 name: new FormControl('', Validators.required),
                                 description: new FormControl(''),
@@ -60,21 +58,6 @@ export class RegisterComponent implements OnInit {
                     },
                     () => {
                         userFromToken$.unsubscribe();
-                    }
-                );
-
-            const getOrganizations$ = this.usersService.getOrganizations()
-                .subscribe(
-                    (res) => {
-                        this.organizations = res
-                            .map((r) => r.attributes)
-                            .filter((org) => org.labels === undefined || !org.labels.includes('open-group'));
-                    },
-                    (err) => {
-                        console.log(err);                        
-                    },
-                    () => {
-                        getOrganizations$.unsubscribe();
                     }
                 );
 
@@ -147,9 +130,5 @@ export class RegisterComponent implements OnInit {
                     submitRegistration$.unsubscribe();
                 }
             );             
-    }
-
-    public makeOrgOptionValue(orgId) {
-        return {id: orgId, approved: false};
     }
 }

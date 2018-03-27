@@ -43,16 +43,29 @@ export class UserEffects {
             }
         })
         .mergeMap(([token, userData]: [string, any]) => {
-            return [
-                new userActions.LoginUser({
-                    userData,
-                    token
-                }),
-                new userActions.SetToken(token),
-                new configActions.FetchConfig(),
-                new notificationActions.FetchNotificationStore(),
-                new utilityActions.RecordVisit()
-            ]
+            // NOTE this is wip for registered but unapproved users 
+            if (!userData.approved) {
+                return[
+                    new userActions.LoginUser({
+                        userData,
+                        token
+                    }),
+                    new userActions.SetToken(token),
+                    new configActions.FetchConfig(true)
+                ];
+            } else {
+                return [
+                    new userActions.LoginUser({
+                        userData,
+                        token
+                    }),
+                    new userActions.SetToken(token),
+                    new configActions.FetchConfig(false),
+                    new notificationActions.FetchNotificationStore(),
+                    new utilityActions.RecordVisit()
+                ];
+            }
+            
         });
 
     @Effect()

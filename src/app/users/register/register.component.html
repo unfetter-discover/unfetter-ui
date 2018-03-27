@@ -60,12 +60,6 @@
                             </mat-error>
                         </mat-form-field>
 
-                        <mat-form-field class="full-width mb-20" *ngIf="organizations && organizations.length">
-                            <mat-select placeholder="Organizations" [multiple]="true" formControlName="organizations">
-                                <mat-option [value]="makeOrgOptionValue(org.id)" *ngFor="let org of organizations">{{org.name}}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-
                         <div id="identityForm">
                             <hr>
                             <p class="lead">STIX Identity</p>
