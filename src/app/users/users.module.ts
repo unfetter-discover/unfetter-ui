@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
-import { MatProgressBarModule, MatSelectModule, MatCardModule, MatInputModule, MatButtonModule, MatListModule, MatCheckboxModule } from '@angular/material';
+import { MatProgressBarModule, MatSelectModule, MatCardModule, MatInputModule, MatButtonModule, MatListModule, MatCheckboxModule, MatStepperModule } from '@angular/material';
 
 import { routing } from './users-routing.module';
 import { ComponentModule } from '../components'
@@ -19,7 +19,8 @@ const matModules = [
     MatProgressBarModule,
     MatButtonModule,
     MatListModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatStepperModule
 ];
 
 @NgModule({
