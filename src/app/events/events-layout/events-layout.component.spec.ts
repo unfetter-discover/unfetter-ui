@@ -1,14 +1,16 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EventsLayoutComponent } from './events-layout.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
-describe('EventsLayoutComponent', () => {
+fdescribe('EventsLayoutComponent', () => {
   let component: EventsLayoutComponent;
   let fixture: ComponentFixture<EventsLayoutComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EventsLayoutComponent ]
+      declarations: [ EventsLayoutComponent ],
+      imports: [ RouterTestingModule ],
     })
     .compileComponents();
   }));
