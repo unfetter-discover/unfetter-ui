@@ -51,13 +51,19 @@ export class HeaderNavigationComponent {
       title: 'Events Dashboard',
       // TODO Placeholder icon
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> new events dashboard initial check-in; themed and routing properly
       icon: Constance.LOGO_IMG_THREAT_DASHBOARD
     },
     {
       url: 'stix/attack-patterns',
       title: 'STIX',
       // Placeholder icon
+<<<<<<< HEAD
+>>>>>>> new events dashboard initial check-in; themed and routing properly
+=======
 >>>>>>> new events dashboard initial check-in; themed and routing properly
       icon: Constance.LOGO_IMG_THREAT_DASHBOARD
     },

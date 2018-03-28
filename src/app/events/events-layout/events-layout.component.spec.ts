@@ -2,7 +2,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EventsLayoutComponent } from './events-layout.component';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { RouterTestingModule } from '@angular/router/testing';
+=======
+>>>>>>> new events dashboard initial check-in; themed and routing properly
 =======
 >>>>>>> new events dashboard initial check-in; themed and routing properly
 
@@ -13,8 +16,12 @@ describe('EventsLayoutComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
 <<<<<<< HEAD
+<<<<<<< HEAD
       declarations: [ EventsLayoutComponent ],
       imports: [ RouterTestingModule ],
+=======
+      declarations: [ EventsLayoutComponent ]
+>>>>>>> new events dashboard initial check-in; themed and routing properly
 =======
       declarations: [ EventsLayoutComponent ]
 >>>>>>> new events dashboard initial check-in; themed and routing properly
