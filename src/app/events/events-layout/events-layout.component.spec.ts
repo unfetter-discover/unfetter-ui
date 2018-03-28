@@ -13,7 +13,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 >>>>>>> fix broken tests
 
-fdescribe('EventsLayoutComponent', () => {
+describe('EventsLayoutComponent', () => {
   let component: EventsLayoutComponent;
   let fixture: ComponentFixture<EventsLayoutComponent>;
 
