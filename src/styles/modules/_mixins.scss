@@ -14,6 +14,10 @@
         .assessmentsTheme & {
           #{$property}: $assessments-primary;
         }
+
+        .eventsTheme & {
+          #{$property}: $events-primary;
+        }
         #{$property}: $primary-color;
     }    
 }
@@ -31,6 +35,10 @@
 
       .assessmentsTheme & {
         #{$property}: $assessments-primary-light;
+      }
+
+      .eventsTheme & {
+        #{$property}: $events-primary-light;
       }
       #{$property}: $primary-color-light;
   }    
@@ -50,6 +58,10 @@
       .assessmentsTheme & {
         #{$property}: $assessments-primary-lighter;
       }
+
+      .eventsTheme & {
+        #{$property}: $events-primary-lighter;
+      }
       #{$property}: $primary-color-lighter;
   }    
 }
@@ -67,6 +79,10 @@
 
       .assessmentsTheme & {
         #{$property}: $assessments-primary-lightest;
+      }
+
+      .eventsTheme & {
+        #{$property}: $events-primary-lightest;
       }
       #{$property}: $primary-color-lightest;
   }    
@@ -86,6 +102,10 @@
         .assessmentsTheme & {
           #{$property}: $assessments-accent;
         }
+
+        .eventsTheme & {
+          #{$property}: $events-accent;
+        }
         #{$property}: $accent-color;
     }    
 }
@@ -102,6 +122,10 @@
   .assessmentsTheme & {
     color: $assessments-primary-text;
   }
+
+  .eventsTheme & {
+    color: $events-primary-text;
+  }
   color: $primary-text-default; 
 }
 
@@ -116,6 +140,10 @@
 
   .assessmentsTheme & {
     #{$property}: $assessments-primary-text;
+  }
+
+  .eventsTheme & {
+    #{$property}: $events-primary-text;
   }
   #{$property}: $primary-text-default; 
 }
@@ -132,6 +160,10 @@
   .assessmentsTheme & {
     color: $assessments-accent-text;
   }
+
+  .eventsTheme & {
+    color: $events-accent-text;
+  }
   color: $primary-text-contrast-color;
 }
 
@@ -145,6 +177,9 @@
     .assessmentsTheme & {
         #{$property}: rgba-to-rgb(rgba($assessments-primary, $percent));
     }
+    .eventsTheme & {
+      #{$property}: rgba-to-rgb(rgba($events-primary, $percent));
+    }
     #{$property}: rgba-to-rgb(rgba($primary-color, $percent)); 
 }
 
@@ -157,6 +192,9 @@
   }
   .assessmentsTheme & {
     #{$property}: rgba-to-rgb(rgba($assessments-accent, $percent));
+  }
+  .eventsTheme & {
+    #{$property}: rgba-to-rgb(rgba($events-accent, $percent));
   }
   #{$property}: rgba-to-rgb(rgba($accent-color, $percent));
 }
@@ -172,6 +210,9 @@
   .assessmentsTheme & {
     #{$property}: darken($assessments-primary, $percent);
   }
+  .eventsTheme & {
+    #{$property}: darken($events-primary, $percent);
+  }
   #{$property}: darken($primary-color, $percent);
 }
 
@@ -185,6 +226,9 @@
  .assessmentsTheme & {
    #{$property}: darken($assessments-accent, $percent);
  }
+ .eventsTheme & {
+  #{$property}: darken($events-accent, $percent);
+}
  #{$property}: darken($accent-color, $percent);
 }
 
@@ -198,6 +242,9 @@
   .assessmentsTheme & {
     #{$property}: #{$modification} $assessments-primary;
   }
+  .eventsTheme & {
+    #{$property}: #{$modification} $events-primary;
+  }
   #{$property}: #{$modification} $primary-color;
 }
 
@@ -210,6 +257,9 @@
   }
   .assessmentsTheme & {
     #{$property}: #{$modification} $assessments-accent;
+  }
+  .eventsTheme & {
+    #{$property}: #{$modification} $events-accent;
   }
   #{$property}: #{$modification} $accent-color;
 }

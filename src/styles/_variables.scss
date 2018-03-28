@@ -55,6 +55,16 @@ $assessments-accent: get-color($indigo, A400);
 $assessments-accent-text: $light-text-default;
 $assessments-primary-text: $dark-text-default;
 
+// Events Dashboard
+$events-primary: get-color($green, 600);
+$events-primary-light: get-color($green, 300);
+$events-primary-lighter: get-color($green, 200);
+$events-primary-lightest: get-color($green, 100);
+$events-primary-subtle: get-color($green, 50);
+$events-accent: get-color($lime, A200);
+$events-accent-text: $light-text-default;
+$events-primary-text: $dark-text-default;
+
 // ~~~ Navbar sizing ~~~
 
 $navbar-height: 64;

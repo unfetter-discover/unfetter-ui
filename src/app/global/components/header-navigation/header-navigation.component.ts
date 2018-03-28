@@ -45,7 +45,13 @@ export class HeaderNavigationComponent {
       title: 'Intrusion Set Dashboard',
       // Placeholder icon
       icon: Constance.LOGO_IMG_THREAT_DASHBOARD
-    },    
+    },
+    {
+      url: 'events',
+      title: 'Events Dashboard',
+      // TODO Placeholder icon
+      icon: Constance.LOGO_IMG_THREAT_DASHBOARD
+    },
     {
       url: 'partners',
       title: 'Partners',
