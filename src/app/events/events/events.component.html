@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 <div id="event" class="fadeIn"> <!--*ngIf="!SERVER_CALL_COMPLETE; else loadingBlock"> -->
   <mat-sidenav-container> <!-- *ngIf="!eventsPresent; else notFound"> -->
+=======
+<div id="event" class="fadeIn" *ngIf="!SERVER_CALL_COMPLETE; else loadingBlock">
+  <mat-sidenav-container *ngIf="!eventsPresent; else notFound">
+>>>>>>> new events dashboard initial check-in; themed and routing properly
        <mat-sidenav class="side-panel" mode="side" opened="true">
          <p>This is where filters will go one day.</p>
             <!-- <unfetter-side-panel class="side-panel" [item]="something" collapsible="false" width="320">
