@@ -53,12 +53,6 @@ export class HeaderNavigationComponent {
       icon: Constance.LOGO_IMG_THREAT_DASHBOARD
     },
     {
-      url: 'stix/attack-patterns',
-      title: 'STIX',
-      // Placeholder icon
-      icon: Constance.LOGO_IMG_THREAT_DASHBOARD
-    },
-    {
       url: 'partners',
       title: 'Partners',
       // Placeholder icon
