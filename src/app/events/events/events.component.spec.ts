@@ -6,7 +6,7 @@ import { MatSidenavModule } from '@angular/material';
 import { GlobalModule } from '../../global/global.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-fdescribe('EventsComponent', () => {
+describe('EventsComponent', () => {
   let component: EventsComponent;
   let fixture: ComponentFixture<EventsComponent>;
 
