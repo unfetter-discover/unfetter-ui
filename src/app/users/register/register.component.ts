@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
 
 import { UsersService } from '../../core/services/users.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -42,11 +43,11 @@ export class RegisterComponent implements OnInit {
                             unfetterInformation: new FormGroup({
                                 firstName: new FormControl(user.firstName ? user.firstName : '', Validators.required),
                                 lastName: new FormControl(user.lastName ? user.lastName : '', Validators.required),
-                                userName: new FormControl(user.userName ? user.userName : user.github.userName ? user.github.userName : '', Validators.required),
+                                userName: new FormControl(user.userName ? user.userName : user.github.userName ? user.github.userName : '', Validators.required, this.validateUserName.bind(this)),
                                 email: new FormControl(user.email ? user.email : '', [
                                     Validators.required,
                                     Validators.email
-                                ]),
+                                ], this.validateEmail.bind(this)),
                             }),
                             registrationInformation: new FormGroup({
                                 applicationNote: new FormControl(''),
@@ -125,5 +126,17 @@ export class RegisterComponent implements OnInit {
                     }
                 }
             );             
+    }
+
+    private validateEmail(emailCtrl: FormControl): Observable<any> {
+        return Observable.timer(50)
+            .switchMap(() => this.usersService.emailAvailable(emailCtrl.value))
+            .map((emailAvailable: boolean) => emailAvailable ? null : { 'emailTaken': true });
+    }
+
+    private validateUserName(userNameCtrl: FormControl): Observable<any> {
+        return Observable.timer(50)
+            .switchMap(() => this.usersService.userNameAvailable(userNameCtrl.value))
+            .map((userNameAvailable: boolean) => userNameAvailable ? null : { 'userNameTaken': true });
     }
 }

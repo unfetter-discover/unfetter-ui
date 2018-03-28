@@ -91,6 +91,7 @@ export const Constance = {
   X_UNFETTER_ASSESSMENT3_URL: 'api/x-unfetter-object-assessments',
   X_UNFETTER_ASSESSMENT3_TYPE: 'x-unfetter-object-assessment',
 
+  AUTH_URL: 'api/auth',
   USER_FROM_TOKEN_URL: 'api/auth/user-from-token',
   FINALIZE_REGISTRATION_URL: 'api/auth/finalize-registration',
   PROFILE_BY_ID_URL: 'api/auth/profile',
