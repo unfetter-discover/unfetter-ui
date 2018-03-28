@@ -107,10 +107,16 @@ import {
 } from './stix-objects/sensors';
 
 import { AuthGuard } from '../core/services/auth.guard';
+import { UserRoles } from '../global/enums/user-roles.enum';
 
 const stixRoutes: Routes = [{
     path: 'stix',
     canActivate: [AuthGuard],
+    data: {
+      ROLES: [
+        UserRoles.ADMIN
+      ]
+    },
     component: StixHomeComponent,
     children: [
       {

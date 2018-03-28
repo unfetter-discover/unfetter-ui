@@ -40,6 +40,12 @@
             <div class="appItemText">API Explorer</div>
           </a>
         </span>
+        <span class="appLinkWrapper" *ngIf="authService.isAdmin()">
+          <a routerLink="./stix/attack-patterns" class="appLink" (click)="showAppMenu = false">
+            <img src="{{ stixIcon }}" class="appItemImg">
+            <div class="appItemText">STIX</div>
+          </a>
+        </span>
         <span class="appLinkWrapper" *ngIf="authService.isOrgLeader()">
           <a routerLink="./organizations" class="appLink" (click)="showAppMenu = false">
             <img src="{{ orgLeaderIcon }}" class="appItemImg">
