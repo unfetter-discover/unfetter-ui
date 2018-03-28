@@ -58,6 +58,7 @@ export class HeaderNavigationComponent {
       icon: Constance.LOGO_IMG_THREAT_DASHBOARD
     },
     {
+<<<<<<< HEAD
       url: 'stix/attack-patterns',
       title: 'STIX',
       // Placeholder icon
@@ -68,6 +69,8 @@ export class HeaderNavigationComponent {
       icon: Constance.LOGO_IMG_THREAT_DASHBOARD
     },
     {
+=======
+>>>>>>> removed redundant STIX link
       url: 'partners',
       title: 'Partners',
       // Placeholder icon
