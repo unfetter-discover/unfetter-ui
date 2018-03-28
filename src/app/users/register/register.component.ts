@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
@@ -20,9 +20,22 @@ export class RegisterComponent implements OnInit {
     public userReturn: any;
     public registrationSubmitted: boolean = false;
     public submitError: boolean = false;
+    public importErrorMsg: string = '';
 
     public identityClasses: string[] = [];
     public identitySectors: string[] = [];
+
+    @ViewChild('importStix')
+    public importStixEl: ElementRef;
+
+    public helpHtml: string = `
+        <h4>Approval Process</h4>
+        <p>After completing registration, an Unfetter administrator will have to approve your account before you can use the application.</p>
+        <h4>Organizations</h4>
+        <p>To get the most out of Unfetters, users should be in one or more organizations.  After being approved to the application, you may apply to join organizations in the users settings dashboard.  An organization leader or an Unfetter administrator has to approve organization applicant.</p>
+    `;
+
+    private importedStixIdentity: any = {};
 
     constructor(
         private usersService: UsersService, 
@@ -98,7 +111,10 @@ export class RegisterComponent implements OnInit {
             }            
         }  
 
-        this.userReturn.identity = cleanObjectProperties({}, { ...this.form.get('identity').value });
+        this.userReturn.identity = { 
+            ...this.importedStixIdentity, 
+            ...cleanObjectProperties({}, { ...this.form.get('identity').value }) 
+        };
         this.userReturn.registrationInformation = cleanObjectProperties({}, { ...this.form.get('registrationInformation').value });
         
         const submitRegistration$ = this.usersService.finalizeRegistration(this.userReturn)
@@ -126,6 +142,54 @@ export class RegisterComponent implements OnInit {
                     }
                 }
             );             
+    }
+
+    public openFileUpload() {
+        this.importStixEl.nativeElement.click();
+    }
+
+    public fileChanged(event: UIEvent) {       
+        this.importErrorMsg = '';
+        this.importedStixIdentity = {};
+        try {
+            const reader: FileReader = new FileReader();
+            reader.onload = (e: any) => {
+                try {                    
+                    const stixContent = JSON.parse(e.target.result);
+                    this.processImportedIdentity(stixContent);
+                } catch (error) {
+                    this.importErrorMsg = 'File is not JSON, please upload a STIX bundle or identity';
+                }
+            };
+            const file = this.importStixEl.nativeElement.files[0];
+            const fileContents = reader.readAsText(file, 'UTF-8');
+        } catch (error) {
+            this.importErrorMsg = 'Unable to read file';
+        }        
+    }
+
+    private processImportedIdentity(stixContent: any) {
+        if (stixContent.type) {
+            if (stixContent.type === 'bundle' && stixContent.objects && stixContent.objects.length && stixContent.objects[0].type === 'identity') {
+                if (stixContent.objects[0].identity_class === 'individual') {
+                    this.importedStixIdentity = stixContent.objects[0];
+                    this.form.get('identity').patchValue(stixContent.objects[0]);
+                } else {
+                    this.importErrorMsg = 'Only individual identities can be accepted';
+                }
+            } else if (stixContent.type === 'identity') {
+                if (stixContent.identity_class === 'individual') {
+                    this.importedStixIdentity = stixContent;
+                    this.form.get('identity').patchValue(stixContent);
+                } else {
+                    this.importErrorMsg = 'Only individual identities can be accepted';
+                }
+            } else {
+                this.importErrorMsg = 'Only STIX identities, or STIX identities in bundles may be processed';
+            }
+        } else {
+            this.importErrorMsg = 'File does not appear to be STIX';
+        }
     }
 
     private validateEmail(emailCtrl: FormControl): Observable<any> {
