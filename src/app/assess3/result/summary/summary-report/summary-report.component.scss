@@ -1,0 +1,153 @@
+@import '../../../../../styles/_variables.scss';
+#report {
+  margin-left: 24px;
+  margin-right: 24px;
+}
+
+#summaryTitle,
+#sophisticationTitle {
+  font-size: 20px;
+  font-weight: lighter;
+  min-height: 24px;
+  margin-top: 11px;
+  margin-bottom: 14px;
+}
+
+#sliderContainer {
+  min-width: 50%;
+  padding-right: 10px;
+}
+
+#sophisticationSlider {
+  flex-grow: 1;
+  margin-right: 8px;
+  margin-left: 8px;
+}
+
+.matchHeight {
+  align-items: stretch;
+  -webkit-box-align: stretch;
+  -ms-flex-align: stretch;
+}
+
+$min-card-width: 330;
+$padding-between-cards: 10;
+$min-card-fullwidth: ($min-card-width * 2 + $padding-between-cards + $padding-between-cards);
+#assessmentCard {
+  min-width: $min-card-fullwidth + px;
+}
+
+.card {
+  min-height: 289px;
+  margin-bottom: 20px;
+  width: 50%;
+  min-width: $min-card-width + px;
+  padding-top: 25px;
+  padding-left: 15px;
+  padding-right: 18px;
+  padding-bottom: 6px;
+  .mat-card-subtitle {
+    color: black;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+}
+
+.mat-card-scroll-content .mat-card-content {
+  overflow-y: auto;
+  max-height: 192px;
+}
+
+.mat-column-kca {
+  min-width: 57%;
+}
+
+.mat-column-item {
+  min-width: 32%;
+  ul {
+    list-style-type: none;
+    -webkit-padding-start: 0px;
+  }
+}
+
+.table-header-row {
+  min-height: 0px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: rgba(0, 0, 0, 0.12);
+  padding: 0px;
+  .mat-header-cell {
+    color: black;
+    font-weight: 600;
+  }
+}
+
+.left-card {
+  flex-grow: .5;
+  margin-right: $padding-between-cards + px;
+}
+
+.right-card {
+  flex-grow: .5;
+  margin-left: $padding-between-cards + px;
+}
+
+.chart {
+  .mat-card-title {
+    margin-bottom: 6px;
+  }
+}
+
+#riskCard {
+  .mat-card-content {
+    max-height: 162px;
+  }
+}
+
+#sophisticationCard {
+  .mat-card-content {
+    max-height: 198px;
+  }
+}
+
+#vulnerabilityCard {
+  .mat-row {
+    padding: 0px;
+    align-items: normal;
+    min-height: 10px;
+    .mat-cell {
+      font-size: 11px;
+    }
+  }
+}
+
+@font-face {
+  font-family: 'icomoon';
+  src: url('../../../../../assets/fonts/IcoMoon/icomoon.eot?a80iwl');
+  src: url('../../../../../assets/fonts/IcoMoon/icomoon.eot?a80iwl#iefix') format('embedded-opentype'), url('../../../../../assets/fonts/IcoMoon/icomoon.ttf?a80iwl') format('truetype'), url('../../../../../assets/fonts/IcoMoon/icomoon.woff?a80iwl') format('woff'), url('../../../../../assets/fonts/IcoMoon/icomoon.svg?a80iwl#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-people-1:before {
+  content: "\e900";
+}
+
+.icon-people:before {
+  content: "\e901";
+}
