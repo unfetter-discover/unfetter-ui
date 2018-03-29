@@ -22,7 +22,7 @@ export class LoginCallbackComponent implements OnInit {
             .subscribe((params) => {
                 const token = `Bearer ${params.token}`;
                 this.store.dispatch(new userActions.SetToken(token));             
-                this.store.dispatch(new userActions.FetchUser(token));                           
+                this.store.dispatch(new userActions.FetchUser(token));              
             },
             (err) => {
                 console.log(err);                
