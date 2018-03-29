@@ -738,10 +738,13 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
         const ty = Math.min(0, Math.max(transform.y, this.heatmap.viewHeight * (1 - transform.k)));
         const boundedTransform = d3.zoomIdentity.translate(tx, ty).scale(transform.k);
         this.heatmap.canvas.attr('transform', boundedTransform);
-        if (((d3.event.sourceEvent instanceof MouseEvent) || (d3.event.sourceEvent instanceof WheelEvent))
-                && this.options.hasMinimap && this.minimap && this.minimap.panner) {
+        if (this.options.hasMinimap && this.minimap && this.minimap.panner) {
             this.minimap.zoom.transform(this.minimap.panner, this.convertHeatmapZoomToMinimap(boundedTransform));
         }
+        // if (((d3.event.sourceEvent instanceof MouseEvent) || (d3.event.sourceEvent instanceof WheelEvent))
+        //         && this.options.hasMinimap && this.minimap && this.minimap.panner) {
+        //     this.minimap.zoom.transform(this.minimap.panner, this.convertHeatmapZoomToMinimap(boundedTransform));
+        // }
     }
 
     /*
@@ -803,6 +806,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
      */
     private handleMinimapClick() {
         const ev = d3.event;
+        this.doMinimapClick(ev);
         if (!ev.sourceEvent && ev.type === 'click') {
             // trying to determine if this is a doubleclick
             if (this.minimap.clicked) {
@@ -813,12 +817,9 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
             } else {
                 // create a timeout, and if it triggers, handle the click
                 this.minimap.clicked = window.setTimeout(() => {
-                    this.doMinimapClick(ev);
                     this.minimap.clicked = null;
-                }, 200);
+                }, 500);
             }
-        } else {
-            this.doMinimapClick(ev);
         }
     }
 
