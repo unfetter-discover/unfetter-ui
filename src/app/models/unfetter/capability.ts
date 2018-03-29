@@ -1,11 +1,9 @@
 import { Stix } from '../stix/stix';
 import { StixLabelEnum } from '../stix/stix-label.enum';
 
+/**
+ * @description a capability
+ */
 export class Capability extends Stix {
-
-    constructor(data?: Capability) {
-        super();
-        Object.assign(this, data);
-        this.type = StixLabelEnum.CAPABILITY;
-    }
+    public type = StixLabelEnum.CAPABILITY;
 }

@@ -12,6 +12,7 @@ import { RiskByAttack3 } from '../../models/assess/risk-by-attack3';
 import { RiskByKillChain } from '../../models/assess/risk-by-kill-chain';
 import { SummaryAggregation } from '../../models/assess/summary-aggregation';
 import { JsonApiObject } from '../../threat-dashboard/models/adapter/json-api-object';
+import { Capability } from '../../models/unfetter/capability';
 
 @Injectable()
 export class AssessService {
@@ -106,6 +107,18 @@ export class AssessService {
     }
 
     /**
+     * @description
+     * @param {string} capability id
+     * @return {Observable<Capability> }
+     */
+    public getCapabilityById(id: string, includeMeta = true): Observable<Capability> {
+        const url = `${Constance.X_UNFETTER_CAPABILITY_URL}/${id}`;
+        return this.genericApi
+            .getAs<JsonApiData<Capability>>(url)
+            .map((data) => data.attributes);
+    }
+
+        /**
          * @description
          * @param {string} id
          * @return {Observable<Assessment> }

@@ -145,11 +145,13 @@ export class FullComponent implements OnInit, OnDestroy {
       .filter((arr) => arr && arr.length > 0)
       .distinctUntilChanged()
       .map((arr: Assessment3[]) => {
+        
+        console.log(`&&&&&&& First object assessment:\n${JSON.stringify(arr[0], null, 2)}`);
+        
         if (arr[0].assessment_objects && arr[0].assessment_objects.length) {
           let retVal = arr[0].name + ' - ';
           const assessedType = arr[0].assessment_objects[0].stix.type;
-          // NOTE this is a temporary fix for naming in rollupId
-          // TODO remove this when a better fix is in place
+          console.log(`&&&&&&& Name is ${arr[0].name} and assessed type is: ${assessedType}`);
           switch (assessedType) {
             case 'course-of-action':
               retVal += 'Mitigations';
@@ -159,6 +161,9 @@ export class FullComponent implements OnInit, OnDestroy {
               break;
             case 'x-unfetter-sensor':
               retVal += 'Sensors';
+              break;
+            case Constance.X_UNFETTER_CAPABILITY_TYPE:
+              retVal += 'Capability';
               break;
           }
           return retVal;
