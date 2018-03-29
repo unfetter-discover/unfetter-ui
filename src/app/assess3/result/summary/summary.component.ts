@@ -21,6 +21,7 @@ import { UserProfile } from '../../../models/user/user-profile';
 import { SummaryDataSource } from './summary.datasource';
 import { Assessment3Object } from '../../../models/assess/assessment3-object';
 import { CleanAssessmentResultData } from '../store/summary.actions';
+import { Capability } from '../../../models/unfetter/capability';
 
 @Component({
   selector: 'summary',
@@ -139,22 +140,27 @@ export class SummaryComponent implements OnInit, OnDestroy {
         if (!summaries || summaries.length === 0) {
           return '';
         }
-        if (summaries[0].assessment_objects && summaries[0].assessment_objects.length) {
+        if (summaries[0].object_ref) {
           let retVal = summaries[0].name + ' - ';
-          const assessedType = summaries[0].assessment_objects[0].stix.type;
-          // NOTE this is a temporary fix for naming in rollupId
-          // TODO remove this when a better fix is in place
-          switch (assessedType) {
-            case 'course-of-action':
-              retVal += 'Mitigations';
-              break;
-            case 'indicator':
-              retVal += 'Indicators';
-              break;
-            case 'x-unfetter-sensor':
-              retVal += 'Sensors';
-              break;
-          }
+          
+          // Get object reference to determine type
+          let o$;
+          o$ = this.assessService.getCapabilityById(summaries[0].object_ref);
+          const capName = o$.map((data) => {
+              if (data === undefined || data.length === 0) {
+                  return 'undefined';
+              } else {
+                  const capability = data[0] as Capability;
+                  return capability.name;
+              }
+          })
+          .catch((err) => {
+              console.log('error getting capability reference from object assessment', err);
+              return 'error';
+          });
+          
+          retVal += capName;
+
           return retVal;
         } else {
           return summaries[0].name;
@@ -163,7 +169,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(sub1$, sub2$, sub8$);
   }
-
+  
   /**
    * @description
    * @param {string} creatorId - optional
