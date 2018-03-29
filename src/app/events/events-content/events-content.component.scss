@@ -1,0 +1,53 @@
+@import '../../../styles/_variables.scss';
+#event-content {
+  margin-left: 24px;
+  margin-right: 24px;
+}
+
+.matchHeight {
+    align-items: stretch;
+    -webkit-box-align: stretch;
+    -ms-flex-align: stretch;
+  }
+
+  $min-card-width: 330;
+  $padding-between-cards: 10;
+  $min-card-fullwidth: ($min-card-width * 2 + $padding-between-cards + $padding-between-cards);
+//   #assessmentCard {
+//     min-width: $min-card-fullwidth + px;
+//   }
+
+.column {
+    width: 50%;
+}
+
+.half-height {
+    height: 50%;
+}
+
+.card {
+    min-height: 289px;
+    margin-bottom: 20px;
+//    width: 50%;
+    min-width: $min-card-width + px;
+    padding-top: 25px;
+    padding-left: 15px;
+    padding-right: 18px;
+    padding-bottom: 6px;
+    .mat-card-subtitle {
+      color: black;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+  }
+
+  .left-card {
+    flex-grow: .5;
+    margin-right: $padding-between-cards + px;
+  }
+  
+  .right-card {
+    flex-grow: .5;
+    margin-left: $padding-between-cards + px;
+  }
