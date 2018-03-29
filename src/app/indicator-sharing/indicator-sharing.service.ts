@@ -137,7 +137,7 @@ export class IndicatorSharingService {
     }
 
     public doSearch(searchParameters: SearchParameters, sortType: SortTypes): Observable<any> {
-        return this.genericApi.get(`${this.baseUrl}/search?searchparameters=${encodeURI(JSON.stringify(searchParameters))}&sorttype=${sortType}&metaproperties=true`);
+        return this.genericApi.get(`${this.baseUrl}/search?searchparameters=${encodeURIComponent(JSON.stringify(searchParameters))}&sorttype=${sortType}&metaproperties=true`);
     }
 
     public getDownloadData(indicatorId: string, attackPatternIds: string[], sensorIds: string[]): Observable<any[]> {
