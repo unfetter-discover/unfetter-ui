@@ -741,10 +741,6 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
         if (this.options.hasMinimap && this.minimap && this.minimap.panner) {
             this.minimap.zoom.transform(this.minimap.panner, this.convertHeatmapZoomToMinimap(boundedTransform));
         }
-        // if (((d3.event.sourceEvent instanceof MouseEvent) || (d3.event.sourceEvent instanceof WheelEvent))
-        //         && this.options.hasMinimap && this.minimap && this.minimap.panner) {
-        //     this.minimap.zoom.transform(this.minimap.panner, this.convertHeatmapZoomToMinimap(boundedTransform));
-        // }
     }
 
     /*
