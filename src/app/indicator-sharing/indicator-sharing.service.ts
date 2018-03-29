@@ -7,6 +7,8 @@ import { AuthService } from '../core/services/auth.service';
 import { environment } from '../../environments/environment';
 import { RxjsHelpers } from '../global/static/rxjs-helpers';
 import { IndicatorSharingSummaryStatistics } from './models/summary-statistics';
+import { SearchParameters } from './models/search-parameters';
+import { SortTypes } from './models/sort-types.enum';
 
 @Injectable()
 export class IndicatorSharingService {
@@ -132,6 +134,10 @@ export class IndicatorSharingService {
         };
 
         return this.genericApi.post(this.relationshipUrl, body);
+    }
+
+    public doSearch(searchParameters: SearchParameters, sortType: SortTypes): Observable<any> {
+        return this.genericApi.get(`${this.baseUrl}/search?searchparameters=${encodeURI(JSON.stringify(searchParameters))}&sorttype=${sortType}&metaproperties=true`);
     }
 
     public getDownloadData(indicatorId: string, attackPatternIds: string[], sensorIds: string[]): Observable<any[]> {

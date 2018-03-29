@@ -14,11 +14,11 @@ export interface IndicatorSharingState {
     sensors: any[],
     attackPatterns: any[],
     identities: any[],
-    searchParameters: {},
+    searchParameters: SearchParameters,
     indicatorToSensorMap: {},
     indicatorToApMap: {},
     serverCallComplete: boolean,
-    sortBy: string
+    sortBy: SortTypes
 }
 
 export const initialSearchParameters: SearchParameters = {
