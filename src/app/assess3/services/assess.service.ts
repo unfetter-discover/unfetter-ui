@@ -5,10 +5,10 @@ import { Assessment3 } from '../../models/assess/assessment3';
 import { Constance } from '../../utils/constance';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { JsonApiData } from '../../models/json/jsonapi-data';
-import { LastModifiedAssessment3 } from '../last-modified-assessment3';
+import { LastModifiedAssessment3 } from '../models/last-modified-assessment3';
 import { Assessment3Object } from '../../models/assess/assessment3-object';
 import { JsonApi } from '../../models/json/jsonapi';
-import { RiskByAttack } from '../../models/assess/risk-by-attack';
+import { RiskByAttack3 } from '../../models/assess/risk-by-attack3';
 import { RiskByKillChain } from '../../models/assess/risk-by-kill-chain';
 import { SummaryAggregation } from '../../models/assess/summary-aggregation';
 import { JsonApiObject } from '../../threat-dashboard/models/adapter/json-api-object';
@@ -97,7 +97,7 @@ export class AssessService {
     /**
      * @description load an assessment w/ optional filter
      * @param {string} filter
-     * @return {Observable<Assessment3[]>}
+     * @return {Observable<Assessment[]>}
      */
     public load(filter?: string): Observable<Assessment3[]> {
         const url = filter ?
@@ -108,14 +108,153 @@ export class AssessService {
     /**
          * @description
          * @param {string} id
-         * @return {Observable<Assessment3> }
+         * @return {Observable<Assessment> }
          */
     public getById(id: string, includeMeta = true): Observable<Assessment3> {
-        const url = `${this.assessBaseUrl}/${id}`;
+        const url = `${this.assessBaseUrl}/${id}?metaproperties=${includeMeta}`;
         return this.genericApi
             .getAs<JsonApiData<Assessment3>>(url)
             .map((data) => data.attributes);
     }
+
+    /**
+     * @description return multiple assessment type associated with given rollup id
+     * @param {string} id
+     * @param {boolean} includeMeta
+     * @return {Observable<Assessment[]>}
+     */
+    public getByRollupId(id: string, includeMeta = true): Observable<Assessment3[]> {
+        const filter = {
+            'metaProperties.rollupId': id
+        };
+        const url = `${this.assessBaseUrl}?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
+        return this.genericApi
+            .getAs<JsonApiData<Assessment3>[]>(url)
+            .map((data) => data.map((el) => el.attributes));
+    }
+
+    /**
+     * @description
+     * @param {string} id
+     * @return {Observable<any>}
+     */
+    public deleteByRollupId(id: string): Observable<any> {
+        if (!id || id.trim().length === 0) {
+            return Observable.empty();
+        }
+        const url = `${this.assessBaseUrl}`;
+        const loadAll$ = this.getByRollupId(id);
+        const deleteAssociated$ = (assessments: Assessment3[]) => {
+            console.log(assessments);
+            // with associated assessment types
+            const calls = assessments
+                .map((assessment) => {
+                    const deleteUrl = `${url}/${assessment.id}`;
+                    return this.genericApi.delete(deleteUrl);
+                });
+            return Observable.forkJoin(...calls);
+        };
+
+        return Observable
+            .zip(loadAll$, deleteAssociated$)
+            .mergeMap((val) => val);
+    }
+
+    /**
+     * @description
+     * @param {string} id
+     * @return {Observable}
+     */
+    public getRiskPerKillChain(id: string): Observable<any> {
+        if (!id) {
+            return Observable.empty();
+        }
+
+        const url = `${this.assessBaseUrl}/${id}/risk-per-kill-chain`;
+        return this.genericApi.getAs<RiskByKillChain>(url);
+    }
+
+    /**
+ * @description
+ * @param {string} id
+ * @return {Observable}
+ */
+    public getRiskPerKillChainByRollupId(id: string): Observable<any> {
+        if (!id) {
+            return Observable.empty();
+        }
+
+        const url = `${this.assessBaseUrl}/${id}/risk-per-kill-chain`;
+        return this.genericApi.get(url);
+    }
+
+    /**
+     * @description
+     * @param {string} id
+     * @return {Observable<RiskByAttack3>}
+     */
+    public getRiskPerAttackPattern(id: string, includeMeta = true): Observable<RiskByAttack3> {
+        if (!id) {
+            return Observable.empty();
+        }
+        const url = `${this.assessBaseUrl}/${id}/risk-by-attack-pattern?metaproperties=${includeMeta}`;
+        return this.genericApi
+            .getAs<RiskByAttack3>(url);
+    }
+
+
+    /**
+     * @description
+     * @param {string} id
+     * @return {Observable}
+     */
+    public getRiskPerAttackPatternByRollupId(id: string, includeMeta = true): Observable<RiskByAttack3[]> {
+        if (!id) {
+            return Observable.empty();
+        }
+        const filter = {
+            'metaProperties.rollupId': id
+        };
+
+        const url = `${this.assessBaseUrl}/${id}/risk-by-attack-pattern?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
+        return this.genericApi
+            .getAs<JsonApiData<RiskByAttack3>[]>(url)
+            .map((data) => data.map((el) => el.attributes));
+    }
+
+    /**
+     * @description
+     * @param {string} id
+     * @return {Observable}
+     */
+    public getSummaryAggregation(id: string): Observable<SummaryAggregation> {
+        if (!id) {
+            return Observable.empty();
+        }
+
+        const url = `${this.assessBaseUrl}/${id}/summary-aggregations`;
+        return this.genericApi.getAs<SummaryAggregation>(url);
+    }
+
+    /**
+     * @description
+     * @param {string} id
+     * @return {Observable}
+     */
+    public getSummaryAggregationByRollup(id: string, includeMeta = true): Observable<SummaryAggregation[]> {
+        if (!id) {
+            return Observable.empty();
+        }
+        const filter = {
+            'metaProperties.rollupId': id
+        };
+
+        const url = `${this.assessBaseUrl}/${id}/summary-aggregations?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
+        return this.genericApi
+            .getAs<JsonApiData<SummaryAggregation>[]>(url)
+            .map((data) => data.map((el) => el.attributes));
+    }
+
 
     /**
      * @description retrieve full assessments for given creator
@@ -126,7 +265,7 @@ export class AssessService {
         const filter = {
             'creator': creatorId,
         };
-        const url = `${this.assessBaseUrl}?filter=${encodeURI(JSON.stringify(filter))}`;
+        const url = `${this.assessBaseUrl}?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
         return this.genericApi
             .getAs<JsonApiData<Assessment3>[]>(url)
             .map((data) => data.map((el) => el.attributes));
@@ -134,7 +273,7 @@ export class AssessService {
 
     /**
      * @description retrieve <i>partial assessments</i>, for all creators/users in system
-     * @return {Observable<Partial<LastModifiedAssessment3>[]>}
+     * @return {Observable<Partial<LastModifiedAssessment>[]>}
      */
     public getLatestAssessments(): Observable<Partial<LastModifiedAssessment3>[]> {
         const url = `${this.assessBaseUrl}/latest`;
@@ -148,8 +287,7 @@ export class AssessService {
      * @return {Observable<Partial<LastModifiedAssessment3>[]>}
      */
     public getLatestAssessmentsByCreatorId(creatorId: string, includeMeta = true): Observable<Partial<LastModifiedAssessment3>[]> {
-        const url = `${this.assessBaseUrl}`;
-        // const url = `${this.assessBaseUrl}/latest/${creatorId}`;
+        const url = `${this.assessBaseUrl}/latest/${creatorId}`;
         return this.genericApi
             .getAs<Partial<LastModifiedAssessment3>[]>(url);
     }

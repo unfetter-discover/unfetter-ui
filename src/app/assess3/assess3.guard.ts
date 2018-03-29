@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { AppState } from '../root-store/app.reducers';
 import { AssessService } from './services/assess.service';
 import { environment } from '../../environments/environment';
-import { LastModifiedAssessment3 } from './last-modified-assessment3';
+import { LastModifiedAssessment3 } from './models/last-modified-assessment3';
 import { UserState } from '../root-store/users/users.reducers';
 import { UserProfile } from '../models/user/user-profile';
 
@@ -32,7 +32,6 @@ export class Assess3Guard implements CanActivate {
             .pluck('userProfile')
             .switchMap((user: UserProfile) => {
                 let o$;
-                console.log(`$$$$$$$$$ User: ` + UserProfile.name);
                 if (!this.demoMode && user && user._id) {
                     o$ = this.fetchWithCreatorId(user._id);
                 } else {
@@ -41,18 +40,17 @@ export class Assess3Guard implements CanActivate {
 
                 return o$.
                     map((data) => {
-
-                        console.log(`$$$$$$$$$ Data: ` + data);
-
                         if (data === undefined || data.length === 0) {
+                            console.log('&&&&&& NO DATA RETURNED!');
                             // no assessments found, navigate to creation page
                             this.router.navigate([this.CREATE_URL]);
                             return false;
                         } else {
                             // has assessments,
                             //  navigate to the last modified
-                            const lastModAssessment = data[0];
-                            this.router.navigate(['/assess3/result/summary', lastModAssessment.rollupId, lastModAssessment.id]);
+                            const lastModAssessment = data[0] as LastModifiedAssessment3;
+                            console.log(`&&&&&& DATA IS: ` + lastModAssessment);
+                            this.router.navigate(['/assess3/result/summary', lastModAssessment.id]);
                             return true;
                         }
                     })
@@ -72,10 +70,12 @@ export class Assess3Guard implements CanActivate {
      */
     public fetchWithCreatorId(creatorId: string): Observable<Partial<LastModifiedAssessment3>[]> {
         return this.assessService
-            .getLatestAssessmentsByCreatorId(creatorId)
+            .load()
+            // .getLatestAssessmentsByCreatorId(creatorId)
             .switchMap((data: any[]) => {
                 if (!data || data.length < 1) {
-                    return this.fetchWithNoCreatorId();
+                    return this.assessService.load();
+                    // return this.fetchWithNoCreatorId();
                 } else {
                     return Observable.of(data);
                 }

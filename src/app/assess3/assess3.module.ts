@@ -21,8 +21,8 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { assessmentReducer } from './store/assess.reducers';
 import { Assess3LayoutComponent } from './layout/assess3-layout.component';
-// import { ResultModule } from './result/result.module';
-// import { AssessSummaryService } from './services/assess-summary.service';
+import { ResultModule } from './result/result.module';
+import { AssessSummaryService } from './services/assess-summary.service';
 import { GlobalModule } from '../global/global.module';
 
 const moduleComponents = [
@@ -42,7 +42,7 @@ const materialModules = [
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    // ResultModule,
+    ResultModule,
     GlobalModule,
     ...materialModules,
     routing,
@@ -57,8 +57,8 @@ const materialModules = [
   providers: [
     Assess3Guard,
     AssessService,
-    AssessStateService
-    // AssessSummaryService,
+    AssessStateService,
+    AssessSummaryService,
   ]
 })
 export class Assess3Module { }
