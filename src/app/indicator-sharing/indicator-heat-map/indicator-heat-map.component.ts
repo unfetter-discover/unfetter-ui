@@ -37,7 +37,8 @@ export class IndicatorHeatMapComponent implements OnInit {
             'false': {bg: '#ccc', fg: 'black'},
             'selected': {bg: '#33a0b0', fg: 'black'},
         },
-        showText: false
+        showText: false,
+        hasMinimap: true,
     }
 
     public attackPatterns = {};
