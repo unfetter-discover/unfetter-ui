@@ -150,7 +150,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                 (res) => {
                     if (res && !res.editMode) {
                         this.store.dispatch(new indicatorSharingActions.AddIndicator(res.indicator));
-                        this.store.dispatch(new indicatorSharingActions.FilterIndicators());
+                        this.store.dispatch(new indicatorSharingActions.FetchIndicators());
                         if (res.newRelationships) {
                             this.store.dispatch(new indicatorSharingActions.RefreshApMap());
                         } 

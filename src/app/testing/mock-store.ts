@@ -124,5 +124,4 @@ export function makeMockIndicatorSharingStore(store: Store<fromIndicatorSharing.
     store.dispatch(new indicatorSharingActions.SetIndicators(mockIndicators));
     store.dispatch(new indicatorSharingActions.SetAttackPatterns(mockAttackPatterns));
     store.dispatch(new indicatorSharingActions.SetIndicatorToApMap(indicatorToApMap));
-    store.dispatch(new indicatorSharingActions.FilterIndicators());
 }
