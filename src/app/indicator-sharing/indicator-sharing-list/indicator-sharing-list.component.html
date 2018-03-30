@@ -36,8 +36,7 @@
                         <div class="pl-24 pr-24 flex flexItemsCenter">
                             <indicator-sharing-sort></indicator-sharing-sort>
                             <label class="spacer" id="spacer1">&nbsp;|&nbsp;</label>
-                            <label class="mb-0">Results: {{ (store.select('indicatorSharing').pluck('filteredIndicators') | async).length }} / {{ (store.select('indicatorSharing').pluck('indicators')
-                                | async).length }}</label>
+                            <label class="mb-0">Results: {{ (store.select('indicatorSharing').pluck('filteredIndicators') | async).length }} / {{ store.select('indicatorSharing').pluck('totalIndicatorCount') | async }}</label>
                             <label class="spacer" id="spacer2">&nbsp;|&nbsp;</label>
                             <button mat-icon-button id="showAttackPatternHeatMap" (click)="viewHeatMapDialog($event)" matTooltip="Show Heat Map">
                                 <i class="material-icons mat-24 labelColor" >view_comfy</i>
