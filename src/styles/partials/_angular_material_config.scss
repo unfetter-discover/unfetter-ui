@@ -43,7 +43,7 @@ $assessments-theme: mat-light-theme($assessments-theme-primary, $assessments-the
 }
 
 $events-theme-primary: mat-palette($mat-green, 600);
-$events-theme-accent: mat-palette($mat-lime, A200, A100, A400);
+$events-theme-accent: mat-palette($mat-yellow, A200, A100, A400);
 $events-theme-warn: mat-palette($mat-deep-orange);
 $events-theme: mat-light-theme($events-theme-primary, $events-theme-accent, $events-theme-warn);
 

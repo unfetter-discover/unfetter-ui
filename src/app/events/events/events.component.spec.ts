@@ -5,14 +5,11 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MatSidenavModule } from '@angular/material';
 import { GlobalModule } from '../../global/global.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('EventsComponent', () => {
   let component: EventsComponent;
   let fixture: ComponentFixture<EventsComponent>;
-
-  const materialModules = [
-    MatSidenavModule
-  ];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -23,6 +20,9 @@ describe('EventsComponent', () => {
         MatSidenavModule,
         GlobalModule,
       ],
+      schemas: [
+        NO_ERRORS_SCHEMA
+      ]
     })
     .compileComponents();
   }));
