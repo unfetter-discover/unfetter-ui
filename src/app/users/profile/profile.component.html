@@ -31,6 +31,16 @@
                             </mat-list-item>
                         </mat-list>
                     </div>
+                    <div *ngIf="frameworks$ | async">
+                        <label>Preferred Cyber Threat Framework</label>
+                        <mat-form-field>
+                            <mat-select placeholder="Cyber Threat Framework">
+                              <mat-option *ngFor="let framework of (frameworks$ | async)" [value]="framework.name">
+                                {{ framework.name }}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                    </div>
                 </mat-card-content>
             </mat-card>
             
