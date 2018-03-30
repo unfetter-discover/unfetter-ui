@@ -3,11 +3,13 @@ import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 
 import * as indicatorSharingActions from './indicator-sharing.actions';
+import * as fromIndicators from './indicator-sharing.reducers';
 import { WebsocketService } from '../../core/services/web-socket.service';
 import { WSMessageTypes } from '../../global/enums/ws-message-types.enum';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { Constance } from '../../utils/constance';
+import { Store } from '@ngrx/store';
 
 @Injectable()
 export class IndicatorSharingEffects {
@@ -39,22 +41,25 @@ export class IndicatorSharingEffects {
             this.indicatorSharingService.getIndicators(),
             this.indicatorSharingService.getAttackPatternsByIndicator(),
             this.indicatorSharingService.getSensors(),
-            this.indicatorSharingService.getAttackPatterns()
+            this.indicatorSharingService.getAttackPatterns(),
+            this.indicatorSharingService.getTotalIndicatorCount()
         ))
         .map((results: any[]) => [
             results[0].map((r) => r.attributes),
             results[1].map((r) => r.attributes),
             this.makeIndicatorToAttackPatternMap(results[2].attributes),
             results[3].map((r) => r.attributes),
-            results[4].map((r) => r.attributes)
+            results[4].map((r) => r.attributes),
+            results[5]
         ])
-        .mergeMap(([identities, indicators, indicatorToApMap, sensors, attackPatterns]) => [
+        .mergeMap(([identities, indicators, indicatorToApMap, sensors, attackPatterns, indCount]) => [
             new indicatorSharingActions.SetIdentities(identities),
             new indicatorSharingActions.SetIndicators(indicators),
             new indicatorSharingActions.SetIndicatorToApMap(indicatorToApMap),
             new indicatorSharingActions.SetSensors(sensors),
             new indicatorSharingActions.SetAttackPatterns(attackPatterns),
-            new indicatorSharingActions.SetServerCallComplete(true)
+            new indicatorSharingActions.SetServerCallComplete(true),
+            new indicatorSharingActions.SetTotalIndicatorCount(indCount)
         ]);
 
     @Effect()
@@ -116,11 +121,22 @@ export class IndicatorSharingEffects {
         .map((res: any) => this.makeIndicatorToAttackPatternMap(res.attributes))
         .map((indicatorToApMap) => new indicatorSharingActions.SetIndicatorToApMap(indicatorToApMap));
 
+    @Effect({ dispatch: false })
+    public fetchIndicators = this.actions$
+        .ofType(indicatorSharingActions.FETCH_INDICATORS)
+        .withLatestFrom(this.store.select('indicatorSharing'))
+        .switchMap(([_, indicatorSharingState]: [any, fromIndicators.IndicatorSharingState]) => {
+            const { searchParameters, sortBy } = indicatorSharingState;
+            return this.indicatorSharingService.doSearch(searchParameters, sortBy);
+        })
+        .do((d) => console.log(d));
+
     constructor(
         private actions$: Actions,
         private websocketService: WebsocketService,
         private genericApi: GenericApi,
-        private indicatorSharingService: IndicatorSharingService
+        private indicatorSharingService: IndicatorSharingService,
+        private store: Store<fromIndicators.IndicatorSharingFeatureState>
     ) { }
 
     private makeIndicatorToAttackPatternMap(attackPatternsByIndicator) {

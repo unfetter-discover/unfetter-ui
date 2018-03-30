@@ -38,6 +38,7 @@ export class IndicatorSharingFiltersComponent implements OnInit {
         (searchParams: SearchParameters) => {
           this.store.dispatch(new indicatorSharingActions.SetSearchParameters(searchParams));
           this.store.dispatch(new indicatorSharingActions.FilterIndicators());
+          this.store.dispatch(new indicatorSharingActions.FetchIndicators());
         },
         (err) => {
           console.log(err);

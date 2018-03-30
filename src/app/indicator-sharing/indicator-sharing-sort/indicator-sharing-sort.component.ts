@@ -22,6 +22,7 @@ export class IndicatorSharingSortComponent implements OnInit {
 
   public sortIndicators() {
     this.store.dispatch(new indicatorSharingActions.SortIndicators(this.sortBy));
+    this.store.dispatch(new indicatorSharingActions.FetchIndicators());
   }
 
 }

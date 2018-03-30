@@ -18,7 +18,8 @@ export interface IndicatorSharingState {
     indicatorToSensorMap: {},
     indicatorToApMap: {},
     serverCallComplete: boolean,
-    sortBy: SortTypes
+    sortBy: SortTypes,
+    totalIndicatorCount: number
 }
 
 export const initialSearchParameters: SearchParameters = {
@@ -41,7 +42,8 @@ const initialState: IndicatorSharingState = {
     indicatorToSensorMap: {},
     indicatorToApMap: {},
     serverCallComplete: false,
-    sortBy: SortTypes.NEWEST
+    sortBy: SortTypes.NEWEST,
+    totalIndicatorCount: 0
 };
 
 const DEFAULT_DISPLAYED_LENGTH: number = 10;
@@ -56,6 +58,17 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
                 filteredIndicators: action.payload,
                 displayedIndicators: initDisplauyedIndicators(action.payload)
             }, state.sortBy);
+        case indicatorSharingActions.SET_FILTERED_INDICATORS:
+            return {
+                ...state,
+                filteredIndicators: action.payload,
+                displayedIndicators: initDisplauyedIndicators(action.payload)
+            };
+        case indicatorSharingActions.SET_TOTAL_INDICATOR_COUNT:
+            return {
+                ...state,
+                totalIndicatorCount: action.payload
+            };
         case indicatorSharingActions.FETCH_DATA:
             return {
                 ...state,
@@ -73,7 +86,8 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
                 indicators: [
                     ...state.indicators,
                     action.payload
-                ]
+                ],
+                totalIndicatorCount: (state.totalIndicatorCount + 1)
             };
         case indicatorSharingActions.UPDATE_INDICATOR:
             const indicatorToUpdateIndex = state.indicators.findIndex((indicator) => indicator.id === action.payload.id);
@@ -116,7 +130,8 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
             }
             return {
                 ...state,
-                indicators: indicatorsCopy
+                indicators: indicatorsCopy,
+                totalIndicatorCount: (state.totalIndicatorCount - 1)
             };
         case indicatorSharingActions.SET_SENSORS:
             const indicatorToSensorMap = buildIndicatorToSensorMap(state.indicators, action.payload);

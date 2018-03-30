@@ -112,6 +112,11 @@ export class IndicatorSharingService {
         return this.genericApi.get(`${this.sensorsUrl}?project=${JSON.stringify(projectObj)}&filter=${JSON.stringify(filterObj)}&metaproperties=true`);
     }
 
+    public getTotalIndicatorCount(): Observable<number> {
+        const filterObj = { 'stix.type': 'indicator' };
+        return this.genericApi.get(`${this.multiplesUrl}/count?filter=${JSON.stringify(filterObj)}`).pluck('attributes').pluck('count');
+    }
+
     public translateAllPatterns(pattern: string): Observable<any> {
         const body = { data: { pattern } };
         return this.genericApi.post(`${this.patternHandlerUrl}/translate-all`, body);
@@ -137,7 +142,8 @@ export class IndicatorSharingService {
     }
 
     public doSearch(searchParameters: SearchParameters, sortType: SortTypes): Observable<any> {
-        return this.genericApi.get(`${this.baseUrl}/search?searchparameters=${encodeURIComponent(JSON.stringify(searchParameters))}&sorttype=${sortType}&metaproperties=true`);
+        return this.genericApi.get(`${this.baseUrl}/search?searchparameters=${encodeURIComponent(JSON.stringify(searchParameters))}&sorttype=${sortType}&metaproperties=true`)
+            .map(RxjsHelpers.mapArrayAttributes);
     }
 
     public getDownloadData(indicatorId: string, attackPatternIds: string[], sensorIds: string[]): Observable<any[]> {
