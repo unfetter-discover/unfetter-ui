@@ -37,7 +37,7 @@ export class FetchData implements Action {
 export class CreateIndicatorToApRelationship implements Action {
     public readonly type = CREATE_IND_TO_AP_RELATIONSHIP;
     
-    constructor(public payload: { indicatorId: string, attackPatternId: string } ) { }
+    constructor(public payload: { indicatorId: string, attackPatternId: string, createdByRef: string } ) { }
 }
 
 export class RefreshApMap implements Action {

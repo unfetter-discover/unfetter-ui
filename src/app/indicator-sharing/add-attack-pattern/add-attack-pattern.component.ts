@@ -13,6 +13,7 @@ import { heightCollapse } from '../../global/animations/height-collapse';
 })
 export class AddAttackPatternComponent implements OnInit {
   @Input() public indicatorId: string;
+  @Input() public createdByRef: string;
   @Input() public existingAttackPatterns: any[] = [];
   public selectedAttackPatterns: any[] = [];
   public displayedAttackPatterns$: any;
@@ -54,7 +55,7 @@ export class AddAttackPatternComponent implements OnInit {
     this.showAddAp = false;
     this.selectedAttackPatterns
       .forEach((attackPatternId) => { 
-        this.store.dispatch(new indicatorSharingActions.CreateIndicatorToApRelationship({ indicatorId: this.indicatorId, attackPatternId }))
+        this.store.dispatch(new indicatorSharingActions.CreateIndicatorToApRelationship({ indicatorId: this.indicatorId, attackPatternId, createdByRef: this.createdByRef }))
       })
     this.selectedAttackPatterns = [];
   }

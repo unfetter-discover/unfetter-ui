@@ -46,7 +46,8 @@
         </div>
 
         <label>Indicated Attack Patterns</label>
-        <add-attack-pattern [existingAttackPatterns]="attackPatterns" [indicatorId]="indicator.id"></add-attack-pattern>
+        <add-attack-pattern [existingAttackPatterns]="attackPatterns" [indicatorId]="indicator.id" [createdByRef]="indicator.created_by_ref"></add-attack-pattern>
+
         <div *ngIf="attackPatterns && attackPatterns.length > 0">
             <div class="uf-collapsible-control mb-10 mt-6" (click)="showAttackPatternDetails = !showAttackPatternDetails">
                 <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showAttackPatternDetails}">chevron_right</i>
