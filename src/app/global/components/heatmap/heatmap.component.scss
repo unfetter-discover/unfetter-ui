@@ -1,11 +1,25 @@
 @import '../../../../styles/_variables.scss';
 
+div.heatmap-with-minimap {
+    display: flex;
+    flex-direction: row;
+}
 div.heat-map {
-    width: 100%;
+    flex: 1;
     height: 400px;
     margin: 0;
     padding: 0;
-    background: $app-background-color;
+    background-color: $app-background-color;
+}
+div.mini-map {
+    width: 200px;
+    height: 200px;
+    margin: 36px 5px 0 10px;
+    padding: 0;
+    background-color: transparent;
+    svg {
+        background-color: $app-background-color;
+    }
 }
 
 :host ::ng-deep {

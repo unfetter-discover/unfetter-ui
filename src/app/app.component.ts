@@ -63,7 +63,7 @@ export class AppComponent implements OnInit {
             ],
           }, token: '1234' }));
       }
-      this.store.dispatch(new configActions.FetchConfig());      
+      this.store.dispatch(new configActions.FetchConfig(false));      
     }
 
     const bodyElement: HTMLElement = document.getElementsByTagName('body')[0];
@@ -76,6 +76,8 @@ export class AppComponent implements OnInit {
         this.setTheme(url, bodyElement);
         if (url === 'indicator-sharing') {
           this.title = 'Analytic Exchange';
+        } else if (url === 'events') {
+          this.title = 'events';
         } else if (url === 'assess') {
           this.title = 'assessments';
         } else if (url === 'assess3') {
@@ -90,6 +92,9 @@ export class AppComponent implements OnInit {
     switch (url) {
       case 'indicator-sharing':
         this.theme = Themes.ANALYTIC_HUB;
+        break;
+      case 'events':
+        this.theme = Themes.EVENTS;
         break;
       case 'threat-dashboard':
         this.theme = Themes.THREAT_DASHBOARD;

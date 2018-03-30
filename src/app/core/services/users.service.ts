@@ -13,6 +13,7 @@ export class UsersService {
     private identitiesUrl = Constance.IDENTITIES_URL;
     private orgUrl = Constance.ORGANIZATIONS_URL;
     private refreshTokenUrl = Constance.REFRESH_TOKEN_URL;
+    private authUrl = Constance.AUTH_URL;
 
     constructor(private genericApi: GenericApi) { }
 
@@ -51,5 +52,17 @@ export class UsersService {
         return this.genericApi.get(this.refreshTokenUrl)
             .pluck('attributes')
             .pluck('token');
+    }
+
+    public emailAvailable(email: string): Observable<boolean> {
+        return this.genericApi.get(`${this.authUrl}/email-available/${email}`)
+            .pluck('attributes')
+            .pluck('available');
+    }
+
+    public userNameAvailable(userName: string): Observable<boolean> {
+        return this.genericApi.get(`${this.authUrl}/username-available/${userName}`)
+            .pluck('attributes')
+            .pluck('available');
     }
 }

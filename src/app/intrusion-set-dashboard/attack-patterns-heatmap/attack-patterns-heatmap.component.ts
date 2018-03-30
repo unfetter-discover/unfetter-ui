@@ -42,6 +42,7 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
         heatColors: {'false': this.noColor},
         noColor: this.noColor,
         showText: true,
+        hasMinimap: true,
     };
     public showHeatMap = false;
 

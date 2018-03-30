@@ -71,6 +71,7 @@ export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit
   public heatMapData: Array<HeatMapData> = [];
   public readonly heatMapOptions: HeatMapOptions = {
     showText: false,
+    hasMinimap: true,
   };
   public showHeatMap = true;
 

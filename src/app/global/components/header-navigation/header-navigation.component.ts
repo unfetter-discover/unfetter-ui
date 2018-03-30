@@ -47,9 +47,9 @@ export class HeaderNavigationComponent {
       icon: Constance.LOGO_IMG_THREAT_DASHBOARD
     },
     {
-      url: 'stix/attack-patterns',
-      title: 'STIX',
-      // Placeholder icon
+      url: 'events',
+      title: 'Events Dashboard',
+      // TODO Placeholder icon
       icon: Constance.LOGO_IMG_THREAT_DASHBOARD
     },
     {
@@ -72,6 +72,7 @@ export class HeaderNavigationComponent {
   public apiDocsIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD;
   public orgLeaderIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD;
   public adminIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD;
+  public stixIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD;
   public encodedToken: string = '';
   @Input() public title;
 

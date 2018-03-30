@@ -1,30 +1,30 @@
-  <div class="row">
-            <div class="col-md-12">
-                <label>Aliases</label>
+<div class="row">
+    <div class="col-md-12">
+        <label>Aliases</label>
+        <div class="button-row">
+            <a mat-raised-button (click)="addAliasButtonClicked()"><i class="material-icons">add</i>ADD</a>
+        </div>
+    </div>
+</div>
+<div class="row" *ngIf="model">
+    <div class="col-md-12">
+        <mat-card *ngFor="let a of model.attributes.aliases; let i = index" class="mt-10 mb-0">
+            <mat-card-content>
+                <div class="row">
+                    <div class="col-md-12">
+                        <mat-input-container class="full-width">
+                            <input #aias matInput placeholder="Alias" value="{{a}}" (change)="update(i, aias.value)">
+                        </mat-input-container>
+                    </div>
+                </div>
+            </mat-card-content>
+            <mat-card-actions>
                 <div class="button-row">
-                    <a mat-raised-button (click)="addAliasButtonClicked()"><i class="material-icons">add</i>ADD</a>
+                    <a mat-raised-button (click)="removeAliasButtonClicked(a)">
+                        <i class="material-icons">delete</i>REMOVE
+                    </a>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-
-                    <mat-card *ngFor="let a of model.attributes.aliases ; let i = index" style="margin: 10px 0px;">
-                            <mat-card-content>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                            <mat-input-container class="full-width">
-                                                <input #aias  matInput placeholder="Alias" value="{{a}}" (change)="update(i, aias.value)">
-                                            </mat-input-container>
-                                    </div>
-
-                                </div>
-                            </mat-card-content>
-                            <mat-card-actions>
-                                <div class="button-row">
-                                    <a mat-raised-button (click)="removeAliasButtonClicked(a)"><i class="material-icons">delete</i>REMOVE</a>
-                                </div>
-                            </mat-card-actions>
-                    </mat-card>
-                </div>
-        </div>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+</div>

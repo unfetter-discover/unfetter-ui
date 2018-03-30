@@ -4,6 +4,7 @@
       <img src="assets/icon/logos/unfetter_mini_logo-assessments.svg" alt="Unfetter Logo" class="logo" *ngSwitchCase="'assessments'">
       <img src="assets/icon/logos/unfetter_mini_logo-threat-dashboard.svg" alt="Unfetter Logo" class="logo" *ngSwitchCase="'threat-dashboard'">
       <img src="assets/icon/logos/unfetter_mini_logo-indicator-sharing.svg" alt="Unfetter Logo" class="logo" *ngSwitchCase="'Analytic Exchange'">
+      <img src="assets/icon/logos/unfetter_mini_logo-devault.svg" alt="Events Logo" class="logo" *ngSwitchCase="'Events'">
       <img src="assets/icon/logos/unfetter_mini_logo-default.svg" alt="Unfetter Logo" class="logo" *ngSwitchDefault>
     </div>
   </a>
@@ -38,6 +39,12 @@
           <a href="{{ swaggerUrl }}?token={{ encodedToken }}&RUN_MODE={{ runMode }}" target=_blank class="appLink">
             <img src="{{ apiDocsIcon }}" class="appItemImg">
             <div class="appItemText">API Explorer</div>
+          </a>
+        </span>
+        <span class="appLinkWrapper" *ngIf="authService.isAdmin()">
+          <a routerLink="./stix/attack-patterns" class="appLink" (click)="showAppMenu = false">
+            <img src="{{ stixIcon }}" class="appItemImg">
+            <div class="appItemText">STIX</div>
           </a>
         </span>
         <span class="appLinkWrapper" *ngIf="authService.isOrgLeader()">

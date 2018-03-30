@@ -27,7 +27,7 @@ export class SelectSearchFieldComponent implements OnInit {
     }
     public ngOnInit() {
         let url = 'api/' + this.searchUrl;
-        this.baseComponentService.autoCompelet(url).subscribe(
+        this.baseComponentService.autoComplete(url).subscribe(
             (data) => {
                 data.forEach(
                     (record) => {

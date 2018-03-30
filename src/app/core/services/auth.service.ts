@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { tokenNotExpired } from 'angular2-jwt';
 
 import { GenericApi } from './genericapi.service';
-import { ConfigService } from './config.service';
 import { environment } from '../../../environments/environment';
 import { Constance } from '../../utils/constance';
 
@@ -14,15 +13,8 @@ export class AuthService {
 
     constructor(
         private router: Router,
-        private genericApi: GenericApi,
-        private configService: ConfigService
-    ) { 
-        if (this.loggedIn() && !this.configService.configSet) {
-            console.log('Initializing configurations for returning user');            
-            this.configService.initConfig();
-        }   
-
-    }
+        private genericApi: GenericApi
+    ) { }
 
     public setToken(token) {
         localStorage.removeItem('unfetterUiToken');
