@@ -75,8 +75,8 @@ describe('AssessGroupComponent', () => {
   it('should return risk by attack pattern id', () => {
     const riskByAttackPattern = RiskByAttackPattern3MockFactory.mockOne();
     component.riskByAttackPattern = riskByAttackPattern;
-    const expectedId = riskByAttackPattern.assessedByAttackPattern[0]._id;
-    const expectedRisk = riskByAttackPattern.assessedByAttackPattern[0].risk;
+    const expectedId = riskByAttackPattern.assessed3ByAttackPattern[0]._id;
+    const expectedRisk = riskByAttackPattern.assessed3ByAttackPattern[0].risk;
     const risk = component.getRiskByAttackPatternId(expectedId);
     expect(risk).toBeDefined();
     expect(risk).toEqual(expectedRisk);
@@ -137,38 +137,38 @@ describe('AssessGroupComponent', () => {
     expect(arr.length).toEqual(0);
   });
 
-  it('should return risk by phase', () => {
-    const riskByAttackPattern = RiskByAttackPattern3MockFactory.mockOne();
-    component.riskByAttackPattern = riskByAttackPattern;
-    const phase = riskByAttackPattern.phases[1];
-    const phaseId = phase._id;
-    phase.assessedObjects = Assessment3ObjectMockFactory
-      .mockMany(5)
-      .map((ao) => {
-        ao.risk = 50;
-        return ao;
-      });
-    phase.assessedObjects[4].risk = 25;
-    const risk = component.getRiskByPhase(phaseId);
-    expect(risk).toBeDefined();
-    expect(risk).toEqual(45);
-  });
+  // it('should return risk by phase', () => {
+  //   const riskByAttackPattern = RiskByAttackPattern3MockFactory.mockOne();
+  //   component.riskByAttackPattern = riskByAttackPattern;
+  //   const phase = riskByAttackPattern.phases[1];
+  //   const phaseId = phase._id;
+  //   phase.assessedObjects = Assessment3ObjectMockFactory
+  //     .mockMany(5)
+  //     .map((ao) => {
+  //       ao.risk = 50;
+  //       return ao;
+  //     });
+  //   phase.assessedObjects[4].risk = 25;
+  //   const risk = component.getRiskByPhase(phaseId);
+  //   expect(risk).toBeDefined();
+  //   expect(risk).toEqual(45);
+  // });
 
-  it('should return risk by phase, edge case', () => {
-    const riskByAttackPattern = RiskByAttackPattern3MockFactory.mockOne();
-    component.riskByAttackPattern = riskByAttackPattern;
-    const phase = riskByAttackPattern.phases[1];
-    const phaseId = phase._id;
-    phase.assessedObjects = Assessment3ObjectMockFactory
-      .mockMany(5)
-      .map((ao) => {
-        ao.risk = 0;
-        return ao;
-      });
-    const risk = component.getRiskByPhase(phaseId);
-    expect(risk).toBeDefined();
-    expect(risk).toEqual(0);
-  });
+  // it('should return risk by phase, edge case', () => {
+  //   const riskByAttackPattern = RiskByAttackPattern3MockFactory.mockOne();
+  //   component.riskByAttackPattern = riskByAttackPattern;
+  //   const phase = riskByAttackPattern.phases[1];
+  //   const phaseId = phase._id;
+  //   phase.assessedObjects = Assessment3ObjectMockFactory
+  //     .mockMany(5)
+  //     .map((ao) => {
+  //       ao.risk = 0;
+  //       return ao;
+  //     });
+  //   const risk = component.getRiskByPhase(phaseId);
+  //   expect(risk).toBeDefined();
+  //   expect(risk).toEqual(0);
+  // });
 
   it('should return risk by phase, edge case', () => {
     const riskByAttackPattern = RiskByAttackPattern3MockFactory.mockOne();
