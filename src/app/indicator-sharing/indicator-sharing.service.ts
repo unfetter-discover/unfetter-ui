@@ -120,11 +120,12 @@ export class IndicatorSharingService {
         return this.genericApi.post(`${this.patternHandlerUrl}/get-objects`, body);
     }
 
-    public createIndToApRelationship(indicatorId: string, attackPatternId: string): Observable<any> {
+    public createIndToApRelationship(indicatorId: string, attackPatternId: string, createdByRef: string): Observable<any> {
         const body = {
             data: {
                 attributes: {
                     source_ref: indicatorId,
+                    created_by_ref: createdByRef,
                     target_ref: attackPatternId,
                     relationship_type: 'indicates'
                 }

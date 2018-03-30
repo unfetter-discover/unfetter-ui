@@ -104,8 +104,8 @@ export class IndicatorSharingEffects {
     public createIndicatorToAttackPatternRelationship = this.actions$
         .ofType(indicatorSharingActions.CREATE_IND_TO_AP_RELATIONSHIP)
         .pluck('payload')
-        .switchMap((payload: { indicatorId: string, attackPatternId: string }) => {
-            return this.indicatorSharingService.createIndToApRelationship(payload.indicatorId, payload.attackPatternId);
+        .switchMap((payload: { indicatorId: string, attackPatternId: string, createdByRef: string }) => {
+            return this.indicatorSharingService.createIndToApRelationship(payload.indicatorId, payload.attackPatternId, payload.createdByRef);
         })
         .map((_) => new indicatorSharingActions.RefreshApMap());
         
