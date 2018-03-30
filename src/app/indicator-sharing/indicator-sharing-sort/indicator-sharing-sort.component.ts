@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { SortTypes } from '../models/sort-types.enum';
@@ -10,18 +10,15 @@ import * as indicatorSharingActions from '../store/indicator-sharing.actions';
   templateUrl: './indicator-sharing-sort.component.html',
   styleUrls: ['./indicator-sharing-sort.component.scss']
 })
-export class IndicatorSharingSortComponent implements OnInit {
+export class IndicatorSharingSortComponent {
 
-  public sortBy: string = 'NEWEST';
+  public sortBy: SortTypes = SortTypes.NEWEST;
   public sortTypes = SortTypes;
   
   constructor(public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>) { }
 
-  ngOnInit() {
-  }
-
   public sortIndicators() {
-    this.store.dispatch(new indicatorSharingActions.SortIndicators(this.sortBy));
+    this.store.dispatch(new indicatorSharingActions.SetSortBy(this.sortBy));
     this.store.dispatch(new indicatorSharingActions.FetchIndicators());
   }
 

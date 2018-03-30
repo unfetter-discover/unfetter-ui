@@ -25,7 +25,6 @@ export class SearchBarComponent implements OnInit {
       .subscribe(
         (indicatorName: string) => {
           this.store.dispatch(new indicatorSharingActions.SetSearchParameters({ indicatorName }));
-          this.store.dispatch(new indicatorSharingActions.FilterIndicators());
           this.store.dispatch(new indicatorSharingActions.FetchIndicators());
         },
         (err) => {

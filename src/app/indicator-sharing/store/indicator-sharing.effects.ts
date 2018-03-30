@@ -72,8 +72,7 @@ export class IndicatorSharingEffects {
             );
         })
         .mergeMap(([indicatorId, deleteResponse]: [string, any]) => [
-            new indicatorSharingActions.DeleteIndicator(indicatorId),
-            new indicatorSharingActions.FilterIndicators()
+            new indicatorSharingActions.DeleteIndicator(indicatorId)
         ]);
 
     @Effect()
@@ -94,7 +93,6 @@ export class IndicatorSharingEffects {
         })
         .mergeMap((indicator: any) => [
             new indicatorSharingActions.UpdateIndicator(indicator),
-            new indicatorSharingActions.FilterIndicators(),
             new indicatorSharingActions.RefreshApMap()
         ]);
 
@@ -103,7 +101,10 @@ export class IndicatorSharingEffects {
         .ofType(indicatorSharingActions.ADD_INDICATOR)
         .switchMap((_) => this.indicatorSharingService.getSensors())
         .map((sensorRes) => sensorRes.map((sensor) => sensor.attributes))
-        .map((sensors) => new indicatorSharingActions.SetSensors(sensors));
+        .mergeMap((sensors) => [ 
+            new indicatorSharingActions.FetchIndicators(),
+            new indicatorSharingActions.SetSensors(sensors) 
+        ]);
 
     @Effect()
     public createIndicatorToAttackPatternRelationship = this.actions$
@@ -121,7 +122,7 @@ export class IndicatorSharingEffects {
         .map((res: any) => this.makeIndicatorToAttackPatternMap(res.attributes))
         .map((indicatorToApMap) => new indicatorSharingActions.SetIndicatorToApMap(indicatorToApMap));
 
-    @Effect({ dispatch: false })
+    @Effect()
     public fetchIndicators = this.actions$
         .ofType(indicatorSharingActions.FETCH_INDICATORS)
         .withLatestFrom(this.store.select('indicatorSharing'))
@@ -129,7 +130,7 @@ export class IndicatorSharingEffects {
             const { searchParameters, sortBy } = indicatorSharingState;
             return this.indicatorSharingService.doSearch(searchParameters, sortBy);
         })
-        .do((d) => console.log(d));
+        .map((indicators: any[]) => new indicatorSharingActions.SetFilteredIndicators(indicators));
 
     constructor(
         private actions$: Actions,

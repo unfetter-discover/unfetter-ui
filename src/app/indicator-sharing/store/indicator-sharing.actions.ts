@@ -1,4 +1,5 @@
 import { Action } from '@ngrx/store';
+import { SortTypes } from '../models/sort-types.enum';
 
 // For effects
 export const START_SOCIAL_STREAM = '[Indicator Sharing] START_SOCIAL_STREAM';
@@ -13,8 +14,7 @@ export const REFRESH_AP_MAP = '[Indicator Sharing] REFRESH_AP_MAP';
 export const SET_INDICATORS = '[Indicator Sharing] SET_INDICATORS';
 export const SET_FILTERED_INDICATORS = '[Indicator Sharing] SET_FILTERED_INDICATORS';
 export const SET_TOTAL_INDICATOR_COUNT = '[Indicator Sharing] SET_TOTAL_INDICATOR_COUNT';
-export const FILTER_INDICATORS = '[Indicator Sharing] FILTER_INDICATORS';
-export const SORT_INDICATORS = '[Indicator Sharing] SORT_INDICATORS';
+export const SET_SORTBY = '[Indicator Sharing] SET_SORTBY';
 export const ADD_INDICATOR = '[Indicator Sharing] ADD_INDICATOR';
 export const UPDATE_INDICATOR = '[Indicator Sharing] UPDATE_INDICATOR';
 export const DELETE_INDICATOR = '[Indicator Sharing] DELETE_INDICATOR';
@@ -80,14 +80,10 @@ export class SetAttackPatterns implements Action {
     constructor(public payload: any[]) { }
 }
 
-export class FilterIndicators implements Action {
-    public readonly type = FILTER_INDICATORS;
-}
+export class SetSortBy implements Action {
+    public readonly type = SET_SORTBY;
 
-export class SortIndicators implements Action {
-    public readonly type = SORT_INDICATORS;
-
-    constructor(public payload: string) { }
+    constructor(public payload: SortTypes) { }
 }
 
 export class AddIndicator implements Action {
@@ -178,8 +174,7 @@ export type IndicatorSharingActions =
     SetFilteredIndicators |
     SetTotalIndicatorCount |
     SetAttackPatterns |
-    FilterIndicators |
-    SortIndicators |
+    SetSortBy |
     AddIndicator |
     UpdateIndicator |
     DeleteIndicator |

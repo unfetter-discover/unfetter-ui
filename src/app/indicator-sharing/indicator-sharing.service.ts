@@ -29,14 +29,9 @@ export class IndicatorSharingService {
     ) { }
 
     public getIndicators(filter: object = {}): Observable<any> {
-        const url = `${this.baseUrl}?filter=${encodeURIComponent(JSON.stringify(filter))}&metaproperties=true`;
+        const url = `${this.baseUrl}?filter=${encodeURIComponent(JSON.stringify(filter))}&sort=${encodeURIComponent(JSON.stringify({ 'stix.created': -1 }))}&metaproperties=true`;
         return this.genericApi.get(url);
     }
-
-    public getIndicator(id, filter: object = {}): Observable<any> {
-        const url = `${this.baseUrl}/${id}?filter=${encodeURIComponent(JSON.stringify(filter))}&metaproperties=true`;
-        return this.genericApi.get(url);
-    } 
 
     public addIndicator(indicator): Observable<any> {
         return this.genericApi.post(this.baseUrl, { data: { attributes: indicator } });
