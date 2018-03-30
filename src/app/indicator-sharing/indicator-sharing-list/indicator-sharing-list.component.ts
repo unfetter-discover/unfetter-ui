@@ -5,7 +5,6 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/pluck';
 
-import { IndicatorSharingService } from '../indicator-sharing.service';
 import { AddIndicatorComponent } from '../add-indicator/add-indicator.component';
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
@@ -38,7 +37,6 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     @ViewChild('filterContainer') public filterContainer: MatSidenav;
 
     constructor(
-        private indicatorSharingService: IndicatorSharingService, 
         public dialog: MatDialog,
         public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>,
         // Used for SERVER_CALL_COMPLETE, this should be moved to ngrx
@@ -115,6 +113,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
             );
 
         const getUser$ = this.store.select('users')
+            .filter((users: any) => users.userProfile && users.userProfile._id)
             .take(1)
             .subscribe(
                 (users: any) => {
