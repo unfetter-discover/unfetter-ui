@@ -41,7 +41,6 @@ export class Assess3Guard implements CanActivate {
                 return o$.
                     map((data) => {
                         if (data === undefined || data.length === 0) {
-                            console.log('&&&&&& NO DATA RETURNED!');
                             // no assessments found, navigate to creation page
                             this.router.navigate([this.CREATE_URL]);
                             return false;
@@ -49,7 +48,6 @@ export class Assess3Guard implements CanActivate {
                             // has assessments,
                             //  navigate to the last modified
                             const lastModAssessment = data[0] as LastModifiedAssessment3;
-                            console.log(`&&&&&& DATA IS: ` + lastModAssessment);
                             this.router.navigate(['/assess3/result/summary', lastModAssessment.id]);
                             return true;
                         }

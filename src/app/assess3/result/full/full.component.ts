@@ -145,13 +145,9 @@ export class FullComponent implements OnInit, OnDestroy {
       .filter((arr) => arr && arr.length > 0)
       .distinctUntilChanged()
       .map((arr: Assessment3[]) => {
-        
-        console.log(`&&&&&&& First object assessment:\n${JSON.stringify(arr[0], null, 2)}`);
-        
         if (arr[0].assessment_objects && arr[0].assessment_objects.length) {
           let retVal = arr[0].name + ' - ';
           const assessedType = arr[0].assessment_objects[0].stix.type;
-          console.log(`&&&&&&& Name is ${arr[0].name} and assessed type is: ${assessedType}`);
           switch (assessedType) {
             case 'course-of-action':
               retVal += 'Mitigations';
