@@ -127,12 +127,12 @@ const unfetterComponents = [
         ReactiveFormsModule,
         ...matModules
     ],
+    declarations: [
+        ...unfetterComponents,
+    ],
     exports: [
         ...unfetterComponents,
         ...matModules,
-    ],
-    declarations: [
-        ...unfetterComponents,
     ],
     providers: [],
     entryComponents: [MasterListDialogComponent]

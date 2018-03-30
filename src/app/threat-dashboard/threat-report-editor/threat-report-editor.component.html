@@ -1,5 +1,4 @@
 <div class="container" id="threatReportEditor" *ngIf="!loading; else loadingBlock">
-
     <div class="col-xs-10 col-sm-10 col-md-8 mt-10 flex edit-title-row">
         <mat-icon class="mat-24 edit-close-button" matTooltip="Cancel" aria-label="Cancel"
                 (click)="onCancel($event)">close</mat-icon>
@@ -14,19 +13,18 @@
     </div>
 
     <div class="clearfix"></div>
-
     <div class="col-xs-10 col-sm-10 col-md-8 col-lg-6 mt-18">
         <div>
             <mat-form-field>
                 <input matInput #filter [(ngModel)]="threatReport.name"
-                        color="primary" placeholder="Work Product Name"
-                        matTooltip="Enter the work product's name" aria-label="enter work product name">
+                color="primary" placeholder="Work Product Name"
+                matTooltip="Enter the work product's name" aria-label="enter work product name">
             </mat-form-field>
         </div>
     </div>
-
+    
     <div class="clearfix"></div>
-
+    
     <div class="col-xs-6 col-sm-6 mt-18 boundaries-title"> Boundaries </div>
     <div class="col-xs-12 col-sm-12 col-lg-10 flex boundaries-fieldsets">
 
@@ -40,41 +38,37 @@
                             aria-label="Enter the name of the target of the threat">
                 </mat-form-field>
             </div>
-
             <div>
                 <mat-form-field floatPlaceholder="always">
                     <input #startDateInput matInput
-                            [(ngModel)]="threatReport.boundaries.startDate" [(ngModel)]="startDate"
-                            [max]="maxStartDate" [matDatepicker]="startDatePicker"
-                            color="primary" placeholder="Date From" floatPlaceholder="always"
-                            matTooltip="Enter the date the threat situation began"
-                            aria-label="Enter the date the threat situation began (m/d/y format)"
-                            (dateChange)="startDateChanged(startDateInput.value)"/>
+                    [(ngModel)]="threatReport.boundaries.startDate" [(ngModel)]="startDate"
+                    [max]="maxStartDate" [matDatepicker]="startDatePicker"
+                    color="primary" placeholder="Date From" floatPlaceholder="always"
+                    matTooltip="Enter the date the threat situation began"
+                    aria-label="Enter the date the threat situation began (m/d/y format)"
+                    (dateChange)="startDateChanged(startDateInput.value)"/>
                     <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
                     <mat-datepicker #startDatePicker></mat-datepicker>
                 </mat-form-field>
                 <small *ngIf="dateError.startDate.isError" class="error">{{ dateError.errorMessage }}</small>
             </div>
-
             <div>
                 <mat-form-field floatPlaceholder="always">
-                    <input #endDateInput matInput
-                            [(ngModel)]="threatReport.boundaries.endDate"
-                            [min]="minEndDate" [matDatepicker]="endDatePicker"
-                            color="primary" placeholder="Date To" floatPlaceholder="always"
-                            matTooltip="Enter the date the threat situation ended"
-                            aria-label="Enter the date the threat situation ended (m/d/y format)"
-                            (dateChange)="endDateChanged(endDateInput.value)"/>
-                    <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
-                    <mat-datepicker #endDatePicker></mat-datepicker>
-                </mat-form-field>
+                        <input #endDateInput matInput
+                        [(ngModel)]="threatReport.boundaries.endDate"
+                        [min]="minEndDate" [matDatepicker]="endDatePicker"
+                        color="primary" placeholder="Date To" floatPlaceholder="always"
+                        matTooltip="Enter the date the threat situation ended"
+                        aria-label="Enter the date the threat situation ended (m/d/y format)"
+                        (dateChange)="endDateChanged(endDateInput.value)"/>
+                        <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+                        <mat-datepicker #endDatePicker></mat-datepicker>
+                    </mat-form-field>
                 <small *ngIf="dateError.endDate.isError" class="error">{{ dateError.errorMessage }}</small>
                 <small *ngIf="dateError.endDate.isSameOrBefore"
                         class="error">{{ dateError.endDate.isSameOrBeforeMessage }}</small>
             </div>
-
         </div>
-
         <div class="flex1 malware-fieldset">
             <mat-form-field floatPlaceholder="always" >
                 <mat-select #malwareSelected color="primary" placeholder="Malware"
@@ -173,7 +167,7 @@
             <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>
             <mat-row *matRowDef="let report; columns: displayColumns;"></mat-row>
         </mat-table>
-    </div>
+    </div> 
 
 </div>
 

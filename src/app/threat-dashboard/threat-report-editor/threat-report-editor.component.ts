@@ -1,25 +1,25 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { Observable } from 'rxjs/Observable';
-import * as clone from 'clone';
-
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
-
+import { ActivatedRoute, Router } from '@angular/router';
+import * as clone from 'clone';
+import { Observable } from 'rxjs/Observable';
+import { GenericApi } from '../../core/services/genericapi.service';
+import { DateHelper } from '../../global/static/date-helper';
+import { SortHelper } from '../../global/static/sort-helper';
+import { IntrusionSet } from '../../models/intrusion-set';
+import { Malware } from '../../models/malware';
+import { Report } from '../../models/report';
+import { ThreatReportOverviewService } from '../../threat-dashboard/services/threat-report-overview.service';
 import { Constance } from '../../utils/constance';
 import { Boundaries } from '../models/boundaries';
-import { Report } from '../../models/report';
-import { Malware } from '../../models/malware';
-import { IntrusionSet } from '../../models/intrusion-set';
 import { SelectOption } from '../models/select-option';
 import { ThreatReport } from '../models/threat-report.model';
-import { ThreatReportOverviewService } from '../../threat-dashboard/services/threat-report-overview.service';
 import { ThreatReportSharedService } from '../services/threat-report-shared.service';
 import { ReportEditorComponent } from './report-editor/report-editor.component';
 import { ReportImporterComponent } from './report-importer/report-importer.component';
-import { GenericApi } from '../../core/services/genericapi.service';
-import { SortHelper } from '../../global/static/sort-helper';
-import { DateHelper } from '../../global/static/date-helper';
+
+
 
 @Component({
     selector: 'threat-report-editor',
@@ -80,21 +80,22 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        if (this.route.snapshot.routeConfig.path === 'create') {
-            this.threatReport = new ThreatReport();
-            this.reportsDataSource = new MatTableDataSource(this.threatReport.reports);
-            if (this.sharedService.threatReportOverview) {
-                this.cloneThreatReport();
-            } else {
-                this.sharedService.threatReportOverview = this.threatReport;
-            }
-            this.title = 'Create';
-            this.loading = false;
-        } else /* modifying an existing threat report */ {
+        if (this.route.snapshot.routeConfig.path !== 'create') {
+            // modifying an existing threat report
             this.id = this.route.snapshot.paramMap.get('id');
             this.load(this.id);
-        }
+            return;
+        } 
 
+        this.threatReport = new ThreatReport();
+        this.reportsDataSource = new MatTableDataSource(this.threatReport.reports);
+        if (this.sharedService.threatReportOverview) {
+            this.cloneThreatReport();
+        } else {
+            this.sharedService.threatReportOverview = this.threatReport;
+        }
+        this.title = 'Create';
+        // this.loading = false;
         this.initSelects();
     }
 
@@ -184,7 +185,9 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
                         .sort(SortHelper.sortDescByField('displayValue'));
                 },
                 (err) => console.log(err),
-                () => {});
+                () => {
+                    this.loading = false;
+                });
         this.subscriptions.push(sub1$);
     }
 
