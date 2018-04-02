@@ -21,23 +21,6 @@ describe('RelationshipListComponent', () => {
     let fixture: ComponentFixture<RelationshipListComponent>;
     let subscriptions: Subscription[];
 
-    let getRelationships = (url, id) => {
-        const uri = url.toString();
-        if (uri.startsWith(Constance.RELATIONSHIPS_URL)) {
-            return Observable.of(mockRelationships.slice(0));
-        }
-        const relationship = mockRelationships
-            .find(rel => uri.includes(rel.attributes.source_ref) || uri.includes(rel.attributes.target_ref));
-        return Observable.of({
-            id: `${relationship.attributes.xtype}-id`,
-            type: relationship.attributes.xtype,
-            attributes: {
-                name: `${relationship.attributes.xtype}-rmap`,
-                pattern: `${relationship.attributes.xtype}-pattern`,
-            }
-        });
-    };
-
     const mockRelationships = [
         {
             id: 'i1',
@@ -80,6 +63,23 @@ describe('RelationshipListComponent', () => {
             }
         },
     ];
+
+    let getRelationships = (url, id) => {
+        const uri = url.toString();
+        if (uri.startsWith(Constance.RELATIONSHIPS_URL)) {
+            return Observable.of(mockRelationships.slice(0));
+        }
+        const relationship = mockRelationships
+            .find(rel => uri.includes(rel.attributes.source_ref) || uri.includes(rel.attributes.target_ref));
+        return Observable.of({
+            id: `${relationship.attributes.xtype}-id`,
+            type: relationship.attributes.xtype,
+            attributes: {
+                name: `${relationship.attributes.xtype}-rmap`,
+                pattern: `${relationship.attributes.xtype}-pattern`,
+            }
+        });
+    };
 
     beforeEach(async(() => {
         subscriptions = [];

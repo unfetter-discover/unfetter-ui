@@ -23,6 +23,16 @@ describe('MitigateListComponent', () => {
     let fixture: ComponentFixture<MitigateListComponent>;
     let subscriptions: Subscription[];
 
+    const mockRelationships = [
+        {
+            id: 'attack-pattern--1',
+            attributes: {
+                source_ref: 'attack-pattern--1',
+                target_ref: 'attack-pattern--x',
+            }
+        },
+    ];
+
     let getRelationships = (url, id) => {
         const uri = url.toString();
         if (uri.startsWith(Constance.RELATIONSHIPS_URL)) {
@@ -41,16 +51,6 @@ describe('MitigateListComponent', () => {
             }
         }));
     };
-
-    const mockRelationships = [
-        {
-            id: 'attack-pattern--1',
-            attributes: {
-                source_ref: 'attack-pattern--1',
-                target_ref: 'attack-pattern--x',
-            }
-        },
-    ];
 
     beforeEach(async(() => {
         subscriptions = [];
