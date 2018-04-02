@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Sighting } from '../../models';
-import { identifierModuleUrl } from '@angular/compiler';
 
 @Component({
   selector: 'events-content',
