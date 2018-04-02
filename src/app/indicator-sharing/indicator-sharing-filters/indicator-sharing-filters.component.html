@@ -22,9 +22,15 @@
           <mat-option value="{{ap.id}}" *ngFor="let ap of (store.select('indicatorSharing').pluck('attackPatterns') | async) | sortByField:'name':'ascending'">{{ ap.name }}</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field class="full-width mb-12">
+      <mat-form-field class="full-width mb-9">
         <mat-select placeholder="Sensors" [multiple]="true" formControlName="sensors">
           <mat-option value="{{sensor.id}}" *ngFor="let sensor of store.select('indicatorSharing').pluck('sensors') | async">{{ sensor.name | capitalize }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="full-width mb-12">
+        <mat-select placeholder="Publish Status" [multiple]="true" formControlName="published">
+          <mat-option value="true">Published</mat-option>
+          <mat-option value="false">Draft</mat-option>
         </mat-select>
       </mat-form-field>
     </form>

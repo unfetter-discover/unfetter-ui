@@ -29,7 +29,7 @@ export function cleanObjectProperties(tempObj, obj) {
                     }
                     break;
                 default:
-                    if (obj[prop]) {
+                    if (obj[prop] !== undefined || obj[prop] !== null) {
                         tempObj[prop] = obj[prop];
                     }
                     break;
