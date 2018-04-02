@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatSnackBar, MatTableDataSource } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as clone from 'clone';
 import { Observable } from 'rxjs/Observable';
@@ -355,7 +355,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      * @param {UIEvent} event optional
      */
     public onCreateReport(event?: UIEvent): void {
-        this.createReportDialog({});
+        this.createReportDialog(event);
     }
 
     /**
@@ -364,14 +364,26 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      * @param {UIEvent} event optional
      */
     public onModifyReport(report: Report, event?: UIEvent): void {
-        this.createReportDialog({data: {report: report}});
+        this.createReportDialog(event, report);
     }
 
-    private createReportDialog(options: any): void {
-        options.width = '100%';
-        options.height = 'calc(100vh - 160px)';
+    /**
+     * @description open report dialog
+     * @param event optional
+     * @param report {Report}
+     */
+    private createReportDialog(event?: UIEvent, report?: Report): void {
+        const opts = new MatDialogConfig();
+        // opts.width = '100vh';
+        // opts.maxWidth = '100vh';
+        // opts.height = '80vh';
+        // opts.minHeight = '80vh';
+        if (report) {
+            opts.data = report;
+        }
+        
         this.dialog
-            .open(ReportEditorComponent, options)
+            .open(ReportEditorComponent, opts)
             .afterClosed()
             .subscribe(
                 (result: Partial<Report> | boolean) => this.insertReport(result),

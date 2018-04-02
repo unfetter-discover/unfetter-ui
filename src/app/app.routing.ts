@@ -49,7 +49,7 @@ const appRoutes: Routes = [
       ]
     },
   },
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '**', component: NoContentComponent },
 ];
 
@@ -60,7 +60,7 @@ const appRoutes: Routes = [
       {
         useHash: true,
         preloadingStrategy: SelectivePreloadingStrategy,
-        enableTracing: true,
+        enableTracing: false,
       }
     )
   ],
@@ -72,8 +72,3 @@ const appRoutes: Routes = [
   ]
 })
 export class AppRoutingModule { }
-// export const appRouting = RouterModule.forRoot(appRoutes, {
-//   useHash: true,
-//   preloadingStrategy: SelectivePreloadingStrategy,
-//   enableTracing: true,
-// });

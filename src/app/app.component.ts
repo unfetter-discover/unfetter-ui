@@ -61,9 +61,10 @@ export class AppComponent implements OnInit {
                 'role': 'STANDARD_USER'
               }
             ],
-          }, token: '1234' }));
+          }, token: '1234'
+        }));
       }
-      this.store.dispatch(new configActions.FetchConfig(false));      
+      this.store.dispatch(new configActions.FetchConfig(false));
     }
 
     const bodyElement: HTMLElement = document.getElementsByTagName('body')[0];
@@ -85,7 +86,8 @@ export class AppComponent implements OnInit {
         } else {
           this.title = url;
         }
-      });
+      },
+        (err) => console.log(err));
   }
 
   private setTheme(url: string, bodyElement: HTMLElement) {

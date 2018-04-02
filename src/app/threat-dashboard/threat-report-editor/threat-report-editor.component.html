@@ -1,7 +1,7 @@
 <div class="container" id="threatReportEditor" *ngIf="!loading; else loadingBlock">
     <div class="col-xs-10 col-sm-10 col-md-8 mt-10 flex edit-title-row">
-        <mat-icon class="mat-24 edit-close-button" matTooltip="Cancel" aria-label="Cancel"
-                (click)="onCancel($event)">close</mat-icon>
+        <button mat-icon-button class="mat-24 edit-close-button" matTooltip="Cancel" aria-label="Cancel"
+                (click)="onCancel($event)"><mat-icon>close</mat-icon></button>
         <div class="flex1 edit-title">{{title}} Work Product</div>
         <div class="edit-title-buttons">
             <button mat-button class="edit-cancel-button" matTooltip="Cancel" aria-label="Cancel"
