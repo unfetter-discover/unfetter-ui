@@ -1,43 +1,26 @@
-import {
-  NO_ERRORS_SCHEMA,
-  DebugElement,
-  ChangeDetectorRef
-} from '@angular/core';
-import {
-  inject,
-  async,
-  fakeAsync,
-  TestBed,
-  ComponentFixture,
-  tick
-} from '@angular/core/testing';
-import {
-  MatDialog,
-  MatSnackBar,
-  MatInputModule,
-  MatSelectModule
-} from '@angular/material';
-
-import { By } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Location, LocationStrategy, CommonModule } from '@angular/common';
-import { Observable } from 'rxjs/Observable';
-import { StixService } from '../../../stix.service';
-import { GlobalModule } from '../../../../global/global.module';
-import { ComponentModule } from '../../../../components/component.module';
-import { FormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { newEvent, click } from '../../../../testing/index';
-
+import { Location } from '@angular/common';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed, async, fakeAsync, tick } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { MatDialog, MatInputModule, MatSelectModule, MatSnackBar } from '@angular/material';
+import { By } from '@angular/platform-browser';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ActivatedRoute, Router } from '@angular/router';
+import { StoreModule } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
+import { ComponentModule } from '../../../../components/component.module';
+import { CoreModule } from '../../../../core/core.module';
+import { ConfigService } from '../../../../core/services/config.service';
+import { GlobalModule } from '../../../../global/global.module';
+import { reducers } from '../../../../root-store/app.reducers';
+import { click, newEvent } from '../../../../testing/index';
+import { StixService } from '../../../stix.service';
 // Load the implementations that should be tested
 import { AttackPatternNewComponent } from './attack-patterns-new.component';
-import { ConfigService } from '../../../../core/services/config.service';
-import { CoreModule } from '../../../../core/core.module';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { StoreModule } from '@ngrx/store';
-import { reducers } from '../../../../root-store/app.reducers';
+
+
 
 /** Duration of the select opening animation. */
 const SELECT_OPEN_ANIMATION = 200;
@@ -279,7 +262,14 @@ function moduleSetup() {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        GlobalModule, CoreModule, ComponentModule, FormsModule, NoopAnimationsModule, HttpClientModule, HttpClientTestingModule, StoreModule.forRoot(reducers), ...matModules
+        NoopAnimationsModule,
+        HttpClientTestingModule,
+        GlobalModule,
+        CoreModule.forRoot(),
+        ComponentModule,
+        FormsModule,
+        StoreModule.forRoot(reducers),
+        ...matModules,
       ],
       declarations: [AttackPatternNewComponent],
       schemas: [NO_ERRORS_SCHEMA],

@@ -1,29 +1,19 @@
-import {
-  NO_ERRORS_SCHEMA,
-  DebugElement,
-  ChangeDetectorRef
-} from '@angular/core';
-import {
-  inject,
-  async,
-  TestBed,
-  ComponentFixture
-} from '@angular/core/testing';
+import { Location, LocationStrategy } from '@angular/common';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ChangeDetectorRef, DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatDialog, MatSnackBar } from '@angular/material';
-import { Location, LocationStrategy } from '@angular/common';
+import { StoreModule } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { CoreModule } from '../../../../core/core.module';
+import { GlobalModule } from '../../../../global/global.module';
+import { reducers } from '../../../../root-store/app.reducers';
 import { StixService } from '../../../stix.service';
-
 // Load the implementations that should be tested
 import { AttackPatternListComponent } from './attack-pattern-list.component';
-import { GlobalModule } from '../../../../global/global.module';
-import { CoreModule } from '../../../../core/core.module';
-import { StoreModule } from '@ngrx/store';
-import { reducers } from '../../../../root-store/app.reducers';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+
 
 describe(`AttackPatternListComponent`, () => {
   let comp: AttackPatternListComponent;
@@ -43,7 +33,10 @@ describe(`AttackPatternListComponent`, () => {
     async(() => {
       TestBed.configureTestingModule({
         imports: [
-          GlobalModule, CoreModule, HttpClientModule, HttpClientTestingModule, StoreModule.forRoot(reducers)
+          GlobalModule,
+          CoreModule.forRoot(),
+          HttpClientTestingModule,
+          StoreModule.forRoot(reducers),
         ],
         declarations: [AttackPatternListComponent],
         schemas: [NO_ERRORS_SCHEMA],
