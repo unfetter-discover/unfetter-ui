@@ -267,7 +267,7 @@ export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit
       ['Unused Patterns', 'Attack Patterns', 0],
     ];
     for (let attackPattern in attackData) {
-      if (attackData[attackPattern].count > 0) {
+      if (attackData[attackPattern] > 0) {
         data.push([attackPattern, 'Attack Patterns', attackData[attackPattern]]);
       }
     }
@@ -284,6 +284,7 @@ export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit
       const patternName: string = selectedPattern.row[0];
       const rawSelection = this.attackPatternPhases[patternName];
       let attackPattern = null;
+      
       this.intrusionSetsDashboard.killChainPhases.forEach(phase => {
         attackPattern = attackPattern || phase.attack_patterns.find(pattern => pattern && pattern.name === patternName);
       });
@@ -397,7 +398,7 @@ export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit
 
       const sub$ = this.overlayRef.backdropClick().subscribe(
         () => this.hideAttackPatternTooltip(this.attackPattern),
-        (err) => console.log(err),
+        (err) => console.log(`${new Date().toISOString()} Error using tooltip: ${err}`),
         () => sub$.unsubscribe());
 
       this.portal = new TemplatePortal(this.apTooltipTemplate, this.vcr);
