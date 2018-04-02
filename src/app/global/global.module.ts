@@ -31,7 +31,7 @@ import { SophisticationPipe } from './pipes/sophistication.pipe';
 import { FieldSortPipe } from './pipes/field-sort.pipe';
 import { TimeAgoPipe } from './pipes/time-ago.pipe';
 
-// Components
+// Components and directives
 import { RiskIconComponent } from './components/risk-icon/risk-icon.component';
 import { StixTableComponent } from './components/stix-table/stix-table.component';
 import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
@@ -59,6 +59,7 @@ import { TreemapComponent } from './components/treemap/treemap.component';
 import { HeatmapComponent } from './components/heatmap/heatmap.component';
 import { CreatedByRefComponent } from './components/created-by-ref/created-by-ref.component';
 import { RelatationshipGeneratorComponent } from './components/relatationship-generator/relatationship-generator.component';
+import { InfiniteScrollDirective } from './directives/infinite-scroll.directive';
 
 const matModules = [
     MatAutocompleteModule,
@@ -115,6 +116,7 @@ const unfetterComponents = [
     HeatmapComponent,
     CreatedByRefComponent,
     RelatationshipGeneratorComponent,
+    InfiniteScrollDirective,
 ];
 
 @NgModule({

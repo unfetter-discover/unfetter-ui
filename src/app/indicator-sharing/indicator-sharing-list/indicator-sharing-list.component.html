@@ -56,7 +56,7 @@
                     </div>
                 </div>
             
-                <div class="row">
+                <div class="row" infiniteScroll (atBottom)="displayShowMoreButton() ? showMoreIndicators() : ''">
                     <div class="col-lg-8 col-lg-offset-2 col-md-12" id="indicatorListWrapper">
             
                         <div *ngFor="let indicator of displayedIndicators" class="mb-15">
@@ -74,6 +74,7 @@
                         <div class="text-center mt-15 mb-20" *ngIf="displayShowMoreButton()">
                             <button mat-button color="primary" class="full-width" (click)="showMoreIndicators()">Show More Indicators</button>
                         </div>
+                        <div id="bottom">&nbsp;</div>
                     </div>
                 </div>
             
