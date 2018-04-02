@@ -17,7 +17,6 @@ import { AppRoutingModule } from './app-routing.module';
 import '../rxjs-operators';
 import 'hammerjs';
 
-import { HomeComponent } from './home';
 import { PartnersComponent } from './partners/partners.component';
 import { NoContentComponent } from './no-content';
 
@@ -38,7 +37,6 @@ import { environment } from '../environments/environment';
   bootstrap: [AppComponent],
   declarations: [
     AppComponent,
-    HomeComponent,
     PartnersComponent,
     NoContentComponent,
   ],
