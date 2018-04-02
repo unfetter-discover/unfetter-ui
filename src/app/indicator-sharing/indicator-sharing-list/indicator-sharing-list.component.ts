@@ -166,8 +166,10 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
             );
     }
 
-    public showMoreIndicators() {
+    public showMoreIndicators() {    
+        console.log('Loading more indicators');
         this.store.dispatch(new indicatorSharingActions.ShowMoreIndicators());
+        this.changeDetectorRef.markForCheck();    
     }
 
     public displayShowMoreButton() {
@@ -209,7 +211,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
 
     public toggleShowStatistics() {
         this.showSummaryStats = !this.showSummaryStats;
-        this.changeDetectorRef.detectChanges();
+        this.changeDetectorRef.markForCheck();
     }
 
     /**
