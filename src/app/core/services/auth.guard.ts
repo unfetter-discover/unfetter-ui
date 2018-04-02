@@ -18,7 +18,6 @@ export class AuthGuard implements CanActivate {
     ) { }
 
     public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-        console.log('--- auth guard canActivate');
         const allowedRoles = route.data['ROLES'];
         return this.store.select('users')
             .take(1)
