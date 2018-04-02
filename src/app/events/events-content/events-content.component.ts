@@ -1,9 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Sighting } from '../../models';
-<<<<<<< HEAD
-import { identifierModuleUrl } from '@angular/compiler';
-=======
->>>>>>> traffic detail table with hard coded data
 
 @Component({
   selector: 'events-content',
