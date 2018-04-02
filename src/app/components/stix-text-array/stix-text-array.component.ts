@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 
 @Component({
     selector: 'stix-text-array',
-  templateUrl: './stix-text-array.component.html'
+    templateUrl: './stix-text-array.component.html'
 })
 export class StixTextArrayComponent {
 
@@ -33,4 +33,5 @@ export class StixTextArrayComponent {
         });
         return retVal;
     }
+
 }

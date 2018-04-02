@@ -1,8 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+
+import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 
 describe('ConfirmationDialogComponent', () => {
 
@@ -53,18 +54,18 @@ describe('ConfirmationDialogComponent', () => {
     });
 
     it('should handle delete button presses', async(() => {
-        let input = fixture.debugElement.query(By.css('.utilityTheme button:nth-child(2)')).nativeElement;
+        let input = fixture.debugElement.query(By.css('.utilityTheme button:nth-child(2)'));
         expect(input).not.toBeNull();
-        input.click();
+        input.nativeElement.click();
         fixture.whenStable().then(() => {
             expect(closeOutput).toBeTruthy();
         });
     }));
 
     it('should handle cancel button presses', async(() => {
-        let remove = fixture.debugElement.query(By.css('.utilityTheme button:nth-child(1)')).nativeElement;
+        let remove = fixture.debugElement.query(By.css('.utilityTheme button:nth-child(1)'));
         expect(remove).not.toBeNull();
-        remove.click();
+        remove.nativeElement.click();
         fixture.whenStable().then(() => {
             expect(closeOutput).toBeFalsy();
         });

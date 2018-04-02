@@ -1,12 +1,12 @@
 <form>
-        <mat-form-field  class="full-width">
-            <input matInput placeholder="{{placeholder}}" [matAutocomplete]="auto"
-             [formControl]="formCtrl" [value]="inputFieldValue">
-
+    <mat-form-field class="full-width">
+        <input matInput placeholder="{{placeholder}}" [matAutocomplete]="auto"
+                [formControl]="formCtrl" [value]="inputFieldValue">
         <mat-autocomplete #auto="matAutocomplete" class="full-width">
-            <mat-option *ngFor="let option of filteredOptions | async" [value]="option.attributes.name" (onSelectionChange)="onOptionChanged(option)">
+            <mat-option *ngFor="let option of filteredOptions | async" [value]="option.attributes.name"
+                    (onSelectionChange)="onOptionChanged(option)">
                 {{ option.attributes.name }}
             </mat-option>
         </mat-autocomplete>
     </mat-form-field>
-    </form>
+</form>

@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 
 import { ButtonsFilterComponent } from './buttons-filter.component';
 import { FilterSearchBoxComponent } from '../filter-search-box/filter-search-box.component';
-import { By } from '@angular/platform-browser';
 
 describe('ButtonsFilterComponent', () => {
 
@@ -49,11 +49,10 @@ describe('ButtonsFilterComponent', () => {
         );
         fixture.detectChanges();
 
-        let input = fixture.debugElement.query(By.css('input#filter-search-box')).nativeElement;
-        console.log('filter search box element?', input);
+        let input = fixture.debugElement.query(By.css('input#filter-search-box'));
         expect(input).not.toBeNull();
-        input.value = component.model[1].attributes.name.substring(0, 2);
-        input.dispatchEvent(new Event('keyup'));
+        input.nativeElement.value = component.model[1].attributes.name.substring(0, 2);
+        input.nativeElement.dispatchEvent(new Event('keyup'));
         fixture.whenStable();
     }));
 
