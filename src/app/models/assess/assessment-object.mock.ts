@@ -6,7 +6,9 @@ export class AssessmentObjectMock extends Mock<AssessmentObject> {
         const tmp = new AssessmentObject();
         tmp.assId = this.genId();
         tmp.questions = AssessmentQuestionMockFactory.mockMany(8);
-        tmp.risk = tmp.questions[0].risk;
+        // TODO: Update for assessments 3.0
+        tmp.risk = 0;
+        // tmp.risk = tmp.questions[0].risk;
         return tmp;
     }
 }

@@ -9,11 +9,9 @@ import { Stix } from '../stix/stix';
  */
 export class Assessment3 extends Stix {
     public assessmentMeta = new AssessmentMeta();
+    public object_ref: string;
+    public is_baseline: boolean;
+    public set_refs = [] as String[];
     public assessment_objects = [] as Assessment3Object[];
-    public created = new Date().toISOString();
-    public description: string;
-    public id?: string;
-    public modified: string;
-    public name: string;
     public type = StixLabelEnum.ASSESSMENT3;    
 }

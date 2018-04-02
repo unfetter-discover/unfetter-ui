@@ -68,10 +68,10 @@ export class AssessEffects {
         })
         .do((el: AssessmentMeta) => {
             this.router.navigate([
-                '/assess/wizard/new',
-                'indicators', el.includesIndicators === true ? 1 : 0,
-                'mitigations', el.includesMitigations === true ? 1 : 0,
-                'sensors', el.includesSensors === true ? 1 : 0
+                '/assess3/wizard/new',
+                // 'indicators', el.includesIndicators === true ? 1 : 0,
+                // 'mitigations', el.includesMitigations === true ? 1 : 0,
+                // 'sensors', el.includesSensors === true ? 1 : 0
             ]);
         })
         // required to send an empty element on non dispatched effects

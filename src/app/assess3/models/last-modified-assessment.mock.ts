@@ -1,12 +1,12 @@
-import { LastModifiedAssessment } from './last-modified-assessment';
+import { LastModifiedAssessment3 } from './last-modified-assessment3';
 import { Mock } from '../../models/mock';
 
-export class LastModifiedAssessmentMock extends Mock<LastModifiedAssessment> {
-    public mockOne(): LastModifiedAssessment {
-        const tmp = new LastModifiedAssessment();
+export class LastModifiedAssessment3Mock extends Mock<LastModifiedAssessment3> {
+    public mockOne(): LastModifiedAssessment3 {
+        const tmp = new LastModifiedAssessment3();
         tmp._id = this.genId();
-        tmp.name = 'assessment-' + tmp._id;
+        tmp.name = 'assessment3-' + tmp._id;
         return tmp;
     }
 }
-export const LastModifiedAssessmentMockFactory = new LastModifiedAssessmentMock();
+export const LastModifiedAssessment3MockFactory = new LastModifiedAssessment3Mock();
