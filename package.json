@@ -23,7 +23,7 @@
     "serve:docker:dev:demo": "ng version && ng serve -v -w --dev -sm --open --hmr --ssl --disable-host-check --port 80 --host 0.0.0.0  --public-host 0.0.0.0:80",
     "super:test": "concurrently -k -n \"serve,test,coverage\" -c \"blue,green,red\" \"npm run serve:local:dev:uac\" \"ng test --code-coverage\" \"npm run serve:coverage\"",
     "live:test": "concurrently -k -n \"test,coverage\" -c \"green,red\" \"ng test --code-coverage\" \"npm run serve:coverage\"",
-    "serve:coverage": "live-server coverage/html",
+    "serve:coverage": "live-server coverage/",
     "build:prod": "ng version && ng build --prod --env=prod",
     "build:prod:noclean": "npm run build:prod -- --no-delete-output-path --vendor-chunk=true",
     "build:demo:noclean": "ng version && ng build --prod --no-delete-output-path --vendor-chunk=true --env=dockerhub",

@@ -77,7 +77,7 @@ export class AddIndicatorComponent implements OnInit {
             this.indicatorSharingService.getUserProfileById(userId),
             this.indicatorSharingService.getAttackPatterns()
         ).subscribe(
-            (res) => {       
+            (res) => {
                 const identities = res[0].map((r) => r.attributes);
                 const userOrgs = res[1].attributes.organizations;
                 this.attackPatterns = res[2].map((r) => r.attributes);
@@ -97,7 +97,9 @@ export class AddIndicatorComponent implements OnInit {
                 console.log(err);
             },
             () => {
-                getData$.unsubscribe();
+                if (getData$) {
+                    getData$.unsubscribe();
+                }
             }
         );
 
