@@ -39,7 +39,6 @@ export class BarChartComponent implements OnInit, OnDestroy, OnChanges {
      * @description initialize this component
      */
     public ngOnInit(): void {
-        console.log('on init');
         this.buildGraph();
     }
 

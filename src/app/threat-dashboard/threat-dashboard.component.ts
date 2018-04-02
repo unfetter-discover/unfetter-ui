@@ -152,7 +152,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @description fetch just the intrusions and render components
    */
   public fetchIntrusionSetsAndRender(): void {
-    console.log('fetching intrustion sets');
+    console.log(`(${new Date().toISOString()}) fetching intrusion sets`);
     this.intrusionSetsDashboard = {
       killChainPhases: [],
       intrusionSets: [],
