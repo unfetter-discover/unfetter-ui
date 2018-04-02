@@ -33,12 +33,12 @@ export class ThreatReportNavigateGuard implements CanActivate {
             .pluck('userProfile')
             .switchMap((user: UserProfile) => {
                 let o$: Observable<Partial<LastModifiedThreatReport>[]>;
-                if (!this.demoMode && user && user._id) {
-                    o$ = this.fetchWithCreatorId(user._id);
-                } else {
-                    o$ = this.routeNoCreatorId();
-                }
-
+                // if (!this.demoMode && user && user._id) {
+                //     o$ = this.fetchWithCreatorId(user._id);
+                // } else {
+                //     o$ = this.routeNoCreatorId();
+                // }
+                o$ = this.routeNoCreatorId();
                 return o$.
                     map((data) => {
                         if (data === undefined || data.length === 0) {

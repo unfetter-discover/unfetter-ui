@@ -19,6 +19,7 @@
         </div>
 
         <div class="col-xs-12 col-sm-12 mt-18">
+            <created-by-ref [model]="report"></created-by-ref>
             <div>
                 <mat-form-field id="report-name">
                     <input matInput required #filter [(ngModel)]="report.attributes.name"
