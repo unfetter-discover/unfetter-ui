@@ -4,6 +4,10 @@
   margin-right: 24px;
 }
 
+.flexColumn {
+  flex-direction: column;
+}
+
 .matchHeight {
   align-items: stretch;
   -webkit-box-align: stretch;
@@ -51,7 +55,7 @@ $traffic-detail-title-bottom-margin: 16;
 }
 
 .card {
-  min-height: 289px;
+  min-height: 200px;
   margin-bottom: 20px;
   min-width: $min-card-width + px;
   padding-top: 25px;
@@ -70,6 +74,7 @@ $traffic-detail-title-bottom-margin: 16;
   flex-grow: .5;
   margin-right: $padding-between-cards + px;
   height: 100%;
+  max-height: 400px;
 }
 
 .right-card {

@@ -1,5 +1,9 @@
 @import '../../../styles/_variables.scss';
 
+.flexColumn {
+    flex-direction: column;
+}
+
 .side-panel {
     min-width: 250px;
 }
