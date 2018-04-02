@@ -36,8 +36,7 @@ export class UserEffects {
         .do(([token, userData]: any) => {            
             if (userData.registered) {
                 // TODO move this to utilities
-                this.authService.setUser(userData);
-                // this.router.navigate(['/']);
+                this.authService.setUser(userData);                
             } else {
                 this.router.navigate(['/users/register']);
             }
