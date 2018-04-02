@@ -27,7 +27,7 @@
       <mat-icon class="mat-24">apps</mat-icon>
     </button>
     <div id="appMenuTriangle" *ngIf="showAppMenu" @fadeInOut>&nbsp;</div>
-    <div *ngIf="showAppMenu" id="appMenuWindow" class="uf-nav-popup" @fadeInOut>
+    <div *ngIf="showAppMenu && authService.loggedIn()" id="appMenuWindow" class="uf-nav-popup" @fadeInOut>
       <div id="appList" class="flex">
         <span *ngFor="let appItem of appList" class="appLinkWrapper">
           <a routerLink="./{{ appItem.url }}" class="appLink" (click)="showAppMenu = false">
