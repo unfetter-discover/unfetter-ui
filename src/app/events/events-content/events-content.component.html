@@ -14,43 +14,40 @@
           </div>
           <div class="flexRow half-height">
             <mat-card color="primary" class="uf-mat-card card left-card mat-card-scroll-content">
-              <mat-card-title>Traffic Detail</mat-card-title>
+              <mat-card-title class="traffic-detail-title">Traffic Detail</mat-card-title>
               <mat-card-content>
                 <mat-table #table [dataSource]="recentSightings">
                   <ng-container matColumnDef="{{columnIds[0]}}">
                     <mat-header-cell *matHeaderCellDef>Date/Time</mat-header-cell>
-                    <mat-cell *matCellDef="let sighting">20NOV2016 0420</mat-cell>
+                    <mat-cell *matCellDef="let sighting">{{sighting.attributes.last_seen}}</mat-cell>
                   </ng-container>
                   <ng-container matColumnDef="{{columnIds[1]}}">
                     <mat-header-cell *matHeaderCellDef>IP Address</mat-header-cell>
-                    <mat-cell *matCellDef="let sighting">193.106.31.90
-                      <ng-template #noObjects>
-                        No assessed vulnerabilities found
-                      </ng-template>
+                    <mat-cell *matCellDef="let sighting">{{sighting.attributes.observed_data_refs[0]}}
                     </mat-cell>
                   </ng-container>
                   <ng-container matColumnDef="{{columnIds[2]}}">
                     <mat-header-cell *matHeaderCellDef>Location</mat-header-cell>
                     <mat-cell *matCellDef="let sighting">
-                      <span>Kyiv</span>
+                      <span>{{sighting.attributes.observed_data_refs_city}}</span>
                     </mat-cell>
                   </ng-container>
                   <ng-container matColumnDef="{{columnIds[3]}}">
                     <mat-header-cell *matHeaderCellDef>Country</mat-header-cell>
                     <mat-cell *matCellDef="let sighting">
-                      <span>UA</span>
+                        <span>{{sighting.attributes.observed_data_refs_country}}</span>
                     </mat-cell>
                   </ng-container>
                   <ng-container matColumnDef="{{columnIds[4]}}">
                     <mat-header-cell *matHeaderCellDef>Attack Pattern</mat-header-cell>
                     <mat-cell *matCellDef="let sighting">
-                      <span>Bypass User</span>
+                      <span>{{sighting.attributes.sighting_of_ref_name}}</span>
                     </mat-cell>
                   </ng-container>
                   <ng-container matColumnDef="{{columnIds[5]}}">
                     <mat-header-cell *matHeaderCellDef>Potential Actor</mat-header-cell>
                     <mat-cell *matCellDef="let sighting">
-                      <span>UNK</span>
+                      <span>{{sighting.attributes.sighting_of_ref_name_intrusion_set_group}}</span>
                     </mat-cell>
                   </ng-container>
                   <mat-header-row class="table-header-row" *matHeaderRowDef="columnIds"></mat-header-row>
