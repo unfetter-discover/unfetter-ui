@@ -374,8 +374,8 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      */
     private createReportDialog(event?: UIEvent, report?: Report): void {
         const opts = new MatDialogConfig();
-        // opts.width = '100vh';
-        // opts.maxWidth = '100vh';
+        // opts.width = '100%';
+        // opts.maxWidth = '100%';
         // opts.height = '80vh';
         // opts.minHeight = '80vh';
         if (report) {
@@ -398,8 +398,6 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
     public onImportReport(event?: UIEvent): void {
         this.dialog
             .open(ReportImporterComponent, {
-                width: '100%',
-                height: '70vh',
                 data: {
                     reports: this.reportsDataSource.data,
                 }
