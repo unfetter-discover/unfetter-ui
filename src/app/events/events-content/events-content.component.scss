@@ -32,10 +32,27 @@ $half-height-margin-bottom: 20px;
   margin-bottom: $half-height-margin-bottom;
 }
 
+$traffic-detail-title-height: 31;
+$traffic-detail-title-bottom-margin: 16;
+.traffic-detail-title {
+  height: $traffic-detail-title-height + px;
+  margin-bottom: $traffic-detail-title-bottom-margin + px;
+}
+
+.mat-card-scroll-content .mat-card-content {
+  overflow-y: auto;
+  max-height: calc(100% - (#{$traffic-detail-title-height + px} + #{$traffic-detail-title-bottom-margin + px}));
+}
+
+.mat-header-row {
+  position: sticky;
+  top: 0;
+  background: white;
+}
+
 .card {
   min-height: 289px;
   margin-bottom: 20px;
-  //    width: 50%;
   min-width: $min-card-width + px;
   padding-top: 25px;
   padding-left: 15px;
