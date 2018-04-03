@@ -3,7 +3,7 @@ import { UserRole } from '../models/user/user-role.enum';
 import { UserIdentity } from '../models/user/user-identity';
 import { Constance } from '../utils/constance';
 
-export const mockUser: UserProfile = {
+export const demoUser: UserProfile = {
     _id: '1234',
     userName: 'Demo-User',
     firstName: 'Demo',

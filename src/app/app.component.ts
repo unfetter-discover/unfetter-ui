@@ -11,7 +11,7 @@ import { environment } from '../environments/environment';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Themes } from './global/enums/themes.enum';
 import { Constance } from './utils/constance';
-import { mockUser } from './testing/mock-user';
+import { demoUser } from './testing/demo-user';
 
 @Component({
   selector: 'unf-app',
@@ -50,7 +50,7 @@ export class AppComponent implements OnInit {
         this.store.dispatch(new userActions.FetchUser(token));
       } else {
         this.store.dispatch(new userActions.LoginUser({
-          userData: mockUser, 
+          userData: demoUser, 
           token: '1234'
         }));
       }
