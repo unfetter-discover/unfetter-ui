@@ -13,7 +13,7 @@
                     </mat-error>
                 </mat-form-field>
                 
-                <mat-form-field class="full-width mb-6">
+                <mat-form-field class="full-width mb-6" *ngIf="!editMode">
                     <mat-select required placeholder="Submitter Organization" formControlName="created_by_ref">
                         <mat-option *ngFor="let org of organizations" [value]="org.id">{{org.name}}</mat-option>
                     </mat-select>
