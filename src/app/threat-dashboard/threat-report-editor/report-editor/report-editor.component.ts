@@ -79,12 +79,7 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
     public initializeReport(data: any) {
         // if we are given a report already, the user wants to modify it
         if (data) {
-            this.report.attributes.id = data.attributes.id;
-            this.report.attributes.name = data.attributes.name;
-            this.report.attributes.description = data.attributes.description;
-            this.report.attributes.created = data.attributes.created;
-            this.report.attributes.modified = data.attributes.modified;
-            this.report.attributes.published = data.attributes.published;
+            this.report.attributes = { ...this.report.attributes, ...data.attributes };
             data.attributes.labels.forEach((label) => this.report.attributes.labels.push(label));
             data.attributes.object_refs
                 .forEach((attackPattern) => this.report.attributes.object_refs.push(attackPattern));
