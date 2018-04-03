@@ -58,9 +58,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
 
     public ngOnInit() {
         this.user = this.authService.getUser();
-
-        // See if user belongs to org that created indicator
-        console.log('~~~', this.user.organizations.map((org) => org.id), '~~~~', this.indicator.created_by_ref);
+        
         if (!this.indicator.created_by_ref || this.user.organizations.map((org) => org.id).includes(this.indicator.created_by_ref)) {
             this.readOnlyMode = false;
         }
