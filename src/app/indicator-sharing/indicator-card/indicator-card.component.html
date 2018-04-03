@@ -7,7 +7,7 @@
                 <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="publishIndicator()" *ngIf="indicator.metaProperties && indicator.metaProperties.published === false">
+                <button mat-menu-item (click)="publishIndicator()" *ngIf="!readOnlyMode && indicator.metaProperties && indicator.metaProperties.published === false">
                     <mat-icon>share</mat-icon>
                     <span>Publish</span>
                 </button>
@@ -15,11 +15,11 @@
                     <mat-icon>file_download</mat-icon>
                     <span>Download</span>
                 </button>
-                <button mat-menu-item (click)="editIndicator()">
+                <button mat-menu-item (click)="editIndicator()" *ngIf="!readOnlyMode">
                     <mat-icon>create</mat-icon>
                     <span>Edit</span>
                 </button>
-                <button mat-menu-item (click)="deleteIndicator()">
+                <button mat-menu-item (click)="deleteIndicator()" *ngIf="!readOnlyMode">
                     <mat-icon>delete</mat-icon>
                     <span>Delete</span>
                 </button>
