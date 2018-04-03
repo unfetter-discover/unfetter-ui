@@ -44,35 +44,35 @@ describe('HeatmapComponent', () => {
 
     it('should accept input heatmap data, default settings', async() => {
         component.heatMapData = [
-            {batch: 'The Americas', active: null, columns: [[
-                {batch: 'Canada', active: false},
-                {batch: 'America', active: true},
-                {batch: 'Mexico', active: false},
-                {batch: 'Brazil', active: true},
-            ]]},
-            {batch: 'Eurasia', active: null, columns: [[
-                {batch: 'Britain', active: true},
-                {batch: 'France', active: false},
-                {batch: 'Germany', active: true},
-                {batch: 'Russia', active: false},
-                {batch: 'China', active: false},
-                {batch: 'India', active: false},
-                {batch: 'Arabia', active: false},
-                {batch: 'Greece', active: true},
-                {batch: 'Italy', active: false},
-            ]]},
-            {batch: 'Africa', active: null, columns: [[
-                {batch: 'Egypt', active: false},
-                {batch: 'Congo', active: false},
-            ]]},
-            {batch: 'Australonesia', active: null, columns: [[
-                {batch: 'Australia', active: true},
-                {batch: 'New Zealand', active: false},
-                {batch: 'Indonesia', active: false},
-                {batch: 'Philippines', active: true},
-                {batch: 'Fiji', active: true},
-                {batch: 'Bali', active: true},
-            ]]},
+            {title: 'The Americas', value: null, cells: [
+                {title: 'Canada', value: false},
+                {title: 'America', value: true},
+                {title: 'Mexico', value: false},
+                {title: 'Brazil', value: true},
+            ]},
+            {title: 'Eurasia', value: null, cells: [
+                {title: 'Britain', value: true},
+                {title: 'France', value: false},
+                {title: 'Germany', value: true},
+                {title: 'Russia', value: false},
+                {title: 'China', value: false},
+                {title: 'India', value: false},
+                {title: 'Arabia', value: false},
+                {title: 'Greece', value: true},
+                {title: 'Italy', value: false},
+            ]},
+            {title: 'Africa', value: null, cells: [
+                {title: 'Egypt', value: false},
+                {title: 'Congo', value: false},
+            ]},
+            {title: 'Australonesia', value: null, cells: [
+                {title: 'Australia', value: true},
+                {title: 'New Zealand', value: false},
+                {title: 'Indonesia', value: false},
+                {title: 'Philippines', value: true},
+                {title: 'Fiji', value: true},
+                {title: 'Bali', value: true},
+            ]},
         ];
         component.ngOnInit();
         fixture.detectChanges();

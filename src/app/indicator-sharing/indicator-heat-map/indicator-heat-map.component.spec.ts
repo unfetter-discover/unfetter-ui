@@ -106,13 +106,13 @@ describe('IndicatorHeatMapComponent', () => {
 
         const first = fixture.nativeElement.querySelector('g.heat-map-cell');
         component.onTooltip({
-            row: component.heatmap[0].columns[0][0],
+            row: component.heatmap[0].cells[0][0],
             event: {target: first}
         });
         tick(1000); // skip a second into the future to spawn the tooltip
         fixture.detectChanges();
         expect(component.attackPattern).not.toBeNull();
-        expect(component.attackPattern.id).toEqual(component.heatmap[0].columns[0][0].id);
+        expect(component.attackPattern.id).toEqual(component.heatmap[0].cells[0][0].id);
 
         // now simulate moving off the attack pattern
         component.onTooltip({
@@ -128,7 +128,7 @@ describe('IndicatorHeatMapComponent', () => {
         const first = fixture.nativeElement.querySelector('g.heat-map-cell rect');
         // TODO i'd rather invoke a mouseclick event on the above rect object, but can't seem to tell angular to do that
         component.highlightAttackPatternAnalytics({
-            row: component.heatmap[0].columns[0][0],
+            row: component.heatmap[0].cells[0][0],
             event: {path: [first]}
         });
         fixture.detectChanges();
@@ -137,7 +137,7 @@ describe('IndicatorHeatMapComponent', () => {
 
         // click it again to see that it handle deselects
         component.highlightAttackPatternAnalytics({
-            row: component.heatmap[0].columns[0][0],
+            row: component.heatmap[0].cells[0][0],
             event: {path: [first]}
         });
         fixture.detectChanges();
