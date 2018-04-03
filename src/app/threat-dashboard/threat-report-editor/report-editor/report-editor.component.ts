@@ -37,12 +37,7 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
         public dialogRef: MatDialogRef<any>,
         @Inject(MAT_DIALOG_DATA) public data: Report,
         protected genericApiService: GenericApi,
-    ) { 
-        if (data) {
-            this.title = TITLES.MODIFY;
-            this.report = data;
-        }
-    }
+    ) { }
 
     ngOnInit() {
         // start loading the full list of attack patterns
@@ -83,17 +78,17 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
 
     public initializeReport(data: any) {
         // if we are given a report already, the user wants to modify it
-        if (data && data.report) {
-            this.report.attributes.id = data.report.attributes.id;
-            this.report.attributes.name = data.report.attributes.name;
-            this.report.attributes.description = data.report.attributes.description;
-            this.report.attributes.created = data.report.attributes.created;
-            this.report.attributes.modified = data.report.attributes.modified;
-            this.report.attributes.published = data.report.attributes.published;
-            data.report.attributes.labels.forEach((label) => this.report.attributes.labels.push(label));
-            data.report.attributes.object_refs
+        if (data) {
+            this.report.attributes.id = data.attributes.id;
+            this.report.attributes.name = data.attributes.name;
+            this.report.attributes.description = data.attributes.description;
+            this.report.attributes.created = data.attributes.created;
+            this.report.attributes.modified = data.attributes.modified;
+            this.report.attributes.published = data.attributes.published;
+            data.attributes.labels.forEach((label) => this.report.attributes.labels.push(label));
+            data.attributes.object_refs
                 .forEach((attackPattern) => this.report.attributes.object_refs.push(attackPattern));
-            data.report.attributes.external_references.forEach((ref) => {
+            data.attributes.external_references.forEach((ref) => {
                 this.report.attributes.external_references.push({
                     source_name: ref.source_name,
                     external_id: ref.external_id,
@@ -102,7 +97,7 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
                 });
             });
             this.references = this.report.attributes.external_references[0];
-            this.title = 'Modify';
+            this.title = TITLES.MODIFY;
             this.editing = true;
         }
 
