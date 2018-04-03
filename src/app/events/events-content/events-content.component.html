@@ -2,9 +2,9 @@
   <div class="container-fluid">
     <div class="row">
       <div class="flex matchHeight">
-        <div class="flexColumn column">
+        <div class="flexColumn left-column">
           <div class="flexRow half-height">
-            <mat-card color="primary" class="uf-mat-card card left-card mat-card-scroll-content" id="riskCard">
+            <mat-card color="primary" class="uf-mat-card card left-card mat-card-scroll-content">
               <mat-card-title>Daily Total</mat-card-title>
               <mat-card-subtitle>"10 days" picker</mat-card-subtitle>
               <mat-card-content>
@@ -13,15 +13,51 @@
             </mat-card>
           </div>
           <div class="flexRow half-height">
-            <mat-card color="primary" class="uf-mat-card card left-card mat-card-scroll-content" id="riskCard">
-              <mat-card-title>Traffic Detail</mat-card-title>
+            <mat-card color="primary" class="uf-mat-card card left-card mat-card-scroll-content">
+              <mat-card-title class="traffic-detail-title">Traffic Detail</mat-card-title>
               <mat-card-content>
-                <p>Detail Table here</p>
+                <mat-table #table [dataSource]="recentSightings">
+                  <ng-container matColumnDef="{{columnIds[0]}}">
+                    <mat-header-cell *matHeaderCellDef>Date/Time</mat-header-cell>
+                    <mat-cell *matCellDef="let sighting">{{sighting.attributes.last_seen}}</mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="{{columnIds[1]}}">
+                    <mat-header-cell *matHeaderCellDef>IP Address</mat-header-cell>
+                    <mat-cell *matCellDef="let sighting">{{sighting.attributes.observed_data_refs[0]}}
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="{{columnIds[2]}}">
+                    <mat-header-cell *matHeaderCellDef>Location</mat-header-cell>
+                    <mat-cell *matCellDef="let sighting">
+                      <span>{{sighting.attributes.observed_data_refs_city}}</span>
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="{{columnIds[3]}}">
+                    <mat-header-cell *matHeaderCellDef>Country</mat-header-cell>
+                    <mat-cell *matCellDef="let sighting">
+                        <span>{{sighting.attributes.observed_data_refs_country}}</span>
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="{{columnIds[4]}}">
+                    <mat-header-cell *matHeaderCellDef>Attack Pattern</mat-header-cell>
+                    <mat-cell *matCellDef="let sighting">
+                      <span>{{sighting.attributes.sighting_of_ref_name}}</span>
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="{{columnIds[5]}}">
+                    <mat-header-cell *matHeaderCellDef>Potential Actor</mat-header-cell>
+                    <mat-cell *matCellDef="let sighting">
+                      <span>{{sighting.attributes.sighting_of_ref_name_intrusion_set_group}}</span>
+                    </mat-cell>
+                  </ng-container>
+                  <mat-header-row class="table-header-row" *matHeaderRowDef="columnIds"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: columnIds;"></mat-row>
+                </mat-table>
               </mat-card-content>
             </mat-card>
           </div>
         </div>
-        <div class="flexColumn column">
+        <div class="flexColumn right-column">
           <mat-card class="uf-mat-card card right-card" id="vulnerabilityCard">
             <mat-card-title>Metrics</mat-card-title>
             <mat-card-content>

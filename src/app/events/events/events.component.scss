@@ -1,5 +1,9 @@
 @import '../../../styles/_variables.scss';
 
+.flexColumn {
+    flex-direction: column;
+}
+
 .side-panel {
     min-width: 250px;
 }
@@ -9,7 +13,7 @@
 }
 
 .side-panel-header, #main-header {
-    height: 128px;
+    height: 82px;
     padding-right: 16px;
 }
 
