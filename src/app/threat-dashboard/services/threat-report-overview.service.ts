@@ -198,9 +198,11 @@ export class ThreatReportOverviewService {
     // assign the correct workproduct to these new reports
     inserts$ = inserts$.map((report) => {
       if (threatReportMeta) {
-        report.attributes.metaProperties = report.attributes.metaProperties || {};
-        report.attributes.metaProperties.work_products = report.attributes.metaProperties.work_products || [];
-        report.attributes.metaProperties.work_products = report.attributes.metaProperties.work_products.concat({ ...threatReportMeta });
+        const meta = report.attributes.metaProperties || {};
+        meta.work_products = meta.work_products || [];
+        meta.work_products = meta.work_products.concat({ ...threatReportMeta });
+        meta.published = threatReportMeta.published;
+        report.attributes.metaProperties = { ...report.attributes.metaProperties, ...meta };
       }
       return report;
     });
@@ -251,8 +253,10 @@ export class ThreatReportOverviewService {
 
     const attributes = Object.assign({}, report.attributes);
     const meta = {
-      work_products: []
+      published: false,
+      work_products: [],
     };
+
     if (report.attributes.metaProperties && report.attributes.metaProperties.work_products) {
       // filter out the given work product we are reattaching it
       meta.work_products = report.attributes.metaProperties.work_products.filter((wp) => wp.id !== id);
@@ -261,6 +265,7 @@ export class ThreatReportOverviewService {
         const updatedThreatReport = this.deepCopyThreatReportForSave(id, threatReportMeta);
         meta.work_products = meta.work_products.concat(updatedThreatReport);
       }
+      meta.published = report.attributes.metaProperties.published || false;
     }
     attributes.metaProperties = meta;
     const body = JSON.stringify({
