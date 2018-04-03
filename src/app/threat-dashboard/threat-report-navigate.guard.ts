@@ -32,13 +32,7 @@ export class ThreatReportNavigateGuard implements CanActivate {
             .take(1)
             .pluck('userProfile')
             .switchMap((user: UserProfile) => {
-                let o$: Observable<Partial<LastModifiedThreatReport>[]>;
-                // if (!this.demoMode && user && user._id) {
-                //     o$ = this.fetchWithCreatorId(user._id);
-                // } else {
-                //     o$ = this.routeNoCreatorId();
-                // }
-                o$ = this.routeNoCreatorId();
+                const o$ = this.service.getLatestReports();
                 return o$.
                     map((data) => {
                         if (data === undefined || data.length === 0) {
@@ -59,23 +53,5 @@ export class ThreatReportNavigateGuard implements CanActivate {
                         return Observable.of(false);
                     });
             });
-    }
-
-    /**
-     * @description route to a create page or the last modified report for this user
-     * @param {string} creatorId
-     * @return {Observable<Partial<LastModifiedThreatReport>[]> }
-     */
-    public fetchWithCreatorId(creatorId: string): Observable<Partial<LastModifiedThreatReport>[]> {
-        const id = creatorId;
-        return this.service.getLatestReportsByCreatorId(creatorId);
-    }
-
-    /**
-     * @description route to a create page or the last modified report in the system
-     * @return {Observable<Partial<LastModifiedThreatReport>[]>}
-     */
-    public routeNoCreatorId(): Observable<Partial<LastModifiedThreatReport>[]> {
-        return this.service.getLatestReports();
     }
 }

@@ -459,7 +459,8 @@ export class ThreatReportOverviewService {
   }
 
   /**
-   * @description fetch latest threat reports regardless of creatorid
+   * @description fetch latest threat reports regardless of creatorid,
+   *  NOTE: the backend may apply security filtering based on user and run mode
    * @param {string} id of the workproduct
    * @return {Observable<Partial<LastModifiedThreatReport>[]>} reports modified
    */
@@ -474,6 +475,7 @@ export class ThreatReportOverviewService {
 
   /**
    * @description fetch latest threat reports by creatorId
+   *  NOTE: the backend may apply security filters, based on user and run mode
    * @param {string} id of the workproduct
    * @return {Observable<Partial<LastModifiedAssessment>[]>} reports modified
    */
