@@ -1,20 +1,41 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { tokenNotExpired } from 'angular2-jwt';
+import { Store } from '@ngrx/store';
 
 import { GenericApi } from './genericapi.service';
 import { environment } from '../../../environments/environment';
 import { Constance } from '../../utils/constance';
+import { UserProfile } from '../../models/user/user-profile';
+import * as fromRoot from '../../root-store/app.reducers';
 
 @Injectable()
 export class AuthService {
 
+    public user: UserProfile;
     public readonly runMode = environment.runMode;
 
     constructor(
         private router: Router,
-        private genericApi: GenericApi
-    ) { }
+        private genericApi: GenericApi,
+        private store: Store<fromRoot.AppState>
+    ) { 
+        const getUser$ = this.store.select('users')
+            .pluck('userProfile')
+            .subscribe(
+                (user: UserProfile) => {
+                    this.user = user;
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    if (getUser$) {
+                        getUser$.unsubscribe();
+                    }
+                }
+            );
+    }
 
     public setToken(token) {
         localStorage.removeItem('unfetterUiToken');
@@ -31,27 +52,15 @@ export class AuthService {
     }    
 
     public getUser(): any {
-        if (this.runMode === 'DEMO') {
-            return {
-                _id: '1234',
-                userName: 'Demo-User',
-                firstName: 'Demo',
-                lastName: 'User',
-                organizations : [
-                    {
-                        'id': Constance.UNFETTER_OPEN_ID,
-                        'approved': true,
-                        'role': 'STANDARD_USER'
-                    }
-                ],
-            };
-        } else {
-            let user = localStorage.getItem('user');
-            if (user) {
-                user = JSON.parse(user);
+        if (!this.user) {
+            let storedUser = localStorage.getItem('user');
+            if (storedUser) {
+                this.user = JSON.parse(storedUser);
+            } else {
+                this.user = null;
             }
-            return user;
-        }        
+        }
+        return this.user;         
     }
 
     public loggedIn() {

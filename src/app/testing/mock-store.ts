@@ -31,7 +31,7 @@ export const mockConfig = {
     ]
 };
 
-export const mockUser = {
+export const mockStoreUser = {
     userData: {
         _id: '1234',
         __v: 0,
