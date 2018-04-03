@@ -84,6 +84,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
             // modifying an existing threat report
             this.id = this.route.snapshot.paramMap.get('id');
             this.load(this.id);
+            this.initSelects();
             return;
         } 
 
