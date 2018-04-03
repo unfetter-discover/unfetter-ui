@@ -28,7 +28,8 @@ export const initialSearchParameters: SearchParameters = {
     labels: [],
     organizations: [],
     sensors: [],
-    attackPatterns: []
+    attackPatterns: [],
+    published: []
 };
 
 const initialState: IndicatorSharingState = {

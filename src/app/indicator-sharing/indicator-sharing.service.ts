@@ -180,4 +180,8 @@ export class IndicatorSharingService {
     public getSummaryStatistics(): Observable<IndicatorSharingSummaryStatistics[]> {
         return this.genericApi.get(`${this.baseUrl}/summary-statistics`).pluck('attributes');
     }
+
+    public publishIndicator(id: string): Observable<any> {
+        return this.genericApi.get(`${this.multiplesUrl}/${id}/publish`);
+    }
 }

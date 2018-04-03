@@ -22,25 +22,33 @@
                     <textarea matInput placeholder="Description" formControlName="description"></textarea>
                 </mat-form-field>
 
+                <div class="mb-6">
+                    <span>
+                        <mat-form-field>
+                            <input matInput required [matDatepicker]="validFromPicker" [max]="form.get('valid_until').value" placeholder="Valid From"
+                                formControlName="valid_from">
+                            <mat-datepicker-toggle matSuffix [for]="validFromPicker"></mat-datepicker-toggle>
+                            <mat-datepicker #validFromPicker></mat-datepicker>
+                            <mat-error *ngIf="form.get('valid_from').hasError('required')">
+                                Valid From is
+                                <strong>required</strong>
+                            </mat-error>
+                        </mat-form-field>
+                    </span>
+                    
+                    <span style="padding-left: 30px;">
+                        <mat-form-field>
+                            <input matInput [matDatepicker]="validUntilPicker" [min]="form.get('valid_from').value" placeholder="Valid Until" formControlName="valid_until">
+                            <mat-datepicker-toggle matSuffix [for]="validUntilPicker"></mat-datepicker-toggle>
+                            <mat-datepicker #validUntilPicker></mat-datepicker>
+                        </mat-form-field>
+                    </span>
+                </div>
 
-                <span class="mb-6">
-                    <mat-form-field>
-                        <input matInput required [matDatepicker]="validFromPicker" [max]="form.get('valid_until').value" placeholder="Valid From" formControlName="valid_from">
-                        <mat-datepicker-toggle matSuffix [for]="validFromPicker"></mat-datepicker-toggle>
-                        <mat-datepicker #validFromPicker></mat-datepicker>
-                        <mat-error *ngIf="form.get('valid_from').hasError('required')">
-                            Valid From is <strong>required</strong>
-                        </mat-error>
-                    </mat-form-field>
-                </span>
-
-                <span class="mb-6" style="padding-left: 30px;">
-                    <mat-form-field>
-                        <input matInput [matDatepicker]="validUntilPicker" [min]="form.get('valid_from').value" placeholder="Valid Until" formControlName="valid_until">
-                        <mat-datepicker-toggle matSuffix [for]="validUntilPicker"></mat-datepicker-toggle>
-                        <mat-datepicker #validUntilPicker></mat-datepicker>
-                    </mat-form-field>
-                </span>
+                <div class="mb-6" formGroupName="metaProperties">
+                    <mat-checkbox formControlName="published">Publish To All Unfetter Users</mat-checkbox>
+                </div>
+                
                 
                 <div class="mt-6">
                     <button mat-raised-button matStepperNext type="button" color="primary" [disabled]="stepOneInvalid()">CONTINUE</button>

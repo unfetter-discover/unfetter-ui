@@ -158,7 +158,23 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
                     addLike$.unsubscribe();
                 }
             );
-    }    
+    }
+    
+    public publishIndicator() {
+        const publish$ = this.indicatorSharingService.publishIndicator(this.indicator.id)
+            .subscribe(
+                (res) => {
+                    this.updateIndicatorState(res.attributes);
+                },
+                (err) => {
+                    this.flashMessage('Unable to publish indicator.');
+                    console.log(err);
+                },
+                () => {
+                    publish$.unsubscribe();
+                }
+            );
+    }
 
     public unlikeIndicator() {
         const unLike$ = this.indicatorSharingService.unlike(this.indicator.id)
