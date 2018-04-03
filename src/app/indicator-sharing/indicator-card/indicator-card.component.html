@@ -7,6 +7,10 @@
                 <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="publishIndicator()" *ngIf="indicator.metaProperties && indicator.metaProperties.published === false">
+                    <mat-icon>share</mat-icon>
+                    <span>Publish</span>
+                </button>
                 <button mat-menu-item (click)="exportIndicator()">
                     <mat-icon>file_download</mat-icon>
                     <span>Download</span>
@@ -115,7 +119,12 @@
                     <label>Unfetter User Interactions: </label>
                     <span *ngIf="indicator.metaProperties && indicator.metaProperties.interactions">{{ indicator.metaProperties.interactions.length }}</span>
                     <span *ngIf="!indicator.metaProperties || !indicator.metaProperties.interactions">{{ 0 }}</span>
-                </div>                
+                </div>
+                <div class="mt-3" *ngIf="indicator.metaProperties && indicator.metaProperties.published !== undefined">
+                    <label>Unfetter Publish Status: </label>
+                    <span *ngIf="indicator.metaProperties.published">Published</span>
+                    <span *ngIf="indicator.metaProperties.published === false">Draft</span>
+                </div>
             </mat-tab>
 
             <mat-tab label="Scripts" *ngIf="indicator.metaProperties && (indicator.metaProperties.queries || indicator.metaProperties.additional_queries)">
