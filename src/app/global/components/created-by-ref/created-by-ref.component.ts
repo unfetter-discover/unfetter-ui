@@ -1,13 +1,13 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatSelectChange } from '@angular/material';
 import { Store } from '@ngrx/store';
-
+import { Observable } from 'rxjs/Observable';
+import { BaseComponentService } from '../../../components/base-service.component';
+import { AssessmentMeta } from '../../../models/assess/assessment-meta';
 import * as fromRoot from '../../../root-store/app.reducers';
 import { Constance } from '../../../utils/constance';
-import { BaseComponentService } from '../../../components/base-service.component';
 import { RxjsHelpers } from '../../static/rxjs-helpers';
-import { AssessmentMeta } from '../../../models/assess/assessment-meta';
+
 
 @Component({
     selector: 'created-by-ref',
@@ -27,7 +27,7 @@ export class CreatedByRefComponent implements OnInit {
         private baseService: BaseComponentService
     ) { }
 
-    public ngOnInit() { 
+    public ngOnInit() {
         const identityFilter = encodeURI(JSON.stringify({ 'stix.identity_class': 'organization' }));
 
         this.userOrgs$ = this.store.select('users')
@@ -38,7 +38,7 @@ export class CreatedByRefComponent implements OnInit {
                 return organizations
                     .filter((org) => org.approved)
             })
-            .switchMap((organizations: any[]) => {                
+            .switchMap((organizations: any[]) => {
                 return Observable.forkJoin(
                     Observable.of(organizations),
                     this.baseService.get(`${Constance.IDENTITIES_URL}?filter=${identityFilter}`)
@@ -66,21 +66,23 @@ export class CreatedByRefComponent implements OnInit {
                     this.selected = organizations[0].id;
                 }
             });
-            
+
         if (this.assessmentMeta && this.assessmentMeta.created_by_ref && this.assessmentMeta.created_by_ref !== '') {
             this.selected = this.assessmentMeta.created_by_ref;
+        } else if (this.model && this.model.attributes && this.model.attributes.created_by_ref) {
+            this.selected = this.model.attributes.created_by_ref;
         }
     }
 
     public updateOrg(selectEvent: MatSelectChange) {
         if (this.model) {
-            this.model.attributes.created_by_ref = selectEvent.value; 
+            this.model.attributes.created_by_ref = selectEvent.value;
         }
 
         if (this.assessmentMeta) {
             this.assessmentMeta.created_by_ref = selectEvent.value;
         }
 
-        this.orgSelected.emit(selectEvent.value)
+        this.orgSelected.emit(selectEvent.value);
     }
 }

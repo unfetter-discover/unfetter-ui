@@ -1,12 +1,13 @@
-import { Component, OnInit, OnDestroy, Inject, EventEmitter } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
-
-import { Constance } from '../../../utils/constance';
-import { Report } from '../../../models/report';
-import { ExternalReference } from '../../../models/externalReference';
-import { AttackPattern } from '../../../models/attack-pattern';
 import { GenericApi } from '../../../core/services/genericapi.service';
+import { AttackPattern } from '../../../models/attack-pattern';
+import { ExternalReference } from '../../../models/externalReference';
+import { Report } from '../../../models/report';
+import { Constance } from '../../../utils/constance';
+
+enum TITLES { CREATE = 'Create', MODIFY = 'Modify' };
 
 @Component({
     selector: 'report-editor',
@@ -15,9 +16,10 @@ import { GenericApi } from '../../../core/services/genericapi.service';
 })
 export class ReportEditorComponent implements OnInit, OnDestroy {
 
+
     public loading = true;
 
-    public title = 'Create';
+    public title = TITLES.CREATE;
 
     public editing = false;
 
@@ -33,9 +35,14 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
 
     constructor(
         public dialogRef: MatDialogRef<any>,
-        @Inject(MAT_DIALOG_DATA) public data: any,
+        @Inject(MAT_DIALOG_DATA) public data: Report,
         protected genericApiService: GenericApi,
-    ) { }
+    ) { 
+        if (data) {
+            this.title = TITLES.MODIFY;
+            this.report = data;
+        }
+    }
 
     ngOnInit() {
         // start loading the full list of attack patterns
