@@ -1,23 +1,16 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import {
-        MatChipsModule,
-        MatDialogModule,
-        MatDialogRef,
-        MAT_DIALOG_DATA,
-        MatFormFieldModule,
-        MatIconModule,
-        MatOptionModule,
-        MatSelectModule,
-    } from '@angular/material';
-
+import { MAT_DIALOG_DATA, MatChipsModule, MatDialogModule, MatDialogRef, MatFormFieldModule, MatIconModule, MatOptionModule, MatSelectModule } from '@angular/material';
+import { ActionReducerMap, StoreModule } from '@ngrx/store';
+import { GenericApi } from '../../../core/services/genericapi.service';
+import { GlobalModule } from '../../../global/global.module';
+import { AttackPattern } from '../../../models/attack-pattern';
 import { Report } from '../../../models/report';
 import { ExternalReference } from '../../../models/stix/external_reference';
-import { AttackPattern } from '../../../models/attack-pattern';
 import { ReportEditorComponent } from './report-editor.component';
-import { GenericApi } from '../../../core/services/genericapi.service';
+import { CreatedByRefComponent } from '../../../global/components/created-by-ref/created-by-ref.component';
+import { BaseComponentService } from '../../../components/base-service.component';
 
 describe('ReportEditorComponent', () => {
 
@@ -27,7 +20,7 @@ describe('ReportEditorComponent', () => {
     const extRef = new ExternalReference();
     extRef.source_name = 'An X Report';
     extRef.external_id = 'X.123.456';
-    extRef.url = 'https:x.x.x/evil.pdf';
+    extRef.url = 'https://x/evil.pdf';
 
     const reportX = new Report();
     reportX.id = reportX.attributes.id = '20180101abcdefg';
@@ -46,16 +39,28 @@ describe('ReportEditorComponent', () => {
             MatSelectModule,
         ];
 
+        let mockReducer: ActionReducerMap<any> = {
+        };
+
         TestBed.configureTestingModule({
-            declarations: [ ReportEditorComponent ],
-            imports: [ HttpClientTestingModule, FormsModule, ...materialModules ],
+            declarations: [
+                ReportEditorComponent,
+                CreatedByRefComponent,
+            ],
+            imports: [
+                HttpClientTestingModule, 
+                FormsModule,
+                ...materialModules,
+                StoreModule.forRoot(mockReducer),
+            ],
             providers: [
                 GenericApi,
+                BaseComponentService,
                 { provide: MAT_DIALOG_DATA, useValue: {} },
                 {
                     provide: MatDialogRef,
                     useValue: {
-                        close: function() {}
+                        close: function () { }
                     }
                 },
             ]
@@ -75,7 +80,7 @@ describe('ReportEditorComponent', () => {
         expect(component.report.attributes.object_refs.length).toBe(0);
         expect(component.editing).toBeFalsy();
 
-        component.initializeReport({report: reportX});
+        component.initializeReport({ report: reportX });
         expect(component.report.attributes.id).toBe(reportX.attributes.id);
         expect(component.report.attributes.name).toBe(reportX.attributes.name);
         expect(component.report.attributes.object_refs.length).toBe(1);
@@ -135,7 +140,7 @@ describe('ReportEditorComponent', () => {
     });
 
     it('should know if an existing report is valid or invalid', () => {
-        component.initializeReport({report: reportX});
+        component.initializeReport({ report: reportX });
 
         // confirm this is a report we are editing, and it is already valid
         expect(component.editing).toBeTruthy();
@@ -149,7 +154,7 @@ describe('ReportEditorComponent', () => {
         expect(component.report.attributes.modified).toBeTruthy();
 
         // let's save it as a new report
-        component.reportPatterns.push({id: 'X2', name: 'X-Squared'});
+        component.reportPatterns.push({ id: 'X2', name: 'X-Squared' });
         component.report.id = component.report.attributes.id;
         component.report.attributes.modified = undefined;
         component.report.attributes.name = 'Clone of The X File';

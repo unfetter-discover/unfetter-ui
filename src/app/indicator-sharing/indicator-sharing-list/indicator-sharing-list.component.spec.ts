@@ -1,13 +1,12 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-
+import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { MatButtonModule, MatDialogModule, MatSidenavModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
-import { indicatorSharingReducer } from '../store/indicator-sharing.reducers';
-import * as indicatorSharingActions from '../store/indicator-sharing.actions';
-import { makeMockIndicatorSharingStore } from '../../testing/mock-store';
 import { ActionReducerMap, StoreModule } from '@ngrx/store';
+import { makeMockIndicatorSharingStore } from '../../testing/mock-store';
+import { indicatorSharingReducer } from '../store/indicator-sharing.reducers';
 import { IndicatorSharingListComponent } from './indicator-sharing-list.component';
-import { MatButtonModule, MatSidenavModule, MatDialogModule } from '@angular/material';
+
 
 describe('IndicatorSharingListComponent', () => {
     let component: IndicatorSharingListComponent;
