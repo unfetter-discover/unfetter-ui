@@ -119,13 +119,11 @@ export class IndicatorHeatMapComponent implements OnInit {
             })
             .subscribe(
                 (results: any[]) => {
-                    console.log('incoming data', results, this.indicators, this.indicatorsToAttackPatternMap);
                     const indicators = this.groupIndicatorsByAttackPatterns();
                     const collects = {attackPatterns: {}, phases: {}};
                     this.attackPatterns = results.reduce(
                         (collect, pattern) => this.collectAttackPatterns(collect, pattern), collects).attackPatterns;
                     this.heatmap = this.groupAttackPatternsByKillchain(collects.phases, indicators);
-                    console.log('resulting heatmap', this.heatmap);
                 },
                 (err) => console.log(err)
             );
