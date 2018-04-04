@@ -39,7 +39,8 @@
         <h4 id="indicators-header">Analytics Using These Patterns</h4>
         <div #indicatorsGrid id="indicators-grid">
             <div *ngFor="let indicator of displayIndicators" id="{{indicator.id}}"
-                    class="indicator" [class.selected]="selectedPatterns.length > 0">{{indicator.name}}</div>
+                    class="indicator cursor-pointer" [class.selected]="selectedPatterns.length > 0"
+                    routerLink="indicator-sharing/single/{{ indicator.id }}">{{indicator.name}}</div>
         </div>
     </div>
 
