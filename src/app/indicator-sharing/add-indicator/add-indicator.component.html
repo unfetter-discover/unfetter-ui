@@ -1,4 +1,8 @@
-<p mat-dialog-title class="lead mb-6">Add Analytic</p>
+<p mat-dialog-title class="lead mb-6">
+    <span *ngIf="!editMode">Add</span>
+    <span *ngIf="editMode">Edit</span>
+    <span>Analytic</span>
+</p>
 
 <mat-dialog-content id="addIndicator">
     <form [formGroup]="form" novalidate (ngSubmit)="submitIndicator()">

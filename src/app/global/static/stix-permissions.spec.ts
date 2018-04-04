@@ -24,19 +24,19 @@ describe('StixPermissions', () => {
     const sameOrgStix = { ...unpublishedStix, created_by_ref: standardUser.organizations[0].id };
     
     it('should allow all operations for an admin, but not standard user', () => {
-        expect(StixPermissions.canRead(unpublishedStix, admin)).toBeTruthy();
-        expect(StixPermissions.canCrud(unpublishedStix, admin)).toBeTruthy();
-        expect(StixPermissions.canRead(unpublishedStix, standardUser)).toBeFalsy();
-        expect(StixPermissions.canCrud(unpublishedStix, standardUser)).toBeFalsy();
+        expect(StixPermissions.canReadStatic(unpublishedStix, admin)).toBeTruthy();
+        expect(StixPermissions.canCrudStatic(unpublishedStix, admin)).toBeTruthy();
+        expect(StixPermissions.canReadStatic(unpublishedStix, standardUser)).toBeFalsy();
+        expect(StixPermissions.canCrudStatic(unpublishedStix, standardUser)).toBeFalsy();
     });
 
     it('should allow read only for standard user on published stix', () => {
-        expect(StixPermissions.canRead(publishedStix, standardUser)).toBeTruthy();
-        expect(StixPermissions.canCrud(publishedStix, standardUser)).toBeFalsy();
+        expect(StixPermissions.canReadStatic(publishedStix, standardUser)).toBeTruthy();
+        expect(StixPermissions.canCrudStatic(publishedStix, standardUser)).toBeFalsy();
     });
 
     it('should allow all operations for a standard user in same org', () => {
-        expect(StixPermissions.canRead(sameOrgStix, standardUser)).toBeTruthy();
-        expect(StixPermissions.canCrud(sameOrgStix, standardUser)).toBeTruthy();
+        expect(StixPermissions.canReadStatic(sameOrgStix, standardUser)).toBeTruthy();
+        expect(StixPermissions.canCrudStatic(sameOrgStix, standardUser)).toBeTruthy();
     });
 });

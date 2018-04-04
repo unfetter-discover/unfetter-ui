@@ -15,6 +15,7 @@ export class AddAttackPatternComponent implements OnInit {
   @Input() public indicatorId: string;
   @Input() public createdByRef: string;
   @Input() public existingAttackPatterns: any[] = [];
+  @Input() public canCrud: boolean = false;
   public selectedAttackPatterns: any[] = [];
   public displayedAttackPatterns$: any;
   public filteredAttackPatterns: any[];
