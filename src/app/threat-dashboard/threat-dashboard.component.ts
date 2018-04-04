@@ -519,12 +519,12 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @returns {void}
    */
   public treeRendered(): void {
-    console.log('finished loading tree');
+    console.log(`(${new Date().toISOString()}) finished loading tree`);
     this.treeLoading = false;
   }
 
   public radarRendered(): void {
-    console.log('radar rendered');
+    console.log(`(${new Date().toISOString()}) radar rendered`);
     this.radarLoading = false;
   }
 

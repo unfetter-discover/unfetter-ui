@@ -1,5 +1,5 @@
 <div class="heatmap-with-minimap">
     <div #heatmap class="heat-map" (mousewheel)="stopScroll($event)"></div>
-    <div #minimap class="mini-map" [hidden]="!options.hasMinimap" (mousewheel)="stopScroll($event)"></div>
+    <div #minimap class="mini-map" [hidden]="!options.zoom.hasMinimap" (mousewheel)="stopScroll($event)"></div>
 </div>
 <div style="clear:both;"></div>

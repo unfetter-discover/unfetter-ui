@@ -14,12 +14,8 @@ import { Observable } from 'rxjs/Observable';
 
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 
-import {
-        HeatmapComponent,
-        HeatMapOptions,
-        BatchData,
-        HeatColor,
-    } from '../../global/components/heatmap/heatmap.component';
+import { HeatmapComponent, } from '../../global/components/heatmap/heatmap.component';
+import { HeatBatchData, HeatColor, HeatMapOptions } from '../../global/components/heatmap/heatmap.data';
 import { IntrusionSetHighlighterService } from '../intrusion-set-highlighter.service';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { AuthService } from '../../core/services/auth.service';
@@ -34,16 +30,22 @@ import { Constance } from '../../utils/constance';
 })
 export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
 
-    public heatMapData: Array<BatchData> = [];
+    public heatMapData: Array<HeatBatchData> = [];
     private noColor: HeatColor = {bg: '#ccc', fg: 'black'};
     public readonly heatMapOptions: HeatMapOptions = {
-        batchColors: [
-            {header: {bg: '#4db6ac', fg: 'black'}, body: {bg: 'white', fg: 'black'}},
-        ],
-        heatColors: {'false': this.noColor},
-        noColor: this.noColor,
-        showText: true,
-        hasMinimap: true,
+        color: {
+            batchColors: [
+                {header: {bg: '#4db6ac', fg: 'black'}, body: {bg: 'white', fg: 'black'}},
+            ],
+            heatColors: {'false': this.noColor},
+            noColor: this.noColor,
+        },
+        text: {
+            showCellText: true,
+        },
+        zoom: {
+            hasMinimap: true,
+        },
     };
     public showHeatMap = false;
     public hoverTooltip = true;
@@ -154,32 +156,35 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
      */
     private createAttackPatternHeatMap() {
         let data = [];
-        this.heatMapOptions.heatColors = {'false': this.noColor};
+        const heats = this.heatMapOptions.color.heatColors = {'false': this.noColor};
 
         this.killChainPhases.forEach(phase => {
             let index = 0;
             if (phase && phase.name && phase.attack_patterns) {
                 const name = this.normalizePhaseName(phase.name);
-                const d = {
-                    batch: name,
-                    active: null,
-                    columns: [[]]
+                const d: HeatBatchData = {
+                    title: name,
+                    value: null,
+                    cells: []
                 };
                 phase.attack_patterns.forEach(attackPattern => {
                     if (attackPattern.name) {
-                        let active: string = 'false';
-                        if (!/#ffffff/i.test(attackPattern.back)) {
-                            active = attackPattern.back;
-                            if (!this.heatMapOptions.heatColors[active]) {
-                                this.heatMapOptions.heatColors[active] = {
-                                    bg: active,
-                                    fg: attackPattern.fore || 'black'
+                        let value: string = 'false', heat = null;
+                        if (attackPattern.intrusion_sets && attackPattern.intrusion_sets.length) {
+                            attackPattern.intrusion_sets
+                                .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+                            value = attackPattern.intrusion_sets.map(is => is.name.toLowerCase()).join('-');
+                            heat = attackPattern.intrusion_sets.map(is => is.color);
+                            if (!heats[value]) {
+                                heats[value] = {
+                                    bg: heat,
+                                    fg: attackPattern.fore || 'transparent'
                                 };
                             }
                         }
-                        d.columns[0].push({
-                            batch: attackPattern.name,
-                            active: active,
+                        d.cells.push({
+                            title: attackPattern.name,
+                            value: value,
                         });
                     }
                 });
@@ -188,7 +193,7 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
         });
 
         this.heatMapData = data;
-        this.heatMapView.options.heatColors = this.heatMapOptions.heatColors;
+        this.heatMapView.options.color.heatColors = heats;
     }
 
     public normalizePhaseName(phase: string): string {
@@ -208,7 +213,7 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
         if (!selection || !selection.row) {
             this.hideAttackPatternTooltip(this.attackPattern);
         } else {
-            selection.attackPattern = Object.values(this.attackPatterns).find(ptn => ptn.name === selection.row.batch);
+            selection.attackPattern = Object.values(this.attackPatterns).find(ptn => ptn.name === selection.row.title);
             if (!selection.attackPattern) {
                 this.hideAttackPatternTooltip(this.attackPattern);
             } else {
