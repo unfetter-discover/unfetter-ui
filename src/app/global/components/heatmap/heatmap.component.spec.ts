@@ -35,6 +35,7 @@ describe('HeatmapComponent', () => {
         heatmap.nativeElement.style.height = '100px';
         expect(heatmap).toBeTruthy();
         component = fixture.componentInstance;
+        component.options = {};
         fixture.detectChanges();
     });
 
@@ -87,7 +88,7 @@ describe('HeatmapComponent', () => {
         console.log('rects', rects);
         expect(Array.from(rects)
             .filter(rect => rect.attributes['fill'].nodeValue ===
-                    component.options.heatColors['true'].bg).length).toEqual(9);
+                    component.options.color.heatColors['true'].bg).length).toEqual(9);
     });
 
 });
