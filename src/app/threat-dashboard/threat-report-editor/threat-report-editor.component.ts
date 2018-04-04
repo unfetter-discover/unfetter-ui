@@ -356,7 +356,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      * @param {UIEvent} event optional
      */
     public onCreateReport(event?: UIEvent): void {
-        this.createReportDialog(event);
+        this.openReportDialog(event);
     }
 
     /**
@@ -365,15 +365,15 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      * @param {UIEvent} event optional
      */
     public onModifyReport(report: Report, event?: UIEvent): void {
-        this.createReportDialog(event, report);
+        this.openReportDialog(event, report);
     }
 
     /**
      * @description open report dialog
-     * @param event optional
-     * @param report {Report}
+     * @param {UIEvent} event optional
+     * @param {Report} report - report which to modify, undefined if you wish to create a new report
      */
-    private createReportDialog(event?: UIEvent, report?: Report): void {
+    private openReportDialog(event?: UIEvent, report?: Report): void {
         const opts = new MatDialogConfig();
         // opts.width = '100%';
         // opts.maxWidth = '100%';

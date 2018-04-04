@@ -1,12 +1,13 @@
-import { Component, OnInit, OnDestroy, Inject, EventEmitter } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
-
-import { Constance } from '../../../utils/constance';
-import { Report } from '../../../models/report';
-import { ExternalReference } from '../../../models/externalReference';
-import { AttackPattern } from '../../../models/attack-pattern';
 import { GenericApi } from '../../../core/services/genericapi.service';
+import { AttackPattern } from '../../../models/attack-pattern';
+import { ExternalReference } from '../../../models/externalReference';
+import { Report } from '../../../models/report';
+import { Constance } from '../../../utils/constance';
+
+enum TITLES { CREATE = 'Create', MODIFY = 'Modify' };
 
 @Component({
     selector: 'report-editor',
@@ -15,9 +16,10 @@ import { GenericApi } from '../../../core/services/genericapi.service';
 })
 export class ReportEditorComponent implements OnInit, OnDestroy {
 
+
     public loading = true;
 
-    public title = 'Create';
+    public title = TITLES.CREATE;
 
     public editing = false;
 
@@ -33,7 +35,7 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
 
     constructor(
         public dialogRef: MatDialogRef<any>,
-        @Inject(MAT_DIALOG_DATA) public data: any,
+        @Inject(MAT_DIALOG_DATA) public data: Report,
         protected genericApiService: GenericApi,
     ) { }
 
@@ -74,28 +76,21 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
         return this.genericApiService.get(url).map((el) => this.attackPatterns = el);
     }
 
-    public initializeReport(data: any) {
+    /**
+     * @description
+     * @param {Report} - optional
+     * @return {void}
+     */
+    public initializeReport(data?: Report): void {
         // if we are given a report already, the user wants to modify it
-        if (data && data.report) {
-            this.report.attributes.id = data.report.attributes.id;
-            this.report.attributes.name = data.report.attributes.name;
-            this.report.attributes.description = data.report.attributes.description;
-            this.report.attributes.created = data.report.attributes.created;
-            this.report.attributes.modified = data.report.attributes.modified;
-            this.report.attributes.published = data.report.attributes.published;
-            data.report.attributes.labels.forEach((label) => this.report.attributes.labels.push(label));
-            data.report.attributes.object_refs
-                .forEach((attackPattern) => this.report.attributes.object_refs.push(attackPattern));
-            data.report.attributes.external_references.forEach((ref) => {
-                this.report.attributes.external_references.push({
-                    source_name: ref.source_name,
-                    external_id: ref.external_id,
-                    description: ref.description,
-                    url: ref.url,
-                });
-            });
+        if (data && data.attributes) {
+            this.report.attributes = { ...this.report.attributes, ...data.attributes };
+            this.report.attributes.labels = data.attributes.labels ? [...data.attributes.labels] : [];
+            this.report.attributes.object_refs = data.attributes.object_refs ? [...data.attributes.object_refs] : [];
+            this.report.attributes.external_references = data.attributes.external_references 
+                ? [...data.attributes.external_references] : [];
             this.references = this.report.attributes.external_references[0];
-            this.title = 'Modify';
+            this.title = TITLES.MODIFY;
             this.editing = true;
         }
 
