@@ -76,21 +76,19 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
         return this.genericApiService.get(url).map((el) => this.attackPatterns = el);
     }
 
-    public initializeReport(data: any) {
+    /**
+     * @description
+     * @param {Report} - optional
+     * @return {void}
+     */
+    public initializeReport(data?: Report): void {
         // if we are given a report already, the user wants to modify it
-        if (data) {
+        if (data && data.attributes) {
             this.report.attributes = { ...this.report.attributes, ...data.attributes };
-            data.attributes.labels.forEach((label) => this.report.attributes.labels.push(label));
-            data.attributes.object_refs
-                .forEach((attackPattern) => this.report.attributes.object_refs.push(attackPattern));
-            data.attributes.external_references.forEach((ref) => {
-                this.report.attributes.external_references.push({
-                    source_name: ref.source_name,
-                    external_id: ref.external_id,
-                    description: ref.description,
-                    url: ref.url,
-                });
-            });
+            this.report.attributes.labels = data.attributes.labels ? [...data.attributes.labels] : [];
+            this.report.attributes.object_refs = data.attributes.object_refs ? [...data.attributes.object_refs] : [];
+            this.report.attributes.external_references = data.attributes.external_references 
+                ? [...data.attributes.external_references] : [];
             this.references = this.report.attributes.external_references[0];
             this.title = TITLES.MODIFY;
             this.editing = true;
