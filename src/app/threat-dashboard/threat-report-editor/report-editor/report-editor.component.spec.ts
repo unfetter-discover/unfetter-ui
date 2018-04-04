@@ -28,6 +28,7 @@ describe('ReportEditorComponent', () => {
     reportX.attributes.object_refs = ['Bad Person Action'];
     reportX.attributes.external_references = [extRef];
     reportX.attributes.metaProperties = {};
+    reportX.attributes.labels = [];
 
     beforeEach(() => {
         const materialModules = [
@@ -80,7 +81,7 @@ describe('ReportEditorComponent', () => {
         expect(component.report.attributes.object_refs.length).toBe(0);
         expect(component.editing).toBeFalsy();
 
-        component.initializeReport({ report: reportX });
+        component.initializeReport(reportX);
         expect(component.report.attributes.id).toBe(reportX.attributes.id);
         expect(component.report.attributes.name).toBe(reportX.attributes.name);
         expect(component.report.attributes.object_refs.length).toBe(1);
@@ -140,7 +141,7 @@ describe('ReportEditorComponent', () => {
     });
 
     it('should know if an existing report is valid or invalid', () => {
-        component.initializeReport({ report: reportX });
+        component.initializeReport(reportX);
 
         // confirm this is a report we are editing, and it is already valid
         expect(component.editing).toBeTruthy();
