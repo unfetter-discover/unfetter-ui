@@ -20,6 +20,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 
 import { Constance } from '../../utils/constance';
+import { AuthService } from '../../core/services/auth.service';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { ThreatReport } from '../models/threat-report.model';
 import { KillChainEntry } from './kill-chain-entry';
@@ -83,6 +84,7 @@ export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
+    protected authService: AuthService,
     protected genericApi: GenericApi,
     private overlay: Overlay,
     private vcr: ViewContainerRef,
@@ -421,4 +423,9 @@ export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit
     this.overlayRef.dispose();
     this.overlayRef = null;
   }
+
+  public isAdminUser(): boolean {
+    return this.authService.isAdmin();
+  }
+
 }

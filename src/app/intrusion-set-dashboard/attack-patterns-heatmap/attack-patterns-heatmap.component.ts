@@ -22,6 +22,7 @@ import {
     } from '../../global/components/heatmap/heatmap.component';
 import { IntrusionSetHighlighterService } from '../intrusion-set-highlighter.service';
 import { TemplatePortal } from '@angular/cdk/portal';
+import { AuthService } from '../../core/services/auth.service';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { Dictionary } from '../../models/json/dictionary';
 import { Constance } from '../../utils/constance';
@@ -45,6 +46,7 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
         hasMinimap: true,
     };
     public showHeatMap = false;
+    public hoverTooltip = true;
 
     @ViewChild(HeatmapComponent) private heatMapView: HeatmapComponent;
 
@@ -59,6 +61,7 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
     private portal: TemplatePortal<any>;
   
     constructor(
+        private authService: AuthService,
         private genericApi: GenericApi,
         private overlay: Overlay,
         private vcr: ViewContainerRef,
@@ -209,6 +212,9 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
             if (!selection.attackPattern) {
                 this.hideAttackPatternTooltip(this.attackPattern);
             } else {
+                if (hover === false) {
+                    this.hideAttackPatternTooltip(this.attackPattern);
+                }
                 this.showAttackPatternTooltip(selection.attackPattern, selection.event, hover);
                 this.highlighter.highlightIntrusionSets(selection.attackPattern);
             }
@@ -221,6 +227,7 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
         }
   
         this.attackPattern = tactic;
+        this.hoverTooltip = hover;
   
         if (!this.overlayRef) {
             const elem = new ElementRef(event.target);
@@ -276,6 +283,10 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
 
     public getIntrusionSetNames(attackPattern: any): string {
         return attackPattern.intrusion_sets.map(is => is.name).join(', ');
+    }
+
+    public isAdminUser(): boolean {
+        return this.authService.isAdmin();
     }
   
 }
