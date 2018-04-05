@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/services/auth.guard';
 import { LandingPageComponent } from './global/components/landing-page/landing-page.component';
-import { UserRoles } from './global/enums/user-roles.enum';
 import { NoContentComponent } from './no-content';
 import { PartnersComponent } from './partners/partners.component';
 import { SelectivePreloadingStrategy } from './selective-preloading-strategy';
+import { UserRole } from './models/user/user-role.enum';
 
 const appRoutes: Routes = [
   { path: 'home', component: LandingPageComponent },
@@ -24,8 +24,8 @@ const appRoutes: Routes = [
     canActivate: [AuthGuard],
     data: {
       ROLES: [
-        UserRoles.ORG_LEADER,
-        UserRoles.ADMIN
+        UserRole.ORG_LEADER,
+        UserRole.ADMIN
       ]
     }
   },
@@ -35,7 +35,7 @@ const appRoutes: Routes = [
     canActivate: [AuthGuard],
     data: {
       ROLES: [
-        UserRoles.ADMIN
+        UserRole.ADMIN
       ]
     }
   },
@@ -45,7 +45,7 @@ const appRoutes: Routes = [
     canActivate: [AuthGuard],
     data: {
       ROLES: [
-        UserRoles.ADMIN
+        UserRole.ADMIN
       ]
     },
   },

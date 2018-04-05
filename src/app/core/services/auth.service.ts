@@ -1,60 +1,68 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { tokenNotExpired } from 'angular2-jwt';
+import { Store } from '@ngrx/store';
 
-import { GenericApi } from './genericapi.service';
 import { environment } from '../../../environments/environment';
 import { Constance } from '../../utils/constance';
+import { UserProfile } from '../../models/user/user-profile';
+import * as fromRoot from '../../root-store/app.reducers';
+import { StixPermissions } from '../../global/static/stix-permissions';
 
 @Injectable()
 export class AuthService {
 
     public readonly runMode = environment.runMode;
+    private user: UserProfile;
 
     constructor(
         private router: Router,
-        private genericApi: GenericApi
-    ) { }
+        private store: Store<fromRoot.AppState>
+    ) { 
+        const getUser$ = this.store.select('users')
+            .pluck('userProfile')
+            .subscribe(
+                (user: UserProfile) => {
+                    this.user = user;
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    if (getUser$) {
+                        getUser$.unsubscribe();
+                    }
+                }
+            );
+    }
 
-    public setToken(token) {
+    public setToken(token): void {
         localStorage.removeItem('unfetterUiToken');
         localStorage.setItem('unfetterUiToken', token);
     }
 
-    public getToken() {
+    public getToken(): string {
         return localStorage.getItem('unfetterUiToken');
     }
 
-    public setUser(user) {
+    public setUser(user): void {
         localStorage.removeItem('user');
         localStorage.setItem('user', JSON.stringify(user));
     }    
 
-    public getUser(): any {
-        if (this.runMode === 'DEMO') {
-            return {
-                _id: '1234',
-                userName: 'Demo-User',
-                firstName: 'Demo',
-                lastName: 'User',
-                organizations : [
-                    {
-                        'id': Constance.UNFETTER_OPEN_ID,
-                        'approved': true,
-                        'role': 'STANDARD_USER'
-                    }
-                ],
-            };
-        } else {
-            let user = localStorage.getItem('user');
-            if (user) {
-                user = JSON.parse(user);
+    public getUser(): UserProfile {
+        if (!this.user) {
+            let storedUser = localStorage.getItem('user');
+            if (storedUser) {
+                this.user = JSON.parse(storedUser);
+            } else {
+                this.user = null;
             }
-            return user;
-        }        
+        }
+        return this.user;         
     }
 
-    public loggedIn() {
+    public loggedIn(): boolean {
         if (this.runMode === 'DEMO') {
             return true;
         } else {
@@ -66,7 +74,7 @@ export class AuthService {
         }
     }
 
-    public isAdmin() {
+    public isAdmin(): boolean {
         if (this.runMode === 'DEMO') {
             return false;
         } else {
@@ -74,7 +82,7 @@ export class AuthService {
         }
     }
 
-    public isOrgLeader() {
+    public isOrgLeader(): boolean {
         return this.loggedIn() && (this.getUser().role === 'ADMIN' || this.getUser().role === 'ORG_LEADER');
     }
 
@@ -85,13 +93,17 @@ export class AuthService {
     public userLocked(): boolean {
         return tokenNotExpired('unfetterUiToken') && this.getUser() !== null && this.getUser().locked === true;
     }
+    
+    public hasRole(allowedRoles): boolean {
+        return allowedRoles.find((role) => role === this.getUser().role) !== undefined;
+    }
 
-    public logOut() {
+    public logOut(): void {
         localStorage.clear();
         this.router.navigate(['/']);
     }
 
-    public hasRole(allowedRoles) {
-        return allowedRoles.find((role) => role === this.getUser().role) !== undefined;
+    public getStixPermissions(): StixPermissions {
+        return new StixPermissions(this.getUser());
     }
 }
