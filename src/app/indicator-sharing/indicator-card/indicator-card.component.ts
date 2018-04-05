@@ -1,7 +1,8 @@
-import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, Renderer2, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, Renderer2, Output, EventEmitter, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { trigger, state, transition, style, animate, query } from '@angular/animations';
 import { Observable } from 'rxjs/Observable';
 import { MatTooltip } from '@angular/material';
+import { Subscription } from 'rxjs/Subscription';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { FormatHelpers } from '../../global/static/format-helpers';
@@ -12,6 +13,7 @@ import { downloadBundle } from '../../global/static/stix-bundle';
 import { generateStixRelationship } from '../../global/static/stix-relationship';
 import { StixRelationshipTypes } from '../../global/enums/stix-relationship-types.enum';
 import { canCrud } from '../../global/static/stix-permissions';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Component({
     selector: 'indicator-card',
@@ -21,12 +23,13 @@ import { canCrud } from '../../global/static/stix-permissions';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class IndicatorCardComponent implements OnInit, AfterViewInit {
+export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input() public indicator: any;
     @Input() public attackPatterns: any;
     @Input() public searchParameters: any;
     @Input() public creator: string;
     @Input() public sensors: any;
+    @Input() public collapseAllCardsSubject: BehaviorSubject<boolean>;
 
     @Output() public stateChange: EventEmitter<any> = new EventEmitter();
     @Output() public indicatorDeleted: EventEmitter<any> = new EventEmitter();
@@ -42,9 +45,13 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     public alreadyCommented: boolean = false;
     public showAttackPatternDetails: boolean = false;
     public canCrud: boolean = false;
+    public readOnlyMode: boolean = true;
+    public collapseContents: boolean = false;
 
     public readonly copyText: string = 'Copied';
     public readonly runMode = environment.runMode;
+
+    private collapseCard$: Subscription;
 
     private readonly FLASH_MSG_TIMER: number = 1500;
     private readonly FLASH_TOOLTIP_TIMER: number = 500;
@@ -80,7 +87,24 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
             if (alreadyCommented) {
                 this.alreadyCommented = true;
             }
-        } 
+        }
+
+        if (this.collapseAllCardsSubject) {            
+            this.collapseCard$ = this.collapseAllCardsSubject
+            .subscribe(
+                (collapseContents) => {
+                    this.collapseContents = collapseContents;
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    if (this.collapseCard$) {
+                        this.collapseCard$.unsubscribe();
+                    }
+                }
+            );
+        }
     }
 
     public ngAfterViewInit() {
@@ -93,6 +117,12 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
                 removeListener();
             });  
         }           
+    }
+
+    public ngOnDestroy() {
+        if (this.collapseCard$) {
+            this.collapseCard$.unsubscribe();
+        }
     }
 
     public highlightPhase(phase) {
