@@ -45,7 +45,6 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
     public alreadyCommented: boolean = false;
     public showAttackPatternDetails: boolean = false;
     public canCrud: boolean = false;
-    public readOnlyMode: boolean = true;
     public collapseContents: boolean = false;
 
     public readonly copyText: string = 'Copied';
