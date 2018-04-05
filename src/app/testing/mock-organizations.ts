@@ -20,4 +20,4 @@ export const mockOrganizations = [
         'modified': '2017-11-01T18:42:35.073Z',
         'created': '2017-11-01T18:36:59.472Z'
     }
-]
+];

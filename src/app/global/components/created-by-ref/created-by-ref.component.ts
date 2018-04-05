@@ -64,6 +64,7 @@ export class CreatedByRefComponent implements OnInit {
             .do((organizations) => {
                 if (organizations.length === 1) {
                     this.selected = organizations[0].id;
+                    this.updateOrganization(this.selected);
                 }
             });
 
@@ -73,16 +74,29 @@ export class CreatedByRefComponent implements OnInit {
             this.selected = this.model.attributes.created_by_ref;
         }
     }
-
-    public updateOrg(selectEvent: MatSelectChange) {
+    /**
+     * @description callback for html template to update the model on drop change
+     * @param  {MatSelectChange} selectEvent
+     * @returns void
+     */
+    public updateOrg(selectEvent: MatSelectChange): void {
+        this.updateOrganization(selectEvent.value);
+    }
+    /**
+     * @description change this components model to update the selected org, 
+     *  emit an event for listeners
+     * @param  {string} value
+     * @returns void
+     */
+    public updateOrganization(value: string): void {
         if (this.model) {
-            this.model.attributes.created_by_ref = selectEvent.value;
+            this.model.attributes.created_by_ref = value;
         }
 
         if (this.assessmentMeta) {
-            this.assessmentMeta.created_by_ref = selectEvent.value;
+            this.assessmentMeta.created_by_ref = value;
         }
 
-        this.orgSelected.emit(selectEvent.value);
+        this.orgSelected.emit(value);
     }
 }
