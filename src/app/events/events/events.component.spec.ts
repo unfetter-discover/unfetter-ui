@@ -6,10 +6,22 @@ import { MatSidenavModule } from '@angular/material';
 import { GlobalModule } from '../../global/global.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ActionReducerMap, StoreModule } from '@ngrx/store';
+import { eventsReducer } from '../store/events.reducers';
+import { usersReducer } from '../../root-store/users/users.reducers';
+import { EventsService } from '../events.service';
 
 describe('EventsComponent', () => {
   let component: EventsComponent;
   let fixture: ComponentFixture<EventsComponent>;
+
+  const mockService = {
+  };
+
+  const mockReducer: ActionReducerMap<any> = {
+    events: eventsReducer,
+    user: usersReducer,
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -19,10 +31,20 @@ describe('EventsComponent', () => {
         BrowserAnimationsModule,
         MatSidenavModule,
         GlobalModule,
+        StoreModule.forRoot(mockReducer),
       ],
       schemas: [
         NO_ERRORS_SCHEMA
       ]
+    }).overrideComponent(EventsComponent, {
+      set: {
+        providers: [
+          {
+            provide: EventsService,
+            useValue: mockService
+          },
+        ],
+      }
     })
     .compileComponents();
   }));
