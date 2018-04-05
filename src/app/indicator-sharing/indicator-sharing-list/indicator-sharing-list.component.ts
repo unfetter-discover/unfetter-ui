@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRe
 import { MatDialog, MatSidenav } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/pluck';
 
@@ -33,6 +34,8 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     public filterOpen: boolean = false;
     public filterOpened: boolean = false;
     public showSummaryStats: boolean = false;
+    public collapseAllCards: boolean = false;
+    public collapseAllCardsSubject: BehaviorSubject<boolean> = new BehaviorSubject(this.collapseAllCards);
 
     @ViewChild('filterContainer') public filterContainer: MatSidenav;
 

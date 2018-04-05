@@ -125,6 +125,7 @@ export class IndicatorSharingEffects {
     @Effect()
     public fetchIndicators = this.actions$
         .ofType(indicatorSharingActions.FETCH_INDICATORS)
+        .pairwise() // To prevent first fetch
         .withLatestFrom(this.store.select('indicatorSharing'))
         .switchMap(([_, indicatorSharingState]: [any, fromIndicators.IndicatorSharingState]) => {
             const { searchParameters, sortBy } = indicatorSharingState;

@@ -1,45 +1,49 @@
 <mat-card class="indicatorCard uf-mat-card" *ngIf="indicator">
-    <mat-card-header>
-        <mat-card-title>
-            <span>{{ indicator.name }}</span>
-            <span class="flex1">&nbsp;</span>
-            <button mat-icon-button [matMenuTriggerFor]="menu" class="mat-24">
-                <mat-icon>more_vert</mat-icon>
+  <mat-card-header>
+    <mat-card-title>
+        <span>{{ indicator.name }}</span>
+        <span class="flex1">&nbsp;</span>
+        <button mat-icon-button [matMenuTriggerFor]="menu" class="mat-24">
+            <mat-icon>more_vert</mat-icon>
+        </button>        
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="publishIndicator()" *ngIf="canCrud && indicator.metaProperties && indicator.metaProperties.published === false">
+                <mat-icon>share</mat-icon>
+                <span>Publish</span>
             </button>
-            <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="publishIndicator()" *ngIf="canCrud && indicator.metaProperties && indicator.metaProperties.published === false">
-                    <mat-icon>share</mat-icon>
-                    <span>Publish</span>
-                </button>
-                <button mat-menu-item (click)="exportIndicator()">
-                    <mat-icon>file_download</mat-icon>
-                    <span>Download</span>
-                </button>
-                <button mat-menu-item (click)="editIndicator()" *ngIf="canCrud">
-                    <mat-icon>create</mat-icon>
-                    <span>Edit</span>
-                </button>
-                <button mat-menu-item (click)="deleteIndicator()" *ngIf="canCrud">
-                    <mat-icon>delete</mat-icon>
-                    <span>Delete</span>
-                </button>
-            </mat-menu>
-        </mat-card-title>
-        <mat-card-subtitle>
-            Published
-            <span matTooltip="{{ indicator.created | date:'medium' }}">{{ indicator.created | timeAgo }}</span> 
-            <span *ngIf="creator">
-                 by <a routerLink="/stix/identities/{{creator.id}}">{{creator.name}}</a>
-            </span>
-            <span *ngIf="indicator.created !== indicator.modified"> (Edited)</span>
-        </mat-card-subtitle>
-    </mat-card-header>
+            <button mat-menu-item (click)="exportIndicator()">
+                <mat-icon>file_download</mat-icon>
+                <span>Download</span>
+            </button>
+            <button mat-menu-item (click)="editIndicator()" *ngIf="canCrud">
+                <mat-icon>create</mat-icon>
+                <span>Edit</span>
+            </button>
+            <button mat-menu-item (click)="deleteIndicator()" *ngIf="canCrud">
+                <mat-icon>delete</mat-icon>
+                <span>Delete</span>
+            </button>
+        </mat-menu>
+        <button mat-icon-button class="mat-24" *ngIf="collapseContents" (click)="collapseContents = false" matTooltip="Expand Card">
+            <mat-icon>fullscreen</mat-icon>
+        </button>
+        <button mat-icon-button class="mat-24" *ngIf="!collapseContents" (click)="collapseContents = true" matTooltip="Collapse Card">
+            <mat-icon>fullscreen_exit</mat-icon>
+        </button>
+    </mat-card-title>
+    <mat-card-subtitle>
+      Published
+      <span matTooltip="{{ indicator.created | date:'medium' }}">{{ indicator.created | timeAgo }}</span>
+      <span *ngIf="creator">
+        by
+        <a routerLink="/stix/identities/{{creator.id}}">{{creator.name}}</a>
+      </span>
+      <span *ngIf="indicator.created !== indicator.modified"> (Edited)</span>
+    </mat-card-subtitle>
+  </mat-card-header>
 
-    <mat-card-content #card>
-        <label>Pattern</label>
-        <p>
-            <code [innerHtml]="whitespaceToBreak(indicator.pattern)" class="inlineBlock"></code>
-        </p>
+  <mat-card-content #card>
+    <div *ngIf="!collapseContents">
 
         <label *ngIf="(indicator.labels && indicator.labels.length) || canCrud">Labels</label>
         <div class="flex flexItemsCenter">
@@ -52,199 +56,187 @@
         <label *ngIf="(attackPatterns && attackPatterns.length > 0) || canCrud">Indicated Attack Patterns</label>
         <add-attack-pattern [existingAttackPatterns]="attackPatterns" [indicatorId]="indicator.id" [createdByRef]="indicator.created_by_ref" [canCrud]="canCrud"></add-attack-pattern>
 
-        <div *ngIf="attackPatterns && attackPatterns.length > 0">
-            <div class="uf-collapsible-control mb-10 mt-6" (click)="showAttackPatternDetails = !showAttackPatternDetails">
-                <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showAttackPatternDetails}">chevron_right</i>
-                <span class="h5">&nbsp;Indicated Attack Pattern Details</span>
-            </div>
-            <div *ngIf="showAttackPatternDetails" class="uf-well" @heightCollapse>
-                <div *ngFor="let ap of attackPatterns">
-                    <h4 class="fw400">
-                        <a routerLink="/stix/attack-patterns/{{ap.id}}">{{ap.name}}</a>
-                    </h4>
-                    <div *ngIf="ap.kill_chain_phases">
-                        <label>Tactics</label>
-                        <p>
-                            <span *ngFor="let phase of ap.kill_chain_phases; let i = index" class="text-muted">
-                                <span [ngClass]="{'uf-highlight': highlightPhase(phase.phase_name)}" matTooltip="{{ phase.kill_chain_name | capitalize }}"
-                                    matTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>
-                                <span *ngIf="i < (ap.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
-                            </span>
-                        </p>
-                    </div>
-                    <div *ngIf="ap.x_mitre_platforms">
-                        <label>Platforms Effected:&nbsp;</label>
-                        <p class="whiteSpaceNormal">
-                            <span *ngFor="let platform of ap.x_mitre_platforms; let i = index" class="text-muted">
-                                <span>{{ platform }}</span>
-                                <span *ngIf="i < (ap.x_mitre_platforms.length - 1)">&nbsp;&bull;&nbsp;</span>
-                            </span>
-                        </p>
-                    </div>
-                    <div *ngIf="ap.x_unfetter_sophistication_level">
-                        <label>Sophistication Level:&nbsp;</label>
-                        <span>{{ ap.x_unfetter_sophistication_level }}</span>
-                    </div>
-                </div>
-            </div>
+      <div *ngIf="attackPatterns && attackPatterns.length > 0">
+        <div class="uf-collapsible-control mb-10 mt-6" (click)="showAttackPatternDetails = !showAttackPatternDetails">
+          <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showAttackPatternDetails}">chevron_right</i>
+          <span class="h5">&nbsp;Indicated Attack Pattern Details</span>
         </div>
-
-        <mat-tab-group>
-            <mat-tab label="Details">
-                <div *ngIf="indicator.description">
-                    <label>Description</label>
-                    <p>{{ indicator.description }}</p>
-                </div>
-                <div *ngIf="indicator.kill_chain_phases">
-                    <label>Tactics</label>
-                    <p>
-                        <span *ngFor="let phase of indicator.kill_chain_phases; let i = index" class="text-muted">
-                            <span 
-                                [ngClass]="{'uf-highlight': highlightPhase(phase.phase_name)}"
-                                matTooltip="{{ phase.kill_chain_name | capitalize }}" 
-                                matTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>
-                            <span *ngIf="i < (indicator.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
-                        </span>
-                    </p>
-                </div>
-                <div *ngIf="indicator.external_references">
-                    <label>External References</label><br>
-                    <chip-links [data]="indicator.external_references" nameField="source_name" urlField="url"></chip-links>
-                </div>
-                <div *ngIf="indicator.metaProperties && indicator.metaProperties.observedData && indicator.metaProperties.observedData.length">
-                    <label>Observed Data</label>
-                    <observable-data-summary [observedData]="indicator.metaProperties.observedData"></observable-data-summary>
-                </div>
-                <div class="mt-3">
-                    <label>Unfetter User Interactions: </label>
-                    <span *ngIf="indicator.metaProperties && indicator.metaProperties.interactions">{{ indicator.metaProperties.interactions.length }}</span>
-                    <span *ngIf="!indicator.metaProperties || !indicator.metaProperties.interactions">{{ 0 }}</span>
-                </div>
-                <div class="mt-3" *ngIf="indicator.metaProperties && indicator.metaProperties.published !== undefined">
-                    <label>Unfetter Publish Status: </label>
-                    <span *ngIf="indicator.metaProperties.published">Published</span>
-                    <span *ngIf="indicator.metaProperties.published === false">Draft</span>
-                </div>
-            </mat-tab>
-
-            <mat-tab label="Scripts" *ngIf="indicator.metaProperties && (indicator.metaProperties.queries || indicator.metaProperties.additional_queries)">
-                <div *ngIf="indicator.metaProperties.queries">
-                    <h4 class="fw400">Generated Pattern Translations</h4>                    
-                    <div *ngIf="indicator.metaProperties.queries.carElastic && indicator.metaProperties.queries.carElastic.include && indicator.metaProperties.queries.carElastic.query">
-                        <label>Elastic Search</label>
-                        <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.metaProperties.queries.carElastic.query" (cbOnSuccess)="flashTooltip(elasticTooltip)">
-                            <mat-icon>content_copy</mat-icon>
-                            <div #elasticTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
-                        </button>
-                        <div class="mb-6">
-                            <code>{{ indicator.metaProperties.queries.carElastic.query }}</code>
-                        </div>
-                    </div>
-                    <div *ngIf="indicator.metaProperties.queries.carSplunk && indicator.metaProperties.queries.carSplunk.include && indicator.metaProperties.queries.carSplunk.query">
-                        <label>Splunk (Cyber Analytic Repository)</label>
-                        <button 
-                            mat-icon-button 
-                            color="primary" 
-                            ngxClipboard 
-                            [cbContent]="indicator.metaProperties.queries.carSplunk.query"
-                            (cbOnSuccess)="flashTooltip(cimTooltip)">
-                            <mat-icon>content_copy</mat-icon>
-                            <div #cimTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
-                        </button>
-                        <div class="mb-6">
-                            <code>{{ indicator.metaProperties.queries.carSplunk.query }}</code>
-                        </div>
-                    </div>
-                    <div *ngIf="indicator.metaProperties.queries.cimSplunk && indicator.metaProperties.queries.cimSplunk.include && indicator.metaProperties.queries.cimSplunk.query">
-                        <label>Splunk (Common Information Model)</label>
-                        <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.metaProperties.queries.cimSplunk.query" (cbOnSuccess)="flashTooltip(carsplunkTooltip)">
-                            <mat-icon>content_copy</mat-icon>
-                            <div #carsplunkTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
-                        </button>
-                        <div class="mb-6">
-                            <code>{{ indicator.metaProperties.queries.cimSplunk.query }}</code>
-                        </div>
-                    </div>
-                </div>
-                <div *ngIf="indicator.metaProperties.additional_queries">
-                    <h4 class="fw400">User Created Queries</h4>
-                    <div *ngFor="let query of indicator.metaProperties.additional_queries; let i = index">
-                        <label>{{ query.name }}</label>
-                        <button 
-                            mat-icon-button color="primary" 
-                            ngxClipboard [cbContent]="query.query" 
-                            (cbOnSuccess)="flashTooltip(copyTooltip)">
-                            <mat-icon>content_copy</mat-icon>
-                            <div 
-                                #copyTooltip="matTooltip" 
-                                matTooltip="{{ copyText }}"
-                                matTooltipPosition="after"
-                                class="inlineBlock"></div>
-                        </button>                        
-                        <div class="mb-6">
-                            <code>{{ query.query }}</code>
-                        </div>
-                    </div>
-                </div>
-            </mat-tab>
-
-            <mat-tab label="Sensors" *ngIf="sensors && sensors.length > 0">     
-                <div *ngFor="let sensor of sensors">
-                    <h4 class="fw400">
-                        <a routerLink="/stix/x-unfetter-sensors/{{sensor.id}}">{{sensor.name}}</a>
-                    </h4> 
-                    <p>
-                        <label>Observed Data</label>
-                        <observable-data-summary [observedData]="sensor.metaProperties.observedData"></observable-data-summary>
-                    </p>        
-                </div>         
-            </mat-tab>
-
-        </mat-tab-group>
-
-        <div class="mt-20 overFlowHidden" @heightCollapse *ngIf="showCommentTextArea">
-            <mat-form-field class="full-width">
-                <textarea matInput placeholder="Comment" [(ngModel)]="commentText">{{ commentText }}</textarea>
-            </mat-form-field>
-            <div class="text-right">
-                <button mat-button (click)="showCommentTextArea = false; commentText = ''">CANCEL</button>
-                <button mat-raised-button color="primary" [disabled]="commentText === ''" (click)="submitComment()">SAVE</button>
+        <div *ngIf="showAttackPatternDetails" class="uf-well" @heightCollapse>
+          <div *ngFor="let ap of attackPatterns">
+            <h4 class="fw400">
+              <a routerLink="/stix/attack-patterns/{{ap.id}}">{{ap.name}}</a>
+            </h4>
+            <div *ngIf="ap.kill_chain_phases">
+              <label>Tactics</label>
+              <p>
+                <span *ngFor="let phase of ap.kill_chain_phases; let i = index" class="text-muted">
+                  <span [ngClass]="{'uf-highlight': highlightPhase(phase.phase_name)}" matTooltip="{{ phase.kill_chain_name | capitalize }}"
+                    matTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>
+                  <span *ngIf="i < (ap.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
+                </span>
+              </p>
             </div>
-            <div label="Comments" *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">
-                <hr>
-                <div *ngFor="let comment of indicator.metaProperties.comments | sortByField: 'submitted'; let i = index">
-                    <div class="flex flexItemsCenter mb-5">
-                        <span *ngIf="comment.user.avatar_url">
-                            <img src="{{ comment.user.avatar_url }}" alt="{{ comment.user.userName }} avatar" class="smallAvatar">&nbsp;
-                        </span>
-                        <span>
-                            <a routerLink="/users/profile/{{comment.user.id}}">{{ comment.user.userName }}</a>
-                            <small class="text-muted"> &bull; {{ comment.submitted | timeAgo }}</small>
-                        </span>
-                    </div>
-                    <p [innerHtml]="whitespaceToBreak(comment.comment)"></p>
-                    <hr>
-                </div>
+            <div *ngIf="ap.x_mitre_platforms">
+              <label>Platforms Effected:&nbsp;</label>
+              <p class="whiteSpaceNormal">
+                <span *ngFor="let platform of ap.x_mitre_platforms; let i = index" class="text-muted">
+                  <span>{{ platform }}</span>
+                  <span *ngIf="i < (ap.x_mitre_platforms.length - 1)">&nbsp;&bull;&nbsp;</span>
+                </span>
+              </p>
             </div>
+            <div *ngIf="ap.x_unfetter_sophistication_level">
+              <label>Sophistication Level:&nbsp;</label>
+              <span>{{ ap.x_unfetter_sophistication_level }}</span>
+            </div>
+          </div>
         </div>
+      </div>
 
-    </mat-card-content>
+      <mat-tab-group>
+        <mat-tab label="Details">
+          <div *ngIf="indicator.description">
+            <label>Description</label>
+            <p>{{ indicator.description }}</p>
+          </div>
+          <div *ngIf="indicator.kill_chain_phases">
+            <label>Tactics</label>
+            <p>
+              <span *ngFor="let phase of indicator.kill_chain_phases; let i = index" class="text-muted">
+                <span [ngClass]="{'uf-highlight': highlightPhase(phase.phase_name)}" matTooltip="{{ phase.kill_chain_name | capitalize }}"
+                  matTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>
+                <span *ngIf="i < (indicator.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
+              </span>
+            </p>
+          </div>
+          <div *ngIf="indicator.external_references">
+            <label>External References</label>
+            <br>
+            <chip-links [data]="indicator.external_references" nameField="source_name" urlField="url"></chip-links>
+          </div>
+          <div *ngIf="indicator.metaProperties && indicator.metaProperties.observedData && indicator.metaProperties.observedData.length">
+            <label>Observed Data</label>
+            <observable-data-summary [observedData]="indicator.metaProperties.observedData"></observable-data-summary>
+          </div>
+          <div class="mt-3">
+            <label>Unfetter User Interactions: </label>
+            <span *ngIf="indicator.metaProperties && indicator.metaProperties.interactions">{{ indicator.metaProperties.interactions.length }}</span>
+            <span *ngIf="!indicator.metaProperties || !indicator.metaProperties.interactions">{{ 0 }}</span>
+          </div>
+          <div class="mt-3" *ngIf="indicator.metaProperties && indicator.metaProperties.published !== undefined">
+            <label>Unfetter Publish Status: </label>
+            <span *ngIf="indicator.metaProperties.published">Published</span>
+            <span *ngIf="indicator.metaProperties.published === false">Draft</span>
+          </div>
+        </mat-tab>
 
-    <mat-card-actions>
-        <button mat-button disabled="true">{{ message }}</button>
+        <mat-tab label="Scripts" *ngIf="indicator.metaProperties && (indicator.metaProperties.queries || indicator.metaProperties.additional_queries)">
+          <div *ngIf="indicator.metaProperties.queries">
+            <h4 class="fw400">Generated Pattern Translations</h4>
+            <div *ngIf="indicator.metaProperties.queries.carElastic && indicator.metaProperties.queries.carElastic.include && indicator.metaProperties.queries.carElastic.query">
+              <label>Elastic Search</label>
+              <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.metaProperties.queries.carElastic.query" (cbOnSuccess)="flashTooltip(elasticTooltip)">
+                <mat-icon>content_copy</mat-icon>
+                <div #elasticTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
+              </button>
+              <div class="mb-6">
+                <code>{{ indicator.metaProperties.queries.carElastic.query }}</code>
+              </div>
+            </div>
+            <div *ngIf="indicator.metaProperties.queries.carSplunk && indicator.metaProperties.queries.carSplunk.include && indicator.metaProperties.queries.carSplunk.query">
+              <label>Splunk (Cyber Analytic Repository)</label>
+              <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.metaProperties.queries.carSplunk.query" (cbOnSuccess)="flashTooltip(cimTooltip)">
+                <mat-icon>content_copy</mat-icon>
+                <div #cimTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
+              </button>
+              <div class="mb-6">
+                <code>{{ indicator.metaProperties.queries.carSplunk.query }}</code>
+              </div>
+            </div>
+            <div *ngIf="indicator.metaProperties.queries.cimSplunk && indicator.metaProperties.queries.cimSplunk.include && indicator.metaProperties.queries.cimSplunk.query">
+              <label>Splunk (Common Information Model)</label>
+              <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.metaProperties.queries.cimSplunk.query" (cbOnSuccess)="flashTooltip(carsplunkTooltip)">
+                <mat-icon>content_copy</mat-icon>
+                <div #carsplunkTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
+              </button>
+              <div class="mb-6">
+                <code>{{ indicator.metaProperties.queries.cimSplunk.query }}</code>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="indicator.metaProperties.additional_queries">
+            <h4 class="fw400">User Created Queries</h4>
+            <div *ngFor="let query of indicator.metaProperties.additional_queries; let i = index">
+              <label>{{ query.name }}</label>
+              <button mat-icon-button color="primary" ngxClipboard [cbContent]="query.query" (cbOnSuccess)="flashTooltip(copyTooltip)">
+                <mat-icon>content_copy</mat-icon>
+                <div #copyTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
+              </button>
+              <div class="mb-6">
+                <code>{{ query.query }}</code>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
 
-        <button mat-button color="primary" (click)="unlikeIndicator()" *ngIf="alreadyLiked" matTooltip="Click to unlike">
-            <i class="material-icons mat-24">thumb_up</i>
-            <span *ngIf="indicator.metaProperties && indicator.metaProperties.likes && indicator.metaProperties.likes.length > 0">&nbsp;{{indicator.metaProperties.likes.length}}</span>
-        </button>
-        <button mat-button (click)="likeIndicator()" *ngIf="!alreadyLiked" matTooltip="Click to like">
-            <i class="material-icons mat-24">thumb_up</i>
-            <span *ngIf="indicator.metaProperties && indicator.metaProperties.likes && indicator.metaProperties.likes.length > 0">&nbsp;{{indicator.metaProperties.likes.length}}</span>
-        </button>
+        <mat-tab label="Sensors" *ngIf="sensors && sensors.length > 0">
+          <div *ngFor="let sensor of sensors">
+            <h4 class="fw400">
+              <a routerLink="/stix/x-unfetter-sensors/{{sensor.id}}">{{sensor.name}}</a>
+            </h4>
+            <p>
+              <label>Observed Data</label>
+              <observable-data-summary [observedData]="sensor.metaProperties.observedData"></observable-data-summary>
+            </p>
+          </div>
+        </mat-tab>
 
-        <button mat-button color="{{ alreadyCommented ? 'primary' : '' }}" (click)="showCommentTextArea = !showCommentTextArea">
-            <i class="material-icons mat-24">chat_bubble</i>
-            <span *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">&nbsp;{{indicator.metaProperties.comments.length}}</span>
-        </button>
-    </mat-card-actions>
+      </mat-tab-group>
+
+      <div class="mt-20 overFlowHidden" @heightCollapse *ngIf="showCommentTextArea">
+        <mat-form-field class="full-width">
+          <textarea matInput placeholder="Comment" [(ngModel)]="commentText">{{ commentText }}</textarea>
+        </mat-form-field>
+        <div class="text-right">
+          <button mat-button (click)="showCommentTextArea = false; commentText = ''">CANCEL</button>
+          <button mat-raised-button color="primary" [disabled]="commentText === ''" (click)="submitComment()">SAVE</button>
+        </div>
+        <div label="Comments" *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">
+          <hr>
+          <div *ngFor="let comment of indicator.metaProperties.comments | sortByField: 'submitted'; let i = index">
+            <div class="flex flexItemsCenter mb-5">
+              <span *ngIf="comment.user.avatar_url">
+                <img src="{{ comment.user.avatar_url }}" alt="{{ comment.user.userName }} avatar" class="smallAvatar">&nbsp;
+              </span>
+              <span>
+                <a routerLink="/users/profile/{{comment.user.id}}">{{ comment.user.userName }}</a>
+                <small class="text-muted"> &bull; {{ comment.submitted | timeAgo }}</small>
+              </span>
+            </div>
+            <p [innerHtml]="whitespaceToBreak(comment.comment)"></p>
+            <hr>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button mat-button disabled="true">{{ message }}</button>
+
+    <button mat-button color="primary" (click)="unlikeIndicator()" *ngIf="alreadyLiked" matTooltip="Click to unlike">
+      <i class="material-icons mat-24">thumb_up</i>
+      <span *ngIf="indicator.metaProperties && indicator.metaProperties.likes && indicator.metaProperties.likes.length > 0">&nbsp;{{indicator.metaProperties.likes.length}}</span>
+    </button>
+    <button mat-button (click)="likeIndicator()" *ngIf="!alreadyLiked" matTooltip="Click to like">
+      <i class="material-icons mat-24">thumb_up</i>
+      <span *ngIf="indicator.metaProperties && indicator.metaProperties.likes && indicator.metaProperties.likes.length > 0">&nbsp;{{indicator.metaProperties.likes.length}}</span>
+    </button>
+
+    <button mat-button color="{{ alreadyCommented ? 'primary' : '' }}" (click)="showCommentTextArea = !showCommentTextArea; showCommentTextArea && collapseContents ? collapseContents = false : ''">
+      <i class="material-icons mat-24">chat_bubble</i>
+      <span *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">&nbsp;{{indicator.metaProperties.comments.length}}</span>
+    </button>
+  </mat-card-actions>
 </mat-card>
