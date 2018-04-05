@@ -3,7 +3,7 @@
     <mat-chip-list style="margin-right: 5px;">
       <mat-chip *ngFor="let ap of existingAttackPatterns" class="chipListChip" [selected]="apSelected(ap.id)">{{ ap.name }}</mat-chip>
     </mat-chip-list>
-    <button mat-mini-fab color="accent" (click)="showAddAp = !showAddAp">
+    <button mat-mini-fab color="accent" (click)="showAddAp = !showAddAp" *ngIf="canCrud">
       <i class="material-icons mat-24" [ngClass]="{'showAddAp': showAddAp}">add</i>
     </button>
   </div>

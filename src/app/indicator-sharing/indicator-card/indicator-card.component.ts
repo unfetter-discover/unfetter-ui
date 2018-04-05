@@ -11,6 +11,7 @@ import { environment } from '../../../environments/environment';
 import { downloadBundle } from '../../global/static/stix-bundle';
 import { generateStixRelationship } from '../../global/static/stix-relationship';
 import { StixRelationshipTypes } from '../../global/enums/stix-relationship-types.enum';
+import { canCrud } from '../../global/static/stix-permissions';
 
 @Component({
     selector: 'indicator-card',
@@ -40,7 +41,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
     public alreadyInteracted: boolean = false;
     public alreadyCommented: boolean = false;
     public showAttackPatternDetails: boolean = false;
-    public readOnlyMode: boolean = true;
+    public canCrud: boolean = false;
 
     public readonly copyText: string = 'Copied';
     public readonly runMode = environment.runMode;
@@ -58,10 +59,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit {
 
     public ngOnInit() {
         this.user = this.authService.getUser();
-        
-        if (!this.indicator.created_by_ref || this.user.organizations.map((org) => org.id).includes(this.indicator.created_by_ref)) {
-            this.readOnlyMode = false;
-        }
+        this.canCrud = canCrud(this.indicator, this.user);
 
         if (this.indicator.metaProperties !== undefined && this.indicator.metaProperties.likes !== undefined && this.indicator.metaProperties.likes.length > 0) {
             const alreadyLiked = this.indicator.metaProperties.likes.find((like) => like.user.id === this.user._id);

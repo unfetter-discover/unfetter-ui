@@ -5,11 +5,17 @@ import { LandingPageComponent } from './landing-page.component';
 import { AuthService } from '../../../core/services/auth.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { GenericApi } from '../../../core/services/genericapi.service';
 
 describe('LandingPageComponent', () => {
   let component: LandingPageComponent;
   let fixture: ComponentFixture<LandingPageComponent>;
+
+  const mockAuthService = {
+    logOut: () => {},
+    userLocked: () => false,
+    loggedIn: () => false,
+    pendingApproval: () => false
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -20,8 +26,10 @@ describe('LandingPageComponent', () => {
         declarations: [ LandingPageComponent ],
         schemas: [ NO_ERRORS_SCHEMA ],
         providers: [ 
-            AuthService,
-            GenericApi
+            { 
+              provide: AuthService, 
+              useValue: mockAuthService
+            }
         ]
     })
     .compileComponents();

@@ -51,6 +51,9 @@ $white: #FFFFFF;
     background-color: $analytic-exchange-primary-lightest;
     border: 1px solid $analytic-exchange-primary-lighter;
     border-radius: 4px;
+    &:focus {
+        outline: none;
+    }
 }
 .indicator.selected {
     background-color: $analytic-exchange-primary;

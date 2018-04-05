@@ -13,6 +13,7 @@ import { makeMockIndicatorSharingStore, mockIndicators, mockAttackPatterns } fro
 import { indicatorSharingReducer } from '../store/indicator-sharing.reducers';
 import { CapitalizePipe } from '../../global/pipes/capitalize.pipe';
 import { GenericApi } from '../../core/services/genericapi.service';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('IndicatorHeatMapComponent', () => {
 
@@ -59,6 +60,7 @@ describe('IndicatorHeatMapComponent', () => {
                     OverlayModule,
                     MatDialogModule,
                     HttpClientTestingModule,
+                    RouterTestingModule,
                     StoreModule.forRoot(mockReducer),
                 ],
                 declarations: [

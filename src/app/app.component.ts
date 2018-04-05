@@ -11,6 +11,7 @@ import { environment } from '../environments/environment';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Themes } from './global/enums/themes.enum';
 import { Constance } from './utils/constance';
+import { demoUser } from './testing/demo-user';
 
 @Component({
   selector: 'unf-app',
@@ -49,19 +50,8 @@ export class AppComponent implements OnInit {
         this.store.dispatch(new userActions.FetchUser(token));
       } else {
         this.store.dispatch(new userActions.LoginUser({
-          userData: {
-            _id: '1234',
-            userName: 'Demo-User',
-            firstName: 'Demo',
-            lastName: 'User',
-            organizations: [
-              {
-                'id': Constance.UNFETTER_OPEN_ID,
-                'approved': true,
-                'role': 'STANDARD_USER'
-              }
-            ],
-          }, token: '1234'
+          userData: demoUser, 
+          token: '1234'
         }));
       }
       this.store.dispatch(new configActions.FetchConfig(false));
