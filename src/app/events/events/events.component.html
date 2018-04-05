@@ -1,7 +1,5 @@
-<div id="event" class="fadeIn">
-  <!--*ngIf="!SERVER_CALL_COMPLETE; else loadingBlock"> -->
-  <mat-sidenav-container>
-    <!-- *ngIf="!eventsPresent; else notFound"> -->
+<div id="event" class="fadeIn" *ngIf="service.finishedLoading else loadingBlock">
+  <mat-sidenav-container *ngIf="service.recentSightings; else notFound">
     <mat-sidenav #filters mode="side" opened class="side-panel mat-elevation-z16">
       <div id="filterTitle" class="flexItemsCenter">
         <div class="side-panel-header">

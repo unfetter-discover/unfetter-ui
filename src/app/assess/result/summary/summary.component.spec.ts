@@ -21,7 +21,7 @@ import { riskByAttackPatternReducer, RiskByAttackPatternState } from '../store/r
 import { Subject } from 'rxjs/Subject';
 import { SummaryActions } from '../store/summary.actions';
 
-fdescribe('SummaryComponent', () => {
+describe('SummaryComponent', () => {
   let component: SummaryComponent;
   let fixture: ComponentFixture<SummaryComponent>;
 

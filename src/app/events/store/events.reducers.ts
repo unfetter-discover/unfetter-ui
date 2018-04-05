@@ -34,7 +34,7 @@ export function eventsReducer(state = initialState, action: eventsActions.Events
         case eventsActions.FINISHED_LOADING:
             return genState({
                 ...state,
-                finishedLoading: action.payload
+                finishedLoading: action.payload,
             });
         default:
             return state;
