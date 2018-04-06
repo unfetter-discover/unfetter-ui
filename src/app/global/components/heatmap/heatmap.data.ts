@@ -50,7 +50,10 @@ export interface HeatColor {
 export interface BatchColor {
     header: HeatColor,
     body: HeatColor,
-    border?: string,
+    border?: {
+        width: number,
+        color: string,
+    },
 }
 
 /**
@@ -280,7 +283,7 @@ export class HeatMapOptions {
         } else if (zoom.length > 2) {
             zoom = merged.zoom.zoomExtent.slice(0, 2);
         }
-        zoom = zoom.map(extent => Math.min(.01, extent)).sort((a, b) => b - a);
+        zoom = zoom.map(extent => Math.max(.01, extent)).sort((a, b) => a - b);
         merged.zoom.cellTitleExtent = Math.min(Math.max(zoom[0], merged.zoom.cellTitleExtent), zoom[1])
                 || zoom[0]; // ensure NaN/null/undefined does not trip us up
         merged.zoom.zoomExtent = zoom as [number, number];
