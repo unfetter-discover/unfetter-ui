@@ -47,7 +47,7 @@ export class Assess3Guard implements CanActivate {
                         } else {
                             // has assessments,
                             //  navigate to the last modified
-                            const lastModAssessment = data[0] as LastModifiedAssessment3;
+                            const lastModAssessment = data[0];
                             this.router.navigate(['/assess3/result/summary', lastModAssessment.id]);
                             return true;
                         }
@@ -67,13 +67,14 @@ export class Assess3Guard implements CanActivate {
      * @return {Observable<Partial<LastModifiedAssessment3>[]>}
      */
     public fetchWithCreatorId(creatorId: string): Observable<Partial<LastModifiedAssessment3>[]> {
+        
+        console.log(`User ID for latest objass by creator: ${creatorId}`);
+
         return this.assessService
-            .load()
-            // .getLatestAssessmentsByCreatorId(creatorId)
+            .getLatestAssessmentsByCreatorId(creatorId)
             .switchMap((data: any[]) => {
                 if (!data || data.length < 1) {
-                    return this.assessService.load();
-                    // return this.fetchWithNoCreatorId();
+                    return this.fetchWithNoCreatorId();
                 } else {
                     return Observable.of(data);
                 }

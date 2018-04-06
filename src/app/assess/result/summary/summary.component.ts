@@ -111,6 +111,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
             this.requestData(this.assessmentId, createdById);
           },
             (err) => console.log(err));
+        console.log(`ASSESS Request data: ${JSON.stringify(sub$)}`);
         this.subscriptions.push(sub$);
       },
         (err) => console.log(err));
