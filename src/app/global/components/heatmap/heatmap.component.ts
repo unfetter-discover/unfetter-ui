@@ -460,7 +460,10 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
                     heat.bg = heat.bg[0];
                 } else if (!this.options.color.showGradients || (heat.bg.length > this.options.color.maxGradients)) {
                     heat.bg = (this.options.color.defaultGradient || this.options.color.noColor).bg;
-                } else {
+                    heat.fg = (this.options.color.defaultGradient || this.options.color.noColor).fg;
+                }
+                // ask again, in case the last if block above gave us another gradient
+                if (Array.isArray(heat.bg)) {
                     const gradient = bounds.workspace.defs
                         .append('linearGradient')
                             .attr('id', `gradient-${index}`);
