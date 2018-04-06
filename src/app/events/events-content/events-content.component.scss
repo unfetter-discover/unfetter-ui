@@ -14,26 +14,43 @@
   -ms-flex-align: stretch;
 }
 
-$min-card-width: 330;
+$min-card-width: 135;
 $padding-between-cards: 10;
-$min-card-fullwidth: ($min-card-width * 2 + $padding-between-cards + $padding-between-cards);
-//   #assessmentCard {
-//     min-width: $min-card-fullwidth + px;
-//   }
+
 $left-column-width: .63;
 $right-column-width: 1 - $left-column-width;
+$right-column-min-width: 175;
+$left-column-min-width: 3 * $right-column-min-width;
+
 .left-column {
   width: percentage($left-column-width);
+  min-width: $left-column-min-width + px;
+
 }
 
 .right-column {
   width: percentage($right-column-width);
+  min-width: $right-column-min-width + px;
 }
 
-$half-height-margin-bottom: 20px;
-.half-height {
-  height: calc(50% - #{$half-height-margin-bottom});
-  margin-bottom: $half-height-margin-bottom;
+
+$top-half-height: 40;
+$bottom-half-height: $top-half-height + 4;
+
+#top-half, #bottom-half {
+  width: 100%;
+}
+
+#top-half {
+  min-height: $top-half-height + vh;
+  margin-bottom: 20px;
+}
+
+$bottom-half-min-width: $right-column-min-width + $left-column-min-width;
+#bottom-half {
+  max-height: $bottom-half-height + vh;
+  min-width: $bottom-half-min-width + px;
+  min-height: 400px;
 }
 
 $traffic-detail-title-height: 31;
@@ -45,7 +62,7 @@ $traffic-detail-title-bottom-margin: 16;
 
 .mat-card-scroll-content .mat-card-content {
   overflow-y: auto;
-  max-height: calc(100% - (#{$traffic-detail-title-height + px} + #{$traffic-detail-title-bottom-margin + px}));
+  max-height: 35vh;
 }
 
 .mat-header-row {
@@ -55,7 +72,6 @@ $traffic-detail-title-bottom-margin: 16;
 }
 
 .card {
-  min-height: 200px;
   margin-bottom: 20px;
   min-width: $min-card-width + px;
   padding-top: 25px;
@@ -74,12 +90,16 @@ $traffic-detail-title-bottom-margin: 16;
   flex-grow: .5;
   margin-right: $padding-between-cards + px;
   height: 100%;
-  max-height: 400px;
 }
 
 .right-card {
   flex-grow: .5;
   margin-left: $padding-between-cards + px;
+  height: 100%
+}
+
+.bottom-card {
+  margin-bottom: 0px;
 }
 
 .mat-header-row, .mat-row {
@@ -88,11 +108,11 @@ $traffic-detail-title-bottom-margin: 16;
 }
 
 .mat-column-date {
-  flex: 0 0 20%;
+  flex: 0 0 32%;
 }
 
 .mat-column-ip {
-  flex: 0 0 20%;
+  flex: 0 0 14%;
 }
 
 .mat-column-city {
@@ -100,13 +120,13 @@ $traffic-detail-title-bottom-margin: 16;
 }
 
 .mat-column-country {
-  flex: 0 0 10%;
+  flex: 0 0 8%;
 }
 
 .mat-column-attack-pattern {
-  flex: 0 0 20%;
+  flex: 0 0 19%;
 }
 
 .mat-column-potential-actor {
-  flex: 0 0 20%;
+  flex: 0 0 17%;
 }
