@@ -39,6 +39,9 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
             ],
             heatColors: {'false': this.noColor},
             noColor: this.noColor,
+            showGradients: true,
+            maxGradients: 3,
+            defaultGradient: {bg: ['#999', 'black'], fg: 'white'}
         },
         text: {
             showCellText: true,
