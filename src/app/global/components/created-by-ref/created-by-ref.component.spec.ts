@@ -14,7 +14,7 @@ import { CreatedByRefComponent } from './created-by-ref.component';
 import { AssessmentMeta } from '../../../models/assess/assessment-meta';
 
 
-fdescribe('CreatedByRefComponent', () => {
+describe('CreatedByRefComponent', () => {
     let component: CreatedByRefComponent;
     let fixture: ComponentFixture<CreatedByRefComponent>;
     let store: Store<any>;

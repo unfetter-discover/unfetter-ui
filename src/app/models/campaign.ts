@@ -17,6 +17,9 @@ export class Campaign {
         objective: string;
         timestamp_precision: string;
         created_by_ref: string;
+        metaProperties: {
+            published: boolean;
+        }
     };
     constructor(data?: Campaign) {
         this.type = Constance.CAMPAIGN_TYPE;
@@ -37,7 +40,10 @@ export class Campaign {
     private createAttributes(): any {
         return {
             labels: [],
-            first_seen: new Date()
+            first_seen: new Date(),
+            metaProperties: {
+                published: true
+            }
         };
     }
 }
