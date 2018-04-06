@@ -105,8 +105,8 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
     @Input() public heatMapData: Array<HeatBatchData> = [];
     private previousHeatMapData: Array<HeatBatchData>; // used to detect when the data changes
 
-    private heatmap: DrawingBounds;
-    private minimap: DrawingBounds;
+    public heatmap: DrawingBounds;  // public for testing
+    public minimap: DrawingBounds;
 
     @Input() public options: HeatMapOptions;
     private defaultOptions: HeatMapOptions = {
@@ -152,10 +152,10 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
         },
     };
 
-    @Output() private onHover = new EventEmitter<{row: HeatCellData, event?: UIEvent}>();
+    @Output() public onHover = new EventEmitter<{row: HeatCellData, event?: UIEvent}>();
     private hoverTimeout: number;
 
-    @Output() private onClick = new EventEmitter<{row: HeatCellData, event?: UIEvent}>();
+    @Output() public onClick = new EventEmitter<{row: HeatCellData, event?: UIEvent}>();
 
     private readonly subscriptions: Subscription[] = [];
 
@@ -229,6 +229,9 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
                     .reduce((max, batch) => max = Math.max(max, batch.cells.length), 0);
                 this.heatmap = new DrawingBounds(rect, this.options.view, largestBatch);
                 this.heatmap.view = graphElement;
+                if (this.options.zoom.cellTitleExtent > this.options.zoom.zoomExtent[0]) {
+                    this.heatmap.workspace.showCellTextOnZoom = true;
+                }
 
                 // Create multiple columns to get the data to fit
                 const batches: Dictionary<HeatBatchData> = this.batchHeatMapData();
@@ -299,7 +302,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
                 if (!batches[d.title]) {
                     batches[d.title] = {
                         title: d.title,
-                        value: null,
+                        value: d.value,
                         cells: []
                     } as HeatBatchData;
                 }
@@ -420,7 +423,9 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
                 .attr('width', bounds.viewWidth)
                 .attr('height', bounds.viewHeight);
 
-        this.addGradients(bounds);
+        if (!bounds.workspace.isMini) {
+            this.addGradients(bounds);
+        }
 
         bounds.workspace.canvas = bounds.workspace.window.append('g');
 
@@ -475,7 +480,8 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
      * @description draw just the given batch on the heatmap
      */
     private drawBatch(batch: BatchWork, bounds: DrawingBounds, svg: D3Selection, header: D3Selection) {
-        const batchColor = this.options.color.batchColors.shift();
+        const heat = batch.value ? this.options.color.heatColors[batch.value] : null;
+        const batchColor = heat ? {header: heat, body: heat} : this.options.color.batchColors.shift();
         const batchWidth = bounds.cellWidth * batch.columns.length
                 + (batch.columns.length - 1) * bounds.workspace.betweenPadding + 2;
         const bg = Array.isArray(batchColor.body.bg) ? batchColor.body.bg[0] : (batchColor.body.bg as string);
@@ -495,6 +501,9 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
         } else {
             batchRect.attr('fill', bg);
         }
+        if (batchColor.border) {
+            batchRect.attr('stroke-width', batchColor.border.width).attr('stroke', batchColor.border.color);
+        }
 
         // draw the batch header over all the columns
         this.drawBatchHeader(batch, header, bounds, batchWidth, batchColor);
@@ -507,7 +516,9 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
         });
 
         // rotate the color back onto the list
-        this.options.color.batchColors.push(batchColor);
+        if (!heat) {
+            this.options.color.batchColors.push(batchColor);
+        }
 
         bounds.workspace.xPosition += bounds.workspace.miniVersion ? 1 : 2;
     }
@@ -538,6 +549,9 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
             batchRect.attr('class', bg.substring(1));
         } else {
             batchRect.attr('fill', bg);
+        }
+        if (batchColor.border) {
+            batchRect.attr('stroke-width', batchColor.border.width).attr('stroke', batchColor.border.color);
         }
 
         // add the batch name and make it fit in the box
@@ -600,6 +614,9 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
             this.drawCellText(data.title, cell, bounds.workspace.xPosition, y,
                     bounds.cellWidth, bounds.cellHeight, this.options.text.cellFontSize, color.fg,
                     this.options.text.allowCellSplit, this.options.text.hyphenateCells);
+            if (bounds.workspace.showCellTextOnZoom) {
+                let texts = cell.selectAll('text').attr('fill-opacity', '0');
+            }
         }
     }
 
@@ -608,92 +625,103 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
      */
     private drawCellText(text: string, cell: D3Selection, x: number, y: number, width: number, height: number,
             fontSize: number, color: string, allowSplit: boolean, allowHyphenation: boolean) {
-        // @todo - New steps:
-        // 1. Determine if there is room to draw the text.
-        // 2. Determine if there is room for multiple lines (negate if !allowSplit) -- also determines how many lines
-        // 3. Determine split function (based on if multiple lines and allowHyphenation)
-
-        let textNode = this.createTextCell(cell, x + width / 2, y + height / 2, fontSize, color).text(text);
-
-        let workingText = text;
-
-        if (allowSplit) {
-            // Try to fit the text within the block, first by splitting on any spaces.
-            for (let done = false, split = this.splitText(text, undefined, false); !done && (split.index > 0);
-                    split = this.splitText(text, split.index - 1, false)) {
-                let newtext = text.substring(0, split.index);
-                textNode.text(newtext);
-                if (this.textWidth(textNode) < width) {
-                    textNode.attr('y', y + height / 3)
-                    workingText = text.substr(split.index + 1);
-                    textNode = this.createTextCell(cell, x + width / 2, y + height / 3 * 2, fontSize, color)
-                            .text(workingText);
-                    done = true;
-                }
-            }
-
-            if ((this.textWidth(textNode) > width) && allowHyphenation && (text === workingText)) {
-                for (let done = false, split = this.splitText(text, undefined, true); !done && (split.index > 0);
-                        split = this.splitText(text, split.index - 1, true)) {
-                    let newtext = text.substring(0, split.index) + (split.hyphenated ? '-' : '');
-                    textNode.text(newtext);
-                    if (this.textWidth(textNode) < width) {
-                        textNode.attr('y', y + height / 3)
-                        workingText = text.substr(split.index + (split.hyphenated ? 0 : 1));
-                        textNode = this.createTextCell(cell, x + width / 2, y + height / 3 * 2, fontSize, color)
-                                .text(workingText);
-                        done = true;
-                    }
-                }
-            }
-        }
-
-        // If the text still doesn't fit, whether we were allowed to split or not, ellipsicatify the text (bummer)
-        for (let textlen = workingText.length - 3; (textlen >= 0) && (this.textWidth(textNode) > width); textlen--) {
-            textNode.text(`${workingText.substring(0, textlen)}...`);
-        }
-    }
-
-    /*
-     * Create a new text node for a given cell. A cell could potentially have multiple text nodes, because svg won't
-     * wrap long lines within the bounding box.
-     */
-    private createTextCell(cell: D3Selection, x: number, y: number, fontSize: number, color: string) {
-        let textNode = cell
+        const textNode = cell
             .append('text')
-                .attr('x', x)
-                .attr('y', y)
-                .attr('dy', '.35em')
+                .attr('x', x + width / 2).attr('y', y)
                 .attr('text-anchor', 'middle')
                 .attr('font-size', `${fontSize}px`)
                 .style('pointer-events', 'none');
         if (color.startsWith('.')) {
-            textNode.attr('class', color);
+            textNode.attr('class', color.substring(1));
         } else {
             textNode.attr('fill', color);
         }
-        return textNode;
-    }
 
-    /*
-     * Attempt to find a good place to split text within a cell to create multiple lines. Hyphenation isn't perfect,
-     * because we would have to add a whole dictionary here to make it proper.
-     */
-    private splitText(text: string, fromIndex: number, allowHyphenation: boolean): {index: number, hyphenated: boolean} {
-        const spaceIndex = Math.max(text.lastIndexOf(' ', fromIndex), text.lastIndexOf('/', fromIndex));
-        for (let index = fromIndex || (text.length - 2); allowHyphenation && (index > spaceIndex + 2); index--) {
-            if ('bcdfghjklmnpqrstvwxz'.includes(text.charAt(index))) {
-                return {index: index, hyphenated: true};
+        const newTSpan = () => textNode.append('tspan').attr('x', x + width / 2).attr('dy', '.35em');
+        const joinWords = (line: string[]) => line.join(' ').replace(/\w\-\s/g, w => w.trim());
+
+        const words = text
+            .split(/\s+/)                               // break the text up into distinct words
+            .reduce((arr, w) => {
+                arr.push(...w.split(/(.*[\-\\/])/));    // break out hyphenated (-) and slashed (/) words
+                return arr;
+            }, [])
+            .filter(w => w.trim().length);              // get rid of any whitespace words we may have created
+        const maxRows = allowSplit ? Math.floor(height / (fontSize * 1.1)) : 1;
+        let tspan = newTSpan(), lines = [];
+
+        wordLoop: for (let word, line = []; (word = words.shift()) && (lines.length < maxRows); ) {
+            line.push(word);
+            let t = joinWords(line);
+            tspan.text(t);
+            while (this.textWidth(tspan) > width) {
+                lines.push(tspan);
+                if (line.length === 1) {
+                    // only one word in this line; we have to hyphenate or ellipsize
+                    if (allowHyphenation && (lines.length < maxRows)) {
+                        let index = this.tryHyphenation(word, width, tspan);
+                        if (index) {
+                            line = [t = word.substring(index)];
+                            tspan = newTSpan().text(line[0]);
+                            continue wordLoop;
+                        }
+                    }
+                    // hyphenation failed or is turned off or we have no more lines available
+                    this.ellipsize(t, width, tspan);
+                    break wordLoop;
+                } else  if (lines.length === maxRows) {
+                    // last row, ellipsize it
+                    this.ellipsize(t, width, tspan);
+                    break wordLoop;
+                } else {
+                    line.pop();
+                    t = joinWords(line);
+                    tspan.text(t);
+                    line = [word];
+                    tspan = newTSpan().text(t = word);
+                }
             }
         }
-        return {index: spaceIndex, hyphenated: false};
+
+        // now correct the vertical position based on how many lines we actually needed
+        if (!lines.includes(tspan)) {
+            lines.push(tspan);
+        }
+        const count = lines.length + 1;
+        lines.forEach((span, index) => {
+            span.attr('y', y + height / count * (index + 1)
+                    + (index - count / 2 + 1) * Math.floor(height / (fontSize * 1.6)));
+        });
     }
 
-    /*
-     * Attempt to determine the current length of the given text node, with room for decent padding.
+    /**
+     * @description Try to do a really basic hyphenate of the given word. No guarantees this hyphenation will be valid,
+     *              because loading an entire dictionary into a user's browser just to fit text into a miniscule cell
+     *              is not really nice.
      */
-    private textWidth(textNode: D3Selection): number {
-        return (textNode.node() as any).getComputedTextLength() + 4;
+    private tryHyphenation(word: string, width: number, tspan: D3Selection): number {
+        for (let index = word.length - 3; index > 2; index--) {
+            if ('bcdfghjklmnpqrstvwxz'.includes(word.charAt(index))) {
+                tspan.text(`${word.substring(0, index)}-`);
+                if (this.textWidth(tspan) < width) {
+                    return index;
+                }
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * @description Reduce the given text until it fits within the given node, appending ellipses.
+     */
+    private ellipsize(text: string, width: number, span: D3Selection) {
+        for (let textlen = text.length - 3; (textlen >= 0) && (this.textWidth(span) > width); textlen--) {
+            span.text(`${text.substring(0, textlen)}...`);
+        }
+    }
+
+    private textWidth(span: D3Selection) {
+        return (span.node() as any).getComputedTextLength() + 4;
     }
 
     /**
@@ -751,6 +779,12 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
         const ty = Math.min(0, Math.max(transform.y, this.heatmap.viewHeight * (1 - transform.k)));
         const boundedTransform = d3.zoomIdentity.translate(tx, ty).scale(transform.k);
         this.heatmap.workspace.canvas.attr('transform', boundedTransform);
+        if (this.heatmap.workspace.showCellTextOnZoom) {
+            const lowestZoom = this.options.zoom.zoomExtent[0];
+            const opacity = transform.k > this.options.zoom.cellTitleExtent ? 1
+                : (transform.k - lowestZoom) / (this.options.zoom.cellTitleExtent - lowestZoom);
+            let texts = this.heatmap.workspace.canvas.selectAll('g.heat-map-cell text').attr('fill-opacity', opacity);
+        }
         if (this.options.zoom.hasMinimap && this.minimap && this.minimap.workspace.panner) {
             this.minimap.workspace.zoom.transform(this.minimap.workspace.panner,
                     this.convertHeatmapZoomToMinimap(boundedTransform));
