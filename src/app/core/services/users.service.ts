@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-
 import { Observable } from 'rxjs/Observable';
-import { GenericApi } from './genericapi.service';
+import { UserProfile } from '../../models/user/user-profile';
 import { Constance } from '../../utils/constance';
+import { GenericApi } from './genericapi.service';
+import { JsonApiData, Identity } from 'stix';
 
 @Injectable()
 export class UsersService {
@@ -22,18 +23,18 @@ export class UsersService {
     }
 
     public finalizeRegistration(user): Observable<any> {
-        return this.genericApi.post(this.finalizeRegistrationUrl, {data: {attributes: user}});
+        return this.genericApi.post(this.finalizeRegistrationUrl, { data: { attributes: user } });
     }
 
-    public getUserProfileById(userId): Observable<any> {
+    public getUserProfileById(userId): Observable<UserProfile> {
         return this.genericApi.get(`${this.profileByIdUrl}/${userId}`);
     }
 
-    public getOrganizations(): Observable<any> {
+    public getOrganizations(): Observable<JsonApiData<Identity>[]> {
         const filter = {
             'stix.identity_class': 'organization'
         };
-        return this.genericApi.get(`${this.identitiesUrl}?filter=${encodeURI(JSON.stringify(filter))}`);
+        return this.genericApi.getAs<JsonApiData<Identity>[]>(`${this.identitiesUrl}?filter=${encodeURI(JSON.stringify(filter))}`);
     }
 
     public requestOrgLeadership(userId, orgId): Observable<any> {
@@ -43,7 +44,7 @@ export class UsersService {
     public requestOrgMemebership(userId, orgId): Observable<any> {
         return this.genericApi.get(`${this.orgUrl}/request-membership/${userId}/${orgId}`);
     }
-    
+
     public changeOrgSubscription(userId: string, orgId: string, subscribe: boolean): Observable<any> {
         return this.genericApi.get(`${this.orgUrl}/subscription/${userId}/${orgId}/${subscribe}`);
     }
