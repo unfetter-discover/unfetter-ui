@@ -23,8 +23,10 @@
 <kill-chain-phases  *ngIf="sensor" [(model)]="sensor"></kill-chain-phases>
 
 <aliases  *ngIf="sensor" [(model)]="sensor"></aliases>
+<published-checkbox [model]="sensor"></published-checkbox>
 
 <relatationship-generator [(model)]="sensor"></relatationship-generator>
+
 
 <div>
     <label class="mb-5">Observable Data Path</label>

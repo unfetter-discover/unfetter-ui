@@ -18,6 +18,9 @@ export class ObservedData {
         objects: {}
         external_references: ExternalReference[];
         created_by_ref: string;
+        metaProperties: {
+            published: boolean;
+        }
     };
 
     constructor(data?: ObservedData) {
@@ -39,6 +42,9 @@ export class ObservedData {
             last_observed: new Date().toISOString(),
             labels: [],
             external_references: [],
+            metaProperties: {
+                published: true
+            }
         };
     }
 }

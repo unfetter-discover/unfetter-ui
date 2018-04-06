@@ -20,6 +20,9 @@ export class AttackPattern {
         kill_chain_phases: KillChainPhase[];
         x_unfetter_sophistication_level: number;
         created_by_ref: string;
+        metaProperties: {
+            published: boolean;
+        }
     };
 
     constructor(data?: AttackPattern) {
@@ -42,7 +45,10 @@ export class AttackPattern {
             labels: [],
             external_references: [],
             kill_chain_phases: [],
-            // x_unfetter_sophistication_level: -1
+            // x_unfetter_sophistication_level: -1,
+            metaProperties: {
+                published: true
+            }
         };
     }
 }
