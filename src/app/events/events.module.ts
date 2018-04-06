@@ -1,19 +1,17 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-
 import { GlobalModule } from '../global/global.module';
-
-import { EventsRoutingModule } from './events-routing.module';
-import { EventsComponent } from './events/events.component';
 import { EventsContentComponent } from './events-content/events-content.component';
-import { EventsEffects } from './store/events.effects';
 import { EventsLayoutComponent } from './events-layout/events-layout.component';
+import { EventsRoutingModule } from './events-routing.module';
 import { EventsService } from './events.service';
-import { eventsReducer } from './store/events.reducers';
+import { EventsComponent } from './events/events.component';
 import { FiltersComponent } from './filters/filters.component';
 import { RelatedComponent } from './related/related.component';
+import { EventsEffects } from './store/events.effects';
+import { eventsReducer } from './store/events.reducers';
 
 @NgModule({
   imports: [

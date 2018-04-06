@@ -1,9 +1,7 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { EventsContentComponent } from './events-content.component';
+import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { MatCardModule, MatTableModule } from '@angular/material';
-import { OrganizationIdentity } from '../../models/user/organization-identity';
 import { EventsService } from '../events.service';
+import { EventsContentComponent } from './events-content.component';
 
 describe('EventsContentComponent', () => {
 
