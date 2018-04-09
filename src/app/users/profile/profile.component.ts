@@ -11,6 +11,7 @@ import { UserProfile } from '../../models/user/user-profile';
 import { AppState } from '../../root-store/app.reducers';
 import { FetchConfig } from '../../root-store/config/config.actions';
 import { KillchainConfigEntry } from './killchain-config-entry';
+import { ProfileOrg } from './profile-org';
 
 @Component({
     selector: 'profile',
@@ -106,10 +107,4 @@ export class ProfileComponent implements OnInit {
                     }
                 });
     }
-}
-
-class ProfileOrg {
-    public id: string;
-    public name: string;
-    public role: string;
 }
