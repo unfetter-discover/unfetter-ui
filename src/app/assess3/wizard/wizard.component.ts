@@ -112,7 +112,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   private assessmentTypeGroups: Dictionary<{ tempModel: TempModel, assessmentsGroups: any[] }> = {};
 
   private readonly subscriptions: Subscription[] = [];
-  private readonly sidePanelOrder: SidePanelName[] = ['baseline', 'categories', 'summary'];
+  private readonly sidePanelOrder: SidePanelName[] = ['categories', 'summary'];
 
   constructor(
     private genericApi: GenericApi,

@@ -67,9 +67,6 @@ export class Assess3Guard implements CanActivate {
      * @return {Observable<Partial<LastModifiedAssessment3>[]>}
      */
     public fetchWithCreatorId(creatorId: string): Observable<Partial<LastModifiedAssessment3>[]> {
-        
-        console.log(`User ID for latest objass by creator: ${creatorId}`);
-
         return this.assessService
             .getLatestAssessmentsByCreatorId(creatorId)
             .switchMap((data: any[]) => {
