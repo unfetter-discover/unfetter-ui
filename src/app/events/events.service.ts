@@ -5,6 +5,7 @@ import { OrganizationIdentity } from '../models/user/organization-identity';
 import { Sighting } from '../models';
 import { Constance } from '../utils/constance';
 import { JsonApiData } from '../models/json/jsonapi-data';
+import { RxjsHelpers } from '../global/static/rxjs-helpers';
 
 @Injectable()
 export class EventsService {
@@ -49,6 +50,16 @@ export class EventsService {
     // TODO filter by org 
     const url = `${this.eventsBaseUrl}`;
     return this.genericApi.getAs<Sighting[]>(url);
+  }
+  /**
+   * @param  {string} sightingId
+   * @return {Observable} various STIX types
+   * @description Gets a sighting by ID and all objects referenced by it, 
+   * as well as the identities that created the referenced objects.
+   */
+  public getSightingGroup(sightingId: string): Observable<any> {
+    return this.genericApi.get(`${this.eventsBaseUrl}/group/${sightingId}`)
+        .map(RxjsHelpers.mapArrayAttributes);
   }
 
 }

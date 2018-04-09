@@ -4,12 +4,13 @@ import { Action } from '@ngrx/store';
 
 // For effects
 export const LOAD_SIGHTINGS_DATA = '[Events] LOAD_SIGHTINGS_DATA';
+export const STREAM_SIGHTING_IDS = '[Events] STREAM_SIGHTING_IDS';
+export const FETCH_SIGHTING_GROUP = '[Events] FETCH_SIGHTING_GROUP';
 
 // For reducers
 export const CLEAN_SIGHTINGS_DATA = '[Events] CLEAN_SIGHTINGS_DATA';
 export const SET_SIGHTINGS = '[Events] SET_SIGHTINGS';
 export const FINISHED_LOADING = '[Events] FINISHED_LOADING';
-export const STREAM_SIGHTING_IDS = '[Events] STREAM_SIGHTING_IDS';
 
 export class CleanSightingsData implements Action {
     public readonly type = CLEAN_SIGHTINGS_DATA;
@@ -40,9 +41,20 @@ export class StreamSightingIds implements Action {
     public readonly type = STREAM_SIGHTING_IDS;
 }
 
+
+export class FetchSightingGroup implements Action {
+    public readonly type = FETCH_SIGHTING_GROUP;
+
+    /**
+     * @param {string} payload sighting id
+     */
+    constructor(public payload: string) { }
+}
+
 export type EventsActions =
     CleanSightingsData |
     LoadSightingsData |
     SetSightings |
     FinishedLoading |
-    StreamSightingIds;
+    StreamSightingIds |
+    FetchSightingGroup;

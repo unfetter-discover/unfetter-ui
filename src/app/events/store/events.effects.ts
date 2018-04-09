@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
-import { LOAD_SIGHTINGS_DATA, SetSightings, FinishedLoading, STREAM_SIGHTING_IDS } from './events.actions';
+import { LOAD_SIGHTINGS_DATA, SetSightings, FinishedLoading, STREAM_SIGHTING_IDS, FetchSightingGroup, FETCH_SIGHTING_GROUP } from './events.actions';
 import { OrganizationIdentity } from '../../models/user/organization-identity';
 import { Sighting } from '../../models';
 import { EventsService } from '../events.service';
@@ -24,7 +24,7 @@ export class EventsEffects {
         .mergeMap((data: Sighting[]) => [new SetSightings(data), new FinishedLoading(true)]);
 
 
-    @Effect({ dispatch: false })
+    @Effect()
     public streamSightingIds = this.actions$
         .ofType(STREAM_SIGHTING_IDS)
         .do(() => console.log('Starting Events / streamSightingIds stream'))
@@ -32,6 +32,13 @@ export class EventsEffects {
         .pluck('body')
         .filter((stixNotificationBody: { id: string, type: string}) => stixNotificationBody.type === 'sighting')
         .pluck('id')
-        // TODO remove { dispath: false }, switchmap to a handler for the STIX ID
-        .do((stix) => console.log('Incoming ID to Events / streamSightingIds effect: ', stix));
+        .map((stixId: string) => new FetchSightingGroup(stixId));
+
+    @Effect({ dispatch: false })
+    public fetchSightingGroup = this.actions$
+        .ofType(FETCH_SIGHTING_GROUP)
+        .pluck('payload')
+        .switchMap((sightingId: string) => this.eventsService.getSightingGroup(sightingId))
+        .do((objs) => console.log('Events / fetchSightingGroup debug output: ', objs));
+    // TODO remove {dispatch:false}, mergeMap to actions to update various STIX objects
 }
