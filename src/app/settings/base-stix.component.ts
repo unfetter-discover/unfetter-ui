@@ -8,6 +8,7 @@ import { BaseStixService } from './base-stix.service';
 
 export class BaseStixComponent {
     public filteredItems: any[];
+    public validationErrorMessages: string[] = [];
     public selectedExternal: any;
     private duration = 3000;
 
@@ -247,6 +248,78 @@ export class BaseStixComponent {
                 }
             }
         );
+    }
+
+    
+    /**
+     * @param  {any} model (Any legacy STIX model)
+     * @returns boolean
+     * @description This is used to disable the save button in the CRUD pages
+     */
+    public invalidate(model: any): boolean {
+        this.validationErrorMessages = [];
+        let invalid = false;
+
+        // created_by_ref not on identity
+        if (model.type !== 'identity' && (!model.attributes.created_by_ref || !model.attributes.created_by_ref.length)) {
+            this.validationErrorMessages.push('Submitter Organization is required');
+            invalid = true;
+        }
+        
+        // Name not on sighting or relationship
+        if (model.type !== 'sighting' && model.type !== 'relationship' && (!model.attributes.name || !model.attributes.name.length)) {
+            this.validationErrorMessages.push('Name is required');
+            invalid = true;
+        }
+        
+        switch (model.type) {
+            case 'identity': 
+                if (!model.attributes.identity_class || !model.attributes.identity_class.length) {
+                    this.validationErrorMessages.push('Identity class is required');
+                    invalid = true;
+                }
+                break;
+            case 'indicator':
+                if (!model.attributes.pattern || !model.attributes.pattern.length) {
+                    this.validationErrorMessages.push('Pattern is required');
+                    invalid = true;
+                }
+                break;
+            case 'report':
+                if (!model.attributes.published) {
+                    this.validationErrorMessages.push('Published is required');
+                    invalid = true;
+                }
+                break;
+            case 'sighting':
+                if (!model.attributes.sighting_of_ref || !model.attributes.sighting_of_ref.length) {
+                    this.validationErrorMessages.push('Sighting reference is required');
+                    invalid = true;
+                }
+                break;
+        }
+
+        // external references
+        if (model.attributes.external_references && model.attributes.external_references.length) {
+            for (let externalReference of model.attributes.external_references) {
+                if (!externalReference.source_name || !externalReference.source_name.length ) {
+                    this.validationErrorMessages.push('All external references must have a source name: Add one, or remove the external reference');
+                    invalid = true;
+                }
+            }
+        }
+
+        // Kill chains
+        if (model.attributes.kill_chain_phases && model.attributes.kill_chain_phases.length) {
+            for (let killChainPhase of model.attributes.kill_chain_phases) {
+                if (!killChainPhase.kill_chain_name || !killChainPhase.kill_chain_name.length || !killChainPhase.phase_name || !killChainPhase.phase_name.length) {
+                    this.validationErrorMessages.push('All kill chain phases must have a kill chain name and phase name: Add them, or remove the kill chain phase');
+                    invalid = true;
+                }
+            }
+        }
+
+        return invalid;
     }
 
 }

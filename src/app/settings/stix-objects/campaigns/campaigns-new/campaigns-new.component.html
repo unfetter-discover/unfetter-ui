@@ -79,8 +79,10 @@
         <div class="button-row pull-right">
 
                  <button  id="cancel-btn" mat-button (click)="cancelButtonClicked()">CANCEL</button>
-                 <button id="save-btn" type="submit"  color="primary" mat-raised-button (click)="saveCampaign()" [disabled]="!campaign.attributes.name || !campaign.attributes.created_by_ref">SAVE</button>
+                 <button id="save-btn" type="submit"  color="primary" mat-raised-button (click)="saveCampaign()" [disabled]="invalidate(campaign)">SAVE</button>
 
         </div>
     </div>
 </div>
+
+<validation-errors [validationErrorMessages]="validationErrorMessages"></validation-errors>

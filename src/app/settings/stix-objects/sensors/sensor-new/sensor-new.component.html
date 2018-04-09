@@ -37,7 +37,9 @@
     <div class="col-md-12">
         <div class="button-row pull-right">
                 <button mat-button (click)="cancelButtonClicked()">CANCEL</button>
-                <button class=" " mat-raised-button (click)="saveNewSensor()" [disabled]="!sensor.attributes.name ||!sensor.attributes.created_by_ref" color="primary">SAVE</button>
+                <button class=" " mat-raised-button (click)="saveNewSensor()" [disabled]="invalidate(sensor)" color="primary">SAVE</button>
         </div>
     </div>
 </div>
+
+<validation-errors [validationErrorMessages]="validationErrorMessages"></validation-errors>

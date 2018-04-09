@@ -23,6 +23,7 @@ import { LinkNodeGraphComponent } from './link-node-graph/link-node-graph.compon
 import { LabelComponent } from './labels/label.component';
 import { GlobalModule } from '../global/global.module';
 import { StixTextArrayComponent } from './stix-text-array/stix-text-array.component';
+import { ValidationErrorsComponent } from './validation-errors/validation-errors.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { StixTextArrayComponent } from './stix-text-array/stix-text-array.compon
     ButtonsFilterComponent,
     LinkNodeGraphComponent,
     LabelComponent,
-    StixTextArrayComponent
+    StixTextArrayComponent,
+    ValidationErrorsComponent
   ],
   imports: [
     CommonModule,
@@ -77,7 +79,8 @@ import { StixTextArrayComponent } from './stix-text-array/stix-text-array.compon
     ButtonsFilterComponent,
     LinkNodeGraphComponent,
     LabelComponent,
-    StixTextArrayComponent
+    StixTextArrayComponent,
+    ValidationErrorsComponent
   ],
   providers: [BaseComponentService],
   entryComponents: [ConfirmationDialogComponent]

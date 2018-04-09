@@ -1,0 +1,8 @@
+<div class="validationErrorsComponent">
+  <div *ngIf="validationErrorMessages && validationErrorMessages.length">
+    <h4>Validation Messages:</h4>
+    <ul>
+      <li *ngFor="let validationErrorMessage of validationErrorMessages">{{ validationErrorMessage }}</li>
+    </ul>
+  </div>
+</div>
