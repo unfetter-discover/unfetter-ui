@@ -1,0 +1,3 @@
+<div class="publishedCheckboxComponent" *ngIf="model && model.attributes && model.attributes.metaProperties && model.attributes.metaProperties.published !== undefined">
+  <mat-checkbox [(ngModel)]="model.attributes.metaProperties.published">Publish To All Unfetter Users</mat-checkbox>
+</div>

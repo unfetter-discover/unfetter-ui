@@ -60,6 +60,7 @@ import { HeatmapComponent } from './components/heatmap/heatmap.component';
 import { CreatedByRefComponent } from './components/created-by-ref/created-by-ref.component';
 import { RelatationshipGeneratorComponent } from './components/relatationship-generator/relatationship-generator.component';
 import { InfiniteScrollDirective } from './directives/infinite-scroll.directive';
+import { PublishedCheckboxComponent } from './components/published-checkbox/published-checkbox.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -117,6 +118,7 @@ const unfetterComponents = [
     CreatedByRefComponent,
     RelatationshipGeneratorComponent,
     InfiniteScrollDirective,
+    PublishedCheckboxComponent,
 ];
 
 @NgModule({
