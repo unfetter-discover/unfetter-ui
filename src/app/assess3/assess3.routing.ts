@@ -16,8 +16,8 @@ const routes = [
         component: Assess3LayoutComponent,
         children: [
             { path: 'create', component: Create3Component },
-            // { path: 'wizard/new/indicators/:includesIndicators/mitigations/:includesMitigations/sensors/:includesSensors', loadChildren: 'app/assess3/wizard/wizard.module#WizardModule' },
-            // { path: 'wizard/edit/:rollupId', loadChildren: 'app/assess3/wizard/wizard.module#WizardModule' },
+            { path: 'wizard/new', loadChildren: 'app/assess3/wizard/wizard.module#WizardModule' },
+            { path: 'wizard/edit/:assessmentId', loadChildren: 'app/assess/wizard/wizard.module#WizardModule' },
         ]
     },
     { path: 'result/summary/:assessmentId', component: SummaryComponent },

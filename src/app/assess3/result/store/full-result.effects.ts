@@ -82,12 +82,14 @@ export class FullResultEffects {
         .pluck('payload')
         .filter((payload) => payload !== undefined)
         .do((payload: any) => {
-            const rollupId = payload.rollupId;
+            // const rollupId = payload.rollupId;
             const assessmentId = payload.assessmentId;
             const phase = payload.phase;
             const attackPattern = payload.attackPattern;
             // const url = `${Constance.API_HOST}/assess3/result/full/${rollupId}/${assessmentId}/phase/${phase}/attackPattern/${attackPattern}`;
-            const url = `${Constance.API_HOST}/assess3/result/full/${rollupId}/${assessmentId}/phase/${phase}`;
+            // TODO: is the rollup ID needed?  Not sure yet.
+            const url = `${Constance.API_HOST}/assess3/result/full/${assessmentId}/phase/${phase}`;
+            // const url = `${Constance.API_HOST}/assess3/result/full/${rollupId}/${assessmentId}/phase/${phase}`;
             this.location.replaceState(url);
         })
         .switchMap(() => Observable.of(new DonePushUrl()));

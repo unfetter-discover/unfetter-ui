@@ -64,7 +64,7 @@ export class FinishedLoading implements Action {
 export class FinishedSaving implements Action {
     public readonly type = FINISHED_SAVING;
 
-    constructor(public payload: { finished: boolean, rollupId: string, id: string }) { }
+    constructor(public payload: { finished: boolean, id: string }) { }
 }
 
 export class AnswerQuestion implements Action {
