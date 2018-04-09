@@ -43,7 +43,6 @@ export class MasterListDialogTableHeaders {
         this.id.format = (value) => {return value};
         if (!editionFormat) {
             editionFormat = (value: string) => {
-                console.log(`Date: ${value}`);
                 return this.dateFormat.transform(value, 'medium')
             };
         }
