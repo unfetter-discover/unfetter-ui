@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect } from '@ngrx/effects';
 import { Router } from '@angular/router';
+import { Actions, Effect } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-
-import * as userActions from '../../root-store/users/user.actions';
+import { AuthService } from '../../core/services/auth.service';
+import { UsersService } from '../../core/services/users.service';
 import * as configActions from '../../root-store/config/config.actions';
 import * as notificationActions from '../../root-store/notification/notification.actions';
+import * as userActions from '../../root-store/users/user.actions';
 import * as utilityActions from '../../root-store/utility/utility.actions';
-import { UsersService } from '../../core/services/users.service';
-import { AuthService } from '../../core/services/auth.service';
-import { Store } from '@ngrx/store';
 import { AppState } from '../app.reducers';
+
 
 @Injectable()
 export class UserEffects {
@@ -21,29 +21,48 @@ export class UserEffects {
     private refreshBufferPercent: number = 0.3;
     private tokenInitialized: boolean = false;
     private doRefreshToken: boolean = false;
-    
+
+    @Effect()
+    public fetchUserOnly = this.actions$
+        .ofType(userActions.FETCH_USER_ONLY)
+        .pluck('payload')
+        .switchMap((token) => {
+            return this.usersService.getUserFromToken()
+                .pluck('attributes');
+        })
+        .do((userData: any) => {
+            if (userData.registered) {
+                this.authService.setUser(userData);
+            }
+        })
+        .map((userProfile: any) => {
+            return new userActions.UpdateUserData({
+                ...userProfile,
+            });
+        });
+
     @Effect()
     public fetchUser = this.actions$
         .ofType(userActions.FETCH_USER)
-        .pluck('payload')        
+        .pluck('payload')
         .switchMap((token) => {
             return Observable.forkJoin(
-                Observable.of(token), 
+                Observable.of(token),
                 this.usersService.getUserFromToken()
                     .pluck('attributes')
             );
-        })      
-        .do(([token, userData]: any) => {            
+        })
+        .do(([token, userData]: any) => {
             if (userData.registered) {
                 // TODO move this to utilities
-                this.authService.setUser(userData);                
+                this.authService.setUser(userData);
             } else {
                 this.router.navigate(['/users/register']);
             }
         })
         .mergeMap(([token, userData]: [string, any]) => {
             if (!userData.approved) {
-                return[
+                return [
                     new userActions.LoginUser({
                         userData,
                         token
@@ -63,14 +82,14 @@ export class UserEffects {
                     new utilityActions.RecordVisit()
                 ];
             }
-            
+
         });
 
     @Effect()
     public setToken = this.actions$
         .ofType(userActions.SET_TOKEN)
         .pluck('payload')
-        .withLatestFrom(this.store) 
+        .withLatestFrom(this.store)
         .do(([token, store]: [string, AppState]) => {
             this.authService.setToken(token);
         })
@@ -116,7 +135,7 @@ export class UserEffects {
                 });
             }
         })
-        .map(({success, token}: { success: boolean, token: string }) => {
+        .map(({ success, token }: { success: boolean, token: string }) => {
             if (!this.doRefreshToken) {
                 console.log('User logged out, stopping refresh cycle');
                 return new utilityActions.NullAction();

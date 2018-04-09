@@ -1,7 +1,8 @@
-import { UserIdentity } from './user-identity';
-import { UserRole } from './user-role.enum';
 import { GithubUser } from './github-user';
 import { OrganizationIdentity } from './organization-identity';
+import { UserIdentity } from './user-identity';
+import { UserPreferences } from './user-preferences';
+import { UserRole } from './user-role.enum';
 
 /**
  * 
@@ -19,5 +20,6 @@ export class UserProfile {
     public locked = true;
     public approved = false;
     public registered: boolean;
+    public preferences?: UserPreferences;
     organizations: OrganizationIdentity[] = [];
 }
