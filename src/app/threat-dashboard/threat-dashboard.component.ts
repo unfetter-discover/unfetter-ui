@@ -1,37 +1,35 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, Renderer2 } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatMenu } from '@angular/material';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, Renderer2 } from '@angular/core';
+import { MatDialog } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-
-import { Constance } from '../utils/constance';
-import { StixService } from '../settings/stix.service';
-import { BaseStixService } from '../settings/base-stix.service';
-import { BaseComponentService } from '../components/base-service.component';
+import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
 import { GenericApi } from '../core/services/genericapi.service';
-
-import { IntrusionSet, AttackPattern } from '../models';
-import { ThreatReportSharedService } from './services/threat-report-shared.service';
-import { ThreatReportOverviewDataSource } from './threat-report-overview.datasource';
-import { ThreatReportOverviewService } from './services/threat-report-overview.service';
-import { ThreatReport } from './models/threat-report.model';
+import { simpleFadeIn, slideInOutAnimation } from '../global/animations/animations';
+import { MasterListDialogTableHeaders } from '../global/components/master-list-dialog/master-list-dialog.component';
+import { SortHelper } from '../global/static/sort-helper';
+import { AttackPattern, IntrusionSet } from '../models';
+import { Report } from '../models/report';
+import { UserProfile } from '../models/user/user-profile';
+import { AppState } from '../root-store/app.reducers';
+import { Constance } from '../utils/constance';
+import { BarChartItem } from './bar-chart/bar-chart-item';
+import { AttackPatternChild } from './collapsible-tree/attack-pattern-child';
+import { CourseOfActionChild } from './collapsible-tree/course-of-action-child';
+import { KillChainPhaseChild } from './collapsible-tree/kill-chain-phase-child';
+import { TreeNode } from './collapsible-tree/tree-node';
 import { KillChainEntry } from './kill-chain-table/kill-chain-entry';
 import { SelectOption } from './models/select-option';
 import { ThreatDashboard } from './models/threat-dashboard';
-import { RadarChartDataPoint } from './radar-chart/radar-chart-datapoint';
-import { simpleFadeIn, slideInOutAnimation } from '../global/animations/animations';
-import { SortHelper } from '../global/static/sort-helper';
-import { RadarChartComponent } from './radar-chart/radar-chart.component';
-import { BarChartItem } from './bar-chart/bar-chart-item';
-import { SidepanelComponent } from '../global/components/sidepanel';
-import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
-import { Report } from '../models/report';
-import { MasterListDialogTableHeaders } from '../global/components/master-list-dialog/master-list-dialog.component';
-import { AttackPatternChild } from './collapsible-tree/attack-pattern-child';
-import { KillChainPhaseChild } from './collapsible-tree/kill-chain-phase-child';
-import { CourseOfActionChild } from './collapsible-tree/course-of-action-child';
-import { TreeNode } from './collapsible-tree/tree-node';
 import { ThreatDashboardIntrusion } from './models/threat-dashboard-intrusion';
+import { ThreatReport } from './models/threat-report.model';
+import { RadarChartDataPoint } from './radar-chart/radar-chart-datapoint';
+import { ThreatReportOverviewService } from './services/threat-report-overview.service';
+import { ThreatReportSharedService } from './services/threat-report-shared.service';
+import { ThreatReportOverviewDataSource } from './threat-report-overview.datasource';
+
+
 
 type troColName = keyof ThreatReport | 'actions';
 
@@ -66,8 +64,9 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   public barLoading = true;
   public uniqChainNames: string[] = [];
   public selectedChain = '';
+  public user: UserProfile;
 
-  private readonly filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
+  private readonly sort = `sort=${encodeURIComponent(JSON.stringify({ name: '1' }))}`;
   private readonly subscriptions: Subscription[] = [];
   private readonly red500 = '#F44336';
   private readonly redAccent200 = '#FF5252';
@@ -92,6 +91,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     protected renderer: Renderer2,
     protected threatReportService: ThreatReportOverviewService,
     protected sharedService: ThreatReportSharedService,
+    private userStore: Store<AppState>,
   ) { }
 
   /**
@@ -108,16 +108,25 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
       .pluck('id')
       .subscribe(
         (id: string) => {
-          this.threatReport = null;
-          if (!id || id.trim() === '') {
-            this.notifyDoneLoading();
-          } else {
-            id = id.trim();
-            if (!this.id || (id !== this.id)) {
-              this.id = id.trim();
-              this.fetchDataAndRender();
+          const getUser$ = this.userStore
+          .select('users')
+          .pluck('userProfile')
+          .take(1)
+          .subscribe((user: UserProfile) => {
+            this.user = user;
+            this.threatReport = null;
+            if (!id || id.trim() === '') {
+              this.notifyDoneLoading();
+            } else {
+              id = id.trim();
+              if (!this.id || (id !== this.id)) {
+                this.id = id.trim();
+                this.fetchDataAndRender();
+              }
             }
-          }
+          },
+            (err) => console.log(err));
+        this.subscriptions.push(getUser$);
         },
         (err) => {
           console.log(err);
@@ -128,6 +137,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
           }
         }
       );
+
   }
 
   /**
@@ -253,14 +263,27 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @return {Observable<any>}
    */
   public loadAttackPatterns(): Observable<AttackPattern[]> {
-    const url = Constance.ATTACK_PATTERN_URL + '?' + this.filter + '&project=' + encodeURI(JSON.stringify({
+    let filter = '';
+    if (this.user && this.user.preferences && this.user.preferences.killchain) {
+      const userFramework = this.user.preferences.killchain;
+      const userFrameworkFilter = { 'stix.kill_chain_phases.kill_chain_name': { $exists: true, $eq: userFramework } };
+      filter = 'filter=' + encodeURIComponent(JSON.stringify(userFrameworkFilter));
+    }
+    const projects = {
       'stix.name': 1,
       'stix.description': 1,
       'stix.kill_chain_phases': 1,
       'extendedProperties.x_mitre_data_sources': 1,
       'extendedProperties.x_mitre_platforms': 1,
       'stix.id': 1
-    }));
+    };
+    const project = `project=${encodeURI(JSON.stringify(projects))}`;
+    let url = '';
+    if (filter) {
+      url = `${Constance.ATTACK_PATTERN_URL}?${filter}&${project}&${this.sort}`;
+    }else {
+      url = `${Constance.ATTACK_PATTERN_URL}?${project}&${this.sort}`;
+    }
     return this.genericApi.get(url)
       .map((el) => this.attackPatterns = el)
       .do(() => {
@@ -275,7 +298,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @return {Observable<any>}
    */
   public loadIntrusionSets(): Observable<IntrusionSet[]> {
-    const url = Constance.INTRUSION_SET_URL + '?' + this.filter;
+    const url = `${Constance.INTRUSION_SET_URL}?${this.sort}`;
     return this.genericApi.get(url).map((data) => this.intrusionSets = data);
   }
 
@@ -449,7 +472,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
       .map((attackPattern) => {
         const apIntrusions = attackPattern.intrusion_sets || [];
         const attackPatternChild =
-            new AttackPatternChild(attackPattern.name, intrusionSet.color, attackPattern.description);
+          new AttackPatternChild(attackPattern.name, intrusionSet.color, attackPattern.description);
         // set courses of actions for this attack pattern node
         apIntrusions
           .filter((curIntrusionSet) => intrusionSet.name === curIntrusionSet.name)
@@ -488,7 +511,11 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
           .filter((attackPattern) => this.isTruthy(attackPattern.isSelected));
         const dataPoint = new RadarChartDataPoint();
         dataPoint.area = phase.name;
+        // const val = selectedAttackPatterns.length > 0 ?
+        //     (Math.log(selectedAttackPatterns.length) / Math.LN10) : 0;
+        // dataPoint.value = val;
         dataPoint.value = Math.round((selectedAttackPatterns.length / total) * 100);
+        dataPoint.value = dataPoint.value > 0 ? Math.log(dataPoint.value) : 0;
         return dataPoint;
       });
 
