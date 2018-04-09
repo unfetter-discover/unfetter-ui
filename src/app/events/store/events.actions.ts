@@ -9,6 +9,7 @@ export const LOAD_SIGHTINGS_DATA = '[Events] LOAD_SIGHTINGS_DATA';
 export const CLEAN_SIGHTINGS_DATA = '[Events] CLEAN_SIGHTINGS_DATA';
 export const SET_SIGHTINGS = '[Events] SET_SIGHTINGS';
 export const FINISHED_LOADING = '[Events] FINISHED_LOADING';
+export const STREAM_SIGHTING_IDS = '[Events] STREAM_SIGHTING_IDS';
 
 export class CleanSightingsData implements Action {
     public readonly type = CLEAN_SIGHTINGS_DATA;
@@ -35,8 +36,13 @@ export class FinishedLoading implements Action {
     constructor(public payload: boolean) { }
 }
 
+export class StreamSightingIds implements Action {
+    public readonly type = STREAM_SIGHTING_IDS;
+}
+
 export type EventsActions =
     CleanSightingsData |
     LoadSightingsData |
     SetSightings |
-    FinishedLoading;
+    FinishedLoading |
+    StreamSightingIds;
