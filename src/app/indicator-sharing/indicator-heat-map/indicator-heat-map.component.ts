@@ -16,6 +16,7 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 
 import { IndicatorSharingFeatureState } from '../store/indicator-sharing.reducers';
+import { HeatmapComponent } from '../../global/components/heatmap/heatmap.component';
 import { HeatMapOptions } from '../../global/components/heatmap/heatmap.data';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { Constance } from '../../utils/constance';
@@ -28,6 +29,7 @@ import { Constance } from '../../utils/constance';
 export class IndicatorHeatMapComponent implements OnInit {
 
     public heatmap: any[] = [];
+    @ViewChild('heatmapView') private heatmapView: HeatmapComponent;
     @Input() heatmapOptions: HeatMapOptions = {
         color: {
             batchColors: [
@@ -240,25 +242,20 @@ export class IndicatorHeatMapComponent implements OnInit {
             if (index < 0) {
                 // pattern was not previously selected; select it
                 this.selectedPatterns.push(clicked.row);
-                if (clicked.event && clicked.event.path && clicked.event.path.length) {
-                    const rect = clicked.event.path.find(node => node && (node.localName === 'rect'));
-                    if (rect) {
-                        const cls = document.createAttribute('class');
-                        cls.value = 'selected';
-                        rect.attributes.setNamedItem(cls);
-                    }
-                }
             } else {
                 // remove the pattern from our selection list
                 newValue = 'inactive';
                 this.selectedPatterns.splice(index, 1);
-                if (clicked.event && clicked.event.path && clicked.event.path.length) {
-                    const rect = clicked.event.path.find(node => node && (node.localName === 'rect'));
-                    if (rect) {
-                        rect.attributes.removeNamedItem('class');
-                    }
-                }
             }
+            this.heatmap.forEach(batch => {
+                batch.cells.forEach(cell => {
+                    if (cell.title === clicked.row.title) {
+                        cell.value = newValue;
+                    }
+                });
+                return batch;
+            });
+            this.heatmapView.updateCells();
         }
     }
 

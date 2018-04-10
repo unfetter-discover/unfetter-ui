@@ -11,9 +11,7 @@ $white: #FFFFFF;
 }
 
 :host ::ng-deep {
-
     background-color: $white;
-
     unf-heatmap {
         div.heat-map {
             width: 100%;
@@ -21,16 +19,14 @@ $white: #FFFFFF;
             margin: 0;
             padding: 0;
             background: white;
-
-            .heat-map-header rect.odd, .heat-map-batch rect.odd {
-                fill: $analytic-exchange-primary-lightest;
-            }
-            .heat-map-cell rect.selected {
-                fill: $analytic-exchange-primary;
-            }
+        }
+        .heat-map-header rect.odd, .heat-map-batch rect.odd {
+            fill: $analytic-exchange-primary-lightest;
+        }
+        .heat-map-cell rect.selected {
+            fill: $analytic-exchange-primary;
         }
     }
-
 }
 
 .attack-pattern-tooltip {
