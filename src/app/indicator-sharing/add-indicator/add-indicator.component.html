@@ -187,7 +187,7 @@
             <mat-step label="Relationships" *ngIf="!editMode">
                 <div formGroupName="metaProperties">
                     <mat-form-field class="full-width mt-10">
-                        <mat-select placeholder="Indicated Attack Patterns" [multiple]="true" formControlName="relationships">
+                        <mat-select placeholder="Indicated Techniques" [multiple]="true" formControlName="relationships">
                             <mat-option [value]="ap.id" *ngFor="let ap of attackPatterns | sortByField:'name':'ascending'">{{ ap.name }}</mat-option>
                         </mat-select>
                     </mat-form-field>
