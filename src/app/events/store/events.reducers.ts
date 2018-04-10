@@ -22,7 +22,7 @@ export function eventsReducer(state = initialState, action: eventsActions.Events
     switch (action.type) {
         case eventsActions.CLEAN_SIGHTINGS_DATA:
             return genState();
-        case eventsActions.LOAD_SIGHTINGS_DATA:
+        case eventsActions.LOAD_DATA:
             return genState({
                 ...state,
             });
