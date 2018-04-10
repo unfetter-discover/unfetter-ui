@@ -1,7 +1,8 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
+import { ChartsModule } from 'ng2-charts';
 import { GlobalModule } from '../global/global.module';
 import { EventsContentComponent } from './events-content/events-content.component';
 import { EventsLayoutComponent } from './events-layout/events-layout.component';
@@ -20,8 +21,9 @@ import { eventsReducer } from './store/events.reducers';
     GlobalModule,
     StoreModule.forFeature('sightings', eventsReducer),
     EffectsModule.forFeature([EventsEffects]),
+    ChartsModule,
   ],
   declarations: [EventsLayoutComponent, EventsComponent, EventsContentComponent, RelatedComponent, FiltersComponent],
-  providers: [EventsService],
+  providers: [EventsService, DatePipe],
 })
 export class EventsModule { }
