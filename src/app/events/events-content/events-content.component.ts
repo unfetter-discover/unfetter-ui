@@ -86,7 +86,7 @@ export class EventsContentComponent implements OnInit {
   updateChart() {
     let earliest = new Date(new Date().setDate(new Date().getDate() - parseInt(this.daysOfData, this.BASE_TEN)));
     let inRangeSightings = this.service.recentSightings.reduce((result, sighting) => {
-      if (sighting.attributes.last_seen >= earliest) {
+      if (new Date(sighting.attributes.last_seen) >= earliest) {
         result.push(sighting)
       }
       return result;
