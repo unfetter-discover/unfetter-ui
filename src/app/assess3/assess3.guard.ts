@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { AppState } from '../root-store/app.reducers';
 import { AssessService } from './services/assess.service';
 import { environment } from '../../environments/environment';
-import { LastModifiedAssessment3 } from './last-modified-assessment3';
+import { LastModifiedAssessment3 } from './models/last-modified-assessment3';
 import { UserState } from '../root-store/users/users.reducers';
 import { UserProfile } from '../models/user/user-profile';
 
@@ -32,7 +32,6 @@ export class Assess3Guard implements CanActivate {
             .pluck('userProfile')
             .switchMap((user: UserProfile) => {
                 let o$;
-                console.log(`$$$$$$$$$ User: ` + UserProfile.name);
                 if (!this.demoMode && user && user._id) {
                     o$ = this.fetchWithCreatorId(user._id);
                 } else {
@@ -41,9 +40,6 @@ export class Assess3Guard implements CanActivate {
 
                 return o$.
                     map((data) => {
-
-                        console.log(`$$$$$$$$$ Data: ` + data);
-
                         if (data === undefined || data.length === 0) {
                             // no assessments found, navigate to creation page
                             this.router.navigate([this.CREATE_URL]);
@@ -52,7 +48,7 @@ export class Assess3Guard implements CanActivate {
                             // has assessments,
                             //  navigate to the last modified
                             const lastModAssessment = data[0];
-                            this.router.navigate(['/assess3/result/summary', lastModAssessment.rollupId, lastModAssessment.id]);
+                            this.router.navigate(['/assess3/result/summary', lastModAssessment.id]);
                             return true;
                         }
                     })

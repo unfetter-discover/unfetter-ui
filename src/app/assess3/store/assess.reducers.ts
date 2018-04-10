@@ -14,7 +14,7 @@ export interface AssessState {
     // TODO: add attack pattern array
     // attackPatterns?: JsonApiData<AttackPattern>[];
     finishedLoading: boolean;
-    saved: { finished: boolean, rollupId: string, id: string };
+    saved: { finished: boolean, id: string };
     showSummary: boolean;
     page: number;
 };
@@ -24,7 +24,7 @@ const genAssessState = (state?: Partial<AssessState>) => {
         assessment: new Assessment3(),
         backButton: false,
         finishedLoading: false,
-        saved: { finished: false, rollupId: '', id: '' },
+        saved: { finished: false, id: '' },
         showSummary: false,
         page: 1,
     };

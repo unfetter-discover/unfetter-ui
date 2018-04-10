@@ -6,7 +6,7 @@ import { Store } from '@ngrx/store';
 import * as assessActions from '../store/assess.actions';
 import * as assessReducers from '../store/assess.reducers';
 
-import { AssessForm } from '../../global/form-models/assess';
+import { Assess3Form } from '../../global/form-models/assess3';
 import { AssessmentMeta } from '../../models/assess/assessment-meta';
 import { AssessStateService } from '../services/assess-state.service';
 import { UpdatePageTitle } from '../store/assess.actions';
@@ -45,7 +45,7 @@ export class Create3Component implements OnInit {
       event.preventDefault();
     }
 
-    this.form = AssessForm();
+    this.form = Assess3Form();
   }
 
   /**

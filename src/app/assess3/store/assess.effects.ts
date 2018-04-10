@@ -68,10 +68,10 @@ export class AssessEffects {
         })
         .do((el: AssessmentMeta) => {
             this.router.navigate([
-                '/assess/wizard/new',
-                'indicators', el.includesIndicators === true ? 1 : 0,
-                'mitigations', el.includesMitigations === true ? 1 : 0,
-                'sensors', el.includesSensors === true ? 1 : 0
+                '/assess3/wizard/new',
+                // 'indicators', el.includesIndicators === true ? 1 : 0,
+                // 'mitigations', el.includesMitigations === true ? 1 : 0,
+                // 'sensors', el.includesSensors === true ? 1 : 0
             ]);
         })
         // required to send an empty element on non dispatched effects
@@ -83,24 +83,24 @@ export class AssessEffects {
         .ofType(assessActions.SAVE_ASSESSMENT)
         .pluck('payload')
         .switchMap((assessments: Assessment3[]) => {
-            const rollupIds = assessments
-                .map((assessment) => assessment.metaProperties)
-                .filter((el) => el !== undefined)
-                .map((meta) => meta.rollupId)
-                .filter((el) => el !== undefined);
-            let rollupId = '';
-            if (rollupIds.length > 0) {
-                rollupId = rollupIds[0];
-            } else {
-                rollupId = UUID.v4();
-            }
+            // const rollupIds = assessments
+            //     .map((assessment) => assessment.metaProperties)
+            //     .filter((el) => el !== undefined)
+            //     .map((meta) => meta.rollupId)
+            //     .filter((el) => el !== undefined);
+            // let rollupId = '';
+            // if (rollupIds.length > 0) {
+            //     rollupId = rollupIds[0];
+            // } else {
+            //     rollupId = UUID.v4();
+            // }
 
             const observables = assessments
-                .map((assessment) => {
-                    assessment.metaProperties = assessment.metaProperties || {};
-                    assessment.metaProperties.rollupId = rollupId;
-                    return assessment;
-                })
+                // .map((assessment) => {
+                //     assessment.metaProperties = assessment.metaProperties || {};
+                //     assessment.metaProperties.rollupId = rollupId;
+                //     return assessment;
+                // })
                 .map((assessment) => {
                     const json = { 'data': { 'attributes': assessment } } as JsonApi<JsonApiData<Assessment3>>;
                     let url = 'api/x-unfetter-object-assessments';
@@ -113,13 +113,13 @@ export class AssessEffects {
                 });
             return Observable.forkJoin(...observables)
                 .map((arr: any) => {
-                    if (Array.isArray(arr[0])) {
-                        return arr;
-                    } else {
-                        // stoopid hack to handle the fact that update returns a single object, not an array, and drops the metadata
-                        arr[0].attributes.metaProperties = { rollupId: rollupId };
+                    // if (Array.isArray(arr[0])) {
+                    //     return arr;
+                    // } else {
+                    //     // stoopid hack to handle the fact that update returns a single object, not an array, and drops the metadata
+                    //     arr[0].attributes.metaProperties = { rollupId: rollupId };
                         return [arr];
-                    }
+                    // }
                 });
         })
         .flatMap((arr: JsonApiData<Assessment3>[][]) => arr)
@@ -128,7 +128,6 @@ export class AssessEffects {
             const hasMetadata = hasAttributes && arr[0].attributes.metaProperties;
             return new assessActions.FinishedSaving({ 
                 finished: true, 
-                rollupId: hasMetadata ? arr[0].attributes.metaProperties.rollupId : '',
                 id: hasAttributes ? arr[0].attributes.id : '',
             });
         })

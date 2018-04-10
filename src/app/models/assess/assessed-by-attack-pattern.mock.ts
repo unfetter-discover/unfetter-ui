@@ -1,4 +1,3 @@
-import { AssessmentObject } from './assessment-object';
 import { Mock } from '../mock';
 import { AssessedByAttackPattern } from './assessed-by-attack-pattern';
 

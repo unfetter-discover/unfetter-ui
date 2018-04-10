@@ -2,7 +2,7 @@ import { RouterModule } from '@angular/router';
 
 import { Create3Component } from './create/create3.component';
 import { Assess3LayoutComponent } from './layout/assess3-layout.component';
-// import { SummaryComponent } from './result/summary/summary.component';
+import { SummaryComponent } from './result/summary/summary.component';
 // import { FullComponent } from './result/full/full.component';
 import { Assess3Guard } from './assess3.guard';
 
@@ -16,12 +16,11 @@ const routes = [
         component: Assess3LayoutComponent,
         children: [
             { path: 'create', component: Create3Component },
-            // { path: 'wizard/new/indicators/:includesIndicators/mitigations/:includesMitigations/sensors/:includesSensors', loadChildren: 'app/assess3/wizard/wizard.module#WizardModule' },
-            // { path: 'wizard/edit/:rollupId', loadChildren: 'app/assess3/wizard/wizard.module#WizardModule' },
+            { path: 'wizard/new', loadChildren: 'app/assess3/wizard/wizard.module#WizardModule' },
+            { path: 'wizard/edit/:assessmentId', loadChildren: 'app/assess/wizard/wizard.module#WizardModule' },
         ]
-    }
-    // { path: 'result/summary/:rollupId', component: SummaryComponent },
-    // { path: 'result/summary/:rollupId/:assessmentId', component: SummaryComponent },
+    },
+    { path: 'result/summary/:assessmentId', component: SummaryComponent },
     // { path: 'result/full/:rollupId', component: FullComponent },
     // { path: 'result/full/:rollupId/:assessmentId', component: FullComponent },
     // { path: 'result/full/:rollupId/:assessmentId/phase/:phase', component: FullComponent },
