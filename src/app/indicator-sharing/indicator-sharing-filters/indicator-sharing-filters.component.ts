@@ -20,7 +20,7 @@ export class IndicatorSharingFiltersComponent implements OnInit {
   public searchForm: FormGroup;
   public killChainPhases$: Observable<any>;
   public labels$: Observable<any>;
-  private heatmapVisible = false;
+  public heatmapVisible = false;
 
   constructor(
     public dialog: MatDialog,

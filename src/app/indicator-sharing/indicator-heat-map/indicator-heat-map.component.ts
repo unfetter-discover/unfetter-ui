@@ -56,8 +56,6 @@ export class IndicatorHeatMapComponent implements OnInit {
     private overlayRef: OverlayRef;
     private portal: TemplatePortal<any>;
 
-    @ViewChild('indicatorsGrid') indicatorsGrid: ElementRef;
-
     constructor(
         public dialogRef: MatDialogRef<IndicatorHeatMapComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
