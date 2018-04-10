@@ -599,14 +599,19 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
                 .on('mouseout', () => this.offCellHover());
         }
 
+        const bg = color.bg as string;
         const rect = cell
             .append('rect')
                 .attr('x', bounds.workspace.xPosition)
                 .attr('y', y)
                 .attr('width', bounds.cellWidth)
                 .attr('height', bounds.cellHeight)
-                .style('padding-right', bounds.workspace.betweenPadding)
-                .attr('fill', color.bg as string);
+                .style('padding-right', bounds.workspace.betweenPadding);
+        if (bg.startsWith('.')) {
+            rect.attr('class', bg.substring(1));
+        } else {
+            rect.attr('fill', bg);
+        }
         if (!isMini) {
             rect
                 .on('mouseover', ev => this.onRectHover(d3.event.target))
@@ -723,6 +728,9 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
         }
     }
 
+    /**
+     * @description determine how much width the current text in the given cell requires
+     */
     private textWidth(span: D3Selection) {
         return (span.node() as any).getComputedTextLength() + 4;
     }
@@ -754,7 +762,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
     private onRectHover(rect: any) {
         if (!this.options.hover.hoverColor) {
         } else if ((this.options.hover.hoverColor.bg as string).startsWith('.')) {
-            rect.setAttribute('class', this.options.hover.hoverColor.bg);
+            rect.setAttribute('class', (this.options.hover.hoverColor.bg as string).substring(1));
         } else {
             rect.setAttribute('fill', this.options.hover.hoverColor.bg);
         }
@@ -766,7 +774,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
     private offRectHover(rect: any, bg: string) {
         if (!this.options.hover.hoverColor) {
         } else if (bg.startsWith('.')) {
-            rect.setAttribute('class', bg);
+            rect.setAttribute('class', bg.substring(1));
         } else {
             rect.setAttribute('fill', bg);
         }
@@ -872,6 +880,9 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
         }
     }
 
+    /**
+     * @description handle single- and double-clicks inside the minimap
+     */
     private doMinimapClick(event) {
         const scale = d3.zoomTransform(this.minimap.workspace.panner.node()).k;
         if (scale < 1) { // don't bother if we are already zoomed all the way out

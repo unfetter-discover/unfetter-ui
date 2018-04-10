@@ -24,7 +24,7 @@ import { Constance } from '../../utils/constance';
 @Component({
     selector: 'indicator-heat-map',
     templateUrl: './indicator-heat-map.component.html',
-    styleUrls: ['./indicator-heat-map.component.scss']
+    styleUrls: ['./indicator-heat-map.component.scss'],
 })
 export class IndicatorHeatMapComponent implements OnInit {
 
@@ -32,29 +32,26 @@ export class IndicatorHeatMapComponent implements OnInit {
     @Input() heatmapOptions: HeatMapOptions = {
         color: {
             batchColors: [
+                {header: {bg: '.odd', fg: '#333'}, body: {bg: '.odd', fg: 'black'}},
                 {header: {bg: 'transparent', fg: '#333'}, body: {bg: 'transparent', fg: 'black'}},
             ],
             heatColors: {
-                'true': {bg: '#b2ebf2', fg: 'black'},
-                'false': {bg: '#ccc', fg: 'black'},
-                'selected': {bg: '#33a0b0', fg: 'black'},
+                'inactive': {bg: '#eee', fg: 'black'},
+                'selected': {bg: '.selected', fg: 'black'},
             },
         },
+        text: {
+            showCellText: true,
+        },
         zoom: {
-            hasMinimap: true,
+            hasMinimap: false,
+            cellTitleExtent: 1,
         },
     }
 
     public attackPatterns = {};
     public attackPattern = null;
     public selectedPatterns = [];
-
-    /**
-     * @description "indicators" is the old reference to "analytics" used in this page
-     */
-    private indicators: any[];
-    public displayIndicators: any[];
-    private indicatorsToAttackPatternMap: any;
 
     @ViewChild('tooltipTemplate') tooltipTemplate: TemplateRef<any>;
     private overlayRef: OverlayRef;
@@ -73,28 +70,7 @@ export class IndicatorHeatMapComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.indicators = this.displayIndicators = this.data.indicators || [];
-        this.loadIndicatorMap();
         this.loadAttackPatterns();
-    }
-
-    /**
-     * @description retrieve the indicators-to-attack-patterns map from the ngrx store
-     */
-    private loadIndicatorMap() {
-        const getIndicatorToAttackPatternMap$ = this.store
-            .select('indicatorSharing')
-            .pluck('indicatorToApMap')
-            .distinctUntilChanged()
-            .finally(() => {
-                if (getIndicatorToAttackPatternMap$) {
-                    getIndicatorToAttackPatternMap$.unsubscribe();
-                }
-            })
-            .subscribe(
-                (indicatorToAttackPatternMap) => this.indicatorsToAttackPatternMap = indicatorToAttackPatternMap,
-                (err) => console.log(err)
-            );
     }
 
     /**
@@ -119,35 +95,13 @@ export class IndicatorHeatMapComponent implements OnInit {
             })
             .subscribe(
                 (results: any[]) => {
-                    const indicators = this.groupIndicatorsByAttackPatterns();
                     const collects = {attackPatterns: {}, phases: {}};
                     this.attackPatterns = results.reduce(
                         (collect, pattern) => this.collectAttackPatterns(collect, pattern), collects).attackPatterns;
-                    this.heatmap = this.groupAttackPatternsByKillchain(collects.phases, indicators);
+                    this.heatmap = this.groupAttackPatternsByKillchain(collects.phases);
                 },
                 (err) => console.log(err)
             );
-    }
-
-    /**
-     * @description create a map of attack patterns and their indicators (inverted indicators-to-attack-patterns map)
-     */
-    private groupIndicatorsByAttackPatterns() {
-        const indicatorIds = this.indicators.map(indicator => indicator.id);
-        const patternIndicators = {};
-        Object.entries(this.indicatorsToAttackPatternMap)
-            .filter(indicator => indicatorIds.includes(indicator[0]))
-            .forEach(([indicator, patterns]) => {
-                if (patterns && (patterns as any[]).length) {
-                    (patterns as any[]).forEach((p: any) => {
-                        if (!patternIndicators[p.name]) {
-                            patternIndicators[p.name] = [];
-                        }
-                        patternIndicators[p.name].push(indicator);
-                    });
-                }
-            });
-        return patternIndicators;
     }
 
     /**
@@ -164,8 +118,7 @@ export class IndicatorHeatMapComponent implements OnInit {
                 phases: (pattern.attributes.kill_chain_phases || []).map(p => p.phase_name),
                 sources: pattern.attributes.x_mitre_data_sources,
                 platforms: pattern.attributes.x_mitre_platforms,
-                indicators: [],
-                value: false,
+                value: 'inactive',
             });
         }
 
@@ -188,15 +141,21 @@ export class IndicatorHeatMapComponent implements OnInit {
         return collects;
     }
 
-    private groupAttackPatternsByKillchain(tactics: any, indicators: any): any[] {
+    /**
+     * @description creates any array of tactics (phases, or kill-chains) as batches of attack patterns for the heatmap
+     */
+    private groupAttackPatternsByKillchain(tactics: any): any[] {
         Object.values(this.attackPatterns).forEach((attackPattern: any) => {
+            const selected = this.data.active && this.data.active.includes(attackPattern.id);
+            if (selected) {
+                this.selectedPatterns.push(attackPattern);
+                attackPattern.value = 'selected';
+            }
             const phases = attackPattern.phases;
             if (phases) {
                 phases.forEach((phase) => {
                     let group = tactics[phase];
                     if (group) {
-                        attackPattern.indicators = indicators[attackPattern.name] || [];
-                        attackPattern.value = attackPattern.indicators.length > 0;
                         group.cells.push(attackPattern);
                     }
                 });
@@ -222,6 +181,9 @@ export class IndicatorHeatMapComponent implements OnInit {
         }
     }
 
+    /**
+     * @description creates the overlay for the tooltip
+     */
     private showTooltip(event: UIEvent) {
         if (!this.overlayRef) {
             const elem = new ElementRef(event.target);
@@ -260,6 +222,9 @@ export class IndicatorHeatMapComponent implements OnInit {
         this.overlayRef.attach(this.portal);
     }
 
+    /**
+     * @description hides the tooltip overlay
+     */
     private hideTooltip() {
         this.attackPattern = null;
         if (this.overlayRef) {
@@ -270,11 +235,12 @@ export class IndicatorHeatMapComponent implements OnInit {
     }
 
     /**
-     * @description when clicked, highlight the analytics targeting the attack pattern
+     * @description for selecting and deselecting attack patterns
      */
-    public highlightAttackPatternAnalytics(clicked?: any) {
+    public toggleAttackPattern(clicked?: any) {
         if (clicked && clicked.row) {
             const index = this.selectedPatterns.findIndex(pattern => pattern.id === clicked.row.id);
+            let newValue = 'selected';
             if (index < 0) {
                 // pattern was not previously selected; select it
                 this.selectedPatterns.push(clicked.row);
@@ -288,6 +254,7 @@ export class IndicatorHeatMapComponent implements OnInit {
                 }
             } else {
                 // remove the pattern from our selection list
+                newValue = 'inactive';
                 this.selectedPatterns.splice(index, 1);
                 if (clicked.event && clicked.event.path && clicked.event.path.length) {
                     const rect = clicked.event.path.find(node => node && (node.localName === 'rect'));
@@ -296,20 +263,14 @@ export class IndicatorHeatMapComponent implements OnInit {
                     }
                 }
             }
-
-            // update the analytics list
-            if (this.selectedPatterns.length === 0) {
-                this.displayIndicators = this.indicators;
-            } else {
-                const selectedIndicators = this.selectedPatterns.reduce(
-                    (indicators, pattern) => {
-                        indicators.push(...pattern.indicators);
-                        return indicators;
-                    }, []);
-                this.displayIndicators =
-                        this.indicators.filter(indicator => selectedIndicators.includes(indicator.id));
-            }
         }
+    }
+
+    /**
+     * @description retrieve the list of selected attack pattern names
+     */
+    public close(): string[] {
+        return Array.from(new Set(this.selectedPatterns.map(pattern => pattern.id)));
     }
   
 }
