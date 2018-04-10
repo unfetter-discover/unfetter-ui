@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+
+import { StreamSightingIds } from '../store/events.actions';
+import { EventsState } from '../store/events.reducers';
 
 @Component({
   selector: 'events-layout',
@@ -7,9 +11,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EventsLayoutComponent implements OnInit {
 
-  constructor() { }
+  constructor(private store: Store<EventsState>) { }
 
   ngOnInit() {
+    this.store.dispatch(new StreamSightingIds());
   }
 
 }
