@@ -78,12 +78,6 @@ $traffic-detail-title-bottom-margin: 16;
   padding-left: 15px;
   padding-right: 18px;
   padding-bottom: 6px;
-  .mat-card-subtitle {
-    color: black;
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 6px;
-  }
 }
 
 .left-card {
@@ -108,7 +102,7 @@ $traffic-detail-title-bottom-margin: 16;
 }
 
 .mat-column-date {
-  flex: 0 0 32%;
+  flex: 0 0 18%;
 }
 
 .mat-column-ip {
@@ -121,6 +115,10 @@ $traffic-detail-title-bottom-margin: 16;
 
 .mat-column-country {
   flex: 0 0 8%;
+}
+
+.mat-column-threat {
+  flex: 0 0 14%
 }
 
 .mat-column-attack-pattern {
