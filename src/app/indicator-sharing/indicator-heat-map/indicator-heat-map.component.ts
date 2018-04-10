@@ -10,7 +10,6 @@ import {
         ChangeDetectorRef,
     } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { Store } from '@ngrx/store';
 
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
@@ -60,7 +59,6 @@ export class IndicatorHeatMapComponent implements OnInit {
     @ViewChild('indicatorsGrid') indicatorsGrid: ElementRef;
 
     constructor(
-        public store: Store<IndicatorSharingFeatureState>,
         public dialogRef: MatDialogRef<IndicatorHeatMapComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
         public genericApi: GenericApi,
