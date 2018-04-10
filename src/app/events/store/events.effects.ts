@@ -6,6 +6,7 @@ import { Sighting } from '../../models';
 import { EventsService } from '../events.service';
 import { WebsocketService } from '../../core/services/web-socket.service';
 import { WSMessageTypes } from '../../global/enums/ws-message-types.enum';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class EventsEffects {
@@ -17,11 +18,18 @@ export class EventsEffects {
     ) { }
 
     @Effect()
-    public fetchSightingsData = this.actions$
+    public fetchData = this.actions$
         .ofType(LOAD_DATA)
-        .switchMap(() => this.eventsService.getSightingGroup())
-        .do((d) => console.log('~~~~', d.filter((dat) => dat.type === 'sighting')))
-        .mergeMap((data: Sighting[]) => [new SetSightings(data.filter((dat) => dat.type === 'sighting')), new FinishedLoading(true)]);
+        .switchMap(() => Observable.forkJoin(
+            this.eventsService.getSightingGroup(),
+            this.eventsService.getAttackPatternsByIndicator()
+        ))
+        .do((data) => console.log('Events / fetchData debug output: ', data))
+        // TODO create additional actions / filters to handle other types of objects
+        .mergeMap(([sightingsGroup, indicatorToApMap]: [any, any]) => [
+            new SetSightings(sightingsGroup.filter((dat: any) => dat.attributes.type === 'sighting')), 
+            new FinishedLoading(true)
+        ]);
 
 
     @Effect()
