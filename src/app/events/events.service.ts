@@ -5,11 +5,11 @@ import { OrganizationIdentity } from '../models/user/organization-identity';
 import { Sighting } from '../models';
 import { Constance } from '../utils/constance';
 import { JsonApiData } from '../models/json/jsonapi-data';
-import { RxjsHelpers } from '../global/static/rxjs-helpers';
 
 @Injectable()
 export class EventsService {
   public readonly eventsBaseUrl = Constance.SIGHTING_URL;
+  public readonly indicatorsUrl = Constance.INDICATOR_URL;
   public recentSightings: Sighting[];
   public finishedLoading: boolean;
   
@@ -38,6 +38,7 @@ export class EventsService {
           });
   }
 
+//   TODO if using getSightingGroup, delete this
   /**
   * @description
   * @param {string} id
@@ -51,15 +52,31 @@ export class EventsService {
     const url = `${this.eventsBaseUrl}`;
     return this.genericApi.getAs<Sighting[]>(url);
   }
+
   /**
    * @param  {string} sightingId
    * @return {Observable} various STIX types
    * @description Gets a sighting by ID and all objects referenced by it, 
    * as well as the identities that created the referenced objects.
    */
-  public getSightingGroup(sightingId: string): Observable<any> {
-    return this.genericApi.get(`${this.eventsBaseUrl}/group/${sightingId}`)
-        .map(RxjsHelpers.mapArrayAttributes);
+  public getSightingGroupById(sightingId: string): Observable<any> {
+        return this.genericApi.get(`${this.eventsBaseUrl}/group/${sightingId}`);
   }
 
+    /**
+     * @return {Observable} various STIX types
+     * @description Gets all sightings nd all objects referenced by them, 
+     * as well as the identities that created the referenced objects.
+     */
+    public getSightingGroup(): Observable<any> {
+        return this.genericApi.get(`${this.eventsBaseUrl}/group`);
+    }
+
+    /**
+     * @return {Observable} various STIX types
+     * @description Gives an object with an indicator IDs as the properties that point to a list of attack patterns
+     */
+    public getAttackPatternsByIndicator(): Observable<any> {
+        return this.genericApi.get(`${this.indicatorsUrl}/attack-patterns-by-indicator`);
+    }
 }

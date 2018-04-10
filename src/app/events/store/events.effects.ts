@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
-import { LOAD_SIGHTINGS_DATA, SetSightings, FinishedLoading, STREAM_SIGHTING_IDS, FetchSightingGroup, FETCH_SIGHTING_GROUP } from './events.actions';
+import { SetSightings, FinishedLoading, STREAM_SIGHTING_IDS, FETCH_SIGHTING_GROUP_BY_ID, FetchSightingGroupById, LOAD_DATA } from './events.actions';
 import { OrganizationIdentity } from '../../models/user/organization-identity';
 import { Sighting } from '../../models';
 import { EventsService } from '../events.service';
 import { WebsocketService } from '../../core/services/web-socket.service';
 import { WSMessageTypes } from '../../global/enums/ws-message-types.enum';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class EventsEffects {
@@ -17,11 +18,18 @@ export class EventsEffects {
     ) { }
 
     @Effect()
-    public fetchSightingsData = this.actions$
-        .ofType(LOAD_SIGHTINGS_DATA)
-        .pluck('payload')
-        .switchMap((organizations: OrganizationIdentity[]) => this.eventsService.getAllSightingsByOrganization(organizations))
-        .mergeMap((data: Sighting[]) => [new SetSightings(data), new FinishedLoading(true)]);
+    public fetchData = this.actions$
+        .ofType(LOAD_DATA)
+        .switchMap(() => Observable.forkJoin(
+            this.eventsService.getSightingGroup(),
+            this.eventsService.getAttackPatternsByIndicator()
+        ))
+        .do((data) => console.log('Events / fetchData debug output: ', data))
+        // TODO create additional actions / filters to handle other types of objects
+        .mergeMap(([sightingsGroup, indicatorToApMap]: [any, any]) => [
+            new SetSightings(sightingsGroup.filter((dat: any) => dat.attributes.type === 'sighting')), 
+            new FinishedLoading(true)
+        ]);
 
 
     @Effect()
@@ -32,13 +40,13 @@ export class EventsEffects {
         .pluck('body')
         .filter((stixNotificationBody: { id: string, type: string}) => stixNotificationBody.type === 'sighting')
         .pluck('id')
-        .map((stixId: string) => new FetchSightingGroup(stixId));
+        .map((stixId: string) => new FetchSightingGroupById(stixId));
 
     @Effect({ dispatch: false })
-    public fetchSightingGroup = this.actions$
-        .ofType(FETCH_SIGHTING_GROUP)
+    public fetchSightingGroupById = this.actions$
+        .ofType(FETCH_SIGHTING_GROUP_BY_ID)
         .pluck('payload')
-        .switchMap((sightingId: string) => this.eventsService.getSightingGroup(sightingId))
+        .switchMap((sightingId: string) => this.eventsService.getSightingGroupById(sightingId))
         .do((objs) => console.log('Events / fetchSightingGroup debug output: ', objs));
     // TODO remove {dispatch:false}, mergeMap to actions to update various STIX objects
 }
