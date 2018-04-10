@@ -147,7 +147,7 @@ describe('HeatmapComponent', () => {
 
         let rects: NodeList = fixture.nativeElement.querySelectorAll('.heat-map svg g.heat-map-cell rect');
         expect(Array.from(rects)
-            .filter(rect => rect.attributes['fill'].nodeValue ===
+            .filter((rect: any) => rect.attributes['fill'].nodeValue ===
                     component.options.color.heatColors['true'].bg).length).toEqual(9);
     });
 
@@ -275,7 +275,7 @@ describe('HeatmapComponent', () => {
         trect.parentElement.dispatchEvent(new Event('mouseover'));
         fixture.whenStable().then(() => {
             expect(spy).not.toBeNull();
-            expect(spy.row).toBe(target);
+            expect(spy.row.title).toBe(target.title);
             trect.dispatchEvent(new Event('mouseout'));
             trect.parentElement.dispatchEvent(new Event('mouseout'));
             expect(spy).toBeNull();
@@ -296,7 +296,7 @@ describe('HeatmapComponent', () => {
         expect(trect).not.toBeNull();
         trect.parentElement.dispatchEvent(new Event('click'));
         expect(spy).not.toBeNull();
-        expect(spy.row).toBe(target);
+        expect(spy.row.title).toBe(target.title);
     });
 
 });
