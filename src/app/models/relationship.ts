@@ -19,6 +19,9 @@ export class Relationship {
         source_ref: string;
         target_ref: string;
         created_by_ref: string;
+        metaProperties: {
+            published: boolean;
+        }
     };
 
     constructor(data?: any) {
@@ -43,7 +46,10 @@ export class Relationship {
             // description: '',
             // relationship_type: '',
             // source_ref: '',
-            // target_ref: ''
+            // target_ref: '',
+            metaProperties: {
+                published: true
+            }
         };
     }
 }

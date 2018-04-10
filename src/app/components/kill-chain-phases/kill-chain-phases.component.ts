@@ -8,12 +8,12 @@ import { KillChainPhase } from '../../models';
     templateUrl: './kill-chain-phases.component.html'
 })
 export class KillChainPhasesComponent {
+
     @Input() public model: any;
 
     constructor() { }
 
     public addkillChainPhase(): void {
-        // let id = this.attackPattern.kill_chain_phases.length + 1;
         let killChainPhase = new KillChainPhase();
         killChainPhase.kill_chain_name = '';
         killChainPhase.phase_name = '';
@@ -24,6 +24,8 @@ export class KillChainPhasesComponent {
     }
 
     public removekillChainPhase(killChainPhase: KillChainPhase): void {
-        this.model.attributes.kill_chain_phases = this.model.attributes.kill_chain_phases.filter((h) => h !== killChainPhase);
+        this.model.attributes.kill_chain_phases = this.model.attributes.kill_chain_phases
+            .filter((h) => h !== killChainPhase);
     }
+
 }

@@ -78,7 +78,7 @@
             <mat-card-subtitle>
                 <div class="flex1"><label>{{attackPattern.attributes.name}}</label></div>
                 <div [hidden]="hoverTooltip">
-                    <button mat-button type="button" class="mat-primary">
+                    <button mat-button type="button" class="mat-primary" *ngIf="isAdminUser()">
                         <a target="_blank" href="/#/stix/attack-patterns/{{attackPattern.id}}">Details</a>
                     </button>
                     <button mat-button type="button" (click)="hideAttackPatternTooltip(attackPattern)">Close</button>

@@ -6,7 +6,9 @@ describe('cleanObjectProperties function', () => {
             bar: [],
             whim: '',
             wham: {},
-            real: 1
+            whap: null,
+            real: 1,
+            real2: false
         }
     };
 
@@ -15,6 +17,6 @@ describe('cleanObjectProperties function', () => {
             ...testObj 
         };
         const cleanedObj = cleanObjectProperties({}, testObjCopy);
-        expect(JSON.stringify(cleanedObj.foo)).toEqual('{"real":1}');
+        expect(Object.entries(cleanedObj.foo)).toEqual([['real', 1], ['real2', false]]);
     });
 });

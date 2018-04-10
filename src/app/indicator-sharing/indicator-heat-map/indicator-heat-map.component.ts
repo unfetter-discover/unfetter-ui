@@ -17,6 +17,7 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 
 import { IndicatorSharingFeatureState } from '../store/indicator-sharing.reducers';
+import { HeatMapOptions } from '../../global/components/heatmap/heatmap.data';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { Constance } from '../../utils/constance';
 
@@ -28,17 +29,20 @@ import { Constance } from '../../utils/constance';
 export class IndicatorHeatMapComponent implements OnInit {
 
     public heatmap: any[] = [];
-    @Input() heatmapOptions = {
-        batchColors: [
-            {header: {bg: 'transparent', fg: '#333'}, body: {bg: 'transparent', fg: 'black'}},
-        ],
-        heatColors: {
-            'true': {bg: '#b2ebf2', fg: 'black'},
-            'false': {bg: '#ccc', fg: 'black'},
-            'selected': {bg: '#33a0b0', fg: 'black'},
+    @Input() heatmapOptions: HeatMapOptions = {
+        color: {
+            batchColors: [
+                {header: {bg: 'transparent', fg: '#333'}, body: {bg: 'transparent', fg: 'black'}},
+            ],
+            heatColors: {
+                'true': {bg: '#b2ebf2', fg: 'black'},
+                'false': {bg: '#ccc', fg: 'black'},
+                'selected': {bg: '#33a0b0', fg: 'black'},
+            },
         },
-        showText: false,
-        hasMinimap: true,
+        zoom: {
+            hasMinimap: true,
+        },
     }
 
     public attackPatterns = {};
@@ -115,13 +119,11 @@ export class IndicatorHeatMapComponent implements OnInit {
             })
             .subscribe(
                 (results: any[]) => {
-                    console.log('incoming data', results, this.indicators, this.indicatorsToAttackPatternMap);
                     const indicators = this.groupIndicatorsByAttackPatterns();
                     const collects = {attackPatterns: {}, phases: {}};
                     this.attackPatterns = results.reduce(
                         (collect, pattern) => this.collectAttackPatterns(collect, pattern), collects).attackPatterns;
                     this.heatmap = this.groupAttackPatternsByKillchain(collects.phases, indicators);
-                    console.log('resulting heatmap', this.heatmap);
                 },
                 (err) => console.log(err)
             );
@@ -155,7 +157,7 @@ export class IndicatorHeatMapComponent implements OnInit {
         const name = pattern.attributes.name;
         if (name) {
             collects.attackPatterns[name] = Object.assign({}, {
-                batch: name,
+                title: name,
                 name: name,
                 id: pattern.attributes.id,
                 description: pattern.attributes.description,
@@ -163,7 +165,7 @@ export class IndicatorHeatMapComponent implements OnInit {
                 sources: pattern.attributes.x_mitre_data_sources,
                 platforms: pattern.attributes.x_mitre_platforms,
                 indicators: [],
-                active: false,
+                value: false,
             });
         }
 
@@ -177,9 +179,9 @@ export class IndicatorHeatMapComponent implements OnInit {
                     .replace(/\sAnd\s/g, ' and ')
                     ;
                 collects.phases[p.phase_name] = {
-                    batch: batch,
-                    active: null,
-                    columns: [[]],
+                    title: batch,
+                    value: null,
+                    cells: [],
                 };
             });
 
@@ -194,8 +196,8 @@ export class IndicatorHeatMapComponent implements OnInit {
                     let group = tactics[phase];
                     if (group) {
                         attackPattern.indicators = indicators[attackPattern.name] || [];
-                        attackPattern.active = attackPattern.indicators.length > 0;
-                        group.columns[0].push(attackPattern);
+                        attackPattern.value = attackPattern.indicators.length > 0;
+                        group.cells.push(attackPattern);
                     }
                 });
             }

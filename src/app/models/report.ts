@@ -20,8 +20,9 @@ export class Report {
         created_by_ref: string;
 
         type?: string;
-        metaProperties?: any;
         id?: string;
+
+        metaProperties?: any;
     };
 
      constructor() {
@@ -37,7 +38,10 @@ export class Report {
             object_refs:  [],
             labels: [],
             external_references: [],
-            kill_chain_phases: []
+            kill_chain_phases: [],
+            metaProperties: {
+                published: true
+            }
         };
     }
 }

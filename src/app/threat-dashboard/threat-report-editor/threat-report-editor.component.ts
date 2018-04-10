@@ -1,25 +1,25 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { Observable } from 'rxjs/Observable';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog, MatDialogConfig, MatSnackBar, MatTableDataSource } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as clone from 'clone';
-
-import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material';
-
+import { Observable } from 'rxjs/Observable';
+import { GenericApi } from '../../core/services/genericapi.service';
+import { DateHelper } from '../../global/static/date-helper';
+import { SortHelper } from '../../global/static/sort-helper';
+import { IntrusionSet } from '../../models/intrusion-set';
+import { Malware } from '../../models/malware';
+import { Report } from '../../models/report';
+import { ThreatReportOverviewService } from '../../threat-dashboard/services/threat-report-overview.service';
 import { Constance } from '../../utils/constance';
 import { Boundaries } from '../models/boundaries';
-import { Report } from '../../models/report';
-import { Malware } from '../../models/malware';
-import { IntrusionSet } from '../../models/intrusion-set';
 import { SelectOption } from '../models/select-option';
 import { ThreatReport } from '../models/threat-report.model';
-import { ThreatReportOverviewService } from '../../threat-dashboard/services/threat-report-overview.service';
 import { ThreatReportSharedService } from '../services/threat-report-shared.service';
 import { ReportEditorComponent } from './report-editor/report-editor.component';
 import { ReportImporterComponent } from './report-importer/report-importer.component';
-import { GenericApi } from '../../core/services/genericapi.service';
-import { SortHelper } from '../../global/static/sort-helper';
-import { DateHelper } from '../../global/static/date-helper';
+
+
 
 @Component({
     selector: 'threat-report-editor',
@@ -80,21 +80,23 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        if (this.route.snapshot.routeConfig.path === 'create') {
-            this.threatReport = new ThreatReport();
-            this.reportsDataSource = new MatTableDataSource(this.threatReport.reports);
-            if (this.sharedService.threatReportOverview) {
-                this.cloneThreatReport();
-            } else {
-                this.sharedService.threatReportOverview = this.threatReport;
-            }
-            this.title = 'Create';
-            this.loading = false;
-        } else /* modifying an existing threat report */ {
+        if (this.route.snapshot.routeConfig.path !== 'create') {
+            // modifying an existing threat report
             this.id = this.route.snapshot.paramMap.get('id');
             this.load(this.id);
-        }
+            this.initSelects();
+            return;
+        } 
 
+        this.threatReport = new ThreatReport();
+        this.reportsDataSource = new MatTableDataSource(this.threatReport.reports);
+        if (this.sharedService.threatReportOverview) {
+            this.cloneThreatReport();
+        } else {
+            this.sharedService.threatReportOverview = this.threatReport;
+        }
+        this.title = 'Create';
+        // this.loading = false;
         this.initSelects();
     }
 
@@ -184,7 +186,9 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
                         .sort(SortHelper.sortDescByField('displayValue'));
                 },
                 (err) => console.log(err),
-                () => {});
+                () => {
+                    this.loading = false;
+                });
         this.subscriptions.push(sub1$);
     }
 
@@ -352,7 +356,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      * @param {UIEvent} event optional
      */
     public onCreateReport(event?: UIEvent): void {
-        this.createReportDialog({});
+        this.openReportDialog(event);
     }
 
     /**
@@ -361,14 +365,26 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      * @param {UIEvent} event optional
      */
     public onModifyReport(report: Report, event?: UIEvent): void {
-        this.createReportDialog({data: {report: report}});
+        this.openReportDialog(event, report);
     }
 
-    private createReportDialog(options: any): void {
-        options.width = '100%';
-        options.height = 'calc(100vh - 160px)';
+    /**
+     * @description open report dialog
+     * @param {UIEvent} event optional
+     * @param {Report} report - report which to modify, undefined if you wish to create a new report
+     */
+    private openReportDialog(event?: UIEvent, report?: Report): void {
+        const opts = new MatDialogConfig();
+        // opts.width = '100%';
+        // opts.maxWidth = '100%';
+        // opts.height = '80vh';
+        // opts.minHeight = '80vh';
+        if (report) {
+            opts.data = report;
+        }
+        
         this.dialog
-            .open(ReportEditorComponent, options)
+            .open(ReportEditorComponent, opts)
             .afterClosed()
             .subscribe(
                 (result: Partial<Report> | boolean) => this.insertReport(result),
@@ -383,8 +399,6 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
     public onImportReport(event?: UIEvent): void {
         this.dialog
             .open(ReportImporterComponent, {
-                width: '100%',
-                height: '70vh',
                 data: {
                     reports: this.reportsDataSource.data,
                 }

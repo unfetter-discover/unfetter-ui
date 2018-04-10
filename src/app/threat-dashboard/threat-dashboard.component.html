@@ -1,4 +1,4 @@
-<div [@simpleFadeIn] *ngIf="!loading; else loadingBlock">
+<div [@simpleFadeIn] *ngIf="loading === false; else loadingBlock">
 
     <mat-sidenav-container *ngIf="threatReport; else notFound">
 

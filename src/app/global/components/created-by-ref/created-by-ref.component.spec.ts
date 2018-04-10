@@ -1,17 +1,18 @@
-import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
-import { MatButtonModule, MatSelectModule } from '@angular/material';
-import { FormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { StoreModule, Store } from '@ngrx/store';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { Observable } from 'rxjs/Observable';
+import { ComponentFixture, TestBed, async, fakeAsync, tick } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule, MatSelectModule } from '@angular/material';
 import { By } from '@angular/platform-browser';
-
-import * as fromRoot from '../../../root-store/app.reducers';
-import { CreatedByRefComponent } from './created-by-ref.component';
-import { mockOrganizations } from '../../../testing/mock-organizations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Store, StoreModule } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
 import { BaseComponentService } from '../../../components/base-service.component';
+import * as fromRoot from '../../../root-store/app.reducers';
+import { mockOrganizations } from '../../../testing/mock-organizations';
 import { makeRootMockStore } from '../../../testing/mock-store';
+import { CreatedByRefComponent } from './created-by-ref.component';
+import { AssessmentMeta } from '../../../models/assess/assessment-meta';
+
 
 describe('CreatedByRefComponent', () => {
     let component: CreatedByRefComponent;
@@ -23,13 +24,13 @@ describe('CreatedByRefComponent', () => {
     const mockBaseService = {
         get() {
             return Observable.of(
-                    mockOrganizations
-                        .map((org) => {
-                            return {
-                                attributes: org
-                            };
-                        })
-                );
+                mockOrganizations
+                    .map((org) => {
+                        return {
+                            attributes: org
+                        };
+                    })
+            );
         }
     };
 
@@ -66,7 +67,7 @@ describe('CreatedByRefComponent', () => {
                 }
             ]
         })
-        .compileComponents();
+            .compileComponents();
     }));
 
     beforeEach(() => {
@@ -96,5 +97,22 @@ describe('CreatedByRefComponent', () => {
         fixture.detectChanges();
         tick(500);
         expect(component.model.attributes.created_by_ref).not.toEqual('');
+        expect(component.selected).toEqual(component.model.attributes.created_by_ref);
     }));
+
+    it('should update a generic model', () => {
+        expect(component.model.attributes.created_by_ref).toEqual('');
+        const ident = 'ident1';
+        component.updateOrganization(ident);
+        expect(component.model.attributes.created_by_ref).toEqual(ident);
+    });
+
+    it('should update a an assessment model', () => {
+        component.model = undefined;
+        component.assessmentMeta = new AssessmentMeta();
+        expect(component.assessmentMeta.created_by_ref).toEqual('');
+        const ident = 'ident1';
+        component.updateOrganization(ident);
+        expect(component.assessmentMeta.created_by_ref).toEqual(ident);
+    });
 });

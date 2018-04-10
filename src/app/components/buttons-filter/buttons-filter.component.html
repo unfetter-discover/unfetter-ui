@@ -4,15 +4,14 @@
             <div class="col-xs-12 col-md-8">
                 <button mat-raised-button class="mat-primary" routerLink="./new"> NEW</button>
                 <button mat-raised-button class="mat-primary" (click)="download()"> DOWNLOAD</button>
-                <button *ngIf="showGrid" class="mat-primary" mat-raised-button routerLink="/relationships/mitigates/course-of-actions/attack-pattern">MITIGATES GRID</button>
+                <button *ngIf="showGrid" class="mat-primary" mat-raised-button
+                        routerLink="/relationships/mitigates/course-of-actions/attack-pattern">MITIGATES GRID</button>
             </div>
              <div class="cell-padding col-xs-12 col-md-4">
-
-                    <filter-search-box  [items]="model" (filterItemsChange)="onFilterItemsChange($event)"></filter-search-box>
+                    <filter-search-box  [items]="model"
+                            (filterItemsChange)="onFilterItemsChange($event)"></filter-search-box>
                     <span *ngIf="filteredItems" class="right-align">Results: {{filteredItems.length}}</span>
-
             </div>
-
         </div>
     </div>
 </div>

@@ -4,11 +4,12 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/startWith';
+
 import { BaseComponent } from '../base.component';
 
 @Component({
-  selector: 'list-stix-objects',
-  templateUrl: './list-stix-objects.component.html'
+    selector: 'list-stix-objects',
+    templateUrl: './list-stix-objects.component.html'
 })
 export class ListStixObjectComponent extends BaseComponent implements OnInit {
 
@@ -19,16 +20,17 @@ export class ListStixObjectComponent extends BaseComponent implements OnInit {
     @Input() public showKillChainPhases: boolean;
     @Input() public showExternalReferences: boolean;
     @Input() public showSectors: boolean;
+
     @Output() public deletButtonClicked: EventEmitter<any> = new EventEmitter();
+
     private isLastRow: boolean;
-
     private index = 0;
-     constructor(
-        public route: ActivatedRoute,
-        public router: Router,
-        public dialog: MatDialog,
-        public location: Location) {
 
+    constructor(
+            public route: ActivatedRoute,
+            public router: Router,
+            public dialog: MatDialog,
+            public location: Location) {
         super(route, router, dialog);
     }
 
@@ -51,9 +53,10 @@ export class ListStixObjectComponent extends BaseComponent implements OnInit {
         this.deletButtonClicked.emit(item);
     }
 
-    private  notLastIndex(): boolean {
+    private notLastIndex(): boolean {
         this.isLastRow = this.index < this.model.length ? true : false;
         this.index = this.index + 1;
         return this.isLastRow;
     }
+
 }

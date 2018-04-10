@@ -3,8 +3,8 @@ import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/startWith';
 
 @Component({
-  selector: 'labels',
-  templateUrl: './label.component.html'
+    selector: 'labels',
+    templateUrl: './label.component.html'
 })
 export class LabelComponent {
 
@@ -21,4 +21,5 @@ export class LabelComponent {
     public update(index: number, value: string): void {
         this.model.attributes.labels[index] = value;
     }
+
 }

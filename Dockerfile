@@ -22,7 +22,8 @@ COPY package.json $WORKING_DIRECTORY
 RUN echo $WORKING_DIRECTORY
 
 # The NPM package depends on TAR package, which has a test directory with an encrypted tgz file, that gets blocked by some antivirus scanners. Removing it.
-RUN npm --loglevel error install && \
+RUN apk add --update git && \
+    npm --loglevel error install && \
     find / -name "cb-never*.tgz" -delete
 
 COPY . $WORKING_DIRECTORY
@@ -30,4 +31,8 @@ COPY . $WORKING_DIRECTORY
 # The NPM package depends on TAR package, which has a test directory with an encrypted tgz file, that gets blocked by some antivirus scanners. Removing it.
 RUN find / -name "cb-never*.tgz" -delete && \
     rm -rf /usr/share/man && \
-    rm -rf /tmp/*
+    rm -rf /tmp/* && \
+    rm -rf /var/cache/apk/* && \
+    rm -rf /usr/lib/node_modules/npm/man && \
+    rm -rf /usr/lib/node_modules/npm/doc && \
+    rm -rf /usr/lib/node_modules/npm/html

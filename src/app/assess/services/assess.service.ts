@@ -273,6 +273,7 @@ export class AssessService {
 
     /**
      * @description retrieve <i>partial assessments</i>, for all creators/users in system
+     *  NOTE: the backend may apply security filters, based on user and run mode
      * @return {Observable<Partial<LastModifiedAssessment>[]>}
      */
     public getLatestAssessments(): Observable<Partial<LastModifiedAssessment>[]> {
@@ -283,6 +284,7 @@ export class AssessService {
 
     /**
      * @description retrieve <i>partial assessments</i> for given creator
+     *   NOTE: the backend may apply security filters, based on user and run mode
      * @param {string} userId, creator mongo user id, not stix identity
      * @return {Observable<Partial<LastModifiedAssessment>[]>}
      */

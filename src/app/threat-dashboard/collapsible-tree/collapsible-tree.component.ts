@@ -23,7 +23,6 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
      * @description initialize this component
      */
     public ngOnInit(): void {
-        console.log('on init');
     }
 
     /**
@@ -124,7 +123,7 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
                     }
                 }
             );
-        } catch (e) { console.log(''); }
+        } catch (e) {}
 
         d3.select(self.frameElement).style('height', '800px');
 
@@ -378,7 +377,7 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
                 break;
             }
             default: {
-                console.log('missing icon for ', type);
+                console.log(`(${new Date().toISOString()}) missing icon for '${type}'`);
                 icon = circleIcon;
                 break;
             }

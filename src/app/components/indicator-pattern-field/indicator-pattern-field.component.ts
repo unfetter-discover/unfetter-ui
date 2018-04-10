@@ -1,11 +1,11 @@
-
 import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
-  selector: 'indicator-pattern-field',
-  templateUrl: './indicator-pattern-field.html'
+    selector: 'indicator-pattern-field',
+    templateUrl: './indicator-pattern-field.html'
 })
 export class IndicatorPatternFieldComponent {
+
     public objectTypes = [
         {label: 'domain-name'},
         {label: 'email-addr'},
@@ -20,7 +20,8 @@ export class IndicatorPatternFieldComponent {
         {label: 'hashes.MD5'},
         {label: 'hashes.SHA-256'},
         {label: 'name'},
-        {label: 'value'}];
+        {label: 'value'}
+    ];
 
     public selectedObjectType: string;
     public selectedObjectProperty: string;
@@ -51,4 +52,5 @@ export class IndicatorPatternFieldComponent {
         this.selectedObjectValue = null;
         this.disabled = true;
     }
+
 }

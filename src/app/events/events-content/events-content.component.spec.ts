@@ -1,18 +1,35 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { MatCardModule, MatTableModule } from '@angular/material';
+import { EventsService } from '../events.service';
 import { EventsContentComponent } from './events-content.component';
-import { MatCardModule } from '@angular/material';
 
 describe('EventsContentComponent', () => {
+
+
+  const mockService = {
+  };
+
   let component: EventsContentComponent;
   let fixture: ComponentFixture<EventsContentComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EventsContentComponent ],
-      imports: [ MatCardModule ],
+      declarations: [EventsContentComponent],
+      imports: [MatCardModule,
+        MatTableModule, 
+      ],
+
+    }).overrideComponent(EventsContentComponent, {
+      set: {
+        providers: [
+          {
+            provide: EventsService,
+            useValue: mockService
+          },
+        ],
+      }
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

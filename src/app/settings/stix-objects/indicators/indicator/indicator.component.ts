@@ -43,7 +43,8 @@ export class IndicatorComponent extends BaseStixComponent implements OnInit {
                 this.indicator =  new Indicator(data);
                 if (!this.indicator.attributes.metaProperties) {
                     this.indicator.attributes.metaProperties = {
-                        observedData: []
+                        observedData: [],
+                        published: true
                     };
                 }
                 if (!this.indicator.attributes.metaProperties.observedData) {

@@ -25,6 +25,9 @@ export class Sighting {
         ];
         summary: boolean;
         created_by_ref: string;
+        metaProperties: {
+            published: boolean;
+        }
     };
 
      constructor(data?: Sighting) {
@@ -59,7 +62,10 @@ export class Sighting {
             // sighting_of_ref: '',
             observed_data_refs: [],
             where_sighted_refs: [],
-            // summary: ''
+            // summary: '',
+            metaProperties: {
+                published: true
+            }
         };
     }
 }

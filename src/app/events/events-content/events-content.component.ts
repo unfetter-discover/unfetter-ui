@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, } from '@angular/core';
+import { EventsService } from '../events.service';
 
 @Component({
   selector: 'events-content',
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EventsContentComponent implements OnInit {
 
-  constructor() { }
+  readonly columnIds: string[];
+
+  constructor( public service: EventsService, ) {
+    this.columnIds = ['date', 'ip', 'city', 'country', 'attack_pattern', 'potential actor'];
+  }
 
   ngOnInit() {
   }
-
 }

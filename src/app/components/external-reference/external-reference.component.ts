@@ -4,8 +4,8 @@ import 'rxjs/add/operator/startWith';
 import { ExternalReference } from '../../models';
 
 @Component({
-  selector: 'external-reference',
-  templateUrl: './external-reference.component.html'
+    selector: 'external-reference',
+    templateUrl: './external-reference.component.html'
 })
 export class ExternalReferenceComponent {
 
@@ -21,6 +21,8 @@ export class ExternalReferenceComponent {
     }
 
     public removeExternalReferenceButtonClicked(externalReference: ExternalReference): void {
-        this.model.attributes.external_references = this.model.attributes.external_references.filter((h) => h !== externalReference);
+        this.model.attributes.external_references = this.model.attributes.external_references
+            .filter((h) => h !== externalReference);
     }
+
 }

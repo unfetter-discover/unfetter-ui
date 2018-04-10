@@ -145,7 +145,6 @@ export class IntrusionSetDashboardComponent implements OnInit {
                 .subscribe(
                     (data: any) => {
                         this.color(data); // TODO move this to the ap tab?
-                        console.log(new Date().toISOString(), 'colorized data to push to the AP tab', data);
                         this.intrusionSets = data.intrusionSets;
                         this.coursesOfAction = data.coursesOfAction;
                         this.killChainPhases = data.killChainPhases;

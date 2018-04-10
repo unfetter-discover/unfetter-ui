@@ -19,7 +19,7 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment
     protected filterChange = new BehaviorSubject('');
     protected dataChange = new BehaviorSubject(undefined);
 
-    constructor(protected assessService: AssessService, protected creatorId?: string) {
+    constructor(protected assessService: AssessService) {
         super();
     }
 
@@ -33,7 +33,7 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment
             .switchMap(() => {
                 const val = this.filterChange.getValue();
                 const filterVal = val.trim().toLowerCase() || '';
-                const assessments$ = this.fetchAssessments(); // .let(this.dedupByRollupId);
+                const assessments$ = this.assessService.getLatestAssessments(); // .let(this.dedupByRollupId);
                 if (!filterVal || filterVal.length === 0) {
                     return assessments$;
                 }
@@ -85,42 +85,4 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment
         });
     }
 
-    /**
-     * @description fetch the last modified summary for this user or the system as necessary
-     * @return {Observable<Partial<LastModifiedAssessment>[]>}
-     */
-    public fetchAssessments(): Observable<Partial<LastModifiedAssessment>[]> {
-        if (!this.demoMode && this.creatorId && this.creatorId.trim() !== '') {
-            return this.fetchWithCreatorId(this.creatorId);
-        } else {
-            return this.fetchWithNoCreatorId();
-        }
-    }
-
-    /**
-     * @description
-     *  fetch assessments by their owner, then fallback and show a group assessment if needed
-     * @param {string} creatorId
-     * @return {Observable<Partial<LastModifiedAssessment>[]>}
-     */
-    public fetchWithCreatorId(creatorId: string): Observable<Partial<LastModifiedAssessment>[]> {
-        return this.assessService
-            .getLatestAssessmentsByCreatorId(creatorId)
-            .switchMap((data: any[]) => {
-                if (!data || data.length < 1) {
-                    return this.fetchWithNoCreatorId();
-                } else {
-                    return Observable.of(data);
-                }
-            });
-    }
-
-    /**
-     * @description show last modified group assessments
-     * @return {Observable<Partial<LastModifiedAssessment>[]>}
-     */
-    public fetchWithNoCreatorId(): Observable<Partial<LastModifiedAssessment>[]> {
-        return this.assessService
-            .getLatestAssessments();
-    }
 }

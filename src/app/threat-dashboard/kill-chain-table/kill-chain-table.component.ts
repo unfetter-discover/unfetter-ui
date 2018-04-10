@@ -20,6 +20,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 
 import { Constance } from '../../utils/constance';
+import { AuthService } from '../../core/services/auth.service';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { ThreatReport } from '../models/threat-report.model';
 import { KillChainEntry } from './kill-chain-entry';
@@ -27,14 +28,8 @@ import { AttackPattern } from '../../models/attack-pattern';
 import { ThreatDashboard } from '../models/threat-dashboard';
 import { topRightSlide } from '../../global/animations/top-right-slide';
 import { KillChainPhase } from '../../models';
-import { HeatMapOptions } from '../../global/components/heatmap/heatmap.component';
+import { HeatMapOptions, HeatBatchData } from '../../global/components/heatmap/heatmap.data';
 import { Dictionary } from '../../models/json/dictionary';
-
-interface HeatMapData {
-  phase: string,
-  count: number,
-  columns: Array<Array<{name: string, active: boolean}>>
-}
 
 @Component({
   selector: 'unf-kill-chain-table',
@@ -68,10 +63,15 @@ export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit
   public treeMapData: Array<any> = [];
   public showTreeMap = false;
 
-  public heatMapData: Array<HeatMapData> = [];
+  public heatMapData: Array<HeatBatchData> = [];
   public readonly heatMapOptions: HeatMapOptions = {
-    showText: false,
-    hasMinimap: true,
+    text: {
+      showCellText: true,
+    },
+    zoom: {
+      hasMinimap: true,
+      cellTitleExtent: 2,
+    },
   };
   public showHeatMap = true;
 
@@ -83,6 +83,7 @@ export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
+    protected authService: AuthService,
     protected genericApi: GenericApi,
     private overlay: Overlay,
     private vcr: ViewContainerRef,
@@ -267,7 +268,7 @@ export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit
       ['Unused Patterns', 'Attack Patterns', 0],
     ];
     for (let attackPattern in attackData) {
-      if (attackData[attackPattern].count > 0) {
+      if (attackData[attackPattern] > 0) {
         data.push([attackPattern, 'Attack Patterns', attackData[attackPattern]]);
       }
     }
@@ -284,6 +285,7 @@ export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit
       const patternName: string = selectedPattern.row[0];
       const rawSelection = this.attackPatternPhases[patternName];
       let attackPattern = null;
+      
       this.intrusionSetsDashboard.killChainPhases.forEach(phase => {
         attackPattern = attackPattern || phase.attack_patterns.find(pattern => pattern && pattern.name === patternName);
       });
@@ -301,7 +303,7 @@ export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit
    */
   private createAttackPatternHeatMap() {
     // Collect the data.
-    let data = [];
+    let data: HeatBatchData[] = [];
     this.intrusionSetsDashboard.killChainPhases.forEach(phase => {
       let index = 0;
       if (phase && phase.name && phase.attack_patterns) {
@@ -312,16 +314,16 @@ export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit
           .join(' ')
           .replace(/\sAnd\s/g, ' and ')
           ;
-        const d = {
-          batch: name,
-          active: null,
-          columns: [[]]
+        const d: HeatBatchData = {
+          title: name,
+          value: null,
+          cells: []
         };
         phase.attack_patterns.forEach(attackPattern => {
           if (attackPattern.name) {
-            d.columns[0].push({
-              batch: attackPattern.name,
-              active: attackPattern.isSelected
+            d.cells.push({
+              title: attackPattern.name,
+              value: attackPattern.isSelected
             });
           }
         });
@@ -340,7 +342,7 @@ export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit
         this.hideAttackPatternTooltip(this.attackPattern);
       }
     } else {
-      const patternName: string = selectedPattern.row.batch;
+      const patternName: string = selectedPattern.row.title;
       const rawSelection = this.attackPatternPhases[patternName];
       let attackPattern = null;
       this.intrusionSetsDashboard.killChainPhases.forEach(phase => {
@@ -397,7 +399,7 @@ export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit
 
       const sub$ = this.overlayRef.backdropClick().subscribe(
         () => this.hideAttackPatternTooltip(this.attackPattern),
-        (err) => console.log(err),
+        (err) => console.log(`${new Date().toISOString()} Error using tooltip: ${err}`),
         () => sub$.unsubscribe());
 
       this.portal = new TemplatePortal(this.apTooltipTemplate, this.vcr);
@@ -420,4 +422,9 @@ export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit
     this.overlayRef.dispose();
     this.overlayRef = null;
   }
+
+  public isAdminUser(): boolean {
+    return this.authService.isAdmin();
+  }
+
 }

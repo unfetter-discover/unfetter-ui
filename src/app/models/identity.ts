@@ -18,6 +18,9 @@ export class Identity {
         identity_class: string;
         sectors: string[];
         contact_information: string;
+        metaProperties: {
+            published: boolean;
+        }
     };
 
     constructor(data?: Identity) {
@@ -42,7 +45,10 @@ export class Identity {
             // description: '',
             // identity_class: '',
             sectors: [],
-            // contact_information: ''
+            // contact_information: '',
+            metaProperties: {
+                published: true
+            }
         };
     }
 }

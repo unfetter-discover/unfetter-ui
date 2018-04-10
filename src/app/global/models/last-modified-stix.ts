@@ -7,5 +7,5 @@ export class LastModifiedStix {
     name: string;
     type: string;
     modified: string;
-    create_by_ref?: string;
+    created_by_ref?: string;
 }

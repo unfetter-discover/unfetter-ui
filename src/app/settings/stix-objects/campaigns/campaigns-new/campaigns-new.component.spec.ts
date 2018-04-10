@@ -1,17 +1,16 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick
-} from '@angular/core/testing';
-import { Location, LocationStrategy, CommonModule } from '@angular/common';
+import { Location } from '@angular/common';
+import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed, async, fakeAsync, tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { NO_ERRORS_SCHEMA, DebugElement } from '@angular/core';
+import { MatDialog, MatInputModule, MatSnackBar } from '@angular/material';
 import { By } from '@angular/platform-browser';
-import { MatSnackBar, MatDialog, MatInputModule } from '@angular/material';
-import { StixService } from '../../../stix.service';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Router } from '@angular/router';
-import { newEvent, click } from '../../../../testing/index';
-
+import { click, newEvent } from '../../../../testing/index';
+import { StixService } from '../../../stix.service';
 // Load the implementations that should be tested
 import { CampaignsNewComponent } from './campaigns-new.component';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+
 
 let comp: CampaignsNewComponent;
 let fixture: ComponentFixture<CampaignsNewComponent>;
@@ -30,7 +29,7 @@ function componetInitialized() {
         createComponent();
         it('should instantiate it', () => {
             expect(comp).not.toBeNull();
-          });
+        });
     });
 }
 
@@ -58,7 +57,7 @@ function buttons() {
         });
 
         it('should navigate back if cancel button click', () => {
-            const location: Location  = fixture.debugElement.injector.get(Location);
+            const location: Location = fixture.debugElement.injector.get(Location);
             const locationSpy = spyOn(location, 'back');
 
             fixture.detectChanges(); // runs initial lifecycle hooks
@@ -124,7 +123,7 @@ function form() {
 function createComponent() {
     beforeEach(() => {
         fixture = TestBed.createComponent(CampaignsNewComponent);
-        comp    = fixture.componentInstance;
+        comp = fixture.componentInstance;
 
         // trigger initial data binding
         fixture.detectChanges();
@@ -133,34 +132,36 @@ function createComponent() {
 
 function moduleSetup() {
     // async beforeEach
-    beforeEach( async(() => {
-       TestBed.configureTestingModule({
-         imports: [
-            FormsModule, NoopAnimationsModule, MatInputModule
-         ],
-         declarations: [CampaignsNewComponent],
-         schemas: [NO_ERRORS_SCHEMA],
-         providers: [
-           { provide: StixService, useValue: {}},
-           { provide: ActivatedRoute, useValue: {} },
-           { provide: Router, useValue: {} },
-           { provide: MatDialog, useValue: {} },
-           { provide: Location, useValue: {back: (): void => {} } },
-           { provide: MatSnackBar, useValue: {} },
-        //    { provide: OverlayContainer, useFactory: () => {
-        //      overlayContainerElement = document.createElement('div') as HTMLElement;
-        //      overlayContainerElement.classList.add('cdk-overlay-container');
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            imports: [
+                NoopAnimationsModule,
+                FormsModule,
+                MatInputModule
+            ],
+            declarations: [CampaignsNewComponent],
+            schemas: [NO_ERRORS_SCHEMA],
+            providers: [
+                { provide: StixService, useValue: {} },
+                { provide: ActivatedRoute, useValue: {} },
+                { provide: Router, useValue: {} },
+                { provide: MatDialog, useValue: {} },
+                { provide: Location, useValue: { back: (): void => { } } },
+                { provide: MatSnackBar, useValue: {} },
+                //    { provide: OverlayContainer, useFactory: () => {
+                //      overlayContainerElement = document.createElement('div') as HTMLElement;
+                //      overlayContainerElement.classList.add('cdk-overlay-container');
 
-        //      document.body.appendChild(overlayContainerElement);
+                //      document.body.appendChild(overlayContainerElement);
 
-        //      // remove body padding to keep consistent cross-browser
-        //      document.body.style.padding = '0';
-        //      document.body.style.margin = '0';
+                //      // remove body padding to keep consistent cross-browser
+                //      document.body.style.padding = '0';
+                //      document.body.style.margin = '0';
 
-        //      return {getContainerElement: () => overlayContainerElement};
-        //    }},
-         ]
-       });
-     })
-   );
- }
+                //      return {getContainerElement: () => overlayContainerElement};
+                //    }},
+            ]
+        });
+    })
+    );
+}
