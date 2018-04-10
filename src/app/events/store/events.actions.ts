@@ -3,9 +3,9 @@ import { OrganizationIdentity } from '../../models/user/organization-identity';
 import { Action } from '@ngrx/store';
 
 // For effects
-export const LOAD_SIGHTINGS_DATA = '[Events] LOAD_SIGHTINGS_DATA';
+export const LOAD_DATA = '[Events] LOAD_DATA';
 export const STREAM_SIGHTING_IDS = '[Events] STREAM_SIGHTING_IDS';
-export const FETCH_SIGHTING_GROUP = '[Events] FETCH_SIGHTING_GROUP';
+export const FETCH_SIGHTING_GROUP_BY_ID = '[Events] FETCH_SIGHTING_GROUP_BY_ID';
 
 // For reducers
 export const CLEAN_SIGHTINGS_DATA = '[Events] CLEAN_SIGHTINGS_DATA';
@@ -18,11 +18,8 @@ export class CleanSightingsData implements Action {
     constructor() { }
 }
 
-export class LoadSightingsData  implements Action {
-    public readonly type = LOAD_SIGHTINGS_DATA;
-
-    // user's organizations
-    constructor(public payload: OrganizationIdentity[]) { }
+export class LoadData  implements Action {
+    public readonly type = LOAD_DATA;
 }
 
 export class SetSightings implements Action {
@@ -42,8 +39,8 @@ export class StreamSightingIds implements Action {
 }
 
 
-export class FetchSightingGroup implements Action {
-    public readonly type = FETCH_SIGHTING_GROUP;
+export class FetchSightingGroupById implements Action {
+    public readonly type = FETCH_SIGHTING_GROUP_BY_ID;
 
     /**
      * @param {string} payload sighting id
@@ -53,8 +50,8 @@ export class FetchSightingGroup implements Action {
 
 export type EventsActions =
     CleanSightingsData |
-    LoadSightingsData |
+    LoadData |
     SetSightings |
     FinishedLoading |
     StreamSightingIds |
-    FetchSightingGroup;
+    FetchSightingGroupById;

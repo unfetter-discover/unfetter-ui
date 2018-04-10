@@ -38,6 +38,7 @@ export class EventsService {
           });
   }
 
+//   TODO if using getSightingGroup, delete this
   /**
   * @description
   * @param {string} id
@@ -51,15 +52,25 @@ export class EventsService {
     const url = `${this.eventsBaseUrl}`;
     return this.genericApi.getAs<Sighting[]>(url);
   }
+
   /**
    * @param  {string} sightingId
    * @return {Observable} various STIX types
    * @description Gets a sighting by ID and all objects referenced by it, 
    * as well as the identities that created the referenced objects.
    */
-  public getSightingGroup(sightingId: string): Observable<any> {
+  public getSightingGroupById(sightingId: string): Observable<any> {
     return this.genericApi.get(`${this.eventsBaseUrl}/group/${sightingId}`)
         .map(RxjsHelpers.mapArrayAttributes);
   }
 
+    /**
+     * @return {Observable} various STIX types
+     * @description Gets all sightings nd all objects referenced by them, 
+     * as well as the identities that created the referenced objects.
+     */
+    public getSightingGroup(): Observable<any> {
+        return this.genericApi.get(`${this.eventsBaseUrl}/group`)
+            .map(RxjsHelpers.mapArrayAttributes);
+    }
 }

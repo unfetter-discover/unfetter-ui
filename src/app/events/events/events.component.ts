@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../../root-store/app.reducers';
 import { EventsState } from '../store/events.reducers';
 import { UserProfile } from '../../models/user/user-profile';
-import { CleanSightingsData, LoadSightingsData, StreamSightingIds } from '../store/events.actions';
+import { CleanSightingsData, StreamSightingIds, LoadData } from '../store/events.actions';
 import { Subscription } from 'rxjs/Subscription';
 import { Sighting } from '../../models';
 
@@ -23,18 +23,10 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const userSub$ = this.userStore
-      .select('users')
-      .pluck('userProfile')
-      .take(1)
-      .subscribe((user: UserProfile) => {
-        this.service.recentSightings = undefined;
-        this.service.finishedLoading = false;
-        this.store.dispatch(new CleanSightingsData());
-        this.store.dispatch(new LoadSightingsData(user.organizations));
-      },
-        (err) => console.log(err));
-    this.subscriptions.push(userSub$);    
+    this.service.recentSightings = undefined;
+    this.service.finishedLoading = false;
+    this.store.dispatch(new CleanSightingsData());
+    this.store.dispatch(new LoadData());   
     this.listenForDataChanges();
   }
 
