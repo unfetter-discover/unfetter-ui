@@ -5,7 +5,6 @@ import { OrganizationIdentity } from '../models/user/organization-identity';
 import { Sighting } from '../models';
 import { Constance } from '../utils/constance';
 import { JsonApiData } from '../models/json/jsonapi-data';
-import { RxjsHelpers } from '../global/static/rxjs-helpers';
 
 @Injectable()
 export class EventsService {
@@ -61,8 +60,7 @@ export class EventsService {
    * as well as the identities that created the referenced objects.
    */
   public getSightingGroupById(sightingId: string): Observable<any> {
-    return this.genericApi.get(`${this.eventsBaseUrl}/group/${sightingId}`)
-        .map(RxjsHelpers.mapArrayAttributes);
+        return this.genericApi.get(`${this.eventsBaseUrl}/group/${sightingId}`);
   }
 
     /**
@@ -71,8 +69,7 @@ export class EventsService {
      * as well as the identities that created the referenced objects.
      */
     public getSightingGroup(): Observable<any> {
-        return this.genericApi.get(`${this.eventsBaseUrl}/group`)
-            // .map(RxjsHelpers.mapArrayAttributes);
+        return this.genericApi.get(`${this.eventsBaseUrl}/group`);
     }
 
     /**
