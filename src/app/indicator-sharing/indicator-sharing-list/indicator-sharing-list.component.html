@@ -39,9 +39,6 @@
                             <label class="mb-0">Results: {{ (store.select('indicatorSharing').pluck('filteredIndicators') | async).length }} / {{ store.select('indicatorSharing').pluck('totalIndicatorCount') | async }}</label>
                             <label class="spacer" id="spacer2">&nbsp;|&nbsp;</label>
                             <span id="listControlBtns">
-                                <button mat-icon-button id="showAttackPatternHeatMap" (click)="viewHeatMapDialog($event)" matTooltip="Show Heat Map">
-                                    <i class="material-icons mat-24 labelColor">view_comfy</i>
-                                </button>
                                 <button mat-icon-button matTooltip="{{ showSummaryStats ? 'Hide' : 'Show' }} Statistics" (click)="toggleShowStatistics()">
                                     <i class="material-icons mat-24" [ngClass]="{'labelColor': !showSummaryStats}">equalizer</i>
                                 </button>

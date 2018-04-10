@@ -3,9 +3,12 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
+import { MatDialog } from '@angular/material';
+
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { SearchParameters } from '../models/search-parameters';
+import { IndicatorHeatMapComponent } from '../indicator-heat-map/indicator-heat-map.component';
 
 @Component({
   selector: 'indicator-sharing-filters',
@@ -17,8 +20,10 @@ export class IndicatorSharingFiltersComponent implements OnInit {
   public searchForm: FormGroup;
   public killChainPhases$: Observable<any>;
   public labels$: Observable<any>;
+  public heatmapVisible = false;
 
   constructor(
+    public dialog: MatDialog,
     public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>, 
     private fb: FormBuilder
   ) {
@@ -68,9 +73,42 @@ export class IndicatorSharingFiltersComponent implements OnInit {
       });
   }
 
-  public clearSearchParamaters() {
+  public clearSearchParameters() {
     this.searchForm.reset(fromIndicatorSharing.initialSearchParameters);
     this.store.dispatch(new indicatorSharingActions.ClearSearchParameters());
+  }
+
+  /**
+   * @description Displays a slide-out that shows the user a heat map of all attack patterns for filtering
+   */
+  public toggleHeatMapDialog() {
+    if (this.heatmapVisible) {
+      this.heatmapVisible = false;
+      this.dialog.closeAll();
+    } else {
+      this.heatmapVisible = true;
+      this.dialog.open(IndicatorHeatMapComponent, {
+        width: 'calc(100vw - 400px)',
+        height: '500px',
+        hasBackdrop: true,
+        disableClose: false,
+        closeOnNavigation: true,
+        position: {
+          left: '345px',
+        },
+        data: {
+          active: this.searchForm.value.attackPatterns,
+        },
+      }).afterClosed().subscribe(
+        result => {
+          if (result) {
+            this.searchForm.get('attackPatterns').patchValue(result);
+          }
+          this.heatmapVisible = false;
+        },
+        (err) => console.log(err),
+      );
+    }
   }
 
 }

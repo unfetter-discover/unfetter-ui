@@ -217,19 +217,4 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
         this.changeDetectorRef.markForCheck();
     }
 
-    /**
-     * @description Displays a popup that shows the user a heat map of all attack patterns used by all the
-     *              currently-filtered analytics.
-     */
-    public viewHeatMapDialog(ev?: UIEvent) {
-        this.dialog.open(IndicatorHeatMapComponent, {
-            width: 'calc(100vw - 150px)',
-            height: 'calc(100vh - 100px)',
-            data: {
-                indicators: this.filteredIndicators,
-                indicatorsToAttackPatternMap: this.indicatorToAttackPatternMap,
-            }
-        });
-    }
-
 }

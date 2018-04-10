@@ -1,0 +1,15 @@
+@import '../../../styles/_variables.scss';
+
+:host ::ng-deep {
+    button#heatmapToggle span.mat-button-wrapper {
+        padding: 0 2px;
+        border-left: 2px solid transparent;
+        border-right: 2px solid transparent;
+    }
+    button#heatmapToggle.open span.mat-button-wrapper {
+        border-right-color: $analytic-exchange-primary-lighter;
+    }
+    button#heatmapToggle.open span.mat-button-wrapper i {
+        color: $analytic-exchange-primary-lighter;
+    }
+}
