@@ -10,6 +10,7 @@ import { RxjsHelpers } from '../global/static/rxjs-helpers';
 @Injectable()
 export class EventsService {
   public readonly eventsBaseUrl = Constance.SIGHTING_URL;
+  public readonly indicatorsUrl = Constance.INDICATOR_URL;
   public recentSightings: Sighting[];
   public finishedLoading: boolean;
   
@@ -71,6 +72,14 @@ export class EventsService {
      */
     public getSightingGroup(): Observable<any> {
         return this.genericApi.get(`${this.eventsBaseUrl}/group`)
-            .map(RxjsHelpers.mapArrayAttributes);
+            // .map(RxjsHelpers.mapArrayAttributes);
+    }
+
+    /**
+     * @return {Observable} various STIX types
+     * @description Gives an object with an indicator IDs as the properties that point to a list of attack patterns
+     */
+    public getAttackPatternsByIndicator(): Observable<any> {
+        return this.genericApi.get(`${this.indicatorsUrl}/attack-patterns-by-indicator`);
     }
 }
