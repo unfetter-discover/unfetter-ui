@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ChartData } from '../chart-data';
+import { ChartData } from '../../../../../global/models/chart-data';
 import { SummaryCalculationService } from '../../summary-calculation.service';
 
 @Component({

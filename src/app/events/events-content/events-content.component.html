@@ -4,10 +4,21 @@
       <div class="flex matchHeight" id="top-half">
         <div class="flexColumn left-column">
           <mat-card color="primary" class="uf-mat-card card left-card">
-            <mat-card-title>Daily Total</mat-card-title>
-            <mat-card-subtitle>"10 days" picker</mat-card-subtitle>
+            <mat-card-title>Daily Totals</mat-card-title>
+            <mat-card-subtitle>
+              <mat-form-field>
+                <mat-select [(value)]="daysOfData">
+                  <mat-option value="7">1 Week</mat-option>
+                  <mat-option value="30">30 Days</mat-option>
+                  <mat-option value="183">6 Months</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </mat-card-subtitle>
             <mat-card-content>
-              <p>Bar chart here</p>
+              <div>
+                <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions" [legend]="barChartLegend"
+                  [chartType]="barChartType" [colors]="colors"></canvas>
+              </div>
             </mat-card-content>
           </mat-card>
         </div>
@@ -40,6 +51,7 @@
     </div>
     <div class="row">
       <div class="flex">
+        <!-- {{service.recentSightings | json }} -->
         <div class="flexRow" id="bottom-half">
           <mat-card color="primary" class="uf-mat-card card mat-card-scroll-content bottom-card">
             <mat-card-title class="traffic-detail-title">Traffic Detail</mat-card-title>
@@ -47,11 +59,11 @@
               <mat-table #table [dataSource]="service.recentSightings">
                 <ng-container matColumnDef="{{columnIds[0]}}">
                   <mat-header-cell *matHeaderCellDef>Date/Time</mat-header-cell>
-                  <mat-cell *matCellDef="let sighting">{{sighting.attributes.last_seen}}</mat-cell>
+                  <mat-cell *matCellDef="let sighting">{{sighting.attributes.last_seen | date:'medium' }}</mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="{{columnIds[1]}}">
-                  <mat-header-cell *matHeaderCellDef>IP Address</mat-header-cell>
-                  <mat-cell *matCellDef="let sighting">{{sighting.attributes.observed_data_refs[0]}}
+                  <mat-header-cell *matHeaderCellDef>Where Sighted</mat-header-cell>
+                  <mat-cell *matCellDef="let sighting">{{sighting.attributes.name}} - {{sighting.attributes.ip}}
                   </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="{{columnIds[2]}}">
@@ -67,13 +79,19 @@
                   </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="{{columnIds[4]}}">
+                  <mat-header-cell *matHeaderCellDef>Threat</mat-header-cell>
+                  <mat-cell *matCellDef="let sighting">
+                    <span>{{sighting.attributes.observed_data_refs}}</span>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="{{columnIds[5]}}">
                   <mat-header-cell *matHeaderCellDef>Attack Pattern</mat-header-cell>
                   <mat-cell *matCellDef="let sighting">
                     <span>{{sighting.attributes.sighting_of_ref_name}}</span>
                   </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="{{columnIds[5]}}">
-                  <mat-header-cell *matHeaderCellDef>Potential Actor</mat-header-cell>
+                <ng-container matColumnDef="{{columnIds[6]}}">
+                  <mat-header-cell *matHeaderCellDef>Potential Actors</mat-header-cell>
                   <mat-cell *matCellDef="let sighting">
                     <span>{{sighting.attributes.sighting_of_ref_name_intrusion_set_group}}</span>
                   </mat-cell>
@@ -86,55 +104,5 @@
         </div>
       </div>
     </div>
-    <!-- <div class="row">
-        <div class="flex" id="sophisticationTitle">
-          <span>Mitigation Sophistication Threshold</span>
-        </div>
-        <div class="flex flexItemsCenter">
-          <div class="flex flexItemsCenter" id="sliderContainer">
-            <mat-icon color="primary" class="mat-24 icon-people-1" aria-hidden="false" aria-label="Least sophisticated mitigation"></mat-icon>
-            <mat-slider min="0" max="1" invert="true" step=".25" tick-interval="1" id="sophisticationSlider" color="primary" [(ngModel)]="summaryCalculationService.selectedRisk">
-            </mat-slider>
-            <mat-icon color="primary" class="mat-24 icon-people" aria-hidden="false" aria-label="Most sophisticated mitigation"></mat-icon>
-          </div>
-          <div class="flex1">&nbsp;</div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="flex matchHeight">
-          <mat-card class="uf-mat-card card chart left-card" id="sophisticationCard">
-            <mat-card-title>Sophistication Breakdown</mat-card-title>
-            <mat-card-content>
-              <div *ngIf="summaryCalculationService.isSummaryAggregationValid(); else noSophisticationData">
-                <sophistication-breakdown [assessedAttackPatterns]="summaryCalculationService.summaryAggregation.assessedAttackPatternCountBySophisicationLevel"
-                  [allAttackPatterns]="summaryCalculationService.summaryAggregation.totalAttackPatternCountBySophisicationLevel"></sophistication-breakdown>
-              </div>
-              <ng-template #noSophisticationData>No data to load chart!</ng-template>
-            </mat-card-content>
-          </mat-card>
-          <mat-card class="uf-mat-card card chart right-card">
-            <mat-card-title>% Techniques Detected by Skill</mat-card-title>
-            <mat-card-content>
-              <div *ngIf="summaryCalculationService.techniqueBreakdown;else noTechniquesData">
-                <techniques-chart #techniquesChart [riskThreshold]="summaryCalculationService.selectedRisk">
-                </techniques-chart>
-              </div>
-              <ng-template #noTechniquesData>No data to load chart!</ng-template>
-            </mat-card-content>
-          </mat-card>
-        </div>
-      </div>
-      <div class="row">
-        <div class="flex flexItemsCenter">
-          <mat-card class="uf-mat-card card chart flex1" id="assessmentCard">
-            <mat-card-title>% of Assessments Better than Mitigation Threshold</mat-card-title>
-            <mat-card-content>
-              <div *ngIf="summaryCalculationService.assessmentsGroupingTotal;else noAssessmentsChartData">
-                <assessment-chart></assessment-chart>
-              </div>
-              <ng-template #noAssessmentsChartData>No data to load chart!</ng-template>
-            </mat-card-content>
-          </mat-card>
-        </div> -->
   </div>
 </div>
