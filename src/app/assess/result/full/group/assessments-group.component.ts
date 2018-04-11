@@ -508,5 +508,4 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   public isCurrentAttackPattern(attackPatternId = ''): boolean {
     return this.currentAttackPattern ? this.currentAttackPattern.id === attackPatternId : false;
   }
-
 }

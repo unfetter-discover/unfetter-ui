@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { AssessService } from '../../../../services/assess.service';
 import { Constance } from '../../../../../utils/constance';
+import { SpeedDialItem } from '../../../../../global/components/speed-dial/speed-dial-item';
 
 @Component({
     selector: 'unf-add-assessed-object',
@@ -41,6 +42,15 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
 
     @Output('addAssessmentEvent')
     public addAssessmentEvent = new EventEmitter<boolean>();
+
+    public addAssessedObjectName: string = '';
+
+    public speedDialItems: SpeedDialItem[] = [
+        new SpeedDialItem('toggle', 'add', true, null, 'Add Assessed Object'),
+        new SpeedDialItem('indicator', null, false, 'indicator', 'Indicator'),
+        new SpeedDialItem('mitigation', null, false, 'course-of-action', 'Mitigation'),
+        new SpeedDialItem('sensor', null, false, 'tool', 'Sensor')
+    ];
 
     private readonly subscriptions: Subscription[] = [];
 
@@ -245,6 +255,30 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
             retVal.push(data);
         });
         return retVal;
+    }
+
+
+    /**
+     * @param  {SpeedDialItem} speedDialItem
+     * @returns void
+     * @description Handler for speed dial click events
+     */
+    public speedDialClicked(speedDialItem: SpeedDialItem): void {
+        this.addAssessedObject = true;
+        switch (speedDialItem.name) {
+            case 'indicator':
+                this.addAssessedObjectName = 'Indicator';
+                this.addAssessedType = 'indicator';
+                break;
+            case 'mitigation':
+                this.addAssessedObjectName = 'Mitigation';
+                this.addAssessedType = 'course-of-action';
+                break;
+            case 'sensor':
+                this.addAssessedObjectName = 'Sensor';
+                this.addAssessedType = 'x-unfetter-sensor';
+                break;
+        }
     }
 
 }
