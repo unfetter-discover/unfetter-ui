@@ -10,6 +10,7 @@ import { JsonApiData } from '../models/json/jsonapi-data';
 export class EventsService {
   public readonly eventsBaseUrl = Constance.SIGHTING_URL;
   public readonly indicatorsUrl = Constance.INDICATOR_URL;
+  public readonly attackPatternsUrl = Constance.ATTACK_PATTERN_URL;
   public recentSightings: Sighting[];
   public finishedLoading: boolean;
   
@@ -78,5 +79,13 @@ export class EventsService {
      */
     public getAttackPatternsByIndicator(): Observable<any> {
         return this.genericApi.get(`${this.indicatorsUrl}/attack-patterns-by-indicator`);
+    }
+
+    /**
+     * @return {Observable} various STIX types
+     * @description Gives an object with an attack pattern IDs as the properties that point to a list of intrusion sets
+     */
+    public getInstrusionSetsByAttackPattern(): Observable<any> {
+        return this.genericApi.get(`${this.attackPatternsUrl}/intrusion-sets-by-attack-pattern`);
     }
 }
