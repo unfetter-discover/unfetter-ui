@@ -41,7 +41,7 @@
             <div class="appItemText">API Explorer</div>
           </a>
         </span>
-        <span class="appLinkWrapper" *ngIf="authService.isAdmin()">
+        <span class="appLinkWrapper" *ngIf="authService.isAdmin() || runMode === 'DEMO'">
           <a routerLink="./stix/attack-patterns" class="appLink" (click)="showAppMenu = false">
             <img src="{{ stixIcon }}" class="appItemImg">
             <div class="appItemText">STIX</div>

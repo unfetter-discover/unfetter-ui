@@ -3,6 +3,7 @@ import { StixPermissions } from './stix-permissions';
 import { Stix } from '../../models/stix/stix';
 import { testUser } from '../../testing/test-user';
 import { UserRole } from '../../models/user/user-role.enum';
+import { environment } from '../../../environments/environment';
 
 const admin: UserProfile | any = testUser.userData;
 const standardUser = { ...admin, role: UserRole.STANDARD_USER };
@@ -25,9 +26,14 @@ const sameOrgStix = { ...unpublishedStix, created_by_ref: standardUser.organizat
 const stixPermissionsAdmin = new StixPermissions(admin);
 const stixPermissionsStandard = new StixPermissions(standardUser);
 
-describe('StixPermissions', () => {  
 
-    describe('Static functions', () => {
+describe('StixPermissions', () => {
+    beforeEach(() => {
+        // Need to ensure that run mode is not in DEMO
+        spyOn(environment, 'runMode').and.returnValue('UAC');
+    });
+    
+    describe('Static functions', () => {        
         it('should allow all operations for an admin, but not standard user', () => {
             expect(StixPermissions.canReadStatic(unpublishedStix, admin)).toBeTruthy();
             expect(StixPermissions.canCrudStatic(unpublishedStix, admin)).toBeTruthy();

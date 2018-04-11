@@ -1,6 +1,7 @@
 import { Stix } from '../../models/stix/stix';
 import { UserProfile } from '../../models/user/user-profile';
 import { UserRole } from '../../models/user/user-role.enum';
+import { environment } from '../../../environments/environment';
 
 /**
  * @param  {Stix} stix
@@ -9,6 +10,9 @@ import { UserRole } from '../../models/user/user-role.enum';
  * @description Determines if the create_by_ref of a STIX object is in a user's organizations
  */
 function orgPermissions (stix: Stix, user: UserProfile): boolean {
+    if (environment.runMode === 'DEMO') {
+        return true;
+    }
     // TODO - How to handle no created_by_ref?
     return user.organizations && 
         user.organizations.length && 
