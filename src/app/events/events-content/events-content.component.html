@@ -64,9 +64,7 @@
                 <ng-container matColumnDef="{{columnIds[1]}}">
                   <mat-header-cell *matHeaderCellDef>Where Sighted</mat-header-cell>
                   <mat-cell *matCellDef="let sighting">
-                    <span>
-                    <!-- *ngIf="sighting.attributes.name && sighting.attributes.ip else unknown"> -->
-                      {{sighting.attributes.name}} - {{sighting.attributes.ip}}</span>
+                    <span *ngIf="sighting.attributes.name && sighting.attributes.ip else unknown">{{sighting.attributes.name}} - {{sighting.attributes.ip}}</span>
                     <ng-template #unknown>
                       Unknown
                     </ng-template>
