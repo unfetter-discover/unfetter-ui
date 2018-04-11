@@ -19,7 +19,7 @@ import { eventsReducer } from './store/events.reducers';
     CommonModule,
     EventsRoutingModule,
     GlobalModule,
-    StoreModule.forFeature('sightings', eventsReducer),
+    StoreModule.forFeature('sightingsGroup', eventsReducer),
     EffectsModule.forFeature([EventsEffects]),
     ChartsModule,
   ],
