@@ -3,12 +3,16 @@ import { Sighting } from '../../models';
 
 export interface EventsState {
     sightingsGroup: any[];
+    indicatorToApMap: any[];
+    intrusionSetToApMap: any[];
     finishedLoading: boolean;
 }
 
 const genState = (state?: Partial<EventsState>) => {
     const tmp = {
         sightingsGroup: [],
+        indicatorToApMap: [], 
+        intrusionSetToApMap: [],
         finishedLoading: false,
     };
     if (state) {
