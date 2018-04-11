@@ -31,7 +31,7 @@ export class EventsEffects {
         .do((data) => console.log('Events / fetchData debug output: ', data))
         // TODO create additional actions / filters to handle other types of objects
         .mergeMap(([sightingsGroup, indicatorToApMap, intrusionSetToApMap]: [any, any, any]) => [
-            new SetSightings(sightingsGroup.filter((dat: any) => dat.attributes.type === 'sighting')), 
+            new SetSightings(sightingsGroup), 
             new FinishedLoading(true)
         ]);
 

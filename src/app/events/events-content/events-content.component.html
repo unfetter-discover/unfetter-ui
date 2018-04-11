@@ -63,7 +63,11 @@
                 </ng-container>
                 <ng-container matColumnDef="{{columnIds[1]}}">
                   <mat-header-cell *matHeaderCellDef>Where Sighted</mat-header-cell>
-                  <mat-cell *matCellDef="let sighting">{{sighting.attributes.name}} - {{sighting.attributes.ip}}
+                  <mat-cell *matCellDef="let sighting">
+                    <span *ngIf="sighting.attributes.name && sighting.attributes.ip else unknown">{{sighting.attributes.name}} - {{sighting.attributes.ip}}</span>
+                    <ng-template #unknown>
+                      Unknown
+                    </ng-template>
                   </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="{{columnIds[2]}}">
@@ -87,7 +91,7 @@
                 <ng-container matColumnDef="{{columnIds[5]}}">
                   <mat-header-cell *matHeaderCellDef>Attack Pattern</mat-header-cell>
                   <mat-cell *matCellDef="let sighting">
-                    <span>{{sighting.attributes.sighting_of_ref_name}}</span>
+                    <span>{{sighting.attributes.sighting_of_ref}}</span>
                   </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="{{columnIds[6]}}">

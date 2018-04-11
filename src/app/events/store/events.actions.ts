@@ -25,7 +25,7 @@ export class LoadData  implements Action {
 export class SetSightings implements Action {
     public readonly type = SET_SIGHTINGS;
 
-    constructor(public payload: Sighting[]) { }
+    constructor(public payload: any[]) { }
 }
 
 export class FinishedLoading implements Action {
