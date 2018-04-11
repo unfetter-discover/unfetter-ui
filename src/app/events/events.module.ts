@@ -13,6 +13,7 @@ import { FiltersComponent } from './filters/filters.component';
 import { RelatedComponent } from './related/related.component';
 import { EventsEffects } from './store/events.effects';
 import { eventsReducer } from './store/events.reducers';
+import { IPGeoService } from './ipgeo.service';
 
 @NgModule({
   imports: [
@@ -24,6 +25,6 @@ import { eventsReducer } from './store/events.reducers';
     ChartsModule,
   ],
   declarations: [EventsLayoutComponent, EventsComponent, EventsContentComponent, RelatedComponent, FiltersComponent],
-  providers: [EventsService, DatePipe],
+  providers: [EventsService, IPGeoService, DatePipe],
 })
 export class EventsModule { }
