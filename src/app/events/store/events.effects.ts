@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
-import { SetSightings, FinishedLoading, STREAM_SIGHTING_IDS, FETCH_SIGHTING_GROUP_BY_ID, FetchSightingGroupById, LOAD_DATA } from './events.actions';
+import { SetSightings, FinishedLoading, STREAM_SIGHTING_IDS, FETCH_SIGHTING_GROUP_BY_ID, FetchSightingGroupById, LOAD_DATA, SetIndicatorToAp, SetIntrusionSetToAp } from './events.actions';
 import { OrganizationIdentity } from '../../models/user/organization-identity';
 import { Sighting } from '../../models';
 import { EventsService } from '../events.service';
@@ -8,6 +8,7 @@ import { WebsocketService } from '../../core/services/web-socket.service';
 import { WSMessageTypes } from '../../global/enums/ws-message-types.enum';
 import { Observable } from 'rxjs/Observable';
 import { RxjsHelpers } from '../../global/static/rxjs-helpers';
+import { SetIndicatorToApMap } from '../../indicator-sharing/store/indicator-sharing.actions';
 
 @Injectable()
 export class EventsEffects {
@@ -31,7 +32,9 @@ export class EventsEffects {
         .do((data) => console.log('Events / fetchData debug output: ', data))
         // TODO create additional actions / filters to handle other types of objects
         .mergeMap(([sightingsGroup, indicatorToApMap, intrusionSetToApMap]: [any, any, any]) => [
-            new SetSightings(sightingsGroup), 
+            new SetSightings(sightingsGroup),
+            new SetIndicatorToAp(indicatorToApMap),
+            new SetIntrusionSetToAp(intrusionSetToApMap),
             new FinishedLoading(true)
         ]);
 
@@ -42,7 +45,7 @@ export class EventsEffects {
         .do(() => console.log('Starting Events / streamSightingIds stream'))
         .switchMap(() => this.websocketService.connect(WSMessageTypes.STIXID))
         .pluck('body')
-        .filter((stixNotificationBody: { id: string, type: string}) => stixNotificationBody.type === 'sighting')
+        .filter((stixNotificationBody: { id: string, type: string }) => stixNotificationBody.type === 'sighting')
         .pluck('id')
         .map((stixId: string) => new FetchSightingGroupById(stixId));
 

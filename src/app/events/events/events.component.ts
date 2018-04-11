@@ -19,6 +19,8 @@ export class EventsComponent implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription[];
   private readonly ips = [];
   private sightingsGroup: any[];
+  private indicatorToAp: any[];
+  private intrusionSetToAp: any[];
   private identities: any[];
   private indicators: any[];
   private observedData: any[];
@@ -36,6 +38,8 @@ export class EventsComponent implements OnInit, OnDestroy {
     this.identities = undefined;
     this.indicators = undefined;
     this.observedData = undefined;
+    this.indicatorToAp = undefined;
+    this.intrusionSetToAp = undefined;
     this.service.recentSightings = undefined;
     this.service.finishedLoading = false;
     this.store.dispatch(new CleanSightingsData());
@@ -66,6 +70,26 @@ export class EventsComponent implements OnInit, OnDestroy {
         (err) => console.log(err));
 
     const sub2$ = this.store
+      .select('sightingsGroup')
+      .pluck('indicatorToAp')
+      .distinctUntilChanged()
+      .filter((arr: any[]) => arr && arr.length > 0)
+      .subscribe((arr: any[]) => {
+        this.indicatorToAp = [...arr];
+      },
+        (err) => console.log(err));
+
+    const sub3$ = this.store
+      .select('sightingsGroup')
+      .pluck('intrusionSetToAp')
+      .distinctUntilChanged()
+      .filter((arr: any[]) => arr && arr.length > 0)
+      .subscribe((arr: any[]) => {
+        this.intrusionSetToAp = [...arr];
+      },
+        (err) => console.log(err));
+
+    const sub4$ = this.store
       .select('sightingsGroup')
       .pluck('finishedLoading')
       .distinctUntilChanged()
