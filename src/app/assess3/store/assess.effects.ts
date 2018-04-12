@@ -12,7 +12,7 @@ import { FetchAssessment, StartAssessment } from './assess.actions';
 
 import { AssessService } from '../services/assess.service';
 import { AssessStateService } from '../services/assess-state.service';
-import { AssessmentMeta } from '../../models/assess/assessment-meta';
+import { Assessment3Meta } from '../../models/assess/assessment3-meta';
 import { Constance } from '../../utils/constance';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { Capability } from '../../models/stix/capability';
@@ -39,9 +39,9 @@ export class AssessEffects {
     public fetchAssessmentWizardData = this.actions$
         .ofType(assessActions.LOAD_ASSESSMENT_WIZARD_DATA)
         .pluck('payload')
-        .switchMap((meta: Partial<AssessmentMeta>) => {
+        .switchMap((meta: Partial<Assessment3Meta>) => {
             const includeMeta = `?metaproperties=true`;
-            let url = `${this.generateUrl('capability')}${includeMeta}`;
+            let url = `${Constance.X_UNFETTER_ASSESSMENT3_URL}${includeMeta}`;
             const observables = new Array<Observable<Array<JsonApiData<Stix>>>>();
 
             return Observable.forkJoin(...observables);
@@ -62,16 +62,13 @@ export class AssessEffects {
     public startAssessment = this.actions$
         .ofType(assessActions.START_ASSESSMENT)
         .pluck('payload')
-        .map((el: AssessmentMeta) => {
+        .map((el: Assessment3Meta) => {
             this.assessStateService.saveCurrent(el);
             return el;
         })
-        .do((el: AssessmentMeta) => {
+        .do((el: Assessment3Meta) => {
             this.router.navigate([
-                '/assess3/wizard/new',
-                // 'indicators', el.includesIndicators === true ? 1 : 0,
-                // 'mitigations', el.includesMitigations === true ? 1 : 0,
-                // 'sensors', el.includesSensors === true ? 1 : 0
+                '/assess3/wizard/new'
             ]);
         })
         // required to send an empty element on non dispatched effects
@@ -131,17 +128,5 @@ export class AssessEffects {
                 id: hasAttributes ? arr[0].attributes.id : '',
             });
         })
-
-
-    /**
-    * @description
-    *  take a stix object type and determine url to fetch data
-    * @param {string} type
-    *  string in the form of a url path
-    */
-    private generateUrl(type: URL_TYPE): string {
-        let url = Constance.X_UNFETTER_ASSESSMENT3_URL;
-        return url;
-    }
 
 }
