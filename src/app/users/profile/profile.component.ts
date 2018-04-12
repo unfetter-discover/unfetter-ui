@@ -1,16 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { MatSelectChange } from '@angular/material/select';
 import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { UserPreferencesService } from '../../core/services/user-preferences.service';
 import { UsersService } from '../../core/services/users.service';
 import { RxjsHelpers } from '../../global/static/rxjs-helpers';
-import { UserPreferences } from '../../models/user/user-preferences';
 import { UserProfile } from '../../models/user/user-profile';
-import { AppState } from '../../root-store/app.reducers';
-import { FetchConfig } from '../../root-store/config/config.actions';
-import { KillchainConfigEntry } from './killchain-config-entry';
 import { ProfileOrg } from './profile-org';
 
 @Component({
@@ -22,13 +16,11 @@ export class ProfileComponent implements OnInit {
 
     public user: UserProfile;
     public organizations: ProfileOrg[];
-    public frameworks$: Observable<KillchainConfigEntry[]>;
 
     constructor(
         private route: ActivatedRoute,
         private usersService: UsersService,
         private userPreferencesService: UserPreferencesService,
-        private store: Store<AppState>,
     ) { }
 
     public ngOnInit() {
@@ -72,39 +64,5 @@ export class ProfileComponent implements OnInit {
                     params$.unsubscribe();
                 });
 
-        this.frameworks$ = this.store
-            .select('config')
-            .pluck('configurations')
-            .distinctUntilChanged()
-            .filter((el) => el !== undefined)
-            .map<object, KillchainConfigEntry[]>((el: any) => {
-                return el.killChains;
-            });
-
-        this.store.dispatch(new FetchConfig(false));
-    }
-    /**
-     * @param {MatSelectChange} event?
-     * @returns void
-     */
-    public onFrameworkChange(event?: MatSelectChange): void {
-        if (!event) {
-            return;
-        }
-
-        this.user.preferences = this.user.preferences || new UserPreferences();
-        this.user.preferences.killchain = event.value;
-        // notify the server
-        const sub$ = this.userPreferencesService
-            .setUserPreferences(this.user._id, this.user.preferences)
-            .subscribe((profile) => {
-                console.log(profile);
-            },
-                (err) => console.log(err),
-                () => {
-                    if (sub$) {
-                        sub$.unsubscribe();
-                    }
-                });
     }
 }
