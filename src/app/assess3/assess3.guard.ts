@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-
+import { environment } from '../../environments/environment';
+import { UserProfile } from '../models/user/user-profile';
 import { AppState } from '../root-store/app.reducers';
 import { AssessService } from './services/assess.service';
-import { environment } from '../../environments/environment';
-import { LastModifiedAssessment3 } from './models/last-modified-assessment3';
-import { UserState } from '../root-store/users/users.reducers';
-import { UserProfile } from '../models/user/user-profile';
+
 
 @Injectable()
 export class Assess3Guard implements CanActivate {
@@ -31,13 +29,7 @@ export class Assess3Guard implements CanActivate {
             .take(1)
             .pluck('userProfile')
             .switchMap((user: UserProfile) => {
-                let o$;
-                if (!this.demoMode && user && user._id) {
-                    o$ = this.fetchWithCreatorId(user._id);
-                } else {
-                    o$ = this.fetchWithNoCreatorId();
-                }
-
+                const o$ = this.assessService.getLatestAssessments();
                 return o$.
                     map((data) => {
                         if (data === undefined || data.length === 0) {
@@ -58,32 +50,5 @@ export class Assess3Guard implements CanActivate {
                         return Observable.of(false);
                     });
             });
-    }
-
-    /**
-     * @description
-     *  fetch assessments by their owner, then fallback and show a group assessment if needed
-     * @param {string} creatorId
-     * @return {Observable<Partial<LastModifiedAssessment3>[]>}
-     */
-    public fetchWithCreatorId(creatorId: string): Observable<Partial<LastModifiedAssessment3>[]> {
-        return this.assessService
-            .getLatestAssessmentsByCreatorId(creatorId)
-            .switchMap((data: any[]) => {
-                if (!data || data.length < 1) {
-                    return this.fetchWithNoCreatorId();
-                } else {
-                    return Observable.of(data);
-                }
-            });
-    }
-
-    /**
-     * @description show last modified group assessments
-     * @return {Observable<Partial<LastModifiedAssessment3>[]>}
-     */
-    public fetchWithNoCreatorId(): Observable<Partial<LastModifiedAssessment3>[]> {
-        return this.assessService
-            .getLatestAssessments();
     }
 }

@@ -1,6 +1,7 @@
 import { Sighting } from '../../models';
 import { OrganizationIdentity } from '../../models/user/organization-identity';
 import { Action } from '@ngrx/store';
+import { SET_INDICATOR_TO_AP_MAP } from '../../indicator-sharing/store/indicator-sharing.actions';
 
 // For effects
 export const LOAD_DATA = '[Events] LOAD_DATA';
@@ -10,6 +11,8 @@ export const FETCH_SIGHTING_GROUP_BY_ID = '[Events] FETCH_SIGHTING_GROUP_BY_ID';
 // For reducers
 export const CLEAN_SIGHTINGS_DATA = '[Events] CLEAN_SIGHTINGS_DATA';
 export const SET_SIGHTINGS = '[Events] SET_SIGHTINGS';
+export const SET_INDICATOR_TO_AP = '[Events] SET_INDICATOR_TO_AP';
+export const SET_INTRUSION_SET_TO_AP = '[Events] SET_INTRUSION_SET_TO_AP';
 export const FINISHED_LOADING = '[Events] FINISHED_LOADING';
 
 export class CleanSightingsData implements Action {
@@ -18,14 +21,26 @@ export class CleanSightingsData implements Action {
     constructor() { }
 }
 
-export class LoadData  implements Action {
+export class LoadData implements Action {
     public readonly type = LOAD_DATA;
 }
 
 export class SetSightings implements Action {
     public readonly type = SET_SIGHTINGS;
 
-    constructor(public payload: Sighting[]) { }
+    constructor(public payload: any[]) { }
+}
+
+export class SetIndicatorToAp implements Action {
+    public readonly type = SET_INDICATOR_TO_AP;
+
+    constructor(public payload: any[]) { }
+}
+
+export class SetIntrusionSetToAp implements Action {
+    public readonly type = SET_INTRUSION_SET_TO_AP;
+
+    constructor(public payload: any[]) { }
 }
 
 export class FinishedLoading implements Action {
@@ -52,6 +67,8 @@ export type EventsActions =
     CleanSightingsData |
     LoadData |
     SetSightings |
+    SetIndicatorToAp |
+    SetIntrusionSetToAp |
     FinishedLoading |
     StreamSightingIds |
     FetchSightingGroupById;

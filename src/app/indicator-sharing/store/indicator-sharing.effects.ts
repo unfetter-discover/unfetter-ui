@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
 
 import * as indicatorSharingActions from './indicator-sharing.actions';
 import * as fromIndicators from './indicator-sharing.reducers';
@@ -9,7 +10,7 @@ import { WSMessageTypes } from '../../global/enums/ws-message-types.enum';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { Constance } from '../../utils/constance';
-import { Store } from '@ngrx/store';
+import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 
 @Injectable()
 export class IndicatorSharingEffects {
@@ -47,7 +48,7 @@ export class IndicatorSharingEffects {
         .map((results: any[]) => [
             results[0].map((r) => r.attributes),
             results[1].map((r) => r.attributes),
-            this.makeIndicatorToAttackPatternMap(results[2].attributes),
+            RxjsHelpers.relationshipArrayToObject(results[2].attributes, 'attackPatterns'),
             results[3].map((r) => r.attributes),
             results[4].map((r) => r.attributes),
             results[5]
@@ -119,7 +120,7 @@ export class IndicatorSharingEffects {
     public refreshApMap = this.actions$
         .ofType(indicatorSharingActions.REFRESH_AP_MAP)
         .switchMap((_) => this.indicatorSharingService.getAttackPatternsByIndicator())
-        .map((res: any) => this.makeIndicatorToAttackPatternMap(res.attributes))
+        .map((res: any) => RxjsHelpers.relationshipArrayToObject(res.attributes, 'attackPatterns'))
         .map((indicatorToApMap) => new indicatorSharingActions.SetIndicatorToApMap(indicatorToApMap));
 
     @Effect()
@@ -140,10 +141,4 @@ export class IndicatorSharingEffects {
         private indicatorSharingService: IndicatorSharingService,
         private store: Store<fromIndicators.IndicatorSharingFeatureState>
     ) { }
-
-    private makeIndicatorToAttackPatternMap(attackPatternsByIndicator) {
-        const indicatorToAttackPatternMap: any = {};
-        attackPatternsByIndicator.forEach((item) => indicatorToAttackPatternMap[item._id] = item.attackPatterns);
-        return indicatorToAttackPatternMap
-    }
 }

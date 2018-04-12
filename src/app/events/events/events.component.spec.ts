@@ -10,6 +10,7 @@ import { ActionReducerMap, StoreModule } from '@ngrx/store';
 import { eventsReducer } from '../store/events.reducers';
 import { usersReducer } from '../../root-store/users/users.reducers';
 import { EventsService } from '../events.service';
+import { IPGeoService } from '../ipgeo.service';
 
 describe('EventsComponent', () => {
   let component: EventsComponent;
@@ -41,6 +42,10 @@ describe('EventsComponent', () => {
         providers: [
           {
             provide: EventsService,
+            useValue: mockService
+          },
+          {
+            provide: IPGeoService,
             useValue: mockService
           },
         ],

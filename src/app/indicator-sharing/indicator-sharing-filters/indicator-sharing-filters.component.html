@@ -19,7 +19,7 @@
       </mat-form-field>
       <div style="display:flex; flex-direction:row; align-items:baseline;">
         <mat-form-field class="full-width mb-9">
-          <mat-select placeholder="Indicated Attack Patterns" [multiple]="true" formControlName="attackPatterns">
+          <mat-select placeholder="Indicated Techniques" [multiple]="true" formControlName="attackPatterns">
             <mat-option value="{{ap.id}}" *ngFor="let ap of (store.select('indicatorSharing').pluck('attackPatterns') | async) | sortByField:'name':'ascending'">{{ ap.name }}</mat-option>
           </mat-select>
         </mat-form-field>

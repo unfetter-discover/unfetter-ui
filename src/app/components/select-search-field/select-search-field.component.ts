@@ -1,9 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import 'rxjs/add/operator/startWith';
 import { Observable } from 'rxjs/Observable';
-
 import { BaseComponentService } from '../base-service.component';
+
 
 @Component({
     selector: 'select-search-field',
@@ -18,7 +17,7 @@ export class SelectSearchFieldComponent implements OnInit {
     @Output() public optionChanged: EventEmitter<any> = new EventEmitter();
 
     public formCtrl: FormControl = new FormControl();
-    public filteredOptions: Observable<string[]>;
+    public filteredOptions: Observable<string|string[]>;
     public selections: string;
     public options = [ ];
     public inputFieldValue;
@@ -35,12 +34,17 @@ export class SelectSearchFieldComponent implements OnInit {
             (data) => data.forEach((record) => this.options.push(record))
         );
     }
-
-    public filter(val: string) {
-        console.log('trying to filter', val);
+    /**
+     * @param  {string} val
+     * @returns string | string[]
+     */
+    public filter(val: string): string|string[] {
          return val ? this.options.filter((s) => new RegExp(`^${val}`, 'gi').test(s.attributes.name)) : this.options;
     }
-
+    /**
+     * @param  {string} option
+     * @returns void
+     */
     public onOptionChanged(option: string): void {
         this.optionChanged.emit(option);
         this.inputFieldValue = null;

@@ -45,6 +45,11 @@
   <mat-card-content #card>
     <div *ngIf="!collapseContents">
 
+        <label>Pattern</label>
+        <p>
+          <code [innerHtml]="whitespaceToBreak(indicator.pattern)" class="inlineBlock"></code>
+        </p>
+
         <label *ngIf="(indicator.labels && indicator.labels.length) || canCrud">Labels</label>
         <div class="flex flexItemsCenter">
             <mat-chip-list>
@@ -53,13 +58,13 @@
             <add-label-reactive [stixType]="'indicator'" (labelAdded)="addLabel($event)" [currentLabels]="indicator.labels" *ngIf="canCrud"></add-label-reactive>
         </div>
 
-        <label *ngIf="(attackPatterns && attackPatterns.length > 0) || canCrud">Indicated Attack Patterns</label>
+        <label *ngIf="(attackPatterns && attackPatterns.length > 0) || canCrud">Indicated Techniques</label>
         <add-attack-pattern [existingAttackPatterns]="attackPatterns" [indicatorId]="indicator.id" [createdByRef]="indicator.created_by_ref" [canCrud]="canCrud"></add-attack-pattern>
 
       <div *ngIf="attackPatterns && attackPatterns.length > 0">
         <div class="uf-collapsible-control mb-10 mt-6" (click)="showAttackPatternDetails = !showAttackPatternDetails">
           <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showAttackPatternDetails}">chevron_right</i>
-          <span class="h5">&nbsp;Indicated Attack Pattern Details</span>
+          <span class="h5">&nbsp;Indicated Technique Details</span>
         </div>
         <div *ngIf="showAttackPatternDetails" class="uf-well" @heightCollapse>
           <div *ngFor="let ap of attackPatterns">
