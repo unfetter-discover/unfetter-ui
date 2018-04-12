@@ -2,13 +2,18 @@ import * as eventsActions from './events.actions';
 import { Sighting } from '../../models';
 
 export interface EventsState {
-    sightings: Sighting[];
+    sightingsGroup: any[];
+    indicatorToAp: any[];
+    intrusionSetToAp: any[];
+
     finishedLoading: boolean;
 }
 
 const genState = (state?: Partial<EventsState>) => {
     const tmp = {
-        sightings: new Array<Sighting>(),
+        sightingsGroup: [],
+        indicatorToAp: [],
+        intrusionSetToAp: [],
         finishedLoading: false,
     };
     if (state) {
@@ -29,8 +34,18 @@ export function eventsReducer(state = initialState, action: eventsActions.Events
         case eventsActions.SET_SIGHTINGS:
             return genState({
                 ...state,
-                sightings: [...action.payload],
+                sightingsGroup: [...action.payload],
             });
+        case eventsActions.SET_INDICATOR_TO_AP:
+            return genState({
+                ...state,
+                indicatorToAp: [action.payload],
+            })
+        case eventsActions.SET_INTRUSION_SET_TO_AP:
+            return genState({
+                ...state,
+                intrusionSetToAp: [action.payload],
+            })
         case eventsActions.FINISHED_LOADING:
             return genState({
                 ...state,

@@ -20,7 +20,7 @@ import { IPGeoService } from './ipgeo.service';
     CommonModule,
     EventsRoutingModule,
     GlobalModule,
-    StoreModule.forFeature('sightings', eventsReducer),
+    StoreModule.forFeature('sightingsGroup', eventsReducer),
     EffectsModule.forFeature([EventsEffects]),
     ChartsModule,
   ],
