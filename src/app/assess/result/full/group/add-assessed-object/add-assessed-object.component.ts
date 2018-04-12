@@ -78,6 +78,11 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
      * @param attackPattern
      */
     public createAssessedObject(newAssessedObject, attackPattern) {
+
+        const { created_by_ref } = this.assessment;
+
+        newAssessedObject.created_by_ref = created_by_ref;
+
         // Update & save questions for assessment
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < newAssessedObject.questions.length; i++) {
@@ -109,7 +114,11 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
                 const createdObj = assessedRes[0];
 
                 // create relationship
-                const relationshipObj: any = { type: 'relationship' };
+                const relationshipObj: any = { 
+                    type: 'relationship',
+                    created_by_ref
+                };
+                
                 switch (newAssessedObject.type) {
                     case 'x-unfetter-sensor':
                     case 'course-of-action':

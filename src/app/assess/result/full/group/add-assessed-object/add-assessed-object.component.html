@@ -11,10 +11,8 @@
           <div *ngSwitchCase="'indicator'">
             <div class="row">
               <div *ngFor="let measurement of indicator.questions" class="col-xs-12">
-                <label class="mat-label">{{measurement.name | capitalize}}</label>
                 <mat-form-field class="full-width">
-
-                  <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin">
+                  <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin" placeholder="{{measurement.name | capitalize}}">
                     <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
                       {{ option.name }}
                     </mat-option>
@@ -28,27 +26,27 @@
                   <input matInput placeholder="Name" required [(ngModel)]="indicator.name" value="{{indicator.name}}" />
                 </mat-input-container>
               </div>
-            </div>
+            </div>            
             <div class="row">
               <div class="col-md-12">
                 <mat-input-container class="full-width">
-                  <textarea matInput placeholder="Description" [(ngModel)]="indicator.description" value="{{indicator.description}}"></textarea>
+                  <textarea matInput placeholder="Pattern" required [(ngModel)]="indicator.pattern" value="{{indicator.pattern}}"></textarea>
                 </mat-input-container>
               </div>
             </div>
             <div class="row">
-              <div class="col-md-12">
-                <mat-input-container class="full-width">
-                  <input matInput placeholder="Pattern" [(ngModel)]="indicator.pattern" value="{{indicator.pattern}}" />
-                </mat-input-container>
-              </div>
+                <div class="col-md-12">
+                    <mat-input-container class="full-width">
+                        <textarea matInput placeholder="Description" [(ngModel)]="indicator.description" value="{{indicator.description}}"></textarea>
+                    </mat-input-container>
+                </div>
             </div>
 
             <div class="row">
               <p class="text-right">
                 <button mat-button (click)="addAssessedObject = !addAssessedObject">CANCEL
                 </button>
-                <button mat-raised-button color="accent" [disabled]="!indicator.name" (click)="indicator.name ? createAssessedObject(indicator, currentAttackPattern) : ''">SAVE</button>
+                <button mat-raised-button color="accent" [disabled]="!indicator.name || !indicator.pattern" (click)="createAssessedObject(indicator, currentAttackPattern)">SAVE</button>
               </p>
             </div>
           </div>
@@ -57,10 +55,8 @@
           <div *ngSwitchCase="'course-of-action'">
             <div class="row">
               <div *ngFor="let measurement of courseOfAction.questions" class="col-xs-12">
-                <label class="mat-label">{{measurement.name | capitalize}}</label>
                 <mat-form-field class="full-width">
-
-                  <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin">
+                  <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin" placeholder="{{measurement.name | capitalize}}">
                     <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
                       {{ option.name }}
                     </mat-option>
@@ -86,7 +82,7 @@
             <div class="row">
               <p class="text-right">
                 <button mat-button (click)="addAssessedObject = !addAssessedObject">CANCEL</button>
-                <button color="accent" mat-raised-button [disabled]="!courseOfAction.name" (click)="courseOfAction.name ? createAssessedObject(courseOfAction, currentAttackPattern) : ''">SAVE</button>
+                <button color="accent" mat-raised-button [disabled]="!courseOfAction.name" (click)="createAssessedObject(courseOfAction, currentAttackPattern)">SAVE</button>
               </p>
             </div>
           </div>
@@ -95,10 +91,8 @@
           <div *ngSwitchCase="'x-unfetter-sensor'">
             <div class="row">
               <div *ngFor="let measurement of xUnfetterSensor.questions" class="col-xs-12">
-                <label class="mat-label">{{measurement.name | capitalize}}</label>
                 <mat-form-field class="full-width">
-
-                  <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin">
+                  <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin" placeholder="{{ measurement.name }}">
                     <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
                       {{ option.name }}
                     </mat-option>
@@ -123,7 +117,7 @@
             <div class="row">
               <p class="text-right">
                 <button mat-button (click)="addAssessedObject = !addAssessedObject">CANCEL</button>
-                <button color="accent" mat-raised-button [disabled]="!xUnfetterSensor.name" (click)="xUnfetterSensor.name ? createAssessedObject(xUnfetterSensor, currentAttackPattern) : ''">SAVE</button>
+                <button color="accent" mat-raised-button [disabled]="!xUnfetterSensor.name" (click)="createAssessedObject(xUnfetterSensor, currentAttackPattern)">SAVE</button>
               </p>
             </div>
           </div>
@@ -133,5 +127,5 @@
       </mat-card-content>
     </mat-card>
   </div>
-  <unf-speed-dial [items]="speedDialItems" (itemClickedEmitter)="speedDialClicked($event)"></unf-speed-dial>
+  <unf-speed-dial [items]="speedDialItems" (itemClickedEmitter)="speedDialClicked($event)" [(open)]="addAssessedObject"></unf-speed-dial>
 </div>
