@@ -6,6 +6,9 @@ import { AttackPattern } from '../../../models/attack-pattern';
 import { ExternalReference } from '../../../models/externalReference';
 import { Report } from '../../../models/report';
 import { Constance } from '../../../utils/constance';
+import { AppState } from '../../../root-store/app.reducers';
+import { Store } from '@ngrx/store';
+import { UserProfile } from '../../../models/user/user-profile';
 
 enum TITLES { CREATE = 'Create', MODIFY = 'Modify' };
 
@@ -31,37 +34,47 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
 
     public reportPatterns = [];
 
+    public user: UserProfile;
     private readonly subscriptions = [];
 
     constructor(
         public dialogRef: MatDialogRef<any>,
         @Inject(MAT_DIALOG_DATA) public data: Report,
         protected genericApiService: GenericApi,
+        private userStore: Store<AppState>,
     ) { }
 
     ngOnInit() {
-        // start loading the full list of attack patterns
-        const sub$ = this.loadAttackPatterns()
-            .map((arr) => arr.sort(this.genAttackPatternSorter()))
-            .subscribe(
-                (val) => {
-                    this.attackPatterns = val;
-                    // convert our report patterns to a list containing the already-selected attack patterns
-                    this.reportPatterns = val
-                        .filter(pattern => this.report.attributes.object_refs.includes(pattern.id))
-                        .map(pattern => {
-                            return {
-                                id: pattern.id,
-                                name: pattern.attributes.name
-                            };
-                        });
-                },
-                (err) => console.log(err),
-                () => this.loading = false
-            );
-        this.subscriptions.push(sub$);
-
-        this.initializeReport(this.data);
+        const getUser$ = this.userStore
+            .select('users')
+            .pluck('userProfile')
+            .take(1)
+            .subscribe((user: UserProfile) => {
+                this.user = user;
+                // start loading the full list of attack patterns
+                const sub$ = this.loadAttackPatterns()
+                    .map((arr) => arr.sort(this.genAttackPatternSorter()))
+                    .subscribe(
+                        (val) => {
+                            this.attackPatterns = val;
+                            // convert our report patterns to a list containing the already-selected attack patterns
+                            this.reportPatterns = val
+                                .filter(pattern => this.report.attributes.object_refs.includes(pattern.id))
+                                .map(pattern => {
+                                    return {
+                                        id: pattern.id,
+                                        name: pattern.attributes.name
+                                    };
+                                });
+                        },
+                        (err) => console.log(err),
+                        () => this.loading = false
+                    );
+                this.subscriptions.push(sub$);
+                this.initializeReport(this.data);
+            },
+                (err) => console.log(err));
+        this.subscriptions.push(getUser$);
     }
 
     /**
@@ -71,8 +84,19 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
         if (this.attackPatterns && this.attackPatterns.length > 0) {
             return Observable.of(this.attackPatterns);
         }
-        const filter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
-        const url = Constance.ATTACK_PATTERN_URL + '?' + filter;
+        const sort = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
+        let filter = '';
+        if (this.user && this.user.preferences && this.user.preferences.killchain) {
+            const userFramework = this.user.preferences.killchain;
+            const userFrameworkFilter = { 'stix.kill_chain_phases.kill_chain_name': { $exists: true, $eq: userFramework } };
+            filter = 'filter=' + encodeURIComponent(JSON.stringify(userFrameworkFilter));
+        }
+        let url = '';
+        if (filter) {
+            url = `${Constance.ATTACK_PATTERN_URL}?${filter}&${sort}`;
+        }else {
+            url = `${Constance.ATTACK_PATTERN_URL}?${sort}`;
+        }
         return this.genericApiService.get(url).map((el) => this.attackPatterns = el);
     }
 
@@ -87,7 +111,7 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
             this.report.attributes = { ...this.report.attributes, ...data.attributes };
             this.report.attributes.labels = data.attributes.labels ? [...data.attributes.labels] : [];
             this.report.attributes.object_refs = data.attributes.object_refs ? [...data.attributes.object_refs] : [];
-            this.report.attributes.external_references = data.attributes.external_references 
+            this.report.attributes.external_references = data.attributes.external_references
                 ? [...data.attributes.external_references] : [];
             this.references = this.report.attributes.external_references[0];
             this.title = TITLES.MODIFY;
