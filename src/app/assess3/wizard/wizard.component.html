@@ -10,7 +10,7 @@
         </mat-panel-title>
       </mat-expansion-panel-header>
     </mat-expansion-panel>
-    <mat-expansion-panel *ngFor="let category of categories" hideToggle="true" [expanded]="openedSidePanel === 'category'"
+    <!--mat-expansion-panel *ngFor="let category of categories" hideToggle="true" [expanded]="openedSidePanel === 'category'"
       (opened)="onOpenSidePanel('category', $event)">
       <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
         <mat-panel-title>
@@ -25,7 +25,7 @@
           </a>
         </li>
       </ul>
-    </mat-expansion-panel>
+    </mat-expansion-panel-->
     <mat-expansion-panel hideToggle="true" [expanded]="openedSidePanel === 'summary'" (opened)="onOpenSidePanel('summary', $event); showSummarySavePage()">
       <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
         <mat-panel-title>
