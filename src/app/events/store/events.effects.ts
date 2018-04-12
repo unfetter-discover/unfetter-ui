@@ -31,10 +31,10 @@ export class EventsEffects {
         ))
         .do((data) => console.log('Events / fetchData debug output: ', data))
         // TODO create additional actions / filters to handle other types of objects
-        .mergeMap(([sightingsGroup, indicatorToApMap, intrusionSetToApMap]: [any, any, any]) => [
+        .mergeMap(([sightingsGroup, indicatorToAp, intrusionSetToAp]: [any, any, any]) => [
             new SetSightings(sightingsGroup),
-            new SetIndicatorToAp(indicatorToApMap),
-            new SetIntrusionSetToAp(intrusionSetToApMap),
+            new SetIndicatorToAp(indicatorToAp),
+            new SetIntrusionSetToAp(intrusionSetToAp),
             new FinishedLoading(true)
         ]);
 

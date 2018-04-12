@@ -39,12 +39,12 @@ export function eventsReducer(state = initialState, action: eventsActions.Events
         case eventsActions.SET_INDICATOR_TO_AP:
             return genState({
                 ...state,
-                indicatorToAp: [...action.payload],
+                indicatorToAp: [action.payload],
             })
         case eventsActions.SET_INTRUSION_SET_TO_AP:
             return genState({
                 ...state,
-                intrusionSetToAp: [...action.payload],
+                intrusionSetToAp: [action.payload],
             })
         case eventsActions.FINISHED_LOADING:
             return genState({

@@ -127,6 +127,17 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   public transformSighting(sighting: Sighting) {
+    // dummy data
+    if (!sighting.attributes['ip']) {
+      sighting.attributes['ip'] = this.ips[0].city ? this.ips[0].ip : this.ips[1].ip;
+    }
+    if (!sighting.attributes['name']) {
+      sighting.attributes['name'] = 'Generic.com Inc.';
+    }
+    sighting.attributes['observed_data_refs_city'] = this.ips[0].city ? this.ips[0].city : this.ips[1].city;
+    sighting.attributes['observed_data_refs_country'] = this.ips[0].country ? this.ips[0].country : this.ips[1].country;
+
+    // end dummy data
     if (!sighting.attributes.where_sighted_refs) {
       sighting.attributes['where_sighted_refs'] = ['Unknown'];
     }
@@ -170,7 +181,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   public transformSightings() {
-    console.log(JSON.stringify(this.sightingsGroup));
+    // console.log(JSON.stringify(this.sightingsGroup));
     if (!this.sightingsGroup) {
       this.service.recentSightings = new Array<Sighting>();
       this.identities = [];
@@ -178,51 +189,49 @@ export class EventsComponent implements OnInit, OnDestroy {
       this.observedData = [];
     } else {
       this.service.recentSightings = this.sightingsGroup.filter((data: any) => data.attributes.type === 'sighting');
-      console.log(`recentSightings initially ${JSON.stringify(this.service.recentSightings[0])}`);
+      // console.log(`recentSightings initially ${JSON.stringify(this.service.recentSightings[0])}`);
       this.identities = this.sightingsGroup.filter((data: any) => data.attributes.type === 'identity');
-      console.log(`identities initially ${JSON.stringify(this.identities)}`);
+      // console.log(`identities initially ${JSON.stringify(this.identities)}`);
       this.indicators = this.sightingsGroup.filter((data: any) => data.attributes.type === 'indicator');
-      console.log(`indicators initially ${JSON.stringify(this.indicators)}`);
+      // console.log(`indicators initially ${JSON.stringify(this.indicators)}`);
       this.observedData = this.sightingsGroup.filter((data: any) => data.attributes.type === 'observed-data');
-      console.log(`observedData initially ${JSON.stringify(this.observedData)}`);
+      // console.log(`observedData initially ${JSON.stringify(this.observedData)}`);
       for (const sighting of this.service.recentSightings) {
         this.transformSighting(sighting);
       }
-      console.log(`recentSightings after ${JSON.stringify(this.service.recentSightings)}`);
+      // console.log(`recentSightings after ${JSON.stringify(this.service.recentSightings)}`);
     }
 
-    // dummy data
-    /*
-    for (let i = 0; i < 40; i++) {
-      const ip = this.ips.shift();
-      const sighting = new Sighting();
-      sighting.attributes.last_seen = new Date(new Date().setDate(new Date().getDate() - i));
-      // sighting.attributes.sighting_of_ref is some id
-      sighting.attributes['sighting_of_ref'] = 'Commonly Used Port';
-      sighting.attributes['name'] = 'Company X';
-      sighting.attributes['ip'] = ip.ip || '123.23.2340';
-      sighting.attributes['observed_data_refs_city'] = ip.city || 'Kyiv';
-      sighting.attributes['observed_data_refs_country'] = ip.country || 'UA';
-      // sighting.attributes.observed_data_refs[] holds ids
-      sighting.attributes.observed_data_refs.push(ip.ip || '123.23.2340');
-      sighting.attributes['sighting_of_ref_name_intrusion_set_group'] = 'APT3';
-      this.service.recentSightings.unshift(sighting);
-      if (i % 2) {
-        const aip = this.ips.shift();
-        const additionalSighting = new Sighting();
-        additionalSighting.attributes.last_seen = new Date(new Date().setDate(new Date().getDate() - i));
-        // additionalSighting.attributes.sighting_of_ref is some id
-        additionalSighting.attributes['sighting_of_ref'] = 'Commonly Used Port';
-        additionalSighting.attributes['name'] = 'Company X';
-        additionalSighting.attributes['ip'] = aip.ip || '123.23.2340';
-        additionalSighting.attributes['observed_data_refs_city'] = aip.city || 'Kyiv';
-        additionalSighting.attributes['observed_data_refs_country'] = aip.country || 'UA';
-        // additionalSighting.attributes.observed_data_refs[] holds ids
-        additionalSighting.attributes.observed_data_refs.push(aip.ip || '123.23.2340');
-        additionalSighting.attributes['sighting_of_ref_name_intrusion_set_group'] = 'APT3';
-        this.service.recentSightings.unshift(additionalSighting);
-        this.ips.push(aip);
-      }
-    } */
+    // for (let i = 0; i < 5; i++) {
+    //   const ip = this.ips.shift();
+    //   const sighting = new Sighting();
+    //   sighting.attributes.last_seen = new Date(new Date().setDate(new Date().getDate() - i));
+    //   // sighting.attributes.sighting_of_ref is some id
+    //   sighting.attributes['sighting_of_ref'] = 'Commonly Used Port';
+    //   sighting.attributes['name'] = 'Company X';
+    //   sighting.attributes['ip'] = ip.ip || '123.23.2340';
+    //   sighting.attributes['observed_data_refs_city'] = ip.city || 'Kyiv';
+    //   sighting.attributes['observed_data_refs_country'] = ip.country || 'UA';
+    //   // sighting.attributes.observed_data_refs[] holds ids
+    //   sighting.attributes.observed_data_refs.push(ip.ip || '123.23.2340');
+    //   sighting.attributes['sighting_of_ref_name_intrusion_set_group'] = 'APT3';
+    //   this.service.recentSightings.unshift(sighting);
+    //   if (i % 2) {
+    //     const aip = this.ips.shift();
+    //     const additionalSighting = new Sighting();
+    //     additionalSighting.attributes.last_seen = new Date(new Date().setDate(new Date().getDate() - i));
+    //     // additionalSighting.attributes.sighting_of_ref is some id
+    //     additionalSighting.attributes['sighting_of_ref'] = 'Commonly Used Port';
+    //     additionalSighting.attributes['name'] = 'Company X';
+    //     additionalSighting.attributes['ip'] = aip.ip || '123.23.2340';
+    //     additionalSighting.attributes['observed_data_refs_city'] = aip.city || 'Kyiv';
+    //     additionalSighting.attributes['observed_data_refs_country'] = aip.country || 'UA';
+    //     // additionalSighting.attributes.observed_data_refs[] holds ids
+    //     additionalSighting.attributes.observed_data_refs.push(aip.ip || '123.23.2340');
+    //     additionalSighting.attributes['sighting_of_ref_name_intrusion_set_group'] = 'APT3';
+    //     this.service.recentSightings.unshift(additionalSighting);
+    //     this.ips.push(aip);
+    //   }
+    // }
   }
 }
