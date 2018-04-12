@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subject } from 'rxjs/Subject';
 
-import { AssessmentMeta } from '../../models/assess/assessment-meta';
+import { Assessment3Meta } from '../../models/assess/assessment3-meta';
 
 /**
  * @description maintain state across the assess create and wizard pages
@@ -12,7 +12,7 @@ import { AssessmentMeta } from '../../models/assess/assessment-meta';
 @Injectable()
 export class AssessStateService {
 
-    protected metaDataSubject = new BehaviorSubject<AssessmentMeta>(new AssessmentMeta());
+    protected metaDataSubject = new BehaviorSubject<Assessment3Meta>(new Assessment3Meta());
     public metaData$ = this.metaDataSubject.asObservable();
 
     constructor() {
@@ -21,9 +21,9 @@ export class AssessStateService {
     /**
      * @description
      * @param meta
-     * @return {Observable<AssessmentMeta>}
+     * @return {Observable<Assessment3Meta>}
      */
-    public saveCurrent(meta: AssessmentMeta): Observable<AssessmentMeta> {
+    public saveCurrent(meta: Assessment3Meta): Observable<Assessment3Meta> {
         this.metaDataSubject.next(meta);
         return this.metaData$;
     }
@@ -31,9 +31,9 @@ export class AssessStateService {
     /**
      * @description
      * @param {void}
-     * @return {Observable<AssessmentMeta>}
+     * @return {Observable<Assessment3Meta>}
      */
-    public currentMeta(): Observable<AssessmentMeta> {
+    public currentMeta(): Observable<Assessment3Meta> {
         return this.metaData$.last();
     }
 

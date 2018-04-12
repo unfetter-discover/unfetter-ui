@@ -17,7 +17,7 @@ const routes = [
         children: [
             { path: 'create', component: Create3Component },
             { path: 'wizard/new', loadChildren: 'app/assess3/wizard/wizard.module#WizardModule' },
-            { path: 'wizard/edit/:assessmentId', loadChildren: 'app/assess/wizard/wizard.module#WizardModule' },
+            { path: 'wizard/edit/:assessmentId', loadChildren: 'app/assess3/wizard/wizard.module#WizardModule' },
         ]
     },
     { path: 'result/summary/:assessmentId', component: SummaryComponent },

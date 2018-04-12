@@ -40,7 +40,6 @@ export class SummaryEffects {
         })
         .mergeMap((data: Assessment3) => {
             const actions = [new FinishedLoading(true)];
-            console.log(`ASSESS3 fetched assessment: ${JSON.stringify(data)}`);
             if (!data || !data.id) {
                 return actions
             }
