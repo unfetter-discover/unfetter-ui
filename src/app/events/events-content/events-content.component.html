@@ -91,7 +91,7 @@
                   </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="{{columnIds[5]}}">
-                  <mat-header-cell *matHeaderCellDef>Attack Pattern</mat-header-cell>
+                  <mat-header-cell *matHeaderCellDef>Indicates</mat-header-cell>
                   <mat-cell *matCellDef="let sighting">
                     <span>{{sighting.attributes.sighting_of_ref}}</span>
                   </mat-cell>
@@ -99,7 +99,7 @@
                 <ng-container matColumnDef="{{columnIds[6]}}">
                   <mat-header-cell *matHeaderCellDef>Potential Actors</mat-header-cell>
                   <mat-cell *matCellDef="let sighting">
-                    <span>{{sighting.attributes.sighting_of_ref_name_intrusion_set_group}}</span>
+                    <span>{{sighting.attributes.intrusionSet[0]}}</span>
                   </mat-cell>
                 </ng-container>
                 <mat-header-row class="table-header-row" *matHeaderRowDef="columnIds"></mat-header-row>
