@@ -66,11 +66,11 @@ export class AuthService {
         if (this.runMode === 'DEMO') {
             return true;
         } else {
-            let tokenExpiried: boolean = true;
+            let tokenExpired: boolean = true;
             try {
-                tokenExpiried = tokenNotExpired('unfetterUiToken');
+                tokenExpired = tokenNotExpired('unfetterUiToken');
             } catch (e) { }
-            return tokenExpiried && this.getUser() !== null && this.getUser().approved === true;
+            return tokenExpired && this.getUser() !== null && this.getUser().approved === true;
         }
     }
 
