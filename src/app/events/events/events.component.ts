@@ -9,21 +9,24 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { Sighting } from '../../models';
 import { IPGeoService } from '../ipgeo.service';
+import { fadeInOut } from '../../global/animations/fade-in-out';
 
 @Component({
   selector: 'events',
   templateUrl: './events.component.html',
-  styleUrls: ['./events.component.scss']
+  styleUrls: ['./events.component.scss'],
+  animations: [fadeInOut],
 })
 export class EventsComponent implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription[];
   private readonly ips = [];
   private sightingsGroup: any[];
-  private indicatorToAp: any[];
-  private intrusionSetToAp: any[];
+  private indicatorToAp: any;
+  private intrusionSetToAp: any;
   private identities: any[];
   private indicators: any[];
   private observedData: any[];
+  private dummyValue: number;
 
   constructor(private userStore: Store<AppState>,
     private store: Store<EventsState>,
@@ -34,6 +37,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.dummyValue = Math.floor(Math.random() * 2);
     this.sightingsGroup = undefined;
     this.identities = undefined;
     this.indicators = undefined;
@@ -73,9 +77,9 @@ export class EventsComponent implements OnInit, OnDestroy {
       .select('sightingsGroup')
       .pluck('indicatorToAp')
       .distinctUntilChanged()
-      .filter((arr: any[]) => arr && arr.length > 0)
-      .subscribe((arr: any[]) => {
-        this.indicatorToAp = [...arr];
+      .filter((obj: any) => obj && Object.keys(obj).length > 0)
+      .subscribe((obj: any) => {
+        this.indicatorToAp = obj;
       },
         (err) => console.log(err));
 
@@ -83,9 +87,9 @@ export class EventsComponent implements OnInit, OnDestroy {
       .select('sightingsGroup')
       .pluck('intrusionSetToAp')
       .distinctUntilChanged()
-      .filter((arr: any[]) => arr && arr.length > 0)
-      .subscribe((arr: any[]) => {
-        this.intrusionSetToAp = [...arr];
+      .filter((obj: any) => obj && Object.keys(obj).length > 0)
+      .subscribe((obj: any) => {
+        this.intrusionSetToAp = obj;
       },
         (err) => console.log(err));
 
@@ -105,7 +109,8 @@ export class EventsComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(sub1$, sub2$, sub3$, sub4$);
   }
-
+  /**
+   */
   public makeIPs() {
     const subips$ = Observable
       .forkJoin([1, 2].map(v4 => this.ipgeo.lookup([1, 2, 3, 4].map(b => Math.floor(Math.random() * 256)).join('.'))))
@@ -113,7 +118,6 @@ export class EventsComponent implements OnInit, OnDestroy {
         if (subips$) {
           subips$.unsubscribe();
         }
-        // console.log('after', this.ips);
         this.transformSightings();
         this.service.finishedLoading = true;
       })
@@ -125,19 +129,60 @@ export class EventsComponent implements OnInit, OnDestroy {
         }
       });
   }
+  /**
+   * @returns string
+   */
+  getDummyIp(): string {
+    // Default, matches default geo
+    let dummyIp = '124.91.183.46';
+    if (this.ips[this.dummyValue].city && this.ips[this.dummyValue].ip) {
+      dummyIp = this.ips[this.dummyValue].ip;
+    } else if (this.ips[Math.abs(this.dummyValue - 1)].ip) {
+      dummyIp = this.ips[Math.abs(this.dummyValue - 1)].ip;
+    }
+    return dummyIp;
+  }
 
+  getDummyCity(): string {
+    // Default, matches default Ip
+    let dummyCity = 'Hangzhou';
+    if (this.ips[this.dummyValue].city) {
+      dummyCity = this.ips[this.dummyValue].city;
+    } else if (this.ips[Math.abs(this.dummyValue - 1)].city) {
+      dummyCity = this.ips[Math.abs(this.dummyValue - 1)].city;
+    }
+    return dummyCity;
+  }
+  /**
+   * @returns string
+   */
+  getDummyCountry(): string {
+    // Default, matches default Ip
+    let dummyCountry = 'CN';
+    if (this.ips[this.dummyValue].country) {
+      dummyCountry = this.ips[this.dummyValue].country;
+    } else if (this.ips[Math.abs(this.dummyValue - 1)].country) {
+      dummyCountry = this.ips[Math.abs(this.dummyValue - 1)].country;
+    }
+    return dummyCountry;
+  }
+
+  /**
+   * @param  {Sighting} sighting
+   */
   public transformSighting(sighting: Sighting) {
     // dummy data
+    this.dummyValue = Math.floor(Math.random() * 2);
     if (!sighting.attributes['ip']) {
-      sighting.attributes['ip'] = this.ips[0].city ? this.ips[0].ip : this.ips[1].ip;
+      sighting.attributes['ip'] = this.getDummyIp();
     }
     if (!sighting.attributes['name']) {
       sighting.attributes['name'] = 'Generic.com Inc.';
     }
-    sighting.attributes['observed_data_refs_city'] = this.ips[0].city ? this.ips[0].city : this.ips[1].city;
-    sighting.attributes['observed_data_refs_country'] = this.ips[0].country ? this.ips[0].country : this.ips[1].country;
-
+    sighting.attributes['observed_data_refs_city'] = this.getDummyCity();
+    sighting.attributes['observed_data_refs_country'] = this.getDummyCountry();
     // end dummy data
+    
     if (!sighting.attributes.where_sighted_refs) {
       sighting.attributes['where_sighted_refs'] = ['Unknown'];
     }
@@ -153,14 +198,14 @@ export class EventsComponent implements OnInit, OnDestroy {
 
     const sightingOfRef = sighting.attributes.sighting_of_ref;
     sighting.attributes.sighting_of_ref = 'Unknown';
-    // console.log(`Ref: ${sightingOfRef}`);
     for (const indicator of this.indicators) {
-      // console.log(`indicator: ${JSON.stringify(indicator)}`);
       if (sightingOfRef === indicator.id) {
         sighting.attributes.sighting_of_ref = indicator.attributes.name;
         break;
       }
     }
+
+    sighting.attributes['intrusionSet'] = this.getIntrusionSets(sightingOfRef);
 
     if (!sighting.attributes.observed_data_refs) {
       sighting.attributes.observed_data_refs = ['Unknown'];
@@ -178,10 +223,39 @@ export class EventsComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+  }
+
+  public getIntrusionSets(indicatorId): string[] {
+    let intrusionSetNames: string[] = new Array<string>();
+    let attackPatterns: any[] = [];
+    if (indicatorId) {
+      for (const key of Object.keys(this.indicatorToAp)) {
+        if (indicatorId === key) {
+          attackPatterns = this.indicatorToAp[key];
+          console.log(`attackPatterns: ${JSON.stringify(attackPatterns)}`);
+          break;
+        }
+      }
+      for (const attackPattern of attackPatterns) {
+        for (const key of Object.keys(this.intrusionSetToAp)) {
+          if (attackPattern.id === key) {
+            console.log(`intrusionSets: ${JSON.stringify(this.intrusionSetToAp[key])}`)
+            for (const set of this.intrusionSetToAp[key]) {
+              intrusionSetNames.push(set.name);
+            }
+            break;
+          }
+        }
+      }
+    }
+    return intrusionSetNames;
   }
 
   public transformSightings() {
-    // console.log(JSON.stringify(this.sightingsGroup));
+    console.log(JSON.stringify(this.intrusionSetToAp));
+    console.log(JSON.stringify(this.indicatorToAp));
+    console.log(JSON.stringify(this.sightingsGroup));
     if (!this.sightingsGroup) {
       this.service.recentSightings = new Array<Sighting>();
       this.identities = [];
@@ -189,49 +263,12 @@ export class EventsComponent implements OnInit, OnDestroy {
       this.observedData = [];
     } else {
       this.service.recentSightings = this.sightingsGroup.filter((data: any) => data.attributes.type === 'sighting');
-      // console.log(`recentSightings initially ${JSON.stringify(this.service.recentSightings[0])}`);
       this.identities = this.sightingsGroup.filter((data: any) => data.attributes.type === 'identity');
-      // console.log(`identities initially ${JSON.stringify(this.identities)}`);
       this.indicators = this.sightingsGroup.filter((data: any) => data.attributes.type === 'indicator');
-      // console.log(`indicators initially ${JSON.stringify(this.indicators)}`);
       this.observedData = this.sightingsGroup.filter((data: any) => data.attributes.type === 'observed-data');
-      // console.log(`observedData initially ${JSON.stringify(this.observedData)}`);
       for (const sighting of this.service.recentSightings) {
         this.transformSighting(sighting);
       }
-      // console.log(`recentSightings after ${JSON.stringify(this.service.recentSightings)}`);
     }
-
-    // for (let i = 0; i < 5; i++) {
-    //   const ip = this.ips.shift();
-    //   const sighting = new Sighting();
-    //   sighting.attributes.last_seen = new Date(new Date().setDate(new Date().getDate() - i));
-    //   // sighting.attributes.sighting_of_ref is some id
-    //   sighting.attributes['sighting_of_ref'] = 'Commonly Used Port';
-    //   sighting.attributes['name'] = 'Company X';
-    //   sighting.attributes['ip'] = ip.ip || '123.23.2340';
-    //   sighting.attributes['observed_data_refs_city'] = ip.city || 'Kyiv';
-    //   sighting.attributes['observed_data_refs_country'] = ip.country || 'UA';
-    //   // sighting.attributes.observed_data_refs[] holds ids
-    //   sighting.attributes.observed_data_refs.push(ip.ip || '123.23.2340');
-    //   sighting.attributes['sighting_of_ref_name_intrusion_set_group'] = 'APT3';
-    //   this.service.recentSightings.unshift(sighting);
-    //   if (i % 2) {
-    //     const aip = this.ips.shift();
-    //     const additionalSighting = new Sighting();
-    //     additionalSighting.attributes.last_seen = new Date(new Date().setDate(new Date().getDate() - i));
-    //     // additionalSighting.attributes.sighting_of_ref is some id
-    //     additionalSighting.attributes['sighting_of_ref'] = 'Commonly Used Port';
-    //     additionalSighting.attributes['name'] = 'Company X';
-    //     additionalSighting.attributes['ip'] = aip.ip || '123.23.2340';
-    //     additionalSighting.attributes['observed_data_refs_city'] = aip.city || 'Kyiv';
-    //     additionalSighting.attributes['observed_data_refs_country'] = aip.country || 'UA';
-    //     // additionalSighting.attributes.observed_data_refs[] holds ids
-    //     additionalSighting.attributes.observed_data_refs.push(aip.ip || '123.23.2340');
-    //     additionalSighting.attributes['sighting_of_ref_name_intrusion_set_group'] = 'APT3';
-    //     this.service.recentSightings.unshift(additionalSighting);
-    //     this.ips.push(aip);
-    //   }
-    // }
   }
 }
