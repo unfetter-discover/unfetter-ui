@@ -1,14 +1,14 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed, async, inject } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { StoreModule } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+
+import { UserPreferencesService } from './user-preferences.service';
+import { UserProfileMockFactory } from '../../models/user/user-profile.mock';
 import { UserProfile } from '../../models/user/user-profile';
 import { reducers } from '../../root-store/app.reducers';
 import { GenericApi } from './genericapi.service';
-import { UserPreferencesService } from './user-preferences.service';
-import { UserProfileMockFactory } from '../../models/user/user-profile.mock';
-
 
 describe('UserPreferencesService', () => {
 
