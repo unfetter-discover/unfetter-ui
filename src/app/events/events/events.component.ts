@@ -113,7 +113,7 @@ export class EventsComponent implements OnInit, OnDestroy {
         if (subips$) {
           subips$.unsubscribe();
         }
-        console.log('after', this.ips);
+        // console.log('after', this.ips);
         this.transformSightings();
         this.service.finishedLoading = true;
       })
@@ -153,9 +153,9 @@ export class EventsComponent implements OnInit, OnDestroy {
 
     const sightingOfRef = sighting.attributes.sighting_of_ref;
     sighting.attributes.sighting_of_ref = 'Unknown';
-    console.log(`Ref: ${sightingOfRef}`);
+    // console.log(`Ref: ${sightingOfRef}`);
     for (const indicator of this.indicators) {
-      console.log(`indicator: ${JSON.stringify(indicator)}`);
+      // console.log(`indicator: ${JSON.stringify(indicator)}`);
       if (sightingOfRef === indicator.id) {
         sighting.attributes.sighting_of_ref = indicator.attributes.name;
         break;
