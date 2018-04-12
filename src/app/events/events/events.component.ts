@@ -103,7 +103,7 @@ export class EventsComponent implements OnInit, OnDestroy {
         this.makeIPs()
       }, (err) => console.log(err));
 
-    this.subscriptions.push(sub1$, sub2$);
+    this.subscriptions.push(sub1$, sub2$, sub3$, sub4$);
   }
 
   public makeIPs() {
