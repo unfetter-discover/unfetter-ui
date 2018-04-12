@@ -10,9 +10,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { AuthGuard } from './auth.guard';
 import { reducers } from '../../root-store/app.reducers';
-
-import * as fromUsers from '../../root-store/users/users.reducers';
-import * as fromApp from '../../root-store/app.reducers';
 import * as userActions from '../../root-store/users/user.actions';
 
 describe('Auth guard should', () => {
