@@ -1,5 +1,5 @@
 import { StixLabelEnum } from '../../../models/stix/stix-label.enum';
-import { AssessmentQuestion } from '../../../models/assess/assessment-question';
+import { Assessment3Question } from '../../../models/assess/assessment3-question';
 
 /**
  * @description assessment as shown on the wizard
@@ -13,6 +13,6 @@ export class WizardAssessment {
     public description: string;
     public type: StixLabelEnum = StixLabelEnum.INDICATOR;
     public risk = -1;
-    public measurements: AssessmentQuestion[] = [];
+    public scores: Assessment3Question[] = [];
     public groupings: any[] = [];
 }

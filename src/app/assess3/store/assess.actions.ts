@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { AssessmentMeta } from '../../models/assess/assessment-meta';
+import { Assessment3Meta } from '../../models/assess/assessment3-meta';
 import { Stix } from '../../models/stix/stix';
 import { JsonApiData } from '../../models/json/jsonapi-data';
 import { Assessment3 } from '../../models/assess/assessment3';
@@ -28,7 +28,7 @@ export class UpdatePageTitle implements Action {
 export class StartAssessment implements Action {
     public readonly type = START_ASSESSMENT;
 
-    constructor(public payload: AssessmentMeta) { }
+    constructor(public payload: Assessment3Meta) { }
 }
 
 export class StartAssessmentSuccess implements Action {
@@ -52,7 +52,7 @@ export class FetchAssessment implements Action {
 export class LoadAssessmentWizardData implements Action {
     public readonly type = LOAD_ASSESSMENT_WIZARD_DATA;
 
-    constructor(public payload: Partial<AssessmentMeta>) { }
+    constructor(public payload: Partial<Assessment3Meta>) { }
 }
 
 export class FinishedLoading implements Action {
