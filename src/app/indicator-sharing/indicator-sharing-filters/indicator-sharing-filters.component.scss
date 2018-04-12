@@ -13,3 +13,8 @@
         color: $analytic-exchange-primary-lighter;
     }
 }
+
+#attackPatternWrapper {
+    flex-direction:row;
+    align-items:baseline;
+}
