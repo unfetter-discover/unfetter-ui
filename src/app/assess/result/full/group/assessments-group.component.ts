@@ -21,6 +21,8 @@ import { LoadGroupData, LoadGroupCurrentAttackPattern, PushUrl, LoadGroupAttackP
 import { RiskByAttack } from '../../../../models/assess/risk-by-attack';
 import { Relationship } from '../../../../models';
 import { FullAssessmentGroup } from './models/full-assessment-group';
+import { AuthService } from '../../../../core/services/auth.service';
+import { StixPermissions } from '../../../../global/static/stix-permissions';
 
 @Component({
   selector: 'unf-assess-group',
@@ -67,6 +69,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   public attackPatternsByPhase: AssessAttackPatternMeta[];
   public addAssessedObject: boolean;
   public addAssessedType: string;
+  public canAddAssessedObjects: boolean = false;
 
   private readonly subscriptions: Subscription[] = [];
 
@@ -74,7 +77,9 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     private assessService: AssessService,
     private route: ActivatedRoute,
     private changeDetector: ChangeDetectorRef,
-    private store: Store<FullAssessmentResultState>) { }
+    private store: Store<FullAssessmentResultState>,
+    private authService: AuthService    
+  ) { }
 
   /**
    * @description init before childern are initialized
@@ -126,6 +131,9 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     this.listenForDataChanges(attackPatternIndex);
     // request for initial data changes
     this.requestDataLoad(this.assessmentId);
+
+    const stixPermissions: StixPermissions = this.authService.getStixPermissions();
+    this.canAddAssessedObjects = stixPermissions.canCreate(this.assessment);
   }
   
   /**

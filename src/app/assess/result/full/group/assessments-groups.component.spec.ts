@@ -23,6 +23,7 @@ import { RiskByAttack } from '../../../../models/assess/risk-by-attack';
 import { RiskByAttackPatternMockFactory } from '../../../../models/assess/risk-by-attack-pattern.mock';
 import { SummaryCalculationService } from '../../summary/summary-calculation.service';
 import { FullAssessmentGroupMockFactory } from './models/full-assessment-group.mock';
+import { AuthService } from '../../../../core/services/auth.service';
 
 describe('AssessGroupComponent', () => {
   let component: AssessGroupComponent;
@@ -31,6 +32,14 @@ describe('AssessGroupComponent', () => {
   let mockReducer: ActionReducerMap<any> = {};
 
   const mockService = {};
+
+  const mockAuthService = {
+    getStixPermissions: () => {
+      return {
+        canCreate: (_) => true 
+      };
+    }
+  };
 
   beforeEach(async(() => {
     const matModules = [
@@ -54,8 +63,13 @@ describe('AssessGroupComponent', () => {
         AssessService,
         {
           provide: GenericApi,
-          use: mockService
-        }],
+          useValue: mockService
+        },
+        {
+          provide: AuthService,
+          useValue: mockAuthService
+        }
+      ],
     })
       .compileComponents();
   }));
