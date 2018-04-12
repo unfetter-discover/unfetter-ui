@@ -15,7 +15,7 @@ import * as assessReducers from '../store/assess.reducers';
 import { AppState } from '../../root-store/app.reducers';
 import { Assessment3 } from '../../models/assess/assessment3';
 import { AssessmentsService } from '../assessments.service';
-import { AssessmentMeta } from '../../models/assess/assessment-meta';
+import { Assessment3Meta } from '../../models/assess/assessment3-meta';
 import { Assessment3Object } from '../../models/assess/assessment3-object';
 import { Assessment3Question } from '../../models/assess/assessment3-question';
 import { Constance } from '../../utils/constance';
@@ -32,8 +32,7 @@ import { FullAssessmentResultState } from '../result/store/full-result.reducers'
 import { LoadAssessmentResultData } from '../result/store/full-result.actions';
 import { heightCollapse } from '../../global/animations/height-collapse';
 import { WizardAssessment } from './models/wizard-assessment';
-import { TempModel } from './models/temp-model';
-import { SidePanelName } from './models/side-panel-name.enum';
+import { ScoresModel } from './models/scores-model';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -59,11 +58,10 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public readonly CHART_BG_COLORS: any[];
   public readonly CHART_HOVER_BG_COLORS: any[];
 
-
   public model: JsonApiData<Assessment3, Dictionary<Assessment3>>;
   public publishDate = new Date();
   public buttonLabel: ButtonLabel = 'CONTINUE';
-  public categories: { label: string, page: number, capabilities: string[] }[] = [];
+  public navigations: { label: string, page: number }[] = [];
   public item: MenuItem[];
   public doughnutChartLabels: string[];
   public doughnutChartData: { data: any[], backgroundColor: any[], hoverBackgroundColor: any[] }[];
@@ -99,20 +97,20 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   // Unfetter Discover will use the survey to help you understand your gaps, how important they are and which should be addressed.
   // You may create multiple reports to see how your risk is changed when implementing different security processes.`;
   public showSummary = false;
-  public currentAssessmentGroup = {} as any;
+  public currentCapability = {} as any;
   public page = 1;
-  public meta = new AssessmentMeta();
+  public meta = new Assessment3Meta();
   public ratioOfQuestionsAnswered = 0;
-  public openedSidePanel: SidePanelName;
+  public openedSidePanel: string;
   public insertMode = false;
   private assessments: WizardAssessment[] = [];
   private groupings = [];
-  private assessmentGroups: any[];
-  private tempModel: TempModel = {} as TempModel;
-  private assessmentTypeGroups: Dictionary<{ tempModel: TempModel, assessmentsGroups: any[] }> = {};
+  private capabilities: any[];
+  private scoresModel: ScoresModel = {} as ScoresModel;
+  public categories: Dictionary<{ scoresModel: ScoresModel, capabilities: any[] }> = {};
 
   private readonly subscriptions: Subscription[] = [];
-  private readonly sidePanelOrder: SidePanelName[] = ['categories', 'summary'];
+  private readonly sidePanelOrder: string[] = ['categories', 'summary'];
 
   constructor(
     private genericApi: GenericApi,
@@ -161,11 +159,12 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     const idParamSub$ = this.route.params
       .subscribe(
         (params) => {
-          const isTrue = (val: number) => val === 1;
-          const assessmentId = params.assessmentId;
-          let meta: Partial<AssessmentMeta> = {};
-          this.loadExistingAssessment(assessmentId, meta);
-          this.wizardStore.dispatch(new LoadAssessmentWizardData(assessmentId));
+          let meta: Partial<Assessment3Meta> = {};
+          let assessmentId = params.assessmentId || '';
+          if (assessmentId) {
+            this.loadExistingAssessment(assessmentId, meta);
+          }
+          this.wizardStore.dispatch(new LoadAssessmentWizardData(meta));
         },
         (err) => console.log(err),
         () => idParamSub$.unsubscribe());
@@ -211,7 +210,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       .pluck('assessmentMeta')
       .distinctUntilChanged()
       .subscribe(
-        (assessmentMeta: AssessmentMeta) => this.meta = assessmentMeta,
+        (assessmentMeta: Assessment3Meta) => this.meta = assessmentMeta,
         (err) => console.log(err));
 
     const sub8$ = this.userStore
@@ -240,7 +239,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     });
   }
 
-  public loadExistingAssessment(assessmentId: string, meta: Partial<AssessmentMeta>) {
+  public loadExistingAssessment(assessmentId: string, meta: Partial<Assessment3Meta>) {
     const sub$ = this.userStore
       .select('users')
       .pluck('userProfile')
@@ -261,7 +260,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.assessStore.dispatch(new LoadAssessmentResultData(assessmentId));
   }
 
-  public loadAssessments(assessmentId: string, arr: Array<Assessment3>, meta: Partial<AssessmentMeta>) {
+  public loadAssessments(assessmentId: string, arr: Array<Assessment3>, meta: Partial<Assessment3Meta>) {
     if (!arr || arr.length === 0) {
       return;
     }
@@ -330,7 +329,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @description find panel names with data
    * @return {SidePanelName[]}
    */
-  public determinePanelsWithData(): SidePanelName[] {
+  public determinePanelsWithData(): string[] {
     const panels = [...this.sidePanelOrder];
     const hasContents = panels.filter((name) => {
       return this[name] && this[name].length > 0;
@@ -342,7 +341,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @description name of first side panel with data
    * @return {string} name of first open side panel
    */
-  public determineFirstOpenSidePanel(): SidePanelName {
+  public determineFirstOpenSidePanel(): string {
     const hasContents = this.determinePanelsWithData();
     // return first panel w/ data
     return hasContents[0];
@@ -352,8 +351,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @description first panel with data, after the currently opened
    * @return {string} name of last listed side panel with data
    */
-  public determineNextSidePanel(): SidePanelName {
-    const panels: SidePanelName[] = [...this.determinePanelsWithData(), 'summary'];
+  public determineNextSidePanel(): string {
+    const panels: string[] = [...this.determinePanelsWithData(), 'summary'];
     const openedIndex = panels.findIndex((el) => el === this.openedSidePanel);
     const nextPanels = panels.slice(openedIndex + 1, panels.length);
     // first panel with data, after the currently opened
@@ -366,16 +365,16 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @param {UIEvent} event
    * @return {void}
    */
-  public onOpenSidePanel(panelName: SidePanelName, event?: UIEvent): void {
-    if (this.openedSidePanel && this.assessmentGroups && this.openedSidePanel !== 'summary') {
+  public onOpenSidePanel(panelName: string, event?: UIEvent): void {
+    if (this.openedSidePanel && this.capabilities && this.openedSidePanel !== 'summary') {
       // save current state, if needed
-      this.assessmentTypeGroups[this.openedSidePanel] = { tempModel: undefined, assessmentsGroups: undefined };
-      this.assessmentTypeGroups[this.openedSidePanel].assessmentsGroups = [...this.assessmentGroups];
-      this.assessmentTypeGroups[this.openedSidePanel].tempModel = { ...this.tempModel };
+      this.categories[this.openedSidePanel] = { scoresModel: undefined, capabilities: undefined };
+      this.categories[this.openedSidePanel].capabilities = [...this.capabilities];
+      this.categories[this.openedSidePanel].scoresModel = { ...this.scoresModel };
     }
 
     // clear out state
-    this.tempModel = {};
+    this.scoresModel = {};
     this.page = 1;
     this.showSummary = false;
     this.buttonLabel = 'CONTINUE';
@@ -384,11 +383,11 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.openedSidePanel = panelName;
     // reload questions
     this.refreshToOpenedAssessmentType();
-    if (this.openedSidePanel && this.assessmentTypeGroups[this.openedSidePanel]) {
+    if (this.openedSidePanel && this.categories[this.openedSidePanel]) {
       // reload previous state for given type/panel if it exists
-      this.assessmentGroups = [...this.assessmentTypeGroups[this.openedSidePanel].assessmentsGroups];
-      this.currentAssessmentGroup = this.getCurrentAssessmentGroup();
-      this.tempModel = { ...this.assessmentTypeGroups[this.openedSidePanel].tempModel };
+      this.capabilities = [...this.categories[this.openedSidePanel].capabilities];
+      this.currentCapability = this.getCurrentCapability();
+      this.scoresModel = { ...this.categories[this.openedSidePanel].scoresModel };
     }
 
     // reset progress 
@@ -407,7 +406,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public refreshToOpenedAssessmentType(): void {
     const data = this[this.openedSidePanel];
     if (data) {
-      this.categories = [];
+      this.navigations = [];
       this.updateRatioOfAnswerQuestions();
       this.build(data);
     }
@@ -418,8 +417,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {void}
    */
   public updateRatioOfAnswerQuestions(): void {
-    if (this.assessmentGroups && this.assessmentGroups.length > 1) {
-      const allQuestions = this.assessmentGroups
+    if (this.capabilities && this.capabilities.length > 1) {
+      const allQuestions = this.capabilities
         // flat map assessments across groups
         .map((groups) => groups.assessments)
         .reduce((assessments, memo) => memo ? memo.concat(assessments) : assessments, [])
@@ -463,11 +462,11 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {void}
    */
   public updateAllQuestions(answerIndex: number): void {
-    if (!this.currentAssessmentGroup || !this.currentAssessmentGroup.assessments) {
+    if (!this.currentCapability || !this.currentCapability.assessments) {
       return;
     }
 
-    this.currentAssessmentGroup.assessments.forEach((assessment) => {
+    this.currentCapability.assessments.forEach((assessment) => {
       const measurements = assessment.measurements;
       measurements.forEach((measurement: Assessment3Question) => {
         // TODO: Update once we have scoring
@@ -490,8 +489,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {void}
    */
   public setSelectedRiskValue(): void {
-    if (this.model && this.currentAssessmentGroup) {
-      this.currentAssessmentGroup.assessments.forEach(assessment => this.collectModelAssessments(assessment));
+    if (this.model && this.currentCapability) {
+      this.currentCapability.assessments.forEach(assessment => this.collectModelAssessments(assessment));
       this.calculateGroupRisk();
     } else {
       this.calculateGroupRisk();
@@ -528,7 +527,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @param {UIEvent} event optional
    * @returns {void}
    */
-  public capabilityClicked(step: number, event?: UIEvent): void {
+  public navigationClicked(step: number, event?: UIEvent): void {
     if (event) {
       event.preventDefault();
     }
@@ -647,7 +646,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     }
     this.page = this.page - 1;
     this.buttonLabel = 'CONTINUE';
-    this.currentAssessmentGroup = this.getCurrentAssessmentGroup();
+    this.currentCapability = this.getCurrentCapability();
     this.showSummary = false;
     this.setSelectedRiskValue();
     this.updateChart();
@@ -679,7 +678,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.buttonLabel = 'CONTINUE';
 
     // last page for this assessment type
-    if (this.page + 1 > this.assessmentGroups.length) {
+    if (this.page + 1 > this.capabilities.length) {
       const nextPanel = this.determineNextSidePanel();
       // last page
       if (nextPanel !== 'summary') {
@@ -694,7 +693,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     } else {
       // advance to next page within a given assessment type
       this.page = this.page + 1;
-      this.currentAssessmentGroup = this.getCurrentAssessmentGroup();
+      this.currentCapability = this.getCurrentCapability();
       this.setSelectedRiskValue();
       this.updateChart();
     }
@@ -707,7 +706,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    */
   public showSummarySavePage(): void {
     //  set show summary to show save page
-    this.currentAssessmentGroup = null;
+    this.currentCapability = null;
     this.showSummary = true;
     this.buttonLabel = 'SAVE';
     this.updateSummaryChart();
@@ -794,8 +793,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       return;
     }
 
-    this.assessmentGroups = this.createAssessmentGroups(data);
-    this.currentAssessmentGroup = this.getCurrentAssessmentGroup();
+    this.capabilities = this.createCapabilities(data);
+    this.currentCapability = this.getCurrentCapability();
     this.updateChart();
   }
 
@@ -804,31 +803,31 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @param {void}
    * @return {any}
    */
-  private getCurrentAssessmentGroup(): any {
+  private getCurrentCapability(): any {
     let index = 0;
     if (this.page) {
       index = this.page - 1;
     }
-    if (index >= this.assessmentGroups.length) {
+    if (index >= this.capabilities.length) {
       index = 0;
     }
-    return this.assessmentGroups[index];
+    return this.capabilities[index];
   }
 
   /* 
    * For testing only
    * @return {any[]}
    */
-  public getAssessmentGroups(): any[] {
-    return this.assessmentGroups;
+  public getCapabilities(): any[] {
+    return this.capabilities;
   }
 
   /* 
    * For testing only
    * @return {any[]}
    */
-  public setAssessmentGroups(newAssessementGroups: any[]): void {
-    this.assessmentGroups = newAssessementGroups;
+  public setCapabilities(newCapabilities: any[]): void {
+    this.capabilities = newCapabilities;
   }
 
   /*
@@ -836,8 +835,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @param {Stix[]}
    * @return {any[]}
    */
-  public createAssessmentGroups(assessedObjects: Stix[]): any[] {
-    const assessmentGroups = [];
+  public createCapabilities(assessedObjects: Stix[]): any[] {
+    const capabilities = [];
     const self = this;
 
     if (assessedObjects) {
@@ -853,9 +852,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           assessment.id = assessedObject.id;
           assessment.name = assessedObject.name;
           assessment.description = assessedObject.description;
-          assessment.measurements = assessedObject.id ? this.buildMeasurements(assessedObject.id) : [];
+          assessment.scores = assessedObject.id ? this.buildMeasurements(assessedObject.id) : [];
           assessment.type = assessedObject.type;
-          const risk = this.getRisk(assessment.measurements);
+          const risk = this.getRisk(assessment.scores);
           assessment.risk = -1;
           return assessment;
         });
@@ -869,28 +868,27 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         const courseOfActionGroup = assessmentObjectsGroups[phaseName];
 
         // This is the x-unfetter-control-assessments
-        const assessmentGroup: any = {};
-        assessmentGroup.name = phaseName;
+        const capability: any = {};
+        capability.name = phaseName;
         const step = index + 1;
-        this.categories.push({
+        this.navigations.push({
           label: this.splitTitle(phaseName),
-          page: step,
-          capabilities: [ 'Capability1', 'Capability2', 'Capability3' ]
+          page: step
         });
-        this.item = this.categories;
+        this.item = this.navigations;
         // TODO: Need to get description somehow from the key phase information
-        assessmentGroup.description = this.groupings[phaseName];
-        assessmentGroup.assessments = courseOfActionGroup;
-        assessmentGroup.risk = 1;
+        capability.description = this.groupings[phaseName];
+        capability.assessments = courseOfActionGroup;
+        capability.risk = 1;
         const riskArray = [1, 0];
-        assessmentGroup.riskArray = riskArray;
+        capability.riskArray = riskArray;
         const riskArrayLabels = ['Risk Accepted', 'Risk Addressed'];
-        assessmentGroup.riskArrayLabels = riskArrayLabels;
-        assessmentGroups.push(assessmentGroup);
+        capability.riskArrayLabels = riskArrayLabels;
+        capabilities.push(capability);
       });
     }
 
-    return assessmentGroups;
+    return capabilities;
   }
 
   /*
@@ -966,18 +964,18 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
   /*
    * @description
-   * @param {any} assessmentGroup 
+   * @param {any} capability 
    * @return {number}
    */
-  public calculateGroupRisk(assessmentGroup: any = this.currentAssessmentGroup): number {
+  public calculateGroupRisk(capability: any = this.currentCapability): number {
     let groupRisk = 0; // based on the default value from the calculateRisk function below
-    if (assessmentGroup && assessmentGroup.assessments && assessmentGroup.assessments.length > 0) {
-      groupRisk = this.calculateRisk(assessmentGroup.assessments);
+    if (capability && capability.assessments && capability.assessments.length > 0) {
+      groupRisk = this.calculateRisk(capability.assessments);
       const riskArray = [];
       riskArray.push(groupRisk);
       riskArray.push(1 - groupRisk);
-      assessmentGroup.risk = groupRisk;
-      assessmentGroup.riskArray = riskArray;
+      capability.risk = groupRisk;
+      capability.riskArray = riskArray;
     }
     return groupRisk;
   }
@@ -988,8 +986,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    */
   private updateChart(): void {
     const chartData = this.doughnutChartData.slice();
-    chartData[0].data = this.currentAssessmentGroup
-      ? this.currentAssessmentGroup.riskArray : [];
+    chartData[0].data = this.currentCapability
+      ? this.currentCapability.riskArray : [];
     this.doughnutChartData = chartData;
   }
 
@@ -1001,17 +999,17 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     let result: number[] = [];
 
     if (assessmentData) {
-      if (this.assessmentGroups && this.assessmentGroups.length > 0) {
-        this.assessmentGroups.forEach(element => {
+      if (this.capabilities && this.capabilities.length > 0) {
+        this.capabilities.forEach(element => {
           if (element.assessments) {
             element.assessments.forEach(assessment => this.collectModelAssessments(assessment))
           }
           this.calculateGroupRisk(element);
         });
-        const singleAssessmentRiskArray: number[] = this.assessmentGroups
+        const singleAssessmentRiskArray: number[] = this.capabilities
           .map((groups) => groups.riskArray)
           .reduce(this.riskReduction, [0, 0])
-          .map((riskSum) => riskSum / this.assessmentGroups.length);
+          .map((riskSum) => riskSum / this.capabilities.length);
         result = singleAssessmentRiskArray;
       }
     }
@@ -1023,40 +1021,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {void}
    */
   public updateSummaryChart(): void {
-    // default for problematic data
-    let chartData = [{ data: [], backgroundColor: [], hoverBackgroundColor: [] }];
-    const assessmentData: number[][] = [];
-    if (this.summaryDoughnutChartData && this.summaryDoughnutChartData[0].data) {
-      chartData = this.summaryDoughnutChartData.slice();
-      const assessmentTypes: string[] = ['mitigations', 'sensors', 'indicators'];
-      assessmentTypes.forEach((element) => {
-        if (this[element] && this[element].length > 0) {
-          this.openedSidePanel = element as SidePanelName;
-          // reload questions
-          this.refreshToOpenedAssessmentType();
-          if (this.openedSidePanel && this.assessmentTypeGroups[this.openedSidePanel]) {
-            // reload previous state for given type/panel if it exists
-            this.assessmentGroups = [...this.assessmentTypeGroups[this.openedSidePanel].assessmentsGroups];
-            this.currentAssessmentGroup = this.getCurrentAssessmentGroup();
-            this.tempModel = { ...this.assessmentTypeGroups[this.openedSidePanel].tempModel };
-          }
-
-          // reset progress 
-          this.setSelectedRiskValue();
-          this.updateRatioOfAnswerQuestions();
-
-          const singleAssessmentData = this.generateSummaryChartDataForAnAssessmentType(this.currentAssessmentGroup);
-          if (singleAssessmentData && singleAssessmentData.length > 0) {
-            assessmentData.push(singleAssessmentData);
-          }
-        }
-      });
-      if (assessmentData && assessmentData.length > 0) {
-        chartData[0].data = assessmentData.reduce(this.riskReduction, [0, 0])
-          .map((riskSum) => riskSum / assessmentData.length);
-      }
-    }
-    this.summaryDoughnutChartData = chartData;
     this.openedSidePanel = 'summary';
   }
 
@@ -1076,7 +1040,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   private splitTitle(title?: string): string {
     const split = title
       ? title.split('-')
-      : this.currentAssessmentGroup.name.split('-');
+      : this.currentCapability.name.split('-');
     for (let i = 0; i < split.length; i++) {
       let s = split[i];
       s = s.charAt(0).toUpperCase() + s.slice(1);
@@ -1090,7 +1054,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @param {any}
    * @return {Assessment}
    */
-  private generateBaselineAssessment(tempModel: TempModel, assessmentMeta: AssessmentMeta): Assessment3 {
+  private generateBaselineAssessment(tempModel: ScoresModel, assessmentMeta: Assessment3Meta): Assessment3 {
     const assessment = new Assessment3();
     assessment.assessmentMeta = assessmentMeta;
     assessment.name = this.meta.title;
@@ -1145,9 +1109,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       this.wizardStore.dispatch(new SaveAssessment(assessments));
     } else {
       const assessments = this.sidePanelOrder
-        .map((name) => this.assessmentTypeGroups[name])
+        .map((name) => this.categories[name])
         .filter((el) => el !== undefined)
-        .map((el) => el.tempModel)
+        .map((el) => el.scoresModel)
         .filter((el) => el !== undefined)
         .map((el) => this.generateBaselineAssessment(el, this.meta))
       this.wizardStore.dispatch(new SaveAssessment(assessments));

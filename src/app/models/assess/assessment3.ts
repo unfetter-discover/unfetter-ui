@@ -1,4 +1,4 @@
-import { AssessmentMeta } from './assessment-meta';
+import { Assessment3Meta } from './assessment3-meta';
 import { Assessment3Object } from './assessment3-object';
 import { StixLabelEnum } from '../stix/stix-label.enum';
 
@@ -8,7 +8,7 @@ import { Stix } from '../stix/stix';
  * @description an assessment of a capability and set of attack patterns
  */
 export class Assessment3 extends Stix {
-    public assessmentMeta = new AssessmentMeta();
+    public assessmentMeta = new Assessment3Meta();
     public object_ref: string;
     public is_baseline: boolean;
     public set_refs = [] as String[];

@@ -7,7 +7,7 @@ import * as assessActions from '../store/assess.actions';
 import * as assessReducers from '../store/assess.reducers';
 
 import { Assess3Form } from '../../global/form-models/assess3';
-import { AssessmentMeta } from '../../models/assess/assessment-meta';
+import { Assessment3Meta } from '../../models/assess/assessment3-meta';
 import { AssessStateService } from '../services/assess-state.service';
 import { UpdatePageTitle } from '../store/assess.actions';
 
@@ -18,7 +18,7 @@ import { UpdatePageTitle } from '../store/assess.actions';
 })
 export class Create3Component implements OnInit {
 
-  public assessMeta: AssessmentMeta;
+  public assessMeta: Assessment3Meta;
   public form: FormGroup;
 
   constructor(
@@ -31,7 +31,7 @@ export class Create3Component implements OnInit {
    * @description
    */
   ngOnInit(): void {
-    this.assessMeta = new AssessmentMeta();
+    this.assessMeta = new Assessment3Meta();
     this.resetForm();
     this.store.dispatch(new UpdatePageTitle(this.assessMeta.title));
   }
@@ -62,8 +62,8 @@ export class Create3Component implements OnInit {
    * @description
    * @param form 
    */
-  public formToAssessment(form: FormGroup): AssessmentMeta {
-    const assessment = Object.assign(new AssessmentMeta(), form.value);
+  public formToAssessment(form: FormGroup): Assessment3Meta {
+    const assessment = Object.assign(new Assessment3Meta(), form.value);
     return assessment;
   }
 
