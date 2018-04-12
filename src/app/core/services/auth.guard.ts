@@ -10,11 +10,11 @@ import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-    public demoMode: boolean = (environment.runMode === 'DEMO');
+    private demoMode: boolean = (environment.runMode === 'DEMO');
 
     constructor(
         private router: Router,
-        public store: Store<fromApp.AppState>
+        private store: Store<fromApp.AppState>
     ) { }
 
     public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
