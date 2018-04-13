@@ -68,59 +68,31 @@ export class IndicatorHeatMapComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.loadAttackPatterns();
-    }
-
-    /**
-     * @description retrieve the attack patterns and their tactics phases from the backend database
-     */
-    private loadAttackPatterns() {
-        const sort = { 'stix.name': '1' };
-        const project = {
-            'stix.name': 1,
-            'stix.description': 1,
-            'stix.kill_chain_phases': 1,
-            'extendedProperties.x_mitre_data_sources': 1,
-            'extendedProperties.x_mitre_platforms': 1,
-            'stix.id': 1,
-        };
-        const filter = encodeURI(`sort=${JSON.stringify(sort)}&project=${JSON.stringify(project)}`);
-        const initData$ = this.genericApi.get(`${Constance.ATTACK_PATTERN_URL}?${filter}`)
-            .finally(() => {
-                if (initData$) {
-                    initData$.unsubscribe();
-                }
-            })
-            .subscribe(
-                (results: any[]) => {
-                    const collects = {attackPatterns: {}, phases: {}};
-                    this.attackPatterns = results.reduce(
-                        (collect, pattern) => this.collectAttackPatterns(collect, pattern), collects).attackPatterns;
-                    this.heatmap = this.groupAttackPatternsByKillchain(collects.phases);
-                },
-                (err) => console.log(err)
-            );
+        const collects = { attackPatterns: {}, phases: {} };
+        this.attackPatterns = this.data.attackPatterns.reduce(
+            (collect, pattern) => this.collectAttackPatterns(collect, pattern), collects).attackPatterns;
+        this.heatmap = this.groupAttackPatternsByKillchain(collects.phases);
     }
 
     /**
      * @description now group up all the phases and the attack patterns they have, for the heatmap display
      */
     private collectAttackPatterns(collects, pattern) {
-        const name = pattern.attributes.name;
+        const name = pattern.name;
         if (name) {
             collects.attackPatterns[name] = Object.assign({}, {
                 title: name,
                 name: name,
-                id: pattern.attributes.id,
-                description: pattern.attributes.description,
-                phases: (pattern.attributes.kill_chain_phases || []).map(p => p.phase_name),
-                sources: pattern.attributes.x_mitre_data_sources,
-                platforms: pattern.attributes.x_mitre_platforms,
+                id: pattern.id,
+                description: pattern.description,
+                phases: (pattern.kill_chain_phases || []).map(p => p.phase_name),
+                sources: pattern.x_mitre_data_sources,
+                platforms: pattern.x_mitre_platforms,
                 value: 'inactive',
             });
         }
 
-        (pattern.attributes.kill_chain_phases || [])
+        (pattern.kill_chain_phases || [])
             .forEach(p => {
                 const batch = p.phase_name
                     .replace(/\-/g, ' ')
