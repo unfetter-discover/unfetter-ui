@@ -1,6 +1,5 @@
 import {
         Component,
-        OnInit,
         Inject,
         Input,
         ViewChild,
@@ -8,25 +7,28 @@ import {
         TemplateRef,
         ViewContainerRef,
         ChangeDetectorRef,
+        AfterViewInit,
     } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
+import { Store } from '@ngrx/store';
 
 import { IndicatorSharingFeatureState } from '../store/indicator-sharing.reducers';
 import { HeatmapComponent } from '../../global/components/heatmap/heatmap.component';
 import { HeatMapOptions } from '../../global/components/heatmap/heatmap.data';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { Constance } from '../../utils/constance';
+import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 
 @Component({
     selector: 'indicator-heat-map',
     templateUrl: './indicator-heat-map.component.html',
     styleUrls: ['./indicator-heat-map.component.scss'],
 })
-export class IndicatorHeatMapComponent implements OnInit {
+export class IndicatorHeatMapComponent implements AfterViewInit {
 
     public heatmap: any[] = [];
     @ViewChild('heatmapView') private heatmapView: HeatmapComponent;
@@ -65,13 +67,33 @@ export class IndicatorHeatMapComponent implements OnInit {
         private overlay: Overlay,
         private vcr: ViewContainerRef,
         private changeDetector: ChangeDetectorRef,
+        public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>
     ) { }
 
-    ngOnInit() {
-        const collects = { attackPatterns: {}, phases: {} };
-        this.attackPatterns = this.data.attackPatterns.reduce(
-            (collect, pattern) => this.collectAttackPatterns(collect, pattern), collects).attackPatterns;
-        this.heatmap = this.groupAttackPatternsByKillchain(collects.phases);
+    ngAfterViewInit() {
+        // NOTE This is a hack to get the modal to start to render before the data is processed, 
+        // since there is a noticeable lag time when that occurs
+        requestAnimationFrame(() => {
+            const getAttackPatterns$ = this.store.select('indicatorSharing')
+                .pluck('attackPatterns')
+                .take(1)
+                .subscribe(
+                    (attackPatterns: any[]) => {
+                        const collects = { attackPatterns: {}, phases: {} };
+                        this.attackPatterns = attackPatterns.reduce(
+                            (collect, pattern) => this.collectAttackPatterns(collect, pattern), collects).attackPatterns;
+                        this.heatmap = this.groupAttackPatternsByKillchain(collects.phases);
+                    },
+                    (err) => {
+                        console.log(err);
+                    },
+                    () => {
+                        if (getAttackPatterns$) {
+                            getAttackPatterns$.unsubscribe();
+                        }
+                    }
+                );
+        });
     }
 
     /**
