@@ -115,7 +115,7 @@ export class IndicatorSharingFiltersComponent implements OnInit {
         },
         data: {
           active: this.searchForm.value.attackPatterns,
-          attackPatterns: this.attackPatterns
+          // attackPatterns: this.attackPatterns
         },
       }).afterClosed().subscribe(
         result => {
