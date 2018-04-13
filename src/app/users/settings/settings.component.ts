@@ -106,7 +106,7 @@ export class SettingsComponent implements OnInit {
     }
 
     public applyForMembership(orgId) {
-        const requestOrgMembership$ = this.usersService.requestOrgMemebership(this.user._id, orgId)
+        const requestOrgMembership$ = this.usersService.requestOrgMembership(this.user._id, orgId)
             .subscribe((res) => {
                 this.fetchData();
             },

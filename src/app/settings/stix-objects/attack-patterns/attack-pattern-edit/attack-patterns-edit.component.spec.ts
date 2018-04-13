@@ -286,7 +286,7 @@ function moduleSetup() {
         { provide: Router, useValue: {} },
         { provide: MatDialog, useValue: {} },
         { provide: Location, useValue: { back: (): void => { } } },
-        { provide: MatSnackBar, useValue: {} },
+        { provide: MatSnackBar, useValue: { open: () => {} } },
         {
           provide: OverlayContainer, useFactory: () => {
             overlayContainerElement = document.createElement('div') as HTMLElement;
