@@ -36,7 +36,7 @@ describe(`App`, () => {
                 userName: 'Demo-User',
                 firstName: 'Demo',
                 lastName: 'User',
-                organizations : [{
+                organizations: [{
                     'id': 'identity--e240b257-5c42-402e-a0e8-7b81ecc1c09a',
                     'approved': true,
                     'role': 'STANDARD_USER'
@@ -51,7 +51,6 @@ describe(`App`, () => {
     const routes: Routes = [
         { path: '', component: AppComponent },
         { path: 'home', component: AppComponent },
-        { path: 'partners', component: AppComponent },
         { path: 'intrusion-set-dashboard', component: AppComponent },
         { path: 'assessments', component: AppComponent },
         { path: 'assess', component: AppComponent },
@@ -84,7 +83,7 @@ describe(`App`, () => {
             schemas: [NO_ERRORS_SCHEMA],
             providers: [...services]
         })
-        .compileComponents(); // compile template and css
+            .compileComponents(); // compile template and css
 
         router = TestBed.get(Router);
         location = TestBed.get(Location);
@@ -112,7 +111,7 @@ describe(`App`, () => {
                 expect(fixture).toBeDefined();
                 expect(comp).toBeDefined();
                 expect(comp.authService.loggedIn()).toEqual(login,
-                        `user should ${login ? '' : 'not '}have been logged in`);
+                    `user should ${login ? '' : 'not '}have been logged in`);
                 expect(comp.runMode).toBe(runmode, `run mode was supposed to be ${runmode}`);
             });
         });
@@ -122,7 +121,6 @@ describe(`App`, () => {
         const routeChecks = [
             { path: '', title: undefined, theme: Themes.DEFAULT },
             { path: 'home', title: 'home', theme: Themes.DEFAULT },
-            { path: 'partners', title: 'partners', theme: Themes.DEFAULT },
             { path: 'intrusion-set-dashboard', title: 'intrusion-set-dashboard', theme: Themes.DEFAULT },
             { path: 'assess', title: 'assessments', theme: Themes.ASSESSMENTS },
             { path: 'assess3', title: 'Assessments 3.0', theme: Themes.ASSESSMENTS },
@@ -156,8 +154,8 @@ describe(`App`, () => {
         let appState = fixture.debugElement.injector.get(AppState);
         appState.set('user', 'pat');
         expect(appState.get('user')).toEqual('pat');
-        expect(appState.get()).toEqual({'user': 'pat'});
-        expect(function() {appState.state = {'user': 'chris'}}).toThrowError();
+        expect(appState.get()).toEqual({ 'user': 'pat' });
+        expect(function () { appState.state = { 'user': 'chris' } }).toThrowError();
     });
 
 });

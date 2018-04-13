@@ -19,7 +19,6 @@ import { CoreModule } from './core/core.module';
 import { GlobalModule } from './global/global.module';
 import { HomeComponent } from './home';
 import { NoContentComponent } from './no-content';
-import { PartnersComponent } from './partners/partners.component';
 import * as fromApp from './root-store/app.reducers';
 import { reducers } from './root-store/app.reducers';
 import { ConfigEffects } from './root-store/config/config.effects';
@@ -52,7 +51,6 @@ import { UtilityEffects } from './root-store/utility/utility.effects';
   bootstrap: [AppComponent],
   declarations: [
     AppComponent,
-    PartnersComponent,
     NoContentComponent,
   ],
   imports: [
