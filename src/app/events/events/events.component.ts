@@ -173,16 +173,19 @@ export class EventsComponent implements OnInit, OnDestroy {
   public transformSighting(sighting: Sighting) {
     // dummy data
     this.dummyValue = Math.floor(Math.random() * 2);
-    if (!sighting.attributes['ip']) {
-      sighting.attributes['ip'] = this.getDummyIp();
+    if (!sighting.attributes['x_unfetter_asset']) {
+      sighting.attributes['x_unfetter_asset'] = {};
     }
-    if (!sighting.attributes['name']) {
-      sighting.attributes['name'] = 'Generic.com Inc.';
+    if (!sighting.attributes['x_unfetter_asset']['ip']) {
+      sighting.attributes['x_unfetter_asset']['ip'] = this.getDummyIp();
+    }
+    if (!sighting.attributes['x_unfetter_asset']['name']) {
+      sighting.attributes['x_unfetter_asset']['name'] = 'Generic.com Inc.';
     }
     sighting.attributes['observed_data_refs_city'] = this.getDummyCity();
     sighting.attributes['observed_data_refs_country'] = this.getDummyCountry();
     // end dummy data
-    
+
     if (!sighting.attributes.where_sighted_refs) {
       sighting.attributes['where_sighted_refs'] = ['Unknown'];
     }
@@ -216,7 +219,20 @@ export class EventsComponent implements OnInit, OnDestroy {
         if (observedData === observed.id) {
           let allNames: string = '';
           for (const key of Object.keys(observed.attributes.objects)) {
-            allNames += ' ' + observed.attributes.objects[key].name;
+            const obj = observed.attributes.objects[key];
+            if (obj.type === 'user-account') {
+              if (obj.user_id) {
+                allNames += ' ' + obj.user_id;
+              } else {
+                allNames += ' ' + obj.type;
+              }
+            } else {
+              if (obj.name) {
+                allNames += ' ' + obj.name;
+              } else {
+                allNames += ' ' + obj.type;
+              }
+            }
           }
           sighting.attributes.observed_data_refs[index] = allNames;
           break;
