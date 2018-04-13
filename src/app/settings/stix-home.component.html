@@ -1,10 +1,10 @@
 <div id="stixHome" class="container">
     <br>
-    <ul class="nav nav-pills">
-        <li *ngFor="let navigation of navigations" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:false}">
-            <a [routerLink]="[navigation.url]">{{navigation.label}}</a>
-        </li>
-    </ul>
+    <div class="flex-header">
+        <span *ngFor="let navigation of navigations" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:false}">
+            <a mat-button [routerLink]="[navigation.url]">{{navigation.label}}</a>
+        </span>
+    </div>
     <!-- NOTE commented this out due to stacking tabs -->
     <!-- <div>
         <nav mat-tab-nav-bar>

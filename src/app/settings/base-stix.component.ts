@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
 import { BaseStixService } from './base-stix.service';
 
-export class BaseStixComponent {
+export class BaseStixComponent<T = any> {
     public filteredItems: any[];
     public validationErrorMessages: string[] = [];
     public selectedExternal: any;

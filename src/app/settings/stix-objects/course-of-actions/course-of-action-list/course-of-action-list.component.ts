@@ -1,26 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
-import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-
-// Observable class extensions
-import 'rxjs/add/observable/of';
-
-// Observable operators
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
-import { CourseOfActionComponent } from '../course-of-action/course-of-action.component';
-import { StixService } from '../../../stix.service';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CourseOfAction } from '../../../../models';
+import { StixService } from '../../../stix.service';
+import { CourseOfActionComponent } from '../course-of-action/course-of-action.component';
 
 @Component({
     selector: 'course-of-action-list',
     templateUrl: './course-of-action-list.component.html',
 })
-
 export class CourseOfActionListComponent extends CourseOfActionComponent implements OnInit {
     public courseOfActions: CourseOfAction[];
     public url: string;

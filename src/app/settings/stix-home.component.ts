@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'stix-home',
@@ -10,6 +9,7 @@ export class StixHomeComponent {
     public navigations: any[] = [
         { url: 'attack-patterns', label: 'Attack Patterns' },
         { url: 'campaigns', label: 'Campaigns' },
+        { url: 'categories', label: 'Categories' },
         { url: 'course-of-actions', label: 'Courses of Action' },
         { url: 'identities', label: 'Identities' },
         { url: 'indicators', label: 'Indicators' },
@@ -17,7 +17,7 @@ export class StixHomeComponent {
         { url: 'malwares', label: 'Malware' },
         // { url: 'relationships', label: 'Relationships' },
         { url: 'reports', label: 'Reports' },
-        { url: 'x-unfetter-sensors', label: 'Sensors'},
+        { url: 'x-unfetter-sensors', label: 'Sensors' },
         { url: 'sightings', label: 'Sightings' },
         { url: 'threat-actors', label: 'Threat Actors' },
         { url: 'tools', label: 'Tools' },

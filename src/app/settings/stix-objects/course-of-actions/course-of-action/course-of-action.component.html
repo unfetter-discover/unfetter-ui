@@ -1,71 +1,71 @@
 <div class="row" *ngIf="courseOfAction">
-       <div class="col-md-12">
-            <div class="row">
+    <div class="col-md-12">
+        <div class="row">
             <div class="col-md-12">
-                    <div class="button-row">
-                        <button class="mat-primary" mat-raised-button (click)="editButtonClicked()"><i class="material-icons">create</i> EDIT</button>
-                        <button class="mat-primary" mat-raised-button (click)="deleteButtonClicked()"><i class="material-icons">delete</i> DELETE</button>
-                    </div>
+                <div class="button-row">
+                    <button class="mat-primary" mat-raised-button (click)="editButtonClicked()">
+                        <i class="material-icons">create</i> EDIT</button>
+                    <button class="mat-primary" mat-raised-button (click)="deleteButtonClicked()">
+                        <i class="material-icons">delete</i> DELETE</button>
                 </div>
             </div>
-            <div class="row" style="margin-top: 15px;">
-                <div class="col-md-12">
-                    <mat-card>
-                        <mat-card-content>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <label>Name</label>
-                                        <h6>{{courseOfAction.attributes.name}}</h6>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <label>Description</label>
-                                        <h6 [innerHTML]="formatText(courseOfAction.attributes.description)"></h6>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <label>Labels</label>
-                                        <mat-chip-list>
-                                            <mat-chip *ngFor="let label of courseOfAction.attributes.labels"
-                                                selected="true"
-                                                color="accent">
-                                                {{label}}
-                                            </mat-chip>
-                                        </mat-chip-list>
+        </div>
+        <div class="row" style="margin-top: 15px;">
+            <div class="col-md-12">
+                <mat-card>
+                    <mat-card-content>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label>Name</label>
+                                <h6>{{courseOfAction.attributes.name}}</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label>Description</label>
+                                <h6 [innerHTML]="formatText(courseOfAction.attributes.description)"></h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label>Labels</label>
+                                <mat-chip-list>
+                                    <mat-chip *ngFor="let label of courseOfAction.attributes.labels" selected="true" color="accent">
+                                        {{label}}
+                                    </mat-chip>
+                                </mat-chip-list>
 
-                                    </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label>External References</label>
+                                <mat-chip-list>
+                                    <mat-chip *ngFor="let externalReferences of courseOfAction.attributes.external_references" selected="true" (click)="getChipInfo(externalReferences)">
+                                        {{externalReferences.source_name}}
+                                    </mat-chip>
+                                </mat-chip-list>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div *ngIf="selectedExternal != null">
+                                    <strong>{{selectedExternal.external_id}}</strong> of {{selectedExternal.source_name}} at
+                                    <a href="{{selectedExternal.url}}"
+                                        target="_blank">{{selectedExternal.url}}</a>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <label>External References</label>
-                                        <mat-chip-list>
-                                            <mat-chip *ngFor="let externalReferences of courseOfAction.attributes.external_references"
-                                            selected="true" (click)="getChipInfo(externalReferences)">
-                                                {{externalReferences.source_name}}
-                                            </mat-chip>
-                                        </mat-chip-list>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                        <div class="col-md-12">
-                                            <div *ngIf="selectedExternal != null">
-                                                    <strong>{{selectedExternal.external_id}}</strong> of {{selectedExternal.source_name}} at <a href="{{selectedExternal.url}}" target="_blank">{{selectedExternal.url}}</a> 
-                                            </div>                                        
-                                        </div>
-                                    </div>s                                
+                            </div>
+                        </div>Ø
 
-                        </mat-card-content>
+                    </mat-card-content>
 
-                    </mat-card>
-                </div>
+                </mat-card>
             </div>
-       </div>
+        </div>
+    </div>
 </div>
 
 
 <relationship-list *ngIf="courseOfAction.id" [model]="courseOfAction"></relationship-list>
 
 <div class="pull-right grey-text">{{courseOfAction.id}}</div>
-
