@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Select Attack Patterns</h2>
+<h2 mat-dialog-title>Select Indicated Techniques</h2>
 <mat-dialog-content>
     <div id="indicator-analytic-heat-map">
         <div id="indicator-heat-map">
@@ -24,7 +24,7 @@
                                 <div class="col-md-9 attack-pattern-platforms">{{attackPattern.platforms.join(', ')}}</div>
                             </div>
                             <div class="row" *ngIf="attackPattern.phases">
-                                <div class="col-md-3"><label>Phases</label></div>
+                                <div class="col-md-3"><label>Tactics</label></div>
                                 <div class="col-md-9 attack-pattern-phases">{{attackPattern.phases.join(', ') | capitalize}}</div>
                             </div>
                         </mat-card-content>
@@ -35,6 +35,6 @@
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button mat-button [mat-dialog-close]="false">Cancel</button>
-    <button mat-button [mat-dialog-close]="close()">Accept</button>
+    <button mat-button [mat-dialog-close]="false">CANCEL</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="close()">ACCEPT</button>
 </mat-dialog-actions>
