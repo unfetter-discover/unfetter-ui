@@ -34,7 +34,7 @@ export class SpeedDialComponent implements OnInit {
   }
 
   /**
-   * @descrption for angular for loops and change detection
+   * @description for angular for loops and change detection
    */
   public trackByFn(index: number, item: object): number {
     return index;

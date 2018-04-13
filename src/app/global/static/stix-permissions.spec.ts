@@ -50,6 +50,17 @@ describe('StixPermissions', () => {
             expect(StixPermissions.canReadStatic(sameOrgStix, standardUser)).toBeTruthy();
             expect(StixPermissions.canCrudStatic(sameOrgStix, standardUser)).toBeTruthy();
         });
+
+        it('should handle org permissions checks', () => {
+            const userWithUnapprovedOrgs = {
+                ...standardUser,
+                organizations: standardUser.organizations.map((org) => ({ ...org, approved: false}))
+            };
+            const stixWithCreatedByRef = { ...unpublishedStix, created_by_ref: standardUser.organizations[0].id };
+
+            expect(StixPermissions.canCrudStatic(stixWithCreatedByRef, userWithUnapprovedOrgs)).toBeFalsy();
+            expect(StixPermissions.canCrudStatic(stixWithCreatedByRef, standardUser)).toBeTruthy();
+        });
     });
 
     describe('instantiated Object', () => {

@@ -28,7 +28,7 @@ export const testUser = {
         organizations: mockOrganizations.map((org) => {
             return {
                 id: org.id,
-                subsrcibed: true,
+                subscribed: true,
                 approved: true,
                 role: 'STANDARD_USER'
             };
