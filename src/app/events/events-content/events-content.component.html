@@ -66,7 +66,7 @@
                   <mat-cell *matCellDef="let sighting">
                     <span>
                     <!-- *ngIf="sighting.attributes.name && sighting.attributes.ip else unknown"> -->
-                      {{sighting.attributes.name}} - {{sighting.attributes.ip}}</span>
+                      {{sighting.attributes.x_unfetter_asset.hostname}} - {{sighting.attributes.x_unfetter_asset.ip}}</span>
                     <ng-template #unknown>
                       Unknown
                     </ng-template>
