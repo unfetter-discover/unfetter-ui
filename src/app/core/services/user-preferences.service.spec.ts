@@ -10,7 +10,7 @@ import { UserProfile } from '../../models/user/user-profile';
 import { reducers } from '../../root-store/app.reducers';
 import { GenericApi } from './genericapi.service';
 
-describe('UserPreferencesService', () => {
+fdescribe('UserPreferencesService', () => {
 
     let service: UserPreferencesService;
 
