@@ -21,6 +21,7 @@ export class IndicatorSharingFiltersComponent implements OnInit {
   public killChainPhases$: Observable<any>;
   public labels$: Observable<any>;
   public heatmapVisible = false;
+  public attackPatterns: any[] = [];
 
   constructor(
     public dialog: MatDialog,
@@ -71,6 +72,22 @@ export class IndicatorSharingFiltersComponent implements OnInit {
         const labelSet = new Set(labels);
         return Array.from(labelSet);
       });
+
+    const getAttackPatterns$ = this.store.select('indicatorSharing')
+      .pluck('attackPatterns')
+      .subscribe(
+        (attackPatterns: any[]) => {
+          this.attackPatterns = attackPatterns;
+        },
+        (err) => {
+          console.log(err);
+        },
+        () => {
+          if (getAttackPatterns$) {
+            getAttackPatterns$.unsubscribe();
+          }
+        }
+    );
   }
 
   public clearSearchParameters() {
@@ -98,6 +115,7 @@ export class IndicatorSharingFiltersComponent implements OnInit {
         },
         data: {
           active: this.searchForm.value.attackPatterns,
+          attackPatterns: this.attackPatterns
         },
       }).afterClosed().subscribe(
         result => {
