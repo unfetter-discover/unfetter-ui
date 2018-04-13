@@ -1,9 +1,12 @@
+import { DatePipe } from '@angular/common';
 import { TestBed, inject } from '@angular/core/testing';
-
-import { EventsService } from './events.service';
 import { GenericApi } from '../core/services/genericapi.service';
+import { EventsService } from './events.service';
+
 
 let mockService = {};
+
+const mockDatePipe = {};
 
 describe('EventsService', () => {
   beforeEach(() => {
@@ -13,6 +16,10 @@ describe('EventsService', () => {
           provide: GenericApi,
           useValue: mockService
         },
+        {
+          provide: DatePipe,
+          useValue: mockDatePipe,
+        }
       ],
     });
   });
