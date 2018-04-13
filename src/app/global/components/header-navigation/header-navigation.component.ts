@@ -17,7 +17,7 @@ import { Constance } from '../../../utils/constance';
   templateUrl: './header-navigation.component.html',
   animations: [fadeInOut]
 })
-export class HeaderNavigationComponent {  
+export class HeaderNavigationComponent {
 
   public appList = [
     {
@@ -52,12 +52,6 @@ export class HeaderNavigationComponent {
       // TODO Placeholder icon
       icon: Constance.LOGO_IMG_THREAT_DASHBOARD
     },
-    {
-      url: 'partners',
-      title: 'Partners',
-      // Placeholder icon
-      icon: Constance.LOGO_IMG_THREAT_DASHBOARD
-    },
   ];
 
   public readonly swaggerUrl = Constance.SWAGGER_URL;
@@ -82,7 +76,7 @@ export class HeaderNavigationComponent {
     private el: ElementRef
   ) {
     this.user$ = this.store.select('users');
-    
+
     if (this.showBanner && this.showBanner === true) {
       this.topPx = '17px';
     }
