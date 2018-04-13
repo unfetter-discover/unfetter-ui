@@ -1,7 +1,7 @@
 import * as eventsActions from './events.actions';
-import { Sighting } from '../../models';
 
 export interface EventsState {
+    newSighting: any[];
     sightingsGroup: any[];
     indicatorToAp: any;
     intrusionSetToAp: any;
@@ -11,6 +11,7 @@ export interface EventsState {
 
 const genState = (state?: Partial<EventsState>) => {
     const tmp = {
+        newSighting: [],
         sightingsGroup: [],
         indicatorToAp: {},
         intrusionSetToAp: {},
@@ -32,9 +33,14 @@ export function eventsReducer(state = initialState, action: eventsActions.Events
                 ...state,
             });
         case eventsActions.SET_SIGHTINGS:
-            return genState({
+        return genState({
                 ...state,
                 sightingsGroup: [...action.payload],
+            });
+        case eventsActions.ADD_SIGHTING:
+            return genState({
+                ...state,
+                newSighting: action.payload,
             });
         case eventsActions.SET_INDICATOR_TO_AP:
             return genState({

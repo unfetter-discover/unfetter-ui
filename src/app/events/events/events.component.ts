@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { EventsService } from '../events.service';
+import { EventsService, SightingsData } from '../events.service';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../root-store/app.reducers';
 import { EventsState } from '../store/events.reducers';
@@ -107,8 +107,29 @@ export class EventsComponent implements OnInit, OnDestroy {
         this.makeIPs()
       }, (err) => console.log(err));
 
-    this.subscriptions.push(sub1$, sub2$, sub3$, sub4$);
+    const sub5$ = this.store
+      .select('sightingsGroup')
+      .pluck('newSighting')
+      .distinctUntilChanged()
+      .subscribe((el: any) => {
+        this.addSighting(el);
+      },
+        (err) => console.log(err));
+
+    this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$);
   }
+
+  public addSighting(newSighting) {
+    if (this.service.recentSightings) {
+      this.transformSighting(newSighting);
+      this.service.dataStore.addSighting(newSighting);
+      let temp = this.service.recentSightings;
+      temp.push(newSighting);
+      this.service.recentSightings = temp;
+      this.service.updateChart();
+    }
+  }
+
   /**
    */
   public makeIPs() {
@@ -249,14 +270,12 @@ export class EventsComponent implements OnInit, OnDestroy {
       for (const key of Object.keys(this.indicatorToAp)) {
         if (indicatorId === key) {
           attackPatterns = this.indicatorToAp[key];
-          console.log(`attackPatterns: ${JSON.stringify(attackPatterns)}`);
           break;
         }
       }
       for (const attackPattern of attackPatterns) {
         for (const key of Object.keys(this.intrusionSetToAp)) {
           if (attackPattern.id === key) {
-            console.log(`intrusionSets: ${JSON.stringify(this.intrusionSetToAp[key])}`)
             for (const set of this.intrusionSetToAp[key]) {
               intrusionSetNames.push(set.name);
             }
@@ -269,10 +288,8 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   public transformSightings() {
-    console.log(JSON.stringify(this.intrusionSetToAp));
-    console.log(JSON.stringify(this.indicatorToAp));
-    console.log(JSON.stringify(this.sightingsGroup));
     if (!this.sightingsGroup) {
+      this.service.dataStore = new SightingsData([]);
       this.service.recentSightings = new Array<Sighting>();
       this.identities = [];
       this.indicators = [];
@@ -284,6 +301,7 @@ export class EventsComponent implements OnInit, OnDestroy {
       this.observedData = this.sightingsGroup.filter((data: any) => data.attributes.type === 'observed-data');
       for (const sighting of this.service.recentSightings) {
         this.transformSighting(sighting);
+        this.service.dataStore.addSighting(sighting);
       }
     }
   }
