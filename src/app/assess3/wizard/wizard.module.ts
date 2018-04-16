@@ -20,9 +20,11 @@ import { CalendarModule } from 'primeng/components/calendar/calendar';
 import { ChartsModule } from 'ng2-charts';
 import { PipesModule } from '../../pipes/pipes.module';
 import { GlobalModule } from '../../global/global.module';
+import { CategoryComponent } from './category/category.component';
 
 const moduleComponents = [
   WizardComponent,
+  CategoryComponent,
 ];
 
 const matModules = [
