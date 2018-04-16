@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, ElementRef, Input, OnInit, SimpleChanges, ViewEncapsulation, OnDestroy, HostListener, QueryList, ViewChildren, Renderer2, AfterViewInit } from '@angular/core';
+import { Component, ChangeDetectorRef, ElementRef, Input, OnInit, SimpleChanges, ViewEncapsulation, OnDestroy, HostListener, QueryList, ViewChildren, Renderer2, AfterViewInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -97,21 +97,26 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   // Unfetter Discover will use the survey to help you understand your gaps, how important they are and which should be addressed.
   // You may create multiple reports to see how your risk is changed when implementing different security processes.`;
   public showSummary = false;
-  public currentCapability = {} as any;
   public page = 1;
   public meta = new Assessment3Meta();
   public ratioOfQuestionsAnswered = 0;
-  public openedSidePanel: string;
   public insertMode = false;
   private assessments: WizardAssessment[] = [];
   private groupings = [];
-  private currentCapabilities: any[];
   private scoresModel: ScoresModel = {} as ScoresModel;
-  public capability: { label: string, page: number };
-  public categories: Dictionary<{ name: string, scoresModel: ScoresModel, capabilities: Capability[] }> = {};
-
+  public openedSidePanel: string;
+  // public categoryNames: string[] = [ 'Network Analysis', 'Network Firewall', 'sysmon' ];
+  public categoryNames: string[] = [];
+  public navigation: { label: string, page: number };
+  public navigations: any[];
+  public categories: Dictionary<{ name: string, scoresModel: ScoresModel, capabilities: any[] }>[] = [];
+  private currentCapabilities: Capability[];
+  private currentCapability = {} as Capability;
+  
   private readonly subscriptions: Subscription[] = [];
-  private readonly sidePanelOrder: string[] = ['categories', 'summary'];
+  private readonly sidePanelNames: string[] = ['categories', 'capabilities', 'capability', 'summary'];
+
+  @ViewChild('categories') categoryElement;
 
   constructor(
     private genericApi: GenericApi,
@@ -156,6 +161,11 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     ];
     this.summaryDoughnutChartLabels = this.CHART_LABELS;
     this.summaryDoughnutChartType = this.CHART_TYPE;
+
+    // TODO:  take out once we've wired in the category selection panel
+    // this.categoryNames.forEach((element, index) => {
+    //   this.navigations.push( { label: element, page: index } );
+    // });
 
     const idParamSub$ = this.route.params
       .subscribe(
@@ -331,11 +341,20 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {SidePanelName[]}
    */
   public determinePanelsWithData(): string[] {
-    const panels = [...this.sidePanelOrder];
-    const hasContents = panels.filter((name) => {
-      return this[name] && this[name].length > 0;
-    });
-    return hasContents;
+    let panelsWithData = [];
+    if (this.categoryNames.length > 0) {
+      let catPanels = [ ...this.categoryNames ];
+      catPanels.forEach(catName => {
+        panelsWithData = [ ...panelsWithData, catName ];
+        if (this.categories[catName] && this.categories[catName].capabilities) {
+          this.categories[catName].capabilities.forEach(cap => {
+            panelsWithData = [ ...panelsWithData, cap];
+          });
+        }
+      });
+    }
+
+    return panelsWithData;
   }
 
   /*
@@ -343,7 +362,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {string} name of first open side panel
    */
   public determineFirstOpenSidePanel(): string {
-    const hasContents = this.determinePanelsWithData();
+    const hasContents = [ this.sidePanelNames[0], ...this.determinePanelsWithData() ];
+
     // return first panel w/ data
     return hasContents[0];
   }
@@ -419,21 +439,21 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    */
   public updateRatioOfAnswerQuestions(): void {
     if (this.currentCapabilities && this.currentCapabilities.length > 1) {
-      const allQuestions = this.currentCapabilities
-        // flat map assessments across groups
-        .map((groups) => groups.assessments)
-        .reduce((assessments, memo) => memo ? memo.concat(assessments) : assessments, [])
-        // flat map across questions
-        .map((assessments) => assessments.measurements)
-        .reduce((measurements, memo) => memo ? memo.concat(measurements) : measurements, []);
-      const numQuestions = allQuestions.length;
-      const answeredQuestions = allQuestions.filter((el) => el.risk > -1).length;
-      if (answeredQuestions > 0) {
-        const ratio = answeredQuestions / numQuestions;
-        this.ratioOfQuestionsAnswered = Math.round(ratio * 100);
-      } else {
-        this.ratioOfQuestionsAnswered = 0;
-      }
+      // const allQuestions = this.currentCapabilities
+      //   // flat map assessments across groups
+      //   .map((groups) => groups.assessments)
+      //   .reduce((assessments, memo) => memo ? memo.concat(assessments) : assessments, [])
+      //   // flat map across questions
+      //   .map((assessments) => assessments.measurements)
+      //   .reduce((measurements, memo) => memo ? memo.concat(measurements) : measurements, []);
+      // const numQuestions = allQuestions.length;
+      // const answeredQuestions = allQuestions.filter((el) => el.risk > -1).length;
+      // if (answeredQuestions > 0) {
+      //   const ratio = answeredQuestions / numQuestions;
+      //   this.ratioOfQuestionsAnswered = Math.round(ratio * 100);
+      // } else {
+      //   this.ratioOfQuestionsAnswered = 0;
+      // }
     }
   }
 
@@ -463,26 +483,26 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {void}
    */
   public updateAllQuestions(answerIndex: number): void {
-    if (!this.currentCapability || !this.currentCapability.assessments) {
-      return;
-    }
+    // if (!this.currentCapability || !this.currentCapability.assessments) {
+    //   return;
+    // }
 
-    this.currentCapability.assessments.forEach((assessment) => {
-      const measurements = assessment.measurements;
-      measurements.forEach((measurement: Assessment3Question) => {
-        // TODO: Update once we have scoring
-        // const options = measurement.options;
-        // const index = answerIndex < options.length ? answerIndex : 0;
-        // const option = options[index];
-        // this.updateRisks({ selected: { value: option.risk } }, measurement, assessment);
-        // this.questions.forEach((question) => {
-        //   question.value = option.risk;
-        // });
-        // this.selectedValue(measurement, option, assessment);
-      });
-      // calculate risk of all measurements
-      this.updateRatioOfAnswerQuestions();
-    });
+    // this.currentCapability.assessments.forEach((assessment) => {
+    //   const measurements = assessment.measurements;
+    //   measurements.forEach((measurement: Assessment3Question) => {
+    //     // TODO: Update once we have scoring
+    //     // const options = measurement.options;
+    //     // const index = answerIndex < options.length ? answerIndex : 0;
+    //     // const option = options[index];
+    //     // this.updateRisks({ selected: { value: option.risk } }, measurement, assessment);
+    //     // this.questions.forEach((question) => {
+    //     //   question.value = option.risk;
+    //     // });
+    //     // this.selectedValue(measurement, option, assessment);
+    //   });
+    //   // calculate risk of all measurements
+    //   this.updateRatioOfAnswerQuestions();
+    // });
   }
 
   /*
@@ -490,12 +510,12 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {void}
    */
   public setSelectedRiskValue(): void {
-    if (this.model && this.currentCapability) {
-      this.currentCapability.assessments.forEach(assessment => this.collectModelAssessments(assessment));
-      this.calculateGroupRisk();
-    } else {
-      this.calculateGroupRisk();
-    }
+    // if (this.model && this.currentCapability) {
+    //   this.currentCapability.assessments.forEach(assessment => this.collectModelAssessments(assessment));
+    //   this.calculateGroupRisk();
+    // } else {
+    //   this.calculateGroupRisk();
+    // }
   }
 
   public collectModelAssessments(assessment: any) {
@@ -540,6 +560,22 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       this.page = step + 1;
       this.onBack();
     }
+  }
+
+  public updateCategories(newCategories: string[]) {
+    this.categoryNames = [ ...this.categoryElement.tempCategories];
+
+    // Remove categories as needed
+    this.categories = this.categories.filter(category => this.categoryNames.find(cat => category[cat] && cat === category[cat].name));
+
+    // Introduce new categories
+    this.categoryNames.forEach(element => {
+      if (!this.categories[element]) {
+        this.categories[element] = { name: element, scoresModel: [], capabilities: [] };
+      }
+    });
+
+    console.log(JSON.stringify(this.categories));
   }
 
   // TODO: commented for now, e
@@ -678,15 +714,23 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.showSummary = false;
     this.buttonLabel = 'CONTINUE';
 
-    // last page for this assessment type
+    // If on "categories", move either to first category or summary
+    if (this.page === 1) {
+      // Save off categories and update sidebar navigation
+      this.updateCategories(this.categoryElement.tempCategories);
+
+      // Navigate to 
+      this.onOpenSidePanel(this.categoryNames[0]);
+    }
+    // last page for this category
     if (this.page + 1 > this.currentCapabilities.length) {
       const nextPanel = this.determineNextSidePanel();
       // last page
       if (nextPanel !== 'summary') {
-        //  but not last assessment type, advance the assessment type
+        //  but not last category, advance to the next category
         this.onOpenSidePanel(nextPanel);
       } else {
-        // last assessment type, show save page
+        // last category, show save page
         this.page = 1;
         this.onOpenSidePanel('summary');
         this.showSummarySavePage();
@@ -806,14 +850,18 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {any}
    */
   private getCurrentCapability(): any {
-    let index = 0;
-    if (this.page) {
-      index = this.page - 1;
+    if (this.currentCapabilities) {
+      let index = 0;
+      if (this.page) {
+        index = this.page - 1;
+      }
+      if (index >= this.currentCapabilities.length) {
+        index = 0;
+      }
+      return this.currentCapabilities[index];
+    } else {
+      return undefined;
     }
-    if (index >= this.currentCapabilities.length) {
-      index = 0;
-    }
-    return this.currentCapabilities[index];
   }
 
   /* 
@@ -857,7 +905,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           assessment.scores = assessedObject.id ? this.buildMeasurements(assessedObject.id) : [];
           assessment.type = assessedObject.type;
           const risk = this.getRisk(assessment.scores);
-          assessment.risk = -1;
+          // assessment.risk = -1;
           return assessment;
         });
       this.groupings = this.buildGrouping(this.assessments);
@@ -873,7 +921,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         const capability: any = {};
         capability.name = phaseName;
         const step = index + 1;
-        this.capability = { label: this.splitTitle(phaseName),  page: step };
+        this.navigations.push( { label: this.splitTitle(phaseName),  page: step } );
         // this.item = this.capability;
         // TODO: Need to get description somehow from the key phase information
         capability.description = this.groupings[phaseName];
@@ -985,8 +1033,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    */
   private updateChart(): void {
     const chartData = this.doughnutChartData.slice();
-    chartData[0].data = this.currentCapability
-      ? this.currentCapability.riskArray : [];
+    // chartData[0].data = this.currentCapability
+    //   ? this.currentCapability.riskArray : [];
     this.doughnutChartData = chartData;
   }
 
@@ -997,21 +1045,21 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public generateSummaryChartDataForAnAssessmentType(assessmentData): number[] {
     let result: number[] = [];
 
-    if (assessmentData) {
-      if (this.currentCapabilities && this.currentCapabilities.length > 0) {
-        this.currentCapabilities.forEach(element => {
-          if (element.assessments) {
-            element.assessments.forEach(assessment => this.collectModelAssessments(assessment))
-          }
-          this.calculateGroupRisk(element);
-        });
-        const singleAssessmentRiskArray: number[] = this.currentCapabilities
-          .map((groups) => groups.riskArray)
-          .reduce(this.riskReduction, [0, 0])
-          .map((riskSum) => riskSum / this.currentCapabilities.length);
-        result = singleAssessmentRiskArray;
-      }
-    }
+    // if (assessmentData) {
+    //   if (this.currentCapabilities && this.currentCapabilities.length > 0) {
+    //     this.currentCapabilities.forEach(element => {
+    //       if (element.assessments) {
+    //         element.assessments.forEach(assessment => this.collectModelAssessments(assessment))
+    //       }
+    //       this.calculateGroupRisk(element);
+    //     });
+    //     const singleAssessmentRiskArray: number[] = this.currentCapabilities
+    //       .map((groups) => groups.riskArray)
+    //       .reduce(this.riskReduction, [0, 0])
+    //       .map((riskSum) => riskSum / this.currentCapabilities.length);
+    //     result = singleAssessmentRiskArray;
+    //   }
+    // }
     return result;
   }
 
@@ -1107,13 +1155,14 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       });
       this.wizardStore.dispatch(new SaveAssessment(assessments));
     } else {
-      const assessments = this.sidePanelOrder
-        .map((name) => this.categories[name])
-        .filter((el) => el !== undefined)
-        .map((el) => el.scoresModel)
-        .filter((el) => el !== undefined)
-        .map((el) => this.generateBaselineAssessment(el, this.meta))
-      this.wizardStore.dispatch(new SaveAssessment(assessments));
+      // TODO: ....
+      // const assessments = this.sidePanelOrder
+      //   .map((name) => this.categories[name])
+      //   .filter((el) => el !== undefined)
+      //   .map((el) => el.scoresModel)
+      //   .filter((el) => el !== undefined)
+      //   .map((el) => this.generateBaselineAssessment(el, this.meta))
+      // this.wizardStore.dispatch(new SaveAssessment(assessments));
     }
   }
 }
