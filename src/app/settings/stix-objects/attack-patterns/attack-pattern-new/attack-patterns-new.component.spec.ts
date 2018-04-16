@@ -42,7 +42,7 @@ let serviceMock = {
   },
 
   create: (item: any): Observable<any> => {
-    return Observable.of(item);
+    return Observable.of([item]);
   }
 };
 
@@ -122,7 +122,7 @@ function buttons() {
     it('should add kill chain when add button is clicked', () => {
       fixture.detectChanges(); // runs initial lifecycle hooks
       expect(comp.attackPattern.attributes.kill_chain_phases.length).toBeLessThanOrEqual(0, 'kill chain not equal zero');
-      de = fixture.debugElement.query(By.css('#add-kill-chain'))
+      de = fixture.debugElement.query(By.css('#add-kill-chain'));
       click(de)
       // attack pattern model should be updated
       expect(comp.attackPattern.attributes.kill_chain_phases.length).toBeGreaterThan(0, 'should add kill chain when add button is clicked');
@@ -279,7 +279,7 @@ function moduleSetup() {
         { provide: Router, useValue: {} },
         { provide: MatDialog, useValue: {} },
         { provide: Location, useValue: { back: (): void => { } } },
-        { provide: MatSnackBar, useValue: {} },
+        { provide: MatSnackBar, useValue: { open: () => {} } },
         {
           provide: OverlayContainer, useFactory: () => {
             overlayContainerElement = document.createElement('div') as HTMLElement;

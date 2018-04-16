@@ -497,20 +497,28 @@ describe('SummaryCalculationService', () => {
       { name: 'Mitigation Threshold', risk: .5 },
       { name: 'Mitigation Threshold', risk: .75 },
       { name: 'Mitigation Threshold', risk: 1 }];
+    const spy = spyOn(console, 'error');
     service.calculateThresholdOptionNames(null);
+    expect(spy).toHaveBeenCalledWith('Failed to read question data for given assessment question; using default values.');
     expect(service.thresholdOptions).toEqual(defaultOptions);
     service.calculateThresholdOptionNames({ name: null, risk: null, options: null, selected_value: null });
     expect(service.thresholdOptions).toEqual(defaultOptions);
+    expect(spy).toHaveBeenCalledWith('Failed to read question data for given assessment question; using default values.');
     service.calculateThresholdOptionNames({ name: null, risk: null, options: [], selected_value: null });
     expect(service.thresholdOptions).toEqual(defaultOptions);
+    expect(spy).toHaveBeenCalledWith('Failed to read question data for given assessment question; using default values.');
     service.calculateThresholdOptionNames({ name: null, risk: null, options: [{ name: null, risk: 0 }], selected_value: null });
     expect(service.thresholdOptions).toEqual([{ name: '', risk: 0 }]);
+    expect(spy).toHaveBeenCalledWith('Failed to read question data for given assessment question; using default values.');
     service.calculateThresholdOptionNames({ name: null, risk: null, options: [{ name: ' ', risk: 0 }], selected_value: null });
     expect(service.thresholdOptions).toEqual([{ name: ' ', risk: 0 }]);
+    expect(spy).toHaveBeenCalledWith('Failed to read question data for given assessment question; using default values.');
     service.calculateThresholdOptionNames({ name: null, risk: null, options: [{ name: 'abbas', risk: 0 }], selected_value: null });
     expect(service.thresholdOptions).toEqual([{ name: 'Abbas', risk: 0 }]);
+    expect(spy).toHaveBeenCalledWith('Failed to read question data for given assessment question; using default values.');
     service.calculateThresholdOptionNames({ name: null, risk: null, options: [{ name: 'abbas', risk: 0 }, { name: 'brian', risk: 0 }, { name: 'chris columbus and son', risk: 0 }], selected_value: null });
     expect(service.thresholdOptions).toEqual([{ name: 'Abbas', risk: 0 }, { name: 'Brian', risk: 0 }, { name: 'Chris Columbus and Son', risk: 0 }]);
+    expect(spy).toHaveBeenCalledWith('Failed to read question data for given assessment question; using default values.');
   }));
 
   it('convert a number to a sophistication value', inject([SummaryCalculationService], (service: SummaryCalculationService) => {

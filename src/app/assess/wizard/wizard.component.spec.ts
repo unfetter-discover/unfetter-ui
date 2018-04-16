@@ -286,46 +286,47 @@ describe('WizardComponent', () => {
   });
 
   it('should collect model assessments robustly', () => {
+    const spy = spyOn(console, 'warn').and.returnValue(null);
+
     component.model = null;
-    spyOn(console, 'warn');
     let assessment: any = null;
     component.collectModelAssessments(assessment);
-    expect(console.warn).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledTimes(1);
 
     component.model = { attributes: null, type: null, relationships: null, links: null };
     component.collectModelAssessments(assessment);
-    expect(console.warn).toHaveBeenCalledTimes(2);
+    expect(spy).toHaveBeenCalledTimes(2);
 
     component.model = new MockModel();
     component.model.attributes.assessment_objects = null;
     component.collectModelAssessments(assessment);
-    expect(console.warn).toHaveBeenCalledTimes(3);
+    expect(spy).toHaveBeenCalledTimes(3);
 
     component.model = new MockModel();
     component.model.attributes.assessment_objects = [];
     component.collectModelAssessments(assessment);
-    expect(console.warn).toHaveBeenCalledTimes(4);
+    expect(spy).toHaveBeenCalledTimes(4);
 
     component.model = new MockModel();
     component.model.attributes.assessment_objects = [{ risk: null, questions: null }];
     component.collectModelAssessments(assessment);
-    expect(console.warn).toHaveBeenCalledTimes(5);
+    expect(spy).toHaveBeenCalledTimes(5);
 
     component.model = new MockModel();
     assessment = {};
     component.collectModelAssessments(assessment);
-    expect(console.warn).toHaveBeenCalledTimes(6);
+    expect(spy).toHaveBeenCalledTimes(6);
 
     component.model = new MockModel();
     assessment = { id: null };
     component.collectModelAssessments(assessment);
-    expect(console.warn).toHaveBeenCalledTimes(7);
+    expect(spy).toHaveBeenCalledTimes(7);
 
     component.model = new MockModel();
     component.model.attributes.assessment_objects = [{ stix: null, risk: null, questions: null }];
     assessment = { id: 'happyjack' };
     component.collectModelAssessments(assessment);
-    expect(console.warn).toHaveBeenCalledTimes(8);
+    expect(spy).toHaveBeenCalledTimes(8);
 
     component.model = new MockModel();
     component.model.attributes.assessment_objects[0] = {
@@ -336,7 +337,7 @@ describe('WizardComponent', () => {
       }, risk: null, questions: null
     };
     component.collectModelAssessments(assessment);
-    expect(console.warn).toHaveBeenCalledTimes(9);
+    expect(spy).toHaveBeenCalledTimes(9);
 
     component.model = new MockModel();
     component.model.attributes.assessment_objects[0] = {
@@ -347,14 +348,14 @@ describe('WizardComponent', () => {
       }, risk: null, questions: null
     };
     component.collectModelAssessments(assessment);
-    expect(console.warn).toHaveBeenCalledTimes(10);
+    expect(spy).toHaveBeenCalledTimes(10);
 
     component.model = new MockModel();
     component.model.attributes.assessment_objects[0].risk = null;
     component.model.attributes.assessment_objects[0].questions = null;
     component.collectModelAssessments(assessment);
     expect(assessment.risk).toEqual(0);
-    expect(console.warn).toHaveBeenCalledTimes(10);
+    expect(spy).toHaveBeenCalledTimes(10);
 
     component.model = new MockModel();
     component.model.attributes.assessment_objects[0].questions = null;

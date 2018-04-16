@@ -3,6 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
+import { Observable } from 'rxjs/Observable';
 import { Action, StoreModule, ActionReducerMap, Store, } from '@ngrx/store';
 
 import { AssessmentSummaryService } from '../../services/assessment-summary.service';
@@ -20,6 +21,8 @@ import { usersReducer, UserState } from '../../../root-store/users/users.reducer
 import { riskByAttackPatternReducer, RiskByAttackPatternState } from '../store/riskbyattackpattern.reducers';
 import { Subject } from 'rxjs/Subject';
 import { SummaryActions } from '../store/summary.actions';
+import { Router } from '@angular/router';
+import { Constance } from '../../../utils/constance';
 
 describe('SummaryComponent', () => {
   let component: SummaryComponent;
@@ -28,7 +31,8 @@ describe('SummaryComponent', () => {
   let mockReducer: ActionReducerMap<any> = {
     summary: summaryReducer,
     riskByAttackPattern: riskByAttackPatternReducer,
-    user: usersReducer
+    users: usersReducer,
+    user: usersReducer,
   };
 
   const mockService = {
@@ -36,7 +40,7 @@ describe('SummaryComponent', () => {
     calculateTopRisks: () => null, calculateWeakness: () => null, calculateThresholdOptionNames: () => null,
     setAverageRiskPerAssessedObject: () => null
   };
-  const mockAssessService = { deleteByRollupId: () => { } };
+  const mockAssessService = { deleteByRollupId: () => Observable.of({}) };
 
   beforeEach(async(() => {
     const matModules = [
@@ -128,6 +132,7 @@ describe('SummaryComponent', () => {
     flush();
     // TODO figure out what to 'expect'
 
+    const spy = spyOn(TestBed.get(Router), 'navigate');
     component.rollupId = 'rollUp';
     component.confirmDelete({ name: 'name', rollupId: 'rollUp' });
     expect(dialog.open).toHaveBeenCalled();
@@ -135,6 +140,7 @@ describe('SummaryComponent', () => {
     openDialog[0].close(true);
     fixture.detectChanges();
     flush();
+    expect(spy).toHaveBeenCalledWith([Constance.X_UNFETTER_ASSESSMENT_NAVIGATE_URL]);
     // TODO figure out what to 'expect'
   }));
 
@@ -151,8 +157,10 @@ describe('SummaryComponent', () => {
     component.onCellSelected({ _id: null, id: null, name: null, type: null, modified: null, rollupId: 'rollupId' });
     expect(store.dispatch).not.toHaveBeenCalled();
 
+    const spy = spyOn(TestBed.get(Router), 'navigate');
     component.onCellSelected({ _id: null, id: 'id', name: null, type: null, modified: null, rollupId: 'rollupId' });
     expect(store.dispatch).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith([component.masterListOptions.displayRoute, 'rollupId', 'id']);
   });
 
   it('should tranform Summary data', () => {

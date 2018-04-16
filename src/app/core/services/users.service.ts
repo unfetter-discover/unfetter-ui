@@ -34,14 +34,15 @@ export class UsersService {
         const filter = {
             'stix.identity_class': 'organization'
         };
-        return this.genericApi.getAs<JsonApiData<Identity>[]>(`${this.identitiesUrl}?filter=${encodeURI(JSON.stringify(filter))}`);
+        return this.genericApi.getAs<JsonApiData<Identity>[]>(
+                `${this.identitiesUrl}?filter=${encodeURI(JSON.stringify(filter))}`);
     }
 
     public requestOrgLeadership(userId, orgId): Observable<any> {
         return this.genericApi.get(`${this.orgUrl}/request-leadership/${userId}/${orgId}`);
     }
 
-    public requestOrgMemebership(userId, orgId): Observable<any> {
+    public requestOrgMembership(userId, orgId): Observable<any> {
         return this.genericApi.get(`${this.orgUrl}/request-membership/${userId}/${orgId}`);
     }
 
@@ -66,4 +67,5 @@ export class UsersService {
             .pluck('attributes')
             .pluck('available');
     }
+
 }
