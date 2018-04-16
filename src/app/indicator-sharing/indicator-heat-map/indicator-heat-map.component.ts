@@ -19,7 +19,6 @@ import { Store } from '@ngrx/store';
 import { IndicatorSharingFeatureState } from '../store/indicator-sharing.reducers';
 import { HeatmapComponent } from '../../global/components/heatmap/heatmap.component';
 import { HeatMapOptions } from '../../global/components/heatmap/heatmap.data';
-import { GenericApi } from '../../core/services/genericapi.service';
 import { Constance } from '../../utils/constance';
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 
@@ -63,7 +62,6 @@ export class IndicatorHeatMapComponent implements AfterViewInit {
     constructor(
         public dialogRef: MatDialogRef<IndicatorHeatMapComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
-        public genericApi: GenericApi,
         private overlay: Overlay,
         private vcr: ViewContainerRef,
         private changeDetector: ChangeDetectorRef,
@@ -80,8 +78,9 @@ export class IndicatorHeatMapComponent implements AfterViewInit {
                 .subscribe(
                     (attackPatterns: any[]) => {
                         const collects = { attackPatterns: {}, phases: {} };
-                        this.attackPatterns = attackPatterns.reduce(
-                            (collect, pattern) => this.collectAttackPatterns(collect, pattern), collects).attackPatterns;
+                        attackPatterns.reduce(
+                            (collect, pattern) => this.collectAttackPatterns(collect, pattern), collects);
+                        this.attackPatterns = collects.attackPatterns;
                         this.heatmap = this.groupAttackPatternsByKillchain(collects.phases);
                     },
                     (err) => {
