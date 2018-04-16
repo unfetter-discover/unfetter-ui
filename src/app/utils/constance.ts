@@ -116,7 +116,12 @@ export const Constance = {
 
   LOGO_IMG_ANALYTIC_HUB: 'assets/icon/dashboard-logos/icon-Analytic_Hub.png',
   LOGO_IMG_ASSESSMENTS: 'assets/icon/dashboard-logos/icon-Assessments.png',
+  LOGO_IMG_ASSESSMENTS_BETA: 'assets/icon/dashboard-logos/icon-Assessments_beta.png',
   LOGO_IMG_THREAT_DASHBOARD: 'assets/icon/dashboard-logos/icon-Threat_Dashboard.png',
+  LOGO_IMG_EVENTS_DASHBOARD: 'assets/icon/dashboard-logos/icon-event_Dashboard_beta.png',
+  LOGO_IMG_API_EXPLORER: 'assets/icon/dashboard-logos/icon-api.png',
+  LOGO_IMG_STIX: 'assets/icon/dashboard-logos/icon-STIX_Dashboard.png',
+  LOGO_IMG_INTRUSION_SET: 'assets/icon/dashboard-logos/icon-Int_Set_Dashboard.png',
 
   COLORS: {
     green: '#4CAF50',

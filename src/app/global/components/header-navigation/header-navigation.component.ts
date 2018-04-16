@@ -38,19 +38,17 @@ export class HeaderNavigationComponent {
     {
       url: Constance.X_UNFETTER_ASSESSMENT3_NAVIGATE_URL,
       title: 'Assessments 3.0',
-      icon: Constance.LOGO_IMG_ASSESSMENTS
+      icon: Constance.LOGO_IMG_ASSESSMENTS_BETA
     },
     {
       url: 'intrusion-set-dashboard',
       title: 'Intrusion Set Dashboard',
-      // Placeholder icon
-      icon: Constance.LOGO_IMG_THREAT_DASHBOARD
+      icon: Constance.LOGO_IMG_INTRUSION_SET
     },
     {
       url: 'events',
       title: 'Events Dashboard',
-      // TODO Placeholder icon
-      icon: Constance.LOGO_IMG_THREAT_DASHBOARD
+      icon: Constance.LOGO_IMG_EVENTS_DASHBOARD
     },
   ];
 
@@ -63,10 +61,10 @@ export class HeaderNavigationComponent {
   public showAccountMenu: boolean = false;
   public topPx = '0px';
   public user$;
-  public apiDocsIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD;
-  public orgLeaderIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD;
-  public adminIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD;
-  public stixIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD;
+  public apiDocsIcon: string = Constance.LOGO_IMG_API_EXPLORER;
+  public orgLeaderIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD; // Placeholder icon
+  public adminIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD; // Placeholder icon
+  public stixIcon: string = Constance.LOGO_IMG_STIX;
   public encodedToken: string = '';
   @Input() public title;
 
