@@ -146,7 +146,9 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
                         console.log(err);                                
                     },
                     () => {
-                        addLabel$.unsubscribe();
+                        if (addLabel$) {
+                            addLabel$.unsubscribe();
+                        }
                     }
                 );            
         }      
@@ -168,7 +170,9 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
                     console.log(err);                    
                 },
                 () => {
-                    addComment$.unsubscribe();
+                    if (addComment$) {
+                        addComment$.unsubscribe();
+                    }
                 }
             );        
     }
@@ -189,7 +193,9 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
                     console.log(err);                    
                 },
                 () => {
-                    addLike$.unsubscribe();
+                    if (addLike$) {
+                        addLike$.unsubscribe();
+                    }
                 }
             );
     }
@@ -205,7 +211,9 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
                     console.log(err);
                 },
                 () => {
-                    publish$.unsubscribe();
+                    if (publish$) {
+                        publish$.unsubscribe();
+                    }
                 }
             );
     }
@@ -222,7 +230,9 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
                     console.log(err);
                 },
                 () => {
-                    unLike$.unsubscribe();
+                    if (unLike$) {
+                        unLike$.unsubscribe();
+                    }
                 }
             );
     }
@@ -239,7 +249,9 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
                     console.log(err);
                 },
                 () => {
-                    addLike$.unsubscribe();
+                    if (addLike$) {
+                        addLike$.unsubscribe();
+                    }
                 }
             );
     }
