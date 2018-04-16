@@ -1,14 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
-import { SetSightings, FinishedLoading, STREAM_SIGHTING_IDS, FETCH_SIGHTING_GROUP_BY_ID, FetchSightingGroupById, LOAD_DATA, SetIndicatorToAp, SetIntrusionSetToAp } from './events.actions';
-import { OrganizationIdentity } from '../../models/user/organization-identity';
-import { Sighting } from '../../models';
-import { EventsService } from '../events.service';
+import { Observable } from 'rxjs/Observable';
 import { WebsocketService } from '../../core/services/web-socket.service';
 import { WSMessageTypes } from '../../global/enums/ws-message-types.enum';
-import { Observable } from 'rxjs/Observable';
 import { RxjsHelpers } from '../../global/static/rxjs-helpers';
-import { SetIndicatorToApMap } from '../../indicator-sharing/store/indicator-sharing.actions';
+import { EventsService } from '../events.service';
+import { AddSighting, FETCH_SIGHTING_GROUP_BY_ID, FetchSightingGroupById, FinishedLoading, LOAD_DATA, STREAM_SIGHTING_IDS, SetIndicatorToAp, SetIntrusionSetToAp, SetSightings } from './events.actions';
 
 @Injectable()
 export class EventsEffects {
@@ -49,11 +46,13 @@ export class EventsEffects {
         .pluck('id')
         .map((stixId: string) => new FetchSightingGroupById(stixId));
 
-    @Effect({ dispatch: false })
+    @Effect()
     public fetchSightingGroupById = this.actions$
         .ofType(FETCH_SIGHTING_GROUP_BY_ID)
         .pluck('payload')
         .switchMap((sightingId: string) => this.eventsService.getSightingGroupById(sightingId))
-        .do((objs) => console.log('Events / fetchSightingGroup debug output: ', objs));
-    // TODO remove {dispatch:false}, mergeMap to actions to update various STIX objects
+        .do((objs) => console.log('Events / fetchSightingGroup debug output: ', objs))
+        .mergeMap(([newSighting]: [any]) => [
+            new AddSighting(newSighting),
+        ]);
 }

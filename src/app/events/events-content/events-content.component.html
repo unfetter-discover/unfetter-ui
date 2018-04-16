@@ -7,7 +7,7 @@
             <mat-card-title>Daily Totals</mat-card-title>
             <mat-card-subtitle>
               <mat-form-field>
-                <mat-select [(value)]="daysOfData">
+                <mat-select [(value)]="service.daysOfData">
                   <mat-option value="7">1 Week</mat-option>
                   <mat-option value="30">30 Days</mat-option>
                   <mat-option value="183">6 Months</mat-option>
@@ -16,7 +16,7 @@
             </mat-card-subtitle>
             <mat-card-content>
               <div>
-                <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions" [legend]="barChartLegend"
+                <canvas baseChart [datasets]="service.barChartData" [labels]="service.barChartLabels" [options]="barChartOptions" [legend]="barChartLegend"
                   [chartType]="barChartType" [colors]="colors"></canvas>
               </div>
             </mat-card-content>
@@ -30,19 +30,19 @@
                 <mat-card-title>
                   INDICATES
                 </mat-card-title>
-                <mat-card-content>Indicators Chart</mat-card-content>
+                <mat-card-content>FUTURE: This will be a doughnut chart with breakdown of Threat events by Indicator</mat-card-content>
               </mat-card>
               <mat-card class="uf-mat-card card">
                 <mat-card-title>
                   POTENTIAL ACTOR
                 </mat-card-title>
-                <mat-card-content>Potential Actor Chart</mat-card-content>
+                <mat-card-content>FUTURE: This will be a doughnut chart with a breakdown of Threat events by Potential Actor</mat-card-content>
               </mat-card>
               <mat-card class="uf-mat-card card">
                 <mat-card-title>
                   LOCATION
                 </mat-card-title>
-                <mat-card-content>Location Chart</mat-card-content>
+                <mat-card-content>FUTURE: This will be a doughnut chart with a breakdown of Threat events by Location Seen</mat-card-content>
               </mat-card>
             </mat-card-content>
           </mat-card>
@@ -56,7 +56,7 @@
           <mat-card color="primary" class="uf-mat-card card mat-card-scroll-content bottom-card">
             <mat-card-title class="traffic-detail-title">Traffic Detail</mat-card-title>
             <mat-card-content>
-              <mat-table #table [dataSource]="service.recentSightings">
+              <mat-table #table [dataSource]="service.dataSource">
                 <ng-container matColumnDef="{{columnIds[0]}}">
                   <mat-header-cell *matHeaderCellDef>Date/Time</mat-header-cell>
                   <mat-cell *matCellDef="let sighting">{{sighting.attributes.last_seen | date:'medium' }}</mat-cell>
@@ -91,7 +91,7 @@
                   </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="{{columnIds[5]}}">
-                  <mat-header-cell *matHeaderCellDef>Indicates</mat-header-cell>
+                  <mat-header-cell *matHeaderCellDef>Indicators</mat-header-cell>
                   <mat-cell *matCellDef="let sighting">
                     <span>{{sighting.attributes.sighting_of_ref}}</span>
                   </mat-cell>
