@@ -8,7 +8,6 @@ import * as d3 from 'd3';
 
 import { HeatmapComponent } from './heatmap.component';
 import { HeatMapOptions } from './heatmap.data';
-import { GenericApi } from '../../../core/services/genericapi.service';
 
 describe('HeatmapComponent', () => {
 
@@ -56,7 +55,6 @@ describe('HeatmapComponent', () => {
                 OverlayModule,
             ],
             providers: [
-                GenericApi,
             ]
         })
         .compileComponents();
