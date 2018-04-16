@@ -1,8 +1,8 @@
 <div id="stixHome" class="container">
     <br>
     <div class="flex-header">
-        <span *ngFor="let navigation of navigations" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:false}">
-            <a mat-button [routerLink]="[navigation.url]">{{navigation.label}}</a>
+        <span *ngFor="let navigation of navigations">
+            <a mat-button [routerLinkActive]="['active']" [routerLink]="[navigation.url]" [routerLinkActiveOptions]="{exact:false}">{{navigation.label}}</a>
         </span>
     </div>
     <!-- NOTE commented this out due to stacking tabs -->

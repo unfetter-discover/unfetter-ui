@@ -6,6 +6,14 @@
         flex-wrap: wrap;
         span {
             flex: 0 0 auto;
+            
+            :focus {
+                outline: none;
+            }
+
+            .active {
+                text-decoration: underline;
+            }
         }
     }    
 }
