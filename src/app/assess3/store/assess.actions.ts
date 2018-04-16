@@ -5,19 +5,19 @@ import { JsonApiData } from '../../models/json/jsonapi-data';
 import { Assessment3 } from '../../models/assess/assessment3';
 
 // For effects
-export const START_ASSESSMENT = '[Assess] START_ASSESSMENT';
-export const START_ASSESSMENT_SUCCESS = '[Assess] START_ASSESSMENT_SUCCESS';
-export const SAVE_ASSESSMENT = '[Assess] SAVE_ASSESSMENT';
-export const LOAD_ASSESSMENT_WIZARD_DATA = '[Assess] LOAD_ASSESSMENT_WIZARD_DATA';
-export const CLEAN_ASSESSMENT_WIZARD_DATA = '[Assess] CLEAN_ASSESSMENT_WIZARD_DATA';
-export const FETCH_ASSESSMENT = '[Assess] FETCH_ASSESSMENT';
+export const START_ASSESSMENT = '[Assess3] START_ASSESSMENT';
+export const START_ASSESSMENT_SUCCESS = '[Assess3] START_ASSESSMENT_SUCCESS';
+export const SAVE_ASSESSMENT = '[Assess3] SAVE_ASSESSMENT';
+export const LOAD_ASSESSMENT_WIZARD_DATA = '[Assess3] LOAD_ASSESSMENT_WIZARD_DATA';
+export const CLEAN_ASSESSMENT_WIZARD_DATA = '[Assess3] CLEAN_ASSESSMENT_WIZARD_DATA';
+export const FETCH_ASSESSMENT = '[Assess3] FETCH_ASSESSMENT';
 
 // For reducers
-export const UPDATE_PAGE_TITLE = '[Assess] UPDATE_PAGE_TITLE';
-export const ANSWER_QUESTION = '[Assess] ANSWER_QUESTION';
-export const FINISHED_LOADING = '[Assess] FINISHED_LOADING';
-export const FINISHED_SAVING = '[Assess] FINISHED_SAVING';
-export const WIZARD_PAGE = '[Asses] WIZARD_PAGE';
+export const UPDATE_PAGE_TITLE = '[Assess3] UPDATE_PAGE_TITLE';
+export const ANSWER_QUESTION = '[Assess3] ANSWER_QUESTION';
+export const FINISHED_LOADING = '[Assess3] FINISHED_LOADING';
+export const FINISHED_SAVING = '[Assess3] FINISHED_SAVING';
+export const WIZARD_PAGE = '[Assess3] WIZARD_PAGE';
 
 export class UpdatePageTitle implements Action {
     public readonly type = UPDATE_PAGE_TITLE;

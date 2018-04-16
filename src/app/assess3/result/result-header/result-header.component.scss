@@ -33,3 +33,8 @@
 .flexColumn {
     flex-direction: column;
 }
+
+.banner-wrapper {
+    background-color: $assessments-primary-lightest;
+    color: $dark-text-default;
+}

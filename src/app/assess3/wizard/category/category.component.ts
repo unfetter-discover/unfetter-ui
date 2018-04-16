@@ -92,9 +92,9 @@ export class CategoryComponent implements OnInit {
    * @return {void}
    */
   public onAddCategory(option: any): void {
-    // Verify this category doesn't already exist
+    // Verify a selection and that this category doesn't already exist
     const index = this.tempCategories.indexOf(option.value);
-    if (index < 0) {
+    if (index < 0 && option.value !== this.defaultValue) {
       this.tempCategories.push(option.value);
 
       option.value = this.defaultValue;
