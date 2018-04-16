@@ -61,6 +61,7 @@ import { CreatedByRefComponent } from './components/created-by-ref/created-by-re
 import { RelatationshipGeneratorComponent } from './components/relatationship-generator/relatationship-generator.component';
 import { InfiniteScrollDirective } from './directives/infinite-scroll.directive';
 import { PublishedCheckboxComponent } from './components/published-checkbox/published-checkbox.component';
+import { HeaderLogoComponent } from './components/header-logo/header-logo.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -131,6 +132,7 @@ const unfetterComponents = [
     ],
     declarations: [
         ...unfetterComponents,
+        HeaderLogoComponent,
     ],
     exports: [
         ...unfetterComponents,

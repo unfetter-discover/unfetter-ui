@@ -1,0 +1,30 @@
+@import '../../../../styles/_variables.scss';
+
+#headerLogoComponent {
+  margin-left: 9px;
+  margin-top: 7px;
+}
+
+.cls-1 {
+  fill: #fff;
+}
+
+.defaultAccent {
+  fill: $accent-color;
+}
+
+.assessmentsAccent {
+  fill: $assessments-accent;
+}
+
+.threatAccent {
+  fill: $threat-dashboard-accent;
+}
+
+.indicatorAccent {
+  fill: $analytic-exchange-accent;
+}
+
+.eventsAccent {
+  fill: $events-accent;
+}
