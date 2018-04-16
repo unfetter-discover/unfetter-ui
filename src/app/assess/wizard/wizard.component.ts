@@ -1,40 +1,32 @@
-import { Component, ChangeDetectorRef, ElementRef, Input, OnInit, SimpleChanges, ViewEncapsulation, OnDestroy, HostListener, QueryList, ViewChildren, Renderer2, AfterViewInit } from '@angular/core';
-import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
-
-import { MatSnackBar, MatSelect } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren } from '@angular/core';
+import { MatSelect, MatSnackBar } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-
+import { MenuItem } from 'primeng/primeng';
+import { Subscription } from 'rxjs/Subscription';
 import { Key } from 'ts-keycode-enum';
-
-import * as assessActions from '../store/assess.actions';
-import * as assessReducers from '../store/assess.reducers';
-
-import { AppState } from '../../root-store/app.reducers';
+import { GenericApi } from '../../core/services/genericapi.service';
+import { heightCollapse } from '../../global/animations/height-collapse';
 import { Assessment } from '../../models/assess/assessment';
-import { AssessmentsService } from '../assessments.service';
 import { AssessmentMeta } from '../../models/assess/assessment-meta';
 import { AssessmentObject } from '../../models/assess/assessment-object';
 import { AssessmentQuestion } from '../../models/assess/assessment-question';
-import { Constance } from '../../utils/constance';
 import { Dictionary } from '../../models/json/dictionary';
-import { GenericApi } from '../../core/services/genericapi.service';
-import { Measurements } from './models/measurements';
-import { MenuItem } from 'primeng/primeng';
-import { LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle, CleanAssessmentWizardData } from '../store/assess.actions';
-import { Stix } from '../../models/stix/stix';
-import { Indicator } from '../../models/stix/indicator';
 import { JsonApiData } from '../../models/json/jsonapi-data';
-import { KEY_CODE } from './key-code.enum';
+import { Indicator } from '../../models/stix/indicator';
+import { Stix } from '../../models/stix/stix';
 import { UserProfile } from '../../models/user/user-profile';
-import { FullAssessmentResultState } from '../result/store/full-result.reducers';
+import { AppState } from '../../root-store/app.reducers';
+import { Constance } from '../../utils/constance';
 import { LoadAssessmentResultData } from '../result/store/full-result.actions';
-import { heightCollapse } from '../../global/animations/height-collapse';
-import { WizardAssessment } from './models/wizard-assessment';
-import { TempModel } from './models/temp-model';
+import { FullAssessmentResultState } from '../result/store/full-result.reducers';
+import { CleanAssessmentWizardData, LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle } from '../store/assess.actions';
+import * as assessReducers from '../store/assess.reducers';
+import { Measurements } from './models/measurements';
 import { SidePanelName } from './models/side-panel-name.enum';
+import { TempModel } from './models/temp-model';
+import { WizardAssessment } from './models/wizard-assessment';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -820,6 +812,10 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @returns {number}
    */
   public trackByFn(index, item) {
+    if (item && item.id) {
+      return item.id;
+    }
+  
     return index;
   }
 
