@@ -37,10 +37,10 @@ export class AssessEffects {
     public fetchAssessmentWizardData = this.actions$
         .ofType(assessActions.LOAD_ASSESSMENT_WIZARD_DATA)
         .pluck('payload')
-        .switchMap((meta: Partial<Assessment3Meta>) => {
-            const includeMeta = `?metaproperties=true`;
-            let url = `${Constance.X_UNFETTER_ASSESSMENT3_URL}${includeMeta}`;
-            const observables = new Array<Observable<Array<JsonApiData<Stix>>>>();
+        // .switchMap((meta: Partial<Assessment3Meta>) => {
+        //     const includeMeta = `?metaproperties=true`;
+        //     let url = `${Constance.X_UNFETTER_ASSESSMENT3_URL}${includeMeta}`;
+        //     const observables = new Array<Observable<Array<JsonApiData<Stix>>>>();
 
         //     return Observable.forkJoin(...observables);
         // })
