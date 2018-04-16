@@ -1,3 +1,49 @@
-<p>
-  categories-edit works!
-</p>
+<div class="row" *ngIf="category">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <mat-input-container class="full-width">
+            <input matInput class="category-name" required placeholder="Name" value="{{category.name}}" [(ngModel)]="category.name">
+          </mat-input-container>
+
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <mat-input-container class="full-width">
+          <textarea matInput class="category-desc" matTextareaAutosize placeholder="Description" [(ngModel)]="category.description">{{category.description}}</textarea>
+        </mat-input-container>
+      </div>
+    </div>
+    <!-- <div class="row">
+      <div class="col-md-12">
+        <form>
+          <mat-form-field>
+            <mat-select name="sophistication-levels" placeholder="How sophisticated would an attacker need to be to leverage this technique?"
+              [(ngModel)]="category.x_unfetter_sophistication_level" class="full-width">
+              <mat-option *ngFor="let sophistication_levels of x_unfetter_sophistication_levels" [value]="sophistication_levels.id">
+                {{ sophistication_levels.value }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </form>
+      </div>
+    </div> -->
+
+    <kill-chain-phases [(model)]="category"></kill-chain-phases>
+
+    <external-reference [(model)]="category"></external-reference>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="button-row pull-right">
+          <button mat-button (click)="cancelButtonClicked()">CANCEL</button>
+          <button type="submit" id="save-btn" color="primary" mat-raised-button (click)="saveButtonClicked()" [disabled]="!category.name">SAVE</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

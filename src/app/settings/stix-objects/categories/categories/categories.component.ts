@@ -52,23 +52,21 @@ export class CategoriesComponent extends BaseStixComponent<Category> implements 
   }
 
   public deleteButtonClicked(): void {
-    super.openDialog(this.category).subscribe(
-      () => {
-        this.location.back();
-      }
-    );
+    const sub$ = super.openDialog(this.category).subscribe(
+      () => this.location.back(),
+      (err) => console.log(err),
+      () => sub$.unsubscribe());
   }
 
-  public saveButtonClicked(): Observable<any> {
+  public saveButtonClicked(): Observable<Category> {
     return Observable.create((observer) => {
       let subscription = super.save(this.category).subscribe(
         (data) => {
           observer.next(data);
           observer.complete();
-        }, (error) => {
-          // handle errors here
-          console.log('error ' + error);
-        }, () => {
+        },
+        (error) => console.log('error ' + error),
+        () => {
           // prevent memory links
           if (subscription) {
             subscription.unsubscribe();
@@ -78,20 +76,22 @@ export class CategoriesComponent extends BaseStixComponent<Category> implements 
     });
   }
 
+  /**
+   * @description load the current category by id in the url
+   * @returns void
+   */
   public loadCategory(): void {
-    let subscription = super.get().subscribe(
-      (data) => {
-        this.category = data as Category;
-      }, (error) => {
-        // handle errors here
-        console.log('error ' + error);
-      }, () => {
-        // prevent memory links
-        if (subscription) {
-          subscription.unsubscribe();
+    let sub$ = super.get()
+      .map((el) => el.attributes || el)
+      .subscribe(
+        (data) => this.category = data as Category,
+        (error) => console.log('error ' + error),
+        () => {
+          if (sub$) {
+            sub$.unsubscribe();
+          }
         }
-      }
-    );
+      );
   }
 
   public formatText(inputString): string {
