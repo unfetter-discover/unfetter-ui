@@ -10,6 +10,37 @@ import { JsonApiData } from '../models/json/jsonapi-data';
 import { OrganizationIdentity } from '../models/user/organization-identity';
 import { Constance } from '../utils/constance';
 
+export class SightingsData {
+    dataChange: BehaviorSubject<Sighting[]> = new BehaviorSubject<Sighting[]>([]);
+    get data(): Sighting[] { return this.dataChange.value; }
+
+    constructor(sightings: Sighting[]) {
+        if (sightings) {
+            for (const sighting of sightings) {
+                this.addSighting(sighting);
+            }
+        }
+    }
+
+    addSighting(newSighting: Sighting) {
+        const copiedData = this.data.slice();
+        copiedData.push(newSighting);
+        this.dataChange.next(copiedData);
+    }
+}
+
+export class SightingsDataSource extends DataSource<any> {
+    constructor(private sightingsData: SightingsData) {
+        super();
+    }
+
+    connect(): Observable<Sighting[]> {
+        return this.sightingsData.dataChange;
+    }
+
+    disconnect() { }
+}
+
 @Injectable()
 export class EventsService {
     readonly BASE_TEN: number;
@@ -27,11 +58,11 @@ export class EventsService {
     public set daysOfData(newSelectedRange: string) {
         this.daysOfDataValue = newSelectedRange;
         this.updateChart();
-      }
-    
-      public get daysOfData(): string {
+    }
+
+    public get daysOfData(): string {
         return this.daysOfDataValue;
-      }
+    }
 
     constructor(
         private genericApi: GenericApi,
@@ -41,11 +72,11 @@ export class EventsService {
         this.dataSource = new SightingsDataSource(this.dataStore);
         this.barChartData = [
             {
-              data: [],
-              label: 'Detected Threats',
-              borderWidth: 0,
+                data: [],
+                label: 'Detected Threats',
+                borderWidth: 0,
             },
-          ]
+        ]
     }
 
     /**
@@ -67,21 +98,6 @@ export class EventsService {
                     return data.attributes;
                 }
             });
-    }
-
-    //   TODO if using getSightingGroup, delete this
-    /**
-    * @description
-    * @param {string} id
-    * @return {Observable}
-    */
-    public getAllSightingsByOrganization(organizations: OrganizationIdentity[]): Observable<Sighting[]> {
-        if (!organizations) {
-            return Observable.empty();
-        }
-        // TODO filter by org 
-        const url = `${this.eventsBaseUrl}`;
-        return this.genericApi.getAs<Sighting[]>(url);
     }
 
     /**
@@ -122,46 +138,15 @@ export class EventsService {
     updateChart() {
         let earliest = new Date(new Date().setDate(new Date().getDate() - parseInt(this.daysOfData, this.BASE_TEN)));
         let inRangeSightings = this.recentSightings.reduce((result, sighting) => {
-          if (new Date(sighting.attributes.last_seen) >= earliest) {
-            result.push(sighting)
-          }
-          return result;
+            if (new Date(sighting.attributes.last_seen) >= earliest) {
+                result.push(sighting)
+            }
+            return result;
         }, []);
-        inRangeSightings.sort(function(a, b) { return (a.attributes.last_seen > b.attributes.last_seen) ? 1 : ((b.attributes.last_seen > a.attributes.last_seen) ? -1 : 0); });
+        inRangeSightings.sort(function (a, b) { return (a.attributes.last_seen > b.attributes.last_seen) ? 1 : ((b.attributes.last_seen > a.attributes.last_seen) ? -1 : 0); });
         let nonUniqueDateSightings = inRangeSightings.map((sighting) => this.datePipe.transform(sighting.attributes.last_seen, 'MMM dd'));
         let uniqueDateSightings = nonUniqueDateSightings.reduce((a, b) => (a[b] = a[b] + 1 || 1) && a, []);
         this.barChartLabels = Object.keys(uniqueDateSightings);
         this.barChartData[0].data = Object.values(uniqueDateSightings);
-      }
-}
-
-export class SightingsData {
-    dataChange: BehaviorSubject<Sighting[]> = new BehaviorSubject<Sighting[]>([]);
-    get data(): Sighting[] { return this.dataChange.value; }
-
-    constructor(sightings: Sighting[]) {
-        if (sightings) {
-            for (const sighting of sightings) {
-                this.addSighting(sighting);
-            }
-        }
     }
-
-    addSighting(newSighting: Sighting) {
-        const copiedData = this.data.slice();
-        copiedData.push(newSighting);
-        this.dataChange.next(copiedData);
-    }
-}
-
-export class SightingsDataSource extends DataSource<any> {
-    constructor(private sightingsData: SightingsData) {
-        super();
-    }
-
-    connect(): Observable<Sighting[]> {
-        return this.sightingsData.dataChange;
-    }
-
-    disconnect() { }
 }
