@@ -3,18 +3,18 @@
     <mat-chip-list style="margin-right: 5px;">
       <mat-chip *ngFor="let ap of existingAttackPatterns" class="chipListChip" [selected]="apSelected(ap.id)">{{ ap.name }}</mat-chip>
     </mat-chip-list>
-    <button mat-mini-fab color="accent" (click)="showAddAp = !showAddAp">
+    <button mat-mini-fab color="accent" (click)="showAddAp = !showAddAp" *ngIf="canCrud">
       <i class="material-icons mat-24" [ngClass]="{'showAddAp': showAddAp}">add</i>
     </button>
   </div>
   <div *ngIf="showAddAp" @heightCollapse>
     <div class="uf-well-accent">
       <mat-form-field class="full-width">
-        <mat-select placeholder="Attack Patterns" [multiple]="true" [(ngModel)]="selectedAttackPatterns">
+        <mat-select placeholder="Techniques" [multiple]="true" [(ngModel)]="selectedAttackPatterns">
           <mat-option [value]="ap.id" *ngFor="let ap of (displayedAttackPatterns$ | async) | sortByField:'name':'ascending'">{{ ap.name }}</mat-option>
         </mat-select>
       </mat-form-field>
-      <button mat-button color="accent" [disabled]="!selectedAttackPatterns.length" (click)="saveRelationsips()">Save Attack Pattern Relationships</button>
+      <button mat-button color="accent" [disabled]="!selectedAttackPatterns.length" (click)="saveRelationsips()">Save Technique Relationships</button>
     </div>    
   </div>
 </div>

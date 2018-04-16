@@ -1,51 +1,29 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-
-import { GlobalModule } from '../global/global.module';
-
-import { MatButtonModule,
-         MatCardModule,
-         MatCheckboxModule,
-         MatChipsModule,
-         MatDatepickerModule,
-         MatExpansionModule,
-         MatDialogModule,
-         MatFormFieldModule,
-         MatInputModule,
-         MatIconModule,
-         MatListModule,
-         MatMenuModule,
-         MatPaginatorModule,
-         MatProgressBarModule,
-         MatSelectModule,
-         MatSlideToggleModule,
-         MatSnackBarModule,
-         MatStepperModule,
-         MatTableModule,
-         MatTabsModule,
-         MatTooltipModule,
-       } from '@angular/material';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { PlatformModule } from '@angular/cdk/platform';
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatDialogModule, 
+  MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatNativeDateModule, 
+  MatPaginatorModule, MatProgressBarModule, MatSelectModule, MatSlideToggleModule, MatSnackBarModule, MatStepperModule, MatTableModule, 
+  MatTabsModule, MatTooltipModule } from '@angular/material';
 import { CarouselModule } from 'primeng/primeng';
-
-import { routing } from './threat-dashboard.routing';
-import { ThreatDashboardComponent } from './threat-dashboard.component';
-import { ThreatReportNavigateGuard } from './threat-report-navigate.guard';
-import { ThreatReportOverviewService } from './services/threat-report-overview.service';
-import { ThreatReportSharedService } from './services/threat-report-shared.service';
-import { ReportTranslationService } from './services/report-translation.service';
-import { ThreatReportEditorComponent } from './report-editor/threat-report-editor.component';
-import { ReportEditorComponent } from './report-editor/report-editor/report-editor.component';
-import { ReportImporterComponent } from './report-editor/report-importer/report-importer.component';
-import { ReportUploadService } from './report-editor/report-importer/report-upload.service';
+import { GlobalModule } from '../global/global.module';
+import { BarChartComponent } from './bar-chart/bar-chart.component';
 import { CollapsibleTreeComponent } from './collapsible-tree/collapsible-tree.component';
+import { ExportComponent } from './export/export.component';
 import { KillChainTableComponent } from './kill-chain-table/kill-chain-table.component';
 import { RadarChartComponent } from './radar-chart/radar-chart.component';
-import { BarChartComponent } from './bar-chart/bar-chart.component';
-import { ExportComponent } from './export/export.component';
-import { TreemapComponent } from '../global/components/treemap/treemap.component';
+import { ReportTranslationService } from './services/report-translation.service';
+import { ThreatReportOverviewService } from './services/threat-report-overview.service';
+import { ThreatReportSharedService } from './services/threat-report-shared.service';
+import { ThreatDashboardComponent } from './threat-dashboard.component';
+import { routing } from './threat-dashboard.routing';
+import { ReportEditorComponent } from './threat-report-editor/report-editor/report-editor.component';
+import { ReportImporterComponent } from './threat-report-editor/report-importer/report-importer.component';
+import { ReportUploadService } from './threat-report-editor/report-importer/report-upload.service';
+import { ThreatReportEditorComponent } from './threat-report-editor/threat-report-editor.component';
+import { ThreatReportNavigateGuard } from './threat-report-navigate.guard';
 
 const moduleComponents = [
   BarChartComponent,
@@ -79,6 +57,7 @@ const materialModules = [
   MatInputModule,
   MatListModule,
   MatMenuModule,
+  MatNativeDateModule,
   MatPaginatorModule,
   MatProgressBarModule,
   MatSelectModule,
@@ -99,11 +78,12 @@ const primengModules = [CarouselModule];
     ...moduleComponents,
   ],
   imports: [
-    GlobalModule,
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     ...materialModules,
     ...primengModules,
+    GlobalModule,
     routing,
   ],
   providers: [

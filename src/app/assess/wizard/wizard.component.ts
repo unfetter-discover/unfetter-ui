@@ -1,40 +1,32 @@
-import { Component, ChangeDetectorRef, ElementRef, Input, OnInit, SimpleChanges, ViewEncapsulation, OnDestroy, HostListener, QueryList, ViewChildren, Renderer2, AfterViewInit } from '@angular/core';
-import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
-
-import { MatSnackBar, MatSelect } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren } from '@angular/core';
+import { MatSelect, MatSnackBar } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-
+import { MenuItem } from 'primeng/primeng';
+import { Subscription } from 'rxjs/Subscription';
 import { Key } from 'ts-keycode-enum';
-
-import * as assessActions from '../store/assess.actions';
-import * as assessReducers from '../store/assess.reducers';
-
-import { AppState } from '../../root-store/app.reducers';
+import { GenericApi } from '../../core/services/genericapi.service';
+import { heightCollapse } from '../../global/animations/height-collapse';
 import { Assessment } from '../../models/assess/assessment';
-import { AssessmentsService } from '../assessments.service';
 import { AssessmentMeta } from '../../models/assess/assessment-meta';
 import { AssessmentObject } from '../../models/assess/assessment-object';
 import { AssessmentQuestion } from '../../models/assess/assessment-question';
-import { Constance } from '../../utils/constance';
 import { Dictionary } from '../../models/json/dictionary';
-import { GenericApi } from '../../core/services/genericapi.service';
-import { Measurements } from './models/measurements';
-import { MenuItem } from 'primeng/primeng';
-import { LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle, CleanAssessmentWizardData } from '../store/assess.actions';
-import { Stix } from '../../models/stix/stix';
-import { Indicator } from '../../models/stix/indicator';
 import { JsonApiData } from '../../models/json/jsonapi-data';
-import { KEY_CODE } from './key-code.enum';
+import { Indicator } from '../../models/stix/indicator';
+import { Stix } from '../../models/stix/stix';
 import { UserProfile } from '../../models/user/user-profile';
-import { FullAssessmentResultState } from '../result/store/full-result.reducers';
+import { AppState } from '../../root-store/app.reducers';
+import { Constance } from '../../utils/constance';
 import { LoadAssessmentResultData } from '../result/store/full-result.actions';
-import { heightCollapse } from '../../global/animations/height-collapse';
-import { WizardAssessment } from './models/wizard-assessment';
-import { TempModel } from './models/temp-model';
+import { FullAssessmentResultState } from '../result/store/full-result.reducers';
+import { CleanAssessmentWizardData, LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle } from '../store/assess.actions';
+import * as assessReducers from '../store/assess.reducers';
+import { Measurements } from './models/measurements';
 import { SidePanelName } from './models/side-panel-name.enum';
+import { TempModel } from './models/temp-model';
+import { WizardAssessment } from './models/wizard-assessment';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -54,25 +46,27 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public readonly defaultMeasurement = 'Nothing';
   public readonly sidePanelCollapseHeight = '32px';
   public readonly sidePanelExpandedHeight = '32px';
+  public readonly CHART_TYPE: string;
+  public readonly DEFAULT_CHART_COLORS: any[];
+  public readonly CHART_LABELS: string[];
+  public readonly CHART_BG_COLORS: any[];
+  public readonly CHART_HOVER_BG_COLORS: any[];
+
 
   public model: JsonApiData<Assessment, Dictionary<Assessment>>;
   public publishDate = new Date();
   public buttonLabel: ButtonLabel = 'CONTINUE';
   public navigations: { label: string, page: number }[] = [];
   public item: MenuItem[];
-  public doughnutChartLabels = ['Risk Accepted', 'Risk Addressed'];
-  public doughnutChartData = [
-    {
-      data: [],
-      backgroundColor: [Constance.COLORS.red, Constance.COLORS.green],
-      hoverBackgroundColor: [
-        Constance.COLORS.darkRed,
-        Constance.COLORS.darkGreen
-      ]
-    }
-  ];
-  public doughnutChartType: string = 'doughnut';
-  public doughnutChartColors = [{}];
+  public doughnutChartLabels: string[];
+  public doughnutChartData: { data: any[], backgroundColor: any[], hoverBackgroundColor: any[] }[];
+  public doughnutChartType: string = this.CHART_TYPE;
+  public doughnutChartColors: any[] = this.DEFAULT_CHART_COLORS;
+
+  public summaryDoughnutChartLabels: string[] = this.CHART_LABELS;
+  public summaryDoughnutChartData: { data: any[], backgroundColor: any[], hoverBackgroundColor: any[] }[];
+  public summaryDoughnutChartType: string = this.CHART_TYPE;
+  public summaryDoughnutChartColors = this.DEFAULT_CHART_COLORS;
   public chartOptions = {
     legend: {
       display: false
@@ -129,6 +123,11 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     private changeDetection: ChangeDetectorRef
   ) {
     super();
+    this.CHART_TYPE = 'doughnut';
+    this.DEFAULT_CHART_COLORS = [{}];
+    this.CHART_LABELS = ['Risk Accepted', 'Risk Addressed'];
+    this.CHART_BG_COLORS = [Constance.COLORS.red, Constance.COLORS.green];
+    this.CHART_HOVER_BG_COLORS = [Constance.COLORS.darkRed, Constance.COLORS.darkGreen];
   }
 
   /*
@@ -136,6 +135,25 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    *  initializes this component, fetchs data to build page
    */
   public ngOnInit(): void {
+    this.doughnutChartColors = this.DEFAULT_CHART_COLORS;
+    this.doughnutChartData = [{
+      data: [],
+      backgroundColor: this.CHART_BG_COLORS,
+      hoverBackgroundColor: this.CHART_HOVER_BG_COLORS,
+    }
+    ];
+    this.doughnutChartLabels = this.CHART_LABELS;
+    this.doughnutChartType = this.CHART_TYPE;
+    this.summaryDoughnutChartColors = this.DEFAULT_CHART_COLORS;
+    this.summaryDoughnutChartData = [{
+      data: [],
+      backgroundColor: this.CHART_BG_COLORS,
+      hoverBackgroundColor: this.CHART_HOVER_BG_COLORS,
+    }
+    ];
+    this.summaryDoughnutChartLabels = this.CHART_LABELS;
+    this.summaryDoughnutChartType = this.CHART_TYPE;
+
     const idParamSub$ = this.route.params
       .subscribe(
         (params) => {
@@ -208,7 +226,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       .select('assessment')
       .pluck('saved')
       .distinctUntilChanged()
-      .filter((el: SavedState) => el.finished === true)
+      .filter((el: SavedState) => el && el.finished === true)
       .subscribe(
         (saved: SavedState) => {
           const rollupId = saved.rollupId;
@@ -244,7 +262,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    */
   public ngAfterViewInit(): void {
     this.questions.changes.subscribe((questionElements: QueryList<MatSelect>) => {
-      console.log('questions changed, focus on first', questionElements);
       const firstQuestion = questionElements.first;
       if (firstQuestion) {
         firstQuestion.focus();
@@ -408,10 +425,12 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       this.tempModel = { ...this.assessmentTypeGroups[this.openedSidePanel].tempModel };
     }
 
-    // reset progress bar
+    // reset progress 
     this.setSelectedRiskValue();
     this.changeDetection.detectChanges();
-    this.updateChart();
+    if (panelName !== 'summary') {
+      this.updateChart();
+    }
     this.updateRatioOfAnswerQuestions();
   }
 
@@ -433,14 +452,14 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {void}
    */
   public updateRatioOfAnswerQuestions(): void {
-    if (this.assessmentGroups) {
+    if (this.assessmentGroups && this.assessmentGroups.length > 1) {
       const allQuestions = this.assessmentGroups
         // flat map assessments across groups
         .map((groups) => groups.assessments)
-        .reduce((assessments, memo) => memo.concat(assessments), [])
+        .reduce((assessments, memo) => memo ? memo.concat(assessments) : assessments, [])
         // flat map across questions
         .map((assessments) => assessments.measurements)
-        .reduce((measurements, memo) => memo.concat(measurements), []);
+        .reduce((measurements, memo) => memo ? memo.concat(measurements) : measurements, []);
       const numQuestions = allQuestions.length;
       const answeredQuestions = allQuestions.filter((el) => el.risk > -1).length;
       if (answeredQuestions > 0) {
@@ -504,7 +523,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {void}
    */
   public setSelectedRiskValue(): void {
-    if (this.model) {
+    if (this.model && this.currentAssessmentGroup) {
       this.currentAssessmentGroup.assessments.forEach(assessment => this.collectModelAssessments(assessment));
       this.calculateGroupRisk();
     } else {
@@ -512,19 +531,27 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     }
   }
 
-  private collectModelAssessments(assessment: any) {
-    const assessmentObject = this.model.attributes.assessment_objects.find(obj => assessment.id === obj.stix.id);
-    if (!assessmentObject) {
-      console.warn(`assessmentObject not found! id: ${assessment.id}, moving on...`);
-      return;
-    }
-    assessment.risk = assessmentObject.risk;
-    assessment.measurements.forEach((m) => {
-      const question = assessmentObject.questions.find((q) => q.name === m.name);
-      if (question) {
-        m.risk = question.risk;
+  public collectModelAssessments(assessment: any) {
+    if (this.model && this.model.attributes && this.model.attributes.assessment_objects
+      && this.model.attributes.assessment_objects.length > 0 && assessment && assessment.id) {
+      const assessmentObject = this.model.attributes.assessment_objects.find(obj => obj.stix ? assessment.id === obj.stix.id : false);
+      if (!assessmentObject) {
+        console.warn(`assessmentObject not found! id: ${assessment.id}, moving on...`);
+        return;
       }
-    });
+      assessment.risk = assessmentObject.risk ? assessmentObject.risk : 0;
+      if (assessment.measurements && assessmentObject.questions) {
+        assessment.measurements.forEach((m) => {
+          const question = assessmentObject.questions.find((q) => q.name === m.name);
+          if (question) {
+            m.risk = question.risk ? question.risk : 0;
+          }
+        });
+      }
+    } else {
+      console.warn(`unable to execute collection of model assessments; moving on... model: ${JSON.stringify(this.model)}`);
+    }
+
   }
 
   /*
@@ -714,6 +741,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.currentAssessmentGroup = null;
     this.showSummary = true;
     this.buttonLabel = 'SAVE';
+    this.updateSummaryChart();
   }
 
   /*
@@ -784,6 +812,10 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @returns {number}
    */
   public trackByFn(index, item) {
+    if (item && item.id) {
+      return item.id;
+    }
+  
     return index;
   }
 
@@ -818,12 +850,28 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return this.assessmentGroups[index];
   }
 
+  /* 
+   * For testing only
+   * @return {any[]}
+   */
+  public getAssessmentGroups(): any[] {
+    return this.assessmentGroups;
+  }
+
+  /* 
+   * For testing only
+   * @return {any[]}
+   */
+  public setAssessmentGroups(newAssessementGroups: any[]): void {
+    this.assessmentGroups = newAssessementGroups;
+  }
+
   /*
    * @description
    * @param {Stix[]}
    * @return {any[]}
    */
-  private createAssessmentGroups(assessedObjects: Stix[]): any[] {
+  public createAssessmentGroups(assessedObjects: Stix[]): any[] {
     const assessmentGroups = [];
     const self = this;
 
@@ -840,7 +888,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           assessment.id = assessedObject.id;
           assessment.name = assessedObject.name;
           assessment.description = assessedObject.description;
-          assessment.measurements = this.buildMeasurements(assessedObject.id);
+          assessment.measurements = assessedObject.id ? this.buildMeasurements(assessedObject.id) : [];
           assessment.type = assessedObject.type;
           const risk = this.getRisk(assessment.measurements);
           assessment.risk = -1;
@@ -849,6 +897,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       this.groupings = this.buildGrouping(this.assessments);
 
       const assessmentObjectsGroups = this.doObjectGroupings(this.assessments);
+      // console.log(`assessmentObjectGroups: ${JSON.stringify(assessmentObjectsGroups)}`);
       const keys = Object.keys(assessmentObjectsGroups).sort();
       keys.forEach((phaseName, index) => {
         // TODO - Need to remove the 'courseOfAction' name
@@ -951,17 +1000,18 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
   /*
    * @description
+   * @param {any} assessmentGroup 
    * @return {number}
    */
-  public calculateGroupRisk(): number {
+  public calculateGroupRisk(assessmentGroup: any = this.currentAssessmentGroup): number {
     let groupRisk = 0; // based on the default value from the calculateRisk function below
-    if (this.currentAssessmentGroup && this.currentAssessmentGroup.assessments && this.currentAssessmentGroup.assessments.length > 0) {
-      groupRisk = this.calculateRisk(this.currentAssessmentGroup.assessments);
+    if (assessmentGroup && assessmentGroup.assessments && assessmentGroup.assessments.length > 0) {
+      groupRisk = this.calculateRisk(assessmentGroup.assessments);
       const riskArray = [];
       riskArray.push(groupRisk);
       riskArray.push(1 - groupRisk);
-      this.currentAssessmentGroup.risk = groupRisk;
-      this.currentAssessmentGroup.riskArray = riskArray;
+      assessmentGroup.risk = groupRisk;
+      assessmentGroup.riskArray = riskArray;
     }
     return groupRisk;
   }
@@ -975,6 +1025,81 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     chartData[0].data = this.currentAssessmentGroup
       ? this.currentAssessmentGroup.riskArray : [];
     this.doughnutChartData = chartData;
+  }
+
+  /*
+   * @description handle an assessment's worth of summary chart data
+   * @return {any[]}
+   */
+  public generateSummaryChartDataForAnAssessmentType(assessmentData): number[] {
+    let result: number[] = [];
+
+    if (assessmentData) {
+      if (this.assessmentGroups && this.assessmentGroups.length > 0) {
+        this.assessmentGroups.forEach(element => {
+          if (element.assessments) {
+            element.assessments.forEach(assessment => this.collectModelAssessments(assessment))
+          }
+          this.calculateGroupRisk(element);
+        });
+        const singleAssessmentRiskArray: number[] = this.assessmentGroups
+          .map((groups) => groups.riskArray)
+          .reduce(this.riskReduction, [0, 0])
+          .map((riskSum) => riskSum / this.assessmentGroups.length);
+        result = singleAssessmentRiskArray;
+      }
+    }
+    return result;
+  }
+
+  /*
+   * @description update the summary chart data
+   * @return {void}
+   */
+  public updateSummaryChart(): void {
+    // default for problematic data
+    let chartData = [{ data: [], backgroundColor: [], hoverBackgroundColor: [] }];
+    const assessmentData: number[][] = [];
+    if (this.summaryDoughnutChartData && this.summaryDoughnutChartData[0].data) {
+      chartData = this.summaryDoughnutChartData.slice();
+      const assessmentTypes: string[] = ['mitigations', 'sensors', 'indicators'];
+      assessmentTypes.forEach((element) => {
+        if (this[element] && this[element].length > 0) {
+          this.openedSidePanel = element as SidePanelName;
+          // reload questions
+          this.refreshToOpenedAssessmentType();
+          if (this.openedSidePanel && this.assessmentTypeGroups[this.openedSidePanel]) {
+            // reload previous state for given type/panel if it exists
+            this.assessmentGroups = [...this.assessmentTypeGroups[this.openedSidePanel].assessmentsGroups];
+            this.currentAssessmentGroup = this.getCurrentAssessmentGroup();
+            this.tempModel = { ...this.assessmentTypeGroups[this.openedSidePanel].tempModel };
+          }
+
+          // reset progress 
+          this.setSelectedRiskValue();
+          this.updateRatioOfAnswerQuestions();
+
+          const singleAssessmentData = this.generateSummaryChartDataForAnAssessmentType(this.currentAssessmentGroup);
+          if (singleAssessmentData && singleAssessmentData.length > 0) {
+            assessmentData.push(singleAssessmentData);
+          }
+        }
+      });
+      if (assessmentData && assessmentData.length > 0) {
+        chartData[0].data = assessmentData.reduce(this.riskReduction, [0, 0])
+          .map((riskSum) => riskSum / assessmentData.length);
+      }
+    }
+    this.summaryDoughnutChartData = chartData;
+    this.openedSidePanel = 'summary';
+  }
+
+  public riskReduction(currentTotalRisk: number[], currentRisk: number[]): number[] {
+    let result: number[] = [];
+    if (currentRisk) {
+      result = currentTotalRisk.map((riskValue, index) => riskValue += currentRisk[index]);
+    }
+    return result;
   }
 
   /*

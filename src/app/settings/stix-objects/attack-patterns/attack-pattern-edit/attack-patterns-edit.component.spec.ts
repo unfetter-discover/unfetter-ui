@@ -1,48 +1,29 @@
-import {
-  NO_ERRORS_SCHEMA,
-  DebugElement,
-  ChangeDetectorRef
-} from '@angular/core';
-import {
-  inject,
-  async,
-  fakeAsync,
-  TestBed,
-  ComponentFixture,
-  tick
-} from '@angular/core/testing';
-import {
-  MatDialog,
-  MatSnackBar,
-  MatInputModule,
-  MatSelectModule
-} from '@angular/material';
+
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { Location } from '@angular/common';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { MatDialog, MatInputModule, MatSelectModule, MatSnackBar } from '@angular/material';
+import { By } from '@angular/platform-browser';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ActivatedRoute, ParamMap, Router, convertToParamMap } from '@angular/router';
+import { StoreModule } from '@ngrx/store';
 // Only implements params and part of snapshot.paramMap
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { convertToParamMap, ParamMap } from '@angular/router';
-
-import { By } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Location, LocationStrategy, CommonModule } from '@angular/common';
 import { Observable } from 'rxjs/Observable';
-import { StixService } from '../../../stix.service';
-import { GlobalModule } from '../../../../global/global.module';
 import { ComponentModule } from '../../../../components/component.module';
-import { FormsModule } from '@angular/forms';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { OverlayContainer } from '@angular/cdk/overlay';
-
-// Load the implementations that should be tested
-import { AttackPatternEditComponent } from './attack-patterns-edit.component';
-import { AttackPattern } from '../../../../models/attack-pattern';
+import { CoreModule } from '../../../../core/core.module';
+import { GlobalModule } from '../../../../global/global.module';
 import { ExternalReference } from '../../../../models/externalReference';
 import { KillChainPhase } from '../../../../models/kill-chain-phase';
-import { ConfigService } from '../../../../core/services/config.service';
-import { CoreModule } from '../../../../core/core.module';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { StoreModule } from '@ngrx/store';
 import { reducers } from '../../../../root-store/app.reducers';
+import { StixService } from '../../../stix.service';
+// Load the implementations that should be tested
+import { AttackPatternEditComponent } from './attack-patterns-edit.component';
+
+
 
 ////// Testing Vars //////
 const id = 'attack-pattern-9999999'
@@ -288,7 +269,13 @@ function moduleSetup() {
 
     TestBed.configureTestingModule({
       imports: [
-        GlobalModule, CoreModule, ComponentModule, FormsModule, NoopAnimationsModule, HttpClientModule, HttpClientTestingModule, StoreModule.forRoot(reducers),
+        NoopAnimationsModule, 
+        GlobalModule, 
+        CoreModule.forRoot(), 
+        ComponentModule, 
+        FormsModule, 
+        HttpClientTestingModule, 
+        StoreModule.forRoot(reducers),
         ...matModules
       ],
       declarations: [AttackPatternEditComponent],
@@ -299,7 +286,7 @@ function moduleSetup() {
         { provide: Router, useValue: {} },
         { provide: MatDialog, useValue: {} },
         { provide: Location, useValue: { back: (): void => { } } },
-        { provide: MatSnackBar, useValue: {} },
+        { provide: MatSnackBar, useValue: { open: () => {} } },
         {
           provide: OverlayContainer, useFactory: () => {
             overlayContainerElement = document.createElement('div') as HTMLElement;
@@ -314,7 +301,6 @@ function moduleSetup() {
             return { getContainerElement: () => overlayContainerElement };
           }
         },
-        ConfigService
       ]
     });
   })

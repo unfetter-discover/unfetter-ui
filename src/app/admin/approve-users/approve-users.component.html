@@ -10,6 +10,8 @@
                     <th>User Name</th>
                     <th>Name</th>
                     <th>Email</th>
+                    <th>Registration Note</th>
+                    <th>Req. Organization</th>
                     <th class="text-right" id="actionHeader">Approve / Deny User</th>
                 </thead>
                 <tbody>
@@ -17,6 +19,16 @@
                         <td>{{ user.userName }}</td>
                         <td>{{ user.lastName }}, {{ user.firstName }}</td>
                         <td>{{ user.email }}</td>
+                        <td>
+                            <span *ngIf="user.registrationInformation && user.registrationInformation.applicationNote">
+                                {{ user.registrationInformation.applicationNote }}
+                            </span>
+                        </td>
+                        <td>
+                            <span *ngIf="user.registrationInformation && user.registrationInformation.requestedOrganization">
+                                {{ user.registrationInformation.requestedOrganization }}
+                            </span>
+                        </td>
                         <td class="text-right">
                             <button mat-button class="mat-24" (click)="userAction(user, 'APPROVE_USER')">
                                 <i class="material-icons">check_circle</i>

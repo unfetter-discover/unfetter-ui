@@ -13,5 +13,7 @@ export enum StixLabelEnum {
     VULNERABILITY = 'vulnerability',
 
     SENSOR = 'x-unfetter-sensor',
+    CAPABILITY = 'x-unfetter-capability',
     ASSESSMENT = 'x-unfetter-assessment',
+    ASSESSMENT3= 'x-unfetter-object-assessment'
 }

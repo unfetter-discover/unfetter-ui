@@ -34,13 +34,16 @@
 <aliases [(model)]="threatActor"></aliases>
 
 <external-reference [(model)]="threatActor"></external-reference>
+<published-checkbox [model]="threatActor"></published-checkbox>
 
 <div class="row">
     <div class="col-md-12">
         <div class="button-row pull-right">
                 <button mat-button (click)="cancelButtonClicked()">CANCEL</button>
-                <button mat-raised-button (click)="saveThreatActor()" [disabled]="!threatActor.attributes.name" color="primary">SAVE</button>
+                <button mat-raised-button (click)="saveThreatActor()" [disabled]="invalidate(threatActor)" color="primary">SAVE</button>
 
         </div>
     </div>
 </div>
+
+<validation-errors [validationErrorMessages]="validationErrorMessages"></validation-errors>

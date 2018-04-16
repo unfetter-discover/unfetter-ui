@@ -1,4 +1,8 @@
-<p mat-dialog-title class="lead mb-6">Add Analytic</p>
+<p mat-dialog-title class="lead mb-6">
+    <span *ngIf="!editMode">Add</span>
+    <span *ngIf="editMode">Edit</span>
+    <span>Analytic</span>
+</p>
 
 <mat-dialog-content id="addIndicator">
     <form [formGroup]="form" novalidate (ngSubmit)="submitIndicator()">
@@ -13,7 +17,7 @@
                     </mat-error>
                 </mat-form-field>
                 
-                <mat-form-field class="full-width mb-6">
+                <mat-form-field class="full-width mb-6" *ngIf="!editMode">
                     <mat-select required placeholder="Submitter Organization" formControlName="created_by_ref">
                         <mat-option *ngFor="let org of organizations" [value]="org.id">{{org.name}}</mat-option>
                     </mat-select>
@@ -22,25 +26,33 @@
                     <textarea matInput placeholder="Description" formControlName="description"></textarea>
                 </mat-form-field>
 
+                <div class="mb-6">
+                    <span>
+                        <mat-form-field>
+                            <input matInput required [matDatepicker]="validFromPicker" [max]="form.get('valid_until').value" placeholder="Valid From"
+                                formControlName="valid_from">
+                            <mat-datepicker-toggle matSuffix [for]="validFromPicker"></mat-datepicker-toggle>
+                            <mat-datepicker #validFromPicker></mat-datepicker>
+                            <mat-error *ngIf="form.get('valid_from').hasError('required')">
+                                Valid From is
+                                <strong>required</strong>
+                            </mat-error>
+                        </mat-form-field>
+                    </span>
+                    
+                    <span style="padding-left: 30px;">
+                        <mat-form-field>
+                            <input matInput [matDatepicker]="validUntilPicker" [min]="form.get('valid_from').value" placeholder="Valid Until" formControlName="valid_until">
+                            <mat-datepicker-toggle matSuffix [for]="validUntilPicker"></mat-datepicker-toggle>
+                            <mat-datepicker #validUntilPicker></mat-datepicker>
+                        </mat-form-field>
+                    </span>
+                </div>
 
-                <span class="mb-6">
-                    <mat-form-field>
-                        <input matInput required [matDatepicker]="validFromPicker" [max]="form.get('valid_until').value" placeholder="Valid From" formControlName="valid_from">
-                        <mat-datepicker-toggle matSuffix [for]="validFromPicker"></mat-datepicker-toggle>
-                        <mat-datepicker #validFromPicker></mat-datepicker>
-                        <mat-error *ngIf="form.get('valid_from').hasError('required')">
-                            Valid From is <strong>required</strong>
-                        </mat-error>
-                    </mat-form-field>
-                </span>
-
-                <span class="mb-6" style="padding-left: 30px;">
-                    <mat-form-field>
-                        <input matInput [matDatepicker]="validUntilPicker" [min]="form.get('valid_from').value" placeholder="Valid Until" formControlName="valid_until">
-                        <mat-datepicker-toggle matSuffix [for]="validUntilPicker"></mat-datepicker-toggle>
-                        <mat-datepicker #validUntilPicker></mat-datepicker>
-                    </mat-form-field>
-                </span>
+                <div class="mb-6" formGroupName="metaProperties">
+                    <mat-checkbox formControlName="published">Publish To All Unfetter Users</mat-checkbox>
+                </div>
+                
                 
                 <div class="mt-6">
                     <button mat-raised-button matStepperNext type="button" color="primary" [disabled]="stepOneInvalid()">CONTINUE</button>
@@ -175,7 +187,7 @@
             <mat-step label="Relationships" *ngIf="!editMode">
                 <div formGroupName="metaProperties">
                     <mat-form-field class="full-width mt-10">
-                        <mat-select placeholder="Indicated Attack Patterns" [multiple]="true" formControlName="relationships">
+                        <mat-select placeholder="Indicated Techniques" [multiple]="true" formControlName="relationships">
                             <mat-option [value]="ap.id" *ngFor="let ap of attackPatterns | sortByField:'name':'ascending'">{{ ap.name }}</mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -188,10 +200,6 @@
             
             <mat-step label="Observable Data">
                 <help-window [helpHtml]="observableDataHelpHtml"></help-window>
-                <!-- TODO figure out why this is breaking observable data tree -->
-                <!-- <div *ngIf="patternObjs && patternObjs.length" class="uf-well-accent mt-10">
-                    <generated-observed-data [patternObjects]="patternObjs" [parentForm]="form"></generated-observed-data>
-                </div> -->
                 <div class="mt-10">
                     <observable-data-tree [parentForm]="form" [patternObjSubject]="patternObjSubject"></observable-data-tree>
                 </div>

@@ -1,7 +1,7 @@
 <div id="indicatorSharingList" class="fadeIn" *ngIf="SERVER_CALL_COMPLETE; else loadingBlock">
     <button mat-fab color="primary" class="bottomRightFab" (click)="openDialog()">
         <i class="material-icons mat-24">add</i>
-    </button>
+    </button>   
 
     <mat-sidenav-container>
         <mat-sidenav #filterContainer id="filterContainer" opened="false" mode="side" class="mat-elevation-z8" (openedStart)="openedStart()" (closedStart)="closedStart()">
@@ -30,28 +30,52 @@
             </div>
             
             <div class="container-fluid">
-            
-                <div class="row">
-                    <div class="col-lg-8 col-lg-offset-2 col-md-12">
-                        <div class="pl-24 pr-24 flex flexItemsCenter">
+
+                <div class="row" id="listControls">
+                    <div class="col-md-12 filterOpenBreakpoint" [ngClass]="{ 'col-lg-8 col-lg-offset-2': !filterOpen }">
+                        <div class="pl-24 pr-24 flex flexItemsCenter" id="listControlFlexWraper">
                             <indicator-sharing-sort></indicator-sharing-sort>
-                            <span class="flex1">&nbsp;</span>
-                            <label class="mb-0">Results: {{ (store.select('indicatorSharing').pluck('filteredIndicators') | async).length }} / {{ (store.select('indicatorSharing').pluck('indicators')
-                                | async).length }}</label>
+                            <label class="spacer" id="spacer1">&nbsp;|&nbsp;</label>
+                            <label class="mb-0">Results: {{ (store.select('indicatorSharing').pluck('filteredIndicators') | async).length }} / {{ store.select('indicatorSharing').pluck('totalIndicatorCount') | async }}</label>
+                            <label class="spacer" id="spacer2">&nbsp;|&nbsp;</label>
+                            <span id="listControlBtns">
+                                <button mat-icon-button matTooltip="{{ showSummaryStats ? 'Hide' : 'Show' }} Statistics" (click)="toggleShowStatistics()">
+                                    <i class="material-icons mat-24" [ngClass]="{'labelColor': !showSummaryStats}">equalizer</i>
+                                </button>
+                                <!-- Collapse cards -->
+                                <button mat-icon-button matTooltip="Collapse All Cards" (click)="collapseAllCards = true; collapseAllCardsSubject.next(collapseAllCards)"
+                                    *ngIf="!collapseAllCards">
+                                    <i class="material-icons mat-24 labelColor">fullscreen_exit</i>
+                                </button>
+                                <!-- Expand Cards -->
+                                <button mat-icon-button matTooltip="Expand All Cards" (click)="collapseAllCards = false; collapseAllCardsSubject.next(collapseAllCards)"
+                                    *ngIf="collapseAllCards">
+                                    <i class="material-icons mat-24 labelColor">fullscreen</i>
+                                </button>
+                            </span>
                          </div>
                     </div>
                 </div>
+
+                <div class="row" id="summaryStatsWrapper" @heightCollapse *ngIf="showSummaryStats">
+                    <div class="col-md-12 filterOpenBreakpoint" [ngClass]="{ 'col-lg-8 col-lg-offset-2': !filterOpen }">
+                        <div class="pl-24 pr-24">
+                            <indicator-sharing-summary-statistics></indicator-sharing-summary-statistics>
+                        </div>
+                    </div>
+                </div>
             
-                <div class="row">
-                    <div class="col-lg-8 col-lg-offset-2 col-md-12" id="indicatorListWrapper">
+                <div class="row" infiniteScroll (atBottom)="displayShowMoreButton() ? showMoreIndicators() : ''">
+                    <div id="indicatorListWrapper" class="col-md-12 filterOpenBreakpoint" [ngClass]="{ 'col-lg-8 col-lg-offset-2': !filterOpen }">
             
-                        <div *ngFor="let indicator of displayedIndicators" class="mb-15">
+                        <div *ngFor="let indicator of displayedIndicators" [ngClass]="{ 'mb-15': !collapseAllCards, 'mb-5': collapseAllCards }">
                             <indicator-card 
                                 [indicator]="indicator" 
                                 [attackPatterns]="getAttackPatternsByIndicatorId(indicator.id)" 
                                 [sensors]="getSensorsByIndicatorId(indicator.id)"
                                 [creator]="getIdentityNameById(indicator.created_by_ref)" 
-                                [searchParameters]="searchParameters" 
+                                [searchParameters]="searchParameters"
+                                [collapseAllCardsSubject]="collapseAllCardsSubject"
                                 (stateChange)="updateIndicator($event)"
                                 (indicatorDeleted)="deleteIndicator($event)"
                                 (indicatorEdit)="editIndicator($event)"></indicator-card>
@@ -60,6 +84,7 @@
                         <div class="text-center mt-15 mb-20" *ngIf="displayShowMoreButton()">
                             <button mat-button color="primary" class="full-width" (click)="showMoreIndicators()">Show More Indicators</button>
                         </div>
+                        <div id="bottom">&nbsp;</div>
                     </div>
                 </div>
             

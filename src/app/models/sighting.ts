@@ -17,13 +17,13 @@ export class Sighting {
         lastseen_precision: string;
         count: 0;
         sighting_of_ref: string;
-        observed_data_refs: [
-          string
-        ];
-        where_sighted_refs: [
-          string
-        ];
-        summary: boolean
+        observed_data_refs: string[];
+        where_sighted_refs: string[];
+        summary: boolean;
+        created_by_ref: string;
+        metaProperties: {
+            published: boolean;
+        }
     };
 
      constructor(data?: Sighting) {
@@ -58,7 +58,10 @@ export class Sighting {
             // sighting_of_ref: '',
             observed_data_refs: [],
             where_sighted_refs: [],
-            // summary: ''
+            // summary: '',
+            metaProperties: {
+                published: true
+            }
         };
     }
 }

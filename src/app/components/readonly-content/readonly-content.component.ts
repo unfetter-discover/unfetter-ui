@@ -5,12 +5,13 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl } from '@angular/forms';
 
 @Component({
-  selector: 'readonly-content',
-  templateUrl: './readonly-content.component.html'
+    selector: 'readonly-content',
+    templateUrl: './readonly-content.component.html'
 })
 export class ReadonlyContentComponent {
 
     @Input() public model: any;
 
-     constructor() { }
+    constructor() { }
+
 }

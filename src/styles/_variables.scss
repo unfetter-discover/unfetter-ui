@@ -4,6 +4,7 @@
 
 $dark-text-default: rgba(0, 0, 0, 0.87);
 $dark-text-dimmed: rgba(1, 1, 1, .54);
+$label-color: #9e9e9e;
 $light-text-default: #ffffff;
 $light-text-slightly-dimmed: rgba(255, 255, 255, .87);
 $light-text-dimmed: rgba(255, 255, 255, .54);
@@ -53,6 +54,16 @@ $assessments-nav-background: #E2F1F8;
 $assessments-accent: get-color($indigo, A400);
 $assessments-accent-text: $light-text-default;
 $assessments-primary-text: $dark-text-default;
+
+// Events Dashboard
+$events-primary: get-color($green, 600);
+$events-primary-light: get-color($green, 300);
+$events-primary-lighter: get-color($green, 200);
+$events-primary-lightest: get-color($green, 100);
+$events-primary-subtle: get-color($green, 50);
+$events-accent: get-color($yellow, A200);
+$events-accent-text: $light-text-default;
+$events-primary-text: $dark-text-default;
 
 // ~~~ Navbar sizing ~~~
 

@@ -62,7 +62,7 @@ describe('HeaderNavigationComponent', () => {
         expect(fixture.debugElement.query(By.css('mat-toolbar')).nativeElement.className).not.toContain('demoMode');
     });
 
-    it('displays the proper logo and title', () => {
+    it('displays the proper title', () => {
         const logoEl = 'img.logo';
         const titleEl = 'span#titleWrapper span#titleText';
         const tests = [
@@ -76,7 +76,6 @@ describe('HeaderNavigationComponent', () => {
             const titledComponent = titledFixture.componentInstance;
             titledComponent.title = test.title;
             titledFixture.detectChanges();
-            expect(titledFixture.debugElement.query(By.css(logoEl)).nativeElement.src).toMatch(test.logo);
             if (test.title) {
                 expect(titledFixture.debugElement.query(By.css(titleEl)).nativeElement.textContent).toMatch(test.text);
             } else {

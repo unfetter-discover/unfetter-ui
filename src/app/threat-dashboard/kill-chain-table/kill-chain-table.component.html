@@ -42,12 +42,14 @@
 
     <div [hidden]="!showTreeMap">
         <h3 class="mat-title tree-map-header">Attack Patterns Used (Tree Map View)</h3>
-        <unf-treemap [treeMapData]="googleTreeMapData" (onTooltip)="showTreeMapTooltip($event)"></unf-treemap>
+        <unf-treemap [treeMapData]="treeMapData" (onTooltip)="showTreeMapTooltip($event)"></unf-treemap>
     </div>
 
     <div [hidden]="!showHeatMap">
         <h3 class="mat-title heat-map-header">Attack Patterns Used (HeatMap Chart View)</h3>
-        <unf-heatmap [heatMapData]="d3HeatMapData" [showText]="true" (onTooltip)="showHeatMapTooltip($event)"></unf-heatmap>
+        <unf-heatmap [heatMapData]="heatMapData" [options]="heatMapOptions"
+                (onHover)="showHeatMapTooltip($event, true)"
+                (onClick)="showHeatMapTooltip($event, false)"></unf-heatmap>
     </div>
 
     <div #toolbox class="toolbox mat-elevation-z5" [style.display]="showToolbox === true ? 'flex': 'none'" [@topRightSlide]>
@@ -76,7 +78,7 @@
             <mat-card-subtitle>
                 <div class="flex1"><label>{{attackPattern.attributes.name}}</label></div>
                 <div [hidden]="hoverTooltip">
-                    <button mat-button type="button" class="mat-primary">
+                    <button mat-button type="button" class="mat-primary" *ngIf="isAdminUser()">
                         <a target="_blank" href="/#/stix/attack-patterns/{{attackPattern.id}}">Details</a>
                     </button>
                     <button mat-button type="button" (click)="hideAttackPatternTooltip(attackPattern)">Close</button>
@@ -97,7 +99,7 @@
                 </div>
                 <div class="row" *ngIf="attackPhases">
                     <div class="col-md-3"><label>Phases</label></div>
-                    <div class="col-md-9 attack-pattern-phases">{{attackPhases.join(', ')}}</div>
+                    <div class="col-md-9 attack-pattern-phases">{{attackPhases.join(', ') | capitalize}}</div>
                 </div>
             </mat-card-content>
         </mat-card>

@@ -2,7 +2,7 @@ import { RouterModule } from '@angular/router';
 import { ModuleWithProviders } from '@angular/core';
 import { ThreatDashboardComponent } from './threat-dashboard.component';
 import { ThreatReportNavigateGuard } from './threat-report-navigate.guard';
-import { ThreatReportEditorComponent } from './report-editor/threat-report-editor.component';
+import { ThreatReportEditorComponent } from './threat-report-editor/threat-report-editor.component';
 
 const routes = [
     {

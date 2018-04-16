@@ -8,6 +8,7 @@ import { indicatorSharingReducer } from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { makeMockIndicatorSharingStore } from '../../testing/mock-store';
 import { By } from '@angular/platform-browser';
+import { SortTypes } from '../models/sort-types.enum';
 
 describe('IndicatorSharingSortComponent', () => {
   let component: IndicatorSharingSortComponent;
@@ -42,16 +43,16 @@ describe('IndicatorSharingSortComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should sort by number of comments', () => { 
+  it('should updated ngrx sortBy to COMMENTS', () => { 
     const commentRadio = fixture.debugElement.query(By.css('#sortComments label')).nativeElement as HTMLElement;
     commentRadio.click();
     fixture.detectChanges();
 
     const displayInd$ = component.store.select('indicatorSharing')
-      .pluck('displayedIndicators')
+      .pluck('sortBy')
       .subscribe(
-        (indicators) => {
-          expect(indicators[0].metaProperties.comments.length).toEqual(2);
+        (sortBy: SortTypes) => {
+          expect(sortBy).toEqual(SortTypes.COMMENTS);
         },
         (err) => {
           console.log(err);

@@ -1,6 +1,6 @@
 {
   "name": "unfetter-ui",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "UNFETTER UI",
   "keywords": [
     "unfetter"
@@ -23,7 +23,7 @@
     "serve:docker:dev:demo": "ng version && ng serve -v -w --dev -sm --open --hmr --ssl --disable-host-check --port 80 --host 0.0.0.0  --public-host 0.0.0.0:80",
     "super:test": "concurrently -k -n \"serve,test,coverage\" -c \"blue,green,red\" \"npm run serve:local:dev:uac\" \"ng test --code-coverage\" \"npm run serve:coverage\"",
     "live:test": "concurrently -k -n \"test,coverage\" -c \"green,red\" \"ng test --code-coverage\" \"npm run serve:coverage\"",
-    "serve:coverage": "live-server coverage/html",
+    "serve:coverage": "live-server coverage/",
     "build:prod": "ng version && ng build --prod --env=prod",
     "build:prod:noclean": "npm run build:prod -- --no-delete-output-path --vendor-chunk=true",
     "build:demo:noclean": "ng version && ng build --prod --no-delete-output-path --vendor-chunk=true --env=dockerhub",
@@ -60,6 +60,7 @@
     "d3": "~4.12.0",
     "d3-heatmap": "^1.2.1",
     "hammerjs": "~2.0.8",
+    "ip-regex": "^3.0.0",
     "jquery": "~3.2.1",
     "moment": "~2.20.0",
     "ng2-charts": "^1.6.0",
@@ -67,6 +68,7 @@
     "perfect-scrollbar": "~1.3.0",
     "primeng": "^5.0.0",
     "rxjs": "^5.5.2",
+    "stix": "git+https://git@github.com/unfetter-discover/stix.git",
     "ts-keycode-enum": "^1.0.4",
     "uuid": "^3.2.1",
     "zone.js": "^0.8.14"
@@ -95,6 +97,7 @@
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
     "live-server": "^1.2.0",
+    "ngrx-store-hmr": "0.0.3",
     "protractor": "~5.1.2",
     "rimraf": "~2.6.0",
     "ts-node": "~3.2.0",

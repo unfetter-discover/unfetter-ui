@@ -106,9 +106,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
           .pluck('userProfile')
           .take(1)
           .subscribe((user: UserProfile) => {
-            const creatorId = user._id;
-            const createdById = user.organizations[0].id;
-            this.requestData(this.assessmentId, createdById);
+            this.requestData(this.assessmentId);
           },
             (err) => console.log(err));
         this.subscriptions.push(sub$);
@@ -261,11 +259,11 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
   /**
    * @description
-   * @param {string} creatorId - optional
+   * @param {string} assessmentId
    */
-  public requestData(assessmentId: string, creatorId?: string): void {
+  public requestData(assessmentId: string): void {
     const isSameAssessment = (row: any) => row && (row.id === this.assessmentId);
-    this.masterListOptions.dataSource = new SummaryDataSource(this.assessService, creatorId);
+    this.masterListOptions.dataSource = new SummaryDataSource(this.assessService);
     this.masterListOptions.columns.id.classes =
       (row: any) => isSameAssessment(row) ? 'current-item' : 'cursor-pointer';
     this.masterListOptions.columns.id.selectable = (row: any) => !isSameAssessment(row);

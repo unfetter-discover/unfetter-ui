@@ -5,11 +5,14 @@ import { FormControl } from '@angular/forms';
   selector: 'buttons-filter',
   templateUrl: './buttons-filter.component.html'
 })
-
 export class ButtonsFilterComponent {
+
     @Input() public model: any[];
+
     @Input() public filteredItems: any[];
+
     @Input() public showGrid = false;
+
     @Output() public filterItemsChange = new EventEmitter<any[]>();
 
     public onFilterItemsChange(filterItems: any[]): void {
@@ -19,4 +22,5 @@ export class ButtonsFilterComponent {
     public download(): void {
         alert('not implemented');
     }
+
 }

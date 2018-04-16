@@ -1,9 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSelectChange } from '@angular/material';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-
-import { UsersService } from '../../core/services/users.service';
 import { AuthService } from '../../core/services/auth.service';
+import { UserPreferencesService } from '../../core/services/user-preferences.service';
+import { UsersService } from '../../core/services/users.service';
+import { UserPreferences } from '../../models/user/user-preferences';
+import { AppState } from '../../root-store/app.reducers';
+import { FetchConfig } from '../../root-store/config/config.actions';
 import { Constance } from '../../utils/constance';
+import { KillchainConfigEntry } from './killchain-config-entry';
 
 @Component({
     selector: 'settings',
@@ -19,14 +25,18 @@ export class SettingsComponent implements OnInit {
     public userId: string;
     public unfetterOpenId: string = Constance.UNFETTER_OPEN_ID;
 
+    public frameworks$: Observable<KillchainConfigEntry[]>;
+
     constructor(
         private usersService: UsersService,
-        private authService: AuthService
+        private userPreferencesService: UserPreferencesService,
+        private authService: AuthService,
+        private store: Store<AppState>,
     ) { }
 
-    public ngOnInit() {          
-        this.userId = this.authService.getUser()._id;   
-        this.fetchData();           
+    public ngOnInit() {
+        this.userId = this.authService.getUser()._id;
+        this.fetchData();
     }
 
     public fetchData() {
@@ -55,7 +65,7 @@ export class SettingsComponent implements OnInit {
                             retVal.subscribed = false;
                         }
                         return retVal;
-                });
+                    });
 
                 this.unaffiliatedOrganizations = allOrgs
                     .filter((org) => !this.user.organizations.find((uOrg) => uOrg.id === org.id))
@@ -67,14 +77,25 @@ export class SettingsComponent implements OnInit {
             () => {
                 getData$.unsubscribe();
             }
-        ); 
+        );
+
+        this.frameworks$ = this.store
+            .select('config')
+            .pluck('configurations')
+            .distinctUntilChanged()
+            .filter((el) => el !== undefined)
+            .map<object, KillchainConfigEntry[]>((el: any) => {
+                return el.killChains;
+            });
+
+        this.store.dispatch(new FetchConfig(false));
     }
 
     public applyForleadership(orgId) {
         const requestOrgLeadership$ = this.usersService.requestOrgLeadership(this.user._id, orgId)
             .subscribe((res) => {
-                    this.fetchData();
-                },
+                this.fetchData();
+            },
                 (err) => {
                     console.log(err);
                 },
@@ -85,16 +106,16 @@ export class SettingsComponent implements OnInit {
     }
 
     public applyForMembership(orgId) {
-        const requestOrgMembership$ = this.usersService.requestOrgMemebership(this.user._id, orgId)
+        const requestOrgMembership$ = this.usersService.requestOrgMembership(this.user._id, orgId)
             .subscribe((res) => {
                 this.fetchData();
             },
-            (err) => {
-                console.log(err);
-            },
-            () => {
-                requestOrgMembership$.unsubscribe();
-            }
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    requestOrgMembership$.unsubscribe();
+                }
             );
 
     }
@@ -104,7 +125,7 @@ export class SettingsComponent implements OnInit {
         const changeSubscription$ = this.usersService.changeOrgSubscription(this.user._id, orgId, checked)
             .subscribe(
                 (res) => {
-                    console.log('#####', res);                    
+                    console.log('#####', res);
                 },
                 (err) => {
                     console.log(err);
@@ -113,5 +134,31 @@ export class SettingsComponent implements OnInit {
                     changeSubscription$.unsubscribe();
                 }
             );
+    }
+
+    /**
+     * @description called on drop down select, persists to backend the new user framework value
+     * @param {MatSelectChange} event?
+     * @returns void
+     */
+    public onFrameworkChange(event?: MatSelectChange): void {
+        if (!event) {
+            return;
+        }
+
+        this.user.preferences = this.user.preferences || new UserPreferences();
+        this.user.preferences.killchain = event.value;
+        // notify the server
+        const sub$ = this.userPreferencesService
+            .setUserPreferences(this.user._id, this.user.preferences)
+            .subscribe((profile) => {
+                console.log(profile);
+            },
+                (err) => console.log(err),
+                () => {
+                    if (sub$) {
+                        sub$.unsubscribe();
+                    }
+                });
     }
 }

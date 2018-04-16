@@ -20,7 +20,9 @@ export class SensorComponent extends BaseStixComponent implements OnInit {
             kill_chain_phases: [],
             description: '',
             metaProperties: {
-                observedData: []
+                observedData: [],
+                relationships: [],
+                published: true
             }
         },
         type: 'x-unfetter-sensor'

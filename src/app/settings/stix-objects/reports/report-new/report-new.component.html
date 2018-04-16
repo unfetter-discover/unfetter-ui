@@ -15,6 +15,11 @@
     </div>
 </div>
 <div class="row">
+    <div class="col-xs-12">
+        <created-by-ref [model]="report"></created-by-ref>
+    </div>
+</div>
+<div class="row">
     <div class="col-md-12">
         <mat-input-container class="full-width">
         <textarea matInput placeholder="Description"  [(ngModel)]="report.attributes.description" value="{{report.attributes.description}}"></textarea>
@@ -56,12 +61,15 @@
 
 </div>
 <external-reference [(model)]="report"></external-reference>
+<published-checkbox [model]="report"></published-checkbox>
 
 <div class="row">
     <div class="col-md-12">
         <div class="button-row pull-right">
                 <button mat-button (click)="cancelButtonClicked()">CANCEL</button>
-                <button mat-raised-button (click)="saveButtonClicked()" [disabled]="!report.attributes.name" color="primary">SAVE</button>
+                <button mat-raised-button (click)="saveButtonClicked()" [disabled]="invalidate(report)" color="primary">SAVE</button>
         </div>
     </div>
 </div>
+
+<validation-errors [validationErrorMessages]="validationErrorMessages"></validation-errors>

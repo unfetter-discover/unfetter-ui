@@ -6,11 +6,13 @@ import { Constance } from '../../utils/constance';
 import { BaseComponentService } from '../base-service.component';
 
 @Component({
-  selector: 'relationship-list',
-  templateUrl: './relationship-list.component.html'
+    selector: 'relationship-list',
+    templateUrl: './relationship-list.component.html'
 })
 export class RelationshipListComponent implements OnInit, OnChanges {
+
     @Input() public model: any;
+
     public url: string;
     public relationshipMapping: any = [];
     public relationships: Relationship[];
@@ -20,8 +22,6 @@ export class RelationshipListComponent implements OnInit, OnChanges {
     }
 
     public ngOnInit() {
-        // this.loadRelationships({ target_ref: this.model.id});
-        // this.loadRelationships({source_ref: this.model.id});
     }
 
     public ngOnChanges(changes: SimpleChanges) {
@@ -34,47 +34,48 @@ export class RelationshipListComponent implements OnInit, OnChanges {
 
     public loadRelationships(filter: any): void {
         let url = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
-        let sub =  this.baseComponentService.get( encodeURI(url) ).subscribe(
-        (data) => {
-            this.relationships = data as Relationship[];
-            this.relationships.forEach(
-                (relationship) => {
-                    if (filter['stix.source_ref']) {
-                        this.loadStixObject(relationship.attributes.target_ref);
-                    } else {
-                        this.loadStixObject(relationship.attributes.source_ref);
-                    }
-                }
-            );
-            }, (error) => {
-                // handle errors here
-                console.log('error ' + error);
-            }, () => {
+        let sub =  this.baseComponentService.get( encodeURI(url) )
+            .finally(() => {
                 // prevent memory links
                 if (sub) {
                     sub.unsubscribe();
                 }
-            }
-        );
+            })
+            .subscribe(
+                (data) => {
+                    this.relationships = data as Relationship[];
+                    this.relationships.forEach(
+                        (relationship) => {
+                            if (filter['stix.source_ref']) {
+                                this.loadStixObject(relationship.attributes.target_ref);
+                            } else {
+                                this.loadStixObject(relationship.attributes.source_ref);
+                            }
+                        }
+                    );
+                },
+                (error) => {
+                    // handle errors here
+                    console.log('error ' + error);
+                }
+            );
     }
 
     public deleteRelationships(id: string): void {
         let relationship = this.relationships.find((r) => {
-            return r.attributes.source_ref === id || r.attributes.target_ref === id ;
+            return r.attributes.source_ref === id || r.attributes.target_ref === id;
         });
-        this.baseComponentService.delete(Constance.RELATIONSHIPS_URL, relationship.id).subscribe(
-            () => {
-                  this.relationships = this.relationships.filter((r) => r.id === relationship.id);
-            }
-        );
+        this.baseComponentService.delete(Constance.RELATIONSHIPS_URL, relationship.id)
+            .subscribe(
+                () => this.relationships = this.relationships.filter((r) => r.id === relationship.id)
+            );
     }
 
     public saveRelationships(relationship: Relationship): void {
-        this.baseComponentService.save(Constance.RELATIONSHIPS_URL, relationship).subscribe(
-            (data) => {
-               this.relationships.push( new Relationship(data));
-            }
-        );
+        this.baseComponentService.save(Constance.RELATIONSHIPS_URL, relationship)
+            .subscribe(
+                (data) => this.relationships.push(new Relationship(data))
+            );
     }
 
     public loadStixObject(id: string): void {
@@ -93,17 +94,16 @@ export class RelationshipListComponent implements OnInit, OnChanges {
 
     public load(url: string, id: string ): void {
         const uri = `${url}/${id}`;
-        let sub = this.baseComponentService.get(uri).subscribe(
-            (data) => {
-                this.relationshipMapping.push(data);
-            }, (error) => {
-                console.log(error);
-            }, () => {
+        let sub = this.baseComponentService.get(uri)
+            .finally(() => {
                 if (sub) {
                     sub.unsubscribe();
                 }
-            }
-        );
+            })
+            .subscribe(
+                (data) => this.relationshipMapping.push(data),
+                (error) => console.log(error),
+            );
     }
 
     public getIcon(relationshipMap: any): string {
@@ -150,4 +150,5 @@ export class RelationshipListComponent implements OnInit, OnChanges {
         let url = relationshipMap.type + '/' + relationshipMap.id;
         this.router.navigateByUrl(url);
     }
+
 }

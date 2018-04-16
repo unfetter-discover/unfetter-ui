@@ -7,10 +7,11 @@ import { BaseComponentService } from '../base-service.component';
 import { RelationshipListComponent } from '../relationship-list/relationship-list.component';
 
 @Component({
-  selector: 'mitigate-list',
-  templateUrl: './mitigate-list.component.html'
+    selector: 'mitigate-list',
+    templateUrl: './mitigate-list.component.html'
 })
 export class MitigateListComponent extends RelationshipListComponent implements OnInit {
+
     @Input() public source: any[];
     @Input() public title: string;
     @Input() public description: string;
@@ -38,7 +39,7 @@ export class MitigateListComponent extends RelationshipListComponent implements 
     }
 
     public isChecked(attackPattern: AttackPattern): boolean {
-          return this.find(attackPattern) ? true : false;
+        return this.find(attackPattern) ? true : false;
     }
 
     public update(attackPattern: AttackPattern): void {
@@ -64,7 +65,7 @@ export class MitigateListComponent extends RelationshipListComponent implements 
                 let attackPatternsProxies = this.phaseNameGroups['unspecified'];
                 attackPatternsProxies.push(attackPattern);
             } else {
-                killChainPhases.forEach( (killChainPhase: KillChainPhase) => {
+                killChainPhases.forEach((killChainPhase: KillChainPhase) => {
                     let phaseName = killChainPhase.phase_name;
                     let attackPatternsProxies = this.phaseNameGroups[phaseName];
                     if (attackPatternsProxies === undefined) {

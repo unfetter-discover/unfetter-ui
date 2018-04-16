@@ -19,6 +19,9 @@ export class Tool {
         kill_chain_phases: KillChainPhase[];
         tool_version: string;
         created_by_ref: string;
+        metaProperties: {
+            published: boolean;
+        }
     };
 
     constructor(data?: Tool) {
@@ -41,7 +44,10 @@ export class Tool {
             aliases: [],
             labels: [],
             external_references: [],
-            kill_chain_phases: []
+            kill_chain_phases: [],
+            metaProperties: {
+                published: true
+            }
         };
     }
 }

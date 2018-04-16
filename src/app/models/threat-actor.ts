@@ -17,6 +17,9 @@ export class ThreatActor {
         kill_chain_phases: KillChainPhase[];
         name: string;
         created_by_ref: string;
+        metaProperties: {
+            published: boolean;
+        }
     };
      constructor(data?: ThreatActor) {
         this.type = Constance.THREAT_ACTORS_TYPE;
@@ -37,7 +40,10 @@ export class ThreatActor {
             labels: [],
             aliases: [],
             external_references: [],
-            kill_chain_phases: []
+            kill_chain_phases: [],
+            metaProperties: {
+                published: true
+            }
         };
     }
 }

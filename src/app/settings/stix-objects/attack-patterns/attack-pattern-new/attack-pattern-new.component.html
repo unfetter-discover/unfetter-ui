@@ -36,13 +36,15 @@
 
         <kill-chain-phases [(model)]="attackPattern"></kill-chain-phases>
          <external-reference [(model)]="attackPattern"></external-reference>
+        <published-checkbox [model]="attackPattern"></published-checkbox>
 
           <div class="row">
             <div class="col-md-12">
                 <div class="button-row pull-right">
                     <button  id="canel-btn"  mat-button (click)="cancelButtonClicked()">CANCEL</button>
-                    <button id="save-btn" type="submit"  color="primary" mat-raised-button (click)="saveAttackPattern()" [disabled]="!attackPattern.attributes.name">SAVE</button>
-
+                    <button id="save-btn" type="submit"  color="primary" mat-raised-button (click)="saveAttackPattern()" [disabled]="invalidate(attackPattern)">SAVE</button>
                 </div>
             </div>
           </div>
+
+          <validation-errors [validationErrorMessages]="validationErrorMessages"></validation-errors>

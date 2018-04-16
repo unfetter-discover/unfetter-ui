@@ -1,32 +1,35 @@
- <div class="row">
+<div class="row">
     <div class="col-md-12">
         <label>Labels</label>
         <div class="button-row">
-            <button mat-raised-button (click)="addLabelButtonClicked()"><i class="material-icons">add</i>ADD</button>
+            <button mat-raised-button id="add-label" (click)="addLabelButtonClicked()">
+                <i class="material-icons">add</i>ADD
+            </button>
         </div>
     </div>
 </div>
-<div class="row" *ngFor="let l of model.attributes.labels; let i = index">
-    <div class="col-md-12">
-
-            <mat-card >
-                    <mat-card-content>
-                        <div class="row">
-                            <div class="col-md-12">
-                                    <mat-input-container  class="full-width">
-                                        <input  #label  value="{{l}}" matInput placeholder="Label" (change)="update(i, label.value)">
-                                    </mat-input-container>
-                            </div>
-
+<ng-container *ngIf="model">
+    <div class="row" *ngFor="let l of model.attributes.labels; let i = index">
+        <div class="col-md-12">
+            <mat-card>
+                <mat-card-content>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <mat-input-container class="full-width">
+                                <input #label matInput value="{{l}}" placeholder="Label"
+                                        (change)="update(i, label.value)">
+                            </mat-input-container>
                         </div>
-                    </mat-card-content>
-                    <mat-card-actions>
-                        <div class="button-row">
-                            <button mat-raised-button (click)="removeLabelButtonClicked(l)"><i class="material-icons">delete</i>REMOVE</button>
-                        </div>
-                    </mat-card-actions>
+                    </div>
+                </mat-card-content>
+                <mat-card-actions>
+                    <div class="button-row">
+                        <button mat-raised-button (click)="removeLabelButtonClicked(l)">
+                            <i class="material-icons">delete</i>REMOVE
+                        </button>
+                    </div>
+                </mat-card-actions>
             </mat-card>
-
-
+        </div>
     </div>
-</div>
+</ng-container>

@@ -1,0 +1,114 @@
+<div id="event-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="flex matchHeight" id="top-half">
+        <div class="flexColumn left-column">
+          <mat-card color="primary" class="uf-mat-card card left-card">
+            <mat-card-title>Daily Totals</mat-card-title>
+            <mat-card-subtitle>
+              <mat-form-field>
+                <mat-select [(value)]="service.daysOfData">
+                  <mat-option value="7">1 Week</mat-option>
+                  <mat-option value="30">30 Days</mat-option>
+                  <mat-option value="183">6 Months</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </mat-card-subtitle>
+            <mat-card-content>
+              <div>
+                <canvas baseChart [datasets]="service.barChartData" [labels]="service.barChartLabels" [options]="barChartOptions" [legend]="barChartLegend"
+                  [chartType]="barChartType" [colors]="colors"></canvas>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        <div class="flexColumn right-column">
+          <mat-card class="uf-mat-card card right-card">
+            <mat-card-title>Metrics</mat-card-title>
+            <mat-card-content>
+              <mat-card class="uf-mat-card card">
+                <mat-card-title>
+                  INDICATES
+                </mat-card-title>
+                <mat-card-content>FUTURE: This will be a doughnut chart with breakdown of Threat events by Indicator</mat-card-content>
+              </mat-card>
+              <mat-card class="uf-mat-card card">
+                <mat-card-title>
+                  POTENTIAL ACTOR
+                </mat-card-title>
+                <mat-card-content>FUTURE: This will be a doughnut chart with a breakdown of Threat events by Potential Actor</mat-card-content>
+              </mat-card>
+              <mat-card class="uf-mat-card card">
+                <mat-card-title>
+                  LOCATION
+                </mat-card-title>
+                <mat-card-content>FUTURE: This will be a doughnut chart with a breakdown of Threat events by Location Seen</mat-card-content>
+              </mat-card>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="flex">
+        <!-- {{service.recentSightings | json }} -->
+        <div class="flexRow" id="bottom-half">
+          <mat-card color="primary" class="uf-mat-card card mat-card-scroll-content bottom-card">
+            <mat-card-title class="traffic-detail-title">Traffic Detail</mat-card-title>
+            <mat-card-content>
+              <mat-table #table [dataSource]="service.dataSource">
+                <ng-container matColumnDef="{{columnIds[0]}}">
+                  <mat-header-cell *matHeaderCellDef>Date/Time</mat-header-cell>
+                  <mat-cell *matCellDef="let sighting">{{sighting.attributes.last_seen | date:'medium' }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="{{columnIds[1]}}">
+                  <mat-header-cell *matHeaderCellDef>Where Sighted</mat-header-cell>
+                  <mat-cell *matCellDef="let sighting">
+                    <span>
+                    <!-- *ngIf="sighting.attributes.name && sighting.attributes.ip else unknown"> -->
+                      {{sighting.attributes.x_unfetter_asset.hostname}} - {{sighting.attributes.x_unfetter_asset.ip}}</span>
+                    <ng-template #unknown>
+                      Unknown
+                    </ng-template>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="{{columnIds[2]}}">
+                  <mat-header-cell *matHeaderCellDef>Location</mat-header-cell>
+                  <mat-cell *matCellDef="let sighting">
+                    <span>{{sighting.attributes.observed_data_refs_city}}</span>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="{{columnIds[3]}}">
+                  <mat-header-cell *matHeaderCellDef>Country</mat-header-cell>
+                  <mat-cell *matCellDef="let sighting">
+                    <span>{{sighting.attributes.observed_data_refs_country}}</span>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="{{columnIds[4]}}">
+                  <mat-header-cell *matHeaderCellDef>Threat</mat-header-cell>
+                  <mat-cell *matCellDef="let sighting">
+                    <span>{{sighting.attributes.observed_data_refs}}</span>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="{{columnIds[5]}}">
+                  <mat-header-cell *matHeaderCellDef>Indicators</mat-header-cell>
+                  <mat-cell *matCellDef="let sighting">
+                    <span>{{sighting.attributes.sighting_of_ref}}</span>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="{{columnIds[6]}}">
+                  <mat-header-cell *matHeaderCellDef>Potential Actors</mat-header-cell>
+                  <mat-cell *matCellDef="let sighting">
+                    <span>{{sighting.attributes.intrusionSet[0]}}</span>
+                  </mat-cell>
+                </ng-container>
+                <mat-header-row class="table-header-row" *matHeaderRowDef="columnIds"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: columnIds;"></mat-row>
+              </mat-table>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,7 +1,10 @@
 import { Injectable, SkipSelf, Optional } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
 
 import { GenericApi } from './genericapi.service';
 import { Constance } from '../../utils/constance';
+import { AppState } from '../../root-store/app.reducers';
 
 @Injectable()
 export class ConfigService {
@@ -10,39 +13,54 @@ export class ConfigService {
     public configurations: any = {};
 
     private configUrl = Constance.CONFIG_URL;
+    private publicConfigUrl = Constance.PUBLIC_CONFIG_URL;
 
-    constructor(private genericApi: GenericApi, @SkipSelf() @Optional() protected parent: ConfigService) {
+    constructor(
+        private genericApi: GenericApi,
+        private store: Store<AppState>,
+        @SkipSelf() @Optional() protected parent: ConfigService
+    ) {
         if (parent) {
             console.log('WARNING - ConfigService was instansiated more than once');
-        }
-        
+        }        
     }
 
     public initConfig() {
         this.getConfigPromise()
-            .then((res) => console.log('Configurations sucessfully initialized'))
+            .then((res) => console.log('Configurations successfully initialized'))
             .catch((err) => console.log('Unable to initalize configurations ', err))
     }
 
-    public getConfigPromise(): Promise<any> {
-        if (this.configSet && Object.keys(this.configurations).length) {
+    public getConfig(): Observable<any> {
+        return this.genericApi.get(this.configUrl);
+    }
+
+    public getPublicConfig(): Observable<any> {
+        return this.genericApi.get(this.publicConfigUrl);
+    }
+
+    public getConfigPromise(publicConfig: boolean = true): Promise<any> {
+        if (this.configSet && Object.keys(this.configurations).length) {        
             return Promise.resolve(this.configurations);
         } else {
             return new Promise((resolve, reject) => {
-                const getConfig$ = this.genericApi.get(this.configUrl)
+                const getConfig$ = this.store.select('config')
+                    .pluck('configurations')
+                    .filter((configurations: any) => Object.keys(configurations).length > 0)
+                    .take(1)
                     .subscribe(
-                        (res) => {
-                            for (let config of res) {
-                                this.configurations[config.attributes.configKey] = config.attributes.configValue;
-                            }
+                        (configurations) => {
+                            this.configurations = configurations;
                             this.configSet = true;
-                            resolve(this.configurations);
+                            resolve(configurations);
                         },
                         (err) => {
                             reject(err);
                         },
                         () => {
-                            getConfig$.unsubscribe();
+                            if (getConfig$) {
+                                getConfig$.unsubscribe();
+                            }
                         }
                     );
             });

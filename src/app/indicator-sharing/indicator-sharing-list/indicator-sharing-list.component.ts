@@ -2,10 +2,10 @@ import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRe
 import { MatDialog, MatSidenav } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/pluck';
 
-import { IndicatorSharingService } from '../indicator-sharing.service';
 import { AddIndicatorComponent } from '../add-indicator/add-indicator.component';
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
@@ -14,12 +14,14 @@ import { IndicatorBase } from '../models/indicator-base-class';
 import { fadeInOut } from '../../global/animations/fade-in-out';
 import { ConfirmationDialogComponent } from '../../components/dialogs/confirmation/confirmation-dialog.component';
 import { initialSearchParameters } from '../store/indicator-sharing.reducers';
+import { IndicatorHeatMapComponent } from '../indicator-heat-map/indicator-heat-map.component';
+import { heightCollapse } from '../../global/animations/height-collapse';
 
 @Component({
     selector: 'indicator-sharing-list',
     templateUrl: 'indicator-sharing-list.component.html',
     styleUrls: ['indicator-sharing-list.component.scss'],
-    animations: [fadeInOut],
+    animations: [ fadeInOut, heightCollapse ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
@@ -31,11 +33,13 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     public searchParameters;
     public filterOpen: boolean = false;
     public filterOpened: boolean = false;
+    public showSummaryStats: boolean = false;
+    public collapseAllCards: boolean = false;
+    public collapseAllCardsSubject: BehaviorSubject<boolean> = new BehaviorSubject(this.collapseAllCards);
 
     @ViewChild('filterContainer') public filterContainer: MatSidenav;
 
     constructor(
-        private indicatorSharingService: IndicatorSharingService, 
         public dialog: MatDialog,
         public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>,
         // Used for SERVER_CALL_COMPLETE, this should be moved to ngrx
@@ -61,7 +65,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                     filteredIndicatorSub$.unsubscribe();
                 }
             );
-        
+
         const displayedIndicatorSub$ = this.store.select('indicatorSharing')
             .pluck('displayedIndicators')
             .distinctUntilChanged()
@@ -111,8 +115,8 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                 }
             );
 
-
         const getUser$ = this.store.select('users')
+            .filter((users: any) => users.userProfile && users.userProfile._id)
             .take(1)
             .subscribe(
                 (users: any) => {
@@ -148,7 +152,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                 (res) => {
                     if (res && !res.editMode) {
                         this.store.dispatch(new indicatorSharingActions.AddIndicator(res.indicator));
-                        this.store.dispatch(new indicatorSharingActions.FilterIndicators());
+                        this.store.dispatch(new indicatorSharingActions.FetchIndicators());
                         if (res.newRelationships) {
                             this.store.dispatch(new indicatorSharingActions.RefreshApMap());
                         } 
@@ -165,8 +169,10 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
             );
     }
 
-    public showMoreIndicators() {
+    public showMoreIndicators() {    
+        console.log('Loading more indicators');
         this.store.dispatch(new indicatorSharingActions.ShowMoreIndicators());
+        this.changeDetectorRef.markForCheck();    
     }
 
     public displayShowMoreButton() {
@@ -205,4 +211,10 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     public editIndicator(indicatorToEdit: any) {
         this.openDialog(indicatorToEdit);
     }
+
+    public toggleShowStatistics() {
+        this.showSummaryStats = !this.showSummaryStats;
+        this.changeDetectorRef.markForCheck();
+    }
+
 }

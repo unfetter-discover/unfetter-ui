@@ -3,10 +3,9 @@ import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/startWith';
 
 @Component({
-  selector: 'aliases',
-  templateUrl: './aliases.component.html'
+    selector: 'aliases',
+    templateUrl: './aliases.component.html'
 })
-
 export class AliasesComponent {
 
     @Input() public model: any;
@@ -21,7 +20,8 @@ export class AliasesComponent {
         this.model.attributes.aliases = this.model.attributes.aliases.filter((h) => h !== alias);
     }
 
-     public update(index: number, value: string): void {
+    public update(index: number, value: string): void {
         this.model.attributes.aliases[index] = value;
     }
+
 }

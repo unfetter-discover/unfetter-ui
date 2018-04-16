@@ -87,10 +87,19 @@ export const Constance = {
   // TODO change icon
   X_UNFETTER_ASSESSMENT_ICON: 'assets/icon/stix-icons/svg/report-b.svg',
 
+  X_UNFETTER_ASSESSMENT3_NAVIGATE_URL: 'assess3/navigate',
+  X_UNFETTER_ASSESSMENT3_URL: 'api/v3/x-unfetter-object-assessments',
+  X_UNFETTER_ASSESSMENT3_TYPE: 'x-unfetter-object-assessment',
+
+  X_UNFETTER_CAPABILITY_URL: 'api/v3/x-unfetter-capability',
+  X_UNFETTER_CAPABILITY_TYPE: 'x-unfetter-capability',
+
+  AUTH_URL: 'api/auth',
   USER_FROM_TOKEN_URL: 'api/auth/user-from-token',
   FINALIZE_REGISTRATION_URL: 'api/auth/finalize-registration',
   PROFILE_BY_ID_URL: 'api/auth/profile',
   REFRESH_TOKEN_URL: 'api/auth/refreshtoken',
+  PUBLIC_CONFIG_URL: 'api/auth/public-config',
 
   CONFIG_URL: 'api/config',
   WEB_ANALYTICS_URL: 'api/web-analytics',
@@ -107,7 +116,12 @@ export const Constance = {
 
   LOGO_IMG_ANALYTIC_HUB: 'assets/icon/dashboard-logos/icon-Analytic_Hub.png',
   LOGO_IMG_ASSESSMENTS: 'assets/icon/dashboard-logos/icon-Assessments.png',
+  LOGO_IMG_ASSESSMENTS_BETA: 'assets/icon/dashboard-logos/icon-Assessments_beta.png',
   LOGO_IMG_THREAT_DASHBOARD: 'assets/icon/dashboard-logos/icon-Threat_Dashboard.png',
+  LOGO_IMG_EVENTS_DASHBOARD: 'assets/icon/dashboard-logos/icon-event_Dashboard_beta.png',
+  LOGO_IMG_API_EXPLORER: 'assets/icon/dashboard-logos/icon-api.png',
+  LOGO_IMG_STIX: 'assets/icon/dashboard-logos/icon-STIX_Dashboard.png',
+  LOGO_IMG_INTRUSION_SET: 'assets/icon/dashboard-logos/icon-Int_Set_Dashboard.png',
 
   COLORS: {
     green: '#4CAF50',

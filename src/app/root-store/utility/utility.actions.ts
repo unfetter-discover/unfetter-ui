@@ -5,6 +5,8 @@ export const ADD_LOCAL_STORAGE = '[Utility] Add Local Storage Item';
 export const UPDATE_LOCAL_STORAGE = '[Utility] Update Local Storage Item';
 export const DELETE_LOCAL_STORAGE_ITEM = '[Utility] Delete Local Storage Item';
 export const NAVIGATE = '[Utility] Navigate';
+export const RECORD_VISIT = '[Utility] Record Visit';
+export const NULL_ACTION = '[Utility] Null Action';
 
 export class ClearAllLocalStorage implements Action {
     public readonly type = CLEAR_ALL_LOCAL_STORAGE;
@@ -32,9 +34,19 @@ export class Navigate implements Action {
     constructor(public payload: any[])  { }
 }
 
+export class RecordVisit implements Action {
+    public readonly type = RECORD_VISIT;
+}
+
+export class NullAction implements Action {
+    public readonly type = NULL_ACTION;
+}
+
 export type UtilityActions =
     ClearAllLocalStorage |
     AddLocalStorage |
     UpdateLocalStorage |
     DeleteLocalStorageItem |
-    Navigate;
+    Navigate |
+    RecordVisit |
+    NullAction;

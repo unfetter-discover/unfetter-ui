@@ -24,6 +24,9 @@ export class IntrusionSet {
         external_references: ExternalReference[];
         kill_chain_phases: KillChainPhase[];
         created_by_ref: string;
+        metaProperties: {
+            published: boolean;
+        }
     };
 
     constructor(data?: IntrusionSet) {
@@ -62,7 +65,10 @@ export class IntrusionSet {
             labels: [],
             aliases: [],
             external_references: [],
-            kill_chain_phases: []
+            kill_chain_phases: [],
+            metaProperties: {
+                published: true
+            }
         };
     }
 }

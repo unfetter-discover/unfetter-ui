@@ -1,8 +1,14 @@
 <div id="registerComponent" class="container">
-    <div class="row mt-20 mb-10">
-        <div class="col-xs-12 col-lg-6 col-lg-offset-3">
+    <div class="row mt-20">
+        <div class="col-xs-12 col-md-8 col-md-offset-2">
             <h3>Finalize Registration</h3>
             <p class="lead">You are almost ready to use Unfetter.  Please verify and fill out the following information.</p>
+        </div>
+    </div>
+
+    <div class="row mb-10">
+        <div class="col-xs-12 col-md-8 col-md-offset-2">
+            <help-window [helpHtml]="helpHtml"></help-window>
         </div>
     </div>
 
@@ -15,87 +21,140 @@
         </div>
     </div>
 
-    <div class="row" *ngIf="!submitError">
-        <div class="col-xs-12 col-lg-6 col-lg-offset-3">
-            <mat-card *ngIf="form !== undefined">
+    <div class="row mb-15" *ngIf="!submitError">
+        <div class="col-xs-12 col-md-8 col-md-offset-2">
+            <mat-card *ngIf="form !== undefined" class="uf-mat-card">
 
                 <mat-card-header>
                     <div mat-card-avatar [style.background]="'url(' + userReturn.github.avatar_url + ')'" class="avatar" *ngIf="userReturn.github.avatar_url !== undefined"></div>
-                    <mat-card-title class="mt-5">{{form.get('userName').value}}</mat-card-title>
-                    <mat-card-subtitle>{{form.get('firstName').value}}&nbsp;{{form.get('lastName').value}}</mat-card-subtitle>
+                    <mat-card-title>{{form.get('unfetterInformation').get('userName').value}}</mat-card-title>
+                    <mat-card-subtitle>{{form.get('unfetterInformation').get('firstName').value}}&nbsp;{{form.get('unfetterInformation').get('lastName').value}}</mat-card-subtitle>
                 </mat-card-header>
 
                 <mat-card-content>
                     <br class="mt-10">
                     <form [formGroup]="form" novalidate (ngSubmit)="registerSubmit()">
 
-                        <mat-form-field class="full-width mb-10">
-                            <input matInput required placeholder="First Name" formControlName="firstName">
-                            <mat-error *ngIf="form.get('firstName').hasError('required')">
-                                First name is <strong>required</strong>
-                            </mat-error>
-                        </mat-form-field>
+                        <mat-vertical-stepper [linear]="true">
 
-                        <mat-form-field class="full-width mb-10">
-                            <input matInput required placeholder="Last Name" formControlName="lastName">
-                            <mat-error *ngIf="form.get('lastName').hasError('required')">
-                                Last name is <strong>required</strong>
-                            </mat-error>
-                        </mat-form-field>
+                            <mat-step label="User Information" [stepControl]="form.get('unfetterInformation')">
+                                <div id="unfetterInformationForm" formGroupName="unfetterInformation">
+                                    <mat-form-field class="full-width mb-10">
+                                        <input matInput required placeholder="First Name" formControlName="firstName">
+                                        <mat-error *ngIf="form.get('unfetterInformation').get('firstName').hasError('required')">
+                                            First name is
+                                            <strong>required</strong>
+                                        </mat-error>
+                                    </mat-form-field>
 
-                        <mat-form-field class="full-width mb-10">
-                            <input matInput required placeholder="Username" formControlName="userName">
-                            <mat-error *ngIf="form.get('userName').hasError('required')">
-                                Username is <strong>required</strong>
-                            </mat-error>
-                        </mat-form-field>
+                                    <mat-form-field class="full-width mb-10">
+                                        <input matInput required placeholder="Last Name" formControlName="lastName">
+                                        <mat-error *ngIf="form.get('unfetterInformation').get('lastName').hasError('required')">
+                                            Last name is
+                                            <strong>required</strong>
+                                        </mat-error>
+                                    </mat-form-field>
 
-                        <mat-form-field class="full-width mb-10">
-                            <input matInput required placeholder="Email" formControlName="email">
-                            <mat-error *ngIf="form.get('email').hasError('email') && !form.get('email').hasError('required')">
-                                Please enter a valid email address
-                            </mat-error>
-                            <mat-error *ngIf="form.get('email').hasError('required')">
-                                Email is <strong>required</strong>
-                            </mat-error>
-                        </mat-form-field>
+                                    <mat-form-field class="full-width mb-10">
+                                        <input matInput required placeholder="Username" formControlName="userName">
+                                        <mat-error *ngIf="form.get('unfetterInformation').get('userName').hasError('required')">
+                                            Username is
+                                            <strong>required</strong>
+                                        </mat-error>
+                                        <mat-error *ngIf="form.get('unfetterInformation').get('userName').hasError('userNameTaken')">
+                                            Username is
+                                            <strong>taken</strong>
+                                        </mat-error>
+                                    </mat-form-field>
 
-                        <mat-form-field class="full-width mb-20" *ngIf="organizations && organizations.length">
-                            <mat-select placeholder="Organizations" [multiple]="true" formControlName="organizations">
-                                <mat-option [value]="makeOrgOptionValue(org.id)" *ngFor="let org of organizations">{{org.name}}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
+                                    <mat-form-field class="full-width mb-10">
+                                        <input matInput required placeholder="Email" formControlName="email">
+                                        <mat-error *ngIf="form.get('unfetterInformation').get('email').hasError('email') && !form.get('unfetterInformation').get('email').hasError('required')">
+                                            Please enter a valid email address
+                                        </mat-error>
+                                        <mat-error *ngIf="form.get('unfetterInformation').get('email').hasError('required')">
+                                            Email is
+                                            <strong>required</strong>
+                                        </mat-error>
+                                        <mat-error *ngIf="form.get('unfetterInformation').get('email').hasError('emailTaken')">
+                                            Email is 
+                                            <strong>taken</strong>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="mt-6">
+                                    <button mat-raised-button matStepperNext type="button" color="primary" [disabled]="form.get('unfetterInformation').status === 'INVALID'">CONTINUE</button>
+                                </div>
+                            </mat-step>
 
-                        <div id="identityForm">
-                            <hr>
-                            <p class="lead">STIX Identity</p>
-                             
-                            <!-- TODO add option to import identity -->
+                            <mat-step label="Account Request Information" [stepControl]="form.get('registrationInformation')">
+                                <div class="uf-well mt-3">
+                                    <h4>Reason for Using Unfetter</h4>
+                                    <p>Everyone whom registers to Unfetter must be approved by an administrator.  This note assists the administrator in the approval process.</p>
+                                    <h4>Requested Organization</h4>
+                                    <p>Once approved to use Unfetter, members must be seperately approved to join organizations.  Requesting an organization at registration will assist in timely organization approval.  You may request to join additional organizations after being approved to use Unfetter.</p>
+                                </div>
+                                <div id="registrationInformationForm" formGroupName="registrationInformation">
+                                    <mat-form-field class="full-width mb-10">
+                                        <textarea matInput placeholder="Reason for Using Unfetter" formControlName="applicationNote"></textarea>
+                                    </mat-form-field>
+                                
+                                    <mat-form-field class="full-width mb-10">
+                                        <input matInput placeholder="Requested Organization" formControlName="requestedOrganization">
+                                    </mat-form-field>
+                                </div>
+                                <div class="mt-6">
+                                    <button mat-raised-button matStepperNext type="button" color="primary" [disabled]="form.get('registrationInformation').status === 'INVALID'">CONTINUE</button>
+                                    <button mat-button matStepperPrevious type="button">BACK</button>
+                                </div>
+                            </mat-step>
 
-                            <div formGroupName="identity">
-                                <mat-form-field class="full-width mb-10">
-                                    <input matInput required placeholder="Name" formControlName="name">
-                                    <mat-error *ngIf="form.get('identity').get('name').hasError('required')">
-                                        Name is <strong>required</strong>
-                                    </mat-error>
-                                </mat-form-field>
-
-                                <mat-form-field class="full-width mb-10">
-                                    <textarea matInput placeholder="Description" formControlName="description"></textarea>
-                                </mat-form-field>                            
-
-                                <mat-form-field class="full-width mb-20">                                        
-                                    <mat-select placeholder="Sectors" [multiple]="true" formControlName="sectors">
-                                        <mat-option [value]="sector" *ngFor="let sector of identitySectors">{{ sector | capitalize }}</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-
-                                <mat-form-field class="full-width mb-10">
-                                    <textarea matInput placeholder="Contact Information" formControlName="contact_information"></textarea>
-                                </mat-form-field>
-                            </div>
-
-                        </div>
+                            <mat-step label="STIX Identity" [stepControl]="form.get('identity')">
+                                <div id="identityForm">
+                                    <div class="uf-well mt-3">
+                                        <h4>STIX Identities</h4>
+                                        <p>STIX identities are how you will be represented in STIX documents.  This form is for your personal/individual STIX identity.</p>
+                                        <h4>Import Identity</h4>
+                                        <p>If you have an existing individual STIX identity, you may import it into Unfetter.  Acceptable formats include a standalone STIX identity and a STIX identity wrapped in a STIX bundle.</p>
+                                    </div> 
+                                    
+                                    <div class="uf-well-warn mt-3" *ngIf="importErrorMsg !== ''">{{ importErrorMsg }}</div>
+                                    
+                                    <div class="mb-3">
+                                        <button mat-raised-button type="button" color="primary" id="uploadButton" (click)="openFileUpload()">Import STIX Identity</button>
+                                        <input #importStix id="fileInput" name="file" type="file" class="displayNone" (change)="fileChanged($event)">
+                                    </div>
+                                
+                                    <div formGroupName="identity">
+                                        <mat-form-field class="full-width mb-10">
+                                            <input matInput required placeholder="Name" formControlName="name">
+                                            <mat-error *ngIf="form.get('identity').get('name').hasError('required')">
+                                                Name is
+                                                <strong>required</strong>
+                                            </mat-error>
+                                        </mat-form-field>
+                                
+                                        <mat-form-field class="full-width mb-10">
+                                            <textarea matInput placeholder="Description" formControlName="description"></textarea>
+                                        </mat-form-field>
+                                
+                                        <mat-form-field class="full-width mb-20">
+                                            <mat-select placeholder="Sectors" [multiple]="true" formControlName="sectors">
+                                                <mat-option [value]="sector" *ngFor="let sector of identitySectors">{{ sector | capitalize }}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                
+                                        <mat-form-field class="full-width mb-10">
+                                            <textarea matInput placeholder="Contact Information" formControlName="contact_information"></textarea>
+                                        </mat-form-field>
+                                    </div>
+                                
+                                </div>
+                                <div class="mt-6">
+                                    <button mat-button matStepperPrevious type="button">BACK</button>
+                                </div>
+                            </mat-step>
+                        </mat-vertical-stepper>                       
 
                         <p class="text-right mt-10">
                             <button mat-button routerLink="/">Cancel</button>

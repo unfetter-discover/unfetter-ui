@@ -60,6 +60,7 @@
         </mat-input-container>
     </div>
 </div>
+<published-checkbox [model]="relationship"></published-checkbox>
 <div class="row">
     <div class="col-md-12">
         <div class="button-row pull-right">
@@ -67,3 +68,5 @@
         </div>
     </div>
 </div>
+
+<validation-errors [validationErrorMessages]="validationErrorMessages"></validation-errors>

@@ -116,36 +116,34 @@ $white: #FFFFFF;
             margin: auto auto;
         }
     }
-}
 
-h3.tree-map-header {
-    height: 64px;
-    margin: 0;
-    padding: 16px 16px 0 16px;
-    color: #ffffffde;
-    background: linear-gradient(60deg, #1e88e5, #2196f3) !important;
-}
-div.tree-map {
-    width: 100%;
-    height: 500px;
-    margin: 0;
-    padding: 0;
-    background: white;
-}
+    h3.tree-map-header {
+        height: 64px;
+        margin: 0;
+        padding: 16px 16px 0 16px;
+        color: #ffffffde;
+        background: linear-gradient(60deg, #1e88e5, #2196f3) !important;
+    }
+    unf-treemap div.tree-map {
+        height: 500px;
+        background: $white;
+    }
+    
+    h3.heat-map-header {
+        height: 64px;
+        margin: 0;
+        padding: 16px 16px 0 16px;
+        color: #ffffffde;
+        background: linear-gradient(60deg, #1e88e5, #2196f3) !important;
+    }
+    unf-heatmap div.heat-map {
+        height: 400px;
+        background: $white;
+    }
+    unf-heatmap div.mini-map svg {
+        background: $white;
+    }
 
-h3.heat-map-header {
-    height: 64px;
-    margin: 0;
-    padding: 16px 16px 0 16px;
-    color: #ffffffde;
-    background: linear-gradient(60deg, #1e88e5, #2196f3) !important;
-}
-div.heat-map {
-    width: 100%;
-    height: 500px;
-    margin: 0;
-    padding: 0;
-    background: white;
 }
 
 .attack-pattern-clicker:hover {

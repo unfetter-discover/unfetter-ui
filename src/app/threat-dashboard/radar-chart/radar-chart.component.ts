@@ -28,7 +28,6 @@ export class RadarChartComponent implements OnInit, OnDestroy, OnChanges {
      * @description initialize this component
      */
     public ngOnInit(): void {
-        console.log('on init');
         this.buildGraph();
     }
 
@@ -92,7 +91,7 @@ export class RadarChartComponent implements OnInit, OnDestroy, OnChanges {
     public draw(id: string, data: RadarChartDataPoint[][], options): void {
         const cfg = {
             radius: 5,
-            w: 600,
+            w: 800,
             h: 600,
             factor: 1,
             factorLegend: .85,

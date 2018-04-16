@@ -22,6 +22,7 @@ export class Indicator {
         created_by_ref: string;
         metaProperties: {
             observedData: any[]
+            published: boolean;          
         }
     };
 
@@ -52,14 +53,15 @@ export class Indicator {
             external_references: [],
             kill_chain_phases: [],
             metaProperties: {
-                observedData: []
+                observedData: [],
+                published: true
             },
             // name: '',
             // description: '',
             // pattern_lang: '',
             // pattern: '',
             valid_from: new Date(),
-            valid_until: new Date()
+            valid_until: new Date(),
         };
     }
 }

@@ -6,6 +6,9 @@ import { Constance } from '../utils/constance';
 import { AuthService } from '../core/services/auth.service';
 import { environment } from '../../environments/environment';
 import { RxjsHelpers } from '../global/static/rxjs-helpers';
+import { IndicatorSharingSummaryStatistics } from './models/summary-statistics';
+import { SearchParameters } from './models/search-parameters';
+import { SortTypes } from './models/sort-types.enum';
 
 @Injectable()
 export class IndicatorSharingService {
@@ -26,14 +29,9 @@ export class IndicatorSharingService {
     ) { }
 
     public getIndicators(filter: object = {}): Observable<any> {
-        const url = `${this.baseUrl}?filter=${encodeURIComponent(JSON.stringify(filter))}&metaproperties=true`;
+        const url = `${this.baseUrl}?filter=${encodeURIComponent(JSON.stringify(filter))}&sort=${encodeURIComponent(JSON.stringify({ 'stix.created': -1 }))}&metaproperties=true`;
         return this.genericApi.get(url);
     }
-
-    public getIndicator(id, filter: object = {}): Observable<any> {
-        const url = `${this.baseUrl}/${id}?filter=${encodeURIComponent(JSON.stringify(filter))}&metaproperties=true`;
-        return this.genericApi.get(url);
-    } 
 
     public addIndicator(indicator): Observable<any> {
         return this.genericApi.post(this.baseUrl, { data: { attributes: indicator } });
@@ -109,6 +107,11 @@ export class IndicatorSharingService {
         return this.genericApi.get(`${this.sensorsUrl}?project=${JSON.stringify(projectObj)}&filter=${JSON.stringify(filterObj)}&metaproperties=true`);
     }
 
+    public getTotalIndicatorCount(): Observable<number> {
+        const filterObj = { 'stix.type': 'indicator' };
+        return this.genericApi.get(`${this.multiplesUrl}/count?filter=${JSON.stringify(filterObj)}`).pluck('attributes').pluck('count');
+    }
+
     public translateAllPatterns(pattern: string): Observable<any> {
         const body = { data: { pattern } };
         return this.genericApi.post(`${this.patternHandlerUrl}/translate-all`, body);
@@ -119,11 +122,12 @@ export class IndicatorSharingService {
         return this.genericApi.post(`${this.patternHandlerUrl}/get-objects`, body);
     }
 
-    public createIndToApRelationship(indicatorId: string, attackPatternId: string): Observable<any> {
+    public createIndToApRelationship(indicatorId: string, attackPatternId: string, createdByRef: string): Observable<any> {
         const body = {
             data: {
                 attributes: {
                     source_ref: indicatorId,
+                    created_by_ref: createdByRef,
                     target_ref: attackPatternId,
                     relationship_type: 'indicates'
                 }
@@ -131,6 +135,11 @@ export class IndicatorSharingService {
         };
 
         return this.genericApi.post(this.relationshipUrl, body);
+    }
+
+    public doSearch(searchParameters: SearchParameters, sortType: SortTypes): Observable<any> {
+        return this.genericApi.get(`${this.baseUrl}/search?searchparameters=${encodeURIComponent(JSON.stringify(searchParameters))}&sorttype=${sortType}&metaproperties=true`)
+            .map(RxjsHelpers.mapArrayAttributes);
     }
 
     public getDownloadData(indicatorId: string, attackPatternIds: string[], sensorIds: string[]): Observable<any[]> {
@@ -166,5 +175,13 @@ export class IndicatorSharingService {
                 this.genericApi.get(`${this.sensorsUrl}?filter=${encodeURI(JSON.stringify(sensorFilter))}`).map(RxjsHelpers.mapArrayAttributes)
             )
             .map((results: [any[], any[], any[]]): any[] => results.reduce((prev, cur) => prev.concat(cur), []));
+    }
+
+    public getSummaryStatistics(): Observable<IndicatorSharingSummaryStatistics[]> {
+        return this.genericApi.get(`${this.baseUrl}/summary-statistics`).pluck('attributes');
+    }
+
+    public publishIndicator(id: string): Observable<any> {
+        return this.genericApi.get(`${this.multiplesUrl}/${id}/publish`);
     }
 }

@@ -73,13 +73,16 @@
 
 <external-reference [(model)]="tool"></external-reference>
 
+<published-checkbox [model]="tool"></published-checkbox>
 
 
 <div class="row">
     <div class="col-md-12">
         <div class="button-row pull-right">
                 <button mat-button (click)="cancelButtonClicked()">CANCEL</button>
-                <button class=" " mat-raised-button (click)="saveNewTool()" [disabled]="!tool.attributes.name" color="primary">SAVE</button>
+                <button class=" " mat-raised-button (click)="saveNewTool()" [disabled]="invalidate(tool)" color="primary">SAVE</button>
         </div>
     </div>
 </div>
+
+<validation-errors [validationErrorMessages]="validationErrorMessages"></validation-errors>

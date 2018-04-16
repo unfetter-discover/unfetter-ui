@@ -80,9 +80,7 @@ export class FullComponent implements OnInit, OnDestroy {
           .pluck('userProfile')
           .take(1)
           .subscribe((user: UserProfile) => {
-            // const creatorId = user._id;
-            const createdById = user.organizations[0].id;
-            this.requestData(this.rollupId, createdById);
+            this.requestData(this.rollupId);
           },
             (err) => console.log(err));
         this.subscriptions.push(sub$);
@@ -129,7 +127,6 @@ export class FullComponent implements OnInit, OnDestroy {
       .filter((group: any) => group.finishedLoadingGroupData === true)
       .subscribe(
         (group: any) => {
-          console.log('refreshing group information at full component top level');
           const riskByAttackPattern = group.riskByAttackPattern || {};
           // active phase is either the current active phase, 
           let activePhase = this.activePhase;
@@ -175,11 +172,11 @@ export class FullComponent implements OnInit, OnDestroy {
 
   /**
    * @description
-   * @param {string} creatorId - optional
+   * @param {string} rollupId
    */
-  public requestData(rollupId: string, creatorId?: string): void {
+  public requestData(rollupId: string): void {
     const isSameAssessment = (row: any) => row && (row.id === this.assessmentId);
-    this.masterListOptions.dataSource = new SummaryDataSource(this.assessService, creatorId);
+    this.masterListOptions.dataSource = new SummaryDataSource(this.assessService);
     this.masterListOptions.columns.id.classes =
       (row: any) => isSameAssessment(row) ? 'current-item' : 'cursor-pointer';
     this.masterListOptions.columns.id.selectable = (row: any) => !isSameAssessment(row);

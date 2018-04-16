@@ -42,6 +42,15 @@ $assessments-theme: mat-light-theme($assessments-theme-primary, $assessments-the
   @include angular-material-theme($assessments-theme);
 }
 
+$events-theme-primary: mat-palette($mat-green, 600);
+$events-theme-accent: mat-palette($mat-yellow, A200, A100, A400);
+$events-theme-warn: mat-palette($mat-deep-orange);
+$events-theme: mat-light-theme($events-theme-primary, $events-theme-accent, $events-theme-warn);
+
+.eventsTheme {
+  @include angular-material-theme($events-theme);
+}
+
 $utility-theme-primary: mat-palette($mat-blue, 600);
 $utility-theme-accent: mat-palette($mat-red, A200, A100, A400);
 $utility-theme-warn: mat-palette($mat-deep-orange);

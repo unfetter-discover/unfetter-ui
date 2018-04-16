@@ -82,7 +82,6 @@
           <mat-card-title>% Techniques Detected by Skill</mat-card-title>
           <mat-card-content>
             <div *ngIf="summaryCalculationService.techniqueBreakdown;else noTechniquesData">
-              <!-- TODO [riskLabelOptions]="thresholdOptions" -->
               <techniques-chart #techniquesChart [riskThreshold]="summaryCalculationService.selectedRisk">
               </techniques-chart>
             </div>
@@ -97,7 +96,6 @@
           <mat-card-title>% of Assessments Better than Mitigation Threshold</mat-card-title>
           <mat-card-content>
             <div *ngIf="summaryCalculationService.assessmentsGroupingTotal;else noAssessmentsChartData">
-              <!-- TODO [riskLabelOptions]="thresholdOptions" -->
               <assessment-chart></assessment-chart>
             </div>
             <ng-template #noAssessmentsChartData>No data to load chart!</ng-template>

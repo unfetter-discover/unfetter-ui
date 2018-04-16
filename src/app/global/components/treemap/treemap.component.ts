@@ -132,13 +132,13 @@ export class TreemapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
         if (!rect || !rect.width || !rect.height) {
             return;
         } else if (this.treeMapData !== this.previousTreeMapData) {
-            console.log('treemap data change detected');
+            console.log(`(${new Date().toISOString()}) treemap data change detected`);
             this.changeDetector.markForCheck();
             this.createTreeMap();
             this.previousTreeMapData = this.treeMapData;
         } else if (this.treeMapBounds &&
                 ((this.treeMapBounds.width !== rect.width) || (this.treeMapBounds.height !== rect.height))) {
-            console.log('treemap viewport change detected');
+            console.log(`(${new Date().toISOString()}) treemap viewport change detected`);
             this.changeDetector.markForCheck();
             this.treeMapBounds = rect;
             this.redraw();

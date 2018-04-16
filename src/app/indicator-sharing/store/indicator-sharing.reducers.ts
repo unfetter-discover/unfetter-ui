@@ -14,11 +14,12 @@ export interface IndicatorSharingState {
     sensors: any[],
     attackPatterns: any[],
     identities: any[],
-    searchParameters: {},
+    searchParameters: SearchParameters,
     indicatorToSensorMap: {},
     indicatorToApMap: {},
     serverCallComplete: boolean,
-    sortBy: string
+    sortBy: SortTypes,
+    totalIndicatorCount: number
 }
 
 export const initialSearchParameters: SearchParameters = {
@@ -27,7 +28,8 @@ export const initialSearchParameters: SearchParameters = {
     labels: [],
     organizations: [],
     sensors: [],
-    attackPatterns: []
+    attackPatterns: [],
+    published: []
 };
 
 const initialState: IndicatorSharingState = {
@@ -41,7 +43,8 @@ const initialState: IndicatorSharingState = {
     indicatorToSensorMap: {},
     indicatorToApMap: {},
     serverCallComplete: false,
-    sortBy: SortTypes.NEWEST
+    sortBy: SortTypes.NEWEST,
+    totalIndicatorCount: 0
 };
 
 const DEFAULT_DISPLAYED_LENGTH: number = 10;
@@ -50,21 +53,33 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
 
     switch (action.type) {
         case indicatorSharingActions.SET_INDICATORS:
-            return sortIndicators({
+            return {
                 ...state,
                 indicators: action.payload,
                 filteredIndicators: action.payload,
                 displayedIndicators: initDisplauyedIndicators(action.payload)
-            }, state.sortBy);
+            };
+        case indicatorSharingActions.SET_FILTERED_INDICATORS:
+            return {
+                ...state,
+                filteredIndicators: action.payload,
+                displayedIndicators: initDisplauyedIndicators(action.payload)
+            };
+        case indicatorSharingActions.SET_TOTAL_INDICATOR_COUNT:
+            return {
+                ...state,
+                totalIndicatorCount: action.payload
+            };
         case indicatorSharingActions.FETCH_DATA:
             return {
                 ...state,
                 serverCallComplete: false
             };
-        case indicatorSharingActions.FILTER_INDICATORS:
-            return sortIndicators(filterIndicators(state, state.searchParameters), state.sortBy);
-        case indicatorSharingActions.SORT_INDICATORS:
-            return sortIndicators(state, action.payload);
+        case indicatorSharingActions.SET_SORTBY:
+            return {
+                ...state,
+                sortBy: action.payload
+            };
         case indicatorSharingActions.ADD_INDICATOR:
             // TODO update indicatorToSensorMap
             // TODO update filtered & displayed indicatoes
@@ -73,7 +88,8 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
                 indicators: [
                     ...state.indicators,
                     action.payload
-                ]
+                ],
+                totalIndicatorCount: (state.totalIndicatorCount + 1)
             };
         case indicatorSharingActions.UPDATE_INDICATOR:
             const indicatorToUpdateIndex = state.indicators.findIndex((indicator) => indicator.id === action.payload.id);
@@ -114,9 +130,25 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
             if (deleteIndex > -1) {
                 indicatorsCopy.splice(deleteIndex, 1);
             }
+
+            const filteredIndicatorsCopy = [...state.indicators];
+            const filteredDeleteIndex = filteredIndicatorsCopy.findIndex((indicator) => indicator.id === action.payload);
+            if (filteredDeleteIndex > -1) {
+                filteredIndicatorsCopy.splice(filteredDeleteIndex, 1);
+            }
+
+            const displayedIndicatorsCopy = [...state.indicators];
+            const displayedDeleteIndex = displayedIndicatorsCopy.findIndex((indicator) => indicator.id === action.payload);
+            if (displayedDeleteIndex > -1) {
+                displayedIndicatorsCopy.splice(displayedDeleteIndex, 1);
+            }
+
             return {
                 ...state,
-                indicators: indicatorsCopy
+                indicators: indicatorsCopy,
+                filteredIndicators: filteredIndicatorsCopy,
+                displayedIndicators: displayedIndicatorsCopy,
+                totalIndicatorCount: (state.totalIndicatorCount - 1)
             };
         case indicatorSharingActions.SET_SENSORS:
             const indicatorToSensorMap = buildIndicatorToSensorMap(state.indicators, action.payload);
@@ -220,124 +252,6 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
         default:
             return state;
     }
-}
-
-function filterIndicators(state: IndicatorSharingState, searchParameters) {
-    const allIndicators = [...state.indicators];
-    let filteredIndicators;
-    if (searchParameters.labels.length) {
-        filteredIndicators = allIndicators
-            .filter((indicator) => {
-                if (indicator.labels !== undefined && indicator.labels.length) {
-                    let labelPresent = false;
-                    indicator.labels
-                        .forEach((label) => {
-                            if (searchParameters.labels.includes(label)) {
-                                labelPresent = true;
-                            }
-                        });
-                    return labelPresent
-                } else {
-                    return false;
-                }
-            });
-    } else {
-        filteredIndicators = [...state.indicators];
-    }
-
-    if (searchParameters.organizations.length) {
-        filteredIndicators = filteredIndicators
-            .filter((indicator) => indicator.created_by_ref !== undefined && searchParameters.organizations.includes(indicator.created_by_ref));
-    }
-
-    if (searchParameters.killChainPhases.length) {
-        filteredIndicators = filteredIndicators
-            .filter((indicator) => !!indicator.kill_chain_phases)
-            .filter((indicator) => {
-                let found = false;
-                indicator.kill_chain_phases.map((e) => e.phase_name).forEach((phase) => {
-                    if (searchParameters.killChainPhases.includes(phase)) {
-                        found = true;
-                    }
-                });
-                return found;
-            });
-    }
-
-    if (searchParameters.indicatorName !== '') {
-        filteredIndicators = filteredIndicators
-            .filter((indicator) => !!indicator.name)
-            .filter((indicator) => indicator.name.toLowerCase().indexOf(searchParameters.indicatorName.toLowerCase()) > -1);
-    }
-
-    if (searchParameters.sensors.length) {
-        filteredIndicators = filteredIndicators
-            .filter((indicator) => indicator.metaProperties && indicator.metaProperties.observedData && Object.keys(state.indicatorToSensorMap).includes(indicator.id))
-            .filter((indicator) => state.indicatorToSensorMap[indicator.id]
-                .map((sensor) => sensor.id)
-                .filter((sensorId) => searchParameters.sensors.includes(sensorId)).length > 0
-            );
-    }
-
-    if (searchParameters.attackPatterns.length) {
-        filteredIndicators = filteredIndicators
-            .filter((indicator) => Object.keys(state.indicatorToApMap).includes(indicator.id) && state.indicatorToApMap[indicator.id].length)
-            .filter((indicator) => {
-                let found: boolean = false;
-                for (let presentAttackpattern of state.indicatorToApMap[indicator.id]) {
-                    if (searchParameters.attackPatterns.includes(presentAttackpattern.id)) {
-                        found = true;
-                        break;
-                    }
-                }
-                return found;
-            })
-    }
-
-    return {
-        ...state,
-        filteredIndicators
-    };
-}
-
-function sortByArrayLengthHelper(a, b, field): number {
-    if (a.metaProperties && a.metaProperties[field] && (!b.metaProperties[field] || !b.metaProperties)) {
-        return -1;
-    } else if ((!a.metaProperties || !a.metaProperties[field]) && b.metaProperties && b.metaProperties[field]) {
-        return 1;
-    } else if (a.metaProperties && a.metaProperties[field] && b.metaProperties && b.metaProperties[field]) {
-        return b.metaProperties[field].length - a.metaProperties[field].length;
-    } else {
-        return 0;
-    }
-}
-
-function sortIndicators(state, sortBy) {
-    let filteredIndicators = [ ...state.filteredIndicators ];
-    switch (sortBy) {
-        case SortTypes.NEWEST:
-            filteredIndicators = filteredIndicators.sort((a, b) => {
-                return (new Date(b.created) as any) - (new Date(a.created) as any);
-            });
-            break;
-        case SortTypes.OLDEST:
-            filteredIndicators = filteredIndicators.sort((a, b) => {
-                return (new Date(a.created) as any) - (new Date(b.created) as any);
-            });
-            break;
-        case SortTypes.LIKES:
-            filteredIndicators = filteredIndicators.sort((a, b) => sortByArrayLengthHelper(a, b, 'likes'));
-            break;
-        case SortTypes.COMMENTS:
-            filteredIndicators = filteredIndicators.sort((a, b) => sortByArrayLengthHelper(a, b, 'comments'));
-            break;
-    }
-    return {
-        ...state,
-        filteredIndicators,
-        sortBy,
-        displayedIndicators: initDisplauyedIndicators(filteredIndicators)
-    };
 }
 
 function buildIndicatorToSensorMap(indicators, sensors): object {

@@ -42,7 +42,9 @@ export class MasterListDialogTableHeaders {
             editionFormat?: (value: string) => string) {
         this.id.format = (value) => {return value};
         if (!editionFormat) {
-            editionFormat = (value: string) => {return this.dateFormat.transform(value, 'medium')};
+            editionFormat = (value: string) => {
+                return this.dateFormat.transform(value, 'medium')
+            };
         }
         this.edition = {ref: editionColumn, header: editionHeader, selectable: selectable, format: editionFormat};
     }
@@ -105,8 +107,6 @@ export class MasterListDialogComponent implements AfterViewInit, OnDestroy {
      * @return {void}
      */
     public ngAfterViewInit(): void {
-        console.log('afterContentInit');
-
         const sub$ = this.filters.changes.subscribe(
             (comps) => this.initFilter(comps.first),
             (err) => {

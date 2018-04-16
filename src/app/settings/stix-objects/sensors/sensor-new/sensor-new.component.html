@@ -23,6 +23,10 @@
 <kill-chain-phases  *ngIf="sensor" [(model)]="sensor"></kill-chain-phases>
 
 <aliases  *ngIf="sensor" [(model)]="sensor"></aliases>
+<published-checkbox [model]="sensor"></published-checkbox>
+
+<relatationship-generator [(model)]="sensor"></relatationship-generator>
+
 
 <div>
     <label class="mb-5">Observable Data Path</label>
@@ -33,7 +37,9 @@
     <div class="col-md-12">
         <div class="button-row pull-right">
                 <button mat-button (click)="cancelButtonClicked()">CANCEL</button>
-                <button class=" " mat-raised-button (click)="saveNewSensor()" [disabled]="!sensor.attributes.name" color="primary">SAVE</button>
+                <button class=" " mat-raised-button (click)="saveNewSensor()" [disabled]="invalidate(sensor)" color="primary">SAVE</button>
         </div>
     </div>
 </div>
+
+<validation-errors [validationErrorMessages]="validationErrorMessages"></validation-errors>

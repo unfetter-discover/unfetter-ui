@@ -3,16 +3,15 @@ import { Store } from '@ngrx/store';
 
 import { AppState } from './app.service';
 import { AuthService } from './core/services/auth.service';
-import { WebAnalyticsService } from './core/services/web-analytics.service';
 import * as fromApp from './root-store/app.reducers';
 import * as userActions from './root-store/users/user.actions';
 import * as configActions from './root-store/config/config.actions';
-import * as notificationsActions from './root-store/notification/notification.actions';
 import { WSMessageTypes } from './global/enums/ws-message-types.enum';
 import { environment } from '../environments/environment';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Themes } from './global/enums/themes.enum';
 import { Constance } from './utils/constance';
+import { demoUser } from './testing/demo-user';
 
 @Component({
   selector: 'unf-app',
@@ -31,7 +30,6 @@ export class AppComponent implements OnInit {
 
   constructor(
     public authService: AuthService,
-    private webAnalyticsService: WebAnalyticsService,
     private store: Store<fromApp.AppState>,
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -41,37 +39,22 @@ export class AppComponent implements OnInit {
   public ngOnInit() {
     if (this.runMode && this.runMode === 'UAC') {
       console.log('Running application in UAC mode');
-      if (this.authService.loggedIn()) {
-        this.webAnalyticsService.recordVisit();
-      }
     } else if (this.runMode && this.runMode === 'DEMO') {
       console.log('Running application in DEMO mode');
     }
 
     if (this.authService.loggedIn()) {
       if (!this.demoMode) {
-        const user = this.authService.getUser();
         const token = this.authService.getToken();
         this.store.dispatch(new userActions.SetToken(token));
-        this.store.dispatch(new userActions.LoginUser({ userData: user, token }));
-        this.store.dispatch(new notificationsActions.FetchNotificationStore());
+        this.store.dispatch(new userActions.FetchUser(token));
       } else {
         this.store.dispatch(new userActions.LoginUser({
-          userData: {
-            _id: '1234',
-            userName: 'Demo-User',
-            firstName: 'Demo',
-            lastName: 'User',
-            organizations: [
-              {
-                'id': Constance.UNFETTER_OPEN_ID,
-                'approved': true,
-                'role': 'STANDARD_USER'
-              }
-            ],
-          }, token: '1234' }));
+          userData: demoUser, 
+          token: '1234'
+        }));
       }
-      this.store.dispatch(new configActions.FetchConfig());      
+      this.store.dispatch(new configActions.FetchConfig(false));
     }
 
     const bodyElement: HTMLElement = document.getElementsByTagName('body')[0];
@@ -84,12 +67,17 @@ export class AppComponent implements OnInit {
         this.setTheme(url, bodyElement);
         if (url === 'indicator-sharing') {
           this.title = 'Analytic Exchange';
+        } else if (url === 'events') {
+          this.title = 'events';
         } else if (url === 'assess') {
           this.title = 'assessments';
+        } else if (url === 'assess3') {
+          this.title = 'Assessments 3.0';
         } else {
           this.title = url;
         }
-      });
+      },
+        (err) => console.log(err));
   }
 
   private setTheme(url: string, bodyElement: HTMLElement) {
@@ -97,13 +85,15 @@ export class AppComponent implements OnInit {
       case 'indicator-sharing':
         this.theme = Themes.ANALYTIC_HUB;
         break;
+      case 'events':
+        this.theme = Themes.EVENTS;
+        break;
       case 'threat-dashboard':
         this.theme = Themes.THREAT_DASHBOARD;
         break;
       case 'assessments':
-        this.theme = Themes.ASSESSMENTS;
-        break;
       case 'assess':
+      case 'assess3':
         this.theme = Themes.ASSESSMENTS;
         break;
       default:

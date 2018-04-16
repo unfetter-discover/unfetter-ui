@@ -10,12 +10,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { AuthGuard } from './auth.guard';
 import { reducers } from '../../root-store/app.reducers';
-
-import * as fromUsers from '../../root-store/users/users.reducers';
-import * as fromApp from '../../root-store/app.reducers';
 import * as userActions from '../../root-store/users/user.actions';
 
 describe('Auth guard should', () => {
+
     let authGuard: AuthGuard;
     let userStore: any;
     let router = {
@@ -43,8 +41,8 @@ describe('Auth guard should', () => {
     // synchronous beforeEach
     beforeEach(() => {
         authGuard = TestBed.get(AuthGuard);
-        authGuard.demoMode = false;
-        userStore = authGuard.store.select('users');
+        authGuard['demoMode'] = false;
+        userStore = authGuard['store'].select('users');
     });
 
     it('Return true when user is logged in and is an admin', async () => {
@@ -88,4 +86,5 @@ describe('Auth guard should', () => {
                 expect(res).toBe(false);
             });
     });
+
 });

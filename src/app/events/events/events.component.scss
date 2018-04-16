@@ -1,0 +1,33 @@
+@import '../../../styles/_variables.scss';
+
+.flexColumn {
+    flex-direction: column;
+}
+
+.side-panel {
+    min-width: 250px;
+}
+
+.side-panel-header {
+    background-color: $events-primary-lighter;
+}
+
+.side-panel-header, #main-header {
+    height: 82px;
+    padding-right: 16px;
+}
+
+.main-panel {
+    min-height: calc(100vh - #{$navbar-height}px);
+}
+
+#main-header {
+    background-color: $events-primary-light;
+}
+
+.title {
+    font-size: 20px;
+    min-height: 24px;
+    margin-top: 11px;
+    margin-left: 16px;
+  }

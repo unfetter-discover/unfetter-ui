@@ -15,7 +15,21 @@ export class ConfigEffects {
     @Effect()
     public configUser = this.actions$
         .ofType(configActions.FETCH_CONFIG)
-        .switchMap(() => Observable.fromPromise(this.configService.getConfigPromise()))
+        .pluck('payload')
+        .switchMap((getPublicConfig: boolean) => {
+            if (getPublicConfig) {
+                return this.configService.getPublicConfig();
+            } else {
+                return this.configService.getConfig();
+            }
+        })
+        .map((configRes: any[]) => {
+            const retVal = {};
+            for (let config of configRes) {
+                retVal[config.attributes.configKey] = config.attributes.configValue;
+            }
+            return retVal;
+        })
         .map((config) => ({
             type: configActions.ADD_CONFIG,
             payload: config

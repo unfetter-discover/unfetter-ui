@@ -23,15 +23,17 @@
 
         <labels [(model)]="courseOfAction"></labels>
         <external-reference [(model)]="courseOfAction"></external-reference>
+        <published-checkbox [model]="courseOfAction"></published-checkbox>
 
         <div class="row">
             <div class="col-md-12">
                 <div class="button-row pull-right">
                         <button mat-button (click)="cancelButtonClicked()">CANCEL</button>
-                        <button mat-raised-button (click)="saveCourceOfAction()" [disabled]="!courseOfAction.attributes.name" color="primary">SAVE</button>
+                        <button mat-raised-button (click)="saveCourseOfAction()" [disabled]="invalidate(courseOfAction)" color="primary">SAVE</button>
 
                 </div>
             </div>
         </div>
+        <validation-errors [validationErrorMessages]="validationErrorMessages"></validation-errors>
     </div>
 </div>
