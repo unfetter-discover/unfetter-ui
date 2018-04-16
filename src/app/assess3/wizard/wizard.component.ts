@@ -33,6 +33,7 @@ import { LoadAssessmentResultData } from '../result/store/full-result.actions';
 import { heightCollapse } from '../../global/animations/height-collapse';
 import { WizardAssessment } from './models/wizard-assessment';
 import { ScoresModel } from './models/scores-model';
+import { Capability } from '../../models/unfetter/capability';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -61,7 +62,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public model: JsonApiData<Assessment3, Dictionary<Assessment3>>;
   public publishDate = new Date();
   public buttonLabel: ButtonLabel = 'CONTINUE';
-  public navigations: { label: string, page: number }[] = [];
   public item: MenuItem[];
   public doughnutChartLabels: string[];
   public doughnutChartData: { data: any[], backgroundColor: any[], hoverBackgroundColor: any[] }[];
@@ -105,9 +105,10 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public insertMode = false;
   private assessments: WizardAssessment[] = [];
   private groupings = [];
-  private capabilities: any[];
+  private currentCapabilities: any[];
   private scoresModel: ScoresModel = {} as ScoresModel;
-  public categories: Dictionary<{ scoresModel: ScoresModel, capabilities: any[] }> = {};
+  public capability: { label: string, page: number };
+  public categories: Dictionary<{ name: string, scoresModel: ScoresModel, capabilities: Capability[] }> = {};
 
   private readonly subscriptions: Subscription[] = [];
   private readonly sidePanelOrder: string[] = ['categories', 'summary'];
@@ -371,10 +372,10 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {void}
    */
   public onOpenSidePanel(panelName: string, event?: UIEvent): void {
-    if (this.openedSidePanel && this.capabilities && this.openedSidePanel !== 'summary') {
+    if (this.openedSidePanel && this.currentCapabilities && this.openedSidePanel !== 'summary') {
       // save current state, if needed
-      this.categories[this.openedSidePanel] = { scoresModel: undefined, capabilities: undefined };
-      this.categories[this.openedSidePanel].capabilities = [...this.capabilities];
+      this.categories[this.openedSidePanel] = { name: undefined, scoresModel: undefined, capabilities: undefined };
+      this.categories[this.openedSidePanel].capabilities = [...this.currentCapabilities];
       this.categories[this.openedSidePanel].scoresModel = { ...this.scoresModel };
     }
 
@@ -391,7 +392,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.refreshToOpenedAssessmentType();
     if (this.openedSidePanel && this.categories[this.openedSidePanel]) {
       // reload previous state for given type/panel if it exists
-      this.capabilities = [...this.categories[this.openedSidePanel].capabilities];
+      this.currentCapabilities = [...this.categories[this.openedSidePanel].capabilities];
       this.currentCapability = this.getCurrentCapability();
       this.scoresModel = { ...this.categories[this.openedSidePanel].scoresModel };
     }
@@ -412,7 +413,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public refreshToOpenedAssessmentType(): void {
     const data = this[this.openedSidePanel];
     if (data) {
-      this.navigations = [];
+      // this.capability = [];
       this.updateRatioOfAnswerQuestions();
       this.build(data);
     }
@@ -423,8 +424,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {void}
    */
   public updateRatioOfAnswerQuestions(): void {
-    if (this.capabilities && this.capabilities.length > 1) {
-      const allQuestions = this.capabilities
+    if (this.currentCapabilities && this.currentCapabilities.length > 1) {
+      const allQuestions = this.currentCapabilities
         // flat map assessments across groups
         .map((groups) => groups.assessments)
         .reduce((assessments, memo) => memo ? memo.concat(assessments) : assessments, [])
@@ -700,7 +701,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.buttonLabel = 'CONTINUE';
 
     // last page for this assessment type
-    if (this.page + 1 > this.capabilities.length) {
+    if (this.page + 1 > this.currentCapabilities.length) {
       const nextPanel = this.determineNextSidePanel();
       // last page
       if (nextPanel !== 'summary') {
@@ -815,7 +816,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       return;
     }
 
-    this.capabilities = this.createCapabilities(data);
+    // TODO: fetch capabilities from this current assessment set
+    // this.currentCapabilities = this.createCapabilities(data);
     this.currentCapability = this.getCurrentCapability();
     this.updateChart();
   }
@@ -830,10 +832,10 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     if (this.page) {
       index = this.page - 1;
     }
-    if (index >= this.capabilities.length) {
+    if (index >= this.currentCapabilities.length) {
       index = 0;
     }
-    return this.capabilities[index];
+    return this.currentCapabilities[index];
   }
 
   /* 
@@ -841,7 +843,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {any[]}
    */
   public getCapabilities(): any[] {
-    return this.capabilities;
+    return this.currentCapabilities;
   }
 
   /* 
@@ -849,7 +851,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {any[]}
    */
   public setCapabilities(newCapabilities: any[]): void {
-    this.capabilities = newCapabilities;
+    this.currentCapabilities = newCapabilities;
   }
 
   /*
@@ -893,11 +895,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         const capability: any = {};
         capability.name = phaseName;
         const step = index + 1;
-        this.navigations.push({
-          label: this.splitTitle(phaseName),
-          page: step
-        });
-        this.item = this.navigations;
+        this.capability = { label: this.splitTitle(phaseName),  page: step };
+        // this.item = this.capability;
         // TODO: Need to get description somehow from the key phase information
         capability.description = this.groupings[phaseName];
         capability.assessments = courseOfActionGroup;
@@ -1021,17 +1020,17 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     let result: number[] = [];
 
     if (assessmentData) {
-      if (this.capabilities && this.capabilities.length > 0) {
-        this.capabilities.forEach(element => {
+      if (this.currentCapabilities && this.currentCapabilities.length > 0) {
+        this.currentCapabilities.forEach(element => {
           if (element.assessments) {
             element.assessments.forEach(assessment => this.collectModelAssessments(assessment))
           }
           this.calculateGroupRisk(element);
         });
-        const singleAssessmentRiskArray: number[] = this.capabilities
+        const singleAssessmentRiskArray: number[] = this.currentCapabilities
           .map((groups) => groups.riskArray)
           .reduce(this.riskReduction, [0, 0])
-          .map((riskSum) => riskSum / this.capabilities.length);
+          .map((riskSum) => riskSum / this.currentCapabilities.length);
         result = singleAssessmentRiskArray;
       }
     }
