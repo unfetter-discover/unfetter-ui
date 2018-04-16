@@ -200,8 +200,8 @@ export class EventsComponent implements OnInit, OnDestroy {
     if (!sighting.attributes['x_unfetter_asset']['ip']) {
       sighting.attributes['x_unfetter_asset']['ip'] = this.getDummyIp();
     }
-    if (!sighting.attributes['x_unfetter_asset']['name']) {
-      sighting.attributes['x_unfetter_asset']['name'] = 'Generic.com Inc.';
+    if (!sighting.attributes['x_unfetter_asset']['hostname']) {
+      sighting.attributes['x_unfetter_asset']['hostname'] = 'Generic.com Inc.';
     }
     sighting.attributes['observed_data_refs_city'] = this.getDummyCity();
     sighting.attributes['observed_data_refs_country'] = this.getDummyCountry();
