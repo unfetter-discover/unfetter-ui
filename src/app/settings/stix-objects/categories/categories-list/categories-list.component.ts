@@ -1,8 +1,9 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CourseOfAction } from '../../../../models';
+import { Subscription } from 'rxjs/Subscription';
+import { Category } from 'stix';
 import { StixService } from '../../../stix.service';
 import { CategoriesComponent } from '../categories/categories.component';
 
@@ -11,9 +12,11 @@ import { CategoriesComponent } from '../categories/categories.component';
   templateUrl: './categories-list.component.html',
   styleUrls: ['./categories-list.component.scss']
 })
-export class CategoriesListComponent extends CategoriesComponent implements OnInit {
-  public courseOfActions: CourseOfAction[];
+export class CategoriesListComponent extends CategoriesComponent implements OnInit, OnDestroy {
+  public categories: Category[];
   public url: string;
+
+  private subscriptions: Subscription[] = [];
 
   constructor(
     public stixService: StixService,
@@ -27,30 +30,47 @@ export class CategoriesListComponent extends CategoriesComponent implements OnIn
     this.url = stixService.url;
   }
 
-  public ngOnInit() {
+  /**
+   * @returns void
+   */
+  public ngOnInit(): void {
     const filter = 'sort=' + encodeURIComponent(JSON.stringify({ 'stix.name': '1' }));
-    const subscription = super.load(filter).subscribe(
-      (data) => {
-        this.courseOfActions = data as CourseOfAction[];
-        // this.assignCopy();
-      }, (error) => {
-        // handle errors here
-        console.log('error ' + error);
-      }, () => {
-        // prevent memory links
-        if (subscription) {
-          subscription.unsubscribe();
-        }
-      }
-    );
+    const sub$ = super.load(filter).subscribe(
+      (data) => this.categories = data as Category[],
+      (error) => console.log('error ' + error));
+    this.subscriptions.push(sub$);
   }
 
-  public deletButtonClicked(courseOfAction: CourseOfAction): void {
-    super.openDialog(courseOfAction).subscribe(
+  /**
+   * @description clean up this components resources and subscriptions
+   * @returns void
+   */
+  public ngOnDestroy(): void {
+    if (this.subscriptions) {
+      this.subscriptions
+        .filter((el) => el !== undefined)
+        .forEach((subscription) => subscription.unsubscribe());
+    }
+  }
+
+  /**
+   * @description discard any categories with the id of the given category
+   * @param  {Category} category
+   * @returns void
+   */
+  public deletButtonClicked(category?: Category): void {
+    if (!category || !category.id) {
+      return;
+    }
+
+    const dialogSub$ = super.openDialog(category).subscribe(
       () => {
-        this.courseOfActions = this.courseOfActions.filter((h) => h.id !== courseOfAction.id);
+        const hasId = (h) => h.id !== category.id;
+        this.categories = this.categories.filter(hasId);
+        this.filteredItems = this.filteredItems.filter(hasId);
       }
     );
+    this.subscriptions.push(dialogSub$);
   }
 
 }

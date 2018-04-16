@@ -14,7 +14,7 @@ import { StixService } from '../../../stix.service';
   templateUrl: './categories.component.html',
   styleUrls: ['./categories.component.scss']
 })
-export class CategoriesComponent extends BaseStixComponent implements OnInit {
+export class CategoriesComponent extends BaseStixComponent<Category> implements OnInit {
 
   public category = new Category();
   public showLabels = true;

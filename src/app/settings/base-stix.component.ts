@@ -7,7 +7,7 @@ import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/
 import { BaseStixService } from './base-stix.service';
 
 export class BaseStixComponent<T = any> {
-    public filteredItems: any[];
+    public filteredItems: T[];
     public validationErrorMessages: string[] = [];
     public selectedExternal: any;
     private duration = 3000;
