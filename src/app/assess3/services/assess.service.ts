@@ -107,6 +107,17 @@ export class AssessService {
     }
 
     /**
+     * @description load categories
+     * @param {string} filter
+     * @return {Observable<Category[]>}
+     */
+    public sloadCategories(filter?: string): Observable<Category[]> {
+        const url = filter ?
+            `${this.assessBaseUrl}?${encodeURI(filter)}` : this.assessBaseUrl;
+        return this.genericApi.get(url);
+    }
+
+    /**
      * @description
      * @param {string} capability id
      * @return {Observable<Capability> }
