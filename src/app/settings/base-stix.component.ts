@@ -1,8 +1,10 @@
 import { Location } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
+import { Subscription } from 'rxjs/Subscription';
 import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
 import { BaseStixService } from './base-stix.service';
 
@@ -46,19 +48,9 @@ export class BaseStixComponent<T = any> {
                 (data) => {
                     observer.next(data);
                     observer.complete();
-                }, (error: string) => {
-                    // handle errors here
-                    this.snackBar.open('Error ' + error, '', {
-                        duration: this.duration,
-                        extraClasses: ['snack-bar-background-error']
-                    });
-                }, () => {
-                    // prevent memory links
-                    if (subscription) {
-                        subscription.unsubscribe();
-                    }
-                }
-            );
+                },
+                (error) => this.showErrorSnackbar(error),
+                () => this.closeSubscription(subscription));
         });
     }
     public create(item: any): Observable<any> {
@@ -68,7 +60,7 @@ export class BaseStixComponent<T = any> {
         });
     }
 
-    public save(item: any): Observable<any> {
+    public save(item: any): Observable<T> {
         const _self = this;
         item.url = this.service.url;
         return Observable.create((observer) => {
@@ -118,19 +110,9 @@ export class BaseStixComponent<T = any> {
             (stixObjects) => {
                 observer.next(stixObjects);
                 observer.complete();
-            }, (error) => {
-                // handle errors here
-                this.snackBar.open('Error ' + error, '', {
-                    duration: this.duration,
-                    extraClasses: ['snack-bar-background-error']
-                });
-            }, () => {
-                // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
-                }
-            }
-        );
+            },
+            (error) => this.showErrorSnackbar(error),
+            () => this.closeSubscription(subscription));
     }
     /**
      * @description look up a generic object by the current url id, emit/next that object into the given {Observer}
@@ -138,30 +120,19 @@ export class BaseStixComponent<T = any> {
      * @returns void
      */
     public getItem(observer: Observer<T>): void {
-        const sub$ = this.route.params
+        const subscription = this.route.params
             .switchMap((params: Params) => this.service.get(params['id']))
             .subscribe(
                 (stixObject) => {
                     observer.next(stixObject);
                     observer.complete();
                 },
-                (error) => {
-                    // handle errors here
-                    this.snackBar.open('Error ' + error, '', {
-                        duration: this.duration,
-                        extraClasses: ['snack-bar-background-error']
-                    });
-                },
-                () => {
-                    if (sub$) {
-                        sub$.unsubscribe();
-                    }
-                }
-            );
+                (error) => this.showErrorSnackbar(error),
+                () => this.closeSubscription(subscription));
     }
 
     public deleteItem(item: any, observer: any): void {
-        this.route.params
+        const subscription = this.route.params
             .switchMap((params: Params) => this.service.delete(item))
             .subscribe(
                 (stixObject) => {
@@ -173,17 +144,9 @@ export class BaseStixComponent<T = any> {
                             extraClasses: ['snack-bar-background-success']
                         });
                     }
-                }, (error) => {
-                    // handle errors here
-                    this.snackBar.open('Error ' + error, '', {
-                        duration: this.duration,
-                        extraClasses: ['snack-bar-background-error']
-                    });
-                    observer.throw = '';
-                }, () => {
-                    // handle errors here
-                }
-            );
+                },
+                (error) => this.showErrorSnackbar(error),
+                () => this.closeSubscription(subscription));
     }
 
     public createItem(item: any, observer: any): void {
@@ -221,22 +184,12 @@ export class BaseStixComponent<T = any> {
                 //         }
                 //     }
                 // );
-            }, (error) => {
-                // handle errors here
-                this.snackBar.open('Error ' + error, '', {
-                    duration: this.duration,
-                    extraClasses: ['snack-bar-background-error']
-                });
-            }, () => {
-                // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
-                }
-            }
-        );
+            },
+            (error) => this.showErrorSnackbar(error),
+            () => this.closeSubscription(subscription));
     }
 
-    public saveItem(item: any, observer: any): void {
+    public saveItem(item: any, observer: Observer<any>): void {
         const subscription = this.service.update(item).subscribe(
             (data) => {
                 observer.next(data);
@@ -247,19 +200,9 @@ export class BaseStixComponent<T = any> {
                         extraClasses: ['snack-bar-background-success']
                     });
                 }
-            }, (error) => {
-                // handle errors here
-                this.snackBar.open('Error ' + error, '', {
-                    duration: this.duration,
-                    extraClasses: ['snack-bar-background-error']
-                });
-            }, () => {
-                // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
-                }
-            }
-        );
+            },
+            (error) => this.showErrorSnackbar(error),
+            () => this.closeSubscription(subscription));
     }
 
 
@@ -332,6 +275,39 @@ export class BaseStixComponent<T = any> {
         }
 
         return invalid;
+    }
+
+    /**
+     * @description show given error in the snack bar error box
+     * @param  {string|any} error
+     * @returns void
+     */
+    public showErrorSnackbar(error: string | HttpErrorResponse | any): void {
+        let msg = error;
+        if (!error) {
+            msg = 'Unknown error';
+        }
+
+        if (error && error.error && error.error.errors) {
+            const details = error.error.errors[0].detail || [error.error.errors[0]];
+            msg = error.error.errors[0].detail.map((el) => el).join(',');
+        }
+        // display errors here
+        this.snackBar.open('Error ' + msg, '', {
+            duration: this.duration,
+            extraClasses: ['snack-bar-background-error']
+        });
+    }
+
+    /**
+     * @description close given subscription if it is defined
+     * @param  {Subscription} subscription
+     * @returns void
+     */
+    public closeSubscription(subscription?: Subscription): void {
+        if (subscription) {
+            subscription.unsubscribe();
+        }
     }
 
 }

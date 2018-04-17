@@ -8,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 export class CategoriesHomeComponent implements OnInit {
 
   public pageTitle = 'Categories';
-  public pageIcon = 'assets/icon/stix-icons/svg/all-defs.svg#tool';
+  public svgIcon = 'assets/icon/stix-icons/svg/all-defs.svg#tool';
   public description = 'A Category is used in assessments.  It represents a generic class of product.';
 
   constructor() { }

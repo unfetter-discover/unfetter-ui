@@ -2,7 +2,6 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
 import { Category } from 'stix';
 import { FormatHelpers } from '../../../../global/static/format-helpers';
 import { Constance } from '../../../../utils/constance';
@@ -55,25 +54,20 @@ export class CategoriesComponent extends BaseStixComponent<Category> implements 
     const sub$ = super.openDialog(this.category).subscribe(
       () => this.location.back(),
       (err) => console.log(err),
-      () => sub$.unsubscribe());
+      () => this.closeSubscription(sub$));
   }
-
-  public saveButtonClicked(): Observable<Category> {
-    return Observable.create((observer) => {
-      let subscription = super.save(this.category).subscribe(
+  /**
+   * @description call back for save button click
+   * @returns Observable<Category>
+   */
+  public saveButtonClicked(): void {
+    const subscription = super.save(this.category)
+      .subscribe(
         (data) => {
-          observer.next(data);
-          observer.complete();
+          console.log('saved', data);
         },
         (error) => console.log('error ' + error),
-        () => {
-          // prevent memory links
-          if (subscription) {
-            subscription.unsubscribe();
-          }
-        }
-      );
-    });
+        () => this.closeSubscription(subscription));
   }
 
   /**
@@ -82,16 +76,11 @@ export class CategoriesComponent extends BaseStixComponent<Category> implements 
    */
   public loadCategory(): void {
     let sub$ = super.get()
-      .map((el) => el.attributes || el)
+      .map((el: any) => el.attributes || el)
       .subscribe(
-        (data) => this.category = data as Category,
+        (data: Category) => this.category = data as Category,
         (error) => console.log('error ' + error),
-        () => {
-          if (sub$) {
-            sub$.unsubscribe();
-          }
-        }
-      );
+        () => this.closeSubscription(sub$));
   }
 
   public formatText(inputString): string {
