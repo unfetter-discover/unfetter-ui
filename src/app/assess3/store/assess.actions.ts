@@ -11,6 +11,7 @@ export const SAVE_ASSESSMENT = '[Assess3] SAVE_ASSESSMENT';
 export const LOAD_ASSESSMENT_WIZARD_DATA = '[Assess3] LOAD_ASSESSMENT_WIZARD_DATA';
 export const CLEAN_ASSESSMENT_WIZARD_DATA = '[Assess3] CLEAN_ASSESSMENT_WIZARD_DATA';
 export const FETCH_ASSESSMENT = '[Assess3] FETCH_ASSESSMENT';
+export const FETCH_CATEGORIES = '[Assess3] FETCH_CATEGORIES';
 
 // For reducers
 export const UPDATE_PAGE_TITLE = '[Assess3] UPDATE_PAGE_TITLE';
@@ -45,6 +46,12 @@ export class SaveAssessment implements Action {
 
 export class FetchAssessment implements Action {
     public readonly type = FETCH_ASSESSMENT;
+
+    constructor(public payload: any[]) { }
+}
+
+export class FetchCategories implements Action {
+    public readonly type = FETCH_CATEGORIES;
 
     constructor(public payload: any[]) { }
 }
@@ -87,6 +94,7 @@ export type AssessmentActions =
     AnswerQuestion |
     CleanAssessmentWizardData |
     FetchAssessment |
+    FetchCategories |
     FinishedLoading |
     FinishedSaving |
     LoadAssessmentWizardData |
