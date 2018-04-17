@@ -111,11 +111,10 @@ export class AssessService {
      * @param {string} filter
      * @return {Observable<Category[]>}
      */
-    public loadCategories(filter?: string): string[]  {
-        // const url = filter ?
-        //     `${this.assessBaseUrl}?${encodeURI(filter)}` : this.assessBaseUrl;
-        // return this.genericApi.get(url);
-        return [ 'Generic AV', 'Standard EDR', 'Network Analysis', 'Network Firewall', 'sysmon', 'Autoruns', 'Enterprise SIEM' ];
+    public sloadCategories(filter?: string): Observable<Category[]> {
+        const url = filter ?
+            `${this.assessBaseUrl}?${encodeURI(filter)}` : this.assessBaseUrl;
+        return this.genericApi.get(url);
     }
 
     /**
