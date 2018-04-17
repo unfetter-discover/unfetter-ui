@@ -1,6 +1,5 @@
 import {
         Component,
-        OnInit,
         Inject,
         Input,
         ViewChild,
@@ -8,25 +7,27 @@ import {
         TemplateRef,
         ViewContainerRef,
         ChangeDetectorRef,
+        AfterViewInit,
     } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
+import { Store } from '@ngrx/store';
 
 import { IndicatorSharingFeatureState } from '../store/indicator-sharing.reducers';
 import { HeatmapComponent } from '../../global/components/heatmap/heatmap.component';
 import { HeatMapOptions } from '../../global/components/heatmap/heatmap.data';
-import { GenericApi } from '../../core/services/genericapi.service';
 import { Constance } from '../../utils/constance';
+import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 
 @Component({
     selector: 'indicator-heat-map',
     templateUrl: './indicator-heat-map.component.html',
     styleUrls: ['./indicator-heat-map.component.scss'],
 })
-export class IndicatorHeatMapComponent implements OnInit {
+export class IndicatorHeatMapComponent implements AfterViewInit {
 
     public heatmap: any[] = [];
     @ViewChild('heatmapView') private heatmapView: HeatmapComponent;
@@ -61,66 +62,58 @@ export class IndicatorHeatMapComponent implements OnInit {
     constructor(
         public dialogRef: MatDialogRef<IndicatorHeatMapComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
-        public genericApi: GenericApi,
         private overlay: Overlay,
         private vcr: ViewContainerRef,
         private changeDetector: ChangeDetectorRef,
+        public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>
     ) { }
 
-    ngOnInit() {
-        this.loadAttackPatterns();
-    }
-
-    /**
-     * @description retrieve the attack patterns and their tactics phases from the backend database
-     */
-    private loadAttackPatterns() {
-        const sort = { 'stix.name': '1' };
-        const project = {
-            'stix.name': 1,
-            'stix.description': 1,
-            'stix.kill_chain_phases': 1,
-            'extendedProperties.x_mitre_data_sources': 1,
-            'extendedProperties.x_mitre_platforms': 1,
-            'stix.id': 1,
-        };
-        const filter = encodeURI(`sort=${JSON.stringify(sort)}&project=${JSON.stringify(project)}`);
-        const initData$ = this.genericApi.get(`${Constance.ATTACK_PATTERN_URL}?${filter}`)
-            .finally(() => {
-                if (initData$) {
-                    initData$.unsubscribe();
-                }
-            })
-            .subscribe(
-                (results: any[]) => {
-                    const collects = {attackPatterns: {}, phases: {}};
-                    this.attackPatterns = results.reduce(
-                        (collect, pattern) => this.collectAttackPatterns(collect, pattern), collects).attackPatterns;
-                    this.heatmap = this.groupAttackPatternsByKillchain(collects.phases);
-                },
-                (err) => console.log(err)
-            );
+    ngAfterViewInit() {
+        // NOTE This is a hack to get the modal to start to render before the data is processed, 
+        // since there is a noticeable lag time when that occurs
+        requestAnimationFrame(() => {
+            const getAttackPatterns$ = this.store.select('indicatorSharing')
+                .pluck('attackPatterns')
+                .take(1)
+                .subscribe(
+                    (attackPatterns: any[]) => {
+                        const collects = { attackPatterns: {}, phases: {} };
+                        attackPatterns.reduce(
+                            (collect, pattern) => this.collectAttackPatterns(collect, pattern), collects);
+                        this.attackPatterns = collects.attackPatterns;
+                        this.heatmap = this.groupAttackPatternsByKillchain(collects.phases);
+                    },
+                    (err) => {
+                        console.log(err);
+                    },
+                    () => {
+                        if (getAttackPatterns$) {
+                            getAttackPatterns$.unsubscribe();
+                        }
+                    }
+                );
+        });
     }
 
     /**
      * @description now group up all the phases and the attack patterns they have, for the heatmap display
      */
     private collectAttackPatterns(collects, pattern) {
-        const name = pattern.attributes.name;
+        const name = pattern.name;
         if (name) {
             collects.attackPatterns[name] = Object.assign({}, {
                 title: name,
                 name: name,
-                id: pattern.attributes.id,
-                description: pattern.attributes.description,
-                phases: (pattern.attributes.kill_chain_phases || []).map(p => p.phase_name),
-                sources: pattern.attributes.x_mitre_data_sources,
-                platforms: pattern.attributes.x_mitre_platforms,
+                id: pattern.id,
+                description: pattern.description,
+                phases: (pattern.kill_chain_phases || []).map(p => p.phase_name),
+                sources: pattern.x_mitre_data_sources,
+                platforms: pattern.x_mitre_platforms,
                 value: 'inactive',
             });
         }
 
-        (pattern.attributes.kill_chain_phases || [])
+        (pattern.kill_chain_phases || [])
             .forEach(p => {
                 const batch = p.phase_name
                     .replace(/\-/g, ' ')

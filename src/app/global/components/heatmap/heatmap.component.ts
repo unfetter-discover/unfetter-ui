@@ -27,7 +27,6 @@ import {
         ViewRules,
         HeatMapOptions,
     } from './heatmap.data';
-import { GenericApi } from '../../../core/services/genericapi.service';
 import { Dictionary } from '../../../models/json/dictionary';
 
 /**
@@ -165,7 +164,6 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
     private readonly subscriptions: Subscription[] = [];
 
     constructor(
-        protected genericApi: GenericApi,
         private overlay: Overlay,
         private vcr: ViewContainerRef,
         private renderer: Renderer2,
