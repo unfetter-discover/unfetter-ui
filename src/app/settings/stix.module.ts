@@ -14,7 +14,6 @@ import { CampaignComponent, CampaignsEditComponent, CampaignsHomeComponent, Camp
 import { CategoriesEditComponent } from './stix-objects/categories/categories-edit/categories-edit.component';
 import { CategoriesHomeComponent } from './stix-objects/categories/categories-home.component';
 import { CategoriesListComponent } from './stix-objects/categories/categories-list/categories-list.component';
-import { CategoriesNewComponent } from './stix-objects/categories/categories-new/categories-new.component';
 import { CategoriesComponent } from './stix-objects/categories/categories/categories.component';
 import { CourseOfActionComponent, CourseOfActionEditComponent, CourseOfActionHomeComponent, CourseOfActionListComponent, CourseOfActionNewComponent } from './stix-objects/course-of-actions';
 import { IdentityComponent, IdentityEditComponent, IdentityHomeComponent, IdentityListComponent, IdentityNewComponent } from './stix-objects/identities';
@@ -59,7 +58,6 @@ const stixComponents = [
   CategoriesHomeComponent,
   CategoriesEditComponent,
   CategoriesListComponent,
-  CategoriesNewComponent,
 
   CampaignsHomeComponent,
   CampaignsListComponent,

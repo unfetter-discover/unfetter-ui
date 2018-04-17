@@ -2,11 +2,15 @@
   <div class="col-md-12">
     <div class="row">
       <div class="col-md-12">
+          <created-by-ref [model]="category"></created-by-ref>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
         <div class="form-group">
           <mat-input-container class="full-width">
             <input matInput class="category-name" required placeholder="Name" value="{{category.name}}" [(ngModel)]="category.name">
           </mat-input-container>
-
         </div>
       </div>
     </div>
@@ -15,6 +19,51 @@
         <mat-input-container class="full-width">
           <textarea matInput class="category-desc" matTextareaAutosize placeholder="Description" [(ngModel)]="category.description">{{category.description}}</textarea>
         </mat-input-container>
+      </div>
+    </div>
+    <div class="row" *ngFor="let framework of frameworks">
+      <div class="col-md-12" *ngFor="let assessedObject of category.assessed_objects">
+        <form class="flex full-width">
+          <span class="flex1">{{lookupAttackPatternName(framework.framework, assessedObject.assessed_object_ref)}}</span>
+          <mat-form-field class="flex1">
+            <mat-select name="mitigates" placeholder="Mitigate" [value]="findQuestionScore(assessedObject, 'mitigate')" 
+                (selectionChange)="onAnswer('mitigate', assessedObject, $event)">
+              <mat-option *ngFor="let answer of answers" [value]="answer.id">
+                {{ answer.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="flex1">
+            <mat-select name="indicates" placeholder="Indicate" [value]="findQuestionScore(assessedObject, 'indicate')"
+              (selectionChange)="onAnswer('indicate', assessedObject, $event)">
+              <mat-option *ngFor="let answer of answers" [value]="answer.id">
+                {{ answer.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="flex1">
+            <mat-select name="" placeholder="Respond" [value]="findQuestionScore(assessedObject, 'respond')"
+              (selectionChange)="onAnswer('respond', assessedObject, $event)">
+              <mat-option *ngFor="let answer of answers" [value]="answer.id">
+                {{ answer.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </form>
+      </div>
+      <div class="col-md-12">
+        <label for="">Suggested Attack Patterns for {{framework.framework}}</label>
+        <div>
+          <form>
+            <mat-form-field class="full-width">
+              <mat-select name="suggest-attack-patterns" placeholder="Add/Remove attack pattern(s)" class="full-width" multiple (selectionChange)="onAttackPatternChange($event)">
+                <mat-option *ngFor="let attackPattern of framework.attackPatterns" [value]="attackPattern.id">
+                  {{ attackPattern.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </form>
+        </div>
       </div>
     </div>
     <!-- <div class="row">
@@ -32,9 +81,9 @@
       </div>
     </div> -->
 
-    <kill-chain-phases [(model)]="category"></kill-chain-phases>
+    <!-- <kill-chain-phases [(model)]="category"></kill-chain-phases> -->
 
-    <external-reference [(model)]="category"></external-reference>
+    <!-- <external-reference [(model)]="category"></external-reference> -->
 
     <div class="row">
       <div class="col-md-12">

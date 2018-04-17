@@ -81,7 +81,7 @@ const stixRoutes: Routes = [
         },
         {
           path: 'new',
-          component: CategoriesNewComponent
+          component: CategoriesEditComponent
         },
         {
           path: ':id',
