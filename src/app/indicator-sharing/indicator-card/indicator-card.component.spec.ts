@@ -27,6 +27,34 @@ describe('IndicatorCardComponent', () => {
     let fixture: ComponentFixture<IndicatorCardComponent>;
     let store;
 
+    const mockIndicator = {
+        name: 'test indicator',
+        id: 'indicator-1234',
+        kill_chain_phases: [
+            {
+                phase_name: 'test',
+                kill_chain_name: 'test'
+            }
+        ],
+        metaProperties: {
+            interactions: [
+                {
+                    user: {
+                        id: '1234'
+                    }
+                }
+            ]
+        }
+    };
+
+    const mockSearchParams: SearchParameters = {
+        ...initialSearchParameters,
+        killChainPhases: ['test'],
+        labels: ['test']
+    };
+
+    const mockCollapseAllCards = new BehaviorSubject(false);
+
     const mockIndService = {
         addLabel: (label, indicatorId) => {
             return Observable.of({
@@ -89,41 +117,13 @@ describe('IndicatorCardComponent', () => {
                 ],
             };
         }
-    };
-
-    const mockIndicator = {
-        name: 'test indicator',
-        id: 'indicator-1234',
-        kill_chain_phases: [
-            {
-                phase_name: 'test',
-                kill_chain_name: 'test'
-            }
-        ],
-        metaProperties: {           
-            interactions: [
-                {
-                    user: {
-                        id: '1234'
-                    }
-                }
-            ]
-        }
-    };
-
-    const mockSearchParams: SearchParameters = {
-        ...initialSearchParameters,
-        killChainPhases: ['test'],
-        labels: ['test']
-    };
-
-    const mockCollapseAllCards = new BehaviorSubject(false);
+    };   
 
     const mockRenderer = {
         listen: (target, event, callback) => {
             return () => {};
         }
-    }
+    };
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
