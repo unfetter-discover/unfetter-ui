@@ -28,7 +28,27 @@ export const mockConfig = {
                 'Preparation'
             ]
         }
-    ]
+    ],
+    openVocab: {
+        'indicator-label-ov': {
+            enum: [ 'test' ]
+        },
+        'identity-label-ov': {
+            enum: [ 'test' ]
+        },
+        'malware-label-ov': {
+            enum: [ 'test' ]
+        },
+        'report-label-ov': {
+            enum: [ 'test' ]
+        },
+        'threat-actor-label-ov': {
+            enum: [ 'test' ]
+        },
+        'tool-label-ov': {
+            enum: [ 'test' ]
+        },
+    }
 };
 
 export function makeRootMockStore(store: Store<fromRoot.AppState>) {

@@ -39,7 +39,7 @@ export class AddLabelReactiveComponent implements OnInit {
         this.labelAdded.emit(this.localForm.value);
         (this.parentForm.get('labels') as FormArray).push(this.localForm);
         this.resetForm();
-        this.showAddLabel = false;        
+        this.showAddLabel = false;
     }
 
     public buttonClick(e) {

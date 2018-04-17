@@ -48,7 +48,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
         super(store, changeDetectorRef);
     }
 
-    public ngOnInit() { 
+    public ngOnInit() {
         this.initBaseData();
 
         const filteredIndicatorSub$ = this.store.select('indicatorSharing')
