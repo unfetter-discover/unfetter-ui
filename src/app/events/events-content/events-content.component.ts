@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Constance } from '../../utils/constance';
 import { EventsService } from '../events.service';
+import { MatSort } from '@angular/material';
 
 @Component({
   selector: 'events-content',
   templateUrl: './events-content.component.html',
   styleUrls: ['./events-content.component.scss']
 })
-export class EventsContentComponent implements OnInit {
+export class EventsContentComponent implements OnInit, AfterViewInit {
   readonly DEFAULT_CHART_DAYS: string;
   readonly columnIds: string[];
   public barChartOptions: any;
@@ -16,8 +17,10 @@ export class EventsContentComponent implements OnInit {
   public colors: any;
   public daysOfDataValue: string;
 
+  @ViewChild(MatSort) sort: MatSort;
+
   constructor( public service: EventsService) {
-    this.columnIds = ['date', 'ip', 'city', 'country', 'threat', 'attack_pattern', 'potential actor'];
+    this.columnIds = ['last_seen', 'hostname', 'observed_data_refs_city', 'observed_data_refs_country', 'threat', 'attack_pattern', 'potential actor'];
     this.DEFAULT_CHART_DAYS = '7';
 
     this.barChartType = 'bar';
@@ -58,5 +61,9 @@ export class EventsContentComponent implements OnInit {
       },
     ];
     this.service.daysOfData = this.DEFAULT_CHART_DAYS;
+  }
+
+  ngAfterViewInit() {
+    this.service.sort = this.sort;
   }
 }
