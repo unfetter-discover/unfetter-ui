@@ -105,35 +105,34 @@ describe('IndicatorHeatMapComponent', () => {
             component['heatmapView']['createHeatMap']();
 
             expect(component.attackPattern).toBeNull();
+            component['changeDetector'].detach(); // NOTE: prevents view from being destroyed ahead of other tests
 
             const first = fixture.nativeElement.querySelector('g.heat-map-cell');
             expect(first).not.toBeNull();
 
-            // None of this works for the next component in the tests; Jasmine complains the view was destroyed
-            // component.onTooltip({
-            //     row: component.heatmap[0].cells[0],
-            //     event: {target: first}
-            // });
-            // setTimeout(() => {
-            //     fixture.detectChanges();
-            //     expect(component.attackPattern).not.toBeNull();
-            //     expect(component.attackPattern.id).toEqual(component.heatmap[0].cells[0].id);
+            component.onTooltip({
+                row: component.heatmap[0].cells[0],
+                event: {target: first}
+            });
+            setTimeout(() => {
+                fixture.detectChanges();
+                expect(component.attackPattern).not.toBeNull();
+                expect(component.attackPattern.id).toEqual(component.heatmap[0].cells[0].id);
 
-            //     // now simulate moving off the attack pattern
-            //     component.onTooltip({
-            //         row: null,
-            //         event: {target: first}
-            //     });
-            //     setTimeout(() => {
-            //         fixture.detectChanges();
-            //         expect(component.attackPattern).toBeNull();
+                // now simulate moving off the attack pattern
+                component.onTooltip({
+                    row: null,
+                    event: {target: first}
+                });
+                setTimeout(() => {
+                    fixture.detectChanges();
+                    expect(component.attackPattern).toBeNull();
 
-            //         // NOTE, if I also split this off into its own test, Jasmine complains the view was destroyed
-            //         const spy = spyOn(component, 'toggleAttackPattern').and.callThrough();
-            //         first.dispatchEvent(new Event('click'));
-            //         expect(spy).toHaveBeenCalled();
-            //     }, 5);
-            // }, 5);
+                    const spy = spyOn(component, 'toggleAttackPattern').and.callThrough();
+                    first.dispatchEvent(new Event('click'));
+                    expect(spy).toHaveBeenCalled();
+                }, 5);
+            }, 5);
         });
     }));
 
