@@ -56,6 +56,12 @@ export class AssessEffects {
         .switchMap(() => this.assessService.load())
         .map((arr: any[]) => new assessActions.FetchAssessment(arr[0]));
 
+    @Effect()
+    public fetchCategories = this.actions$
+        .ofType(assessActions.FETCH_CATEGORIES)
+        .switchMap(() => this.assessService.loadCategories())
+        .map((arr: any[]) => new assessActions.FetchCategories(arr));
+
     @Effect({ dispatch: false })
     public startAssessment = this.actions$
         .ofType(assessActions.START_ASSESSMENT)

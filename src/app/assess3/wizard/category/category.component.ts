@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import * as assessActions from '../../store/assess.actions';
+import * as assessReducers from '../../store/assess.reducers';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'unf-assess3-wizard-category',
@@ -10,9 +13,13 @@ export class CategoryComponent implements OnInit {
   public tempCategories: string[] = [];
   public dummyCategories: string[] = [ 'Generic AV', 'Standard EDR', 'Network Analysis', 'Network Firewall', 'sysmon', 'Autoruns', 'Enterprise SIEM' ];
 
-  constructor() { }
+    
+  constructor(
+    private wizardStore: Store<assessReducers.AssessState>
+  ) { }
 
   ngOnInit() {
+    this.wizardStore.dispatch(new assessActions.FetchCategories());
   }
 
   /**
