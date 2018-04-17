@@ -40,23 +40,7 @@ describe('IndicatorSharingFiltersComponent', () => {
                 FormsModule,
                 NoopAnimationsModule,
                 StoreModule.forRoot(mockReducer)
-            ],
-            // providers: [
-            //     {
-            //         provide: OverlayContainer, useFactory: () => {
-            //             overlayContainerElement = document.createElement('div') as HTMLElement;
-            //             overlayContainerElement.classList.add('cdk-overlay-container');
-
-            //             document.body.appendChild(overlayContainerElement);
-
-            //             // remove body padding to keep consistent cross-browser
-            //             document.body.style.padding = '0';
-            //             document.body.style.margin = '0';
-
-            //             return { getContainerElement: () => overlayContainerElement };
-            //         }
-            //     }
-            // ]
+            ]
         })
         .compileComponents();
     }));
