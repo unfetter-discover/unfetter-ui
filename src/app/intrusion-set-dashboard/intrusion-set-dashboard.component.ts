@@ -131,12 +131,12 @@ export class IntrusionSetDashboardComponent implements OnInit {
      * @description
      */
     public onIntrusionSetsChange(selections: any[]): void {
-        this.treeSpinner = true;
         if (!selections || (selections.length === 0)) {
             this.intrusionSets = null;
             this.killChainPhases = this.groupKillchain;
             this.treeData = null;
         } else {
+            this.treeSpinner = true;
             this.killChainPhases = null;
             const ids = selections.map((intrusionSet) => intrusionSet.id);
             const url = 'api/dashboards/intrusionSetView?intrusionSetIds=' + ids.join();
