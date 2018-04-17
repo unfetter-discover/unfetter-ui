@@ -28,7 +28,9 @@ export class CategoriesEditComponent extends CategoriesComponent implements OnIn
   public frameworks: Framework[] = [];
   public user: UserProfile;
   public loading = false;
+  public selectedAttackPatterns: AttackPattern[];
   public readonly answers = [
+    new AnswerOption('', ''),
     new AnswerOption('L', 'LOW'),
     new AnswerOption('M', 'MEDIUM'),
     new AnswerOption('S', 'SIGNIFICANT'),
@@ -79,7 +81,10 @@ export class CategoriesEditComponent extends CategoriesComponent implements OnIn
         return this.loadAttackPatterns(framework);
       })
       .subscribe(
-        (attackPatterns) => { },
+        (attackPatterns) => {
+          const framework = this.user.preferences.killchain;
+          this.resetSelectedAttackPatterns(framework);
+        },
         (err) => console.log(err),
         () => this.loading = false);
     this.subscriptions.push(getUser$);
@@ -133,7 +138,6 @@ export class CategoriesEditComponent extends CategoriesComponent implements OnIn
    * @returns void
    */
   public onAttackPatternChange(event: MatSelectChange): void {
-    console.log(event);
     if (!event || !event.value) {
       return;
     }
@@ -159,6 +163,16 @@ export class CategoriesEditComponent extends CategoriesComponent implements OnIn
         })
     ];
     this.category.assessed_objects = curAssessedObjects;
+  }
+
+  public resetSelectedAttackPatterns(assesedObjects: AssessedObject[]): AttackPattern[] {
+    if (!assessedObjects) {
+      return [];
+    }
+
+    assessedObjects.map((assessedObject) => {
+      return this.lookupAttackPattern(framework);
+    });
   }
 
   /**
@@ -195,10 +209,14 @@ export class CategoriesEditComponent extends CategoriesComponent implements OnIn
       return id;
     }
 
+    const attackPattern = this.lookupAttackPattern(framework, id);
+    return attackPattern.name || id;
+  }
+
+  public lookupAttackPattern(framework: string, id = ''): AttackPattern {
     const selectedFramework = this.frameworks.find((el) => el.framework === framework);
     const attackPatterns = selectedFramework.attackPatterns || [];
-    const attackPattern = attackPatterns.find((el) => el.id === id);
-    return attackPattern.name || id;
+    return attackPatterns.find((el) => el.id === id);
   }
 
   public findQuestionScore(assessedObject: AssessedObject, curQuestion: string): string {

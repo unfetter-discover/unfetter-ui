@@ -30,7 +30,7 @@ export class CategoriesListComponent extends CategoriesComponent implements OnIn
     public snackBar: MatSnackBar) {
 
     super(stixService, genericApiService, route, router, dialog, location, snackBar);
-    this.url = 'x-unfetter-categories';
+    this.url = 'categories';
   }
 
   /**
