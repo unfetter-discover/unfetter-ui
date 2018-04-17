@@ -402,6 +402,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
     // switch to new open panel
     this.openedSidePanel = panelName;
+
     // reload questions
     this.refreshToOpenedAssessmentType();
     if (this.openedSidePanel && this.categories[this.openedSidePanel]) {
