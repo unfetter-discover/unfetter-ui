@@ -14,6 +14,7 @@ import { RelatedComponent } from './related/related.component';
 import { EventsEffects } from './store/events.effects';
 import { eventsReducer } from './store/events.reducers';
 import { IPGeoService } from './ipgeo.service';
+import { MatSortModule } from '@angular/material';
 
 @NgModule({
   imports: [
@@ -23,6 +24,7 @@ import { IPGeoService } from './ipgeo.service';
     StoreModule.forFeature('sightingsGroup', eventsReducer),
     EffectsModule.forFeature([EventsEffects]),
     ChartsModule,
+    MatSortModule,
   ],
   declarations: [EventsLayoutComponent, EventsComponent, EventsContentComponent, RelatedComponent, FiltersComponent],
   providers: [EventsService, IPGeoService, DatePipe],
