@@ -1,5 +1,5 @@
 <unf-heatmap #heatmap [data]="heatMapData" [options]="heatMapOptions"
-        (hover)="highlightAttackPattern($event, true)" (click)="highlightAttackPattern($event)"></unf-heatmap>
+        (hover)="onHover($event, true)" (click)="onClick($event)"></unf-heatmap>
 
 <ng-template #apTooltipTemplate>
     <div class="col-md-12 attack-pattern-tooltip">
@@ -18,21 +18,21 @@
                     <div class="col-md-3"><label>Description</label></div>
                     <div class="col-md-8 attack-pattern-desc" [innerHTML]="attackPattern.description"></div>
                 </div>
-                <div class="row" *ngIf="attackPattern.x_mitre_data_sources && attackPattern.x_mitre_data_sources.length">
+                <div class="row" *ngIf="attackPattern.sources && attackPattern.sources.length">
                     <div class="col-md-3"><label>Data Sources</label></div>
-                    <div class="col-md-9 attack-pattern-sources">{{attackPattern.x_mitre_data_sources.join(', ')}}</div>
+                    <div class="col-md-9 attack-pattern-sources">{{attackPattern.sources.join(', ')}}</div>
                 </div>
-                <div class="row" *ngIf="attackPattern.x_mitre_platforms && attackPattern.x_mitre_platforms.length">
+                <div class="row" *ngIf="attackPattern.platforms && attackPattern.platforms.length">
                     <div class="col-md-3"><label>Platforms</label></div>
-                    <div class="col-md-9 attack-pattern-platforms">{{attackPattern.x_mitre_platforms.join(', ')}}</div>
+                    <div class="col-md-9 attack-pattern-platforms">{{attackPattern.platforms.join(', ')}}</div>
                 </div>
                 <div class="row" *ngIf="attackPattern.phases && attackPattern.phases.length">
                     <div class="col-md-3"><label>Phases</label></div>
                     <div class="col-md-9 attack-pattern-phases">{{attackPattern.phases.join(', ') | capitalize}}</div>
                 </div>
-                <div class="row" *ngIf="attackPattern.intrusion_sets && attackPattern.intrusion_sets.length">
+                <div class="row" *ngIf="attackPattern.analytics && attackPattern.analytics.length">
                     <div class="col-md-3"><label>Intrusion Sets</label></div>
-                    <div class="col-md-9 attack-pattern-intrusion-sets">{{getIntrusionSetNames(attackPattern)}}</div>
+                    <div class="col-md-9 attack-pattern-analytics">{{getAnalyticNames(attackPattern)}}</div>
                 </div>
             </mat-card-content>
         </mat-card>

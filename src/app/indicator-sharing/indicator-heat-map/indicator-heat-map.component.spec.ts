@@ -92,7 +92,7 @@ describe('IndicatorHeatMapComponent', () => {
         fixture.whenStable().then(() => {
             expect(component).toBeTruthy();
             expect(component.heatmap.length).toBe(2);
-            component['heatmapView'].heatMapData = component.heatmap.slice(0);
+            component['heatmapView'].data = component.heatmap.slice(0);
             component['heatmapView']['createHeatMap']();
         });
     }));
@@ -101,7 +101,7 @@ describe('IndicatorHeatMapComponent', () => {
         fixture.detectChanges();
         fixture.whenStable().then(() => {
             component.heatmapOptions.hover = {hoverDelay: 2};
-            component['heatmapView'].heatMapData = component.heatmap.slice(0);
+            component['heatmapView'].data = component.heatmap.slice(0);
             component['heatmapView']['createHeatMap']();
 
             expect(component.attackPattern).toBeNull();

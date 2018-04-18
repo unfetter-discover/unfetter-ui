@@ -29,6 +29,7 @@ import { ThreatDashboard } from '../models/threat-dashboard';
 import { topRightSlide } from '../../global/animations/top-right-slide';
 import { KillChainPhase } from '../../models';
 import { HeatMapOptions, HeatBatchData } from '../../global/components/heatmap/heatmap.data';
+import { AttackPatternCell } from '../../global/components/heatmap/ap-heatmap.component';
 import { Dictionary } from '../../models/json/dictionary';
 
 @Component({
@@ -63,7 +64,7 @@ export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit
   public treeMapData: Array<any> = [];
   public showTreeMap = false;
 
-  public heatMapData: Array<HeatBatchData> = [];
+  public heatMapData: Array<AttackPatternCell> = [];
   public readonly heatMapOptions: HeatMapOptions = {
     text: {
       showCellText: true,
@@ -303,34 +304,25 @@ export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit
    */
   private createAttackPatternHeatMap() {
     // Collect the data.
-    let data: HeatBatchData[] = [];
-    this.intrusionSetsDashboard.killChainPhases.forEach(phase => {
-      let index = 0;
-      if (phase && phase.name && phase.attack_patterns) {
-        const name = phase.name
-          .replace(/\-/g, ' ')
-          .split(/\s+/)
-          .map(w => w[0].toUpperCase() + w.slice(1))
-          .join(' ')
-          .replace(/\sAnd\s/g, ' and ')
-          ;
-        const d: HeatBatchData = {
-          title: name,
-          value: null,
-          cells: []
-        };
-        phase.attack_patterns.forEach(attackPattern => {
-          if (attackPattern.name) {
-            d.cells.push({
-              title: attackPattern.name,
-              value: attackPattern.isSelected
-            });
-          }
-        });
-        data.push(d);
+    this.heatMapData = this.attackPatterns.map((attackPattern: any) => {
+      const ap = {
+        id: attackPattern.id,
+        name: attackPattern.attributes.name,
+        title: attackPattern.attributes.name,
+        value: attackPattern.isSelected,
+        description: attackPattern.attributes.description,
+        phases: [],
+        sources: [],
+        platforms: attackPattern.attributes.x_mitre_platforms,
+      };
+      if (attackPattern.attributes.kill_chain_phases) {
+        ap.phases = attackPattern.attributes.kill_chain_phases.map(phase => phase.phase_name);
       }
+      if (attackPattern.attributes.x_mitre_data_sources) {
+        ap.sources = attackPattern.attributes.x_mitre_data_sources.map(source => source);
+      }
+      return ap;
     });
-    this.heatMapData = data;
   }
 
   /**

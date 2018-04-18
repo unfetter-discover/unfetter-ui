@@ -106,8 +106,8 @@ class DrawingBounds {
 })
 export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestroy {
 
-    @Input() public heatMapData: Array<HeatBatchData> = [];
-    private previousHeatMapData: Array<HeatBatchData>; // used to detect when the data changes
+    @Input() public data: Array<HeatBatchData> = [];
+    private previousData: Array<HeatBatchData>; // used to detect when the data changes
 
     public heatmap: DrawingBounds;  // public for testing
     public minimap: DrawingBounds;
@@ -156,10 +156,10 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
         },
     };
 
-    @Output() public onHover = new EventEmitter<{row: HeatCellData, event?: UIEvent}>();
+    @Output() public hover = new EventEmitter<{row: HeatCellData, event?: UIEvent}>();
     private hoverTimeout: number;
 
-    @Output() public onClick = new EventEmitter<{row: HeatCellData, event?: UIEvent}>();
+    @Output() public click = new EventEmitter<{row: HeatCellData, event?: UIEvent}>();
 
     private readonly subscriptions: Subscription[] = [];
 
@@ -184,7 +184,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
     public ngAfterViewInit(): void {
         requestAnimationFrame(() => {
             this.createHeatMap();
-            this.previousHeatMapData = this.heatMapData;
+            this.previousData = this.data;
             this.changeDetector.detectChanges();
         });
     }
@@ -197,11 +197,11 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
         const rect: DOMRect = node ? node.getBoundingClientRect() : null;
         if (!node || !rect || !rect.width || !rect.height) {
             return;
-        } else if (this.heatMapData !== this.previousHeatMapData) {
+        } else if (this.data !== this.previousData) {
             console.log(`(${new Date().toISOString()}) heatmap data change detected`);
             this.changeDetector.markForCheck();
             this.createHeatMap();
-            this.previousHeatMapData = this.heatMapData;
+            this.previousData = this.data;
         } else if (this.heatmap &&
                 ((this.heatmap.rect.width !== rect.width) || (this.heatmap.rect.height !== rect.height))) {
             console.log(`(${new Date().toISOString()}) heatmap viewport change detected`);
@@ -224,11 +224,11 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
      */
     private createHeatMap() {
         const graphElement = d3.select('.heat-map');
-        if (this.heatMapData && this.heatMapData.length && graphElement) {
+        if (this.data && this.data.length && graphElement) {
             const rect: DOMRect = (graphElement.node() as any).getBoundingClientRect();
             if (rect && rect.width && rect.height) {
                 // Create a work object based on the available space to draw the canvas.
-                const largestBatch = this.heatMapData
+                const largestBatch = this.data
                     .reduce((max, batch) => max = Math.max(max, batch.cells.length), 0);
                 this.heatmap = new DrawingBounds(rect, this.options.view, largestBatch);
                 this.heatmap.view = graphElement;
@@ -301,7 +301,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
      */
     private batchHeatMapData(): Dictionary<HeatBatchData> {
         const batches: Dictionary<HeatBatchData> = {};
-        this.heatMapData.forEach(d => {
+        this.data.forEach(d => {
             if (d.title) {
                 if (!batches[d.title]) {
                     batches[d.title] = {
@@ -598,7 +598,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
                 .attr('aria-label', data.title);
         if (!isMini) {
             cell
-                .on('click', p => this.onClick.emit({row: data, event: d3.event}))
+                .on('click', p => this.click.emit({row: data, event: d3.event}))
                 .on('mouseover', p => this.onCellHover(data))
                 .on('mouseout', () => this.offCellHover());
         }
@@ -787,7 +787,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
         window.clearTimeout(this.hoverTimeout);
         const ev = d3.event;
         this.hoverTimeout = window.setTimeout(
-            () => this.onHover.emit({row: cellData, event: ev}),
+            () => this.hover.emit({row: cellData, event: ev}),
             this.options.hover.hoverDelay);
     }
 
@@ -796,7 +796,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
      */
     private offCellHover() {
         window.clearTimeout(this.hoverTimeout);
-        this.onHover.emit(null);
+        this.hover.emit(null);
     }
 
     /**

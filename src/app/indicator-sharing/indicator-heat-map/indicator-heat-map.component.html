@@ -2,8 +2,8 @@
 <mat-dialog-content>
     <div id="indicator-analytic-heat-map">
         <div id="indicator-heat-map">
-            <unf-heatmap #heatmapView [heatMapData]="heatmap" [options]="heatmapOptions"
-                    (onHover)="onTooltip($event)" (onClick)="toggleAttackPattern($event)"></unf-heatmap>
+            <unf-heatmap #heatmapView [data]="heatmap" [options]="heatmapOptions"
+                    (hover)="onTooltip($event)" (click)="toggleAttackPattern($event)"></unf-heatmap>
             <ng-template #tooltipTemplate>
                 <div class="col-md-12 attack-pattern-tooltip">
                     <mat-card>
