@@ -33,11 +33,16 @@ export class CategoriesComponent extends BaseStixComponent<Category> implements 
     super(stixService, route, router, dialog, location, snackBar);
     stixService.url = Constance.X_UNFETTER_CATEGORY_URL;
   }
+
   /**
    * @returns void
    */
   public ngOnInit(): void {
-    this.loadCategory();
+    let sub$ = this.loadCategory()
+      .subscribe(
+        (data: Category) => this.category = data as Category,
+        (error) => console.log('error ' + error),
+        () => this.closeSubscription(sub$));
   }
 
   public getChipInfo(chipInfo): void {
@@ -65,7 +70,7 @@ export class CategoriesComponent extends BaseStixComponent<Category> implements 
    * @returns Observable<Category>
    */
   public saveButtonClicked(): void {
-    let o$;
+    let o$: Observable<Category>;
     if (this.category.id) {
       o$ = this.update(this.category);
     } else {
@@ -74,7 +79,12 @@ export class CategoriesComponent extends BaseStixComponent<Category> implements 
     const subscription = o$
       .subscribe(
         (data) => {
-          console.log('saved', data);
+          const name = Array.isArray(data) && data.length > 0 ? data[0].name : data.name;
+          this.snackBar.open(name + ' has been successfully saved', '', {
+            duration: this.duration,
+            extraClasses: ['snack-bar-background-success']
+          });
+          this.location.back();
         },
         (error) => console.log('error ' + error),
         () => this.closeSubscription(subscription));
@@ -84,13 +94,10 @@ export class CategoriesComponent extends BaseStixComponent<Category> implements 
    * @description load the current category by id in the url
    * @returns void
    */
-  public loadCategory(): void {
-    let sub$ = super.get()
-      .map((el: any) => el.attributes || el)
-      .subscribe(
-        (data: Category) => this.category = data as Category,
-        (error) => console.log('error ' + error),
-        () => this.closeSubscription(sub$));
+  public loadCategory(): Observable<Category> {
+    return super.get()
+      .map((el: any) => this.unwrapJsonData(el))
+      .map(el => this.category = el);
   }
 
   public formatText(inputString): string {
@@ -106,7 +113,9 @@ export class CategoriesComponent extends BaseStixComponent<Category> implements 
       return Observable.empty();
     }
     const url = Constance.X_UNFETTER_CATEGORY_URL;
-    return this.genericApiService.post(url, this.jsonObjectWrapper(category));
+    return this.genericApiService
+      .post(url, this.jsonDataWrapper(category))
+      .map((el: any) => this.unwrapJsonData(el));
   }
 
   /**
@@ -118,15 +127,40 @@ export class CategoriesComponent extends BaseStixComponent<Category> implements 
       return Observable.empty();
     }
     const url = `${Constance.X_UNFETTER_CATEGORY_URL}/${category.id}`;
-    return this.genericApiService.patch(url, this.jsonObjectWrapper(category));
+    return this.genericApiService
+      .patch(url, this.jsonDataWrapper(category))
+      .map((el: any) => this.unwrapJsonData(el));
   }
 
-  public jsonObjectWrapper(category: Category): { data: { attributes: Category } } {
+  /**
+   * @description rest api expect a jsondata api wrapper
+   * @param  {Category} category
+   * @returns Category
+   */
+  public jsonDataWrapper(category: Category): { data: { attributes: Category } } {
     return {
       data: {
         attributes: category,
       }
     }
+  }
+
+  /**
+   * @description unwrapp attributes for this Category object
+   * @param  {any} el - can be an array or single element
+   * @returns Category
+   */
+  public unwrapJsonData(el: any): Category {
+    if (!el) {
+      return el;
+    }
+
+    if (Array.isArray(el)) {
+      el = el.map((x) => this.unwrapJsonData(x));
+    } else {
+      el = el.attributes || el;
+    }
+    return el;
   }
 
 }

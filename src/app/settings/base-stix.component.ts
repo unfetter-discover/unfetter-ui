@@ -12,7 +12,7 @@ export class BaseStixComponent<T = any> {
     public filteredItems: T[];
     public validationErrorMessages: string[] = [];
     public selectedExternal: any;
-    private duration = 3000;
+    public readonly duration = 3000;
 
     constructor(
         public service: BaseStixService,

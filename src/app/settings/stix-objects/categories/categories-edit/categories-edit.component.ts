@@ -28,7 +28,7 @@ export class CategoriesEditComponent extends CategoriesComponent implements OnIn
   public frameworks: Framework[] = [];
   public user: UserProfile;
   public loading = false;
-  public selectedAttackPatterns: AttackPattern[];
+  public selectedAttackPatterns: string[];
   public readonly answers = [
     new AnswerOption('', ''),
     new AnswerOption('L', 'LOW'),
@@ -69,22 +69,40 @@ export class CategoriesEditComponent extends CategoriesComponent implements OnIn
       .pluck<any, UserProfile>('userProfile')
       .take(1)
       .distinctUntilChanged()
-      .do(() => {
-        const params = this.route.snapshot.params;
-        if (params['id']) {
-          this.loadCategory();
-        }
-      })
-      .switchMap((user: UserProfile) => {
+      .subscribe((user: UserProfile) => {
         this.user = user;
         const framework = this.user.preferences.killchain;
-        return this.loadAttackPatterns(framework);
-      })
-      .subscribe(
-        (attackPatterns) => {
-          const framework = this.user.preferences.killchain;
-          this.resetSelectedAttackPatterns(framework);
-        },
+        const params = this.route.snapshot.params;
+        const observables = [];
+        if (params['id']) {
+          const loadCat$ = this.loadCategory()
+            // initial questions answers for the drop downs
+            .map((category) => {
+                // unrolls the questions array and adds values just for MIR dropdowns
+                const assessedObjects = category.assessed_objects;
+                assessedObjects.forEach((assessedObject) => {
+                  const questions = assessedObject.questions || [];
+                  questions.forEach((x) => {
+                    const name = x.name.toLowerCase();
+                    assessedObject[`${name}Score`] = x.score;
+                  });
+                });
+                return category;
+            })
+            // sets the initial selected attack patterns drop down
+            .do((category) => this.selectedAttackPatterns = this.resetSelectedAttackPatterns(category.assessed_objects));
+          observables.push(loadCat$);
+        }
+        observables.push(this.loadAttackPatterns(framework));
+        const sub$ = Observable
+          .forkJoin(observables)
+          .subscribe(
+            (data) => {
+              console.log(data);
+            },
+            (err) => console.log(err));
+        this.subscriptions.push(sub$);
+      },
         (err) => console.log(err),
         () => this.loading = false);
     this.subscriptions.push(getUser$);
@@ -165,14 +183,23 @@ export class CategoriesEditComponent extends CategoriesComponent implements OnIn
     this.category.assessed_objects = curAssessedObjects;
   }
 
-  public resetSelectedAttackPatterns(assesedObjects: AssessedObject[]): AttackPattern[] {
+  /**
+   * @description used to specifiy the current list of selected attack patterns
+   * @param  {AssessedObject[]} assessedObjects
+   * @returns string[]
+   */
+  public resetSelectedAttackPatterns(assessedObjects: AssessedObject[]): string[] {
     if (!assessedObjects) {
       return [];
     }
 
-    assessedObjects.map((assessedObject) => {
-      return this.lookupAttackPattern(framework);
-    });
+    // return assessedObjects
+    //   .map((assessedObject) => this.lookupAttackPattern(assessedObject.assessed_object_ref))
+    //   .filter((el) => el !== undefined)
+    //   .map((el) => el.id);
+    return assessedObjects
+          .map((el) => el.assessed_object_ref)
+          .filter((el) => el !== undefined);
   }
 
   /**
@@ -196,6 +223,9 @@ export class CategoriesEditComponent extends CategoriesComponent implements OnIn
       answered.score = event.value;
       assessedObject.questions.push(answered);
     }
+
+    // needed to bind to drop down, didnt like mixing the view data w/ this model, but a function didnt work
+    assessedObject[questionName + 'Score'] = event.value;
   }
 
   /**
@@ -204,24 +234,50 @@ export class CategoriesEditComponent extends CategoriesComponent implements OnIn
    * @param  {} id=''
    * @returns string
    */
-  public lookupAttackPatternName(framework: string, id = ''): string {
+  public lookupAttackPatternName(id = '', framework?: string): string {
     if (!id) {
       return id;
     }
 
-    const attackPattern = this.lookupAttackPattern(framework, id);
+    const attackPattern = this.lookupAttackPattern(id, framework);
     return attackPattern.name || id;
   }
 
-  public lookupAttackPattern(framework: string, id = ''): AttackPattern {
-    const selectedFramework = this.frameworks.find((el) => el.framework === framework);
-    const attackPatterns = selectedFramework.attackPatterns || [];
+  /**
+   * @description find attack pattern with given id
+   *  will search the given framework or across all frameworks
+   * @param  {} id=''
+   * @param  {string} framework?
+   * @returns AttackPattern
+   */
+  public lookupAttackPattern(id = '', framework?: string, ): AttackPattern {
+    let attackPatterns;
+    if (framework) {
+      // attack patterns from given framework
+      const selectedFramework = this.frameworks.find((el) => el.framework === framework);
+      attackPatterns = selectedFramework.attackPatterns || [];
+    } else {
+      // all attack patterns
+      attackPatterns = this.frameworks
+        .map((el) => el.attackPatterns)
+        .reduce((acc, x) => acc.concat(x), []);
+    }
+    // return attack pattern w/ matching id
     return attackPatterns.find((el) => el.id === id);
   }
 
-  public findQuestionScore(assessedObject: AssessedObject, curQuestion: string): string {
-    return assessedObject.questions.find((el) => el.name === curQuestion).score || '';
-  }
+  /**
+   * caused a lot of change detection and the drop downs didnt work
+   * @param  {AssessedObject} assessedObject
+   * @param  {string} curQuestion
+   * @returns string
+   public findQuestionScore(assessedObject: AssessedObject, curQuestion: string): string {
+     if (!assessedObject || !assessedObject.questions || assessedObject.questions.length <= 0) {
+       return '';
+      }
+      return assessedObject.questions.find((el) => el.name === curQuestion).score || '';
+    }
+    */
 
 
   /**
