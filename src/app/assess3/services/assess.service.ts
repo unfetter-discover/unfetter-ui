@@ -107,6 +107,18 @@ export class AssessService {
     }
 
     /**
+     * @description load categories
+     * @param {string} filter
+     * @return {Observable<Category[]>}
+     */
+    public loadCategories(filter?: string): string[]  {
+        // const url = filter ?
+        //     `${this.assessBaseUrl}?${encodeURI(filter)}` : this.assessBaseUrl;
+        // return this.genericApi.get(url);
+        return [ 'Generic AV', 'Standard EDR', 'Network Analysis', 'Network Firewall', 'sysmon', 'Autoruns', 'Enterprise SIEM' ];
+    }
+
+    /**
      * @description
      * @param {string} capability id
      * @return {Observable<Capability> }

@@ -11,6 +11,7 @@ export interface AssessFeatureState extends fromApp.AppState {
 export interface AssessState {
     assessment: Assessment3;
     backButton: boolean;
+    categories: string[];
     // TODO: add attack pattern array
     // attackPatterns?: JsonApiData<AttackPattern>[];
     finishedLoading: boolean;
@@ -23,6 +24,7 @@ const genAssessState = (state?: Partial<AssessState>) => {
     const tmp = {
         assessment: new Assessment3(),
         backButton: false,
+        categories: [ 'Generic AV', 'Standard EDR', 'Network Analysis', 'Network Firewall', 'sysmon', 'Autoruns', 'Enterprise SIEM' ],
         finishedLoading: false,
         saved: { finished: false, id: '' },
         showSummary: false,
@@ -42,6 +44,10 @@ export function assessmentReducer(state = initialState, action: assessmentAction
         case assessmentActions.FETCH_ASSESSMENT:
             return genAssessState({
                 ...state,
+            });
+        case assessmentActions.FETCH_CATEGORIES:
+            return genAssessState({
+                ...state
             });
         case assessmentActions.START_ASSESSMENT:
             const a0 = new Assessment3();

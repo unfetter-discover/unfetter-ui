@@ -10,22 +10,22 @@
         </mat-panel-title>
       </mat-expansion-panel-header>
     </mat-expansion-panel>
-    <!--mat-expansion-panel *ngFor="let category of categories" hideToggle="true" [expanded]="openedSidePanel === 'category'"
-      (opened)="onOpenSidePanel('category', $event)">
+    <mat-expansion-panel *ngFor="let category of categoryNames" hideToggle="true" [expanded]="openedSidePanel === 'capabilities'"
+      (opened)="onOpenSidePanel('capabilities', $event)">
       <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
         <mat-panel-title>
-          {{category.label}}
+          {{category}}
         </mat-panel-title>
       </mat-expansion-panel-header>
-      <ul class="stepper stepper-vertical">
-        <li [class.active]="capability.page === page" *ngFor="let capability of category.capabilities">
+      <ul *ngIf="categories[category]" class="stepper stepper-vertical">
+        <li *ngFor="let capability of categories[category].capabilities" [class.active]="capability.page === page">
           <a href (click)="navigationClicked(capability.page, $event)">
             <span class="circle">&nbsp;</span>
             <span class="label">{{capability}}</span>
           </a>
         </li>
       </ul>
-    </mat-expansion-panel-->
+    </mat-expansion-panel>
     <mat-expansion-panel hideToggle="true" [expanded]="openedSidePanel === 'summary'" (opened)="onOpenSidePanel('summary', $event); showSummarySavePage()">
       <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
         <mat-panel-title>
@@ -46,9 +46,25 @@
 
 <div class="card flex1">
   <mat-card>
+
+    <!-- List of cards containing each panel in the baselines wizard -->
+    
     <!-- CATEGORIES DEFINITION PANEL -->
-    <!--unf-assess3-wizard-category></unf-assess3-wizard-category-->
-    <ng-template #savePage>
+    <div *ngIf="openedSidePanel === 'categories'"> 
+      <unf-assess3-wizard-category #categories></unf-assess3-wizard-category>
+    </div>
+
+    <!-- CAPABILITIES SELECTION PANEL -->
+    <div *ngIf="openedSidePanel === 'capabilities'"> 
+      <p>This is the capabilities definition panel.</p>>
+    </div>
+
+    <!-- KCP/AP SELECTION and SCORING PANEL -->
+    <div *ngIf="openedSidePanel === 'capability'"> 
+      <p>This is the attack pattern selection and capability scoring panel.</p>
+    </div>
+
+    <div *ngIf="openedSidePanel === 'summary'">
       <mat-card-header>
         <mat-card-title>Assessment Report</mat-card-title>
       </mat-card-header>
@@ -77,7 +93,7 @@
           </div>
         </div>
       </mat-card-content>
-    </ng-template>
+    </div>
 
     <mat-card-actions class="text-right">
       <button mat-button color="primary" *ngIf="!isFirstPage()" (click)="onBack($event)"> Back</button>
