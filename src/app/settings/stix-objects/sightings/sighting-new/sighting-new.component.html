@@ -43,7 +43,7 @@
                 </mat-form-field>
     </div>
 </div>
-<labels [(model)]="sighting"></labels>
+<stix-text-array [(model)]="sighting" [propertyName]="'labels'"></stix-text-array>
 <published-checkbox [model]="sighting"></published-checkbox>
 <div class="row">
     <div class="col-md-12">

@@ -120,7 +120,7 @@
 </div>
 
 <!--<external-reference [(model)]="intrusionSet"></external-reference>-->
-<labels [(model)]="intrusionSet"></labels>
+<stix-text-array [(model)]="intrusionSet" [propertyName]="'labels'"></stix-text-array>
 <stix-text-array [(model)]="intrusionSet" [propertyName]="'goals'"></stix-text-array>
 <published-checkbox [model]="intrusionSet"></published-checkbox>
 

@@ -40,7 +40,7 @@
                
             </div>
         </div>
-        <labels [(model)]="indicator"></labels>
+        <stix-text-array [(model)]="indicator" [propertyName]="'labels'"></stix-text-array>
          <kill-chain-phases [(model)]="indicator"></kill-chain-phases>
 
         <external-reference [(model)]="indicator"></external-reference>

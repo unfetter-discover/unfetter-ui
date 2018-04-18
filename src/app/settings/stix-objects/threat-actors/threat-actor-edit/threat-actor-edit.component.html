@@ -27,8 +27,8 @@
 
         </div>
 
-        <labels [(model)]="threatActor"></labels>
-        <aliases [(model)]="threatActor"></aliases>
+        <stix-text-array [(model)]="threatActor" [propertyName]="'labels'"></stix-text-array>
+        <stix-text-array [(model)]="threatActor" [propertyName]="'aliases'"></stix-text-array>
 
         <external-reference [(model)]="threatActor"></external-reference>
 

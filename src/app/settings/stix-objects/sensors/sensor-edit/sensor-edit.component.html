@@ -14,10 +14,9 @@
     </div>
 </div>
 
-<labels [(model)]="sensor"></labels>
+<stix-text-array [(model)]="sensor" [propertyName]="'labels'"></stix-text-array>
+<stix-text-array [(model)]="sensor" [propertyName]="'aliases'"></stix-text-array>
 <kill-chain-phases  *ngIf="sensor" [(model)]="sensor"></kill-chain-phases>
-
-<aliases  *ngIf="sensor" [(model)]="sensor"></aliases>
 
 <div *ngIf="sensor && sensor.attributes.metaProperties && sensor.attributes.metaProperties.observedData && stixFetchComplete">
     <label class="mb-5">Observable Data Path</label>
