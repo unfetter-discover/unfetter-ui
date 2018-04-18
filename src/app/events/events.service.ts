@@ -1,6 +1,6 @@
 import { DataSource } from '@angular/cdk/table';
 import { DatePipe } from '@angular/common';
-import { Injectable } from '@angular/core';
+import { Injectable, ChangeDetectorRef, ApplicationRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { GenericApi } from '../core/services/genericapi.service';
@@ -9,12 +9,17 @@ import { Sighting } from '../models';
 import { JsonApiData } from '../models/json/jsonapi-data';
 import { OrganizationIdentity } from '../models/user/organization-identity';
 import { Constance } from '../utils/constance';
+import { MatSort, MatTableDataSource } from '@angular/material';
 
 export class SightingsData {
     dataChange: BehaviorSubject<Sighting[]> = new BehaviorSubject<Sighting[]>([]);
     get data(): Sighting[] { return this.dataChange.value; }
 
-    constructor(sightings: Sighting[]) {
+    resetData(): void {
+        this.dataChange = new BehaviorSubject<Sighting[]>([]);
+    }
+
+    constructor(sightings: Sighting[], private ref: ApplicationRef) {
         if (sightings) {
             for (const sighting of sightings) {
                 this.addSighting(sighting);
@@ -27,18 +32,73 @@ export class SightingsData {
         copiedData.push(newSighting);
         this.dataChange.next(copiedData);
     }
+
+    public sortData(sort: MatSort): Sighting[] {
+        let copiedData = this.data.slice();
+        if (!sort.active || sort.direction === '') {
+            return;
+        }
+        console.log(JSON.stringify(this.data[0]));
+        copiedData.sort((a, b) => {
+            let isAsc = sort.direction === 'asc';
+            console.log(JSON.stringify(sort));
+            switch (sort.active) {
+                     case 'last_seen': return compare(a.attributes.last_seen, b.attributes.last_seen, isAsc);
+                default: return 0;
+            }
+        });
+        this.resetData();
+        console.log(JSON.stringify(this.data));
+        this.dataChange.next(copiedData);
+        console.log(JSON.stringify(this.data[0]));
+//        this.ref.tick();
+        return copiedData;
+
+
+        function compare(a, b, isAsc) {
+            return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+        }
+    }
 }
 
-export class SightingsDataSource extends DataSource<any> {
+export class SightingsDataSource extends MatTableDataSource<any> {
     constructor(private sightingsData: SightingsData) {
         super();
     }
 
-    connect(): Observable<Sighting[]> {
+    connect(): BehaviorSubject<Sighting[]> {
         return this.sightingsData.dataChange;
     }
 
     disconnect() { }
+
+    sortData = (newData: Sighting[], sort: MatSort): Sighting[] => {
+        let copiedData = this.data.slice();
+        if (!sort.active || sort.direction === '') {
+            return;
+        }
+        console.log(JSON.stringify(this.data[0]));
+        copiedData.sort((a, b) => {
+            let isAsc = sort.direction === 'asc';
+            console.log(JSON.stringify(sort));
+            switch (sort.active) {
+                     case 'last_seen': return compare(a.attributes.last_seen, b.attributes.last_seen, isAsc);
+                default: return 0;
+            }
+        });
+        // this.resetData();
+        console.log(JSON.stringify(this.data));
+        // this.dataChange.next(copiedData);
+        this.data = copiedData;
+        console.log(JSON.stringify(this.data[0]));
+//        this.ref.tick();
+        return copiedData;
+
+
+        function compare(a, b, isAsc) {
+            return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+        }
+    }
 }
 
 @Injectable()
@@ -49,7 +109,7 @@ export class EventsService {
     public readonly attackPatternsUrl = Constance.ATTACK_PATTERN_URL;
     public recentSightings: Sighting[];
     public finishedLoading: boolean;
-    public dataStore = new SightingsData(this.recentSightings);
+    public dataStore = new SightingsData(this.recentSightings, this.ref);
     public dataSource: SightingsDataSource | null;
     public readonly barChartData: ChartData[];
     public barChartLabels: string[];
@@ -60,13 +120,23 @@ export class EventsService {
         this.updateChart();
     }
 
+    public refreshData(sort: MatSort) {
+        console.log(this.dataSource.data);
+        this.dataSource.data = [];
+        this.dataSource.data = this.dataSource.sortData(this.dataSource.data, sort);
+        this.ref.tick();
+        console.log(this.dataSource.data);
+
+    }
+
     public get daysOfData(): string {
         return this.daysOfDataValue;
     }
 
     constructor(
         private genericApi: GenericApi,
-        private datePipe: DatePipe
+        private datePipe: DatePipe,
+        private ref: ApplicationRef
     ) {
         this.BASE_TEN = 10;
         this.dataSource = new SightingsDataSource(this.dataStore);
