@@ -13,14 +13,12 @@ import { ExternalReferenceComponent } from './external-reference/external-refere
 import { KillChainPhasesComponent } from './kill-chain-phases/kill-chain-phases.component';
 import { ListStixObjectComponent } from './list-stix-objects/list-stix-objects.component';
 import { ReadonlyContentComponent } from './readonly-content/readonly-content.component';
-import { AliasesComponent } from './aliases/aliases.component';
 import { FilterSearchBoxComponent } from './filter-search-box/filter-search-box.component';
 import { RelationshipListComponent } from './relationship-list/relationship-list.component';
 import { MitigateListComponent } from './mitigate-list/mitigate-list.component';
 import { BaseComponentService } from './base-service.component';
 import { ButtonsFilterComponent } from './buttons-filter/buttons-filter.component';
 import { LinkNodeGraphComponent } from './link-node-graph/link-node-graph.component';
-import { LabelComponent } from './labels/label.component';
 import { GlobalModule } from '../global/global.module';
 import { StixTextArrayComponent } from './stix-text-array/stix-text-array.component';
 import { ValidationErrorsComponent } from './validation-errors/validation-errors.component';
@@ -36,13 +34,11 @@ import { ValidationErrorsComponent } from './validation-errors/validation-errors
     KillChainPhasesComponent,
     ListStixObjectComponent,
     ReadonlyContentComponent,
-    AliasesComponent,
     FilterSearchBoxComponent,
     RelationshipListComponent,
     MitigateListComponent,
     ButtonsFilterComponent,
     LinkNodeGraphComponent,
-    LabelComponent,
     StixTextArrayComponent,
     ValidationErrorsComponent
   ],
@@ -72,13 +68,11 @@ import { ValidationErrorsComponent } from './validation-errors/validation-errors
     KillChainPhasesComponent,
     ListStixObjectComponent,
     ReadonlyContentComponent,
-    AliasesComponent,
     RelationshipListComponent,
     MitigateListComponent,
     FilterSearchBoxComponent,
     ButtonsFilterComponent,
     LinkNodeGraphComponent,
-    LabelComponent,
     StixTextArrayComponent,
     ValidationErrorsComponent
   ],
