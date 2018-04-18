@@ -1,17 +1,21 @@
-import { Component, OnInit, ViewEncapsulation, ViewChildren, QueryList, ChangeDetectorRef  } from '@angular/core';
-import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
-import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { AttackPatternComponent } from '../attack-pattern/attack-pattern.component';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs/Subscription';
 import { AttackPattern, KillChainPhase } from '../../../../models';
+import { UserProfile } from '../../../../models/user/user-profile';
+import { AppState } from '../../../../root-store/app.reducers';
 import { StixService } from '../../../stix.service';
+import { AttackPatternComponent } from '../attack-pattern/attack-pattern.component';
 
 @Component({
     selector: 'attack-pattern-list',
     templateUrl: './attack-pattern-list.component.html',
 
 })
-export class AttackPatternListComponent extends AttackPatternComponent implements OnInit {
+export class AttackPatternListComponent extends AttackPatternComponent implements OnInit, OnDestroy {
 
     public attackPatterns: AttackPattern[] = [];
     public selectedPhaseNameGroup: string;
@@ -21,6 +25,8 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
     public attackPatternByPhaseMap: any = {};
     public numOfRows = 10;
     public displayedColumns: string[] = ['name', 'action'];
+    public user: UserProfile;
+    private subscriptions: Subscription[] = [];
 
     constructor(
         public stixService: StixService,
@@ -29,40 +35,75 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
         public dialog: MatDialog,
         public location: Location,
         public snackBar: MatSnackBar,
-        private ref: ChangeDetectorRef) {
-
+        private ref: ChangeDetectorRef,
+        private userStore: Store<AppState>,
+    ) {
         super(stixService, route, router, dialog, location, snackBar);
         this.phaseNameGroups['unspecified'] = [];
     }
-
-    public ngOnInit() {
+    /**
+     * @description angular initialize the component
+     * @returns void
+     */
+    public ngOnInit(): void {
+        const getUser$ = this.userStore
+            .select('users')
+            .pluck('userProfile')
+            .take(1)
+            .subscribe((user: UserProfile) => {
+                this.user = user;
+                this.fetchData(user);
+            },
+                (err) => console.log(err));
+        this.subscriptions.push(getUser$);
+    }
+    /**
+     * @description call the backend to populate this component
+     * @param  {UserProfile} userProfile? - filters on this users kill chain framework if given
+     * @returns void
+     */
+    public fetchData(userProfile?: UserProfile): void {
+        let filter = '';
+        if (userProfile && userProfile.preferences && userProfile.preferences.killchain) {
+            const userFramework = this.user.preferences.killchain;
+            const userFrameworkFilter = { 'stix.kill_chain_phases.kill_chain_name': { $exists: true, $eq: userFramework } };
+            filter = `filter=${encodeURIComponent(JSON.stringify(userFrameworkFilter))}`;
+        }
         const sortObj = { 'stix.name': '1' };
+        const sort = `sort=${JSON.stringify(sortObj)}`;
         const projectObj = {
             'stix.name': 1,
             'stix.external_references': 1,
             'stix.kill_chain_phases': 1,
             'stix.id': 1
         };
-        const filter = `sort=${JSON.stringify(sortObj)}&project=${JSON.stringify(projectObj)}`;
-        const subscription = super.load(filter).subscribe(
+        const project = `project=${encodeURI(JSON.stringify(projectObj))}`;
+        const url = `${filter}&${project}&${sort}`;
+        const subscription = super.load(url).subscribe(
             (data) => {
                 this.attackPatterns = data as AttackPattern[];
                 this.getPhaseNameAttackPatterns();
                 this.populateAttackPatternByPhaseMap();
                 this.phaseNameGroupKeys = Object.keys(this.phaseNameGroups).sort();
-            }, (error) => {
-                // handle errors here
-                console.log('error ' + error);
-            }, () => {
-                // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
-                }
-            }
+            },
+            (error) => console.log('error ' + error),
         );
+        this.subscriptions.push()
     }
 
-    public populateAttackPatternByPhaseMap() {
+    /**
+     * @description clean up this component
+     */
+    public ngOnDestroy(): void {
+        if (this.subscriptions) {
+            this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+        }
+    }
+    /**
+     * @description
+     * @returns void
+     */
+    public populateAttackPatternByPhaseMap(): void {
         this.attackPatterns.forEach((attackPattern: AttackPattern) => {
             let killChainPhases = attackPattern.attributes.kill_chain_phases;
             if (!killChainPhases || killChainPhases.length === 0) {
@@ -112,8 +153,11 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
             }
         );
     }
-
-    public getPhaseNameAttackPatterns() {
+    /**
+     * @description groups the phase names of the given attack patterns
+     * @returns void
+     */
+    public getPhaseNameAttackPatterns(): void {
         this.attackPatterns.forEach((attackPattern: AttackPattern) => {
             let killChainPhases = attackPattern.attributes.kill_chain_phases;
             if (attackPattern.attributes.name === 'test attack') {
@@ -158,5 +202,16 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
             }
         );
         this.filterAttackPattern[phaseName] = attackPatterns;
+    }
+
+    /**
+     * @description angular track by list function, uses the items id if
+     *  it exists, otherwise uses the index
+     * @param {number} index
+     * @param {item}
+     * @return {number}
+     */
+    public trackByFn(index: number, item: any): number {
+        return item.id || index;
     }
 }

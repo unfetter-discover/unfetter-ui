@@ -27,7 +27,7 @@ export class ConfigService {
 
     public initConfig() {
         this.getConfigPromise()
-            .then((res) => console.log('Configurations sucessfully initialized'))
+            .then((res) => console.log('Configurations successfully initialized'))
             .catch((err) => console.log('Unable to initalize configurations ', err))
     }
 

@@ -14,9 +14,15 @@ function orgPermissions (stix: Stix, user: UserProfile): boolean {
         return true;
     }
     // TODO - How to handle no created_by_ref?
-    return user.organizations && 
-        user.organizations.length && 
-        user.organizations.map((org) => org.id).includes(stix.created_by_ref);
+    let orgIds = [];
+
+    if (user.organizations && user.organizations.length) {
+        orgIds = user.organizations
+            .filter((org) => org.approved)
+            .map((org) => org.id);
+    }
+
+    return orgIds.length && orgIds.includes(stix.created_by_ref) ? true : false;
 }
 
 /**
@@ -25,7 +31,7 @@ function orgPermissions (stix: Stix, user: UserProfile): boolean {
  * @description Determines if published exists and is `true`
  */
 function isPublished(stix: Stix): boolean {
-    return stix.metaProperties && stix.metaProperties.published !== undefined && stix.metaProperties.published === true;
+    return stix.metaProperties && stix.metaProperties.published !== undefined && stix.metaProperties.published === true ? true : false;
 }
 
 /**
@@ -33,7 +39,7 @@ function isPublished(stix: Stix): boolean {
  * @returns boolean
  */
 function isAdmin(user: UserProfile): boolean {
-    return user.role === UserRole.ADMIN;
+    return user.role === UserRole.ADMIN ? true : false;
 }
 
 /**

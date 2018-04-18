@@ -7,7 +7,7 @@
                 <div class="flex flexItemsCenter">
                     <span class="flex1">
                         <a routerLink="{{element.id}}">{{element.name}}</a>
-                        <chip-links [data]="element.external_references" maxChips="3" nameField="source_name" urlField="url"></chip-links>
+                        <chip-links [data]="element.external_references || []" maxChips="3" nameField="source_name" urlField="url"></chip-links>
                     </span>
                     <span class="buttonGrp text-right">
                         <button mat-button routerLink="edit/{{element.id}}">

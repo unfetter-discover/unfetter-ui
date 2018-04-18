@@ -69,7 +69,7 @@
             </div>
 
             <div class="assessment-objects">
-                <unf-add-assessed-object #addAssessedObjectComponent *ngIf="assessment" [assessment]="assessment" [addAssessedObject]="addAssessedObject"
+                <unf-add-assessed-object #addAssessedObjectComponent *ngIf="assessment && canAddAssessedObjects" [assessment]="assessment" [addAssessedObject]="addAssessedObject"
                     [addAssessedType]="addAssessedType" [currentAttackPattern]="currentAttackPattern" [indicator]="indicator"
                     [courseOfAction]="courseOfAction" [xUnfetterSensor]="xUnfetterSensor" [displayedAssessedObjects]="displayedAssessedObjects"
                     [assessedObjects]="assessedObjects" (addAssessmentEvent)="$event ? onAddAssessment(assessmentId) : 0"></unf-add-assessed-object>
