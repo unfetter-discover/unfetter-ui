@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { WizardComponent } from './wizard.component';
@@ -20,9 +20,11 @@ import { CalendarModule } from 'primeng/components/calendar/calendar';
 import { ChartsModule } from 'ng2-charts';
 import { PipesModule } from '../../pipes/pipes.module';
 import { GlobalModule } from '../../global/global.module';
+import { CategoryComponent } from './category/category.component';
 
 const moduleComponents = [
   WizardComponent,
+  CategoryComponent,
 ];
 
 const matModules = [

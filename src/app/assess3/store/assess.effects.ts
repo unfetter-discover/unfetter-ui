@@ -21,8 +21,6 @@ import { JsonApiData } from '../../models/json/jsonapi-data';
 import { Assessment3 } from '../../models/assess/assessment3';
 import { JsonApi } from '../../models/json/jsonapi';
 
-type URL_TYPE = 'course-of-action' | 'indicator' | 'mitigation' | 'sensor' | 'capability';
-
 @Injectable()
 export class AssessEffects {
 
@@ -39,13 +37,13 @@ export class AssessEffects {
     public fetchAssessmentWizardData = this.actions$
         .ofType(assessActions.LOAD_ASSESSMENT_WIZARD_DATA)
         .pluck('payload')
-        .switchMap((meta: Partial<Assessment3Meta>) => {
-            const includeMeta = `?metaproperties=true`;
-            let url = `${Constance.X_UNFETTER_ASSESSMENT3_URL}${includeMeta}`;
-            const observables = new Array<Observable<Array<JsonApiData<Stix>>>>();
+        // .switchMap((meta: Partial<Assessment3Meta>) => {
+        //     const includeMeta = `?metaproperties=true`;
+        //     let url = `${Constance.X_UNFETTER_ASSESSMENT3_URL}${includeMeta}`;
+        //     const observables = new Array<Observable<Array<JsonApiData<Stix>>>>();
 
-            return Observable.forkJoin(...observables);
-        })
+        //     return Observable.forkJoin(...observables);
+        // })
         .mergeMap(() => {
             return [
                 new assessActions.FinishedLoading(true)
@@ -57,6 +55,12 @@ export class AssessEffects {
         .ofType(assessActions.FETCH_ASSESSMENT)
         .switchMap(() => this.assessService.load())
         .map((arr: any[]) => new assessActions.FetchAssessment(arr[0]));
+
+    @Effect()
+    public fetchCategories = this.actions$
+        .ofType(assessActions.FETCH_CATEGORIES)
+        .switchMap(() => this.assessService.loadCategories())
+        .map((arr: string) => new assessActions.FetchCategories(arr[0]));
 
     @Effect({ dispatch: false })
     public startAssessment = this.actions$

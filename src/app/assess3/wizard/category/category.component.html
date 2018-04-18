@@ -1,0 +1,52 @@
+    <mat-card-content>
+      <div class="row margin-bottom flex-sm flexItemsCenter">
+        <div class="col-sm-9 group-name">
+          CATEGORIES
+        </div>
+      </div>
+      <div class="row margin-bottom" *ngFor="let tempCategory of tempCategories; trackBy: trackByFn">
+        <div class="col-xs-12">
+          <div class="row">
+            <div class="col-xs-10">
+              <form>
+                <mat-form-field class="full-width">
+                  <mat-select #existingCategory name="existingCategory" (change)="updateCategory(existingCategory, trackByFn)" [value]="tempCategory">
+                    <mat-option *ngFor="let dummyCategory of dummyCategories" [value]="dummyCategory">
+                      {{ dummyCategory }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </form>
+            </div>
+            <div class="col-xs-2">
+              <button mat-button (click)="onDeleteCategory(existingCategory)">
+                <mat-icon>highlight off</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row margin-bottom">
+        <div class="col-xs-12">
+          <form>
+            <div class="row">
+              <div class="col-xs-10">
+                <mat-form-field class="full-width">
+                  <mat-select #newCategory name="newCategory">
+                    <mat-option [value]="defaultValue"></mat-option>
+                    <mat-option *ngFor="let category of dummyCategories" [value]="category">
+                       {{ category }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-lg-1">
+                <button mat-button (click)="onAddCategory(newCategory)">
+                  <mat-icon>add circle outline</mat-icon>
+                </button>    
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </mat-card-content>
