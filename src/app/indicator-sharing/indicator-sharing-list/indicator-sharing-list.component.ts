@@ -16,6 +16,8 @@ import { ConfirmationDialogComponent } from '../../components/dialogs/confirmati
 import { initialSearchParameters } from '../store/indicator-sharing.reducers';
 import { IndicatorHeatMapComponent } from '../indicator-heat-map/indicator-heat-map.component';
 import { heightCollapse } from '../../global/animations/height-collapse';
+import { generateStixRelationship } from '../../global/static/stix-relationship';
+import { StixRelationshipTypes } from '../../global/enums/stix-relationship-types.enum';
 
 @Component({
     selector: 'indicator-sharing-list',
@@ -215,6 +217,68 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     public toggleShowStatistics() {
         this.showSummaryStats = !this.showSummaryStats;
         this.changeDetectorRef.markForCheck();
+    }
+
+    public downloadResults() {
+        const sensorRelationships: any[] = [];
+        const attackPatternIdSet = new Set();
+        const sensorIdSet = new Set();
+
+        const indicatorsCopy = this.filteredIndicators
+            .map((indicator) => {
+                const indicatorCopy = { ...indicator };
+                const enhancements: any = {};
+                const sensorIds: string[] = this.getSensorsByIndicatorId(indicator.id) ? this.getSensorsByIndicatorId(indicator.id)
+                    .map((sensor) => sensor.id) : [];
+                const attackPatternIds: string[] = this.getAttackPatternsByIndicatorId(indicator.id)
+                    .map((ap) => ap.id);                
+
+                if (indicatorCopy.metaProperties) {
+                    delete indicatorCopy.metaProperties;
+                }
+
+                if (indicator.metaProperties && indicator.metaProperties.queries) {
+                    const generatedQueries = { ...indicator.metaProperties.queries };
+                    const queryArr = [];
+                    for (let name in generatedQueries) {
+                        queryArr.push({ name, query: generatedQueries[name].query });
+                    }
+
+                    enhancements.x_unfetter_generated_queries = queryArr;
+                }
+
+                if (indicator.metaProperties && indicator.metaProperties.additional_queries) {
+                    enhancements.x_unfetter_user_queries = [...indicator.metaProperties.additional_queries];
+                }
+
+                if (sensorIds && sensorIds.length) {
+                    sensorIds.forEach((sensorId) => {
+                        sensorIdSet.add(sensorId)
+                        sensorRelationships.push(generateStixRelationship(sensorId, indicator.id, StixRelationshipTypes.X_UNFETTER_CAN_RUN));
+                    });
+                }
+
+                if (attackPatternIds && attackPatternIds.length) {
+                    attackPatternIds.forEach((attackPatternId) => attackPatternIdSet.add(attackPatternId));
+                }
+
+                return {
+                    ...indicatorCopy,
+                    ...enhancements
+                };
+            });
+            
+        indicatorsCopy
+            .forEach((indicator) => {
+                if (indicator.metaProperties) {
+                    delete indicator.metaProperties;
+                }
+            });
+        
+        console.log(this.filteredIndicators);
+        console.log(indicatorsCopy);         
+        console.log('####', Array.from(sensorIdSet));  
+        console.log('$$$$', Array.from(attackPatternIdSet));  
     }
 
 }

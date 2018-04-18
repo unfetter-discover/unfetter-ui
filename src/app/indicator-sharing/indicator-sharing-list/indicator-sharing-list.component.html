@@ -39,6 +39,11 @@
                             <label class="mb-0">Results: {{ (store.select('indicatorSharing').pluck('filteredIndicators') | async).length }} / {{ store.select('indicatorSharing').pluck('totalIndicatorCount') | async }}</label>
                             <label class="spacer" id="spacer2">&nbsp;|&nbsp;</label>
                             <span id="listControlBtns">
+                                <!-- Download bundle -->
+                                <button mat-icon-button matTooltip="Download Results" (click)="downloadResults()">
+                                    <i class="material-icons mat-24 labelColor">file_download</i>
+                                </button>
+                                <!-- Show summary stats -->
                                 <button mat-icon-button matTooltip="{{ showSummaryStats ? 'Hide' : 'Show' }} Statistics" (click)="toggleShowStatistics()">
                                     <i class="material-icons mat-24" [ngClass]="{'labelColor': !showSummaryStats}">equalizer</i>
                                 </button>
@@ -51,7 +56,7 @@
                                 <button mat-icon-button matTooltip="Expand All Cards" (click)="collapseAllCards = false; collapseAllCardsSubject.next(collapseAllCards)"
                                     *ngIf="collapseAllCards">
                                     <i class="material-icons mat-24 labelColor">fullscreen</i>
-                                </button>
+                                </button>                                
                             </span>
                          </div>
                     </div>
