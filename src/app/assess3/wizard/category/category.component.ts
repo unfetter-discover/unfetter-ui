@@ -19,7 +19,7 @@ export class CategoryComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.wizardStore.dispatch(new assessActions.FetchCategories());
+    // this.wizardStore.dispatch(new assessActions.FetchCategories());
   }
 
   /**

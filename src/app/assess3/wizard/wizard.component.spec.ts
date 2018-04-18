@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
-import { MatButtonModule, MatCardModule, MatDatepickerModule, MatDialogModule, MatSnackBarModule, MatSelectModule, MatInputModule, MatExpansionModule, MatProgressBarModule } from '@angular/material';
+import { MatButtonModule, MatCardModule, MatDatepickerModule, MatDialogModule, MatSnackBarModule, MatSelectModule, MatInputModule, MatExpansionModule, MatProgressBarModule, MatIcon } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 import { StoreModule, combineReducers } from '@ngrx/store';
 
@@ -22,6 +22,7 @@ import { Assessment3 } from '../../models/assess/assessment3';
 import { Assessment3Object } from '../../models/assess/assessment3-object';
 import { Stix } from '../../models/stix/stix';
 import { StixLabelEnum } from '../../models/stix/stix-label.enum';
+import { CategoryComponent } from './category/category.component';
 
 class MockModel {
   attributes: any;
@@ -89,7 +90,10 @@ describe('WizardComponent', () => {
     ];
 
     TestBed.configureTestingModule({
-      declarations: [WizardComponent],
+      declarations: [
+        WizardComponent,
+        CategoryComponent
+      ],
       imports: [
         NoopAnimationsModule,
         HttpClientModule,
