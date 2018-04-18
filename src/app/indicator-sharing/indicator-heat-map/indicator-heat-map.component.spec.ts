@@ -8,14 +8,16 @@ import { MatCardModule, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@
 import { OverlayModule } from '@angular/cdk/overlay';
 
 import { IndicatorHeatMapComponent } from './indicator-heat-map.component';
+import { AttackPatternsHeatmapComponent } from '../../global/components/heatmap/attack-patterns-heatmap.component';
 import { HeatmapComponent } from '../../global/components/heatmap/heatmap.component';
 import { CapitalizePipe } from '../../global/pipes/capitalize.pipe';
 import { RouterTestingModule } from '@angular/router/testing';
 import { indicatorSharingReducer } from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { mockAttackPatterns } from '../../testing/mock-store';
+import { AuthService } from '../../core/services/auth.service';
 
-describe('IndicatorHeatMapComponent', () => {
+fdescribe('IndicatorHeatMapComponent', () => {
 
     let fixture: ComponentFixture<IndicatorHeatMapComponent>;
     let component: IndicatorHeatMapComponent;
@@ -58,10 +60,12 @@ describe('IndicatorHeatMapComponent', () => {
                 ],
                 declarations: [
                     IndicatorHeatMapComponent,
+                    AttackPatternsHeatmapComponent,
                     HeatmapComponent,
                     CapitalizePipe,
                 ],
                 providers: [
+                    AuthService,
                     {
                         provide: MAT_DIALOG_DATA,
                         useValue: {active: [mockAttackPatterns[1].id]}
@@ -85,54 +89,38 @@ describe('IndicatorHeatMapComponent', () => {
         component = fixture.componentInstance;
         let store = component.store;
         store.dispatch(new indicatorSharingActions.SetAttackPatterns(mockAttackPatternData));
-    });
-
-    it('should initialize', async(() => {
         fixture.detectChanges();
         fixture.whenStable().then(() => {
+            component['view']['createAttackPatternHeatMap']();
+            fixture.detectChanges();
+        });
+    });
+    
+    it('should initialize', async(() => {
+        fixture.whenStable().then(() => {
             expect(component).toBeTruthy();
-            expect(component.heatmap.length).toBe(2);
-            component['heatmapView'].data = component.heatmap.slice(0);
-            component['heatmapView']['createHeatMap']();
+            expect(Object.values(component.attackPatterns).length).toBe(2);
+            fixture.detectChanges();
+            fixture.whenStable().then(() => {
+                const first = fixture.nativeElement.querySelector('g.heat-map-cell');
+                expect(first).not.toBeNull();
+            });
         });
     }));
 
-    it('should show hover tooltips, and handle cell clicks', async(() => {
-        fixture.detectChanges();
+    it('should handle cell clicks', async(() => {
+        // fixture.detectChanges();
         fixture.whenStable().then(() => {
             component.heatmapOptions.hover = {hoverDelay: 2};
-            component['heatmapView'].data = component.heatmap.slice(0);
-            component['heatmapView']['createHeatMap']();
-
-            expect(component.attackPattern).toBeNull();
-            component['changeDetector'].detach(); // NOTE: prevents view from being destroyed ahead of other tests
+            component['view']['createAttackPatternHeatMap']();
+            fixture.detectChanges();
 
             const first = fixture.nativeElement.querySelector('g.heat-map-cell');
             expect(first).not.toBeNull();
 
-            component.onTooltip({
-                row: component.heatmap[0].cells[0],
-                event: {target: first}
-            });
-            setTimeout(() => {
-                fixture.detectChanges();
-                expect(component.attackPattern).not.toBeNull();
-                expect(component.attackPattern.id).toEqual(component.heatmap[0].cells[0].id);
-
-                // now simulate moving off the attack pattern
-                component.onTooltip({
-                    row: null,
-                    event: {target: first}
-                });
-                setTimeout(() => {
-                    fixture.detectChanges();
-                    expect(component.attackPattern).toBeNull();
-
-                    const spy = spyOn(component, 'toggleAttackPattern').and.callThrough();
-                    first.dispatchEvent(new Event('click'));
-                    expect(spy).toHaveBeenCalled();
-                }, 5);
-            }, 5);
+            const spy = spyOn(component, 'toggleAttackPattern').and.callThrough();
+            first.dispatchEvent(new Event('click'));
+            expect(spy).toHaveBeenCalled();
         });
     }));
 
