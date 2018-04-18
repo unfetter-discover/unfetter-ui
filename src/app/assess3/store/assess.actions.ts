@@ -53,7 +53,7 @@ export class FetchAssessment implements Action {
 export class FetchCategories implements Action {
     public readonly type = FETCH_CATEGORIES;
 
-    constructor(public payload: any[]) { }
+    constructor(public payload: string) { }
 }
 
 export class LoadAssessmentWizardData implements Action {
