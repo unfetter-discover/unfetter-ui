@@ -47,6 +47,36 @@ describe('AddIndicatorComponent', () => {
                     }
                 }
             ]);
+        },
+        translateAllPatterns: (pattern) => {
+            return Observable.of({
+                attributes: {
+                    'car-elastic': 'test',
+                    'car-splunk': 'test',
+                    'cim-elastic': 'test',
+                    pattern,
+                    validated: true
+                }
+            });
+        },
+        patternHandlerObjects: (pattern) => {
+            return Observable.of({
+                attributes: {
+                    object: [
+                        {
+                            name: 'process',
+                            property: 'pid'
+                        }
+                    ],
+                    pattern,
+                    validated: true
+                }
+            });
+        },
+        addIndicator: (indicator) => {
+            return Observable.of({
+                attributes: indicator
+            });
         }
     };
 
@@ -98,10 +128,33 @@ describe('AddIndicatorComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(AddIndicatorComponent);
         component = fixture.componentInstance;
-        fixture.detectChanges();
+        fixture.detectChanges();        
     });
 
     it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+
+    it('should pattern translate and get objects', (done) => {
+        component.form.get('pattern').setValue('testpattern');
+        // NOTE this is a hack to be sure the subcribe block is actually called
+        component.patternObjSubject
+            .take(1)
+            .subscribe((_) => {
+                expect(component.patternObjs[0].name).toBe('process');
+                expect(component.patternObjs[0].property).toBe('pid');
+                expect(component.showPatternTranslations).toBeTruthy();
+                done();
+            });
+    });
+
+    it('should submit indicator', () => {
+        component.form.patchValue({
+            name: 'test',
+            created_by_ref: '1234',
+            pattern: 'test'
+        });
+        component.submitIndicator();
         expect(component).toBeTruthy();
     });
 });

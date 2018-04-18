@@ -3,9 +3,12 @@ import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { MatButtonModule, MatDialogModule, MatSidenavModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActionReducerMap, StoreModule } from '@ngrx/store';
-import { makeMockIndicatorSharingStore } from '../../testing/mock-store';
+import { makeMockIndicatorSharingStore, makeRootMockStore } from '../../testing/mock-store';
 import { indicatorSharingReducer } from '../store/indicator-sharing.reducers';
 import { IndicatorSharingListComponent } from './indicator-sharing-list.component';
+import { usersReducer } from '../../root-store/users/users.reducers';
+import { By } from '@angular/platform-browser';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 
 describe('IndicatorSharingListComponent', () => {
@@ -15,6 +18,7 @@ describe('IndicatorSharingListComponent', () => {
     let store;
 
     let mockReducer: ActionReducerMap<any> = {
+        users: usersReducer,
         indicatorSharing: indicatorSharingReducer
     };
 
@@ -24,6 +28,7 @@ describe('IndicatorSharingListComponent', () => {
                 IndicatorSharingListComponent
             ],
             imports: [
+                NoopAnimationsModule,
                 MatButtonModule,
                 MatSidenavModule,
                 MatDialogModule,
@@ -39,6 +44,7 @@ describe('IndicatorSharingListComponent', () => {
         fixture = TestBed.createComponent(IndicatorSharingListComponent);
         component = fixture.componentInstance;
         store = component.store;
+        makeRootMockStore(store);
         makeMockIndicatorSharingStore(store);
         fixture.detectChanges();
     });

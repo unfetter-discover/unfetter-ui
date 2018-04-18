@@ -17,14 +17,88 @@ import { AuthService } from '../../core/services/auth.service';
 import { Constance } from '../../utils/constance';
 import { mockConfigService } from '../../testing/mock-config-service';
 import { ConfigService } from '../../core/services/config.service';
+import { SearchParameters } from '../models/search-parameters';
+import { initialSearchParameters } from '../store/indicator-sharing.reducers';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs/Observable';
 
 describe('IndicatorCardComponent', () => {
     let component: IndicatorCardComponent;
     let fixture: ComponentFixture<IndicatorCardComponent>;
     let store;
 
+    const mockIndicator = {
+        name: 'test indicator',
+        id: 'indicator-1234',
+        kill_chain_phases: [
+            {
+                phase_name: 'test',
+                kill_chain_name: 'test'
+            }
+        ],
+        metaProperties: {
+            interactions: [
+                {
+                    user: {
+                        id: '1234'
+                    }
+                }
+            ]
+        }
+    };
+
+    const mockSearchParams: SearchParameters = {
+        ...initialSearchParameters,
+        killChainPhases: ['test'],
+        labels: ['test']
+    };
+
+    const mockCollapseAllCards = new BehaviorSubject(false);
+
     const mockIndService = {
-        // No functions used at current coverage level
+        addLabel: (label, indicatorId) => {
+            return Observable.of({
+                attributes: {
+                    ...mockIndicator,
+                    labels: [label]
+                }
+            });
+        },
+        addComment: (comment, indicatorId) => {
+            return Observable.of({
+                attributes: {
+                    ...mockIndicator,
+                    metaProperties: {
+                        ...mockIndicator.metaProperties,
+                        comments: [
+                            {
+                                comment: 'test',
+                                user: {
+                                    id: '1234'
+                                }
+                            }
+                        ]
+                    }
+                }
+            });
+        },
+        addLike: (indicatorId) => {
+            return Observable.of({
+                attributes: {
+                    ...mockIndicator,
+                    metaProperties: {
+                        ...mockIndicator.metaProperties,
+                        likes: [
+                            {
+                                user: {
+                                    id: '1234'
+                                }
+                            }
+                        ]
+                    }
+                }
+            });
+        }
     };
 
     const mockAuthService = {
@@ -43,13 +117,13 @@ describe('IndicatorCardComponent', () => {
                 ],
             };
         }
-    };
+    };   
 
     const mockRenderer = {
         listen: (target, event, callback) => {
             return () => {};
         }
-    }
+    };
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -101,14 +175,35 @@ describe('IndicatorCardComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(IndicatorCardComponent);
         component = fixture.componentInstance;
-        component.indicator = {
-            name: 'test indicator',
-            id: 'indicator-1234'
-        };
+
+        // Input mocks
+        component.indicator = { ...mockIndicator };
+        component.searchParameters = { ...mockSearchParams };
+        component.collapseAllCardsSubject = mockCollapseAllCards;
+
         fixture.detectChanges();
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should add label', () => {
+        component.addLabel('test');
+        expect(component.indicator.labels).toBeTruthy();
+        expect(component.indicator.labels.includes('test')).toBeTruthy();        
+    });
+
+    it('should add comment', () => {
+        component.commentText = 'test';
+        component.submitComment();
+        expect(component.indicator.metaProperties.comments).toBeTruthy();
+        expect(component.indicator.metaProperties.comments.map((comObj) => comObj.comment).includes('test')).toBeTruthy();
+    });
+
+    it('should add like', () => {
+        component.likeIndicator();
+        expect(component.indicator.metaProperties.likes).toBeTruthy();
+        expect(component.alreadyLiked).toBeTruthy();
     });
 });
