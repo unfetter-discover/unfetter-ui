@@ -1,0 +1,105 @@
+<div class="row" *ngIf="category">
+  <div class="col-md-12">
+    <div *ngIf="!category.id" class="row">
+      <div class="col-md-12">
+        <created-by-ref [model]="category"></created-by-ref>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <mat-input-container class="full-width">
+            <input matInput class="category-name" required placeholder="Name" value="{{category.name}}" [(ngModel)]="category.name">
+          </mat-input-container>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <mat-input-container class="full-width">
+          <textarea matInput class="category-desc" matTextareaAutosize placeholder="Description" [(ngModel)]="category.description">{{category.description}}</textarea>
+        </mat-input-container>
+      </div>
+    </div>
+    <div class="row" *ngFor="let framework of frameworks">
+      <div class="col-md-12" *ngFor="let assessedObject of category.assessed_objects">
+        <form class="flex full-width">
+          <span class="flex1">{{lookupAttackPatternName(assessedObject.assessed_object_ref, framework.framework)}}</span>
+          <mat-form-field class="flex1">
+            <!-- [value]="findQuestionScore(assessedObject, 'mitigate')"  -->
+            <mat-select name="mitigates" placeholder="Mitigate"
+                [value]="assessedObject.mitigateScore"
+                (selectionChange)="onAnswer('mitigate', assessedObject, $event)">
+              <mat-option *ngFor="let answer of answers" [value]="answer.id">
+                {{ answer.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="flex1">
+            <!-- [value]="findQuestionScore(assessedObject, 'indica÷te')"  -->
+            <mat-select name="indicates" placeholder="Indicate"
+              [value]="assessedObject.indicateScore"
+              (selectionChange)="onAnswer('indicate', assessedObject, $event)">
+              <mat-option *ngFor="let answer of answers" [value]="answer.id">
+                {{ answer.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="flex1">
+            <!-- [value]="findQuestionScore(assessedObject, 'respond')"  -->
+            <mat-select name="" placeholder="Respond"
+              [value]="assessedObject.respondScore"
+              (selectionChange)="onAnswer('respond', assessedObject, $event)">
+              <mat-option *ngFor="let answer of answers" [value]="answer.id">
+                {{ answer.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </form>
+      </div>
+      <div class="col-md-12">
+        <label for="">Suggested Attack Patterns for {{framework.framework}}</label>
+        <div>
+          <form>
+            <mat-form-field class="full-width">
+              <mat-select name="suggest-attack-patterns" placeholder="Add/Remove attack pattern(s)" class="full-width" multiple [value]="selectedAttackPatterns"
+                (selectionChange)="onAttackPatternChange($event)">
+                <mat-option *ngFor="let attackPattern of framework.attackPatterns" [value]="attackPattern.id">
+                  {{ attackPattern.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="row">
+      <div class="col-md-12">
+        <form>
+          <mat-form-field>
+            <mat-select name="sophistication-levels" placeholder="How sophisticated would an attacker need to be to leverage this technique?"
+              [(ngModel)]="category.x_unfetter_sophistication_level" class="full-width">
+              <mat-option *ngFor="let sophistication_levels of x_unfetter_sophistication_levels" [value]="sophistication_levels.id">
+                {{ sophistication_levels.value }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </form>
+      </div>
+    </div> -->
+
+    <!-- <kill-chain-phases [(model)]="category"></kill-chain-phases> -->
+
+    <!-- <external-reference [(model)]="category"></external-reference> -->
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="button-row pull-right">
+          <button mat-button (click)="cancelButtonClicked()">CANCEL</button>
+          <button type="submit" id="save-btn" color="primary" mat-raised-button (click)="saveButtonClicked()" [disabled]="!category.name">SAVE</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,16 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
-import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
+import { HttpErrorResponse } from '@angular/common/http';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
+import { Observer } from 'rxjs/Observer';
+import { Subscription } from 'rxjs/Subscription';
 import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
 import { BaseStixService } from './base-stix.service';
 
-export class BaseStixComponent {
-    public filteredItems: any[];
+export class BaseStixComponent<T = any> {
+    public filteredItems: T[];
     public validationErrorMessages: string[] = [];
     public selectedExternal: any;
-    private duration = 3000;
+    public readonly duration = 3000;
 
     constructor(
         public service: BaseStixService,
@@ -21,61 +23,55 @@ export class BaseStixComponent {
         public snackBar?: MatSnackBar) {
     }
 
-     public load(filter?: any): Observable<any[]> {
-         const _self  = this;
-         return Observable.create((observer) => {
-               _self.loadItems(observer, filter);
-         });
+    public load(filter?: any): Observable<any[]> {
+        const _self = this;
+        return Observable.create((observer) => {
+            _self.loadItems(observer, filter);
+        });
     }
 
-    public get(): Observable<any> {
-        const _self  = this;
+    /**
+     * @description get this components data
+     * @returns Observable<T>
+     */
+    public get(): Observable<T> {
+        const _self = this;
         return Observable.create((observer) => {
-               _self.getItem(observer);
+            _self.getItem(observer);
         });
     }
 
     public getByUrl(url: string): Observable<any> {
-        const _self  = this;
+        const _self = this;
         return Observable.create((observer) => {
-              const subscription =  _self.service.getByUrl(url).subscribe(
-                   (data) => {
-                        observer.next(data);
-                        observer.complete();
-                   }, (error: string) => {
-                        // handle errors here
-                        this.snackBar.open('Error ' + error , '', {
-                            duration: this.duration,
-                            extraClasses: ['snack-bar-background-error']
-                        });
-                    }, () => {
-                        // prevent memory links
-                        if (subscription) {
-                            subscription.unsubscribe();
-                        }
-                    }
-               );
+            const subscription = _self.service.getByUrl(url).subscribe(
+                (data) => {
+                    observer.next(data);
+                    observer.complete();
+                },
+                (error) => this.showErrorSnackbar(error),
+                () => this.closeSubscription(subscription));
         });
     }
-    public create(item: any): Observable<any>  {
-        const _self  = this;
+    public create(item: any): Observable<any> {
+        const _self = this;
         return Observable.create((observer) => {
-               _self.createItem(item, observer);
+            _self.createItem(item, observer);
         });
     }
 
-    public save(item: any): Observable<any>  {
-        const _self  = this;
+    public save(item: any): Observable<T> {
+        const _self = this;
         item.url = this.service.url;
         return Observable.create((observer) => {
-               _self.saveItem(item, observer);
+            _self.saveItem(item, observer);
         });
     }
 
-    public delete(item: any): Observable<any>  {
-        const _self  = this;
+    public delete(item: any): Observable<any> {
+        const _self = this;
         return Observable.create((observer) => {
-               _self.deleteItem(item, observer);
+            _self.deleteItem(item, observer);
         });
     }
 
@@ -84,7 +80,7 @@ export class BaseStixComponent {
     }
 
     public openDialog(item: any): Observable<any> {
-        const _self  = this;
+        const _self = this;
         item.url = this.service.url;
         return Observable.create((observer) => {
             const dialogRef = _self.dialog.open(ConfirmationDialogComponent, { data: item });
@@ -93,7 +89,7 @@ export class BaseStixComponent {
                     if (result === 'true' || result === true) {
                         _self.deleteItem(item, observer);
                     }
-            });
+                });
         });
     }
 
@@ -110,46 +106,33 @@ export class BaseStixComponent {
     }
 
     public loadItems(observer: any, filter?: any): void {
-         const subscription = this.service.load(filter).subscribe(
+        const subscription = this.service.load(filter).subscribe(
             (stixObjects) => {
                 observer.next(stixObjects);
                 observer.complete();
-            }, (error) => {
-                // handle errors here
-                this.snackBar.open('Error ' + error , '', {
-                     duration: this.duration,
-                     extraClasses: ['snack-bar-background-error']
-                });
-            }, () => {
-                // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
-                }
-            }
-        );
+            },
+            (error) => this.showErrorSnackbar(error),
+            () => this.closeSubscription(subscription));
     }
-
-    public getItem(observer: any): void {
-       this.route.params
-                .switchMap((params: Params) => this.service.get(params['id']))
-                .subscribe(
-                    (stixObject) => {
-                        observer.next(stixObject);
-                        observer.complete();
-                    }, (error) => {
-                        // handle errors here
-                        this.snackBar.open('Error ' + error , '', {
-                            duration: this.duration,
-                            extraClasses: ['snack-bar-background-error']
-                        });
-                    }, () => {
-                    // handle errors here
-                    }
-                );
+    /**
+     * @description look up a generic object by the current url id, emit/next that object into the given {Observer}
+     * @param  {Observer<T>} observer
+     * @returns void
+     */
+    public getItem(observer: Observer<T>): void {
+        const subscription = this.route.params
+            .switchMap((params: Params) => this.service.get(params['id']))
+            .subscribe(
+                (stixObject) => {
+                    observer.next(stixObject);
+                    observer.complete();
+                },
+                (error) => this.showErrorSnackbar(error),
+                () => this.closeSubscription(subscription));
     }
 
     public deleteItem(item: any, observer: any): void {
-        this.route.params
+        const subscription = this.route.params
             .switchMap((params: Params) => this.service.delete(item))
             .subscribe(
                 (stixObject) => {
@@ -161,17 +144,9 @@ export class BaseStixComponent {
                             extraClasses: ['snack-bar-background-success']
                         });
                     }
-                }, (error) => {
-                    // handle errors here
-                    this.snackBar.open('Error ' + error , '', {
-                        duration: this.duration,
-                        extraClasses: ['snack-bar-background-error']
-                    });
-                    observer.throw = '';
-                }, () => {
-                   // handle errors here
-                }
-            );
+                },
+                (error) => this.showErrorSnackbar(error),
+                () => this.closeSubscription(subscription));
     }
 
     public createItem(item: any, observer: any): void {
@@ -209,22 +184,12 @@ export class BaseStixComponent {
                 //         }
                 //     }
                 // );
-            }, (error) => {
-                // handle errors here
-                this.snackBar.open('Error ' + error , '', {
-                    duration: this.duration,
-                    extraClasses: ['snack-bar-background-error']
-                });
-            }, () => {
-                // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
-                }
-            }
-        );
+            },
+            (error) => this.showErrorSnackbar(error),
+            () => this.closeSubscription(subscription));
     }
 
-    public saveItem(item: any, observer: any): void {
+    public saveItem(item: any, observer: Observer<any>): void {
         const subscription = this.service.update(item).subscribe(
             (data) => {
                 observer.next(data);
@@ -235,22 +200,12 @@ export class BaseStixComponent {
                         extraClasses: ['snack-bar-background-success']
                     });
                 }
-            }, (error) => {
-                // handle errors here
-                this.snackBar.open('Error ' + error , '', {
-                    duration: this.duration,
-                    extraClasses: ['snack-bar-background-error']
-                });
-            }, () => {
-                // prevent memory links
-                if (subscription) {
-                    subscription.unsubscribe();
-                }
-            }
-        );
+            },
+            (error) => this.showErrorSnackbar(error),
+            () => this.closeSubscription(subscription));
     }
 
-    
+
     /**
      * @param  {any} model (Any legacy STIX model)
      * @returns boolean
@@ -265,15 +220,15 @@ export class BaseStixComponent {
             this.validationErrorMessages.push('Submitter Organization is required');
             invalid = true;
         }
-        
+
         // Name not on sighting or relationship
         if (model.type !== 'sighting' && model.type !== 'relationship' && (!model.attributes.name || !model.attributes.name.length)) {
             this.validationErrorMessages.push('Name is required');
             invalid = true;
         }
-        
+
         switch (model.type) {
-            case 'identity': 
+            case 'identity':
                 if (!model.attributes.identity_class || !model.attributes.identity_class.length) {
                     this.validationErrorMessages.push('Identity class is required');
                     invalid = true;
@@ -302,7 +257,7 @@ export class BaseStixComponent {
         // external references
         if (model.attributes.external_references && model.attributes.external_references.length) {
             for (let externalReference of model.attributes.external_references) {
-                if (!externalReference.source_name || !externalReference.source_name.length ) {
+                if (!externalReference.source_name || !externalReference.source_name.length) {
                     this.validationErrorMessages.push('All external references must have a source name: Add one, or remove the external reference');
                     invalid = true;
                 }
@@ -320,6 +275,39 @@ export class BaseStixComponent {
         }
 
         return invalid;
+    }
+
+    /**
+     * @description show given error in the snack bar error box
+     * @param  {string|any} error
+     * @returns void
+     */
+    public showErrorSnackbar(error: string | HttpErrorResponse | any): void {
+        let msg = error;
+        if (!error) {
+            msg = 'Unknown error';
+        }
+
+        if (error && error.error && error.error.errors) {
+            const details = error.error.errors[0].detail || [error.error.errors[0]];
+            msg = error.error.errors[0].detail.map((el) => el).join(',');
+        }
+        // display errors here
+        this.snackBar.open('Error ' + msg, '', {
+            duration: this.duration,
+            extraClasses: ['snack-bar-background-error']
+        });
+    }
+
+    /**
+     * @description close given subscription if it is defined
+     * @param  {Subscription} subscription
+     * @returns void
+     */
+    public closeSubscription(subscription?: Subscription): void {
+        if (subscription) {
+            subscription.unsubscribe();
+        }
     }
 
 }

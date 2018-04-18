@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule, MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatExpansionModule, 
-  MatInputModule, MatListModule, MatNativeDateModule, MatProgressSpinnerModule, MatRadioModule, MatSelectModule, MatSlideToggleModule, MatSnackBarModule } from '@angular/material';
+import { MatAutocompleteModule, MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatExpansionModule, MatInputModule, 
+  MatListModule, MatNativeDateModule, MatProgressSpinnerModule, MatRadioModule, MatSelectModule, MatSlideToggleModule, MatSnackBarModule } from '@angular/material';
 import { AccordionModule, CalendarModule, DataListModule } from 'primeng/primeng';
 import { ComponentModule } from '../components/component.module';
 import { GlobalModule } from '../global/global.module';
@@ -11,6 +11,10 @@ import { LinkExplorerComponent } from './link-explorer';
 import { StixHomeComponent } from './stix-home.component';
 import { AttackPatternComponent, AttackPatternEditComponent, AttackPatternListComponent, AttackPatternNewComponent, AttackPatternsHomeComponent } from './stix-objects/attack-patterns';
 import { CampaignComponent, CampaignsEditComponent, CampaignsHomeComponent, CampaignsListComponent, CampaignsNewComponent } from './stix-objects/campaigns';
+import { CategoriesEditComponent } from './stix-objects/categories/categories-edit/categories-edit.component';
+import { CategoriesHomeComponent } from './stix-objects/categories/categories-home.component';
+import { CategoriesListComponent } from './stix-objects/categories/categories-list/categories-list.component';
+import { CategoriesComponent } from './stix-objects/categories/categories/categories.component';
 import { CourseOfActionComponent, CourseOfActionEditComponent, CourseOfActionHomeComponent, CourseOfActionListComponent, CourseOfActionNewComponent } from './stix-objects/course-of-actions';
 import { IdentityComponent, IdentityEditComponent, IdentityHomeComponent, IdentityListComponent, IdentityNewComponent } from './stix-objects/identities';
 import { IndicatorComponent, IndicatorEditComponent, IndicatorHomeComponent, IndicatorListComponent, IndicatorNewComponent } from './stix-objects/indicators';
@@ -49,6 +53,11 @@ const stixComponents = [
   AttackPatternComponent,
   AttackPatternNewComponent,
   AttackPatternEditComponent,
+
+  CategoriesComponent,
+  CategoriesHomeComponent,
+  CategoriesEditComponent,
+  CategoriesListComponent,
 
   CampaignsHomeComponent,
   CampaignsListComponent,
@@ -140,7 +149,6 @@ const stixComponents = [
   declarations: [
     ...stixComponents,
   ],
-
   providers: [StixService],
 })
 export class StixModule { }
