@@ -1,21 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ApHeatmapComponent } from './ap-heatmap.component';
+import { AttackPatternsHeatmapComponent } from './attack-patterns-heatmap.component';
 
-describe('ApHeatmapComponent', () => {
+describe('AttackPatternsHeatmapComponent', () => {
 
-    let component: ApHeatmapComponent;
-    let fixture: ComponentFixture<ApHeatmapComponent>;
+    let component: AttackPatternsHeatmapComponent;
+    let fixture: ComponentFixture<AttackPatternsHeatmapComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [ ApHeatmapComponent ]
+            declarations: [ AttackPatternsHeatmapComponent ]
         })
         .compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(ApHeatmapComponent);
+        fixture = TestBed.createComponent(AttackPatternsHeatmapComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

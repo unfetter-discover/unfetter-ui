@@ -47,7 +47,8 @@
 
     <div [hidden]="!showHeatMap">
         <h3 class="mat-title heat-map-header">Attack Patterns Used (HeatMap Chart View)</h3>
-        <ap-heatmap [attackPatterns]="heatMapData" [heatMapOptions]="heatMapOptions"></ap-heatmap>
+        <attack-patterns-heatmap [attackPatterns]="heatMapData"
+                [heatMapOptions]="heatMapOptions"></attack-patterns-heatmap>
     </div>
 
     <div #toolbox class="toolbox mat-elevation-z5" [style.display]="showToolbox === true ? 'flex': 'none'" [@topRightSlide]>

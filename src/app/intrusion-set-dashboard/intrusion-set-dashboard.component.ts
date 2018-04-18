@@ -19,7 +19,7 @@ import { BaseComponentService } from '../components/base-service.component';
 import { topRightSlide } from '../global/animations/top-right-slide';
 import { GenericApi } from '../core/services/genericapi.service';
 import { HeatmapComponent } from '../global/components/heatmap/heatmap.component';
-import { AttackPatternCell } from '../global/components/heatmap/ap-heatmap.component';
+import { AttackPatternCell } from '../global/components/heatmap/attack-patterns-heatmap.component';
 import { HeatColor, HeatMapOptions } from '../global/components/heatmap/heatmap.data';
 import { IntrusionSetHighlighterService } from './intrusion-set-highlighter.service';
 import { Dictionary } from '../models/json/dictionary';

@@ -29,7 +29,7 @@ import { ThreatDashboard } from '../models/threat-dashboard';
 import { topRightSlide } from '../../global/animations/top-right-slide';
 import { KillChainPhase } from '../../models';
 import { HeatMapOptions, HeatBatchData } from '../../global/components/heatmap/heatmap.data';
-import { AttackPatternCell } from '../../global/components/heatmap/ap-heatmap.component';
+import { AttackPatternCell } from '../../global/components/heatmap/attack-patterns-heatmap.component';
 import { Dictionary } from '../../models/json/dictionary';
 
 @Component({

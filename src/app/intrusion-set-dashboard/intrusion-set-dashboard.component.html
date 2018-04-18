@@ -67,10 +67,10 @@
                                             </button>
                                         </div>
 
-                                        <ap-heatmap [hidden]="!showHeatMap"
+                                        <attack-patterns-heatmap [hidden]="!showHeatMap"
                                                 [attackPatterns]="heatMapData"
                                                 [heatMapOptions]="heatMapOptions"
-                                                (hover)="highlightAttackPattern($event)"></ap-heatmap>
+                                                (hover)="highlightAttackPattern($event)"></attack-patterns-heatmap>
 
                                         <attack-patterns-carousel [hidden]="showHeatMap"
                                                 [killChainPhases]="killChainPhases"></attack-patterns-carousel>

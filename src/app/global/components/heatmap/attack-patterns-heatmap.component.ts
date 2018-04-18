@@ -45,12 +45,12 @@ export interface AttackPatternCell extends HeatCellData {
 }
 
 @Component({
-    selector: 'ap-heatmap',
-    templateUrl: './ap-heatmap.component.html',
-    styleUrls: ['./ap-heatmap.component.scss'],
+    selector: 'attack-patterns-heatmap',
+    templateUrl: './attack-patterns-heatmap.component.html',
+    styleUrls: ['./attack-patterns-heatmap.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ApHeatmapComponent implements OnInit, DoCheck {
+export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
 
     public showHeatMap = false;
     @Input() public attackPatterns: Dictionary<AttackPatternCell> | Array<AttackPatternCell>;
