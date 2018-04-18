@@ -575,8 +575,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         this.categories[element] = { name: element, scoresModel: [], capabilities: [] };
       }
     });
-
-    console.log(JSON.stringify(this.categories));
   }
 
   // TODO: commented for now, e
