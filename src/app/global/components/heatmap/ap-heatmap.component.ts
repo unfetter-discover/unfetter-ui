@@ -3,14 +3,15 @@ import {
     OnInit,
     DoCheck,
     Input,
+    Output,
+    EventEmitter,
     ViewChild,
     Renderer2,
     ElementRef,
     TemplateRef,
     ViewContainerRef,
     ChangeDetectorRef,
-    Output,
-    EventEmitter,
+    ChangeDetectionStrategy,
 } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
@@ -46,15 +47,18 @@ export interface AttackPatternCell extends HeatCellData {
 @Component({
     selector: 'ap-heatmap',
     templateUrl: './ap-heatmap.component.html',
-    styleUrls: ['./ap-heatmap.component.scss']
+    styleUrls: ['./ap-heatmap.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ApHeatmapComponent implements OnInit, DoCheck {
 
     public showHeatMap = false;
     @Input() public attackPatterns: Dictionary<AttackPatternCell> | Array<AttackPatternCell>;
+    private previousPatterns: Dictionary<AttackPatternCell> | Array<AttackPatternCell>;
     public heatMapData: Array<HeatBatchData> = [];
     @Input() public heatMapOptions: HeatMapOptions;
     private noColor: HeatColor = {bg: '#ccc', fg: 'black'};
+    private baseHeats: Dictionary<HeatColor> = null;
     @ViewChild(HeatmapComponent) private heatMapView: HeatmapComponent;
 
     @ViewChild('apTooltipTemplate') apTooltipTemplate: TemplateRef<any>;
@@ -82,13 +86,17 @@ export class ApHeatmapComponent implements OnInit, DoCheck {
             this.heatMapOptions.color = {};
         }
         this.createAttackPatternHeatMap();
+        this.previousPatterns = this.attackPatterns;
         this.showHeatMap = (this.attackPatterns && (Object.keys(this.attackPatterns).length > 0));
     }
 
     ngDoCheck() {
-        this.changeDetector.markForCheck();
-        this.createAttackPatternHeatMap();
-        this.showHeatMap = (this.attackPatterns && (Object.keys(this.attackPatterns).length > 0));
+        if (this.previousPatterns !== this.attackPatterns) {
+            this.changeDetector.markForCheck();
+            this.createAttackPatternHeatMap();
+            this.previousPatterns = this.attackPatterns;
+            this.showHeatMap = (this.attackPatterns && (Object.keys(this.attackPatterns).length > 0));
+        }
     }
 
     /**
@@ -96,8 +104,17 @@ export class ApHeatmapComponent implements OnInit, DoCheck {
      *              in order to fit within the viewport.
      */
     private createAttackPatternHeatMap() {
+        if (!this.baseHeats) {
+            if (this.heatMapView && this.heatMapView.options && this.heatMapView.options.color) {
+                this.baseHeats = this.heatMapView.options.color.heatColors;
+            }
+            if (!this.baseHeats) {
+                this.baseHeats = this.heatMapView['defaultOptions'].color.heatColors;
+            }
+        }
+
+        const heats = this.baseHeats;
         const data: Dictionary<HeatBatchData> = {};
-        const heats = this.heatMapOptions.color.heatColors = {'false': this.noColor};
         const patterns = Array.isArray(this.attackPatterns) ? this.attackPatterns : Object.values(this.attackPatterns);
         patterns.forEach(pattern => {
             if (pattern.id && pattern.name && pattern.phases && pattern.phases.length) {
@@ -113,7 +130,7 @@ export class ApHeatmapComponent implements OnInit, DoCheck {
                     }
                 }
                 pattern.title = pattern.name;
-                pattern.value = value;
+                pattern.value = value.toString();
                 pattern.phases.forEach(phase => {
                     if (phase) {
                         let batch = data[phase];
@@ -129,10 +146,10 @@ export class ApHeatmapComponent implements OnInit, DoCheck {
                 });
             }
         });
+
         const sorted = Object.values(data).sort((batch1, batch2) => batch1.title.localeCompare(batch2.title));
         sorted.forEach(batch => batch.cells.sort((cell1, cell2) => cell1.title.localeCompare(cell2.title)));
         this.heatMapData = sorted;
-        console.log('result', this.heatMapData);
         if (this.heatMapView && this.heatMapView.options && this.heatMapView.options.color) {
             this.heatMapView.options.color.heatColors = heats;
         }

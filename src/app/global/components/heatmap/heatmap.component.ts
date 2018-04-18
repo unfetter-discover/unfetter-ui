@@ -196,6 +196,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
         const node: any = d3.select('.heat-map').node();
         const rect: DOMRect = node ? node.getBoundingClientRect() : null;
         if (!node || !rect || !rect.width || !rect.height) {
+            console.log('cannot detect heatmap bounds');
             return;
         } else if (this.data !== this.previousData) {
             console.log(`(${new Date().toISOString()}) heatmap data change detected`);

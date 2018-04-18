@@ -325,35 +325,6 @@ export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit
     });
   }
 
-  /**
-   * @description Display a tooltip on the heatmap for the tactic we are hovering over.
-   */
-  public showHeatMapTooltip(selectedPattern: any, hover: boolean = true) {
-    if (!selectedPattern || !selectedPattern.row) {
-      if (this.hoverTooltip) { // only hide it if it really a tooltip, not a popup
-        this.hideAttackPatternTooltip(this.attackPattern);
-      }
-    } else {
-      const patternName: string = selectedPattern.row.title;
-      const rawSelection = this.attackPatternPhases[patternName];
-      let attackPattern = null;
-      this.intrusionSetsDashboard.killChainPhases.forEach(phase => {
-        attackPattern = attackPattern || phase.attack_patterns.find(pattern => pattern && pattern.name === patternName);
-      });
-      if (!attackPattern) {
-        this.hideAttackPatternTooltip(this.attackPattern);
-      } else if (this.attackPattern && (this.attackPattern.id === attackPattern.id)) {
-        // displaying same attack pattern already; if the current one is hovering (real tooltip), redisplay as popup
-        if (!hover && this.hoverTooltip) {
-          this.attackPattern = null;
-          this.showAttackPatternTooltip(attackPattern, selectedPattern.event, rawSelection || null, hover);
-        }
-      } else {
-        this.showAttackPatternTooltip(attackPattern, selectedPattern.event, rawSelection || null, hover);
-      }
-    }
-  }
-
   public showAttackPatternTooltip(tactic: Partial<KillChainEntry>, event?: UIEvent,
       phases?: string[], asTooltip: boolean = false): void {
     if (tactic && this.attackPattern && (this.attackPattern.id === tactic.id)) {

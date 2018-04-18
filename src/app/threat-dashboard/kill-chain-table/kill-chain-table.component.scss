@@ -137,7 +137,7 @@ $white: #FFFFFF;
         background: linear-gradient(60deg, #1e88e5, #2196f3) !important;
     }
     unf-heatmap div.heat-map {
-        height: 400px;
+        width: calc(100% - 250px);
         background: $white;
     }
     unf-heatmap div.mini-map svg {

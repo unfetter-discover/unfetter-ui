@@ -1,18 +1,5 @@
 @import '../../../../styles/_variables.scss';
 
-$white: #FFFFFF;
-
-:host ::ng-deep {
-    unf-heatmap {
-        div.heat-map {
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            background: $white;
-        }
-    }
-}
-
 .attack-pattern-tooltip {
 
     padding: 10px;
