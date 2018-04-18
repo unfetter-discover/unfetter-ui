@@ -77,3 +77,10 @@
         font-weight: 300;
     }
 }
+
+:host ::ng-deep {
+    unf-heatmap div.heat-map {
+        height: 500px;
+        background: white;
+    }
+}

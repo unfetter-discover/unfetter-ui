@@ -6,7 +6,6 @@ import { AccordionModule, AutoCompleteModule, CarouselModule } from 'primeng/pri
 import { ComponentModule } from '../components';
 import { GlobalModule } from '../global/global.module';
 import { AttackPatternsCarouselComponent } from './attack-patterns-carousel/attack-patterns-carousel.component';
-import { AttackPatternsHeatmapComponent } from './attack-patterns-heatmap/attack-patterns-heatmap.component';
 import { AttackPatternsLegendComponent } from './attack-patterns-legend/attack-patterns-legend.component';
 import { CriticalSecurityControlsComponent } from './critical-security-controls/critical-security-controls.component';
 import { IntrusionSetDashboardComponent } from './intrusion-set-dashboard.component';
@@ -23,7 +22,6 @@ const unfetterComponents = [
     IntrusionSetsPanelComponent,
     CollapsibleTreeComponent,
     AttackPatternsLegendComponent,
-    AttackPatternsHeatmapComponent,
     AttackPatternsCarouselComponent,
     IntrusionSetsTreeComponent,
     CriticalSecurityControlsComponent,

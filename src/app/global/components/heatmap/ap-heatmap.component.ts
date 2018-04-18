@@ -113,7 +113,7 @@ export class ApHeatmapComponent implements OnInit, DoCheck {
             }
         }
 
-        const heats = this.baseHeats;
+        const heats = Object.assign({}, this.baseHeats);
         const data: Dictionary<HeatBatchData> = {};
         const patterns = Array.isArray(this.attackPatterns) ? this.attackPatterns : Object.values(this.attackPatterns);
         patterns.forEach(pattern => {
