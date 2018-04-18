@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row mb-5">
     <div class="col-md-12">
         <label>Labels</label>
         <div class="button-row">
@@ -9,22 +9,21 @@
     </div>
 </div>
 <ng-container *ngIf="model">
-    <div class="row" *ngFor="let l of model.attributes.labels; let i = index">
+    <div class="row mb-5" *ngFor="let l of model.attributes.labels; let i = index; trackBy: trackByFn">
         <div class="col-md-12">
             <mat-card>
                 <mat-card-content>
                     <div class="row">
                         <div class="col-md-12">
                             <mat-input-container class="full-width">
-                                <input #label matInput value="{{l}}" placeholder="Label"
-                                        (change)="update(i, label.value)">
+                                <input matInput [(ngModel)]="model.attributes.labels[i]" placeholder="Label">
                             </mat-input-container>
                         </div>
                     </div>
                 </mat-card-content>
                 <mat-card-actions>
                     <div class="button-row">
-                        <button mat-raised-button (click)="removeLabelButtonClicked(l)">
+                        <button mat-raised-button (click)="removeLabelButtonClicked(i)">
                             <i class="material-icons">delete</i>REMOVE
                         </button>
                     </div>

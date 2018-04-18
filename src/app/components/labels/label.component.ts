@@ -11,15 +11,18 @@ export class LabelComponent {
     @Input() public model: any;
 
     public addLabelButtonClicked(): void {
-        this.model.attributes.labels.unshift(' ');
+        this.model.attributes.labels.unshift('');
     }
 
-    public removeLabelButtonClicked(label: string): void {
-        this.model.attributes.labels = this.model.attributes.labels.filter((l) => l !== label);
+    public removeLabelButtonClicked(index: number): void {
+        this.model.attributes.labels.splice(index, 1);
     }
 
     public update(index: number, value: string): void {
         this.model.attributes.labels[index] = value;
     }
 
+    public trackByFn(index: number, _: any): number {
+        return index;
+    }
 }

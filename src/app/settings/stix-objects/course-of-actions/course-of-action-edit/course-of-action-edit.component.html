@@ -14,38 +14,8 @@
                 </mat-input-container>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <label>Labels</label>
-                <div class="button-row">
-                    <button mat-raised-button (click)="addLabelButtonClicked()"><i class="material-icons">add</i>ADD</button>
-                </div>
-            </div>
-        </div>
-        <div class="row" >
-            <div class="col-md-12">
-
-                    <mat-card *ngFor="let label of courseOfAction.attributes.label_names" style="margin: 10px 0px;">
-                            <mat-card-content>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                            <mat-input-container class="full-width">
-                                                <input matInput placeholder="Label"  value="{{label.name}}">
-                                            </mat-input-container>
-                                    </div>
-
-                                </div>
-                            </mat-card-content>
-                            <mat-card-actions>
-                                <div class="button-row">
-                                    <a mat-raised-button (click)="removeLabelButtonClicked(label)"><i class="material-icons">delete</i>REMOVE</a>
-                                </div>
-                            </mat-card-actions>
-                    </mat-card>
-
-
-            </div>
-        </div>
+        
+        <labels [(model)]="courseOfAction"></labels>
         <external-reference [(model)]="courseOfAction"></external-reference>
 
         <div class="row">

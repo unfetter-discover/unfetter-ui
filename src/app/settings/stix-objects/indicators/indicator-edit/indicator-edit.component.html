@@ -23,15 +23,7 @@
         </div>
         <div class="row" >
             <div class="col-md-6">
-                <!-- <label>Valid From</label>
-                 <div>
-                <p-calendar [(ngModel)]="indicator.attributes.valid_from"  dateFormat="M-dd-yy" showIcon="true"></p-calendar>
-                 </div> -->
-                <!--<mat-input-container class="full-width">
-                    <input matInput [matDatepicker]="picker" placeholder="Valid From" [(ngModel)]="indicator.attributes.valid_from">
-                    <button matSuffix [matDatepickerToggle]="picker"></button>
-                </mat-input-container>
-                <mat-datepicker #picker></mat-datepicker>-->
+   
                 <mat-form-field class="full-width">
                     <input matInput [matDatepicker]="picker" placeholder="Valid From" [(ngModel)]="indicator.attributes.valid_from">
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -39,22 +31,16 @@
                 </mat-form-field>
             </div>
             <div class="col-md-6">
-                <!-- <label>Valid To</label>
-               <div> -->
-                    <!--<mat-input-container class="full-width">
-                        <input matInput [matDatepicker]="picker_to" placeholder="Valid Until" [(ngModel)]="indicator.attributes.valid_until">
-                        <button matSuffix [matDatepickerToggle]="picker_to"></button>
-                    </mat-input-container>
-                    <mat-datepicker #picker_to></mat-datepicker>-->
+      
                         <mat-form-field class="full-width">
                             <input matInput [matDatepicker]="picker_to" placeholder="Valid Until" [(ngModel)]="indicator.attributes.valid_until">
                             <mat-datepicker-toggle matSuffix [for]="picker_to"></mat-datepicker-toggle>
                             <mat-datepicker #picker_to></mat-datepicker>
                         </mat-form-field>
-                    <!-- <p-calendar [(ngModel)]="indicator.attributes.valid_to"  dateFormat="M-dd-yy" showIcon="true"></p-calendar> -->
-               <!-- </div> -->
+               
             </div>
         </div>
+        <labels [(model)]="indicator"></labels>
          <kill-chain-phases [(model)]="indicator"></kill-chain-phases>
 
         <external-reference [(model)]="indicator"></external-reference>

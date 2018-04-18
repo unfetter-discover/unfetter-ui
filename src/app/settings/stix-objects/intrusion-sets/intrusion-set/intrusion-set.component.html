@@ -19,6 +19,17 @@
                             <p>{{intrusionSet.attributes.name}}</p>
                         </div>
                     </div>
+                    <div class="row" *ngIf="intrusionSet.attributes.labels">
+                        <div class="col-md-12">
+                            <label>Labels</label>
+                            <mat-chip-list>
+                                <mat-chip *ngFor="let label of intrusionSet.attributes.labels" selected="true" color="accent">
+                                    {{label}}
+                                </mat-chip>
+                            </mat-chip-list>
+                    
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
                             <label>First Seen</label>

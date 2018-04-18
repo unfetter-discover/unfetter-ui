@@ -15,7 +15,6 @@ import { StixService } from '../../../stix.service';
 })
 export class CourseOfActionComponent extends BaseStixComponent implements OnInit {
     public courseOfAction = new CourseOfAction();
-    public showLabels = true;
     public showExternalReferences = true;
 
      constructor(
