@@ -67,6 +67,7 @@ export class CategoriesEditComponent extends CategoriesComponent implements OnIn
     const getUser$ = this.userStore
       .select<any>('users')
       .pluck<any, UserProfile>('userProfile')
+      .filter((user) => user !== undefined)
       .take(1)
       .distinctUntilChanged()
       .subscribe((user: UserProfile) => {
