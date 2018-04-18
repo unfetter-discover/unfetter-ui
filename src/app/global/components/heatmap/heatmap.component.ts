@@ -447,7 +447,9 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
                 .attr('transform', `translate(${bounds.workspace.sidePadding}, ${bounds.headerHeight})`);
 
         bounds.workspace.xPosition = 0;
+        const batchColors = this.options.color.batchColors.slice(0);
         data.forEach(batch => this.drawBatch(batch, bounds, body, header));
+        this.options.color.batchColors = batchColors;
     }
 
     /**

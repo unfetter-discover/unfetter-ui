@@ -104,9 +104,9 @@ export class IndicatorSharingFiltersComponent implements OnInit {
       this.dialog.closeAll();
     } else {
       this.heatmapVisible = true;
-      this.dialog.open(IndicatorHeatMapComponent, {
+      const dialog = this.dialog.open(IndicatorHeatMapComponent, {
         width: 'calc(100vw - 400px)',
-        height: '500px',
+        height: '600px',
         hasBackdrop: true,
         disableClose: false,
         closeOnNavigation: true,
@@ -115,9 +115,9 @@ export class IndicatorSharingFiltersComponent implements OnInit {
         },
         data: {
           active: this.searchForm.value.attackPatterns,
-          // attackPatterns: this.attackPatterns
         },
-      }).afterClosed().subscribe(
+      });
+      dialog.afterClosed().subscribe(
         result => {
           if (result) {
             this.searchForm.get('attackPatterns').patchValue(result);

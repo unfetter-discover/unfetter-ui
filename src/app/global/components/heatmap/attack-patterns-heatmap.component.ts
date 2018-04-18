@@ -105,7 +105,9 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
      */
     private createAttackPatternHeatMap() {
         if (!this.baseHeats) {
-            if (this.heatMapView && this.heatMapView.options && this.heatMapView.options.color) {
+            if (this.heatMapOptions && this.heatMapOptions.color && this.heatMapOptions.color.heatColors) {
+                this.baseHeats = this.heatMapOptions.color.heatColors;
+            } else if (this.heatMapView && this.heatMapView.options && this.heatMapView.options.color) {
                 this.baseHeats = this.heatMapView.options.color.heatColors;
             }
             if (!this.baseHeats) {

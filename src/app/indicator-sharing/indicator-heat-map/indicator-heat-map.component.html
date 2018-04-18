@@ -2,35 +2,8 @@
 <mat-dialog-content>
     <div id="indicator-analytic-heat-map">
         <div id="indicator-heat-map">
-            <unf-heatmap #heatmapView [data]="heatmap" [options]="heatmapOptions"
-                    (hover)="onTooltip($event)" (click)="toggleAttackPattern($event)"></unf-heatmap>
-            <ng-template #tooltipTemplate>
-                <div class="col-md-12 attack-pattern-tooltip">
-                    <mat-card>
-                        <mat-card-subtitle>
-                            <div class="flex1"><label>{{attackPattern.name}}</label></div>
-                        </mat-card-subtitle>
-                        <mat-card-content>
-                            <div class="row" *ngIf="attackPattern.description">
-                                <div class="col-md-3"><label>Description</label></div>
-                                <div class="col-md-8 attack-pattern-desc" [innerHTML]="attackPattern.description"></div>
-                            </div>
-                            <div class="row" *ngIf="attackPattern.sources">
-                                <div class="col-md-3"><label>Data Sources</label></div>
-                                <div class="col-md-9 attack-pattern-sources">{{attackPattern.sources.join(', ')}}</div>
-                            </div>
-                            <div class="row" *ngIf="attackPattern.platforms">
-                                <div class="col-md-3"><label>Platforms</label></div>
-                                <div class="col-md-9 attack-pattern-platforms">{{attackPattern.platforms.join(', ')}}</div>
-                            </div>
-                            <div class="row" *ngIf="attackPattern.phases">
-                                <div class="col-md-3"><label>Tactics</label></div>
-                                <div class="col-md-9 attack-pattern-phases">{{attackPattern.phases.join(', ') | capitalize}}</div>
-                            </div>
-                        </mat-card-content>
-                    </mat-card>
-                </div>
-            </ng-template>
+            <attack-patterns-heatmap #heatmapView [attackPatterns]="attackPatterns" [heatMapOptions]="heatmapOptions"
+                    (click)="toggleAttackPattern($event)"></attack-patterns-heatmap>
         </div>
     </div>
 </mat-dialog-content>
