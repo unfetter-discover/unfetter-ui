@@ -24,7 +24,7 @@ const genAssessState = (state?: Partial<AssessState>) => {
     const tmp = {
         assessment: new Assessment3(),
         backButton: false,
-        categories: [],
+        categories: [ 'Generic AV', 'Standard EDR', 'Network Analysis', 'Network Firewall', 'sysmon', 'Autoruns', 'Enterprise SIEM' ],
         finishedLoading: false,
         saved: { finished: false, id: '' },
         showSummary: false,
