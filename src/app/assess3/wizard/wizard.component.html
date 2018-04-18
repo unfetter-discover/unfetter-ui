@@ -17,8 +17,8 @@
           {{category}}
         </mat-panel-title>
       </mat-expansion-panel-header>
-      <ul *ngIf="categories[category]" class="stepper stepper-vertical">
-        <li *ngFor="let capability of categories[category].capabilities" [class.active]="capability.page === page">
+      <ul class="stepper stepper-vertical">
+        <li [class.active]="capability.page === page" *ngFor="let capability of category.capabilities">
           <a href (click)="navigationClicked(capability.page, $event)">
             <span class="circle">&nbsp;</span>
             <span class="label">{{capability}}</span>
@@ -46,25 +46,9 @@
 
 <div class="card flex1">
   <mat-card>
-
-    <!-- List of cards containing each panel in the baselines wizard -->
-    
     <!-- CATEGORIES DEFINITION PANEL -->
-    <div *ngIf="openedSidePanel === 'categories'"> 
-      <unf-assess3-wizard-category #categories></unf-assess3-wizard-category>
-    </div>
-
-    <!-- CAPABILITIES SELECTION PANEL -->
-    <div *ngIf="openedSidePanel === 'capabilities'"> 
-      <p>This is the capabilities definition panel.</p>>
-    </div>
-
-    <!-- KCP/AP SELECTION and SCORING PANEL -->
-    <div *ngIf="openedSidePanel === 'capability'"> 
-      <p>This is the attack pattern selection and capability scoring panel.</p>
-    </div>
-
-    <div *ngIf="openedSidePanel === 'summary'">
+    <!--unf-assess3-wizard-category></unf-assess3-wizard-category-->
+    <ng-template #savePage>
       <mat-card-header>
         <mat-card-title>Assessment Report</mat-card-title>
       </mat-card-header>

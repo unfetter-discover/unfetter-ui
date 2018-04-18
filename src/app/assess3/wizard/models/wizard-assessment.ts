@@ -12,6 +12,7 @@ export class WizardAssessment {
     public name: string;
     public description: string;
     public type: StixLabelEnum = StixLabelEnum.INDICATOR;
+    public risk = -1;
     public scores: Assessment3Question[] = [];
     public groupings: any[] = [];
 }
