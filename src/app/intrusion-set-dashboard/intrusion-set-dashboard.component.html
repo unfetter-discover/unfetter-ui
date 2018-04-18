@@ -68,7 +68,9 @@
                                         </div>
 
                                         <attack-patterns-heatmap [hidden]="!showHeatMap"
-                                                [killChainPhases]="killChainPhases"></attack-patterns-heatmap>
+                                                [attackPatterns]="heatMapData"
+                                                [heatMapOptions]="heatMapOptions"
+                                                (hover)="highlightAttackPattern($event)"></attack-patterns-heatmap>
 
                                         <attack-patterns-carousel [hidden]="showHeatMap"
                                                 [killChainPhases]="killChainPhases"></attack-patterns-carousel>

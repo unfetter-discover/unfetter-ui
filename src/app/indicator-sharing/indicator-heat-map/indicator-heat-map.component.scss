@@ -15,7 +15,7 @@ $white: #FFFFFF;
     unf-heatmap {
         div.heat-map {
             width: 100%;
-            height: 350px;
+            height: 450px;
             margin: 0;
             padding: 0;
             background: white;
@@ -26,6 +26,9 @@ $white: #FFFFFF;
         .heat-map-cell rect.selected {
             fill: $analytic-exchange-primary;
         }
+    }
+    .mat-dialog-container {
+        transition: none;
     }
 }
 

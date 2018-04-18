@@ -62,6 +62,7 @@ import { RelatationshipGeneratorComponent } from './components/relatationship-ge
 import { InfiniteScrollDirective } from './directives/infinite-scroll.directive';
 import { PublishedCheckboxComponent } from './components/published-checkbox/published-checkbox.component';
 import { HeaderLogoComponent } from './components/header-logo/header-logo.component';
+import { AttackPatternsHeatmapComponent } from './components/heatmap/attack-patterns-heatmap.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -116,6 +117,7 @@ const unfetterComponents = [
     RiskBreakdownComponent,
     TreemapComponent,
     HeatmapComponent,
+    AttackPatternsHeatmapComponent,
     CreatedByRefComponent,
     RelatationshipGeneratorComponent,
     InfiniteScrollDirective,

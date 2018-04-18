@@ -134,7 +134,7 @@ describe('HeatmapComponent', () => {
     });
 
     it('should accept input heatmap data, default settings', () => {
-        component.heatMapData = mockData;
+        component.data = mockData;
         component.ngOnInit();
         fixture.detectChanges();
 
@@ -150,7 +150,7 @@ describe('HeatmapComponent', () => {
     });
 
     it('should draw cell text', () => {
-        component.heatMapData = mockData;
+        component.data = mockData;
         component.options = {
             color: {
                 showGradients: false,
@@ -178,12 +178,12 @@ describe('HeatmapComponent', () => {
         const gbatch = Math.floor(Math.random() * mockData.length);
         const gcell = Math.floor(Math.random() * (mockData[gbatch].cells.length - 1));
         const gtitle = mockData[gbatch].cells[gcell].title;
-        component.heatMapData = mockData.map(batch => {
+        component.data = mockData.map(batch => {
             return {title: batch.title, value: batch.value, cells: batch.cells.map(cell => Object.assign({}, cell))};
         });
-        component.heatMapData[gbatch].value = 'classed';
-        component.heatMapData[gbatch].cells[gcell].value = 'test';
-        component.heatMapData[gbatch].cells[gcell + 1].value = 'classed';
+        component.data[gbatch].value = 'classed';
+        component.data[gbatch].cells[gcell].value = 'test';
+        component.data[gbatch].cells[gcell + 1].value = 'classed';
         component.options = {
             color: {
                 batchColors: [
@@ -220,7 +220,7 @@ describe('HeatmapComponent', () => {
         minimap.nativeElement.style.width = '100px';
         minimap.nativeElement.style.height = '50px';
 
-        component.heatMapData = mockData;
+        component.data = mockData;
         component.options = {
             text: {
                 showHeaderText: true,
@@ -260,13 +260,13 @@ describe('HeatmapComponent', () => {
         const tbatch = Math.floor(Math.random() * mockData.length);
         const tcell = Math.floor(Math.random() * mockData[tbatch].cells.length);
         const target = mockData[tbatch].cells[tcell];
-        component.heatMapData = mockData;
+        component.data = mockData;
         component.options = {hover: {hoverDelay: 1}};
         component.ngOnInit();
         fixture.detectChanges();
 
         let spy = null;
-        component.onHover.subscribe(ev => spy = ev);
+        component.hover.subscribe(ev => spy = ev);
         let trect = fixture.nativeElement.querySelector(`g.heat-map-cell[aria-label="${target.title}"] rect`);
         expect(trect).not.toBeNull();
         trect.dispatchEvent(new Event('mouseover'));
@@ -284,12 +284,12 @@ describe('HeatmapComponent', () => {
         const tbatch = Math.floor(Math.random() * mockData.length);
         const tcell = Math.floor(Math.random() * mockData[tbatch].cells.length);
         const target = mockData[tbatch].cells[tcell];
-        component.heatMapData = mockData;
+        component.data = mockData;
         component.ngOnInit();
         fixture.detectChanges();
 
         let spy = null;
-        component.onClick.subscribe(ev => spy = ev);
+        component.click.subscribe(ev => spy = ev);
         let trect = fixture.nativeElement.querySelector(`g.heat-map-cell[aria-label="${target.title}"] rect`);
         expect(trect).not.toBeNull();
         trect.parentElement.dispatchEvent(new Event('click'));

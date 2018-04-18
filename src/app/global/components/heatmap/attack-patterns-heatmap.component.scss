@@ -1,13 +1,4 @@
-@import '../../../styles/_variables.scss';
-
-$white: #FFFFFF;
-
-:host ::ng-deep {
-    unf-heatmap div.heat-map {
-        height: 500px;
-        background: $white;
-    }
-}
+@import '../../../../styles/_variables.scss';
 
 .attack-pattern-tooltip {
 

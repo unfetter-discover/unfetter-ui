@@ -67,8 +67,8 @@ export class IntrusionSetsPanelComponent implements OnInit {
                 (event) => {
                     const highlighted: NodeList = this.listElement.nativeElement.querySelectorAll('[highlight]');
                     Array.from(highlighted).forEach((node: Element) => node.removeAttribute('highlight'));
-                    if (event && event.intrusion_sets) {
-                        event.intrusion_sets.forEach(intrusion => {
+                    if (event && event.analytics) {
+                        event.analytics.forEach(intrusion => {
                             const target = this.listElement.nativeElement.querySelector(`#${intrusion.id}`);
                             if (target) {
                                 target.attributes.setNamedItem(document.createAttribute('highlight'));
