@@ -1,6 +1,6 @@
 import { _isNumberValue } from '@angular/cdk/coercion';
 import { DatePipe } from '@angular/common';
-import { ApplicationRef, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import { GenericApi } from '../core/services/genericapi.service';
@@ -49,7 +49,6 @@ export class EventsService {
     constructor(
         private genericApi: GenericApi,
         private datePipe: DatePipe,
-        private ref: ApplicationRef
     ) {
         this.BASE_TEN = 10;
         this.dataSource = new SightingsDataSource(this.recentSightings);
