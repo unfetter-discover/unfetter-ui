@@ -314,7 +314,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
             ...enhancements
         };
 
-        const downloadData$ = this.indicatorSharingService.getDownloadData(indicatorCopy.id, attackPatternIds, sensorIds)
+        const downloadData$ = this.indicatorSharingService.getDownloadData([indicatorCopy.id], attackPatternIds, sensorIds)
             .subscribe(
                 (downloadData) => {
                     downloadBundle([exportObj, ...sensorRelationships, ...downloadData ], `${this.indicator.name}-enhanced-bundle`);
