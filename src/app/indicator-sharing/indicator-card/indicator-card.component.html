@@ -46,6 +46,10 @@
     <div *ngIf="!collapseContents">
 
         <label>Pattern</label>
+        <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.pattern" (cbOnSuccess)="flashTooltip(patternTooltip)">
+          <mat-icon>content_copy</mat-icon>
+          <div #patternTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
+        </button>
         <p>
           <code [innerHtml]="whitespaceToBreak(indicator.pattern)" class="inlineBlock"></code>
         </p>

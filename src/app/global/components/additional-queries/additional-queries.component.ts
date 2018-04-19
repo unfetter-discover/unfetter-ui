@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 
 import { AdditionalQueriesForm } from '../../form-models/additional-queries';
 import { heightCollapse } from '../../animations/height-collapse';
+import { FormatHelpers } from '../../static/format-helpers';
 
 @Component({
   selector: 'additional-queries',
@@ -36,5 +37,15 @@ export class AdditionalQueriesComponent implements OnInit {
     this.resetForm();
     this.changeDetectorRef.detectChanges(); // To force rerender of angular material inputs
     this.formResetComplete = true;
+  }
+
+  /**
+   * @param  {FormControl} formCtrl
+   * @returns void
+   * @description Normalizes quotes on an input
+   */
+  public patternChange(formCtrl: FormControl): void {
+    const originalValue = formCtrl.value;
+    formCtrl.setValue(FormatHelpers.normalizeQuotes(originalValue));
   }
 }

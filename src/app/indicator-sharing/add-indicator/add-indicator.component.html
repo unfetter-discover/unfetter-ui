@@ -63,7 +63,7 @@
                 <help-window [helpHtml]="patternHelpHtml"></help-window>
 
                 <mat-form-field class="full-width mb-6">
-                    <textarea matInput required placeholder="Pattern (STIX Patterning Optional)" formControlName="pattern"></textarea>
+                    <textarea matInput required placeholder="Pattern (STIX Patterning Optional)" formControlName="pattern" (keyup)="patternChange(form.get('pattern'))"></textarea>
                     <mat-error *ngIf="form.get('pattern').hasError('required')">
                         Pattern is <strong>required</strong>
                     </mat-error>

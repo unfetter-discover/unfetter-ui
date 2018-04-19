@@ -14,7 +14,7 @@
       </mat-form-field>
 
       <mat-form-field class="full-width mb-6">
-        <textarea matInput required placeholder="Query" formControlName="query"></textarea>
+        <textarea matInput required placeholder="Query" formControlName="query" (keyup)="queryChange(localForm.get('query'))"></textarea>
         <mat-error *ngIf="localForm.get('query').hasError('required')">
           Query is <strong>required</strong>
         </mat-error>
