@@ -1,23 +1,17 @@
+import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
-
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
-
-import { Assessment } from '../../../models/assess/assessment';
-import { AssessService } from '../../services/assess.service';
-import {
-    LOAD_ASSESSMENT_RESULT_DATA, SetAssessments,
-    FinishedLoading, SetGroupAssessedObjects, SetGroupRiskByAttackPattern,
-    SetGroupData, LOAD_GROUP_DATA, LOAD_GROUP_CURRENT_ATTACK_PATTERN, SetGroupCurrentAttackPattern,
-    PUSH_URL, DonePushUrl, LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS, SetGroupAttackPatternRelationships, ReloadAfterAssessmentObjectUpdate, UPDATE_ASSESSMENT_OBJECT, LoadGroupData
-} from './full-result.actions';
-import { fullAssessmentResultReducer } from './full-result.reducers';
-import { Constance } from '../../../utils/constance';
-import { Stix } from '../../../models/stix/stix';
-import { RiskByAttack } from '../../../models/assess/risk-by-attack';
 import { Relationship } from '../../../models';
+import { Assessment } from '../../../models/assess/assessment';
+import { RiskByAttack } from '../../../models/assess/risk-by-attack';
+import { Stix } from '../../../models/stix/stix';
+import { Constance } from '../../../utils/constance';
+import { AssessService } from '../../services/assess.service';
+import { DonePushUrl, FinishedLoading, LOAD_ASSESSMENT_RESULT_DATA, LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS, LOAD_GROUP_CURRENT_ATTACK_PATTERN, LOAD_GROUP_DATA, LoadGroupData, PUSH_URL, SetAssessments, SetGroupAttackPatternRelationships, SetGroupCurrentAttackPattern, SetGroupData, UPDATE_ASSESSMENT_OBJECT } from './full-result.actions';
+
+
 
 
 @Injectable()
@@ -34,7 +28,11 @@ export class FullResultEffects {
     public fetchAssessmentResultData = this.actions$
         .ofType(LOAD_ASSESSMENT_RESULT_DATA)
         .pluck('payload')
-        .switchMap((rollupId: string) => this.assessService.getByRollupId(rollupId))
+        .switchMap((rollupId: string) => {
+            return this.assessService
+                .getByRollupId(rollupId)
+                .catch((ex) => Observable.empty());
+        })
         .mergeMap((data: Assessment[]) => [new SetAssessments(data), new FinishedLoading(true)]);
 
     @Effect()

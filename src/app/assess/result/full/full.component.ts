@@ -108,7 +108,9 @@ export class FullComponent implements OnInit, OnDestroy {
       .pluck<object, Assessment[]>('assessmentTypes')
       .distinctUntilChanged()
       .filter((arr) => arr && arr.length > 0)
-      .map((arr) => arr[0]);
+      .map((arr) => {
+        return arr.find((el) => el.id === this.assessmentId);
+      });
 
     this.finishedLoading = this.store
       .select('fullAssessment')
@@ -144,10 +146,13 @@ export class FullComponent implements OnInit, OnDestroy {
       .pluck<object, Assessment[]>('assessmentTypes')
       .filter((arr) => arr && arr.length > 0)
       .distinctUntilChanged()
-      .map((arr: Assessment[]) => {
-        if (arr[0].assessment_objects && arr[0].assessment_objects.length) {
-          let retVal = arr[0].name + ' - ';
-          const assessedType = arr[0].assessment_objects[0].stix.type;
+      .map((arr) => {
+        return arr.find((el) => el.id === this.assessmentId);
+      })
+      .map((assessment: Assessment) => {
+        if (assessment.assessment_objects && assessment.assessment_objects.length) {
+          let retVal = assessment.name + ' - ';
+          const assessedType = assessment.assessment_objects[0].stix.type;
           // NOTE this is a temporary fix for naming in rollupId
           // TODO remove this when a better fix is in place
           switch (assessedType) {
@@ -163,7 +168,7 @@ export class FullComponent implements OnInit, OnDestroy {
           }
           return retVal;
         } else {
-          return arr[0].name;
+          return assessment.name;
         }
       });
 
