@@ -24,6 +24,7 @@ import { CoreModule } from '../../../core/core.module';
 import { GlobalModule } from '../../../global/global.module';
 import { StixService } from '../../stix.service';
 import { GenericApi } from '../../../core/services/genericapi.service';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('CategoriesHomeComponent', () => {
   let component: CategoriesHomeComponent;
@@ -71,7 +72,8 @@ describe('CategoriesHomeComponent', () => {
       providers: [
         StixService,
         GenericApi,
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
       .compileComponents();
   }));

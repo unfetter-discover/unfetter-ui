@@ -23,6 +23,7 @@ import { GlobalModule } from '../../../../global/global.module';
 import { StixService } from '../../../stix.service';
 import { RelationshipNewComponent, RelationshipsComponent } from '../../relationships';
 import { CategoriesComponent } from './categories.component';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('CategoriesComponent', () => {
   let component: CategoriesComponent;
@@ -70,7 +71,8 @@ describe('CategoriesComponent', () => {
       providers: [
         StixService,
         GenericApi,
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
       .compileComponents();
   }));

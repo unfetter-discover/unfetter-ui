@@ -29,6 +29,7 @@ import { usersReducer } from '../../../../root-store/users/users.reducers';
 import { StixService } from '../../../stix.service';
 import { RelationshipNewComponent, RelationshipsComponent } from '../../relationships';
 import { CategoriesEditComponent } from './categories-edit.component';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('CategoriesEditComponent', () => {
   let component: CategoriesEditComponent;
@@ -83,7 +84,8 @@ describe('CategoriesEditComponent', () => {
         BaseComponentService,
         GenericApi,
         StixService,
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
       .compileComponents();
   }));
