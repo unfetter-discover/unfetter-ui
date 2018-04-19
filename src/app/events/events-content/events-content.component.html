@@ -56,7 +56,7 @@
           <mat-card color="primary" class="uf-mat-card card mat-card-scroll-content bottom-card">
             <mat-card-title class="traffic-detail-title">Traffic Detail</mat-card-title>
             <mat-card-content>
-              <mat-table #table [dataSource]="service.dataSource" matSort (matSortChange)="service.refreshData($event)">
+              <mat-table #table [dataSource]="service.dataSource" matSort>
                 <ng-container matColumnDef="{{columnIds[0]}}">
                   <mat-header-cell *matHeaderCellDef mat-sort-header>Date/Time</mat-header-cell>
                   <mat-cell *matCellDef="let sighting">{{sighting.attributes.last_seen | date:'medium' }}</mat-cell>
@@ -64,8 +64,7 @@
                 <ng-container matColumnDef="{{columnIds[1]}}">
                   <mat-header-cell *matHeaderCellDef>Where Sighted</mat-header-cell>
                   <mat-cell *matCellDef="let sighting">
-                    <span>
-                    <!-- *ngIf="sighting.attributes.name && sighting.attributes.ip else unknown"> -->
+                    <span *ngIf="sighting.attributes.x_unfetter_asset.hostname && sighting.attributes.x_unfetter_asset.ip else unknown">
                       {{sighting.attributes.x_unfetter_asset.hostname}} - {{sighting.attributes.x_unfetter_asset.ip}}</span>
                     <ng-template #unknown>
                       Unknown
