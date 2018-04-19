@@ -12,11 +12,11 @@ import { SetCategorySteps } from '../../store/baseline.actions';
   templateUrl: './category.component.html',
   styleUrls: ['./category.component.scss']
 })
-export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {    
-  public static readonly DEFAULT_VALUE = undefined;
-  
-  public tempCategories: Category[] = [ CategoryComponent.DEFAULT_VALUE ];
-  public categories: Category[];
+export class CategoryComponent implements OnInit {
+  public readonly defaultValue = undefined;
+  public tempCategories: string[] = [ this.defaultValue ];
+  public dummyCategories: string[] = [ 'Generic AV', 'Standard EDR', 'Network Analysis', 'Network Firewall', 'sysmon', 'Autoruns', 'Enterprise SIEM' ];
+
   private subscriptions: Subscription[] = [];
     
   constructor(
@@ -26,36 +26,8 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-
-    const catSub1$ = this.wizardStore
-      .select('baseline')
-      .pluck('categories')
-      .distinctUntilChanged()
-      .subscribe(
-        (categories: Category[]) => this.categories = categories,
-        (err) => console.log(err));
-
-    const catSub2$ = this.wizardStore
-      .select('baseline')
-      .pluck('categorySteps')
-      .distinctUntilChanged()
-      .subscribe(
-        (categorySteps: Category[]) => this.tempCategories = categorySteps,
-        (err) => console.log(err));
-  
-    this.subscriptions.push(catSub1$, catSub2$);
-
-    this.wizardStore.dispatch(new assessActions.FetchCategories());
-  }
-
-  ngAfterViewInit() {
-    // Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
-    // Add 'implements AfterViewInit' to the class.
-    
-  }
-
-  ngOnDestroy(): void {
-   this.subscriptions.forEach((sub) => sub.unsubscribe());
+    // Get categories
+    // this.wizardStore.dispatch(new assessActions.FetchCategories());
   }
 
   /**
@@ -96,10 +68,11 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param {string} category name - optional
    * @return {number}
    */
-  public selectedCategory(option: any, index: number): Category {
-    const selValue = this.tempCategories[index];
-    if (selValue === undefined) {
-      return CategoryComponent.DEFAULT_VALUE;
+  public selectedCategory(option: any, tempCategory?: Category): number {
+    if (this.tempCategories) {
+      const index = this.tempCategories.indexOf(tempCategory);
+      const retVal = (index >= 0) ? this.dummyCategories.indexOf(tempCategory) : this.defaultValue;
+      return retVal;
     } else {
       const selIndex = this.categories.findIndex(category => category.id === selValue.id);
       console.log(`value is -` + JSON.stringify(selValue) + `- and index is ` + selIndex);
