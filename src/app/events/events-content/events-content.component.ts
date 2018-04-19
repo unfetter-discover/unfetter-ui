@@ -61,6 +61,7 @@ export class EventsContentComponent implements OnInit, AfterViewInit {
       },
     ];
     this.service.daysOfData = this.DEFAULT_CHART_DAYS;
+    this.sort = new MatSort();
     this.sort.sort(<MatSortable>{
       id: this.columnIds[0],
       start: 'desc',
