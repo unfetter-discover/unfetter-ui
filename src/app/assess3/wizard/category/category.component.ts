@@ -11,11 +11,10 @@ import { Subscription } from 'rxjs/Subscription';
   templateUrl: './category.component.html',
   styleUrls: ['./category.component.scss']
 })
-export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {    
+export class CategoryComponent implements OnInit {
   public readonly defaultValue = undefined;
-  public tempCategories: Category[] = [ this.defaultValue ];
-  public categories: Category[];
-  // public categories: string[] = [ 'Generic AV', 'Standard EDR', 'Network Analysis', 'Network Firewall', 'sysmon', 'Autoruns', 'Enterprise SIEM' ];
+  public tempCategories: string[] = [ this.defaultValue ];
+  public dummyCategories: string[] = [ 'Generic AV', 'Standard EDR', 'Network Analysis', 'Network Firewall', 'sysmon', 'Autoruns', 'Enterprise SIEM' ];
 
   private subscriptions: Subscription[] = [];
     
@@ -26,24 +25,8 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    const sub1$ = this.wizardStore
-      .select('categories')
-      .distinctUntilChanged()
-      .subscribe(
-        (categories: Category[]) => this.categories = categories,
-        (err) => console.log(err));
-
-    this.subscriptions.push(sub1$);
-  }
-
-  ngAfterViewInit() {
-    // Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
-    // Add 'implements AfterViewInit' to the class.
-    
-  }
-
-  ngOnDestroy(): void {
-   this.subscriptions.forEach((sub) => sub.unsubscribe());
+    // Get categories
+    // this.wizardStore.dispatch(new assessActions.FetchCategories());
   }
 
   /**
@@ -84,7 +67,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   public selectedCategory(option: any, tempCategory?: Category): number {
     if (this.tempCategories) {
       const index = this.tempCategories.indexOf(tempCategory);
-      const retVal = (index >= 0) ? this.categories.indexOf(tempCategory) : this.defaultValue;
+      const retVal = (index >= 0) ? this.dummyCategories.indexOf(tempCategory) : this.defaultValue;
       return retVal;
     } else {
       return this.defaultValue;
