@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { EventsService, SightingsData } from '../events.service';
+import { EventsService, SightingsDataSource } from '../events.service';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../root-store/app.reducers';
 import { EventsState } from '../store/events.reducers';
@@ -122,7 +122,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   public addSighting(newSighting) {
     if (this.service.recentSightings) {
       this.transformSighting(newSighting);
-      this.service.dataStore.addSighting(newSighting);
+      this.service.dataSource.addSighting(newSighting);
       let temp = this.service.recentSightings;
       temp.push(newSighting);
       this.service.recentSightings = temp;
@@ -289,8 +289,8 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   public transformSightings() {
     if (!this.sightingsGroup) {
-      this.service.dataStore = new SightingsData([]);
       this.service.recentSightings = new Array<Sighting>();
+      this.service.dataSource = new SightingsDataSource(this.service.recentSightings);
       this.identities = [];
       this.indicators = [];
       this.observedData = [];
@@ -301,7 +301,7 @@ export class EventsComponent implements OnInit, OnDestroy {
       this.observedData = this.sightingsGroup.filter((data: any) => data.attributes.type === 'observed-data');
       for (const sighting of this.service.recentSightings) {
         this.transformSighting(sighting);
-        this.service.dataStore.addSighting(sighting);
+        this.service.dataSource.addSighting(sighting);
       }
     }
   }
