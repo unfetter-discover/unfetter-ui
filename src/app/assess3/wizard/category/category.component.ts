@@ -9,8 +9,8 @@ import { Store } from '@ngrx/store';
   styleUrls: ['./category.component.scss']
 })
 export class CategoryComponent implements OnInit {
-  public readonly defaultValue = -1;
-  public tempCategories: string[] = [];
+  public readonly defaultValue = undefined;
+  public tempCategories: string[] = [ this.defaultValue ];
   public dummyCategories: string[] = [ 'Generic AV', 'Standard EDR', 'Network Analysis', 'Network Firewall', 'sysmon', 'Autoruns', 'Enterprise SIEM' ];
 
     
@@ -19,6 +19,7 @@ export class CategoryComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // Get categories
     // this.wizardStore.dispatch(new assessActions.FetchCategories());
   }
 
@@ -29,7 +30,7 @@ export class CategoryComponent implements OnInit {
    * @returns {number}
    */
   public trackByFn(index, item) {
-    return index;
+    return ((item !== undefined) ? item.id : item) || index;
   }
 
   /*
@@ -40,7 +41,15 @@ export class CategoryComponent implements OnInit {
   public updateCategory(option: any, index: number): void {
     const newCategoryName = option.selected.value;
 
-    this.tempCategories[index] = newCategoryName;
+    // Verify a selection and that this category doesn't already exist
+    const indexInList = this.tempCategories.indexOf(newCategoryName);
+    if (indexInList < 0 && option.value !== this.defaultValue) {
+      this.tempCategories[index] = newCategoryName;
+    } else {
+      // TODO: error message to user here saying this category is already selected
+
+      option.value = this.defaultValue;
+    }
   }
 
   /*
@@ -53,7 +62,6 @@ export class CategoryComponent implements OnInit {
     if (this.tempCategories) {
       const index = this.tempCategories.indexOf(tempCategory);
       const retVal = (index >= 0) ? this.dummyCategories.indexOf(tempCategory) : this.defaultValue;
-      console.log(`For selector ${option}, sel value is ${tempCategory} and return is ${retVal}`);
       return retVal;
     } else {
       return this.defaultValue;
@@ -70,9 +78,7 @@ export class CategoryComponent implements OnInit {
 
     if (confirmed) {
       const index = this.tempCategories.indexOf(option.value);
-      if (index >= 0) {
-        this.tempCategories.splice(index, 1);
-      }  
+      this.tempCategories.splice(index, 1); 
     }
   }
 
@@ -83,29 +89,14 @@ export class CategoryComponent implements OnInit {
    * @return {boolean} true to delete, false otherwise
    */
   public confirmDelete(category: string, event?: UIEvent): boolean {
-    if (!category) {
-      console.log('no category given to delete');
-      return;
-    }
-
     // TODO: Add confirmation dialog
 
     return true;
   }
 
-    /**
-   * @description Add category to list
-   * @param {string} category
-   * @return {void}
-   */
-  public onAddCategory(option: any): void {
-    // Verify a selection and that this category doesn't already exist
-    const index = this.tempCategories.indexOf(option.value);
-    if (index < 0 && option.value !== this.defaultValue) {
-      this.tempCategories.push(option.value);
-
-      option.value = this.defaultValue;
-    }
+  public addCategoryEntry(): void {
+    this.tempCategories.push(this.defaultValue);
   }
+
 
 }
