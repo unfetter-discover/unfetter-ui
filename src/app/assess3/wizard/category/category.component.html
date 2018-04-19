@@ -11,8 +11,8 @@
               <form>
                 <mat-form-field class="full-width">
                   <mat-select #existingCategory name="existingCategory" (change)="updateCategory(existingCategory, i)" [value]="tempCategory">
-                    <mat-option *ngFor="let category of categories" [value]="category">
-                      {{ category.name }}
+                    <mat-option *ngFor="let dummyCategory of dummyCategories" [value]="dummyCategory">
+                      {{ dummyCategory }}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
