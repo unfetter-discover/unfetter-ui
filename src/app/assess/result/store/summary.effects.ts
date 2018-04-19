@@ -36,12 +36,12 @@ export class SummaryEffects {
         .switchMap((assessmentId: string) => {
             return this.assessService
                 .getById(assessmentId)
-                .catch((ex) => Observable.of({}));
+                .catch((ex) => Observable.empty());
         })
         .mergeMap((data: Assessment) => {
             const actions = [new FinishedLoading(true)];
             if (!data || !data.id) {
-                return actions
+                return actions;
             }
             return [new SetAssessments([data]), ...actions];
         });
