@@ -18,6 +18,17 @@
                                         <h6>{{identity.attributes.name}}</h6>
                                     </div>
                                 </div>
+                                <div class="row" *ngIf="identity.attributes.labels">
+                                    <div class="col-md-12">
+                                        <label>Labels</label>
+                                        <mat-chip-list>
+                                            <mat-chip *ngFor="let label of identity.attributes.labels" selected="true" color="accent">
+                                                {{label}}
+                                            </mat-chip>
+                                        </mat-chip-list>
+                                
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label>Description:</label>

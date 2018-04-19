@@ -16,12 +16,23 @@
                             <p>{{tool.attributes.name}}</p>
                         </div>
                     </div>
+                    <div class="row" *ngIf="tool.attributes.labels">
+                        <div class="col-md-12">
+                            <label>Labels</label>
+                            <mat-chip-list>
+                                <mat-chip *ngFor="let label of tool.attributes.labels" selected="true" color="accent">
+                                    {{label}}
+                                </mat-chip>
+                            </mat-chip-list>
+                    
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-12">
                             <label>Aliases</label>
                             <mat-chip-list>
-                                <mat-chip *ngFor="let aliase of tool.attributes.aliases" selected="true">
-                                    {{aliase}}
+                                <mat-chip *ngFor="let alias of tool.attributes.aliases" selected="true">
+                                    {{alias}}
                                 </mat-chip>
                             </mat-chip-list>
                         </div>
@@ -41,20 +52,6 @@
                                     {{kill_chain_phase.phase_name}}
                                 </mat-chip>
                             </mat-chip-list>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label>Labels</label>
-                            <mat-chip-list>
-                                <mat-chip *ngFor="let label of tool.attributes.labels"
-                                    selected="true"
-                                    color="accent">
-                                    {{label}}
-                                </mat-chip>
-                            </mat-chip-list>
-
                         </div>
                     </div>
                     <div class="row">

@@ -10,7 +10,10 @@ export class StixTextArrayComponent {
     @Input() public model: any;
     @Input() public propertyName: any;
 
-     public addItemToArray(): void {
+    public addItemToArray(): void {
+        if (!this.model.attributes[this.propertyName]) {
+            this.model.attributes[this.propertyName] = [];
+        }
         this.model.attributes[this.propertyName].unshift('');
     }
 
@@ -23,7 +26,7 @@ export class StixTextArrayComponent {
     }
 
     public makePlaceholder(prop: string) {
-        let retVal = prop.replace(/s$/, '');
+        let retVal = prop.replace(/e?s$/, '');
         retVal = retVal.replace(/\b([a-z])(\w+)/g, (_, g1, g2) => {
             let word = g1.concat(g2);
             if (word === 'and' || word === 'or' || word === 'the') {

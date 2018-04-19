@@ -17,6 +17,17 @@
                                 <h6>{{sensor.attributes.name}}</h6>
                             </div>
                         </div>
+                        <div class="row" *ngIf="sensor.attributes.labels">
+                            <div class="col-md-12">
+                                <label>Labels</label>
+                                <mat-chip-list>
+                                    <mat-chip *ngFor="let label of sensor.attributes.labels" selected="true" color="accent">
+                                        {{label}}
+                                    </mat-chip>
+                                </mat-chip-list>
+                        
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                     <label>Kill Chain Name / Framework:</label>
@@ -32,9 +43,9 @@
                             <div class="col-md-12">
                                     <label>Aliases:</label>
                                     <mat-chip-list>
-                                        <mat-chip *ngFor="let aliase of sensor.attributes.aliases"
+                                        <mat-chip *ngFor="let alias of sensor.attributes.aliases"
                                             selected="true">
-                                            {{aliase}}
+                                            {{alias}}
                                         </mat-chip>
                                     </mat-chip-list>
                             </div>

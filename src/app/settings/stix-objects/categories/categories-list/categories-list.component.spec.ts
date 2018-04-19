@@ -27,6 +27,7 @@ import { PublishedCheckboxComponent } from '../../../../global/components/publis
 import { StixService } from '../../../stix.service';
 import { RelationshipNewComponent, RelationshipsComponent } from '../../relationships';
 import { CategoriesListComponent } from './categories-list.component';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('CategoriesListComponent', () => {
   let component: CategoriesListComponent;
@@ -81,7 +82,8 @@ describe('CategoriesListComponent', () => {
       providers: [
         StixService,
         GenericApi,
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
       .compileComponents();
   }));

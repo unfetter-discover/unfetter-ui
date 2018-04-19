@@ -13,6 +13,7 @@ export class Campaign {
         description: string;
         name: string;
         labels: string[];
+        aliases: string[];
         first_seen: any;
         objective: string;
         timestamp_precision: string;
@@ -40,6 +41,7 @@ export class Campaign {
     private createAttributes(): any {
         return {
             labels: [],
+            aliases: [],
             first_seen: new Date(),
             metaProperties: {
                 published: true
