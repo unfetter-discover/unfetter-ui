@@ -4,6 +4,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { AdditionalQueriesForm } from '../../form-models/additional-queries';
 import { heightCollapse } from '../../animations/height-collapse';
 import { FormatHelpers } from '../../static/format-helpers';
+import { CheckPII } from '../../static/check-pii';
 
 @Component({
   selector: 'additional-queries',
@@ -44,8 +45,12 @@ export class AdditionalQueriesComponent implements OnInit {
    * @returns void
    * @description Normalizes quotes on an input
    */
-  public patternChange(formCtrl: FormControl): void {
+  public queryChange(formCtrl: FormControl): void {
     const originalValue = formCtrl.value;
     formCtrl.setValue(FormatHelpers.normalizeQuotes(originalValue));
+  }
+  
+  public getPiiWarning(inputString: string): any[] {
+    return CheckPII.validationErrors(inputString);
   }
 }

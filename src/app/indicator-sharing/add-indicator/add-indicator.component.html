@@ -78,6 +78,14 @@
                     [style.opacity]="form.get('pattern').dirty && patternValid && form.get('pattern').value.length > 0 ? 1 : 0"
                     [style.marginTop]="!form.get('pattern').hasError('required') ? '-30px' : '-5px'" 
                     [style.marginBottom]="!form.get('pattern').hasError('required') ? '15px' : '0px'"><i class="material-icons">check</i> Valid STIX 2 Pattern</p>
+
+
+                <div id="patternWarningPii" [style.display]="form.get('pattern').dirty && getPiiWarning(form.get('pattern').value) && getPiiWarning(form.get('pattern').value).length && form.get('pattern').value.length > 0 ? 'block' : 'none'" class="uf-well-accent">
+                    <span>Please verify there is not a disclosure of Personally Identifiable Information (PII) in the following:</span>
+                    <ul>
+                        <li *ngFor="let piiWarning of getPiiWarning(form.get('pattern').value)">{{ piiWarning.name }}: {{ piiWarning.matches.join(', ') }}</li>
+                    </ul>
+                </div>
                 
                 <div class="mb-6">
                     <div class="uf-collapsible-control mb-10" (click)="showPatternTranslations = !showPatternTranslations">

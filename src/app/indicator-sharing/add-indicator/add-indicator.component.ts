@@ -15,6 +15,7 @@ import { cleanObjectProperties } from '../../global/static/clean-object-properti
 import { ExternalReferencesForm } from '../../global/form-models/external-references';
 import { KillChainPhasesForm } from '../../global/form-models/kill-chain-phases';
 import { FormatHelpers } from '../../global/static/format-helpers';
+import { CheckPII } from '../../global/static/check-pii';
 
 @Component({
     selector: 'add-indicator',
@@ -289,8 +290,12 @@ export class AddIndicatorComponent implements OnInit {
      * @returns void
      * @description Normalizes quotes on an input
      */
-    public queryChange(formCtrl: FormControl): void {
+    public patternChange(formCtrl: FormControl): void {
         const originalValue = formCtrl.value;
         formCtrl.setValue(FormatHelpers.normalizeQuotes(originalValue));
+    }
+
+    public getPiiWarning(inputString: string): any[] {
+        return CheckPII.validationErrors(inputString);
     }
 }

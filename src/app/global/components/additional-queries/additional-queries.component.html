@@ -20,6 +20,13 @@
         </mat-error>
       </mat-form-field>
 
+      <div id="patternWarningPii" [style.display]="localForm.get('query').dirty && getPiiWarning(localForm.get('query').value) && getPiiWarning(localForm.get('query').value).length && localForm.get('query').value.length > 0 ? 'block' : 'none'">
+          <span>Please verify there is not a disclosure of Personally Identifiable Information (PII) in the following:</span>
+          <ul>
+              <li *ngFor="let piiWarning of getPiiWarning(localForm.get('query').value)">{{ piiWarning.name }}: {{ piiWarning.matches.join(', ') }}</li>
+          </ul>
+      </div>
+
       <button mat-button color="accent" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Attach Query to {{ parentDocumentType | capitalize }}</button>
     </form>
   </div>
