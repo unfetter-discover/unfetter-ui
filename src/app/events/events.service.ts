@@ -1,44 +1,27 @@
-import { DataSource } from '@angular/cdk/table';
+import { _isNumberValue } from '@angular/cdk/coercion';
 import { DatePipe } from '@angular/common';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { MatTableDataSource } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import { GenericApi } from '../core/services/genericapi.service';
 import { ChartData } from '../global/models/chart-data';
 import { Sighting } from '../models';
 import { JsonApiData } from '../models/json/jsonapi-data';
-import { OrganizationIdentity } from '../models/user/organization-identity';
 import { Constance } from '../utils/constance';
 
-export class SightingsData {
-    dataChange: BehaviorSubject<Sighting[]> = new BehaviorSubject<Sighting[]>([]);
-    get data(): Sighting[] { return this.dataChange.value; }
-
-    constructor(sightings: Sighting[]) {
-        if (sightings) {
-            for (const sighting of sightings) {
-                this.addSighting(sighting);
-            }
-        }
-    }
-
+export class SightingsDataSource extends MatTableDataSource<any> {
     addSighting(newSighting: Sighting) {
-        const copiedData = this.data.slice();
-        copiedData.push(newSighting);
-        this.dataChange.next(copiedData);
-    }
-}
-
-export class SightingsDataSource extends DataSource<any> {
-    constructor(private sightingsData: SightingsData) {
-        super();
+        this.data = [...this.data, newSighting];
     }
 
-    connect(): Observable<Sighting[]> {
-        return this.sightingsData.dataChange;
+    sortingDataAccessor = (sighting: Sighting, sortHeaderId: string): string|number => {
+        if (sortHeaderId === 'last_seen') {
+            const date: any = sighting.attributes.last_seen;
+            return date;
+        }
+        const value: any = sighting[sortHeaderId];
+        return _isNumberValue(value) ? Number(value) : value;
     }
-
-    disconnect() { }
 }
 
 @Injectable()
@@ -49,7 +32,6 @@ export class EventsService {
     public readonly attackPatternsUrl = Constance.ATTACK_PATTERN_URL;
     public recentSightings: Sighting[];
     public finishedLoading: boolean;
-    public dataStore = new SightingsData(this.recentSightings);
     public dataSource: SightingsDataSource | null;
     public readonly barChartData: ChartData[];
     public barChartLabels: string[];
@@ -66,10 +48,10 @@ export class EventsService {
 
     constructor(
         private genericApi: GenericApi,
-        private datePipe: DatePipe
+        private datePipe: DatePipe,
     ) {
         this.BASE_TEN = 10;
-        this.dataSource = new SightingsDataSource(this.dataStore);
+        this.dataSource = new SightingsDataSource(this.recentSightings);
         this.barChartData = [
             {
                 data: [],

@@ -1,6 +1,6 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { MatCardModule, MatSelectModule, MatTableModule } from '@angular/material';
+import { MatCardModule, MatSelectModule, MatTableModule, MatTableDataSource } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChartsModule } from 'ng2-charts';
 import { EventsService } from '../events.service';
@@ -12,6 +12,9 @@ describe('EventsContentComponent', () => {
 
   const mockService = {
     recentSightings: [],
+    barChartLabels: [],
+    daysOfData: '',
+    dataSource: new MatTableDataSource([]),
   };
 
   let component: EventsContentComponent;
