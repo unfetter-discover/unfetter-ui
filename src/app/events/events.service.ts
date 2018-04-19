@@ -1,19 +1,26 @@
-import { DataSource } from '@angular/cdk/table';
+import { _isNumberValue } from '@angular/cdk/coercion';
 import { DatePipe } from '@angular/common';
-import { Injectable, ChangeDetectorRef, ApplicationRef } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { ApplicationRef, Injectable } from '@angular/core';
+import { MatTableDataSource } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import { GenericApi } from '../core/services/genericapi.service';
 import { ChartData } from '../global/models/chart-data';
 import { Sighting } from '../models';
 import { JsonApiData } from '../models/json/jsonapi-data';
-import { OrganizationIdentity } from '../models/user/organization-identity';
 import { Constance } from '../utils/constance';
-import { MatTableDataSource } from '@angular/material';
 
 export class SightingsDataSource extends MatTableDataSource<any> {
     addSighting(newSighting: Sighting) {
         this.data = [...this.data, newSighting];
+    }
+
+    sortingDataAccessor = (sighting: Sighting, sortHeaderId: string): string|number => {
+        if (sortHeaderId === 'last_seen') {
+            const date: any = sighting.attributes.last_seen;
+            return date;
+        }
+        const value: any = sighting[sortHeaderId];
+        return _isNumberValue(value) ? Number(value) : value;
     }
 }
 
