@@ -18,6 +18,8 @@ import { IndicatorHeatMapComponent } from '../indicator-heat-map/indicator-heat-
 import { heightCollapse } from '../../global/animations/height-collapse';
 import { generateStixRelationship } from '../../global/static/stix-relationship';
 import { StixRelationshipTypes } from '../../global/enums/stix-relationship-types.enum';
+import { IndicatorSharingService } from '../indicator-sharing.service';
+import { downloadBundle } from '../../global/static/stix-bundle';
 
 @Component({
     selector: 'indicator-sharing-list',
@@ -44,6 +46,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     constructor(
         public dialog: MatDialog,
         public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>,
+        private indicatorSharingService: IndicatorSharingService,
         // Used for SERVER_CALL_COMPLETE, this should be moved to ngrx
         protected changeDetectorRef: ChangeDetectorRef
     ) { 
@@ -275,10 +278,25 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                 }
             });
         
-        console.log(this.filteredIndicators);
-        console.log(indicatorsCopy);         
-        console.log('####', Array.from(sensorIdSet));  
-        console.log('$$$$', Array.from(attackPatternIdSet));  
+        const downloadData$ = this.indicatorSharingService.getDownloadData(indicatorsCopy.map((ind) => ind.id), Array.from(attackPatternIdSet), Array.from(sensorIdSet))
+            .subscribe(
+                (downloadData) => {
+                    console.log(downloadData);
+                    downloadBundle([indicatorsCopy, ...sensorRelationships, ...downloadData], `analytic-exchange-enhanced-bundle`);
+                },
+                (err) => {
+                    console.log(err);
+                },
+                () => {
+                    downloadData$.unsubscribe();
+                }
+            );
+
+        
+        // console.log(this.filteredIndicators);
+        // console.log(indicatorsCopy);         
+        // console.log('####', Array.from(sensorIdSet));  
+        // console.log('$$$$', Array.from(attackPatternIdSet));  
     }
 
 }

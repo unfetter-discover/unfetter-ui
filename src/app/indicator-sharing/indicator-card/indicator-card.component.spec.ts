@@ -180,7 +180,7 @@ describe('IndicatorCardComponent', () => {
         component.indicator = { ...mockIndicator };
         component.searchParameters = { ...mockSearchParams };
         component.collapseAllCardsSubject = mockCollapseAllCards;
-
+        spyOn(component, 'exportIndicator').and.returnValue(true);
         fixture.detectChanges();
     });
 

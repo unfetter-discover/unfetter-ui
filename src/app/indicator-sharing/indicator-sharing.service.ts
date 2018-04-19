@@ -149,13 +149,13 @@ export class IndicatorSharingService {
             .map(RxjsHelpers.mapArrayAttributes);
     }
 
-    public getDownloadData(indicatorId: string, attackPatternIds: string[], sensorIds: string[]): Observable<any[]> {
+    public getDownloadData(indicatorIds: string[], attackPatternIds: string[], sensorIds: string[]): Observable<any[]> {
         const relFilterObj = {
             $and: [
                 {
                     $or: [
-                        { 'stix.source_ref': indicatorId },
-                        { 'stix.target_ref': indicatorId }
+                        { 'stix.source_ref': { $in: indicatorIds } },
+                        { 'stix.target_ref': { $in: indicatorIds } }
                     ]
                 },
                 {
