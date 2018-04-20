@@ -9,12 +9,10 @@ import { RiskByAttack } from '../../../models/assess/risk-by-attack';
 import { Stix } from '../../../models/stix/stix';
 import { Constance } from '../../../utils/constance';
 import { AssessService } from '../../services/assess.service';
-import { DonePushUrl, FinishedLoading, LOAD_ASSESSMENT_RESULT_DATA, LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS, 
-    LOAD_GROUP_CURRENT_ATTACK_PATTERN, LOAD_GROUP_DATA, LoadGroupData, PUSH_URL, SetAssessments, SetGroupAttackPatternRelationships, 
-    SetGroupCurrentAttackPattern, SetGroupData, UPDATE_ASSESSMENT_OBJECT } from './full-result.actions';
-
-
-
+import { DonePushUrl, FinishedLoading, LOAD_ASSESSMENTS_BY_ROLLUP_ID, LOAD_ASSESSMENT_BY_ID, 
+        LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS, LOAD_GROUP_CURRENT_ATTACK_PATTERN, LOAD_GROUP_DATA, 
+        LoadGroupData, PUSH_URL, SetAssessments, SetGroupAttackPatternRelationships, SetGroupCurrentAttackPattern, 
+        SetGroupData, UPDATE_ASSESSMENT_OBJECT, SetAssessment } from './full-result.actions';
 
 @Injectable()
 export class FullResultEffects {
@@ -27,8 +25,8 @@ export class FullResultEffects {
     ) { }
 
     @Effect()
-    public fetchAssessmentResultData = this.actions$
-        .ofType(LOAD_ASSESSMENT_RESULT_DATA)
+    public fetchAssessmentsByRollupId = this.actions$
+        .ofType(LOAD_ASSESSMENTS_BY_ROLLUP_ID)
         .pluck('payload')
         .switchMap((rollupId: string) => {
             return this.assessService
@@ -36,6 +34,17 @@ export class FullResultEffects {
                 .catch((ex) => Observable.empty());
         })
         .mergeMap((data: Assessment[]) => [new SetAssessments(data), new FinishedLoading(true)]);
+
+    @Effect()
+    public fetchAssessmentById = this.actions$
+        .ofType(LOAD_ASSESSMENT_BY_ID)
+        .pluck('payload')
+        .switchMap((id: string) => {
+            return this.assessService
+                .getById(id)
+                .catch((ex) => Observable.empty());
+        })
+        .mergeMap((data: Assessment) => [new SetAssessment(data), new FinishedLoading(true)]);
 
     @Effect()
     public fetchAssessmentGroupData = this.actions$

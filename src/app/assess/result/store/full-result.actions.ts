@@ -7,7 +7,8 @@ import { RiskByAttack } from '../../../models/assess/risk-by-attack';
 import { Relationship } from '../../../models';
 
 // For effects
-export const LOAD_ASSESSMENT_RESULT_DATA = '[Assess Result] LOAD_ASSESSMENT_RESULT_DATA';
+export const LOAD_ASSESSMENTS_BY_ROLLUP_ID = '[Assess Result] LOAD_ASSESSMENTS_BY_ROLLUP_ID';
+export const LOAD_ASSESSMENT_BY_ID = '[Assess Result] LOAD_ASSESSMENT_BY_ID';
 export const LOAD_GROUP_DATA = '[Assess Result Group] LOAD_GROUP_DATA';
 export const LOAD_GROUP_CURRENT_ATTACK_PATTERN = '[Assess Result Group] LOAD_GROUP_CURRENT_ATTACK_PATTERN';
 export const LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS = '[Assess Result Group] LOAD_ATTACK_PATTERN_RELATIONSHIPS';
@@ -17,6 +18,7 @@ export const UPDATE_ASSESSMENT_OBJECT = '[Assess Result Group] UPDATE_ASSESSMENT
 
 // For reducers
 export const SET_ASSESSMENTS = '[Assess Result] SET_ASSESSMENTS';
+export const SET_ASSESSMENT = '[Assess Result] SET_ASSESSMENT';
 export const SET_GROUP_DATA = '[Assess Result Group] SET_GROUP_DATA';
 export const SET_GROUP_ASSESSMENT_OBJECTS = '[Assess Result Group] SET_GROUP_ASSESSMENT_OBJECTS_DATA';
 export const SET_GROUP_RISK_BY_ATTACK_PATTERN = '[Assess Result Group] SET_RISK_BY_ATTACK_PATTERN';
@@ -34,14 +36,26 @@ export class SetAssessments implements Action {
     constructor(public payload: Assessment[]) { }
 }
 
+export class SetAssessment implements Action {
+    public readonly type = SET_ASSESSMENT;
+    constructor(public payload: Assessment) { }
+}
+
 export class FinishedLoading implements Action {
     public readonly type = FINISHED_LOADING;
 
     constructor(public payload: boolean) { }
 }
 
-export class LoadAssessmentResultData implements Action {
-    public readonly type = LOAD_ASSESSMENT_RESULT_DATA;
+export class LoadAssessmentsByRollupId implements Action {
+    public readonly type = LOAD_ASSESSMENTS_BY_ROLLUP_ID;
+
+    // assessment rollup id
+    constructor(public payload: string) { }
+}
+
+export class LoadAssessmentById implements Action {
+    public readonly type = LOAD_ASSESSMENT_BY_ID;
 
     // assessment rollup id
     constructor(public payload: string) { }
@@ -126,13 +140,15 @@ export type FullAssessmentResultActions =
     CleanAssessmentResultData |
     DonePushUrl |
     FinishedLoading |
-    LoadAssessmentResultData |
+    LoadAssessmentsByRollupId |
+    LoadAssessmentById |
     LoadGroupData |
     LoadGroupCurrentAttackPattern |
     LoadGroupAttackPatternRelationships |
     PushUrl |
     ReloadAfterAssessmentObjectUpdate |
     SetAssessments |
+    SetAssessment |
     SetGroupData |
     SetGroupAssessedObjects |
     SetGroupAttackPatternRelationships |

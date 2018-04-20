@@ -19,7 +19,7 @@ import { Stix } from '../../models/stix/stix';
 import { UserProfile } from '../../models/user/user-profile';
 import { AppState } from '../../root-store/app.reducers';
 import { Constance } from '../../utils/constance';
-import { LoadAssessmentResultData } from '../result/store/full-result.actions';
+import { LoadAssessmentsByRollupId } from '../result/store/full-result.actions';
 import { FullAssessmentResultState } from '../result/store/full-result.reducers';
 import { CleanAssessmentWizardData, LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle } from '../store/assess.actions';
 import * as assessReducers from '../store/assess.reducers';
@@ -288,7 +288,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         },
         (err) => console.log(err));
     this.subscriptions.push(sub$);
-    this.assessStore.dispatch(new LoadAssessmentResultData(rollupId));
+    this.assessStore.dispatch(new LoadAssessmentsByRollupId(rollupId));
   }
 
   public loadAssessments(rollupId: string, arr: Array<Assessment>, meta: Partial<AssessmentMeta>) {
