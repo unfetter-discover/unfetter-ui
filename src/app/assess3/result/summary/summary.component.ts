@@ -39,7 +39,13 @@ export class SummaryComponent implements OnInit, OnDestroy {
   finishedLoading = false;
   masterListOptions = {
     dataSource: null,
-    columns: new MasterListDialogTableHeaders('modified', 'Modified'),
+    columns: new MasterListDialogTableHeaders('modified', 'Date Modified')
+        .addColumn('capabilities', '# of Capabilities', 'master-list-capabilities', false, (value) => value || '0')
+        .addColumn('creator', 'Author', 'master-list-extra', false, (value) => value || 'Unknown')
+        .addColumn('framework', 'Type', 'master-list-extra', false, (value) => value || 'ATT&CK')
+        .addColumn('industry', 'Industry', 'master-list-extra', false, (value) => value || 'Local')
+        .addColumn('published', 'Status', 'master-list-extra', false, (published) => published ? 'Public' : 'Draft')
+        ,
     displayRoute: this.baseAssessUrl + '/result/summary',
     modifyRoute: this.baseAssessUrl + '/wizard/edit',
     createRoute: this.baseAssessUrl + '/create',
@@ -141,30 +147,18 @@ export class SummaryComponent implements OnInit, OnDestroy {
           return '';
         }
         if (summaries[0].object_ref) {
-          let retVal = summaries[0].name + ' - ';
-          
           // Get object reference to determine type
-          let o$;
-          o$ = this.assessService.getCapabilityById(summaries[0].object_ref);
-          const capName = o$.map((data) => {
-              if (data === undefined || data.length === 0) {
-                  return 'undefined';
-              } else {
-                  const capability = data[0] as Capability;
-                  return capability.name;
-              }
-          })
-          .catch((err) => {
-              console.log('error getting capability reference from object assessment', err);
-              return 'error';
-          });
-          
-          retVal += capName;
-
-          return retVal;
-        } else {
-          return summaries[0].name;
+          let o$ = this.assessService.getCapabilityById(summaries[0].object_ref)
+            .subscribe(
+              (capability) => {
+                if (capability !== undefined) {
+                    this.assessmentName = Observable.of(summaries[0].name + ' - ' + capability.name);
+                }
+              },
+              (err) => console.log('error getting capability reference from object assessment', err)
+            );
         }
+        return summaries[0].name;
       });
 
     this.subscriptions.push(sub1$, sub2$, sub8$);

@@ -9,3 +9,25 @@
     min-height: calc(100vh - #{$navbar-height}px);
     background-color: #F1F1F1;
 }
+
+::ng-deep .uf-master-list-dialog .mat-dialog-container {
+    mat-dialog-content {
+        div.master-list-table {
+            .master-list-capabilities, .master-list-capabilities-header {
+                flex: 1;
+                align-items: center;
+                text-align: center;
+            }
+            .master-list-extra, .master-list-extra-header {
+                flex: 1;
+                align-items: center;
+            }
+        }
+    }
+
+    mat-dialog-actions {
+        justify-content: flex-end;
+        padding: 6px 0;
+        padding-right: 6px;
+    }
+}
