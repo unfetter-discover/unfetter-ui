@@ -60,7 +60,7 @@ export class BaselineEffects {
     @Effect()
     public fetchCategories = this.actions$
         .ofType(assessActions.FETCH_CATEGORIES)
-        .switchMap(() => this.baselineService.getCategories())
+        .switchMap(() => this.assessService.loadCategories())
         .map((arr: Category[]) => new assessActions.SetCategories(arr));
 
     @Effect({ dispatch: false })
