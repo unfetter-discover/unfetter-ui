@@ -135,7 +135,6 @@ describe('HeatmapComponent', () => {
 
     it('should accept input heatmap data, default settings', () => {
         component.data = mockData;
-        component.ngOnInit();
         fixture.detectChanges();
 
         let cells: NodeList = fixture.nativeElement.querySelectorAll('.heat-map svg g.heat-map-cell');

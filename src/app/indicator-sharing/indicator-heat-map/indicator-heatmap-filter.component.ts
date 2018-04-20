@@ -116,10 +116,8 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
      * @description for selecting and deselecting attack patterns
      */
     public toggleAttackPattern(clicked?: any) {
-        console.log('click detected', clicked);
         if (clicked && clicked.row) {
             const index = this.selectedPatterns.findIndex(pattern => pattern.id === clicked.row.id);
-            console.log('existing selection?', index);
             let newValue = 'selected';
             if (index < 0) {
                 // pattern was not previously selected; select it
@@ -129,7 +127,6 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
                 newValue = 'inactive';
                 this.selectedPatterns.splice(index, 1);
             }
-            console.log('new state', newValue);
             this.attackPatterns[clicked.row.title].value = newValue;
             this.view['heatMapView'].updateCells();
         }

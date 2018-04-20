@@ -1,18 +1,21 @@
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
 import { ActionReducerMap, StoreModule } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 
-import { MatCardModule } from '@angular/material';
+import { MatCardModule, MatIconModule } from '@angular/material';
 import { OverlayModule } from '@angular/cdk/overlay';
 
 import { IndicatorHeatMapComponent } from './indicator-heat-map.component';
+import { AttackPatternsHeatmapComponent } from '../../global/components/heatmap/attack-patterns-heatmap.component';
 import { HeatmapComponent } from '../../global/components/heatmap/heatmap.component';
 import { makeMockIndicatorSharingStore, mockIndicators, mockAttackPatterns } from '../../testing/mock-store';
 import { indicatorSharingReducer } from '../store/indicator-sharing.reducers';
 import { CapitalizePipe } from '../../global/pipes/capitalize.pipe';
 import { GenericApi } from '../../core/services/genericapi.service';
+import { AuthService } from '../../core/services/auth.service';
 
 describe('IndicatorHeatMapComponent', () => {
 
@@ -56,17 +59,21 @@ describe('IndicatorHeatMapComponent', () => {
             .configureTestingModule({
                 imports: [
                     MatCardModule,
+                    MatIconModule,
                     OverlayModule,
+                    RouterTestingModule,
                     HttpClientTestingModule,
                     StoreModule.forRoot(mockReducer),
                 ],
                 declarations: [
                     IndicatorHeatMapComponent,
+                    AttackPatternsHeatmapComponent,
                     HeatmapComponent,
                     CapitalizePipe,
                 ],
                 providers: [
                     GenericApi,
+                    AuthService,
                 ],
             })
             .compileComponents();
@@ -74,7 +81,7 @@ describe('IndicatorHeatMapComponent', () => {
 
     beforeEach(() => {
         fixture = TestBed.createComponent(IndicatorHeatMapComponent);
-        let heatmap = fixture.debugElement.query(By.css('div#indicator-analytic-heat-map'));
+        let heatmap = fixture.debugElement.query(By.css('div#indicator-heat-map'));
         heatmap.nativeElement.style.width = '300px';
         heatmap.nativeElement.style.height = '500px';
         component = fixture.componentInstance;
@@ -86,7 +93,6 @@ describe('IndicatorHeatMapComponent', () => {
 
     it('should initialize', async(() => {
         expect(component).toBeTruthy();
-        expect(Object.values(component.attackPatterns).length).toBe(2);
     }));
 
 });

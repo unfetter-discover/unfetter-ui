@@ -17,7 +17,7 @@ import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { mockAttackPatterns } from '../../testing/mock-store';
 import { AuthService } from '../../core/services/auth.service';
 
-fdescribe('IndicatorHeatMapFilterComponent', () => {
+describe('IndicatorHeatMapFilterComponent', () => {
 
     let fixture: ComponentFixture<IndicatorHeatMapFilterComponent>;
     let component: IndicatorHeatMapFilterComponent;

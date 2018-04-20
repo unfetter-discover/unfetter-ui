@@ -179,7 +179,6 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
      */
     public ngOnInit(): void {
         this.options = HeatMapOptions.merge(this.options, this.defaultOptions);
-        this.previousData = this.data;
     }
 
     /**

@@ -149,7 +149,7 @@ export class IndicatorHeatMapComponent implements OnInit, DoCheck {
         const initData$ = this.genericApi.get(`${Constance.ATTACK_PATTERN_URL}?${filter}`)
             .finally(() => initData$ && initData$.unsubscribe())
             .subscribe(
-                (patterns: any[]) => this.update(patterns),
+                (patterns: any[]) => this.heatmap && this.update(patterns),
                 (err) => console.log(err)
             );
     }
@@ -186,7 +186,6 @@ export class IndicatorHeatMapComponent implements OnInit, DoCheck {
      * @description Build a list of all the attack patterns.
      */
     private collectAttackPatterns(patterns: any[], indicators: any): any {
-        console.log('collecting indicators:', indicators, this.indicatorsToAttackPatternMap, this.indicators);
         const attackPatterns = {};
         patterns.forEach((pattern) => {
             const name = pattern.attributes.name;
