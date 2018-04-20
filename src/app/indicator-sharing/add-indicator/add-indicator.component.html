@@ -63,7 +63,7 @@
                 <help-window [helpHtml]="patternHelpHtml"></help-window>
 
                 <mat-form-field class="full-width mb-6">
-                    <textarea matInput required placeholder="Pattern (STIX Patterning Optional)" formControlName="pattern"></textarea>
+                    <textarea matInput required placeholder="Pattern (STIX Patterning Optional)" formControlName="pattern" (keyup)="patternChange(form.get('pattern'))"></textarea>
                     <mat-error *ngIf="form.get('pattern').hasError('required')">
                         Pattern is <strong>required</strong>
                     </mat-error>
@@ -78,6 +78,8 @@
                     [style.opacity]="form.get('pattern').dirty && patternValid && form.get('pattern').value.length > 0 ? 1 : 0"
                     [style.marginTop]="!form.get('pattern').hasError('required') ? '-30px' : '-5px'" 
                     [style.marginBottom]="!form.get('pattern').hasError('required') ? '15px' : '0px'"><i class="material-icons">check</i> Valid STIX 2 Pattern</p>
+                    
+                <pii-check-message [formCtrl]="form.get('pattern')"></pii-check-message>
                 
                 <div class="mb-6">
                     <div class="uf-collapsible-control mb-10" (click)="showPatternTranslations = !showPatternTranslations">

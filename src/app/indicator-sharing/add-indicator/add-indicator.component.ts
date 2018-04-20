@@ -14,6 +14,7 @@ import { patternHelp, observableDataHelp } from '../help-templates';
 import { cleanObjectProperties } from '../../global/static/clean-object-properties';
 import { ExternalReferencesForm } from '../../global/form-models/external-references';
 import { KillChainPhasesForm } from '../../global/form-models/kill-chain-phases';
+import { FormatHelpers } from '../../global/static/format-helpers';
 
 @Component({
     selector: 'add-indicator',
@@ -281,5 +282,15 @@ export class AddIndicatorComponent implements OnInit {
                 delete tempIndicator.metaProperties.queries;
             } catch (e) { }
         }      
+    }
+
+    /**
+     * @param  {FormControl} formCtrl
+     * @returns void
+     * @description Normalizes quotes on an input
+     */
+    public patternChange(formCtrl: FormControl): void {
+        const originalValue = formCtrl.value;
+        formCtrl.setValue(FormatHelpers.normalizeQuotes(originalValue));
     }
 }

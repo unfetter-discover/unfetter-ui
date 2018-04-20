@@ -63,6 +63,7 @@ import { InfiniteScrollDirective } from './directives/infinite-scroll.directive'
 import { PublishedCheckboxComponent } from './components/published-checkbox/published-checkbox.component';
 import { HeaderLogoComponent } from './components/header-logo/header-logo.component';
 import { AttackPatternsHeatmapComponent } from './components/heatmap/attack-patterns-heatmap.component';
+import { PiiCheckMessageComponent } from './components/pii-check-message/pii-check-message.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -122,6 +123,8 @@ const unfetterComponents = [
     RelatationshipGeneratorComponent,
     InfiniteScrollDirective,
     PublishedCheckboxComponent,
+    HeaderLogoComponent,
+    PiiCheckMessageComponent,
 ];
 
 @NgModule({
@@ -133,8 +136,7 @@ const unfetterComponents = [
         ...matModules
     ],
     declarations: [
-        ...unfetterComponents,
-        HeaderLogoComponent,
+        ...unfetterComponents,        
     ],
     exports: [
         ...unfetterComponents,

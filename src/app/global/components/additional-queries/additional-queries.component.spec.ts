@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule, MatInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { AdditionalQueriesComponent } from './additional-queries.component';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
@@ -22,7 +23,8 @@ describe('AdditionalQueriesComponent', () => {
         MatButtonModule,
         MatInputModule,
         BrowserAnimationsModule
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
   }));
