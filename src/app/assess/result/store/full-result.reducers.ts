@@ -3,7 +3,7 @@ import { Assessment } from '../../../models/assess/assessment';
 import { AssessmentObject } from '../../../models/assess/assessment-object';
 import { AssessedByAttackPattern } from '../full/group/models/assessed-by-attack-pattern';
 import { DisplayedAssessmentObject } from '../full/group/models/displayed-assessment-object';
-import { FullAssessmentResultActions, LOAD_ASSESSMENT_RESULT_DATA } from './full-result.actions';
+import { FullAssessmentResultActions, LOAD_ASSESSMENTS_BY_ROLLUP_ID } from './full-result.actions';
 import { Stix } from '../../../models/stix/stix';
 import { RiskByAttack } from '../../../models/assess/risk-by-attack';
 import { Relationship } from '../../../models';
@@ -60,7 +60,11 @@ export function fullAssessmentResultReducer(state = initialState, action: FullAs
     switch (action.type) {
         case fullAssessmentResultActions.CLEAN_ASSESSMENT_RESULT_DATA:
             return genState();
-        case LOAD_ASSESSMENT_RESULT_DATA:
+        case LOAD_ASSESSMENTS_BY_ROLLUP_ID:
+            return {
+                ...state,
+            };
+        case fullAssessmentResultActions.LOAD_ASSESSMENT_BY_ID:
             return {
                 ...state,
             };
@@ -68,6 +72,11 @@ export function fullAssessmentResultReducer(state = initialState, action: FullAs
             return {
                 ...state,
                 assessmentTypes: [...action.payload],
+            };
+        case fullAssessmentResultActions.SET_ASSESSMENT:
+            return {
+                ...state,
+                fullAssessment: { ...action.payload },
             };
         case fullAssessmentResultActions.FINISHED_LOADING:
             return {

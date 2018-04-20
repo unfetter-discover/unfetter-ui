@@ -1,26 +1,21 @@
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-
-import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-
-import { AppState } from '../../../root-store/app.reducers';
-import { Assessment } from '../../../models/assess/assessment';
-import { AssessService } from '../../services/assess.service';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { ConfirmationDialogComponent } from '../../../components/dialogs/confirmation/confirmation-dialog.component';
-import { LastModifiedAssessment } from '../../models/last-modified-assessment';
-import { LoadAssessmentResultData, CleanAssessmentResultData } from '../store/full-result.actions';
 import { MasterListDialogTableHeaders } from '../../../global/components/master-list-dialog/master-list-dialog.component';
-import { SummaryDataSource } from '../summary/summary.datasource';
-import { UserProfile } from '../../../models/user/user-profile';
-import { FullAssessmentResultState } from '../store/full-result.reducers';
-import { AssessedByAttackPattern } from './group/models/assessed-by-attack-pattern';
-import { Constance } from '../../../utils/constance';
-import { RiskByAttackPattern } from './group/models/risk-by-attack-pattern';
+import { Assessment } from '../../../models/assess/assessment';
 import { RiskByAttack } from '../../../models/assess/risk-by-attack';
+import { UserProfile } from '../../../models/user/user-profile';
+import { AppState } from '../../../root-store/app.reducers';
+import { Constance } from '../../../utils/constance';
+import { LastModifiedAssessment } from '../../models/last-modified-assessment';
+import { AssessService } from '../../services/assess.service';
+import { CleanAssessmentResultData, LoadAssessmentsByRollupId, LoadAssessmentById } from '../store/full-result.actions';
+import { FullAssessmentResultState } from '../store/full-result.reducers';
+import { SummaryDataSource } from '../summary/summary.datasource';
 import { FullAssessmentGroup } from './group/models/full-assessment-group';
 
 @Component({
@@ -32,7 +27,6 @@ import { FullAssessmentGroup } from './group/models/full-assessment-group';
 export class FullComponent implements OnInit, OnDestroy {
 
   readonly baseAssessUrl = '/assess';
-  assessmentTypes: Observable<Assessment[]>;
   assessment: Observable<Assessment>;
   assessmentName: Observable<string>;
   assessmentGroup: Observable<FullAssessmentGroup>;
@@ -97,20 +91,14 @@ export class FullComponent implements OnInit, OnDestroy {
    */
   public listenForDataChanges(): void {
 
-    this.assessmentTypes = this.store
-      .select('fullAssessment')
-      .pluck<object, Assessment[]>('assessmentTypes')
-      .distinctUntilChanged()
-      .filter((arr) => arr && arr.length > 0);
-
     this.assessment = this.store
       .select('fullAssessment')
-      .pluck<object, Assessment[]>('assessmentTypes')
-      .distinctUntilChanged()
-      .filter((arr) => arr && arr.length > 0)
-      .map((arr) => {
-        return arr.find((el) => el.id === this.assessmentId);
-      });
+      .pluck<object, Assessment>('fullAssessment')
+      .distinctUntilChanged();
+    // .filter((arr) => arr && arr.length > 0)
+    // .map((arr) => {
+    //   return arr.find((el) => el.id === this.assessmentId);
+    // });
 
     this.finishedLoading = this.store
       .select('fullAssessment')
@@ -143,12 +131,14 @@ export class FullComponent implements OnInit, OnDestroy {
 
     this.assessmentName = this.store
       .select('fullAssessment')
-      .pluck<object, Assessment[]>('assessmentTypes')
-      .filter((arr) => arr && arr.length > 0)
+      .pluck<object, Assessment>('fullAssessment')
       .distinctUntilChanged()
-      .map((arr) => {
-        return arr.find((el) => el.id === this.assessmentId);
-      })
+      // .pluck<object, Assessment[]>('assessmentTypes')
+      // .filter((arr) => arr && arr.length > 0)
+      // .distinctUntilChanged()
+      // .map((arr) => {
+      //   return arr.find((el) => el.id === this.assessmentId);
+      // })
       .map((assessment: Assessment) => {
         if (assessment.assessment_objects && assessment.assessment_objects.length) {
           let retVal = assessment.name + ' - ';
@@ -185,7 +175,7 @@ export class FullComponent implements OnInit, OnDestroy {
     this.masterListOptions.columns.id.classes =
       (row: any) => isSameAssessment(row) ? 'current-item' : 'cursor-pointer';
     this.masterListOptions.columns.id.selectable = (row: any) => !isSameAssessment(row);
-    this.store.dispatch(new LoadAssessmentResultData(rollupId));
+    this.store.dispatch(new LoadAssessmentById(this.assessmentId));
   }
 
   /**
@@ -297,7 +287,7 @@ export class FullComponent implements OnInit, OnDestroy {
    * @return {Promise<boolean>}
    */
   public onCellSelected(assessment: LastModifiedAssessment): Promise<boolean> {
-    if (!assessment || !assessment.rollupId || (this.rollupId === assessment.rollupId)) {
+    if (!assessment || !assessment.rollupId || !assessment.id) {
       return;
     }
 
