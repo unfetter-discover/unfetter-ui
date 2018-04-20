@@ -12,10 +12,11 @@ import { SetCategorySteps } from '../../store/baseline.actions';
   templateUrl: './category.component.html',
   styleUrls: ['./category.component.scss']
 })
-export class CategoryComponent implements OnInit {
+export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {    
   public readonly defaultValue = undefined;
-  public tempCategories: string[] = [ this.defaultValue ];
-  public dummyCategories: string[] = [ 'Generic AV', 'Standard EDR', 'Network Analysis', 'Network Firewall', 'sysmon', 'Autoruns', 'Enterprise SIEM' ];
+  public tempCategories: Category[] = [ this.defaultValue ];
+  public categories: Category[];
+  // public categories: string[] = [ 'Generic AV', 'Standard EDR', 'Network Analysis', 'Network Firewall', 'sysmon', 'Autoruns', 'Enterprise SIEM' ];
 
   private subscriptions: Subscription[] = [];
     
@@ -26,8 +27,24 @@ export class CategoryComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // Get categories
-    // this.wizardStore.dispatch(new assessActions.FetchCategories());
+    const sub1$ = this.wizardStore
+      .select('categories')
+      .distinctUntilChanged()
+      .subscribe(
+        (categories: Category[]) => this.categories = categories,
+        (err) => console.log(err));
+
+    this.subscriptions.push(sub1$);
+  }
+
+  ngAfterViewInit() {
+    // Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
+    // Add 'implements AfterViewInit' to the class.
+    
+  }
+
+  ngOnDestroy(): void {
+   this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
   /**
@@ -71,7 +88,7 @@ export class CategoryComponent implements OnInit {
   public selectedCategory(option: any, tempCategory?: Category): number {
     if (this.tempCategories) {
       const index = this.tempCategories.indexOf(tempCategory);
-      const retVal = (index >= 0) ? this.dummyCategories.indexOf(tempCategory) : this.defaultValue;
+      const retVal = (index >= 0) ? this.categories.indexOf(tempCategory) : this.defaultValue;
       return retVal;
     } else {
       const selIndex = this.categories.findIndex(category => category.id === selValue.id);
