@@ -46,6 +46,7 @@ type D3Selection = d3.Selection<d3.BaseType, {}, HTMLElement, any>;
  * Used internally to rearrange large batches into multiple columns.
  */
 interface HeatCellWork extends HeatCellData {
+    fill?: string | boolean;
     rect?: D3Selection;
     mini?: D3Selection;
 }
@@ -115,6 +116,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
     @Input() public options: HeatMapOptions;
     private defaultOptions: HeatMapOptions = {
         view: {
+            component: '',
             headerHeight: 48,
             minSidePadding: 1,
             minBottomPadding: 1,
@@ -193,7 +195,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
      * @description handle changes to the data or the viewport size
      */
     public ngDoCheck() {
-        const node: any = d3.select('.heat-map').node();
+        const node: any = d3.select(`${this.options.view.component} .heat-map`).node();
         const rect: DOMRect = node ? node.getBoundingClientRect() : null;
         if (!node || !rect || !rect.width || !rect.height) {
             console.log('cannot detect heatmap bounds');
@@ -220,11 +222,17 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
         }
     }
 
+    public forceUpdate() {
+        this.changeDetector.markForCheck();
+        this.createHeatMap();
+        this.previousData = this.data;
+    }
+
     /**
      * @description generate the internal heatmap data (based on viewport size), and draw the heatmap chart
      */
     private createHeatMap() {
-        const graphElement = d3.select('.heat-map');
+        const graphElement = d3.select(`${this.options.view.component} .heat-map`);
         if (this.data && this.data.length && graphElement) {
             const rect: DOMRect = (graphElement.node() as any).getBoundingClientRect();
             if (rect && rect.width && rect.height) {
@@ -249,7 +257,8 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
                 this.drawHeatMap(data, this.heatmap, graphElement);
 
                 // Moved the zoom rule here, so that the minimap can reuse the drawHeatMap method
-                this.heatmap.workspace.zoom = d3.zoom().scaleExtent([1, 4]).on('zoom', () => this.onHeatmapZoom());
+                this.heatmap.workspace.zoom = d3.zoom().scaleExtent(this.options.zoom.zoomExtent)
+                    .on('zoom', () => this.onHeatmapZoom());
                 this.heatmap.workspace.canvas.call(this.heatmap.workspace.zoom);
 
                 // Now create a minimap (if the component options asks for one)
@@ -262,7 +271,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
      * @description generate a miniature heatmap (minimap) to allow easier panning around a zoomed-in heatmap
      */
     private createMiniMap(data: BatchWork[]) {
-        const graphElement = d3.select('.mini-map');
+        const graphElement = d3.select(`${this.options.view.component} .mini-map`);
         if (this.options.zoom.hasMinimap && graphElement) {
             const rect: DOMRect = (graphElement.node() as any).getBoundingClientRect();
             if (rect && rect.width && rect.height) {
@@ -581,6 +590,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
             // determine fill color of this cell
             let fill = (data.value != null) ? this.options.color.heatColors[data.value.toString()] : null;
             fill = fill || this.options.color.noColor;
+            data.fill = data.value;
 
             // draw the cell
             this.drawCell(data, fill, bounds, y, view);
@@ -750,10 +760,12 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
      */
     public updateCells() {
         this.heatmap.workspace.data.forEach((batch) => {
+            // console.log('working batch', batch.title);
             batch.columns.forEach(column => column.forEach(cell => {
                 const hcell = batch.cells.find(c => c.title === cell.title);
-                if (cell.value !== hcell.value) {
-                    cell.value = hcell.value;
+                // console.log('working cell', cell.title, hcell, cell.fill === hcell.value ? 'same' : 'CHANGED');
+                if ((cell.fill !== hcell.value) || (cell.value !== hcell.value)) {
+                    cell.fill = cell.value = hcell.value;
                     let fill = (cell.value != null) ? this.options.color.heatColors[cell.value.toString()] : null;
                     fill = fill || this.options.color.noColor;
                     const bg = fill.bg as string;

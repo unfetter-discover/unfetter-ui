@@ -2,9 +2,7 @@
 
 $white: #FFFFFF;
 
-#indicator-analytic-heat-map {
-    display: flex;
-    flex-direction: column;
+#indicator-heat-map {
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -12,23 +10,32 @@ $white: #FFFFFF;
 
 :host ::ng-deep {
     background-color: $white;
+
+    .mat-card {
+        margin: 4px 20px 15px 20px;
+    }
+    .mat-card-header-text {
+        width: 100%;
+        .mat-card-title {
+            display: flex;
+            align-items: center;
+        }
+    }
+
     unf-heatmap {
         div.heat-map {
-            width: 100%;
-            height: 450px;
+            width: calc(100% - 20px);
+            height: 250px;
             margin: 0;
             padding: 0;
             background: white;
+            rect.selected {
+                fill: $analytic-exchange-primary;
+            }
         }
-        .heat-map-header rect.odd, .heat-map-batch rect.odd {
-            fill: $analytic-exchange-primary-lightest;
+        div.mini-map {
+            margin-top: 0px;
         }
-        .heat-map-cell rect.selected {
-            fill: $analytic-exchange-primary;
-        }
-    }
-    .mat-dialog-container {
-        transition: none;
     }
 }
 

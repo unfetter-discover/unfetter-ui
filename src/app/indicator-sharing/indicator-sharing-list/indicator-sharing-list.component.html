@@ -69,10 +69,14 @@
                         </div>
                     </div>
                 </div>
-            
+
                 <div class="row" infiniteScroll (atBottom)="displayShowMoreButton() ? showMoreIndicators() : ''">
                     <div id="indicatorListWrapper" class="col-md-12 filterOpenBreakpoint" [ngClass]="{ 'col-lg-8 col-lg-offset-2': !filterOpen }">
-            
+
+                        <indicator-heat-map [indicators]="filteredIndicators"
+                                [collapseAllCardsSubject]="collapseAllCardsSubject"
+                                [ngClass]="{'mb-15':!collapseAllCards, 'mb-5':collapseAllCards}"></indicator-heat-map>
+
                         <div *ngFor="let indicator of displayedIndicators" [ngClass]="{ 'mb-15': !collapseAllCards, 'mb-5': collapseAllCards }">
                             <indicator-card 
                                 [indicator]="indicator" 
