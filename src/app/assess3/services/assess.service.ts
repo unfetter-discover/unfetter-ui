@@ -13,10 +13,12 @@ import { RiskByKillChain } from '../../models/assess/risk-by-kill-chain';
 import { SummaryAggregation } from '../../models/assess/summary-aggregation';
 import { JsonApiObject } from '../../threat-dashboard/models/adapter/json-api-object';
 import { Capability } from '../../models/unfetter/capability';
+import { Category } from 'stix';
 
 @Injectable()
 export class AssessService {
     public readonly assessBaseUrl = Constance.X_UNFETTER_ASSESSMENT3_URL;
+    public readonly categoryBaseUrl = Constance.X_UNFETTER_CATEGORY_URL;
     public readonly relationshipsBaseUrl = Constance.RELATIONSHIPS_URL;
 
     constructor(
@@ -111,11 +113,11 @@ export class AssessService {
      * @param {string} filter
      * @return {Observable<Category[]>}
      */
-    public loadCategories(filter?: string): string[]  {
-        // const url = filter ?
-        //     `${this.assessBaseUrl}?${encodeURI(filter)}` : this.assessBaseUrl;
-        // return this.genericApi.get(url);
-        return [ 'Generic AV', 'Standard EDR', 'Network Analysis', 'Network Firewall', 'sysmon', 'Autoruns', 'Enterprise SIEM' ];
+    public loadCategories(filter?: string): Observable<Category[]>  {
+        const url = filter ?
+            `${this.categoryBaseUrl}?${encodeURI(filter)}` : this.categoryBaseUrl;
+        return this.genericApi.get(url);
+        // return [ 'Generic AV', 'Standard EDR', 'Network Analysis', 'Network Firewall', 'sysmon', 'Autoruns', 'Enterprise SIEM' ];
     }
 
     /**

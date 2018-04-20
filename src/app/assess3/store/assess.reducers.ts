@@ -3,6 +3,7 @@ import * as fromApp from '../../root-store/app.reducers'
 import { Assessment3 } from '../../models/assess/assessment3';
 import { Stix } from '../../models/stix/stix';
 import { JsonApiData } from '../../models/json/jsonapi-data';
+import { Category } from 'stix';
 
 export interface AssessFeatureState extends fromApp.AppState {
     assessment: Assessment3
@@ -11,7 +12,7 @@ export interface AssessFeatureState extends fromApp.AppState {
 export interface AssessState {
     assessment: Assessment3;
     backButton: boolean;
-    categories: string[];
+    categories: Category[];
     // TODO: add attack pattern array
     // attackPatterns?: JsonApiData<AttackPattern>[];
     finishedLoading: boolean;
@@ -24,7 +25,8 @@ const genAssessState = (state?: Partial<AssessState>) => {
     const tmp = {
         assessment: new Assessment3(),
         backButton: false,
-        categories: [ 'Generic AV', 'Standard EDR', 'Network Analysis', 'Network Firewall', 'sysmon', 'Autoruns', 'Enterprise SIEM' ],
+        categories: [],
+        // categories: [ 'Generic AV', 'Standard EDR', 'Network Analysis', 'Network Firewall', 'sysmon', 'Autoruns', 'Enterprise SIEM' ],
         finishedLoading: false,
         saved: { finished: false, id: '' },
         showSummary: false,
@@ -45,9 +47,9 @@ export function assessmentReducer(state = initialState, action: assessmentAction
             return genAssessState({
                 ...state,
             });
-        case assessmentActions.FETCH_CATEGORIES:
+        case assessmentActions.SET_CATEGORIES:
             return genAssessState({
-                ...state
+              categories: action.payload,
             });
         case assessmentActions.START_ASSESSMENT:
             const a0 = new Assessment3();

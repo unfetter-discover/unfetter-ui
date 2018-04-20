@@ -20,6 +20,7 @@ import { Stix } from '../../models/stix/stix';
 import { JsonApiData } from '../../models/json/jsonapi-data';
 import { Assessment3 } from '../../models/assess/assessment3';
 import { JsonApi } from '../../models/json/jsonapi';
+import { Category } from 'stix';
 
 @Injectable()
 export class AssessEffects {
@@ -60,7 +61,7 @@ export class AssessEffects {
     public fetchCategories = this.actions$
         .ofType(assessActions.FETCH_CATEGORIES)
         .switchMap(() => this.assessService.loadCategories())
-        .map((arr: string) => new assessActions.FetchCategories(arr[0]));
+        .map((arr: Category[]) => new assessActions.SetCategories(arr));
 
     @Effect({ dispatch: false })
     public startAssessment = this.actions$
