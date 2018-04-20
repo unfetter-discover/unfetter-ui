@@ -13,7 +13,6 @@ import {
     ViewContainerRef,
     ChangeDetectorRef,
     ChangeDetectionStrategy,
-    HostListener,
 } from '@angular/core';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';

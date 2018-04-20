@@ -96,7 +96,6 @@ const matModules = [
         AddAttackPatternComponent,
         IndicatorHeatMapComponent,
         IndicatorHeatMapFilterComponent,
-        // AttackPatternsHeatmapComponent,
         SummaryStatisticsComponent,
     ],
     providers: [
