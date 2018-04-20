@@ -561,21 +561,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     }
   }
 
-  public updateCategories(newCategories: string[]) {
-    this.categoryNames = [ ...this.categoryElement.tempCategories];
-
-    // Remove categories as needed
-    this.categories = this.categories.filter(category => this.categoryNames.find(cat => category[cat] && cat === category[cat].name));
-
-    // Introduce new categories
-    this.categoryNames.forEach(element => {
-      if (!this.categories[element]) {
-        this.categories[element] = { name: element, scoresModel: [], capabilities: [] };
-      }
-    });
-  }
-
-  // TODO: commented for now, e
+  // TODO: commented for now
   /*
    * @description update riskss
    * @param option
