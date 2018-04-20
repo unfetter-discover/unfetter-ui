@@ -1,5 +1,7 @@
 import {
         Component,
+        OnInit,
+        DoCheck,
         Inject,
         Input,
         ViewChild,
@@ -7,132 +9,204 @@ import {
         TemplateRef,
         ViewContainerRef,
         ChangeDetectorRef,
-        AfterViewInit,
+        ChangeDetectionStrategy,
     } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { Overlay, OverlayRef } from '@angular/cdk/overlay';
-import { TemplatePortal } from '@angular/cdk/portal';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Store } from '@ngrx/store';
 
-import { AttackPatternsHeatmapComponent } from '../../global/components/heatmap/attack-patterns-heatmap.component';
+import * as d3 from 'd3';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+
 import { HeatMapOptions } from '../../global/components/heatmap/heatmap.data';
 import { IndicatorSharingFeatureState } from '../store/indicator-sharing.reducers';
+import { GenericApi } from '../../core/services/genericapi.service';
 import { Constance } from '../../utils/constance';
 
 @Component({
     selector: 'indicator-heat-map',
     templateUrl: './indicator-heat-map.component.html',
     styleUrls: ['./indicator-heat-map.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class IndicatorHeatMapComponent implements AfterViewInit {
+export class IndicatorHeatMapComponent implements OnInit, DoCheck {
 
-    @ViewChild('heatmapView') private view: AttackPatternsHeatmapComponent;
+    public attackPatterns = {};
+    @Input() private indicators: any[] = [];
+    private previousIndicators: any[];
+    private indicatorsToAttackPatternMap: any;
+
+    @ViewChild('heatmap') private heatmap;
     @Input() heatmapOptions: HeatMapOptions = {
+        view: {
+            component: '#indicator-heat-map',
+            headerHeight: 0,
+        },
         color: {
             batchColors: [
-                {header: {bg: '.odd', fg: '#333'}, body: {bg: '.odd', fg: 'black'}},
                 {header: {bg: 'transparent', fg: '#333'}, body: {bg: 'transparent', fg: 'black'}},
             ],
             heatColors: {
-                'inactive': {bg: '#eee', fg: 'black'},
-                'selected': {bg: '.selected', fg: 'black'},
+                'true': {bg: '#b2ebf2', fg: 'black'},
+                'false': {bg: '#ccc', fg: 'black'},
+                'selected': {bg: '#33a0b0', fg: 'black'},
             },
         },
         text: {
-            showCellText: true,
+            showCellText: false,
         },
         zoom: {
+            zoomExtent: [1, 1],
             hasMinimap: false,
-            cellTitleExtent: 1,
-        },
+            cellTitleExtent: 2,
+        }
     }
+    private oldrect = null;
 
-    public attackPatterns = {};
-    public selectedPatterns = [];
-
-    @ViewChild('tooltipTemplate') tooltipTemplate: TemplateRef<any>;
-    private overlayRef: OverlayRef;
-    private portal: TemplatePortal<any>;
+    @Input() public collapseAllCardsSubject: BehaviorSubject<boolean>;
+    public collapseContents: boolean = false;
 
     constructor(
-        public dialogRef: MatDialogRef<IndicatorHeatMapComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: any,
-        private overlay: Overlay,
-        private vcr: ViewContainerRef,
+        public genericApi: GenericApi,
+        public store: Store<IndicatorSharingFeatureState>,
         private changeDetector: ChangeDetectorRef,
-        public store: Store<IndicatorSharingFeatureState>
     ) { }
 
-    ngAfterViewInit() {
-        // NOTE This is a hack to get the modal to start to render before the data is processed, 
-        // since there is a noticeable lag time when that occurs
-        requestAnimationFrame(() => {
-            const getAttackPatterns$ = this.store.select('indicatorSharing')
-                .pluck('attackPatterns')
-                .take(1)
-                .finally(() => getAttackPatterns$ && getAttackPatterns$.unsubscribe())
+    ngOnInit() {
+        this.previousIndicators = this.indicators;
+
+        this.loadIndicatorMap();
+        this.loadAttackPatterns();
+
+        if (this.collapseAllCardsSubject) {            
+            const collapseCard$ = this.collapseAllCardsSubject
+                .finally(() => collapseCard$ && collapseCard$.unsubscribe())
                 .subscribe(
-                    (attackPatterns: any[]) => {
-                        this.attackPatterns = attackPatterns.reduce(
-                            (patterns, pattern) => this.collectAttackPattern(patterns, pattern), {});
-                        setTimeout(() => this.view['heatMapView']['ngDoCheck'](), 1000);
-                    },
+                    (collapseContents) => this.collapseContents = collapseContents,
                     (err) => console.log(err),
                 );
-        });
+        }
     }
 
-    /**
-     * @description now group up all the phases and the attack patterns they have, for the heatmap display
-     */
-    private collectAttackPattern(patterns, pattern) {
-        const name = pattern.name;
-        if (name) {
-            const selected = this.data.active && this.data.active.includes(pattern.id);
-            const ap = patterns[name] = Object.assign({}, {
-                id: pattern.id,
-                name: name,
-                title: name,
-                description: pattern.description,
-                phases: (pattern.kill_chain_phases || []).map(p => p.phase_name),
-                sources: pattern.x_mitre_data_sources,
-                platforms: pattern.x_mitre_platforms,
-                value: selected ? 'selected' : 'inactive',
+    ngDoCheck() {
+        if (this.previousIndicators !== this.indicators) {
+            const indicators = this.groupIndicatorsByAttackPatterns();
+            Object.values(this.attackPatterns).forEach((pattern: any) => {
+                const analytics = indicators[pattern.name] || [];
+                pattern.analytics = analytics.map(is => ({name: is}));
+                pattern.value = analytics.length > 0;
             });
-            if (selected) {
-                this.selectedPatterns.push(ap);
+            this.heatmap.createAttackPatternHeatMap();
+            this.heatmap.heatMapView.forceUpdate();
+            this.previousIndicators = this.indicators;
+        } else {
+            const node: any = d3.select(`#indicator-heat-map .heat-map`).node();
+            const rect = node ? node.getBoundingClientRect() : null;
+            if (node && rect && rect.width && rect.height) {
+                if (this.oldrect === null) {
+                    this.oldrect = rect;
+                } else if ((this.oldrect.width !== rect.width) || (this.oldrect.height !== rect.height)) {
+                    this.heatmap.heatMapView.forceUpdate();
+                    this.oldrect = rect;
+                }
             }
-        }
-        return patterns;
-    }
-
-    /**
-     * @description for selecting and deselecting attack patterns
-     */
-    public toggleAttackPattern(clicked?: any) {
-        if (clicked && clicked.row) {
-            const index = this.selectedPatterns.findIndex(pattern => pattern.id === clicked.row.id);
-            let newValue = 'selected';
-            if (index < 0) {
-                // pattern was not previously selected; select it
-                this.selectedPatterns.push(clicked.row);
-            } else {
-                // remove the pattern from our selection list
-                newValue = 'inactive';
-                this.selectedPatterns.splice(index, 1);
-            }
-            this.attackPatterns[clicked.row.title].value = newValue;
-            this.view['heatMapView'].updateCells();
         }
     }
 
     /**
-     * @description retrieve the list of selected attack pattern names
+     * @description retrieve the indicators-to-attack-patterns map from the ngrx store
      */
-    public close(): string[] {
-        return Array.from(new Set(this.selectedPatterns.map(pattern => pattern.id)));
+    private loadIndicatorMap() {
+        const getIndicatorToAttackPatternMap$ = this.store
+            .select('indicatorSharing')
+            .pluck('indicatorToApMap')
+            .distinctUntilChanged()
+            .finally(() => {
+                if (getIndicatorToAttackPatternMap$) {
+                    getIndicatorToAttackPatternMap$.unsubscribe();
+                }
+            })
+            .subscribe(
+                (indicatorToAttackPatternMap) => this.indicatorsToAttackPatternMap = indicatorToAttackPatternMap,
+                (err) => console.log(err)
+            );
     }
-  
+
+    /**
+     * @description retrieve the attack patterns and their tactics phases from the backend database
+     */
+    private loadAttackPatterns() {
+        const sort = { 'stix.name': '1' };
+        const project = {
+            'stix.id': 1,
+            'stix.name': 1,
+            'stix.description': 1,
+            'stix.kill_chain_phases': 1,
+            'extendedProperties.x_mitre_data_sources': 1,
+            'extendedProperties.x_mitre_platforms': 1,
+        };
+        const filter = encodeURI(`sort=${JSON.stringify(sort)}&project=${JSON.stringify(project)}`);
+        const initData$ = this.genericApi.get(`${Constance.ATTACK_PATTERN_URL}?${filter}`)
+            .finally(() => initData$ && initData$.unsubscribe())
+            .subscribe(
+                (patterns: any[]) => this.update(patterns),
+                (err) => console.log(err)
+            );
+    }
+
+    private update(patterns: any[]) {
+        const indicators = this.groupIndicatorsByAttackPatterns();
+        this.attackPatterns = this.collectAttackPatterns(patterns, indicators);
+        this.heatmap.createAttackPatternHeatMap();
+        this.heatmap['heatMapView'].forceUpdate();
+    }
+
+    /**
+     * @description create a map of attack patterns and their indicators (inverted indicators-to-attack-patterns map)
+     */
+    private groupIndicatorsByAttackPatterns() {
+        const indicatorIds = this.indicators ? this.indicators.map(indicator => indicator.id) : [];
+        const patternIndicators = {};
+        Object.entries(this.indicatorsToAttackPatternMap)
+            .filter(indicator => indicatorIds.includes(indicator[0]))
+            .forEach(([indicator, patterns]) => {
+                if (patterns && (patterns as any[]).length) {
+                    (patterns as any[]).forEach((p: any) => {
+                        if (!patternIndicators[p.name]) {
+                            patternIndicators[p.name] = [];
+                        }
+                        patternIndicators[p.name].push(indicator);
+                    });
+                }
+            });
+        return patternIndicators;
+    }
+
+    /**
+     * @description Build a list of all the attack patterns.
+     */
+    private collectAttackPatterns(patterns: any[], indicators: any): any {
+        console.log('collecting indicators:', indicators, this.indicatorsToAttackPatternMap, this.indicators);
+        const attackPatterns = {};
+        patterns.forEach((pattern) => {
+            const name = pattern.attributes.name;
+            if (name) {
+                let analytics = indicators[name] || [];
+                analytics = analytics.map(analytic => this.indicators.find(a => a.id === analytic));
+                attackPatterns[name] = Object.assign({}, {
+                    id: pattern.attributes.id,
+                    name: name,
+                    title: name,
+                    description: pattern.attributes.description,
+                    phases: (pattern.attributes.kill_chain_phases || []).map(p => p.phase_name),
+                    sources: pattern.attributes.x_mitre_data_sources,
+                    platforms: pattern.attributes.x_mitre_platforms,
+                    analytics: analytics,
+                    value: analytics.length > 0,
+                });
+            }
+        });
+        return attackPatterns;
+    }
+
 }

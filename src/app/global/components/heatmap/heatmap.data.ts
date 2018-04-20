@@ -61,6 +61,12 @@ export interface BatchColor {
  */
 export interface ViewRules {
     /**
+     * If you have multiple heatmaps on a page, this value distinguishes the one you are drawing onto.
+     * Needed by D3 to access the div to draw the canvas on.
+     */
+    component?: string,
+
+    /**
      * The height of the header bar for rendering batch titles. Defaults to a whopping 48 pixels.
      */
     headerHeight?: number,

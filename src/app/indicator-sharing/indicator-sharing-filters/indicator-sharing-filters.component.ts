@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material';
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { SearchParameters } from '../models/search-parameters';
-import { IndicatorHeatMapComponent } from '../indicator-heat-map/indicator-heat-map.component';
+import { IndicatorHeatMapFilterComponent } from '../indicator-heat-map/indicator-heatmap-filter.component';
 
 @Component({
   selector: 'indicator-sharing-filters',
@@ -104,7 +104,7 @@ export class IndicatorSharingFiltersComponent implements OnInit {
       this.dialog.closeAll();
     } else {
       this.heatmapVisible = true;
-      const dialog = this.dialog.open(IndicatorHeatMapComponent, {
+      const dialog = this.dialog.open(IndicatorHeatMapFilterComponent, {
         width: 'calc(100vw - 400px)',
         height: '600px',
         hasBackdrop: true,

@@ -1,13 +1,28 @@
-<h2 mat-dialog-title>Select Indicated Techniques</h2>
-<mat-dialog-content>
-    <div id="indicator-analytic-heat-map">
-        <div id="indicator-heat-map">
-            <attack-patterns-heatmap #heatmapView [attackPatterns]="attackPatterns" [heatMapOptions]="heatmapOptions"
-                    (click)="toggleAttackPattern($event)"></attack-patterns-heatmap>
-        </div>
-    </div>
-</mat-dialog-content>
-<mat-dialog-actions>
-    <button mat-button [mat-dialog-close]="false">CANCEL</button>
-    <button mat-raised-button color="primary" [mat-dialog-close]="close()">ACCEPT</button>
-</mat-dialog-actions>
+<div id="indicator-heat-map">
+    <mat-card class="uf-mat-card">
+        <mat-card-header>
+            <mat-card-title>
+                <span>Indicator Attack Patterns</span>
+                <span class="flex1">&nbsp;</span>
+                <button mat-icon-button *ngIf="collapseContents" class="mat-24" matTooltip="Expand Heatmap"
+                        (click)="collapseContents = false">
+                    <mat-icon>fullscreen</mat-icon>
+                </button>
+                <button mat-icon-button *ngIf="!collapseContents" class="mat-24" matTooltip="Collapse Heatmap"
+                        (click)="collapseContents = true">
+                    <mat-icon>fullscreen_exit</mat-icon>
+                </button>
+            </mat-card-title>
+            <mat-card-subtitle>
+                These are the attack patterns targeted by the list of analytics below.
+            </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content #card>
+            <div *ngIf="!collapseContents">
+                <attack-patterns-heatmap #heatmap [attackPatterns]="attackPatterns"
+                        [heatMapOptions]="heatmapOptions"></attack-patterns-heatmap>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+</div>

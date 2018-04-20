@@ -1,0 +1,34 @@
+@import '../../../styles/_variables.scss';
+
+$white: #FFFFFF;
+
+#indicator-heatmap-filter {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+:host ::ng-deep {
+    background-color: $white;
+    #indicator-heatmap-filter unf-heatmap {
+        div.heat-map {
+            width: 100%;
+            height: 450px;
+            margin: 0;
+            padding: 0;
+            background: white;
+        }
+        .heat-map-canvas {
+            cursor: pointer;
+        }
+        .heat-map-header rect.odd, .heat-map-batch rect.odd {
+            fill: $analytic-exchange-primary-lightest;
+        }
+        .heat-map-cell rect.selected {
+            fill: $analytic-exchange-primary;
+        }
+    }
+    .mat-dialog-container {
+        transition: none;
+    }
+}
