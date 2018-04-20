@@ -116,8 +116,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   private readonly subscriptions: Subscription[] = [];
   private readonly sidePanelNames: string[] = ['categories', 'capabilities', 'capability', 'summary'];
 
-  @ViewChild('categories') categoryElement;
-
   constructor(
     private genericApi: GenericApi,
     private snackBar: MatSnackBar,
@@ -162,11 +160,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.summaryDoughnutChartLabels = this.CHART_LABELS;
     this.summaryDoughnutChartType = this.CHART_TYPE;
 
-    // TODO:  take out once we've wired in the category selection panel
-    // this.categoryNames.forEach((element, index) => {
-    //   this.navigations.push( { label: element, page: index } );
-    // });
-
     const idParamSub$ = this.route.params
       .subscribe(
         (params) => {
@@ -176,6 +169,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
             this.loadExistingAssessment(assessmentId, meta);
           }
           this.wizardStore.dispatch(new LoadAssessmentWizardData(meta));
+          this.wizardStore.dispatch(new assessActions.FetchCategories());
         },
         (err) => console.log(err),
         () => idParamSub$.unsubscribe());
@@ -563,21 +557,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     }
   }
 
-  public updateCategories(newCategories: string[]) {
-    this.categoryNames = [ ...this.categoryElement.tempCategories];
-
-    // Remove categories as needed
-    this.categories = this.categories.filter(category => this.categoryNames.find(cat => category[cat] && cat === category[cat].name));
-
-    // Introduce new categories
-    this.categoryNames.forEach(element => {
-      if (!this.categories[element]) {
-        this.categories[element] = { name: element, scoresModel: [], capabilities: [] };
-      }
-    });
-  }
-
-  // TODO: commented for now, e
+  // TODO: commented for now
   /*
    * @description update riskss
    * @param option
@@ -715,8 +695,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
     // If on "categories", move either to first category or summary
     if (this.page === 1) {
-      // Save off categories and update sidebar navigation
-      this.updateCategories(this.categoryElement.tempCategories);
 
       // Navigate to 
       this.onOpenSidePanel(this.categoryNames[0]);

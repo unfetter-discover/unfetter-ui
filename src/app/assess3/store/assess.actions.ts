@@ -3,6 +3,7 @@ import { Assessment3Meta } from '../../models/assess/assessment3-meta';
 import { Stix } from '../../models/stix/stix';
 import { JsonApiData } from '../../models/json/jsonapi-data';
 import { Assessment3 } from '../../models/assess/assessment3';
+import { Category } from 'stix';
 
 // For effects
 export const START_ASSESSMENT = '[Assess3] START_ASSESSMENT';
@@ -12,6 +13,7 @@ export const LOAD_ASSESSMENT_WIZARD_DATA = '[Assess3] LOAD_ASSESSMENT_WIZARD_DAT
 export const CLEAN_ASSESSMENT_WIZARD_DATA = '[Assess3] CLEAN_ASSESSMENT_WIZARD_DATA';
 export const FETCH_ASSESSMENT = '[Assess3] FETCH_ASSESSMENT';
 export const FETCH_CATEGORIES = '[Assess3] FETCH_CATEGORIES';
+export const SET_CATEGORIES = '[Assess3] SET_CATEGORIES';
 
 // For reducers
 export const UPDATE_PAGE_TITLE = '[Assess3] UPDATE_PAGE_TITLE';
@@ -53,7 +55,13 @@ export class FetchAssessment implements Action {
 export class FetchCategories implements Action {
     public readonly type = FETCH_CATEGORIES;
 
-    constructor(public payload: string) { }
+    constructor() { }
+}
+
+export class SetCategories implements Action {
+    public readonly type = SET_CATEGORIES;
+
+    constructor(public payload: Category[]) { }
 }
 
 export class LoadAssessmentWizardData implements Action {
@@ -95,6 +103,7 @@ export type AssessmentActions =
     CleanAssessmentWizardData |
     FetchAssessment |
     FetchCategories |
+    SetCategories |
     FinishedLoading |
     FinishedSaving |
     LoadAssessmentWizardData |
