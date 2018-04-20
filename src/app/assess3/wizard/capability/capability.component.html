@@ -1,0 +1,36 @@
+    <mat-card-content>
+      <div class="row margin-bottom top-row flex-sm flexItemsCenter">
+        <div class="col-lg-9">
+          <mat-card-title>
+            {{ dummyCapabilityName }}
+          </mat-card-title>
+        </div>
+        <div class="col-lg-1">
+          <button mat-icon-button matTooltip="HeatMap Chart View" (click)="showHeatMap = true">
+            <mat-icon class="mat-24" aria-hidden="true" aria-label="view heat map">view_comfy</mat-icon>
+            {{ attackMatrix }}
+          </button>
+        </div>
+      </div>
+
+      <div class="row margin-bottom main-row flex-col">
+        <div class="row margin-bottom">
+          <div class="col-sm-12">
+            {{ noAttackPatterns }}
+          </div>
+        </div>
+        <div class="row margin-bottom">
+          <div class="col-sm-12">
+            {{ addAttackPatterns }}
+          </div>
+        </div>
+        <div class="row margin-bottom">
+          <div class="col-sm-12">
+              <button mat-button matTooltip="HeatMap Chart View" (click)="showHeatMap = true">
+                {{ openAttackMatrix }}
+              </button>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+    

@@ -21,6 +21,7 @@ import { ChartsModule } from 'ng2-charts';
 import { PipesModule } from '../../pipes/pipes.module';
 import { GlobalModule } from '../../global/global.module';
 import { CategoryComponent } from './category/category.component';
+import { CapabilityComponent } from './capability/capability.component';
 
 const moduleComponents = [
   WizardComponent,
@@ -57,6 +58,7 @@ const primengModules = [
   ],
   declarations: [
     ...moduleComponents,
+    CapabilityComponent,
   ],
   exports: [
     ...moduleComponents,
