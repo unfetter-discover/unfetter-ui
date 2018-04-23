@@ -13,8 +13,6 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   public readonly defaultValue = undefined;
   public tempCategories: Category[] = [ this.defaultValue ];
   public categories: Category[];
-  // public categories: string[] = [ 'Generic AV', 'Standard EDR', 'Network Analysis', 'Network Firewall', 'sysmon', 'Autoruns', 'Enterprise SIEM' ];
-
   private subscriptions: Subscription[] = [];
     
   constructor(
