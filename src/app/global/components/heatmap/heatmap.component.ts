@@ -54,6 +54,9 @@ interface HeatCellWork extends HeatCellData {
 class BatchWork implements HeatBatchData {
     title: string;
     value: string;
+    fill?: BatchColor;
+    rect?: D3Selection;
+    header?: D3Selection;
     cells: Array<HeatCellData>;
     columns: Array<Array<HeatCellWork>>;
     constructor(data: HeatBatchData) {
@@ -523,6 +526,10 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
         if (batchColor.border) {
             batchRect.attr('stroke-width', batchColor.border.width).attr('stroke', batchColor.border.color);
         }
+        if (!bounds.workspace.miniVersion) {
+            batch.rect = batchRect;
+            batch.fill = batchColor;
+        }
 
         // draw the batch header over all the columns
         this.drawBatchHeader(batch, header, bounds, batchWidth, batchColor);
@@ -573,8 +580,12 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
             batchRect.attr('stroke-width', batchColor.border.width).attr('stroke', batchColor.border.color);
         }
 
-        // add the batch name and make it fit in the box
         const isMini = bounds.workspace.miniVersion;
+        if (!isMini) {
+            batch.header = batchRect;
+        }
+
+        // add the batch name and make it fit in the box
         this.drawCellText(batch.title, batchHeader, bounds.workspace.xPosition, 1, batchWidth, bounds.headerHeight,
                 isMini ? this.options.zoom.minimapFontSize : this.options.text.headerFontSize, batchColor.header.fg,
                 !isMini && this.options.text.allowHeaderSplit, !isMini && this.options.text.hyphenateHeaders);
@@ -760,10 +771,29 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
      */
     public updateCells() {
         this.heatmap.workspace.data.forEach((batch) => {
-            // console.log('working batch', batch.title);
+            let batchBg = null;
+            if (batch.value) {
+                const heat = this.options.color.heatColors[batch.value];
+                batchBg = heat ? {header: heat, body: heat} : null;
+            }
+            if (batchBg === null) {
+                batchBg = batch.fill;
+            }
+            batchBg = Array.isArray(batchBg.body.bg) ? batchBg.body.bg[0] : (batchBg.body.bg as string);
+            if (batchBg.startsWith('.')) {
+                batch.rect.attr('fill', null);
+                batch.rect.attr('class', batchBg.substring(1));
+                batch.header.attr('fill', null);
+                batch.header.attr('class', batchBg.substring(1));
+            } else {
+                batch.rect.attr('class', null);
+                batch.rect.attr('fill', batchBg);
+                batch.header.attr('class', null);
+                batch.header.attr('fill', batchBg);
+            }
+
             batch.columns.forEach(column => column.forEach(cell => {
                 const hcell = batch.cells.find(c => c.title === cell.title);
-                // console.log('working cell', cell.title, hcell, cell.fill === hcell.value ? 'same' : 'CHANGED');
                 if ((cell.fill !== hcell.value) || (cell.value !== hcell.value)) {
                     cell.fill = cell.value = hcell.value;
                     let fill = (cell.value != null) ? this.options.color.heatColors[cell.value.toString()] : null;

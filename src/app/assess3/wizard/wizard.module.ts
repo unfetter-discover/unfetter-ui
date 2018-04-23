@@ -19,11 +19,13 @@ import { CapabilityComponent } from './capability/capability.component';
 import { CategoryComponent } from './category/category.component';
 import { WizardComponent } from './wizard.component';
 import { routing } from './wizard.routing';
+import { AttackPatternChooserComponent } from './attack-pattern-chooser/attack-pattern-chooser.component';
 
 const moduleComponents = [
   WizardComponent,
   CategoryComponent,
   CapabilityComponent,
+  AttackPatternChooserComponent,
 ];
 
 const matModules = [
@@ -56,10 +58,9 @@ const primengModules = [
   ],
   declarations: [
     ...moduleComponents,
-    CapabilityComponent,
   ],
-  exports: [
-    ...moduleComponents,
-  ],
+  entryComponents: [
+    AttackPatternChooserComponent,
+  ]
 })
 export class WizardModule { }
