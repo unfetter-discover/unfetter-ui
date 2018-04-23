@@ -113,12 +113,13 @@ export class AssessService {
      * @param {string} filter
      * @return {Observable<Category[]>}
      */
-    public loadCategories(filter?: string): Observable<Category[]>  {
+    public getCategories(filter?: string): Observable<Category[]>  {
         const url = filter ?
             `${this.categoryBaseUrl}?${encodeURI(filter)}` : this.categoryBaseUrl;
-        return this.genericApi.get(url);
-        // return [ 'Generic AV', 'Standard EDR', 'Network Analysis', 'Network Firewall', 'sysmon', 'Autoruns', 'Enterprise SIEM' ];
-    }
+        return this.genericApi
+            .getAs<JsonApiData<Category>[]>(url)
+            .map((data) => data.map((el) => el.attributes));
+   }
 
     /**
      * @description

@@ -14,6 +14,7 @@ export const CLEAN_ASSESSMENT_WIZARD_DATA = '[Assess3] CLEAN_ASSESSMENT_WIZARD_D
 export const FETCH_ASSESSMENT = '[Assess3] FETCH_ASSESSMENT';
 export const FETCH_CATEGORIES = '[Assess3] FETCH_CATEGORIES';
 export const SET_CATEGORIES = '[Assess3] SET_CATEGORIES';
+export const SET_CATEGORY_STEPS = '[Assess3] SET_CATEGORY_STEPS';
 
 // For reducers
 export const UPDATE_PAGE_TITLE = '[Baseline] UPDATE_PAGE_TITLE';
@@ -64,6 +65,12 @@ export class SetCategories implements Action {
     constructor(public payload: Category[]) { }
 }
 
+export class SetCategorySteps implements Action {
+    public readonly type = SET_CATEGORY_STEPS;
+
+    constructor(public payload: Category[]) { }
+}
+
 export class LoadAssessmentWizardData implements Action {
     public readonly type = LOAD_ASSESSMENT_WIZARD_DATA;
 
@@ -104,6 +111,7 @@ export type AssessmentActions =
     FetchAssessment |
     FetchCategories |
     SetCategories |
+    SetCategorySteps |
     FinishedLoading |
     FinishedSaving |
     LoadAssessmentWizardData |
