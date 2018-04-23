@@ -42,7 +42,13 @@ export class FullComponent implements OnInit, OnDestroy {
   finishedLoading: Observable<boolean>;
   masterListOptions = {
     dataSource: null,
-    columns: new MasterListDialogTableHeaders('modified', 'Modified'),
+    columns: new MasterListDialogTableHeaders('modified', 'Date Modified')
+        .addColumn('capabilities', '# of Capabilities', 'master-list-capabilities', false, (value) => value || '0')
+        .addColumn('creator', 'Author', 'master-list-extra', false, (value) => value || 'Unknown')
+        .addColumn('framework', 'Type', 'master-list-extra', false, (value) => value || 'ATT&CK')
+        .addColumn('industry', 'Industry', 'master-list-extra', false, (value) => value || 'Local')
+        .addColumn('published', 'Status', 'master-list-extra', false, (published) => published ? 'Public' : 'Draft')
+        ,
     displayRoute: this.baseAssessUrl + '/result/full',
     modifyRoute: this.baseAssessUrl + '/wizard/edit',
     createRoute: this.baseAssessUrl + '/create',

@@ -1,15 +1,17 @@
 <div *ngIf="(finishedLoading|async) === true; else loadingBlock" class="fadeIn">
   <mat-sidenav-container *ngIf="(assessment|async) !== undefined; else notFound">
     <mat-sidenav class="side-panel" mode="side" opened="true">
-      <unfetter-side-panel class="side-panel" [item]="{ name: assessmentName|async }" collapsible="false" width="320">
+      <unfetter-side-panel [item]="{ name: assessmentName | async | capitalize }"
+          class="side-panel" collapsible="false" width="350">
 
         <sidepanel-option-item label="Edit" icon="mode_edit" (click)="onEdit($event)"></sidepanel-option-item>
         <sidepanel-option-item label="Share" icon="share" disabled="true" (click)="onShare($event)"></sidepanel-option-item>
         <sidepanel-option-item label="Delete" icon="delete" (click)="onDeleteCurrent($event)"></sidepanel-option-item>
 
-        <master-list-dialog-trigger title="Assessments" width="750px" height="400px" [dataSource]="masterListOptions.dataSource"
-          [columns]="masterListOptions.columns" (tabChange)="onFilterTabChanged($event)" (create)="onCreate($event)" (select)="onCellSelected($event)"
-          (edit)="onEdit($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
+        <master-list-dialog-trigger title="Assessments" width="1200px" height="400px"
+            [dataSource]="masterListOptions.dataSource" [columns]="masterListOptions.columns"
+            (tabChange)="onFilterTabChanged($event)" (create)="onCreate($event)" (select)="onCellSelected($event)"
+            (edit)="onEdit($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
       </unfetter-side-panel>
       <div *ngIf="assessGroupMain.riskByAttackPattern" class="side-panel-risks">
         <div class="risk-header-wrapper">

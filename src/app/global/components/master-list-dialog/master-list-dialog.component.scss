@@ -23,6 +23,7 @@
         }
 
         .mat-form-field {
+            width: 100%;
             margin: 10px 4px 4px 4px;
             padding: 2px 8px;
             background: rgba(1, 1, 1, .12);
@@ -99,11 +100,12 @@
                 align-items: center;
             }
 
-            .mat-column-actions {
+            .master-list-actions {
+                flex: 1;
                 text-align: right !important;
-
                 .mat-button {
                     min-width: 0;
+                    padding: 0 8px;
                 }
             }
 

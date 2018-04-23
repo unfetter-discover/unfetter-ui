@@ -47,6 +47,14 @@
                         </mat-cell>
                     </ng-container>
 
+                    <ng-container *ngFor="let extra of data.columns.extra" matColumnDef='{{extra.ref}}'>
+                        <mat-header-cell *matHeaderCellDef> {{extra.header}} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" class="{{cdefs.rowClass(row, extra)}}"
+                                (click)="cdefs.canSelect(row, extra) && onSelect(row, extra.ref, $event)">
+                            <span> {{ $any(extra).format(row[extra.ref]) }} </span>
+                        </mat-cell>
+                    </ng-container>
+
                     <ng-container *ngIf="cdefs.actions as acts" matColumnDef='{{acts.ref}}'>
                         <mat-header-cell *matHeaderCellDef
                                 class="master-list-actions-header"> {{acts.header}} </mat-header-cell>
