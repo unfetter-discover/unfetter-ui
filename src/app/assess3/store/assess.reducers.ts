@@ -13,6 +13,7 @@ export interface AssessState {
     assessment: Assessment3;
     backButton: boolean;
     categories: Category[];
+    categorySteps: Category[];
     // TODO: add attack pattern array
     // attackPatterns?: JsonApiData<AttackPattern>[];
     finishedLoading: boolean;
@@ -26,7 +27,7 @@ const genAssessState = (state?: Partial<AssessState>) => {
         assessment: new Assessment3(),
         backButton: false,
         categories: [],
-        // categories: [ 'Generic AV', 'Standard EDR', 'Network Analysis', 'Network Firewall', 'sysmon', 'Autoruns', 'Enterprise SIEM' ],
+        categorySteps: [],
         finishedLoading: false,
         saved: { finished: false, id: '' },
         showSummary: false,
@@ -51,7 +52,11 @@ export function assessmentReducer(state = initialState, action: assessmentAction
             return genAssessState({
               categories: action.payload,
             });
-        case assessmentActions.START_ASSESSMENT:
+        case assessmentActions.SET_CATEGORY_STEPS:
+            return genAssessState({
+              categorySteps: action.payload,
+            });
+         case assessmentActions.START_ASSESSMENT:
             const a0 = new Assessment3();
             a0.assessmentMeta = { ...action.payload };
             return genAssessState({

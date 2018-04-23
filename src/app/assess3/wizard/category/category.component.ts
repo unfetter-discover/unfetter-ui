@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Category } from 'stix';
 import { Subscription } from 'rxjs/Subscription';
+import { SetCategorySteps } from '../../store/assess.actions';
 
 @Component({
   selector: 'unf-assess3-wizard-category',
@@ -26,14 +27,18 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    const sub1$ = this.wizardStore
-      .select('categories')
+
+    const catSub$ = this.wizardStore
+      .select('assessment')
+      .pluck('categories')
       .distinctUntilChanged()
       .subscribe(
         (categories: Category[]) => this.categories = categories,
         (err) => console.log(err));
 
-    this.subscriptions.push(sub1$);
+    this.subscriptions.push(catSub$);
+
+    this.wizardStore.dispatch(new assessActions.FetchCategories());
   }
 
   ngAfterViewInit() {
@@ -73,6 +78,9 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
 
       option.value = this.defaultValue;
     }
+
+    // Update wizard store with current category selections
+    this.wizardStore.dispatch(new SetCategorySteps(this.tempCategories));
   }
 
   /*
@@ -102,6 +110,9 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
     if (confirmed) {
       const index = this.tempCategories.indexOf(option.value);
       this.tempCategories.splice(index, 1); 
+
+      // Update wizard store with current category selections
+      this.wizardStore.dispatch(new SetCategorySteps(this.tempCategories));
     }
   }
 
