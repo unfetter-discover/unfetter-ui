@@ -23,13 +23,14 @@ export class CategoryComponent implements OnInit {
   }
 
   /**
-   * @description
-   * @param index
-   * @param item
-   * @returns {number}
+   * @description angular track by list function, uses the items id if
+   *  it exists, otherwise uses the index
+   * @param {number} index
+   * @param {item}
+   * @return {number}
    */
-  public trackByFn(index, item) {
-    return index;
+  public trackByFn(index: number, item: any): number {
+    return item.id || index;
   }
 
   /*

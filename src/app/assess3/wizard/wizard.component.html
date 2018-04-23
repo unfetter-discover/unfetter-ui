@@ -48,7 +48,7 @@
     <!-- List of cards containing each panel in the baselines wizard -->
     <div [ngSwitch]="openedSidePanel">
       <unf-assess3-wizard-category *ngSwitchCase="'categories'" #categories></unf-assess3-wizard-category>
-      <unf-assess3-wizard-capability *ngSwitchCase="'capabilities'"></unf-assess3-wizard-capability>
+      <unf-assess3-wizard-capability *ngSwitchCase="'capabilities'" (onToggleHeatMap)="toggleHeatMap()"></unf-assess3-wizard-capability>
       <div *ngSwitchCase="'capability'">
         <p>This is the attack pattern selection and capability scoring panel.</p>
       </div>
