@@ -34,6 +34,7 @@ import { heightCollapse } from '../../global/animations/height-collapse';
 import { WizardAssessment } from './models/wizard-assessment';
 import { ScoresModel } from './models/scores-model';
 import { Capability } from '../../models/unfetter/capability';
+import { Category } from 'stix';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -169,7 +170,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
             this.loadExistingAssessment(assessmentId, meta);
           }
           this.wizardStore.dispatch(new LoadAssessmentWizardData(meta));
-          this.wizardStore.dispatch(new assessActions.FetchCategories());
         },
         (err) => console.log(err),
         () => idParamSub$.unsubscribe());
@@ -227,7 +227,15 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         (user: UserProfile) => this.currentUser = user,
         (err) => console.log(err));
 
-    this.subscriptions.push(sub4$, sub5$, sub6$, sub7$, sub8$);
+    const sub9$ = this.wizardStore
+      .select('assessment')
+      .pluck('categorySteps')
+      .distinctUntilChanged()
+      .subscribe(
+        (categorySteps: Category[]) => this.categoryNames = categorySteps.map((category) => category.name),
+        (err) => console.log(err));
+
+      this.subscriptions.push(sub4$, sub5$, sub6$, sub7$, sub8$, sub9$);
   }
 
   /**
@@ -819,6 +827,12 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     // this.currentCapabilities = this.createCapabilities(data);
     this.currentCapability = this.getCurrentCapability();
     this.updateChart();
+  }
+  /**
+   * @param  {Category[]} steps
+   */
+  private updateCategorySteps(steps: Category[]) {
+    
   }
 
   /*

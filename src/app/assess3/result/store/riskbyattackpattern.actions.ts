@@ -4,13 +4,13 @@ import { JsonApiData } from '../../../models/json/jsonapi-data';
 import { RiskByAttack3 } from '../../../models/assess/risk-by-attack3';
 
 // For effects
-export const LOAD_RISK_BY_ATTACK_PATTERN_DATA = '[Assess Risk By Attack Pattern] LOAD_RISK_BY_ATTACK_PATTERN_DATA';
-export const LOAD_SINGLE_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA = '[Assess Risk By Attack Pattern] LOAD_SINGLE_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA';
+export const LOAD_RISK_BY_ATTACK_PATTERN_DATA = '[Assess3 Risk By Attack Pattern] LOAD_RISK_BY_ATTACK_PATTERN_DATA';
+export const LOAD_SINGLE_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA = '[Assess3 Risk By Attack Pattern] LOAD_SINGLE_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA';
 
 // For reducers
-export const SET_RISK_BY_ATTACK_PATTERNS = '[Assess Risk By Attack Pattern] SET_RISK_BY_ATTACK_PATTERN_DATA';
-export const FINISHED_LOADING = '[Assess Risk By Attack Pattern] FINISHED_LOADING';
-export const CLEAN_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA = '[Assess Risk By Attack Pattern] CLEAN_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA';
+export const SET_RISK_BY_ATTACK_PATTERNS = '[Assess3 Risk By Attack Pattern] SET_RISK_BY_ATTACK_PATTERN_DATA';
+export const FINISHED_LOADING = '[Assess3 Risk By Attack Pattern] FINISHED_LOADING';
+export const CLEAN_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA = '[Assess3 Risk By Attack Pattern] CLEAN_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA';
 
 export class LoadSingleAssessmentRiskByAttackPatternData implements Action {
     public readonly type = LOAD_SINGLE_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA;
