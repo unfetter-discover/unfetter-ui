@@ -1,12 +1,10 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import * as fromRoot from 'app/root-store/app.reducers';
-
-import { CategoryComponent } from './category.component';
-import { MatButtonModule, MatCardModule, MatDatepickerModule, MatDialogModule, MatExpansionModule, MatSnackBarModule, MatSelectModule, MatInputModule, MatProgressBarModule, MatIconModule } from '@angular/material';
-import { StoreModule, combineReducers } from '@ngrx/store';
-import { assessmentReducer } from '../../../assess/store/assess.reducers';
+import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { MatButtonModule, MatCardModule, MatIconModule, MatSelectModule } from '@angular/material';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { StoreModule, combineReducers } from '@ngrx/store';
+import * as fromRoot from 'app/root-store/app.reducers';
+import { assessmentReducer } from '../../../assess/store/assess.reducers';
+import { CategoryComponent } from './category.component';
 
 describe('CategoryComponent', () => {
   let component: CategoryComponent;
@@ -21,7 +19,7 @@ describe('CategoryComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CategoryComponent ],
+      declarations: [CategoryComponent],
       imports: [
         NoopAnimationsModule,
         ...matModules,
@@ -31,7 +29,7 @@ describe('CategoryComponent', () => {
         }),
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
