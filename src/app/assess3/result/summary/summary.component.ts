@@ -22,6 +22,7 @@ import { SummaryDataSource } from './summary.datasource';
 import { Assessment3Object } from '../../../models/assess/assessment3-object';
 import { CleanAssessmentResultData } from '../store/summary.actions';
 import { Capability } from '../../../models/unfetter/capability';
+import { Identity } from 'stix';
 
 @Component({
   selector: 'summary',
@@ -37,11 +38,20 @@ export class SummaryComponent implements OnInit, OnDestroy {
   summaries: Assessment3[];
   summary: Assessment3;
   finishedLoading = false;
+  private identities: Identity[];
+
   masterListOptions = {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Date Modified')
         .addColumn('capabilities', '# of Capabilities', 'master-list-capabilities', false, (value) => value || '0')
-        .addColumn('creator', 'Author', 'master-list-extra', false, (value) => value || 'Unknown')
+        .addColumn('created_by_ref', 'Organization', 'master-list-organization', false, (value) => {
+          console.log('looking up identity', value, this.identities);
+          let author: Identity = null;
+          if (value) {
+            author = this.identities.find(id => id.id === value)
+          }
+          return author ? author.name : 'Unknown';
+        })
         .addColumn('framework', 'Type', 'master-list-extra', false, (value) => value || 'ATT&CK')
         .addColumn('industry', 'Industry', 'master-list-extra', false, (value) => value || 'Local')
         .addColumn('published', 'Status', 'master-list-extra', false, (published) => published ? 'Public' : 'Draft')
@@ -91,9 +101,21 @@ export class SummaryComponent implements OnInit, OnDestroy {
             (err) => console.log(err));
         this.subscriptions.push(sub$);
       },
-        (err) => console.log(err));
+      (err) => console.log(err));
+
+    const subIdentitie$ = this.userStore
+      .select('identities')
+      .pluck('identities')
+      .finally(() => console.log('identity retrieval done'))
+      .subscribe(
+        (identities: Identity[]) => { console.log('orgs found', identities); this.identities = identities; },
+        (error) => console.log(`(${new Date().toISOString()}) error retrieving identities from app store`, error)
+      );
+
     this.listenForDataChanges();
+
     this.subscriptions.push(idParamSub$);
+    this.subscriptions.push(subIdentitie$);
   }
 
   /**

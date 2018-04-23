@@ -13,10 +13,17 @@
 ::ng-deep .uf-master-list-dialog .mat-dialog-container {
     mat-dialog-content {
         div.master-list-table {
+            .master-list-item, .master-list-item-header {
+                flex: 3 !important;
+            }
             .master-list-capabilities, .master-list-capabilities-header {
                 flex: 1;
                 align-items: center;
                 text-align: center;
+            }
+            .master-list-organization, .mat-column-created_by_ref {
+                flex: 2;
+                align-items: center;
             }
             .master-list-extra, .master-list-extra-header {
                 flex: 1;
