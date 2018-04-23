@@ -3,17 +3,17 @@ import { Assessment3 } from '../../../../models/assess/assessment3';
 import { SummaryAggregation } from '../../../../models/assess/summary-aggregation';
 
 // For effects
-export const LOAD_ASSESSMENT_SUMMARY_DATA = '[Assess Summary] LOAD_ASSESSMENT_SUMMARY_DATA';
-export const LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA = '[Assess Summary] LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA';
-export const LOAD_SINGLE_SUMMARY_AGGREGATION_DATA = '[Assess Summary] LOAD_SINGLE_SUMMARY_AGGREGATION_DATA';
-export const LOAD_SUMMARY_AGGREGATION_DATA = '[Assess Summary] LOAD_SUMMARY_AGGREGATION_DATA';
+export const LOAD_ASSESSMENT_SUMMARY_DATA = '[Assess3 Summary] LOAD_ASSESSMENT_SUMMARY_DATA';
+export const LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA = '[Assess3 Summary] LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA';
+export const LOAD_SINGLE_SUMMARY_AGGREGATION_DATA = '[Assess3 Summary] LOAD_SINGLE_SUMMARY_AGGREGATION_DATA';
+export const LOAD_SUMMARY_AGGREGATION_DATA = '[Assess3 Summary] LOAD_SUMMARY_AGGREGATION_DATA';
 
 // For reducers
-export const SET_ASSESSMENTS = '[Assess Summary] SET_ASSESSMENTS';
-export const FINISHED_LOADING = '[Assess Summary] FINISHED_LOADING';
-export const SET_SUMMARY_AGGREGATION_DATA = '[Assess Summary] SET_SUMMARY_AGGREGATION_DATA';
-export const FINISHED_LOADING_SUMMARY_AGGREGATION_DATA = '[Assess Summary] FINISHED_LOADING_SUMMARY_AGGREGATION_DATA';
-export const CLEAN_ASSESSMENT_RESULT_DATA = '[Assess Result Group] CLEAN_ASSESSMENT_RESULT_DATA';
+export const SET_ASSESSMENTS = '[Assess3 Summary] SET_ASSESSMENTS';
+export const FINISHED_LOADING = '[Assess3 Summary] FINISHED_LOADING';
+export const SET_SUMMARY_AGGREGATION_DATA = '[Assess3 Summary] SET_SUMMARY_AGGREGATION_DATA';
+export const FINISHED_LOADING_SUMMARY_AGGREGATION_DATA = '[Assess3 Summary] FINISHED_LOADING_SUMMARY_AGGREGATION_DATA';
+export const CLEAN_ASSESSMENT_RESULT_DATA = '[Assess3 Result Group] CLEAN_ASSESSMENT_RESULT_DATA';
 
 
 export class LoadSingleAssessmentSummaryData implements Action {

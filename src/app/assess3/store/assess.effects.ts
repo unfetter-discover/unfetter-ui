@@ -60,7 +60,7 @@ export class AssessEffects {
     @Effect()
     public fetchCategories = this.actions$
         .ofType(assessActions.FETCH_CATEGORIES)
-        .switchMap(() => this.assessService.loadCategories())
+        .switchMap(() => this.assessService.getCategories())
         .map((arr: Category[]) => new assessActions.SetCategories(arr));
 
     @Effect({ dispatch: false })
