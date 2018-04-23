@@ -51,18 +51,14 @@ export function baselineReducer(state = initialState, action: baselineActions.As
             });
         case baselineActions.SET_CATEGORIES:
             return genAssessState({
-                ...state,
-                categories: [...action.payload],
-            });
-        case baselineActions.SET_CATEGORY_STEPS:
-            return genAssessState({
-                ...state,
-                categorySteps: [...action.payload],
+                categories: action.payload,
             });
         case assessmentActions.SET_CATEGORY_STEPS:
-            return genAssessState({
-              categorySteps: action.payload,
+            const c1 = genAssessState({
+                ...state,
+                categorySteps: action.payload,
             });
+            return c1;
          case assessmentActions.START_ASSESSMENT:
             const a0 = new Assessment3();
             a0.assessmentMeta = { ...action.payload };
