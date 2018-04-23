@@ -50,12 +50,14 @@ export function assessmentReducer(state = initialState, action: assessmentAction
             });
         case assessmentActions.SET_CATEGORIES:
             return genAssessState({
-              categories: action.payload,
+                categories: action.payload,
             });
         case assessmentActions.SET_CATEGORY_STEPS:
-            return genAssessState({
-              categorySteps: action.payload,
+            const c1 = genAssessState({
+                ...state,
+                categorySteps: action.payload,
             });
+            return c1;
          case assessmentActions.START_ASSESSMENT:
             const a0 = new Assessment3();
             a0.assessmentMeta = { ...action.payload };
