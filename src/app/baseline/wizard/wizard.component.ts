@@ -25,7 +25,8 @@ import { CleanAssessmentWizardData, LoadAssessmentWizardData, SaveAssessment, Up
 import { BaselineState } from '../store/baseline.reducers';
 import { Measurements } from './models/measurements';
 import { ScoresModel } from './models/scores-model';
-import { WizardBaseline } from './models/wizard-baseline';
+import { Capability } from '../../models/unfetter/capability';
+import { Category } from 'stix';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -161,7 +162,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
             this.loadExistingAssessment(baselineId, meta);
           }
           this.wizardStore.dispatch(new LoadAssessmentWizardData(meta));
-          this.wizardStore.dispatch(new assessActions.FetchCategories());
         },
         (err) => console.log(err),
         () => idParamSub$.unsubscribe());
@@ -220,15 +220,11 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         (err) => console.log(err));
 
     const sub9$ = this.wizardStore
-      .select('baseline')
+      .select('assessment')
       .pluck('categorySteps')
       .distinctUntilChanged()
       .subscribe(
-        (categorySteps: Category[]) => {
-          this.categoryNames = categorySteps
-            .filter((cat) => cat !== undefined)
-            .map((category) => category.name)
-        },
+        (categorySteps: Category[]) => this.categoryNames = categorySteps.map((category) => category.name),
         (err) => console.log(err));
 
       this.subscriptions.push(sub4$, sub5$, sub6$, sub7$, sub8$, sub9$);

@@ -4,21 +4,21 @@ import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
 import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
 
 // For effects
-export const LOAD_ASSESSMENT_SUMMARY_DATA = '[Baseline Summary] LOAD_ASSESSMENT_SUMMARY_DATA';
-export const LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA = '[Baseline Summary] LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA';
-export const LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA = '[Baseline Summary] LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA';
-export const LOAD_RISK_PER_KILL_CHAIN_DATA = '[Baseline Summary] LOAD_RISK_PER_KILL_CHAIN_DATA';
-export const LOAD_SINGLE_SUMMARY_AGGREGATION_DATA = '[Baseline Summary] LOAD_SINGLE_SUMMARY_AGGREGATION_DATA';
-export const LOAD_SUMMARY_AGGREGATION_DATA = '[Baseline Summary] LOAD_SUMMARY_AGGREGATION_DATA';
+export const LOAD_ASSESSMENT_SUMMARY_DATA = '[Assess3 Summary] LOAD_ASSESSMENT_SUMMARY_DATA';
+export const LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA = '[Assess3 Summary] LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA';
+export const LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA = '[Assess3 Summary] LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA';
+export const LOAD_RISK_PER_KILL_CHAIN_DATA = '[Assess3 Summary] LOAD_RISK_PER_KILL_CHAIN_DATA';
+export const LOAD_SINGLE_SUMMARY_AGGREGATION_DATA = '[Assess3 Summary] LOAD_SINGLE_SUMMARY_AGGREGATION_DATA';
+export const LOAD_SUMMARY_AGGREGATION_DATA = '[Assess3 Summary] LOAD_SUMMARY_AGGREGATION_DATA';
 
 // For reducers
-export const SET_ASSESSMENTS = '[Baseline Summary] SET_ASSESSMENTS';
-export const FINISHED_LOADING = '[Baseline Summary] FINISHED_LOADING';
-export const SET_KILL_CHAIN_DATA = '[Baseline Summary] SET_KILL_CHAIN_DATA';
-export const FINISHED_LOADING_KILL_CHAIN_DATA = '[Baseline Summary] FINISHED_LOADING_KILL_CHAIN_DATA';
-export const SET_SUMMARY_AGGREGATION_DATA = '[Baseline Summary] SET_SUMMARY_AGGREGATION_DATA';
-export const FINISHED_LOADING_SUMMARY_AGGREGATION_DATA = '[Baseline Summary] FINISHED_LOADING_SUMMARY_AGGREGATION_DATA';
-export const CLEAN_ASSESSMENT_RESULT_DATA = '[Baseline Result Group] CLEAN_ASSESSMENT_RESULT_DATA';
+export const SET_ASSESSMENTS = '[Assess3 Summary] SET_ASSESSMENTS';
+export const FINISHED_LOADING = '[Assess3 Summary] FINISHED_LOADING';
+export const SET_KILL_CHAIN_DATA = '[Assess3 Summary] SET_KILL_CHAIN_DATA';
+export const FINISHED_LOADING_KILL_CHAIN_DATA = '[Assess3 Summary] FINISHED_LOADING_KILL_CHAIN_DATA';
+export const SET_SUMMARY_AGGREGATION_DATA = '[Assess3 Summary] SET_SUMMARY_AGGREGATION_DATA';
+export const FINISHED_LOADING_SUMMARY_AGGREGATION_DATA = '[Assess3 Summary] FINISHED_LOADING_SUMMARY_AGGREGATION_DATA';
+export const CLEAN_ASSESSMENT_RESULT_DATA = '[Assess3 Result Group] CLEAN_ASSESSMENT_RESULT_DATA';
 
 
 export class LoadSingleAssessmentSummaryData implements Action {
