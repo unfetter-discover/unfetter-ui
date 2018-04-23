@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { SetCategorySteps } from '../../store/baseline.actions';
+import { SetCategorySteps } from '../../store/assess.actions';
 
 @Component({
   selector: 'unf-baseline-wizard-category',
@@ -27,23 +27,15 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
 
-    const catSub1$ = this.wizardStore
-      .select('baseline')
+    const catSub$ = this.wizardStore
+      .select('assessment')
       .pluck('categories')
       .distinctUntilChanged()
       .subscribe(
         (categories: Category[]) => this.categories = categories,
         (err) => console.log(err));
 
-    const catSub2$ = this.wizardStore
-      .select('baseline')
-      .pluck('categorySteps')
-      .distinctUntilChanged()
-      .subscribe(
-        (categorySteps: Category[]) => this.tempCategories = categorySteps,
-        (err) => console.log(err));
-  
-    this.subscriptions.push(catSub1$, catSub2$);
+    this.subscriptions.push(catSub$);
 
     this.wizardStore.dispatch(new assessActions.FetchCategories());
   }
