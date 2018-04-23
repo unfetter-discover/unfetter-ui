@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'unf-assess3-wizard-capability',
@@ -12,7 +12,8 @@ export class CapabilityComponent implements OnInit {
   public noAttackPatterns: string = 'You have no Attack Patterns yet';
   public addAttackPatterns: string = 'Add a Kill Chain Phase and Attack Patterns and they will show up here';
   public openAttackMatrix: string = 'Open Att&ck Matrix';
-  public showHeatMap = false;
+  @Output()
+  public onToggleHeatMap = new EventEmitter<boolean>();
 
   constructor() { }
 

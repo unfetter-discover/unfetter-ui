@@ -2,7 +2,7 @@ import { Component, ChangeDetectorRef, ElementRef, Input, OnInit, SimpleChanges,
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { MatSnackBar, MatSelect } from '@angular/material';
+import { MatSnackBar, MatSelect, MatDialog } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { Store } from '@ngrx/store';
@@ -34,6 +34,7 @@ import { heightCollapse } from '../../global/animations/height-collapse';
 import { WizardAssessment } from './models/wizard-assessment';
 import { ScoresModel } from './models/scores-model';
 import { Capability } from '../../models/unfetter/capability';
+import { AttackPatternChooserComponent } from './attack-pattern-chooser/attack-pattern-chooser.component';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -92,6 +93,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       }
     }
   };
+
   // public description = `An Assessment is your evaluation of the implementations of your network.  You will rate your environment
   // ' to the best of your ability. On the final page of the survey, you will be asked to enter a name for the report and a description.
   // Unfetter Discover will use the survey to help you understand your gaps, how important they are and which should be addressed.
@@ -112,7 +114,10 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public categories: Dictionary<{ name: string, scoresModel: ScoresModel, capabilities: any[] }>[] = [];
   private currentCapabilities: Capability[];
   private currentCapability = {} as Capability;
-  
+
+  public showHeatmap = false;
+  public attackPatterns: any[] = [];
+
   private readonly subscriptions: Subscription[] = [];
   private readonly sidePanelNames: string[] = ['categories', 'capabilities', 'capability', 'summary'];
 
@@ -128,7 +133,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     private userStore: Store<AppState>,
     private assessStore: Store<FullAssessmentResultState>,
     private wizardStore: Store<assessReducers.AssessState>,
-    private changeDetection: ChangeDetectorRef
+    private changeDetection: ChangeDetectorRef,
+    private dialog: MatDialog,
   ) {
     super();
     this.CHART_TYPE = 'doughnut';
@@ -820,13 +826,14 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   }
 
   /**
-   * @description
-   * @param index
-   * @param item
-   * @returns {number}
+   * @description angular track by list function, uses the items id if
+   *  it exists, otherwise uses the index
+   * @param {number} index
+   * @param {item}
+   * @return {number}
    */
-  public trackByFn(index, item) {
-    return index;
+  public trackByFn(index: number, item: any): number {
+    return item.id || index;
   }
 
   /*
@@ -1028,6 +1035,36 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return groupRisk;
   }
 
+  /**
+   * @description Displays a slide-out that shows the user a heat map of all attack patterns for filtering
+   */
+  public toggleHeatMap() {
+    if (this.showHeatmap) {
+      this.showHeatmap = false;
+      this.dialog.closeAll();
+    } else {
+      this.showHeatmap = true;
+      const dialog = this.dialog.open(AttackPatternChooserComponent, {
+        width: '80vw',
+        height: '80vh',
+        hasBackdrop: true,
+        disableClose: false,
+        closeOnNavigation: true,
+        data: {
+          active: this.attackPatterns,
+        },
+      });
+      dialog.afterClosed().subscribe(
+        result => {
+          if (result) {
+            this.attackPatterns = result;
+          }
+          this.showHeatmap = false;
+        },
+        (err) => console.log(err),
+      );
+    }
+  }
   /*
    * @description update the chart data
    * @return {void}
