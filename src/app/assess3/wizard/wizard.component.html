@@ -2,8 +2,7 @@
   <div @heightCollapse class="flex-col mt-18 mb-12">
   </div>
   <mat-accordion displayMode="flat" multi="false">
-    <mat-expansion-panel hideToggle="true" [expanded]="openedSidePanel === 'categories'"
-      (opened)="onOpenSidePanel('categories', $event)">
+    <mat-expansion-panel hideToggle="true" [expanded]="openedSidePanel === 'categories'" (opened)="onOpenSidePanel('categories', $event)">
       <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
         <mat-panel-title>
           CATEGORIES
@@ -46,53 +45,43 @@
 
 <div class="card flex1">
   <mat-card>
-
     <!-- List of cards containing each panel in the baselines wizard -->
-    
-    <!-- CATEGORIES DEFINITION PANEL -->
-    <div *ngIf="openedSidePanel === 'categories'"> 
-      <unf-assess3-wizard-category #categories></unf-assess3-wizard-category>
-    </div>
-
-    <!-- CAPABILITIES SELECTION PANEL -->
-    <div *ngIf="openedSidePanel === 'capabilities'"> 
-      <p>This is the capabilities definition panel.</p>>
-    </div>
-
-    <!-- KCP/AP SELECTION and SCORING PANEL -->
-    <div *ngIf="openedSidePanel === 'capability'"> 
-      <p>This is the attack pattern selection and capability scoring panel.</p>
-    </div>
-
-    <div *ngIf="openedSidePanel === 'summary'">
-      <mat-card-header>
-        <mat-card-title>Assessment Report</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="row mat-card-padding">
-          <div class="col-xs-8">
-            <mat-form-field class="full-width">
-              <input matInput placeholder="Assessment Name" name="assessment-name" [(ngModel)]="meta.title">
-              <mat-error *ngIf="isTitleEmpty()">
-                Title is
-                <strong>required</strong>
-              </mat-error>
-            </mat-form-field>
+    <div [ngSwitch]="openedSidePanel">
+      <unf-assess3-wizard-category *ngSwitchCase="'categories'" #categories></unf-assess3-wizard-category>
+      <unf-assess3-wizard-capability *ngSwitchCase="'capabilities'"></unf-assess3-wizard-capability>
+      <div *ngSwitchCase="'capability'">
+        <p>This is the attack pattern selection and capability scoring panel.</p>
+      </div>
+      <div *ngSwitchDefault>
+        <mat-card-header>
+          <mat-card-title>Assessment Report</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="row mat-card-padding">
+            <div class="col-xs-8">
+              <mat-form-field class="full-width">
+                <input matInput placeholder="Assessment Name" name="assessment-name" [(ngModel)]="meta.title">
+                <mat-error *ngIf="isTitleEmpty()">
+                  Title is
+                  <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
           </div>
-        </div>
-        <div class="row mat-card-padding">
-          <div class="col-xs-12">
-            <mat-form-field class="full-width">
-              <textarea matInput placeholder="Assessment Description" [(ngModel)]="meta.description"></textarea>
-            </mat-form-field>
+          <div class="row mat-card-padding">
+            <div class="col-xs-12">
+              <mat-form-field class="full-width">
+                <textarea matInput placeholder="Assessment Description" [(ngModel)]="meta.description"></textarea>
+              </mat-form-field>
+            </div>
           </div>
-        </div>
-        <div class="row mat-card-padding">
-          <div class="col-xs-12">
-            <created-by-ref [assessmentMeta]="meta"></created-by-ref>
+          <div class="row mat-card-padding">
+            <div class="col-xs-12">
+              <created-by-ref [assessmentMeta]="meta"></created-by-ref>
+            </div>
           </div>
-        </div>
-      </mat-card-content>
+        </mat-card-content>
+      </div>
     </div>
 
     <mat-card-actions class="text-right">

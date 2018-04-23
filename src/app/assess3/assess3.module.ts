@@ -1,29 +1,24 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-
-import { routing } from './assess3.routing';
-
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
-
-import { Create3Component } from './create/create3.component';
-
-import { Assess3Guard } from './assess3.guard';
-import { AssessService } from './services/assess.service';
-import { AssessStateService } from './services/assess-state.service';
-
-import { AssessEffects } from './store/assess.effects';
+import { MatInputModule } from '@angular/material/input';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { assessmentReducer } from './store/assess.reducers';
+import { GlobalModule } from '../global/global.module';
+import { Assess3Guard } from './assess3.guard';
+import { routing } from './assess3.routing';
+import { Create3Component } from './create/create3.component';
 import { Assess3LayoutComponent } from './layout/assess3-layout.component';
 import { ResultModule } from './result/result.module';
+import { AssessStateService } from './services/assess-state.service';
 import { AssessSummaryService } from './services/assess-summary.service';
-import { GlobalModule } from '../global/global.module';
+import { AssessService } from './services/assess.service';
+import { AssessEffects } from './store/assess.effects';
+import { assessmentReducer } from './store/assess.reducers';
 
 const moduleComponents = [
   Assess3LayoutComponent,
