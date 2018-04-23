@@ -11,7 +11,7 @@ const initialState: IdentityState = {
 
 export function identitiesReducer(state = initialState, action: identityActions.IdentityActions): IdentityState {
     switch (action.type) {
-        case identityActions.FETCH_IDENTITIES:
+        case identityActions.SET_IDENTITIES:
             return {
                 ...state,
                 identities: action.payload,

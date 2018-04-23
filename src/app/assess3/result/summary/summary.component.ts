@@ -23,6 +23,7 @@ import { Assessment3Object } from '../../../models/assess/assessment3-object';
 import { CleanAssessmentResultData } from '../store/summary.actions';
 import { Capability } from '../../../models/unfetter/capability';
 import { Identity } from 'stix';
+import { UsersService } from '../../../core/services/users.service';
 
 @Component({
   selector: 'summary',
@@ -45,7 +46,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
     columns: new MasterListDialogTableHeaders('modified', 'Date Modified')
         .addColumn('capabilities', '# of Capabilities', 'master-list-capabilities', false, (value) => value || '0')
         .addColumn('created_by_ref', 'Organization', 'master-list-organization', false, (value) => {
-          console.log('looking up identity', value, this.identities);
           let author: Identity = null;
           if (value) {
             author = this.identities.find(id => id.id === value)
@@ -70,6 +70,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     private store: Store<SummaryState>,
     private userStore: Store<AppState>,
     private assessService: AssessService,
+    private usersService: UsersService,
   ) { }
 
   public getDialog(): MatDialog {
@@ -106,16 +107,15 @@ export class SummaryComponent implements OnInit, OnDestroy {
     const subIdentitie$ = this.userStore
       .select('identities')
       .pluck('identities')
-      .finally(() => console.log('identity retrieval done'))
+      .finally(() => subIdentitie$ && subIdentitie$.unsubscribe())
       .subscribe(
-        (identities: Identity[]) => { console.log('orgs found', identities); this.identities = identities; },
+        (identities: Identity[]) => this.identities = identities,
         (error) => console.log(`(${new Date().toISOString()}) error retrieving identities from app store`, error)
       );
 
     this.listenForDataChanges();
 
     this.subscriptions.push(idParamSub$);
-    this.subscriptions.push(subIdentitie$);
   }
 
   /**
