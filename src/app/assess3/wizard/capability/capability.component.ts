@@ -12,6 +12,7 @@ export class CapabilityComponent implements OnInit {
   public noAttackPatterns: string = 'You have no Attack Patterns yet';
   public addAttackPatterns: string = 'Add a Kill Chain Phase and Attack Patterns and they will show up here';
   public openAttackMatrix: string = 'Open Att&ck Matrix';
+  public showHeatMap = false;
 
   constructor() { }
 
