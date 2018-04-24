@@ -7,26 +7,35 @@ import { MenuItem } from 'primeng/primeng';
 import { Subscription } from 'rxjs/Subscription';
 import { Category } from 'stix';
 import { Key } from 'ts-keycode-enum';
-import { GenericApi } from '../../core/services/genericapi.service';
-import { heightCollapse } from '../../global/animations/height-collapse';
+
+import * as assessActions from '../store/baseline.actions';
+import * as assessReducers from '../store/baseline.reducers';
+
+import { AppState } from '../../root-store/app.reducers';
 import { Baseline } from '../../models/baseline/baseline';
+import { AssessmentsService } from '../baselines.service';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
 import { BaselineObject } from '../../models/baseline/baseline-object';
+import { BaselineQuestion } from '../../models/baseline/baseline-question';
+import { Constance } from '../../utils/constance';
 import { Dictionary } from '../../models/json/dictionary';
+import { GenericApi } from '../../core/services/genericapi.service';
+import { Measurements } from './models/measurements';
+import { MenuItem } from 'primeng/primeng';
+import { LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle, CleanAssessmentWizardData } from '../store/baseline.actions';
+import { Stix } from '../../models/stix/stix';
 import { JsonApiData } from '../../models/json/jsonapi-data';
 import { Stix } from '../../models/stix/stix';
 import { Capability } from '../../models/unfetter/capability';
 import { UserProfile } from '../../models/user/user-profile';
-import { AppState } from '../../root-store/app.reducers';
-import { Constance } from '../../utils/constance';
-import { LoadAssessmentResultData } from '../result/store/full-result.actions';
 import { FullBaselineResultState } from '../result/store/full-result.reducers';
-import { CleanAssessmentWizardData, LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle } from '../store/baseline.actions';
-import { BaselineState } from '../store/baseline.reducers';
-import { Measurements } from './models/measurements';
+import { LoadAssessmentResultData } from '../result/store/full-result.actions';
+import { heightCollapse } from '../../global/animations/height-collapse';
+import { WizardBaseline } from './models/wizard-baseline';
 import { ScoresModel } from './models/scores-model';
 import { Capability } from '../../models/unfetter/capability';
 import { Category } from 'stix';
+import { CategoryComponent } from './category/category.component';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -118,7 +127,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     private renderer: Renderer2,
     private userStore: Store<AppState>,
     private assessStore: Store<FullBaselineResultState>,
-    private wizardStore: Store<BaselineState>,
+    private wizardStore: Store<assessReducers.BaselineState>,
     private changeDetection: ChangeDetectorRef
   ) {
     super();
@@ -220,11 +229,15 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         (err) => console.log(err));
 
     const sub9$ = this.wizardStore
-      .select('assessment')
+      .select('baseline')
       .pluck('categorySteps')
       .distinctUntilChanged()
       .subscribe(
-        (categorySteps: Category[]) => this.categoryNames = categorySteps.map((category) => category.name),
+        (categorySteps: Category[]) => {
+          this.categoryNames = categorySteps
+            .filter((cat) => cat !== undefined)
+            .map((category) => category.name)
+        },
         (err) => console.log(err));
 
       this.subscriptions.push(sub4$, sub5$, sub6$, sub7$, sub8$, sub9$);
@@ -693,12 +706,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.showSummary = false;
     this.buttonLabel = 'CONTINUE';
 
-    // If on "categories", move either to first category or summary
-    if (this.page === 1) {
-
-      // Navigate to 
-      this.onOpenSidePanel(this.categoryNames[0]);
-    }
     // last page for this category
     if (this.page + 1 > this.currentCapabilities.length) {
       const nextPanel = this.determineNextSidePanel();
