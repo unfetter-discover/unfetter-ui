@@ -8,7 +8,7 @@ import * as assessReducers from '../store/baseline.reducers';
 
 import { BaselineForm } from '../../global/form-models/baseline';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
-import { AssessStateService } from '../services/assess-state.service';
+import { BaselineStateService } from '../services/baseline-state.service';
 import { UpdatePageTitle } from '../store/baseline.actions';
 
 @Component({
