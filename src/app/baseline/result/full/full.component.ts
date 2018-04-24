@@ -24,7 +24,7 @@ import { RiskByAttack3 } from '../../../models/baseline/risk-by-attack3';
 import { FullBaselineGroup } from './group/models/full-baseline-group';
 
 @Component({
-  selector: 'unf-assess-full',
+  selector: 'unf-baseline-full',
   templateUrl: './full.component.html',
   styleUrls: ['./full.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

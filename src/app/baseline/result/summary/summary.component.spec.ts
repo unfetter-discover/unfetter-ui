@@ -9,7 +9,7 @@ import { Action, StoreModule, ActionReducerMap, Store, } from '@ngrx/store';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { SummaryComponent } from './summary.component';
 import { summaryReducer, SummaryState } from '../store/summary.reducers';
-import { AssessService } from '../../services/assess.service';
+import { BaselineService } from '../../services/baseline.service';
 import { SummaryCalculationService } from './summary-calculation.service';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ComponentModule } from '../../../components';
