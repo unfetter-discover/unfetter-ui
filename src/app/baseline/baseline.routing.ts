@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 import { Create3Component } from './create/create3.component';
 import { BaselineLayoutComponent } from './layout/baseline-layout.component';
 import { SummaryComponent } from './result/summary/summary.component';
-// import { FullComponent } from './result/full/full.component';
+import { FullComponent } from './result/full/full.component';
 import { BaselineGuard } from './baseline.guard';
 
 const routes = [
