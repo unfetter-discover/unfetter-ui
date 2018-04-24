@@ -1,0 +1,47 @@
+<div id="newAssessmentsSummary" *ngIf="finishedLoading; else loadingBlock" class="fadeIn">
+  <mat-sidenav-container *ngIf="summary !== undefined; else notFound">
+    <mat-sidenav class="side-panel" mode="side" opened="true">
+      <unfetter-side-panel class="side-panel" [item]="{ name: baselineName|async }" collapsible="false" width="320">
+
+        <sidepanel-option-item label="Edit" icon="mode_edit" (click)="onEdit($event)"></sidepanel-option-item>
+        <sidepanel-option-item label="Share" icon="share" disabled="true" (click)="onShare($event)"></sidepanel-option-item>
+        <sidepanel-option-item label="Delete" icon="delete" (click)="onDeleteCurrent($event)"></sidepanel-option-item>
+
+        <master-list-dialog-trigger title="Assessments" width="750px" height="400px" [dataSource]="masterListOptions.dataSource"
+          [columns]="masterListOptions.columns" (tabChange)="onFilterTabChanged($event)" (create)="onCreate($event)" (select)="onCellSelected($event)"
+          (edit)="onEdit($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
+
+        <!-- TODO: update for baselines
+        <sidepanel-list-item label="{{summaries[0].name}}" [items]="summaries" expandable="true">
+          <mat-list-item *ngFor="let summary of summaries; trackBy:trackByFn" class="list-divider" [@slideInOutAnimation]>
+            <h4 mat-line>
+              {{summary?.name}}
+            </h4>
+            <div mat-line class="mat-caption"> {{summary?.baseline_objects[0]?.stix?.type}} </div>
+          </mat-list-item>
+        </sidepanel-list-item-->
+
+      </unfetter-side-panel>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <div class="main-panel">
+        <result-header [baselineId]="baselineId" [created]="summary?.created"></result-header>
+        <summary-report></summary-report>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
+
+<ng-template #loadingBlock>
+  <loading-spinner></loading-spinner>
+</ng-template>
+
+<ng-template #notFound>
+  <div class="container">
+    <div class="row mt-15">
+      <div class="col-xs-10 col-xs-offset-1">
+        <error-card errorTitle="Baseline Not Found" errorBody="404: The request URL was not found in the application."></error-card>
+      </div>
+    </div>
+  </div>
+</ng-template>

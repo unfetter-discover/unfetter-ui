@@ -1,0 +1,27 @@
+@import '../../../styles/_variables.scss';
+@import '../_baseline.common.scss';
+
+.titleWrapper {
+    background: $assessments-primary-lightest;
+    height: 128px;
+    position: relative;
+}
+
+.contentWrapper {
+    margin-top: -64px;
+}
+
+.center {
+    margin: 0 auto;
+}
+
+.title {
+    position: absolute;
+    margin-top: 24px;
+    margin-left: 56px;
+}
+
+.banner-wrapper {
+    background-color: $assessments-primary-lightest;
+    color: $dark-text-default;
+}
