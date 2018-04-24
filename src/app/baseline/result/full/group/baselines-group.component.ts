@@ -23,7 +23,7 @@ import { Relationship } from '../../../../models';
 import { FullBaselineGroup } from './models/full-baseline-group';
 
 @Component({
-  selector: 'unf-baseline-group',
+  selector: 'unf-assess-group',
   templateUrl: './baselines-group.component.html',
   styleUrls: ['./baselines-group.component.scss']
 })
