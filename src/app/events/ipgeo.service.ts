@@ -18,8 +18,9 @@ export class IPGeoService {
 
     private ipCache: IPGeoData[] = [];
 
-    // @todo make this configurable; set to one hour for now
+    // @todo make these configurable
     private EXPIRATION_TIME = 1 * 60 * 60 * 1000;
+    private MAX_CACHED_ITEMS = 1000;
 
     constructor(
         private genericApi: GenericApi,
@@ -39,7 +40,16 @@ export class IPGeoService {
             delete this.ipCache[ip];
         }
         return this.genericApi.get(`${Constance.IPGEO_LOOKUP_URL}?ip=${ip}`)
-            .do(data => this.ipCache[ip] = { data: data, time: Date.now(), });
+            .do(data => {
+                this.ipCache[ip] = { data: data, time: Date.now(), };
+                while (Object.keys(this.ipCache).length > this.MAX_CACHED_ITEMS) {
+                    const eldest = Object.keys(this.ipCache).reduce(
+                        (oldest, curr) => 
+                            (this.ipCache[curr].time < oldest.time) ? {ip: curr, ...this.ipCache[curr]} : oldest,
+                            {ip: null, data: undefined, time: Date.now()});
+                    delete this.ipCache[eldest];
+                }
+            });
     }
 
 }
