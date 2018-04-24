@@ -108,6 +108,8 @@ export const Constance = {
   WEB_ANALYTICS_URL: 'api/web-analytics',
   PATTERN_HANDLER_URL: 'api/pattern-handler',
 
+  IPGEO_LOOKUP_URL: 'api/lookup',
+
   // ADMIN
   ADMIN_URL: 'api/admin',
   ORGANIZATIONS_URL: 'api/organizations',

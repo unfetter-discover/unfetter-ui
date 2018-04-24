@@ -1,7 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { HttpClient } from '@angular/common/http';
-import * as ipregex from 'ip-regex';
+import { Store } from '@ngrx/store';
+
+import { GenericApi } from '../core/services/genericapi.service';
+import { Constance } from '../utils/constance';
+
+interface IPGeoData {
+    data: any,
+    time: number,
+}
 
 /**
  * Quick service that looks up an IP address' geolocation.
@@ -9,20 +16,13 @@ import * as ipregex from 'ip-regex';
 @Injectable()
 export class IPGeoService {
 
-    /**
-     * @todo need to make this configurable or something
-     */
-    private readonly providers = [
-        'https://ipapi.co/*/json/',     // free-version service allows up to 1000 requests per day, no bulk queries
-        // 'https://freegeoip.net/json/*', // free-version service allows up to 10,000 requests per month, can be bulk,
-                                        // and being replaced by newer (still free) service that requires sign-up by
-                                        // 1 July 2018
-        // 'http://api.ipstack.com/*?access_key=64a9512c200c1edd5b5b521a441f0eff',
-                                        // new endpoint for freegeoip with personal key ()
-    ]
+    private ipCache: IPGeoData[] = [];
+
+    // @todo make this configurable; set to one hour for now
+    private EXPIRATION_TIME = 1 * 60 * 60 * 1000;
 
     constructor(
-        private http: HttpClient,
+        private genericApi: GenericApi,
     ) {
         // Nothing to do.
     }
@@ -31,18 +31,15 @@ export class IPGeoService {
      * @description executes the query function against each IP lookup provider until one returns a valid result
      */
     public lookup(ip: string): Observable<any> {
-        if (ip && !ipregex().test(ip)) {
-            console.log('Invalid IP address.');
-            return Observable.of({success: false, ip: ip, message: 'Invalid IP address.'});
-        } else {
-            return Observable.forkJoin(this.providers.map(uri => {
-                const url = uri.replace('*', ip || '');
-                return this.http
-                    .get(url, {headers: {}})
-                    .map(resp => Object.assign(resp, {success: true}) )
-                    .catch((err) => Observable.of({success: false, ip: ip, message: err}));
-            }));
+        const cached = this.ipCache[ip];
+        if (cached !== undefined) {
+            if (Date.now() - cached.time < this.EXPIRATION_TIME) {
+                return Observable.of(cached.data);
+            }
+            delete this.ipCache[ip];
         }
+        return this.genericApi.get(`${Constance.IPGEO_LOOKUP_URL}?ip=${ip}`)
+            .do(data => this.ipCache[ip] = { data: data, time: Date.now(), });
     }
 
 }

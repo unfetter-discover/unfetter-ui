@@ -1,68 +1,48 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Observable } from 'rxjs/Observable';
 
 import { IPGeoService } from './ipgeo.service';
 import { GenericApi } from '../core/services/genericapi.service';
 
-describe('ipgeo service', () => {
+fdescribe('ipgeo service', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [HttpClientModule, HttpClientTestingModule],
+            imports: [HttpClientTestingModule],
             providers: [IPGeoService, GenericApi],
         });
     });
 
-    /**
-     * Disabled this. We don't want bad connections to kill our builds or Travis runs.
-     */
-    xit('should lookup a machine', inject([IPGeoService, GenericApi], (service: IPGeoService, api: GenericApi) => {
+    it('should fake lookup a machine', inject([IPGeoService, GenericApi], (service: IPGeoService, api: GenericApi) => {
         const ipaddr = '205.175.221.58'; // one of the services shows a sample using this ip
+        const spy = spyOn(api, 'get').and.returnValue(Observable.of({
+            data: {
+                success: true,
+                ip: ipaddr,
+                provider: 'test',
+                city: 'Unfetterville',
+            }
+        }));
         service.lookup(ipaddr).subscribe(
             (response) => {
-                console.log('We received an IP address lookup response:', response); // leaving this here for other devs
+                console.log('We received an IP address lookup response:', response);
+                expect(spy).toHaveBeenCalled();
                 expect(response).toBeDefined();
-                expect(response.length).toBe(1);
-                expect(response[0].success).toBeTruthy();
-                expect(response[0].ip).toEqual(ipaddr);
-                expect(response[0].city).toBeDefined();
-            },
-            (err) => expect(false).toBeTruthy(`We got an error looking up an IP: ${err}`),
-        );
-    }));
+                expect(response.data).toBeDefined();
+                expect(response.data.success).toBeTruthy();
+                expect(response.data.ip).toEqual(ipaddr);
+                expect(response.data.city).toBeDefined();
 
-    it('should fake lookup a machine', inject([IPGeoService], (service: IPGeoService) => {
-        const ipaddr = '205.175.221.58'; // one of the services shows a sample using this ip
-        const httpMock = TestBed.get(HttpTestingController);
-        service.lookup(ipaddr).subscribe(
-            (response) => {
-                console.log('We received an IP address lookup response:', response); // leaving this here for other devs
-                expect(response).toBeDefined();
-                expect(response.length).toBe(1);
-                expect(response[0].success).toBeTruthy();
-                expect(response[0].ip).toEqual(ipaddr);
-                expect(response[0].city).toBeDefined();
-            },
-            (err) => expect(false).toBeTruthy(`We got an error looking up an IP: ${err}`),
-        );
-        const ipRequest = httpMock.expectOne(`https://ipapi.co/${ipaddr}/json/`);
-        ipRequest.flush({
-            ip: ipaddr,
-            city: 'New Test City',
-            country: 'United Earth'
-        });
-        httpMock.verify();
-    }));
-
-    it('should hate bad IP addresses', inject([IPGeoService, GenericApi], (service: IPGeoService, api: GenericApi) => {
-        const ipaddr = '205.175.221'; // kind of short...
-        service.lookup(ipaddr).subscribe(
-            (response) => {
-                expect(response).toBeDefined();
-                expect(response.success).not.toBeTruthy();
-                expect(response.ip).toEqual(ipaddr);
-                expect(response.message).toBeDefined();
+                // Now do it again to prove it pulls it out of its internal cache.
+                spy.calls.reset();
+                service.lookup(ipaddr).subscribe(
+                    (response2) => {
+                        expect(spy).not.toHaveBeenCalled();
+                        expect(response2).toBe(response);
+                    },
+                    (err) => expect(false).toBeTruthy(`For some reason, second call failed: ${err}`),
+                );
             },
             (err) => expect(false).toBeTruthy(`We got an error looking up an IP: ${err}`),
         );
