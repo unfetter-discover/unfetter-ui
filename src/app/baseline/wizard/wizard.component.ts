@@ -35,6 +35,7 @@ import { WizardBaseline } from './models/wizard-baseline';
 import { ScoresModel } from './models/scores-model';
 import { Capability } from '../../models/unfetter/capability';
 import { Category } from 'stix';
+import { CategoryComponent } from './category/category.component';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -228,11 +229,15 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         (err) => console.log(err));
 
     const sub9$ = this.wizardStore
-      .select('assessment')
+      .select('baseline')
       .pluck('categorySteps')
       .distinctUntilChanged()
       .subscribe(
-        (categorySteps: Category[]) => this.categoryNames = categorySteps.map((category) => category.name),
+        (categorySteps: Category[]) => {
+          this.categoryNames = categorySteps
+            .filter((cat) => cat !== undefined)
+            .map((category) => category.name)
+        },
         (err) => console.log(err));
 
       this.subscriptions.push(sub4$, sub5$, sub6$, sub7$, sub8$, sub9$);
@@ -701,12 +706,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.showSummary = false;
     this.buttonLabel = 'CONTINUE';
 
-    // If on "categories", move either to first category or summary
-    if (this.page === 1) {
-
-      // Navigate to 
-      this.onOpenSidePanel(this.categoryNames[0]);
-    }
     // last page for this category
     if (this.page + 1 > this.currentCapabilities.length) {
       const nextPanel = this.determineNextSidePanel();
