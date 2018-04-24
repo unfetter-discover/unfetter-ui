@@ -7,26 +7,26 @@ import { RiskByAttack3 } from '../../../models/baseline/risk-by-attack3';
 import { Relationship } from '../../../models';
 
 // For effects
-export const LOAD_ASSESSMENT_RESULT_DATA = '[Assess3 Result] LOAD_ASSESSMENT_RESULT_DATA';
-export const LOAD_GROUP_DATA = '[Assess3 Result Group] LOAD_GROUP_DATA';
-export const LOAD_GROUP_CURRENT_ATTACK_PATTERN = '[Assess3 Result Group] LOAD_GROUP_CURRENT_ATTACK_PATTERN';
-export const LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS = '[Assess3 Result Group] LOAD_ATTACK_PATTERN_RELATIONSHIPS';
+export const LOAD_ASSESSMENT_RESULT_DATA = '[Baseline Result] LOAD_ASSESSMENT_RESULT_DATA';
+export const LOAD_GROUP_DATA = '[Baseline Result Group] LOAD_GROUP_DATA';
+export const LOAD_GROUP_CURRENT_ATTACK_PATTERN = '[Baseline Result Group] LOAD_GROUP_CURRENT_ATTACK_PATTERN';
+export const LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS = '[Baseline Result Group] LOAD_ATTACK_PATTERN_RELATIONSHIPS';
 
-export const UPDATE_ASSESSMENT_OBJECT = '[Assess3 Result Group] UPDATE_ASSESSMENT_OBJECT';
+export const UPDATE_ASSESSMENT_OBJECT = '[Baseline Result Group] UPDATE_ASSESSMENT_OBJECT';
 
 
 // For reducers
-export const SET_ASSESSMENTS = '[Assess3 Result] SET_ASSESSMENTS';
-export const SET_GROUP_DATA = '[Assess3 Result Group] SET_GROUP_DATA';
-export const SET_GROUP_ASSESSMENT_OBJECTS = '[Assess3 Result Group] SET_GROUP_ASSESSMENT_OBJECTS_DATA';
-export const SET_GROUP_RISK_BY_ATTACK_PATTERN = '[Assess3 Result Group] SET_RISK_BY_ATTACK_PATTERN';
-export const SET_GROUP_CURRENT_ATTACK_PATTERN = '[Assess3 Result Group] SET_GROUP_CURRENT_ATTACK_PATTERN';
-export const SET_GROUP_ATTACK_PATTERN_RELATIONSHIPS = '[Assess3 Result Group] SET_GROUP_ATTACK_PATTERN_RELATIONSHIPS';
-export const PUSH_URL = '[Assess3 Result] PUSH_URL';
-export const DONE_PUSH_URL = '[Assess3 Result] DONE_PUSH_URL';
-export const CLEAN_ASSESSMENT_RESULT_DATA = '[Assess3 Result Group] CLEAN_ASSESSMENT_RESULT_DATA';
-export const FINISHED_LOADING = '[Assess3 Result] FINISHED_LOADING';
-export const RELOAD_AFTER_UPDATE_ASSESSMENT_OBJECT = '[Assess3 Result Group] RELOAD_AFTER_UPDATE_ASSESSMENT_OBJECT';
+export const SET_ASSESSMENTS = '[Baseline Result] SET_ASSESSMENTS';
+export const SET_GROUP_DATA = '[Baseline Result Group] SET_GROUP_DATA';
+export const SET_GROUP_ASSESSMENT_OBJECTS = '[Baseline Result Group] SET_GROUP_ASSESSMENT_OBJECTS_DATA';
+export const SET_GROUP_RISK_BY_ATTACK_PATTERN = '[Baseline Result Group] SET_RISK_BY_ATTACK_PATTERN';
+export const SET_GROUP_CURRENT_ATTACK_PATTERN = '[Baseline Result Group] SET_GROUP_CURRENT_ATTACK_PATTERN';
+export const SET_GROUP_ATTACK_PATTERN_RELATIONSHIPS = '[Baseline Result Group] SET_GROUP_ATTACK_PATTERN_RELATIONSHIPS';
+export const PUSH_URL = '[Baseline Result] PUSH_URL';
+export const DONE_PUSH_URL = '[Baseline Result] DONE_PUSH_URL';
+export const CLEAN_ASSESSMENT_RESULT_DATA = '[Baseline Result Group] CLEAN_ASSESSMENT_RESULT_DATA';
+export const FINISHED_LOADING = '[Baseline Result] FINISHED_LOADING';
+export const RELOAD_AFTER_UPDATE_ASSESSMENT_OBJECT = '[Baseline Result Group] RELOAD_AFTER_UPDATE_ASSESSMENT_OBJECT';
 
 export class SetAssessments implements Action {
     public readonly type = SET_ASSESSMENTS;

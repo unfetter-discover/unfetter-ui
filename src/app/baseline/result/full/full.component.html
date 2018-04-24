@@ -61,7 +61,7 @@
     <mat-sidenav-content>
       <div class="main-panel">
         <result-header [baselineId]="baselineId" [created]="(baseline|async)?.created"></result-header>
-        <unf-baseline-group #assessGroupMain [baselineGroup]="baselineGroup" [activePhase]="phase" [ [baseline]="(baseline|async)" (riskByAttackPatternChanged)="calculateRiskBreakdown($event)"></unf-baseline-group>
+        <unf-assess-group #assessGroupMain [baselineGroup]="baselineGroup" [activePhase]="phase" [ [baseline]="(baseline|async)" (riskByAttackPatternChanged)="calculateRiskBreakdown($event)"></unf-assess-group>
       </div>
     </mat-sidenav-content>
   </mat-sidenav-container>

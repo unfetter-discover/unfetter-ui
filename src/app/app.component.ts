@@ -72,7 +72,7 @@ export class AppComponent implements OnInit {
         } else if (url === 'assess') {
           this.title = 'assessments';
         } else if (url === 'baseline') {
-          this.title = 'Baselines';
+          this.title = 'Assessments 3.0';
         } else {
           this.title = url;
         }
