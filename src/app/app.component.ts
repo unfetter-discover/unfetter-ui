@@ -71,7 +71,7 @@ export class AppComponent implements OnInit {
           this.title = 'events';
         } else if (url === 'assess') {
           this.title = 'assessments';
-        } else if (url === 'assess3') {
+        } else if (url === 'baseline') {
           this.title = 'Assessments 3.0';
         } else {
           this.title = url;
@@ -93,7 +93,7 @@ export class AppComponent implements OnInit {
         break;
       case 'assessments':
       case 'assess':
-      case 'assess3':
+      case 'baseline':
         this.theme = Themes.ASSESSMENTS;
         break;
       default:

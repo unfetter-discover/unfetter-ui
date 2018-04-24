@@ -1,0 +1,34 @@
+    <mat-card-content>
+      <div class="row margin-bottom flex-sm flexItemsCenter">
+        <div class="col-sm-9 group-name">
+          CATEGORIES
+        </div>
+      </div>
+      <div class="row margin-bottom" *ngFor="let tempCategory of tempCategories; index as i; trackBy: trackByFn">
+        <div class="col-xs-12">
+          <div class="row">
+            <div class="col-xs-10">
+              <form>
+                <mat-form-field class="full-width">
+                  <mat-select #existingCategory name="existingCategory" (change)="updateCategory(existingCategory, i)" [value]="selectedCategory(existingCategory, i)">
+                    <mat-option *ngFor="let category of categories" [value]="category">
+                      {{ category.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </form>
+            </div>
+            <div class="col-xs-1" [hidden]="tempCategories[tempCategories.length-1] === undefined || i !== tempCategories.length-1">
+                <button mat-button (click)="addCategoryEntry()">
+                  <mat-icon class="mat-24">add circle</mat-icon>
+                </button>    
+              </div>
+            <div class="col-xs-1" [hidden]="tempCategories.length === 1">
+              <button mat-button (click)="onDeleteCategory(existingCategory)">
+                <mat-icon class="mat-24">delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
