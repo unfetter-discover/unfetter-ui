@@ -15,7 +15,7 @@ import { Baseline } from '../../../../models/baseline/baseline';
 import { AssessAttackPatternMeta } from '../../../../models/baseline/assess-attack-pattern-meta';
 import { AssessAttackPatternMetaMockFactory } from '../../../../models/baseline/assess-attack-pattern-meta.mock';
 import { BaselineGroupComponent } from './baselines-group.component';
-import { BaselineService } from '../../../services/baseline.service';
+import { AssessService } from '../../../services/assess.service';
 import { AddAssessedObjectComponent } from './add-assessed-object/add-assessed-object.component';
 import { BaselineObjectMockFactory } from '../../../../models/baseline/baseline-object.mock';
 import { Phase3 } from '../../../../models/baseline/phase3';

@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { SetCategorySteps } from '../../store/assess.actions';
+import { SetCategorySteps } from '../../store/baseline.actions';
 
 @Component({
   selector: 'unf-baseline-wizard-category',
@@ -13,8 +13,9 @@ import { SetCategorySteps } from '../../store/assess.actions';
   styleUrls: ['./category.component.scss']
 })
 export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {    
-  public readonly defaultValue = undefined;
-  public tempCategories: Category[] = [ this.defaultValue ];
+  public static readonly DEFAULT_VALUE = undefined;
+  
+  public tempCategories: Category[] = [ CategoryComponent.DEFAULT_VALUE ];
   public categories: Category[];
   private subscriptions: Subscription[] = [];
     
@@ -26,15 +27,23 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
 
-    const catSub$ = this.wizardStore
-      .select('assessment')
+    const catSub1$ = this.wizardStore
+      .select('baseline')
       .pluck('categories')
       .distinctUntilChanged()
       .subscribe(
         (categories: Category[]) => this.categories = categories,
         (err) => console.log(err));
 
-    this.subscriptions.push(catSub$);
+    const catSub2$ = this.wizardStore
+      .select('baseline')
+      .pluck('categorySteps')
+      .distinctUntilChanged()
+      .subscribe(
+        (categorySteps: Category[]) => this.tempCategories = categorySteps,
+        (err) => console.log(err));
+  
+    this.subscriptions.push(catSub1$, catSub2$);
 
     this.wizardStore.dispatch(new assessActions.FetchCategories());
   }
@@ -87,11 +96,10 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param {string} category name - optional
    * @return {number}
    */
-  public selectedCategory(option: any, tempCategory?: Category): number {
-    if (this.tempCategories) {
-      const index = this.tempCategories.indexOf(tempCategory);
-      const retVal = (index >= 0) ? this.categories.indexOf(tempCategory) : this.defaultValue;
-      return retVal;
+  public selectedCategory(option: any, index: number): Category {
+    const selValue = this.tempCategories[index];
+    if (selValue === undefined) {
+      return CategoryComponent.DEFAULT_VALUE;
     } else {
       const selIndex = this.categories.findIndex(category => category.id === selValue.id);
       console.log(`value is -` + JSON.stringify(selValue) + `- and index is ` + selIndex);

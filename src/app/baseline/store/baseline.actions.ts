@@ -2,19 +2,19 @@ import { Action } from '@ngrx/store';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
 import { Stix } from '../../models/stix/stix';
 import { JsonApiData } from '../../models/json/jsonapi-data';
-import { Assessment3 } from '../../models/assess/assessment3';
+import { Baseline } from '../../models/baseline/baseline';
 import { Category } from 'stix';
 
 // For effects
-export const START_ASSESSMENT = '[Assess3] START_ASSESSMENT';
-export const START_ASSESSMENT_SUCCESS = '[Assess3] START_ASSESSMENT_SUCCESS';
-export const SAVE_ASSESSMENT = '[Assess3] SAVE_ASSESSMENT';
-export const LOAD_ASSESSMENT_WIZARD_DATA = '[Assess3] LOAD_ASSESSMENT_WIZARD_DATA';
-export const CLEAN_ASSESSMENT_WIZARD_DATA = '[Assess3] CLEAN_ASSESSMENT_WIZARD_DATA';
-export const FETCH_ASSESSMENT = '[Assess3] FETCH_ASSESSMENT';
-export const FETCH_CATEGORIES = '[Assess3] FETCH_CATEGORIES';
-export const SET_CATEGORIES = '[Assess3] SET_CATEGORIES';
-export const SET_CATEGORY_STEPS = '[Assess3] SET_CATEGORY_STEPS';
+export const START_ASSESSMENT = '[Baseline] START_ASSESSMENT';
+export const START_ASSESSMENT_SUCCESS = '[Baseline] START_ASSESSMENT_SUCCESS';
+export const SAVE_ASSESSMENT = '[Baseline] SAVE_ASSESSMENT';
+export const LOAD_ASSESSMENT_WIZARD_DATA = '[Baseline] LOAD_ASSESSMENT_WIZARD_DATA';
+export const CLEAN_ASSESSMENT_WIZARD_DATA = '[Baseline] CLEAN_ASSESSMENT_WIZARD_DATA';
+export const FETCH_ASSESSMENT = '[Baseline] FETCH_ASSESSMENT';
+export const FETCH_CATEGORIES = '[Baseline] FETCH_CATEGORIES';
+export const SET_CATEGORIES = '[Baseline] SET_CATEGORIES';
+export const SET_CATEGORY_STEPS = '[Baseline] SET_CATEGORY_STEPS';
 
 // For reducers
 export const UPDATE_PAGE_TITLE = '[Baseline] UPDATE_PAGE_TITLE';
