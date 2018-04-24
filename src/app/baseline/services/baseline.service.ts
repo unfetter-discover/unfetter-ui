@@ -16,8 +16,8 @@ import { Capability } from '../../models/unfetter/capability';
 import { Category } from 'stix';
 
 @Injectable()
-export class AssessService {
-    public readonly assessBaseUrl = Constance.X_UNFETTER_ASSESSMENT3_URL;
+export class BaselineService {
+    public readonly baselineBaseUrl = Constance.X_UNFETTER_BASELINE_URL;
     public readonly categoryBaseUrl = Constance.X_UNFETTER_CATEGORY_URL;
     public readonly relationshipsBaseUrl = Constance.RELATIONSHIPS_URL;
 

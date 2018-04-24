@@ -28,7 +28,7 @@ const genAssessState = (state?: Partial<BaselineState>) => {
         baseline: new Baseline(),
         backButton: false,
         categories: [],
-        categorySteps: [],
+        categorySteps: [ CategoryComponent.DEFAULT_VALUE ],
         finishedLoading: false,
         saved: { finished: false, id: '' },
         showSummary: false,
@@ -51,17 +51,17 @@ export function baselineReducer(state = initialState, action: baselineActions.As
             });
         case baselineActions.SET_CATEGORIES:
             return genAssessState({
-                categories: action.payload,
-            });
-        case assessmentActions.SET_CATEGORY_STEPS:
-            const c1 = genAssessState({
                 ...state,
-                categorySteps: action.payload,
+                categories: [...action.payload],
             });
-            return c1;
-         case assessmentActions.START_ASSESSMENT:
-            const a0 = new Assessment3();
-            a0.assessmentMeta = { ...action.payload };
+        case baselineActions.SET_CATEGORY_STEPS:
+            return genAssessState({
+                ...state,
+                categorySteps: [...action.payload],
+            });
+         case baselineActions.START_ASSESSMENT:
+            const a0 = new Baseline();
+            a0.baselineMeta = { ...action.payload };
             return genAssessState({
                 baseline: a0,
             });
