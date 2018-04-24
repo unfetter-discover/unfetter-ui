@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { IPGeoService } from './ipgeo.service';
 import { GenericApi } from '../core/services/genericapi.service';
 
-fdescribe('ipgeo service', () => {
+describe('ipgeo service', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
