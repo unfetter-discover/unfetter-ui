@@ -7,7 +7,7 @@ import { MatSidenavModule } from '@angular/material';
 
 import { ActionReducerMap, StoreModule } from '@ngrx/store';
 
-import { AssessService } from '../../services/assess.service';
+import { BaselineService } from '../../services/baseline.service';
 import { GlobalModule } from '../../../global/global.module';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { FullComponent } from './full.component';
@@ -37,7 +37,7 @@ describe('FullComponent', () => {
       schemas: [NO_ERRORS_SCHEMA],
       declarations: [FullComponent],
       providers: [
-        AssessService,
+        BaselineService,
         GenericApi,
       ]
     })
