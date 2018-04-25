@@ -1,0 +1,13 @@
+<div class="info-bar-wrapper" [style.display]="shouldShow === true ? 'block': 'none'">
+  <div class="flex">
+    <div class="info-bar">
+      {{message}}
+      <span *ngIf="completeBtnMsg && completeActionUrl">
+        <a mat-button (click)="onCompleteClick($event)">
+          {{completeBtnMsg}}
+        </a>
+      </span>
+      <a mat-button (click)="onDismissClick($event)">{{dismissBtnMsg}}</a>
+    </div>
+  </div>
+</div>

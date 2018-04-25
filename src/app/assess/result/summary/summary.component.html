@@ -25,7 +25,7 @@
     </mat-sidenav>
     <mat-sidenav-content>
       <div class="main-panel">
-        <result-header [assessmentId]="assessmentId" [rollupId]="rollupId" [created]="summary?.created"></result-header>
+        <result-header [assessment]="(summary|async)" [assessmentId]="assessmentId" [rollupId]="rollupId" [created]="summary?.created"></result-header>
         <summary-report></summary-report>
       </div>
     </mat-sidenav-content>
