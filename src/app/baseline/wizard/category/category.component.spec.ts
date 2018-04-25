@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import * as fromRoot from 'app/root-store/app.reducers';
 
@@ -23,6 +24,7 @@ describe('CategoryComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ CategoryComponent ],
       imports: [
+        RouterTestingModule,
         NoopAnimationsModule,
         ...matModules,
         StoreModule.forRoot({
