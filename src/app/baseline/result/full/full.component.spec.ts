@@ -5,9 +5,6 @@ import { MatSidenavModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActionReducerMap, StoreModule } from '@ngrx/store';
-
-import { BaselineService } from '../../services/baseline.service';
-import { GlobalModule } from '../../../global/global.module';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { GlobalModule } from '../../../global/global.module';
 import { BaselineService } from '../../services/baseline.service';
