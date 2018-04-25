@@ -16,8 +16,8 @@ import { Capability } from '../../models/unfetter/capability';
 import { Category } from 'stix';
 
 @Injectable()
-export class BaselineService {
-    public readonly baselineBaseUrl = Constance.X_UNFETTER_BASELINE_URL;
+export class AssessService {
+    public readonly assessBaseUrl = Constance.X_UNFETTER_ASSESSMENT3_URL;
     public readonly categoryBaseUrl = Constance.X_UNFETTER_CATEGORY_URL;
     public readonly relationshipsBaseUrl = Constance.RELATIONSHIPS_URL;
 
@@ -113,13 +113,12 @@ export class BaselineService {
      * @param {string} filter
      * @return {Observable<Category[]>}
      */
-    public getCategories(filter?: string): Observable<Category[]>  {
+    public loadCategories(filter?: string): Observable<Category[]>  {
         const url = filter ?
             `${this.categoryBaseUrl}?${encodeURI(filter)}` : this.categoryBaseUrl;
-        return this.genericApi
-            .getAs<JsonApiData<Category>[]>(url)
-            .map((data) => data.map((el) => el.attributes));
-   }
+        return this.genericApi.get(url);
+        // return [ 'Generic AV', 'Standard EDR', 'Network Analysis', 'Network Firewall', 'sysmon', 'Autoruns', 'Enterprise SIEM' ];
+    }
 
     /**
      * @description

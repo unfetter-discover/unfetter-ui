@@ -171,6 +171,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
             this.loadExistingAssessment(baselineId, meta);
           }
           this.wizardStore.dispatch(new LoadAssessmentWizardData(meta));
+          this.wizardStore.dispatch(new assessActions.FetchCategories());
         },
         (err) => console.log(err),
         () => idParamSub$.unsubscribe());
@@ -570,21 +571,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     }
   }
 
-  // public updateCategories(newCategories: string[]) {
-  //   this.categoryNames = [ ...this.categoryElement.tempCategories];
-
-  //   // Remove categories as needed
-  //   this.categories = this.categories.filter(category => this.categoryNames.find(cat => category[cat] && cat === category[cat].name));
-
-  //   // Introduce new categories
-  //   this.categoryNames.forEach(element => {
-  //     if (!this.categories[element]) {
-  //       this.categories[element] = { name: element, scoresModel: [], capabilities: [] };
-  //     }
-  //   });
-  // }
-
-  // TODO: commented for now, e
+  // TODO: commented for now
   /*
    * @description update riskss
    * @param option
@@ -720,6 +707,12 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.showSummary = false;
     this.buttonLabel = 'CONTINUE';
 
+    // If on "categories", move either to first category or summary
+    if (this.page === 1) {
+
+      // Navigate to 
+      this.onOpenSidePanel(this.categoryNames[0]);
+    }
     // last page for this category
     if (this.page + 1 > this.currentCapabilities.length) {
       const nextPanel = this.determineNextSidePanel();
