@@ -1,17 +1,15 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { MatSidenavModule } from '@angular/material';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
 import { ActionReducerMap, StoreModule } from '@ngrx/store';
-
-import { BaselineService } from '../../services/baseline.service';
-import { GlobalModule } from '../../../global/global.module';
 import { GenericApi } from '../../../core/services/genericapi.service';
-import { FullComponent } from './full.component';
+import { GlobalModule } from '../../../global/global.module';
+import { BaselineService } from '../../services/baseline.service';
 import { fullAssessmentResultReducer } from '../store/full-result.reducers';
+import { FullComponent } from './full.component';
 
 describe('FullComponent', () => {
   let component: FullComponent;
@@ -23,7 +21,7 @@ describe('FullComponent', () => {
 
   beforeEach(async(() => {
     let mockReducer: ActionReducerMap<any> = {
-      fullAssessment: fullAssessmentResultReducer,
+      fullBaseline: fullAssessmentResultReducer,
     };
     TestBed.configureTestingModule({
       imports: [

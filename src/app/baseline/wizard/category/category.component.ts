@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
-import * as assessActions from '../../store/baseline.actions';
-import * as assessReducers from '../../store/baseline.reducers';
-import { Store } from '@ngrx/store';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Category } from 'stix';
+import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
+import { Category } from 'stix';
+import * as assessActions from '../../store/baseline.actions';
 import { SetCategorySteps } from '../../store/baseline.actions';
+import * as assessReducers from '../../store/baseline.reducers';
 
 @Component({
   selector: 'unf-baseline-wizard-category',

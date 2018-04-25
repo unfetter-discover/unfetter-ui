@@ -1,41 +1,31 @@
-import { Component, ChangeDetectorRef, ElementRef, Input, OnInit, SimpleChanges, ViewEncapsulation, OnDestroy, HostListener, QueryList, ViewChildren, Renderer2, AfterViewInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
-
-import { MatSnackBar, MatSelect } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren } from '@angular/core';
+import { MatSelect, MatSnackBar } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-
+import { MenuItem } from 'primeng/primeng';
+import { Subscription } from 'rxjs/Subscription';
+import { Category } from 'stix';
 import { Key } from 'ts-keycode-enum';
-
-import * as assessActions from '../store/baseline.actions';
-import * as assessReducers from '../store/baseline.reducers';
-
-import { AppState } from '../../root-store/app.reducers';
+import { GenericApi } from '../../core/services/genericapi.service';
+import { heightCollapse } from '../../global/animations/height-collapse';
 import { Baseline } from '../../models/baseline/baseline';
-import { AssessmentsService } from '../baselines.service';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
 import { BaselineObject } from '../../models/baseline/baseline-object';
-import { BaselineQuestion } from '../../models/baseline/baseline-question';
-import { Constance } from '../../utils/constance';
 import { Dictionary } from '../../models/json/dictionary';
-import { GenericApi } from '../../core/services/genericapi.service';
-import { Measurements } from './models/measurements';
-import { MenuItem } from 'primeng/primeng';
-import { LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle, CleanAssessmentWizardData } from '../store/baseline.actions';
-import { Stix } from '../../models/stix/stix';
 import { JsonApiData } from '../../models/json/jsonapi-data';
-import { KEY_CODE } from './key-code.enum';
-import { UserProfile } from '../../models/user/user-profile';
-import { FullBaselineResultState } from '../result/store/full-result.reducers';
-import { LoadAssessmentResultData } from '../result/store/full-result.actions';
-import { heightCollapse } from '../../global/animations/height-collapse';
-import { WizardBaseline } from './models/wizard-baseline';
-import { ScoresModel } from './models/scores-model';
+import { Stix } from '../../models/stix/stix';
 import { Capability } from '../../models/unfetter/capability';
-import { Category } from 'stix';
-import { CategoryComponent } from './category/category.component';
+import { UserProfile } from '../../models/user/user-profile';
+import { AppState } from '../../root-store/app.reducers';
+import { Constance } from '../../utils/constance';
+import { LoadAssessmentResultData } from '../result/store/full-result.actions';
+import { FullBaselineResultState } from '../result/store/full-result.reducers';
+import { CleanAssessmentWizardData, LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle } from '../store/baseline.actions';
+import { BaselineState } from '../store/baseline.reducers';
+import { Measurements } from './models/measurements';
+import { ScoresModel } from './models/scores-model';
+import { WizardBaseline } from './models/wizard-baseline';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -127,7 +117,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     private renderer: Renderer2,
     private userStore: Store<AppState>,
     private assessStore: Store<FullBaselineResultState>,
-    private wizardStore: Store<assessReducers.BaselineState>,
+    private wizardStore: Store<BaselineState>,
     private changeDetection: ChangeDetectorRef
   ) {
     super();
