@@ -38,15 +38,4 @@ export class InfoBarComponent implements OnInit {
     this.shouldShow = false;
   }
 
-  /**
-   * @param  {UIEvent} event?
-   * @returns Promise
-   */
-  public onCompleteClick(event?: UIEvent): Promise<boolean> {
-    if (!this.completeActionUrl) {
-      return Promise.resolve(false);
-    }
-    return this.router.navigateByUrl(this.completeActionUrl);
-  }
-
 }
