@@ -3,7 +3,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, O
 import { MatSelect, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { MenuItem } from 'primeng/primeng';
+import { MenuItem } from 'primeng/components/common/menuitem';
 import { Subscription } from 'rxjs/Subscription';
 import { Key } from 'ts-keycode-enum';
 import { GenericApi } from '../../core/services/genericapi.service';
@@ -815,7 +815,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     if (item && item.id) {
       return item.id;
     }
-  
+
     return index;
   }
 

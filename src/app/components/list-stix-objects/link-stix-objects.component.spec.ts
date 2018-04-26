@@ -1,14 +1,10 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { Location } from '@angular/common';
+import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { MatChipsModule, MatDialog, MatIconModule } from '@angular/material';
 import { ActivatedRoute, Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Location } from '@angular/common';
-import { By } from '@angular/platform-browser';
+import { DataListModule } from 'primeng/components/datalist/datalist';
 import { Observable } from 'rxjs/Observable';
-
-import { FormsModule } from '@angular/forms';
-import { DataListModule } from 'primeng/primeng';
-import { MatChipsModule, MatIconModule, MatDialog } from '@angular/material';
-
 import { ListStixObjectComponent } from './list-stix-objects.component';
 
 describe('ListStixObjectComponent', () => {
@@ -16,9 +12,9 @@ describe('ListStixObjectComponent', () => {
     let component: ListStixObjectComponent;
     let fixture: ComponentFixture<ListStixObjectComponent>;
 
-    const routes: Routes = [{path: 'test', component: ListStixObjectComponent}];
+    const routes: Routes = [{ path: 'test', component: ListStixObjectComponent }];
     const mockRouter = {
-        navigate: (paths: string[]) => {},
+        navigate: (paths: string[]) => { },
     }
     const mockDialog = {
         open: () => {
@@ -26,7 +22,7 @@ describe('ListStixObjectComponent', () => {
                 afterClosed: () => Observable.of({})
             };
         },
-        closeAll: () => {},
+        closeAll: () => { },
     };
 
     beforeEach(async(() => {
@@ -44,10 +40,10 @@ describe('ListStixObjectComponent', () => {
                 { provide: ActivatedRoute, useValue: {} },
                 { provide: Router, useValue: mockRouter },
                 { provide: MatDialog, useValue: mockDialog },
-                { provide: Location, useValue: {back: () => {}} },
+                { provide: Location, useValue: { back: () => { } } },
             ]
         })
-        .compileComponents();
+            .compileComponents();
     }));
 
     beforeEach(() => {
