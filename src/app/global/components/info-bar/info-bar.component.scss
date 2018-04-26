@@ -1,0 +1,29 @@
+@import '../../../../styles/_variables.scss';
+
+.info-bar-wrapper {
+    position: absolute;
+    background-color: #4F5B62;
+    height: 48px;
+    width: 100%;
+    color: $dark-text-default;
+    font-size: 14px;
+
+    .flex {
+        height: 100%;
+        width: 100%;
+
+        .info-bar {
+            margin: auto 14px;
+        }
+    }
+
+    a:focus {
+        outline: none;
+        color: $light-text-slightly-dimmed;
+    }
+
+    a:hover {
+        color: $light-text-slightly-dimmed;
+    }
+
+}
