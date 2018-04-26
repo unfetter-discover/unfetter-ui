@@ -37,7 +37,7 @@ export class HeaderNavigationComponent {
     },
     {
       url: Constance.X_UNFETTER_ASSESSMENT3_NAVIGATE_URL,
-      title: 'Assessments 3.0',
+      title: 'Baselines',
       icon: Constance.LOGO_IMG_ASSESSMENTS_BETA
     },
     {

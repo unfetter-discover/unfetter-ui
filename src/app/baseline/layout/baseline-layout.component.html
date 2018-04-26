@@ -1,0 +1,24 @@
+<div class="layout">
+  <div class="titleWrapper">
+      <div class="banner-wrapper">
+        <div class="flex">
+          <div class="banner">Baselines is currently in beta. Some functionality does not work.</div>
+        </div>
+      </div>
+      <span class="title mat-title">
+      <span *ngIf="showBackButton|async">
+        <button mat-icon-button class="mat-24" (click)="onBack($event)">
+          <mat-icon>keyboard_backspace</mat-icon>
+        </button>
+      </span>
+      <span>
+        {{(title | async)}}
+      </span>
+    </span>
+  </div>
+  <div class="fadeIn flex contentWrapper">
+    <div class="center">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,83 @@
+<div *ngIf="(finishedLoading|async) === true; else loadingBlock" class="fadeIn">
+  <mat-sidenav-container *ngIf="(baseline|async) !== undefined; else notFound">
+    <mat-sidenav class="side-panel" mode="side" opened="true">
+      <unfetter-side-panel class="side-panel" [item]="{ name: baselineName | async | capitalize }" collapsible="false" width="350">
+
+        <sidepanel-option-item label="Edit" icon="mode_edit" (click)="onEdit($event)"></sidepanel-option-item>
+        <sidepanel-option-item label="Share" icon="share" disabled="true" (click)="onShare($event)"></sidepanel-option-item>
+        <sidepanel-option-item label="Delete" icon="delete" (click)="onDeleteCurrent($event)"></sidepanel-option-item>
+
+        <master-list-dialog-trigger title="Assessments" width="1200px" height="400px"
+            [dataSource]="masterListOptions.dataSource" [columns]="masterListOptions.columns"
+            (tabChange)="onFilterTabChanged($event)" (create)="onCreate($event)" (select)="onCellSelected($event)"
+            (edit)="onEdit($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
+      </unfetter-side-panel>
+      <div *ngIf="assessGroupMain.riskByAttackPattern" class="side-panel-risks">
+        <div class="risk-header-wrapper">
+          <div class="flex risk-header">
+            <span class="flex-grow">
+              Tactic
+            </span>
+            <span class="align-right">
+              Risk Level
+            </span>
+          </div>
+        </div>
+        <div class="phases-list">
+          <div class="phases-list-item cursor-pointer" 
+            *ngFor="let phase of assessGroupMain.riskByAttackPattern.phases; trackBy:trackByFn" 
+            [ngClass]="{'highlightPhase': isCurrentPhase(phase._id)}"
+            (click)="assessGroupMain.setPhase(phase._id); activePhase = phase._id">
+            <div class="item-content flex">
+              <span class="phase-name flex-grow">
+                <b>{{phase._id | capitalize}}</b>
+              </span>
+              <span class="align-right">{{assessGroupMain.getRiskByPhase(phase._id) | percent:'2.1-1'}}</span>
+            </div>
+            <div class="item-content">Attack Patterns {{ phase.attackPatterns.length }}/{{ assessGroupMain.getNumAttackPatterns(phase._id) }}</div>
+            <div class="item-content" *ngIf="riskBreakdown">
+              <risk-breakdown [riskBreakdown]="riskBreakdown[phase._id]"></risk-breakdown>
+            </div>
+          </div>
+        </div>
+        <div class="divider-wrapper">
+        </div>
+        <div *ngIf="assessGroupMain.unassessedPhases && assessGroupMain.unassessedPhases.length > 0">
+          <div class="header">Unassessed Tactics</div>
+          <div class="unassessed-phases-list">
+            <div class="unassessed-phases-list-item cursor-pointer" 
+              *ngFor="let phase of assessGroupMain.unassessedPhases; trackBy:trackByFn"
+              [ngClass]="{'highlightPhase': isCurrentPhase(phase)}"
+              (click)="assessGroupMain.setPhase(phase); activePhase = phase">
+              <div class="item-content">
+                <span class="phase-name">
+                  <b>{{phase | capitalize}}</b>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <div class="main-panel">
+        <result-header [baselineId]="baselineId" [created]="(baseline|async)?.created"></result-header>
+        <unf-baseline-group #assessGroupMain [baselineGroup]="baselineGroup" [activePhase]="phase" [ [baseline]="(baseline|async)" (riskByAttackPatternChanged)="calculateRiskBreakdown($event)"></unf-baseline-group>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
+
+<ng-template #loadingBlock>
+  <loading-spinner></loading-spinner>
+</ng-template>
+
+<ng-template #notFound>
+  <div class="container">
+    <div class="row mt-15">
+      <div class="col-xs-10 col-xs-offset-1">
+        <error-card errorTitle="Assessment Not Found" errorBody="404: The request URL was not found in the application."></error-card>
+      </div>
+    </div>
+  </div>
+</ng-template>
