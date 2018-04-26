@@ -1,28 +1,20 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
-import { MatButtonModule, MatCardModule, MatDatepickerModule, MatDialogModule, MatSnackBarModule, MatSelectModule, MatInputModule, MatExpansionModule, MatProgressBarModule, MatIcon } from '@angular/material';
+import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { StoreModule, combineReducers } from '@ngrx/store';
-
-import * as fromRoot from 'app/root-store/app.reducers';
-import { baselineReducer } from '../store/baseline.reducers';
-
-import { WizardComponent } from './wizard.component';
-import { ComponentModule } from '../../components/component.module';
-import { ChartsModule } from 'ng2-charts';
-import { PipesModule } from '../../pipes/pipes.module';
-import { GlobalModule } from '../../global/global.module';
-import { GenericApi } from '../../core/services/genericapi.service';
+import { MatButtonModule, MatCardModule, MatDatepickerModule, MatDialogModule, MatExpansionModule, MatInputModule, MatProgressBarModule, MatSelectModule, MatSnackBarModule } from '@angular/material';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Observable } from 'rxjs/Observable';
-import { BaselineMeta } from '../../models/baseline/baseline-meta';
-import { Baseline } from '../../models/baseline/baseline';
-import { BaselineObject } from '../../models/baseline/baseline-object';
-import { Stix } from '../../models/stix/stix';
-import { StixLabelEnum } from '../../models/stix/stix-label.enum';
+import { StoreModule } from '@ngrx/store';
+import * as fromRoot from 'app/root-store/app.reducers';
+import { ChartsModule } from 'ng2-charts';
+import { ComponentModule } from '../../components/component.module';
+import { GenericApi } from '../../core/services/genericapi.service';
+import { GlobalModule } from '../../global/global.module';
+import { PipesModule } from '../../pipes';
+import { baselineReducer } from '../store/baseline.reducers';
+import { CapabilityComponent } from './capability/capability.component';
 import { CategoryComponent } from './category/category.component';
+import { WizardComponent } from './wizard.component';
 
 class MockModel {
   attributes: any;
@@ -40,7 +32,7 @@ class MockModel {
               type: null, valid_from: null, labels: null, modified: null, created: null,
               metaProperties: null, id: 'gogogadget'
             },
-          questions: [{ name: 'eringobragh', score: 'L' }, { name: 'gobragherin', score: 'M' }, { name: 'bragheringo', score: 'S' } ]
+          questions: [{ name: 'eringobragh', score: 'L' }, { name: 'gobragherin', score: 'M' }, { name: 'bragheringo', score: 'S' }]
         },
         {
           stix:
@@ -50,7 +42,7 @@ class MockModel {
               type: null, valid_from: null, labels: null, modified: null, created: null,
               metaProperties: null, id: 'gogadgetgo'
             },
-            questions: [{ name: 'eringobragh', score: 'N/A' }, { name: 'gobragherin', score: 'L' }, { name: 'bragheringo', score: 'M' } ]
+          questions: [{ name: 'eringobragh', score: 'N/A' }, { name: 'gobragherin', score: 'L' }, { name: 'bragheringo', score: 'M' }]
         },
         {
           stix:
@@ -60,7 +52,7 @@ class MockModel {
               type: null, valid_from: null, labels: null, modified: null, created: null,
               metaProperties: null, id: 'gadgetgogo'
             },
-            questions: [{ name: 'eringobragh', score: 'N/A' }, { name: 'gobragherin', score: 'N/A' }, { name: 'bragheringo', score: 'N/A' } ]
+          questions: [{ name: 'eringobragh', score: 'N/A' }, { name: 'gobragherin', score: 'N/A' }, { name: 'bragheringo', score: 'N/A' }]
         }],
       created: null,
       description: null, modified: null, name: null, type: null, version: null,
@@ -92,7 +84,8 @@ describe('WizardComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         WizardComponent,
-        CategoryComponent
+        CategoryComponent,
+        CapabilityComponent,
       ],
       imports: [
         NoopAnimationsModule,

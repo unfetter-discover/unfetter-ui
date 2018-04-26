@@ -48,7 +48,6 @@ import { AddAttackPatternComponent } from './add-attack-pattern/add-attack-patte
 import { IndicatorHeatMapComponent } from './indicator-heat-map/indicator-heat-map.component';
 import { IndicatorHeatMapFilterComponent } from './indicator-heat-map/indicator-heatmap-filter.component';
 import { SummaryStatisticsComponent } from './summary-statistics/summary-statistics.component';
-import { AttackPatternsHeatmapComponent } from '../global/components/heatmap/attack-patterns-heatmap.component';
 
 const matModules = [
     MatButtonModule,

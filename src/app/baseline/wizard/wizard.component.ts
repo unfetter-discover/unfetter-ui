@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren } from '@angular/core';
-import { MatSelect, MatSnackBar } from '@angular/material';
+import { MatDialog, MatSelect, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MenuItem } from 'primeng/primeng';
@@ -20,9 +20,10 @@ import { UserProfile } from '../../models/user/user-profile';
 import { AppState } from '../../root-store/app.reducers';
 import { Constance } from '../../utils/constance';
 import { LoadAssessmentResultData } from '../result/store/full-result.actions';
-import { FullBaselineResultState } from '../result/store/full-result.reducers';
+import { FullAssessmentResultState } from '../result/summary/store/full-result.reducers';
 import { CleanAssessmentWizardData, LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle } from '../store/baseline.actions';
 import { BaselineState } from '../store/baseline.reducers';
+import { AttackPatternChooserComponent } from './attack-pattern-chooser/attack-pattern-chooser.component';
 import { Measurements } from './models/measurements';
 import { ScoresModel } from './models/scores-model';
 import { WizardBaseline } from './models/wizard-baseline';
@@ -84,6 +85,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       }
     }
   };
+
   // public description = `An Assessment is your evaluation of the implementations of your network.  You will rate your environment
   // ' to the best of your ability. On the final page of the survey, you will be asked to enter a name for the report and a description.
   // Unfetter Discover will use the survey to help you understand your gaps, how important they are and which should be addressed.
@@ -104,7 +106,10 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public categories: Dictionary<{ name: string, scoresModel: ScoresModel, capabilities: any[] }>[] = [];
   private currentCapabilities: Capability[] = [];
   private currentCapability = {} as Capability;
-  
+
+  public showHeatmap = false;
+  public attackPatterns: any[] = [];
+
   private readonly subscriptions: Subscription[] = [];
   private readonly sidePanelNames: string[] = ['categories', 'capabilities', 'capability', 'summary'];
 
@@ -116,9 +121,10 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     private router: Router,
     private renderer: Renderer2,
     private userStore: Store<AppState>,
-    private assessStore: Store<FullBaselineResultState>,
+    private baselineStore: Store<FullAssessmentResultState>,
     private wizardStore: Store<BaselineState>,
-    private changeDetection: ChangeDetectorRef
+    private changeDetection: ChangeDetectorRef,
+    private dialog: MatDialog,
   ) {
     super();
     this.CHART_TYPE = 'doughnut';
@@ -254,7 +260,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       .take(1)
       .subscribe(
         (user: UserProfile) => {
-          const sub1$ = this.assessStore
+          const sub1$ = this.baselineStore
             .select('fullBaseline')
             .pluck('baselineTypes')
             .distinctUntilChanged()
@@ -265,7 +271,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         },
         (err) => console.log(err));
     this.subscriptions.push(sub$);
-    this.assessStore.dispatch(new LoadAssessmentResultData(baselineId));
+    this.baselineStore.dispatch(new LoadAssessmentResultData(baselineId));
   }
 
   public loadAssessments(baselineId: string, arr: Array<Baseline>, meta: Partial<BaselineMeta>) {
@@ -793,13 +799,14 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   }
 
   /**
-   * @description
-   * @param index
-   * @param item
-   * @returns {number}
+   * @description angular track by list function, uses the items id if
+   *  it exists, otherwise uses the index
+   * @param {number} index
+   * @param {item}
+   * @return {number}
    */
-  public trackByFn(index, item) {
-    return index;
+  public trackByFn(index: number, item: any): number {
+    return item.id || index;
   }
 
   /*
@@ -1007,6 +1014,36 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return groupRisk;
   }
 
+  /**
+   * @description Displays a slide-out that shows the user a heat map of all attack patterns for filtering
+   */
+  public toggleHeatMap() {
+    if (this.showHeatmap) {
+      this.showHeatmap = false;
+      this.dialog.closeAll();
+    } else {
+      this.showHeatmap = true;
+      const dialog = this.dialog.open(AttackPatternChooserComponent, {
+        width: '80vw',
+        height: '80vh',
+        hasBackdrop: true,
+        disableClose: false,
+        closeOnNavigation: true,
+        data: {
+          active: this.attackPatterns,
+        },
+      });
+      dialog.afterClosed().subscribe(
+        result => {
+          if (result) {
+            this.attackPatterns = result;
+          }
+          this.showHeatmap = false;
+        },
+        (err) => console.log(err),
+      );
+    }
+  }
   /*
    * @description update the chart data
    * @return {void}

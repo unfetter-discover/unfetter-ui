@@ -5,8 +5,8 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
-import * as assessActions from '../store/baseline.actions';
-import * as assessReducers from '../store/baseline.reducers';
+import * as baselineActions from '../store/baseline.actions';
+import * as baselineReducers from '../store/baseline.reducers';
 
 import { BaselineStateService } from '../baseline-state.service';
 
@@ -21,7 +21,7 @@ export class BaselineLayoutComponent implements OnInit, AfterViewInit {
   public showBackButton = new BehaviorSubject(false).asObservable();
 
   public constructor(
-    private store: Store<assessReducers.BaselineState>,
+    private store: Store<baselineReducers.BaselineState>,
     private location: Location,
     private changeDetectorRef: ChangeDetectorRef,
   ) { }

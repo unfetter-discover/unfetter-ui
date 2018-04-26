@@ -16,24 +16,22 @@ import { Constance } from '../../../utils/constance';
  * throughout the UI, however, so it really shouldn't be necessary.
  */
 type ClassSelector = (row: any) => string;
+type Formatter = (value: string) => string;
 type Selectable = (row: any) => boolean;
 
 interface MasterListColumn {
     readonly ref: string;
-
     readonly header: string;
-
     classes?: string | ClassSelector;
-
     selectable?: boolean | Selectable;
-
-    format?(value: string): string;
+    format?: Formatter;
 }
 
 export class MasterListDialogTableHeaders {
 
     id: MasterListColumn = {ref: 'name', header: 'Name', selectable: true};
     edition: MasterListColumn;
+    extra: MasterListColumn[] = [];
     actions: MasterListColumn = {ref: 'actions', header: ''};
 
     private dateFormat = new DatePipe('en-US');
@@ -49,8 +47,16 @@ export class MasterListDialogTableHeaders {
         this.edition = {ref: editionColumn, header: editionHeader, selectable: selectable, format: editionFormat};
     }
 
+    public addColumn(column: string, header: string,
+        classes: string | ClassSelector = null,
+        selectable: boolean | Selectable = false,
+        format: Formatter = null): MasterListDialogTableHeaders {
+        this.extra.push({ref: column, header: header, classes: classes, selectable: selectable, format: format});
+        return this;
+    }
+
     public getColumns(): string[] {
-        return [this.id.ref, this.edition.ref, this.actions.ref];
+        return [this.id.ref, this.edition.ref, ...this.extra.map(col => col.ref), this.actions.ref];
     }
 
     public rowClass(row: any, column: MasterListColumn, ): string {

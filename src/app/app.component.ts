@@ -6,6 +6,7 @@ import { AuthService } from './core/services/auth.service';
 import * as fromApp from './root-store/app.reducers';
 import * as userActions from './root-store/users/user.actions';
 import * as configActions from './root-store/config/config.actions';
+import * as identityActions from './root-store/identities/identity.actions';
 import { WSMessageTypes } from './global/enums/ws-message-types.enum';
 import { environment } from '../environments/environment';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
@@ -55,6 +56,7 @@ export class AppComponent implements OnInit {
         }));
       }
       this.store.dispatch(new configActions.FetchConfig(false));
+      this.store.dispatch(new identityActions.FetchIdentities());
     }
 
     const bodyElement: HTMLElement = document.getElementsByTagName('body')[0];

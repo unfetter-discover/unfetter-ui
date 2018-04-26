@@ -22,6 +22,8 @@ import { SummaryDataSource } from './summary.datasource';
 import { BaselineObject } from '../../../models/baseline/baseline-object';
 import { CleanAssessmentResultData } from '../store/summary.actions';
 import { Capability } from '../../../models/unfetter/capability';
+import { Identity } from 'stix';
+import { UsersService } from '../../../core/services/users.service';
 
 @Component({
   selector: 'summary',
@@ -37,9 +39,23 @@ export class SummaryComponent implements OnInit, OnDestroy {
   summaries: Baseline[];
   summary: Baseline;
   finishedLoading = false;
+  private identities: Identity[];
+
   masterListOptions = {
     dataSource: null,
-    columns: new MasterListDialogTableHeaders('modified', 'Modified'),
+    columns: new MasterListDialogTableHeaders('modified', 'Date Modified')
+        .addColumn('capabilities', '# of Capabilities', 'master-list-capabilities', false, (value) => value || '0')
+        .addColumn('created_by_ref', 'Organization', 'master-list-organization', false, (value) => {
+          let author: Identity = null;
+          if (value) {
+            author = this.identities.find(id => id.id === value)
+          }
+          return author ? author.name : 'Unknown';
+        })
+        .addColumn('framework', 'Type', 'master-list-extra', false, (value) => value || 'ATT&CK')
+        .addColumn('industry', 'Industry', 'master-list-extra', false, (value) => value || 'Local')
+        .addColumn('published', 'Status', 'master-list-extra', false, (published) => published ? 'Public' : 'Draft')
+        ,
     displayRoute: this.baseAssessUrl + '/result/summary',
     modifyRoute: this.baseAssessUrl + '/wizard/edit',
     createRoute: this.baseAssessUrl + '/create',
@@ -54,6 +70,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     private store: Store<SummaryState>,
     private userStore: Store<AppState>,
     private baselineService: BaselineService,
+    private usersService: UsersService,
   ) { }
 
   public getDialog(): MatDialog {
@@ -85,8 +102,19 @@ export class SummaryComponent implements OnInit, OnDestroy {
             (err) => console.log(err));
         this.subscriptions.push(sub$);
       },
-        (err) => console.log(err));
+      (err) => console.log(err));
+
+    const subIdentitie$ = this.userStore
+      .select('identities')
+      .pluck('identities')
+      .finally(() => subIdentitie$ && subIdentitie$.unsubscribe())
+      .subscribe(
+        (identities: Identity[]) => this.identities = identities,
+        (error) => console.log(`(${new Date().toISOString()}) error retrieving identities from app store`, error)
+      );
+
     this.listenForDataChanges();
+
     this.subscriptions.push(idParamSub$);
   }
 
@@ -141,30 +169,18 @@ export class SummaryComponent implements OnInit, OnDestroy {
           return '';
         }
         if (summaries[0].object_ref) {
-          let retVal = summaries[0].name + ' - ';
-          
           // Get object reference to determine type
-          let o$;
-          o$ = this.baselineService.getCapabilityById(summaries[0].object_ref);
-          const capName = o$.map((data) => {
-              if (data === undefined || data.length === 0) {
-                  return 'undefined';
-              } else {
-                  const capability = data[0] as Capability;
-                  return capability.name;
-              }
-          })
-          .catch((err) => {
-              console.log('error getting capability reference from object baseline', err);
-              return 'error';
-          });
-          
-          retVal += capName;
-
-          return retVal;
-        } else {
-          return summaries[0].name;
+          let o$ = this.baselineService.getCapabilityById(summaries[0].object_ref)
+            .subscribe(
+              (capability) => {
+                if (capability !== undefined) {
+                    this.baselineName = Observable.of(summaries[0].name + ' - ' + capability.name);
+                }
+              },
+              (err) => console.log('error getting capability reference from object assessment', err)
+            );
         }
+        return summaries[0].name;
       });
 
     this.subscriptions.push(sub1$, sub2$, sub8$);
