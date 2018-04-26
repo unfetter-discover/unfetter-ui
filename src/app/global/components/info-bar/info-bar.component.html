@@ -3,7 +3,7 @@
     <div class="info-bar">
       {{message}}
       <span *ngIf="completeBtnMsg && completeActionUrl">
-        <a mat-button (click)="onCompleteClick($event)">
+        <a mat-button [routerLink]="completeActionUrl">
           {{completeBtnMsg}}
         </a>
       </span>

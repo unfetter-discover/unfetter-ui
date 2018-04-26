@@ -1,9 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'uf-info-bar',
   templateUrl: './info-bar.component.html',
-  styleUrls: ['./info-bar.component.scss']
+  styleUrls: ['./info-bar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InfoBarComponent implements OnInit {
 
@@ -17,8 +19,11 @@ export class InfoBarComponent implements OnInit {
   public completeBtnMsg = 'COMPLETE';
   @Input()
   public completeActionUrl = '';
-  constructor() { }
-  
+
+  constructor(
+    protected router: Router,
+  ) { }
+
   /**
    * @returns void
    */
@@ -35,10 +40,13 @@ export class InfoBarComponent implements OnInit {
 
   /**
    * @param  {UIEvent} event?
-   * @returns void
+   * @returns Promise
    */
-  public onCompleteClick(event?: UIEvent): void {
-    console.log('on complete');
+  public onCompleteClick(event?: UIEvent): Promise<boolean> {
+    if (!this.completeActionUrl) {
+      return Promise.resolve(false);
+    }
+    return this.router.navigateByUrl(this.completeActionUrl);
   }
 
 }

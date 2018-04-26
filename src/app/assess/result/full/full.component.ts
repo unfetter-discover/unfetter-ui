@@ -13,7 +13,7 @@ import { AppState } from '../../../root-store/app.reducers';
 import { Constance } from '../../../utils/constance';
 import { LastModifiedAssessment } from '../../models/last-modified-assessment';
 import { AssessService } from '../../services/assess.service';
-import { CleanAssessmentResultData, LoadAssessmentsByRollupId, LoadAssessmentById } from '../store/full-result.actions';
+import { CleanAssessmentResultData, LoadAssessmentById } from '../store/full-result.actions';
 import { FullAssessmentResultState } from '../store/full-result.reducers';
 import { SummaryDataSource } from '../summary/summary.datasource';
 import { FullAssessmentGroup } from './group/models/full-assessment-group';

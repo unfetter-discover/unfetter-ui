@@ -1,34 +1,27 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-
-import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-
-import { SummaryState } from '../store/summary.reducers';
-import { RiskByAttackPatternState } from '../store/riskbyattackpattern.reducers';
-import { LoadAssessmentSummaryData, LoadSingleAssessmentSummaryData, LoadSingleRiskPerKillChainData, LoadSingleSummaryAggregationData } from '../store/summary.actions';
-
-import { AppState } from '../../../root-store/app.reducers';
-import { Assessment } from '../../../models/assess/assessment';
-import { AssessService } from '../../services/assess.service';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { ConfirmationDialogComponent } from '../../../components/dialogs/confirmation/confirmation-dialog.component';
-import { MasterListDialogTableHeaders } from '../../../global/components/master-list-dialog/master-list-dialog.component';
-import { LastModifiedAssessment } from '../../models/last-modified-assessment';
 import { slideInOutAnimation } from '../../../global/animations/animations';
-import { Constance } from '../../../utils/constance';
-import { UserProfile } from '../../../models/user/user-profile';
-import { SummaryDataSource } from './summary.datasource';
-import { SummaryCalculationService } from './summary-calculation.service';
-import { AssessmentObject } from '../../../models/assess/assessment-object';
-import { AssessmentsDashboardService } from '../../../assessments/assessments-dashboard/assessments-dashboard.service';
+import { MasterListDialogTableHeaders } from '../../../global/components/master-list-dialog/master-list-dialog.component';
+import { Assessment } from '../../../models/assess/assessment';
 import { RiskByAttack } from '../../../models/assess/risk-by-attack';
-import { LoadAssessmentRiskByAttackPatternData, LoadSingleAssessmentRiskByAttackPatternData, CleanAssessmentRiskByAttackPatternData } from '../store/riskbyattackpattern.actions';
 import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
 import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
-import { CleanAssessmentResultData } from '../store/summary.actions';
+import { UserProfile } from '../../../models/user/user-profile';
+import { AppState } from '../../../root-store/app.reducers';
+import { Constance } from '../../../utils/constance';
+import { LastModifiedAssessment } from '../../models/last-modified-assessment';
+import { AssessService } from '../../services/assess.service';
+import { CleanAssessmentRiskByAttackPatternData, LoadSingleAssessmentRiskByAttackPatternData } from '../store/riskbyattackpattern.actions';
+import { RiskByAttackPatternState } from '../store/riskbyattackpattern.reducers';
+import { CleanAssessmentResultData, LoadSingleAssessmentSummaryData, LoadSingleRiskPerKillChainData, LoadSingleSummaryAggregationData } from '../store/summary.actions';
+import { SummaryState } from '../store/summary.reducers';
+import { SummaryCalculationService } from './summary-calculation.service';
+import { SummaryDataSource } from './summary.datasource';
 
 @Component({
   selector: 'summary',

@@ -70,7 +70,7 @@ const matModules = [
     MatMenuModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
-    MatSelectModule
+    MatSelectModule,
     MatSidenavModule,
     MatTableModule,
     MatTabsModule,
