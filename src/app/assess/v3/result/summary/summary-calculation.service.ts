@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { AssessKillChainType } from '../../../models/assess/assess-kill-chain-type';
-import { AssessmentObject } from '../../../models/assess/assessment-object';
-import { AssessmentQuestion } from '../../../models/assess/assessment-question';
-import { Phase } from '../../../models/assess/phase';
-import { RiskByAttack } from '../../../models/assess/risk-by-attack';
-import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
-import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
-import { Stix } from '../../../models/stix/stix';
-import { Constance } from '../../../utils/constance';
+import { AssessKillChainType } from '../../../../models/assess/assess-kill-chain-type';
+import { AssessmentObject } from '../../../../models/assess/assessment-object';
+import { AssessmentQuestion } from '../../../../models/assess/assessment-question';
+import { Phase } from '../../../../models/assess/phase';
+import { RiskByAttack } from '../../../../models/assess/risk-by-attack';
+import { RiskByKillChain } from '../../../../models/assess/risk-by-kill-chain';
+import { SummaryAggregation } from '../../../../models/assess/summary-aggregation';
+import { Stix } from '../../../../models/stix/stix';
+import { Constance } from '../../../../utils/constance';
 import { ThresholdOption } from '../../models/threshold-option';
 import { SummarySortHelper } from './summary-sort-helper';
 

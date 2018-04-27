@@ -2,15 +2,16 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { environment } from '../../environments/environment';
-import { UserProfile } from '../models/user/user-profile';
-import { AppState } from '../root-store/app.reducers';
+import { environment } from '../../../environments/environment';
+import { UserProfile } from '../../models/user/user-profile';
+import { AppState } from '../../root-store/app.reducers';
 import { AssessService } from './services/assess.service';
 
 @Injectable()
 export class AssessGuard implements CanActivate {
     public readonly demoMode: boolean = (environment.runMode === 'DEMO');
-    private readonly CREATE_URL = 'assess/create';
+    private readonly BASE_URL = 'assess-beta';
+    private readonly CREATE_URL = `${this.BASE_URL}/create`;
 
     constructor(
         private router: Router,
@@ -39,7 +40,7 @@ export class AssessGuard implements CanActivate {
                             // has assessments,
                             //  navigate to the last modified
                             const lastModAssessment = data[0];
-                            this.router.navigate(['/assess/result/summary', lastModAssessment.rollupId, lastModAssessment.id]);
+                            this.router.navigate([`/${this.BASE_URL}/result/summary`, lastModAssessment.rollupId, lastModAssessment.id]);
                             return true;
                         }
                     })

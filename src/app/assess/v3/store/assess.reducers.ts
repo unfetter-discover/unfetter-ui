@@ -1,8 +1,8 @@
-import { Assessment } from '../../models/assess/assessment';
-import { JsonApiData } from '../../models/json/jsonapi-data';
-import { Indicator } from '../../models/stix/indicator';
-import { Stix } from '../../models/stix/stix';
-import * as fromApp from '../../root-store/app.reducers';
+import { Assessment } from '../../../models/assess/assessment';
+import { JsonApiData } from '../../../models/json/jsonapi-data';
+import { Indicator } from '../../../models/stix/indicator';
+import { Stix } from '../../../models/stix/stix';
+import * as fromApp from '../../../root-store/app.reducers';
 import * as assessmentActions from './assess.actions';
 
 export interface AssessFeatureState extends fromApp.AppState {

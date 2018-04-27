@@ -1,7 +1,7 @@
-import { AssessmentObject } from '../../../../../models/assess/assessment-object';
-import { RiskByAttack } from '../../../../../models/assess/risk-by-attack';
-import { Relationship } from '../../../../../models/relationship';
-import { Stix } from '../../../../../models/stix/stix';
+import { AssessmentObject } from '../../../../../../models/assess/assessment-object';
+import { RiskByAttack } from '../../../../../../models/assess/risk-by-attack';
+import { Relationship } from '../../../../../../models/relationship';
+import { Stix } from '../../../../../../models/stix/stix';
 import { DisplayedAssessmentObject } from './displayed-assessment-object';
 
 export class FullAssessmentGroup {

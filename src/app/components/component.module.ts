@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-// import { CalendarModule, AccordionModule, DataListModule, CheckboxModule } from 'primeng/primeng';
 import { MatAutocompleteModule, MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatIconModule, MatInputModule, MatSelectModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { CheckboxModule } from 'primeng/components/checkbox/checkbox';
@@ -26,20 +25,19 @@ import { ValidationErrorsComponent } from './validation-errors/validation-errors
 
 @NgModule({
   declarations: [
-    // Components / Directives/ Pipes
-    PageHeaderComponent,
-    ConfirmationDialogComponent,
-    IndicatorPatternFieldComponent,
-    SelectSearchFieldComponent,
-    ExternalReferenceComponent,
-    KillChainPhasesComponent,
-    ListStixObjectComponent,
-    ReadonlyContentComponent,
-    FilterSearchBoxComponent,
-    RelationshipListComponent,
-    MitigateListComponent,
     ButtonsFilterComponent,
+    ConfirmationDialogComponent,
+    ExternalReferenceComponent,
+    FilterSearchBoxComponent,
+    IndicatorPatternFieldComponent,
+    KillChainPhasesComponent,
     LinkNodeGraphComponent,
+    ListStixObjectComponent,
+    MitigateListComponent,
+    PageHeaderComponent,
+    ReadonlyContentComponent,
+    RelationshipListComponent,
+    SelectSearchFieldComponent,
     StixTextArrayComponent,
     ValidationErrorsComponent
   ],
@@ -61,19 +59,19 @@ import { ValidationErrorsComponent } from './validation-errors/validation-errors
     GlobalModule
   ],
   exports: [
-    PageHeaderComponent,
+    ButtonsFilterComponent,
     ConfirmationDialogComponent,
-    IndicatorPatternFieldComponent,
-    SelectSearchFieldComponent,
     ExternalReferenceComponent,
+    FilterSearchBoxComponent,
+    IndicatorPatternFieldComponent,
     KillChainPhasesComponent,
+    LinkNodeGraphComponent,
     ListStixObjectComponent,
+    MitigateListComponent,
+    PageHeaderComponent,
     ReadonlyContentComponent,
     RelationshipListComponent,
-    MitigateListComponent,
-    FilterSearchBoxComponent,
-    ButtonsFilterComponent,
-    LinkNodeGraphComponent,
+    SelectSearchFieldComponent,
     StixTextArrayComponent,
     ValidationErrorsComponent
   ],

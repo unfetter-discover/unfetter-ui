@@ -1,5 +1,5 @@
-import { Assessment } from '../../../models/assess/assessment';
-import { Stix } from '../../../models/stix/stix';
+import { Assessment } from '../../../../models/assess/assessment';
+import { Stix } from '../../../../models/stix/stix';
 import { FullAssessmentGroup } from '../full/group/models/full-assessment-group';
 import * as fullAssessmentResultActions from './full-result.actions';
 import { FullAssessmentResultActions, LOAD_ASSESSMENTS_BY_ROLLUP_ID } from './full-result.actions';

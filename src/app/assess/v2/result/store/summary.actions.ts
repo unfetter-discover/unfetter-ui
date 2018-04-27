@@ -1,7 +1,7 @@
 import { Action } from '@ngrx/store';
-import { Assessment } from '../../../models/assess/assessment';
-import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
-import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
+import { Assessment } from '../../../../models/assess/assessment';
+import { RiskByKillChain } from '../../../../models/assess/risk-by-kill-chain';
+import { SummaryAggregation } from '../../../../models/assess/summary-aggregation';
 
 // For effects
 export const LOAD_ASSESSMENT_SUMMARY_DATA = '[Assess Summary] LOAD_ASSESSMENT_SUMMARY_DATA';

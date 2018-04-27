@@ -1,7 +1,7 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { MatTableModule } from '@angular/material';
-import { CapitalizePipe } from '../../../../global/pipes/capitalize.pipe';
+import { CapitalizePipe } from '../../../../../global/pipes/capitalize.pipe';
 import { SummaryCalculationService } from '../summary-calculation.service';
 import { SummaryReportComponent } from './summary-report.component';
 

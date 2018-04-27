@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { RiskByAttack } from '../../../models/assess/risk-by-attack';
+import { RiskByAttack } from '../../../../models/assess/risk-by-attack';
 
 // For effects
 export const LOAD_RISK_BY_ATTACK_PATTERN_DATA = '[Assess Risk By Attack Pattern] LOAD_RISK_BY_ATTACK_PATTERN_DATA';

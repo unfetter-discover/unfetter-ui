@@ -1,6 +1,6 @@
-import { AssessAttackPattern } from '../../../models/assess/assess-attack-pattern';
-import { AssessKillChainType } from '../../../models/assess/assess-kill-chain-type';
-import { Phase } from '../../../models/assess/phase';
+import { AssessAttackPattern } from '../../../../models/assess/assess-attack-pattern';
+import { AssessKillChainType } from '../../../../models/assess/assess-kill-chain-type';
+import { Phase } from '../../../../models/assess/phase';
 import { SummarySortHelper } from './summary-sort-helper';
 
 describe('SummarySortHelper', () => {

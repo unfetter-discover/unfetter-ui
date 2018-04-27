@@ -29,8 +29,6 @@ import { ThreatReportOverviewService } from './services/threat-report-overview.s
 import { ThreatReportSharedService } from './services/threat-report-shared.service';
 import { ThreatReportOverviewDataSource } from './threat-report-overview.datasource';
 
-
-
 type troColName = keyof ThreatReport | 'actions';
 
 @Component({

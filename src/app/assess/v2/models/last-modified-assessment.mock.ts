@@ -1,4 +1,4 @@
-import { Mock } from '../../models/mock';
+import { Mock } from '../../../models/mock';
 import { LastModifiedAssessment } from './last-modified-assessment';
 
 export class LastModifiedAssessmentMock extends Mock<LastModifiedAssessment> {

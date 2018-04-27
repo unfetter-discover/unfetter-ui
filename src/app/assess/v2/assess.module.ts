@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { GlobalModule } from '../global/global.module';
+import { GlobalModule } from '../../global/global.module';
 import { AssessGuard } from './assess.guard';
 import { routing } from './assess.routing';
 import { CreateComponent } from './create/create.component';

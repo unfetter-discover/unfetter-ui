@@ -1,23 +1,15 @@
+import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
-
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
-
+import { Assessment } from '../../../../models/assess/assessment';
+import { RiskByKillChain } from '../../../../models/assess/risk-by-kill-chain';
+import { SummaryAggregation } from '../../../../models/assess/summary-aggregation';
 import { AssessService } from '../../services/assess.service';
-
-import {
-    LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA, LOAD_ASSESSMENT_SUMMARY_DATA, FinishedLoading, SetAssessments, LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA,
-    LOAD_RISK_PER_KILL_CHAIN_DATA, FinishedLoadingKillChainData, SetKillChainData, LOAD_SINGLE_SUMMARY_AGGREGATION_DATA, SetSummaryAggregationData,
-    FinishedLoadingSummaryAggregationData, LOAD_SUMMARY_AGGREGATION_DATA
-} from './summary.actions';
-import { Assessment } from '../../../models/assess/assessment';
-import { GenericApi } from '../../../core/services/genericapi.service';
-import { JsonApi } from '../../models/json/jsonapi';
-import { JsonApiData } from '../../../models/json/jsonapi-data';
-import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
-import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
+import { FinishedLoading, FinishedLoadingKillChainData, FinishedLoadingSummaryAggregationData, LOAD_ASSESSMENT_SUMMARY_DATA, LOAD_RISK_PER_KILL_CHAIN_DATA, 
+    LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA, LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA, LOAD_SINGLE_SUMMARY_AGGREGATION_DATA, LOAD_SUMMARY_AGGREGATION_DATA, SetAssessments, 
+    SetKillChainData, SetSummaryAggregationData } from './summary.actions';
 
 @Injectable()
 export class SummaryEffects {

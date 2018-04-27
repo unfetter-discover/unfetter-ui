@@ -12,9 +12,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ChartsModule } from 'ng2-charts';
 import { CalendarModule } from 'primeng/components/calendar/calendar';
-import { ComponentModule } from '../../components/component.module';
-import { GlobalModule } from '../../global/global.module';
-import { PipesModule } from '../../pipes/pipes.module';
+import { ComponentModule } from '../../../components/component.module';
+import { GlobalModule } from '../../../global/global.module';
+import { PipesModule } from '../../../pipes/pipes.module';
 import { WizardComponent } from './wizard.component';
 import { routing } from './wizard.routing';
 
@@ -36,7 +36,7 @@ const matModules = [
 
 const primengModules = [
   CalendarModule,
-]
+];
 
 @NgModule({
   imports: [

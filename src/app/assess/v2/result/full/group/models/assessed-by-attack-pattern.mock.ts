@@ -1,4 +1,4 @@
-import { Mock } from '../../../../../models/mock';
+import { Mock } from '../../../../../../models/mock';
 import { AssessedByAttackPattern } from './assessed-by-attack-pattern';
 
 export class AssessedByAttackPatternMock extends Mock<AssessedByAttackPattern> {

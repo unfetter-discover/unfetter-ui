@@ -3,11 +3,11 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
-import { Relationship } from '../../../models';
-import { Assessment } from '../../../models/assess/assessment';
-import { RiskByAttack } from '../../../models/assess/risk-by-attack';
-import { Stix } from '../../../models/stix/stix';
-import { Constance } from '../../../utils/constance';
+import { Relationship } from '../../../../models';
+import { Assessment } from '../../../../models/assess/assessment';
+import { RiskByAttack } from '../../../../models/assess/risk-by-attack';
+import { Stix } from '../../../../models/stix/stix';
+import { Constance } from '../../../../utils/constance';
 import { AssessService } from '../../services/assess.service';
 import { DonePushUrl, FinishedLoading, LOAD_ASSESSMENTS_BY_ROLLUP_ID, LOAD_ASSESSMENT_BY_ID, 
         LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS, LOAD_GROUP_CURRENT_ATTACK_PATTERN, LOAD_GROUP_DATA, 
@@ -95,8 +95,8 @@ export class FullResultEffects {
             const assessmentId = payload.assessmentId;
             const phase = payload.phase;
             const attackPattern = payload.attackPattern;
-            // const url = `${Constance.API_HOST}/assess/result/full/${rollupId}/${assessmentId}/phase/${phase}/attackPattern/${attackPattern}`;
-            const url = `${Constance.API_HOST}/assess/result/full/${rollupId}/${assessmentId}/phase/${phase}`;
+            // const url = `${Constance.API_HOST}/assess-beta/result/full/${rollupId}/${assessmentId}/phase/${phase}/attackPattern/${attackPattern}`;
+            const url = `${Constance.API_HOST}/assess-beta/result/full/${rollupId}/${assessmentId}/phase/${phase}`;
             this.location.replaceState(url);
         })
         .switchMap(() => Observable.of(new DonePushUrl()));

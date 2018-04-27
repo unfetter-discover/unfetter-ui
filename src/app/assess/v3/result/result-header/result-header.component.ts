@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Assessment } from '../../../models/assess/assessment';
+import { Assessment } from '../../../../models/assess/assessment';
 
 @Component({
   selector: 'result-header',
@@ -32,10 +32,11 @@ export class ResultHeaderComponent implements OnInit {
    * @return {void}
    */
   public ngOnInit(): void {
-    const base = '/assess/result/';
-    this.summaryLink = `${base}/summary/${this.rollupId}/${this.assessmentId}`;
-    this.resultsLink = `${base}/full/${this.rollupId}/${this.assessmentId}`;
-    const editBase = '/assess/wizard/edit/';
+    const base = '/assess-beta';
+    const resultBase = `${base}/result`;
+    this.summaryLink = `${resultBase}/summary/${this.rollupId}/${this.assessmentId}`;
+    this.resultsLink = `${resultBase}/full/${this.rollupId}/${this.assessmentId}`;
+    const editBase = `${base}/wizard/edit/`;
     this.editUrl = `${editBase}/${this.rollupId}`; 
     // TODO: initialize the correct total questions, by calling the server, may need a count endpoint
     this.percentCompleted = this.calcPercentCompleted(this.assessment);

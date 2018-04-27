@@ -1,9 +1,9 @@
 import { Action } from '@ngrx/store';
-import { Assessment } from '../../models/assess/assessment';
-import { AssessmentMeta } from '../../models/assess/assessment-meta';
-import { JsonApiData } from '../../models/json/jsonapi-data';
-import { Indicator } from '../../models/stix/indicator';
-import { Stix } from '../../models/stix/stix';
+import { Assessment } from '../../../models/assess/assessment';
+import { AssessmentMeta } from '../../../models/assess/assessment-meta';
+import { JsonApiData } from '../../../models/json/jsonapi-data';
+import { Indicator } from '../../../models/stix/indicator';
+import { Stix } from '../../../models/stix/stix';
 
 // For effects
 export const START_ASSESSMENT = '[Assess] START_ASSESSMENT';

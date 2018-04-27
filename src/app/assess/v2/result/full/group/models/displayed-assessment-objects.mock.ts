@@ -1,5 +1,5 @@
-import { AssessmentObjectMockFactory } from '../../../../../models/assess/assessment-object.mock';
-import { Mock } from '../../../../../models/mock';
+import { AssessmentObjectMockFactory } from '../../../../../../models/assess/assessment-object.mock';
+import { Mock } from '../../../../../../models/mock';
 import { DisplayedAssessmentObject } from './displayed-assessment-object';
 
 export class DisplayedAssessmentObjectMock extends Mock<DisplayedAssessmentObject> {

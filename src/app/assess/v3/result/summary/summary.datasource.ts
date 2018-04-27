@@ -2,7 +2,7 @@ import { CollectionViewer } from '@angular/cdk/collections';
 import { DataSource } from '@angular/cdk/table';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-import { environment } from '../../../../environments/environment';
+import { environment } from '../../../../../environments/environment';
 import { LastModifiedAssessment } from '../../models/last-modified-assessment';
 import { AssessService } from '../../services/assess.service';
 

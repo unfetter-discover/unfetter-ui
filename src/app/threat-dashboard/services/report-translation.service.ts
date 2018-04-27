@@ -1,15 +1,12 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
-import { HttpClient } from '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-
 import { Constance } from '../../utils/constance';
-import { UrlTranslationResponse } from '../models/adapter/url-translation-response';
-import { JsonApiObject } from '../models/adapter/json-api-object';
-import { UrlTranslationRequest } from '../models/adapter/url-translation-request';
 import { ExternalDataTranslationRequest } from '../models/adapter/external-data-translation-request';
 import { ExternalDataTranslationResponse } from '../models/adapter/external-data-translation-response';
+import { JsonApiObject } from '../models/adapter/json-api-object';
+import { UrlTranslationRequest } from '../models/adapter/url-translation-request';
+import { UrlTranslationResponse } from '../models/adapter/url-translation-response';
 
 @Injectable()
 export class ReportTranslationService {

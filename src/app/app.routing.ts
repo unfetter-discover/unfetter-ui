@@ -10,7 +10,7 @@ const appRoutes: Routes = [
   { path: 'home', component: LandingPageComponent },
   { path: 'intrusion-set-dashboard', loadChildren: 'app/intrusion-set-dashboard/intrusion-set-dashboard.module#IntrusionSetDashboardModule', canActivate: [AuthGuard] },
   { path: 'assess', loadChildren: 'app/assess/v2/assess.module#AssessModule', canActivate: [AuthGuard] },
-  { path: 'assess-v3', loadChildren: 'app/assess/v3/assess.module#AssessModule', canActivate: [AuthGuard] },
+  { path: 'assess-beta', loadChildren: 'app/assess/v3/assess.module#AssessModule', canActivate: [AuthGuard] },
   { path: 'baseline', loadChildren: 'app/baseline/baseline.module#BaselineModule', canActivate: [AuthGuard] },
   { path: 'threat-dashboard', loadChildren: 'app/threat-dashboard/threat-dashboard.module#ThreatDashboardModule', canActivate: [AuthGuard] },
   { path: 'users', loadChildren: 'app/users/users.module#UsersModule' },

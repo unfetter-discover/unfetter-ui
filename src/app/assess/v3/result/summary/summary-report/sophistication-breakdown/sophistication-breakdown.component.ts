@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ChartData } from '../../../../../global/models/chart-data';
-import { AssessAttackPatternCount } from '../../../../../models/assess/assess-attack-pattern-count';
+import { ChartData } from '../../../../../../global/models/chart-data';
+import { AssessAttackPatternCount } from '../../../../../../models/assess/assess-attack-pattern-count';
 import { SummaryCalculationService } from '../../summary-calculation.service';
 
 @Component({

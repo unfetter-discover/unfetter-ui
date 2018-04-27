@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { GenericApi } from '../../core/services/genericapi.service';
-import { Assessment } from '../../models/assess/assessment';
-import { AssessmentObject } from '../../models/assess/assessment-object';
-import { RiskByAttack } from '../../models/assess/risk-by-attack';
-import { RiskByKillChain } from '../../models/assess/risk-by-kill-chain';
-import { SummaryAggregation } from '../../models/assess/summary-aggregation';
-import { JsonApiData } from '../../models/json/jsonapi-data';
-import { Constance } from '../../utils/constance';
+import { GenericApi } from '../../../core/services/genericapi.service';
+import { Assessment } from '../../../models/assess/assessment';
+import { AssessmentObject } from '../../../models/assess/assessment-object';
+import { RiskByAttack } from '../../../models/assess/risk-by-attack';
+import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
+import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
+import { JsonApiData } from '../../../models/json/jsonapi-data';
+import { Constance } from '../../../utils/constance';
 import { LastModifiedAssessment } from '../models/last-modified-assessment';
 
 @Injectable()

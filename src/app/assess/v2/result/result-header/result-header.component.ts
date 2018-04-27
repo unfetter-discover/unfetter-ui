@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Assessment } from '../../../models/assess/assessment';
+import { Assessment } from '../../../../models/assess/assessment';
 
 @Component({
   selector: 'result-header',

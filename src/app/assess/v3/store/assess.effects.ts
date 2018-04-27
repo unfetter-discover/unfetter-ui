@@ -4,14 +4,14 @@ import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 import * as UUID from 'uuid';
-import { GenericApi } from '../../core/services/genericapi.service';
-import { Assessment } from '../../models/assess/assessment';
-import { AssessmentMeta } from '../../models/assess/assessment-meta';
-import { JsonApi } from '../../models/json/jsonapi';
-import { JsonApiData } from '../../models/json/jsonapi-data';
-import { Indicator } from '../../models/stix/indicator';
-import { Stix } from '../../models/stix/stix';
-import { Constance } from '../../utils/constance';
+import { GenericApi } from '../../../core/services/genericapi.service';
+import { Assessment } from '../../../models/assess/assessment';
+import { AssessmentMeta } from '../../../models/assess/assessment-meta';
+import { JsonApi } from '../../../models/json/jsonapi';
+import { JsonApiData } from '../../../models/json/jsonapi-data';
+import { Indicator } from '../../../models/stix/indicator';
+import { Stix } from '../../../models/stix/stix';
+import { Constance } from '../../../utils/constance';
 import { AssessStateService } from '../services/assess-state.service';
 import { AssessService } from '../services/assess.service';
 import * as assessActions from './assess.actions';
@@ -83,7 +83,7 @@ export class AssessEffects {
         })
         .do((el: AssessmentMeta) => {
             this.router.navigate([
-                '/assess/wizard/new',
+                '/assess-beta/wizard/new',
                 'indicators', el.includesIndicators === true ? 1 : 0,
                 'mitigations', el.includesMitigations === true ? 1 : 0,
                 'sensors', el.includesSensors === true ? 1 : 0

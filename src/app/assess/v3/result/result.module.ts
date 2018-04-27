@@ -6,7 +6,7 @@ import { RouterModule } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { ChartsModule } from 'ng2-charts';
-import { GlobalModule } from '../../global/global.module';
+import { GlobalModule } from '../../../global/global.module';
 import { FullComponent } from './full/full.component';
 import { AddAssessedObjectComponent } from './full/group/add-assessed-object/add-assessed-object.component';
 import { AssessGroupComponent } from './full/group/assessments-group.component';

@@ -1,30 +1,28 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientModule } from '@angular/common/http';
+import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule, MatCardModule, MatDatepickerModule, MatDialogModule, MatExpansionModule, MatInputModule, MatProgressBarModule, MatSelectModule, MatSnackBarModule } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
-import { MatButtonModule, MatCardModule, MatDatepickerModule, MatDialogModule, MatSnackBarModule, MatSelectModule, MatInputModule, MatExpansionModule, MatProgressBarModule } from '@angular/material';
-import { FormsModule } from '@angular/forms';
-import { StoreModule, combineReducers } from '@ngrx/store';
-
-import * as fromRoot from 'app/root-store/app.reducers';
-import { assessmentReducer } from '../store/assess.reducers';
-
-import { WizardComponent } from './wizard.component';
-import { ComponentModule } from '../../components/component.module';
-import { ChartsModule } from 'ng2-charts';
-import { PipesModule } from '../../pipes/pipes.module';
-import { GlobalModule } from '../../global/global.module';
-import { GenericApi } from '../../core/services/genericapi.service';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Indicator } from '../../models/stix/indicator';
-import { Observable } from 'rxjs/Observable';
-import { CourseOfAction } from '../../models/stix/course-of-action';
-import { Sensor } from '../../models/unfetter/sensor';
-import { AssessmentMeta } from '../../models/assess/assessment-meta';
-import { Assessment } from '../../models/assess/assessment';
-import { AssessmentObject } from '../../models/assess/assessment-object';
-import { Stix } from '../../models/stix/stix';
-import { StixLabelEnum } from '../../models/stix/stix-label.enum';
+import { StoreModule, combineReducers } from '@ngrx/store';
+import * as fromRoot from 'app/root-store/app.reducers';
+import { ChartsModule } from 'ng2-charts';
+import { ComponentModule } from '../../../components/component.module';
+import { GenericApi } from '../../../core/services/genericapi.service';
+import { GlobalModule } from '../../../global/global.module';
+import { Assessment } from '../../../models/assess/assessment';
+import { AssessmentMeta } from '../../../models/assess/assessment-meta';
+import { AssessmentObject } from '../../../models/assess/assessment-object';
+import { CourseOfAction } from '../../../models/stix/course-of-action';
+import { Indicator } from '../../../models/stix/indicator';
+import { Stix } from '../../../models/stix/stix';
+import { StixLabelEnum } from '../../../models/stix/stix-label.enum';
+import { Sensor } from '../../../models/unfetter/sensor';
+import { PipesModule } from '../../../pipes/pipes.module';
+import { assessmentReducer } from '../store/assess.reducers';
+import { WizardComponent } from './wizard.component';
+
 
 class MockModel {
   attributes: any;

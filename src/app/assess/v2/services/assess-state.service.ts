@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-import { AssessmentMeta } from '../../models/assess/assessment-meta';
+import { AssessmentMeta } from '../../../models/assess/assessment-meta';
 
 /**
  * @description maintain state across the assess create and wizard pages

@@ -1,4 +1,4 @@
-@import '../../../../../styles/_variables.scss';
+@import '../../../../../../styles/_variables.scss';
 #report {
   margin-left: 24px;
   margin-right: 24px;
@@ -124,8 +124,8 @@ $min-card-fullwidth: ($min-card-width * 2 + $padding-between-cards + $padding-be
 
 @font-face {
   font-family: 'icomoon';
-  src: url('../../../../../assets/fonts/IcoMoon/icomoon.eot?a80iwl');
-  src: url('../../../../../assets/fonts/IcoMoon/icomoon.eot?a80iwl#iefix') format('embedded-opentype'), url('../../../../../assets/fonts/IcoMoon/icomoon.ttf?a80iwl') format('truetype'), url('../../../../../assets/fonts/IcoMoon/icomoon.woff?a80iwl') format('woff'), url('../../../../../assets/fonts/IcoMoon/icomoon.svg?a80iwl#icomoon') format('svg');
+  src: url('../../../../../../assets/fonts/IcoMoon/icomoon.eot?a80iwl');
+  src: url('../../../../../../assets/fonts/IcoMoon/icomoon.eot?a80iwl#iefix') format('embedded-opentype'), url('../../../../../../assets/fonts/IcoMoon/icomoon.ttf?a80iwl') format('truetype'), url('../../../../../../assets/fonts/IcoMoon/icomoon.woff?a80iwl') format('woff'), url('../../../../../../assets/fonts/IcoMoon/icomoon.svg?a80iwl#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
