@@ -16,7 +16,7 @@ import { Overlay } from '@angular/cdk/overlay';
 import { Subscription } from 'rxjs/Subscription';
 import * as d3 from 'd3';
 
-import { HeatBatchData, HeatCellData, HeatmapOptions, DOMRect, } from './heatmap.data';
+import { HeatBatchData, HeatCellData, HeatmapOptions, DOMRect, DEFAULT_OPTIONS, } from './heatmap.data';
 import { Heatmap, HeatmapRenderer, } from './heatmap.renderer';
 import { HeatmapColumnRenderer } from './heatmap.renderer.columns';
 import { Dictionary } from '../../../models/json/dictionary';
@@ -54,7 +54,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
      * @description init this component
      */
     public ngOnInit(): void {
-        this.options = HeatmapOptions.merge(this.options);
+        this.options = HeatmapOptions.merge(this.options, DEFAULT_OPTIONS);
         this.helper.setComponent(this);
     }
     

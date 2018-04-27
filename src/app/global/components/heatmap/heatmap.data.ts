@@ -298,7 +298,7 @@ export class HeatmapOptions {
 
     zoom?: ZoomRules;
 
-    static merge(custom: HeatmapOptions, defaults: HeatmapOptions = DEFAULT_OPTIONS): HeatmapOptions {
+    static merge(custom: HeatmapOptions, defaults: HeatmapOptions): HeatmapOptions {
         const merged = new HeatmapOptions();
         merged.view = Object.assign({}, defaults.view, custom.view);
         merged.color = Object.assign({}, defaults.color, custom.color);
