@@ -14,7 +14,6 @@ export class ResultHeaderComponent implements OnInit {
   public created: Date;
 
   public summaryLink: string;
-  public resultsLink: string;
 
   constructor() { }
 
@@ -25,7 +24,6 @@ export class ResultHeaderComponent implements OnInit {
   public ngOnInit(): void {
     const base = '/baseline/result/';
     this.summaryLink = `${base}/summary/${this.baselineId}`;
-    this.resultsLink = `${base}/full/${this.baselineId}`;
   }
 
 }

@@ -17,6 +17,12 @@ export class SidepanelListItemComponent implements OnInit {
 
   @Input('expandable') public expandable: boolean = false;
 
+  @Input('showCount') public showCount: boolean = true;
+
+  @Input('expanded') public expanded: boolean = false;
+
+  @Input('hideToggle') public hideToggle: boolean = false;
+
   constructor() { }
 
   ngOnInit() {
