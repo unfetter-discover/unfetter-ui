@@ -28,7 +28,7 @@ import { AttackPattern } from '../../models/attack-pattern';
 import { ThreatDashboard } from '../models/threat-dashboard';
 import { topRightSlide } from '../../global/animations/top-right-slide';
 import { KillChainPhase } from '../../models';
-import { HeatMapOptions, HeatBatchData } from '../../global/components/heatmap/heatmap.data';
+import { HeatmapOptions } from '../../global/components/heatmap/heatmap.data';
 import { AttackPatternCell } from '../../global/components/heatmap/attack-patterns-heatmap.component';
 import { Dictionary } from '../../models/json/dictionary';
 
@@ -65,12 +65,13 @@ export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit
   public showTreeMap = false;
 
   public heatMapData: Array<AttackPatternCell> = [];
-  public readonly heatMapOptions: HeatMapOptions = {
+  public readonly heatMapOptions: HeatmapOptions = {
     text: {
-      showCellText: true,
+      cells: {
+        showText: true,
+      },
     },
     zoom: {
-      hasMinimap: true,
       cellTitleExtent: 2,
     },
   };

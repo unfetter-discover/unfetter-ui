@@ -20,7 +20,7 @@ import { topRightSlide } from '../global/animations/top-right-slide';
 import { GenericApi } from '../core/services/genericapi.service';
 import { HeatmapComponent } from '../global/components/heatmap/heatmap.component';
 import { AttackPatternCell } from '../global/components/heatmap/attack-patterns-heatmap.component';
-import { HeatColor, HeatMapOptions } from '../global/components/heatmap/heatmap.data';
+import { HeatColor, HeatmapOptions } from '../global/components/heatmap/heatmap.data';
 import { IntrusionSetHighlighterService } from './intrusion-set-highlighter.service';
 import { Dictionary } from '../models/json/dictionary';
 
@@ -43,7 +43,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
     public showHeatMap = true;
     public heatMapData: Array<AttackPatternCell> = [];
     private noColor: HeatColor = {bg: '#ccc', fg: 'black'};
-    public readonly heatMapOptions: HeatMapOptions = {
+    public readonly heatMapOptions: HeatmapOptions = {
         color: {
             batchColors: [
                 {header: {bg: '#4db6ac', fg: 'black'}, body: {bg: 'white', fg: 'black'}},
@@ -55,10 +55,9 @@ export class IntrusionSetDashboardComponent implements OnInit {
             defaultGradient: {bg: ['#999', 'black'], fg: 'white'}
         },
         text: {
-            showCellText: true,
-        },
-        zoom: {
-            hasMinimap: true,
+            cells: {
+                showText: true,
+            },
         },
     };
     public hoverTooltip = true;
@@ -256,6 +255,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
                         if (attackPattern.intrusion_sets && attackPattern.intrusion_sets.length) {
                             ap.values = attackPattern.intrusion_sets
                                 .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+                            ap.text = attackPattern.fore;
                         } else {
                             ap.values = [];
                         }

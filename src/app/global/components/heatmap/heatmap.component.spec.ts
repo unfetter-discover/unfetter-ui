@@ -7,7 +7,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import * as d3 from 'd3';
 
 import { HeatmapComponent } from './heatmap.component';
-import { HeatMapOptions } from './heatmap.data';
+import { HeatmapOptions } from './heatmap.data';
 
 describe('HeatmapComponent', () => {
 
@@ -76,7 +76,7 @@ describe('HeatmapComponent', () => {
     });
 
     it('should merge options', () => {
-        let opts: HeatMapOptions = {
+        let opts: HeatmapOptions = {
             view: {
                 headerHeight: -1,
                 minSidePadding: -1,
@@ -86,47 +86,55 @@ describe('HeatmapComponent', () => {
                 maxGradients: 0,
             },
             hover: {
-                hoverColor: {bg: ['black', 'white'], fg: 'transparent'},
-                hoverDelay: -500,
+                color: {bg: ['black', 'white'], fg: 'transparent'},
+                delay: -500,
             },
             text: {
-                headerFontSize: -12,
-                cellFontSize: -6,
+                headers: {
+                    fontSize: -12,
+                },
+                cells: {
+                    fontSize: -6,
+                },
             },
             zoom: {
-                minimapFontSize: -3,
-                minimapPannerWidth: -1,
-                zoomExtent: undefined,
+                zoomExtent: null,
                 cellTitleExtent: 6,
+                minimap: {
+                    text: {
+                        fontSize: -3,
+                    },
+                    panner: {
+                        width: -1,
+                        color: 'bleu'
+                    },
+                },
             },
         }
-        let newopts = HeatMapOptions.merge(opts, component.options);
+
+        let newopts = HeatmapOptions.merge(opts, component.options);
         expect(newopts.view.headerHeight).toEqual(0);
         expect(newopts.view.minSidePadding).toEqual(0);
         expect(newopts.view.minBottomPadding).toEqual(0);
         expect(newopts.color.maxGradients).toEqual(1);
-        expect(newopts.hover.hoverDelay).toEqual(1);
-        expect(newopts.hover.hoverColor.bg).toEqual('black');
-        expect(newopts.text.headerFontSize).toEqual(0);
-        expect(newopts.text.cellFontSize).toEqual(0);
-        expect(newopts.zoom.minimapFontSize).toEqual(0);
-        expect(newopts.zoom.minimapPannerWidth).toEqual(0);
-        expect(newopts.zoom.zoomExtent).toBeDefined();
-        expect(newopts.zoom.zoomExtent.length).toEqual(2);
-        expect(newopts.zoom.zoomExtent[0]).toEqual(1);
-        expect(newopts.zoom.zoomExtent[1]).toEqual(1);
+        expect(newopts.hover.delay).toEqual(1);
+        expect(newopts.hover.color.bg).toEqual('black');
+        expect(newopts.text.headers.fontSize).toEqual(0);
+        expect(newopts.text.cells.fontSize).toEqual(0);
+        expect(newopts.zoom.minimap.text.fontSize).toEqual(0);
+        expect(newopts.zoom.minimap.panner.width).toEqual(1);
+        expect(newopts.zoom.zoomExtent).toBeNull();
         expect(newopts.zoom.cellTitleExtent).toEqual(1);
 
-        newopts.zoom.zoomExtent[0] = 0;
+        newopts.zoom.zoomExtent = [0, 0];
         newopts.zoom.zoomExtent.pop();
-        newopts = HeatMapOptions.merge(newopts, component.options);
+        newopts = HeatmapOptions.merge(newopts, component.options);
         expect(newopts.zoom.zoomExtent.length).toEqual(2);
-        expect(newopts.zoom.zoomExtent[0]).toEqual(.01);
+        expect(newopts.zoom.zoomExtent[0]).toEqual(0.01);
         expect(newopts.zoom.zoomExtent[1]).toEqual(1);
-        expect(newopts.zoom.cellTitleExtent).toEqual(1);
 
         (newopts.zoom.zoomExtent as number[]) = [5, 4, 3, 2, 1];
-        newopts = HeatMapOptions.merge(newopts, component.options);
+        newopts = HeatmapOptions.merge(newopts, component.options);
         expect(newopts.zoom.zoomExtent.length).toEqual(2);
         expect(newopts.zoom.zoomExtent[0]).toEqual(4);
         expect(newopts.zoom.zoomExtent[1]).toEqual(5);
@@ -137,12 +145,12 @@ describe('HeatmapComponent', () => {
         component.data = mockData;
         fixture.detectChanges();
 
-        let cells: NodeList = fixture.nativeElement.querySelectorAll('.heat-map svg g.heat-map-cell');
+        let cells: NodeList = fixture.nativeElement.querySelectorAll('.heat-map svg.heat-map-canvas g.heat-map-cell');
         expect(cells).toBeTruthy();
         expect(cells.length).toEqual(21);
         expect(Array.from(cells).every(cell => cell.childNodes.length === 1)).toBeTruthy();
 
-        let rects: NodeList = fixture.nativeElement.querySelectorAll('.heat-map svg g.heat-map-cell rect');
+        let rects: NodeList = fixture.nativeElement.querySelectorAll('.heat-map svg.heat-map-canvas g.heat-map-cell rect');
         expect(Array.from(rects)
             .filter((rect: any) => rect.attributes['fill'].nodeValue ===
                     component.options.color.heatColors['true'].bg).length).toEqual(9);
@@ -158,12 +166,16 @@ describe('HeatmapComponent', () => {
                 }),
             },
             text: {
-                showHeaderText: true,
-                allowHeaderSplit: true,
-                hyphenateHeaders: true,
-                showCellText: true,
-                allowCellSplit: true,
-                hyphenateCells: true,
+                headers: {
+                    showText: true,
+                    allowSplit: true,
+                    hyphenate: true,
+                },
+                cells: {
+                    showText: true,
+                    allowSplit: true,
+                    hyphenate: true,
+                },
             },
         }
         component.ngOnInit();
@@ -186,8 +198,10 @@ describe('HeatmapComponent', () => {
         component.options = {
             color: {
                 batchColors: [
-                    {header: {bg: '#e3f2fd', fg: '#333'}, body: {bg: '#e3f2fd', fg: 'black'},
-                     border: {width: 2, color: '#f33'}},
+                    {
+                        header: {bg: '#e3f2fd', fg: '#333', border: {width: 2, color: '#f33'}},
+                        body: {bg: '#e3f2fd', fg: 'black'}
+                    },
                     {header: {bg: 'transparent', fg: '#333'}, body: {bg: 'transparent', fg: 'black'}},
                     {header: {bg: '.header', fg: '#333'}, body: {bg: 'transparent', fg: '.header'}},
                 ],
@@ -215,22 +229,21 @@ describe('HeatmapComponent', () => {
     });
 
     it('should create a minimap', async(() => {
-        let minimap = fixture.debugElement.query(By.css('div.mini-map'));
-        minimap.nativeElement.style.width = '100px';
-        minimap.nativeElement.style.height = '50px';
-
         component.data = mockData;
         component.options = {
             text: {
-                showHeaderText: true,
-                allowHeaderSplit: true,
-                hyphenateHeaders: true,
-                showCellText: true,
-                allowCellSplit: true,
-                hyphenateCells: true,
+                headers: {
+                    showText: true,
+                    allowSplit: true,
+                    hyphenate: true,
+                },
+                cells: {
+                    showText: true,
+                    allowSplit: true,
+                    hyphenate: true,
+                },
             },
             zoom: {
-                hasMinimap: true,
                 cellTitleExtent: 2,
             },
         };
@@ -239,16 +252,16 @@ describe('HeatmapComponent', () => {
 
         // testing zooming on the heatmap
         fixture.whenStable().then(() => {
-            component.heatmap.workspace.canvas.transition()
-                .duration(100).call(component.heatmap.workspace.zoom.transform,
+            component.helper['heatmap'].workspace.canvas.transition()
+                .duration(100).call(component.helper['heatmap'].workspace.zoom.transform,
                         d3.zoomIdentity.scale(2.5).translate(300, 300));
             fixture.whenStable().then(() => {
-                component.minimap.workspace.canvas.node().dispatchEvent(new Event('click'));
-                component.minimap.workspace.canvas.node().dispatchEvent(new Event('click'));
+                component.helper['minimap'].workspace.canvas.node().dispatchEvent(new Event('click'));
+                component.helper['minimap'].workspace.canvas.node().dispatchEvent(new Event('click'));
                 /* NOTE: clicking not registering */
                 fixture.whenStable().then(() => {
-                    component.minimap.workspace.panner.transition().duration(1)
-                        .call(component.heatmap.workspace.zoom.transform,
+                    component.helper['minimap'].workspace.panner.transition().duration(1)
+                        .call(component.helper['heatmap'].workspace.zoom.transform,
                                 d3.zoomIdentity.translate(50, 20).scale(.9));
                 });
             });
@@ -260,7 +273,7 @@ describe('HeatmapComponent', () => {
         const tcell = Math.floor(Math.random() * mockData[tbatch].cells.length);
         const target = mockData[tbatch].cells[tcell];
         component.data = mockData;
-        component.options = {hover: {hoverDelay: 1}};
+        component.options = {hover: {delay: 1}};
         component.ngOnInit();
         fixture.detectChanges();
 
