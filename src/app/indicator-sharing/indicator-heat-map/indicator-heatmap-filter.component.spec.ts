@@ -111,7 +111,7 @@ describe('IndicatorHeatMapFilterComponent', () => {
     it('should handle cell clicks', async(() => {
         // fixture.detectChanges();
         fixture.whenStable().then(() => {
-            component.heatmapOptions.hover = {hoverDelay: 2};
+            component.heatmapOptions.hover = {delay: 2};
             component['view']['createAttackPatternHeatMap']();
             fixture.detectChanges();
 

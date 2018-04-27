@@ -18,7 +18,7 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { Store } from '@ngrx/store';
 
 import { AttackPatternsHeatmapComponent } from '../../../global/components/heatmap/attack-patterns-heatmap.component';
-import { HeatMapOptions } from '../../../global/components/heatmap/heatmap.data';
+import { HeatmapOptions } from '../../../global/components/heatmap/heatmap.data';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { Constance } from '../../../utils/constance';
 
@@ -32,8 +32,8 @@ export class AttackPatternChooserComponent implements OnInit, AfterViewInit {
     public attackPatterns = {};
     @Input() public selectedPatterns = [];
 
-    @ViewChild('heatmapView') private view: AttackPatternsHeatmapComponent;
-    @Input() heatmapOptions: HeatMapOptions = {
+    @ViewChild('apChooser') private view: AttackPatternsHeatmapComponent;
+    @Input() heatmapOptions: HeatmapOptions = {
         view: {
             component: '#attack-pattern-filter',
         },
@@ -42,16 +42,17 @@ export class AttackPatternChooserComponent implements OnInit, AfterViewInit {
                 {header: {bg: 'white', fg: '#333'}, body: {bg: 'white', fg: 'black'}},
             ],
             heatColors: {
-                'inactive': {bg: '#fcfcfc', fg: 'black'},
+                'inactive': {bg: '#ccc', fg: 'black'},
                 'selected': {bg: '.selected', fg: 'black'},
                 'active': {bg: '.active', fg: 'black'},
             },
         },
         text: {
-            showCellText: true,
+            cells: {
+                showText: true,
+            },
         },
         zoom: {
-            hasMinimap: false,
             cellTitleExtent: 1,
         },
     }
@@ -96,9 +97,9 @@ export class AttackPatternChooserComponent implements OnInit, AfterViewInit {
             .subscribe(
                 (patterns: any[]) => {
                     this.attackPatterns = this.collectAttackPatterns(patterns);
-                    this.view['heatMapView'].forceUpdate();
+                    this.view.heatmap.redraw();
                     setTimeout(() => {
-                        this.view['heatMapView'].ngDoCheck();
+                        this.view.heatmap.ngDoCheck();
                         const selects = this.selectedPatterns
                             .map(pattern => Object.values(this.attackPatterns).find((ap: any) => ap.id === pattern));
                         this.selectedPatterns = [];
@@ -150,10 +151,10 @@ export class AttackPatternChooserComponent implements OnInit, AfterViewInit {
             const ap = this.attackPatterns[clicked.row.title];
             if (ap) {
                 ap.value = newValue;
-                this.view['heatMapView'].heatmap.workspace.data.forEach(batch => {
+                this.view.heatmap.helper['heatmap'].workspace.data.forEach(batch => {
                     batch.value = batch.cells.some(cell => cell.value === 'selected') ? 'active' : null;
                 });
-                this.view['heatMapView'].updateCells();
+                this.view.heatmap.helper.updateCells();
             }
         }
     }

@@ -19,7 +19,7 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 
 import { HeatmapComponent, } from './heatmap.component';
-import { HeatBatchData, HeatColor, HeatMapOptions, HeatCellData } from './heatmap.data';
+import { HeatBatchData, HeatColor, HeatmapOptions, HeatCellData, DEFAULT_OPTIONS } from './heatmap.data';
 import { AuthService } from '../../../core/services/auth.service';
 import { Dictionary } from '../../../models/json/dictionary';
 
@@ -41,7 +41,7 @@ export interface AttackPatternCell extends HeatCellData {
     analytics?: any[],
     references?: any[],
     values?: Array<{name: string, color: string}>,
-    color?: string,
+    text?: string, // the foreground, or text, color of an attack pattern cell
 }
 
 @Component({
@@ -56,7 +56,7 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
     @Input() public attackPatterns: Dictionary<AttackPatternCell> | Array<AttackPatternCell>;
     private previousPatterns: Dictionary<AttackPatternCell> | Array<AttackPatternCell>;
     public heatMapData: Array<HeatBatchData> = [];
-    @Input() public heatMapOptions: HeatMapOptions;
+    @Input() public heatMapOptions: HeatmapOptions;
     private noColor: HeatColor = {bg: '#ccc', fg: 'black'};
     private baseHeats: Dictionary<HeatColor> = null;
     @ViewChild(HeatmapComponent) private heatMapView: HeatmapComponent;
@@ -99,11 +99,15 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
         }
     }
 
+    get heatmap(): HeatmapComponent {
+        return this.heatMapView;
+    }
+
     /**
      * @description Create a heatmap chart of all the tactics. This looks like a version of the carousel, but shrunken
      *              in order to fit within the viewport.
      */
-    private createAttackPatternHeatMap() {
+    public createAttackPatternHeatMap() {
         if (!this.baseHeats) {
             if (this.heatMapOptions && this.heatMapOptions.color && this.heatMapOptions.color.heatColors) {
                 this.baseHeats = this.heatMapOptions.color.heatColors;
@@ -111,7 +115,7 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
                 this.baseHeats = this.heatMapView.options.color.heatColors;
             }
             if (!this.baseHeats) {
-                this.baseHeats = this.heatMapView['defaultOptions'].color.heatColors;
+                this.baseHeats = DEFAULT_OPTIONS.color.heatColors;
             }
         }
 
@@ -127,7 +131,7 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
                     if (!heats[value]) {
                         heats[value] = {
                             bg: heat,
-                            fg: pattern.color || 'black'
+                            fg: pattern.text || 'black'
                         };
                     }
                 }

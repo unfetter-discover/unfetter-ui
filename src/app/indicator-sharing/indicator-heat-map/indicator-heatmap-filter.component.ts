@@ -17,7 +17,7 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { Store } from '@ngrx/store';
 
 import { AttackPatternsHeatmapComponent } from '../../global/components/heatmap/attack-patterns-heatmap.component';
-import { HeatMapOptions } from '../../global/components/heatmap/heatmap.data';
+import { HeatmapOptions } from '../../global/components/heatmap/heatmap.data';
 import { IndicatorSharingFeatureState } from '../store/indicator-sharing.reducers';
 import { Constance } from '../../utils/constance';
 
@@ -29,7 +29,7 @@ import { Constance } from '../../utils/constance';
 export class IndicatorHeatMapFilterComponent implements AfterViewInit {
 
     @ViewChild('heatmapView') private view: AttackPatternsHeatmapComponent;
-    @Input() heatmapOptions: HeatMapOptions = {
+    @Input() heatmapOptions: HeatmapOptions = {
         view: {
             component: '#indicator-heatmap-filter',
         },
@@ -44,10 +44,11 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
             },
         },
         text: {
-            showCellText: true,
+            cells: {
+                showText: true,
+            },
         },
         zoom: {
-            hasMinimap: false,
             cellTitleExtent: 1,
         },
     }
@@ -80,8 +81,8 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
                     (attackPatterns: any[]) => {
                         this.attackPatterns = attackPatterns.reduce(
                             (patterns, pattern) => this.collectAttackPattern(patterns, pattern), {});
-                        this.view['heatMapView'].forceUpdate();
-                        setTimeout(() => this.view['heatMapView']['ngDoCheck'](), 500);
+                        this.view.heatmap.redraw();
+                        setTimeout(() => this.view.heatmap.ngDoCheck(), 500);
                     },
                     (err) => console.log(err),
                 );
@@ -128,7 +129,7 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
                 this.selectedPatterns.splice(index, 1);
             }
             this.attackPatterns[clicked.row.title].value = newValue;
-            this.view['heatMapView'].updateCells();
+            this.view.heatmap.helper.updateCells();
         }
     }
 

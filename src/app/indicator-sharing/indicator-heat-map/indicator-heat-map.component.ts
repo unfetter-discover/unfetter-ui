@@ -18,10 +18,12 @@ import { Store } from '@ngrx/store';
 import * as d3 from 'd3';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
-import { HeatMapOptions } from '../../global/components/heatmap/heatmap.data';
+import { HeatmapOptions } from '../../global/components/heatmap/heatmap.data';
+import { AttackPatternsHeatmapComponent } from '../../global/components/heatmap/attack-patterns-heatmap.component';
 import { IndicatorSharingFeatureState } from '../store/indicator-sharing.reducers';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { Constance } from '../../utils/constance';
+import { Dictionary } from '../../models/json/dictionary';
 
 @Component({
     selector: 'indicator-heat-map',
@@ -36,11 +38,10 @@ export class IndicatorHeatMapComponent implements OnInit, DoCheck {
     private previousIndicators: any[];
     private indicatorsToAttackPatternMap: any;
 
-    @ViewChild('heatmap') private heatmap;
-    @Input() heatmapOptions: HeatMapOptions = {
+    @ViewChild('heatmap') private view: AttackPatternsHeatmapComponent;
+    @Input() heatmapOptions: HeatmapOptions = {
         view: {
             component: '#indicator-heat-map',
-            headerHeight: 0,
         },
         color: {
             batchColors: [
@@ -53,11 +54,11 @@ export class IndicatorHeatMapComponent implements OnInit, DoCheck {
             },
         },
         text: {
-            showCellText: false,
+            cells: {
+                showText: true,
+            },
         },
         zoom: {
-            zoomExtent: [1, 1],
-            hasMinimap: false,
             cellTitleExtent: 2,
         }
     }
@@ -93,11 +94,11 @@ export class IndicatorHeatMapComponent implements OnInit, DoCheck {
             const indicators = this.groupIndicatorsByAttackPatterns();
             Object.values(this.attackPatterns).forEach((pattern: any) => {
                 const analytics = indicators[pattern.name] || [];
-                pattern.analytics = analytics.map(is => ({name: is}));
+                pattern.analytics = analytics.map(analytic => this.indicators.find(a => a.id === analytic));
                 pattern.value = analytics.length > 0;
             });
-            this.heatmap.createAttackPatternHeatMap();
-            this.heatmap.heatMapView.forceUpdate();
+            this.view.createAttackPatternHeatMap();
+            this.view.heatmap.redraw();
             this.previousIndicators = this.indicators;
         } else {
             const node: any = d3.select(`#indicator-heat-map .heat-map`).node();
@@ -106,7 +107,7 @@ export class IndicatorHeatMapComponent implements OnInit, DoCheck {
                 if (this.oldrect === null) {
                     this.oldrect = rect;
                 } else if ((this.oldrect.width !== rect.width) || (this.oldrect.height !== rect.height)) {
-                    this.heatmap.heatMapView.forceUpdate();
+                    this.view.heatmap.redraw();
                     this.oldrect = rect;
                 }
             }
@@ -149,7 +150,7 @@ export class IndicatorHeatMapComponent implements OnInit, DoCheck {
         const initData$ = this.genericApi.get(`${Constance.ATTACK_PATTERN_URL}?${filter}`)
             .finally(() => initData$ && initData$.unsubscribe())
             .subscribe(
-                (patterns: any[]) => this.heatmap && this.update(patterns),
+                (patterns: any[]) => this.view && this.update(patterns),
                 (err) => console.log(err)
             );
     }
@@ -157,21 +158,21 @@ export class IndicatorHeatMapComponent implements OnInit, DoCheck {
     private update(patterns: any[]) {
         const indicators = this.groupIndicatorsByAttackPatterns();
         this.attackPatterns = this.collectAttackPatterns(patterns, indicators);
-        this.heatmap.createAttackPatternHeatMap();
-        this.heatmap['heatMapView'].forceUpdate();
+        this.view.createAttackPatternHeatMap();
+        this.view.heatmap.redraw();
     }
 
     /**
      * @description create a map of attack patterns and their indicators (inverted indicators-to-attack-patterns map)
      */
     private groupIndicatorsByAttackPatterns() {
-        const indicatorIds = this.indicators ? this.indicators.map(indicator => indicator.id) : [];
-        const patternIndicators = {};
+        const indicatorIds: string[] = this.indicators ? this.indicators.map(indicator => indicator.id) : [];
+        const patternIndicators: Dictionary<string[]> = {};
         Object.entries(this.indicatorsToAttackPatternMap)
             .filter(indicator => indicatorIds.includes(indicator[0]))
-            .forEach(([indicator, patterns]) => {
-                if (patterns && (patterns as any[]).length) {
-                    (patterns as any[]).forEach((p: any) => {
+            .forEach(([indicator, patterns]: [string, any[]]) => {
+                if (patterns && patterns.length) {
+                    patterns.forEach((p: any) => {
                         if (!patternIndicators[p.name]) {
                             patternIndicators[p.name] = [];
                         }
@@ -185,7 +186,7 @@ export class IndicatorHeatMapComponent implements OnInit, DoCheck {
     /**
      * @description Build a list of all the attack patterns.
      */
-    private collectAttackPatterns(patterns: any[], indicators: any): any {
+    private collectAttackPatterns(patterns: any[], indicators: Dictionary<string[]>): any {
         const attackPatterns = {};
         patterns.forEach((pattern) => {
             const name = pattern.attributes.name;
