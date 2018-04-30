@@ -14,6 +14,11 @@
 
         .info-bar {
             margin: auto 14px;
+
+            span {
+                flex: 0 0 auto;
+                margin: auto 4px;
+            }
         }
     }
 
@@ -24,6 +29,11 @@
 
     a:hover {
         color: $light-text-slightly-dimmed;
+    }
+
+    mat-icon {
+        margin: 0 0 auto;
+        flex: 1 1 auto;
     }
 
 }

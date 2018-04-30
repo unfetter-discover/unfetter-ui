@@ -1,5 +1,5 @@
 <div id="tabWrapper">
-  <uf-info-bar *ngIf="percentCompleted < 100" [message]="percentCompletedMsg" [completeActionUrl]="editUrl||''"></uf-info-bar>
+  <uf-info-bar *ngIf="percentCompleted < 100" isWarningMsg="true" [message]="percentCompletedMsg" [completeActionUrl]="editUrl||''"></uf-info-bar>
   <div class="height-100-percent">
     <div class="height-100-percent flex flexRow">
       <div class="height-100-percent flex flexColumn">

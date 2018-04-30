@@ -40,7 +40,7 @@ export class ResultHeaderComponent implements OnInit {
     this.editUrl = `${editBase}/${this.rollupId}`; 
     // TODO: initialize the correct total questions, by calling the server, may need a count endpoint
     this.percentCompleted = this.calcPercentCompleted(this.assessment);
-    this.percentCompletedMsg = `${this.percentCompleted}% of your assessment is complete.`;
+    this.percentCompletedMsg = `Assessments BETA, some features do not work!  ${this.percentCompleted}% of your assessment is complete.`;
   }
 
   /**
