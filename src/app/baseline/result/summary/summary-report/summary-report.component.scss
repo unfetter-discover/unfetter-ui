@@ -10,6 +10,7 @@
   -ms-flex-align: stretch;
 }
 
+$min-card-height: 357px;
 $min-card-width: 292;
 $padding-between-cards: 10;
 $min-card-fullwidth: ($min-card-width * 3 + $padding-between-cards + $padding-between-cards);
@@ -30,12 +31,13 @@ $min-card-fullwidth: ($min-card-width * 3 + $padding-between-cards + $padding-be
 }
 
 .card {
-  min-height: 371px;
+  min-height: $min-card-height;
   margin-bottom: 20px;
-  padding-top: 25px;
-  padding-left: 15px;
+  padding-top: 19px;
+  padding-left: 23px;
   padding-right: 18px;
   padding-bottom: 6px;
+  font-weight: lighter;
   .mat-card-subtitle {
     color: black;
     font-size: 20px;
@@ -52,4 +54,42 @@ $min-card-fullwidth: ($min-card-width * 3 + $padding-between-cards + $padding-be
 .right-card {
   flex-grow: .5;
   margin-left: $padding-between-cards + px;
+}
+
+#stats {
+  background-color: $assessments-primary;
+  color: $assessments-accent-text-slightly-dimmed;
+  opacity: 0.87;
+}
+
+#overall-rating {
+  padding-top: 29px;
+  padding-left: 37px;
+  padding-right: 37px;
+  padding-bottom: 29px;
+}
+
+#overall-rating-chart {
+  height: $min-card-height;
+}
+
+#ratings {
+  color: $assessments-primary;
+}
+
+.card-row-description {
+  font-size: 15px;
+}
+
+.card-row-data {
+  font-size: 50px;
+  font-weight: 300;
+}
+
+.second-row {
+  padding-top: 25px;
+}
+
+.third-row {
+  padding-top: 27px;
 }
