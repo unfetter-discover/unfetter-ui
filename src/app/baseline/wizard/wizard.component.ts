@@ -5,17 +5,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MenuItem } from 'primeng/primeng';
 import { Subscription } from 'rxjs/Subscription';
-import { Category } from 'stix';
+import { Category, Capability, ObjectAssessment, AssessmentSet } from 'stix/assess/v3';
 import { Key } from 'ts-keycode-enum';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { heightCollapse } from '../../global/animations/height-collapse';
-import { Baseline } from '../../models/baseline/baseline';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
-import { BaselineObject } from '../../models/baseline/baseline-object';
 import { Dictionary } from '../../models/json/dictionary';
 import { JsonApiData } from '../../models/json/jsonapi-data';
 import { Stix } from '../../models/stix/stix';
-import { Capability } from '../../models/unfetter/capability';
 import { UserProfile } from '../../models/user/user-profile';
 import { AppState } from '../../root-store/app.reducers';
 import { Constance } from '../../utils/constance';
@@ -25,7 +22,7 @@ import { CleanAssessmentWizardData, LoadAssessmentWizardData, SaveAssessment, Up
 import { BaselineState } from '../store/baseline.reducers';
 import { AttackPatternChooserComponent } from './attack-pattern-chooser/attack-pattern-chooser.component';
 import { Measurements } from './models/measurements';
-import { ScoresModel } from './models/scores-model';
+import { WeightsModel } from './models/weights-model';
 import { WizardBaseline } from './models/wizard-baseline';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
@@ -52,7 +49,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public readonly CHART_BG_COLORS: any[];
   public readonly CHART_HOVER_BG_COLORS: any[];
 
-  public model: JsonApiData<Baseline, Dictionary<Baseline>>;
+  public model: JsonApiData<ObjectAssessment, Dictionary<ObjectAssessment>>;
   public publishDate = new Date();
   public buttonLabel: ButtonLabel = 'CONTINUE';
   public item: MenuItem[];
@@ -97,21 +94,24 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public insertMode = false;
   private baselines: WizardBaseline[] = [];
   private groupings = [];
-  private scoresModel: ScoresModel = {} as ScoresModel;
   public openedSidePanel: string;
-  // public categoryNames: string[] = [ 'Network Analysis', 'Network Firewall', 'sysmon' ];
-  public categoryNames: string[] = [];
-  public navigation: { label: string, page: number };
+  public navigation: { id: string, label: string, page: number };
   public navigations: any[];
-  public categories: Dictionary<{ name: string, scoresModel: ScoresModel, capabilities: any[] }>[] = [];
-  private currentCapabilities: Capability[] = [];
-  private currentCapability = {} as Capability;
+  public baselineGroups: Dictionary<{ category: Category, capabilities: Capability[] }>[] = [];
+  
+  private objAssessments: ObjectAssessment[];
+  private currentObjAssessment: ObjectAssessment;
+  public categories: Category[] = [];
+  public currentCategory = {} as Category;
+  public capabilities: Capability[] = [];
+  public currentCapability = {} as Capability;
+  
 
   public showHeatmap = false;
   public attackPatterns: any[] = [];
 
   private readonly subscriptions: Subscription[] = [];
-  private readonly sidePanelNames: string[] = ['categories', 'capabilities', 'capability', 'summary'];
+  private readonly sidePanelNames: string[] = ['categories', 'capability-selector', 'capabilities', 'summary'];
 
   constructor(
     private genericApi: GenericApi,
@@ -164,7 +164,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           let meta: Partial<BaselineMeta> = {};
           let baselineId = params.baselineId || '';
           if (baselineId) {
-            this.loadExistingAssessment(baselineId, meta);
+            this.loadExistingBaseline(baselineId, meta);
           }
           this.wizardStore.dispatch(new LoadAssessmentWizardData(meta));
         },
@@ -180,6 +180,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         (loaded: boolean) => {
           const panel = this.determineFirstOpenSidePanel();
           if (panel) {
+            this.page = 1;
             this.onOpenSidePanel(panel);
           }
         },
@@ -229,11 +230,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       .pluck('categorySteps')
       .distinctUntilChanged()
       .subscribe(
-        (categorySteps: Category[]) => {
-          this.categoryNames = categorySteps
-            .filter((cat) => cat !== undefined)
-            .map((category) => category.name)
-        },
+        (categorySteps: Category[]) => this.updateNavigations(categorySteps),
         (err) => console.log(err));
 
       this.subscriptions.push(sub4$, sub5$, sub6$, sub7$, sub8$, sub9$);
@@ -253,7 +250,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     });
   }
 
-  public loadExistingAssessment(baselineId: string, meta: Partial<BaselineMeta>) {
+  public loadExistingBaseline(baselineId: string, meta: Partial<BaselineMeta>) {
     const sub$ = this.userStore
       .select('users')
       .pluck('userProfile')
@@ -261,11 +258,10 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       .subscribe(
         (user: UserProfile) => {
           const sub1$ = this.baselineStore
-            .select('fullBaseline')
-            .pluck('baselineTypes')
+            .select('fullBaselineNew')
             .distinctUntilChanged()
             .subscribe(
-              (arr: Baseline[]) => this.loadAssessments(baselineId, arr, meta),
+              (arr: AssessmentSet) => this.loadAssessments(baselineId, arr, meta),
               (err) => console.log(err));
           this.subscriptions.push(sub1$);
         },
@@ -274,8 +270,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.baselineStore.dispatch(new LoadAssessmentResultData(baselineId));
   }
 
-  public loadAssessments(baselineId: string, arr: Array<Baseline>, meta: Partial<BaselineMeta>) {
-    if (!arr || arr.length === 0) {
+  public loadAssessments(baselineId: string, arr: AssessmentSet, meta: Partial<BaselineMeta>) {
+    if (!arr) {
       return;
     }
 
@@ -283,46 +279,15 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
      * making the model a collection of all the baselines matching the given rollup id, plus a summary of all the
      * assessed objects to make it easier to use the existing code to display the questions and existing answers
      */
-    const summary = new Baseline();
-    const typedAssessments = {};
-    arr.forEach(baseline => {
-      summary.id = baseline.id;
-      summary.type = baseline.type;
-      summary.name = baseline.name;
-      summary.description = baseline.description;
-      summary.created = baseline.created;
-      summary.modified = baseline.modified;
-      summary.baselineMeta = baseline.baselineMeta;
-      summary.baseline_objects = summary.baseline_objects.concat(baseline.baseline_objects);
-      summary.created_by_ref = baseline.created_by_ref;
-      // if (!baseline.metaProperties) {
-      //   baseline.metaProperties = {};
-      //   if (!baseline.metaProperties.rollupId) {
-      //     baseline.metaProperties.rollupId = rollupId;
-      //   }
-      // }
-      // if (baseline.baseline_objects.every(el => el.stix.type === 'indicator')) {
-      //   typedAssessments[this.sidePanelOrder[0]] = baseline;
-      //   meta.includesIndicators = true;
-      // } else if (baseline.baseline_objects.every(el => el.stix.type === 'course-of-action')) {
-      //   typedAssessments[this.sidePanelOrder[1]] = baseline;
-      //   meta.includesMitigations = true;
-      // } else if (baseline.baseline_objects.every(el => el.stix.type === 'x-unfetter-sensor')) {
-      //   typedAssessments[this.sidePanelOrder[2]] = baseline;
-      //   meta.includesSensors = true;
-      // } else {
-      //   console.log('We got a weird baseline document that is not all of one category, or has unknown categories',
-      //     baseline);
-      // }
-    });
-
-    this.model = {
-      id: summary.id,
-      type: summary.type,
-      attributes: summary,
-      relationships: typedAssessments,
-      links: undefined
-    };
+    const summary = new AssessmentSet();
+    summary.id = arr.id;
+    summary.type = arr.type;
+    summary.name = arr.name;
+    summary.description = arr.description;
+    summary.created = arr.created;
+    summary.modified = arr.modified;
+    summary.assessments = summary.assessments.concat(arr.assessments);
+    summary.created_by_ref = arr.created_by_ref;
 
     meta.title = summary.name;
     meta.description = summary.description;
@@ -339,49 +304,52 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  /*
-   * @description find panel names with data
-   * @return {SidePanelName[]}
-   */
-  public determinePanelsWithData(): string[] {
-    let panelsWithData = [];
-    if (this.categoryNames.length > 0) {
-      let catPanels = [ ...this.categoryNames ];
-      catPanels.forEach(catName => {
-        panelsWithData = [ ...panelsWithData, catName ];
-        if (this.categories[catName] && this.categories[catName].capabilities) {
-          this.categories[catName].capabilities.forEach(cap => {
-            panelsWithData = [ ...panelsWithData, cap];
-          });
-        }
-      });
-    }
+  // /*
+  //  * @description find panel names with data
+  //  * @return {SidePanelName[]}
+  //  */
+  // public determinePanelsWithData(): string[] {
+  //   let panelsWithData = [];
+  //   if (this.navigations.length > 0) {
+  //     let groupPanels = [ ...this.navigations ];
+  //     groupPanels.forEach(name => {
+  //       panelsWithData = [ ...panelsWithData, name ];
+  //       if (this.baselineGroups[name] && this.baselineGroups[name].capabilities) {
+  //         this.baselineGroups[name].capabilities.capabilities.forEach(cap => {
+  //           panelsWithData = [ ...panelsWithData, cap];
+  //         });
+  //       }
+  //     });
+  //   }
 
-    return panelsWithData;
-  }
+  //   return panelsWithData;
+  // }
 
   /*
    * @description name of first side panel with data
    * @return {string} name of first open side panel
    */
   public determineFirstOpenSidePanel(): string {
-    const hasContents = [ this.sidePanelNames[0], ...this.determinePanelsWithData() ];
+    // TODO: For now, go to first panel (Group Setup), but eventually
+    //       want to check for first incomplete capability in this assessment set
+
+    let hasContents = [ this.sidePanelNames[0] ];
 
     // return first panel w/ data
     return hasContents[0];
   }
 
-  /*
-   * @description first panel with data, after the currently opened
-   * @return {string} name of last listed side panel with data
-   */
-  public determineNextSidePanel(): string {
-    const panels: string[] = [...this.determinePanelsWithData(), 'summary'];
-    const openedIndex = panels.findIndex((el) => el === this.openedSidePanel);
-    const nextPanels = panels.slice(openedIndex + 1, panels.length);
-    // first panel with data, after the currently opened
-    return nextPanels[0];
-  }
+  // /*
+  //  * @description first panel with data, after the currently opened
+  //  * @return {string} name of last listed side panel with data
+  //  */
+  // public determineNextSidePanel(): string {
+  //   const panels: string[] = [...this.determinePanelsWithData(), 'summary'];
+  //   const openedIndex = panels.findIndex((el) => el === this.openedSidePanel);
+  //   const nextPanels = panels.slice(openedIndex + 1, panels.length);
+  //   // first panel with data, after the currently opened
+  //   return nextPanels[0];
+  // }
 
   /*
    * @description
@@ -390,15 +358,13 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {void}
    */
   public onOpenSidePanel(panelName: string, event?: UIEvent): void {
-    if (this.openedSidePanel && this.currentCapabilities && this.openedSidePanel !== 'summary') {
-      // save current state, if needed
-      this.categories[this.openedSidePanel] = { name: undefined, scoresModel: undefined, capabilities: undefined };
-      this.categories[this.openedSidePanel].capabilities = [...this.currentCapabilities];
-      this.categories[this.openedSidePanel].scoresModel = { ...this.scoresModel };
-    }
+    // if (this.openedSidePanel && this.capabilities && this.openedSidePanel !== 'summary') {
+    //   // save current state, if needed
+    //   this.baselineGroups[this.openedSidePanel] = { name: undefined, weightsModel: undefined, capabilities: undefined };
+    //   this.baselineGroups[this.openedSidePanel].capabilities = [...this.capabilities];
+    // }
 
     // clear out state
-    this.scoresModel = {};
     this.page = 1;
     this.showSummary = false;
     this.buttonLabel = 'CONTINUE';
@@ -408,11 +374,10 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
     // reload questions
     this.refreshToOpenedAssessmentType();
-    if (this.openedSidePanel && this.categories[this.openedSidePanel]) {
+    if (this.openedSidePanel && this.baselineGroups[this.openedSidePanel]) {
       // reload previous state for given type/panel if it exists
-      this.currentCapabilities = [...this.categories[this.openedSidePanel].capabilities];
+      this.capabilities = [...this.baselineGroups[this.openedSidePanel].capabilities];
       this.currentCapability = this.getCurrentCapability();
-      this.scoresModel = { ...this.categories[this.openedSidePanel].scoresModel };
     }
 
     // reset progress 
@@ -433,7 +398,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     if (data) {
       // this.capability = [];
       this.updateRatioOfAnswerQuestions();
-      this.build(data);
+      this.updateNavigations(data);
     }
   }
 
@@ -442,7 +407,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {void}
    */
   public updateRatioOfAnswerQuestions(): void {
-    if (this.currentCapabilities && this.currentCapabilities.length > 1) {
+    if (this.capabilities && this.capabilities.length > 1) {
       // const allQuestions = this.currentCapabilities
       //   // flat map baselines across groups
       //   .map((groups) => groups.baselines)
@@ -522,29 +487,29 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     // }
   }
 
-  public collectModelAssessments(baseline: any) {
-    if (this.model && this.model.attributes && this.model.attributes.baseline_objects
-      && this.model.attributes.baseline_objects.length > 0 && baseline && baseline.id) {
-      const baselineObject = this.model.attributes.baseline_objects.find(obj => obj.stix ? baseline.id === obj.stix.id : false);
-      if (!baselineObject) {
-        console.warn(`baselineObject not found! id: ${baseline.id}, moving on...`);
-        return;
-      }
-      // TODO: Resurrect this once we have scoring
-      // baseline.risk = baselineObject.risk ? baselineObject.risk : 0;
-      // if (baseline.measurements && baselineObject.questions) {
-      //   baseline.measurements.forEach((m) => {
-      //     const question = baselineObject.questions.find((q) => q.name === m.name);
-      //     if (question) {
-      //       m.risk = question.risk ? question.risk : 0;
-      //     }
-      //   });
-      // }
-    } else {
-      console.warn(`unable to execute collection of model baselines; moving on... model: ${JSON.stringify(this.model)}`);
-    }
+  // public collectModelAssessments(baseline: any) {
+  //   if (this.model && this.model.attributes && this.model.attributes.baseline_objects
+  //     && this.model.attributes.baseline_objects.length > 0 && baseline && baseline.id) {
+  //     const baselineObject = this.model.attributes.baseline_objects.find(obj => obj.stix ? baseline.id === obj.stix.id : false);
+  //     if (!baselineObject) {
+  //       console.warn(`baselineObject not found! id: ${baseline.id}, moving on...`);
+  //       return;
+  //     }
+  //     // TODO: Resurrect this once we have scoring
+  //     // baseline.risk = baselineObject.risk ? baselineObject.risk : 0;
+  //     // if (baseline.measurements && baselineObject.questions) {
+  //     //   baseline.measurements.forEach((m) => {
+  //     //     const question = baselineObject.questions.find((q) => q.name === m.name);
+  //     //     if (question) {
+  //     //       m.risk = question.risk ? question.risk : 0;
+  //     //     }
+  //     //   });
+  //     // }
+  //   } else {
+  //     console.warn(`unable to execute collection of model baselines; moving on... model: ${JSON.stringify(this.model)}`);
+  //   }
 
-  }
+  // }
 
   /*
    * @description clicked a stepper
@@ -702,26 +667,42 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.showSummary = false;
     this.buttonLabel = 'CONTINUE';
 
-    // last page for this category
-    if (this.page + 1 > this.currentCapabilities.length) {
-      const nextPanel = this.determineNextSidePanel();
-      // last page
-      if (nextPanel !== 'summary') {
-        //  but not last category, advance to the next category
-        this.onOpenSidePanel(nextPanel);
-      } else {
-        // last category, show save page
-        this.page = 1;
-        this.onOpenSidePanel('summary');
-        this.showSummarySavePage();
-      }
+    // Is this the last cat/cap page?
+    if (this.page === this.navigations.length) {
+      // Show summary page
+      this.page = 1 + this.navigations.length + 1;  // groups + (cats & caps) + summary
+      this.onOpenSidePanel('summary');
+      this.showSummarySavePage();
     } else {
-      // advance to next page within a given baseline type
-      this.page = this.page + 1;
-      this.currentCapability = this.getCurrentCapability();
+      // Increment to next page
+      this.page += 1;
+
+      const nextPage = this.navigations.find((page) => page === this.page);
+      const catIndex = this.categories.find((id) => id === nextPage.id);
+      let nextPanel: string;
+
+      // Is the next page a category?
+      if (catIndex) {
+        // Move to the next category and its capabilities
+        this.currentCategory = this.categories.find((id) => id === nextPage.id);
+      }
+
+      this.capabilities = this.capabilities.filter((category) => category.id === this.currentCategory.id);
+      this.currentCapability = this.capabilities[0];
+
+      if (catIndex) {
+        nextPanel = this.currentCategory.name;
+      } else {
+        nextPanel = this.currentCapability.name;
+      }
+
+      this.onOpenSidePanel(nextPanel);
+
       this.setSelectedRiskValue();
       this.updateChart();
+
     }
+
     this.updateRatioOfAnswerQuestions();
   }
 
@@ -744,6 +725,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @param {Assessment} baseline - optional
    * @return {number}
    */
+  // TODO: Update to reflect current value of the question in current object assessment
+  //       This method should operate on current(ObjAssessment, Category, Capability)
+  //       to determine value of specific P/D/R weight
   // public selectedValue(measurement: any, option: any, baseline?: Assessment3): number {
   //   if (!this.model) {
   //     if (this.tempModel) {
@@ -814,21 +798,23 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @param data 
    * @return {void}
    */
-  private build(data?: Stix[]): void {
+  private updateNavigations(data?: Category[]): void {
     if (!data) {
       return;
     }
 
+    // TODO: Fill out navigations array and baselineGroups dictionary
+    let index = 2;   // start at 2; 1 is 'GROUP SETUP'
+    data.forEach((category) => {
+      this.navigations = [];
+      this.navigations.push( { id: category.id, label: category.name,  page: index++ } );
+    });
+    
     // TODO: fetch capabilities from this current baseline set
     // this.currentCapabilities = this.createCapabilities(data);
     this.currentCapability = this.getCurrentCapability();
-    this.updateChart();
-  }
-  /**
-   * @param  {Category[]} steps
-   */
-  private updateCategorySteps(steps: Category[]) {
     
+    this.updateChart();
   }
 
   /*
@@ -837,15 +823,15 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {any}
    */
   private getCurrentCapability(): any {
-    if (this.currentCapabilities) {
+    if (this.capabilities) {
       let index = 0;
       if (this.page) {
         index = this.page - 1;
       }
-      if (index >= this.currentCapabilities.length) {
+      if (index >= this.capabilities.length) {
         index = 0;
       }
-      return this.currentCapabilities[index];
+      return this.capabilities[index];
     } else {
       return undefined;
     }
@@ -856,7 +842,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {any[]}
    */
   public getCapabilities(): any[] {
-    return this.currentCapabilities;
+    return this.capabilities;
   }
 
   /* 
@@ -864,7 +850,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {any[]}
    */
   public setCapabilities(newCapabilities: any[]): void {
-    this.currentCapabilities = newCapabilities;
+    this.capabilities = newCapabilities;
   }
 
   /*
@@ -889,9 +875,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           baseline.id = assessedObject.id;
           baseline.name = assessedObject.name;
           baseline.description = assessedObject.description;
-          baseline.scores = assessedObject.id ? this.buildMeasurements(assessedObject.id) : [];
+          baseline.weights = assessedObject.id ? this.buildMeasurements(assessedObject.id) : [];
           baseline.type = assessedObject.type;
-          const risk = this.getRisk(baseline.scores);
+          const risk = this.getRisk(baseline.weights);
           // baseline.risk = -1;
           return baseline;
         });
@@ -1118,40 +1104,30 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @param {any}
    * @return {Assessment}
    */
-  private generateBaselineAssessment(tempModel: ScoresModel, baselineMeta: BaselineMeta): Baseline {
-    const baseline = new Baseline();
-    baseline.baselineMeta = baselineMeta;
+  private generateBaseline(tempModel: WeightsModel, baselineMeta: BaselineMeta): AssessmentSet {
+    const baseline = new AssessmentSet();
     baseline.name = this.meta.title;
     baseline.description = this.meta.description;
     baseline.created = this.publishDate.toISOString();
     baseline.created_by_ref = this.meta.created_by_ref;
-    const baselineSet = new Set<BaselineObject>();
+    const objAssessments = new Set<ObjectAssessment>();
 
     Object.keys(tempModel)
       .forEach((baselineId) => {
         const baselineObj = tempModel[baselineId];
-        const temp = new BaselineObject();
+        const temp = new ObjectAssessment();
         const stix = new Stix();
         stix.id = baselineObj.baseline.id;
         stix.type = baselineObj.baseline.type;
         stix.description = baselineObj.baseline.description || '';
         stix.name = baselineObj.baseline.name;
         stix.created_by_ref = baselineObj.baseline.created_by_ref;
-        temp.stix = stix;
-        temp.questions = [];
-        // if (baselineObj.measurements !== undefined) {
-        //   temp.questions = baselineObj.measurements
-        //     .filter((measurement) => {
-        //       return measurement.selected_value && measurement.selected_value.risk >= 0;
-        //     });
-        // }
-        // temp.risk = temp.questions
-        //   .map((question) => question.risk)
-        //   .reduce((prev, cur) => (prev += cur), 0) / temp.questions.length;
-        baselineSet.add(temp);
+        Object.assign(temp, stix);
+        temp.assessments_objects = [];
+        objAssessments.add(temp);
       });
 
-    baseline['baseline_objects'] = Array.from(baselineSet);
+    baseline['baseline_objects'] = Array.from(objAssessments);
     return baseline;
   }
 
@@ -1161,25 +1137,25 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {void}
    */
   private saveAssessments(): void {
-    if (this.model) {
-      const baselines = Object.values(this.model.relationships);
-      baselines.forEach(baseline => {
-        baseline.modified = this.publishDate.toISOString();
-        baseline.description = this.meta.description;
-        if (this.meta.created_by_ref) {
-          baseline.created_by_ref = this.meta.created_by_ref;
-        }
-      });
-      this.wizardStore.dispatch(new SaveAssessment(baselines));
-    } else {
-      // TODO: ....
-      // const baselines = this.sidePanelOrder
-      //   .map((name) => this.categories[name])
-      //   .filter((el) => el !== undefined)
-      //   .map((el) => el.scoresModel)
-      //   .filter((el) => el !== undefined)
-      //   .map((el) => this.generateBaselineAssessment(el, this.meta))
-      // this.wizardStore.dispatch(new SaveAssessment(baselines));
-    }
+    // TODO: once model is set, implement this to save AssessmentSet
+    // if (this.model) {
+    //   const baselines = Object.values(this.model.relationships);
+    //   baselines.forEach(baseline => {
+    //     baseline.modified = this.publishDate.toISOString();
+    //     baseline.description = this.meta.description;
+    //     if (this.meta.created_by_ref) {
+    //       baseline.created_by_ref = this.meta.created_by_ref;
+    //     }
+    //   });
+    //   this.wizardStore.dispatch(new SaveAssessment(baselines));
+    // } else {
+    //   const baselines = this.sidePanelOrder
+    //     .map((name) => this.categories[name])
+    //     .filter((el) => el !== undefined)
+    //     .map((el) => el.scoresModel)
+    //     .filter((el) => el !== undefined)
+    //     .map((el) => this.generateBaselineAssessment(el, this.meta))
+    //   this.wizardStore.dispatch(new SaveAssessment(baselines));
+    // }
   }
 }

@@ -12,6 +12,6 @@ export class WizardBaseline {
     public name: string;
     public description: string;
     public type: StixLabelEnum = StixLabelEnum.INDICATOR;
-    public scores: BaselineQuestion[] = [];
+    public weights: BaselineQuestion[] = [];
     public groupings: any[] = [];
 }

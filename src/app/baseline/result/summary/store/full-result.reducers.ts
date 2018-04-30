@@ -1,14 +1,12 @@
-import * as fullAssessmentResultActions from './full-result.actions';
+import { AssessmentSet } from 'stix/assess/v3';
 import { Baseline } from '../../../../models/baseline/baseline';
-import { BaselineObject } from '../../../models/baseline/baseline-object';
-import { DisplayedAssessmentObject } from '../full/group/models/displayed-baseline-object';
-import { FullAssessmentResultActions, LOAD_ASSESSMENT_RESULT_DATA } from './full-result.actions';
 import { Stix } from '../../../models/stix/stix';
-import { RiskByAttack3 } from '../../../models/baseline/risk-by-attack3';
-import { Relationship } from '../../../models';
 import { FullBaselineGroup } from '../../full/group/models/full-baseline-group';
+import * as fullAssessmentResultActions from './full-result.actions';
+import { FullAssessmentResultActions, LOAD_ASSESSMENT_RESULT_DATA } from './full-result.actions';
 
 export interface FullAssessmentResultState {
+    fullBaselineNew: AssessmentSet;
     fullBaseline: Baseline;
     baselineTypes: Baseline[];
     finishedLoading: boolean;
@@ -42,6 +40,7 @@ export const genGroupState = (state?: Partial<FullBaselineGroup>) => {
 
 export const genState = (state?: Partial<FullAssessmentResultState>) => {
     const tmp = {
+        fullBaselineNew: new AssessmentSet(),
         fullBaseline: new Baseline(),
         baselineTypes: [],
         finishedLoading: false,

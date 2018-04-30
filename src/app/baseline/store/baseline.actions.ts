@@ -1,9 +1,7 @@
 import { Action } from '@ngrx/store';
-import { BaselineMeta } from '../../models/baseline/baseline-meta';
-import { Stix } from '../../models/stix/stix';
-import { JsonApiData } from '../../models/json/jsonapi-data';
+import { Capability, Category } from 'stix/assess/v3';
 import { Baseline } from '../../models/baseline/baseline';
-import { Category } from 'stix';
+import { BaselineMeta } from '../../models/baseline/baseline-meta';
 
 // For effects
 export const START_ASSESSMENT = '[Baseline] START_ASSESSMENT';
@@ -15,6 +13,7 @@ export const FETCH_ASSESSMENT = '[Baseline] FETCH_ASSESSMENT';
 export const FETCH_CATEGORIES = '[Baseline] FETCH_CATEGORIES';
 export const SET_CATEGORIES = '[Baseline] SET_CATEGORIES';
 export const SET_CATEGORY_STEPS = '[Baseline] SET_CATEGORY_STEPS';
+export const SET_BASELINE_CAPS = '[Baseline] SET_BASELINE_CAPS';
 
 // For reducers
 export const UPDATE_PAGE_TITLE = '[Baseline] UPDATE_PAGE_TITLE';
@@ -71,6 +70,12 @@ export class SetCategorySteps implements Action {
     constructor(public payload: Category[]) { }
 }
 
+export class SetBaselineCaps implements Action {
+    public readonly type = SET_BASELINE_CAPS;
+
+    constructor(public payload: Capability[]) { }
+}
+
 export class LoadAssessmentWizardData implements Action {
     public readonly type = LOAD_ASSESSMENT_WIZARD_DATA;
 
@@ -112,6 +117,7 @@ export type AssessmentActions =
     FetchCategories |
     SetCategories |
     SetCategorySteps |
+    SetBaselineCaps |
     FinishedLoading |
     FinishedSaving |
     LoadAssessmentWizardData |

@@ -1,20 +1,19 @@
-import * as baselineActions from './baseline.actions';
-import * as fromApp from '../../root-store/app.reducers'
-import { Baseline } from '../../models/baseline/baseline';
-import { Stix } from '../../models/stix/stix';
-import { JsonApiData } from '../../models/json/jsonapi-data';
-import { Category } from 'stix';
+import { AssessmentSet, Capability, Category } from 'stix/assess/v3';
+import * as fromApp from '../../root-store/app.reducers';
 import { CategoryComponent } from '../wizard/category/category.component';
+import * as baselineActions from './baseline.actions';
+import { BaselineMeta } from '../../models/baseline/baseline-meta';
 
 export interface BaselineFeatureState extends fromApp.AppState {
-    baseline: Baseline
+    baseline: AssessmentSet
 };
 
 export interface BaselineState {
-    baseline: Baseline;
+    baseline: AssessmentSet;
     backButton: boolean;
     categories: Category[];
     categorySteps: Category[];
+    baselineCaps: Capability[];
     // TODO: add attack pattern array
     // attackPatterns?: JsonApiData<AttackPattern>[];
     finishedLoading: boolean;
@@ -25,10 +24,11 @@ export interface BaselineState {
 
 const genAssessState = (state?: Partial<BaselineState>) => {
     const tmp = {
-        baseline: new Baseline(),
+        baseline: new AssessmentSet(),
         backButton: false,
         categories: [],
         categorySteps: [ CategoryComponent.DEFAULT_VALUE ],
+        baselineCaps: [],
         finishedLoading: false,
         saved: { finished: false, id: '' },
         showSummary: false,
@@ -59,18 +59,29 @@ export function baselineReducer(state = initialState, action: baselineActions.As
                 ...state,
                 categorySteps: [...action.payload],
             });
-         case baselineActions.START_ASSESSMENT:
-            const a0 = new Baseline();
-            a0.baselineMeta = { ...action.payload };
+        case baselineActions.SET_BASELINE_CAPS:
+            return genAssessState({
+                ...state,
+                baselineCaps: [...action.payload],
+            });
+        case baselineActions.START_ASSESSMENT:
+            const a0 = new AssessmentSet();
+            const meta = action.payload;
+            a0.name = meta.title;
+            Object.assign(a0, action.payload);
+            // a0.description = meta.description;
+            // a0.created_by_ref = meta.created_by_ref;
             return genAssessState({
                 baseline: a0,
             });
         case baselineActions.UPDATE_PAGE_TITLE:
-            const a1 = new Baseline();
+            const a1 = new AssessmentSet();
             if (typeof action.payload === 'string') {
-                a1.baselineMeta.title = action.payload;
+                a1.name = action.payload;
             } else {
-                Object.assign(a1.baselineMeta, action.payload);
+                const blMeta = action.payload as BaselineMeta;
+                a1.name = blMeta.title;
+                Object.assign(a1, action.payload);
             }
             const s1 = genAssessState({
                 baseline: a1,

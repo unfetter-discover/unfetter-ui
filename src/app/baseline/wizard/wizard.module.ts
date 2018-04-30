@@ -15,15 +15,17 @@ import { CalendarModule } from 'primeng/components/calendar/calendar';
 import { ComponentModule } from '../../components/component.module';
 import { GlobalModule } from '../../global/global.module';
 import { PipesModule } from '../../pipes/pipes.module';
+import { AttackPatternChooserComponent } from './attack-pattern-chooser/attack-pattern-chooser.component';
+import { CapabilitySelectorComponent } from './capability-selector/capability-selector.component';
 import { CapabilityComponent } from './capability/capability.component';
 import { CategoryComponent } from './category/category.component';
 import { WizardComponent } from './wizard.component';
 import { routing } from './wizard.routing';
-import { AttackPatternChooserComponent } from './attack-pattern-chooser/attack-pattern-chooser.component';
 
 const moduleComponents = [
   WizardComponent,
   CategoryComponent,
+  CapabilitySelectorComponent,
   CapabilityComponent,
   AttackPatternChooserComponent,
 ];

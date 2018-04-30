@@ -9,8 +9,8 @@
         </mat-panel-title>
       </mat-expansion-panel-header>
     </mat-expansion-panel>
-    <mat-expansion-panel *ngFor="let category of categoryNames" hideToggle="true" [expanded]="openedSidePanel === 'capabilities'"
-      (opened)="onOpenSidePanel('capabilities', $event)">
+    <mat-expansion-panel *ngFor="let category of categories" hideToggle="true" [expanded]="category.name === currentCategory.name"
+      (opened)="onOpenSidePanel(category.name, $event)">
       <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
         <mat-panel-title>
           {{category}}
@@ -47,7 +47,8 @@
   <mat-card>
     <!-- List of cards containing each panel in the baselines wizard -->
     <div [ngSwitch]="openedSidePanel">
-      <unf-baseline-wizard-category *ngSwitchCase="'categories'" #categories></unf-baseline-wizard-category>
+      <unf-baseline-wizard-category *ngSwitchCase="'categories'"></unf-baseline-wizard-category>
+      <unf-baseline-wizard-capability-selector *ngSwitchCase="'capability-selector'"></unf-baseline-wizard-capability-selector>
       <unf-baseline-wizard-capability *ngSwitchCase="'capabilities'" (onToggleHeatMap)="toggleHeatMap()"></unf-baseline-wizard-capability>
       <div *ngSwitchCase="'capability'">
         <p>This is the attack pattern selection and capability scoring panel.</p>
