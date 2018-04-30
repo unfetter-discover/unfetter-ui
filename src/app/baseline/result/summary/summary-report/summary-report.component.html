@@ -1,82 +1,30 @@
 <div id="report">
   <div class="container-fluid">
-    <summary-header></summary-header>
-    <div class="row" id="summaryTitle">
-      <span>Object Assessment Overview</span>
-    </div>
     <div class="row">
       <div class="flex matchHeight">
-        <mat-card color="primary" class="uf-mat-card card left-card mat-card-scroll-content" id="capabilitiesCard">
-          <mat-card-title>Capabilities</mat-card-title>
-          <!--mat-card-title>Overall implementation risk: {{summaryCalculationService.getRiskText()}}%</mat-card-title>
-          <mat-card-subtitle>Weakness</mat-card-subtitle-->
-          <mat-card-content>
-            <span>TODO: capability detail here</span>
-            <!--p *ngIf="summaryCalculationService.weakness && summaryCalculationService.weakness.length > 0; else noWeakestAttackPatterns">
-              {{summaryCalculationService.weakness}}
-            </p>
-            <ng-template #noWeakestAttackPatterns>
-              No Weaknesses found? Either we messed up or you are good!
-            </ng-template-->
-          </mat-card-content>
-        </mat-card>
-        <mat-card color="primary" class="uf-mat-card card right-card mat-card-scroll-content" id="baselineObjectsCard">
-          <mat-card-title>Assessment Objects</mat-card-title>
-          <!--mat-card-title>Overall implementation risk: {{summaryCalculationService.getRiskText()}}%</mat-card-title>
-          <mat-card-subtitle>Weakness</mat-card-subtitle-->
-          <mat-card-content>
-            <span>TODO:  List baseline objects summary here</span>
-            <!--p *ngIf="summaryCalculationService.weakness && summaryCalculationService.weakness.length > 0; else noWeakestAttackPatterns">
-              {{summaryCalculationService.weakness}}
-            </p>
-            <ng-template #noWeakestAttackPatterns>
-              No Weaknesses found? Either we messed up or you are good!
-            </ng-template-->
-          </mat-card-content>
-        </mat-card>
+        <span class="card-width external-card-title left-card">
+          What are your baseline stats?</span>
+        <span class="card-width external-card-title left-card right-card">
+          What is your overall baseline rating?</span>
+        <span class="card-width external-card-title right-card">
+          What are your baseline ratings?</span>
       </div>
     </div>
     <div class="row">
       <div class="flex matchHeight">
-        <mat-card color="primary" lass="uf-mat-card card left-card mat-card-scroll-content" id="baselineSetsCard">
-          <mat-card-title>Assessment Sets</mat-card-title>
-          <!--mat-card-title>Where you are most vulnerable</mat-card-title-->
+        <mat-card color="primary" class="uf-mat-card card card-width left-card">
           <mat-card-content>
-            <span>TODO:  List baseline set summary here...</span>
-            <!--mat-table #table [dataSource]="summaryCalculationService.topRisks">
-              <ng-container matColumnDef="{{columnIds[0]}}">
-                <mat-header-cell *matHeaderCellDef>KILL CHAIN AFFECTED</mat-header-cell>
-                <mat-cell *matCellDef="let risk">{{risk.phaseName | capitalize }}</mat-cell>
-              </ng-container>
-              <ng-container matColumnDef="{{columnIds[1]}}">
-                <mat-header-cell *matHeaderCellDef>ASSESSED ITEM</mat-header-cell>
-                <mat-cell *matCellDef="let risk">
-                  <ul *ngIf="risk.objects && risk.objects.length; else noObjects">
-                    <li *ngFor="let obj of risk.objects">
-                      <a href="#stix/{{obj.type}}s/{{obj.id}}">{{obj.name}}</a>
-                    </li>
-                  </ul>
-                  <ng-template #noObjects>
-                    No assessed vulnerabilities found
-                  </ng-template>
-                </mat-cell>
-              </ng-container>
-              <ng-container matColumnDef="{{columnIds[2]}}">
-                <mat-header-cell *matHeaderCellDef>RISK</mat-header-cell>
-                <mat-cell *matCellDef="let risk">
-                  <span *ngIf="risk.objects && risk.objects.length" class="label label-warning">{{calculateRisk(risk.objects)}}</span>
-                </mat-cell>
-              </ng-container>
-              <mat-header-row class="table-header-row" *matHeaderRowDef="columnIds"></mat-header-row>
-              <mat-row *matRowDef="let row; columns: columnIds;"></mat-row>
-            </mat-table-->
+            <span>TODO: baseline stats detail here</span>
           </mat-card-content>
         </mat-card>
-        <mat-card color="primary" class="uf-mat-card card right-card mat-card-scroll-content" id="baselineGroupsCard">
-          <mat-card-title>Assessment Groups</mat-card-title>
-          <!--mat-card-title>Sophistication Breakdown</mat-card-title-->
+        <mat-card color="primary" class="uf-mat-card card card-width left-card right-card">
           <mat-card-content>
-            <span>TODO:  List baseline group summary here...</span>
+            <span>TODO: Baseline rating here here</span>
+          </mat-card-content>
+        </mat-card>
+        <mat-card color="primary" class="uf-mat-card card card-width right-card">
+          <mat-card-content>
+            <span>TODO: Baseline weightings here</span>
           </mat-card-content>
         </mat-card>
       </div>

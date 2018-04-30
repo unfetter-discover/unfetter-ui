@@ -1,32 +1,29 @@
 <div id="newAssessmentsSummary" *ngIf="finishedLoading; else loadingBlock" class="fadeIn">
   <mat-sidenav-container *ngIf="summary !== undefined; else notFound">
     <mat-sidenav class="side-panel" mode="side" opened="true">
-      <unfetter-side-panel class="side-panel" [item]="{ name: baselineName | async | capitalize }" collapsible="false" width="350">
+      <unfetter-side-panel class="side-panel" [item]="{ name: baselineName | async | capitalize }" collapsible="false" width="320">
 
         <sidepanel-option-item label="Edit" icon="mode_edit" (click)="onEdit($event)"></sidepanel-option-item>
         <sidepanel-option-item label="Share" icon="share" disabled="true" (click)="onShare($event)"></sidepanel-option-item>
         <sidepanel-option-item label="Delete" icon="delete" (click)="onDeleteCurrent($event)"></sidepanel-option-item>
 
-        <master-list-dialog-trigger title="Assessments" width="1200px" height="400px"
-            [dataSource]="masterListOptions.dataSource" [columns]="masterListOptions.columns"
-            (tabChange)="onFilterTabChanged($event)" (create)="onCreate($event)" (select)="onCellSelected($event)"
-            (edit)="onEdit($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
+        <master-list-dialog-trigger title="Baselines" width="1200px" height="400px" [dataSource]="masterListOptions.dataSource"
+          [columns]="masterListOptions.columns" (tabChange)="onFilterTabChanged($event)" (create)="onCreate($event)" (select)="onCellSelected($event)"
+          (edit)="onEdit($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
 
-        <!-- TODO: update for baselines
-        <sidepanel-list-item label="{{summaries[0].name}}" [items]="summaries" expandable="true">
-          <mat-list-item *ngFor="let summary of summaries; trackBy:trackByFn" class="list-divider" [@slideInOutAnimation]>
-            <h4 mat-line>
-              {{summary?.name}}
+        <sidepanel-list-item label="Date Modified" [items]="dates" id="sideDateList" showCount="false" expanded="true" hideToggle="true">
+          <mat-list-item *ngFor="let date of dates;" class="list-divider" [@slideInOutAnimation]>
+            <h4 class="side-list-item" mat-line>
+              {{date}}
             </h4>
-            <div mat-line class="mat-caption"> {{summary?.baseline_objects[0]?.stix?.type}} </div>
           </mat-list-item>
-        </sidepanel-list-item-->
+        </sidepanel-list-item>
 
       </unfetter-side-panel>
     </mat-sidenav>
     <mat-sidenav-content>
       <div class="main-panel">
-        <result-header [baselineId]="baselineId" [created]="summary?.created"></result-header>
+        <result-header [baselineId]="baselineId" [created]=""></result-header>
         <summary-report></summary-report>
       </div>
     </mat-sidenav-content>

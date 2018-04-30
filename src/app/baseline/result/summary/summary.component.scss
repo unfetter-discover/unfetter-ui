@@ -1,13 +1,22 @@
 @import '../../../../styles/_variables.scss';
 
 .side-panel {
-    width: 350px;
+    width: 320px;
     background-color: white;
 }
 
 .main-panel {
     min-height: calc(100vh - #{$navbar-height}px);
     background-color: #F1F1F1;
+}
+
+::ng-deep #sideDateList .side-list-item {
+    padding-left: 35px;
+    font-size: 14px;
+}
+
+::ng-deep #sideDateList .mat-expansion-panel-header-title {
+    font-size: 16px;
 }
 
 ::ng-deep .uf-master-list-dialog .mat-dialog-container {

@@ -36,6 +36,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
   readonly baseAssessUrl = '/baseline';
   baselineName: Observable<string>;
   baselineId: string;
+
+  dates: any[];
   summaries: Baseline[];
   summary: Baseline;
   finishedLoading = false;
@@ -116,6 +118,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     this.listenForDataChanges();
 
     this.subscriptions.push(idParamSub$);
+    this.dates = ['Yesterday, 09:36:40 AM', 'Monday, 03:11:15 PM', 'Mar 15, 2018 01:14:55 PM'];
   }
 
   /**
