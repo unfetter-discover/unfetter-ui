@@ -1,0 +1,165 @@
+<div class="sidenav">
+  <div @heightCollapse class="flex-col mt-18 mb-12">
+    <div class="center chart-header">
+      <span *ngIf="showSummary === false; else summaryChartTitle">Phase Rating</span>
+      <ng-template #summaryChartTitle>
+        <span id="summary-chart-title">Overall Rating</span>
+      </ng-template>
+    </div>
+    <div style="display: block">
+      <canvas *ngIf="showSummary === false; else summaryChart" baseChart [datasets]="doughnutChartData" [labels]="doughnutChartLabels"
+        [chartType]="doughnutChartType" [colors]="doughnutChartColors" [options]="chartOptions"></canvas>
+      <ng-template #summaryChart>
+        <canvas baseChart [datasets]="summaryDoughnutChartData" [labels]="summaryDoughnutChartLabels"
+          [chartType]="summaryDoughnutChartType" [colors]="summaryDoughnutChartColors" [options]="chartOptions" id="summary-chart"></canvas>
+      </ng-template>
+    </div>
+  </div>
+  <mat-accordion displayMode="flat" multi="false">
+    <mat-expansion-panel *ngIf="indicators && indicators.length > 0" hideToggle="true" [expanded]="openedSidePanel === 'indicators'"
+      (opened)="onOpenSidePanel('indicators', $event)">
+      <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
+        <mat-panel-title>
+          INDICATORS
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <ul class="stepper stepper-vertical">
+        <li [class.active]="navigation.page === page" *ngFor="let navigation of navigations">
+          <a href (click)="navigationClicked(navigation.page, $event)">
+            <span class="circle">&nbsp;</span>
+            <span class="label">{{navigation.label}}</span>
+          </a>
+        </li>
+      </ul>
+    </mat-expansion-panel>
+    <mat-expansion-panel *ngIf="mitigations && mitigations.length > 0" hideToggle="true" [expanded]="openedSidePanel === 'mitigations'"
+      (opened)="onOpenSidePanel('mitigations', $event)">
+      <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
+        <mat-panel-title>
+          MITIGATIONS
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <ul class="stepper stepper-vertical">
+        <li [class.active]="navigation.page === page" *ngFor="let navigation of navigations">
+          <a href (click)="navigationClicked(navigation.page, $event)">
+            <span class="circle">&nbsp;</span>
+            <span class="label">{{navigation.label}}</span>
+          </a>
+        </li>
+      </ul>
+    </mat-expansion-panel>
+    <mat-expansion-panel *ngIf="sensors && sensors.length > 0" hideToggle="true" [expanded]="openedSidePanel === 'sensors'" (opened)="onOpenSidePanel('sensors', $event)">
+      <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
+        <mat-panel-title>
+          SENSORS
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <ul class="stepper stepper-vertical">
+        <li [class.active]="navigation.page === page" *ngFor="let navigation of navigations">
+          <a href (click)="navigationClicked(navigation.page, $event)">
+            <span class="circle">&nbsp;</span>
+            <span class="label">{{navigation.label}}</span>
+          </a>
+        </li>
+      </ul>
+    </mat-expansion-panel>
+    <mat-expansion-panel hideToggle="true" [expanded]="openedSidePanel === 'summary'" (opened)="onOpenSidePanel('summary', $event); showSummarySavePage()">
+      <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
+        <mat-panel-title>
+          SUMMARY
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <ul class="stepper stepper-vertical">
+        <li class="active">
+          <a (click)="showSummarySavePage()">
+            <span class="circle">&nbsp;</span>
+            <span class="label">Summary</span>
+          </a>
+        </li>
+      </ul>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+
+<div class="card flex1">
+  <mat-card>
+    <div *ngIf="showSummary === false && currentAssessmentGroup; else savePage">
+      <mat-card-content>
+        <div class="row top-row">
+          <div class="col-xs-12">
+            Progress
+            <mat-progress-bar class="mt-8" [value]="ratioOfQuestionsAnswered">
+            </mat-progress-bar>
+          </div>
+        </div>
+        <div class="row margin-bottom flex-sm flexItemsCenter">
+          <div class="col-sm-9 group-name">
+            {{currentAssessmentGroup.name | capitalize }}
+          </div>
+        </div>
+        <div class="row margin-bottom" *ngFor="let assessment of currentAssessmentGroup?.assessments; trackBy: trackByFn">
+          <div class="col-xs-12">
+            <div class="row">
+              <div class="col-xs-12">
+                <risk-icon [risk]="assessment.risk" [showTooltip]="true"></risk-icon>
+                <strong>{{assessment.name}} -- {{assessment.description | firstSentence}}</strong> {{assessment.description | restSentence}}
+              </div>
+            </div>
+            <div class="row" style="margin: 10px 0px;">
+              <div class="col-xs-{{assessment.measurements.length | columnSize}}" *ngFor="let measurement of assessment.measurements; trackBy: trackByFn">
+                <form>
+                  <mat-form-field class="full-width">
+                    <mat-select #question name="question" (change)="updateRisks(question, measurement, assessment)" [value]="selectedValue(measurement, question, assessment)">
+                      <mat-option [value]="defaultValue"></mat-option>
+                      <mat-option *ngFor="let options of measurement.options" [value]="options.risk">
+                        {{ options.name }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </div>
+
+    <ng-template #savePage>
+      <mat-card-header>
+        <mat-card-title>Assessment Report</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="row mat-card-padding">
+          <div class="col-xs-8">
+            <mat-form-field class="full-width">
+              <input matInput placeholder="Assessment Name" name="assessment-name" [(ngModel)]="meta.title">
+              <mat-error *ngIf="isTitleEmpty()">
+                Title is
+                <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row mat-card-padding">
+          <div class="col-xs-12">
+            <mat-form-field class="full-width">
+              <textarea matInput placeholder="Assessment Description" [(ngModel)]="meta.description"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row mat-card-padding">
+          <div class="col-xs-12">
+            <created-by-ref [assessmentMeta]="meta"></created-by-ref>
+          </div>
+        </div>
+      </mat-card-content>
+    </ng-template>
+
+    <mat-card-actions class="text-right">
+      <button mat-button color="primary" *ngIf="!isFirstPage()" (click)="onBack($event)"> Back</button>
+      <button focus="true" mat-raised-button color="primary" (click)="onSave($event)" *ngIf="buttonLabel === 'SAVE'" [disabled]="isTitleEmpty()">{{buttonLabel}}</button>
+      <button focus="true" mat-raised-button color="primary" (click)="onNext($event)" *ngIf="buttonLabel !== 'SAVE'">{{buttonLabel}}</button>
+    </mat-card-actions>
+
+  </mat-card>
+</div>

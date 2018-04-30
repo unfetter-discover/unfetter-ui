@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { MatButtonModule } from '@angular/material';
+import { MatButtonModule, MatIconModule } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { InfoBarComponent } from './info-bar.component';
@@ -12,6 +12,7 @@ describe('InfoBarComponent', () => {
 
     const materialModules = [
       MatButtonModule,
+      MatIconModule,
     ]
     TestBed.configureTestingModule({
       declarations: [InfoBarComponent],

@@ -1,17 +1,13 @@
 import { HttpClientModule } from '@angular/common/http';
-import { TestBed } from '@angular/core/testing';
-import { inject } from '@angular/core/testing';
-import { fakeAsync } from '@angular/core/testing';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TestBed, fakeAsync, inject } from '@angular/core/testing';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-
 import { GenericApi } from '../../core/services/genericapi.service';
-import { ThreatReportOverviewService } from './threat-report-overview.service';
 import { ReportMock } from '../../models/report-mock.model';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ThreatReportMock } from '../models/threat-report-mock.model';
 import { ThreatReport } from '../models/threat-report.model';
+import { ThreatReportOverviewService } from './threat-report-overview.service';
 
 describe('Threat Report Overview Spec', () => {
 

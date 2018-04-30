@@ -12,6 +12,8 @@ export class InfoBarComponent implements OnInit {
   @Input()
   public shouldShow = true;
   @Input()
+  public isWarningMsg = false;
+  @Input()
   public message = '';
   @Input()
   public dismissBtnMsg = 'DISMISS';

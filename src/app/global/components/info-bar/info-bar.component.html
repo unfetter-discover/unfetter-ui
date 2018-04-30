@@ -1,13 +1,21 @@
 <div class="info-bar-wrapper" [style.display]="shouldShow === true ? 'block': 'none'">
   <div class="flex">
-    <div class="info-bar">
-      {{message}}
+    <div class="info-bar flex">
+      <span *ngIf="isWarningMsg">
+        <mat-icon class="mat-24" color="warn">warning</mat-icon>
+        <span class="cdk-visually-hidden">Warning</span>
+      </span>
+      <span>
+        {{message}}
+      </span>
       <span *ngIf="completeBtnMsg && completeActionUrl">
         <a mat-button [routerLink]="completeActionUrl">
           {{completeBtnMsg}}
         </a>
       </span>
-      <a mat-button (click)="onDismissClick($event)">{{dismissBtnMsg}}</a>
+      <span>
+        <a mat-button (click)="onDismissClick($event)">{{dismissBtnMsg}}</a>
+      </span>
     </div>
   </div>
 </div>
