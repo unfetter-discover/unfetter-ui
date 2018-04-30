@@ -1,0 +1,38 @@
+@import '../../../../styles/_variables.scss';
+
+$white: #FFFFFF;
+
+div.tactics-pane {
+    position: relative;
+    background-color: $white;
+
+    .tactics-header {
+        display: flex;
+        flex-direction: row;
+        height: 64px;
+        margin: 0;
+        padding: 16px 16px 0 16px;
+        background: linear-gradient(60deg, #1e88e5, #2196f3) !important;
+        color: #ffffffde;
+
+        .toolbox {
+            color: $threat-dashboard-primary;
+            background-color: $white;
+        }
+        .toolbox:not(:last-child) {
+            margin-right: 16px;
+        }
+        .mat-button-toggle-group {
+            margin-top: -8px;
+            height: 48px;
+        }
+        .mat-24 {
+            font-size: 24px;
+        }
+    }
+}
+
+.attack-pattern-clicker:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}

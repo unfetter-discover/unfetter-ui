@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatCardModule, MatExpansionModule, MatListModule, MatSelectModule } from '@angular/material';
+import { MatCardModule, MatExpansionModule, MatListModule, MatSelectModule, MatButtonToggleModule } from '@angular/material';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -55,10 +55,12 @@ import { CapitalizePipe } from './pipes/capitalize.pipe';
 import { FieldSortPipe } from './pipes/field-sort.pipe';
 import { SophisticationPipe } from './pipes/sophistication.pipe';
 import { TimeAgoPipe } from './pipes/time-ago.pipe';
+import { TacticsPaneComponent } from './components/tactics-pane/tactics-pane.component';
 
 const matModules = [
     MatAutocompleteModule,
     MatButtonModule,
+    MatButtonToggleModule,
     MatCardModule,
     MatCheckboxModule,
     MatChipsModule,
@@ -115,6 +117,7 @@ const unfetterComponents = [
     SophisticationPipe,
     SpeedDialComponent,
     StixTableComponent,
+    TacticsPaneComponent,
     TimeAgoPipe,
     TreemapComponent,
 ];
