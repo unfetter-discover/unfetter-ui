@@ -20,8 +20,8 @@ import { UserProfile } from '../../../models/user/user-profile';
 import { AppState } from '../../../root-store/app.reducers';
 import { Constance } from '../../../utils/constance';
 import { LoadAssessmentsByRollupId } from '../result/store/full-result.actions';
-import { CleanAssessmentWizardData, LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle } from '../store/assess.actions';
 import { FullAssessmentResultState } from '../result/store/full-result.reducers';
+import { CleanAssessmentWizardData, LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle } from '../store/assess.actions';
 import * as assessReducers from '../store/assess.reducers';
 import { Measurements } from './models/measurements';
 import { SidePanelName } from './models/side-panel-name.enum';
@@ -111,16 +111,16 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   private readonly sidePanelOrder: SidePanelName[] = ['indicators', 'mitigations', 'sensors', 'summary'];
 
   constructor(
+    private assessStore: Store<FullAssessmentResultState>,
+    private changeDetection: ChangeDetectorRef,
     private genericApi: GenericApi,
-    private snackBar: MatSnackBar,
     private location: Location,
+    private renderer: Renderer2,
     private route: ActivatedRoute,
     private router: Router,
-    private renderer: Renderer2,
+    private snackBar: MatSnackBar,
     private userStore: Store<AppState>,
-    private assessStore: Store<FullAssessmentResultState>,
     private wizardStore: Store<assessReducers.AssessState>,
-    private changeDetection: ChangeDetectorRef
   ) {
     super();
     this.CHART_TYPE = 'doughnut';

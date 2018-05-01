@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
+import { AttackPatternService } from '../core/services/attack-pattern.service';
 import { GenericApi } from '../core/services/genericapi.service';
 import { simpleFadeIn, slideInOutAnimation } from '../global/animations/animations';
 import { MasterListDialogTableHeaders } from '../global/components/master-list-dialog/master-list-dialog.component';
@@ -82,14 +83,15 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   };
 
   constructor(
-    protected router: Router,
-    protected route: ActivatedRoute,
-    protected genericApi: GenericApi,
+    protected attackPatternService: AttackPatternService,
     protected dialog: MatDialog,
+    protected genericApi: GenericApi,
     protected renderer: Renderer2,
-    protected threatReportService: ThreatReportOverviewService,
+    protected route: ActivatedRoute,
+    protected router: Router,
     protected sharedService: ThreatReportSharedService,
-    private userStore: Store<AppState>,
+    protected threatReportService: ThreatReportOverviewService,
+    protected userStore: Store<AppState>,
   ) { }
 
   /**
@@ -107,24 +109,24 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
       .subscribe(
         (id: string) => {
           const getUser$ = this.userStore
-          .select('users')
-          .pluck('userProfile')
-          .take(1)
-          .subscribe((user: UserProfile) => {
-            this.user = user;
-            this.threatReport = null;
-            if (!id || id.trim() === '') {
-              this.notifyDoneLoading();
-            } else {
-              id = id.trim();
-              if (!this.id || (id !== this.id)) {
-                this.id = id.trim();
-                this.fetchDataAndRender();
+            .select('users')
+            .pluck('userProfile')
+            .take(1)
+            .subscribe((user: UserProfile) => {
+              this.user = user;
+              this.threatReport = null;
+              if (!id || id.trim() === '') {
+                this.notifyDoneLoading();
+              } else {
+                id = id.trim();
+                if (!this.id || (id !== this.id)) {
+                  this.id = id.trim();
+                  this.fetchDataAndRender();
+                }
               }
-            }
-          },
-            (err) => console.log(err));
-        this.subscriptions.push(getUser$);
+            },
+              (err) => console.log(err));
+          this.subscriptions.push(getUser$);
         },
         (err) => {
           console.log(err);
@@ -261,28 +263,9 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @return {Observable<any>}
    */
   public loadAttackPatterns(): Observable<AttackPattern[]> {
-    let filter = '';
-    if (this.user && this.user.preferences && this.user.preferences.killchain) {
-      const userFramework = this.user.preferences.killchain;
-      const userFrameworkFilter = { 'stix.kill_chain_phases.kill_chain_name': { $exists: true, $eq: userFramework } };
-      filter = 'filter=' + encodeURIComponent(JSON.stringify(userFrameworkFilter));
-    }
-    const projects = {
-      'stix.name': 1,
-      'stix.description': 1,
-      'stix.kill_chain_phases': 1,
-      'extendedProperties.x_mitre_data_sources': 1,
-      'extendedProperties.x_mitre_platforms': 1,
-      'stix.id': 1
-    };
-    const project = `project=${encodeURI(JSON.stringify(projects))}`;
-    let url = '';
-    if (filter) {
-      url = `${Constance.ATTACK_PATTERN_URL}?${filter}&${project}&${this.sort}`;
-    }else {
-      url = `${Constance.ATTACK_PATTERN_URL}?${project}&${this.sort}`;
-    }
-    return this.genericApi.get(url)
+    const userFramework = (this.user && this.user.preferences && this.user.preferences.killchain)
+      ? this.user.preferences.killchain : '';
+    return this.attackPatternService.fetchAttackPatterns1(userFramework)
       .map((el) => this.attackPatterns = el)
       .do(() => {
         this.uniqChainNames = this.generateUniqChainNames(this.attackPatterns);
