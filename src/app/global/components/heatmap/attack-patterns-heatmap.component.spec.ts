@@ -38,7 +38,7 @@ describe('AttackPatternsHeatmapComponent', () => {
         fixture = TestBed.createComponent(AttackPatternsHeatmapComponent);
         component = fixture.componentInstance;
         component.attackPatterns = [];
-        component.heatMapOptions = {};
+        component.options = {};
         fixture.detectChanges();
     });
 

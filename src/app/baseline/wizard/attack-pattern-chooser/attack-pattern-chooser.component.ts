@@ -33,7 +33,7 @@ export class AttackPatternChooserComponent implements OnInit, AfterViewInit {
     @Input() public selectedPatterns = [];
 
     @ViewChild('apChooser') private view: AttackPatternsHeatmapComponent;
-    @Input() heatmapOptions: HeatmapOptions = {
+    @Input() options: HeatmapOptions = {
         view: {
             component: '#attack-pattern-filter',
         },

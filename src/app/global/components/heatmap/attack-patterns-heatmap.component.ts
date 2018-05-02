@@ -14,6 +14,7 @@ import {
     ChangeDetectionStrategy,
 } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
 
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
@@ -22,6 +23,8 @@ import { HeatmapComponent, } from './heatmap.component';
 import { HeatBatchData, HeatColor, HeatmapOptions, HeatCellData, DEFAULT_OPTIONS } from './heatmap.data';
 import { AuthService } from '../../../core/services/auth.service';
 import { Dictionary } from '../../../models/json/dictionary';
+import { AppState } from '../../../root-store/app.reducers';
+import { UserProfile } from '../../../models/user/user-profile';
 
 /**
  * @description Common data that can be found on attack patterns displayed in a heatmap cell.
@@ -34,6 +37,7 @@ export interface AttackPatternCell extends HeatCellData {
     modified?: Date,
     description: string,
     sophistication_level?: number,
+    framework: string,
     phases: string[],
     labels?: string[],
     sources?: string[],
@@ -42,6 +46,11 @@ export interface AttackPatternCell extends HeatCellData {
     references?: any[],
     values?: Array<{name: string, color: string}>,
     text?: string, // the foreground, or text, color of an attack pattern cell
+}
+
+interface Framework {
+    name: string,
+    phases: string[],
 }
 
 @Component({
@@ -56,7 +65,8 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
     @Input() public attackPatterns: Dictionary<AttackPatternCell> | Array<AttackPatternCell>;
     private previousPatterns: Dictionary<AttackPatternCell> | Array<AttackPatternCell>;
     public heatMapData: Array<HeatBatchData> = [];
-    @Input() public heatMapOptions: HeatmapOptions;
+    private frameworkPhases: Array<any>;
+    @Input() public options: HeatmapOptions;
     private noColor: HeatColor = {bg: '#ccc', fg: 'black'};
     private baseHeats: Dictionary<HeatColor> = null;
     @ViewChild(HeatmapComponent) private heatMapView: HeatmapComponent;
@@ -70,7 +80,10 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
     @Output() public hover = new EventEmitter<{row: HeatCellData, event?: UIEvent}>();
     @Output() public click = new EventEmitter<{row: HeatCellData, event?: UIEvent}>();
 
+    public user: UserProfile;
+
     constructor(
+        private appStore: Store<AppState>, 
         private authService: AuthService,
         private overlay: Overlay,
         private vcr: ViewContainerRef,
@@ -79,15 +92,38 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
     ) { }
 
     ngOnInit() {
-        if (!this.heatMapOptions) {
-            this.heatMapOptions = {};
+        if (!this.options) {
+            this.options = {};
         }
-        if (!this.heatMapOptions.color) {
-            this.heatMapOptions.color = {};
+        if (!this.options.color) {
+            this.options.color = {};
         }
-        this.createAttackPatternHeatMap();
-        this.previousPatterns = this.attackPatterns;
-        this.showHeatMap = (this.attackPatterns && (Object.keys(this.attackPatterns).length > 0));
+
+        const getUser$ = this.appStore
+            .select('users')
+            .pluck('userProfile')
+            .take(1);
+        const getConfig$ = this.appStore
+            .select('config')
+            .pluck('configurations')
+            .take(1);
+        const getData$ = Observable.forkJoin(getUser$, getConfig$)
+            .finally(() => {
+                if (getData$) {
+                    getData$.unsubscribe();
+                }
+                this.createAttackPatternHeatMap();
+                this.previousPatterns = this.attackPatterns;
+                this.showHeatMap = (this.attackPatterns && (Object.keys(this.attackPatterns).length > 0));
+            })
+            .subscribe(
+                (res: [UserProfile, any]) => {
+                    this.user = res[0];
+                    this.frameworkPhases = res[1].killChains
+                        .find(kc => kc.name === this.user.preferences.killchain).phase_names;
+                },
+                (err) => console.log(new Date().toISOString(), err),
+            );
     }
 
     ngDoCheck() {
@@ -109,8 +145,8 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
      */
     public createAttackPatternHeatMap() {
         if (!this.baseHeats) {
-            if (this.heatMapOptions && this.heatMapOptions.color && this.heatMapOptions.color.heatColors) {
-                this.baseHeats = this.heatMapOptions.color.heatColors;
+            if (this.options && this.options.color && this.options.color.heatColors) {
+                this.baseHeats = this.options.color.heatColors;
             } else if (this.heatMapView && this.heatMapView.options && this.heatMapView.options.color) {
                 this.baseHeats = this.heatMapView.options.color.heatColors;
             }
@@ -122,6 +158,14 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
         const heats = Object.assign({}, this.baseHeats);
         const data: Dictionary<HeatBatchData> = {};
         const patterns = Array.isArray(this.attackPatterns) ? this.attackPatterns : Object.values(this.attackPatterns);
+        if (patterns && patterns.length && this.frameworkPhases) {
+            this.frameworkPhases.forEach(phase => data[phase] = {
+                title: this.normalizePhaseName(phase),
+                value: null,
+                cells: []
+            });
+        }
+
         patterns.forEach(pattern => {
             if (pattern.id && pattern.name && pattern.phases && pattern.phases.length) {
                 let value = pattern.value || 'false', heat = null;
@@ -153,9 +197,13 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
             }
         });
 
-        const sorted = Object.values(data).sort((batch1, batch2) => batch1.title.localeCompare(batch2.title));
-        sorted.forEach(batch => batch.cells.sort((cell1, cell2) => cell1.title.localeCompare(cell2.title)));
-        this.heatMapData = sorted;
+        if (!this.frameworkPhases) {
+            const sorted = Object.values(data).sort((batch1, batch2) => batch1.title.localeCompare(batch2.title));
+            sorted.forEach(batch => batch.cells.sort((cell1, cell2) => cell1.title.localeCompare(cell2.title)));
+            this.heatMapData = sorted;
+        } else {
+            this.heatMapData = Object.values(data);
+        }
         if (this.heatMapView && this.heatMapView.options && this.heatMapView.options.color) {
             this.heatMapView.options.color.heatColors = heats;
         }

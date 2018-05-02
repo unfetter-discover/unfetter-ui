@@ -46,6 +46,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   public threatReport: ThreatReport;
   public id = '';
   public attackPatterns: AttackPattern[];
+  public selections: AttackPattern[];
   public intrusionSets: IntrusionSet[];
   public intrusionSetsDashboard: ThreatDashboard = {
     killChainPhases: [],
@@ -390,6 +391,14 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
       attackPattern.isSelected = true;
       return attackPattern;
     });
+
+    this.selections = activeAttackPatterns
+        .filter((attackPattern: any) => attackPattern.isSelected)
+        .map((attackPattern: any) => ({
+          ...attackPattern,
+          values: [{name: 'targeted', color: attackPattern.backgroundColor}],
+          text: attackPattern.foregroundColor
+        }));
 
     return attackPatterns;
   }

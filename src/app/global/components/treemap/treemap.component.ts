@@ -65,7 +65,10 @@ export class TreemapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
     // view settings
     // 
 
-    /* How tall the x-axis header should be at the top of the treemap, defaults to 0. */
+    /*
+     * How tall the x-axis header should be at the top of the treemap, defaults to 0.
+     * NOTE!!!: If you set this to zero, you will get stupid Google errors!
+     */
     @Input() headerHeight = 0;
 
     /* The color to use for the text elements in the chart. */
@@ -189,22 +192,35 @@ export class TreemapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
      * @description draws the treemap onto the viewport
      */
     private redraw() {
-        this.treeMapChart.draw(this.treeMapTable, {
-            showScale: false,
-            headerHeight: this.headerHeight,
-            fontColor: this.fontColor,
-            fontFamily: this.fontFamily,
-            fontSize: this.fontSize,
-            minColor: this.minColor,
-            midColor: this.midColor,
-            maxColor: this.maxColor,
-            noColor: this.noColor,
-            highlightOnMouseOver: true,
-            minHighlightColor: this.minHighlightColor,
-            midHighlightColor: this.midHighlightColor,
-            maxHighlightColor: this.maxHighlightColor,
-            showTooltips: false
-        });
+        if (this.treeMapChart) {
+            const headerHeight = this.headerHeight || 1;
+            this.treeMapChart.draw(this.treeMapTable, {
+                showScale: false,
+                maxDepth: 1,
+                maxPostDepth: 3,
+                hintOpacity: 0.5,
+                headerHeight: headerHeight,
+                fontColor: this.fontColor,
+                fontFamily: this.fontFamily,
+                fontSize: this.fontSize,
+                minColor: this.minColor,
+                midColor: this.midColor,
+                maxColor: this.maxColor,
+                noColor: this.noColor,
+                highlightOnMouseOver: true,
+                minHighlightColor: this.minHighlightColor,
+                midHighlightColor: this.midHighlightColor,
+                maxHighlightColor: this.maxHighlightColor,
+                useWeightedAverageForAggregation: true,
+                showTooltips: false,
+            });
+            if (!this.headerHeight) {
+                const title = this.treeMapView.nativeElement.querySelector('svg g:last-child');
+                if (title) {
+                    title.remove();
+                }
+            }
+        }
     }
 
 }

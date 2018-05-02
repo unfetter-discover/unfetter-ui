@@ -312,6 +312,7 @@ export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit
         title: attackPattern.attributes.name,
         value: attackPattern.isSelected,
         description: attackPattern.attributes.description,
+        framework: null,
         phases: [],
         sources: [],
         platforms: attackPattern.attributes.x_mitre_platforms,

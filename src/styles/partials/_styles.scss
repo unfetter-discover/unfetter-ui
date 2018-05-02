@@ -56,6 +56,14 @@ label {
     @include themePrimaryText();
 }
 
+.theme-color-primary-light {
+    @include themePrimaryLightColors('color');
+}
+
+.theme-color-primary-lighter {
+    @include themePrimaryLighterColors('color');
+}
+
 .theme-fill-primary {
     @include themePrimaryTextProp('fill');
 }

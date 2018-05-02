@@ -1,26 +1,17 @@
 <div class="tactics-pane">
 
-    <h3 class="mat-title tactics-header">
+    <h3 class="mat-title tactics-header theme-color-primary theme-bg-primary-lighter">
 
-        <div class="flex1">{{display.title}}</div>
+        <div class="flex1 tactics-title">{{display.title}}</div>
 
-        <mat-button-toggle-group #carouselOption="matButtonToggleGroup" value="full"
-                class="toolbox" [hidden]="!display.carousel">
-            <mat-button-toggle value="compress-rows" matTooltip="Compress rows" aria-label="view compact rows">
-                <mat-icon class="mat-24" aria-hidden="true">format_line_spacing</mat-icon>
-            </mat-button-toggle>
-            <mat-button-toggle value="compress-columns" matTooltip="Compress columns"
-                    aria-label="view compact columns">
-                <mat-icon class="mat-24" aria-hidden="true">view_compact</mat-icon>
-            </mat-button-toggle>
-            <mat-button-toggle value="full" matTooltip="Reset to full table" aria-label="view full table">
-                <mat-icon class="mat-24" aria-hidden="true">view_column</mat-icon>
-            </mat-button-toggle>
-        </mat-button-toggle-group>
+        <div class="carousel-view-controls" *ngIf="isCarouselView()">
+            <tactic-carousel-control></tactic-carousel-control>
+        </div>
 
-        <mat-button-toggle-group #viewOption="matButtonToggleGroup" value="heatmap" class="toolbox">
-            <mat-button-toggle value="carousel" matTooltip="TreeMap View">
-                <mat-icon class="mat-24" aria-hidden="true" aria-label="view full table">view_column</mat-icon>
+        <mat-button-toggle-group #viewOption="matButtonToggleGroup" class="toolbox"
+                [value]="display.view" (change)="onViewChange($event)">
+            <mat-button-toggle value="carousel" matTooltip="Carousel View">
+                <mat-icon class="mat-24" aria-hidden="true" aria-label="view wide table">view_carousel</mat-icon>
             </mat-button-toggle>
             <mat-button-toggle value="treemap" matTooltip="TreeMap View">
                 <mat-icon class="mat-24" aria-hidden="true" aria-label="view tree map">view_quilt</mat-icon>
@@ -32,50 +23,53 @@
 
     </h3>
 
-    <!-- <tactic-carousel [hidden]="!display.carousel"
-            [data]="attackPatterns" (onTooltip)="showTooltip($event)"></tactic-carousel>
+    <tactic-carousel #carousel [hidden]="!isCarouselView()" [data]="chainPatterns"
+            (onTooltip)="showCarouselTooltip($event)"></tactic-carousel>
 
-    <unf-treemap [hidden]="!display.treemap"
-            [data]="attackPatterns" (onTooltip)="showTooltip($event)"></unf-treemap>
+    <unf-treemap #treemap [hidden]="!isTreemapView()"
+            [treeMapData]="treeMapData" [headerHeight]="20"
+            [minHighlightColor]="'transparent'"
+            [midHighlightColor]="'transparent'"
+            [maxHighlightColor]="'transparent'"
+            (onTooltip)="showTreeMapTooltip($event)"></unf-treemap>
 
-    <attack-patterns-heatmap [hidden]="!display.heatmap"
-            [attackPatterns]="attackPatterns" [options]="heatMapOptions"
-            (onTooltip)="showTooltip($event)"></attack-patterns-heatmap> -->
+    <attack-patterns-heatmap #heatmap [hidden]="!isHeatmapView()"
+            [attackPatterns]="attackPatterns" [options]="heatMapOptions"></attack-patterns-heatmap>
 
 </div>
 
-<ng-template #attackPatternTooltip>
-    <div class="col-md-12 attack-pattern-tooltip">
-        <mat-card *ngIf="attackPattern">
+<ng-template #apTooltipTemplate>
+    <div class="col-md-12 tactic-tooltip">
+        <mat-card *ngIf="tooltipTarget">
             <mat-card-subtitle>
-                <div class="flex1"><label>{{attackPattern.name}}</label></div>
-                <div [hidden]="tooltip">
+                <div class="flex1"><label>{{tooltipTarget.name}}</label></div>
+                <div [hidden]="asTooltip">
                     <button mat-button type="button" class="mat-primary" *ngIf="isAdminUser()">
-                        <a target="_blank" href="/#/stix/attack-patterns/{{attackPattern.id}}">Details</a>
+                        <a target="_blank" href="/#/stix/attack-patterns/{{tooltipTarget.id}}">Details</a>
                     </button>
-                    <button mat-button type="button" (click)="hideTooltip(attackPattern)">Close</button>
+                    <button mat-button type="button" (click)="hideTacticTooltip(tooltipTarget)">Close</button>
                 </div>
             </mat-card-subtitle>
             <mat-card-content>
                 <div class="row">
                     <div class="col-md-3"><label>Description</label></div>
-                    <div class="col-md-8 attack-pattern-desc" [innerHTML]="attackPattern.description"></div>
+                    <div class="col-md-8 tactic-description" [innerHTML]="tooltipTarget.description"></div>
                 </div>
-                <div class="row" *ngIf="attackPattern.phases">
+                <div class="row" *ngIf="tooltipTarget.phases">
                     <div class="col-md-3"><label>Phases</label></div>
-                    <div class="col-md-9 attack-pattern-phases">{{attackPattern.phases.join(', ') | capitalize}}</div>
+                    <div class="col-md-9 tactic-phases">{{tooltipTarget.phases.join(', ') | capitalize}}</div>
                 </div>
-                <div class="row" *ngIf="attackPattern.sources">
+                <div class="row" *ngIf="tooltipTarget.sources">
                     <div class="col-md-3"><label>Data Sources</label></div>
-                    <div class="col-md-9 attack-pattern-sources">{{attackPattern.sources.join(', ')}}</div>
+                    <div class="col-md-9 tactic-sources">{{tooltipTarget.sources.join(', ')}}</div>
                 </div>
-                <div class="row" *ngIf="attackPattern.platforms">
+                <div class="row" *ngIf="tooltipTarget.platforms">
                     <div class="col-md-3"><label>Platforms</label></div>
-                    <div class="col-md-9 attack-pattern-platforms">{{attackPattern.platforms.join(', ')}}</div>
+                    <div class="col-md-9 tactic-platforms">{{tooltipTarget.platforms.join(', ')}}</div>
                 </div>
-                <div class="row" *ngIf="attackPattern.analytics">
-                    <div class="col-md-3"><label>Platforms</label></div>
-                    <div class="col-md-9 attack-pattern-analytics">{{attackPattern.analytics.join(', ')}}</div>
+                <div class="row" *ngIf="tooltipTarget.analytics">
+                    <div class="col-md-3"><label>Analytics</label></div>
+                    <div class="col-md-9 tactic-analytics">{{tooltipTarget.analytics.join(', ')}}</div>
                 </div>
             </mat-card-content>
         </mat-card>

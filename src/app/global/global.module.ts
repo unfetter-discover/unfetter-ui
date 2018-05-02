@@ -18,6 +18,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
+import { CarouselModule } from 'primeng/primeng';
 import { AddLabelReactiveComponent } from './components/add-label/add-label.component';
 import { AdditionalQueriesComponent } from './components/additional-queries/additional-queries.component';
 import { ChipLinksComponent } from './components/chip-links/chip-links.component';
@@ -55,7 +56,10 @@ import { CapitalizePipe } from './pipes/capitalize.pipe';
 import { FieldSortPipe } from './pipes/field-sort.pipe';
 import { SophisticationPipe } from './pipes/sophistication.pipe';
 import { TimeAgoPipe } from './pipes/time-ago.pipe';
+import { TacticCarouselComponent } from './components/tactics-pane/tactic-carousel/tactic-carousel.component';
+import { TacticCarouselControlComponent } from './components/tactics-pane/tactic-carousel/tactic-carousel-control.component';
 import { TacticsPaneComponent } from './components/tactics-pane/tactics-pane.component';
+import { TacticControlService } from './components/tactics-pane/tactic-control.service';
 
 const matModules = [
     MatAutocompleteModule,
@@ -117,6 +121,8 @@ const unfetterComponents = [
     SophisticationPipe,
     SpeedDialComponent,
     StixTableComponent,
+    TacticCarouselComponent,
+    TacticCarouselControlComponent,
     TacticsPaneComponent,
     TimeAgoPipe,
     TreemapComponent,
@@ -128,17 +134,18 @@ const unfetterComponents = [
         RouterModule,
         FormsModule,
         ReactiveFormsModule,
+        CarouselModule,
         ...matModules
     ],
     declarations: [
         ...unfetterComponents,
-
     ],
     exports: [
         ...unfetterComponents,
         ...matModules,
+        CarouselModule,
     ],
-    providers: [],
+    providers: [TacticControlService],
     entryComponents: [MasterListDialogComponent]
 })
 

@@ -1,3 +1,19 @@
+export interface TMark {
+    label?: string,
+    value?: number,
+    color?: {
+        style?: string,
+        bg?: string,
+        fg?: string,
+    },
+}
+
+export interface TGloss {
+    badges?: TMark[],
+    notes?: TMark[],
+    highlights?: TMark[],
+}
+
 export interface Tactic {
     id: string,
     name: string,
@@ -12,14 +28,17 @@ export interface Tactic {
     platforms?: string[],
     analytics?: any[],
     references?: any[],
-    values?: Array<{name: string, color: string}>,
-    color?: {background: string, foreground: string},
+    adds?: TGloss,
 }
 
-export interface Phase {
-    framework: string,
+export interface TacticPhase {
     name: string,
     tactics: Tactic[],
-    values?: Array<{name: string, color: string}>,
-    color?: {background: string, foreground: string},
+    adds?: TGloss,
+}
+
+export interface TacticChain {
+    name: string,
+    phases: TacticPhase[],
+    adds?: TGloss,
 }
