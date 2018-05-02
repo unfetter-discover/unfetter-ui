@@ -102,7 +102,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
       return CategoryComponent.DEFAULT_VALUE;
     } else {
       const selIndex = this.categories.findIndex(category => category.id === selValue.id);
-      console.log(`value is -` + JSON.stringify(selValue) + `- and index is ` + selIndex);
+      // console.log(`value is -` + JSON.stringify(selValue) + `- and index is ` + selIndex);
       return this.categories[selIndex];
     }
   }

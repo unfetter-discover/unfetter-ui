@@ -1,37 +1,31 @@
+import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
-
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
-
-import * as UUID from 'uuid';
-import * as assessActions from './baseline.actions';
-
-import { FetchAssessment, StartAssessment } from './baseline.actions';
-
-import { BaselineService } from '../services/baseline.service';
-import { BaselineStateService } from '../services/baseline-state.service';
-import { BaselineMeta } from '../../models/baseline/baseline-meta';
-import { Constance } from '../../utils/constance';
-import { GenericApi } from '../../core/services/genericapi.service';
-import { Capability } from '../../models/stix/capability';
-import { Stix } from '../../models/stix/stix';
-import { JsonApiData } from '../../models/json/jsonapi-data';
-import { Baseline } from '../../models/baseline/baseline';
-import { JsonApi } from '../../models/json/jsonapi';
 import { Category } from 'stix';
+import { AttackPattern } from 'stix/unfetter/attack-pattern';
+import { AttackPatternService } from '../../core/services/attack-pattern.service';
+import { GenericApi } from '../../core/services/genericapi.service';
+import { Baseline } from '../../models/baseline/baseline';
+import { BaselineMeta } from '../../models/baseline/baseline-meta';
+import { JsonApi } from '../../models/json/jsonapi';
+import { JsonApiData } from '../../models/json/jsonapi-data';
+import { BaselineStateService } from '../services/baseline-state.service';
+import { BaselineService } from '../services/baseline.service';
+import * as assessActions from './baseline.actions';
 
 @Injectable()
 export class BaselineEffects {
 
     public constructor(
-        private router: Router,
-        private location: Location,
-        private actions$: Actions,
+        protected actions$: Actions,
+        protected attackPatternService: AttackPatternService,
         protected baselineService: BaselineService,
         protected baselineStateService: BaselineStateService,
-        protected genericServiceApi: GenericApi
+        protected genericServiceApi: GenericApi,
+        protected location: Location,
+        protected router: Router,
     ) { }
 
     @Effect()
@@ -62,6 +56,40 @@ export class BaselineEffects {
         .ofType(assessActions.FETCH_CATEGORIES)
         .switchMap(() => this.baselineService.getCategories())
         .map((arr: Category[]) => new assessActions.SetCategories(arr));
+
+    @Effect()
+    public fetchAttackPatterns = this.actions$
+        .ofType(assessActions.FETCH_ATTACK_PATTERNS)
+        .pluck('payload')
+        .switchMap((selectedFramework: string) => {
+            const o1$ = Observable.of(selectedFramework);
+            // select all the attack patterns
+            const o2$ = this.attackPatternService
+                .fetchAttackPatterns()
+                .catch((ex) => Observable.of([] as AttackPattern[]));
+            // merge selected framework and all system attack patterns                
+            return Observable.forkJoin(o1$, o2$);
+        })
+        .mergeMap(([framework, allAttackPatterns]) => {
+            // if no framework given, use all attack patterns
+            let selectedAttackPatterns = allAttackPatterns;
+            if (framework) {
+                // filter if we are given a selected framework
+                const isFromSelectedFramework = (el) => {
+                    return el 
+                        && el.kill_chain_phases
+                        .findIndex((_) => _.kill_chain_name === framework) > -1;
+                };
+                selectedAttackPatterns = allAttackPatterns
+                    .filter(isFromSelectedFramework);
+            }
+
+            // tell reducer to set the attack pattern states
+            return [
+                new assessActions.SetAttackPatterns(allAttackPatterns),
+                new assessActions.SetSelectedFrameworkAttackPatterns(selectedAttackPatterns),
+            ];
+        });
 
     @Effect({ dispatch: false })
     public startAssessment = this.actions$
@@ -120,7 +148,7 @@ export class BaselineEffects {
                     // } else {
                     //     // stoopid hack to handle the fact that update returns a single object, not an array, and drops the metadata
                     //     arr[0].attributes.metaProperties = { rollupId: rollupId };
-                        return [arr];
+                    return [arr];
                     // }
                 });
         })
@@ -128,8 +156,8 @@ export class BaselineEffects {
         .map((arr) => {
             const hasAttributes = arr && arr[0] && arr[0].attributes;
             const hasMetadata = hasAttributes && arr[0].attributes.metaProperties;
-            return new assessActions.FinishedSaving({ 
-                finished: true, 
+            return new assessActions.FinishedSaving({
+                finished: true,
                 id: hasAttributes ? arr[0].attributes.id : '',
             });
         })

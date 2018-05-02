@@ -4,8 +4,10 @@ import { MatDialog, MatSelect, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MenuItem } from 'primeng/primeng';
+import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { Category } from 'stix';
+import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { Key } from 'ts-keycode-enum';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { heightCollapse } from '../../global/animations/height-collapse';
@@ -21,7 +23,7 @@ import { AppState } from '../../root-store/app.reducers';
 import { Constance } from '../../utils/constance';
 import { LoadAssessmentResultData } from '../result/store/full-result.actions';
 import { FullAssessmentResultState } from '../result/summary/store/full-result.reducers';
-import { CleanAssessmentWizardData, LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle } from '../store/baseline.actions';
+import { CleanAssessmentWizardData, FetchAttackPatterns, LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle } from '../store/baseline.actions';
 import { BaselineState } from '../store/baseline.reducers';
 import { AttackPatternChooserComponent } from './attack-pattern-chooser/attack-pattern-chooser.component';
 import { Measurements } from './models/measurements';
@@ -108,7 +110,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   private currentCapability = {} as Capability;
 
   public showHeatmap = false;
-  public attackPatterns: any[] = [];
+  public allAttackPatterns: Observable<AttackPattern[]> = Observable.of([]);
+  public selectedFrameworkAttackPatterns: Observable<AttackPattern[]> = Observable.of([]);
+  public selectedAttackPatterns: AttackPattern[] = [];
 
   private readonly subscriptions: Subscription[] = [];
   private readonly sidePanelNames: string[] = ['categories', 'capabilities', 'capability', 'summary'];
@@ -139,25 +143,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    *  initializes this component, fetchs data to build page
    */
   public ngOnInit(): void {
-    this.doughnutChartColors = this.DEFAULT_CHART_COLORS;
-    this.doughnutChartData = [{
-      data: [],
-      backgroundColor: this.CHART_BG_COLORS,
-      hoverBackgroundColor: this.CHART_HOVER_BG_COLORS,
-    }
-    ];
-    this.doughnutChartLabels = this.CHART_LABELS;
-    this.doughnutChartType = this.CHART_TYPE;
-    this.summaryDoughnutChartColors = this.DEFAULT_CHART_COLORS;
-    this.summaryDoughnutChartData = [{
-      data: [],
-      backgroundColor: this.CHART_BG_COLORS,
-      hoverBackgroundColor: this.CHART_HOVER_BG_COLORS,
-    }
-    ];
-    this.summaryDoughnutChartLabels = this.CHART_LABELS;
-    this.summaryDoughnutChartType = this.CHART_TYPE;
 
+    this.initChart();
     const idParamSub$ = this.route.params
       .subscribe(
         (params) => {
@@ -170,6 +157,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         },
         (err) => console.log(err),
         () => idParamSub$.unsubscribe());
+
 
     const sub4$ = this.wizardStore
       .select('baseline')
@@ -221,7 +209,12 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       .distinctUntilChanged()
       .take(1)
       .subscribe(
-        (user: UserProfile) => this.currentUser = user,
+      (user: UserProfile) => {
+          const framework = (user && user.preferences && user.preferences.killchain) 
+            ? user.preferences.killchain : undefined;
+          this.currentUser = user;
+          this.wizardStore.dispatch(new FetchAttackPatterns(framework));
+        },
         (err) => console.log(err));
 
     const sub9$ = this.wizardStore
@@ -236,7 +229,42 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         },
         (err) => console.log(err));
 
-      this.subscriptions.push(sub4$, sub5$, sub6$, sub7$, sub8$, sub9$);
+    this.allAttackPatterns = this.wizardStore
+      .select('baseline')
+      .pluck<{}, AttackPattern[]>('allAttackPatterns')
+      .distinctUntilChanged();
+
+    this.selectedFrameworkAttackPatterns = this.wizardStore
+      .select('baseline')
+      .pluck<{}, AttackPattern[]>('selectedFrameworkAttackPatterns')
+      .distinctUntilChanged();
+
+    this.subscriptions.push(sub4$, sub5$, sub6$, sub7$, sub8$, sub9$);
+  }
+
+  /**
+   * @description initialize the chart data
+   * @returns void
+   */
+  public initChart(): void {
+    this.doughnutChartColors = this.DEFAULT_CHART_COLORS;
+    this.doughnutChartData = [{
+      data: [],
+      backgroundColor: this.CHART_BG_COLORS,
+      hoverBackgroundColor: this.CHART_HOVER_BG_COLORS,
+    }
+    ];
+    this.doughnutChartLabels = this.CHART_LABELS;
+    this.doughnutChartType = this.CHART_TYPE;
+    this.summaryDoughnutChartColors = this.DEFAULT_CHART_COLORS;
+    this.summaryDoughnutChartData = [{
+      data: [],
+      backgroundColor: this.CHART_BG_COLORS,
+      hoverBackgroundColor: this.CHART_HOVER_BG_COLORS,
+    }
+    ];
+    this.summaryDoughnutChartLabels = this.CHART_LABELS;
+    this.summaryDoughnutChartType = this.CHART_TYPE;
   }
 
   /**
@@ -346,12 +374,12 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public determinePanelsWithData(): string[] {
     let panelsWithData = [];
     if (this.categoryNames.length > 0) {
-      let catPanels = [ ...this.categoryNames ];
+      let catPanels = [...this.categoryNames];
       catPanels.forEach(catName => {
-        panelsWithData = [ ...panelsWithData, catName ];
+        panelsWithData = [...panelsWithData, catName];
         if (this.categories[catName] && this.categories[catName].capabilities) {
           this.categories[catName].capabilities.forEach(cap => {
-            panelsWithData = [ ...panelsWithData, cap];
+            panelsWithData = [...panelsWithData, cap];
           });
         }
       });
@@ -365,7 +393,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {string} name of first open side panel
    */
   public determineFirstOpenSidePanel(): string {
-    const hasContents = [ this.sidePanelNames[0], ...this.determinePanelsWithData() ];
+    const hasContents = [this.sidePanelNames[0], ...this.determinePanelsWithData()];
 
     // return first panel w/ data
     return hasContents[0];
@@ -828,7 +856,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @param  {Category[]} steps
    */
   private updateCategorySteps(steps: Category[]) {
-    
+
   }
 
   /*
@@ -908,7 +936,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         const capability: any = {};
         capability.name = phaseName;
         const step = index + 1;
-        this.navigations.push( { label: this.splitTitle(phaseName),  page: step } );
+        this.navigations.push({ label: this.splitTitle(phaseName), page: step });
         // this.item = this.capability;
         // TODO: Need to get description somehow from the key phase information
         capability.description = this.groupings[phaseName];
@@ -1017,7 +1045,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   /**
    * @description Displays a slide-out that shows the user a heat map of all attack patterns for filtering
    */
-  public toggleHeatMap() {
+  public toggleHeatMap(): void {
     if (this.showHeatmap) {
       this.showHeatmap = false;
       this.dialog.closeAll();
@@ -1030,18 +1058,19 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         disableClose: false,
         closeOnNavigation: true,
         data: {
-          active: this.attackPatterns,
+          active: this.selectedFrameworkAttackPatterns,
         },
       });
-      dialog.afterClosed().subscribe(
-        result => {
-          if (result) {
-            this.attackPatterns = result;
-          }
-          this.showHeatmap = false;
-        },
+
+      const sub$ = dialog.afterClosed().subscribe((result) => {
+        if (result) {
+          this.selectedAttackPatterns = result;
+        }
+        this.showHeatmap = false;
+      },
         (err) => console.log(err),
       );
+      this.subscriptions.push(sub$);
     }
   }
   /*

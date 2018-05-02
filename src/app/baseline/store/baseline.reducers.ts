@@ -1,38 +1,39 @@
-import * as baselineActions from './baseline.actions';
-import * as fromApp from '../../root-store/app.reducers'
-import { Baseline } from '../../models/baseline/baseline';
-import { Stix } from '../../models/stix/stix';
-import { JsonApiData } from '../../models/json/jsonapi-data';
 import { Category } from 'stix';
+import { AttackPattern } from 'stix/unfetter/attack-pattern';
+import { Baseline } from '../../models/baseline/baseline';
+import * as fromApp from '../../root-store/app.reducers';
 import { CategoryComponent } from '../wizard/category/category.component';
+import * as baselineActions from './baseline.actions';
 
 export interface BaselineFeatureState extends fromApp.AppState {
     baseline: Baseline
 };
 
 export interface BaselineState {
-    baseline: Baseline;
+    allAttackPatterns?: AttackPattern[];
     backButton: boolean;
+    baseline: Baseline;
     categories: Category[];
     categorySteps: Category[];
-    // TODO: add attack pattern array
-    // attackPatterns?: JsonApiData<AttackPattern>[];
     finishedLoading: boolean;
-    saved: { finished: boolean, id: string };
-    showSummary: boolean;
     page: number;
+    saved: { finished: boolean, id: string };
+    selectedFrameworkAttackPatterns?: AttackPattern[];
+    showSummary: boolean;
 };
 
 const genAssessState = (state?: Partial<BaselineState>) => {
     const tmp = {
-        baseline: new Baseline(),
+        allAttackPatterns: [],
         backButton: false,
+        baseline: new Baseline(),
         categories: [],
-        categorySteps: [ CategoryComponent.DEFAULT_VALUE ],
+        categorySteps: [CategoryComponent.DEFAULT_VALUE],
         finishedLoading: false,
-        saved: { finished: false, id: '' },
-        showSummary: false,
         page: 1,
+        saved: { finished: false, id: '' },
+        selectedFrameworkAttackPatterns: [],
+        showSummary: false,
     };
     if (state) {
         Object.assign(tmp, state);
@@ -59,7 +60,17 @@ export function baselineReducer(state = initialState, action: baselineActions.As
                 ...state,
                 categorySteps: [...action.payload],
             });
-         case baselineActions.START_ASSESSMENT:
+        case baselineActions.SET_ATTACK_PATTERNS:
+            return genAssessState({
+                ...state,
+                allAttackPatterns: [...action.payload],
+            });
+        case baselineActions.SET_SELECTED_FRAMEWORK_ATTACK_PATTERNS:
+            return genAssessState({
+                ...state,
+                selectedFrameworkAttackPatterns: [...action.payload],
+            });
+        case baselineActions.START_ASSESSMENT:
             const a0 = new Baseline();
             a0.baselineMeta = { ...action.payload };
             return genAssessState({

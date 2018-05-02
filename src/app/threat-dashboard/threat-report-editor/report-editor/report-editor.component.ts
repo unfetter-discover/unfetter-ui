@@ -1,14 +1,14 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { AttackPatternService } from '../../../core/services/attack-pattern.service';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { AttackPattern } from '../../../models/attack-pattern';
 import { ExternalReference } from '../../../models/externalReference';
 import { Report } from '../../../models/report';
-import { Constance } from '../../../utils/constance';
-import { AppState } from '../../../root-store/app.reducers';
-import { Store } from '@ngrx/store';
 import { UserProfile } from '../../../models/user/user-profile';
+import { AppState } from '../../../root-store/app.reducers';
 
 enum TITLES { CREATE = 'Create', MODIFY = 'Modify' };
 
@@ -18,8 +18,6 @@ enum TITLES { CREATE = 'Create', MODIFY = 'Modify' };
     styleUrls: ['./report-editor.component.scss']
 })
 export class ReportEditorComponent implements OnInit, OnDestroy {
-
-
     public loading = true;
 
     public title = TITLES.CREATE;
@@ -40,8 +38,9 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
     constructor(
         public dialogRef: MatDialogRef<any>,
         @Inject(MAT_DIALOG_DATA) public data: Report,
+        protected attackPatternService: AttackPatternService,
         protected genericApiService: GenericApi,
-        private userStore: Store<AppState>,
+        protected userStore: Store<AppState>,
     ) { }
 
     ngOnInit() {
@@ -79,25 +78,17 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
 
     /**
      * @description load attack patterns
+     * @returns Observable<AttackPattern[]>
      */
     public loadAttackPatterns(): Observable<AttackPattern[]> {
         if (this.attackPatterns && this.attackPatterns.length > 0) {
             return Observable.of(this.attackPatterns);
         }
-        const sort = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
-        let filter = '';
-        if (this.user && this.user.preferences && this.user.preferences.killchain) {
-            const userFramework = this.user.preferences.killchain;
-            const userFrameworkFilter = { 'stix.kill_chain_phases.kill_chain_name': { $exists: true, $eq: userFramework } };
-            filter = 'filter=' + encodeURIComponent(JSON.stringify(userFrameworkFilter));
-        }
-        let url = '';
-        if (filter) {
-            url = `${Constance.ATTACK_PATTERN_URL}?${filter}&${sort}`;
-        }else {
-            url = `${Constance.ATTACK_PATTERN_URL}?${sort}`;
-        }
-        return this.genericApiService.get(url).map((el) => this.attackPatterns = el);
+
+        const userFramework = (this.user && this.user.preferences && this.user.preferences.killchain)
+            ? this.user.preferences.killchain : '';
+        return this.attackPatternService.fetchAttackPatterns1(userFramework)
+            .map((el) => this.attackPatterns = el);
     }
 
     /**
