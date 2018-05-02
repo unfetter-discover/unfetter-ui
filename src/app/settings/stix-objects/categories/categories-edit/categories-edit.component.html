@@ -27,9 +27,9 @@
           <span class="flex1">{{lookupAttackPatternName(assessedObject.assessed_object_ref, framework.framework)}}</span>
           <mat-form-field class="flex1">
             <!-- [value]="findQuestionScore(assessedObject, 'mitigate')"  -->
-            <mat-select name="mitigates" placeholder="Mitigate"
-                [value]="assessedObject.mitigateScore"
-                (selectionChange)="onAnswer('mitigate', assessedObject, $event)">
+            <mat-select name="protects" placeholder="Protect"
+                [value]="assessedObject.protectScore"
+                (selectionChange)="onAnswer('protect', assessedObject, $event)">
               <mat-option *ngFor="let answer of answers" [value]="answer.id">
                 {{ answer.name }}
               </mat-option>
@@ -37,9 +37,9 @@
           </mat-form-field>
           <mat-form-field class="flex1">
             <!-- [value]="findQuestionScore(assessedObject, 'indica÷te')"  -->
-            <mat-select name="indicates" placeholder="Indicate"
-              [value]="assessedObject.indicateScore"
-              (selectionChange)="onAnswer('indicate', assessedObject, $event)">
+            <mat-select name="detects" placeholder="Detect"
+              [value]="assessedObject.detectScore"
+              (selectionChange)="onAnswer('detect', assessedObject, $event)">
               <mat-option *ngFor="let answer of answers" [value]="answer.id">
                 {{ answer.name }}
               </mat-option>
