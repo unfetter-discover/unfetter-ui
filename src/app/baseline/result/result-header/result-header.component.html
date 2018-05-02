@@ -10,13 +10,18 @@
       </div>
       <div class="flex1"></div>
       <div class="height-100-percent flex flexColumn">
-        <div class="flex1"></div>
+        <div class="flex1">
+          <button mat-icon-button matTooltip="Heat Map"> <!-- (click)="setMainWell('heatmap')"> -->  <!-- {{ activeMainWell === 'heatmap' ? 'Hide' : 'Show' }} --> 
+            <i class="material-icons mat-24" [ngClass]="{'labelColor': activeMainWell !== 'heatmap'}">view_comfy</i>
+            ATT&amp;CK MATRIX
+          </button>
+        </div>
         <div *ngIf="created; else notPublished" class="publishText">
           Published &bull; {{ created | date:'medium' }}
         </div>
         <ng-template #notPublished>
-          <div id="publishWrapper" matTooltip="Future Baseline Functionality">
-            <button id="publishButton" disabled mat-raised-button>PUBLISH</button>
+          <div id="publishWrapper">
+            <button id="publishButton" mat-raised-button>PUBLISH</button>
           </div>
         </ng-template>
       </div>
