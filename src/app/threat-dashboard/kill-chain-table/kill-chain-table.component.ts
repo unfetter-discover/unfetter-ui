@@ -41,11 +41,11 @@ import { Dictionary } from '../../models/json/dictionary';
 })
 export class KillChainTableComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  @Input('threatReport')
+  @Input()
   public threatReport: ThreatReport;
-  @Input('attackPatterns')
+  @Input()
   public attackPatterns: AttackPattern[];
-  @Input('intrusionSetsDashboard')
+  @Input()
   public intrusionSetsDashboard: ThreatDashboard;
 
   @ViewChild('toolboxBtn')

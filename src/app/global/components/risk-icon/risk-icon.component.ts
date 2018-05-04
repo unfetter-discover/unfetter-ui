@@ -7,10 +7,10 @@ import { Constance } from '../../../utils/constance';
   templateUrl: 'risk-icon.component.html'
 })
 export class RiskIconComponent {
-  @Input('risk') public risk: number;
-  @Input('showTooltip') public showTooltip = false;
-  @Input('tooltipPlacement') public tooltipPlacement = 'after';
-  @Input('showTextShadow') public showTextShadow: boolean = true;
+  @Input() public risk: number;
+  @Input() public showTooltip = false;
+  @Input() public tooltipPlacement = 'after';
+  @Input() public showTextShadow: boolean = true;
 
   public getRiskColor(avgRisk) {
     let riskHsl: any = {};

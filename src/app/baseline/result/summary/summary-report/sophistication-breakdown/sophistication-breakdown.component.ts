@@ -9,8 +9,8 @@ import { SummaryCalculationService } from '../../summary-calculation.service';
   styleUrls: ['./sophistication-breakdown.component.scss']
 })
 export class SophisticationBreakdownComponent implements OnInit {
-  @Input('assessedAttackPatterns') public assessedAttackPatterns: AssessAttackPatternCount;
-  @Input('allAttackPatterns') public allAttackPatterns: AssessAttackPatternCount;
+  @Input() public assessedAttackPatterns: AssessAttackPatternCount;
+  @Input() public allAttackPatterns: AssessAttackPatternCount;
   public readonly barChartData: ChartData[];
   public barChartLabels: string[];
   public barChartOptions: any;
