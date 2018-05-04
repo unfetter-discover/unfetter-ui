@@ -1,13 +1,35 @@
 @import '../../../../styles/_variables.scss';
 
 .side-panel {
-    width: 350px;
+    width: 320px;
     background-color: white;
 }
 
 .main-panel {
     min-height: calc(100vh - #{$navbar-height}px);
     background-color: #F1F1F1;
+}
+
+::ng-deep #sideDateList .side-list-item {
+    font-size: 14px;
+    font-weight: lighter;
+    color: $assessments-primary;
+}
+
+::ng-deep #sideDateList .mat-list-item {
+    height: 32px;
+}
+
+::ng-deep #sideDateList .mat-expansion-panel-header-title {
+    font-size: 16px;
+}
+
+::ng-deep #sideDateList .mat-expansion-panel-header {
+    padding-left: 0px;
+}
+
+::ng-deep #sideDateList .mat-expansion-panel-content.mat-expanded {
+    margin-top: -23px;
 }
 
 ::ng-deep .uf-master-list-dialog .mat-dialog-container {

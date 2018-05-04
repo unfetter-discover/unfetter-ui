@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 import { Category } from 'stix/assess/v3';
+import { AttackPattern } from 'stix/unfetter/attack-pattern';
+import { AttackPatternService } from '../../core/services/attack-pattern.service';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { Baseline } from '../../models/baseline/baseline';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
@@ -17,12 +19,13 @@ import * as assessActions from './baseline.actions';
 export class BaselineEffects {
 
     public constructor(
-        private router: Router,
-        private location: Location,
-        private actions$: Actions,
+        protected actions$: Actions,
+        protected attackPatternService: AttackPatternService,
         protected baselineService: BaselineService,
         protected baselineStateService: BaselineStateService,
-        protected genericServiceApi: GenericApi
+        protected genericServiceApi: GenericApi,
+        protected location: Location,
+        protected router: Router,
     ) { }
 
     @Effect()
@@ -60,6 +63,40 @@ export class BaselineEffects {
         .switchMap(() => this.baselineService.getCapabilities())
         .map((arr: Category[]) => new assessActions.SetCapabilities(arr));
 
+        @Effect()
+        public fetchAttackPatterns = this.actions$
+            .ofType(assessActions.FETCH_ATTACK_PATTERNS)
+            .pluck('payload')
+            .switchMap((selectedFramework: string) => {
+                const o1$ = Observable.of(selectedFramework);
+                // select all the attack patterns
+                const o2$ = this.attackPatternService
+                    .fetchAttackPatterns()
+                    .catch((ex) => Observable.of([] as AttackPattern[]));
+                // merge selected framework and all system attack patterns                
+                return Observable.forkJoin(o1$, o2$);
+            })
+            .mergeMap(([framework, allAttackPatterns]) => {
+                // if no framework given, use all attack patterns
+                let selectedAttackPatterns = allAttackPatterns;
+                if (framework) {
+                    // filter if we are given a selected framework
+                    const isFromSelectedFramework = (el) => {
+                        return el 
+                            && el.kill_chain_phases
+                            .findIndex((_) => _.kill_chain_name === framework) > -1;
+                    };
+                    selectedAttackPatterns = allAttackPatterns
+                        .filter(isFromSelectedFramework);
+                }
+    
+                // tell reducer to set the attack pattern states
+                return [
+                    new assessActions.SetAttackPatterns(allAttackPatterns),
+                    new assessActions.SetSelectedFrameworkAttackPatterns(selectedAttackPatterns),
+                ];
+            });
+    
     @Effect({ dispatch: false })
     public startAssessment = this.actions$
         .ofType(assessActions.START_BASELINE)

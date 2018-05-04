@@ -1,29 +1,21 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-
-import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { LoadAssessmentSummaryData, LoadSingleAssessmentSummaryData, LoadSingleSummaryAggregationData } from '../store/summary.actions';
-
-import { SummaryState } from '../store/summary.reducers';
-import { AppState } from '../../../root-store/app.reducers';
-import { Baseline } from '../../../models/baseline/baseline';
-import { BaselineService } from '../../services/baseline.service';
-import { ConfirmationDialogComponent } from '../../../components/dialogs/confirmation/confirmation-dialog.component';
-import { MasterListDialogTableHeaders } from '../../../global/components/master-list-dialog/master-list-dialog.component';
-import { LastModifiedBaseline } from '../../models/last-modified-baseline';
-import { slideInOutAnimation } from '../../../global/animations/animations';
-import { Constance } from '../../../utils/constance';
-import { UserProfile } from '../../../models/user/user-profile';
-import { SummaryDataSource } from './summary.datasource';
-import { BaselineObject } from '../../../models/baseline/baseline-object';
-import { CleanAssessmentResultData } from '../store/summary.actions';
-import { Capability } from '../../../models/unfetter/capability';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { Identity } from 'stix';
 import { UsersService } from '../../../core/services/users.service';
+import { slideInOutAnimation } from '../../../global/animations/animations';
+import { MasterListDialogTableHeaders } from '../../../global/components/master-list-dialog/master-list-dialog.component';
+import { Baseline } from '../../../models/baseline/baseline';
+import { UserProfile } from '../../../models/user/user-profile';
+import { AppState } from '../../../root-store/app.reducers';
+import { LastModifiedBaseline } from '../../models/last-modified-baseline';
+import { BaselineService } from '../../services/baseline.service';
+import { CleanAssessmentResultData, LoadSingleAssessmentSummaryData } from '../store/summary.actions';
+import { SummaryState } from '../store/summary.reducers';
+import { SummaryDataSource } from './summary.datasource';
 
 @Component({
   selector: 'summary',
@@ -36,6 +28,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
   readonly baseAssessUrl = '/baseline';
   baselineName: Observable<string>;
   baselineId: string;
+
+  dates: any[];
   summaries: Baseline[];
   summary: Baseline;
   finishedLoading = false;
@@ -44,18 +38,18 @@ export class SummaryComponent implements OnInit, OnDestroy {
   masterListOptions = {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Date Modified')
-        .addColumn('capabilities', '# of Capabilities', 'master-list-capabilities', false, (value) => value || '0')
-        .addColumn('created_by_ref', 'Organization', 'master-list-organization', false, (value) => {
-          let author: Identity = null;
-          if (value) {
-            author = this.identities.find(id => id.id === value)
-          }
-          return author ? author.name : 'Unknown';
-        })
-        .addColumn('framework', 'Type', 'master-list-extra', false, (value) => value || 'ATT&CK')
-        .addColumn('industry', 'Industry', 'master-list-extra', false, (value) => value || 'Local')
-        .addColumn('published', 'Status', 'master-list-extra', false, (published) => published ? 'Public' : 'Draft')
-        ,
+      .addColumn('capabilities', '# of Capabilities', 'master-list-capabilities', false, (value) => value || '0')
+      .addColumn('created_by_ref', 'Organization', 'master-list-organization', false, (value) => {
+        let author: Identity = null;
+        if (value) {
+          author = this.identities.find(id => id.id === value)
+        }
+        return author ? author.name : 'Unknown';
+      })
+      .addColumn('framework', 'Type', 'master-list-extra', false, (value) => value || 'ATT&CK')
+      .addColumn('industry', 'Industry', 'master-list-extra', false, (value) => value || 'Local')
+      .addColumn('published', 'Status', 'master-list-extra', false, (published) => published ? 'Public' : 'Draft')
+    ,
     displayRoute: this.baseAssessUrl + '/result/summary',
     modifyRoute: this.baseAssessUrl + '/wizard/edit',
     createRoute: this.baseAssessUrl + '/create',
@@ -102,7 +96,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
             (err) => console.log(err));
         this.subscriptions.push(sub$);
       },
-      (err) => console.log(err));
+        (err) => console.log(err));
 
     const subIdentitie$ = this.userStore
       .select('identities')
@@ -116,6 +110,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     this.listenForDataChanges();
 
     this.subscriptions.push(idParamSub$);
+    this.dates = ['Yesterday, 09:36:40 AM', 'Monday, 03:11:15 PM', 'Mar 15, 2018 01:14:55 PM'];
   }
 
   /**
@@ -164,7 +159,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .select('summary')
       .pluck('summaries')
       .distinctUntilChanged()
-      .map((summaries: Baseline[]) => {
+      .switchMap((summaries: Baseline[]) => {
         if (!summaries || summaries.length === 0) {
           return '';
         }
@@ -174,7 +169,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
             .subscribe(
               (capability) => {
                 if (capability !== undefined) {
-                    this.baselineName = Observable.of(summaries[0].name + ' - ' + capability.name);
+                  this.baselineName = Observable.of(summaries[0].name + ' - ' + capability.name);
                 }
               },
               (err) => console.log('error getting capability reference from object assessment', err)
@@ -185,7 +180,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(sub1$, sub2$, sub8$);
   }
-  
   /**
    * @description
    * @param {string} creatorId - optional
@@ -313,12 +307,12 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {Promise<boolean>}
    */
   public onCellSelected(baseline: LastModifiedBaseline): Promise<boolean> {
-    if (!baseline || !baseline.rollupId || !baseline.id) {
+    if (!baseline || !baseline.id) {
       return;
     }
 
     this.store.dispatch(new CleanAssessmentResultData());
-    return this.router.navigate([this.masterListOptions.displayRoute, baseline.rollupId, baseline.id]);
+    return this.router.navigate([this.masterListOptions.displayRoute, baseline.id]);
   }
 
   /**

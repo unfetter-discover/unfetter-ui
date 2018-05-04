@@ -1,9 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule, MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatExpansionModule, MatInputModule, 
-  MatListModule, MatNativeDateModule, MatProgressSpinnerModule, MatRadioModule, MatSelectModule, MatSlideToggleModule, MatSnackBarModule } from '@angular/material';
-import { AccordionModule, CalendarModule, DataListModule } from 'primeng/primeng';
+import { MatAutocompleteModule, MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDatepickerModule, 
+  MatExpansionModule, MatInputModule, MatListModule, MatNativeDateModule, MatProgressSpinnerModule, MatRadioModule, 
+  MatSelectModule, MatSlideToggleModule, MatSnackBarModule } from '@angular/material';
+import { AccordionModule } from 'primeng/components/accordion/accordion';
+import { CalendarModule } from 'primeng/components/calendar/calendar';
+import { DataListModule } from 'primeng/components/datalist/datalist';
 import { ComponentModule } from '../components/component.module';
 import { GlobalModule } from '../global/global.module';
 import { IdentifierSummarizedPipe, IdentifierTypePipe } from '../pipes';
@@ -33,11 +36,10 @@ const materialModules = [
   MatAutocompleteModule,
   MatButtonModule,
   MatCardModule,
-  MatChipsModule,
   MatCheckboxModule,
+  MatChipsModule,
   MatDatepickerModule,
   MatExpansionModule,
-  MatSnackBarModule,
   MatInputModule,
   MatListModule,
   MatNativeDateModule,
@@ -45,92 +47,87 @@ const materialModules = [
   MatRadioModule,
   MatSelectModule,
   MatSlideToggleModule,
+  MatSnackBarModule,
 ];
 
 const stixComponents = [
-  AttackPatternsHomeComponent,
-  AttackPatternListComponent,
   AttackPatternComponent,
-  AttackPatternNewComponent,
   AttackPatternEditComponent,
-
-  CategoriesComponent,
-  CategoriesHomeComponent,
-  CategoriesEditComponent,
-  CategoriesListComponent,
-
+  AttackPatternListComponent,
+  AttackPatternNewComponent,
+  AttackPatternsHomeComponent,
+  CampaignComponent,
+  CampaignsEditComponent,
   CampaignsHomeComponent,
   CampaignsListComponent,
   CampaignsNewComponent,
-  CampaignsEditComponent,
-  CampaignComponent,
-
+  CategoriesComponent,
+  CategoriesEditComponent,
+  CategoriesHomeComponent,
+  CategoriesListComponent,
+  CourseOfActionComponent,
+  CourseOfActionEditComponent,
   CourseOfActionHomeComponent,
   CourseOfActionListComponent,
-  CourseOfActionEditComponent,
   CourseOfActionNewComponent,
-  CourseOfActionComponent,
-
-  SightingHomeComponent,
-  SightingListComponent,
-  SightingNewComponent,
-  SightingEditComponent,
-  SightingComponent,
-
+  IdentifierSummarizedPipe,
+  IdentifierTypePipe,
+  IdentityComponent,
+  IdentityEditComponent,
+  IdentityHomeComponent,
+  IdentityListComponent,
+  IdentityNewComponent,
+  IndicatorComponent,
+  IndicatorEditComponent,
+  IndicatorHomeComponent,
+  IndicatorListComponent,
+  IndicatorNewComponent,
+  IntrusionSetComponent,
+  IntrusionSetEditComponent,
+  IntrusionSetHomeComponent,
+  IntrusionSetListComponent,
+  IntrusionSetNewComponent,
+  IntrusionUsesAttackComponent,
+  LinkExplorerComponent,
+  MalwareComponent,
+  MalwareEditComponent,
+  MalwareHomeComponent,
+  MalwareListComponent,
+  MalwareNewComponent,
+  MitigateComponent,
+  MitigateListComponent,
+  RelationshipNewComponent,
+  RelationshipsComponent,
+  ReportNewComponent,
+  ReportsComponent,
+  ReportsListComponent,
+  SensorComponent,
+  SensorEditComponent,
   SensorHomeComponent,
   SensorListComponent,
   SensorNewComponent,
-  SensorEditComponent,
-  SensorComponent,
-
-  ReportsComponent,
-  ReportsListComponent,
-  ReportNewComponent,
-
+  SightingComponent,
+  SightingEditComponent,
+  SightingHomeComponent,
+  SightingListComponent,
+  SightingNewComponent,
+  StixHomeComponent,
+  ThreatActorEditComponent,
   ThreatActorHomeComponent,
   ThreatActorListComponent,
-  ThreatActorsComponent,
   ThreatActorNewComponent,
-  ThreatActorEditComponent,
-
-  IntrusionSetHomeComponent,
-  IntrusionSetListComponent,
-  IntrusionSetComponent,
-  IntrusionSetEditComponent,
-  IntrusionSetNewComponent,
-
-  MitigateListComponent,
-  MitigateComponent,
-  IntrusionUsesAttackComponent,
-  IndicatorHomeComponent,
-  IndicatorListComponent,
-  IndicatorEditComponent,
-  IndicatorNewComponent,
-  IndicatorComponent,
-
-  IdentityHomeComponent,
-  IdentityListComponent,
-  IdentityEditComponent,
-  IdentityNewComponent,
-  IdentityComponent,
-
-  IdentifierTypePipe,
-  IdentifierSummarizedPipe,
-
-  MalwareHomeComponent,
-  MalwareListComponent,
-  MalwareEditComponent,
-  MalwareComponent,
-  MalwareNewComponent,
-  RelationshipsComponent,
-  RelationshipNewComponent,
-  ToolHomeComponent,
-  ToolListComponent,
+  ThreatActorsComponent,
   ToolComponent,
   ToolEditComponent,
+  ToolHomeComponent,
+  ToolListComponent,
   ToolNewComponent,
-  LinkExplorerComponent,
-  StixHomeComponent
+];
+
+const primengModules = [
+  AccordionModule,
+  CalendarModule,
+  DataListModule,
 ];
 
 @NgModule({
@@ -140,9 +137,7 @@ const stixComponents = [
     ReactiveFormsModule,
     ...materialModules,
     ComponentModule,
-    CalendarModule,
-    AccordionModule,
-    DataListModule,
+    ...primengModules,
     GlobalModule,
     routing,
   ],

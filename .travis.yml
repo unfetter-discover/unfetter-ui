@@ -19,10 +19,7 @@ addons:
 install:
   - npm install
 script:
-  - npm run clean
-  - npm run build:prod
   - npm run lint
-#  - npm run headless:test
   - npm run headless:coverage
+  - npm run build:prod
   - npm run doc
-  - npm run clean

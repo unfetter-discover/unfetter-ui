@@ -1,15 +1,11 @@
-import { Component, ViewEncapsulation, HostListener, ElementRef, Input } from '@angular/core';
+import { Component, ElementRef, HostListener, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
-
-import { Navigation } from '../../../models/navigation';
+import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../core/services/auth.service';
 import * as fromApp from '../../../root-store/app.reducers';
-import * as notificationActions from '../../../root-store/notification/notification.actions';
 import * as userActions from '../../../root-store/users/user.actions';
-import { AppNotification } from '../../../root-store/notification/notification.model';
-import { environment } from '../../../../environments/environment';
-import { fadeInOut } from '../../animations/fade-in-out';
 import { Constance } from '../../../utils/constance';
+import { fadeInOut } from '../../animations/fade-in-out';
 
 @Component({
   selector: 'header-navigation',
@@ -37,6 +33,11 @@ export class HeaderNavigationComponent {
     },
     {
       url: Constance.X_UNFETTER_ASSESSMENT3_NAVIGATE_URL,
+      title: 'Assessments Beta',
+      icon: Constance.LOGO_IMG_ASSESSMENTS_BETA
+    },
+    {
+      url: Constance.X_UNFETTER_ASSESSMENT3_BASELINE_NAVIGATE_URL,
       title: 'Baselines',
       icon: Constance.LOGO_IMG_ASSESSMENTS_BETA
     },

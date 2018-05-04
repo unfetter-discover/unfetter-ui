@@ -1,16 +1,11 @@
 <div id="tabWrapper" class="flex flexColumn">
-  <div class="banner-wrapper">
-      <div class="flex">
-        <div class="banner">Baselines is currently in beta. Some functionality does not work.</div>
-      </div>
-  </div>
+  <uf-info-bar isWarningMsg="true" message="Baselines is currently in beta. Some functionality does not work."></uf-info-bar>
   <div class="flex1">
     <div class="height-100-percent flex flexRow">
       <div class="height-100-percent flex flexColumn">
         <div class="flex1"></div>
         <nav mat-tab-nav-bar class="indent uf-tabs-borderless">
           <a class="noUnderline" mat-tab-link [routerLink]="summaryLink" routerLinkActive #summary="routerLinkActive" [active]="summary.isActive">SUMMARY</a>
-          <a class="noUnderline" mat-tab-link [routerLink]="resultsLink" routerLinkActive #full="routerLinkActive" [active]="full.isActive">FULL RESULTS</a>
         </nav>
       </div>
       <div class="flex1"></div>
@@ -20,7 +15,7 @@
           Published &bull; {{ created | date:'medium' }}
         </div>
         <ng-template #notPublished>
-          <div id="publishWrapper" matTooltip="Future Assessment Functionality">
+          <div id="publishWrapper" matTooltip="Future Baseline Functionality">
             <button id="publishButton" disabled mat-raised-button>PUBLISH</button>
           </div>
         </ng-template>

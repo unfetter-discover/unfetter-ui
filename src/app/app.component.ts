@@ -1,17 +1,13 @@
-import { Component, OnInit, ViewEncapsulation, Renderer2 } from '@angular/core';
+import { Component, OnInit, Renderer2 } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-
-import { AppState } from './app.service';
+import { environment } from '../environments/environment';
 import { AuthService } from './core/services/auth.service';
+import { Themes } from './global/enums/themes.enum';
 import * as fromApp from './root-store/app.reducers';
-import * as userActions from './root-store/users/user.actions';
 import * as configActions from './root-store/config/config.actions';
 import * as identityActions from './root-store/identities/identity.actions';
-import { WSMessageTypes } from './global/enums/ws-message-types.enum';
-import { environment } from '../environments/environment';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { Themes } from './global/enums/themes.enum';
-import { Constance } from './utils/constance';
+import * as userActions from './root-store/users/user.actions';
 import { demoUser } from './testing/demo-user';
 
 @Component({
@@ -75,6 +71,8 @@ export class AppComponent implements OnInit {
           this.title = 'assessments';
         } else if (url === 'baseline') {
           this.title = 'Baselines';
+        } else if (url === 'assesss-beta') {
+            this.title = 'assessments';
         } else {
           this.title = url;
         }
@@ -95,6 +93,7 @@ export class AppComponent implements OnInit {
         break;
       case 'assessments':
       case 'assess':
+      case 'assess-beta':  
       case 'baseline':
         this.theme = Themes.ASSESSMENTS;
         break;

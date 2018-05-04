@@ -6,7 +6,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { AssessedObject } from 'stix/assess/v3/assessed-object';
-import { Question } from 'stix/assess/v3/question';
+import { Question, PdrString, MirString } from 'stix/assess/v3/question';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { AppState } from '../../../../app.service';
 import { GenericApi } from '../../../../core/services/genericapi.service';
@@ -79,7 +79,7 @@ export class CategoriesEditComponent extends CategoriesComponent implements OnIn
           const loadCat$ = this.loadCategory()
             // initial questions answers for the drop downs
             .map((category) => {
-                // unrolls the questions array and adds values just for MIR dropdowns
+                // unrolls the questions array and adds values just for PDR/MIR dropdowns
                 const assessedObjects = category.assessed_objects;
                 assessedObjects.forEach((assessedObject) => {
                   const questions = assessedObject.questions || [];
@@ -209,7 +209,7 @@ export class CategoriesEditComponent extends CategoriesComponent implements OnIn
    * @param  {MatSelectChange} event?
    * @returns void
    */
-  public onAnswer(questionName: 'mitigate' | 'indicate' | 'respond', assessedObject: AssessedObject, event?: MatSelectChange): void {
+  public onAnswer(questionName: PdrString, assessedObject: AssessedObject, event?: MatSelectChange): void {
     if (!event) {
       return;
     }

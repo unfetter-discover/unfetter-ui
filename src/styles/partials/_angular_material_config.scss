@@ -176,3 +176,11 @@ $utility-theme: mat-light-theme($utility-theme-primary, $utility-theme-accent, $
     height: 49px;
   }
 }
+
+a.mat-button {
+  text-decoration: none;
+}
+
+.mat-button a {
+  text-decoration: none;
+}

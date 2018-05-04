@@ -3,14 +3,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatChipsModule, MatDialogModule, MatDialogRef, MatFormFieldModule, MatIconModule, MatOptionModule, MatSelectModule } from '@angular/material';
 import { ActionReducerMap, StoreModule } from '@ngrx/store';
+import { BaseComponentService } from '../../../components/base-service.component';
+import { AttackPatternService } from '../../../core/services/attack-pattern.service';
 import { GenericApi } from '../../../core/services/genericapi.service';
-import { GlobalModule } from '../../../global/global.module';
+import { CreatedByRefComponent } from '../../../global/components/created-by-ref/created-by-ref.component';
 import { AttackPattern } from '../../../models/attack-pattern';
 import { Report } from '../../../models/report';
 import { ExternalReference } from '../../../models/stix/external_reference';
 import { ReportEditorComponent } from './report-editor.component';
-import { CreatedByRefComponent } from '../../../global/components/created-by-ref/created-by-ref.component';
-import { BaseComponentService } from '../../../components/base-service.component';
 
 describe('ReportEditorComponent', () => {
 
@@ -49,14 +49,15 @@ describe('ReportEditorComponent', () => {
                 CreatedByRefComponent,
             ],
             imports: [
-                HttpClientTestingModule, 
+                HttpClientTestingModule,
                 FormsModule,
                 ...materialModules,
                 StoreModule.forRoot(mockReducer),
             ],
             providers: [
-                GenericApi,
+                AttackPatternService,
                 BaseComponentService,
+                GenericApi,
                 { provide: MAT_DIALOG_DATA, useValue: {} },
                 {
                     provide: MatDialogRef,

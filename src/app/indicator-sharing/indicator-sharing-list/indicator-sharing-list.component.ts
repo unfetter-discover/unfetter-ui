@@ -21,14 +21,15 @@ import { StixRelationshipTypes } from '../../global/enums/stix-relationship-type
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { downloadBundle } from '../../global/static/stix-bundle';
 
+type mainWell = 'stats' | 'heatmap' | 'none';
+
 @Component({
     selector: 'indicator-sharing-list',
     templateUrl: 'indicator-sharing-list.component.html',
     styleUrls: ['indicator-sharing-list.component.scss'],
-    animations: [ fadeInOut, heightCollapse ],
+    animations: [fadeInOut, heightCollapse],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 export class IndicatorSharingListComponent extends IndicatorBase implements OnInit, OnDestroy {
 
     public displayedIndicators: any[];
@@ -37,8 +38,8 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     public searchParameters;
     public filterOpen: boolean = false;
     public filterOpened: boolean = false;
-    public showSummaryStats: boolean = false;
     public collapseAllCards: boolean = false;
+    public activeMainWell: mainWell = 'heatmap';
     public collapseAllCardsSubject: BehaviorSubject<boolean> = new BehaviorSubject(this.collapseAllCards);
 
     @ViewChild('filterContainer') public filterContainer: MatSidenav;
@@ -49,7 +50,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
         private indicatorSharingService: IndicatorSharingService,
         // Used for SERVER_CALL_COMPLETE, this should be moved to ngrx
         protected changeDetectorRef: ChangeDetectorRef
-    ) { 
+    ) {
         super(store, changeDetectorRef);
     }
 
@@ -109,7 +110,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
             .pluck('indicatorToSensorMap')
             .distinctUntilChanged()
             .subscribe(
-                (res) => {                    
+                (res) => {
                     this.indicatorToSensorMap = res;
                 },
                 (err) => {
@@ -136,7 +137,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                     }
                 }
             );
-    }    
+    }
 
     public ngOnDestroy() {
         this.dialog.closeAll();
@@ -160,7 +161,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                         this.store.dispatch(new indicatorSharingActions.FetchIndicators());
                         if (res.newRelationships) {
                             this.store.dispatch(new indicatorSharingActions.RefreshApMap());
-                        } 
+                        }
                     } else if (res && res.editMode) {
                         this.store.dispatch(new indicatorSharingActions.StartUpdateIndicator(res.indicator));
                     }
@@ -174,10 +175,10 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
             );
     }
 
-    public showMoreIndicators() {    
+    public showMoreIndicators() {
         console.log('Loading more indicators');
         this.store.dispatch(new indicatorSharingActions.ShowMoreIndicators());
-        this.changeDetectorRef.markForCheck();    
+        this.changeDetectorRef.markForCheck();
     }
 
     public displayShowMoreButton() {
@@ -217,8 +218,12 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
         this.openDialog(indicatorToEdit);
     }
 
-    public toggleShowStatistics() {
-        this.showSummaryStats = !this.showSummaryStats;
+    public setMainWell(wellTab: mainWell) {
+        if (this.activeMainWell === wellTab) {
+            this.activeMainWell = 'none';
+        } else {
+            this.activeMainWell = wellTab;
+        }
         this.changeDetectorRef.markForCheck();
     }
 
@@ -234,7 +239,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                 const sensorIds: string[] = this.getSensorsByIndicatorId(indicator.id) ? this.getSensorsByIndicatorId(indicator.id)
                     .map((sensor) => sensor.id) : [];
                 const attackPatternIds: string[] = this.getAttackPatternsByIndicatorId(indicator.id)
-                    .map((ap) => ap.id);                
+                    .map((ap) => ap.id);
 
                 if (indicatorCopy.metaProperties) {
                     delete indicatorCopy.metaProperties;
@@ -270,14 +275,14 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                     ...enhancements
                 };
             });
-            
+
         indicatorsCopy
             .forEach((indicator) => {
                 if (indicator.metaProperties) {
                     delete indicator.metaProperties;
                 }
             });
-        
+
         const downloadData$ = this.indicatorSharingService.getDownloadData(indicatorsCopy.map((ind) => ind.id), Array.from(attackPatternIdSet), Array.from(sensorIdSet))
             .subscribe(
                 (downloadData) => {
@@ -291,12 +296,6 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                     downloadData$.unsubscribe();
                 }
             );
-
-        
-        // console.log(this.filteredIndicators);
-        // console.log(indicatorsCopy);         
-        // console.log('####', Array.from(sensorIdSet));  
-        // console.log('$$$$', Array.from(attackPatternIdSet));  
     }
 
 }

@@ -1,4 +1,3 @@
-// Statics
 import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/observable/concat';
 import 'rxjs/add/observable/empty';
@@ -10,7 +9,6 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/observable/timer';
 import 'rxjs/add/observable/zip';
-// Operators
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/concat';
 import 'rxjs/add/operator/concatAll';
@@ -33,8 +31,8 @@ import 'rxjs/add/operator/mapTo';
 import 'rxjs/add/operator/merge';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/multicast';
-import 'rxjs/add/operator/partition';
 import 'rxjs/add/operator/pairwise';
+import 'rxjs/add/operator/partition';
 import 'rxjs/add/operator/pluck';
 import 'rxjs/add/operator/reduce';
 import 'rxjs/add/operator/share';
@@ -49,3 +47,4 @@ import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/withLatestFrom';
 import 'rxjs/add/operator/zip';
 import 'rxjs/operators/tap';
+import 'rxjs/util/pipe';

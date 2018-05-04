@@ -1,4 +1,5 @@
 import { AssessmentSet, Capability, Category } from 'stix/assess/v3';
+import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
 import * as fromApp from '../../root-store/app.reducers';
 import * as baselineActions from './baseline.actions';
@@ -8,36 +9,38 @@ export interface BaselineFeatureState extends fromApp.AppState {
 };
 
 export interface BaselineState {
-    baseline: AssessmentSet;
+    allAttackPatterns?: AttackPattern[];
     backButton: boolean;
-    capabilityGroups: Category[];
-    baselineGroups: Category[];
-    currentCapabilityGroup: Category;
-    capabilities: Capability[];
+    baseline: AssessmentSet;
     baselineCapabilities: Capability[];
+    baselineGroups: Category[];
+    capabilities: Capability[];
+    capabilityGroups: Category[];
     currentCapability: Capability;
-    // TODO: add attack pattern array
-    // attackPatterns?: JsonApiData<AttackPattern>[];
+    currentCapabilityGroup: Category;
     finishedLoading: boolean;
-    saved: { finished: boolean, id: string };
-    showSummary: boolean;
     page: number;
+    saved: { finished: boolean, id: string };
+    selectedFrameworkAttackPatterns?: AttackPattern[];
+    showSummary: boolean;
 };
 
 const genAssessState = (state?: Partial<BaselineState>) => {
     const tmp = {
-        baseline: new AssessmentSet(),
+        allAttackPatterns: [],
         backButton: false,
-        capabilityGroups: [],
-        baselineGroups: [],
-        currentCapabilityGroup: undefined,
-        capabilities: [],
+        baseline: new AssessmentSet(),
         baselineCapabilities: [],
+        baselineGroups: [],
+        capabilities: [],
+        capabilityGroups: [],
         currentCapability: undefined,
+        currentCapabilityGroup: undefined,
         finishedLoading: false,
-        saved: { finished: false, id: '' },
-        showSummary: false,
         page: 1,
+        saved: { finished: false, id: '' },
+        selectedFrameworkAttackPatterns: [],
+        showSummary: false,
     };
     if (state) {
         Object.assign(tmp, state);
@@ -83,6 +86,16 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
             return genAssessState({
                 ...state,
                 currentCapability: action.payload,
+            });
+        case baselineActions.SET_ATTACK_PATTERNS:
+            return genAssessState({
+                ...state,
+                allAttackPatterns: [...action.payload],
+            });
+        case baselineActions.SET_SELECTED_FRAMEWORK_ATTACK_PATTERNS:
+            return genAssessState({
+                ...state,
+                selectedFrameworkAttackPatterns: [...action.payload],
             });
         case baselineActions.START_BASELINE:
             const a0 = new AssessmentSet();

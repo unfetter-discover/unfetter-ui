@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule, MatNativeDateModule, MatProgressSpinnerModule, MatSelectModule } from '@angular/material';
@@ -14,7 +15,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AccordionModule, CalendarModule, DataListModule } from 'primeng/primeng';
+import { AccordionModule } from 'primeng/components/accordion/accordion';
+import { CalendarModule } from 'primeng/components/calendar/calendar';
+import { DataListModule } from 'primeng/components/datalist/datalist';
 import { ButtonsFilterComponent } from '../../../../components/buttons-filter/buttons-filter.component';
 import { FilterSearchBoxComponent } from '../../../../components/filter-search-box/filter-search-box.component';
 import { ListStixObjectComponent } from '../../../../components/list-stix-objects/list-stix-objects.component';
@@ -27,7 +30,6 @@ import { PublishedCheckboxComponent } from '../../../../global/components/publis
 import { StixService } from '../../../stix.service';
 import { RelationshipNewComponent, RelationshipsComponent } from '../../relationships';
 import { CategoriesListComponent } from './categories-list.component';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('CategoriesListComponent', () => {
   let component: CategoriesListComponent;
@@ -38,29 +40,29 @@ describe('CategoriesListComponent', () => {
       MatAutocompleteModule,
       MatButtonModule,
       MatCardModule,
-      MatChipsModule,
       MatCheckboxModule,
+      MatChipsModule,
       MatDatepickerModule,
       MatExpansionModule,
-      MatSnackBarModule,
-      MatInputModule,
       MatIconModule,
+      MatInputModule,
       MatListModule,
       MatNativeDateModule,
       MatProgressSpinnerModule,
       MatSelectModule,
+      MatSnackBarModule,
     ];
 
     const stixComponents = [
-      PublishedCheckboxComponent,
-      ListStixObjectComponent,
-      RelationshipsComponent,
-      RelationshipNewComponent,
-      RelationshipListComponent,
-      PageHeaderComponent,
-      ValidationErrorsComponent,
       ButtonsFilterComponent,
       FilterSearchBoxComponent,
+      ListStixObjectComponent,
+      PageHeaderComponent,
+      PublishedCheckboxComponent,
+      RelationshipListComponent,
+      RelationshipNewComponent,
+      RelationshipsComponent,
+      ValidationErrorsComponent,
     ];
 
     TestBed.configureTestingModule({
