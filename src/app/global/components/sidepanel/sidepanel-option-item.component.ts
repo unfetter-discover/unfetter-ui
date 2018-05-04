@@ -7,11 +7,11 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class SidepanelOptionItemComponent implements OnInit {
 
-  @Input('label') public label: string;
+  @Input() public label: string;
 
-  @Input('icon') public icon: string;
+  @Input() public icon: string;
 
-  @Input('disabled') public disabled: boolean = false;
+  @Input() public disabled: boolean = false;
 
   constructor() { }
 

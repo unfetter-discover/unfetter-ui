@@ -12,7 +12,7 @@ import { ThreatReport } from '../models/threat-report.model';
   styleUrls: ['./export.component.scss']
 })
 export class ExportComponent implements OnInit, OnDestroy {
-  @Input('threatReport')
+  @Input()
   public threatReport: ThreatReport;
 
   public readonly subscriptions: Subscription[] = [];
