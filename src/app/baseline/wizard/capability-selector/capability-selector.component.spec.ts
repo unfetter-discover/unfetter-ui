@@ -5,7 +5,6 @@ import { StoreModule, combineReducers } from '@ngrx/store';
 import * as fromRoot from 'app/root-store/app.reducers';
 import { baselineReducer } from '../../../baseline/store/baseline.reducers';
 import { CapabilitySelectorComponent } from './capability-selector.component';
-import { CapabilityComponent } from './capability.component';
 
 describe('CapabilitySelectorComponent', () => {
   let component: CapabilitySelectorComponent;
@@ -20,7 +19,7 @@ describe('CapabilitySelectorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CapabilityComponent ],
+      declarations: [ CapabilitySelectorComponent ],
       imports: [
         NoopAnimationsModule,
         ...matModules,
@@ -34,7 +33,7 @@ describe('CapabilitySelectorComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CapabilityComponent);
+    fixture = TestBed.createComponent(CapabilitySelectorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
