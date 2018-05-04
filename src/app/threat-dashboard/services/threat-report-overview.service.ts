@@ -246,23 +246,18 @@ export class ThreatReportOverviewService {
       id = threatReportMeta.id;
     }
 
-    const attributes = Object.assign({}, report.attributes);
     const meta = {
       published: false,
       work_products: [],
     };
-
-    if (report.attributes.metaProperties && report.attributes.metaProperties.work_products) {
+    const attributes = Object.assign({}, { metaProperties: meta }, report.attributes);
+    if (threatReportMeta) {
       // filter out the given work product we are reattaching it
-      meta.work_products = report.attributes.metaProperties.work_products.filter((wp) => wp.id !== id);
+      attributes.metaProperties.work_products = attributes.metaProperties.work_products.filter((wp) => wp.id !== id);
       // reattach
-      if (threatReportMeta) {
-        const updatedThreatReport = this.deepCopyThreatReportForSave(id, threatReportMeta);
-        meta.work_products = meta.work_products.concat(updatedThreatReport);
-      }
-      meta.published = report.attributes.metaProperties.published || false;
+      const updatedThreatReport = this.deepCopyThreatReportForSave(id, threatReportMeta);
+      attributes.metaProperties.work_products = attributes.metaProperties.work_products.concat(updatedThreatReport);
     }
-    attributes.metaProperties = meta;
     const body = JSON.stringify({
       data: {
         type: report.type || 'report',
@@ -270,7 +265,7 @@ export class ThreatReportOverviewService {
       }
     } as JsonApiObject<Report>);
 
-    const reportId = report.attributes.id || undefined;
+    const reportId = attributes.id || undefined;
     if (reportId) {
       // update an existing object
       const updateOrAddUrl = `${url}/${reportId}`;
