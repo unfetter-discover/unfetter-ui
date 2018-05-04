@@ -15,7 +15,7 @@ import {
 
 export class RiskBreakdownComponent implements OnInit {
 
-    @Input('riskBreakdown') public riskBreakdown: any;
+    @Input() public riskBreakdown: any;
 
     public categories: string[];
 
