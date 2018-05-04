@@ -85,16 +85,18 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
    * @returns {void}
    */
   public updateCapability(option: any, index: number): void {
-    const newCapabilityName = option.selected.value;
+    const newCapability = option.selected.value;
 
     // Verify a selection and that this capability doesn't already exist
-    const indexInList = this.selectedCapabilities.indexOf(newCapabilityName);
+    const indexInList = this.selectedCapabilities.indexOf(newCapability);
     if (indexInList < 0 && option.value !== CapabilitySelectorComponent.DEFAULT_VALUE) {
       if (index === -1) {
-        this.selectedCapabilities.push(newCapabilityName);
+        // Apply category name to this capability
+        newCapability.category = this.currentCapabilityGroup.name;
+        this.selectedCapabilities.push(newCapability);
         option.value = CapabilitySelectorComponent.DEFAULT_VALUE;
       } else {
-        this.selectedCapabilities[index] = newCapabilityName;
+        this.selectedCapabilities[index] = newCapability;
       }
     } else {
       // TODO: error message to user here saying this capability is already selected

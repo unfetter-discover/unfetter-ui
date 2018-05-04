@@ -167,7 +167,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           const panel = this.determineFirstOpenSidePanel();
           if (panel) {
             this.page = 1;
-            this.openedSidePanel = 'capability-selector';
+            this.openedSidePanel = 'categories';
           }
         },
         (err) => console.log(err));
@@ -335,7 +335,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
      */
     const summary = new AssessmentSet();
     summary.id = arr.id;
-    summary.type = arr.type;
     summary.name = arr.name;
     summary.description = arr.description;
     summary.created = arr.created;
