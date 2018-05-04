@@ -2,8 +2,8 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { Capability } from 'stix';
-import { FetchCategories, SetBaselineCaps } from '../../store/baseline.actions';
+import { Capability, Category } from 'stix/assess/v3';
+import { SetBaselineCapabilities } from '../../store/baseline.actions';
 import * as assessReducers from '../../store/baseline.reducers';
 
 @Component({
@@ -14,8 +14,10 @@ import * as assessReducers from '../../store/baseline.reducers';
 export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDestroy {    
   public static readonly DEFAULT_VALUE = undefined;
   
-  public tempCapabilities: Capability[] = [ CapabilitySelectorComponent.DEFAULT_VALUE ];
-  public capabilities: Capability[];
+  public currentCapabilityGroup: Category;
+  public selectedCapabilities: Capability[] = [];
+  public allCapabilities: Capability[];
+
   private subscriptions: Subscription[] = [];
     
   constructor(
@@ -31,20 +33,30 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
       .pluck('capabilities')
       .distinctUntilChanged()
       .subscribe(
-        (capabilities: Capability[]) => this.capabilities = capabilities,
+        (allCapabilities: Capability[]) => this.allCapabilities = allCapabilities,
         (err) => console.log(err));
 
     const capSub2$ = this.wizardStore
       .select('baseline')
-      .pluck('baselineCaps')
+      .pluck('currentCapabilityGroup')
       .distinctUntilChanged()
       .subscribe(
-        (baselineCaps: Capability[]) => this.tempCapabilities = baselineCaps,
+        (currentCapabilityGroup: Category) => {
+          this.currentCapabilityGroup = currentCapabilityGroup;
+        },
+        (err) => console.log(err));
+
+    const capSub3$ = this.wizardStore
+      .select('baseline')
+      .pluck('baselineCapabilities')
+      .distinctUntilChanged()
+      .subscribe(
+        (selectedCapabilities: Capability[]) => {
+          this.selectedCapabilities = selectedCapabilities;
+        },
         (err) => console.log(err));
   
-    this.subscriptions.push(capSub1$, capSub2$);
-
-    this.wizardStore.dispatch(new FetchCategories());
+    this.subscriptions.push(capSub1$, capSub2$, capSub3$);
   }
 
   ngAfterViewInit() {
@@ -76,9 +88,14 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
     const newCapabilityName = option.selected.value;
 
     // Verify a selection and that this capability doesn't already exist
-    const indexInList = this.tempCapabilities.indexOf(newCapabilityName);
+    const indexInList = this.selectedCapabilities.indexOf(newCapabilityName);
     if (indexInList < 0 && option.value !== CapabilitySelectorComponent.DEFAULT_VALUE) {
-      this.tempCapabilities[index] = newCapabilityName;
+      if (index === -1) {
+        this.selectedCapabilities.push(newCapabilityName);
+        option.value = CapabilitySelectorComponent.DEFAULT_VALUE;
+      } else {
+        this.selectedCapabilities[index] = newCapabilityName;
+      }
     } else {
       // TODO: error message to user here saying this capability is already selected
 
@@ -86,7 +103,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
     }
 
     // Update wizard store with current capability selections
-    this.wizardStore.dispatch(new SetBaselineCaps(this.tempCapabilities));
+    this.wizardStore.dispatch(new SetBaselineCapabilities(this.selectedCapabilities));
   }
 
   /*
@@ -96,13 +113,12 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
    * @return {number}
    */
   public selectedCapability(option: any, index: number): Capability {
-    const selValue = this.tempCapabilities[index];
+    const selValue = this.selectedCapabilities[index];
     if (selValue === undefined) {
       return CapabilitySelectorComponent.DEFAULT_VALUE;
     } else {
-      const selIndex = this.capabilities.findIndex(capability => capability.id === selValue.id);
-      console.log(`value is -` + JSON.stringify(selValue) + `- and index is ` + selIndex);
-      return this.capabilities[selIndex];
+      const selIndex = this.allCapabilities.findIndex(capability => capability.id === selValue.id);
+      return this.allCapabilities[selIndex];
     }
   }
 
@@ -115,11 +131,11 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
     const confirmed = this.confirmDelete(option.value);
 
     if (confirmed) {
-      const index = this.tempCapabilities.indexOf(option.value);
-      this.tempCapabilities.splice(index, 1); 
+      const index = this.selectedCapabilities.indexOf(option.value);
+      this.selectedCapabilities.splice(index, 1); 
 
       // Update wizard store with current capability selections
-      this.wizardStore.dispatch(new SetBaselineCaps(this.tempCapabilities));
+      this.wizardStore.dispatch(new SetBaselineCapabilities(this.selectedCapabilities));
     }
   }
 
@@ -136,7 +152,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
   }
 
   public addCapabilityEntry(): void {
-    this.tempCapabilities.push(CapabilitySelectorComponent.DEFAULT_VALUE);
+    this.selectedCapabilities.push(CapabilitySelectorComponent.DEFAULT_VALUE);
   }
 
 

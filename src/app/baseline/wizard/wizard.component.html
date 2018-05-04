@@ -2,29 +2,31 @@
   <div @heightCollapse class="flex-col mt-18 mb-12">
   </div>
   <mat-accordion displayMode="flat" multi="false">
-    <mat-expansion-panel hideToggle="true" [expanded]="openedSidePanel === 'categories'" (opened)="onOpenSidePanel('categories', $event)">
-      <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
+    <mat-expansion-panel hideToggle="true">
+      <mat-expansion-panel-header>
         <mat-panel-title>
           CATEGORIES
         </mat-panel-title>
       </mat-expansion-panel-header>
     </mat-expansion-panel>
-    <mat-expansion-panel *ngFor="let category of categories" hideToggle="true" [expanded]="category.name === currentCategory.name"
-      (opened)="onOpenSidePanel(category.name, $event)">
-      <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
-        <mat-panel-title>
-          {{category}}
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <ul *ngIf="categories[category]" class="stepper stepper-vertical">
-        <li *ngFor="let capability of categories[category].capabilities" [class.active]="capability.page === page">
-          <a href (click)="navigationClicked(capability.page, $event)">
-            <span class="circle">&nbsp;</span>
-            <span class="label">{{capability}}</span>
-          </a>
-        </li>
-      </ul>
-    </mat-expansion-panel>
+    <div *ngIf="baselineGroups.length > 0">
+      <mat-expansion-panel *ngFor="let group of baselineGroups" hideToggle="true" [expanded]="currentBaselineGroup && group.name === currentBaselineGroup.name"
+        (opened)="onOpenSidePanel('capability-selector', $event)">
+        <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
+          <mat-panel-title>
+            {{group.name}}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <ul *ngIf="capabilities.length > 0" class="stepper stepper-vertical">
+          <li *ngFor="let capability of capabilities" [class.active]="capability === currentCapability">
+            <a href (click)="navigationClicked(capability.id, $event)">
+              <span class="circle">&nbsp;</span>
+              <span class="label">{{capability}}</span>
+            </a>
+          </li>
+        </ul>
+      </mat-expansion-panel>
+    </div>
     <mat-expansion-panel hideToggle="true" [expanded]="openedSidePanel === 'summary'" (opened)="onOpenSidePanel('summary', $event); showSummarySavePage()">
       <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
         <mat-panel-title>
@@ -47,7 +49,7 @@
   <mat-card>
     <!-- List of cards containing each panel in the baselines wizard -->
     <div [ngSwitch]="openedSidePanel">
-      <unf-baseline-wizard-category *ngSwitchCase="'categories'"></unf-baseline-wizard-category>
+      <unf-baseline-wizard-group *ngSwitchCase="'categories'"></unf-baseline-wizard-group>
       <unf-baseline-wizard-capability-selector *ngSwitchCase="'capability-selector'"></unf-baseline-wizard-capability-selector>
       <unf-baseline-wizard-capability *ngSwitchCase="'capabilities'" (onToggleHeatMap)="toggleHeatMap()"></unf-baseline-wizard-capability>
       <div *ngSwitchCase="'capability'">

@@ -1,26 +1,17 @@
+import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
-
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
-
-import * as UUID from 'uuid';
-import * as assessActions from './baseline.actions';
-
-import { FetchAssessment, StartAssessment } from './baseline.actions';
-
-import { BaselineService } from '../services/baseline.service';
-import { BaselineStateService } from '../services/baseline-state.service';
-import { BaselineMeta } from '../../models/baseline/baseline-meta';
-import { Constance } from '../../utils/constance';
+import { Category } from 'stix/assess/v3';
 import { GenericApi } from '../../core/services/genericapi.service';
-import { Capability } from '../../models/stix/capability';
-import { Stix } from '../../models/stix/stix';
-import { JsonApiData } from '../../models/json/jsonapi-data';
 import { Baseline } from '../../models/baseline/baseline';
+import { BaselineMeta } from '../../models/baseline/baseline-meta';
 import { JsonApi } from '../../models/json/jsonapi';
-import { Category } from 'stix';
+import { JsonApiData } from '../../models/json/jsonapi-data';
+import { BaselineStateService } from '../services/baseline-state.service';
+import { BaselineService } from '../services/baseline.service';
+import * as assessActions from './baseline.actions';
 
 @Injectable()
 export class BaselineEffects {
@@ -36,7 +27,7 @@ export class BaselineEffects {
 
     @Effect()
     public fetchAssessmentWizardData = this.actions$
-        .ofType(assessActions.LOAD_ASSESSMENT_WIZARD_DATA)
+        .ofType(assessActions.LOAD_BASELINE_WIZARD_DATA)
         .pluck('payload')
         // .switchMap((meta: Partial<Assessment3Meta>) => {
         //     const includeMeta = `?metaproperties=true`;
@@ -53,19 +44,25 @@ export class BaselineEffects {
 
     @Effect()
     public fetchAssessment = this.actions$
-        .ofType(assessActions.FETCH_ASSESSMENT)
+        .ofType(assessActions.FETCH_BASELINE)
         .switchMap(() => this.baselineService.load())
-        .map((arr: any[]) => new assessActions.FetchAssessment(arr[0]));
+        .map((arr: any[]) => new assessActions.FetchBaseline(arr[0]));
 
     @Effect()
-    public fetchCategories = this.actions$
-        .ofType(assessActions.FETCH_CATEGORIES)
+    public fetchCapabilityGroups = this.actions$
+        .ofType(assessActions.FETCH_CAPABILITY_GROUPS)
         .switchMap(() => this.baselineService.getCategories())
-        .map((arr: Category[]) => new assessActions.SetCategories(arr));
+        .map((arr: Category[]) => new assessActions.SetCapabilityGroups(arr));
+
+    @Effect()
+    public fetchCapabilities = this.actions$
+        .ofType(assessActions.FETCH_CAPABILITIES)
+        .switchMap(() => this.baselineService.getCapabilities())
+        .map((arr: Category[]) => new assessActions.SetCapabilities(arr));
 
     @Effect({ dispatch: false })
     public startAssessment = this.actions$
-        .ofType(assessActions.START_ASSESSMENT)
+        .ofType(assessActions.START_BASELINE)
         .pluck('payload')
         .map((el: BaselineMeta) => {
             this.baselineStateService.saveCurrent(el);
@@ -82,7 +79,7 @@ export class BaselineEffects {
 
     @Effect()
     public saveAssessment = this.actions$
-        .ofType(assessActions.SAVE_ASSESSMENT)
+        .ofType(assessActions.SAVE_BASELINE)
         .pluck('payload')
         .switchMap((baselines: Baseline[]) => {
             // const rollupIds = baselines

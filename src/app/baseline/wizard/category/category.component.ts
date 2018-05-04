@@ -1,21 +1,21 @@
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
-import * as assessActions from '../../store/baseline.actions';
-import * as assessReducers from '../../store/baseline.reducers';
-import { Store } from '@ngrx/store';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Category } from 'stix';
+import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { SetCategorySteps } from '../../store/baseline.actions';
+import { Category } from 'stix/assess/v3';
+import * as assessActions from '../../store/baseline.actions';
+import { SetBaselineGroups } from '../../store/baseline.actions';
+import * as assessReducers from '../../store/baseline.reducers';
 
 @Component({
-  selector: 'unf-baseline-wizard-category',
+  selector: 'unf-baseline-wizard-group',
   templateUrl: './category.component.html',
   styleUrls: ['./category.component.scss']
 })
 export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {    
   public static readonly DEFAULT_VALUE = undefined;
   
-  public tempCategories: Category[] = [ CategoryComponent.DEFAULT_VALUE ];
+  public selectedCapabilityGroups: Category[] = [];
   public categories: Category[];
   private subscriptions: Subscription[] = [];
     
@@ -29,7 +29,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const catSub1$ = this.wizardStore
       .select('baseline')
-      .pluck('categories')
+      .pluck('capabilityGroups')
       .distinctUntilChanged()
       .subscribe(
         (categories: Category[]) => this.categories = categories,
@@ -37,15 +37,17 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const catSub2$ = this.wizardStore
       .select('baseline')
-      .pluck('categorySteps')
+      .pluck('baselineGroups')
       .distinctUntilChanged()
       .subscribe(
-        (categorySteps: Category[]) => this.tempCategories = categorySteps,
+        (selectedCapabilityGroups: Category[]) => {
+          this.selectedCapabilityGroups = selectedCapabilityGroups;
+        },
         (err) => console.log(err));
   
     this.subscriptions.push(catSub1$, catSub2$);
 
-    this.wizardStore.dispatch(new assessActions.FetchCategories());
+    this.wizardStore.dispatch(new assessActions.FetchCapabilityGroups());
   }
 
   ngAfterViewInit() {
@@ -77,9 +79,14 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
     const newCategoryName = option.selected.value;
 
     // Verify a selection and that this category doesn't already exist
-    const indexInList = this.tempCategories.indexOf(newCategoryName);
+    const indexInList = this.selectedCapabilityGroups.indexOf(newCategoryName);
     if (indexInList < 0 && option.value !== CategoryComponent.DEFAULT_VALUE) {
-      this.tempCategories[index] = newCategoryName;
+      if (index === -1) {
+        this.selectedCapabilityGroups.push(newCategoryName);
+        option.value = CategoryComponent.DEFAULT_VALUE;
+      } else {
+        this.selectedCapabilityGroups[index] = newCategoryName;
+      }
     } else {
       // TODO: error message to user here saying this category is already selected
 
@@ -87,7 +94,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     // Update wizard store with current category selections
-    this.wizardStore.dispatch(new SetCategorySteps(this.tempCategories));
+    this.wizardStore.dispatch(new SetBaselineGroups(this.selectedCapabilityGroups));
   }
 
   /*
@@ -97,12 +104,11 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
    * @return {number}
    */
   public selectedCategory(option: any, index: number): Category {
-    const selValue = this.tempCategories[index];
+    const selValue = this.selectedCapabilityGroups[index];
     if (selValue === undefined) {
       return CategoryComponent.DEFAULT_VALUE;
     } else {
       const selIndex = this.categories.findIndex(category => category.id === selValue.id);
-      console.log(`value is -` + JSON.stringify(selValue) + `- and index is ` + selIndex);
       return this.categories[selIndex];
     }
   }
@@ -116,11 +122,11 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
     const confirmed = this.confirmDelete(option.value);
 
     if (confirmed) {
-      const index = this.tempCategories.indexOf(option.value);
-      this.tempCategories.splice(index, 1); 
+      const index = this.selectedCapabilityGroups.indexOf(option.value);
+      this.selectedCapabilityGroups.splice(index, 1); 
 
       // Update wizard store with current category selections
-      this.wizardStore.dispatch(new SetCategorySteps(this.tempCategories));
+      this.wizardStore.dispatch(new SetBaselineGroups(this.selectedCapabilityGroups.filter((capabilityGroup) => capabilityGroup !== undefined)));
     }
   }
 
@@ -137,7 +143,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public addCategoryEntry(): void {
-    this.tempCategories.push(CategoryComponent.DEFAULT_VALUE);
+    this.selectedCapabilityGroups.push(CategoryComponent.DEFAULT_VALUE);
   }
 
 

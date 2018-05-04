@@ -4,16 +4,20 @@ import { Baseline } from '../../models/baseline/baseline';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
 
 // For effects
-export const START_ASSESSMENT = '[Baseline] START_ASSESSMENT';
-export const START_ASSESSMENT_SUCCESS = '[Baseline] START_ASSESSMENT_SUCCESS';
-export const SAVE_ASSESSMENT = '[Baseline] SAVE_ASSESSMENT';
-export const LOAD_ASSESSMENT_WIZARD_DATA = '[Baseline] LOAD_ASSESSMENT_WIZARD_DATA';
-export const CLEAN_ASSESSMENT_WIZARD_DATA = '[Baseline] CLEAN_ASSESSMENT_WIZARD_DATA';
-export const FETCH_ASSESSMENT = '[Baseline] FETCH_ASSESSMENT';
-export const FETCH_CATEGORIES = '[Baseline] FETCH_CATEGORIES';
-export const SET_CATEGORIES = '[Baseline] SET_CATEGORIES';
-export const SET_CATEGORY_STEPS = '[Baseline] SET_CATEGORY_STEPS';
-export const SET_BASELINE_CAPS = '[Baseline] SET_BASELINE_CAPS';
+export const START_BASELINE = '[Baseline] START_BASELINE';
+export const START_BASELINE_SUCCESS = '[Baseline] START_BASELINE_SUCCESS';
+export const SAVE_BASELINE = '[Baseline] SAVE_BASELINE';
+export const LOAD_BASELINE_WIZARD_DATA = '[Baseline] LOAD_BASELINE_WIZARD_DATA';
+export const CLEAN_BASELINE_WIZARD_DATA = '[Baseline] CLEAN_BASELINE_WIZARD_DATA';
+export const FETCH_BASELINE = '[Baseline] FETCH_BASELINE';
+export const FETCH_CAPABILITY_GROUPS = '[Baseline] FETCH_CAPABILITY_GROUPS';
+export const SET_CAPABILITY_GROUPS = '[Baseline] SET_CAPABILITY_GROUPS';
+export const SET_BASELINE_GROUPS = '[Baseline] SET_BASELINE_GROUPS';
+export const SET_CURRENT_BASELINE_GROUP = '[Baseline] SET_CURRENT_BASELINE_GROUP';
+export const FETCH_CAPABILITIES = '[Baseline] FETCH_CAPABILITIES';
+export const SET_CAPABILITIES = '[Baseline] SET_CAPABILITIES';
+export const SET_BASELINE_CAPABILITIES = '[Baseline] SET_BASELINE_CAPABILITIES';
+export const SET_CURRENT_BASELINE_CAPABILITY = '[Baseline] SET_CURRENT_BASELINE_CAPABILITY';
 
 // For reducers
 export const UPDATE_PAGE_TITLE = '[Baseline] UPDATE_PAGE_TITLE';
@@ -28,56 +32,80 @@ export class UpdatePageTitle implements Action {
     constructor(public payload?: string | Object) { }
 }
 
-export class StartAssessment implements Action {
-    public readonly type = START_ASSESSMENT;
+export class StartBaseline implements Action {
+    public readonly type = START_BASELINE;
 
     constructor(public payload: BaselineMeta) { }
 }
 
-export class StartAssessmentSuccess implements Action {
-    public readonly type = START_ASSESSMENT_SUCCESS;
+export class StartBaselineSuccess implements Action {
+    public readonly type = START_BASELINE_SUCCESS;
 }
 
-export class SaveAssessment implements Action {
-    public readonly type = SAVE_ASSESSMENT;
+export class SaveBaseline implements Action {
+    public readonly type = SAVE_BASELINE;
 
     // an baseline can contain multiple baseline types
     //  these baselines will be saved w/ the same parentId
     constructor(public payload: Baseline[]) { }
 }
 
-export class FetchAssessment implements Action {
-    public readonly type = FETCH_ASSESSMENT;
+export class FetchBaseline implements Action {
+    public readonly type = FETCH_BASELINE;
 
     constructor(public payload: any[]) { }
 }
 
-export class FetchCategories implements Action {
-    public readonly type = FETCH_CATEGORIES;
+export class FetchCapabilityGroups implements Action {
+    public readonly type = FETCH_CAPABILITY_GROUPS;
 
     constructor() { }
 }
 
-export class SetCategories implements Action {
-    public readonly type = SET_CATEGORIES;
+export class SetCapabilityGroups implements Action {
+    public readonly type = SET_CAPABILITY_GROUPS;
 
     constructor(public payload: Category[]) { }
 }
 
-export class SetCategorySteps implements Action {
-    public readonly type = SET_CATEGORY_STEPS;
+export class SetBaselineGroups implements Action {
+    public readonly type = SET_BASELINE_GROUPS;
 
     constructor(public payload: Category[]) { }
 }
 
-export class SetBaselineCaps implements Action {
-    public readonly type = SET_BASELINE_CAPS;
+export class SetCurrentBaselineGroup implements Action {
+    public readonly type = SET_CURRENT_BASELINE_GROUP;
+
+    constructor(public payload: Category) { }
+}
+
+export class FetchCapabilities implements Action {
+    public readonly type = FETCH_CAPABILITIES;
+
+    constructor() { }
+}
+
+export class SetCapabilities implements Action {
+    public readonly type = SET_CAPABILITIES;
 
     constructor(public payload: Capability[]) { }
 }
 
-export class LoadAssessmentWizardData implements Action {
-    public readonly type = LOAD_ASSESSMENT_WIZARD_DATA;
+export class SetBaselineCapabilities implements Action {
+    public readonly type = SET_BASELINE_CAPABILITIES;
+
+    constructor(public payload: Capability[]) { }
+}
+
+export class SetCurrentBaselineCapability implements Action {
+    public readonly type = SET_CURRENT_BASELINE_CAPABILITY;
+
+    constructor(public payload: Capability) { }
+}
+
+export class LoadBaselineWizardData implements Action {
+    public readonly type = LOAD_BASELINE_WIZARD_DATA;
 
     constructor(public payload: Partial<BaselineMeta>) { }
 }
@@ -104,25 +132,29 @@ export class WizardPage implements Action {
     constructor(public payload: number) { }
 }
 
-export class CleanAssessmentWizardData {
-    public readonly type = CLEAN_ASSESSMENT_WIZARD_DATA;
+export class CleanBaselineWizardData {
+    public readonly type = CLEAN_BASELINE_WIZARD_DATA;
 
     constructor() { }
 }
 
-export type AssessmentActions =
+export type BaselineActions =
     AnswerQuestion |
-    CleanAssessmentWizardData |
-    FetchAssessment |
-    FetchCategories |
-    SetCategories |
-    SetCategorySteps |
-    SetBaselineCaps |
+    CleanBaselineWizardData |
+    FetchBaseline |
+    FetchCapabilityGroups |
+    SetCapabilityGroups |
+    SetBaselineGroups |
+    SetCurrentBaselineGroup |
+    FetchCapabilities |
+    SetCapabilities |
+    SetBaselineCapabilities |
+    SetCurrentBaselineCapability |
     FinishedLoading |
     FinishedSaving |
-    LoadAssessmentWizardData |
-    StartAssessment |
-    StartAssessmentSuccess |
-    SaveAssessment |
+    LoadBaselineWizardData |
+    StartBaseline |
+    StartBaselineSuccess |
+    SaveBaseline |
     UpdatePageTitle |
     WizardPage;

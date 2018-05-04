@@ -44,7 +44,7 @@ export class BaselineLayoutComponent implements OnInit, AfterViewInit {
       .distinctUntilChanged()
       .pluck('baseline')
       .pluck('baselineMeta')
-      .pluck('title');
+      .pluck('name');
 
     this.showBackButton = this.store
       .select('baseline')
