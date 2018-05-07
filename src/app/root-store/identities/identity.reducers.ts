@@ -5,7 +5,7 @@ export interface IdentityState {
     identities: Identity[],
 }
 
-const initialState: IdentityState = {
+export const initialState: IdentityState = {
     identities: [],
 }
 
@@ -15,6 +15,11 @@ export function identitiesReducer(state = initialState, action: identityActions.
             return {
                 ...state,
                 identities: action.payload,
+            };
+        case identityActions.CLEAR_IDENTITIES:
+            return {
+                ...state,
+                ...initialState
             };
         default:
             return state;
