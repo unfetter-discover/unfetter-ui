@@ -14,11 +14,12 @@ describe('identitiesReducer', () => {
     });
 
     it('should set identities', () => {
-        const payload = [ 'foo', 'bar' ];
+        const identity = new Identity();
+        const payload: Identity[] = [ identity ];
         const expected = {
             identities: payload
         };
-        expect(identitiesReducer(undefined, new identityActions.SetIdentities(payload as any[]))).toEqual(expected);
+        expect(identitiesReducer(undefined, new identityActions.SetIdentities(payload))).toEqual(expected);
     });
 
     it('should clear identities', () => {
