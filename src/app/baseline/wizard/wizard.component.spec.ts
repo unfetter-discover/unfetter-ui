@@ -17,6 +17,7 @@ import { CapabilitySelectorComponent } from './capability-selector/capability-se
 import { CapabilityComponent } from './capability/capability.component';
 import { CategoryComponent } from './category/category.component';
 import { WizardComponent } from './wizard.component';
+import { CapabilitySelectorComponent } from './capability-selector/capability-selector.component';
 
 class MockModel {
   attributes: any;
@@ -87,6 +88,7 @@ describe('WizardComponent', () => {
       declarations: [
         WizardComponent,
         CategoryComponent,
+        CapabilitySelectorComponent,
         CapabilityComponent,
         CapabilitySelectorComponent,
       ],

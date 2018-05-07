@@ -22,6 +22,7 @@ describe('CapabilitySelectorComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ CapabilitySelectorComponent ],
       imports: [
+        RouterTestingModule,
         NoopAnimationsModule,
         RouterTestingModule,
         ...matModules,
