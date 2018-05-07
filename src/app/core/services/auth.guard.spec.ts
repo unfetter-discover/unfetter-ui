@@ -29,11 +29,12 @@ describe('Auth guard should', () => {
                 CommonModule,
                 StoreModule.forRoot(reducers),
                 RouterTestingModule,
-                HttpClientTestingModule
+                HttpClientTestingModule,
             ],
             schemas: [NO_ERRORS_SCHEMA],
             providers: [
-                AuthGuard
+                AuthGuard,
+                { provide: Router, useValue: router },
             ]
         });
     }));
@@ -45,7 +46,48 @@ describe('Auth guard should', () => {
         userStore = authGuard['store'].select('users');
     });
 
-    it('Return true when user is logged in and is an admin', async () => {
+    it('return true when in demo mode', async () => {
+        authGuard['demoMode'] = true;
+        authGuard.canActivate({ data: { ROLES: ['STANDARD_USER'] } } as ActivatedRouteSnapshot | any, null)
+            .take(1)
+            .subscribe((res) => {
+                expect(res).toBe(true);
+            });
+    });
+
+    it('reroute to the home page if the user is not logged in, even though the route has no role restrictions', async () => {
+        spy = spyOn(authGuard, 'loggedIn').and.returnValue(false);
+        userStore.dispatch(new userActions.LoginUser({
+            userData: {
+                approved: true,
+                role: 'STANDARD_USER'
+            },
+            token: ''
+        }));
+        authGuard.canActivate({ data: {} } as ActivatedRouteSnapshot | any, null)
+            .take(1)
+            .subscribe((res) => {
+                expect(router.navigate).toHaveBeenCalledWith(['/']);
+            });
+    });
+
+    it('return true when user is logged in, is a standard user, but the route has no role restrictions', async () => {
+        spy = spyOn(authGuard, 'loggedIn').and.returnValue(true);
+        userStore.dispatch(new userActions.LoginUser({
+            userData: {
+                approved: true,
+                role: 'STANDARD_USER'
+            },
+            token: ''
+        }));
+        authGuard.canActivate({ data: {} } as ActivatedRouteSnapshot | any, null)
+            .take(1)
+            .subscribe((res) => {
+                expect(res).toBe(true);
+            });
+    });
+
+    it('return true when user is logged in and is an admin', async () => {
         spy = spyOn(authGuard, 'loggedIn').and.returnValue(true);
         userStore.dispatch(new userActions.LoginUser({
             userData: {
@@ -61,7 +103,7 @@ describe('Auth guard should', () => {
             });
     });
 
-    it('Return false when user is logged in and is a standard user', async () => {
+    it('return false when user is logged in and is a standard user', async () => {
         spy = spyOn(authGuard, 'loggedIn').and.returnValue(true);
         userStore.dispatch(new userActions.LoginUser({
             userData: {
@@ -77,7 +119,7 @@ describe('Auth guard should', () => {
             });
     });
 
-    it('Return false when user is logged out', async () => {
+    it('return false when user is logged out', async () => {
         spy = spyOn(authGuard, 'loggedIn').and.returnValue(false);
         userStore.dispatch(new userActions.LogoutUser());
         authGuard.canActivate({ data: { ROLES: ['STANDARD_USER'] } } as ActivatedRouteSnapshot | any, null)

@@ -45,7 +45,7 @@ describe('TreemapComponent', () => {
     });
 
     it('should accept input treemap data', async() => {
-        component.treeMapData = [
+        component.data = [
             [ 'Countries', 'Continents', '# Medals' ],
             [ 'Country', '', 0 ],
             [ 'North America', 'Country', 0 ],

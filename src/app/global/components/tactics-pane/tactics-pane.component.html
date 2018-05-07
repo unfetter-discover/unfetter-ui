@@ -2,14 +2,14 @@
 
     <h3 class="mat-title tactics-header theme-color-primary theme-bg-primary-lighter">
 
-        <div class="flex1 tactics-title">{{display.title}}</div>
+        <div class="flex1 tactics-title">{{title}}</div>
 
         <div class="carousel-view-controls" *ngIf="isCarouselView()">
-            <tactic-carousel-control></tactic-carousel-control>
+            <tactics-carousel-control></tactics-carousel-control>
         </div>
 
         <mat-button-toggle-group #viewOption="matButtonToggleGroup" class="toolbox"
-                [value]="display.view" (change)="onViewChange($event)">
+                [value]="view" (change)="onViewChange($event)">
             <mat-button-toggle value="carousel" matTooltip="Carousel View">
                 <mat-icon class="mat-24" aria-hidden="true" aria-label="view wide table">view_carousel</mat-icon>
             </mat-button-toggle>
@@ -23,55 +23,15 @@
 
     </h3>
 
-    <tactic-carousel #carousel [hidden]="!isCarouselView()" [data]="chainPatterns"
-            (onTooltip)="showCarouselTooltip($event)"></tactic-carousel>
+    <tactics-carousel #carousel [hidden]="!isCarouselView()"
+            [frameworks]="frameworks" [targeted]="targeted" [options]="carouselOptions"></tactics-carousel>
 
-    <unf-treemap #treemap [hidden]="!isTreemapView()"
-            [treeMapData]="treeMapData" [headerHeight]="20"
-            [minHighlightColor]="'transparent'"
-            [midHighlightColor]="'transparent'"
-            [maxHighlightColor]="'transparent'"
-            (onTooltip)="showTreeMapTooltip($event)"></unf-treemap>
+    <tactics-treemap #treemap [hidden]="!isTreemapView()"
+            [frameworks]="frameworks" [targeted]="targeted" [options]="treemapOptions"></tactics-treemap>
 
-    <attack-patterns-heatmap #heatmap [hidden]="!isHeatmapView()"
-            [attackPatterns]="attackPatterns" [options]="heatMapOptions"></attack-patterns-heatmap>
+    <tactics-heatmap #heatmap [hidden]="!isHeatmapView()"
+            [frameworks]="frameworks" [targeted]="targeted" [options]="heatmapOptions"></tactics-heatmap>
 
 </div>
 
-<ng-template #apTooltipTemplate>
-    <div class="col-md-12 tactic-tooltip">
-        <mat-card *ngIf="tooltipTarget">
-            <mat-card-subtitle>
-                <div class="flex1"><label>{{tooltipTarget.name}}</label></div>
-                <div [hidden]="asTooltip">
-                    <button mat-button type="button" class="mat-primary" *ngIf="isAdminUser()">
-                        <a target="_blank" href="/#/stix/attack-patterns/{{tooltipTarget.id}}">Details</a>
-                    </button>
-                    <button mat-button type="button" (click)="hideTacticTooltip(tooltipTarget)">Close</button>
-                </div>
-            </mat-card-subtitle>
-            <mat-card-content>
-                <div class="row">
-                    <div class="col-md-3"><label>Description</label></div>
-                    <div class="col-md-8 tactic-description" [innerHTML]="tooltipTarget.description"></div>
-                </div>
-                <div class="row" *ngIf="tooltipTarget.phases">
-                    <div class="col-md-3"><label>Phases</label></div>
-                    <div class="col-md-9 tactic-phases">{{tooltipTarget.phases.join(', ') | capitalize}}</div>
-                </div>
-                <div class="row" *ngIf="tooltipTarget.sources">
-                    <div class="col-md-3"><label>Data Sources</label></div>
-                    <div class="col-md-9 tactic-sources">{{tooltipTarget.sources.join(', ')}}</div>
-                </div>
-                <div class="row" *ngIf="tooltipTarget.platforms">
-                    <div class="col-md-3"><label>Platforms</label></div>
-                    <div class="col-md-9 tactic-platforms">{{tooltipTarget.platforms.join(', ')}}</div>
-                </div>
-                <div class="row" *ngIf="tooltipTarget.analytics">
-                    <div class="col-md-3"><label>Analytics</label></div>
-                    <div class="col-md-9 tactic-analytics">{{tooltipTarget.analytics.join(', ')}}</div>
-                </div>
-            </mat-card-content>
-        </mat-card>
-    </div>
-</ng-template>
+<tactics-tooltip #tooltips (hover)="onHover($event)" (click)="onClick($event)"></tactics-tooltip>

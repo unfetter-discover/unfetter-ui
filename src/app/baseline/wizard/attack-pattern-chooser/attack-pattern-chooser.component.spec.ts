@@ -1,22 +1,25 @@
-import { OverlayModule } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { MAT_DIALOG_DATA, MatCardModule, MatDialogModule, MatDialogRef } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
-import { StoreModule } from '@ngrx/store';
 import { AuthService } from '../../../core/services/auth.service';
 import { GenericApi } from '../../../core/services/genericapi.service';
+import { StoreModule, Store } from '@ngrx/store';
+
+import { OverlayModule } from '@angular/cdk/overlay';
+import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef, MatCardModule } from '@angular/material';
+
+import { AttackPatternChooserComponent } from './attack-pattern-chooser.component';
 import { AttackPatternsHeatmapComponent } from '../../../global/components/heatmap/attack-patterns-heatmap.component';
 import { HeatmapComponent } from '../../../global/components/heatmap/heatmap.component';
 import { CapitalizePipe } from '../../../global/pipes/capitalize.pipe';
 import { reducers } from '../../../root-store/app.reducers';
 import { mockAttackPatterns } from '../../../testing/mock-store';
-import { AttackPatternChooserComponent } from './attack-pattern-chooser.component';
 
 describe('AttackPatternChooserComponent', () => {
 
     let component: AttackPatternChooserComponent;
     let fixture: ComponentFixture<AttackPatternChooserComponent>;
+    let store: Store<any>;
 
     const mockAttackPatternData = [
         {

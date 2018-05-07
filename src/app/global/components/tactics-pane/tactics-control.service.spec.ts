@@ -1,16 +1,16 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { TacticControlService } from './tactic-control.service';
+import { TacticsControlService } from './tactics-control.service';
 
 describe('TacticControlService', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [TacticControlService]
+            providers: [TacticsControlService]
         });
     });
 
-    it('should be created', inject([TacticControlService], (service: TacticControlService) => {
+    it('should be created', inject([TacticsControlService], (service: TacticsControlService) => {
         expect(service).toBeTruthy();
     }));
 

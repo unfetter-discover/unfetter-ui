@@ -52,6 +52,7 @@ export class AppComponent implements OnInit {
         }));
       }
       this.store.dispatch(new configActions.FetchConfig(false));
+      this.store.dispatch(new configActions.FetchTactics());
       this.store.dispatch(new identityActions.FetchIdentities());
     }
 

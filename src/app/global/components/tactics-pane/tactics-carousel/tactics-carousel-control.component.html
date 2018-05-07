@@ -12,12 +12,12 @@
     </div>
 
     <mat-button-toggle-group id="carousel-options" #filterOption="matButtonToggleGroup" multiple class="toolbox">
-        <mat-button-toggle value="rows" [checked]="controls.filters.rows"
+        <mat-button-toggle value="rows" [checked]="filters.rows"
                 matTooltip="Compress rows" aria-label="view compact rows" (change)="onFilterChange($event)">
             <!-- <mat-icon class="mat-24" aria-hidden="true">format_line_spacing</mat-icon> -->
             <mat-icon class="mat-24" aria-hidden="true">panorama_horizontal</mat-icon>
         </mat-button-toggle>
-        <mat-button-toggle value="columns" [checked]="controls.filters.columns"
+        <mat-button-toggle value="columns" [checked]="filters.columns"
                 matTooltip="Compress columns" aria-label="view compact columns" (change)="onFilterChange($event)">
             <!-- <mat-icon class="mat-24" aria-hidden="true">view_compact</mat-icon> -->
             <mat-icon class="mat-24" aria-hidden="true">panorama_vertical</mat-icon>

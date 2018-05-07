@@ -1,6 +1,5 @@
-@import '../../../../styles/_variables.scss';
 
-.attack-pattern-tooltip {
+.tactic-tooltip {
 
     padding: 10px;
 
@@ -23,12 +22,12 @@
         margin-bottom: 4px;
     }
 
-    .attack-pattern-desc {
+    .tactic-description {
         max-height: 60px;
         overflow: hidden;
     }
 
-    .attack-pattern-desc:after {
+    .tactic-description:after {
         content: "";
         text-align: right;
         position: absolute;
@@ -40,12 +39,12 @@
         background: linear-gradient(to right, rgba(240, 240, 240, 0), rgba(240, 240, 240, 1) 80%);
     }
 
-    .attack-pattern-sources {
+    .tactic-sources {
         max-height: 40px;
         overflow: hidden;
     }
 
-    .attack-pattern-platforms {
+    .tactic-platforms {
         max-height: 20px;
         overflow: hidden;
     }

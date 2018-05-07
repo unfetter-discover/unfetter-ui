@@ -4,17 +4,17 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatCardModule } from '@angular/material';
 
-import { AttackPatternsHeatmapComponent } from './attack-patterns-heatmap.component';
 import { HeatmapComponent } from './heatmap.component';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 import { AuthService } from '../../../core/services/auth.service';
 import { StoreModule } from '@ngrx/store';
 import { reducers } from '../../../root-store/app.reducers';
+import { TacticsTooltipComponent } from './tactics-tooltip.component';
 
-describe('AttackPatternsHeatmapComponent', () => {
+describe('TacticsTooltipComponent should', () => {
 
-    let component: AttackPatternsHeatmapComponent;
-    let fixture: ComponentFixture<AttackPatternsHeatmapComponent>;
+    let component: TacticsTooltipComponent;
+    let fixture: ComponentFixture<TacticsTooltipComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -25,7 +25,7 @@ describe('AttackPatternsHeatmapComponent', () => {
                 StoreModule.forRoot(reducers),
             ],
             declarations: [
-                AttackPatternsHeatmapComponent,
+                TacticsTooltipComponent,
                 HeatmapComponent,
                 CapitalizePipe,
             ],
@@ -35,7 +35,7 @@ describe('AttackPatternsHeatmapComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(AttackPatternsHeatmapComponent);
+        fixture = TestBed.createComponent(TacticsTooltipComponent);
         component = fixture.componentInstance;
         component.attackPatterns = [];
         component.options = {};
