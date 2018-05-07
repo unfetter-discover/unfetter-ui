@@ -147,8 +147,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     const idParamSub$ = this.route.params
       .subscribe(
         (params) => {
-          let meta: Partial<BaselineMeta> = {};
-          let baselineId = params.baselineId || '';
+          const meta: Partial<BaselineMeta> = new BaselineMeta();
+          const baselineId = params.baselineId || '';
           if (baselineId) {
             this.loadExistingBaseline(baselineId, meta);
           }
@@ -197,9 +197,12 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       .select('baseline')
       .pluck('baseline')
       .pluck('baselineMeta')
+      .filter((el) => el !== undefined)
       .distinctUntilChanged()
       .subscribe(
-        (baselineMeta: BaselineMeta) => this.meta = baselineMeta,
+        (baselineMeta: BaselineMeta) => {
+          this.meta = baselineMeta;
+        },
         (err) => console.log(err));
 
     const sub8$ = this.userStore
@@ -229,9 +232,11 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       const sub10$ = this.wizardStore
         .select('baseline')
         .pluck('capabilityGroups')
+        .filter((el) => el !== undefined)
         .distinctUntilChanged()
         .subscribe(
           (baselineGroups: Category[]) => {
+            console.log(`baselinegroups ${baselineGroups}`);
             this.allCategories = baselineGroups;
             // TEMPORARY - to test out capability selector - remove after capability selector merged
             this.wizardStore.dispatch(new SetCurrentBaselineGroup(this.allCategories[Math.floor(Math.random() * this.allCategories.length) + 1  ]))
@@ -304,7 +309,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     });
   }
 
-  public loadExistingBaseline(baselineId: string, meta: Partial<BaselineMeta>) {
+  public loadExistingBaseline(baselineId: string, meta: Partial<BaselineMeta>): void {
     const sub$ = this.userStore
       .select('users')
       .pluck('userProfile')
@@ -324,7 +329,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.baselineStore.dispatch(new LoadAssessmentResultData(baselineId));
   }
 
-  public loadAssessments(baselineId: string, arr: AssessmentSet, meta: Partial<BaselineMeta>) {
+  public loadAssessments(baselineId: string, arr: AssessmentSet, meta: Partial<BaselineMeta>): void {
     if (!arr) {
       return;
     }

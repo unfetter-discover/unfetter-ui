@@ -4,14 +4,16 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule, MatCardModule, MatDatepickerModule, MatDialogModule, MatExpansionModule, MatInputModule, MatProgressBarModule, MatSelectModule, MatSnackBarModule } from '@angular/material';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { StoreModule } from '@ngrx/store';
+import { StoreModule, combineReducers } from '@ngrx/store';
 import * as fromRoot from 'app/root-store/app.reducers';
 import { ChartsModule } from 'ng2-charts';
 import { ComponentModule } from '../../components/component.module';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { GlobalModule } from '../../global/global.module';
+import { BaselineMeta } from '../../models/baseline/baseline-meta';
 import { PipesModule } from '../../pipes';
 import { baselineReducer } from '../store/baseline.reducers';
+import { CapabilitySelectorComponent } from './capability-selector/capability-selector.component';
 import { CapabilityComponent } from './capability/capability.component';
 import { CategoryComponent } from './category/category.component';
 import { WizardComponent } from './wizard.component';
@@ -23,7 +25,7 @@ class MockModel {
 
   constructor() {
     this.attributes = {
-      baselineMeta: null, baseline_objects: [
+      baselineMeta: new BaselineMeta(), baseline_objects: [
         {
           stix:
             {
@@ -86,6 +88,7 @@ describe('WizardComponent', () => {
         WizardComponent,
         CategoryComponent,
         CapabilityComponent,
+        CapabilitySelectorComponent,
       ],
       imports: [
         NoopAnimationsModule,
@@ -99,7 +102,7 @@ describe('WizardComponent', () => {
         RouterTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          'baseline': baselineReducer,
+          'baseline': combineReducers(baselineReducer),
         }),
       ],
       providers: [GenericApi],
@@ -110,6 +113,7 @@ describe('WizardComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(WizardComponent);
     component = fixture.componentInstance;
+    // component.model = this.attributes;
     fixture.detectChanges();
   });
 
