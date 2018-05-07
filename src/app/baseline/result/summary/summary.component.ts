@@ -180,7 +180,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(sub1$, sub2$, sub8$);
   }
-
   /**
    * @description
    * @param {string} creatorId - optional

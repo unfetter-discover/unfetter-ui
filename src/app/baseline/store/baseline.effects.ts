@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
-import { Category } from 'stix';
+import { Category } from 'stix/assess/v3';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { AttackPatternService } from '../../core/services/attack-pattern.service';
 import { GenericApi } from '../../core/services/genericapi.service';
@@ -30,7 +30,7 @@ export class BaselineEffects {
 
     @Effect()
     public fetchAssessmentWizardData = this.actions$
-        .ofType(assessActions.LOAD_ASSESSMENT_WIZARD_DATA)
+        .ofType(assessActions.LOAD_BASELINE_WIZARD_DATA)
         .pluck('payload')
         // .switchMap((meta: Partial<Assessment3Meta>) => {
         //     const includeMeta = `?metaproperties=true`;
@@ -47,53 +47,59 @@ export class BaselineEffects {
 
     @Effect()
     public fetchAssessment = this.actions$
-        .ofType(assessActions.FETCH_ASSESSMENT)
+        .ofType(assessActions.FETCH_BASELINE)
         .switchMap(() => this.baselineService.load())
-        .map((arr: any[]) => new assessActions.FetchAssessment(arr[0]));
+        .map((arr: any[]) => new assessActions.FetchBaseline(arr[0]));
 
     @Effect()
-    public fetchCategories = this.actions$
-        .ofType(assessActions.FETCH_CATEGORIES)
+    public fetchCapabilityGroups = this.actions$
+        .ofType(assessActions.FETCH_CAPABILITY_GROUPS)
         .switchMap(() => this.baselineService.getCategories())
-        .map((arr: Category[]) => new assessActions.SetCategories(arr));
+        .map((arr: Category[]) => new assessActions.SetCapabilityGroups(arr));
 
     @Effect()
-    public fetchAttackPatterns = this.actions$
-        .ofType(assessActions.FETCH_ATTACK_PATTERNS)
-        .pluck('payload')
-        .switchMap((selectedFramework: string) => {
-            const o1$ = Observable.of(selectedFramework);
-            // select all the attack patterns
-            const o2$ = this.attackPatternService
-                .fetchAttackPatterns()
-                .catch((ex) => Observable.of([] as AttackPattern[]));
-            // merge selected framework and all system attack patterns                
-            return Observable.forkJoin(o1$, o2$);
-        })
-        .mergeMap(([framework, allAttackPatterns]) => {
-            // if no framework given, use all attack patterns
-            let selectedAttackPatterns = allAttackPatterns;
-            if (framework) {
-                // filter if we are given a selected framework
-                const isFromSelectedFramework = (el) => {
-                    return el 
-                        && el.kill_chain_phases
-                        .findIndex((_) => _.kill_chain_name === framework) > -1;
-                };
-                selectedAttackPatterns = allAttackPatterns
-                    .filter(isFromSelectedFramework);
-            }
+    public fetchCapabilities = this.actions$
+        .ofType(assessActions.FETCH_CAPABILITIES)
+        .switchMap(() => this.baselineService.getCapabilities())
+        .map((arr: Category[]) => new assessActions.SetCapabilities(arr));
 
-            // tell reducer to set the attack pattern states
-            return [
-                new assessActions.SetAttackPatterns(allAttackPatterns),
-                new assessActions.SetSelectedFrameworkAttackPatterns(selectedAttackPatterns),
-            ];
-        });
-
+        @Effect()
+        public fetchAttackPatterns = this.actions$
+            .ofType(assessActions.FETCH_ATTACK_PATTERNS)
+            .pluck('payload')
+            .switchMap((selectedFramework: string) => {
+                const o1$ = Observable.of(selectedFramework);
+                // select all the attack patterns
+                const o2$ = this.attackPatternService
+                    .fetchAttackPatterns()
+                    .catch((ex) => Observable.of([] as AttackPattern[]));
+                // merge selected framework and all system attack patterns                
+                return Observable.forkJoin(o1$, o2$);
+            })
+            .mergeMap(([framework, allAttackPatterns]) => {
+                // if no framework given, use all attack patterns
+                let selectedAttackPatterns = allAttackPatterns;
+                if (framework) {
+                    // filter if we are given a selected framework
+                    const isFromSelectedFramework = (el) => {
+                        return el 
+                            && el.kill_chain_phases
+                            .findIndex((_) => _.kill_chain_name === framework) > -1;
+                    };
+                    selectedAttackPatterns = allAttackPatterns
+                        .filter(isFromSelectedFramework);
+                }
+    
+                // tell reducer to set the attack pattern states
+                return [
+                    new assessActions.SetAttackPatterns(allAttackPatterns),
+                    new assessActions.SetSelectedFrameworkAttackPatterns(selectedAttackPatterns),
+                ];
+            });
+    
     @Effect({ dispatch: false })
     public startAssessment = this.actions$
-        .ofType(assessActions.START_ASSESSMENT)
+        .ofType(assessActions.START_BASELINE)
         .pluck('payload')
         .map((el: BaselineMeta) => {
             this.baselineStateService.saveCurrent(el);
@@ -110,7 +116,7 @@ export class BaselineEffects {
 
     @Effect()
     public saveAssessment = this.actions$
-        .ofType(assessActions.SAVE_ASSESSMENT)
+        .ofType(assessActions.SAVE_BASELINE)
         .pluck('payload')
         .switchMap((baselines: Baseline[]) => {
             // const rollupIds = baselines
@@ -148,7 +154,7 @@ export class BaselineEffects {
                     // } else {
                     //     // stoopid hack to handle the fact that update returns a single object, not an array, and drops the metadata
                     //     arr[0].attributes.metaProperties = { rollupId: rollupId };
-                    return [arr];
+                        return [arr];
                     // }
                 });
         })
@@ -156,8 +162,8 @@ export class BaselineEffects {
         .map((arr) => {
             const hasAttributes = arr && arr[0] && arr[0].attributes;
             const hasMetadata = hasAttributes && arr[0].attributes.metaProperties;
-            return new assessActions.FinishedSaving({
-                finished: true,
+            return new assessActions.FinishedSaving({ 
+                finished: true, 
                 id: hasAttributes ? arr[0].attributes.id : '',
             });
         })

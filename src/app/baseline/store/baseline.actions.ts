@@ -1,10 +1,30 @@
 import { Action } from '@ngrx/store';
-import { Category } from 'stix';
-import { AttackPattern } from 'stix/unfetter/attack-pattern';
+import { Capability, Category } from 'stix/assess/v3';
 import { Baseline } from '../../models/baseline/baseline';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
+import { AttackPattern } from 'stix/unfetter/attack-pattern';
 
 // For effects
+export const START_BASELINE = '[Baseline] START_BASELINE';
+export const START_BASELINE_SUCCESS = '[Baseline] START_BASELINE_SUCCESS';
+export const SAVE_BASELINE = '[Baseline] SAVE_BASELINE';
+export const LOAD_BASELINE_WIZARD_DATA = '[Baseline] LOAD_BASELINE_WIZARD_DATA';
+export const CLEAN_BASELINE_WIZARD_DATA = '[Baseline] CLEAN_BASELINE_WIZARD_DATA';
+export const FETCH_BASELINE = '[Baseline] FETCH_BASELINE';
+export const FETCH_CAPABILITY_GROUPS = '[Baseline] FETCH_CAPABILITY_GROUPS';
+export const SET_CAPABILITY_GROUPS = '[Baseline] SET_CAPABILITY_GROUPS';
+export const SET_BASELINE_GROUPS = '[Baseline] SET_BASELINE_GROUPS';
+export const SET_CURRENT_BASELINE_GROUP = '[Baseline] SET_CURRENT_BASELINE_GROUP';
+export const FETCH_CAPABILITIES = '[Baseline] FETCH_CAPABILITIES';
+export const SET_CAPABILITIES = '[Baseline] SET_CAPABILITIES';
+export const SET_BASELINE_CAPABILITIES = '[Baseline] SET_BASELINE_CAPABILITIES';
+export const SET_CURRENT_BASELINE_CAPABILITY = '[Baseline] SET_CURRENT_BASELINE_CAPABILITY';
+
+// For reducers
+export const UPDATE_PAGE_TITLE = '[Baseline] UPDATE_PAGE_TITLE';
+export const ANSWER_QUESTION = '[Baseline] ANSWER_QUESTION';
+export const FINISHED_LOADING = '[Baseline] FINISHED_LOADING';
+export const FINISHED_SAVING = '[Baseline] FINISHED_SAVING';
 export const CLEAN_ASSESSMENT_WIZARD_DATA = '[Baseline] CLEAN_ASSESSMENT_WIZARD_DATA';
 export const FETCH_ASSESSMENT = '[Baseline] FETCH_ASSESSMENT';
 export const FETCH_ATTACK_PATTERNS = '[Baseline] FETCH_ATTACK_PATTERNS';
@@ -13,16 +33,10 @@ export const LOAD_ASSESSMENT_WIZARD_DATA = '[Baseline] LOAD_ASSESSMENT_WIZARD_DA
 export const SAVE_ASSESSMENT = '[Baseline] SAVE_ASSESSMENT';
 export const START_ASSESSMENT = '[Baseline] START_ASSESSMENT';
 export const START_ASSESSMENT_SUCCESS = '[Baseline] START_ASSESSMENT_SUCCESS';
-
-// For reducers
-export const ANSWER_QUESTION = '[Baseline] ANSWER_QUESTION';
-export const FINISHED_LOADING = '[Baseline] FINISHED_LOADING';
-export const FINISHED_SAVING = '[Baseline] FINISHED_SAVING';
 export const SET_ATTACK_PATTERNS = '[Baseline] SET_ATTACK_PATTERNS';
 export const SET_CATEGORIES = '[Baseline] SET_CATEGORIES';
 export const SET_CATEGORY_STEPS = '[Baseline] SET_CATEGORY_STEPS';
 export const SET_SELECTED_FRAMEWORK_ATTACK_PATTERNS = '[Baseline] SET_SELECTED_FRAMEWORK_ATTACK_PATTERNS';
-export const UPDATE_PAGE_TITLE = '[Baseline] UPDATE_PAGE_TITLE';
 export const WIZARD_PAGE = '[Baseline] WIZARD_PAGE';
 
 export class UpdatePageTitle implements Action {
@@ -31,34 +45,82 @@ export class UpdatePageTitle implements Action {
     constructor(public payload?: string | Object) { }
 }
 
-export class StartAssessment implements Action {
-    public readonly type = START_ASSESSMENT;
+export class StartBaseline implements Action {
+    public readonly type = START_BASELINE;
 
     constructor(public payload: BaselineMeta) { }
 }
 
-export class StartAssessmentSuccess implements Action {
-    public readonly type = START_ASSESSMENT_SUCCESS;
+export class StartBaselineSuccess implements Action {
+    public readonly type = START_BASELINE_SUCCESS;
 }
 
-export class SaveAssessment implements Action {
-    public readonly type = SAVE_ASSESSMENT;
+export class SaveBaseline implements Action {
+    public readonly type = SAVE_BASELINE;
 
     // an baseline can contain multiple baseline types
     //  these baselines will be saved w/ the same parentId
     constructor(public payload: Baseline[]) { }
 }
 
-export class FetchAssessment implements Action {
-    public readonly type = FETCH_ASSESSMENT;
+export class FetchBaseline implements Action {
+    public readonly type = FETCH_BASELINE;
 
     constructor(public payload: any[]) { }
 }
 
-export class FetchCategories implements Action {
-    public readonly type = FETCH_CATEGORIES;
+export class FetchCapabilityGroups implements Action {
+    public readonly type = FETCH_CAPABILITY_GROUPS;
 
     constructor() { }
+}
+
+export class SetCapabilityGroups implements Action {
+    public readonly type = SET_CAPABILITY_GROUPS;
+
+    constructor(public payload: Category[]) { }
+}
+
+export class SetBaselineGroups implements Action {
+    public readonly type = SET_BASELINE_GROUPS;
+
+    constructor(public payload: Category[]) { }
+}
+
+export class SetCurrentBaselineGroup implements Action {
+    public readonly type = SET_CURRENT_BASELINE_GROUP;
+
+    constructor(public payload: Category) { }
+}
+
+export class FetchCapabilities implements Action {
+    public readonly type = FETCH_CAPABILITIES;
+
+    constructor() { }
+}
+
+export class SetCapabilities implements Action {
+    public readonly type = SET_CAPABILITIES;
+
+    constructor(public payload: Capability[]) { }
+}
+
+export class SetBaselineCapabilities implements Action {
+    public readonly type = SET_BASELINE_CAPABILITIES;
+
+    constructor(public payload: Capability[]) { }
+}
+
+export class SetCurrentBaselineCapability implements Action {
+    public readonly type = SET_CURRENT_BASELINE_CAPABILITY;
+
+    constructor(public payload: Capability) { }
+}
+
+export class LoadBaselineWizardData implements Action {
+    public readonly type = LOAD_BASELINE_WIZARD_DATA;
+
+    constructor(public payload: Partial<BaselineMeta>) { }
 }
 
 export class FetchAttackPatterns implements Action {
@@ -88,12 +150,6 @@ export class SetCategorySteps implements Action {
     constructor(public payload: Category[]) { }
 }
 
-export class LoadAssessmentWizardData implements Action {
-    public readonly type = LOAD_ASSESSMENT_WIZARD_DATA;
-
-    constructor(public payload: Partial<BaselineMeta>) { }
-}
-
 export class FinishedLoading implements Action {
     public readonly type = FINISHED_LOADING;
 
@@ -116,26 +172,37 @@ export class WizardPage implements Action {
     constructor(public payload: number) { }
 }
 
-export class CleanAssessmentWizardData {
-    public readonly type = CLEAN_ASSESSMENT_WIZARD_DATA;
+export class CleanBaselineWizardData {
+    public readonly type = CLEAN_BASELINE_WIZARD_DATA;
 
     constructor() { }
 }
-export type AssessmentActions =
+
+export type BaselineActions =
     AnswerQuestion |
-    CleanAssessmentWizardData |
-    FetchAssessment |
-    FetchAttackPatterns |
-    FetchCategories |
+    CleanBaselineWizardData |
+    FetchBaseline |
+    FetchCapabilityGroups |
+    SetCapabilityGroups |
+    SetBaselineGroups |
+    SetCurrentBaselineGroup |
+    FetchCapabilities |
+    SetCapabilities |
+    SetBaselineCapabilities |
+    SetCurrentBaselineCapability |
     FinishedLoading |
     FinishedSaving |
-    LoadAssessmentWizardData |
-    SaveAssessment |
+    LoadBaselineWizardData |
+    StartBaseline |
+    StartBaselineSuccess |
+    SaveBaseline |
+    AnswerQuestion |
+    FetchAttackPatterns |
+    FinishedLoading |
+    FinishedSaving |
     SetAttackPatterns |
     SetCategories |
     SetCategorySteps |
     SetSelectedFrameworkAttackPatterns |
-    StartAssessment |
-    StartAssessmentSuccess |
     UpdatePageTitle |
     WizardPage;

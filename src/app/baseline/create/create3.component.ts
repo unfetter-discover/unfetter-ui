@@ -55,7 +55,7 @@ export class Create3Component implements OnInit {
   public submitForm(): void {
     this.assessMeta = this.formToAssessment(this.form);
     console.log('submit form', this.assessMeta);
-    this.store.dispatch(new assessActions.StartAssessment(this.assessMeta));
+    this.store.dispatch(new assessActions.StartBaseline(this.assessMeta));
   }
 
   /**

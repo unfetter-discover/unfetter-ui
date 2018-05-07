@@ -1,0 +1,42 @@
+    <mat-card-content>
+      <div *ngIf="currentCapabilityGroup !== undefined" class="row margin-bottom flex-sm flexItemsCenter">
+        <div class="col-sm-9 group-name">
+          {{ currentCapabilityGroup.name }} Capabilities
+        </div>
+      </div>
+      <div class="row margin-bottom" *ngFor="let selCapability of selectedCapabilities; index as i; trackBy: trackByFn">
+        <div class="col-xs-12">
+          <div class="row">
+            <div class="col-xs-10">
+              <form>
+                <mat-form-field class="full-width">
+                  <mat-select #existingCapability name="existingCapability" (change)="updateCapability(existingCapability, i)" [value]="selectedCapability(existingCapability, i)">
+                    <mat-option *ngFor="let capability of allCapabilities" [value]="selCapability">
+                      {{ selCapability.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </form>
+            </div>
+            <div class="col-xs-1" [hidden]="selectedCapabilities.length === 0">
+              <button mat-button (click)="onDeleteCapability(existingCapability)">
+                <mat-icon class="mat-24">delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-10">
+          <form>
+            <mat-form-field class="full-width">
+              <mat-select #newCapability name="newCapability" (change)="updateCapability(newCapability, -1)">
+                <mat-option *ngFor="let capability of allCapabilities" [value]="capability">
+                  {{ capability.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </form>
+        </div>
+      </div>
+    </mat-card-content>

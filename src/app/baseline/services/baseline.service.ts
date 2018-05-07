@@ -1,23 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-
-import { Baseline } from '../../models/baseline/baseline';
-import { Constance } from '../../utils/constance';
+import { Capability, Category } from 'stix/assess/v3';
 import { GenericApi } from '../../core/services/genericapi.service';
-import { JsonApiData } from '../../models/json/jsonapi-data';
-import { LastModifiedBaseline } from '../models/last-modified-baseline';
-import { BaselineObject } from '../../models/baseline/baseline-object';
-import { JsonApi } from '../../models/json/jsonapi';
-import { RiskByAttack3 } from '../../models/baseline/risk-by-attack3';
 import { RiskByKillChain } from '../../models/assess/risk-by-kill-chain';
 import { SummaryAggregation } from '../../models/assess/summary-aggregation';
-import { JsonApiObject } from '../../threat-dashboard/models/adapter/json-api-object';
-import { Capability } from '../../models/unfetter/capability';
-import { Category } from 'stix';
+import { Baseline } from '../../models/baseline/baseline';
+import { BaselineObject } from '../../models/baseline/baseline-object';
+import { RiskByAttack3 } from '../../models/baseline/risk-by-attack3';
+import { JsonApiData } from '../../models/json/jsonapi-data';
+import { Constance } from '../../utils/constance';
+import { LastModifiedBaseline } from '../models/last-modified-baseline';
 
 @Injectable()
 export class BaselineService {
     public readonly baselineBaseUrl = Constance.X_UNFETTER_BASELINE_URL;
+    public readonly capabilityBaseUrl = Constance.X_UNFETTER_CAPABILITY_URL;
     public readonly categoryBaseUrl = Constance.X_UNFETTER_CATEGORY_URL;
     public readonly relationshipsBaseUrl = Constance.RELATIONSHIPS_URL;
 
@@ -118,6 +115,19 @@ export class BaselineService {
             `${this.categoryBaseUrl}?${encodeURI(filter)}` : this.categoryBaseUrl;
         return this.genericApi
             .getAs<JsonApiData<Category>[]>(url)
+            .map((data) => data.map((el) => el.attributes));
+   }
+
+    /**
+     * @description load capabilities
+     * @param {string} filter
+     * @return {Observable<Capability[]>}
+     */
+    public getCapabilities(filter?: string): Observable<Capability[]>  {
+        const url = filter ?
+            `${this.capabilityBaseUrl}?${encodeURI(filter)}` : this.capabilityBaseUrl;
+        return this.genericApi
+            .getAs<JsonApiData<Capability>[]>(url)
             .map((data) => data.map((el) => el.attributes));
    }
 
