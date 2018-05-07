@@ -196,13 +196,15 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     const sub7$ = this.wizardStore
       .select('baseline')
       .pluck('baseline')
+      .filter((el) => el !== undefined)
       .distinctUntilChanged()
       .subscribe(
         (assessmentSet: AssessmentSet) => {
-          this.meta = new BaselineMeta();
-          this.meta.title = assessmentSet.name;
-          this.meta.description = assessmentSet.description;
-          this.meta.created_by_ref = assessmentSet.created_by_ref;
+          const meta = new BaselineMeta();
+          meta.title = assessmentSet.name || meta.title;
+          meta.description = assessmentSet.description || meta.description;
+          meta.created_by_ref = assessmentSet.created_by_ref || meta.created_by_ref;
+          this.meta = meta;
         },
         (err) => console.log(err));
 
