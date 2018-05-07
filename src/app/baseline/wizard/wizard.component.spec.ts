@@ -86,11 +86,10 @@ describe('WizardComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [
-        WizardComponent,
-        CategoryComponent,
-        CapabilitySelectorComponent,
         CapabilityComponent,
         CapabilitySelectorComponent,
+        CategoryComponent,
+        WizardComponent,
       ],
       imports: [
         NoopAnimationsModule,
@@ -115,7 +114,6 @@ describe('WizardComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(WizardComponent);
     component = fixture.componentInstance;
-    // component.model = this.attributes;
     fixture.detectChanges();
   });
 
