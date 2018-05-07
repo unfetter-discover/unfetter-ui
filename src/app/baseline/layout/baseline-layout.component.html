@@ -1,17 +1,17 @@
 <div class="layout">
   <div class="titleWrapper">
-      <div class="banner-wrapper">
-        <div class="flex">
-          <div class="banner">Baselines is currently in beta. Some functionality does not work.</div>
-        </div>
+    <div class="banner-wrapper">
+      <div class="flex">
+        <div class="banner">Baselines is currently in beta. Some functionality does not work.</div>
       </div>
-      <span class="title mat-title">
+    </div>
+    <span class="title mat-title">
       <span *ngIf="showBackButton|async">
         <button mat-icon-button class="mat-24" (click)="onBack($event)">
           <mat-icon>keyboard_backspace</mat-icon>
         </button>
       </span>
-      <span>
+      <span *ngIf="title | async" [@fadeInOut]>
         {{(title | async)}}
       </span>
     </span>
