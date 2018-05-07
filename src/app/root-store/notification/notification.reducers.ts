@@ -6,8 +6,7 @@ export interface NotificationState {
     notifications: AppNotification[]
 }
 
-// Uncomment the fake notifications to test
-const initialState: NotificationState = {
+export const initialState: NotificationState = {
     notifications: []
 };
 

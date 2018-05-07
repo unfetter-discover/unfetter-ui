@@ -32,7 +32,7 @@ export const initialSearchParameters: SearchParameters = {
     published: []
 };
 
-const initialState: IndicatorSharingState = {
+export const initialState: IndicatorSharingState = {
     indicators: [],
     filteredIndicators: [],
     displayedIndicators: [],
