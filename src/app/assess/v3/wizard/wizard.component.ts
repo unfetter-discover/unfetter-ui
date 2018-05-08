@@ -5,17 +5,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MenuItem } from 'primeng/components/common/menuitem';
 import { Subscription } from 'rxjs/Subscription';
+import { AssessmentObject } from 'stix/assess/v2/assessment-object';
+import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';
+import { Assessment } from 'stix/assess/v3/assessment';
+import { Dictionary } from 'stix/common/dictionary';
+import { JsonApiData } from 'stix/json/jsonapi-data';
+import { Indicator } from 'stix/stix/indicator';
+import { Stix } from 'stix/unfetter/stix';
 import { Key } from 'ts-keycode-enum';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { heightCollapse } from '../../../global/animations/height-collapse';
-import { Assessment } from '../../../models/assess/assessment';
-import { AssessmentMeta } from '../../../models/assess/assessment-meta';
-import { AssessmentObject } from '../../../models/assess/assessment-object';
-import { AssessmentQuestion } from '../../../models/assess/assessment-question';
-import { Dictionary } from '../../../models/json/dictionary';
-import { JsonApiData } from '../../../models/json/jsonapi-data';
-import { Indicator } from '../../../models/stix/indicator';
-import { Stix } from '../../../models/stix/stix';
 import { UserProfile } from '../../../models/user/user-profile';
 import { AppState } from '../../../root-store/app.reducers';
 import { Constance } from '../../../utils/constance';
@@ -94,7 +93,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public showSummary = false;
   public currentAssessmentGroup = {} as any;
   public page = 1;
-  public meta = new AssessmentMeta();
+  public meta = new Assess3Meta();
   public indicators: Indicator[];
   public sensors: Stix[];
   public mitigations: Stix[];
@@ -160,11 +159,11 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           const isTrue = (val: number) => val === 1;
           const includesIndicators = isTrue(+this.route.snapshot.paramMap.get('includesIndicators'));
           const includesMitigations = isTrue(+this.route.snapshot.paramMap.get('includesMitigations'));
-          const includesSensors = isTrue(+this.route.snapshot.paramMap.get('includesSensors'));
-          const meta: Partial<AssessmentMeta> = {
+          const baselineRef = isTrue(+this.route.snapshot.paramMap.get('baselineRef'));
+          const meta: Partial<Assess3Meta> = {
             includesIndicators,
             includesMitigations,
-            includesSensors,
+            baselineRef,
           };
           const rollupId = params.rollupId || '';
           if (rollupId) {
@@ -241,7 +240,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       .pluck('assessmentMeta')
       .distinctUntilChanged()
       .subscribe(
-        (assessmentMeta: AssessmentMeta) => this.meta = assessmentMeta,
+        (assessmentMeta: Assess3Meta) => this.meta = assessmentMeta,
         (err) => console.log(err));
 
     const sub8$ = this.userStore
@@ -270,7 +269,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     });
   }
 
-  public loadExistingAssessment(rollupId: string, meta: Partial<AssessmentMeta>) {
+  public loadExistingAssessment(rollupId: string, meta: Partial<Assess3Meta>) {
     const sub$ = this.userStore
       .select('users')
       .pluck('userProfile')
@@ -291,14 +290,15 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.assessStore.dispatch(new LoadAssessmentsByRollupId(rollupId));
   }
 
-  public loadAssessments(rollupId: string, arr: Array<Assessment>, meta: Partial<AssessmentMeta>) {
+  public loadAssessments(rollupId: string, arr: Array<Assessment>, meta: Partial<Assess3Meta>) {
     if (!arr || arr.length === 0) {
       return;
     }
 
     meta.includesIndicators = false;
     meta.includesMitigations = false;
-    meta.includesSensors = false;
+    // TODO: set baselineRef
+    // meta.includesSensors = false;
 
     /*
      * making the model a collection of all the assessments matching the given rollup id, plus a summary of all the
@@ -317,7 +317,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       summary.assessment_objects = summary.assessment_objects.concat(assessment.assessment_objects);
       summary.created_by_ref = meta.created_by_ref = assessment.created_by_ref;
       if (!assessment.metaProperties) {
-        assessment.metaProperties = {};
+        assessment.metaProperties = { published: false };
         if (!assessment.metaProperties.rollupId) {
           assessment.metaProperties.rollupId = rollupId;
         }
@@ -330,7 +330,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         meta.includesMitigations = true;
       } else if (assessment.assessment_objects.every(el => el.stix.type === 'x-unfetter-sensor')) {
         typedAssessments[this.sidePanelOrder[2]] = assessment;
-        meta.includesSensors = true;
+        // TODO: set baselineRef
+        // meta.includesSensors = true;
       } else {
         console.log('We got a weird assessment document that is not all of one category, or has unknown categories',
           assessment);
@@ -873,7 +874,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    */
   public createAssessmentGroups(assessedObjects: Stix[]): any[] {
     const assessmentGroups = [];
-    const self = this;
 
     if (assessedObjects) {
       // Go through and build each assessment
@@ -891,7 +891,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           assessment.measurements = assessedObject.id ? this.buildMeasurements(assessedObject.id) : [];
           assessment.type = assessedObject.type;
           const risk = this.getRisk(assessment.measurements);
-          assessment.risk = -1;
+          assessment.risk = (risk >= 0) ? risk : -1;
           return assessment;
         });
       this.groupings = this.buildGrouping(this.assessments);
@@ -1124,7 +1124,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @param {any}
    * @return {Assessment}
    */
-  private generateXUnfetterAssessment(tempModel: TempModel, assessmentMeta: AssessmentMeta): Assessment {
+  private generateXUnfetterAssessment(tempModel: TempModel, assessmentMeta: Assess3Meta): Assessment {
     const assessment = new Assessment();
     assessment.assessmentMeta = assessmentMeta;
     assessment.name = this.meta.title;
@@ -1169,7 +1169,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   private saveAssessments(): void {
     if (this.model) {
       const assessments = Object.values(this.model.relationships);
-      assessments.forEach(assessment => {
+      assessments.forEach((assessment) => {
         assessment.modified = this.publishDate.toISOString();
         assessment.description = this.meta.description;
         if (this.meta.created_by_ref) {

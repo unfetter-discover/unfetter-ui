@@ -1,9 +1,7 @@
-import { AssessmentObject } from './assessment-object';
-import { StixBundle } from '../stix/stix-bundle';
+import { Stix } from '../stix/stix';
 import { StixLabelEnum } from '../stix/stix-label.enum';
 import { AssessmentMeta } from './assessment-meta';
-
-import { Stix } from '../stix/stix';
+import { AssessmentObject } from './assessment-object';
 
 /**
  * @description an assessment of a single type ie, indicator, mitigation, sensor

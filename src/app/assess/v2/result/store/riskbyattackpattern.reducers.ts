@@ -1,4 +1,4 @@
-import { RiskByAttack } from '../../../../models/assess/risk-by-attack';
+import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import * as riskByAttackPatternActions from './riskbyattackpattern.actions';
 
 export interface RiskByAttackPatternState {

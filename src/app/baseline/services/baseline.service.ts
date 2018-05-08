@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { Capability, Category } from 'stix/assess/v3';
+import { Capability, Category } from 'stix/assess/v3/baseline';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { RiskByKillChain } from '../../models/assess/risk-by-kill-chain';
 import { SummaryAggregation } from '../../models/assess/summary-aggregation';

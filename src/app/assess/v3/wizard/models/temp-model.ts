@@ -1,5 +1,5 @@
-import { Assessment } from '../../../../models/assess/assessment';
-import { AssessmentQuestion } from '../../../../models/assess/assessment-question';
+import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';
+import { Assessment } from 'stix/assess/v3/assessment';
 
 export interface TempModel {
     [index: string]: {

@@ -3,14 +3,14 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
+import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
+import { Assessment } from 'stix/assess/v3/assessment';
+import { JsonApi } from 'stix/json/jsonapi';
+import { JsonApiData } from 'stix/json/jsonapi-data';
+import * as Indicator from 'stix/unfetter/indicator';
+import { Stix } from 'stix/unfetter/stix';
 import * as UUID from 'uuid';
 import { GenericApi } from '../../../core/services/genericapi.service';
-import { Assessment } from '../../../models/assess/assessment';
-import { AssessmentMeta } from '../../../models/assess/assessment-meta';
-import { JsonApi } from '../../../models/json/jsonapi';
-import { JsonApiData } from '../../../models/json/jsonapi-data';
-import { Indicator } from '../../../models/stix/indicator';
-import { Stix } from '../../../models/stix/stix';
 import { Constance } from '../../../utils/constance';
 import { AssessStateService } from '../services/assess-state.service';
 import { AssessService } from '../services/assess.service';
@@ -34,14 +34,14 @@ export class AssessEffects {
     public fetchAssessmentWizardData = this.actions$
         .ofType(assessActions.LOAD_ASSESSMENT_WIZARD_DATA)
         .pluck('payload')
-        .switchMap((meta: Partial<AssessmentMeta>) => {
+        .switchMap((meta: Partial<Assess3Meta>) => {
             const includeMeta = `?metaproperties=true`;
             let url = `${this.generateUrl('indicator')}${includeMeta}`;
             const observables = new Array<Observable<Array<JsonApiData<Stix>>>>();
 
             const indicators$ = meta.includesIndicators ?
-                this.genericServiceApi.getAs<JsonApiData<Indicator>[]>(url) :
-                Observable.of<JsonApiData<Indicator>[]>([]);
+                this.genericServiceApi.getAs<JsonApiData<Indicator.UnfetterIndicator>[]>(url) :
+                Observable.of<JsonApiData<Indicator.UnfetterIndicator>[]>([]);
             observables.push(indicators$);
 
             url = `${this.generateUrl('mitigation')}${includeMeta}`;
@@ -50,19 +50,20 @@ export class AssessEffects {
                 Observable.of<JsonApiData<Stix>[]>([]);
             observables.push(mitigations$);
 
-            url = `${this.generateUrl('sensor')}${includeMeta}`;
-            const sensors$ = meta.includesSensors ?
-                this.genericServiceApi.getAs<JsonApiData<Stix>[]>(url) :
-                Observable.of<JsonApiData<Stix>[]>([]);
-            observables.push(sensors$);
+            // TODO: change this to pulling the baseline assessment_sets
+            // url = `${this.generateUrl('sensor')}${includeMeta}`;
+            // const sensors$ = meta.includesSensors ?
+            //     this.genericServiceApi.getAs<JsonApiData<Stix>[]>(url) :
+            //     Observable.of<JsonApiData<Stix>[]>([]);
+            // observables.push(sensors$);
 
             return Observable.forkJoin(...observables);
         })
-        .mergeMap(([indicators, mitigations, sensors]) => {
+        .mergeMap(([indicators, mitigations]) => {
             return [
-                new assessActions.IndicatorsLoaded(indicators as JsonApiData<Indicator>[]),
+                new assessActions.IndicatorsLoaded(indicators as JsonApiData<Indicator.UnfetterIndicator>[]),
                 new assessActions.MitigationsLoaded(mitigations),
-                new assessActions.SensorsLoaded(sensors),
+                // new assessActions.SensorsLoaded(sensors),
                 new assessActions.FinishedLoading(true)
             ];
         });
@@ -77,16 +78,16 @@ export class AssessEffects {
     public startAssessment = this.actions$
         .ofType(assessActions.START_ASSESSMENT)
         .pluck('payload')
-        .map((el: AssessmentMeta) => {
+        .map((el: Assess3Meta) => {
             this.assessStateService.saveCurrent(el);
             return el;
         })
-        .do((el: AssessmentMeta) => {
+        .do((el: Assess3Meta) => {
             this.router.navigate([
                 '/assess-beta/wizard/new',
                 'indicators', el.includesIndicators === true ? 1 : 0,
                 'mitigations', el.includesMitigations === true ? 1 : 0,
-                'sensors', el.includesSensors === true ? 1 : 0
+                'baselineRef', el.baselineRef  ? el.baselineRef : ''
             ]);
         })
         // required to send an empty element on non dispatched effects
@@ -112,7 +113,7 @@ export class AssessEffects {
 
             const observables = assessments
                 .map((assessment) => {
-                    assessment.metaProperties = assessment.metaProperties || {};
+                    assessment.metaProperties = assessment.metaProperties || { published: false };
                     assessment.metaProperties.rollupId = rollupId;
                     return assessment;
                 })
@@ -141,7 +142,7 @@ export class AssessEffects {
         .map((arr) => {
             const hasAttributes = arr && arr[0] && arr[0].attributes;
             const hasMetadata = hasAttributes && arr[0].attributes.metaProperties;
-            return new assessActions.FinishedSaving({ 
+            return new assessActions.FinishedSaving({
                 finished: true, 
                 rollupId: hasMetadata ? arr[0].attributes.metaProperties.rollupId : '',
                 id: hasAttributes ? arr[0].attributes.id : '',

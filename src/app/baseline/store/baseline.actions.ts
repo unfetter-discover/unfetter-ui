@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Capability, Category, ObjectAssessment } from 'stix/assess/v3';
+import { Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
 import { Baseline } from '../../models/baseline/baseline';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';

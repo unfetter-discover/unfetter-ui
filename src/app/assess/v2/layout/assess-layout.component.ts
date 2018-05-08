@@ -2,12 +2,14 @@ import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { fadeInOut } from '../../../global/animations/fade-in-out';
 import * as assessReducers from '../store/assess.reducers';
 
 @Component({
   selector: 'assess-layout',
   templateUrl: './assess-layout.component.html',
   styleUrls: ['./assess-layout.component.scss'],
+  animations: [fadeInOut],
 })
 export class AssessLayoutComponent implements OnInit, AfterViewInit {
 

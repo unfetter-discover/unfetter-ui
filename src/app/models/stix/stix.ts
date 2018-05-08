@@ -6,6 +6,7 @@ import { KillChainEnum } from './kill-chain.enum';
 import { KillChainPhase } from './kill-chain-phase';
 
 /**
+ * @deprecated this class should be replaced in favor of the implementation in the stix npm module 
  * @description 
  * @see https://stixproject.github.io/
  * @see https://oasis-open.github.io/cti-documentation/

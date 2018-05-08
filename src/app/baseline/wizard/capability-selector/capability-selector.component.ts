@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { Capability, Category } from 'stix/assess/v3';
+import { Capability, Category } from 'stix/assess/v3/baseline';
 import { SetBaselineCapabilities } from '../../store/baseline.actions';
 import * as assessReducers from '../../store/baseline.reducers';
 import * as _ from 'lodash';

@@ -1,4 +1,4 @@
-import { AssessmentSet } from 'stix/assess/v3';
+import { AssessmentSet } from 'stix/assess/v3/baseline';
 import { Baseline } from '../../../../models/baseline/baseline';
 import { Stix } from '../../../models/stix/stix';
 import { FullBaselineGroup } from '../../full/group/models/full-baseline-group';

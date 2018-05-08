@@ -4,13 +4,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import { Assessment } from 'stix/assess/v2/assessment';
+import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
+import { RiskByKillChain } from 'stix/assess/v2/risk-by-kill-chain';
+import { SummaryAggregation } from 'stix/assess/v2/summary-aggregation';
 import { ConfirmationDialogComponent } from '../../../../components/dialogs/confirmation/confirmation-dialog.component';
 import { slideInOutAnimation } from '../../../../global/animations/animations';
 import { MasterListDialogTableHeaders } from '../../../../global/components/master-list-dialog/master-list-dialog.component';
-import { Assessment } from '../../../../models/assess/assessment';
-import { RiskByAttack } from '../../../../models/assess/risk-by-attack';
-import { RiskByKillChain } from '../../../../models/assess/risk-by-kill-chain';
-import { SummaryAggregation } from '../../../../models/assess/summary-aggregation';
 import { UserProfile } from '../../../../models/user/user-profile';
 import { AppState } from '../../../../root-store/app.reducers';
 import { Constance } from '../../../../utils/constance';
@@ -121,7 +121,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .filter((arr: Assessment[]) => arr && arr.length > 0)
       .subscribe((arr: Assessment[]) => {
         this.summaries = [...arr];
-        this.summary = { ...arr[0] };
+        this.summary = arr[0];
         this.riskByAttackPatternStore.dispatch(new LoadSingleAssessmentRiskByAttackPatternData(this.assessmentId));
         this.store.dispatch(new LoadSingleRiskPerKillChainData(this.assessmentId));
         this.store.dispatch(new LoadSingleSummaryAggregationData(this.assessmentId));

@@ -3,14 +3,14 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
+import { Assessment } from 'stix/assess/v2/assessment';
+import { AssessmentMeta } from 'stix/assess/v2/assessment-meta';
+import { JsonApi } from 'stix/json/jsonapi';
+import { JsonApiData } from 'stix/json/jsonapi-data';
+import * as Indicator from 'stix/unfetter/indicator';
+import { Stix } from 'stix/unfetter/stix';
 import * as UUID from 'uuid';
 import { GenericApi } from '../../../core/services/genericapi.service';
-import { Assessment } from '../../../models/assess/assessment';
-import { AssessmentMeta } from '../../../models/assess/assessment-meta';
-import { JsonApi } from '../../../models/json/jsonapi';
-import { JsonApiData } from '../../../models/json/jsonapi-data';
-import { Indicator } from '../../../models/stix/indicator';
-import { Stix } from '../../../models/stix/stix';
 import { Constance } from '../../../utils/constance';
 import { AssessStateService } from '../services/assess-state.service';
 import { AssessService } from '../services/assess.service';
@@ -40,8 +40,8 @@ export class AssessEffects {
             const observables = new Array<Observable<Array<JsonApiData<Stix>>>>();
 
             const indicators$ = meta.includesIndicators ?
-                this.genericServiceApi.getAs<JsonApiData<Indicator>[]>(url) :
-                Observable.of<JsonApiData<Indicator>[]>([]);
+                this.genericServiceApi.getAs<JsonApiData<Indicator.UnfetterIndicator>[]>(url) :
+                Observable.of<JsonApiData<Indicator.UnfetterIndicator>[]>([]);
             observables.push(indicators$);
 
             url = `${this.generateUrl('mitigation')}${includeMeta}`;
@@ -60,7 +60,7 @@ export class AssessEffects {
         })
         .mergeMap(([indicators, mitigations, sensors]) => {
             return [
-                new assessActions.IndicatorsLoaded(indicators as JsonApiData<Indicator>[]),
+                new assessActions.IndicatorsLoaded(indicators as JsonApiData<Indicator.UnfetterIndicator>[]),
                 new assessActions.MitigationsLoaded(mitigations),
                 new assessActions.SensorsLoaded(sensors),
                 new assessActions.FinishedLoading(true)
@@ -112,7 +112,7 @@ export class AssessEffects {
 
             const observables = assessments
                 .map((assessment) => {
-                    assessment.metaProperties = assessment.metaProperties || {};
+                    assessment.metaProperties = assessment.metaProperties || { published: false };
                     assessment.metaProperties.rollupId = rollupId;
                     return assessment;
                 })
@@ -141,8 +141,8 @@ export class AssessEffects {
         .map((arr) => {
             const hasAttributes = arr && arr[0] && arr[0].attributes;
             const hasMetadata = hasAttributes && arr[0].attributes.metaProperties;
-            return new assessActions.FinishedSaving({ 
-                finished: true, 
+            return new assessActions.FinishedSaving({
+                finished: true,
                 rollupId: hasMetadata ? arr[0].attributes.metaProperties.rollupId : '',
                 id: hasAttributes ? arr[0].attributes.id : '',
             });

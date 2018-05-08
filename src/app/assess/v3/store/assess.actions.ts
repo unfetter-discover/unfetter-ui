@@ -1,9 +1,9 @@
 import { Action } from '@ngrx/store';
-import { Assessment } from '../../../models/assess/assessment';
-import { AssessmentMeta } from '../../../models/assess/assessment-meta';
-import { JsonApiData } from '../../../models/json/jsonapi-data';
-import { Indicator } from '../../../models/stix/indicator';
-import { Stix } from '../../../models/stix/stix';
+import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
+import { Assessment } from 'stix/assess/v3/assessment';
+import { JsonApiData } from 'stix/json/jsonapi-data';
+import { Indicator } from 'stix/stix/indicator';
+import { Stix } from 'stix/unfetter/stix';
 
 // For effects
 export const START_ASSESSMENT = '[Assess] START_ASSESSMENT';
@@ -32,7 +32,7 @@ export class UpdatePageTitle implements Action {
 export class StartAssessment implements Action {
     public readonly type = START_ASSESSMENT;
 
-    constructor(public payload: AssessmentMeta) { }
+    constructor(public payload: Assess3Meta) { }
 }
 
 export class StartAssessmentSuccess implements Action {
@@ -56,7 +56,7 @@ export class FetchAssessment implements Action {
 export class LoadAssessmentWizardData implements Action {
     public readonly type = LOAD_ASSESSMENT_WIZARD_DATA;
 
-    constructor(public payload: Partial<AssessmentMeta>) { }
+    constructor(public payload: Partial<Assess3Meta>) { }
 }
 
 export class IndicatorsLoaded implements Action {

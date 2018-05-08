@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
 import { GenericApi } from '../../../../core/services/genericapi.service';
-import { RiskByAttack } from '../../../../models/assess/risk-by-attack';
+import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { AssessService } from '../../services/assess.service';
 import { FinishedLoading, LOAD_RISK_BY_ATTACK_PATTERN_DATA, LOAD_SINGLE_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA, SetRiskByAttackPattern } from './riskbyattackpattern.actions';
 

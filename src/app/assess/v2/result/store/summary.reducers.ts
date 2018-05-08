@@ -1,7 +1,7 @@
 import * as summaryActions from './summary.actions';
-import { Assessment } from '../../../../models/assess/assessment';
-import { RiskByKillChain } from '../../../../models/assess/risk-by-kill-chain';
-import { SummaryAggregation } from '../../../../models/assess/summary-aggregation';
+import { Assessment } from 'stix/assess/v2/assessment';
+import { RiskByKillChain } from 'stix/assess/v2/risk-by-kill-chain';
+import { SummaryAggregation } from 'stix/assess/v2/summary-aggregation';
 
 export interface SummaryState {
     summary: Assessment;
