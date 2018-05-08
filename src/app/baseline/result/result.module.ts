@@ -19,6 +19,7 @@ import { SummaryComponent } from './summary/summary.component';
 import { FullComponent } from './full/full.component';
 import { ResultHeaderComponent } from './result-header/result-header.component';
 import { SummaryHeaderComponent } from './summary/summary-header/summary-header.component';
+import { SummaryHeatmapComponent } from './summary/summary-report/summary-heatmap.component';
 import { SummaryReportComponent } from './summary/summary-report/summary-report.component';
 import { AssessmentsSummaryComponent } from '../../baselines/baselines-summary/baselines-summary.component';
 import { FullResultEffects } from './store/full-result.effects';
@@ -46,6 +47,7 @@ const moduleComponents = [
   FullComponent,
   ResultHeaderComponent,
   SummaryHeaderComponent,
+  SummaryHeatmapComponent,
   SummaryReportComponent,
 ];
 
@@ -68,6 +70,7 @@ const moduleComponents = [
     FullComponent,
     ResultHeaderComponent,
     SummaryHeaderComponent,
+    SummaryHeatmapComponent,
     SummaryReportComponent,
     SophisticationBreakdownComponent,
     TechniquesChartComponent,

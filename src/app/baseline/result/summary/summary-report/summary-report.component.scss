@@ -6,6 +6,7 @@
 
 .matchHeight {
   align-items: stretch;
+  box-align: stretch;
   -webkit-box-align: stretch;
   -ms-flex-align: stretch;
 }
@@ -13,7 +14,7 @@
 $min-card-height: 357px;
 $min-card-width: 292;
 $padding-between-cards: 10;
-$min-card-fullwidth: ($min-card-width * 3 + $padding-between-cards + $padding-between-cards);
+$min-card-fullwidth: ($min-card-width * 3 + ($padding-between-cards + $padding-between-cards) * 2);
 #baselineCard {
   min-width: $min-card-fullwidth + px;
 }
@@ -25,9 +26,13 @@ $min-card-fullwidth: ($min-card-width * 3 + $padding-between-cards + $padding-be
   padding-bottom: 15px;
 }
 
-.card-width {
-  width: 33%;
-  min-width: $min-card-width + px;
+.triple-card-width {
+  width: 100%;
+  min-width: $min-card-fullwidth + px;
+}
+
+#chart-container {
+  padding: 0px;
 }
 
 .card {
@@ -44,6 +49,11 @@ $min-card-fullwidth: ($min-card-width * 3 + $padding-between-cards + $padding-be
     font-weight: 600;
     margin-bottom: 6px;
   }
+}
+
+.card-width {
+  width: 33%;
+  min-width: $min-card-width + px;
 }
 
 .left-card {

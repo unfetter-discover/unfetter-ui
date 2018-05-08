@@ -1,30 +1,22 @@
 <div id="tabWrapper" class="flex flexColumn">
-  <uf-info-bar isWarningMsg="true" message="Baselines is currently in beta. Some functionality does not work."></uf-info-bar>
-  <div class="flex1">
-    <div class="height-100-percent flex flexRow">
-      <div class="height-100-percent flex flexColumn">
-        <div class="flex1"></div>
-        <nav mat-tab-nav-bar class="indent uf-tabs-borderless">
-          <a class="noUnderline" mat-tab-link [routerLink]="summaryLink" routerLinkActive #summary="routerLinkActive" [active]="summary.isActive">SUMMARY</a>
-        </nav>
-      </div>
-      <div class="flex1"></div>
-      <div class="height-100-percent flex flexColumn">
-        <div class="flex1">
-          <button mat-icon-button matTooltip="Heat Map"> <!-- (click)="setMainWell('heatmap')"> -->  <!-- {{ activeMainWell === 'heatmap' ? 'Hide' : 'Show' }} --> 
-            <i class="material-icons mat-24" [ngClass]="{'labelColor': activeMainWell !== 'heatmap'}">view_comfy</i>
-            ATT&amp;CK MATRIX
-          </button>
-        </div>
-        <div *ngIf="created; else notPublished" class="publishText">
-          Published &bull; {{ created | date:'medium' }}
-        </div>
-        <ng-template #notPublished>
-          <div id="publishWrapper">
-            <button id="publishButton" mat-raised-button>PUBLISH</button>
-          </div>
-        </ng-template>
-      </div>
+  <div class="flex flexRow">
+    <div class="flex">
+      <uf-info-bar isWarningMsg="true" message="Baselines is currently in beta. Some functionality does not work."></uf-info-bar>
     </div>
+  </div>
+  <div class="flex1"></div>
+  <div class="flex flexRow">
+    <nav mat-tab-nav-bar class="indent uf-tabs-borderless">
+      <a class="noUnderline" mat-tab-link [routerLink]="summaryLink" routerLinkActive #summary="routerLinkActive" [active]="summary.isActive">SUMMARY</a>
+    </nav>
+    <div class="flex1"></div>
+    <div *ngIf="created; else notPublished" class="publishText">
+      Published &bull; {{ created | date:'medium' }}
+    </div>
+    <ng-template #notPublished>
+      <div id="publishWrapper">
+        <button id="publishButton" mat-raised-button>PUBLISH</button>
+      </div>
+    </ng-template>
   </div>
 </div>

@@ -1,0 +1,88 @@
+@import '../../../../../styles/_variables.scss';
+
+$white: #FFFFFF;
+
+#baseline-heat-map {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+:host ::ng-deep {
+    background-color: $white;
+
+    .mat-card {
+        margin: 4px 20px 15px 20px;
+    }
+    .mat-card-header-text {
+        width: 100%;
+        .mat-card-title {
+            display: flex;
+            align-items: center;
+        }
+    }
+
+    unf-heatmap {
+        div.heat-map {
+            background: white;
+            rect.selected {
+                fill: $assessments-primary;
+            }
+        }
+        div.mini-map {
+            margin-top: 0px;
+        }
+    }
+}
+
+.attack-pattern-tooltip {
+
+    padding: 10px;
+
+    .mat-card {
+        padding: 12px;
+        background-color: #f0f0f0;
+    }
+
+    .mat-card-subtitle {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0;
+
+        label {
+            color: $dark-text-default;
+        }
+    }
+
+    div.row {
+        margin-bottom: 4px;
+    }
+
+    .attack-pattern-desc {
+        max-height: 58px;
+        overflow: hidden;
+    }
+
+    .attack-pattern-desc:after {
+        content: "";
+        text-align: right;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        top: 40px;
+        width: 70%;
+        height: 20px;
+        background: linear-gradient(to right, rgba(240, 240, 240, 0), rgba(240, 240, 240, 1) 80%);
+    }
+
+    .attack-pattern-sources {
+        max-height: 40px;
+        overflow: hidden;
+    }
+
+    .attack-pattern-platforms {
+        max-height: 20px;
+        overflow: hidden;
+    }
+
+}

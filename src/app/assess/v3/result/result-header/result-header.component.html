@@ -1,26 +1,23 @@
-<div id="tabWrapper">
-  <uf-info-bar *ngIf="percentCompleted < 100" isWarningMsg="true" [message]="percentCompletedMsg" [completeActionUrl]="editUrl||''"></uf-info-bar>
-  <div class="height-100-percent">
-    <div class="height-100-percent flex flexRow">
-      <div class="height-100-percent flex flexColumn">
-        <div class="flex1"></div>
-        <nav mat-tab-nav-bar class="indent uf-tabs-borderless">
-          <a class="noUnderline" mat-tab-link [routerLink]="summaryLink" routerLinkActive #summary="routerLinkActive" [active]="summary.isActive">SUMMARY</a>
-          <a class="noUnderline" mat-tab-link [routerLink]="resultsLink" routerLinkActive #full="routerLinkActive" [active]="full.isActive">FULL RESULTS</a>
-        </nav>
-      </div>
-      <div class="flex1"></div>
-      <div class="height-100-percent flex flexColumn">
-        <div class="flex1"></div>
-        <div *ngIf="created; else notPublished" class="publishText">
-          Published &bull; {{ created | date:'medium' }}
-        </div>
-        <ng-template #notPublished>
-          <div id="publishWrapper" matTooltip="Future Assessment Functionality">
-            <button id="publishButton" disabled mat-raised-button>PUBLISH</button>
-          </div>
-        </ng-template>
-      </div>
+<div id="tabWrapper" class="flex flexColumn">
+  <div class="flex flexRow">
+    <div class="flex">
+      <uf-info-bar *ngIf="percentCompleted < 100" isWarningMsg="true" [message]="percentCompletedMsg" [completeActionUrl]="editUrl||''"></uf-info-bar>
     </div>
+    <div class="flex1"></div>
+    <div class="flex flexRow">
+      <nav mat-tab-nav-bar class="indent uf-tabs-borderless">
+        <a class="noUnderline" mat-tab-link [routerLink]="summaryLink" routerLinkActive #summary="routerLinkActive" [active]="summary.isActive">SUMMARY</a>
+        <a class="noUnderline" mat-tab-link [routerLink]="resultsLink" routerLinkActive #full="routerLinkActive" [active]="full.isActive">FULL RESULTS</a>
+      </nav>
+    </div>
+    <div class="flex1"></div>
+    <div *ngIf="created; else notPublished" class="publishText">
+      Published &bull; {{ created | date:'medium' }}
+    </div>
+    <ng-template #notPublished>
+      <div id="publishWrapper" matTooltip="Future Assessment Functionality">
+        <button id="publishButton" disabled mat-raised-button>PUBLISH</button>
+      </div>
+    </ng-template>
   </div>
 </div>
