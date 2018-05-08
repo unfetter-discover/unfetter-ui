@@ -4,7 +4,7 @@ export interface ConfigState {
     configurations: any
 }
 
-const initialState: ConfigState = {
+export const initialState: ConfigState = {
     configurations: {}
 }
 

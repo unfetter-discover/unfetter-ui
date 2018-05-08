@@ -1,19 +1,15 @@
-import { Component, OnInit, ViewEncapsulation, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { Location } from '@angular/common';
-
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-
-import * as baselineActions from '../store/baseline.actions';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { fadeInOut } from '../../global/animations/fade-in-out';
 import * as baselineReducers from '../store/baseline.reducers';
-
-import { BaselineStateService } from '../baseline-state.service';
 
 @Component({
   selector: 'baseline-layout',
   templateUrl: './baseline-layout.component.html',
   styleUrls: ['./baseline-layout.component.scss'],
+  animations: [fadeInOut],
 })
 export class BaselineLayoutComponent implements OnInit, AfterViewInit {
 
@@ -43,8 +39,7 @@ export class BaselineLayoutComponent implements OnInit, AfterViewInit {
       .filter((el) => el !== undefined)
       .distinctUntilChanged()
       .pluck('baseline')
-      .pluck('baselineMeta')
-      .pluck('title');
+      .pluck('name');
 
     this.showBackButton = this.store
       .select('baseline')

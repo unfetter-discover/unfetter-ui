@@ -161,12 +161,12 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           const includesIndicators = isTrue(+this.route.snapshot.paramMap.get('includesIndicators'));
           const includesMitigations = isTrue(+this.route.snapshot.paramMap.get('includesMitigations'));
           const includesSensors = isTrue(+this.route.snapshot.paramMap.get('includesSensors'));
-          let meta: Partial<AssessmentMeta> = {
+          const meta: Partial<AssessmentMeta> = {
             includesIndicators,
             includesMitigations,
             includesSensors,
           };
-          let rollupId = params.rollupId || '';
+          const rollupId = params.rollupId || '';
           if (rollupId) {
             this.loadExistingAssessment(rollupId, meta);
           }
@@ -306,7 +306,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
      */
     const summary = new Assessment();
     const typedAssessments = {};
-    arr.forEach(assessment => {
+    arr.forEach((assessment) => {
       summary.id = assessment.id;
       summary.type = assessment.type;
       summary.name = assessment.name;

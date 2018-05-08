@@ -28,7 +28,7 @@
     "build:prod:noclean": "npm run build:prod -- --no-delete-output-path --vendor-chunk=true",
     "build:demo:noclean": "ng version && ng build --prod --no-delete-output-path --vendor-chunk=true --env=dockerhub",
     "build:dev": "ng version && ng build",
-    "watch:test": "ng test --watch --source=false",
+    "watch:test": "ng test --watch --source=true",
     "test": "ng test --single-run --source=false",
     "headless:test": "ng test --single-run --browsers ChromeHeadless",
     "coverage": "ng test --code-coverage --single-run",
