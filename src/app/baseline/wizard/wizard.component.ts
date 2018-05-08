@@ -262,7 +262,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         .distinctUntilChanged()
         .subscribe(
           (capabilities: Capability[]) => {
-            this.allCapabilities = capabilities;
+            this.baselineCapabilities = capabilities;
           },
           (err) => console.log(err));
   
@@ -683,7 +683,11 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {any[]}
    */
   public getCapabilities(category: Category): Capability[] {
-    return this.allCapabilities.filter((capability) => capability.category === category.name);
+    return this.baselineCapabilities;  // .filter((capability) => capability.category === category.name);
+  }
+
+  public getCategoryStyle(group: Category): string {
+    return (group === this.currentBaselineGroup) ? '400' : '100';
   }
 
   /*
