@@ -13,7 +13,7 @@
       <mat-expansion-panel *ngFor="let group of baselineGroups" hideToggle="true" [expanded]="currentBaselineGroup && group.name === currentBaselineGroup.name"
         (opened)="onOpenSidePanel('capability-selector', $event)">
         <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
-          <mat-panel-title [class.active]="group === currentBaselineGroup">
+          <mat-panel-title>
             {{group.name}}
           </mat-panel-title>
         </mat-expansion-panel-header>
