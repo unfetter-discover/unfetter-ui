@@ -42,11 +42,4 @@ describe('ResultHeaderComponent', () => {
     publishButton = fixture.debugElement.query(By.css('#publishButton'));
     expect(publishButton).toBeFalsy();
   });
-
-  it('should have a disabled PUBLISH button (for now) and a tooltip explaining', () => {
-    const publishButton = fixture.debugElement.query(By.css('#publishButton')).nativeElement;
-    expect(publishButton.disabled).toBe(true);
-    const publishDiv = fixture.debugElement.query(By.css('#publishWrapper')).nativeElement;
-    expect(publishDiv.getAttribute('mattooltip')).toBe('Future Baseline Functionality');
-  });
 });
