@@ -1,6 +1,7 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { SummaryHeatmapComponent } from './summary-heatmap.component';
+
 
 describe('SummaryHeatmapComponent', () => {
   let component: SummaryHeatmapComponent;
@@ -8,7 +9,8 @@ describe('SummaryHeatmapComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SummaryHeatmapComponent ]
+      declarations: [ SummaryHeatmapComponent ],
+      schemas: [ NO_ERRORS_SCHEMA ],
     })
     .compileComponents();
   }));
