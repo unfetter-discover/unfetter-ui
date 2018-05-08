@@ -1,14 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 
 import { SummaryCalculationService } from '../summary-calculation.service';
 import { AssessKillChainType } from '../../../../models/baseline/assess-kill-chain-type';
 import { SummaryAggregation } from '../../../../models/baseline/summary-aggregation';
 import { Constance } from '../../../../utils/constance';
 
+type mainWell = 'heatmap' | 'none';
+
 @Component({
   selector: 'summary-report',
   templateUrl: './summary-report.component.html',
-  styleUrls: ['./summary-report.component.scss']
+  styleUrls: ['./summary-report.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SummaryReportComponent implements OnInit {
   public readonly CHART_TYPE: string;
@@ -21,7 +24,10 @@ export class SummaryReportComponent implements OnInit {
   public overallRatingChartData: { data: any[], backgroundColor: any[], hoverBackgroundColor: any[] }[];
   public overallRatingChartType: string = this.CHART_TYPE;
 
-  constructor(public summaryCalculationService: SummaryCalculationService) {
+  public activeMainWell: mainWell;
+
+  constructor(public summaryCalculationService: SummaryCalculationService,
+              protected changeDetectorRef: ChangeDetectorRef) {
     this.CHART_TYPE = 'doughnut';
     this.DEFAULT_CHART_COLORS = [{}];
     this.CHART_LABELS = ['Risk Accepted', 'Risk Addressed'];
@@ -60,7 +66,18 @@ export class SummaryReportComponent implements OnInit {
     }
     ];
     this.overallRatingChartType = this.CHART_TYPE;
+    this.activeMainWell = 'heatmap';
   }
+
+  public setMainWell(wellTab: mainWell) {
+    if (this.activeMainWell === wellTab) {
+        this.activeMainWell = 'none';
+    } else {
+        this.activeMainWell = wellTab;
+    }
+    this.changeDetectorRef.markForCheck();
+}
+
   public calculateRisk(riskArr: any[]): string {
     let risk = 0;
     if (riskArr) {

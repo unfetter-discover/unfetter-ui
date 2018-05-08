@@ -64,7 +64,7 @@ export class AttackPatternsHeatmapComponent implements OnInit, DoCheck {
     @ViewChild('apTooltipTemplate') apTooltipTemplate: TemplateRef<any>;
     public hoverTooltip = true;
     private tooltipBackdropped = false;
-    private tooltipTarget: any;
+    public tooltipTarget: any;
     private tooltipOverlay: OverlayRef;
     private tooltipPortal: TemplatePortal<any>;
     @Output() public hover = new EventEmitter<{row: HeatCellData, event?: UIEvent}>();
