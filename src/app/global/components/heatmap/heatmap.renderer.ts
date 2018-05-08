@@ -11,13 +11,14 @@ import {
     HeatColor,
     DOMRect,
 } from './heatmap.data';
+import { TooltipEvent } from '../tactics-pane/tactics-tooltip/tactics-tooltip.service';
 import { Dictionary } from '../../../models/json/dictionary';
 
 export interface Heatmap {
     data: Array<HeatBatchData>;
     options: HeatmapOptions;
-    hover: EventEmitter<{row: HeatCellData, event?: UIEvent}>;
-    click: EventEmitter<{row: HeatCellData, event?: UIEvent}>;
+    hover: EventEmitter<TooltipEvent>;
+    click: EventEmitter<TooltipEvent>;
 }
 
 /*
@@ -145,11 +146,11 @@ export abstract class HeatmapRenderer {
         return this._map.options.zoom.minimap;
     }
 
-    protected get hover(): EventEmitter<{row: HeatCellData, event?: UIEvent}> {
+    protected get hover(): EventEmitter<TooltipEvent> {
         return this._map.hover;
     }
 
-    protected get click(): EventEmitter<{row: HeatCellData, event?: UIEvent}> {
+    protected get click(): EventEmitter<TooltipEvent> {
         return this._map.click;
     }
 
@@ -238,7 +239,7 @@ export abstract class HeatmapRenderer {
         window.clearTimeout(this.hoverTimeout);
         const ev = d3.event;
         this.hoverTimeout = window.setTimeout(
-            () => this.hover.emit({row: cellData, event: ev}),
+            () => this.hover.emit({data: cellData, source: ev}),
             this.options.hover.delay);
     }
 
@@ -247,7 +248,7 @@ export abstract class HeatmapRenderer {
      */
     protected offCellHover() {
         window.clearTimeout(this.hoverTimeout);
-        this.hover.emit(null);
+        this.hover.emit({data: null, source: d3.event});
     }
 
     /**

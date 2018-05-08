@@ -16,7 +16,9 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { Store } from '@ngrx/store';
 
-import { AttackPatternsHeatmapComponent } from '../../global/components/heatmap/attack-patterns-heatmap.component';
+import {
+    TacticsHeatmapComponent
+} from '../../global/components/tactics-pane/tactics-heatmap/tactics-heatmap.component';
 import { HeatmapOptions } from '../../global/components/heatmap/heatmap.data';
 import { IndicatorSharingFeatureState } from '../store/indicator-sharing.reducers';
 import { Constance } from '../../utils/constance';
@@ -28,7 +30,7 @@ import { Constance } from '../../utils/constance';
 })
 export class IndicatorHeatMapFilterComponent implements AfterViewInit {
 
-    @ViewChild('heatmapView') private view: AttackPatternsHeatmapComponent;
+    @ViewChild('heatmapView') private heatmap: TacticsHeatmapComponent;
     @Input() heatmapOptions: HeatmapOptions = {
         view: {
             component: '#indicator-heatmap-filter',
@@ -53,6 +55,7 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
         },
     }
 
+    public targeted = [];
     public attackPatterns = {};
     public selectedPatterns = [];
 
@@ -66,14 +69,15 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
         private overlay: Overlay,
         private vcr: ViewContainerRef,
         private changeDetector: ChangeDetectorRef,
-        public store: Store<IndicatorSharingFeatureState>
+        public store: Store<IndicatorSharingFeatureState>,
     ) { }
 
     ngAfterViewInit() {
         // NOTE This is a hack to get the modal to start to render before the data is processed, 
         // since there is a noticeable lag time when that occurs
         requestAnimationFrame(() => {
-            const getAttackPatterns$ = this.store.select('indicatorSharing')
+            const getAttackPatterns$ = this.store
+                .select('indicatorSharing')
                 .pluck('attackPatterns')
                 .take(1)
                 .finally(() => getAttackPatterns$ && getAttackPatterns$.unsubscribe())
@@ -81,8 +85,8 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
                     (attackPatterns: any[]) => {
                         this.attackPatterns = attackPatterns.reduce(
                             (patterns, pattern) => this.collectAttackPattern(patterns, pattern), {});
-                        this.view.heatmap.redraw();
-                        setTimeout(() => this.view.heatmap.ngDoCheck(), 500);
+                        this.heatmap.view.redraw();
+                        setTimeout(() => this.heatmap.view.ngDoCheck(), 500);
                     },
                     (err) => console.log(err),
                 );
@@ -129,7 +133,7 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
                 this.selectedPatterns.splice(index, 1);
             }
             this.attackPatterns[clicked.row.title].value = newValue;
-            this.view.heatmap.helper.updateCells();
+            this.heatmap.view.helper.updateCells();
         }
     }
 

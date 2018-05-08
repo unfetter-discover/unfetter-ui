@@ -11,7 +11,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
 import { reducers } from '../../../../root-store/app.reducers';
 
-describe('AttackPatternsHeatmapComponent', () => {
+describe('TacticsHeatmapComponent', () => {
 
     let component: TacticsHeatmapComponent;
     let fixture: ComponentFixture<TacticsHeatmapComponent>;
@@ -37,7 +37,7 @@ describe('AttackPatternsHeatmapComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(TacticsHeatmapComponent);
         component = fixture.componentInstance;
-        component.attackPatterns = [];
+        component.targeted = [];
         component.options = {};
         fixture.detectChanges();
     });

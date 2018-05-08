@@ -29,6 +29,7 @@ import { ThreatReportOverviewService } from './services/threat-report-overview.s
 import { ThreatReportSharedService } from './services/threat-report-shared.service';
 import { ThreatReportOverviewDataSource } from './threat-report-overview.datasource';
 import { KillChainEntry } from './models/kill-chain-entry';
+import { Tactic } from '../global/components/tactics-pane/tactics.model';
 
 type troColName = keyof ThreatReport | 'actions';
 
@@ -46,7 +47,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   public threatReport: ThreatReport;
   public id = '';
   public attackPatterns: AttackPattern[];
-  public employedTactics: AttackPattern[];
+  public employedTactics: Tactic[];
   public intrusionSets: IntrusionSet[];
   public intrusionSetsDashboard: ThreatDashboard = {
     killChainPhases: [],
@@ -395,9 +396,14 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     this.employedTactics = activeAttackPatterns
         .filter((attackPattern: any) => attackPattern.isSelected)
         .map((attackPattern: any) => ({
-          ...attackPattern,
-          values: [{name: 'targeted', color: attackPattern.backgroundColor}],
-          text: attackPattern.foregroundColor
+          ...attackPattern.attributes,
+          id: attackPattern.id,
+          name: attackPattern.name,
+          adds: {
+            highlights: [
+              { color: 'true', bg: attackPattern.backgroundColor, fg: attackPattern.foregroundColor, },
+            ],
+          },
         }));
 
     return attackPatterns;

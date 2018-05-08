@@ -21,6 +21,7 @@ import { TacticChain, Tactic } from './tactics.model';
 import { TacticsCarouselComponent } from './tactics-carousel/tactics-carousel.component';
 import { TacticsHeatmapComponent } from './tactics-heatmap/tactics-heatmap.component';
 import { TacticsTreemapComponent } from './tactics-treemap/tactics-treemap.component';
+import { TacticsTooltipComponent } from './tactics-tooltip/tactics-tooltip.component';
 import { TooltipEvent } from './tactics-tooltip/tactics-tooltip.service';
 import { HeatmapOptions } from '../heatmap/heatmap.data';
 import { TreemapOptions } from '../treemap/treemap.data';
@@ -32,7 +33,6 @@ import { Dictionary } from '../../../models/json/dictionary';
 import { UserProfile } from '../../../models/user/user-profile';
 import { AppState } from '../../../root-store/app.reducers';
 import { Constance } from '../../../utils/constance';
-import { TacticsTooltipComponent } from './tactics-tooltip/tactics-tooltip.component';
 
 @Component({
     selector: 'tactics-pane',
@@ -106,12 +106,7 @@ export class TacticsPaneComponent implements OnInit {
      * View options that will be propagated to the treemap, to override the default settings if you wish.
      */
     @ViewChild('treemap') private treemap: TacticsTreemapComponent;
-    @Input() public treemapOptions = {
-        headerHeight: 20,
-        minHighlightColor: 'transparent',
-        midHighlightColor: 'transparent',
-        maxHighlightColor: 'transparent',
-    };
+    @Input() public treemapOptions = new TreemapOptions();
 
     /**
      * View options that will be propagated to the carousel, again, for overriding, as needed.
@@ -132,6 +127,7 @@ export class TacticsPaneComponent implements OnInit {
      * @description
      */
     ngOnInit() {
+        this.treemapOptions.headerHeight = 20;
     }
 
     /**
@@ -170,26 +166,22 @@ export class TacticsPaneComponent implements OnInit {
     /**
      * @description
      */
-    public onHover(msg?: TooltipEvent) {
-        if (msg && (msg.type === 'hover') && this.hover.observers.length) {
-            this.hover.emit(msg);
-        } else if (!msg || !msg.tactic) {
-            this.tooltips.hideTacticTooltip(null);
+    public onHover(event?: TooltipEvent) {
+        if (event && (event.type === 'hover') && this.hover.observers.length) {
+            this.hover.emit(event);
         } else {
-            this.tooltips.showTacticTooltip(msg.tactic, msg.event, true);
+            this.tooltips.handleTacticTooltip(event);
         }
     }
 
     /**
      * @description
      */
-    public onClick(msg?: TooltipEvent) {
-        if (msg && (msg.type === 'click') && this.click.observers.length) {
-            this.hover.emit(msg);
-        } else if (!msg || !msg.tactic) {
-            this.tooltips.hideTacticTooltip(null);
+    public onClick(event?: TooltipEvent) {
+        if (event && (event.type === 'click') && this.click.observers.length) {
+            this.hover.emit(event);
         } else {
-            this.tooltips.showTacticTooltip(msg.tactic, msg.event, false);
+            this.tooltips.handleTacticTooltip(event);
         }
     }
 

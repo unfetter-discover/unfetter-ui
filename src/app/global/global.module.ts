@@ -74,6 +74,8 @@ import { CapitalizePipe } from './pipes/capitalize.pipe';
 import { FieldSortPipe } from './pipes/field-sort.pipe';
 import { SophisticationPipe } from './pipes/sophistication.pipe';
 import { TimeAgoPipe } from './pipes/time-ago.pipe';
+import { AuthService } from '../core/services/auth.service';
+import { TacticsTooltipService } from './components/tactics-pane/tactics-tooltip/tactics-tooltip.service';
 
 const matModules = [
     MatAutocompleteModule,
@@ -137,9 +139,9 @@ const unfetterComponents = [
     TacticsCarouselComponent,
     TacticsCarouselControlComponent,
     TacticsHeatmapComponent,
-    TacticsPaneComponent,
     TacticsTooltipComponent,
     TacticsTreemapComponent,
+    TacticsPaneComponent,
     TimeAgoPipe,
     TreemapComponent,
 ];
@@ -161,7 +163,11 @@ const unfetterComponents = [
         ...matModules,
         CarouselModule,
     ],
-    providers: [TacticsControlService],
+    providers: [
+        AuthService,
+        TacticsControlService,
+        TacticsTooltipService,
+    ],
     entryComponents: [MasterListDialogComponent]
 })
 

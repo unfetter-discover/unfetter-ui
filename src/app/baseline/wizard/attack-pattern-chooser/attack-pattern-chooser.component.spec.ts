@@ -9,7 +9,9 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef, MatCardModule } from '@angular/material';
 
 import { AttackPatternChooserComponent } from './attack-pattern-chooser.component';
-import { AttackPatternsHeatmapComponent } from '../../../global/components/heatmap/attack-patterns-heatmap.component';
+import {
+    TacticsHeatmapComponent
+} from '../../../global/components/tactics-pane/tactics-heatmap/tactics-heatmap.component';
 import { HeatmapComponent } from '../../../global/components/heatmap/heatmap.component';
 import { CapitalizePipe } from '../../../global/pipes/capitalize.pipe';
 import { reducers } from '../../../root-store/app.reducers';
@@ -54,7 +56,7 @@ describe('AttackPatternChooserComponent', () => {
             ],
             declarations: [
                 AttackPatternChooserComponent,
-                AttackPatternsHeatmapComponent,
+                TacticsHeatmapComponent,
                 HeatmapComponent,
                 CapitalizePipe,
             ],

@@ -409,7 +409,7 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
                 .attr('aria-label', data.title);
         if (!isMini) {
             cell
-                .on('click', p => this.click.emit({row: data, event: d3.event}))
+                .on('click', p => this.click.emit({data: data, source: d3.event}))
                 .on('mouseover', p => this.onCellHover(data))
                 .on('mouseout', () => this.offCellHover());
         }
@@ -548,10 +548,10 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
         const view = this.minimap.view;
         const corners = [
             {x: 0, y: 0, top: 0, left: 0},
-            {x: view.width - 24, y: 0, top: 0, left: this.heatmap.view.width - view.width},
-            {x: view.width - 24, y: view.height - 24,
+            {x: view.width - 16, y: 0, top: 0, left: this.heatmap.view.width - view.width},
+            {x: view.width - 16, y: view.height - 16,
                 top: this.heatmap.view.height - view.height, left: this.heatmap.view.width - view.width},
-            {x: 0, y: view.height - 24, top: this.heatmap.view.height - view.height, left: 0},
+            {x: 0, y: view.height - 16, top: this.heatmap.view.height - view.height, left: 0},
         ];
         corners.forEach(corner => {
             const hotCorner = this.minimap.workspace.canvas
@@ -561,8 +561,8 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
                 .append('rect')
                     .attr('x', corner.x)
                     .attr('y', corner.y)
-                    .attr('width', 24)
-                    .attr('height', 24)
+                    .attr('width', 16)
+                    .attr('height', 16)
                     .attr('stroke-width', 1)
                     .attr('stroke', 'black')
                     .attr('fill', 'white')
@@ -573,8 +573,8 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
                     });
             hotCorner
                 .append('circle')
-                    .attr('cx', corner.x + 12)
-                    .attr('cy', corner.y + 12)
+                    .attr('cx', corner.x + 8)
+                    .attr('cy', corner.y + 8)
                     .attr('r', 6)
                     .attr('fill', 'red')
                     .attr('pointer-events', 'none');

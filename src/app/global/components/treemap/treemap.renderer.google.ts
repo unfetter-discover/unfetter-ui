@@ -37,6 +37,7 @@ export class GoogleTreemapRenderer implements TreemapRenderer {
      * @description draws the treemap onto the given viewport
      */
     public draw(treeMapView: ElementRef, eventHandler: any) {
+        this.view = treeMapView;
         GoogleCharts.load(() => {
             this.table = GoogleCharts.api.visualization.arrayToDataTable(this.data);
             this.chart = new GoogleCharts.api.visualization.TreeMap(this.view.nativeElement);
@@ -51,16 +52,16 @@ export class GoogleTreemapRenderer implements TreemapRenderer {
                                 let index: string = this.table.getValue(event.row, 0);
                                 const selected = this.data.filter(row => row[0] === index)[0];
                                 if (selected && (!this.selected || (selected[0] !== this.selected[0]))) {
-                                    eventHandler.onHover({tactic: this.selected = selected, event: event});
+                                    eventHandler.onHover({data: this.selected = selected, source: event});
                                 }
                             }, 500);
                         }
                     });
                 GoogleCharts.api.visualization.events.addListener(this.chart,
-                    'onmouseout', () => {
+                    'onmouseout', (event) => {
                         window.clearTimeout(this.tooltipDelay);
                         if (this.selected !== null) {
-                            eventHandler.onHover(this.selected = null)
+                            eventHandler.onHover({data: this.selected = null, source: event});
                         }
                     });
             }

@@ -9,7 +9,7 @@
 </h2>
 <mat-dialog-content>
     <div id="attack-pattern-filter">
-        <attack-patterns-heatmap #apChooser [attackPatterns]="attackPatterns" [options]="heatmapOptions"
-                (click)="toggleAttackPattern($event)"></attack-patterns-heatmap>
+        <tactics-heatmap #apChooser [targeted]="attackPatterns" [options]="options"
+                (click)="toggleAttackPattern($event)"></tactics-heatmap>
     </div>
 </mat-dialog-content>

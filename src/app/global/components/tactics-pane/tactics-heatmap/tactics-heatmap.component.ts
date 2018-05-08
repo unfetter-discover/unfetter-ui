@@ -1,7 +1,6 @@
 import {
     Component,
     OnInit,
-    DoCheck,
     Input,
     Output,
     EventEmitter,
@@ -50,7 +49,7 @@ export interface AttackPatternCell extends HeatCellData, Tactic {
     templateUrl: './tactics-heatmap.component.html',
     styleUrls: ['./tactics-heatmap.component.scss']
 })
-export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, HeatmapOptions> implements DoCheck {
+export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, HeatmapOptions> {
 
     public data: HeatBatchData[] = [];
 
@@ -66,11 +65,11 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
         tooltips: TacticsTooltipService,
         private changeDetector: ChangeDetectorRef,
     ) {
-        super(store, controls, tooltips);
+        super('heatmap', store, controls, tooltips);
     }
 
-    protected get view() {
-        return this.heatmap
+    public get view() {
+        return this.heatmap;
     }
 
     /**
@@ -103,8 +102,14 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
         const heats = Object.assign({}, this.baseHeats);
 
         // convert the tactics in the TacticChains we were given into heat cells
-        const patterns: Dictionary<AttackPatternCell> = Object.values(tactics).reduce((aps, chain) => {
-            chain.phases.forEach(phase => {
+        const data: Dictionary<HeatBatchData> = {};
+        const patterns: Dictionary<AttackPatternCell> = this.frameworks.reduce((aps, chain) => {
+            tactics[chain].phases.forEach(phase => {
+                data[phase.id] = {
+                    title: phase.name,
+                    value: null,
+                    cells: [],
+                };
                 phase.tactics.forEach(tactic => {
                     if (!aps[tactic.id]) {
                         const ap: AttackPatternCell = aps[tactic.id] = {...tactic, title: tactic.name, value: 'false'};
@@ -112,6 +117,7 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
                         if (target && target.adds && target.adds.highlights && target.adds.highlights.length) {
                             let value = ap.value, values = [], heat = [];
                             target.adds.highlights.forEach(h => {
+                                // @todo handle all highlight attributes - note we cannot combine gradients and styles
                                 if (h.color && h.color.bg) {
                                     values.push(h.color.bg.toLowerCase());
                                     heat.push(h.color.bg);
@@ -126,31 +132,23 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
                             }
                         }
                     }
+                    data[phase.id].cells.push(aps[tactic.id]);
                 });
             });
             return aps;
         }, {});
 
         // now convert the phases in the TacticChains into heat batches
-        const data: Dictionary<HeatBatchData> = Object.values(tactics).reduce((chains, chain) => {
-            chain.phases.forEach(phase => {
-                data[phase.name] = {
-                    title: phase.name,
-                    value: null,
-                    cells: [],
-                };
-                phase.tactics.forEach(pattern => {
-                    data[phase.name].cells.push(patterns[pattern.id]);
-                });
-                data[phase.name].cells.sort((ap1, ap2) => ap1.title.localeCompare(ap2.title));
-            });
-            return chains;
-        }, {});
-        this.data = Object.values(data);
+        Object.values(data).forEach(batch => batch.cells.sort((ap1, ap2) => ap1.title.localeCompare(ap2.title)));
+        requestAnimationFrame(() => {
+            this.data = Object.values(data);
+            console.log(`(${new Date().toISOString()} heatmap data`, this.data);
 
-        if (this.heatmap && this.heatmap.options && this.heatmap.options.color) {
-            this.heatmap.options.color.heatColors = heats;
-        }
+            if (this.heatmap && this.heatmap.options && this.heatmap.options.color) {
+                this.heatmap.options.color.heatColors = heats;
+                console.log(`(${new Date().toISOString()} heatmap heats`, heats);
+            }
+        });
     }
 
     /**
@@ -161,6 +159,9 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
         // Nothing to do
     }
 
+    /**
+     * @description order a rebuild of the underlying heatmap
+     */
     protected rerender() {
         this.view.ngDoCheck();
     }

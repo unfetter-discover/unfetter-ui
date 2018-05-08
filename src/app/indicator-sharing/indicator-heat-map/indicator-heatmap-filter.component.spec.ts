@@ -8,7 +8,9 @@ import { MatCardModule, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@
 import { OverlayModule } from '@angular/cdk/overlay';
 
 import { IndicatorHeatMapFilterComponent } from './indicator-heatmap-filter.component';
-import { AttackPatternsHeatmapComponent } from '../../global/components/heatmap/attack-patterns-heatmap.component';
+import {
+    TacticsHeatmapComponent
+} from '../../global/components/tactics-pane/tactics-heatmap/tactics-heatmap.component';
 import { HeatmapComponent } from '../../global/components/heatmap/heatmap.component';
 import { CapitalizePipe } from '../../global/pipes/capitalize.pipe';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -60,7 +62,7 @@ describe('IndicatorHeatMapFilterComponent', () => {
                 ],
                 declarations: [
                     IndicatorHeatMapFilterComponent,
-                    AttackPatternsHeatmapComponent,
+                    TacticsHeatmapComponent,
                     HeatmapComponent,
                     CapitalizePipe,
                 ],

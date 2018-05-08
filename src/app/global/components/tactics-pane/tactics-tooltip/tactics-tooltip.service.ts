@@ -3,8 +3,9 @@ import { Tactic } from '../tactics.model';
 
 export interface TooltipEvent {
     type?: 'hover' | 'click',
-    tactic?: any,
-    event?: UIEvent,
+    data?: any,
+    source?: UIEvent,
+    observed?: boolean,
 }
 
 /**

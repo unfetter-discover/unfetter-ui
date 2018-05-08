@@ -32,7 +32,7 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
     /**
      * Tactics grouped by framework.
      */
-    private chainedTactics: Dictionary<TacticChain>;
+    private chainedTactics: Dictionary<TacticChain> = {};
 
     @ViewChild('carousel') private carousel: Carousel;
 
@@ -43,14 +43,14 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
         controls: TacticsControlService,
         tooltips: TacticsTooltipService,
     ) {
-        super(store, controls, tooltips);
+        super('carousel', store, controls, tooltips);
     }
 
     protected get view() {
         return this.carousel;
     }
 
-    get phases() {
+    get phases(): any[] {
         return (this.frameworks || Object.keys(this.chainedTactics))
             .map(chain => (this.chainedTactics || {})[chain])
             .filter(chain => chain !== null && chain !== undefined)
@@ -76,7 +76,9 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
      * @description ensure valid carousel option values
      */
     protected extractData(tactics: Dictionary<TacticChain>) {
-        this.chainedTactics = tactics;
+        requestAnimationFrame(() => {
+            this.chainedTactics = tactics;
+        });
     }
 
     /**
@@ -114,7 +116,10 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
         // nothing to do; the carousel should automatically updated with the modified chainedTactics
     }
 
-    onInitialPageLoad() {
+    /**
+     * @description
+     */
+    public onInitialPageLoad(ev?: any) {
         if (!this.readied) {
             this.controls.state.pager = this.view;
             this.controls.onChange({pager: this.view});
@@ -128,7 +133,7 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
     public count(tactics: Tactic[]): number {
         return tactics ? tactics.reduce((c, tactic) => {
             let value = 0, target = this.lookupTactic(tactic);
-            if (target.adds && target.adds.highlights && target.adds.highlights.length) {
+            if (this.hasHighlights(target)) {
                 value = Math.sign(target.adds.highlights.reduce((v, add) => v + add.value, 0));
             }
             return c + value;

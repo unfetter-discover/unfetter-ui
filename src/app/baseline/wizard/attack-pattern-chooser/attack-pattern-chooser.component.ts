@@ -11,16 +11,21 @@ import {
         AfterViewInit,
     } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
 
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { Store } from '@ngrx/store';
 
-import { AttackPatternsHeatmapComponent } from '../../../global/components/heatmap/attack-patterns-heatmap.component';
+import {
+    TacticsHeatmapComponent
+} from '../../../global/components/tactics-pane/tactics-heatmap/tactics-heatmap.component';
+import { Tactic, TacticChain } from '../../../global/components/tactics-pane/tactics.model';
 import { HeatmapOptions } from '../../../global/components/heatmap/heatmap.data';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { Constance } from '../../../utils/constance';
+import { AppState } from '../../../root-store/app.reducers';
+import { Dictionary } from '../../../models/json/dictionary';
 
 @Component({
     selector: 'attack-pattern-chooser',
@@ -29,10 +34,10 @@ import { Constance } from '../../../utils/constance';
 })
 export class AttackPatternChooserComponent implements OnInit, AfterViewInit {
 
-    public attackPatterns = {};
-    @Input() public selectedPatterns = [];
+    public attackPatterns: Tactic[] = [];
+    public selected = [];
 
-    @ViewChild('apChooser') private view: AttackPatternsHeatmapComponent;
+    @ViewChild('apChooser') private heatmap: TacticsHeatmapComponent;
     @Input() options: HeatmapOptions = {
         view: {
             component: '#attack-pattern-filter',
@@ -62,7 +67,8 @@ export class AttackPatternChooserComponent implements OnInit, AfterViewInit {
     private portal: TemplatePortal<any>;
 
     constructor(
-        private dialogRef: MatDialogRef<AttackPatternsHeatmapComponent>,
+        private tacticsStore: Store<AppState>,
+        private dialogRef: MatDialogRef<TacticsHeatmapComponent>,
         @Inject(MAT_DIALOG_DATA) private data: any,
         private genericApi: GenericApi,
         private overlay: Overlay,
@@ -71,66 +77,15 @@ export class AttackPatternChooserComponent implements OnInit, AfterViewInit {
     ) { }
 
     ngOnInit() {
-        this.selectedPatterns = this.data.active || [];
+        this.selected = this.data.active || [];
     }
     
     ngAfterViewInit() {
-        this.loadAttackPatterns();
-    }
-
-    /**
-     * @description retrieve the attack patterns and their tactics phases from the backend database
-     */
-    private loadAttackPatterns() {
-        const sort = { 'stix.name': '1' };
-        const project = {
-            'stix.id': 1,
-            'stix.name': 1,
-            'stix.description': 1,
-            'stix.kill_chain_phases': 1,
-            'extendedProperties.x_mitre_data_sources': 1,
-            'extendedProperties.x_mitre_platforms': 1,
-        };
-        const filter = encodeURI(`sort=${JSON.stringify(sort)}&project=${JSON.stringify(project)}`);
-        const initData$ = this.genericApi.get(`${Constance.ATTACK_PATTERN_URL}?${filter}`)
-            .finally(() => initData$ && initData$.unsubscribe())
-            .subscribe(
-                (patterns: any[]) => {
-                    this.attackPatterns = this.collectAttackPatterns(patterns);
-                    this.view.heatmap.redraw();
-                    setTimeout(() => {
-                        this.view.heatmap.ngDoCheck();
-                        const selects = this.selectedPatterns
-                            .map(pattern => Object.values(this.attackPatterns).find((ap: any) => ap.id === pattern));
-                        this.selectedPatterns = [];
-                        selects.forEach(pattern => this.toggleAttackPattern({row: pattern}));
-                    }, 350);
-                },
-                (err) => console.log(new Date().toISOString(), err),
-            );
-    }
-
-    /**
-     * @description Build a list of all the attack patterns.
-     */
-    private collectAttackPatterns(patterns: any[]): any {
-        const attackPatterns = {};
-        patterns.forEach((pattern) => {
-            const name = pattern.attributes.name;
-            if (name) {
-                attackPatterns[name] = Object.assign({}, {
-                    id: pattern.attributes.id,
-                    name: name,
-                    title: name,
-                    description: pattern.attributes.description,
-                    phases: (pattern.attributes.kill_chain_phases || []).map(p => p.phase_name),
-                    sources: pattern.attributes.x_mitre_data_sources,
-                    platforms: pattern.attributes.x_mitre_platforms,
-                    value: 'inactive',
-                });
-            }
+        this.heatmap.data.forEach(batch => {
+            batch.cells.forEach(pattern => {
+                pattern.value = this.selected.find(p => p.title === pattern.title) ? 'selected' : 'inactive';
+            });
         });
-        return attackPatterns;
     }
 
     /**
@@ -138,24 +93,20 @@ export class AttackPatternChooserComponent implements OnInit, AfterViewInit {
      */
     public toggleAttackPattern(clicked?: any) {
         if (clicked && clicked.row) {
-            const index = this.selectedPatterns.findIndex(pattern => pattern.id === clicked.row.id);
-            let newValue = 'selected';
+            const index = this.selected.findIndex(pattern => pattern.id === clicked.row.id);
             if (index < 0) {
                 // pattern was not previously selected; select it
-                this.selectedPatterns.push(clicked.row);
+                clicked.row.value = 'selected';
+                this.selected.push(clicked.row);
             } else {
                 // remove the pattern from our selection list
-                newValue = 'inactive';
-                this.selectedPatterns.splice(index, 1);
+                clicked.row.value = 'inactive';
+                this.selected.splice(index, 1);
             }
-            const ap = this.attackPatterns[clicked.row.title];
-            if (ap) {
-                ap.value = newValue;
-                this.view.heatmap.helper['heatmap'].workspace.data.forEach(batch => {
-                    batch.value = batch.cells.some(cell => cell.value === 'selected') ? 'active' : null;
-                });
-                this.view.heatmap.helper.updateCells();
-            }
+            this.heatmap.view.helper['heatmap'].workspace.data.forEach(batch => {
+                batch.value = batch.cells.some(cell => cell.value === 'selected') ? 'active' : null;
+            });
+            this.heatmap.view.helper.updateCells();
         }
     }
 
@@ -163,14 +114,14 @@ export class AttackPatternChooserComponent implements OnInit, AfterViewInit {
      * @description Remove all selections
      */
     public clearSelections() {
-        this.selectedPatterns.slice(0).forEach(pattern => this.toggleAttackPattern({row: pattern}));
+        this.selected.slice(0).forEach(pattern => this.toggleAttackPattern({row: pattern}));
     }
 
     /**
      * @description retrieve the list of selected attack pattern names
      */
     public onClose(): string[] {
-        return Array.from(new Set(this.selectedPatterns.map(pattern => pattern.id)));
+        return Array.from(new Set(this.selected.map(pattern => pattern.id)));
     }
   
 }

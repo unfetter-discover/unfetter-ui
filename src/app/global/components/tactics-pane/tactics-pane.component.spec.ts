@@ -16,14 +16,15 @@ import { CarouselModule } from 'primeng/primeng';
 import { TacticsPaneComponent } from './tactics-pane.component';
 import { TacticsCarouselComponent } from './tactics-carousel/tactics-carousel.component';
 import { TacticsCarouselControlComponent } from './tactics-carousel/tactics-carousel-control.component';
-import { AttackPatternsHeatmapComponent } from '../heatmap/attack-patterns-heatmap.component';
+import { TacticsHeatmapComponent } from './tactics-heatmap/tactics-heatmap.component';
+import { TacticsTreemapComponent } from './tactics-treemap/tactics-treemap.component';
+import { TacticControlService } from './tactic-control.service';
 import { HeatmapComponent } from '../heatmap/heatmap.component';
 import { TreemapComponent } from '../treemap/treemap.component';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 import { AuthService } from '../../../core/services/auth.service';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { reducers } from '../../../root-store/app.reducers';
-import { TacticControlService } from './tactic-control.service';
 
 describe('TacticsPaneComponent', () => {
 
@@ -48,7 +49,8 @@ describe('TacticsPaneComponent', () => {
                 TacticsPaneComponent,
                 TacticsCarouselComponent,
                 TacticsCarouselControlComponent,
-                AttackPatternsHeatmapComponent,
+                TacticsHeatmapComponent,
+                TacticsTreemapComponent,
                 HeatmapComponent,
                 TreemapComponent,
                 CapitalizePipe,

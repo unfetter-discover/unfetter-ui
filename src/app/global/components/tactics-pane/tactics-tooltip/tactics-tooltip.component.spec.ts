@@ -37,8 +37,6 @@ describe('TacticsTooltipComponent should', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(TacticsTooltipComponent);
         component = fixture.componentInstance;
-        component.attackPatterns = [];
-        component.options = {};
         fixture.detectChanges();
     });
 

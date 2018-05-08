@@ -1,7 +1,6 @@
 import {
         Component,
         OnInit,
-        DoCheck,
         Inject,
         Input,
         ViewChild,
@@ -18,12 +17,14 @@ import { Store } from '@ngrx/store';
 import * as d3 from 'd3';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
+import { TacticsHeatmapComponent } from '../../global/components/tactics-pane/tactics-heatmap/tactics-heatmap.component';
+import { TacticChain, Tactic } from '../../global/components/tactics-pane/tactics.model';
 import { HeatmapOptions } from '../../global/components/heatmap/heatmap.data';
-import { AttackPatternsHeatmapComponent } from '../../global/components/heatmap/attack-patterns-heatmap.component';
 import { IndicatorSharingFeatureState } from '../store/indicator-sharing.reducers';
+import { AppState } from '../../root-store/app.reducers';
+import { Dictionary } from '../../models/json/dictionary';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { Constance } from '../../utils/constance';
-import { Dictionary } from '../../models/json/dictionary';
 
 @Component({
     selector: 'indicator-heat-map',
@@ -31,14 +32,16 @@ import { Dictionary } from '../../models/json/dictionary';
     styleUrls: ['./indicator-heat-map.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class IndicatorHeatMapComponent implements OnInit, DoCheck {
+export class IndicatorHeatMapComponent implements OnInit {
 
-    public attackPatterns = {};
+    public targeted: Tactic[] = [];
+
     @Input() private indicators: any[] = [];
     private previousIndicators: any[];
+
     private indicatorsToAttackPatternMap: any;
 
-    @ViewChild('heatmap') private view: AttackPatternsHeatmapComponent;
+    @ViewChild('heatmap') private heatmap: TacticsHeatmapComponent;
     @Input() heatmapOptions: HeatmapOptions = {
         view: {
             component: '#indicator-heat-map',
@@ -68,8 +71,9 @@ export class IndicatorHeatMapComponent implements OnInit, DoCheck {
     public collapseContents: boolean = false;
 
     constructor(
-        public genericApi: GenericApi,
-        public store: Store<IndicatorSharingFeatureState>,
+        private genericApi: GenericApi,
+        private indicatorsStore: Store<IndicatorSharingFeatureState>,
+        private tacticsStore: Store<AppState>,
         private changeDetector: ChangeDetectorRef,
     ) { }
 
@@ -77,7 +81,6 @@ export class IndicatorHeatMapComponent implements OnInit, DoCheck {
         this.previousIndicators = this.indicators;
 
         this.loadIndicatorMap();
-        this.loadAttackPatterns();
 
         if (this.collapseAllCardsSubject) {            
             const collapseCard$ = this.collapseAllCardsSubject
@@ -89,40 +92,16 @@ export class IndicatorHeatMapComponent implements OnInit, DoCheck {
         }
     }
 
-    ngDoCheck() {
-        if (this.previousIndicators !== this.indicators) {
-            const indicators = this.groupIndicatorsByAttackPatterns();
-            Object.values(this.attackPatterns).forEach((pattern: any) => {
-                const analytics = indicators[pattern.name] || [];
-                pattern.analytics = analytics.map(analytic => this.indicators.find(a => a.id === analytic));
-                pattern.value = analytics.length > 0;
-            });
-            this.view.createAttackPatternHeatMap();
-            this.view.heatmap.redraw();
-            this.previousIndicators = this.indicators;
-        } else {
-            const node: any = d3.select(`#indicator-heat-map .heat-map`).node();
-            const rect = node ? node.getBoundingClientRect() : null;
-            if (node && rect && rect.width && rect.height) {
-                if (this.oldrect === null) {
-                    this.oldrect = rect;
-                } else if ((this.oldrect.width !== rect.width) || (this.oldrect.height !== rect.height)) {
-                    this.view.heatmap.redraw();
-                    this.oldrect = rect;
-                }
-            }
-        }
-    }
-
     /**
      * @description retrieve the indicators-to-attack-patterns map from the ngrx store
      */
     private loadIndicatorMap() {
-        const getIndicatorToAttackPatternMap$ = this.store
+        const getIndicatorToAttackPatternMap$ = this.indicatorsStore
             .select('indicatorSharing')
             .pluck('indicatorToApMap')
             .distinctUntilChanged()
             .finally(() => {
+                this.loadAttackPatterns();
                 if (getIndicatorToAttackPatternMap$) {
                     getIndicatorToAttackPatternMap$.unsubscribe();
                 }
@@ -137,29 +116,23 @@ export class IndicatorHeatMapComponent implements OnInit, DoCheck {
      * @description retrieve the attack patterns and their tactics phases from the backend database
      */
     private loadAttackPatterns() {
-        const sort = { 'stix.name': '1' };
-        const project = {
-            'stix.id': 1,
-            'stix.name': 1,
-            'stix.description': 1,
-            'stix.kill_chain_phases': 1,
-            'extendedProperties.x_mitre_data_sources': 1,
-            'extendedProperties.x_mitre_platforms': 1,
-        };
-        const filter = encodeURI(`sort=${JSON.stringify(sort)}&project=${JSON.stringify(project)}`);
-        const initData$ = this.genericApi.get(`${Constance.ATTACK_PATTERN_URL}?${filter}`)
-            .finally(() => initData$ && initData$.unsubscribe())
+        const sub$ = this.tacticsStore
+            .select('config')
+            .pluck('tacticsChains')
+            .finally(() => (sub$ && sub$.unsubscribe()))
             .subscribe(
-                (patterns: any[]) => this.view && this.update(patterns),
-                (err) => console.log(err)
+                (tactics: Dictionary<TacticChain>) => this.heatmap && this.update(tactics),
+                (err) => console.log(`(${new Date().toISOString()}) could not load tactics`, err)
             );
     }
 
-    private update(patterns: any[]) {
+    /**
+     * @description
+     */
+    private update(tactics: Dictionary<TacticChain>) {
         const indicators = this.groupIndicatorsByAttackPatterns();
-        this.attackPatterns = this.collectAttackPatterns(patterns, indicators);
-        this.view.createAttackPatternHeatMap();
-        this.view.heatmap.redraw();
+        this.targeted = this.collectAttackPatterns(tactics, indicators);
+        this.heatmap.ngDoCheck();
     }
 
     /**
@@ -186,25 +159,28 @@ export class IndicatorHeatMapComponent implements OnInit, DoCheck {
     /**
      * @description Build a list of all the attack patterns.
      */
-    private collectAttackPatterns(patterns: any[], indicators: Dictionary<string[]>): any {
-        const attackPatterns = {};
-        patterns.forEach((pattern) => {
-            const name = pattern.attributes.name;
-            if (name) {
-                let analytics = indicators[name] || [];
-                analytics = analytics.map(analytic => this.indicators.find(a => a.id === analytic));
-                attackPatterns[name] = Object.assign({}, {
-                    id: pattern.attributes.id,
-                    name: name,
-                    title: name,
-                    description: pattern.attributes.description,
-                    phases: (pattern.attributes.kill_chain_phases || []).map(p => p.phase_name),
-                    sources: pattern.attributes.x_mitre_data_sources,
-                    platforms: pattern.attributes.x_mitre_platforms,
-                    analytics: analytics,
-                    value: analytics.length > 0,
+    private collectAttackPatterns(tactics: Dictionary<TacticChain>, indicators: Dictionary<string[]>): Tactic[] {
+        const attackPatterns: Tactic[] = [];
+        Object.values(tactics).forEach(chain => {
+            chain.phases.forEach(phase => {
+                phase.tactics.forEach(tactic => {
+                    const name = tactic.name;
+                    if (name) {
+                        let analytics = indicators[name] || [];
+                        analytics = analytics.map(analytic => this.indicators.find(a => a.id === analytic));
+                        attackPatterns.push(Object.assign({}, {
+                            ...tactic,
+                            analytics: analytics,
+                            adds: {
+                                highlights: [
+                                    { value: analytics.length, color: {style: analytics.length > 0, }, }
+                                ],
+                            },
+                            value: analytics.length > 0,
+                        }));
+                    }
                 });
-            }
+            });
         });
         return attackPatterns;
     }

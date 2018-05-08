@@ -47,6 +47,7 @@ export function configReducer(state = initialState, action: configActions.Config
             };
 
         case configActions.LOAD_TACTICS:
+            console.log('loaded tactics', action);
             return {
                 ...state,
                 tacticsChains: {

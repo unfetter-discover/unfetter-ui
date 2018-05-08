@@ -1,17 +1,17 @@
-import { OnInit, Input, ViewChild, DoCheck } from '@angular/core';
+import { OnInit, Input, ViewChild, DoCheck, AfterViewInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
 import { TacticChain, Tactic } from './tactics.model';
 import { TacticsControlService } from './tactics-control.service';
-import { TacticsTooltipService } from './tactics-tooltip/tactics-tooltip.service';
+import { TacticsTooltipService, TooltipEvent } from './tactics-tooltip/tactics-tooltip.service';
 import { Dictionary } from '../../../models/json/dictionary';
 import { AppState } from '../../../root-store/app.reducers';
 
 /**
  * Abstract base class for the type of views displayed in the tactics pane.
  */
-export abstract class TacticsView<Component, Options> implements OnInit, DoCheck {
+export abstract class TacticsView<Component, Options> implements OnInit, AfterViewInit, DoCheck {
     /**
      * The relevant framework(s) for the patterns to display.
      */
@@ -30,9 +30,10 @@ export abstract class TacticsView<Component, Options> implements OnInit, DoCheck
     @Input() public options: Options;
 
     constructor(
+        private type: string,
         protected store: Store<AppState>,
         protected controls: TacticsControlService,
-        protected tooltips: TacticsTooltipService,
+        public tooltips: TacticsTooltipService,
     ) {}
 
     ngOnInit() {
@@ -40,19 +41,19 @@ export abstract class TacticsView<Component, Options> implements OnInit, DoCheck
         this.previousTargeted = this.targeted;
 
         this.validateOptions();
+    }
 
+    ngAfterViewInit() {
         this.loadTactics();
-
         this.initController();
     }
 
     ngDoCheck() {
         if (this.previousFrameworks !== this.frameworks) {
-            console.log(`(${new Date().toISOString()}) frameworks change detected`);
-            this.previousFrameworks = this.frameworks;
+            console.log(`(${new Date().toISOString()}) ${this.type} frameworks change detected`);
             this.loadTactics();
         } else if (this.previousTargeted !== this.targeted) {
-            console.log(`(${new Date().toISOString()}) targeted data change detected`);
+            console.log(`(${new Date().toISOString()}) ${this.type} targeted data change detected`);
             this.previousTargeted = this.targeted;
             this.loadTactics();
         }
@@ -76,17 +77,23 @@ export abstract class TacticsView<Component, Options> implements OnInit, DoCheck
             .finally(() => getf$ && getf$.unsubscribe())
             .subscribe(
                 (frameworks) => {
-                    this.frameworks = frameworks;
+                    this.previousFrameworks = this.frameworks = frameworks;
                     const sub$ = this.store
                         .select('config')
-                        .pluck('tactics')
+                        .pluck('tacticsChains')
                         .finally(() => (sub$ && sub$.unsubscribe()) || this.rerender())
                         .subscribe(
-                            (tactics: Dictionary<TacticChain>) => this.extractData(tactics),
-                            (err) => console.log(`(${new Date().toISOString()}) could not load tactics`, err)
+                            (tactics: Dictionary<TacticChain>) => {
+                                this.extractData(tactics);
+                            },
+                            (err) => {
+                                console.log(`(${new Date().toISOString()}) ${this.type} could not load tactics`, err);
+                            },
                         );
                 },
-                (err) => console.log(`(${new Date().toISOString()}) could not determine current framework`, err)
+                (err) => {
+                    console.log(`(${new Date().toISOString()}) ${this.type} could not determine current framework`, err);
+                }
             );
     }
 
@@ -138,17 +145,24 @@ export abstract class TacticsView<Component, Options> implements OnInit, DoCheck
     }
 
     /**
+     * @description
+     */
+    protected hasHighlights(tactic: Tactic): boolean {
+        return tactic && tactic.adds && tactic.adds.highlights && (tactic.adds.highlights.length > 0);
+    }
+
+    /**
      * @description common event handler for when the user hovers over a tactic -- passes it on to the tooltip service
      */
-    public onHover(tactic: Tactic, event?: UIEvent) {
-        this.tooltips.onHover({tactic: tactic, event: event});
+    public onHover(event: TooltipEvent) {
+        this.tooltips.onHover(event);
     }
 
     /**
      * @description common event handler for when the user clicks on a tactic -- passes it on to the tooltip service
      */
-    public onClick(tactic: Tactic, event?: UIEvent) {
-        this.tooltips.onClick({tactic: tactic, event: event});
+    public onClick(event: TooltipEvent) {
+        this.tooltips.onClick(event);
     }
 
 }

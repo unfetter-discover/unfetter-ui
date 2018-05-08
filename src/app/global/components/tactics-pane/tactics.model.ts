@@ -2,7 +2,7 @@ interface Marking {
     label?: string,
     value?: number,
     color?: {
-        style?: string,
+        style?: string | boolean,
         bg?: string,
         fg?: string,
     },

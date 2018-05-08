@@ -9,7 +9,9 @@ import { MatCardModule, MatIconModule } from '@angular/material';
 import { OverlayModule } from '@angular/cdk/overlay';
 
 import { IndicatorHeatMapComponent } from './indicator-heat-map.component';
-import { AttackPatternsHeatmapComponent } from '../../global/components/heatmap/attack-patterns-heatmap.component';
+import {
+    TacticsHeatmapComponent
+} from '../../global/components/tactics-pane/tactics-heatmap/tactics-heatmap.component';
 import { HeatmapComponent } from '../../global/components/heatmap/heatmap.component';
 import { makeMockIndicatorSharingStore, mockIndicators, mockAttackPatterns } from '../../testing/mock-store';
 import { indicatorSharingReducer } from '../store/indicator-sharing.reducers';
@@ -67,7 +69,7 @@ describe('IndicatorHeatMapComponent', () => {
                 ],
                 declarations: [
                     IndicatorHeatMapComponent,
-                    AttackPatternsHeatmapComponent,
+                    TacticsHeatmapComponent,
                     HeatmapComponent,
                     CapitalizePipe,
                 ],
@@ -85,9 +87,9 @@ describe('IndicatorHeatMapComponent', () => {
         heatmap.nativeElement.style.width = '300px';
         heatmap.nativeElement.style.height = '500px';
         component = fixture.componentInstance;
-        store = component.store;
+        store = component['indicatorsStore'];
         makeMockIndicatorSharingStore(store);
-        let mockApi = spyOn(component.genericApi, 'get').and.returnValue(Observable.of(mockAttackPatternData));
+        let mockApi = spyOn(component['genericApi'], 'get').and.returnValue(Observable.of(mockAttackPatternData));
         fixture.detectChanges();
     });
 
