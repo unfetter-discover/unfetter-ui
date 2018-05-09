@@ -22,6 +22,14 @@ $white: #FFFFFF;
         }
     }
 
+    tactics-pane .tactics-title {
+        color: rgba(255, 255, 255, .87);
+    }
+
+    tactics-carousel-control .carousel-button.disabled {
+        color: rgba(255, 255, 255, .87);
+    }
+
     unf-heatmap {
         div.heat-map {
             background: white;

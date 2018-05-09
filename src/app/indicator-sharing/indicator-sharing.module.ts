@@ -45,7 +45,6 @@ import { SearchBarComponent } from './search-bar/search-bar.component';
 import { IndicatorSharingSortComponent } from './indicator-sharing-sort/indicator-sharing-sort.component';
 import { IndicatorSharingFiltersComponent } from './indicator-sharing-filters/indicator-sharing-filters.component';
 import { AddAttackPatternComponent } from './add-attack-pattern/add-attack-pattern.component';
-import { IndicatorHeatMapComponent } from './indicator-heat-map/indicator-heat-map.component';
 import { IndicatorHeatMapFilterComponent } from './indicator-heat-map/indicator-heatmap-filter.component';
 import { SummaryStatisticsComponent } from './summary-statistics/summary-statistics.component';
 
@@ -93,7 +92,6 @@ const matModules = [
         IndicatorSharingSortComponent,
         IndicatorSharingFiltersComponent,
         AddAttackPatternComponent,
-        IndicatorHeatMapComponent,
         IndicatorHeatMapFilterComponent,
         SummaryStatisticsComponent,
     ],

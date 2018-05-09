@@ -6,6 +6,8 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { MatCardModule } from '@angular/material';
 
 import { TacticsHeatmapComponent } from './tactics-heatmap.component';
+import { TacticsControlService } from '../tactics-control.service';
+import { TacticsTooltipService } from '../tactics-tooltip/tactics-tooltip.service';
 import { HeatmapComponent } from '../../heatmap/heatmap.component';
 import { AuthService } from '../../../../core/services/auth.service';
 import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
@@ -29,7 +31,11 @@ describe('TacticsHeatmapComponent', () => {
                 HeatmapComponent,
                 CapitalizePipe,
             ],
-            providers: [AuthService]
+            providers: [
+                AuthService,
+                TacticsControlService,
+                TacticsTooltipService,
+            ]
         })
         .compileComponents();
     }));

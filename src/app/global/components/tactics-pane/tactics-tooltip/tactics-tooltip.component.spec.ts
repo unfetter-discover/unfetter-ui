@@ -4,12 +4,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatCardModule } from '@angular/material';
 
-import { HeatmapComponent } from './heatmap.component';
-import { CapitalizePipe } from '../../pipes/capitalize.pipe';
-import { AuthService } from '../../../core/services/auth.service';
-import { StoreModule } from '@ngrx/store';
-import { reducers } from '../../../root-store/app.reducers';
 import { TacticsTooltipComponent } from './tactics-tooltip.component';
+import { TacticsTooltipService } from './tactics-tooltip.service';
+import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
+import { AuthService } from '../../../../core/services/auth.service';
+import { StoreModule } from '@ngrx/store';
+import { reducers } from '../../../../root-store/app.reducers';
 
 describe('TacticsTooltipComponent should', () => {
 
@@ -26,10 +26,12 @@ describe('TacticsTooltipComponent should', () => {
             ],
             declarations: [
                 TacticsTooltipComponent,
-                HeatmapComponent,
                 CapitalizePipe,
             ],
-            providers: [AuthService]
+            providers: [
+                AuthService,
+                TacticsTooltipService,
+            ]
         })
         .compileComponents();
     }));

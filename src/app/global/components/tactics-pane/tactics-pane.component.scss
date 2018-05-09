@@ -13,6 +13,18 @@ div.tactics-pane {
         margin: 0;
         padding: 16px 16px 0 16px;
 
+        .tactics-title-with-subtitle {
+            margin-top: -8px;
+            line-height: 24px;
+            .tactics-title-row {
+                font-weight: 400;
+            }
+            .tactics-subtitle-row {
+                font-size: 14px;
+                font-weight: 100;
+            }
+        }
+
         ::ng-deep {
             .toolbox {
                 color: $threat-dashboard-primary;

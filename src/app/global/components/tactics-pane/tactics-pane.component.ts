@@ -1,16 +1,19 @@
 import {
     Component,
     OnInit,
+    OnDestroy,
     Input,
+    Output,
     ViewChild,
     ElementRef,
     TemplateRef,
     ViewContainerRef,
     Renderer2,
-    Output,
     EventEmitter,
 } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Subscription } from 'rxjs/Subscription';
 import { Store } from '@ngrx/store';
 
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
@@ -40,7 +43,7 @@ import { Constance } from '../../../utils/constance';
     templateUrl: './tactics-pane.component.html',
     styleUrls: ['./tactics-pane.component.scss']
 })
-export class TacticsPaneComponent implements OnInit {
+export class TacticsPaneComponent implements OnInit, OnDestroy {
 
     /**
      * The relevant frameworks for the patterns to display. If not provided, will attempt to derive it from the
@@ -68,6 +71,12 @@ export class TacticsPaneComponent implements OnInit {
      * Title to display in the component's header.
      */
     @Input() public title: string = 'Tactics Used';
+    @Input() public subtitle: string = null;
+
+    @Input() public collapsible: boolean = false;
+    public collapsed: boolean = false;
+    @Input() public collapseSubject: BehaviorSubject<boolean>;
+    private collapseCard$: Subscription;
 
     /**
      * The starting view in the pane. Defaults to the heatmap.
@@ -134,6 +143,24 @@ export class TacticsPaneComponent implements OnInit {
      */
     ngOnInit() {
         this.treemapOptions.headerHeight = 20;
+
+        if (this.collapseSubject) {
+            this.collapseCard$ = this.collapseSubject
+                .finally(() => this.collapseCard$ && this.collapseCard$.unsubscribe())
+                .subscribe(
+                    (collapseContents) => this.collapsed = collapseContents,
+                    (err) => console.log(err),
+                );
+        }
+    }
+
+    /**
+     * @description
+     */
+    ngOnDestroy() {
+        if (this.collapseCard$) {
+            this.collapseCard$.unsubscribe();
+        }
     }
 
     /**
@@ -185,7 +212,7 @@ export class TacticsPaneComponent implements OnInit {
      */
     public onClick(event?: TooltipEvent) {
         if (event && (event.type === 'click') && this.click.observers.length) {
-            this.hover.emit(event);
+            this.click.emit(event);
         } else {
             this.tooltips.handleTacticTooltip(event);
         }

@@ -99,7 +99,7 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
             );
     }
 
-    protected rerender() {
+    public rerender() {
         // nothing to do; the carousel should automatically updated with the modified chainedTactics
     }
 

@@ -285,10 +285,10 @@ describe('HeatmapComponent', () => {
         trect.parentElement.dispatchEvent(new Event('mouseover'));
         fixture.whenStable().then(() => {
             expect(spy).not.toBeNull();
-            expect(spy.row.title).toBe(target.title);
+            expect(spy.data.title).toBe(target.title);
             trect.dispatchEvent(new Event('mouseout'));
             trect.parentElement.dispatchEvent(new Event('mouseout'));
-            expect(spy).toBeNull();
+            expect(spy.data).toBeNull();
         });
     }));
 
@@ -306,7 +306,7 @@ describe('HeatmapComponent', () => {
         expect(trect).not.toBeNull();
         trect.parentElement.dispatchEvent(new Event('click'));
         expect(spy).not.toBeNull();
-        expect(spy.row.title).toBe(target.title);
+        expect(spy.data.title).toBe(target.title);
     });
 
 });

@@ -1,7 +1,10 @@
 <div id="baseline-heat-map" class="uf-well">
-  <h3 class="lightH3">Addressed Techniques</h3>
-  <p>These are the techniques addressed by the capabilities in this baseline.</p>
   <div *ngIf="!collapseContents">
-    <attack-patterns-heatmap #heatmap [attackPatterns]="attackPatterns" [heatMapOptions]="heatmapOptions"></attack-patterns-heatmap>
+    <tactics-pane #tactics [targeted]="attackPatterns"
+        [title]="'Addressed Techniques'"
+        [subtitle]="'These are the techniques addressed by the capabilities in this baseline.'"
+        [heatmapOptions]="heatmapOptions"
+        [treemapOptions]="treemapOptions"
+        [carouselOptions]="carouselOptions"></tactics-pane>
   </div>
 </div>

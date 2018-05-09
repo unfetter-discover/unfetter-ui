@@ -1,4 +1,4 @@
-import { OnInit, Input, ViewChild, DoCheck, AfterViewInit } from '@angular/core';
+import { OnInit, Input, Output, ViewChild, DoCheck, AfterViewInit, EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
@@ -33,6 +33,9 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
      * Preferences on how to view the data.
      */
     @Input() public options: Options;
+
+    @Output() public hover: EventEmitter<TooltipEvent> = new EventEmitter();
+    @Output() public click: EventEmitter<TooltipEvent> = new EventEmitter();
 
     constructor(
         protected store: Store<AppState>,
@@ -90,11 +93,13 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
                         .subscribe(
                             (tactics: Dictionary<TacticChain>) => {
                                 const patterns = [];
-                                Object.values(tactics).forEach(chain => {
-                                    chain.phases.forEach(phase => {
-                                        phase.tactics.forEach(tactic => patterns.push(tactic));
+                                if (tactics) {
+                                    Object.values(tactics).forEach(chain => {
+                                        chain.phases.forEach(phase => {
+                                            phase.tactics.forEach(tactic => patterns.push(tactic));
+                                        });
                                     });
-                                });
+                                }
                                 this.tactics = patterns;
                                 this.extractData(tactics);
                             },
@@ -149,7 +154,7 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
     /**
      * @description order the view to redraw itself; due to data change
      */
-    protected abstract rerender(): void;
+    public abstract rerender(): void;
 
     /**
      * @description attempts to find the given tactic in the targeted list; if not found, returns the given tactic
@@ -173,7 +178,11 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
             const tactic = this.lookupTarget(event.data);
             event.data = tactic;
         }
-        this.tooltips.onHover(event);
+        if (this.hover.observers.length) {
+            this.hover.emit(event);
+        } else {
+            this.tooltips.onHover(event);
+        }
     }
 
     /**
@@ -184,7 +193,11 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
             const tactic = this.lookupTarget(event.data);
             event.data = tactic;
         }
-        this.tooltips.onClick(event);
+        if (this.click.observers.length) {
+            this.click.emit(event);
+        } else {
+            this.tooltips.onClick(event);
+        }
     }
 
     /**

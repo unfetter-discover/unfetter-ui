@@ -1,10 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { StoreModule } from '@ngrx/store';
 
 import { CarouselModule } from 'primeng/primeng';
 
 import { TacticsCarouselComponent } from './tactics-carousel.component';
+import { TacticsControlService } from '../tactics-control.service';
+import { TacticsTooltipService } from '../tactics-tooltip/tactics-tooltip.service';
 import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
-import { TacticControlService } from '../tactic-control.service';
+import { reducers } from '../../../../root-store/app.reducers';
 
 describe('TacticCarouselComponent', () => {
 
@@ -16,12 +19,16 @@ describe('TacticCarouselComponent', () => {
             .configureTestingModule({
                 imports: [
                     CarouselModule,
+                    StoreModule.forRoot(reducers),
                 ],
                 declarations: [
                     TacticsCarouselComponent,
                     CapitalizePipe,
                 ],
-                providers: [TacticControlService]
+                providers: [
+                    TacticsControlService,
+                    TacticsTooltipService,
+                ]
             })
             .compileComponents();
     }));

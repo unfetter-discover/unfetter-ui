@@ -16,6 +16,8 @@ import { HeatmapComponent } from '../../../global/components/heatmap/heatmap.com
 import { CapitalizePipe } from '../../../global/pipes/capitalize.pipe';
 import { reducers } from '../../../root-store/app.reducers';
 import { mockAttackPatterns } from '../../../testing/mock-store';
+import { TacticsControlService } from '../../../global/components/tactics-pane/tactics-control.service';
+import { TacticsTooltipService } from '../../../global/components/tactics-pane/tactics-tooltip/tactics-tooltip.service';
 
 describe('AttackPatternChooserComponent', () => {
 
@@ -61,6 +63,8 @@ describe('AttackPatternChooserComponent', () => {
                 CapitalizePipe,
             ],
             providers: [
+                TacticsControlService,
+                TacticsTooltipService,
                 GenericApi,
                 AuthService,
                 {

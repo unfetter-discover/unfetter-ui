@@ -74,8 +74,10 @@
                             <indicator-sharing-summary-statistics></indicator-sharing-summary-statistics>
                         </div>
                         <div class="pl-24 pr-24" *ngIf="activeMainWell === 'tactics'">
-                            <tactics-pane id="indicator-tactics" [targeted]="targeted"
+                            <tactics-pane id="indicator-tactics"
+                                    [targeted]="targeted"
                                     [theme]="'theme-bg-primary theme-color-primary'"
+                                    [collapsible]="true" [collapseSubject]="collapseAllCardsSubject"
                                     [heatmapOptions]="heatmapOptions"
                                     [treemapOptions]="treemapOptions"
                                     [carouselOptions]="carouselOptions"></tactics-pane>

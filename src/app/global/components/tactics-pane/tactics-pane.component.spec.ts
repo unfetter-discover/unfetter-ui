@@ -14,11 +14,13 @@ import {
 import { CarouselModule } from 'primeng/primeng';
 
 import { TacticsPaneComponent } from './tactics-pane.component';
+import { TacticsControlService } from './tactics-control.service';
 import { TacticsCarouselComponent } from './tactics-carousel/tactics-carousel.component';
 import { TacticsCarouselControlComponent } from './tactics-carousel/tactics-carousel-control.component';
 import { TacticsHeatmapComponent } from './tactics-heatmap/tactics-heatmap.component';
 import { TacticsTreemapComponent } from './tactics-treemap/tactics-treemap.component';
-import { TacticControlService } from './tactic-control.service';
+import { TacticsTooltipComponent } from './tactics-tooltip/tactics-tooltip.component';
+import { TacticsTooltipService } from './tactics-tooltip/tactics-tooltip.service';
 import { HeatmapComponent } from '../heatmap/heatmap.component';
 import { TreemapComponent } from '../treemap/treemap.component';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
@@ -51,6 +53,7 @@ describe('TacticsPaneComponent', () => {
                 TacticsCarouselControlComponent,
                 TacticsHeatmapComponent,
                 TacticsTreemapComponent,
+                TacticsTooltipComponent,
                 HeatmapComponent,
                 TreemapComponent,
                 CapitalizePipe,
@@ -58,7 +61,8 @@ describe('TacticsPaneComponent', () => {
             providers: [
                 AuthService,
                 GenericApi,
-                TacticControlService,
+                TacticsControlService,
+                TacticsTooltipService,
             ],
         })
         .compileComponents();

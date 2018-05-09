@@ -74,9 +74,9 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
         }
     }
     public readonly treemapOptions: TreemapOptions = {
-        minColor: '#8df6ec',
-        midColor: '#6dd6cc',
-        maxColor: '#4db6ac',
+        minColor: '#cccccc',
+        midColor: '#60dcd1',
+        maxColor: '#30bcc1',
     };
     public readonly carouselOptions: CarouselOptions = {
         toolboxTheme: 'theme-bg-primary-lightest analytic-carousel-button'

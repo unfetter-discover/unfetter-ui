@@ -1,13 +1,24 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, Input, OnInit, ViewChild } from '@angular/core';
-import * as d3 from 'd3';
+import {
+  Component,
+  OnInit,
+  DoCheck,
+  Input,
+  ViewChild,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { GenericApi } from '../../../../core/services/genericapi.service';
-import { AttackPatternsHeatmapComponent } from '../../../../global/components/heatmap/attack-patterns-heatmap.component';
+import { Store } from '@ngrx/store';
+import * as d3 from 'd3';
+
 import { HeatmapOptions } from '../../../../global/components/heatmap/heatmap.data';
+import { Tactic, TacticChain } from '../../../../global/components/tactics-pane/tactics.model';
+import { TacticsPaneComponent } from '../../../../global/components/tactics-pane/tactics-pane.component';
+import { CarouselOptions } from '../../../../global/components/tactics-pane/tactics-carousel/carousel.data';
+import { TreemapOptions } from '../../../../global/components/treemap/treemap.data';
 import { Dictionary } from '../../../../models/json/dictionary';
+import { AppState } from '../../../../root-store/app.reducers';
 import { Constance } from '../../../../utils/constance';
-
-
 
 @Component({
   selector: 'summary-heatmap',
@@ -17,12 +28,13 @@ import { Constance } from '../../../../utils/constance';
 })
 export class SummaryHeatmapComponent implements OnInit, DoCheck {
 
-  public attackPatterns = {};
+  public attackPatterns: Tactic[] = [];
+  private previousTactics: Tactic[];
   @Input() private capabilities: any[] = [];
   private previousCapabilities: any[];
   private capabilitiesToAttackPatternMap: any;
 
-  @ViewChild('heatmap') private view: AttackPatternsHeatmapComponent;
+  @ViewChild('tactics') private tactics: TacticsPaneComponent;
   @Input() heatmapOptions: HeatmapOptions = {
     view: {
       component: '#baseline-heat-map',
@@ -46,13 +58,19 @@ export class SummaryHeatmapComponent implements OnInit, DoCheck {
       cellTitleExtent: 2,
     }
   }
-  private oldrect = null;
+  public readonly treemapOptions: TreemapOptions = {
+      minColor: '#c8e0ec',
+      midColor: '#a8c0cc',
+      maxColor: '#88a0ac',
+  };
+  public readonly carouselOptions: CarouselOptions = {
+  };
 
   @Input() public collapseAllCardsSubject: BehaviorSubject<boolean>;
   public collapseContents: boolean = false;
 
   constructor(
-    public genericApi: GenericApi,
+    private tacticsStore: Store<AppState>,
     private changeDetector: ChangeDetectorRef,
   ) { }
 
@@ -80,19 +98,15 @@ export class SummaryHeatmapComponent implements OnInit, DoCheck {
         pattern.analytics = analytics.map(analytic => this.capabilities.find(a => a.id === analytic));
         pattern.value = analytics.length > 0;
       });
-      this.view.createAttackPatternHeatMap();
-      this.view.heatmap.redraw();
       this.previousCapabilities = this.capabilities;
-    } else {
-      const node: any = d3.select(`#baseline-heat-map .heat-map`).node();
-      const rect = node ? node.getBoundingClientRect() : null;
-      if (node && rect && rect.width && rect.height) {
-        if (this.oldrect === null) {
-          this.oldrect = rect;
-        } else if ((this.oldrect.width !== rect.width) || (this.oldrect.height !== rect.height)) {
-          this.view.heatmap.redraw();
-          this.oldrect = rect;
-        }
+    }
+    if (this.previousTactics !== this.attackPatterns) {
+      if (this.tactics && this.tactics[this.tactics.view]) {
+        this.previousTactics = this.attackPatterns;
+        requestAnimationFrame(() => this.tactics['heatmap'].redraw());
+      } else {
+        // stupid fix to force the heatmap to draw
+        setTimeout(() => { this.ngDoCheck(); }, 250);
       }
     }
   }
@@ -120,29 +134,30 @@ export class SummaryHeatmapComponent implements OnInit, DoCheck {
    * @description retrieve the attack patterns and their tactics phases from the backend database
    */
   private loadAttackPatterns() {
-    const sort = { 'stix.name': '1' };
-    const project = {
-      'stix.id': 1,
-      'stix.name': 1,
-      'stix.description': 1,
-      'stix.kill_chain_phases': 1,
-      'extendedProperties.x_mitre_data_sources': 1,
-      'extendedProperties.x_mitre_platforms': 1,
-    };
-    const filter = encodeURI(`sort=${JSON.stringify(sort)}&project=${JSON.stringify(project)}`);
-    const initData$ = this.genericApi.get(`${Constance.ATTACK_PATTERN_URL}?${filter}`)
+    const initData$ = this.tacticsStore
+      .select('config')
+      .pluck('tacticsChains')
+      .take(1)
       .finally(() => initData$ && initData$.unsubscribe())
       .subscribe(
-        (patterns: any[]) => this.view && this.update(patterns),
+        (tactics: Dictionary<TacticChain>) => {
+          if (tactics) {
+            const patterns = Object.values(tactics).reduce((arr, chain) => {
+              chain.phases.forEach(phase => arr.concat(phase.tactics));
+              return arr;
+            }, []);
+            this.update(patterns);
+          }
+        },
         (err) => console.log(err)
       );
   }
 
   private update(patterns: any[]) {
     const indicators = this.groupCapabilitiesByAttackPatterns();
-    this.attackPatterns = this.collectAttackPatterns(patterns, indicators);
-    this.view.createAttackPatternHeatMap();
-    this.view.heatmap.redraw();
+    requestAnimationFrame(() => {
+      this.attackPatterns = this.collectAttackPatterns(patterns, indicators);
+    });
   }
 
   /**
@@ -169,27 +184,25 @@ export class SummaryHeatmapComponent implements OnInit, DoCheck {
   /**
    * @description Build a list of all the attack patterns.
    */
-  private collectAttackPatterns(patterns: any[], indicators: Dictionary<string[]>): any {
-    const attackPatterns = {};
+  private collectAttackPatterns(patterns: any[], indicators: Dictionary<string[]>): Tactic[] {
+    const attackPatterns: Dictionary<Tactic> = {};
     patterns.forEach((pattern) => {
       const name = pattern.attributes.name;
       if (name) {
-        let analytics = indicators[name] || [];
-        analytics = analytics.map(analytic => this.capabilities.find(a => a.id === analytic));
-        attackPatterns[name] = Object.assign({}, {
-          id: pattern.attributes.id,
-          name: name,
-          title: name,
-          description: pattern.attributes.description,
-          phases: (pattern.attributes.kill_chain_phases || []).map(p => p.phase_name),
-          sources: pattern.attributes.x_mitre_data_sources,
-          platforms: pattern.attributes.x_mitre_platforms,
-          analytics: analytics,
-          value: analytics.length > 0,
-        });
+        let analytics = indicators[name];
+        if (analytics) {
+          analytics = analytics.map(analytic => this.capabilities.find(a => a.id === analytic));
+          attackPatterns[name] = Object.assign({}, {
+            ...pattern.attributes,
+            analytics: analytics,
+            adds: {
+              highlights: [{value: analytics.length, color: {style: analytics.length > 0}}]
+            },
+          });
+        }
       }
     });
-    return attackPatterns;
+    return Object.values(attackPatterns);
   }
 
 }

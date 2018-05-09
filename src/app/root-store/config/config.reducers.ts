@@ -2,12 +2,11 @@ import * as configActions from './config.actions';
 
 export interface ConfigState {
     configurations: any,
-    tacticsChains: any,
+    tacticsChains?: any,
 }
 
-const initialState: ConfigState = {
+export const initialState: ConfigState = {
     configurations: {},
-    tacticsChains: {}
 }
 
 export function configReducer(state = initialState, action: configActions.ConfigActions) {

@@ -1,10 +1,12 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { Observable } from 'rxjs/Observable';
-import { GenericApi } from '../../../../core/services/genericapi.service';
-import { mockAttackPatterns } from '../../../../testing/mock-store';
-import { SummaryHeatmapComponent } from './summary-heatmap.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Observable } from 'rxjs/Observable';
+import { StoreModule } from '@ngrx/store';
+
+import { SummaryHeatmapComponent } from './summary-heatmap.component';
+import { mockAttackPatterns } from '../../../../testing/mock-store';
+import { reducers } from '../../../../root-store/app.reducers';
 
 const mockAttackPatternData = [
   {
@@ -33,19 +35,19 @@ const mockAttackPatternData = [
   },
 ];
 
-
 describe('SummaryHeatmapComponent', () => {
   let component: SummaryHeatmapComponent;
   let fixture: ComponentFixture<SummaryHeatmapComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ HttpClientTestingModule ],
+      imports: [
+        HttpClientTestingModule,
+        StoreModule.forRoot(reducers),
+      ],
       declarations: [ SummaryHeatmapComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
-      providers: [
-        GenericApi,
-      ],
+      providers: [],
     })
     .compileComponents();
   }));
@@ -53,7 +55,6 @@ describe('SummaryHeatmapComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SummaryHeatmapComponent);
     component = fixture.componentInstance;
-    let mockApi = spyOn(component.genericApi, 'get').and.returnValue(Observable.of(mockAttackPatternData));
     fixture.detectChanges();
   });
 

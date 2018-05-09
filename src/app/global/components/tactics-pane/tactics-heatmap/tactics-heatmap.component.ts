@@ -131,35 +131,38 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
      */
     private convertTacticChain(tactics: Dictionary<TacticChain>, chain: string,
             data: Dictionary<HeatBatchData>, aps: any, heats: Dictionary<HeatColor>) {
-        tactics[chain].phases.forEach(phase => {
-            data[phase.id] = {
-                title: phase.name,
-                value: null,
-                cells: [],
-            };
-            phase.tactics.forEach(tactic => {
-                if (!aps[tactic.id]) {
-                    // convert the tactic into a heat cell, colorize it if it is targeted
-                    const ap: AttackPatternCell = aps[tactic.id] = {...tactic, title: tactic.name, value: 'false'};
-                    const target = this.targeted.find(t => t.id === tactic.id);
-                    if (this.hasHighlights(target)) {
-                        const colors = this.collectColors(target);
-                        if (colors.styles.size) {
-                            ap.value = Array.from(colors.styles).sort().join('-');
-                        } else if (colors.bgs.size) {
-                            ap.value = Array.from(colors.bgs).join('-');
-                        }
-                        if (!heats[ap.value]) {
-                            heats[ap.value] = { bg: Array.from(colors.heats), fg: colors.text || 'black', };
-                        }
-                        if (colors.text) {
-                            ap.text = colors.text;
+        const framework = tactics[chain];
+        if (framework) {
+            framework.phases.forEach(phase => {
+                data[phase.id] = {
+                    title: phase.name,
+                    value: null,
+                    cells: [],
+                };
+                phase.tactics.forEach(tactic => {
+                    if (!aps[tactic.id]) {
+                        // convert the tactic into a heat cell, colorize it if it is targeted
+                        const ap: AttackPatternCell = aps[tactic.id] = {...tactic, title: tactic.name, value: 'false'};
+                        const target = this.targeted.find(t => t.id === tactic.id);
+                        if (this.hasHighlights(target)) {
+                            const colors = this.collectColors(target);
+                            if (colors.styles.size) {
+                                ap.value = Array.from(colors.styles).sort().join('-');
+                            } else if (colors.bgs.size) {
+                                ap.value = Array.from(colors.bgs).join('-');
+                            }
+                            if (!heats[ap.value]) {
+                                heats[ap.value] = { bg: Array.from(colors.heats), fg: colors.text || 'black', };
+                            }
+                            if (colors.text) {
+                                ap.text = colors.text;
+                            }
                         }
                     }
-                }
-                data[phase.id].cells.push(aps[tactic.id]);
+                    data[phase.id].cells.push(aps[tactic.id]);
+                });
             });
-        });
+        }
     }
 
     /**
@@ -202,8 +205,15 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
     /**
      * @description order a rebuild of the underlying heatmap
      */
-    protected rerender() {
+    public rerender() {
         this.view.ngDoCheck();
+    }
+
+    /**
+     * @description force a rebuild of the underlying heatmap
+     */
+    public redraw() {
+        this.view.redraw();
     }
 
     /**
