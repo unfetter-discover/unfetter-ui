@@ -4,17 +4,17 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatCardModule } from '@angular/material';
 
-import { AttackPatternsHeatmapComponent } from './attack-patterns-heatmap.component';
-import { HeatmapComponent } from './heatmap.component';
-import { CapitalizePipe } from '../../pipes/capitalize.pipe';
-import { AuthService } from '../../../core/services/auth.service';
+import { TacticsTooltipComponent } from './tactics-tooltip.component';
+import { TacticsTooltipService } from './tactics-tooltip.service';
+import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
+import { AuthService } from '../../../../core/services/auth.service';
 import { StoreModule } from '@ngrx/store';
-import { reducers } from '../../../root-store/app.reducers';
+import { reducers } from '../../../../root-store/app.reducers';
 
-describe('AttackPatternsHeatmapComponent', () => {
+describe('TacticsTooltipComponent should', () => {
 
-    let component: AttackPatternsHeatmapComponent;
-    let fixture: ComponentFixture<AttackPatternsHeatmapComponent>;
+    let component: TacticsTooltipComponent;
+    let fixture: ComponentFixture<TacticsTooltipComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -25,20 +25,20 @@ describe('AttackPatternsHeatmapComponent', () => {
                 StoreModule.forRoot(reducers),
             ],
             declarations: [
-                AttackPatternsHeatmapComponent,
-                HeatmapComponent,
+                TacticsTooltipComponent,
                 CapitalizePipe,
             ],
-            providers: [AuthService]
+            providers: [
+                AuthService,
+                TacticsTooltipService,
+            ]
         })
         .compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(AttackPatternsHeatmapComponent);
+        fixture = TestBed.createComponent(TacticsTooltipComponent);
         component = fixture.componentInstance;
-        component.attackPatterns = [];
-        component.heatMapOptions = {};
         fixture.detectChanges();
     });
 

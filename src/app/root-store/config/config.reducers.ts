@@ -1,15 +1,18 @@
 import * as configActions from './config.actions';
 
 export interface ConfigState {
-    configurations: any
+    configurations: any,
+    tacticsChains?: any,
 }
 
 export const initialState: ConfigState = {
-    configurations: {}
+    configurations: {},
 }
 
 export function configReducer(state = initialState, action: configActions.ConfigActions) {
+
     switch (action.type) {
+
         case configActions.ADD_CONFIG:
             return {
                 ...state,
@@ -18,6 +21,7 @@ export function configReducer(state = initialState, action: configActions.Config
                     ...action.payload
                 }
             };
+
         case configActions.UPDATE_CONFIG:
             return {
                 ...state,
@@ -26,6 +30,7 @@ export function configReducer(state = initialState, action: configActions.Config
                     ...action.payload
                 }
             };
+
         case configActions.DELETE_CONFIG:
             const configCopy = { ...state.configurations };
             delete configCopy[action.payload];
@@ -33,12 +38,25 @@ export function configReducer(state = initialState, action: configActions.Config
                 ...state,
                 configurations: configCopy
             };
+
         case configActions.CLEAR_CONFIG:
             return {
                 ...state,
                 ...initialState
             };
+
+        case configActions.LOAD_TACTICS:
+            console.log('loaded tactics', action);
+            return {
+                ...state,
+                tacticsChains: {
+                    ...action.payload
+                }
+            };
+
         default:
             return state;
+
     }    
+
 }

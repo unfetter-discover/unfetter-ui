@@ -1,4 +1,4 @@
-import { KillChainEntry } from '../kill-chain-table/kill-chain-entry';
+import { KillChainEntry } from './kill-chain-entry';
 import { IntrusionSet } from '../../models/intrusion-set';
 import { ThreatDashboardIntrusion } from './threat-dashboard-intrusion';
 

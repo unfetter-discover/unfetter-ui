@@ -1,0 +1,64 @@
+@import '../../../../../styles/_variables.scss';
+
+$white: #FFFFFF;
+
+:host ::ng-deep {
+
+    background-color: $white;
+
+    .ui-carousel {
+        .ui-carousel-header {
+            display: none;
+        }
+    }
+
+    .ui-widget-content {
+        border: none;
+    }
+
+    .ui-carousel .ui-carousel-viewport {
+        height: 500px;
+        overflow-y: auto;
+    }
+
+    .ui-carousel .ui-carousel-viewport .ui-carousel-items .ui-carousel-item {
+        margin: 0px;
+    }
+
+    .ui-corner-all {
+        border: none;
+        border-radius: 0;
+    }
+
+    .carouselSubheadingRow {
+        .phase-div {
+            font-weight: medium;
+            font-size: 12px;
+            padding: 16px;
+        }
+    }
+
+    .carousel-content-wrapper {
+        overflow-y: auto;
+        position: relative;
+    }
+
+    .ui-grid {
+        .tactic-div {
+            font-size: 13px;
+            font-weight: normal;
+            margin: 0px;
+            height: 48px;
+            display: flex;
+            .flexCenter {
+                margin: auto 16px;
+            }
+        }
+    }
+
+}
+
+.tactic-clicker:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}

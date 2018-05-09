@@ -1,22 +1,29 @@
-import { OverlayModule } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { MAT_DIALOG_DATA, MatCardModule, MatDialogModule, MatDialogRef } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
-import { StoreModule } from '@ngrx/store';
 import { AuthService } from '../../../core/services/auth.service';
 import { GenericApi } from '../../../core/services/genericapi.service';
-import { AttackPatternsHeatmapComponent } from '../../../global/components/heatmap/attack-patterns-heatmap.component';
+import { StoreModule, Store } from '@ngrx/store';
+
+import { OverlayModule } from '@angular/cdk/overlay';
+import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef, MatCardModule } from '@angular/material';
+
+import { AttackPatternChooserComponent } from './attack-pattern-chooser.component';
+import {
+    TacticsHeatmapComponent
+} from '../../../global/components/tactics-pane/tactics-heatmap/tactics-heatmap.component';
 import { HeatmapComponent } from '../../../global/components/heatmap/heatmap.component';
 import { CapitalizePipe } from '../../../global/pipes/capitalize.pipe';
 import { reducers } from '../../../root-store/app.reducers';
 import { mockAttackPatterns } from '../../../testing/mock-store';
-import { AttackPatternChooserComponent } from './attack-pattern-chooser.component';
+import { TacticsControlService } from '../../../global/components/tactics-pane/tactics-control.service';
+import { TacticsTooltipService } from '../../../global/components/tactics-pane/tactics-tooltip/tactics-tooltip.service';
 
 describe('AttackPatternChooserComponent', () => {
 
     let component: AttackPatternChooserComponent;
     let fixture: ComponentFixture<AttackPatternChooserComponent>;
+    let store: Store<any>;
 
     const mockAttackPatternData = [
         {
@@ -51,11 +58,13 @@ describe('AttackPatternChooserComponent', () => {
             ],
             declarations: [
                 AttackPatternChooserComponent,
-                AttackPatternsHeatmapComponent,
+                TacticsHeatmapComponent,
                 HeatmapComponent,
                 CapitalizePipe,
             ],
             providers: [
+                TacticsControlService,
+                TacticsTooltipService,
                 GenericApi,
                 AuthService,
                 {

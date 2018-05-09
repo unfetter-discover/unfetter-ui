@@ -11,7 +11,6 @@ import { GlobalModule } from '../global/global.module';
 import { BarChartComponent } from './bar-chart/bar-chart.component';
 import { CollapsibleTreeComponent } from './collapsible-tree/collapsible-tree.component';
 import { ExportComponent } from './export/export.component';
-import { KillChainTableComponent } from './kill-chain-table/kill-chain-table.component';
 import { RadarChartComponent } from './radar-chart/radar-chart.component';
 import { ReportTranslationService } from './services/report-translation.service';
 import { ThreatReportOverviewService } from './services/threat-report-overview.service';
@@ -28,7 +27,6 @@ const moduleComponents = [
   BarChartComponent,
   CollapsibleTreeComponent,
   ExportComponent,
-  KillChainTableComponent,
   RadarChartComponent,
   ReportEditorComponent,
   ReportImporterComponent,

@@ -167,6 +167,25 @@
   color: $primary-text-contrast-color;
 }
 
+@mixin themeAccentFill () {
+  .analyticHubTheme & {
+    fill: $analytic-exchange-accent;
+  }
+
+  .threatDashboardTheme & {
+    fill: $threat-dashboard-accent;
+  }
+
+  .assessmentsTheme & {
+    fill: $assessments-accent;
+  }
+
+  .eventsTheme & {
+    fill: $events-accent;
+  }
+  fill: $accent-color;
+}
+
 @mixin lightenPrimaryColors ($property, $percent) {
     .analyticHubTheme & {
         #{$property}: rgba-to-rgb(rgba($analytic-exchange-primary, $percent));

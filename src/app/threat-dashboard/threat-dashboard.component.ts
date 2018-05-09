@@ -20,7 +20,6 @@ import { AttackPatternChild } from './collapsible-tree/attack-pattern-child';
 import { CourseOfActionChild } from './collapsible-tree/course-of-action-child';
 import { KillChainPhaseChild } from './collapsible-tree/kill-chain-phase-child';
 import { TreeNode } from './collapsible-tree/tree-node';
-import { KillChainEntry } from './kill-chain-table/kill-chain-entry';
 import { SelectOption } from './models/select-option';
 import { ThreatDashboard } from './models/threat-dashboard';
 import { ThreatDashboardIntrusion } from './models/threat-dashboard-intrusion';
@@ -29,6 +28,8 @@ import { RadarChartDataPoint } from './radar-chart/radar-chart-datapoint';
 import { ThreatReportOverviewService } from './services/threat-report-overview.service';
 import { ThreatReportSharedService } from './services/threat-report-shared.service';
 import { ThreatReportOverviewDataSource } from './threat-report-overview.datasource';
+import { KillChainEntry } from './models/kill-chain-entry';
+import { Tactic } from '../global/components/tactics-pane/tactics.model';
 
 type troColName = keyof ThreatReport | 'actions';
 
@@ -46,6 +47,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   public threatReport: ThreatReport;
   public id = '';
   public attackPatterns: AttackPattern[];
+  public employedTactics: Tactic[];
   public intrusionSets: IntrusionSet[];
   public intrusionSetsDashboard: ThreatDashboard = {
     killChainPhases: [],
@@ -390,6 +392,26 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
       attackPattern.isSelected = true;
       return attackPattern;
     });
+
+    this.employedTactics = activeAttackPatterns
+        .filter((attackPattern: any) => attackPattern.isSelected)
+        .map((attackPattern: any) => ({
+          ...attackPattern.attributes,
+          id: attackPattern.id,
+          name: attackPattern.name,
+          adds: {
+            highlights: [
+              {
+                value: 2,
+                color: {
+                  style: 'true',
+                  bg: attackPattern.backgroundColor,
+                  fg: attackPattern.foregroundColor,
+                },
+              },
+            ],
+          },
+        }));
 
     return attackPatterns;
   }

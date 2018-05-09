@@ -16,10 +16,13 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { Store } from '@ngrx/store';
 
-import { AttackPatternsHeatmapComponent } from '../../global/components/heatmap/attack-patterns-heatmap.component';
+import {
+    TacticsHeatmapComponent
+} from '../../global/components/tactics-pane/tactics-heatmap/tactics-heatmap.component';
 import { HeatmapOptions } from '../../global/components/heatmap/heatmap.data';
 import { IndicatorSharingFeatureState } from '../store/indicator-sharing.reducers';
 import { Constance } from '../../utils/constance';
+import { TooltipEvent } from '../../global/components/tactics-pane/tactics-tooltip/tactics-tooltip.service';
 
 @Component({
     selector: 'indicator-heatmap-filter',
@@ -28,7 +31,7 @@ import { Constance } from '../../utils/constance';
 })
 export class IndicatorHeatMapFilterComponent implements AfterViewInit {
 
-    @ViewChild('heatmapView') private view: AttackPatternsHeatmapComponent;
+    @ViewChild('heatmapView') private heatmap: TacticsHeatmapComponent;
     @Input() heatmapOptions: HeatmapOptions = {
         view: {
             component: '#indicator-heatmap-filter',
@@ -53,7 +56,7 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
         },
     }
 
-    public attackPatterns = {};
+    public attackPatterns = [];
     public selectedPatterns = [];
 
     @ViewChild('tooltipTemplate') tooltipTemplate: TemplateRef<any>;
@@ -66,23 +69,27 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
         private overlay: Overlay,
         private vcr: ViewContainerRef,
         private changeDetector: ChangeDetectorRef,
-        public store: Store<IndicatorSharingFeatureState>
+        public store: Store<IndicatorSharingFeatureState>,
     ) { }
 
     ngAfterViewInit() {
         // NOTE This is a hack to get the modal to start to render before the data is processed, 
         // since there is a noticeable lag time when that occurs
         requestAnimationFrame(() => {
-            const getAttackPatterns$ = this.store.select('indicatorSharing')
+            const getAttackPatterns$ = this.store
+                .select('indicatorSharing')
                 .pluck('attackPatterns')
                 .take(1)
                 .finally(() => getAttackPatterns$ && getAttackPatterns$.unsubscribe())
                 .subscribe(
                     (attackPatterns: any[]) => {
-                        this.attackPatterns = attackPatterns.reduce(
+                        const tactics = attackPatterns.reduce(
                             (patterns, pattern) => this.collectAttackPattern(patterns, pattern), {});
-                        this.view.heatmap.redraw();
-                        setTimeout(() => this.view.heatmap.ngDoCheck(), 500);
+                        this.attackPatterns = Object.values(tactics);
+                        console.log('preselects?', this.attackPatterns);
+                        this.heatmap.view.redraw();
+                        // this.heatmap.view.click.subscribe((event) => this.toggleAttackPattern(event));
+                        setTimeout(() => this.heatmap.view.ngDoCheck(), 500);
                     },
                     (err) => console.log(err),
                 );
@@ -104,7 +111,9 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
                 phases: (pattern.kill_chain_phases || []).map(p => p.phase_name),
                 sources: pattern.x_mitre_data_sources,
                 platforms: pattern.x_mitre_platforms,
-                value: selected ? 'selected' : 'inactive',
+                adds: {
+                    highlights: [{color: {style: selected ? 'selected' : 'inactive'}}],
+                },
             });
             if (selected) {
                 this.selectedPatterns.push(ap);
@@ -116,20 +125,25 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
     /**
      * @description for selecting and deselecting attack patterns
      */
-    public toggleAttackPattern(clicked?: any) {
-        if (clicked && clicked.row) {
-            const index = this.selectedPatterns.findIndex(pattern => pattern.id === clicked.row.id);
+    public toggleAttackPattern(clicked?: TooltipEvent) {
+        if (clicked && clicked.data) {
+            const index = this.selectedPatterns.findIndex(pattern => pattern.id === clicked.data.id);
             let newValue = 'selected';
             if (index < 0) {
                 // pattern was not previously selected; select it
-                this.selectedPatterns.push(clicked.row);
+                this.selectedPatterns.push(clicked.data);
             } else {
                 // remove the pattern from our selection list
                 newValue = 'inactive';
                 this.selectedPatterns.splice(index, 1);
             }
-            this.attackPatterns[clicked.row.title].value = newValue;
-            this.view.heatmap.helper.updateCells();
+            const target = this.attackPatterns.find(p => p.name === clicked.data.name);
+            console.log('toggling', clicked, index, newValue, target);
+            if (target) {
+                target.adds.highlights[0].color.style = newValue;
+                this.attackPatterns = this.attackPatterns.slice(0);
+                this.heatmap.redraw();
+            }
         }
     }
 

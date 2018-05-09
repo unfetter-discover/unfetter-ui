@@ -1,0 +1,27 @@
+<mat-toolbar>
+
+    <div #widgets class="carousel-widgets">
+        <mat-select class="carousel-page-dropdown" *ngIf="pages > 0" [(value)]="page"
+                (selectionChange)="onPageChange($event)">
+            <mat-option *ngFor="let p of pagelist; index as pg" [value]="pg">{{pg + 1}}</mat-option>
+        </mat-select>
+        <span class="carousel-button carousel-prev-button {{options.toolboxTheme}}"
+                [ngClass]="{'disabled': page === 0}" (click)="goPreviousPage($event)"></span>
+        <span class="carousel-button carousel-next-button {{options.toolboxTheme}}"
+                [ngClass]="{'disabled': page >= pages - 1}" (click)="goNextPage($event)"></span>
+    </div>
+
+    <mat-button-toggle-group id="carousel-options" #filterOption="matButtonToggleGroup" multiple class="toolbox">
+        <mat-button-toggle value="rows" [checked]="filters.rows"
+                matTooltip="Compress rows" aria-label="view compact rows" (change)="onFilterChange($event)">
+            <!-- <mat-icon class="mat-24" aria-hidden="true">format_line_spacing</mat-icon> -->
+            <mat-icon class="mat-24" aria-hidden="true">panorama_horizontal</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="columns" [checked]="filters.columns"
+                matTooltip="Compress columns" aria-label="view compact columns" (change)="onFilterChange($event)">
+            <!-- <mat-icon class="mat-24" aria-hidden="true">view_compact</mat-icon> -->
+            <mat-icon class="mat-24" aria-hidden="true">panorama_vertical</mat-icon>
+        </mat-button-toggle>
+    </mat-button-toggle-group>
+
+</mat-toolbar>
