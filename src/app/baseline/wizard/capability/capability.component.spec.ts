@@ -1,7 +1,13 @@
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { MatButtonModule, MatCardModule, MatIconModule, MatTooltipModule } from '@angular/material';
+import { MatButtonModule, MatCardModule, MatIconModule, MatTooltipModule, MatInputModule, MatTableModule, MatSelectModule } from '@angular/material';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { CapabilityComponent } from './capability.component';
+
+import { MatTableDataSource } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormControl } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { ReactiveFormsModule } from '@angular/forms';
 
 describe('CapabilityComponent', () => {
   let component: CapabilityComponent;
@@ -13,6 +19,10 @@ describe('CapabilityComponent', () => {
       MatCardModule,
       MatIconModule,
       MatTooltipModule,
+      MatFormFieldModule,
+      MatInputModule,
+      MatTableModule,
+      MatSelectModule,
     ];
 
     TestBed.configureTestingModule({
@@ -20,6 +30,9 @@ describe('CapabilityComponent', () => {
       imports: [
         NoopAnimationsModule,
         ...matModules,
+        ReactiveFormsModule,
+        // BrowserAnimationsModule,
+
       ]
     })
       .compileComponents();

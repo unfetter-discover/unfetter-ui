@@ -25,6 +25,8 @@ import { routing } from './wizard.routing';
 // import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 // import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+
 import {
   MatTableModule,
   MatOptionModule,
@@ -75,6 +77,7 @@ const primengModules = [
     ChartsModule,
     PipesModule,
     GlobalModule,
+
 
 
     ReactiveFormsModule,
