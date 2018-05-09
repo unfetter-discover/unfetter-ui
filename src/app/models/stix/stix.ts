@@ -1,9 +1,8 @@
-import { StixLabelEnum } from './stix-label.enum';
-import { MetaProps } from './meta-props';
 import { ExternalReference } from './external_reference';
 import { GranularMarking } from './granular-marking';
-import { KillChainEnum } from './kill-chain.enum';
 import { KillChainPhase } from './kill-chain-phase';
+import { MetaProps } from './meta-props';
+import { StixLabelEnum } from './stix-label.enum';
 
 /**
  * @deprecated this class should be replaced in favor of the implementation in the stix npm module 

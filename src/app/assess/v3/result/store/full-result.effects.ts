@@ -5,8 +5,8 @@ import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 import { Assessment } from 'stix/assess/v2/assessment';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
+import { Stix } from 'stix/unfetter/stix';
 import { Relationship } from '../../../../models';
-import { Stix } from '../../../../models/stix/stix';
 import { Constance } from '../../../../utils/constance';
 import { AssessService } from '../../services/assess.service';
 import { DonePushUrl, FinishedLoading, LOAD_ASSESSMENTS_BY_ROLLUP_ID, LOAD_ASSESSMENT_BY_ID, LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS, 

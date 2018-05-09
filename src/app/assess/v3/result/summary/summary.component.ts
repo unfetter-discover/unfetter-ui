@@ -121,7 +121,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .filter((arr: Assessment[]) => arr && arr.length > 0)
       .subscribe((arr: Assessment[]) => {
         this.summaries = [...arr];
-        this.summary = { ...arr[0] };
+        this.summary = arr[0];
         this.riskByAttackPatternStore.dispatch(new LoadSingleAssessmentRiskByAttackPatternData(this.assessmentId));
         this.store.dispatch(new LoadSingleRiskPerKillChainData(this.assessmentId));
         this.store.dispatch(new LoadSingleSummaryAggregationData(this.assessmentId));

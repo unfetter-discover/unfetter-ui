@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-import { Assess3Meta } from '../create/assess3-meta';
+import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 
 /**
  * @description maintain state across the assess create and wizard pages

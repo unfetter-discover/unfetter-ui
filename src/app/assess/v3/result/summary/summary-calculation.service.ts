@@ -7,7 +7,7 @@ import { Phase } from 'stix/assess/v2/phase';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { RiskByKillChain } from 'stix/assess/v2/risk-by-kill-chain';
 import { SummaryAggregation } from 'stix/assess/v2/summary-aggregation';
-import { Stix } from '../../../../models/stix/stix';
+import { Stix } from 'stix/unfetter/stix';
 import { Constance } from '../../../../utils/constance';
 import { ThresholdOption } from '../../models/threshold-option';
 import { SummarySortHelper } from './summary-sort-helper';

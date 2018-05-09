@@ -26,6 +26,7 @@ import { Measurements } from './models/measurements';
 import { SidePanelName } from './models/side-panel-name.enum';
 import { TempModel } from './models/temp-model';
 import { WizardAssessment } from './models/wizard-assessment';
+import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -159,7 +160,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           const isTrue = (val: number) => val === 1;
           const includesIndicators = isTrue(+this.route.snapshot.paramMap.get('includesIndicators'));
           const includesMitigations = isTrue(+this.route.snapshot.paramMap.get('includesMitigations'));
-          const baselineRef = isTrue(+this.route.snapshot.paramMap.get('baselineRef'));
+          const baselineRef = this.route.snapshot.paramMap.get('baselineRef');
           const meta: Partial<Assess3Meta> = {
             includesIndicators,
             includesMitigations,
