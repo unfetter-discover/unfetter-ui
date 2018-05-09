@@ -19,6 +19,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
   public selectedCapabilities: Capability[] = [];
   public allCapabilities: Capability[];
   private baselineCapabilities: Capability[];
+  public availableCapabilities: Capability[];
 
   private subscriptions: Subscription[] = [];
     
@@ -55,7 +56,8 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
       .subscribe(
         (baselineCapabilities: any[]) => {
           this.baselineCapabilities = baselineCapabilities;
-          this.selectedCapabilities = this.baselineCapabilities; // .filter((cap) => cap.category === this.currentCapabilityGroup.name);
+          this.selectedCapabilities = [ ...this.baselineCapabilities ]; // .filter((cap) => cap.category === this.currentCapabilityGroup.name);
+          this.updateAvailableCapabilitiesList();
         },
         (err) => console.log(err));
   
@@ -121,8 +123,8 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
     if (selValue === undefined) {
       return CapabilitySelectorComponent.DEFAULT_VALUE;
     } else {
-      const selIndex = this.allCapabilities.findIndex(capability => capability.id === selValue.id);
-      return this.allCapabilities[selIndex];
+      const selIndex = this.selectedCapabilities.findIndex(capability => capability.id === selValue.id);
+      return this.selectedCapabilities[selIndex];
     }
   }
 
@@ -158,20 +160,11 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
     this.selectedCapabilities.push(CapabilitySelectorComponent.DEFAULT_VALUE);
   }
 
-  public availableCapabilities(): Capability[] {
-    let availCaps = [ ...this.allCapabilities ];
+  private updateAvailableCapabilitiesList(): void {
+    this.availableCapabilities = [ ...this.allCapabilities ];
 
-    _.pullAll(availCaps, this.baselineCapabilities);
-    _.pullAll(availCaps, this.selectedCapabilities);
-  
-    // availCaps.filter((cap) => {
-    //   this.baselineCapabilities.find(baseCap => baseCap.name !== cap.name)
-    // });
-    // availCaps.filter((cap) => {
-    //   this.selectedCapabilities.find(selCap => selCap.name !== cap.name)
-    // });
-
-    return availCaps;
+    _.pullAll(this.availableCapabilities, this.baselineCapabilities);
+    _.pullAll(this.availableCapabilities, this.selectedCapabilities);
   }
 
   private updateBaselineCapabilities(): void {
@@ -181,5 +174,8 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
 
     // Update wizard store with current capability selections
     this.wizardStore.dispatch(new SetBaselineCapabilities(this.selectedCapabilities));
+
+    // Update list of available capabilities
+    this.updateAvailableCapabilitiesList();
   }
 }
