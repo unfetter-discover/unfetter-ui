@@ -229,7 +229,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       .distinctUntilChanged()
       .subscribe(
         (baselineGroups: Category[]) => {
-          this.updateBaselineGroups(baselineGroups);
+          this.baselineGroups = baselineGroups;
+          this.updateNavigations();
         },
         (err) => console.log(err));
 
@@ -263,6 +264,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         .subscribe(
           (capabilities: Capability[]) => {
             this.baselineCapabilities = capabilities;
+            this.updateNavigations();
           },
           (err) => console.log(err));
   
@@ -395,27 +397,18 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @param {UIEvent} event
    * @return {void}
    */
-  public onOpenSidePanel(panelName: string, event?: UIEvent): void {
-    // if (this.openedSidePanel && this.capabilities && this.openedSidePanel !== 'summary') {
-    //   // save current state, if needed
-    //   this.baselineGroups[this.openedSidePanel] = { name: undefined, weightsModel: undefined, capabilities: undefined };
-    //   this.baselineGroups[this.openedSidePanel].capabilities = [...this.capabilities];
-    // }
+  public onOpenSidePanel(panelName: string, group?: Category): void {
+    if (group) {
+      this.currentBaselineGroup = group;
 
-    // TODO: Switch to correct object assessment
-    //       based on current group and capability
-    // (should set current page and update button visibility as well)
+      // Adjust page based on given group
+      this.page = this.navigations.find(navigation => navigation.id === group.id).page;
+    }
 
-    // clear out state
-    // this.page = 1;
-    // this.showSummary = false;
-    // this.buttonLabel = 'CONTINUE';
-
-    // switch to new open panel
-    this.openedSidePanel = panelName;
+    this.updateWizardData();
 
     this.changeDetection.detectChanges();
-    if (panelName !== 'summary') {
+    if (this.openedSidePanel !== 'summary') {
       this.updateChart();
     }
   }
@@ -451,8 +444,11 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       event.preventDefault();
     }
 
+    this.page = this.navigations.find(navigation => navigation.id === capabilityId);
     this.currentCapability = this.baselineCapabilities.find((capability) => capability.id === capability.id);
     this.wizardStore.dispatch(new SetCurrentBaselineCapability(this.baselineCapabilities.find((capability) => capability.id === capabilityId)));
+
+    this.openedSidePanel = 'capabilities';
 
     // if (step > this.page) {
     //   this.page = step - 1;
@@ -516,7 +512,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     // Have we made it beyond the cat/cap pages (i.e. Group Setup + cat/cap pages)?
     if (this.page > 1 + this.navigations.length) {
       // Show summary page
-      this.onOpenSidePanel('summary');
+      this.openedSidePanel = 'summary';
       this.showSummarySavePage();
     } else {
       // Determine ID for this page
@@ -526,21 +522,20 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
       // Is the next page a category?
       if (catIndex) {
-        nextPanel = 'capability-selector';
+        this.openedSidePanel = 'capability-selector';
 
         // Move to the next category and its capabilities
         this.currentBaselineGroup = this.allCategories.find((category) => category.id === currPage.id);    
         this.wizardStore.dispatch(new SetCurrentBaselineGroup(this.currentBaselineGroup));
         // TODO: Update after category property added to capability
-        // this.capabilities = this.allCapabilities.filter((capability) => capability.category === this.currentBaselineGroup.name)
+        // this.capabilities = this.allCapabilities.filter(capability => capability.category === this.currentBaselineGroup.name)
+        this.currentCapability = undefined;
       } else {
-        nextPanel = 'capabilities';
+        this.openedSidePanel = 'capabilities';
 
-        this.baselineCapabilities = this.allCapabilities.filter((capability) => capability.object_refs.includes(this.currentBaselineGroup.id));
-        this.currentCapability = this.baselineCapabilities[0];
+        this.baselineCapabilities = [ ...this.allCapabilities ];  // .filter(capability => capability.category === this.currentBaselineGroup.name);
+        this.currentCapability = this.baselineCapabilities.find(capability => capability.id === currPage.id);
       }
-
-      this.onOpenSidePanel(nextPanel);
 
       this.wizardStore.dispatch(new SetCurrentBaselineCapability(this.currentCapability));
 
@@ -641,21 +636,23 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @param categorySteps 
    * @return {void}
    */
-  private updateBaselineGroups(baselineGroups: Category[]): void {
-    if (!baselineGroups) {
+  private updateNavigations(): void {
+    if (!this.baselineGroups) {
       return;
     }
 
-    this.baselineGroups = baselineGroups;
     this.navigations = [];
 
     // TODO: Fill out navigations array and baselineGroups dictionary
     let index = 2;   // start at 2; 1 is 'GROUP SETUP'
     this.baselineGroups.forEach((category) => {
       this.navigations.push( { id: category.id, label: category.name,  page: index++ } );
+      this.baselineCapabilities
+        // .filter(cap => cap.category === category.name)
+        .forEach((cap) => {
+          this.navigations.push( { id: cap.id, label: cap.name,  page: index++ } );
+        })
     });
-
-    this.updateChart();
   }
   
   /*
@@ -684,10 +681,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    */
   public getCapabilities(category: Category): Capability[] {
     return this.baselineCapabilities;  // .filter((capability) => capability.category === category.name);
-  }
-
-  public getCategoryStyle(group: Category): string {
-    return (group === this.currentBaselineGroup) ? '400' : '100';
   }
 
   /*
