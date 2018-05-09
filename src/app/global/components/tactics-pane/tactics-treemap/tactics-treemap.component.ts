@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { TacticsView } from '../tactics-view';
 import { TacticChain, Tactic } from '../tactics.model';
 import { TacticsControlService } from '../tactics-control.service';
-import { TacticsTooltipService } from '../tactics-tooltip/tactics-tooltip.service';
+import { TacticsTooltipService, TooltipEvent } from '../tactics-tooltip/tactics-tooltip.service';
 import { TreemapComponent } from '../../treemap/treemap.component';
 import { TreemapOptions } from '../../treemap/treemap.data';
 import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
@@ -30,7 +30,7 @@ export class TacticsTreemapComponent extends TacticsView<TreemapComponent, Treem
         controls: TacticsControlService,
         tooltips: TacticsTooltipService,
     ) {
-        super('treemap', store, controls, tooltips);
+        super(store, controls, tooltips);
     }
 
     protected get view() {
@@ -73,7 +73,6 @@ export class TacticsTreemapComponent extends TacticsView<TreemapComponent, Treem
             });
         }
         requestAnimationFrame(() => {
-            console.log('resulting treemap data', data);
             this.data = data;
         });
     }
@@ -82,7 +81,7 @@ export class TacticsTreemapComponent extends TacticsView<TreemapComponent, Treem
      * @description
      */
     private sumHighlights(tactic: Tactic): number {
-        return tactic.adds.highlights.reduce((sum, h) => sum + h.value ? (h.value * 10) : 1, 0);
+        return tactic.adds.highlights.reduce((sum, h) => sum + h.value ? h.value : 1, 0);
     }
 
     /**
@@ -95,6 +94,21 @@ export class TacticsTreemapComponent extends TacticsView<TreemapComponent, Treem
 
     protected rerender() {
         this.treemap.ngDoCheck();
+    }
+
+    /**
+     * @description attempts to find the given tactic in the targeted list; if not found, returns the given tactic
+     */
+    protected lookupTarget(data: any): Tactic {
+        if (data.length) {
+            let name: string = data[0];
+            let index = name.lastIndexOf(' (');
+            if (index > 0) {
+                name = name.substring(0, index);
+            }
+            return this.tactics.find(tactic => name.localeCompare(tactic.name) === 0);
+        }
+        return null;
     }
 
 }

@@ -19,6 +19,11 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
     private previousFrameworks: string[];
 
     /**
+     * The full list of known tactics, for the input frameworks. Generated list, do not disturb.
+     */
+    protected tactics: Tactic[];
+
+    /**
      * Provided tactics that should be specially marked.
      */
     @Input() public targeted: Tactic[] = [];
@@ -30,7 +35,6 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
     @Input() public options: Options;
 
     constructor(
-        private type: string,
         protected store: Store<AppState>,
         protected controls: TacticsControlService,
         public tooltips: TacticsTooltipService,
@@ -50,10 +54,10 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
 
     ngDoCheck() {
         if (this.previousFrameworks !== this.frameworks) {
-            console.log(`(${new Date().toISOString()}) ${this.type} frameworks change detected`);
+            console.log(`(${new Date().toISOString()}) ${this.constructor.name} frameworks change detected`);
             this.loadTactics();
         } else if (this.previousTargeted !== this.targeted) {
-            console.log(`(${new Date().toISOString()}) ${this.type} targeted data change detected`);
+            console.log(`(${new Date().toISOString()}) ${this.constructor.name} targeted data change detected`);
             this.previousTargeted = this.targeted;
             this.loadTactics();
         }
@@ -81,18 +85,28 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
                     const sub$ = this.store
                         .select('config')
                         .pluck('tacticsChains')
+                        .take(1)
                         .finally(() => (sub$ && sub$.unsubscribe()) || this.rerender())
                         .subscribe(
                             (tactics: Dictionary<TacticChain>) => {
+                                const patterns = [];
+                                Object.values(tactics).forEach(chain => {
+                                    chain.phases.forEach(phase => {
+                                        phase.tactics.forEach(tactic => patterns.push(tactic));
+                                    });
+                                });
+                                this.tactics = patterns;
                                 this.extractData(tactics);
                             },
                             (err) => {
-                                console.log(`(${new Date().toISOString()}) ${this.type} could not load tactics`, err);
+                                console.log(`(${new Date().toISOString()}) ${this.constructor.name}`,
+                                        'could not load tactics', err);
                             },
                         );
                 },
                 (err) => {
-                    console.log(`(${new Date().toISOString()}) ${this.type} could not determine current framework`, err);
+                    console.log(`(${new Date().toISOString()}) ${this.constructor.name}`,
+                            'could not determine current framework', err);
                 }
             );
     }
@@ -155,6 +169,10 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
      * @description common event handler for when the user hovers over a tactic -- passes it on to the tooltip service
      */
     public onHover(event: TooltipEvent) {
+        if (event && event.data) {
+            const tactic = this.lookupTarget(event.data);
+            event.data = tactic;
+        }
         this.tooltips.onHover(event);
     }
 
@@ -162,7 +180,16 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
      * @description common event handler for when the user clicks on a tactic -- passes it on to the tooltip service
      */
     public onClick(event: TooltipEvent) {
+        if (event && event.data) {
+            const tactic = this.lookupTarget(event.data);
+            event.data = tactic;
+        }
         this.tooltips.onClick(event);
     }
+
+    /**
+     * @description 
+     */
+    protected abstract lookupTarget(data: any): Tactic;
 
 }

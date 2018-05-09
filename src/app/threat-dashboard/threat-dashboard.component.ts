@@ -401,7 +401,14 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
           name: attackPattern.name,
           adds: {
             highlights: [
-              { color: 'true', bg: attackPattern.backgroundColor, fg: attackPattern.foregroundColor, },
+              {
+                value: 2,
+                color: {
+                  style: 'true',
+                  bg: attackPattern.backgroundColor,
+                  fg: attackPattern.foregroundColor,
+                },
+              },
             ],
           },
         }));

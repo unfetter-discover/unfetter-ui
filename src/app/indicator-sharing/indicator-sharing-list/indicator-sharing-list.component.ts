@@ -20,8 +20,13 @@ import { generateStixRelationship } from '../../global/static/stix-relationship'
 import { StixRelationshipTypes } from '../../global/enums/stix-relationship-types.enum';
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { downloadBundle } from '../../global/static/stix-bundle';
+import { TreemapOptions } from '../../global/components/treemap/treemap.data';
+import { HeatmapOptions, HeatColor } from '../../global/components/heatmap/heatmap.data';
+import { Tactic } from '../../global/components/tactics-pane/tactics.model';
+import { Dictionary } from '../../models/json/dictionary';
+import { CarouselOptions } from '../../global/components/tactics-pane/tactics-carousel/carousel.data';
 
-type mainWell = 'stats' | 'heatmap' | 'none';
+type mainWell = 'stats' | 'tactics' | 'none';
 
 @Component({
     selector: 'indicator-sharing-list',
@@ -34,15 +39,48 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
 
     public displayedIndicators: any[];
     public filteredIndicators: any[];
+    public targeted: Tactic[] = [];
     public DEFAULT_LENGTH: number = 10;
     public searchParameters;
     public filterOpen: boolean = false;
     public filterOpened: boolean = false;
     public collapseAllCards: boolean = false;
-    public activeMainWell: mainWell = 'heatmap';
+    public activeMainWell: mainWell = 'tactics';
     public collapseAllCardsSubject: BehaviorSubject<boolean> = new BehaviorSubject(this.collapseAllCards);
 
     @ViewChild('filterContainer') public filterContainer: MatSidenav;
+
+    public readonly heatmapOptions: HeatmapOptions = {
+        view: {
+            component: '#indicator-tactics',
+        },
+        color: {
+            batchColors: [
+                {header: {bg: 'transparent', fg: '#333'}, body: {bg: 'transparent', fg: 'black'}},
+            ],
+            heatColors: {
+                'true': {bg: '#b2ebf2', fg: 'black'},
+                'false': {bg: '#ccc', fg: 'black'},
+                'selected': {bg: '#33a0b0', fg: 'black'},
+            },
+        },
+        text: {
+            cells: {
+                showText: true,
+            },
+        },
+        zoom: {
+            cellTitleExtent: 2,
+        }
+    }
+    public readonly treemapOptions: TreemapOptions = {
+        minColor: '#8df6ec',
+        midColor: '#6dd6cc',
+        maxColor: '#4db6ac',
+    };
+    public readonly carouselOptions: CarouselOptions = {
+        toolboxTheme: 'theme-bg-primary-lightest analytic-carousel-button'
+    };
 
     constructor(
         public dialog: MatDialog,
@@ -63,6 +101,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
             .subscribe(
                 (res: any[]) => {
                     this.filteredIndicators = res;
+                    requestAnimationFrame(() => this.targeted = this.collectAttackPatterns());
                 },
                 (err) => {
                     console.log(err);
@@ -139,6 +178,30 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
             );
     }
 
+    /**
+     * @description Build a list of all the attack patterns targeted by the currently listed analytics.
+     */
+    private collectAttackPatterns(): Tactic[] {
+        const targets: Dictionary<Tactic> = {};
+        this.filteredIndicators.forEach(indicator => {
+            const patterns = this.indicatorToAttackPatternMap[indicator.id];
+            if (patterns) {
+                patterns.forEach(pattern => {
+                    let target = targets[pattern.id];
+                    if (!target) {
+                        targets[pattern.id] = target = {
+                            ...pattern,
+                            adds: {
+                                highlights: [{value: 2, color: {style: 'selected'}}]
+                            }
+                        };
+                    }
+                });
+            }
+        });
+        return Object.values(targets);
+    }
+
     public ngOnDestroy() {
         this.dialog.closeAll();
     }
@@ -176,7 +239,6 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     }
 
     public showMoreIndicators() {
-        console.log('Loading more indicators');
         this.store.dispatch(new indicatorSharingActions.ShowMoreIndicators());
         this.changeDetectorRef.markForCheck();
     }

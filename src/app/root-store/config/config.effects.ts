@@ -119,10 +119,11 @@ export class ConfigEffects {
             description: pattern.attributes.description,
             sophistication_level: pattern.x_unfetter_sophistication_level,
             phases: pattern.attributes.kill_chain_phases.map(phase => phase.phase_name),
-            labels: pattern.attributes.labels,
-            sources: (pattern.attributes as any).x_mitre_data_sources,
-            platforms: (pattern.attributes as any).x_mitre_platforms,
-            references: pattern.attributes.external_references,
+            labels: pattern.attributes.labels || [],
+            sources: (pattern.attributes as any).x_mitre_data_sources || [],
+            platforms: (pattern.attributes as any).x_mitre_platforms || [],
+            references: pattern.attributes.external_references || [],
+            analytics: [],
         };
         return tactic;
     }

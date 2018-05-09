@@ -18,6 +18,10 @@ import { Store } from '@ngrx/store';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 
+import { TacticsView } from '../tactics-view';
+import { Tactic, TacticChain } from '../tactics.model';
+import { TacticsControlService } from '../tactics-control.service';
+import { TacticsTooltipService, TooltipEvent } from '../tactics-tooltip/tactics-tooltip.service';
 import { HeatmapComponent } from '../../heatmap/heatmap.component';
 import {
     HeatBatchData,
@@ -30,10 +34,6 @@ import { Dictionary } from '../../../../models/json/dictionary';
 import { UserProfile } from '../../../../models/user/user-profile';
 import { AppState } from '../../../../root-store/app.reducers';
 import { AuthService } from '../../../../core/services/auth.service';
-import { Tactic, TacticChain } from '../tactics.model';
-import { TacticsView } from '../tactics-view';
-import { TacticsTooltipService } from '../tactics-tooltip/tactics-tooltip.service';
-import { TacticsControlService } from '../tactics-control.service';
 
 /**
  * @description Common data that can be found on attack patterns displayed in a heatmap cell.
@@ -65,7 +65,7 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
         tooltips: TacticsTooltipService,
         private changeDetector: ChangeDetectorRef,
     ) {
-        super('heatmap', store, controls, tooltips);
+        super(store, controls, tooltips);
     }
 
     public get view() {
@@ -88,7 +88,31 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
      * @description ensure valid carousel option values
      */
     protected extractData(tactics: Dictionary<TacticChain>) {
-        // initialize the heat colors
+        const heats = this.getBaseHeats();
+
+        // convert the tactics in the TacticChains we were given into heat cells
+        const data: Dictionary<HeatBatchData> = {};
+        const patterns: Dictionary<AttackPatternCell> = this.frameworks.reduce((aps, chain) => {
+            this.convertTacticChain(tactics, chain, data, aps, heats);
+            return aps;
+        }, {});
+
+        // now convert the phases in the TacticChains into heat batches
+        Object.values(data).forEach(batch => batch.cells.sort((ap1, ap2) => ap1.title.localeCompare(ap2.title)));
+        requestAnimationFrame(() => {
+            this.data = Object.values(data);
+            console.log(`(${new Date().toISOString()}) heatmap tactics`, this.data);
+            if (this.heatmap && this.heatmap.options && this.heatmap.options.color) {
+                this.heatmap.options.color.heatColors = heats;
+                console.log(`(${new Date().toISOString()}) heatmap heats`, this.heatmap.options.color.heatColors);
+            }
+        });
+    }
+
+    /**
+     * @description initialize the heat colors
+     */
+    private getBaseHeats() {
         if (!this.baseHeats) {
             if (this.options && this.options.color && this.options.color.heatColors) {
                 this.baseHeats = this.options.color.heatColors;
@@ -99,56 +123,72 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
                 this.baseHeats = DEFAULT_OPTIONS.color.heatColors;
             }
         }
-        const heats = Object.assign({}, this.baseHeats);
+        return Object.assign({}, this.baseHeats);
+    }
 
-        // convert the tactics in the TacticChains we were given into heat cells
-        const data: Dictionary<HeatBatchData> = {};
-        const patterns: Dictionary<AttackPatternCell> = this.frameworks.reduce((aps, chain) => {
-            tactics[chain].phases.forEach(phase => {
-                data[phase.id] = {
-                    title: phase.name,
-                    value: null,
-                    cells: [],
-                };
-                phase.tactics.forEach(tactic => {
-                    if (!aps[tactic.id]) {
-                        const ap: AttackPatternCell = aps[tactic.id] = {...tactic, title: tactic.name, value: 'false'};
-                        const target = this.targeted.find(t => t.id === tactic.id);
-                        if (target && target.adds && target.adds.highlights && target.adds.highlights.length) {
-                            let value = ap.value, values = [], heat = [];
-                            target.adds.highlights.forEach(h => {
-                                // @todo handle all highlight attributes - note we cannot combine gradients and styles
-                                if (h.color && h.color.bg) {
-                                    values.push(h.color.bg.toLowerCase());
-                                    heat.push(h.color.bg);
-                                    if (h.color.fg) {
-                                        ap.text = h.color.fg;
-                                    }
-                                }
-                            });
-                            ap.value = values.join('-');
-                            if (!heats[ap.value]) {
-                                heats[ap.value] = { bg: heat, fg: ap.text || 'black', };
-                            }
+    /**
+     * @description
+     */
+    private convertTacticChain(tactics: Dictionary<TacticChain>, chain: string,
+            data: Dictionary<HeatBatchData>, aps: any, heats: Dictionary<HeatColor>) {
+        tactics[chain].phases.forEach(phase => {
+            data[phase.id] = {
+                title: phase.name,
+                value: null,
+                cells: [],
+            };
+            phase.tactics.forEach(tactic => {
+                if (!aps[tactic.id]) {
+                    // convert the tactic into a heat cell, colorize it if it is targeted
+                    const ap: AttackPatternCell = aps[tactic.id] = {...tactic, title: tactic.name, value: 'false'};
+                    const target = this.targeted.find(t => t.id === tactic.id);
+                    if (this.hasHighlights(target)) {
+                        const colors = this.collectColors(target);
+                        if (colors.styles.size) {
+                            ap.value = Array.from(colors.styles).sort().join('-');
+                        } else if (colors.bgs.size) {
+                            ap.value = Array.from(colors.bgs).join('-');
+                        }
+                        if (!heats[ap.value]) {
+                            heats[ap.value] = { bg: Array.from(colors.heats), fg: colors.text || 'black', };
+                        }
+                        if (colors.text) {
+                            ap.text = colors.text;
                         }
                     }
-                    data[phase.id].cells.push(aps[tactic.id]);
-                });
+                }
+                data[phase.id].cells.push(aps[tactic.id]);
             });
-            return aps;
-        }, {});
+        });
+    }
 
-        // now convert the phases in the TacticChains into heat batches
-        Object.values(data).forEach(batch => batch.cells.sort((ap1, ap2) => ap1.title.localeCompare(ap2.title)));
-        requestAnimationFrame(() => {
-            this.data = Object.values(data);
-            console.log(`(${new Date().toISOString()} heatmap data`, this.data);
-
-            if (this.heatmap && this.heatmap.options && this.heatmap.options.color) {
-                this.heatmap.options.color.heatColors = heats;
-                console.log(`(${new Date().toISOString()} heatmap heats`, heats);
+    /**
+     * @description
+     */
+    private collectColors(target: Tactic) {
+        const colors = {
+            styles: new Set(),
+            bgs: new Set(),
+            heats: new Set(),
+            text: null,
+        };
+        target.adds.highlights.forEach(h => {
+            if (h.color) {
+                if (h.color.style) {
+                    colors.styles.add(h.color.style);
+                    if (h.color.bg) {
+                        colors.heats.add(h.color.bg);
+                    }
+                } else if (h.color.bg) {
+                    colors.bgs.add(h.color.bg.toLowerCase());
+                    colors.heats.add(h.color.bg);
+                }
+                if (h.color.fg) {
+                    colors.text = h.color.fg;
+                }
             }
         });
+        return colors;
     }
 
     /**
@@ -164,6 +204,13 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
      */
     protected rerender() {
         this.view.ngDoCheck();
+    }
+
+    /**
+     * @description 
+     */
+    protected lookupTarget(data: any): Tactic {
+        return data;
     }
 
 }

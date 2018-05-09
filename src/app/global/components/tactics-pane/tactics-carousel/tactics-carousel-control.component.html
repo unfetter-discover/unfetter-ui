@@ -5,9 +5,9 @@
                 (selectionChange)="onPageChange($event)">
             <mat-option *ngFor="let p of pagelist; index as pg" [value]="pg">{{pg + 1}}</mat-option>
         </mat-select>
-        <span class="carousel-button carousel-prev-button theme-color-primary-lighter"
+        <span class="carousel-button carousel-prev-button {{options.toolboxTheme}}"
                 [ngClass]="{'disabled': page === 0}" (click)="goPreviousPage($event)"></span>
-        <span class="carousel-button carousel-next-button theme-color-primary-lighter"
+        <span class="carousel-button carousel-next-button {{options.toolboxTheme}}"
                 [ngClass]="{'disabled': page >= pages - 1}" (click)="goNextPage($event)"></span>
     </div>
 

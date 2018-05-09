@@ -23,6 +23,7 @@ import { TacticsHeatmapComponent } from './tactics-heatmap/tactics-heatmap.compo
 import { TacticsTreemapComponent } from './tactics-treemap/tactics-treemap.component';
 import { TacticsTooltipComponent } from './tactics-tooltip/tactics-tooltip.component';
 import { TooltipEvent } from './tactics-tooltip/tactics-tooltip.service';
+import { CarouselOptions } from './tactics-carousel/carousel.data';
 import { HeatmapOptions } from '../heatmap/heatmap.data';
 import { TreemapOptions } from '../treemap/treemap.data';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
@@ -72,19 +73,12 @@ export class TacticsPaneComponent implements OnInit {
      * The starting view in the pane. Defaults to the heatmap.
      * @todo We may want to make this a preference some day?
      */
-    @Input() public view: string = 'heatmap';
-
-    @ViewChild('tooltips') public tooltips: TacticsTooltipComponent;
+    @Input() public view: 'heatmap' | 'treemap' | 'carousel' = 'heatmap';
 
     /**
-     * Ability to override default hover behavior on attack patterns.
+     * What style settings to use.
      */
-    @Output() public hover: EventEmitter<TooltipEvent> = new EventEmitter();
-
-    /**
-     * Ability to override default click behavior on attack patterns.
-     */
-    @Output() public click: EventEmitter<TooltipEvent> = new EventEmitter();
+    @Input() public theme: string = 'theme-bg-primary theme-color-primary';
 
     /**
      * The heatmap options object here makes it easier for those using this component to supply option without having
@@ -112,10 +106,22 @@ export class TacticsPaneComponent implements OnInit {
      * View options that will be propagated to the carousel, again, for overriding, as needed.
      */
     @ViewChild('carousel') private carousel: TacticsCarouselComponent;
-    @Input() public carouselOptions = {
-        numVisible: 4,
-        minPageLinks: 2,
-    };
+    @Input() public carouselOptions: CarouselOptions = new CarouselOptions();
+
+    /**
+     * Displays tooltips for the tactics.
+     */
+    @ViewChild('tooltips') public tooltips: TacticsTooltipComponent;
+
+    /**
+     * Ability to override default hover behavior on attack patterns.
+     */
+    @Output() public hover: EventEmitter<TooltipEvent> = new EventEmitter();
+
+    /**
+     * Ability to override default click behavior on attack patterns.
+     */
+    @Output() public click: EventEmitter<TooltipEvent> = new EventEmitter();
 
     /**
      * @description

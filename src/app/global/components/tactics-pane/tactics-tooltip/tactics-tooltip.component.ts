@@ -75,9 +75,7 @@ export class TacticsTooltipComponent implements OnInit {
      * @description Handle hovering over the an attack pattern in the heatmap.
      */
     public handleTacticTooltip(event: TooltipEvent) {
-        console.log('being asked to handle tooltip', event, this.backdropped);
         if (this.backdropped && (event.type !== 'click')) {
-            console.log('ignoring event');
             return;
         }
         if (!event || !event.data) {
@@ -93,7 +91,6 @@ export class TacticsTooltipComponent implements OnInit {
      * @description
      */
     public showTacticTooltip(tactic?: Tactic, event?: UIEvent, asTooltip: boolean = true): void {
-        console.log('asked to display tooltip for', tactic, event, asTooltip, this.backdropped, this.tooltipTarget);
         if (tactic && this.tooltipTarget && (tactic.id === this.tooltipTarget.id)) {
             if (this.backdropped || asTooltip) {
                 return;
@@ -104,7 +101,6 @@ export class TacticsTooltipComponent implements OnInit {
         this.backdropped = !asTooltip;
 
         if (!this.overlayRef) {
-            console.log('creating overlay');
             const elem = new ElementRef(event.target);
 
             const positionStrategy = this.overlay.position()
@@ -122,13 +118,12 @@ export class TacticsTooltipComponent implements OnInit {
             });
 
             const sub$ = this.overlayRef.backdropClick().subscribe(
-                () => {console.log('backdrop clicked'); this.hideTacticTooltip(this.tooltipTarget)},
+                () => this.hideTacticTooltip(this.tooltipTarget),
                 (err) => console.log(`${new Date().toISOString()} Error using tooltip: ${err}`),
                 () => sub$.unsubscribe());
 
             this.portal = new TemplatePortal(this.tooltipTemplate, this.vcr);
         } else {
-            console.log('detaching overlay');
             this.overlayRef.detach();
             this.overlayRef.getConfig().hasBackdrop = this.backdropped;
         }
@@ -140,7 +135,6 @@ export class TacticsTooltipComponent implements OnInit {
      * @description
      */
     public hideTacticTooltip(tactic: Tactic): void {
-        console.log('hiding tooltip');
         if (!tactic || !this.tooltipTarget || (tactic.id !== this.tooltipTarget.id)) {
             return;
         }
@@ -151,6 +145,16 @@ export class TacticsTooltipComponent implements OnInit {
         this.overlayRef = null;
     }
 
+    /**
+     * @description
+     */
+    public getAnalyticNames(tactic: Tactic): string {
+        return tactic.analytics ? tactic.analytics.map(is => is.name).join(', ') : '';
+    }
+
+    /**
+     * @description
+     */
     public isAdminUser(): boolean {
         return this.authService.isAdmin();
     }

@@ -20,6 +20,7 @@ import { HeatBatchData, HeatCellData, HeatmapOptions, DOMRect, DEFAULT_OPTIONS, 
 import { Heatmap, HeatmapRenderer, } from './heatmap.renderer';
 import { HeatmapColumnRenderer } from './heatmap.renderer.columns';
 import { Dictionary } from '../../../models/json/dictionary';
+import { TooltipEvent } from '../tactics-pane/tactics-tooltip/tactics-tooltip.service';
 
 @Component({
     selector: 'unf-heatmap',
@@ -37,8 +38,8 @@ export class HeatmapComponent implements OnInit, AfterViewInit, DoCheck, OnDestr
     private previousData: Array<HeatBatchData>;
     private heatmap: DOMRect;
 
-    @Output() public hover = new EventEmitter<{row: HeatCellData, event?: UIEvent}>();
-    @Output() public click = new EventEmitter<{row: HeatCellData, event?: UIEvent}>();
+    @Output() public hover = new EventEmitter<TooltipEvent>();
+    @Output() public click = new EventEmitter<TooltipEvent>();
 
     private readonly subscriptions: Subscription[] = [];
 

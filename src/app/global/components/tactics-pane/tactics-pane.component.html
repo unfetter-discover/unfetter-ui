@@ -1,11 +1,11 @@
 <div class="tactics-pane">
 
-    <h3 class="mat-title tactics-header theme-color-primary theme-bg-primary-lighter">
+    <h3 class="mat-title tactics-header" [ngClass]="theme">
 
         <div class="flex1 tactics-title">{{title}}</div>
 
         <div class="carousel-view-controls" *ngIf="isCarouselView()">
-            <tactics-carousel-control></tactics-carousel-control>
+            <tactics-carousel-control [options]="carouselOptions"></tactics-carousel-control>
         </div>
 
         <mat-button-toggle-group #viewOption="matButtonToggleGroup" class="toolbox"

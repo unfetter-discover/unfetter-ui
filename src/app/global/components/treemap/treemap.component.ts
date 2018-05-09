@@ -64,6 +64,7 @@ export class TreemapComponent implements OnInit, AfterViewInit, DoCheck {
      * @description init this component
      */
     public ngOnInit(): void {
+        TreemapOptions.merge(this.options);
         this.previousData = this.data;
     }
 

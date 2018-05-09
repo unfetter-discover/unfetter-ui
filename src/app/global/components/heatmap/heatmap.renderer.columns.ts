@@ -576,7 +576,7 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
                     .attr('cx', corner.x + 8)
                     .attr('cy', corner.y + 8)
                     .attr('r', 6)
-                    .attr('fill', 'red')
+                    .attr('class', 'theme-fill-accent')
                     .attr('pointer-events', 'none');
         });
     }

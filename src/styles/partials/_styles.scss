@@ -48,8 +48,16 @@ label {
     @include themePrimaryColors('background-color');
 }
 
+.theme-bg-primary-light {
+    @include themePrimaryLightColors('background-color');
+}
+
 .theme-bg-primary-lighter {
     @include themePrimaryLighterColors('background-color');
+}
+
+.theme-bg-primary-lightest {
+    @include themePrimaryLightestColors('background-color');
 }
 
 .theme-color-primary {
@@ -64,12 +72,20 @@ label {
     @include themePrimaryLighterColors('color');
 }
 
+.theme-color-primary-lightest {
+    @include themePrimaryLightestColors('color');
+}
+
 .theme-fill-primary {
     @include themePrimaryTextProp('fill');
 }
 
 .theme-color-accent {
     @include themeAccentText();
+}
+
+.theme-fill-accent {
+    @include themeAccentFill();
 }
 
 .bg-accent {

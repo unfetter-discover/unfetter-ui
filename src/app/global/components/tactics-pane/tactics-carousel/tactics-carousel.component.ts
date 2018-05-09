@@ -1,26 +1,15 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { Carousel } from 'primeng/primeng';
 
+import { CarouselOptions } from './carousel.data';
 import { TacticsView } from '../tactics-view';
 import { TacticChain, Tactic } from '../tactics.model';
 import { TacticsControlService } from '../tactics-control.service';
-import { TacticsTooltipService } from '../tactics-tooltip/tactics-tooltip.service';
+import { TacticsTooltipService, TooltipEvent } from '../tactics-tooltip/tactics-tooltip.service';
 import { Dictionary } from '../../../../models/json/dictionary';
 import { AppState } from '../../../../root-store/app.reducers';
-
-interface CarouselOptions {
-    /**
-     * The number of columns per carousel page. Defaults to 4. (Unfortunately the carousel can't figure this out.)
-     */
-    numVisible?: number,
-
-    /**
-     * How many carousel pages there will be before the dropdown is created.  Defaults to 2.
-     */
-    minPageLinks?: number,
-}
 
 @Component({
     selector: 'tactics-carousel',
@@ -34,6 +23,8 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
      */
     private chainedTactics: Dictionary<TacticChain> = {};
 
+    @Input() public options: CarouselOptions = new CarouselOptions();
+
     @ViewChild('carousel') private carousel: Carousel;
 
     private readied = false;
@@ -43,7 +34,7 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
         controls: TacticsControlService,
         tooltips: TacticsTooltipService,
     ) {
-        super('carousel', store, controls, tooltips);
+        super(store, controls, tooltips);
     }
 
     protected get view() {
@@ -65,11 +56,7 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
      * @description ensure valid carousel option values
      */
     protected validateOptions() {
-        if (!this.options) {
-            this.options = {};
-        }
-        this.options.numVisible = Math.max(1, this.options.numVisible || 4);
-        this.options.minPageLinks = Math.max(1, this.options.minPageLinks || 2);
+        this.options = CarouselOptions.merge(this.options);
     }
 
     /**
@@ -134,7 +121,7 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
         return tactics ? tactics.reduce((c, tactic) => {
             let value = 0, target = this.lookupTactic(tactic);
             if (this.hasHighlights(target)) {
-                value = Math.sign(target.adds.highlights.reduce((v, add) => v + add.value, 0));
+                value = Math.sign(target.adds.highlights.reduce((v, add) => v + (add.value || 0), 0));
             }
             return c + value;
         }, 0) : 0;
@@ -148,8 +135,7 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
             return true;
         }
         let target = this.lookupTactic(tactic);
-        return target.adds && target.adds.highlights && target.adds.highlights.length
-                && target.adds.highlights.some(add => add.value > 1);
+        return this.hasHighlights(target) && target.adds.highlights.some(add => add.value > 0);
     }
 
     /**
@@ -158,11 +144,17 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
      */
     public getTacticBackground(tactic: Tactic): string {
         let target = this.lookupTactic(tactic);
-        if (target.adds && target.adds.highlights && target.adds.highlights.length) {
+        if (this.hasHighlights(target)) {
+            target['overhighlighted'] = false;
             let set = new Set(target.adds.highlights.map(add => add.color ? add.color.bg : undefined));
             set.delete(undefined);
             if (set.size === 1) {
                 return Array.from(set)[0];
+            } else if (set.size < 4) {
+                return `linear-gradient(to right, ${Array.from(set).join(',')})`;
+            } else {
+                target['overhighlighted'] = true;
+                return 'black';
             }
         }
         return 'initial';
@@ -173,14 +165,23 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
      */
     public getTacticForeground(tactic: Tactic): string {
         let target = this.lookupTactic(tactic);
-        if (target.adds && target.adds.highlights && target.adds.highlights.length) {
+        if (this.hasHighlights(target)) {
             let set = new Set(target.adds.highlights.map(add => add.color ? add.color.fg : undefined));
             set.delete(undefined);
             if (set.size === 1) {
                 return Array.from(set)[0];
+            } else if (target['overhighlighted']) {
+                return 'white';
             }
         }
         return 'initial';
+    }
+
+    /**
+     * @description attempts to find the given tactic in the targeted list; if not found, returns the given tactic
+     */
+    protected lookupTarget(data: any): Tactic {
+        return data;
     }
 
 }

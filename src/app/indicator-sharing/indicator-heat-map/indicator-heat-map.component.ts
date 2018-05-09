@@ -65,7 +65,6 @@ export class IndicatorHeatMapComponent implements OnInit {
             cellTitleExtent: 2,
         }
     }
-    private oldrect = null;
 
     @Input() public collapseAllCardsSubject: BehaviorSubject<boolean>;
     public collapseContents: boolean = false;

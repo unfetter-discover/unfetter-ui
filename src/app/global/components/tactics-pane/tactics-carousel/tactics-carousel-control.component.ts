@@ -5,12 +5,14 @@ import {
     ViewChild,
     ElementRef,
     OnDestroy,
+    Input,
 } from '@angular/core';
 
 import { MatButtonToggleChange, MatSelectChange } from '@angular/material';
 import { Carousel } from 'primeng/primeng';
 
 import { TacticsControlService } from '../tactics-control.service';
+import { CarouselOptions } from './carousel.data';
 
 @Component({
     selector: 'tactics-carousel-control',
@@ -19,6 +21,8 @@ import { TacticsControlService } from '../tactics-control.service';
 })
 export class TacticsCarouselControlComponent implements OnInit, AfterViewChecked {
 
+    @Input() public options: CarouselOptions = new CarouselOptions();
+
     @ViewChild('widgets') private toolbox: ElementRef;
 
     constructor(
@@ -26,6 +30,8 @@ export class TacticsCarouselControlComponent implements OnInit, AfterViewChecked
     ) { }
 
     ngOnInit() {
+        this.options = CarouselOptions.merge(this.options);
+
         if (!this.controls.state.hasOwnProperty('pages')) {
             this.controls.state.pages = 0;
         }

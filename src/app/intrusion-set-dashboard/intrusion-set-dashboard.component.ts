@@ -14,6 +14,7 @@ import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import * as Ps from 'perfect-scrollbar';
 
 import { Tactic } from '../global/components/tactics-pane/tactics.model';
+import { TooltipEvent } from '../global/components/tactics-pane/tactics-tooltip/tactics-tooltip.service';
 import { HeatColor, HeatmapOptions } from '../global/components/heatmap/heatmap.data';
 import { IntrusionSetHighlighterService } from './intrusion-set-highlighter.service';
 import { BaseComponentService } from '../components/base-service.component';
@@ -24,6 +25,8 @@ import { BaseStixService } from '../settings/base-stix.service';
 import { StixService } from '../settings/stix.service';
 import { Constance } from '../utils/constance';
 import { topRightSlide } from '../global/animations/top-right-slide';
+import { TreemapOptions } from '../global/components/treemap/treemap.data';
+import { CarouselOptions } from '../global/components/tactics-pane/tactics-carousel/carousel.data';
 
 @Component({
     selector: 'intrusion-set-dashboard',
@@ -59,6 +62,14 @@ export class IntrusionSetDashboardComponent implements OnInit {
             },
         },
     };
+    public readonly treemapOptions: TreemapOptions = {
+        minColor: '#8df6ec',
+        midColor: '#6dd6cc',
+        maxColor: '#4db6ac',
+    };
+    public readonly carouselOptions: CarouselOptions = {
+        toolboxTheme: 'theme-bg-primary-lighter theme-color-primary-lightest'
+    };
 
     public treeData: any;
     public graphMetaData = {
@@ -80,7 +91,8 @@ export class IntrusionSetDashboardComponent implements OnInit {
     public ngOnInit() {
         const initAttackPatterns$ = this.tacticsStore
             .select('config')
-            .pluck('tacticsChains');
+            .pluck('tacticsChains')
+            .take(1);
 
         const intrusionsProperties = {
             'stix.id': 1,
@@ -101,13 +113,13 @@ export class IntrusionSetDashboardComponent implements OnInit {
             .finally(() => initData$ && initData$.unsubscribe())
             .subscribe(
                 ([tactics, intrusionSets, relationships]) => {
+                    const patterns = {};
                     Object.values(tactics).forEach(chain => {
                         chain.phases.forEach(phase => {
-                            phase.tactics.forEach(tactic => {
-                                this.attackPatterns[tactic.id] = {...tactic};
-                            });
+                            phase.tactics.forEach(tactic => patterns[tactic.id] = {...tactic});
                         });
                     });
+                    this.attackPatterns = patterns;
 
                     const intrusions = {};
                     intrusionSets.forEach(intrusion => {
@@ -122,6 +134,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
                             const is = intrusions[rel.attributes.source_ref];
                             if (ap && is) {
                                 ap.analytics.push(is);
+                                ap.analytics.sort();
                             }
                         }
                     });
@@ -160,35 +173,23 @@ export class IntrusionSetDashboardComponent implements OnInit {
         }
     }
 
+    /**
+     * @description
+     */
     public color(data: string): void {
-        const targets = [];
         data['killChainPhases'].forEach((killChainPhase) => {
             killChainPhase.attack_patterns.forEach((attack_pattern) => {
                 const found = data['intrusionSets'].find((intrusionSet) => {
                     const f = intrusionSet.attack_patterns.find((pattern) => {
-                        let back = '#FFFFFF';
-                        let fore = '#000000';
+                        attack_pattern.back = null;
+                        attack_pattern.fore = null;
                         if (pattern._id === attack_pattern._id) {
-                            let rgb: any = {};
                             if (attack_pattern.intrusion_sets.length > 0) {
-                                back = attack_pattern.intrusion_sets[0].color;
-                                rgb = this.hexToRgb(attack_pattern.intrusion_sets[0].color);
-                            } else {
-                                rgb = this.hexToRgb('#FFFFFF');
+                                const back = attack_pattern.intrusion_sets[0].color;
+                                 const fore = this.getContrast(back);
+                                 attack_pattern.back = back;
+                                 attack_pattern.fore = fore;
                             }
-                            // http://www.w3.org/TR/AERT#color-contrast
-                            const o = Math.round(
-                               (parseInt(rgb.r, 10) * 299 +
-                                parseInt(rgb.g, 10) * 587 +
-                                parseInt(rgb.b, 10) * 114) /
-                                1000
-                            );
-                            fore = o > 125 ? 'black' : 'white';
-                            attack_pattern.back = back;
-                            attack_pattern.fore = fore;
-                        } else {
-                            attack_pattern.back = back;
-                            attack_pattern.fore = fore;
                         }
                         return pattern._id === attack_pattern._id;
                     });
@@ -198,42 +199,48 @@ export class IntrusionSetDashboardComponent implements OnInit {
         });
     }
 
-    public hexToRgb(hex): any {
-        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return !result ? null :
-            {
-                r: parseInt(result[1], 16),
-                g: parseInt(result[2], 16),
-                b: parseInt(result[3], 16),
+    /**
+     * @description
+     */
+    private getSelections() {
+        const targets: Dictionary<Tactic> = {};
+        this.intrusionSets.forEach(is => {
+            const highlight = {
+                value: 2,
+                color: {
+                    style: is.name.toLowerCase(),
+                    bg: is.color,
+                    fg: this.getContrast(is.color),
+                },
             };
+            is.attack_patterns.forEach(pattern => {
+                const tactic = this.attackPatterns[pattern.id];
+                if (tactic) {
+                    let target = targets[pattern.id];
+                    if (!target) {
+                        targets[pattern.id] = target = { ...tactic, adds: { highlights: [], }, };
+                    }
+                    target.adds.highlights.push(highlight);
+                }
+            });
+        });
+        return Object.values(targets);
     }
 
     /**
      * @description
      */
-    private getSelections() {
-        const targets: Tactic[] = [];
-        this.killChainPhases.forEach(phase => {
-            phase.attack_patterns.forEach(pattern => {
-                const tactic = this.attackPatterns.find(p => p.id === pattern.id);
-                if (tactic) {
-                    const target = {...tactic, adds: {},
-                    };
-                    targets.push({
-                        ...tactic,
-                        adds: {
-                            highlights: [
-                                {
-                                    bg: pattern.back,
-                                    fg: pattern.fore,
-                                },
-                            ],
-                        },
-                    });
-                }
-            });
-        });
-        return targets;
+    public getContrast(color: string) {
+        // http://www.w3.org/TR/AERT#color-contrast
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
+        const rgb = !result ? null :
+            {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16),
+            };
+        const o = Math.round((rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000);
+        return o > 125 ? 'black' : 'white';
     }
 
     /**
@@ -316,15 +323,21 @@ export class IntrusionSetDashboardComponent implements OnInit {
         return killChainPhaseChild;
     }
 
+    /**
+     * @description
+     */
     public treeComplete() {
         this.loadSpinner = false;
         this.ref.detectChanges();
     }
 
-    public highlightAttackPattern(selection: any) {
+    /**
+     * @description
+     */
+    public highlightAttackPattern(selection: TooltipEvent) {
         let ap = null;
-        if (selection && selection.row) {
-            ap = Object.values(this.attackPatterns).find(ptn => ptn.name === selection.row.title) || null;
+        if (selection && selection.data) {
+            ap = Object.values(this.attackPatterns).find(ptn => ptn.name === selection.data.name) || null;
         }
         this.highlighter.highlightIntrusionSets(ap);
     }

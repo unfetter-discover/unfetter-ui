@@ -52,7 +52,10 @@ export class GoogleTreemapRenderer implements TreemapRenderer {
                                 let index: string = this.table.getValue(event.row, 0);
                                 const selected = this.data.filter(row => row[0] === index)[0];
                                 if (selected && (!this.selected || (selected[0] !== this.selected[0]))) {
-                                    eventHandler.onHover({data: this.selected = selected, source: event});
+                                    eventHandler.onHover({
+                                        data: this.selected = selected,
+                                        source: {target: this.view.nativeElement}
+                                    });
                                 }
                             }, 500);
                         }
@@ -61,7 +64,10 @@ export class GoogleTreemapRenderer implements TreemapRenderer {
                     'onmouseout', (event) => {
                         window.clearTimeout(this.tooltipDelay);
                         if (this.selected !== null) {
-                            eventHandler.onHover({data: this.selected = null, source: event});
+                            eventHandler.onHover({
+                                data: this.selected = null,
+                                source: {target: this.view.nativeElement}
+                            });
                         }
                     });
             }
