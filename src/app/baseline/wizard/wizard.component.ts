@@ -167,7 +167,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           const panel = this.determineFirstOpenSidePanel();
           if (panel) {
             this.page = 1;
-            this.openedSidePanel = 'categories';
+            this.openedSidePanel = 'capabilities';      // <-- Change back to categories (this is just to view the capabilities easier for this PR)
           }
         },
         (err) => console.log(err));

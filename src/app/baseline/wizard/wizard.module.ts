@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
+// import { MatButtonModule } from '@angular/material/button';
+// import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { MatInputModule } from '@angular/material/input';
+// import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSelectModule } from '@angular/material/select';
+// import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ChartsModule } from 'ng2-charts';
 import { CalendarModule } from 'primeng/components/calendar/calendar';
@@ -21,6 +21,19 @@ import { CapabilityComponent } from './capability/capability.component';
 import { CategoryComponent } from './category/category.component';
 import { WizardComponent } from './wizard.component';
 import { routing } from './wizard.routing';
+
+// import { BrowserModule } from '@angular/platform-browser';
+import { ReactiveFormsModule } from '@angular/forms';
+// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {
+  MatTableModule,
+  MatOptionModule,
+  MatSelectModule,
+  MatButtonModule,
+  MatCardModule,
+  MatTooltipModule,
+  MatInputModule,
+} from '@angular/material';
 
 const moduleComponents = [
   WizardComponent,
@@ -39,7 +52,12 @@ const matModules = [
   MatSnackBarModule,
   MatSelectModule,
   MatInputModule,
-  MatProgressBarModule
+  MatProgressBarModule,
+
+  MatTableModule,
+  MatOptionModule,
+  MatTooltipModule,
+
 ];
 
 const primengModules = [
@@ -57,6 +75,11 @@ const primengModules = [
     ChartsModule,
     PipesModule,
     GlobalModule,
+
+
+    ReactiveFormsModule,
+    // BrowserAnimationsModule
+
   ],
   declarations: [
     ...moduleComponents,

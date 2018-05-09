@@ -1,7 +1,21 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule, MatCardModule, MatDatepickerModule, MatDialogModule, MatExpansionModule, MatInputModule, MatProgressBarModule, MatSelectModule, MatSnackBarModule } from '@angular/material';
+import { 
+  MatButtonModule,
+  MatCardModule, 
+  MatDatepickerModule, 
+  MatDialogModule, 
+  MatExpansionModule, 
+  MatInputModule, 
+  MatProgressBarModule, 
+  MatSelectModule, 
+  MatSnackBarModule,
+  MatTableModule,
+  MatOptionModule,
+  MatTooltipModule,
+  MatFormField,
+} from '@angular/material';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule, combineReducers } from '@ngrx/store';
@@ -17,6 +31,11 @@ import { CapabilitySelectorComponent } from './capability-selector/capability-se
 import { CapabilityComponent } from './capability/capability.component';
 import { CategoryComponent } from './category/category.component';
 import { WizardComponent } from './wizard.component';
+
+
+// import { BrowserModule } from '@angular/platform-browser';
+import { ReactiveFormsModule } from '@angular/forms';
+// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 class MockModel {
   attributes: any;
@@ -80,7 +99,11 @@ describe('WizardComponent', () => {
       MatSnackBarModule,
       MatSelectModule,
       MatInputModule,
-      MatProgressBarModule
+      MatProgressBarModule,
+      MatTableModule,
+      MatOptionModule,
+      MatTooltipModule,
+      MatFormField,
     ];
 
     TestBed.configureTestingModule({
@@ -97,6 +120,9 @@ describe('WizardComponent', () => {
         ComponentModule,
         ChartsModule,
         PipesModule,
+        // BrowserModule,
+        ReactiveFormsModule,
+        // BrowserAnimationsModule,
         GlobalModule,
         FormsModule,
         RouterTestingModule,
