@@ -1,4 +1,4 @@
-<p-carousel #carousel [value]="phases" [numVisible]="options.numVisible || 4" [pageLinks]="options.pageLinks || 2"
+<p-carousel #carousel [value]="phases" [numVisible]="options.numVisible || 4" [pageLinks]="options.minPageLinks || 2"
         (onPage)="onInitialPageLoad($event)">
     <ng-template let-phase pTemplate="phase">
         <div class="ui-grid ui-grid-responsive" *ngIf="!filters.columns || (count(phase.tactics) !== 0)">
