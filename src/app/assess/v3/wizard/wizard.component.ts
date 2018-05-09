@@ -7,6 +7,7 @@ import { MenuItem } from 'primeng/components/common/menuitem';
 import { Subscription } from 'rxjs/Subscription';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';
+import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { Dictionary } from 'stix/common/dictionary';
 import { JsonApiData } from 'stix/json/jsonapi-data';
@@ -26,7 +27,6 @@ import { Measurements } from './models/measurements';
 import { SidePanelName } from './models/side-panel-name.enum';
 import { TempModel } from './models/temp-model';
 import { WizardAssessment } from './models/wizard-assessment';
-import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -298,7 +298,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
     meta.includesIndicators = false;
     meta.includesMitigations = false;
-    // TODO: set baselineRef
+    meta.baselineRef = undefined;
     // meta.includesSensors = false;
 
     /*
