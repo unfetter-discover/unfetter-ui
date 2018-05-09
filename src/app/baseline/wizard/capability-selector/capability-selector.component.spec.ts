@@ -24,7 +24,6 @@ describe('CapabilitySelectorComponent', () => {
       imports: [
         RouterTestingModule,
         NoopAnimationsModule,
-        RouterTestingModule,
         ...matModules,
         StoreModule.forRoot({
           ...fromRoot.reducers,

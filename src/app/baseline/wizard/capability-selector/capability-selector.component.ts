@@ -56,7 +56,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
       .subscribe(
         (baselineCapabilities: any[]) => {
           this.baselineCapabilities = baselineCapabilities;
-          this.selectedCapabilities = [ ...this.baselineCapabilities ]; // .filter((cap) => cap.category === this.currentCapabilityGroup.name);
+          this.selectedCapabilities = this.baselineCapabilities; // .filter((cap) => cap.category === this.currentCapabilityGroup.name);
           this.updateAvailableCapabilitiesList();
         },
         (err) => console.log(err));
@@ -161,7 +161,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
   }
 
   private updateAvailableCapabilitiesList(): void {
-    this.availableCapabilities = [ ...this.allCapabilities ];
+    this.availableCapabilities = this.allCapabilities;
 
     _.pullAll(this.availableCapabilities, this.baselineCapabilities);
     _.pullAll(this.availableCapabilities, this.selectedCapabilities);
