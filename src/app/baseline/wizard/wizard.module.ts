@@ -21,10 +21,7 @@ import { CapabilityComponent } from './capability/capability.component';
 import { CategoryComponent } from './category/category.component';
 import { WizardComponent } from './wizard.component';
 import { routing } from './wizard.routing';
-
-// import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
-// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 import {
@@ -77,11 +74,8 @@ const primengModules = [
     ChartsModule,
     PipesModule,
     GlobalModule,
-
-
-
     ReactiveFormsModule,
-    // BrowserAnimationsModule
+
 
   ],
   declarations: [

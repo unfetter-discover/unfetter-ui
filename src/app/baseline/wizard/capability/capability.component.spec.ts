@@ -31,8 +31,6 @@ describe('CapabilityComponent', () => {
         NoopAnimationsModule,
         ...matModules,
         ReactiveFormsModule,
-        // BrowserAnimationsModule,
-
       ]
     })
       .compileComponents();
