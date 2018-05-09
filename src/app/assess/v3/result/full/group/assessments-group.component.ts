@@ -360,7 +360,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /**
    * @description load the data for given attack pattern, update page
-   * @param {string} attackPatternId
+   * @param attackPatternId
    * @return {void}
    */
   public setAttackPattern(attackPatternId = ''): void {

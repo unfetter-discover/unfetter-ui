@@ -94,11 +94,12 @@ export class FullComponent implements OnInit, OnDestroy {
     this.assessment = this.store
       .select('fullAssessment')
       .pluck<object, Assessment>('fullAssessment')
-      .distinctUntilChanged();
-    // .filter((arr) => arr && arr.length > 0)
-    // .map((arr) => {
-    //   return arr.find((el) => el.id === this.assessmentId);
-    // });
+      .filter((el) => el !== undefined)
+      .distinctUntilChanged()
+      // .filter((arr) => arr && arr.length > 0)
+      // .map((arr) => {
+      //   return arr.find((el) => el.id === this.assessmentId);
+      // });
 
     this.finishedLoading = this.store
       .select('fullAssessment')

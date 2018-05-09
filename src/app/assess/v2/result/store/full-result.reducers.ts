@@ -71,7 +71,7 @@ export function fullAssessmentResultReducer(state = initialState, action: FullAs
         case fullAssessmentResultActions.SET_ASSESSMENT:
             return {
                 ...state,
-                fullAssessment: new Assessment({ ...action.payload }),
+                fullAssessment: { ...action.payload } as Assessment,
             };
         case fullAssessmentResultActions.FINISHED_LOADING:
             return {
@@ -84,9 +84,6 @@ export function fullAssessmentResultReducer(state = initialState, action: FullAs
                 group: {
                     ...state.group,
                     ...action.payload,
-                    // riskByAttackPattern: {
-                    //     ...action.payload.riskByAttackPattern,
-                    // },
                     finishedLoadingGroupData: true,
                 },
             };
