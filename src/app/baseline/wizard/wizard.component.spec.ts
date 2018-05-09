@@ -17,6 +17,7 @@ import { CapabilitySelectorComponent } from './capability-selector/capability-se
 import { CapabilityComponent } from './capability/capability.component';
 import { CategoryComponent } from './category/category.component';
 import { WizardComponent } from './wizard.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 class MockModel {
   attributes: any;
@@ -100,6 +101,7 @@ describe('WizardComponent', () => {
         GlobalModule,
         FormsModule,
         RouterTestingModule,
+        ReactiveFormsModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
           'baseline': combineReducers(baselineReducer),
