@@ -3,15 +3,17 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
-import { Assessment } from 'stix/assess/v3/assessment';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
+import { Assessment } from 'stix/assess/v3/assessment';
 import { Stix } from 'stix/unfetter/stix';
 import { Relationship } from '../../../../models';
 import { Constance } from '../../../../utils/constance';
 import { AssessService } from '../../services/assess.service';
-import { DonePushUrl, FinishedLoading, LOAD_ASSESSMENTS_BY_ROLLUP_ID, LOAD_ASSESSMENT_BY_ID, LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS, 
-    LOAD_GROUP_CURRENT_ATTACK_PATTERN, LOAD_GROUP_DATA, LoadGroupData, PUSH_URL, SetAssessment, SetAssessments, 
-    SetGroupAttackPatternRelationships, SetGroupCurrentAttackPattern, SetGroupData, UPDATE_ASSESSMENT_OBJECT } from './full-result.actions';
+import {
+    DonePushUrl, FinishedLoading, LOAD_ASSESSMENTS_BY_ROLLUP_ID, LOAD_ASSESSMENT_BY_ID, LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS,
+    LOAD_GROUP_CURRENT_ATTACK_PATTERN, LOAD_GROUP_DATA, LoadGroupData, PUSH_URL, SetAssessment, SetAssessments, SetGroupAttackPatternRelationships,
+    SetGroupCurrentAttackPattern, SetGroupData, UPDATE_ASSESSMENT_OBJECT
+} from './full-result.actions';
 
 @Injectable()
 export class FullResultEffects {
@@ -30,9 +32,13 @@ export class FullResultEffects {
         .switchMap((rollupId: string) => {
             return this.assessService
                 .getByRollupId(rollupId)
-                .catch((ex) => Observable.empty());
-        })
-        .mergeMap((data: Assessment[]) => [new SetAssessments(data), new FinishedLoading(true)]);
+                .mergeMap((data: Assessment[]) => [new SetAssessments(data), new FinishedLoading(true)])
+                .catch((err) => {
+                    console.log(err);
+                    return Observable.empty();
+                });
+        });
+
 
     @Effect()
     public fetchAssessmentById = this.actions$
@@ -41,9 +47,13 @@ export class FullResultEffects {
         .switchMap((id: string) => {
             return this.assessService
                 .getById(id)
-                .catch((ex) => Observable.empty());
-        })
-        .mergeMap((data: Assessment) => [new SetAssessment(data), new FinishedLoading(true)]);
+                .mergeMap((data: Assessment) => [new SetAssessment(data), new FinishedLoading(true)])
+                .catch((err) => {
+                    console.log(err);
+                    return Observable.empty();
+                });
+        });
+
 
     @Effect()
     public fetchAssessmentGroupData = this.actions$
@@ -52,37 +62,57 @@ export class FullResultEffects {
         .switchMap((assessmentId: string) => {
             const getAssessedObjects$ = this.assessService.getAssessedObjects(assessmentId);
             const getRiskByAttackPattern$ = this.assessService.getRiskPerAttackPattern(assessmentId);
-            return Observable.forkJoin(getAssessedObjects$, getRiskByAttackPattern$);
-        })
-        .map(([assessedObjects, riskByAttackPattern]) => {
-            riskByAttackPattern = riskByAttackPattern || new RiskByAttack;
-            return new SetGroupData({ assessedObjects, riskByAttackPattern });
+            return Observable
+                .forkJoin(getAssessedObjects$, getRiskByAttackPattern$)
+                .map(([assessedObjects, riskByAttackPattern]) => {
+                    riskByAttackPattern = riskByAttackPattern || new RiskByAttack();
+                    return new SetGroupData({ assessedObjects, riskByAttackPattern });
+                })
+                .catch((err) => {
+                    console.log(err);
+                    return Observable.of([]);
+                });
         });
 
-    @Effect()
+
+    @Effect({ dispatch: true })
     public loadGroupCurrentAttackPattern = this.actions$
-        .ofType(LOAD_GROUP_CURRENT_ATTACK_PATTERN)
+        .do((action) => console.log(`full-result.effects.ts Received ${action.type}`))
+        .filter((action) => action.type === LOAD_GROUP_CURRENT_ATTACK_PATTERN)
+        // .ofType(LOAD_GROUP_CURRENT_ATTACK_PATTERN)
         .pluck('payload')
         .switchMap((attackPatternId: string) => {
-            return this.assessService.getAs<Stix>(`${Constance.ATTACK_PATTERN_URL}/${attackPatternId}`);
-        })
-        .map((data: Stix) => {
-            return new SetGroupCurrentAttackPattern({ currentAttackPattern: data });
+            return this.assessService
+                .getAs<Stix>(`${Constance.ATTACK_PATTERN_URL}/${attackPatternId}`)
+                .map((data: Stix) => {
+                    return new SetGroupCurrentAttackPattern({ currentAttackPattern: data });
+                })
+                .catch((err) => {
+                    console.log(err);
+                    return Observable.empty();
+                });
         });
 
-    @Effect()
+
+    @Effect({ dispatch: true })
     public loadGroupAttackPatternRelationships = this.actions$
         .ofType(LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS)
         .pluck('payload')
         .switchMap((attackPatternId: string) => {
-            return this.assessService.getAttackPatternRelationships(attackPatternId);
-        })
-        .mergeMap((relationships: Relationship[]) => {
-            return [
-                new SetGroupAttackPatternRelationships(relationships),
-                new FinishedLoading(true),
-            ];
+            return this.assessService
+                .getAttackPatternRelationships(attackPatternId)
+                .mergeMap((relationships: Relationship[]) => {
+                    return [
+                        new SetGroupAttackPatternRelationships(relationships),
+                        new FinishedLoading(true),
+                    ];
+                })
+                .catch((err) => {
+                    console.log(err);
+                    return Observable.empty();
+                });
         });
+
 
     @Effect()
     public pushUrlState = this.actions$
@@ -111,10 +141,9 @@ export class FullResultEffects {
                 .genericPatch(`${Constance.X_UNFETTER_ASSESSMENT_URL}/${id}`, assessment)
                 .map((resp) => new LoadGroupData(id))
                 .catch((err) => {
-                    // TODO: better error handling action
                     console.log(err);
                     return Observable.empty();
                 });
             return o1$;
-        })
+        });
 }

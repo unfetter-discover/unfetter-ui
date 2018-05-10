@@ -57,22 +57,33 @@ export class AssessEffects {
             //     Observable.of<JsonApiData<Stix>[]>([]);
             // observables.push(sensors$);
 
-            return Observable.forkJoin(...observables);
-        })
-        .mergeMap(([indicators, mitigations]) => {
-            return [
-                new assessActions.IndicatorsLoaded(indicators as JsonApiData<Indicator.UnfetterIndicator>[]),
-                new assessActions.MitigationsLoaded(mitigations),
-                // new assessActions.SensorsLoaded(sensors),
-                new assessActions.FinishedLoading(true)
-            ];
+            return Observable.forkJoin(...observables)
+                .mergeMap(([indicators, mitigations]) => {
+                    return [
+                        new assessActions.IndicatorsLoaded(indicators as JsonApiData<Indicator.UnfetterIndicator>[]),
+                        new assessActions.MitigationsLoaded(mitigations),
+                        // new assessActions.SensorsLoaded(sensors),
+                        new assessActions.FinishedLoading(true)
+                    ];
+                })
+                .catch((err) => {
+                    console.log(err);
+                    return Observable.empty();
+                });
         });
 
     @Effect()
     public fetchAssessment = this.actions$
         .ofType(assessActions.FETCH_ASSESSMENT)
-        .switchMap(() => this.assessService.load())
-        .map((arr: any[]) => new assessActions.FetchAssessment(arr[0]));
+        .switchMap(() => {
+            return this.assessService
+                .load()
+                .map((arr: any[]) => new assessActions.FetchAssessment(arr[0]))
+                .catch((err) => {
+                    console.log(err);
+                    return Observable.empty();
+                });
+        });
 
     @Effect({ dispatch: false })
     public startAssessment = this.actions$
@@ -87,7 +98,7 @@ export class AssessEffects {
                 '/assess-beta/wizard/new',
                 'indicators', el.includesIndicators === true ? 1 : 0,
                 'mitigations', el.includesMitigations === true ? 1 : 0,
-                'baselineRef', el.baselineRef  ? el.baselineRef : ''
+                'baselineRef', el.baselineRef ? el.baselineRef : ''
             ]);
         })
         // required to send an empty element on non dispatched effects
@@ -127,6 +138,7 @@ export class AssessEffects {
                         return this.genericServiceApi.postAs<JsonApiData<Assessment>[]>(url, json);
                     }
                 });
+
             return Observable.forkJoin(...observables)
                 .map((arr: any) => {
                     if (Array.isArray(arr[0])) {
@@ -136,18 +148,22 @@ export class AssessEffects {
                         arr[0].attributes.metaProperties = { rollupId: rollupId };
                         return [arr];
                     }
+                })
+                .flatMap((arr: JsonApiData<Assessment>[][]) => arr)
+                .map((arr) => {
+                    const hasAttributes = arr && arr[0] && arr[0].attributes;
+                    const hasMetadata = hasAttributes && arr[0].attributes.metaProperties;
+                    return new assessActions.FinishedSaving({
+                        finished: true,
+                        rollupId: hasMetadata ? arr[0].attributes.metaProperties.rollupId : '',
+                        id: hasAttributes ? arr[0].attributes.id : '',
+                    });
+                })
+                .catch((err) => {
+                    console.log(err);
+                    return Observable.empty();
                 });
-        })
-        .flatMap((arr: JsonApiData<Assessment>[][]) => arr)
-        .map((arr) => {
-            const hasAttributes = arr && arr[0] && arr[0].attributes;
-            const hasMetadata = hasAttributes && arr[0].attributes.metaProperties;
-            return new assessActions.FinishedSaving({
-                finished: true, 
-                rollupId: hasMetadata ? arr[0].attributes.metaProperties.rollupId : '',
-                id: hasAttributes ? arr[0].attributes.id : '',
-            });
-        })
+        });
 
 
     /**

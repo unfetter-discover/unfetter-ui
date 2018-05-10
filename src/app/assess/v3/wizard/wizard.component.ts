@@ -11,7 +11,7 @@ import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { Dictionary } from 'stix/common/dictionary';
 import { JsonApiData } from 'stix/json/jsonapi-data';
-import { Indicator } from 'stix/stix/indicator';
+import * as Indicator from 'stix/unfetter/indicator';
 import { Stix } from 'stix/unfetter/stix';
 import { Key } from 'ts-keycode-enum';
 import { GenericApi } from '../../../core/services/genericapi.service';
@@ -95,7 +95,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public currentAssessmentGroup = {} as any;
   public page = 1;
   public meta = new Assess3Meta();
-  public indicators: Indicator[];
+  public indicators: Indicator.UnfetterIndicator[];
   public sensors: Stix[];
   public mitigations: Stix[];
   public ratioOfQuestionsAnswered = 0;
@@ -180,8 +180,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       .pluck('indicators')
       .distinctUntilChanged()
       .filter((el) => el !== undefined)
-      .map((arr: JsonApiData<Indicator>[]) => arr.map((el) => el.attributes))
-      .subscribe((arr: Indicator[]) => this.indicators = arr);
+      .map((arr: JsonApiData<Indicator.UnfetterIndicator>[]) => arr.map((el) => el.attributes))
+      .subscribe((arr: Indicator.UnfetterIndicator[]) => this.indicators = arr);
 
     const sub2$ = this.wizardStore
       .select('assessment')
@@ -291,7 +291,13 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.assessStore.dispatch(new LoadAssessmentsByRollupId(rollupId));
   }
 
-  public loadAssessments(rollupId: string, arr: Array<Assessment>, meta: Partial<Assess3Meta>) {
+  /**
+   * @param  {string} rollupId
+   * @param  {Array<Assessment>} arr
+   * @param  {Partial<Assess3Meta>} meta
+   * @returns void
+   */
+  public loadAssessments(rollupId: string, arr: Array<Assessment>, meta: Partial<Assess3Meta>): void {
     if (!arr || arr.length === 0) {
       return;
     }

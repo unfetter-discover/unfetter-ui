@@ -3,11 +3,12 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import { AttackPattern } from 'stix';
 import { AssessAttackPatternMeta } from 'stix/assess/v2/assess-attack-pattern-meta';
-import { Assessment } from 'stix/assess/v3/assessment';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
+import { Assessment } from 'stix/assess/v3/assessment';
 import { Stix } from 'stix/unfetter/stix';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { FormatHelpers } from '../../../../../global/static/format-helpers';
@@ -25,7 +26,8 @@ import { FullAssessmentGroup } from './models/full-assessment-group';
 @Component({
   selector: 'unf-assess-group',
   templateUrl: './assessments-group.component.html',
-  styleUrls: ['./assessments-group.component.scss']
+  styleUrls: ['./assessments-group.component.scss'],
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
 
@@ -61,9 +63,9 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   public riskByAttackPattern: RiskByAttack;
   public assessedObjects: AssessmentObject[];
   public unassessedPhases: string[];
-  public currentAttackPattern: Stix;
+  public currentAttackPattern: AttackPattern;
   public displayedAssessedObjects: DisplayedAssessmentObject[];
-  public unassessedAttackPatterns: Stix[];
+  public unassessedAttackPatterns: AttackPattern[];
   public attackPatternsByPhase: AssessAttackPatternMeta[];
   public addAssessedObject: boolean;
   public addAssessedType: string;
@@ -76,8 +78,10 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     private route: ActivatedRoute,
     private changeDetector: ChangeDetectorRef,
     private store: Store<FullAssessmentResultState>,
-    private authService: AuthService    
-  ) { }
+    private authService: AuthService
+  ) {
+    console.log(`AssessGroupComponent store`, this.store);
+  }
 
   /**
    * @description init before childern are initialized
@@ -133,7 +137,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     const stixPermissions: StixPermissions = this.authService.getStixPermissions();
     this.canAddAssessedObjects = stixPermissions.canCreate(this.assessment);
   }
-  
+
   /**
    * @description request data
    * @returns {void}
@@ -367,6 +371,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     this.resetNewAssessmentObjects();
 
     if (attackPatternId !== '') {
+      console.log(`AssessGroupComponent store`, this.store);
       // Get attack pattern details
       this.store.dispatch(new LoadGroupCurrentAttackPattern(attackPatternId));
       // Get relationships for attack pattern, link to assessed objects

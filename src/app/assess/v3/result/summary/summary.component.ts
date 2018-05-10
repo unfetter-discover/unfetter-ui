@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { ConfirmationDialogComponent } from '../../../../components/dialogs/confirmation/confirmation-dialog.component';
 import { slideInOutAnimation } from '../../../../global/animations/animations';
 import { MasterListDialogTableHeaders } from '../../../../global/components/master-list-dialog/master-list-dialog.component';
-import { Assessment } from 'stix/assess/v2/assessment';
+import { Assessment } from 'stix/assess/v3/assessment';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { RiskByKillChain } from 'stix/assess/v2/risk-by-kill-chain';
 import { SummaryAggregation } from 'stix/assess/v2/summary-aggregation';

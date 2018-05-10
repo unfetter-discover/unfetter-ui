@@ -55,7 +55,9 @@ export class FullComponent implements OnInit, OnDestroy {
     private userStore: Store<AppState>,
     private assessService: AssessService,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { }
+  ) { 
+    console.log(`full component store ${store}`);
+  }
 
   /**
    * @description
@@ -94,11 +96,7 @@ export class FullComponent implements OnInit, OnDestroy {
     this.assessment = this.store
       .select('fullAssessment')
       .pluck<object, Assessment>('fullAssessment')
-      .distinctUntilChanged();
-    // .filter((arr) => arr && arr.length > 0)
-    // .map((arr) => {
-    //   return arr.find((el) => el.id === this.assessmentId);
-    // });
+      .distinctUntilChanged()
 
     this.finishedLoading = this.store
       .select('fullAssessment')
@@ -184,7 +182,6 @@ export class FullComponent implements OnInit, OnDestroy {
    */
   public ngOnDestroy(): void {
     this.subscriptions
-      .filter((el) => el !== undefined)
       .forEach((sub) => sub.unsubscribe());
     this.store.dispatch(new CleanAssessmentResultData());
   }
