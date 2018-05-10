@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Capability, Category } from 'stix/assess/v3';
+import { Capability, Category, ObjectAssessment } from 'stix/assess/v3';
 import { Baseline } from '../../models/baseline/baseline';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
@@ -35,6 +35,7 @@ export const START_ASSESSMENT = '[Baseline] START_ASSESSMENT';
 export const START_ASSESSMENT_SUCCESS = '[Baseline] START_ASSESSMENT_SUCCESS';
 export const SET_ATTACK_PATTERNS = '[Baseline] SET_ATTACK_PATTERNS';
 export const SET_CATEGORIES = '[Baseline] SET_CATEGORIES';
+export const SET_CURRENT_BASELINE_OBJECT_ASSESSMENT = '[Baseline] SET_CURRENT_BASELINE_OBJECT_ASSESSMENT';
 export const SET_CATEGORY_STEPS = '[Baseline] SET_CATEGORY_STEPS';
 export const SET_SELECTED_FRAMEWORK_ATTACK_PATTERNS = '[Baseline] SET_SELECTED_FRAMEWORK_ATTACK_PATTERNS';
 export const WIZARD_PAGE = '[Baseline] WIZARD_PAGE';
@@ -117,6 +118,12 @@ export class SetCurrentBaselineCapability implements Action {
     constructor(public payload: Capability) { }
 }
 
+export class SetCurrentBaselineObjectAssessment implements Action {
+    public readonly type = SET_CURRENT_BASELINE_OBJECT_ASSESSMENT;
+
+    constructor(public payload: ObjectAssessment) { }
+}
+
 export class LoadBaselineWizardData implements Action {
     public readonly type = LOAD_BASELINE_WIZARD_DATA;
 
@@ -190,6 +197,7 @@ export type BaselineActions =
     SetCapabilities |
     SetBaselineCapabilities |
     SetCurrentBaselineCapability |
+    SetCurrentBaselineObjectAssessment |
     FinishedLoading |
     FinishedSaving |
     LoadBaselineWizardData |

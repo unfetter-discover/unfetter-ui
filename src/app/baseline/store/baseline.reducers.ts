@@ -1,4 +1,4 @@
-import { AssessmentSet, Capability, Category } from 'stix/assess/v3';
+import { AssessmentSet, Capability, Category, ObjectAssessment } from 'stix/assess/v3';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
 import * as fromApp from '../../root-store/app.reducers';
@@ -18,6 +18,7 @@ export interface BaselineState {
     capabilityGroups: Category[];
     currentCapability: Capability;
     currentCapabilityGroup: Category;
+    currentObjectAssessment: ObjectAssessment;
     finishedLoading: boolean;
     page: number;
     saved: { finished: boolean, id: string };
@@ -36,6 +37,7 @@ const genAssessState = (state?: Partial<BaselineState>) => {
         capabilityGroups: [],
         currentCapability: undefined,
         currentCapabilityGroup: undefined,
+        currentObjectAssessment: undefined,
         finishedLoading: false,
         page: 1,
         saved: { finished: false, id: '' },
@@ -86,6 +88,11 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
             return genAssessState({
                 ...state,
                 currentCapability: action.payload,
+            });
+        case baselineActions.SET_CURRENT_BASELINE_OBJECT_ASSESSMENT:
+            return genAssessState({
+                ...state,
+                currentObjectAssessment: action.payload,
             });
         case baselineActions.SET_ATTACK_PATTERNS:
             return genAssessState({
