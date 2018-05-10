@@ -15,7 +15,7 @@ import { Stix } from 'stix/unfetter/stix';
 import { Key } from 'ts-keycode-enum';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { heightCollapse } from '../../../global/animations/height-collapse';
-import { Indicator } from '../../../models/stix/indicator';
+import * as Indicator from 'stix/unfetter/indicator';
 import { UserProfile } from '../../../models/user/user-profile';
 import { AppState } from '../../../root-store/app.reducers';
 import { Constance } from '../../../utils/constance';
@@ -95,7 +95,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public currentAssessmentGroup = {} as any;
   public page = 1;
   public meta = new AssessmentMeta();
-  public indicators: Indicator[];
+  public indicators: Indicator.UnfetterIndicator[];
   public sensors: Stix[];
   public mitigations: Stix[];
   public ratioOfQuestionsAnswered = 0;
@@ -180,8 +180,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       .pluck('indicators')
       .distinctUntilChanged()
       .filter((el) => el !== undefined)
-      .map((arr: JsonApiData<Indicator>[]) => arr.map((el) => el.attributes))
-      .subscribe((arr: Indicator[]) => this.indicators = arr);
+      .map((arr: JsonApiData<Indicator.UnfetterIndicator>[]) => arr.map((el) => el.attributes))
+      .subscribe((arr: Indicator.UnfetterIndicator[]) => this.indicators = arr);
 
     const sub2$ = this.wizardStore
       .select('assessment')

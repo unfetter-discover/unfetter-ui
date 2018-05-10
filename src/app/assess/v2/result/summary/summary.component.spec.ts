@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActionReducerMap, Store, StoreModule } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { AssessmentMockFactory } from 'stix/assess/v2/assessment.mock';
 import { ComponentModule } from '../../../../components';
 import { GenericApi } from '../../../../core/services/genericapi.service';
 import { usersReducer } from '../../../../root-store/users/users.reducers';
@@ -166,45 +167,27 @@ describe('SummaryComponent', () => {
     expect(service.setAverageRiskPerAssessedObject).not.toHaveBeenCalled();
     expect(service.calculateThresholdOptionNames).not.toHaveBeenCalled();
 
-    component.summary = {
-      assessmentMeta: null, created: null, description: null, modified: null, name: null, type: null, version: null, external_references: null,
-      granular_markings: null, pattern: null, kill_chain_phases: null, created_by_ref: null, valid_from: null, labels: null, metaProperties: null, assessment_objects: null
-    }
+    component.summary = AssessmentMockFactory.mockOne();
     component.transformSummary();
     expect(service.setAverageRiskPerAssessedObject).not.toHaveBeenCalled();
     expect(service.calculateThresholdOptionNames).not.toHaveBeenCalled();
 
-    component.summary = {
-      assessmentMeta: null, created: null, description: null, modified: null, name: null, type: null, version: null, external_references: null,
-      granular_markings: null, pattern: null, kill_chain_phases: null, created_by_ref: null, valid_from: null, labels: null, metaProperties: null, assessment_objects: []
-    }
+    component.summary = AssessmentMockFactory.mockOne();
     component.transformSummary();
     expect(service.setAverageRiskPerAssessedObject).toHaveBeenCalled();
     expect(service.calculateThresholdOptionNames).not.toHaveBeenCalled();
 
-    component.summary = {
-      assessmentMeta: null, created: null, description: null, modified: null, name: null, type: null, version: null, external_references: null,
-      granular_markings: null, pattern: null, kill_chain_phases: null, created_by_ref: null, valid_from: null, labels: null, metaProperties: null,
-      assessment_objects: [{ risk: null, questions: null }]
-    }
+    component.summary = AssessmentMockFactory.mockOne();
     component.transformSummary();
     expect(service.setAverageRiskPerAssessedObject).toHaveBeenCalled();
     expect(service.calculateThresholdOptionNames).not.toHaveBeenCalled();
 
-    component.summary = {
-      assessmentMeta: null, created: null, description: null, modified: null, name: null, type: null, version: null, external_references: null,
-      granular_markings: null, pattern: null, kill_chain_phases: null, created_by_ref: null, valid_from: null, labels: null, metaProperties: null,
-      assessment_objects: [{ risk: null, questions: [] }]
-    }
+    component.summary = AssessmentMockFactory.mockOne();
     component.transformSummary();
     expect(service.setAverageRiskPerAssessedObject).toHaveBeenCalled();
     expect(service.calculateThresholdOptionNames).not.toHaveBeenCalled();
 
-    component.summary = {
-      assessmentMeta: null, created: null, description: null, modified: null, name: null, type: null, version: null, external_references: null,
-      granular_markings: null, pattern: null, kill_chain_phases: null, created_by_ref: null, valid_from: null, labels: null, metaProperties: null,
-      assessment_objects: [{ risk: null, questions: [{ name: null, risk: null, options: null, selected_value: null }] }]
-    }
+    component.summary = AssessmentMockFactory.mockOne();
     component.transformSummary();
     expect(service.setAverageRiskPerAssessedObject).toHaveBeenCalled();
     expect(service.calculateThresholdOptionNames).toHaveBeenCalled();
@@ -220,10 +203,7 @@ describe('SummaryComponent', () => {
       attackPatternsByAssessedObject: null,
       totalAttackPatternCountBySophisicationLevel: null
     };
-    component.summary = {
-      assessmentMeta: null, created: null, description: null, modified: null, name: null, type: null, version: null, external_references: null,
-      granular_markings: null, pattern: null, kill_chain_phases: null, created_by_ref: null, valid_from: null, labels: null, metaProperties: null, assessment_objects: []
-    }
+    component.summary = AssessmentMockFactory.mockOne();
 
     component.transformSAD();
     expect(component.getSummaryCalculationService().summaryAggregation).toEqual({

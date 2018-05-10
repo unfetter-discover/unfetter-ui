@@ -12,7 +12,7 @@ import { Assessment } from 'stix/assess/v3/assessment';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 import * as Indicator from 'stix/unfetter/indicator';
-import { UnfetterIndicatorMockFactory } from 'stix/unfetter/indicator.mock';
+import { UnfetterIndicatorMockFactory } from 'stix/unfetter/unfetter-indicator.mock';
 import { Stix } from 'stix/unfetter/stix';
 import { StixEnum } from 'stix/unfetter/stix.enum';
 import { StixMockFactory } from 'stix/unfetter/stix.mock';

@@ -1,5 +1,7 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { SummaryCalculationService } from './summary-calculation.service';
+import { StixMockFactory } from 'stix/unfetter/stix.mock';
+import { SummaryAggregation } from 'stix/assess/v2/summary-aggregation';
 
 describe('SummaryCalculationService', () => {
   beforeEach(() => {
@@ -254,35 +256,20 @@ describe('SummaryCalculationService', () => {
     expect(service.filterOnRisk([])).toEqual([]);
     expect(service.filterOnRisk([{ risk: null, questions: null, stix: null }])).toEqual([]);
     expect(service.filterOnRisk([{
-      risk: .25, questions: null, stix: {
-        id: null, metaProperties: null, created: null, modified: null, version: null, external_references: null,
-        granular_markings: null, name: null, description: null, pattern: null, kill_chain_phases: null, created_by_ref: null, type: null, valid_from: null, labels: null
-      }
+      risk: .25, questions: null, stix: StixMockFactory.mockOne(),
     }])).toEqual([]);
     expect(service.filterOnRisk([{
-      risk: .25, questions: null, stix: {
-        id: null, metaProperties: null, created: null, modified: null, version: null, external_references: null,
-        granular_markings: null, name: null, description: null, pattern: null, kill_chain_phases: null, created_by_ref: null, type: null, valid_from: null, labels: null
-      }
+      risk: .25, questions: null, stix: StixMockFactory.mockOne(),
     }])).toEqual([]);
     expect(service.filterOnRisk([{
-      risk: .25, questions: null, stix: {
-        id: 'ididid', metaProperties: null, created: null, modified: null, version: null, external_references: null,
-        granular_markings: null, name: null, description: null, pattern: null, kill_chain_phases: null, created_by_ref: null, type: null, valid_from: null, labels: null
-      }
+      risk: .25, questions: null, stix: StixMockFactory.mockOne('ididid'),
     }])).toEqual(['ididid']);
     expect(service.filterOnRisk([
       {
-        risk: .25, questions: null, stix: {
-          id: 'ididid', metaProperties: null, created: null, modified: null, version: null, external_references: null,
-          granular_markings: null, name: null, description: null, pattern: null, kill_chain_phases: null, created_by_ref: null, type: null, valid_from: null, labels: null
-        },
+        risk: .25, questions: null, stix: StixMockFactory.mockOne('ididid'),
       },
       {
-        risk: .75, questions: null, stix: {
-          id: 'nope', metaProperties: null, created: null, modified: null, version: null, external_references: null,
-          granular_markings: null, name: null, description: null, pattern: null, kill_chain_phases: null, created_by_ref: null, type: null, valid_from: null, labels: null
-        }
+        risk: .75, questions: null, stix: StixMockFactory.mockOne('nope')
       }])).toEqual(['ididid']);
   }));
 
@@ -301,51 +288,36 @@ describe('SummaryCalculationService', () => {
     expect(service.assessmentsGroupingTotal).toEqual({});
     service.summaryAggregation = { assessedAttackPatternCountBySophisicationLevel: null, attackPatternsByAssessedObject: [{ _id: 'an id', attackPatterns: null }], totalAttackPatternCountBySophisicationLevel: null };
     service.populateAssessmentsGrouping([{
-      risk: .25, questions: null, stix: {
-        id: 'an id', metaProperties: null, created: null, modified: null, version: null, external_references: null,
-        granular_markings: null, name: null, description: null, pattern: null, kill_chain_phases: null, created_by_ref: null, type: null, valid_from: null, labels: null
-      }
+      risk: .25, questions: null, stix: StixMockFactory.mockOne('an id'),
     }]);
     expect(service.assessmentsGroupingTotal).toEqual({});
     service.summaryAggregation = { assessedAttackPatternCountBySophisicationLevel: null, attackPatternsByAssessedObject: [{ _id: 'an id', attackPatterns: [] }], totalAttackPatternCountBySophisicationLevel: null };
     service.populateAssessmentsGrouping([{
-      risk: .25, questions: null, stix: {
-        id: 'an id', metaProperties: null, created: null, modified: null, version: null, external_references: null,
-        granular_markings: null, name: null, description: null, pattern: null, kill_chain_phases: null, created_by_ref: null, type: null, valid_from: null, labels: null
-      }
+      risk: .25, questions: null, stix: StixMockFactory.mockOne('an id'),
     }]);
     expect(service.assessmentsGroupingTotal).toEqual({});
     service.summaryAggregation = {
       assessedAttackPatternCountBySophisicationLevel: null,
       attackPatternsByAssessedObject: [{ _id: 'an id', attackPatterns: [{ kill_chain_phases: null }] }], totalAttackPatternCountBySophisicationLevel: null
-    };
+    } as SummaryAggregation;
     service.populateAssessmentsGrouping([{
-      risk: .25, questions: null, stix: {
-        id: 'an id', metaProperties: null, created: null, modified: null, version: null, external_references: null,
-        granular_markings: null, name: null, description: null, pattern: null, kill_chain_phases: null, created_by_ref: null, type: null, valid_from: null, labels: null
-      }
+      risk: .25, questions: null, stix: StixMockFactory.mockOne('an id'),
     }]);
     expect(service.assessmentsGroupingTotal).toEqual({ '': 1 });
     service.summaryAggregation = {
       assessedAttackPatternCountBySophisicationLevel: null,
       attackPatternsByAssessedObject: [{ _id: 'an id', attackPatterns: [{ kill_chain_phases: [{ kill_chain_name: null, phase_name: 'happy camper' }] }] }], totalAttackPatternCountBySophisicationLevel: null
-    };
+    } as SummaryAggregation;
     service.populateAssessmentsGrouping([{
-      risk: .25, questions: null, stix: {
-        id: 'an id', metaProperties: null, created: null, modified: null, version: null, external_references: null,
-        granular_markings: null, name: null, description: null, pattern: null, kill_chain_phases: [{ kill_chain_name: null, phase_name: 'happy camper' }], created_by_ref: null, type: null, valid_from: null, labels: null
-      }
+      risk: .25, questions: null, stix: StixMockFactory.mockOne('an id'),
     }]);
     expect(service.assessmentsGroupingTotal).toEqual({ 'happy camper': 1 });
     service.summaryAggregation = {
       assessedAttackPatternCountBySophisicationLevel: null,
       attackPatternsByAssessedObject: [{ _id: 'an id', attackPatterns: [{ kill_chain_phases: [{ kill_chain_name: null, phase_name: 'happy camper' }, { kill_chain_name: null, phase_name: 'happy camper' }] }] }], totalAttackPatternCountBySophisicationLevel: null
-    };
+    } as SummaryAggregation;
     service.populateAssessmentsGrouping([{
-      risk: .25, questions: null, stix: {
-        id: 'an id', metaProperties: null, created: null, modified: null, version: null, external_references: null,
-        granular_markings: null, name: null, description: null, pattern: null, kill_chain_phases: [{ kill_chain_name: null, phase_name: 'happy camper' }], created_by_ref: null, type: null, valid_from: null, labels: null
-      }
+      risk: .25, questions: null, stix: StixMockFactory.mockOne('an id'),
     }]);
     expect(service.assessmentsGroupingTotal).toEqual({ 'happy camper': 2 });
   }));
@@ -376,23 +348,17 @@ describe('SummaryCalculationService', () => {
     service.summaryAggregation = {
       assessedAttackPatternCountBySophisicationLevel: { index: null, count: null },
       attackPatternsByAssessedObject: [{ _id: 'an id', attackPatterns: [{ kill_chain_phases: [{ kill_chain_name: null, phase_name: 'happy camper' }] }] }], totalAttackPatternCountBySophisicationLevel: null
-    };
+    } as SummaryAggregation;
     service.populateTechniqueBreakdown([{
-      risk: .25, questions: null, stix: {
-        id: 'an id', metaProperties: null, created: null, modified: null, version: null, external_references: null,
-        granular_markings: null, name: null, description: null, pattern: null, kill_chain_phases: [{ kill_chain_name: null, phase_name: 'happy camper' }], created_by_ref: null, type: null, valid_from: null, labels: null
-      }
+      risk: .25, questions: null, stix: StixMockFactory.mockOne('an id'),
     }]);
     expect(service.techniqueBreakdown).toEqual({ 0: 0, 1: 0 });
     service.summaryAggregation = {
       assessedAttackPatternCountBySophisicationLevel: { index: 0, count: 3 },
       attackPatternsByAssessedObject: [{ _id: 'an id', attackPatterns: [{ kill_chain_phases: [{ kill_chain_name: null, phase_name: 'happy camper' }] }] }], totalAttackPatternCountBySophisicationLevel: null
-    };
+    } as SummaryAggregation;
     service.populateTechniqueBreakdown([{
-      risk: .25, questions: null, stix: {
-        id: 'an id', metaProperties: null, created: null, modified: null, version: null, external_references: null,
-        granular_markings: null, name: null, description: null, pattern: null, kill_chain_phases: [{ kill_chain_name: null, phase_name: 'happy camper' }], created_by_ref: null, type: null, valid_from: null, labels: null
-      }
+      risk: .25, questions: null, stix: StixMockFactory.mockOne('an id'),
     }]);
     expect(service.techniqueBreakdown).toEqual({ 0: 0, 1: 0 });
 
