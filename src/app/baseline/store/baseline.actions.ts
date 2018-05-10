@@ -35,6 +35,7 @@ export const START_ASSESSMENT = '[Baseline] START_ASSESSMENT';
 export const START_ASSESSMENT_SUCCESS = '[Baseline] START_ASSESSMENT_SUCCESS';
 export const SET_ATTACK_PATTERNS = '[Baseline] SET_ATTACK_PATTERNS';
 export const SET_CATEGORIES = '[Baseline] SET_CATEGORIES';
+export const SET_BASELINE_OBJECT_ASSESSMENTS = '[Baseline] SET_BASELINE_OBJECT_ASSESSMENTS';
 export const SET_CURRENT_BASELINE_OBJECT_ASSESSMENT = '[Baseline] SET_CURRENT_BASELINE_OBJECT_ASSESSMENT';
 export const SET_CATEGORY_STEPS = '[Baseline] SET_CATEGORY_STEPS';
 export const SET_SELECTED_FRAMEWORK_ATTACK_PATTERNS = '[Baseline] SET_SELECTED_FRAMEWORK_ATTACK_PATTERNS';
@@ -118,6 +119,12 @@ export class SetCurrentBaselineCapability implements Action {
     constructor(public payload: Capability) { }
 }
 
+export class SetBaselineObjectAssessments implements Action {
+    public readonly type = SET_BASELINE_OBJECT_ASSESSMENTS;
+
+    constructor(public payload: ObjectAssessment[]) { }
+}
+
 export class SetCurrentBaselineObjectAssessment implements Action {
     public readonly type = SET_CURRENT_BASELINE_OBJECT_ASSESSMENT;
 
@@ -197,6 +204,7 @@ export type BaselineActions =
     SetCapabilities |
     SetBaselineCapabilities |
     SetCurrentBaselineCapability |
+    SetBaselineObjectAssessments |
     SetCurrentBaselineObjectAssessment |
     FinishedLoading |
     FinishedSaving |
