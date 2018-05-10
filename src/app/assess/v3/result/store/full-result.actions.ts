@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Assessment } from 'stix/assess/v2/assessment';
+import { Assessment } from 'stix/assess/v3/assessment';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { Stix } from 'stix/unfetter/stix';

@@ -1,4 +1,4 @@
-import { Assessment } from 'stix/assess/v2/assessment';
+import { Assessment } from 'stix/assess/v3/assessment';
 import { Stix } from 'stix/unfetter/stix';
 import { FullAssessmentGroup } from '../full/group/models/full-assessment-group';
 import * as fullAssessmentResultActions from './full-result.actions';

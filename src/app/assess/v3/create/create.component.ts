@@ -36,7 +36,7 @@ export class CreateComponent implements OnInit {
    * @description for this component create and set a fresh assess form
    * @return {void}
    */
-  public resetForm(event?: UIEvent) {
+  public resetForm(event?: UIEvent): void {
     if (event) {
       event.preventDefault();
     }

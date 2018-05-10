@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
-import { Assessment } from 'stix/assess/v2/assessment';
+import { Assessment } from 'stix/assess/v3/assessment';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { Stix } from 'stix/unfetter/stix';
 import { Relationship } from '../../../../models';
