@@ -75,9 +75,9 @@ export class FullResultEffects {
         });
 
 
-    @Effect({ dispatch: true })
+    @Effect()
     public loadGroupCurrentAttackPattern = this.actions$
-        .do((action) => console.log(`full-result.effects.ts Received ${action.type}`))
+        .do((action) => console.log(`v3 - full-result.effects.ts Received ${action.type}`))
         .filter((action) => action.type === LOAD_GROUP_CURRENT_ATTACK_PATTERN)
         // .ofType(LOAD_GROUP_CURRENT_ATTACK_PATTERN)
         .pluck('payload')
@@ -94,7 +94,7 @@ export class FullResultEffects {
         });
 
 
-    @Effect({ dispatch: true })
+    @Effect()
     public loadGroupAttackPatternRelationships = this.actions$
         .ofType(LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS)
         .pluck('payload')
