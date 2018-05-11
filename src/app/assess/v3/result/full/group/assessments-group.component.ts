@@ -79,9 +79,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     private changeDetector: ChangeDetectorRef,
     private store: Store<FullAssessmentResultState>,
     private authService: AuthService
-  ) {
-    console.log(`AssessGroupComponent store`, this.store);
-  }
+  ) { }
 
   /**
    * @description init before childern are initialized
@@ -371,7 +369,6 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     this.resetNewAssessmentObjects();
 
     if (attackPatternId !== '') {
-      console.log(`AssessGroupComponent store`, this.store);
       // Get attack pattern details
       this.store.dispatch(new LoadGroupCurrentAttackPattern(attackPatternId));
       // Get relationships for attack pattern, link to assessed objects

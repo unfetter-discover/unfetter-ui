@@ -77,9 +77,9 @@ export class FullResultEffects {
 
     @Effect()
     public loadGroupCurrentAttackPattern = this.actions$
-        .do((action) => console.log(`v3 - full-result.effects.ts Received ${action.type}`))
-        .filter((action) => action.type === LOAD_GROUP_CURRENT_ATTACK_PATTERN)
-        // .ofType(LOAD_GROUP_CURRENT_ATTACK_PATTERN)
+        // .do((action) => console.log(`v3 - full-result.effects.ts Received ${action.type}`))
+        // .filter((action) => action.type === LOAD_GROUP_CURRENT_ATTACK_PATTERN)
+        .ofType(LOAD_GROUP_CURRENT_ATTACK_PATTERN)
         .pluck('payload')
         .switchMap((attackPatternId: string) => {
             return this.assessService
