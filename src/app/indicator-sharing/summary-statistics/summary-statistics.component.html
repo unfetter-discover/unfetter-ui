@@ -1,15 +1,109 @@
 <div id="summaryStatisticsComponent" *ngIf="serverCallComplete" class="uf-well">
   <h3 class="lightH3">Summary Statistics</h3>
 
-  <label>Most Contributions</label>
-  <p>{{ mostIndicators.org }}: {{ mostIndicators.number }}</p>
+  <br><br>
 
-  <label>Most Views</label>
-  <p>{{ mostViewed.org }}: {{ mostViewed.number }}</p>
+  <div class="flex">
+    <div class="fb-4 callout">
+      <mat-card class="uf-mat-card" [style.border]="getCardBorder(mostIndicators.index)">
+        <mat-card-content>
+          <mat-card-header [style.borderBottom]="getCardBorder(mostIndicators.index)">
+            <mat-card-title>Contributions</mat-card-title>
+          </mat-card-header>
+          <div class="calloutContent">
+            <span>{{ mostIndicators.org }}</span>
+            <span>{{ mostIndicators.number }}</span>  
+          </div>
+        </mat-card-content>
+      </mat-card> 
+    </div>
+    <div class="fb-8">
+        <canvas baseChart 
+          [datasets]="barChartData.indicators"
+          [options]="barChartOptions" 
+          [legend]="barChartLegend"
+          [chartType]="barChartType" 
+          [colors]="chartColors" 
+          *ngIf="barChartData.indicators.length"></canvas>
+    </div>
+  </div>
+  <br><br><br><br>
+  
+  <div class="flex">
+    <div class="fb-8">
+      <canvas baseChart 
+      [datasets]="barChartData.views"
+      [options]="barChartOptions" 
+      [legend]="barChartLegend"
+      [chartType]="barChartType" 
+      [colors]="chartColors" 
+      *ngIf="barChartData.views.length"></canvas>
+    </div>
+    <div class="fb-4 callout">
+      <mat-card class="uf-mat-card" [style.border]="getCardBorder(mostViewed.index)">
+        <mat-card-content>
+          <mat-card-header [style.borderBottom]="getCardBorder(mostViewed.index)">
+            <mat-card-title>Views</mat-card-title>
+          </mat-card-header>
+          <div class="calloutContent">
+            <span>{{ mostViewed.org }}</span>
+            <span>{{ mostViewed.number }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+  <br><br><br><br>
+  
+  <div class="flex">
+    <div class="fb-4 callout">
+      <mat-card class="uf-mat-card" [style.border]="getCardBorder(mostLiked.index)">
+        <mat-card-content>
+          <mat-card-header [style.borderBottom]="getCardBorder(mostLiked.index)">
+            <mat-card-title>Likes</mat-card-title>
+          </mat-card-header>
+          <div class="calloutContent">
+            <span>{{ mostLiked.org }}</span>
+            <span>{{ mostLiked.number }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="fb-8">
+      <canvas baseChart 
+        [datasets]="barChartData.likes" 
+        [options]="barChartOptions" 
+        [legend]="barChartLegend"
+        [chartType]="barChartType" 
+        [colors]="chartColors" 
+        *ngIf="barChartData.likes.length"></canvas>
+    </div>
+  </div>
+  <br><br><br><br>
+  
+  <div class="flex">    
+    <div class="fb-8">
+      <canvas baseChart 
+        [datasets]="barChartData.comments" 
+        [options]="barChartOptions" 
+        [legend]="barChartLegend"
+        [chartType]="barChartType" 
+        [colors]="chartColors" 
+        *ngIf="barChartData.comments.length"></canvas>
+    </div>
+    <div class="fb-4 callout">
+      <mat-card class="uf-mat-card" [style.border]="getCardBorder(mostComments.index)">
+        <mat-card-content>
+          <mat-card-header [style.borderBottom]="getCardBorder(mostComments.index)">
+            <mat-card-title>Comments</mat-card-title>
+          </mat-card-header>
+          <div class="calloutContent">
+            <span>{{ mostComments.org }}</span>
+            <span>{{ mostComments.number }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
 
-  <label>Most Likes Recieved</label>
-  <p>{{ mostLiked.org }}: {{ mostLiked.number }}</p>
-
-  <label>Most Comments Recieved</label>
-  <p>{{ mostComments.org }}: {{ mostComments.number }}</p>
 </div>
