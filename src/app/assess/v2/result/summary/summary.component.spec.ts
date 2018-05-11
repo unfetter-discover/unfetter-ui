@@ -168,21 +168,14 @@ describe('SummaryComponent', () => {
     expect(service.calculateThresholdOptionNames).not.toHaveBeenCalled();
 
     component.summary = AssessmentMockFactory.mockOne();
+    component.summary.assessment_objects = null;
     component.transformSummary();
     expect(service.setAverageRiskPerAssessedObject).not.toHaveBeenCalled();
     expect(service.calculateThresholdOptionNames).not.toHaveBeenCalled();
 
     component.summary = AssessmentMockFactory.mockOne();
-    component.transformSummary();
-    expect(service.setAverageRiskPerAssessedObject).toHaveBeenCalled();
-    expect(service.calculateThresholdOptionNames).not.toHaveBeenCalled();
-
-    component.summary = AssessmentMockFactory.mockOne();
-    component.transformSummary();
-    expect(service.setAverageRiskPerAssessedObject).toHaveBeenCalled();
-    expect(service.calculateThresholdOptionNames).not.toHaveBeenCalled();
-
-    component.summary = AssessmentMockFactory.mockOne();
+    component.summary.assessment_objects =  component.summary.assessment_objects || [];
+    component.summary.assessment_objects[0].questions = null;
     component.transformSummary();
     expect(service.setAverageRiskPerAssessedObject).toHaveBeenCalled();
     expect(service.calculateThresholdOptionNames).not.toHaveBeenCalled();

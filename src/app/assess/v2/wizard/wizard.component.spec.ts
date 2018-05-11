@@ -24,6 +24,7 @@ import { PipesModule } from '../../../pipes/pipes.module';
 import { assessmentReducer } from '../store/assess.reducers';
 import { WizardComponent } from './wizard.component';
 import { AssessmentMeta } from 'stix/assess/v2/assessment-meta';
+import { AssessmentObjectMockFactory } from 'stix/assess/v2/assessment-object.mock';
 
 
 class MockModel {
@@ -308,7 +309,8 @@ describe('WizardComponent', () => {
     expect(spy).toHaveBeenCalledTimes(4);
 
     component.model = new MockModel();
-    component.model.attributes.assessment_objects = [{ risk: null, questions: null }];
+    const assessmentObjectArr = AssessmentObjectMockFactory.mockMany(1);
+    component.model.attributes.assessment_objects = assessmentObjectArr;
     component.collectModelAssessments(assessment);
     expect(spy).toHaveBeenCalledTimes(5);
 
@@ -323,22 +325,18 @@ describe('WizardComponent', () => {
     expect(spy).toHaveBeenCalledTimes(7);
 
     component.model = new MockModel();
-    component.model.attributes.assessment_objects = [{ stix: null, risk: null, questions: null }];
+    component.model.attributes.assessment_objects = AssessmentObjectMockFactory.mockMany(1);
     assessment = { id: 'happyjack' };
     component.collectModelAssessments(assessment);
     expect(spy).toHaveBeenCalledTimes(8);
 
     component.model = new MockModel();
-    component.model.attributes.assessment_objects[0] = {
-      stix: StixMockFactory.mockOne(), risk: null, questions: null
-    };
+    component.model.attributes.assessment_objects[0] = assessmentObjectArr[0];
     component.collectModelAssessments(assessment);
     expect(spy).toHaveBeenCalledTimes(9);
 
     component.model = new MockModel();
-    component.model.attributes.assessment_objects[0] = {
-      stix: StixMockFactory.mockOne(), risk: null, questions: null
-    };
+    component.model.attributes.assessment_objects[0] = assessmentObjectArr[0];
     component.collectModelAssessments(assessment);
     expect(spy).toHaveBeenCalledTimes(10);
 

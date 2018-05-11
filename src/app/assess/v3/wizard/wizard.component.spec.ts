@@ -8,23 +8,21 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule, combineReducers } from '@ngrx/store';
 import * as fromRoot from 'app/root-store/app.reducers';
 import { ChartsModule } from 'ng2-charts';
-import { Assessment } from 'stix/assess/v3/assessment';
+import { Assess3Meta } from 'stix';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
-import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
+import { AssessmentObjectMockFactory } from 'stix/assess/v2/assessment-object.mock';
+import { Assessment } from 'stix/assess/v3/assessment';
 import * as Indicator from 'stix/unfetter/indicator';
-import { UnfetterIndicatorMockFactory } from 'stix/unfetter/unfetter-indicator.mock';
 import { Stix } from 'stix/unfetter/stix';
 import { StixEnum } from 'stix/unfetter/stix.enum';
 import { StixMockFactory } from 'stix/unfetter/stix.mock';
+import { UnfetterIndicatorMockFactory } from 'stix/unfetter/unfetter-indicator.mock';
 import { ComponentModule } from '../../../components/component.module';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { GlobalModule } from '../../../global/global.module';
-import { CourseOfAction } from '../../../models/stix/course-of-action';
-import { Sensor } from '../../../models/unfetter/sensor';
 import { PipesModule } from '../../../pipes/pipes.module';
 import { assessmentReducer } from '../store/assess.reducers';
 import { WizardComponent } from './wizard.component';
-
 
 class MockModel {
   attributes: any;
@@ -308,7 +306,8 @@ describe('WizardComponent', () => {
     expect(spy).toHaveBeenCalledTimes(4);
 
     component.model = new MockModel();
-    component.model.attributes.assessment_objects = [{ risk: null, questions: null }];
+    const assessmentObjectArr = AssessmentObjectMockFactory.mockMany(1);
+    component.model.attributes.assessment_objects = assessmentObjectArr;
     component.collectModelAssessments(assessment);
     expect(spy).toHaveBeenCalledTimes(5);
 
@@ -323,22 +322,18 @@ describe('WizardComponent', () => {
     expect(spy).toHaveBeenCalledTimes(7);
 
     component.model = new MockModel();
-    component.model.attributes.assessment_objects = [{ stix: null, risk: null, questions: null }];
+    component.model.attributes.assessment_objects = AssessmentObjectMockFactory.mockMany(1);
     assessment = { id: 'happyjack' };
     component.collectModelAssessments(assessment);
     expect(spy).toHaveBeenCalledTimes(8);
 
     component.model = new MockModel();
-    component.model.attributes.assessment_objects[0] = {
-      stix: StixMockFactory.mockOne(), risk: null, questions: null
-    };
+    component.model.attributes.assessment_objects[0] = assessmentObjectArr[0];
     component.collectModelAssessments(assessment);
     expect(spy).toHaveBeenCalledTimes(9);
 
     component.model = new MockModel();
-    component.model.attributes.assessment_objects[0] = {
-      stix: StixMockFactory.mockOne(), risk: null, questions: null
-    };
+    component.model.attributes.assessment_objects[0] = assessmentObjectArr[0];
     component.collectModelAssessments(assessment);
     expect(spy).toHaveBeenCalledTimes(10);
 
@@ -506,7 +501,7 @@ describe('WizardComponent', () => {
     const meta: Partial<Assess3Meta> = {
       includesIndicators: false,
       includesMitigations: false,
-      baselineRef: '',
+      // includesSensors: false,
     };
 
     const id = '0123456789abcdef', rollup = 'fedcba9876543210', name = 'Test Assessment';
@@ -546,7 +541,7 @@ describe('WizardComponent', () => {
     expect(meta.description).toEqual(desc);
     expect(meta.includesIndicators).toBeTruthy();
     expect(meta.includesMitigations).toBeTruthy();
-    expect(meta.baselineRef).toBeTruthy();
+    // expect(meta.includesSensors).toBeTruthy();
     expect(component.model.attributes.assessment_objects.length).toEqual(3);
     expect(component.model.relationships.indicators).toEqual(indicators);
     expect(component.model.relationships.mitigations).toEqual(mitigations);

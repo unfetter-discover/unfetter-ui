@@ -2,6 +2,8 @@ import { TestBed, inject } from '@angular/core/testing';
 import { SummaryCalculationService } from './summary-calculation.service';
 import { StixMockFactory } from 'stix/unfetter/stix.mock';
 import { SummaryAggregation } from 'stix/assess/v2/summary-aggregation';
+import { AssessmentObject } from 'stix/assess/v2/assessment-object';
+import { AssessmentObjectMockFactory } from 'stix/assess/v2/assessment-object.mock';
 
 describe('SummaryCalculationService', () => {
   beforeEach(() => {
@@ -40,9 +42,9 @@ describe('SummaryCalculationService', () => {
   }));
 
   it('should set average risk per assessed object', inject([SummaryCalculationService], (service: SummaryCalculationService) => {
-    service.setAverageRiskPerAssessedObject([{ risk: 3, questions: null }]);
+    service.setAverageRiskPerAssessedObject([AssessmentObjectMockFactory.mockWithRisk(3)]);
     expect(service.numericRisk).toEqual(3);
-    service.setAverageRiskPerAssessedObject([{ risk: 3, questions: null }, { risk: 0, questions: null }]);
+    service.setAverageRiskPerAssessedObject([AssessmentObjectMockFactory.mockWithRisk(3), AssessmentObjectMockFactory.mockWithRisk(0)]);
     expect(service.numericRisk).toEqual(1.5);
   }));
 
@@ -118,8 +120,8 @@ describe('SummaryCalculationService', () => {
   }));
 
   it('should calculate average risk for a phase', inject([SummaryCalculationService], (service: SummaryCalculationService) => {
-    expect(service.calculateAvgRiskPerPhase({ assessedObjects: [{ questions: null, risk: 0 }], attackPatterns: null, _id: null })).toEqual(0);
-    expect(service.calculateAvgRiskPerPhase({ assessedObjects: [{ questions: null, risk: 1 }], attackPatterns: null, _id: null })).toEqual(1);
+    expect(service.calculateAvgRiskPerPhase({ assessedObjects: [AssessmentObjectMockFactory.mockWithRisk(0)], attackPatterns: null, _id: null })).toEqual(0);
+    expect(service.calculateAvgRiskPerPhase({ assessedObjects: [AssessmentObjectMockFactory.mockWithRisk(1)], attackPatterns: null, _id: null })).toEqual(1);
   }));
 
   it('should calculate default top risks for kill chains', inject([SummaryCalculationService], (service: SummaryCalculationService) => {
@@ -254,27 +256,15 @@ describe('SummaryCalculationService', () => {
     service.selectedRisk = 0.5;
     expect(service.filterOnRisk(null)).toEqual([]);
     expect(service.filterOnRisk([])).toEqual([]);
-    expect(service.filterOnRisk([{ risk: null, questions: null, stix: null }])).toEqual([]);
-    expect(service.filterOnRisk([{
-      risk: .25, questions: null, stix: StixMockFactory.mockOne()
-    }])).toEqual([]);
-    expect(service.filterOnRisk([{
-      risk: .25, questions: null, stix: StixMockFactory.mockOne()
-    }])).toEqual([]);
-
-    const arr = [{
-      risk: .25, questions: null, stix: StixMockFactory.mockOne('ididid')
-    }];
-    expect(service.filterOnRisk(arr)).toEqual(['ididid']);
-
-    const arr2 = [
-      {
-        risk: .25, questions: null, stix: StixMockFactory.mockOne('ididid'),
-      },
-      {
-        risk: .75, questions: null, stix: StixMockFactory.mockOne('nope'),
-      }];
-    expect(service.filterOnRisk(arr2)).toEqual(['ididid']);
+    expect(service.filterOnRisk([AssessmentObjectMockFactory.mockOne()])).toEqual([]);
+    const arr = [AssessmentObjectMockFactory.mockWithRisk(.25)];
+    expect(service.filterOnRisk(arr)).toEqual([arr[0].stix.id]);
+    const ao = AssessmentObjectMockFactory.mockWithRisk(.25);
+    ao.stix = StixMockFactory.mockOne('ididid');
+    const ao1 = AssessmentObjectMockFactory.mockWithRisk(.75);
+    ao1.stix = StixMockFactory.mockOne('nope');
+    expect(service.filterOnRisk([ao])).toEqual(['ididid']);
+    expect(service.filterOnRisk([ao, ao1])).toEqual(['ididid']);
   }));
 
   it('should populate assessments grouping given an array of asssesment objects', inject([SummaryCalculationService], (service: SummaryCalculationService) => {
@@ -288,44 +278,34 @@ describe('SummaryCalculationService', () => {
     service.populateAssessmentsGrouping([]);
     expect(service.assessmentsGroupingTotal).toEqual({});
     service.summaryAggregation = { assessedAttackPatternCountBySophisicationLevel: null, attackPatternsByAssessedObject: [{ _id: 'an id', attackPatterns: null }], totalAttackPatternCountBySophisicationLevel: null };
-    service.populateAssessmentsGrouping([{ risk: null, questions: null }]);
+    service.populateAssessmentsGrouping(AssessmentObjectMockFactory.mockMany(1));
     expect(service.assessmentsGroupingTotal).toEqual({});
     service.summaryAggregation = { assessedAttackPatternCountBySophisicationLevel: null, attackPatternsByAssessedObject: [{ _id: 'an id', attackPatterns: null }], totalAttackPatternCountBySophisicationLevel: null };
-    service.populateAssessmentsGrouping([{
-      risk: .25, questions: null, stix: StixMockFactory.mockOne('an id')
-    }]);
+    
+    const ao1 = AssessmentObjectMockFactory.mockWithRisk(.25);
+    ao1.stix = StixMockFactory.mockOne('an id');
+    service.populateAssessmentsGrouping([]);
     expect(service.assessmentsGroupingTotal).toEqual({});
     service.summaryAggregation = { assessedAttackPatternCountBySophisicationLevel: null, attackPatternsByAssessedObject: [{ _id: 'an id', attackPatterns: [] }], totalAttackPatternCountBySophisicationLevel: null };
-    service.populateAssessmentsGrouping([{
-      risk: .25, questions: null, stix: StixMockFactory.mockOne('an id')
-    }]);
+    service.populateAssessmentsGrouping([ao1]);
     expect(service.assessmentsGroupingTotal).toEqual({});
     service.summaryAggregation = {
       assessedAttackPatternCountBySophisicationLevel: null,
       attackPatternsByAssessedObject: [{ _id: 'an id', attackPatterns: [{ kill_chain_phases: null }] }], totalAttackPatternCountBySophisicationLevel: null
     } as SummaryAggregation;
-    service.populateAssessmentsGrouping([{
-      risk: .25, questions: null, stix: StixMockFactory.mockOne('an id')
-    }]);
+    service.populateAssessmentsGrouping([ao1]);
     expect(service.assessmentsGroupingTotal).toEqual({ '': 1 });
     service.summaryAggregation = {
       assessedAttackPatternCountBySophisicationLevel: null,
       attackPatternsByAssessedObject: [{ _id: 'an id', attackPatterns: [{ kill_chain_phases: [{ kill_chain_name: null, phase_name: 'happy camper' }] }] }], totalAttackPatternCountBySophisicationLevel: null
     } as SummaryAggregation;
-
-    const happyCamperAnId = StixMockFactory.mockOne('an id');
-    happyCamperAnId.kill_chain_phases = [{ kill_chain_name: null, phase_name: 'happy camper' }];
-    service.populateAssessmentsGrouping([{
-      risk: .25, questions: null, stix: happyCamperAnId,
-    }]);
+    service.populateAssessmentsGrouping([ao1]);
     expect(service.assessmentsGroupingTotal).toEqual({ 'happy camper': 1 });
     service.summaryAggregation = {
       assessedAttackPatternCountBySophisicationLevel: null,
       attackPatternsByAssessedObject: [{ _id: 'an id', attackPatterns: [{ kill_chain_phases: [{ kill_chain_name: null, phase_name: 'happy camper' }, { kill_chain_name: null, phase_name: 'happy camper' }] }] }], totalAttackPatternCountBySophisicationLevel: null
     } as SummaryAggregation;
-    service.populateAssessmentsGrouping([{
-      risk: .25, questions: null, stix: happyCamperAnId,
-    }]);
+    service.populateAssessmentsGrouping([ao1]);
     expect(service.assessmentsGroupingTotal).toEqual({ 'happy camper': 2 });
   }));
 
@@ -335,40 +315,36 @@ describe('SummaryCalculationService', () => {
     expect(service.techniqueBreakdown).toEqual({});
     service.populateTechniqueBreakdown([]);
     expect(service.techniqueBreakdown).toEqual({});
-    service.populateTechniqueBreakdown([{ risk: null, questions: null }]);
+    service.populateTechniqueBreakdown(AssessmentObjectMockFactory.mockMany(1));
     expect(service.techniqueBreakdown).toEqual({});
     service.summaryAggregation = { assessedAttackPatternCountBySophisicationLevel: null, attackPatternsByAssessedObject: null, totalAttackPatternCountBySophisicationLevel: null };
     service.populateTechniqueBreakdown([]);
     expect(service.techniqueBreakdown).toEqual({});
-    service.populateTechniqueBreakdown([{ risk: null, questions: null }]);
+    service.populateTechniqueBreakdown(AssessmentObjectMockFactory.mockMany(1));
     expect(service.techniqueBreakdown).toEqual({});
     service.summaryAggregation = { assessedAttackPatternCountBySophisicationLevel: null, attackPatternsByAssessedObject: [{ _id: null, attackPatterns: null }], totalAttackPatternCountBySophisicationLevel: null };
     service.populateTechniqueBreakdown([]);
     expect(service.techniqueBreakdown).toEqual({});
-    service.populateTechniqueBreakdown([{ risk: null, questions: null }]);
+    service.populateTechniqueBreakdown(AssessmentObjectMockFactory.mockMany(1));
     expect(service.techniqueBreakdown).toEqual({});
     service.summaryAggregation = { assessedAttackPatternCountBySophisicationLevel: { index: null, count: null }, attackPatternsByAssessedObject: [{ _id: null, attackPatterns: null }], totalAttackPatternCountBySophisicationLevel: null };
     service.populateTechniqueBreakdown([]);
     expect(service.techniqueBreakdown).toEqual({ 0: 0, 1: 0 });
-    service.populateTechniqueBreakdown([{ risk: null, questions: null }]);
+    service.populateTechniqueBreakdown(AssessmentObjectMockFactory.mockMany(1));
     expect(service.techniqueBreakdown).toEqual({ 0: 0, 1: 0 });
     service.summaryAggregation = {
       assessedAttackPatternCountBySophisicationLevel: { index: null, count: null },
       attackPatternsByAssessedObject: [{ _id: 'an id', attackPatterns: [{ kill_chain_phases: [{ kill_chain_name: null, phase_name: 'happy camper' }] }] }], totalAttackPatternCountBySophisicationLevel: null
     } as SummaryAggregation;
-    const happyCamperAnId = StixMockFactory.mockOne('an id');
-    happyCamperAnId.kill_chain_phases = [{ kill_chain_name: null, phase_name: 'happy camper' }];
-    service.populateTechniqueBreakdown([{
-      risk: .25, questions: null, stix: happyCamperAnId,
-    }]);
+    const ao = AssessmentObjectMockFactory.mockWithRisk(.25);
+    ao.stix = StixMockFactory.mockOne('an id');
+    service.populateTechniqueBreakdown([ao]);
     expect(service.techniqueBreakdown).toEqual({ 0: 0, 1: 0 });
     service.summaryAggregation = {
       assessedAttackPatternCountBySophisicationLevel: { index: 0, count: 3 },
       attackPatternsByAssessedObject: [{ _id: 'an id', attackPatterns: [{ kill_chain_phases: [{ kill_chain_name: null, phase_name: 'happy camper' }] }] }], totalAttackPatternCountBySophisicationLevel: null
     } as SummaryAggregation;
-    service.populateTechniqueBreakdown([{
-      risk: .25, questions: null, stix: happyCamperAnId,
-    }]);
+    service.populateTechniqueBreakdown([ao]);
     expect(service.techniqueBreakdown).toEqual({ 0: 0, 1: 0 });
 
   }));
