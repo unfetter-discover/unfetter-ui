@@ -1,4 +1,5 @@
 import { Stix } from '../../models/stix/stix';
+import * as UnfetterStix from 'stix/unfetter/stix';
 import { UserProfile } from '../../models/user/user-profile';
 import { UserRole } from '../../models/user/user-role.enum';
 import { environment } from '../../../environments/environment';
@@ -9,7 +10,7 @@ import { environment } from '../../../environments/environment';
  * @returns boolean
  * @description Determines if the create_by_ref of a STIX object is in a user's organizations
  */
-function orgPermissions (stix: Stix, user: UserProfile): boolean {
+function orgPermissions (stix: Stix|UnfetterStix.Stix, user: UserProfile): boolean {
     if (environment.runMode === 'DEMO') {
         return true;
     }
@@ -30,7 +31,7 @@ function orgPermissions (stix: Stix, user: UserProfile): boolean {
  * @returns boolean
  * @description Determines if published exists and is `true`
  */
-function isPublished(stix: Stix): boolean {
+function isPublished(stix: Stix|UnfetterStix.Stix): boolean {
     return stix.metaProperties && stix.metaProperties.published !== undefined && stix.metaProperties.published === true ? true : false;
 }
 
@@ -48,7 +49,7 @@ function isAdmin(user: UserProfile): boolean {
  * @returns boolean
  * @description Determines if a user has permission to read a STIX document
  */
-export const canRead = (stix: Stix, user: UserProfile): boolean => {
+export const canRead = (stix: Stix|UnfetterStix.Stix, user: UserProfile): boolean => {
     return isAdmin(user) || isPublished(stix) || orgPermissions(stix, user);
 }
 
@@ -58,7 +59,7 @@ export const canRead = (stix: Stix, user: UserProfile): boolean => {
  * @returns boolean
  * @description Determines if a user has permission to edit a STIX document
  */
-export const canEdit = (stix: Stix, user: UserProfile): boolean => {
+export const canEdit = (stix: Stix|UnfetterStix.Stix, user: UserProfile): boolean => {
     return isAdmin(user) || orgPermissions(stix, user);
 }
 
@@ -68,7 +69,7 @@ export const canEdit = (stix: Stix, user: UserProfile): boolean => {
  * @returns boolean
  * @description Determines if a user has permission to delete a STIX document
  */
-export const canDelete = (stix: Stix, user: UserProfile): boolean => {
+export const canDelete = (stix: Stix|UnfetterStix.Stix, user: UserProfile): boolean => {
     return isAdmin(user) || orgPermissions(stix, user);
 }
 
@@ -78,7 +79,7 @@ export const canDelete = (stix: Stix, user: UserProfile): boolean => {
  * @returns boolean
  * @description Determines if a user has permission to create a STIX document
  */
-export const canCreate = (stix: Stix, user: UserProfile): boolean => {
+export const canCreate = (stix: Stix|UnfetterStix.Stix, user: UserProfile): boolean => {
     return isAdmin(user) || orgPermissions(stix, user);
 }
 
@@ -88,42 +89,42 @@ export const canCreate = (stix: Stix, user: UserProfile): boolean => {
  * @returns boolean
  * @description Determines if a user has permission to do all CRUD operations on a STIX document
  */
-export const canCrud = (stix: Stix, user: UserProfile): boolean => {
+export const canCrud = (stix: Stix|UnfetterStix.Stix, user: UserProfile): boolean => {
     return isAdmin(user) || orgPermissions(stix, user);
 }
 
 export class StixPermissions {
     private user: UserProfile;
 
-    public static canReadStatic(stix: Stix, user: UserProfile): boolean {
+    public static canReadStatic(stix: Stix|UnfetterStix.Stix, user: UserProfile): boolean {
         return canRead(stix, user);
     }
-    public static canEditStatic(stix: Stix, user: UserProfile): boolean {
+    public static canEditStatic(stix: Stix|UnfetterStix.Stix, user: UserProfile): boolean {
         return canEdit(stix, user);
     }
-    public static canDeleteStatic(stix: Stix, user: UserProfile): boolean {
+    public static canDeleteStatic(stix: Stix|UnfetterStix.Stix, user: UserProfile): boolean {
         return canDelete(stix, user);
     }
-    public static canCreateStatic(stix: Stix, user: UserProfile): boolean {
+    public static canCreateStatic(stix: Stix|UnfetterStix.Stix, user: UserProfile): boolean {
         return canCreate(stix, user);
     }
-    public static canCrudStatic(stix: Stix, user: UserProfile): boolean {
+    public static canCrudStatic(stix: Stix|UnfetterStix.Stix, user: UserProfile): boolean {
         return canCrud(stix, user);
     }
 
-    public canRead(stix: Stix): boolean {
+    public canRead(stix: Stix|UnfetterStix.Stix): boolean {
         return canRead(stix, this.user);
     }
-    public canEdit(stix: Stix): boolean {
+    public canEdit(stix: Stix|UnfetterStix.Stix): boolean {
         return canEdit(stix, this.user);
     }
-    public canDelete(stix: Stix): boolean {
+    public canDelete(stix: Stix|UnfetterStix.Stix): boolean {
         return canDelete(stix, this.user);
     }
-    public canCreate(stix: Stix): boolean {
+    public canCreate(stix: Stix|UnfetterStix.Stix): boolean {
         return canCreate(stix, this.user);
     }
-    public canCrud(stix: Stix): boolean {
+    public canCrud(stix: Stix|UnfetterStix.Stix): boolean {
         return canCrud(stix, this.user);
     }
 

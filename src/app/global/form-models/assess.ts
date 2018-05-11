@@ -1,6 +1,5 @@
-import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
-
-import { AssessmentMeta } from '../../models/assess/assessment-meta';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AssessmentMeta } from 'stix/assess/v2/assessment-meta';
 
 export const AssessForm = (assessment?: AssessmentMeta) => {
     if (!assessment) {

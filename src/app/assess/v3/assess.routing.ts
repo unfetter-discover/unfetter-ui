@@ -15,7 +15,7 @@ const routes = [
         component: AssessLayoutComponent,
         children: [
             { path: 'create', component: CreateComponent },
-            { path: 'wizard/new/indicators/:includesIndicators/mitigations/:includesMitigations/sensors/:includesSensors', loadChildren: 'app/assess/v3/wizard/wizard.module#WizardModule' },
+            { path: 'wizard/new/indicators/:includesIndicators/mitigations/:includesMitigations/sensors/:baselineRef', loadChildren: 'app/assess/v3/wizard/wizard.module#WizardModule' },
             { path: 'wizard/edit/:rollupId', loadChildren: 'app/assess/v3/wizard/wizard.module#WizardModule' },
         ]
     },

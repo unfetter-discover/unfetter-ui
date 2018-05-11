@@ -5,23 +5,23 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MenuItem } from 'primeng/components/common/menuitem';
 import { Subscription } from 'rxjs/Subscription';
+import { Assessment } from 'stix/assess/v2/assessment';
+import { AssessmentMeta } from 'stix/assess/v2/assessment-meta';
+import { AssessmentObject } from 'stix/assess/v2/assessment-object';
+import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';
+import { Dictionary } from 'stix/common/dictionary';
+import { JsonApiData } from 'stix/json/jsonapi-data';
+import { Stix } from 'stix/unfetter/stix';
 import { Key } from 'ts-keycode-enum';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { heightCollapse } from '../../../global/animations/height-collapse';
-import { Assessment } from '../../../models/assess/assessment';
-import { AssessmentMeta } from '../../../models/assess/assessment-meta';
-import { AssessmentObject } from '../../../models/assess/assessment-object';
-import { AssessmentQuestion } from '../../../models/assess/assessment-question';
-import { Dictionary } from '../../../models/json/dictionary';
-import { JsonApiData } from '../../../models/json/jsonapi-data';
-import { Indicator } from '../../../models/stix/indicator';
-import { Stix } from '../../../models/stix/stix';
+import * as Indicator from 'stix/unfetter/indicator';
 import { UserProfile } from '../../../models/user/user-profile';
 import { AppState } from '../../../root-store/app.reducers';
 import { Constance } from '../../../utils/constance';
 import { LoadAssessmentsByRollupId } from '../result/store/full-result.actions';
-import { CleanAssessmentWizardData, LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle } from '../store/assess.actions';
 import { FullAssessmentResultState } from '../result/store/full-result.reducers';
+import { CleanAssessmentWizardData, LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle } from '../store/assess.actions';
 import * as assessReducers from '../store/assess.reducers';
 import { Measurements } from './models/measurements';
 import { SidePanelName } from './models/side-panel-name.enum';
@@ -95,7 +95,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public currentAssessmentGroup = {} as any;
   public page = 1;
   public meta = new AssessmentMeta();
-  public indicators: Indicator[];
+  public indicators: Indicator.UnfetterIndicator[];
   public sensors: Stix[];
   public mitigations: Stix[];
   public ratioOfQuestionsAnswered = 0;
@@ -180,8 +180,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       .pluck('indicators')
       .distinctUntilChanged()
       .filter((el) => el !== undefined)
-      .map((arr: JsonApiData<Indicator>[]) => arr.map((el) => el.attributes))
-      .subscribe((arr: Indicator[]) => this.indicators = arr);
+      .map((arr: JsonApiData<Indicator.UnfetterIndicator>[]) => arr.map((el) => el.attributes))
+      .subscribe((arr: Indicator.UnfetterIndicator[]) => this.indicators = arr);
 
     const sub2$ = this.wizardStore
       .select('assessment')
@@ -317,7 +317,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       summary.assessment_objects = summary.assessment_objects.concat(assessment.assessment_objects);
       summary.created_by_ref = meta.created_by_ref = assessment.created_by_ref;
       if (!assessment.metaProperties) {
-        assessment.metaProperties = {};
+        assessment.metaProperties = { published: false };
         if (!assessment.metaProperties.rollupId) {
           assessment.metaProperties.rollupId = rollupId;
         }
@@ -873,7 +873,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    */
   public createAssessmentGroups(assessedObjects: Stix[]): any[] {
     const assessmentGroups = [];
-    const self = this;
 
     if (assessedObjects) {
       // Go through and build each assessment
@@ -891,7 +890,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           assessment.measurements = assessedObject.id ? this.buildMeasurements(assessedObject.id) : [];
           assessment.type = assessedObject.type;
           const risk = this.getRisk(assessment.measurements);
-          assessment.risk = -1;
+          assessment.risk = (risk >= 0) ? risk : -1;
           return assessment;
         });
       this.groupings = this.buildGrouping(this.assessments);

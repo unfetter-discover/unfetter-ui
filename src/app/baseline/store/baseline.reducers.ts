@@ -1,4 +1,4 @@
-import { AssessmentSet, Capability, Category, ObjectAssessment } from 'stix/assess/v3';
+import { AssessmentSet, Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
 import * as fromApp from '../../root-store/app.reducers';

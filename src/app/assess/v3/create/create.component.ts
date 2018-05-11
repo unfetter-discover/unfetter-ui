@@ -2,11 +2,11 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { AssessForm } from '../../../global/form-models/assess';
-import { AssessmentMeta } from '../../../models/assess/assessment-meta';
+import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 import * as assessActions from '../store/assess.actions';
 import { UpdatePageTitle } from '../store/assess.actions';
 import * as assessReducers from '../store/assess.reducers';
+import { Assess3Form } from './assess3.form';
 
 @Component({
   selector: 'unf-assess-create',
@@ -14,8 +14,7 @@ import * as assessReducers from '../store/assess.reducers';
   styleUrls: ['./create.component.scss']
 })
 export class CreateComponent implements OnInit {
-
-  public assessMeta: AssessmentMeta;
+  public assessMeta: Assess3Meta;
   public form: FormGroup;
 
   constructor(
@@ -28,7 +27,7 @@ export class CreateComponent implements OnInit {
    * @description
    */
   ngOnInit(): void {
-    this.assessMeta = new AssessmentMeta();
+    this.assessMeta = new Assess3Meta();
     this.resetForm();
     this.store.dispatch(new UpdatePageTitle(this.assessMeta.title));
   }
@@ -37,12 +36,12 @@ export class CreateComponent implements OnInit {
    * @description for this component create and set a fresh assess form
    * @return {void}
    */
-  public resetForm(event?: UIEvent) {
+  public resetForm(event?: UIEvent): void {
     if (event) {
       event.preventDefault();
     }
 
-    this.form = AssessForm();
+    this.form = Assess3Form();
   }
 
   /**
@@ -51,16 +50,16 @@ export class CreateComponent implements OnInit {
    */
   public submitForm(): void {
     this.assessMeta = this.formToAssessment(this.form);
-    console.log('submit form', this.assessMeta);
-    this.store.dispatch(new assessActions.StartAssessment(this.assessMeta));
+    // TODO: pass thru the correct types
+    this.store.dispatch(new assessActions.StartAssessment(this.assessMeta as any));
   }
 
   /**
    * @description
    * @param form 
    */
-  public formToAssessment(form: FormGroup): AssessmentMeta {
-    const assessment = Object.assign(new AssessmentMeta(), form.value);
+  public formToAssessment(form: FormGroup): Assess3Meta {
+    const assessment = Object.assign(new Assess3Meta(), form.value);
     return assessment;
   }
 
@@ -89,5 +88,13 @@ export class CreateComponent implements OnInit {
    */
   public orgSelected(orgId: string): void {
     this.form.get('created_by_ref').patchValue(orgId);
+  }
+
+  /**
+   * @param  {string} baselineId
+   * @returns void
+   */
+  public baselineSelected(baselineId: string): void {
+    this.form.get('baselineRef').patchValue(baselineId);
   }
 }

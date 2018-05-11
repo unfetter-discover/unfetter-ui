@@ -1,9 +1,9 @@
 import { Action } from '@ngrx/store';
+import { Assessment } from 'stix/assess/v2/assessment';
+import { AssessmentObject } from 'stix/assess/v2/assessment-object';
+import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
+import { Stix } from 'stix/unfetter/stix';
 import { Relationship } from '../../../../models';
-import { Assessment } from '../../../../models/assess/assessment';
-import { AssessmentObject } from '../../../../models/assess/assessment-object';
-import { RiskByAttack } from '../../../../models/assess/risk-by-attack';
-import { Stix } from '../../../../models/stix/stix';
 
 // For effects
 export const LOAD_ASSESSMENTS_BY_ROLLUP_ID = '[Assess Result] LOAD_ASSESSMENTS_BY_ROLLUP_ID';

@@ -1,8 +1,10 @@
 import { Mock } from '../mock';
-import { Phase } from './phase';
 import { AssessAttackPatternMetaMockFactory } from './assess-attack-pattern-meta.mock';
+import { Phase } from './phase';
 
-
+/**
+ * @deprecated this class should be replaced in favor of the implementation in the stix npm module 
+ */
 export class PhaseMock extends Mock<Phase> {
     public mockOne(): Phase {
         const tmp = new Phase();

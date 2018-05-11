@@ -1,7 +1,7 @@
-import { AssessmentObjectMockFactory } from '../../../../../../models/assess/assessment-object.mock';
-import { RiskByAttackPatternMockFactory } from '../../../../../../models/assess/risk-by-attack-pattern.mock';
+import { RiskByAttackPatternMockFactory } from 'stix/assess/v2/risk-by-attack-pattern.mock';
+import { AssessmentObjectMockFactory } from 'stix/assess/v2/assessment-object.mock';
+import { StixMockFactory } from 'stix/unfetter/stix.mock';
 import { Mock } from '../../../../../../models/mock';
-import { StixMockFactory } from '../../../../../../models/stix/stix-mock';
 import { DisplayedAssessmentObjectMockFactory } from './displayed-assessment-objects.mock';
 import { FullAssessmentGroup } from './full-assessment-group';
 

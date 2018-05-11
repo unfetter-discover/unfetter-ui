@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Assessment } from '../../../../models/assess/assessment';
+import { Assessment } from 'stix/assess/v3/assessment';
 
 @Component({
   selector: 'result-header',
@@ -60,7 +60,7 @@ export class ResultHeaderComponent implements OnInit {
 
     const assessmentType = assessmentObjects[0].stix.type || '';
     let totalQuestions;
-    switch (assessmentType) {
+    switch (assessmentType.toString()) {
       case 'indicator': {
         totalQuestions = this.totalIndicators;
         break;

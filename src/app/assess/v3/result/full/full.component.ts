@@ -4,10 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
+import { Assessment } from 'stix/assess/v3/assessment';
 import { ConfirmationDialogComponent } from '../../../../components/dialogs/confirmation/confirmation-dialog.component';
 import { MasterListDialogTableHeaders } from '../../../../global/components/master-list-dialog/master-list-dialog.component';
-import { Assessment } from '../../../../models/assess/assessment';
-import { RiskByAttack } from '../../../../models/assess/risk-by-attack';
 import { UserProfile } from '../../../../models/user/user-profile';
 import { AppState } from '../../../../root-store/app.reducers';
 import { Constance } from '../../../../utils/constance';
@@ -55,7 +55,9 @@ export class FullComponent implements OnInit, OnDestroy {
     private userStore: Store<AppState>,
     private assessService: AssessService,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { }
+  ) { 
+    console.log(`full component store ${store}`);
+  }
 
   /**
    * @description
@@ -94,11 +96,7 @@ export class FullComponent implements OnInit, OnDestroy {
     this.assessment = this.store
       .select('fullAssessment')
       .pluck<object, Assessment>('fullAssessment')
-      .distinctUntilChanged();
-    // .filter((arr) => arr && arr.length > 0)
-    // .map((arr) => {
-    //   return arr.find((el) => el.id === this.assessmentId);
-    // });
+      .distinctUntilChanged()
 
     this.finishedLoading = this.store
       .select('fullAssessment')
@@ -184,7 +182,6 @@ export class FullComponent implements OnInit, OnDestroy {
    */
   public ngOnDestroy(): void {
     this.subscriptions
-      .filter((el) => el !== undefined)
       .forEach((sub) => sub.unsubscribe());
     this.store.dispatch(new CleanAssessmentResultData());
   }

@@ -1,7 +1,7 @@
-import { Assessment } from '../../../models/assess/assessment';
-import { JsonApiData } from '../../../models/json/jsonapi-data';
-import { Indicator } from '../../../models/stix/indicator';
-import { Stix } from '../../../models/stix/stix';
+import { Assessment } from 'stix/assess/v2/assessment';
+import { JsonApiData } from 'stix/json/jsonapi-data';
+import { Stix } from 'stix/unfetter/stix';
+import { Indicator } from 'stix/stix/indicator';
 import * as fromApp from '../../../root-store/app.reducers';
 import * as assessmentActions from './assess.actions';
 

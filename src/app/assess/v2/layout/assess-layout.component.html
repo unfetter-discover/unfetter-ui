@@ -6,7 +6,7 @@
           <mat-icon>keyboard_backspace</mat-icon>
         </button>
       </span>
-      <span>
+      <span *ngIf="title | async" [@fadeInOut]>
         {{(title | async)}}
       </span>
     </span>

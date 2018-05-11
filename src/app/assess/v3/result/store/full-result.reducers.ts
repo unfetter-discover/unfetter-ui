@@ -1,8 +1,9 @@
-import { Assessment } from '../../../../models/assess/assessment';
-import { Stix } from '../../../../models/stix/stix';
+import { Assessment } from 'stix/assess/v3/assessment';
+import { Stix } from 'stix/unfetter/stix';
 import { FullAssessmentGroup } from '../full/group/models/full-assessment-group';
 import * as fullAssessmentResultActions from './full-result.actions';
 import { FullAssessmentResultActions, LOAD_ASSESSMENTS_BY_ROLLUP_ID } from './full-result.actions';
+import { FullBaselineGroup } from '../../../../baseline/result/full/group/models/full-baseline-group';
 
 export interface FullAssessmentResultState {
     fullAssessment: Assessment;
@@ -71,7 +72,7 @@ export function fullAssessmentResultReducer(state = initialState, action: FullAs
         case fullAssessmentResultActions.SET_ASSESSMENT:
             return {
                 ...state,
-                fullAssessment: { ...action.payload },
+                fullAssessment: { ...action.payload } as Assessment,
             };
         case fullAssessmentResultActions.FINISHED_LOADING:
             return {
@@ -84,9 +85,6 @@ export function fullAssessmentResultReducer(state = initialState, action: FullAs
                 group: {
                     ...state.group,
                     ...action.payload,
-                    // riskByAttackPattern: {
-                    //     ...action.payload.riskByAttackPattern,
-                    // },
                     finishedLoadingGroupData: true,
                 },
             };

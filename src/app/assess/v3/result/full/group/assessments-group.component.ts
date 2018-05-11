@@ -3,17 +3,18 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import { AttackPattern } from 'stix';
+import { AssessAttackPatternMeta } from 'stix/assess/v2/assess-attack-pattern-meta';
+import { AssessmentObject } from 'stix/assess/v2/assessment-object';
+import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';
+import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
+import { Assessment } from 'stix/assess/v3/assessment';
+import { Stix } from 'stix/unfetter/stix';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { FormatHelpers } from '../../../../../global/static/format-helpers';
 import { SortHelper } from '../../../../../global/static/sort-helper';
 import { StixPermissions } from '../../../../../global/static/stix-permissions';
 import { Relationship } from '../../../../../models';
-import { AssessAttackPatternMeta } from '../../../../../models/assess/assess-attack-pattern-meta';
-import { Assessment } from '../../../../../models/assess/assessment';
-import { AssessmentObject } from '../../../../../models/assess/assessment-object';
-import { AssessmentQuestion } from '../../../../../models/assess/assessment-question';
-import { RiskByAttack } from '../../../../../models/assess/risk-by-attack';
-import { Stix } from '../../../../../models/stix/stix';
 import { Constance } from '../../../../../utils/constance';
 import { AssessService } from '../../../services/assess.service';
 import { LoadGroupAttackPatternRelationships, LoadGroupCurrentAttackPattern, LoadGroupData, PushUrl, UpdateAssessmentObject } from '../../store/full-result.actions';
@@ -25,7 +26,8 @@ import { FullAssessmentGroup } from './models/full-assessment-group';
 @Component({
   selector: 'unf-assess-group',
   templateUrl: './assessments-group.component.html',
-  styleUrls: ['./assessments-group.component.scss']
+  styleUrls: ['./assessments-group.component.scss'],
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
 
@@ -61,9 +63,9 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   public riskByAttackPattern: RiskByAttack;
   public assessedObjects: AssessmentObject[];
   public unassessedPhases: string[];
-  public currentAttackPattern: Stix;
+  public currentAttackPattern: AttackPattern;
   public displayedAssessedObjects: DisplayedAssessmentObject[];
-  public unassessedAttackPatterns: Stix[];
+  public unassessedAttackPatterns: AttackPattern[];
   public attackPatternsByPhase: AssessAttackPatternMeta[];
   public addAssessedObject: boolean;
   public addAssessedType: string;
@@ -76,7 +78,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     private route: ActivatedRoute,
     private changeDetector: ChangeDetectorRef,
     private store: Store<FullAssessmentResultState>,
-    private authService: AuthService    
+    private authService: AuthService
   ) { }
 
   /**
@@ -133,7 +135,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     const stixPermissions: StixPermissions = this.authService.getStixPermissions();
     this.canAddAssessedObjects = stixPermissions.canCreate(this.assessment);
   }
-  
+
   /**
    * @description request data
    * @returns {void}
@@ -360,7 +362,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /**
    * @description load the data for given attack pattern, update page
-   * @param {string} attackPatternId
+   * @param attackPatternId
    * @return {void}
    */
   public setAttackPattern(attackPatternId = ''): void {

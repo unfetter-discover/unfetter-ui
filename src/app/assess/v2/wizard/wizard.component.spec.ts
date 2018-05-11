@@ -8,20 +8,24 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule, combineReducers } from '@ngrx/store';
 import * as fromRoot from 'app/root-store/app.reducers';
 import { ChartsModule } from 'ng2-charts';
+import { Assessment } from 'stix/assess/v2/assessment';
+import { AssessmentObject } from 'stix/assess/v2/assessment-object';
+import * as Indicator from 'stix/unfetter/indicator';
+import { UnfetterIndicatorMockFactory } from 'stix/unfetter/unfetter-indicator.mock';
+import { Stix } from 'stix/unfetter/stix';
+import { StixEnum } from 'stix/unfetter/stix.enum';
+import { StixMockFactory } from 'stix/unfetter/stix.mock';
 import { ComponentModule } from '../../../components/component.module';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { GlobalModule } from '../../../global/global.module';
-import { Assessment } from '../../../models/assess/assessment';
-import { AssessmentMeta } from '../../../models/assess/assessment-meta';
-import { AssessmentObject } from '../../../models/assess/assessment-object';
 import { CourseOfAction } from '../../../models/stix/course-of-action';
-import { Indicator } from '../../../models/stix/indicator';
-import { Stix } from '../../../models/stix/stix';
-import { StixLabelEnum } from '../../../models/stix/stix-label.enum';
 import { Sensor } from '../../../models/unfetter/sensor';
 import { PipesModule } from '../../../pipes/pipes.module';
 import { assessmentReducer } from '../store/assess.reducers';
 import { WizardComponent } from './wizard.component';
+import { AssessmentMeta } from 'stix/assess/v2/assessment-meta';
+import { AssessmentObjectMockFactory } from 'stix/assess/v2/assessment-object.mock';
+
 
 class MockModel {
   attributes: any;
@@ -123,8 +127,8 @@ describe('WizardComponent', () => {
   });
 
   it('should know the first side panel with data, if it is indicators', () => {
-    const indicators = [new Indicator()];
-    const coa = [new CourseOfAction()];
+    const indicators = UnfetterIndicatorMockFactory.mockMany(1);
+    const coa = StixMockFactory.mockMany(1);
     component.indicators = indicators;
     component.mitigations = coa;
     expect(component).toBeTruthy();
@@ -134,7 +138,7 @@ describe('WizardComponent', () => {
   });
 
   it('should know the first side panel with data, if it is mitigations', () => {
-    const coa = [new CourseOfAction()];
+    const coa = StixMockFactory.mockMany(1);
     component.mitigations = coa;
     expect(component).toBeTruthy();
     const firstPanel = component.determineFirstOpenSidePanel();
@@ -143,8 +147,8 @@ describe('WizardComponent', () => {
   });
 
   it('should know the next side panel with data, case 1', () => {
-    const indicators = [new Indicator()];
-    const coa = [new CourseOfAction()];
+    const indicators = [new Indicator.UnfetterIndicator()];
+    const coa = StixMockFactory.mockMany(1);
     component.indicators = indicators;
     component.mitigations = coa;
     component.openedSidePanel = 'indicators';
@@ -155,8 +159,8 @@ describe('WizardComponent', () => {
   });
 
   it('should know the next side panel with data, case 2', () => {
-    const indicators = [new Indicator()];
-    const sensors = [new Sensor()];
+    const indicators = UnfetterIndicatorMockFactory.mockMany(1);
+    const sensors = StixMockFactory.mockMany(1);
     component.indicators = indicators;
     component.sensors = sensors;
     component.openedSidePanel = 'indicators';
@@ -167,8 +171,8 @@ describe('WizardComponent', () => {
   });
 
   it('should know the next side panel with data, case 3', () => {
-    const indicators = [new Indicator()];
-    const sensors = [new Sensor()];
+    const indicators = UnfetterIndicatorMockFactory.mockMany(1);
+    const sensors = StixMockFactory.mockMany(1);
     component.indicators = indicators;
     component.sensors = sensors;
     component.openedSidePanel = 'sensors';
@@ -266,19 +270,19 @@ describe('WizardComponent', () => {
     let assessment = {
       version: null, external_references: null, granular_markings: null, name: null, description: null, pattern: null, kill_chain_phases: null,
       created_by_ref: null, type: null, valid_from: null, labels: null, modified: null, created: null, metaProperties: null
-    };
+    } as Assessment;
     expect(component.createAssessmentGroups(null)).toEqual([]);
     expect(component.createAssessmentGroups([])).toEqual([]);
     expect(component.createAssessmentGroups([assessment])).toEqual([]);
-    assessment.metaProperties = {};
+    assessment.metaProperties = { published: false };
     expect(component.createAssessmentGroups([assessment])).toEqual([]);
-    assessment.metaProperties = { groupings: null };
+    assessment.metaProperties = { published: false, groupings: null };
     expect(component.createAssessmentGroups([assessment])).toEqual([]);
-    assessment.metaProperties = { groupings: [] };
+    assessment.metaProperties = { published: false, groupings: [] };
     expect(component.createAssessmentGroups([assessment])).toEqual([]);
-    assessment.metaProperties = { groupings: [{ groupingValue: 'group1' }] };
+    assessment.metaProperties = { published: false, groupings: [{ groupingValue: 'group1' }] };
     expect(component.createAssessmentGroups([assessment]).length).toEqual(1);
-    assessment.metaProperties = { groupings: [{ groupingValue: 'group1' }, { groupingValue: 'group2' }] };
+    assessment.metaProperties = { published: false, groupings: [{ groupingValue: 'group1' }, { groupingValue: 'group2' }] };
     expect(component.createAssessmentGroups([assessment]).length).toEqual(2);
   });
 
@@ -305,7 +309,8 @@ describe('WizardComponent', () => {
     expect(spy).toHaveBeenCalledTimes(4);
 
     component.model = new MockModel();
-    component.model.attributes.assessment_objects = [{ risk: null, questions: null }];
+    const assessmentObjectArr = AssessmentObjectMockFactory.mockMany(1);
+    component.model.attributes.assessment_objects = assessmentObjectArr;
     component.collectModelAssessments(assessment);
     expect(spy).toHaveBeenCalledTimes(5);
 
@@ -320,30 +325,18 @@ describe('WizardComponent', () => {
     expect(spy).toHaveBeenCalledTimes(7);
 
     component.model = new MockModel();
-    component.model.attributes.assessment_objects = [{ stix: null, risk: null, questions: null }];
+    component.model.attributes.assessment_objects = AssessmentObjectMockFactory.mockMany(1);
     assessment = { id: 'happyjack' };
     component.collectModelAssessments(assessment);
     expect(spy).toHaveBeenCalledTimes(8);
 
     component.model = new MockModel();
-    component.model.attributes.assessment_objects[0] = {
-      stix: {
-        version: null, external_references: null, granular_markings: null, name: null, description: null,
-        pattern: null, kill_chain_phases: null, created_by_ref: null, type: null, valid_from: null, labels: null,
-        modified: null, created: null, metaProperties: null
-      }, risk: null, questions: null
-    };
+    component.model.attributes.assessment_objects[0] = assessmentObjectArr[0];
     component.collectModelAssessments(assessment);
     expect(spy).toHaveBeenCalledTimes(9);
 
     component.model = new MockModel();
-    component.model.attributes.assessment_objects[0] = {
-      stix: {
-        version: null, external_references: null, granular_markings: null, name: null, description: null,
-        pattern: null, kill_chain_phases: null, created_by_ref: null, type: null, valid_from: null, labels: null,
-        modified: null, created: null, metaProperties: null, id: null
-      }, risk: null, questions: null
-    };
+    component.model.attributes.assessment_objects[0] = assessmentObjectArr[0];
     component.collectModelAssessments(assessment);
     expect(spy).toHaveBeenCalledTimes(10);
 
@@ -435,15 +428,11 @@ describe('WizardComponent', () => {
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([1, 3, 5]);
 
-    component.mitigations = [{
-      metaProperties: null, created: null, modified: null, labels: null, valid_from: null, type: null, created_by_ref: null,
-      kill_chain_phases: null, pattern: null, description: null, version: null, external_references: null,
-      granular_markings: null, name: null
-    }];
+    component.mitigations = [StixMockFactory.mockOne()];
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([1, 3, 5]);
 
-    component.mitigations[0].metaProperties = { groupings: [{ groupingValue: 'group1' }] };
+    component.mitigations[0].metaProperties = { published: false, groupings: [{ groupingValue: 'group1' }] };
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([1, 0]);
 
@@ -455,47 +444,28 @@ describe('WizardComponent', () => {
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([1, 0]);
 
-    component.mitigations = [{
-      metaProperties: null, created: null, modified: null, labels: null, valid_from: null, type: null, created_by_ref: null,
-      kill_chain_phases: null, pattern: null, description: null, version: null, external_references: null,
-      granular_markings: null, name: null, id: null
-    }, {
-      metaProperties: null, created: null, modified: null, labels: null, valid_from: null, type: null, created_by_ref: null,
-      kill_chain_phases: null, pattern: null, description: null, version: null, external_references: null,
-      granular_markings: null, name: null, id: null
-    }, {
-      metaProperties: null, created: null, modified: null, labels: null, valid_from: null, type: null, created_by_ref: null,
-      kill_chain_phases: null, pattern: null, description: null, version: null, external_references: null,
-      granular_markings: null, name: null, id: null
-    }];
+    component.mitigations = [...StixMockFactory.mockMany(3)];
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([1, 0]);
 
-    component.mitigations = [{
-      metaProperties: null, created: null, modified: null, labels: null, valid_from: null, type: null, created_by_ref: null,
-      kill_chain_phases: null, pattern: null, description: null, version: null, external_references: null,
-      granular_markings: null, name: null, id: 'happyjack',
-    }];
+    component.mitigations = [StixMockFactory.mockOne()];
+    component.mitigations[0].id = 'happyjack';
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([1, 0]);
 
-    component.mitigations[0].metaProperties = { groupings: [{ groupingValue: 'group1' }] };
+    component.mitigations[0].metaProperties = { published: false, groupings: [{ groupingValue: 'group1' }] };
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([.25, .75]);
 
-    component.indicators = [{
-      metaProperties: { groupings: [{ groupingValue: 'group1' }] }, created: null, modified: null, labels: null, valid_from: null, type: null, created_by_ref: null,
-      kill_chain_phases: null, pattern: null, description: null, version: null, external_references: null,
-      granular_markings: null, name: null, id: 'happyjack', pattern_lang: null, valid_until: null, formatDate: null
-    }];
+    component.indicators = UnfetterIndicatorMockFactory.mockMany(1);
+    component.indicators[0].metaProperties = { published: false, groupings: [{ groupingValue: 'group1' }] };
+    component.indicators[0].id = 'happyjack';
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([.25, .75]);
 
-    component.sensors = [{
-      metaProperties: { groupings: [{ groupingValue: 'group1' }] }, created: null, modified: null, labels: null, valid_from: null, type: null, created_by_ref: null,
-      kill_chain_phases: null, pattern: null, description: null, version: null, external_references: null,
-      granular_markings: null, name: null, id: 'happyjack',
-    }];
+    component.sensors = StixMockFactory.mockMany(1);
+    component.sensors[0].metaProperties = { published: false, groupings: [{ groupingValue: 'group1' }] };
+    component.sensors[0].id = 'happyjack';
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([.25, .75]);
 
@@ -510,7 +480,7 @@ describe('WizardComponent', () => {
           metaProperties: null, id: 'bellystaple'
         },
       risk: 0, questions: [{ name: 'sandychapsticks', risk: 3, options: null, selected_value: null }]
-    });
+    } as AssessmentObject);
     component.model.attributes.assessment_objects.push({
       stix:
         {
@@ -520,7 +490,7 @@ describe('WizardComponent', () => {
           metaProperties: null, id: 'jumpyflashpan'
         },
       risk: .75, questions: [{ name: 'sandychapsticks', risk: 3, options: null, selected_value: null }]
-    });
+    } as AssessmentObject);
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([(.25 + 0 + .75) / 3, (.75 + 1 + .25) / 3]);
 
@@ -543,8 +513,8 @@ describe('WizardComponent', () => {
 
     const indicators = new Assessment();
     indicators.id = id + '-1';
-    indicators.type = StixLabelEnum.ASSESSMENT;
-    indicators.metaProperties = { rollupId: rollup };
+    indicators.type = StixEnum.ASSESSMENT;
+    indicators.metaProperties = { published: false, rollupId: rollup };
     indicators.name = name;
     indicators.description = desc;
     indicators.created = indicators.modified = time;
@@ -552,8 +522,8 @@ describe('WizardComponent', () => {
 
     const mitigations = new Assessment();
     mitigations.id = id + '-2';
-    mitigations.type = StixLabelEnum.ASSESSMENT;
-    mitigations.metaProperties = { rollupId: rollup };
+    mitigations.type = StixEnum.ASSESSMENT;
+    mitigations.metaProperties = { published: false, rollupId: rollup };
     mitigations.name = name;
     mitigations.description = desc;
     mitigations.created = indicators.modified = time;
@@ -561,8 +531,8 @@ describe('WizardComponent', () => {
 
     const sensors = new Assessment();
     sensors.id = id + '-3';
-    sensors.type = StixLabelEnum.ASSESSMENT;
-    sensors.metaProperties = { rollupId: rollup };
+    sensors.type = StixEnum.ASSESSMENT;
+    sensors.metaProperties = { published: false, rollupId: rollup };
     sensors.name = name;
     sensors.description = desc;
     sensors.created = indicators.modified = time;
