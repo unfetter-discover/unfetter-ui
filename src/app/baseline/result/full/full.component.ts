@@ -1,26 +1,21 @@
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-
-import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-
-import { AppState } from '../../../root-store/app.reducers';
-import { Baseline } from '../../../models/baseline/baseline';
-import { BaselineService } from '../../services/baseline.service';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { ConfirmationDialogComponent } from '../../../components/dialogs/confirmation/confirmation-dialog.component';
-import { LastModifiedBaseline } from '../../models/last-modified-baseline';
-import { LoadAssessmentResultData, CleanAssessmentResultData } from '../store/full-result.actions';
 import { MasterListDialogTableHeaders } from '../../../global/components/master-list-dialog/master-list-dialog.component';
-import { SummaryDataSource } from '../summary/summary.datasource';
-import { UserProfile } from '../../../models/user/user-profile';
-import { FullBaselineResultState } from '../store/full-result.reducers';
-import { Assessed3ByAttackPattern } from './group/models/assessed3-by-attack-pattern';
-import { Constance } from '../../../utils/constance';
-import { RiskByAttackPattern } from './group/models/risk-by-attack-pattern';
+import { Baseline } from '../../../models/baseline/baseline';
 import { RiskByAttack3 } from '../../../models/baseline/risk-by-attack3';
+import { UserProfile } from '../../../models/user/user-profile';
+import { AppState } from '../../../root-store/app.reducers';
+import { Constance } from '../../../utils/constance';
+import { LastModifiedBaseline } from '../../models/last-modified-baseline';
+import { BaselineService } from '../../services/baseline.service';
+import { CleanAssessmentResultData, LoadAssessmentResultData } from '../store/full-result.actions';
+import { FullBaselineResultState } from '../store/full-result.reducers';
+import { SummaryDataSource } from '../summary/summary.datasource';
 import { FullBaselineGroup } from './group/models/full-baseline-group';
 
 @Component({

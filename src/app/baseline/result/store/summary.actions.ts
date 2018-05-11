@@ -4,7 +4,6 @@ import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
 import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
 
 // For effects
-export const LOAD_ASSESSMENT_SUMMARY_DATA = '[Baseline Summary] LOAD_ASSESSMENT_SUMMARY_DATA';
 export const LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA = '[Baseline Summary] LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA';
 export const LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA = '[Baseline Summary] LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA';
 export const LOAD_RISK_PER_KILL_CHAIN_DATA = '[Baseline Summary] LOAD_RISK_PER_KILL_CHAIN_DATA';
@@ -28,13 +27,6 @@ export class LoadSingleAssessmentSummaryData implements Action {
     constructor(public payload: string) { }
 }
 
-export class LoadAssessmentSummaryData implements Action {
-    public readonly type = LOAD_ASSESSMENT_SUMMARY_DATA;
-
-    // baseline rollup id
-    constructor(public payload: string) { }
-}
-
 export class SetAssessments implements Action {
     public readonly type = SET_ASSESSMENTS;
 
@@ -54,13 +46,6 @@ export class LoadSingleRiskPerKillChainData implements Action {
     constructor(public payload: string) { }
 }
 
-export class LoadRiskPerKillChainData implements Action {
-    public readonly type = LOAD_RISK_PER_KILL_CHAIN_DATA;
-
-    // individual baseline id
-    constructor(public payload: string) { }
-}
-
 export class SetKillChainData implements Action {
     public readonly type = SET_KILL_CHAIN_DATA;
 
@@ -75,13 +60,6 @@ export class FinishedLoadingKillChainData implements Action {
 
 export class LoadSingleSummaryAggregationData implements Action {
     public readonly type = LOAD_SINGLE_SUMMARY_AGGREGATION_DATA;
-
-    // individual baseline id
-    constructor(public payload: string) { }
-}
-
-export class LoadSummaryAggregationData implements Action {
-    public readonly type = LOAD_SUMMARY_AGGREGATION_DATA;
 
     // individual baseline id
     constructor(public payload: string) { }
@@ -108,15 +86,12 @@ export class CleanAssessmentResultData {
 export type SummaryActions =
     CleanAssessmentResultData |
     SetAssessments |
-    LoadAssessmentSummaryData |
     LoadSingleAssessmentSummaryData |
     FinishedLoading |
     SetKillChainData |
     LoadSingleRiskPerKillChainData |
-    LoadRiskPerKillChainData |
     FinishedLoadingKillChainData |
     SetSummaryAggregationData |
     LoadSingleSummaryAggregationData |
-    LoadSummaryAggregationData |
     FinishedLoadingSummaryAggregationData;
 

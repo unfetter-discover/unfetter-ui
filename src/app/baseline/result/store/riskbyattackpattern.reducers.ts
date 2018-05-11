@@ -1,6 +1,5 @@
-import * as riskByAttackPatternActions from './riskbyattackpattern.actions';
-import { JsonApiData } from '../../models/json/jsonapi-data';
 import { RiskByAttack3 } from '../../../models/baseline/risk-by-attack3';
+import * as riskByAttackPatternActions from './riskbyattackpattern.actions';
 
 export interface RiskByAttackPatternState {
     riskByAttackPattern: RiskByAttack3;
@@ -26,10 +25,6 @@ export function riskByAttackPatternReducer(state = initialState, action: riskByA
         case riskByAttackPatternActions.CLEAN_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA:
             return genState();
         case riskByAttackPatternActions.LOAD_SINGLE_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA:
-            return genState({
-                ...state,
-            });
-        case riskByAttackPatternActions.LOAD_RISK_BY_ATTACK_PATTERN_DATA:
             return genState({
                 ...state,
             });

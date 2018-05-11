@@ -40,10 +40,6 @@ export function summaryReducer(state = initialState, action: summaryActions.Summ
             return genState({
                 ...state,
             });
-        case summaryActions.LOAD_ASSESSMENT_SUMMARY_DATA:
-            return genState({
-                ...state,
-            });
         case summaryActions.SET_ASSESSMENTS:
             return genState({
                 ...state,
@@ -55,10 +51,6 @@ export function summaryReducer(state = initialState, action: summaryActions.Summ
                 finishedLoading: action.payload
             });
         case summaryActions.LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA:
-            return genState({
-                ...state,
-            });
-        case summaryActions.LOAD_RISK_PER_KILL_CHAIN_DATA:
             return genState({
                 ...state,
             });
@@ -74,10 +66,6 @@ export function summaryReducer(state = initialState, action: summaryActions.Summ
             });
         case summaryActions.LOAD_SINGLE_SUMMARY_AGGREGATION_DATA:
 
-            return genState({
-                ...state,
-            });
-        case summaryActions.LOAD_SUMMARY_AGGREGATION_DATA:
             return genState({
                 ...state,
             });

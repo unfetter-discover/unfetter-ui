@@ -1,10 +1,9 @@
 import { Action } from '@ngrx/store';
-
+import { Relationship } from '../../../models';
 import { Baseline } from '../../../models/baseline/baseline';
 import { BaselineObject } from '../../../models/baseline/baseline-object';
-import { Stix } from '../../../models/stix/stix';
 import { RiskByAttack3 } from '../../../models/baseline/risk-by-attack3';
-import { Relationship } from '../../../models';
+import { Stix } from '../../../models/stix/stix';
 
 // For effects
 export const LOAD_ASSESSMENT_RESULT_DATA = '[Baseline Result] LOAD_ASSESSMENT_RESULT_DATA';
@@ -14,9 +13,8 @@ export const LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS = '[Baseline Result Group] 
 
 export const UPDATE_ASSESSMENT_OBJECT = '[Baseline Result Group] UPDATE_ASSESSMENT_OBJECT';
 
-
 // For reducers
-export const SET_ASSESSMENTS = '[Baseline Result] SET_ASSESSMENTS';
+export const SET_ASSESSMENT = '[Baseline Result] SET_ASSESSMENT';
 export const SET_GROUP_DATA = '[Baseline Result Group] SET_GROUP_DATA';
 export const SET_GROUP_ASSESSMENT_OBJECTS = '[Baseline Result Group] SET_GROUP_ASSESSMENT_OBJECTS_DATA';
 export const SET_GROUP_RISK_BY_ATTACK_PATTERN = '[Baseline Result Group] SET_RISK_BY_ATTACK_PATTERN';
@@ -28,10 +26,10 @@ export const CLEAN_ASSESSMENT_RESULT_DATA = '[Baseline Result Group] CLEAN_ASSES
 export const FINISHED_LOADING = '[Baseline Result] FINISHED_LOADING';
 export const RELOAD_AFTER_UPDATE_ASSESSMENT_OBJECT = '[Baseline Result Group] RELOAD_AFTER_UPDATE_ASSESSMENT_OBJECT';
 
-export class SetAssessments implements Action {
-    public readonly type = SET_ASSESSMENTS;
+export class SetAssessment implements Action {
+    public readonly type = SET_ASSESSMENT;
 
-    constructor(public payload: Baseline[]) { }
+    constructor(public payload: Baseline) { }
 }
 
 export class FinishedLoading implements Action {
@@ -132,7 +130,7 @@ export type FullBaselineResultActions =
     LoadGroupAttackPatternRelationships |
     PushUrl |
     ReloadAfterAssessmentObjectUpdate |
-    SetAssessments |
+    SetAssessment |
     SetGroupData |
     SetGroupAssessedObjects |
     SetGroupAttackPatternRelationships |

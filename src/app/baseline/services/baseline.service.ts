@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Capability, Category } from 'stix/assess/v3/baseline';
+import { JsonApiData } from 'stix/json/jsonapi-data';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { RiskByKillChain } from '../../models/assess/risk-by-kill-chain';
 import { SummaryAggregation } from '../../models/assess/summary-aggregation';
 import { Baseline } from '../../models/baseline/baseline';
 import { BaselineObject } from '../../models/baseline/baseline-object';
 import { RiskByAttack3 } from '../../models/baseline/risk-by-attack3';
-import { JsonApiData } from '../../models/json/jsonapi-data';
 import { Constance } from '../../utils/constance';
 import { LastModifiedBaseline } from '../models/last-modified-baseline';
 
@@ -19,8 +19,14 @@ export class BaselineService {
     public readonly relationshipsBaseUrl = Constance.RELATIONSHIPS_URL;
 
     constructor(
-        private genericApi: GenericApi,
-    ) { }
+        @SkipSelf() @Optional() protected parent: BaselineService,
+        protected genericApi: GenericApi,
+        protected genericApiService: GenericApi,
+    ) {
+        if (parent) {
+            throw new Error('BaselineService is already loaded.');
+        }
+    }
 
     /**
      * @description call generic api GET request, with given route
@@ -38,7 +44,7 @@ export class BaselineService {
      * @param {string} url
      * @return {Observable<T>}
      */
-    public getAs<T>(url = ''): Observable<T|T[]> {
+    public getAs<T>(url = ''): Observable<T | T[]> {
         if (!url) {
             return Observable.empty();
         }
@@ -110,26 +116,26 @@ export class BaselineService {
      * @param {string} filter
      * @return {Observable<Category[]>}
      */
-    public getCategories(filter?: string): Observable<Category[]>  {
+    public getCategories(filter?: string): Observable<Category[]> {
         const url = filter ?
             `${this.categoryBaseUrl}?${encodeURI(filter)}` : this.categoryBaseUrl;
         return this.genericApi
             .getAs<JsonApiData<Category>[]>(url)
             .map((data) => data.map((el) => el.attributes));
-   }
+    }
 
     /**
      * @description load capabilities
      * @param {string} filter
      * @return {Observable<Capability[]>}
      */
-    public getCapabilities(filter?: string): Observable<Capability[]>  {
+    public getCapabilities(filter?: string): Observable<Capability[]> {
         const url = filter ?
             `${this.capabilityBaseUrl}?${encodeURI(filter)}` : this.capabilityBaseUrl;
         return this.genericApi
             .getAs<JsonApiData<Capability>[]>(url)
             .map((data) => data.map((el) => el.attributes));
-   }
+    }
 
     /**
      * @description
@@ -143,59 +149,16 @@ export class BaselineService {
             .map((data) => data.attributes);
     }
 
-        /**
-         * @description
-         * @param {string} id
-         * @return {Observable<Assessment> }
-         */
+    /**
+     * @description
+     * @param {string} id
+     * @return {Observable<Assessment> }
+     */
     public getById(id: string, includeMeta = true): Observable<Baseline> {
         const url = `${this.baselineBaseUrl}/${id}?metaproperties=${includeMeta}`;
         return this.genericApi
             .getAs<JsonApiData<Baseline>>(url)
             .map((data) => data.attributes);
-    }
-
-    /**
-     * @description return multiple baseline type associated with given rollup id
-     * @param {string} id
-     * @param {boolean} includeMeta
-     * @return {Observable<Assessment[]>}
-     */
-    public getByRollupId(id: string, includeMeta = true): Observable<Baseline[]> {
-        const filter = {
-            'metaProperties.rollupId': id
-        };
-        const url = `${this.baselineBaseUrl}?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
-        return this.genericApi
-            .getAs<JsonApiData<Baseline>[]>(url)
-            .map((data) => data.map((el) => el.attributes));
-    }
-
-    /**
-     * @description
-     * @param {string} id
-     * @return {Observable<any>}
-     */
-    public deleteByRollupId(id: string): Observable<any> {
-        if (!id || id.trim().length === 0) {
-            return Observable.empty();
-        }
-        const url = `${this.baselineBaseUrl}`;
-        const loadAll$ = this.getByRollupId(id);
-        const deleteAssociated$ = (baselines: Baseline[]) => {
-            console.log(baselines);
-            // with associated baseline types
-            const calls = baselines
-                .map((baseline) => {
-                    const deleteUrl = `${url}/${baseline.id}`;
-                    return this.genericApi.delete(deleteUrl);
-                });
-            return Observable.forkJoin(...calls);
-        };
-
-        return Observable
-            .zip(loadAll$, deleteAssociated$)
-            .mergeMap((val) => val);
     }
 
     /**
@@ -213,20 +176,6 @@ export class BaselineService {
     }
 
     /**
- * @description
- * @param {string} id
- * @return {Observable}
- */
-    public getRiskPerKillChainByRollupId(id: string): Observable<any> {
-        if (!id) {
-            return Observable.empty();
-        }
-
-        const url = `${this.baselineBaseUrl}/${id}/risk-per-kill-chain`;
-        return this.genericApi.get(url);
-    }
-
-    /**
      * @description
      * @param {string} id
      * @return {Observable<RiskByAttack3>}
@@ -238,26 +187,6 @@ export class BaselineService {
         const url = `${this.baselineBaseUrl}/${id}/risk-by-attack-pattern?metaproperties=${includeMeta}`;
         return this.genericApi
             .getAs<RiskByAttack3>(url);
-    }
-
-
-    /**
-     * @description
-     * @param {string} id
-     * @return {Observable}
-     */
-    public getRiskPerAttackPatternByRollupId(id: string, includeMeta = true): Observable<RiskByAttack3[]> {
-        if (!id) {
-            return Observable.empty();
-        }
-        const filter = {
-            'metaProperties.rollupId': id
-        };
-
-        const url = `${this.baselineBaseUrl}/${id}/risk-by-attack-pattern?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
-        return this.genericApi
-            .getAs<JsonApiData<RiskByAttack3>[]>(url)
-            .map((data) => data.map((el) => el.attributes));
     }
 
     /**
@@ -275,57 +204,11 @@ export class BaselineService {
     }
 
     /**
-     * @description
-     * @param {string} id
-     * @return {Observable}
-     */
-    public getSummaryAggregationByRollup(id: string, includeMeta = true): Observable<SummaryAggregation[]> {
-        if (!id) {
-            return Observable.empty();
-        }
-        const filter = {
-            'metaProperties.rollupId': id
-        };
-
-        const url = `${this.baselineBaseUrl}/${id}/summary-aggregations?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
-        return this.genericApi
-            .getAs<JsonApiData<SummaryAggregation>[]>(url)
-            .map((data) => data.map((el) => el.attributes));
-    }
-
-
-    /**
-     * @description retrieve full baselines for given creator
-     * @param {string} creatorId, creator mongo user id, not stix identity
-     * @return {Observable<Baseline[]>}
-     */
-    public getAssessmentsByCreatorId(creatorId: string, includeMeta = true): Observable<Baseline[]> {
-        const filter = {
-            'creator': creatorId,
-        };
-        const url = `${this.baselineBaseUrl}?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
-        return this.genericApi
-            .getAs<JsonApiData<Baseline>[]>(url)
-            .map((data) => data.map((el) => el.attributes));
-    }
-
-    /**
      * @description retrieve <i>partial baselines</i>, for all creators/users in system
      * @return {Observable<Partial<LastModifiedAssessment>[]>}
      */
     public getLatestAssessments(): Observable<Partial<LastModifiedBaseline>[]> {
         const url = `${this.baselineBaseUrl}/latest`;
-        return this.genericApi
-            .getAs<Partial<LastModifiedBaseline>[]>(url);
-    }
-
-    /**
-     * @description retrieve <i>partial baselines</i> for given creator
-     * @param {string} userId, creator mongo user id, not stix identity
-     * @return {Observable<Partial<LastModifiedBaseline>[]>}
-     */
-    public getLatestAssessmentsByCreatorId(creatorId: string, includeMeta = true): Observable<Partial<LastModifiedBaseline>[]> {
-        const url = `${this.baselineBaseUrl}/latest/${creatorId}`;
         return this.genericApi
             .getAs<Partial<LastModifiedBaseline>[]>(url);
     }
