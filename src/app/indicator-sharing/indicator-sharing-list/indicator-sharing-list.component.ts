@@ -45,7 +45,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     public filterOpen: boolean = false;
     public filterOpened: boolean = false;
     public collapseAllCards: boolean = false;
-    public activeMainWell: mainWell = 'tactics';
+    public activeMainWell: mainWell = 'stats';
     public collapseAllCardsSubject: BehaviorSubject<boolean> = new BehaviorSubject(this.collapseAllCards);
 
     @ViewChild('filterContainer') public filterContainer: MatSidenav;

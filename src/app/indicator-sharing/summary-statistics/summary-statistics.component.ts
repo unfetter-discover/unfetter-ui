@@ -7,7 +7,7 @@ import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 import { ChartData } from '../../global/models/chart-data';
 import { Ng2ChartHelpers } from '../../global/static/ng2-chart-helpers';
 
-interface OrgNumber {
+interface OrgMostData {
   org: string;
   number: number;
   index: number;
@@ -36,25 +36,22 @@ export class SummaryStatisticsComponent implements OnInit {
   public chartColors = Ng2ChartHelpers.chartColors;
 
   public barChartData: {
-    indicators: ChartData[],
-    views: ChartData[],
-    likes: ChartData[],
-    comments: ChartData[],
-  } = {
-      indicators: [],
-      views: [],
-      likes: [],
-      comments: []
-  };
+    [key: string]: ChartData[]
+  } = {};
 
-  public mostIndicators: OrgNumber;
-  public mostViewed: OrgNumber;
-  public mostLiked: OrgNumber;
-  public mostComments: OrgNumber;
+  public readonly dataCategories: string[] = ['count', 'views', 'likes', 'comments'];
+
+  public theMost: {
+    [key: string]: OrgMostData
+  } = {};
   public serverCallComplete: boolean = false;
   private identities: any[] = [];
 
-  constructor(private indicatorSharingService: IndicatorSharingService) {}
+  constructor(private indicatorSharingService: IndicatorSharingService) {
+    this.dataCategories.forEach((dataCategory) => {
+      this.barChartData[dataCategory] = [];
+    });
+  }
 
   ngOnInit() {
     const getStats$ = Observable.forkJoin(
@@ -67,57 +64,15 @@ export class SummaryStatisticsComponent implements OnInit {
           this.identities = identities;
           this.buildCharts(stats);
           stats.forEach((stat: IndicatorSharingSummaryStatistics, i: number) => {
-            if (i === 0) {
-              this.mostIndicators = {
-                org: this.getOrgName(stat._id),
-                number: stat.count,
-                index: i
-              };
-              this.mostViewed = {
-                org: this.getOrgName(stat._id),
-                number: stat.views,
-                index: i
-              };
-              this.mostLiked = {
-                org: this.getOrgName(stat._id),
-                number: stat.likes,
-                index: i
-              };
-              this.mostComments = {
-                org: this.getOrgName(stat._id),
-                number: stat.comments,
-                index: i
-              };
-            } else {
-              if (stat.count > this.mostIndicators.number) {
-                this.mostIndicators = {
+            this.dataCategories.forEach((dataCategory) => {
+              if (i === 0 || stat[dataCategory] > this.theMost[dataCategory].number) {
+                this.theMost[dataCategory] = {
                   org: this.getOrgName(stat._id),
-                  number: stat.count,
+                  number: stat[dataCategory],
                   index: i
-                };
+                }
               }
-              if (stat.views > this.mostViewed.number) {
-                this.mostViewed = {
-                  org: this.getOrgName(stat._id),
-                  number: stat.views,
-                  index: i
-                };
-              }
-              if (stat.likes > this.mostLiked.number) {
-                this.mostLiked = {
-                  org: this.getOrgName(stat._id),
-                  number: stat.likes,
-                  index: i
-                };
-              }
-              if (stat.comments > this.mostComments.number) {
-                this.mostComments = {
-                  org: this.getOrgName(stat._id),
-                  number: stat.comments,
-                  index: i
-                };
-              }
-            }
+            });
           });
         },
         (err) => {
@@ -139,11 +94,10 @@ export class SummaryStatisticsComponent implements OnInit {
   private buildCharts(stats: IndicatorSharingSummaryStatistics[]): void {
     const tempBarChartData = { ...this.barChartData };
     stats.forEach((stat: IndicatorSharingSummaryStatistics, i: number) => {
-      tempBarChartData.indicators.push({ data: [stat.count], label: this.getOrgName(stat._id) });
+      tempBarChartData.count.push({ data: [stat.count], label: this.getOrgName(stat._id) });
       tempBarChartData.views.push({ data: [stat.views], label: this.getOrgName(stat._id) });
       tempBarChartData.likes.push({ data: [stat.likes], label: this.getOrgName(stat._id) });
       tempBarChartData.comments.push({ data: [stat.comments], label: this.getOrgName(stat._id) });
-      console.log('####', stat.comments, '%%%%%', this.getOrgName(stat._id), '(((((', this.barChartData.comments);
     });
     this.barChartData = tempBarChartData;
   }
