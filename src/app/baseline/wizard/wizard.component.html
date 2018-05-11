@@ -11,23 +11,23 @@
     </mat-expansion-panel>
     <div *ngIf="baselineGroups.length > 0">
       <mat-expansion-panel *ngFor="let group of baselineGroups" hideToggle="true" [expanded]="currentBaselineGroup && group.name === currentBaselineGroup.name"
-        (opened)="onOpenSidePanel('capability-selector', $event)">
+        (opened)="onOpenSidePanel('capability-selector', group)" (closed)="onOpenSidePanel('capability-selector', group)">
         <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
           <mat-panel-title>
             {{group.name}}
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <ul *ngIf="capabilities.length > 0" class="stepper stepper-vertical">
-          <li *ngFor="let capability of capabilities" [class.active]="capability === currentCapability">
+        <ul *ngIf="baselineCapabilities.length > 0" class="stepper stepper-vertical">
+          <li *ngFor="let capability of getCapabilities(group)" [class.active]="capability === currentCapability">
             <a href (click)="navigationClicked(capability.id, $event)">
               <span class="circle">&nbsp;</span>
-              <span class="label">{{capability}}</span>
+              <span class="label">{{capability.name}}</span>
             </a>
           </li>
         </ul>
       </mat-expansion-panel>
     </div>
-    <mat-expansion-panel hideToggle="true" [expanded]="openedSidePanel === 'summary'" (opened)="onOpenSidePanel('summary', $event); showSummarySavePage()">
+    <mat-expansion-panel hideToggle="true" [expanded]="openedSidePanel === 'summary'" (opened)="onOpenSidePanel('summary'); showSummarySavePage()">
       <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
         <mat-panel-title>
           SUMMARY

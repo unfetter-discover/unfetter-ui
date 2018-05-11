@@ -11,8 +11,8 @@
               <form>
                 <mat-form-field class="full-width">
                   <mat-select #existingCapability name="existingCapability" (change)="updateCapability(existingCapability, i)" [value]="selectedCapability(existingCapability, i)">
-                    <mat-option *ngFor="let capability of allCapabilities" [value]="selCapability">
-                      {{ selCapability.name }}
+                    <mat-option *ngFor="let capability of allCapabilities" [value]="capability">
+                      {{ capability.name }}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
@@ -31,7 +31,7 @@
           <form>
             <mat-form-field class="full-width">
               <mat-select #newCapability name="newCapability" (change)="updateCapability(newCapability, -1)">
-                <mat-option *ngFor="let capability of allCapabilities" [value]="capability">
+                <mat-option *ngFor="let capability of availableCapabilities" [value]="capability">
                   {{ capability.name }}
                 </mat-option>
               </mat-select>
