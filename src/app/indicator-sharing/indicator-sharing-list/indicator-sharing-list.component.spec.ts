@@ -12,7 +12,6 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { Observable } from 'rxjs/Observable';
 
-
 describe('IndicatorSharingListComponent', () => {
     let component: IndicatorSharingListComponent;
     let fixture: ComponentFixture<IndicatorSharingListComponent>;
