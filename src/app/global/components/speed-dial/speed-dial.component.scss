@@ -3,6 +3,7 @@
 #fabWrapper {
     #wrapperInner {
         position: relative;
+
         .mini {
             position: absolute;
             top: 8px;
@@ -12,6 +13,7 @@
             svg {
                 height: 24px;
                 width: 24px;
+
                 ::ng-deep use {
                     fill: $light-text-slightly-dimmed;
                 }
@@ -25,7 +27,6 @@
     }
 
     .speedDial {
-
         #firstIcon {
             transform: rotateZ(135deg);
         }

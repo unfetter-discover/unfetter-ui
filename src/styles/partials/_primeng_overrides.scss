@@ -18,6 +18,7 @@
     .attack-pattern-div {
         padding: 0 5px;
     }
+
     .ui-carousel-header {
         display: flex;
         align-items: center;
@@ -30,10 +31,12 @@
         background: $primary-color;
         padding: 16px 32px;
     }
+
     .ui-carousel-header-title {
         flex: 1;
         font-size: 20px;
     }
+
     .ui-carousel-button {
         width: 25px;
         height: 25px;
@@ -42,8 +45,10 @@
         border-radius: 50%;
         font-size: 30px;
         color: $primary-color;
+
         &.ui-carousel-prev-button {
             order: 2;
+
             &:before {
                 content: "keyboard_arrow_left";
                 top: 18px;
@@ -52,8 +57,10 @@
                 @include material-icons;
             }
         }
+
         &.ui-carousel-next-button {
             order: 3;
+
             &:before {
                 content: "keyboard_arrow_right";
                 top: 18px;

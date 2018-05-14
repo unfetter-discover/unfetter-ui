@@ -10,6 +10,7 @@ $white: #FFFFFF;
 
 :host ::ng-deep {
     background-color: $white;
+
     #indicator-heatmap-filter unf-heatmap {
         div.heat-map {
             width: 100%;
@@ -18,16 +19,20 @@ $white: #FFFFFF;
             padding: 0;
             background: white;
         }
+
         .heat-map-canvas {
             cursor: pointer;
         }
+
         .heat-map-header rect.odd, .heat-map-batch rect.odd {
             fill: $analytic-exchange-primary-lightest;
         }
+
         .heat-map-cell rect.selected {
             fill: $analytic-exchange-primary;
         }
     }
+
     .mat-dialog-container {
         transition: none;
     }
