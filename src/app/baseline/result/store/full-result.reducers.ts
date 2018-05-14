@@ -1,17 +1,11 @@
-import * as fullAssessmentResultActions from './full-result.actions';
 import { Baseline } from '../../../models/baseline/baseline';
-import { BaselineObject } from '../../../models/baseline/baseline-object';
-import { AssessedByAttackPattern } from '../full/group/models/assessed-by-attack-pattern';
-import { DisplayedBaselineObject } from '../full/group/models/displayed-baseline-object';
-import { FullBaselineResultActions, LOAD_ASSESSMENT_RESULT_DATA } from './full-result.actions';
 import { Stix } from '../../../models/stix/stix';
-import { RiskByAttack3 } from '../../../models/baseline/risk-by-attack3';
-import { Relationship } from '../../../models';
 import { FullBaselineGroup } from '../full/group/models/full-baseline-group';
+import * as fullAssessmentResultActions from './full-result.actions';
+import { FullBaselineResultActions, LOAD_ASSESSMENT_RESULT_DATA } from './full-result.actions';
 
 export interface FullBaselineResultState {
     fullBaseline: Baseline;
-    baselineTypes: Baseline[];
     finishedLoading: boolean;
     group: FullBaselineGroup;
 };
@@ -44,7 +38,6 @@ export const genGroupState = (state?: Partial<FullBaselineGroup>) => {
 export const genState = (state?: Partial<FullBaselineResultState>) => {
     const tmp = {
         fullBaseline: new Baseline(),
-        baselineTypes: [],
         finishedLoading: false,
         group: genGroupState(),
     };
@@ -64,10 +57,10 @@ export function fullAssessmentResultReducer(state = initialState, action: FullBa
             return {
                 ...state,
             };
-        case fullAssessmentResultActions.SET_ASSESSMENTS:
+        case fullAssessmentResultActions.SET_ASSESSMENT:
             return {
                 ...state,
-                baselineTypes: [...action.payload],
+                fullBaseline: {...action.payload},
             };
         case fullAssessmentResultActions.FINISHED_LOADING:
             return {
@@ -80,9 +73,6 @@ export function fullAssessmentResultReducer(state = initialState, action: FullBa
                 group: {
                     ...state.group,
                     ...action.payload,
-                    // riskByAttackPattern: {
-                    //     ...action.payload.riskByAttackPattern,
-                    // },
                     finishedLoadingGroupData: true,
                 },
             };

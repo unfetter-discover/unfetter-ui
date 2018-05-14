@@ -1,13 +1,10 @@
-import { DataSource } from '@angular/cdk/table';
 import { CollectionViewer } from '@angular/cdk/collections';
-
-import { Observable } from 'rxjs/Observable';
+import { DataSource } from '@angular/cdk/table';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-
-import { BaselineService } from '../../services/baseline.service';
-import { Dictionary } from '../../../models/json/dictionary';
+import { Observable } from 'rxjs/Observable';
 import { environment } from '../../../../environments/environment';
 import { LastModifiedBaseline } from '../../models/last-modified-baseline';
+import { BaselineService } from '../../services/baseline.service';
 
 /**
  * @description handles filter events from the UI sent to the datasource, in this case a service call
@@ -18,7 +15,10 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedBaseline>>
     protected filterChange = new BehaviorSubject('');
     protected dataChange = new BehaviorSubject(undefined);
 
-    constructor(protected assessService: BaselineService, protected creatorId?: string) {
+    constructor(
+        protected assessService: BaselineService,
+        protected creatorId?: string,
+    ) {
         super();
     }
 
@@ -32,7 +32,7 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedBaseline>>
             .switchMap(() => {
                 const val = this.filterChange.getValue();
                 const filterVal = val.trim().toLowerCase() || '';
-                const baselines$ = this.fetchAssessments(); // .let(this.dedupByRollupId);
+                const baselines$ = this.assessService.getLatestAssessments();
                 if (!filterVal || filterVal.length === 0) {
                     return baselines$;
                 }
@@ -68,58 +68,4 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedBaseline>>
         this.dataChange.next(undefined);
     }
 
-    /**
-     * @description given objects with duplicate names, dedup the names by rollupId
-     * @param {Observable<Partial<LastModifiedAssessment>[]>} o$
-     * @return {Observable<Partial<LastModifiedAssessment>[]>}
-     */
-    public dedupByRollupId(o$: Observable<Partial<LastModifiedBaseline>[]>): Observable<Partial<LastModifiedBaseline>[]> {
-        return o$.map((val) => {
-            const uniqIds = Array.from(new Set(val.map((el) => el.rollupId)));
-            const uniq = uniqIds
-                .map((key) => {
-                    return val.find((el) => el.rollupId === key);
-                });
-            return uniq;
-        });
-    }
-
-    /**
-     * @description fetch the last modified summary for this user or the system as necessary
-     * @return {Observable<Partial<LastModifiedAssessment>[]>}
-     */
-    public fetchAssessments(): Observable<Partial<LastModifiedBaseline>[]> {
-        if (!this.demoMode && this.creatorId && this.creatorId.trim() !== '') {
-            return this.fetchWithCreatorId(this.creatorId);
-        } else {
-            return this.fetchWithNoCreatorId();
-        }
-    }
-
-    /**
-     * @description
-     *  fetch baselines by their owner, then fallback and show a group baseline if needed
-     * @param {string} creatorId
-     * @return {Observable<Partial<LastModifiedAssessment>[]>}
-     */
-    public fetchWithCreatorId(creatorId: string): Observable<Partial<LastModifiedBaseline>[]> {
-        return this.assessService
-            .getLatestAssessmentsByCreatorId(creatorId)
-            .switchMap((data: any[]) => {
-                if (!data || data.length < 1) {
-                    return this.fetchWithNoCreatorId();
-                } else {
-                    return Observable.of(data);
-                }
-            });
-    }
-
-    /**
-     * @description show last modified group baselines
-     * @return {Observable<Partial<LastModifiedAssessment>[]>}
-     */
-    public fetchWithNoCreatorId(): Observable<Partial<LastModifiedBaseline>[]> {
-        return this.assessService
-            .getLatestAssessments();
-    }
 }

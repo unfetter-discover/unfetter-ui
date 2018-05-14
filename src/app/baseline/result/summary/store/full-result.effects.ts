@@ -1,24 +1,18 @@
+import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
-
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
-
-import { Baseline } from '../../../../models/baseline/baseline';
-import { BaselineService } from '../../../services/baseline.service';
-import {
-    LOAD_ASSESSMENT_RESULT_DATA, SetAssessments,
-    FinishedLoading, SetGroupAssessedObjects, SetGroupRiskByAttackPattern,
-    SetGroupData, LOAD_GROUP_DATA, LOAD_GROUP_CURRENT_ATTACK_PATTERN, SetGroupCurrentAttackPattern,
-    PUSH_URL, DonePushUrl, LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS, SetGroupAttackPatternRelationships, ReloadAfterAssessmentObjectUpdate, UPDATE_ASSESSMENT_OBJECT, LoadGroupData
-} from './full-result.actions';
-import { fullAssessmentResultReducer } from './full-result.reducers';
-import { Constance } from '../../../utils/constance';
-import { Stix } from '../../../../models/stix/stix';
-import { RiskByAttack3 } from '../../../../models/baseline/risk-by-attack3';
 import { Relationship } from '../../../../models';
-
+import { Baseline } from '../../../../models/baseline/baseline';
+import { Stix } from '../../../../models/stix/stix';
+import { BaselineService } from '../../../services/baseline.service';
+import { Constance } from '../../../utils/constance';
+import {
+    DonePushUrl, FinishedLoading, LOAD_ASSESSMENT_RESULT_DATA, LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS,
+    LOAD_GROUP_CURRENT_ATTACK_PATTERN, LOAD_GROUP_DATA, LoadGroupData, PUSH_URL, SetAssessments, SetGroupAttackPatternRelationships,
+    SetGroupCurrentAttackPattern, UPDATE_ASSESSMENT_OBJECT
+} from './full-result.actions';
 
 @Injectable()
 export class FullResultEffects {
@@ -47,10 +41,10 @@ export class FullResultEffects {
             return Observable.forkJoin(getAssessedObjects$);
             // return Observable.forkJoin(getAssessedObjects$, getRiskByAttackPattern$);
         });
-        // .map(([assessedObjects, riskByAttackPattern]) => {
-        //     riskByAttackPattern = riskByAttackPattern || new RiskByAttack3;
-        //     return new SetGroupData({ assessedObjects, riskByAttackPattern });
-        // });
+    // .map(([assessedObjects, riskByAttackPattern]) => {
+    //     riskByAttackPattern = riskByAttackPattern || new RiskByAttack3;
+    //     return new SetGroupData({ assessedObjects, riskByAttackPattern });
+    // });
 
     @Effect()
     public loadGroupCurrentAttackPattern = this.actions$
@@ -83,12 +77,11 @@ export class FullResultEffects {
         .pluck('payload')
         .filter((payload) => payload !== undefined)
         .do((payload: any) => {
-            const rollupId = payload.rollupId;
             const baselineId = payload.baselineId;
             const phase = payload.phase;
             const attackPattern = payload.attackPattern;
             // const url = `${Constance.API_HOST}/baseline/result/full/${rollupId}/${baselineId}/phase/${phase}/attackPattern/${attackPattern}`;
-            const url = `${Constance.API_HOST}/baseline/result/full/${rollupId}/${baselineId}/phase/${phase}`;
+            const url = `${Constance.API_HOST}/baseline/result/full/${baselineId}/phase/${phase}`;
             this.location.replaceState(url);
         })
         .switchMap(() => Observable.of(new DonePushUrl()));
