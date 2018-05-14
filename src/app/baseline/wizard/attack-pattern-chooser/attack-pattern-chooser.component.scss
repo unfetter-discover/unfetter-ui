@@ -36,12 +36,20 @@ $white: #FFFFFF;
             cursor: pointer;
         }
 
+        .heat-map-header rect.odd, .heat-map-batch rect.odd {
+            fill: $assessments-primary-lightest;
+        }
+
         .heat-map-header rect.active, .heat-map-batch rect.active {
             fill: $assessments-primary-lightest;
         }
 
         .heat-map-cell rect.selected {
             fill: $assessments-primary;
+        }
+
+        .heat-map-cell rect.active {
+            fill: $assessments-primary-light;
         }
     }
 }

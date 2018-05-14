@@ -4,7 +4,7 @@
         <span class="flex1"></span>
         <button mat-button (click)="clearSelections()">CLEAR</button>
         <button mat-button [mat-dialog-close]="false">CANCEL</button>
-        <button mat-raised-button color="primary" [mat-dialog-close]="onClose()">SUBMIT</button>
+        <button mat-raised-button color="primary" (click)="close()">SUBMIT</button>
     </div>
 </h2>
 <mat-dialog-content>

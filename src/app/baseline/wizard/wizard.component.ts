@@ -755,16 +755,19 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         disableClose: false,
         closeOnNavigation: true,
         data: {
-          active: this.selectedFrameworkAttackPatterns,
+          active: null, // @todo This needs to be replaced with the current capability's list of attack patterns!!
+                        //       The current model appears to have no hook for this.
         },
       });
 
-      const sub$ = dialog.afterClosed().subscribe((result) => {
-        if (result) {
-          this.selectedAttackPatterns = result;
-        }
-        this.showHeatmap = false;
-      },
+      const sub$ = dialog.afterClosed().subscribe(
+        (result) => {
+          if (result) {
+            console.log('selected patterns', result);
+            this.selectedAttackPatterns = result;
+          }
+          this.showHeatmap = false;
+        },
         (err) => console.log(err),
       );
       this.subscriptions.push(sub$);
