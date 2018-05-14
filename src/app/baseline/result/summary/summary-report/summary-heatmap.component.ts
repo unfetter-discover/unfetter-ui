@@ -136,19 +136,12 @@ export class SummaryHeatmapComponent implements OnInit, DoCheck {
   private loadAttackPatterns() {
     const initData$ = this.tacticsStore
       .select('config')
-      .pluck('tacticsChains')
+      .pluck('tactics')
+      .filter((t: Tactic[]) => t.length !== 0)
       .take(1)
       .finally(() => initData$ && initData$.unsubscribe())
       .subscribe(
-        (tactics: Dictionary<TacticChain>) => {
-          if (tactics) {
-            const patterns = Object.values(tactics).reduce((arr, chain) => {
-              chain.phases.forEach(phase => arr.concat(phase.tactics));
-              return arr;
-            }, []);
-            this.update(patterns);
-          }
-        },
+        (tactics: Tactic[]) => tactics && this.update(tactics),
         (err) => console.log(err)
       );
   }
@@ -187,13 +180,13 @@ export class SummaryHeatmapComponent implements OnInit, DoCheck {
   private collectAttackPatterns(patterns: any[], indicators: Dictionary<string[]>): Tactic[] {
     const attackPatterns: Dictionary<Tactic> = {};
     patterns.forEach((pattern) => {
-      const name = pattern.attributes.name;
+      const name = pattern.name;
       if (name) {
         let analytics = indicators[name];
         if (analytics) {
           analytics = analytics.map(analytic => this.capabilities.find(a => a.id === analytic));
           attackPatterns[name] = Object.assign({}, {
-            ...pattern.attributes,
+            ...pattern,
             analytics: analytics,
             adds: {
               highlights: [{value: analytics.length, color: {style: analytics.length > 0}}]

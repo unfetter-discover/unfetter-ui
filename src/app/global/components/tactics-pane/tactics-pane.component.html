@@ -36,14 +36,14 @@
 
     </h3>
 
-    <tactics-carousel #carousel [hidden]="collapsed || !isCarouselView()"
-            [frameworks]="frameworks" [targeted]="targeted" [options]="carouselOptions"></tactics-carousel>
+    <tactics-carousel #carousel [hidden]="collapsed || !isCarouselView()" [frameworks]="frameworks" [chains]="chains"
+            [targeted]="targeted" [options]="carouselOptions"></tactics-carousel>
 
-    <tactics-treemap #treemap [hidden]="collapsed || !isTreemapView()"
-            [frameworks]="frameworks" [targeted]="targeted" [options]="treemapOptions"></tactics-treemap>
+    <tactics-treemap #treemap [hidden]="collapsed || !isTreemapView()" [frameworks]="frameworks" [chains]="chains"
+            [targeted]="targeted" [options]="treemapOptions"></tactics-treemap>
 
-    <tactics-heatmap #heatmap [hidden]="collapsed || !isHeatmapView()"
-            [frameworks]="frameworks" [targeted]="targeted" [options]="heatmapOptions"></tactics-heatmap>
+    <tactics-heatmap #heatmap [hidden]="collapsed || !isHeatmapView()" [frameworks]="frameworks" [chains]="chains"
+            [targeted]="targeted" [options]="heatmapOptions"></tactics-heatmap>
 
 </div>
 

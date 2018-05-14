@@ -86,7 +86,6 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
                         const tactics = attackPatterns.reduce(
                             (patterns, pattern) => this.collectAttackPattern(patterns, pattern), {});
                         this.attackPatterns = Object.values(tactics);
-                        console.log('preselects?', this.attackPatterns);
                         this.heatmap.view.redraw();
                         // this.heatmap.view.click.subscribe((event) => this.toggleAttackPattern(event));
                         setTimeout(() => this.heatmap.view.ngDoCheck(), 500);
@@ -138,7 +137,6 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
                 this.selectedPatterns.splice(index, 1);
             }
             const target = this.attackPatterns.find(p => p.name === clicked.data.name);
-            console.log('toggling', clicked, index, newValue, target);
             if (target) {
                 target.adds.highlights[0].color.style = newValue;
                 this.attackPatterns = this.attackPatterns.slice(0);

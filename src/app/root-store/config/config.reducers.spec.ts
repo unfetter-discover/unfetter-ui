@@ -1,7 +1,6 @@
 import { ConfigState, initialState, configReducer } from './config.reducers';
 import * as configActions from './config.actions';
 
-
 describe('configReducer', () => {
     let mockInitialState: ConfigState = null;
 
@@ -16,7 +15,8 @@ describe('configReducer', () => {
     it('should add config', () => {
         const payload = { foo: 'bar' };
         const expected = {
-            configurations: payload
+            configurations: payload,
+            tactics: [],
         };
         expect(configReducer(undefined, new configActions.AddConfig(payload))).toEqual(expected);
     });

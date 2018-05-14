@@ -1,5 +1,8 @@
 import { Action } from '@ngrx/store';
 
+import { TacticChain } from '../../global/components/tactics-pane/tactics.model';
+import { Dictionary } from '../../models/json/dictionary';
+
 export const FETCH_CONFIG = '[Config] Fetch Config';
 export const ADD_CONFIG = '[Config] Add Config';
 export const UPDATE_CONFIG = '[Config] Update Config';
@@ -41,7 +44,7 @@ export class FetchTactics implements Action {
 
 export class LoadTactics implements Action {
     public readonly type = LOAD_TACTICS;
-    constructor(public payload: any) {}
+    constructor(public payload: Dictionary<TacticChain>) {}
 }
 
 export type ConfigActions = 
