@@ -1,7 +1,6 @@
 @import '../../../../../styles/_variables.scss';
 
 :host ::ng-deep {
-
     .mat-toolbar {
         width: auto;
         height: 48px;
@@ -32,19 +31,23 @@
                 font-size: 30px;
                 cursor: pointer;
             }
+
             .carousel-button:before {
                 position: relative;
                 font-family: "Material Icons";
                 top: -3px;
             }
+
             .carousel-button.carousel-prev-button:before {
                 right: 3px;
                 content: "keyboard_arrow_left";
             }
+
             .carousel-button.carousel-next-button:before {
                 right: 1px;
                 content: "keyboard_arrow_right";
             }
+
             .carousel-button.disabled {
                 background-color: #ccc;
                 cursor: default;
@@ -63,6 +66,7 @@
                 text-align: start;
                 text-indent: 0px;
                 text-shadow: none;
+
                 .mat-select-value-text {
                     display: inline-block;
                     width: 100%;

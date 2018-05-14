@@ -2,6 +2,7 @@
 
 #searchBarComponent {
     padding: 0 !important;
+
     &:before {
       display: block;
       content: "search";
@@ -12,7 +13,6 @@
       @include material-icons;
       color: #4F5B62;
     }
-
 }
 
 #searchInput {
@@ -20,7 +20,8 @@
     padding: 8px 13px;
     text-indent: 25px;
     font-size: 16px;
+
     &:focus {
         outline: none;
-    }    
+    }   
 }

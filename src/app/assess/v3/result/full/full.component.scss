@@ -42,6 +42,7 @@
             padding-top: 8px;
             padding-bottom: 16px;
             height: 76px;
+
             &:hover {
               background-color: $assessments-primary;
             }
@@ -63,6 +64,7 @@
         .unassessed-phases-list-item {
             padding-top: 8px;
             height: 36px;
+
             &:hover {
               background-color: $assessments-primary;
             }

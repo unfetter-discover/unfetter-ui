@@ -2,6 +2,7 @@
 
 i {
     transition: transform 0.3s $elastic-transition;
+
     &.showAddAp {
       transform: rotateZ(135deg);
     }

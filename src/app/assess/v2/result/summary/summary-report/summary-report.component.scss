@@ -1,4 +1,5 @@
 @import '../../../../../../styles/_variables.scss';
+
 #report {
   margin-left: 24px;
   margin-right: 24px;
@@ -33,6 +34,7 @@
 $min-card-width: 330;
 $padding-between-cards: 10;
 $min-card-fullwidth: ($min-card-width * 2 + $padding-between-cards + $padding-between-cards);
+
 #assessmentCard {
   min-width: $min-card-fullwidth + px;
 }
@@ -46,6 +48,7 @@ $min-card-fullwidth: ($min-card-width * 2 + $padding-between-cards + $padding-be
   padding-left: 15px;
   padding-right: 18px;
   padding-bottom: 6px;
+
   .mat-card-subtitle {
     color: black;
     font-size: 20px;
@@ -65,6 +68,7 @@ $min-card-fullwidth: ($min-card-width * 2 + $padding-between-cards + $padding-be
 
 .mat-column-item {
   min-width: 32%;
+
   ul {
     list-style-type: none;
     -webkit-padding-start: 0px;
@@ -77,6 +81,7 @@ $min-card-fullwidth: ($min-card-width * 2 + $padding-between-cards + $padding-be
   border-top-width: 1px;
   border-top-color: rgba(0, 0, 0, 0.12);
   padding: 0px;
+
   .mat-header-cell {
     color: black;
     font-weight: 600;
@@ -116,6 +121,7 @@ $min-card-fullwidth: ($min-card-width * 2 + $padding-between-cards + $padding-be
     padding: 0px;
     align-items: normal;
     min-height: 10px;
+
     .mat-cell {
       font-size: 11px;
     }

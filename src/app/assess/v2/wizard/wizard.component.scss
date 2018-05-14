@@ -67,11 +67,7 @@
 }
 
 .stepper-vertical li {
-    display: flex;
     position: relative;
-}
-
-.stepper-vertical li {
     display: flex;
     align-items: center;
     flex: 1;
@@ -160,10 +156,6 @@
 .stepper li a .label {
     display: inline-block;
     color: rgba(0, 0, 0, .38);
-}
-
-.stepper-vertical li.completed a .label {
-    font-weight: 500;
 }
 
 .stepper-vertical li a .label {

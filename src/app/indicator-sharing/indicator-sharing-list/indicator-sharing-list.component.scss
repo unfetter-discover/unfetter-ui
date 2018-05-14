@@ -40,9 +40,11 @@
   .spacer {
     font-size: 28px;
   }
+
   #spacer1 {
     margin-right: 13px;
   }
+
   #spacer2 {
     margin-left: 14px;
     margin-right: 6px;
@@ -53,6 +55,8 @@
   .filterOpenBreakpoint {
     width: 80%;
   }
+  
+  /* stylelint-disable no-duplicate-selectors */
   .filterOpenBreakpoint {
     margin-left: 10%;
   }
@@ -62,6 +66,7 @@
   .filterOpenBreakpoint {
     width: 66.66666667%;
   }
+
   .filterOpenBreakpoint {
     margin-left: 16.66666667%;
   }
@@ -71,6 +76,7 @@
   #listControlFlexWraper {
     flex-direction: column;
     align-items: flex-start;
+
     #spacer1, #spacer2 {
       display: none;
     }
@@ -80,13 +86,16 @@
 :host ::ng-deep {
   .tactics-pane {
     margin-bottom: 15px;
+
     .carousel-button {
       background: $analytic-exchange-primary-lightest !important;
       color: $analytic-exchange-primary !important;
     }
+
     .carousel-button.disabled {
       background: #ccc !important;
     }
+
     p-carousel .badge {
       color: #333 !important;
     }

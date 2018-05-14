@@ -16,9 +16,11 @@ div.tactics-pane {
         .tactics-title-with-subtitle {
             margin-top: -8px;
             line-height: 24px;
+
             .tactics-title-row {
                 font-weight: 400;
             }
+
             .tactics-subtitle-row {
                 font-size: 14px;
                 font-weight: 100;
@@ -30,19 +32,24 @@ div.tactics-pane {
                 color: $threat-dashboard-primary;
                 background-color: $white;
             }
+
             .toolbox:not(:last-child) {
                 margin-right: 16px;
             }
+
             .mat-button-toggle-group {
                 margin-top: -8px;
                 height: 48px;
             }
+
             .mat-button-toggle-group.hide {
                 display: none;
             }
+
             .mat-button-toggle-focus-overlay {
                 background-color: transparent;
             }
+
             .mat-button-toggle-label {
                 margin-top: 4px;
             }

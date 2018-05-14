@@ -15,11 +15,11 @@ $white: #FFFFFF;
 }
 
 :host ::ng-deep {
-
     path.link {
         stroke: #cccccc;
         fill: transparent;
     }
+
     .tooltip ::ng-deep {
         position: absolute;
         text-align: left;
@@ -40,7 +40,6 @@ $white: #FFFFFF;
     }
 
     svg ::ng-deep  {
-
         .node ::ng-deep {
             stroke: unset;
             cursor: pointer;
