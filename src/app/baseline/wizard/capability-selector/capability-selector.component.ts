@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import * as _ from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
 import { Capability, Category } from 'stix/assess/v3/baseline';
 import { SetBaselineCapabilities } from '../../store/baseline.actions';
 import * as assessReducers from '../../store/baseline.reducers';
-import * as _ from 'lodash';
 
 @Component({
   selector: 'unf-baseline-wizard-capability-selector',
@@ -56,7 +56,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
       .subscribe(
         (baselineCapabilities: any[]) => {
           this.baselineCapabilities = baselineCapabilities;
-          this.selectedCapabilities = this.baselineCapabilities; // .filter((cap) => cap.category === this.currentCapabilityGroup.name);
+          this.selectedCapabilities = this.baselineCapabilities.filter((cap) => cap.category === this.currentCapabilityGroup.name);
           this.updateAvailableCapabilitiesList();
         },
         (err) => console.log(err));
