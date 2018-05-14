@@ -1,13 +1,7 @@
 import { Injectable } from '@angular/core';
-
 import { Observable } from 'rxjs/Observable';
-
-import { Constance } from '../../utils/constance';
 import { GenericApi } from '../../core/services/genericapi.service';
-import { JsonApiData } from '../../models/json/jsonapi-data';
-import { Baseline } from '../../models/baseline/baseline';
-import { LastModifiedBaseline } from '../models/last-modified-baseline';
-import { JsonApi } from '../../models/json/jsonapi';
+import { Constance } from '../../utils/constance';
 
 @Injectable()
 export class BaselineSummaryService {

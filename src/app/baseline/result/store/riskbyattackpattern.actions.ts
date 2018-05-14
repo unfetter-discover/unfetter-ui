@@ -4,7 +4,6 @@ import { JsonApiData } from '../../../models/json/jsonapi-data';
 import { RiskByAttack3 } from '../../../models/baseline/risk-by-attack3';
 
 // For effects
-export const LOAD_RISK_BY_ATTACK_PATTERN_DATA = '[Baseline Risk By Attack Pattern] LOAD_RISK_BY_ATTACK_PATTERN_DATA';
 export const LOAD_SINGLE_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA = '[Baseline Risk By Attack Pattern] LOAD_SINGLE_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA';
 
 // For reducers
@@ -16,13 +15,6 @@ export class LoadSingleAssessmentRiskByAttackPatternData implements Action {
     public readonly type = LOAD_SINGLE_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA;
 
     // individual baseline id
-    constructor(public payload: string) { }
-}
-
-export class LoadAssessmentRiskByAttackPatternData implements Action {
-    public readonly type = LOAD_RISK_BY_ATTACK_PATTERN_DATA;
-
-    // baseline rollup id
     constructor(public payload: string) { }
 }
 
@@ -46,6 +38,5 @@ export class CleanAssessmentRiskByAttackPatternData implements Action {
 export type RiskByAttackPatternActions =
     CleanAssessmentRiskByAttackPatternData |
     SetRiskByAttackPattern |
-    LoadAssessmentRiskByAttackPatternData |
     LoadSingleAssessmentRiskByAttackPatternData |
     FinishedLoading;

@@ -27,7 +27,20 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome'],
-    singleRun: false
+    browsers: ['Chrome', 'ChromeHeadlessCustom', 'ChromeHeadless'],
+    singleRun: false,
+    customLaunchers: {
+      'ChromeHeadlessCustom': {
+        base: 'ChromeHeadless',
+        flags: [
+          '--headless',
+          '--enable-gpu',
+          '--disable-translate',
+          '--disable-extensions'
+        ]
+      }
+    },
+    browserNoActivityTimeout: 20000,
+    browserDisconnectTolerance: 3
   });
 };

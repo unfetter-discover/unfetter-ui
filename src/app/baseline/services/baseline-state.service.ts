@@ -1,9 +1,6 @@
-import { Injectable } from '@angular/core';
-
-import { Observable } from 'rxjs/Observable';
+import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Subject } from 'rxjs/Subject';
-
+import { Observable } from 'rxjs/Observable';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
 
 /**
@@ -15,7 +12,12 @@ export class BaselineStateService {
     protected metaDataSubject = new BehaviorSubject<BaselineMeta>(new BaselineMeta());
     public metaData$ = this.metaDataSubject.asObservable();
 
-    constructor() {
+    constructor(
+        @SkipSelf() @Optional() protected parent: BaselineStateService,
+    ) {
+        if (parent) {
+            throw new Error('BaselineStateService is already loaded.');
+        }
     }
 
     /**
