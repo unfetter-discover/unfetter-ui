@@ -61,6 +61,12 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
      */
     @Input() public frameworks: string[] = [];
 
+    /**
+     * The full list of known tactics, for the input frameworks, provided to avoid having multiple copies among the
+     * subcomponents.
+     */
+    protected chains: Dictionary<TacticChain> = null;
+
     /*
      * These input values are only the "preselected" attack patterns. If there is nothing preselected, it is perfectly
      * okay to not provide this input.
@@ -136,6 +142,7 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
      * @description
      */
     constructor(
+        protected store: Store<AppState>,
     ) {}
 
     /**
@@ -152,6 +159,8 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
                     (err) => console.log(err),
                 );
         }
+
+        this.initData();
     }
 
     /**
@@ -182,6 +191,64 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
      */
     public isCarouselView(): boolean {
         return this.view === 'carousel';
+    }
+
+    /**
+     * @description load all data
+     */
+    protected initData() {
+        const getf$ = this.getFrameworks()
+            .finally(() => getf$ && getf$.unsubscribe())
+            .subscribe(
+                (frameworks) => {
+                    this.frameworks = frameworks;
+                    this.loadTactics();
+                },
+                (err) => {
+                    console.log(`(${new Date().toISOString()}) ${this.constructor.name}`,
+                            'could not determine current framework', err);
+                }
+            );
+    }
+
+    /**
+     * @description determine which framework is to be displayed here
+     */
+    private getFrameworks(): Observable<string[]> {
+        if (this.frameworks && this.frameworks.length) {
+            return Observable.of(this.frameworks.slice(0));
+        }
+        if (this.targeted && this.targeted.length) {
+            const frameworks = this.targeted
+                .reduce((chains, tactic) => chains.concat(tactic.framework), [])
+                .filter(chain => chain !== undefined && chain !== null);
+            if (frameworks.length >= 1) {
+                return Observable.of(frameworks);
+            }
+        }
+        return this.store
+            .select('users')
+            .pluck('userProfile')
+            .take(1)
+            .pluck('preferences')
+            .pluck('killchain')
+            .map((chain: string) => [chain]);
+    }
+
+    /**
+     * @description load all the attack patterns, by relevant framework
+     */
+    protected loadTactics() {
+        const sub$ = this.store
+            .select('config')
+            .pluck('tacticsChains')
+            .filter(t => t !== null)
+            .take(1)
+            .finally(() => (sub$ && sub$.unsubscribe && sub$.unsubscribe()))
+            .subscribe(
+                (tactics: Dictionary<TacticChain>) => this.chains = tactics,
+                (err) => console.log(`(${new Date().toISOString()}) TacticsPane could not load tactics`, err),
+        );
     }
 
     /**

@@ -91,8 +91,8 @@ export class IntrusionSetDashboardComponent implements OnInit {
     public ngOnInit() {
         const initAttackPatterns$ = this.tacticsStore
             .select('config')
-            .pluck('tacticsChains')
-            .filter(chains => chains !== null)
+            .pluck('tactics')
+            .filter((t: Tactic[]) => t.length !== 0)
             .take(1);
 
         const intrusionsProperties = {
@@ -115,11 +115,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
             .subscribe(
                 ([tactics, intrusionSets, relationships]) => {
                     const patterns = {};
-                    Object.values(tactics).forEach(chain => {
-                        chain.phases.forEach(phase => {
-                            phase.tactics.forEach(tactic => patterns[tactic.id] = {...tactic});
-                        });
-                    });
+                    (tactics as Tactic[]).forEach(tactic => patterns[tactic.id] = {...tactic});
                     this.attackPatterns = patterns;
 
                     const intrusions = {};

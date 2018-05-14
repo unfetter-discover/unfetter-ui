@@ -1,12 +1,16 @@
 import * as configActions from './config.actions';
+import { Tactic, TacticChain } from '../../global/components/tactics-pane/tactics.model';
+import { Dictionary } from '../../models/json/dictionary';
 
 export interface ConfigState {
     configurations: any,
-    tacticsChains?: any,
+    tacticsChains?: Dictionary<TacticChain>,
+    tactics?: Tactic[],
 }
 
 export const initialState: ConfigState = {
     configurations: {},
+    tactics: [],
 }
 
 export function configReducer(state = initialState, action: configActions.ConfigActions) {
@@ -47,11 +51,18 @@ export function configReducer(state = initialState, action: configActions.Config
 
         case configActions.LOAD_TACTICS:
             console.log('loaded tactics', action);
+            const patterns = [];
+            if (action.payload) {
+                Object.values(action.payload).forEach(chain => {
+                    chain.phases.forEach(phase => {
+                        phase.tactics.forEach(tactic => patterns.push(tactic));
+                    });
+                });
+            }
             return {
                 ...state,
-                tacticsChains: {
-                    ...action.payload
-                }
+                tacticsChains: {...action.payload},
+                tactics: patterns,
             };
 
         default:
