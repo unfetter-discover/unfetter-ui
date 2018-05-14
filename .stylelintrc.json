@@ -18,6 +18,10 @@
       "except": ["first-nested"],
       "ignore": ["after-comment"]
     }],
+    "scss/at-else-closing-brace-newline-after": "always-last-in-chain",
+    "scss/at-rule-no-unknown": true,
+    "scss/no-duplicate-dollar-variables": true,
+    "scss/selector-no-redundant-nesting-selector": true,
     "unit-no-unknown": true
   }
 }
