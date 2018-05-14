@@ -8,6 +8,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormControl } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
+import { StoreModule } from '@ngrx/store';
+import * as assessReducers from '../../store/baseline.reducers';
+
 
 describe('CapabilityComponent', () => {
   let component: CapabilityComponent;
@@ -30,6 +33,7 @@ describe('CapabilityComponent', () => {
       imports: [
         NoopAnimationsModule,
         ...matModules,
+        StoreModule.forRoot(assessReducers),
         ReactiveFormsModule,
       ]
     })

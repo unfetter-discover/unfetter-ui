@@ -3,6 +3,10 @@ import { DataSource } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
+import * as assessReducers from '../../store/baseline.reducers';
+import { Capability, ObjectAssessment } from 'stix/assess/v3';
 
 @Component({
   selector: 'unf-baseline-wizard-capability',
@@ -14,7 +18,6 @@ export class CapabilityComponent implements OnInit {
 
   pageToggle: number = 2;    // 1 for heatmap, 2 for pdr score picker
 
-  public dummyCapabilityName: string = 'Capability Name (VPN)';
   public attackMatrix: string = 'Att&ck Matrix';
   public noAttackPatterns: string = 'You have no Attack Patterns yet';
   public addAttackPatterns: string = 'Add a Kill Chain Phase and Attack Patterns and they will show up here';
@@ -60,8 +63,25 @@ export class CapabilityComponent implements OnInit {
 
   @Output()
   public onToggleHeatMap = new EventEmitter<boolean>();
+  public currentCapability: Capability;
+  public currentCapabilityName: string;
+  public currentCapabilityDescription: string;
+  public objectAssessments: ObjectAssessment[];
 
-  constructor() { 
+  constructor(private wizardStore: Store<assessReducers.BaselineState>) { 
+
+    const sub1$ = this.wizardStore
+      .select('baseline')
+      .pluck('currentCapability')
+      .distinctUntilChanged()
+      .subscribe(
+        (currentCapability: Capability) => {
+          this.currentCapability = currentCapability
+          this.currentCapabilityName = (this.currentCapability === undefined) ? '' : this.currentCapability.name;
+          this.currentCapabilityDescription = (this.currentCapability === undefined) ? '' : this.currentCapability.description;
+        }, (err) => console.log(err));
+
+
     this.dataSource =  new MatTableDataSource<TableEntry>(
       this.incomingListOfAttackPatterns.map(x => ({
         id: 1,  // TODO: get id
