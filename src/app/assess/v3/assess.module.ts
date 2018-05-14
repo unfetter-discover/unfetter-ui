@@ -1,13 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
+import { BaselineService } from '../../baseline/services/baseline.service';
 import { GlobalModule } from '../../global/global.module';
 import { AssessGuard } from './assess.guard';
 import { routing } from './assess.routing';
@@ -31,11 +34,14 @@ const materialModules = [
   MatCheckboxModule,
   MatIconModule,
   MatInputModule,
-]
+  MatFormFieldModule,
+  MatSelectModule,
+];
 
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     ResultModule,
     GlobalModule,
@@ -54,6 +60,7 @@ const materialModules = [
     AssessService,
     AssessStateService,
     AssessSummaryService,
+    BaselineService,
   ]
 })
 export class AssessModule { }

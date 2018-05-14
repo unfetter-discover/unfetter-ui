@@ -10,11 +10,16 @@
 
     .flex {
         height: 100%;
-        width: 100%;
 
-        .info-bar {
+        .centered {
+            margin: auto auto;
+        }
+
+        .left-aligned {
             margin: auto 14px;
-
+        }
+    
+        .info-bar {
             span {
                 flex: 0 0 auto;
                 margin: auto 4px;

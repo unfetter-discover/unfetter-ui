@@ -8,19 +8,13 @@ import { Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InfoBarComponent implements OnInit {
-
-  @Input()
-  public shouldShow = true;
-  @Input()
-  public isWarningMsg = false;
-  @Input()
-  public message = '';
-  @Input()
-  public dismissBtnMsg = 'DISMISS';
-  @Input()
-  public completeBtnMsg = 'COMPLETE';
-  @Input()
-  public completeActionUrl = '';
+  @Input() public completeActionUrl = '';
+  @Input() public completeBtnMsg = 'COMPLETE';
+  @Input() public dismissBtnMsg = 'DISMISS';
+  @Input() public isWarningMsg = false;
+  @Input() public message = '';
+  @Input() public shouldCenter = false;
+  @Input() public shouldShow = true;
 
   constructor(
     protected router: Router,

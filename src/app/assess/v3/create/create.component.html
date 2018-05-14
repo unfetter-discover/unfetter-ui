@@ -19,6 +19,13 @@
                         <mat-checkbox class="" [value]="assessMeta.includesIndicators" color="primary" formControlName="includesIndicators">Indicators</mat-checkbox>
                         <mat-checkbox class="" [value]="assessMeta.includesMitigations" color="primary" formControlName="includesMitigations">Mitigations</mat-checkbox>
                         <!-- <mat-checkbox class="" [value]="assessMeta.includesSensors" color="primary" formControlName="includesSensors">Sensors</mat-checkbox> -->
+                        <mat-form-field>
+                            <mat-select placeholder="Baseline">
+                                <mat-option *ngFor="let baseline of (baselines | async)" [value]="baseline.id">
+                                    {{ baseline.name }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
                     </div>
                 </mat-card-content>
                 <mat-card-actions>

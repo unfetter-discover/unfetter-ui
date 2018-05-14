@@ -2,9 +2,11 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
 import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
+import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
 import * as assessActions from '../store/assess.actions';
-import { UpdatePageTitle } from '../store/assess.actions';
+import { LoadBaselines, UpdatePageTitle } from '../store/assess.actions';
 import * as assessReducers from '../store/assess.reducers';
 import { Assess3Form } from './assess3.form';
 
@@ -16,6 +18,7 @@ import { Assess3Form } from './assess3.form';
 export class CreateComponent implements OnInit {
   public assessMeta: Assess3Meta;
   public form: FormGroup;
+  public baselines: Observable<AssessmentSet[]>;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -29,7 +32,27 @@ export class CreateComponent implements OnInit {
   ngOnInit(): void {
     this.assessMeta = new Assess3Meta();
     this.resetForm();
+    this.fetchData();
+    this.listenForChanges();
+  }
+
+  /**
+   * @returns void
+   */
+  public fetchData(): void {
     this.store.dispatch(new UpdatePageTitle(this.assessMeta.title));
+    this.store.dispatch(new LoadBaselines());
+  }
+
+  /**
+   * @returns void
+   */
+  public listenForChanges(): void {
+    this.baselines = this.store
+      .select('assessment')
+      .pluck<object, AssessmentSet[]>('baselines')
+      .filter((el) => el !== undefined)
+      .distinctUntilChanged();
   }
 
   /**
