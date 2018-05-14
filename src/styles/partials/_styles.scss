@@ -80,6 +80,18 @@ label {
     @include themePrimaryTextProp('fill');
 }
 
+.theme-fill-primary-light {
+    @include themePrimaryLightColors('fill');
+}
+
+.theme-fill-primary-lighter {
+    @include themePrimaryLighterColors('fill');
+}
+
+.theme-fill-primary-lightest {
+    @include themePrimaryLightestColors('fill');
+}
+
 .theme-color-accent {
     @include themeAccentText();
 }

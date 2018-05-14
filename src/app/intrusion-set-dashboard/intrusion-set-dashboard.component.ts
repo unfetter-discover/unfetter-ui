@@ -48,7 +48,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
     public readonly heatmapOptions: HeatmapOptions = {
         color: {
             batchColors: [
-                {header: {bg: '#4db6ac', fg: 'black'}, body: {bg: 'white', fg: 'black'}},
+                {header: {bg: '.theme-fill-primary-lighter', fg: 'black'}, body: {bg: 'white', fg: 'black'}},
             ],
             heatColors: {'false': this.noColor},
             noColor: this.noColor,
@@ -92,6 +92,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
         const initAttackPatterns$ = this.tacticsStore
             .select('config')
             .pluck('tacticsChains')
+            .filter(chains => chains !== null)
             .take(1);
 
         const intrusionsProperties = {
@@ -161,7 +162,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
                 .subscribe(
                     (data: any) => {
                         this.color(data); // TODO move this to the ap tab?
-                        this.intrusionSets = data.intrusionSets;
+                        this.intrusionSets = data.intrusionSets.sort((a, b) => a.name.localeCompare(b.name));
                         this.coursesOfAction = data.coursesOfAction;
                         this.killChainPhases = data.killChainPhases;
                         this.totalAttackPatterns = data.totalAttackPatterns;
