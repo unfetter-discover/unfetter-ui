@@ -1,15 +1,24 @@
 <div id="summaryStatisticsComponent" *ngIf="serverCallComplete" class="uf-well">
   <h3 class="lightH3">Summary Statistics</h3>
 
-  <label>Most Contributions</label>
-  <p>{{ mostIndicators.org }}: {{ mostIndicators.number }}</p>
+  <div class="flex mt-35" *ngFor="let dataCategory of dataCategories; let i = index" [class.reverseFlex]="i % 2 !== 0">
+    <div class="fb-4 callout">
+      <mat-card class="uf-mat-card" [style.border]="getCardBorder(theMost[dataCategory].index)">
+        <mat-card-content>
+          <mat-card-header [style.borderBottom]="getCardBorder(theMost[dataCategory].index)">
+            <mat-card-title>{{ dataCategory === 'count' ? 'Contributions' : dataCategory | capitalize }}</mat-card-title>
+          </mat-card-header>
+          <div class="calloutContent">
+            <span>{{ theMost[dataCategory].org }}</span>
+            <span>{{ theMost[dataCategory].number }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="fb-8">
+      <canvas baseChart [datasets]="barChartData[dataCategory]" [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType"
+        [colors]="chartColors" *ngIf="barChartData[dataCategory].length"></canvas>
+    </div>
+  </div>
 
-  <label>Most Views</label>
-  <p>{{ mostViewed.org }}: {{ mostViewed.number }}</p>
-
-  <label>Most Likes Recieved</label>
-  <p>{{ mostLiked.org }}: {{ mostLiked.number }}</p>
-
-  <label>Most Comments Recieved</label>
-  <p>{{ mostComments.org }}: {{ mostComments.number }}</p>
 </div>

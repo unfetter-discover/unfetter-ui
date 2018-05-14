@@ -23,6 +23,7 @@ import {
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { ClipboardModule } from 'ngx-clipboard';
+import { ChartsModule } from 'ng2-charts';
 
 // Modules
 import { routing } from './indicator-sharing-routing.module';
@@ -74,6 +75,7 @@ const matModules = [
         GlobalModule,
         FormsModule,
         ReactiveFormsModule,
+        ChartsModule,
         ...matModules,
         ClipboardModule,
         StoreModule.forFeature('indicatorSharing', indicatorSharingReducer),

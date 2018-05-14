@@ -4,10 +4,13 @@ import { Observable } from 'rxjs/Observable';
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { IndicatorSharingSummaryStatistics } from '../models/summary-statistics';
 import { RxjsHelpers } from '../../global/static/rxjs-helpers';
+import { ChartData } from '../../global/models/chart-data';
+import { Ng2ChartHelpers } from '../../global/static/ng2-chart-helpers';
 
-interface OrgNumber {
+interface OrgMostData {
   org: string;
   number: number;
+  index: number;
 }
 
 @Component({
@@ -17,14 +20,38 @@ interface OrgNumber {
 })
 export class SummaryStatisticsComponent implements OnInit {
 
-  public mostIndicators: OrgNumber;
-  public mostViewed: OrgNumber;
-  public mostLiked: OrgNumber;
-  public mostComments: OrgNumber;
+  public barChartOptions: any = {
+    scaleShowVerticalLines: false,
+    responsive: true,
+    scales: {
+      yAxes: [{
+        ticks: {
+          suggestedMin: 0
+        }
+      }]
+    },
+  };
+  public barChartType: string = 'bar';
+  public barChartLegend: boolean = true;
+  public chartColors = Ng2ChartHelpers.chartColors;
+
+  public barChartData: {
+    [key: string]: ChartData[]
+  } = {};
+
+  public readonly dataCategories: string[] = ['count', 'views', 'likes', 'comments'];
+
+  public theMost: {
+    [key: string]: OrgMostData
+  } = {};
   public serverCallComplete: boolean = false;
   private identities: any[] = [];
 
-  constructor(private indicatorSharingService: IndicatorSharingService) {}
+  constructor(private indicatorSharingService: IndicatorSharingService) {
+    this.dataCategories.forEach((dataCategory) => {
+      this.barChartData[dataCategory] = [];
+    });
+  }
 
   ngOnInit() {
     const getStats$ = Observable.forkJoin(
@@ -32,53 +59,20 @@ export class SummaryStatisticsComponent implements OnInit {
       this.indicatorSharingService.getIdentities().map(RxjsHelpers.mapArrayAttributes)
     )
       .subscribe(
-        ([stats, identities]: [IndicatorSharingSummaryStatistics[], any]) => {
+        ([stats, identities]: [IndicatorSharingSummaryStatistics[], any[]]) => {
           this.serverCallComplete = true;
           this.identities = identities;
+          this.buildCharts(stats);
           stats.forEach((stat: IndicatorSharingSummaryStatistics, i: number) => {
-            if (i === 0) {
-              this.mostIndicators = {
-                org: this.getOrgName(stat._id),
-                number: stat.count
-              };
-              this.mostViewed = {
-                org: this.getOrgName(stat._id),
-                number: stat.views
-              };
-              this.mostLiked = {
-                org: this.getOrgName(stat._id),
-                number: stat.likes
-              };
-              this.mostComments = {
-                org: this.getOrgName(stat._id),
-                number: stat.comments
-              };
-            } else {
-              if (stat.count > this.mostIndicators.number) {
-                this.mostIndicators = {
+            this.dataCategories.forEach((dataCategory) => {
+              if (i === 0 || stat[dataCategory] > this.theMost[dataCategory].number) {
+                this.theMost[dataCategory] = {
                   org: this.getOrgName(stat._id),
-                  number: stat.count
-                };
+                  number: stat[dataCategory],
+                  index: i
+                }
               }
-              if (stat.views > this.mostViewed.number) {
-                this.mostViewed = {
-                  org: this.getOrgName(stat._id),
-                  number: stat.views
-                };
-              }
-              if (stat.likes > this.mostLiked.number) {
-                this.mostLiked = {
-                  org: this.getOrgName(stat._id),
-                  number: stat.likes
-                };
-              }
-              if (stat.comments > this.mostComments.number) {
-                this.mostComments = {
-                  org: this.getOrgName(stat._id),
-                  number: stat.comments
-                };
-              }
-            }
+            });
           });
         },
         (err) => {
@@ -90,6 +84,22 @@ export class SummaryStatisticsComponent implements OnInit {
           }
         }
       );
+  }
+
+  public getCardBorder(index: number): string {
+    const color = Ng2ChartHelpers.getChartColorByIndex(index);
+    return `2px solid ${color}`;
+  }
+
+  private buildCharts(stats: IndicatorSharingSummaryStatistics[]): void {
+    const tempBarChartData = { ...this.barChartData };
+    stats.forEach((stat: IndicatorSharingSummaryStatistics, i: number) => {
+      tempBarChartData.count.push({ data: [stat.count], label: this.getOrgName(stat._id) });
+      tempBarChartData.views.push({ data: [stat.views], label: this.getOrgName(stat._id) });
+      tempBarChartData.likes.push({ data: [stat.likes], label: this.getOrgName(stat._id) });
+      tempBarChartData.comments.push({ data: [stat.comments], label: this.getOrgName(stat._id) });
+    });
+    this.barChartData = tempBarChartData;
   }
 
   private getOrgName(orgId: string): string {

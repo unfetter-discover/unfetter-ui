@@ -50,3 +50,9 @@
     display: flex;
   }
 }
+
+@for $i from 1 to 12 {
+  .fb-#{$i} {
+    flex-basis: percentage($i / 12);
+  }
+}
