@@ -1,7 +1,7 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule, MatCardModule, MatCheckboxModule, MatInputModule } from '@angular/material';
+import { MatButtonModule, MatCardModule, MatCheckboxModule, MatInputModule, MatSelectModule } from '@angular/material';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule, combineReducers } from '@ngrx/store';
@@ -19,17 +19,18 @@ describe('CreateComponent', () => {
       MatCardModule,
       MatCheckboxModule,
       MatInputModule,
+      MatSelectModule,
     ];
     TestBed.configureTestingModule({
       declarations: [CreateComponent],
       imports: [
+        ...materialModules,
         NoopAnimationsModule,
         RouterTestingModule,
         ReactiveFormsModule,
-        ...materialModules,
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          'assess': combineReducers(assessmentReducer)
+          'assessment': combineReducers(assessmentReducer)
         }),
       ],
       schemas: [NO_ERRORS_SCHEMA]
