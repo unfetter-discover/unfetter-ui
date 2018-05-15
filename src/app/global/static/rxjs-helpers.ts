@@ -1,7 +1,11 @@
-import { Observable } from 'rxjs/Observable';
 
 export class RxjsHelpers {
-    public static mapArrayAttributes(arr: any) {
+
+    /**
+     * @param  {any[]=[]} arr
+     * @returns any
+     */
+    public static mapArrayAttributes(arr: any[] = []): any[] {
         return arr.map((el) => {
             if (el instanceof Array) {
                 return el.map((e) => e.attributes);
@@ -11,6 +15,20 @@ export class RxjsHelpers {
                 return el;
             }
         })
+    }
+
+    /**
+     * @param  {any[]|object|any} el
+     * @returns any
+     */
+    public static mapAttributes(el: any[] | object | any): any[] | object | any {
+        if (el instanceof Array) {
+            return RxjsHelpers.mapArrayAttributes(el);
+        } else if (el instanceof Object) {
+            return (el as any).attributes || el;
+        } else {
+            return el;
+        }
     }
 
     /**

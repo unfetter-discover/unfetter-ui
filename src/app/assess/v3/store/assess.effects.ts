@@ -10,7 +10,9 @@ import { JsonApiData } from 'stix/json/jsonapi-data';
 import * as Indicator from 'stix/unfetter/indicator';
 import { Stix } from 'stix/unfetter/stix';
 import * as UUID from 'uuid';
+import { BaselineService } from '../../../baseline/services/baseline.service';
 import { GenericApi } from '../../../core/services/genericapi.service';
+import { RxjsHelpers } from '../../../global/static/rxjs-helpers';
 import { Constance } from '../../../utils/constance';
 import { AssessStateService } from '../services/assess-state.service';
 import { AssessService } from '../services/assess.service';
@@ -22,12 +24,13 @@ type URL_TYPE = 'course-of-action' | 'indicator' | 'mitigation' | 'sensor';
 export class AssessEffects {
 
     public constructor(
-        private router: Router,
-        private location: Location,
-        private actions$: Actions,
+        protected actions$: Actions,
         protected assessService: AssessService,
         protected assessStateService: AssessStateService,
-        protected genericServiceApi: GenericApi
+        protected baselineService: BaselineService,
+        protected genericServiceApi: GenericApi,
+        protected location: Location,
+        protected router: Router,
     ) { }
 
     @Effect()
@@ -37,17 +40,21 @@ export class AssessEffects {
         .switchMap((meta: Partial<Assess3Meta>) => {
             const includeMeta = `?metaproperties=true`;
             let url = `${this.generateUrl('indicator')}${includeMeta}`;
-            const observables = new Array<Observable<Array<JsonApiData<Stix>>>>();
+            const observables = new Array<Observable<Array<Stix>>>();
 
             const indicators$ = meta.includesIndicators ?
-                this.genericServiceApi.getAs<JsonApiData<Indicator.UnfetterIndicator>[]>(url) :
-                Observable.of<JsonApiData<Indicator.UnfetterIndicator>[]>([]);
+                this.genericServiceApi
+                    .getAs<Indicator.UnfetterIndicator[]>(url)
+                    .map(RxjsHelpers.mapArrayAttributes)
+                : Observable.of<Indicator.UnfetterIndicator[]>([]);
             observables.push(indicators$);
 
             url = `${this.generateUrl('mitigation')}${includeMeta}`;
             const mitigations$ = meta.includesMitigations ?
-                this.genericServiceApi.getAs<JsonApiData<Stix>[]>(url) :
-                Observable.of<JsonApiData<Stix>[]>([]);
+                this.genericServiceApi
+                    .getAs<JsonApiData<Stix>[]>(url)
+                    .map(RxjsHelpers.mapArrayAttributes)
+                : Observable.of<Stix[]>([]);
             observables.push(mitigations$);
 
             // TODO: change this to pulling the baseline assessment_sets
@@ -60,7 +67,7 @@ export class AssessEffects {
             return Observable.forkJoin(...observables)
                 .mergeMap(([indicators, mitigations]) => {
                     return [
-                        new assessActions.IndicatorsLoaded(indicators as JsonApiData<Indicator.UnfetterIndicator>[]),
+                        new assessActions.IndicatorsLoaded(indicators as Indicator.UnfetterIndicator[]),
                         new assessActions.MitigationsLoaded(mitigations),
                         // new assessActions.SensorsLoaded(sensors),
                         new assessActions.FinishedLoading(true)
@@ -133,9 +140,13 @@ export class AssessEffects {
                     let url = 'api/x-unfetter-assessments';
                     if (assessment.id) {
                         url = `${url}/${assessment.id}`;
-                        return this.genericServiceApi.patchAs<JsonApiData<Assessment>[]>(url, json);
+                        return this.genericServiceApi
+                            .patchAs<Assessment[]>(url, json)
+                            .map(RxjsHelpers.mapArrayAttributes);
                     } else {
-                        return this.genericServiceApi.postAs<JsonApiData<Assessment>[]>(url, json);
+                        return this.genericServiceApi
+                            .postAs<Assessment[]>(url, json)
+                            .map(RxjsHelpers.mapArrayAttributes);
                     }
                 });
 
@@ -159,6 +170,19 @@ export class AssessEffects {
                         id: hasAttributes ? arr[0].attributes.id : '',
                     });
                 })
+                .catch((err) => {
+                    console.log(err);
+                    return Observable.empty();
+                });
+        });
+
+    @Effect()
+    public fetchCapabilites = this.actions$
+        .ofType(assessActions.LOAD_BASELINES)
+        .switchMap(() => {
+            return this.baselineService
+                .fetchBaselines()
+                .map((arr) => new assessActions.SetBaselines(arr))
                 .catch((err) => {
                     console.log(err);
                     return Observable.empty();

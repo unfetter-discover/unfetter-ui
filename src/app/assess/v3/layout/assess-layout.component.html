@@ -1,5 +1,10 @@
 <div class="layout">
   <div class="titleWrapper">
+    <div class="banner-wrapper">
+      <div class="flex">
+        <uf-info-bar shouldCenter="true" isWarningMsg="true" message="Currently in beta. Some functionality does not work."></uf-info-bar>
+      </div>
+    </div>
     <span class="title mat-title">
       <span *ngIf="showBackButton|async">
         <button mat-icon-button class="mat-24" (click)="onBack($event)">

@@ -1,6 +1,6 @@
 <div class="info-bar-wrapper" [style.display]="shouldShow === true ? 'block': 'none'">
   <div class="flex">
-    <div class="info-bar flex">
+    <div class="info-bar flex" [class.centered]="shouldCenter" [class.left-aligned]="!shouldCenter">
       <span *ngIf="isWarningMsg">
         <mat-icon class="mat-24" color="warn">warning</mat-icon>
         <span class="cdk-visually-hidden">Warning</span>

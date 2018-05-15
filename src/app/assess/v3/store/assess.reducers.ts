@@ -1,5 +1,5 @@
 import { Assessment } from 'stix/assess/v3/assessment';
-import { JsonApiData } from 'stix/json/jsonapi-data';
+import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
 import { Indicator } from 'stix/stix/indicator';
 import { Stix } from 'stix/unfetter/stix';
 import * as fromApp from '../../../root-store/app.reducers';
@@ -12,9 +12,10 @@ export interface AssessFeatureState extends fromApp.AppState {
 export interface AssessState {
     assessment: Assessment;
     backButton: boolean;
-    indicators?: JsonApiData<Indicator>[];
-    sensors?: JsonApiData<Stix>[];
-    mitigations?: JsonApiData<Stix>[];
+    indicators?: Indicator[];
+    sensors?: Stix[];
+    mitigations?: Stix[];
+    baselines?: AssessmentSet[];
     finishedLoading: boolean;
     saved: { finished: boolean, rollupId: string, id: string };
     showSummary: boolean;
@@ -29,6 +30,7 @@ const genAssessState = (state?: Partial<AssessState>) => {
         saved: { finished: false, rollupId: '', id: '' },
         showSummary: false,
         page: 1,
+        baselines: [],
     };
     if (state) {
         Object.assign(tmp, state);
@@ -76,6 +78,11 @@ export function assessmentReducer(state = initialState, action: assessmentAction
             return genAssessState({
                 ...state,
                 sensors: [...action.payload],
+            });
+        case assessmentActions.SET_BASELINES:
+            return genAssessState({
+                ...state,
+                baselines: [...action.payload],
             });
         case assessmentActions.FINISHED_LOADING:
             return genAssessState({
