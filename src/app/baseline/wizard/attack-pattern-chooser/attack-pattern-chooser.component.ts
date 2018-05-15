@@ -8,7 +8,6 @@ import {
         TemplateRef,
         ViewContainerRef,
         ChangeDetectorRef,
-        AfterViewInit,
     } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
@@ -26,16 +25,17 @@ import { GenericApi } from '../../../core/services/genericapi.service';
 import { Constance } from '../../../utils/constance';
 import { AppState } from '../../../root-store/app.reducers';
 import { Dictionary } from '../../../models/json/dictionary';
+import { AttackPattern } from '../../../models';
+import { TooltipEvent } from '../../../global/components/tactics-pane/tactics-tooltip/tactics-tooltip.service';
 
 @Component({
     selector: 'attack-pattern-chooser',
     templateUrl: './attack-pattern-chooser.component.html',
     styleUrls: ['./attack-pattern-chooser.component.scss'],
 })
-export class AttackPatternChooserComponent implements OnInit, AfterViewInit {
+export class AttackPatternChooserComponent implements OnInit {
 
     public attackPatterns: Tactic[] = [];
-    public selected = [];
 
     @ViewChild('apChooser') private heatmap: TacticsHeatmapComponent;
     @Input() options: HeatmapOptions = {
@@ -44,9 +44,11 @@ export class AttackPatternChooserComponent implements OnInit, AfterViewInit {
         },
         color: {
             batchColors: [
-                {header: {bg: 'white', fg: '#333'}, body: {bg: 'white', fg: 'black'}},
+                {header: {bg: '.odd', fg: '#333'}, body: {bg: '.odd', fg: 'black'}},
+                {header: {bg: 'transparent', fg: '#333'}, body: {bg: 'transparent', fg: 'black'}},
             ],
             heatColors: {
+                'false': {bg: '#ccc', fg: 'black'},
                 'inactive': {bg: '#ccc', fg: 'black'},
                 'selected': {bg: '.selected', fg: 'black'},
                 'active': {bg: '.active', fg: 'black'},
@@ -77,34 +79,40 @@ export class AttackPatternChooserComponent implements OnInit, AfterViewInit {
     ) { }
 
     ngOnInit() {
-        this.selected = this.data.active || [];
-    }
-    
-    ngAfterViewInit() {
-        this.heatmap.data.forEach(batch => {
-            batch.cells.forEach(pattern => {
-                pattern.value = this.selected.find(p => p.title === pattern.title) ? 'selected' : 'inactive';
-            });
-        });
+        if (this.data && this.data.active) {
+            (this.data.active as Observable<AttackPattern[]>)
+                .distinctUntilChanged()
+                .subscribe(
+                    (patterns) => {
+                        // @todo We need to convert whatever is provided to us into Tactic objects,
+                        //       and set their value to a heat property ('inactive' or 'selected').
+                    },
+                    (err) => console.log(`(${new Date().toISOString}) Attack Pattern Chooser preselects error`, err),
+                )
+        }
     }
 
     /**
      * @description for selecting and deselecting attack patterns
      */
-    public toggleAttackPattern(clicked?: any) {
-        if (clicked && clicked.row) {
-            const index = this.selected.findIndex(pattern => pattern.id === clicked.row.id);
+    public toggleAttackPattern(clicked?: TooltipEvent) {
+        if (clicked && clicked.data) {
+            const index = this.attackPatterns.findIndex(pattern => pattern.id === clicked.data.id);
+            let newValue = 'selected';
             if (index < 0) {
                 // pattern was not previously selected; select it
-                clicked.row.value = 'selected';
-                this.selected.push(clicked.row);
+                this.attackPatterns.push(clicked.data);
             } else {
                 // remove the pattern from our selection list
-                clicked.row.value = 'inactive';
-                this.selected.splice(index, 1);
+                newValue = 'false';
+                this.attackPatterns.splice(index, 1);
             }
             this.heatmap.view.helper['heatmap'].workspace.data.forEach(batch => {
-                batch.value = batch.cells.some(cell => cell.value === 'selected') ? 'active' : null;
+                batch.cells.forEach(cell => {
+                    if (cell.id === clicked.data.id) {
+                        cell.value = newValue === 'selected' ? 'active' : 'inactive';
+                    }
+                });
             });
             this.heatmap.view.helper.updateCells();
         }
@@ -114,14 +122,15 @@ export class AttackPatternChooserComponent implements OnInit, AfterViewInit {
      * @description Remove all selections
      */
     public clearSelections() {
-        this.selected.slice(0).forEach(pattern => this.toggleAttackPattern({row: pattern}));
+        this.attackPatterns.slice(0).forEach(pattern => this.toggleAttackPattern({data: pattern}));
     }
 
     /**
      * @description retrieve the list of selected attack pattern names
      */
-    public onClose(): string[] {
-        return Array.from(new Set(this.selected.map(pattern => pattern.id)));
+    public close() {
+        const selections = Array.from(new Set(this.attackPatterns.map(pattern => pattern.id)));
+        this.dialogRef.close(selections);
     }
   
 }

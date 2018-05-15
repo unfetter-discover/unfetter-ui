@@ -7,5 +7,5 @@
 </mat-dialog-content>
 <mat-dialog-actions>
     <button mat-button [mat-dialog-close]="false">CANCEL</button>
-    <button mat-raised-button color="primary" [mat-dialog-close]="close()">ACCEPT</button>
+    <button mat-raised-button color="primary" (click)="close()">ACCEPT</button>
 </mat-dialog-actions>

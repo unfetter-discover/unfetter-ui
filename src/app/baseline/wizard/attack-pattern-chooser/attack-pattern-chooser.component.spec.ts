@@ -69,7 +69,7 @@ describe('AttackPatternChooserComponent', () => {
                 AuthService,
                 {
                     provide: MAT_DIALOG_DATA,
-                    useValue: {active: [mockAttackPatterns[1].id]}
+                    useValue: {active: null}
                 },
                 {
                     provide: MatDialogRef,
