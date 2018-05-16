@@ -1,7 +1,9 @@
     <mat-card-content>
       <div *ngIf="currentCapabilityGroup !== undefined" class="row margin-bottom flex-sm flexItemsCenter">
-        <div class="col-sm-9 group-name">
-          {{ currentCapabilityGroup.name }} Capabilities
+        <div class="col-sm-9">
+          <mat-card-title>
+            {{ currentCapabilityGroup.name }} Capabilities
+          </mat-card-title>
         </div>
       </div>
       <div class="row margin-bottom" *ngFor="let selCapability of selectedCapabilities; index as i; trackBy: trackByFn">
@@ -31,7 +33,7 @@
           <form>
             <mat-form-field class="full-width">
               <mat-select #newCapability name="newCapability" (change)="updateCapability(newCapability, -1)">
-                <mat-option *ngFor="let capability of availableCapabilities" [value]="capability">
+                <mat-option *ngFor="let capability of allCapabilities" [value]="capability">
                   {{ capability.name }}
                 </mat-option>
               </mat-select>
