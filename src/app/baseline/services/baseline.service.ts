@@ -11,7 +11,6 @@ import { BaselineObject } from '../../models/baseline/baseline-object';
 import { RiskByAttack3 } from '../../models/baseline/risk-by-attack3';
 import { Constance } from '../../utils/constance';
 import { LastModifiedBaseline } from '../models/last-modified-baseline';
-import { JsonApi } from 'stix/json/jsonapi';
 
 @Injectable()
 export class BaselineService {
@@ -153,7 +152,20 @@ export class BaselineService {
 
     /**
      * @description
-     * @param {string} capability id
+     *  fetch all assessment sets (aka baselines) from the server that this user can see
+     *      given the rules of the security filter
+     * @param {boolean} includeMeta - true to include metaProperties metadata
+     * @returns {Observable<AssessmentSet[]>}
+     */
+    public fetchAssessmentSets(includeMeta = true): Observable<AssessmentSet[]> {
+        return this.fetchBaselines(includeMeta);
+    }
+
+    /**
+     * @description
+     *  fetch all assessment sets (aka baselines) from the server that this user can see
+     *      given the rules of the security filter
+     * @param {boolean} includeMeta - true to include metaProperties metadata
      * @return {Observable<AssessmentSet[]>}
      */
     public fetchBaselines(includeMeta = true): Observable<AssessmentSet[]> {
@@ -166,12 +178,24 @@ export class BaselineService {
     /**
      * @description
      * @param {string} id
-     * @return {Observable<Assessment> }
+     * @return {Observable<Assessment>}
      */
     public getById(id: string, includeMeta = true): Observable<Baseline> {
         const url = `${this.baselineBaseUrl}/${id}?metaproperties=${includeMeta}`;
         return this.genericApi
             .getAs<JsonApiData<Baseline>>(url)
+            .map(RxjsHelpers.mapAttributes);
+    }
+
+    /**
+     * @description
+     * @param {string} id
+     * @return {Observable<Assessment>}
+     */
+    public fetchAssessmentSet(id: string, includeMeta = true): Observable<AssessmentSet> {
+        const url = `${Constance.X_UNFETTER_ASSESSMENT_SETS_URL}/${id}?metaproperties=${includeMeta}`;
+        return this.genericApi
+            .getAs<JsonApiData<AssessmentSet>>(url)
             .map(RxjsHelpers.mapAttributes);
     }
 

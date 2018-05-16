@@ -34,22 +34,15 @@ export class AssessLayoutComponent implements OnInit, AfterViewInit {
    */
   public ngAfterViewInit(): void {
     this.title = this.store
-      .select('assessment')
-      .filter((el) => el !== undefined)
-      .distinctUntilChanged()
-      .pluck('assessment')
-      .pluck('assessmentMeta')
-      .pluck('title');
+      .select(assessReducers.getAssessmentMetaTitle)
+      .distinctUntilChanged();
 
     this.showBackButton = this.store
-      .select('assessment')
-      .pluck<object, boolean>('backButton')
+      .select(assessReducers.getBackButton)
       .filter((el) => (el && typeof el === 'boolean'))
       .distinctUntilChanged()
-      .map((el) => {
-        this.changeDetectorRef.detectChanges();
-        return el;
-      });
+      .do(() => this.changeDetectorRef.detectChanges());
+
     this.changeDetectorRef.detectChanges();
   }
 

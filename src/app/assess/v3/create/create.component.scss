@@ -1,10 +1,13 @@
 @import '../../../../styles/_variables.scss';
+@import '../_assess.common.scss';
 
 .flex-cols {
+    display: flex;
     flex-direction: column;
 }
 
 .flex-rows {
+    display: flex;
     flex-direction: row;
 }
 
@@ -26,4 +29,22 @@
 
 mat-radio-button {
     display: flex;
+}
+
+$icon-size: 48px;
+
+.empty {
+    mat-icon {
+        font-size: $icon-size;
+        width: $icon-size;
+        height: $icon-size;
+    }
+}
+
+.pad-24 {
+    padding: 24px;
+}
+
+.faded-text {
+    color: $assessments-primary-light;
 }

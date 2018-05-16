@@ -89,6 +89,7 @@ export const Constance = {
 
   X_UNFETTER_ASSESSMENT3_NAVIGATE_URL: 'assess-beta/navigate',
   X_UNFETTER_ASSESSMENT3_BASELINE_NAVIGATE_URL: 'baseline/navigate',
+  X_UNFETTER_OBJECT_ASSESSMENTS_URL: 'api/v3/x-unfetter-object-assessments',
   X_UNFETTER_BASELINE_URL: 'api/v3/x-unfetter-object-assessments',
   X_UNFETTER_ASSESSMENT3_TYPE: 'x-unfetter-object-assessment',
 

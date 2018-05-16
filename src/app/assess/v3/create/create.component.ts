@@ -38,6 +38,7 @@ export class CreateComponent implements OnInit {
   }
 
   /**
+   * @description dispatch events to store
    * @returns void
    */
   public fetchData(): void {
@@ -46,11 +47,11 @@ export class CreateComponent implements OnInit {
   }
 
   /**
+   * @description listen to redux store changes
    * @returns void
    */
   public listenForChanges(): void {
-    this.baselines = this.store
-    .select(assessReducers.getSortedBaselines);
+    this.baselines = this.store.select(assessReducers.getSortedBaselines);
   }
 
   /**
@@ -117,5 +118,15 @@ export class CreateComponent implements OnInit {
    */
   public baselineSelected(baselineId: string): void {
     this.form.get('baselineRef').patchValue(baselineId);
+  }
+
+  /**
+   * @description
+   * @param index
+   * @param item
+   * @returns {number}
+   */
+  public trackByFn(index: number, item: any): number {
+    return item || item.id || index;
   }
 }

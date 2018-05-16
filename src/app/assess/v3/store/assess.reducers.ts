@@ -1,11 +1,13 @@
+import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
+import { ObjectAssessment } from 'stix/assess/v3/baseline/object-assessment';
 import { Indicator } from 'stix/stix/indicator';
 import { Stix } from 'stix/unfetter/stix';
+import { SortHelper } from '../../../global/static/sort-helper';
 import * as fromApp from '../../../root-store/app.reducers';
 import * as assessmentActions from './assess.actions';
-import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { SortHelper } from '../../../global/static/sort-helper';
 
 export interface AssessFeatureState extends fromApp.AppState {
     assessment: Assessment
@@ -17,6 +19,8 @@ export interface AssessState {
     indicators?: Indicator[];
     mitigations?: Stix[];
     baselines?: AssessmentSet[];
+    curBaseline?: AssessmentSet;
+    baselineQuestions?: ObjectAssessment[];
     finishedLoading: boolean;
     saved: { finished: boolean, rollupId: string, id: string };
     showSummary: boolean;
@@ -81,6 +85,11 @@ export function assessmentReducer(state = initialState, action: assessmentAction
                 ...state,
                 baselines: [...action.payload],
             });
+        case assessmentActions.SET_CURRENT_BASELINE:
+            return genAssessState({
+                ...state,
+                curBaseline: { ...action.payload },
+            });
         case assessmentActions.FINISHED_LOADING:
             return genAssessState({
                 ...state,
@@ -119,6 +128,16 @@ export const getAssessmentName = createSelector(
     (state: Assessment) => state.name
 );
 
+export const getAssessmentMeta = createSelector(
+    getAssessmentState,
+    (state: Assessment) => state.assessmentMeta
+);
+
+export const getAssessmentMetaTitle = createSelector(
+    getAssessmentMeta,
+    (state: Assess3Meta) => state.title
+);
+
 export const getBaselines = createSelector(
     getAssessState,
     (state: AssessState) => state.baselines
@@ -127,4 +146,34 @@ export const getBaselines = createSelector(
 export const getSortedBaselines = createSelector(
     getBaselines,
     (state: AssessmentSet[]) => state.sort(SortHelper.sortDescByField('name'))
+);
+
+export const getBackButton = createSelector(
+    getAssessState,
+    (state) => state.backButton
+);
+
+export const getMitigationsQuestions = createSelector(
+    getAssessState,
+    (state) => state.mitigations
+);
+
+export const getIndicatorQuestions = createSelector(
+    getAssessState,
+    (state) => state.indicators
+);
+
+export const getCapabilityQuestions = createSelector(
+    getAssessState,
+    (state) => state.baselineQuestions
+);
+
+export const getCurWizardPage = createSelector(
+    getAssessState,
+    (state) => state.page
+);
+
+export const getAssessmentSavedState = createSelector(
+    getAssessState,
+    (state) => state.saved
 );

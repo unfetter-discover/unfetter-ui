@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
+import { AssessmentSet } from 'stix';
 import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { JsonApi } from 'stix/json/jsonapi';
@@ -17,8 +18,9 @@ import { Constance } from '../../../utils/constance';
 import { AssessStateService } from '../services/assess-state.service';
 import { AssessService } from '../services/assess.service';
 import * as assessActions from './assess.actions';
+import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 
-type URL_TYPE = 'course-of-action' | 'indicator' | 'mitigation' | 'sensor';
+type URL_TYPE = 'course-of-action' | 'indicator' | 'mitigation';
 
 @Injectable()
 export class AssessEffects {
@@ -40,7 +42,7 @@ export class AssessEffects {
         .switchMap((meta: Partial<Assess3Meta>) => {
             const includeMeta = `?metaproperties=true`;
             let url = `${this.generateUrl('indicator')}${includeMeta}`;
-            const observables = new Array<Observable<Array<Stix>>>();
+            const observables = new Array<Observable<Array<Stix> | AssessmentSet>>();
 
             const indicators$ = meta.includesIndicators ?
                 this.genericServiceApi
@@ -57,19 +59,17 @@ export class AssessEffects {
                 : Observable.of<Stix[]>([]);
             observables.push(mitigations$);
 
-            // TODO: change this to pulling the baseline assessment_sets
-            // url = `${this.generateUrl('sensor')}${includeMeta}`;
-            // const sensors$ = meta.includesSensors ?
-            //     this.genericServiceApi.getAs<JsonApiData<Stix>[]>(url) :
-            //     Observable.of<JsonApiData<Stix>[]>([]);
-            // observables.push(sensors$);
+            const capabilitiesQuestions$ = meta.baselineRef ?
+                this.baselineService.fetchAssessmentSet(meta.baselineRef)
+                : Observable.empty<AssessmentSet>();
+            observables.push(capabilitiesQuestions$);
 
             return Observable.forkJoin(...observables)
-                .mergeMap(([indicators, mitigations]) => {
+                .mergeMap(([indicators, mitigations, baseline]) => {
                     return [
-                        new assessActions.IndicatorsLoaded(indicators as Indicator.UnfetterIndicator[]),
-                        new assessActions.MitigationsLoaded(mitigations),
-                        // new assessActions.SensorsLoaded(sensors),
+                        new assessActions.SetIndicators(indicators as Indicator.UnfetterIndicator[]),
+                        new assessActions.SetMitigations(mitigations as Stix[]),
+                        new assessActions.SetCurrentBaseline(baseline as AssessmentSet),
                         new assessActions.FinishedLoading(true)
                     ];
                 })
@@ -105,7 +105,7 @@ export class AssessEffects {
                 '/assess-beta/wizard/new',
                 'indicators', el.includesIndicators === true ? 1 : 0,
                 'mitigations', el.includesMitigations === true ? 1 : 0,
-                'baselineRef', el.baselineRef ? el.baselineRef : ''
+                'baseline', el.baselineRef ? el.baselineRef : ''
             ]);
         })
         // required to send an empty element on non dispatched effects
@@ -195,6 +195,7 @@ export class AssessEffects {
     *  take a stix object type and determine url to fetch data
     * @param {string} type
     *  string in the form of a url path
+    * @returns {string}
     */
     private generateUrl(type: URL_TYPE): string {
         let url = '';
@@ -211,12 +212,8 @@ export class AssessEffects {
                 url = Constance.COURSE_OF_ACTION_URL;
                 break;
             }
-            case 'sensor': {
-                url = 'api/x-unfetter-sensors';
-                break;
-            }
             default: {
-                url = 'api/x-unfetter-sensors';
+                url = Constance.INDICATOR_URL;
             }
         }
         return url;

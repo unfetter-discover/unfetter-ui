@@ -9,6 +9,7 @@ import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';
 import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 import { Assessment } from 'stix/assess/v3/assessment';
+import { ObjectAssessment } from 'stix/assess/v3/baseline/object-assessment';
 import { Dictionary } from 'stix/common/dictionary';
 import { JsonApiData } from 'stix/json/jsonapi-data';
 import * as Indicator from 'stix/unfetter/indicator';
@@ -98,6 +99,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public indicators: Indicator.UnfetterIndicator[];
   public sensors: Stix[];
   public mitigations: Stix[];
+  public capabilityQuestions: ObjectAssessment[];
   public ratioOfQuestionsAnswered = 0;
   public openedSidePanel: SidePanelName;
   public insertMode = false;
@@ -130,9 +132,10 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.CHART_HOVER_BG_COLORS = [Constance.COLORS.darkRed, Constance.COLORS.darkGreen];
   }
 
-  /*
+  /**
    * @description
-   *  initializes this component, fetchs data to build page
+   *    initializes this component, fetchs data to build page
+   * @returns void
    */
   public ngOnInit(): void {
     this.doughnutChartColors = this.DEFAULT_CHART_COLORS;
@@ -176,28 +179,19 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         () => idParamSub$.unsubscribe());
 
     const sub1$ = this.wizardStore
-      .select('assessment')
-      .pluck('indicators')
+      .select(assessReducers.getIndicatorQuestions)
       .distinctUntilChanged()
-      .filter((el) => el !== undefined)
-      .map((arr: JsonApiData<Indicator.UnfetterIndicator>[]) => arr.map((el) => el.attributes))
       .subscribe((arr: Indicator.UnfetterIndicator[]) => this.indicators = arr);
 
     const sub2$ = this.wizardStore
-      .select('assessment')
-      .pluck('mitigations')
+      .select(assessReducers.getMitigationsQuestions)
       .distinctUntilChanged()
-      .filter((el) => el !== undefined)
-      .map((arr: JsonApiData<Stix>[]) => arr.map((el) => el.attributes))
       .subscribe((arr: Stix[]) => this.mitigations = arr);
 
     const sub3$ = this.wizardStore
-      .select('assessment')
-      .pluck('sensors')
+      .select(assessReducers.getCapabilityQuestions)
       .distinctUntilChanged()
-      .filter((el) => el !== undefined)
-      .map((arr: JsonApiData<Stix>[]) => arr.map((el) => el.attributes))
-      .subscribe((arr: Stix[]) => this.sensors = arr);
+      .subscribe((arr: ObjectAssessment[]) => this.capabilityQuestions = arr);
 
     const sub4$ = this.wizardStore
       .select('assessment')
@@ -214,8 +208,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         (err) => console.log(err));
 
     const sub5$ = this.wizardStore
-      .select('assessment')
-      .pluck('page')
+      .select(assessReducers.getCurWizardPage)
       .distinctUntilChanged()
       .subscribe(
         (page: number) => this.page = page,
@@ -223,8 +216,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
     interface SavedState { finished: boolean, rollupId: string, id: string };
     const sub6$ = this.wizardStore
-      .select('assessment')
-      .pluck('saved')
+      .select(assessReducers.getAssessmentSavedState)
       .distinctUntilChanged()
       .filter((el: SavedState) => el && el.finished === true)
       .subscribe(
@@ -236,9 +228,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         (err) => console.log(err));
 
     const sub7$ = this.wizardStore
-      .select('assessment')
-      .pluck('assessment')
-      .pluck('assessmentMeta')
+      .select(assessReducers.getAssessmentMeta)
       .distinctUntilChanged()
       .subscribe(
         (assessmentMeta: Assess3Meta) => this.meta = assessmentMeta,
@@ -270,7 +260,12 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     });
   }
 
-  public loadExistingAssessment(rollupId: string, meta: Partial<Assess3Meta>) {
+  /**
+   * @param  {string} rollupId
+   * @param  {Partial<Assess3Meta>} meta
+   * @returns void
+   */
+  public loadExistingAssessment(rollupId: string, meta: Partial<Assess3Meta>): void {
     const sub$ = this.userStore
       .select('users')
       .pluck('userProfile')
@@ -305,7 +300,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     meta.includesIndicators = false;
     meta.includesMitigations = false;
     meta.baselineRef = undefined;
-    // meta.includesSensors = false;
 
     /*
      * making the model a collection of all the assessments matching the given rollup id, plus a summary of all the
@@ -827,7 +821,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return index;
   }
 
-  /*
+  /**
    * @description build page and refresh chart
    * @param data 
    * @return {void}
@@ -842,7 +836,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.updateChart();
   }
 
-  /*
+  /**
    * @description
    * @param {void}
    * @return {any}
@@ -858,7 +852,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return this.assessmentGroups[index];
   }
 
-  /* 
+  /**
    * For testing only
    * @return {any[]}
    */
@@ -866,7 +860,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return this.assessmentGroups;
   }
 
-  /* 
+  /**
    * For testing only
    * @return {any[]}
    */
@@ -874,7 +868,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.assessmentGroups = newAssessementGroups;
   }
 
-  /*
+  /**
    * @description
    * @param {Stix[]}
    * @return {any[]}
@@ -934,7 +928,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return assessmentGroups;
   }
 
-  /*
+  /**
    * @description
    * @param stixObjects
    * @return {any} 
@@ -967,7 +961,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return groupings;
   }
 
-  /*
+  /**
    * @description
    * @param stixObjects
    * @return {any}
@@ -1005,7 +999,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return hash;
   }
 
-  /*
+  /**
    * @description
    * @param {any} assessmentGroup 
    * @return {number}
@@ -1023,7 +1017,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return groupRisk;
   }
 
-  /*
+  /**
    * @description update the chart data
    * @return {void}
    */
@@ -1034,7 +1028,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.doughnutChartData = chartData;
   }
 
-  /*
+  /**
    * @description handle an assessment's worth of summary chart data
    * @return {any[]}
    */
@@ -1059,7 +1053,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return result;
   }
 
-  /*
+  /**
    * @description update the summary chart data
    * @return {void}
    */
@@ -1109,7 +1103,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return result;
   }
 
-  /*
+  /**
    * @description
    * @param title
    * @return {string}
@@ -1126,7 +1120,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return split.join(' ');
   }
 
-  /*
+  /**
    * @description
    * @param {any}
    * @return {Assessment}
@@ -1168,7 +1162,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return assessment;
   }
 
-  /*
+  /**
    * @description save an assessment object to the database
    * @param {void}
    * @return {void}

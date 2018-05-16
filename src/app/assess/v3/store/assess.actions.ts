@@ -19,6 +19,7 @@ export const UPDATE_PAGE_TITLE = '[Assess] UPDATE_PAGE_TITLE';
 export const ANSWER_QUESTION = '[Assess] ANSWER_QUESTION';
 export const SET_INDICATORS = '[Assess] SET_INDICATORS';
 export const SET_MITIGATONS = '[Assess] SET_MITIGATIONS';
+export const SET_CURRENT_BASELINE = '[Assess] SET_CURRENT_BASELINE';
 export const SET_SENSORS = '[Assess] SET_SENSORS';
 export const SET_BASELINES = '[Assess] SET_BASELINES';
 export const FINISHED_LOADING = '[Assess] FINISHED_LOADING';
@@ -61,20 +62,14 @@ export class LoadAssessmentWizardData implements Action {
     constructor(public payload: Partial<Assess3Meta>) { }
 }
 
-export class IndicatorsLoaded implements Action {
+export class SetIndicators implements Action {
     public readonly type = SET_INDICATORS;
 
     constructor(public payload: Indicator[]) { }
 }
 
-export class MitigationsLoaded implements Action {
+export class SetMitigations implements Action {
     public readonly type = SET_MITIGATONS;
-
-    constructor(public payload: Stix[]) { }
-}
-
-export class SensorsLoaded implements Action {
-    public readonly type = SET_SENSORS;
 
     constructor(public payload: Stix[]) { }
 }
@@ -110,7 +105,12 @@ export class CleanAssessmentWizardData {
 export class LoadBaselines {
     public readonly type = LOAD_BASELINES;
 
-    constructor() { }
+}
+
+export class SetCurrentBaseline {
+    public readonly type = SET_CURRENT_BASELINE;
+
+    constructor(public payload: AssessmentSet) { }
 }
 
 export class SetBaselines {
@@ -125,13 +125,13 @@ export type AssessmentActions =
     FetchAssessment |
     FinishedLoading |
     FinishedSaving |
-    IndicatorsLoaded |
     LoadAssessmentWizardData |
     LoadBaselines |
-    MitigationsLoaded |
     SaveAssessment |
-    SensorsLoaded |
     SetBaselines |
+    SetCurrentBaseline |
+    SetIndicators |
+    SetMitigations |
     StartAssessment |
     StartAssessmentSuccess |
     UpdatePageTitle |
