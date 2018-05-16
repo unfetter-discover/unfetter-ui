@@ -4,6 +4,8 @@ import { Indicator } from 'stix/stix/indicator';
 import { Stix } from 'stix/unfetter/stix';
 import * as fromApp from '../../../root-store/app.reducers';
 import * as assessmentActions from './assess.actions';
+import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { SortHelper } from '../../../global/static/sort-helper';
 
 export interface AssessFeatureState extends fromApp.AppState {
     assessment: Assessment
@@ -13,7 +15,6 @@ export interface AssessState {
     assessment: Assessment;
     backButton: boolean;
     indicators?: Indicator[];
-    sensors?: Stix[];
     mitigations?: Stix[];
     baselines?: AssessmentSet[];
     finishedLoading: boolean;
@@ -61,6 +62,7 @@ export function assessmentReducer(state = initialState, action: assessmentAction
                 Object.assign(a1.assessmentMeta, action.payload);
             }
             const s1 = genAssessState({
+                ...state,
                 assessment: a1,
             });
             return s1;
@@ -73,11 +75,6 @@ export function assessmentReducer(state = initialState, action: assessmentAction
             return genAssessState({
                 ...state,
                 mitigations: [...action.payload],
-            });
-        case assessmentActions.SET_SENSORS:
-            return genAssessState({
-                ...state,
-                sensors: [...action.payload],
             });
         case assessmentActions.SET_BASELINES:
             return genAssessState({
@@ -109,3 +106,25 @@ export function assessmentReducer(state = initialState, action: assessmentAction
             return state;
     }
 }
+
+const getAssessState = createFeatureSelector<AssessState>('assessment');
+
+export const getAssessmentState = createSelector(
+    getAssessState,
+    (state: AssessState) => state.assessment
+);
+
+export const getAssessmentName = createSelector(
+    getAssessmentState,
+    (state: Assessment) => state.name
+);
+
+export const getBaselines = createSelector(
+    getAssessState,
+    (state: AssessState) => state.baselines
+);
+
+export const getSortedBaselines = createSelector(
+    getBaselines,
+    (state: AssessmentSet[]) => state.sort(SortHelper.sortDescByField('name'))
+);

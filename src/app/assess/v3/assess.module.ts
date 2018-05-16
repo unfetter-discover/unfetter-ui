@@ -7,6 +7,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
@@ -32,9 +33,10 @@ const materialModules = [
   MatButtonModule,
   MatCardModule,
   MatCheckboxModule,
+  MatFormFieldModule,
   MatIconModule,
   MatInputModule,
-  MatFormFieldModule,
+  MatRadioModule,
   MatSelectModule,
 ];
 

@@ -19,6 +19,7 @@ export class CreateComponent implements OnInit {
   public assessMeta: Assess3Meta;
   public form: FormGroup;
   public baselines: Observable<AssessmentSet[]>;
+  public showToSelectBaselines = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -49,10 +50,7 @@ export class CreateComponent implements OnInit {
    */
   public listenForChanges(): void {
     this.baselines = this.store
-      .select('assessment')
-      .pluck<object, AssessmentSet[]>('baselines')
-      .filter((el) => el !== undefined)
-      .distinctUntilChanged();
+    .select(assessReducers.getSortedBaselines);
   }
 
   /**

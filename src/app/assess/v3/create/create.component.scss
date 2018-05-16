@@ -4,6 +4,10 @@
     flex-direction: column;
 }
 
+.flex-rows {
+    flex-direction: row;
+}
+
 .mb-18 {
     margin-bottom: 18px;
 }
@@ -18,4 +22,8 @@
 
 .center {
     margin: 0 auto;
+}
+
+mat-radio-button {
+    display: flex;
 }

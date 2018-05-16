@@ -18,14 +18,28 @@
                         <span class="mat-title">Compile Categories to Assess*</span>
                         <mat-checkbox class="" [value]="assessMeta.includesIndicators" color="primary" formControlName="includesIndicators">Indicators</mat-checkbox>
                         <mat-checkbox class="" [value]="assessMeta.includesMitigations" color="primary" formControlName="includesMitigations">Mitigations</mat-checkbox>
-                        <!-- <mat-checkbox class="" [value]="assessMeta.includesSensors" color="primary" formControlName="includesSensors">Sensors</mat-checkbox> -->
-                        <mat-form-field>
-                            <mat-select placeholder="Baseline">
-                                <mat-option *ngFor="let baseline of (baselines | async)" [value]="baseline.id">
-                                    {{ baseline.name }}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
+                        <mat-checkbox class="" [value]="showToSelectBaselines" color="primary" (change)="showToSelectBaselines = !showToSelectBaselines">Capabilities</mat-checkbox>
+                        <span *ngIf="showToSelectBaselines">
+                            <!--
+                            <mat-form-field>
+                                <mat-select placeholder="Baseline">
+                                    <mat-option *ngFor="let baseline of (baselines | async)" [value]="baseline.id">
+                                        {{ baseline.name }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field> 
+                        -->
+                            <mat-radio-group formControlName="baselineRef">
+                                <mat-radio-button *ngFor="let baseline of (baselines | async)" [value]="baseline.id">
+                                    <p>
+                                        {{ baseline.name }}
+                                    </p>
+                                    <p>
+                                        {{ (baseline.assessments || []).length }} weighted capabilities
+                                    </p>
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </span>
                     </div>
                 </mat-card-content>
                 <mat-card-actions>
