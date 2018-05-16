@@ -241,7 +241,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         .distinctUntilChanged()
         .subscribe(
           (baselineGroups: Category[]) => {
-            this.allCategories = baselineGroups.slice();
+            this.allCategories = (baselineGroups) ? baselineGroups.slice() : [];
           },
           (err) => console.log(err));
 
@@ -251,7 +251,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         .distinctUntilChanged()
         .subscribe(
           (capabilities: Capability[]) => {
-            this.allCapabilities = capabilities.slice();
+            this.allCapabilities = (capabilities) ? capabilities.slice() : [];
           },
           (err) => console.log(err));
 
@@ -261,7 +261,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         .distinctUntilChanged()
         .subscribe(
           (capabilities: Capability[]) => {
-            this.baselineCapabilities = capabilities.slice();
+            this.baselineCapabilities = (capabilities) ? capabilities.slice() : [];
             console.log('Current baseline capabilities:');
             console.log(JSON.stringify(this.baselineCapabilities));
             this.updateNavigations();

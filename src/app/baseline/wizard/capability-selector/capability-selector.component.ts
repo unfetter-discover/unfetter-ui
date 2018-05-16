@@ -55,7 +55,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
       .distinctUntilChanged()
       .subscribe(
         (baselineCapabilities: any[]) => {
-          this.baselineCapabilities = baselineCapabilities.slice();
+          this.baselineCapabilities = (baselineCapabilities) ? baselineCapabilities.slice() : [];
           this.selectedCapabilities = this.baselineCapabilities.filter((cap) => cap.category === this.currentCapabilityGroup.name);
         },
         (err) => console.log(err));
