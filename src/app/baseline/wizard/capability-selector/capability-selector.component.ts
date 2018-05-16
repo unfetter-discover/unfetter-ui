@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import * as _ from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
 import { Capability, Category } from 'stix/assess/v3/baseline';
 import { SetBaselineCapabilities } from '../../store/baseline.actions';
 import * as assessReducers from '../../store/baseline.reducers';
-import * as _ from 'lodash';
 
 @Component({
   selector: 'unf-baseline-wizard-capability-selector',
@@ -55,9 +55,8 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
       .distinctUntilChanged()
       .subscribe(
         (baselineCapabilities: any[]) => {
-          this.baselineCapabilities = baselineCapabilities;
-          this.selectedCapabilities = this.baselineCapabilities; // .filter((cap) => cap.category === this.currentCapabilityGroup.name);
-          this.updateAvailableCapabilitiesList();
+          this.baselineCapabilities = (baselineCapabilities) ? baselineCapabilities.slice() : [];
+          this.selectedCapabilities = this.baselineCapabilities.filter((cap) => cap.category === this.currentCapabilityGroup.name);
         },
         (err) => console.log(err));
   
@@ -93,7 +92,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
     const newCapability = option.selected.value;
 
     // Verify a selection and that this capability doesn't already exist
-    const indexInList = this.selectedCapabilities.indexOf(newCapability);
+    const indexInList = this.baselineCapabilities.indexOf(newCapability);
     if (indexInList < 0 && option.value !== CapabilitySelectorComponent.DEFAULT_VALUE) {
       if (index === -1) {
         // Apply category name to this capability
@@ -123,8 +122,8 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
     if (selValue === undefined) {
       return CapabilitySelectorComponent.DEFAULT_VALUE;
     } else {
-      const selIndex = this.selectedCapabilities.findIndex(capability => capability.id === selValue.id);
-      return this.selectedCapabilities[selIndex];
+      const selIndex = this.allCapabilities.findIndex(capability => capability.id === selValue.id);
+      return this.allCapabilities[selIndex];
     }
   }
 
@@ -156,26 +155,12 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
     return true;
   }
 
-  public addCapabilityEntry(): void {
-    this.selectedCapabilities.push(CapabilitySelectorComponent.DEFAULT_VALUE);
-  }
-
-  private updateAvailableCapabilitiesList(): void {
-    this.availableCapabilities = this.allCapabilities;
-
-    _.pullAll(this.availableCapabilities, this.baselineCapabilities);
-    _.pullAll(this.availableCapabilities, this.selectedCapabilities);
-  }
-
   private updateBaselineCapabilities(): void {
     // Update baseline capabilities
-    this.baselineCapabilities.concat(this.selectedCapabilities);
+    this.baselineCapabilities = [ ...this.baselineCapabilities, ...this.selectedCapabilities ];
     this.baselineCapabilities = _.uniqBy(this.baselineCapabilities, 'id');
 
     // Update wizard store with current capability selections
-    this.wizardStore.dispatch(new SetBaselineCapabilities(this.selectedCapabilities));
-
-    // Update list of available capabilities
-    this.updateAvailableCapabilitiesList();
+    this.wizardStore.dispatch(new SetBaselineCapabilities(this.baselineCapabilities));
   }
 }

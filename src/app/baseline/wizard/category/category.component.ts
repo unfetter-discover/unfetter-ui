@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { Category } from 'stix/assess/v3/baseline';
+import { Category, Capability } from 'stix/assess/v3/baseline';
 import * as assessActions from '../../store/baseline.actions';
 import { SetBaselineGroups } from '../../store/baseline.actions';
 import * as assessReducers from '../../store/baseline.reducers';
@@ -17,6 +17,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   
   public selectedCapabilityGroups: Category[] = [];
   public categories: Category[];
+  private baselineCapabilities: Capability[];
   private subscriptions: Subscription[] = [];
     
   constructor(
@@ -45,7 +46,17 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
         },
         (err) => console.log(err));
   
-    this.subscriptions.push(catSub1$, catSub2$);
+    const catSub3$ = this.wizardStore
+      .select('baseline')
+      .pluck('baselineCapabilities')
+      .distinctUntilChanged()
+      .subscribe(
+        (capabilities: Capability[]) => {
+          this.baselineCapabilities = capabilities;
+        },
+        (err) => console.log(err));
+    
+    this.subscriptions.push(catSub1$, catSub2$, catSub3$);
 
     this.wizardStore.dispatch(new assessActions.FetchCapabilityGroups());
   }
@@ -122,8 +133,12 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
     const confirmed = this.confirmDelete(option.value);
 
     if (confirmed) {
-      const index = this.selectedCapabilityGroups.indexOf(option.value);
+      let catToDelete = option.value as Category;
+      const index = this.selectedCapabilityGroups.findIndex(category => category.id === catToDelete.id);
       this.selectedCapabilityGroups.splice(index, 1); 
+
+      // Must remove any capabilities for which this category were associated
+      this.wizardStore.dispatch(new assessActions.SetBaselineCapabilities(this.baselineCapabilities.filter(capability => capability.category !== option.value.name)));
 
       // Update wizard store with current category selections
       this.wizardStore.dispatch(new SetBaselineGroups(this.selectedCapabilityGroups.filter((capabilityGroup) => capabilityGroup !== undefined)));
