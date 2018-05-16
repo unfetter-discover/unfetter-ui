@@ -1,7 +1,7 @@
 import { Action } from '@ngrx/store';
 import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 import { Assessment } from 'stix/assess/v3/assessment';
-import { JsonApiData } from 'stix/json/jsonapi-data';
+import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
 import { Indicator } from 'stix/stix/indicator';
 import { Stix } from 'stix/unfetter/stix';
 
@@ -10,6 +10,7 @@ export const START_ASSESSMENT = '[Assess] START_ASSESSMENT';
 export const START_ASSESSMENT_SUCCESS = '[Assess] START_ASSESSMENT_SUCCESS';
 export const SAVE_ASSESSMENT = '[Assess] SAVE_ASSESSMENT';
 export const LOAD_ASSESSMENT_WIZARD_DATA = '[Assess] LOAD_ASSESSMENT_WIZARD_DATA';
+export const LOAD_BASELINES = '[Assess] LOAD_BASELINES';
 export const CLEAN_ASSESSMENT_WIZARD_DATA = '[Assess] CLEAN_ASSESSMENT_WIZARD_DATA';
 export const FETCH_ASSESSMENT = '[Assess] FETCH_ASSESSMENT';
 
@@ -19,6 +20,7 @@ export const ANSWER_QUESTION = '[Assess] ANSWER_QUESTION';
 export const SET_INDICATORS = '[Assess] SET_INDICATORS';
 export const SET_MITIGATONS = '[Assess] SET_MITIGATIONS';
 export const SET_SENSORS = '[Assess] SET_SENSORS';
+export const SET_BASELINES = '[Assess] SET_BASELINES';
 export const FINISHED_LOADING = '[Assess] FINISHED_LOADING';
 export const FINISHED_SAVING = '[Assess] FINISHED_SAVING';
 export const WIZARD_PAGE = '[Asses] WIZARD_PAGE';
@@ -62,19 +64,19 @@ export class LoadAssessmentWizardData implements Action {
 export class IndicatorsLoaded implements Action {
     public readonly type = SET_INDICATORS;
 
-    constructor(public payload: JsonApiData<Indicator>[]) { }
+    constructor(public payload: Indicator[]) { }
 }
 
 export class MitigationsLoaded implements Action {
     public readonly type = SET_MITIGATONS;
 
-    constructor(public payload: JsonApiData<Stix>[]) { }
+    constructor(public payload: Stix[]) { }
 }
 
 export class SensorsLoaded implements Action {
     public readonly type = SET_SENSORS;
 
-    constructor(public payload: JsonApiData<Stix>[]) { }
+    constructor(public payload: Stix[]) { }
 }
 
 export class FinishedLoading implements Action {
@@ -105,6 +107,18 @@ export class CleanAssessmentWizardData {
     constructor() { }
 }
 
+export class LoadBaselines {
+    public readonly type = LOAD_BASELINES;
+
+    constructor() { }
+}
+
+export class SetBaselines {
+    public readonly type = SET_BASELINES;
+
+    constructor(public payload: AssessmentSet[]) { }
+}
+
 export type AssessmentActions =
     AnswerQuestion |
     CleanAssessmentWizardData |
@@ -113,10 +127,12 @@ export type AssessmentActions =
     FinishedSaving |
     IndicatorsLoaded |
     LoadAssessmentWizardData |
+    LoadBaselines |
     MitigationsLoaded |
+    SaveAssessment |
     SensorsLoaded |
+    SetBaselines |
     StartAssessment |
     StartAssessmentSuccess |
-    SaveAssessment |
     UpdatePageTitle |
     WizardPage;

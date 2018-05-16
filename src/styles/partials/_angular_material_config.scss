@@ -64,19 +64,24 @@ $utility-theme: mat-light-theme($utility-theme-primary, $utility-theme-accent, $
 
 .uf-mat-card {
   transition: box-shadow 0.2s ease-in-out;
+
   .mat-card-header-text {
     margin: 0 !important;
   }
+
   .mat-card-title {
     font-size: 22px;
     font-weight: 300;
   }
+
   .mat-card-actions {
     text-align: right;
   }
+
   .mat-tab-body-content {
     padding: 10px 3px 5px;
   }
+
   &.mat-card:hover {
     @include mat-elevation(5);
   }
@@ -94,16 +99,20 @@ $utility-theme: mat-light-theme($utility-theme-primary, $utility-theme-accent, $
   .mat-expansion-panel {
     transition: box-shadow 0.3s ease-in-out;
   }
+
   .mat-expansion-panel-header-title {
     align-items: center;
   }
+
   .mat-expanded {
     &.mat-expansion-panel {
       @include mat-elevation(11);
     }
+
     .mat-expansion-panel-header {
       background: $primary-color !important;
       transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+
       .mat-expansion-panel-header-title,
       .mat-expansion-indicator::after {
         color: white !important;
@@ -172,6 +181,7 @@ $utility-theme: mat-light-theme($utility-theme-primary, $utility-theme-accent, $
   &.mat-tab-nav-bar, .mat-tab-header {
     border-bottom: none !important;
   }
+
   .mat-tab-header .mat-tab-label {
     height: 49px;
   }

@@ -1,4 +1,5 @@
 @import '../../../styles/_variables.scss';
+
 #event-content {
   margin-left: 24px;
   margin-right: 24px;
@@ -47,6 +48,7 @@ $bottom-half-height: $top-half-height + 4;
 }
 
 $bottom-half-min-width: $right-column-min-width + $left-column-min-width;
+
 #bottom-half {
   max-height: $bottom-half-height + vh;
   min-width: $bottom-half-min-width + px;
@@ -55,6 +57,7 @@ $bottom-half-min-width: $right-column-min-width + $left-column-min-width;
 
 $traffic-detail-title-height: 31;
 $traffic-detail-title-bottom-margin: 16;
+
 .traffic-detail-title {
   height: $traffic-detail-title-height + px;
   margin-bottom: $traffic-detail-title-bottom-margin + px;

@@ -29,7 +29,7 @@ export class SummaryEffects {
                 .mergeMap((data: Baseline) => {
                     const actions = [new FinishedLoading(true)];
                     if (!data || !data.id) {
-                        return actions
+                        return actions;
                     }
                     return [new SetAssessments([data]), ...actions];
                 })

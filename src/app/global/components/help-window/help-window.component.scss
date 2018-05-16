@@ -2,15 +2,18 @@
     padding: 19px;
     margin-bottom: 10px;
     overflow: hidden;
+
     .helpIconWrapper {
         margin-right: -18px;
         padding-right: 10px;
         transition: padding 0.1s ease-in-out;
         margin-top: -15px;
     }
+
     &:not(.uf-well) {
         border-left: 8px solid transparent;
         margin-bottom: -30px;
+
         .helpIconWrapper {
           padding-right: 1px;
         }

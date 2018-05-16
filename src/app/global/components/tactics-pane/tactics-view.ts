@@ -19,8 +19,10 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
     private previousFrameworks: string[];
 
     /**
-     * The full list of known tactics, for the input frameworks. Generated list, do not disturb.
+     * The full list of known tactics, for the input frameworks. Generated list, do not disturb. Can be provided, to
+     * avoid having multiple copies among multiple components.
      */
+    @Input() protected chains: Dictionary<TacticChain> = null;
     protected tactics: Tactic[];
 
     /**
@@ -51,18 +53,18 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
     }
 
     ngAfterViewInit() {
-        this.loadTactics();
+        this.initData();
         this.initController();
     }
 
     ngDoCheck() {
         if (this.previousFrameworks !== this.frameworks) {
             console.log(`(${new Date().toISOString()}) ${this.constructor.name} frameworks change detected`);
-            this.loadTactics();
+            this.initData();
         } else if (this.previousTargeted !== this.targeted) {
             console.log(`(${new Date().toISOString()}) ${this.constructor.name} targeted data change detected`);
             this.previousTargeted = this.targeted;
-            this.loadTactics();
+            this.extractData(this.chains);
         }
     }
 
@@ -77,37 +79,15 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
     protected abstract validateOptions();
 
     /**
-     * @description load all the attack patterns, by relevant framework
+     * @description load all data
      */
-    protected loadTactics() {
+    protected initData() {
         const getf$ = this.getFrameworks()
             .finally(() => getf$ && getf$.unsubscribe())
             .subscribe(
                 (frameworks) => {
                     this.previousFrameworks = this.frameworks = frameworks;
-                    const sub$ = this.store
-                        .select('config')
-                        .pluck('tacticsChains')
-                        .take(1)
-                        .finally(() => (sub$ && sub$.unsubscribe()) || this.rerender())
-                        .subscribe(
-                            (tactics: Dictionary<TacticChain>) => {
-                                const patterns = [];
-                                if (tactics) {
-                                    Object.values(tactics).forEach(chain => {
-                                        chain.phases.forEach(phase => {
-                                            phase.tactics.forEach(tactic => patterns.push(tactic));
-                                        });
-                                    });
-                                }
-                                this.tactics = patterns;
-                                this.extractData(tactics);
-                            },
-                            (err) => {
-                                console.log(`(${new Date().toISOString()}) ${this.constructor.name}`,
-                                        'could not load tactics', err);
-                            },
-                        );
+                    this.loadTactics();
                 },
                 (err) => {
                     console.log(`(${new Date().toISOString()}) ${this.constructor.name}`,
@@ -138,6 +118,36 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
             .pluck('preferences')
             .pluck('killchain')
             .map((chain: string) => [chain]);
+    }
+
+    /**
+     * @description load all the attack patterns, by relevant framework
+     */
+    protected loadTactics() {
+        const sub$ = this.chains ? Observable.of(this.chains) : this.store
+                .select('config')
+                .pluck('tacticsChains')
+                .filter(t => t !== null)
+                .take(1)
+                .finally(() => (sub$ && sub$.unsubscribe && sub$.unsubscribe()) || this.rerender());
+        sub$.subscribe(
+            (tactics: Dictionary<TacticChain>) => {
+                const patterns = [];
+                if (tactics) {
+                    Object.values(tactics).forEach(chain => {
+                        chain.phases.forEach(phase => {
+                            phase.tactics.forEach(tactic => patterns.push(tactic));
+                        });
+                    });
+                }
+                this.chains = tactics;
+                this.tactics = patterns;
+                this.extractData(tactics);
+            },
+            (err) => {
+                console.log(`(${new Date().toISOString()}) ${this.constructor.name}`, 'could not load tactics', err);
+            },
+        );
     }
 
     /**

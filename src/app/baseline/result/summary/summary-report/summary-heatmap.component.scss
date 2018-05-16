@@ -14,8 +14,10 @@ $white: #FFFFFF;
     .mat-card {
         margin: 4px 20px 15px 20px;
     }
+
     .mat-card-header-text {
         width: 100%;
+
         .mat-card-title {
             display: flex;
             align-items: center;
@@ -33,10 +35,12 @@ $white: #FFFFFF;
     unf-heatmap {
         div.heat-map {
             background: white;
+
             rect.selected {
                 fill: $assessments-primary;
             }
         }
+
         div.mini-map {
             margin-top: 0px;
         }

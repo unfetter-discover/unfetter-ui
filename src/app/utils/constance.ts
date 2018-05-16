@@ -95,6 +95,9 @@ export const Constance = {
   X_UNFETTER_CAPABILITY_URL: 'api/v3/x-unfetter-capabilities',
   X_UNFETTER_CAPABILITY_TYPE: 'x-unfetter-capability',
 
+  X_UNFETTER_ASSESSMENT_SETS_URL: 'api/v3/x-unfetter-assessment-sets',
+  X_UNFETTER_ASSESSMENT_SETS_TYPE: 'x-unfetter-assessment-sets',
+
   X_UNFETTER_CATEGORY_URL: 'api/v3/x-unfetter-categories',
   X_UNFETTER_CATEGORY_TYPE: 'x-unfetter-category',
 

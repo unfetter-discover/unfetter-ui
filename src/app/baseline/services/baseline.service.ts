@@ -1,8 +1,9 @@
 import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { Capability, Category } from 'stix/assess/v3/baseline';
+import { AssessmentSet, Capability, Category } from 'stix/assess/v3/baseline';
 import { JsonApiData } from 'stix/json/jsonapi-data';
 import { GenericApi } from '../../core/services/genericapi.service';
+import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 import { RiskByKillChain } from '../../models/assess/risk-by-kill-chain';
 import { SummaryAggregation } from '../../models/assess/summary-aggregation';
 import { Baseline } from '../../models/baseline/baseline';
@@ -10,6 +11,7 @@ import { BaselineObject } from '../../models/baseline/baseline-object';
 import { RiskByAttack3 } from '../../models/baseline/risk-by-attack3';
 import { Constance } from '../../utils/constance';
 import { LastModifiedBaseline } from '../models/last-modified-baseline';
+import { JsonApi } from 'stix/json/jsonapi';
 
 @Injectable()
 export class BaselineService {
@@ -121,7 +123,7 @@ export class BaselineService {
             `${this.categoryBaseUrl}?${encodeURI(filter)}` : this.categoryBaseUrl;
         return this.genericApi
             .getAs<JsonApiData<Category>[]>(url)
-            .map((data) => data.map((el) => el.attributes));
+            .map(RxjsHelpers.mapAttributes);
     }
 
     /**
@@ -134,7 +136,7 @@ export class BaselineService {
             `${this.capabilityBaseUrl}?${encodeURI(filter)}` : this.capabilityBaseUrl;
         return this.genericApi
             .getAs<JsonApiData<Capability>[]>(url)
-            .map((data) => data.map((el) => el.attributes));
+            .map(RxjsHelpers.mapAttributes);
     }
 
     /**
@@ -146,7 +148,19 @@ export class BaselineService {
         const url = `${Constance.X_UNFETTER_CAPABILITY_URL}/${id}`;
         return this.genericApi
             .getAs<JsonApiData<Capability>>(url)
-            .map((data) => data.attributes);
+            .map(RxjsHelpers.mapAttributes);
+    }
+
+    /**
+     * @description
+     * @param {string} capability id
+     * @return {Observable<AssessmentSet[]>}
+     */
+    public fetchBaselines(includeMeta = true): Observable<AssessmentSet[]> {
+        const url = `${Constance.X_UNFETTER_ASSESSMENT_SETS_URL}?metaproperties=${includeMeta}`;
+        return this.genericApi
+            .getAs<JsonApiData<AssessmentSet[]>>(url)
+            .map(RxjsHelpers.mapAttributes);
     }
 
     /**
@@ -158,7 +172,7 @@ export class BaselineService {
         const url = `${this.baselineBaseUrl}/${id}?metaproperties=${includeMeta}`;
         return this.genericApi
             .getAs<JsonApiData<Baseline>>(url)
-            .map((data) => data.attributes);
+            .map(RxjsHelpers.mapAttributes);
     }
 
     /**

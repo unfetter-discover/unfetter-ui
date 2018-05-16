@@ -6,6 +6,7 @@
 
 #addLabelInputWrapper {
     transition: all 0.2s ease-in-out;
+
     * {
         transition: all 0.2s ease-in-out;
     }
@@ -23,6 +24,7 @@
 
 #addLabelBtn {
     margin-left: -30px;
+
     i {
         transition: transform 0.3s $elastic-transition !important;
     }
@@ -32,10 +34,12 @@
     #addLabelInputWrapper {
         width: 243px;
         opacity: 1;
+
         i {
             margin-left: 3px;
         }
     }
+
     #addLabelBtn i {
         transform: rotateZ(135deg);
     }

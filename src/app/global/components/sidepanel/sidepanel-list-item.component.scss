@@ -4,10 +4,6 @@
     box-shadow: 0 -3px 4px -3px rgba(0,0,0,.2), 0 3px 4px -3px rgba(0,0,0,.2);
 }
 
-.mat-expansion-panel:not([class*=mat-elevation-z]) {
-    box-shadow: 0 -3px 4px -3px rgba(0,0,0,.2), 0 3px 4px -3px rgba(0,0,0,.2);
-}
-
 .mat-expansion-panel {
     box-shadow: 0 -3px 4px -3px rgba(0,0,0,.2), 0 3px 4px -3px rgba(0,0,0,.2);
 
@@ -31,7 +27,6 @@
     }
 
     ::ng-deep .mat-expanded {
-
         .mat-expansion-panel-body {
             padding: 0px 0px 0px 16px;
         }

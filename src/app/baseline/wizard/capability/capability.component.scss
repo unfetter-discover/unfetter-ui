@@ -14,7 +14,6 @@
     width: 800px;
 }
 
-
 .flex-col {
     display: flex;
     flex-direction: column;
@@ -26,11 +25,6 @@
     display: flex;
     flex-direction: row;
 }
-
-
-
-
-
 
 // PDR selector
 
@@ -126,10 +120,6 @@ mat-row:nth-child(even){
 .mat-form-field {
   font-size: 14px;
   width: 100%;
-}
-
-.mat-table {
-  overflow: auto;
 }
 
 .add-remove-ap-container {

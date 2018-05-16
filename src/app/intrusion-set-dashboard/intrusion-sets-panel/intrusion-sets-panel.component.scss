@@ -27,18 +27,6 @@
 p-autocomplete {
     flex: 1;
 }
-:host ::ng-deep {
-    .ui-autocomplete {
-        width: 100%;
-        background-color: $primary-color-dark;
-        input {
-            width: 100%;
-        }
-        .ui-widget-content {
-            background: white;
-        }
-    }
-}
 
 #search-button {
     margin-left: 20px;
@@ -58,6 +46,7 @@ p-autocomplete {
     .intrusion-set-cell {
         margin-bottom: 4px;
     }
+
     .intrusion-set {
         padding: 0 6px;
         border: 1px solid transparent;
@@ -77,12 +66,32 @@ p-autocomplete {
 
     @keyframes flash-highlight {
          0% {background-color: transparent;}
+
         10% {background-color: rgba(255, 255, 99, .7);}
+
         20% {background-color: transparent;}
+
         30% {background-color: rgba(255, 255, 99, .7);}
+
         40% {background-color: transparent;}
+
         50% {background-color: rgba(255, 255, 99, .7);}
+
         60% {background-color: transparent;}
+
         70% {background-color: rgba(255, 255, 99, .7);}
+    }
+
+    .ui-autocomplete {
+      width: 100%;
+      background-color: $primary-color-dark;
+
+      input {
+        width: 100%;
+      }
+      
+      .ui-widget-content {
+        background: white;
+      }
     }
 }

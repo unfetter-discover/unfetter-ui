@@ -58,6 +58,7 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
 
     public attackPatterns = [];
     public selectedPatterns = [];
+    private _selections: string[] = [];
 
     @ViewChild('tooltipTemplate') tooltipTemplate: TemplateRef<any>;
     private overlayRef: OverlayRef;
@@ -86,7 +87,6 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
                         const tactics = attackPatterns.reduce(
                             (patterns, pattern) => this.collectAttackPattern(patterns, pattern), {});
                         this.attackPatterns = Object.values(tactics);
-                        console.log('preselects?', this.attackPatterns);
                         this.heatmap.view.redraw();
                         // this.heatmap.view.click.subscribe((event) => this.toggleAttackPattern(event));
                         setTimeout(() => this.heatmap.view.ngDoCheck(), 500);
@@ -123,6 +123,11 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
     }
 
     /**
+     * @description 
+     */
+    public get selections() { return this._selections; }
+
+    /**
      * @description for selecting and deselecting attack patterns
      */
     public toggleAttackPattern(clicked?: TooltipEvent) {
@@ -137,21 +142,23 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
                 newValue = 'inactive';
                 this.selectedPatterns.splice(index, 1);
             }
-            const target = this.attackPatterns.find(p => p.name === clicked.data.name);
-            console.log('toggling', clicked, index, newValue, target);
-            if (target) {
-                target.adds.highlights[0].color.style = newValue;
-                this.attackPatterns = this.attackPatterns.slice(0);
-                this.heatmap.redraw();
-            }
+            this.heatmap.view.helper['heatmap'].workspace.data.forEach(batch => {
+                batch.cells.forEach(cell => {
+                    if (cell.id === clicked.data.id) {
+                        cell.value = newValue;
+                    }
+                });
+            });
+            this.heatmap.view.helper.updateCells();
         }
     }
 
     /**
      * @description retrieve the list of selected attack pattern names
      */
-    public close(): string[] {
-        return Array.from(new Set(this.selectedPatterns.map(pattern => pattern.id)));
+    public close() {
+        this._selections = Array.from(new Set(this.selectedPatterns.map(pattern => pattern.id)));
+        this.dialogRef.close(this.selections);
     }
   
 }

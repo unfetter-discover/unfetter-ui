@@ -4,6 +4,7 @@
 
 #addLabelInputWrapper {
     transition: all 0.2s ease-in-out;
+
     * {
         transition: all 0.2s ease-in-out;
     }
@@ -12,6 +13,7 @@
     border-radius: 24px;
     width: 0;
     opacity: 0;
+
     input {
         border: none;
         padding: 3px;
@@ -29,13 +31,16 @@
     #addLabelInputWrapper {
         width: 225px;
         opacity: 1;
+
         i {
             margin-left: 3px;
         }
     }
+
     input {
         width: 152px !important;
     }
+
     #addLabelBtn i {
         transform: rotateZ(135deg);
     }
@@ -44,6 +49,7 @@
 :host ::ng-deep {
     .mat-card-header-text {
         width: 100%;
+
         .mat-card-title {
             display: flex;
             align-items: center;

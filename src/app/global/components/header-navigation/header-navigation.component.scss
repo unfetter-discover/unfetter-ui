@@ -11,15 +11,19 @@
         padding: 10px 12px;
     }
 }
+
 #avatar {    
     margin: -5px auto;
 }
+
 .dropdown-toggle .caret {
     margin-left: 4px;
 }
+
 .dropdown-menu .material-icons {
     font-size: 20px;
 }
+
 .navbar {
     min-height: 64px;
 }
@@ -39,6 +43,7 @@
 
 .dropdown-toggle {
     color: #fff !important;
+
     &:focus, &:hover {
         text-decoration: none;
     }
@@ -100,14 +105,18 @@
     padding: 14px;
     font-size: 14px;
     font-weight: 400;
+
     hr {
         margin: 1px -14px;
     }
+
     a {
         color: $dark-text-default;
+
         &:hover, &:focus {
             text-decoration: none;
         }
+
         i {
             font-size: 18px;
         }
@@ -139,6 +148,7 @@
     line-height: 13px;
     white-space: normal;
     font-weight: 400;
+
     &:hover {
         border: 1px solid rgb(229, 229, 229);
     }
@@ -157,13 +167,16 @@
 #spacer1 {
     width: 23px;
 }
+
 #spacer2 {
     width: 20px;
 }
+
 #bar {
     font-size: 24px;
     font-weight: 300;
 }
+
 #titleText {
     font-size: 21px;
     font-weight: 300;

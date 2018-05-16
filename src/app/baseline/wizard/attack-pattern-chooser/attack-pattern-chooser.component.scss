@@ -10,16 +10,20 @@ $white: #FFFFFF;
 
 :host ::ng-deep {
     background-color: $white;
+
     .mat-dialog-container {
         transition: none;
     }
+
     .mat-dialog-content {
         height: 100%;
     }
+
     #attack-pattern-filter unf-heatmap {
         div.heatmap-with-minimap {
             height: 100%;
         }
+
         div.heat-map {
             width: 100%;
             height: 100%;
@@ -27,14 +31,25 @@ $white: #FFFFFF;
             padding: 0;
             background: white;
         }
+
         .heat-map-canvas {
             cursor: pointer;
         }
+
+        .heat-map-header rect.odd, .heat-map-batch rect.odd {
+            fill: $assessments-primary-lightest;
+        }
+
         .heat-map-header rect.active, .heat-map-batch rect.active {
             fill: $assessments-primary-lightest;
         }
+
         .heat-map-cell rect.selected {
             fill: $assessments-primary;
+        }
+
+        .heat-map-cell rect.active {
+            fill: $assessments-primary-light;
         }
     }
 }

@@ -6,9 +6,11 @@
         border-left: 2px solid transparent;
         border-right: 2px solid transparent;
     }
+
     button#heatmapToggle.open span.mat-button-wrapper {
         border-right-color: $analytic-exchange-primary-lighter;
     }
+
     button#heatmapToggle.open span.mat-button-wrapper i {
         color: $analytic-exchange-primary-lighter;
     }

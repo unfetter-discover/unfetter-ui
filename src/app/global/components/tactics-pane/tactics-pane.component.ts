@@ -1,42 +1,20 @@
-import {
-    Component,
-    OnInit,
-    OnDestroy,
-    Input,
-    Output,
-    ViewChild,
-    ElementRef,
-    TemplateRef,
-    ViewContainerRef,
-    Renderer2,
-    EventEmitter,
-} from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Subscription } from 'rxjs/Subscription';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { MatButtonToggleChange } from '@angular/material';
 import { Store } from '@ngrx/store';
-
-import { Overlay, OverlayRef } from '@angular/cdk/overlay';
-import { TemplatePortal } from '@angular/cdk/portal';
-import { MatButtonToggleChange, MatToolbar } from '@angular/material';
-
-import { TacticChain, Tactic } from './tactics.model';
-import { TacticsCarouselComponent } from './tactics-carousel/tactics-carousel.component';
-import { TacticsHeatmapComponent } from './tactics-heatmap/tactics-heatmap.component';
-import { TacticsTreemapComponent } from './tactics-treemap/tactics-treemap.component';
-import { TacticsTooltipComponent } from './tactics-tooltip/tactics-tooltip.component';
-import { TooltipEvent } from './tactics-tooltip/tactics-tooltip.service';
-import { CarouselOptions } from './tactics-carousel/carousel.data';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+import { Dictionary } from '../../../models/json/dictionary';
+import { AppState } from '../../../root-store/app.reducers';
 import { HeatmapOptions } from '../heatmap/heatmap.data';
 import { TreemapOptions } from '../treemap/treemap.data';
-import { CapitalizePipe } from '../../pipes/capitalize.pipe';
-import { AuthService } from '../../../core/services/auth.service';
-import { GenericApi } from '../../../core/services/genericapi.service';
-import { AttackPattern } from '../../../models/attack-pattern';
-import { Dictionary } from '../../../models/json/dictionary';
-import { UserProfile } from '../../../models/user/user-profile';
-import { AppState } from '../../../root-store/app.reducers';
-import { Constance } from '../../../utils/constance';
+import { CarouselOptions } from './tactics-carousel/carousel.data';
+import { TacticsCarouselComponent } from './tactics-carousel/tactics-carousel.component';
+import { TacticsHeatmapComponent } from './tactics-heatmap/tactics-heatmap.component';
+import { TacticsTooltipComponent } from './tactics-tooltip/tactics-tooltip.component';
+import { TooltipEvent } from './tactics-tooltip/tactics-tooltip.service';
+import { TacticsTreemapComponent } from './tactics-treemap/tactics-treemap.component';
+import { Tactic, TacticChain } from './tactics.model';
 
 @Component({
     selector: 'tactics-pane',
@@ -62,9 +40,9 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
     @Input() public frameworks: string[] = [];
 
     /*
-     * These input values are only the "preselected" attack patterns. If there is nothing preselected, it is perfectly
-     * okay to not provide this input.
-     */
+    * These input values are only the "preselected" attack patterns. If there is nothing preselected, it is perfectly
+    * okay to not provide this input.
+    */
     @Input() public targeted: Tactic[] = [];
 
     /**
@@ -88,6 +66,7 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
      * What style settings to use.
      */
     @Input() public theme: string = 'theme-bg-primary theme-color-primary';
+
 
     /**
      * The heatmap options object here makes it easier for those using this component to supply option without having
@@ -133,10 +112,17 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
     @Output() public click: EventEmitter<TooltipEvent> = new EventEmitter();
 
     /**
+     * The full list of known tactics, for the input frameworks, provided to avoid having multiple copies among the
+     * subcomponents.
+     */
+    public chains: Dictionary<TacticChain> = null;
+
+    /**
      * @description
      */
     constructor(
-    ) {}
+        protected store: Store<AppState>,
+    ) { }
 
     /**
      * @description
@@ -150,8 +136,10 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
                 .subscribe(
                     (collapseContents) => this.collapsed = collapseContents,
                     (err) => console.log(err),
-                );
+            );
         }
+
+        this.initData();
     }
 
     /**
@@ -182,6 +170,64 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
      */
     public isCarouselView(): boolean {
         return this.view === 'carousel';
+    }
+
+    /**
+     * @description load all data
+     */
+    protected initData() {
+        const getf$ = this.getFrameworks()
+            .finally(() => getf$ && getf$.unsubscribe())
+            .subscribe(
+                (frameworks) => {
+                    this.frameworks = frameworks;
+                    this.loadTactics();
+                },
+                (err) => {
+                    console.log(`(${new Date().toISOString()}) ${this.constructor.name}`,
+                        'could not determine current framework', err);
+                }
+            );
+    }
+
+    /**
+     * @description determine which framework is to be displayed here
+     */
+    private getFrameworks(): Observable<string[]> {
+        if (this.frameworks && this.frameworks.length) {
+            return Observable.of(this.frameworks.slice(0));
+        }
+        if (this.targeted && this.targeted.length) {
+            const frameworks = this.targeted
+                .reduce((chains, tactic) => chains.concat(tactic.framework), [])
+                .filter(chain => chain !== undefined && chain !== null);
+            if (frameworks.length >= 1) {
+                return Observable.of(frameworks);
+            }
+        }
+        return this.store
+            .select('users')
+            .pluck('userProfile')
+            .take(1)
+            .pluck('preferences')
+            .pluck('killchain')
+            .map((chain: string) => [chain]);
+    }
+
+    /**
+     * @description load all the attack patterns, by relevant framework
+     */
+    protected loadTactics() {
+        const sub$ = this.store
+            .select('config')
+            .pluck('tacticsChains')
+            .filter(t => t !== null)
+            .take(1)
+            .finally(() => (sub$ && sub$.unsubscribe && sub$.unsubscribe()))
+            .subscribe(
+                (tactics: Dictionary<TacticChain>) => this.chains = tactics,
+                (err) => console.log(`(${new Date().toISOString()}) TacticsPane could not load tactics`, err),
+        );
     }
 
     /**
