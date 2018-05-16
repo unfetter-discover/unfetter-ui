@@ -64,7 +64,7 @@ export class TacticsTreemapComponent extends TacticsView<TreemapComponent, Treem
                         phase.tactics.forEach(ap => {
                             const name = ap.name
                                     + (ap.phases.length > 1 ? ` (${ap.phases.indexOf(phase.id) + 1})` : '');
-                            const target = this.targeted.find(tactic => tactic.id === ap.id);
+                            const target = this.targets.find(tactic => tactic.id === ap.id);
                             const value = (this.hasHighlights(target)) ? this.sumHighlights(target) : 0;
                             data.push([name, phase.name, value + 1]);
                         });

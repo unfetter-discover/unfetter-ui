@@ -1,20 +1,30 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { MatButtonToggleChange } from '@angular/material';
-import { Store } from '@ngrx/store';
+import {
+    Component,
+    Input,
+    Output,
+    ViewChild,
+    OnInit,
+    OnDestroy,
+    EventEmitter,
+} from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { Dictionary } from '../../../models/json/dictionary';
-import { AppState } from '../../../root-store/app.reducers';
-import { HeatmapOptions } from '../heatmap/heatmap.data';
-import { TreemapOptions } from '../treemap/treemap.data';
+import { Store } from '@ngrx/store';
+
+import { MatButtonToggleChange } from '@angular/material';
+
+import { Tactic, TacticChain } from './tactics.model';
 import { CarouselOptions } from './tactics-carousel/carousel.data';
 import { TacticsCarouselComponent } from './tactics-carousel/tactics-carousel.component';
 import { TacticsHeatmapComponent } from './tactics-heatmap/tactics-heatmap.component';
-import { TacticsTooltipComponent } from './tactics-tooltip/tactics-tooltip.component';
-import { TooltipEvent } from './tactics-tooltip/tactics-tooltip.service';
 import { TacticsTreemapComponent } from './tactics-treemap/tactics-treemap.component';
-import { Tactic, TacticChain } from './tactics.model';
+import { TacticsTooltipComponent } from './tactics-tooltip/tactics-tooltip.component';
+import { TooltipEvent, TacticsTooltipService } from './tactics-tooltip/tactics-tooltip.service';
+import { HeatmapOptions } from '../heatmap/heatmap.data';
+import { TreemapOptions } from '../treemap/treemap.data';
+import { Dictionary } from '../../../models/json/dictionary';
+import { AppState } from '../../../root-store/app.reducers';
 
 @Component({
     selector: 'tactics-pane',
@@ -39,22 +49,28 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
      */
     @Input() public frameworks: string[] = [];
 
+    private framework$: Subscription = null;
+
+    /**
+     * The full list of known tactics, for the input frameworks, provided to avoid having multiple copies among the
+     * subcomponents.
+     */
+    private _chains: Dictionary<TacticChain> = {};
+
+    private chain$: Subscription;
+
     /*
     * These input values are only the "preselected" attack patterns. If there is nothing preselected, it is perfectly
     * okay to not provide this input.
     */
-    @Input() public targeted: Tactic[] = [];
+    @Input() public targets: Tactic[] = [];
 
     /**
      * Title to display in the component's header.
      */
     @Input() public title: string = 'Tactics Used';
-    @Input() public subtitle: string = null;
 
-    @Input() public collapsible: boolean = false;
-    public collapsed: boolean = false;
-    @Input() public collapseSubject: BehaviorSubject<boolean>;
-    private collapseCard$: Subscription;
+    @Input() public subtitle: string = null;
 
     /**
      * The starting view in the pane. Defaults to the heatmap.
@@ -66,7 +82,6 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
      * What style settings to use.
      */
     @Input() public theme: string = 'theme-bg-primary theme-color-primary';
-
 
     /**
      * The heatmap options object here makes it easier for those using this component to supply option without having
@@ -102,6 +117,17 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
     @ViewChild('tooltips') public tooltips: TacticsTooltipComponent;
 
     /**
+     * Allow the pane to be collapsed and expanded, including by external controls.
+     */
+    @Input() public collapsible: boolean = false;
+
+    public collapsed: boolean = false;
+
+    @Input() public collapseSubject: BehaviorSubject<boolean>;
+
+    private collapseCard$: Subscription;
+
+    /**
      * Ability to override default hover behavior on attack patterns.
      */
     @Output() public hover: EventEmitter<TooltipEvent> = new EventEmitter();
@@ -112,34 +138,28 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
     @Output() public click: EventEmitter<TooltipEvent> = new EventEmitter();
 
     /**
-     * The full list of known tactics, for the input frameworks, provided to avoid having multiple copies among the
-     * subcomponents.
-     */
-    public chains: Dictionary<TacticChain> = null;
-
-    /**
      * @description
      */
     constructor(
         protected store: Store<AppState>,
-    ) { }
-
+    ) {
+    }
+    
     /**
      * @description
      */
     ngOnInit() {
+        this.initData();
+
         this.treemapOptions.headerHeight = 20;
 
         if (this.collapseSubject) {
             this.collapseCard$ = this.collapseSubject
-                .finally(() => this.collapseCard$ && this.collapseCard$.unsubscribe())
                 .subscribe(
                     (collapseContents) => this.collapsed = collapseContents,
-                    (err) => console.log(err),
+                    (err) => console.log(`(${new Date().toISOString()}) error with collapse card subscription`, err),
             );
         }
-
-        this.initData();
     }
 
     /**
@@ -149,26 +169,37 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
         if (this.collapseCard$) {
             this.collapseCard$.unsubscribe();
         }
+        if (this.framework$) {
+            this.framework$.unsubscribe();
+        }
+        if (this.chain$) {
+            this.chain$.unsubscribe();
+        }
     }
+
+    /**
+     * @description readonly access to the internal tactics data
+     */
+    public get chains() { return this._chains; }
 
     /**
      * @description
      */
-    public isHeatmapView(): boolean {
+    public get isHeatmapView(): boolean {
         return this.view === 'heatmap';
     }
 
     /**
      * @description
      */
-    public isTreemapView(): boolean {
+    public get isTreemapView(): boolean {
         return this.view === 'treemap';
     }
 
     /**
      * @description
      */
-    public isCarouselView(): boolean {
+    public get isCarouselView(): boolean {
         return this.view === 'carousel';
     }
 
@@ -176,18 +207,34 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
      * @description load all data
      */
     protected initData() {
-        const getf$ = this.getFrameworks()
-            .finally(() => getf$ && getf$.unsubscribe())
+        console.log(`(${new Date().toISOString()}) TacticsPane querying store`);
+
+        this.framework$ = this.getFrameworks()
+            .distinctUntilChanged()
             .subscribe(
                 (frameworks) => {
-                    this.frameworks = frameworks;
-                    this.loadTactics();
+                    console['debug'](`(${new Date().toISOString()}) TacticsPane loaded frameworks`, frameworks);
+                    requestAnimationFrame(() => this.frameworks = frameworks);
                 },
                 (err) => {
                     console.log(`(${new Date().toISOString()}) ${this.constructor.name}`,
                         'could not determine current framework', err);
                 }
             );
+
+        this.chain$ = this.store
+            .select('config')
+            .pluck('tacticsChains')
+            .filter(t => t !== null)
+            .distinctUntilChanged()
+            .take(1)
+            .subscribe(
+                (tactics: Dictionary<TacticChain>) => {
+                    console['debug'](`(${new Date().toISOString()}) TacticsPane loaded tactics`, tactics);
+                    requestAnimationFrame(() => this._chains = tactics);
+                },
+                (err) => console.log(`(${new Date().toISOString()}) TacticsPane could not load tactics`, err),
+        );
     }
 
     /**
@@ -195,13 +242,15 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
      */
     private getFrameworks(): Observable<string[]> {
         if (this.frameworks && this.frameworks.length) {
+            console['debug'](`(${new Date().toISOString()}) TacticsPane frameworks provided`);
             return Observable.of(this.frameworks.slice(0));
         }
-        if (this.targeted && this.targeted.length) {
-            const frameworks = this.targeted
+        if (this.targets && this.targets.length) {
+            const frameworks = this.targets
                 .reduce((chains, tactic) => chains.concat(tactic.framework), [])
                 .filter(chain => chain !== undefined && chain !== null);
             if (frameworks.length >= 1) {
+                console['debug'](`(${new Date().toISOString()}) TacticsPane frameworks derived from targets`);
                 return Observable.of(frameworks);
             }
         }
@@ -211,39 +260,25 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
             .take(1)
             .pluck('preferences')
             .pluck('killchain')
-            .map((chain: string) => [chain]);
-    }
+            .map((chain: string) => [chain])
+            .do(() => console['debug'](`(${new Date().toISOString()}) TacticsPane`,
+                    'frameworks plucked from user preferences'));
+        }
 
     /**
-     * @description load all the attack patterns, by relevant framework
-     */
-    protected loadTactics() {
-        const sub$ = this.store
-            .select('config')
-            .pluck('tacticsChains')
-            .filter(t => t !== null)
-            .take(1)
-            .finally(() => (sub$ && sub$.unsubscribe && sub$.unsubscribe()))
-            .subscribe(
-                (tactics: Dictionary<TacticChain>) => this.chains = tactics,
-                (err) => console.log(`(${new Date().toISOString()}) TacticsPane could not load tactics`, err),
-        );
-    }
-
-    /**
-     * @description
+     * @description Handle requests to change the view.
      */
     public onViewChange(ev?: MatButtonToggleChange) {
         if (ev && ev.value) {
             this.view = ev.value;
             if (ev.value === 'heatmap') {
-                requestAnimationFrame(() => this.heatmap.ngDoCheck());
+                requestAnimationFrame(() => this[this.view].rerender());
             }
         }
     }
 
     /**
-     * @description
+     * @description Handle when the mouse passes over a tactic.
      */
     public onHover(event?: TooltipEvent) {
         if (event && (event.type === 'hover') && this.hover.observers.length) {
@@ -254,7 +289,7 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * @description
+     * @description Handle when the user clicks on a tactic.
      */
     public onClick(event?: TooltipEvent) {
         if (event && (event.type === 'click') && this.click.observers.length) {

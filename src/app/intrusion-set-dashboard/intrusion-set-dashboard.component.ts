@@ -42,7 +42,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
     public coursesOfAction: any[];
 
     private attackPatterns: Dictionary<any> = {};
-    public targeted: Tactic[] = [];
+    public targets: Tactic[] = [];
     public totalAttackPatterns: number;
     private noColor: HeatColor = {bg: '#ccc', fg: 'black'};
     public readonly heatmapOptions: HeatmapOptions = {
@@ -93,6 +93,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
             .select('config')
             .pluck('tactics')
             .filter((t: Tactic[]) => t.length !== 0)
+            .distinctUntilChanged()
             .take(1);
 
         const intrusionsProperties = {
@@ -146,7 +147,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
     public onIntrusionSetsChange(selections: any[]): void {
         if (!selections || (selections.length === 0)) {
             this.intrusionSets = null;
-            this.targeted = [];
+            this.targets = [];
             this.treeData = null;
         } else {
             this.loadSpinner = true;
@@ -162,7 +163,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
                         this.coursesOfAction = data.coursesOfAction;
                         this.killChainPhases = data.killChainPhases;
                         this.totalAttackPatterns = data.totalAttackPatterns;
-                        this.targeted = this.getSelections();
+                        this.targets = this.getSelections();
                         this.treeData = this.buildTreeData();
                     },
                     (err) => console.log(new Date().toISOString(), err),

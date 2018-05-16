@@ -1,29 +1,32 @@
 import {
     Component,
     OnInit,
-    AfterViewChecked,
-    ViewChild,
-    ElementRef,
+    OnChanges,
     OnDestroy,
     Input,
+    ViewChild,
+    ElementRef,
 } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
 
 import { MatButtonToggleChange, MatSelectChange } from '@angular/material';
 import { Carousel } from 'primeng/primeng';
 
-import { TacticsControlService } from '../tactics-control.service';
 import { CarouselOptions } from './carousel.data';
+import { TacticsControlService } from '../tactics-control.service';
 
 @Component({
     selector: 'tactics-carousel-control',
     templateUrl: './tactics-carousel-control.component.html',
     styleUrls: ['./tactics-carousel-control.component.scss']
 })
-export class TacticsCarouselControlComponent implements OnInit, AfterViewChecked {
+export class TacticsCarouselControlComponent implements OnInit, OnChanges, OnDestroy {
 
     @Input() public options: CarouselOptions = new CarouselOptions();
 
     @ViewChild('widgets') private toolbox: ElementRef;
+
+    private control$: Subscription = null;
 
     constructor(
         private controls: TacticsControlService,
@@ -38,7 +41,7 @@ export class TacticsCarouselControlComponent implements OnInit, AfterViewChecked
         if (!this.controls.state.hasOwnProperty('page')) {
             this.controls.state.page = 0;
         }
-        this.controls.change.subscribe(
+        this.control$ = this.controls.change.subscribe(
             (event) => {
                 if (event && event.pager) {
                     requestAnimationFrame(() => {});
@@ -47,9 +50,15 @@ export class TacticsCarouselControlComponent implements OnInit, AfterViewChecked
         );
     }
 
-    ngAfterViewChecked() {
+    ngOnChanges() {
         if (this.controls.state.pager && (this.controls.state.pages !== this.controls.state.pager.totalPages)) {
             requestAnimationFrame(() => this.controls.state.pages = this.controls.state.pager.totalPages);
+        }
+    }
+
+    ngOnDestroy() {
+        if (this.control$) {
+            this.control$.unsubscribe();
         }
     }
 

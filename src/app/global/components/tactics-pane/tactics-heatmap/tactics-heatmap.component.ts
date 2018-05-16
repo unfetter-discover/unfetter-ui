@@ -47,7 +47,7 @@ export interface AttackPatternCell extends HeatCellData, Tactic {
 @Component({
     selector: 'tactics-heatmap',
     templateUrl: './tactics-heatmap.component.html',
-    styleUrls: ['./tactics-heatmap.component.scss']
+    styleUrls: ['./tactics-heatmap.component.scss'],
 })
 export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, HeatmapOptions> {
 
@@ -143,7 +143,7 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
                     if (!aps[tactic.id]) {
                         // convert the tactic into a heat cell, colorize it if it is targeted
                         const ap: AttackPatternCell = aps[tactic.id] = {...tactic, title: tactic.name, value: 'false'};
-                        const target = this.targeted.find(t => t.id === tactic.id);
+                        const target = this.targets.find(t => t.id === tactic.id);
                         if (this.hasHighlights(target)) {
                             const colors = this.collectColors(target);
                             if (colors.styles.size) {

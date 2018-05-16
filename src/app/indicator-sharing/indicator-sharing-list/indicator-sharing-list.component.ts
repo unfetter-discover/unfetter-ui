@@ -39,7 +39,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
 
     public displayedIndicators: any[];
     public filteredIndicators: any[];
-    public targeted: Tactic[] = [];
+    public targets: Tactic[] = [];
     public DEFAULT_LENGTH: number = 10;
     public searchParameters;
     public filterOpen: boolean = false;
@@ -101,7 +101,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
             .subscribe(
                 (res: any[]) => {
                     this.filteredIndicators = res;
-                    requestAnimationFrame(() => this.targeted = this.collectAttackPatterns());
+                    requestAnimationFrame(() => this.targets = this.collectAttackPatterns());
                 },
                 (err) => {
                     console.log(err);

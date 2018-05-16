@@ -43,7 +43,7 @@ describe('TacticsHeatmapComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(TacticsHeatmapComponent);
         component = fixture.componentInstance;
-        component.targeted = [];
+        component.targets = [];
         component.options = {};
         fixture.detectChanges();
     });

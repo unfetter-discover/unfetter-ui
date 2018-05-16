@@ -1,6 +1,6 @@
 <div id="baseline-heat-map" class="uf-well">
   <div *ngIf="!collapseContents">
-    <tactics-pane #tactics [targeted]="attackPatterns"
+    <tactics-pane #tactics [targets]="attackPatterns"
         [title]="'Addressed Techniques'"
         [subtitle]="'These are the techniques addressed by the capabilities in this baseline.'"
         [heatmapOptions]="heatmapOptions"

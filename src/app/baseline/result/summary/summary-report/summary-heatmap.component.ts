@@ -138,6 +138,7 @@ export class SummaryHeatmapComponent implements OnInit, DoCheck {
       .select('config')
       .pluck('tactics')
       .filter((t: Tactic[]) => t.length !== 0)
+      .distinctUntilChanged()
       .take(1)
       .finally(() => initData$ && initData$.unsubscribe())
       .subscribe(
