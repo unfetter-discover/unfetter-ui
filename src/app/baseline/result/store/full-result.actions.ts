@@ -4,6 +4,7 @@ import { Baseline } from '../../../models/baseline/baseline';
 import { BaselineObject } from '../../../models/baseline/baseline-object';
 import { RiskByAttack3 } from '../../../models/baseline/risk-by-attack3';
 import { Stix } from '../../../models/stix/stix';
+import { AssessmentSet } from 'stix/assess/v3/baseline';
 
 // For effects
 export const LOAD_ASSESSMENT_RESULT_DATA = '[Baseline Result] LOAD_ASSESSMENT_RESULT_DATA';
@@ -14,7 +15,7 @@ export const LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS = '[Baseline Result Group] 
 export const UPDATE_ASSESSMENT_OBJECT = '[Baseline Result Group] UPDATE_ASSESSMENT_OBJECT';
 
 // For reducers
-export const SET_ASSESSMENT = '[Baseline Result] SET_ASSESSMENT';
+export const SET_BASELINE = '[Baseline Result] SET_BASELINE';
 export const SET_GROUP_DATA = '[Baseline Result Group] SET_GROUP_DATA';
 export const SET_GROUP_ASSESSMENT_OBJECTS = '[Baseline Result Group] SET_GROUP_ASSESSMENT_OBJECTS_DATA';
 export const SET_GROUP_RISK_BY_ATTACK_PATTERN = '[Baseline Result Group] SET_RISK_BY_ATTACK_PATTERN';
@@ -27,9 +28,9 @@ export const FINISHED_LOADING = '[Baseline Result] FINISHED_LOADING';
 export const RELOAD_AFTER_UPDATE_ASSESSMENT_OBJECT = '[Baseline Result Group] RELOAD_AFTER_UPDATE_ASSESSMENT_OBJECT';
 
 export class SetAssessment implements Action {
-    public readonly type = SET_ASSESSMENT;
+    public readonly type = SET_BASELINE;
 
-    constructor(public payload: Baseline) { }
+    constructor(public payload: AssessmentSet) { }
 }
 
 export class FinishedLoading implements Action {

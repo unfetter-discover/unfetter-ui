@@ -18,7 +18,7 @@ import { UserProfile } from '../../models/user/user-profile';
 import { AppState } from '../../root-store/app.reducers';
 import { Constance } from '../../utils/constance';
 import { LoadAssessmentResultData } from '../result/store/full-result.actions';
-import { FullAssessmentResultState } from '../result/summary/store/full-result.reducers';
+import { FullBaselineResultState } from '../result/store/full-result.reducers';
 import { CleanBaselineWizardData, FetchCapabilities, FetchCapabilityGroups, LoadBaselineWizardData, SetCurrentBaselineCapability, SetCurrentBaselineGroup, UpdatePageTitle, FetchAttackPatterns } from '../store/baseline.actions';
 import { BaselineState } from '../store/baseline.reducers';
 import { AttackPatternChooserComponent } from './attack-pattern-chooser/attack-pattern-chooser.component';
@@ -124,7 +124,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     private router: Router,
     private renderer: Renderer2,
     private userStore: Store<AppState>,
-    private baselineStore: Store<FullAssessmentResultState>,
+    private baselineStore: Store<FullBaselineResultState>,
     private wizardStore: Store<BaselineState>,
     private changeDetection: ChangeDetectorRef,
     private dialog: MatDialog,
@@ -353,7 +353,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       .subscribe(
         (user: UserProfile) => {
           const sub1$ = this.baselineStore
-            .select('fullBaselineNew')
+            .select('fullBaseline')
             .distinctUntilChanged()
             .subscribe(
               (arr: AssessmentSet) => this.loadAssessments(baselineId, arr, meta),
