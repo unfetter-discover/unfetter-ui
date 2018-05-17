@@ -72,7 +72,6 @@ export class CreateComponent implements OnInit {
    */
   public submitForm(): void {
     this.assessMeta = this.formToAssessment(this.form);
-    // TODO: pass thru the correct types
     this.store.dispatch(new assessActions.StartAssessment(this.assessMeta as any));
   }
 

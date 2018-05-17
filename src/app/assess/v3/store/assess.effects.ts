@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
+import { catchError, flatMap, map, mergeMap } from 'rxjs/operators';
 import { AssessmentSet } from 'stix';
 import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 import { Assessment } from 'stix/assess/v3/assessment';
@@ -18,7 +19,6 @@ import { Constance } from '../../../utils/constance';
 import { AssessStateService } from '../services/assess-state.service';
 import { AssessService } from '../services/assess.service';
 import * as assessActions from './assess.actions';
-import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 
 type URL_TYPE = 'course-of-action' | 'indicator' | 'mitigation';
 
@@ -64,20 +64,50 @@ export class AssessEffects {
                 : Observable.empty<AssessmentSet>();
             observables.push(capabilitiesQuestions$);
 
-            return Observable.forkJoin(...observables)
-                .mergeMap(([indicators, mitigations, baseline]) => {
+            return Observable.forkJoin(...observables).pipe(
+                mergeMap(([indicators, mitigations, baseline]) => {
                     return [
                         new assessActions.SetIndicators(indicators as Indicator.UnfetterIndicator[]),
                         new assessActions.SetMitigations(mitigations as Stix[]),
                         new assessActions.SetCurrentBaseline(baseline as AssessmentSet),
-                        new assessActions.FinishedLoading(true)
+                        new assessActions.LoadCurrentBaselineQuestions(baseline as AssessmentSet),
                     ];
-                })
-                .catch((err) => {
+                }),
+                catchError((err) => {
                     console.log(err);
                     return Observable.empty();
-                });
+                })
+            );
         });
+
+    @Effect()
+    public fetchObjectAssessments = this.actions$
+        .ofType(assessActions.LOAD_CURRENT_BASELINE_QUESTIONS)
+        .pluck('payload')
+        .switchMap((assessmentSet: AssessmentSet) => {
+            if (!assessmentSet
+                || assessmentSet.assessments
+                || assessmentSet.assessments.length === 0
+            ) {
+                return Observable.of([new assessActions.FinishedLoading(true)]);
+            }
+
+            return this.baselineService
+                .fetchObjectAssessmentsByAssessmentSet(assessmentSet)
+                .pipe(
+                    mergeMap((arr) => {
+                        return [
+                            new assessActions.SetCurrentBaselineQuestions(arr),
+                            new assessActions.FinishedLoading(true)
+                        ];
+                    }),
+                    catchError((err) => {
+                        console.log(err);
+                        return Observable.empty();
+                    })
+                );
+        });
+
 
     @Effect()
     public fetchAssessment = this.actions$
@@ -85,11 +115,13 @@ export class AssessEffects {
         .switchMap(() => {
             return this.assessService
                 .load()
-                .map((arr: any[]) => new assessActions.FetchAssessment(arr[0]))
-                .catch((err) => {
-                    console.log(err);
-                    return Observable.empty();
-                });
+                .pipe(
+                    map((arr: any[]) => new assessActions.FetchAssessment(arr[0])),
+                    catchError((err) => {
+                        console.log(err);
+                        return Observable.empty();
+                    }),
+            );
         });
 
     @Effect({ dispatch: false })
@@ -101,15 +133,69 @@ export class AssessEffects {
             return el;
         })
         .do((el: Assess3Meta) => {
-            this.router.navigate([
+            let route = [
                 '/assess-beta/wizard/new',
                 'indicators', el.includesIndicators === true ? 1 : 0,
                 'mitigations', el.includesMitigations === true ? 1 : 0,
-                'baseline', el.baselineRef ? el.baselineRef : ''
-            ]);
+            ];
+            if (el.baselineRef) {
+                route = route.concat('baseline', el.baselineRef);
+            }
+            this.router.navigate(route);
         })
         // required to send an empty element on non dispatched effects
         .switchMap(() => Observable.of({}));
+
+    // @Effect({ dispatch: false })
+    // public startAssessment = this.actions$
+    //     .ofType(assessActions.START_ASSESSMENT)
+    //     .pluck('payload')
+    //     .pipe(
+    //         map((meta: Assess3Meta) => this.assessStateService.saveCurrent(meta)),
+    //         tap((el: Assess3Meta) => {
+    //             this.router.navigate([
+    //                 '/assess-beta/wizard/new',
+    //                 'indicators', el.includesIndicators === true ? 1 : 0,
+    //                 'mitigations', el.includesMitigations === true ? 1 : 0,
+    //                 'baseline', el.baselineRef ? el.baselineRef : ''
+    //             ]);
+    //             return el;
+    //         }),
+    //         // required to send an empty element on non dispatched effects
+    //         // switchMap(() => {
+    //         //     return Observable.empty();
+    //         // }),
+    //         catchError((err) => {
+    //             console.log(err);
+    //             return Observable.empty();
+    //         })
+    //     )
+    //     .switchMap(() => {
+    //         return Observable.empty();
+    //     })
+    // .switchMap((meta: Assess3Meta) => {
+    //     // return this.assessStateService
+    //     //     .saveCurrent(meta)
+    //     //     .pipe(
+    //     //         map((el: Assess3Meta) => {
+    //     //             this.router.navigate([
+    //     //                 '/assess-beta/wizard/new',
+    //     //                 'indicators', el.includesIndicators === true ? 1 : 0,
+    //     //                 'mitigations', el.includesMitigations === true ? 1 : 0,
+    //     //                 'baseline', el.baselineRef ? el.baselineRef : ''
+    //     //             ]);
+    //     //             return el;
+    //     //         }),
+    //     //         // required to send an empty element on non dispatched effects
+    //     //         switchMap(() => {
+    //     //             return Observable.of({});
+    //     //         }),
+    //     //         catchError((err) => {
+    //     //             console.log(err);
+    //     //             return Observable.empty();
+    //     //         }),
+    //     );
+    // });
 
 
     @Effect()
@@ -151,29 +237,30 @@ export class AssessEffects {
                 });
 
             return Observable.forkJoin(...observables)
-                .map((arr: any) => {
-                    if (Array.isArray(arr[0])) {
-                        return arr;
-                    } else {
-                        // stoopid hack to handle the fact that update returns a single object, not an array, and drops the metadata
-                        arr[0].attributes.metaProperties = { rollupId: rollupId };
-                        return [arr];
-                    }
-                })
-                .flatMap((arr: JsonApiData<Assessment>[][]) => arr)
-                .map((arr) => {
-                    const hasAttributes = arr && arr[0] && arr[0].attributes;
-                    const hasMetadata = hasAttributes && arr[0].attributes.metaProperties;
-                    return new assessActions.FinishedSaving({
-                        finished: true,
-                        rollupId: hasMetadata ? arr[0].attributes.metaProperties.rollupId : '',
-                        id: hasAttributes ? arr[0].attributes.id : '',
-                    });
-                })
-                .catch((err) => {
-                    console.log(err);
-                    return Observable.empty();
-                });
+                .pipe(
+                    map((arr: any) => {
+                        if (Array.isArray(arr[0])) {
+                            return arr;
+                        } else {
+                            // stoopid hack to handle the fact that update returns a single object, not an array, and drops the metadata
+                            arr[0].attributes.metaProperties = { rollupId: rollupId };
+                            return [arr];
+                        }
+                    }),
+                    flatMap((arr: JsonApiData<Assessment>[][]) => arr),
+                    map((arr) => {
+                        const hasAttributes = arr && arr[0] && arr[0].attributes;
+                        const hasMetadata = hasAttributes && arr[0].attributes.metaProperties;
+                        return new assessActions.FinishedSaving({
+                            finished: true,
+                            rollupId: hasMetadata ? arr[0].attributes.metaProperties.rollupId : '',
+                            id: hasAttributes ? arr[0].attributes.id : '',
+                        });
+                    }),
+                    catchError((err) => {
+                        console.log(err);
+                        return Observable.empty();
+                    }));
         });
 
     @Effect()
@@ -182,11 +269,13 @@ export class AssessEffects {
         .switchMap(() => {
             return this.baselineService
                 .fetchBaselines()
-                .map((arr) => new assessActions.SetBaselines(arr))
-                .catch((err) => {
-                    console.log(err);
-                    return Observable.empty();
-                });
+                .pipe(
+                    map((arr) => new assessActions.SetBaselines(arr)),
+                    catchError((err) => {
+                        console.log(err);
+                        return Observable.empty();
+                    })
+                );
         });
 
 

@@ -21,7 +21,7 @@
                         <mat-checkbox class="" [value]="showToSelectBaselines" color="primary" (change)="showToSelectBaselines = !showToSelectBaselines">Capabilities</mat-checkbox>
                         <span *ngIf="showToSelectBaselines">
                             <mat-radio-group formControlName="baselineRef" *ngIf="(baselines | async); else createNewBaseline">
-                                <mat-radio-button *ngFor="let baseline of (baselines | async); trackBy: trackByFn" [value]="baseline.id">
+                                <mat-radio-button color="primary" *ngFor="let baseline of (baselines | async); trackBy: trackByFn" [value]="baseline.id">
                                     <div class="flex-cols">
                                         <span class="mat-subheader-1">{{ baseline.name }}</span>
                                         <span class="mat-caption">

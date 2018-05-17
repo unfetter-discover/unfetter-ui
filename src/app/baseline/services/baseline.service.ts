@@ -1,6 +1,6 @@
 import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { AssessmentSet, Capability, Category } from 'stix/assess/v3/baseline';
+import { AssessmentSet, Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
 import { JsonApiData } from 'stix/json/jsonapi-data';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { RxjsHelpers } from '../../global/static/rxjs-helpers';
@@ -18,6 +18,7 @@ export class BaselineService {
     public readonly capabilityBaseUrl = Constance.X_UNFETTER_CAPABILITY_URL;
     public readonly categoryBaseUrl = Constance.X_UNFETTER_CATEGORY_URL;
     public readonly relationshipsBaseUrl = Constance.RELATIONSHIPS_URL;
+    public readonly objectAssessmentsBaseUrl = Constance.X_UNFETTER_OBJECT_ASSESSMENTS_URL;
 
     constructor(
         @SkipSelf() @Optional() protected parent: BaselineService,
@@ -262,6 +263,38 @@ export class BaselineService {
         }
 
         return this.genericApi.getAs<BaselineObject[]>(`${this.baselineBaseUrl}/${id}/assessed-objects`);
+    }
+
+    /**
+     * @description
+     * @param {AssessmentSet} assessmentSet
+     * @return {Observable<any>}
+     */
+    public fetchObjectAssessmentsByAssessmentSet(assessmentSet: AssessmentSet): Observable<ObjectAssessment[]> {
+        if (!assessmentSet) {
+            return Observable.of([]);
+        }
+
+        return this.fetchObjectAssessments(assessmentSet.assessments);
+    }
+
+    /**
+     * @description
+     * @param {string} id
+     * @return {Observable<any>}
+     */
+    public fetchObjectAssessments(ids: string[] = []): Observable<ObjectAssessment[]> {
+        if (!ids) {
+            return Observable.of([]);
+        }
+        const urlBase = this.objectAssessmentsBaseUrl;
+        const observables = ids.map((id) => {
+            return this.genericApi
+                .getAs<JsonApiData<ObjectAssessment>>(`${this.baselineBaseUrl}/${id}`)
+                .map<JsonApiData<ObjectAssessment>, ObjectAssessment>(RxjsHelpers.mapAttributes);
+        });
+
+        return Observable.forkJoin(...observables);
     }
 
     /**

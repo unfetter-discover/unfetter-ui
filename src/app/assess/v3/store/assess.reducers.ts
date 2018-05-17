@@ -19,8 +19,8 @@ export interface AssessState {
     indicators?: Indicator[];
     mitigations?: Stix[];
     baselines?: AssessmentSet[];
-    curBaseline?: AssessmentSet;
-    baselineQuestions?: ObjectAssessment[];
+    currentBaseline?: AssessmentSet;
+    currentBaselineQuestions?: ObjectAssessment[];
     finishedLoading: boolean;
     saved: { finished: boolean, rollupId: string, id: string };
     showSummary: boolean;
@@ -56,6 +56,7 @@ export function assessmentReducer(state = initialState, action: assessmentAction
             const a0 = new Assessment();
             a0.assessmentMeta = { ...action.payload };
             return genAssessState({
+                ...state,
                 assessment: a0,
             });
         case assessmentActions.UPDATE_PAGE_TITLE:
@@ -88,7 +89,12 @@ export function assessmentReducer(state = initialState, action: assessmentAction
         case assessmentActions.SET_CURRENT_BASELINE:
             return genAssessState({
                 ...state,
-                curBaseline: { ...action.payload },
+                currentBaseline: { ...action.payload },
+            });
+        case assessmentActions.SET_CURRENT_BASELINE_QUESTIONS:
+            return genAssessState({
+                ...state,
+                currentBaselineQuestions: [ ...action.payload ],
             });
         case assessmentActions.FINISHED_LOADING:
             return genAssessState({
@@ -163,9 +169,9 @@ export const getIndicatorQuestions = createSelector(
     (state) => state.indicators
 );
 
-export const getCapabilityQuestions = createSelector(
+export const getCurrentBaselineQuestions = createSelector(
     getAssessState,
-    (state) => state.baselineQuestions
+    (state) => state.currentBaselineQuestions
 );
 
 export const getCurWizardPage = createSelector(

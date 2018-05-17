@@ -189,7 +189,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       .subscribe((arr: Stix[]) => this.mitigations = arr);
 
     const sub3$ = this.wizardStore
-      .select(assessReducers.getCapabilityQuestions)
+      .select(assessReducers.getCurrentBaselineQuestions)
       .distinctUntilChanged()
       .subscribe((arr: ObjectAssessment[]) => this.capabilityQuestions = arr);
 
