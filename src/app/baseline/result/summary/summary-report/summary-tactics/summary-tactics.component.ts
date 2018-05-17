@@ -6,6 +6,7 @@ import {
     OnChanges,
     SimpleChanges,
 } from '@angular/core';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Store } from '@ngrx/store';
 
 import * as d3 from 'd3';
@@ -40,12 +41,10 @@ export class SummaryTacticsComponent implements OnInit, OnChanges {
      */
     private capabilitiesToAttackPatternMap: any;
 
-    @ViewChild('tactics') private tacticsPane: TacticsPaneComponent;
-
     /**
      * @description 
      */
-    @Input() heatmapOptions: HeatmapOptions = {
+    public readonly heatmapOptions: HeatmapOptions = {
         view: {
             component: '#baseline-heat-map',
         },
@@ -84,6 +83,13 @@ export class SummaryTacticsComponent implements OnInit, OnChanges {
     public readonly carouselOptions: CarouselOptions = {
     };
 
+    /**
+     * @description 
+     */
+    @Input() public collapseSubject: BehaviorSubject<boolean>;
+
+    public collapseContents: boolean = false;
+
     constructor(
         private tacticsStore: Store<AppState>,
     ) {
@@ -106,6 +112,15 @@ export class SummaryTacticsComponent implements OnInit, OnChanges {
                 this.attackPatterns = [];
                 // this.attackPatterns = this.collectAttackPatterns(patterns, indicators);
             });
+        }
+
+        if (this.collapseSubject) {
+            const collapseCard$ = this.collapseSubject
+              .finally(() => collapseCard$ && collapseCard$.unsubscribe())
+              .subscribe(
+                (collapseContents) => this.collapseContents = collapseContents,
+                (err) => console.log(err),
+            );
         }
     }
 

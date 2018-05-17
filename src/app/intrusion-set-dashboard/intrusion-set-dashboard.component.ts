@@ -25,7 +25,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
     public killChainPhases: any[];
     public coursesOfAction: any[];
 
-    private attackPatterns: Dictionary<any> = {};
+    public attackPatterns: Dictionary<any> = {};
     public totalAttackPatterns: number;
 
     public treeData: any;
