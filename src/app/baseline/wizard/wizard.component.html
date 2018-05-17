@@ -89,9 +89,9 @@
 
     <mat-card-actions class="text-right">
       <button mat-button color="primary" *ngIf="!isFirstPage()" (click)="onBack($event)"> Back</button>
-      <button focus="true" mat-raised-button color="primary" (click)="onBackGroup($event)" *ngIf="hasBackGroup()">Previous Group</button>
-      <button focus="true" mat-raised-button color="primary" (click)="onNextGroup($event)" *ngIf="hasNextGroup()">Next Group</button>
-      <button focus="true" mat-raised-button color="primary" (click)="onSave($event)" *ngIf="buttonLabel === 'SAVE'" [disabled]="isTitleEmpty()">{{buttonLabel}}</button>
+      <button mat-button color="primary" (click)="onBackGroup($event)" *ngIf="hasBackGroup()">Previous Group</button>
+      <button mat-button color="primary" (click)="onNextGroup($event)" *ngIf="hasNextGroup()">Next Group</button>
+      <button mat-button color="primary" (click)="onSave($event)" *ngIf="buttonLabel === 'SAVE'" [disabled]="isTitleEmpty()">{{buttonLabel}}</button>
       <button focus="true" mat-raised-button color="primary" (click)="onNext($event)" *ngIf="buttonLabel !== 'SAVE'">{{buttonLabel}}</button>
     </mat-card-actions>
 
