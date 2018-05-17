@@ -529,13 +529,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
     this.page = this.page - 1;
 
-    if (this.page === 1) {
-      // Headed to capability group step
-      this.openedSidePanel = 'categories';
-    }
-
-    this.buttonLabel = 'CONTINUE';
-
     this.updateWizardData();
   }
 
@@ -576,6 +569,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     if (this.page > 1 + this.navigations.length) {
       // Show summary page
       this.openedSidePanel = 'summary';
+      this.wizardStore.dispatch(new SetCurrentBaselineGroup(undefined));
+      this.wizardStore.dispatch(new SetCurrentBaselineCapability(undefined));
       this.showSummarySavePage();
     } else {
       // Determine ID for this page
@@ -595,7 +590,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
         // Update current capability group if we've drifted onto another one
         let currCap = this.baselineCapabilities.find(capability => capability.id === currPage.id) as Capability;
-        if (currCap.category !== this.currentBaselineGroup.name) {
+        if (!this.currentBaselineGroup || currCap.category !== this.currentBaselineGroup.name) {
           this.wizardStore.dispatch(new SetCurrentBaselineGroup(this.allCategories.find((category) => category.name === currCap.category)));
         }
 
@@ -609,8 +604,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {void}
    */
   public showSummarySavePage(): void {
-    this.wizardStore.dispatch(new SetCurrentBaselineCapability(undefined));
-    
     this.showSummary = true;
     this.buttonLabel = 'SAVE';
   }
