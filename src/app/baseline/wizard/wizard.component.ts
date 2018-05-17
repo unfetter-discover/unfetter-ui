@@ -485,7 +485,29 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.updateWizardData();
   }
 
-    /*
+  /*
+   * @description navigate directly to next group
+   * @param {UIEvent} event optional
+   * @return {void}
+   */
+  public onNextGroup(event?: UIEvent): void {
+    if (event) {
+      event.preventDefault();
+    }
+
+    // Set page to next group in the list
+    let groupIndex = this.baselineGroups.findIndex(group => group.id === this.currentBaselineGroup.id);
+    this.page = this.navigations.find(nav => nav.id === this.baselineGroups[groupIndex + 1].id).page;
+
+    this.updateWizardData();
+  }
+
+  public hasNextGroup(page: number): boolean {
+    return this.page > 1 && this.currentBaselineGroup &&
+           this.baselineGroups.findIndex(group => group.id === this.currentBaselineGroup.id) < this.baselineGroups.length - 1;
+  }
+
+  /*
    * @description clicked back a page
    * @param {UIEvent} event optional
    * @returns {void}
@@ -505,10 +527,39 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.updateWizardData();
   }
 
+  /*
+   * @description navigate directly to previous group
+   * @param {UIEvent} event optional
+   * @return {void}
+   */
+  public onBackGroup(event?: UIEvent): void {
+    if (event) {
+      event.preventDefault();
+    }
+
+    // Set page to previous group in the list
+    let groupIndex = this.baselineGroups.findIndex(group => group.id === this.currentBaselineGroup.id);
+    this.page = this.navigations.find(nav => nav.id === this.baselineGroups[groupIndex - 1].id).page;
+
+    this.updateWizardData();
+  }
+
+  public hasBackGroup(): boolean {
+    return this.currentBaselineGroup &&
+           this.baselineGroups.findIndex(group => group.id === this.currentBaselineGroup.id) > 0;
+  }
+
   private updateWizardData(): void {
     this.showSummary = false;
     this.buttonLabel = 'CONTINUE';
 
+    // Have we made it beyond the cat/cap pages (i.e. Group Setup + cat/cap pages)?
+    if (this.page === 1 ) {
+      // Show categories page
+      this.openedSidePanel = 'categories';
+      this.wizardStore.dispatch(new SetCurrentBaselineGroup(undefined));
+      this.wizardStore.dispatch(new SetCurrentBaselineCapability(undefined));
+    } else 
     // Have we made it beyond the cat/cap pages (i.e. Group Setup + cat/cap pages)?
     if (this.page > 1 + this.navigations.length) {
       // Show summary page
@@ -654,7 +705,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         })
     });
   }
-  
+
   /*
    * @description
    * @param {void}
