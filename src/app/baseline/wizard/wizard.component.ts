@@ -523,11 +523,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.updateWizardData();
   }
 
-<<<<<<< HEAD
-  public hasNextGroup(): boolean {
-=======
   public hasNextGroup(page: number): boolean {
->>>>>>> Initial prev/next category buttons
     return this.page > 1 && this.currentBaselineGroup &&
            this.baselineGroups.findIndex(group => group.id === this.currentBaselineGroup.id) < this.baselineGroups.length - 1;
   }
@@ -688,29 +684,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         })
     });
   }
-<<<<<<< HEAD
-=======
-
-  /*
-   * @description
-   * @param {void}
-   * @return {any}
-   */
-  private getCurrentCapability(): any {
-    if (this.allCapabilities) {
-      let index = 0;
-      if (this.page) {
-        index = this.page - 1;
-      }
-      if (index >= this.allCapabilities.length) {
-        index = 0;
-      }
-      return this.allCapabilities[index];
-    } else {
-      return undefined;
-    }
-  }
->>>>>>> Initial prev/next category buttons
 
   /*
    * @description
