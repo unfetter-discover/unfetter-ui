@@ -25,51 +25,61 @@ import { AppState } from '../../../root-store/app.reducers';
 export abstract class TacticsView<Component, Options> implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
     /**
-     * The relevant framework(s) for the patterns to display.
+     * @description The relevant framework(s) for the patterns to display.
      */
     @Input() public frameworks: string[] = null;
 
     private framework$: Subscription = null;
 
     /**
-     * The full list of known tactics, for the input frameworks. Generated list, do not disturb. Can be provided, to
-     * avoid having multiple copies among multiple components.
+     * @description The full list of known tactics, for the input frameworks. Generated list, do not disturb.
+     *              Can be provided, to avoid having multiple copies among multiple components.
      */
     @Input() public chains: Dictionary<TacticChain> = null;
+
+    private previousChains: Dictionary<TacticChain> = null;
     
     private chain$: Subscription = null;
 
     protected tactics: Tactic[];
 
     /**
-     * Provided tactics that should be specially marked.
+     * @description Provided tactics that should be specially marked.
      */
     @Input() public targets: Tactic[] = [];
 
     /**
-     * Preferences on how to view the data.
+     * @description Preferences on how to view the data.
      */
     @Input() public options: Options;
 
     /**
-     * Ability to override default hover behavior on attack patterns.
+     * @description Ability to override default hover behavior on attack patterns.
      */
     @Output() public hover: EventEmitter<TooltipEvent> = new EventEmitter();
 
     /**
-     * Ability to override default click behavior on attack patterns.
+     * @description Ability to override default click behavior on attack patterns.
      */
     @Output() public click: EventEmitter<TooltipEvent> = new EventEmitter();
 
-    private inited = false;
     /**
      * @description
      */
     constructor(
         protected store: Store<AppState>,
         protected controls: TacticsControlService,
-        public tooltips: TacticsTooltipService,
+        protected tooltips: TacticsTooltipService,
     ) {
+    }
+
+    /**
+     * @description
+     */
+    ngOnInit() {
+        this.previousChains = this.chains;
+        this.validateOptions();
+        this.initData();
     }
 
     /**
@@ -77,23 +87,14 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
      */
     ngOnChanges(changes: SimpleChanges) {
         if (this.frameworksChanged(changes) || this.chainsChanged(changes)) {
-            console.log(`(${new Date().toISOString()}) ${this.constructor.name} source data change detected`);
-            console['debug']('changes', changes);
+            console['debug'](`(${new Date().toISOString()}) ${this.constructor.name} source data change detected`);
+            this.previousChains = this.chains;
             this.loadTactics(this.chains);
         }
         if (this.targetsChanged(changes)) {
-            console.log(`(${new Date().toISOString()}) ${this.constructor.name} targets data change detected`);
-            console['debug']('changes', changes);
+            console['debug'](`(${new Date().toISOString()}) ${this.constructor.name} targets data change detected`);
             this.extractData(this.chains);
         }
-    }
-
-    /**
-     * @description
-     */
-    ngOnInit() {
-        this.validateOptions();
-        this.initData();
     }
 
     /**
@@ -139,7 +140,7 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
      * @description gives the view object access to the underlying component.
      */
     private targetsChanged(changes: SimpleChanges): boolean {
-        return !changes || !changes.targets || !changes.targets.currentValue;
+        return !!changes && !!changes.targets;
     }
 
     /**
@@ -171,7 +172,7 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
         }
 
         if (this.chains === null) {
-            console.log(`(${new Date().toISOString()}) ${this.constructor.name} querying tactics store`);
+            console['debug'](`(${new Date().toISOString()}) ${this.constructor.name} querying tactics store`);
             this.chain$ = this.store
                 .select('config')
                 .pluck('tacticsChains')

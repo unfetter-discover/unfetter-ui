@@ -23,9 +23,6 @@ export class TacticsTooltipService {
      */
     @Output() tooltip: EventEmitter<TooltipEvent> = new EventEmitter();
 
-    /**
-     * @description 
-     */
     constructor(
     ) {
     }

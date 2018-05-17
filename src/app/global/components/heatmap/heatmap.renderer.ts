@@ -14,20 +14,20 @@ import {
 import { TooltipEvent } from '../tactics-pane/tactics-tooltip/tactics-tooltip.service';
 import { Dictionary } from '../../../models/json/dictionary';
 
-export interface Heatmap {
+export interface HeatmapPane {
     data: Array<HeatBatchData>;
     options: HeatmapOptions;
     hover: EventEmitter<TooltipEvent>;
     click: EventEmitter<TooltipEvent>;
 }
 
-/*
- * To make d3 select types easier.
+/**
+ * @description To make d3 select types easier.
  */
 export type D3Selection = d3.Selection<d3.BaseType, {}, HTMLElement, any>;
 
 /**
- * Collects data used to draw a component so that we can access it again later, quickly.
+ * @description Collects data used to draw a component so that we can access it again later, quickly.
  */
 export interface Workspace {
     fill?: BatchColor | string | boolean;
@@ -36,7 +36,7 @@ export interface Workspace {
 }
 
 /**
- * Used internally to rearrange large batches into multiple columns.
+ * @description Used internally to rearrange large batches into multiple columns.
  */
 export interface HeatCellWork extends HeatCellData, Workspace {
 }
@@ -57,7 +57,7 @@ export class BatchWork implements HeatBatchData {
 }
 
 /**
- * These are used internally to draw the heatmap canvas.
+ * @description These are used internally to draw the heatmap canvas.
  */
 export class DrawingBounds {
     elem: D3Selection;
@@ -96,69 +96,111 @@ export class DrawingBounds {
 }
 
 /**
- * A heatmap renderer makes decisions on how it wants to draw a heatmap. For instance, one might draw batches as
- * columns across a canvas (being width-intensive), or down the canvas (being height-intensive). Another might bunch
- * batches without whitespace (how a calendar chart looks). Another might be similar to how code library usages look;
- * in other words, more like a treemap.
+ * @description A heatmap renderer makes decisions on how it wants to draw a heatmap. For instance, one might draw
+ *              batches as columns across a canvas (being width-intensive), or down the canvas (being height-intensive).
+ *              Another might bunch batches without whitespace (how a calendar chart looks). Another might be similar
+ *              to how code library usages look; in other words, more like a treemap.
  * 
- * The renderer can also take the presence of a minimap in mind; either drawing it outside or inside the same canvas as
- * the heatmap.
+ *              The renderer can also take the presence of a minimap in mind; either drawing it outside or inside the
+ *              same canvas as the heatmap.
  */
 export abstract class HeatmapRenderer {
 
-    private _map: Heatmap;
+    /**
+     * @description 
+     */
+    private pane: HeatmapPane;
 
+    /**
+     * @description 
+     */
     protected heatmap: DrawingBounds;
 
+    /**
+     * @description 
+     */
     protected minimap: DrawingBounds;
 
+    /**
+     * @description 
+     */
     private hoverTimeout: number;
-
-    protected get data(): Array<HeatBatchData> {
-        return this._map.data;
-    }
-
-    protected get options(): HeatmapOptions {
-        return this._map.options;
-    }
-
-    protected get viewOpts() {
-        return this._map.options.view;
-    }
-
-    protected get colorOpts() {
-        return this._map.options.color;
-    }
-
-    protected get textOpts() {
-        return this._map.options.text;
-    }
-
-    protected get hoverOpts() {
-        return this._map.options.hover;
-    }
-
-    protected get zoomOpts() {
-        return this._map.options.zoom;
-    }
-
-    protected get minimapOpts() {
-        return this._map.options.zoom.minimap;
-    }
-
-    protected get hover(): EventEmitter<TooltipEvent> {
-        return this._map.hover;
-    }
-
-    protected get click(): EventEmitter<TooltipEvent> {
-        return this._map.click;
-    }
 
     /**
      * @description Callback to this component to handle certain events(?).
      */
-    public setComponent(heatmap: Heatmap) {
-        this._map = heatmap;
+    public set component(heatmap: HeatmapPane) {
+        this.pane = heatmap;
+    }
+
+    /**
+     * @description 
+     */
+    protected get data(): Array<HeatBatchData> {
+        return this.pane.data;
+    }
+
+    /**
+     * @description 
+     */
+    protected get options(): HeatmapOptions {
+        return this.pane.options;
+    }
+
+    /**
+     * @description 
+     */
+    protected get viewOpts() {
+        return this.pane.options.view;
+    }
+
+    /**
+     * @description 
+     */
+    protected get colorOpts() {
+        return this.pane.options.color;
+    }
+
+    /**
+     * @description 
+     */
+    protected get textOpts() {
+        return this.pane.options.text;
+    }
+
+    /**
+     * @description 
+     */
+    protected get hoverOpts() {
+        return this.pane.options.hover;
+    }
+
+    /**
+     * @description 
+     */
+    protected get zoomOpts() {
+        return this.pane.options.zoom;
+    }
+
+    /**
+     * @description 
+     */
+    protected get minimapOpts() {
+        return this.pane.options.zoom.minimap;
+    }
+
+    /**
+     * @description 
+     */
+    protected get hover(): EventEmitter<TooltipEvent> {
+        return this.pane.hover;
+    }
+
+    /**
+     * @description 
+     */
+    protected get click(): EventEmitter<TooltipEvent> {
+        return this.pane.click;
     }
 
     /**
@@ -341,8 +383,8 @@ export abstract class HeatmapRenderer {
         }
     }
 
-    /*
-     * Translate the zoom and pan event on the minimap to coordinates that mirror the heatmap.
+    /**
+     * @description Translate the zoom and pan event on the minimap to coordinates that mirror the heatmap.
      */
     private convertMinimapZoomToHeatmap(transform: d3.ZoomTransform): d3.ZoomTransform {
         // scale the x coordinate to match the heatmap (may have to adjust this based on the extra minimap padding)

@@ -101,7 +101,10 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
             .subscribe(
                 (res: any[]) => {
                     this.filteredIndicators = res;
-                    requestAnimationFrame(() => this.targets = this.collectAttackPatterns());
+                    requestAnimationFrame(() => {
+                        this.targets = this.collectAttackPatterns();
+                        this.changeDetectorRef.detectChanges();
+                    });
                 },
                 (err) => {
                     console.log(err);

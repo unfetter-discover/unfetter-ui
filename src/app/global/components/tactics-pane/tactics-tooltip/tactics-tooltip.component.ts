@@ -27,7 +27,7 @@ import { Subscription } from 'rxjs/Subscription';
 export class TacticsTooltipComponent implements OnInit, OnDestroy {
 
     /**
-     * Common tooltip component across the views.
+     * @description Common tooltip component across the views.
      * @todo refactor this into its own component?
      */
     @ViewChild('tacticTooltipTemplate') tooltipTemplate: TemplateRef<any>;

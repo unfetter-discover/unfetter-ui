@@ -1,26 +1,30 @@
 /**
- * View options for the carousel. All options have default values.
+ * @description View options for the carousel. All options have default values.
  */
 export class CarouselOptions {
 
     /**
-     * How many columns to display in the carousel. It would be nice if we could calculate this based on data and
-     * window size, but for now it is a coded value. Defaults to 4.
+     * @description How many columns to display in the carousel. It would be nice if we could calculate this based on
+     *              data and window size, but for now it is a coded value. Defaults to 4.
      */
     public numVisible?: number;
 
     /**
-     * How many pages of carousel columns have to be displayed before the links dropdown appears to make things easier
-     * on the user. The default is 2, meaning, if there is more than one page the user has to scroll through, the
-     * dropdown will be there. If there is only one page of data, the dropdown is hidden.
+     * @description How many pages of carousel columns have to be displayed before the links dropdown appears to make
+     *              things easier on the user. The default is 2, meaning, if there is more than one page the user has
+     *              to scroll through, the dropdown will be there. If there is only one page of data, the dropdown is
+     *              hidden.
      */
     public minPageLinks?: number;
 
     /**
-     * What style settings to use for the carousel controls.
+     * @description What style settings to use for the carousel controls.
      */
     public toolboxTheme?: string;
 
+    /**
+     * @description
+     */
     static merge(custom: CarouselOptions, defaults?: CarouselOptions): CarouselOptions {
         if (!defaults) {
             defaults = new CarouselOptions();

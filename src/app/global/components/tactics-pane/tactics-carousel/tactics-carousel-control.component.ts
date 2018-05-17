@@ -22,6 +22,9 @@ import { TacticsControlService } from '../tactics-control.service';
 })
 export class TacticsCarouselControlComponent implements OnInit, OnChanges, OnDestroy {
 
+    /**
+     * @description 
+     */
     @Input() public options: CarouselOptions = new CarouselOptions();
 
     @ViewChild('widgets') private toolbox: ElementRef;
@@ -30,8 +33,12 @@ export class TacticsCarouselControlComponent implements OnInit, OnChanges, OnDes
 
     constructor(
         private controls: TacticsControlService,
-    ) { }
+    ) {
+    }
 
+    /**
+     * @description 
+     */
     ngOnInit() {
         this.options = CarouselOptions.merge(this.options);
 
@@ -50,30 +57,48 @@ export class TacticsCarouselControlComponent implements OnInit, OnChanges, OnDes
         );
     }
 
+    /**
+     * @description 
+     */
     ngOnChanges() {
         if (this.controls.state.pager && (this.controls.state.pages !== this.controls.state.pager.totalPages)) {
             requestAnimationFrame(() => this.controls.state.pages = this.controls.state.pager.totalPages);
         }
     }
 
+    /**
+     * @description 
+     */
     ngOnDestroy() {
         if (this.control$) {
             this.control$.unsubscribe();
         }
     }
 
+    /**
+     * @description 
+     */
     get page() {
         return this.controls.state.page;
     }
 
+    /**
+     * @description 
+     */
     get pages() {
         return this.controls.state.pages;
     }
 
+    /**
+     * @description 
+     */
     get pagelist() {
         return new Array(this.pages);
     }
 
+    /**
+     * @description 
+     */
     get filters() {
         return this.controls.state.filters || {};
     }
@@ -88,11 +113,17 @@ export class TacticsCarouselControlComponent implements OnInit, OnChanges, OnDes
         }
     }
 
+    /**
+     * @description 
+     */
     public onPageChange(ev?: MatSelectChange) {
         this.controls.state.page = ev.value;
         this.controls.onChange({page: this.page});
     }
 
+    /**
+     * @description 
+     */
     public goPreviousPage(ev?: UIEvent) {
         if (this.page > 0) {
             requestAnimationFrame(() => {
@@ -102,6 +133,9 @@ export class TacticsCarouselControlComponent implements OnInit, OnChanges, OnDes
         }
     }
 
+    /**
+     * @description 
+     */
     public goNextPage(ev?: UIEvent) {
         if (this.page < this.pages - 1) {
             requestAnimationFrame(() => {

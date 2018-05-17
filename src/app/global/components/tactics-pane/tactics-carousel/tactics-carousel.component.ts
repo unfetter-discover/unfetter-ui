@@ -1,4 +1,4 @@
-import { Component, ViewChild, Input } from '@angular/core';
+import { Component, ViewChild, Input, } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { Carousel } from 'primeng/primeng';
@@ -14,19 +14,25 @@ import { AppState } from '../../../../root-store/app.reducers';
 @Component({
     selector: 'tactics-carousel',
     templateUrl: './tactics-carousel.component.html',
-    styleUrls: ['./tactics-carousel.component.scss']
+    styleUrls: ['./tactics-carousel.component.scss'],
 })
 export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOptions> {
 
     /**
-     * Tactics grouped by framework.
+     * @description Tactics grouped by framework.
      */
     private chainedTactics: Dictionary<TacticChain> = {};
 
+    /**
+     * @description 
+     */
     @Input() public options: CarouselOptions = new CarouselOptions();
 
     @ViewChild('carousel') private carousel: Carousel;
 
+    /**
+     * @description 
+     */
     private readied = false;
 
     constructor(
@@ -37,10 +43,16 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
         super(store, controls, tooltips);
     }
 
+    /**
+     * @description 
+     */
     protected get view() {
         return this.carousel;
     }
 
+    /**
+     * @description 
+     */
     get phases(): any[] {
         return (this.frameworks || Object.keys(this.chainedTactics))
             .map(chain => (this.chainedTactics || {})[chain])
@@ -48,6 +60,9 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
             .reduce((phases, chain) => phases.concat(chain.phases), []);
     }
 
+    /**
+     * @description 
+     */
     get filters() {
         return this.controls.state.filters || {};
     }
@@ -99,6 +114,9 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
             );
     }
 
+    /**
+     * @description 
+     */
     public rerender() {
         // nothing to do; the carousel should automatically updated with the modified chainedTactics
     }
@@ -140,7 +158,6 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
 
     /**
      * @description determine the background color of the given tactic
-     * @todo this version cannot return gradients
      */
     public getTacticBackground(tactic: Tactic): string {
         let target = this.lookupTactic(tactic);
