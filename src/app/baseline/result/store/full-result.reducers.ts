@@ -1,3 +1,4 @@
+import { AssessmentSet } from 'stix/assess/v3/baseline';
 import { Baseline } from '../../../models/baseline/baseline';
 import { Stix } from '../../../models/stix/stix';
 import { FullBaselineGroup } from '../full/group/models/full-baseline-group';
@@ -5,7 +6,7 @@ import * as fullAssessmentResultActions from './full-result.actions';
 import { FullBaselineResultActions, LOAD_ASSESSMENT_RESULT_DATA } from './full-result.actions';
 
 export interface FullBaselineResultState {
-    fullBaseline: Baseline;
+    fullBaseline: AssessmentSet;
     finishedLoading: boolean;
     group: FullBaselineGroup;
 };
@@ -37,7 +38,7 @@ export const genGroupState = (state?: Partial<FullBaselineGroup>) => {
 
 export const genState = (state?: Partial<FullBaselineResultState>) => {
     const tmp = {
-        fullBaseline: new Baseline(),
+        fullBaseline: new AssessmentSet(),
         finishedLoading: false,
         group: genGroupState(),
     };
@@ -57,7 +58,7 @@ export function fullAssessmentResultReducer(state = initialState, action: FullBa
             return {
                 ...state,
             };
-        case fullAssessmentResultActions.SET_ASSESSMENT:
+        case fullAssessmentResultActions.SET_BASELINE:
             return {
                 ...state,
                 fullBaseline: {...action.payload},
