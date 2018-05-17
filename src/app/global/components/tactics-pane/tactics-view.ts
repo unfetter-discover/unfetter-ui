@@ -87,12 +87,14 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
      */
     ngOnChanges(changes: SimpleChanges) {
         if (this.frameworksChanged(changes) || this.chainsChanged(changes)) {
-            console['debug'](`(${new Date().toISOString()}) ${this.constructor.name} source data change detected`);
+            console['debug'](`(${new Date().toISOString()}) ${this.constructor.name}`,
+                    'source data change detected', changes);
             this.previousChains = this.chains;
             this.loadTactics(this.chains);
         }
         if (this.targetsChanged(changes)) {
-            console['debug'](`(${new Date().toISOString()}) ${this.constructor.name} targets data change detected`);
+            console['debug'](`(${new Date().toISOString()}) ${this.constructor.name}`,
+                    'targets data change detected', changes);
             this.extractData(this.chains);
         }
     }

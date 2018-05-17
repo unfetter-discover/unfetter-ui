@@ -25,11 +25,11 @@
             </mat-button-toggle>
         </mat-button-toggle-group>
 
-        <button *ngIf="collapsible && collapsed" mat-icon-button class="mat-24"
+        <button *ngIf="collapsible && collapsed" mat-icon-button class="mat-24 collapser"
                 (click)="collapsed = false" matTooltip="Expand Card">
             <mat-icon>fullscreen</mat-icon>
         </button>
-        <button *ngIf="collapsible && !collapsed" mat-icon-button class="mat-24"
+        <button *ngIf="collapsible && !collapsed" mat-icon-button class="mat-24 collapser"
                 (click)="collapsed = true" matTooltip="Collapse Card">
             <mat-icon>fullscreen_exit</mat-icon>
         </button>

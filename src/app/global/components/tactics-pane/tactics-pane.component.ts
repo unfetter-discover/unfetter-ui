@@ -89,6 +89,7 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
      *              without having to do something weird to drill down into the component.
      */
     @ViewChild('heatmap') private heatmap: TacticsHeatmapComponent;
+
     @Input() public heatmapOptions: HeatmapOptions = {
         text: {
             cells: {
@@ -104,12 +105,14 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
      * @description View options that will be propagated to the treemap, to override the default settings if you wish.
      */
     @ViewChild('treemap') private treemap: TacticsTreemapComponent;
+
     @Input() public treemapOptions = new TreemapOptions();
 
     /**
      * @description View options that will be propagated to the carousel, again, for overriding, as needed.
      */
     @ViewChild('carousel') private carousel: TacticsCarouselComponent;
+
     @Input() public carouselOptions: CarouselOptions = new CarouselOptions();
 
     /**
@@ -275,9 +278,9 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
     public onViewChange(ev?: MatButtonToggleChange) {
         if (ev && ev.value) {
             this.view = ev.value;
-            if (ev.value === 'heatmap') {
-                requestAnimationFrame(() => this[this.view].rerender());
-            }
+            requestAnimationFrame(() => {
+                this[this.view].rerender();
+            });
         }
     }
 

@@ -74,23 +74,15 @@
                             <indicator-sharing-summary-statistics></indicator-sharing-summary-statistics>
                         </div>
                         <div class="pl-24 pr-24" *ngIf="activeMainWell === 'tactics'">
-                            <tactics-pane id="indicator-tactics"
-                                    [targets]="targets"
-                                    [theme]="'theme-bg-primary theme-color-primary'"
-                                    [collapsible]="true" [collapseSubject]="collapseAllCardsSubject"
-                                    [heatmapOptions]="heatmapOptions"
-                                    [treemapOptions]="treemapOptions"
-                                    [carouselOptions]="carouselOptions"></tactics-pane>
+                            <indicator-tactics [indicators]="filteredIndicators"
+                                    [mappings]="indicatorToAttackPatternMap"
+                                    [collapseSubject]="collapseAllCardsSubject"></indicator-tactics>
                         </div>
                     </div>
                 </div>
 
                 <div class="row" infiniteScroll (atBottom)="displayShowMoreButton() ? showMoreIndicators() : ''">
                     <div id="indicatorListWrapper" class="col-md-12 filterOpenBreakpoint" [ngClass]="{ 'col-lg-8 col-lg-offset-2': !filterOpen }">
-
-                        <!-- <indicator-heat-map [indicators]="filteredIndicators"
-                                [collapseAllCardsSubject]="collapseAllCardsSubject"
-                                [ngClass]="{'mb-15':!collapseAllCards, 'mb-5':collapseAllCards}"></indicator-heat-map> -->
 
                         <div *ngFor="let indicator of displayedIndicators" [ngClass]="{ 'mb-15': !collapseAllCards, 'mb-5': collapseAllCards }">
                             <indicator-card [indicator]="indicator" [attackPatterns]="getAttackPatternsByIndicatorId(indicator.id)" [sensors]="getSensorsByIndicatorId(indicator.id)"

@@ -53,6 +53,9 @@ export class TacticsCarouselControlComponent implements OnInit, OnChanges, OnDes
                 if (event && event.pager) {
                     requestAnimationFrame(() => {});
                 }
+                if (this.controls.state.pager && (this.controls.state.pages !== this.controls.state.pager.totalPages)) {
+                    requestAnimationFrame(() => this.controls.state.pages = this.controls.state.pager.totalPages);
+                }
             }
         );
     }
@@ -61,9 +64,6 @@ export class TacticsCarouselControlComponent implements OnInit, OnChanges, OnDes
      * @description 
      */
     ngOnChanges() {
-        if (this.controls.state.pager && (this.controls.state.pages !== this.controls.state.pager.totalPages)) {
-            requestAnimationFrame(() => this.controls.state.pages = this.controls.state.pager.totalPages);
-        }
     }
 
     /**

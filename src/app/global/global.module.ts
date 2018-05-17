@@ -26,6 +26,7 @@ import {
     MatTooltipModule,
 } from '@angular/material';
 import { CarouselModule } from 'primeng/primeng';
+import { AngularResizedEventModule } from 'angular-resize-event/dist';
 
 import { AddLabelReactiveComponent } from './components/add-label/add-label.component';
 import { AdditionalQueriesComponent } from './components/additional-queries/additional-queries.component';
@@ -68,6 +69,7 @@ import { TacticsCarouselControlComponent } from './components/tactics-pane/tacti
 import { TacticsHeatmapComponent } from './components/tactics-pane/tactics-heatmap/tactics-heatmap.component';
 import { TacticsTreemapComponent } from './components/tactics-pane/tactics-treemap/tactics-treemap.component';
 import { TacticsTooltipComponent } from './components/tactics-pane/tactics-tooltip/tactics-tooltip.component';
+import { TacticsTooltipService } from './components/tactics-pane/tactics-tooltip/tactics-tooltip.service';
 
 import { InfiniteScrollDirective } from './directives/infinite-scroll.directive';
 import { CapitalizePipe } from './pipes/capitalize.pipe';
@@ -75,7 +77,6 @@ import { FieldSortPipe } from './pipes/field-sort.pipe';
 import { SophisticationPipe } from './pipes/sophistication.pipe';
 import { TimeAgoPipe } from './pipes/time-ago.pipe';
 import { AuthService } from '../core/services/auth.service';
-import { TacticsTooltipService } from './components/tactics-pane/tactics-tooltip/tactics-tooltip.service';
 
 const matModules = [
     MatAutocompleteModule,
@@ -152,6 +153,7 @@ const unfetterComponents = [
         RouterModule,
         FormsModule,
         ReactiveFormsModule,
+        AngularResizedEventModule,
         CarouselModule,
         ...matModules
     ],

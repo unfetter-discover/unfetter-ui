@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material';
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { SearchParameters } from '../models/search-parameters';
-import { IndicatorHeatMapFilterComponent } from '../indicator-heat-map/indicator-heatmap-filter.component';
+import { IndicatorHeatMapFilterComponent } from '../indicator-tactics/indicator-heatmap-filter.component';
 
 @Component({
   selector: 'indicator-sharing-filters',

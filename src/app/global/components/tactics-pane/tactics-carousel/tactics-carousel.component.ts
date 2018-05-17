@@ -1,6 +1,7 @@
 import { Component, ViewChild, Input, } from '@angular/core';
 import { Store } from '@ngrx/store';
 
+import { ResizedEvent } from 'angular-resize-event/dist/resized-event';
 import { Carousel } from 'primeng/primeng';
 
 import { CarouselOptions } from './carousel.data';
@@ -10,6 +11,7 @@ import { TacticsControlService } from '../tactics-control.service';
 import { TacticsTooltipService, TooltipEvent } from '../tactics-tooltip/tactics-tooltip.service';
 import { Dictionary } from '../../../../models/json/dictionary';
 import { AppState } from '../../../../root-store/app.reducers';
+import { DOMRect } from '../../heatmap/heatmap.data';
 
 @Component({
     selector: 'tactics-carousel',
@@ -34,6 +36,13 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
      * @description 
      */
     private readied = false;
+
+    /**
+     * @description Used to detection viewport changes.
+     */
+    private bounds: DOMRect;
+
+    private resizeTimer: number;
 
     constructor(
         store: Store<AppState>,
@@ -115,13 +124,6 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
     }
 
     /**
-     * @description 
-     */
-    public rerender() {
-        // nothing to do; the carousel should automatically updated with the modified chainedTactics
-    }
-
-    /**
      * @description
      */
     public onInitialPageLoad(ev?: any) {
@@ -129,6 +131,35 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
             this.controls.state.pager = this.view;
             this.controls.onChange({pager: this.view});
             this.readied = true;
+        }
+    }
+
+    /**
+     * @description handle changes to the viewport size
+     */
+    onResize(event?: ResizedEvent) {
+        if (this.resizeTimer) {
+            window.clearTimeout(this.resizeTimer);
+        }
+        this.resizeTimer = window.setTimeout(() => {
+            this.resizeTimer = null;
+            this.rerender();
+        }, 500);
+    }
+
+    /**
+     * @description 
+     */
+    public rerender() {
+        const rect: DOMRect = this.carousel.viewportViewChild.nativeElement.getBoundingClientRect();
+        if (!rect || !rect.width || !rect.height) {
+            return;
+        } else if (!this.bounds || (this.bounds.width !== rect.width) || (this.bounds.height !== rect.height)) {
+            console['debug'](`(${new Date().toISOString()}) carousel viewport change detected`);
+            const maxColumns = Math.floor(rect.width / this.options.columnWidth);
+            this.carousel.numVisible = Math.max(1, maxColumns);
+            this.controls.onChange({pager: this.view});
+            this.bounds = rect;
         }
     }
 

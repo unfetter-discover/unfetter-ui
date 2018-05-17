@@ -54,6 +54,7 @@
     "@ngrx/effects": "^4.1.1",
     "@ngrx/store": "^4.1.1",
     "@ngrx/store-devtools": "^4.1.1",
+    "angular-resize-event": "^0.4.2",
     "angular2-jwt": "^0.2.3",
     "bootstrap": "~3.3.7",
     "clone": "^2.1.1",

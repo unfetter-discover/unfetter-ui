@@ -4,10 +4,9 @@
 export class CarouselOptions {
 
     /**
-     * @description How many columns to display in the carousel. It would be nice if we could calculate this based on
-     *              data and window size, but for now it is a coded value. Defaults to 4.
+     * @description The average width you assume each column will require, in pixels. Defaults to 200px, min 20px.
      */
-    public numVisible?: number;
+    public columnWidth?: number;
 
     /**
      * @description How many pages of carousel columns have to be displayed before the links dropdown appears to make
@@ -30,13 +29,13 @@ export class CarouselOptions {
             defaults = new CarouselOptions();
         }
         const options = Object.assign({}, defaults, custom);
-        options.numVisible = Math.max(1, options.numVisible);
+        options.columnWidth = Math.max(20, options.columnWidth);
         options.minPageLinks = Math.max(2, options.minPageLinks);
         return options;
     }
 
-    constructor(numVisible = 4, minPageLinks = 2, toolboxTheme = 'theme-bg-primary-lighter theme-color-primary') {
-        this.numVisible = numVisible;
+    constructor(columnWidth = 200, minPageLinks = 2, toolboxTheme = 'theme-bg-primary-lighter theme-color-primary') {
+        this.columnWidth = columnWidth;
         this.minPageLinks = minPageLinks;
         this.toolboxTheme = toolboxTheme;
     }

@@ -46,8 +46,9 @@ import { SearchBarComponent } from './search-bar/search-bar.component';
 import { IndicatorSharingSortComponent } from './indicator-sharing-sort/indicator-sharing-sort.component';
 import { IndicatorSharingFiltersComponent } from './indicator-sharing-filters/indicator-sharing-filters.component';
 import { AddAttackPatternComponent } from './add-attack-pattern/add-attack-pattern.component';
-import { IndicatorHeatMapFilterComponent } from './indicator-heat-map/indicator-heatmap-filter.component';
+import { IndicatorHeatMapFilterComponent } from './indicator-tactics/indicator-heatmap-filter.component';
 import { SummaryStatisticsComponent } from './summary-statistics/summary-statistics.component';
+import { IndicatorTacticsComponent } from './indicator-tactics/indicator-tactics.component';
 
 const matModules = [
     MatButtonModule,
@@ -96,6 +97,7 @@ const matModules = [
         AddAttackPatternComponent,
         IndicatorHeatMapFilterComponent,
         SummaryStatisticsComponent,
+        IndicatorTacticsComponent,
     ],
     providers: [
         IndicatorSharingService

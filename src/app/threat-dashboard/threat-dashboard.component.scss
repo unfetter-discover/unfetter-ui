@@ -75,14 +75,3 @@
     height: 45px;
     font-size: 45px;
 }
-
-:host ::ng-deep {
-    .carousel-button {
-        background: $threat-dashboard-primary-lightest !important;
-        color: $threat-dashboard-primary-light !important;
-    }
-
-    .carousel-button.disabled {
-        background: #ccc !important;
-    }
-}

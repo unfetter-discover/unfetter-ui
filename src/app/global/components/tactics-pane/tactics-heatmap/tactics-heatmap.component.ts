@@ -98,12 +98,14 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
 
         // convert the tactics in the TacticChains we were given into heat cells
         const data: Dictionary<HeatBatchData> = {};
-        const patterns: Dictionary<AttackPatternCell> = this.frameworks.reduce((aps, chain) => {
-            if (tactics) {
-                this.convertTacticChain(tactics, chain, data, aps, heats);
-            }
-            return aps;
-        }, {});
+        if (this.frameworks) {
+            this.frameworks.reduce((aps, chain) => {
+                if (tactics) {
+                    this.convertTacticChain(tactics, chain, data, aps, heats);
+                }
+                return aps;
+            }, {});
+        }
 
         // now convert the phases in the TacticChains into heat batches
         Object.values(data).forEach(batch => batch.cells.sort((ap1, ap2) => ap1.title.localeCompare(ap2.title)));
@@ -214,7 +216,7 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
      * @description order a rebuild of the underlying heatmap
      */
     public rerender() {
-        this.view.ngDoCheck();
+        this.view.redraw();
     }
 
     /**

@@ -22,6 +22,7 @@ import { ReportImporterComponent } from './threat-report-editor/report-importer/
 import { ReportUploadService } from './threat-report-editor/report-importer/report-upload.service';
 import { ThreatReportEditorComponent } from './threat-report-editor/threat-report-editor.component';
 import { ThreatReportNavigateGuard } from './threat-report-navigate.guard';
+import { ThreatTacticsComponent } from './threat-tactics/threat-tactics.component';
 
 const moduleComponents = [
   BarChartComponent,
@@ -32,6 +33,7 @@ const moduleComponents = [
   ReportImporterComponent,
   ThreatDashboardComponent,
   ThreatReportEditorComponent,
+  ThreatTacticsComponent,
 ];
 
 const moduleServices = [

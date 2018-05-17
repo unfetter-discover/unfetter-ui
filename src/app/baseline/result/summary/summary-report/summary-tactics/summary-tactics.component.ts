@@ -6,25 +6,24 @@ import {
     OnChanges,
     SimpleChanges,
 } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Store } from '@ngrx/store';
+
 import * as d3 from 'd3';
 
-import { HeatmapOptions } from '../../../../global/components/heatmap/heatmap.data';
-import { Tactic, TacticChain } from '../../../../global/components/tactics-pane/tactics.model';
-import { TacticsPaneComponent } from '../../../../global/components/tactics-pane/tactics-pane.component';
-import { CarouselOptions } from '../../../../global/components/tactics-pane/tactics-carousel/carousel.data';
-import { TreemapOptions } from '../../../../global/components/treemap/treemap.data';
-import { Dictionary } from '../../../../models/json/dictionary';
-import { AppState } from '../../../../root-store/app.reducers';
-import { Constance } from '../../../../utils/constance';
+import { Tactic } from '../../../../../global/components/tactics-pane/tactics.model';
+import { HeatmapOptions } from '../../../../../global/components/heatmap/heatmap.data';
+import { TreemapOptions } from '../../../../../global/components/treemap/treemap.data';
+import { CarouselOptions } from '../../../../../global/components/tactics-pane/tactics-carousel/carousel.data';
+import { TacticsPaneComponent } from '../../../../../global/components/tactics-pane/tactics-pane.component';
+import { Dictionary } from '../../../../../models/json/dictionary';
+import { AppState } from '../../../../../root-store/app.reducers';
 
 @Component({
-    selector: 'summary-heatmap',
-    templateUrl: './summary-heatmap.component.html',
-    styleUrls: ['./summary-heatmap.component.scss'],
+    selector: 'summary-tactics',
+    templateUrl: './summary-tactics.component.html',
+    styleUrls: ['./summary-tactics.component.scss']
 })
-export class SummaryHeatmapComponent implements OnInit, OnChanges {
+export class SummaryTacticsComponent implements OnInit, OnChanges {
 
     /**
      * @description 

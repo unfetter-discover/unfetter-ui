@@ -39,12 +39,8 @@
                                 <div id="graphWrapper">
                                     <attack-patterns-legend [total]="totalAttackPatterns"
                                             [intrusionSets]="intrusionSets"></attack-patterns-legend>
-                                    <tactics-pane [targets]="targets"
-                                            [theme]="'theme-bg-primary-light theme-color-primary-lightest'"
-                                            [heatmapOptions]="heatmapOptions"
-                                            [treemapOptions]="treemapOptions"
-                                            [carouselOptions]="carouselOptions"
-                                            (hover)="highlightAttackPattern($event)"></tactics-pane>
+                                    <intrusion-sets-tactics [attackPatterns]="attackPatterns"
+                                            [intrusionSets]="intrusionSets"></intrusion-sets-tactics>
                                     <intrusion-sets-tree
                                             [treeData]="treeData" (onRender)="treeComplete()"></intrusion-sets-tree>
                                 </div>

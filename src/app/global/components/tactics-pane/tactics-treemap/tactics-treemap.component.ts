@@ -99,7 +99,7 @@ export class TacticsTreemapComponent extends TacticsView<TreemapComponent, Treem
      * @description
      */
     public rerender() {
-        this.treemap.ngDoCheck();
+        this.treemap.redraw();
     }
 
     /**

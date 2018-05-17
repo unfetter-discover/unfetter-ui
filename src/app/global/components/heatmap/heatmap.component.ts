@@ -3,27 +3,22 @@ import {
     Input,
     Output,
     OnInit,
-    OnChanges,
     AfterViewInit,
-    Renderer2,
-    ViewContainerRef,
+    ViewChild,
+    ElementRef,
+    OnChanges,
     SimpleChanges,
     ChangeDetectorRef,
     ChangeDetectionStrategy,
     EventEmitter,
-    ElementRef,
-    ViewChild,
 } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 
-import { Overlay } from '@angular/cdk/overlay';
+import { ResizedEvent } from 'angular-resize-event/dist/resized-event';
 import * as d3 from 'd3';
 
 import { HeatBatchData, HeatCellData, HeatmapOptions, DOMRect, DEFAULT_OPTIONS, } from './heatmap.data';
 import { HeatmapPane, HeatmapRenderer, } from './heatmap.renderer';
 import { HeatmapColumnRenderer } from './heatmap.renderer.columns';
-import { Dictionary } from '../../../models/json/dictionary';
 import { TooltipEvent } from '../tactics-pane/tactics-tooltip/tactics-tooltip.service';
 
 @Component({
@@ -49,6 +44,8 @@ export class HeatmapComponent implements OnInit, AfterViewInit, OnChanges, Heatm
      */
     private bounds: DOMRect;
 
+    private resizeTimer: number;
+
     /**
      * @description 
      */
@@ -67,9 +64,6 @@ export class HeatmapComponent implements OnInit, AfterViewInit, OnChanges, Heatm
     @ViewChild('heatmap') private view: ElementRef;
 
     constructor(
-        private overlay: Overlay,
-        private vcr: ViewContainerRef,
-        private renderer: Renderer2,
         private changeDetector: ChangeDetectorRef,
     ) {
     }
@@ -104,20 +98,24 @@ export class HeatmapComponent implements OnInit, AfterViewInit, OnChanges, Heatm
     }
 
     /**
-     * @description handle changes to the data or the viewport size
+     * @description handle changes to the viewport size
      */
-    onResize(event?: UIEvent) {
-        console.warn('resize event heard!', event);
-        const node: any = d3.select(`${this.options.view.component} .heat-map`).node();
-        const rect: DOMRect = node ? node.getBoundingClientRect() : null;
-        if (!node || !rect || !rect.width || !rect.height || !this.bounds) {
-            return;
-        } else if ((this.bounds.width !== rect.width) || (this.bounds.height !== rect.height)) {
-            console['debug'](`(${new Date().toISOString()}) heatmap viewport change detected`);
-            this.changeDetector.markForCheck();
-            this.helper.createHeatmap();
-            this.bounds = rect;
+    onResize(event?: ResizedEvent) {
+        if (this.resizeTimer) {
+            window.clearTimeout(this.resizeTimer);
         }
+        this.resizeTimer = window.setTimeout(() => {
+            this.resizeTimer = null;
+            const node: any = d3.select(`${this.options.view.component} .heat-map`).node();
+            const rect: DOMRect = node ? node.getBoundingClientRect() : null;
+            if (!node || !rect || !rect.width || !rect.height) {
+                return;
+            } else if (!this.bounds || (this.bounds.width !== rect.width) || (this.bounds.height !== rect.height)) {
+                console['debug'](`(${new Date().toISOString()}) heatmap viewport change detected`);
+                this.bounds = rect;
+                this.redraw();
+            }
+        }, 500);
     }
 
     /**
