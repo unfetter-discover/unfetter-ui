@@ -89,7 +89,7 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
                         this.attackPatterns = Object.values(tactics);
                         this.heatmap.view.redraw();
                         // this.heatmap.view.click.subscribe((event) => this.toggleAttackPattern(event));
-                        setTimeout(() => this.heatmap.view.ngDoCheck(), 500);
+                        setTimeout(() => this.heatmap.view.redraw(), 500);
                     },
                     (err) => console.log(err),
                 );

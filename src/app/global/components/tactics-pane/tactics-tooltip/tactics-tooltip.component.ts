@@ -1,12 +1,13 @@
 import {
     Component,
     OnInit,
+    OnDestroy,
+    Output,
     ViewChild,
     ElementRef,
     TemplateRef,
-    Renderer2,
     ViewContainerRef,
-    Output,
+    Renderer2,
     EventEmitter,
 } from '@angular/core';
 
@@ -16,16 +17,17 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { Tactic } from '../tactics.model';
 import { TacticsTooltipService, TooltipEvent } from './tactics-tooltip.service';
 import { AuthService } from '../../../../core/services/auth.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: 'tactics-tooltip',
     templateUrl: './tactics-tooltip.component.html',
     styleUrls: ['./tactics-tooltip.component.scss']
 })
-export class TacticsTooltipComponent implements OnInit {
+export class TacticsTooltipComponent implements OnInit, OnDestroy {
 
     /**
-     * Common tooltip component across the views.
+     * @description Common tooltip component across the views.
      * @todo refactor this into its own component?
      */
     @ViewChild('tacticTooltipTemplate') tooltipTemplate: TemplateRef<any>;
@@ -46,6 +48,8 @@ export class TacticsTooltipComponent implements OnInit {
     private overlayRef: OverlayRef;
     private portal: TemplatePortal<any>;
 
+    private tooltip$: Subscription = null;
+
     constructor(
         private tooltips: TacticsTooltipService,
         private authService: AuthService,
@@ -54,8 +58,11 @@ export class TacticsTooltipComponent implements OnInit {
         private vcr: ViewContainerRef,
     ) {}
 
+    /**
+     * @description 
+     */
     ngOnInit() {
-        this.tooltips.tooltip
+        this.tooltip$ = this.tooltips.tooltip
             .subscribe(
                 (event: TooltipEvent) => {
                     if (event && event.type && this[event.type].observers.length) {
@@ -69,6 +76,15 @@ export class TacticsTooltipComponent implements OnInit {
                 },
                 (err) => console.log(`(${new Date().toISOString()}) bad tooltip event`, err),
             );
+    }
+
+    /**
+     * @description 
+     */
+    ngOnDestroy() {
+        if (this.tooltip$) {
+            this.tooltip$.unsubscribe();
+        }
     }
 
     /**

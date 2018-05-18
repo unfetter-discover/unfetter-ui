@@ -1,66 +1,68 @@
 /**
- * View options for the treemap. All options have default values.
- * 
- * Note that due to the limitations of Google's Treemap charting, class names cannot be used.
+ * @description View options for the treemap. All options have default values. Note that due to the limitations of
+ *              Google's Treemap charting, class names cannot be used.
  */
 export class TreemapOptions {
 
     /**
-     * How tall the x-axis header should be at the top of the treemap, defaults to 0.
-     * NOTE!!!: If you set this to zero, you will get stupid Google errors!
+     * @description How tall the x-axis header should be at the top of the treemap, defaults to 0.
+     *              NOTE!!!: If you set this to zero, you will get stupid Google errors!
      */
     public headerHeight?;
 
     /**
-     * The color to use for the text elements in the chart.
+     * @description The color to use for the text elements in the chart.
      */
     public fontColor?;
 
     /**
-     * The font to use.
+     * @description The font to use.
      */
     public fontFamily?;
 
     /**
-     *  The font size to use, defaults to 16.
+     * @description The font size to use, defaults to 16.
      */
     public fontSize?;
 
     /**
-     * The color to use for the "lowest-value" items in the treemap, defaults to brown.
+     * @description The color to use for the "lowest-value" items in the treemap, defaults to brown.
      */
     public minColor?;
 
     /**
-     * The color to use for the "mid-range" items in the treemap, defaults to a light tan.
+     * @description The color to use for the "mid-range" items in the treemap, defaults to a light tan.
      */
     public midColor?;
 
     /**
-     * The color to use for the "highest-value" items in the treemap, defaults to a dull red.
+     * @description The color to use for the "highest-value" items in the treemap, defaults to a dull red.
      */
     public maxColor?;
 
     /**
-     * The color to use for the "zero-value" items in the treemap, defaults to white.
+     * @description The color to use for the "zero-value" items in the treemap, defaults to white.
      */
     public noColor?;
 
     /**
-     * The color to use when hovering over the "lowest-value" items in the treemap, defaults to yellow.
+     * @description The color to use when hovering over the "lowest-value" items in the treemap, defaults to yellow.
      */
     public minHighlightColor?;
 
     /**
-     * The color to use when hovering over the "mid-range" items in the treemap, defaults to yellow.
+     * @description The color to use when hovering over the "mid-range" items in the treemap, defaults to yellow.
      */
     public midHighlightColor?;
 
     /**
-     * The color to use when hovering over the "highest-value" items in the treemap, defaults to yellow.
+     * @description The color to use when hovering over the "highest-value" items in the treemap, defaults to yellow.
      */
     public maxHighlightColor?;
 
+    /**
+     * @description
+     */
     static merge(custom: TreemapOptions, defaults?: TreemapOptions) {
         if (!defaults) {
             defaults = new TreemapOptions();

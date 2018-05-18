@@ -1,32 +1,16 @@
-import {
-        Component,
-        OnInit,
-        AfterContentInit,
-        ViewChild,
-        ElementRef,
-        HostListener,
-        ChangeDetectorRef,
-    } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
-import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
-import * as Ps from 'perfect-scrollbar';
+import { MatSnackBar } from '@angular/material';
 
 import { Tactic } from '../global/components/tactics-pane/tactics.model';
-import { TooltipEvent } from '../global/components/tactics-pane/tactics-tooltip/tactics-tooltip.service';
-import { HeatColor, HeatmapOptions } from '../global/components/heatmap/heatmap.data';
 import { IntrusionSetHighlighterService } from './intrusion-set-highlighter.service';
-import { BaseComponentService } from '../components/base-service.component';
 import { GenericApi } from '../core/services/genericapi.service';
 import { Dictionary } from '../models/json/dictionary';
 import { AppState } from '../root-store/app.reducers';
-import { BaseStixService } from '../settings/base-stix.service';
-import { StixService } from '../settings/stix.service';
 import { Constance } from '../utils/constance';
 import { topRightSlide } from '../global/animations/top-right-slide';
-import { TreemapOptions } from '../global/components/treemap/treemap.data';
-import { CarouselOptions } from '../global/components/tactics-pane/tactics-carousel/carousel.data';
 
 @Component({
     selector: 'intrusion-set-dashboard',
@@ -41,35 +25,8 @@ export class IntrusionSetDashboardComponent implements OnInit {
     public killChainPhases: any[];
     public coursesOfAction: any[];
 
-    private attackPatterns: Dictionary<any> = {};
-    public targeted: Tactic[] = [];
+    public attackPatterns: Dictionary<any> = {};
     public totalAttackPatterns: number;
-    private noColor: HeatColor = {bg: '#ccc', fg: 'black'};
-    public readonly heatmapOptions: HeatmapOptions = {
-        color: {
-            batchColors: [
-                {header: {bg: '.theme-fill-primary-lighter', fg: 'black'}, body: {bg: 'white', fg: 'black'}},
-            ],
-            heatColors: {'false': this.noColor},
-            noColor: this.noColor,
-            showGradients: true,
-            maxGradients: 3,
-            defaultGradient: {bg: ['#999', 'black'], fg: 'white'}
-        },
-        text: {
-            cells: {
-                showText: true,
-            },
-        },
-    };
-    public readonly treemapOptions: TreemapOptions = {
-        minColor: '#8df6ec',
-        midColor: '#6dd6cc',
-        maxColor: '#4db6ac',
-    };
-    public readonly carouselOptions: CarouselOptions = {
-        toolboxTheme: 'theme-bg-primary-lighter theme-color-primary-lightest'
-    };
 
     public treeData: any;
     public graphMetaData = {
@@ -85,14 +42,15 @@ export class IntrusionSetDashboardComponent implements OnInit {
         private genericApi: GenericApi,
         private snackBar: MatSnackBar,
         private ref: ChangeDetectorRef,
-        private highlighter: IntrusionSetHighlighterService,
-    ) {}
+    ) {
+    }
 
     public ngOnInit() {
         const initAttackPatterns$ = this.tacticsStore
             .select('config')
             .pluck('tactics')
             .filter((t: Tactic[]) => t.length !== 0)
+            .distinctUntilChanged()
             .take(1);
 
         const intrusionsProperties = {
@@ -146,7 +104,6 @@ export class IntrusionSetDashboardComponent implements OnInit {
     public onIntrusionSetsChange(selections: any[]): void {
         if (!selections || (selections.length === 0)) {
             this.intrusionSets = null;
-            this.targeted = [];
             this.treeData = null;
         } else {
             this.loadSpinner = true;
@@ -162,7 +119,6 @@ export class IntrusionSetDashboardComponent implements OnInit {
                         this.coursesOfAction = data.coursesOfAction;
                         this.killChainPhases = data.killChainPhases;
                         this.totalAttackPatterns = data.totalAttackPatterns;
-                        this.targeted = this.getSelections();
                         this.treeData = this.buildTreeData();
                     },
                     (err) => console.log(new Date().toISOString(), err),
@@ -194,34 +150,6 @@ export class IntrusionSetDashboardComponent implements OnInit {
                 });
             });
         });
-    }
-
-    /**
-     * @description
-     */
-    private getSelections() {
-        const targets: Dictionary<Tactic> = {};
-        this.intrusionSets.forEach(is => {
-            const highlight = {
-                value: 2,
-                color: {
-                    style: is.name.toLowerCase(),
-                    bg: is.color,
-                    fg: this.getContrast(is.color),
-                },
-            };
-            is.attack_patterns.forEach(pattern => {
-                const tactic = this.attackPatterns[pattern.id];
-                if (tactic) {
-                    let target = targets[pattern.id];
-                    if (!target) {
-                        targets[pattern.id] = target = { ...tactic, adds: { highlights: [], }, };
-                    }
-                    target.adds.highlights.push(highlight);
-                }
-            });
-        });
-        return Object.values(targets);
     }
 
     /**
@@ -326,17 +254,6 @@ export class IntrusionSetDashboardComponent implements OnInit {
     public treeComplete() {
         this.loadSpinner = false;
         this.ref.detectChanges();
-    }
-
-    /**
-     * @description
-     */
-    public highlightAttackPattern(selection: TooltipEvent) {
-        let ap = null;
-        if (selection && selection.data) {
-            ap = Object.values(this.attackPatterns).find(ptn => ptn.name === selection.data.name) || null;
-        }
-        this.highlighter.highlightIntrusionSets(ap);
     }
 
 }

@@ -19,8 +19,8 @@ import { SummaryComponent } from './summary/summary.component';
 import { FullComponent } from './full/full.component';
 import { ResultHeaderComponent } from './result-header/result-header.component';
 import { SummaryHeaderComponent } from './summary/summary-header/summary-header.component';
-import { SummaryHeatmapComponent } from './summary/summary-report/summary-heatmap.component';
 import { SummaryReportComponent } from './summary/summary-report/summary-report.component';
+import { SummaryTacticsComponent } from './summary/summary-report/summary-tactics/summary-tactics.component';
 import { AssessmentsSummaryComponent } from '../../baselines/baselines-summary/baselines-summary.component';
 import { FullResultEffects } from './store/full-result.effects';
 import { fullAssessmentResultReducer } from './store/full-result.reducers';
@@ -47,8 +47,8 @@ const moduleComponents = [
   FullComponent,
   ResultHeaderComponent,
   SummaryHeaderComponent,
-  SummaryHeatmapComponent,
   SummaryReportComponent,
+  SummaryTacticsComponent,
 ];
 
 @NgModule({
@@ -70,7 +70,6 @@ const moduleComponents = [
     FullComponent,
     ResultHeaderComponent,
     SummaryHeaderComponent,
-    SummaryHeatmapComponent,
     SummaryReportComponent,
     SophisticationBreakdownComponent,
     TechniquesChartComponent,

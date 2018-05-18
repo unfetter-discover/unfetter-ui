@@ -9,8 +9,6 @@ import {
     ElementRef,
     TemplateRef,
     ViewContainerRef,
-    ChangeDetectorRef,
-    ChangeDetectionStrategy,
 } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
@@ -47,27 +45,35 @@ export interface AttackPatternCell extends HeatCellData, Tactic {
 @Component({
     selector: 'tactics-heatmap',
     templateUrl: './tactics-heatmap.component.html',
-    styleUrls: ['./tactics-heatmap.component.scss']
+    styleUrls: ['./tactics-heatmap.component.scss'],
 })
 export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, HeatmapOptions> {
 
+    /**
+     * @description 
+     */
     public data: HeatBatchData[] = [];
 
     @ViewChild(HeatmapComponent) private heatmap: HeatmapComponent;
 
     private noColor: HeatColor = {bg: '#ccc', fg: 'black'};
 
+    /**
+     * @description 
+     */
     private baseHeats: Dictionary<HeatColor> = null;
 
     constructor(
         store: Store<AppState>,
         controls: TacticsControlService,
         tooltips: TacticsTooltipService,
-        private changeDetector: ChangeDetectorRef,
     ) {
         super(store, controls, tooltips);
     }
 
+    /**
+     * @description
+     */
     public get view() {
         return this.heatmap;
     }
@@ -92,19 +98,23 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
 
         // convert the tactics in the TacticChains we were given into heat cells
         const data: Dictionary<HeatBatchData> = {};
-        const patterns: Dictionary<AttackPatternCell> = this.frameworks.reduce((aps, chain) => {
-            this.convertTacticChain(tactics, chain, data, aps, heats);
-            return aps;
-        }, {});
+        if (this.frameworks) {
+            this.frameworks.reduce((aps, chain) => {
+                if (tactics) {
+                    this.convertTacticChain(tactics, chain, data, aps, heats);
+                }
+                return aps;
+            }, {});
+        }
 
         // now convert the phases in the TacticChains into heat batches
         Object.values(data).forEach(batch => batch.cells.sort((ap1, ap2) => ap1.title.localeCompare(ap2.title)));
         requestAnimationFrame(() => {
             this.data = Object.values(data);
-            console.log(`(${new Date().toISOString()}) heatmap tactics`, this.data);
+            console['debug'](`(${new Date().toISOString()}) heatmap tactics`, this.data);
             if (this.heatmap && this.heatmap.options && this.heatmap.options.color) {
                 this.heatmap.options.color.heatColors = heats;
-                console.log(`(${new Date().toISOString()}) heatmap heats`, this.heatmap.options.color.heatColors);
+                console['debug'](`(${new Date().toISOString()}) heatmap heats`, this.heatmap.options.color.heatColors);
             }
         });
     }
@@ -143,7 +153,7 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
                     if (!aps[tactic.id]) {
                         // convert the tactic into a heat cell, colorize it if it is targeted
                         const ap: AttackPatternCell = aps[tactic.id] = {...tactic, title: tactic.name, value: 'false'};
-                        const target = this.targeted.find(t => t.id === tactic.id);
+                        const target = this.targets.find(t => t.id === tactic.id);
                         if (this.hasHighlights(target)) {
                             const colors = this.collectColors(target);
                             if (colors.styles.size) {
@@ -206,7 +216,7 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
      * @description order a rebuild of the underlying heatmap
      */
     public rerender() {
-        this.view.ngDoCheck();
+        this.view.redraw();
     }
 
     /**

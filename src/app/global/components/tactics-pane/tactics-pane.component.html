@@ -8,12 +8,12 @@
             <div class="tactics-subtitle-row">{{subtitle}}</div>
         </div>
 
-        <div class="carousel-view-controls" *ngIf="isCarouselView()">
+        <div class="carousel-view-controls" *ngIf="isCarouselView" [hidden]="collapsed">
             <tactics-carousel-control [options]="carouselOptions"></tactics-carousel-control>
         </div>
 
         <mat-button-toggle-group #viewOption="matButtonToggleGroup" class="toolbox"
-                [value]="view" (change)="onViewChange($event)">
+                [value]="view" (change)="onViewChange($event)" [ngClass]="{'hidden': collapsed}">
             <mat-button-toggle value="carousel" matTooltip="Carousel View">
                 <mat-icon class="mat-24" aria-hidden="true" aria-label="view wide table">view_carousel</mat-icon>
             </mat-button-toggle>
@@ -25,25 +25,25 @@
             </mat-button-toggle>
         </mat-button-toggle-group>
 
-        <button *ngIf="collapsible && collapsed" mat-icon-button class="mat-24"
+        <button *ngIf="collapsible && collapsed" mat-icon-button class="mat-24 collapser"
                 (click)="collapsed = false" matTooltip="Expand Card">
             <mat-icon>fullscreen</mat-icon>
         </button>
-        <button *ngIf="collapsible && !collapsed" mat-icon-button class="mat-24"
+        <button *ngIf="collapsible && !collapsed" mat-icon-button class="mat-24 collapser"
                 (click)="collapsed = true" matTooltip="Collapse Card">
             <mat-icon>fullscreen_exit</mat-icon>
         </button>
 
     </h3>
 
-    <tactics-carousel #carousel [hidden]="collapsed || !isCarouselView()" [frameworks]="frameworks" [chains]="chains"
-            [targeted]="targeted" [options]="carouselOptions"></tactics-carousel>
+    <tactics-carousel #carousel [hidden]="collapsed || !isCarouselView" [frameworks]="frameworks" [chains]="chains"
+            [targets]="targets" [options]="carouselOptions"></tactics-carousel>
 
-    <tactics-treemap #treemap [hidden]="collapsed || !isTreemapView()" [frameworks]="frameworks" [chains]="chains"
-            [targeted]="targeted" [options]="treemapOptions"></tactics-treemap>
+    <tactics-treemap #treemap [hidden]="collapsed || !isTreemapView" [frameworks]="frameworks" [chains]="chains"
+            [targets]="targets" [options]="treemapOptions"></tactics-treemap>
 
-    <tactics-heatmap #heatmap [hidden]="collapsed || !isHeatmapView()" [frameworks]="frameworks" [chains]="chains"
-            [targeted]="targeted" [options]="heatmapOptions"></tactics-heatmap>
+    <tactics-heatmap #heatmap [hidden]="collapsed || !isHeatmapView" [frameworks]="frameworks" [chains]="chains"
+            [targets]="targets" [options]="heatmapOptions"></tactics-heatmap>
 
 </div>
 

@@ -23,6 +23,7 @@ import { TacticsTooltipComponent } from './tactics-tooltip/tactics-tooltip.compo
 import { TacticsTooltipService } from './tactics-tooltip/tactics-tooltip.service';
 import { HeatmapComponent } from '../heatmap/heatmap.component';
 import { TreemapComponent } from '../treemap/treemap.component';
+import { ResizeDirective } from '../../directives/resize.directive';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 import { AuthService } from '../../../core/services/auth.service';
 import { GenericApi } from '../../../core/services/genericapi.service';
@@ -56,6 +57,7 @@ describe('TacticsPaneComponent', () => {
                 TacticsTooltipComponent,
                 HeatmapComponent,
                 TreemapComponent,
+                ResizeDirective,
                 CapitalizePipe,
             ],
             providers: [

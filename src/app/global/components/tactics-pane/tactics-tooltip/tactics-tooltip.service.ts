@@ -1,6 +1,10 @@
-import { Injectable, Output, EventEmitter } from '@angular/core';
+import { Injectable, Output, EventEmitter, SkipSelf, Optional } from '@angular/core';
+
 import { Tactic } from '../tactics.model';
 
+/**
+ * Generic description of a tooltip event.
+ */
 export interface TooltipEvent {
     type?: 'hover' | 'click',
     data?: any,
@@ -19,7 +23,9 @@ export class TacticsTooltipService {
      */
     @Output() tooltip: EventEmitter<TooltipEvent> = new EventEmitter();
 
-    constructor() {}
+    constructor(
+    ) {
+    }
 
     /**
      * @description Alert that a tactic was hovered over, and that a tooltip needs to be displayed for it.

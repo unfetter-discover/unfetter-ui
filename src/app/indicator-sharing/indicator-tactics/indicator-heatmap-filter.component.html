@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>Select Indicated Techniques</h2>
 <mat-dialog-content>
     <div id="indicator-heatmap-filter">
-        <tactics-heatmap #heatmapView [targeted]="attackPatterns" [options]="heatmapOptions"
+        <tactics-heatmap #heatmapView [targets]="attackPatterns" [options]="heatmapOptions"
                 (click)="toggleAttackPattern($event)"></tactics-heatmap>
     </div>
 </mat-dialog-content>

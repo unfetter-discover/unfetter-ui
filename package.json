@@ -58,6 +58,7 @@
     "bootstrap": "~3.3.7",
     "clone": "^2.1.1",
     "core-js": "^2.4.1",
+    "css-element-queries": "^1.0.2",
     "d3": "~4.12.0",
     "d3-heatmap": "^1.2.1",
     "hammerjs": "~2.0.8",

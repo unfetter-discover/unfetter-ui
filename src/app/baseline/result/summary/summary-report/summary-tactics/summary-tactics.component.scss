@@ -1,0 +1,44 @@
+@import '../../../../../../styles/_variables.scss';
+
+$white: #FFFFFF;
+
+#baseline-heat-map {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+:host ::ng-deep {
+    background-color: $white;
+
+    .mat-card {
+        margin: 4px 20px 15px 20px;
+    }
+
+    .mat-card-header-text {
+        width: 100%;
+
+        .mat-card-title {
+            display: flex;
+            align-items: center;
+        }
+    }
+
+    tactics-pane .tactics-title {
+        color: rgba(255, 255, 255, .87);
+    }
+
+    tactics-carousel-control .carousel-button.disabled {
+        color: rgba(0, 0, 0, .33);
+    }
+
+    unf-heatmap {
+        div.heat-map {
+            background: white;
+
+            rect.selected {
+                fill: $assessments-primary;
+            }
+        }
+    }
+}

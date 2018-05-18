@@ -82,22 +82,3 @@
     }
   }
 }
-
-:host ::ng-deep {
-  .tactics-pane {
-    margin-bottom: 15px;
-
-    .carousel-button {
-      background: $analytic-exchange-primary-lightest !important;
-      color: $analytic-exchange-primary !important;
-    }
-
-    .carousel-button.disabled {
-      background: #ccc !important;
-    }
-
-    p-carousel .badge {
-      color: #333 !important;
-    }
-  }
-}
