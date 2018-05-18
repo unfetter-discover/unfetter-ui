@@ -48,10 +48,10 @@
         </li>
       </ul>
     </mat-expansion-panel>
-    <mat-expansion-panel *ngIf="sensors && sensors.length > 0" hideToggle="true" [expanded]="openedSidePanel === 'sensors'" (opened)="onOpenSidePanel('sensors', $event)">
+    <mat-expansion-panel *ngIf="capabilities && capabilities.length > 0" hideToggle="true" [expanded]="openedSidePanel === 'capabilities'" (opened)="onOpenSidePanel('capabilities', $event)">
       <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
         <mat-panel-title>
-          SENSORS
+          CAPABILITIES
         </mat-panel-title>
       </mat-expansion-panel-header>
       <ul class="stepper stepper-vertical">

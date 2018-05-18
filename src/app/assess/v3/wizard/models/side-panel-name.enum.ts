@@ -1,1 +1,1 @@
-export type SidePanelName = 'indicators' | 'mitigations' | 'sensors' | 'summary';
+export type SidePanelName = 'indicators' | 'mitigations' | 'capabilities' | 'summary';

@@ -183,7 +183,7 @@ export const getCurrentBaselineQuestions = createSelector(
     (state) => state.currentBaselineQuestions
 );
 
-export const getCurWizardPage = createSelector(
+export const getCurrentWizardPage = createSelector(
     getAssessState,
     (state) => state.page
 );

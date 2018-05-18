@@ -14,7 +14,7 @@
     "analyze:prod": "npm run clean && npm run build:prod -- --stats-json && npm run analyze",
     "ng": "ng",
     "clean": "rimraf compiled dist tsdocs coverage out-tsc",
-    "start": "ng version && ng serve --ssl -o",
+    "start": "npm run serve:local:dev:uac",
     "start:dev": "ng version && ng serve --ssl --disable-host-check --host 0.0.0.0 --port 80",
     "serve:local:prod:demo": "ng version && ng serve -v -w --prod --sourcemap --hmr --open --ssl --port 9443 --proxy-config proxy.conf.json",
     "serve:local:dev:demo": "ng version && ng serve -v -w --dev --sourcemap --hmr --open --ssl --port 9443 --proxy-config proxy.conf.json",
