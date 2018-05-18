@@ -124,7 +124,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     private router: Router,
     private renderer: Renderer2,
     private userStore: Store<AppState>,
-    private baselineStore: Store<FullBaselineResultState>,
     private wizardStore: Store<BaselineState>,
     private changeDetection: ChangeDetectorRef,
     private dialog: MatDialog,
