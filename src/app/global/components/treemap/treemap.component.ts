@@ -11,13 +11,12 @@ import {
     SimpleChanges,
 } from '@angular/core';
 
-import { ResizedEvent } from 'angular-resize-event/dist/resized-event';
-
 import { TreemapOptions } from './treemap.data';
 import { TreemapRenderer } from './treemap.renderer';
 import { GoogleTreemapRenderer } from './treemap.renderer.google';
-import { DOMRect } from '../heatmap/heatmap.data';
 import { TacticsTooltipService } from '../tactics-pane/tactics-tooltip/tactics-tooltip.service';
+import { ResizeEvent, ResizeDirective } from '../../directives/resize.directive';
+import { DOMRect } from '../heatmap/heatmap.data';
 
 @Component({
     selector: 'unf-treemap',
@@ -48,14 +47,18 @@ export class TreemapComponent implements OnInit, OnChanges, AfterViewInit {
      */
     @Input() public options: TreemapOptions = new TreemapOptions();
 
-    @ViewChild('treemap') view: ElementRef;
-
     /**
      * @description Used to detection viewport changes.
      */
     private bounds: DOMRect;
 
     private resizeTimer: number;
+
+    @ViewChild('treemap') view: ElementRef;
+
+    @ViewChild('canvas') canvas: ElementRef;
+
+    @ViewChild(ResizeDirective) private resizer: ResizeDirective;
 
     /**
      * @description 
@@ -66,6 +69,7 @@ export class TreemapComponent implements OnInit, OnChanges, AfterViewInit {
      * @description 
      */
     @Input() public eventHandler;
+
 
     constructor(
         private changeDetector: ChangeDetectorRef,
@@ -83,8 +87,10 @@ export class TreemapComponent implements OnInit, OnChanges, AfterViewInit {
      * @description init this component after it gets some screen real estate
      */
     ngAfterViewInit() {
-        this.bounds = this.view.nativeElement.getBoundingClientRect();
-        this.createTreeMap();
+        requestAnimationFrame(() => {
+            this.bounds = this.view.nativeElement.getBoundingClientRect();
+            this.createTreeMap();
+        });
     }
 
     /**
@@ -100,7 +106,7 @@ export class TreemapComponent implements OnInit, OnChanges, AfterViewInit {
     /**
      * @description handle changes to the viewport size
      */
-    onResize(event?: ResizedEvent) {
+    onResize(event?: ResizeEvent) {
         if (this.resizeTimer) {
             window.clearTimeout(this.resizeTimer);
         }
@@ -114,13 +120,14 @@ export class TreemapComponent implements OnInit, OnChanges, AfterViewInit {
                 this.bounds = rect;
                 this.redraw();
             }
-        }, 500);
+        }, 100);
     }
 
     /**
      * @description draws the treemap onto the viewport
      */
     public redraw() {
+        this.resizer.sensor.reset();
         this.changeDetector.markForCheck();
         this.createTreeMap();
     }
@@ -131,7 +138,7 @@ export class TreemapComponent implements OnInit, OnChanges, AfterViewInit {
     private createTreeMap() {
         if (this.helper) {
             this.helper.initialize(this.data, this.options);
-            this.helper.draw(this.view, this.eventHandler);
+            this.helper.draw(this.canvas, this.eventHandler);
         }
     }
 

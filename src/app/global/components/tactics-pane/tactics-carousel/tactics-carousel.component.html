@@ -1,28 +1,30 @@
-<p-carousel #carousel [value]="phases" [pageLinks]="options.minPageLinks || 2"
-        (onPage)="onInitialPageLoad($event)" (resized)="onResize($event)">
-    <ng-template let-phase pTemplate="phase">
-        <div class="ui-grid ui-grid-responsive" *ngIf="!filters.columns || (count(phase.tactics) !== 0)">
-            <div class="ui-grid-row carouselSubheadingRow theme-bg-primary-lightest">
-                <div class="ui-grid-col-12 phase-div flex">
-                    <span class="flex1 flexNowrap">{{phase.name | capitalize}}</span>
-                    <small class="badge theme-color-primary theme-bg-primary-lighter">
-                        {{count(phase.tactics)}}/{{phase.tactics.length}}
-                    </small>
+<div class="carousel-div" (resize)="onResize($event)">
+    <p-carousel #carousel [value]="phases" [pageLinks]="options.minPageLinks || 2"
+            (onPage)="onInitialPageLoad($event)">
+        <ng-template let-phase pTemplate="phase">
+            <div class="ui-grid ui-grid-responsive" *ngIf="!filters.columns || (count(phase.tactics) !== 0)">
+                <div class="ui-grid-row carouselSubheadingRow theme-bg-primary-lightest">
+                    <div class="ui-grid-col-12 phase-div flex">
+                        <span class="flex1 flexNowrap">{{phase.name | capitalize}}</span>
+                        <small class="badge theme-color-primary theme-bg-primary-lighter">
+                            {{count(phase.tactics)}}/{{phase.tactics.length}}
+                        </small>
+                    </div>
                 </div>
-            </div>
-            <div class="ui-grid-row">
-                <div class="ui-grid-col-12">
-                    <div class="carousel-content-wrapper">
-                        <div class="ui-grid ui-grid-responsive">
-                            <div class="ui-grid-row" *ngFor="let tactic of phase.tactics">
-                                <div class="ui-grid-col-12 tactic-div" *ngIf="canShowTactic(tactic)"
-                                        [style.color]="getTacticForeground(tactic)"
-                                        [style.background]="getTacticBackground(tactic)">
-                                    <div class="flexCenter tactic-clicker"
-                                            (mouseenter)="onHover({data: tactic, source: $event})"
-                                            (mouseleave)="onHover({data: null, source: $event})"
-                                            (click)="onClick({data: tactic, source: $event})">
-                                        {{tactic.name}}
+                <div class="ui-grid-row">
+                    <div class="ui-grid-col-12">
+                        <div class="carousel-content-wrapper">
+                            <div class="ui-grid ui-grid-responsive">
+                                <div class="ui-grid-row" *ngFor="let tactic of phase.tactics">
+                                    <div class="ui-grid-col-12 tactic-div" *ngIf="canShowTactic(tactic)"
+                                            [style.color]="getTacticForeground(tactic)"
+                                            [style.background]="getTacticBackground(tactic)">
+                                        <div class="flexCenter tactic-clicker"
+                                                (mouseenter)="onHover({data: tactic, source: $event})"
+                                                (mouseleave)="onHover({data: null, source: $event})"
+                                                (click)="onClick({data: tactic, source: $event})">
+                                            {{tactic.name}}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -30,6 +32,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </ng-template>
-</p-carousel>
+        </ng-template>
+    </p-carousel>
+</div>

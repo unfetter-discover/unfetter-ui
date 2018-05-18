@@ -11,6 +11,7 @@ import { TacticsTreemapComponent } from './tactics-treemap.component';
 import { TacticsControlService } from '../tactics-control.service';
 import { TacticsTooltipService } from '../tactics-tooltip/tactics-tooltip.service';
 import { TreemapComponent } from '../../treemap/treemap.component';
+import { ResizeDirective } from '../../../directives/resize.directive';
 import { reducers } from '../../../../root-store/app.reducers';
 
 xdescribe('TacticsTreemapComponent', () => {
@@ -30,6 +31,7 @@ xdescribe('TacticsTreemapComponent', () => {
             declarations: [
                 TacticsTreemapComponent,
                 TreemapComponent,
+                ResizeDirective,
             ],
             providers: [
                 TacticsControlService,

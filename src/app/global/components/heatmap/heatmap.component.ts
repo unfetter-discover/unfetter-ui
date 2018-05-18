@@ -13,13 +13,14 @@ import {
     EventEmitter,
 } from '@angular/core';
 
-import { ResizedEvent } from 'angular-resize-event/dist/resized-event';
+import * as CSSElementQueries from 'css-element-queries';
 import * as d3 from 'd3';
 
 import { HeatBatchData, HeatCellData, HeatmapOptions, DOMRect, DEFAULT_OPTIONS, } from './heatmap.data';
 import { HeatmapPane, HeatmapRenderer, } from './heatmap.renderer';
 import { HeatmapColumnRenderer } from './heatmap.renderer.columns';
 import { TooltipEvent } from '../tactics-pane/tactics-tooltip/tactics-tooltip.service';
+import { ResizeEvent, ResizeDirective } from '../../directives/resize.directive';
 
 @Component({
     selector: 'unf-heatmap',
@@ -46,6 +47,10 @@ export class HeatmapComponent implements OnInit, AfterViewInit, OnChanges, Heatm
 
     private resizeTimer: number;
 
+    @ViewChild('heatmap') private view: ElementRef;
+
+    @ViewChild(ResizeDirective) private resizer: ResizeDirective;
+
     /**
      * @description 
      */
@@ -60,8 +65,6 @@ export class HeatmapComponent implements OnInit, AfterViewInit, OnChanges, Heatm
      * @description 
      */
     @Output() public click = new EventEmitter<TooltipEvent>();
-
-    @ViewChild('heatmap') private view: ElementRef;
 
     constructor(
         private changeDetector: ChangeDetectorRef,
@@ -100,7 +103,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, OnChanges, Heatm
     /**
      * @description handle changes to the viewport size
      */
-    onResize(event?: ResizedEvent) {
+    onResize(event?: ResizeEvent) {
         if (this.resizeTimer) {
             window.clearTimeout(this.resizeTimer);
         }
@@ -115,13 +118,14 @@ export class HeatmapComponent implements OnInit, AfterViewInit, OnChanges, Heatm
                 this.bounds = rect;
                 this.redraw();
             }
-        }, 500);
+        }, 100);
     }
 
     /**
      * @description Force a complete redraw of the heatmap.
      */
     public redraw() {
+        this.resizer.sensor.reset();
         this.changeDetector.markForCheck();
         this.helper.createHeatmap();
     }

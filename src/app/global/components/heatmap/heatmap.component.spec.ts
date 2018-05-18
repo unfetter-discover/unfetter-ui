@@ -8,6 +8,7 @@ import * as d3 from 'd3';
 
 import { HeatmapComponent } from './heatmap.component';
 import { HeatmapOptions } from './heatmap.data';
+import { ResizeDirective } from '../../directives/resize.directive';
 
 describe('HeatmapComponent', () => {
 
@@ -49,7 +50,10 @@ describe('HeatmapComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [ HeatmapComponent, ],
+            declarations: [
+                HeatmapComponent,
+                ResizeDirective,
+            ],
             imports: [
                 HttpClientTestingModule,
                 OverlayModule,

@@ -1,13 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
+import { By } from '@angular/platform-browser';
 
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatCardModule } from '@angular/material';
 
 import { TreemapComponent } from './treemap.component';
+import { ResizeDirective } from '../../directives/resize.directive';
 import { GenericApi } from '../../../core/services/genericapi.service';
-import { By } from '@angular/platform-browser';
 
 describe('TreemapComponent', () => {
 
@@ -17,7 +18,10 @@ describe('TreemapComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [ TreemapComponent ],
+            declarations: [
+                TreemapComponent,
+                ResizeDirective,
+            ],
             imports: [
                 MatCardModule,
                 OverlayModule,

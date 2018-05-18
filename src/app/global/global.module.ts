@@ -26,7 +26,6 @@ import {
     MatTooltipModule,
 } from '@angular/material';
 import { CarouselModule } from 'primeng/primeng';
-import { AngularResizedEventModule } from 'angular-resize-event/dist';
 
 import { AddLabelReactiveComponent } from './components/add-label/add-label.component';
 import { AdditionalQueriesComponent } from './components/additional-queries/additional-queries.component';
@@ -72,6 +71,7 @@ import { TacticsTooltipComponent } from './components/tactics-pane/tactics-toolt
 import { TacticsTooltipService } from './components/tactics-pane/tactics-tooltip/tactics-tooltip.service';
 
 import { InfiniteScrollDirective } from './directives/infinite-scroll.directive';
+import { ResizeDirective } from './directives/resize.directive';
 import { CapitalizePipe } from './pipes/capitalize.pipe';
 import { FieldSortPipe } from './pipes/field-sort.pipe';
 import { SophisticationPipe } from './pipes/sophistication.pipe';
@@ -116,6 +116,7 @@ const unfetterComponents = [
     HeatmapComponent,
     HelpWindowComponent,
     InfiniteScrollDirective,
+    ResizeDirective,
     InfoBarComponent,
     KillChainPhasesReactiveComponent,
     LandingPageComponent,
@@ -153,7 +154,6 @@ const unfetterComponents = [
         RouterModule,
         FormsModule,
         ReactiveFormsModule,
-        AngularResizedEventModule,
         CarouselModule,
         ...matModules
     ],

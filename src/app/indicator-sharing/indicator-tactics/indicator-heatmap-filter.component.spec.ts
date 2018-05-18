@@ -25,6 +25,7 @@ import * as userActions from '../../root-store/users/user.actions';
 import { mockAttackPatterns } from '../../testing/mock-store';
 import { Dictionary } from '../../models/json/dictionary';
 import { TacticChain } from '../../global/components/tactics-pane/tactics.model';
+import { ResizeDirective } from '../../global/directives/resize.directive';
 
 describe('IndicatorHeatMapFilterComponent', () => {
 
@@ -147,6 +148,7 @@ describe('IndicatorHeatMapFilterComponent', () => {
                     IndicatorHeatMapFilterComponent,
                     TacticsHeatmapComponent,
                     HeatmapComponent,
+                    ResizeDirective,
                     CapitalizePipe,
                 ],
                 providers: [

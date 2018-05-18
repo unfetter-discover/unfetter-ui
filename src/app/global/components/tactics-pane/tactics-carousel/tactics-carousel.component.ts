@@ -1,7 +1,6 @@
 import { Component, ViewChild, Input, } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import { ResizedEvent } from 'angular-resize-event/dist/resized-event';
 import { Carousel } from 'primeng/primeng';
 
 import { CarouselOptions } from './carousel.data';
@@ -9,6 +8,7 @@ import { TacticsView } from '../tactics-view';
 import { TacticChain, Tactic } from '../tactics.model';
 import { TacticsControlService } from '../tactics-control.service';
 import { TacticsTooltipService, TooltipEvent } from '../tactics-tooltip/tactics-tooltip.service';
+import { ResizeEvent, ResizeDirective } from '../../../directives/resize.directive';
 import { Dictionary } from '../../../../models/json/dictionary';
 import { AppState } from '../../../../root-store/app.reducers';
 import { DOMRect } from '../../heatmap/heatmap.data';
@@ -30,8 +30,6 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
      */
     @Input() public options: CarouselOptions = new CarouselOptions();
 
-    @ViewChild('carousel') private carousel: Carousel;
-
     /**
      * @description 
      */
@@ -43,6 +41,10 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
     private bounds: DOMRect;
 
     private resizeTimer: number;
+
+    @ViewChild('carousel') private carousel: Carousel;
+
+    @ViewChild(ResizeDirective) private resizer: ResizeDirective;
 
     constructor(
         store: Store<AppState>,
@@ -137,29 +139,33 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
     /**
      * @description handle changes to the viewport size
      */
-    onResize(event?: ResizedEvent) {
+    onResize(event?: ResizeEvent) {
         if (this.resizeTimer) {
             window.clearTimeout(this.resizeTimer);
         }
         this.resizeTimer = window.setTimeout(() => {
             this.resizeTimer = null;
             this.rerender();
-        }, 500);
+        }, 100);
     }
 
     /**
      * @description 
      */
     public rerender() {
+        this.resizer.sensor.reset();
         const rect: DOMRect = this.carousel.viewportViewChild.nativeElement.getBoundingClientRect();
         if (!rect || !rect.width || !rect.height) {
             return;
         } else if (!this.bounds || (this.bounds.width !== rect.width) || (this.bounds.height !== rect.height)) {
             console['debug'](`(${new Date().toISOString()}) carousel viewport change detected`);
             const maxColumns = Math.floor(rect.width / this.options.columnWidth);
-            this.carousel.numVisible = Math.max(1, maxColumns);
-            this.controls.onChange({pager: this.view});
             this.bounds = rect;
+            requestAnimationFrame(() => {
+                this.carousel.numVisible = Math.max(1, maxColumns);
+                this.carousel.render();
+                this.controls.onChange({pager: this.view});
+            });
         }
     }
 
