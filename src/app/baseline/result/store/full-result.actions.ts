@@ -30,7 +30,7 @@ export const RELOAD_AFTER_UPDATE_ASSESSMENT_OBJECT = '[Baseline Result Group] RE
 export class SetAssessment implements Action {
     public readonly type = SET_BASELINE;
 
-    constructor(public payload: AssessmentSet) { }
+    constructor(public payload: Baseline) { }
 }
 
 export class FinishedLoading implements Action {
