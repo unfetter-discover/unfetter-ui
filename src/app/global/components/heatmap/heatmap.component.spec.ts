@@ -8,6 +8,7 @@ import * as d3 from 'd3';
 
 import { HeatmapComponent } from './heatmap.component';
 import { HeatmapOptions } from './heatmap.data';
+import { ResizeDirective } from '../../directives/resize.directive';
 
 describe('HeatmapComponent', () => {
 
@@ -49,7 +50,10 @@ describe('HeatmapComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [ HeatmapComponent, ],
+            declarations: [
+                HeatmapComponent,
+                ResizeDirective,
+            ],
             imports: [
                 HttpClientTestingModule,
                 OverlayModule,
@@ -141,22 +145,26 @@ describe('HeatmapComponent', () => {
         expect(newopts.zoom.cellTitleExtent).toEqual(4);
     });
 
-    it('should accept input heatmap data, default settings', () => {
+    it('should accept input heatmap data, default settings', async(() => {
         component.data = mockData;
         fixture.detectChanges();
 
-        let cells: NodeList = fixture.nativeElement.querySelectorAll('.heat-map svg.heat-map-canvas g.heat-map-cell');
-        expect(cells).toBeTruthy();
-        expect(cells.length).toEqual(21);
-        expect(Array.from(cells).every(cell => cell.childNodes.length === 1)).toBeTruthy();
+        fixture.whenStable().then(() => {
+            let cells: NodeList =
+                    fixture.nativeElement.querySelectorAll('.heat-map svg.heat-map-canvas g.heat-map-cell');
+            expect(cells).toBeTruthy();
+            expect(cells.length).toEqual(21);
+            expect(Array.from(cells).every(cell => cell.childNodes.length === 1)).toBeTruthy();
 
-        let rects: NodeList = fixture.nativeElement.querySelectorAll('.heat-map svg.heat-map-canvas g.heat-map-cell rect');
-        expect(Array.from(rects)
-            .filter((rect: any) => rect.attributes['fill'].nodeValue ===
-                    component.options.color.heatColors['true'].bg).length).toEqual(9);
-    });
+            let rects: NodeList =
+                    fixture.nativeElement.querySelectorAll('.heat-map svg.heat-map-canvas g.heat-map-cell rect');
+            expect(Array.from(rects)
+                .filter((rect: any) => rect.attributes['fill'].nodeValue ===
+                        component.options.color.heatColors['true'].bg).length).toEqual(9);
+        });
+    }));
 
-    it('should draw cell text', () => {
+    it('should draw cell text', async(() => {
         component.data = mockData;
         component.options = {
             color: {
@@ -181,11 +189,13 @@ describe('HeatmapComponent', () => {
         component.ngOnInit();
         fixture.detectChanges();
 
-        let texts: NodeList = fixture.nativeElement.querySelectorAll('.heat-map svg g.heat-map-cell text');
-        expect(Array.from(texts).length).toBeGreaterThan(0);
-    });
+        fixture.whenStable().then(() => {
+            let texts: NodeList = fixture.nativeElement.querySelectorAll('.heat-map svg g.heat-map-cell text');
+            expect(Array.from(texts).length).toBeGreaterThan(0);
+        });
+    }));
 
-    it('should draw gradients', () => {
+    it('should draw gradients', async(() => {
         const gbatch = Math.floor(Math.random() * mockData.length);
         const gcell = Math.floor(Math.random() * (mockData[gbatch].cells.length - 1));
         const gtitle = mockData[gbatch].cells[gcell].title;
@@ -219,14 +229,16 @@ describe('HeatmapComponent', () => {
         component.ngOnInit();
         fixture.detectChanges();
 
-        /*
-         * For some reason, running the test here refuses to write the svg defs. In live, it draws it fine.
-         * It does, however, set the gradient URL in the rect, so this test will prove that.
-         */
-        let grect = fixture.nativeElement.querySelector(`g.heat-map-cell[aria-label="${gtitle}"] rect`);
-        expect(grect).not.toBeNull();
-        expect(grect.getAttribute('fill')).toMatch(/url\(\#gradient\-\d*\)/);
-    });
+        fixture.whenStable().then(() => {
+            /*
+             * For some reason, running the test here refuses to write the svg defs. In live, it draws it fine.
+             * It does, however, set the gradient URL in the rect, so this test will prove that.
+             */
+            let grect = fixture.nativeElement.querySelector(`g.heat-map-cell[aria-label="${gtitle}"] rect`);
+            expect(grect).not.toBeNull();
+            expect(grect.getAttribute('fill')).toMatch(/url\(\#gradient\-\d*\)/);
+        });
+    }));
 
     it('should create a minimap', async(() => {
         component.data = mockData;
@@ -277,18 +289,20 @@ describe('HeatmapComponent', () => {
         component.ngOnInit();
         fixture.detectChanges();
 
-        let spy = null;
-        component.hover.subscribe(ev => spy = ev);
-        let trect = fixture.nativeElement.querySelector(`g.heat-map-cell[aria-label="${target.title}"] rect`);
-        expect(trect).not.toBeNull();
-        trect.dispatchEvent(new Event('mouseover'));
-        trect.parentElement.dispatchEvent(new Event('mouseover'));
         fixture.whenStable().then(() => {
-            expect(spy).not.toBeNull();
-            expect(spy.data.title).toBe(target.title);
-            trect.dispatchEvent(new Event('mouseout'));
-            trect.parentElement.dispatchEvent(new Event('mouseout'));
-            expect(spy.data).toBeNull();
+            let spy = null;
+            component.hover.subscribe(ev => spy = ev);
+            let trect = fixture.nativeElement.querySelector(`g.heat-map-cell[aria-label="${target.title}"] rect`);
+            expect(trect).not.toBeNull();
+            trect.dispatchEvent(new Event('mouseover'));
+            trect.parentElement.dispatchEvent(new Event('mouseover'));
+            fixture.whenStable().then(() => {
+                expect(spy).not.toBeNull();
+                expect(spy.data.title).toBe(target.title);
+                trect.dispatchEvent(new Event('mouseout'));
+                trect.parentElement.dispatchEvent(new Event('mouseout'));
+                expect(spy.data).toBeNull();
+            });
         });
     }));
 
@@ -300,13 +314,15 @@ describe('HeatmapComponent', () => {
         component.ngOnInit();
         fixture.detectChanges();
 
-        let spy = null;
-        component.click.subscribe(ev => spy = ev);
-        let trect = fixture.nativeElement.querySelector(`g.heat-map-cell[aria-label="${target.title}"] rect`);
-        expect(trect).not.toBeNull();
-        trect.parentElement.dispatchEvent(new Event('click'));
-        expect(spy).not.toBeNull();
-        expect(spy.data.title).toBe(target.title);
+        fixture.whenStable().then(() => {
+            let spy = null;
+            component.click.subscribe(ev => spy = ev);
+            let trect = fixture.nativeElement.querySelector(`g.heat-map-cell[aria-label="${target.title}"] rect`);
+            expect(trect).not.toBeNull();
+            trect.parentElement.dispatchEvent(new Event('click'));
+            expect(spy).not.toBeNull();
+            expect(spy.data.title).toBe(target.title);
+        });
     });
 
 });

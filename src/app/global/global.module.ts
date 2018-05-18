@@ -68,14 +68,15 @@ import { TacticsCarouselControlComponent } from './components/tactics-pane/tacti
 import { TacticsHeatmapComponent } from './components/tactics-pane/tactics-heatmap/tactics-heatmap.component';
 import { TacticsTreemapComponent } from './components/tactics-pane/tactics-treemap/tactics-treemap.component';
 import { TacticsTooltipComponent } from './components/tactics-pane/tactics-tooltip/tactics-tooltip.component';
+import { TacticsTooltipService } from './components/tactics-pane/tactics-tooltip/tactics-tooltip.service';
 
 import { InfiniteScrollDirective } from './directives/infinite-scroll.directive';
+import { ResizeDirective } from './directives/resize.directive';
 import { CapitalizePipe } from './pipes/capitalize.pipe';
 import { FieldSortPipe } from './pipes/field-sort.pipe';
 import { SophisticationPipe } from './pipes/sophistication.pipe';
 import { TimeAgoPipe } from './pipes/time-ago.pipe';
 import { AuthService } from '../core/services/auth.service';
-import { TacticsTooltipService } from './components/tactics-pane/tactics-tooltip/tactics-tooltip.service';
 
 const matModules = [
     MatAutocompleteModule,
@@ -115,6 +116,7 @@ const unfetterComponents = [
     HeatmapComponent,
     HelpWindowComponent,
     InfiniteScrollDirective,
+    ResizeDirective,
     InfoBarComponent,
     KillChainPhasesReactiveComponent,
     LandingPageComponent,

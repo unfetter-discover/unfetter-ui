@@ -25,6 +25,7 @@ import { routing } from './intrusion-set-dashboard.routing';
 import { AttackPatternsLegendComponent } from './attack-patterns-legend/attack-patterns-legend.component';
 import { CriticalSecurityControlsComponent } from './critical-security-controls/critical-security-controls.component';
 import { IntrusionSetsPanelComponent } from './intrusion-sets-panel/intrusion-sets-panel.component';
+import { IntrusionSetsTacticsComponent } from './intrusion-sets-tactics/intrusion-sets-tactics.component';
 import { CollapsibleTreeComponent } from './intrusion-sets-tree/collapsible-tree.component';
 import { IntrusionSetsTreeComponent } from './intrusion-sets-tree/intrusion-sets-tree.component';
 import { ComponentModule } from '../components';
@@ -36,6 +37,7 @@ const unfetterComponents = [
     CriticalSecurityControlsComponent,
     IntrusionSetDashboardComponent,
     IntrusionSetsPanelComponent,
+    IntrusionSetsTacticsComponent,
     IntrusionSetsTreeComponent,
 ];
 

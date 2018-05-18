@@ -1,5 +1,16 @@
-import { OnInit, Input, Output, ViewChild, DoCheck, AfterViewInit, EventEmitter } from '@angular/core';
+import {
+    Input,
+    Output,
+    ViewChild,
+    OnInit,
+    AfterViewInit,
+    OnDestroy,
+    OnChanges,
+    SimpleChanges,
+    EventEmitter,
+} from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { Store } from '@ngrx/store';
 
 import { TacticChain, Tactic } from './tactics.model';
@@ -11,61 +22,127 @@ import { AppState } from '../../../root-store/app.reducers';
 /**
  * Abstract base class for the type of views displayed in the tactics pane.
  */
-export abstract class TacticsView<Component, Options> implements OnInit, AfterViewInit, DoCheck {
-    /**
-     * The relevant framework(s) for the patterns to display.
-     */
-    @Input() public frameworks: string[] = null;
-    private previousFrameworks: string[];
+export abstract class TacticsView<Component, Options> implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
     /**
-     * The full list of known tactics, for the input frameworks. Generated list, do not disturb. Can be provided, to
-     * avoid having multiple copies among multiple components.
+     * @description The relevant framework(s) for the patterns to display.
      */
-    @Input() protected chains: Dictionary<TacticChain> = null;
+    @Input() public frameworks: string[] = null;
+
+    private framework$: Subscription = null;
+
+    /**
+     * @description The full list of known tactics, for the input frameworks. Generated list, do not disturb.
+     *              Can be provided, to avoid having multiple copies among multiple components.
+     */
+    @Input() public chains: Dictionary<TacticChain> = null;
+
+    private previousChains: Dictionary<TacticChain> = null;
+    
+    private chain$: Subscription = null;
+
     protected tactics: Tactic[];
 
     /**
-     * Provided tactics that should be specially marked.
+     * @description Provided tactics that should be specially marked.
      */
-    @Input() public targeted: Tactic[] = [];
-    private previousTargeted: Tactic[];
+    @Input() public targets: Tactic[] = [];
 
     /**
-     * Preferences on how to view the data.
+     * @description Preferences on how to view the data.
      */
     @Input() public options: Options;
 
+    /**
+     * @description Ability to override default hover behavior on attack patterns.
+     */
     @Output() public hover: EventEmitter<TooltipEvent> = new EventEmitter();
+
+    /**
+     * @description Ability to override default click behavior on attack patterns.
+     */
     @Output() public click: EventEmitter<TooltipEvent> = new EventEmitter();
 
+    /**
+     * @description
+     */
     constructor(
         protected store: Store<AppState>,
         protected controls: TacticsControlService,
-        public tooltips: TacticsTooltipService,
-    ) {}
-
-    ngOnInit() {
-        this.previousFrameworks = this.frameworks;
-        this.previousTargeted = this.targeted;
-
-        this.validateOptions();
+        protected tooltips: TacticsTooltipService,
+    ) {
     }
 
-    ngAfterViewInit() {
+    /**
+     * @description
+     */
+    ngOnInit() {
+        this.previousChains = this.chains;
+        this.validateOptions();
         this.initData();
+    }
+
+    /**
+     * @description
+     */
+    ngOnChanges(changes: SimpleChanges) {
+        if (this.frameworksChanged(changes) || this.chainsChanged(changes)) {
+            console['debug'](`(${new Date().toISOString()}) ${this.constructor.name}`,
+                    'source data change detected', changes);
+            this.previousChains = this.chains;
+            this.loadTactics(this.chains);
+        }
+        if (this.targetsChanged(changes)) {
+            console['debug'](`(${new Date().toISOString()}) ${this.constructor.name}`,
+                    'targets data change detected', changes);
+            this.extractData(this.chains);
+        }
+    }
+
+    /**
+     * @description
+     */
+    ngAfterViewInit() {
         this.initController();
     }
 
-    ngDoCheck() {
-        if (this.previousFrameworks !== this.frameworks) {
-            console.log(`(${new Date().toISOString()}) ${this.constructor.name} frameworks change detected`);
-            this.initData();
-        } else if (this.previousTargeted !== this.targeted) {
-            console.log(`(${new Date().toISOString()}) ${this.constructor.name} targeted data change detected`);
-            this.previousTargeted = this.targeted;
-            this.extractData(this.chains);
+    /**
+     * @description
+     */
+    ngOnDestroy() {
+        if (this.framework$) {
+            this.framework$.unsubscribe();
         }
+        if (this.chain$) {
+            this.chain$.unsubscribe();
+        }
+    }
+
+    /**
+     * @description gives the view object access to the underlying component.
+     */
+    private frameworksChanged(changes: SimpleChanges): boolean {
+        if (!changes || !changes.frameworks || !changes.frameworks.currentValue) {
+            return false;
+        }
+        return (changes.frameworks.currentValue instanceof Array) && (changes.frameworks.currentValue.length > 0);
+    }
+
+    /**
+     * @description gives the view object access to the underlying component.
+     */
+    private chainsChanged(changes: SimpleChanges): boolean {
+        if (!changes || !changes.chains || !changes.chains.currentValue) {
+            return false;
+        }
+        return Object.keys(changes.chains.currentValue).length > 0;
+    }
+
+    /**
+     * @description gives the view object access to the underlying component.
+     */
+    private targetsChanged(changes: SimpleChanges): boolean {
+        return !!changes && !!changes.targets;
     }
 
     /**
@@ -82,18 +159,37 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
      * @description load all data
      */
     protected initData() {
-        const getf$ = this.getFrameworks()
-            .finally(() => getf$ && getf$.unsubscribe())
-            .subscribe(
-                (frameworks) => {
-                    this.previousFrameworks = this.frameworks = frameworks;
-                    this.loadTactics();
-                },
-                (err) => {
-                    console.log(`(${new Date().toISOString()}) ${this.constructor.name}`,
-                            'could not determine current framework', err);
-                }
-            );
+        if (this.frameworks === null) {
+            this.framework$ = this.getFrameworks()
+                .distinctUntilChanged()
+                .subscribe(
+                    (frameworks) => {
+                        this.frameworks = frameworks;
+                    },
+                    (err) => {
+                        console.log(`(${new Date().toISOString()}) ${this.constructor.name}`,
+                                'could not determine current framework', err);
+                    }
+                );
+        }
+
+        if (this.chains === null) {
+            console['debug'](`(${new Date().toISOString()}) ${this.constructor.name} querying tactics store`);
+            this.chain$ = this.store
+                .select('config')
+                .pluck('tacticsChains')
+                .filter(t => t !== null)
+                .distinctUntilChanged()
+                .subscribe(
+                    (tactics: Dictionary<TacticChain>) => {
+                        this.loadTactics(tactics);
+                    },
+                    (err) => {
+                        console.log(`(${new Date().toISOString()}) ${this.constructor.name}`,
+                                'could not load tactics', err);
+                    },
+                );
+        }
     }
 
     /**
@@ -103,8 +199,8 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
         if (this.frameworks && this.frameworks.length) {
             return Observable.of(this.frameworks.slice(0));
         }
-        if (this.targeted && this.targeted.length) {
-            const frameworks = this.targeted
+        if (this.targets && this.targets.length) {
+            const frameworks = this.targets
                 .reduce((chains, tactic) => chains.concat(tactic.framework), [])
                 .filter(chain => chain !== undefined && chain !== null);
             if (frameworks.length >= 1) {
@@ -121,33 +217,20 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
     }
 
     /**
-     * @description load all the attack patterns, by relevant framework
+     * @description determine which framework is to be displayed here
      */
-    protected loadTactics() {
-        const sub$ = this.chains ? Observable.of(this.chains) : this.store
-                .select('config')
-                .pluck('tacticsChains')
-                .filter(t => t !== null)
-                .take(1)
-                .finally(() => (sub$ && sub$.unsubscribe && sub$.unsubscribe()) || this.rerender());
-        sub$.subscribe(
-            (tactics: Dictionary<TacticChain>) => {
-                const patterns = [];
-                if (tactics) {
-                    Object.values(tactics).forEach(chain => {
-                        chain.phases.forEach(phase => {
-                            phase.tactics.forEach(tactic => patterns.push(tactic));
-                        });
-                    });
-                }
-                this.chains = tactics;
-                this.tactics = patterns;
-                this.extractData(tactics);
-            },
-            (err) => {
-                console.log(`(${new Date().toISOString()}) ${this.constructor.name}`, 'could not load tactics', err);
-            },
-        );
+    protected loadTactics(tactics: Dictionary<TacticChain>) {
+        const patterns = [];
+        if (tactics) {
+            Object.values(tactics).forEach(chain => {
+                chain.phases.forEach(phase => {
+                    phase.tactics.forEach(tactic => patterns.push(tactic));
+                });
+            });
+        }
+        this.chains = tactics;
+        this.tactics = patterns;
+        this.extractData(tactics);
     }
 
     /**
@@ -170,7 +253,7 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
      * @description attempts to find the given tactic in the targeted list; if not found, returns the given tactic
      */
     protected lookupTactic(tactic: Tactic): Tactic {
-        return this.targeted.find(t => t.id === tactic.id) || tactic;
+        return this.targets.find(t => t.id === tactic.id) || tactic;
     }
 
     /**

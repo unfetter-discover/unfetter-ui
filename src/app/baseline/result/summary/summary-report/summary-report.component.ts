@@ -11,7 +11,7 @@ type mainWell = 'heatmap' | 'none';
   selector: 'summary-report',
   templateUrl: './summary-report.component.html',
   styleUrls: ['./summary-report.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SummaryReportComponent implements OnInit {
   public readonly CHART_TYPE: string;
@@ -27,7 +27,8 @@ export class SummaryReportComponent implements OnInit {
   public activeMainWell: mainWell;
 
   constructor(public summaryCalculationService: SummaryCalculationService,
-              protected changeDetectorRef: ChangeDetectorRef) {
+              // protected changeDetectorRef: ChangeDetectorRef,
+  ) {
     this.CHART_TYPE = 'doughnut';
     this.DEFAULT_CHART_COLORS = [{}];
     this.CHART_LABELS = ['Risk Accepted', 'Risk Addressed'];
@@ -75,8 +76,8 @@ export class SummaryReportComponent implements OnInit {
     } else {
         this.activeMainWell = wellTab;
     }
-    this.changeDetectorRef.markForCheck();
-}
+    // this.changeDetectorRef.markForCheck();
+  }
 
   public calculateRisk(riskArr: any[]): string {
     let risk = 0;

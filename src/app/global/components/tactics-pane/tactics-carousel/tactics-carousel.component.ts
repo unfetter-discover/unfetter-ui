@@ -1,4 +1,4 @@
-import { Component, ViewChild, Input } from '@angular/core';
+import { Component, ViewChild, Input, } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { Carousel } from 'primeng/primeng';
@@ -8,26 +8,43 @@ import { TacticsView } from '../tactics-view';
 import { TacticChain, Tactic } from '../tactics.model';
 import { TacticsControlService } from '../tactics-control.service';
 import { TacticsTooltipService, TooltipEvent } from '../tactics-tooltip/tactics-tooltip.service';
+import { ResizeEvent, ResizeDirective } from '../../../directives/resize.directive';
 import { Dictionary } from '../../../../models/json/dictionary';
 import { AppState } from '../../../../root-store/app.reducers';
+import { DOMRect } from '../../heatmap/heatmap.data';
 
 @Component({
     selector: 'tactics-carousel',
     templateUrl: './tactics-carousel.component.html',
-    styleUrls: ['./tactics-carousel.component.scss']
+    styleUrls: ['./tactics-carousel.component.scss'],
 })
 export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOptions> {
 
     /**
-     * Tactics grouped by framework.
+     * @description Tactics grouped by framework.
      */
     private chainedTactics: Dictionary<TacticChain> = {};
 
+    /**
+     * @description 
+     */
     @Input() public options: CarouselOptions = new CarouselOptions();
+
+    /**
+     * @description 
+     */
+    private readied = false;
+
+    /**
+     * @description Used to detection viewport changes.
+     */
+    private bounds: DOMRect;
+
+    private resizeTimer: number;
 
     @ViewChild('carousel') private carousel: Carousel;
 
-    private readied = false;
+    @ViewChild(ResizeDirective) private resizer: ResizeDirective;
 
     constructor(
         store: Store<AppState>,
@@ -37,10 +54,16 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
         super(store, controls, tooltips);
     }
 
+    /**
+     * @description 
+     */
     protected get view() {
         return this.carousel;
     }
 
+    /**
+     * @description 
+     */
     get phases(): any[] {
         return (this.frameworks || Object.keys(this.chainedTactics))
             .map(chain => (this.chainedTactics || {})[chain])
@@ -48,6 +71,9 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
             .reduce((phases, chain) => phases.concat(chain.phases), []);
     }
 
+    /**
+     * @description 
+     */
     get filters() {
         return this.controls.state.filters || {};
     }
@@ -99,10 +125,6 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
             );
     }
 
-    public rerender() {
-        // nothing to do; the carousel should automatically updated with the modified chainedTactics
-    }
-
     /**
      * @description
      */
@@ -111,6 +133,39 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
             this.controls.state.pager = this.view;
             this.controls.onChange({pager: this.view});
             this.readied = true;
+        }
+    }
+
+    /**
+     * @description handle changes to the viewport size
+     */
+    onResize(event?: ResizeEvent) {
+        if (this.resizeTimer) {
+            window.clearTimeout(this.resizeTimer);
+        }
+        this.resizeTimer = window.setTimeout(() => {
+            this.resizeTimer = null;
+            this.rerender();
+        }, 100);
+    }
+
+    /**
+     * @description 
+     */
+    public rerender() {
+        this.resizer.sensor.reset();
+        const rect: DOMRect = this.carousel.viewportViewChild.nativeElement.getBoundingClientRect();
+        if (!rect || !rect.width || !rect.height) {
+            return;
+        } else if (!this.bounds || (this.bounds.width !== rect.width) || (this.bounds.height !== rect.height)) {
+            console['debug'](`(${new Date().toISOString()}) carousel viewport change detected`);
+            const maxColumns = Math.floor(rect.width / this.options.columnWidth);
+            this.bounds = rect;
+            requestAnimationFrame(() => {
+                this.carousel.numVisible = Math.max(1, maxColumns);
+                this.carousel.render();
+                this.controls.onChange({pager: this.view});
+            });
         }
     }
 
@@ -140,7 +195,6 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
 
     /**
      * @description determine the background color of the given tactic
-     * @todo this version cannot return gradients
      */
     public getTacticBackground(tactic: Tactic): string {
         let target = this.lookupTactic(tactic);

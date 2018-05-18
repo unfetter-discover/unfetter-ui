@@ -9,6 +9,7 @@ import { TacticsHeatmapComponent } from './tactics-heatmap.component';
 import { TacticsControlService } from '../tactics-control.service';
 import { TacticsTooltipService } from '../tactics-tooltip/tactics-tooltip.service';
 import { HeatmapComponent } from '../../heatmap/heatmap.component';
+import { ResizeDirective } from '../../../directives/resize.directive';
 import { AuthService } from '../../../../core/services/auth.service';
 import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
 import { reducers } from '../../../../root-store/app.reducers';
@@ -29,6 +30,7 @@ describe('TacticsHeatmapComponent', () => {
             declarations: [
                 TacticsHeatmapComponent,
                 HeatmapComponent,
+                ResizeDirective,
                 CapitalizePipe,
             ],
             providers: [
@@ -43,7 +45,7 @@ describe('TacticsHeatmapComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(TacticsHeatmapComponent);
         component = fixture.componentInstance;
-        component.targeted = [];
+        component.targets = [];
         component.options = {};
         fixture.detectChanges();
     });

@@ -1,4 +1,4 @@
-import { Component, ViewChild, Input } from '@angular/core';
+import { Component, ViewChild, Input, } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { TacticsView } from '../tactics-view';
@@ -14,7 +14,7 @@ import { AppState } from '../../../../root-store/app.reducers';
 @Component({
     selector: 'tactics-treemap',
     templateUrl: './tactics-treemap.component.html',
-    styleUrls: ['./tactics-treemap.component.scss']
+    styleUrls: ['./tactics-treemap.component.scss'],
 })
 export class TacticsTreemapComponent extends TacticsView<TreemapComponent, TreemapOptions> {
 
@@ -33,6 +33,9 @@ export class TacticsTreemapComponent extends TacticsView<TreemapComponent, Treem
         super(store, controls, tooltips);
     }
 
+    /**
+     * @description
+     */
     protected get view() {
         return this.treemap;
     }
@@ -64,7 +67,7 @@ export class TacticsTreemapComponent extends TacticsView<TreemapComponent, Treem
                         phase.tactics.forEach(ap => {
                             const name = ap.name
                                     + (ap.phases.length > 1 ? ` (${ap.phases.indexOf(phase.id) + 1})` : '');
-                            const target = this.targeted.find(tactic => tactic.id === ap.id);
+                            const target = this.targets.find(tactic => tactic.id === ap.id);
                             const value = (this.hasHighlights(target)) ? this.sumHighlights(target) : 0;
                             data.push([name, phase.name, value + 1]);
                         });
@@ -92,8 +95,11 @@ export class TacticsTreemapComponent extends TacticsView<TreemapComponent, Treem
         // Nothing to do
     }
 
+    /**
+     * @description
+     */
     public rerender() {
-        this.treemap.ngDoCheck();
+        this.treemap.redraw();
     }
 
     /**

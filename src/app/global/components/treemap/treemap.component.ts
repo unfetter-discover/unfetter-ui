@@ -5,20 +5,18 @@ import {
     ElementRef,
     OnInit,
     AfterViewInit,
-    DoCheck,
     ChangeDetectorRef,
     ChangeDetectionStrategy,
+    OnChanges,
+    SimpleChanges,
 } from '@angular/core';
 
 import { TreemapOptions } from './treemap.data';
 import { TreemapRenderer } from './treemap.renderer';
 import { GoogleTreemapRenderer } from './treemap.renderer.google';
 import { TacticsTooltipService } from '../tactics-pane/tactics-tooltip/tactics-tooltip.service';
-
-interface DOMRect {
-    width: number;
-    height: number;
-}
+import { ResizeEvent, ResizeDirective } from '../../directives/resize.directive';
+import { DOMRect } from '../heatmap/heatmap.data';
 
 @Component({
     selector: 'unf-treemap',
@@ -26,7 +24,7 @@ interface DOMRect {
     styleUrls: ['./treemap.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TreemapComponent implements OnInit, AfterViewInit, DoCheck {
+export class TreemapComponent implements OnInit, OnChanges, AfterViewInit {
 
     /**
      * This data should be in the format that Google Charts accepts, which is:
@@ -43,17 +41,35 @@ export class TreemapComponent implements OnInit, AfterViewInit, DoCheck {
      * chart.
      */
     @Input() public data: Array<any>;
-    private previousData: Array<any>; // used to detect when the data changes
 
     /**
-     * View settings.
+     * @description View settings.
      */
     @Input() public options: TreemapOptions = new TreemapOptions();
 
-    @ViewChild('treemap') view: ElementRef; // the viewport
-    private bounds: DOMRect; // used to detect when the viewport size changes
+    /**
+     * @description Used to detection viewport changes.
+     */
+    private bounds: DOMRect;
+
+    private resizeTimer: number;
+
+    @ViewChild('treemap') view: ElementRef;
+
+    @ViewChild('canvas') canvas: ElementRef;
+
+    @ViewChild(ResizeDirective) private resizer: ResizeDirective;
+
+    /**
+     * @description 
+     */
     @Input() public helper: TreemapRenderer = new GoogleTreemapRenderer();
+
+    /**
+     * @description 
+     */
     @Input() public eventHandler;
+
 
     constructor(
         private changeDetector: ChangeDetectorRef,
@@ -63,37 +79,57 @@ export class TreemapComponent implements OnInit, AfterViewInit, DoCheck {
     /**
      * @description init this component
      */
-    public ngOnInit(): void {
+    ngOnInit() {
         TreemapOptions.merge(this.options);
-        this.previousData = this.data;
     }
 
     /**
      * @description init this component after it gets some screen real estate
      */
-    public ngAfterViewInit(): void {
-        this.bounds = this.view.nativeElement.getBoundingClientRect();
-        this.createTreeMap();
+    ngAfterViewInit() {
+        requestAnimationFrame(() => {
+            this.bounds = this.view.nativeElement.getBoundingClientRect();
+            this.createTreeMap();
+        });
     }
 
     /**
      * @description 
      */
-    public ngDoCheck() {
-        const rect: DOMRect = this.view.nativeElement.getBoundingClientRect();
-        if (!rect || !rect.width || !rect.height) {
-            return;
-        } else if (this.data !== this.previousData) {
-            console.log(`(${new Date().toISOString()}) treemap data change detected`);
-            this.changeDetector.markForCheck();
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes && changes.data) {
+            console['debug'](`(${new Date().toISOString()}) treemap data change detected`, changes);
             this.createTreeMap();
-            this.previousData = this.data;
-        } else if (this.bounds && ((this.bounds.width !== rect.width) || (this.bounds.height !== rect.height))) {
-            console.log(`(${new Date().toISOString()}) treemap viewport change detected`);
-            this.changeDetector.markForCheck();
-            this.bounds = rect;
-            this.redraw();
         }
+    }
+
+    /**
+     * @description handle changes to the viewport size
+     */
+    onResize(event?: ResizeEvent) {
+        if (this.resizeTimer) {
+            window.clearTimeout(this.resizeTimer);
+        }
+        this.resizeTimer = window.setTimeout(() => {
+            this.resizeTimer = null;
+            const rect: DOMRect = this.view.nativeElement.getBoundingClientRect();
+            if (!rect || !rect.width || !rect.height) {
+                return;
+            } else if (!this.bounds || (this.bounds.width !== rect.width) || (this.bounds.height !== rect.height)) {
+                console['debug'](`(${new Date().toISOString()}) treemap viewport change detected`);
+                this.bounds = rect;
+                this.redraw();
+            }
+        }, 100);
+    }
+
+    /**
+     * @description draws the treemap onto the viewport
+     */
+    public redraw() {
+        this.resizer.sensor.reset();
+        this.changeDetector.markForCheck();
+        this.createTreeMap();
     }
 
     /**
@@ -102,16 +138,7 @@ export class TreemapComponent implements OnInit, AfterViewInit, DoCheck {
     private createTreeMap() {
         if (this.helper) {
             this.helper.initialize(this.data, this.options);
-            this.helper.draw(this.view, this.eventHandler);
-        }
-    }
-
-    /**
-     * @description draws the treemap onto the viewport
-     */
-    private redraw() {
-        if (this.helper) {
-            this.helper.redraw();
+            this.helper.draw(this.canvas, this.eventHandler);
         }
     }
 

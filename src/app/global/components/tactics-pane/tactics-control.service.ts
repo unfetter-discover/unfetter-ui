@@ -13,12 +13,23 @@ import { MatButtonToggleChange } from '@angular/material';
 @Injectable()
 export class TacticsControlService {
 
+    /**
+     * 
+     */
     public state: any = {};
 
+    /**
+     * 
+     */
     @Output() change: EventEmitter<any> = new EventEmitter();
 
-    constructor() {}
+    constructor(
+    ) {
+    }
 
+    /**
+     * @description 
+     */
     public onChange(event: any) {
         if (event) {
             this.change.emit(event);

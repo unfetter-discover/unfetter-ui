@@ -4,9 +4,9 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Observable } from 'rxjs/Observable';
 import { StoreModule } from '@ngrx/store';
 
-import { SummaryHeatmapComponent } from './summary-heatmap.component';
-import { mockAttackPatterns } from '../../../../testing/mock-store';
-import { reducers } from '../../../../root-store/app.reducers';
+import { SummaryTacticsComponent } from './summary-tactics.component';
+import { mockAttackPatterns } from '../../../../../testing/mock-store';
+import { reducers } from '../../../../../root-store/app.reducers';
 
 const mockAttackPatternData = [
   {
@@ -35,9 +35,9 @@ const mockAttackPatternData = [
   },
 ];
 
-describe('SummaryHeatmapComponent', () => {
-  let component: SummaryHeatmapComponent;
-  let fixture: ComponentFixture<SummaryHeatmapComponent>;
+describe('SummaryTacticsComponent', () => {
+  let component: SummaryTacticsComponent;
+  let fixture: ComponentFixture<SummaryTacticsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -45,7 +45,7 @@ describe('SummaryHeatmapComponent', () => {
         HttpClientTestingModule,
         StoreModule.forRoot(reducers),
       ],
-      declarations: [ SummaryHeatmapComponent ],
+      declarations: [ SummaryTacticsComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [],
     })
@@ -53,7 +53,7 @@ describe('SummaryHeatmapComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SummaryHeatmapComponent);
+    fixture = TestBed.createComponent(SummaryTacticsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

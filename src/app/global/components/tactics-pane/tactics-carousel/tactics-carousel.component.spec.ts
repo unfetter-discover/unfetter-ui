@@ -6,6 +6,7 @@ import { CarouselModule } from 'primeng/primeng';
 import { TacticsCarouselComponent } from './tactics-carousel.component';
 import { TacticsControlService } from '../tactics-control.service';
 import { TacticsTooltipService } from '../tactics-tooltip/tactics-tooltip.service';
+import { ResizeDirective } from '../../../directives/resize.directive';
 import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
 import { reducers } from '../../../../root-store/app.reducers';
 
@@ -23,6 +24,7 @@ describe('TacticCarouselComponent', () => {
                 ],
                 declarations: [
                     TacticsCarouselComponent,
+                    ResizeDirective,
                     CapitalizePipe,
                 ],
                 providers: [

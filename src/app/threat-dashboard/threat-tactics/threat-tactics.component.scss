@@ -1,0 +1,12 @@
+@import '../../../styles/_variables.scss';
+
+:host ::ng-deep {
+    .carousel-button {
+        background: $threat-dashboard-primary-lightest !important;
+        color: $threat-dashboard-primary-light !important;
+    }
+
+    .carousel-button.disabled {
+        background: #ccc !important;
+    }
+}
