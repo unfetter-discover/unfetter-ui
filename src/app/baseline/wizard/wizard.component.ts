@@ -347,23 +347,23 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
   // TODO: Uncomment when we are ready to support editing of existing
   public loadExistingBaseline(baselineId: string, meta: Partial<BaselineMeta>): void {
-    const sub$ = this.userStore
-      .select('users')
-      .pluck('userProfile')
-      .take(1)
-      .subscribe(
-        (user: UserProfile) => {
-          const sub1$ = this.baselineStore
-            .select('fullBaseline')
-            .distinctUntilChanged()
-            .subscribe(
-              (arr: AssessmentSet) => this.loadAssessments(baselineId, arr, meta),
-              (err) => console.log(err));
-          this.subscriptions.push(sub1$);
-        },
-        (err) => console.log(err));
-    this.subscriptions.push(sub$);
-    this.baselineStore.dispatch(new LoadAssessmentResultData(baselineId));
+  //   const sub$ = this.userStore
+  //     .select('users')
+  //     .pluck('userProfile')
+  //     .take(1)
+  //     .subscribe(
+  //       (user: UserProfile) => {
+  //         const sub1$ = this.baselineStore
+  //           .select('fullBaseline')
+  //           .distinctUntilChanged()
+  //           .subscribe(
+  //             (arr: AssessmentSet) => this.loadAssessments(baselineId, arr, meta),
+  //             (err) => console.log(err));
+  //         this.subscriptions.push(sub1$);
+  //       },
+  //       (err) => console.log(err));
+  //   this.subscriptions.push(sub$);
+  //   this.baselineStore.dispatch(new LoadAssessmentResultData(baselineId));
   }
 
   public loadAssessments(baselineId: string, arr: AssessmentSet, meta: Partial<BaselineMeta>): void {
