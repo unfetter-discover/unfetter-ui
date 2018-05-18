@@ -1,13 +1,6 @@
-<<<<<<< HEAD:src/app/assess/v2/result/store/full-result.reducers.ts
 import { Assessment } from 'stix/assess/v2/assessment';
 import { Stix } from 'stix/unfetter/stix';
 import { FullAssessmentGroup } from '../full/group/models/full-assessment-group';
-=======
-import { AssessmentSet } from 'stix/assess/v3/baseline';
-import { Baseline } from '../../../models/baseline/baseline';
-import { Stix } from '../../../models/stix/stix';
-import { FullBaselineGroup } from '../full/group/models/full-baseline-group';
->>>>>>> Change reference of Baseline to AssessmentSet and remove BL reference:src/app/baseline/result/store/full-result.reducers.ts
 import * as fullAssessmentResultActions from './full-result.actions';
 import { FullAssessmentResultActions, LOAD_ASSESSMENTS_BY_ROLLUP_ID } from './full-result.actions';
 
@@ -15,11 +8,6 @@ export interface FullAssessmentResultState {
     fullAssessment: Assessment;
     assessmentTypes: Assessment[];
 
-<<<<<<< HEAD:src/app/assess/v2/result/store/full-result.reducers.ts
-=======
-export interface FullBaselineResultState {
-    fullBaseline: AssessmentSet;
->>>>>>> Change reference of Baseline to AssessmentSet and remove BL reference:src/app/baseline/result/store/full-result.reducers.ts
     finishedLoading: boolean;
     group: FullAssessmentGroup;
 };
@@ -51,12 +39,8 @@ export const genGroupState = (state?: Partial<FullAssessmentGroup>) => {
 
 export const genState = (state?: Partial<FullAssessmentResultState>) => {
     const tmp = {
-<<<<<<< HEAD:src/app/assess/v2/result/store/full-result.reducers.ts
         fullAssessment: new Assessment(),
         assessmentTypes: [],
-=======
-        fullBaseline: new AssessmentSet(),
->>>>>>> Change reference of Baseline to AssessmentSet and remove BL reference:src/app/baseline/result/store/full-result.reducers.ts
         finishedLoading: false,
         group: genGroupState(),
     };
