@@ -1,4 +1,4 @@
-<div class="sidenav">
+<div class="sidenav" *ngIf="finishedLoading === true; else loadingBlock">
   <div @heightCollapse class="flex-col mt-18 mb-12">
     <div class="center chart-header">
       <span *ngIf="showSummary === false; else summaryChartTitle">Phase Rating</span>
@@ -10,8 +10,8 @@
       <canvas *ngIf="showSummary === false; else summaryChart" baseChart [datasets]="doughnutChartData" [labels]="doughnutChartLabels"
         [chartType]="doughnutChartType" [colors]="doughnutChartColors" [options]="chartOptions"></canvas>
       <ng-template #summaryChart>
-        <canvas baseChart [datasets]="summaryDoughnutChartData" [labels]="summaryDoughnutChartLabels"
-          [chartType]="summaryDoughnutChartType" [colors]="summaryDoughnutChartColors" [options]="chartOptions" id="summary-chart"></canvas>
+        <canvas baseChart [datasets]="summaryDoughnutChartData" [labels]="summaryDoughnutChartLabels" [chartType]="summaryDoughnutChartType"
+          [colors]="summaryDoughnutChartColors" [options]="chartOptions" id="summary-chart"></canvas>
       </ng-template>
     </div>
   </div>
@@ -81,7 +81,7 @@
   </mat-accordion>
 </div>
 
-<div class="card flex1">
+<div class="card flex1" *ngIf="finishedLoading === true">
   <mat-card>
     <div *ngIf="showSummary === false && currentAssessmentGroup; else savePage">
       <mat-card-content>
@@ -163,3 +163,7 @@
 
   </mat-card>
 </div>
+
+<ng-template #loadingBlock>
+  <loading-spinner class="full-width"></loading-spinner>
+</ng-template>

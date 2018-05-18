@@ -16,26 +16,28 @@ export interface AssessFeatureState extends fromApp.AppState {
 export interface AssessState {
     assessment: Assessment;
     backButton: boolean;
-    indicators?: Indicator[];
-    mitigations?: Stix[];
     baselines?: AssessmentSet[];
     currentBaseline?: AssessmentSet;
     currentBaselineQuestions?: ObjectAssessment[];
+    failedToLoad: boolean;
     finishedLoading: boolean;
+    indicators?: Indicator[];
+    mitigations?: Stix[];
+    page: number;
     saved: { finished: boolean, rollupId: string, id: string };
     showSummary: boolean;
-    page: number;
 };
 
 const genAssessState = (state?: Partial<AssessState>) => {
     const tmp = {
         assessment: new Assessment(),
         backButton: false,
+        baselines: [],
+        failedToLoad: false,
         finishedLoading: false,
+        page: 1,
         saved: { finished: false, rollupId: '', id: '' },
         showSummary: false,
-        page: 1,
-        baselines: [],
     };
     if (state) {
         Object.assign(tmp, state);
@@ -100,6 +102,7 @@ export function assessmentReducer(state = initialState, action: assessmentAction
             return genAssessState({
                 ...state,
                 finishedLoading: action.payload,
+                failedToLoad: !action.payload,
                 backButton: true
             });
         case assessmentActions.FINISHED_SAVING:
@@ -108,6 +111,12 @@ export function assessmentReducer(state = initialState, action: assessmentAction
                 saved: {
                     ...action.payload,
                 }
+            });
+        case assessmentActions.FAILED_TO_LOAD:
+            return genAssessState({
+                ...state,
+                finishedLoading: !action.payload,
+                failedToLoad: action.payload,
             });
         case assessmentActions.WIZARD_PAGE:
             return genAssessState({
@@ -182,4 +191,14 @@ export const getCurWizardPage = createSelector(
 export const getAssessmentSavedState = createSelector(
     getAssessState,
     (state) => state.saved
+);
+
+export const getFinishedLoading = createSelector(
+    getAssessState,
+    (state) => state.finishedLoading
+);
+
+export const getFailedToLoad = createSelector(
+    getAssessState,
+    (state) => state.failedToLoad
 );

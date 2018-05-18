@@ -1,4 +1,4 @@
-<div class="layout">
+<div #layout class="layout" *ngIf="(failedToLoad|async) === false; else failedToLoadBlock">
   <div class="titleWrapper">
     <div class="banner-wrapper">
       <div class="flex">
@@ -22,3 +22,19 @@
     </div>
   </div>
 </div>
+
+<ng-template #failedToLoadBlock>
+  <div class="center">
+    <div class="flex-cols center">
+      <span class="center empty">
+        <mat-icon>sync_problem</mat-icon>
+      </span>
+      <span class="center mat-body-2">
+        Error!
+      </span>
+      <span class="center pad-24 faded-text">
+        Failed to load data for the page, please try again
+      </span>
+    </div>
+  </div>
+</ng-template>

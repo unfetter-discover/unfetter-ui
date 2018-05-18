@@ -4,6 +4,8 @@ import { MatSelect, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MenuItem } from 'primeng/components/common/menuitem';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';
@@ -53,7 +55,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public readonly CHART_BG_COLORS: any[];
   public readonly CHART_HOVER_BG_COLORS: any[];
 
-
   public model: JsonApiData<Assessment, Dictionary<Assessment>>;
   public publishDate = new Date();
   public buttonLabel: ButtonLabel = 'CONTINUE';
@@ -92,22 +93,24 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   // ' to the best of your ability. On the final page of the survey, you will be asked to enter a name for the report and a description.
   // Unfetter Discover will use the survey to help you understand your gaps, how important they are and which should be addressed.
   // You may create multiple reports to see how your risk is changed when implementing different security processes.`;
-  public showSummary = false;
-  public currentAssessmentGroup = {} as any;
-  public page = 1;
-  public meta = new Assess3Meta();
-  public indicators: Indicator.UnfetterIndicator[];
-  public sensors: Stix[];
-  public mitigations: Stix[];
-  public capabilityQuestions: ObjectAssessment[];
-  public ratioOfQuestionsAnswered = 0;
-  public openedSidePanel: SidePanelName;
-  public insertMode = false;
+
+  private assessmentGroups: any[];
+  private assessmentTypeGroups: Dictionary<{ tempModel: TempModel, assessmentsGroups: any[] }> = {};
   private assessments: WizardAssessment[] = [];
   private groupings = [];
-  private assessmentGroups: any[];
   private tempModel: TempModel = {} as TempModel;
-  private assessmentTypeGroups: Dictionary<{ tempModel: TempModel, assessmentsGroups: any[] }> = {};
+  public capabilityQuestions: ObjectAssessment[];
+  public currentAssessmentGroup = {} as any;
+  public finishedLoading = false;
+  public indicators: Indicator.UnfetterIndicator[];
+  public insertMode = false;
+  public meta = new Assess3Meta();
+  public mitigations: Stix[];
+  public openedSidePanel: SidePanelName;
+  public page = 1;
+  public ratioOfQuestionsAnswered = 0;
+  public sensors: Stix[];
+  public showSummary = false;
 
   private readonly subscriptions: Subscription[] = [];
   private readonly sidePanelOrder: SidePanelName[] = ['indicators', 'mitigations', 'sensors', 'summary'];
@@ -169,11 +172,15 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
             includesMitigations,
             baselineRef,
           };
+
           const rollupId = params.rollupId || '';
           if (rollupId) {
+            // this is an edit
             this.loadExistingAssessment(rollupId, meta);
+          } else {
+            // this is a new wizard
+            this.wizardStore.dispatch(new LoadAssessmentWizardData(meta));
           }
-          this.wizardStore.dispatch(new LoadAssessmentWizardData(meta));
         },
         (err) => console.log(err),
         () => idParamSub$.unsubscribe());
@@ -194,12 +201,12 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       .subscribe((arr: ObjectAssessment[]) => this.capabilityQuestions = arr);
 
     const sub4$ = this.wizardStore
-      .select('assessment')
-      .pluck('finishedLoading')
+      .select(assessReducers.getFinishedLoading)
       .distinctUntilChanged()
       .filter((loaded: boolean) => loaded && loaded === true)
       .subscribe(
         (loaded: boolean) => {
+          this.finishedLoading = loaded;
           const panel = this.determineFirstOpenSidePanel();
           if (panel) {
             this.onOpenSidePanel(panel);
@@ -243,6 +250,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         (user: UserProfile) => this.currentUser = user,
         (err) => console.log(err));
 
+        
     this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$, sub7$, sub8$);
   }
 

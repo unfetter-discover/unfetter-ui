@@ -75,7 +75,7 @@ export class AssessEffects {
                 }),
                 catchError((err) => {
                     console.log(err);
-                    return Observable.empty();
+                    return Observable.of(new assessActions.FailedToLoad(true));
                 })
             );
         });
@@ -86,10 +86,10 @@ export class AssessEffects {
         .pluck('payload')
         .switchMap((assessmentSet: AssessmentSet) => {
             if (!assessmentSet
-                || assessmentSet.assessments
+                || !assessmentSet.assessments
                 || assessmentSet.assessments.length === 0
             ) {
-                return Observable.of([new assessActions.FinishedLoading(true)]);
+                return Observable.of(new assessActions.FailedToLoad(true));
             }
 
             return this.baselineService
@@ -103,7 +103,7 @@ export class AssessEffects {
                     }),
                     catchError((err) => {
                         console.log(err);
-                        return Observable.empty();
+                        return Observable.of(new assessActions.FailedToLoad(true));
                     })
                 );
         });
@@ -119,7 +119,7 @@ export class AssessEffects {
                     map((arr: any[]) => new assessActions.FetchAssessment(arr[0])),
                     catchError((err) => {
                         console.log(err);
-                        return Observable.empty();
+                        return Observable.of(new assessActions.FailedToLoad(true));
                     }),
             );
         });
@@ -259,12 +259,12 @@ export class AssessEffects {
                     }),
                     catchError((err) => {
                         console.log(err);
-                        return Observable.empty();
+                        return Observable.of(new assessActions.FailedToLoad(true));
                     }));
         });
 
     @Effect()
-    public fetchCapabilites = this.actions$
+    public fetchBaselines = this.actions$
         .ofType(assessActions.LOAD_BASELINES)
         .switchMap(() => {
             return this.baselineService
@@ -273,7 +273,7 @@ export class AssessEffects {
                     map((arr) => new assessActions.SetBaselines(arr)),
                     catchError((err) => {
                         console.log(err);
-                        return Observable.empty();
+                        return Observable.of(new assessActions.FailedToLoad(true));
                     })
                 );
         });

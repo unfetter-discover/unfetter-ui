@@ -15,6 +15,7 @@ export const LOAD_CURRENT_BASELINE_QUESTIONS = '[Assess] LOAD_CURRENT_BASELINE_Q
 export const SAVE_ASSESSMENT = '[Assess] SAVE_ASSESSMENT';
 export const START_ASSESSMENT = '[Assess] START_ASSESSMENT';
 export const START_ASSESSMENT_SUCCESS = '[Assess] START_ASSESSMENT_SUCCESS';
+export const FAILED_TO_LOAD = '[Assess] FAILED_TO_LOAD';
 
 // For reducers
 export const ANSWER_QUESTION = '[Assess] ANSWER_QUESTION';
@@ -133,9 +134,16 @@ export class SetBaselines {
     constructor(public payload: AssessmentSet[]) { }
 }
 
+export class FailedToLoad {
+    public readonly type = FAILED_TO_LOAD;
+
+    constructor(public payload: boolean) { }
+}
+
 export type AssessmentActions =
     AnswerQuestion |
     CleanAssessmentWizardData |
+    FailedToLoad |
     FetchAssessment |
     FinishedLoading |
     FinishedSaving |

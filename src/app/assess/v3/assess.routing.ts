@@ -20,13 +20,10 @@ const routes = [
             { path: 'wizard/edit/:rollupId', loadChildren: 'app/assess/v3/wizard/wizard.module#WizardModule' },
         ]
     },
-    // { path: 'result/summary/:rollupId', component: SummaryComponent },
     { path: 'result/summary/:rollupId/:assessmentId', component: SummaryComponent },
-    // { path: 'result/full/:rollupId', component: FullComponent },
     { path: 'result/full/:rollupId/:assessmentId', component: FullComponent },
     { path: 'result/full/:rollupId/:assessmentId/phase/:phase', component: FullComponent },
     { path: 'result/full/:rollupId/:assessmentId/phase/:phase/attackPattern/:attackPattern', component: FullComponent },
-    // { path: 'result/group/:id/:phase', component: AssessmentsGroupComponent },
 ];
 
 export const routing = RouterModule.forChild(routes);
