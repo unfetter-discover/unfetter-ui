@@ -19,7 +19,7 @@ import { AppState } from '../../root-store/app.reducers';
 import { Constance } from '../../utils/constance';
 import { LoadAssessmentResultData } from '../result/store/full-result.actions';
 import { FullBaselineResultState } from '../result/store/full-result.reducers';
-import { CleanBaselineWizardData, FetchCapabilities, FetchCapabilityGroups, LoadBaselineWizardData, SetCurrentBaselineCapability, SetCurrentBaselineGroup, UpdatePageTitle, FetchAttackPatterns } from '../store/baseline.actions';
+import { CleanBaselineWizardData, FetchCapabilities, FetchCapabilityGroups, LoadBaselineWizardData, SetCurrentBaselineCapability, SetCurrentBaselineGroup, UpdatePageTitle, FetchAttackPatterns, SetCurrentBaselineObjectAssessment } from '../store/baseline.actions';
 import { BaselineState } from '../store/baseline.reducers';
 import { AttackPatternChooserComponent } from './attack-pattern-chooser/attack-pattern-chooser.component';
 import { Measurements } from './models/measurements';
@@ -107,6 +107,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public allCapabilities: Capability[] = [];
   public baselineCapabilities: Capability[] = [];
   public currentCapability = {} as Capability;
+  private baselineObjAssessments: ObjectAssessment[] = [];
 
   public showHeatmap = false;
   public allAttackPatterns: Observable<AttackPattern[]> = Observable.of([]);
@@ -267,28 +268,38 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           },
           (err) => console.log(err));
   
-          const sub13$ = this.wizardStore
-          .select('baseline')
-          .pluck('currentCapabilityGroup')
-          .distinctUntilChanged()
-          .subscribe(
-            (capabilityGroup: Category) => {
-              this.currentBaselineGroup = capabilityGroup;
-              this.updateNavigations();
-            },
-            (err) => console.log(err));
+      const sub13$ = this.wizardStore
+        .select('baseline')
+        .pluck('currentCapabilityGroup')
+        .distinctUntilChanged()
+        .subscribe(
+          (capabilityGroup: Category) => {
+            this.currentBaselineGroup = capabilityGroup;
+            this.updateNavigations();
+          },
+          (err) => console.log(err));
     
-            const sub14$ = this.wizardStore
-            .select('baseline')
-            .pluck('currentCapability')
-            .distinctUntilChanged()
-            .subscribe(
-              (capability: Capability) => {
-                this.currentCapability = capability;
-              },
-              (err) => console.log(err));
+      const sub14$ = this.wizardStore
+        .select('baseline')
+        .pluck('currentCapability')
+        .distinctUntilChanged()
+        .subscribe(
+          (capability: Capability) => {
+            this.currentCapability = capability;
+          },
+        (err) => console.log(err));
       
-              this.allAttackPatterns = this.wizardStore
+      const sub15$ = this.wizardStore
+        .select('baseline')
+        .pluck('baselineObjAssessments')
+        .distinctUntilChanged()
+        .subscribe(
+          (baselineObjAssessments: ObjectAssessment[]) => {
+            this.baselineObjAssessments = baselineObjAssessments;
+          },
+        (err) => console.log(err));
+      
+      this.allAttackPatterns = this.wizardStore
         .select('baseline')
         .pluck<{}, AttackPattern[]>('allAttackPatterns')
         .distinctUntilChanged();
@@ -298,7 +309,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         .pluck<{}, AttackPattern[]>('selectedFrameworkAttackPatterns')
         .distinctUntilChanged();
     
-      this.subscriptions.push(sub4$, sub5$, sub6$, sub7$, sub8$, sub9$, sub10$, sub11$, sub12$, sub13$, sub14$);
+      this.subscriptions.push(sub4$, sub5$, sub6$, sub7$, sub8$, sub9$, sub10$, sub11$, sub12$, sub13$, sub14$, sub15$);
 
       // Fetch categories and capabilities to power this wizard
       this.wizardStore.dispatch(new FetchCapabilityGroups());
@@ -564,6 +575,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       this.openedSidePanel = 'categories';
       this.wizardStore.dispatch(new SetCurrentBaselineGroup(undefined));
       this.wizardStore.dispatch(new SetCurrentBaselineCapability(undefined));
+      this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(undefined));
     } else 
     // Have we made it beyond the cat/cap pages (i.e. Group Setup + cat/cap pages)?
     if (this.page > 1 + this.navigations.length) {
@@ -571,6 +583,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       this.openedSidePanel = 'summary';
       this.wizardStore.dispatch(new SetCurrentBaselineGroup(undefined));
       this.wizardStore.dispatch(new SetCurrentBaselineCapability(undefined));
+      this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(undefined));
       this.showSummarySavePage();
     } else {
       // Determine ID for this page
@@ -585,6 +598,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         // Move to the next category and its capabilities
         this.wizardStore.dispatch(new SetCurrentBaselineGroup(this.allCategories.find((category) => category.id === currPage.id)));
         this.wizardStore.dispatch(new SetCurrentBaselineCapability(undefined));
+        this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(undefined));
       } else {
         this.openedSidePanel = 'capabilities';
 
@@ -595,6 +609,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         }
 
         this.wizardStore.dispatch(new SetCurrentBaselineCapability(currCap));
+        let currObjAssessment = this.baselineObjAssessments.find(((oa) => oa.object_ref === currCap.id);
+        this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(currObjAssessment));
       }
     }
   }
