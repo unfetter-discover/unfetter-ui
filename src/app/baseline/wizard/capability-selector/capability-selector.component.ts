@@ -197,6 +197,10 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
       stix.name = capability.name;
       stix.created_by_ref = capability.created_by_ref;
       Object.assign(newOA, stix);
+
+      // Inherit assessed objects from category
+      newOA.assessments_objects = [ ...this.currentCapabilityGroup.assessed_objects ];
+
       newOAs.push(newOA);
     });
 
