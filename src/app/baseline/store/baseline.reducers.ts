@@ -20,7 +20,7 @@ export interface BaselineState {
     currentCapabilityGroup: Category;
     currentObjectAssessment: ObjectAssessment;
     finishedLoading: boolean;
-    objectAssessments: ObjectAssessment[];
+    baselineObjAssessments: ObjectAssessment[];
     page: number;
     saved: { finished: boolean, id: string };
     selectedFrameworkAttackPatterns?: AttackPattern[];
@@ -40,7 +40,7 @@ const genAssessState = (state?: Partial<BaselineState>) => {
         currentCapabilityGroup: new Category(),
         currentObjectAssessment: new ObjectAssessment(),
         finishedLoading: false,
-        objectAssessments: [],
+        baselineObjAssessments: [],
         page: 1,
         saved: { finished: false, id: '' },
         selectedFrameworkAttackPatterns: [],
@@ -94,7 +94,7 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
         case baselineActions.SET_BASELINE_OBJECT_ASSESSMENTS:
             return genAssessState({
                 ...state,
-                objectAssessments: [...action.payload],
+                baselineObjAssessments: [...action.payload],
             });
         case baselineActions.SET_CURRENT_BASELINE_OBJECT_ASSESSMENT:
             return genAssessState({
