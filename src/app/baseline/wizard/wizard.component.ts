@@ -609,7 +609,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         }
 
         this.wizardStore.dispatch(new SetCurrentBaselineCapability(currCap));
-        let currObjAssessment = this.baselineObjAssessments.find(((oa) => oa.object_ref === currCap.id);
+        let currObjAssessment = this.baselineObjAssessments.find(((oa) => oa.object_ref === currCap.id));
         this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(currObjAssessment));
       }
     }
