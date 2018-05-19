@@ -512,7 +512,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.updateWizardData();
   }
 
-  public hasNextGroup(page: number): boolean {
+  public hasNextGroup(): boolean {
     return this.page > 1 && this.currentBaselineGroup &&
            this.baselineGroups.findIndex(group => group.id === this.currentBaselineGroup.id) < this.baselineGroups.length - 1;
   }
