@@ -9,6 +9,7 @@ import { distinctUntilChanged } from 'rxjs/operators/distinctUntilChanged';
 import { filter } from 'rxjs/operators/filter';
 import { pluck } from 'rxjs/operators/pluck';
 import { take } from 'rxjs/operators/take';
+import { Capability } from 'stix';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';
 import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
@@ -33,7 +34,7 @@ import * as assessReducers from '../store/assess.reducers';
 import { Measurements } from './models/measurements';
 import { SidePanelName } from './models/side-panel-name.enum';
 import { TempModel } from './models/temp-model';
-import { WizardAssessment } from './models/wizard-assessment';
+import { WizardQuestion } from './models/wizard-question';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -58,8 +59,9 @@ export class WizardComponent extends Measurements
   public readonly sidePanelExpandedHeight = '32px';
 
   public buttonLabel: ButtonLabel = 'CONTINUE';
-  public capabilities: ObjectAssessment[];
+  public lookupCapabilities: Capability[];
   public currentAssessmentGroup = {} as any;
+  public capabilities: ObjectAssessment[];
   public currentUser: UserProfile;
   public doughnutChartColors: any[] = this.DEFAULT_CHART_COLORS;
   public doughnutChartData: {
@@ -120,7 +122,7 @@ export class WizardComponent extends Measurements
     tempModel: TempModel;
     assessmentsGroups: any[];
   }> = {};
-  private assessments: WizardAssessment[] = [];
+  private assessments: WizardQuestion[] = [];
   private groupings = [];
   private tempModel: TempModel = {} as TempModel;
 
@@ -142,7 +144,7 @@ export class WizardComponent extends Measurements
     private router: Router,
     private snackBar: MatSnackBar,
     private userStore: Store<AppState>,
-    private wizardStore: Store<assessReducers.AssessState>
+    private wizardStore: Store<assessReducers.AssessState>,
   ) {
     super();
     this.CHART_TYPE = 'doughnut';
@@ -207,26 +209,24 @@ export class WizardComponent extends Measurements
           this.wizardStore.dispatch(new LoadAssessmentWizardData(meta));
         }
       },
-      err => console.log(err),
+      (err) => console.log(err),
       () => idParamSub$.unsubscribe()
     );
 
     const sub1$ = this.wizardStore
       .select(assessReducers.getIndicatorQuestions)
       .pipe(distinctUntilChanged())
-      .subscribe(
-        (arr: Indicator.UnfetterIndicator[]) => (this.indicators = arr)
-      );
+      .subscribe((arr) => (this.indicators = arr));
 
     const sub2$ = this.wizardStore
       .select(assessReducers.getMitigationsQuestions)
       .pipe(distinctUntilChanged())
-      .subscribe((arr: Stix[]) => (this.mitigations = arr));
+      .subscribe((arr) => (this.mitigations = arr));
 
     const sub3$ = this.wizardStore
       .select(assessReducers.getCurrentBaselineQuestions)
       .pipe(distinctUntilChanged())
-      .subscribe((arr: ObjectAssessment[]) => (this.capabilities = arr));
+      .subscribe((arr) => (this.capabilities = arr));
 
     const sub4$ = this.wizardStore
       .select(assessReducers.getFinishedLoading)
@@ -242,13 +242,13 @@ export class WizardComponent extends Measurements
             this.onOpenSidePanel(panel);
           }
         },
-        err => console.log(err)
+        (err) => console.log(err)
       );
 
     const sub5$ = this.wizardStore
       .select(assessReducers.getCurrentWizardPage)
       .pipe(distinctUntilChanged())
-      .subscribe((page: number) => (this.page = page), err => console.log(err));
+      .subscribe((page: number) => (this.page = page), (err) => console.log(err));
 
     interface SavedState {
       finished: boolean;
@@ -267,7 +267,7 @@ export class WizardComponent extends Measurements
           const id = saved.id;
           this.router.navigate(['/assess-beta/result/summary', rollupId, id]);
         },
-        err => console.log(err)
+        (err) => console.log(err)
       );
 
     const sub7$ = this.wizardStore
@@ -275,10 +275,18 @@ export class WizardComponent extends Measurements
       .pipe(distinctUntilChanged())
       .subscribe(
         (assessmentMeta: Assess3Meta) => (this.meta = assessmentMeta),
-        err => console.log(err)
+        (err) => console.log(err)
       );
 
-    this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$, sub7$);
+    const sub8$ = this.wizardStore
+      .select(assessReducers.getCapabilities)
+      .pipe(distinctUntilChanged())
+      .subscribe(
+        (capabilities) => (this.lookupCapabilities = capabilities),
+        (err) => console.log(err)
+      );
+
+    this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$, sub7$, sub8$);
   }
 
   /**
@@ -317,11 +325,11 @@ export class WizardComponent extends Measurements
             .pipe(pluck('assessmentTypes'), distinctUntilChanged())
             .subscribe(
               (arr: Assessment[]) => this.loadAssessments(rollupId, arr, meta),
-              err => console.log(err)
+              (err) => console.log(err)
             );
           this.subscriptions.push(sub1$);
         },
-        err => console.log(err)
+        (err) => console.log(err)
       );
     this.subscriptions.push(sub$);
     this.assessStore.dispatch(new LoadAssessmentsByRollupId(rollupId));
@@ -333,11 +341,7 @@ export class WizardComponent extends Measurements
    * @param  {Partial<Assess3Meta>} meta
    * @returns void
    */
-  public loadAssessments(
-    rollupId: string,
-    arr: Array<Assessment>,
-    meta: Partial<Assess3Meta>
-  ): void {
+  public loadAssessments(rollupId: string, arr: Array<Assessment>, meta: Partial<Assess3Meta>): void {
     if (!arr || arr.length === 0) {
       return;
     }
@@ -350,20 +354,21 @@ export class WizardComponent extends Measurements
      * making the model a collection of all the assessments matching the given rollup id, plus a summary of all the
      * assessed objects to make it easier to use the existing code to display the questions and existing answers
      */
-    const summary = new Assessment();
+
     const typedAssessments = {};
-    arr.forEach(assessment => {
-      summary.id = assessment.id;
-      summary.type = assessment.type;
-      summary.name = assessment.name;
-      summary.description = assessment.description;
-      summary.created = assessment.created;
-      summary.modified = assessment.modified;
-      summary.assessmentMeta = assessment.assessmentMeta;
-      summary.assessment_objects = summary.assessment_objects.concat(
+    const summary = arr.map((assessment) => {
+      const curSummary = new Assessment();
+      curSummary.id = assessment.id;
+      curSummary.type = assessment.type;
+      curSummary.name = assessment.name;
+      curSummary.description = assessment.description;
+      curSummary.created = assessment.created;
+      curSummary.modified = assessment.modified;
+      curSummary.assessmentMeta = assessment.assessmentMeta;
+      curSummary.assessment_objects = summary.assessment_objects.concat(
         assessment.assessment_objects
       );
-      summary.created_by_ref = meta.created_by_ref = assessment.created_by_ref;
+      curSummary.created_by_ref = meta.created_by_ref = assessment.created_by_ref;
       if (!assessment.metaProperties) {
         assessment.metaProperties = { published: false };
         if (!assessment.metaProperties.rollupId) {
@@ -371,7 +376,9 @@ export class WizardComponent extends Measurements
         }
       }
       if (
-        assessment.assessment_objects.every(el => el.stix.type === StixCoreEnum.INDICATOR)
+        assessment.assessment_objects.every(
+          el => el.stix.type === StixCoreEnum.INDICATOR
+        )
       ) {
         typedAssessments[this.sidePanelOrder[0]] = assessment;
         meta.includesIndicators = true;
@@ -384,7 +391,7 @@ export class WizardComponent extends Measurements
         meta.includesMitigations = true;
       } else if (
         assessment.assessment_objects.every(
-          el => el.stix.type === StixEnum.OBJECT_ASSESSMENT
+          (el) => el.stix.type === StixEnum.OBJECT_ASSESSMENT
         )
       ) {
         typedAssessments[this.sidePanelOrder[2]] = assessment;
@@ -394,6 +401,7 @@ export class WizardComponent extends Measurements
           assessment
         );
       }
+      return summary;
     });
 
     this.model = {
@@ -697,11 +705,7 @@ export class WizardComponent extends Measurements
    * @param assessment
    * @returns {void}
    */
-  public updateRisks(
-    option: any,
-    measurement: AssessmentQuestion,
-    assessment: any
-  ): void {
+  public updateRisks(option: any, measurement: AssessmentQuestion, assessment: any): void {
     const newRisk = option.selected.value;
     // update measurement value in assessments
     const assessmentMeasurementToUpdate = assessment.measurements.find(
@@ -806,7 +810,7 @@ export class WizardComponent extends Measurements
     this.updateRatioOfAnswerQuestions();
   }
 
-  /*
+  /**
    * @description clicked back a page
    * @param {UIEvent} event optional
    * @returns {void}
@@ -828,7 +832,7 @@ export class WizardComponent extends Measurements
     this.updateRatioOfAnswerQuestions();
   }
 
-  /*
+  /**
    * @description
    * @param {UIEvent} event optional
    */
@@ -839,7 +843,7 @@ export class WizardComponent extends Measurements
     this.saveAssessments();
   }
 
-  /*
+  /**
    * @description clicked next page
    * @param {UIEvent} event optional
    * @return {void}
@@ -875,7 +879,7 @@ export class WizardComponent extends Measurements
     this.updateRatioOfAnswerQuestions();
   }
 
-  /*
+  /**
    * @description
    * @return {void}
    */
@@ -887,7 +891,7 @@ export class WizardComponent extends Measurements
     this.updateSummaryChart();
   }
 
-  /*
+  /**
    * @description
    * @param measurement 
    * @param option 
@@ -931,7 +935,7 @@ export class WizardComponent extends Measurements
     }
   }
 
-  /*
+  /**
    * @description
    * @return {boolean} true if first page of first side panel otherwise false
    */
@@ -941,7 +945,7 @@ export class WizardComponent extends Measurements
     return isFirstPanel && this.isFirstPage();
   }
 
-  /*
+  /**
    * @description
    * @return {boolean} true if first page of first side panel otherwise false
    */
@@ -949,7 +953,7 @@ export class WizardComponent extends Measurements
     return this.page <= 1;
   }
 
-  /*
+  /**
    * @description
    * @return {boolean} true if title is empty otherwise false
    */
@@ -1025,38 +1029,8 @@ export class WizardComponent extends Measurements
     if (assessedObjects) {
       // Go through and build each assessment
       // We do this so we can just save all the assessments later.
-      this.assessments = assessedObjects
-        // .map((el) => el.attributes)
-        .map(assessedObject => {
-          const assessment = new WizardAssessment();
-          if (
-            assessedObject.metaProperties &&
-            assessedObject.metaProperties.groupings
-          ) {
-            assessment.groupings = assessedObject.metaProperties.groupings;
-          } else {
-            if (assessedObject.type === StixEnum.OBJECT_ASSESSMENT) {
-              const objectAssessment = assessedObject as ObjectAssessment;
-              const assessmentGroup = {
-                groupName: objectAssessment.object_ref,
-                groupValue: objectAssessment.name,
-              };
-              assessment.groupings = [assessmentGroup];
-            }
-          }
-          assessment.id = assessedObject.id;
-          assessment.name = assessedObject.name;
-          assessment.description = assessedObject.description;
-          assessment.measurements = assessedObject.id
-            ? this.buildMeasurements(assessedObject.id)
-            : [];
-          assessment.type = assessedObject.type;
-          const risk = this.getRisk(assessment.measurements);
-          assessment.risk = risk >= 0 ? risk : -1;
-          return assessment;
-        });
+      this.assessments = assessedObjects.map((assessedObject) => this.createWizardQuestion(assessedObject));
       this.groupings = this.buildGrouping(this.assessments);
-
       const assessmentObjectsGroups = this.doObjectGroupings(this.assessments);
       // console.log(`assessmentObjectGroups: ${JSON.stringify(assessmentObjectsGroups)}`);
       const keys = Object.keys(assessmentObjectsGroups).sort();
@@ -1090,19 +1064,50 @@ export class WizardComponent extends Measurements
 
   /**
    * @description
-   * @param stixObjects
+   *  take a stix assessed object and adapt it into a question for the UI
+   * @param {Stix} assessedObject
+   * @returns WizardQuestion
+   */
+  public createWizardQuestion(assessedObject: Stix): WizardQuestion {
+    const assessment = new WizardQuestion();
+    if (
+      assessedObject.metaProperties &&
+      assessedObject.metaProperties.groupings
+    ) {
+      assessment.groupings = assessedObject.metaProperties.groupings;
+    } else {
+      if (assessedObject.type === StixEnum.OBJECT_ASSESSMENT) {
+        const objectAssessment = assessedObject as ObjectAssessment;
+        const assessmentGroup = {
+          groupingName: objectAssessment.name,
+          groupingValue: this.lookupCategory(objectAssessment.object_ref),
+        };
+        assessment.groupings = [assessmentGroup];
+      }
+    }
+    assessment.id = assessedObject.id;
+    assessment.name = assessedObject.name;
+    assessment.description = assessedObject.description;
+    assessment.measurements = assessedObject.id
+      ? this.buildMeasurements(assessedObject.id)
+      : [];
+    assessment.type = assessedObject.type;
+    const risk = this.getRisk(assessment.measurements);
+    assessment.risk = risk >= 0 ? risk : -1;
+    return assessment;
+  }
+
+  /**
+   * @description
+   * @param wizardQuestions
    * @return {any}
    */
-  private buildGrouping(stixObjects: WizardAssessment[]): any {
+  public buildGrouping(wizardQuestions: WizardQuestion[]): any[] {
     const groupings = [];
-    stixObjects.forEach(stixObject => {
+    wizardQuestions.forEach(stixObject => {
       const groupingStages = stixObject.groupings;
       if (!groupingStages) {
         const phaseName = 'unknown';
-        // if (!groupings[phaseName]) {
-        //   const description = 'unknown description';
-        //   groupings[phaseName] = description;
-        // }
       } else {
         groupingStages.forEach(groupingStage => {
           const phaseName = groupingStage.groupingValue;
@@ -1111,9 +1116,6 @@ export class WizardComponent extends Measurements
             if (description) {
               groupings[phaseName] = description;
             }
-            // else {
-            //   groupings[phaseName] = phaseName;
-            // }
           }
         });
       }
@@ -1126,7 +1128,7 @@ export class WizardComponent extends Measurements
    * @param stixObjects
    * @return {any}
    */
-  private doObjectGroupings(stixObjects): any {
+  public doObjectGroupings(stixObjects): any {
     const hash = {};
     stixObjects.forEach(stixObject => {
       const groupingStages = stixObject.groupings;
@@ -1164,9 +1166,7 @@ export class WizardComponent extends Measurements
    * @param {any} assessmentGroup
    * @return {number}
    */
-  public calculateGroupRisk(
-    assessmentGroup: any = this.currentAssessmentGroup
-  ): number {
+  public calculateGroupRisk(assessmentGroup: any = this.currentAssessmentGroup): number {
     let groupRisk = 0; // based on the default value from the calculateRisk function below
     if (
       assessmentGroup &&
@@ -1187,7 +1187,7 @@ export class WizardComponent extends Measurements
    * @description update the chart data
    * @return {void}
    */
-  private updateChart(): void {
+  public updateChart(): void {
     const chartData = this.doughnutChartData.slice();
     chartData[0].data = this.currentAssessmentGroup
       ? this.currentAssessmentGroup.riskArray
@@ -1242,7 +1242,7 @@ export class WizardComponent extends Measurements
         'capabilities',
         'indicators',
       ];
-      assessmentTypes.forEach(element => {
+      assessmentTypes.forEach((element) => {
         if (this[element] && this[element].length > 0) {
           this.openedSidePanel = element as SidePanelName;
           // reload questions
@@ -1284,10 +1284,12 @@ export class WizardComponent extends Measurements
     this.openedSidePanel = 'summary';
   }
 
-  public riskReduction(
-    currentTotalRisk: number[],
-    currentRisk: number[]
-  ): number[] {
+  /**
+   * @param  {number[]} currentTotalRisk
+   * @param  {number[]} currentRisk
+   * @returns number
+   */
+  public riskReduction(currentTotalRisk: number[], currentRisk: number[]): number[] {
     let result: number[] = [];
     if (currentRisk) {
       result = currentTotalRisk.map(
@@ -1302,7 +1304,7 @@ export class WizardComponent extends Measurements
    * @param title
    * @return {string}
    */
-  private splitTitle(title?: string): string {
+  public splitTitle(title?: string): string {
     const split = title
       ? title.split('-')
       : this.currentAssessmentGroup.name.split('-');
@@ -1319,10 +1321,7 @@ export class WizardComponent extends Measurements
    * @param {any}
    * @return {Assessment}
    */
-  private generateXUnfetterAssessment(
-    tempModel: TempModel,
-    assessmentMeta: Assess3Meta
-  ): Assessment {
+  public generateXUnfetterAssessment(tempModel: TempModel, assessmentMeta: Assess3Meta): Assessment {
     const assessment = new Assessment();
     assessment.assessmentMeta = assessmentMeta;
     assessment.name = this.meta.title;
@@ -1331,7 +1330,7 @@ export class WizardComponent extends Measurements
     assessment.created_by_ref = this.meta.created_by_ref;
     const assessmentSet = new Set<AssessmentObject>();
 
-    Object.keys(tempModel).forEach(assessmentId => {
+    Object.keys(tempModel).forEach((assessmentId) => {
       const assessmentObj = tempModel[assessmentId];
       const temp = new AssessmentObject();
       const stix = new Stix();
@@ -1343,7 +1342,7 @@ export class WizardComponent extends Measurements
       temp.stix = stix;
       temp.questions = [];
       if (assessmentObj.measurements !== undefined) {
-        temp.questions = assessmentObj.measurements.filter(measurement => {
+        temp.questions = assessmentObj.measurements.filter((measurement) => {
           return (
             measurement.selected_value && measurement.selected_value.risk >= 0
           );
@@ -1351,7 +1350,7 @@ export class WizardComponent extends Measurements
       }
       temp.risk =
         temp.questions
-          .map(question => question.risk)
+          .map((question) => question.risk)
           .reduce((prev, cur) => (prev += cur), 0) / temp.questions.length;
       assessmentSet.add(temp);
     });
@@ -1368,7 +1367,7 @@ export class WizardComponent extends Measurements
   private saveAssessments(): void {
     if (this.model) {
       const assessments = Object.values(this.model.relationships);
-      assessments.forEach(assessment => {
+      assessments.forEach((assessment) => {
         assessment.modified = this.publishDate.toISOString();
         assessment.description = this.meta.description;
         if (this.meta.created_by_ref) {
@@ -1378,12 +1377,27 @@ export class WizardComponent extends Measurements
       this.wizardStore.dispatch(new SaveAssessment(assessments));
     } else {
       const assessments = this.sidePanelOrder
-        .map(name => this.assessmentTypeGroups[name])
-        .filter(el => el !== undefined)
-        .map(el => el.tempModel)
-        .filter(el => el !== undefined)
-        .map(el => this.generateXUnfetterAssessment(el, this.meta));
+        .map((name) => this.assessmentTypeGroups[name])
+        .filter((el) => el !== undefined)
+        .map((el) => el.tempModel)
+        .filter((el) => el !== undefined)
+        .map((el) => this.generateXUnfetterAssessment(el, this.meta));
       this.wizardStore.dispatch(new SaveAssessment(assessments));
     }
+  }
+
+  /**
+   * @description lookup the category associated with the given 
+   *  capability id
+   * @param  {string} id of a capability
+   * @returns string - category of the capability, otherwise the id given
+   */
+  private lookupCategory(id: string): string {
+    if (!id) {
+      return id;
+    }
+
+    const capability = this.lookupCapabilities.find((_) => _.id === id);
+    return (capability && capability.category) ? capability.category : id;
   }
 }

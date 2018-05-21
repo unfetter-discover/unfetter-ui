@@ -8,6 +8,7 @@ import { Stix } from 'stix/unfetter/stix';
 import { SortHelper } from '../../../global/static/sort-helper';
 import * as fromApp from '../../../root-store/app.reducers';
 import * as assessmentActions from './assess.actions';
+import { Capability } from 'stix/assess/v3/baseline/capability';
 
 export interface AssessFeatureState extends fromApp.AppState {
     assessment: Assessment
@@ -17,6 +18,7 @@ export interface AssessState {
     assessment: Assessment;
     backButton: boolean;
     baselines?: AssessmentSet[];
+    capabilities: Capability[];
     currentBaseline?: AssessmentSet;
     currentBaselineQuestions?: ObjectAssessment[];
     failedToLoad: boolean;
@@ -33,6 +35,7 @@ const genAssessState = (state?: Partial<AssessState>) => {
         assessment: new Assessment(),
         backButton: false,
         baselines: [],
+        capabilities: [],
         failedToLoad: false,
         finishedLoading: false,
         page: 1,
@@ -87,6 +90,11 @@ export function assessmentReducer(state = initialState, action: assessmentAction
             return genAssessState({
                 ...state,
                 baselines: [...action.payload],
+            });
+        case assessmentActions.SET_CAPABILITIES:
+            return genAssessState({
+                ...state,
+                capabilities: [ ...action.payload ],
             });
         case assessmentActions.SET_CURRENT_BASELINE:
             return genAssessState({
@@ -202,3 +210,8 @@ export const getFailedToLoad = createSelector(
     getAssessState,
     (state) => state.failedToLoad
 );
+
+export const getCapabilities = createSelector(
+    getAssessState,
+    (state) => state.capabilities,
+)

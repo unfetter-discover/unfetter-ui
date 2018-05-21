@@ -169,10 +169,10 @@ describe('WizardComponent', () => {
 
   it('should know the next side panel with data, case 3', () => {
     const indicators = UnfetterIndicatorMockFactory.mockMany(1);
-    const sensors = StixMockFactory.mockMany(1);
+    const capabilities = StixMockFactory.mockMany(1);
     component.indicators = indicators;
-    component.sensors = sensors;
-    component.openedSidePanel = 'sensors';
+    component.capabilities = capabilities;
+    component.openedSidePanel = 'capabilities';
     expect(component).toBeTruthy();
     const nextPanel = component.determineNextSidePanel();
     expect(nextPanel).toBeDefined();
