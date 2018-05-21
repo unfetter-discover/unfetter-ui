@@ -12,6 +12,7 @@ import { Assess3Meta } from 'stix';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { AssessmentObjectMockFactory } from 'stix/assess/v2/assessment-object.mock';
 import { Assessment } from 'stix/assess/v3/assessment';
+import { ObjectAssessmentMockFactory } from 'stix/assess/v3/baseline/object-assessment.mock';
 import * as Indicator from 'stix/unfetter/indicator';
 import { Stix } from 'stix/unfetter/stix';
 import { StixEnum } from 'stix/unfetter/stix.enum';
@@ -157,9 +158,9 @@ describe('WizardComponent', () => {
 
   it('should know the next side panel with data, case 2', () => {
     const indicators = UnfetterIndicatorMockFactory.mockMany(1);
-    const sensors = StixMockFactory.mockMany(1);
+    const capabilities = ObjectAssessmentMockFactory.mockMany(1);
     component.indicators = indicators;
-    component.sensors = sensors;
+    component.capabilities = capabilities;
     component.openedSidePanel = 'indicators';
     expect(component).toBeTruthy();
     const nextPanel = component.determineNextSidePanel();
@@ -169,7 +170,7 @@ describe('WizardComponent', () => {
 
   it('should know the next side panel with data, case 3', () => {
     const indicators = UnfetterIndicatorMockFactory.mockMany(1);
-    const capabilities = StixMockFactory.mockMany(1);
+    const capabilities = ObjectAssessmentMockFactory.mockMany(1);
     component.indicators = indicators;
     component.capabilities = capabilities;
     component.openedSidePanel = 'capabilities';
@@ -218,7 +219,7 @@ describe('WizardComponent', () => {
     expect(component.buttonLabel).toEqual('CONTINUE');
 
     component.buttonLabel = 'SAVE';
-    component.onOpenSidePanel('sensors');
+    component.onOpenSidePanel('capabilities');
     expect(component.buttonLabel).toEqual('CONTINUE');
 
     component.buttonLabel = 'SAVE';
@@ -236,7 +237,7 @@ describe('WizardComponent', () => {
     expect(title).toBeTruthy();
     expect(chart).toBeTruthy();
 
-    component.onOpenSidePanel('sensors');
+    component.onOpenSidePanel('capabilities');
     fixture.detectChanges();
     title = fixture.debugElement.query(By.css('#summary-chart-title'));
     expect(title).toBeFalsy();
@@ -409,7 +410,7 @@ describe('WizardComponent', () => {
     component.summaryDoughnutChartData = null;
     component.mitigations = null;
     component.indicators = null;
-    component.sensors = null;
+    component.capabilities = null;
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([]);
 
@@ -460,14 +461,14 @@ describe('WizardComponent', () => {
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([.25, .75]);
 
-    component.sensors = StixMockFactory.mockMany(1);
-    component.sensors[0].metaProperties = { published: false, groupings: [{ groupingValue: 'group1' }] };
-    component.sensors[0].id = 'happyjack';
+    component.capabilities = ObjectAssessmentMockFactory.mockMany(1);
+    component.capabilities[0].metaProperties = { published: false, groupings: [{ groupingValue: 'group1' }] };
+    component.capabilities[0].id = 'happyjack';
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([.25, .75]);
 
     component.indicators[0].id = 'bellystaple';
-    component.sensors[0].id = 'jumpyflashpan';
+    component.capabilities[0].id = 'jumpyflashpan';
     component.model.attributes.assessment_objects.push({
       stix:
         {
