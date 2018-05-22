@@ -171,19 +171,21 @@ export class Measurements {
     return measurement;
   }
 
-  protected calculateMeasurementsAvgRisk(measurements: any[]) {
-    let validMeasurements = measurements.filter(
-      measurement => measurement.risk !== -1
-    );
-    if (validMeasurements && validMeasurements.length) {
-      return (
-        validMeasurements
-          .map(assMes => assMes.risk)
-          .reduce((prev, cur) => (prev += cur), 0) / validMeasurements.length
-      );
-    } else {
+  /**
+   * @description avg the risk of all the measurement object
+   * @param  {any[]} measurements an object w/ a risk field
+   * @returns number -1 is the measurements are empty others an avg of the risk
+   */
+  protected calculateMeasurementsAvgRisk(measurements: any[]): number {
+    const validMeasurements = measurements.filter((measurement) => measurement.risk !== -1);
+    if (!validMeasurements || validMeasurements.length === 0) {
       return -1;
     }
+
+    const sum = validMeasurements
+      .map((assMes) => assMes.risk)
+      .reduce((prev, cur) => prev += cur, 0);
+    return sum / validMeasurements.length;
   }
 
   protected updateQuestionRisk(question, risk) {
