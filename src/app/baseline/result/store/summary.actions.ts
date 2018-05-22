@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Baseline } from '../../../models/baseline/baseline';
+import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
 import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
 import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
 
@@ -30,7 +30,7 @@ export class LoadSingleAssessmentSummaryData implements Action {
 export class SetAssessments implements Action {
     public readonly type = SET_ASSESSMENTS;
 
-    constructor(public payload: Baseline[]) { }
+    constructor(public payload: AssessmentSet[]) { }
 }
 
 export class FinishedLoading implements Action {

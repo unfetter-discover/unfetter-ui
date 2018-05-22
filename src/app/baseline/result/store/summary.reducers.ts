@@ -1,11 +1,12 @@
-import * as summaryActions from './summary.actions';
-import { Baseline } from '../../../models/baseline/baseline';
+import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
 import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
 import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
+import { Baseline } from '../../../models/baseline/baseline';
+import * as summaryActions from './summary.actions';
 
 export interface SummaryState {
-    summary: Baseline;
-    summaries: Baseline[];
+    summary: AssessmentSet;
+    summaries: AssessmentSet[];
     finishedLoading: boolean;
     killChainData: RiskByKillChain[];
     finishedLoadingKillChainData: boolean;
@@ -17,8 +18,8 @@ export interface SummaryState {
 
 const genState = (state?: Partial<SummaryState>) => {
     const tmp = {
-        summary: new Baseline(),
-        summaries: [],
+        summary: new AssessmentSet(),
+        summaries: new Array<AssessmentSet>(),
         finishedLoading: false,
         killChainData: [],
         finishedLoadingKillChainData: false,

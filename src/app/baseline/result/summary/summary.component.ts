@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { Identity } from 'stix';
+import { Identity, AssessmentSet } from 'stix';
 import { UsersService } from '../../../core/services/users.service';
 import { slideInOutAnimation } from '../../../global/animations/animations';
 import { MasterListDialogTableHeaders } from '../../../global/components/master-list-dialog/master-list-dialog.component';
@@ -30,9 +30,10 @@ export class SummaryComponent implements OnInit, OnDestroy {
   baselineId: string;
 
   dates: any[];
-  summaries: Baseline[];
-  summary: Baseline;
-  finishedLoading = false;
+  summaries: AssessmentSet[];
+  summary: AssessmentSet;
+  // TODO fix
+  finishedLoading = true;
   private identities: Identity[];
 
   masterListOptions = {
@@ -82,7 +83,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
         this.baselineId = params.baselineId || '';
         this.summary = undefined;
         this.summaries = undefined;
-        this.finishedLoading = false;
+        // TODO fix
+        this.finishedLoading = true; // false;
         this.store.dispatch(new CleanAssessmentResultData());
         const sub$ = this.userStore
           .select('users')
@@ -118,12 +120,14 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public listenForDataChanges(): void {
+    console.log('listening');
     const sub1$ = this.store
       .select('summary')
       .pluck('summaries')
       .distinctUntilChanged()
-      .filter((arr: Baseline[]) => arr && arr.length > 0)
-      .subscribe((arr: Baseline[]) => {
+      .filter((arr: AssessmentSet[]) => arr && arr.length > 0)
+      .subscribe((arr: AssessmentSet[]) => {
+        console.log('data changed');
         this.summaries = [...arr];
         this.summary = { ...arr[0] };
       },
@@ -137,6 +141,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .subscribe((done: boolean) => {
         if (this.summary === undefined) {
           // fetching the summary failed, set all flags to done
+          console.log('load failed');
           this.setLoadingToDone();
           return;
         }
@@ -163,18 +168,18 @@ export class SummaryComponent implements OnInit, OnDestroy {
         if (!summaries || summaries.length === 0) {
           return '';
         }
-        if (summaries[0].object_ref) {
-          // Get object reference to determine type
-          let o$ = this.baselineService.getCapabilityById(summaries[0].object_ref)
-            .subscribe(
-              (capability) => {
-                if (capability !== undefined) {
-                  this.baselineName = Observable.of(summaries[0].name + ' - ' + capability.name);
-                }
-              },
-              (err) => console.log('error getting capability reference from object assessment', err)
-            );
-        }
+        // if (summaries[0].object_ref) {
+        //   // Get object reference to determine type
+        //   let o$ = this.baselineService.getCapabilityById(summaries[0].object_ref)
+        //     .subscribe(
+        //       (capability) => {
+        //         if (capability !== undefined) {
+        //           this.baselineName = Observable.of(summaries[0].name + ' - ' + capability.name);
+        //         }
+        //       },
+        //       (err) => console.log('error getting capability reference from object assessment', err)
+        //     );
+        // }
         return summaries[0].name;
       });
 
