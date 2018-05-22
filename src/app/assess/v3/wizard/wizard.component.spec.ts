@@ -543,7 +543,6 @@ describe('WizardComponent', () => {
     expect(meta.description).toEqual(desc);
     expect(meta.includesIndicators).toBeTruthy();
     expect(meta.includesMitigations).toBeTruthy();
-    expect(meta.baselineRef).toBeTruthy();
     expect(component.model.attributes.assessment_objects.length).toEqual(3);
     expect(component.model.relationships.indicators).toEqual(indicators);
     expect(component.model.relationships.mitigations).toEqual(mitigations);
