@@ -69,11 +69,6 @@ export function fullAssessmentResultReducer(state = initialState, action: FullAs
                 ...state,
                 assessmentTypes: [...action.payload],
             };
-        case fullAssessmentResultActions.SET_BASELINE:
-            return {
-                ...state,
-                fullAssessment: { ...action.payload } as Assessment,
-            };
         case fullAssessmentResultActions.FINISHED_LOADING:
             return {
                 ...state,
