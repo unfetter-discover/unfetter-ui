@@ -1,6 +1,6 @@
 export const patternHelp = `
-    <h4>Pattern (Required)</h4>
-    <p>A pattern is pseudocode that describes the analytic.  Any format of pseudocode is acceptable, however Unfetter will check patterns as valid 
+    <h4>Pseudocode (Required)</h4>
+    <p>Pseudocode describes the analytic.  Any format of pseudocode is acceptable, however Unfetter will check pseudocode as valid 
         <a href="http://docs.oasis-open.org/cti/stix/v2.0/stix-v2.0-part5-stix-patterning.html" target=_blank>STIX 2 Patterning Language</a>.  Valid
         STIX 2 patterns will yield additional benefits in Unfetter.
     </p>

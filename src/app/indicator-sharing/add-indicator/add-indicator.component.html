@@ -59,11 +59,11 @@
                 </div>
             </mat-step>
 
-            <mat-step label="Pattern {{ form.get('pattern').status !== 'VALID' ? '(Required Fields Remaining)' : '' }}" [stepControl]="form.get('pattern')">
+            <mat-step label="Analytic {{ form.get('pattern').status !== 'VALID' ? '(Required Fields Remaining)' : '' }}" [stepControl]="form.get('pattern')">
                 <help-window [helpHtml]="patternHelpHtml"></help-window>
 
                 <mat-form-field class="full-width mb-6">
-                    <textarea matInput required placeholder="Pattern (STIX Patterning Optional)" formControlName="pattern" (keyup)="patternChange(form.get('pattern'))"></textarea>
+                    <textarea matInput required placeholder="Pseudocode (Optional: Use STIX patterns to get automated translations)" formControlName="pattern" (keyup)="patternChange(form.get('pattern'))"></textarea>
                     <mat-error *ngIf="form.get('pattern').hasError('required')">
                         Pattern is <strong>required</strong>
                     </mat-error>
