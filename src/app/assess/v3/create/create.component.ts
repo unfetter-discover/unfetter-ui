@@ -19,6 +19,7 @@ export class CreateComponent implements OnInit {
   public assessMeta: Assess3Meta;
   public form: FormGroup;
   public baselines: Observable<AssessmentSet[]>;
+  public showToSelectBaselines = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -37,6 +38,7 @@ export class CreateComponent implements OnInit {
   }
 
   /**
+   * @description dispatch events to store
    * @returns void
    */
   public fetchData(): void {
@@ -45,14 +47,11 @@ export class CreateComponent implements OnInit {
   }
 
   /**
+   * @description listen to redux store changes
    * @returns void
    */
   public listenForChanges(): void {
-    this.baselines = this.store
-      .select('assessment')
-      .pluck<object, AssessmentSet[]>('baselines')
-      .filter((el) => el !== undefined)
-      .distinctUntilChanged();
+    this.baselines = this.store.select(assessReducers.getSortedBaselines);
   }
 
   /**
@@ -73,7 +72,6 @@ export class CreateComponent implements OnInit {
    */
   public submitForm(): void {
     this.assessMeta = this.formToAssessment(this.form);
-    // TODO: pass thru the correct types
     this.store.dispatch(new assessActions.StartAssessment(this.assessMeta as any));
   }
 
@@ -119,5 +117,15 @@ export class CreateComponent implements OnInit {
    */
   public baselineSelected(baselineId: string): void {
     this.form.get('baselineRef').patchValue(baselineId);
+  }
+
+  /**
+   * @description
+   * @param index
+   * @param item
+   * @returns {number}
+   */
+  public trackByFn(index: number, item: any): number {
+    return item || item.id || index;
   }
 }

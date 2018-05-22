@@ -1,7 +1,7 @@
 <div class="center">
     <div class="mb-18 unf-mat-card assess-create-card">
         <mat-card>
-            <form class="assess-form" [formGroup]="form" novalidate (ngSubmit)="submitForm()">
+            <form class="assess-form" [formGroup]="form" novalidate (ngSubmit)="submitForm()" autocomplete="off">
                 <mat-card-content>
                     <mat-form-field class="full-width">
                         <input matInput placeholder="Title" [value]="assessMeta.title" formControlName="title" (blur)="onTitleBlur($event)">
@@ -14,18 +14,41 @@
                         <textarea matInput placeholder="Description" [value]="assessMeta.description" formControlName="description"></textarea>
                     </mat-form-field>
                     <created-by-ref (orgSelected)="orgSelected($event)"></created-by-ref>
-                    <div class="flex flex-cols">
+                    <div class="flex-cols">
                         <span class="mat-title">Compile Categories to Assess*</span>
                         <mat-checkbox class="" [value]="assessMeta.includesIndicators" color="primary" formControlName="includesIndicators">Indicators</mat-checkbox>
                         <mat-checkbox class="" [value]="assessMeta.includesMitigations" color="primary" formControlName="includesMitigations">Mitigations</mat-checkbox>
-                        <!-- <mat-checkbox class="" [value]="assessMeta.includesSensors" color="primary" formControlName="includesSensors">Sensors</mat-checkbox> -->
-                        <mat-form-field>
-                            <mat-select placeholder="Baseline">
-                                <mat-option *ngFor="let baseline of (baselines | async)" [value]="baseline.id">
-                                    {{ baseline.name }}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
+                        <mat-checkbox class="" [value]="showToSelectBaselines" color="primary" (change)="showToSelectBaselines = !showToSelectBaselines">Capabilities</mat-checkbox>
+                        <span *ngIf="showToSelectBaselines">
+                            <mat-radio-group formControlName="baselineRef" *ngIf="(baselines | async); else createNewBaseline">
+                                <mat-radio-button color="primary" *ngFor="let baseline of (baselines | async); trackBy: trackByFn" [value]="baseline.id">
+                                    <div class="flex-cols">
+                                        <span class="mat-subheader-1">{{ baseline.name }}</span>
+                                        <span class="mat-caption">
+                                            {{ (baseline.assessments || []).length }} weighted capabilities
+                                        </span>
+                                    </div>
+                                </mat-radio-button>
+                            </mat-radio-group>
+                            <ng-template #createNewBaseline>
+                                <div class="flex-cols center">
+                                    <span class="center empty">
+                                        <mat-icon>domain</mat-icon>
+                                    </span>
+                                    <span class="center mat-body-2">
+                                        No baselines created!
+                                    </span>
+                                    <span class="center pad-24 faded-text">
+                                        Your organization does not appear to have any baselines.  Create a baseline with weightings to start assessing capabilities in your environment.
+                                    </span>
+                                    <span class="center pad-24">
+                                        <a routerLink="/baseline/create" mat-raised-button color="primary">
+                                            Create baseline
+                                        </a>
+                                    </span>
+                                </div>
+                            </ng-template>
+                        </span>
                     </div>
                 </mat-card-content>
                 <mat-card-actions>

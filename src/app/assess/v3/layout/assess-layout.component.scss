@@ -20,3 +20,18 @@
     margin-top: 24px;
     margin-left: 56px;
 }
+
+$icon-size: 48px;
+
+.empty {
+    mat-icon {
+        font-size: $icon-size;
+        width: $icon-size;
+        height: $icon-size;
+    }
+}
+
+.flex-cols {
+    display: flex;
+    flex-direction: columns;
+}

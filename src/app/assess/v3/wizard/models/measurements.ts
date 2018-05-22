@@ -3,189 +3,199 @@
  * Builds out the referenced objects.
  */
 export class Measurements {
+  protected changeMeasurement(measurement, selected_value) {
+    measurement.selected_value = selected_value;
+    measurement.risk = parseFloat(selected_value.risk);
+    return measurement;
+  }
+  /**
+   * Build Measurements
+   *
+   * @param {String} A string representing the data type.  Because it can only be 'indicator' or 'course-of-action'
+   * only need to look at the first five characters in the string
+   *
+   * @return {Object} will build the measurements based on the type
+   */
+  protected buildMeasurements(dataType): any[] {
+    const measurements = [];
+    if (dataType.substr(0, 6) === 'course') {
+      // If the data type starts with course of action
+      const policyOptions = [
+        'No Policy',
+        'Informal Policy',
+        'Partial Written Policy',
+        'Written Policy',
+        'Approved Written Policy',
+      ];
+      const implementationOptions = [
+        'Not Implemented',
+        'Parts of Policy Implemented',
+        'Implemented on Some Systems',
+        'Implemented on Most Systems',
+        'Implemented on All Systems',
+      ];
 
-    protected changeMeasurement(measurement, selected_value) {
-        measurement.selected_value = selected_value;
-        measurement.risk = parseFloat(selected_value.risk);
-        return measurement;
+      const automationOptions = [
+        'Not Automated',
+        'Parts of Policy Automated',
+        'Automated on Some Systems',
+        'Automated on Most Systems',
+        'Automated on All Systems',
+      ];
+
+      const reportingOptions = [
+        'Not Reported',
+        'Parts of Policy Reported',
+        'Reported on Some Systems',
+        'Reported on Most Systems',
+        'Reported on All Systems',
+      ];
+
+      measurements.push(this.createMeasurement('policy', -1, policyOptions));
+      measurements.push(
+        this.createMeasurement('implementation', -1, implementationOptions)
+      );
+      measurements.push(
+        this.createMeasurement('automation', -1, automationOptions)
+      );
+      measurements.push(
+        this.createMeasurement('reporting', -1, reportingOptions)
+      );
+    } else if (dataType.substr(0, 6) === 'indicator') {
+      // Then, assuming its an indicator
+      const indicatorOption = [
+        'Nothing',
+        'Local Logging',
+        'Central Logging, No Alerting',
+        'Alerting, but false positives/negatives',
+        'Real Time Alerting, No False Positives/Negatives',
+      ];
+
+      measurements.push(this.createMeasurement('policy', -1, indicatorOption));
+    } else {
+      // generic question options
+      const genericOptions = [
+        'no coverage',
+        'some coverage',
+        'half coverage',
+        'most critical systems covered',
+        'all critical systems covered',
+      ];
+
+      measurements.push(this.createMeasurement('coverage', -1, genericOptions));
     }
-    /**
-     * Build Measurements
-     *
-     * @param {String} A string representing the data type.  Because it can only be 'indicator' or 'course-of-action'
-     * only need to look at the first five characters in the string
-     *
-     * @return {Object} will build the measurements based on the type
-     */
+    return measurements;
+  }
 
-    protected buildMeasurements(dataType) {
+  /**
+   * @description format number as string w/ a given precision
+   * @param  number risk
+   * @returns string
+   */
+  protected displayRisk(risk: number): string {
+    return Number(risk * 100).toFixed(2);
+  }
 
-        const measurements = [];
-        if (dataType.substr(0, 6) === 'course') {
-            // If the data type starts with course of action
-            const policyOptions = ['No Policy',
-                'Informal Policy',
-                'Partial Written Policy',
-                'Written Policy',
-                'Approved Written Policy'
-            ];
-            const implementationOptions = ['Not Implemented',
-                'Parts of Policy Implemented',
-                'Implemented on Some Systems',
-                'Implemented on Most Systems',
-                'Implemented on All Systems'
-            ];
+  protected calculateRisk(assessments): number {
+    let risk = 0;
+    assessments.forEach(assessment => {
+      if (assessment.risk && typeof assessment.risk === 'number') {
+        const r = assessment.risk === -1 ? 1 : assessment.risk;
+        risk += r;
+      }
+    });
+    return risk / assessments.length;
+  }
 
-            const automationOptions = ['Not Automated',
-                'Parts of Policy Automated',
-                'Automated on Some Systems',
-                'Automated on Most Systems',
-                'Automated on All Systems'
-            ];
+  protected getRisk(measureObject) {
+    let risk = 0;
+    let count = 0;
+    measureObject.forEach(measurement => {
+      const selected_value = measurement.selected_value;
+      risk = risk + parseFloat(selected_value.risk);
+      count = count + 1;
+    });
+    return risk / measureObject.length;
+  }
 
-            const reportingOptions = ['Not Reported',
-                'Parts of Policy Reported',
-                'Reported on Some Systems',
-                'Reported on Most Systems',
-                'Reported on All Systems'
-            ];
-
-            measurements.push(this.createMeasurement('policy', -1, policyOptions));
-            measurements.push(this.createMeasurement('implementation', -1, implementationOptions));
-            measurements.push(this.createMeasurement('automation', -1, automationOptions));
-            measurements.push(this.createMeasurement('reporting', -1, reportingOptions));
-
-        } else if (dataType.substr(0, 6) === 'indica') {
-            // Then, assuming its an indicator
-            const indicatorOption = ['Nothing',
-                'Local Logging',
-                'Central Logging, No Alerting',
-                'Alerting, but false positives/negatives',
-                'Real Time Alerting, No False Positives/Negatives'
-            ];
-
-            measurements.push(this.createMeasurement('policy', -1, indicatorOption));
-
-        } else {
-            // Then, assuming it is a sensor
-            const indicatorOption = ['no coverage',
-                'some coverage',
-                'half coverage',
-                'most critical systems covered',
-                'all critical systems covered'
-            ];
-
-            measurements.push(this.createMeasurement('coverage', -1, indicatorOption));
-        }
-        return measurements;
+  protected getRiskByName(assessments) {
+    if (Array.isArray(assessments)) {
+      const riskMap = [];
+      assessments.forEach(assessment => {
+        const measurements = assessment.measurements;
+        measurements.forEach(measurement => {
+          const name = measurement.name;
+          const risk = measurement.risk;
+          let riskObject = riskMap.find(n => n === name);
+          if (riskObject) {
+            riskObject.risk = riskObject.risk + risk;
+            riskObject.count = riskObject.count + 1;
+          } else {
+            riskObject = {};
+            riskObject.name = name;
+            riskObject.risk = risk;
+            riskObject.count = 1;
+            riskMap.push(riskObject);
+          }
+        });
+      });
+      riskMap.forEach(risk => {
+        risk.risk = risk.risk / risk.count;
+      });
+      return riskMap;
+    } else {
+      return false;
     }
+  }
 
-    protected displayRisk(risk) {
-        return Number((risk) * 100).toFixed(2);
-    }
+  protected createMeasurement(name, selectedOption, options) {
+    const measurement: any = {};
+    measurement.name = name;
+    measurement.options = [];
+    options.forEach((label, index) => {
+      const data: any = {};
+      data.name = label;
+      data.risk = 1 - index / (options.length - 1);
+      measurement.options.push(data);
+    });
 
-    protected calculateRisk(assessments): number {
-        let risk = 0;
-        assessments.forEach(
-            (assessment) => {
-                if (assessment.risk && (typeof assessment.risk === 'number')) {
-                    const r = assessment.risk === -1 ? 1 : assessment.risk
-                    risk += r;
-                }
-            });
-        return risk / assessments.length;
-    }
-
-    protected getRisk(measureObject) {
-        let risk = 0;
-        let count = 0;
-        measureObject.forEach(
-            (measurement) => {
-                const selected_value = measurement.selected_value;
-                risk = risk + parseFloat(selected_value.risk);
-                count = count + 1;
-            });
-        return risk / measureObject.length;
-    }
-
-    protected getRiskByName(assessments) {
-        if (Array.isArray(assessments)) {
-            const riskMap = [];
-            assessments.forEach(
-                (assessment) => {
-                    const measurements = assessment.measurements;
-                    measurements.forEach(
-                        (measurement) => {
-                            const name = measurement.name;
-                            const risk = measurement.risk;
-                            let riskObject = riskMap.find((n) => n === name);
-                            if (riskObject) {
-                                riskObject.risk = riskObject.risk + risk;
-                                riskObject.count = riskObject.count + 1;
-                            } else {
-                                riskObject = {};
-                                riskObject.name = name;
-                                riskObject.risk = risk;
-                                riskObject.count = 1;
-                                riskMap.push(riskObject);
-                            }
-                        });
-                });
-            riskMap.forEach(
-                (risk) => {
-                    risk.risk = risk.risk / risk.count;
-                });
-            return riskMap;
-
-        } else {
-            return false;
-        }
-    }
-
-    protected createMeasurement(name, selectedOption, options) {
-        const measurement: any = {};
-        measurement.name = name;
-        measurement.options = [];
-        options.forEach(
-            (label, index) => {
-                const data: any = {};
-                data.name = label;
-                data.risk = 1 - (index / (options.length - 1));
-                measurement.options.push(data);
-            });
-
-        if (selectedOption !== -1) {
-            measurement.selected_value = measurement.options[selectedOption];
-            measurement.risk = measurement.selected_value.risk;
-        } else {
-            measurement.selected_value = {name: 'Unselected', risk: -1};
-            measurement.risk = -1;
-        }
-
-        /***measurement.selected_option = selectedOption;**/
-        return measurement;
-    }
-
-    protected calculateMeasurementsAvgRisk(measurements: any[]) {
-        let validMeasurements = measurements.filter((measurement) => measurement.risk !== -1);
-        if (validMeasurements && validMeasurements.length) { 
-            return validMeasurements
-                .map((assMes) => assMes.risk)
-                .reduce((prev, cur) => prev += cur, 0) /
-                validMeasurements.length;
-        } else {
-            return -1;
-        }        
+    if (selectedOption !== -1) {
+      measurement.selected_value = measurement.options[selectedOption];
+      measurement.risk = measurement.selected_value.risk;
+    } else {
+      measurement.selected_value = { name: 'Unselected', risk: -1 };
+      measurement.risk = -1;
     }
 
-    protected updateQuestionRisk(question, risk) {
-        if (question.selected_value === undefined) {
-            question.selected_value = {};
-        }
-        // question.selected_value.risk = risk;
-        const matchingOption = question.options.find((q) => q.risk === risk);
-        // question.selected_value.name = matchingOption.name;
-        question.selected_value = matchingOption;
-        question.risk = risk;
+    /***measurement.selected_option = selectedOption;**/
+    return measurement;
+  }
+
+  /**
+   * @description avg the risk of all the measurement object
+   * @param  {any[]} measurements an object w/ a risk field
+   * @returns number -1 is the measurements are empty others an avg of the risk
+   */
+  protected calculateMeasurementsAvgRisk(measurements: any[]): number {
+    const validMeasurements = measurements.filter((measurement) => measurement.risk !== -1);
+    if (!validMeasurements || validMeasurements.length === 0) {
+      return -1;
     }
+
+    const sum = validMeasurements
+      .map((assMes) => assMes.risk)
+      .reduce((prev, cur) => prev += cur, 0);
+    return sum / validMeasurements.length;
+  }
+
+  protected updateQuestionRisk(question, risk) {
+    if (question.selected_value === undefined) {
+      question.selected_value = {};
+    }
+    // question.selected_value.risk = risk;
+    const matchingOption = question.options.find(q => q.risk === risk);
+    // question.selected_value.name = matchingOption.name;
+    question.selected_value = matchingOption;
+    question.risk = risk;
+  }
 }

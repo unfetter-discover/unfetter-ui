@@ -1,11 +1,13 @@
 import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';
 import { StixCoreEnum } from 'stix/stix/stix-core.enum';
 import { StixEnum } from 'stix/unfetter/stix.enum';
+import { WizardQuestionGrouping } from 'stix/unfetter/wizard-question-grouping';
+import { WizardQuestionGroupings } from 'stix/unfetter/wizard-question-groupings';
 
 /**
- * @description assessment as shown on the wizard
- */ 
-export class WizardAssessment {
+ * @description assessment question as shown in the wizard UI
+ */
+export class WizardQuestion implements WizardQuestionGroupings {
     public version = '1';
     public modified = new Date();
     public created = new Date();
@@ -15,5 +17,5 @@ export class WizardAssessment {
     public type: StixCoreEnum | StixEnum;
     public risk = -1;
     public measurements: AssessmentQuestion[] = [];
-    public groupings: any[] = [];
+    public groupings: WizardQuestionGrouping[] = [];
 }

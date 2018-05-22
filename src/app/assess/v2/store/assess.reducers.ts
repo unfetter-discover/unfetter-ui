@@ -59,6 +59,7 @@ export function assessmentReducer(state = initialState, action: assessmentAction
                 Object.assign(a1.assessmentMeta, action.payload);
             }
             const s1 = genAssessState({
+                ...state,
                 assessment: a1,
             });
             return s1;

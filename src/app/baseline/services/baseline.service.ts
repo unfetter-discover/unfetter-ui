@@ -1,6 +1,6 @@
 import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { AssessmentSet, Capability, Category } from 'stix/assess/v3/baseline';
+import { AssessmentSet, Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
 import { JsonApiData } from 'stix/json/jsonapi-data';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { RxjsHelpers } from '../../global/static/rxjs-helpers';
@@ -11,7 +11,6 @@ import { BaselineObject } from '../../models/baseline/baseline-object';
 import { RiskByAttack3 } from '../../models/baseline/risk-by-attack3';
 import { Constance } from '../../utils/constance';
 import { LastModifiedBaseline } from '../models/last-modified-baseline';
-import { JsonApi } from 'stix/json/jsonapi';
 
 @Injectable()
 export class BaselineService {
@@ -19,6 +18,7 @@ export class BaselineService {
     public readonly capabilityBaseUrl = Constance.X_UNFETTER_CAPABILITY_URL;
     public readonly categoryBaseUrl = Constance.X_UNFETTER_CATEGORY_URL;
     public readonly relationshipsBaseUrl = Constance.RELATIONSHIPS_URL;
+    public readonly objectAssessmentsBaseUrl = Constance.X_UNFETTER_OBJECT_ASSESSMENTS_URL;
 
     constructor(
         @SkipSelf() @Optional() protected parent: BaselineService,
@@ -153,7 +153,20 @@ export class BaselineService {
 
     /**
      * @description
-     * @param {string} capability id
+     *  fetch all assessment sets (aka baselines) from the server that this user can see
+     *      given the rules of the security filter
+     * @param {boolean} includeMeta - true to include metaProperties metadata
+     * @returns {Observable<AssessmentSet[]>}
+     */
+    public fetchAssessmentSets(includeMeta = true): Observable<AssessmentSet[]> {
+        return this.fetchBaselines(includeMeta);
+    }
+
+    /**
+     * @description
+     *  fetch all assessment sets (aka baselines) from the server that this user can see
+     *      given the rules of the security filter
+     * @param {boolean} includeMeta - true to include metaProperties metadata
      * @return {Observable<AssessmentSet[]>}
      */
     public fetchBaselines(includeMeta = true): Observable<AssessmentSet[]> {
@@ -166,12 +179,24 @@ export class BaselineService {
     /**
      * @description
      * @param {string} id
-     * @return {Observable<Assessment> }
+     * @return {Observable<Assessment>}
      */
     public getById(id: string, includeMeta = true): Observable<Baseline> {
         const url = `${this.baselineBaseUrl}/${id}?metaproperties=${includeMeta}`;
         return this.genericApi
             .getAs<JsonApiData<Baseline>>(url)
+            .map(RxjsHelpers.mapAttributes);
+    }
+
+    /**
+     * @description
+     * @param {string} id
+     * @return {Observable<Assessment>}
+     */
+    public fetchAssessmentSet(id: string, includeMeta = true): Observable<AssessmentSet> {
+        const url = `${Constance.X_UNFETTER_ASSESSMENT_SETS_URL}/${id}?metaproperties=${includeMeta}`;
+        return this.genericApi
+            .getAs<JsonApiData<AssessmentSet>>(url)
             .map(RxjsHelpers.mapAttributes);
     }
 
@@ -238,6 +263,38 @@ export class BaselineService {
         }
 
         return this.genericApi.getAs<BaselineObject[]>(`${this.baselineBaseUrl}/${id}/assessed-objects`);
+    }
+
+    /**
+     * @description
+     * @param {AssessmentSet} assessmentSet
+     * @return {Observable<any>}
+     */
+    public fetchObjectAssessmentsByAssessmentSet(assessmentSet: AssessmentSet): Observable<ObjectAssessment[]> {
+        if (!assessmentSet) {
+            return Observable.of([]);
+        }
+
+        return this.fetchObjectAssessments(assessmentSet.assessments);
+    }
+
+    /**
+     * @description
+     * @param {string} id
+     * @return {Observable<any>}
+     */
+    public fetchObjectAssessments(ids: string[] = []): Observable<ObjectAssessment[]> {
+        if (!ids) {
+            return Observable.of([]);
+        }
+        const urlBase = this.objectAssessmentsBaseUrl;
+        const observables = ids.map((id) => {
+            return this.genericApi
+                .getAs<JsonApiData<ObjectAssessment>>(`${this.baselineBaseUrl}/${id}`)
+                .map<JsonApiData<ObjectAssessment>, ObjectAssessment>(RxjsHelpers.mapAttributes);
+        });
+
+        return Observable.forkJoin(...observables);
     }
 
     /**

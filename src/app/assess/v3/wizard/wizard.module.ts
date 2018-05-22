@@ -6,12 +6,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ChartsModule } from 'ng2-charts';
-import { CalendarModule } from 'primeng/components/calendar/calendar';
 import { ComponentModule } from '../../../components/component.module';
 import { GlobalModule } from '../../../global/global.module';
 import { PipesModule } from '../../../pipes/pipes.module';
@@ -28,6 +28,7 @@ const matModules = [
   MatDatepickerModule,
   MatDialogModule,
   MatExpansionModule,
+  MatFormFieldModule,
   MatInputModule,
   MatProgressBarModule,
   MatSelectModule,
@@ -35,7 +36,6 @@ const matModules = [
 ];
 
 const primengModules = [
-  CalendarModule,
 ];
 
 @NgModule({

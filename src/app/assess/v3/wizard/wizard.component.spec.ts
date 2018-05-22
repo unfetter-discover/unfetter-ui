@@ -12,6 +12,7 @@ import { Assess3Meta } from 'stix';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { AssessmentObjectMockFactory } from 'stix/assess/v2/assessment-object.mock';
 import { Assessment } from 'stix/assess/v3/assessment';
+import { ObjectAssessmentMockFactory } from 'stix/assess/v3/baseline/object-assessment.mock';
 import * as Indicator from 'stix/unfetter/indicator';
 import { Stix } from 'stix/unfetter/stix';
 import { StixEnum } from 'stix/unfetter/stix.enum';
@@ -116,6 +117,7 @@ describe('WizardComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(WizardComponent);
     component = fixture.componentInstance;
+    component.finishedLoading = true;
     fixture.detectChanges();
   });
 
@@ -157,22 +159,22 @@ describe('WizardComponent', () => {
 
   it('should know the next side panel with data, case 2', () => {
     const indicators = UnfetterIndicatorMockFactory.mockMany(1);
-    const sensors = StixMockFactory.mockMany(1);
+    const capabilities = ObjectAssessmentMockFactory.mockMany(1);
     component.indicators = indicators;
-    component.sensors = sensors;
+    component.capabilities = capabilities;
     component.openedSidePanel = 'indicators';
     expect(component).toBeTruthy();
     const nextPanel = component.determineNextSidePanel();
     expect(nextPanel).toBeDefined();
-    expect(nextPanel).toEqual('sensors');
+    expect(nextPanel).toEqual('capabilities');
   });
 
   it('should know the next side panel with data, case 3', () => {
     const indicators = UnfetterIndicatorMockFactory.mockMany(1);
-    const sensors = StixMockFactory.mockMany(1);
+    const capabilities = ObjectAssessmentMockFactory.mockMany(1);
     component.indicators = indicators;
-    component.sensors = sensors;
-    component.openedSidePanel = 'sensors';
+    component.capabilities = capabilities;
+    component.openedSidePanel = 'capabilities';
     expect(component).toBeTruthy();
     const nextPanel = component.determineNextSidePanel();
     expect(nextPanel).toBeDefined();
@@ -218,7 +220,7 @@ describe('WizardComponent', () => {
     expect(component.buttonLabel).toEqual('CONTINUE');
 
     component.buttonLabel = 'SAVE';
-    component.onOpenSidePanel('sensors');
+    component.onOpenSidePanel('capabilities');
     expect(component.buttonLabel).toEqual('CONTINUE');
 
     component.buttonLabel = 'SAVE';
@@ -236,7 +238,7 @@ describe('WizardComponent', () => {
     expect(title).toBeTruthy();
     expect(chart).toBeTruthy();
 
-    component.onOpenSidePanel('sensors');
+    component.onOpenSidePanel('capabilities');
     fixture.detectChanges();
     title = fixture.debugElement.query(By.css('#summary-chart-title'));
     expect(title).toBeFalsy();
@@ -409,7 +411,7 @@ describe('WizardComponent', () => {
     component.summaryDoughnutChartData = null;
     component.mitigations = null;
     component.indicators = null;
-    component.sensors = null;
+    component.capabilities = null;
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([]);
 
@@ -460,14 +462,14 @@ describe('WizardComponent', () => {
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([.25, .75]);
 
-    component.sensors = StixMockFactory.mockMany(1);
-    component.sensors[0].metaProperties = { published: false, groupings: [{ groupingValue: 'group1' }] };
-    component.sensors[0].id = 'happyjack';
+    component.capabilities = ObjectAssessmentMockFactory.mockMany(1);
+    component.capabilities[0].metaProperties = { published: false, groupings: [{ groupingValue: 'group1' }] };
+    component.capabilities[0].id = 'happyjack';
     component.updateSummaryChart();
     expect(component.summaryDoughnutChartData[0].data).toEqual([.25, .75]);
 
     component.indicators[0].id = 'bellystaple';
-    component.sensors[0].id = 'jumpyflashpan';
+    component.capabilities[0].id = 'jumpyflashpan';
     component.model.attributes.assessment_objects.push({
       stix:
         {
@@ -501,7 +503,7 @@ describe('WizardComponent', () => {
     const meta: Partial<Assess3Meta> = {
       includesIndicators: false,
       includesMitigations: false,
-      // includesSensors: false,
+      baselineRef: '123',
     };
 
     const id = '0123456789abcdef', rollup = 'fedcba9876543210', name = 'Test Assessment';
@@ -526,26 +528,25 @@ describe('WizardComponent', () => {
     mitigations.created = indicators.modified = time;
     mitigations.assessment_objects.push({ risk: -1, stix: { type: 'course-of-action' } } as AssessmentObject<Stix>);
 
-    const sensors = new Assessment();
-    sensors.id = id + '-3';
-    sensors.type = StixEnum.ASSESSMENT;
-    sensors.metaProperties = { published: false, rollupId: rollup };
-    sensors.name = name;
-    sensors.description = desc;
-    sensors.created = indicators.modified = time;
-    sensors.assessment_objects.push({ risk: -1, stix: { type: 'x-unfetter-sensor' } } as AssessmentObject<Stix>);
+    const capabilities = new Assessment();
+    capabilities.id = id + '-3';
+    capabilities.type = StixEnum.ASSESSMENT;
+    capabilities.metaProperties = { published: false, rollupId: rollup };
+    capabilities.name = name;
+    capabilities.description = desc;
+    capabilities.created = indicators.modified = time;
+    capabilities.assessment_objects.push({ risk: -1, stix: { type: 'x-unfetter-object-assessment' } } as AssessmentObject<Stix>);
 
-    component.loadAssessments('0123456789abcdef', [indicators, mitigations, sensors], meta);
+    component.loadAssessments('0123456789abcdef', [indicators, mitigations, capabilities], meta);
 
     expect(meta.title).toEqual(name);
     expect(meta.description).toEqual(desc);
     expect(meta.includesIndicators).toBeTruthy();
     expect(meta.includesMitigations).toBeTruthy();
-    // expect(meta.includesSensors).toBeTruthy();
     expect(component.model.attributes.assessment_objects.length).toEqual(3);
     expect(component.model.relationships.indicators).toEqual(indicators);
     expect(component.model.relationships.mitigations).toEqual(mitigations);
-    expect(component.model.relationships.sensors).toEqual(sensors);
+    expect(component.model.relationships.capabilities).toEqual(capabilities);
   });
 
 });
