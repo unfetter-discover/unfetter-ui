@@ -119,43 +119,20 @@ export class BaselineEffects {
         .ofType(assessActions.SAVE_BASELINE)
         .pluck('payload')
         .switchMap((baselines: Baseline[]) => {
-            // const rollupIds = baselines
-            //     .map((baseline) => baseline.metaProperties)
-            //     .filter((el) => el !== undefined)
-            //     .map((meta) => meta.rollupId)
-            //     .filter((el) => el !== undefined);
-            // let rollupId = '';
-            // if (rollupIds.length > 0) {
-            //     rollupId = rollupIds[0];
-            // } else {
-            //     rollupId = UUID.v4();
-            // }
-
             const observables = baselines
-                // .map((baseline) => {
-                //     baseline.metaProperties = baseline.metaProperties || {};
-                //     baseline.metaProperties.rollupId = rollupId;
-                //     return baseline;
-                // })
                 .map((baseline) => {
                     const json = { 'data': { 'attributes': baseline } } as JsonApi<JsonApiData<Baseline>>;
-                    let url = 'api/x-unfetter-object-baselines';
+                    let url = 'api/x-unfetter-assessment-sets';
                     if (baseline.id) {
                         url = `${url}/${baseline.id}`;
-                        return this.genericServiceApi.patchAs<JsonApiData<Baseline>[]>(url, json);
+                        return this.genericServiceApi.patchAs<JsonApiData<Baseline>>(url, json);
                     } else {
-                        return this.genericServiceApi.postAs<JsonApiData<Baseline>[]>(url, json);
+                        return this.genericServiceApi.postAs<JsonApiData<Baseline>>(url, json);
                     }
                 });
             return Observable.forkJoin(...observables)
                 .map((arr: any) => {
-                    // if (Array.isArray(arr[0])) {
-                    //     return arr;
-                    // } else {
-                    //     // stoopid hack to handle the fact that update returns a single object, not an array, and drops the metadata
-                    //     arr[0].attributes.metaProperties = { rollupId: rollupId };
-                        return [arr];
-                    // }
+                    return [arr];
                 });
         })
         .flatMap((arr: JsonApiData<Baseline>[][]) => arr)
