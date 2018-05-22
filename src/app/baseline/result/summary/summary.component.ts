@@ -149,6 +149,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public listenForDataChanges(): void {
+    console.log('listening');
     const sub1$ = this.store
       .select('summary')
       .pluck('summaries')
@@ -168,6 +169,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .subscribe((done: boolean) => {
         if (this.baseline === undefined) {
           // fetching the summary failed, set all flags to done
+          console.log('load failed');
           this.setLoadingToDone();
           return;
         }
