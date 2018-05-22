@@ -14,7 +14,7 @@ import { BaselineMeta } from '../../models/baseline/baseline-meta';
 import { Stix } from '../../models/stix/stix';
 import { UserProfile } from '../../models/user/user-profile';
 import { AppState } from '../../root-store/app.reducers';
-import { CleanBaselineWizardData, FetchAttackPatterns, FetchCapabilities, FetchCapabilityGroups, LoadBaselineWizardData, SetCurrentBaselineCapability, SetCurrentBaselineGroup, SetCurrentBaselineObjectAssessment, UpdatePageTitle } from '../store/baseline.actions';
+import { CleanBaselineWizardData, FetchAttackPatterns, FetchCapabilities, FetchCapabilityGroups, LoadBaselineWizardData, SetCurrentBaselineCapability, SetCurrentBaselineGroup, SetCurrentBaselineObjectAssessment, UpdatePageTitle, SaveBaseline } from '../store/baseline.actions';
 import { BaselineState } from '../store/baseline.reducers';
 import { AttackPatternChooserComponent } from './attack-pattern-chooser/attack-pattern-chooser.component';
 import { Measurements } from './models/measurements';
@@ -721,25 +721,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {void}
    */
   private saveAssessments(): void {
-    // TODO: once model is set, implement this to save AssessmentSet
-    // if (this.model) {
-    //   const baselines = Object.values(this.model.relationships);
-    //   baselines.forEach(baseline => {
-    //     baseline.modified = this.publishDate.toISOString();
-    //     baseline.description = this.meta.description;
-    //     if (this.meta.created_by_ref) {
-    //       baseline.created_by_ref = this.meta.created_by_ref;
-    //     }
-    //   });
-    //   this.wizardStore.dispatch(new SaveAssessment(baselines));
-    // } else {
-    //   const baselines = this.sidePanelOrder
-    //     .map((name) => this.categories[name])
-    //     .filter((el) => el !== undefined)
-    //     .map((el) => el.scoresModel)
-    //     .filter((el) => el !== undefined)
-    //     .map((el) => this.generateBaselineAssessment(el, this.meta))
-    //   this.wizardStore.dispatch(new SaveAssessment(baselines));
-    // }
+    this.wizardStore.dispatch(new SaveBaseline());
   }
+
 }
