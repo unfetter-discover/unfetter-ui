@@ -60,9 +60,9 @@ export class StartBaselineSuccess implements Action {
 export class SaveBaseline implements Action {
     public readonly type = SAVE_BASELINE;
 
-    // an baseline can contain multiple baseline types
-    //  these baselines will be saved w/ the same parentId
-    constructor(public payload: Baseline[]) { }
+    // Saving a baseline assumes the assessment set and
+    //  object assessments in this ngrx store are current
+    constructor() { }
 }
 
 export class FetchBaseline implements Action {
