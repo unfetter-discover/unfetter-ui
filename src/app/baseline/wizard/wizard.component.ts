@@ -523,11 +523,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.updateWizardData();
   }
 
-<<<<<<< HEAD
-  public hasNextGroup(): boolean {
-=======
   public hasNextGroup(page: number): boolean {
->>>>>>> Initial prev/next category buttons
     return this.page > 1 && this.currentBaselineGroup &&
            this.baselineGroups.findIndex(group => group.id === this.currentBaselineGroup.id) < this.baselineGroups.length - 1;
   }
@@ -688,8 +684,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         })
     });
   }
-<<<<<<< HEAD
-=======
 
   /*
    * @description
@@ -710,7 +704,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       return undefined;
     }
   }
->>>>>>> Initial prev/next category buttons
 
   /* 
    * Returns only those capabilities categorized to the given category

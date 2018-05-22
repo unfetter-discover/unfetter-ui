@@ -16,10 +16,11 @@ import { SummaryCalculationService } from './summary/summary-calculation.service
 import { SummaryHeaderComponent } from './summary/summary-header/summary-header.component';
 import { BaselineChartComponent } from './summary/summary-report/baseline-chart/baseline-chart.component';
 import { SophisticationBreakdownComponent } from './summary/summary-report/sophistication-breakdown/sophistication-breakdown.component';
+import { SummaryHeatmapComponent } from './summary/summary-report/summary-heatmap.component';
 import { SummaryReportComponent } from './summary/summary-report/summary-report.component';
-import { SummaryTacticsComponent } from './summary/summary-report/summary-tactics/summary-tactics.component';
 import { TechniquesChartComponent } from './summary/summary-report/techniques-chart/techniques-chart.component';
 import { SummaryComponent } from './summary/summary.component';
+import { SummaryTacticsComponent } from './summary/summary-report/summary-tactics/summary-tactics.component';
 
 const materialModules = [
   MatCardModule,
