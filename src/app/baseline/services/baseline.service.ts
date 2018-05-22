@@ -129,13 +129,13 @@ export class BaselineService {
      * @param {string} filter
      * @return {Observable<Capability[]>}
      */
-    public getCapabilities(filter?: string): Observable<Capability[]> {
-        const url = filter ?
-            `${this.capabilityBaseUrl}?${encodeURI(filter)}` : this.capabilityBaseUrl;
-        return this.genericApi
-            .getAs<JsonApiData<Capability>[]>(url)
-            .map(RxjsHelpers.mapAttributes);
-    }
+    // public getCapabilities(filter?: string): Observable<Capability[]> {
+    //     const url = filter ?
+    //         `${this.capabilityBaseUrl}?${encodeURI(filter)}` : this.capabilityBaseUrl;
+    //     return this.genericApi
+    //         .getAs<JsonApiData<Capability>[]>(url)
+    //         .map(RxjsHelpers.mapAttributes);
+    // }
 
     /**
      * @description
