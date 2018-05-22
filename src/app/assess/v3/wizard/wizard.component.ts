@@ -1130,7 +1130,7 @@ export class WizardComponent extends Measurements
    */
   public doObjectGroupings(stixObjects): any {
     const hash = {};
-    stixObjects.forEach(stixObject => {
+    stixObjects.forEach((stixObject) => {
       const groupingStages = stixObject.groupings;
       if (!groupingStages) {
         const phaseName = 'unknown';
@@ -1142,7 +1142,7 @@ export class WizardComponent extends Measurements
         const objectProxy = { content: stixObject };
         objectProxies.push(stixObject);
       } else {
-        groupingStages.forEach(groupingStage => {
+        groupingStages.forEach((groupingStage) => {
           const phaseName = groupingStage.groupingValue;
           let objectProxies = hash[phaseName];
           if (objectProxies === undefined) {
@@ -1204,9 +1204,9 @@ export class WizardComponent extends Measurements
 
     if (assessmentData) {
       if (this.assessmentGroups && this.assessmentGroups.length > 0) {
-        this.assessmentGroups.forEach(element => {
+        this.assessmentGroups.forEach((element) => {
           if (element.assessments) {
-            element.assessments.forEach(assessment =>
+            element.assessments.forEach((assessment) =>
               this.collectModelAssessments(assessment)
             );
           }

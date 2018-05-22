@@ -3,11 +3,10 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
-import { catchError, flatMap, map, mergeMap } from 'rxjs/operators';
+import { catchError, flatMap, map, mergeMap, tap } from 'rxjs/operators';
 import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
-import { Capability } from 'stix/assess/v3/baseline/capability';
 import { JsonApi } from 'stix/json/jsonapi';
 import { JsonApiData } from 'stix/json/jsonapi-data';
 import * as Indicator from 'stix/unfetter/indicator';
@@ -33,7 +32,7 @@ export class AssessEffects {
     protected genericServiceApi: GenericApi,
     protected location: Location,
     protected router: Router
-  ) {}
+  ) { }
 
   @Effect()
   public fetchAssessmentWizardData = this.actions$
@@ -46,16 +45,16 @@ export class AssessEffects {
 
       const indicators$ = meta.includesIndicators
         ? this.genericServiceApi
-            .getAs<Indicator.UnfetterIndicator[]>(url)
-            .map(RxjsHelpers.mapArrayAttributes)
+          .getAs<Indicator.UnfetterIndicator[]>(url)
+          .map(RxjsHelpers.mapArrayAttributes)
         : Observable.of<Indicator.UnfetterIndicator[]>([]);
       observables.push(indicators$);
 
       url = `${this.generateUrl('mitigation')}${includeMeta}`;
       const mitigations$ = meta.includesMitigations
         ? this.genericServiceApi
-            .getAs<JsonApiData<Stix>[]>(url)
-            .map(RxjsHelpers.mapArrayAttributes)
+          .getAs<JsonApiData<Stix>[]>(url)
+          .map(RxjsHelpers.mapArrayAttributes)
         : Observable.of<Stix[]>([]);
       observables.push(mitigations$);
 
@@ -100,7 +99,7 @@ export class AssessEffects {
         .fetchObjectAssessmentsByAssessmentSet(assessmentSet)
         .pipe(
           map((arr) => {
-              return new assessActions.SetCurrentBaselineQuestions(arr);
+            return new assessActions.SetCurrentBaselineQuestions(arr);
           }),
           catchError((err) => {
             console.log(err);
@@ -126,104 +125,57 @@ export class AssessEffects {
   public startAssessment = this.actions$
     .ofType(assessActions.START_ASSESSMENT)
     .pluck('payload')
-    .map((el: Assess3Meta) => {
-      this.assessStateService.saveCurrent(el);
-      return el;
-    })
-    .do((el: Assess3Meta) => {
-      let route = [
-        '/assess-beta/wizard/new',
-        'indicators',
-        el.includesIndicators === true ? 1 : 0,
-        'mitigations',
-        el.includesMitigations === true ? 1 : 0,
-      ];
-      if (el.baselineRef) {
-        route = route.concat('baseline', el.baselineRef);
-      }
-      this.router.navigate(route);
-    })
-    // required to send an empty element on non dispatched effects
-    .switchMap(() => Observable.of({}));
-
-  // @Effect({ dispatch: false })
-  // public startAssessment = this.actions$
-  //     .ofType(assessActions.START_ASSESSMENT)
-  //     .pluck('payload')
-  //     .pipe(
-  //         map((meta: Assess3Meta) => this.assessStateService.saveCurrent(meta)),
-  //         tap((el: Assess3Meta) => {
-  //             this.router.navigate([
-  //                 '/assess-beta/wizard/new',
-  //                 'indicators', el.includesIndicators === true ? 1 : 0,
-  //                 'mitigations', el.includesMitigations === true ? 1 : 0,
-  //                 'baseline', el.baselineRef ? el.baselineRef : ''
-  //             ]);
-  //             return el;
-  //         }),
-  //         // required to send an empty element on non dispatched effects
-  //         // switchMap(() => {
-  //         //     return Observable.empty();
-  //         // }),
-  //         catchError((err) => {
-  //             console.log(err);
-  //             return Observable.empty();
-  //         })
-  //     )
-  //     .switchMap(() => {
-  //         return Observable.empty();
-  //     })
-  // .switchMap((meta: Assess3Meta) => {
-  //     // return this.assessStateService
-  //     //     .saveCurrent(meta)
-  //     //     .pipe(
-  //     //         map((el: Assess3Meta) => {
-  //     //             this.router.navigate([
-  //     //                 '/assess-beta/wizard/new',
-  //     //                 'indicators', el.includesIndicators === true ? 1 : 0,
-  //     //                 'mitigations', el.includesMitigations === true ? 1 : 0,
-  //     //                 'baseline', el.baselineRef ? el.baselineRef : ''
-  //     //             ]);
-  //     //             return el;
-  //     //         }),
-  //     //         // required to send an empty element on non dispatched effects
-  //     //         switchMap(() => {
-  //     //             return Observable.of({});
-  //     //         }),
-  //     //         catchError((err) => {
-  //     //             console.log(err);
-  //     //             return Observable.empty();
-  //     //         }),
-  //     );
-  // });
+    .switchMap((meta: Assess3Meta) => {
+      return this.assessStateService.saveCurrent(meta)
+        .pipe(
+          tap((el: Assess3Meta) => {
+            let route = [
+              '/assess-beta/wizard/new',
+              'indicators',
+              el.includesIndicators === true ? 1 : 0,
+              'mitigations',
+              el.includesMitigations === true ? 1 : 0,
+            ];
+            if (el.baselineRef) {
+              route = route.concat('baseline', el.baselineRef);
+            }
+            this.router.navigate(route);
+          }),
+          map(() => Observable.empty()),
+          catchError((err) => {
+            console.log(err);
+            return Observable.empty();
+          })
+        );
+    });
 
   @Effect()
   public fetchCapabilities = this.actions$
     .ofType(assessActions.FETCH_CAPABILITIES)
     .switchMap(() => {
-        return this.baselineService.getCapabilities().pipe(
-            mergeMap((arr) => {
-              return [
-                new assessActions.SetCapabilities(arr),
-                new assessActions.FinishedLoading(true),
-              ];
-            }),
-            catchError((err) => {
-              console.log(err);
-              return Observable.of(new assessActions.FailedToLoad(true));
-            }));
+      return this.baselineService.getCapabilities().pipe(
+        mergeMap((arr) => {
+          return [
+            new assessActions.SetCapabilities(arr),
+            new assessActions.FinishedLoading(true),
+          ];
+        }),
+        catchError((err) => {
+          console.log(err);
+          return Observable.of(new assessActions.FailedToLoad(true));
+        }));
     });
-    
+
   @Effect()
   public saveAssessment = this.actions$
     .ofType(assessActions.SAVE_ASSESSMENT)
     .pluck('payload')
     .switchMap((assessments: Assessment[]) => {
       const rollupIds = assessments
-        .map(assessment => assessment.metaProperties)
-        .filter(el => el !== undefined)
-        .map(meta => meta.rollupId)
-        .filter(el => el !== undefined);
+        .map((assessment) => assessment.metaProperties)
+        .filter((el) => el !== undefined)
+        .map((meta) => meta.rollupId)
+        .filter((el) => el !== undefined);
       let rollupId = '';
       if (rollupIds.length > 0) {
         rollupId = rollupIds[0];
@@ -240,42 +192,40 @@ export class AssessEffects {
           return assessment;
         })
         .map((assessment) => {
-          const json = { 
-            data: { attributes: assessment } 
+          const json = {
+            data: { attributes: assessment }
           } as JsonApi<JsonApiData<Assessment>>;
           let url = 'api/x-unfetter-assessments';
           if (assessment.id) {
             url = `${url}/${assessment.id}`;
             return this.genericServiceApi
               .patchAs<Assessment[]>(url, json)
-              .map(RxjsHelpers.mapArrayAttributes);
+              .map<any[], Assessment[]>(RxjsHelpers.mapArrayAttributes);
           } else {
             return this.genericServiceApi
               .postAs<Assessment[]>(url, json)
-              .map(RxjsHelpers.mapArrayAttributes);
+              .map<any[], Assessment[]>(RxjsHelpers.mapArrayAttributes);
           }
         });
 
       return Observable.forkJoin(...observables).pipe(
-        map((arr: any) => {
-          if (Array.isArray(arr[0])) {
-            return arr;
-          } else {
-            // hack to handle the fact that an update returns a single object, not an array, and drops the metadata
-            arr[0].attributes.metaProperties = { rollupId: rollupId };
-            return [arr];
-          }
-        }),
-        flatMap((arr: JsonApiData<Assessment>[][]) => arr),
+        // TODO: do we still need this for updates?
+        // map((arr) => {
+        //   if (Array.isArray(arr[0])) {
+        //     return arr;
+        //   } else {
+        //     // hack to handle the fact that an update returns a single object, not an array, and drops the metadata
+        //     arr[0].metaProperties = { rollupId: rollupId };
+        //     return [arr];
+        //   }
+        // }),
+        flatMap((arr: Assessment[][]) => arr),
         map((arr) => {
-          const hasAttributes = arr && arr[0] && arr[0].attributes;
-          const hasMetadata = hasAttributes && arr[0].attributes.metaProperties;
+          const hasMetadata = arr && arr[0] && arr[0].metaProperties;
           return new assessActions.FinishedSaving({
             finished: true,
-            rollupId: hasMetadata
-              ? arr[0].attributes.metaProperties.rollupId
-              : '',
-            id: hasAttributes ? arr[0].attributes.id : '',
+            rollupId: hasMetadata ? arr[0].metaProperties.rollupId : '',
+            id: arr[0].id || '',
           });
         }),
         catchError((err) => {
