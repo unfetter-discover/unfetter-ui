@@ -7,6 +7,7 @@ import { FullAssessmentResultActions, LOAD_ASSESSMENTS_BY_ROLLUP_ID } from './fu
 export interface FullAssessmentResultState {
     fullAssessment: Assessment;
     assessmentTypes: Assessment[];
+
     finishedLoading: boolean;
     group: FullAssessmentGroup;
 };
@@ -67,11 +68,6 @@ export function fullAssessmentResultReducer(state = initialState, action: FullAs
             return {
                 ...state,
                 assessmentTypes: [...action.payload],
-            };
-        case fullAssessmentResultActions.SET_ASSESSMENT:
-            return {
-                ...state,
-                fullAssessment: { ...action.payload } as Assessment,
             };
         case fullAssessmentResultActions.FINISHED_LOADING:
             return {

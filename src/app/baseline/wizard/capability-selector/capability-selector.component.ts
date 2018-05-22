@@ -3,9 +3,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
-import { Capability, Category } from 'stix/assess/v3/baseline';
-import { SetBaselineCapabilities } from '../../store/baseline.actions';
+import { Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
+import { SetBaselineCapabilities, SetBaselineObjectAssessments } from '../../store/baseline.actions';
 import * as assessReducers from '../../store/baseline.reducers';
+import { Stix } from 'stix/unfetter/stix';
+import { Constance } from '../../../utils/constance';
+import { StixCoreEnum } from 'stix';
+import { StixEnum } from 'stix/unfetter/stix.enum';
 
 @Component({
   selector: 'unf-baseline-wizard-capability-selector',
@@ -19,6 +23,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
   public selectedCapabilities: Capability[] = [];
   public allCapabilities: Capability[];
   private baselineCapabilities: Capability[] = [];
+  private baselineObjAssessments: ObjectAssessment[] = [];
 
   private subscriptions: Subscription[] = [];
     
@@ -64,7 +69,17 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
         },
         (err) => console.log(err));
   
-    this.subscriptions.push(capSub1$, capSub2$, capSub3$);
+    const capSub4$ = this.wizardStore
+      .select('baseline')
+      .pluck('baselineObjAssessments')
+      .distinctUntilChanged()
+      .subscribe(
+        (objAssessments: any[]) => {
+          this.baselineObjAssessments = objAssessments;
+        },
+        (err) => console.log(err));
+    
+    this.subscriptions.push(capSub1$, capSub2$, capSub3$, capSub4$);
   }
 
   ngAfterViewInit() {
@@ -113,6 +128,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
     }
 
     this.updateBaselineCapabilities();
+    this.updateObjectAssessments();
   }
 
   /*
@@ -166,5 +182,34 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
 
     // Update wizard store with current capability selections
     this.wizardStore.dispatch(new SetBaselineCapabilities(this.baselineCapabilities));
+  }
+
+  private updateObjectAssessments(): void {
+    // Determine which ones are new
+    let newCaps = this.baselineCapabilities.filter(selCap => this.baselineObjAssessments.findIndex(bOA => bOA.object_ref === selCap.id) === -1);
+    let newOAs = [];
+    newCaps.forEach((capability) => {
+      const newOA = new ObjectAssessment();
+      newOA.object_ref = capability.id;
+      const stix = new Stix();
+      stix.type = StixEnum.OBJECT_ASSESSMENT;
+      stix.description = capability.description;
+      stix.name = capability.name;
+      stix.created_by_ref = capability.created_by_ref;
+      Object.assign(newOA, stix);
+
+      // Inherit assessed objects from category
+      newOA.assessments_objects = [ ...this.currentCapabilityGroup.assessed_objects ];
+
+      newOAs.push(newOA);
+    });
+
+    // Filter out capabilities that have been deleted
+    let existingOAs = this.baselineObjAssessments.filter(bOA => this.baselineCapabilities.findIndex(blCap => bOA.object_ref === blCap.id) !== -1);
+
+    let newOAlist = _.union(existingOAs, newOAs);
+
+    // Update wizard store with current capability selections
+    this.wizardStore.dispatch(new SetBaselineObjectAssessments(newOAlist));
   }
 }
