@@ -1,33 +1,31 @@
 import { Action } from '@ngrx/store';
-import { Assessment } from 'stix/assess/v3/assessment';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
+import { Assessment } from 'stix/assess/v3/assessment';
 import { Stix } from 'stix/unfetter/stix';
 import { Relationship } from '../../../../models';
 
 // For effects
 export const LOAD_ASSESSMENTS_BY_ROLLUP_ID = '[Assess Result] LOAD_ASSESSMENTS_BY_ROLLUP_ID';
 export const LOAD_ASSESSMENT_BY_ID = '[Assess Result] LOAD_ASSESSMENT_BY_ID';
-export const LOAD_GROUP_DATA = '[Assess Result Group] LOAD_GROUP_DATA';
-export const LOAD_GROUP_CURRENT_ATTACK_PATTERN = '[Assess Result Group] LOAD_GROUP_CURRENT_ATTACK_PATTERN';
 export const LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS = '[Assess Result Group] LOAD_ATTACK_PATTERN_RELATIONSHIPS';
-
+export const LOAD_GROUP_CURRENT_ATTACK_PATTERN = '[Assess Result Group] LOAD_GROUP_CURRENT_ATTACK_PATTERN';
+export const LOAD_GROUP_DATA = '[Assess Result Group] LOAD_GROUP_DATA';
 export const UPDATE_ASSESSMENT_OBJECT = '[Assess Result Group] UPDATE_ASSESSMENT_OBJECT';
 
-
 // For reducers
-export const SET_ASSESSMENTS = '[Assess Result] SET_ASSESSMENTS';
-export const SET_ASSESSMENT = '[Assess Result] SET_ASSESSMENT';
-export const SET_GROUP_DATA = '[Assess Result Group] SET_GROUP_DATA';
-export const SET_GROUP_ASSESSMENT_OBJECTS = '[Assess Result Group] SET_GROUP_ASSESSMENT_OBJECTS_DATA';
-export const SET_GROUP_RISK_BY_ATTACK_PATTERN = '[Assess Result Group] SET_RISK_BY_ATTACK_PATTERN';
-export const SET_GROUP_CURRENT_ATTACK_PATTERN = '[Assess Result Group] SET_GROUP_CURRENT_ATTACK_PATTERN';
-export const SET_GROUP_ATTACK_PATTERN_RELATIONSHIPS = '[Assess Result Group] SET_GROUP_ATTACK_PATTERN_RELATIONSHIPS';
-export const PUSH_URL = '[Assess Result] PUSH_URL';
-export const DONE_PUSH_URL = '[Assess Result] DONE_PUSH_URL';
 export const CLEAN_ASSESSMENT_RESULT_DATA = '[Assess Result Group] CLEAN_ASSESSMENT_RESULT_DATA';
+export const DONE_PUSH_URL = '[Assess Result] DONE_PUSH_URL';
 export const FINISHED_LOADING = '[Assess Result] FINISHED_LOADING';
+export const PUSH_URL = '[Assess Result] PUSH_URL';
 export const RELOAD_AFTER_UPDATE_ASSESSMENT_OBJECT = '[Assess Result Group] RELOAD_AFTER_UPDATE_ASSESSMENT_OBJECT';
+export const SET_ASSESSMENT = '[Assess Result] SET_ASSESSMENT';
+export const SET_ASSESSMENTS = '[Assess Result] SET_ASSESSMENTS';
+export const SET_GROUP_ASSESSMENT_OBJECTS = '[Assess Result Group] SET_GROUP_ASSESSMENT_OBJECTS_DATA';
+export const SET_GROUP_ATTACK_PATTERN_RELATIONSHIPS = '[Assess Result Group] SET_GROUP_ATTACK_PATTERN_RELATIONSHIPS';
+export const SET_GROUP_CURRENT_ATTACK_PATTERN = '[Assess Result Group] SET_GROUP_CURRENT_ATTACK_PATTERN';
+export const SET_GROUP_DATA = '[Assess Result Group] SET_GROUP_DATA';
+export const SET_GROUP_RISK_BY_ATTACK_PATTERN = '[Assess Result Group] SET_RISK_BY_ATTACK_PATTERN';
 
 export class SetAssessments implements Action {
     public readonly type = SET_ASSESSMENTS;
@@ -139,19 +137,19 @@ export type FullAssessmentResultActions =
     CleanAssessmentResultData |
     DonePushUrl |
     FinishedLoading |
-    LoadAssessmentsByRollupId |
     LoadAssessmentById |
-    LoadGroupData |
-    LoadGroupCurrentAttackPattern |
+    LoadAssessmentsByRollupId |
     LoadGroupAttackPatternRelationships |
+    LoadGroupCurrentAttackPattern |
+    LoadGroupData |
     PushUrl |
     ReloadAfterAssessmentObjectUpdate |
-    SetAssessments |
     SetAssessment |
-    SetGroupData |
+    SetAssessments |
     SetGroupAssessedObjects |
     SetGroupAttackPatternRelationships |
-    SetGroupRiskByAttackPattern |
     SetGroupCurrentAttackPattern |
+    SetGroupData |
+    SetGroupRiskByAttackPattern |
     UpdateAssessmentObject;
 
