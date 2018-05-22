@@ -3,7 +3,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, O
 import { MatDialog, MatSelect, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { MenuItem } from 'primeng/primeng';
+import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { AssessmentSet, Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
@@ -11,21 +11,14 @@ import { Key } from 'ts-keycode-enum';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { heightCollapse } from '../../global/animations/height-collapse';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
-import { Dictionary } from '../../models/json/dictionary';
-import { JsonApiData } from '../../models/json/jsonapi-data';
 import { Stix } from '../../models/stix/stix';
 import { UserProfile } from '../../models/user/user-profile';
 import { AppState } from '../../root-store/app.reducers';
-import { Constance } from '../../utils/constance';
-import { LoadAssessmentResultData } from '../result/store/full-result.actions';
-import { FullBaselineResultState } from '../result/store/full-result.reducers';
-import { CleanBaselineWizardData, FetchCapabilities, FetchCapabilityGroups, LoadBaselineWizardData, SetCurrentBaselineCapability, SetCurrentBaselineGroup, UpdatePageTitle, FetchAttackPatterns, SetCurrentBaselineObjectAssessment } from '../store/baseline.actions';
+import { CleanBaselineWizardData, FetchAttackPatterns, FetchCapabilities, FetchCapabilityGroups, LoadBaselineWizardData, SetCurrentBaselineCapability, SetCurrentBaselineGroup, UpdatePageTitle } from '../store/baseline.actions';
 import { BaselineState } from '../store/baseline.reducers';
 import { AttackPatternChooserComponent } from './attack-pattern-chooser/attack-pattern-chooser.component';
 import { Measurements } from './models/measurements';
 import { WeightsModel } from './models/weights-model';
-import { Observable } from 'rxjs/Observable';
-import * as _ from 'lodash.uniq'
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -42,59 +35,15 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
   public currentUser: UserProfile;
   public readonly defaultValue = -1;
-  public readonly defaultMeasurement = 'Nothing';
   public readonly sidePanelCollapseHeight = '32px';
   public readonly sidePanelExpandedHeight = '32px';
-  public readonly CHART_TYPE: string;
-  public readonly DEFAULT_CHART_COLORS: any[];
-  public readonly CHART_LABELS: string[];
-  public readonly CHART_BG_COLORS: any[];
-  public readonly CHART_HOVER_BG_COLORS: any[];
-
-  public model: JsonApiData<ObjectAssessment, Dictionary<ObjectAssessment>>;
-  public publishDate = new Date();
   public buttonLabel: ButtonLabel = 'CONTINUE';
-  public item: MenuItem[];
-  public doughnutChartLabels: string[];
-  public doughnutChartData: { data: any[], backgroundColor: any[], hoverBackgroundColor: any[] }[];
-  public doughnutChartType: string = this.CHART_TYPE;
-  public doughnutChartColors: any[] = this.DEFAULT_CHART_COLORS;
 
-  public summaryDoughnutChartLabels: string[] = this.CHART_LABELS;
-  public summaryDoughnutChartData: { data: any[], backgroundColor: any[], hoverBackgroundColor: any[] }[];
-  public summaryDoughnutChartType: string = this.CHART_TYPE;
-  public summaryDoughnutChartColors = this.DEFAULT_CHART_COLORS;
-  public chartOptions = {
-    legend: {
-      display: false
-    },
-    tooltips: {
-      callbacks: {
-        label: (tooltipItem, data) => {
-          const allData = data.datasets[tooltipItem.datasetIndex].data;
-          const tooltipLabel = data.labels[tooltipItem.index];
-          const tooltipData = allData[tooltipItem.index];
-          let total = 0;
-          allData.forEach((d) => {
-            total += d;
-          });
-          const tooltipPercentage = Math.round(tooltipData / total * 100);
-          return `${tooltipLabel}: ${tooltipPercentage}%`;
-        }
-      }
-    }
-  };
-
-  // public description = `An Assessment is your evaluation of the implementations of your network.  You will rate your environment
-  // ' to the best of your ability. On the final page of the survey, you will be asked to enter a name for the report and a description.
-  // Unfetter Discover will use the survey to help you understand your gaps, how important they are and which should be addressed.
-  // You may create multiple reports to see how your risk is changed when implementing different security processes.`;
   public showSummary = false;
   public page = 1;
   public totalPages = 0;
   public meta = new BaselineMeta();
   public insertMode = false;
-  private groupings = [];
   public openedSidePanel: string;
   public navigation: { id: string, label: string, page: number };
   public navigations: any[];
@@ -130,11 +79,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     private dialog: MatDialog,
   ) {
     super();
-    this.CHART_TYPE = 'doughnut';
-    this.DEFAULT_CHART_COLORS = [{}];
-    this.CHART_LABELS = ['Risk Accepted', 'Risk Addressed'];
-    this.CHART_BG_COLORS = [Constance.COLORS.red, Constance.COLORS.green];
-    this.CHART_HOVER_BG_COLORS = [Constance.COLORS.darkRed, Constance.COLORS.darkGreen];
   }
 
   /*
@@ -142,9 +86,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    *  initializes this component, fetchs data to build page
    */
   public ngOnInit(): void {
-
-    this.initChart();
-
     const idParamSub$ = this.route.params
       .subscribe(
         (params) => {
@@ -314,31 +255,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       // Fetch categories and capabilities to power this wizard
       this.wizardStore.dispatch(new FetchCapabilityGroups());
       this.wizardStore.dispatch(new FetchCapabilities());
-  }
-
-  /**
-   * @description initialize the chart data
-   * @returns void
-   */
-  public initChart(): void {
-    this.doughnutChartColors = this.DEFAULT_CHART_COLORS;
-    this.doughnutChartData = [{
-      data: [],
-      backgroundColor: this.CHART_BG_COLORS,
-      hoverBackgroundColor: this.CHART_HOVER_BG_COLORS,
-    }
-    ];
-    this.doughnutChartLabels = this.CHART_LABELS;
-    this.doughnutChartType = this.CHART_TYPE;
-    this.summaryDoughnutChartColors = this.DEFAULT_CHART_COLORS;
-    this.summaryDoughnutChartData = [{
-      data: [],
-      backgroundColor: this.CHART_BG_COLORS,
-      hoverBackgroundColor: this.CHART_HOVER_BG_COLORS,
-    }
-    ];
-    this.summaryDoughnutChartLabels = this.CHART_LABELS;
-    this.summaryDoughnutChartType = this.CHART_TYPE;
   }
 
   /**
@@ -776,7 +692,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     const baseline = new AssessmentSet();
     baseline.name = this.meta.title;
     baseline.description = this.meta.description;
-    baseline.created = this.publishDate.toISOString();
+    baseline.created = new Date().toISOString();
     baseline.created_by_ref = this.meta.created_by_ref;
     const objAssessments = new Set<ObjectAssessment>();
 
