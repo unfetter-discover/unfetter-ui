@@ -75,7 +75,7 @@ class MockModel {
   }
 }
 
-fdescribe('WizardComponent', () => {
+describe('WizardComponent', () => {
   let component: WizardComponent;
   let fixture: ComponentFixture<WizardComponent>;
 
@@ -503,7 +503,7 @@ fdescribe('WizardComponent', () => {
     const meta: Partial<Assess3Meta> = {
       includesIndicators: false,
       includesMitigations: false,
-      // includesSensors: false,
+      baselineRef: '123',
     };
 
     const id = '0123456789abcdef', rollup = 'fedcba9876543210', name = 'Test Assessment';
@@ -535,7 +535,7 @@ fdescribe('WizardComponent', () => {
     capabilities.name = name;
     capabilities.description = desc;
     capabilities.created = indicators.modified = time;
-    capabilities.assessment_objects.push({ risk: -1, stix: { type: 'x-unfetter-capability' } } as AssessmentObject<Stix>);
+    capabilities.assessment_objects.push({ risk: -1, stix: { type: 'x-unfetter-object-assessment' } } as AssessmentObject<Stix>);
 
     component.loadAssessments('0123456789abcdef', [indicators, mitigations, capabilities], meta);
 
@@ -543,7 +543,7 @@ fdescribe('WizardComponent', () => {
     expect(meta.description).toEqual(desc);
     expect(meta.includesIndicators).toBeTruthy();
     expect(meta.includesMitigations).toBeTruthy();
-    // expect(meta.includesSensors).toBeTruthy();
+    expect(meta.baselineRef).toBeTruthy();
     expect(component.model.attributes.assessment_objects.length).toEqual(3);
     expect(component.model.relationships.indicators).toEqual(indicators);
     expect(component.model.relationships.mitigations).toEqual(mitigations);

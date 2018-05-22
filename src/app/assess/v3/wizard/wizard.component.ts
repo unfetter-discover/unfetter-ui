@@ -356,44 +356,35 @@ export class WizardComponent extends Measurements
      */
 
     const typedAssessments = {};
-    const summary = arr.map((assessment) => {
-      const curSummary = new Assessment();
-      curSummary.id = assessment.id;
-      curSummary.type = assessment.type;
-      curSummary.name = assessment.name;
-      curSummary.description = assessment.description;
-      curSummary.created = assessment.created;
-      curSummary.modified = assessment.modified;
-      curSummary.assessmentMeta = assessment.assessmentMeta;
-      curSummary.assessment_objects = curSummary.assessment_objects.concat(
+    const summary = new Assessment();
+    arr.forEach((assessment) => {
+      summary.id = assessment.id;
+      summary.type = assessment.type;
+      summary.name = assessment.name;
+      summary.description = assessment.description;
+      summary.created = assessment.created;
+      summary.modified = assessment.modified;
+      summary.assessmentMeta = assessment.assessmentMeta;
+      summary.assessment_objects = summary.assessment_objects.concat(
         assessment.assessment_objects
       );
-      curSummary.created_by_ref = meta.created_by_ref = assessment.created_by_ref;
+      summary.created_by_ref = meta.created_by_ref = assessment.created_by_ref;
       if (!assessment.metaProperties) {
         assessment.metaProperties = { published: false };
         if (!assessment.metaProperties.rollupId) {
           assessment.metaProperties.rollupId = rollupId;
         }
       }
-      if (
-        assessment.assessment_objects.every(
-          el => el.stix.type === StixCoreEnum.INDICATOR
-        )
-      ) {
+      if (assessment.assessment_objects
+        .every((el) => el.stix.type === StixCoreEnum.INDICATOR)) {
         typedAssessments[this.sidePanelOrder[0]] = assessment;
         meta.includesIndicators = true;
-      } else if (
-        assessment.assessment_objects.every(
-          el => el.stix.type === StixCoreEnum.COURSE_OF_ACTION
-        )
-      ) {
+      } else if (assessment.assessment_objects
+        .every((el) => el.stix.type === StixCoreEnum.COURSE_OF_ACTION)) {
         typedAssessments[this.sidePanelOrder[1]] = assessment;
         meta.includesMitigations = true;
-      } else if (
-        assessment.assessment_objects.every(
-          (el) => el.stix.type === StixEnum.OBJECT_ASSESSMENT
-        )
-      ) {
+      } else if (assessment.assessment_objects
+        .every((el) => el.stix.type === StixEnum.OBJECT_ASSESSMENT)) {
         typedAssessments[this.sidePanelOrder[2]] = assessment;
       } else {
         console.log(
