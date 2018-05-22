@@ -365,7 +365,7 @@ export class WizardComponent extends Measurements
       curSummary.created = assessment.created;
       curSummary.modified = assessment.modified;
       curSummary.assessmentMeta = assessment.assessmentMeta;
-      curSummary.assessment_objects = summary.assessment_objects.concat(
+      curSummary.assessment_objects = curSummary.assessment_objects.concat(
         assessment.assessment_objects
       );
       curSummary.created_by_ref = meta.created_by_ref = assessment.created_by_ref;

@@ -75,7 +75,7 @@ class MockModel {
   }
 }
 
-describe('WizardComponent', () => {
+fdescribe('WizardComponent', () => {
   let component: WizardComponent;
   let fixture: ComponentFixture<WizardComponent>;
 
@@ -117,6 +117,7 @@ describe('WizardComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(WizardComponent);
     component = fixture.componentInstance;
+    component.finishedLoading = true;
     fixture.detectChanges();
   });
 
@@ -165,7 +166,7 @@ describe('WizardComponent', () => {
     expect(component).toBeTruthy();
     const nextPanel = component.determineNextSidePanel();
     expect(nextPanel).toBeDefined();
-    expect(nextPanel).toEqual('sensors');
+    expect(nextPanel).toEqual('capabilities');
   });
 
   it('should know the next side panel with data, case 3', () => {
@@ -527,16 +528,16 @@ describe('WizardComponent', () => {
     mitigations.created = indicators.modified = time;
     mitigations.assessment_objects.push({ risk: -1, stix: { type: 'course-of-action' } } as AssessmentObject<Stix>);
 
-    const sensors = new Assessment();
-    sensors.id = id + '-3';
-    sensors.type = StixEnum.ASSESSMENT;
-    sensors.metaProperties = { published: false, rollupId: rollup };
-    sensors.name = name;
-    sensors.description = desc;
-    sensors.created = indicators.modified = time;
-    sensors.assessment_objects.push({ risk: -1, stix: { type: 'x-unfetter-sensor' } } as AssessmentObject<Stix>);
+    const capabilities = new Assessment();
+    capabilities.id = id + '-3';
+    capabilities.type = StixEnum.ASSESSMENT;
+    capabilities.metaProperties = { published: false, rollupId: rollup };
+    capabilities.name = name;
+    capabilities.description = desc;
+    capabilities.created = indicators.modified = time;
+    capabilities.assessment_objects.push({ risk: -1, stix: { type: 'x-unfetter-capability' } } as AssessmentObject<Stix>);
 
-    component.loadAssessments('0123456789abcdef', [indicators, mitigations, sensors], meta);
+    component.loadAssessments('0123456789abcdef', [indicators, mitigations, capabilities], meta);
 
     expect(meta.title).toEqual(name);
     expect(meta.description).toEqual(desc);
@@ -546,7 +547,7 @@ describe('WizardComponent', () => {
     expect(component.model.attributes.assessment_objects.length).toEqual(3);
     expect(component.model.relationships.indicators).toEqual(indicators);
     expect(component.model.relationships.mitigations).toEqual(mitigations);
-    expect(component.model.relationships.sensors).toEqual(sensors);
+    expect(component.model.relationships.capabilities).toEqual(capabilities);
   });
 
 });
