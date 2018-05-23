@@ -61,6 +61,11 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
             return genAssessState({
                 ...state,
             });
+        case baselineActions.SET_BASELINE:
+            return genAssessState({
+                ...state,
+                baseline: action.payload,
+            });
         case baselineActions.SET_CAPABILITY_GROUPS:
             return genAssessState({
                 ...state,
@@ -158,6 +163,7 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
         case baselineActions.SAVE_BASELINE:
             return genAssessState({
                 ...state,
+                baseline: action.payload,
             });
         default:
             return state;
