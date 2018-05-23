@@ -129,13 +129,13 @@ export class BaselineService {
      * @param {string} filter
      * @return {Observable<Capability[]>}
      */
-    // public getCapabilities(filter?: string): Observable<Capability[]> {
-    //     const url = filter ?
-    //         `${this.capabilityBaseUrl}?${encodeURI(filter)}` : this.capabilityBaseUrl;
-    //     return this.genericApi
-    //         .getAs<JsonApiData<Capability>[]>(url)
-    //         .map(RxjsHelpers.mapAttributes);
-    // }
+    public getCapabilities(filter?: string): Observable<Capability[]> {
+        const url = filter ?
+            `${this.capabilityBaseUrl}?${encodeURI(filter)}` : this.capabilityBaseUrl;
+        return this.genericApi
+            .getAs<JsonApiData<Capability>[]>(url)
+            .map(RxjsHelpers.mapAttributes);
+    }
 
     /**
      * @description
@@ -177,12 +177,12 @@ export class BaselineService {
     /**
      * @description
      * @param {string} id
-     * @return {Observable<Assessment>}
+     * @return {Observable<AssessmentSet> }
      */
     public getById(id: string, includeMeta = true): Observable<AssessmentSet> {
         const url = `${this.baselineBaseUrl}/${id}?metaproperties=${includeMeta}`;
         return this.genericApi
-            .getAs<JsonApiData<Baseline>>(url)
+            .getAs<JsonApiData<AssessmentSet>>(url)
             .map(RxjsHelpers.mapAttributes);
     }
 
@@ -197,34 +197,6 @@ export class BaselineService {
             .getAs<JsonApiData<AssessmentSet>>(url)
             .map(RxjsHelpers.mapAttributes);
     }
-
-    /**
-     * @description
-     * @param {string} id
-     * @return {Observable}
-     */
-    // public getRiskPerKillChain(id: string): Observable<any> {
-    //     if (!id) {
-    //         return Observable.empty();
-    //     }
-
-    //     const url = `${this.baselineBaseUrl}/${id}/risk-per-kill-chain`;
-    //     return this.genericApi.getAs<RiskByKillChain>(url);
-    // }
-
-    /**
-     * @description
-     * @param {string} id
-     * @return {Observable<RiskByAttack3>}
-     */
-    // public getRiskPerAttackPattern(id: string, includeMeta = true): Observable<RiskByAttack3> {
-    //     if (!id) {
-    //         return Observable.empty();
-    //     }
-    //     const url = `${this.baselineBaseUrl}/${id}/risk-by-attack-pattern?metaproperties=${includeMeta}`;
-    //     return this.genericApi
-    //         .getAs<RiskByAttack3>(url);
-    // }
 
     /**
      * @description

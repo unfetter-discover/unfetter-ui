@@ -48,6 +48,7 @@ const moduleComponents = [
     GlobalModule,
     ChartsModule,
     StoreModule.forFeature('summary', summaryReducer),
+    EffectsModule.forFeature([SummaryEffects]),
   ],
   declarations: [
     ...moduleComponents,

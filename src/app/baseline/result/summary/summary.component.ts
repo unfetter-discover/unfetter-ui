@@ -13,7 +13,7 @@ import { UserProfile } from '../../../models/user/user-profile';
 import { AppState } from '../../../root-store/app.reducers';
 import { LastModifiedBaseline } from '../../models/last-modified-baseline';
 import { BaselineService } from '../../services/baseline.service';
-import { CleanAssessmentResultData, LoadSingleAssessmentSummaryData } from '../store/summary.actions';
+import { CleanAssessmentResultData, LoadSingleAssessmentSummaryData, LoadBaselineData } from '../store/summary.actions';
 import { SummaryState } from '../store/summary.reducers';
 import { SummaryDataSource } from './summary.datasource';
 
@@ -32,8 +32,9 @@ export class SummaryComponent implements OnInit, OnDestroy {
   dates: any[];
   summaries: AssessmentSet[];
   summary: AssessmentSet;
-  // TODO fix
-  finishedLoading = true;
+
+  baseline: AssessmentSet;
+  finishedLoading = false;
   private identities: Identity[];
 
   masterListOptions = {
@@ -83,8 +84,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
         this.baselineId = params.baselineId || '';
         this.summary = undefined;
         this.summaries = undefined;
-        // TODO fix
-        this.finishedLoading = true; // false;
+        this.finishedLoading = false;
+        this.baseline = undefined;
         this.store.dispatch(new CleanAssessmentResultData());
         const sub$ = this.userStore
           .select('users')
@@ -93,7 +94,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
           .subscribe((user: UserProfile) => {
             const creatorId = user._id;
             const createdById = user.organizations[0].id;
-            this.requestData(this.baselineId, createdById);
+            this.requestBaseline(this.baselineId, createdById);
           },
             (err) => console.log(err));
         this.subscriptions.push(sub$);
@@ -109,6 +110,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
         (error) => console.log(`(${new Date().toISOString()}) error retrieving identities from app store`, error)
       );
 
+    this.getBaseline();
     this.listenForDataChanges();
 
     this.subscriptions.push(idParamSub$);
@@ -116,18 +118,43 @@ export class SummaryComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * @description
+   * @param {string} creatorId - optional
+   */
+  public requestBaseline(baselineId: string, creatorId?: string): void {
+    const isSameBaseline = (row: any) => row && (row.id === this.baselineId);
+    this.masterListOptions.dataSource = new SummaryDataSource(this.baselineService, creatorId);
+    this.masterListOptions.columns.id.classes =
+      (row: any) => isSameBaseline(row) ? 'current-item' : 'cursor-pointer';
+    this.masterListOptions.columns.id.selectable = (row: any) => !isSameBaseline(row);
+    this.store.dispatch(new LoadBaselineData(baselineId));
+  }
+
+  // TODO unsubscribes
+
+  public getBaseline(): void {
+    const baselineRetrieve$ = this.store
+      .select('summary')
+      .pluck('baseline')
+      .distinctUntilChanged()
+      .filter((arr: AssessmentSet[]) => arr && arr.length > 0)
+      .subscribe((arr: AssessmentSet[]) => this.baseline = arr[0],
+        (err) => console.log(err));
+
+    this.subscriptions.push(baselineRetrieve$);
+  }
+
+  /**
    * @description setup subscriptions and observables for data changes
    * @return {void}
    */
   public listenForDataChanges(): void {
-    console.log('listening');
     const sub1$ = this.store
       .select('summary')
       .pluck('summaries')
       .distinctUntilChanged()
       .filter((arr: AssessmentSet[]) => arr && arr.length > 0)
       .subscribe((arr: AssessmentSet[]) => {
-        console.log('data changed');
         this.summaries = [...arr];
         this.summary = { ...arr[0] };
       },
@@ -139,9 +166,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .distinctUntilChanged()
       .filter((el) => el === true)
       .subscribe((done: boolean) => {
-        if (this.summary === undefined) {
+        if (this.baseline === undefined) {
           // fetching the summary failed, set all flags to done
-          console.log('load failed');
           this.setLoadingToDone();
           return;
         }
@@ -162,26 +188,17 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
     this.baselineName = this.store
       .select('summary')
-      .pluck('summaries')
+      .pluck('baseline')
       .distinctUntilChanged()
-      .switchMap((summaries: Baseline[]) => {
-        if (!summaries || summaries.length === 0) {
-          return '';
+      .switchMap((arr: AssessmentSet[]) => {
+        if (!arr || arr.length === 0) {
+          return Observable.of('');
         }
-        // if (summaries[0].object_ref) {
-        //   // Get object reference to determine type
-        //   let o$ = this.baselineService.getCapabilityById(summaries[0].object_ref)
-        //     .subscribe(
-        //       (capability) => {
-        //         if (capability !== undefined) {
-        //           this.baselineName = Observable.of(summaries[0].name + ' - ' + capability.name);
-        //         }
-        //       },
-        //       (err) => console.log('error getting capability reference from object assessment', err)
-        //     );
-        // }
-        return summaries[0].name;
+        return Observable.of(arr[0].name);
       });
+    
+    
+
 
     this.subscriptions.push(sub1$, sub2$, sub8$);
   }
