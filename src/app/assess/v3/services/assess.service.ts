@@ -7,6 +7,7 @@ import { SummaryAggregation } from 'stix/assess/v2/summary-aggregation';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { JsonApiData } from 'stix/json/jsonapi-data';
 import { GenericApi } from '../../../core/services/genericapi.service';
+import { RxjsHelpers } from '../../../global/static/rxjs-helpers';
 import { Constance } from '../../../utils/constance';
 import { LastModifiedAssessment } from '../models/last-modified-assessment';
 
@@ -42,13 +43,7 @@ export class AssessService {
 
         return this.genericApi
             .getAs<JsonApiData<T>>(url)
-            .map((data) => {
-                if (Array.isArray(data)) {
-                    return data.map((el) => el.attributes);
-                } else {
-                    return data.attributes;
-                }
-            });
+            .map<any, T|T[]>(RxjsHelpers.mapAttributes);
     }
 
     /**
@@ -111,7 +106,10 @@ export class AssessService {
         const url = `${this.assessBaseUrl}/${id}?metaproperties=${includeMeta}`;
         return this.genericApi
             .getAs<JsonApiData<Assessment>>(url)
-            .map((data) => data.attributes);
+            // remove the attributes wrapping
+            .map<any, Assessment>(RxjsHelpers.mapAttributes)
+            // cast the object literal to an actual object so we have its methods
+            .map((assessment: Assessment) => new Assessment(assessment));
     }
 
     /**
@@ -127,7 +125,10 @@ export class AssessService {
         const url = `${this.assessBaseUrl}?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
         return this.genericApi
             .getAs<JsonApiData<Assessment>[]>(url)
-            .map((data) => data.map((el) => el.attributes));
+            // remove the attributes wrapping
+            .map<any[], Assessment[]>(RxjsHelpers.mapAttributes)
+            // cast the object literal to an actual object so we have its methods
+            .map((arr: Assessment[]) => arr.map((_) => new Assessment(_)));
     }
 
     /**
@@ -216,7 +217,10 @@ export class AssessService {
         const url = `${this.assessBaseUrl}/${id}/risk-by-attack-pattern?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
         return this.genericApi
             .getAs<JsonApiData<RiskByAttack>[]>(url)
-            .map((data) => data.map((el) => el.attributes));
+            // remove the attributes wrapping
+            .map<any[], RiskByAttack[]>(RxjsHelpers.mapAttributes)
+            // cast the object literal to an actual object so we have its methods
+            .map((arr: RiskByAttack[]) => arr.map((_) => Object.assign(new RiskByAttack(), _)));
     }
 
     /**
@@ -249,11 +253,12 @@ export class AssessService {
         const url = `${this.assessBaseUrl}/${id}/summary-aggregations?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
         return this.genericApi
             .getAs<JsonApiData<SummaryAggregation>[]>(url)
-            .map((data) => data.map((el) => el.attributes));
+            .map<any[], SummaryAggregation[]>(RxjsHelpers.mapAttributes);
     }
 
 
     /**
+     * @deprecated - operating on the creator id has been replaced by the new security filter, this method will be removed
      * @description retrieve full assessments for given creator
      * @param {string} creatorId, creator mongo user id, not stix identity
      * @return {Observable<Assessment[]>}
@@ -265,7 +270,7 @@ export class AssessService {
         const url = `${this.assessBaseUrl}?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
         return this.genericApi
             .getAs<JsonApiData<Assessment>[]>(url)
-            .map((data) => data.map((el) => el.attributes));
+            .map<any[], Assessment[]>(RxjsHelpers.mapAttributes);
     }
 
     /**
@@ -280,6 +285,7 @@ export class AssessService {
     }
 
     /**
+     * @deprecated - operating on the creator id has been replaced by the new security filter, this method will be removed
      * @description retrieve <i>partial assessments</i> for given creator
      *   NOTE: the backend may apply security filters, based on user and run mode
      * @param {string} userId, creator mongo user id, not stix identity
