@@ -1,5 +1,5 @@
 <div id="newAssessmentsSummary" *ngIf="finishedLoading; else loadingBlock" class="fadeIn">
-  <mat-sidenav-container *ngIf="summary !== undefined; else notFound">
+  <mat-sidenav-container *ngIf="baseline !== undefined; else notFound">
     <mat-sidenav class="side-panel" mode="side" opened="true">
       <unfetter-side-panel class="side-panel" [item]="{ name: baselineName | async | capitalize }" collapsible="false" width="320">
 

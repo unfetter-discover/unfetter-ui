@@ -1,17 +1,17 @@
 import { Action } from '@ngrx/store';
-import { Baseline } from '../../../models/baseline/baseline';
+import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
 import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
 import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
 
 // For effects
 export const LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA = '[Baseline Summary] LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA';
-export const LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA = '[Baseline Summary] LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA';
-export const LOAD_RISK_PER_KILL_CHAIN_DATA = '[Baseline Summary] LOAD_RISK_PER_KILL_CHAIN_DATA';
+export const LOAD_BASELINE_DATA = '[Baseline Summary] LOAD_BASELINE_DATA';
 export const LOAD_SINGLE_SUMMARY_AGGREGATION_DATA = '[Baseline Summary] LOAD_SINGLE_SUMMARY_AGGREGATION_DATA';
 export const LOAD_SUMMARY_AGGREGATION_DATA = '[Baseline Summary] LOAD_SUMMARY_AGGREGATION_DATA';
 
 // For reducers
 export const SET_ASSESSMENTS = '[Baseline Summary] SET_ASSESSMENTS';
+export const SET_BASELINE = '[Baseline Summary] SET_BASELINE';
 export const FINISHED_LOADING = '[Baseline Summary] FINISHED_LOADING';
 export const SET_KILL_CHAIN_DATA = '[Baseline Summary] SET_KILL_CHAIN_DATA';
 export const FINISHED_LOADING_KILL_CHAIN_DATA = '[Baseline Summary] FINISHED_LOADING_KILL_CHAIN_DATA';
@@ -27,23 +27,29 @@ export class LoadSingleAssessmentSummaryData implements Action {
     constructor(public payload: string) { }
 }
 
+export class LoadBaselineData implements Action {
+    public readonly type = LOAD_BASELINE_DATA;
+
+    // individual baseline id
+    constructor(public payload: string) { }
+}
+
 export class SetAssessments implements Action {
     public readonly type = SET_ASSESSMENTS;
 
-    constructor(public payload: Baseline[]) { }
+    constructor(public payload: AssessmentSet[]) { }
+}
+
+export class SetBaseline implements Action {
+    public readonly type = SET_BASELINE;
+
+    constructor(public payload: AssessmentSet[]) { }
 }
 
 export class FinishedLoading implements Action {
     public readonly type = FINISHED_LOADING;
 
     constructor(public payload: boolean) { }
-}
-
-export class LoadSingleRiskPerKillChainData implements Action {
-    public readonly type = LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA;
-
-    // individual baseline id
-    constructor(public payload: string) { }
 }
 
 export class SetKillChainData implements Action {
@@ -86,11 +92,11 @@ export class CleanAssessmentResultData {
 export type SummaryActions =
     CleanAssessmentResultData |
     SetAssessments |
+    SetBaseline |
     LoadSingleAssessmentSummaryData |
+    LoadBaselineData |
     FinishedLoading |
     SetKillChainData |
-    LoadSingleRiskPerKillChainData |
-    FinishedLoadingKillChainData |
     SetSummaryAggregationData |
     LoadSingleSummaryAggregationData |
     FinishedLoadingSummaryAggregationData;

@@ -1,14 +1,13 @@
-import * as summaryActions from './summary.actions';
-import { Baseline } from '../../../models/baseline/baseline';
+import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
 import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
 import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
+import * as summaryActions from './summary.actions';
 
 export interface SummaryState {
-    summary: Baseline;
-    summaries: Baseline[];
+    baseline: AssessmentSet[];
+    summary: AssessmentSet;
+    summaries: AssessmentSet[];
     finishedLoading: boolean;
-    killChainData: RiskByKillChain[];
-    finishedLoadingKillChainData: boolean;
     summaryAggregations: SummaryAggregation[];
     finishedLoadingSummaryAggregationData: boolean;
 };
@@ -17,11 +16,10 @@ export interface SummaryState {
 
 const genState = (state?: Partial<SummaryState>) => {
     const tmp = {
-        summary: new Baseline(),
-        summaries: [],
+        baseline: new Array<AssessmentSet>(),
+        summary: new AssessmentSet(),
+        summaries: new Array<AssessmentSet>(),
         finishedLoading: false,
-        killChainData: [],
-        finishedLoadingKillChainData: false,
         summaryAggregations: [],
         finishedLoadingSummaryAggregationData: false
     };
@@ -40,6 +38,15 @@ export function summaryReducer(state = initialState, action: summaryActions.Summ
             return genState({
                 ...state,
             });
+        case summaryActions.LOAD_BASELINE_DATA:
+            return genState({
+                ...state,
+            });
+        case summaryActions.SET_BASELINE:
+            return genState({
+                ...state,
+                baseline: [...action.payload],
+            });
         case summaryActions.SET_ASSESSMENTS:
             return genState({
                 ...state,
@@ -49,20 +56,6 @@ export function summaryReducer(state = initialState, action: summaryActions.Summ
             return genState({
                 ...state,
                 finishedLoading: action.payload
-            });
-        case summaryActions.LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA:
-            return genState({
-                ...state,
-            });
-        case summaryActions.FINISHED_LOADING_KILL_CHAIN_DATA:
-            return genState({
-                ...state,
-                finishedLoadingKillChainData: action.payload
-            });
-        case summaryActions.SET_KILL_CHAIN_DATA:
-            return genState({
-                ...state,
-                killChainData: [...action.payload],
             });
         case summaryActions.LOAD_SINGLE_SUMMARY_AGGREGATION_DATA:
 

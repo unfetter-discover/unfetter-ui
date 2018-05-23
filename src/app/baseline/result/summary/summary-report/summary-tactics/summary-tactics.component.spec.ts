@@ -55,6 +55,7 @@ describe('SummaryTacticsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SummaryTacticsComponent);
     component = fixture.componentInstance;
+    // let mockApi = spyOn(component.genericApi, 'get').and.returnValue(Observable.of(mockAttackPatternData));
     fixture.detectChanges();
   });
 

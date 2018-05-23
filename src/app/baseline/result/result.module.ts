@@ -48,8 +48,7 @@ const moduleComponents = [
     GlobalModule,
     ChartsModule,
     StoreModule.forFeature('summary', summaryReducer),
-    StoreModule.forFeature('riskByAttackPattern', riskByAttackPatternReducer),
-    EffectsModule.forFeature([SummaryEffects, RiskByAttackPatternEffects]),
+    EffectsModule.forFeature([SummaryEffects]),
   ],
   declarations: [
     ...moduleComponents,

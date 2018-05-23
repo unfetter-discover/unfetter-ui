@@ -3,6 +3,15 @@
     <div class="flex">
       <uf-info-bar *ngIf="percentCompleted < 100" isWarningMsg="true" [message]="percentCompletedMsg" [completeActionUrl]="editUrl||''"></uf-info-bar>
     </div>
+    <div class="flex1"></div>
+    <div *ngIf="created; else notPublished" class="publishText">
+      Published &bull; {{ created | date:'medium' }}
+    </div>
+    <ng-template #notPublished>
+      <div id="publishWrapper" matTooltip="Future Assessment Functionality">
+        <button id="publishButton" disabled mat-raised-button>PUBLISH</button>
+      </div>
+    </ng-template>
   </div>
   <div class="flex1"></div>
   <div class="flex flexRow">

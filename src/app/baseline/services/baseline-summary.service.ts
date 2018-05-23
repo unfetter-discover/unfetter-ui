@@ -14,13 +14,13 @@ export class BaselineSummaryService {
      * @param {string} id
      * @return {Observable}
      */
-    public getSummaryAggregation(id: string): Observable<any> {
-        if (!id) {
-            return Observable.empty();
-        }
+    // public getSummaryAggregation(id: string): Observable<any> {
+    //     if (!id) {
+    //         return Observable.empty();
+    //     }
 
-        const url = `${this.baseUrl}/${id}/summary-aggregations`;
-        return this.genericApi.get(url);
-    }
+    //     const url = `${this.baseUrl}/${id}/summary-aggregations`;
+    //     return this.genericApi.get(url);
+    // }
 
 }

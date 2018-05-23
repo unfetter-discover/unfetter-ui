@@ -4,8 +4,6 @@ import { AssessmentSet, Capability, Category, ObjectAssessment } from 'stix/asse
 import { JsonApiData } from 'stix/json/jsonapi-data';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { RxjsHelpers } from '../../global/static/rxjs-helpers';
-import { RiskByKillChain } from '../../models/assess/risk-by-kill-chain';
-import { SummaryAggregation } from '../../models/assess/summary-aggregation';
 import { Baseline } from '../../models/baseline/baseline';
 import { BaselineObject } from '../../models/baseline/baseline-object';
 import { RiskByAttack3 } from '../../models/baseline/risk-by-attack3';
@@ -107,7 +105,7 @@ export class BaselineService {
      * @param {string} filter
      * @return {Observable<Assessment[]>}
      */
-    public load(filter?: string): Observable<Baseline[]> {
+    public load(filter?: string): Observable<AssessmentSet[]> {
         const url = filter ?
             `${this.baselineBaseUrl}?${encodeURI(filter)}` : this.baselineBaseUrl;
         return this.genericApi.get(url);
@@ -118,13 +116,13 @@ export class BaselineService {
      * @param {string} filter
      * @return {Observable<Category[]>}
      */
-    public getCategories(filter?: string): Observable<Category[]> {
-        const url = filter ?
-            `${this.categoryBaseUrl}?${encodeURI(filter)}` : this.categoryBaseUrl;
-        return this.genericApi
-            .getAs<JsonApiData<Category>[]>(url)
-            .map(RxjsHelpers.mapAttributes);
-    }
+    // public getCategories(filter?: string): Observable<Category[]> {
+    //     const url = filter ?
+    //         `${this.categoryBaseUrl}?${encodeURI(filter)}` : this.categoryBaseUrl;
+    //     return this.genericApi
+    //         .getAs<JsonApiData<Category>[]>(url)
+    //         .map(RxjsHelpers.mapAttributes);
+    // }
 
     /**
      * @description load capabilities
@@ -144,12 +142,12 @@ export class BaselineService {
      * @param {string} capability id
      * @return {Observable<Capability> }
      */
-    public getCapabilityById(id: string, includeMeta = true): Observable<Capability> {
-        const url = `${Constance.X_UNFETTER_CAPABILITY_URL}/${id}`;
-        return this.genericApi
-            .getAs<JsonApiData<Capability>>(url)
-            .map(RxjsHelpers.mapAttributes);
-    }
+    // public getCapabilityById(id: string, includeMeta = true): Observable<Capability> {
+    //     const url = `${Constance.X_UNFETTER_CAPABILITY_URL}/${id}`;
+    //     return this.genericApi
+    //         .getAs<JsonApiData<Capability>>(url)
+    //         .map(RxjsHelpers.mapAttributes);
+    // }
 
     /**
      * @description
@@ -179,12 +177,12 @@ export class BaselineService {
     /**
      * @description
      * @param {string} id
-     * @return {Observable<Assessment>}
+     * @return {Observable<AssessmentSet> }
      */
-    public getById(id: string, includeMeta = true): Observable<Baseline> {
+    public getById(id: string, includeMeta = true): Observable<AssessmentSet> {
         const url = `${this.baselineBaseUrl}/${id}?metaproperties=${includeMeta}`;
         return this.genericApi
-            .getAs<JsonApiData<Baseline>>(url)
+            .getAs<JsonApiData<AssessmentSet>>(url)
             .map(RxjsHelpers.mapAttributes);
     }
 
@@ -205,42 +203,14 @@ export class BaselineService {
      * @param {string} id
      * @return {Observable}
      */
-    public getRiskPerKillChain(id: string): Observable<any> {
-        if (!id) {
-            return Observable.empty();
-        }
+    // public getSummaryAggregation(id: string): Observable<SummaryAggregation> {
+    //     if (!id) {
+    //         return Observable.empty();
+    //     }
 
-        const url = `${this.baselineBaseUrl}/${id}/risk-per-kill-chain`;
-        return this.genericApi.getAs<RiskByKillChain>(url);
-    }
-
-    /**
-     * @description
-     * @param {string} id
-     * @return {Observable<RiskByAttack3>}
-     */
-    public getRiskPerAttackPattern(id: string, includeMeta = true): Observable<RiskByAttack3> {
-        if (!id) {
-            return Observable.empty();
-        }
-        const url = `${this.baselineBaseUrl}/${id}/risk-by-attack-pattern?metaproperties=${includeMeta}`;
-        return this.genericApi
-            .getAs<RiskByAttack3>(url);
-    }
-
-    /**
-     * @description
-     * @param {string} id
-     * @return {Observable}
-     */
-    public getSummaryAggregation(id: string): Observable<SummaryAggregation> {
-        if (!id) {
-            return Observable.empty();
-        }
-
-        const url = `${this.baselineBaseUrl}/${id}/summary-aggregations`;
-        return this.genericApi.getAs<SummaryAggregation>(url);
-    }
+    //     const url = `${this.baselineBaseUrl}/${id}/summary-aggregations`;
+    //     return this.genericApi.getAs<SummaryAggregation>(url);
+    // }
 
     /**
      * @description retrieve <i>partial baselines</i>, for all creators/users in system
