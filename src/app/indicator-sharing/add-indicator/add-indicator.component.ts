@@ -27,7 +27,6 @@ export class AddIndicatorComponent implements OnInit {
     public form: FormGroup | any;
     public organizations: any;
     public attackPatterns: any[] = [];
-    public patternValid: boolean = false;
     public showPatternTranslations: boolean = false;
     public showAdditionalQueries: boolean = true;
     public includeQueries = {
@@ -124,7 +123,7 @@ export class AddIndicatorComponent implements OnInit {
                 ([translations, objects]: [PatternHandlerTranslateAll, PatternHandlerGetObjects]) => {
 
                     // ~~~ Pattern Translations ~~~
-                    this.patternValid = translations.validated;
+                    this.form.get('metaProperties').get('validStixPattern').setValue(translations.validated);
                     this.form.get('metaProperties').get('queries').get('carElastic').patchValue({
                         query: translations['car-elastic']
                     });
