@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
+import { Capability, Category, ObjectAssessment, AssessmentSet } from 'stix/assess/v3/baseline';
 import { Baseline } from '../../models/baseline/baseline';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
@@ -19,6 +19,7 @@ export const FETCH_CAPABILITIES = '[Baseline] FETCH_CAPABILITIES';
 export const SET_CAPABILITIES = '[Baseline] SET_CAPABILITIES';
 export const SET_BASELINE_CAPABILITIES = '[Baseline] SET_BASELINE_CAPABILITIES';
 export const SET_CURRENT_BASELINE_CAPABILITY = '[Baseline] SET_CURRENT_BASELINE_CAPABILITY';
+export const SET_BASELINE = '[Baseline] SET_BASELINE';
 
 // For reducers
 export const UPDATE_PAGE_TITLE = '[Baseline] UPDATE_PAGE_TITLE';
@@ -60,15 +61,19 @@ export class StartBaselineSuccess implements Action {
 export class SaveBaseline implements Action {
     public readonly type = SAVE_BASELINE;
 
-    // Saving a baseline assumes the assessment set and
-    //  object assessments in this ngrx store are current
-    constructor() { }
+    constructor(public payload: AssessmentSet) { }
 }
 
 export class FetchBaseline implements Action {
     public readonly type = FETCH_BASELINE;
 
     constructor(public payload: any[]) { }
+}
+
+export class SetBaseline implements Action {
+    public readonly type = SET_BASELINE;
+
+    constructor(public payload: AssessmentSet) { }
 }
 
 export class FetchCapabilityGroups implements Action {
@@ -196,6 +201,7 @@ export type BaselineActions =
     AnswerQuestion |
     CleanBaselineWizardData |
     FetchBaseline |
+    SetBaseline |
     FetchCapabilityGroups |
     SetCapabilityGroups |
     SetBaselineGroups |

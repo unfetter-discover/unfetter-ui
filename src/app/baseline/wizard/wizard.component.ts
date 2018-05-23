@@ -14,7 +14,7 @@ import { BaselineMeta } from '../../models/baseline/baseline-meta';
 import { Stix } from '../../models/stix/stix';
 import { UserProfile } from '../../models/user/user-profile';
 import { AppState } from '../../root-store/app.reducers';
-import { CleanBaselineWizardData, FetchAttackPatterns, FetchCapabilities, FetchCapabilityGroups, LoadBaselineWizardData, SetCurrentBaselineCapability, SetCurrentBaselineGroup, SetCurrentBaselineObjectAssessment, UpdatePageTitle, SaveBaseline } from '../store/baseline.actions';
+import { CleanBaselineWizardData, FetchAttackPatterns, FetchCapabilities, FetchCapabilityGroups, LoadBaselineWizardData, SaveBaseline, SetBaseline, SetCurrentBaselineCapability, SetCurrentBaselineGroup, SetCurrentBaselineObjectAssessment, UpdatePageTitle } from '../store/baseline.actions';
 import { BaselineState } from '../store/baseline.reducers';
 import { AttackPatternChooserComponent } from './attack-pattern-chooser/attack-pattern-chooser.component';
 import { Measurements } from './models/measurements';
@@ -48,6 +48,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public navigation: { id: string, label: string, page: number };
   public navigations: any[];
   
+  private currentBaseline: AssessmentSet;
   private objAssessments: ObjectAssessment[];
   private currentObjAssessment: ObjectAssessment;
   public allCategories: Category[] = [];
@@ -57,6 +58,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public baselineCapabilities: Capability[] = [];
   public currentCapability = {} as Capability;
   private baselineObjAssessments: ObjectAssessment[] = [];
+  private currentObjectAssessment: ObjectAssessment;
 
   public showHeatmap = false;
   public allAttackPatterns: Observable<AttackPattern[]> = Observable.of([]);
@@ -147,6 +149,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           meta.description = assessmentSet.description || meta.description;
           meta.created_by_ref = assessmentSet.created_by_ref || meta.created_by_ref;
           this.meta = meta;
+          this.currentBaseline = assessmentSet;
         },
         (err) => console.log(err));
 
@@ -237,6 +240,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         .subscribe(
           (baselineObjAssessments: ObjectAssessment[]) => {
             this.baselineObjAssessments = baselineObjAssessments;
+            this.currentBaseline.assessments = this.baselineObjAssessments.map(objAssess => objAssess.id);
+            this.wizardStore.dispatch(new SetBaseline(this.currentBaseline));
           },
         (err) => console.log(err));
       
@@ -721,7 +726,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {void}
    */
   private saveAssessments(): void {
-    this.wizardStore.dispatch(new SaveBaseline());
+    this.wizardStore.dispatch(new SaveBaseline(this.currentBaseline));
   }
 
 }
