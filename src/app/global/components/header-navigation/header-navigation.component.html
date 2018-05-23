@@ -11,9 +11,16 @@
 
   <span class="flex1">&nbsp;</span>
 
-  <a href="/api/auth/login/" *ngIf="!demoMode && !authService.loggedIn()">
-    <button mat-raised-button color="accent">Sign In / Register</button>
-  </a>
+  <button mat-raised-button *ngIf="!demoMode && !authService.loggedIn()"
+      [matMenuTriggerFor]="loginMenu" color="accent">Sign In / Register</button>
+  <mat-menu #loginMenu="matMenu" [overlapTrigger]="false">
+    <a mat-button color="primary" href="/api/auth/login/github">
+      <img src="assets/images/logos/github.png" width="32" height="32"> ... Using Github
+    </a>
+    <a mat-button color="primary" href="/api/auth/login/gitlab">
+      <img src="assets/images/logos/gitlab.png" width="32" height="32"> ... Using Gitlab
+    </a>
+  </mat-menu>
 
   <span id="appMenuWrapper">
     <button mat-icon-button class="navButton" *ngIf="authService.loggedIn()" (click)="showAppMenu = !showAppMenu">
@@ -61,9 +68,10 @@
   </span>
 
   <span id="accountWrapper" class="navButton" *ngIf="!demoMode && authService.loggedIn()">
-    <div class="cursor-pointer" (click)="showAccountMenu = !showAccountMenu">
-      <img src="{{ (user$ | async).userProfile.github.avatar_url }}" alt="User" id="avatar" *ngIf="(user$ | async).userProfile && (user$ | async).userProfile.github && (user$ | async).userProfile.github.avatar_url" class="smallAvatar">
-      <button mat-icon-button *ngIf="!(user$ | async).userProfile || (user$ | async).userProfile.github.avatar_url === undefined" id="accountBtn">
+    <div class="cursor-pointer" *ngFor="let avatar of [getAvatar(user$ | async)]"
+        (click)="showAccountMenu = !showAccountMenu">
+      <img *ngIf="avatar" id="avatar" class="smallAvatar" src="{{avatar}}" alt="User">
+      <button mat-icon-button *ngIf="!avatar" id="accountBtn">
         <mat-icon class="mat-24">account_circle</mat-icon>
       </button>
       <i class="material-icons" id="accountCaret">arrow_drop_down</i>

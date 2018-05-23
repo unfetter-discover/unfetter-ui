@@ -127,7 +127,7 @@ describe('HeaderNavigationComponent', () => {
             firstName: 'Demo',
             lastName: 'User',
             role: 'STANDARD_USER',
-            github: {id: 1, userName: 'demo', avatar_url: 'assets/icon/stix-icons/svg/identity-b.svg'},
+            oauth: {id: 1, userName: 'demo', avatar_url: 'assets/icon/stix-icons/svg/identity-b.svg'},
             approved: true
         };
         const adminUser = {
@@ -136,7 +136,7 @@ describe('HeaderNavigationComponent', () => {
             firstName: 'Admin',
             lastName: 'User',
             role: 'ADMIN',
-            github: {id: 2, userName: 'admin', avatar_url: 'assets/icon/stix-icons/svg/identity-b.svg'},
+            oauth: {id: 2, userName: 'admin', avatar_url: 'assets/icon/stix-icons/svg/identity-b.svg'},
             approved: true
         };
         const orgUser = {
@@ -146,7 +146,7 @@ describe('HeaderNavigationComponent', () => {
             lastName: 'Chief',
             organizations : [{ 'approved': true, 'role': 'STANDARD_USER' }],
             role: 'ORG_LEADER',
-            github: {id: 3, userName: 'chief', avatar_url: 'assets/icon/stix-icons/svg/identity-b.svg'},
+            oauth: {id: 3, userName: 'chief', avatar_url: 'assets/icon/stix-icons/svg/identity-b.svg'},
             approved: true
         };
     
@@ -172,7 +172,7 @@ describe('HeaderNavigationComponent', () => {
             expect(component.showAccountMenu).toBeFalsy();
             expect(fixture.debugElement.query(By.css('#accountWrapper')).nativeElement).toBeDefined();
             expect(fixture.debugElement.query(By.css('#accountWrapper img#avatar')).nativeElement.src)
-                .toMatch(new RegExp(`${demoUser.github.avatar_url}$`));
+                .toMatch(new RegExp(`${demoUser.oauth.avatar_url}$`));
             expect(fixture.debugElement.query(By.css('#accountMenuWindow'))).toBeNull();
             fixture.debugElement.query(By.css('#accountWrapper div.cursor-pointer'))
                 .triggerEventHandler('click', null);
