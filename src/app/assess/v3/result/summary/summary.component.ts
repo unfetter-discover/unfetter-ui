@@ -22,6 +22,10 @@ import { CleanAssessmentResultData, LoadSingleAssessmentSummaryData, LoadSingleR
 import { SummaryState } from '../store/summary.reducers';
 import { SummaryCalculationService } from './summary-calculation.service';
 import { SummaryDataSource } from './summary.datasource';
+import { distinctUntilChanged } from 'rxjs/operators/distinctUntilChanged';
+import { filter } from 'rxjs/operators/filter';
+import { map } from 'rxjs/operators/map';
+import { catchError } from 'rxjs/operators/catchError';
 
 @Component({
   selector: 'summary',
@@ -117,8 +121,10 @@ export class SummaryComponent implements OnInit, OnDestroy {
     const sub1$ = this.store
       .select('summary')
       .pluck('summaries')
-      .distinctUntilChanged()
-      .filter((arr: Assessment[]) => arr && arr.length > 0)
+      .pipe(
+        distinctUntilChanged(),
+        filter((arr: Assessment[]) => arr && arr.length > 0)
+      )
       .subscribe((arr: Assessment[]) => {
         this.summaries = [...arr];
         this.summary = arr[0];
@@ -131,8 +137,10 @@ export class SummaryComponent implements OnInit, OnDestroy {
     const sub2$ = this.store
       .select('summary')
       .pluck('finishedLoading')
-      .distinctUntilChanged()
-      .filter((el) => el === true)
+      .pipe(
+        distinctUntilChanged(),
+        filter((el) => el === true)
+      )
       .subscribe((done: boolean) => {
         if (this.summary === undefined) {
           // fetching the summary failed, set all flags to done
@@ -146,8 +154,10 @@ export class SummaryComponent implements OnInit, OnDestroy {
     const sub3$ = this.riskByAttackPatternStore
       .select('riskByAttackPattern')
       .pluck('riskByAttackPatterns')
-      .distinctUntilChanged()
-      .filter((arr: Assessment[]) => arr && arr.length > 0)
+      .pipe(
+        distinctUntilChanged(),
+        filter((arr: RiskByAttack[]) => arr && arr.length > 0)
+      )
       .subscribe((arr: RiskByAttack[]) => {
         this.riskByAttacks = [...arr];
         this.riskByAttack = { ...arr[0] };
@@ -157,7 +167,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     const sub4$ = this.riskByAttackPatternStore
       .select('riskByAttackPattern')
       .pluck('finishedLoading')
-      .distinctUntilChanged()
+      .pipe(distinctUntilChanged())
       .subscribe((done: boolean) => {
         this.finishedLoadingRBAP = done;
         if (done) {
@@ -169,7 +179,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     const sub5$ = this.store
       .select('summary')
       .pluck('killChainData')
-      .distinctUntilChanged()
+      .pipe(distinctUntilChanged())
       .subscribe((arr: RiskByKillChain[]) => {
         if (!arr || arr.length === 0) {
           this.riskByKillChain = undefined;
@@ -184,7 +194,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     const sub6$ = this.store
       .select('summary')
       .pluck('finishedLoadingKillChainData')
-      .distinctUntilChanged()
+      .pipe(distinctUntilChanged())
       .subscribe((done: boolean) => {
         this.finishedLoadingKCD = done;
         if (done) {
@@ -195,7 +205,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     const sub7$ = this.store
       .select('summary')
       .pluck('summaryAggregations')
-      .distinctUntilChanged()
+      .pipe(distinctUntilChanged())
       .subscribe((arr: SummaryAggregation[]) => {
         if (!arr || arr.length === 0) {
           this.summaryAggregation = undefined;
@@ -209,7 +219,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     const sub8$ = this.store
       .select('summary')
       .pluck('finishedLoadingSummaryAggregationData')
-      .distinctUntilChanged()
+      .pipe(distinctUntilChanged())
       .subscribe((done: boolean) => {
         this.finishedLoadingSAD = done;
         if (done) {
@@ -220,32 +230,18 @@ export class SummaryComponent implements OnInit, OnDestroy {
     this.assessmentName = this.store
       .select('summary')
       .pluck('summaries')
-      .distinctUntilChanged()
-      .map((summaries: Assessment[]) => {
-        if (!summaries || summaries.length === 0) {
-          return '';
-        }
-        if (summaries[0].assessment_objects && summaries[0].assessment_objects.length) {
-          let retVal = summaries[0].name + ' - ';
-          const assessedType = summaries[0].assessment_objects[0].stix.type;
-          // NOTE this is a temporary fix for naming in rollupId
-          // TODO remove this when a better fix is in place
-          switch (assessedType) {
-            case 'course-of-action':
-              retVal += 'Mitigations';
-              break;
-            case 'indicator':
-              retVal += 'Indicators';
-              break;
-            case 'x-unfetter-sensor':
-              retVal += 'Sensors';
-              break;
-          }
-          return retVal;
-        } else {
-          return summaries[0].name;
-        }
-      });
+      .pipe(
+        distinctUntilChanged(),
+        filter((summaries: Assessment[]) => summaries && summaries.length > 0),
+        map((summaries: Assessment[]) => {
+          const assessmentType = summaries[0].determineAssessmentType();
+          return `${summaries[0].name} - ${assessmentType}`;
+        }),
+        catchError((err, caught) => {
+          console.log(err);
+          return caught;
+        }),
+      );
 
     this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$, sub7$, sub8$);
   }

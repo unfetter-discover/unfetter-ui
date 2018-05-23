@@ -17,6 +17,11 @@ import { CleanAssessmentResultData, LoadAssessmentById } from '../store/full-res
 import { FullAssessmentResultState } from '../store/full-result.reducers';
 import { SummaryDataSource } from '../summary/summary.datasource';
 import { FullAssessmentGroup } from './group/models/full-assessment-group';
+import { catchError } from 'rxjs/operators/catchError';
+import { filter } from 'rxjs/operators/filter';
+import { distinctUntilChanged } from 'rxjs/operators/distinctUntilChanged';
+import { map } from 'rxjs/operators/map';
+import { take } from 'rxjs/operators/take';
 
 @Component({
   selector: 'unf-assess-full',
@@ -65,7 +70,7 @@ export class FullComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     const idParamSub$ = this.route.params
-      .distinctUntilChanged()
+      .pipe(distinctUntilChanged())
       .subscribe((params) => {
         this.rollupId = params.rollupId || '';
         this.assessmentId = params.assessmentId || '';
@@ -74,7 +79,7 @@ export class FullComponent implements OnInit, OnDestroy {
         const sub$ = this.userStore
           .select('users')
           .pluck('userProfile')
-          .take(1)
+          .pipe(take(1))
           .subscribe((user: UserProfile) => {
             this.requestData(this.rollupId);
           },
@@ -96,23 +101,25 @@ export class FullComponent implements OnInit, OnDestroy {
     this.assessment = this.store
       .select('fullAssessment')
       .pluck<object, Assessment>('fullAssessment')
-      .distinctUntilChanged()
+      .pipe(distinctUntilChanged());
 
     this.finishedLoading = this.store
       .select('fullAssessment')
       .pluck<Assessment, boolean>('finishedLoading')
-      .distinctUntilChanged();
+      .pipe(distinctUntilChanged());
 
     this.assessmentGroup = this.store
       .select('fullAssessment')
       .pluck<object, FullAssessmentGroup>('group')
-      .distinctUntilChanged();
+      .pipe(distinctUntilChanged());
 
     const sub$ = this.store
       .select('fullAssessment')
       .pluck('group')
-      .distinctUntilChanged()
-      .filter((group: any) => group.finishedLoadingGroupData === true)
+      .pipe(
+        distinctUntilChanged(),
+        filter((group: any) => group.finishedLoadingGroupData === true)
+      )
       .subscribe(
         (group: any) => {
           const riskByAttackPattern = group.riskByAttackPattern || {};
@@ -130,35 +137,17 @@ export class FullComponent implements OnInit, OnDestroy {
     this.assessmentName = this.store
       .select('fullAssessment')
       .pluck<object, Assessment>('fullAssessment')
-      .distinctUntilChanged()
-      // .pluck<object, Assessment[]>('assessmentTypes')
-      // .filter((arr) => arr && arr.length > 0)
-      // .distinctUntilChanged()
-      // .map((arr) => {
-      //   return arr.find((el) => el.id === this.assessmentId);
-      // })
-      .map((assessment: Assessment) => {
-        if (assessment.assessment_objects && assessment.assessment_objects.length) {
-          let retVal = assessment.name + ' - ';
-          const assessedType = assessment.assessment_objects[0].stix.type;
-          // NOTE this is a temporary fix for naming in rollupId
-          // TODO remove this when a better fix is in place
-          switch (assessedType) {
-            case 'course-of-action':
-              retVal += 'Mitigations';
-              break;
-            case 'indicator':
-              retVal += 'Indicators';
-              break;
-            case 'x-unfetter-sensor':
-              retVal += 'Sensors';
-              break;
-          }
-          return retVal;
-        } else {
-          return assessment.name;
-        }
-      });
+      .pipe(
+        distinctUntilChanged(),
+        map((assessment: Assessment) => {
+          const assessmentType = assessment.determineAssessmentType();
+          return `${assessment.name} - ${assessmentType}`;
+        }),
+        catchError((err, caught) => {
+          console.log(err);
+          return caught;
+        }),
+      );
 
     this.subscriptions.push(sub$);
   }

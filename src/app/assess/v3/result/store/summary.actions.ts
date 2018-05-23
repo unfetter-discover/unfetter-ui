@@ -5,20 +5,20 @@ import { Assessment } from 'stix/assess/v3/assessment';
 
 // For effects
 export const LOAD_ASSESSMENT_SUMMARY_DATA = '[Assess Summary] LOAD_ASSESSMENT_SUMMARY_DATA';
+export const LOAD_RISK_PER_KILL_CHAIN_DATA = '[Assess Summary] LOAD_RISK_PER_KILL_CHAIN_DATA';
 export const LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA = '[Assess Summary] LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA';
 export const LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA = '[Assess Summary] LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA';
-export const LOAD_RISK_PER_KILL_CHAIN_DATA = '[Assess Summary] LOAD_RISK_PER_KILL_CHAIN_DATA';
 export const LOAD_SINGLE_SUMMARY_AGGREGATION_DATA = '[Assess Summary] LOAD_SINGLE_SUMMARY_AGGREGATION_DATA';
 export const LOAD_SUMMARY_AGGREGATION_DATA = '[Assess Summary] LOAD_SUMMARY_AGGREGATION_DATA';
 
 // For reducers
-export const SET_ASSESSMENTS = '[Assess Summary] SET_ASSESSMENTS';
-export const FINISHED_LOADING = '[Assess Summary] FINISHED_LOADING';
-export const SET_KILL_CHAIN_DATA = '[Assess Summary] SET_KILL_CHAIN_DATA';
-export const FINISHED_LOADING_KILL_CHAIN_DATA = '[Assess Summary] FINISHED_LOADING_KILL_CHAIN_DATA';
-export const SET_SUMMARY_AGGREGATION_DATA = '[Assess Summary] SET_SUMMARY_AGGREGATION_DATA';
-export const FINISHED_LOADING_SUMMARY_AGGREGATION_DATA = '[Assess Summary] FINISHED_LOADING_SUMMARY_AGGREGATION_DATA';
 export const CLEAN_ASSESSMENT_RESULT_DATA = '[Assess Result Group] CLEAN_ASSESSMENT_RESULT_DATA';
+export const FINISHED_LOADING = '[Assess Summary] FINISHED_LOADING';
+export const FINISHED_LOADING_KILL_CHAIN_DATA = '[Assess Summary] FINISHED_LOADING_KILL_CHAIN_DATA';
+export const FINISHED_LOADING_SUMMARY_AGGREGATION_DATA = '[Assess Summary] FINISHED_LOADING_SUMMARY_AGGREGATION_DATA';
+export const SET_ASSESSMENTS = '[Assess Summary] SET_ASSESSMENTS';
+export const SET_KILL_CHAIN_DATA = '[Assess Summary] SET_KILL_CHAIN_DATA';
+export const SET_SUMMARY_AGGREGATION_DATA = '[Assess Summary] SET_SUMMARY_AGGREGATION_DATA';
 
 
 export class LoadSingleAssessmentSummaryData implements Action {
@@ -107,16 +107,16 @@ export class CleanAssessmentResultData {
 
 export type SummaryActions =
     CleanAssessmentResultData |
-    SetAssessments |
-    LoadAssessmentSummaryData |
-    LoadSingleAssessmentSummaryData |
     FinishedLoading |
-    SetKillChainData |
-    LoadSingleRiskPerKillChainData |
-    LoadRiskPerKillChainData |
     FinishedLoadingKillChainData |
-    SetSummaryAggregationData |
+    FinishedLoadingSummaryAggregationData |
+    LoadAssessmentSummaryData |
+    LoadRiskPerKillChainData |
+    LoadSingleAssessmentSummaryData |
+    LoadSingleRiskPerKillChainData |
     LoadSingleSummaryAggregationData |
     LoadSummaryAggregationData |
-    FinishedLoadingSummaryAggregationData;
+    SetAssessments |
+    SetKillChainData |
+    SetSummaryAggregationData;
 
