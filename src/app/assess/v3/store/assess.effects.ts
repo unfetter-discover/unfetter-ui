@@ -60,19 +60,20 @@ export class AssessEffects {
 
       const capabilitiesQuestions$ = meta.baselineRef
         ? this.baselineService.fetchAssessmentSet(meta.baselineRef)
-        : Observable.empty<AssessmentSet>();
+        : Observable.of<AssessmentSet>(new AssessmentSet());
       observables.push(capabilitiesQuestions$);
 
       return Observable.forkJoin(...observables).pipe(
         mergeMap(([indicators, mitigations, baseline]) => {
           return [
-            new assessActions.SetIndicators(
-              indicators as Indicator.UnfetterIndicator[]
-            ),
+            new assessActions.SetIndicators(indicators as Indicator.UnfetterIndicator[]),
             new assessActions.SetMitigations(mitigations as Stix[]),
             new assessActions.SetCurrentBaseline(baseline as AssessmentSet),
+            // resolve baseline question ids to full questions
             new assessActions.LoadCurrentBaselineQuestions(baseline as AssessmentSet),
+            // full capabilities needs to look up category names
             new assessActions.FetchCapabilities(),
+            new assessActions.FinishedLoading(true),
           ];
         }),
         catchError((err) => {
@@ -87,11 +88,8 @@ export class AssessEffects {
     .ofType(assessActions.LOAD_CURRENT_BASELINE_QUESTIONS)
     .pluck('payload')
     .switchMap((assessmentSet: AssessmentSet) => {
-      if (
-        !assessmentSet ||
-        !assessmentSet.assessments ||
-        assessmentSet.assessments.length === 0
-      ) {
+      // resolve baseline question ids to full questions
+      if (!assessmentSet || !assessmentSet.assessments || assessmentSet.assessments.length === 0) {
         return Observable.of(new assessActions.FailedToLoad(true));
       }
 
@@ -153,13 +151,9 @@ export class AssessEffects {
   public fetchCapabilities = this.actions$
     .ofType(assessActions.FETCH_CAPABILITIES)
     .switchMap(() => {
+      // fetch full capability objects, useful for lookups
       return this.baselineService.getCapabilities().pipe(
-        mergeMap((arr) => {
-          return [
-            new assessActions.SetCapabilities(arr),
-            new assessActions.FinishedLoading(true),
-          ];
-        }),
+        map((arr) => new assessActions.SetCapabilities(arr)),
         catchError((err) => {
           console.log(err);
           return Observable.of(new assessActions.FailedToLoad(true));
@@ -189,6 +183,9 @@ export class AssessEffects {
             published: false,
           };
           assessment.metaProperties.rollupId = rollupId;
+          if (assessment.assessmentMeta && assessment.assessmentMeta.baselineRef) {
+            assessment.metaProperties.baselineRef = assessment.assessmentMeta.baselineRef;
+          }
           return assessment;
         })
         .map((assessment) => {
@@ -209,16 +206,15 @@ export class AssessEffects {
         });
 
       return Observable.forkJoin(...observables).pipe(
-        // TODO: do we still need this for updates?
-        // map((arr) => {
-        //   if (Array.isArray(arr[0])) {
-        //     return arr;
-        //   } else {
-        //     // hack to handle the fact that an update returns a single object, not an array, and drops the metadata
-        //     arr[0].metaProperties = { rollupId: rollupId };
-        //     return [arr];
-        //   }
-        // }),
+        map((arr: Assessment[][] | any[]) => {
+          if (Array.isArray(arr[0])) {
+            return arr;
+          } else {
+            // hack to handle the fact that an update returns a single object, not an array, and drops the metadata
+            arr[0].metaProperties = { rollupId: rollupId };
+            return [arr];
+          }
+        }),
         flatMap((arr: Assessment[][]) => arr),
         map((arr) => {
           const hasMetadata = arr && arr[0] && arr[0].metaProperties;

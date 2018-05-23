@@ -184,31 +184,30 @@ export class WizardComponent extends Measurements
     this.summaryDoughnutChartLabels = this.CHART_LABELS;
     this.summaryDoughnutChartType = this.CHART_TYPE;
 
-    const idParamSub$ = this.route.params.subscribe(
-      params => {
-        const isTrue = (val: number) => val === 1;
-        const includesIndicators = isTrue(
-          +this.route.snapshot.paramMap.get('includesIndicators')
-        );
-        const includesMitigations = isTrue(
-          +this.route.snapshot.paramMap.get('includesMitigations')
-        );
-        const baselineRef = this.route.snapshot.paramMap.get('baselineRef');
-        const meta: Partial<Assess3Meta> = {
-          includesIndicators,
-          includesMitigations,
-          baselineRef,
-        };
+    const idParamSub$ = this.route.params.subscribe((params) => {
+      const isTrue = (val: number) => val === 1;
+      const includesIndicators = isTrue(
+        +this.route.snapshot.paramMap.get('includesIndicators')
+      );
+      const includesMitigations = isTrue(
+        +this.route.snapshot.paramMap.get('includesMitigations')
+      );
+      const baselineRef = this.route.snapshot.paramMap.get('baselineRef');
+      const meta: Partial<Assess3Meta> = {
+        includesIndicators,
+        includesMitigations,
+        baselineRef,
+      };
 
-        const rollupId = params.rollupId || '';
-        if (rollupId) {
-          // this is an edit
-          this.loadExistingAssessment(rollupId, meta);
-        } else {
-          // this is a new wizard
-          this.wizardStore.dispatch(new LoadAssessmentWizardData(meta));
-        }
-      },
+      const rollupId = params.rollupId || '';
+      if (rollupId) {
+        // this is an edit
+        this.loadExistingAssessment(rollupId, meta);
+      } else {
+        // this is a new wizard
+        this.wizardStore.dispatch(new LoadAssessmentWizardData(meta));
+      }
+    },
       (err) => console.log(err),
       () => idParamSub$.unsubscribe()
     );
@@ -311,10 +310,7 @@ export class WizardComponent extends Measurements
    * @param  {Partial<Assess3Meta>} meta
    * @returns void
    */
-  public loadExistingAssessment(
-    rollupId: string,
-    meta: Partial<Assess3Meta>
-  ): void {
+  public loadExistingAssessment(rollupId: string, meta: Partial<Assess3Meta>): void {
     const sub$ = this.userStore
       .select('users')
       .pipe(pluck('userProfile'), take(1))
@@ -341,20 +337,14 @@ export class WizardComponent extends Measurements
    * @param  {Partial<Assess3Meta>} meta
    * @returns void
    */
-  public loadAssessments(rollupId: string, arr: Array<Assessment>, meta: Partial<Assess3Meta>): void {
+  public loadAssessments(rollupId: string, arr: Array<Assessment>, meta: Partial<Assess3Meta> = new Assess3Meta()): void {
     if (!arr || arr.length === 0) {
       return;
     }
 
-    meta.includesIndicators = false;
-    meta.includesMitigations = false;
-    meta.baselineRef = undefined;
-
-    /*
-     * making the model a collection of all the assessments matching the given rollup id, plus a summary of all the
-     * assessed objects to make it easier to use the existing code to display the questions and existing answers
-     */
-
+    // making the model a collection of all the assessments matching the given rollup id, 
+    //  plus a summary of all the assessed objects to make it easier to use the existing code 
+    //  to display the questions and existing answers
     const typedAssessments = {};
     const summary = new Assessment();
     arr.forEach((assessment) => {
@@ -386,6 +376,7 @@ export class WizardComponent extends Measurements
       } else if (assessment.assessment_objects
         .every((el) => el.stix.type === StixEnum.OBJECT_ASSESSMENT)) {
         typedAssessments[this.sidePanelOrder[2]] = assessment;
+        meta.baselineRef = assessment.metaProperties.baselineRef;
       } else {
         console.log(
           'We got a weird assessment document that is not all of one category, or has unknown categories',
