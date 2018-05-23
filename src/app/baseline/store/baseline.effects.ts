@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
-import { Category } from 'stix/assess/v3/baseline';
+import { Category, AssessmentSet } from 'stix/assess/v3/baseline';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { AttackPatternService } from '../../core/services/attack-pattern.service';
 import { GenericApi } from '../../core/services/genericapi.service';
@@ -118,30 +118,19 @@ export class BaselineEffects {
     public saveAssessment = this.actions$
         .ofType(assessActions.SAVE_BASELINE)
         .pluck('payload')
-        .switchMap((baselines: Baseline[]) => {
-            const observables = baselines
-                .map((baseline) => {
-                    const json = { 'data': { 'attributes': baseline } } as JsonApi<JsonApiData<Baseline>>;
-                    let url = 'api/x-unfetter-assessment-sets';
-                    if (baseline.id) {
-                        url = `${url}/${baseline.id}`;
-                        return this.genericServiceApi.patchAs<JsonApiData<Baseline>>(url, json);
-                    } else {
-                        return this.genericServiceApi.postAs<JsonApiData<Baseline>>(url, json);
-                    }
-                });
-            return Observable.forkJoin(...observables)
-                .map((arr: any) => {
-                    return [arr];
-                });
+        .switchMap((baseline: AssessmentSet) => {
+            const json = { 'data': { 'attributes': baseline } } as JsonApi<JsonApiData<AssessmentSet>>;
+            let url = 'api/x-unfetter-assessment-sets';
+            if (baseline.id) {
+                url = `${url}/${baseline.id}`;
+                return this.genericServiceApi.patchAs<JsonApiData<AssessmentSet>>(url, json);
+            } else {
+                return this.genericServiceApi.postAs<JsonApiData<AssessmentSet>>(url, json);
+            }
         })
-        .flatMap((arr: JsonApiData<Baseline>[][]) => arr)
-        .map((arr) => {
-            const hasAttributes = arr && arr[0] && arr[0].attributes;
-            const hasMetadata = hasAttributes && arr[0].attributes.metaProperties;
+        .do((set: AssessmentSet) => {
             return new assessActions.FinishedSaving({ 
-                finished: true, 
-                id: hasAttributes ? arr[0].attributes.id : '',
+                finished: true,
             });
         })
 
