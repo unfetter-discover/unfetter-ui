@@ -1,4 +1,4 @@
-FROM node:9.5-alpine
+FROM node:10.1-alpine
 
 LABEL MAINTAINER="UNFETTER"
 LABEL Description="UNFETTER user interface, Angular app"
