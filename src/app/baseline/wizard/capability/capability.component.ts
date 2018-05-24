@@ -40,6 +40,7 @@ export class CapabilityComponent implements OnInit {
   public allAttackPatterns: AttackPattern[];
 
   // PDR Table
+  currentNumberOfAttackPatterns = 0;  // keep track so that we do not reload the pdr table on score changes
   dataSource: MatTableDataSource<TableEntry>;
   displayedColumns = ['attackPattern', 'protect', 'detect', 'respond'];
   incomingListOfAttackPatterns: string[] = [];
@@ -86,15 +87,29 @@ export class CapabilityComponent implements OnInit {
           this.currentAssessedObject = currentObjectAssessment.assessments_objects;   
           this.incomingListOfAttackPatterns = this.currentAssessedObject.map(x => x.assessed_object_ref);
 
-          this.dataSource.data = this.currentAssessedObject.map(x => ({
-            assessed_obj_id: x.id,
-            capability_id: x.assessed_object_ref,
-            capability: this.getAttackPatternName(x.assessed_object_ref),
-            protect: this.getScore(x.questions, 'protect'),
-            detect: this.getScore(x.questions, 'detect'),
-            respond: this.getScore(x.questions, 'respond'),
-            definition: this.getAttackPatternDescription(x.assessed_object_ref),
-          }));
+          if (this.currentNumberOfAttackPatterns === 0 || this.currentNumberOfAttackPatterns !== this.currentAssessedObject.length) {
+            // inital value for number of attack patterns
+            this.currentNumberOfAttackPatterns = this.currentAssessedObject.length;
+
+            this.dataSource.data = this.currentAssessedObject.map(x => ({
+              assessed_obj_id: x.id,
+              capability_id: x.assessed_object_ref,
+              capability: this.getAttackPatternName(x.assessed_object_ref),
+              protect: this.getScore(x.questions, 'protect'),
+              detect: this.getScore(x.questions, 'detect'),
+              respond: this.getScore(x.questions, 'respond'),
+              definition: this.getAttackPatternDescription(x.assessed_object_ref),
+            }));
+
+
+          } else {
+              //console.log('pdr change, not reloading!   ' + this.currentNumberOfAttackPatterns );
+              return;
+          }
+
+
+          
+         
         }, (err) =>  console.log(err));
 
         // this.subscriptions.push(sub1$, sub2$, sub3$)
@@ -118,6 +133,7 @@ export class CapabilityComponent implements OnInit {
 
     if (selectedValues.length > prevValues.length ) {
       // Added AP - see which AP is in selectedValues and not in prevValues
+      // this.currentNumberOfAttackPatterns += 1;
       for (let i in selectedValues) {
         if (prevValues.indexOf(selectedValues[i]) === -1) {
           let newAssessedObject = new AssessedObject();
@@ -137,6 +153,7 @@ export class CapabilityComponent implements OnInit {
       }
     } else if (selectedValues.length < prevValues.length) {
       // Removed AP - see which AP is in prevValues and not in selected values
+      // this.currentNumberOfAttackPatterns -= 1;
       for (let i in prevValues) {
         if (selectedValues.indexOf(prevValues[i]) === -1) {
           let index = this.currentObjectAssessment.assessments_objects.findIndex(x => x.assessed_object_ref === prevValues[i]);          
