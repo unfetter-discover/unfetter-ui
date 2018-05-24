@@ -5,15 +5,15 @@ import { Relationship } from '../../../../../../models/relationship';
 import { DisplayedAssessmentObject } from './displayed-assessment-object';
 
 export class FullAssessmentGroup {
-    finishedLoadingGroupData: boolean;
-    currentAttackPattern: Stix;
-    riskByAttackPattern: RiskByAttack;
-    assessedObjects: AssessmentObject[];
-    unassessedPhases: string[];
-    displayedAssessedObjects: DisplayedAssessmentObject[];
-    unassessedAttackPatterns: Stix[];
-    attackPatternsByPhase: any[];
     addAssessedObject: boolean;
     addAssessedType: string;
+    assessedObjects: AssessmentObject[];
     attackPatternRelationships: Relationship[];
+    attackPatternsByPhase: any[];
+    currentAttackPattern: Stix;
+    displayedAssessedObjects: DisplayedAssessmentObject[];
+    finishedLoadingGroupData: boolean;
+    riskByAttackPattern: RiskByAttack;
+    unassessedAttackPatterns: Stix[];
+    unassessedPhases: string[];
 }
