@@ -11,7 +11,7 @@ export class ResultHeaderComponent implements OnInit {
   baselineId: string;
 
   @Input()
-  public created: Date;
+  public published: Date;
 
   public summaryLink: string;
 

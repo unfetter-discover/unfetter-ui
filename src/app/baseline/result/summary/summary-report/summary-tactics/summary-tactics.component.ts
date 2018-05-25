@@ -88,7 +88,7 @@ export class SummaryTacticsComponent implements OnInit, OnChanges {
      */
     @Input() public collapseSubject: BehaviorSubject<boolean>;
 
-    public collapseContents: boolean = false;
+    public collapseContents: boolean;
 
     constructor(
         private tacticsStore: Store<AppState>,
@@ -100,6 +100,7 @@ export class SummaryTacticsComponent implements OnInit, OnChanges {
      */
     ngOnInit() {
         this.loadCapabilitiesMap();
+        this.collapseContents = false;
     }
 
     /**

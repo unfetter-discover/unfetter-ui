@@ -29,13 +29,13 @@ describe('ResultHeaderComponent', () => {
   });
 
   it('should have a published string and no PUBLISH button if create date is known', () => {
-    component.created = null;
+    component.published = null;
     let publishButton = fixture.debugElement.query(By.css('#publishButton')).nativeElement;
     let publishArea = fixture.debugElement.query(By.css('.publishText'));
     expect(publishButton).toBeTruthy();
     expect(publishArea).toBeFalsy();
 
-    component.created = new Date(2018, 2);
+    component.published = new Date(2018, 2);
     fixture.detectChanges();
     publishArea = fixture.debugElement.query(By.css('.publishText')).nativeElement;
     expect(publishArea).toBeTruthy();
