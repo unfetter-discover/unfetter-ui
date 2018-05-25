@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
-import { MatCardModule, MatSelectModule, MatInputModule, MatDialogModule } from '@angular/material';
+import { MatCardModule, MatSelectModule, MatInputModule, MatDialogModule, MatCheckboxModule } from '@angular/material';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ActionReducerMap, StoreModule } from '@ngrx/store';
 
@@ -33,6 +33,7 @@ describe('IndicatorSharingFiltersComponent', () => {
             ],
             imports: [
                 MatCardModule,
+                MatCheckboxModule,
                 MatDialogModule,
                 MatSelectModule,
                 MatInputModule,
