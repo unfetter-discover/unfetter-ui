@@ -1,4 +1,4 @@
-export const environment  = {
+export const environment = {
     "showBanner": false, 
     "hmr": true, 
     "runMode": "UAC", 

@@ -7,5 +7,6 @@ export const environment = {
     showBanner: false,
     bannerText: '',
     runMode: 'DEMO',
-    hmr: true
+    hmr: true,
+    authServices: []
 };

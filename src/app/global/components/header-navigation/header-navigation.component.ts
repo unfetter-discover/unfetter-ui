@@ -58,6 +58,7 @@ export class HeaderNavigationComponent {
   public readonly runMode = environment.runMode;
   public readonly showBanner = environment.showBanner;
   public readonly demoMode: boolean = (environment.runMode === 'DEMO');
+  public readonly authServices: string[] = environment.authServices || ['gitlab'];
   public collapsed: boolean = true;
   public showAppMenu: boolean = false;
   public showAccountMenu: boolean = false;

@@ -13,12 +13,10 @@
 
   <button mat-raised-button *ngIf="!demoMode && !authService.loggedIn()"
       [matMenuTriggerFor]="loginMenu" color="accent">Sign In / Register</button>
-  <mat-menu #loginMenu="matMenu" [overlapTrigger]="false">
-    <a mat-button color="primary" href="/api/auth/login/github">
-      <img src="assets/images/logos/github.png" width="32" height="32"> ... Using Github
-    </a>
-    <a mat-button color="primary" href="/api/auth/login/gitlab">
-      <img src="assets/images/logos/gitlab.png" width="32" height="32"> ... Using Gitlab
+  <mat-menu #loginMenu="matMenu" class="login-options" [overlapTrigger]="false">
+    <a *ngFor="let service of authServices" mat-button color="primary" href="/api/auth/login/{{service}}">
+      <img src="assets/images/logos/{{service}}.png" width="32" height="32">
+      <span class="login-option">... Using {{service | capitalize}}</span>
     </a>
   </mat-menu>
 
