@@ -11,7 +11,7 @@
 
   <span class="flex1">&nbsp;</span>
 
-  <button mat-raised-button *ngIf="!demoMode && !authService.loggedIn()"
+  <button id="login-button" mat-raised-button *ngIf="!demoMode && !authService.loggedIn()"
       [matMenuTriggerFor]="loginMenu" color="accent">Sign In / Register</button>
   <mat-menu #loginMenu="matMenu" class="login-options" [overlapTrigger]="false">
     <a *ngFor="let service of authServices" mat-button color="primary" href="/api/auth/login/{{service}}">
