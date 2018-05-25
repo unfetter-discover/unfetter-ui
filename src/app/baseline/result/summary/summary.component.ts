@@ -138,7 +138,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .pluck('baseline')
       .distinctUntilChanged()
       .filter((arr: AssessmentSet[]) => arr && arr.length > 0)
-      .subscribe((arr: AssessmentSet[]) => {console.log(`baseline data: ${JSON.stringify(arr[0])}`); this.baseline = arr[0]; console.log(`this.baseline: ${JSON.stringify(this.baseline)}`); return this.baseline},
+      .subscribe((arr: AssessmentSet[]) => {this.baseline = arr[0]; return this.baseline},
         (err) => console.log(err));
 
     this.subscriptions.push(baselineRetrieve$);

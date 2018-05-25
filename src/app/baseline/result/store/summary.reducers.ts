@@ -42,6 +42,10 @@ export function summaryReducer(state = initialState, action: summaryActions.Summ
             return genState({
                 ...state,
             });
+        case summaryActions.SET_ASSESSMENTS:
+            return genState({
+                ...state,
+            });
         case summaryActions.SET_BASELINE:
             return genState({
                 ...state,
