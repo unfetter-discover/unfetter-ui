@@ -20,6 +20,7 @@ export class SummaryReportComponent implements OnInit {
   public readonly CHART_BG_COLORS: any[];
   public readonly CHART_HOVER_BG_COLORS: any[];
   public readonly CHART_OPTIONS: any;
+  public collapseTechniques: boolean;
 
   public overallRatingChartData: { data: any[], backgroundColor: any[], hoverBackgroundColor: any[] }[];
   public overallRatingChartType: string = this.CHART_TYPE;
@@ -68,6 +69,7 @@ export class SummaryReportComponent implements OnInit {
     ];
     this.overallRatingChartType = this.CHART_TYPE;
     this.activeMainWell = 'heatmap';
+    this.collapseTechniques = true;
   }
 
   public setMainWell(wellTab: mainWell) {

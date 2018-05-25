@@ -11,10 +11,17 @@
           [columns]="masterListOptions.columns" (tabChange)="onFilterTabChanged($event)" (create)="onCreate($event)" (select)="onCellSelected($event)"
           (edit)="onEdit($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
 
-        <sidepanel-list-item label="Date Modified" [items]="dates" id="sideDateList" showCount="false" expanded="true" hideToggle="true">
-          <mat-list-item *ngFor="let date of dates;" class="list-divider" [@slideInOutAnimation]>
+        <sidepanel-list-item label="Date Last Modified" [items]="baseline.modified" id="sideDateList" showCount="false" expanded="true" hideToggle="true">
+          <mat-list-item class="list-divider" [@slideInOutAnimation]>
             <h4 class="side-list-item" mat-line>
-              {{date}}
+              {{baseline.modified | date:'medium'}}
+            </h4>
+          </mat-list-item>
+        </sidepanel-list-item>
+        <sidepanel-list-item label="Date Created" [items]="baseline.created" id="sideDateList" showCount="false" expanded="true" hideToggle="true">
+          <mat-list-item class="list-divider" [@slideInOutAnimation]>
+            <h4 class="side-list-item" mat-line>
+              {{baseline.created | date:'medium'}}
             </h4>
           </mat-list-item>
         </sidepanel-list-item>
@@ -23,7 +30,8 @@
     </mat-sidenav>
     <mat-sidenav-content>
       <div class="main-panel">
-        <result-header [baselineId]="baselineId" [created]=""></result-header>
+        <!-- TODO replace true with published flag from metaproperties of baseline -->
+        <result-header [baselineId]="baselineId" [published]="baseline.metaProperties.published ? baseline.modified : undefined"></result-header>
         <summary-report></summary-report>
       </div>
     </mat-sidenav-content>
