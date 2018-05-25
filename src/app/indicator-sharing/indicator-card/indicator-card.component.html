@@ -50,6 +50,9 @@
           <mat-icon>content_copy</mat-icon>
           <div #patternTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
         </button>
+        <small *ngIf="indicator.metaProperties && indicator.metaProperties.validStixPattern">
+          <i class="material-icons">check</i> Valid STIX Pattern
+        </small>
         <p>
           <code [innerHtml]="whitespaceToBreak(indicator.pattern)" class="inlineBlock"></code>
         </p>

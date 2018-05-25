@@ -5,5 +5,6 @@ export interface SearchParameters {
     organizations: string[],
     sensors: string[],
     attackPatterns: string[],
-    published: string[] // Should be boolean[], but mat-option is being finicky
+    published: string[], // Should be boolean[], but mat-option is being finicky
+    validStixPattern: boolean
 }
