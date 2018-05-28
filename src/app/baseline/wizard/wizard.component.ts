@@ -50,7 +50,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   
   private currentBaseline: AssessmentSet;
   private objAssessments: ObjectAssessment[];
-  private currentObjAssessment: ObjectAssessment;
   public allCategories: Category[] = [];
   public baselineGroups: Category[] = [];
   public currentBaselineGroup = {} as Category;
@@ -58,8 +57,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public baselineCapabilities: Capability[] = [];
   public currentCapability = {} as Capability;
   private baselineObjAssessments: ObjectAssessment[] = [];
-  private currentObjectAssessment: ObjectAssessment;
-
+  
   public showHeatmap = false;
   public allAttackPatterns: Observable<AttackPattern[]> = Observable.of([]);
   public selectedFrameworkAttackPatterns: Observable<AttackPattern[]> = Observable.of([]);
@@ -206,8 +204,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         .subscribe(
           (capabilities: Capability[]) => {
             this.baselineCapabilities = (capabilities) ? capabilities.slice() : [];
-            console.log('Current baseline capabilities:');
-            console.log(JSON.stringify(this.baselineCapabilities));
             this.updateNavigations();
           },
           (err) => console.log(err));
@@ -597,11 +593,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     let index = 2;   // start at 2; 1 is 'GROUP SETUP'
     this.baselineGroups.forEach((category) => {
       this.navigations.push( { id: category.id, label: category.name,  page: index++ } );
-      console.log('Added category: ', category.name);
       let capsForThisCategory = this.baselineCapabilities.filter(cap => cap.category === category.name);
       capsForThisCategory.forEach((cap) => {
           this.navigations.push( { id: cap.id, label: cap.name,  page: index++ } );
-          console.log('Added capability: ', cap.name);
         })
     });
   }
@@ -660,7 +654,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       const sub$ = dialog.afterClosed().subscribe(
         (result) => {
           if (result) {
-            console.log('selected patterns', result);
             this.selectedAttackPatterns = result;
           }
           this.showHeatmap = false;
