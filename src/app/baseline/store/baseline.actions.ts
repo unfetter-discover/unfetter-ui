@@ -20,6 +20,8 @@ export const SET_CAPABILITIES = '[Baseline] SET_CAPABILITIES';
 export const SET_BASELINE_CAPABILITIES = '[Baseline] SET_BASELINE_CAPABILITIES';
 export const SET_CURRENT_BASELINE_CAPABILITY = '[Baseline] SET_CURRENT_BASELINE_CAPABILITY';
 export const SET_BASELINE = '[Baseline] SET_BASELINE';
+export const SAVE_OBJECT_ASSESSMENTS = '[Baseline] SAVE_OBJECT_ASSESSMENTS';
+export const FAILED_TO_LOAD = '[Assess] FAILED_TO_LOAD';
 
 // For reducers
 export const UPDATE_PAGE_TITLE = '[Baseline] UPDATE_PAGE_TITLE';
@@ -41,6 +43,7 @@ export const SET_CURRENT_BASELINE_OBJECT_ASSESSMENT = '[Baseline] SET_CURRENT_BA
 export const SET_CATEGORY_STEPS = '[Baseline] SET_CATEGORY_STEPS';
 export const SET_SELECTED_FRAMEWORK_ATTACK_PATTERNS = '[Baseline] SET_SELECTED_FRAMEWORK_ATTACK_PATTERNS';
 export const WIZARD_PAGE = '[Baseline] WIZARD_PAGE';
+export const ADD_OBJECT_ASSESSMENT = '[Baseline] ADD_OBJECT_ASSESSMENT';
 
 export class UpdatePageTitle implements Action {
     public readonly type = UPDATE_PAGE_TITLE;
@@ -62,6 +65,18 @@ export class SaveBaseline implements Action {
     public readonly type = SAVE_BASELINE;
 
     constructor(public payload: AssessmentSet) { }
+}
+
+export class AddObjectAssessment implements Action {
+    public readonly type = ADD_OBJECT_ASSESSMENT;
+
+    constructor(public payload: string) { }
+}
+
+export class SaveObjectAssessments implements Action {
+    public readonly type = SAVE_OBJECT_ASSESSMENTS;
+
+    constructor(public payload: ObjectAssessment[]) { }
 }
 
 export class FetchBaseline implements Action {
@@ -178,7 +193,7 @@ export class FinishedLoading implements Action {
 export class FinishedSaving implements Action {
     public readonly type = FINISHED_SAVING;
 
-    constructor(public payload: { finished: boolean, id: string }) { }
+    constructor(public payload: { finished: boolean; id: string }) { }
 }
 
 export class AnswerQuestion implements Action {
@@ -197,34 +212,40 @@ export class CleanBaselineWizardData {
     constructor() { }
 }
 
+export class FailedToLoad implements Action {
+    public readonly type = FAILED_TO_LOAD;
+  
+    constructor(public payload: boolean) {}
+  }  
+
 export type BaselineActions =
+    AddObjectAssessment |
     AnswerQuestion |
     CleanBaselineWizardData |
+    FailedToLoad |
     FetchBaseline |
-    SetBaseline |
-    FetchCapabilityGroups |
-    SetCapabilityGroups |
-    SetBaselineGroups |
-    SetCurrentBaselineGroup |
+    FetchAttackPatterns |
     FetchCapabilities |
-    SetCapabilities |
-    SetBaselineCapabilities |
-    SetCurrentBaselineCapability |
-    SetBaselineObjectAssessments |
-    SetCurrentBaselineObjectAssessment |
+    FetchCapabilityGroups |
     FinishedLoading |
     FinishedSaving |
     LoadBaselineWizardData |
-    StartBaseline |
-    StartBaselineSuccess |
     SaveBaseline |
-    AnswerQuestion |
-    FetchAttackPatterns |
-    FinishedLoading |
-    FinishedSaving |
+    SaveObjectAssessments |
     SetAttackPatterns |
+    SetBaseline |
+    SetBaselineCapabilities |
+    SetBaselineGroups |
+    SetBaselineObjectAssessments |
+    SetCapabilities |
+    SetCapabilityGroups |
     SetCategories |
     SetCategorySteps |
+    SetCurrentBaselineCapability |
+    SetCurrentBaselineGroup |
+    SetCurrentBaselineObjectAssessment |
     SetSelectedFrameworkAttackPatterns |
+    StartBaseline |
+    StartBaselineSuccess |
     UpdatePageTitle |
     WizardPage;
