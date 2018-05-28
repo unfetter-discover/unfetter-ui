@@ -57,8 +57,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public baselineCapabilities: Capability[] = [];
   public currentCapability = {} as Capability;
   private baselineObjAssessments: ObjectAssessment[] = [];
-  private currentObjectAssessment: ObjectAssessment;
-
+  
   public showHeatmap = false;
   public allAttackPatterns: Observable<AttackPattern[]> = Observable.of([]);
   public selectedFrameworkAttackPatterns: Observable<AttackPattern[]> = Observable.of([]);

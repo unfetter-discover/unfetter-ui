@@ -232,11 +232,7 @@ export type BaselineActions =
     CleanBaselineWizardData |
     FailedToLoad |
     FetchBaseline |
-    SetBaseline |
-    FetchCapabilityGroups |
-    SetCapabilityGroups |
-    SetBaselineGroups |
-    SetCurrentBaselineGroup |
+    FetchAttackPatterns |
     FetchCapabilities |
     FetchCapabilityGroups |
     FinishedLoading |
