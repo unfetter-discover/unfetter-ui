@@ -4,6 +4,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import { catchError } from 'rxjs/operators/catchError';
+import { distinctUntilChanged } from 'rxjs/operators/distinctUntilChanged';
+import { filter } from 'rxjs/operators/filter';
+import { map } from 'rxjs/operators/map';
+import { take } from 'rxjs/operators/take';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { ConfirmationDialogComponent } from '../../../../components/dialogs/confirmation/confirmation-dialog.component';
@@ -17,11 +22,6 @@ import { CleanAssessmentResultData, LoadAssessmentById } from '../store/full-res
 import { FullAssessmentResultState } from '../store/full-result.reducers';
 import { SummaryDataSource } from '../summary/summary.datasource';
 import { FullAssessmentGroup } from './group/models/full-assessment-group';
-import { catchError } from 'rxjs/operators/catchError';
-import { filter } from 'rxjs/operators/filter';
-import { distinctUntilChanged } from 'rxjs/operators/distinctUntilChanged';
-import { map } from 'rxjs/operators/map';
-import { take } from 'rxjs/operators/take';
 
 @Component({
   selector: 'unf-assess-full',
@@ -31,24 +31,25 @@ import { take } from 'rxjs/operators/take';
 })
 export class FullComponent implements OnInit, OnDestroy {
 
-  readonly baseAssessUrl = '/assess-beta';
-  assessment: Observable<Assessment>;
-  assessmentName: Observable<string>;
-  assessmentGroup: Observable<FullAssessmentGroup>;
-  rollupId: string;
-  assessmentId: string;
-  phase: string;
-  attackPatternId: string;
-  finishedLoading: Observable<boolean>;
-  masterListOptions = {
+  public readonly baseAssessUrl = '/assess-beta';
+
+  public activePhase: string;
+  public assessment: Observable<Assessment>;
+  public assessmentGroup: Observable<FullAssessmentGroup>;
+  public assessmentId: string;
+  public assessmentName: Observable<string>;
+  public attackPatternId: string;
+  public finishedLoading: Observable<boolean>;
+  public phase: string;
+  public riskBreakdown: any;
+  public rollupId: string;
+  public masterListOptions = {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Modified'),
     displayRoute: this.baseAssessUrl + '/result/full',
     modifyRoute: this.baseAssessUrl + '/wizard/edit',
     createRoute: this.baseAssessUrl + '/create',
   };
-  activePhase: string;
-  public riskBreakdown: any;
 
   private readonly subscriptions: Subscription[] = [];
 
@@ -60,9 +61,7 @@ export class FullComponent implements OnInit, OnDestroy {
     private userStore: Store<AppState>,
     private assessService: AssessService,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { 
-    console.log(`full component store ${store}`);
-  }
+  ) { }
 
   /**
    * @description
@@ -147,7 +146,7 @@ export class FullComponent implements OnInit, OnDestroy {
           console.log(err);
           return caught;
         }),
-      );
+    );
 
     this.subscriptions.push(sub$);
   }
@@ -170,8 +169,7 @@ export class FullComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public ngOnDestroy(): void {
-    this.subscriptions
-      .forEach((sub) => sub.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
     this.store.dispatch(new CleanAssessmentResultData());
   }
 
@@ -274,7 +272,7 @@ export class FullComponent implements OnInit, OnDestroy {
    */
   public onCellSelected(assessment: LastModifiedAssessment): Promise<boolean> {
     if (!assessment || !assessment.rollupId || !assessment.id) {
-      return;
+      return Promise.resolve(false);
     }
 
     // this.activePhase = undefined;
@@ -316,8 +314,11 @@ export class FullComponent implements OnInit, OnDestroy {
     return this.activePhase ? this.activePhase === phase : false;
   }
 
-  public calculateRiskBreakdown(riskByAttackPattern: RiskByAttack) {
-
+  /**
+   * @param  {RiskByAttack} riskByAttackPattern
+   * @returns void
+   */
+  public calculateRiskBreakdown(riskByAttackPattern: RiskByAttack): void {
     if (!riskByAttackPattern || !Object.keys(riskByAttackPattern).length) {
       return;
     }
@@ -345,7 +346,11 @@ export class FullComponent implements OnInit, OnDestroy {
 
   }
 
-  public populatePhaseRiskTree(phase: any) {
+  /**
+   * @param  {any} phase?
+   * @returns number
+   */
+  public populatePhaseRiskTree(phase?: any): { [key: string]: number[] } {
     const riskTree = {};
 
     // Assessed Objects per phase
@@ -365,16 +370,20 @@ export class FullComponent implements OnInit, OnDestroy {
     return riskTree;
   }
 
-  public calculateRiskBreakdownByQuestionForPhase(phaseRiskTree: any, questions: Set<string>) {
+  /**
+   * @param  {any} phaseRiskTree
+   * @param  {Set<string>} questions
+   * @returns number
+   */
+  public calculateRiskBreakdownByQuestionForPhase(phaseRiskTree: any, questions: Set<string>): { [key: string]: number } {
     const riskBreakdownPhase = {};
     if (questions !== undefined && phaseRiskTree !== undefined) {
       for (let question in phaseRiskTree) {
         questions.add(question);
-        /* Average risk for each question-category,
-        then multiply it by 1 / the number of question-categories.
-        This will show how much each question contributes to absolute overall risk. */
-        riskBreakdownPhase[question] = (phaseRiskTree[question]
-          .reduce((prev, cur) => prev += cur, 0)
+        // Average risk for each question-category,
+        //  then multiply it by 1 / the number of question-categories.
+        //  This will show how much each question contributes to absolute overall risk
+        riskBreakdownPhase[question] = (phaseRiskTree[question].reduce((prev, cur) => prev += cur, 0)
           / phaseRiskTree[question].length) * (1 / Object.keys(phaseRiskTree).length);
       }
     }

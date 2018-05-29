@@ -3,7 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { AttackPattern } from 'stix';
+import { distinctUntilChanged } from 'rxjs/operators/distinctUntilChanged';
+import { filter } from 'rxjs/operators/filter';
+import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { AssessAttackPatternMeta } from 'stix/assess/v2/assess-attack-pattern-meta';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';
@@ -56,29 +58,28 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   public addAssessedObjectComponents: QueryList<AddAssessedObjectComponent>;
   public addAssessedObjectComponent: AddAssessedObjectComponent;
 
-  public indicator: any;
-  public courseOfAction: any;
-  public xUnfetterSensor: any;
-
-  public riskByAttackPattern: RiskByAttack;
-  public assessedObjects: AssessmentObject[];
-  public unassessedPhases: string[];
-  public currentAttackPattern: AttackPattern;
-  public displayedAssessedObjects: DisplayedAssessmentObject[];
-  public unassessedAttackPatterns: AttackPattern[];
-  public attackPatternsByPhase: AssessAttackPatternMeta[];
   public addAssessedObject: boolean;
   public addAssessedType: string;
+  public assessedObjects: AssessmentObject[];
+  public attackPatternsByPhase: AssessAttackPatternMeta[];
   public canAddAssessedObjects: boolean = false;
+  public courseOfAction: any;
+  public currentAttackPattern: AttackPattern;
+  public displayedAssessedObjects: DisplayedAssessmentObject[];
+  public indicator: any;
+  public riskByAttackPattern: RiskByAttack;
+  public unassessedAttackPatterns: AttackPattern[];
+  public unassessedPhases: string[];
+  public xUnfetterSensor: any;
 
   private readonly subscriptions: Subscription[] = [];
 
   constructor(
     private assessService: AssessService,
-    private route: ActivatedRoute,
+    private authService: AuthService,
     private changeDetector: ChangeDetectorRef,
+    private route: ActivatedRoute,
     private store: Store<FullAssessmentResultState>,
-    private authService: AuthService
   ) { }
 
   /**
@@ -138,12 +139,16 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /**
    * @description request data
+   * @param {string} assessmentId
    * @returns {void}
    */
   public requestDataLoad(assessmentId: string): void {
     this.store.dispatch(new LoadGroupData(assessmentId));
   }
 
+  /**
+   * @returns void
+   */
   public onAddAssessment(): void {
     // clear objects for the observable will detect a change
     this.displayedAssessedObjects = undefined;
@@ -157,13 +162,14 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public listenForDataChanges(attackPatternIndex: number = 0): void {
     const sub1$ = this.assessmentGroup
-      .distinctUntilChanged()
-      .filter((group: FullAssessmentGroup) => {
-        // TODO: stop an infinite loop of network requests
-        //  figure out a better way to short circuit
-        return group.finishedLoadingGroupData === true
-          && this.displayedAssessedObjects === undefined;
-      })
+      .pipe(
+        distinctUntilChanged(),
+        filter((group: FullAssessmentGroup) => {
+          // TODO: stop an infinite loop of network requests
+          //  figure out a better way to short circuit
+          return group.finishedLoadingGroupData === true
+            && this.displayedAssessedObjects === undefined;
+        }))
       .subscribe((group: FullAssessmentGroup) => {
         // initialize the displayed assessed objects, 
         //  used also to stop loop of network calls
@@ -176,14 +182,14 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const sub2$ = this.assessmentGroup
       .pluck('currentAttackPattern')
-      .distinctUntilChanged()
+      .pipe(distinctUntilChanged())
       .subscribe((currentAttackPattern: Stix) => this.currentAttackPattern = currentAttackPattern,
         (err) => console.log(err));
 
     const sub3$ = this.assessmentGroup
       .filter((group: FullAssessmentGroup) => group.finishedLoadingGroupData === true)
       .pluck('attackPatternRelationships')
-      .distinctUntilChanged()
+      .pipe(distinctUntilChanged())
       .subscribe((relationships: Relationship[]) => {
         const assessmentCandidates = relationships
           .map((el) => el.attributes)

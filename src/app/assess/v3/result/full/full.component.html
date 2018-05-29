@@ -11,7 +11,7 @@
           [columns]="masterListOptions.columns" (tabChange)="onFilterTabChanged($event)" (create)="onCreate($event)" (select)="onCellSelected($event)"
           (edit)="onEdit($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
       </unfetter-side-panel>
-      <div *ngIf="assessGroupMain.riskByAttackPattern" class="side-panel-risks">
+      <div *ngIf="(assessmentGroup | async).riskByAttackPattern" class="side-panel-risks">
         <div class="risk-header-wrapper">
           <div class="flex risk-header">
             <span class="flex-grow">
@@ -24,7 +24,7 @@
         </div>
         <div class="phases-list">
           <div class="phases-list-item cursor-pointer" 
-            *ngFor="let phase of assessGroupMain.riskByAttackPattern.phases; trackBy:trackByFn" 
+            *ngFor="let phase of (assessmentGroup | async).riskByAttackPattern.phases; trackBy:trackByFn" 
             [ngClass]="{'highlightPhase': isCurrentPhase(phase._id)}"
             (click)="assessGroupMain.setPhase(phase._id); activePhase = phase._id">
             <div class="item-content flex">
@@ -41,7 +41,7 @@
         </div>
         <div class="divider-wrapper">
         </div>
-        <div *ngIf="assessGroupMain.unassessedPhases && assessGroupMain.unassessedPhases.length > 0">
+        <div *ngIf="(assessmentGroup | async).unassessedPhases && assessGroupMain.unassessedPhases.length > 0">
           <div class="header">Unassessed Tactics</div>
           <div class="unassessed-phases-list">
             <div class="unassessed-phases-list-item cursor-pointer" 
