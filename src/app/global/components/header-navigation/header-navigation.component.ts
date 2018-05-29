@@ -6,6 +6,7 @@ import * as fromApp from '../../../root-store/app.reducers';
 import * as userActions from '../../../root-store/users/user.actions';
 import { Constance } from '../../../utils/constance';
 import { fadeInOut } from '../../animations/fade-in-out';
+import { UserState } from '../../../root-store/users/users.reducers';
 
 @Component({
   selector: 'header-navigation',
@@ -57,6 +58,7 @@ export class HeaderNavigationComponent {
   public readonly runMode = environment.runMode;
   public readonly showBanner = environment.showBanner;
   public readonly demoMode: boolean = (environment.runMode === 'DEMO');
+  public readonly authServices: string[] = environment.authServices || ['gitlab'];
   public collapsed: boolean = true;
   public showAppMenu: boolean = false;
   public showAccountMenu: boolean = false;
@@ -98,6 +100,16 @@ export class HeaderNavigationComponent {
       );
   }
 
+  public getAvatar(user): string {
+    if (user && user.userProfile && user.userProfile.oauth) {
+      const oauth = user.userProfile.oauth;
+      if (user.userProfile[oauth] && user.userProfile[oauth].avatar_url) {
+        return user.userProfile[oauth].avatar_url;
+      }
+    }
+    return null;
+  }
+
   @HostListener('document:click', ['$event']) public clickedOutside(event) {
     if (this.showAppMenu && this.el.nativeElement.querySelector('#appMenuWrapper') && !this.el.nativeElement.querySelector('#appMenuWrapper').contains(event.target)) {
       this.showAppMenu = false;
@@ -111,4 +123,5 @@ export class HeaderNavigationComponent {
   public logoutStore() {
     this.store.dispatch(new userActions.LogoutUser());
   }
+
 }
