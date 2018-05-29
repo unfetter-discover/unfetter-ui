@@ -44,11 +44,11 @@ export class CapabilityComponent implements OnInit {
   displayedColumns = ['attackPattern', 'protect', 'detect', 'respond'];
   incomingListOfAttackPatterns: string[] = [];
   public readonly answers = [
-    new AnswerOption('', ''),
-    new AnswerOption('L', 'LOW'),
-    new AnswerOption('M', 'MEDIUM'),
-    new AnswerOption('S', 'SIGNIFICANT'),
-    new AnswerOption('NA', 'NOT_APPLICABLE'),
+    new AnswerOption(QuestionAnswerEnum.UNANSWERED, 'NONE'),
+    new AnswerOption(QuestionAnswerEnum.LOW, 'LOW'),
+    new AnswerOption(QuestionAnswerEnum.MEDIUM, 'MEDIUM'),
+    new AnswerOption(QuestionAnswerEnum.SIGNIFICANT, 'SIGNIFICANT'),
+    new AnswerOption(QuestionAnswerEnum.NOT_APPLICABLE, 'NOT_APPLICABLE'),
   ];
   selectedAttackPatterns = new FormControl();
 
