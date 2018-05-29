@@ -45,11 +45,11 @@ export class CapabilityComponent implements OnInit {
   displayedColumns = ['attackPattern', 'protect', 'detect', 'respond'];
   incomingListOfAttackPatterns: string[] = [];
   public readonly answers = [
-    new AnswerOption('', ''),
-    new AnswerOption('L', 'LOW'),
-    new AnswerOption('M', 'MEDIUM'),
-    new AnswerOption('S', 'SIGNIFICANT'),
-    new AnswerOption('NA', 'NOT_APPLICABLE'),
+    new AnswerOption(QuestionAnswerEnum.UNANSWERED, 'NONE'),
+    new AnswerOption(QuestionAnswerEnum.LOW, 'LOW'),
+    new AnswerOption(QuestionAnswerEnum.MEDIUM, 'MEDIUM'),
+    new AnswerOption(QuestionAnswerEnum.SIGNIFICANT, 'SIGNIFICANT'),
+    new AnswerOption(QuestionAnswerEnum.NOT_APPLICABLE, 'NOT_APPLICABLE'),
   ];
   selectedAttackPatterns = new FormControl();
 
@@ -105,11 +105,7 @@ export class CapabilityComponent implements OnInit {
           } else {
               // console.log('pdr change, not reloading!   ' + this.currentNumberOfAttackPatterns );
               return;
-          }
-
-
-          
-         
+          }     
         }, (err) =>  console.log(err));
 
         // this.subscriptions.push(sub1$, sub2$, sub3$)
@@ -130,7 +126,6 @@ export class CapabilityComponent implements OnInit {
     }
 
 
-
     if (selectedValues.length > prevValues.length ) {
       // Added AP - see which AP is in selectedValues and not in prevValues
       // this.currentNumberOfAttackPatterns += 1;
@@ -143,8 +138,11 @@ export class CapabilityComponent implements OnInit {
           let d = new Question();
           let r = new Question();
           p.name = 'protect';
+          p.score = QuestionAnswerEnum.UNANSWERED;
           d.name = 'detect';
+          d.score = QuestionAnswerEnum.UNANSWERED;
           r.name = 'respond';
+          r.score = QuestionAnswerEnum.UNANSWERED;
           newAssessedObject.questions = [p, d, r];
           this.currentObjectAssessment.assessments_objects.push(newAssessedObject);
           this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(this.currentObjectAssessment));
