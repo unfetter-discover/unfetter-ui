@@ -100,6 +100,16 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
             return genAssessState({
                 ...state,
             });
+        case baselineActions.ADD_OBJECT_ASSESSMENTS_TO_BASELINE:
+            let currBaseline = state.baseline;
+            if (!currBaseline.assessments) {
+                currBaseline.assessments = [];
+            }
+            currBaseline.assessments.push(...action.payload);
+            return genAssessState({
+                ...state,
+                baseline: currBaseline,
+            });
         case baselineActions.SET_BASELINE_OBJECT_ASSESSMENTS:
             return genAssessState({
                 ...state,

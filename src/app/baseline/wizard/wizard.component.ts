@@ -236,11 +236,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         .subscribe(
           (baselineObjAssessments: ObjectAssessment[]) => {
             this.baselineObjAssessments = baselineObjAssessments;
-            this.currentBaseline.assessments = this.baselineObjAssessments.map(objAssess => objAssess.id);
-            this.wizardStore.dispatch(new SetBaseline(this.currentBaseline));
           },
         (err) => console.log(err));
-      
+
       this.allAttackPatterns = this.wizardStore
         .select('baseline')
         .pluck<{}, AttackPattern[]>('allAttackPatterns')

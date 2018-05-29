@@ -44,6 +44,7 @@ export const SET_CATEGORY_STEPS = '[Baseline] SET_CATEGORY_STEPS';
 export const SET_SELECTED_FRAMEWORK_ATTACK_PATTERNS = '[Baseline] SET_SELECTED_FRAMEWORK_ATTACK_PATTERNS';
 export const WIZARD_PAGE = '[Baseline] WIZARD_PAGE';
 export const ADD_OBJECT_ASSESSMENT = '[Baseline] ADD_OBJECT_ASSESSMENT';
+export const ADD_OBJECT_ASSESSMENTS_TO_BASELINE = '[Baseline] ADD_OBJECT_ASSESSMENTS_TO_BASELINE';
 
 export class UpdatePageTitle implements Action {
     public readonly type = UPDATE_PAGE_TITLE;
@@ -77,6 +78,12 @@ export class SaveObjectAssessments implements Action {
     public readonly type = SAVE_OBJECT_ASSESSMENTS;
 
     constructor(public payload: ObjectAssessment[]) { }
+}
+
+export class AddObjectAssessmentsToBaseline implements Action {
+    public readonly type = ADD_OBJECT_ASSESSMENTS_TO_BASELINE;
+
+    constructor(public payload: string[]) { }
 }
 
 export class FetchBaseline implements Action {
@@ -220,6 +227,7 @@ export class FailedToLoad implements Action {
 
 export type BaselineActions =
     AddObjectAssessment |
+    AddObjectAssessmentsToBaseline |
     AnswerQuestion |
     CleanBaselineWizardData |
     FailedToLoad |
