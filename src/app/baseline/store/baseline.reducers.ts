@@ -102,9 +102,6 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
             });
         case baselineActions.ADD_OBJECT_ASSESSMENTS_TO_BASELINE:
             let currBaseline = state.baseline;
-            if (!currBaseline.assessments) {
-                currBaseline.assessments = [];
-            }
             currBaseline.assessments.push(...action.payload);
             return genAssessState({
                 ...state,
@@ -136,15 +133,17 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
                 selectedFrameworkAttackPatterns: [...action.payload],
             });
         case baselineActions.START_BASELINE:
-            const a0 = new AssessmentSet();
+            const newBaseline = new AssessmentSet();
             const meta = action.payload;
-            a0.name = meta.title;
-            // Object.assign(a0, action.payload);
-            a0.description = meta.description;
-            a0.created_by_ref = meta.created_by_ref;
+            newBaseline.name = meta.title;
+            newBaseline.description = meta.description;
+            newBaseline.created_by_ref = meta.created_by_ref;
+            newBaseline.created = new Date().toISOString();
+            newBaseline.assessments = [];
+            newBaseline.metaProperties = { published: false };
             return genAssessState({
-                ...state,
-                baseline: a0,
+              ...state,
+              baseline: newBaseline,
             });
         case baselineActions.UPDATE_PAGE_TITLE:
             const a1 = new AssessmentSet();
@@ -174,10 +173,6 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
                 saved: {
                     ...action.payload,
                 }
-            });
-        case baselineActions.WIZARD_PAGE:
-            return genAssessState({
-                ...state,
             });
         case baselineActions.SAVE_BASELINE:
             return genAssessState({

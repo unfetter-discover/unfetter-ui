@@ -25,16 +25,11 @@ export const FAILED_TO_LOAD = '[Assess] FAILED_TO_LOAD';
 
 // For reducers
 export const UPDATE_PAGE_TITLE = '[Baseline] UPDATE_PAGE_TITLE';
-export const ANSWER_QUESTION = '[Baseline] ANSWER_QUESTION';
 export const FINISHED_LOADING = '[Baseline] FINISHED_LOADING';
 export const FINISHED_SAVING = '[Baseline] FINISHED_SAVING';
 export const CLEAN_ASSESSMENT_WIZARD_DATA = '[Baseline] CLEAN_ASSESSMENT_WIZARD_DATA';
-export const FETCH_ASSESSMENT = '[Baseline] FETCH_ASSESSMENT';
 export const FETCH_ATTACK_PATTERNS = '[Baseline] FETCH_ATTACK_PATTERNS';
 export const FETCH_CATEGORIES = '[Baseline] FETCH_CATEGORIES';
-export const LOAD_ASSESSMENT_WIZARD_DATA = '[Baseline] LOAD_ASSESSMENT_WIZARD_DATA';
-export const SAVE_ASSESSMENT = '[Baseline] SAVE_ASSESSMENT';
-export const START_ASSESSMENT = '[Baseline] START_ASSESSMENT';
 export const START_ASSESSMENT_SUCCESS = '[Baseline] START_ASSESSMENT_SUCCESS';
 export const SET_ATTACK_PATTERNS = '[Baseline] SET_ATTACK_PATTERNS';
 export const SET_CATEGORIES = '[Baseline] SET_CATEGORIES';
@@ -42,7 +37,6 @@ export const SET_BASELINE_OBJECT_ASSESSMENTS = '[Baseline] SET_BASELINE_OBJECT_A
 export const SET_CURRENT_BASELINE_OBJECT_ASSESSMENT = '[Baseline] SET_CURRENT_BASELINE_OBJECT_ASSESSMENT';
 export const SET_CATEGORY_STEPS = '[Baseline] SET_CATEGORY_STEPS';
 export const SET_SELECTED_FRAMEWORK_ATTACK_PATTERNS = '[Baseline] SET_SELECTED_FRAMEWORK_ATTACK_PATTERNS';
-export const WIZARD_PAGE = '[Baseline] WIZARD_PAGE';
 export const ADD_OBJECT_ASSESSMENT = '[Baseline] ADD_OBJECT_ASSESSMENT';
 export const ADD_OBJECT_ASSESSMENTS_TO_BASELINE = '[Baseline] ADD_OBJECT_ASSESSMENTS_TO_BASELINE';
 
@@ -203,16 +197,6 @@ export class FinishedSaving implements Action {
     constructor(public payload: { finished: boolean; id: string }) { }
 }
 
-export class AnswerQuestion implements Action {
-    public readonly type = ANSWER_QUESTION;
-    constructor(public payload: any) { }
-}
-
-export class WizardPage implements Action {
-    public readonly type = WIZARD_PAGE;
-    constructor(public payload: number) { }
-}
-
 export class CleanBaselineWizardData {
     public readonly type = CLEAN_BASELINE_WIZARD_DATA;
 
@@ -228,7 +212,6 @@ export class FailedToLoad implements Action {
 export type BaselineActions =
     AddObjectAssessment |
     AddObjectAssessmentsToBaseline |
-    AnswerQuestion |
     CleanBaselineWizardData |
     FailedToLoad |
     FetchBaseline |
@@ -255,5 +238,4 @@ export type BaselineActions =
     SetSelectedFrameworkAttackPatterns |
     StartBaseline |
     StartBaselineSuccess |
-    UpdatePageTitle |
-    WizardPage;
+    UpdatePageTitle;

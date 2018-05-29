@@ -116,13 +116,13 @@ export class BaselineService {
      * @param {string} filter
      * @return {Observable<Category[]>}
      */
-    // public getCategories(filter?: string): Observable<Category[]> {
-    //     const url = filter ?
-    //         `${this.categoryBaseUrl}?${encodeURI(filter)}` : this.categoryBaseUrl;
-    //     return this.genericApi
-    //         .getAs<JsonApiData<Category>[]>(url)
-    //         .map(RxjsHelpers.mapAttributes);
-    // }
+    public getCategories(filter?: string): Observable<Category[]> {
+        const url = filter ?
+            `${this.categoryBaseUrl}?${encodeURI(filter)}` : this.categoryBaseUrl;
+        return this.genericApi
+            .getAs<JsonApiData<Category>[]>(url)
+            .map(RxjsHelpers.mapAttributes);
+    }
 
     /**
      * @description load capabilities

@@ -116,8 +116,8 @@ export class BaselineEffects {
 
 
     @Effect()
-    public saveAssessment = this.actions$
-        .ofType(baselineActions.SAVE_ASSESSMENT)
+    public saveBaseline = this.actions$
+        .ofType(baselineActions.SAVE_BASELINE)
         .pluck('payload')
         .switchMap((baseline: AssessmentSet) => {
             const json = {
@@ -133,10 +133,10 @@ export class BaselineEffects {
                 .postAs<AssessmentSet>(url, json);
             }
         })
-        .map((objAssessment) => {
+        .map((assessmentSet) => {
             return new baselineActions.FinishedSaving({
                 finished: true,
-                id: objAssessment.id || '',
+                id: assessmentSet[0].id || '',
             });
         });
 

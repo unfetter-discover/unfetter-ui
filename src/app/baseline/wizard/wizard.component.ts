@@ -680,38 +680,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   }
 
   /*
-   * @description
-   * @param {any}
-   * @return {Assessment}
-   */
-  private generateBaseline(tempModel: WeightsModel, baselineMeta: BaselineMeta): AssessmentSet {
-    const baseline = new AssessmentSet();
-    baseline.name = this.meta.title;
-    baseline.description = this.meta.description;
-    baseline.created = new Date().toISOString();
-    baseline.created_by_ref = this.meta.created_by_ref;
-    const objAssessments = new Set<ObjectAssessment>();
-
-    Object.keys(tempModel)
-      .forEach((baselineId) => {
-        const baselineObj = tempModel[baselineId];
-        const temp = new ObjectAssessment();
-        const stix = new Stix();
-        stix.id = baselineObj.baseline.id;
-        stix.type = baselineObj.baseline.type;
-        stix.description = baselineObj.baseline.description || '';
-        stix.name = baselineObj.baseline.name;
-        stix.created_by_ref = baselineObj.baseline.created_by_ref;
-        Object.assign(temp, stix);
-        temp.assessments_objects = [];
-        objAssessments.add(temp);
-      });
-
-    baseline['baseline_objects'] = Array.from(objAssessments);
-    return baseline;
-  }
-
-  /*
    * @description save an baseline object to the database
    * @param {void}
    * @return {void}
