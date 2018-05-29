@@ -3,5 +3,6 @@ export const environment = {
     showBanner: false,
     bannerText: '',
     runMode: 'DEMO',
-    hmr: false
+    hmr: false,
+    authServices: []
 };
