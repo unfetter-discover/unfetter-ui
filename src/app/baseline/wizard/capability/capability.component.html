@@ -1,3 +1,6 @@
+<!-- <button (click)="logDataSource()"></button> -->
+
+
 <mat-card-content>
   <div class="row margin-bottom top-row flex-sm flexItemsCenter">
     <div class="col-lg-9">
@@ -52,11 +55,11 @@
   <mat-table #table [dataSource]="dataSource">
 
     <!-- Capability Column -->
-    <ng-container matColumnDef="capability">
+    <ng-container matColumnDef="attackPattern">
       <mat-header-cell *matHeaderCellDef> Attack Patterns </mat-header-cell>
-      <mat-cell *matCellDef="let capabilityScores;">
-        <span mat-raised-button matTooltip="{{capabilityScores.definition}}" matTooltipShowDelay="1000">
-          {{capabilityScores.capability}}
+      <mat-cell *matCellDef="let thisAssessedObject;">
+        <span mat-raised-button matTooltip="{{thisAssessedObject.definition}}" matTooltipShowDelay="1000">
+          {{thisAssessedObject.capability}}
         </span>
       </mat-cell>
     </ng-container>
@@ -65,8 +68,8 @@
     <ng-container matColumnDef="protect">
       <mat-header-cell *matHeaderCellDef> Protect </mat-header-cell>
       <mat-cell *matCellDef="let element; let i=index;" class="hoverable" (click)="$event.stopPropagation()">
-        <mat-select class="inTable" value="{{element.protect}}" placeholder="Protect" (selectionChange)="updatePDRScore(i, 'protect', $event.value)">
-          <mat-option *ngFor="let choice of pdr_choices" value="{{choice}}"> {{ choice }}</mat-option>
+        <mat-select class="inTable" value="{{element.protect}}" placeholder="Protect" (selectionChange)="updatePDRScore(i, 'protect', $event.value, element.capability_id)">
+            <mat-option *ngFor="let answer of answers" [value]="answer.id"> {{ answer.name}}</mat-option>
         </mat-select>
       </mat-cell>
     </ng-container>
@@ -75,8 +78,8 @@
     <ng-container matColumnDef="detect">
       <mat-header-cell *matHeaderCellDef> Detect </mat-header-cell>
       <mat-cell *matCellDef="let element; let i=index;" class="hoverable" (click)="$event.stopPropagation()">
-        <mat-select class="inTable" value="{{element.detect}}" placeholder="Detect" (selectionChange)="updatePDRScore(i, 'detect', $event.value)">
-          <mat-option *ngFor="let choice of pdr_choices" value="{{choice}}"> {{ choice }}</mat-option>
+        <mat-select class="inTable" value="{{element.detect}}" placeholder="Detect" (selectionChange)="updatePDRScore(i, 'detect', $event.value, element.capability_id)">
+            <mat-option *ngFor="let answer of answers" [value]="answer.id"> {{ answer.name}}</mat-option>
         </mat-select>
       </mat-cell>
     </ng-container>
@@ -86,8 +89,8 @@
       <mat-header-cell *matHeaderCellDef> Respond </mat-header-cell>
       <!-- <mat-cell *matCellDef="let capabilityScores"> {{capabilityScores.respond}} </mat-cell> -->
       <mat-cell *matCellDef="let element; let i=index;" class="hoverable" (click)="$event.stopPropagation()">
-        <mat-select class="inTable" value="{{element.respond}}" placeholder="Respond" (selectionChange)="updatePDRScore(i, 'respond', $event.value)">
-          <mat-option *ngFor="let choice of pdr_choices" value="{{choice}}"> {{ choice }}</mat-option>
+        <mat-select class="inTable" value="{{element.respond}}" placeholder="Respond" (selectionChange)="updatePDRScore(i, 'respond', $event.value, element.capability_id)">
+          <mat-option *ngFor="let answer of answers" [value]="answer.id"> {{ answer.name}}</mat-option>
         </mat-select>
       </mat-cell>
     </ng-container>
@@ -103,14 +106,14 @@
 <!-- Add/Remove attack patterns -->
 <div class="add-remove-ap-container">
 <mat-form-field style="width: 100%;" hintLabel="Add/Remove Attack Patterns.">
-  <mat-select (selectionChange)="onAttackPatternChange($event)" [formControl]="selectedAttackPatterns" [(ngModel)]="incomingListOfAttackPatterns" multiple>
+  <mat-select (ngModelChange)="onAttackPatternChange($event)" [formControl]="selectedAttackPatterns" [(ngModel)]="incomingListOfAttackPatterns" multiple>
     <mat-select-trigger>
       {{selectedAttackPatterns.value.length > 0 ? "No. of attack patterns selected: " : ""}}
       <span *ngIf="selectedAttackPatterns.value?.length > 0" class="example-additional-selection">
         {{selectedAttackPatterns.value.length}}
       </span>
     </mat-select-trigger>
-    <mat-option *ngFor="let attackPattern of attackPatterns" [value]=attackPattern>{{attackPattern}}</mat-option>
+    <mat-option *ngFor="let attackPattern of allAttackPatterns" [value]=attackPattern.id>{{attackPattern.name}}</mat-option>
   </mat-select>
   <mat-hint align="end">Note: Unchecking a value will remove its PDR scores!</mat-hint>
 </mat-form-field>
