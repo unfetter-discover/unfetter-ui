@@ -21,11 +21,6 @@ const routes = [
         ]
     },
     { path: 'result/summary/:baselineId', component: SummaryComponent },
-    // { path: 'result/full/:rollupId', component: FullComponent },
-    // { path: 'result/full/:rollupId/:baselineId', component: FullComponent },
-    // { path: 'result/full/:rollupId/:baselineId/phase/:phase', component: FullComponent },
-    // { path: 'result/full/:rollupId/:baselineId/phase/:phase/attackPattern/:attackPattern', component: FullComponent },
-    // { path: 'result/group/:id/:phase', component: AssessmentsGroupComponent },
 ];
 
 export const routing = RouterModule.forChild(routes);
