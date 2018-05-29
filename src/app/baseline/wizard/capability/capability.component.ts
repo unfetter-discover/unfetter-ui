@@ -10,7 +10,7 @@ import { Capability, AssessedObject, ObjectAssessment, Question, QuestionAnswerE
 import { PdrString} from 'stix/assess/v3/baseline/question';
 import { StixEnum } from 'stix/unfetter/stix.enum';
 import { AnswerOption } from '../../../settings/stix-objects/categories/categories-edit/answer-option'
-import { AttackPattern } from '../../../models';
+import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { SetCurrentBaselineObjectAssessment } from '../../store/baseline.actions';
 
 
@@ -103,7 +103,7 @@ export class CapabilityComponent implements OnInit {
 
 
           } else {
-              //console.log('pdr change, not reloading!   ' + this.currentNumberOfAttackPatterns );
+              // console.log('pdr change, not reloading!   ' + this.currentNumberOfAttackPatterns );
               return;
           }
 
