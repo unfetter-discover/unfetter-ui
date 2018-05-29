@@ -1,9 +1,10 @@
+
 @import '../../../../styles/_variables.scss';
 
 :host {
     display: flex;
     flex-direction: row;
-    width: 1282px;
+    width: 100%;
 }
 
 .top-row {
@@ -32,6 +33,24 @@
     overflow: auto;
   }
 
+.mat-row, .mat-cell, .mat-header-row, .mat-header-cell {
+  padding-left: 0px;
+}
+
+.mat-row {
+  padding-right: 0px;
+}
+
+// .mat-cell {
+//   padding-top: 0px;
+//   padding-bottom: 0px;
+// }
+
+:host ::ng-deep .mat-select-trigger {
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+}
+
 .element-row {
     position: relative;
     max-height: 50px;
@@ -39,8 +58,8 @@
   
 .table-container {
     display: block;
-    min-width: 300px;
-    width:800px;
+    min-width: 800px;
+    width:100%;
     margin-left: auto;
     margin-right: auto;
 }
@@ -86,9 +105,7 @@
 }
 
 .mat-column-capability {
-  flex:3;
-  font-weight: bold;
-  min-width: 270px;
+  min-width: 400px !important;
 }
 
 .mat-column-protect {
@@ -105,16 +122,12 @@
   flex: 1;
 }
 
-mat-row:nth-child(even){
-  background-color: #0066ff0f;
-  }
-
 .filter-header {
   min-height: 50px;
   /* padding: 8px 24px 0; */
-  margin-left: auto;
+  margin-left: 0px;
   margin-right: auto;
-  width:80%;
+  width:250px;
 }
 
 .mat-form-field {
