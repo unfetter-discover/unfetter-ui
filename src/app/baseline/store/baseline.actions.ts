@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
+import { Capability, Category, ObjectAssessment, AssessmentSet } from 'stix/assess/v3/baseline';
 import { Baseline } from '../../models/baseline/baseline';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
@@ -19,19 +19,17 @@ export const FETCH_CAPABILITIES = '[Baseline] FETCH_CAPABILITIES';
 export const SET_CAPABILITIES = '[Baseline] SET_CAPABILITIES';
 export const SET_BASELINE_CAPABILITIES = '[Baseline] SET_BASELINE_CAPABILITIES';
 export const SET_CURRENT_BASELINE_CAPABILITY = '[Baseline] SET_CURRENT_BASELINE_CAPABILITY';
+export const SET_BASELINE = '[Baseline] SET_BASELINE';
+export const SAVE_OBJECT_ASSESSMENTS = '[Baseline] SAVE_OBJECT_ASSESSMENTS';
+export const FAILED_TO_LOAD = '[Assess] FAILED_TO_LOAD';
 
 // For reducers
 export const UPDATE_PAGE_TITLE = '[Baseline] UPDATE_PAGE_TITLE';
-export const ANSWER_QUESTION = '[Baseline] ANSWER_QUESTION';
 export const FINISHED_LOADING = '[Baseline] FINISHED_LOADING';
 export const FINISHED_SAVING = '[Baseline] FINISHED_SAVING';
 export const CLEAN_ASSESSMENT_WIZARD_DATA = '[Baseline] CLEAN_ASSESSMENT_WIZARD_DATA';
-export const FETCH_ASSESSMENT = '[Baseline] FETCH_ASSESSMENT';
 export const FETCH_ATTACK_PATTERNS = '[Baseline] FETCH_ATTACK_PATTERNS';
 export const FETCH_CATEGORIES = '[Baseline] FETCH_CATEGORIES';
-export const LOAD_ASSESSMENT_WIZARD_DATA = '[Baseline] LOAD_ASSESSMENT_WIZARD_DATA';
-export const SAVE_ASSESSMENT = '[Baseline] SAVE_ASSESSMENT';
-export const START_ASSESSMENT = '[Baseline] START_ASSESSMENT';
 export const START_ASSESSMENT_SUCCESS = '[Baseline] START_ASSESSMENT_SUCCESS';
 export const SET_ATTACK_PATTERNS = '[Baseline] SET_ATTACK_PATTERNS';
 export const SET_CATEGORIES = '[Baseline] SET_CATEGORIES';
@@ -39,7 +37,8 @@ export const SET_BASELINE_OBJECT_ASSESSMENTS = '[Baseline] SET_BASELINE_OBJECT_A
 export const SET_CURRENT_BASELINE_OBJECT_ASSESSMENT = '[Baseline] SET_CURRENT_BASELINE_OBJECT_ASSESSMENT';
 export const SET_CATEGORY_STEPS = '[Baseline] SET_CATEGORY_STEPS';
 export const SET_SELECTED_FRAMEWORK_ATTACK_PATTERNS = '[Baseline] SET_SELECTED_FRAMEWORK_ATTACK_PATTERNS';
-export const WIZARD_PAGE = '[Baseline] WIZARD_PAGE';
+export const ADD_OBJECT_ASSESSMENT = '[Baseline] ADD_OBJECT_ASSESSMENT';
+export const ADD_OBJECT_ASSESSMENTS_TO_BASELINE = '[Baseline] ADD_OBJECT_ASSESSMENTS_TO_BASELINE';
 
 export class UpdatePageTitle implements Action {
     public readonly type = UPDATE_PAGE_TITLE;
@@ -60,15 +59,37 @@ export class StartBaselineSuccess implements Action {
 export class SaveBaseline implements Action {
     public readonly type = SAVE_BASELINE;
 
-    // an baseline can contain multiple baseline types
-    //  these baselines will be saved w/ the same parentId
-    constructor(public payload: Baseline[]) { }
+    constructor(public payload: AssessmentSet) { }
+}
+
+export class AddObjectAssessment implements Action {
+    public readonly type = ADD_OBJECT_ASSESSMENT;
+
+    constructor(public payload: string) { }
+}
+
+export class SaveObjectAssessments implements Action {
+    public readonly type = SAVE_OBJECT_ASSESSMENTS;
+
+    constructor(public payload: ObjectAssessment[]) { }
+}
+
+export class AddObjectAssessmentsToBaseline implements Action {
+    public readonly type = ADD_OBJECT_ASSESSMENTS_TO_BASELINE;
+
+    constructor(public payload: string[]) { }
 }
 
 export class FetchBaseline implements Action {
     public readonly type = FETCH_BASELINE;
 
     constructor(public payload: any[]) { }
+}
+
+export class SetBaseline implements Action {
+    public readonly type = SET_BASELINE;
+
+    constructor(public payload: AssessmentSet) { }
 }
 
 export class FetchCapabilityGroups implements Action {
@@ -173,17 +194,7 @@ export class FinishedLoading implements Action {
 export class FinishedSaving implements Action {
     public readonly type = FINISHED_SAVING;
 
-    constructor(public payload: { finished: boolean, id: string }) { }
-}
-
-export class AnswerQuestion implements Action {
-    public readonly type = ANSWER_QUESTION;
-    constructor(public payload: any) { }
-}
-
-export class WizardPage implements Action {
-    public readonly type = WIZARD_PAGE;
-    constructor(public payload: number) { }
+    constructor(public payload: { finished: boolean; id: string }) { }
 }
 
 export class CleanBaselineWizardData {
@@ -192,33 +203,39 @@ export class CleanBaselineWizardData {
     constructor() { }
 }
 
+export class FailedToLoad implements Action {
+    public readonly type = FAILED_TO_LOAD;
+  
+    constructor(public payload: boolean) {}
+  }  
+
 export type BaselineActions =
-    AnswerQuestion |
+    AddObjectAssessment |
+    AddObjectAssessmentsToBaseline |
     CleanBaselineWizardData |
+    FailedToLoad |
     FetchBaseline |
-    FetchCapabilityGroups |
-    SetCapabilityGroups |
-    SetBaselineGroups |
-    SetCurrentBaselineGroup |
+    FetchAttackPatterns |
     FetchCapabilities |
-    SetCapabilities |
-    SetBaselineCapabilities |
-    SetCurrentBaselineCapability |
-    SetBaselineObjectAssessments |
-    SetCurrentBaselineObjectAssessment |
+    FetchCapabilityGroups |
     FinishedLoading |
     FinishedSaving |
     LoadBaselineWizardData |
-    StartBaseline |
-    StartBaselineSuccess |
     SaveBaseline |
-    AnswerQuestion |
-    FetchAttackPatterns |
-    FinishedLoading |
-    FinishedSaving |
+    SaveObjectAssessments |
     SetAttackPatterns |
+    SetBaseline |
+    SetBaselineCapabilities |
+    SetBaselineGroups |
+    SetBaselineObjectAssessments |
+    SetCapabilities |
+    SetCapabilityGroups |
     SetCategories |
     SetCategorySteps |
+    SetCurrentBaselineCapability |
+    SetCurrentBaselineGroup |
+    SetCurrentBaselineObjectAssessment |
     SetSelectedFrameworkAttackPatterns |
-    UpdatePageTitle |
-    WizardPage;
+    StartBaseline |
+    StartBaselineSuccess |
+    UpdatePageTitle;

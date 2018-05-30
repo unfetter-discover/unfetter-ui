@@ -3,7 +3,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, O
 import { MatDialog, MatSelect, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { MenuItem } from 'primeng/primeng';
+import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { AssessmentSet, Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
@@ -11,21 +11,14 @@ import { Key } from 'ts-keycode-enum';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { heightCollapse } from '../../global/animations/height-collapse';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
-import { Dictionary } from '../../models/json/dictionary';
-import { JsonApiData } from '../../models/json/jsonapi-data';
 import { Stix } from '../../models/stix/stix';
 import { UserProfile } from '../../models/user/user-profile';
 import { AppState } from '../../root-store/app.reducers';
-import { Constance } from '../../utils/constance';
-import { LoadAssessmentResultData } from '../result/store/full-result.actions';
-import { FullBaselineResultState } from '../result/store/full-result.reducers';
-import { CleanBaselineWizardData, FetchCapabilities, FetchCapabilityGroups, LoadBaselineWizardData, SetCurrentBaselineCapability, SetCurrentBaselineGroup, UpdatePageTitle, FetchAttackPatterns, SetCurrentBaselineObjectAssessment } from '../store/baseline.actions';
+import { CleanBaselineWizardData, FetchAttackPatterns, FetchCapabilities, FetchCapabilityGroups, LoadBaselineWizardData, SaveBaseline, SetBaseline, SetCurrentBaselineCapability, SetCurrentBaselineGroup, SetCurrentBaselineObjectAssessment, UpdatePageTitle } from '../store/baseline.actions';
 import { BaselineState } from '../store/baseline.reducers';
 import { AttackPatternChooserComponent } from './attack-pattern-chooser/attack-pattern-chooser.component';
 import { Measurements } from './models/measurements';
 import { WeightsModel } from './models/weights-model';
-import { Observable } from 'rxjs/Observable';
-import * as _ from 'lodash.uniq'
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -42,65 +35,21 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
   public currentUser: UserProfile;
   public readonly defaultValue = -1;
-  public readonly defaultMeasurement = 'Nothing';
   public readonly sidePanelCollapseHeight = '32px';
   public readonly sidePanelExpandedHeight = '32px';
-  public readonly CHART_TYPE: string;
-  public readonly DEFAULT_CHART_COLORS: any[];
-  public readonly CHART_LABELS: string[];
-  public readonly CHART_BG_COLORS: any[];
-  public readonly CHART_HOVER_BG_COLORS: any[];
-
-  public model: JsonApiData<ObjectAssessment, Dictionary<ObjectAssessment>>;
-  public publishDate = new Date();
   public buttonLabel: ButtonLabel = 'CONTINUE';
-  public item: MenuItem[];
-  public doughnutChartLabels: string[];
-  public doughnutChartData: { data: any[], backgroundColor: any[], hoverBackgroundColor: any[] }[];
-  public doughnutChartType: string = this.CHART_TYPE;
-  public doughnutChartColors: any[] = this.DEFAULT_CHART_COLORS;
 
-  public summaryDoughnutChartLabels: string[] = this.CHART_LABELS;
-  public summaryDoughnutChartData: { data: any[], backgroundColor: any[], hoverBackgroundColor: any[] }[];
-  public summaryDoughnutChartType: string = this.CHART_TYPE;
-  public summaryDoughnutChartColors = this.DEFAULT_CHART_COLORS;
-  public chartOptions = {
-    legend: {
-      display: false
-    },
-    tooltips: {
-      callbacks: {
-        label: (tooltipItem, data) => {
-          const allData = data.datasets[tooltipItem.datasetIndex].data;
-          const tooltipLabel = data.labels[tooltipItem.index];
-          const tooltipData = allData[tooltipItem.index];
-          let total = 0;
-          allData.forEach((d) => {
-            total += d;
-          });
-          const tooltipPercentage = Math.round(tooltipData / total * 100);
-          return `${tooltipLabel}: ${tooltipPercentage}%`;
-        }
-      }
-    }
-  };
-
-  // public description = `An Assessment is your evaluation of the implementations of your network.  You will rate your environment
-  // ' to the best of your ability. On the final page of the survey, you will be asked to enter a name for the report and a description.
-  // Unfetter Discover will use the survey to help you understand your gaps, how important they are and which should be addressed.
-  // You may create multiple reports to see how your risk is changed when implementing different security processes.`;
   public showSummary = false;
   public page = 1;
   public totalPages = 0;
   public meta = new BaselineMeta();
   public insertMode = false;
-  private groupings = [];
   public openedSidePanel: string;
   public navigation: { id: string, label: string, page: number };
   public navigations: any[];
   
+  private currentBaseline: AssessmentSet;
   private objAssessments: ObjectAssessment[];
-  private currentObjAssessment: ObjectAssessment;
   public allCategories: Category[] = [];
   public baselineGroups: Category[] = [];
   public currentBaselineGroup = {} as Category;
@@ -108,7 +57,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public baselineCapabilities: Capability[] = [];
   public currentCapability = {} as Capability;
   private baselineObjAssessments: ObjectAssessment[] = [];
-
+  
   public showHeatmap = false;
   public allAttackPatterns: Observable<AttackPattern[]> = Observable.of([]);
   public selectedFrameworkAttackPatterns: Observable<AttackPattern[]> = Observable.of([]);
@@ -130,11 +79,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     private dialog: MatDialog,
   ) {
     super();
-    this.CHART_TYPE = 'doughnut';
-    this.DEFAULT_CHART_COLORS = [{}];
-    this.CHART_LABELS = ['Risk Accepted', 'Risk Addressed'];
-    this.CHART_BG_COLORS = [Constance.COLORS.red, Constance.COLORS.green];
-    this.CHART_HOVER_BG_COLORS = [Constance.COLORS.darkRed, Constance.COLORS.darkGreen];
   }
 
   /*
@@ -142,9 +86,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    *  initializes this component, fetchs data to build page
    */
   public ngOnInit(): void {
-
-    this.initChart();
-
     const idParamSub$ = this.route.params
       .subscribe(
         (params) => {
@@ -206,6 +147,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           meta.description = assessmentSet.description || meta.description;
           meta.created_by_ref = assessmentSet.created_by_ref || meta.created_by_ref;
           this.meta = meta;
+          this.currentBaseline = assessmentSet;
         },
         (err) => console.log(err));
 
@@ -262,8 +204,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         .subscribe(
           (capabilities: Capability[]) => {
             this.baselineCapabilities = (capabilities) ? capabilities.slice() : [];
-            console.log('Current baseline capabilities:');
-            console.log(JSON.stringify(this.baselineCapabilities));
             this.updateNavigations();
           },
           (err) => console.log(err));
@@ -298,7 +238,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
             this.baselineObjAssessments = baselineObjAssessments;
           },
         (err) => console.log(err));
-      
+
       this.allAttackPatterns = this.wizardStore
         .select('baseline')
         .pluck<{}, AttackPattern[]>('allAttackPatterns')
@@ -314,31 +254,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       // Fetch categories and capabilities to power this wizard
       this.wizardStore.dispatch(new FetchCapabilityGroups());
       this.wizardStore.dispatch(new FetchCapabilities());
-  }
-
-  /**
-   * @description initialize the chart data
-   * @returns void
-   */
-  public initChart(): void {
-    this.doughnutChartColors = this.DEFAULT_CHART_COLORS;
-    this.doughnutChartData = [{
-      data: [],
-      backgroundColor: this.CHART_BG_COLORS,
-      hoverBackgroundColor: this.CHART_HOVER_BG_COLORS,
-    }
-    ];
-    this.doughnutChartLabels = this.CHART_LABELS;
-    this.doughnutChartType = this.CHART_TYPE;
-    this.summaryDoughnutChartColors = this.DEFAULT_CHART_COLORS;
-    this.summaryDoughnutChartData = [{
-      data: [],
-      backgroundColor: this.CHART_BG_COLORS,
-      hoverBackgroundColor: this.CHART_HOVER_BG_COLORS,
-    }
-    ];
-    this.summaryDoughnutChartLabels = this.CHART_LABELS;
-    this.summaryDoughnutChartType = this.CHART_TYPE;
   }
 
   /**
@@ -523,7 +438,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.updateWizardData();
   }
 
-  public hasNextGroup(page: number): boolean {
+  public hasNextGroup(): boolean {
     return this.page > 1 && this.currentBaselineGroup &&
            this.baselineGroups.findIndex(group => group.id === this.currentBaselineGroup.id) < this.baselineGroups.length - 1;
   }
@@ -676,11 +591,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     let index = 2;   // start at 2; 1 is 'GROUP SETUP'
     this.baselineGroups.forEach((category) => {
       this.navigations.push( { id: category.id, label: category.name,  page: index++ } );
-      console.log('Added category: ', category.name);
       let capsForThisCategory = this.baselineCapabilities.filter(cap => cap.category === category.name);
       capsForThisCategory.forEach((cap) => {
           this.navigations.push( { id: cap.id, label: cap.name,  page: index++ } );
-          console.log('Added capability: ', cap.name);
         })
     });
   }
@@ -739,7 +652,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       const sub$ = dialog.afterClosed().subscribe(
         (result) => {
           if (result) {
-            console.log('selected patterns', result);
             this.selectedAttackPatterns = result;
           }
           this.showHeatmap = false;
@@ -768,62 +680,12 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   }
 
   /*
-   * @description
-   * @param {any}
-   * @return {Assessment}
-   */
-  private generateBaseline(tempModel: WeightsModel, baselineMeta: BaselineMeta): AssessmentSet {
-    const baseline = new AssessmentSet();
-    baseline.name = this.meta.title;
-    baseline.description = this.meta.description;
-    baseline.created = this.publishDate.toISOString();
-    baseline.created_by_ref = this.meta.created_by_ref;
-    const objAssessments = new Set<ObjectAssessment>();
-
-    Object.keys(tempModel)
-      .forEach((baselineId) => {
-        const baselineObj = tempModel[baselineId];
-        const temp = new ObjectAssessment();
-        const stix = new Stix();
-        stix.id = baselineObj.baseline.id;
-        stix.type = baselineObj.baseline.type;
-        stix.description = baselineObj.baseline.description || '';
-        stix.name = baselineObj.baseline.name;
-        stix.created_by_ref = baselineObj.baseline.created_by_ref;
-        Object.assign(temp, stix);
-        temp.assessments_objects = [];
-        objAssessments.add(temp);
-      });
-
-    baseline['baseline_objects'] = Array.from(objAssessments);
-    return baseline;
-  }
-
-  /*
    * @description save an baseline object to the database
    * @param {void}
    * @return {void}
    */
   private saveAssessments(): void {
-    // TODO: once model is set, implement this to save AssessmentSet
-    // if (this.model) {
-    //   const baselines = Object.values(this.model.relationships);
-    //   baselines.forEach(baseline => {
-    //     baseline.modified = this.publishDate.toISOString();
-    //     baseline.description = this.meta.description;
-    //     if (this.meta.created_by_ref) {
-    //       baseline.created_by_ref = this.meta.created_by_ref;
-    //     }
-    //   });
-    //   this.wizardStore.dispatch(new SaveAssessment(baselines));
-    // } else {
-    //   const baselines = this.sidePanelOrder
-    //     .map((name) => this.categories[name])
-    //     .filter((el) => el !== undefined)
-    //     .map((el) => el.scoresModel)
-    //     .filter((el) => el !== undefined)
-    //     .map((el) => this.generateBaselineAssessment(el, this.meta))
-    //   this.wizardStore.dispatch(new SaveAssessment(baselines));
-    // }
+    this.wizardStore.dispatch(new SaveBaseline(this.currentBaseline));
   }
+
 }

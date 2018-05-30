@@ -3,8 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as _ from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
-import { Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
-import { SetBaselineCapabilities, SetBaselineObjectAssessments } from '../../store/baseline.actions';
+import { Capability, Category, ObjectAssessment, AssessedObject } from 'stix/assess/v3/baseline';
+import { SetBaselineCapabilities, SetBaselineObjectAssessments, SaveObjectAssessments } from '../../store/baseline.actions';
 import * as assessReducers from '../../store/baseline.reducers';
 import { Stix } from 'stix/unfetter/stix';
 import { Constance } from '../../../utils/constance';
@@ -191,6 +191,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
     newCaps.forEach((capability) => {
       const newOA = new ObjectAssessment();
       newOA.object_ref = capability.id;
+      newOA.assessments_objects = [];
       const stix = new Stix();
       stix.type = StixEnum.OBJECT_ASSESSMENT;
       stix.description = capability.description;
@@ -203,6 +204,9 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
 
       newOAs.push(newOA);
     });
+
+    // Save new object assessments so we have IDs for them
+    this.wizardStore.dispatch(new SaveObjectAssessments(newOAs));
 
     // Filter out capabilities that have been deleted
     let existingOAs = this.baselineObjAssessments.filter(bOA => this.baselineCapabilities.findIndex(blCap => bOA.object_ref === blCap.id) !== -1);
