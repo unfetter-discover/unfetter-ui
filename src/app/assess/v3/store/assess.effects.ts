@@ -73,7 +73,6 @@ export class AssessEffects {
             new assessActions.LoadCurrentBaselineQuestions(baseline as AssessmentSet),
             // full capabilities needs to look up category names
             new assessActions.FetchCapabilities(),
-            new assessActions.FinishedLoading(true),
           ];
         }),
         catchError((err) => {
@@ -153,7 +152,12 @@ export class AssessEffects {
     .switchMap(() => {
       // fetch full capability objects, useful for lookups
       return this.baselineService.getCapabilities().pipe(
-        map((arr) => new assessActions.SetCapabilities(arr)),
+        mergeMap((arr) => {
+          return [ 
+            new assessActions.SetCapabilities(arr), 
+            new assessActions.FinishedLoading(true) 
+          ];
+        }),
         catchError((err) => {
           console.log(err);
           return Observable.of(new assessActions.FailedToLoad(true));
