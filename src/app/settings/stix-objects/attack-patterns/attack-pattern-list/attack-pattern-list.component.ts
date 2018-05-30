@@ -65,8 +65,27 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
     public fetchData(userProfile?: UserProfile): void {
         let filter = '';
         if (userProfile && userProfile.preferences && userProfile.preferences.killchain) {
+
             const userFramework = this.user.preferences.killchain;
-            const userFrameworkFilter = { 'stix.kill_chain_phases.kill_chain_name': { $exists: true, $eq: userFramework } };
+            const userFrameworkFilter = {
+                $or: [
+                    {
+                        'stix.kill_chain_phases.kill_chain_name': {
+                            $exists: true,
+                            $eq: userFramework
+                        }
+                    },
+                    {
+                        'stix.kill_chain_phases': {
+                            $exists: false
+                        }
+                    },
+                    {
+                        'stix.kill_chain_phases': []
+                    }
+                ]
+            };
+            
             filter = `filter=${encodeURIComponent(JSON.stringify(userFrameworkFilter))}`;
         }
         const sortObj = { 'stix.name': '1' };
