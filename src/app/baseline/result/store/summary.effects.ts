@@ -5,7 +5,7 @@ import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
 import { BaselineService } from '../../services/baseline.service';
-import { FinishedLoading, LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA, SetAssessments, LOAD_BASELINE_DATA, SetBaseline } from './summary.actions';
+import { FinishedLoading, LOAD_BASELINE_DATA, SetBaseline } from './summary.actions';
 
 @Injectable()
 export class SummaryEffects {
@@ -16,25 +16,6 @@ export class SummaryEffects {
         private actions$: Actions,
         protected baselineService: BaselineService,
     ) { }
-
-    @Effect()
-    public fetchSingleAssessmentSummaryData = this.actions$
-        .ofType(LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA)
-        .pluck('payload')
-        .switchMap((baselineId: string) => {
-            return this.baselineService
-                .getById(baselineId)
-                .mergeMap((data: AssessmentSet) => {
-                    const actions = [new FinishedLoading(true)];
-                    if (!data || !data.id) {
-                        return actions;
-                    }
-                    return [new SetAssessments([data]), ...actions];
-                })
-                .catch((err) => {
-                    return Observable.empty();
-                });
-        });
 
     @Effect()
     public fetchBaselineData = this.actions$

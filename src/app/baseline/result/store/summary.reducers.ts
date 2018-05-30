@@ -6,7 +6,6 @@ import * as summaryActions from './summary.actions';
 export interface SummaryState {
     baseline: AssessmentSet[];
     summary: AssessmentSet;
-    summaries: AssessmentSet[];
     finishedLoading: boolean;
     summaryAggregations: SummaryAggregation[];
     finishedLoadingSummaryAggregationData: boolean;
@@ -18,7 +17,6 @@ const genState = (state?: Partial<SummaryState>) => {
     const tmp = {
         baseline: new Array<AssessmentSet>(),
         summary: new AssessmentSet(),
-        summaries: new Array<AssessmentSet>(),
         finishedLoading: false,
         summaryAggregations: [],
         finishedLoadingSummaryAggregationData: false
@@ -32,17 +30,9 @@ const initialState: SummaryState = genState();
 
 export function summaryReducer(state = initialState, action: summaryActions.SummaryActions): SummaryState {
     switch (action.type) {
-        case summaryActions.CLEAN_ASSESSMENT_RESULT_DATA:
+        case summaryActions.CLEAN_BASELINE_RESULT_DATA:
             return genState();
-        case summaryActions.LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA:
-            return genState({
-                ...state,
-            });
         case summaryActions.LOAD_BASELINE_DATA:
-            return genState({
-                ...state,
-            });
-        case summaryActions.SET_ASSESSMENTS:
             return genState({
                 ...state,
             });
@@ -51,20 +41,10 @@ export function summaryReducer(state = initialState, action: summaryActions.Summ
                 ...state,
                 baseline: [...action.payload],
             });
-        case summaryActions.SET_ASSESSMENTS:
-            return genState({
-                ...state,
-                summaries: [...action.payload],
-            });
         case summaryActions.FINISHED_LOADING:
             return genState({
                 ...state,
                 finishedLoading: action.payload
-            });
-        case summaryActions.LOAD_SINGLE_SUMMARY_AGGREGATION_DATA:
-
-            return genState({
-                ...state,
             });
         case summaryActions.FINISHED_LOADING_SUMMARY_AGGREGATION_DATA:
             return genState({
