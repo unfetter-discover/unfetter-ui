@@ -46,7 +46,7 @@
                                 <mat-form-field floatLabel="never">
                                     <mat-select placeholder="Cyber Threat Framework" [(value)]="user.preferences.killchain" (selectionChange)="onFrameworkChange($event)">
                                         <mat-option *ngFor="let framework of (frameworks$ | async)" [value]="framework.name">
-                                            {{ framework.name }}
+                                            {{ framework.name | capitalize }}
                                         </mat-option>
                                     </mat-select>
                                 </mat-form-field>
