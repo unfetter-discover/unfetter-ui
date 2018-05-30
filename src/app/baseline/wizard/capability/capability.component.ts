@@ -83,29 +83,30 @@ export class CapabilityComponent implements OnInit {
       .subscribe(
         (currentObjectAssessment: ObjectAssessment) => {
           this.currentObjectAssessment = currentObjectAssessment;
-          this.currentAssessedObject = currentObjectAssessment.assessments_objects;
-          this.incomingListOfAttackPatterns = this.currentAssessedObject.map(x => x.assessed_object_ref);
+          if (this.currentObjectAssessment) {
+            this.currentAssessedObject = currentObjectAssessment.assessments_objects;
+            if (this.currentAssessedObject) {
+              this.incomingListOfAttackPatterns = this.currentAssessedObject.map(x => x.assessed_object_ref);
 
-          if (this.currentNumberOfAttackPatterns === 0 || this.currentNumberOfAttackPatterns !== this.currentAssessedObject.length) {
-            // inital value for number of attack patterns
-            this.currentNumberOfAttackPatterns = this.currentAssessedObject.length;
+              if (this.currentNumberOfAttackPatterns === 0 || this.currentNumberOfAttackPatterns !== this.currentAssessedObject.length) {
+                // inital value for number of attack patterns
+                this.currentNumberOfAttackPatterns = this.currentAssessedObject.length;
 
-            this.dataSource.data = this.currentAssessedObject.map(x => ({
-              assessed_obj_id: x.id,
-              capability_id: x.assessed_object_ref,
-              capability: this.getAttackPatternName(x.assessed_object_ref),
-              protect: this.getScore(x.questions, 'protect'),
-              detect: this.getScore(x.questions, 'detect'),
-              respond: this.getScore(x.questions, 'respond'),
-              definition: this.getAttackPatternDescription(x.assessed_object_ref),
-            }));
-
-
-          } else {
-            // console.log('pdr change, not reloading!   ' + this.currentNumberOfAttackPatterns );
-            return;
+                this.dataSource.data = this.currentAssessedObject.map(x => ({
+                  assessed_obj_id: x.id,
+                  capability_id: x.assessed_object_ref,
+                  capability: this.getAttackPatternName(x.assessed_object_ref),
+                  protect: this.getScore(x.questions, 'protect'),
+                  detect: this.getScore(x.questions, 'detect'),
+                  respond: this.getScore(x.questions, 'respond'),
+                  definition: this.getAttackPatternDescription(x.assessed_object_ref),
+                }));
+              }
+            } else {
+              // console.log('pdr change, not reloading!   ' + this.currentNumberOfAttackPatterns );
+              return;
+            }
           }
-
         }, (err) => console.log(err));
 
     // this.subscriptions.push(sub1$, sub2$, sub3$)

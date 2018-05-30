@@ -191,6 +191,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
     newCaps.forEach((capability) => {
       const newOA = new ObjectAssessment();
       newOA.object_ref = capability.id;
+      newOA.assessments_objects = [];
       const stix = new Stix();
       stix.type = StixEnum.OBJECT_ASSESSMENT;
       stix.description = capability.description;
