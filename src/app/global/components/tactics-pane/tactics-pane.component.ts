@@ -69,7 +69,7 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
     /**
      * @description Title to display in the component's header.
      */
-    @Input() public title: string = 'Tactics Used';
+    @Input() public title: string = 'Techniques Used';
 
     @Input() public subtitle: string = null;
 
