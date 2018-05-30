@@ -153,9 +153,9 @@ export class AssessEffects {
       // fetch full capability objects, useful for lookups
       return this.baselineService.getCapabilities().pipe(
         mergeMap((arr) => {
-          return [ 
-            new assessActions.SetCapabilities(arr), 
-            new assessActions.FinishedLoading(true) 
+          return [
+            new assessActions.SetCapabilities(arr),
+            new assessActions.FinishedLoading(true)
           ];
         }),
         catchError((err) => {
