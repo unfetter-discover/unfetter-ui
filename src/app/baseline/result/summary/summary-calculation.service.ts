@@ -13,6 +13,7 @@ import { Constance } from '../../../utils/constance';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ThresholdOption } from '../../models/threshold-option';
 import { BaselineQuestion } from '../../../models/baseline/baseline-question';
+import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
 
 @Injectable()
 export class SummaryCalculationService {
@@ -31,6 +32,8 @@ export class SummaryCalculationService {
   techniqueBreakdownValue: any;
   baselineObjects: BaselineObject[];
   thresholdOptionsValue: ThresholdOption[];
+
+  baselineValue: AssessmentSet;
 
   constructor() {
     this.numericRisk = 0;
@@ -91,6 +94,10 @@ export class SummaryCalculationService {
     this.thresholdOptionsValue = newThresholdOptions;
   }
 
+  public set baseline(newBaseline: AssessmentSet) {
+    this.baselineValue = newBaseline;
+  }
+
   public get numericRisk(): number {
     return this.numericRiskValue;
   }
@@ -132,6 +139,10 @@ export class SummaryCalculationService {
 
   public get thresholdOptions(): ThresholdOption[] {
     return this.thresholdOptionsValue;
+  }
+
+  public get baseline(): AssessmentSet {
+    return this.baselineValue;
   }
 
   public getRiskText(): string {

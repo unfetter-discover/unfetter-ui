@@ -32,7 +32,7 @@ export class SummaryReportComponent implements OnInit {
   ) {
     this.CHART_TYPE = 'doughnut';
     this.DEFAULT_CHART_COLORS = [{}];
-    this.CHART_LABELS = ['Risk Accepted', 'Risk Addressed'];
+    this.CHART_LABELS = ['Attack Patterns Unweighted', 'Attack Patterns Weighted'];
     this.CHART_BG_COLORS = [Constance.COLORS.red, Constance.COLORS.green];
     this.CHART_HOVER_BG_COLORS = [Constance.COLORS.darkRed, Constance.COLORS.darkGreen];
     this.CHART_OPTIONS = {

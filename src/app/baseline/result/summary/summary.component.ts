@@ -13,9 +13,10 @@ import { UserProfile } from '../../../models/user/user-profile';
 import { AppState } from '../../../root-store/app.reducers';
 import { LastModifiedBaseline } from '../../models/last-modified-baseline';
 import { BaselineService } from '../../services/baseline.service';
-import { CleanAssessmentResultData, LoadSingleAssessmentSummaryData, LoadBaselineData } from '../store/summary.actions';
+import { CleanBaselineResultData, LoadBaselineData } from '../store/summary.actions';
 import { SummaryState } from '../store/summary.reducers';
 import { SummaryDataSource } from './summary.datasource';
+import { SummaryCalculationService } from './summary-calculation.service';
 
 @Component({
   selector: 'summary',
@@ -31,9 +32,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
   dates: any[];
   summaries: AssessmentSet[];
-  summary: AssessmentSet;
 
-  baseline: AssessmentSet;
   finishedLoading = false;
   private identities: Identity[];
 
@@ -67,6 +66,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     private userStore: Store<AppState>,
     private baselineService: BaselineService,
     private usersService: UsersService,
+    protected calculationService: SummaryCalculationService,
   ) { }
 
   public getDialog(): MatDialog {
@@ -82,11 +82,10 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .distinctUntilChanged()
       .subscribe((params) => {
         this.baselineId = params.baselineId || '';
-        this.summary = undefined;
         this.summaries = undefined;
         this.finishedLoading = false;
-        this.baseline = undefined;
-        this.store.dispatch(new CleanAssessmentResultData());
+        this.calculationService.baseline = undefined;
+        this.store.dispatch(new CleanBaselineResultData());
         const sub$ = this.userStore
           .select('users')
           .pluck('userProfile')
@@ -138,7 +137,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .pluck('baseline')
       .distinctUntilChanged()
       .filter((arr: AssessmentSet[]) => arr && arr.length > 0)
-      .subscribe((arr: AssessmentSet[]) => {this.baseline = arr[0]; return this.baseline},
+      .subscribe((arr: AssessmentSet[]) => {this.calculationService.baseline = arr[0]; return this.calculationService.baseline},
         (err) => console.log(err));
 
     this.subscriptions.push(baselineRetrieve$);
@@ -156,7 +155,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .filter((arr: AssessmentSet[]) => arr && arr.length > 0)
       .subscribe((arr: AssessmentSet[]) => {
         this.summaries = [...arr];
-        this.summary = { ...arr[0] };
       },
         (err) => console.log(err));
 
@@ -166,7 +164,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .distinctUntilChanged()
       .filter((el) => el === true)
       .subscribe((done: boolean) => {
-        if (this.baseline === undefined) {
+        if (this.calculationService.baseline === undefined) {
           // fetching the summary failed, set all flags to done
           this.setLoadingToDone();
           return;
@@ -202,18 +200,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(sub1$, sub2$, sub8$);
   }
-  /**
-   * @description
-   * @param {string} creatorId - optional
-   */
-  public requestData(baselineId: string, creatorId?: string): void {
-    const isSameAssessment = (row: any) => row && (row.id === this.baselineId);
-    this.masterListOptions.dataSource = new SummaryDataSource(this.baselineService, creatorId);
-    this.masterListOptions.columns.id.classes =
-      (row: any) => isSameAssessment(row) ? 'current-item' : 'cursor-pointer';
-    this.masterListOptions.columns.id.selectable = (row: any) => !isSameAssessment(row);
-    this.store.dispatch(new LoadSingleAssessmentSummaryData(baselineId));
-  }
+
 
   /**
    * @description close open subscriptions, clean up resources when we destroy this component
@@ -223,7 +210,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     this.subscriptions
       .filter((el) => el !== undefined)
       .forEach((sub) => sub.unsubscribe());
-    this.store.dispatch(new CleanAssessmentResultData());
+    this.store.dispatch(new CleanBaselineResultData());
   }
 
   /**
@@ -333,7 +320,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.store.dispatch(new CleanAssessmentResultData());
+    this.store.dispatch(new CleanBaselineResultData());
     return this.router.navigate([this.masterListOptions.displayRoute, baseline.id]);
   }
 
