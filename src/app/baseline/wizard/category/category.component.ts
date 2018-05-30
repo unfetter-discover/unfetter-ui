@@ -15,6 +15,8 @@ import * as assessReducers from '../../store/baseline.reducers';
 export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {    
   public static readonly DEFAULT_VALUE = undefined;
   
+  public isAddCategory: boolean = false;
+  public addCategory: Category = new Category();
   public selectedCapabilityGroups: Category[] = [];
   public categories: Category[];
   private baselineCapabilities: Capability[];
@@ -79,6 +81,37 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   public trackByFn(index, item) {
     return ((item !== undefined) ? item.id : item) || index;
+  }
+
+  /*
+   * @description Initialize variables to create a new category
+   * @returns {void}
+   */
+  private createNewCategory(): void {
+    this.isAddCategory = true;
+    this.addCategory = new Category();
+  }
+  
+  /*
+   * @description Create a new category and add the category to the categories list
+   * @returns {void}
+   */
+  private addNewCategory(): void {
+    
+    this.categories.push(this.addCategory);
+    this.wizardStore.dispatch(new assessActions.SetCapabilityGroups(this.categories));
+    
+    this.isAddCategory = false;
+    this.addCategory = new Category();
+  }
+
+  /*
+   * @description Cancel creating a new category
+   * @returns {void}
+   */
+  private cancelAddNewCategory(): void {
+    this.isAddCategory = false;
+    this.addCategory = new Category();
   }
 
   /*
