@@ -2,6 +2,7 @@ import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
+import { Action } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { catchError, flatMap, map, mergeMap, tap } from 'rxjs/operators';
 import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
@@ -65,16 +66,21 @@ export class AssessEffects {
 
       return Observable.forkJoin(...observables).pipe(
         mergeMap(([indicators, mitigations, baseline]) => {
-          return [
+          const actions: Action[] = [
             new assessActions.SetIndicators(indicators as Indicator.UnfetterIndicator[]),
             new assessActions.SetMitigations(mitigations as Stix[]),
             new assessActions.SetCurrentBaseline(baseline as AssessmentSet),
-            // resolve baseline question ids to full questions
-            new assessActions.LoadCurrentBaselineQuestions(baseline as AssessmentSet),
-            // full capabilities needs to look up category names
-            new assessActions.FetchCapabilities(),
-            new assessActions.FinishedLoading(true),
           ];
+          const curBaseline = baseline as AssessmentSet;
+          if (curBaseline && curBaseline.assessments) {
+            // resolve baseline question ids to full questions
+            actions.push(new assessActions.LoadCurrentBaselineQuestions(curBaseline));
+            // full capabilities needs to look up category names
+            actions.push(new assessActions.FetchCapabilities());
+          } else {
+            actions.push(new assessActions.FinishedLoading(true));
+          }
+          return actions;
         }),
         catchError((err) => {
           console.log(err);
@@ -153,7 +159,12 @@ export class AssessEffects {
     .switchMap(() => {
       // fetch full capability objects, useful for lookups
       return this.baselineService.getCapabilities().pipe(
-        map((arr) => new assessActions.SetCapabilities(arr)),
+        mergeMap((arr) => {
+          return [
+            new assessActions.SetCapabilities(arr),
+            new assessActions.FinishedLoading(true)
+          ];
+        }),
         catchError((err) => {
           console.log(err);
           return Observable.of(new assessActions.FailedToLoad(true));

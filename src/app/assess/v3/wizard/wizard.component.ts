@@ -415,9 +415,8 @@ export class WizardComponent extends Measurements
    */
   public determinePanelsWithData(): SidePanelName[] {
     const panels = [...this.sidePanelOrder];
-    const hasContents = panels.filter(name => {
-      return this[name] && this[name].length > 0;
-    });
+    const hasContents = panels
+      .filter(((name) => this[name] && this[name].length > 0));
     return hasContents;
   }
 
@@ -427,6 +426,9 @@ export class WizardComponent extends Measurements
    */
   public determineFirstOpenSidePanel(): SidePanelName {
     const hasContents = this.determinePanelsWithData();
+    if (!hasContents || hasContents.length === 0) {
+      console.warn('failed to determine what panels if any have contents, attempting to move on...');
+    }
     // return first panel w/ data
     return hasContents[0];
   }
