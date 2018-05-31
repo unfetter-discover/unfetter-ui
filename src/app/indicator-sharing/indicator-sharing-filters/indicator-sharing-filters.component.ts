@@ -9,6 +9,7 @@ import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { SearchParameters } from '../models/search-parameters';
 import { IndicatorHeatMapFilterComponent } from '../indicator-tactics/indicator-heatmap-filter.component';
+import { getPreferredKillchainPhases } from '../../root-store/config/config.selectors';
 
 @Component({
   selector: 'indicator-sharing-filters',
@@ -52,13 +53,8 @@ export class IndicatorSharingFiltersComponent implements OnInit {
           searchChanges$.unsubscribe();
         }
       );
-
-    this.killChainPhases$ = this.store.select('config')
-      .pluck('configurations')
-      .filter((configurations: any) => configurations.killChains !== undefined)
-      .pluck('killChains')
-      .filter((killChains: any) => killChains.find((kc) => kc.name === 'mitre-attack') !== null)
-      .map((killChains: any) => killChains.find((kc) => kc.name === 'mitre-attack').phase_names);
+      
+    this.killChainPhases$ = this.store.select(getPreferredKillchainPhases);
 
     this.labels$ = this.store.select('indicatorSharing')
       .pluck('indicators')
