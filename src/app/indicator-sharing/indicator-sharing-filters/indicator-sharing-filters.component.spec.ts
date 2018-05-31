@@ -13,7 +13,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
-fdescribe('IndicatorSharingFiltersComponent', () => {
+describe('IndicatorSharingFiltersComponent', () => {
     let overlayContainerElement: HTMLElement;
     let component: IndicatorSharingFiltersComponent;
     let fixture: ComponentFixture<IndicatorSharingFiltersComponent>;
