@@ -30,6 +30,7 @@ export const IndicatorForm = () => {
                     include: new FormControl(true)
                 })
             }),
+            validStixPattern: new FormControl(false),
             published: new FormControl(true)
         })
     })

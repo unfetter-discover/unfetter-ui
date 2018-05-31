@@ -1,0 +1,11 @@
+<h2 mat-dialog-title>Select Indicated Techniques</h2>
+<mat-dialog-content>
+    <div id="indicator-heatmap-filter">
+        <tactics-heatmap #heatmapView [targets]="attackPatterns" [options]="heatmapOptions"
+                (click)="toggleAttackPattern($event)"></tactics-heatmap>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="false">CANCEL</button>
+    <button mat-raised-button color="primary" (click)="close()">ACCEPT</button>
+</mat-dialog-actions>

@@ -9,13 +9,19 @@ import { slideInOutAnimation } from '../../animations/animations';
 })
 export class SidepanelListItemComponent implements OnInit {
 
-  @Input('label') public label: string = '';
+  @Input() public label: string = '';
 
-  @Input('icon') public icon: string = '';
+  @Input() public icon: string = '';
 
-  @Input('items') public items: any = [];
+  @Input() public items: any = [];
 
-  @Input('expandable') public expandable: boolean = false;
+  @Input() public expandable: boolean = false;
+
+  @Input() public showCount: boolean = true;
+
+  @Input() public expanded: boolean = false;
+
+  @Input() public hideToggle: boolean = false;
 
   constructor() { }
 

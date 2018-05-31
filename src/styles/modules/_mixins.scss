@@ -167,16 +167,38 @@
   color: $primary-text-contrast-color;
 }
 
+@mixin themeAccentFill () {
+  .analyticHubTheme & {
+    fill: $analytic-exchange-accent;
+  }
+
+  .threatDashboardTheme & {
+    fill: $threat-dashboard-accent;
+  }
+
+  .assessmentsTheme & {
+    fill: $assessments-accent;
+  }
+
+  .eventsTheme & {
+    fill: $events-accent;
+  }
+  fill: $accent-color;
+}
+
 @mixin lightenPrimaryColors ($property, $percent) {
     .analyticHubTheme & {
         #{$property}: rgba-to-rgb(rgba($analytic-exchange-primary, $percent));
     }
+
     .threatDashboardTheme & {
         #{$property}: rgba-to-rgb(rgba($threat-dashboard-primary, $percent));
     }
+
     .assessmentsTheme & {
         #{$property}: rgba-to-rgb(rgba($assessments-primary, $percent));
     }
+
     .eventsTheme & {
       #{$property}: rgba-to-rgb(rgba($events-primary, $percent));
     }
@@ -187,12 +209,15 @@
   .analyticHubTheme & {
     #{$property}: rgba-to-rgb(rgba($analytic-exchange-accent, $percent));
   }
+
   .threatDashboardTheme & {
     #{$property}: rgba-to-rgb(rgba($threat-dashboard-accent, $percent));
   }
+
   .assessmentsTheme & {
     #{$property}: rgba-to-rgb(rgba($assessments-accent, $percent));
   }
+
   .eventsTheme & {
     #{$property}: rgba-to-rgb(rgba($events-accent, $percent));
   }
@@ -204,12 +229,15 @@
   .analyticHubTheme & {
     #{$property}: darken($analytic-exchange-primary, $percent);
   }
+
   .threatDashboardTheme & {
     #{$property}: darken($threat-dashboard-primary, $percent);
   }
+
   .assessmentsTheme & {
     #{$property}: darken($assessments-primary, $percent);
   }
+
   .eventsTheme & {
     #{$property}: darken($events-primary, $percent);
   }
@@ -220,12 +248,15 @@
  .analyticHubTheme & {
    #{$property}: darken($analytic-exchange-accent, $percent);
  }
+
  .threatDashboardTheme & {
    #{$property}: darken($threat-dashboard-accent, $percent);
  }
+
  .assessmentsTheme & {
    #{$property}: darken($assessments-accent, $percent);
  }
+
  .eventsTheme & {
   #{$property}: darken($events-accent, $percent);
 }
@@ -236,12 +267,15 @@
   .analyticHubTheme & {
     #{$property}: #{$modification} $analytic-exchange-primary;
   }
+
   .threatDashboardTheme & {
     #{$property}: #{$modification} $threat-dashboard-primary;
   }
+
   .assessmentsTheme & {
     #{$property}: #{$modification} $assessments-primary;
   }
+
   .eventsTheme & {
     #{$property}: #{$modification} $events-primary;
   }
@@ -252,12 +286,15 @@
   .analyticHubTheme & {
     #{$property}: #{$modification} $analytic-exchange-accent;
   }
+
   .threatDashboardTheme & {
     #{$property}: #{$modification} $threat-dashboard-accent;
   }
+
   .assessmentsTheme & {
     #{$property}: #{$modification} $assessments-accent;
   }
+
   .eventsTheme & {
     #{$property}: #{$modification} $events-accent;
   }

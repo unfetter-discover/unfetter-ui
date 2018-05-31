@@ -1,0 +1,134 @@
+@import '../../../../styles/_variables.scss';
+
+$white: #FFFFFF;
+
+div.tactics-pane {
+    position: relative;
+    background-color: $white;
+
+    .tactics-header {
+        display: flex;
+        flex-direction: row;
+        height: 64px;
+        margin: 0;
+        padding: 16px 16px 0 16px;
+
+        .tactics-title-with-subtitle {
+            margin-top: -8px;
+            line-height: 24px;
+
+            .tactics-title-row {
+                font-weight: 400;
+            }
+
+            .tactics-subtitle-row {
+                font-size: 14px;
+                font-weight: 100;
+            }
+        }
+
+        ::ng-deep {
+            .toolbox {
+                color: $threat-dashboard-primary;
+                background-color: $white;
+            }
+
+            .toolbox:not(:last-child) {
+                margin-right: 16px;
+            }
+
+            .mat-button-toggle-group {
+                margin-top: -8px;
+                height: 48px;
+            }
+
+            .mat-button-toggle-group.hide {
+                display: none;
+            }
+
+            .mat-button-toggle-focus-overlay {
+                background-color: transparent;
+            }
+
+            .mat-button-toggle-label {
+                margin-top: 4px;
+            }
+
+            button.collapser {
+                margin-top: -4px;
+            }
+        }
+
+        .mat-24 {
+            font-size: 24px;
+        }
+    }
+}
+
+:host ::ng-deep {
+    unf-heatmap div.heat-map {
+        height: 500px;
+        background: $white;
+    }
+
+    unf-treemap div.tree-map {
+        height: 500px;
+        background: $white;
+    }
+
+    unf-treemap svg text {
+        pointer-events: none;
+    }
+}
+
+.tactic-tooltip {
+
+    padding: 10px;
+
+    .mat-card {
+        padding: 12px;
+        background-color: #f0f0f0;
+    }
+
+    .mat-card-subtitle {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0;
+
+        label {
+            color: $dark-text-default;
+        }
+    }
+
+    div.row {
+        margin-bottom: 4px;
+    }
+
+    .tactic-description {
+        max-height: 60px;
+        overflow: hidden;
+    }
+
+    .tactic-description:after {
+        content: "";
+        text-align: right;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        top: 40px;
+        width: 70%;
+        height: 20px;
+        background: linear-gradient(to right, rgba(240, 240, 240, 0), rgba(240, 240, 240, 1) 80%);
+    }
+
+    .tactic-sources {
+        max-height: 40px;
+        overflow: hidden;
+    }
+
+    .tactic-platforms {
+        max-height: 20px;
+        overflow: hidden;
+    }
+
+}

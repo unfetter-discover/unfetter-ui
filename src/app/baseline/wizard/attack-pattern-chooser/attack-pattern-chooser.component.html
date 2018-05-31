@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>
+    <div class="flex">
+        <span>Choose VPN Related Attack Patterns</span>
+        <span class="flex1"></span>
+        <button mat-button (click)="clearSelections()">CLEAR</button>
+        <button mat-button [mat-dialog-close]="false">CANCEL</button>
+        <button mat-raised-button color="primary" (click)="close()">SUBMIT</button>
+    </div>
+</h2>
+<mat-dialog-content>
+    <div id="attack-pattern-filter">
+        <tactics-heatmap #apChooser [targets]="attackPatterns" [options]="options"
+                (click)="toggleAttackPattern($event)"></tactics-heatmap>
+    </div>
+</mat-dialog-content>

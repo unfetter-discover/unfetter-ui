@@ -1,0 +1,22 @@
+<div id="tabWrapper" class="flex flexColumn">
+  <div class="flex flexRow">
+    <div class="flex">
+      <uf-info-bar isWarningMsg="true" message="Baselines is currently in beta. Some functionality does not work."></uf-info-bar>
+    </div>
+  </div>
+  <div class="flex1"></div>
+  <div class="flex flexRow">
+    <nav mat-tab-nav-bar class="indent uf-tabs-borderless">
+      <a class="noUnderline" mat-tab-link [routerLink]="summaryLink" routerLinkActive #summary="routerLinkActive" [active]="summary.isActive">SUMMARY</a>
+    </nav>
+    <div class="flex1"></div>
+    <div *ngIf="published; else notPublished" class="publishText">
+      Published &bull; {{ published | date:'medium' }}
+    </div>
+    <ng-template #notPublished>
+      <div id="publishWrapper">
+        <button id="publishButton" mat-raised-button>PUBLISH</button>
+      </div>
+    </ng-template>
+  </div>
+</div>

@@ -16,6 +16,8 @@ export class SensorComponent extends BaseStixComponent implements OnInit {
 
     public sensor: any = {
         attributes: {
+            name: '',
+            created_by_ref: '',
             aliases: [],
             kill_chain_phases: [],
             description: '',

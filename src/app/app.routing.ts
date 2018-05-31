@@ -2,15 +2,16 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/services/auth.guard';
 import { LandingPageComponent } from './global/components/landing-page/landing-page.component';
+import { UserRole } from './models/user/user-role.enum';
 import { NoContentComponent } from './no-content';
 import { SelectivePreloadingStrategy } from './selective-preloading-strategy';
-import { UserRole } from './models/user/user-role.enum';
 
 const appRoutes: Routes = [
   { path: 'home', component: LandingPageComponent },
   { path: 'intrusion-set-dashboard', loadChildren: 'app/intrusion-set-dashboard/intrusion-set-dashboard.module#IntrusionSetDashboardModule', canActivate: [AuthGuard] },
-  { path: 'assess', loadChildren: 'app/assess/assess.module#AssessModule', canActivate: [AuthGuard] },
-  { path: 'assess3', loadChildren: 'app/assess3/assess3.module#Assess3Module', canActivate: [AuthGuard] },
+  { path: 'assess', loadChildren: 'app/assess/v2/assess.module#AssessModule', canActivate: [AuthGuard] },
+  { path: 'assess-beta', loadChildren: 'app/assess/v3/assess.module#AssessModule', canActivate: [AuthGuard] },
+  { path: 'baseline', loadChildren: 'app/baseline/baseline.module#BaselineModule', canActivate: [AuthGuard] },
   { path: 'threat-dashboard', loadChildren: 'app/threat-dashboard/threat-dashboard.module#ThreatDashboardModule', canActivate: [AuthGuard] },
   { path: 'users', loadChildren: 'app/users/users.module#UsersModule' },
   { path: 'indicator-sharing', loadChildren: 'app/indicator-sharing/indicator-sharing.module#IndicatorSharingModule', canActivate: [AuthGuard] },

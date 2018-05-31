@@ -3,5 +3,6 @@ export const environment = {
     showBanner: false,
     bannerText: '',
     runMode: 'UAC',
-    hmr: false
+    hmr: false,
+    authServices: []
 };

@@ -1,0 +1,53 @@
+<div id="newAssessmentsSummary" *ngIf="finishedLoading; else loadingBlock" class="fadeIn">
+  <mat-sidenav-container *ngIf="calculationService.baseline !== undefined; else notFound">
+    <mat-sidenav class="side-panel" mode="side" opened="true">
+      <unfetter-side-panel class="side-panel" [item]="{ name: baselineName | async | capitalize }" collapsible="false" width="320">
+
+        <sidepanel-option-item label="Edit" icon="mode_edit" (click)="onEdit($event)"></sidepanel-option-item>
+        <sidepanel-option-item label="Share" icon="share" disabled="true" (click)="onShare($event)"></sidepanel-option-item>
+        <sidepanel-option-item label="Delete" icon="delete" (click)="onDeleteCurrent($event)"></sidepanel-option-item>
+
+        <master-list-dialog-trigger title="Baselines" width="1200px" height="400px" [dataSource]="masterListOptions.dataSource"
+          [columns]="masterListOptions.columns" (tabChange)="onFilterTabChanged($event)" (create)="onCreate($event)" (select)="onCellSelected($event)"
+          (edit)="onEdit($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
+
+        <sidepanel-list-item label="Date Last Modified" [items]="calculationService.baseline.modified" id="sideDateList" showCount="false" expanded="true" hideToggle="true">
+          <mat-list-item class="list-divider" [@slideInOutAnimation]>
+            <h4 class="side-list-item" mat-line>
+              {{calculationService.baseline.modified | date:'medium'}}
+            </h4>
+          </mat-list-item>
+        </sidepanel-list-item>
+        <sidepanel-list-item label="Date Created" [items]="calculationService.baseline.created" id="sideDateList" showCount="false" expanded="true" hideToggle="true">
+          <mat-list-item class="list-divider" [@slideInOutAnimation]>
+            <h4 class="side-list-item" mat-line>
+              {{calculationService.baseline.created | date:'medium'}}
+            </h4>
+          </mat-list-item>
+        </sidepanel-list-item>
+
+      </unfetter-side-panel>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <div class="main-panel">
+        <!-- TODO replace true with published flag from metaproperties of baseline -->
+        <result-header [baselineId]="baselineId" [published]="calculationService.baseline.metaProperties.published ? calculationService.baseline.modified : undefined"></result-header>
+        <summary-report></summary-report>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
+
+<ng-template #loadingBlock>
+  <loading-spinner></loading-spinner>
+</ng-template>
+
+<ng-template #notFound>
+  <div class="container">
+    <div class="row mt-15">
+      <div class="col-xs-10 col-xs-offset-1">
+        <error-card errorTitle="Baseline Not Found" errorBody="404: The request URL was not found in the application."></error-card>
+      </div>
+    </div>
+  </div>
+</ng-template>

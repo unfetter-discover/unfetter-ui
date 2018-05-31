@@ -1,0 +1,19 @@
+<div class="layout">
+  <div class="titleWrapper">
+    <span class="title mat-title">
+      <span *ngIf="showBackButton|async">
+        <button mat-icon-button class="mat-24" (click)="onBack($event)">
+          <mat-icon>keyboard_backspace</mat-icon>
+        </button>
+      </span>
+      <span *ngIf="title | async" [@fadeInOut]>
+        {{(title | async)}}
+      </span>
+    </span>
+  </div>
+  <div class="fadeIn flex contentWrapper">
+    <div class="center">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

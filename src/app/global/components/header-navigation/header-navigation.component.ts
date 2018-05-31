@@ -1,15 +1,12 @@
-import { Component, ViewEncapsulation, HostListener, ElementRef, Input } from '@angular/core';
+import { Component, ElementRef, HostListener, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
-
-import { Navigation } from '../../../models/navigation';
+import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../core/services/auth.service';
 import * as fromApp from '../../../root-store/app.reducers';
-import * as notificationActions from '../../../root-store/notification/notification.actions';
 import * as userActions from '../../../root-store/users/user.actions';
-import { AppNotification } from '../../../root-store/notification/notification.model';
-import { environment } from '../../../../environments/environment';
-import { fadeInOut } from '../../animations/fade-in-out';
 import { Constance } from '../../../utils/constance';
+import { fadeInOut } from '../../animations/fade-in-out';
+import { UserState } from '../../../root-store/users/users.reducers';
 
 @Component({
   selector: 'header-navigation',
@@ -37,7 +34,12 @@ export class HeaderNavigationComponent {
     },
     {
       url: Constance.X_UNFETTER_ASSESSMENT3_NAVIGATE_URL,
-      title: 'Assessments 3.0',
+      title: 'Assessments Beta',
+      icon: Constance.LOGO_IMG_ASSESSMENTS_BETA
+    },
+    {
+      url: Constance.X_UNFETTER_ASSESSMENT3_BASELINE_NAVIGATE_URL,
+      title: 'Baselines',
       icon: Constance.LOGO_IMG_ASSESSMENTS_BETA
     },
     {
@@ -56,6 +58,7 @@ export class HeaderNavigationComponent {
   public readonly runMode = environment.runMode;
   public readonly showBanner = environment.showBanner;
   public readonly demoMode: boolean = (environment.runMode === 'DEMO');
+  public readonly authServices: string[] = environment.authServices || ['gitlab'];
   public collapsed: boolean = true;
   public showAppMenu: boolean = false;
   public showAccountMenu: boolean = false;
@@ -97,6 +100,16 @@ export class HeaderNavigationComponent {
       );
   }
 
+  public getAvatar(user): string {
+    if (user && user.userProfile && user.userProfile.oauth) {
+      const oauth = user.userProfile.oauth;
+      if (user.userProfile[oauth] && user.userProfile[oauth].avatar_url) {
+        return user.userProfile[oauth].avatar_url;
+      }
+    }
+    return null;
+  }
+
   @HostListener('document:click', ['$event']) public clickedOutside(event) {
     if (this.showAppMenu && this.el.nativeElement.querySelector('#appMenuWrapper') && !this.el.nativeElement.querySelector('#appMenuWrapper').contains(event.target)) {
       this.showAppMenu = false;
@@ -110,4 +123,5 @@ export class HeaderNavigationComponent {
   public logoutStore() {
     this.store.dispatch(new userActions.LogoutUser());
   }
+
 }

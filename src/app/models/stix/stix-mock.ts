@@ -2,6 +2,9 @@ import { GranularMarking } from './granular-marking';
 import { Mock } from '../mock';
 import { Stix } from './stix';
 
+/**
+ * @deprecated this class should be replaced in favor of the implementation in the stix npm module 
+ */
 export class StixMock extends Mock<Stix> {
 
     public mockOne(): Stix {

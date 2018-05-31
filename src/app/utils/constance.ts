@@ -87,12 +87,22 @@ export const Constance = {
   // TODO change icon
   X_UNFETTER_ASSESSMENT_ICON: 'assets/icon/stix-icons/svg/report-b.svg',
 
-  X_UNFETTER_ASSESSMENT3_NAVIGATE_URL: 'assess3/navigate',
-  X_UNFETTER_ASSESSMENT3_URL: 'api/v3/x-unfetter-object-assessments',
+  X_UNFETTER_ASSESSMENT3_NAVIGATE_URL: 'assess-beta/navigate',
+  X_UNFETTER_ASSESSMENT3_BASELINE_NAVIGATE_URL: 'baseline/navigate',
+  X_UNFETTER_BASELINE_URL: 'api/v3/x-unfetter-assessment-sets', // matches assessment sets url below
   X_UNFETTER_ASSESSMENT3_TYPE: 'x-unfetter-object-assessment',
 
-  X_UNFETTER_CAPABILITY_URL: 'api/v3/x-unfetter-capability',
+  X_UNFETTER_CAPABILITY_URL: 'api/v3/x-unfetter-capabilities',
   X_UNFETTER_CAPABILITY_TYPE: 'x-unfetter-capability',
+
+  X_UNFETTER_ASSESSMENT_SETS_URL: 'api/v3/x-unfetter-assessment-sets',
+  X_UNFETTER_ASSESSMENT_SETS_TYPE: 'x-unfetter-assessment-sets',
+
+  X_UNFETTER_CATEGORY_URL: 'api/v3/x-unfetter-categories',
+  X_UNFETTER_CATEGORY_TYPE: 'x-unfetter-category',
+
+  X_UNFETTER_OBJECT_ASSESSMENTS_URL: 'api/v3/x-unfetter-object-assessments',
+  X_UNFETTER_OBJECT_ASSESSMENTS_TYPE: 'x-unfetter-object-assessments',
 
   AUTH_URL: 'api/auth',
   USER_FROM_TOKEN_URL: 'api/auth/user-from-token',
@@ -104,6 +114,8 @@ export const Constance = {
   CONFIG_URL: 'api/config',
   WEB_ANALYTICS_URL: 'api/web-analytics',
   PATTERN_HANDLER_URL: 'api/pattern-handler',
+
+  IPGEO_LOOKUP_URL: 'api/lookup',
 
   // ADMIN
   ADMIN_URL: 'api/admin',

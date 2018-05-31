@@ -1,0 +1,83 @@
+<div id="report">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="flex matchHeight">
+        <div class="triple-card-width external-card-title">
+          <button mat-icon-button matTooltip="{{ activeMainWell === 'heatmap' ? 'Hide' : 'Show' }} Heat Map" (click)="setMainWell('heatmap')">
+              <i class="material-icons mat-24" [ngClass]="{'labelColor': activeMainWell !== 'heatmap'}">view_comfy</i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="flex matchHeight">
+        <div class="uf-mat-card card triple-card-width" id="chart-container" *ngIf="activeMainWell === 'heatmap'">
+            <summary-tactics [collapseSubject]="false"></summary-tactics>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="flex matchHeight">
+        <span class="card-width external-card-title left-card">
+          What are your baseline stats?</span>
+        <span class="card-width external-card-title left-card right-card">
+          What is your overall baseline weighting status?</span>
+        <span class="card-width external-card-title right-card">
+          What are your baseline weightings?</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="flex matchHeight">
+        <mat-card color="primary" class="uf-mat-card card card-width left-card" id="stats">
+          <mat-card-content>
+            <div class="card-row-description">
+              Groups
+            </div>
+            <div class="card-row-data">
+              5
+            </div>
+            <div class="card-row-description second-row">
+              Capabilities
+            </div>
+            <div class="card-row-data">
+              {{summaryCalculationService.baseline.assessments.length}}
+            </div>
+            <div class="card-row-description third-row">
+              Attack Patterns Weighted
+            </div>
+            <div class="card-row-data">
+              57
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <mat-card color="primary" class="uf-mat-card card card-width left-card right-card" id="overall-rating">
+          <mat-card-content>
+            <canvas baseChart [datasets]="overallRatingChartData" [labels]="CHART_LABELS" [chartType]="CHART_TYPE" [colors]="DEFAULT_CHART_COLORS"
+              [options]="CHART_OPTIONS" id="overall-rating-chart"></canvas>
+          </mat-card-content>
+        </mat-card>
+        <mat-card color="primary" class="uf-mat-card card card-width right-card" id="ratings">
+          <mat-card-content>
+            <div class="card-row-description">
+              Protect
+            </div>
+            <div class="card-row-data">
+              46%
+            </div>
+            <div class="card-row-description second-row">
+              Detect
+            </div>
+            <div class="card-row-data">
+              45%
+            </div>
+            <div class="card-row-description third-row">
+              Respond
+            </div>
+            <div class="card-row-data">
+              15%
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>

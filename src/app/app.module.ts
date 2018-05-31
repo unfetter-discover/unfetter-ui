@@ -25,6 +25,7 @@ import { ConfigEffects } from './root-store/config/config.effects';
 import { NotificationEffects } from './root-store/notification/notification.effects';
 import { UserEffects } from './root-store/users/user.effects';
 import { UtilityEffects } from './root-store/utility/utility.effects';
+import { IdentityEffects } from './root-store/identities/identity.effects';
 
 // make sure you export for AoT
 // export function stateSetter(reducer: ActionReducer<any>): ActionReducer<any> {
@@ -72,6 +73,7 @@ import { UtilityEffects } from './root-store/utility/utility.effects';
       ConfigEffects,
       UtilityEffects,
       NotificationEffects,
+      IdentityEffects,
     ]),
     (!environment.production && environment.runMode !== 'DEMO') ? StoreDevtoolsModule.instrument() : [],
     AppRoutingModule,

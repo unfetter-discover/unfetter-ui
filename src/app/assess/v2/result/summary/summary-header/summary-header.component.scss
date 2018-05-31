@@ -1,0 +1,14 @@
+#assessmentsSummaryHeaderComponent {
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 17px;
+    min-height: 108px; //differs from wireframe (102px) due to wireframe having cut-off letters
+}
+
+#bannerRow {
+    font-size: 34px;
+}
+
+.headerRow {
+    font-size: 24px;
+}

@@ -1,0 +1,127 @@
+
+<mat-card-content>
+    <div class="row margin-bottom top-row flex-sm flexItemsCenter">
+      <div class="col-lg-9">
+        <mat-card-title>
+          {{ currentCapabilityName }}
+        </mat-card-title>
+      </div>
+      <div class="col-lg-1">
+        <button mat-icon-button matTooltip="HeatMap Chart View" (click)="onToggleHeatMap.emit(true)">
+          <mat-icon class="mat-24" aria-hidden="true" aria-label="view heat map">view_comfy</mat-icon>
+          {{ attackMatrix }}
+        </button>
+      </div>
+    </div>
+  
+  
+  
+  
+    <div *ngIf="pageToggle == 1" class="row margin-bottom main-row flex-col">
+      <div class="row margin-bottom">
+        <div class="col-sm-12">
+          {{ noAttackPatterns }}
+        </div>
+      </div>
+      <div class="row margin-bottom">
+        <div class="col-sm-12">
+          {{ addAttackPatterns }}
+        </div>
+      </div>
+      <div class="row margin-bottom">
+        <div class="col-sm-12">
+            <button mat-raised-button matTooltip="HeatMap Chart View" (click)="onToggleHeatMap.emit(true)">
+              {{ openAttackMatrix }}
+            </button>
+        </div>
+      </div>
+    </div>
+  
+  
+    <div *ngIf="pageToggle == 2">
+  
+    <div class="table-container">
+  
+  
+      <div class="filter-header">
+          <mat-form-field>
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+          </mat-form-field>
+      </div>
+  
+  
+    <mat-table #table [dataSource]="dataSource">
+  
+      <!-- Capability Column -->
+      <ng-container matColumnDef="attackPattern">
+        <mat-header-cell class="mat-column-capability" *matHeaderCellDef> Attack Patterns </mat-header-cell>
+        <mat-cell class class="mat-column-capability" *matCellDef="let thisAssessedObject;">
+          <span mat-raised-button matTooltip="{{thisAssessedObject.definition}}" matTooltipShowDelay="1000">
+            {{thisAssessedObject.capability}}
+          </span>
+        </mat-cell>
+      </ng-container>
+  
+      <!-- Protect Column -->
+      <ng-container matColumnDef="protect">
+        <mat-header-cell *matHeaderCellDef> Protect </mat-header-cell>
+        <mat-cell *matCellDef="let element; let i=index;" class="hoverable" (click)="$event.stopPropagation()">
+          <mat-select class="inTable" value="{{element.protect}}" placeholder="Protect" (selectionChange)="updatePDRScore(i, 'protect', $event.value, element.capability_id)">
+              <mat-option *ngFor="let answer of answers" [value]="answer.id"> {{ answer.name}}</mat-option>
+          </mat-select>
+        </mat-cell>
+      </ng-container>
+  
+      <!-- Detect Column -->
+      <ng-container matColumnDef="detect">
+        <mat-header-cell *matHeaderCellDef> Detect </mat-header-cell>
+        <mat-cell *matCellDef="let element; let i=index;" class="hoverable" (click)="$event.stopPropagation()">
+          <mat-select class="inTable" value="{{element.detect}}" placeholder="Detect" (selectionChange)="updatePDRScore(i, 'detect', $event.value, element.capability_id)">
+              <mat-option *ngFor="let answer of answers" [value]="answer.id"> {{ answer.name}}</mat-option>
+          </mat-select>
+        </mat-cell>
+      </ng-container>
+  
+      <!-- Respond Column -->
+      <ng-container matColumnDef="respond">
+        <mat-header-cell *matHeaderCellDef> Respond </mat-header-cell>
+        <!-- <mat-cell *matCellDef="let capabilityScores"> {{capabilityScores.respond}} </mat-cell> -->
+        <mat-cell *matCellDef="let element; let i=index;" class="hoverable" (click)="$event.stopPropagation()">
+          <mat-select class="inTable" value="{{element.respond}}" placeholder="Respond" (selectionChange)="updatePDRScore(i, 'respond', $event.value, element.capability_id)">
+            <mat-option *ngFor="let answer of answers" [value]="answer.id"> {{ answer.name}}</mat-option>
+          </mat-select>
+        </mat-cell>
+      </ng-container>
+  
+      <!-- Row info -->
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;" class="element-row"></mat-row>
+  
+    </mat-table>
+  </div>
+  
+  
+  <!-- Add/Remove attack patterns -->
+  <div class="add-remove-ap-container">
+  <mat-form-field style="width: 100%;" hintLabel="Add/Remove Attack Patterns.">
+    <mat-select (ngModelChange)="onAttackPatternChange($event)" [formControl]="selectedAttackPatterns" [(ngModel)]="incomingListOfAttackPatterns" multiple>
+      <mat-select-trigger>
+        {{selectedAttackPatterns.value.length > 0 ? "No. of attack patterns selected: " : ""}}
+        <span *ngIf="selectedAttackPatterns.value?.length > 0" class="example-additional-selection">
+          {{selectedAttackPatterns.value.length}}
+        </span>
+      </mat-select-trigger>
+      <mat-option *ngFor="let attackPattern of allAttackPatterns" [value]=attackPattern.id>{{attackPattern.name}}</mat-option>
+    </mat-select>
+    <mat-hint align="end">Note: Unchecking a value will remove its PDR scores!</mat-hint>
+  </mat-form-field>
+  </div>
+  
+  </div> 
+  
+  
+  
+  
+  
+  </mat-card-content>
+  

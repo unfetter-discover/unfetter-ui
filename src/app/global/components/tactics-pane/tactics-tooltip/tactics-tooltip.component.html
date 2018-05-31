@@ -1,0 +1,37 @@
+<ng-template #tacticTooltipTemplate>
+    <div class="col-md-12 tactic-tooltip">
+        <mat-card>
+            <mat-card-subtitle>
+                <div class="flex1"><label>{{tooltipTarget.name}}</label></div>
+                <div [hidden]="!backdropped">
+                    <button mat-button type="button" class="mat-primary" *ngIf="isAdminUser()">
+                        <a target="_blank" href="/#/stix/attack-patterns/{{tooltipTarget.id}}">Details</a>
+                    </button>
+                    <button mat-button type="button" (click)="hideTacticTooltip(tooltipTarget)">Close</button>
+                </div>
+            </mat-card-subtitle>
+            <mat-card-content>
+                <div class="row" *ngIf="tooltipTarget.description">
+                    <div class="col-md-3"><label>Description</label></div>
+                    <div class="col-md-8 tactic-description" [innerHTML]="tooltipTarget.description"></div>
+                </div>
+                <div class="row" *ngIf="tooltipTarget.sources && tooltipTarget.sources.length">
+                    <div class="col-md-3"><label>Data Sources</label></div>
+                    <div class="col-md-9 tactic-sources">{{tooltipTarget.sources.join(', ')}}</div>
+                </div>
+                <div class="row" *ngIf="tooltipTarget.platforms && tooltipTarget.platforms.length">
+                    <div class="col-md-3"><label>Platforms</label></div>
+                    <div class="col-md-9 tactic-platforms">{{tooltipTarget.platforms.join(', ')}}</div>
+                </div>
+                <div class="row" *ngIf="tooltipTarget.phases && tooltipTarget.phases.length">
+                    <div class="col-md-3"><label>Phases</label></div>
+                    <div class="col-md-9 tactic-phases">{{tooltipTarget.phases.join(', ') | capitalize}}</div>
+                </div>
+                <div class="row" *ngIf="tooltipTarget.analytics && tooltipTarget.analytics.length">
+                    <div class="col-md-3"><label>Intrusion Sets</label></div>
+                    <div class="col-md-9 tactic-analytics">{{getAnalyticNames(tooltipTarget)}}</div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</ng-template>

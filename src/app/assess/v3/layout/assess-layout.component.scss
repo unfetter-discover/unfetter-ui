@@ -1,0 +1,37 @@
+@import '../../../../styles/_variables.scss';
+@import '../_assess.common.scss';
+
+.titleWrapper {
+    background: $assessments-primary-lightest;
+    height: 128px;
+    position: relative;
+}
+
+.contentWrapper {
+    margin-top: -64px;
+}
+
+.center {
+    margin: 0 auto;
+}
+
+.title {
+    position: absolute;
+    margin-top: 24px;
+    margin-left: 56px;
+}
+
+$icon-size: 48px;
+
+.empty {
+    mat-icon {
+        font-size: $icon-size;
+        width: $icon-size;
+        height: $icon-size;
+    }
+}
+
+.flex-cols {
+    display: flex;
+    flex-direction: columns;
+}

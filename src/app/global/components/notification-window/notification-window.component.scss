@@ -80,13 +80,10 @@ $notification-row-height: 106;
     border-bottom: 2px solid #eee;
 }
 
-.notificationRow {
-    height: $notification-row-height + px;
-}
-
 .notificationHeader {
     border-top-left-radius: $nav-popup-radius+px;
     border-top-right-radius: $nav-popup-radius+px;
+
     .title {
         font-size: 20px;
         font-weight: 300;
@@ -106,6 +103,7 @@ $notification-row-height: 106;
 .notificationHeader {
     background-color: #eee;
     padding: 10px;
+
     p {
         margin: 0;
     }
@@ -113,6 +111,8 @@ $notification-row-height: 106;
 
 .notificationRow {
     padding: 10px;
+    height: $notification-row-height+px;
+
     .lead {
         margin-bottom: 2px;
     }

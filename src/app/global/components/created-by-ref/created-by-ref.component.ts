@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatSelectChange } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { AssessmentMeta } from 'stix/assess/v2/assessment-meta';
 import { BaseComponentService } from '../../../components/base-service.component';
-import { AssessmentMeta } from '../../../models/assess/assessment-meta';
 import * as fromRoot from '../../../root-store/app.reducers';
 import { Constance } from '../../../utils/constance';
 import { RxjsHelpers } from '../../static/rxjs-helpers';
@@ -72,6 +72,8 @@ export class CreatedByRefComponent implements OnInit {
             this.selected = this.assessmentMeta.created_by_ref;
         } else if (this.model && this.model.attributes && this.model.attributes.created_by_ref) {
             this.selected = this.model.attributes.created_by_ref;
+        } else if (this.model && this.model.created_by_ref) {
+            this.selected = this.model.created_by_ref;
         }
     }
     /**
@@ -89,8 +91,10 @@ export class CreatedByRefComponent implements OnInit {
      * @returns void
      */
     public updateOrganization(value: string): void {
-        if (this.model) {
+        if (this.model && this.model.attributes) {
             this.model.attributes.created_by_ref = value;
+        } else if (this.model) {
+            this.model.created_by_ref = value;
         }
 
         if (this.assessmentMeta) {

@@ -1,0 +1,44 @@
+@import '../../../../styles/_variables.scss';
+
+.info-bar-wrapper {
+    position: absolute;
+    background-color: #8f9da3;
+    height: 48px;
+    width: 100%;
+    color: $dark-text-default;
+    font-size: 14px;
+
+    .flex {
+        height: 100%;
+
+        .centered {
+            margin: auto auto;
+        }
+
+        .left-aligned {
+            margin: auto 14px;
+        }
+    
+        .info-bar {
+            span {
+                flex: 0 0 auto;
+                margin: auto 4px;
+            }
+        }
+    }
+
+    a:focus {
+        outline: none;
+        color: $light-text-slightly-dimmed;
+    }
+
+    a:hover {
+        color: $light-text-slightly-dimmed;
+    }
+
+    mat-icon {
+        margin: 0 0 auto;
+        flex: 1 1 auto;
+    }
+
+}

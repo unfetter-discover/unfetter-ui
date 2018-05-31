@@ -48,20 +48,56 @@ label {
     @include themePrimaryColors('background-color');
 }
 
+.theme-bg-primary-light {
+    @include themePrimaryLightColors('background-color');
+}
+
 .theme-bg-primary-lighter {
     @include themePrimaryLighterColors('background-color');
+}
+
+.theme-bg-primary-lightest {
+    @include themePrimaryLightestColors('background-color');
 }
 
 .theme-color-primary {
     @include themePrimaryText();
 }
 
+.theme-color-primary-light {
+    @include themePrimaryLightColors('color');
+}
+
+.theme-color-primary-lighter {
+    @include themePrimaryLighterColors('color');
+}
+
+.theme-color-primary-lightest {
+    @include themePrimaryLightestColors('color');
+}
+
 .theme-fill-primary {
     @include themePrimaryTextProp('fill');
 }
 
+.theme-fill-primary-light {
+    @include themePrimaryLightColors('fill');
+}
+
+.theme-fill-primary-lighter {
+    @include themePrimaryLighterColors('fill');
+}
+
+.theme-fill-primary-lightest {
+    @include themePrimaryLightestColors('fill');
+}
+
 .theme-color-accent {
     @include themeAccentText();
+}
+
+.theme-fill-accent {
+    @include themeAccentFill();
 }
 
 .bg-accent {
@@ -109,24 +145,31 @@ label {
     .mt-#{$i * 5} {
         margin-top: $i * 5px;
     }
+
     .mb-#{$i * 5} {
         margin-bottom: $i * 5px;
     }
+
     .mt-#{$i * 3} {
         margin-top: $i * 3px;
     }
+
     .mb-#{$i * 3} {
         margin-bottom: $i * 3px;
     }
+
     .pt-#{$i * 5} {
         padding-top: $i * 5px !important;
     }
+
     .pb-#{$i * 5} {
         padding-bottom: $i * 5px !important;
     }
+
     .pt-#{$i * 3} {
         padding-top: $i * 3px !important;
     }
+
     .pb-#{$i * 3} {
         padding-bottom: $i * 3px !important;
     }
@@ -147,6 +190,7 @@ label {
 .fw400 {
     font-weight: 400;
 }
+
 .fw300 {
     font-weight: 300;
 }
@@ -209,6 +253,7 @@ a {
 .lh-24 {
     line-height: 24px;
 }
+
 .cardHoverShadow {
     transition: box-shadow 0.2s ease-in-out;
 }
@@ -244,15 +289,19 @@ a {
 .textPrimary {
     color: $primary-color;
 }
+
 .textAccent {
     color: $accent-color;
 }
+
 .textAccentAlt{
     color: $accent-alt-color;
 }
+
 .textWarn {
     color: $warn-color;
 }
+
 .textNeutral {
     color: $neutral-color;
 }
@@ -295,28 +344,15 @@ span.stix-object-item-label {
   vertical-align: middle;
 }
 
-.stix-icon {
-  height: 30px;
-  width: 30px;
-}
-
-.stix-icon-header {
-  height: 30px;
-  width: 30px;
-}
-
-.stix-icon-mini {
-  height: 20px;
-  width: 20px;
-}
-
 .goog-tooltip {
     z-index: 10 !important;
 }
+
 .goog-tooltip .goog-attack-pattern-desc {
     max-height: 60px;
     overflow: hidden;
 }
+
 .goog-tooltip .goog-attack-pattern-desc:after {
     content: "";
     text-align: right;
@@ -328,6 +364,7 @@ span.stix-object-item-label {
     height: 20px;
     background: linear-gradient(to right, rgba(240, 240, 240, 0), rgba(240, 240, 240, 1) 80%);
 }
+
 .goog-tooltip .mat-card-content .row:not(:first-child) {
     margin-top: 10px;
 }

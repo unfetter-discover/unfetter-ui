@@ -1,4 +1,4 @@
-import { Injectable, SkipSelf, Optional } from '@angular/core';
+import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { ThreatReport } from '../models/threat-report.model';
 
 @Injectable()

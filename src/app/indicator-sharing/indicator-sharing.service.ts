@@ -48,9 +48,16 @@ export class IndicatorSharingService {
     public getAttackPatterns(): Observable<any> {
         const projectObj = {
             'stix.name': 1,
-            'stix.id': 1
+            'stix.description': 1,
+            'stix.kill_chain_phases': 1,
+            'extendedProperties.x_mitre_data_sources': 1,
+            'extendedProperties.x_mitre_platforms': 1,
+            'stix.id': 1,
         };
-        return this.genericApi.get(`${this.attackPatternsUrl}?project=${JSON.stringify(projectObj)}`);
+        const sortObj = { 
+            'stix.name': 1 
+        };
+        return this.genericApi.get(`${this.attackPatternsUrl}?project=${JSON.stringify(projectObj)}&sort=${JSON.stringify(sortObj)}`);
     }
 
     public addComment(comment, id) {
@@ -142,13 +149,13 @@ export class IndicatorSharingService {
             .map(RxjsHelpers.mapArrayAttributes);
     }
 
-    public getDownloadData(indicatorId: string, attackPatternIds: string[], sensorIds: string[]): Observable<any[]> {
+    public getDownloadData(indicatorIds: string[], attackPatternIds: string[], sensorIds: string[]): Observable<any[]> {
         const relFilterObj = {
             $and: [
                 {
                     $or: [
-                        { 'stix.source_ref': indicatorId },
-                        { 'stix.target_ref': indicatorId }
+                        { 'stix.source_ref': { $in: indicatorIds } },
+                        { 'stix.target_ref': { $in: indicatorIds } }
                     ]
                 },
                 {

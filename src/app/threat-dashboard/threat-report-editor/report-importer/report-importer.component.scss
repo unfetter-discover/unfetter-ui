@@ -38,14 +38,17 @@
         min-height: 0;
         padding: 0 6px;
     }
+
     .mat-column-title {
         flex: 2;
         margin: 8px 2px;
     }
+
     .text-fadeable {
         position: relative;
         max-height: 40px;
     }
+
     .text-fadeable:after {
         content: "";
         text-align: right;
@@ -57,9 +60,11 @@
         height: 20px;
         background: linear-gradient(to right, rgba(255, 255, 255, 0), $light-text-slightly-dimmed 100%);
     }
+
     .mat-column-date {
         text-align: center;
     }
+
     .mat-column-actions {
         text-align: right;
     }

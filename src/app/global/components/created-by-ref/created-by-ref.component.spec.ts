@@ -6,13 +6,12 @@ import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Store, StoreModule } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { AssessmentMeta } from 'stix/assess/v2/assessment-meta';
 import { BaseComponentService } from '../../../components/base-service.component';
 import * as fromRoot from '../../../root-store/app.reducers';
 import { mockOrganizations } from '../../../testing/mock-organizations';
 import { makeRootMockStore } from '../../../testing/mock-store';
 import { CreatedByRefComponent } from './created-by-ref.component';
-import { AssessmentMeta } from '../../../models/assess/assessment-meta';
-
 
 describe('CreatedByRefComponent', () => {
     let component: CreatedByRefComponent;

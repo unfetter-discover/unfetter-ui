@@ -40,27 +40,33 @@ $sidenav_max_width: 400px;
     .mat-toolbar {
         background: transparent;
     }
+
     .push-right {
         flex: 1 1 auto;
     }
+
     #options-toolbar {
         padding: 0;
         height: 67px;
         padding-right: 8px;
         margin-top: -12px;
     }
+
     #item-toolbar {
         height: 80px;
         overflow-y: hidden;
         align-items: flex-start;
+
         .mat-display-2 {
             margin: 0;
             font-size: 34px;
             line-height: 40px;
             white-space: normal;
             word-break: break-word;
+            font-weight: lighter;
         }
     }
+
     #master-list-toolbar {
         margin-top: -15px;
         height: 33px;

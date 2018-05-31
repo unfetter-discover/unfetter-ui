@@ -1,15 +1,15 @@
 import * as userActions from './user.actions';
-import { User } from '../../models/user/user';
+import { UserProfile } from '../../models/user/user-profile';
 
 export interface UserState {
-    userProfile: User,
+    userProfile: UserProfile,
     token: string,
     authenticated: boolean,
     approved: boolean,
     role: string
 }
 
-const initialState: UserState = {
+export const initialState: UserState = {
     userProfile: null,
     token: null,
     authenticated: false,
@@ -31,11 +31,11 @@ export function usersReducer(state = initialState, action: userActions.UserActio
         case userActions.UPDATE_USER_DATA:
             return {
                 ...state,
+                role: action.payload.role,
+                approved: action.payload.approved,
                 userProfile: {
                     ...action.payload
                 },
-                role: action.payload.role,
-                approved: action.payload.approved
             };
         case userActions.LOGOUT_USER:
             return {

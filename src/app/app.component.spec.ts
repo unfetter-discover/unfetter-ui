@@ -54,7 +54,7 @@ describe(`App`, () => {
         { path: 'intrusion-set-dashboard', component: AppComponent },
         { path: 'assessments', component: AppComponent },
         { path: 'assess', component: AppComponent },
-        { path: 'assess3', component: AppComponent },
+        { path: 'baseline', component: AppComponent },
         { path: 'threat-dashboard', component: AppComponent },
         { path: 'users', component: AppComponent },
         { path: 'indicator-sharing', component: AppComponent },
@@ -120,17 +120,17 @@ describe(`App`, () => {
     it(`should handle various router outlets`, fakeAsync(() => {
         const routeChecks = [
             { path: '', title: undefined, theme: Themes.DEFAULT },
-            { path: 'home', title: 'home', theme: Themes.DEFAULT },
-            { path: 'intrusion-set-dashboard', title: 'intrusion-set-dashboard', theme: Themes.DEFAULT },
+            { path: 'admin', title: 'admin', theme: Themes.DEFAULT },
             { path: 'assess', title: 'assessments', theme: Themes.ASSESSMENTS },
-            { path: 'assess3', title: 'Assessments 3.0', theme: Themes.ASSESSMENTS },
+            { path: 'baseline', title: 'Baselines', theme: Themes.ASSESSMENTS },
+            { path: 'events', title: 'events', theme: Themes.EVENTS },
+            { path: 'home', title: 'home', theme: Themes.DEFAULT },
+            { path: 'indicator-sharing', title: 'Analytic Exchange', theme: Themes.ANALYTIC_HUB },
+            { path: 'intrusion-set-dashboard', title: 'intrusion-set-dashboard', theme: Themes.DEFAULT },
+            { path: 'non-existent-page', title: 'non-existent-page', theme: Themes.DEFAULT },
+            { path: 'organizations', title: 'organizations', theme: Themes.DEFAULT },
             { path: 'threat-dashboard', title: 'threat-dashboard', theme: Themes.THREAT_DASHBOARD },
             { path: 'users', title: 'users', theme: Themes.DEFAULT },
-            { path: 'indicator-sharing', title: 'Analytic Exchange', theme: Themes.ANALYTIC_HUB },
-            { path: 'events', title: 'events', theme: Themes.EVENTS },
-            { path: 'organizations', title: 'organizations', theme: Themes.DEFAULT },
-            { path: 'admin', title: 'admin', theme: Themes.DEFAULT },
-            { path: 'non-existent-page', title: 'non-existent-page', theme: Themes.DEFAULT },
         ];
 
         loggedIn = true;

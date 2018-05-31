@@ -1,6 +1,10 @@
 import { Mock } from '../mock';
 import { AssessmentObject } from './assessment-object';
 import { AssessmentQuestionMockFactory } from './assessment-question.mock';
+
+/**
+ * @deprecated this class should be replaced in favor of the implementation in the stix npm module 
+ */
 export class AssessmentObjectMock extends Mock<AssessmentObject> {
     public mockOne(): AssessmentObject {
         const tmp = new AssessmentObject();

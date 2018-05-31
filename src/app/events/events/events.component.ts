@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { EventsService, SightingsData } from '../events.service';
+import { EventsService, SightingsDataSource } from '../events.service';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../root-store/app.reducers';
 import { EventsState } from '../store/events.reducers';
@@ -122,7 +122,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   public addSighting(newSighting) {
     if (this.service.recentSightings) {
       this.transformSighting(newSighting);
-      this.service.dataStore.addSighting(newSighting);
+      this.service.dataSource.addSighting(newSighting);
       let temp = this.service.recentSightings;
       temp.push(newSighting);
       this.service.recentSightings = temp;
@@ -134,7 +134,8 @@ export class EventsComponent implements OnInit, OnDestroy {
    */
   public makeIPs() {
     const subips$ = Observable
-      .forkJoin([1, 2].map(v4 => this.ipgeo.lookup([1, 2, 3, 4].map(b => Math.floor(Math.random() * 256)).join('.'))))
+      .forkJoin([1, 2, 3].map(v4 => this.ipgeo.lookup(v4 === 3 ? '124.91.183.46'
+          : [1, 2, 3, 4].map(b => Math.floor(Math.random() * 256)).join('.'))))
       .finally(() => {
         if (subips$) {
           subips$.unsubscribe();
@@ -143,6 +144,7 @@ export class EventsComponent implements OnInit, OnDestroy {
         this.service.finishedLoading = true;
       })
       .subscribe(resp => {
+        console.log('event ipgeo output', resp);
         const ip = [].concat.apply([], resp).filter(r => r.success);
         this.ips.push(...ip);
         while (this.ips.length < 2) {
@@ -156,6 +158,7 @@ export class EventsComponent implements OnInit, OnDestroy {
   getDummyIp(): string {
     // Default, matches default geo
     let dummyIp = '124.91.183.46';
+    this.ipgeo.lookup(dummyIp);
     if (this.ips[this.dummyValue].city && this.ips[this.dummyValue].ip) {
       dummyIp = this.ips[this.dummyValue].ip;
     } else if (this.ips[Math.abs(this.dummyValue - 1)].ip) {
@@ -289,8 +292,8 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   public transformSightings() {
     if (!this.sightingsGroup) {
-      this.service.dataStore = new SightingsData([]);
       this.service.recentSightings = new Array<Sighting>();
+      this.service.dataSource = new SightingsDataSource(this.service.recentSightings);
       this.identities = [];
       this.indicators = [];
       this.observedData = [];
@@ -301,7 +304,7 @@ export class EventsComponent implements OnInit, OnDestroy {
       this.observedData = this.sightingsGroup.filter((data: any) => data.attributes.type === 'observed-data');
       for (const sighting of this.service.recentSightings) {
         this.transformSighting(sighting);
-        this.service.dataStore.addSighting(sighting);
+        this.service.dataSource.addSighting(sighting);
       }
     }
   }

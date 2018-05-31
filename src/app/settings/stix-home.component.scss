@@ -1,3 +1,20 @@
 #stixHome {
     padding-bottom: 80px;
+
+    .flex-header {
+        display: flex;
+        flex-wrap: wrap;
+
+        span {
+            flex: 0 0 auto;
+            
+            :focus {
+                outline: none;
+            }
+
+            .active {
+                text-decoration: underline;
+            }
+        }
+    }    
 }

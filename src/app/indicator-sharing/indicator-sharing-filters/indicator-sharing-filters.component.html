@@ -27,16 +27,25 @@
           <mat-option value="true">Published</mat-option>
           <mat-option value="false">Draft</mat-option>
         </mat-select>
-      </mat-form-field>
+      </mat-form-field>      
       <div class="flex" id="attackPatternWrapper">
-        <mat-form-field class="full-width mb-9">
+        <mat-form-field class="full-width mb-12">
           <mat-select placeholder="Indicated Techniques" [multiple]="true" formControlName="attackPatterns">
-            <mat-option value="{{ap.id}}" *ngFor="let ap of (store.select('indicatorSharing').pluck('attackPatterns') | async) | sortByField:'name':'ascending'">{{ ap.name }}</mat-option>
+            <mat-option value="{{ap.id}}" *ngFor="let ap of attackPatterns | sortByField:'name':'ascending'">{{ ap.name }}</mat-option>
           </mat-select>
         </mat-form-field>
         <button mat-icon-button id="heatmapToggle" [class.open]="heatmapVisible" matTooltip="Show Heat Map" (click)="toggleHeatMapDialog()">
           <i class="material-icons mat-24 labelColor">view_comfy</i>
         </button>
+      </div>
+      <!-- <div class="full-width mb-12">
+        <mat-select placeholder="Uses STIX Patterning Language" formControlName="validStixPattern">
+          <mat-option value="true">Yes</mat-option>
+          <mat-option value="false">No</mat-option>
+        </mat-select>
+      </div> -->
+      <div class="mb-9">
+        <mat-checkbox formControlName="validStixPattern">Show STIX Patterns Only</mat-checkbox>
       </div>
     </form>
   </div>

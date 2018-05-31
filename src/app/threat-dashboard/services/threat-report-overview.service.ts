@@ -1,22 +1,17 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
-import { HttpClient } from '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-import * as UUID from 'uuid';
-
-import { Constance } from '../../utils/constance';
-import { GenericApi } from '../../core/services/genericapi.service';
-import { ThreatReport } from '../models/threat-report.model';
-import { Boundaries } from '../models/boundaries';
-import { Report } from '../../models/report';
-import { JsonApiObject } from '../models/adapter/json-api-object';
-import { SortHelper } from '../../global/static/sort-helper';
-import { LastModifiedAssessment } from '../../assess/models/last-modified-assessment';
-import { StixLabelEnum } from '../../models/stix/stix-label.enum';
-import { LastModifiedThreatReport } from '../models/last-modified-threat-report';
-import { JsonApi } from '../../models/json/jsonapi';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
+import * as UUID from 'uuid';
+import { GenericApi } from '../../core/services/genericapi.service';
+import { SortHelper } from '../../global/static/sort-helper';
+import { JsonApi } from '../../models/json/jsonapi';
+import { Report } from '../../models/report';
+import { Constance } from '../../utils/constance';
+import { JsonApiObject } from '../models/adapter/json-api-object';
+import { Boundaries } from '../models/boundaries';
+import { LastModifiedThreatReport } from '../models/last-modified-threat-report';
+import { ThreatReport } from '../models/threat-report.model';
 
 @Injectable()
 export class ThreatReportOverviewService {
@@ -251,23 +246,18 @@ export class ThreatReportOverviewService {
       id = threatReportMeta.id;
     }
 
-    const attributes = Object.assign({}, report.attributes);
     const meta = {
       published: false,
       work_products: [],
     };
-
-    if (report.attributes.metaProperties && report.attributes.metaProperties.work_products) {
+    const attributes = Object.assign({}, { metaProperties: meta }, report.attributes);
+    if (threatReportMeta) {
       // filter out the given work product we are reattaching it
-      meta.work_products = report.attributes.metaProperties.work_products.filter((wp) => wp.id !== id);
+      attributes.metaProperties.work_products = attributes.metaProperties.work_products.filter((wp) => wp.id !== id);
       // reattach
-      if (threatReportMeta) {
-        const updatedThreatReport = this.deepCopyThreatReportForSave(id, threatReportMeta);
-        meta.work_products = meta.work_products.concat(updatedThreatReport);
-      }
-      meta.published = report.attributes.metaProperties.published || false;
+      const updatedThreatReport = this.deepCopyThreatReportForSave(id, threatReportMeta);
+      attributes.metaProperties.work_products = attributes.metaProperties.work_products.concat(updatedThreatReport);
     }
-    attributes.metaProperties = meta;
     const body = JSON.stringify({
       data: {
         type: report.type || 'report',
@@ -275,7 +265,7 @@ export class ThreatReportOverviewService {
       }
     } as JsonApiObject<Report>);
 
-    const reportId = report.attributes.id || undefined;
+    const reportId = attributes.id || undefined;
     if (reportId) {
       // update an existing object
       const updateOrAddUrl = `${url}/${reportId}`;
@@ -482,9 +472,9 @@ export class ThreatReportOverviewService {
    * @description fetch latest threat reports by creatorId
    *  NOTE: the backend may apply security filters, based on user and run mode
    * @param {string} id of the workproduct
-   * @return {Observable<Partial<LastModifiedAssessment>[]>} reports modified
+   * @return {Observable<Partial<LastModifiedThreatReport>[]>} reports modified
    */
-  public getLatestReportsByCreatorId(creatorId: string): Observable<Partial<LastModifiedAssessment>[]> {
+  public getLatestReportsByCreatorId(creatorId: string): Observable<Partial<LastModifiedThreatReport>[]> {
     const url = Constance.API_HOST + Constance.LATEST_THREAT_REPORTS_URL + `/creator/${creatorId}`;
     const headers = this.ensureAuthHeaders(this.headers);
     return this.http

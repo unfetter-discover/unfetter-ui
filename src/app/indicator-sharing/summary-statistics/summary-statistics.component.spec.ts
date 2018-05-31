@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { SummaryStatisticsComponent } from './summary-statistics.component';
 import { IndicatorSharingService } from '../indicator-sharing.service';
+import { CapitalizePipe } from '../../global/pipes/capitalize.pipe';
 
 describe('SummaryStatisticsComponent', () => {
   let component: SummaryStatisticsComponent;
@@ -54,7 +55,10 @@ describe('SummaryStatisticsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SummaryStatisticsComponent ],
+      declarations: [ 
+        SummaryStatisticsComponent,
+        CapitalizePipe
+      ],
       providers: [
         {
           provide: IndicatorSharingService,
@@ -77,22 +81,44 @@ describe('SummaryStatisticsComponent', () => {
   });
 
   it('should have correct mostIndicators', () => {
-    expect(component.mostIndicators.org).toEqual('testorg1');
-    expect(component.mostIndicators.number).toEqual(2);
+    expect(component.theMost.count.org).toEqual('testorg1');
+    expect(component.theMost.count.number).toEqual(2);
   });
 
   it('should have correct mostViews', () => {
-    expect(component.mostViewed.org).toEqual('testorg1');
-    expect(component.mostViewed.number).toEqual(2);
+    expect(component.theMost.views.org).toEqual('testorg1');
+    expect(component.theMost.views.number).toEqual(2);
   });
 
   it('should have correct mostLiked', () => {
-    expect(component.mostLiked.org).toEqual('testorg2');
-    expect(component.mostLiked.number).toEqual(3);
+    expect(component.theMost.likes.org).toEqual('testorg2');
+    expect(component.theMost.likes.number).toEqual(3);
   });
 
   it('should have correct mostComments', () => {
-    expect(component.mostComments.org).toEqual('testorg2');
-    expect(component.mostComments.number).toEqual(3);
+    expect(component.theMost.comments.org).toEqual('testorg2');
+    expect(component.theMost.comments.number).toEqual(3);
+  });
+
+  it('should have correct barChartData', () => {
+    const expected = { 
+      'count': [
+        { 'data': [2], 'label': 'testorg1' },
+        { 'data': [1], 'label': 'testorg2' }
+      ], 
+      'views': [
+        { 'data': [2], 'label': 'testorg1' }, 
+        { 'data': [1], 'label': 'testorg2' }
+      ], 
+      'likes': [
+        { 'data': [1], 'label': 'testorg1' }, 
+        { 'data': [3], 'label': 'testorg2' }
+      ], 
+      'comments': [
+        { 'data': [1], 'label': 'testorg1' }, 
+        { 'data': [3], 'label': 'testorg2' }
+      ] 
+    };
+    expect(component.barChartData).toEqual(expected);
   });
 });

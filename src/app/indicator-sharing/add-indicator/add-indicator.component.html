@@ -59,25 +59,27 @@
                 </div>
             </mat-step>
 
-            <mat-step label="Pattern {{ form.get('pattern').status !== 'VALID' ? '(Required Fields Remaining)' : '' }}" [stepControl]="form.get('pattern')">
+            <mat-step label="Analytic {{ form.get('pattern').status !== 'VALID' ? '(Required Fields Remaining)' : '' }}" [stepControl]="form.get('pattern')">
                 <help-window [helpHtml]="patternHelpHtml"></help-window>
 
                 <mat-form-field class="full-width mb-6">
-                    <textarea matInput required placeholder="Pattern (STIX Patterning Optional)" formControlName="pattern"></textarea>
+                    <textarea matInput required placeholder="Pseudocode (Optional: Use STIX patterns to get automated translations)" formControlName="pattern" (keyup)="patternChange(form.get('pattern'))"></textarea>
                     <mat-error *ngIf="form.get('pattern').hasError('required')">
                         Pattern is <strong>required</strong>
                     </mat-error>
                 </mat-form-field>
 
                 <p id="patternWarning" 
-                    [style.opacity]="form.get('pattern').dirty && !patternValid && form.get('pattern').value.length > 0 ? 1 : 0" 
+                    [style.opacity]="form.get('pattern').dirty && !form.get('metaProperties').get('validStixPattern').value && form.get('pattern').value.length > 0 ? 1 : 0"
                     [style.marginTop]="!form.get('pattern').hasError('required') ? '-20px' : '-5px'" 
                     [style.marginBottom]="!form.get('pattern').hasError('required') ? '15px' : '0px'">(Warning) Optional STIX patterning validation failed</p>
 
                 <p id="patternSuccess" 
-                    [style.opacity]="form.get('pattern').dirty && patternValid && form.get('pattern').value.length > 0 ? 1 : 0"
+                    [style.opacity]="form.get('metaProperties').get('validStixPattern').value && form.get('pattern').dirty && form.get('pattern').value.length > 0 ? 1 : 0"                    
                     [style.marginTop]="!form.get('pattern').hasError('required') ? '-30px' : '-5px'" 
-                    [style.marginBottom]="!form.get('pattern').hasError('required') ? '15px' : '0px'"><i class="material-icons">check</i> Valid STIX 2 Pattern</p>
+                    [style.marginBottom]="!form.get('pattern').hasError('required') ? '15px' : '0px'"><i class="material-icons">check</i> Valid STIX Pattern</p>
+                    
+                <pii-check-message [formCtrl]="form.get('pattern')"></pii-check-message>
                 
                 <div class="mb-6">
                     <div class="uf-collapsible-control mb-10" (click)="showPatternTranslations = !showPatternTranslations">

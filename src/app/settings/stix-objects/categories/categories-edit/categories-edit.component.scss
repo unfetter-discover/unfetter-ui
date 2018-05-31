@@ -1,0 +1,18 @@
+@import '../../../../../styles/_variables.scss';
+
+.flex1 {
+    flex: 1 1 20%;
+    margin: auto 0;
+}
+
+span.flex1 {
+    color: $dark-text-default;
+    border-bottom: 1px solid $dark-text-dimmed;
+}
+
+.flex {
+    mat-form-field {
+        margin-left: 8px;
+        margin-right: 8px;
+    }
+}

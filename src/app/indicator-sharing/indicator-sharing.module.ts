@@ -23,6 +23,7 @@ import {
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { ClipboardModule } from 'ngx-clipboard';
+import { ChartsModule } from 'ng2-charts';
 
 // Modules
 import { routing } from './indicator-sharing-routing.module';
@@ -45,8 +46,9 @@ import { SearchBarComponent } from './search-bar/search-bar.component';
 import { IndicatorSharingSortComponent } from './indicator-sharing-sort/indicator-sharing-sort.component';
 import { IndicatorSharingFiltersComponent } from './indicator-sharing-filters/indicator-sharing-filters.component';
 import { AddAttackPatternComponent } from './add-attack-pattern/add-attack-pattern.component';
-import { IndicatorHeatMapComponent } from './indicator-heat-map/indicator-heat-map.component';
+import { IndicatorHeatMapFilterComponent } from './indicator-tactics/indicator-heatmap-filter.component';
 import { SummaryStatisticsComponent } from './summary-statistics/summary-statistics.component';
+import { IndicatorTacticsComponent } from './indicator-tactics/indicator-tactics.component';
 
 const matModules = [
     MatButtonModule,
@@ -74,6 +76,7 @@ const matModules = [
         GlobalModule,
         FormsModule,
         ReactiveFormsModule,
+        ChartsModule,
         ...matModules,
         ClipboardModule,
         StoreModule.forFeature('indicatorSharing', indicatorSharingReducer),
@@ -92,15 +95,16 @@ const matModules = [
         IndicatorSharingSortComponent,
         IndicatorSharingFiltersComponent,
         AddAttackPatternComponent,
-        IndicatorHeatMapComponent,
+        IndicatorHeatMapFilterComponent,
         SummaryStatisticsComponent,
+        IndicatorTacticsComponent,
     ],
     providers: [
         IndicatorSharingService
     ],
     entryComponents: [
         AddIndicatorComponent,
-        IndicatorHeatMapComponent,
+        IndicatorHeatMapFilterComponent,
     ]
 })
 export class IndicatorSharingModule { }

@@ -8,7 +8,8 @@ import { MatDialog } from '@angular/material';
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { SearchParameters } from '../models/search-parameters';
-import { IndicatorHeatMapComponent } from '../indicator-heat-map/indicator-heat-map.component';
+import { IndicatorHeatMapFilterComponent } from '../indicator-tactics/indicator-heatmap-filter.component';
+import { getPreferredKillchainPhases } from '../../root-store/config/config.selectors';
 
 @Component({
   selector: 'indicator-sharing-filters',
@@ -21,6 +22,7 @@ export class IndicatorSharingFiltersComponent implements OnInit {
   public killChainPhases$: Observable<any>;
   public labels$: Observable<any>;
   public heatmapVisible = false;
+  public attackPatterns: any[] = [];
 
   constructor(
     public dialog: MatDialog,
@@ -51,13 +53,8 @@ export class IndicatorSharingFiltersComponent implements OnInit {
           searchChanges$.unsubscribe();
         }
       );
-
-    this.killChainPhases$ = this.store.select('config')
-      .pluck('configurations')
-      .filter((configurations: any) => configurations.killChains !== undefined)
-      .pluck('killChains')
-      .filter((killChains: any) => killChains.find((kc) => kc.name === 'mitre-attack') !== null)
-      .map((killChains: any) => killChains.find((kc) => kc.name === 'mitre-attack').phase_names);
+      
+    this.killChainPhases$ = this.store.select(getPreferredKillchainPhases);
 
     this.labels$ = this.store.select('indicatorSharing')
       .pluck('indicators')
@@ -71,6 +68,22 @@ export class IndicatorSharingFiltersComponent implements OnInit {
         const labelSet = new Set(labels);
         return Array.from(labelSet);
       });
+
+    const getAttackPatterns$ = this.store.select('indicatorSharing')
+      .pluck('attackPatterns')
+      .subscribe(
+        (attackPatterns: any[]) => {
+          this.attackPatterns = attackPatterns;
+        },
+        (err) => {
+          console.log(err);
+        },
+        () => {
+          if (getAttackPatterns$) {
+            getAttackPatterns$.unsubscribe();
+          }
+        }
+    );
   }
 
   public clearSearchParameters() {
@@ -87,9 +100,9 @@ export class IndicatorSharingFiltersComponent implements OnInit {
       this.dialog.closeAll();
     } else {
       this.heatmapVisible = true;
-      this.dialog.open(IndicatorHeatMapComponent, {
+      const dialog = this.dialog.open(IndicatorHeatMapFilterComponent, {
         width: 'calc(100vw - 400px)',
-        height: '500px',
+        height: '600px',
         hasBackdrop: true,
         disableClose: false,
         closeOnNavigation: true,
@@ -99,7 +112,8 @@ export class IndicatorSharingFiltersComponent implements OnInit {
         data: {
           active: this.searchForm.value.attackPatterns,
         },
-      }).afterClosed().subscribe(
+      });
+      dialog.afterClosed().subscribe(
         result => {
           if (result) {
             this.searchForm.get('attackPatterns').patchValue(result);

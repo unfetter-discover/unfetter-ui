@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
-import { MatCardModule, MatSelectModule, MatInputModule, MatDialogModule } from '@angular/material';
+import { MatCardModule, MatSelectModule, MatInputModule, MatDialogModule, MatCheckboxModule } from '@angular/material';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ActionReducerMap, StoreModule } from '@ngrx/store';
 
@@ -33,6 +33,7 @@ describe('IndicatorSharingFiltersComponent', () => {
             ],
             imports: [
                 MatCardModule,
+                MatCheckboxModule,
                 MatDialogModule,
                 MatSelectModule,
                 MatInputModule,
@@ -40,35 +41,19 @@ describe('IndicatorSharingFiltersComponent', () => {
                 FormsModule,
                 NoopAnimationsModule,
                 StoreModule.forRoot(mockReducer)
-            ],
-            providers: [
-                {
-                    provide: OverlayContainer, useFactory: () => {
-                        overlayContainerElement = document.createElement('div') as HTMLElement;
-                        overlayContainerElement.classList.add('cdk-overlay-container');
-
-                        document.body.appendChild(overlayContainerElement);
-
-                        // remove body padding to keep consistent cross-browser
-                        document.body.style.padding = '0';
-                        document.body.style.margin = '0';
-
-                        return { getContainerElement: () => overlayContainerElement };
-                    }
-                }
             ]
         })
         .compileComponents();
     }));
 
-    beforeEach(() => {
+    beforeEach(async(() => {
         fixture = TestBed.createComponent(IndicatorSharingFiltersComponent);
         component = fixture.componentInstance;
         store = component.store;
         makeRootMockStore(store);
         makeMockIndicatorSharingStore(store);
         fixture.detectChanges();
-    });
+    }));
 
     it('should create', () => {
         expect(component).toBeTruthy();

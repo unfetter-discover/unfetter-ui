@@ -14,11 +14,13 @@
       </mat-form-field>
 
       <mat-form-field class="full-width mb-6">
-        <textarea matInput required placeholder="Query" formControlName="query"></textarea>
+        <textarea matInput required placeholder="Query" formControlName="query" (keyup)="queryChange(localForm.get('query'))"></textarea>
         <mat-error *ngIf="localForm.get('query').hasError('required')">
           Query is <strong>required</strong>
         </mat-error>
       </mat-form-field>
+      
+      <pii-check-message [formCtrl]="localForm.get('query')"></pii-check-message>
 
       <button mat-button color="accent" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Attach Query to {{ parentDocumentType | capitalize }}</button>
     </form>

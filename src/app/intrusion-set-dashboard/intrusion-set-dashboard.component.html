@@ -29,58 +29,22 @@
                     <div class="col-sm-12">
 
                         <p id="treeSpinner" class="flex flexItemsCenter"
-                                [style.display]="treeSpinner ? 'flex' : 'none'">
+                                [style.display]="loadSpinner ? 'flex' : 'none'">
                             <mat-spinner></mat-spinner>
                         </p>
 
-                        <mat-tab-group [style.opacity]="treeSpinner ? 0 : 1" id="tabGroup">
+                        <mat-tab-group id="tabGroup" [style.opacity]="loadSpinner ? 0 : 1">
 
                             <mat-tab label="Attack Patterns Used">
-
                                 <div id="graphWrapper">
-
                                     <attack-patterns-legend [total]="totalAttackPatterns"
                                             [intrusionSets]="intrusionSets"></attack-patterns-legend>
-
-                                    <mat-card id="tactics-view" class="margin-top cardHoverShadow">
-
-                                        <mat-card-title>Tactics Used</mat-card-title>
-
-                                        <div #toolboxBtn class="toolbox-btn">
-                                            <button mat-icon-button (click)="toggleShowToolbox($event)">
-                                                <mat-icon class="mat-24" aria-hidden="true"
-                                                        aria-label="change view">zoom_out_map</mat-icon>
-                                            </button>
-                                        </div>
-
-                                        <div #toolbox class="toolbox mat-elevation-z5" [@topRightSlide]
-                                                [style.display]="showToolbox ? 'flex' : 'none'">
-                                            <button mat-icon-button matTooltip="HeatMap Chart View"
-                                                    (click)="showHeatMap = true">
-                                                <mat-icon class="mat-24" aria-hidden="true"
-                                                        aria-label="view heat map">view_comfy</mat-icon>
-                                            </button>
-                                            <button mat-icon-button matTooltip="Carousel View"
-                                                    (click)="showHeatMap = false">
-                                                <mat-icon class="mat-24" aria-hidden="true"
-                                                        aria-label="view carousel">view_week</mat-icon>
-                                            </button>
-                                        </div>
-
-                                        <attack-patterns-heatmap [hidden]="!showHeatMap"
-                                                [killChainPhases]="killChainPhases"></attack-patterns-heatmap>
-
-                                        <attack-patterns-carousel [hidden]="showHeatMap"
-                                                [killChainPhases]="killChainPhases"></attack-patterns-carousel>
-
-                                    </mat-card>
-
+                                    <intrusion-sets-tactics [attackPatterns]="attackPatterns"
+                                            [intrusionSets]="intrusionSets"></intrusion-sets-tactics>
                                     <intrusion-sets-tree
                                             [treeData]="treeData" (onRender)="treeComplete()"></intrusion-sets-tree>
-
                                 </div>
                                 <br />
-
                             </mat-tab>
 
                             <mat-tab label="Critical Security Controls (CSC)">

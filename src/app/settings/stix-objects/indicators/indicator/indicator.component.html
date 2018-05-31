@@ -18,6 +18,17 @@
                                         <h6>{{indicator.attributes.name}}</h6>
                                     </div>
                                 </div>
+                                <div class="row" *ngIf="indicator.attributes.labels">
+                                    <div class="col-md-12">
+                                        <label>Labels</label>
+                                        <mat-chip-list>
+                                            <mat-chip *ngFor="let label of indicator.attributes.labels" selected="true" color="accent">
+                                                {{label}}
+                                            </mat-chip>
+                                        </mat-chip-list>
+                                
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label>Description:</label>
@@ -34,16 +45,10 @@
                                     <div class="col-md-6">
                                         <label>Valid From:</label>
                                         <p>{{indicator.attributes.valid_from | date:'medium' }}</p>
-                                        <!--<mat-input-container class="full-width">
-                                            <input readonly matInput placeholder="Valid From:" value="{{indicator.attributes.valid_from | date:'medium' }}" />
-                                        </mat-input-container>-->
                                     </div>
                                     <div class="col-md-6">
                                         <label>Valid Until:</label>
                                         <p>{{indicator.attributes.valid_until | date:'medium' }}</p>
-                                        <!--<mat-input-container class="full-width">
-                                            <input readonly matInput placeholder="Valid Until:" value="{{indicator.attributes.valid_until | date:'medium' }}" />
-                                            </mat-input-container>-->
                                     </div>
                                 </div>
                                 <div class="row">

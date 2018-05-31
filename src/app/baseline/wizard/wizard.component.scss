@@ -1,0 +1,184 @@
+@import '../../../styles/_variables.scss';
+
+:host {
+    display: flex;
+    flex-direction: row;
+    width: 1282px;
+}
+
+.card {
+    width: 835px;
+
+    .group-name {
+        font-size: 34px;
+    }
+
+    .top-row {
+        /** 64 - 24 px padding = 40px **/
+        height: 40px;
+        font-size: 12px;
+        border-bottom: 1px solid #DCDCDC;
+    }
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.center {
+    margin: 0 auto;
+}
+
+.sidenav {
+    flex: 0;
+    margin-left: 24px;
+    margin-top: 54px;
+    min-width: 300px;
+
+    .mat-expansion-panel {
+        background-color: #fafafa;
+        box-shadow: none;
+    }
+
+    .chart-header {
+        font-size: 12px;
+    }
+}
+
+.btn-wrapper {
+    padding-top: 1%;
+}
+
+.btn-wrapper a {
+    margin-right: 5px;
+}
+
+.margin-top-3percent {
+    margin-top: 3%
+}
+
+.mt-8 {
+    margin-top: 8px;
+}
+
+.stepper {
+    margin-top: 4px;
+    padding-left: 5px;
+}
+
+.stepper-vertical li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    flex-direction: column;
+}
+
+.stepper-vertical li:not(:last-child):after {
+    content: " ";
+    position: absolute;
+    width: 1px;
+    height: -webkit-calc(100% - 16px);
+    height: calc(100% - 16px);
+    left: 5px;
+    top: 27px;
+    background-color: rgba(0, 0, 0, 0.07);
+}
+
+.stepper-vertical li a {
+    align-self: flex-start;
+    display: flex;
+    position: relative;
+}
+
+.stepper-vertical {
+    display: flex;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+}
+
+.stepper-vertical,
+.stepper-vertical li {
+    display: flex;
+    position: relative;
+}
+
+.stepper-vertical li.completed a .label {
+    font-weight: 500;
+    color: rgba(0, 0, 0, .87);
+}
+
+.stepper li.active a .label,
+.stepper li.completed a .label {
+    font-weight: 600;
+    color: rgba(0, 0, 0, .87);
+}
+
+.stepper li a {
+    padding: 12px 24px 12px 0px;
+    font-size: 14px;
+    text-align: center;
+    color: #0275d8;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.stepper li.active a .circle,
+.stepper li.completed a .circle {
+    background-color: $assessments-accent !important;
+}
+
+.stepper-vertical li a .circle {
+    -webkit-box-ordinal-group: 2;
+    -webkit-order: 1;
+    -ms-flex-order: 1;
+    order: 1;
+}
+
+.stepper li a .circle {
+    display: inline-block;
+    align-self: center;
+    color: #fff;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, .38);
+    width: 10px;
+    height: 10px;
+    /*line-height: 24px;*/
+    margin-right: 8px;
+    text-align: center;
+}
+
+.stepper li a .label {
+    display: inline-block;
+    color: rgba(0, 0, 0, .38);
+}
+
+.stepper-vertical li a .label {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-flow: column nowrap;
+    -ms-flex-flow: column nowrap;
+    flex-flow: column nowrap;
+    align-self: center;
+    -webkit-box-ordinal-group: 3;
+    -webkit-order: 2;
+    -ms-flex-order: 2;
+    order: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+}
+
+.stepper-vertical li .step-content {
+    display: block;
+    margin-top: 0;
+    margin-left: 50px;
+    padding: 0px;
+    box-sizing: inherit;
+}

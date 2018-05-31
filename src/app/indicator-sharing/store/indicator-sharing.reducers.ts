@@ -29,10 +29,11 @@ export const initialSearchParameters: SearchParameters = {
     organizations: [],
     sensors: [],
     attackPatterns: [],
-    published: []
+    published: [],
+    validStixPattern: false
 };
 
-const initialState: IndicatorSharingState = {
+export const initialState: IndicatorSharingState = {
     indicators: [],
     filteredIndicators: [],
     displayedIndicators: [],
