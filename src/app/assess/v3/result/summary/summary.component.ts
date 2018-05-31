@@ -26,6 +26,7 @@ import { distinctUntilChanged } from 'rxjs/operators/distinctUntilChanged';
 import { filter } from 'rxjs/operators/filter';
 import { map } from 'rxjs/operators/map';
 import { catchError } from 'rxjs/operators/catchError';
+import { AssessmentEvalTypeEnum } from 'stix';
 
 @Component({
   selector: 'summary',
@@ -128,6 +129,13 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .subscribe((arr: Assessment[]) => {
         this.summaries = [...arr];
         this.summary = arr[0];
+        const assessmentType = this.summaries[0].determineAssessmentType();
+        // TODO: temporary
+        if (assessmentType === AssessmentEvalTypeEnum.CAPABILITIES) {
+          this.summaryCalculationService.isCapability = true;
+        } else {
+          this.summaryCalculationService.isCapability = false;
+        }
         this.riskByAttackPatternStore.dispatch(new LoadSingleAssessmentRiskByAttackPatternData(this.assessmentId));
         this.store.dispatch(new LoadSingleRiskPerKillChainData(this.assessmentId));
         this.store.dispatch(new LoadSingleSummaryAggregationData(this.assessmentId));
@@ -235,6 +243,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
         filter((summaries: Assessment[]) => summaries && summaries.length > 0),
         map((summaries: Assessment[]) => {
           const assessmentType = summaries[0].determineAssessmentType();
+
           return `${summaries[0].name} - ${assessmentType}`;
         }),
         catchError((err, caught) => {
