@@ -38,12 +38,12 @@ import { AuthService } from '../../core/services/auth.service';
 import {
     mockUser,
     mockTactics,
-    mockAttackPatterns,
-    mockTargets
+    mockAttackPatternData
 } from '../../global/components/tactics-pane/tactics.model.test';
 import * as configActions from '../../root-store/config/config.actions';
 import * as userActions from '../../root-store/users/user.actions';
 import { reducers, AppState } from '../../root-store/app.reducers';
+import { AttackPattern } from '../../models';
 
 describe('ThreatTacticsComponent', () => {
 
@@ -96,6 +96,11 @@ describe('ThreatTacticsComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should handle input targets', () => {
+        component.attackPatterns = [new AttackPattern()];
+        component.ngOnChanges();
     });
 
 });
