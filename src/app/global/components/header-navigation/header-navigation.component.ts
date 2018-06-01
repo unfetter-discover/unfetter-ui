@@ -1,7 +1,7 @@
 import { Component, ElementRef, HostListener, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { environment } from '../../../../environments/environment';
-import { runconfig } from '../../../../assets/public-config.ts';
+import { runconfig } from '../../public-config';
 import { AuthService } from '../../../core/services/auth.service';
 import * as fromApp from '../../../root-store/app.reducers';
 import * as userActions from '../../../root-store/users/user.actions';

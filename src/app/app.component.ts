@@ -2,7 +2,7 @@ import { Component, OnInit, Renderer2 } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { environment } from '../environments/environment';
-import { runconfig } from '../assets/public-config.ts';
+import { runconfig } from './global/public-config';
 import { AuthService } from './core/services/auth.service';
 import { Themes } from './global/enums/themes.enum';
 import * as fromApp from './root-store/app.reducers';
@@ -21,8 +21,8 @@ import { demoUser } from './testing/demo-user';
 export class AppComponent implements OnInit {
   public readonly runMode = environment.runMode;
   public readonly demoMode: boolean = (environment.runMode === 'DEMO');
-  public readonly showBanner = runconfig[this.runMode.toLowerCase()].showBanner || false;
-  public readonly securityMarkingLabel = runconfig[this.runMode.toLowerCase()].bannerText || '';
+  public readonly showBanner = this.runMode ? runconfig[this.runMode.toLowerCase()].showBanner : false;
+  public readonly securityMarkingLabel = this.runMode ? runconfig[this.runMode.toLowerCase()].bannerText : '';
   public theme: Themes = Themes.DEFAULT;
   public title;
 
