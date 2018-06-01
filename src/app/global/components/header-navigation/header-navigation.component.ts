@@ -1,6 +1,7 @@
 import { Component, ElementRef, HostListener, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { environment } from '../../../../environments/environment';
+import { runconfig } from '../../../../assets/public-config.ts';
 import { AuthService } from '../../../core/services/auth.service';
 import * as fromApp from '../../../root-store/app.reducers';
 import * as userActions from '../../../root-store/users/user.actions';
@@ -56,9 +57,9 @@ export class HeaderNavigationComponent {
 
   public readonly swaggerUrl = Constance.SWAGGER_URL;
   public readonly runMode = environment.runMode;
-  public readonly showBanner = environment.showBanner;
   public readonly demoMode: boolean = (environment.runMode === 'DEMO');
-  public readonly authServices: string[] = environment.authServices || ['gitlab'];
+  public readonly showBanner = runconfig[this.runMode.toLowerCase()].showBanner;
+  public readonly authServices: string[] = runconfig[this.runMode.toLowerCase()].authServices || ['github'];
   public collapsed: boolean = true;
   public showAppMenu: boolean = false;
   public showAccountMenu: boolean = false;

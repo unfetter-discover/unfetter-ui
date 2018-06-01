@@ -27,4 +27,5 @@ npm-debug.log
 /coverage/**
 npm-debug.log
 
+private-config.ts
 
