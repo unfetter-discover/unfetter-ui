@@ -17,7 +17,7 @@ import { GenericApi } from '../../../core/services/genericapi.service';
 import * as fromApp from '../../../root-store/app.reducers';
 import * as userActions from '../../../root-store/users/user.actions';
 import { environment } from '../../../../environments/environment';
-import * as runconfig from '../assets/public-config.json';
+import * as runconfig from '../assets/public-config.ts';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 import { FieldSortPipe } from '../../pipes/field-sort.pipe';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
