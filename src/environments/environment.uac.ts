@@ -1,5 +1,5 @@
 export const environment = {
-    'production': false, 
-    'runMode': 'UAC',
-    'hmr': true,
+    production: false, 
+    runMode: 'UAC',
+    hmr: true,
 };

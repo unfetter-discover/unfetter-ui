@@ -5,5 +5,5 @@
 export const environment = {
     production: false,
     runMode: 'DEMO',
-    'hmr': true,
+    hmr: true,
 };
