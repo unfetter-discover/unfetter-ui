@@ -6,5 +6,6 @@ export interface SearchParameters {
     sensors: string[],
     attackPatterns: string[],
     published: string[], // Should be boolean[], but mat-option is being finicky
+    dataSources: string[],
     validStixPattern: boolean
 }

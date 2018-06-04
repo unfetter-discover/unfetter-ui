@@ -200,12 +200,13 @@
                 </div>
             </mat-step>
             
-            <mat-step label="Data">
+            <mat-step label="Input Data">
                 <help-window [helpHtml]="observableDataHelpHtml"></help-window>
+                <h5>Observed Data</h5>
                 <div class="mt-10">
                     <observable-data-tree [parentForm]="form" [patternObjSubject]="patternObjSubject"></observable-data-tree>
                 </div>
-                <div class="mt-10">
+                <div class="mt-15">
                     <data-sources [formCtrl]="form.get('x_mitre_data_sources')"></data-sources>
                 </div>
                 <div class="mt-6">
