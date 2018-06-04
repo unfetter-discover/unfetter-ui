@@ -77,6 +77,7 @@ import { FieldSortPipe } from './pipes/field-sort.pipe';
 import { SophisticationPipe } from './pipes/sophistication.pipe';
 import { TimeAgoPipe } from './pipes/time-ago.pipe';
 import { AuthService } from '../core/services/auth.service';
+import { DataSourcesComponent } from './components/data-sources/data-sources.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -146,6 +147,7 @@ const unfetterComponents = [
     TacticsPaneComponent,
     TimeAgoPipe,
     TreemapComponent,
+    DataSourcesComponent,
 ];
 
 @NgModule({

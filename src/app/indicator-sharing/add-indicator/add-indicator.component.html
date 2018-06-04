@@ -200,10 +200,13 @@
                 </div>
             </mat-step>
             
-            <mat-step label="Observable Data">
+            <mat-step label="Data">
                 <help-window [helpHtml]="observableDataHelpHtml"></help-window>
                 <div class="mt-10">
                     <observable-data-tree [parentForm]="form" [patternObjSubject]="patternObjSubject"></observable-data-tree>
+                </div>
+                <div class="mt-10">
+                    <data-sources [formCtrl]="form.get('x_mitre_data_sources')"></data-sources>
                 </div>
                 <div class="mt-6">
                     <button mat-button matStepperPrevious type="button">BACK</button>
