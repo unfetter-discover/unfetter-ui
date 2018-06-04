@@ -3,7 +3,7 @@ import { createSelector } from '@ngrx/store';
 import { AppState } from '../app.reducers';
 import { getPreferredKillchain } from '../users/user.selectors';
 
-const DEFAULT_KILL_CHAIN = 'mitre-attack';
+export const DEFAULT_KILL_CHAIN = 'mitre-attack';
 
 export const getConfigState = (state: AppState) => state.config;
 
