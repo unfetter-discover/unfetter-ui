@@ -178,4 +178,39 @@ export class BaselineEffects {
       );
     });
 
+    @Effect()
+    public saveCapabilityGroups = this.actions$
+      .ofType(baselineActions.SAVE_CAPABILITY_GROUPS)
+      .pluck('payload')
+      .switchMap(( categories: Category[] ) => {
+        let url = 'api/v3/x-unfetter-categories';
+        const observables = categories
+          .map((category) => {
+              const json = {
+                data: { attributes: category }
+              } as JsonApi<JsonApiData<Category>>;
+              if (category.id) {
+                url = `${url}/${category.id}`;
+                return this.genericServiceApi
+                  .patchAs<Category[]>(url, json)
+                  .map<any[], Category[]>(RxjsHelpers.mapArrayAttributes);
+              } else {
+                return this.genericServiceApi
+                  .postAs<Category[]>(url, json)
+                  .map<any[], Category[]>(RxjsHelpers.mapArrayAttributes);
+              }
+        });
+  
+        return Observable.forkJoin(...observables).pipe(
+          flatMap((arr: Category[][]) => arr),
+          map((arr) => {
+            return new baselineActions.SetCapabilityGroups(arr);
+          }),
+          catchError((err) => {
+            console.log(err);
+            return Observable.of(new baselineActions.FailedToLoad(true));
+          })
+        );
+      });
+  
 }

@@ -99,7 +99,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   private addNewCategory(): void {
     
     this.categories.push(this.addCategory);
-    this.wizardStore.dispatch(new assessActions.SetCapabilityGroups(this.categories));
+    this.wizardStore.dispatch(new assessActions.SaveCapabilityGroups(this.categories));
     
     this.isAddCategory = false;
     this.addCategory = new Category();
