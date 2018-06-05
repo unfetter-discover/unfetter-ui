@@ -7,7 +7,7 @@ import * as public_config from '../../../assets/public-config.json';
 @Injectable()
 export class RunConfigService {
 
-    private private_config: any = null;
+    private private_config: any = {};
 
     constructor(
     ) {
@@ -15,7 +15,7 @@ export class RunConfigService {
             this.private_config = require('../../../assets/private-config.json');
         } catch (ex) {
             console.error(`(${new Date().toISOString()}) Could not load private run configuration!`, ex);
-            this.private_config = null;
+            this.private_config = {};
         }
     }
 
