@@ -96,7 +96,7 @@
                   <span *ngIf="i < (ap.x_mitre_platforms.length - 1)">&nbsp;&bull;&nbsp;</span>
                 </span>
               </p>
-            </div>
+            </div>            
             <div *ngIf="ap.x_unfetter_sophistication_level">
               <label>Sophistication Level:&nbsp;</label>
               <span>{{ ap.x_unfetter_sophistication_level }}</span>
@@ -129,6 +129,15 @@
           <div *ngIf="indicator.metaProperties && indicator.metaProperties.observedData && indicator.metaProperties.observedData.length">
             <label>Observed Data</label>
             <observable-data-summary [observedData]="indicator.metaProperties.observedData"></observable-data-summary>
+          </div>
+          <div *ngIf="indicator.x_mitre_data_sources">
+            <label>Required Data Sources:&nbsp;</label>
+            <p class="whiteSpaceNormal">
+              <span *ngFor="let dataSource of indicator.x_mitre_data_sources; let i = index" class="text-muted">
+                <span>{{ dataSource }}</span>
+                <span *ngIf="i < (indicator.x_mitre_data_sources.length - 1)">&nbsp;&bull;&nbsp;</span>
+              </span>
+            </p>
           </div>
           <div class="mt-3">
             <label>Unfetter User Interactions: </label>

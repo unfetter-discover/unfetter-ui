@@ -30,6 +30,7 @@ export const initialSearchParameters: SearchParameters = {
     sensors: [],
     attackPatterns: [],
     published: [],
+    dataSources: [],
     validStixPattern: false
 };
 
