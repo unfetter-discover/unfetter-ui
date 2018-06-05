@@ -23,6 +23,7 @@ export const SET_SENSORS = '[Indicator Sharing] SET_SENSORS';
 export const SET_IDENTITIES = '[Indicator Sharing] SET_IDENTITIES';
 export const SET_ATTACK_PATTERNS = '[Indicator Sharing] SET_ATTACK_PATTERNS';
 export const SET_INDICATOR_TO_AP_MAP = '[Indicator Sharing] SET_INDICATOR_TO_AP_MAP';
+export const SET_INTRUSION_SETS_BY_ATTACK_PATTERN = '[Indicator Sharing] SET_INTRUSION_SETS_BY_ATTACK_PATTERN';
 export const CLEAR_DATA = '[Indicator Sharing] CLEAR_DATA';
 export const SET_SEARCH_PARAMETERS = '[Indicator Sharing] SET_SEARCH_PARAMETERS';
 export const CLEAR_SEARCH_PARAMETERS = '[Indicator Sharing] CLEAR_SEARCH_PARAMETERS';
@@ -122,6 +123,12 @@ export class SetIndicatorToApMap implements Action {
     constructor(public payload: {}) { }
 }
 
+export class SetIntrusionSetsByAttackPattern implements Action {
+    public readonly type = SET_INTRUSION_SETS_BY_ATTACK_PATTERN;
+
+    constructor(public payload: {}) { }
+}
+
 export class ClearData implements Action {
     public readonly type = CLEAR_DATA;
 
@@ -181,6 +188,7 @@ export type IndicatorSharingActions =
     SetSensors |
     SetIdentities |
     SetIndicatorToApMap |
+    SetIntrusionSetsByAttackPattern |
     ClearData |
     SetSearchParameters |
     ClearSearchParameters |

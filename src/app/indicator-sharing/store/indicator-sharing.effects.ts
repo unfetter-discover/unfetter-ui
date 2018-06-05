@@ -43,7 +43,8 @@ export class IndicatorSharingEffects {
             this.indicatorSharingService.getAttackPatternsByIndicator(),
             this.indicatorSharingService.getSensors(),
             this.indicatorSharingService.getAttackPatterns(),
-            this.indicatorSharingService.getTotalIndicatorCount()
+            this.indicatorSharingService.getTotalIndicatorCount(),
+            this.indicatorSharingService.getInstrusionSetsByAttackPattern()
         ))
         .map((results: any[]) => [
             results[0].map((r) => r.attributes),
@@ -51,16 +52,18 @@ export class IndicatorSharingEffects {
             RxjsHelpers.relationshipArrayToObject(results[2].attributes, 'attackPatterns'),
             results[3].map((r) => r.attributes),
             results[4].map((r) => r.attributes),
-            results[5]
+            results[5],
+            RxjsHelpers.relationshipArrayToObject(results[6].attributes, 'intrusionSets')
         ])
-        .mergeMap(([identities, indicators, indicatorToApMap, sensors, attackPatterns, indCount]) => [
+        .mergeMap(([identities, indicators, indicatorToApMap, sensors, attackPatterns, indCount, intrToApMap]) => [
             new indicatorSharingActions.SetIdentities(identities),
             new indicatorSharingActions.SetIndicators(indicators),
             new indicatorSharingActions.SetIndicatorToApMap(indicatorToApMap),
             new indicatorSharingActions.SetSensors(sensors),
             new indicatorSharingActions.SetAttackPatterns(attackPatterns),
             new indicatorSharingActions.SetServerCallComplete(true),
-            new indicatorSharingActions.SetTotalIndicatorCount(indCount)
+            new indicatorSharingActions.SetTotalIndicatorCount(indCount),
+            new indicatorSharingActions.SetIntrusionSetsByAttackPattern(intrToApMap)
         ]);
 
     @Effect()

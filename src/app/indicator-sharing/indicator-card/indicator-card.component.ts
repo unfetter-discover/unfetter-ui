@@ -26,6 +26,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input() public indicator: any;
     @Input() public attackPatterns: any;
+    @Input() public intrusionSets: any;
     @Input() public searchParameters: any;
     @Input() public creator: string;
     @Input() public sensors: any;

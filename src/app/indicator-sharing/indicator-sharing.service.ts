@@ -191,4 +191,12 @@ export class IndicatorSharingService {
     public publishIndicator(id: string): Observable<any> {
         return this.genericApi.get(`${this.multiplesUrl}/${id}/publish`);
     }
+
+    /**
+     * @return {Observable} various STIX types
+     * @description Gives an object with an attack pattern IDs as the properties that point to a list of intrusion sets
+     */
+    public getInstrusionSetsByAttackPattern(): Observable<any> {
+        return this.genericApi.get(`${this.attackPatternsUrl}/intrusion-sets-by-attack-pattern`);
+    }
 }

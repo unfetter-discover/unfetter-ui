@@ -14,6 +14,7 @@ export interface IndicatorSharingState {
     sensors: any[],
     attackPatterns: any[],
     identities: any[],
+    intrusionSetsByAttackpattern: {},
     searchParameters: SearchParameters,
     indicatorToSensorMap: {},
     indicatorToApMap: {},
@@ -41,6 +42,7 @@ export const initialState: IndicatorSharingState = {
     sensors: [],
     attackPatterns: [],
     identities: [],
+    intrusionSetsByAttackpattern: {},
     searchParameters: { ...initialSearchParameters },
     indicatorToSensorMap: {},
     indicatorToApMap: {},
@@ -174,7 +176,11 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
                 ...state,
                 indicatorToApMap: action.payload
             };
-
+        case indicatorSharingActions.SET_INTRUSION_SETS_BY_ATTACK_PATTERN:
+            return {
+                ...state,
+                intrusionSetsByAttackpattern: action.payload
+            };
         case indicatorSharingActions.SET_SEARCH_PARAMETERS:
             return {
                 ...state,
