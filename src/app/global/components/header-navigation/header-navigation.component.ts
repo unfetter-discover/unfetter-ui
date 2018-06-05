@@ -72,8 +72,8 @@ export class HeaderNavigationComponent {
   @Input() public title;
 
   constructor(
+    public authService: AuthService,
     private run_config: RunConfigService,
-    private authService: AuthService,
     private store: Store<fromApp.AppState>,
     private el: ElementRef
   ) {
