@@ -19,6 +19,7 @@ export const ADD_INDICATOR = '[Indicator Sharing] ADD_INDICATOR';
 export const UPDATE_INDICATOR = '[Indicator Sharing] UPDATE_INDICATOR';
 export const DELETE_INDICATOR = '[Indicator Sharing] DELETE_INDICATOR';
 
+export const SET_INTRUSION_SETS = '[Indicator Sharing] SET_INTRUSION_SETS';
 export const SET_SENSORS = '[Indicator Sharing] SET_SENSORS';
 export const SET_IDENTITIES = '[Indicator Sharing] SET_IDENTITIES';
 export const SET_ATTACK_PATTERNS = '[Indicator Sharing] SET_ATTACK_PATTERNS';
@@ -105,6 +106,12 @@ export class DeleteIndicator implements Action {
     constructor(public payload: string) { }
 }
 
+export class SetIntrusionSets implements Action {
+    public readonly type = SET_INTRUSION_SETS;
+
+    constructor(public payload: any[]) { }
+}
+
 export class SetSensors implements Action {
     public readonly type = SET_SENSORS;
 
@@ -185,6 +192,7 @@ export type IndicatorSharingActions =
     AddIndicator |
     UpdateIndicator |
     DeleteIndicator |
+    SetIntrusionSets |
     SetSensors |
     SetIdentities |
     SetIndicatorToApMap |
