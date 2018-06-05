@@ -17,7 +17,7 @@ import { GenericApi } from '../../../core/services/genericapi.service';
 import * as fromApp from '../../../root-store/app.reducers';
 import * as userActions from '../../../root-store/users/user.actions';
 import { environment } from '../../../../environments/environment';
-import { runconfig } from '../../public-config';
+import * as private_config from '../../../../assets/private-config.json';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 import { FieldSortPipe } from '../../pipes/field-sort.pipe';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
@@ -90,7 +90,7 @@ describe('HeaderNavigationComponent', () => {
         {
             expect(component.topPx).toEqual('0px');
 
-            runconfig.uac.showBanner = true;
+            private_config.showBanner = true;
             const titledFixture = TestBed.createComponent(HeaderNavigationComponent);
             const titledComponent = titledFixture.componentInstance;
             titledFixture.detectChanges();

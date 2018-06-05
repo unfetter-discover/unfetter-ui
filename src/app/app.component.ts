@@ -2,7 +2,8 @@ import { Component, OnInit, Renderer2 } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { environment } from '../environments/environment';
-import { runconfig } from './global/public-config';
+import * as public_config from '../assets/public-config.json';
+import * as private_config from '../assets/private-config.json';
 import { AuthService } from './core/services/auth.service';
 import { Themes } from './global/enums/themes.enum';
 import * as fromApp from './root-store/app.reducers';
@@ -21,8 +22,6 @@ import { demoUser } from './testing/demo-user';
 export class AppComponent implements OnInit {
   public readonly runMode = environment.runMode;
   public readonly demoMode: boolean = (environment.runMode === 'DEMO');
-  public readonly showBanner = this.runMode ? runconfig[this.runMode.toLowerCase()].showBanner : false;
-  public readonly securityMarkingLabel = this.runMode ? runconfig[this.runMode.toLowerCase()].bannerText : '';
   public theme: Themes = Themes.DEFAULT;
   public title;
 
@@ -33,6 +32,20 @@ export class AppComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private renderer: Renderer2,
   ) {
+  }
+
+  private get run_config(): any {
+    const mode = this.runMode ? this.runMode.toLocaleLowerCase() : undefined;
+    const hasPublicConfig = mode && public_config && public_config[mode];
+    return Object.assign({}, hasPublicConfig ? public_config[mode] : {}, private_config || {});
+  }
+
+  public get showBanner(): boolean {
+    return this.run_config.showBanner || false;
+  }
+
+  public get securityMarkingLabel(): string {
+    return this.run_config.bannerText || '';
   }
 
   public ngOnInit() {
