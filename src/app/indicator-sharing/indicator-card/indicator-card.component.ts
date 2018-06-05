@@ -129,6 +129,10 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
         return this.searchParameters.killChainPhases.length > 0 && this.searchParameters.killChainPhases.includes(phase);
     }
 
+    public highlightIs(isId) {
+        return this.searchParameters.intrusionSets.length > 0 && this.searchParameters.intrusionSets.includes(isId);
+    }
+
     public labelSelected(label) {
         return this.searchParameters.labels.length > 0 && this.searchParameters.labels.includes(label);
     }
