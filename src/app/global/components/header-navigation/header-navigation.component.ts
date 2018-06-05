@@ -2,14 +2,13 @@ import { Component, ElementRef, HostListener, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { environment } from '../../../../environments/environment';
-import * as public_config from '../../../../assets/public-config.json';
-import * as private_config from '../../../../assets/private-config.json';
+import { RunConfigService } from '../../../core/services/run-config.service';
+import { AuthService } from '../../../core/services/auth.service';
 import * as fromApp from '../../../root-store/app.reducers';
 import * as userActions from '../../../root-store/users/user.actions';
-import { AuthService } from '../../../core/services/auth.service';
+import { UserState } from '../../../root-store/users/users.reducers';
 import { Constance } from '../../../utils/constance';
 import { fadeInOut } from '../../animations/fade-in-out';
-import { UserState } from '../../../root-store/users/users.reducers';
 
 @Component({
   selector: 'header-navigation',
@@ -73,7 +72,8 @@ export class HeaderNavigationComponent {
   @Input() public title;
 
   constructor(
-    public authService: AuthService,
+    private run_config: RunConfigService,
+    private authService: AuthService,
     private store: Store<fromApp.AppState>,
     private el: ElementRef
   ) {
@@ -101,18 +101,12 @@ export class HeaderNavigationComponent {
       );
   }
 
-  private get run_config(): any {
-    const mode = this.runMode ? this.runMode.toLocaleLowerCase() : undefined;
-    const hasPublicConfig = mode && public_config && public_config[mode];
-    return Object.assign({}, hasPublicConfig ? public_config[mode] : {}, private_config || {});
-  }
-
   public get showBanner(): boolean {
-    return this.run_config.showBanner || false;
+    return this.run_config.getConfig().showBanner || false;
   }
 
   public get authServices(): string[] {
-    return this.run_config.authServices || ['github'];
+    return this.run_config.getConfig().authServices || ['github'];
   }
 
   public getAvatar(user): string {

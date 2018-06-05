@@ -2,8 +2,7 @@ import { Component, OnInit, Renderer2 } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { environment } from '../environments/environment';
-import * as public_config from '../assets/public-config.json';
-import * as private_config from '../assets/private-config.json';
+import { RunConfigService } from './core/services/run-config.service';
 import { AuthService } from './core/services/auth.service';
 import { Themes } from './global/enums/themes.enum';
 import * as fromApp from './root-store/app.reducers';
@@ -26,7 +25,8 @@ export class AppComponent implements OnInit {
   public title;
 
   constructor(
-    public authService: AuthService,
+    private run_config: RunConfigService,
+    private authService: AuthService,
     private store: Store<fromApp.AppState>,
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -34,18 +34,12 @@ export class AppComponent implements OnInit {
   ) {
   }
 
-  private get run_config(): any {
-    const mode = this.runMode ? this.runMode.toLocaleLowerCase() : undefined;
-    const hasPublicConfig = mode && public_config && public_config[mode];
-    return Object.assign({}, hasPublicConfig ? public_config[mode] : {}, private_config || {});
-  }
-
   public get showBanner(): boolean {
-    return this.run_config.showBanner || false;
+    return this.run_config.getConfig().showBanner || false;
   }
 
   public get securityMarkingLabel(): string {
-    return this.run_config.bannerText || '';
+    return this.run_config.getConfig().bannerText || '';
   }
 
   public ngOnInit() {
