@@ -2,23 +2,20 @@ import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
+import { Action } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { catchError, map, flatMap } from 'rxjs/operators';
-import { AssessmentSet, Category, ObjectAssessment, Capability } from 'stix/assess/v3/baseline';
+import { catchError, flatMap, map } from 'rxjs/operators';
+import { AssessmentSet, Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { AttackPatternService } from '../../core/services/attack-pattern.service';
 import { GenericApi } from '../../core/services/genericapi.service';
+import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
 import { JsonApi } from '../../models/json/jsonapi';
 import { JsonApiData } from '../../models/json/jsonapi-data';
 import { BaselineStateService } from '../services/baseline-state.service';
 import { BaselineService } from '../services/baseline.service';
 import * as baselineActions from './baseline.actions';
-import { RxjsHelpers } from '../../global/static/rxjs-helpers';
-import { Action } from '@ngrx/store';
-import { Constance } from '../../utils/constance';
-import { Stix } from 'stix/unfetter/stix';
-import { mergeMap } from 'rxjs/operator/mergeMap';
 
 @Injectable()
 export class BaselineEffects {
@@ -86,20 +83,33 @@ export class BaselineEffects {
                 .map((capability) => {
                     return this.baselineService.fetchCategory(capability.category);
                 });
-            
-            return Observable.forkJoin(...observables).pipe(
-                map((groups) => {
-                    const actions: Action[] = [];
-                    actions.push(new baselineActions.SetBaselineGroups(groups));
-                    actions.push(new baselineActions.FinishedLoading(true));
-                    return actions;
-                }),
-                catchError((err) => {
-                    console.log(err);
-                    return Observable.of(new baselineActions.FailedToLoad(true));
-                })
-            );
+            return Observable.forkJoin(...observables);
+        })
+        .mergeMap((groups) => {
+            const actions: Action[] = [
+                new baselineActions.SetBaselineGroups(groups),
+                new baselineActions.FinishedLoading(true) ];
+            return actions;
         });
+        // .switchMap((capabilities: Capability[]) => {
+        //     const observables = capabilities
+        //         .map((capability) => {
+        //             return this.baselineService.fetchCategory(capability.category);
+        //         });
+            
+        //     return Observable.forkJoin(...observables).pipe(
+        //         map((groups) => {
+        //             const actions: Action[] = [];
+        //             actions.push(new baselineActions.SetBaselineGroups(groups));
+        //             actions.push(new baselineActions.FinishedLoading(true));
+        //             return actions;
+        //         }),
+        //         catchError((err) => {
+        //             console.log(err);
+        //             return Observable.of(new baselineActions.FailedToLoad(true));
+        //         })
+        //     );
+        // });
 
     @Effect()
     public fetchCapabilityGroups = this.actions$
