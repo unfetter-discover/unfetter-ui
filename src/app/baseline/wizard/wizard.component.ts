@@ -10,15 +10,12 @@ import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { Key } from 'ts-keycode-enum';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { heightCollapse } from '../../global/animations/height-collapse';
-import { BaselineMeta } from '../../models/baseline/baseline-meta';
-import { Stix } from '../../models/stix/stix';
 import { UserProfile } from '../../models/user/user-profile';
 import { AppState } from '../../root-store/app.reducers';
-import { CleanBaselineWizardData, FetchAttackPatterns, FetchCapabilities, FetchCapabilityGroups, LoadBaselineWizardData, SaveBaseline, SetBaseline, SetCurrentBaselineCapability, SetCurrentBaselineGroup, SetCurrentBaselineObjectAssessment, UpdatePageTitle } from '../store/baseline.actions';
+import { CleanBaselineWizardData, FetchAttackPatterns, FetchBaseline, FetchCapabilities, FetchCapabilityGroups, SaveBaseline, SetCurrentBaselineCapability, SetCurrentBaselineGroup, SetCurrentBaselineObjectAssessment } from '../store/baseline.actions';
 import { BaselineState } from '../store/baseline.reducers';
 import { AttackPatternChooserComponent } from './attack-pattern-chooser/attack-pattern-chooser.component';
 import { Measurements } from './models/measurements';
-import { WeightsModel } from './models/weights-model';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -38,13 +35,13 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public readonly sidePanelCollapseHeight = '32px';
   public readonly sidePanelExpandedHeight = '32px';
   public buttonLabel: ButtonLabel = 'CONTINUE';
+  private readonly sidePanelNames: string[] = ['categories', 'capability-selector', 'capabilities', 'summary'];
 
   public showSummary = false;
   public page = 1;
   public totalPages = 0;
-  public meta = new BaselineMeta();
   public insertMode = false;
-  public openedSidePanel: string;
+  public openedSidePanel: string = this.sidePanelNames[0];
   public navigation: { id: string, label: string, page: number };
   public navigations: any[];
   
@@ -64,8 +61,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public selectedAttackPatterns: AttackPattern[] = [];
 
   private readonly subscriptions: Subscription[] = [];
-  private readonly sidePanelNames: string[] = ['categories', 'capability-selector', 'capabilities', 'summary'];
-
+  
   constructor(
     private genericApi: GenericApi,
     private snackBar: MatSnackBar,
@@ -89,12 +85,10 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     const idParamSub$ = this.route.params
       .subscribe(
         (params) => {
-          const meta: Partial<BaselineMeta> = new BaselineMeta();
           const baselineId = params.baselineId || '';
           if (baselineId) {
-            this.loadExistingBaseline(baselineId, meta);
+            this.wizardStore.dispatch(new FetchBaseline(baselineId));
           }
-          this.wizardStore.dispatch(new LoadBaselineWizardData(meta));
         },
         (err) => console.log(err),
         () => idParamSub$.unsubscribe());
@@ -111,6 +105,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
             this.page = 1;
             this.openedSidePanel = 'categories';
           }
+          this.updateWizardData();
         },
         (err) => console.log(err));
 
@@ -142,11 +137,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       .distinctUntilChanged()
       .subscribe(
         (assessmentSet: AssessmentSet) => {
-          const meta = new BaselineMeta();
-          meta.title = assessmentSet.name || meta.title;
-          meta.description = assessmentSet.description || meta.description;
-          meta.created_by_ref = assessmentSet.created_by_ref || meta.created_by_ref;
-          this.meta = meta;
           this.currentBaseline = assessmentSet;
         },
         (err) => console.log(err));
@@ -268,51 +258,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         this.changeDetection.detectChanges();
       }
     });
-  }
-
-  // TODO: Uncomment when we are ready to support editing of existing
-  public loadExistingBaseline(baselineId: string, meta: Partial<BaselineMeta>): void {
-  //   const sub$ = this.userStore
-  //     .select('users')
-  //     .pluck('userProfile')
-  //     .take(1)
-  //     .subscribe(
-  //       (user: UserProfile) => {
-  //         const sub1$ = this.baselineStore
-  //           .select('fullBaseline')
-  //           .distinctUntilChanged()
-  //           .subscribe(
-  //             (arr: AssessmentSet) => this.loadAssessments(baselineId, arr, meta),
-  //             (err) => console.log(err));
-  //         this.subscriptions.push(sub1$);
-  //       },
-  //       (err) => console.log(err));
-  //   this.subscriptions.push(sub$);
-  //   this.baselineStore.dispatch(new LoadAssessmentResultData(baselineId));
-  }
-
-  public loadAssessments(baselineId: string, arr: AssessmentSet, meta: Partial<BaselineMeta>): void {
-    if (!arr) {
-      return;
-    }
-
-    /*
-     * making the model a collection of all the baselines matching the given rollup id, plus a summary of all the
-     * assessed objects to make it easier to use the existing code to display the questions and existing answers
-     */
-    const summary = new AssessmentSet();
-    summary.id = arr.id;
-    summary.name = arr.name;
-    summary.description = arr.description;
-    summary.created = arr.created;
-    summary.modified = arr.modified;
-    summary.assessments = summary.assessments.concat(arr.assessments);
-    summary.created_by_ref = arr.created_by_ref;
-
-    meta.title = summary.name;
-    meta.description = summary.description;
-    this.wizardStore.dispatch(new LoadBaselineWizardData(meta));
-    this.wizardStore.dispatch(new UpdatePageTitle(meta));
   }
 
   /*
@@ -561,7 +506,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {boolean} true if title is empty otherwise false
    */
   public isTitleEmpty(): boolean {
-    return !this.meta.title || this.meta.title.trim() === '';
+    return !this.currentBaseline.name || this.currentBaseline.name.trim() === '';
   }
 
   /**

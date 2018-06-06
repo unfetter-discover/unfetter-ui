@@ -63,7 +63,7 @@
           <div class="row mat-card-padding">
             <div class="col-xs-8">
               <mat-form-field class="full-width">
-                <input matInput placeholder="Assessment Name" name="assessment-name" [(ngModel)]="meta.title">
+                <input matInput placeholder="Assessment Name" name="assessment-name" [(ngModel)]="currentBaseline.name">
                 <mat-error *ngIf="isTitleEmpty()">
                   Title is
                   <strong>required</strong>
