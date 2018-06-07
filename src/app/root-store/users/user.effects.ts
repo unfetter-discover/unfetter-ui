@@ -78,6 +78,7 @@ export class UserEffects {
                     }),
                     new userActions.SetToken(token),
                     new configActions.FetchConfig(false),
+                    new configActions.FetchTactics(),
                     new notificationActions.FetchNotificationStore(),
                     new utilityActions.RecordVisit()
                 ];

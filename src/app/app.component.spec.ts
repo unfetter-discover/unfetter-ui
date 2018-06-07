@@ -17,6 +17,7 @@ import { GenericApi } from './core/services/genericapi.service';
 import { environment } from '../environments/environment';
 import { reducers } from './root-store/app.reducers';
 import { Themes } from './global/enums/themes.enum';
+import { RunConfigService } from './core/services/run-config.service';
 
 describe(`App`, () => {
 
@@ -66,23 +67,23 @@ describe(`App`, () => {
 
     // async beforeEach
     beforeEach(async(() => {
-        const services = [
-            AppState,
-            { provide: AuthService, useValue: mockAuthService },
-            GenericApi,
-            ConfigService,
-        ];
-
-        TestBed.configureTestingModule({
-            imports: [
-                RouterTestingModule.withRoutes(routes),
-                HttpClientTestingModule,
-                StoreModule.forRoot(reducers)
-            ],
-            declarations: [AppComponent],
-            schemas: [NO_ERRORS_SCHEMA],
-            providers: [...services]
-        })
+        TestBed
+            .configureTestingModule({
+                imports: [
+                    RouterTestingModule.withRoutes(routes),
+                    HttpClientTestingModule,
+                    StoreModule.forRoot(reducers)
+                ],
+                declarations: [AppComponent],
+                schemas: [NO_ERRORS_SCHEMA],
+                providers: [
+                    AppState,
+                    { provide: AuthService, useValue: mockAuthService },
+                    GenericApi,
+                    ConfigService,
+                    RunConfigService,
+                ]
+            })
             .compileComponents(); // compile template and css
 
         router = TestBed.get(Router);
@@ -110,7 +111,7 @@ describe(`App`, () => {
                 fixture.detectChanges();
                 expect(fixture).toBeDefined();
                 expect(comp).toBeDefined();
-                expect(comp.authService.loggedIn()).toEqual(login,
+                expect(comp['authService'].loggedIn()).toEqual(login,
                     `user should ${login ? '' : 'not '}have been logged in`);
                 expect(comp.runMode).toBe(runmode, `run mode was supposed to be ${runmode}`);
             });
