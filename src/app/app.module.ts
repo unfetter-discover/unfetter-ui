@@ -26,6 +26,7 @@ import { NotificationEffects } from './root-store/notification/notification.effe
 import { UserEffects } from './root-store/users/user.effects';
 import { UtilityEffects } from './root-store/utility/utility.effects';
 import { IdentityEffects } from './root-store/identities/identity.effects';
+import { RunConfigService } from './core/services/run-config.service';
 
 // make sure you export for AoT
 // export function stateSetter(reducer: ActionReducer<any>): ActionReducer<any> {
@@ -80,6 +81,9 @@ import { IdentityEffects } from './root-store/identities/identity.effects';
   ],
   entryComponents: [
     ConfirmationDialogComponent,
+  ],
+  providers: [
+    RunConfigService,
   ]
 })
 export class AppModule {

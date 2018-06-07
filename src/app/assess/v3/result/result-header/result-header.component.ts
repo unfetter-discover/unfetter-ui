@@ -40,7 +40,8 @@ export class ResultHeaderComponent implements OnInit {
     this.editUrl = `${editBase}/${this.rollupId}`; 
     // TODO: initialize the correct total questions, by calling the server, may need a count endpoint
     this.percentCompleted = this.calcPercentCompleted(this.assessment);
-    this.percentCompletedMsg = `Assessments BETA, some features do not work!  ${this.percentCompleted}% of your assessment is complete.`;
+    this.percentCompletedMsg = `Assessments BETA, some features do not work!`
+    this.percentCompletedMsg += ` ${this.percentCompleted}% of your assessment is complete.`;
   }
 
   /**
@@ -73,12 +74,13 @@ export class ResultHeaderComponent implements OnInit {
         totalQuestions = this.totalSensors;
         break;
       }
-      case 'x-unfetter-capability': {
+      case 'x-unfetter-capability': 
+      case 'x-unfetter-object-assessment': {
         totalQuestions = this.totalSensors;
         break;
       }
       default: {
-        const msg = `cannot cacluate percent complete. cannot determine the assessment type of ${assessmentObjects[0]}.  moving on...`;
+        const msg = `cannot cacluate percent complete. cannot determine the assessment type of ${JSON.stringify(assessmentObjects[0])}.  moving on...`;
         console.log(msg);
         return defaultPercent;
       }

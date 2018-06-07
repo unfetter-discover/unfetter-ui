@@ -1,12 +1,14 @@
 import { Component, ElementRef, HostListener, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
+
 import { environment } from '../../../../environments/environment';
+import { RunConfigService } from '../../../core/services/run-config.service';
 import { AuthService } from '../../../core/services/auth.service';
 import * as fromApp from '../../../root-store/app.reducers';
 import * as userActions from '../../../root-store/users/user.actions';
+import { UserState } from '../../../root-store/users/users.reducers';
 import { Constance } from '../../../utils/constance';
 import { fadeInOut } from '../../animations/fade-in-out';
-import { UserState } from '../../../root-store/users/users.reducers';
 
 @Component({
   selector: 'header-navigation',
@@ -56,9 +58,7 @@ export class HeaderNavigationComponent {
 
   public readonly swaggerUrl = Constance.SWAGGER_URL;
   public readonly runMode = environment.runMode;
-  public readonly showBanner = environment.showBanner;
   public readonly demoMode: boolean = (environment.runMode === 'DEMO');
-  public readonly authServices: string[] = environment.authServices || ['gitlab'];
   public collapsed: boolean = true;
   public showAppMenu: boolean = false;
   public showAccountMenu: boolean = false;
@@ -73,6 +73,7 @@ export class HeaderNavigationComponent {
 
   constructor(
     public authService: AuthService,
+    private run_config: RunConfigService,
     private store: Store<fromApp.AppState>,
     private el: ElementRef
   ) {
@@ -98,6 +99,14 @@ export class HeaderNavigationComponent {
           }
         }
       );
+  }
+
+  public get showBanner(): boolean {
+    return this.run_config.getConfig().showBanner || false;
+  }
+
+  public get authServices(): string[] {
+    return this.run_config.getConfig().authServices || ['github'];
   }
 
   public getAvatar(user): string {

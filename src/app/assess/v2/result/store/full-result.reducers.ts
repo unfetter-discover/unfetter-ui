@@ -69,6 +69,11 @@ export function fullAssessmentResultReducer(state = initialState, action: FullAs
                 ...state,
                 assessmentTypes: [...action.payload],
             };
+        case fullAssessmentResultActions.SET_ASSESSMENT:
+            return {
+                ...state,
+                fullAssessment: new Assessment(action.payload),
+            };
         case fullAssessmentResultActions.FINISHED_LOADING:
             return {
                 ...state,

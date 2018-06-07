@@ -29,6 +29,8 @@ export class SummaryCalculationService {
   techniqueBreakdownValue: any;
   assessmentObjects: AssessmentObject[];
   thresholdOptionsValue: ThresholdOption[];
+  // TODO temporary
+  isCapabilityValue: boolean;
 
   constructor() {
     this.numericRisk = 0;
@@ -44,6 +46,7 @@ export class SummaryCalculationService {
     ];
     this.riskSub = new BehaviorSubject<number>(null);
     this.selectedRisk = 0.5;
+    this.isCapability = false;
   }
 
   public set numericRisk(newRisk: number) {
@@ -89,6 +92,10 @@ export class SummaryCalculationService {
     this.thresholdOptionsValue = newThresholdOptions;
   }
 
+  public set isCapability(newIsCapability: boolean) {
+    this.isCapabilityValue = newIsCapability;
+  }
+
   public get numericRisk(): number {
     return this.numericRiskValue;
   }
@@ -130,6 +137,10 @@ export class SummaryCalculationService {
 
   public get thresholdOptions(): ThresholdOption[] {
     return this.thresholdOptionsValue;
+  }
+
+  public get isCapability(): boolean {
+    return this.isCapabilityValue;
   }
 
   public getRiskText(): string {

@@ -8,46 +8,53 @@
       <div class="flex matchHeight">
         <mat-card color="primary" class="uf-mat-card card left-card mat-card-scroll-content" id="riskCard">
           <mat-card-title>Overall implementation risk: {{summaryCalculationService.getRiskText()}}%</mat-card-title>
-          <mat-card-subtitle>Weakness</mat-card-subtitle>
+          <!-- TODO temporary -->
+          <mat-card-subtitle *ngIf="!summaryCalculationService.isCapability">Weakness</mat-card-subtitle>
           <mat-card-content>
-            <p *ngIf="summaryCalculationService.weakness && summaryCalculationService.weakness.length > 0; else noWeakestAttackPatterns">
-              {{summaryCalculationService.weakness}}
-            </p>
-            <ng-template #noWeakestAttackPatterns>
-              No Weaknesses found? Either we messed up or you are good!
-            </ng-template>
+            <!-- TODO temporary -->
+            <div *ngIf="!summaryCalculationService.isCapability; else capability">
+              <p *ngIf="summaryCalculationService.weakness && summaryCalculationService.weakness.length > 0; else noWeakestAttackPatterns">
+                {{summaryCalculationService.weakness}}
+              </p>
+              <ng-template #noWeakestAttackPatterns>
+                No Weaknesses found? Either we messed up or you are good!
+              </ng-template>
+            </div>
           </mat-card-content>
         </mat-card>
         <mat-card class="uf-mat-card card right-card" id="vulnerabilityCard">
           <mat-card-title>Where you are most vulnerable</mat-card-title>
           <mat-card-content>
-            <mat-table #table [dataSource]="summaryCalculationService.topRisks">
-              <ng-container matColumnDef="{{columnIds[0]}}">
-                <mat-header-cell *matHeaderCellDef>KILL CHAIN AFFECTED</mat-header-cell>
-                <mat-cell *matCellDef="let risk">{{risk.phaseName | capitalize }}</mat-cell>
-              </ng-container>
-              <ng-container matColumnDef="{{columnIds[1]}}">
-                <mat-header-cell *matHeaderCellDef>ASSESSED ITEM</mat-header-cell>
-                <mat-cell *matCellDef="let risk">
-                  <ul *ngIf="risk.objects && risk.objects.length; else noObjects">
-                    <li *ngFor="let obj of risk.objects">
-                      <a href="#stix/{{obj.type}}s/{{obj.id}}">{{obj.name}}</a>
-                    </li>
-                  </ul>
-                  <ng-template #noObjects>
-                    No assessed vulnerabilities found
-                  </ng-template>
-                </mat-cell>
-              </ng-container>
-              <ng-container matColumnDef="{{columnIds[2]}}">
-                <mat-header-cell *matHeaderCellDef>RISK</mat-header-cell>
-                <mat-cell *matCellDef="let risk">
-                  <span *ngIf="risk.objects && risk.objects.length" class="label label-warning">{{calculateRisk(risk.objects)}}</span>
-                </mat-cell>
-              </ng-container>
-              <mat-header-row class="table-header-row" *matHeaderRowDef="columnIds"></mat-header-row>
-              <mat-row *matRowDef="let row; columns: columnIds;"></mat-row>
-            </mat-table>
+            <!-- TODO temporary -->
+            <div *ngIf="!summaryCalculationService.isCapability; else capability">
+              <mat-table #table [dataSource]="summaryCalculationService.topRisks">
+                <ng-container matColumnDef="{{columnIds[0]}}">
+                  <mat-header-cell *matHeaderCellDef>KILL CHAIN AFFECTED</mat-header-cell>
+                  <mat-cell *matCellDef="let risk">{{risk.phaseName | capitalize }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="{{columnIds[1]}}">
+                  <mat-header-cell *matHeaderCellDef>ASSESSED ITEM</mat-header-cell>
+                  <mat-cell *matCellDef="let risk">
+                    <ul *ngIf="risk.objects && risk.objects.length; else noObjects">
+                      <li *ngFor="let obj of risk.objects">
+                        <a href="#stix/{{obj.type}}s/{{obj.id}}">{{obj.name}}</a>
+                      </li>
+                    </ul>
+                    <ng-template #noObjects>
+                      No assessed vulnerabilities found
+                    </ng-template>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="{{columnIds[2]}}">
+                  <mat-header-cell *matHeaderCellDef>RISK</mat-header-cell>
+                  <mat-cell *matCellDef="let risk">
+                    <span *ngIf="risk.objects && risk.objects.length" class="label label-warning">{{calculateRisk(risk.objects)}}</span>
+                  </mat-cell>
+                </ng-container>
+                <mat-header-row class="table-header-row" *matHeaderRowDef="columnIds"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: columnIds;"></mat-row>
+              </mat-table>
+            </div>
           </mat-card-content>
         </mat-card>
       </div>
@@ -71,21 +78,27 @@
         <mat-card class="uf-mat-card card chart left-card" id="sophisticationCard">
           <mat-card-title>Sophistication Breakdown</mat-card-title>
           <mat-card-content>
-            <div *ngIf="summaryCalculationService.isSummaryAggregationValid(); else noSophisticationData">
-              <sophistication-breakdown [assessedAttackPatterns]="summaryCalculationService.summaryAggregation.assessedAttackPatternCountBySophisicationLevel"
-                [allAttackPatterns]="summaryCalculationService.summaryAggregation.totalAttackPatternCountBySophisicationLevel"></sophistication-breakdown>
+            <!-- TODO temporary -->
+            <div *ngIf="!summaryCalculationService.isCapability; else capability">
+              <div *ngIf="summaryCalculationService.isSummaryAggregationValid(); else noSophisticationData">
+                <sophistication-breakdown [assessedAttackPatterns]="summaryCalculationService.summaryAggregation.assessedAttackPatternCountBySophisicationLevel"
+                  [allAttackPatterns]="summaryCalculationService.summaryAggregation.totalAttackPatternCountBySophisicationLevel"></sophistication-breakdown>
+              </div>
+              <ng-template #noSophisticationData>No data to load chart!</ng-template>
             </div>
-            <ng-template #noSophisticationData>No data to load chart!</ng-template>
           </mat-card-content>
         </mat-card>
         <mat-card class="uf-mat-card card chart right-card">
           <mat-card-title>% Techniques Detected by Skill</mat-card-title>
           <mat-card-content>
-            <div *ngIf="summaryCalculationService.techniqueBreakdown;else noTechniquesData">
-              <techniques-chart #techniquesChart [riskThreshold]="summaryCalculationService.selectedRisk">
-              </techniques-chart>
+            <!-- TODO temporary -->
+            <div *ngIf="!summaryCalculationService.isCapability; else capability">
+              <div *ngIf="summaryCalculationService.techniqueBreakdown;else noTechniquesData">
+                <techniques-chart #techniquesChart [riskThreshold]="summaryCalculationService.selectedRisk">
+                </techniques-chart>
+              </div>
+              <ng-template #noTechniquesData>No data to load chart!</ng-template>
             </div>
-            <ng-template #noTechniquesData>No data to load chart!</ng-template>
           </mat-card-content>
         </mat-card>
       </div>
@@ -95,12 +108,18 @@
         <mat-card class="uf-mat-card card chart flex1" id="assessmentCard">
           <mat-card-title>% of Assessments Better than Mitigation Threshold</mat-card-title>
           <mat-card-content>
-            <div *ngIf="summaryCalculationService.assessmentsGroupingTotal;else noAssessmentsChartData">
-              <assessment-chart></assessment-chart>
+            <!-- TODO temporary -->
+            <div *ngIf="!summaryCalculationService.isCapability; else capability">
+              <div *ngIf="summaryCalculationService.assessmentsGroupingTotal;else noAssessmentsChartData">
+                <assessment-chart></assessment-chart>
+              </div>
+              <ng-template #noAssessmentsChartData>No data to load chart!</ng-template>
             </div>
-            <ng-template #noAssessmentsChartData>No data to load chart!</ng-template>
           </mat-card-content>
         </mat-card>
       </div>
     </div>
   </div>
+  <ng-template #capability>
+    Implementation COMING SOON
+  </ng-template>

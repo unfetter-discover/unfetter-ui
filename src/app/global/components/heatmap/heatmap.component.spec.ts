@@ -49,19 +49,20 @@ describe('HeatmapComponent', () => {
     ];
 
     beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                HeatmapComponent,
-                ResizeDirective,
-            ],
-            imports: [
-                HttpClientTestingModule,
-                OverlayModule,
-            ],
-            providers: [
-            ]
-        })
-        .compileComponents();
+        TestBed
+            .configureTestingModule({
+                declarations: [
+                    HeatmapComponent,
+                    ResizeDirective,
+                ],
+                imports: [
+                    HttpClientTestingModule,
+                    OverlayModule,
+                ],
+                providers: [
+                ]
+            })
+            .compileComponents();
     }));
 
     beforeEach(() => {

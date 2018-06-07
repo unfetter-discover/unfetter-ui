@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
@@ -9,6 +9,9 @@ import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { SearchParameters } from '../models/search-parameters';
 import { IndicatorHeatMapFilterComponent } from '../indicator-tactics/indicator-heatmap-filter.component';
+import { getPreferredKillchainPhases } from '../../root-store/config/config.selectors';
+import { RxjsHelpers } from '../../global/static/rxjs-helpers';
+import { ConfigKeys } from '../../global/enums/config-keys.enum';
 
 @Component({
   selector: 'indicator-sharing-filters',
@@ -18,8 +21,10 @@ import { IndicatorHeatMapFilterComponent } from '../indicator-tactics/indicator-
 export class IndicatorSharingFiltersComponent implements OnInit {
 
   public searchForm: FormGroup;
-  public killChainPhases$: Observable<any>;
-  public labels$: Observable<any>;
+  public killChainPhases$: Observable<string[]>;
+  public labels$: Observable<string[]>;
+  public dataSources$: Observable<string[]>;
+  public intrusionSets$: Observable<any[]>;
   public heatmapVisible = false;
   public attackPatterns: any[] = [];
 
@@ -52,13 +57,8 @@ export class IndicatorSharingFiltersComponent implements OnInit {
           searchChanges$.unsubscribe();
         }
       );
-
-    this.killChainPhases$ = this.store.select('config')
-      .pluck('configurations')
-      .filter((configurations: any) => configurations.killChains !== undefined)
-      .pluck('killChains')
-      .filter((killChains: any) => killChains.find((kc) => kc.name === 'mitre-attack') !== null)
-      .map((killChains: any) => killChains.find((kc) => kc.name === 'mitre-attack').phase_names);
+      
+    this.killChainPhases$ = this.store.select(getPreferredKillchainPhases);
 
     this.labels$ = this.store.select('indicatorSharing')
       .pluck('indicators')
@@ -68,10 +68,16 @@ export class IndicatorSharingFiltersComponent implements OnInit {
           .map((indicator) => indicator.labels)
           .reduce((prev, cur) => prev.concat(cur), []);
       })
-      .map((labels) => {
+      .map((labels: string[]) => {
         const labelSet = new Set(labels);
         return Array.from(labelSet);
       });
+
+    this.dataSources$ = this.store.select('config')
+      .pluck('configurations')
+      .filter(RxjsHelpers.filterByConfigKey(ConfigKeys.DATA_SOURCES))
+      .pluck(ConfigKeys.DATA_SOURCES)
+      .map((dataSources: string[]) => dataSources.sort());
 
     const getAttackPatterns$ = this.store.select('indicatorSharing')
       .pluck('attackPatterns')
@@ -88,6 +94,9 @@ export class IndicatorSharingFiltersComponent implements OnInit {
           }
         }
     );
+
+    this.intrusionSets$ = this.store.select('indicatorSharing')
+      .pluck('intrusionSets');
   }
 
   public clearSearchParameters() {

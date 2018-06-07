@@ -2,6 +2,7 @@ import { Component, OnInit, Renderer2 } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { environment } from '../environments/environment';
+import { RunConfigService } from './core/services/run-config.service';
 import { AuthService } from './core/services/auth.service';
 import { Themes } from './global/enums/themes.enum';
 import * as fromApp from './root-store/app.reducers';
@@ -18,20 +19,28 @@ import { demoUser } from './testing/demo-user';
   templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
-  public readonly showBanner = environment.showBanner || false;
-  public readonly securityMarkingLabel = environment.bannerText || '';
   public readonly runMode = environment.runMode;
   public readonly demoMode: boolean = (environment.runMode === 'DEMO');
   public theme: Themes = Themes.DEFAULT;
   public title;
 
   constructor(
-    public authService: AuthService,
+    private run_config: RunConfigService,
+    private authService: AuthService,
     private store: Store<fromApp.AppState>,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private renderer: Renderer2,
-  ) { }
+  ) {
+  }
+
+  public get showBanner(): boolean {
+    return this.run_config.getConfig().showBanner || false;
+  }
+
+  public get securityMarkingLabel(): string {
+    return this.run_config.getConfig().bannerText || '';
+  }
 
   public ngOnInit() {
     if (this.runMode && this.runMode === 'UAC') {

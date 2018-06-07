@@ -48,7 +48,12 @@ export const mockConfig = {
         'tool-label-ov': {
             enum: [ 'test' ]
         },
-    }
+    },
+    dataSources: [
+        'Application logs',
+        'Authentication logs',
+        'BIOS'
+    ]
 };
 
 export function makeRootMockStore(store: Store<fromRoot.AppState>) {

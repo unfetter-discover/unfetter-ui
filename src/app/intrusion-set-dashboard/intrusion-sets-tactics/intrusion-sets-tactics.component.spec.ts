@@ -1,6 +1,6 @@
 import { TestBed, ComponentFixture, async, } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { StoreModule } from '@ngrx/store';
+import { StoreModule, Store } from '@ngrx/store';
 
 import {
     MatButtonToggleModule,
@@ -26,56 +26,113 @@ import { HeatmapComponent } from '../../global/components/heatmap/heatmap.compon
 import { TreemapComponent } from '../../global/components/treemap/treemap.component';
 import { CapitalizePipe } from '../../global/pipes/capitalize.pipe';
 import { AuthService } from '../../core/services/auth.service';
-import { reducers } from '../../root-store/app.reducers';
+import {
+    mockUser,
+    mockTactics,
+    mockTargets,
+    mockAttackPatternData
+} from '../../global/components/tactics-pane/tactics.model.test';
+import * as configActions from '../../root-store/config/config.actions';
+import * as userActions from '../../root-store/users/user.actions';
+import { reducers, AppState } from '../../root-store/app.reducers';
 
 describe('IntrusionSetsTacticsComponent', () => {
 
-    let component: IntrusionSetsTacticsComponent;
     let fixture: ComponentFixture<IntrusionSetsTacticsComponent>;
+    let component: IntrusionSetsTacticsComponent;
+    let store: Store<AppState>;
 
     beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [
-                MatButtonToggleModule,
-                MatCardModule,
-                MatIconModule,
-                MatOptionModule,
-                MatSelectModule,
-                MatToolbarModule,
-                RouterTestingModule,
-                StoreModule.forRoot(reducers),
-            ],
-            declarations: [
-                IntrusionSetsTacticsComponent,
-                TacticsPaneComponent,
-                TacticsHeatmapComponent,
-                TacticsTreemapComponent,
-                TacticsCarouselComponent,
-                TacticsCarouselControlComponent,
-                TacticsTooltipComponent,
-                HeatmapComponent,
-                TreemapComponent,
-                Carousel,
-                CapitalizePipe,
-            ],
-            providers: [
-                IntrusionSetHighlighterService,
-                TacticsControlService,
-                TacticsTooltipService,
-                AuthService,
-            ],
-        })
-        .compileComponents();
+        TestBed
+            .configureTestingModule({
+                imports: [
+                    MatButtonToggleModule,
+                    MatCardModule,
+                    MatIconModule,
+                    MatOptionModule,
+                    MatSelectModule,
+                    MatToolbarModule,
+                    RouterTestingModule,
+                    StoreModule.forRoot(reducers),
+                ],
+                declarations: [
+                    IntrusionSetsTacticsComponent,
+                    TacticsPaneComponent,
+                    TacticsHeatmapComponent,
+                    TacticsTreemapComponent,
+                    TacticsCarouselComponent,
+                    TacticsCarouselControlComponent,
+                    TacticsTooltipComponent,
+                    HeatmapComponent,
+                    TreemapComponent,
+                    Carousel,
+                    CapitalizePipe,
+                ],
+                providers: [
+                    IntrusionSetHighlighterService,
+                    TacticsControlService,
+                    TacticsTooltipService,
+                    AuthService,
+                ],
+            })
+            .compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(IntrusionSetsTacticsComponent);
         component = fixture.componentInstance;
+        store = TestBed.get(Store);
+        store.dispatch(new userActions.LoginUser(mockUser));
+        store.dispatch(new configActions.LoadTactics(mockTactics));
         fixture.detectChanges();
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    describe('(with input data)', () => {
+
+        beforeEach(() => {
+            component.intrusionSets = [
+                {
+                    name: 'IS-1',
+                    color: '#ff6666',
+                    attack_patterns: [{ id: mockAttackPatternData[0].id }]
+                },
+            ];
+            component.attackPatterns = mockAttackPatternData.reduce((ptns, ap) => {
+                ptns[ap.id] = ap;
+                return ptns;
+            }, {});
+            component.targets = mockTargets;
+            component.ngOnChanges();
+            fixture.detectChanges();
+        });
+
+        it('should handle input data', () => {
+            expect(component).toBeTruthy();
+        });
+
+        it('should highlight patterns', () => {
+            const spy = spyOn(component['highlighter'], 'highlightIntrusionSets').and.callThrough();
+
+            component.highlightAttackPattern(null);
+            expect(spy).toHaveBeenCalledWith(null);
+
+            component.highlightAttackPattern({});
+            expect(spy).toHaveBeenCalledWith(null);
+
+            component.highlightAttackPattern({data: null});
+            expect(spy).toHaveBeenCalledWith(null);
+
+            component.highlightAttackPattern({data: {name: 'AP-IDK'}});
+            expect(spy).toHaveBeenCalledWith(null);
+
+            component.highlightAttackPattern({data: mockAttackPatternData[1]});
+            expect(spy).toHaveBeenCalledWith(component.attackPatterns[mockAttackPatternData[1].id]);
+        });
+
     });
 
 });
