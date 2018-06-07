@@ -17,6 +17,8 @@ import { CleanBaselineResultData, LoadBaselineData } from '../store/summary.acti
 import { SummaryState } from '../store/summary.reducers';
 import { SummaryDataSource } from './summary.datasource';
 import { SummaryCalculationService } from './summary-calculation.service';
+import { ConfirmationDialogComponent } from '../../../components/dialogs/confirmation/confirmation-dialog.component';
+import { Constance } from '../../../utils/constance';
 
 @Component({
   selector: 'summary',
@@ -252,8 +254,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public onDeleteCurrent(): void {
-    const id = this.baselineId;
-    // this.confirmDelete({ name: this.summary.name, rollupId: id });
+    this.confirmDelete(this.baselineId, this.baselineName.map((name) => return name);
   }
 
   /**
@@ -262,53 +263,52 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public onDelete(baseline: LastModifiedBaseline): void {
-    // this.confirmDelete({ name: baseline.name, rollupId: baseline.rollupId });
+    this.confirmDelete(baseline.id, baseline.name);
   }
 
   // /**
   //  * @description confirmation to delete
-  //  *  loop thru all baselines related to the given rollupId - and delete them
   //  * @param {LastModifiedAssessment} baseline
   //  * @return {void}
   //  */
-  // public confirmDelete(baseline: { name: string, rollupId: string }): void {
-  //   if (!baseline || !baseline.name || !baseline.rollupId) {
-  //     console.log('confirm delete requires a name and id');
-  //     return;
-  //   }
+  public confirmDelete(baselineId: string, baselineName: string): void {
+    if (!baselineId || !baselineId) {
+      console.log('confirm delete requires an id');
+      return;
+    }
 
-  //   const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: { attributes: baseline } });
-  //   const dialogSub$ = dialogRef.afterClosed()
-  //     .subscribe(
-  //       (result) => {
-  //         const isBool = typeof result === 'boolean';
-  //         const isString = typeof result === 'string';
-  //         if (!result ||
-  //           (isBool && result !== true) ||
-  //           (isString && result !== 'true')) {
-  //           return;
-  //         }
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: { attributes: baselineId } });
+    const dialogSub$ = dialogRef.afterClosed()
+      .subscribe(
+        (result) => {
+          const isBool = typeof result === 'boolean';
+          const isString = typeof result === 'string';
+          if (!result ||
+            (isBool && result !== true) ||
+            (isString && result !== 'true')) {
+            return;
+          }
 
-  //         const isCurrentlyViewed = baseline.rollupId === this.rollupId ? true : false;
-  //         const sub$ = this.assessService
-  //           .deleteByRollupId(baseline.rollupId)
-  //           .subscribe(
-  //             (resp) => this.masterListOptions.dataSource.nextDataChange(resp),
-  //             (err) => console.log(err),
-  //             () => {
-  //               if (sub$) {
-  //                 sub$.unsubscribe();
-  //               }
+          const isCurrentlyViewed = baselineId === this.baselineId ? true : false;
+          const sub$ = this.baselineService
+            .delete(baselineId)
+            .subscribe(
+              (resp) => this.masterListOptions.dataSource.nextDataChange(resp),
+              (err) => console.log(err),
+              () => {
+                if (sub$) {
+                  sub$.unsubscribe();
+                }
 
-  //               // we deleted the current baseline
-  //               if (isCurrentlyViewed) {
-  //                 return this.router.navigate([Constance.X_UNFETTER_ASSESSMENT_NAVIGATE_URL]);
-  //               }
-  //             });
-  //       },
-  //       (err) => console.log(err),
-  //       () => dialogSub$.unsubscribe());
-  // }
+                // we deleted the current baseline
+                if (isCurrentlyViewed) {
+                  return this.router.navigate([Constance.X_UNFETTER_ASSESSMENT_NAVIGATE_URL]);
+                }
+              });
+        },
+        (err) => console.log(err),
+        () => dialogSub$.unsubscribe());
+  }
 
   /**
    * @description
