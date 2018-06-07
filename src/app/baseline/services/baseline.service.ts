@@ -261,7 +261,8 @@ export class BaselineService {
 
         const url = `${this.capabilityBaseUrl}/${capId}`;
         return this.genericApi
-            .getAs<Capability>(url);
+            .getAs<Capability>(url)
+            .map(RxjsHelpers.mapAttributes);
     }
 
     /**
@@ -276,7 +277,8 @@ export class BaselineService {
 
         const url = `${this.categoryBaseUrl}/${catId}`;
         return this.genericApi
-            .getAs<Category>(url);
+            .getAs<Category>(url)
+            .map(RxjsHelpers.mapAttributes);
     }
 
     /**

@@ -16,6 +16,7 @@ import { CleanBaselineWizardData, FetchAttackPatterns, FetchBaseline, FetchCapab
 import { BaselineState } from '../store/baseline.reducers';
 import { AttackPatternChooserComponent } from './attack-pattern-chooser/attack-pattern-chooser.component';
 import { Measurements } from './models/measurements';
+import { Assess3Meta } from 'stix/assess/v3';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -37,6 +38,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public buttonLabel: ButtonLabel = 'CONTINUE';
   private readonly sidePanelNames: string[] = ['categories', 'capability-selector', 'capabilities', 'summary'];
 
+  public meta = new Assess3Meta();
   public showSummary = false;
   public page = 1;
   public totalPages = 0;
@@ -138,6 +140,10 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       .subscribe(
         (assessmentSet: AssessmentSet) => {
           this.currentBaseline = assessmentSet;
+          this.meta = new Assess3Meta();
+          this.meta.title = this.currentBaseline.name;
+          this.meta.description = this.currentBaseline.description;
+          this.meta.created_by_ref = this.currentBaseline.created_by_ref;
         },
         (err) => console.log(err));
 
@@ -335,7 +341,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
     this.page = this.navigations.find(navigation => navigation.id === capabilityId);
     this.wizardStore.dispatch(this.baselineCapabilities.find((capability) => capability.id === capability.id));
-    this.wizardStore.dispatch(new SetCurrentBaselineGroup(this.baselineGroups.find(category => category.name === this.currentCapability.category)));
+    this.wizardStore.dispatch(new SetCurrentBaselineGroup(this.baselineGroups.find(category => category.id === this.currentCapability.category)));
 
     this.openedSidePanel = 'capabilities';
   }
@@ -464,8 +470,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
         // Update current capability group if we've drifted onto another one
         let currCap = this.baselineCapabilities.find(capability => capability.id === currPage.id) as Capability;
-        if (!this.currentBaselineGroup || currCap.category !== this.currentBaselineGroup.name) {
-          this.wizardStore.dispatch(new SetCurrentBaselineGroup(this.allCategories.find((category) => category.name === currCap.category)));
+        if (!this.currentBaselineGroup || currCap.category !== this.currentBaselineGroup.id) {
+          this.wizardStore.dispatch(new SetCurrentBaselineGroup(this.allCategories.find((category) => category.id === currCap.category)));
         }
 
         this.wizardStore.dispatch(new SetCurrentBaselineCapability(currCap));
@@ -536,7 +542,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     let index = 2;   // start at 2; 1 is 'GROUP SETUP'
     this.baselineGroups.forEach((category) => {
       this.navigations.push( { id: category.id, label: category.name,  page: index++ } );
-      let capsForThisCategory = this.baselineCapabilities.filter(cap => cap.category === category.name);
+      let capsForThisCategory = this.baselineCapabilities.filter(cap => cap.category === category.id);
       capsForThisCategory.forEach((cap) => {
           this.navigations.push( { id: cap.id, label: cap.name,  page: index++ } );
         })
@@ -569,7 +575,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    */
   public getCapabilities(category: Category): Capability[] {
     return this.baselineCapabilities
-                    .filter((capability) => capability.category === category.name)
+                    .filter((capability) => capability.category === category.id)
                     .sort();
   }
 
