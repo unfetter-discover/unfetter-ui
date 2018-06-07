@@ -11,9 +11,11 @@ export interface IndicatorSharingState {
     indicators: any[],
     filteredIndicators: any[],
     displayedIndicators: any[]
+    intrusionSets: any[],
     sensors: any[],
     attackPatterns: any[],
     identities: any[],
+    intrusionSetsByAttackpattern: {},
     searchParameters: SearchParameters,
     indicatorToSensorMap: {},
     indicatorToApMap: {},
@@ -31,6 +33,7 @@ export const initialSearchParameters: SearchParameters = {
     attackPatterns: [],
     published: [],
     dataSources: [],
+    intrusionSets: [],
     validStixPattern: false
 };
 
@@ -38,9 +41,11 @@ export const initialState: IndicatorSharingState = {
     indicators: [],
     filteredIndicators: [],
     displayedIndicators: [],
+    intrusionSets: [],
     sensors: [],
     attackPatterns: [],
     identities: [],
+    intrusionSetsByAttackpattern: {},
     searchParameters: { ...initialSearchParameters },
     indicatorToSensorMap: {},
     indicatorToApMap: {},
@@ -152,6 +157,11 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
                 displayedIndicators: displayedIndicatorsCopy,
                 totalIndicatorCount: (state.totalIndicatorCount - 1)
             };
+        case indicatorSharingActions.SET_INTRUSION_SETS:
+            return {
+                ...state,
+                intrusionSets: action.payload
+            };
         case indicatorSharingActions.SET_SENSORS:
             const indicatorToSensorMap = buildIndicatorToSensorMap(state.indicators, action.payload);
             return {
@@ -174,7 +184,11 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
                 ...state,
                 indicatorToApMap: action.payload
             };
-
+        case indicatorSharingActions.SET_INTRUSION_SETS_BY_ATTACK_PATTERN:
+            return {
+                ...state,
+                intrusionSetsByAttackpattern: action.payload
+            };
         case indicatorSharingActions.SET_SEARCH_PARAMETERS:
             return {
                 ...state,
