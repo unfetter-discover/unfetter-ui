@@ -53,3 +53,14 @@ if (!Array.prototype.includes) {
         }
     });
 }
+
+Object.keys = Object.keys || (obj => {
+    const keys = [];
+    for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            keys.push(key);
+        }
+    }
+    return keys;
+});
+Object.values = Object.values || (obj => Object.keys(obj).map(key => obj[key]));
