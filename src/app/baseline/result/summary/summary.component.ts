@@ -30,6 +30,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
   readonly baseAssessUrl = '/baseline';
   baselineName: Observable<string>;
+  blName: string;
   baselineId: string;
 
   dates: any[];
@@ -190,15 +191,15 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .select('summary')
       .pluck('baseline')
       .distinctUntilChanged()
+      .do((bl: AssessmentSet) => {
+        this.blName = (bl) ? bl.name : '';
+      })
       .switchMap((arr: AssessmentSet[]) => {
         if (!arr || arr.length === 0) {
           return Observable.of('');
         }
         return Observable.of(arr[0].name);
       });
-    
-    
-
 
     this.subscriptions.push(sub1$, sub2$, sub8$);
   }
@@ -233,7 +234,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     if (!event || (event instanceof UIEvent)) {
       routePromise = this.router.navigate([this.masterListOptions.modifyRoute, this.baselineId]);
     } else {
-      routePromise = this.router.navigate([this.masterListOptions.modifyRoute, event.baselineId]);
+      routePromise = this.router.navigate([this.masterListOptions.modifyRoute, event.id]);
     }
 
     routePromise.catch((e) => console.log(e));
@@ -254,7 +255,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public onDeleteCurrent(): void {
-    this.confirmDelete(this.baselineId, this.baselineName.map((name) => return name);
+    this.confirmDelete({ name: this.blName, id: this.baselineId });
   }
 
   /**
@@ -263,7 +264,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public onDelete(baseline: LastModifiedBaseline): void {
-    this.confirmDelete(baseline.id, baseline.name);
+    this.confirmDelete({ name: baseline.name, id: baseline.id });
   }
 
   // /**
@@ -271,13 +272,13 @@ export class SummaryComponent implements OnInit, OnDestroy {
   //  * @param {LastModifiedAssessment} baseline
   //  * @return {void}
   //  */
-  public confirmDelete(baselineId: string, baselineName: string): void {
-    if (!baselineId || !baselineId) {
+  public confirmDelete(baseline: { name: string, id: string }): void {
+    if (!baseline || !baseline.id) {
       console.log('confirm delete requires an id');
       return;
     }
 
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: { attributes: baselineId } });
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: { attributes: baseline } });
     const dialogSub$ = dialogRef.afterClosed()
       .subscribe(
         (result) => {
@@ -289,9 +290,9 @@ export class SummaryComponent implements OnInit, OnDestroy {
             return;
           }
 
-          const isCurrentlyViewed = baselineId === this.baselineId ? true : false;
+          const isCurrentlyViewed = baseline.id === this.baselineId ? true : false;
           const sub$ = this.baselineService
-            .delete(baselineId)
+            .delete(baseline)
             .subscribe(
               (resp) => this.masterListOptions.dataSource.nextDataChange(resp),
               (err) => console.log(err),
