@@ -214,10 +214,7 @@
             <h4 class="fw400">
               <a routerLink="/stix/x-unfetter-sensors/{{sensor.id}}">{{sensor.name}}</a>
             </h4>
-            <p>
-              <label>Observed Data</label>
-              <observable-data-summary [observedData]="sensor.metaProperties.observedData"></observable-data-summary>
-            </p>
+            <p *ngIf="sensor.description">{{ sensor.description }}</p>
           </div>
         </mat-tab>
 
