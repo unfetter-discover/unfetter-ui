@@ -96,10 +96,6 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
                 ...state,
                 currentCapability: action.payload,
             });
-        case baselineActions.SAVE_CAPABILITY_GROUPS:
-            return genAssessState({
-                ...state,
-            });
         case baselineActions.SAVE_OBJECT_ASSESSMENTS:
             return genAssessState({
                 ...state,

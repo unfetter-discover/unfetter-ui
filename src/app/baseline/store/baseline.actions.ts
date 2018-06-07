@@ -20,7 +20,7 @@ export const SET_CAPABILITIES = '[Baseline] SET_CAPABILITIES';
 export const SET_BASELINE_CAPABILITIES = '[Baseline] SET_BASELINE_CAPABILITIES';
 export const SET_CURRENT_BASELINE_CAPABILITY = '[Baseline] SET_CURRENT_BASELINE_CAPABILITY';
 export const SET_BASELINE = '[Baseline] SET_BASELINE';
-export const SAVE_CAPABILITY_GROUPS = '[Baseline] SAVE_CAPABILITY_GROUPS';
+export const ADD_CAPABILITY_GROUP = '[Baseline] ADD_CAPABILITY_GROUP';
 export const SAVE_OBJECT_ASSESSMENTS = '[Baseline] SAVE_OBJECT_ASSESSMENTS';
 export const FAILED_TO_LOAD = '[Assess] FAILED_TO_LOAD';
 
@@ -105,10 +105,10 @@ export class SetCapabilityGroups implements Action {
     constructor(public payload: Category[]) { }
 }
 
-export class SaveCapabilityGroups implements Action {
-    public readonly type = SAVE_CAPABILITY_GROUPS;
+export class AddCapabilityGroup implements Action {
+    public readonly type = ADD_CAPABILITY_GROUP;
 
-    constructor(public payload: Category[]) { }
+    constructor(public payload: Category) { }
 }
 
 export class SetBaselineGroups implements Action {
@@ -229,7 +229,7 @@ export type BaselineActions =
     FinishedSaving |
     LoadBaselineWizardData |
     SaveBaseline |
-    SaveCapabilityGroups |
+    AddCapabilityGroup |
     SaveObjectAssessments |
     SetAttackPatterns |
     SetBaseline |
