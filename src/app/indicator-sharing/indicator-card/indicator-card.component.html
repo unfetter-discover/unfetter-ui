@@ -121,6 +121,15 @@
               </span>
             </p>
           </div>
+          <div *ngIf="intrusionSets && intrusionSets.length">
+            <label>Intrusion Sets</label>
+            <p>
+              <span *ngFor="let intrusionSet of intrusionSets; let i = index">
+                <a routerLink="/stix/intrusion-sets/{{ intrusionSet.id }}" [ngClass]="{'uf-highlight': highlightIs(intrusionSet.id)}">{{ intrusionSet.name }}</a>
+                <span *ngIf="i < (intrusionSets.length - 1)">&nbsp;&bull;&nbsp;</span>
+              </span>
+            </p>
+          </div>
           <div *ngIf="indicator.external_references">
             <label>External References</label>
             <br>

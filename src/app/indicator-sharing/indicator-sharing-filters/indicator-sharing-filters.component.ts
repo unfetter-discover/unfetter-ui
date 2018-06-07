@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
@@ -24,6 +24,7 @@ export class IndicatorSharingFiltersComponent implements OnInit {
   public killChainPhases$: Observable<string[]>;
   public labels$: Observable<string[]>;
   public dataSources$: Observable<string[]>;
+  public intrusionSets$: Observable<any[]>;
   public heatmapVisible = false;
   public attackPatterns: any[] = [];
 
@@ -93,6 +94,9 @@ export class IndicatorSharingFiltersComponent implements OnInit {
           }
         }
     );
+
+    this.intrusionSets$ = this.store.select('indicatorSharing')
+      .pluck('intrusionSets');
   }
 
   public clearSearchParameters() {
