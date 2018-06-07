@@ -12,6 +12,7 @@ import { IndicatorHeatMapFilterComponent } from '../indicator-tactics/indicator-
 import { getPreferredKillchainPhases } from '../../root-store/config/config.selectors';
 import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 import { ConfigKeys } from '../../global/enums/config-keys.enum';
+import { UserState } from '../../root-store/users/users.reducers';
 
 @Component({
   selector: 'indicator-sharing-filters',
@@ -81,9 +82,20 @@ export class IndicatorSharingFiltersComponent implements OnInit {
 
     const getAttackPatterns$ = this.store.select('indicatorSharing')
       .pluck('attackPatterns')
+      .withLatestFrom(this.store.select('users'))
       .subscribe(
-        (attackPatterns: any[]) => {
-          this.attackPatterns = attackPatterns;
+        ([attackPatterns, user]: [any[], UserState]) => {
+          if (user.userProfile.preferences && user.userProfile.preferences.killchain) {
+            this.attackPatterns = attackPatterns
+              .filter((ap) => {
+                return ap.kill_chain_phases &&
+                  ap.kill_chain_phases
+                    .map((kc) => kc.kill_chain_name)
+                    .includes(user.userProfile.preferences.killchain);
+              });
+          } else {
+            this.attackPatterns = attackPatterns;
+          }
         },
         (err) => {
           console.log(err);
