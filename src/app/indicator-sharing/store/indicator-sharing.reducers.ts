@@ -34,6 +34,7 @@ export const initialSearchParameters: SearchParameters = {
     published: [],
     dataSources: [],
     intrusionSets: [],
+    observedData: [],
     validStixPattern: false
 };
 

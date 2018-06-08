@@ -17,6 +17,7 @@ import { PatternHandlerPatternObject } from '../../models/pattern-handlers';
 
 export class ObservableDataTreeComponent implements OnInit {
     @Input() public parentForm: FormGroup;
+    @Input() public formCtrl: FormControl;
     @Input() public observedDataPath: any[];
     @Input() public patternObjSubject: Subject<PatternHandlerPatternObject[]>;
 
@@ -85,6 +86,32 @@ export class ObservableDataTreeComponent implements OnInit {
                     console.log('Could not find element in observedData form');
                 }
             }
+
+        // If reactive form control
+        } else if (this.formCtrl) {
+
+            const observedDataCtrlVal: PatternHandlerPatternObject[] = this.formCtrl.value;
+            if (e.checked) {
+                observedDataCtrlVal.push({
+                    name,
+                    action,
+                    property
+                });
+            } else {
+                let index = -1;
+                observedDataCtrlVal.forEach((obs, i) => {
+                    if (obs.name === name && obs.action === action && obs.property === property) {
+                        index = i;
+                    }
+                });
+
+                if (index > -1) {
+                    observedDataCtrlVal.splice(index, 1);
+                } else {
+                    console.log('Could not find element in observedDataPath');
+                }
+            }
+            this.formCtrl.setValue(observedDataCtrlVal || []);
 
         // If input is standard array
         } else if (this.observedDataPath) {

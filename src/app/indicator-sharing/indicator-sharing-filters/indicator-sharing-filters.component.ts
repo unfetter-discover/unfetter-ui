@@ -14,6 +14,7 @@ import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 import { ConfigKeys } from '../../global/enums/config-keys.enum';
 import { UserState } from '../../root-store/users/users.reducers';
 import { ObservedDataFilterComponent } from './observed-data-filter/observed-data-filter.component';
+import { Constance } from '../../utils/constance';
 
 @Component({
   selector: 'indicator-sharing-filters',
@@ -125,18 +126,24 @@ export class IndicatorSharingFiltersComponent implements OnInit {
     } else {
       this.observedDataVisible = true;
       const dialog = this.dialog.open(ObservedDataFilterComponent, {
-        width: 'calc(100vw - 400px)',
-        height: 'calc(100vh - 200px)',
+        width: Constance.DIALOG_WIDTH_MEDIUM,
+        height: Constance.DIALOG_HEIGHT_TALL,
         hasBackdrop: true,
         disableClose: false,
-        closeOnNavigation: true
+        closeOnNavigation: true,
+        data: {
+          formCtrl: this.searchForm.get('observedData')
+        }
       });
-      dialog.afterClosed().subscribe(
-        result => {
-          this.observedDataVisible = false;
-        },
-        (err) => console.log(err),
-      );
+      const dialog$ = dialog.afterClosed()
+        .finally(() => dialog$ && dialog$.unsubscribe())
+        .subscribe(
+          (result) => {
+            console.log('~~~~ obs diag ~~', result);
+            this.observedDataVisible = false;
+          },
+          (err) => console.log(err),
+        );
     }
   }
 
