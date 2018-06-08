@@ -102,6 +102,7 @@ export class IndicatorSharingService {
         const projectObj = {
             'stix.name': 1,
             'stix.id': 1,
+            'stix.description': 1,
             'metaProperties.observedData': 1
         };
         const filterObj = {

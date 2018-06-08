@@ -34,6 +34,9 @@ export const testUser = {
             };
         })
     },
+    preferences: {
+        killchain: 'mitre-attack'
+    },
     token: 'Bearer 123',
     authenticated: true,
     approved: true,
