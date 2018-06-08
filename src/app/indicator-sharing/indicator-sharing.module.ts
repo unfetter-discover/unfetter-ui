@@ -49,6 +49,7 @@ import { AddAttackPatternComponent } from './add-attack-pattern/add-attack-patte
 import { IndicatorHeatMapFilterComponent } from './indicator-tactics/indicator-heatmap-filter.component';
 import { SummaryStatisticsComponent } from './summary-statistics/summary-statistics.component';
 import { IndicatorTacticsComponent } from './indicator-tactics/indicator-tactics.component';
+import { ObservedDataFilterComponent } from './indicator-sharing-filters/observed-data-filter/observed-data-filter.component';
 
 const matModules = [
     MatButtonModule,
@@ -98,6 +99,7 @@ const matModules = [
         IndicatorHeatMapFilterComponent,
         SummaryStatisticsComponent,
         IndicatorTacticsComponent,
+        ObservedDataFilterComponent,
     ],
     providers: [
         IndicatorSharingService
@@ -105,6 +107,7 @@ const matModules = [
     entryComponents: [
         AddIndicatorComponent,
         IndicatorHeatMapFilterComponent,
+        ObservedDataFilterComponent,
     ]
 })
 export class IndicatorSharingModule { }

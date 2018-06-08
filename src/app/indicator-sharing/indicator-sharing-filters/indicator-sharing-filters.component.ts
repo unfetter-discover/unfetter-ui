@@ -13,6 +13,7 @@ import { getPreferredKillchainPhases } from '../../root-store/config/config.sele
 import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 import { ConfigKeys } from '../../global/enums/config-keys.enum';
 import { UserState } from '../../root-store/users/users.reducers';
+import { ObservedDataFilterComponent } from './observed-data-filter/observed-data-filter.component';
 
 @Component({
   selector: 'indicator-sharing-filters',
@@ -27,6 +28,7 @@ export class IndicatorSharingFiltersComponent implements OnInit {
   public dataSources$: Observable<string[]>;
   public intrusionSets$: Observable<any[]>;
   public heatmapVisible = false;
+  public observedDataVisible = false;
   public attackPatterns: any[] = [];
 
   constructor(
@@ -114,6 +116,28 @@ export class IndicatorSharingFiltersComponent implements OnInit {
   public clearSearchParameters() {
     this.searchForm.reset(fromIndicatorSharing.initialSearchParameters);
     this.store.dispatch(new indicatorSharingActions.ClearSearchParameters());
+  }
+
+  public toggleObservedDataDialog() {
+    if (this.observedDataVisible) {
+      this.observedDataVisible = false;
+      this.dialog.closeAll();
+    } else {
+      this.observedDataVisible = true;
+      const dialog = this.dialog.open(ObservedDataFilterComponent, {
+        width: 'calc(100vw - 400px)',
+        height: 'calc(100vh - 200px)',
+        hasBackdrop: true,
+        disableClose: false,
+        closeOnNavigation: true
+      });
+      dialog.afterClosed().subscribe(
+        result => {
+          this.observedDataVisible = false;
+        },
+        (err) => console.log(err),
+      );
+    }
   }
 
   /**
