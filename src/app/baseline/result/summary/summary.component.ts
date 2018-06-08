@@ -17,6 +17,8 @@ import { CleanBaselineResultData, LoadBaselineData } from '../store/summary.acti
 import { SummaryState } from '../store/summary.reducers';
 import { SummaryDataSource } from './summary.datasource';
 import { SummaryCalculationService } from './summary-calculation.service';
+import { ConfirmationDialogComponent } from '../../../components/dialogs/confirmation/confirmation-dialog.component';
+import { Constance } from '../../../utils/constance';
 
 @Component({
   selector: 'summary',
@@ -28,6 +30,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
   readonly baseAssessUrl = '/baseline';
   baselineName: Observable<string>;
+  blName: string;
   baselineId: string;
 
   dates: any[];
@@ -184,21 +187,20 @@ export class SummaryComponent implements OnInit, OnDestroy {
         // }
       }, (err) => console.log(err));
 
-    this.baselineName = this.store
+    const sub9$ = this.store
       .select('summary')
       .pluck('baseline')
       .distinctUntilChanged()
-      .switchMap((arr: AssessmentSet[]) => {
+      .subscribe((arr: AssessmentSet[]) => {
         if (!arr || arr.length === 0) {
-          return Observable.of('');
+          this.blName = '';
+        } else {
+          this.blName = arr[0].name;
         }
-        return Observable.of(arr[0].name);
-      });
-    
-    
+        this.baselineName = Observable.of(this.blName);
+      }, (err) => console.log(err));
 
-
-    this.subscriptions.push(sub1$, sub2$, sub8$);
+    this.subscriptions.push(sub1$, sub2$, sub8$, sub9$);
   }
 
 
@@ -252,8 +254,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public onDeleteCurrent(): void {
-    const id = this.baselineId;
-    // this.confirmDelete({ name: this.summary.name, rollupId: id });
+    this.confirmDelete({ name: this.blName, id: this.baselineId });
   }
 
   /**
@@ -262,53 +263,52 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public onDelete(baseline: LastModifiedBaseline): void {
-    // this.confirmDelete({ name: baseline.name, rollupId: baseline.rollupId });
+    this.confirmDelete({ name: baseline.name, id: baseline.id });
   }
 
   // /**
   //  * @description confirmation to delete
-  //  *  loop thru all baselines related to the given rollupId - and delete them
   //  * @param {LastModifiedAssessment} baseline
   //  * @return {void}
   //  */
-  // public confirmDelete(baseline: { name: string, rollupId: string }): void {
-  //   if (!baseline || !baseline.name || !baseline.rollupId) {
-  //     console.log('confirm delete requires a name and id');
-  //     return;
-  //   }
+  public confirmDelete(baseline: { name: string, id: string }): void {
+    if (!baseline || !baseline.id) {
+      console.log('confirm delete requires an id');
+      return;
+    }
 
-  //   const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: { attributes: baseline } });
-  //   const dialogSub$ = dialogRef.afterClosed()
-  //     .subscribe(
-  //       (result) => {
-  //         const isBool = typeof result === 'boolean';
-  //         const isString = typeof result === 'string';
-  //         if (!result ||
-  //           (isBool && result !== true) ||
-  //           (isString && result !== 'true')) {
-  //           return;
-  //         }
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: { attributes: baseline } });
+    const dialogSub$ = dialogRef.afterClosed()
+      .subscribe(
+        (result) => {
+          const isBool = typeof result === 'boolean';
+          const isString = typeof result === 'string';
+          if (!result ||
+            (isBool && result !== true) ||
+            (isString && result !== 'true')) {
+            return;
+          }
 
-  //         const isCurrentlyViewed = baseline.rollupId === this.rollupId ? true : false;
-  //         const sub$ = this.assessService
-  //           .deleteByRollupId(baseline.rollupId)
-  //           .subscribe(
-  //             (resp) => this.masterListOptions.dataSource.nextDataChange(resp),
-  //             (err) => console.log(err),
-  //             () => {
-  //               if (sub$) {
-  //                 sub$.unsubscribe();
-  //               }
+          const isCurrentlyViewed = baseline.id === this.baselineId ? true : false;
+          const sub$ = this.baselineService
+            .delete(baseline)
+            .subscribe(
+              (resp) => this.masterListOptions.dataSource.nextDataChange(resp),
+              (err) => console.log(err),
+              () => {
+                if (sub$) {
+                  sub$.unsubscribe();
+                }
 
-  //               // we deleted the current baseline
-  //               if (isCurrentlyViewed) {
-  //                 return this.router.navigate([Constance.X_UNFETTER_ASSESSMENT_NAVIGATE_URL]);
-  //               }
-  //             });
-  //       },
-  //       (err) => console.log(err),
-  //       () => dialogSub$.unsubscribe());
-  // }
+                // we deleted the current baseline
+                if (isCurrentlyViewed) {
+                  return this.router.navigate([Constance.X_UNFETTER_ASSESSMENT3_BASELINE_NAVIGATE_URL]);
+                }
+              });
+        },
+        (err) => console.log(err),
+        () => dialogSub$.unsubscribe());
+  }
 
   /**
    * @description

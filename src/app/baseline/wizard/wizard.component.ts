@@ -298,7 +298,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public onOpenSidePanel(panelName: string, group?: Category): void {
     if (group) {
       // Adjust page based on given group
-      // this.page = this.navigations.find(navigation => navigation.id === group.id).page;
+      this.page = this.navigations.find(navigation => navigation.id === group.id).page;
 
       this.wizardStore.dispatch(new SetCurrentBaselineGroup(group));
     }
