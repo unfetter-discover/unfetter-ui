@@ -1,3 +1,4 @@
+import { ConfigKeys } from '../enums/config-keys.enum';
 
 export class RxjsHelpers {
 
@@ -46,5 +47,18 @@ export class RxjsHelpers {
             }
         });
         return mapObj;
+    }
+    
+    /**
+     * @param  {ConfigKeys} configKey
+     * @returns {({}) => boolean }
+     * @description Usage: this.store.select('config').filter(RxjsHelpers.filterByConfigKey(ConfigKeys.KEY_NAME)).pluck(ConfigKeys.KEY_NAME)
+     *  Confirms a key is present in the ngrx config store before continuing with the observable
+     */
+    public static filterByConfigKey(configKey: ConfigKeys): ({}) => boolean {
+        return (configObj: {}): boolean => {
+            const UCkeys = Object.keys(configObj).map(key => key.toUpperCase());
+            return UCkeys.indexOf(configKey.toUpperCase()) > -1;
+        };
     }
 }

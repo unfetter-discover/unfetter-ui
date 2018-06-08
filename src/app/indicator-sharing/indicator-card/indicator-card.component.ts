@@ -26,6 +26,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input() public indicator: any;
     @Input() public attackPatterns: any;
+    @Input() public intrusionSets: any;
     @Input() public searchParameters: any;
     @Input() public creator: string;
     @Input() public sensors: any;
@@ -126,6 +127,10 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
 
     public highlightPhase(phase) {
         return this.searchParameters.killChainPhases.length > 0 && this.searchParameters.killChainPhases.includes(phase);
+    }
+
+    public highlightIs(isId) {
+        return this.searchParameters.intrusionSets.length > 0 && this.searchParameters.intrusionSets.includes(isId);
     }
 
     public labelSelected(label) {
