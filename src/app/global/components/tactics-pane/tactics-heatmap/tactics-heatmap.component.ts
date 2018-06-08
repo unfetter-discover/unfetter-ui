@@ -1,20 +1,8 @@
 import {
     Component,
-    OnInit,
-    Input,
-    Output,
-    EventEmitter,
     ViewChild,
-    Renderer2,
-    ElementRef,
-    TemplateRef,
-    ViewContainerRef,
 } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
-
-import { Overlay, OverlayRef } from '@angular/cdk/overlay';
-import { TemplatePortal } from '@angular/cdk/portal';
 
 import { TacticsView } from '../tactics-view';
 import { Tactic, TacticChain } from '../tactics.model';
@@ -29,9 +17,7 @@ import {
     DEFAULT_OPTIONS,
 } from '../../heatmap/heatmap.data';
 import { Dictionary } from '../../../../models/json/dictionary';
-import { UserProfile } from '../../../../models/user/user-profile';
 import { AppState } from '../../../../root-store/app.reducers';
-import { AuthService } from '../../../../core/services/auth.service';
 
 /**
  * @description Common data that can be found on attack patterns displayed in a heatmap cell.
@@ -57,6 +43,12 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
     @ViewChild(HeatmapComponent) private heatmap: HeatmapComponent;
 
     private noColor: HeatColor = {bg: '#ccc', fg: 'black'};
+    private readonly undefinedData = 'no-stix-data-defined';
+    private readonly undefinedTactics = {
+        title: 'No STIX Data Defined',
+        value: this.undefinedData,
+    };
+    private readonly undefinedColor: HeatColor = {bg: 'transparent', fg: 'transparent'};
 
     /**
      * @description 
@@ -149,6 +141,14 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
                     value: null,
                     cells: [],
                 };
+
+                if (!phase.tactics || !phase.tactics.length) {
+                    data[phase.id].cells.push({...this.undefinedTactics});
+                    if (!heats[this.undefinedData]) {
+                        heats[this.undefinedData] = this.undefinedColor;
+                    }
+                }
+
                 phase.tactics.forEach(tactic => {
                     if (!aps[tactic.id]) {
                         // convert the tactic into a heat cell, colorize it if it is targeted
