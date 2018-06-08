@@ -63,19 +63,24 @@ export class TacticsTreemapComponent extends TacticsView<TreemapComponent, Treem
                         data.push([framework.name, 'Attack Patterns', null]);
                     }
                     Object.values(framework.phases).forEach((phase: any) => {
-                        data.push([phase.name, chains.length > 1 ? framework.name : 'Attack Patterns', null]);
-                        phase.tactics.forEach(ap => {
-                            const name = ap.name
-                                    + (ap.phases.length > 1 ? ` (${ap.phases.indexOf(phase.id) + 1})` : '');
-                            const target = this.targets.find(tactic => tactic.id === ap.id);
-                            const value = (this.hasHighlights(target)) ? this.sumHighlights(target) : 0;
-                            data.push([name, phase.name, value + 1]);
-                        });
+                        if (phase.tactics && phase.tactics.length) {
+                            data.push([phase.name, chains.length > 1 ? framework.name : 'Attack Patterns', null]);
+                            phase.tactics.forEach(ap => {
+                                const name = ap.name
+                                        + (ap.phases.length > 1 ? ` (${ap.phases.indexOf(phase.id) + 1})` : '');
+                                const target = this.targets.find(tactic => tactic.id === ap.id);
+                                const value = (this.hasHighlights(target)) ? this.sumHighlights(target) : 0;
+                                data.push([name, phase.name, value + 1]);
+                            });
+                        } else {
+                            data.push([phase.name, chains.length > 1 ? framework.name : 'Attack Patterns', 1]);
+                        }
                     });
                 }
             });
         }
         requestAnimationFrame(() => {
+            console['debug']('tactics treemap data', data);
             this.data = data;
         });
     }
