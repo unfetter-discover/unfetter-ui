@@ -187,21 +187,20 @@ export class SummaryComponent implements OnInit, OnDestroy {
         // }
       }, (err) => console.log(err));
 
-    this.baselineName = this.store
+    const sub9$ = this.store
       .select('summary')
       .pluck('baseline')
       .distinctUntilChanged()
-      .do((bl: AssessmentSet) => {
-        this.blName = (bl) ? bl.name : '';
-      })
-      .switchMap((arr: AssessmentSet[]) => {
+      .subscribe((arr: AssessmentSet[]) => {
         if (!arr || arr.length === 0) {
-          return Observable.of('');
+          this.blName = '';
+        } else {
+          this.blName = arr[0].name;
         }
-        return Observable.of(arr[0].name);
-      });
+        this.baselineName = Observable.of(this.blName);
+      }, (err) => console.log(err));
 
-    this.subscriptions.push(sub1$, sub2$, sub8$);
+    this.subscriptions.push(sub1$, sub2$, sub8$, sub9$);
   }
 
 
@@ -303,7 +302,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
                 // we deleted the current baseline
                 if (isCurrentlyViewed) {
-                  return this.router.navigate([Constance.X_UNFETTER_ASSESSMENT_NAVIGATE_URL]);
+                  return this.router.navigate([Constance.X_UNFETTER_ASSESSMENT3_BASELINE_NAVIGATE_URL]);
                 }
               });
         },
