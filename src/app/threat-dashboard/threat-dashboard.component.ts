@@ -496,7 +496,8 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
         //     (Math.log(selectedAttackPatterns.length) / Math.LN10) : 0;
         // dataPoint.value = val;
         dataPoint.value = Math.round((selectedAttackPatterns.length / total) * 100);
-        dataPoint.value = dataPoint.value > 0 ? Math.log(dataPoint.value) : 0;
+        // log does not work well for few elements
+        // dataPoint.value = dataPoint.value > 0 ? Math.log(dataPoint.value) : 0;
         return dataPoint;
       });
 
