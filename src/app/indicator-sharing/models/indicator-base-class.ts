@@ -3,10 +3,12 @@ import { Store } from '@ngrx/store';
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { ChangeDetectorRef } from '@angular/core';
+import { SortHelper } from '../../global/static/sort-helper';
 
 export abstract class IndicatorBase {
     public errorMessage: string = null;
     public indicatorToAttackPatternMap = {};
+    public intrusionSetToAttackPatternMap = {};
     public identities = [];
     public indicatorToSensorMap = {};
     public SERVER_CALL_COMPLETE = false;
@@ -88,6 +90,19 @@ export abstract class IndicatorBase {
                     }
                 }
             );
+
+        const getIntrusionSetToAttackPatternMap$ = this.store.select('indicatorSharing')
+            .pluck('intrusionSetsByAttackpattern')
+            .finally(() => getIntrusionSetToAttackPatternMap$ && getIntrusionSetToAttackPatternMap$.unsubscribe())
+            .distinctUntilChanged()
+                .subscribe(
+                    (intrusionSetsByAttackpattern) => {
+                        this.intrusionSetToAttackPatternMap = intrusionSetsByAttackpattern;
+                    },
+                    (err) => {
+                        console.log(err);
+                    }
+                );
     }
 
     public updateIndicator(newIndicatorState) {
@@ -96,6 +111,25 @@ export abstract class IndicatorBase {
 
     public getAttackPatternsByIndicatorId(indicatorId) {
         return this.indicatorToAttackPatternMap[indicatorId] !== undefined ? this.indicatorToAttackPatternMap[indicatorId] : [];
+    }
+    
+    /**
+     * @param  {string} indicatorId
+     * @returns any[]
+     * @description takes an indicator ID, finds the attack patterns related to that indicator,
+     * then returns the intrusion sets related to that attack pattern
+     */
+    public getIntrusionSetsByIndicatorId(indicatorId: string): any[] {
+        const attackPatterns = this.getAttackPatternsByIndicatorId(indicatorId);
+        const isSet = new Set();
+        attackPatterns.forEach((ap) => {
+            const intrusionSets = this.intrusionSetToAttackPatternMap[ap.id] !== undefined ? this.intrusionSetToAttackPatternMap[ap.id] : [];
+            intrusionSets.forEach((is) => isSet.add(JSON.stringify(is)));
+        });
+        const retVal = Array.from(isSet)
+            .map((is) => JSON.parse(is))
+            .sort(SortHelper.sortDescByField('name', true));
+        return retVal;
     }
 
     public getIdentityNameById(createdByRef) {

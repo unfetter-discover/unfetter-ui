@@ -1,0 +1,9 @@
+<div class="dataSourcesComponent">
+  <mat-form-field class="full-width">
+    <mat-select placeholder="Data Sources" [formControl]="formCtrl" [multiple]="true">
+      <mat-option *ngFor="let dataSource of dataSources$ | async" [value]="dataSource">
+        {{ dataSource }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>

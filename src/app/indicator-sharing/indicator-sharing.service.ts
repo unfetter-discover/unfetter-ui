@@ -21,6 +21,7 @@ export class IndicatorSharingService {
     public sensorsUrl = Constance.X_UNFETTER_SENSOR_URL;
     public patternHandlerUrl = Constance.PATTERN_HANDLER_URL;
     public relationshipUrl = Constance.RELATIONSHIPS_URL;
+    public intrusionSetsUrl = Constance.INTRUSION_SET_URL;
     public readonly runMode = environment.runMode;
 
     constructor(
@@ -101,6 +102,7 @@ export class IndicatorSharingService {
         const projectObj = {
             'stix.name': 1,
             'stix.id': 1,
+            'stix.description': 1,
             'metaProperties.observedData': 1
         };
         const filterObj = {
@@ -190,5 +192,21 @@ export class IndicatorSharingService {
 
     public publishIndicator(id: string): Observable<any> {
         return this.genericApi.get(`${this.multiplesUrl}/${id}/publish`);
+    }
+
+    /**
+     * @return {Observable} various STIX types
+     * @description Gives an object with an attack pattern IDs as the properties that point to a list of intrusion sets
+     */
+    public getInstrusionSetsByAttackPattern(): Observable<any> {
+        return this.genericApi.get(`${this.attackPatternsUrl}/intrusion-sets-by-attack-pattern`);
+    }
+
+    public getIntrusionSets(): Observable<any> {
+        const projectObj = {
+            'stix.name': 1,
+            'stix.id': 1
+        }
+        return this.genericApi.get(`${this.intrusionSetsUrl}?project=${encodeURI(JSON.stringify(projectObj))}`);
     }
 }

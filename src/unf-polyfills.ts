@@ -4,7 +4,6 @@
 if (!Array.prototype.includes) {
     Object.defineProperty(Array.prototype, 'includes', {
         value: (searchElement, fromIndex) => {
-            
             // 1. Let O be ? ToObject(this value).
             if (this == null) {
                 throw new TypeError('"this" is null or not defined');
@@ -51,5 +50,54 @@ if (!Array.prototype.includes) {
             // 8. Return false
             return false;
         }
+    });
+}
+
+Object.keys = Object.keys || (obj => {
+    const keys = [];
+    for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            keys.push(key);
+        }
+    }
+    return keys;
+});
+Object.values = Object.values || (obj => Object.keys(obj).map(key => obj[key]));
+if (!Object.entries) {
+    Object.entries = function(obj) {
+        const ownProps = Object.keys(obj);
+        let i = ownProps.length, resArray = new Array(i); // preallocate the Array
+        while (i--) {
+            resArray[i] = [ownProps[i], obj[ownProps[i]]];
+        }
+        return resArray;
+    }
+};
+
+if (typeof Object.assign !== 'function') {
+    // Must be writable: true, enumerable: false, configurable: true
+    Object.defineProperty(Object, 'assign', {
+        value: function assign(target, varArgs) { // .length of function is 2
+            'use strict';
+            if (target == null) { // TypeError if undefined or null
+                throw new TypeError('Cannot convert undefined or null to object');
+            }
+
+            const to = Object(target);
+            for (let index = 1; index < arguments.length; index++) {
+                const nextSource = arguments[index];
+                if (nextSource != null) { // Skip over if undefined or null
+                    for (const nextKey in nextSource) {
+                        // Avoid bugs when hasOwnProperty is shadowed
+                        if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+                            to[nextKey] = nextSource[nextKey];
+                        }
+                    }
+                }
+            }
+            return to;
+        },
+        writable: true,
+        configurable: true
     });
 }

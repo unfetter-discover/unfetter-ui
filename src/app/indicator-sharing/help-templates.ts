@@ -17,4 +17,6 @@ export const observableDataHelp = `
     <h4>Observed Data</h4>
     <p>Observed data follows the <strong>Object, Action, Field</strong> structure of the <a href="https://car.mitre.org/wiki/Data_Model" target=_blank>CAR Data Model</a>.  
     It is applied to both analytics and sensors to help determine which sensors are capable of running an analytic.</p>
+    <h4>Data Sources</h4>
+    <p>The data sources required to run the analytic.</p>
 `;

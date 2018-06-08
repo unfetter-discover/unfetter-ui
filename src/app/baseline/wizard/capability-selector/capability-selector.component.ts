@@ -51,7 +51,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
         (currentCapabilityGroup: Category) => {
           this.currentCapabilityGroup = currentCapabilityGroup;
           if (this.currentCapabilityGroup) {
-           this.selectedCapabilities = this.baselineCapabilities.filter((cap) => cap.category === this.currentCapabilityGroup.name);
+           this.selectedCapabilities = this.baselineCapabilities.filter((cap) => cap.category === this.currentCapabilityGroup.id);
           } else {
             this.selectedCapabilities = [];
           }
@@ -65,7 +65,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
       .subscribe(
         (baselineCapabilities: any[]) => {
           this.baselineCapabilities = (baselineCapabilities) ? baselineCapabilities.slice() : [];
-          this.selectedCapabilities = this.baselineCapabilities.filter((cap) => cap.category === this.currentCapabilityGroup.name);
+          this.selectedCapabilities = this.baselineCapabilities.filter((cap) => cap.category === this.currentCapabilityGroup.id);
         },
         (err) => console.log(err));
   
@@ -115,7 +115,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
     if (indexInList < 0 && option.value !== CapabilitySelectorComponent.DEFAULT_VALUE) {
       if (index === -1) {
         // Apply category name to this capability
-        newCapability.category = this.currentCapabilityGroup.name;
+        newCapability.category = this.currentCapabilityGroup.id;
         this.selectedCapabilities.push(newCapability);
         option.value = CapabilitySelectorComponent.DEFAULT_VALUE;
       } else {

@@ -12,11 +12,12 @@ import { LastModifiedBaseline } from '../models/last-modified-baseline';
 
 @Injectable()
 export class BaselineService {
-    public readonly baselineBaseUrl = Constance.X_UNFETTER_BASELINE_URL;
+    public readonly baselineBaseUrl = Constance.X_UNFETTER_ASSESSMENT_SETS_URL;
     public readonly capabilityBaseUrl = Constance.X_UNFETTER_CAPABILITY_URL;
     public readonly categoryBaseUrl = Constance.X_UNFETTER_CATEGORY_URL;
     public readonly relationshipsBaseUrl = Constance.RELATIONSHIPS_URL;
     public readonly objectAssessmentsBaseUrl = Constance.X_UNFETTER_OBJECT_ASSESSMENTS_URL;
+    public readonly assessmentSetBaseUrl = Constance.X_UNFETTER_ASSESSMENT_SETS_URL;
 
     constructor(
         @SkipSelf() @Optional() protected parent: BaselineService,
@@ -246,6 +247,38 @@ export class BaselineService {
         }
 
         return this.fetchObjectAssessments(assessmentSet.assessments);
+    }
+
+    /**
+     * @description
+     * @param {string} capability id
+     * @return {Observable<Capability>}
+     */
+    public fetchCapability(capId: string): Observable<Capability> {
+        if (!capId) {
+            return Observable.of(new Capability());
+        }
+
+        const url = `${this.capabilityBaseUrl}/${capId}`;
+        return this.genericApi
+            .getAs<Capability>(url)
+            .map(RxjsHelpers.mapAttributes);
+    }
+
+    /**
+     * @description
+     * @param {string} category id
+     * @return {Observable<Category>}
+     */
+    public fetchCategory(catId: string): Observable<Category> {
+        if (!catId) {
+            return Observable.of(new Category());
+        }
+
+        const url = `${this.categoryBaseUrl}/${catId}`;
+        return this.genericApi
+            .getAs<Category>(url)
+            .map(RxjsHelpers.mapAttributes);
     }
 
     /**

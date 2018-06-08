@@ -1,4 +1,5 @@
 import { RxjsHelpers } from './rxjs-helpers';
+import { Observable } from 'rxjs/Observable';
 
 describe('RxjsHelpers class', () => {
 
@@ -39,6 +40,31 @@ describe('RxjsHelpers class', () => {
             const relObj = RxjsHelpers.relationshipArrayToObject(relArr, 'wrongProperty');
             expect(relObj['1234']).toBe(undefined);
             expect(relObj['4567']).toBe(undefined);
+        });
+    });
+
+    describe('filterByConfigKey function', () => {
+        const fakeConfigurations = { foo: true, bar: true };
+
+        it('should return a filter to find the key', (done) => {
+            Observable.of(fakeConfigurations)
+                .filter(RxjsHelpers.filterByConfigKey('foo' as any))
+                .pluck('foo')
+                .subscribe(
+                    (configValue) => {
+                        expect(configValue).toBeTruthy();
+                        done();
+                    },
+                    (err) => {
+                        console.log(err);
+                    }
+                );
+        });
+
+        it('should fail to find a fake key', () => {
+            const filter = RxjsHelpers.filterByConfigKey('fakekey' as any);
+            const result = filter(fakeConfigurations);
+            expect(result).toBeFalsy();
         });
     });
 });

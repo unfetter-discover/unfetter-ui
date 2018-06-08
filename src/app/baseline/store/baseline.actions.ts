@@ -8,7 +8,6 @@ import { AttackPattern } from 'stix/unfetter/attack-pattern';
 export const START_BASELINE = '[Baseline] START_BASELINE';
 export const START_BASELINE_SUCCESS = '[Baseline] START_BASELINE_SUCCESS';
 export const SAVE_BASELINE = '[Baseline] SAVE_BASELINE';
-export const LOAD_BASELINE_WIZARD_DATA = '[Baseline] LOAD_BASELINE_WIZARD_DATA';
 export const CLEAN_BASELINE_WIZARD_DATA = '[Baseline] CLEAN_BASELINE_WIZARD_DATA';
 export const FETCH_BASELINE = '[Baseline] FETCH_BASELINE';
 export const FETCH_CAPABILITY_GROUPS = '[Baseline] FETCH_CAPABILITY_GROUPS';
@@ -22,7 +21,10 @@ export const SET_CURRENT_BASELINE_CAPABILITY = '[Baseline] SET_CURRENT_BASELINE_
 export const SET_BASELINE = '[Baseline] SET_BASELINE';
 export const ADD_CAPABILITY_GROUP = '[Baseline] ADD_CAPABILITY_GROUP';
 export const SAVE_OBJECT_ASSESSMENTS = '[Baseline] SAVE_OBJECT_ASSESSMENTS';
-export const FAILED_TO_LOAD = '[Assess] FAILED_TO_LOAD';
+export const FAILED_TO_LOAD = '[Baseline] FAILED_TO_LOAD';
+export const SET_AND_READ_ASSESSMENT_SET = '[Baseline] SET_AND_GET_ASSESSMENT_OBJECTS';
+export const SET_AND_READ_OBJECT_ASSESSMENTS = '[Baseline] SET_AND_READ_OBJECT_ASSESSMENTS';
+export const SET_AND_READ_CAPABILITIES = '[Baseline] SET_AND_READ_CAPABILITIES';
 
 // For reducers
 export const UPDATE_PAGE_TITLE = '[Baseline] UPDATE_PAGE_TITLE';
@@ -93,6 +95,24 @@ export class SetBaseline implements Action {
     constructor(public payload: AssessmentSet) { }
 }
 
+export class SetAndReadAssessmentSet implements Action {
+    public readonly type = SET_AND_READ_ASSESSMENT_SET;
+
+    constructor(public payload: AssessmentSet) { }
+}
+
+export class SetAndReadObjectAssessments implements Action {
+    public readonly type = SET_AND_READ_OBJECT_ASSESSMENTS;
+
+    constructor(public payload: ObjectAssessment[]) { }
+}
+
+export class SetAndReadCapabilities implements Action {
+    public readonly type = SET_AND_READ_CAPABILITIES;
+
+    constructor(public payload: Capability[]) { }
+}
+
 export class FetchCapabilityGroups implements Action {
     public readonly type = FETCH_CAPABILITY_GROUPS;
 
@@ -159,12 +179,6 @@ export class SetCurrentBaselineObjectAssessment implements Action {
     constructor(public payload: ObjectAssessment) { }
 }
 
-export class LoadBaselineWizardData implements Action {
-    public readonly type = LOAD_BASELINE_WIZARD_DATA;
-
-    constructor(public payload: Partial<BaselineMeta>) { }
-}
-
 export class FetchAttackPatterns implements Action {
     public readonly type = FETCH_ATTACK_PATTERNS;
     constructor(public payload?: string) { }
@@ -227,10 +241,12 @@ export type BaselineActions =
     FetchCapabilityGroups |
     FinishedLoading |
     FinishedSaving |
-    LoadBaselineWizardData |
     SaveBaseline |
     AddCapabilityGroup |
     SaveObjectAssessments |
+    SetAndReadAssessmentSet |
+    SetAndReadObjectAssessments |
+    SetAndReadCapabilities |
     SetAttackPatterns |
     SetBaseline |
     SetBaselineCapabilities |

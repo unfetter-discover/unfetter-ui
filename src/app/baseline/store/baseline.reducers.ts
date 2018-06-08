@@ -62,9 +62,15 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
                 ...state,
             });
         case baselineActions.SET_BASELINE:
+        case baselineActions.SET_AND_READ_ASSESSMENT_SET:
             return genAssessState({
                 ...state,
                 baseline: action.payload,
+            });
+        case baselineActions.SET_AND_READ_OBJECT_ASSESSMENTS:
+            return genAssessState({
+                ...state,
+                baselineObjAssessments: action.payload,
             });
         case baselineActions.SET_CAPABILITY_GROUPS:
             return genAssessState({
@@ -87,6 +93,7 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
                 capabilities: [...action.payload],
             });
         case baselineActions.SET_BASELINE_CAPABILITIES:
+        case baselineActions.SET_AND_READ_CAPABILITIES:
             return genAssessState({
                 ...state,
                 baselineCapabilities: [...action.payload],

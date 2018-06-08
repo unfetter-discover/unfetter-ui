@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
@@ -10,6 +10,9 @@ import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { SearchParameters } from '../models/search-parameters';
 import { IndicatorHeatMapFilterComponent } from '../indicator-tactics/indicator-heatmap-filter.component';
 import { getPreferredKillchainPhases } from '../../root-store/config/config.selectors';
+import { RxjsHelpers } from '../../global/static/rxjs-helpers';
+import { ConfigKeys } from '../../global/enums/config-keys.enum';
+import { UserState } from '../../root-store/users/users.reducers';
 
 @Component({
   selector: 'indicator-sharing-filters',
@@ -19,8 +22,10 @@ import { getPreferredKillchainPhases } from '../../root-store/config/config.sele
 export class IndicatorSharingFiltersComponent implements OnInit {
 
   public searchForm: FormGroup;
-  public killChainPhases$: Observable<any>;
-  public labels$: Observable<any>;
+  public killChainPhases$: Observable<string[]>;
+  public labels$: Observable<string[]>;
+  public dataSources$: Observable<string[]>;
+  public intrusionSets$: Observable<any[]>;
   public heatmapVisible = false;
   public attackPatterns: any[] = [];
 
@@ -64,16 +69,33 @@ export class IndicatorSharingFiltersComponent implements OnInit {
           .map((indicator) => indicator.labels)
           .reduce((prev, cur) => prev.concat(cur), []);
       })
-      .map((labels) => {
+      .map((labels: string[]) => {
         const labelSet = new Set(labels);
         return Array.from(labelSet);
       });
 
+    this.dataSources$ = this.store.select('config')
+      .pluck('configurations')
+      .filter(RxjsHelpers.filterByConfigKey(ConfigKeys.DATA_SOURCES))
+      .pluck(ConfigKeys.DATA_SOURCES)
+      .map((dataSources: string[]) => dataSources.sort());
+
     const getAttackPatterns$ = this.store.select('indicatorSharing')
       .pluck('attackPatterns')
+      .withLatestFrom(this.store.select('users'))
       .subscribe(
-        (attackPatterns: any[]) => {
-          this.attackPatterns = attackPatterns;
+        ([attackPatterns, user]: [any[], UserState]) => {
+          if (user.userProfile.preferences && user.userProfile.preferences.killchain) {
+            this.attackPatterns = attackPatterns
+              .filter((ap) => {
+                return ap.kill_chain_phases &&
+                  ap.kill_chain_phases
+                    .map((kc) => kc.kill_chain_name)
+                    .includes(user.userProfile.preferences.killchain);
+              });
+          } else {
+            this.attackPatterns = attackPatterns;
+          }
         },
         (err) => {
           console.log(err);
@@ -84,6 +106,9 @@ export class IndicatorSharingFiltersComponent implements OnInit {
           }
         }
     );
+
+    this.intrusionSets$ = this.store.select('indicatorSharing')
+      .pluck('intrusionSets');
   }
 
   public clearSearchParameters() {
