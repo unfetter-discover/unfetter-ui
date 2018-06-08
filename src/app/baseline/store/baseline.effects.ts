@@ -2,19 +2,20 @@ import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
+import { Action } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { catchError, map, flatMap } from 'rxjs/operators';
-import { AssessmentSet, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
+import { catchError, flatMap, map } from 'rxjs/operators';
+import { AssessmentSet, Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { AttackPatternService } from '../../core/services/attack-pattern.service';
 import { GenericApi } from '../../core/services/genericapi.service';
+import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
 import { JsonApi } from '../../models/json/jsonapi';
 import { JsonApiData } from '../../models/json/jsonapi-data';
 import { BaselineStateService } from '../services/baseline-state.service';
 import { BaselineService } from '../services/baseline.service';
 import * as baselineActions from './baseline.actions';
-import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 
 @Injectable()
 export class BaselineEffects {
@@ -29,28 +30,86 @@ export class BaselineEffects {
         protected router: Router,
     ) { }
 
-    @Effect()
-    public fetchAssessmentWizardData = this.actions$
-        .ofType(baselineActions.LOAD_BASELINE_WIZARD_DATA)
-        .pluck('payload')
-        // .switchMap((meta: Partial<Assessment3Meta>) => {
-        //     const includeMeta = `?metaproperties=true`;
-        //     let url = `${Constance.X_UNFETTER_ASSESSMENT3_URL}${includeMeta}`;
-        //     const observables = new Array<Observable<Array<JsonApiData<Stix>>>>();
 
-        //     return Observable.forkJoin(...observables);
-        // })
-        .mergeMap(() => {
-            return [
-                new baselineActions.FinishedLoading(true)
-            ];
+    @Effect()
+    public fetchBaseline = this.actions$
+        .ofType(baselineActions.FETCH_BASELINE)
+        .pluck('payload')
+        .switchMap((baselineId: string) => {
+            return this.baselineService.fetchAssessmentSet(baselineId);
+        })
+        .map((assessmentSet: AssessmentSet) => {
+            return new baselineActions.SetAndReadAssessmentSet(assessmentSet);
+        });
+    
+    @Effect()
+    public setAndReadAssessmentSet = this.actions$
+        .ofType(baselineActions.SET_AND_READ_ASSESSMENT_SET)
+        .pluck('payload')
+        .switchMap((assessmentSet: AssessmentSet) => {
+            return this.baselineService.fetchObjectAssessmentsByAssessmentSet(assessmentSet);
+        })
+        .map((objAssessments: ObjectAssessment[]) => {
+            return new baselineActions.SetAndReadObjectAssessments(objAssessments);
         });
 
     @Effect()
-    public fetchAssessment = this.actions$
-        .ofType(baselineActions.FETCH_BASELINE)
-        .switchMap(() => this.baselineService.load())
-        .map((arr: any[]) => new baselineActions.FetchBaseline(arr[0]));
+    public setAndReadObjectAssessments = this.actions$
+        .ofType(baselineActions.SET_AND_READ_OBJECT_ASSESSMENTS)
+        .pluck('payload')
+        .switchMap((objAssessments: ObjectAssessment[]) => {
+            const observables = objAssessments
+                .map((objAssessment) => {
+                    return this.baselineService.fetchCapability(objAssessment.object_ref);
+                });
+
+            return Observable.forkJoin(...observables).pipe(
+                map((arr) => {
+                    return new baselineActions.SetAndReadCapabilities(arr);
+                }),
+                catchError((err) => {
+                    console.log(err);
+                    return Observable.of(new baselineActions.FailedToLoad(true));
+                })
+            );
+        });
+
+    @Effect()
+    public setAndReadCapabilities = this.actions$
+        .ofType(baselineActions.SET_AND_READ_CAPABILITIES)
+        .pluck('payload')
+        .switchMap((capabilities: Capability[]) => {
+            const observables = capabilities
+                .map((capability) => {
+                    return this.baselineService.fetchCategory(capability.category);
+                });
+            return Observable.forkJoin(...observables);
+        })
+        .mergeMap((groups) => {
+            const actions: Action[] = [
+                new baselineActions.SetBaselineGroups(groups),
+                new baselineActions.FinishedLoading(true) ];
+            return actions;
+        });
+        // .switchMap((capabilities: Capability[]) => {
+        //     const observables = capabilities
+        //         .map((capability) => {
+        //             return this.baselineService.fetchCategory(capability.category);
+        //         });
+            
+        //     return Observable.forkJoin(...observables).pipe(
+        //         map((groups) => {
+        //             const actions: Action[] = [];
+        //             actions.push(new baselineActions.SetBaselineGroups(groups));
+        //             actions.push(new baselineActions.FinishedLoading(true));
+        //             return actions;
+        //         }),
+        //         catchError((err) => {
+        //             console.log(err);
+        //             return Observable.of(new baselineActions.FailedToLoad(true));
+        //         })
+        //     );
+        // });
 
     @Effect()
     public fetchCapabilityGroups = this.actions$

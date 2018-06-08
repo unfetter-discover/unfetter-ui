@@ -231,7 +231,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     if (!event || (event instanceof UIEvent)) {
       routePromise = this.router.navigate([this.masterListOptions.modifyRoute, this.baselineId]);
     } else {
-      routePromise = this.router.navigate([this.masterListOptions.modifyRoute, event.baselineId]);
+      routePromise = this.router.navigate([this.masterListOptions.modifyRoute, event.id]);
     }
 
     routePromise.catch((e) => console.log(e));

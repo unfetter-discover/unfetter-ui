@@ -5,7 +5,7 @@ import { Constance } from '../../utils/constance';
 
 @Injectable()
 export class BaselineSummaryService {
-    public readonly baseUrl = Constance.X_UNFETTER_BASELINE_URL;
+    public readonly baseUrl = Constance.X_UNFETTER_ASSESSMENT_SETS_URL;
 
     constructor(private genericApi: GenericApi) { }
 

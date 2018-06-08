@@ -171,7 +171,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
       this.selectedCapabilityGroups.splice(index, 1); 
 
       // Must remove any capabilities for which this category were associated
-      this.wizardStore.dispatch(new assessActions.SetBaselineCapabilities(this.baselineCapabilities.filter(capability => capability.category !== option.value.name)));
+      this.wizardStore.dispatch(new assessActions.SetBaselineCapabilities(this.baselineCapabilities.filter(capability => capability.category !== option.value.id)));
 
       // Update wizard store with current category selections
       this.wizardStore.dispatch(new SetBaselineGroups(this.selectedCapabilityGroups.filter((capabilityGroup) => capabilityGroup !== undefined)));
