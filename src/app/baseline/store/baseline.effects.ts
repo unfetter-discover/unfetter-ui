@@ -199,6 +199,29 @@ export class BaselineEffects {
             });
         });
 
+    @Effect()
+    public addCapabilityGroup = this.actions$
+        .ofType(baselineActions.ADD_CAPABILITY_GROUP)
+        .pluck('payload')
+        .switchMap(( category: Category) => {
+            const json = {
+                data: { attributes: category }
+            } as JsonApi<JsonApiData<Category>>;
+            let url = 'api/v3/x-unfetter-categories';
+            if (category.id) {
+                url = `${url}/${category.id}`;
+                return this.genericServiceApi
+                .patchAs<Category>(url, json);
+            } else {
+                return this.genericServiceApi
+                .postAs<Category>(url, json);
+            }
+        })
+        .map((category) => {
+            return new baselineActions.FetchCapabilityGroups();
+        });
+
+
   @Effect()
   public saveObjectAssessments = this.actions$
     .ofType(baselineActions.SAVE_OBJECT_ASSESSMENTS)
@@ -236,5 +259,5 @@ export class BaselineEffects {
         })
       );
     });
-
+  
 }
