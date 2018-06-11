@@ -53,10 +53,13 @@
         </button>
       </div>
       <div class="mb-12">
-        <button mat-raised-button (click)="toggleObservedDataDialog()">Observed Data</button>
-      </div>
-      <div class="mb-9">
         <mat-checkbox formControlName="validStixPattern">Show STIX Patterns Only</mat-checkbox>
+      </div>
+      <div class="mb-9" id="obsDataWrapper">
+        <button mat-button (click)="toggleObservedDataDialog()">
+          <a>Observed Data&nbsp;</a>
+          <span *ngIf="searchForm.get('observedData').value.length">({{ searchForm.get('observedData').value.length }})</span>
+        </button>
       </div>
     </form>
   </div>
