@@ -3,6 +3,6 @@
   <observable-data-tree [formCtrl]="data.formCtrl"></observable-data-tree>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-button [mat-dialog-close]="false">CANCEL</button>
+  <button mat-button [mat-dialog-close]="false" (click)="clear()">CANCEL</button>
   <button mat-raised-button color="primary" (click)="accept()">ACCEPT</button>
 </mat-dialog-actions>

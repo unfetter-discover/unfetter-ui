@@ -115,7 +115,7 @@ export class IndicatorSharingFiltersComponent implements OnInit {
   }
 
   public clearSearchParameters() {
-    this.searchForm.reset(fromIndicatorSharing.initialSearchParameters);
+    this.searchForm.reset({ ...fromIndicatorSharing.initialSearchParameters });
     this.store.dispatch(new indicatorSharingActions.ClearSearchParameters());
   }
 
@@ -139,7 +139,6 @@ export class IndicatorSharingFiltersComponent implements OnInit {
         .finally(() => dialog$ && dialog$.unsubscribe())
         .subscribe(
           (result) => {
-            console.log('~~~~ obs diag ~~', result);
             this.observedDataVisible = false;
           },
           (err) => console.log(err),

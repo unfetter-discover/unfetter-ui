@@ -36,6 +36,10 @@ export class ObservableDataTreeComponent implements OnInit {
     }
 
     public ngOnInit() {
+        if (this.formCtrl) {
+            this.observedDataPath = this.formCtrl.value;
+        }
+
         const config$ = this.store.select('config')
             .pluck('configurations')
             .filter((configurations: any) => configurations.observableDataTypes)
@@ -43,7 +47,7 @@ export class ObservableDataTreeComponent implements OnInit {
             .subscribe(
                 (observableDataTypes: any[]) => {
                     this.observableDataTypes = observableDataTypes;
-                    if (this.observedDataPath && this.observedDataPath.length) {
+                    if ((this.observedDataPath && this.observedDataPath.length) || this.formCtrl) {
                         this.buildTree(true);
                     } else {
                         this.buildTree();
@@ -90,7 +94,7 @@ export class ObservableDataTreeComponent implements OnInit {
         // If reactive form control
         } else if (this.formCtrl) {
 
-            const observedDataCtrlVal: PatternHandlerPatternObject[] = this.formCtrl.value;
+            const observedDataCtrlVal: PatternHandlerPatternObject[] = [ ...this.formCtrl.value ];
             if (e.checked) {
                 observedDataCtrlVal.push({
                     name,

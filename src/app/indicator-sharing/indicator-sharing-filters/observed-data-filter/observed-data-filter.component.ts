@@ -13,9 +13,12 @@ export class ObservedDataFilterComponent {
     public dialogRef: MatDialogRef<ObservedDataFilterComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { formCtrl: FormControl }
   ) { }
-  // TODO add clear button
 
-  accept() {
+  public clear() {
+    this.data.formCtrl.setValue([]);
+  }
+
+  public accept() {
     this.dialogRef.close(true);
   }
 }
