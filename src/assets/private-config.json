@@ -1,8 +1,0 @@
-{
-    "showBanner": true,
-    "bannerText": "I'm a banner!!",
-    "authServices": [
-        "github",
-        "gitlab"
-    ]
-}

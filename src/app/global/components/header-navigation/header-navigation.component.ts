@@ -83,7 +83,6 @@ export class HeaderNavigationComponent {
       (cfg) => {
         if (cfg && cfg[this.runMode.toLocaleLowerCase()]) {
           cfg = {...cfg[this.runMode.toLocaleLowerCase()], ...cfg.private};
-          console.log('header config', cfg);
           if (cfg.showBanner === true) {
             this.topPx = '17px';
           }
