@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormControl } from '@angular/forms';
-import { PatternHandlerGetObjects } from '../../../global/models/pattern-handlers';
+import { PatternHandlerPatternObject } from '../../../global/models/pattern-handlers';
 
 @Component({
   selector: 'observed-data-filter',
@@ -10,7 +10,7 @@ import { PatternHandlerGetObjects } from '../../../global/models/pattern-handler
 })
 export class ObservedDataFilterComponent implements OnInit {
 
-  public observedDataPath: PatternHandlerGetObjects[];
+  public observedDataPath: PatternHandlerPatternObject[];
 
   constructor(
     public dialogRef: MatDialogRef<ObservedDataFilterComponent>,
