@@ -1,24 +1,28 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormControl } from '@angular/forms';
+import { PatternHandlerGetObjects } from '../../../global/models/pattern-handlers';
 
 @Component({
   selector: 'observed-data-filter',
   templateUrl: './observed-data-filter.component.html',
   styleUrls: ['./observed-data-filter.component.scss']
 })
-export class ObservedDataFilterComponent {
+export class ObservedDataFilterComponent implements OnInit {
+
+  public observedDataPath: PatternHandlerGetObjects[];
 
   constructor(
     public dialogRef: MatDialogRef<ObservedDataFilterComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { formCtrl: FormControl }
   ) { }
 
-  public clear() {
-    this.data.formCtrl.setValue([]);
+  public ngOnInit() {
+    this.observedDataPath = [ ...this.data.formCtrl.value ];
   }
 
   public accept() {
+    this.data.formCtrl.setValue(this.observedDataPath);
     this.dialogRef.close(true);
   }
 }
