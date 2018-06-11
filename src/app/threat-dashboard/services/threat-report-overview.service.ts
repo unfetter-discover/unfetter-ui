@@ -246,11 +246,14 @@ export class ThreatReportOverviewService {
       id = threatReportMeta.id;
     }
 
-    const meta = {
-      published: false,
-      work_products: [],
-    };
-    const attributes = Object.assign({}, { metaProperties: meta }, report.attributes);
+    // const metaProperties = {
+    //   published: false,
+    //   work_products: [],
+    // };
+    // const attributes = Object.assign({}, { metaProperties }, report.attributes);
+    const attributes = report.attributes;
+    attributes.metaProperties.published = (attributes.metaProperties.published !== undefined) ? attributes.metaProperties.published : false;
+    attributes.metaProperties.work_products = attributes.metaProperties.work_products || [];
     if (threatReportMeta) {
       // filter out the given work product we are reattaching it
       attributes.metaProperties.work_products = attributes.metaProperties.work_products.filter((wp) => wp.id !== id);

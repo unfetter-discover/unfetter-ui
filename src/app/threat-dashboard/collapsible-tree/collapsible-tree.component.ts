@@ -168,26 +168,19 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
                     }
                     return d._children ? 'full-node' : 'empty-node';
                 })
-                .on('mouseover', (d: any) => {
-                    // TODO: fix tooltip across browsers with 
-                    //  this.getScreenCTM()
-                    const mouseCoords = d3.mouse(svgEl as any);
-                    const D3event = d3.event as any;
-                    const eventX = mouseCoords[0];
-                    const eventY = mouseCoords[1];
+                .on('mouseover', function (d: any) {
+                    const curEl: any = this;
+                    const matrix = curEl.getScreenCTM().translate(+curEl.getAttribute('cx'), +curEl.getAttribute('cy'));
+                    const eventX = (window.pageXOffset + matrix.e) - 275;
+                    const eventY = (window.pageYOffset + matrix.f) - 150;
                     if (d.data.description) {
                         tooltipDiv.transition()
-                            .duration(200)
+                            .duration(400)
                             .style('opacity', .9);
                         tooltipDiv.html(d.data.description)
-                            .style('left', (eventX + 24) + 'px')
-                            .style('top', (eventY - 24) + 'px');
+                            .style('left', eventX + 'px')
+                            .style('top', eventY + 'px');
                     }
-                    // const el = D3event.target;
-                    // const nativeEl = el.nativeElement;
-                    // if (nativeEl) {
-                    //     _self.renderer.addClass(nativeEl, 'node-hover');
-                    // }
                 })
                 .on('mouseout', (d: any) => {
                     const D3event = d3.event as any;
@@ -196,11 +189,6 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
                             .duration(500)
                             .style('opacity', 0);
                     }
-                    // const el = D3event.target;
-                    // const nativeEl = el.nativeElement;
-                    // if (nativeEl) {
-                    //     _self.renderer.addClass(nativeEl, 'node-hover');
-                    // }
                 });
 
             nodeEnter.append('text')
