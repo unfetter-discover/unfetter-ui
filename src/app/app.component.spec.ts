@@ -1,14 +1,12 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Location } from '@angular/common';
-import { Router, NavigationEnd, Routes } from '@angular/router';
-import { inject, async, TestBed, ComponentFixture, tick, fakeAsync } from '@angular/core/testing';
+import { Router, Routes } from '@angular/router';
+import { TestBed, ComponentFixture, async, fakeAsync, tick } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Observable } from 'rxjs/Observable';
 import { StoreModule } from '@ngrx/store';
 
 // Load the implementations that should be tested
-import { AppModule } from './app.module';
 import { AppState } from './app.service';
 import { AppComponent } from './app.component';
 import { AuthService } from './core/services/auth.service';
@@ -17,13 +15,11 @@ import { GenericApi } from './core/services/genericapi.service';
 import { environment } from '../environments/environment';
 import { reducers } from './root-store/app.reducers';
 import { Themes } from './global/enums/themes.enum';
-import { RunConfigService } from './core/services/run-config.service';
 
 describe(`App`, () => {
 
     let comp: AppComponent;
     let fixture: ComponentFixture<AppComponent>;
-    let location: Location;
     let router: Router;
 
     let loggedIn: boolean;
@@ -81,7 +77,6 @@ describe(`App`, () => {
                     { provide: AuthService, useValue: mockAuthService },
                     GenericApi,
                     ConfigService,
-                    RunConfigService,
                 ]
             })
             .compileComponents(); // compile template and css

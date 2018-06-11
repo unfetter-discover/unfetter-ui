@@ -3,29 +3,22 @@ declare var require: any;
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import * as public_config from '../../../assets/public-config.json';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class RunConfigService {
 
-    private private_config: any = {};
+    public _config: Observable<any>;
 
     constructor(
+        private http: HttpClient,
     ) {
-        try {
-            this.private_config = require('../../../assets/private-config.json');
-        } catch (ex) {
-            console.error(`(${new Date().toISOString()}) Could not load private run configuration!`, ex);
-            this.private_config = {};
-        }
+        this._config = this.http.get('./assets/private-config.json');
     }
 
-    /**
-     * @description retrieve the run configuration properties based on the current environment run mode
-     */
-    public getConfig(): any {
-        const mode = environment.runMode ? environment.runMode.toLocaleLowerCase() : undefined;
-        const hasPublicConfig = mode && public_config && public_config[mode];
-        return Object.assign({}, hasPublicConfig ? public_config[mode] : {}, this.private_config || {});
+    public get config(): Observable<any> {
+        return this._config.map(cfg => ({...public_config, private: cfg}));
     }
 
 }

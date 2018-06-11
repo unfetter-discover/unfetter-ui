@@ -1,8 +1,7 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { environment } from '../environments/environment';
-import { RunConfigService } from './core/services/run-config.service';
 import { AuthService } from './core/services/auth.service';
 import { Themes } from './global/enums/themes.enum';
 import * as fromApp from './root-store/app.reducers';
@@ -10,6 +9,7 @@ import * as configActions from './root-store/config/config.actions';
 import * as identityActions from './root-store/identities/identity.actions';
 import * as userActions from './root-store/users/user.actions';
 import { demoUser } from './testing/demo-user';
+import { RunConfigService } from './core/services/run-config.service';
 
 @Component({
   selector: 'unf-app',
@@ -23,23 +23,16 @@ export class AppComponent implements OnInit {
   public readonly demoMode: boolean = (environment.runMode === 'DEMO');
   public theme: Themes = Themes.DEFAULT;
   public title;
+  public showBanner: boolean = false;
+  public securityMarkingLabel: string = '';
 
   constructor(
-    private run_config: RunConfigService,
     private authService: AuthService,
+    private runConfigService: RunConfigService,
     private store: Store<fromApp.AppState>,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private renderer: Renderer2,
   ) {
-  }
-
-  public get showBanner(): boolean {
-    return this.run_config.getConfig().showBanner || false;
-  }
-
-  public get securityMarkingLabel(): string {
-    return this.run_config.getConfig().bannerText || '';
   }
 
   public ngOnInit() {
@@ -48,6 +41,15 @@ export class AppComponent implements OnInit {
     } else if (this.runMode && this.runMode === 'DEMO') {
       console.log('Running application in DEMO mode');
     }
+    this.runConfigService.config.subscribe(
+      (cfg) => {
+        if (cfg && cfg[this.runMode.toLocaleLowerCase()]) {
+          cfg = {...cfg[this.runMode.toLocaleLowerCase()], ...cfg.private};
+          this.showBanner = cfg.showBanner || false;
+          this.securityMarkingLabel = cfg.bannerText || '';
+        }
+      }
+    );
 
     if (this.authService.loggedIn()) {
       if (!this.demoMode) {
@@ -60,7 +62,6 @@ export class AppComponent implements OnInit {
           token: '1234'
         }));
       }
-      this.store.dispatch(new configActions.FetchConfig(false));
       this.store.dispatch(new configActions.FetchTactics());
       this.store.dispatch(new identityActions.FetchIdentities());
     }

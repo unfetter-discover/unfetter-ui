@@ -11,7 +11,6 @@ import { MatMenuModule } from '@angular/material';
 
 import { HeaderNavigationComponent } from './header-navigation.component';
 import { NotificationWindowComponent } from '../notification-window/notification-window.component';
-import { RunConfigService } from '../../../core/services/run-config.service';
 import { ConfigService } from '../../../core/services/config.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { GenericApi } from '../../../core/services/genericapi.service';
@@ -48,7 +47,6 @@ describe('HeaderNavigationComponent', () => {
                     AuthService,
                     GenericApi,
                     ConfigService,
-                    RunConfigService,
                 ],
                 schemas: [ NO_ERRORS_SCHEMA ]
             })
