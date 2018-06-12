@@ -15,99 +15,101 @@
             <indicator-sharing-filters></indicator-sharing-filters>
         </mat-sidenav>
 
-        <div id="mainWindow">
-            <button mat-button (click)="filterContainer.open()" id="showFiltersButton" *ngIf="!filterOpen" @fadeInOut>
-                <h5 class="inlineBlock">FILTERS&nbsp;&nbsp;</h5>
-                <i class="material-icons mat-24">filter_list</i>
-            </button>
-            <div id="searchWrapper" [ngClass]="{'filterOpen': filterOpen}">
-                <div class="container-fluid height-100-percent">
-                    <div class="row height-100-percent flex flexItemsCenter">
-                        <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
-                            <search-bar></search-bar>
+        <mat-sidenav-content [class.sidenavContentPolyfill360]="filterOpen">
+            <div id="mainWindow">
+                <button mat-button (click)="filterContainer.open()" id="showFiltersButton" *ngIf="!filterOpen" @fadeInOut>
+                    <h5 class="inlineBlock">FILTERS&nbsp;&nbsp;</h5>
+                    <i class="material-icons mat-24">filter_list</i>
+                </button>
+                <div id="searchWrapper" [ngClass]="{'filterOpen': filterOpen}">
+                    <div class="container-fluid height-100-percent">
+                        <div class="row height-100-percent flex flexItemsCenter">
+                            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
+                                <search-bar></search-bar>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="container-fluid">
+
+                    <div class="row" id="listControls">
+                        <div class="col-md-12 filterOpenBreakpoint" [ngClass]="{ 'col-lg-8 col-lg-offset-2': !filterOpen }">
+                            <div class="pl-24 pr-24 flex flexItemsCenter" id="listControlFlexWraper">
+                                <indicator-sharing-sort></indicator-sharing-sort>
+                                <label class="spacer" id="spacer1">&nbsp;|&nbsp;</label>
+                                <label class="mb-0">Results: {{ (store.select('indicatorSharing').pluck('filteredIndicators') | async).length }}
+                                    / {{ store.select('indicatorSharing').pluck('totalIndicatorCount') | async }}</label>
+                                <label class="spacer" id="spacer2">&nbsp;|&nbsp;</label>
+                                <span id="listControlBtns">
+                                    <!-- Download bundle -->
+                                    <button mat-icon-button matTooltip="Download Results" (click)="downloadResults()">
+                                        <i class="material-icons mat-24 labelColor">file_download</i>
+                                    </button>
+                                    <!-- Collapse cards -->
+                                    <button mat-icon-button matTooltip="Collapse All Cards" (click)="collapseAllCards = true; collapseAllCardsSubject.next(collapseAllCards)"
+                                        *ngIf="!collapseAllCards">
+                                        <i class="material-icons mat-24 labelColor">fullscreen_exit</i>
+                                    </button>
+                                    <!-- Expand Cards -->
+                                    <button mat-icon-button matTooltip="Expand All Cards" (click)="collapseAllCards = false; collapseAllCardsSubject.next(collapseAllCards)"
+                                        *ngIf="collapseAllCards">
+                                        <i class="material-icons mat-24 labelColor">fullscreen</i>
+                                    </button>
+                                    <!-- Show summary stats -->
+                                    <button mat-icon-button matTooltip="{{ activeMainWell === 'stats' ? 'Hide' : 'Show' }} Statistics" (click)="setMainWell('stats')">
+                                        <i class="material-icons mat-24" [ngClass]="{'labelColor': activeMainWell !== 'stats'}">equalizer</i>
+                                    </button>
+                                    <!-- Show heatmap -->
+                                    <button mat-icon-button matTooltip="{{ activeMainWell === 'tactics' ? 'Hide' : 'Show' }} Tactics List" (click)="setMainWell('tactics')">
+                                        <i class="material-icons mat-24" [ngClass]="{'labelColor': activeMainWell !== 'tactics'}">view_comfy</i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" id="mainWell" @heightCollapse *ngIf="activeMainWell !== 'none'">
+                        <div class="col-md-12 filterOpenBreakpoint" [ngClass]="{ 'col-lg-8 col-lg-offset-2': !filterOpen }">
+                            <div class="pl-24 pr-24" *ngIf="activeMainWell === 'stats'">
+                                <indicator-sharing-summary-statistics></indicator-sharing-summary-statistics>
+                            </div>
+                            <div class="pl-24 pr-24" *ngIf="activeMainWell === 'tactics'">
+                                <indicator-tactics [indicators]="filteredIndicators"
+                                        [mappings]="indicatorToAttackPatternMap"
+                                        [collapseSubject]="collapseAllCardsSubject"></indicator-tactics>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" infiniteScroll (atBottom)="displayShowMoreButton() ? showMoreIndicators() : ''">
+                        <div id="indicatorListWrapper" class="col-md-12 filterOpenBreakpoint" [ngClass]="{ 'col-lg-8 col-lg-offset-2': !filterOpen }">
+
+                            <div *ngFor="let indicator of displayedIndicators" [ngClass]="{ 'mb-15': !collapseAllCards, 'mb-5': collapseAllCards }">
+                                <indicator-card [indicator]="indicator" 
+                                    [attackPatterns]="getAttackPatternsByIndicatorId(indicator.id)"
+                                    [intrusionSets]="getIntrusionSetsByIndicatorId(indicator.id)"
+                                    [sensors]="getSensorsByIndicatorId(indicator.id)"
+                                    [creator]="getIdentityNameById(indicator.created_by_ref)" 
+                                    [searchParameters]="searchParameters"
+                                    [collapseAllCardsSubject]="collapseAllCardsSubject" 
+                                    (stateChange)="updateIndicator($event)" 
+                                    (indicatorDeleted)="deleteIndicator($event)"
+                                    (indicatorEdit)="editIndicator($event)"></indicator-card>
+                            </div>
+
+                            <div class="text-center mt-15 mb-20" *ngIf="displayShowMoreButton()">
+                                <button mat-button color="primary" class="full-width" (click)="showMoreIndicators()">Show More Indicators</button>
+                            </div>
+                            <div id="bottom">&nbsp;</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <br>
             </div>
-
-            <div class="container-fluid">
-
-                <div class="row" id="listControls">
-                    <div class="col-md-12 filterOpenBreakpoint" [ngClass]="{ 'col-lg-8 col-lg-offset-2': !filterOpen }">
-                        <div class="pl-24 pr-24 flex flexItemsCenter" id="listControlFlexWraper">
-                            <indicator-sharing-sort></indicator-sharing-sort>
-                            <label class="spacer" id="spacer1">&nbsp;|&nbsp;</label>
-                            <label class="mb-0">Results: {{ (store.select('indicatorSharing').pluck('filteredIndicators') | async).length }}
-                                / {{ store.select('indicatorSharing').pluck('totalIndicatorCount') | async }}</label>
-                            <label class="spacer" id="spacer2">&nbsp;|&nbsp;</label>
-                            <span id="listControlBtns">
-                                <!-- Download bundle -->
-                                <button mat-icon-button matTooltip="Download Results" (click)="downloadResults()">
-                                    <i class="material-icons mat-24 labelColor">file_download</i>
-                                </button>
-                                <!-- Collapse cards -->
-                                <button mat-icon-button matTooltip="Collapse All Cards" (click)="collapseAllCards = true; collapseAllCardsSubject.next(collapseAllCards)"
-                                    *ngIf="!collapseAllCards">
-                                    <i class="material-icons mat-24 labelColor">fullscreen_exit</i>
-                                </button>
-                                <!-- Expand Cards -->
-                                <button mat-icon-button matTooltip="Expand All Cards" (click)="collapseAllCards = false; collapseAllCardsSubject.next(collapseAllCards)"
-                                    *ngIf="collapseAllCards">
-                                    <i class="material-icons mat-24 labelColor">fullscreen</i>
-                                </button>
-                                <!-- Show summary stats -->
-                                <button mat-icon-button matTooltip="{{ activeMainWell === 'stats' ? 'Hide' : 'Show' }} Statistics" (click)="setMainWell('stats')">
-                                    <i class="material-icons mat-24" [ngClass]="{'labelColor': activeMainWell !== 'stats'}">equalizer</i>
-                                </button>
-                                <!-- Show heatmap -->
-                                <button mat-icon-button matTooltip="{{ activeMainWell === 'tactics' ? 'Hide' : 'Show' }} Tactics List" (click)="setMainWell('tactics')">
-                                    <i class="material-icons mat-24" [ngClass]="{'labelColor': activeMainWell !== 'tactics'}">view_comfy</i>
-                                </button>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row" id="mainWell" @heightCollapse *ngIf="activeMainWell !== 'none'">
-                    <div class="col-md-12 filterOpenBreakpoint" [ngClass]="{ 'col-lg-8 col-lg-offset-2': !filterOpen }">
-                        <div class="pl-24 pr-24" *ngIf="activeMainWell === 'stats'">
-                            <indicator-sharing-summary-statistics></indicator-sharing-summary-statistics>
-                        </div>
-                        <div class="pl-24 pr-24" *ngIf="activeMainWell === 'tactics'">
-                            <indicator-tactics [indicators]="filteredIndicators"
-                                    [mappings]="indicatorToAttackPatternMap"
-                                    [collapseSubject]="collapseAllCardsSubject"></indicator-tactics>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row" infiniteScroll (atBottom)="displayShowMoreButton() ? showMoreIndicators() : ''">
-                    <div id="indicatorListWrapper" class="col-md-12 filterOpenBreakpoint" [ngClass]="{ 'col-lg-8 col-lg-offset-2': !filterOpen }">
-
-                        <div *ngFor="let indicator of displayedIndicators" [ngClass]="{ 'mb-15': !collapseAllCards, 'mb-5': collapseAllCards }">
-                            <indicator-card [indicator]="indicator" 
-                                [attackPatterns]="getAttackPatternsByIndicatorId(indicator.id)"
-                                [intrusionSets]="getIntrusionSetsByIndicatorId(indicator.id)"
-                                [sensors]="getSensorsByIndicatorId(indicator.id)"
-                                [creator]="getIdentityNameById(indicator.created_by_ref)" 
-                                [searchParameters]="searchParameters"
-                                [collapseAllCardsSubject]="collapseAllCardsSubject" 
-                                (stateChange)="updateIndicator($event)" 
-                                (indicatorDeleted)="deleteIndicator($event)"
-                                (indicatorEdit)="editIndicator($event)"></indicator-card>
-                        </div>
-
-                        <div class="text-center mt-15 mb-20" *ngIf="displayShowMoreButton()">
-                            <button mat-button color="primary" class="full-width" (click)="showMoreIndicators()">Show More Indicators</button>
-                        </div>
-                        <div id="bottom">&nbsp;</div>
-                    </div>
-                </div>
-
-            </div>
-
-            <br>
-        </div>
+        </mat-sidenav-content>        
 
     </mat-sidenav-container>
 </div>

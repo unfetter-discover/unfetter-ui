@@ -58,7 +58,7 @@
         </div>
       </div>
     </mat-sidenav>
-    <mat-sidenav-content>
+    <mat-sidenav-content class="sidenavContentPolyfill320">
       <div class="main-panel">
         <result-header [assessment]="(assessment|async)" [assessmentId]="assessmentId" [rollupId]="rollupId" [created]="(assessment|async)?.created"></result-header>
         <unf-assess-group #assessGroupMain [assessmentGroup]="assessmentGroup" [activePhase]="phase" [rollupId]="rollupId" [assessment]="(assessment|async)" (riskByAttackPatternChanged)="calculateRiskBreakdown($event)"></unf-assess-group>

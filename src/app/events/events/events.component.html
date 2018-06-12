@@ -1,6 +1,6 @@
 <div id="event" class="fadeIn" *ngIf="service.finishedLoading else loadingBlock">
   <mat-sidenav-container *ngIf="service.recentSightings; else notFound">
-    <mat-sidenav #filters mode="side" opened class="side-panel mat-elevation-z16">
+    <mat-sidenav #filters mode="side" opened class="side-panel mat-elevation-z16" (openedStart)="filterOpen = true" (closedStart)="filterOpen = false">
       <div id="filterTitle" class="flexItemsCenter">
         <div class="side-panel-header">
           <div class="height-100-percent">
@@ -19,7 +19,7 @@
       </div>
       <filters></filters>
     </mat-sidenav>
-    <mat-sidenav-content>
+    <mat-sidenav-content [class.sidenavContentPolyfill250]="filterOpen">
       <div class="main-panel">
         <div id="main-header">
           <div class="height-100-percent">
