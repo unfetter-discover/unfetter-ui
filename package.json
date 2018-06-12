@@ -28,6 +28,7 @@
     "serve:coverage": "live-server coverage/",
     "build:prod": "ng version && ng build --prod --env=prod",
     "build:prod:noclean": "npm run build:prod -- --no-delete-output-path --vendor-chunk=true",
+    "build:prod:noclean:ff31": "ng version && ng build --no-delete-output-path --env=prod --aot --output-hashing=all --sourcemaps=false --extract-css=true --named-chunks=false --build-optimizer=true",
     "build:demo:noclean": "ng version && ng build --prod --no-delete-output-path --vendor-chunk=true --env=dockerhub",
     "build:demo:noclean:ff31": "ng version && ng build --no-delete-output-path --env=dockerhub --aot --output-hashing=all --sourcemaps=false --extract-css=true --named-chunks=false --build-optimizer=true",
     "build:dev": "ng version && ng build",
