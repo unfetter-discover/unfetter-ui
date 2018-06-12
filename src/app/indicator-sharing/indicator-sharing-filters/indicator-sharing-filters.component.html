@@ -52,14 +52,14 @@
           <i class="material-icons mat-24 labelColor">view_comfy</i>
         </button>
       </div>
-      <!-- <div class="full-width mb-12">
-        <mat-select placeholder="Uses STIX Patterning Language" formControlName="validStixPattern">
-          <mat-option value="true">Yes</mat-option>
-          <mat-option value="false">No</mat-option>
-        </mat-select>
-      </div> -->
-      <div class="mb-9">
+      <div class="mb-12">
         <mat-checkbox formControlName="validStixPattern">Show STIX Patterns Only</mat-checkbox>
+      </div>
+      <div class="mb-9" id="obsDataWrapper">
+        <button mat-button (click)="toggleObservedDataDialog()">
+          <a>Observed Data&nbsp;</a>
+          <span *ngIf="searchForm.get('observedData').value.length">({{ searchForm.get('observedData').value.length }})</span>
+        </button>
       </div>
     </form>
   </div>

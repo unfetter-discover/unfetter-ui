@@ -1,0 +1,8 @@
+<h2 mat-dialog-title>Select Observed Data</h2>
+<mat-dialog-content>
+  <observable-data-tree [observedDataPath]="observedDataPath"></observable-data-tree>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="false">CANCEL</button>
+  <button mat-raised-button color="primary" (click)="accept()">ACCEPT</button>
+</mat-dialog-actions>
