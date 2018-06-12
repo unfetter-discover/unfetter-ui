@@ -81,13 +81,10 @@ export class HeaderNavigationComponent {
 
     this.runConfigService.config.subscribe(
       (cfg) => {
-        if (cfg && cfg[this.runMode.toLocaleLowerCase()]) {
-          cfg = {...cfg[this.runMode.toLocaleLowerCase()], ...cfg.private};
-          if (cfg.showBanner === true) {
-            this.topPx = '17px';
-          }
-          this._authServices = cfg.authServices || ['github'];
+        if (cfg.showBanner === true) {
+          this.topPx = '17px';
         }
+        this._authServices = cfg.authServices || ['github'];
       }
     );
 

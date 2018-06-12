@@ -43,8 +43,7 @@ export class AppComponent implements OnInit {
     }
     this.runConfigService.config.subscribe(
       (cfg) => {
-        if (cfg && cfg[this.runMode.toLocaleLowerCase()]) {
-          cfg = {...cfg[this.runMode.toLocaleLowerCase()], ...cfg.private};
+        if (cfg) {
           this.showBanner = cfg.showBanner || false;
           this.securityMarkingLabel = cfg.bannerText || '';
         }

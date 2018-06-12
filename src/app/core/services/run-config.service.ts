@@ -9,6 +9,7 @@ import { Observable } from 'rxjs/Observable';
 @Injectable()
 export class RunConfigService {
 
+    public readonly runMode = environment.runMode.toLocaleLowerCase();
     public _config: Observable<any>;
 
     constructor(
@@ -18,7 +19,7 @@ export class RunConfigService {
     }
 
     public get config(): Observable<any> {
-        return this._config.map(cfg => ({...public_config, private: cfg}));
+        return this._config.map(cfg => ({...public_config[this.runMode], ...cfg}));
     }
 
 }
