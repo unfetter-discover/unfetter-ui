@@ -18,6 +18,7 @@ import { fadeInOut } from '../../global/animations/fade-in-out';
   animations: [fadeInOut],
 })
 export class EventsComponent implements OnInit, OnDestroy {
+  public filterOpen = true;
   private readonly subscriptions: Subscription[];
   private readonly ips = [];
   private sightingsGroup: any[];
