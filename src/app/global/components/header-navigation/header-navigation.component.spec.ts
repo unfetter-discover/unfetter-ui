@@ -20,11 +20,17 @@ import { environment } from '../../../../environments/environment';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 import { FieldSortPipe } from '../../pipes/field-sort.pipe';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
+import { RunConfigService } from '../../../core/services/run-config.service';
 
 describe('HeaderNavigationComponent', () => {
 
     let component: HeaderNavigationComponent;
     let fixture: ComponentFixture<HeaderNavigationComponent>;
+    const config = {
+        'showBanner': false,
+        'bannerText': '',
+        'authServices': [ 'github' ]
+    };
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -47,6 +53,10 @@ describe('HeaderNavigationComponent', () => {
                     AuthService,
                     GenericApi,
                     ConfigService,
+                    {
+                        provide: RunConfigService,
+                        useValue: { config: Observable.of(config) }
+                    },
                 ],
                 schemas: [ NO_ERRORS_SCHEMA ]
             })
@@ -66,7 +76,6 @@ describe('HeaderNavigationComponent', () => {
     });
 
     it('displays the proper title', () => {
-        const logoEl = 'img.logo';
         const titleEl = 'span#titleWrapper span#titleText';
         const tests = [
             {title: '', logo: /.*logo\-default\.svg/, text: undefined},
@@ -88,12 +97,12 @@ describe('HeaderNavigationComponent', () => {
 
         {
             expect(component.topPx).toEqual('0px');
-
-            component['run_config']['private_config'].showBanner = true;
+            config.showBanner = true;
             const titledFixture = TestBed.createComponent(HeaderNavigationComponent);
             const titledComponent = titledFixture.componentInstance;
             titledFixture.detectChanges();
             expect(titledComponent.topPx).toEqual('17px');
+            config.showBanner = false;
         }
     });
 

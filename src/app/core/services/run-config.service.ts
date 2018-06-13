@@ -15,6 +15,10 @@ export class RunConfigService {
     constructor(
         private http: HttpClient,
     ) {
+        this.loadPrivateConfig();
+    }
+    
+    private loadPrivateConfig() {
         this._config = this.http.get('./assets/private-config.json');
     }
 
