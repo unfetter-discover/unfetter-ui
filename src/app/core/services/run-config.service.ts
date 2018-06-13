@@ -19,7 +19,11 @@ export class RunConfigService {
     }
     
     private loadPrivateConfig() {
-        this._config = this.http.get('./assets/private-config.json');
+        this._config = this.http.get('./assets/private-config.json').catch(() => {
+            console.warn('Could not load assets/private-config.json. Default configuration will be used.');
+            console.warn('If you create or edit the file, be sure to restart the application.');
+            return Observable.of({});
+        });
     }
 
     public get config(): Observable<any> {
