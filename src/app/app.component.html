@@ -3,6 +3,10 @@
     <span class="banner-text strong">{{securityMarkingLabel}}</span>
   </div>
   
+  <div class="banner security-marking-label" *ngIf="showBanner" id="bottomBanner">
+    <span class="banner-text strong">{{securityMarkingLabel}}</span>
+  </div>
+  
   <header-navigation [title]="title"></header-navigation>
   
   <div id="routerWrapper">
