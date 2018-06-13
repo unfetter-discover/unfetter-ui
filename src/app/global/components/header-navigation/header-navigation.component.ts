@@ -2,11 +2,10 @@ import { Component, ElementRef, HostListener, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { environment } from '../../../../environments/environment';
-import { RunConfigService } from '../../../core/services/run-config.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { RunConfigService } from '../../../core/services/run-config.service';
 import * as fromApp from '../../../root-store/app.reducers';
 import * as userActions from '../../../root-store/users/user.actions';
-import { UserState } from '../../../root-store/users/users.reducers';
 import { Constance } from '../../../utils/constance';
 import { fadeInOut } from '../../animations/fade-in-out';
 
@@ -70,18 +69,24 @@ export class HeaderNavigationComponent {
   public stixIcon: string = Constance.LOGO_IMG_STIX;
   public encodedToken: string = '';
   @Input() public title;
+  private _authServices: string[] = null;
 
   constructor(
     public authService: AuthService,
-    private run_config: RunConfigService,
+    private runConfigService: RunConfigService,
     private store: Store<fromApp.AppState>,
     private el: ElementRef
   ) {
     this.user$ = this.store.select('users');
 
-    if (this.showBanner && this.showBanner === true) {
-      this.topPx = '17px';
-    }
+    this.runConfigService.config.subscribe(
+      (cfg) => {
+        if (cfg.showBanner === true) {
+          this.topPx = '17px';
+        }
+        this._authServices = cfg.authServices || ['github'];
+      }
+    );
 
     const getToken$ = this.user$
       .filter((user) => user.token)
@@ -101,12 +106,8 @@ export class HeaderNavigationComponent {
       );
   }
 
-  public get showBanner(): boolean {
-    return this.run_config.getConfig().showBanner || false;
-  }
-
   public get authServices(): string[] {
-    return this.run_config.getConfig().authServices || ['github'];
+    return this._authServices;
   }
 
   public getAvatar(user): string {

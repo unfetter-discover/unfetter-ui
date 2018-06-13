@@ -27,5 +27,5 @@ npm-debug.log
 /coverage/**
 npm-debug.log
 
-private-config.json
+**/private-config.json
 package-lock.json

@@ -3,29 +3,51 @@ declare var require: any;
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import * as public_config from '../../../assets/public-config.json';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
+
+export interface PublicConfigRoots {
+    demo: PublicConfig;
+    test: PublicConfig;
+    uac:  PublicConfig;
+}
+
+export interface PublicConfig {
+    showBanner?:   boolean;
+    bannerText?:   string;
+    authServices?: string[] | null;
+}
+
+export interface MasterConfig extends PublicConfig {
+    contentOwner?: string;
+    pagePublisher?: string;
+    lastReviewed?: number;
+    lastModified?: number;
+    footerTextHtml?: string;
+}
 
 @Injectable()
 export class RunConfigService {
 
-    private private_config: any = {};
+    public readonly runMode = environment.runMode.toLocaleLowerCase();
+    public _config: Observable<MasterConfig>;
 
     constructor(
+        private http: HttpClient,
     ) {
-        try {
-            this.private_config = require('../../../assets/private-config.json');
-        } catch (ex) {
-            console.error(`(${new Date().toISOString()}) Could not load private run configuration!`, ex);
-            this.private_config = {};
-        }
+        this.loadPrivateConfig();
+    }
+    
+    private loadPrivateConfig() {
+        this._config = this.http.get<MasterConfig>('./assets/private-config.json').catch(() => {
+            console.warn('Could not load assets/private-config.json. Default configuration will be used.');
+            console.warn('If you create or edit the file, be sure to restart the application.');
+            return Observable.of({} as MasterConfig);
+        });
     }
 
-    /**
-     * @description retrieve the run configuration properties based on the current environment run mode
-     */
-    public getConfig(): any {
-        const mode = environment.runMode ? environment.runMode.toLocaleLowerCase() : undefined;
-        const hasPublicConfig = mode && public_config && public_config[mode];
-        return Object.assign({}, hasPublicConfig ? public_config[mode] : {}, this.private_config || {});
+    public get config(): Observable<MasterConfig> {
+        return this._config.map(cfg => ({...public_config[this.runMode] as PublicConfig, ...cfg}));
     }
 
 }
