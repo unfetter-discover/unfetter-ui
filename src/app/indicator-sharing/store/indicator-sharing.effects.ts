@@ -143,7 +143,6 @@ export class IndicatorSharingEffects {
             // If intrusion set, add attack patterns
             if (searchParameters.intrusionSets.length) {
                 const apSet = new Set();
-                searchParameters.attackPatterns.forEach((apId) => apSet.add(apId));
                 Object.keys(intrusionSetsByAttackpattern)
                     .forEach((apId) => {
                         searchParameters.intrusionSets
@@ -154,11 +153,11 @@ export class IndicatorSharingEffects {
                                 }
                             });
                     });
-                if (apSet.size > 0) {
-                    searchParametersCopy.attackPatterns = Array.from(apSet);
-                }
+                
+                searchParametersCopy.intrusionSetAttackPatterns = Array.from(apSet);
             }
 
+            // Delete intrusion set since its driven by the derived attack patterns
             delete searchParametersCopy.intrusionSets;
 
             return this.indicatorSharingService.doSearch(searchParametersCopy, sortBy);
