@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { BaseStixService } from './base-stix.service';
 import { GenericApi } from '../core/services/genericapi.service';

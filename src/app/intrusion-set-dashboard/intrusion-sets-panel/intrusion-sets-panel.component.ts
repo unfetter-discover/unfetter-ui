@@ -1,3 +1,5 @@
+
+import {distinctUntilChanged, finalize, debounceTime} from 'rxjs/operators';
 import {
         Component,
         OnInit,
@@ -8,7 +10,7 @@ import {
         EventEmitter,
         ChangeDetectorRef,
     } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 import { Constance } from '../../utils/constance';
 import { GenericApi } from '../../core/services/genericapi.service';
@@ -46,23 +48,23 @@ export class IntrusionSetsPanelComponent implements OnInit {
             'stix.id': 1
         };
         const ISfilter = encodeURI(`sort=${JSON.stringify(ISsortObj)}&project=${JSON.stringify(ISprojectObj)}`);
-        const initData$ = this.genericApi.get(`${Constance.INTRUSION_SET_URL}?${ISfilter}`)
-            .finally(() => {initData$.unsubscribe()})
+        const initData$ = this.genericApi.get(`${Constance.INTRUSION_SET_URL}?${ISfilter}`).pipe(
+            finalize(() => {initData$.unsubscribe()}))
             .subscribe(
                 (results) => this.intrusionSets = results || [],
                 (err) => console.log(new Date().toISOString(), err),
                 () => this.intrusionSets.forEach(intrusionSet => intrusionSet.checked = false)
             );
 
-        this.updateDebouncer
-            .debounceTime(1000)
+        this.updateDebouncer.pipe(
+            debounceTime(1000))
             .subscribe(
                 () => this.onChange.emit(this.selectedIntrusionSets),
                 (err) => console.log(new Date().toISOString(), err),
             );
 
-        this.highlighter.intrusionSet
-            .distinctUntilChanged()
+        this.highlighter.intrusionSet.pipe(
+            distinctUntilChanged())
             .subscribe(
                 (event) => {
                     const highlighted: NodeList = this.listElement.nativeElement.querySelectorAll('[highlight]');

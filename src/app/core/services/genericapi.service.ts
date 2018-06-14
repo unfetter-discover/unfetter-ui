@@ -1,6 +1,9 @@
+
+import {throwError as observableThrowError, of as observableOf,  Observable } from 'rxjs';
+
+import {catchError, map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
 import { Constance } from '../../utils/constance';
 import { JsonApiData } from '../../models/json/jsonapi-data';
 import { JsonApi } from '../../models/json/jsonapi';
@@ -30,9 +33,9 @@ export class GenericApi {
         this.data = (data !== undefined && data !== null) ? '/' + data : '';
         let builtUrl = this.baseUrl + url + this.data;
 
-        return this.http.get<JsonApi<T>>(builtUrl)
-            .map(this.extractData)
-            .catch(this.handleError);
+        return this.http.get<JsonApi<T>>(builtUrl).pipe(
+            map(this.extractData),
+            catchError(this.handleError),);
     }
 
     /**
@@ -45,9 +48,9 @@ export class GenericApi {
         this.data = (data !== undefined && data !== null) ? '/' + data : '';
         let builtUrl = this.baseUrl + url + this.data;
 
-        return this.http.get(builtUrl)
-            .map(this.extractData)
-            .catch(this.handleError);
+        return this.http.get(builtUrl).pipe(
+            map(this.extractData),
+            catchError(this.handleError),);
     }
 
     /**
@@ -58,9 +61,9 @@ export class GenericApi {
      */
     public postAs<T = JsonApiData>(url: string, data?: any): Observable<T> {
         const builtUrl = this.baseUrl + url;
-        return this.http.post<JsonApi<T>>(builtUrl, data, { headers: this.postHeaders })
-            .map(this.extractData)
-            .catch(this.handleError);
+        return this.http.post<JsonApi<T>>(builtUrl, data, { headers: this.postHeaders }).pipe(
+            map(this.extractData),
+            catchError(this.handleError),);
     }
 
     /**
@@ -74,9 +77,9 @@ export class GenericApi {
      */
     public post(url: string, data: any, type?: string): Observable<any> {
         let builtUrl = this.baseUrl + url;
-        return this.http.post(builtUrl, data, { headers: this.postHeaders })
-            .map(this.extractData)
-            .catch(this.handleError);
+        return this.http.post(builtUrl, data, { headers: this.postHeaders }).pipe(
+            map(this.extractData),
+            catchError(this.handleError),);
     }
 
     /**
@@ -87,9 +90,9 @@ export class GenericApi {
      */
     public patchAs<T = JsonApiData>(url: string, data?: any): Observable<T> {
         const builtUrl = this.baseUrl + url;
-        return this.http.patch<JsonApi<T>>(builtUrl, data, { headers: this.postHeaders })
-            .map(this.extractData)
-            .catch(this.handleError);
+        return this.http.patch<JsonApi<T>>(builtUrl, data, { headers: this.postHeaders }).pipe(
+            map(this.extractData),
+            catchError(this.handleError),);
 
     }
 
@@ -102,17 +105,17 @@ export class GenericApi {
      */
     public patch(url: string, data: any): Observable<any> {
         let builtUrl = this.baseUrl + url;
-        return this.http.patch(builtUrl, data, { headers: this.postHeaders })
-            .map(this.extractData)
-            .catch(this.handleError);
+        return this.http.patch(builtUrl, data, { headers: this.postHeaders }).pipe(
+            map(this.extractData),
+            catchError(this.handleError),);
     }
 
     public delete(url: string, data?: any): Observable<any> {
         this.data = (data !== undefined && data !== null) ? '/' + data : '';
         let builtUrl = this.baseUrl + url + this.data;
-        return this.http.delete(builtUrl)
-            .map(this.extractData)
-            .catch(this.handleError);
+        return this.http.delete(builtUrl).pipe(
+            map(this.extractData),
+            catchError(this.handleError),);
     }
 
     /**
@@ -121,14 +124,14 @@ export class GenericApi {
      */
     public getLatestByType(stixType: StixLabelEnum): Observable<Partial<LastModifiedStix>[]> {
         if (!stixType || stixType.trim() === '') {
-            return Observable.of([]);
+            return observableOf([]);
         }
 
         const url = `${this.baseUrl}/latest/type/${stixType}`;
         return this.http
-            .get<JsonApi<Partial<LastModifiedStix>[]>>(url)
-            .map(this.extractData)
-            .catch(this.handleError);
+            .get<JsonApi<Partial<LastModifiedStix>[]>>(url).pipe(
+            map(this.extractData),
+            catchError(this.handleError),);
     }
 
     /**
@@ -138,7 +141,7 @@ export class GenericApi {
      */
     public getLatestByTypeAndCreatorId(stixType: StixLabelEnum, creatorId: string): Observable<Partial<LastModifiedStix>[]> {
         if (!stixType || stixType.trim() === '') {
-            return Observable.of([]);
+            return observableOf([]);
         }
 
         if (!creatorId || creatorId.trim() === '') {
@@ -147,9 +150,9 @@ export class GenericApi {
 
         const url = `${this.baseUrl}/latest/type/${stixType}/creator/${creatorId}`;
         return this.http
-            .get<JsonApi<Partial<LastModifiedStix>[]>>(url)
-            .map(this.extractData)
-            .catch(this.handleError);
+            .get<JsonApi<Partial<LastModifiedStix>[]>>(url).pipe(
+            map(this.extractData),
+            catchError(this.handleError),);
     }
 
     /**
@@ -166,6 +169,6 @@ export class GenericApi {
      * @param error
      */
     private handleError(error: any): ErrorObservable {
-        return Observable.throw(error);
+        return observableThrowError(error);
     }
 }

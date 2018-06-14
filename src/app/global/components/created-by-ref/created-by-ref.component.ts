@@ -1,7 +1,10 @@
+
+import {of as observableOf, forkJoin as observableForkJoin,  Observable } from 'rxjs';
+
+import {tap, switchMap, map, pluck, filter} from 'rxjs/operators';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatSelectChange } from '@angular/material';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
 import { AssessmentMeta } from 'stix/assess/v2/assessment-meta';
 import { BaseComponentService } from '../../../components/base-service.component';
 import * as fromRoot from '../../../root-store/app.reducers';
@@ -30,22 +33,22 @@ export class CreatedByRefComponent implements OnInit {
     public ngOnInit() {
         const identityFilter = encodeURI(JSON.stringify({ 'stix.identity_class': 'organization' }));
 
-        this.userOrgs$ = this.store.select('users')
-            .filter((user: any) => user.userProfile && user.userProfile.organizations && user.userProfile.organizations.length)
-            .pluck('userProfile')
-            .pluck('organizations')
-            .map((organizations: any[]) => {
+        this.userOrgs$ = this.store.select('users').pipe(
+            filter((user: any) => user.userProfile && user.userProfile.organizations && user.userProfile.organizations.length),
+            pluck('userProfile'),
+            pluck('organizations'),
+            map((organizations: any[]) => {
                 return organizations
                     .filter((org) => org.approved)
-            })
-            .switchMap((organizations: any[]) => {
-                return Observable.forkJoin(
-                    Observable.of(organizations),
-                    this.baseService.get(`${Constance.IDENTITIES_URL}?filter=${identityFilter}`)
-                        .map(RxjsHelpers.mapArrayAttributes)
+            }),
+            switchMap((organizations: any[]) => {
+                return observableForkJoin(
+                    observableOf(organizations),
+                    this.baseService.get(`${Constance.IDENTITIES_URL}?filter=${identityFilter}`).pipe(
+                        map(RxjsHelpers.mapArrayAttributes))
                 );
-            })
-            .map(([organizations, identities]) => {
+            }),
+            map(([organizations, identities]) => {
                 return organizations.map((org) => {
                     const foundOrg = identities.find((identity) => identity.id === org.id);
                     if (foundOrg) {
@@ -60,13 +63,13 @@ export class CreatedByRefComponent implements OnInit {
                         };
                     }
                 });
-            })
-            .do((organizations) => {
+            }),
+            tap((organizations) => {
                 if (organizations.length === 1) {
                     this.selected = organizations[0].id;
                     this.updateOrganization(this.selected);
                 }
-            });
+            }),);
 
         if (this.assessmentMeta && this.assessmentMeta.created_by_ref && this.assessmentMeta.created_by_ref !== '') {
             this.selected = this.assessmentMeta.created_by_ref;

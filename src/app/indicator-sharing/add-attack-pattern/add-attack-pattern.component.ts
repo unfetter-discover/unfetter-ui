@@ -1,3 +1,5 @@
+
+import {distinctUntilChanged, pluck, map} from 'rxjs/operators';
 import { Component, OnInit, Input } from '@angular/core'; 
 import { Store } from '@ngrx/store';
 
@@ -24,19 +26,19 @@ export class AddAttackPatternComponent implements OnInit {
   constructor(public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>) { }
 
   ngOnInit() {
-    this.displayedAttackPatterns$ = this.store.select('indicatorSharing')
-      .pluck('attackPatterns')
-      .map((attackPatterns: any[]) => {
+    this.displayedAttackPatterns$ = this.store.select('indicatorSharing').pipe(
+      pluck('attackPatterns'),
+      map((attackPatterns: any[]) => {
         return attackPatterns
           .filter((attackPattern) => {
             return this.existingAttackPatterns
               .find((existingAttackPattern: any) => existingAttackPattern.id === attackPattern.id) === undefined;
           });
-      });
-    const getFilteredAp$ = this.store.select('indicatorSharing')
-      .pluck('searchParameters')
-      .pluck('attackPatterns')
-      .distinctUntilChanged()
+      }),);
+    const getFilteredAp$ = this.store.select('indicatorSharing').pipe(
+      pluck('searchParameters'),
+      pluck('attackPatterns'),
+      distinctUntilChanged(),)
       .subscribe(
         (filteredAttackPatterns: any[]) => {
           this.filteredAttackPatterns = filteredAttackPatterns;

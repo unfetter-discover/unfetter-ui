@@ -1,6 +1,8 @@
+
+import {map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { GenericApi } from '../core/services/genericapi.service';
 import { Constance } from '../utils/constance';
@@ -17,18 +19,18 @@ export class AdminService {
     constructor(private genericApi: GenericApi) { }
 
     public getUsersPendingApproval(): Observable<UserProfile[]> {
-        return this.genericApi.getAs<JsonApiData<UserProfile>[]>(`${this.adminUrl}/users-pending-approval`)
-            .map((usersData: JsonApiData<UserProfile>[]) => {
+        return this.genericApi.getAs<JsonApiData<UserProfile>[]>(`${this.adminUrl}/users-pending-approval`).pipe(
+            map((usersData: JsonApiData<UserProfile>[]) => {
                 return usersData.map((userData: JsonApiData<UserProfile>) => userData.attributes);
-            });
+            }));
     }
 
     public getCurrentUsers(): Observable<UserProfile[]> {
         return this.genericApi
-            .getAs<JsonApiData<UserProfile>[]>(`${this.adminUrl}/current-users`)
-            .map((usersData: JsonApiData<UserProfile>[]) => {
+            .getAs<JsonApiData<UserProfile>[]>(`${this.adminUrl}/current-users`).pipe(
+            map((usersData: JsonApiData<UserProfile>[]) => {
                 return usersData.map((userData: JsonApiData<UserProfile>) => userData.attributes);
-            });
+            }));
     }
 
     public getOrgLeaderApplicants(): Observable<any> {

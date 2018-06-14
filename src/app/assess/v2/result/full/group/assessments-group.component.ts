@@ -1,8 +1,9 @@
+
+import {distinctUntilChanged, filter, pluck} from 'rxjs/operators';
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable ,  Subscription } from 'rxjs';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { FormatHelpers } from '../../../../../global/static/format-helpers';
 import { SortHelper } from '../../../../../global/static/sort-helper';
@@ -154,14 +155,14 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
    * @returns {void}
    */
   public listenForDataChanges(attackPatternIndex: number = 0): void {
-    const sub1$ = this.assessmentGroup
-      .distinctUntilChanged()
-      .filter((group: FullAssessmentGroup) => {
+    const sub1$ = this.assessmentGroup.pipe(
+      distinctUntilChanged(),
+      filter((group: FullAssessmentGroup) => {
         // TODO: stop an infinite loop of network requests
         //  figure out a better way to short circuit
         return group.finishedLoadingGroupData === true
           && this.displayedAssessedObjects === undefined;
-      })
+      }),)
       .subscribe((group: FullAssessmentGroup) => {
         // initialize the displayed assessed objects, 
         //  used also to stop loop of network calls
@@ -172,16 +173,16 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
       },
         (err) => console.log(err));
 
-    const sub2$ = this.assessmentGroup
-      .pluck('currentAttackPattern')
-      .distinctUntilChanged()
+    const sub2$ = this.assessmentGroup.pipe(
+      pluck('currentAttackPattern'),
+      distinctUntilChanged(),)
       .subscribe((currentAttackPattern: Stix) => this.currentAttackPattern = currentAttackPattern,
         (err) => console.log(err));
 
-    const sub3$ = this.assessmentGroup
-      .filter((group: FullAssessmentGroup) => group.finishedLoadingGroupData === true)
-      .pluck('attackPatternRelationships')
-      .distinctUntilChanged()
+    const sub3$ = this.assessmentGroup.pipe(
+      filter((group: FullAssessmentGroup) => group.finishedLoadingGroupData === true),
+      pluck('attackPatternRelationships'),
+      distinctUntilChanged(),)
       .subscribe((relationships: Relationship[]) => {
         const assessmentCandidates = relationships
           .map((el) => el.attributes)

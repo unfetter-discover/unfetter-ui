@@ -1,9 +1,12 @@
+
+import {of as observableOf, forkJoin as observableForkJoin,  Observable } from 'rxjs';
+
+import {mergeMap, tap, switchMap, pluck,  catchError, flatMap, map } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
 import { Action, Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
 import { catchError, map } from 'rxjs/operators';
 import { AssessmentSet, Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
@@ -39,59 +42,59 @@ export class BaselineEffects {
 
     @Effect()
     public fetchBaseline = this.actions$
-        .ofType(baselineActions.FETCH_BASELINE)
-        .pluck('payload')
-        .switchMap((baselineId: string) => {
+        .ofType(baselineActions.FETCH_BASELINE).pipe(
+        pluck('payload'),
+        switchMap((baselineId: string) => {
             return this.baselineService.fetchAssessmentSet(baselineId);
-        })
-        .map((assessmentSet: AssessmentSet) => {
+        }),
+        map((assessmentSet: AssessmentSet) => {
             return new baselineActions.SetAndReadAssessmentSet(assessmentSet);
-        });
+        }),);
     
     @Effect()
     public setAndReadAssessmentSet = this.actions$
-        .ofType(baselineActions.SET_AND_READ_ASSESSMENT_SET)
-        .pluck('payload')
-        .switchMap((assessmentSet: AssessmentSet) => {
+        .ofType(baselineActions.SET_AND_READ_ASSESSMENT_SET).pipe(
+        pluck('payload'),
+        switchMap((assessmentSet: AssessmentSet) => {
             return this.baselineService.fetchObjectAssessmentsByAssessmentSet(assessmentSet);
-        })
-        .map((objAssessments: ObjectAssessment[]) => {
+        }),
+        map((objAssessments: ObjectAssessment[]) => {
             return new baselineActions.SetAndReadObjectAssessments(objAssessments);
-        });
+        }),);
 
     @Effect()
     public setAndReadObjectAssessments = this.actions$
-        .ofType(baselineActions.SET_AND_READ_OBJECT_ASSESSMENTS)
-        .pluck('payload')
-        .switchMap((objAssessments: ObjectAssessment[]) => {
+        .ofType(baselineActions.SET_AND_READ_OBJECT_ASSESSMENTS).pipe(
+        pluck('payload'),
+        switchMap((objAssessments: ObjectAssessment[]) => {
             const observables = objAssessments
                 .map((objAssessment) => {
                     return this.baselineService.fetchCapability(objAssessment.object_ref);
                 });
 
-            return Observable.forkJoin(...observables).pipe(
+            return observableForkJoin(...observables).pipe(
                 map((arr) => {
                     return new baselineActions.SetAndReadCapabilities(arr);
                 }),
                 catchError((err) => {
                     console.log(err);
-                    return Observable.of(new baselineActions.FailedToLoad(true));
+                    return observableOf(new baselineActions.FailedToLoad(true));
                 })
             );
-        });
+        }),);
 
     @Effect()
     public setAndReadCapabilities = this.actions$
-        .ofType(baselineActions.SET_AND_READ_CAPABILITIES)
-        .pluck('payload')
-        .switchMap((capabilities: Capability[]) => {
+        .ofType(baselineActions.SET_AND_READ_CAPABILITIES).pipe(
+        pluck('payload'),
+        switchMap((capabilities: Capability[]) => {
             const observables = capabilities
                 .map((capability) => {
                     return this.baselineService.fetchCategory(capability.category);
                 });
-            return Observable.forkJoin(...observables);
-        })
-        .mergeMap((groups) => {
+            return observableForkJoin(...observables);
+        }),
+        mergeMap((groups) => {
             const actions: Action[] = [
                 new baselineActions.SetBaselineGroups(groups),
                 new baselineActions.FinishedLoading(true) ];
@@ -123,30 +126,30 @@ export class BaselineEffects {
 
     @Effect()
     public fetchCapabilityGroups = this.actions$
-        .ofType(baselineActions.FETCH_CAPABILITY_GROUPS)
-        .switchMap(() => this.baselineService.getCategories())
-        .map((arr: Category[]) => new baselineActions.SetCapabilityGroups(arr));
+        .ofType(baselineActions.FETCH_CAPABILITY_GROUPS).pipe(
+        switchMap(() => this.baselineService.getCategories()),
+        map((arr: Category[]) => new baselineActions.SetCapabilityGroups(arr)),);
 
     @Effect()
     public fetchCapabilities = this.actions$
-        .ofType(baselineActions.FETCH_CAPABILITIES)
-        .switchMap(() => this.baselineService.getCapabilities())
-        .map((arr: Category[]) => new baselineActions.SetCapabilities(arr));
+        .ofType(baselineActions.FETCH_CAPABILITIES).pipe(
+        switchMap(() => this.baselineService.getCapabilities()),
+        map((arr: Category[]) => new baselineActions.SetCapabilities(arr)),);
 
     @Effect()
     public fetchAttackPatterns = this.actions$
-        .ofType(baselineActions.FETCH_ATTACK_PATTERNS)
-        .pluck('payload')
-        .switchMap((selectedFramework: string) => {
-            const o1$ = Observable.of(selectedFramework);
+        .ofType(baselineActions.FETCH_ATTACK_PATTERNS).pipe(
+        pluck('payload'),
+        switchMap((selectedFramework: string) => {
+            const o1$ = observableOf(selectedFramework);
             // select all the attack patterns
             const o2$ = this.attackPatternService
-                .fetchAttackPatterns()
-                .catch((ex) => Observable.of([] as AttackPattern[]));
+                .fetchAttackPatterns().pipe(
+                catchError((ex) => observableOf([] as AttackPattern[])));
             // merge selected framework and all system attack patterns                
-            return Observable.forkJoin(o1$, o2$);
-        })
-        .mergeMap(([framework, allAttackPatterns]) => {
+            return observableForkJoin(o1$, o2$);
+        }),
+        mergeMap(([framework, allAttackPatterns]) => {
             // if no framework given, use all attack patterns
             let selectedAttackPatterns = allAttackPatterns;
             if (framework) {
@@ -165,7 +168,7 @@ export class BaselineEffects {
                 new baselineActions.SetAttackPatterns(allAttackPatterns),
                 new baselineActions.SetSelectedFrameworkAttackPatterns(selectedAttackPatterns),
             ];
-        });
+        }),);
     
         /**
          * Start an assessment, persist AssessmentSet to db.
@@ -202,9 +205,9 @@ export class BaselineEffects {
 
     @Effect()
     public saveBaseline = this.actions$
-        .ofType(baselineActions.SAVE_BASELINE)
-        .pluck('payload')
-        .switchMap((baseline: AssessmentSet) => {
+        .ofType(baselineActions.SAVE_BASELINE).pipe(
+        pluck('payload'),
+        switchMap((baseline: AssessmentSet) => {
             const json = {
                 data: { attributes: baseline }
             } as JsonApi<JsonApiData<AssessmentSet>>;
@@ -217,19 +220,19 @@ export class BaselineEffects {
                 return this.genericServiceApi
                 .postAs<AssessmentSet>(url, json);
             }
-        })
-        .map((assessmentSet) => {
+        }),
+        map((assessmentSet) => {
             return new baselineActions.FinishedSaving({
                 finished: true,
                 id: assessmentSet.id || '',
             });
-        });
+        }),);
 
     @Effect()
     public addCapabilityGroup = this.actions$
-        .ofType(baselineActions.ADD_CAPABILITY_GROUP)
-        .pluck('payload')
-        .switchMap(( category: Category) => {
+        .ofType(baselineActions.ADD_CAPABILITY_GROUP).pipe(
+        pluck('payload'),
+        switchMap(( category: Category) => {
             const json = {
                 data: { attributes: category }
             } as JsonApi<JsonApiData<Category>>;
@@ -242,10 +245,10 @@ export class BaselineEffects {
                 return this.genericServiceApi
                 .postAs<Category>(url, json);
             }
-        })
-        .map((category) => {
+        }),
+        map((category) => {
             return new baselineActions.FetchCapabilityGroups();
-        });
+        }),);
 
     @Effect()
     public addCapabilityToBaselineCapabilities = this.actions$

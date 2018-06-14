@@ -1,9 +1,10 @@
+
+import {combineLatest as observableCombineLatest,  Observable } from 'rxjs';
 import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatSnackBar, MatTableDataSource } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as clone from 'clone';
-import { Observable } from 'rxjs/Observable';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { DateHelper } from '../../global/static/date-helper';
 import { SortHelper } from '../../global/static/sort-helper';
@@ -169,7 +170,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
         const malwareUrl = `${Constance.MALWARE_URL}?${malwareFilter}`;
         const o2$ = this.genericApi.get(malwareUrl);
 
-        const sub1$ = Observable.combineLatest(o1$, o2$, (s1, s2) => [s1, s2])
+        const sub1$ = observableCombineLatest(o1$, o2$, (s1, s2) => [s1, s2])
             .subscribe(
                 (data) => {
                     const intrusions: IntrusionSet[] = data[0];

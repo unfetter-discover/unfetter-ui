@@ -1,9 +1,10 @@
+
+import {map, distinctUntilChanged, pluck, take, filter} from 'rxjs/operators';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable ,  Subscription } from 'rxjs';
 import { Assessment } from 'stix/assess/v2/assessment';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { ConfirmationDialogComponent } from '../../../../components/dialogs/confirmation/confirmation-dialog.component';
@@ -62,17 +63,17 @@ export class FullComponent implements OnInit, OnDestroy {
    *  initialize this component, fetching data from backend
    */
   public ngOnInit(): void {
-    const idParamSub$ = this.route.params
-      .distinctUntilChanged()
+    const idParamSub$ = this.route.params.pipe(
+      distinctUntilChanged())
       .subscribe((params) => {
         this.rollupId = params.rollupId || '';
         this.assessmentId = params.assessmentId || '';
         this.phase = params.phase || '';
         this.attackPatternId = params.attackPatternId || '';
         const sub$ = this.userStore
-          .select('users')
-          .pluck('userProfile')
-          .take(1)
+          .select('users').pipe(
+          pluck('userProfile'),
+          take(1),)
           .subscribe((user: UserProfile) => {
             this.requestData(this.rollupId);
           },
@@ -92,30 +93,30 @@ export class FullComponent implements OnInit, OnDestroy {
   public listenForDataChanges(): void {
 
     this.assessment = this.store
-      .select('fullAssessment')
-      .pluck<object, Assessment>('fullAssessment')
-      .filter((el) => el !== undefined)
-      .distinctUntilChanged()
+      .select('fullAssessment').pipe(
+      pluck<object, Assessment>('fullAssessment'),
+      filter((el) => el !== undefined),
+      distinctUntilChanged(),)
       // .filter((arr) => arr && arr.length > 0)
       // .map((arr) => {
       //   return arr.find((el) => el.id === this.assessmentId);
       // });
 
     this.finishedLoading = this.store
-      .select('fullAssessment')
-      .pluck<Assessment, boolean>('finishedLoading')
-      .distinctUntilChanged();
+      .select('fullAssessment').pipe(
+      pluck<Assessment, boolean>('finishedLoading'),
+      distinctUntilChanged(),);
 
     this.assessmentGroup = this.store
-      .select('fullAssessment')
-      .pluck<object, FullAssessmentGroup>('group')
-      .distinctUntilChanged();
+      .select('fullAssessment').pipe(
+      pluck<object, FullAssessmentGroup>('group'),
+      distinctUntilChanged(),);
 
     const sub$ = this.store
-      .select('fullAssessment')
-      .pluck('group')
-      .distinctUntilChanged()
-      .filter((group: any) => group.finishedLoadingGroupData === true)
+      .select('fullAssessment').pipe(
+      pluck('group'),
+      distinctUntilChanged(),
+      filter((group: any) => group.finishedLoadingGroupData === true),)
       .subscribe(
         (group: any) => {
           const riskByAttackPattern = group.riskByAttackPattern || {};
@@ -131,16 +132,16 @@ export class FullComponent implements OnInit, OnDestroy {
         (err) => console.log(err));
 
     this.assessmentName = this.store
-      .select('fullAssessment')
-      .pluck<object, Assessment>('fullAssessment')
-      .distinctUntilChanged()
+      .select('fullAssessment').pipe(
+      pluck<object, Assessment>('fullAssessment'),
+      distinctUntilChanged(),
       // .pluck<object, Assessment[]>('assessmentTypes')
       // .filter((arr) => arr && arr.length > 0)
       // .distinctUntilChanged()
       // .map((arr) => {
       //   return arr.find((el) => el.id === this.assessmentId);
       // })
-      .map((assessment: Assessment) => {
+      map((assessment: Assessment) => {
         if (assessment.assessment_objects && assessment.assessment_objects.length) {
           let retVal = assessment.name + ' - ';
           const assessedType = assessment.assessment_objects[0].stix.type;
@@ -161,7 +162,7 @@ export class FullComponent implements OnInit, OnDestroy {
         } else {
           return assessment.name;
         }
-      });
+      }),);
 
     this.subscriptions.push(sub$);
   }

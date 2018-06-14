@@ -1,6 +1,7 @@
+
+import {last} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject ,  Observable } from 'rxjs';
 import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 
 /**
@@ -31,7 +32,7 @@ export class AssessStateService {
      * @return {Observable<Assess3Meta>}
      */
     public currentMeta(): Observable<Assess3Meta> {
-        return this.metaData$.last();
+        return this.metaData$.pipe(last());
     }
 
 }

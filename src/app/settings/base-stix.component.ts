@@ -1,10 +1,10 @@
+
+import {switchMap} from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { Observer } from 'rxjs/Observer';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable ,  Observer ,  Subscription } from 'rxjs';
 import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
 import { BaseStixService } from './base-stix.service';
 
@@ -120,8 +120,8 @@ export class BaseStixComponent<T = any> {
      * @returns void
      */
     public getItem(observer: Observer<T>): void {
-        const subscription = this.route.params
-            .switchMap((params: Params) => this.service.get(params['id']))
+        const subscription = this.route.params.pipe(
+            switchMap((params: Params) => this.service.get(params['id'])))
             .subscribe(
                 (stixObject) => {
                     observer.next(stixObject);
@@ -132,8 +132,8 @@ export class BaseStixComponent<T = any> {
     }
 
     public deleteItem(item: any, observer: any): void {
-        const subscription = this.route.params
-            .switchMap((params: Params) => this.service.delete(item))
+        const subscription = this.route.params.pipe(
+            switchMap((params: Params) => this.service.delete(item)))
             .subscribe(
                 (stixObject) => {
                     observer.next(stixObject);

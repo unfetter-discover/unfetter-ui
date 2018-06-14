@@ -3,8 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Constance } from '../../../utils/constance';
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
+import { Observable } from 'rxjs';
+
 
 import { StixTableDataSource } from './stix-table.datasource';
 

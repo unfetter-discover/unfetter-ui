@@ -9,7 +9,7 @@ import {
         OnDestroy,
         OnChanges,
     } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import * as d3 from 'd3';
 import { BarChartItem } from './bar-chart-item';

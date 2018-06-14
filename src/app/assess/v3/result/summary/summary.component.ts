@@ -1,9 +1,10 @@
+
+import {take, pluck,  distinctUntilChanged ,  filter ,  map ,  catchError } from 'rxjs/operators';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable ,  Subscription } from 'rxjs';
 import { ConfirmationDialogComponent } from '../../../../components/dialogs/confirmation/confirmation-dialog.component';
 import { slideInOutAnimation } from '../../../../global/animations/animations';
 import { MasterListDialogTableHeaders } from '../../../../global/components/master-list-dialog/master-list-dialog.component';
@@ -22,10 +23,6 @@ import { CleanAssessmentResultData, LoadSingleAssessmentSummaryData, LoadSingleR
 import { SummaryState } from '../store/summary.reducers';
 import { SummaryCalculationService } from './summary-calculation.service';
 import { SummaryDataSource } from './summary.datasource';
-import { distinctUntilChanged } from 'rxjs/operators/distinctUntilChanged';
-import { filter } from 'rxjs/operators/filter';
-import { map } from 'rxjs/operators/map';
-import { catchError } from 'rxjs/operators/catchError';
 import { AssessmentEvalTypeEnum } from 'stix';
 
 @Component({
@@ -87,8 +84,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
    *  initialize this component, fetching data from backend
    */
   public ngOnInit(): void {
-    const idParamSub$ = this.route.params
-      .distinctUntilChanged()
+    const idParamSub$ = this.route.params.pipe(
+      distinctUntilChanged())
       .subscribe((params) => {
         this.rollupId = params.rollupId || '';
         this.assessmentId = params.assessmentId || '';
@@ -100,9 +97,9 @@ export class SummaryComponent implements OnInit, OnDestroy {
         this.store.dispatch(new CleanAssessmentResultData());
         this.riskByAttackPatternStore.dispatch(new CleanAssessmentRiskByAttackPatternData());
         const sub$ = this.userStore
-          .select('users')
-          .pluck('userProfile')
-          .take(1)
+          .select('users').pipe(
+          pluck('userProfile'),
+          take(1),)
           .subscribe((user: UserProfile) => {
             this.requestData(this.assessmentId);
           },
@@ -120,8 +117,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
    */
   public listenForDataChanges(): void {
     const sub1$ = this.store
-      .select('summary')
-      .pluck('summaries')
+      .select('summary').pipe(
+      pluck('summaries'))
       .pipe(
         distinctUntilChanged(),
         filter((arr: Assessment[]) => arr && arr.length > 0)
@@ -145,8 +142,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
         (err) => console.log(err));
 
     const sub2$ = this.store
-      .select('summary')
-      .pluck('finishedLoading')
+      .select('summary').pipe(
+      pluck('finishedLoading'))
       .pipe(
         distinctUntilChanged(),
         filter((el) => el === true)
@@ -162,8 +159,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
       }, (err) => console.log(err));
 
     const sub3$ = this.riskByAttackPatternStore
-      .select('riskByAttackPattern')
-      .pluck('riskByAttackPatterns')
+      .select('riskByAttackPattern').pipe(
+      pluck('riskByAttackPatterns'))
       .pipe(
         distinctUntilChanged(),
         filter((arr: RiskByAttack[]) => arr && arr.length > 0)
@@ -175,8 +172,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
         (err) => console.log(err));
 
     const sub4$ = this.riskByAttackPatternStore
-      .select('riskByAttackPattern')
-      .pluck('finishedLoading')
+      .select('riskByAttackPattern').pipe(
+      pluck('finishedLoading'))
       .pipe(distinctUntilChanged())
       .subscribe((done: boolean) => {
         this.finishedLoadingRBAP = done;
@@ -187,8 +184,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
         (err) => console.log(err));
 
     const sub5$ = this.store
-      .select('summary')
-      .pluck('killChainData')
+      .select('summary').pipe(
+      pluck('killChainData'))
       .pipe(distinctUntilChanged())
       .subscribe((arr: RiskByKillChain[]) => {
         if (!arr || arr.length === 0) {
@@ -202,8 +199,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
       })
 
     const sub6$ = this.store
-      .select('summary')
-      .pluck('finishedLoadingKillChainData')
+      .select('summary').pipe(
+      pluck('finishedLoadingKillChainData'))
       .pipe(distinctUntilChanged())
       .subscribe((done: boolean) => {
         this.finishedLoadingKCD = done;
@@ -213,8 +210,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
       }, (err) => console.log(err));
 
     const sub7$ = this.store
-      .select('summary')
-      .pluck('summaryAggregations')
+      .select('summary').pipe(
+      pluck('summaryAggregations'))
       .pipe(distinctUntilChanged())
       .subscribe((arr: SummaryAggregation[]) => {
         if (!arr || arr.length === 0) {
@@ -227,8 +224,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
       })
 
     const sub8$ = this.store
-      .select('summary')
-      .pluck('finishedLoadingSummaryAggregationData')
+      .select('summary').pipe(
+      pluck('finishedLoadingSummaryAggregationData'))
       .pipe(distinctUntilChanged())
       .subscribe((done: boolean) => {
         this.finishedLoadingSAD = done;
@@ -238,8 +235,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
       }, (err) => console.log(err));
 
     this.assessmentName = this.store
-      .select('summary')
-      .pluck('summaries')
+      .select('summary').pipe(
+      pluck('summaries'))
       .pipe(
         distinctUntilChanged(),
         filter((summaries: Assessment[]) => summaries && summaries.length > 0),

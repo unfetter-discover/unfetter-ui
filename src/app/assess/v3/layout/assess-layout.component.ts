@@ -1,16 +1,10 @@
 import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { combineLatest } from 'rxjs/operators/combineLatest';
-import { distinctUntilChanged } from 'rxjs/operators/distinctUntilChanged';
-import { filter } from 'rxjs/operators/filter';
-import { map } from 'rxjs/operators/map';
-import { tap } from 'rxjs/operators/tap';
+import { BehaviorSubject } from 'rxjs';
+import { combineLatest ,  distinctUntilChanged ,  filter ,  map ,  tap ,  defaultIfEmpty ,  take } from 'rxjs/operators';
 import { fadeInOut } from '../../../global/animations/fade-in-out';
 import * as assessReducers from '../store/assess.reducers';
-import { defaultIfEmpty } from 'rxjs/operators/defaultIfEmpty';
-import { take } from 'rxjs/operators/take';
 
 @Component({
   selector: 'assess-layout',

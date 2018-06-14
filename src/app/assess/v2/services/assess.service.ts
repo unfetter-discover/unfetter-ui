@@ -1,5 +1,8 @@
+
+import {forkJoin as observableForkJoin, zip as observableZip, empty as observableEmpty,  Observable } from 'rxjs';
+
+import {mergeMap, map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { Assessment } from 'stix/assess/v2/assessment';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
@@ -25,7 +28,7 @@ export class AssessService {
      */
     public genericGet(route = '') {
         if (!route) {
-            return Observable.empty();
+            return observableEmpty();
         }
         return this.genericApi.get(route);
     }
@@ -37,18 +40,18 @@ export class AssessService {
      */
     public getAs<T>(url = ''): Observable<T|T[]> {
         if (!url) {
-            return Observable.empty();
+            return observableEmpty();
         }
 
         return this.genericApi
-            .getAs<JsonApiData<T>>(url)
-            .map((data) => {
+            .getAs<JsonApiData<T>>(url).pipe(
+            map((data) => {
                 if (Array.isArray(data)) {
                     return data.map((el) => el.attributes);
                 } else {
                     return data.attributes;
                 }
-            });
+            }));
     }
 
     /**
@@ -58,7 +61,7 @@ export class AssessService {
      */
     public genericPost(route: string, data: any) {
         if (!route) {
-            return Observable.empty();
+            return observableEmpty();
         }
 
         return this.genericApi.post(route, { 'data': { 'attributes': data } });
@@ -71,7 +74,7 @@ export class AssessService {
      */
     public genericPatch(route: string, data: any) {
         if (!route) {
-            return Observable.empty();
+            return observableEmpty();
         }
 
         return this.genericApi.patch(route, { 'data': { 'attributes': data } });
@@ -84,7 +87,7 @@ export class AssessService {
      */
     public delete(item?: any): Observable<any> {
         if (!item) {
-            return Observable.empty();
+            return observableEmpty();
         }
 
         const url = this.assessBaseUrl + '/' + item.id;
@@ -110,8 +113,8 @@ export class AssessService {
     public getById(id: string, includeMeta = true): Observable<Assessment> {
         const url = `${this.assessBaseUrl}/${id}?metaproperties=${includeMeta}`;
         return this.genericApi
-            .getAs<JsonApiData<Assessment>>(url)
-            .map((data) => data.attributes);
+            .getAs<JsonApiData<Assessment>>(url).pipe(
+            map((data) => data.attributes));
     }
 
     /**
@@ -126,8 +129,8 @@ export class AssessService {
         };
         const url = `${this.assessBaseUrl}?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
         return this.genericApi
-            .getAs<JsonApiData<Assessment>[]>(url)
-            .map((data) => data.map((el) => el.attributes));
+            .getAs<JsonApiData<Assessment>[]>(url).pipe(
+            map((data) => data.map((el) => el.attributes)));
     }
 
     /**
@@ -137,7 +140,7 @@ export class AssessService {
      */
     public deleteByRollupId(id: string): Observable<any> {
         if (!id || id.trim().length === 0) {
-            return Observable.empty();
+            return observableEmpty();
         }
         const url = `${this.assessBaseUrl}`;
         const loadAll$ = this.getByRollupId(id);
@@ -149,12 +152,11 @@ export class AssessService {
                     const deleteUrl = `${url}/${assessment.id}`;
                     return this.genericApi.delete(deleteUrl);
                 });
-            return Observable.forkJoin(...calls);
+            return observableForkJoin(...calls);
         };
 
-        return Observable
-            .zip(loadAll$, deleteAssociated$)
-            .mergeMap((val) => val);
+        return observableZip(loadAll$, deleteAssociated$).pipe(
+            mergeMap((val) => val));
     }
 
     /**
@@ -164,7 +166,7 @@ export class AssessService {
      */
     public getRiskPerKillChain(id: string): Observable<any> {
         if (!id) {
-            return Observable.empty();
+            return observableEmpty();
         }
 
         const url = `${this.assessBaseUrl}/${id}/risk-per-kill-chain`;
@@ -178,7 +180,7 @@ export class AssessService {
  */
     public getRiskPerKillChainByRollupId(id: string): Observable<any> {
         if (!id) {
-            return Observable.empty();
+            return observableEmpty();
         }
 
         const url = `${this.assessBaseUrl}/${id}/risk-per-kill-chain`;
@@ -192,7 +194,7 @@ export class AssessService {
      */
     public getRiskPerAttackPattern(id: string, includeMeta = true): Observable<RiskByAttack> {
         if (!id) {
-            return Observable.empty();
+            return observableEmpty();
         }
         const url = `${this.assessBaseUrl}/${id}/risk-by-attack-pattern?metaproperties=${includeMeta}`;
         return this.genericApi
@@ -207,7 +209,7 @@ export class AssessService {
      */
     public getRiskPerAttackPatternByRollupId(id: string, includeMeta = true): Observable<RiskByAttack[]> {
         if (!id) {
-            return Observable.empty();
+            return observableEmpty();
         }
         const filter = {
             'metaProperties.rollupId': id
@@ -215,8 +217,8 @@ export class AssessService {
 
         const url = `${this.assessBaseUrl}/${id}/risk-by-attack-pattern?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
         return this.genericApi
-            .getAs<JsonApiData<RiskByAttack>[]>(url)
-            .map((data) => data.map((el) => el.attributes));
+            .getAs<JsonApiData<RiskByAttack>[]>(url).pipe(
+            map((data) => data.map((el) => el.attributes)));
     }
 
     /**
@@ -226,7 +228,7 @@ export class AssessService {
      */
     public getSummaryAggregation(id: string): Observable<SummaryAggregation> {
         if (!id) {
-            return Observable.empty();
+            return observableEmpty();
         }
 
         const url = `${this.assessBaseUrl}/${id}/summary-aggregations`;
@@ -240,7 +242,7 @@ export class AssessService {
      */
     public getSummaryAggregationByRollup(id: string, includeMeta = true): Observable<SummaryAggregation[]> {
         if (!id) {
-            return Observable.empty();
+            return observableEmpty();
         }
         const filter = {
             'metaProperties.rollupId': id
@@ -248,8 +250,8 @@ export class AssessService {
 
         const url = `${this.assessBaseUrl}/${id}/summary-aggregations?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
         return this.genericApi
-            .getAs<JsonApiData<SummaryAggregation>[]>(url)
-            .map((data) => data.map((el) => el.attributes));
+            .getAs<JsonApiData<SummaryAggregation>[]>(url).pipe(
+            map((data) => data.map((el) => el.attributes)));
     }
 
 
@@ -264,8 +266,8 @@ export class AssessService {
         };
         const url = `${this.assessBaseUrl}?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
         return this.genericApi
-            .getAs<JsonApiData<Assessment>[]>(url)
-            .map((data) => data.map((el) => el.attributes));
+            .getAs<JsonApiData<Assessment>[]>(url).pipe(
+            map((data) => data.map((el) => el.attributes)));
     }
 
     /**
@@ -298,7 +300,7 @@ export class AssessService {
      */
     public getAssessedObjects(id: string): Observable<AssessmentObject[]> {
         if (!id) {
-            return Observable.empty();
+            return observableEmpty();
         }
 
         return this.genericApi.getAs<AssessmentObject[]>(`${this.assessBaseUrl}/${id}/assessed-objects`);
@@ -311,7 +313,7 @@ export class AssessService {
      */
     public getAttackPatternRelationships(id: string): Observable<any> {
         if (!id) {
-            return Observable.empty();
+            return observableEmpty();
         }
 
         let query = { 'stix.target_ref': id, 'stix.relationship_type': { $in: ['mitigates', 'indicates'] } };

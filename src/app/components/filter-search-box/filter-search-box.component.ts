@@ -1,7 +1,9 @@
+
+import {distinctUntilChanged, debounceTime} from 'rxjs/operators';
 import { Component, Input, Output, OnChanges, OnInit, EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/startWith';
+import { Subject } from 'rxjs';
+
 import { ExternalReference } from '../../models';
 
 @Component({
@@ -19,9 +21,9 @@ export class FilterSearchBoxComponent implements OnInit {
     private searchTerms = new Subject<string>();
 
     public ngOnInit() {
-        this.searchTerms
-            .debounceTime(300)        // wait 300ms after each keystroke before considering the term
-            .distinctUntilChanged()
+        this.searchTerms.pipe(
+            debounceTime(300),        // wait 300ms after each keystroke before considering the term
+            distinctUntilChanged(),)
             .subscribe((term) => {
                 if (term) {
                     this.filterItems = this.filter(term);

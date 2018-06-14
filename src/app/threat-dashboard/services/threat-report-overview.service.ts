@@ -1,6 +1,9 @@
+
+import {throwError as observableThrowError, empty as observableEmpty, zip as observableZip, from as observableFrom, merge as observableMerge, of as observableOf, forkJoin as observableForkJoin,  Observable } from 'rxjs';
+
+import {mergeMap, filter, first, map, reduce, catchError} from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import * as UUID from 'uuid';
 import { GenericApi } from '../../core/services/genericapi.service';
@@ -33,7 +36,7 @@ export class ThreatReportOverviewService {
    */
   public load(id: string): Observable<Partial<ThreatReport>> {
     if (!id || id.trim().length === 0) {
-      return Observable.of();
+      return observableOf();
     }
 
     const query = { 'stix.type': 'report', 'metaProperties.work_products.id': id };
@@ -42,11 +45,11 @@ export class ThreatReportOverviewService {
     // const project = encodeURI(JSON.stringify(projection));
     const url = `${this.reportsUrl}?extendedproperties=true&metaproperties=true&filter=${filter}`;
     const reports$: Observable<Report[]> = this.genericService.get(url);
-    const threatReports$ = reports$
-      .let(this.aggregateReportsAsThreatReports())
-      .flatMap((el) => el)
-      .filter((el) => el.id === id)
-      .first();
+    const threatReports$ = reports$.pipe(
+      (this.aggregateReportsAsThreatReports()),
+      mergeMap((el) => el),
+      filter((el) => el.id === id),
+      first(),);
     return threatReports$;
   }
 
@@ -56,8 +59,8 @@ export class ThreatReportOverviewService {
    */
   public loadAll(): Observable<ThreatReport[]> {
     const url = this.reportsUrl + '?extendedproperties=true&metaproperties=true';
-    const o$ = this.genericService.get(url).let(this.aggregateReportsAsThreatReports());
-    return o$.map((arr) => arr.sort(SortHelper.sortDescByField('name')))
+    const o$ = this.genericService.get(url).pipe((this.aggregateReportsAsThreatReports()));
+    return o$.pipe(map((arr) => arr.sort(SortHelper.sortDescByField('name'))))
   }
 
   /**
@@ -78,13 +81,13 @@ export class ThreatReportOverviewService {
    */
   public loadReport(id: string): Observable<Report> {
     if (!id) {
-      return Observable.empty();
+      return observableEmpty();
     }
 
     const query = { 'stix.type': 'report', 'stix.id': id };
     const url = `${this.reportsUrl}?extendedproperties=true&metaproperties=true&filter=${encodeURI(JSON.stringify(query))}`;
     const reports$ = this.genericService.getAs<Report>(url);
-    return reports$.first();
+    return reports$.pipe(first());
   }
 
   /**
@@ -95,7 +98,7 @@ export class ThreatReportOverviewService {
    */
   public loadAllReportsForThreatReport(id: string): Observable<Report[]> {
     if (!id || id.trim().length === 0) {
-      return Observable.of();
+      return observableOf();
     }
 
     const query = { 'stix.type': 'report', 'metaProperties.work_products.id': id };
@@ -110,14 +113,14 @@ export class ThreatReportOverviewService {
    */
   public aggregateReportsAsThreatReports(): (reports: Observable<Report[]>) => Observable<ThreatReport[]> {
     return (reports: Observable<Report[]>) => {
-      return reports
-        .flatMap((el) => el)
-        .filter((el) => el !== undefined)
+      return reports.pipe(
+        mergeMap((el) => el),
+        filter((el) => el !== undefined),
         // if the report does not have a workproduct we cant aggregate it now can we?
-        .filter((report) => report.attributes
-          && report.attributes.metaProperties && report.attributes.metaProperties.work_products)
+        filter((report) => report.attributes
+          && report.attributes.metaProperties && report.attributes.metaProperties.work_products),
         // flatten (report * <=> * workproduct) relationship into (report * <=> 1 workproduct)
-        .flatMap((report) => {
+        mergeMap((report) => {
           const arr = report.attributes.metaProperties.work_products.map((wp) => {
             const tmpReport = Object.assign(new Report(), report);
             tmpReport.attributes = Object.assign({}, report.attributes);
@@ -126,8 +129,8 @@ export class ThreatReportOverviewService {
             return tmpReport;
           }) as Array<Partial<Report>>;
           return arr;
-        })
-        .reduce((memo, el) => {
+        }),
+        reduce((memo, el) => {
           // map threat reports to a key, this reduce performs a grouping by like reports
           const report = el;
           const attribs = report.attributes;
@@ -161,13 +164,13 @@ export class ThreatReportOverviewService {
           tr.boundaries.targets = new Set(Array.from(srcBoundries.targets));
           tr.reports.push(report);
           return memo;
-        }, {} as { [key: string]: ThreatReport })
-        .map((obj) => {
+        }, {} as { [key: string]: ThreatReport }),
+        map((obj) => {
           // map from object of keys back to an array of workproducts, 
           //  with each workproducts reports grouped correctly
           const keys = Object.keys(obj);
           return keys.map((key) => obj[key]);
-        });
+        }),);
     }
   }
 
@@ -187,11 +190,11 @@ export class ThreatReportOverviewService {
       id = threatReportMeta.id;
     }
 
-    let [inserts$, updates$] = Observable.from(reports).partition((report) => report.id === undefined);
+    let [inserts$, updates$] = observableFrom(reports).partition((report) => report.id === undefined);
     // pull fresh copies of the reports
-    updates$ = updates$.mergeMap((report) => this.loadReport(report.id));
+    updates$ = updates$.pipe(mergeMap((report) => this.loadReport(report.id)));
     // assign the correct workproduct to these new reports
-    inserts$ = inserts$.map((report) => {
+    inserts$ = inserts$.pipe(map((report) => {
       if (threatReportMeta) {
         const meta = report.attributes.metaProperties || {};
         meta.work_products = meta.work_products || [];
@@ -200,17 +203,16 @@ export class ThreatReportOverviewService {
         report.attributes.metaProperties = { ...report.attributes.metaProperties, ...meta };
       }
       return report;
-    });
-    const updateReports$ = Observable
-      .merge(inserts$, updates$)
-      .mergeMap((el) => {
+    }));
+    const updateReports$ = observableMerge(inserts$, updates$).pipe(
+      mergeMap((el) => {
         // I cant explain why this an array of single element arrays
         //  but lets unwrap
         if (el instanceof Array) {
           el = el[0];
         }
         return this.upsertReport(el, threatReportMeta);
-      })
+      }))
     // .exhaustMap((val) => val)
     // return updateReports$
     //   // unroll fetch for latest reports
@@ -313,7 +315,7 @@ export class ThreatReportOverviewService {
    */
   public saveThreatReport(threatReport: Partial<ThreatReport>): Observable<Partial<ThreatReport>> {
     if (!threatReport) {
-      return Observable.empty();
+      return observableEmpty();
     }
 
     const url = this.reportsUrl;
@@ -322,9 +324,9 @@ export class ThreatReportOverviewService {
     const id = threatReport.id || UUID.v4();
     threatReport.id = id;
     const reports = threatReport.reports;
-    const saveReports$ = this.upsertReports(reports as Report[], threatReport)
-      .reduce((acc, val) => acc.concat(val), [])
-      .map((el) => threatReport);
+    const saveReports$ = this.upsertReports(reports as Report[], threatReport).pipe(
+      reduce((acc, val) => acc.concat(val), []),
+      map((el) => threatReport),);
     return saveReports$;
   }
 
@@ -335,7 +337,7 @@ export class ThreatReportOverviewService {
    */
   public deleteReport(id: string): Observable<Report> {
     if (!id || id.trim().length === 0) {
-      return Observable.empty();
+      return observableEmpty();
     }
 
     const url = this.reportsUrl + '/' + id;
@@ -351,7 +353,7 @@ export class ThreatReportOverviewService {
    */
   public removeReport(report: Report, threatReport: ThreatReport): Observable<Report> {
     if (!report || !threatReport) {
-      return Observable.empty();
+      return observableEmpty();
     }
 
     const url = this.reportsUrl;
@@ -401,7 +403,7 @@ export class ThreatReportOverviewService {
       .map((report) => {
         return this.removeReport(report, threatReport);
       });
-    return Observable.forkJoin(...calls);
+    return observableForkJoin(...calls);
   }
 
   /**
@@ -411,7 +413,7 @@ export class ThreatReportOverviewService {
    */
   public deleteThreatReport(id: string): Observable<Observable<Report[]>> {
     if (!id || id.trim().length === 0) {
-      return Observable.empty();
+      return observableEmpty();
     }
 
     const url = this.reportsUrl;
@@ -449,10 +451,10 @@ export class ThreatReportOverviewService {
           const updateOp$ = this.http.patch<Report>(updateOrAddUrl, body, { headers });
           return updateOp$;
         });
-      return Observable.forkJoin(...calls);
+      return observableForkJoin(...calls);
     };
 
-    const o$ = Observable.zip(loadAll$, modifyAll);
+    const o$ = observableZip(loadAll$, modifyAll);
     return o$;
   }
 
@@ -465,10 +467,11 @@ export class ThreatReportOverviewService {
   public getLatestReports(): Observable<Partial<LastModifiedThreatReport>[]> {
     const url = Constance.API_HOST + Constance.LATEST_THREAT_REPORTS_URL;
     const headers = this.ensureAuthHeaders(this.headers);
-    return this.http
-      .get<JsonApi<Partial<LastModifiedThreatReport>[]>>(url, { headers })
-      .map((resp) => resp.data)
-      .catch(this.handleError);
+    return this.http.get<JsonApi<Partial<LastModifiedThreatReport>[]>>(url, { headers })
+      .pipe(
+        map((resp): any => resp.data),
+        catchError(this.handleError)
+      );
   }
 
   /**
@@ -480,10 +483,11 @@ export class ThreatReportOverviewService {
   public getLatestReportsByCreatorId(creatorId: string): Observable<Partial<LastModifiedThreatReport>[]> {
     const url = Constance.API_HOST + Constance.LATEST_THREAT_REPORTS_URL + `/creator/${creatorId}`;
     const headers = this.ensureAuthHeaders(this.headers);
-    return this.http
-      .get<JsonApi<Partial<LastModifiedThreatReport>[]>>(url, { headers })
-      .map((resp) => resp.data)
-      .catch(this.handleError);
+    return this.http.get<JsonApi<Partial<LastModifiedThreatReport>[]>>(url, { headers })
+      .pipe(
+      map((resp): any => resp.data),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -507,7 +511,7 @@ export class ThreatReportOverviewService {
   */
   private handleError(error: any): ErrorObservable {
     console.log(error);
-    return Observable.throw(error);
+    return observableThrowError(error);
   }
 
 }

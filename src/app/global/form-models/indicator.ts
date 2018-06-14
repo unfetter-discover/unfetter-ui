@@ -1,5 +1,5 @@
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 export const IndicatorForm = () => {
     return new FormGroup({

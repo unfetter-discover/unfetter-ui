@@ -1,8 +1,10 @@
+
+import {map, take} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { tokenNotExpired } from 'angular2-jwt';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import * as fromUsers from '../../root-store/users/users.reducers';
 import * as fromApp from '../../root-store/app.reducers';
@@ -19,9 +21,9 @@ export class AuthGuard implements CanActivate {
 
     public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
         const allowedRoles = route.data['ROLES'];
-        return this.store.select('users')
-            .take(1)
-            .map((userState: fromUsers.UserState) => { 
+        return this.store.select('users').pipe(
+            take(1),
+            map((userState: fromUsers.UserState) => { 
                 if (this.demoMode) {
                     return true;
                 } else {
@@ -46,7 +48,7 @@ export class AuthGuard implements CanActivate {
 
                     } 
                 }             
-            });
+            }),);
     }
 
     public loggedIn(userState: fromUsers.UserState) {

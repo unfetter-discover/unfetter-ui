@@ -7,7 +7,7 @@ import {
     ViewChild,
     ElementRef,
 } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { MatButtonToggleChange, MatSelectChange } from '@angular/material';
 import { Carousel } from 'primeng/primeng';

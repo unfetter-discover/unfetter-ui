@@ -1,6 +1,9 @@
+
+import {forkJoin as observableForkJoin,  Observable } from 'rxjs';
+
+import {map} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
 import { UserPreferencesService } from '../../core/services/user-preferences.service';
 import { UsersService } from '../../core/services/users.service';
 import { RxjsHelpers } from '../../global/static/rxjs-helpers';
@@ -27,11 +30,11 @@ export class ProfileComponent implements OnInit {
         const params$ = this.route.params
             .subscribe((params) => {
                 const routeId = params.id;
-                const getData$ = Observable.forkJoin(
+                const getData$ = observableForkJoin(
                     this.usersService.getUserProfileById(routeId),
                     this.usersService.getOrganizations()
-                )
-                    .map(RxjsHelpers.mapArrayAttributes)
+                ).pipe(
+                    map(RxjsHelpers.mapArrayAttributes))
                     .subscribe(([userResults, allOrgs]) => {
                         this.user = userResults;
 

@@ -1,3 +1,5 @@
+
+import {pluck} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 
 import { AdminService } from '../admin.service';
@@ -16,9 +18,9 @@ export class HeartbeatComponent implements OnInit {
   constructor(private adminService: AdminService) { }
 
   ngOnInit() {
-    const heartbeat$ = this.adminService.getHeartbeat()
-      .pluck('attributes')
-      .pluck('statuses')
+    const heartbeat$ = this.adminService.getHeartbeat().pipe(
+      pluck('attributes'),
+      pluck('statuses'),)
       .subscribe(
         (heartbeats: Heartbeat[]) => {
           this.heartbeats = heartbeats;

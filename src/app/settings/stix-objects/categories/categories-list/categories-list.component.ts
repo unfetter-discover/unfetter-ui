@@ -2,7 +2,7 @@ import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { Category } from 'stix';
 import { GenericApi } from '../../../../core/services/genericapi.service';
 import { StixService } from '../../../stix.service';

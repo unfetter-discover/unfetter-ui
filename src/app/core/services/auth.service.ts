@@ -1,3 +1,5 @@
+
+import {pluck} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { tokenNotExpired } from 'angular2-jwt';
@@ -19,8 +21,8 @@ export class AuthService {
         private router: Router,
         private store: Store<fromRoot.AppState>
     ) { 
-        const getUser$ = this.store.select('users')
-            .pluck('userProfile')
+        const getUser$ = this.store.select('users').pipe(
+            pluck('userProfile'))
             .subscribe(
                 (user: UserProfile) => {
                     this.user = user;

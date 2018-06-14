@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import 'rxjs/add/operator/startWith';
+
 import { KillChainPhase } from '../../models';
 
 @Component({

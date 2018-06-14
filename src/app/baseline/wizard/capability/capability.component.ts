@@ -1,9 +1,11 @@
+
+import {pluck, distinctUntilChanged} from 'rxjs/operators';
 import { Component, EventEmitter, OnInit, Output, NgModule, ViewEncapsulation, Inject } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as assessReducers from '../../store/baseline.reducers';
 import { Capability, AssessedObject, ObjectAssessment, Question, QuestionAnswerEnum } from 'stix/assess/v3';
@@ -57,9 +59,9 @@ export class CapabilityComponent implements OnInit {
     this.dataSource = new MatTableDataSource<TableEntry>();
 
     const sub1$ = this.wizardStore
-      .select('baseline')
-      .pluck('currentCapability')
-      .distinctUntilChanged()
+      .select('baseline').pipe(
+      pluck('currentCapability'),
+      distinctUntilChanged(),)
       .subscribe(
         (currentCapability: Capability) => {
           this.currentCapability = currentCapability;
@@ -68,17 +70,17 @@ export class CapabilityComponent implements OnInit {
         }, (err) => console.log(err));
 
     const sub2$ = this.wizardStore
-      .select('baseline')
-      .pluck('allAttackPatterns')
-      .distinctUntilChanged()
+      .select('baseline').pipe(
+      pluck('allAttackPatterns'),
+      distinctUntilChanged(),)
       .subscribe(
         (allAttackPatterns: AttackPattern[]) => {
           this.allAttackPatterns = allAttackPatterns;
         }, (err) => console.log(err));
 
     const sub3$ = this.wizardStore
-      .select('baseline')
-      .pluck('currentObjectAssessment')
+      .select('baseline').pipe(
+      pluck('currentObjectAssessment'))
       // .distinctUntilChanged()
       .subscribe(
         (currentObjectAssessment: ObjectAssessment) => {

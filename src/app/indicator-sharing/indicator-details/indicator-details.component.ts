@@ -1,3 +1,5 @@
+
+import {filter, distinctUntilChanged, pluck} from 'rxjs/operators';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -26,8 +28,8 @@ export class IndicatorDetailsComponent extends IndicatorBase implements OnInit {
   }
 
   public ngOnInit() {
-    const getId$ = this.route.params
-      .pluck('id')
+    const getId$ = this.route.params.pipe(
+      pluck('id'))
       .subscribe(
         (id: string) => {
           this.errorMessage = null;
@@ -54,10 +56,10 @@ export class IndicatorDetailsComponent extends IndicatorBase implements OnInit {
   }
 
   private initData() {
-    const indicators$ = this.store.select('indicatorSharing')
-      .pluck('indicators')
-      .distinctUntilChanged()
-      .filter((indicators: any[]) => indicators.length > 0)
+    const indicators$ = this.store.select('indicatorSharing').pipe(
+      pluck('indicators'),
+      distinctUntilChanged(),
+      filter((indicators: any[]) => indicators.length > 0),)
       .subscribe(
         (indicators: any[]) => {
           const findIndicator = indicators.find((indicator) => indicator.id === this.id);

@@ -1,10 +1,12 @@
+
+import {forkJoin as observableForkJoin, empty as observableEmpty, of as observableOf,  Observable } from 'rxjs';
+
+import {switchMap, pluck,  catchError, flatMap, map, mergeMap, tap } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import { catchError, flatMap, map, mergeMap, tap } from 'rxjs/operators';
 import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
@@ -37,34 +39,34 @@ export class AssessEffects {
 
   @Effect()
   public fetchAssessmentWizardData = this.actions$
-    .ofType(assessActions.LOAD_ASSESSMENT_WIZARD_DATA)
-    .pluck('payload')
-    .switchMap((meta: Partial<Assess3Meta>) => {
+    .ofType(assessActions.LOAD_ASSESSMENT_WIZARD_DATA).pipe(
+    pluck('payload'),
+    switchMap((meta: Partial<Assess3Meta>) => {
       const includeMeta = `?metaproperties=true`;
       let url = `${this.generateUrl('indicator')}${includeMeta}`;
       const observables = new Array<Observable<Array<Stix> | AssessmentSet>>();
 
       const indicators$ = meta.includesIndicators
         ? this.genericServiceApi
-          .getAs<Indicator.UnfetterIndicator[]>(url)
-          .map(RxjsHelpers.mapArrayAttributes)
-        : Observable.of<Indicator.UnfetterIndicator[]>([]);
+          .getAs<Indicator.UnfetterIndicator[]>(url).pipe(
+          map(RxjsHelpers.mapArrayAttributes))
+        : observableOf<Indicator.UnfetterIndicator[]>([]);
       observables.push(indicators$);
 
       url = `${this.generateUrl('mitigation')}${includeMeta}`;
       const mitigations$ = meta.includesMitigations
         ? this.genericServiceApi
-          .getAs<JsonApiData<Stix>[]>(url)
-          .map(RxjsHelpers.mapArrayAttributes)
-        : Observable.of<Stix[]>([]);
+          .getAs<JsonApiData<Stix>[]>(url).pipe(
+          map(RxjsHelpers.mapArrayAttributes))
+        : observableOf<Stix[]>([]);
       observables.push(mitigations$);
 
       const capabilitiesQuestions$ = meta.baselineRef
         ? this.baselineService.fetchAssessmentSet(meta.baselineRef)
-        : Observable.of<AssessmentSet>(new AssessmentSet());
+        : observableOf<AssessmentSet>(new AssessmentSet());
       observables.push(capabilitiesQuestions$);
 
-      return Observable.forkJoin(...observables).pipe(
+      return observableForkJoin(...observables).pipe(
         mergeMap(([indicators, mitigations, baseline]) => {
           const actions: Action[] = [
             new assessActions.SetIndicators(indicators as Indicator.UnfetterIndicator[]),
@@ -84,19 +86,19 @@ export class AssessEffects {
         }),
         catchError((err) => {
           console.log(err);
-          return Observable.of(new assessActions.FailedToLoad(true));
+          return observableOf(new assessActions.FailedToLoad(true));
         })
       );
-    });
+    }),);
 
   @Effect()
   public fetchObjectAssessments = this.actions$
-    .ofType(assessActions.LOAD_CURRENT_BASELINE_QUESTIONS)
-    .pluck('payload')
-    .switchMap((assessmentSet: AssessmentSet) => {
+    .ofType(assessActions.LOAD_CURRENT_BASELINE_QUESTIONS).pipe(
+    pluck('payload'),
+    switchMap((assessmentSet: AssessmentSet) => {
       // resolve baseline question ids to full questions
       if (!assessmentSet || !assessmentSet.assessments || assessmentSet.assessments.length === 0) {
-        return Observable.of(new assessActions.FailedToLoad(true));
+        return observableOf(new assessActions.FailedToLoad(true));
       }
 
       return this.baselineService
@@ -107,29 +109,29 @@ export class AssessEffects {
           }),
           catchError((err) => {
             console.log(err);
-            return Observable.of(new assessActions.FailedToLoad(true));
+            return observableOf(new assessActions.FailedToLoad(true));
           })
         );
-    });
+    }),);
 
   @Effect()
   public fetchAssessment = this.actions$
-    .ofType(assessActions.FETCH_ASSESSMENT)
-    .switchMap(() => {
+    .ofType(assessActions.FETCH_ASSESSMENT).pipe(
+    switchMap(() => {
       return this.assessService.load().pipe(
         map((arr: any[]) => new assessActions.FetchAssessment(arr[0])),
         catchError((err) => {
           console.log(err);
-          return Observable.of(new assessActions.FailedToLoad(true));
+          return observableOf(new assessActions.FailedToLoad(true));
         })
       );
-    });
+    }));
 
   @Effect({ dispatch: false })
   public startAssessment = this.actions$
-    .ofType(assessActions.START_ASSESSMENT)
-    .pluck('payload')
-    .switchMap((meta: Assess3Meta) => {
+    .ofType(assessActions.START_ASSESSMENT).pipe(
+    pluck('payload'),
+    switchMap((meta: Assess3Meta) => {
       return this.assessStateService.saveCurrent(meta)
         .pipe(
           tap((el: Assess3Meta) => {
@@ -145,18 +147,18 @@ export class AssessEffects {
             }
             this.router.navigate(route);
           }),
-          map(() => Observable.empty()),
+          map(() => observableEmpty()),
           catchError((err) => {
             console.log(err);
-            return Observable.empty();
+            return observableEmpty();
           })
         );
-    });
+    }),);
 
   @Effect()
   public fetchCapabilities = this.actions$
-    .ofType(assessActions.FETCH_CAPABILITIES)
-    .switchMap(() => {
+    .ofType(assessActions.FETCH_CAPABILITIES).pipe(
+    switchMap(() => {
       // fetch full capability objects, useful for lookups
       return this.baselineService.getCapabilities().pipe(
         mergeMap((arr) => {
@@ -167,15 +169,15 @@ export class AssessEffects {
         }),
         catchError((err) => {
           console.log(err);
-          return Observable.of(new assessActions.FailedToLoad(true));
+          return observableOf(new assessActions.FailedToLoad(true));
         }));
-    });
+    }));
 
   @Effect()
   public saveAssessment = this.actions$
-    .ofType(assessActions.SAVE_ASSESSMENT)
-    .pluck('payload')
-    .switchMap((assessments: Assessment[]) => {
+    .ofType(assessActions.SAVE_ASSESSMENT).pipe(
+    pluck('payload'),
+    switchMap((assessments: Assessment[]) => {
       const rollupIds = assessments
         .map((assessment) => assessment.metaProperties)
         .filter((el) => el !== undefined)
@@ -207,16 +209,16 @@ export class AssessEffects {
           if (assessment.id) {
             url = `${url}/${assessment.id}`;
             return this.genericServiceApi
-              .patchAs<Assessment[]>(url, json)
-              .map<any[], Assessment[]>(RxjsHelpers.mapArrayAttributes);
+              .patchAs<Assessment[]>(url, json).pipe(
+              map<any[], Assessment[]>(RxjsHelpers.mapArrayAttributes));
           } else {
             return this.genericServiceApi
-              .postAs<Assessment[]>(url, json)
-              .map<any[], Assessment[]>(RxjsHelpers.mapArrayAttributes);
+              .postAs<Assessment[]>(url, json).pipe(
+              map<any[], Assessment[]>(RxjsHelpers.mapArrayAttributes));
           }
         });
 
-      return Observable.forkJoin(...observables).pipe(
+      return observableForkJoin(...observables).pipe(
         map((arr: Assessment[][] | any[]) => {
           if (Array.isArray(arr[0])) {
             return arr;
@@ -237,23 +239,23 @@ export class AssessEffects {
         }),
         catchError((err) => {
           console.log(err);
-          return Observable.of(new assessActions.FailedToLoad(true));
+          return observableOf(new assessActions.FailedToLoad(true));
         })
       );
-    });
+    }),);
 
   @Effect()
   public fetchBaselines = this.actions$
-    .ofType(assessActions.LOAD_BASELINES)
-    .switchMap(() => {
+    .ofType(assessActions.LOAD_BASELINES).pipe(
+    switchMap(() => {
       return this.baselineService.fetchBaselines().pipe(
         map((arr) => new assessActions.SetBaselines(arr)),
         catchError((err) => {
           console.log(err);
-          return Observable.of(new assessActions.FailedToLoad(true));
+          return observableOf(new assessActions.FailedToLoad(true));
         })
       );
-    });
+    }));
 
   /**
    * @description

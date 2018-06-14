@@ -1,9 +1,11 @@
+
+import {of as observableOf,  Observable ,  Subscription } from 'rxjs';
+
+import {filter, distinctUntilChanged, pluck, take, finalize} from 'rxjs/operators';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 import { Identity, AssessmentSet } from 'stix';
 import { UsersService } from '../../../core/services/users.service';
 import { slideInOutAnimation } from '../../../global/animations/animations';
@@ -81,8 +83,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
    *  initialize this component, fetching data from backend
    */
   public ngOnInit(): void {
-    const idParamSub$ = this.route.params
-      .distinctUntilChanged()
+    const idParamSub$ = this.route.params.pipe(
+      distinctUntilChanged())
       .subscribe((params) => {
         this.baselineId = params.baselineId || '';
         this.summaries = undefined;
@@ -90,9 +92,9 @@ export class SummaryComponent implements OnInit, OnDestroy {
         this.calculationService.baseline = undefined;
         this.store.dispatch(new CleanBaselineResultData());
         const sub$ = this.userStore
-          .select('users')
-          .pluck('userProfile')
-          .take(1)
+          .select('users').pipe(
+          pluck('userProfile'),
+          take(1),)
           .subscribe((user: UserProfile) => {
             const creatorId = user._id;
             const createdById = user.organizations[0].id;
@@ -104,9 +106,9 @@ export class SummaryComponent implements OnInit, OnDestroy {
         (err) => console.log(err));
 
     const subIdentitie$ = this.userStore
-      .select('identities')
-      .pluck('identities')
-      .finally(() => subIdentitie$ && subIdentitie$.unsubscribe())
+      .select('identities').pipe(
+      pluck('identities'),
+      finalize(() => subIdentitie$ && subIdentitie$.unsubscribe()),)
       .subscribe(
         (identities: Identity[]) => this.identities = identities,
         (error) => console.log(`(${new Date().toISOString()}) error retrieving identities from app store`, error)
@@ -136,10 +138,10 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
   public getBaseline(): void {
     const baselineRetrieve$ = this.store
-      .select('summary')
-      .pluck('baseline')
-      .distinctUntilChanged()
-      .filter((arr: AssessmentSet[]) => arr && arr.length > 0)
+      .select('summary').pipe(
+      pluck('baseline'),
+      distinctUntilChanged(),
+      filter((arr: AssessmentSet[]) => arr && arr.length > 0),)
       .subscribe((arr: AssessmentSet[]) => {this.calculationService.baseline = arr[0]; return this.calculationService.baseline},
         (err) => console.log(err));
 
@@ -152,20 +154,20 @@ export class SummaryComponent implements OnInit, OnDestroy {
    */
   public listenForDataChanges(): void {
     const sub1$ = this.store
-      .select('summary')
-      .pluck('summaries')
-      .distinctUntilChanged()
-      .filter((arr: AssessmentSet[]) => arr && arr.length > 0)
+      .select('summary').pipe(
+      pluck('summaries'),
+      distinctUntilChanged(),
+      filter((arr: AssessmentSet[]) => arr && arr.length > 0),)
       .subscribe((arr: AssessmentSet[]) => {
         this.summaries = [...arr];
       },
         (err) => console.log(err));
 
     const sub2$ = this.store
-      .select('summary')
-      .pluck('finishedLoading')
-      .distinctUntilChanged()
-      .filter((el) => el === true)
+      .select('summary').pipe(
+      pluck('finishedLoading'),
+      distinctUntilChanged(),
+      filter((el) => el === true),)
       .subscribe((done: boolean) => {
         if (this.calculationService.baseline === undefined) {
           // fetching the summary failed, set all flags to done
@@ -177,9 +179,9 @@ export class SummaryComponent implements OnInit, OnDestroy {
       }, (err) => console.log(err));
 
     const sub8$ = this.store
-      .select('summary')
-      .pluck('finishedLoadingSummaryAggregationData')
-      .distinctUntilChanged()
+      .select('summary').pipe(
+      pluck('finishedLoadingSummaryAggregationData'),
+      distinctUntilChanged(),)
       .subscribe((done: boolean) => {
         // this.finishedLoadingSAD = done;
         // if (done) {
@@ -188,16 +190,16 @@ export class SummaryComponent implements OnInit, OnDestroy {
       }, (err) => console.log(err));
 
     const sub9$ = this.store
-      .select('summary')
-      .pluck('baseline')
-      .distinctUntilChanged()
+      .select('summary').pipe(
+      pluck('baseline'),
+      distinctUntilChanged(),)
       .subscribe((arr: AssessmentSet[]) => {
         if (!arr || arr.length === 0) {
           this.blName = '';
         } else {
           this.blName = arr[0].name;
         }
-        this.baselineName = Observable.of(this.blName);
+        this.baselineName = observableOf(this.blName);
       }, (err) => console.log(err));
 
     this.subscriptions.push(sub1$, sub2$, sub8$, sub9$);

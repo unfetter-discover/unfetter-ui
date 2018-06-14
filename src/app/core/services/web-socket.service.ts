@@ -1,7 +1,8 @@
+
+import {take, map, filter, pluck} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import { Observable ,  Subject } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { WSMessageTypes } from '../../global/enums/ws-message-types.enum';
@@ -31,10 +32,10 @@ export class WebsocketService {
     }
 
     public initConnection(): void {
-        const getAuthUser$ = this.store.select('users')
-            .filter((user: fromUser.UserState) => user.authenticated)
-            .take(1)
-            .pluck('token')
+        const getAuthUser$ = this.store.select('users').pipe(
+            filter((user: fromUser.UserState) => user.authenticated),
+            take(1),
+            pluck('token'),)
             .subscribe(
                 (userToken: string) => {
                     console.log('Starting connection!');
@@ -85,9 +86,9 @@ export class WebsocketService {
     }
 
     public connect(messageType: WSMessageTypes): Observable<any> {
-        return this.socketSubject
-            .filter((message: any) => message.messageType === messageType)
-            .map((message) => {
+        return this.socketSubject.pipe(
+            filter((message: any) => message.messageType === messageType),
+            map((message) => {
                 if (message._id) {
                     return {
                         ...message.messageContent,
@@ -96,7 +97,7 @@ export class WebsocketService {
                 } else {
                     return message.messageContent;
                 }
-            });
+            }),);
     }
 
     public sendMessage(data: {}) {

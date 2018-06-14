@@ -1,5 +1,8 @@
+
+import {forkJoin as observableForkJoin, of as observableOf,  Observable } from 'rxjs';
+
+import {map, pluck} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 
 import { GenericApi } from '../core/services/genericapi.service';
 import { Constance } from '../utils/constance';
@@ -92,7 +95,7 @@ export class IndicatorSharingService {
 
     public getUserProfileById(userId): Observable<any> {
         if (this.runMode !== undefined && this.runMode === 'DEMO') {
-            return Observable.of({ 'attributes': this.authService.getUser()});
+            return observableOf({ 'attributes': this.authService.getUser()});
         } else {
             return this.genericApi.get(`${this.profileByIdUrl}/${userId}`);
         }
@@ -118,7 +121,7 @@ export class IndicatorSharingService {
 
     public getTotalIndicatorCount(): Observable<number> {
         const filterObj = { 'stix.type': 'indicator' };
-        return this.genericApi.get(`${this.multiplesUrl}/count?filter=${JSON.stringify(filterObj)}`).pluck('attributes').pluck('count');
+        return this.genericApi.get(`${this.multiplesUrl}/count?filter=${JSON.stringify(filterObj)}`).pipe(pluck('attributes'),pluck('count'),);
     }
 
     public translateAllPatterns(pattern: string): Observable<any> {
@@ -147,8 +150,8 @@ export class IndicatorSharingService {
     }
 
     public doSearch(searchParameters: SearchParameters, sortType: SortTypes): Observable<any> {
-        return this.genericApi.get(`${this.baseUrl}/search?searchparameters=${encodeURIComponent(JSON.stringify(searchParameters))}&sorttype=${sortType}&metaproperties=true`)
-            .map(RxjsHelpers.mapArrayAttributes);
+        return this.genericApi.get(`${this.baseUrl}/search?searchparameters=${encodeURIComponent(JSON.stringify(searchParameters))}&sorttype=${sortType}&metaproperties=true`).pipe(
+            map(RxjsHelpers.mapArrayAttributes));
     }
 
     public getDownloadData(indicatorIds: string[], attackPatternIds: string[], sensorIds: string[]): Observable<any[]> {
@@ -177,17 +180,16 @@ export class IndicatorSharingService {
             _id: { $in: sensorIds }
         };
 
-        return Observable
-            .forkJoin(
-                this.genericApi.get(`${this.relationshipUrl}?filter=${encodeURI(JSON.stringify(relFilterObj))}`).map(RxjsHelpers.mapArrayAttributes),
-                this.genericApi.get(`${this.attackPatternsUrl}?filter=${encodeURI(JSON.stringify(apFilter))}`).map(RxjsHelpers.mapArrayAttributes),
-                this.genericApi.get(`${this.sensorsUrl}?filter=${encodeURI(JSON.stringify(sensorFilter))}`).map(RxjsHelpers.mapArrayAttributes)
-            )
-            .map((results: [any[], any[], any[]]): any[] => results.reduce((prev, cur) => prev.concat(cur), []));
+        return observableForkJoin(
+                this.genericApi.get(`${this.relationshipUrl}?filter=${encodeURI(JSON.stringify(relFilterObj))}`).pipe(map(RxjsHelpers.mapArrayAttributes)),
+                this.genericApi.get(`${this.attackPatternsUrl}?filter=${encodeURI(JSON.stringify(apFilter))}`).pipe(map(RxjsHelpers.mapArrayAttributes)),
+                this.genericApi.get(`${this.sensorsUrl}?filter=${encodeURI(JSON.stringify(sensorFilter))}`).pipe(map(RxjsHelpers.mapArrayAttributes))
+            ).pipe(
+            map((results: [any[], any[], any[]]): any[] => results.reduce((prev, cur) => prev.concat(cur), [])));
     }
 
     public getSummaryStatistics(): Observable<IndicatorSharingSummaryStatistics[]> {
-        return this.genericApi.get(`${this.baseUrl}/summary-statistics`).pluck('attributes');
+        return this.genericApi.get(`${this.baseUrl}/summary-statistics`).pipe(pluck('attributes'));
     }
 
     public publishIndicator(id: string): Observable<any> {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { Constance } from '../../utils/constance';
 

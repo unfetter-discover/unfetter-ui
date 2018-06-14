@@ -1,8 +1,11 @@
+
+import {empty as observableEmpty,  Observable } from 'rxjs';
+
+import {catchError, mergeMap, switchMap, pluck} from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
-import { Observable } from 'rxjs/Observable';
 import { RiskByKillChain } from 'stix/assess/v2/risk-by-kill-chain';
 import { SummaryAggregation } from 'stix/assess/v2/summary-aggregation';
 import { Assessment } from 'stix/assess/v3/assessment';
@@ -26,91 +29,91 @@ export class SummaryEffects {
 
     @Effect()
     public fetchSingleAssessmentSummaryData = this.actions$
-        .ofType(LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA)
-        .pluck('payload')
-        .switchMap((assessmentId: string) => {
+        .ofType(LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA).pipe(
+        pluck('payload'),
+        switchMap((assessmentId: string) => {
             return this.assessService
-                .getById(assessmentId)
-                .mergeMap((data: Assessment) => {
+                .getById(assessmentId).pipe(
+                mergeMap((data: Assessment) => {
                     const actions = [new FinishedLoading(true)];
                     if (!data || !data.id) {
                         return actions;
                     }
                     return [new SetAssessments([data]), ...actions];
-                })
-                .catch((err) => {
+                }),
+                catchError((err) => {
                     console.log(err);
-                    return Observable.empty();
-                });
-        });
+                    return observableEmpty();
+                }),);
+        }),);
 
     @Effect()
     public fetchAssessmentSummaryData = this.actions$
-        .ofType(LOAD_ASSESSMENT_SUMMARY_DATA)
-        .pluck('payload')
-        .switchMap((rollupId: string) => {
+        .ofType(LOAD_ASSESSMENT_SUMMARY_DATA).pipe(
+        pluck('payload'),
+        switchMap((rollupId: string) => {
             return this.assessService
-                .getByRollupId(rollupId)
-                .mergeMap((data: Assessment[]) => [new SetAssessments(data), new FinishedLoading(true)])
-                .catch((err) => {
+                .getByRollupId(rollupId).pipe(
+                mergeMap((data: Assessment[]) => [new SetAssessments(data), new FinishedLoading(true)]),
+                catchError((err) => {
                     console.log(err);
-                    return Observable.empty();
-                });
-        });
+                    return observableEmpty();
+                }),);
+        }),);
 
     @Effect()
     public fetchSingleRiskPerKillChainData = this.actions$
-        .ofType(LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA)
-        .pluck('payload')
-        .switchMap((assessmentId: string) => {
+        .ofType(LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA).pipe(
+        pluck('payload'),
+        switchMap((assessmentId: string) => {
             return this.assessService
-                .getRiskPerKillChain(assessmentId)
-                .mergeMap((data: RiskByKillChain) => [new SetKillChainData([data]), new FinishedLoadingKillChainData(true)])
-                .catch((err) => {
+                .getRiskPerKillChain(assessmentId).pipe(
+                mergeMap((data: RiskByKillChain) => [new SetKillChainData([data]), new FinishedLoadingKillChainData(true)]),
+                catchError((err) => {
                     console.log(err);
-                    return Observable.empty();
-                });
-        });
+                    return observableEmpty();
+                }),);
+        }),);
 
     @Effect()
     public fetchRiskPerKillChainData = this.actions$
-        .ofType(LOAD_RISK_PER_KILL_CHAIN_DATA)
-        .pluck('payload')
-        .switchMap((rollupId: string) => {
+        .ofType(LOAD_RISK_PER_KILL_CHAIN_DATA).pipe(
+        pluck('payload'),
+        switchMap((rollupId: string) => {
             return this.assessService
-                .getRiskPerKillChainByRollupId(rollupId)
-                .mergeMap((data: RiskByKillChain[]) => [new SetKillChainData(data), new FinishedLoadingKillChainData(true)])
-                .catch((err) => {
+                .getRiskPerKillChainByRollupId(rollupId).pipe(
+                mergeMap((data: RiskByKillChain[]) => [new SetKillChainData(data), new FinishedLoadingKillChainData(true)]),
+                catchError((err) => {
                     console.log(err);
-                    return Observable.empty();
-                });
-        });
+                    return observableEmpty();
+                }),);
+        }),);
 
     @Effect()
     public fetchSingleSummaryAggregationData = this.actions$
-        .ofType(LOAD_SINGLE_SUMMARY_AGGREGATION_DATA)
-        .pluck('payload')
-        .switchMap((assessmentId: string) => {
+        .ofType(LOAD_SINGLE_SUMMARY_AGGREGATION_DATA).pipe(
+        pluck('payload'),
+        switchMap((assessmentId: string) => {
             return this.assessService
-                .getSummaryAggregation(assessmentId)
-                .mergeMap((data: SummaryAggregation) => [new SetSummaryAggregationData([data]), new FinishedLoadingSummaryAggregationData(true)])
-                .catch((err) => {
+                .getSummaryAggregation(assessmentId).pipe(
+                mergeMap((data: SummaryAggregation) => [new SetSummaryAggregationData([data]), new FinishedLoadingSummaryAggregationData(true)]),
+                catchError((err) => {
                     console.log(err);
-                    return Observable.empty();
-                });
-        });
+                    return observableEmpty();
+                }),);
+        }),);
 
     @Effect()
     public fetchSummaryAggregationData = this.actions$
-        .ofType(LOAD_SUMMARY_AGGREGATION_DATA)
-        .pluck('payload')
-        .switchMap((rollupId: string) => {
+        .ofType(LOAD_SUMMARY_AGGREGATION_DATA).pipe(
+        pluck('payload'),
+        switchMap((rollupId: string) => {
             return this.assessService
-                .getSummaryAggregationByRollup(rollupId)
-                .mergeMap((data: SummaryAggregation[]) => [new SetSummaryAggregationData(data), new FinishedLoadingSummaryAggregationData(true)])
-                .catch((err) => {
+                .getSummaryAggregationByRollup(rollupId).pipe(
+                mergeMap((data: SummaryAggregation[]) => [new SetSummaryAggregationData(data), new FinishedLoadingSummaryAggregationData(true)]),
+                catchError((err) => {
                     console.log(err);
-                    return Observable.empty();
-                });
-        });
+                    return observableEmpty();
+                }),);
+        }),);
 }

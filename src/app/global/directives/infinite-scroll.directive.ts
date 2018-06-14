@@ -1,5 +1,6 @@
+
+import {fromEvent as observableFromEvent,  Observable } from 'rxjs';
 import { Directive, ElementRef, AfterViewInit, EventEmitter, Output, Input } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 
 @Directive({
   selector: '[infiniteScroll]'
@@ -12,8 +13,7 @@ export class InfiniteScrollDirective implements AfterViewInit {
   constructor(private el: ElementRef) { }
 
   ngAfterViewInit() {
-    const scrollEvent$: Observable<any> = Observable
-      .fromEvent(window, 'scroll');
+    const scrollEvent$: Observable<any> = observableFromEvent(window, 'scroll');
 
     const bottomDiv = this.el.nativeElement.querySelector('#bottom');
 

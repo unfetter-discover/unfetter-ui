@@ -1,8 +1,11 @@
+
+import {empty as observableEmpty,  Observable } from 'rxjs';
+
+import {catchError, mergeMap, pluck, switchMap} from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
-import { Observable } from 'rxjs/Observable';
 import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
 import { BaselineService } from '../../services/baseline.service';
 import { FinishedLoading, LOAD_BASELINE_DATA, SetBaseline } from './summary.actions';
@@ -19,20 +22,20 @@ export class SummaryEffects {
 
     @Effect()
     public fetchBaselineData = this.actions$
-        .ofType(LOAD_BASELINE_DATA)
-        .pluck('payload')
-        .switchMap((baselineId: string) => {
+        .ofType(LOAD_BASELINE_DATA).pipe(
+        pluck('payload'),
+        switchMap((baselineId: string) => {
             return this.baselineService
-                .getById(baselineId)
-                .mergeMap((data: AssessmentSet) => {
+                .getById(baselineId).pipe(
+                mergeMap((data: AssessmentSet) => {
                     const actions = [new FinishedLoading(true)];
                     if (!data || !data.id) {
                         return actions;
                     }
                     return [new SetBaseline([data]), ...actions];
-                })
-                .catch((err) => {
-                    return Observable.empty();
-                });
-        });
+                }),
+                catchError((err) => {
+                    return observableEmpty();
+                }),);
+        }),);
 }

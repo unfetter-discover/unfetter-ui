@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { SpeedDialItem } from '../../../../../../global/components/speed-dial/speed-dial-item';
 import { Constance } from '../../../../../../utils/constance';
 import { AssessService } from '../../../../services/assess.service';

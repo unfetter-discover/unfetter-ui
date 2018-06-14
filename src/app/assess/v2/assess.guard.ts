@@ -1,7 +1,10 @@
+
+import {of as observableOf,  Observable } from 'rxjs';
+
+import {pluck, map, catchError, take, switchMap} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
 import { environment } from '../../../environments/environment';
 import { UserProfile } from '../../models/user/user-profile';
 import { AppState } from '../../root-store/app.reducers';
@@ -25,12 +28,12 @@ export class AssessGuard implements CanActivate {
      * @param state 
      */
     public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-        return this.store.select('users')
-            .take(1)
-            .pluck('userProfile')
-            .switchMap((user: UserProfile) => {
+        return this.store.select('users').pipe(
+            take(1),
+            pluck('userProfile'),
+            switchMap((user: UserProfile) => {
                 const o$ = this.assessService.getLatestAssessments();
-                return o$.
+                return o$.pipe(
                     map((data) => {
                         if (data === undefined || data.length === 0) {
                             // no assessments found, navigate to creation page
@@ -43,12 +46,12 @@ export class AssessGuard implements CanActivate {
                             this.router.navigate([`/${this.BASE_URL}/result/summary`, lastModAssessment.rollupId, lastModAssessment.id]);
                             return true;
                         }
-                    })
-                    .catch((err) => {
+                    }),
+                    catchError((err) => {
                         console.log('error in route gaurd, routing to create page', err);
                         this.router.navigate([this.CREATE_URL]);
-                        return Observable.of(false);
-                    });
-            });
+                        return observableOf(false);
+                    }),);
+            }),);
     }
 }

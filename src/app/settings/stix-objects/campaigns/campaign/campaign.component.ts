@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { Constance } from '../../../../utils/constance';
 import { BaseStixComponent } from '../../../base-stix.component';

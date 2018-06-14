@@ -2,7 +2,7 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
 import * as assessActions from '../store/assess.actions';

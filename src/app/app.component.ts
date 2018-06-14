@@ -1,3 +1,5 @@
+
+import {map, filter} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -67,9 +69,9 @@ export class AppComponent implements OnInit {
 
     const bodyElement: HTMLElement = document.getElementsByTagName('body')[0];
 
-    this.router.events
-      .filter((event) => event instanceof NavigationEnd)
-      .map(() => this.activatedRoute)
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      map(() => this.activatedRoute),)
       .subscribe((event: ActivatedRoute) => {
         const url = ((event as any)._routerState.snapshot.url.split('/'))[1];
         this.setTheme(url, bodyElement);

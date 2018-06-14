@@ -1,7 +1,9 @@
+
+import {pluck, distinctUntilChanged} from 'rxjs/operators';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { Category, Capability } from 'stix/assess/v3/baseline';
 import * as assessActions from '../../store/baseline.actions';
 import { SetBaselineGroups } from '../../store/baseline.actions';
@@ -31,17 +33,17 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
 
     const catSub1$ = this.wizardStore
-      .select('baseline')
-      .pluck('capabilityGroups')
-      .distinctUntilChanged()
+      .select('baseline').pipe(
+      pluck('capabilityGroups'),
+      distinctUntilChanged(),)
       .subscribe(
         (categories: Category[]) => this.categories = categories,
         (err) => console.log(err));
 
     const catSub2$ = this.wizardStore
-      .select('baseline')
-      .pluck('baselineGroups')
-      .distinctUntilChanged()
+      .select('baseline').pipe(
+      pluck('baselineGroups'),
+      distinctUntilChanged(),)
       .subscribe(
         (selectedCapabilityGroups: Category[]) => {
           this.selectedCapabilityGroups = selectedCapabilityGroups;
@@ -49,9 +51,9 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
         (err) => console.log(err));
   
     const catSub3$ = this.wizardStore
-      .select('baseline')
-      .pluck('baselineCapabilities')
-      .distinctUntilChanged()
+      .select('baseline').pipe(
+      pluck('baselineCapabilities'),
+      distinctUntilChanged(),)
       .subscribe(
         (capabilities: Capability[]) => {
           this.baselineCapabilities = capabilities;

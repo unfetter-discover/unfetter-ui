@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Location } from '@angular/common';
 import { BaseStixComponent } from '../../../base-stix.component';
 import { AttackPattern, CourseOfAction, Relationship } from '../../../../models';

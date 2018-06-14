@@ -1,3 +1,7 @@
+
+import {of as observableOf,  BehaviorSubject ,  Observable ,  Subscription } from 'rxjs';
+
+import {tap, map, take, distinctUntilChanged, pluck, filter} from 'rxjs/operators';
 import {
     Component,
     Input,
@@ -8,9 +12,6 @@ import {
     EventEmitter,
     SimpleChange,
 } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 import { Store } from '@ngrx/store';
 
 import { MatButtonToggleChange } from '@angular/material';
@@ -213,8 +214,8 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
     protected initData() {
         console['debug'](`(${new Date().toISOString()}) TacticsPane querying store`);
 
-        this.framework$ = this.getFrameworks()
-            .distinctUntilChanged()
+        this.framework$ = this.getFrameworks().pipe(
+            distinctUntilChanged())
             .subscribe(
                 (frameworks) => {
                     console['debug'](`(${new Date().toISOString()}) TacticsPane loaded frameworks`, frameworks);
@@ -229,10 +230,10 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
             );
 
         this.chain$ = this.store
-            .select('config')
-            .pluck('tacticsChains')
-            .filter(t => t !== null)
-            .distinctUntilChanged()
+            .select('config').pipe(
+            pluck('tacticsChains'),
+            filter(t => t !== null),
+            distinctUntilChanged(),)
             .subscribe(
                 (tactics: Dictionary<TacticChain>) => {
                     console['debug'](`(${new Date().toISOString()}) TacticsPane loaded tactics`, tactics);
@@ -250,7 +251,7 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
     private getFrameworks(): Observable<string[]> {
         if (this.frameworks && this.frameworks.length) {
             console['debug'](`(${new Date().toISOString()}) TacticsPane frameworks provided`);
-            return Observable.of(this.frameworks.slice(0));
+            return observableOf(this.frameworks.slice(0));
         }
         if (this.targets && this.targets.length) {
             const frameworks = this.targets
@@ -258,18 +259,18 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
                 .filter(chain => chain !== undefined && chain !== null);
             if (frameworks.length >= 1) {
                 console['debug'](`(${new Date().toISOString()}) TacticsPane frameworks derived from targets`);
-                return Observable.of(frameworks);
+                return observableOf(frameworks);
             }
         }
         return this.store
-            .select('users')
-            .pluck('userProfile')
-            .take(1)
-            .pluck('preferences')
-            .pluck('killchain')
-            .map((chain: string) => [chain])
-            .do(() => console['debug'](`(${new Date().toISOString()}) TacticsPane`,
-                    'frameworks plucked from user preferences'));
+            .select('users').pipe(
+            pluck('userProfile'),
+            take(1),
+            pluck('preferences'),
+            pluck('killchain'),
+            map((chain: string) => [chain]),
+            tap(() => console['debug'](`(${new Date().toISOString()}) TacticsPane`,
+                    'frameworks plucked from user preferences')),);
         }
 
     /**

@@ -1,6 +1,7 @@
+
+import {empty as observableEmpty,  Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { Constance } from '../../utils/constance';
 import { ExternalDataTranslationRequest } from '../models/adapter/external-data-translation-request';
 import { ExternalDataTranslationResponse } from '../models/adapter/external-data-translation-response';
@@ -24,7 +25,7 @@ export class ReportTranslationService {
    */
   public translateUrl(req: UrlTranslationRequest): Observable<JsonApiObject<UrlTranslationResponse>> {
     if (!req || !req.systemName || !req.url) {
-      return Observable.empty();
+      return observableEmpty();
     }
 
     const jsonApiObject = new JsonApiObject<UrlTranslationRequest>();
@@ -41,7 +42,7 @@ export class ReportTranslationService {
    */
   public translateData(req: ExternalDataTranslationRequest): Observable<JsonApiObject<ExternalDataTranslationResponse>> {
     if (!req || !req.systemName || !req.payload) {
-      return Observable.empty();
+      return observableEmpty();
     }
 
     const jsonApiObject = new JsonApiObject<ExternalDataTranslationRequest>();
@@ -57,7 +58,7 @@ export class ReportTranslationService {
    */
   public fetchReport(url: string, includeAuthHeaders = false): any {
     if (!url) {
-      return Observable.empty();
+      return observableEmpty();
     }
   
     let headers = this.headers;

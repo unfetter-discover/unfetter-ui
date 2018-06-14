@@ -1,3 +1,7 @@
+
+import {fromEvent as observableFromEvent, combineLatest as observableCombineLatest,  Observable } from 'rxjs';
+
+import {distinctUntilChanged, debounceTime, withLatestFrom, tap} from 'rxjs/operators';
 import { Component,
          OnInit,
          AfterViewInit,
@@ -16,7 +20,6 @@ import { MatDialogRef,
          MatPaginator,
          PageEvent,
          MatSnackBar } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
 
 import { Report } from '../../../models/report';
 import { GenericApi } from '../../../core/services/genericapi.service';
@@ -74,27 +77,27 @@ export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy
         this.reportsLoading = true;
 
         const loadReports$ = this.service.loadAllReports();
-        let loadAll$ = Observable.combineLatest(loadReports$)
-            .withLatestFrom((results) => {
+        let loadAll$ = observableCombineLatest(loadReports$).pipe(
+            withLatestFrom((results) => {
                 let filter = [];
                 if (this.data && this.data.reports) {
                     filter = this.data.reports;
                 }
                 return results[0].filter(report => !filter.some(have => this.areSameReport(have, report)));
-            });
-        loadAll$ = loadAll$
-            .do(() => {
+            }));
+        loadAll$ = loadAll$.pipe(
+            tap(() => {
                 // removing spinner, put on change queue
                 requestAnimationFrame(() => {
                     this.reportsLoading = false;
                 });
-            })
-            .do(() => {
+            }),
+            tap(() => {
                 // trigger change detection, to connect number of reports show needed or get expression changed error
                 requestAnimationFrame(() => {
                     this.curDisplayLen = this.currents.curDisplayLen$;
                 });
-            });
+            }),);
 
         this.currents = new ReportsDataSource(loadAll$);
         return loadReports$;
@@ -124,9 +127,9 @@ export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy
         }
 
         this.filter = filter;
-        const sub$ = Observable.fromEvent(this.filter.nativeElement, 'keyup')
-            .debounceTime(150)
-            .distinctUntilChanged()
+        const sub$ = observableFromEvent(this.filter.nativeElement, 'keyup').pipe(
+            debounceTime(150),
+            distinctUntilChanged(),)
             .subscribe(() => {
                 if (!this.currents) {
                     return;

@@ -1,6 +1,8 @@
+
+import {finalize, debounceTime, distinctUntilChanged, pluck, map, filter, withLatestFrom} from 'rxjs/operators';
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { MatDialog } from '@angular/material';
@@ -46,9 +48,9 @@ export class IndicatorSharingFiltersComponent implements OnInit {
   }
 
   public ngOnInit() {
-    const searchChanges$ = this.searchForm.valueChanges
-      .debounceTime(300)
-      .distinctUntilChanged()
+    const searchChanges$ = this.searchForm.valueChanges.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),)
       .subscribe(
         (searchParams: SearchParameters) => {
           this.store.dispatch(new indicatorSharingActions.SetSearchParameters(searchParams));
@@ -64,28 +66,28 @@ export class IndicatorSharingFiltersComponent implements OnInit {
       
     this.killChainPhases$ = this.store.select(getPreferredKillchainPhases);
 
-    this.labels$ = this.store.select('indicatorSharing')
-      .pluck('indicators')
-      .map((indicators: any) => {
+    this.labels$ = this.store.select('indicatorSharing').pipe(
+      pluck('indicators'),
+      map((indicators: any) => {
         return indicators
           .filter((indicator) => indicator.labels && indicator.labels.length)
           .map((indicator) => indicator.labels)
           .reduce((prev, cur) => prev.concat(cur), []);
-      })
-      .map((labels: string[]) => {
+      }),
+      map((labels: string[]) => {
         const labelSet = new Set(labels);
         return Array.from(labelSet);
-      });
+      }),);
 
-    this.dataSources$ = this.store.select('config')
-      .pluck('configurations')
-      .filter(RxjsHelpers.filterByConfigKey(ConfigKeys.DATA_SOURCES))
-      .pluck(ConfigKeys.DATA_SOURCES)
-      .map((dataSources: string[]) => dataSources.sort());
+    this.dataSources$ = this.store.select('config').pipe(
+      pluck('configurations'),
+      filter(RxjsHelpers.filterByConfigKey(ConfigKeys.DATA_SOURCES)),
+      pluck(ConfigKeys.DATA_SOURCES),
+      map((dataSources: string[]) => dataSources.sort()),);
 
-    const getAttackPatterns$ = this.store.select('indicatorSharing')
-      .pluck('attackPatterns')
-      .withLatestFrom(this.store.select('users'))
+    const getAttackPatterns$ = this.store.select('indicatorSharing').pipe(
+      pluck('attackPatterns'),
+      withLatestFrom(this.store.select('users')),)
       .subscribe(
         ([attackPatterns, user]: [any[], UserState]) => {
           if (user.userProfile.preferences && user.userProfile.preferences.killchain) {
@@ -110,8 +112,8 @@ export class IndicatorSharingFiltersComponent implements OnInit {
         }
     );
 
-    this.intrusionSets$ = this.store.select('indicatorSharing')
-      .pluck('intrusionSets');
+    this.intrusionSets$ = this.store.select('indicatorSharing').pipe(
+      pluck('intrusionSets'));
   }
 
   public clearSearchParameters() {
@@ -135,8 +137,8 @@ export class IndicatorSharingFiltersComponent implements OnInit {
           formCtrl: this.searchForm.get('observedData')
         }
       });
-      const dialog$ = dialog.afterClosed()
-        .finally(() => dialog$ && dialog$.unsubscribe())
+      const dialog$ = dialog.afterClosed().pipe(
+        finalize(() => dialog$ && dialog$.unsubscribe()))
         .subscribe(
           (result) => {
             this.observedDataVisible = false;

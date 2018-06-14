@@ -1,5 +1,8 @@
+
+import {forkJoin as observableForkJoin,  Observable } from 'rxjs';
+
+import {map} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { IndicatorSharingSummaryStatistics } from '../models/summary-statistics';
@@ -54,9 +57,9 @@ export class SummaryStatisticsComponent implements OnInit {
   }
 
   ngOnInit() {
-    const getStats$ = Observable.forkJoin(
+    const getStats$ = observableForkJoin(
       this.indicatorSharingService.getSummaryStatistics(), 
-      this.indicatorSharingService.getIdentities().map(RxjsHelpers.mapArrayAttributes)
+      this.indicatorSharingService.getIdentities().pipe(map(RxjsHelpers.mapArrayAttributes))
     )
       .subscribe(
         ([stats, identities]: [IndicatorSharingSummaryStatistics[], any[]]) => {
