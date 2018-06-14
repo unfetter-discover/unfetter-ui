@@ -33,9 +33,11 @@ export class GenericApi {
         this.data = (data !== undefined && data !== null) ? '/' + data : '';
         let builtUrl = this.baseUrl + url + this.data;
 
-        return this.http.get<JsonApi<T>>(builtUrl).pipe(
-            map(this.extractData),
-            catchError(this.handleError));
+        return this.http.get<JsonApi<T>>(builtUrl)
+            .pipe(
+                map((dat): any => this.extractData(dat)),
+                catchError(this.handleError)
+            );
     }
 
     /**
@@ -61,9 +63,11 @@ export class GenericApi {
      */
     public postAs<T = JsonApiData>(url: string, data?: any): Observable<T> {
         const builtUrl = this.baseUrl + url;
-        return this.http.post<JsonApi<T>>(builtUrl, data, { headers: this.postHeaders }).pipe(
-            map(this.extractData),
-            catchError(this.handleError));
+        return this.http.post<JsonApi<T>>(builtUrl, data, { headers: this.postHeaders })
+            .pipe(
+                map((dat): any => this.extractData(dat)),
+                catchError(this.handleError)
+            );
     }
 
     /**
@@ -90,9 +94,11 @@ export class GenericApi {
      */
     public patchAs<T = JsonApiData>(url: string, data?: any): Observable<T> {
         const builtUrl = this.baseUrl + url;
-        return this.http.patch<JsonApi<T>>(builtUrl, data, { headers: this.postHeaders }).pipe(
-            map(this.extractData),
-            catchError(this.handleError));
+        return this.http.patch<JsonApi<T>>(builtUrl, data, { headers: this.postHeaders })
+            .pipe(
+                map((dat): any => this.extractData(dat)),
+                catchError(this.handleError)
+            );
 
     }
 
@@ -129,9 +135,11 @@ export class GenericApi {
 
         const url = `${this.baseUrl}/latest/type/${stixType}`;
         return this.http
-            .get<JsonApi<Partial<LastModifiedStix>[]>>(url).pipe(
-            map(this.extractData),
-            catchError(this.handleError));
+            .get<JsonApi<Partial<LastModifiedStix>[]>>(url)
+                .pipe(
+                    map((dat): any => this.extractData(dat)),
+                    catchError(this.handleError)
+                );
     }
 
     /**
@@ -150,9 +158,11 @@ export class GenericApi {
 
         const url = `${this.baseUrl}/latest/type/${stixType}/creator/${creatorId}`;
         return this.http
-            .get<JsonApi<Partial<LastModifiedStix>[]>>(url).pipe(
-            map(this.extractData),
-            catchError(this.handleError));
+            .get<JsonApi<Partial<LastModifiedStix>[]>>(url)
+                .pipe(
+                    map((dat): any => this.extractData(dat)),
+                    catchError(this.handleError)
+                );
     }
 
     /**
@@ -168,7 +178,7 @@ export class GenericApi {
      * @description throw error
      * @param error
      */
-    private handleError(error: any): ErrorObservable {
+    private handleError(error: any): ErrorObservable<any> {
         return observableThrowError(error);
     }
 }

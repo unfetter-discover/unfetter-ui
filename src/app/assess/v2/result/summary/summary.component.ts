@@ -145,15 +145,18 @@ export class SummaryComponent implements OnInit, OnDestroy {
       }, (err) => console.log(err));
 
     const sub3$ = this.riskByAttackPatternStore
-      .select('riskByAttackPattern').pipe(
-      pluck('riskByAttackPatterns'),
-      distinctUntilChanged(),
-      filter((arr: Assessment[]) => arr && arr.length > 0))
-      .subscribe((arr: RiskByAttack[]) => {
+      .select('riskByAttackPattern')
+      .pipe(
+        pluck('riskByAttackPatterns'),
+        distinctUntilChanged(),
+        filter((arr: Assessment[]) => arr && arr.length > 0)
+      )
+      .subscribe((arr: any[]) => {
         this.riskByAttacks = [...arr];
         this.riskByAttack = { ...arr[0] };
       },
-        (err) => console.log(err));
+        (err) => console.log(err)
+      );
 
     const sub4$ = this.riskByAttackPatternStore
       .select('riskByAttackPattern').pipe(

@@ -113,12 +113,14 @@ export class FullResultEffects {
             const id = assessment.id;
             const o1$ = this.assessService
                 .genericPatch(`${Constance.X_UNFETTER_ASSESSMENT_URL}/${id}`, assessment)
-                .map(() => new LoadGroupData(id))
-                .catch((err) => {
-                    // TODO: better error handling action
-                    console.log(err);
-                    return observableEmpty();
-                });
+                .pipe(
+                    map(() => new LoadGroupData(id)),
+                    catchError((err) => {
+                        // TODO: better error handling action
+                        console.log(err);
+                        return observableEmpty();
+                    })
+                )
             return o1$;
         }))
 }

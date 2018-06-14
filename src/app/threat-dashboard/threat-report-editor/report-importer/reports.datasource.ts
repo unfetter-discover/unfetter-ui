@@ -30,7 +30,7 @@ export class ReportsDataSource extends DataSource<Report> {
 
     constructor(public reports$: Observable<Report[]>) {
         super();
-        const co = reports$.pipe(multicast(this.dataChange$));
+        const co: any = reports$.pipe(multicast(this.dataChange$));
         co.connect();
     }
 

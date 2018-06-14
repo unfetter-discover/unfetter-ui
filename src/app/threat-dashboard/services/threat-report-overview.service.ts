@@ -1,7 +1,7 @@
 
 import {throwError as observableThrowError, empty as observableEmpty, zip as observableZip, from as observableFrom, merge as observableMerge, of as observableOf, forkJoin as observableForkJoin,  Observable } from 'rxjs';
 
-import {mergeMap, filter, first, map, reduce, catchError} from 'rxjs/operators';
+import {mergeMap, filter, first, map, reduce, catchError, partition} from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
@@ -40,10 +40,10 @@ export class ThreatReportOverviewService {
     }
 
     const query = { 'stix.type': 'report', 'metaProperties.work_products.id': id };
-    const filter = encodeURI(JSON.stringify(query));
+    const filterStr = encodeURI(JSON.stringify(query));
     // const projection = { 'stix.name': 1, 'stix.id': 1, 'metaProperties.work_products': 1 };
     // const project = encodeURI(JSON.stringify(projection));
-    const url = `${this.reportsUrl}?extendedproperties=true&metaproperties=true&filter=${filter}`;
+    const url = `${this.reportsUrl}?extendedproperties=true&metaproperties=true&filter=${filterStr}`;
     const reports$: Observable<Report[]> = this.genericService.get(url);
     const threatReports$ = reports$.pipe(
       (this.aggregateReportsAsThreatReports()),
@@ -190,11 +190,15 @@ export class ThreatReportOverviewService {
       id = threatReportMeta.id;
     }
 
-    let [inserts$, updates$] = observableFrom(reports).partition((report) => report.id === undefined);
+    let [inserts$, updates$]: [any, any] = observableFrom(reports)
+      .pipe(
+        partition((report) => report.id === undefined)
+      );
+    
     // pull fresh copies of the reports
     updates$ = updates$.pipe(mergeMap((report) => this.loadReport(report.id)));
     // assign the correct workproduct to these new reports
-    inserts$ = inserts$.pipe(map((report) => {
+    inserts$ = inserts$.pipe(map((report: any) => {
       if (threatReportMeta) {
         const meta = report.attributes.metaProperties || {};
         meta.work_products = meta.work_products || [];
@@ -509,7 +513,7 @@ export class ThreatReportOverviewService {
   * @description throw error
   * @param error
   */
-  private handleError(error: any): ErrorObservable {
+  private handleError(error: any): ErrorObservable<any> {
     console.log(error);
     return observableThrowError(error);
   }
