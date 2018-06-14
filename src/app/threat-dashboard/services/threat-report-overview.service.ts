@@ -190,7 +190,7 @@ export class ThreatReportOverviewService {
       id = threatReportMeta.id;
     }
 
-    let [inserts$, updates$]: [any, any] = observableFrom(reports)
+    let [inserts$, updates$]: [Report[], Report[]] = observableFrom(reports)
       .pipe(
         partition((report) => report.id === undefined)
       );
