@@ -3,17 +3,19 @@ import { distinctUntilChanged, filter, pluck } from 'rxjs/operators';
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable ,  Subscription } from 'rxjs';
-import { AuthService } from '../../../../../core/services/auth.service';
-import { FormatHelpers } from '../../../../../global/static/format-helpers';
-import { SortHelper } from '../../../../../global/static/sort-helper';
-import { StixPermissions } from '../../../../../global/static/stix-permissions';
-import { Relationship } from '../../../../../models';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
 import { AssessAttackPatternMeta } from 'stix/assess/v2/assess-attack-pattern-meta';
 import { Assessment } from 'stix/assess/v2/assessment';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
+import { AuthService } from '../../../../../core/services/auth.service';
+import { AngularHelper } from '../../../../../global/static/angular-helper';
+import { FormatHelpers } from '../../../../../global/static/format-helpers';
+import { SortHelper } from '../../../../../global/static/sort-helper';
+import { StixPermissions } from '../../../../../global/static/stix-permissions';
+import { Relationship } from '../../../../../models';
 import { Stix } from '../../../../../models/stix/stix';
 import { Constance } from '../../../../../utils/constance';
 import { AssessService } from '../../../services/assess.service';
@@ -77,7 +79,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     private route: ActivatedRoute,
     private changeDetector: ChangeDetectorRef,
     private store: Store<FullAssessmentResultState>,
-    private authService: AuthService    
+    private authService: AuthService
   ) { }
 
   /**
@@ -127,6 +129,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public initData(attackPatternIndex: number = 0): void {
     this.assessment = this.assessment || new Assessment();
+    this.unassessedPhases = [];
     this.listenForDataChanges(attackPatternIndex);
     // request for initial data changes
     this.requestDataLoad(this.assessmentId);
@@ -134,7 +137,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     const stixPermissions: StixPermissions = this.authService.getStixPermissions();
     this.canAddAssessedObjects = stixPermissions.canCreate(this.assessment);
   }
-  
+
   /**
    * @description request data
    * @returns {void}
@@ -271,6 +274,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public setPhase(phaseName: string, attackPatternIndex: number = 0) {
     this.resetNewAssessmentObjects();
+    this.unassessedAttackPatterns = [];
     this.activePhase = phaseName;
     this.attackPatternsByPhase = this.getAttackPatternsByPhase(this.activePhase);
     let currentAttackPatternId = '';
@@ -382,10 +386,17 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
       .getAs<Stix>(`${Constance.ATTACK_PATTERN_URL}?filter=${encodeURI(JSON.stringify(query))}`)
       .subscribe(
         (data: Stix[]) => {
-          // Get unassessed attack patterns
-          this.unassessedAttackPatterns = data
-            .filter((ap) => !assessedAps.includes(ap.id))
-            .sort(SortHelper.sortDescByField('name'));
+            const start = Date.now();
+            // Get unassessed attack patterns
+            this.unassessedAttackPatterns = data
+              .filter((ap) => !assessedAps.includes(ap.id))
+              .sort(SortHelper.sortDescByField('name'));
+            const end = Date.now();
+            const diff = start - end;
+            console.log(`filter and sort for unassessed took ${diff} millis`);
+            console.log(`hinting to change detect assessments-group.component`);
+            // trigger change detection when finished
+            this.changeDetector.detectChanges();
         },
         (err) => console.log(err)
       );
@@ -514,5 +525,17 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public isCurrentAttackPattern(attackPatternId = ''): boolean {
     return this.currentAttackPattern ? this.currentAttackPattern.id === attackPatternId : false;
+  }
+
+  /**
+   * @description angular track by list function, 
+   *  uses the items id iff (if and only if) it exists, 
+   *  otherwise uses the index
+   * @param {number} index
+   * @param {item}
+   * @return {number}
+   */
+  public trackByFn(index: number, item: any): number {
+    return AngularHelper.genericTrackBy(index, item);
   }
 }
