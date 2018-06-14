@@ -233,7 +233,7 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
             .select('config').pipe(
             pluck('tacticsChains'),
             filter(t => t !== null),
-            distinctUntilChanged(),)
+            distinctUntilChanged())
             .subscribe(
                 (tactics: Dictionary<TacticChain>) => {
                     console['debug'](`(${new Date().toISOString()}) TacticsPane loaded tactics`, tactics);
@@ -270,7 +270,7 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
             pluck('killchain'),
             map((chain: string) => [chain]),
             tap(() => console['debug'](`(${new Date().toISOString()}) TacticsPane`,
-                    'frameworks plucked from user preferences')),);
+                    'frameworks plucked from user preferences')));
         }
 
     /**

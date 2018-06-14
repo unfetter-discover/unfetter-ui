@@ -61,7 +61,7 @@ export class CapabilityComponent implements OnInit {
     const sub1$ = this.wizardStore
       .select('baseline').pipe(
       pluck('currentCapability'),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe(
         (currentCapability: Capability) => {
           this.currentCapability = currentCapability;
@@ -72,7 +72,7 @@ export class CapabilityComponent implements OnInit {
     const sub2$ = this.wizardStore
       .select('baseline').pipe(
       pluck('allAttackPatterns'),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe(
         (allAttackPatterns: AttackPattern[]) => {
           this.allAttackPatterns = allAttackPatterns;

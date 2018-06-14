@@ -154,7 +154,7 @@ export class MasterListDialogComponent implements AfterViewInit, OnDestroy {
         this.filter = filter;
         const sub$ = observableFromEvent(this.filter.nativeElement, 'keyup').pipe(
             debounceTime(this.duration),
-            distinctUntilChanged(),)
+            distinctUntilChanged())
             .subscribe(() => {
                 if (!this.data.dataSource) {
                     console.log('no datasource!!!');

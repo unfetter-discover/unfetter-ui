@@ -36,7 +36,7 @@ export class EventsEffects {
             new SetIndicatorToAp(indicatorToAp),
             new SetIntrusionSetToAp(intrusionSetToAp),
             new FinishedLoading(true)
-        ]),);
+        ]));
 
 
     @Effect()
@@ -47,7 +47,7 @@ export class EventsEffects {
         pluck('body'),
         filter((stixNotificationBody: { id: string, type: string }) => stixNotificationBody.type === 'sighting'),
         pluck('id'),
-        map((stixId: string) => new FetchSightingGroupById(stixId)),);
+        map((stixId: string) => new FetchSightingGroupById(stixId)));
 
     @Effect()
     public fetchSightingGroupById = this.actions$
@@ -57,5 +57,5 @@ export class EventsEffects {
         tap((objs) => console.log('Events / fetchSightingGroup debug output: ', objs)),
         mergeMap(([newSighting]: [any]) => [
             new AddSighting(newSighting),
-        ]),);
+        ]));
 }

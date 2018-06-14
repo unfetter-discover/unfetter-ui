@@ -25,7 +25,7 @@ export class UtilityEffects {
         pluck('payload'),
         tap((payload: { itemKey: string, itemValue: string }) => {
             localStorage.setItem(payload.itemKey, payload.itemValue);
-        }),);
+        }));
 
     @Effect({ dispatch: false })
     public updateLocalStorageEffect = this.actions$
@@ -34,7 +34,7 @@ export class UtilityEffects {
         tap((payload: { itemKey: string, itemValue: string }) => {
             localStorage.removeItem(payload.itemKey);
             localStorage.setItem(payload.itemKey, payload.itemValue);
-        }),);
+        }));
 
     @Effect({ dispatch: false })
     public deleteLocalStorageEffect = this.actions$
@@ -42,13 +42,13 @@ export class UtilityEffects {
         pluck('payload'),
         tap((itemKey: string) => {
             localStorage.removeItem(itemKey);
-        }),);
+        }));
 
     @Effect({ dispatch: false })
     public navigate = this.actions$
         .ofType(utilityActions.NAVIGATE).pipe(
         pluck('payload'),
-        tap((route: any[]) => this.router.navigate(route)),)
+        tap((route: any[]) => this.router.navigate(route)))
 
     @Effect({ dispatch: false })
     public recordVisit = this.actions$

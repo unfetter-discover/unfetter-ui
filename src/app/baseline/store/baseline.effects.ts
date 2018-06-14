@@ -49,7 +49,7 @@ export class BaselineEffects {
         }),
         map((assessmentSet: AssessmentSet) => {
             return new baselineActions.SetAndReadAssessmentSet(assessmentSet);
-        }),);
+        }));
     
     @Effect()
     public setAndReadAssessmentSet = this.actions$
@@ -60,7 +60,7 @@ export class BaselineEffects {
         }),
         map((objAssessments: ObjectAssessment[]) => {
             return new baselineActions.SetAndReadObjectAssessments(objAssessments);
-        }),);
+        }));
 
     @Effect()
     public setAndReadObjectAssessments = this.actions$
@@ -81,7 +81,7 @@ export class BaselineEffects {
                     return observableOf(new baselineActions.FailedToLoad(true));
                 })
             );
-        }),);
+        }));
 
     @Effect()
     public setAndReadCapabilities = this.actions$
@@ -128,13 +128,13 @@ export class BaselineEffects {
     public fetchCapabilityGroups = this.actions$
         .ofType(baselineActions.FETCH_CAPABILITY_GROUPS).pipe(
         switchMap(() => this.baselineService.getCategories()),
-        map((arr: Category[]) => new baselineActions.SetCapabilityGroups(arr)),);
+        map((arr: Category[]) => new baselineActions.SetCapabilityGroups(arr)));
 
     @Effect()
     public fetchCapabilities = this.actions$
         .ofType(baselineActions.FETCH_CAPABILITIES).pipe(
         switchMap(() => this.baselineService.getCapabilities()),
-        map((arr: Category[]) => new baselineActions.SetCapabilities(arr)),);
+        map((arr: Category[]) => new baselineActions.SetCapabilities(arr)));
 
     @Effect()
     public fetchAttackPatterns = this.actions$
@@ -168,7 +168,7 @@ export class BaselineEffects {
                 new baselineActions.SetAttackPatterns(allAttackPatterns),
                 new baselineActions.SetSelectedFrameworkAttackPatterns(selectedAttackPatterns),
             ];
-        }),);
+        }));
     
         /**
          * Start an assessment, persist AssessmentSet to db.
@@ -226,7 +226,7 @@ export class BaselineEffects {
                 finished: true,
                 id: assessmentSet.id || '',
             });
-        }),);
+        }));
 
     @Effect()
     public addCapabilityGroup = this.actions$
@@ -248,7 +248,7 @@ export class BaselineEffects {
         }),
         map((category) => {
             return new baselineActions.FetchCapabilityGroups();
-        }),);
+        }));
 
     @Effect()
     public addCapabilityToBaselineCapabilities = this.actions$

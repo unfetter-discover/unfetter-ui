@@ -121,7 +121,7 @@ export class IndicatorSharingService {
 
     public getTotalIndicatorCount(): Observable<number> {
         const filterObj = { 'stix.type': 'indicator' };
-        return this.genericApi.get(`${this.multiplesUrl}/count?filter=${JSON.stringify(filterObj)}`).pipe(pluck('attributes'),pluck('count'),);
+        return this.genericApi.get(`${this.multiplesUrl}/count?filter=${JSON.stringify(filterObj)}`).pipe(pluck('attributes'),pluck('count'));
     }
 
     public translateAllPatterns(pattern: string): Observable<any> {

@@ -34,11 +34,11 @@ export class AddAttackPatternComponent implements OnInit {
             return this.existingAttackPatterns
               .find((existingAttackPattern: any) => existingAttackPattern.id === attackPattern.id) === undefined;
           });
-      }),);
+      }));
     const getFilteredAp$ = this.store.select('indicatorSharing').pipe(
       pluck('searchParameters'),
       pluck('attackPatterns'),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe(
         (filteredAttackPatterns: any[]) => {
           this.filteredAttackPatterns = filteredAttackPatterns;

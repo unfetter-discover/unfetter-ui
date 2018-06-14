@@ -25,12 +25,12 @@ export class RiskByAttackPatternEffects {
         .ofType(LOAD_SINGLE_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA).pipe(
         pluck('payload'),
         switchMap((assessmentId: string) => this.assessService.getRiskPerAttackPattern(assessmentId)),
-        mergeMap((data: RiskByAttack) => [new SetRiskByAttackPattern([data]), new FinishedLoading(true)]),)
+        mergeMap((data: RiskByAttack) => [new SetRiskByAttackPattern([data]), new FinishedLoading(true)]))
 
     @Effect()
     public fetchAssessmentRiskByAttackPatternData = this.actions$
         .ofType(LOAD_RISK_BY_ATTACK_PATTERN_DATA).pipe(
         pluck('payload'),
         switchMap((rollupId: string) => this.assessService.getRiskPerAttackPatternByRollupId(rollupId)),
-        mergeMap((data: RiskByAttack[]) => [new SetRiskByAttackPattern(data), new FinishedLoading(true)]),)
+        mergeMap((data: RiskByAttack[]) => [new SetRiskByAttackPattern(data), new FinishedLoading(true)]))
 }

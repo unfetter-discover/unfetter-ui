@@ -15,7 +15,7 @@ export class IdentityEffects {
         switchMap(() => this.usersService.getOrganizations()),
         mergeMap(identities => [
             new identityActions.SetIdentities(identities.map(x => x.attributes))
-        ]),);
+        ]));
 
     constructor(
         private actions$: Actions,

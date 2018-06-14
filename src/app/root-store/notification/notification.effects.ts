@@ -24,7 +24,7 @@ export class NotificationEffects {
         map((notification) => ({
             type: notificationActions.ADD_NOTIFCATION,
             payload: notification
-        })),);
+        })));
 
     @Effect()
     public notificationStore = this.actions$
@@ -40,7 +40,7 @@ export class NotificationEffects {
                 }))
             ),
             new notificationActions.StartNotificationStream()
-        ]),);
+        ]));
 
     @Effect()
     public readNotification = this.actions$
@@ -55,7 +55,7 @@ export class NotificationEffects {
             const readNotification = action.payload;
             readNotification.read = true;
             return new notificationActions.UpdateNotification(readNotification);
-        }),);
+        }));
 
     @Effect()
     public deleteNotification = this.actions$
@@ -66,7 +66,7 @@ export class NotificationEffects {
                 messageContent: action.payload
             });
         }),
-        map((action: { type: string, payload: string }) => new notificationActions.DeleteNotification(action.payload)),);
+        map((action: { type: string, payload: string }) => new notificationActions.DeleteNotification(action.payload)));
 
     @Effect()
     public readAllNotifications = this.actions$
@@ -76,7 +76,7 @@ export class NotificationEffects {
                 messageType: NotificationEmitTypes.READ_ALL_NOTIFICATIONS
             });
         }),
-        map(() => new notificationActions.MarkAllAsRead()),);
+        map(() => new notificationActions.MarkAllAsRead()));
 
     @Effect()
     public deleteAllNotifications = this.actions$
@@ -86,7 +86,7 @@ export class NotificationEffects {
                 messageType: NotificationEmitTypes.DELETE_ALL_NOTIFICATIONS
             });
         }),
-        map(() => new notificationActions.DeleteAllNotifications()),);
+        map(() => new notificationActions.DeleteAllNotifications()));
 
     constructor(
         private actions$: Actions,

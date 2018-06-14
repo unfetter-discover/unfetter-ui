@@ -51,7 +51,7 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
         const getUser$ = this.userStore
             .select('users').pipe(
             pluck('userProfile'),
-            take(1),)
+            take(1))
             .subscribe((user: UserProfile) => {
                 this.user = user;
                 this.fetchData(user);

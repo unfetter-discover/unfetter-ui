@@ -97,7 +97,7 @@ export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy
                 requestAnimationFrame(() => {
                     this.curDisplayLen = this.currents.curDisplayLen$;
                 });
-            }),);
+            }));
 
         this.currents = new ReportsDataSource(loadAll$);
         return loadReports$;
@@ -129,7 +129,7 @@ export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy
         this.filter = filter;
         const sub$ = observableFromEvent(this.filter.nativeElement, 'keyup').pipe(
             debounceTime(150),
-            distinctUntilChanged(),)
+            distinctUntilChanged())
             .subscribe(() => {
                 if (!this.currents) {
                     return;

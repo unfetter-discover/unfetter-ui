@@ -70,7 +70,7 @@ export class EventsComponent implements OnInit, OnDestroy {
       .select('sightingsGroup').pipe(
       pluck('sightingsGroup'),
       distinctUntilChanged(),
-      filter((arr: any[]) => arr && arr.length > 0),)
+      filter((arr: any[]) => arr && arr.length > 0))
       .subscribe((arr: any[]) => {
         this.sightingsGroup = [...arr];
       },
@@ -80,7 +80,7 @@ export class EventsComponent implements OnInit, OnDestroy {
       .select('sightingsGroup').pipe(
       pluck('indicatorToAp'),
       distinctUntilChanged(),
-      filter((obj: any) => obj && Object.keys(obj).length > 0),)
+      filter((obj: any) => obj && Object.keys(obj).length > 0))
       .subscribe((obj: any) => {
         this.indicatorToAp = obj;
       },
@@ -90,7 +90,7 @@ export class EventsComponent implements OnInit, OnDestroy {
       .select('sightingsGroup').pipe(
       pluck('intrusionSetToAp'),
       distinctUntilChanged(),
-      filter((obj: any) => obj && Object.keys(obj).length > 0),)
+      filter((obj: any) => obj && Object.keys(obj).length > 0))
       .subscribe((obj: any) => {
         this.intrusionSetToAp = obj;
       },
@@ -100,7 +100,7 @@ export class EventsComponent implements OnInit, OnDestroy {
       .select('sightingsGroup').pipe(
       pluck('finishedLoading'),
       distinctUntilChanged(),
-      filter((el) => el === true),)
+      filter((el) => el === true))
       .subscribe((done: boolean) => {
         if (this.sightingsGroup === undefined) {
           // fetching the summary failed, set all flags to done
@@ -113,7 +113,7 @@ export class EventsComponent implements OnInit, OnDestroy {
     const sub5$ = this.store
       .select('sightingsGroup').pipe(
       pluck('newSighting'),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe((el: any) => {
         this.addSighting(el);
       },

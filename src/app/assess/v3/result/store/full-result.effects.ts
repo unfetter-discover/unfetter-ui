@@ -39,8 +39,8 @@ export class FullResultEffects {
                 catchError((err) => {
                     console.log(err);
                     return observableEmpty();
-                }),);
-        }),);
+                }));
+        }));
 
 
     @Effect()
@@ -54,8 +54,8 @@ export class FullResultEffects {
                 catchError((err) => {
                     console.log(err);
                     return observableEmpty();
-                }),);
-        }),);
+                }));
+        }));
 
 
     @Effect()
@@ -73,8 +73,8 @@ export class FullResultEffects {
                 catchError((err) => {
                     console.log(err);
                     return observableOf([]);
-                }),);
-        }),);
+                }));
+        }));
 
 
     @Effect()
@@ -92,8 +92,8 @@ export class FullResultEffects {
                 catchError((err) => {
                     console.log(err);
                     return observableEmpty();
-                }),);
-        }),);
+                }));
+        }));
 
 
     @Effect()
@@ -112,8 +112,8 @@ export class FullResultEffects {
                 catchError((err) => {
                     console.log(err);
                     return observableEmpty();
-                }),);
-        }),);
+                }));
+        }));
 
 
     @Effect()
@@ -130,7 +130,7 @@ export class FullResultEffects {
             const url = `${Constance.API_HOST}/assess-beta/result/full/${rollupId}/${assessmentId}/phase/${phase}`;
             this.location.replaceState(url);
         }),
-        switchMap(() => observableOf(new DonePushUrl())),);
+        switchMap(() => observableOf(new DonePushUrl())));
 
     @Effect()
     public updateAssesmentObject = this.actions$
@@ -147,5 +147,5 @@ export class FullResultEffects {
                     return observableEmpty();
                 });
             return o1$;
-        }),);
+        }));
 }

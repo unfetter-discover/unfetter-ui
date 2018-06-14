@@ -59,7 +59,7 @@ export class IndicatorDetailsComponent extends IndicatorBase implements OnInit {
     const indicators$ = this.store.select('indicatorSharing').pipe(
       pluck('indicators'),
       distinctUntilChanged(),
-      filter((indicators: any[]) => indicators.length > 0),)
+      filter((indicators: any[]) => indicators.length > 0))
       .subscribe(
         (indicators: any[]) => {
           const findIndicator = indicators.find((indicator) => indicator.id === this.id);

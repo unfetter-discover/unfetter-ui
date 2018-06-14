@@ -36,7 +36,7 @@ export class IndicatorSharingEffects {
         map((message) => ({
             type: indicatorSharingActions.UPDATE_SOCIAL,
             payload: message
-        })),);
+        })));
 
     @Effect()
     public fetchData = this.actions$
@@ -71,7 +71,7 @@ export class IndicatorSharingEffects {
             new indicatorSharingActions.SetTotalIndicatorCount(indCount),
             new indicatorSharingActions.SetIntrusionSetsByAttackPattern(intrToApMap),
             new indicatorSharingActions.SetIntrusionSets(intrusionSets)
-        ]),);
+        ]));
 
     @Effect()
     public deleteIndicator = this.actions$
@@ -84,7 +84,7 @@ export class IndicatorSharingEffects {
         }),
         mergeMap(([indicatorId, deleteResponse]: [string, any]) => [
             new indicatorSharingActions.DeleteIndicator(indicatorId)
-        ]),);
+        ]));
 
     @Effect()
     public updateIndicator = this.actions$
@@ -105,7 +105,7 @@ export class IndicatorSharingEffects {
         mergeMap((indicator: any) => [
             new indicatorSharingActions.UpdateIndicator(indicator),
             new indicatorSharingActions.RefreshApMap()
-        ]),);
+        ]));
 
     @Effect()
     public addIndicator = this.actions$
@@ -115,7 +115,7 @@ export class IndicatorSharingEffects {
         mergeMap((sensors) => [ 
             new indicatorSharingActions.FetchIndicators(),
             new indicatorSharingActions.SetSensors(sensors) 
-        ]),);
+        ]));
 
     @Effect()
     public createIndicatorToAttackPatternRelationship = this.actions$
@@ -124,14 +124,14 @@ export class IndicatorSharingEffects {
         switchMap((payload: { indicatorId: string, attackPatternId: string, createdByRef: string }) => {
             return this.indicatorSharingService.createIndToApRelationship(payload.indicatorId, payload.attackPatternId, payload.createdByRef);
         }),
-        map((_) => new indicatorSharingActions.RefreshApMap()),);
+        map((_) => new indicatorSharingActions.RefreshApMap()));
         
     @Effect()
     public refreshApMap = this.actions$
         .ofType(indicatorSharingActions.REFRESH_AP_MAP).pipe(
         switchMap((_) => this.indicatorSharingService.getAttackPatternsByIndicator()),
         map((res: any) => RxjsHelpers.relationshipArrayToObject(res.attributes, 'attackPatterns')),
-        map((indicatorToApMap) => new indicatorSharingActions.SetIndicatorToApMap(indicatorToApMap)),);
+        map((indicatorToApMap) => new indicatorSharingActions.SetIndicatorToApMap(indicatorToApMap)));
 
     @Effect()
     public fetchIndicators = this.actions$
@@ -165,7 +165,7 @@ export class IndicatorSharingEffects {
 
             return this.indicatorSharingService.doSearch(searchParametersCopy, sortBy);
         }),
-        map((indicators: any[]) => new indicatorSharingActions.SetFilteredIndicators(indicators)),);
+        map((indicators: any[]) => new indicatorSharingActions.SetFilteredIndicators(indicators)));
 
     constructor(
         private actions$: Actions,

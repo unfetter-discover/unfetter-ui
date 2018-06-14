@@ -55,19 +55,19 @@ export class UsersService {
     public refreshToken(): Observable<string> {
         return this.genericApi.get(this.refreshTokenUrl).pipe(
             pluck('attributes'),
-            pluck('token'),);
+            pluck('token'));
     }
 
     public emailAvailable(email: string): Observable<boolean> {
         return this.genericApi.get(`${this.authUrl}/email-available/${email}`).pipe(
             pluck('attributes'),
-            pluck('available'),);
+            pluck('available'));
     }
 
     public userNameAvailable(userName: string): Observable<boolean> {
         return this.genericApi.get(`${this.authUrl}/username-available/${userName}`).pipe(
             pluck('attributes'),
-            pluck('available'),);
+            pluck('available'));
     }
 
 }

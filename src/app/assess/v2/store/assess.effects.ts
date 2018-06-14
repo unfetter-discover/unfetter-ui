@@ -68,13 +68,13 @@ export class AssessEffects {
                 new assessActions.SensorsLoaded(sensors),
                 new assessActions.FinishedLoading(true)
             ];
-        }),);
+        }));
 
     @Effect()
     public fetchAssessment = this.actions$
         .ofType(assessActions.FETCH_ASSESSMENT).pipe(
         switchMap(() => this.assessService.load()),
-        map((arr: any[]) => new assessActions.FetchAssessment(arr[0])),);
+        map((arr: any[]) => new assessActions.FetchAssessment(arr[0])));
 
     @Effect({ dispatch: false })
     public startAssessment = this.actions$
@@ -93,7 +93,7 @@ export class AssessEffects {
             ]);
         }),
         // required to send an empty element on non dispatched effects
-        switchMap(() => observableOf({})),);
+        switchMap(() => observableOf({})));
 
 
     @Effect()
@@ -149,7 +149,7 @@ export class AssessEffects {
                 rollupId: hasMetadata ? arr[0].attributes.metaProperties.rollupId : '',
                 id: hasAttributes ? arr[0].attributes.id : '',
             });
-        }),)
+        }))
 
 
     /**

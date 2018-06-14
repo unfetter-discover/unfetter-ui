@@ -35,7 +35,7 @@ export class GenericApi {
 
         return this.http.get<JsonApi<T>>(builtUrl).pipe(
             map(this.extractData),
-            catchError(this.handleError),);
+            catchError(this.handleError));
     }
 
     /**
@@ -50,7 +50,7 @@ export class GenericApi {
 
         return this.http.get(builtUrl).pipe(
             map(this.extractData),
-            catchError(this.handleError),);
+            catchError(this.handleError));
     }
 
     /**
@@ -63,7 +63,7 @@ export class GenericApi {
         const builtUrl = this.baseUrl + url;
         return this.http.post<JsonApi<T>>(builtUrl, data, { headers: this.postHeaders }).pipe(
             map(this.extractData),
-            catchError(this.handleError),);
+            catchError(this.handleError));
     }
 
     /**
@@ -79,7 +79,7 @@ export class GenericApi {
         let builtUrl = this.baseUrl + url;
         return this.http.post(builtUrl, data, { headers: this.postHeaders }).pipe(
             map(this.extractData),
-            catchError(this.handleError),);
+            catchError(this.handleError));
     }
 
     /**
@@ -92,7 +92,7 @@ export class GenericApi {
         const builtUrl = this.baseUrl + url;
         return this.http.patch<JsonApi<T>>(builtUrl, data, { headers: this.postHeaders }).pipe(
             map(this.extractData),
-            catchError(this.handleError),);
+            catchError(this.handleError));
 
     }
 
@@ -107,7 +107,7 @@ export class GenericApi {
         let builtUrl = this.baseUrl + url;
         return this.http.patch(builtUrl, data, { headers: this.postHeaders }).pipe(
             map(this.extractData),
-            catchError(this.handleError),);
+            catchError(this.handleError));
     }
 
     public delete(url: string, data?: any): Observable<any> {
@@ -115,7 +115,7 @@ export class GenericApi {
         let builtUrl = this.baseUrl + url + this.data;
         return this.http.delete(builtUrl).pipe(
             map(this.extractData),
-            catchError(this.handleError),);
+            catchError(this.handleError));
     }
 
     /**
@@ -131,7 +131,7 @@ export class GenericApi {
         return this.http
             .get<JsonApi<Partial<LastModifiedStix>[]>>(url).pipe(
             map(this.extractData),
-            catchError(this.handleError),);
+            catchError(this.handleError));
     }
 
     /**
@@ -152,7 +152,7 @@ export class GenericApi {
         return this.http
             .get<JsonApi<Partial<LastModifiedStix>[]>>(url).pipe(
             map(this.extractData),
-            catchError(this.handleError),);
+            catchError(this.handleError));
     }
 
     /**

@@ -44,8 +44,8 @@ export class SummaryEffects {
                 catchError((err) => {
                     console.log(err);
                     return observableEmpty();
-                }),);
-        }),);
+                }));
+        }));
 
     @Effect()
     public fetchAssessmentSummaryData = this.actions$
@@ -58,8 +58,8 @@ export class SummaryEffects {
                 catchError((err) => {
                     console.log(err);
                     return observableEmpty();
-                }),);
-        }),);
+                }));
+        }));
 
     @Effect()
     public fetchSingleRiskPerKillChainData = this.actions$
@@ -72,8 +72,8 @@ export class SummaryEffects {
                 catchError((err) => {
                     console.log(err);
                     return observableEmpty();
-                }),);
-        }),);
+                }));
+        }));
 
     @Effect()
     public fetchRiskPerKillChainData = this.actions$
@@ -86,8 +86,8 @@ export class SummaryEffects {
                 catchError((err) => {
                     console.log(err);
                     return observableEmpty();
-                }),);
-        }),);
+                }));
+        }));
 
     @Effect()
     public fetchSingleSummaryAggregationData = this.actions$
@@ -100,8 +100,8 @@ export class SummaryEffects {
                 catchError((err) => {
                     console.log(err);
                     return observableEmpty();
-                }),);
-        }),);
+                }));
+        }));
 
     @Effect()
     public fetchSummaryAggregationData = this.actions$
@@ -114,6 +114,6 @@ export class SummaryEffects {
                 catchError((err) => {
                     console.log(err);
                     return observableEmpty();
-                }),);
-        }),);
+                }));
+        }));
 }

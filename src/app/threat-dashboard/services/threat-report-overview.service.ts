@@ -49,7 +49,7 @@ export class ThreatReportOverviewService {
       (this.aggregateReportsAsThreatReports()),
       mergeMap((el) => el),
       filter((el) => el.id === id),
-      first(),);
+      first());
     return threatReports$;
   }
 
@@ -170,7 +170,7 @@ export class ThreatReportOverviewService {
           //  with each workproducts reports grouped correctly
           const keys = Object.keys(obj);
           return keys.map((key) => obj[key]);
-        }),);
+        }));
     }
   }
 
@@ -326,7 +326,7 @@ export class ThreatReportOverviewService {
     const reports = threatReport.reports;
     const saveReports$ = this.upsertReports(reports as Report[], threatReport).pipe(
       reduce((acc, val) => acc.concat(val), []),
-      map((el) => threatReport),);
+      map((el) => threatReport));
     return saveReports$;
   }
 

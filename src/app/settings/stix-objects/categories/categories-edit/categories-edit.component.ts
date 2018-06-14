@@ -71,7 +71,7 @@ export class CategoriesEditComponent extends CategoriesComponent implements OnIn
       pluck<any, UserProfile>('userProfile'),
       filter((user) => user !== undefined),
       take(1),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe((user: UserProfile) => {
         this.user = user;
         const framework = this.user.preferences.killchain;
@@ -93,7 +93,7 @@ export class CategoriesEditComponent extends CategoriesComponent implements OnIn
                 return category;
             }),
             // sets the initial selected attack patterns drop down
-            tap((category) => this.selectedAttackPatterns = this.resetSelectedAttackPatterns(category.assessed_objects)),);
+            tap((category) => this.selectedAttackPatterns = this.resetSelectedAttackPatterns(category.assessed_objects)));
           observables.push(loadCat$);
         }
         observables.push(this.loadAttackPatterns(framework));
@@ -149,7 +149,7 @@ export class CategoriesEditComponent extends CategoriesComponent implements OnIn
       map((attackPatterns) => {
         this.frameworks.push(new Framework(framework, attackPatterns));
         return attackPatterns;
-      }),);
+      }));
   }
 
   /**

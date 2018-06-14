@@ -40,7 +40,7 @@ export class ObservableDataTreeComponent implements OnInit {
         const config$ = this.store.select('config').pipe(
             pluck('configurations'),
             filter((configurations: any) => configurations.observableDataTypes),
-            pluck('observableDataTypes'),)
+            pluck('observableDataTypes'))
             .subscribe(
                 (observableDataTypes: any[]) => {
                     this.observableDataTypes = observableDataTypes;

@@ -98,7 +98,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
         const sub$ = this.userStore
           .select('users').pipe(
           pluck('userProfile'),
-          take(1),)
+          take(1))
           .subscribe((user: UserProfile) => {
             this.requestData(this.assessmentId);
           },
@@ -119,7 +119,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .select('summary').pipe(
       pluck('summaries'),
       distinctUntilChanged(),
-      filter((arr: Assessment[]) => arr && arr.length > 0),)
+      filter((arr: Assessment[]) => arr && arr.length > 0))
       .subscribe((arr: Assessment[]) => {
         this.summaries = [...arr];
         this.summary = arr[0];
@@ -133,7 +133,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .select('summary').pipe(
       pluck('finishedLoading'),
       distinctUntilChanged(),
-      filter((el) => el === true),)
+      filter((el) => el === true))
       .subscribe((done: boolean) => {
         if (this.summary === undefined) {
           // fetching the summary failed, set all flags to done
@@ -148,7 +148,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .select('riskByAttackPattern').pipe(
       pluck('riskByAttackPatterns'),
       distinctUntilChanged(),
-      filter((arr: Assessment[]) => arr && arr.length > 0),)
+      filter((arr: Assessment[]) => arr && arr.length > 0))
       .subscribe((arr: RiskByAttack[]) => {
         this.riskByAttacks = [...arr];
         this.riskByAttack = { ...arr[0] };
@@ -158,7 +158,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     const sub4$ = this.riskByAttackPatternStore
       .select('riskByAttackPattern').pipe(
       pluck('finishedLoading'),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe((done: boolean) => {
         this.finishedLoadingRBAP = done;
         if (done) {
@@ -170,7 +170,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     const sub5$ = this.store
       .select('summary').pipe(
       pluck('killChainData'),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe((arr: RiskByKillChain[]) => {
         if (!arr || arr.length === 0) {
           this.riskByKillChain = undefined;
@@ -185,7 +185,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     const sub6$ = this.store
       .select('summary').pipe(
       pluck('finishedLoadingKillChainData'),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe((done: boolean) => {
         this.finishedLoadingKCD = done;
         if (done) {
@@ -196,7 +196,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     const sub7$ = this.store
       .select('summary').pipe(
       pluck('summaryAggregations'),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe((arr: SummaryAggregation[]) => {
         if (!arr || arr.length === 0) {
           this.summaryAggregation = undefined;
@@ -210,7 +210,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     const sub8$ = this.store
       .select('summary').pipe(
       pluck('finishedLoadingSummaryAggregationData'),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe((done: boolean) => {
         this.finishedLoadingSAD = done;
         if (done) {
@@ -246,7 +246,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
         } else {
           return summaries[0].name;
         }
-      }),);
+      }));
 
     this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$, sub7$, sub8$);
   }

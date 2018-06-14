@@ -120,7 +120,7 @@ export class AddIndicatorComponent implements OnInit {
                         observableOf(this.initialGetObjectsResponse)
                     );
                 }
-            }),)
+            }))
             .subscribe(
                 ([translations, objects]: [PatternHandlerTranslateAll, PatternHandlerGetObjects]) => {
 

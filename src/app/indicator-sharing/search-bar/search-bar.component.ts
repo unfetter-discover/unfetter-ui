@@ -23,7 +23,7 @@ export class SearchBarComponent implements OnInit {
 
   ngOnInit() {
     const searchChanges$ = this.searchTerm.valueChanges.pipe(debounceTime(300),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe(
         (indicatorName: string) => {
           this.store.dispatch(new indicatorSharingActions.SetSearchParameters({ indicatorName }));
@@ -41,7 +41,7 @@ export class SearchBarComponent implements OnInit {
       pluck('searchParameters'),
       pluck('indicatorName'),
       distinctUntilChanged(),
-      filter((indicatorName: string) => indicatorName === ''),)
+      filter((indicatorName: string) => indicatorName === ''))
       .subscribe(
         (_) => {
           this.searchTerm.setValue('');

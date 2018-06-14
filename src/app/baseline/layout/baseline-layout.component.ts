@@ -41,7 +41,7 @@ export class BaselineLayoutComponent implements OnInit, AfterViewInit {
       filter((el) => el !== undefined),
       distinctUntilChanged(),
       pluck('baseline'),
-      pluck('name'),);
+      pluck('name'));
 
     this.showBackButton = this.store
       .select('baseline').pipe(
@@ -51,7 +51,7 @@ export class BaselineLayoutComponent implements OnInit, AfterViewInit {
       map((el) => {
         this.changeDetectorRef.detectChanges();
         return el;
-      }),);
+      }));
     this.changeDetectorRef.detectChanges();
   }
 

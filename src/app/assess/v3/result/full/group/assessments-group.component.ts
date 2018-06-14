@@ -187,7 +187,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const sub3$ = this.assessmentGroup.pipe(
       filter((group: FullAssessmentGroup) => group.finishedLoadingGroupData === true),
-      pluck('attackPatternRelationships'),)
+      pluck('attackPatternRelationships'))
       .pipe(distinctUntilChanged())
       .subscribe((relationships: Relationship[]) => {
         const assessmentCandidates = relationships

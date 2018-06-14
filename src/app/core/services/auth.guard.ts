@@ -48,7 +48,7 @@ export class AuthGuard implements CanActivate {
 
                     } 
                 }             
-            }),);
+            }));
     }
 
     public loggedIn(userState: fromUsers.UserState) {

@@ -26,7 +26,7 @@ export class DataSourcesComponent implements OnInit {
       pluck('configurations'),
       filter(RxjsHelpers.filterByConfigKey(ConfigKeys.DATA_SOURCES)),
       pluck(ConfigKeys.DATA_SOURCES),
-      map((dataSources: string[]) => dataSources.sort()),);
+      map((dataSources: string[]) => dataSources.sort()));
   }
 
 }

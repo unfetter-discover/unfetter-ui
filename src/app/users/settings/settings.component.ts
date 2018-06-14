@@ -89,7 +89,7 @@ export class SettingsComponent implements OnInit {
             filter((el) => el !== undefined),
             map<object, KillchainConfigEntry[]>((el: any) => {
                 return el.killChains;
-            }),);
+            }));
 
         this.store.dispatch(new FetchConfig(false));
     }

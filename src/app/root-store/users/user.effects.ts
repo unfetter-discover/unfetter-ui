@@ -42,7 +42,7 @@ export class UserEffects {
             return new userActions.UpdateUserData({
                 ...userProfile,
             });
-        }),);
+        }));
 
     @Effect()
     public fetchUser = this.actions$
@@ -87,7 +87,7 @@ export class UserEffects {
                 ];
             }
 
-        }),);
+        }));
 
     @Effect()
     public setToken = this.actions$
@@ -110,7 +110,7 @@ export class UserEffects {
             return observableOf(null).pipe(
                 delay(this.refreshTokenDelayMS));
         }),
-        map((_) => new userActions.RefreshToken()),);
+        map((_) => new userActions.RefreshToken()));
 
     @Effect()
     public refreshToken = this.actions$
@@ -131,7 +131,7 @@ export class UserEffects {
                             success: false,
                             token: null
                         });
-                    }),)
+                    }))
             } else {
                 return observableOf({
                     success: false,
@@ -152,13 +152,13 @@ export class UserEffects {
                     return new userActions.LogoutUser();
                 }
             }
-        }),);
+        }));
 
     @Effect()
     public logoutUser = this.actions$
         .ofType(userActions.LOGOUT_USER).pipe(
         tap(() => localStorage.clear()),
-        map(() => new utilityActions.Navigate(['/'])),);
+        map(() => new utilityActions.Navigate(['/'])));
 
     constructor(
         private actions$: Actions,

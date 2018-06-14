@@ -36,7 +36,7 @@ export class FullResultEffects {
                 .getByRollupId(rollupId).pipe(
                 catchError(() => observableEmpty()));
         }),
-        mergeMap((data: Assessment[]) => [new SetAssessments(data), new FinishedLoading(true)]),);
+        mergeMap((data: Assessment[]) => [new SetAssessments(data), new FinishedLoading(true)]));
 
     @Effect()
     public fetchAssessmentById = this.actions$
@@ -47,7 +47,7 @@ export class FullResultEffects {
                 .getById(id).pipe(
                 catchError(() => observableEmpty()));
         }),
-        mergeMap((data: Assessment) => [new SetAssessment(data), new FinishedLoading(true)]),);
+        mergeMap((data: Assessment) => [new SetAssessment(data), new FinishedLoading(true)]));
 
     @Effect()
     public fetchAssessmentGroupData = this.actions$
@@ -61,7 +61,7 @@ export class FullResultEffects {
         map(([assessedObjects, riskByAttackPattern]) => {
             riskByAttackPattern = riskByAttackPattern || new RiskByAttack;
             return new SetGroupData({ assessedObjects, riskByAttackPattern });
-        }),);
+        }));
 
     @Effect()
     public loadGroupCurrentAttackPattern = this.actions$
@@ -72,7 +72,7 @@ export class FullResultEffects {
         }),
         map((data: Stix) => {
             return new SetGroupCurrentAttackPattern({ currentAttackPattern: data });
-        }),);
+        }));
 
     @Effect()
     public loadGroupAttackPatternRelationships = this.actions$
@@ -86,7 +86,7 @@ export class FullResultEffects {
                 new SetGroupAttackPatternRelationships(relationships),
                 new FinishedLoading(true),
             ];
-        }),);
+        }));
 
     @Effect()
     public pushUrlState = this.actions$
@@ -102,7 +102,7 @@ export class FullResultEffects {
             const url = `${Constance.API_HOST}/assess/result/full/${rollupId}/${assessmentId}/phase/${phase}`;
             this.location.replaceState(url);
         }),
-        switchMap(() => observableOf(new DonePushUrl())),);
+        switchMap(() => observableOf(new DonePushUrl())));
 
     @Effect()
     public updateAssesmentObject = this.actions$
@@ -120,5 +120,5 @@ export class FullResultEffects {
                     return observableEmpty();
                 });
             return o1$;
-        }),)
+        }))
 }

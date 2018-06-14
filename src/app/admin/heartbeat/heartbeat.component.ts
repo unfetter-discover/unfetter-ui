@@ -20,7 +20,7 @@ export class HeartbeatComponent implements OnInit {
   ngOnInit() {
     const heartbeat$ = this.adminService.getHeartbeat().pipe(
       pluck('attributes'),
-      pluck('statuses'),)
+      pluck('statuses'))
       .subscribe(
         (heartbeats: Heartbeat[]) => {
           this.heartbeats = heartbeats;

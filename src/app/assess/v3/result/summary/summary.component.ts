@@ -99,7 +99,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
         const sub$ = this.userStore
           .select('users').pipe(
           pluck('userProfile'),
-          take(1),)
+          take(1))
           .subscribe((user: UserProfile) => {
             this.requestData(this.assessmentId);
           },

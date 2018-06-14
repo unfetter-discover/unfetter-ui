@@ -49,7 +49,7 @@ export class ConfigService {
                 const getConfig$ = this.store.select('config').pipe(
                     pluck('configurations'),
                     filter((configurations: any) => Object.keys(configurations).length > 0),
-                    take(1),)
+                    take(1))
                     .subscribe(
                         (configurations) => {
                             this.configurations = configurations;

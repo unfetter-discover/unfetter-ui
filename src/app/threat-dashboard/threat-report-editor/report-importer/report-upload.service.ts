@@ -52,7 +52,7 @@ export class ReportUploadService {
             }),
             map((event) => (event instanceof HttpResponse) ? event.body : []),
             map((reports) => reports.map((report) => report.data)),
-            catchError(this.handleError),);
+            catchError(this.handleError));
     }
 
     /**

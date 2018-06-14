@@ -39,40 +39,40 @@ export class SummaryEffects {
                 return actions;
             }
             return [new SetAssessments([data]), ...actions];
-        }),);
+        }));
 
     @Effect()
     public fetchAssessmentSummaryData = this.actions$
         .ofType(LOAD_ASSESSMENT_SUMMARY_DATA).pipe(
         pluck('payload'),
         switchMap((rollupId: string) => this.assessService.getByRollupId(rollupId)),
-        mergeMap((data: Assessment[]) => [new SetAssessments(data), new FinishedLoading(true)]),);
+        mergeMap((data: Assessment[]) => [new SetAssessments(data), new FinishedLoading(true)]));
 
     @Effect()
     public fetchSingleRiskPerKillChainData = this.actions$
         .ofType(LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA).pipe(
         pluck('payload'),
         switchMap((assessmentId: string) => this.assessService.getRiskPerKillChain(assessmentId)),
-        mergeMap((data: RiskByKillChain) => [new SetKillChainData([data]), new FinishedLoadingKillChainData(true)]),)
+        mergeMap((data: RiskByKillChain) => [new SetKillChainData([data]), new FinishedLoadingKillChainData(true)]))
 
     @Effect()
     public fetchRiskPerKillChainData = this.actions$
         .ofType(LOAD_RISK_PER_KILL_CHAIN_DATA).pipe(
         pluck('payload'),
         switchMap((rollupId: string) => this.assessService.getRiskPerKillChainByRollupId(rollupId)),
-        mergeMap((data: RiskByKillChain[]) => [new SetKillChainData(data), new FinishedLoadingKillChainData(true)]),)
+        mergeMap((data: RiskByKillChain[]) => [new SetKillChainData(data), new FinishedLoadingKillChainData(true)]))
 
     @Effect()
     public fetchSingleSummaryAggregationData = this.actions$
         .ofType(LOAD_SINGLE_SUMMARY_AGGREGATION_DATA).pipe(
         pluck('payload'),
         switchMap((assessmentId: string) => this.assessService.getSummaryAggregation(assessmentId)),
-        mergeMap((data: SummaryAggregation) => [new SetSummaryAggregationData([data]), new FinishedLoadingSummaryAggregationData(true)]),)
+        mergeMap((data: SummaryAggregation) => [new SetSummaryAggregationData([data]), new FinishedLoadingSummaryAggregationData(true)]))
 
     @Effect()
     public fetchSummaryAggregationData = this.actions$
         .ofType(LOAD_SUMMARY_AGGREGATION_DATA).pipe(
         pluck('payload'),
         switchMap((rollupId: string) => this.assessService.getSummaryAggregationByRollup(rollupId)),
-        mergeMap((data: SummaryAggregation[]) => [new SetSummaryAggregationData(data), new FinishedLoadingSummaryAggregationData(true)]),)
+        mergeMap((data: SummaryAggregation[]) => [new SetSummaryAggregationData(data), new FinishedLoadingSummaryAggregationData(true)]))
 }

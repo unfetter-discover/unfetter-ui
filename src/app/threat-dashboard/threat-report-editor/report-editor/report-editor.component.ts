@@ -50,7 +50,7 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
         const getUser$ = this.userStore
             .select('users').pipe(
             pluck('userProfile'),
-            take(1),)
+            take(1))
             .subscribe((user: UserProfile) => {
                 this.user = user;
                 // start loading the full list of attack patterns

@@ -40,7 +40,7 @@ export class UserPreferencesService {
                 // refresh the user in the app
                 this.store.dispatch(new FetchUserOnly());
                 return el;
-            }),);
+            }));
     }
 
 }

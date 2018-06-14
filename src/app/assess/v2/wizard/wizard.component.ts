@@ -182,7 +182,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       pluck('indicators'),
       distinctUntilChanged(),
       filter((el) => el !== undefined),
-      map((arr: JsonApiData<Indicator.UnfetterIndicator>[]) => arr.map((el) => el.attributes)),)
+      map((arr: JsonApiData<Indicator.UnfetterIndicator>[]) => arr.map((el) => el.attributes)))
       .subscribe((arr: Indicator.UnfetterIndicator[]) => this.indicators = arr);
 
     const sub2$ = this.wizardStore
@@ -190,7 +190,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       pluck('mitigations'),
       distinctUntilChanged(),
       filter((el) => el !== undefined),
-      map((arr: JsonApiData<Stix>[]) => arr.map((el) => el.attributes)),)
+      map((arr: JsonApiData<Stix>[]) => arr.map((el) => el.attributes)))
       .subscribe((arr: Stix[]) => this.mitigations = arr);
 
     const sub3$ = this.wizardStore
@@ -198,14 +198,14 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       pluck('sensors'),
       distinctUntilChanged(),
       filter((el) => el !== undefined),
-      map((arr: JsonApiData<Stix>[]) => arr.map((el) => el.attributes)),)
+      map((arr: JsonApiData<Stix>[]) => arr.map((el) => el.attributes)))
       .subscribe((arr: Stix[]) => this.sensors = arr);
 
     const sub4$ = this.wizardStore
       .select('assessment').pipe(
       pluck('finishedLoading'),
       distinctUntilChanged(),
-      filter((loaded: boolean) => loaded && loaded === true),)
+      filter((loaded: boolean) => loaded && loaded === true))
       .subscribe(
         (loaded: boolean) => {
           const panel = this.determineFirstOpenSidePanel();
@@ -218,7 +218,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     const sub5$ = this.wizardStore
       .select('assessment').pipe(
       pluck('page'),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe(
         (page: number) => this.page = page,
         (err) => console.log(err));
@@ -228,7 +228,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       .select('assessment').pipe(
       pluck('saved'),
       distinctUntilChanged(),
-      filter((el: SavedState) => el && el.finished === true),)
+      filter((el: SavedState) => el && el.finished === true))
       .subscribe(
         (saved: SavedState) => {
           const rollupId = saved.rollupId;
@@ -241,7 +241,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       .select('assessment').pipe(
       pluck('assessment'),
       pluck('assessmentMeta'),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe(
         (assessmentMeta: AssessmentMeta) => this.meta = assessmentMeta,
         (err) => console.log(err));
@@ -250,7 +250,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       .select('users').pipe(
       pluck('userProfile'),
       distinctUntilChanged(),
-      take(1),)
+      take(1))
       .subscribe(
         (user: UserProfile) => this.currentUser = user,
         (err) => console.log(err));
@@ -276,13 +276,13 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     const sub$ = this.userStore
       .select('users').pipe(
       pluck('userProfile'),
-      take(1),)
+      take(1))
       .subscribe(
         (user: UserProfile) => {
           const sub1$ = this.assessStore
             .select('fullAssessment').pipe(
             pluck('assessmentTypes'),
-            distinctUntilChanged(),)
+            distinctUntilChanged())
             .subscribe(
               (arr: Assessment[]) => this.loadAssessments(rollupId, arr, meta),
               (err) => console.log(err));

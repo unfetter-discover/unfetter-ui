@@ -71,7 +71,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
     const capSub4$ = this.wizardStore
       .select('baseline').pipe(
       pluck('baselineObjAssessments'),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe(
         (objAssessments: any[]) => {
           this.baselineObjAssessments = objAssessments;

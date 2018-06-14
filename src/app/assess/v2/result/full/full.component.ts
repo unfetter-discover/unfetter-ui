@@ -73,7 +73,7 @@ export class FullComponent implements OnInit, OnDestroy {
         const sub$ = this.userStore
           .select('users').pipe(
           pluck('userProfile'),
-          take(1),)
+          take(1))
           .subscribe((user: UserProfile) => {
             this.requestData(this.rollupId);
           },
@@ -96,7 +96,7 @@ export class FullComponent implements OnInit, OnDestroy {
       .select('fullAssessment').pipe(
       pluck<object, Assessment>('fullAssessment'),
       filter((el) => el !== undefined),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       // .filter((arr) => arr && arr.length > 0)
       // .map((arr) => {
       //   return arr.find((el) => el.id === this.assessmentId);
@@ -105,18 +105,18 @@ export class FullComponent implements OnInit, OnDestroy {
     this.finishedLoading = this.store
       .select('fullAssessment').pipe(
       pluck<Assessment, boolean>('finishedLoading'),
-      distinctUntilChanged(),);
+      distinctUntilChanged());
 
     this.assessmentGroup = this.store
       .select('fullAssessment').pipe(
       pluck<object, FullAssessmentGroup>('group'),
-      distinctUntilChanged(),);
+      distinctUntilChanged());
 
     const sub$ = this.store
       .select('fullAssessment').pipe(
       pluck('group'),
       distinctUntilChanged(),
-      filter((group: any) => group.finishedLoadingGroupData === true),)
+      filter((group: any) => group.finishedLoadingGroupData === true))
       .subscribe(
         (group: any) => {
           const riskByAttackPattern = group.riskByAttackPattern || {};
@@ -162,7 +162,7 @@ export class FullComponent implements OnInit, OnDestroy {
         } else {
           return assessment.name;
         }
-      }),);
+      }));
 
     this.subscriptions.push(sub$);
   }

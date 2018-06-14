@@ -69,7 +69,7 @@ export class CreatedByRefComponent implements OnInit {
                     this.selected = organizations[0].id;
                     this.updateOrganization(this.selected);
                 }
-            }),);
+            }));
 
         if (this.assessmentMeta && this.assessmentMeta.created_by_ref && this.assessmentMeta.created_by_ref !== '') {
             this.selected = this.assessmentMeta.created_by_ref;

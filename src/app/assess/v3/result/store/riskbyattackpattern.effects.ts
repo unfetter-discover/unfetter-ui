@@ -36,8 +36,8 @@ export class RiskByAttackPatternEffects {
                 catchError((err) => {
                     console.log(err);
                     return observableEmpty();
-                }),)
-        }),);
+                }))
+        }));
 
     @Effect()
     public fetchAssessmentRiskByAttackPatternData = this.actions$
@@ -50,6 +50,6 @@ export class RiskByAttackPatternEffects {
                 catchError((err) => {
                     console.log(err);
                     return observableEmpty();
-                }),);
-        }),);
+                }));
+        }));
 }

@@ -198,12 +198,12 @@ export class RegisterComponent implements OnInit {
     private validateEmail(emailCtrl: FormControl): Observable<any> {
         return observableTimer(50).pipe(
             switchMap(() => this.usersService.emailAvailable(emailCtrl.value)),
-            map((emailAvailable: boolean) => emailAvailable ? null : { 'emailTaken': true }),);
+            map((emailAvailable: boolean) => emailAvailable ? null : { 'emailTaken': true }));
     }
 
     private validateUserName(userNameCtrl: FormControl): Observable<any> {
         return observableTimer(50).pipe(
             switchMap(() => this.usersService.userNameAvailable(userNameCtrl.value)),
-            map((userNameAvailable: boolean) => userNameAvailable ? null : { 'userNameTaken': true }),);
+            map((userNameAvailable: boolean) => userNameAvailable ? null : { 'userNameTaken': true }));
     }
 }

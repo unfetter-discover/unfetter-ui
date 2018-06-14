@@ -89,7 +89,7 @@ export class AssessEffects {
           return observableOf(new assessActions.FailedToLoad(true));
         })
       );
-    }),);
+    }));
 
   @Effect()
   public fetchObjectAssessments = this.actions$
@@ -112,7 +112,7 @@ export class AssessEffects {
             return observableOf(new assessActions.FailedToLoad(true));
           })
         );
-    }),);
+    }));
 
   @Effect()
   public fetchAssessment = this.actions$
@@ -153,7 +153,7 @@ export class AssessEffects {
             return observableEmpty();
           })
         );
-    }),);
+    }));
 
   @Effect()
   public fetchCapabilities = this.actions$
@@ -242,7 +242,7 @@ export class AssessEffects {
           return observableOf(new assessActions.FailedToLoad(true));
         })
       );
-    }),);
+    }));
 
   @Effect()
   public fetchBaselines = this.actions$

@@ -46,7 +46,7 @@ export class ConfigEffects {
         map((config) => ({
             type: configActions.ADD_CONFIG,
             payload: config
-        })),);
+        })));
 
     @Effect()
     public loadTactics = this.actions$
@@ -55,7 +55,7 @@ export class ConfigEffects {
             return observableForkJoin(this.configService.getConfig(), this.tacticsService.fetchByFramework());
         }),
         map(([config, patterns]) => this.createTacticsChains(config, patterns)),
-        map(tactics => new configActions.LoadTactics(tactics)),);
+        map(tactics => new configActions.LoadTactics(tactics)));
 
     /**
      * @description Group the given attack patterns into TacticChain objects, ordered according to the configuration

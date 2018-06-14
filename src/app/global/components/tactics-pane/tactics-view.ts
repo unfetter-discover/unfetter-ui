@@ -181,7 +181,7 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
                 .select('config').pipe(
                 pluck('tacticsChains'),
                 filter(t => t !== null),
-                distinctUntilChanged(),)
+                distinctUntilChanged())
                 .subscribe(
                     (tactics: Dictionary<TacticChain>) => {
                         this.loadTactics(tactics);
@@ -215,7 +215,7 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
             take(1),
             pluck('preferences'),
             pluck('killchain'),
-            map((chain: string) => [chain]),);
+            map((chain: string) => [chain]));
     }
 
     /**

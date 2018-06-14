@@ -113,7 +113,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
           const getUser$ = this.userStore
             .select('users').pipe(
             pluck('userProfile'),
-            take(1),)
+            take(1))
             .subscribe((user: UserProfile) => {
               this.user = user;
               this.threatReport = null;
@@ -273,7 +273,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
         this.uniqChainNames = this.generateUniqChainNames(this.attackPatterns);
         this.selectedChain = this.determineFilter(this.uniqChainNames);
         this.attackPatterns = this.filterAttackPatterns(this.attackPatterns, this.selectedChain);
-      }),);
+      }));
   }
 
   /**

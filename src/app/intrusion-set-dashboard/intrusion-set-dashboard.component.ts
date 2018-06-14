@@ -54,7 +54,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
             pluck('tactics'),
             filter((t: Tactic[]) => t.length !== 0),
             distinctUntilChanged(),
-            take(1),);
+            take(1));
 
         const intrusionsProperties = {
             'stix.id': 1,

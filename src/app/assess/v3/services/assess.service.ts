@@ -112,7 +112,7 @@ export class AssessService {
             // remove the attributes wrapping
             map<any, Assessment>(RxjsHelpers.mapAttributes),
             // cast the object literal to an actual object so we have its methods
-            map((assessment: Assessment) => new Assessment(assessment)),);
+            map((assessment: Assessment) => new Assessment(assessment)));
     }
 
     /**
@@ -131,7 +131,7 @@ export class AssessService {
             // remove the attributes wrapping
             map<any[], Assessment[]>(RxjsHelpers.mapAttributes),
             // cast the object literal to an actual object so we have its methods
-            map((arr: Assessment[]) => arr.map((_) => new Assessment(_))),);
+            map((arr: Assessment[]) => arr.map((_) => new Assessment(_))));
     }
 
     /**
@@ -222,7 +222,7 @@ export class AssessService {
             // remove the attributes wrapping
             map<any[], RiskByAttack[]>(RxjsHelpers.mapAttributes),
             // cast the object literal to an actual object so we have its methods
-            map((arr: RiskByAttack[]) => arr.map((_) => Object.assign(new RiskByAttack(), _))),);
+            map((arr: RiskByAttack[]) => arr.map((_) => Object.assign(new RiskByAttack(), _))));
     }
 
     /**

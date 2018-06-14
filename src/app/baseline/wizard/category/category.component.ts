@@ -35,7 +35,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
     const catSub1$ = this.wizardStore
       .select('baseline').pipe(
       pluck('capabilityGroups'),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe(
         (categories: Category[]) => this.categories = categories,
         (err) => console.log(err));
@@ -43,7 +43,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
     const catSub2$ = this.wizardStore
       .select('baseline').pipe(
       pluck('baselineGroups'),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe(
         (selectedCapabilityGroups: Category[]) => {
           this.selectedCapabilityGroups = selectedCapabilityGroups;
@@ -53,7 +53,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
     const catSub3$ = this.wizardStore
       .select('baseline').pipe(
       pluck('baselineCapabilities'),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe(
         (capabilities: Capability[]) => {
           this.baselineCapabilities = capabilities;

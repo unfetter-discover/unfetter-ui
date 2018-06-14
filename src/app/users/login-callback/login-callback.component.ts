@@ -30,7 +30,7 @@ export class LoginCallbackComponent implements OnInit {
                 const getUser$ = this.store.select('users').pipe(
                     pluck('userProfile'),
                     filter((user: any) => !!user && user.approved),
-                    take(1),)
+                    take(1))
                     .subscribe(
                         (user) => {
                             this.router.navigate(['/']);

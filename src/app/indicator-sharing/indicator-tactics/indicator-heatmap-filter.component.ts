@@ -83,7 +83,7 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
                 .select('indicatorSharing').pipe(
                 pluck('attackPatterns'),
                 take(1),
-                finalize(() => getAttackPatterns$ && getAttackPatterns$.unsubscribe()),)
+                finalize(() => getAttackPatterns$ && getAttackPatterns$.unsubscribe()))
                 .subscribe(
                     (attackPatterns: any[]) => {
                         const tactics = attackPatterns.reduce(

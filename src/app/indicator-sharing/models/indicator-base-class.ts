@@ -23,7 +23,7 @@ export abstract class IndicatorBase {
     protected initBaseData() {
         const getIdentities$ = this.store.select('indicatorSharing').pipe(
             pluck('identities'),
-            distinctUntilChanged(),)
+            distinctUntilChanged())
             .subscribe(
                 (identities: any[]) => {
                     this.identities = identities;
@@ -40,7 +40,7 @@ export abstract class IndicatorBase {
 
         const getIndicatorToSensorMap$ = this.store.select('indicatorSharing').pipe(
             pluck('indicatorToSensorMap'),
-            distinctUntilChanged(),)
+            distinctUntilChanged())
             .subscribe(
                 (indicatorToSensorMap) => {
                     this.indicatorToSensorMap = indicatorToSensorMap;
@@ -57,7 +57,7 @@ export abstract class IndicatorBase {
 
         const getIndicatorToAttackPatternMap$ = this.store.select('indicatorSharing').pipe(
             pluck('indicatorToApMap'),
-            distinctUntilChanged(),)
+            distinctUntilChanged())
             .subscribe(
                 (indicatorToAttackPatternMap) => {
                     this.indicatorToAttackPatternMap = indicatorToAttackPatternMap;
@@ -74,7 +74,7 @@ export abstract class IndicatorBase {
 
         const getServerCallComplete$ = this.store.select('indicatorSharing').pipe(
             pluck('serverCallComplete'),
-            distinctUntilChanged(),)
+            distinctUntilChanged())
             .subscribe(
                 (serverCallComplete: boolean) => {
                     // This is to check that it was only assigned once, to avoid change detection errors                    
@@ -96,7 +96,7 @@ export abstract class IndicatorBase {
         const getIntrusionSetToAttackPatternMap$ = this.store.select('indicatorSharing').pipe(
             pluck('intrusionSetsByAttackpattern'),
             finalize(() => getIntrusionSetToAttackPatternMap$ && getIntrusionSetToAttackPatternMap$.unsubscribe()),
-            distinctUntilChanged(),)
+            distinctUntilChanged())
                 .subscribe(
                     (intrusionSetsByAttackpattern) => {
                         this.intrusionSetToAttackPatternMap = intrusionSetsByAttackpattern;

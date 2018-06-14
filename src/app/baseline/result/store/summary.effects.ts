@@ -36,6 +36,6 @@ export class SummaryEffects {
                 }),
                 catchError((err) => {
                     return observableEmpty();
-                }),);
-        }),);
+                }));
+        }));
 }

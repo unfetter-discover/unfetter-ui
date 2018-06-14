@@ -71,7 +71,7 @@ export class AppComponent implements OnInit {
 
     this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),
-      map(() => this.activatedRoute),)
+      map(() => this.activatedRoute))
       .subscribe((event: ActivatedRoute) => {
         const url = ((event as any)._routerState.snapshot.url.split('/'))[1];
         this.setTheme(url, bodyElement);

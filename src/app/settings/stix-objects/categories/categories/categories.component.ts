@@ -100,7 +100,7 @@ export class CategoriesComponent extends BaseStixComponent<Category> implements 
   public loadCategory(): Observable<Category> {
     return super.get().pipe(
       map((el: any) => this.unwrapJsonData(el)),
-      map(el => this.category = el),);
+      map(el => this.category = el));
   }
 
   public formatText(inputString): string {

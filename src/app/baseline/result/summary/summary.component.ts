@@ -94,7 +94,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
         const sub$ = this.userStore
           .select('users').pipe(
           pluck('userProfile'),
-          take(1),)
+          take(1))
           .subscribe((user: UserProfile) => {
             const creatorId = user._id;
             const createdById = user.organizations[0].id;
@@ -108,7 +108,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     const subIdentitie$ = this.userStore
       .select('identities').pipe(
       pluck('identities'),
-      finalize(() => subIdentitie$ && subIdentitie$.unsubscribe()),)
+      finalize(() => subIdentitie$ && subIdentitie$.unsubscribe()))
       .subscribe(
         (identities: Identity[]) => this.identities = identities,
         (error) => console.log(`(${new Date().toISOString()}) error retrieving identities from app store`, error)
@@ -141,7 +141,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .select('summary').pipe(
       pluck('baseline'),
       distinctUntilChanged(),
-      filter((arr: AssessmentSet[]) => arr && arr.length > 0),)
+      filter((arr: AssessmentSet[]) => arr && arr.length > 0))
       .subscribe((arr: AssessmentSet[]) => {this.calculationService.baseline = arr[0]; return this.calculationService.baseline},
         (err) => console.log(err));
 
@@ -157,7 +157,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .select('summary').pipe(
       pluck('summaries'),
       distinctUntilChanged(),
-      filter((arr: AssessmentSet[]) => arr && arr.length > 0),)
+      filter((arr: AssessmentSet[]) => arr && arr.length > 0))
       .subscribe((arr: AssessmentSet[]) => {
         this.summaries = [...arr];
       },
@@ -167,7 +167,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .select('summary').pipe(
       pluck('finishedLoading'),
       distinctUntilChanged(),
-      filter((el) => el === true),)
+      filter((el) => el === true))
       .subscribe((done: boolean) => {
         if (this.calculationService.baseline === undefined) {
           // fetching the summary failed, set all flags to done
@@ -181,7 +181,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     const sub8$ = this.store
       .select('summary').pipe(
       pluck('finishedLoadingSummaryAggregationData'),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe((done: boolean) => {
         // this.finishedLoadingSAD = done;
         // if (done) {
@@ -192,7 +192,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     const sub9$ = this.store
       .select('summary').pipe(
       pluck('baseline'),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe((arr: AssessmentSet[]) => {
         if (!arr || arr.length === 0) {
           this.blName = '';

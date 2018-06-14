@@ -50,7 +50,7 @@ export class IndicatorSharingFiltersComponent implements OnInit {
   public ngOnInit() {
     const searchChanges$ = this.searchForm.valueChanges.pipe(
       debounceTime(300),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe(
         (searchParams: SearchParameters) => {
           this.store.dispatch(new indicatorSharingActions.SetSearchParameters(searchParams));
@@ -77,17 +77,17 @@ export class IndicatorSharingFiltersComponent implements OnInit {
       map((labels: string[]) => {
         const labelSet = new Set(labels);
         return Array.from(labelSet);
-      }),);
+      }));
 
     this.dataSources$ = this.store.select('config').pipe(
       pluck('configurations'),
       filter(RxjsHelpers.filterByConfigKey(ConfigKeys.DATA_SOURCES)),
       pluck(ConfigKeys.DATA_SOURCES),
-      map((dataSources: string[]) => dataSources.sort()),);
+      map((dataSources: string[]) => dataSources.sort()));
 
     const getAttackPatterns$ = this.store.select('indicatorSharing').pipe(
       pluck('attackPatterns'),
-      withLatestFrom(this.store.select('users')),)
+      withLatestFrom(this.store.select('users')))
       .subscribe(
         ([attackPatterns, user]: [any[], UserState]) => {
           if (user.userProfile.preferences && user.userProfile.preferences.killchain) {

@@ -65,7 +65,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
 
         const filteredIndicatorSub$ = this.store.select('indicatorSharing').pipe(
             pluck('filteredIndicators'),
-            distinctUntilChanged(),)
+            distinctUntilChanged())
             .subscribe(
                 (res: any[]) => this.filteredIndicators = res,
                 (err) => console.log(err),
@@ -74,7 +74,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
 
         const displayedIndicatorSub$ = this.store.select('indicatorSharing').pipe(
             pluck('displayedIndicators'),
-            distinctUntilChanged(),)
+            distinctUntilChanged())
             .subscribe(
                 (res: any[]) => {
                     this.displayedIndicators = res;
@@ -89,7 +89,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
 
         const searchParametersSub$ = this.store.select('indicatorSharing').pipe(
             pluck('searchParameters'),
-            distinctUntilChanged(),)
+            distinctUntilChanged())
             .subscribe(
                 (res) => {
                     if (!this.filterOpened && JSON.stringify(res) !== JSON.stringify(initialSearchParameters)) {
@@ -108,7 +108,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
 
         const indicatorToSensorMap$ = this.store.select('indicatorSharing').pipe(
             pluck('indicatorToSensorMap'),
-            distinctUntilChanged(),)
+            distinctUntilChanged())
             .subscribe(
                 (res) => {
                     this.indicatorToSensorMap = res;
@@ -123,7 +123,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
 
         const getUser$ = this.store.select('users').pipe(
             filter((users: any) => users.userProfile && users.userProfile._id),
-            take(1),)
+            take(1))
             .subscribe(
                 (users: any) => {
                     this.store.dispatch(new indicatorSharingActions.StartSocialStream(users.userProfile._id));

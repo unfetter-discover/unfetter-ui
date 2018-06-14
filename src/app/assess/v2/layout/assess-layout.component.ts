@@ -41,7 +41,7 @@ export class AssessLayoutComponent implements OnInit, AfterViewInit {
       distinctUntilChanged(),
       pluck('assessment'),
       pluck('assessmentMeta'),
-      pluck('title'),);
+      pluck('title'));
 
     this.showBackButton = this.store
       .select('assessment').pipe(
@@ -51,7 +51,7 @@ export class AssessLayoutComponent implements OnInit, AfterViewInit {
       map((el) => {
         this.changeDetectorRef.detectChanges();
         return el;
-      }),);
+      }));
     this.changeDetectorRef.detectChanges();
   }
 

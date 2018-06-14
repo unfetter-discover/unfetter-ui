@@ -51,7 +51,7 @@ export class AssessGuard implements CanActivate {
                         console.log('error in route gaurd, routing to create page', err);
                         this.router.navigate([this.CREATE_URL]);
                         return observableOf(false);
-                    }),);
-            }),);
+                    }));
+            }));
     }
 }

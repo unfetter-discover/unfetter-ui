@@ -27,7 +27,7 @@ export class SelectSearchFieldComponent implements OnInit {
     constructor(public baseComponentService: BaseComponentService) {
         this.filteredOptions = this.formCtrl.valueChanges.pipe(
             startWith(null),
-            map((val) => val ? this.filter(val) : this.options.slice()),);
+            map((val) => val ? this.filter(val) : this.options.slice()));
     }
 
     public ngOnInit() {

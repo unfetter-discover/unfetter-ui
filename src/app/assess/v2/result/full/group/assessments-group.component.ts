@@ -162,7 +162,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
         //  figure out a better way to short circuit
         return group.finishedLoadingGroupData === true
           && this.displayedAssessedObjects === undefined;
-      }),)
+      }))
       .subscribe((group: FullAssessmentGroup) => {
         // initialize the displayed assessed objects, 
         //  used also to stop loop of network calls
@@ -175,14 +175,14 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const sub2$ = this.assessmentGroup.pipe(
       pluck('currentAttackPattern'),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe((currentAttackPattern: Stix) => this.currentAttackPattern = currentAttackPattern,
         (err) => console.log(err));
 
     const sub3$ = this.assessmentGroup.pipe(
       filter((group: FullAssessmentGroup) => group.finishedLoadingGroupData === true),
       pluck('attackPatternRelationships'),
-      distinctUntilChanged(),)
+      distinctUntilChanged())
       .subscribe((relationships: Relationship[]) => {
         const assessmentCandidates = relationships
           .map((el) => el.attributes)

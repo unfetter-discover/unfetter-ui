@@ -23,7 +23,7 @@ export class FilterSearchBoxComponent implements OnInit {
     public ngOnInit() {
         this.searchTerms.pipe(
             debounceTime(300),        // wait 300ms after each keystroke before considering the term
-            distinctUntilChanged(),)
+            distinctUntilChanged())
             .subscribe((term) => {
                 if (term) {
                     this.filterItems = this.filter(term);

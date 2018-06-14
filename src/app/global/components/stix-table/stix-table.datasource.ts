@@ -37,7 +37,7 @@ export class StixTableDataSource extends DataSource<any> {
         let junk = observableOf(1);
         return junk.pipe(concat(this.paginator.page),map(() => {
             return this.updateData();
-        }),);
+        }));
     }
 
     public disconnect() { }

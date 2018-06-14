@@ -35,7 +35,7 @@ export class WebsocketService {
         const getAuthUser$ = this.store.select('users').pipe(
             filter((user: fromUser.UserState) => user.authenticated),
             take(1),
-            pluck('token'),)
+            pluck('token'))
             .subscribe(
                 (userToken: string) => {
                     console.log('Starting connection!');
@@ -97,7 +97,7 @@ export class WebsocketService {
                 } else {
                     return message.messageContent;
                 }
-            }),);
+            }));
     }
 
     public sendMessage(data: {}) {
