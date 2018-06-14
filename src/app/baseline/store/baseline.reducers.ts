@@ -140,17 +140,9 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
                 selectedFrameworkAttackPatterns: [...action.payload],
             });
         case baselineActions.START_BASELINE:
-            const newBaseline = new AssessmentSet();
-            const meta = action.payload;
-            newBaseline.name = meta.title;
-            newBaseline.description = meta.description;
-            newBaseline.created_by_ref = meta.created_by_ref;
-            newBaseline.created = new Date().toISOString();
-            newBaseline.assessments = [];
-            newBaseline.metaProperties = { published: false };
             return genAssessState({
               ...state,
-              baseline: newBaseline,
+              baseline: action.payload,
             });
         case baselineActions.UPDATE_PAGE_TITLE:
             const a1 = new AssessmentSet();
@@ -160,8 +152,8 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
                 const blMeta = action.payload as BaselineMeta;
                 a1.name = blMeta.title;
                 // Object.assign(a1, action.payload);
-                a1.description = meta.description;
-                a1.created_by_ref = meta.created_by_ref;
+                a1.description = blMeta.description;
+                a1.created_by_ref = blMeta.created_by_ref;
             }
             const s1 = genAssessState({
                 ...state,

@@ -10,6 +10,7 @@ import { BaselineForm } from '../../global/form-models/baseline';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
 import { BaselineStateService } from '../services/baseline-state.service';
 import { UpdatePageTitle } from '../store/baseline.actions';
+import { AssessmentSet } from 'stix/assess/v3/baseline';
 
 @Component({
   selector: 'unf-baseline-create',
@@ -53,9 +54,14 @@ export class Create3Component implements OnInit {
    * @return {void}
    */
   public submitForm(): void {
-    this.assessMeta = this.formToAssessment(this.form);
-    console.log('submit form', this.assessMeta);
-    this.store.dispatch(new assessActions.StartBaseline(this.assessMeta));
+    const newBaseline = new AssessmentSet();
+    newBaseline.name = this.form.value.title;
+    newBaseline.description = this.form.value.description;
+    newBaseline.created_by_ref = this.form.value.created_by_ref;
+    newBaseline.created = new Date().toISOString();
+    newBaseline.assessments = [];
+    newBaseline.metaProperties = { published: false };
+    this.store.dispatch(new assessActions.StartBaseline(newBaseline));
   }
 
   /**
