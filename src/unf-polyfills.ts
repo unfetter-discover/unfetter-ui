@@ -101,3 +101,5 @@ if (typeof Object.assign !== 'function') {
         configurable: true
     });
 }
+
+(window as any).global = window;

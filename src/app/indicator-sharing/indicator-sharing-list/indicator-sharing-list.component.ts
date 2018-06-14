@@ -46,6 +46,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     public filterOpened: boolean = false;
     public collapseAllCards: boolean = false;
     public activeMainWell: mainWell = 'tactics';
+    public totalIndicatorCount$: Observable<number>
     public collapseAllCardsSubject: BehaviorSubject<boolean> = new BehaviorSubject(this.collapseAllCards);
 
     @ViewChild('filterContainer') public filterContainer: MatSidenav;
@@ -58,6 +59,8 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
         protected changeDetectorRef: ChangeDetectorRef
     ) {
         super(store, changeDetectorRef);
+        this.totalIndicatorCount$ = this.store.select('indicatorSharing')
+            .pipe(pluck('totalIndicatorCount'));
     }
 
     public ngOnInit() {

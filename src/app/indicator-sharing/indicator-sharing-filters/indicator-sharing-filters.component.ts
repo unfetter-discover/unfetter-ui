@@ -30,6 +30,8 @@ export class IndicatorSharingFiltersComponent implements OnInit {
   public labels$: Observable<string[]>;
   public dataSources$: Observable<string[]>;
   public intrusionSets$: Observable<any[]>;
+  public organizations$: Observable<any[]>;
+  public sensors$: Observable<any[]>;
   public heatmapVisible = false;
   public observedDataVisible = false;
   public attackPatterns: any[] = [];
@@ -45,6 +47,10 @@ export class IndicatorSharingFiltersComponent implements OnInit {
     } catch (e) { }
     this.searchForm = fb.group(params);
     this.searchForm.setValue(params);
+    this.organizations$ = this.store.select('indicatorSharing')
+      .pipe(pluck('identities'));
+    this.sensors$ = this.store.select('indicatorSharing')
+      .pipe(pluck('sensors'));
   }
 
   public ngOnInit() {

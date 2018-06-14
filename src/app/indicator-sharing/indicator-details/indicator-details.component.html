@@ -18,7 +18,7 @@
           [attackPatterns]="getAttackPatternsByIndicatorId(indicator.id)"
           [creator]="getIdentityNameById(indicator.created_by_ref)"
           [sensors]="getSensorsByIndicatorId(indicator.id)"
-          [searchParameters]="store.select('indicatorSharing').pluck('searchParameters') | async"
+          [searchParameters]="searchParameters$ | async"
           (stateChange)="updateIndicator($event)"></indicator-card>
         </p>
       </div>

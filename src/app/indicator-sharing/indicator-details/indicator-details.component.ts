@@ -18,6 +18,7 @@ export class IndicatorDetailsComponent extends IndicatorBase implements OnInit {
   public indicator: any;
   private id: string;
   private retryFetch: boolean = true;
+  public searchParameters$;
 
   constructor(
     private route: ActivatedRoute,
@@ -25,6 +26,8 @@ export class IndicatorDetailsComponent extends IndicatorBase implements OnInit {
     protected changeDetectorRef: ChangeDetectorRef
   ) { 
     super(store, changeDetectorRef);
+    this.searchParameters$ = this.store.select('indicatorSharing')
+      .pipe(pluck('searchParameters'));
   }
 
   public ngOnInit() {

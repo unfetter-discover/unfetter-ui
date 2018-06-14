@@ -133,9 +133,9 @@ export class ThreatReportOverviewService {
         reduce((memo, el) => {
           // map threat reports to a key, this reduce performs a grouping by like reports
           const report = el;
-          const attribs = report.attributes;
+          const attribs: any = report.attributes;
           // we are ensured only on workproduct due filter and flatMaps above, ...riggghht?
-          const workProduct = attribs.metaProperties.work_products[0];
+          const workProduct: any = attribs.metaProperties.work_products[0];
           const name = workProduct.name;
           const author = workProduct.author || '';
           const date = workProduct.date || '';
@@ -190,13 +190,11 @@ export class ThreatReportOverviewService {
       id = threatReportMeta.id;
     }
 
-    let [inserts$, updates$]: [Report[], Report[]] = observableFrom(reports)
-      .pipe(
-        partition((report) => report.id === undefined)
-      );
+    // Hack to fix partition outside of a pipe
+    let [inserts$, updates$]: any = partition((report: any) => report.id === undefined)(observableFrom(reports));
     
     // pull fresh copies of the reports
-    updates$ = updates$.pipe(mergeMap((report) => this.loadReport(report.id)));
+    updates$ = updates$.pipe(mergeMap((report: any) => this.loadReport(report.id)));
     // assign the correct workproduct to these new reports
     inserts$ = inserts$.pipe(map((report: any) => {
       if (threatReportMeta) {
@@ -209,7 +207,7 @@ export class ThreatReportOverviewService {
       return report;
     }));
     const updateReports$ = observableMerge(inserts$, updates$).pipe(
-      mergeMap((el) => {
+      mergeMap((el: any) => {
         // I cant explain why this an array of single element arrays
         //  but lets unwrap
         if (el instanceof Array) {
