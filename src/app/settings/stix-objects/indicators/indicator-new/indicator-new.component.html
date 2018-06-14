@@ -11,23 +11,23 @@
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-12">
-                <mat-input-container class="full-width">
+                <mat-form-field class="full-width">
                 <input matInput placeholder="Name" required [(ngModel)]="indicator.attributes.name" value="{{indicator.attributes.name}}" />
-                </mat-input-container>
+                </mat-form-field>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-            <mat-input-container class="full-width">
+            <mat-form-field class="full-width">
                 <textarea matInput placeholder="Description"  [(ngModel)]="indicator.attributes.description" value="{{indicator.attributes.description}}"></textarea>
-                </mat-input-container>
+                </mat-form-field>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-                <mat-input-container class="full-width">
+                <mat-form-field class="full-width">
                     <input matInput placeholder="Pattern"  [(ngModel)]="indicator.attributes.pattern" value="{{indicator.attributes.pattern}}" required />
-                </mat-input-container>
+                </mat-form-field>
             </div>
         </div>
         <div class="row" >

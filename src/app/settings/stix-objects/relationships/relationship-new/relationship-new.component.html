@@ -2,7 +2,7 @@
     <div class="col-md-6">
         <form>
             <mat-form-field>
-                <mat-select placeholder="Source Type" [(ngModel)]="selectedSource" name="sourceRef" class="full-width" (change)="onSelectedSourceChange()">
+                <mat-select placeholder="Source Type" [(ngModel)]="selectedSource" name="sourceRef" class="full-width" (selectionChange)="onSelectedSourceChange()">
                     <mat-option *ngFor="let type of types" [value]="type.id">
                         {{type.label}}
                     </mat-option>
@@ -24,16 +24,16 @@
 </div>
 <div class="row">
     <div class="col-md-12">
-        <mat-input-container class="full-width">
+        <mat-form-field class="full-width">
             <input matInput placeholder="Relationship Type" [(ngModel)]="relationship.attributes.relationship_type">
-        </mat-input-container>
+        </mat-form-field>
     </div>
 </div>
 <div class="row">
     <div class="col-md-6">
         <form>
             <mat-form-field>
-                <mat-select placeholder="Target Type" [(ngModel)]="selectedTargetType" name="targetRef" class="full-width" (change)="onSelectedSourceChange()">
+                <mat-select placeholder="Target Type" [(ngModel)]="selectedTargetType" name="targetRef" class="full-width" (selectionChange)="onSelectedSourceChange()">
                     <mat-option *ngFor="let type of types" [value]="type.id">
                         {{type.label}}
                     </mat-option>
@@ -55,9 +55,9 @@
 </div>
 <div class="row">
     <div class="col-md-12">
-        <mat-input-container class="full-width">
+        <mat-form-field class="full-width">
             <textarea matInput placeholder="Description" [(ngModel)]="relationship.attributes.description"></textarea>
-        </mat-input-container>
+        </mat-form-field>
     </div>
 </div>
 <stix-text-array [(model)]="relationship" [propertyName]="'labels'"></stix-text-array>

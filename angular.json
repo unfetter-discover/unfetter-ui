@@ -51,7 +51,13 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true
-            }
+            },            
+            "uac": {
+              "fileReplacements": [{
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.uac.ts"
+              }]
+            }            
           }
         },
         "serve": {
@@ -62,6 +68,9 @@
           "configurations": {
             "production": {
               "browserTarget": "unfetterUi:build:production"
+            },
+            "uac": {
+              "browserTarget": "unfetterUi:build:uac"
             }
           }
         },

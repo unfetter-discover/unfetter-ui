@@ -8,14 +8,14 @@
                   <div class="col-md-12">
                     <div *ngIf="addConfig">
                           <div class="form-group">
-                             <mat-input-container class="full-width">
+                             <mat-form-field class="full-width">
                                  <input matInput class="form-control" required placeholder="Config Name" value="newConfig.configKey"
                                      [(ngModel)]="newConfig.configKey">
-                             </mat-input-container>
+                             </mat-form-field>
                           </div>
-                            <mat-input-container class="full-width">
+                            <mat-form-field class="full-width">
                                 <textarea matInput required matTextareaAutosize value="newConfig.configValue" [(ngModel)]="newConfig.configValue" placeholder="Config JSON Object">{{newConfig.configValue}}</textarea>
-                            </mat-input-container>
+                            </mat-form-field>
                             <button type="submit"  class="mat-primary" mat-raised-button [disabled]="!newConfig.configKey || !newConfig.configValue" (click)="addNewObject()"><i class="material-icons">save</i> SAVE {{ newConfig.configKey }}</button>
                             <button type="submit"  class="mat-primary" mat-raised-button (click)="cancelObjectAdd()">CANCEL</button>
                     </div>
@@ -27,9 +27,9 @@
                     <div>
                         <div *ngIf="message[i]" class="alert alert-info">{{message[i]}}</div>
                         <h3>EDIT {{configData[i].attributes.configKey}}</h3>
-                            <mat-input-container class="full-width">
+                            <mat-form-field class="full-width">
                                 <textarea matInput matTextareaAutosize value="configData[i].attributes.configValue" [(ngModel)]="configData[i].attributes.configValue">{{configData[i].configValue}}</textarea>
-                            </mat-input-container>
+                            </mat-form-field>
                             <button type="submit"  class="mat-primary" mat-raised-button (click)="changeData(configData[i], i)"><i class="material-icons">save</i> SAVE {{ configData[i].attributes.configKey }}</button>
                             <button type="submit"  class="mat-primary" mat-raised-button (click)="deleteSingleConfig(configData[i].attributes.id, i)"><i class="material-icons">delete</i> DELETE {{ configData[i].attributes.configKey }}</button>
                             <button type="submit"  class="mat-primary" mat-raised-button (click)="fetchSingleConfig(configData[i].attributes.id, i)"> UNDO EDITS</button>
