@@ -1,10 +1,9 @@
 
-import {throwError as observableThrowError, empty as observableEmpty, zip as observableZip, from as observableFrom, merge as observableMerge, of as observableOf, forkJoin as observableForkJoin,  Observable } from 'rxjs';
-
-import {mergeMap, filter, first, map, reduce, catchError, partition} from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { empty as observableEmpty, forkJoin as observableForkJoin, from as observableFrom, merge as observableMerge, Observable, of as observableOf, throwError as observableThrowError, zip as observableZip } from 'rxjs';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
+import { catchError, filter, first, map, mergeMap, reduce } from 'rxjs/operators';
 import * as UUID from 'uuid';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { SortHelper } from '../../global/static/sort-helper';
@@ -15,6 +14,7 @@ import { JsonApiObject } from '../models/adapter/json-api-object';
 import { Boundaries } from '../models/boundaries';
 import { LastModifiedThreatReport } from '../models/last-modified-threat-report';
 import { ThreatReport } from '../models/threat-report.model';
+
 
 @Injectable()
 export class ThreatReportOverviewService {
@@ -130,12 +130,12 @@ export class ThreatReportOverviewService {
           }) as Array<Partial<Report>>;
           return arr;
         }),
-        reduce((memo, el) => {
+        reduce((memo, el: Partial<Report>) => {
           // map threat reports to a key, this reduce performs a grouping by like reports
           const report = el;
-          const attribs: any = report.attributes;
+          const attribs = report.attributes;
           // we are ensured only on workproduct due filter and flatMaps above, ...riggghht?
-          const workProduct: any = attribs.metaProperties.work_products[0];
+          const workProduct = attribs.metaProperties.work_products[0];
           const name = workProduct.name;
           const author = workProduct.author || '';
           const date = workProduct.date || '';
@@ -185,18 +185,19 @@ export class ThreatReportOverviewService {
     const url = this.reportsUrl;
     const headers = this.ensureAuthHeaders(this.headers);
 
-    let id;
-    if (threatReportMeta) {
-      id = threatReportMeta.id;
-    }
+    // let id;
+    // if (threatReportMeta) {
+    //   id = threatReportMeta.id;
+    // }
 
-    // Hack to fix partition outside of a pipe
-    let [inserts$, updates$]: any = partition((report: any) => report.id === undefined)(observableFrom(reports));
-    
+    const sourceReports$ = observableFrom(reports);
+    const hasIdPredicate = (report) => report.id === undefined;
+    const reportsForUpdate$: Observable<Report> = sourceReports$.pipe(filter(hasIdPredicate));
+    const reportsForInsert$: Observable<Report> = sourceReports$.pipe(filter(((x) => !hasIdPredicate(x))));
     // pull fresh copies of the reports
-    updates$ = updates$.pipe(mergeMap((report: any) => this.loadReport(report.id)));
+    const updates$ = reportsForUpdate$.pipe(mergeMap((report) => this.loadReport(report.id)));
     // assign the correct workproduct to these new reports
-    inserts$ = inserts$.pipe(map((report: any) => {
+    const inserts$ = reportsForInsert$.pipe(map((report: any) => {
       if (threatReportMeta) {
         const meta = report.attributes.metaProperties || {};
         meta.work_products = meta.work_products || [];
@@ -207,7 +208,7 @@ export class ThreatReportOverviewService {
       return report;
     }));
     const updateReports$ = observableMerge(inserts$, updates$).pipe(
-      mergeMap((el: any) => {
+      mergeMap((el) => {
         // I cant explain why this an array of single element arrays
         //  but lets unwrap
         if (el instanceof Array) {
@@ -487,9 +488,9 @@ export class ThreatReportOverviewService {
     const headers = this.ensureAuthHeaders(this.headers);
     return this.http.get<JsonApi<Partial<LastModifiedThreatReport>[]>>(url, { headers })
       .pipe(
-      map((resp): any => resp.data),
-      catchError(this.handleError)
-    );
+        map((resp): any => resp.data),
+        catchError(this.handleError)
+      );
   }
 
   /**
