@@ -52,7 +52,7 @@ export class UpdatePageTitle implements Action {
 export class StartBaseline implements Action {
     public readonly type = START_BASELINE;
 
-    constructor(public payload: BaselineMeta) { }
+    constructor(public payload: AssessmentSet) { }
 }
 
 export class StartBaselineSuccess implements Action {
