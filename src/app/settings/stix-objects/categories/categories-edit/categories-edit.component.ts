@@ -125,13 +125,13 @@ export class CategoriesEditComponent extends CategoriesComponent implements OnIn
     }
 
     const sort = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
-    let filter = '';
+    let urlFilter = '';
     if (framework) {
       const userFrameworkFilter = { 'stix.kill_chain_phases.kill_chain_name': { $exists: true, $eq: framework } };
-      filter = 'filter=' + encodeURIComponent(JSON.stringify(userFrameworkFilter));
+      urlFilter = 'filter=' + encodeURIComponent(JSON.stringify(userFrameworkFilter));
     }
     let url = '';
-    if (filter) {
+    if (urlFilter) {
       url = `${Constance.ATTACK_PATTERN_URL}?${filter}&${sort}`;
     } else {
       url = `${Constance.ATTACK_PATTERN_URL}?${sort}`;
