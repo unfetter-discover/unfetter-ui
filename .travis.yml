@@ -21,5 +21,9 @@ install:
 script:
   - npm run lint
   - npm run headless:coverage
-  - travis_wait 15 npm run build:prod
+  # Output something every 9 minutes (540 seconds) so Travis doesn't give up
+  - while sleep 540; do echo "=====[ $SECONDS seconds still running ]====="; done &
+  - npm run build:prod
+  # Kill background sleep loop
+  - kill %1
   - npm run doc
