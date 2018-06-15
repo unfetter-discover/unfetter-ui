@@ -92,7 +92,30 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
                 ...state,
                 capabilities: [...action.payload],
             });
-        case baselineActions.SET_BASELINE_CAPABILITIES:
+        case baselineActions.ADD_CAPABILITY_TO_BASELINE:
+            const capList1 = state.baselineCapabilities;
+            capList1.push(action.payload);
+            return genAssessState({
+                ...state,
+                baselineCapabilities: capList1,
+            });
+        case baselineActions.REPLACE_CAPABILITY_IN_BASELINE:
+            const oldCap = action.payload[0];
+            const newCap = action.payload[1];    
+            const capList2 = state.baselineCapabilities;
+            const replIndex = capList2.indexOf(oldCap);
+            capList2[replIndex] = newCap;
+            return genAssessState({
+                ...state,
+                baselineCapabilities: capList2,
+            });
+        case baselineActions.REMOVE_CAPABILITY_FROM_BASELINE:
+            const capList3 = state.baselineCapabilities;
+            // TODO: remove this capability from the list and update OA list and AS
+            return genAssessState({
+                ...state,
+                baselineCapabilities: capList3,
+            });
         case baselineActions.SET_AND_READ_CAPABILITIES:
             return genAssessState({
                 ...state,
@@ -103,26 +126,26 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
                 ...state,
                 currentCapability: action.payload,
             });
-        case baselineActions.SAVE_OBJECT_ASSESSMENTS:
+        case baselineActions.ADD_OBJECT_ASSESSMENT:
+            const objAssessments = state.baselineObjAssessments;
+            objAssessments.push(action.payload);
             return genAssessState({
                 ...state,
+                baselineObjAssessments: objAssessments,
             });
-        case baselineActions.ADD_OBJECT_ASSESSMENTS_TO_BASELINE:
-            let currBaseline = state.baseline;
-            currBaseline.assessments.push(...action.payload);
+        case baselineActions.ADD_OBJECT_ASSESSMENT_TO_BASELINE:
+            const objAssessment = action.payload;
+
+            // Add object assessment to baseline and list of object assessments in this baseline
+            const currBaseline = state.baseline;
+            currBaseline.assessments.push(objAssessment.id);
+            const objAssessments2 = state.baselineObjAssessments;
+            objAssessments2.push(objAssessment);
+
             return genAssessState({
                 ...state,
                 baseline: currBaseline,
-            });
-        case baselineActions.SET_BASELINE_OBJECT_ASSESSMENTS:
-            return genAssessState({
-                ...state,
-                baselineObjAssessments: [...action.payload],
-            });
-        case baselineActions.SET_BASELINE_OBJECT_ASSESSMENTS:
-            return genAssessState({
-                ...state,
-                baselineObjAssessments: [...action.payload],
+                baselineObjAssessments: objAssessments2,
             });
         case baselineActions.SET_CURRENT_BASELINE_OBJECT_ASSESSMENT:
             return genAssessState({

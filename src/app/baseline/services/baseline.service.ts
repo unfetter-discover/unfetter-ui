@@ -140,18 +140,6 @@ export class BaselineService {
 
     /**
      * @description
-     * @param {string} capability id
-     * @return {Observable<Capability> }
-     */
-    // public getCapabilityById(id: string, includeMeta = true): Observable<Capability> {
-    //     const url = `${Constance.X_UNFETTER_CAPABILITY_URL}/${id}`;
-    //     return this.genericApi
-    //         .getAs<JsonApiData<Capability>>(url)
-    //         .map(RxjsHelpers.mapAttributes);
-    // }
-
-    /**
-     * @description
      *  fetch all assessment sets (aka baselines) from the server that this user can see
      *      given the rules of the security filter
      * @param {boolean} includeMeta - true to include metaProperties metadata
@@ -198,20 +186,6 @@ export class BaselineService {
             .getAs<JsonApiData<AssessmentSet>>(url)
             .map(RxjsHelpers.mapAttributes);
     }
-
-    /**
-     * @description
-     * @param {string} id
-     * @return {Observable}
-     */
-    // public getSummaryAggregation(id: string): Observable<SummaryAggregation> {
-    //     if (!id) {
-    //         return Observable.empty();
-    //     }
-
-    //     const url = `${this.baselineBaseUrl}/${id}/summary-aggregations`;
-    //     return this.genericApi.getAs<SummaryAggregation>(url);
-    // }
 
     /**
      * @description retrieve <i>partial baselines</i>, for all creators/users in system

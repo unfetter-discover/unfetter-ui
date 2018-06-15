@@ -1,8 +1,7 @@
 import { Action } from '@ngrx/store';
-import { Capability, Category, ObjectAssessment, AssessmentSet } from 'stix/assess/v3/baseline';
-import { Baseline } from '../../models/baseline/baseline';
-import { BaselineMeta } from '../../models/baseline/baseline-meta';
+import { AssessmentSet, Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
+import { BaselineMeta } from '../../models/baseline/baseline-meta';
 
 // For effects
 export const START_BASELINE = '[Baseline] START_BASELINE';
@@ -17,12 +16,15 @@ export const SET_CURRENT_BASELINE_GROUP = '[Baseline] SET_CURRENT_BASELINE_GROUP
 export const FETCH_CAPABILITIES = '[Baseline] FETCH_CAPABILITIES';
 export const SET_CAPABILITIES = '[Baseline] SET_CAPABILITIES';
 export const SET_BASELINE_CAPABILITIES = '[Baseline] SET_BASELINE_CAPABILITIES';
+export const ADD_CAPABILITY_TO_BASELINE = '[Baseline] ADD_CAPABILITY_TO_BASELINE';
+export const REPLACE_CAPABILITY_IN_BASELINE = '[Baseline] REPLACE_CAPABILITY_IN_BASELINE';
+export const REMOVE_CAPABILITY_FROM_BASELINE = '[Baseline] REMOVE_CAPABILITY_FROM_BASELINE';
 export const SET_CURRENT_BASELINE_CAPABILITY = '[Baseline] SET_CURRENT_BASELINE_CAPABILITY';
 export const SET_BASELINE = '[Baseline] SET_BASELINE';
 export const ADD_CAPABILITY_GROUP = '[Baseline] ADD_CAPABILITY_GROUP';
 export const SAVE_OBJECT_ASSESSMENTS = '[Baseline] SAVE_OBJECT_ASSESSMENTS';
 export const FAILED_TO_LOAD = '[Baseline] FAILED_TO_LOAD';
-export const SET_AND_READ_ASSESSMENT_SET = '[Baseline] SET_AND_GET_ASSESSMENT_OBJECTS';
+export const SET_AND_READ_ASSESSMENT_SET = '[Baseline] SET_AND_READ_ASSESSMENT_SET';
 export const SET_AND_READ_OBJECT_ASSESSMENTS = '[Baseline] SET_AND_READ_OBJECT_ASSESSMENTS';
 export const SET_AND_READ_CAPABILITIES = '[Baseline] SET_AND_READ_CAPABILITIES';
 
@@ -41,7 +43,7 @@ export const SET_CURRENT_BASELINE_OBJECT_ASSESSMENT = '[Baseline] SET_CURRENT_BA
 export const SET_CATEGORY_STEPS = '[Baseline] SET_CATEGORY_STEPS';
 export const SET_SELECTED_FRAMEWORK_ATTACK_PATTERNS = '[Baseline] SET_SELECTED_FRAMEWORK_ATTACK_PATTERNS';
 export const ADD_OBJECT_ASSESSMENT = '[Baseline] ADD_OBJECT_ASSESSMENT';
-export const ADD_OBJECT_ASSESSMENTS_TO_BASELINE = '[Baseline] ADD_OBJECT_ASSESSMENTS_TO_BASELINE';
+export const ADD_OBJECT_ASSESSMENT_TO_BASELINE = '[Baseline] ADD_OBJECT_ASSESSMENT_TO_BASELINE';
 
 export class UpdatePageTitle implements Action {
     public readonly type = UPDATE_PAGE_TITLE;
@@ -68,7 +70,7 @@ export class SaveBaseline implements Action {
 export class AddObjectAssessment implements Action {
     public readonly type = ADD_OBJECT_ASSESSMENT;
 
-    constructor(public payload: string) { }
+    constructor(public payload: ObjectAssessment) { }
 }
 
 export class SaveObjectAssessments implements Action {
@@ -77,10 +79,10 @@ export class SaveObjectAssessments implements Action {
     constructor(public payload: ObjectAssessment[]) { }
 }
 
-export class AddObjectAssessmentsToBaseline implements Action {
-    public readonly type = ADD_OBJECT_ASSESSMENTS_TO_BASELINE;
+export class AddObjectAssessmentToBaseline implements Action {
+    public readonly type = ADD_OBJECT_ASSESSMENT_TO_BASELINE;
 
-    constructor(public payload: string[]) { }
+    constructor(public payload: ObjectAssessment) { }
 }
 
 export class FetchBaseline implements Action {
@@ -161,16 +163,34 @@ export class SetBaselineCapabilities implements Action {
     constructor(public payload: Capability[]) { }
 }
 
-export class SetCurrentBaselineCapability implements Action {
-    public readonly type = SET_CURRENT_BASELINE_CAPABILITY;
-
-    constructor(public payload: Capability) { }
-}
-
 export class SetBaselineObjectAssessments implements Action {
     public readonly type = SET_BASELINE_OBJECT_ASSESSMENTS;
 
     constructor(public payload: ObjectAssessment[]) { }
+}
+
+export class AddCapabilityToBaseline implements Action {
+    public readonly type = ADD_CAPABILITY_TO_BASELINE;
+
+    constructor(public payload: Capability) { }
+}
+
+export class RemoveCapabilityFromBaseline implements Action {
+    public readonly type = REMOVE_CAPABILITY_FROM_BASELINE;
+
+    constructor(public payload: Capability) { }
+}
+
+export class ReplaceCapabilityInBaseline implements Action {
+    public readonly type = REPLACE_CAPABILITY_IN_BASELINE;
+
+    constructor(public payload: Capability[] ) { }
+}
+
+export class SetCurrentBaselineCapability implements Action {
+    public readonly type = SET_CURRENT_BASELINE_CAPABILITY;
+
+    constructor(public payload: Capability) { }
 }
 
 export class SetCurrentBaselineObjectAssessment implements Action {
@@ -232,7 +252,7 @@ export class FailedToLoad implements Action {
 
 export type BaselineActions =
     AddObjectAssessment |
-    AddObjectAssessmentsToBaseline |
+    AddObjectAssessmentToBaseline |
     CleanBaselineWizardData |
     FailedToLoad |
     FetchBaseline |
@@ -249,10 +269,12 @@ export type BaselineActions =
     SetAndReadCapabilities |
     SetAttackPatterns |
     SetBaseline |
-    SetBaselineCapabilities |
+    AddCapabilityToBaseline |
+    ReplaceCapabilityInBaseline |
+    RemoveCapabilityFromBaseline |
     SetBaselineGroups |
-    SetBaselineObjectAssessments |
     SetCapabilities |
+    SetBaselineCapabilities |
     SetCapabilityGroups |
     SetCategories |
     SetCategorySteps |
