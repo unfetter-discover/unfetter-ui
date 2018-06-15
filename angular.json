@@ -53,6 +53,23 @@
               "buildOptimizer": true,
               "verbose": true
             },            
+            "productionNoClean": {
+              "fileReplacements": [{
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.prod.ts"
+              }],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "verbose": true,
+              "deleteOutputPath": false
+            },            
             "uac": {
               "fileReplacements": [{
                 "replace": "src/environments/environment.ts",
@@ -89,6 +106,10 @@
           "configurations": {
             "production": {
               "browserTarget": "unfetterUi:build:production",
+              "watch": true
+            },
+            "productionNoClean": {
+              "browserTarget": "unfetterUi:build:productionNoClean",
               "watch": true
             },
             "uac": {
