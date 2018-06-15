@@ -1,7 +1,7 @@
 
-import {merge as observableMerge,  BehaviorSubject ,  Observable } from 'rxjs';
+import { merge as observableMerge,  BehaviorSubject ,  Observable  } from 'rxjs';
 
-import {map, multicast} from 'rxjs/operators';
+import { map, multicast } from 'rxjs/operators';
 import { EventEmitter } from '@angular/core';
 import { DataSource } from '@angular/cdk/table';
 import { CollectionViewer } from '@angular/cdk/collections';

@@ -1,7 +1,7 @@
 
-import {forkJoin as observableForkJoin,  Observable } from 'rxjs';
+import { forkJoin as observableForkJoin,  Observable  } from 'rxjs';
 
-import {filter, pluck, distinctUntilChanged, finalize, take} from 'rxjs/operators';
+import { filter, pluck, distinctUntilChanged, finalize, take } from 'rxjs/operators';
 import { Component, OnInit, ChangeDetectorRef, } from '@angular/core';
 import { Store } from '@ngrx/store';
 

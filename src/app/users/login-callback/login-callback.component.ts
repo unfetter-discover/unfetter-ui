@@ -1,5 +1,5 @@
 
-import {take, filter, pluck} from 'rxjs/operators';
+import { take, filter, pluck } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';

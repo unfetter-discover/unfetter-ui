@@ -1,7 +1,7 @@
 
-import {forkJoin as observableForkJoin, zip as observableZip, empty as observableEmpty,  Observable } from 'rxjs';
+import { forkJoin as observableForkJoin, zip as observableZip, empty as observableEmpty,  Observable  } from 'rxjs';
 
-import {mergeMap, map} from 'rxjs/operators';
+import { mergeMap, map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';

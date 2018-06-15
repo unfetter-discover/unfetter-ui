@@ -1,7 +1,7 @@
 
-import {of as observableOf,  Observable } from 'rxjs';
+import { of as observableOf,  Observable  } from 'rxjs';
 
-import {map, catchError} from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 declare var require: any;
 
 import { Injectable } from '@angular/core';

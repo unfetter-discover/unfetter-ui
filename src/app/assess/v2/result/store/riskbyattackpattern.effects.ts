@@ -1,5 +1,5 @@
 
-import {switchMap, pluck, mergeMap} from 'rxjs/operators';
+import { switchMap, pluck, mergeMap } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';

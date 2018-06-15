@@ -1,5 +1,5 @@
 
-import {pluck} from 'rxjs/operators';
+import { pluck } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UserProfile } from '../../models/user/user-profile';

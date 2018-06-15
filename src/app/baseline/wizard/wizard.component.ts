@@ -1,7 +1,7 @@
 
-import {of as observableOf,  Observable ,  Subscription } from 'rxjs';
+import { of as observableOf,  Observable ,  Subscription  } from 'rxjs';
 
-import {take, filter, distinctUntilChanged, pluck} from 'rxjs/operators';
+import { take, filter, distinctUntilChanged, pluck } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren } from '@angular/core';
 import { MatDialog, MatSelect, MatSnackBar } from '@angular/material';

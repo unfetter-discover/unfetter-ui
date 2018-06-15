@@ -1,5 +1,5 @@
 
-import {map} from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Component, OnInit, Input } from '@angular/core';
 
 import { GenericApi } from '../../../core/services/genericapi.service';

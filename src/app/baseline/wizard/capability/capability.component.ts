@@ -1,5 +1,5 @@
 
-import {pluck, distinctUntilChanged} from 'rxjs/operators';
+import { pluck, distinctUntilChanged } from 'rxjs/operators';
 import { Component, EventEmitter, OnInit, Output, NgModule, ViewEncapsulation, Inject } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material';

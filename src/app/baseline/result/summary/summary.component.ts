@@ -1,7 +1,7 @@
 
-import {of as observableOf,  Observable ,  Subscription } from 'rxjs';
+import { of as observableOf,  Observable ,  Subscription  } from 'rxjs';
 
-import {filter, distinctUntilChanged, pluck, take, finalize} from 'rxjs/operators';
+import { filter, distinctUntilChanged, pluck, take, finalize } from 'rxjs/operators';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';

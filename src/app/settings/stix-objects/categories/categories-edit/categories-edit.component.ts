@@ -1,7 +1,7 @@
 
-import {of as observableOf, forkJoin as observableForkJoin,  Observable ,  Subscription } from 'rxjs';
+import { of as observableOf, forkJoin as observableForkJoin,  Observable ,  Subscription  } from 'rxjs';
 
-import {tap, filter, take, map, distinctUntilChanged, pluck} from 'rxjs/operators';
+import { tap, filter, take, map, distinctUntilChanged, pluck } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatSelectChange, MatSnackBar } from '@angular/material';

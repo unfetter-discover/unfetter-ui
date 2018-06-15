@@ -1,5 +1,5 @@
 
-import {mergeMap, switchMap} from 'rxjs/operators';
+import { mergeMap, switchMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs';

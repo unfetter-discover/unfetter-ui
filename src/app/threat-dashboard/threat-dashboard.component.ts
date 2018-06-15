@@ -1,7 +1,7 @@
 
-import {empty as observableEmpty, of as observableOf, forkJoin as observableForkJoin,  Observable ,  Subscription } from 'rxjs';
+import { empty as observableEmpty, of as observableOf, forkJoin as observableForkJoin,  Observable ,  Subscription  } from 'rxjs';
 
-import {finalize, take, pluck, tap, map} from 'rxjs/operators';
+import { finalize, take, pluck, tap, map } from 'rxjs/operators';
 import { Component, EventEmitter, OnDestroy, OnInit, Output, Renderer2 } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';

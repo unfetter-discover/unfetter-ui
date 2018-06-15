@@ -1,5 +1,5 @@
 
-import {merge as observableMerge,  BehaviorSubject ,  Observable } from 'rxjs';
+import { merge as observableMerge,  BehaviorSubject ,  Observable  } from 'rxjs';
 import { CollectionViewer } from '@angular/cdk/collections';
 import { DataSource } from '@angular/cdk/table';
 import { catchError ,  map ,  switchMap } from 'rxjs/operators';

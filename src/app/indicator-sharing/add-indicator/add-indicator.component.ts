@@ -1,7 +1,7 @@
 
-import {of as observableOf, forkJoin as observableForkJoin,  Observable ,  Subject } from 'rxjs';
+import { of as observableOf, forkJoin as observableForkJoin,  Observable ,  Subject  } from 'rxjs';
 
-import {distinctUntilChanged, debounceTime, switchMap, pluck} from 'rxjs/operators';
+import { distinctUntilChanged, debounceTime, switchMap, pluck } from 'rxjs/operators';
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatStep } from '@angular/material';

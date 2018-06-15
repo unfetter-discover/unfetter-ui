@@ -1,5 +1,5 @@
 
-import {map, distinctUntilChanged, pluck, take, filter} from 'rxjs/operators';
+import { map, distinctUntilChanged, pluck, take, filter } from 'rxjs/operators';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';

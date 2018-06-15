@@ -1,5 +1,5 @@
 
-import {of as observableOf,  Observable } from 'rxjs';
+import { of as observableOf,  Observable  } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 import { PreloadingStrategy, Route } from '@angular/router';

@@ -1,7 +1,7 @@
 
-import {forkJoin as observableForkJoin, of as observableOf, combineLatest as observableCombineLatest,  Observable } from 'rxjs';
+import { forkJoin as observableForkJoin, of as observableOf, combineLatest as observableCombineLatest,  Observable  } from 'rxjs';
 
-import {withLatestFrom, pairwise, switchMap, filter, map, mergeMap, pluck} from 'rxjs/operators';
+import { withLatestFrom, pairwise, switchMap, filter, map, mergeMap, pluck } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';

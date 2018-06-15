@@ -1,5 +1,5 @@
 
-import {filter, pluck} from 'rxjs/operators';
+import { filter, pluck } from 'rxjs/operators';
 import { Component, OnInit, Input } from '@angular/core';
 import { FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';

@@ -1,5 +1,5 @@
 
-import {distinctUntilChanged, finalize, debounceTime} from 'rxjs/operators';
+import { distinctUntilChanged, finalize, debounceTime } from 'rxjs/operators';
 import {
         Component,
         OnInit,

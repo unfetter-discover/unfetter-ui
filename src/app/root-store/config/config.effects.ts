@@ -1,7 +1,7 @@
 
-import {forkJoin as observableForkJoin,  Observable } from 'rxjs';
+import { forkJoin as observableForkJoin,  Observable  } from 'rxjs';
 
-import {pluck, map, switchMap} from 'rxjs/operators';
+import { pluck, map, switchMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 

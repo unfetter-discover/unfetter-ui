@@ -1,5 +1,5 @@
 
-import {map} from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { Observable } from 'rxjs';
 import * as Stix from 'stix/unfetter/attack-pattern';

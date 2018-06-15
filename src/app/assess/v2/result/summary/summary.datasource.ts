@@ -1,7 +1,7 @@
 
-import {merge as observableMerge,  BehaviorSubject ,  Observable } from 'rxjs';
+import { merge as observableMerge,  BehaviorSubject ,  Observable  } from 'rxjs';
 
-import {switchMap, map} from 'rxjs/operators';
+import { switchMap, map } from 'rxjs/operators';
 import { CollectionViewer } from '@angular/cdk/collections';
 import { DataSource } from '@angular/cdk/table';
 import { environment } from '../../../../../environments/environment';

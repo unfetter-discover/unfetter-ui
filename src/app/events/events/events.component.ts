@@ -1,7 +1,7 @@
 
-import {forkJoin as observableForkJoin,  Observable ,  Subscription, forkJoin } from 'rxjs';
+import { forkJoin as observableForkJoin,  Observable ,  Subscription  } from 'rxjs';
 
-import {finalize, pluck, distinctUntilChanged, filter} from 'rxjs/operators';
+import { finalize, pluck, distinctUntilChanged, filter } from 'rxjs/operators';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { EventsService, SightingsDataSource } from '../events.service';
 import { Store } from '@ngrx/store';

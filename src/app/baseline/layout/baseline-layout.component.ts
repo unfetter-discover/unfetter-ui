@@ -1,5 +1,5 @@
 
-import {pluck, map, distinctUntilChanged, filter} from 'rxjs/operators';
+import { pluck, map, distinctUntilChanged, filter } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';

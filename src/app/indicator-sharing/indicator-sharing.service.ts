@@ -1,7 +1,7 @@
 
-import {forkJoin as observableForkJoin, of as observableOf,  Observable } from 'rxjs';
+import { forkJoin as observableForkJoin, of as observableOf,  Observable  } from 'rxjs';
 
-import {map, pluck} from 'rxjs/operators';
+import { map, pluck } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 
 import { GenericApi } from '../core/services/genericapi.service';

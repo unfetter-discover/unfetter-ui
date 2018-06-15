@@ -1,5 +1,5 @@
 
-import {finalize, take, pluck} from 'rxjs/operators';
+import { finalize, take, pluck } from 'rxjs/operators';
 import {
         Component,
         Inject,

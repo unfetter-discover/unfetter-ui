@@ -1,5 +1,5 @@
 
-import {finalize} from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 import { Component, ViewChild, Input, } from '@angular/core';
 import { Store } from '@ngrx/store';
 

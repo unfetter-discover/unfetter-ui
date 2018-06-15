@@ -1,5 +1,5 @@
 
-import {take, filter, pluck, distinctUntilChanged} from 'rxjs/operators';
+import { take, filter, pluck, distinctUntilChanged } from 'rxjs/operators';
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { MatDialog, MatSidenav } from '@angular/material';
 import { Store } from '@ngrx/store';

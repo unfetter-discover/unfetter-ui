@@ -1,7 +1,7 @@
 
-import {of as observableOf,  Observable ,  Subscription } from 'rxjs';
+import { of as observableOf,  Observable ,  Subscription  } from 'rxjs';
 
-import {map, take, distinctUntilChanged, pluck, filter} from 'rxjs/operators';
+import { map, take, distinctUntilChanged, pluck, filter } from 'rxjs/operators';
 import {
     Input,
     Output,

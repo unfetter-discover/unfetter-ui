@@ -1,5 +1,5 @@
 
-import {finalize, pluck, distinctUntilChanged} from 'rxjs/operators';
+import { finalize, pluck, distinctUntilChanged } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';

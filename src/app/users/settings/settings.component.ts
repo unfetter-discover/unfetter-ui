@@ -1,7 +1,7 @@
 
-import {forkJoin as observableForkJoin,  Observable } from 'rxjs';
+import { forkJoin as observableForkJoin,  Observable  } from 'rxjs';
 
-import {map, filter, distinctUntilChanged, pluck} from 'rxjs/operators';
+import { map, filter, distinctUntilChanged, pluck } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { MatSelectChange } from '@angular/material';
 import { Store } from '@ngrx/store';

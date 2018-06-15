@@ -1,7 +1,7 @@
 
-import {empty as observableEmpty,  Observable } from 'rxjs';
+import { empty as observableEmpty,  Observable  } from 'rxjs';
 
-import {mergeMap, pluck, switchMap, catchError} from 'rxjs/operators';
+import { mergeMap, pluck, switchMap, catchError } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';

@@ -1,5 +1,5 @@
 
-import {map, filter} from 'rxjs/operators';
+import { map, filter } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';

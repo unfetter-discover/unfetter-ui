@@ -1,7 +1,7 @@
 
-import {of as observableOf,  BehaviorSubject ,  Observable ,  Subscription } from 'rxjs';
+import { of as observableOf,  BehaviorSubject ,  Observable ,  Subscription  } from 'rxjs';
 
-import {tap, map, take, distinctUntilChanged, pluck, filter} from 'rxjs/operators';
+import { tap, map, take, distinctUntilChanged, pluck, filter } from 'rxjs/operators';
 import {
     Component,
     Input,

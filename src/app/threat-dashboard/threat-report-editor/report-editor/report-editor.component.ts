@@ -1,7 +1,7 @@
 
-import {of as observableOf,  Observable } from 'rxjs';
+import { of as observableOf,  Observable  } from 'rxjs';
 
-import {map, pluck, take} from 'rxjs/operators';
+import { map, pluck, take } from 'rxjs/operators';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Store } from '@ngrx/store';

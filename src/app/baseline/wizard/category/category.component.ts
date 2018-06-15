@@ -1,5 +1,5 @@
 
-import {pluck, distinctUntilChanged} from 'rxjs/operators';
+import { pluck, distinctUntilChanged } from 'rxjs/operators';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';

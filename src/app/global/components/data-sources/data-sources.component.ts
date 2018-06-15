@@ -1,5 +1,5 @@
 
-import {map, filter, pluck} from 'rxjs/operators';
+import { map, filter, pluck } from 'rxjs/operators';
 import { Component, OnInit, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { AppState } from '../../../root-store/app.reducers';

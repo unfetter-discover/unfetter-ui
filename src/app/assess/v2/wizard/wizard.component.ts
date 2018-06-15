@@ -1,5 +1,5 @@
 
-import {map, filter, take, distinctUntilChanged, pluck} from 'rxjs/operators';
+import { map, filter, take, distinctUntilChanged, pluck } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren } from '@angular/core';
 import { MatSelect, MatSnackBar } from '@angular/material';

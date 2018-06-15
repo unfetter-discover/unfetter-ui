@@ -1,7 +1,7 @@
 
-import {of as observableOf,  Observable ,  BehaviorSubject } from 'rxjs';
+import { of as observableOf,  Observable ,  BehaviorSubject  } from 'rxjs';
 
-import {map, concat} from 'rxjs/operators';
+import { map, concat } from 'rxjs/operators';
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material';
 

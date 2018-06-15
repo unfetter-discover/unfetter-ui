@@ -1,7 +1,7 @@
 
-import {forkJoin as observableForkJoin,  Observable } from 'rxjs';
+import { forkJoin as observableForkJoin,  Observable  } from 'rxjs';
 
-import {pluck, map, filter, mergeMap, tap, switchMap} from 'rxjs/operators';
+import { pluck, map, filter, mergeMap, tap, switchMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import { WebsocketService } from '../../core/services/web-socket.service';

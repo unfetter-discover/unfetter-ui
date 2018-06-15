@@ -1,5 +1,5 @@
 
-import {take, filter, pluck} from 'rxjs/operators';
+import { take, filter, pluck } from 'rxjs/operators';
 import { Injectable, SkipSelf, Optional } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';

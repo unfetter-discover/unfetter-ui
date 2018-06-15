@@ -1,5 +1,5 @@
 
-import {pluck} from 'rxjs/operators';
+import { pluck } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 
 import { AdminService } from '../admin.service';

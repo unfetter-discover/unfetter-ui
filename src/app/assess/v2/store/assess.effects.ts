@@ -1,7 +1,7 @@
 
-import {forkJoin as observableForkJoin, of as observableOf,  Observable } from 'rxjs';
+import { forkJoin as observableForkJoin, of as observableOf,  Observable  } from 'rxjs';
 
-import {map, tap, mergeMap, switchMap, pluck} from 'rxjs/operators';
+import { map, tap, mergeMap, switchMap, pluck } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';

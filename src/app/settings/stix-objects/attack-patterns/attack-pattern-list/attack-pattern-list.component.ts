@@ -1,5 +1,5 @@
 
-import {take, pluck} from 'rxjs/operators';
+import { take, pluck } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';

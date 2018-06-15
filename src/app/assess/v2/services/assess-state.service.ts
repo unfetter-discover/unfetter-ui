@@ -1,5 +1,5 @@
 
-import {last} from 'rxjs/operators';
+import { last } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject ,  Observable } from 'rxjs';
 import { AssessmentMeta } from 'stix/assess/v2/assessment-meta';

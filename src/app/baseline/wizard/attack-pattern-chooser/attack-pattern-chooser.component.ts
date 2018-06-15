@@ -1,5 +1,5 @@
 
-import {distinctUntilChanged} from 'rxjs/operators';
+import { distinctUntilChanged } from 'rxjs/operators';
 import {
         Component,
         Inject,

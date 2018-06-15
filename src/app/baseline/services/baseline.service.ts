@@ -1,7 +1,7 @@
 
-import {forkJoin as observableForkJoin, of as observableOf, empty as observableEmpty,  Observable } from 'rxjs';
+import { forkJoin as observableForkJoin, of as observableOf, empty as observableEmpty,  Observable  } from 'rxjs';
 
-import {map} from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { AssessmentSet, Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
 import { JsonApiData } from 'stix/json/jsonapi-data';

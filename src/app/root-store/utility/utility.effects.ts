@@ -1,5 +1,5 @@
 
-import {switchMap, tap, pluck} from 'rxjs/operators';
+import { switchMap, tap, pluck } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs';

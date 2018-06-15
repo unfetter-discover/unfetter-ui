@@ -1,5 +1,5 @@
 
-import {last} from 'rxjs/operators';
+import { last } from 'rxjs/operators';
 import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { BehaviorSubject ,  Observable } from 'rxjs';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';

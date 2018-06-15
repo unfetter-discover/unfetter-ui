@@ -1,7 +1,7 @@
 
-import {timer as observableTimer,  Observable } from 'rxjs';
+import { timer as observableTimer,  Observable  } from 'rxjs';
 
-import {map, switchMap} from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';

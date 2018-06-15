@@ -1,5 +1,5 @@
 
-import {fromEvent as observableFromEvent,  Observable } from 'rxjs';
+import { fromEvent as observableFromEvent,  Observable  } from 'rxjs';
 import { Directive, ElementRef, AfterViewInit, EventEmitter, Output, Input } from '@angular/core';
 
 @Directive({

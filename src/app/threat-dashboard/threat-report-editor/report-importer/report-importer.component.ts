@@ -1,7 +1,7 @@
 
-import {fromEvent as observableFromEvent, combineLatest as observableCombineLatest,  Observable } from 'rxjs';
+import { fromEvent as observableFromEvent, combineLatest as observableCombineLatest,  Observable  } from 'rxjs';
 
-import {distinctUntilChanged, debounceTime, withLatestFrom, tap} from 'rxjs/operators';
+import { distinctUntilChanged, debounceTime, withLatestFrom, tap } from 'rxjs/operators';
 import { Component,
          OnInit,
          AfterViewInit,
