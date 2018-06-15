@@ -1,5 +1,5 @@
 
-import {take, map, filter, pluck} from 'rxjs/operators';
+import {take, map, filter, pluck, share} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import { Observable ,  Subject } from 'rxjs';
@@ -32,10 +32,12 @@ export class WebsocketService {
     }
 
     public initConnection(): void {
-        const getAuthUser$ = this.store.select('users').pipe(
-            filter((user: fromUser.UserState) => user.authenticated),
-            take(1),
-            pluck('token'))
+        const getAuthUser$ = this.store.select('users')
+            .pipe(
+                filter((user: fromUser.UserState) => user.authenticated),
+                take(1),
+                pluck('token')
+            )
             .subscribe(
                 (userToken: string) => {
                     console.log('Starting connection!');
@@ -71,7 +73,8 @@ export class WebsocketService {
                         },
                     };
 
-                    this.socketSubject = Subject.create(observer, observable).share();
+                    this.socketSubject = Subject.create(observer, observable)
+                        .pipe(share());
                     
                 },
                 (err) => {
@@ -86,18 +89,20 @@ export class WebsocketService {
     }
 
     public connect(messageType: WSMessageTypes): Observable<any> {
-        return this.socketSubject.pipe(
-            filter((message: any) => message.messageType === messageType),
-            map((message) => {
-                if (message._id) {
-                    return {
-                        ...message.messageContent,
-                        _id: message._id
-                    };
-                } else {
-                    return message.messageContent;
-                }
-            }));
+        return this.socketSubject
+            .pipe(
+                filter((message: any) => message.messageType === messageType),
+                map((message) => {
+                    if (message._id) {
+                        return {
+                            ...message.messageContent,
+                            _id: message._id
+                        };
+                    } else {
+                        return message.messageContent;
+                    }
+                })
+            );
     }
 
     public sendMessage(data: {}) {

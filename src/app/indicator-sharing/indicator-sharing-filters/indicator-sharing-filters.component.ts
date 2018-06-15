@@ -96,7 +96,7 @@ export class IndicatorSharingFiltersComponent implements OnInit {
       withLatestFrom(this.store.select('users')))
       .subscribe(
         ([attackPatterns, user]: [any[], UserState]) => {
-          if (user.userProfile.preferences && user.userProfile.preferences.killchain) {
+          if (user.userProfile && user.userProfile.preferences && user.userProfile.preferences.killchain) {
             this.attackPatterns = attackPatterns
               .filter((ap) => {
                 return ap.kill_chain_phases &&

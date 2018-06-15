@@ -141,7 +141,7 @@ export class BaseStixComponent<T = any> {
                     if (item.attributes.name) {
                         this.snackBar.open(item.attributes.name + ' has been successfully deleted', '', {
                             duration: this.duration,
-                            extraClasses: ['snack-bar-background-success']
+                            panelClass: ['snack-bar-background-success']
                         });
                     }
                 },
@@ -157,7 +157,7 @@ export class BaseStixComponent<T = any> {
                 if (item.attributes.name) {
                     this.snackBar.open(item.attributes.name + ' has been successfully saved', '', {
                         duration: this.duration,
-                        extraClasses: ['snack-bar-background-success']
+                        panelClass: ['snack-bar-background-success']
                     });
                 }
                 // data.url = item.url;
@@ -167,7 +167,7 @@ export class BaseStixComponent<T = any> {
                 //         observer.complete();
                 //         this.snackBar.open(item.attributes.name + ' has been successfully save', '', {
                 //             duration: this.duration,
-                //             extraClasses: ['snack-bar-background-success']
+                //             panelClass: ['snack-bar-background-success']
                 //         });
                 //     } , (error) => {
                 //         // handle errors here
@@ -175,7 +175,7 @@ export class BaseStixComponent<T = any> {
                 //         this.deleteItem(data, observer);
                 //         this.snackBar.open('Error ' + error , '', {
                 //             duration: this.duration,
-                //             extraClasses: ['snack-bar-background-error']
+                //             panelClass: ['snack-bar-background-error']
                 //         });
                 //     }, () => {
                 //         // prevent memory links
@@ -197,7 +197,7 @@ export class BaseStixComponent<T = any> {
                 if (item.attributes.name) {
                     this.snackBar.open(item.attributes.name + ' has been successfully saved', '', {
                         duration: this.duration,
-                        extraClasses: ['snack-bar-background-success']
+                        panelClass: ['snack-bar-background-success']
                     });
                 }
             },
@@ -295,7 +295,7 @@ export class BaseStixComponent<T = any> {
         // display errors here
         this.snackBar.open('Error ' + msg, '', {
             duration: this.duration,
-            extraClasses: ['snack-bar-background-error']
+            panelClass: ['snack-bar-background-error']
         });
     }
 

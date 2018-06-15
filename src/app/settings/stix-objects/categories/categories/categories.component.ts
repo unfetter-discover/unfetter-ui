@@ -85,7 +85,7 @@ export class CategoriesComponent extends BaseStixComponent<Category> implements 
           const name = Array.isArray(data) && data.length > 0 ? data[0].name : data.name;
           this.snackBar.open(name + ' has been successfully saved', '', {
             duration: this.duration,
-            extraClasses: ['snack-bar-background-success']
+            panelClass: ['snack-bar-background-success']
           });
           this.location.back();
         },
