@@ -107,6 +107,10 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
             return genAssessState({
                 ...state,
             });
+        case baselineActions.ADD_CAPABILITY_GROUP:
+            return genAssessState({
+                ...state,
+            });
         case baselineActions.ADD_OBJECT_ASSESSMENTS_TO_BASELINE:
             let currBaseline = state.baseline;
             currBaseline.assessments.push(...action.payload);
