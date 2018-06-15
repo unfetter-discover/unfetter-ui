@@ -11,6 +11,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AuthGuard } from './auth.guard';
 import { reducers } from '../../root-store/app.reducers';
 import * as userActions from '../../root-store/users/user.actions';
+import { take } from 'rxjs/operators';
 
 describe('Auth guard should', () => {
 
@@ -49,7 +50,7 @@ describe('Auth guard should', () => {
     it('return true when in demo mode', async () => {
         authGuard['demoMode'] = true;
         authGuard.canActivate({ data: { ROLES: ['STANDARD_USER'] } } as ActivatedRouteSnapshot | any, null)
-            .take(1)
+            .pipe(take(1))
             .subscribe((res) => {
                 expect(res).toBe(true);
             });
@@ -65,7 +66,7 @@ describe('Auth guard should', () => {
             token: ''
         }));
         authGuard.canActivate({ data: {} } as ActivatedRouteSnapshot | any, null)
-            .take(1)
+            .pipe(take(1))
             .subscribe((res) => {
                 expect(router.navigate).toHaveBeenCalledWith(['/']);
             });
@@ -81,7 +82,7 @@ describe('Auth guard should', () => {
             token: ''
         }));
         authGuard.canActivate({ data: {} } as ActivatedRouteSnapshot | any, null)
-            .take(1)
+            .pipe(take(1))
             .subscribe((res) => {
                 expect(res).toBe(true);
             });
@@ -97,7 +98,7 @@ describe('Auth guard should', () => {
             token: ''
         }));
         authGuard.canActivate({ data: { ROLES: ['ADMIN'] } } as ActivatedRouteSnapshot | any, null)
-            .take(1)
+            .pipe(take(1))
             .subscribe((res) => {
                 expect(res).toBe(true);
             });
@@ -113,7 +114,7 @@ describe('Auth guard should', () => {
             token: ''
         }));
         authGuard.canActivate({ data: { ROLES: ['ADMIN'] } } as ActivatedRouteSnapshot | any, null)
-            .take(1)
+            .pipe(take(1))
             .subscribe((res) => {
                 expect(res).toBe(false);
             });
@@ -123,7 +124,7 @@ describe('Auth guard should', () => {
         spy = spyOn(authGuard, 'loggedIn').and.returnValue(false);
         userStore.dispatch(new userActions.LogoutUser());
         authGuard.canActivate({ data: { ROLES: ['STANDARD_USER'] } } as ActivatedRouteSnapshot | any, null)
-            .take(1)
+            .pipe(take(1))
             .subscribe((res) => {
                 expect(res).toBe(false);
             });

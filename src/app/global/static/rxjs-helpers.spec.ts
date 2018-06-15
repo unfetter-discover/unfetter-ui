@@ -1,5 +1,6 @@
 import { RxjsHelpers } from './rxjs-helpers';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
+import { filter, pluck } from 'rxjs/operators';
 
 describe('RxjsHelpers class', () => {
 
@@ -47,9 +48,11 @@ describe('RxjsHelpers class', () => {
         const fakeConfigurations = { foo: true, bar: true };
 
         it('should return a filter to find the key', (done) => {
-            Observable.of(fakeConfigurations)
-                .filter(RxjsHelpers.filterByConfigKey('foo' as any))
-                .pluck('foo')
+            observableOf(fakeConfigurations)
+                .pipe(
+                    filter(RxjsHelpers.filterByConfigKey('foo' as any)),
+                    pluck('foo')
+                )
                 .subscribe(
                     (configValue) => {
                         expect(configValue).toBeTruthy();
@@ -62,8 +65,8 @@ describe('RxjsHelpers class', () => {
         });
 
         it('should fail to find a fake key', () => {
-            const filter = RxjsHelpers.filterByConfigKey('fakekey' as any);
-            const result = filter(fakeConfigurations);
+            const zfilter = RxjsHelpers.filterByConfigKey('fakekey' as any);
+            const result = zfilter(fakeConfigurations);
             expect(result).toBeFalsy();
         });
     });

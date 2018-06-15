@@ -6,7 +6,7 @@ import { Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { StoreModule } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 
 // Load the implementations that should be tested
 import { AppState } from './app.service';
@@ -61,7 +61,7 @@ describe(`App`, () => {
         loadPrivateConfig: () => {
             console.log('i solemnly swear i am not trying to perform an http get...');
         },
-        config: Observable.of(config)
+        config: observableOf(config)
     }
 
     const routes: Routes = [

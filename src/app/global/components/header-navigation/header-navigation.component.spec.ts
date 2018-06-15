@@ -4,7 +4,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
 import { StoreModule, Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatMenuModule } from '@angular/material';
@@ -55,7 +55,7 @@ describe('HeaderNavigationComponent', () => {
                     ConfigService,
                     {
                         provide: RunConfigService,
-                        useValue: { config: Observable.of(config) }
+                        useValue: { config: observableOf(config) }
                     },
                 ],
                 schemas: [ NO_ERRORS_SCHEMA ]

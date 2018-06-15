@@ -12,7 +12,7 @@ import { ActivatedRoute, ParamMap, Router, convertToParamMap } from '@angular/ro
 import { StoreModule } from '@ngrx/store';
 // Only implements params and part of snapshot.paramMap
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 import { ComponentModule } from '../../../../components/component.module';
 import { CoreModule } from '../../../../core/core.module';
 import { GlobalModule } from '../../../../global/global.module';
@@ -53,19 +53,19 @@ let stixServiceStub = {
         x_unfetter_sophistication_level: 1
       }
     };
-    return Observable.of(data);
+    return observableOf(data);
   },
 
   load: (filter?: any): Observable<any[]> => {
-    return Observable.of([]);
+    return observableOf([]);
   },
 
   create: (item: any): Observable<any> => {
-    return Observable.of(item);
+    return observableOf(item);
   },
 
   update: (item: any): Observable<any> => {
-    return Observable.of(item);
+    return observableOf(item);
   }
 }
 

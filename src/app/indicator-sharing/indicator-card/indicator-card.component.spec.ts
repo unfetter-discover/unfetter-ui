@@ -20,7 +20,7 @@ import { ConfigService } from '../../core/services/config.service';
 import { SearchParameters } from '../models/search-parameters';
 import { initialSearchParameters } from '../store/indicator-sharing.reducers';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 
 describe('IndicatorCardComponent', () => {
     let component: IndicatorCardComponent;
@@ -57,7 +57,7 @@ describe('IndicatorCardComponent', () => {
 
     const mockIndService = {
         addLabel: (label, indicatorId) => {
-            return Observable.of({
+            return observableOf({
                 attributes: {
                     ...mockIndicator,
                     labels: [label]
@@ -65,7 +65,7 @@ describe('IndicatorCardComponent', () => {
             });
         },
         addComment: (comment, indicatorId) => {
-            return Observable.of({
+            return observableOf({
                 attributes: {
                     ...mockIndicator,
                     metaProperties: {
@@ -83,7 +83,7 @@ describe('IndicatorCardComponent', () => {
             });
         },
         addLike: (indicatorId) => {
-            return Observable.of({
+            return observableOf({
                 attributes: {
                     ...mockIndicator,
                     metaProperties: {

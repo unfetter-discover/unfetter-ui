@@ -1,7 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed, fakeAsync, inject } from '@angular/core/testing';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { ReportMock } from '../../models/report-mock.model';
@@ -49,7 +49,7 @@ describe('Threat Report Overview Spec', () => {
     const reportId1 = reports[0].id;
     const reportId2 = reports[1].id;
     const reportId3 = reports[2].id;
-    const spy = spyOn(api, 'get').and.returnValue(Observable.of(reports));
+    const spy = spyOn(api, 'get').and.returnValue(observableOf(reports));
     service.setGenericApiService(api);
     const threatReport$ = service.loadAll();
     expect(threatReport$).toBeDefined();

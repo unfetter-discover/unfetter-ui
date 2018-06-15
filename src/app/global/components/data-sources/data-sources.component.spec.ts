@@ -7,6 +7,7 @@ import { reducers, AppState } from '../../../root-store/app.reducers';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatSelectModule } from '@angular/material';
 import { makeRootMockStore, mockConfig } from '../../../testing/mock-store';
+import { take } from 'rxjs/operators';
 
 describe('DataSourcesComponent', () => {
   let component: DataSourcesComponent;
@@ -43,7 +44,7 @@ describe('DataSourcesComponent', () => {
 
   it('should have populated data sources', (done) => {
     component.dataSources$
-      .take(1)
+      .pipe(take(1))
       .subscribe(
         (dataSources) => {          
           expect(dataSources).toBeTruthy();

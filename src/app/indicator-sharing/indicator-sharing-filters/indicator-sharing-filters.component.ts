@@ -143,8 +143,10 @@ export class IndicatorSharingFiltersComponent implements OnInit {
           formCtrl: this.searchForm.get('observedData')
         }
       });
-      const dialog$ = dialog.afterClosed().pipe(
-        finalize(() => dialog$ && dialog$.unsubscribe()))
+      const dialog$ = dialog.afterClosed()
+        .pipe(
+          finalize(() => dialog$ && dialog$.unsubscribe()) as any
+        )
         .subscribe(
           (result) => {
             this.observedDataVisible = false;

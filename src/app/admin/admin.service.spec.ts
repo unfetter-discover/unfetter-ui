@@ -2,7 +2,7 @@ import { TestBed, inject, fakeAsync } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 
 import { AdminService } from './admin.service';
@@ -45,7 +45,7 @@ describe('Admin Service', () => {
             firstName: 'Teresa',
             lastName: 'Stern',
         } as UserProfile;
-        const spy = spyOn(api, 'getAs').and.returnValue(Observable.of([{attributes: userProfile}]));
+        const spy = spyOn(api, 'getAs').and.returnValue(observableOf([{attributes: userProfile}]));
         let getUsers$ = service.getUsersPendingApproval()
             .subscribe(
                 (users) => {
@@ -65,7 +65,7 @@ describe('Admin Service', () => {
             firstName: 'Teresa',
             lastName: 'Stern',
         } as UserProfile;
-        const spy = spyOn(api, 'getAs').and.returnValue(Observable.of([{attributes: userProfile}]));
+        const spy = spyOn(api, 'getAs').and.returnValue(observableOf([{attributes: userProfile}]));
         let getUsers$ = service.getCurrentUsers()
             .subscribe(
                 (users) => {
@@ -85,7 +85,7 @@ describe('Admin Service', () => {
             firstName: 'Teresa',
             lastName: 'Stern',
         } as UserProfile;
-        const spy = spyOn(api, 'get').and.returnValue(Observable.of([userProfile]));
+        const spy = spyOn(api, 'get').and.returnValue(observableOf([userProfile]));
         let getUsers$ = service.getOrgLeaderApplicants()
             .subscribe(
                 (users) => {
@@ -100,7 +100,7 @@ describe('Admin Service', () => {
 
     it('should get website visits',
             fakeAsync(inject([AdminService, GenericApi], (service: AdminService, api: GenericApi) => {
-        const spy = spyOn(api, 'get').and.returnValue(Observable.of([3]));
+        const spy = spyOn(api, 'get').and.returnValue(observableOf([3]));
         let getVisits$ = service.getWebsiteVisits()
             .subscribe(
                 (visit) => {
@@ -116,7 +116,7 @@ describe('Admin Service', () => {
     it('should get a website visit graph',
             fakeAsync(inject([AdminService, GenericApi], (service: AdminService, api: GenericApi) => {
         const visits = [{day: '1', visits: 6}, {day: '2', visits: 11}, {day: '3', visits: 8}];
-        const spies = spyOn(api, 'get').and.returnValue(Observable.of(visits));
+        const spies = spyOn(api, 'get').and.returnValue(observableOf(visits));
         let getGraph$ = service.getWebsiteVisitsGraph(3)
             .subscribe(
                 (graph) => {
@@ -131,7 +131,7 @@ describe('Admin Service', () => {
 
     it('should change user status',
             fakeAsync(inject([AdminService, GenericApi], (service: AdminService, api: GenericApi) => {
-        const spies = spyOn(api, 'post').and.returnValue(Observable.of(true));
+        const spies = spyOn(api, 'post').and.returnValue(observableOf(true));
         let editUser$ = service.changeUserStatus({})
             .subscribe(
                 (result) => expect(result).toBeTruthy(),
@@ -148,7 +148,7 @@ describe('Admin Service', () => {
             updated: true,
         };
 
-        let response: Observable<any> = Observable.of(configs);
+        let response: Observable<any> = observableOf(configs);
         const spy = spyOn(api, 'get').and.returnValue(response);
 
         let getConfigs$ = service.getConfig()
@@ -161,7 +161,7 @@ describe('Admin Service', () => {
                 () => {});
         subscriptions.push(getConfigs$);
 
-        response = Observable.of(configs.server);
+        response = observableOf(configs.server);
         spy.and.returnValue(response);
         let getConfig$ = service.getSingleConfig('server')
             .subscribe(
@@ -173,7 +173,7 @@ describe('Admin Service', () => {
         subscriptions.push(getConfig$);
 
         const newProperty = { date: Date.now() };
-        response = Observable.of(Object.assign({}, configs, newProperty));
+        response = observableOf(Object.assign({}, configs, newProperty));
         spyOn(api, 'post').and.returnValue(response);
         let addConfig$ = service.addConfig(newProperty)
             .subscribe(
@@ -186,7 +186,7 @@ describe('Admin Service', () => {
         subscriptions.push(getConfig$);
 
         delete configs.items;
-        response = Observable.of(configs);
+        response = observableOf(configs);
         spyOn(api, 'delete').and.returnValue(response);
         let deleteConfig$ = service.deleteSingleConfig('items')
             .subscribe(
@@ -201,7 +201,7 @@ describe('Admin Service', () => {
 
     it('should process changed data',
             fakeAsync(inject([AdminService, GenericApi], (service: AdminService, api: GenericApi) => {
-        const spies = spyOn(api, 'patch').and.returnValue(Observable.of(true));
+        const spies = spyOn(api, 'patch').and.returnValue(observableOf(true));
         let processChange$ = service.processChangedData({}, '')
             .subscribe(
                 (result) => expect(result).toBeTruthy(),
@@ -213,7 +213,7 @@ describe('Admin Service', () => {
     it('should get organizations',
             fakeAsync(inject([AdminService, GenericApi], (service: AdminService, api: GenericApi) => {
         const orgs = [{name: 'org1'}, {name: 'org2'}, {name: 'org3'}];
-        const spies = spyOn(api, 'get').and.returnValue(Observable.of(orgs));
+        const spies = spyOn(api, 'get').and.returnValue(observableOf(orgs));
         let getOrgs$ = service.getOrganizations()
             .subscribe(
                 (result) => {
@@ -232,7 +232,7 @@ describe('Admin Service', () => {
             firstName: 'Teresa',
             lastName: 'Stern',
         } as UserProfile;
-        const spies = spyOn(api, 'post').and.returnValue(Observable.of(true));
+        const spies = spyOn(api, 'post').and.returnValue(observableOf(true));
         let processChange$ = service.processOrgApplicant(userProfile, 'theOrg')
             .subscribe(
                 (result) => expect(result).toBeTruthy(),
@@ -243,7 +243,7 @@ describe('Admin Service', () => {
 
     it('should get heartbeat',
             fakeAsync(inject([AdminService, GenericApi], (service: AdminService, api: GenericApi) => {
-        const spies = spyOn(api, 'get').and.returnValue(Observable.of(true));
+        const spies = spyOn(api, 'get').and.returnValue(observableOf(true));
         let processChange$ = service.getHeartbeat()
             .subscribe(
                 (result) => expect(result).toBeTruthy(),

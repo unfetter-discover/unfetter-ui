@@ -2,14 +2,8 @@
 import {of as observableOf,  Observable ,  BehaviorSubject } from 'rxjs';
 
 import {map, concat} from 'rxjs/operators';
-import { Component } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material';
-
-
-
-
-
 
 export class StixTableDataSource extends DataSource<any> {
 
@@ -35,9 +29,13 @@ export class StixTableDataSource extends DataSource<any> {
 
     public connect(): Observable<any[]> {
         let junk = observableOf(1);
-        return junk.pipe(concat(this.paginator.page),map(() => {
-            return this.updateData();
-        }));
+        return junk
+            .pipe(
+                concat(this.paginator.page),
+                map(() => {
+                    return this.updateData();
+                })
+            );
     }
 
     public disconnect() { }

@@ -4,7 +4,7 @@ import { MatChipsModule, MatDialog, MatIconModule } from '@angular/material';
 import { ActivatedRoute, Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { DataListModule } from 'primeng/components/datalist/datalist';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 import { ListStixObjectComponent } from './list-stix-objects.component';
 
 describe('ListStixObjectComponent', () => {
@@ -19,7 +19,7 @@ describe('ListStixObjectComponent', () => {
     const mockDialog = {
         open: () => {
             return {
-                afterClosed: () => Observable.of({})
+                afterClosed: () => observableOf({})
             };
         },
         closeAll: () => { },
