@@ -84,7 +84,7 @@ export class CapabilityComponent implements OnInit {
         (currentObjectAssessment: ObjectAssessment) => {
           this.currentObjectAssessment = currentObjectAssessment;
           if (this.currentObjectAssessment) {
-            this.currentAssessedObject = currentObjectAssessment.assessments_objects;
+            this.currentAssessedObject = currentObjectAssessment.assessed_objects;
             if (this.currentAssessedObject) {
               this.incomingListOfAttackPatterns = this.currentAssessedObject.map(x => x.assessed_object_ref);
 
@@ -142,7 +142,7 @@ export class CapabilityComponent implements OnInit {
           d.name = 'detect';
           r.name = 'respond';
           newAssessedObject.questions = [p, d, r];
-          this.currentObjectAssessment.assessments_objects.push(newAssessedObject);
+          this.currentObjectAssessment.assessed_objects.push(newAssessedObject);
           this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(this.currentObjectAssessment));
           break;
         }
@@ -152,8 +152,8 @@ export class CapabilityComponent implements OnInit {
       // this.currentNumberOfAttackPatterns -= 1;
       for (let i in prevValues) {
         if (selectedValues.indexOf(prevValues[i]) === -1) {
-          let index = this.currentObjectAssessment.assessments_objects.findIndex(x => x.assessed_object_ref === prevValues[i]);
-          this.currentObjectAssessment.assessments_objects.splice(index, 1);
+          let index = this.currentObjectAssessment.assessed_objects.findIndex(x => x.assessed_object_ref === prevValues[i]);
+          this.currentObjectAssessment.assessed_objects.splice(index, 1);
           this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(this.currentObjectAssessment));
           break;
         }
@@ -167,7 +167,7 @@ export class CapabilityComponent implements OnInit {
   updatePDRScore(index: number, pdr: string, value: QuestionAnswerEnum, id) {
     let correctIndex = this.currentAssessedObject.findIndex(x => x.assessed_object_ref === id);
     this.setScore(this.currentAssessedObject[correctIndex].questions, pdr, value)
-    this.currentObjectAssessment.assessments_objects = this.currentAssessedObject
+    this.currentObjectAssessment.assessed_objects = this.currentAssessedObject
     this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(this.currentObjectAssessment));
   }
 
