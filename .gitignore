@@ -29,3 +29,6 @@ npm-debug.log
 
 **/private-config.json
 package-lock.json
+
+# Angular schematics
+angular_material_schematics-*/
