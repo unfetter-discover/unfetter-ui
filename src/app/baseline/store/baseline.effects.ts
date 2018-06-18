@@ -200,8 +200,6 @@ export class BaselineEffects {
             } as JsonApi<JsonApiData<AssessmentSet>>;
             let url = 'api/v3/x-unfetter-assessment-sets';
 
-            console.log('baseline ===== ', baseline);
-
             if (baseline.id) {
                 url = `${url}/${baseline.id}`;
                 return this.genericServiceApi
@@ -214,7 +212,7 @@ export class BaselineEffects {
         .map((assessmentSet) => {
             return new baselineActions.FinishedSaving({
                 finished: true,
-                id: assessmentSet[0].id || '',
+                id: assessmentSet.id || '',
             });
         });
 
