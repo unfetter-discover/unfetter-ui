@@ -28,7 +28,7 @@
     "build:prod": "ng version && ng build --configuration=production",
     "build:prod:noclean": "ng version && ng build --configuration=productionNoClean",
     "build:prod:noclean:ff31": "ng version && ng build --configuration=ff31Prod",
-    "build:demo:noclean": "ng version && ng build --prod --no-delete-output-path --vendor-chunk=true --env=dockerhub",
+    "build:demo:noclean": "ng version && ng build --configuration=demoNoClean",
     "build:demo:noclean:ff31": "ng version && ng build --configuration=ff31Demo",
     "build:dev": "ng version && ng build",
     "watch:test": "ng test --watch --source-map",
