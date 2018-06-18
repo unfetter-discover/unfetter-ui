@@ -79,7 +79,7 @@ export class BaselineEffects {
                     }),
                     catchError((err) => {
                         console.log(err);
-                        return Observable.of(new baselineActions.FailedToLoad(true));
+                        return observableOf(new baselineActions.FailedToLoad(true));
                     })
                 );
             })
