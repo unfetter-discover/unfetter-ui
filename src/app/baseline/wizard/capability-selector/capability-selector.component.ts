@@ -58,7 +58,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
     const capSub3$ = this.wizardStore
       .select('baseline')
       .pluck('baselineCapabilities')
-      .distinctUntilChanged()
+      // .distinctUntilChanged()
       .subscribe(
         (baselineCapabilities: any[]) => {
           this.baselineCapabilities = (baselineCapabilities) ? baselineCapabilities.slice() : [];
@@ -177,6 +177,16 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
     // TODO: Add confirmation dialog
 
     return true;
+  }
+
+  /* 
+   * Returns only those capabilities which are specific to current category
+   * @return {any[]}
+   */
+  public getCapabilities(category: Category): Capability[] {
+    return this.allCapabilities
+                    .filter((capability) => capability.category === category.id)
+                    .sort();
   }
 
   private addObjectAssessment(capability: Capability): void {

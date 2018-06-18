@@ -33,7 +33,7 @@
           <form>
             <mat-form-field class="full-width">
               <mat-select #newCapability name="newCapability" (change)="updateCapability(newCapability, -1)">
-                <mat-option *ngFor="let capability of allCapabilities" [value]="capability">
+                <mat-option *ngFor="let capability of getCapabilities(currentCapabilityGroup)" [value]="capability">
                   {{ capability.name }}
                 </mat-option>
               </mat-select>
