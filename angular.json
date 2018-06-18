@@ -50,8 +50,7 @@
               "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
-              "buildOptimizer": true,
-              "verbose": true
+              "buildOptimizer": true
             },            
             "productionNoClean": {
               "fileReplacements": [{
@@ -67,34 +66,38 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "verbose": true,
               "deleteOutputPath": false
             },            
             "uac": {
               "fileReplacements": [{
                 "replace": "src/environments/environment.ts",
                 "with": "src/environments/environment.uac.ts"
-              }],
-              "verbose": true
+              }]
             },
             "ff31Prod": {
               "aot": true,
-              "buildOptimizer": true,
+              "buildOptimizer": false,
               "extractCss": true,
-              "sourceMap": false,
-              "verbose": true
+              "fileReplacements": [{
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.prod.ts"
+              }],
+              "optimization": true,
+              "outputHashing": "bundles",
+              "sourceMap": false
             },
             "ff31Demo": {
               "aot": true,
               "buildOptimizer": false,
               "extractCss": true,
-              "sourceMap": false,
-              "outputHashing": "all",
               "fileReplacements": [{
                 "replace": "src/environments/environment.ts",
                 "with": "src/environments/environment.dockerhub.ts"
               }],
-              "verbose": true
+              "namedChunks": false,
+              "optimization": true,
+              "outputHashing": "bundles",
+              "sourceMap": false
             }            
           }
         },
@@ -106,27 +109,72 @@
           "configurations": {
             "production": {
               "browserTarget": "unfetterUi:build:production",
+              "open": true,
+              "watch": true
+            },
+            "demo": {
+              "hmr": true,
+              "open": true,
+              "port": 9443,
+              "proxyConfig": "proxy.conf.json",
+              "sourceMap": true,
+              "ssl": true,
               "watch": true
             },
             "productionNoClean": {
               "browserTarget": "unfetterUi:build:productionNoClean",
+              "open": true,
               "watch": true
             },
             "uac": {
               "browserTarget": "unfetterUi:build:uac",
+              "hmr": true,
+              "open": true,
+              "port": 9443,
+              "proxyConfig": "proxy.conf.json",
+              "sourceMap": true,
+              "ssl": true,
+              "watch": true
+            },
+            "dockerDemo": {
+              "disableHostCheck": true,
+              "host": "0.0.0.0",
+              "hmr": true,
+              "open": true,
+              "port": 80,
+              "proxyConfig": "proxy.conf.json",
+              "publicHost": "0.0.0.0:80",
+              "sourceMap": true,
+              "ssl": true,
+              "watch": true
+            },
+            "dockerUac": {
+              "browserTarget": "unfetterUi:build:uac",
+              "disableHostCheck": true,
+              "host": "0.0.0.0",
+              "hmr": true,
+              "open": true,
+              "port": 80,
+              "proxyConfig": "proxy.conf.json",
+              "publicHost": "0.0.0.0:80",
+              "sourceMap": true,
+              "ssl": true,
               "watch": true
             },
             "ff31Prod": {
               "browserTarget": "unfetterUi:build:ff31Prod",
               "aot": false,
-              "watch": true,
-              "sourceMap": true
+              "open": true,
+              "watch": true
             },
             "ff31Demo": {
               "browserTarget": "unfetterUi:build:ff31Demo",
               "aot": false,
-              "watch": true,
-              "sourceMap": true
+              "open": true,
+              "port": 9443,
+              "proxyConfig": "proxy.conf.json",
+              "ssl": true,
+              "watch": true
             }
           }
         },
