@@ -175,7 +175,7 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   getDummyCity(): string {
     // Default, matches default Ip
-    let dummyCity = 'Hangzhou';
+    let dummyCity = '--';
     if (this.ips[this.dummyValue] && this.ips[this.dummyValue].city) {
       dummyCity = this.ips[this.dummyValue].city;
     } else if (this.ips[Math.abs(this.dummyValue - 1)] && this.ips[Math.abs(this.dummyValue - 1)].city) {
@@ -189,7 +189,7 @@ export class EventsComponent implements OnInit, OnDestroy {
    */
   getDummyCountry(): string {
     // Default, matches default Ip
-    let dummyCountry = 'CN';
+    let dummyCountry = '--';
     if (this.ips[this.dummyValue] && this.ips[this.dummyValue].country) {
       dummyCountry = this.ips[this.dummyValue].country;
     } else if (this.ips[Math.abs(this.dummyValue - 1)] && this.ips[Math.abs(this.dummyValue - 1)].country) {
