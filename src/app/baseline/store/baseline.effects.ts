@@ -157,22 +157,38 @@ export class BaselineEffects {
             ];
         });
     
-    @Effect({ dispatch: false })
+        /**
+         * Start an assessment, persist AssessmentSet to db.
+         */
+    @Effect()
     public startAssessment = this.actions$
         .ofType(baselineActions.START_BASELINE)
         .pluck('payload')
-        .map((el: BaselineMeta) => {
-            this.baselineStateService.saveCurrent(el);
-            return el;
+        .switchMap((el: AssessmentSet) => {
+
+            // create baselinemeta object
+            let baselineMeta = new BaselineMeta;
+            baselineMeta.title = el.name; 
+            baselineMeta.description = el.description;
+            baselineMeta.created_by_ref = el.created_by_ref;
+
+            this.baselineStateService.saveCurrent(baselineMeta);
+
+            const json = { data: { attributes: el } } as JsonApi<JsonApiData<AssessmentSet>>;
+            let url = 'api/v3/x-unfetter-assessment-sets';
+            return this.genericServiceApi.postAs<AssessmentSet>(url, json);
+
         })
-        .do((el: BaselineMeta) => {
+
+        .do((el: AssessmentSet) => {
             this.router.navigate([
                 '/baseline/wizard/new'
             ]);
         })
-        // required to send an empty element on non dispatched effects
-        .switchMap(() => Observable.of({}));
-
+        .map((newAssessmentSet) => {
+            return new baselineActions.SetBaseline(newAssessmentSet[0].attributes);
+        })
+        
 
     @Effect()
     public saveBaseline = this.actions$
@@ -183,6 +199,7 @@ export class BaselineEffects {
                 data: { attributes: baseline }
             } as JsonApi<JsonApiData<AssessmentSet>>;
             let url = 'api/v3/x-unfetter-assessment-sets';
+
             if (baseline.id) {
                 url = `${url}/${baseline.id}`;
                 return this.genericServiceApi
@@ -195,7 +212,7 @@ export class BaselineEffects {
         .map((assessmentSet) => {
             return new baselineActions.FinishedSaving({
                 finished: true,
-                id: assessmentSet[0].id || '',
+                id: assessmentSet.id || '',
             });
         });
 
