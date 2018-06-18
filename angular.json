@@ -68,31 +68,50 @@
               "buildOptimizer": true,
               "deleteOutputPath": false
             },            
+            "demoNoClean": {
+              "fileReplacements": [{
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.dockerhub.ts"
+              }],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "deleteOutputPath": false
+            },            
             "uac": {
               "fileReplacements": [{
                 "replace": "src/environments/environment.ts",
                 "with": "src/environments/environment.uac.ts"
               }]
             },
-            "ff31Prod": {
-              "aot": true,
-              "buildOptimizer": false,
-              "extractCss": true,
-              "fileReplacements": [{
-                "replace": "src/environments/environment.ts",
-                "with": "src/environments/environment.prod.ts"
-              }],
-              "optimization": true,
-              "outputHashing": "bundles",
-              "sourceMap": false
-            },
             "ff31Demo": {
               "aot": true,
               "buildOptimizer": false,
+              "deleteOutputPath": false,
               "extractCss": true,
               "fileReplacements": [{
                 "replace": "src/environments/environment.ts",
                 "with": "src/environments/environment.dockerhub.ts"
+              }],
+              "namedChunks": false,
+              "optimization": true,
+              "outputHashing": "bundles",
+              "sourceMap": false
+            },            
+            "ff31Prod": {
+              "aot": true,
+              "buildOptimizer": false,
+              "deleteOutputPath": false,
+              "extractCss": true,
+              "fileReplacements": [{
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.prod.ts"
               }],
               "namedChunks": false,
               "optimization": true,
@@ -115,6 +134,16 @@
             "demo": {
               "hmr": true,
               "open": true,
+              "port": 9443,
+              "proxyConfig": "proxy.conf.json",
+              "sourceMap": true,
+              "ssl": true,
+              "watch": true
+            },
+            "prodDemo": {
+              "hmr": true,
+              "open": true,
+              "optimization": true,
               "port": 9443,
               "proxyConfig": "proxy.conf.json",
               "sourceMap": true,
@@ -165,6 +194,9 @@
               "browserTarget": "unfetterUi:build:ff31Prod",
               "aot": false,
               "open": true,
+              "port": 9443,
+              "proxyConfig": "proxy.conf.json",
+              "ssl": true,
               "watch": true
             },
             "ff31Demo": {
