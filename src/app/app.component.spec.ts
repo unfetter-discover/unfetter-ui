@@ -23,7 +23,7 @@ class NoopComponent {
 
 }
 
-fdescribe(`App`, () => {
+describe(`App`, () => {
 
     let comp: AppComponent;
     let fixture: ComponentFixture<AppComponent>;
