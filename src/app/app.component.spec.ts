@@ -1,6 +1,6 @@
 import { TestBed, ComponentFixture, async, fakeAsync, tick } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -18,7 +18,12 @@ import { environment } from '../environments/environment';
 import { reducers } from './root-store/app.reducers';
 import { Themes } from './global/enums/themes.enum';
 
-xdescribe(`App`, () => {
+@Component({template: 'Nothing to see here'})
+class NoopComponent {
+
+}
+
+describe(`App`, () => {
 
     let comp: AppComponent;
     let fixture: ComponentFixture<AppComponent>;
@@ -60,19 +65,19 @@ xdescribe(`App`, () => {
     }
 
     const routes: Routes = [
-        { path: '', component: AppComponent },
-        { path: 'home', component: AppComponent },
-        { path: 'intrusion-set-dashboard', component: AppComponent },
-        { path: 'assessments', component: AppComponent },
-        { path: 'assess', component: AppComponent },
-        { path: 'baseline', component: AppComponent },
-        { path: 'threat-dashboard', component: AppComponent },
-        { path: 'users', component: AppComponent },
-        { path: 'indicator-sharing', component: AppComponent },
-        { path: 'events', component: AppComponent },
-        { path: 'organizations', component: AppComponent },
-        { path: 'admin', component: AppComponent },
-        { path: '**', component: AppComponent },
+        { path: '', component: NoopComponent },
+        { path: 'home', component: NoopComponent },
+        { path: 'intrusion-set-dashboard', component: NoopComponent },
+        { path: 'assessments', component: NoopComponent },
+        { path: 'assess', component: NoopComponent },
+        { path: 'baseline', component: NoopComponent },
+        { path: 'threat-dashboard', component: NoopComponent },
+        { path: 'users', component: NoopComponent },
+        { path: 'indicator-sharing', component: NoopComponent },
+        { path: 'events', component: NoopComponent },
+        { path: 'organizations', component: NoopComponent },
+        { path: 'admin', component: NoopComponent },
+        { path: '**', component: NoopComponent },
     ];
 
     // async beforeEach
@@ -82,9 +87,12 @@ xdescribe(`App`, () => {
                 imports: [
                     RouterTestingModule.withRoutes(routes),
                     HttpClientTestingModule,
-                    StoreModule.forRoot(reducers)
+                    StoreModule.forRoot(reducers),
                 ],
-                declarations: [AppComponent],
+                declarations: [
+                    NoopComponent,
+                    AppComponent,
+                ],
                 schemas: [NO_ERRORS_SCHEMA],
                 providers: [
                     AppState,
@@ -101,8 +109,8 @@ xdescribe(`App`, () => {
             })
             .compileComponents(); // compile template and css
 
-        router = TestBed.get(Router);
-        location = TestBed.get(Location);
+        // router = TestBed.get(Router);
+        // location = TestBed.get(Location);
     }));
 
     it(`should be readly initialized`, () => {
@@ -133,7 +141,7 @@ xdescribe(`App`, () => {
         });
     });
 
-    it(`should handle various router outlets`, fakeAsync(() => {
+    xit(`should handle various router outlets`, fakeAsync(() => {
         const routeChecks = [
             { path: '', title: undefined, theme: Themes.DEFAULT },
             { path: 'admin', title: 'admin', theme: Themes.DEFAULT },
