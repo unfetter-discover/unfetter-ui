@@ -22,7 +22,7 @@ export class AppComponent implements OnInit {
   public readonly runMode = environment.runMode;
   public readonly demoMode: boolean = (environment.runMode === 'DEMO');
   public theme: Themes = Themes.DEFAULT;
-  public title;
+  public title = '';
   public showBanner: boolean = false;
   public securityMarkingLabel: string = '';
 
