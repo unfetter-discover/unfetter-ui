@@ -29,7 +29,8 @@ export class EventsComponent implements OnInit, OnDestroy {
   private observedData: any[];
   private dummyValue: number;
 
-  constructor(private userStore: Store<AppState>,
+  constructor(
+    private userStore: Store<AppState>,
     private store: Store<EventsState>,
     public service: EventsService,
     public ipgeo: IPGeoService,
@@ -132,11 +133,12 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * 
    */
   public makeIPs() {
     const subips$ = Observable
       .forkJoin([1, 2, 3].map(v4 => this.ipgeo.lookup(v4 === 3 ? '124.91.183.46'
-          : [1, 2, 3, 4].map(b => Math.floor(Math.random() * 256)).join('.'))))
+          : [1, 2, 3, 4].map(() => Math.floor(Math.random() * 256)).join('.'))))
       .finally(() => {
         if (subips$) {
           subips$.unsubscribe();
@@ -146,13 +148,16 @@ export class EventsComponent implements OnInit, OnDestroy {
       })
       .subscribe(resp => {
         console.log('event ipgeo output', resp);
-        const ip = [].concat.apply([], resp).filter(r => r.success);
-        this.ips.push(...ip);
+        const ip = [].concat.apply([], resp).filter(r => r && r.success);
+        if (ip) {
+          this.ips.push(...ip);
+        }
         while (this.ips.length < 2) {
           this.ips.push({});
         }
       });
   }
+
   /**
    * @returns string
    */
@@ -160,9 +165,9 @@ export class EventsComponent implements OnInit, OnDestroy {
     // Default, matches default geo
     let dummyIp = '124.91.183.46';
     this.ipgeo.lookup(dummyIp);
-    if (this.ips[this.dummyValue].city && this.ips[this.dummyValue].ip) {
+    if (this.ips[this.dummyValue] && this.ips[this.dummyValue].city && this.ips[this.dummyValue].ip) {
       dummyIp = this.ips[this.dummyValue].ip;
-    } else if (this.ips[Math.abs(this.dummyValue - 1)].ip) {
+    } else if (this.ips[Math.abs(this.dummyValue - 1)] && this.ips[Math.abs(this.dummyValue - 1)].ip) {
       dummyIp = this.ips[Math.abs(this.dummyValue - 1)].ip;
     }
     return dummyIp;
@@ -170,23 +175,24 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   getDummyCity(): string {
     // Default, matches default Ip
-    let dummyCity = 'Hangzhou';
-    if (this.ips[this.dummyValue].city) {
+    let dummyCity = '--';
+    if (this.ips[this.dummyValue] && this.ips[this.dummyValue].city) {
       dummyCity = this.ips[this.dummyValue].city;
-    } else if (this.ips[Math.abs(this.dummyValue - 1)].city) {
+    } else if (this.ips[Math.abs(this.dummyValue - 1)] && this.ips[Math.abs(this.dummyValue - 1)].city) {
       dummyCity = this.ips[Math.abs(this.dummyValue - 1)].city;
     }
     return dummyCity;
   }
+
   /**
    * @returns string
    */
   getDummyCountry(): string {
     // Default, matches default Ip
-    let dummyCountry = 'CN';
-    if (this.ips[this.dummyValue].country) {
+    let dummyCountry = '--';
+    if (this.ips[this.dummyValue] && this.ips[this.dummyValue].country) {
       dummyCountry = this.ips[this.dummyValue].country;
-    } else if (this.ips[Math.abs(this.dummyValue - 1)].country) {
+    } else if (this.ips[Math.abs(this.dummyValue - 1)] && this.ips[Math.abs(this.dummyValue - 1)].country) {
       dummyCountry = this.ips[Math.abs(this.dummyValue - 1)].country;
     }
     return dummyCountry;
