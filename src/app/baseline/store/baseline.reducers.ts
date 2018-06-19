@@ -28,10 +28,12 @@ export interface BaselineState {
 };
 
 const genAssessState = (state?: Partial<BaselineState>) => {
+    const baseline = new AssessmentSet();
+    baseline.assessments = baseline.assessments || [];
     const tmp = {
         allAttackPatterns: [],
         backButton: false,
-        baseline: new AssessmentSet(),
+        baseline,
         baselineCapabilities: [],
         baselineGroups: [],
         capabilities: [],

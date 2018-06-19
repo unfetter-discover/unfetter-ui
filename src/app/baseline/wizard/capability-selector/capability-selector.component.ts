@@ -188,6 +188,10 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
       return [];
     }
 
+    if (!category || !category.id) {
+      return this.allCapabilities;
+    }
+
     return this.allCapabilities
       .filter((capability) => capability.category === category.id)
       .sort();
