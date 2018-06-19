@@ -90,6 +90,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   private createNewCategory(): void {
     this.isAddCategory = true;
     this.addCategory = new Category();
+    this.addCategory.created_by_ref = this.categories[0].created_by_ref;
   }
   
   /*
