@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
 import { Stix } from 'stix/unfetter/stix';
 import { StixEnum } from 'stix/unfetter/stix.enum';
-import { AddCapabilityToBaseline, AddObjectAssessmentToBaseline, ReplaceCapabilityInBaseline, RemoveCapabilityFromBaseline } from '../../store/baseline.actions';
+import { AddCapabilityToBaseline, AddObjectAssessmentToBaseline, RemoveCapabilityFromBaseline, ReplaceCapabilityInBaseline } from '../../store/baseline.actions';
 import * as assessReducers from '../../store/baseline.reducers';
 
 @Component({
@@ -13,9 +13,9 @@ import * as assessReducers from '../../store/baseline.reducers';
   templateUrl: './capability-selector.component.html',
   styleUrls: ['./capability-selector.component.scss']
 })
-export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDestroy {    
+export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDestroy {
   public static readonly DEFAULT_VALUE = undefined;
-  
+
   public currentCapabilityGroup: Category;
   public selectedCapabilities: Capability[] = [];
   public allCapabilities: Capability[];
@@ -23,7 +23,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
   private baselineObjAssessments: ObjectAssessment[] = [];
 
   private subscriptions: Subscription[] = [];
-    
+
   constructor(
     private wizardStore: Store<assessReducers.BaselineState>,
     private route: ActivatedRoute,
@@ -48,7 +48,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
         (currentCapabilityGroup: Category) => {
           this.currentCapabilityGroup = currentCapabilityGroup;
           if (this.currentCapabilityGroup) {
-           this.selectedCapabilities = this.baselineCapabilities.filter((cap) => cap.category === this.currentCapabilityGroup.id);
+            this.selectedCapabilities = this.baselineCapabilities.filter((cap) => cap.category === this.currentCapabilityGroup.id);
           } else {
             this.selectedCapabilities = [];
           }
@@ -65,7 +65,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
           this.selectedCapabilities = this.baselineCapabilities.filter((cap) => cap.category === this.currentCapabilityGroup.id);
         },
         (err) => console.log(err));
-  
+
     const capSub4$ = this.wizardStore
       .select('baseline')
       .pluck('baselineObjAssessments')
@@ -75,18 +75,18 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
           this.baselineObjAssessments = objAssessments;
         },
         (err) => console.log(err));
-    
+
     this.subscriptions.push(capSub1$, capSub2$, capSub3$, capSub4$);
   }
 
   ngAfterViewInit() {
     // Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
     // Add 'implements AfterViewInit' to the class.
-    
+
   }
 
   ngOnDestroy(): void {
-   this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
   /**
@@ -121,7 +121,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
         option.value = CapabilitySelectorComponent.DEFAULT_VALUE;
       } else {
         // Replace capabilities
-        this.wizardStore.dispatch(new ReplaceCapabilityInBaseline( [ this.selectedCapabilities[index], newCapability ] ));
+        this.wizardStore.dispatch(new ReplaceCapabilityInBaseline([this.selectedCapabilities[index], newCapability]));
 
         // Replace it
         this.selectedCapabilities[index] = newCapability;
@@ -179,14 +179,18 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
     return true;
   }
 
-  /* 
+  /** 
    * Returns only those capabilities which are specific to current category
    * @return {any[]}
    */
   public getCapabilities(category: Category): Capability[] {
+    if (!this.allCapabilities) {
+      return [];
+    }
+
     return this.allCapabilities
-                    .filter((capability) => capability.category === category.id)
-                    .sort();
+      .filter((capability) => capability.category === category.id)
+      .sort();
   }
 
   private addObjectAssessment(capability: Capability): void {
@@ -202,7 +206,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
     Object.assign(newOA, stix);
 
     // Inherit assessed objects from category
-    newOA.assessed_objects = [ ...this.currentCapabilityGroup.assessed_objects ];
+    newOA.assessed_objects = [...this.currentCapabilityGroup.assessed_objects];
 
     // Save new object assessments so we have IDs for them
     this.wizardStore.dispatch(new AddObjectAssessmentToBaseline(newOA));
