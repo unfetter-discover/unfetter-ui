@@ -4,13 +4,18 @@ import { Observable } from 'rxjs/Observable';
 
 import { IPGeoService } from './ipgeo.service';
 import { GenericApi } from '../core/services/genericapi.service';
+import { RunConfigService } from '../core/services/run-config.service';
 
 describe('ipgeo service', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
-            providers: [IPGeoService, GenericApi],
+            providers: [
+                RunConfigService,
+                IPGeoService,
+                GenericApi,
+            ],
         });
     });
 

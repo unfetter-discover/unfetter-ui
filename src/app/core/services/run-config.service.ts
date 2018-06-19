@@ -19,6 +19,11 @@ export interface PublicConfig {
 }
 
 export interface MasterConfig extends PublicConfig {
+    ipgeo?: {
+        performLookups?: boolean;
+        expiration_time?: number;
+        max_cached_items?: number;
+    };
     contentOwner?: string;
     pagePublisher?: string;
     lastReviewed?: number;

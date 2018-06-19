@@ -11,7 +11,7 @@
     </mat-expansion-panel>
     <div *ngIf="baselineGroups.length > 0">
       <mat-expansion-panel *ngFor="let group of baselineGroups" hideToggle="true" [expanded]="currentBaselineGroup && group.name === currentBaselineGroup.name"
-        (opened)="onOpenSidePanel('capability-selector', group)" class="stepper-vertical">
+        (opened)="onOpenSidePanel('capability-selector', group, $event)" class="stepper-vertical">
         <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
           <mat-panel-title >
             {{group.name | uppercase}}
