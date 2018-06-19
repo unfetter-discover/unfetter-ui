@@ -354,7 +354,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
     this.prevPage = this.page;
     this.page = this.navigations.find(navigation => navigation.id === capabilityId).page;
-    const capability = this.baselineCapabilities.find((capability) => capability.id === capabilityId);
+    const capability = this.baselineCapabilities.find((c) => c.id === capabilityId);
     this.wizardStore.dispatch(capability);
     this.wizardStore.dispatch(new SetCurrentBaselineGroup(this.baselineGroups.find(category => category.id === capability.category)));
 
