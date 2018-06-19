@@ -1,26 +1,25 @@
 
-import { of as observableOf,  Observable ,  Subscription  } from 'rxjs';
-
-import { filter, distinctUntilChanged, pluck, take, finalize } from 'rxjs/operators';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Identity, AssessmentSet } from 'stix';
+import { Observable, of as observableOf, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, finalize, pluck, take } from 'rxjs/operators';
+import { AssessmentSet, Identity } from 'stix';
+import { ConfirmationDialogComponent } from '../../../components/dialogs/confirmation/confirmation-dialog.component';
 import { UsersService } from '../../../core/services/users.service';
 import { slideInOutAnimation } from '../../../global/animations/animations';
 import { MasterListDialogTableHeaders } from '../../../global/components/master-list-dialog/master-list-dialog.component';
-import { Baseline } from '../../../models/baseline/baseline';
 import { UserProfile } from '../../../models/user/user-profile';
 import { AppState } from '../../../root-store/app.reducers';
+import { Constance } from '../../../utils/constance';
 import { LastModifiedBaseline } from '../../models/last-modified-baseline';
 import { BaselineService } from '../../services/baseline.service';
 import { CleanBaselineResultData, LoadBaselineData } from '../store/summary.actions';
 import { SummaryState } from '../store/summary.reducers';
-import { SummaryDataSource } from './summary.datasource';
 import { SummaryCalculationService } from './summary-calculation.service';
-import { ConfirmationDialogComponent } from '../../../components/dialogs/confirmation/confirmation-dialog.component';
-import { Constance } from '../../../utils/constance';
+import { SummaryDataSource } from './summary.datasource';
+
 
 @Component({
   selector: 'summary',

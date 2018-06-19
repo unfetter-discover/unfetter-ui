@@ -2,13 +2,13 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
+import { Capability } from 'stix/assess/v3/baseline/capability';
 import { ObjectAssessment } from 'stix/assess/v3/baseline/object-assessment';
 import { Indicator } from 'stix/stix/indicator';
 import { Stix } from 'stix/unfetter/stix';
 import { SortHelper } from '../../../global/static/sort-helper';
 import * as fromApp from '../../../root-store/app.reducers';
 import * as assessmentActions from './assess.actions';
-import { Capability } from 'stix/assess/v3/baseline/capability';
 
 export interface AssessFeatureState extends fromApp.AppState {
     assessment: Assessment

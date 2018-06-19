@@ -1,8 +1,7 @@
-import { SummarySortHelper } from './summary-sort-helper';
-import { Phase3 } from '../../../models/baseline/phase3';
-import { AttackPattern } from '../../../models/attack-pattern';
 import { AssessAttackPattern } from '../../../models/assess/assess-attack-pattern';
 import { AssessKillChainType } from '../../../models/assess/assess-kill-chain-type';
+import { Phase3 } from '../../../models/baseline/phase3';
+import { SummarySortHelper } from './summary-sort-helper';
 
 describe('SummarySortHelper', () => {
   it('should create an instance', () => {

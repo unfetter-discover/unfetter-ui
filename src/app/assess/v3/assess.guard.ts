@@ -1,10 +1,9 @@
 
-import { of as observableOf,  Observable  } from 'rxjs';
-
-import { pluck, map, catchError, take, switchMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { Observable, of as observableOf } from 'rxjs';
+import { catchError, map, pluck, switchMap, take } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { UserProfile } from '../../models/user/user-profile';
 import { AppState } from '../../root-store/app.reducers';

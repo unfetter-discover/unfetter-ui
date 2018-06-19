@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MenuItem } from 'primeng/components/common/menuitem';
 import { Subscription } from 'rxjs';
-import { distinctUntilChanged ,  filter ,  pluck ,  take } from 'rxjs/operators';
+import { distinctUntilChanged, filter, pluck, take } from 'rxjs/operators';
 import { Capability } from 'stix';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';

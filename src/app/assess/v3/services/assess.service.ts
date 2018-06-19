@@ -1,8 +1,7 @@
 
-import { forkJoin as observableForkJoin, zip as observableZip, empty as observableEmpty,  Observable  } from 'rxjs';
-
-import { mergeMap, map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
+import { empty as observableEmpty, forkJoin as observableForkJoin, Observable, zip as observableZip } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { RiskByKillChain } from 'stix/assess/v2/risk-by-kill-chain';
@@ -13,6 +12,7 @@ import { GenericApi } from '../../../core/services/genericapi.service';
 import { RxjsHelpers } from '../../../global/static/rxjs-helpers';
 import { Constance } from '../../../utils/constance';
 import { LastModifiedAssessment } from '../models/last-modified-assessment';
+
 
 @Injectable()
 export class AssessService {
@@ -39,14 +39,15 @@ export class AssessService {
      * @param {string} url
      * @return {Observable<T>}
      */
-    public getAs<T>(url = ''): Observable<T|T[]> {
+    public getAs<T>(url = ''): Observable<T | T[]> {
         if (!url) {
             return observableEmpty();
         }
 
-        return this.genericApi
-            .getAs<JsonApiData<T>>(url).pipe(
-            map<any, T|T[]>(RxjsHelpers.mapAttributes));
+        return this.genericApi.getAs<JsonApiData<T>>(url)
+            .pipe(
+                map<any, T | T[]>(RxjsHelpers.mapAttributes)
+            );
     }
 
     /**
@@ -108,11 +109,13 @@ export class AssessService {
     public getById(id: string, includeMeta = true): Observable<Assessment> {
         const url = `${this.assessBaseUrl}/${id}?metaproperties=${includeMeta}`;
         return this.genericApi
-            .getAs<JsonApiData<Assessment>>(url).pipe(
-            // remove the attributes wrapping
-            map<any, Assessment>(RxjsHelpers.mapAttributes),
-            // cast the object literal to an actual object so we have its methods
-            map((assessment: Assessment) => new Assessment(assessment)));
+            .getAs<JsonApiData<Assessment>>(url)
+            .pipe(
+                // remove the attributes wrapping
+                map<any, Assessment>(RxjsHelpers.mapAttributes),
+                // cast the object literal to an actual object so we have its methods
+                map((assessment: Assessment) => new Assessment(assessment))
+            );
     }
 
     /**
@@ -127,11 +130,13 @@ export class AssessService {
         };
         const url = `${this.assessBaseUrl}?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
         return this.genericApi
-            .getAs<JsonApiData<Assessment>[]>(url).pipe(
-            // remove the attributes wrapping
-            map<any[], Assessment[]>(RxjsHelpers.mapAttributes),
-            // cast the object literal to an actual object so we have its methods
-            map((arr: Assessment[]) => arr.map((_) => new Assessment(_))));
+            .getAs<JsonApiData<Assessment>[]>(url)
+            .pipe(
+                // remove the attributes wrapping
+                map<any[], Assessment[]>(RxjsHelpers.mapAttributes),
+                // cast the object literal to an actual object so we have its methods
+                map((arr: Assessment[]) => arr.map((_) => new Assessment(_)))
+            );
     }
 
     /**
@@ -156,8 +161,10 @@ export class AssessService {
             return observableForkJoin(...calls);
         };
 
-        return observableZip(loadAll$, deleteAssociated$).pipe(
-            mergeMap((val) => val));
+        return observableZip(loadAll$, deleteAssociated$)
+            .pipe(
+                mergeMap((val) => val)
+            );
     }
 
     /**
@@ -198,8 +205,7 @@ export class AssessService {
             return observableEmpty();
         }
         const url = `${this.assessBaseUrl}/${id}/risk-by-attack-pattern?metaproperties=${includeMeta}`;
-        return this.genericApi
-            .getAs<RiskByAttack>(url);
+        return this.genericApi.getAs<RiskByAttack>(url);
     }
 
 
@@ -218,11 +224,13 @@ export class AssessService {
 
         const url = `${this.assessBaseUrl}/${id}/risk-by-attack-pattern?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
         return this.genericApi
-            .getAs<JsonApiData<RiskByAttack>[]>(url).pipe(
-            // remove the attributes wrapping
-            map<any[], RiskByAttack[]>(RxjsHelpers.mapAttributes),
-            // cast the object literal to an actual object so we have its methods
-            map((arr: RiskByAttack[]) => arr.map((_) => Object.assign(new RiskByAttack(), _))));
+            .getAs<JsonApiData<RiskByAttack>[]>(url)
+            .pipe(
+                // remove the attributes wrapping
+                map<any[], RiskByAttack[]>(RxjsHelpers.mapAttributes),
+                // cast the object literal to an actual object so we have its methods
+                map((arr: RiskByAttack[]) => arr.map((_) => Object.assign(new RiskByAttack(), _)))
+            );
     }
 
     /**
@@ -254,8 +262,10 @@ export class AssessService {
 
         const url = `${this.assessBaseUrl}/${id}/summary-aggregations?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
         return this.genericApi
-            .getAs<JsonApiData<SummaryAggregation>[]>(url).pipe(
-            map<any[], SummaryAggregation[]>(RxjsHelpers.mapAttributes));
+            .getAs<JsonApiData<SummaryAggregation>[]>(url)
+            .pipe(
+                map<any[], SummaryAggregation[]>(RxjsHelpers.mapAttributes)
+            );
     }
 
 
@@ -271,8 +281,10 @@ export class AssessService {
         };
         const url = `${this.assessBaseUrl}?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
         return this.genericApi
-            .getAs<JsonApiData<Assessment>[]>(url).pipe(
-            map<any[], Assessment[]>(RxjsHelpers.mapAttributes));
+            .getAs<JsonApiData<Assessment>[]>(url)
+            .pipe(
+                map<any[], Assessment[]>(RxjsHelpers.mapAttributes)
+            );
     }
 
     /**
@@ -282,8 +294,7 @@ export class AssessService {
      */
     public getLatestAssessments(): Observable<Partial<LastModifiedAssessment>[]> {
         const url = `${this.assessBaseUrl}/latest`;
-        return this.genericApi
-            .getAs<Partial<LastModifiedAssessment>[]>(url);
+        return this.genericApi.getAs<Partial<LastModifiedAssessment>[]>(url);
     }
 
     /**
@@ -295,8 +306,7 @@ export class AssessService {
      */
     public getLatestAssessmentsByCreatorId(creatorId: string, includeMeta = true): Observable<Partial<LastModifiedAssessment>[]> {
         const url = `${this.assessBaseUrl}/latest/${creatorId}`;
-        return this.genericApi
-            .getAs<Partial<LastModifiedAssessment>[]>(url);
+        return this.genericApi.getAs<Partial<LastModifiedAssessment>[]>(url);
     }
 
     /**

@@ -1,8 +1,8 @@
 
-import { merge as observableMerge,  BehaviorSubject ,  Observable  } from 'rxjs';
+import { merge as observableMerge, BehaviorSubject, Observable } from 'rxjs';
 import { CollectionViewer } from '@angular/cdk/collections';
 import { DataSource } from '@angular/cdk/table';
-import { catchError ,  map ,  switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { LastModifiedAssessment } from '../../models/last-modified-assessment';
 import { AssessService } from '../../services/assess.service';
 
@@ -78,17 +78,16 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment
      * @return {Observable<Partial<LastModifiedAssessment>[]>}
      */
     public dedupByRollupId(o$: Observable<Partial<LastModifiedAssessment>[]>): Observable<Partial<LastModifiedAssessment>[]> {
-        return o$
-            .pipe(
-                map((val) => {
-                    const uniqIds = Array.from(new Set(val.map((el) => el.rollupId)));
-                    const uniq = uniqIds
-                        .map((key) => {
-                            return val.find((el) => el.rollupId === key);
-                        });
-                    return uniq;
-                })
-            );
+        return o$.pipe(
+            map((val) => {
+                const uniqIds = Array.from(new Set(val.map((el) => el.rollupId)));
+                const uniq = uniqIds
+                    .map((key) => {
+                        return val.find((el) => el.rollupId === key);
+                    });
+                return uniq;
+            }),
+        );
     }
 
 }

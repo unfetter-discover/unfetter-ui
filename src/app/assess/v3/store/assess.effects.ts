@@ -1,12 +1,11 @@
 
-import { forkJoin as observableForkJoin, empty as observableEmpty, of as observableOf,  Observable  } from 'rxjs';
-
-import { switchMap, pluck,  catchError, flatMap, map, mergeMap, tap  } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
+import { empty as observableEmpty, forkJoin as observableForkJoin, Observable, of as observableOf } from 'rxjs';
+import { catchError, flatMap, map, mergeMap, pluck, switchMap, tap } from 'rxjs/operators';
 import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
@@ -22,6 +21,7 @@ import { Constance } from '../../../utils/constance';
 import { AssessStateService } from '../services/assess-state.service';
 import { AssessService } from '../services/assess.service';
 import * as assessActions from './assess.actions';
+
 
 type URL_TYPE = 'course-of-action' | 'indicator' | 'mitigation';
 

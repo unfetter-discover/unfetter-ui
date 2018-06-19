@@ -1,9 +1,8 @@
 
-import { merge as observableMerge,  BehaviorSubject ,  Observable  } from 'rxjs';
-
-import { map, switchMap } from 'rxjs/operators';
 import { CollectionViewer } from '@angular/cdk/collections';
 import { DataSource } from '@angular/cdk/table';
+import { BehaviorSubject, merge as observableMerge, Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { LastModifiedBaseline } from '../../models/last-modified-baseline';
 import { BaselineService } from '../../services/baseline.service';
