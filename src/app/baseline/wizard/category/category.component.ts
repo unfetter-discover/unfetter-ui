@@ -2,7 +2,8 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs/Subscription';
-import { Category, Capability } from 'stix/assess/v3/baseline';
+import { AssessmentSet, Category, Capability } from 'stix/assess/v3/baseline';
+import { Assess3Meta } from 'stix/assess/v3';
 import * as assessActions from '../../store/baseline.actions';
 import { SetBaselineGroups } from '../../store/baseline.actions';
 import * as assessReducers from '../../store/baseline.reducers';
@@ -19,6 +20,8 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   public addCategory: Category = new Category();
   public selectedCapabilityGroups: Category[] = [];
   public categories: Category[];
+  public meta = new Assess3Meta();
+  private currentBaseline: AssessmentSet;
   private baselineCapabilities: Capability[];
   private subscriptions: Subscription[] = [];
     
@@ -57,8 +60,21 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
           this.baselineCapabilities = capabilities;
         },
         (err) => console.log(err));
+        
+    const catSub4$ = this.wizardStore 
+      .select('baseline')
+      .pluck('baseline')
+      .distinctUntilChanged()
+      .subscribe(
+        (assessmentSet: AssessmentSet) => {
+          this.currentBaseline = assessmentSet;
+          this.meta = new Assess3Meta();
+          this.meta.created_by_ref = this.currentBaseline.created_by_ref;
+        },
+        (err) => console.log(err));
+
     
-    this.subscriptions.push(catSub1$, catSub2$, catSub3$);
+    this.subscriptions.push(catSub1$, catSub2$, catSub3$, catSub4$);
 
     this.wizardStore.dispatch(new assessActions.FetchCapabilityGroups());
   }
@@ -90,6 +106,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   private createNewCategory(): void {
     this.isAddCategory = true;
     this.addCategory = new Category();
+    this.addCategory.created_by_ref = this.meta.created_by_ref;
   }
   
   /*
@@ -97,7 +114,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
    * @returns {void}
    */
   private addNewCategory(): void {
-    
+
     this.categories.push(this.addCategory);
     this.wizardStore.dispatch(new assessActions.AddCapabilityGroup(this.addCategory));
     
