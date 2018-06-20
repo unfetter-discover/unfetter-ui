@@ -1,0 +1,19 @@
+<div class="unfSelectionListComponent">
+  <div class="uf-well">
+    <mat-form-field class="full-width filterWrapper">
+      <input matInput placeholder="Filter List" [formControl]="filterCtrl">
+    </mat-form-field>
+  </div>
+  <div class="uf-well stixList">
+    <mat-selection-list [formControl]="formCtrl">
+      <mat-list-option *ngFor="let s of stix | sortByField:'name':'ascending'; let i = index" [value]="s.id" [style.display]="!displayArr || displayArr[i] ? 'block' : 'none'">
+        {{ s.name }}
+      </mat-list-option>
+    </mat-selection-list>
+  </div>
+  <div class="uf-well">
+    <p class="text-right">
+      <small>{{ formCtrl.value.length }} / {{ stix.length }} Items Selected</small>
+    </p>
+  </div>
+</div>
