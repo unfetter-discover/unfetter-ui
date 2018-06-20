@@ -18,7 +18,8 @@
                                 </a>
                             </div>
                             <div class="truncate">
-                                <small>{{data.attributes.description}}</small>
+                                <markdown-editor [editing]="false" [truncate]="true"
+                                        [data]="data.attributes.description"></markdown-editor>
                             </div>
 
                             <mat-chip-list class="pull-left" *ngIf="showLabels">

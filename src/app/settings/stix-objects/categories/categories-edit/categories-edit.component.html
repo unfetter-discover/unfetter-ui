@@ -15,11 +15,8 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-12">
-        <mat-input-container class="full-width">
-          <textarea matInput class="category-desc" matTextareaAutosize placeholder="Description" [(ngModel)]="category.description">{{category.description}}</textarea>
-        </mat-input-container>
-      </div>
+      <markdown-editor [editing]="true" [inputLabel]="'Description (Markdown Editor)'"
+          [data]="category.description"></markdown-editor>
     </div>
     <div class="row" *ngFor="let framework of frameworks">
       <div class="col-md-12" *ngFor="let assessedObject of category.assessed_objects">

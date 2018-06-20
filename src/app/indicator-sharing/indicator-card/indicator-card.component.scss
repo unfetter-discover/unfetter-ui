@@ -55,4 +55,16 @@
             align-items: center;
         }
     }
+
+    markdown-editor div.flex {
+        padding: 0px;
+
+        label {
+            color: rgba(0, 0, 0, 0.87);
+        }
+
+        div.preview {
+            height: auto;
+        }
+    }
 }
