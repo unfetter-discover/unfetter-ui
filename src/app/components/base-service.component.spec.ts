@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed, fakeAsync, inject } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 
 import { BaseComponentService } from './base-service.component';
@@ -46,7 +46,7 @@ describe('BaseComponentService', () => {
     it('should call get',
             fakeAsync(inject([BaseComponentService, GenericApi], (service: BaseComponentService, api: GenericApi) => {
         expect(api).toBeDefined();
-        const spy = spyOn(api, 'get').and.returnValue(Observable.of([userProfile]));
+        const spy = spyOn(api, 'get').and.returnValue(observableOf([userProfile]));
         let getUsers$ = service.get('user/profile')
             .subscribe(
                 (users) => {
@@ -62,7 +62,7 @@ describe('BaseComponentService', () => {
     it('should call save',
             fakeAsync(inject([BaseComponentService, GenericApi], (service: BaseComponentService, api: GenericApi) => {
         expect(api).toBeDefined();
-        const spy = spyOn(api, 'post').and.returnValue(Observable.of({success: true}));
+        const spy = spyOn(api, 'post').and.returnValue(observableOf({success: true}));
         let newUser$ = service.save('user/profile', userProfile)
             .subscribe(
                 (result) => {
@@ -77,7 +77,7 @@ describe('BaseComponentService', () => {
     it('should call delete',
             fakeAsync(inject([BaseComponentService, GenericApi], (service: BaseComponentService, api: GenericApi) => {
         expect(api).toBeDefined();
-        const spy = spyOn(api, 'delete').and.returnValue(Observable.of({success: false}));
+        const spy = spyOn(api, 'delete').and.returnValue(observableOf({success: false}));
         let deleteUser$ = service.delete('user/profile', userProfile.userName)
             .subscribe(
                 (result) => {
@@ -92,7 +92,7 @@ describe('BaseComponentService', () => {
     it('should call autoComplete',
             fakeAsync(inject([BaseComponentService, GenericApi], (service: BaseComponentService, api: GenericApi) => {
         expect(api).toBeDefined();
-        const spy = spyOn(api, 'get').and.returnValue(Observable.of([userProfile]));
+        const spy = spyOn(api, 'get').and.returnValue(observableOf([userProfile]));
         let getUsers$ = service.autoComplete('user/profile')
             .subscribe(
                 (users) => {

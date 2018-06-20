@@ -1,8 +1,10 @@
+
+import { of as observableOf, forkJoin as observableForkJoin,  Observable ,  Subject  } from 'rxjs';
+
+import { distinctUntilChanged, debounceTime, switchMap, pluck } from 'rxjs/operators';
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatStep } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
 import { IndicatorForm } from '../../global/form-models/indicator';
@@ -72,7 +74,7 @@ export class AddIndicatorComponent implements OnInit {
         }
 
         const userId = this.authService.getUser()._id;
-        const getData$ = Observable.forkJoin(
+        const getData$ = observableForkJoin(
             this.indicatorSharingService.getIdentities(),
             this.indicatorSharingService.getUserProfileById(userId),
             this.indicatorSharingService.getAttackPatterns()
@@ -103,22 +105,22 @@ export class AddIndicatorComponent implements OnInit {
             }
         );
 
-        const patternChange$ = (this.form.get('pattern') as FormControl).valueChanges
-            .debounceTime(100)
-            .distinctUntilChanged()
-            .switchMap((pattern: any): Observable<[PatternHandlerTranslateAll, PatternHandlerGetObjects]> => {
+        const patternChange$ = (this.form.get('pattern') as FormControl).valueChanges.pipe(
+            debounceTime(100),
+            distinctUntilChanged(),
+            switchMap((pattern: any): Observable<[PatternHandlerTranslateAll, PatternHandlerGetObjects]> => {
                 if (pattern && pattern.length > 0) {
-                    return Observable.forkJoin(
-                        this.indicatorSharingService.translateAllPatterns(pattern).pluck('attributes'),
-                        this.indicatorSharingService.patternHandlerObjects(pattern).pluck('attributes')
+                    return observableForkJoin(
+                        this.indicatorSharingService.translateAllPatterns(pattern).pipe(pluck('attributes')),
+                        this.indicatorSharingService.patternHandlerObjects(pattern).pipe(pluck('attributes'))
                     );
                 } else {
-                    return Observable.forkJoin(
-                        Observable.of(this.initialPatternHandlerResponse),
-                        Observable.of(this.initialGetObjectsResponse)
+                    return observableForkJoin(
+                        observableOf(this.initialPatternHandlerResponse),
+                        observableOf(this.initialGetObjectsResponse)
                     );
                 }
-            })
+            }))
             .subscribe(
                 ([translations, objects]: [PatternHandlerTranslateAll, PatternHandlerGetObjects]) => {
 

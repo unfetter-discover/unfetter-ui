@@ -1,3 +1,5 @@
+
+import { finalize } from 'rxjs/operators';
 import { Component, ViewChild, Input, } from '@angular/core';
 import { Store } from '@ngrx/store';
 
@@ -110,8 +112,8 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
             this.readied = true;
         }
 
-        const sub$ = this.controls.change
-            .finally(() => sub$ && sub$.unsubscribe())
+        const sub$ = this.controls.change.pipe(
+            finalize(() => sub$ && sub$.unsubscribe()))
             .subscribe(
                 (event) => {
                     if (event) {

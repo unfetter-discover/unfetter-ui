@@ -3,9 +3,9 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { Location } from '@angular/common';
 import { MatDialog, MatDialogRef, MatDialogConfig, MatSnackBar } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/startWith';
-import 'rxjs/add/operator/map';
+import { Observable } from 'rxjs';
+
+
 
 import { IntrusionSetComponent } from '../intrusion-set/intrusion-set.component';
 import { StixService } from '../../../stix.service';

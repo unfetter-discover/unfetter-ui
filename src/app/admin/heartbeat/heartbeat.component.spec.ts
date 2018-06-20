@@ -3,7 +3,7 @@ import { MatProgressSpinnerModule } from '@angular/material';
 
 import { HeartbeatComponent } from './heartbeat.component';
 import { AdminService } from '../admin.service';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 import { HeartbeatStatus } from '../../global/models/heartbeat';
 import { CapitalizePipe } from '../../global/pipes/capitalize.pipe';
 import { LoadingSpinnerComponent } from '../../global/components/loading-spinner/loading-spinner.component';
@@ -15,7 +15,7 @@ describe('HeartbeatComponent', () => {
 
     const mockAdminService = {
         getHeartbeat: function() {
-            return Observable.of({
+            return observableOf({
                 attributes: {
                     statuses: [
                         {

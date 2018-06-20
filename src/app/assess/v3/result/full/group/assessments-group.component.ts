@@ -1,10 +1,9 @@
+
+import { pluck,  distinctUntilChanged ,  filter  } from 'rxjs/operators';
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { distinctUntilChanged } from 'rxjs/operators/distinctUntilChanged';
-import { filter } from 'rxjs/operators/filter';
+import { Observable ,  Subscription } from 'rxjs';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { AssessAttackPatternMeta } from 'stix/assess/v2/assess-attack-pattern-meta';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
@@ -180,15 +179,15 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
       },
         (err) => console.log(err));
 
-    const sub2$ = this.assessmentGroup
-      .pluck('currentAttackPattern')
+    const sub2$ = this.assessmentGroup.pipe(
+      pluck('currentAttackPattern'))
       .pipe(distinctUntilChanged())
       .subscribe((currentAttackPattern: Stix) => this.currentAttackPattern = currentAttackPattern,
         (err) => console.log(err));
 
-    const sub3$ = this.assessmentGroup
-      .filter((group: FullAssessmentGroup) => group.finishedLoadingGroupData === true)
-      .pluck('attackPatternRelationships')
+    const sub3$ = this.assessmentGroup.pipe(
+      filter((group: FullAssessmentGroup) => group.finishedLoadingGroupData === true),
+      pluck('attackPatternRelationships'))
       .pipe(distinctUntilChanged())
       .subscribe((relationships: Relationship[]) => {
         const assessmentCandidates = relationships

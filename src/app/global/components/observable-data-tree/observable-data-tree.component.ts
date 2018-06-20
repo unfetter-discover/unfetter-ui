@@ -1,7 +1,9 @@
+
+import { filter, pluck } from 'rxjs/operators';
 import { Component, OnInit, Input } from '@angular/core';
 import { FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 import { ObservedDataForm } from '../../form-models/observed-data';
 import { heightCollapse } from '../../animations/height-collapse';
@@ -35,10 +37,10 @@ export class ObservableDataTreeComponent implements OnInit {
     }
 
     public ngOnInit() {
-        const config$ = this.store.select('config')
-            .pluck('configurations')
-            .filter((configurations: any) => configurations.observableDataTypes)
-            .pluck('observableDataTypes')
+        const config$ = this.store.select('config').pipe(
+            pluck('configurations'),
+            filter((configurations: any) => configurations.observableDataTypes),
+            pluck('observableDataTypes'))
             .subscribe(
                 (observableDataTypes: any[]) => {
                     this.observableDataTypes = observableDataTypes;

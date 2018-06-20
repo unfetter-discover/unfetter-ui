@@ -1,0 +1,284 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "unfetterUi": {
+      "root": "",
+      "sourceRoot": "src",
+      "projectType": "application",
+      "prefix": "",
+      "schematics": {
+        "@schematics/angular:component": {
+          "styleext": "scss"
+        }
+      },
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "src/tsconfig.app.json",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeng/resources/themes/omega/theme.scss",
+              "src/styles/main.scss"
+            ],
+            "scripts": [
+              "node_modules/moment/min/moment.min.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [{
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.prod.ts"
+              }],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },            
+            "productionNoClean": {
+              "fileReplacements": [{
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.prod.ts"
+              }],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "deleteOutputPath": false
+            },            
+            "demoNoClean": {
+              "fileReplacements": [{
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.dockerhub.ts"
+              }],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "deleteOutputPath": false
+            },            
+            "uac": {
+              "fileReplacements": [{
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.uac.ts"
+              }]
+            },
+            "ff31Demo": {
+              "aot": true,
+              "buildOptimizer": false,
+              "deleteOutputPath": false,
+              "extractCss": true,
+              "fileReplacements": [{
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.dockerhub.ts"
+              }],
+              "namedChunks": false,
+              "optimization": true,
+              "outputHashing": "bundles",
+              "sourceMap": false
+            },            
+            "ff31Prod": {
+              "aot": true,
+              "buildOptimizer": false,
+              "deleteOutputPath": false,
+              "extractCss": true,
+              "fileReplacements": [{
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.prod.ts"
+              }],
+              "namedChunks": false,
+              "optimization": true,
+              "outputHashing": "bundles",
+              "sourceMap": false
+            }            
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "unfetterUi:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "unfetterUi:build:production",
+              "open": true,
+              "watch": true
+            },
+            "demo": {
+              "hmr": true,
+              "open": true,
+              "port": 9443,
+              "proxyConfig": "proxy.conf.json",
+              "sourceMap": true,
+              "ssl": true,
+              "watch": true
+            },
+            "prodDemo": {
+              "hmr": true,
+              "open": true,
+              "optimization": true,
+              "port": 9443,
+              "proxyConfig": "proxy.conf.json",
+              "sourceMap": true,
+              "ssl": true,
+              "watch": true
+            },
+            "productionNoClean": {
+              "browserTarget": "unfetterUi:build:productionNoClean",
+              "open": true,
+              "watch": true
+            },
+            "uac": {
+              "browserTarget": "unfetterUi:build:uac",
+              "hmr": true,
+              "open": true,
+              "port": 9443,
+              "proxyConfig": "proxy.conf.json",
+              "sourceMap": true,
+              "ssl": true,
+              "watch": true
+            },
+            "dockerDemo": {
+              "disableHostCheck": true,
+              "host": "0.0.0.0",
+              "hmr": true,
+              "open": true,
+              "port": 80,
+              "proxyConfig": "proxy.conf.json",
+              "publicHost": "0.0.0.0:80",
+              "sourceMap": true,
+              "ssl": true,
+              "watch": true
+            },
+            "dockerUac": {
+              "browserTarget": "unfetterUi:build:uac",
+              "disableHostCheck": true,
+              "host": "0.0.0.0",
+              "hmr": true,
+              "open": true,
+              "port": 80,
+              "proxyConfig": "proxy.conf.json",
+              "publicHost": "0.0.0.0:80",
+              "sourceMap": true,
+              "ssl": true,
+              "watch": true
+            },
+            "ff31Prod": {
+              "browserTarget": "unfetterUi:build:ff31Prod",
+              "aot": false,
+              "open": true,
+              "port": 9443,
+              "proxyConfig": "proxy.conf.json",
+              "ssl": true,
+              "watch": true
+            },
+            "ff31Demo": {
+              "browserTarget": "unfetterUi:build:ff31Demo",
+              "aot": false,
+              "open": true,
+              "port": 9443,
+              "proxyConfig": "proxy.conf.json",
+              "ssl": true,
+              "watch": true
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "unfetterUi:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/test.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "src/tsconfig.spec.json",
+            "karmaConfig": "src/karma.conf.js",
+            "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeng/resources/themes/omega/theme.scss",
+              "styles/main.scss"
+            ],
+            "scripts": [
+              "node_modules/moment/min/moment.min.js"
+            ],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "src/tsconfig.app.json",
+              "src/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "unfetterUi-e2e": {
+      "root": "e2e/",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "e2e/protractor.conf.js",
+            "devServerTarget": "unfetterUi:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "unfetterUi:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "e2e/tsconfig.e2e.json",
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "unfetterUi"
+}

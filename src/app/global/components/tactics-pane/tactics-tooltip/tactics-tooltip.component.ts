@@ -17,7 +17,7 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { Tactic } from '../tactics.model';
 import { TacticsTooltipService, TooltipEvent } from './tactics-tooltip.service';
 import { AuthService } from '../../../../core/services/auth.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'tactics-tooltip',

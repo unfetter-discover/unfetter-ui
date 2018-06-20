@@ -1,3 +1,5 @@
+
+import { map } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 
 import { AdminService } from '../admin.service';
@@ -25,8 +27,8 @@ export class CurrentUsersComponent implements OnInit {
 
   ngOnInit() {
     this.fetchUsers();
-    const getOrganizaitons$ = this.adminService.getOrganizations()
-      .map(RxjsHelpers.mapArrayAttributes)
+    const getOrganizaitons$ = this.adminService.getOrganizations().pipe(
+      map(RxjsHelpers.mapArrayAttributes))
       .subscribe(
         (organizations: any[]) => {
           this.organizations = organizations;

@@ -1,7 +1,8 @@
+
 import { CollectionViewer } from '@angular/cdk/collections';
 import { DataSource } from '@angular/cdk/table';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject, merge as observableMerge, Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { LastModifiedBaseline } from '../../models/last-modified-baseline';
 import { BaselineService } from '../../services/baseline.service';
@@ -28,8 +29,8 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedBaseline>>
      */
     public connect(collectionViewer: CollectionViewer): Observable<Partial<LastModifiedBaseline>[]> {
         const arr = [this.filterChange, this.dataChange];
-        return Observable.merge(...arr)
-            .switchMap(() => {
+        return observableMerge(...arr).pipe(
+            switchMap(() => {
                 const val = this.filterChange.getValue();
                 const filterVal = val.trim().toLowerCase() || '';
                 const baselines$ = this.assessService.getLatestAssessments();
@@ -37,11 +38,11 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedBaseline>>
                     return baselines$;
                 }
 
-                return baselines$
-                    .map((el) => {
+                return baselines$.pipe(
+                    map((el) => {
                         return el.filter((_) => _.name.trim().toLowerCase().includes(filterVal));
-                    });
-            });
+                    }));
+            }));
     }
 
     /**

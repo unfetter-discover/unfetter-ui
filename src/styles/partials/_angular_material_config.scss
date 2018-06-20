@@ -88,7 +88,7 @@ $utility-theme: mat-light-theme($utility-theme-primary, $utility-theme-accent, $
 }
 
 .addLabelComponentWrapper {
-  .mat-input-infix.mat-form-field-infix {
+  .mat-form-field-infix.mat-form-field-infix {
     padding-bottom: 3px;
     width: 0 !important;
     transition: width 0.2s ease-in-out;
@@ -153,7 +153,7 @@ $utility-theme: mat-light-theme($utility-theme-primary, $utility-theme-accent, $
 }
 
 .showAddLabel {
-  .mat-input-infix.mat-form-field-infix {
+  .mat-form-field-infix.mat-form-field-infix {
     width: 170px !important;
   }
 }

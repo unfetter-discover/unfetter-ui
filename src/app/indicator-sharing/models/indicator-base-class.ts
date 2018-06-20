@@ -1,3 +1,5 @@
+
+import { finalize, pluck, distinctUntilChanged } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
@@ -19,9 +21,9 @@ export abstract class IndicatorBase {
     ) { }
 
     protected initBaseData() {
-        const getIdentities$ = this.store.select('indicatorSharing')
-            .pluck('identities')
-            .distinctUntilChanged()
+        const getIdentities$ = this.store.select('indicatorSharing').pipe(
+            pluck('identities'),
+            distinctUntilChanged())
             .subscribe(
                 (identities: any[]) => {
                     this.identities = identities;
@@ -36,9 +38,9 @@ export abstract class IndicatorBase {
                 }
             );
 
-        const getIndicatorToSensorMap$ = this.store.select('indicatorSharing')
-            .pluck('indicatorToSensorMap')
-            .distinctUntilChanged()
+        const getIndicatorToSensorMap$ = this.store.select('indicatorSharing').pipe(
+            pluck('indicatorToSensorMap'),
+            distinctUntilChanged())
             .subscribe(
                 (indicatorToSensorMap) => {
                     this.indicatorToSensorMap = indicatorToSensorMap;
@@ -53,9 +55,9 @@ export abstract class IndicatorBase {
                 }
             );
 
-        const getIndicatorToAttackPatternMap$ = this.store.select('indicatorSharing')
-            .pluck('indicatorToApMap')
-            .distinctUntilChanged()
+        const getIndicatorToAttackPatternMap$ = this.store.select('indicatorSharing').pipe(
+            pluck('indicatorToApMap'),
+            distinctUntilChanged())
             .subscribe(
                 (indicatorToAttackPatternMap) => {
                     this.indicatorToAttackPatternMap = indicatorToAttackPatternMap;
@@ -70,9 +72,9 @@ export abstract class IndicatorBase {
                 }
             );
 
-        const getServerCallComplete$ = this.store.select('indicatorSharing')
-            .pluck('serverCallComplete')
-            .distinctUntilChanged()
+        const getServerCallComplete$ = this.store.select('indicatorSharing').pipe(
+            pluck('serverCallComplete'),
+            distinctUntilChanged())
             .subscribe(
                 (serverCallComplete: boolean) => {
                     // This is to check that it was only assigned once, to avoid change detection errors                    
@@ -91,10 +93,10 @@ export abstract class IndicatorBase {
                 }
             );
 
-        const getIntrusionSetToAttackPatternMap$ = this.store.select('indicatorSharing')
-            .pluck('intrusionSetsByAttackpattern')
-            .finally(() => getIntrusionSetToAttackPatternMap$ && getIntrusionSetToAttackPatternMap$.unsubscribe())
-            .distinctUntilChanged()
+        const getIntrusionSetToAttackPatternMap$ = this.store.select('indicatorSharing').pipe(
+            pluck('intrusionSetsByAttackpattern'),
+            finalize(() => getIntrusionSetToAttackPatternMap$ && getIntrusionSetToAttackPatternMap$.unsubscribe()),
+            distinctUntilChanged())
                 .subscribe(
                     (intrusionSetsByAttackpattern) => {
                         this.intrusionSetToAttackPatternMap = intrusionSetsByAttackpattern;

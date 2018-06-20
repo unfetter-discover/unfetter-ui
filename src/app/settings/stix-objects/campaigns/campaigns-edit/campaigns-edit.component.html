@@ -1,16 +1,16 @@
 
 <div class="row">
     <div class="col-md-6">
-        <mat-input-container class="full-width">
+        <mat-form-field class="full-width">
         <input matInput placeholder="Name"  required [(ngModel)]="campaign.attributes.name" value="{{campaign.attributes.name}}">
-        </mat-input-container>
+        </mat-form-field>
     </div>
     <div class="col-md-6">
          <!-- <p-calendar [(ngModel)]="campaign.attributes.first_seen"  dateFormat="MM-dd-yy" showIcon="true" placeholder="First Seen"></p-calendar> -->
-         <!--<mat-input-container class="full-width">
+         <!--<mat-form-field class="full-width">
             <input matInput [matDatepicker]="picker" placeholder="First Seen" [(ngModel)]="campaign.attributes.first_seen">
             <button matSuffix [matDatepickerToggle]="picker"></button>
-        </mat-input-container>
+        </mat-form-field>
         <mat-datepicker #picker></mat-datepicker>-->
         <mat-form-field class="full-width">
             <input matInput [matDatepicker]="picker" placeholder="First Seen" [(ngModel)]="campaign.attributes.first_seen">
@@ -61,9 +61,9 @@
 <div class="row">
     <div class="col-md-12">
 
-        <mat-input-container class="full-width">
+        <mat-form-field class="full-width">
             <textarea matInput placeholder="Description"  [(ngModel)]="campaign.attributes.description" value="{{campaign.attributes.description}}"></textarea>
-        </mat-input-container>
+        </mat-form-field>
 
     </div>
 </div>

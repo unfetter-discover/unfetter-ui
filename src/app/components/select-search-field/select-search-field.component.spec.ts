@@ -3,7 +3,7 @@ import { By, BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';

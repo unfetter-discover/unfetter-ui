@@ -1,5 +1,9 @@
+
+import { of as observableOf,  Observable  } from 'rxjs';
+
+import { tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
 
 import { RunConfigService } from '../core/services/run-config.service';
 import { GenericApi } from '../core/services/genericapi.service';
@@ -44,17 +48,17 @@ export class IPGeoService {
      */
     public lookup(ip: string): Observable<any> {
         if (!this.perform_lookups) {
-            return Observable.of({});
+            return observableOf({});
         }
         const cached = this.ipCache[ip];
         if (cached !== undefined) {
             if (Date.now() - cached.time < this.expiration_time) {
-                return Observable.of(cached.data);
+                return observableOf(cached.data);
             }
             delete this.ipCache[ip];
         }
-        return this.genericApi.get(`${Constance.IPGEO_LOOKUP_URL}?ip=${ip}`)
-            .do(data => {
+        return this.genericApi.get(`${Constance.IPGEO_LOOKUP_URL}?ip=${ip}`).pipe(
+            tap(data => {
                 this.ipCache[ip] = { data: data, time: Date.now(), };
                 while (Object.keys(this.ipCache).length > this.max_cached_items) {
                     const eldest = Object.keys(this.ipCache).reduce(
@@ -63,7 +67,7 @@ export class IPGeoService {
                             {ip: null, data: undefined, time: Date.now()});
                     delete this.ipCache[eldest];
                 }
-            });
+            }));
     }
 
 }

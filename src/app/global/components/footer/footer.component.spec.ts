@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FooterComponent } from './footer.component';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { RunConfigService } from '../../../core/services/run-config.service';
 
@@ -22,7 +22,7 @@ describe('FooterComponent', () => {
     loadPrivateConfig: () => {
       console.log('i solemnly swear i am not trying to perform an http get...');
     },
-    config: Observable.of(config)
+    config: observableOf(config)
   }
 
   beforeEach(async(() => {

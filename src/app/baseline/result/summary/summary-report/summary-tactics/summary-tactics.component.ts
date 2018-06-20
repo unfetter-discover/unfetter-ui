@@ -1,3 +1,5 @@
+
+import { finalize } from 'rxjs/operators';
 import {
     Component,
     OnInit,
@@ -6,7 +8,7 @@ import {
     OnChanges,
     SimpleChanges,
 } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import * as d3 from 'd3';
@@ -116,8 +118,8 @@ export class SummaryTacticsComponent implements OnInit, OnChanges {
         }
 
         if (this.collapseSubject) {
-            const collapseCard$ = this.collapseSubject
-              .finally(() => collapseCard$ && collapseCard$.unsubscribe())
+            const collapseCard$ = this.collapseSubject.pipe(
+              finalize(() => collapseCard$ && collapseCard$.unsubscribe()))
               .subscribe(
                 (collapseContents) => this.collapseContents = collapseContents,
                 (err) => console.log(err),

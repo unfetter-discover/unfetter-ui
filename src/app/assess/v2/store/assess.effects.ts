@@ -1,8 +1,11 @@
+
+import { forkJoin as observableForkJoin, of as observableOf,  Observable  } from 'rxjs';
+
+import { map, tap, mergeMap, switchMap, pluck } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
-import { Observable } from 'rxjs/Observable';
 import { Assessment } from 'stix/assess/v2/assessment';
 import { AssessmentMeta } from 'stix/assess/v2/assessment-meta';
 import { JsonApi } from 'stix/json/jsonapi';
@@ -32,72 +35,72 @@ export class AssessEffects {
 
     @Effect()
     public fetchAssessmentWizardData = this.actions$
-        .ofType(assessActions.LOAD_ASSESSMENT_WIZARD_DATA)
-        .pluck('payload')
-        .switchMap((meta: Partial<AssessmentMeta>) => {
+        .ofType(assessActions.LOAD_ASSESSMENT_WIZARD_DATA).pipe(
+        pluck('payload'),
+        switchMap((meta: Partial<AssessmentMeta>) => {
             const includeMeta = `?metaproperties=true`;
             let url = `${this.generateUrl('indicator')}${includeMeta}`;
             const observables = new Array<Observable<Array<JsonApiData<Stix>>>>();
 
             const indicators$ = meta.includesIndicators ?
                 this.genericServiceApi.getAs<JsonApiData<Indicator.UnfetterIndicator>[]>(url) :
-                Observable.of<JsonApiData<Indicator.UnfetterIndicator>[]>([]);
+                observableOf<JsonApiData<Indicator.UnfetterIndicator>[]>([]);
             observables.push(indicators$);
 
             url = `${this.generateUrl('mitigation')}${includeMeta}`;
             const mitigations$ = meta.includesMitigations ?
                 this.genericServiceApi.getAs<JsonApiData<Stix>[]>(url) :
-                Observable.of<JsonApiData<Stix>[]>([]);
+                observableOf<JsonApiData<Stix>[]>([]);
             observables.push(mitigations$);
 
             url = `${this.generateUrl('sensor')}${includeMeta}`;
             const sensors$ = meta.includesSensors ?
                 this.genericServiceApi.getAs<JsonApiData<Stix>[]>(url) :
-                Observable.of<JsonApiData<Stix>[]>([]);
+                observableOf<JsonApiData<Stix>[]>([]);
             observables.push(sensors$);
 
-            return Observable.forkJoin(...observables);
-        })
-        .mergeMap(([indicators, mitigations, sensors]) => {
+            return observableForkJoin(...observables);
+        }),
+        mergeMap(([indicators, mitigations, sensors]) => {
             return [
                 new assessActions.IndicatorsLoaded(indicators as JsonApiData<Indicator.UnfetterIndicator>[]),
                 new assessActions.MitigationsLoaded(mitigations),
                 new assessActions.SensorsLoaded(sensors),
                 new assessActions.FinishedLoading(true)
             ];
-        });
+        }));
 
     @Effect()
     public fetchAssessment = this.actions$
-        .ofType(assessActions.FETCH_ASSESSMENT)
-        .switchMap(() => this.assessService.load())
-        .map((arr: any[]) => new assessActions.FetchAssessment(arr[0]));
+        .ofType(assessActions.FETCH_ASSESSMENT).pipe(
+        switchMap(() => this.assessService.load()),
+        map((arr: any[]) => new assessActions.FetchAssessment(arr[0])));
 
     @Effect({ dispatch: false })
     public startAssessment = this.actions$
-        .ofType(assessActions.START_ASSESSMENT)
-        .pluck('payload')
-        .map((el: AssessmentMeta) => {
+        .ofType(assessActions.START_ASSESSMENT).pipe(
+        pluck('payload'),
+        map((el: AssessmentMeta) => {
             this.assessStateService.saveCurrent(el);
             return el;
-        })
-        .do((el: AssessmentMeta) => {
+        }),
+        tap((el: AssessmentMeta) => {
             this.router.navigate([
                 '/assess/wizard/new',
                 'indicators', el.includesIndicators === true ? 1 : 0,
                 'mitigations', el.includesMitigations === true ? 1 : 0,
                 'sensors', el.includesSensors === true ? 1 : 0
             ]);
-        })
+        }),
         // required to send an empty element on non dispatched effects
-        .switchMap(() => Observable.of({}));
+        switchMap(() => observableOf({})));
 
 
     @Effect()
     public saveAssessment = this.actions$
-        .ofType(assessActions.SAVE_ASSESSMENT)
-        .pluck('payload')
-        .switchMap((assessments: Assessment[]) => {
+        .ofType(assessActions.SAVE_ASSESSMENT).pipe(
+        pluck('payload'),
+        switchMap((assessments: Assessment[]) => {
             const rollupIds = assessments
                 .map((assessment) => assessment.metaProperties)
                 .filter((el) => el !== undefined)
@@ -126,8 +129,8 @@ export class AssessEffects {
                         return this.genericServiceApi.postAs<JsonApiData<Assessment>[]>(url, json);
                     }
                 });
-            return Observable.forkJoin(...observables)
-                .map((arr: any) => {
+            return observableForkJoin(...observables).pipe(
+                map((arr: any) => {
                     if (Array.isArray(arr[0])) {
                         return arr;
                     } else {
@@ -135,10 +138,10 @@ export class AssessEffects {
                         arr[0].attributes.metaProperties = { rollupId: rollupId };
                         return [arr];
                     }
-                });
-        })
-        .flatMap((arr: JsonApiData<Assessment>[][]) => arr)
-        .map((arr) => {
+                }));
+        }),
+        mergeMap((arr: JsonApiData<Assessment>[][]) => arr),
+        map((arr) => {
             const hasAttributes = arr && arr[0] && arr[0].attributes;
             const hasMetadata = hasAttributes && arr[0].attributes.metaProperties;
             return new assessActions.FinishedSaving({
@@ -146,7 +149,7 @@ export class AssessEffects {
                 rollupId: hasMetadata ? arr[0].attributes.metaProperties.rollupId : '',
                 id: hasAttributes ? arr[0].attributes.id : '',
             });
-        })
+        }))
 
 
     /**

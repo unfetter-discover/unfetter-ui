@@ -1,14 +1,10 @@
+
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { catchError } from 'rxjs/operators/catchError';
-import { distinctUntilChanged } from 'rxjs/operators/distinctUntilChanged';
-import { filter } from 'rxjs/operators/filter';
-import { map } from 'rxjs/operators/map';
-import { take } from 'rxjs/operators/take';
+import { Observable, Subscription } from 'rxjs';
+import { catchError, distinctUntilChanged, filter, map, pluck, take } from 'rxjs/operators';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { ConfirmationDialogComponent } from '../../../../components/dialogs/confirmation/confirmation-dialog.component';
@@ -77,8 +73,10 @@ export class FullComponent implements OnInit, OnDestroy {
         this.attackPatternId = params.attackPatternId || '';
         const sub$ = this.userStore
           .select('users')
-          .pluck('userProfile')
-          .pipe(take(1))
+          .pipe(
+            pluck('userProfile'),
+            take(1)
+          )
           .subscribe((user: UserProfile) => {
             this.requestData(this.rollupId);
           },
@@ -99,23 +97,29 @@ export class FullComponent implements OnInit, OnDestroy {
 
     this.assessment = this.store
       .select('fullAssessment')
-      .pluck<object, Assessment>('fullAssessment')
-      .pipe(distinctUntilChanged());
+      .pipe(
+        pluck<object, Assessment>('fullAssessment'),
+        distinctUntilChanged()
+      );
 
     this.finishedLoading = this.store
       .select('fullAssessment')
-      .pluck<Assessment, boolean>('finishedLoading')
-      .pipe(distinctUntilChanged());
+      .pipe(
+        pluck<Assessment, boolean>('finishedLoading'),
+        distinctUntilChanged()
+      );
 
     this.assessmentGroup = this.store
       .select('fullAssessment')
-      .pluck<object, FullAssessmentGroup>('group')
-      .pipe(distinctUntilChanged());
+      .pipe(
+        pluck<object, FullAssessmentGroup>('group'),
+        distinctUntilChanged()
+      );
 
     const sub$ = this.store
       .select('fullAssessment')
-      .pluck('group')
       .pipe(
+        pluck('group'),
         distinctUntilChanged(),
         filter((group: any) => group.finishedLoadingGroupData === true)
       )
@@ -135,8 +139,8 @@ export class FullComponent implements OnInit, OnDestroy {
 
     this.assessmentName = this.store
       .select('fullAssessment')
-      .pluck<object, Assessment>('fullAssessment')
       .pipe(
+        pluck<object, Assessment>('fullAssessment'),
         distinctUntilChanged(),
         map((assessment: Assessment) => {
           const assessmentType = assessment.determineAssessmentType();

@@ -1,5 +1,8 @@
+
+import { forkJoin as observableForkJoin,  Observable  } from 'rxjs';
+
+import { filter, pluck, distinctUntilChanged, finalize, take } from 'rxjs/operators';
 import { Component, OnInit, ChangeDetectorRef, } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
 import { MatSnackBar } from '@angular/material';
@@ -47,11 +50,11 @@ export class IntrusionSetDashboardComponent implements OnInit {
 
     public ngOnInit() {
         const initAttackPatterns$ = this.tacticsStore
-            .select('config')
-            .pluck('tactics')
-            .filter((t: Tactic[]) => t.length !== 0)
-            .distinctUntilChanged()
-            .take(1);
+            .select('config').pipe(
+            pluck('tactics'),
+            filter((t: Tactic[]) => t.length !== 0),
+            distinctUntilChanged(),
+            take(1));
 
         const intrusionsProperties = {
             'stix.id': 1,
@@ -68,8 +71,8 @@ export class IntrusionSetDashboardComponent implements OnInit {
         const relQuery = encodeURI(`filter=${JSON.stringify(relFilter)}`);
         const initRelationships$ = this.genericApi.get(`${Constance.RELATIONSHIPS_URL}?${relQuery}`)
 
-        const initData$ = Observable.forkJoin(initAttackPatterns$, initIntrusions$, initRelationships$)
-            .finally(() => initData$ && initData$.unsubscribe())
+        const initData$ = observableForkJoin(initAttackPatterns$, initIntrusions$, initRelationships$).pipe(
+            finalize(() => initData$ && initData$.unsubscribe()))
             .subscribe(
                 ([tactics, intrusionSets, relationships]) => {
                     const patterns = {};
@@ -110,8 +113,8 @@ export class IntrusionSetDashboardComponent implements OnInit {
             this.killChainPhases = null;
             const ids = selections.map((intrusionSet) => intrusionSet.id);
             const url = 'api/dashboards/intrusionSetView?intrusionSetIds=' + ids.join();
-            const sub = this.genericApi.get(url)
-                .finally(() => sub ? sub.unsubscribe() : 0)
+            const sub = this.genericApi.get(url).pipe(
+                finalize(() => sub ? sub.unsubscribe() : 0))
                 .subscribe(
                     (data: any) => {
                         this.color(data); // TODO move this to the ap tab?

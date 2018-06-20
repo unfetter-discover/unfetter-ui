@@ -1,12 +1,12 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, async, fakeAsync, flush } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActionReducerMap, Store, StoreModule } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf } from 'rxjs';
 import { AssessmentMockFactory } from 'stix/assess/v3/assessment.mock';
 import { ComponentModule } from '../../../../components';
 import { GenericApi } from '../../../../core/services/genericapi.service';
@@ -34,7 +34,7 @@ describe('SummaryComponent', () => {
     calculateTopRisks: () => null, calculateWeakness: () => null, calculateThresholdOptionNames: () => null,
     setAverageRiskPerAssessedObject: () => null
   };
-  const mockAssessService = { deleteByRollupId: () => Observable.of({}) };
+  const mockAssessService = { deleteByRollupId: () => observableOf({}) };
 
   beforeEach(async(() => {
     const matModules = [

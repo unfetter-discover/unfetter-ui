@@ -7,8 +7,9 @@ import { AddIndicatorComponent } from './add-indicator.component';
 import { CapitalizePipe } from '../../global/pipes/capitalize.pipe';
 import { FieldSortPipe } from '../../global/pipes/field-sort.pipe';
 import { IndicatorSharingService } from '../indicator-sharing.service';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
+import { take } from 'rxjs/operators';
 
 describe('AddIndicatorComponent', () => {
     let component: AddIndicatorComponent;
@@ -16,7 +17,7 @@ describe('AddIndicatorComponent', () => {
 
     const mockIndService = {
         getIdentities: () => {
-            return Observable.of([
+            return observableOf([
                 {
                     attributes: {
                         id: 'identity-1234',
@@ -26,7 +27,7 @@ describe('AddIndicatorComponent', () => {
             ]);
         },
         getUserProfileById: (userId) => {
-            return Observable.of({
+            return observableOf({
                 attributes: {
                     organizations: [
                         {
@@ -39,7 +40,7 @@ describe('AddIndicatorComponent', () => {
             });
         },
         getAttackPatterns: () => {
-            return Observable.of([
+            return observableOf([
                 {
                     attributes: {
                         id: 'attack-pattern-1234',
@@ -49,7 +50,7 @@ describe('AddIndicatorComponent', () => {
             ]);
         },
         translateAllPatterns: (pattern) => {
-            return Observable.of({
+            return observableOf({
                 attributes: {
                     'car-elastic': 'test',
                     'car-splunk': 'test',
@@ -60,7 +61,7 @@ describe('AddIndicatorComponent', () => {
             });
         },
         patternHandlerObjects: (pattern) => {
-            return Observable.of({
+            return observableOf({
                 attributes: {
                     object: [
                         {
@@ -74,7 +75,7 @@ describe('AddIndicatorComponent', () => {
             });
         },
         addIndicator: (indicator) => {
-            return Observable.of({
+            return observableOf({
                 attributes: indicator
             });
         }
@@ -139,7 +140,7 @@ describe('AddIndicatorComponent', () => {
         component.form.get('pattern').setValue('testpattern');
         // NOTE this is a hack to be sure the subcribe block is actually called
         component.patternObjSubject
-            .take(1)
+            .pipe(take(1))
             .subscribe((_) => {
                 expect(component.patternObjs[0].name).toBe('process');
                 expect(component.patternObjs[0].property).toBe('pid');

@@ -1,6 +1,9 @@
+
+import { throwError as observableThrowError,  Observable  } from 'rxjs';
+
+import { catchError, map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHeaders, HttpEvent, HttpEventType, HttpResponse, HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
 
 import { Constance } from '../../../utils/constance';
 import { Report } from '../../../models/report';
@@ -37,8 +40,8 @@ export class ReportUploadService {
             reportProgress: true,
             headers
         });
-        return this.http.request<Array<JsonApiObject<Report>>>(req)
-            .map((event) => {
+        return this.http.request<Array<JsonApiObject<Report>>>(req).pipe(
+            map((event) => {
                 if (event.type === HttpEventType.UploadProgress) {
                     const percentDone = Math.round(100 * event.loaded / event.total);
                     console.log(`File is ${percentDone}% uploaded`);
@@ -46,10 +49,10 @@ export class ReportUploadService {
                     console.log('File is completly uploaded');
                     return event;
                 }
-            })
-            .map((event) => (event instanceof HttpResponse) ? event.body : [])
-            .map((reports) => reports.map((report) => report.data))
-            .catch(this.handleError);
+            }),
+            map((event) => (event instanceof HttpResponse) ? event.body : []),
+            map((reports) => reports.map((report) => report.data)),
+            catchError(this.handleError));
     }
 
     /**
@@ -57,7 +60,7 @@ export class ReportUploadService {
      */
     private handleError(errResp: any): Observable<any> {
         if (!errResp) {
-            return Observable.throw('unknown error');
+            return observableThrowError('unknown error');
         }
         const err = errResp.error;
         const detail = err && err.detail && err.detail.message ? err.detail.message : '';
@@ -65,6 +68,6 @@ export class ReportUploadService {
         if (!errMsg) {
             errMsg = errResp;
         }
-        return Observable.throw(errMsg);
+        return observableThrowError(errMsg);
     }
 }

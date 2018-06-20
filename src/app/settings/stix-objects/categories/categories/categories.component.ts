@@ -1,8 +1,11 @@
+
+import { empty as observableEmpty,  Observable  } from 'rxjs';
+
+import { map } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
 import { Category } from 'stix';
 import { GenericApi } from '../../../../core/services/genericapi.service';
 import { FormatHelpers } from '../../../../global/static/format-helpers';
@@ -82,7 +85,7 @@ export class CategoriesComponent extends BaseStixComponent<Category> implements 
           const name = Array.isArray(data) && data.length > 0 ? data[0].name : data.name;
           this.snackBar.open(name + ' has been successfully saved', '', {
             duration: this.duration,
-            extraClasses: ['snack-bar-background-success']
+            panelClass: ['snack-bar-background-success']
           });
           this.location.back();
         },
@@ -95,9 +98,9 @@ export class CategoriesComponent extends BaseStixComponent<Category> implements 
    * @returns void
    */
   public loadCategory(): Observable<Category> {
-    return super.get()
-      .map((el: any) => this.unwrapJsonData(el))
-      .map(el => this.category = el);
+    return super.get().pipe(
+      map((el: any) => this.unwrapJsonData(el)),
+      map(el => this.category = el));
   }
 
   public formatText(inputString): string {
@@ -110,12 +113,12 @@ export class CategoriesComponent extends BaseStixComponent<Category> implements 
    */
   public create(category: Category): Observable<Category> {
     if (!category) {
-      return Observable.empty();
+      return observableEmpty();
     }
     const url = Constance.X_UNFETTER_CATEGORY_URL;
     return this.genericApiService
-      .post(url, this.jsonDataWrapper(category))
-      .map((el: any) => this.unwrapJsonData(el));
+      .post(url, this.jsonDataWrapper(category)).pipe(
+      map((el: any) => this.unwrapJsonData(el)));
   }
 
   /**
@@ -124,12 +127,12 @@ export class CategoriesComponent extends BaseStixComponent<Category> implements 
    */
   public update(category: Category): Observable<Category> {
     if (!category) {
-      return Observable.empty();
+      return observableEmpty();
     }
     const url = `${Constance.X_UNFETTER_CATEGORY_URL}/${category.id}`;
     return this.genericApiService
-      .patch(url, this.jsonDataWrapper(category))
-      .map((el: any) => this.unwrapJsonData(el));
+      .patch(url, this.jsonDataWrapper(category)).pipe(
+      map((el: any) => this.unwrapJsonData(el)));
   }
 
   /**

@@ -1,9 +1,8 @@
-import { TestBed, inject } from '@angular/core/testing';
-import { SummaryCalculationService } from './summary-calculation.service';
-import { StixMockFactory } from 'stix/unfetter/stix.mock';
-import { SummaryAggregation } from 'stix/assess/v2/summary-aggregation';
-import { AssessmentObject } from 'stix/assess/v2/assessment-object';
+import { inject, TestBed } from '@angular/core/testing';
 import { AssessmentObjectMockFactory } from 'stix/assess/v2/assessment-object.mock';
+import { SummaryAggregation } from 'stix/assess/v2/summary-aggregation';
+import { StixMockFactory } from 'stix/unfetter/stix.mock';
+import { SummaryCalculationService } from './summary-calculation.service';
 
 describe('SummaryCalculationService', () => {
   beforeEach(() => {

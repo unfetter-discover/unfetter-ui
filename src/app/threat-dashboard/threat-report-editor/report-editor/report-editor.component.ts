@@ -1,7 +1,10 @@
+
+import { of as observableOf,  Observable  } from 'rxjs';
+
+import { map, pluck, take } from 'rxjs/operators';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
 import { AttackPatternService } from '../../../core/services/attack-pattern.service';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { AttackPattern } from '../../../models/attack-pattern';
@@ -45,14 +48,14 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         const getUser$ = this.userStore
-            .select('users')
-            .pluck('userProfile')
-            .take(1)
+            .select('users').pipe(
+            pluck('userProfile'),
+            take(1))
             .subscribe((user: UserProfile) => {
                 this.user = user;
                 // start loading the full list of attack patterns
-                const sub$ = this.loadAttackPatterns()
-                    .map((arr) => arr.sort(this.genAttackPatternSorter()))
+                const sub$ = this.loadAttackPatterns().pipe(
+                    map((arr) => arr.sort(this.genAttackPatternSorter())))
                     .subscribe(
                         (val) => {
                             this.attackPatterns = val;
@@ -82,13 +85,13 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
      */
     public loadAttackPatterns(): Observable<AttackPattern[]> {
         if (this.attackPatterns && this.attackPatterns.length > 0) {
-            return Observable.of(this.attackPatterns);
+            return observableOf(this.attackPatterns);
         }
 
         const userFramework = (this.user && this.user.preferences && this.user.preferences.killchain)
             ? this.user.preferences.killchain : '';
-        return this.attackPatternService.fetchAttackPatterns1(userFramework)
-            .map((el) => this.attackPatterns = el);
+        return this.attackPatternService.fetchAttackPatterns1(userFramework).pipe(
+            map((el) => this.attackPatterns = el));
     }
 
     /**

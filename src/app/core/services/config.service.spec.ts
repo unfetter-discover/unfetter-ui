@@ -3,7 +3,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { StoreModule } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 
 import { ConfigService } from './config.service';
 import { reducers } from '../../root-store/app.reducers';
@@ -66,7 +66,7 @@ describe('ConfigService', () => {
     });
 
     it('gets remote configuration', inject([GenericApi], (api: GenericApi) => {
-        spyOn(api, 'get').and.returnValue(Observable.of({
+        spyOn(api, 'get').and.returnValue(observableOf({
             'keyx': 'valuex',
         }));
         service.getConfig().subscribe(cfg => {
@@ -76,7 +76,7 @@ describe('ConfigService', () => {
     }));
 
     it('gets remote public configuration', inject([GenericApi], (api: GenericApi) => {
-        spyOn(api, 'get').and.returnValue(Observable.of({
+        spyOn(api, 'get').and.returnValue(observableOf({
             'keyz': 'valuez',
         }));
         service.getPublicConfig().subscribe(cfg => {

@@ -5,7 +5,7 @@ import { MatDialog, MatDialogRef, MatDialogConfig, MatSnackBar } from '@angular/
 import { IntrusionSetEditComponent } from '../intrusion-set-edit/intrusion-set-edit.component';
 import { StixService } from '../../../stix.service';
 import { IntrusionSet } from '../../../../models';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'intrusion-set-new',

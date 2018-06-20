@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { SpeedDialItem } from '../../../../../../global/components/speed-dial/speed-dial-item';
 import { Constance } from '../../../../../../utils/constance';
 import { AssessService } from '../../../../services/assess.service';
+import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'unf-add-assessed-object',
@@ -105,7 +106,9 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
         // Uploaded indicator, COA, or sensor
         const sub = this.assessService
             .genericPost(`api/${convertedObj.type}s`, convertedObj)
-            .map((assessments) => assessments.map((el) => el.attributes))
+            .pipe(
+                map((assessments) => assessments.map((el) => el.attributes))
+            )
             .subscribe(
             (assessedRes) => {
                 const newId = assessedRes[0].id;

@@ -9,7 +9,7 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 import { ComponentModule } from '../../../../components/component.module';
 import { CoreModule } from '../../../../core/core.module';
 import { ConfigService } from '../../../../core/services/config.service';
@@ -38,11 +38,11 @@ let res = [];
 let serviceMock = {
   url: '',
   load: (filter?: any): Observable<any[]> => {
-    return Observable.of(res);
+    return observableOf(res);
   },
 
   create: (item: any): Observable<any> => {
-    return Observable.of([item]);
+    return observableOf([item]);
   }
 };
 
