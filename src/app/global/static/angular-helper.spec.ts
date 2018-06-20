@@ -12,13 +12,13 @@ describe('AngularHelper', () => {
         ];
     });
 
-    describe('genericTrackBy', () => {
+    fdescribe('genericTrackBy', () => {
         it('should use an object id first if it exists', () => {
-            expect(AngularHelper.genericTrackByFn(-100, t[0])).toEqual(t[0].id);
+            expect(AngularHelper.genericTrackBy(-100, t[0])).toEqual(t[0].id);
         });
 
-        it('should use the given index if and id does not exist', () => {
-            expect(AngularHelper.genericTrackByFn(-100, t[0])).toEqual(-100);
+        it('should use the given index if the id does not exist', () => {
+            expect(AngularHelper.genericTrackBy(-100, undefined)).toEqual(-100);
         });
     });
 
