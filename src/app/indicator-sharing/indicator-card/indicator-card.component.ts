@@ -1,8 +1,7 @@
 import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, Renderer2, Output, EventEmitter, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { trigger, state, transition, style, animate, query } from '@angular/animations';
-import { Observable } from 'rxjs/Observable';
+import { Observable ,  Subscription ,  BehaviorSubject } from 'rxjs';
 import { MatTooltip } from '@angular/material';
-import { Subscription } from 'rxjs/Subscription';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { FormatHelpers } from '../../global/static/format-helpers';
@@ -13,7 +12,6 @@ import { downloadBundle } from '../../global/static/stix-bundle';
 import { generateStixRelationship } from '../../global/static/stix-relationship';
 import { StixRelationshipTypes } from '../../global/enums/stix-relationship-types.enum';
 import { canCrud } from '../../global/static/stix-permissions';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Component({
     selector: 'indicator-card',

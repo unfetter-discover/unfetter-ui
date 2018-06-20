@@ -1,7 +1,9 @@
+
+import { distinctUntilChanged, pluck, map, filter } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { fadeInOut } from '../../../global/animations/fade-in-out';
 import * as assessReducers from '../store/assess.reducers';
 
@@ -34,22 +36,22 @@ export class AssessLayoutComponent implements OnInit, AfterViewInit {
    */
   public ngAfterViewInit(): void {
     this.title = this.store
-      .select('assessment')
-      .filter((el) => el !== undefined)
-      .distinctUntilChanged()
-      .pluck('assessment')
-      .pluck('assessmentMeta')
-      .pluck('title');
+      .select('assessment').pipe(
+      filter((el) => el !== undefined),
+      distinctUntilChanged(),
+      pluck('assessment'),
+      pluck('assessmentMeta'),
+      pluck('title'));
 
     this.showBackButton = this.store
-      .select('assessment')
-      .pluck<object, boolean>('backButton')
-      .filter((el) => (el && typeof el === 'boolean'))
-      .distinctUntilChanged()
-      .map((el) => {
+      .select('assessment').pipe(
+      pluck<object, boolean>('backButton'),
+      filter((el) => (el && typeof el === 'boolean')),
+      distinctUntilChanged(),
+      map((el) => {
         this.changeDetectorRef.detectChanges();
         return el;
-      });
+      }));
     this.changeDetectorRef.detectChanges();
   }
 

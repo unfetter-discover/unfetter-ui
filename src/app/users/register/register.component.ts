@@ -1,7 +1,10 @@
+
+import { timer as observableTimer,  Observable  } from 'rxjs';
+
+import { map, switchMap } from 'rxjs/operators';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
 
 import { UsersService } from '../../core/services/users.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -193,14 +196,14 @@ export class RegisterComponent implements OnInit {
     }
 
     private validateEmail(emailCtrl: FormControl): Observable<any> {
-        return Observable.timer(50)
-            .switchMap(() => this.usersService.emailAvailable(emailCtrl.value))
-            .map((emailAvailable: boolean) => emailAvailable ? null : { 'emailTaken': true });
+        return observableTimer(50).pipe(
+            switchMap(() => this.usersService.emailAvailable(emailCtrl.value)),
+            map((emailAvailable: boolean) => emailAvailable ? null : { 'emailTaken': true }));
     }
 
     private validateUserName(userNameCtrl: FormControl): Observable<any> {
-        return Observable.timer(50)
-            .switchMap(() => this.usersService.userNameAvailable(userNameCtrl.value))
-            .map((userNameAvailable: boolean) => userNameAvailable ? null : { 'userNameTaken': true });
+        return observableTimer(50).pipe(
+            switchMap(() => this.usersService.userNameAvailable(userNameCtrl.value)),
+            map((userNameAvailable: boolean) => userNameAvailable ? null : { 'userNameTaken': true }));
     }
 }

@@ -5,7 +5,7 @@ import { MatButtonModule, MatSelectModule } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Store, StoreModule } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 import { AssessmentMeta } from 'stix/assess/v2/assessment-meta';
 import { BaseComponentService } from '../../../components/base-service.component';
 import * as fromRoot from '../../../root-store/app.reducers';
@@ -22,7 +22,7 @@ describe('CreatedByRefComponent', () => {
 
     const mockBaseService = {
         get() {
-            return Observable.of(
+            return observableOf(
                 mockOrganizations
                     .map((org) => {
                         return {

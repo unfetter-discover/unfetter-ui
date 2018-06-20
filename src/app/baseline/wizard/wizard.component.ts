@@ -1,10 +1,12 @@
+
+import { of as observableOf,  Observable ,  Subscription  } from 'rxjs';
+
+import { take, filter, distinctUntilChanged, pluck } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren } from '@angular/core';
 import { MatDialog, MatSelect, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 import { AssessmentSet, Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { Key } from 'ts-keycode-enum';
@@ -59,8 +61,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   private baselineObjAssessments: ObjectAssessment[] = [];
   
   public showHeatmap = false;
-  public allAttackPatterns: Observable<AttackPattern[]> = Observable.of([]);
-  public selectedFrameworkAttackPatterns: Observable<AttackPattern[]> = Observable.of([]);
+  public allAttackPatterns: Observable<AttackPattern[]> = observableOf([]);
+  public selectedFrameworkAttackPatterns: Observable<AttackPattern[]> = observableOf([]);
   public selectedAttackPatterns: AttackPattern[] = [];
 
   private readonly subscriptions: Subscription[] = [];
@@ -97,10 +99,10 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         () => idParamSub$.unsubscribe());
 
     const sub4$ = this.wizardStore
-      .select('baseline')
-      .pluck('finishedLoading')
-      .distinctUntilChanged()
-      .filter((loaded: boolean) => loaded && loaded === true)
+      .select('baseline').pipe(
+      pluck('finishedLoading'),
+      distinctUntilChanged(),
+      filter((loaded: boolean) => loaded && loaded === true))
       .subscribe(
         (loaded: boolean) => {
           const panel = this.determineFirstOpenSidePanel();
@@ -113,19 +115,19 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         (err) => console.log(err));
 
     const sub5$ = this.wizardStore
-      .select('baseline')
-      .pluck('page')
-      .distinctUntilChanged()
+      .select('baseline').pipe(
+      pluck('page'),
+      distinctUntilChanged())
       .subscribe(
         (page: number) => this.page = page,
         (err) => console.log(err));
 
     interface SavedState { finished: boolean, id: string };
     const sub6$ = this.wizardStore
-      .select('baseline')
-      .pluck('saved')
-      .distinctUntilChanged()
-      .filter((el: SavedState) => el && el.finished === true)
+      .select('baseline').pipe(
+      pluck('saved'),
+      distinctUntilChanged(),
+      filter((el: SavedState) => el && el.finished === true))
       .subscribe(
         (saved: SavedState) => {
           const id = saved.id;
@@ -134,10 +136,10 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         (err) => console.log(err));
 
     const sub7$ = this.wizardStore
-      .select('baseline')
-      .pluck('baseline')
-      .filter((el) => el !== undefined)
-      .distinctUntilChanged()
+      .select('baseline').pipe(
+      pluck('baseline'),
+      filter((el) => el !== undefined),
+      distinctUntilChanged())
       .subscribe(
         (assessmentSet: AssessmentSet) => {
           this.currentBaseline = assessmentSet;
@@ -149,10 +151,10 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         (err) => console.log(err));
 
     const sub8$ = this.userStore
-      .select('users')
-      .pluck('userProfile')
-      .distinctUntilChanged()
-      .take(1)
+      .select('users').pipe(
+      pluck('userProfile'),
+      distinctUntilChanged(),
+      take(1))
       .subscribe(
       (user: UserProfile) => {
           const framework = (user && user.preferences && user.preferences.killchain) 
@@ -163,9 +165,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         (err) => console.log(err));
 
     const sub9$ = this.wizardStore
-      .select('baseline')
-      .pluck('baselineGroups')
-      .distinctUntilChanged()
+      .select('baseline').pipe(
+      pluck('baselineGroups'),
+      distinctUntilChanged())
       .subscribe(
         (baselineGroups: Category[]) => {
           this.baselineGroups = baselineGroups;
@@ -174,10 +176,10 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         (err) => console.log(err));
 
       const sub10$ = this.wizardStore
-        .select('baseline')
-        .pluck('capabilityGroups')
-        .filter((el) => el !== undefined)
-        .distinctUntilChanged()
+        .select('baseline').pipe(
+        pluck('capabilityGroups'),
+        filter((el) => el !== undefined),
+        distinctUntilChanged())
         .subscribe(
           (baselineGroups: Category[]) => {
             this.allCategories = (baselineGroups) ? baselineGroups.slice() : [];
@@ -185,9 +187,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           (err) => console.log(err));
 
       const sub11$ = this.wizardStore
-        .select('baseline')
-        .pluck('capabilities')
-        .distinctUntilChanged()
+        .select('baseline').pipe(
+        pluck('capabilities'),
+        distinctUntilChanged())
         .subscribe(
           (capabilities: Capability[]) => {
             this.allCapabilities = (capabilities) ? capabilities.slice() : [];
@@ -195,9 +197,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           (err) => console.log(err));
 
       const sub12$ = this.wizardStore
-        .select('baseline')
-        .pluck('baselineCapabilities')
-        .distinctUntilChanged()
+        .select('baseline').pipe(
+        pluck('baselineCapabilities'),
+        distinctUntilChanged())
         .subscribe(
           (capabilities: Capability[]) => {
             this.baselineCapabilities = (capabilities) ? capabilities.slice() : [];
@@ -206,9 +208,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           (err) => console.log(err));
   
       const sub13$ = this.wizardStore
-        .select('baseline')
-        .pluck('currentCapabilityGroup')
-        .distinctUntilChanged()
+        .select('baseline').pipe(
+        pluck('currentCapabilityGroup'),
+        distinctUntilChanged())
         .subscribe(
           (capabilityGroup: Category) => {
             this.currentBaselineGroup = capabilityGroup;
@@ -217,9 +219,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           (err) => console.log(err));
     
       const sub14$ = this.wizardStore
-        .select('baseline')
-        .pluck('currentCapability')
-        .distinctUntilChanged()
+        .select('baseline').pipe(
+        pluck('currentCapability'),
+        distinctUntilChanged())
         .subscribe(
           (capability: Capability) => {
             this.currentCapability = capability;
@@ -227,9 +229,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         (err) => console.log(err));
       
       const sub15$ = this.wizardStore
-        .select('baseline')
-        .pluck('baselineObjAssessments')
-        .distinctUntilChanged()
+        .select('baseline').pipe(
+        pluck('baselineObjAssessments'),
+        distinctUntilChanged())
         .subscribe(
           (baselineObjAssessments: ObjectAssessment[]) => {
             this.baselineObjAssessments = baselineObjAssessments;
@@ -237,14 +239,14 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         (err) => console.log(err));
 
       this.allAttackPatterns = this.wizardStore
-        .select('baseline')
-        .pluck<{}, AttackPattern[]>('allAttackPatterns')
-        .distinctUntilChanged();
+        .select('baseline').pipe(
+        pluck<{}, AttackPattern[]>('allAttackPatterns'),
+        distinctUntilChanged());
     
       this.selectedFrameworkAttackPatterns = this.wizardStore
-        .select('baseline')
-        .pluck<{}, AttackPattern[]>('selectedFrameworkAttackPatterns')
-        .distinctUntilChanged();
+        .select('baseline').pipe(
+        pluck<{}, AttackPattern[]>('selectedFrameworkAttackPatterns'),
+        distinctUntilChanged());
     
       this.subscriptions.push(sub4$, sub5$, sub6$, sub7$, sub8$, sub9$, sub10$, sub11$, sub12$, sub13$, sub14$, sub15$);
 

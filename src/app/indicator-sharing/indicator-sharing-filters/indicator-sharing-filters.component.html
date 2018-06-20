@@ -9,7 +9,7 @@
       </mat-form-field>
       <mat-form-field class="full-width mb-9">
         <mat-select placeholder="Organizations" [multiple]="true" formControlName="organizations">
-          <mat-option value="{{org.id}}" *ngFor="let org of store.select('indicatorSharing').pluck('identities') | async">{{ org.name }}</mat-option>
+          <mat-option value="{{org.id}}" *ngFor="let org of organizations$| async">{{ org.name }}</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field class="full-width mb-9">
@@ -19,7 +19,7 @@
       </mat-form-field>      
       <mat-form-field class="full-width mb-9">
         <mat-select placeholder="Sensors" [multiple]="true" formControlName="sensors">
-          <mat-option value="{{sensor.id}}" *ngFor="let sensor of store.select('indicatorSharing').pluck('sensors') | async">{{ sensor.name | capitalize }}</mat-option>
+          <mat-option value="{{sensor.id}}" *ngFor="let sensor of sensors$ | async">{{ sensor.name | capitalize }}</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field class="full-width mb-9">

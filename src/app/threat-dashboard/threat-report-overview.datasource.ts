@@ -1,7 +1,9 @@
+
+import { merge as observableMerge,  Observable ,  BehaviorSubject  } from 'rxjs';
+
+import { map, switchMap } from 'rxjs/operators';
 import { DataSource } from '@angular/cdk/table';
 import { CollectionViewer } from '@angular/cdk/collections';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { ThreatReport } from './models/threat-report.model';
 import { ThreatReportOverviewService } from '../threat-dashboard/services/threat-report-overview.service';
@@ -23,8 +25,8 @@ export class ThreatReportOverviewDataSource extends DataSource<ThreatReport> {
      */
     public connect(collectionViewer: CollectionViewer): Observable<ThreatReport[]> {
         const arr = [this.filterChange, this.dataChange];
-        return Observable.merge(...arr)
-            .switchMap(() => {
+        return observableMerge(...arr).pipe(
+            switchMap(() => {
                 console.log('rebuilding table');
                 const val = this.filterChange.getValue();
                 const filterVal = val.trim().toLowerCase() || '';
@@ -35,12 +37,12 @@ export class ThreatReportOverviewDataSource extends DataSource<ThreatReport> {
                     return products$;
                 }
 
-                return products$
-                    .map((el) => {
+                return products$.pipe(
+                    map((el) => {
                         return el.filter((tro) => tro.name.trim().toLowerCase().includes(filterVal)
                             || tro.author.trim().toLowerCase().includes(filterVal));
-                    });
-            });
+                    }));
+            }));
     }
 
     /**

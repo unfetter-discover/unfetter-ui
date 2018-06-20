@@ -1,10 +1,11 @@
+
+import { take, filter, pluck, distinctUntilChanged } from 'rxjs/operators';
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { MatDialog, MatSidenav } from '@angular/material';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/pluck';
+import { Observable ,  BehaviorSubject } from 'rxjs';
+
+
 
 import { AddIndicatorComponent } from '../add-indicator/add-indicator.component';
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
@@ -45,6 +46,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     public filterOpened: boolean = false;
     public collapseAllCards: boolean = false;
     public activeMainWell: mainWell = 'tactics';
+    public totalIndicatorCount$: Observable<number>
     public collapseAllCardsSubject: BehaviorSubject<boolean> = new BehaviorSubject(this.collapseAllCards);
 
     @ViewChild('filterContainer') public filterContainer: MatSidenav;
@@ -57,23 +59,25 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
         protected changeDetectorRef: ChangeDetectorRef
     ) {
         super(store, changeDetectorRef);
+        this.totalIndicatorCount$ = this.store.select('indicatorSharing')
+            .pipe(pluck('totalIndicatorCount'));
     }
 
     public ngOnInit() {
         this.initBaseData();
 
-        const filteredIndicatorSub$ = this.store.select('indicatorSharing')
-            .pluck('filteredIndicators')
-            .distinctUntilChanged()
+        const filteredIndicatorSub$ = this.store.select('indicatorSharing').pipe(
+            pluck('filteredIndicators'),
+            distinctUntilChanged())
             .subscribe(
                 (res: any[]) => this.filteredIndicators = res,
                 (err) => console.log(err),
                 () => filteredIndicatorSub$.unsubscribe()
             );
 
-        const displayedIndicatorSub$ = this.store.select('indicatorSharing')
-            .pluck('displayedIndicators')
-            .distinctUntilChanged()
+        const displayedIndicatorSub$ = this.store.select('indicatorSharing').pipe(
+            pluck('displayedIndicators'),
+            distinctUntilChanged())
             .subscribe(
                 (res: any[]) => {
                     this.displayedIndicators = res;
@@ -86,9 +90,9 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                 }
             );
 
-        const searchParametersSub$ = this.store.select('indicatorSharing')
-            .pluck('searchParameters')
-            .distinctUntilChanged()
+        const searchParametersSub$ = this.store.select('indicatorSharing').pipe(
+            pluck('searchParameters'),
+            distinctUntilChanged())
             .subscribe(
                 (res) => {
                     if (!this.filterOpened && JSON.stringify(res) !== JSON.stringify(initialSearchParameters)) {
@@ -105,9 +109,9 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                 }
             );
 
-        const indicatorToSensorMap$ = this.store.select('indicatorSharing')
-            .pluck('indicatorToSensorMap')
-            .distinctUntilChanged()
+        const indicatorToSensorMap$ = this.store.select('indicatorSharing').pipe(
+            pluck('indicatorToSensorMap'),
+            distinctUntilChanged())
             .subscribe(
                 (res) => {
                     this.indicatorToSensorMap = res;
@@ -120,9 +124,9 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                 }
             );
 
-        const getUser$ = this.store.select('users')
-            .filter((users: any) => users.userProfile && users.userProfile._id)
-            .take(1)
+        const getUser$ = this.store.select('users').pipe(
+            filter((users: any) => users.userProfile && users.userProfile._id),
+            take(1))
             .subscribe(
                 (users: any) => {
                     this.store.dispatch(new indicatorSharingActions.StartSocialStream(users.userProfile._id));

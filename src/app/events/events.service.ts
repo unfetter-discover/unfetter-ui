@@ -1,8 +1,11 @@
+
+import { empty as observableEmpty,  Observable  } from 'rxjs';
+
+import { map } from 'rxjs/operators';
 import { _isNumberValue } from '@angular/cdk/coercion';
 import { DatePipe } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
 import { GenericApi } from '../core/services/genericapi.service';
 import { ChartData } from '../global/models/chart-data';
 import { Sighting } from '../models';
@@ -68,18 +71,18 @@ export class EventsService {
    */
     public getAs<T>(url = ''): Observable<T | T[]> {
         if (!url) {
-            return Observable.empty();
+            return observableEmpty();
         }
 
         return this.genericApi
-            .getAs<JsonApiData<T>>(url)
-            .map((data) => {
+            .getAs<JsonApiData<T>>(url).pipe(
+            map((data) => {
                 if (Array.isArray(data)) {
                     return data.map((el) => el.attributes);
                 } else {
                     return data.attributes;
                 }
-            });
+            }));
     }
 
     /**

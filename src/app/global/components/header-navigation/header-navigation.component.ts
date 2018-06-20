@@ -8,6 +8,7 @@ import * as fromApp from '../../../root-store/app.reducers';
 import * as userActions from '../../../root-store/users/user.actions';
 import { Constance } from '../../../utils/constance';
 import { fadeInOut } from '../../animations/fade-in-out';
+import { filter, pluck } from 'rxjs/operators';
 
 @Component({
   selector: 'header-navigation',
@@ -89,8 +90,10 @@ export class HeaderNavigationComponent {
     );
 
     const getToken$ = this.user$
-      .filter((user) => user.token)
-      .pluck('token')
+      .pipe(
+        filter((user: any) => user.token),
+        pluck('token')
+      )
       .subscribe(
         (token) => {
           this.encodedToken = encodeURI(token);

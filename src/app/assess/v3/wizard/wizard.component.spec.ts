@@ -1,11 +1,14 @@
 import { HttpClientModule } from '@angular/common/http';
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule, MatCardModule, MatDatepickerModule, MatDialogModule, MatExpansionModule, MatInputModule, MatProgressBarModule, MatSelectModule, MatSnackBarModule } from '@angular/material';
+import {
+  MatButtonModule, MatCardModule, MatDatepickerModule, MatDialogModule, MatExpansionModule,
+  MatInputModule, MatProgressBarModule, MatSelectModule, MatSnackBarModule
+} from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { StoreModule, combineReducers } from '@ngrx/store';
+import { combineReducers, StoreModule } from '@ngrx/store';
 import * as fromRoot from 'app/root-store/app.reducers';
 import { ChartsModule } from 'ng2-charts';
 import { Assess3Meta } from 'stix';
@@ -36,32 +39,32 @@ class MockModel {
       assessmentMeta: null, assessment_objects: [
         {
           stix:
-            {
-              version: null, external_references: null, granular_markings: null, name: null,
-              description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
-              type: null, valid_from: null, labels: null, modified: null, created: null,
-              metaProperties: null, id: 'happyjack'
-            },
+          {
+            version: null, external_references: null, granular_markings: null, name: null,
+            description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
+            type: null, valid_from: null, labels: null, modified: null, created: null,
+            metaProperties: null, id: 'happyjack'
+          },
           risk: .25, questions: [{ name: 'sandychapsticks', risk: 3, options: null, selected_value: null }]
         },
         {
           stix:
-            {
-              version: null, external_references: null, granular_markings: null, name: null,
-              description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
-              type: null, valid_from: null, labels: null, modified: null, created: null,
-              metaProperties: null, id: 'bellystaple'
-            },
+          {
+            version: null, external_references: null, granular_markings: null, name: null,
+            description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
+            type: null, valid_from: null, labels: null, modified: null, created: null,
+            metaProperties: null, id: 'bellystaple'
+          },
           risk: 0, questions: [{ name: 'sandychapsticks', risk: 3, options: null, selected_value: null }]
         },
         {
           stix:
-            {
-              version: null, external_references: null, granular_markings: null, name: null,
-              description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
-              type: null, valid_from: null, labels: null, modified: null, created: null,
-              metaProperties: null, id: 'jumpyflashpan'
-            },
+          {
+            version: null, external_references: null, granular_markings: null, name: null,
+            description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
+            type: null, valid_from: null, labels: null, modified: null, created: null,
+            metaProperties: null, id: 'jumpyflashpan'
+          },
           risk: .75, questions: [{ name: 'sandychapsticks', risk: 3, options: null, selected_value: null }]
         }],
       created: null,
@@ -472,22 +475,22 @@ describe('WizardComponent', () => {
     component.capabilities[0].id = 'jumpyflashpan';
     component.model.attributes.assessment_objects.push({
       stix:
-        {
-          version: null, external_references: null, granular_markings: null, name: null,
-          description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
-          type: null, valid_from: null, labels: null, modified: null, created: null,
-          metaProperties: null, id: 'bellystaple'
-        },
+      {
+        version: null, external_references: null, granular_markings: null, name: null,
+        description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
+        type: null, valid_from: null, labels: null, modified: null, created: null,
+        metaProperties: null, id: 'bellystaple'
+      },
       risk: 0, questions: [{ name: 'sandychapsticks', risk: 3, options: null, selected_value: null }]
     } as AssessmentObject);
     component.model.attributes.assessment_objects.push({
       stix:
-        {
-          version: null, external_references: null, granular_markings: null, name: null,
-          description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
-          type: null, valid_from: null, labels: null, modified: null, created: null,
-          metaProperties: null, id: 'jumpyflashpan'
-        },
+      {
+        version: null, external_references: null, granular_markings: null, name: null,
+        description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
+        type: null, valid_from: null, labels: null, modified: null, created: null,
+        metaProperties: null, id: 'jumpyflashpan'
+      },
       risk: .75, questions: [{ name: 'sandychapsticks', risk: 3, options: null, selected_value: null }]
     } as AssessmentObject);
     component.updateSummaryChart();

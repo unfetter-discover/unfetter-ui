@@ -4,16 +4,16 @@
         <ng-container matColumnDef="stix">
             <mat-header-cell *matHeaderCellDef>STIX</mat-header-cell>
             <mat-cell *matCellDef="let element">
-                <div class="flex flexItemsCenter">
+                <div class="flex1 flex flexItemsCenter">
                     <span class="flex1">
-                        <a routerLink="{{element.id}}">{{element.name}}</a>
+                        <a routerLink="{{element.id}}">{{element.name}}</a>&nbsp;
                         <chip-links [data]="element.external_references || []" maxChips="3" nameField="source_name" urlField="url"></chip-links>
                     </span>
                     <span class="buttonGrp text-right">
                         <button mat-button routerLink="edit/{{element.id}}">
                             <i class="material-icons">create</i>
                         </button>
-                            <button mat-button (click)="deletButtonClicked(element)">
+                        <button mat-button (click)="deletButtonClicked(element)">
                             <i class="material-icons">delete</i>
                         </button>
                     </span>

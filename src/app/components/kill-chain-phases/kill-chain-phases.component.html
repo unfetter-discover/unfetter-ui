@@ -15,17 +15,17 @@
             <mat-card-content>
                 <div class="row">
                     <div class="col-md-6">
-                        <mat-input-container class="full-width">
+                        <mat-form-field class="full-width">
                             <input id="kill-chain-name" matInput placeholder="Kill Chain Name / Framework"
                                     [(ngModel)]="killChainPhase.kill_chain_name"
                                     value="{{killChainPhase.kill_chain_name}}">
-                        </mat-input-container>
+                        </mat-form-field>
                     </div>
                     <div class="col-md-6">
-                        <mat-input-container class="full-width">
+                        <mat-form-field class="full-width">
                             <input id="phase-name" matInput placeholder="Phase Name / Tactic"
                                     [(ngModel)]="killChainPhase.phase_name" value="{{killChainPhase.phase_name}}">
-                        </mat-input-container>
+                        </mat-form-field>
                     </div>
                 </div>
             </mat-card-content>

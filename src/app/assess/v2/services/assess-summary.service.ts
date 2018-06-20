@@ -1,5 +1,6 @@
+
+import { empty as observableEmpty,  Observable  } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { Constance } from '../../../utils/constance';
 
@@ -16,7 +17,7 @@ export class AssessSummaryService {
      */
     public getSummaryAggregation(id: string): Observable<any> {
         if (!id) {
-            return Observable.empty();
+            return observableEmpty();
         }
 
         const url = `${this.baseUrl}/${id}/summary-aggregations`;

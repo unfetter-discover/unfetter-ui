@@ -1,6 +1,8 @@
+
+import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { JsonApiData } from '../../models/json/jsonapi-data';
 import { UserPreferences } from '../../models/user/user-preferences';
 import { UserProfile } from '../../models/user/user-profile';
@@ -32,13 +34,13 @@ export class UserPreferencesService {
         
         const url = `${this.referencesUrl}/${userId}`;
         return this.genericApi
-            .postAs<JsonApiData<UserProfile>>(url, {data: {preferences}})
-            .map((el) => el.attributes)
-            .map((el) => {
+            .postAs<JsonApiData<UserProfile>>(url, {data: {preferences}}).pipe(
+            map((el) => el.attributes),
+            map((el) => {
                 // refresh the user in the app
                 this.store.dispatch(new FetchUserOnly());
                 return el;
-            });
+            }));
     }
 
 }

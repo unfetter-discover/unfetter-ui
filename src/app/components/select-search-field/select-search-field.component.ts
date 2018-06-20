@@ -1,6 +1,8 @@
+
+import { map, startWith } from 'rxjs/operators';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { BaseComponentService } from '../base-service.component';
 
 
@@ -23,9 +25,9 @@ export class SelectSearchFieldComponent implements OnInit {
     public inputFieldValue;
 
     constructor(public baseComponentService: BaseComponentService) {
-        this.filteredOptions = this.formCtrl.valueChanges
-            .startWith(null)
-            .map((val) => val ? this.filter(val) : this.options.slice());
+        this.filteredOptions = this.formCtrl.valueChanges.pipe(
+            startWith(null),
+            map((val) => val ? this.filter(val) : this.options.slice()));
     }
 
     public ngOnInit() {

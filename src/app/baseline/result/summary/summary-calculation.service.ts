@@ -10,7 +10,7 @@ import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
 import { AssessKillChainType } from '../../../models/assess/assess-kill-chain-type';
 import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
 import { Constance } from '../../../utils/constance';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { ThresholdOption } from '../../models/threshold-option';
 import { BaselineQuestion } from '../../../models/baseline/baseline-question';
 import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';

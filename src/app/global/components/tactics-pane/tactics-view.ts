@@ -1,3 +1,7 @@
+
+import { of as observableOf,  Observable ,  Subscription  } from 'rxjs';
+
+import { map, take, distinctUntilChanged, pluck, filter } from 'rxjs/operators';
 import {
     Input,
     Output,
@@ -9,8 +13,6 @@ import {
     SimpleChanges,
     EventEmitter,
 } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 import { Store } from '@ngrx/store';
 
 import { TacticChain, Tactic } from './tactics.model';
@@ -160,8 +162,8 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
      */
     protected initData() {
         if (this.frameworks === null) {
-            this.framework$ = this.getFrameworks()
-                .distinctUntilChanged()
+            this.framework$ = this.getFrameworks().pipe(
+                distinctUntilChanged())
                 .subscribe(
                     (frameworks) => {
                         this.frameworks = frameworks;
@@ -176,10 +178,10 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
         if (this.chains === null) {
             console['debug'](`(${new Date().toISOString()}) ${this.constructor.name} querying tactics store`);
             this.chain$ = this.store
-                .select('config')
-                .pluck('tacticsChains')
-                .filter(t => t !== null)
-                .distinctUntilChanged()
+                .select('config').pipe(
+                pluck('tacticsChains'),
+                filter(t => t !== null),
+                distinctUntilChanged())
                 .subscribe(
                     (tactics: Dictionary<TacticChain>) => {
                         this.loadTactics(tactics);
@@ -197,23 +199,23 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
      */
     private getFrameworks(): Observable<string[]> {
         if (this.frameworks && this.frameworks.length) {
-            return Observable.of(this.frameworks.slice(0));
+            return observableOf(this.frameworks.slice(0));
         }
         if (this.targets && this.targets.length) {
             const frameworks = this.targets
                 .reduce((chains, tactic) => chains.concat(tactic.framework), [])
                 .filter(chain => chain !== undefined && chain !== null);
             if (frameworks.length >= 1) {
-                return Observable.of(frameworks);
+                return observableOf(frameworks);
             }
         }
         return this.store
-            .select('users')
-            .pluck('userProfile')
-            .take(1)
-            .pluck('preferences')
-            .pluck('killchain')
-            .map((chain: string) => [chain]);
+            .select('users').pipe(
+            pluck('userProfile'),
+            take(1),
+            pluck('preferences'),
+            pluck('killchain'),
+            map((chain: string) => [chain]));
     }
 
     /**

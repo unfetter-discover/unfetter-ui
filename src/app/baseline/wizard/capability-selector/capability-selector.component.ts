@@ -1,3 +1,5 @@
+
+import { distinctUntilChanged, pluck } from 'rxjs/operators';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -33,17 +35,17 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
   ngOnInit() {
 
     const capSub1$ = this.wizardStore
-      .select('baseline')
-      .pluck('capabilities')
-      .distinctUntilChanged()
+      .select('baseline').pipe(
+      pluck('capabilities'),
+      distinctUntilChanged())
       .subscribe(
         (allCapabilities: Capability[]) => this.allCapabilities = allCapabilities,
         (err) => console.log(err));
 
     const capSub2$ = this.wizardStore
-      .select('baseline')
-      .pluck('currentCapabilityGroup')
-      .distinctUntilChanged()
+      .select('baseline').pipe(
+      pluck('currentCapabilityGroup'),
+      distinctUntilChanged())
       .subscribe(
         (currentCapabilityGroup: Category) => {
           this.currentCapabilityGroup = currentCapabilityGroup;
@@ -56,9 +58,9 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
         (err) => console.log(err));
 
     const capSub3$ = this.wizardStore
-      .select('baseline')
-      .pluck('baselineCapabilities')
-      // .distinctUntilChanged()
+      .select('baseline').pipe(
+      pluck('baselineCapabilities'),
+      distinctUntilChanged())
       .subscribe(
         (baselineCapabilities: any[]) => {
           this.baselineCapabilities = (baselineCapabilities) ? baselineCapabilities.slice() : [];
@@ -67,9 +69,9 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
         (err) => console.log(err));
 
     const capSub4$ = this.wizardStore
-      .select('baseline')
-      .pluck('baselineObjAssessments')
-      .distinctUntilChanged()
+      .select('baseline').pipe(
+      pluck('baselineObjAssessments'),
+      distinctUntilChanged())
       .subscribe(
         (objAssessments: any[]) => {
           this.baselineObjAssessments = objAssessments;

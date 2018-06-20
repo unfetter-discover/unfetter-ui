@@ -6,7 +6,7 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 import { CoreModule } from '../../../../core/core.module';
 import { GlobalModule } from '../../../../global/global.module';
 import { reducers } from '../../../../root-store/app.reducers';
@@ -24,7 +24,7 @@ describe(`AttackPatternListComponent`, () => {
   let serviceMock = {
     url: '',
     load: (filter?: any): Observable<any[]> => {
-      return Observable.of(res);
+      return observableOf(res);
     }
   };
 

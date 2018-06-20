@@ -6,16 +6,16 @@
 
 <div  *ngIf="sensor" class="row">
     <div class="col-md-12">
-        <mat-input-container class="full-width">
+        <mat-form-field class="full-width">
         <input matInput placeholder="Name" required [(ngModel)]="sensor.attributes.name" value="{{sensor.attributes.name}}">
-        </mat-input-container>
+        </mat-form-field>
     </div>
 </div>
 <div  *ngIf="sensor" class="row">
     <div class="col-md-12">
-        <mat-input-container class="full-width">
+        <mat-form-field class="full-width">
             <input matInput placeholder="Decsription" [(ngModel)]="sensor.attributes.description" value="{{sensor.attributes.description}}">
-        </mat-input-container>
+        </mat-form-field>
     </div>
 </div>
 

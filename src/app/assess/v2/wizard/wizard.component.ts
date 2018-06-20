@@ -1,10 +1,12 @@
+
+import { map, filter, take, distinctUntilChanged, pluck } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren } from '@angular/core';
 import { MatSelect, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MenuItem } from 'primeng/components/common/menuitem';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { Assessment } from 'stix/assess/v2/assessment';
 import { AssessmentMeta } from 'stix/assess/v2/assessment-meta';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
@@ -176,34 +178,34 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         () => idParamSub$.unsubscribe());
 
     const sub1$ = this.wizardStore
-      .select('assessment')
-      .pluck('indicators')
-      .distinctUntilChanged()
-      .filter((el) => el !== undefined)
-      .map((arr: JsonApiData<Indicator.UnfetterIndicator>[]) => arr.map((el) => el.attributes))
+      .select('assessment').pipe(
+      pluck('indicators'),
+      distinctUntilChanged(),
+      filter((el) => el !== undefined),
+      map((arr: JsonApiData<Indicator.UnfetterIndicator>[]) => arr.map((el) => el.attributes)))
       .subscribe((arr: Indicator.UnfetterIndicator[]) => this.indicators = arr);
 
     const sub2$ = this.wizardStore
-      .select('assessment')
-      .pluck('mitigations')
-      .distinctUntilChanged()
-      .filter((el) => el !== undefined)
-      .map((arr: JsonApiData<Stix>[]) => arr.map((el) => el.attributes))
+      .select('assessment').pipe(
+      pluck('mitigations'),
+      distinctUntilChanged(),
+      filter((el) => el !== undefined),
+      map((arr: JsonApiData<Stix>[]) => arr.map((el) => el.attributes)))
       .subscribe((arr: Stix[]) => this.mitigations = arr);
 
     const sub3$ = this.wizardStore
-      .select('assessment')
-      .pluck('sensors')
-      .distinctUntilChanged()
-      .filter((el) => el !== undefined)
-      .map((arr: JsonApiData<Stix>[]) => arr.map((el) => el.attributes))
+      .select('assessment').pipe(
+      pluck('sensors'),
+      distinctUntilChanged(),
+      filter((el) => el !== undefined),
+      map((arr: JsonApiData<Stix>[]) => arr.map((el) => el.attributes)))
       .subscribe((arr: Stix[]) => this.sensors = arr);
 
     const sub4$ = this.wizardStore
-      .select('assessment')
-      .pluck('finishedLoading')
-      .distinctUntilChanged()
-      .filter((loaded: boolean) => loaded && loaded === true)
+      .select('assessment').pipe(
+      pluck('finishedLoading'),
+      distinctUntilChanged(),
+      filter((loaded: boolean) => loaded && loaded === true))
       .subscribe(
         (loaded: boolean) => {
           const panel = this.determineFirstOpenSidePanel();
@@ -214,19 +216,19 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         (err) => console.log(err));
 
     const sub5$ = this.wizardStore
-      .select('assessment')
-      .pluck('page')
-      .distinctUntilChanged()
+      .select('assessment').pipe(
+      pluck('page'),
+      distinctUntilChanged())
       .subscribe(
         (page: number) => this.page = page,
         (err) => console.log(err));
 
     interface SavedState { finished: boolean, rollupId: string, id: string };
     const sub6$ = this.wizardStore
-      .select('assessment')
-      .pluck('saved')
-      .distinctUntilChanged()
-      .filter((el: SavedState) => el && el.finished === true)
+      .select('assessment').pipe(
+      pluck('saved'),
+      distinctUntilChanged(),
+      filter((el: SavedState) => el && el.finished === true))
       .subscribe(
         (saved: SavedState) => {
           const rollupId = saved.rollupId;
@@ -236,19 +238,19 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         (err) => console.log(err));
 
     const sub7$ = this.wizardStore
-      .select('assessment')
-      .pluck('assessment')
-      .pluck('assessmentMeta')
-      .distinctUntilChanged()
+      .select('assessment').pipe(
+      pluck('assessment'),
+      pluck('assessmentMeta'),
+      distinctUntilChanged())
       .subscribe(
         (assessmentMeta: AssessmentMeta) => this.meta = assessmentMeta,
         (err) => console.log(err));
 
     const sub8$ = this.userStore
-      .select('users')
-      .pluck('userProfile')
-      .distinctUntilChanged()
-      .take(1)
+      .select('users').pipe(
+      pluck('userProfile'),
+      distinctUntilChanged(),
+      take(1))
       .subscribe(
         (user: UserProfile) => this.currentUser = user,
         (err) => console.log(err));
@@ -272,15 +274,15 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
   public loadExistingAssessment(rollupId: string, meta: Partial<AssessmentMeta>) {
     const sub$ = this.userStore
-      .select('users')
-      .pluck('userProfile')
-      .take(1)
+      .select('users').pipe(
+      pluck('userProfile'),
+      take(1))
       .subscribe(
         (user: UserProfile) => {
           const sub1$ = this.assessStore
-            .select('fullAssessment')
-            .pluck('assessmentTypes')
-            .distinctUntilChanged()
+            .select('fullAssessment').pipe(
+            pluck('assessmentTypes'),
+            distinctUntilChanged())
             .subscribe(
               (arr: Assessment[]) => this.loadAssessments(rollupId, arr, meta),
               (err) => console.log(err));

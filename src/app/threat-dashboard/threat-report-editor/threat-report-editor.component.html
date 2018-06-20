@@ -78,7 +78,7 @@
                     <mat-select #malwareSelected color="primary" placeholder="Malware"
                             matTooltip="Select all the malware that was used"
                             aria-label="Select all the malware that was used"
-                            (change)="addChip($event.source.selected.value, 'malware')">
+                            (selectionChange)="addChip($event.source.selected.value, 'malware')">
                         <mat-option *ngFor="let curMalware of malware" [value]="curMalware">
                             {{ curMalware.displayValue }}
                         </mat-option>
@@ -100,7 +100,7 @@
                     <mat-select color="primary" placeholder="Intrusion Set"
                             matTooltip="Select the intrusion sets attempted during the attack"
                             aria-label="Select the intrusion sets attempted during the attack"
-                            (change)="addChip($event.source.selected.value, 'intrusion-set')">
+                            (selectionChange)="addChip($event.source.selected.value, 'intrusion-set')">
                         <mat-option *ngFor="let intrusion of intrusions" [value]="intrusion">
                             {{ intrusion.displayValue }}
                         </mat-option>

@@ -2,7 +2,7 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { FormatHelpers } from '../../../../global/static/format-helpers';
 import { CourseOfAction } from '../../../../models';
 import { Constance } from '../../../../utils/constance';

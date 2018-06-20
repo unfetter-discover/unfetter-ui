@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 
 import { SummaryStatisticsComponent } from './summary-statistics.component';
 import { IndicatorSharingService } from '../indicator-sharing.service';
@@ -12,7 +12,7 @@ describe('SummaryStatisticsComponent', () => {
 
   const indicatorSharingServiceMock = {
     getSummaryStatistics: () => {
-      return Observable.of([
+      return observableOf([
         {
           _id: 'identity--1234',
           count: 2.0,
@@ -30,7 +30,7 @@ describe('SummaryStatisticsComponent', () => {
       ]);
     },
     getIdentities: () => {
-      return Observable.of([
+      return observableOf([
         {
           id: 'identity--1234',
           type: 'identity',

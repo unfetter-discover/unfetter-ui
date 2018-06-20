@@ -1,7 +1,9 @@
+
+import { pluck, map, distinctUntilChanged, filter } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { fadeInOut } from '../../global/animations/fade-in-out';
 import * as baselineReducers from '../store/baseline.reducers';
 
@@ -35,21 +37,21 @@ export class BaselineLayoutComponent implements OnInit, AfterViewInit {
    */
   public ngAfterViewInit(): void {
     this.title = this.store
-      .select('baseline')
-      .filter((el) => el !== undefined)
-      .distinctUntilChanged()
-      .pluck('baseline')
-      .pluck('name');
+      .select('baseline').pipe(
+      filter((el) => el !== undefined),
+      distinctUntilChanged(),
+      pluck('baseline'),
+      pluck('name'));
 
     this.showBackButton = this.store
-      .select('baseline')
-      .pluck<object, boolean>('backButton')
-      .filter((el) => (el && typeof el === 'boolean'))
-      .distinctUntilChanged()
-      .map((el) => {
+      .select('baseline').pipe(
+      pluck<object, boolean>('backButton'),
+      filter((el) => (el && typeof el === 'boolean')),
+      distinctUntilChanged(),
+      map((el) => {
         this.changeDetectorRef.detectChanges();
         return el;
-      });
+      }));
     this.changeDetectorRef.detectChanges();
   }
 

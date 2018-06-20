@@ -1,3 +1,5 @@
+
+import { distinctUntilChanged } from 'rxjs/operators';
 import {
         Component,
         Inject,
@@ -9,7 +11,7 @@ import {
         ViewContainerRef,
         ChangeDetectorRef,
     } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
@@ -80,8 +82,8 @@ export class AttackPatternChooserComponent implements OnInit {
 
     ngOnInit() {
         if (this.data && this.data.active) {
-            (this.data.active as Observable<AttackPattern[]>)
-                .distinctUntilChanged()
+            (this.data.active as Observable<AttackPattern[]>).pipe(
+                distinctUntilChanged())
                 .subscribe(
                     (patterns) => {
                         // @todo We need to convert whatever is provided to us into Tactic objects,

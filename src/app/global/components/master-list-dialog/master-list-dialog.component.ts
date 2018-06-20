@@ -1,10 +1,13 @@
+
+import { fromEvent as observableFromEvent,  Observable  } from 'rxjs';
+
+import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { Component, Inject, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { ElementRef, ViewChildren, QueryList, AfterViewInit, Pipe, PipeTransform } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Router } from '@angular/router';
 import { DataSource } from '@angular/cdk/table';
-import { Observable } from 'rxjs/Observable';
 
 import { Constance } from '../../../utils/constance';
 
@@ -149,9 +152,9 @@ export class MasterListDialogComponent implements AfterViewInit, OnDestroy {
         }
 
         this.filter = filter;
-        const sub$ = Observable.fromEvent(this.filter.nativeElement, 'keyup')
-            .debounceTime(this.duration)
-            .distinctUntilChanged()
+        const sub$ = observableFromEvent(this.filter.nativeElement, 'keyup').pipe(
+            debounceTime(this.duration),
+            distinctUntilChanged())
             .subscribe(() => {
                 if (!this.data.dataSource) {
                     console.log('no datasource!!!');

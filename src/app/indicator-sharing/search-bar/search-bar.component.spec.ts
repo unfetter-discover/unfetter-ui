@@ -6,6 +6,7 @@ import { ActionReducerMap, StoreModule } from '@ngrx/store';
 import { SearchBarComponent } from './search-bar.component';
 import { indicatorSharingReducer } from '../store/indicator-sharing.reducers';
 import { makeMockIndicatorSharingStore } from '../../testing/mock-store';
+import { filter, pluck } from 'rxjs/operators';
 
 describe('SearchBarComponent', () => {
   let component: SearchBarComponent;
@@ -46,8 +47,10 @@ describe('SearchBarComponent', () => {
       fixture.detectChanges();
       let counter: number = 0;
       const displayInd$ = component.store.select('indicatorSharing')
-          .filter((state: any) => state.searchTerm !== '')
-          .pluck('displayedIndicators')
+          .pipe(
+            filter((state: any) => state.searchTerm !== ''),
+            pluck('displayedIndicators')
+          )
           .subscribe(
               (indicators: any[]) => {
                   counter++;

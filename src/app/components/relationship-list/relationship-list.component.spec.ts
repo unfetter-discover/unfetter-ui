@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 
 import { MatCardModule } from '@angular/material';
@@ -67,11 +67,11 @@ describe('RelationshipListComponent', () => {
     let getRelationships = (url, id) => {
         const uri = url.toString();
         if (uri.startsWith(Constance.RELATIONSHIPS_URL)) {
-            return Observable.of(mockRelationships.slice(0));
+            return observableOf(mockRelationships.slice(0));
         }
         const relationship = mockRelationships
             .find(rel => uri.includes(rel.attributes.source_ref) || uri.includes(rel.attributes.target_ref));
-        return Observable.of({
+        return observableOf({
             id: `${relationship.attributes.xtype}-id`,
             type: relationship.attributes.xtype,
             attributes: {
@@ -154,7 +154,7 @@ describe('RelationshipListComponent', () => {
     it('should save relationships',
             fakeAsync(inject([BaseComponentService, GenericApi], (service: BaseComponentService, api: GenericApi) => {
         spyOn(service, 'get').and.callFake(getRelationships);
-        spyOn(service, 'save').and.returnValue(Observable.of({}));
+        spyOn(service, 'save').and.returnValue(observableOf({}));
         component.loadRelationships({'stix.target_ref': 'test'});
         component.saveRelationships(new Relationship());
         expect(component.relationships.length).toBe(6);
@@ -163,7 +163,7 @@ describe('RelationshipListComponent', () => {
     it('should delete relationships',
             fakeAsync(inject([BaseComponentService, GenericApi], (service: BaseComponentService, api: GenericApi) => {
         spyOn(service, 'get').and.callFake(getRelationships);
-        spyOn(service, 'delete').and.returnValue(Observable.of({}));
+        spyOn(service, 'delete').and.returnValue(observableOf({}));
         component.loadRelationships({'stix.source_ref': 'test'});
         let rand = Math.floor(Math.random() * mockRelationships.length);
         component.deleteRelationships(mockRelationships[rand].attributes.source_ref);

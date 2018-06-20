@@ -1,6 +1,7 @@
+
+import { last } from 'rxjs/operators';
 import { Injectable, Optional, SkipSelf } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject ,  Observable } from 'rxjs';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
 
 /**
@@ -36,7 +37,7 @@ export class BaselineStateService {
      * @return {Observable<BaselineMeta>}
      */
     public currentMeta(): Observable<BaselineMeta> {
-        return this.metaData$.last();
+        return this.metaData$.pipe(last());
     }
 
 }

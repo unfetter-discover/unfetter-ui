@@ -13,9 +13,9 @@
         <div class="row margin-bottom flex-sm flexItemsCenter">
           <div class="col-sm-9">
             <div class="form-group">
-              <mat-input-container class="full-width">
+              <mat-form-field class="full-width">
                 <input matInput class="form-control" required placeholder="Capability Group Name" value="addCategory.name" [(ngModel)]="addCategory.name">
-              </mat-input-container>
+              </mat-form-field>
             </div>
             <button type="submit"  class="mat-primary" mat-raised-button [disabled]="!addCategory.name" (click)="addNewCategory(addCategory)"><i class="material-icons">save</i> SAVE {{ addCategory.name }}</button>
             <button type="submit"  class="mat-primary" mat-raised-button (click)="cancelAddNewCategory()">CANCEL</button>
@@ -28,7 +28,7 @@
             <div class="col-xs-10">
               <form>
                 <mat-form-field class="full-width">
-                  <mat-select #existingCategory name="existingCategory" (change)="updateCategory(existingCategory, i)" [value]="selectedCategory(existingCategory, i)">
+                  <mat-select #existingCategory name="existingCategory" (selectionChange)="updateCategory(existingCategory, i)" [value]="selectedCategory(existingCategory, i)">
                     <mat-option *ngFor="let category of categories" [value]="category">
                       {{ category.name }}
                     </mat-option>
@@ -48,7 +48,7 @@
         <div class="col-xs-10">
           <form>
             <mat-form-field class="full-width">
-              <mat-select #newCategory name="newCategory" (change)="updateCategory(newCategory, -1)">
+              <mat-select #newCategory name="newCategory" (selectionChange)="updateCategory(newCategory, -1)">
                 <mat-option *ngFor="let category of categories" [value]="category">
                   {{ category.name }}
                 </mat-option>
