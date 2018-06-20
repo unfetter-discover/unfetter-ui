@@ -17,11 +17,8 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12">
-            <mat-input-container class="full-width">
-                <textarea matInput placeholder="Description"  [(ngModel)]="indicator.attributes.description" value="{{indicator.attributes.description}}"></textarea>
-                </mat-input-container>
-            </div>
+            <markdown-editor [editing]="true" [inputLabel]="'Description (Markdown Editor)'"
+                    [data]="indicator.attributes.description"></markdown-editor>
         </div>
         <div class="row">
             <div class="col-md-12">

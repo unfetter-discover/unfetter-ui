@@ -70,10 +70,8 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
-                            <label>Description</label>
-                            <h5>{{intrusionSet.attributes.description}}</h5>
-                        </div>
+                        <markdown-editor [editing]="false" [truncate]="true" [inputLabel]="'Description'"
+                                [data]="intrusionSet.attributes.description"></markdown-editor>
                     </div>
 
 

@@ -8,11 +8,8 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12">
-                <mat-input-container class="full-width">
-                    <textarea id="attack-pattern-desc" matInput [(ngModel)]="attackPattern.attributes.description"  placeholder="Description"></textarea>
-                </mat-input-container>
-            </div>
+            <markdown-editor [inputLabel]="'Description (Markdown Editor)'"
+                    [data]="attackPattern.attributes.description"></markdown-editor>
         </div>
          <div class="row">
             <div class="col-md-12">

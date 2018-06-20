@@ -7,11 +7,8 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-md-12">
-        <mat-input-container class="full-width">
-            <textarea matInput placeholder="Description" [(ngModel)]="tool.attributes.description" value="{{tool.attributes.description}}"></textarea>
-        </mat-input-container>
-    </div>
+    <markdown-editor [editing]="true" [inputLabel]="'Description (Markdown Editor)'"
+            [data]="tool.attributes.description"></markdown-editor>
 </div>
 
 <div class="row">

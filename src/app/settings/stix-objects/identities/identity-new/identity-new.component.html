@@ -8,11 +8,8 @@
 </div>
 
 <div class="row">
-    <div class="col-md-12">
-       <mat-input-container class="full-width">
-        <textarea matInput placeholder="Description"  [(ngModel)]="identity.attributes.description" value=""></textarea>
-        </mat-input-container>
-    </div>
+    <markdown-editor [editing]="true" [inputLabel]="'Description (Markdown Editor)'"
+            [data]="identity.attributes.description"></markdown-editor>
 </div>
 <div class="row">
     <div class="col-md-3">

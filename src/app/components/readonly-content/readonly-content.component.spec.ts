@@ -1,9 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 
-import { MatCardModule, MatChipsModule } from '@angular/material';
+import { FormsModule } from '@angular/forms';
+import { MatCardModule, MatChipsModule, MatInputModule } from '@angular/material';
+import { MarkdownComponent, MarkdownService } from 'ngx-markdown';
 
 import { ReadonlyContentComponent } from './readonly-content.component';
+import { MarkdownEditorComponent } from '../../global/components/markdown-editor/markdown-editor.component';
 
 describe('ReadonlyContentComponent', () => {
 
@@ -22,13 +26,25 @@ describe('ReadonlyContentComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [
+                HttpClientTestingModule,
+                FormsModule,
                 MatCardModule,
                 MatChipsModule,
+                MatInputModule,
             ],
             declarations: [
                 ReadonlyContentComponent,
+                MarkdownEditorComponent,
+                MarkdownComponent,
             ],
             providers: [
+                {
+                    provide: MarkdownService,
+                    useValue: {
+                        compile: (str) => { console.log('markdownservice compile call', str); return str; },
+                        highlight: () => { console.log('markdownservice highlight'); },
+                    }
+                }
             ]
         })
         .compileComponents();
@@ -52,7 +68,7 @@ describe('ReadonlyContentComponent', () => {
         expect(name).not.toBeNull();
         expect(name.nativeElement.textContent).toMatch(component.model.attributes.name);
 
-        let description = fixture.debugElement.query(By.css('div.row:nth-child(2) p'));
+        let description = fixture.debugElement.query(By.css('div.row:nth-child(2) markdown'));
         expect(description).not.toBeNull();
         expect(description.nativeElement.textContent).toMatch(component.model.attributes.description);
 
