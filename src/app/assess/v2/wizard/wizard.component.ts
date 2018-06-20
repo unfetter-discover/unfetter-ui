@@ -168,11 +168,16 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
             includesMitigations,
             includesSensors,
           };
-          let rollupId = params.rollupId || '';
+
+          const rollupId = params.rollupId || '';
           if (rollupId) {
+            // this is an edit
             this.loadExistingAssessment(rollupId, meta);
+          } else {
+            // this is a new wizard
+            this.wizardStore.dispatch(new LoadAssessmentWizardData(meta));
           }
-          this.wizardStore.dispatch(new LoadAssessmentWizardData(meta));
+          
         },
         (err) => console.log(err),
         () => idParamSub$.unsubscribe());

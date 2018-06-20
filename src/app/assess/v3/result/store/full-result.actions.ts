@@ -61,7 +61,7 @@ export class LoadAssessmentById implements Action {
 export class LoadGroupData implements Action {
     public readonly type = LOAD_GROUP_DATA;
 
-    constructor(public payload: string) { }
+    constructor(public payload: { id: string, isCapability: boolean }) { }
 }
 export class SetGroupAssessedObjects implements Action {
     public readonly type = SET_GROUP_ASSESSMENT_OBJECTS;

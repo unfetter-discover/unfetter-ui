@@ -27,6 +27,7 @@ import { FullAssessmentResultState } from '../../store/full-result.reducers';
 import { AddAssessedObjectComponent } from './add-assessed-object/add-assessed-object.component';
 import { DisplayedAssessmentObject } from './models/displayed-assessment-object';
 import { FullAssessmentGroup } from './models/full-assessment-group';
+import { AssessmentEvalTypeEnum } from 'stix/assess/v3/assessment-eval-type.enum';
 
 @Component({
   selector: 'unf-assess-group',
@@ -140,16 +141,21 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     this.canAddAssessedObjects = stixPermissions.canCreate(this.assessment);
     this.listenForDataChanges(attackPatternIndex);
     // request for initial data changes
-    this.requestDataLoad(this.assessmentId);
+    this.requestDataLoad();
   }
 
   /**
    * @description request data
-   * @param {string} assessmentId
    * @returns {void}
    */
-  public requestDataLoad(assessmentId: string): void {
-    this.store.dispatch(new LoadGroupData(assessmentId));
+  public requestDataLoad(): void {
+    const id = this.assessmentId;
+    const assessmentType = this.assessment.determineAssessmentType();
+    let isCapability = false;
+    if (assessmentType === AssessmentEvalTypeEnum.CAPABILITIES) {
+      isCapability = true;
+    }
+    this.store.dispatch(new LoadGroupData({ id, isCapability }));
   }
 
   /**
@@ -158,7 +164,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   public onAddAssessment(): void {
     // clear objects for the observable will detect a change
     this.displayedAssessedObjects = undefined;
-    this.requestDataLoad(this.assessmentId);
+    this.requestDataLoad();
   }
 
   /**
