@@ -12,7 +12,7 @@ describe('AngularHelper', () => {
         ];
     });
 
-    fdescribe('genericTrackBy', () => {
+    describe('genericTrackBy', () => {
         it('should use an object id first if it exists', () => {
             expect(AngularHelper.genericTrackBy(-100, t[0])).toEqual(t[0].id);
         });

@@ -8,6 +8,7 @@ import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
 import * as assessActions from '../store/assess.actions';
 import { LoadBaselines, UpdatePageTitle } from '../store/assess.actions';
 import * as assessReducers from '../store/assess.reducers';
+import * as assessSelectors from '../store/assess.selectors';
 import { Assess3Form } from './assess3.form';
 
 @Component({
@@ -51,7 +52,7 @@ export class CreateComponent implements OnInit {
    * @returns void
    */
   public listenForChanges(): void {
-    this.baselines = this.store.select(assessReducers.getSortedBaselines);
+    this.baselines = this.store.select(assessSelectors.getSortedBaselines);
   }
 
   /**

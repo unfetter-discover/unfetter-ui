@@ -188,6 +188,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
         this.displayedAssessedObjects = [];
         this.assessedObjects = group.assessedObjects || [];
         this.riskByAttackPattern = group.riskByAttackPattern || new RiskByAttack();
+        this.unassessedPhases = group.unassessedPhases;
         this.loadDisplayedObjects(attackPatternIndex);
       },
         (err) => console.log(err));

@@ -1,6 +1,6 @@
-import * as configActions from './config.actions';
 import { Tactic, TacticChain } from '../../global/components/tactics-pane/tactics.model';
 import { Dictionary } from '../../models/json/dictionary';
+import * as configActions from './config.actions';
 
 export interface ConfigState {
     configurations: any,
