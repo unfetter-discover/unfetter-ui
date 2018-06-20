@@ -84,7 +84,7 @@
                 <mat-select #attackPatternsSelected color="primary" placeholder="Attack Pattern(s)"
                         matTooltip="Select all the attack patterns defined in the report"
                         aria-label="Select all the attack patterns defined in the report"
-                        (change)="addAttackPattern($event.source.selected.value)">
+                        (selectionChange)="addAttackPattern($event.source.selected.value)">
                     <mat-option *ngFor="let pattern of attackPatterns" [value]="pattern">
                         {{ pattern.attributes.name }}
                     </mat-option>
