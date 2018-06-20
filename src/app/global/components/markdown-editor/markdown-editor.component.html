@@ -1,0 +1,17 @@
+<div class="col-md-12 flex">
+    <div *ngIf="editing" class="flex1 pr-24">
+        <label>{{inputLabel}}</label>
+        <mat-form-field class="full-width">
+            <textarea matInput [(ngModel)]="data" value="{{data}}"></textarea>
+        </mat-form-field>
+        <!-- <mat-input-container class="full-width">
+            <textarea matInput [(ngModel)]="data"></textarea>
+        </mat-input-container> -->
+    </div>
+    <div *ngIf="viewing" class="flex1">
+        <label *ngIf="!truncate">{{previewLabel}}</label>
+        <div class="preview" [ngClass]="{'preview-only': !editing, 'preview-truncate': truncate}">
+            <markdown [data]="data"></markdown>
+        </div>
+    </div>
+</div>

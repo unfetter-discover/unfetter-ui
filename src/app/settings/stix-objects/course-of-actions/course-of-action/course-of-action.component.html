@@ -21,10 +21,8 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12">
-                                <label>Description</label>
-                                <h6 [innerHTML]="formatText(courseOfAction.attributes.description)"></h6>
-                            </div>
+                            <markdown-editor [editing]="false" [truncate]="true" [inputLabel]="'Description'"
+                                    [data]="courseOfAction.attributes.description"></markdown-editor>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
@@ -55,7 +53,7 @@
                                         target="_blank">{{selectedExternal.url}}</a>
                                 </div>
                             </div>
-                        </div>Ø
+                        </div>
 
                     </mat-card-content>
 

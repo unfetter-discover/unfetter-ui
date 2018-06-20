@@ -5,5 +5,7 @@
     </button>
   </div>
 
-  <div *ngIf="showHelp" @heightCollapse [innerHtml]="helpHtml"></div>
+  <div *ngIf="showHelp" @heightCollapse>
+    <markdown-editor [editing]="false" [truncate]="true" [data]="helpHtml"></markdown-editor>
+  </div>
 </div>

@@ -108,8 +108,8 @@
       <mat-tab-group>
         <mat-tab label="Details">
           <div *ngIf="indicator.description">
-            <label>Description</label>
-            <p>{{ indicator.description }}</p>
+            <markdown-editor [editing]="false" [previewLabel]="'Description'"
+                [data]="indicator.description"></markdown-editor>
           </div>
           <div *ngIf="indicator.kill_chain_phases">
             <label>Tactics</label>

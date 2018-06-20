@@ -1,0 +1,27 @@
+:host ::ng-deep {
+    mat-input-container .mat-input-infix {
+        border-top: 0px;
+    }
+
+    textarea {
+        height: 288px;
+        resize: none;
+    }
+
+    div.preview {
+        height: 300px;
+        padding: 3px;
+        padding-left: 6px;
+        overflow-y: auto;
+        border: 1px solid rgba(0, 0, 0, 0.42);
+    }
+
+    div.preview-only {
+        border: none;
+        padding: 0;
+    }
+
+    div.preview-truncate {
+        height: auto;
+    }
+}
