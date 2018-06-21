@@ -321,7 +321,7 @@ export class BaselineEffects {
                 } as JsonApi<JsonApiData<AssessmentSet>>;
                 url = `${url}/${baseline.id}`;
                 return this.genericServiceApi
-                .patchAs<AssessmentSet>(url, json)
+                    .patchAs<AssessmentSet>(url, json)
                     .pipe(
                         map(RxjsHelpers.mapAttributes)
                     );
@@ -330,7 +330,7 @@ export class BaselineEffects {
                 return new baselineActions.SetBaseline(baseline);
             })
         );
-    
+
     @Effect()
     public removeCapabilityFromBaselineCapabilities = this.actions$
         .ofType(baselineActions.REMOVE_CAPABILITY_FROM_BASELINE)
@@ -371,10 +371,10 @@ export class BaselineEffects {
                 return this.genericServiceApi.patch(url, jsonBL);
             }),
             map((baseline) => {
-             return new baselineActions.SetBaseline(baseline);
+                return new baselineActions.SetBaseline(baseline);
             })
         );
-    
+
     private createObjAssessment(capability: Capability): ObjectAssessment {
         const newOA = new ObjectAssessment();
         newOA.object_ref = capability.id;
