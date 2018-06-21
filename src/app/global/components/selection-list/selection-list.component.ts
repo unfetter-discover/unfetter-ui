@@ -32,7 +32,7 @@ export class SelectionListComponent implements OnInit {
   public ngOnInit() {
     const filter$ = this.filterCtrl.valueChanges
       .pipe(
-        debounceTime(100),
+        debounceTime(50),
         distinctUntilChanged(),
         finalize(() => filter$ && filter$.unsubcribe())
       )
