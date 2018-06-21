@@ -21,6 +21,7 @@ import { StixEnum } from 'stix/unfetter/stix.enum';
 import { Key } from 'ts-keycode-enum';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { heightCollapse } from '../../../global/animations/height-collapse';
+import { AngularHelper } from '../../../global/static/angular-helper';
 import { UserProfile } from '../../../models/user/user-profile';
 import { AppState } from '../../../root-store/app.reducers';
 import { Constance } from '../../../utils/constance';
@@ -948,8 +949,8 @@ export class WizardComponent extends Measurements
    * @param item
    * @returns {number}
    */
-  public trackByFn(index, item): number {
-    return item && item.id ? item.id : index;
+  public trackByFn(index: number, item: any): number {
+    return AngularHelper.genericTrackBy(index, item);
   }
 
   /**

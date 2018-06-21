@@ -200,14 +200,13 @@ export class AssessService {
      * @param {string} id
      * @return {Observable<RiskByAttack>}
      */
-    public getRiskPerAttackPattern(id: string, includeMeta = true): Observable<RiskByAttack> {
+    public getRiskPerAttackPattern(id: string, includeMeta = true, isCapability = false): Observable<RiskByAttack> {
         if (!id) {
             return observableEmpty();
         }
-        const url = `${this.assessBaseUrl}/${id}/risk-by-attack-pattern?metaproperties=${includeMeta}`;
+        const url = `${this.assessBaseUrl}/${id}/risk-by-attack-pattern?metaproperties=${includeMeta}&isCapability=${isCapability}`;
         return this.genericApi.getAs<RiskByAttack>(url);
     }
-
 
     /**
      * @description

@@ -1,21 +1,25 @@
 
-import { pluck,  distinctUntilChanged ,  filter  } from 'rxjs/operators';
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable ,  Subscription } from 'rxjs';
-import { AttackPattern } from 'stix/unfetter/attack-pattern';
+import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
+import { distinctUntilChanged, filter, pluck, switchMap } from 'rxjs/operators';
+import { Subscription } from 'rxjs/Subscription';
 import { AssessAttackPatternMeta } from 'stix/assess/v2/assess-attack-pattern-meta';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { Assessment } from 'stix/assess/v3/assessment';
+import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { Stix } from 'stix/unfetter/stix';
 import { AuthService } from '../../../../../core/services/auth.service';
+import { Tactic } from '../../../../../global/components/tactics-pane/tactics.model';
+import { AngularHelper } from '../../../../../global/static/angular-helper';
 import { FormatHelpers } from '../../../../../global/static/format-helpers';
 import { SortHelper } from '../../../../../global/static/sort-helper';
 import { StixPermissions } from '../../../../../global/static/stix-permissions';
 import { Relationship } from '../../../../../models';
+import { AppState } from '../../../../../root-store/app.reducers';
 import { Constance } from '../../../../../utils/constance';
 import { AssessService } from '../../../services/assess.service';
 import { LoadGroupAttackPatternRelationships, LoadGroupCurrentAttackPattern, LoadGroupData, PushUrl, UpdateAssessmentObject } from '../../store/full-result.actions';
@@ -23,6 +27,7 @@ import { FullAssessmentResultState } from '../../store/full-result.reducers';
 import { AddAssessedObjectComponent } from './add-assessed-object/add-assessed-object.component';
 import { DisplayedAssessmentObject } from './models/displayed-assessment-object';
 import { FullAssessmentGroup } from './models/full-assessment-group';
+import { AssessmentEvalTypeEnum } from 'stix/assess/v3/assessment-eval-type.enum';
 
 @Component({
   selector: 'unf-assess-group',
@@ -52,7 +57,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Output('riskByAttackPatternChanged')
   public riskByAttackPatternChanged = new EventEmitter<RiskByAttack>();
-
+  
   @ViewChildren('addAssessedObjectComponent')
   public addAssessedObjectComponents: QueryList<AddAssessedObjectComponent>;
   public addAssessedObjectComponent: AddAssessedObjectComponent;
@@ -74,10 +79,10 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly subscriptions: Subscription[] = [];
 
   constructor(
+    private appStore: Store<AppState>,
     private assessService: AssessService,
     private authService: AuthService,
     private changeDetector: ChangeDetectorRef,
-    private route: ActivatedRoute,
     private store: Store<FullAssessmentResultState>,
   ) { }
 
@@ -86,7 +91,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public ngOnInit(): void {
     this.assessmentId = this.assessment.id || '';
-    // TODO: translate the initialAttackPatternId to and index
+    // TODO: translate the initialAttackPatternId to an index
     this.initData();
   }
 
@@ -99,9 +104,12 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
-   * @description init after view
+   * @description init after child views initialize, called once
    */
   public ngAfterViewInit(): void {
+    if (!this.addAssessedObjectComponents) {
+      return;
+    }
     const sub = this.addAssessedObjectComponents.changes
       .subscribe(
         (comps: QueryList<AddAssessedObjectComponent>) => {
@@ -128,21 +136,26 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public initData(attackPatternIndex: number = 0): void {
     this.assessment = this.assessment || new Assessment();
-    this.listenForDataChanges(attackPatternIndex);
-    // request for initial data changes
-    this.requestDataLoad(this.assessmentId);
-
+    this.unassessedPhases = [];
     const stixPermissions: StixPermissions = this.authService.getStixPermissions();
     this.canAddAssessedObjects = stixPermissions.canCreate(this.assessment);
+    this.listenForDataChanges(attackPatternIndex);
+    // request for initial data changes
+    this.requestDataLoad();
   }
 
   /**
    * @description request data
-   * @param {string} assessmentId
    * @returns {void}
    */
-  public requestDataLoad(assessmentId: string): void {
-    this.store.dispatch(new LoadGroupData(assessmentId));
+  public requestDataLoad(): void {
+    const id = this.assessmentId;
+    const assessmentType = this.assessment.determineAssessmentType();
+    let isCapability = false;
+    if (assessmentType === AssessmentEvalTypeEnum.CAPABILITIES) {
+      isCapability = true;
+    }
+    this.store.dispatch(new LoadGroupData({ id, isCapability }));
   }
 
   /**
@@ -151,7 +164,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   public onAddAssessment(): void {
     // clear objects for the observable will detect a change
     this.displayedAssessedObjects = undefined;
-    this.requestDataLoad(this.assessmentId);
+    this.requestDataLoad();
   }
 
   /**
@@ -277,6 +290,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public setPhase(phaseName: string, attackPatternIndex: number = 0) {
     this.resetNewAssessmentObjects();
+    this.unassessedAttackPatterns = [];
     this.activePhase = phaseName;
     this.attackPatternsByPhase = this.getAttackPatternsByPhase(this.activePhase);
     let currentAttackPatternId = '';
@@ -323,7 +337,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
         return 1;
       }
     });
-    return attackPatterns;
+    return ranked;
   }
 
   /**
@@ -383,19 +397,38 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     const assessedAps = this.getAttackPatternsByPhase(this.activePhase)
       .map((ap) => ap.attackPatternId);
 
-    const query = { 'stix.kill_chain_phases.phase_name': this.activePhase };
-    const s1$ = this.assessService
-      .getAs<Stix>(`${Constance.ATTACK_PATTERN_URL}?filter=${encodeURI(JSON.stringify(query))}`)
+    const s$ = this.appStore
+      .select('config')
+      .pipe(
+        switchMap(
+          (state) => {
+            // get all the phases across the frameworks
+            const phases = Object.keys(state.tacticsChains)
+              .map((curFramework) => {
+                return state.tacticsChains[curFramework].phases;
+              })
+              .reduce((acc, val) => acc.concat(val), []);
+            // look for the currently viewed phase
+            // TODO: there is potential to get the wrong phase if the phase id exists in two frameworks
+            //  however the only framework I have to match against is the users preferences
+            //  but that might not be the correct framework for this assessment
+            const curPhase = phases.filter((phase) => phase.id === this.activePhase)[0];
+            return of(curPhase.tactics);
+          }),
+    )
       .subscribe(
-        (data: Stix[]) => {
-          // Get unassessed attack patterns
-          this.unassessedAttackPatterns = data
-            .filter((ap) => !assessedAps.includes(ap.id))
+        (tactics: Tactic[]) => {
+          // Give tactics for this current phase
+          //  Get unassessed and transform to attack patterns
+          this.unassessedAttackPatterns = tactics
+            .filter((tactic) => !assessedAps.includes(tactic.id))
+            .map((tactic) => Object.assign(new AttackPattern(), tactic))
             .sort(SortHelper.sortDescByField('name'));
+          // trigger change detection when finished
+          this.changeDetector.detectChanges();
         },
-        (err) => console.log(err)
-      );
-    this.subscriptions.push(s1$);
+        (err) => console.log(err));
+    this.subscriptions.push(s$);
   }
 
   /**
@@ -520,5 +553,17 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public isCurrentAttackPattern(attackPatternId = ''): boolean {
     return this.currentAttackPattern ? this.currentAttackPattern.id === attackPatternId : false;
+  }
+
+  /**
+   * @description angular track by list function, 
+   *  uses the items id iff (if and only if) it exists, 
+   *  otherwise uses the index
+   * @param {number} index
+   * @param {item}
+   * @return {number}
+   */
+  public trackByFn(index: number, item: any): number {
+    return AngularHelper.genericTrackBy(index, item);
   }
 }
