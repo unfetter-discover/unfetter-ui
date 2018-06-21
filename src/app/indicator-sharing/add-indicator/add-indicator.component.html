@@ -185,8 +185,8 @@
             </mat-step>
             
             <!-- TODO remove ngif once edit mode can update relationships -->
-            <mat-step label="Relationships" *ngIf="!editMode">
-                <div formGroupName="metaProperties">
+            <mat-step label="Relationships">
+                <div formGroupName="metaProperties" *ngIf="attackPatterns && attackPatterns.length">
                     <h5>Indicated Techniques</h5>
                     <unf-selection-list [stix]="attackPatterns" [formCtrl]="form.get('metaProperties').get('relationships')"></unf-selection-list>
                     <!-- <mat-selection-list formControlName="relationships">

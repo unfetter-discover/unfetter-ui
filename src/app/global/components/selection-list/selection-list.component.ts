@@ -1,11 +1,11 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'unf-selection-list',
   templateUrl: './selection-list.component.html',
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./selection-list.component.scss']
 })
 export class SelectionListComponent implements OnInit {
@@ -25,9 +25,11 @@ export class SelectionListComponent implements OnInit {
   public filterCtrl: FormControl = new FormControl('');
   public searchTerm: string = '';
   public hideStixObj = {};
+  public stixIds: string[];
+
+  constructor(private changeDetectorRef: ChangeDetectorRef) { }
 
   public ngOnInit() {
-    
     const filter$ = this.filterCtrl.valueChanges
       .pipe(
         debounceTime(100),
@@ -46,6 +48,7 @@ export class SelectionListComponent implements OnInit {
   }
 
   public hideObjs() {
+    const hideStixObj = {};
     if (this.showSelectedOnly) {
       this.stix.forEach((stix, i) => {
         if (this.formCtrl.value.includes(stix.id) && (this.searchTerm === '' || stix.name.toUpperCase().indexOf(this.searchTerm) > -1)) {
@@ -63,5 +66,6 @@ export class SelectionListComponent implements OnInit {
         }
       });
     }
+    this.changeDetectorRef.detectChanges();
   }
 }
