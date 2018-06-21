@@ -42,7 +42,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
   public meta = new Assess3Meta();
   public showSummary = false;
-  public prevPage = 1;  // for avoiding skip to group on back button presses
   public page = 1;
   public totalPages = 0;
   public insertMode = false;
@@ -303,16 +302,13 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       event.preventDefault();
     }
 
-    // Bail if this was implicitly called as the result of a Back button press from a group or summary page
-    const prevNav = this.navigations.find(navigation => navigation.page === this.prevPage);
-    const lastNavWasGroup = prevNav && this.allCategories.find((category) => category.id === prevNav.id) !== undefined;
-    if (lastNavWasGroup || this.prevPage > 1 + this.navigations.length) {
+    // Bail if this was implicitly called as the result of a wizard button press
+    if (event.target instanceof HTMLSpanElement) {
       return;
     }
 
     if (group) {
       // Adjust page based on given group
-      this.prevPage = this.page;
       this.page = this.navigations.find(navigation => navigation.id === group.id).page;
 
       this.wizardStore.dispatch(new SetCurrentBaselineGroup(group));
@@ -354,7 +350,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       event.preventDefault();
     }
 
-    this.prevPage = this.page;
     this.page = this.navigations.find(navigation => navigation.id === capabilityId).page;
     const capability = this.baselineCapabilities.find((c) => c.id === capabilityId);
     this.wizardStore.dispatch(capability);
@@ -401,7 +396,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
     // Set page to next group in the list
     let groupIndex = this.baselineGroups.findIndex(group => group.id === this.currentBaselineGroup.id);
-    this.prevPage = this.page;
     this.page = this.navigations.find(nav => nav.id === this.baselineGroups[groupIndex + 1].id).page;
 
     this.updateWizardData();
@@ -422,7 +416,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       event.preventDefault();
     }
 
-    this.prevPage = this.page;
     this.page = this.page - 1;
 
     this.updateWizardData();
@@ -440,7 +433,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
     // Set page to previous group in the list
     let groupIndex = this.baselineGroups.findIndex(group => group.id === this.currentBaselineGroup.id);
-    this.prevPage = this.page;
     this.page = this.navigations.find(nav => nav.id === this.baselineGroups[groupIndex - 1].id).page;
 
     this.updateWizardData();
