@@ -113,7 +113,8 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
             });
         case baselineActions.REMOVE_CAPABILITY_FROM_BASELINE:
             const capList3 = state.baselineCapabilities;
-            // TODO: remove this capability from the list and update OA list and AS
+            const remIndex = capList3.indexOf(action.payload);
+            capList3.splice(remIndex, 1);
             return genAssessState({
                 ...state,
                 baselineCapabilities: capList3,
@@ -148,6 +149,24 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
                 ...state,
                 baseline: currBaseline,
                 baselineObjAssessments: objAssessments2,
+            });
+        case baselineActions.REMOVE_OBJECT_ASSESSMENT_FROM_BASELINE:
+            const oaToRemove = action.payload;
+
+            // Remove object assessment from OAs in this baseline
+            const oasInBL = state.baselineObjAssessments;
+            const oaBLIndex = oasInBL.findIndex((oa) => oa.id === oaToRemove.id);
+            oasInBL.splice(oaBLIndex, 1);
+
+            // Remove object assessment from baseline
+            const currBaseline2 = state.baseline;
+            const oaIndex = currBaseline2.assessments.findIndex((oaId) => oaId === oaToRemove.id);
+            currBaseline2.assessments.splice(oaIndex, 1);
+            
+            return genAssessState({
+                ...state,
+                baseline: currBaseline2,
+                baselineObjAssessments: oasInBL,
             });
         case baselineActions.SET_CURRENT_BASELINE_OBJECT_ASSESSMENT:
             return genAssessState({
@@ -199,6 +218,7 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
                 }
             });
         case baselineActions.SAVE_BASELINE:
+        case baselineActions.SET_BASELINE:
             return genAssessState({
                 ...state,
                 baseline: action.payload,

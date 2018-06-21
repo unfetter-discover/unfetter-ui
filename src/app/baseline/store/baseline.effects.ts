@@ -1,16 +1,14 @@
 import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { Actions, Effect } from '@ngrx/effects';
-import { Action, Store } from '@ngrx/store';
+import { Effect, Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 import { catchError, map } from 'rxjs/operators';
-import { AssessmentSet, Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
-import { AttackPattern } from 'stix/unfetter/attack-pattern';
+import { AssessmentSet, ObjectAssessment, Capability, Category } from 'stix/assess/v3/baseline';
 import { Stix } from 'stix/unfetter/stix';
 import { StixEnum } from 'stix/unfetter/stix.enum';
 import { AttackPatternService } from '../../core/services/attack-pattern.service';
 import { GenericApi } from '../../core/services/genericapi.service';
+import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
 import { JsonApi } from '../../models/json/jsonapi';
 import { JsonApiData } from '../../models/json/jsonapi-data';
@@ -18,9 +16,10 @@ import { Constance } from '../../utils/constance';
 import { BaselineStateService } from '../services/baseline-state.service';
 import { BaselineService } from '../services/baseline.service';
 import * as baselineActions from './baseline.actions';
-import { BaselineFeatureState, BaselineState } from './baseline.reducers';
-import { AppState } from '../../root-store/app.reducers';
-import { RxjsHelpers } from '../../global/static/rxjs-helpers';
+import { BaselineFeatureState } from './baseline.reducers';
+import { Router } from '@angular/router';
+import { Store, Action } from '@ngrx/store';
+import { AttackPattern } from 'stix/unfetter/attack-pattern';
 
 @Injectable()
 export class BaselineEffects {
@@ -85,9 +84,16 @@ export class BaselineEffects {
         .ofType(baselineActions.SET_AND_READ_CAPABILITIES)
         .pluck('payload')
         .switchMap((capabilities: Capability[]) => {
-            const observables = capabilities
-                .map((capability) => {
-                    return this.baselineService.fetchCategory(capability.category);
+            // Collect unique category references
+            const catList = new Array<string>();
+            capabilities.map((capability) => {
+                if (catList.indexOf(capability.category) < 0) {
+                    catList.push(capability.category);
+                }
+            });
+            const observables = catList
+                .map((catId) => {
+                    return this.baselineService.fetchCategory(catId);
                 });
             return Observable.forkJoin(...observables);
         })
@@ -259,8 +265,6 @@ export class BaselineEffects {
             const capGroup = capabilityGroups.find((group) => group.id === capability.category);
             newOA.assessed_objects = capGroup.assessed_objects;
 
-            console.log(JSON.stringify(newOA));
-
             // Save ObjectAssessment to DB
             const json = {
                 data: { attributes: newOA }
@@ -274,12 +278,12 @@ export class BaselineEffects {
             return new baselineActions.AddObjectAssessmentToBaseline(objAssessment[0]);
         });
     
-    @Effect({ dispatch: false })
+    @Effect()
     public addObjectAssessmentToBaseline = this.actions$
         .ofType(baselineActions.ADD_OBJECT_ASSESSMENT_TO_BASELINE)
         .pluck('payload')
         .withLatestFrom(this.store.select('baseline').pluck('baseline'))
-        .do(([objAssessment, baseline]: [ObjectAssessment, AssessmentSet]) => {
+        .switchMap(([objAssessment, baseline]: [ObjectAssessment, AssessmentSet]) => {
             let url = Constance.X_UNFETTER_ASSESSMENT_SETS_URL;
             const json = {
                 data: { attributes: baseline }
@@ -289,8 +293,55 @@ export class BaselineEffects {
             .patchAs<AssessmentSet>(url, json)
             .map(RxjsHelpers.mapAttributes);
         })
-        // required to send an empty element on non dispatched effects
-        .switchMap(() => Observable.of({}));
+        .map((baseline) => {
+            return new baselineActions.SetBaseline(baseline);
+        });
+
+    @Effect()
+    public removeCapabilityFromBaselineCapabilities = this.actions$
+        .ofType(baselineActions.REMOVE_CAPABILITY_FROM_BASELINE)
+        .pluck('payload')
+        .withLatestFrom(this.store.select('baseline'))
+        .pluck('baselineObjAssessments')
+        .switchMap(( [ capability, baselineOA ]: [ Capability, ObjectAssessment[] ] ) => {
+        // .pipe(
+        //     pluck('payload'),
+        //     withLatestFrom(this.store.select('baseline'),
+        //     pluck('baselineObjAssessments'),
+        //     pluck('baseline')),
+        //     switchMap(( [ capability, baselineOA, baseline ]: [ Capability, ObjectAssessment[], AssessmentSet ]) => {
+                // Get object assessment associated with this capability
+                const oaForCap = baselineOA.find((oa) => oa.object_ref === capability.id);
+
+                // Remove ObjectAssessment from baseline and delete it 
+                const jsonOA = {
+                    data: { attributes: oaForCap }
+                } as JsonApi<JsonApiData<ObjectAssessment>>;
+                let url = Constance.X_UNFETTER_OBJECT_ASSESSMENTS_URL;
+                return this.genericServiceApi.delete(url, jsonOA);
+        })
+        .map((objAssessment) => {
+            return new baselineActions.RemoveObjectAssessmentFromBaseline(objAssessment);
+        });
+
+    @Effect()
+    public removeObjectAssessmentFromBaseline = this.actions$
+        .ofType(baselineActions.REMOVE_OBJECT_ASSESSMENT_FROM_BASELINE)
+        .pluck('payload')
+        .withLatestFrom(this.store.select('baseline'))
+        .pluck('baseline')
+        .switchMap(([ objAssessment, baseline ]: [ ObjectAssessment, AssessmentSet ]) => {
+            const oaIndex = baseline.assessments.findIndex((oaId) => oaId === objAssessment.id);
+            baseline.assessments.splice(oaIndex, 1);
+            const jsonBL = {
+                data: { attributes: baseline }
+            } as JsonApi<JsonApiData<AssessmentSet>>;
+            const url = Constance.X_UNFETTER_ASSESSMENT_SETS_URL;
+            return this.genericServiceApi.patch(url, jsonBL);
+        })
+        .map((baseline) => {
+            return new baselineActions.SetBaseline(baseline);
+        });
 
     private createObjAssessment(capability: Capability): ObjectAssessment {
         const newOA = new ObjectAssessment();
