@@ -9,6 +9,7 @@ import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { ConfirmationDialogComponent } from '../../../../components/dialogs/confirmation/confirmation-dialog.component';
 import { MasterListDialogTableHeaders } from '../../../../global/components/master-list-dialog/master-list-dialog.component';
+import { AngularHelper } from '../../../../global/static/angular-helper';
 import { UserProfile } from '../../../../models/user/user-profile';
 import { AppState } from '../../../../root-store/app.reducers';
 import { Constance } from '../../../../utils/constance';
@@ -143,7 +144,7 @@ export class FullComponent implements OnInit, OnDestroy {
         pluck<object, Assessment>('fullAssessment'),
         distinctUntilChanged(),
         map((assessment: Assessment) => {
-          const assessmentType = assessment.determineAssessmentType();
+          const assessmentType = assessment.determineAssessmentType() || 'Unkown';
           return `${assessment.name} - ${assessmentType}`;
         }),
         catchError((err, caught) => {
@@ -292,20 +293,21 @@ export class FullComponent implements OnInit, OnDestroy {
    * @description noop
    * @return {Promise<boolean>}
    */
-  public onFilterTabChanged($event?: UIEvent): Promise<boolean> {
+  public onFilterTabChanged(event?: Event): Promise<boolean> {
     console.log('noop');
     return Promise.resolve(false);
   }
 
   /**
-   * @description angular track by list function, uses the items id if
-   *  it exists, otherwise uses the index
+   * @description angular track by list function, 
+   *  uses the items id iff (if and only if) it exists, 
+   *  otherwise uses the index
    * @param {number} index
    * @param {item}
    * @return {number}
    */
   public trackByFn(index: number, item: any): number {
-    return item.id || index;
+    return AngularHelper.genericTrackBy(index, item);
   }
 
   /**

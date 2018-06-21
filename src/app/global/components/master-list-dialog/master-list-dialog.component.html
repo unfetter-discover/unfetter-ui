@@ -61,11 +61,11 @@
                         <!-- Note that these actions are hard-wired at this time -->
                         <mat-cell *matCellDef="let row" class="master-list-actions {{cdefs.rowClass(row, acts)}}">
                             <div class="buttonGrp">
-                                <button mat-button (click)="onEdit(row, $event)">
-                                    <mat-icon>edit</mat-icon>
+                                <button mat-icon-button (click)="onEdit(row, $event)">
+                                    <mat-icon class="mat-24" aria-hidden="false" aria-label="edit">edit</mat-icon>
                                 </button>
-                                <button mat-button (click)="onDelete(row, $event)">
-                                    <mat-icon>delete</mat-icon>
+                                <button mat-icon-button (click)="onDelete(row, $event)">
+                                    <mat-icon class="mat-24" aria-hidden="false" aria-label="delete">delete</mat-icon>
                                 </button>
                             </div>
                         </mat-cell>

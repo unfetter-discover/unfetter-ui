@@ -9,6 +9,7 @@ import { Assessment } from 'stix/assess/v2/assessment';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { ConfirmationDialogComponent } from '../../../../components/dialogs/confirmation/confirmation-dialog.component';
 import { MasterListDialogTableHeaders } from '../../../../global/components/master-list-dialog/master-list-dialog.component';
+import { AngularHelper } from '../../../../global/static/angular-helper';
 import { UserProfile } from '../../../../models/user/user-profile';
 import { AppState } from '../../../../root-store/app.reducers';
 import { Constance } from '../../../../utils/constance';
@@ -312,14 +313,15 @@ export class FullComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description angular track by list function, uses the items id if
-   *  it exists, otherwise uses the index
+   * @description angular track by list function, 
+   *  uses the items id iff (if and only if) it exists, 
+   *  otherwise uses the index
    * @param {number} index
    * @param {item}
    * @return {number}
    */
   public trackByFn(index: number, item: any): number {
-    return item.id || index;
+    return AngularHelper.genericTrackBy(index, item);
   }
 
   /**
