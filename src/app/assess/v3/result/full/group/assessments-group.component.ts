@@ -54,6 +54,8 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input()
   public assessmentGroup: Observable<FullAssessmentGroup>;
+  @Input()
+  public unassessedPhases: string[];
 
   @Output('riskByAttackPatternChanged')
   public riskByAttackPatternChanged = new EventEmitter<RiskByAttack>();
@@ -73,7 +75,6 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   public indicator: any;
   public riskByAttackPattern: RiskByAttack;
   public unassessedAttackPatterns: AttackPattern[];
-  public unassessedPhases: string[];
   public xUnfetterSensor: any;
 
   private readonly subscriptions: Subscription[] = [];
@@ -136,7 +137,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public initData(attackPatternIndex: number = 0): void {
     this.assessment = this.assessment || new Assessment();
-    this.unassessedPhases = [];
+    this.unassessedPhases = this.unassessedPhases || [];
     const stixPermissions: StixPermissions = this.authService.getStixPermissions();
     this.canAddAssessedObjects = stixPermissions.canCreate(this.assessment);
     this.listenForDataChanges(attackPatternIndex);
@@ -188,7 +189,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
         this.displayedAssessedObjects = [];
         this.assessedObjects = group.assessedObjects || [];
         this.riskByAttackPattern = group.riskByAttackPattern || new RiskByAttack();
-        this.unassessedPhases = group.unassessedPhases;
+        // this.unassessedPhases = group.unassessedPhases;
         this.loadDisplayedObjects(attackPatternIndex);
       },
         (err) => console.log(err));

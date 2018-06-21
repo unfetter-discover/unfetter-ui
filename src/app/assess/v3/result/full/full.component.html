@@ -1,6 +1,6 @@
 <div *ngIf="(finishedLoading|async) === true; else loadingBlock" class="fadeIn">
-  <mat-sidenav-container *ngIf="(assessment|async) !== undefined; else notFound">
-    <mat-sidenav class="side-panel" mode="side" opened="true">
+  <mat-sidenav-container *ngIf="assessment | async as assessment; else notFound">
+    <mat-sidenav *ngIf="(assessmentGroup$ | async) as assessmentGroup" class="side-panel" mode="side" opened="true" >
       <unfetter-side-panel class="side-panel" [item]="{ name: assessmentName|async }" collapsible="false" width="320">
 
         <sidepanel-option-item label="Edit" icon="mode_edit" (click)="onEdit($event)"></sidepanel-option-item>
@@ -11,7 +11,7 @@
           [columns]="masterListOptions.columns" (tabChange)="onFilterTabChanged($event)" (create)="onCreate($event)" (select)="onCellSelected($event)"
           (edit)="onEdit($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
       </unfetter-side-panel>
-      <div *ngIf="(assessmentGroup | async).riskByAttackPattern" class="side-panel-risks">
+      <div *ngIf="assessmentGroup.riskByAttackPattern" class="side-panel-risks" >
         <div class="risk-header-wrapper">
           <div class="flex risk-header">
             <span class="flex-grow">
@@ -24,7 +24,7 @@
         </div>
         <div class="phases-list">
           <div class="phases-list-item cursor-pointer" 
-            *ngFor="let phase of (assessmentGroup | async).riskByAttackPattern.phases; trackBy:trackByFn" 
+            *ngFor="let phase of assessmentGroup.riskByAttackPattern.phases; trackBy:trackByFn" 
             [ngClass]="{'highlightPhase': isCurrentPhase(phase._id)}"
             (click)="assessGroupMain.setPhase(phase._id); activePhase = phase._id">
             <div class="item-content flex">
@@ -41,11 +41,11 @@
         </div>
         <div class="divider-wrapper">
         </div>
-        <div *ngIf="(assessmentGroup | async).unassessedPhases && assessGroupMain.unassessedPhases.length > 0">
+        <div *ngIf="unassessedPhases$ | async as unassessedPhases">
           <div class="header">Unassessed Tactics</div>
           <div class="unassessed-phases-list">
             <div class="unassessed-phases-list-item cursor-pointer" 
-              *ngFor="let phase of assessGroupMain.unassessedPhases; trackBy:trackByFn"
+              *ngFor="let phase of unassessedPhases; trackBy:trackByFn"
               [ngClass]="{'highlightPhase': isCurrentPhase(phase)}"
               (click)="assessGroupMain.setPhase(phase); activePhase = phase">
               <div class="item-content">
@@ -60,8 +60,10 @@
     </mat-sidenav>
     <mat-sidenav-content class="sidenavContentPolyfill320">
       <div class="main-panel">
-        <result-header [assessment]="(assessment|async)" [assessmentId]="assessmentId" [rollupId]="rollupId" [created]="(assessment|async)?.created"></result-header>
-        <unf-assess-group #assessGroupMain [assessmentGroup]="assessmentGroup" [activePhase]="phase" [rollupId]="rollupId" [assessment]="(assessment|async)" (riskByAttackPatternChanged)="calculateRiskBreakdown($event)"></unf-assess-group>
+        <result-header [assessment]="assessment" [assessmentId]="assessmentId" [rollupId]="rollupId" [created]="assessment?.created"></result-header>
+        <unf-assess-group #assessGroupMain [unassessedPhases]="unassessedPhases$ | async" [assessmentGroup]="assessmentGroup$" [activePhase]="phase" 
+          [rollupId]="rollupId" [assessment]="assessment" (riskByAttackPatternChanged)="calculateRiskBreakdown($event)">
+        </unf-assess-group>
       </div>
     </mat-sidenav-content>
   </mat-sidenav-container>

@@ -17,7 +17,7 @@ import { LastModifiedAssessment } from '../../models/last-modified-assessment';
 import { AssessService } from '../../services/assess.service';
 import { CleanAssessmentResultData, LoadAssessmentById } from '../store/full-result.actions';
 import { FullAssessmentResultState } from '../store/full-result.reducers';
-import { getFinishedLoadingAssessment, getFullAssessment, getGroupState } from '../store/full-result.selectors';
+import { getFinishedLoadingAssessment, getFullAssessment, getGroupState, getUnassessedPhasesForCurrentFramework } from '../store/full-result.selectors';
 import { SummaryDataSource } from '../summary/summary.datasource';
 import { FullAssessmentGroup } from './group/models/full-assessment-group';
 
@@ -33,7 +33,8 @@ export class FullComponent implements OnInit, OnDestroy {
 
   public activePhase: string;
   public assessment: Observable<Assessment>;
-  public assessmentGroup: Observable<FullAssessmentGroup>;
+  public assessmentGroup$: Observable<FullAssessmentGroup>;
+  public unassessedPhases$: Observable<any[]>;
   public assessmentId: string;
   public assessmentName: Observable<string>;
   public attackPatternId: string;
@@ -105,7 +106,7 @@ export class FullComponent implements OnInit, OnDestroy {
       .select(getFinishedLoadingAssessment)
       .pipe(distinctUntilChanged());
 
-    this.assessmentGroup = this.store
+    this.assessmentGroup$ = this.store
       .select(getGroupState)
       .pipe(distinctUntilChanged());
 
@@ -142,6 +143,10 @@ export class FullComponent implements OnInit, OnDestroy {
           return caught;
         }),
     );
+
+    this.unassessedPhases$ = this.store
+      .select(getUnassessedPhasesForCurrentFramework)
+      .pipe(distinctUntilChanged());
 
     this.subscriptions.push(sub$);
   }

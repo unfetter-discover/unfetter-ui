@@ -3,7 +3,7 @@ import { FullAssessmentGroup } from '../full/group/models/full-assessment-group'
 import * as actions from './full-result.actions';
 import { fullAssessmentResultReducer, FullAssessmentResultState, genGroupState, genState } from './full-result.reducers';
 
-describe('full assessment v3 result state reducer specs', () => {
+describe('assessment v3 - full result reducer spec', () => {
 
     let initialState: FullAssessmentResultState = null;
     let initialGroupDataState: FullAssessmentGroup = null;
