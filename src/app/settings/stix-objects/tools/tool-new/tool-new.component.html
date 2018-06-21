@@ -13,7 +13,8 @@
 </div>
 <div class="row">
     <markdown-editor [editing]="true" [inputLabel]="'Description (Markdown Editor)'"
-            [data]="tool.attributes.description"></markdown-editor>
+            [value]="tool.attributes.description"
+            (changed)="tool.attributes.description = $event"></markdown-editor>
 </div>
 
 <div class="row">

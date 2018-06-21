@@ -1,10 +1,10 @@
 :host ::ng-deep {
-    mat-input-container .mat-input-infix {
-        border-top: 0px;
+    div.markdown-editor-panel.flushed {
+        padding: 0px;
     }
 
     textarea {
-        height: 288px;
+        height: 280px;
         resize: none;
     }
 
@@ -21,7 +21,7 @@
         padding: 0;
     }
 
-    div.preview-truncate {
+    div.preview-truncate, div.markdown-editor-panel.flushed div.preview {
         height: auto;
     }
 }

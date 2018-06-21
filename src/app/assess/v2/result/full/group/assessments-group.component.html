@@ -48,8 +48,8 @@
                 </div>
 
                 <div *ngIf="currentAttackPattern.description">
-                    <markdown-editor [editing]="false" [truncate]="true" [previewLabel]="'Description'"
-                            [data]="currentAttackPattern.description"></markdown-editor>
+                    <markdown-editor [editing]="false" [flushed]="true" [previewLabel]="'Description'"
+                            [value]="currentAttackPattern.description"></markdown-editor>
                 </div>
 
                 <div *ngIf="currentAttackPattern.external_references">

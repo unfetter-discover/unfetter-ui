@@ -1,17 +1,14 @@
-<div class="col-md-12 flex">
-    <div *ngIf="editing" class="flex1 pr-24">
+<div class="col-md-12 flex markdown-editor-panel" [ngClass]="{'flushed': flushed}">
+    <div *ngIf="editing" class="flex1 pr-24 markdown-editor-pane">
         <label>{{inputLabel}}</label>
         <mat-form-field class="full-width">
-            <textarea matInput [(ngModel)]="data" value="{{data}}"></textarea>
+            <textarea #markdown matInput [(ngModel)]="value"></textarea>
         </mat-form-field>
-        <!-- <mat-input-container class="full-width">
-            <textarea matInput [(ngModel)]="data"></textarea>
-        </mat-input-container> -->
     </div>
-    <div *ngIf="viewing" class="flex1">
+    <div *ngIf="viewing" class="flex1 markdown-preview-pane">
         <label *ngIf="!truncate">{{previewLabel}}</label>
         <div class="preview" [ngClass]="{'preview-only': !editing, 'preview-truncate': truncate}">
-            <markdown [data]="data"></markdown>
+            <markdown [data]="value"></markdown>
         </div>
     </div>
 </div>

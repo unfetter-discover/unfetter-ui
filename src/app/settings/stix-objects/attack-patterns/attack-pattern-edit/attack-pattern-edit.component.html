@@ -13,8 +13,9 @@
                 </div>
             </div>
             <div class="row">
-                <markdown-editor [inputLabel]="'Description (Markdown Editor)'"
-                        [data]="attackPattern.attributes.description"></markdown-editor>
+                <markdown-editor #markdownEditor [inputLabel]="'Description (Markdown Editor)'"
+                        [value]="attackPattern.attributes.description"
+                        (changed)="attackPattern.attributes.description = $event"></markdown-editor>
             </div>
              <div class="row">
                 <div class="col-md-12">

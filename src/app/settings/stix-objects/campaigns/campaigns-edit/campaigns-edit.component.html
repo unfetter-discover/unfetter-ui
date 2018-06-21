@@ -60,7 +60,8 @@
 
 <div class="row">
     <markdown-editor [editing]="true" [inputLabel]="'Description (Markdown Editor)'"
-            [data]="campaign.attributes.description"></markdown-editor>
+            [value]="campaign.attributes.description"
+            (changed)="campaign.attributes.description = $event"></markdown-editor>
 </div>
 <stix-text-array [(model)]="campaign" [propertyName]="'labels'"></stix-text-array>
 <stix-text-array [(model)]="campaign" [propertyName]="'aliases'"></stix-text-array>

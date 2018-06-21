@@ -1,12 +1,11 @@
 import { TestBed, ComponentFixture, async } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA, SimpleChange } from '@angular/core';
+import { SimpleChange } from '@angular/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of as observableOf, Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { StoreModule, Store } from '@ngrx/store';
 
-import { Carousel } from 'primeng/primeng';
+import { FormsModule } from '@angular/forms';
 import {
     MatButtonToggleModule,
     MatCardModule,
@@ -15,6 +14,8 @@ import {
     MatSelectModule,
     MatToolbarModule,
 } from '@angular/material';
+import { MarkdownComponent } from 'ngx-markdown';
+import { Carousel } from 'primeng/primeng';
 
 import { SummaryTacticsComponent } from './summary-tactics.component';
 import { TacticsPaneComponent } from '../../../../../global/components/tactics-pane/tactics-pane.component';
@@ -27,13 +28,9 @@ import { TacticsTooltipService } from '../../../../../global/components/tactics-
 import { TacticsControlService } from '../../../../../global/components/tactics-pane/tactics-control.service';
 import { HeatmapComponent } from '../../../../../global/components/heatmap/heatmap.component';
 import { TreemapComponent } from '../../../../../global/components/treemap/treemap.component';
+import { MarkdownEditorComponent } from '../../../../../global/components/markdown-editor/markdown-editor.component';
 import { CapitalizePipe } from '../../../../../global/pipes/capitalize.pipe';
-import {
-    mockUser,
-    mockTactics,
-    mockTargets,
-    mockAttackPatternData
-} from '../../../../../global/components/tactics-pane/tactics.model.test';
+import { mockUser, mockTactics } from '../../../../../global/components/tactics-pane/tactics.model.test';
 import * as configActions from '../../../../../root-store/config/config.actions';
 import * as userActions from '../../../../../root-store/users/user.actions';
 import { reducers, AppState } from '../../../../../root-store/app.reducers';
@@ -49,6 +46,7 @@ describe('SummaryTacticsComponent', () => {
         TestBed
             .configureTestingModule({
                 imports: [
+                    FormsModule,
                     MatButtonToggleModule,
                     MatCardModule,
                     MatIconModule,
@@ -70,6 +68,8 @@ describe('SummaryTacticsComponent', () => {
                     HeatmapComponent,
                     TreemapComponent,
                     Carousel,
+                    MarkdownEditorComponent,
+                    MarkdownComponent,
                     CapitalizePipe,
                 ],
                 providers: [

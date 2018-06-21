@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 
 /**
  * 
@@ -8,7 +8,7 @@ import { Component, OnInit, Input } from '@angular/core';
     templateUrl: './markdown-editor.component.html',
     styleUrls: ['./markdown-editor.component.scss']
 })
-export class MarkdownEditorComponent implements OnInit {
+export class MarkdownEditorComponent {
 
     /**
      * 
@@ -28,6 +28,11 @@ export class MarkdownEditorComponent implements OnInit {
     /**
      * 
      */
+    @Input() flushed: boolean = false;
+
+    /**
+     * 
+     */
     @Input() inputLabel: string = null;
 
     /**
@@ -38,7 +43,12 @@ export class MarkdownEditorComponent implements OnInit {
     /**
      * 
      */
-    @Input() data: string = null;
+    private text: string = '';
+
+    /**
+     * 
+     */
+    @Output() changed: EventEmitter<string> = new EventEmitter();
 
     /**
      * 
@@ -50,7 +60,16 @@ export class MarkdownEditorComponent implements OnInit {
     /**
      * 
      */
-    ngOnInit() {
+    @Input() get value() {
+        return this.text;
+    }
+
+    /**
+     * 
+     */
+    set value(value) {
+        this.text = value;
+        this.changed.emit(this.text);
     }
 
 }

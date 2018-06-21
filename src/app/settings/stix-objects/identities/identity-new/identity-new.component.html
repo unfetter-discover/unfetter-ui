@@ -9,7 +9,8 @@
 
 <div class="row">
     <markdown-editor [editing]="true" [inputLabel]="'Description (Markdown Editor)'"
-            [data]="identity.attributes.description"></markdown-editor>
+            [value]="identity.attributes.description"
+            (changed)="identity.attributes.description = $event"></markdown-editor>
 </div>
 <div class="row">
     <div class="col-md-3">

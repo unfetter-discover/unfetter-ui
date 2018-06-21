@@ -15,7 +15,8 @@
         </div>
         <div class="row">
             <markdown-editor [editing]="true" [inputLabel]="'Description (Markdown Editor)'"
-                    [data]="courseOfAction.attributes.description"></markdown-editor>
+                    [value]="courseOfAction.attributes.description"
+                    (changed)="courseOfAction.attributes.description = $event"></markdown-editor>
         </div>
 
         <stix-text-array [(model)]="courseOfAction" [propertyName]="'labels'"></stix-text-array>

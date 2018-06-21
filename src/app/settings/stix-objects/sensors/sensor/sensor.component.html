@@ -52,7 +52,7 @@
                         </div>
                         <div class="row">
                             <markdown-editor [editing]="false" [truncate]="true" [inputLabel]="'Description'"
-                                    [data]="sensor.attributes.description"></markdown-editor>
+                                    [value]="sensor.attributes.description"></markdown-editor>
                         </div>
                         <div class="row" *ngIf="sensor.attributes.metaProperties && sensor.attributes.metaProperties.observedData && sensor.attributes.metaProperties.observedData.length">
                             <div class="col-xs-12">

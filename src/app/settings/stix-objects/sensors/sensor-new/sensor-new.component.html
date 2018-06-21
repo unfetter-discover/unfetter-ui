@@ -13,7 +13,8 @@
 </div>
 <div  *ngIf="sensor" class="row">
     <markdown-editor [editing]="true" [inputLabel]="'Description (Markdown Editor)'"
-            [data]="sensor.attributes.description"></markdown-editor>
+            [value]="sensor.attributes.description"
+            (changed)="sensor.attributes.description = $event"></markdown-editor>
 </div>
 
 <stix-text-array [(model)]="sensor" [propertyName]="'labels'"></stix-text-array>

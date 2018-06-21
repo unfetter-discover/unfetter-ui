@@ -113,7 +113,8 @@
 
 <div class="row">
     <markdown-editor [editing]="true" [inputLabel]="'Description (Markdown Editor)'"
-            [data]="intrusionSet.attributes.description"></markdown-editor>
+            [value]="intrusionSet.attributes.description"
+            (changed)="intrusionSet.attributes.description = $event"></markdown-editor>
 </div>
 
 <!--<external-reference [(model)]="intrusionSet"></external-reference>-->

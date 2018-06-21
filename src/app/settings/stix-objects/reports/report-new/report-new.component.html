@@ -21,7 +21,8 @@
 </div>
 <div class="row">
     <markdown-editor [editing]="true" [inputLabel]="'Description (Markdown Editor)'"
-            [data]="report.attributes.description"></markdown-editor>
+            [value]="report.attributes.description"
+            (changed)="report.attributes.description = $event"></markdown-editor>
 </div>
 <div class="row">
     <div class="col-md-12">

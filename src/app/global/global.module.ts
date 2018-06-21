@@ -160,15 +160,17 @@ const unfetterComponents = [
         FormsModule,
         ReactiveFormsModule,
         MarkdownModule.forRoot({
-            provide: MarkedOptions,
-            useValue: {
-                gfm: true,
-                tables: true,
-                breaks: true,
-                sanitize: true,
-                pedantic: false,
-                smartLists: true,
-                smartypants: true,
+            markedOptions: {
+                provide: MarkedOptions,
+                useValue: {
+                    gfm: true,
+                    tables: true,
+                    breaks: true,
+                    sanitize: false,
+                    pedantic: false,
+                    smartLists: true,
+                    smartypants: true,
+                }
             }
         }),
         CarouselModule,

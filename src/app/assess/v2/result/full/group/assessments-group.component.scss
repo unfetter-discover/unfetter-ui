@@ -92,9 +92,7 @@
 }
 
 :host ::ng-deep {
-    markdown-editor div.flex {
-        padding: 0px;
-
+    markdown-editor div.markdown-editor-panel {
         label {
             color: rgba(0, 0, 0, 0.87);
         }

@@ -55,7 +55,8 @@
 </div>
 <div class="row">
     <markdown-editor [editing]="true" [inputLabel]="'Description (Markdown Editor)'"
-            [data]="relationship.attributes.description"></markdown-editor>
+            [value]="relationship.attributes.description"
+            (changed)="relationship.attributes.description = $event"></markdown-editor>
 </div>
 <stix-text-array [(model)]="relationship" [propertyName]="'labels'"></stix-text-array>
 <published-checkbox [model]="relationship"></published-checkbox>

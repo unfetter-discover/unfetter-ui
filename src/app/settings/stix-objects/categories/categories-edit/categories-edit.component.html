@@ -16,7 +16,7 @@
     </div>
     <div class="row">
       <markdown-editor [editing]="true" [inputLabel]="'Description (Markdown Editor)'"
-          [data]="category.description"></markdown-editor>
+          [value]="category.description" (changed)="category.description = $event"></markdown-editor>
     </div>
     <div class="row" *ngFor="let framework of frameworks">
       <div class="col-md-12" *ngFor="let assessedObject of category.assessed_objects">
