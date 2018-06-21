@@ -16,9 +16,15 @@ export class SelectionListComponent implements OnInit {
   @Input()
   public formCtrl: FormControl;
 
+  @Input()
+  public showSelectedOnly: boolean = false;
+
+  @Input()
+  public listMaxHeight: string = '392px';
+
   public filterCtrl: FormControl = new FormControl('');
   public searchTerm: string = '';
-  public displayArr: boolean[];
+  public hideStixObj = {};
 
   public ngOnInit() {
     
@@ -31,14 +37,7 @@ export class SelectionListComponent implements OnInit {
       .subscribe(
         (term) => {
           this.searchTerm = term.toUpperCase();
-          this.initDisplayArr();
-          this.stix.forEach((stix, i) => {
-            if (stix.name.toUpperCase().indexOf(this.searchTerm) > -1) {
-              this.displayArr[i] = true;
-            } else {
-              this.displayArr[i] = false;
-            }
-          });
+          this.hideObjs();
         },
         (err) => {
           console.log(err);
@@ -46,9 +45,23 @@ export class SelectionListComponent implements OnInit {
       );
   }
 
-  private initDisplayArr() {
-    if (!this.displayArr || (this.displayArr.length && this.displayArr.length !== this.stix.length)) {
-      this.displayArr = this.stix.map(() => true);
+  public hideObjs() {
+    if (this.showSelectedOnly) {
+      this.stix.forEach((stix, i) => {
+        if (this.formCtrl.value.includes(stix.id) && (this.searchTerm === '' || stix.name.toUpperCase().indexOf(this.searchTerm) > -1)) {
+          this.hideStixObj[stix.id] = false;
+        } else {
+          this.hideStixObj[stix.id] = true;
+        }
+      });
+    } else {      
+      this.stix.forEach((stix, i) => {
+        if (this.searchTerm === '' || stix.name.toUpperCase().indexOf(this.searchTerm) > -1) {
+          this.hideStixObj[stix.id] = false;
+        } else {
+          this.hideStixObj[stix.id] = true;
+        }
+      });
     }
   }
 }

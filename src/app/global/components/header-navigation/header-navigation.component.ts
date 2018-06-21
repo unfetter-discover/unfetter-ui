@@ -65,8 +65,8 @@ export class HeaderNavigationComponent {
   public topPx = '0px';
   public user$;
   public apiDocsIcon: string = Constance.LOGO_IMG_API_EXPLORER;
-  public orgLeaderIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD; // Placeholder icon
-  public adminIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD; // Placeholder icon
+  public orgLeaderIcon: string = Constance.LOGO_IMG_ORGANIZATIONS_MANAGEMENT; // Placeholder icon
+  public adminIcon: string = Constance.LOGO_IMG_ADMIN; // Placeholder icon
   public stixIcon: string = Constance.LOGO_IMG_STIX;
   public encodedToken: string = '';
   @Input() public title;
