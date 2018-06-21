@@ -1,11 +1,8 @@
-
 import { take, filter, pluck, distinctUntilChanged } from 'rxjs/operators';
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { MatDialog, MatSidenav } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { Observable ,  BehaviorSubject } from 'rxjs';
-
-
 
 import { AddIndicatorComponent } from '../add-indicator/add-indicator.component';
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
@@ -21,11 +18,6 @@ import { generateStixRelationship } from '../../global/static/stix-relationship'
 import { StixRelationshipTypes } from '../../global/enums/stix-relationship-types.enum';
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { downloadBundle } from '../../global/static/stix-bundle';
-import { TreemapOptions } from '../../global/components/treemap/treemap.data';
-import { HeatmapOptions, HeatColor } from '../../global/components/heatmap/heatmap.data';
-import { Tactic } from '../../global/components/tactics-pane/tactics.model';
-import { Dictionary } from '../../models/json/dictionary';
-import { CarouselOptions } from '../../global/components/tactics-pane/tactics-carousel/carousel.data';
 
 type mainWell = 'stats' | 'tactics' | 'none';
 
@@ -40,7 +32,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
 
     public displayedIndicators: any[];
     public filteredIndicators: any[];
-    public DEFAULT_LENGTH: number = 10;
+    public DEFAULT_LENGTH: number = Constance.INDICATOR_SHARING.DEFAULT_LIST_LENGTH;
     public searchParameters;
     public filterOpen: boolean = false;
     public filterOpened: boolean = false;

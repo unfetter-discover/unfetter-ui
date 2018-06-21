@@ -2,6 +2,7 @@ import * as indicatorSharingActions from './indicator-sharing.actions';
 import * as fromApp from '../../root-store/app.reducers'
 import { SearchParameters } from '../models/search-parameters';
 import { SortTypes } from '../models/sort-types.enum';
+import { Constance } from '../../utils/constance';
 
 export interface IndicatorSharingFeatureState extends fromApp.AppState {
     indicatorSharing: IndicatorSharingState
@@ -55,7 +56,7 @@ export const initialState: IndicatorSharingState = {
     totalIndicatorCount: 0
 };
 
-const DEFAULT_DISPLAYED_LENGTH: number = 10;
+const DEFAULT_DISPLAYED_LENGTH: number = Constance.INDICATOR_SHARING.DEFAULT_LIST_LENGTH;
 
 export function indicatorSharingReducer(state = initialState, action: indicatorSharingActions.IndicatorSharingActions): IndicatorSharingState {
 

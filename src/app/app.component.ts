@@ -62,9 +62,15 @@ export class AppComponent implements OnInit {
           userData: demoUser, 
           token: '1234'
         }));
+
+        /**
+         * These actions are dispatched by the userActions.FetchUser
+         * effect and do NOT pertain to UAC
+         */
+        this.store.dispatch(new configActions.FetchConfig(false));
+        this.store.dispatch(new configActions.FetchTactics());
+        this.store.dispatch(new identityActions.FetchIdentities());
       }
-      this.store.dispatch(new configActions.FetchTactics());
-      this.store.dispatch(new identityActions.FetchIdentities());
     }
 
     const bodyElement: HTMLElement = document.getElementsByTagName('body')[0];
