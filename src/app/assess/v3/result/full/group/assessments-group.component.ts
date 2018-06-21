@@ -189,7 +189,6 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
         this.displayedAssessedObjects = [];
         this.assessedObjects = group.assessedObjects || [];
         this.riskByAttackPattern = group.riskByAttackPattern || new RiskByAttack();
-        // this.unassessedPhases = group.unassessedPhases;
         this.loadDisplayedObjects(attackPatternIndex);
       },
         (err) => console.log(err));
@@ -229,7 +228,6 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
    * @returns {void}
    */
   public loadDisplayedObjects(attackPatternIndex: number): void {
-    this.populateUnassessedPhases();
     // active phase is either the current active phase, 
     let activePhase = this.activePhase;
     if (!activePhase && this.riskByAttackPattern && this.riskByAttackPattern.phases.length > 0) {
@@ -272,17 +270,6 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
     return 0;
-  }
-
-  /**
-   * @description set the unassessedPhases from the risks per attack pattern query
-   * @return {void}
-   */
-  public populateUnassessedPhases(): void {
-    const assessedPhases = this.riskByAttackPattern.phases
-      .map((phase) => phase._id);
-    this.unassessedPhases = Constance.KILL_CHAIN_PHASES
-      .filter((phase) => assessedPhases.indexOf(phase) < 0);
   }
 
   /**

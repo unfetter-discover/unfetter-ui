@@ -34,7 +34,7 @@ export class FullComponent implements OnInit, OnDestroy {
   public activePhase: string;
   public assessment: Observable<Assessment>;
   public assessmentGroup$: Observable<FullAssessmentGroup>;
-  public unassessedPhases$: Observable<any[]>;
+  public unassessedPhases$: Observable<string[]>;
   public assessmentId: string;
   public assessmentName: Observable<string>;
   public attackPatternId: string;

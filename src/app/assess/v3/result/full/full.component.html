@@ -11,7 +11,7 @@
           [columns]="masterListOptions.columns" (tabChange)="onFilterTabChanged($event)" (create)="onCreate($event)" (select)="onCellSelected($event)"
           (edit)="onEdit($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
       </unfetter-side-panel>
-      <div *ngIf="assessmentGroup.riskByAttackPattern" class="side-panel-risks" >
+      <div *ngIf="assessmentGroup.riskByAttackPattern" class="side-panel-risks">
         <div class="risk-header-wrapper">
           <div class="flex risk-header">
             <span class="flex-grow">
@@ -24,7 +24,7 @@
         </div>
         <div class="phases-list">
           <div class="phases-list-item cursor-pointer" 
-            *ngFor="let phase of assessmentGroup.riskByAttackPattern.phases; trackBy:trackByFn" 
+            *ngFor="let phase of assessmentGroup.riskByAttackPattern.phases; trackBy:trackByFn"
             [ngClass]="{'highlightPhase': isCurrentPhase(phase._id)}"
             (click)="assessGroupMain.setPhase(phase._id); activePhase = phase._id">
             <div class="item-content flex">
