@@ -1,11 +1,14 @@
 import { TestBed, ComponentFixture, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
+import { FormsModule } from '@angular/forms';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { MatCardModule } from '@angular/material';
+import { MatCardModule, MatFormFieldModule } from '@angular/material';
+import { MarkdownComponent } from 'ngx-markdown';
 
 import { TacticsTooltipComponent } from './tactics-tooltip.component';
 import { TacticsTooltipService } from './tactics-tooltip.service';
+import { MarkdownEditorComponent } from '../../markdown-editor/markdown-editor.component';
 import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
 import { AuthService } from '../../../../core/services/auth.service';
 import { StoreModule } from '@ngrx/store';
@@ -20,13 +23,17 @@ describe('TacticsTooltipComponent should', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [
-                MatCardModule,
+                FormsModule,
                 OverlayModule,
+                MatCardModule,
+                MatFormFieldModule,
                 RouterTestingModule,
                 StoreModule.forRoot(reducers),
             ],
             declarations: [
                 TacticsTooltipComponent,
+                MarkdownEditorComponent,
+                MarkdownComponent,
                 CapitalizePipe,
             ],
             providers: [

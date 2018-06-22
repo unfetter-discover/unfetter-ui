@@ -16,6 +16,7 @@ export const UPDATE_ASSESSMENT_OBJECT = '[Assess Result Group] UPDATE_ASSESSMENT
 // For reducers
 export const CLEAN_ASSESSMENT_RESULT_DATA = '[Assess Result Group] CLEAN_ASSESSMENT_RESULT_DATA';
 export const DONE_PUSH_URL = '[Assess Result] DONE_PUSH_URL';
+export const FAILED_TO_LOAD = '[Assess Result Group] FAILED_TO_LOAD';
 export const FINISHED_LOADING = '[Assess Result] FINISHED_LOADING';
 export const PUSH_URL = '[Assess Result] PUSH_URL';
 export const RELOAD_AFTER_UPDATE_ASSESSMENT_OBJECT = '[Assess Result Group] RELOAD_AFTER_UPDATE_ASSESSMENT_OBJECT';
@@ -133,9 +134,15 @@ export class UpdateAssessmentObject implements Action {
     constructor(public payload: Assessment) { }
 }
 
+export class FailedToLoad implements Action {
+    public readonly type = FAILED_TO_LOAD;
+    constructor(public payload: boolean) { }
+}
+
 export type FullAssessmentResultActions =
     CleanAssessmentResultData |
     DonePushUrl |
+    FailedToLoad |
     FinishedLoading |
     LoadAssessmentById |
     LoadAssessmentsByRollupId |

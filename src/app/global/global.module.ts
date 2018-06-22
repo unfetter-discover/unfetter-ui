@@ -26,6 +26,7 @@ import {
     MatTooltipModule,
 } from '@angular/material';
 import { CarouselModule } from 'primeng/primeng';
+import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 
 import { AddLabelReactiveComponent } from './components/add-label/add-label.component';
 import { AdditionalQueriesComponent } from './components/additional-queries/additional-queries.component';
@@ -78,6 +79,7 @@ import { SophisticationPipe } from './pipes/sophistication.pipe';
 import { TimeAgoPipe } from './pipes/time-ago.pipe';
 import { AuthService } from '../core/services/auth.service';
 import { DataSourcesComponent } from './components/data-sources/data-sources.component';
+import { MarkdownEditorComponent } from './components/markdown-editor/markdown-editor.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -148,6 +150,7 @@ const unfetterComponents = [
     TimeAgoPipe,
     TreemapComponent,
     DataSourcesComponent,
+    MarkdownEditorComponent,
 ];
 
 @NgModule({
@@ -156,6 +159,20 @@ const unfetterComponents = [
         RouterModule,
         FormsModule,
         ReactiveFormsModule,
+        MarkdownModule.forRoot({
+            markedOptions: {
+                provide: MarkedOptions,
+                useValue: {
+                    gfm: true,
+                    tables: true,
+                    breaks: true,
+                    sanitize: false,
+                    pedantic: false,
+                    smartLists: true,
+                    smartypants: true,
+                }
+            }
+        }),
         CarouselModule,
         ...matModules
     ],

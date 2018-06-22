@@ -1,5 +1,4 @@
 import { createSelector } from '@ngrx/store';
-
 import { AppState } from '../app.reducers';
 import { getPreferredKillchain } from '../users/user.selectors';
 

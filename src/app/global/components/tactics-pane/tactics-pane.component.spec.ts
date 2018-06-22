@@ -4,6 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { StoreModule, Store } from '@ngrx/store';
 
+import { FormsModule } from '@angular/forms';
 import {
     MatButtonToggleModule,
     MatButtonToggleChange,
@@ -13,6 +14,7 @@ import {
     MatSelectModule,
     MatToolbarModule,
 } from '@angular/material';
+import { MarkdownComponent } from 'ngx-markdown';
 import { CarouselModule } from 'primeng/primeng';
 
 import { TacticsPaneComponent } from './tactics-pane.component';
@@ -26,6 +28,7 @@ import { TacticsTooltipService, TooltipEvent } from './tactics-tooltip/tactics-t
 import { HeatmapComponent } from '../heatmap/heatmap.component';
 import { TreemapComponent } from '../treemap/treemap.component';
 import { ResizeDirective } from '../../directives/resize.directive';
+import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.component';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 import { AuthService } from '../../../core/services/auth.service';
 import { GenericApi } from '../../../core/services/genericapi.service';
@@ -44,6 +47,7 @@ describe('TacticsPaneComponent', () => {
         TestBed
             .configureTestingModule({
                 imports: [
+                    FormsModule,
                     CarouselModule,
                     MatButtonToggleModule,
                     MatCardModule,
@@ -64,6 +68,8 @@ describe('TacticsPaneComponent', () => {
                     TacticsTooltipComponent,
                     HeatmapComponent,
                     TreemapComponent,
+                    MarkdownEditorComponent,
+                    MarkdownComponent,
                     ResizeDirective,
                     CapitalizePipe,
                 ],

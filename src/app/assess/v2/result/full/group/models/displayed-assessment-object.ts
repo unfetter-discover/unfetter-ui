@@ -6,6 +6,5 @@ export class DisplayedAssessmentObject extends AssessmentObject {
         public editActive = false,
     ) {
         super();
-        console.log('new DisplayedAssessmentObject');
     }
 }

@@ -13,7 +13,10 @@
             <mat-card-content>
                 <div class="row" *ngIf="tooltipTarget.description">
                     <div class="col-md-3"><label>Description</label></div>
-                    <div class="col-md-8 tactic-description" [innerHTML]="tooltipTarget.description"></div>
+                    <div class="col-md-8 tactic-description">
+                        <markdown-editor [editing]="false" [truncate]="true" [flushed]="true"
+                                [value]="tooltipTarget.description"></markdown-editor>
+                    </div>
                 </div>
                 <div class="row" *ngIf="tooltipTarget.sources && tooltipTarget.sources.length">
                     <div class="col-md-3"><label>Data Sources</label></div>
