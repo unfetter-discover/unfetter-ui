@@ -134,6 +134,7 @@ export class FullComponent implements OnInit, OnDestroy {
       .select(getFullAssessment)
       .pipe(
         distinctUntilChanged(),
+        // filter((assessment: Assessment) => assessment !== undefined),
         map((assessment: Assessment) => {
           const assessmentType = assessment.determineAssessmentType() || 'Unknown';
           return `${assessment.name} - ${assessmentType}`;

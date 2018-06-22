@@ -13,8 +13,9 @@ import { RxjsHelpers } from '../../../global/static/rxjs-helpers';
 import { Constance } from '../../../utils/constance';
 import { LastModifiedAssessment } from '../models/last-modified-assessment';
 
-
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+  })
 export class AssessService {
     public readonly assessBaseUrl = Constance.X_UNFETTER_ASSESSMENT_URL;
     public readonly relationshipsBaseUrl = Constance.RELATIONSHIPS_URL;
