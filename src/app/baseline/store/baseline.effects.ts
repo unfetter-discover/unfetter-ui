@@ -322,7 +322,7 @@ export class BaselineEffects {
                     .patchAs<AssessmentSet>(url, json)
                     .pipe(
                         map(RxjsHelpers.mapAttributes),
-                        map((baseline) => new baselineActions.SetBaseline(baseline)),
+                        map((newBaseline) => new baselineActions.SetBaseline(newBaseline)),
                         catchError((err) => {
                             console.log(err);
                             return observableOf();
@@ -371,7 +371,7 @@ export class BaselineEffects {
                 return this.genericServiceApi.patch(url, jsonBL)
                     .pipe(
                         map(RxjsHelpers.mapAttributes),
-                        map((baseline) => new baselineActions.SetBaseline(baseline)),
+                        map((newBaseline) => new baselineActions.SetBaseline(newBaseline)),
                         catchError((err) => {
                             console.log(err);
                             return observableOf();
