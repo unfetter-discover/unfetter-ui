@@ -2,7 +2,7 @@
   <div @heightCollapse class="flex-col mt-18 mb-12">
   </div>
   <mat-accordion displayMode="flat" multi="false">
-    <mat-expansion-panel hideToggle="true">
+    <mat-expansion-panel hideToggle="true" (opened)="onOpenSidePanel('category')">
       <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
         <mat-panel-title>
           GROUP SETUP
@@ -27,7 +27,7 @@
         </ul>
       </mat-expansion-panel>
     </div>
-    <mat-expansion-panel hideToggle="true" [expanded]="openedSidePanel === 'summary'" (opened)="onOpenSidePanel('summary'); showSummarySavePage()">
+    <mat-expansion-panel hideToggle="true" [expanded]="openedSidePanel === 'summary'" (opened)="onOpenSidePanel('summary')">
       <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
         <mat-panel-title>
           SUMMARY
@@ -56,10 +56,14 @@
         <p>This is the attack pattern selection and capability scoring panel.</p>
       </div>
       <div *ngSwitchDefault>
-        <mat-card-header>
-          <mat-card-title>Assessment Report</mat-card-title>
-        </mat-card-header>
         <mat-card-content>
+          <div class="row margin-bottom flex-sm flexItemsCenter">
+            <div class="col-sm-9">
+              <mat-card-title>
+              Baseline Summary
+              </mat-card-title>
+            </div>
+          </div>
           <div class="row mat-card-padding">
             <div class="col-xs-8">
               <mat-form-field class="full-width">
