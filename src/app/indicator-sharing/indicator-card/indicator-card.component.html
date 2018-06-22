@@ -108,7 +108,8 @@
       <mat-tab-group>
         <mat-tab label="Details">
           <div *ngIf="indicator.description">
-            <markdown-editor [editing]="false" [flushed]="true" [previewLabel]="'Description'"
+            <label>Description</label>
+            <markdown-editor [editing]="false" [flushed]="true" [truncate]="true"
                 [value]="indicator.description"></markdown-editor>
           </div>
           <div *ngIf="indicator.kill_chain_phases">
