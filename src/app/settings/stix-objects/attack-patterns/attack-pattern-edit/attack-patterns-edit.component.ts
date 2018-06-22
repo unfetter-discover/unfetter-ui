@@ -1,10 +1,11 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild, Output, EventEmitter } from '@angular/core';
 import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { AttackPatternComponent } from '../attack-pattern/attack-pattern.component';
 import { StixService } from '../../../stix.service';
 import { AttackPattern, ExternalReference, KillChainPhase } from '../../../../models';
+import { MarkdownEditorComponent } from '../../../../global/components/markdown-editor/markdown-editor.component';
 
 @Component({
     selector: 'attack-pattern-edit',
@@ -12,6 +13,8 @@ import { AttackPattern, ExternalReference, KillChainPhase } from '../../../../mo
 })
 
 export class AttackPatternEditComponent extends AttackPatternComponent implements OnInit {
+
+    @ViewChild('markdownEditor') markdownEditor: MarkdownEditorComponent;
 
     constructor(
         public stixService: StixService,
@@ -41,7 +44,7 @@ export class AttackPatternEditComponent extends AttackPatternComponent implement
     }
 
     public saveAttackPattern(): void {
-         let sub = super.saveButtonClicked().subscribe(
+        let sub = super.saveButtonClicked().subscribe(
             (data) => {
                 this.saveCourseOfAction(data.id);
                 this.location.back();

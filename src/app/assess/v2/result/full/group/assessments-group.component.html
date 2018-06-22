@@ -48,10 +48,8 @@
                 </div>
 
                 <div *ngIf="currentAttackPattern.description">
-                    <p>
-                        <strong>Description</strong>
-                    </p>
-                    <p [innerHTML]="whitespaceToBreak(currentAttackPattern.description)"></p>
+                    <markdown-editor [editing]="false" [flushed]="true" [previewLabel]="'Description'"
+                            [value]="currentAttackPattern.description"></markdown-editor>
                 </div>
 
                 <div *ngIf="currentAttackPattern.external_references">

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Output, EventEmitter } from '@angular/core';
 import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -31,6 +31,7 @@ export class AttackPatternComponent extends BaseStixComponent implements OnInit 
           { id : 3, value: '3 - Expert' },
           { id : 4, value: '4 - Innovator' }
     ];
+    @Output() descriptionEdit: EventEmitter<string> = new EventEmitter();
 
     constructor(
         public stixService: StixService,
