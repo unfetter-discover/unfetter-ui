@@ -1,0 +1,27 @@
+:host ::ng-deep {
+    div.markdown-editor-panel.flushed {
+        padding: 0px;
+    }
+
+    textarea {
+        height: 280px;
+        resize: none;
+    }
+
+    div.preview {
+        height: 300px;
+        padding: 3px;
+        padding-left: 6px;
+        overflow-y: auto;
+        border: 1px solid rgba(0, 0, 0, 0.42);
+    }
+
+    div.preview-only {
+        border: none;
+        padding: 0;
+    }
+
+    div.preview-truncate, div.markdown-editor-panel.flushed div.preview {
+        height: auto;
+    }
+}

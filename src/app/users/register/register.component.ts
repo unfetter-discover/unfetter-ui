@@ -32,11 +32,14 @@ export class RegisterComponent implements OnInit {
     public importStixEl: ElementRef;
 
     public helpHtml: string = `
-        <h4>Approval Process</h4>
-        <p>After completing registration, an Unfetter administrator will have to approve your account before you can use the application.</p>
-        <h4>Organizations</h4>
-        <p>To get the most out of Unfetters, users should be in one or more organizations.  After being approved to the application, you may apply to join organizations in the users settings dashboard.  An organization leader or an Unfetter administrator has to approve organization applicant.</p>
-    `;
+#### Approval Process
+
+After completing registration, an Unfetter administrator will have to approve your account before you can use the application.
+
+#### Organizations
+
+To get the most out of Unfetter, users should be in one or more organizations. After being approved to the application, you may apply to join organizations in the users settings dashboard. An organization leader or an Unfetter administrator has to approve organization applicants.
+`;
 
     private importedStixIdentity: any = {};
 
