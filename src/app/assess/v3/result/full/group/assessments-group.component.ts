@@ -54,6 +54,8 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input()
   public assessmentGroup: Observable<FullAssessmentGroup>;
+  @Input()
+  public unassessedPhases: string[];
 
   @Output('riskByAttackPatternChanged')
   public riskByAttackPatternChanged = new EventEmitter<RiskByAttack>();
@@ -73,7 +75,6 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   public indicator: any;
   public riskByAttackPattern: RiskByAttack;
   public unassessedAttackPatterns: AttackPattern[];
-  public unassessedPhases: string[];
   public xUnfetterSensor: any;
 
   private readonly subscriptions: Subscription[] = [];
@@ -136,7 +137,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public initData(attackPatternIndex: number = 0): void {
     this.assessment = this.assessment || new Assessment();
-    this.unassessedPhases = [];
+    this.unassessedPhases = this.unassessedPhases || [];
     const stixPermissions: StixPermissions = this.authService.getStixPermissions();
     this.canAddAssessedObjects = stixPermissions.canCreate(this.assessment);
     this.listenForDataChanges(attackPatternIndex);
@@ -227,7 +228,6 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
    * @returns {void}
    */
   public loadDisplayedObjects(attackPatternIndex: number): void {
-    this.populateUnassessedPhases();
     // active phase is either the current active phase, 
     let activePhase = this.activePhase;
     if (!activePhase && this.riskByAttackPattern && this.riskByAttackPattern.phases.length > 0) {
@@ -270,17 +270,6 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
     return 0;
-  }
-
-  /**
-   * @description set the unassessedPhases from the risks per attack pattern query
-   * @return {void}
-   */
-  public populateUnassessedPhases(): void {
-    const assessedPhases = this.riskByAttackPattern.phases
-      .map((phase) => phase._id);
-    this.unassessedPhases = Constance.KILL_CHAIN_PHASES
-      .filter((phase) => assessedPhases.indexOf(phase) < 0);
   }
 
   /**

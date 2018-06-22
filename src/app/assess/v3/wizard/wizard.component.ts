@@ -29,6 +29,7 @@ import { LoadAssessmentsByRollupId } from '../result/store/full-result.actions';
 import { FullAssessmentResultState } from '../result/store/full-result.reducers';
 import { CleanAssessmentWizardData, LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle } from '../store/assess.actions';
 import * as assessReducers from '../store/assess.reducers';
+import * as assessSelectors from '../store/assess.selectors';
 import { Measurements } from './models/measurements';
 import { SidePanelName } from './models/side-panel-name.enum';
 import { TempModel } from './models/temp-model';
@@ -211,22 +212,22 @@ export class WizardComponent extends Measurements
     );
 
     const sub1$ = this.wizardStore
-      .select(assessReducers.getIndicatorQuestions)
+      .select(assessSelectors.getIndicatorQuestions)
       .pipe(distinctUntilChanged())
       .subscribe((arr) => (this.indicators = arr));
 
     const sub2$ = this.wizardStore
-      .select(assessReducers.getMitigationsQuestions)
+      .select(assessSelectors.getMitigationsQuestions)
       .pipe(distinctUntilChanged())
       .subscribe((arr) => (this.mitigations = arr));
 
     const sub3$ = this.wizardStore
-      .select(assessReducers.getCurrentBaselineQuestions)
+      .select(assessSelectors.getCurrentBaselineQuestions)
       .pipe(distinctUntilChanged())
       .subscribe((arr) => (this.capabilities = arr));
 
     const sub4$ = this.wizardStore
-      .select(assessReducers.getFinishedLoading)
+      .select(assessSelectors.getFinishedLoading)
       .pipe(
         distinctUntilChanged(),
         filter((loaded: boolean) => loaded && loaded === true)
@@ -243,7 +244,7 @@ export class WizardComponent extends Measurements
       );
 
     const sub5$ = this.wizardStore
-      .select(assessReducers.getCurrentWizardPage)
+      .select(assessSelectors.getCurrentWizardPage)
       .pipe(distinctUntilChanged())
       .subscribe((page: number) => (this.page = page), (err) => console.log(err));
 
@@ -253,7 +254,7 @@ export class WizardComponent extends Measurements
       id: string;
     }
     const sub6$ = this.wizardStore
-      .select(assessReducers.getAssessmentSavedState)
+      .select(assessSelectors.getAssessmentSavedState)
       .pipe(
         distinctUntilChanged(),
         filter((el: SavedState) => el && el.finished === true)
@@ -268,7 +269,7 @@ export class WizardComponent extends Measurements
       );
 
     const sub7$ = this.wizardStore
-      .select(assessReducers.getAssessmentMeta)
+      .select(assessSelectors.getAssessmentMeta)
       .pipe(distinctUntilChanged())
       .subscribe(
         (assessmentMeta: Assess3Meta) => (this.meta = assessmentMeta),
@@ -276,7 +277,7 @@ export class WizardComponent extends Measurements
       );
 
     const sub8$ = this.wizardStore
-      .select(assessReducers.getCapabilities)
+      .select(assessSelectors.getCapabilities)
       .pipe(distinctUntilChanged())
       .subscribe(
         (capabilities) => (this.lookupCapabilities = capabilities),

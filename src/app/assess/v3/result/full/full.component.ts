@@ -17,6 +17,7 @@ import { LastModifiedAssessment } from '../../models/last-modified-assessment';
 import { AssessService } from '../../services/assess.service';
 import { CleanAssessmentResultData, LoadAssessmentById } from '../store/full-result.actions';
 import { FullAssessmentResultState } from '../store/full-result.reducers';
+import { getFinishedLoadingAssessment, getFullAssessment, getGroupState, getUnassessedPhasesForCurrentFramework } from '../store/full-result.selectors';
 import { SummaryDataSource } from '../summary/summary.datasource';
 import { FullAssessmentGroup } from './group/models/full-assessment-group';
 
@@ -32,7 +33,8 @@ export class FullComponent implements OnInit, OnDestroy {
 
   public activePhase: string;
   public assessment: Observable<Assessment>;
-  public assessmentGroup: Observable<FullAssessmentGroup>;
+  public assessmentGroup$: Observable<FullAssessmentGroup>;
+  public unassessedPhases$: Observable<string[]>;
   public assessmentId: string;
   public assessmentName: Observable<string>;
   public attackPatternId: string;
@@ -97,40 +99,30 @@ export class FullComponent implements OnInit, OnDestroy {
   public listenForDataChanges(): void {
 
     this.assessment = this.store
-      .select('fullAssessment')
-      .pipe(
-        pluck<object, Assessment>('fullAssessment'),
-        distinctUntilChanged()
-      );
+      .select(getFullAssessment)
+      .pipe(distinctUntilChanged());
 
     this.finishedLoading = this.store
-      .select('fullAssessment')
-      .pipe(
-        pluck<Assessment, boolean>('finishedLoading'),
-        distinctUntilChanged()
-      );
+      .select(getFinishedLoadingAssessment)
+      .pipe(distinctUntilChanged());
 
-    this.assessmentGroup = this.store
-      .select('fullAssessment')
-      .pipe(
-        pluck<object, FullAssessmentGroup>('group'),
-        distinctUntilChanged()
-      );
+    this.assessmentGroup$ = this.store
+      .select(getGroupState)
+      .pipe(distinctUntilChanged());
 
     const sub$ = this.store
-      .select('fullAssessment')
+      .select(getGroupState)
       .pipe(
-        pluck('group'),
         distinctUntilChanged(),
         filter((group: any) => group.finishedLoadingGroupData === true)
       )
       .subscribe(
         (group: any) => {
           const riskByAttackPattern = group.riskByAttackPattern || {};
-          // active phase is either the current active phase, 
+          // active phase is either the current active phase,
           let activePhase = this.activePhase;
           if (!activePhase && riskByAttackPattern && riskByAttackPattern.phases.length > 0) {
-            //  the first assess attack pattern, 
+            //  the first assess attack pattern,
             activePhase = riskByAttackPattern.phases[0]._id;
           }
           this.activePhase = activePhase;
@@ -139,12 +131,11 @@ export class FullComponent implements OnInit, OnDestroy {
         (err) => console.log(err));
 
     this.assessmentName = this.store
-      .select('fullAssessment')
+      .select(getFullAssessment)
       .pipe(
-        pluck<object, Assessment>('fullAssessment'),
         distinctUntilChanged(),
         map((assessment: Assessment) => {
-          const assessmentType = assessment.determineAssessmentType() || 'Unkown';
+          const assessmentType = assessment.determineAssessmentType() || 'Unknown';
           return `${assessment.name} - ${assessmentType}`;
         }),
         catchError((err, caught) => {
@@ -152,6 +143,10 @@ export class FullComponent implements OnInit, OnDestroy {
           return caught;
         }),
     );
+
+    this.unassessedPhases$ = this.store
+      .select(getUnassessedPhasesForCurrentFramework)
+      .pipe(distinctUntilChanged());
 
     this.subscriptions.push(sub$);
   }

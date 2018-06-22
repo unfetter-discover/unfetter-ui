@@ -53,7 +53,7 @@
                     <p>
                         <strong>Description</strong>
                     </p>
-                    <p [innerHTML]="whitespaceToBreak(currentAttackPattern.description)"></p>
+                    <p class="longText" [innerHTML]="whitespaceToBreak(currentAttackPattern.description)"></p>
                 </div>
 
                 <div *ngIf="currentAttackPattern.external_references">
