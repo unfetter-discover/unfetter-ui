@@ -281,9 +281,9 @@ export class BaselineEffects {
         .ofType(baselineActions.ADD_CAPABILITY_TO_BASELINE)
         .pipe(
             pluck('payload'),
-            withLatestFrom(this.store.select('baseline'),
-            pluck('capabilityGroups')),
-            switchMap(( [ capability, capabilityGroups ]: [ Capability, Category[] ]) => {
+            withLatestFrom(this.store.select('baseline')),
+            pluck('capabilityGroups'),
+            mergeMap(( [ capability, capabilityGroups ]: [ Capability, Category[] ]) => {
                 const newOA = this.createObjAssessment(capability);
                 
                 // Update object assessment with assessed objects from relevant capability group
@@ -297,13 +297,13 @@ export class BaselineEffects {
                     data: { attributes: newOA }
                 } as JsonApi<JsonApiData<ObjectAssessment>>;
                 let url = Constance.X_UNFETTER_OBJECT_ASSESSMENTS_URL;
-                return this.genericServiceApi.postAs<ObjectAssessment>(url, json)
-                    .pipe(
-                        map(RxjsHelpers.mapAttributes)
-                    )
+                return this.genericServiceApi.postAs<ObjectAssessment>(url, json);
+                    // .pipe(
+                    //     map(RxjsHelpers.mapAttributes)
+                    // )
             }),
             map((objAssessment) => {
-                return new baselineActions.AddObjectAssessmentToBaseline(objAssessment[0]);
+                return new baselineActions.AddObjectAssessmentToBaseline(objAssessment);
             })
         )
     
@@ -312,8 +312,8 @@ export class BaselineEffects {
         .ofType(baselineActions.ADD_OBJECT_ASSESSMENT_TO_BASELINE)
         .pipe(
             pluck('payload'),
-            withLatestFrom(this.store.select('baseline'),
-            pluck('baseline')),
+            withLatestFrom(this.store.select('baseline')),
+            pluck('baseline'),
             switchMap(([objAssessment, baseline]: [ObjectAssessment, AssessmentSet]) => {
                 let url = Constance.X_UNFETTER_ASSESSMENT_SETS_URL;
                 const json = {
