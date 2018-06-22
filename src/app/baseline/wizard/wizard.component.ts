@@ -42,7 +42,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
   public meta = new Assess3Meta();
   public showSummary = false;
-  public prevPage = 1;  // for avoiding skip to group on back button presses
   public page = 1;
   public totalPages = 0;
   public insertMode = false;
@@ -198,8 +197,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
       const sub12$ = this.wizardStore
         .select('baseline').pipe(
-        pluck('baselineCapabilities'),
-        distinctUntilChanged())
+        pluck('baselineCapabilities'))
         .subscribe(
           (capabilities: Capability[]) => {
             this.baselineCapabilities = (capabilities) ? capabilities.slice() : [];
@@ -303,19 +301,26 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       event.preventDefault();
     }
 
-    // Bail if this was implicitly called as the result of a Back button press from a group or summary page
-    const prevNav = this.navigations.find(navigation => navigation.page === this.prevPage);
-    const lastNavWasGroup = prevNav && this.allCategories.find((category) => category.id === prevNav.id) !== undefined;
-    if (lastNavWasGroup || this.prevPage > 1 + this.navigations.length) {
+    // Bail if this was implicitly called as the result of a wizard button press
+    if (event.target instanceof HTMLSpanElement) {
       return;
     }
 
     if (group) {
       // Adjust page based on given group
-      this.prevPage = this.page;
       this.page = this.navigations.find(navigation => navigation.id === group.id).page;
 
       this.wizardStore.dispatch(new SetCurrentBaselineGroup(group));
+    } else {
+      // If Group Setup or Summary, indicate as such
+      if (panelName === 'summary') {
+        // Set page to last page
+        this.page = 1 // group setup
+                    + this.navigations.length
+                    + 1;   // summary
+      } else {
+        this.page = 1;  // group setup
+      }
     }
 
     this.updateWizardData();
@@ -354,7 +359,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       event.preventDefault();
     }
 
-    this.prevPage = this.page;
     this.page = this.navigations.find(navigation => navigation.id === capabilityId).page;
     const capability = this.baselineCapabilities.find((c) => c.id === capabilityId);
     this.wizardStore.dispatch(capability);
@@ -401,7 +405,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
     // Set page to next group in the list
     let groupIndex = this.baselineGroups.findIndex(group => group.id === this.currentBaselineGroup.id);
-    this.prevPage = this.page;
     this.page = this.navigations.find(nav => nav.id === this.baselineGroups[groupIndex + 1].id).page;
 
     this.updateWizardData();
@@ -422,7 +425,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       event.preventDefault();
     }
 
-    this.prevPage = this.page;
     this.page = this.page - 1;
 
     this.updateWizardData();
@@ -440,7 +442,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
     // Set page to previous group in the list
     let groupIndex = this.baselineGroups.findIndex(group => group.id === this.currentBaselineGroup.id);
-    this.prevPage = this.page;
     this.page = this.navigations.find(nav => nav.id === this.baselineGroups[groupIndex - 1].id).page;
 
     this.updateWizardData();
@@ -456,47 +457,48 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.buttonLabel = 'CONTINUE';
 
     // Have we made it beyond the cat/cap pages (i.e. Group Setup + cat/cap pages)?
-    if (this.page === 1 ) {
+    if (this.page === 1) {
       // Show categories page
       this.openedSidePanel = 'categories';
       this.wizardStore.dispatch(new SetCurrentBaselineGroup(undefined));
       this.wizardStore.dispatch(new SetCurrentBaselineCapability(undefined));
       this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(undefined));
-    } else 
-    // Have we made it beyond the cat/cap pages (i.e. Group Setup + cat/cap pages)?
-    if (this.page > 1 + this.navigations.length) {
-      // Show summary page
-      this.openedSidePanel = 'summary';
-      this.wizardStore.dispatch(new SetCurrentBaselineGroup(undefined));
-      this.wizardStore.dispatch(new SetCurrentBaselineCapability(undefined));
-      this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(undefined));
-      this.showSummarySavePage();
     } else {
-      // Determine ID for this page
-      const currPage = this.navigations.find((navigation) => navigation.page === this.page);
-      const catIndex = this.allCategories.find((category) => category.id === currPage.id);
-      let nextPanel: string;
-
-      // Is the next page a category?
-      if (catIndex) {
-        this.openedSidePanel = 'capability-selector';
-
-        // Move to the next category and its capabilities
-        this.wizardStore.dispatch(new SetCurrentBaselineGroup(this.allCategories.find((category) => category.id === currPage.id)));
+      // Have we made it beyond the cat/cap pages (i.e. Group Setup + cat/cap pages)?
+      if (this.page > 1 + this.navigations.length) {
+        // Show summary page
+        this.openedSidePanel = 'summary';
+        this.wizardStore.dispatch(new SetCurrentBaselineGroup(undefined));
         this.wizardStore.dispatch(new SetCurrentBaselineCapability(undefined));
         this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(undefined));
+        this.showSummarySavePage();
       } else {
-        this.openedSidePanel = 'capabilities';
+        // Determine ID for this page
+        const currPage = this.navigations.find((navigation) => navigation.page === this.page);
+        const catIndex = this.allCategories.find((category) => category.id === currPage.id);
+        let nextPanel: string;
 
-        // Update current capability group if we've drifted onto another one
-        let currCap = this.baselineCapabilities.find(capability => capability.id === currPage.id) as Capability;
-        if (!this.currentBaselineGroup || currCap.category !== this.currentBaselineGroup.id) {
-          this.wizardStore.dispatch(new SetCurrentBaselineGroup(this.allCategories.find((category) => category.id === currCap.category)));
+        // Is the next page a category?
+        if (catIndex) {
+          this.openedSidePanel = 'capability-selector';
+
+          // Move to the next category and its capabilities
+          this.wizardStore.dispatch(new SetCurrentBaselineGroup(this.allCategories.find((category) => category.id === currPage.id)));
+          this.wizardStore.dispatch(new SetCurrentBaselineCapability(undefined));
+          this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(undefined));
+        } else {
+          this.openedSidePanel = 'capabilities';
+
+          // Update current capability group if we've drifted onto another one
+          let currCap = this.baselineCapabilities.find(capability => capability.id === currPage.id) as Capability;
+          if (!this.currentBaselineGroup || currCap.category !== this.currentBaselineGroup.id) {
+            this.wizardStore.dispatch(new SetCurrentBaselineGroup(this.allCategories.find((category) => category.id === currCap.category)));
+          }
+
+          this.wizardStore.dispatch(new SetCurrentBaselineCapability(currCap));
+          let currObjAssessment = this.baselineObjAssessments.find(((oa) => oa.object_ref === currCap.id));
+          this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(currObjAssessment));
         }
-
-        this.wizardStore.dispatch(new SetCurrentBaselineCapability(currCap));
-        let currObjAssessment = this.baselineObjAssessments.find(((oa) => oa.object_ref === currCap.id));
-        this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(currObjAssessment));
       }
     }
   }

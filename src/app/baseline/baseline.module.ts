@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -54,6 +54,7 @@ const materialModules = [
     BaselineService,
     BaselineStateService,
     BaselineSummaryService,
+    Location
   ]
 })
 export class BaselineModule { }
