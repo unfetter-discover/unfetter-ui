@@ -1,4 +1,4 @@
-<div class="unfSelectionListComponent">
+<div class="unfSelectionListComponent" *ngIf="stix && stix.length">
   <div class="uf-well filterWell">
     <mat-form-field class="full-width filterWrapper">
       <input matInput placeholder="Filter List" [formControl]="filterCtrl">
