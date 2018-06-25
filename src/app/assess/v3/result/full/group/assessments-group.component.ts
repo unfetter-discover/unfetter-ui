@@ -57,7 +57,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input()
   public unassessedPhases: string[];
 
-  @Output('riskByAttackPatternChanged')
+  @Output()
   public riskByAttackPatternChanged = new EventEmitter<RiskByAttack>();
   
   @ViewChildren('addAssessedObjectComponent')
