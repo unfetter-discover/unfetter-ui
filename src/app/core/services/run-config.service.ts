@@ -6,7 +6,7 @@ declare var require: any;
 
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import * as public_config from '../../../assets/public-config.json';
+import * as public_config from '../../../assets/runmode-settings.json';
 import { HttpClient } from '@angular/common/http';
 
 export interface PublicConfigRoots {
@@ -47,8 +47,8 @@ export class RunConfigService {
     }
     
     private loadPrivateConfig() {
-        this._config = this.http.get<MasterConfig>('./assets/private-config.json').pipe(catchError(() => {
-            console.warn('Could not load assets/private-config.json. Default configuration will be used.');
+        this._config = this.http.get<MasterConfig>('./assets/config/local-settings.json').pipe(catchError(() => {
+            console.warn('Could not load assets/config/local-settings.json. Default configuration will be used.');
             console.warn('If you create or edit the file, be sure to restart the application.');
             return observableOf({} as MasterConfig);
         }));

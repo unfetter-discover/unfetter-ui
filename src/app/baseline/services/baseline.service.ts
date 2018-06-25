@@ -1,19 +1,18 @@
 
-import { forkJoin as observableForkJoin, of as observableOf, empty as observableEmpty,  Observable  } from 'rxjs';
-
-import { map } from 'rxjs/operators';
 import { Injectable, Optional, SkipSelf } from '@angular/core';
+import { empty as observableEmpty, forkJoin as observableForkJoin, Observable, of as observableOf } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AssessmentSet, Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
 import { JsonApiData } from 'stix/json/jsonapi-data';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { RxjsHelpers } from '../../global/static/rxjs-helpers';
-import { Baseline } from '../../models/baseline/baseline';
 import { BaselineObject } from '../../models/baseline/baseline-object';
-import { RiskByAttack3 } from '../../models/baseline/risk-by-attack3';
 import { Constance } from '../../utils/constance';
 import { LastModifiedBaseline } from '../models/last-modified-baseline';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class BaselineService {
     public readonly baselineBaseUrl = Constance.X_UNFETTER_ASSESSMENT_SETS_URL;
     public readonly capabilityBaseUrl = Constance.X_UNFETTER_CAPABILITY_URL;
@@ -55,13 +54,13 @@ export class BaselineService {
 
         return this.genericApi
             .getAs<JsonApiData<T>>(url).pipe(
-            map((data) => {
-                if (Array.isArray(data)) {
-                    return data.map((el) => el.attributes);
-                } else {
-                    return data.attributes;
-                }
-            }));
+                map((data) => {
+                    if (Array.isArray(data)) {
+                        return data.map((el) => el.attributes);
+                    } else {
+                        return data.attributes;
+                    }
+                }));
     }
 
     /**
@@ -125,7 +124,7 @@ export class BaselineService {
             `${this.categoryBaseUrl}?${encodeURI(filter)}` : this.categoryBaseUrl;
         return this.genericApi
             .getAs<JsonApiData<Category>[]>(url).pipe(
-            map(RxjsHelpers.mapAttributes));
+                map(RxjsHelpers.mapAttributes));
     }
 
     /**
@@ -138,7 +137,7 @@ export class BaselineService {
             `${this.capabilityBaseUrl}?${encodeURI(filter)}` : this.capabilityBaseUrl;
         return this.genericApi
             .getAs<JsonApiData<Capability>[]>(url).pipe(
-            map(RxjsHelpers.mapAttributes));
+                map(RxjsHelpers.mapAttributes));
     }
 
     /**
@@ -163,7 +162,7 @@ export class BaselineService {
         const url = `${Constance.X_UNFETTER_ASSESSMENT_SETS_URL}?metaproperties=${includeMeta}`;
         return this.genericApi
             .getAs<JsonApiData<AssessmentSet[]>>(url).pipe(
-            map(RxjsHelpers.mapAttributes));
+                map(RxjsHelpers.mapAttributes));
     }
 
     /**
@@ -175,7 +174,7 @@ export class BaselineService {
         const url = `${this.baselineBaseUrl}/${id}?metaproperties=${includeMeta}`;
         return this.genericApi
             .getAs<JsonApiData<AssessmentSet>>(url).pipe(
-            map(RxjsHelpers.mapAttributes));
+                map(RxjsHelpers.mapAttributes));
     }
 
     /**
@@ -187,7 +186,7 @@ export class BaselineService {
         const url = `${Constance.X_UNFETTER_ASSESSMENT_SETS_URL}/${id}?metaproperties=${includeMeta}`;
         return this.genericApi
             .getAs<JsonApiData<AssessmentSet>>(url).pipe(
-            map(RxjsHelpers.mapAttributes));
+                map(RxjsHelpers.mapAttributes));
     }
 
     /**
@@ -239,7 +238,7 @@ export class BaselineService {
         const url = `${this.capabilityBaseUrl}/${capId}`;
         return this.genericApi
             .getAs<Capability>(url).pipe(
-            map(RxjsHelpers.mapAttributes));
+                map(RxjsHelpers.mapAttributes));
     }
 
     /**
@@ -255,7 +254,7 @@ export class BaselineService {
         const url = `${this.categoryBaseUrl}/${catId}`;
         return this.genericApi
             .getAs<Category>(url).pipe(
-            map(RxjsHelpers.mapAttributes));
+                map(RxjsHelpers.mapAttributes));
     }
 
     /**
@@ -271,7 +270,7 @@ export class BaselineService {
         const observables = ids.map((id) => {
             return this.genericApi
                 .getAs<JsonApiData<ObjectAssessment>>(`${this.baselineBaseUrl}/${id}`).pipe(
-                map<JsonApiData<ObjectAssessment>, ObjectAssessment>(RxjsHelpers.mapAttributes));
+                    map<JsonApiData<ObjectAssessment>, ObjectAssessment>(RxjsHelpers.mapAttributes));
         });
 
         return observableForkJoin(...observables);

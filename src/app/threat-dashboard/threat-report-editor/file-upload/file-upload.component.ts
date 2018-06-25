@@ -16,10 +16,10 @@ export class FileUploadComponent implements OnInit {
   @ViewChild('fileUpload')
   public fileUploadEl: ElementRef;
 
-  @Output('fileParsedEvent')
+  @Output()
   public fileParsedEvent = new EventEmitter<any[]>();
 
-  @Output('fileUploadFailed')
+  @Output()
   public fileUploadFailed = new EventEmitter<string>();
 
   public success = false;

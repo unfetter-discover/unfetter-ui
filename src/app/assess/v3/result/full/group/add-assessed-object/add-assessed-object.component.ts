@@ -39,7 +39,7 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
     @Input()
     public assessedObjects: any[];
 
-    @Output('addAssessmentEvent')
+    @Output()
     public addAssessmentEvent = new EventEmitter<boolean>();
 
     public addAssessedObjectName: string = '';
