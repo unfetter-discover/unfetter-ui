@@ -1,6 +1,7 @@
 import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
 import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
 import * as summaryActions from './summary.actions';
+import { AttackPattern } from 'stix/unfetter/attack-pattern';
 
 export interface SummaryState {
     baseline: AssessmentSet[];
