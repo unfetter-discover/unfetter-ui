@@ -1,16 +1,16 @@
-import { Location } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren } from '@angular/core';
-import { MatSelect, MatSnackBar } from '@angular/material';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { MatSelect } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MenuItem } from 'primeng/components/common/menuitem';
 import { Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, pluck, take } from 'rxjs/operators';
-import { Capability } from 'stix';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';
 import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 import { Assessment } from 'stix/assess/v3/assessment';
+import { Capability } from 'stix/assess/v3/baseline/capability';
+import { Category } from 'stix/assess/v3/baseline/category';
 import { ObjectAssessment } from 'stix/assess/v3/baseline/object-assessment';
 import { Dictionary } from 'stix/common/dictionary';
 import { JsonApiData } from 'stix/json/jsonapi-data';
@@ -19,7 +19,6 @@ import * as Indicator from 'stix/unfetter/indicator';
 import { Stix } from 'stix/unfetter/stix';
 import { StixEnum } from 'stix/unfetter/stix.enum';
 import { Key } from 'ts-keycode-enum';
-import { GenericApi } from '../../../core/services/genericapi.service';
 import { heightCollapse } from '../../../global/animations/height-collapse';
 import { AngularHelper } from '../../../global/static/angular-helper';
 import { UserProfile } from '../../../models/user/user-profile';
@@ -59,6 +58,7 @@ export class WizardComponent extends Measurements
 
   public buttonLabel: ButtonLabel = 'CONTINUE';
   public lookupCapabilities: Capability[];
+  public lookupCategories: Category[];
   public currentAssessmentGroup = {} as any;
   public capabilities: ObjectAssessment[];
   public currentUser: UserProfile;
@@ -136,12 +136,8 @@ export class WizardComponent extends Measurements
   constructor(
     private assessStore: Store<FullAssessmentResultState>,
     private changeDetection: ChangeDetectorRef,
-    private genericApi: GenericApi,
-    private location: Location,
-    private renderer: Renderer2,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: MatSnackBar,
     private userStore: Store<AppState>,
     private wizardStore: Store<assessReducers.AssessState>,
   ) {
@@ -284,7 +280,15 @@ export class WizardComponent extends Measurements
         (err) => console.log(err)
       );
 
-    this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$, sub7$, sub8$);
+    const sub9$ = this.wizardStore
+      .select(assessSelectors.getCategories)
+      .pipe(distinctUntilChanged())
+      .subscribe(
+        (categories) => (this.lookupCategories = categories),
+        (err) => console.log(err)
+      );
+
+    this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$, sub7$, sub8$, sub9$);
   }
 
   /**
@@ -1343,6 +1347,26 @@ export class WizardComponent extends Measurements
   }
 
   /**
+   * @description lookup the category associated with the given 
+   *  capability id
+   * @param  {string} id of a capability
+   * @returns string - category of the capability, otherwise the id given
+   */
+  public lookupCategory(id: string): string {
+    if (!id) {
+      return id;
+    }
+
+    const capability = this.lookupCapabilities.find((_) => _.id === id);
+    if (!capability || !capability.category) {
+      return id;
+    }
+
+    const category = this.lookupCategories.find((_) => _.id === capability.category);
+    return (category && category.name) ? category.name : id;
+  }
+
+  /**
    * @description save an assessment object to the database
    * @param {void}
    * @return {void}
@@ -1369,18 +1393,4 @@ export class WizardComponent extends Measurements
     }
   }
 
-  /**
-   * @description lookup the category associated with the given 
-   *  capability id
-   * @param  {string} id of a capability
-   * @returns string - category of the capability, otherwise the id given
-   */
-  private lookupCategory(id: string): string {
-    if (!id) {
-      return id;
-    }
-
-    const capability = this.lookupCapabilities.find((_) => _.id === id);
-    return (capability && capability.category) ? capability.category : id;
-  }
 }

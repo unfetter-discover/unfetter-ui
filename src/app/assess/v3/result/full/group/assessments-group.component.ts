@@ -57,7 +57,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input()
   public unassessedPhases: string[];
 
-  @Output('riskByAttackPatternChanged')
+  @Output()
   public riskByAttackPatternChanged = new EventEmitter<RiskByAttack>();
   
   @ViewChildren('addAssessedObjectComponent')
@@ -389,6 +389,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     const s$ = this.appStore
       .select('config')
       .pipe(
+        filter(() => this.activePhase !== undefined && this.activePhase.length > 0),
         switchMap(
           (state) => {
             // get all the phases across the frameworks
@@ -399,8 +400,6 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
               .reduce((acc, val) => acc.concat(val), []);
             // look for the currently viewed phase
             // TODO: there is potential to get the wrong phase if the phase id exists in two frameworks
-            //  however the only framework I have to match against is the users preferences
-            //  but that might not be the correct framework for this assessment
             const curPhase = phases.filter((phase) => phase.id === this.activePhase)[0];
             return of(curPhase.tactics);
           }),

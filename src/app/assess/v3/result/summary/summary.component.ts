@@ -123,19 +123,17 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .pipe(
         pluck('summaries'),
         distinctUntilChanged(),
-        filter((arr: Assessment[]) => arr && arr.length > 0)
+        filter((arr: Assessment[]) => arr && arr.length > 0 && arr[0] !== undefined)
       )
       .subscribe((arr: Assessment[]) => {
-        if (arr && arr.length) {
-          this.summaries = [...arr];
-          this.summary = arr[0];
-          const assessmentType = this.summaries[0].determineAssessmentType() || 'Unknown';
-          // TODO: temporary
-          if (assessmentType === AssessmentEvalTypeEnum.CAPABILITIES) {
-            this.summaryCalculationService.isCapability = true;
-          } else {
-            this.summaryCalculationService.isCapability = false;
-          }
+        this.summaries = [...arr];
+        this.summary = this.summaries[0] || new Assessment();
+        const assessmentType = this.summary.determineAssessmentType() || 'Unknown';
+        // TODO: temporary
+        if (assessmentType === AssessmentEvalTypeEnum.CAPABILITIES) {
+          this.summaryCalculationService.isCapability = true;
+        } else {
+          this.summaryCalculationService.isCapability = false;
         }
         this.riskByAttackPatternStore.dispatch(new LoadSingleAssessmentRiskByAttackPatternData(this.assessmentId));
         this.store.dispatch(new LoadSingleRiskPerKillChainData(this.assessmentId));

@@ -1,10 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import {
-  MatButtonModule, MatCardModule, MatDatepickerModule, MatDialogModule, MatExpansionModule,
-  MatInputModule, MatProgressBarModule, MatSelectModule, MatSnackBarModule
-} from '@angular/material';
+import { MatButtonModule, MatCardModule, MatDatepickerModule, MatDialogModule, MatExpansionModule, MatInputModule, MatProgressBarModule, MatSelectModule, MatSnackBarModule } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -15,6 +12,8 @@ import { Assess3Meta } from 'stix';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { AssessmentObjectMockFactory } from 'stix/assess/v2/assessment-object.mock';
 import { Assessment } from 'stix/assess/v3/assessment';
+import { CapabilityMockFactory } from 'stix/assess/v3/baseline/capability.mock';
+import { CategoryMockFactory } from 'stix/assess/v3/baseline/category.mock';
 import { ObjectAssessmentMockFactory } from 'stix/assess/v3/baseline/object-assessment.mock';
 import * as Indicator from 'stix/unfetter/indicator';
 import { Stix } from 'stix/unfetter/stix';
@@ -550,6 +549,16 @@ describe('WizardComponent', () => {
     expect(component.model.relationships.indicators).toEqual(indicators);
     expect(component.model.relationships.mitigations).toEqual(mitigations);
     expect(component.model.relationships.capabilities).toEqual(capabilities);
+  });
+
+  it(`can load existing data`, () => {
+    const categories = CategoryMockFactory.mockMany(3);
+    const capabilities = CapabilityMockFactory.mockMany(3);
+    capabilities[0].category = categories[0].id;
+    component.lookupCategories = categories;
+    component.lookupCapabilities = capabilities;
+    const name = component.lookupCategory(capabilities[0].id);
+    expect(name).toEqual(categories[0].name);
   });
 
 });

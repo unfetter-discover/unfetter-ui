@@ -81,3 +81,8 @@ export const getCapabilities = createSelector(
     getAssessState,
     (state) => state.capabilities,
 );
+
+export const getCategories = createSelector(
+    getAssessState,
+    (state) => state.categories,
+);
