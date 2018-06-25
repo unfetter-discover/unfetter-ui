@@ -80,6 +80,7 @@ import { TimeAgoPipe } from './pipes/time-ago.pipe';
 import { AuthService } from '../core/services/auth.service';
 import { DataSourcesComponent } from './components/data-sources/data-sources.component';
 import { MarkdownEditorComponent } from './components/markdown-editor/markdown-editor.component';
+import { SelectionListComponent } from './components/selection-list/selection-list.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -151,6 +152,7 @@ const unfetterComponents = [
     TreemapComponent,
     DataSourcesComponent,
     MarkdownEditorComponent,
+    SelectionListComponent,
 ];
 
 @NgModule({
@@ -177,7 +179,7 @@ const unfetterComponents = [
         ...matModules
     ],
     declarations: [
-        ...unfetterComponents,
+        ...unfetterComponents,        
     ],
     exports: [
         ...unfetterComponents,

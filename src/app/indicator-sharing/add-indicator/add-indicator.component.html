@@ -1,7 +1,7 @@
 <p mat-dialog-title class="lead mb-6">
     <span *ngIf="!editMode">Add</span>
     <span *ngIf="editMode">Edit</span>
-    <span>Analytic</span>
+    <span> Analytic</span>
 </p>
 
 <mat-dialog-content id="addIndicator">
@@ -22,8 +22,13 @@
                         <mat-option *ngFor="let org of organizations" [value]="org.id">{{org.name}}</mat-option>
                     </mat-select>
                 </mat-form-field>
-                <markdown-editor [editing]="true" [flushed]="true" [inputLabel]="'Description (Markdown Editor)'"
-                        [value]="description" (changed)="description = $event"></markdown-editor>
+                <!-- TODO wait for reactive forms support and formatting more consistent with this component -->
+                <!-- <markdown-editor [editing]="true" [flushed]="true" [inputLabel]="'Description (Markdown Editor)'"
+                        [value]="description" (changed)="description = $event"></markdown-editor> -->
+                
+                <mat-form-field class="full-width mb-6">
+                    <textarea matInput placeholder="Description" formControlName="description"></textarea>
+                </mat-form-field>
 
                 <div class="mb-6">
                     <span>
@@ -185,13 +190,20 @@
             </mat-step>
             
             <!-- TODO remove ngif once edit mode can update relationships -->
-            <mat-step label="Relationships" *ngIf="!editMode">
-                <div formGroupName="metaProperties">
-                    <mat-form-field class="full-width mt-10">
+            <mat-step label="Relationships">
+                <div formGroupName="metaProperties" *ngIf="attackPatterns && attackPatterns.length">
+                    <h5>Indicated Techniques</h5>
+                    <unf-selection-list [stix]="attackPatterns" [formCtrl]="form.get('metaProperties').get('relationships')"></unf-selection-list>
+                    <!-- <mat-selection-list formControlName="relationships">
+                        <mat-list-option *ngFor="let ap of attackPatterns | sortByField:'name':'ascending'" [value]="ap.id">
+                        {{ap.name}}
+                        </mat-list-option>
+                    </mat-selection-list> -->
+                    <!-- <mat-form-field class="full-width mt-10">
                         <mat-select placeholder="Indicated Techniques" [multiple]="true" formControlName="relationships">
                             <mat-option [value]="ap.id" *ngFor="let ap of attackPatterns | sortByField:'name':'ascending'">{{ ap.name }}</mat-option>
                         </mat-select>
-                    </mat-form-field>
+                    </mat-form-field> -->
                     <div class="mt-6">
                         <button mat-raised-button matStepperNext type="button" color="primary">CONTINUE</button>
                         <button mat-button matStepperPrevious type="button">BACK</button>

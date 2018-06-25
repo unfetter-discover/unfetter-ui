@@ -6,6 +6,11 @@ code {
     @include darkenPrimaryColors('color', 18%);
 }
 
+pre code {
+    background-color: inherit !important;
+    color: inherit !important;
+}
+
 .assessmentsTheme code {
    @include lightenAccentColors('background-color', 0.15);
    @include darkenAccentColors('color', 18%);

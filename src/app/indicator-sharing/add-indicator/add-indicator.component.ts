@@ -27,7 +27,6 @@ import { FormatHelpers } from '../../global/static/format-helpers';
 export class AddIndicatorComponent implements OnInit {
 
     public form: FormGroup | any;
-    public description: string;
     public organizations: any;
     public attackPatterns: any[] = [];
     public showPatternTranslations: boolean = false;
@@ -179,8 +178,6 @@ export class AddIndicatorComponent implements OnInit {
 
     public submitIndicator() {
         const tempIndicator: any = cleanObjectProperties({}, this.form.value);
-        tempIndicator.description = this.description;
-        console.log('description is', this.description);
 
         this.pruneQueries(tempIndicator);
         
@@ -226,7 +223,6 @@ export class AddIndicatorComponent implements OnInit {
     private setEditValues() {
 
         this.form.patchValue(this.editData);
-        this.description = this.editData.description;
 
         if (this.editData.external_references) {
             this.editData.external_references.forEach((extRef) => {

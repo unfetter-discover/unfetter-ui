@@ -134,6 +134,8 @@ export const Constance = {
   LOGO_IMG_API_EXPLORER: 'assets/icon/dashboard-logos/icon-api.png',
   LOGO_IMG_STIX: 'assets/icon/dashboard-logos/icon-STIX_Dashboard.png',
   LOGO_IMG_INTRUSION_SET: 'assets/icon/dashboard-logos/icon-Int_Set_Dashboard.png',
+  LOGO_IMG_ORGANIZATIONS_MANAGEMENT: 'assets/icon/dashboard-logos/icon-orgs.png',
+  LOGO_IMG_ADMIN: 'assets/icon/dashboard-logos/icon-admin.png',
 
   COLORS: {
     green: '#4CAF50',
