@@ -557,7 +557,7 @@ describe('WizardComponent', () => {
     capabilities[0].category = categories[0].id;
     component.lookupCategories = categories;
     component.lookupCapabilities = capabilities;
-    const name = component.lookupCategory(capabilities[0].category)
+    const name = component.lookupCategory(capabilities[0].id);
     expect(name).toEqual(categories[0].name);
   });
 
