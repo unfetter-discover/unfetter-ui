@@ -29,6 +29,7 @@ npm-debug.log
 
 # locale-specific configuration
 /src/assets/config/*.json
+package-lock.json
 
 # Angular schematics
 angular_material_schematics-*/
