@@ -60,7 +60,7 @@
         <label *ngIf="(indicator.labels && indicator.labels.length) || canCrud">Labels</label>
         <div class="flex flexItemsCenter">
             <mat-chip-list>
-                <mat-chip *ngFor="let label of indicator.labels" [selected]="labelSelected(label)" class="cursor-pointer chipListChip">{{label | capitalize}}</mat-chip>
+                <mat-chip *ngFor="let label of indicator.labels" [selected]="highlightObj.labels[label]" class="cursor-pointer chipListChip">{{label | capitalize}}</mat-chip>
             </mat-chip-list>
             <add-label-reactive [stixType]="'indicator'" (labelAdded)="addLabel($event)" [currentLabels]="indicator.labels" *ngIf="canCrud"></add-label-reactive>
         </div>
@@ -82,7 +82,7 @@
               <label>Tactics</label>
               <p>
                 <span *ngFor="let phase of ap.kill_chain_phases; let i = index" class="text-muted">
-                  <span [ngClass]="{'uf-highlight': highlightPhase(phase.phase_name)}" matTooltip="{{ phase.kill_chain_name | capitalize }}"
+                  <span [ngClass]="{'uf-highlight': highlightObj.phases[phase.phase_name]}" matTooltip="{{ phase.kill_chain_name | capitalize }}"
                     matTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>
                   <span *ngIf="i < (ap.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
                 </span>
@@ -116,7 +116,7 @@
             <label>Tactics</label>
             <p>
               <span *ngFor="let phase of indicator.kill_chain_phases; let i = index" class="text-muted">
-                <span [ngClass]="{'uf-highlight': highlightPhase(phase.phase_name)}" matTooltip="{{ phase.kill_chain_name | capitalize }}"
+                <span [ngClass]="{'uf-highlight': highlightObj.phases[phase.phase_name]}" matTooltip="{{ phase.kill_chain_name | capitalize }}"
                   matTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>
                 <span *ngIf="i < (indicator.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
               </span>
@@ -126,7 +126,7 @@
             <label>Intrusion Sets</label>
             <p>
               <span *ngFor="let intrusionSet of intrusionSets; let i = index">
-                <a routerLink="/stix/intrusion-sets/{{ intrusionSet.id }}" [ngClass]="{'uf-highlight': highlightIs(intrusionSet.id)}">{{ intrusionSet.name }}</a>
+                <a routerLink="/stix/intrusion-sets/{{ intrusionSet.id }}" [ngClass]="{'uf-highlight': highlightObj.intrusionSets[intrusionSet.id]}">{{ intrusionSet.name }}</a>
                 <span *ngIf="i < (intrusionSets.length - 1)">&nbsp;&bull;&nbsp;</span>
               </span>
             </p>

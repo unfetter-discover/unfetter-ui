@@ -1,4 +1,4 @@
-import { take, filter, pluck, distinctUntilChanged } from 'rxjs/operators';
+import { take, filter, pluck, distinctUntilChanged, distinctUntilKeyChanged } from 'rxjs/operators';
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { MatDialog, MatSidenav } from '@angular/material';
 import { Store } from '@ngrx/store';
@@ -18,6 +18,7 @@ import { generateStixRelationship } from '../../global/static/stix-relationship'
 import { StixRelationshipTypes } from '../../global/enums/stix-relationship-types.enum';
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { downloadBundle } from '../../global/static/stix-bundle';
+import { SearchParameters } from '../models/search-parameters';
 
 type mainWell = 'stats' | 'tactics' | 'none';
 
@@ -33,7 +34,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     public displayedIndicators: any[];
     public filteredIndicators: any[];
     public DEFAULT_LENGTH: number = Constance.INDICATOR_SHARING.DEFAULT_LIST_LENGTH;
-    public searchParameters;
+    public searchParameters$: Observable<SearchParameters>;
     public filterOpen: boolean = false;
     public filterOpened: boolean = false;
     public collapseAllCards: boolean = false;
@@ -82,16 +83,18 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                 }
             );
 
-        const searchParametersSub$ = this.store.select('indicatorSharing').pipe(
-            pluck('searchParameters'),
-            distinctUntilChanged())
-            .subscribe(
+        this.searchParameters$ = this.store.select('indicatorSharing')
+            .pipe(
+                pluck('searchParameters'),
+                distinctUntilChanged<SearchParameters>()
+            );
+
+        const searchParametersSub$ = this.searchParameters$.subscribe(
                 (res) => {
                     if (!this.filterOpened && JSON.stringify(res) !== JSON.stringify(initialSearchParameters)) {
                         // Open container on first valid search if it wasn't already opened
                         this.filterContainer.open();
                     }
-                    this.searchParameters = res;
                 },
                 (err) => {
                     console.log(err);
@@ -112,7 +115,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                     console.log(err);
                 },
                 () => {
-                    searchParametersSub$.unsubscribe();
+                    indicatorToSensorMap$.unsubscribe();
                 }
             );
 

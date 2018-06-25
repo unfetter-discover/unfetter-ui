@@ -178,7 +178,7 @@ describe('IndicatorCardComponent', () => {
 
         // Input mocks
         component.indicator = { ...mockIndicator };
-        component.searchParameters = { ...mockSearchParams };
+        component.searchParameters = observableOf({ ...mockSearchParams });
         component.collapseAllCardsSubject = mockCollapseAllCards;
         spyOn(component, 'exportIndicator').and.returnValue(true);
         fixture.detectChanges();

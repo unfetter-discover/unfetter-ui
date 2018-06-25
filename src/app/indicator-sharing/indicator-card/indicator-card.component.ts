@@ -12,6 +12,8 @@ import { downloadBundle } from '../../global/static/stix-bundle';
 import { generateStixRelationship } from '../../global/static/stix-relationship';
 import { StixRelationshipTypes } from '../../global/enums/stix-relationship-types.enum';
 import { canCrud } from '../../global/static/stix-permissions';
+import { SearchParameters } from '../models/search-parameters';
+import { finalize } from 'rxjs/operators';
 
 @Component({
     selector: 'indicator-card',
@@ -25,9 +27,9 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
     @Input() public indicator: any;
     @Input() public attackPatterns: any;
     @Input() public intrusionSets: any;
-    @Input() public searchParameters: any;
     @Input() public creator: string;
     @Input() public sensors: any;
+    @Input() public searchParameters: Observable<SearchParameters>;
     @Input() public collapseAllCardsSubject: BehaviorSubject<boolean>;
 
     @Output() public stateChange: EventEmitter<any> = new EventEmitter();
@@ -45,6 +47,12 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
     public showAttackPatternDetails: boolean = false;
     public canCrud: boolean = false;
     public collapseContents: boolean = false;
+    public initialHighlightObj = {
+        labels: {},
+        intrusionSets: {},
+        phases: {}
+    };
+    public highlightObj = { ...this.initialHighlightObj };
 
     public readonly copyText: string = 'Copied';
     public readonly runMode = environment.runMode;
@@ -103,6 +111,31 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
                 }
             );
         }
+
+        const searchParametersSub$ = this.searchParameters
+            .pipe(
+                finalize(() => searchParametersSub$ && searchParametersSub$.unsubscribe())
+            )
+            .subscribe(
+                (searchParameters) => {
+                    this.highlightObj = { ...this.initialHighlightObj };
+
+                    searchParameters.killChainPhases.forEach((phase) => {
+                        this.highlightObj.phases[phase] = true;
+                    });
+
+                    searchParameters.labels.forEach((label) => {
+                        this.highlightObj.labels[label] = true;
+                    });
+
+                    searchParameters.intrusionSets.forEach((intrusionSet) => {
+                        this.highlightObj.intrusionSets[intrusionSet] = true;
+                    });
+                },
+                (err) => {
+                    console.log(err);
+                }
+            );
     }
 
     public ngAfterViewInit() {
@@ -121,18 +154,6 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
         if (this.collapseCard$) {
             this.collapseCard$.unsubscribe();
         }
-    }
-
-    public highlightPhase(phase) {
-        return this.searchParameters.killChainPhases.length > 0 && this.searchParameters.killChainPhases.includes(phase);
-    }
-
-    public highlightIs(isId) {
-        return this.searchParameters.intrusionSets.length > 0 && this.searchParameters.intrusionSets.includes(isId);
-    }
-
-    public labelSelected(label) {
-        return this.searchParameters.labels.length > 0 && this.searchParameters.labels.includes(label);
     }
 
     public addLabel(label) {
@@ -180,7 +201,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
             );        
     }
 
-    public whitespaceToBreak(comment) {
+    public whitespaceToBreak(comment: string): string {
         return FormatHelpers.whitespaceToBreak(comment);
     }
 
