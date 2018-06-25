@@ -34,6 +34,8 @@ export class SummaryCalculationService {
   thresholdOptionsValue: ThresholdOption[];
 
   baselineValue: AssessmentSet;
+  blGroups: string[] = [];
+  blAttackPatterns: string[] = [];
 
   constructor() {
     this.numericRisk = 0;
@@ -98,6 +100,14 @@ export class SummaryCalculationService {
     this.baselineValue = newBaseline;
   }
 
+  public set baselineGroups(blGroups: string[]) {
+    this.blGroups = blGroups;
+  }
+
+  public set baselineAttackPatterns(blAttackPatterns: string[]) {
+    this.blAttackPatterns = blAttackPatterns;
+  }
+
   public get numericRisk(): number {
     return this.numericRiskValue;
   }
@@ -143,6 +153,14 @@ export class SummaryCalculationService {
 
   public get baseline(): AssessmentSet {
     return this.baselineValue;
+  }
+
+  public get baselineGroups(): string[] {
+    return this.baselineGroups;
+  }
+
+  public get baselineAttackPatterns(): string[] {
+    return this.baselineAttackPatterns;
   }
 
   public getRiskText(): string {
