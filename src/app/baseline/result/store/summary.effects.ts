@@ -52,8 +52,9 @@ export class SummaryEffects {
                 const apList = [];
                 const observables = objAssessments.map((objAssessment) => {
                     objAssessment.assessed_objects.map((aoObj) => {
-                        if (apList.indexOf(aoObj.assessed_object_ref) < 0)
+                        if (apList.indexOf(aoObj.assessed_object_ref) < 0) {
                             apList.push(aoObj.assessed_object_ref);
+                        }
                     })
 
                     return this.baselineService.fetchCapability(objAssessment.object_ref);
