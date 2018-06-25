@@ -1,10 +1,12 @@
 
-import { empty as observableEmpty,  Observable  } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { empty as observableEmpty, Observable } from 'rxjs';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { Constance } from '../../../utils/constance';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class AssessSummaryService {
     public readonly baseUrl = Constance.X_UNFETTER_ASSESSMENT_URL;
 

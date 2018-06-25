@@ -11,16 +11,12 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { BaselineService } from '../../baseline/services/baseline.service';
 import { GlobalModule } from '../../global/global.module';
 import { AssessGuard } from './assess.guard';
 import { routing } from './assess.routing';
 import { CreateComponent } from './create/create.component';
 import { AssessLayoutComponent } from './layout/assess-layout.component';
 import { ResultModule } from './result/result.module';
-import { AssessStateService } from './services/assess-state.service';
-import { AssessSummaryService } from './services/assess-summary.service';
-import { AssessService } from './services/assess.service';
 import { AssessEffects } from './store/assess.effects';
 import { assessmentReducer } from './store/assess.reducers';
 
@@ -59,10 +55,6 @@ const materialModules = [
   ],
   providers: [
     AssessGuard,
-    AssessService,
-    AssessStateService,
-    AssessSummaryService,
-    BaselineService,
   ]
 })
 export class AssessModule { }

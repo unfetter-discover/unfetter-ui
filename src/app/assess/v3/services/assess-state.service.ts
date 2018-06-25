@@ -1,13 +1,15 @@
 
-import { last } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject ,  Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { last } from 'rxjs/operators';
 import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 
 /**
  * @description maintain state across the assess create and wizard pages
  */
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class AssessStateService {
 
     protected metaDataSubject = new BehaviorSubject<Assess3Meta>(new Assess3Meta());

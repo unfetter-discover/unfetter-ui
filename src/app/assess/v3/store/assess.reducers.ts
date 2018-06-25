@@ -1,6 +1,7 @@
 import { Assessment } from 'stix/assess/v3/assessment';
 import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
 import { Capability } from 'stix/assess/v3/baseline/capability';
+import { Category } from 'stix/assess/v3/baseline/category';
 import { ObjectAssessment } from 'stix/assess/v3/baseline/object-assessment';
 import { Indicator } from 'stix/stix/indicator';
 import { Stix } from 'stix/unfetter/stix';
@@ -11,6 +12,7 @@ export interface AssessState {
     backButton: boolean;
     baselines?: AssessmentSet[];
     capabilities: Capability[];
+    categories: Category[];
     currentBaseline?: AssessmentSet;
     currentBaselineQuestions?: ObjectAssessment[];
     failedToLoad: boolean;
@@ -28,6 +30,7 @@ const genAssessState = (state?: Partial<AssessState>) => {
         backButton: false,
         baselines: [],
         capabilities: [],
+        categories: [],
         failedToLoad: false,
         finishedLoading: false,
         page: 1,
@@ -86,7 +89,12 @@ export function assessmentReducer(state = initialState, action: assessmentAction
         case assessmentActions.SET_CAPABILITIES:
             return genAssessState({
                 ...state,
-                capabilities: [ ...action.payload ],
+                capabilities: [...action.payload],
+            });
+        case assessmentActions.SET_CATEGORIES:
+            return genAssessState({
+                ...state,
+                categories: [...action.payload],
             });
         case assessmentActions.SET_CURRENT_BASELINE:
             return genAssessState({
@@ -96,7 +104,7 @@ export function assessmentReducer(state = initialState, action: assessmentAction
         case assessmentActions.SET_CURRENT_BASELINE_QUESTIONS:
             return genAssessState({
                 ...state,
-                currentBaselineQuestions: [ ...action.payload ],
+                currentBaselineQuestions: [...action.payload],
             });
         case assessmentActions.FINISHED_LOADING:
             return genAssessState({

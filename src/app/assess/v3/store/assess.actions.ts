@@ -6,12 +6,14 @@ import { Capability } from 'stix/assess/v3/baseline/capability';
 import { ObjectAssessment } from 'stix/assess/v3/baseline/object-assessment';
 import { Indicator } from 'stix/stix/indicator';
 import { Stix } from 'stix/unfetter/stix';
+import { Category } from 'stix/assess/v3/baseline/category';
 
 // For effects
 export const CLEAN_ASSESSMENT_WIZARD_DATA = '[Assess] CLEAN_ASSESSMENT_WIZARD_DATA';
 export const FAILED_TO_LOAD = '[Assess] FAILED_TO_LOAD';
 export const FETCH_ASSESSMENT = '[Assess] FETCH_ASSESSMENT';
 export const FETCH_CAPABILITIES = '[Assess] FETCH_CAPABILITIES';
+export const FETCH_CATEGORIES = '[Assess] FETCH_CATEGORIES';
 export const LOAD_ASSESSMENT_WIZARD_DATA = '[Assess] LOAD_ASSESSMENT_WIZARD_DATA';
 export const LOAD_BASELINES = '[Assess] LOAD_BASELINES';
 export const LOAD_CURRENT_BASELINE_QUESTIONS = '[Assess] LOAD_CURRENT_BASELINE_QUESTIONS';
@@ -25,6 +27,7 @@ export const FINISHED_LOADING = '[Assess] FINISHED_LOADING';
 export const FINISHED_SAVING = '[Assess] FINISHED_SAVING';
 export const SET_BASELINES = '[Assess] SET_BASELINES';
 export const SET_CAPABILITIES = '[Assess] SET_CAPABILITIES';
+export const SET_CATEGORIES = '[Assess] SET_CATEGORIES';
 export const SET_CURRENT_BASELINE = '[Assess] SET_CURRENT_BASELINE';
 export const SET_CURRENT_BASELINE_QUESTIONS = '[Assess] SET_CURRENT_BASELINE_QUESTIONS';
 export const SET_INDICATORS = '[Assess] SET_INDICATORS';
@@ -148,17 +151,29 @@ export class FetchCapabilities implements Action {
   public readonly type = FETCH_CAPABILITIES;
 }
 
+export class FetchCategories implements Action {
+  public readonly type = FETCH_CATEGORIES;
+}
+
 export class SetCapabilities implements Action {
   public readonly type = SET_CAPABILITIES;
 
   constructor(public payload: Capability[]) { }
 }
+
+export class SetCategories implements Action {
+  public readonly type = SET_CATEGORIES;
+
+  constructor(public payload: Category[]) { }
+}
+
 export type AssessmentActions =
   AnswerQuestion
   | CleanAssessmentWizardData
   | FailedToLoad
   | FetchAssessment
   | FetchCapabilities
+  | FetchCategories
   | FinishedLoading
   | FinishedSaving
   | LoadAssessmentWizardData
@@ -167,6 +182,7 @@ export type AssessmentActions =
   | SaveAssessment
   | SetBaselines
   | SetCapabilities
+  | SetCategories
   | SetCurrentBaseline
   | SetCurrentBaselineQuestions
   | SetIndicators

@@ -17,7 +17,6 @@ import { RiskByAttackPatternEffects } from './store/riskbyattackpattern.effects'
 import { riskByAttackPatternReducer } from './store/riskbyattackpattern.reducers';
 import { SummaryEffects } from './store/summary.effects';
 import { summaryReducer } from './store/summary.reducers';
-import { SummaryCalculationService } from './summary/summary-calculation.service';
 import { SummaryHeaderComponent } from './summary/summary-header/summary-header.component';
 import { AssessmentChartComponent } from './summary/summary-report/assessment-chart/assessment-chart.component';
 import { SophisticationBreakdownComponent } from './summary/summary-report/sophistication-breakdown/sophistication-breakdown.component';
@@ -67,6 +66,8 @@ const moduleComponents = [
     SophisticationBreakdownComponent,
     TechniquesChartComponent,
     AssessmentChartComponent],
-  providers: [SummaryCalculationService]
+  providers: [
+
+  ],
 })
 export class ResultModule { }

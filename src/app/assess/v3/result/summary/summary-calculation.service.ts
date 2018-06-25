@@ -12,7 +12,9 @@ import { Constance } from '../../../../utils/constance';
 import { ThresholdOption } from '../../models/threshold-option';
 import { SummarySortHelper } from './summary-sort-helper';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class SummaryCalculationService {
   public readonly topNRisks: number;
   public readonly riskSub: BehaviorSubject<number>;
