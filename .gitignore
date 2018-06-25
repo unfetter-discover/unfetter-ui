@@ -27,7 +27,8 @@ npm-debug.log
 /coverage/**
 npm-debug.log
 
-**/private-config.json
+# locale-specific configuration
+/src/assets/config/*.json
 package-lock.json
 
 # Angular schematics
