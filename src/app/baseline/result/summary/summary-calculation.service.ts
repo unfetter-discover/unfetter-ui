@@ -34,6 +34,7 @@ export class SummaryCalculationService {
   baselineValue: AssessmentSet;
   blGroups: string[] = [];
   blAttackPatterns: string[] = [];
+  blWeightings: any = { protWeighting: 0, detWeighting: 0, respWeighting: 0 };
 
   constructor() {
     this.numericRisk = 0;
@@ -104,6 +105,10 @@ export class SummaryCalculationService {
 
   public set baselineAttackPatterns(blAttackPatterns: string[]) {
     this.blAttackPatterns = blAttackPatterns;
+  }
+
+  public set baselineWeightings(blWeightings: any) {
+    this.blWeightings = blWeightings;
   }
 
   public get numericRisk(): number {
