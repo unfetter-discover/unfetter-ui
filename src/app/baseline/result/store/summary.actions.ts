@@ -9,6 +9,8 @@ export const LOAD_SUMMARY_AGGREGATION_DATA = '[Baseline Summary] LOAD_SUMMARY_AG
 
 // For reducers
 export const SET_BASELINE = '[Baseline Summary] SET_BASELINE';
+export const SET_ATTACK_PATTERNS = '[Baseline Summary] SET_ATTACK_PATTERNS';
+export const SET_BASELINE_GROUPS = '[Baseline Summary] SET_BASELINE_GROUPS';
 export const FINISHED_LOADING = '[Baseline Summary] FINISHED_LOADING';
 export const SET_SUMMARY_AGGREGATION_DATA = '[Baseline Summary] SET_SUMMARY_AGGREGATION_DATA';
 export const FINISHED_LOADING_SUMMARY_AGGREGATION_DATA = '[Baseline Summary] FINISHED_LOADING_SUMMARY_AGGREGATION_DATA';
@@ -26,6 +28,18 @@ export class SetBaseline implements Action {
     public readonly type = SET_BASELINE;
 
     constructor(public payload: AssessmentSet[]) { }
+}
+
+export class SetAttackPatterns implements Action {
+    public readonly type = SET_ATTACK_PATTERNS;
+
+    constructor(public payload: string[]) { }
+}
+
+export class SetBaselineGroups implements Action {
+    public readonly type = SET_BASELINE_GROUPS;
+
+    constructor(public payload: string[]) { }
 }
 
 export class FinishedLoading implements Action {
@@ -62,6 +76,8 @@ export class CleanBaselineResultData {
 export type SummaryActions =
     CleanBaselineResultData |
     SetBaseline |
+    SetAttackPatterns |
+    SetBaselineGroups |
     LoadBaselineData |
     FinishedLoading |
     SetSummaryAggregationData |
