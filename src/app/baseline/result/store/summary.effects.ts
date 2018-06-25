@@ -60,16 +60,20 @@ export class SummaryEffects {
                     return this.baselineService.fetchCapability(objAssessment.object_ref);
                 });
 
-                return observableForkJoin(...observables).pipe(
-                    mergeMap((arr) => {
-                        // Use capabilities to get groups
-                        return [ new SetAttackPatterns(apList), new SetAndReadCapabilities(arr) ];
-                    }),
-                    catchError((err) => {
-                        console.log(err);
-                        return observableEmpty();
-                    })
-                );
+                if (observables.length === 0) {
+                    return [ new SetAttackPatterns(apList), new SetAndReadCapabilities([]) ];
+                } else {
+                    return observableForkJoin(...observables).pipe(
+                        mergeMap((arr) => {
+                            // Use capabilities to get groups
+                            return [ new SetAttackPatterns(apList), new SetAndReadCapabilities(arr) ];
+                        }),
+                        catchError((err) => {
+                            console.log(err);
+                            return observableEmpty();
+                        })
+                    );
+                }
             })
         );
 

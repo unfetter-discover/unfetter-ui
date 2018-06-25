@@ -1,19 +1,17 @@
 import { Injectable } from '@angular/core';
-import { BaselineObject } from '../../../models/baseline/baseline-object';
-import { RiskByAttack3 } from '../../../models/baseline/risk-by-attack3';
-import { Phase3 } from '../../../models/baseline/phase3';
-import { AttackPattern } from '../../../models/attack-pattern';
-import { AssessAttackPattern } from '../../../models/baseline/assess-attack-pattern';
-import { SummarySortHelper } from './summary-sort-helper';
-import { Stix } from '../../../models/stix/stix';
-import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
-import { AssessKillChainType } from '../../../models/assess/assess-kill-chain-type';
-import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
-import { Constance } from '../../../utils/constance';
 import { BehaviorSubject } from 'rxjs';
-import { ThresholdOption } from '../../models/threshold-option';
-import { BaselineQuestion } from '../../../models/baseline/baseline-question';
 import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
+import { AssessKillChainType } from '../../../models/assess/assess-kill-chain-type';
+import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
+import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
+import { BaselineObject } from '../../../models/baseline/baseline-object';
+import { BaselineQuestion } from '../../../models/baseline/baseline-question';
+import { Phase3 } from '../../../models/baseline/phase3';
+import { RiskByAttack3 } from '../../../models/baseline/risk-by-attack3';
+import { Stix } from '../../../models/stix/stix';
+import { Constance } from '../../../utils/constance';
+import { ThresholdOption } from '../../models/threshold-option';
+import { SummarySortHelper } from './summary-sort-helper';
 
 @Injectable()
 export class SummaryCalculationService {
