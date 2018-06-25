@@ -50,7 +50,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input()
   public assessmentGroup: Observable<FullAssessmentGroup>;
 
-  @Output('riskByAttackPatternChanged')
+  @Output()
   public riskByAttackPatternChanged = new EventEmitter<RiskByAttack>();
 
   @ViewChildren('addAssessedObjectComponent')
