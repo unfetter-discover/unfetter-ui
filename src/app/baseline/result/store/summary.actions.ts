@@ -1,4 +1,5 @@
 import { Action } from '@ngrx/store';
+import { Capability } from 'stix/assess/v3/baseline';
 import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
 import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
 
@@ -10,6 +11,7 @@ export const LOAD_SUMMARY_AGGREGATION_DATA = '[Baseline Summary] LOAD_SUMMARY_AG
 // For reducers
 export const SET_BASELINE = '[Baseline Summary] SET_BASELINE';
 export const SET_ATTACK_PATTERNS = '[Baseline Summary] SET_ATTACK_PATTERNS';
+export const SET_AND_READ_CAPABILITIES = '[Baseline Summary] SET_AND_READ_CAPABILITIES';
 export const SET_BASELINE_GROUPS = '[Baseline Summary] SET_BASELINE_GROUPS';
 export const FINISHED_LOADING = '[Baseline Summary] FINISHED_LOADING';
 export const SET_SUMMARY_AGGREGATION_DATA = '[Baseline Summary] SET_SUMMARY_AGGREGATION_DATA';
@@ -34,6 +36,12 @@ export class SetAttackPatterns implements Action {
     public readonly type = SET_ATTACK_PATTERNS;
 
     constructor(public payload: string[]) { }
+}
+
+export class SetAndReadCapabilities implements Action {
+    public readonly type = SET_AND_READ_CAPABILITIES;
+
+    constructor(public payload: Capability[]) { }
 }
 
 export class SetBaselineGroups implements Action {
