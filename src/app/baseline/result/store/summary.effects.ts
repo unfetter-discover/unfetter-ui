@@ -79,7 +79,7 @@ export class SummaryEffects {
                         mergeMap((arr) => {
                             const protPct = Math.round(protWeightings / apTotal * 100);
                             const detPct = Math.round(detWeightings / apTotal * 100);
-                            const respPct = Math.min(respWeightings / apTotal * 100, 100 - protPct - detPct);
+                            const respPct = Math.round(respWeightings / apTotal * 100);
                             return [ new SetAttackPatterns(apList), 
                                     new SetBaselineWeightings({ protPct, detPct, respPct }),
                                     new SetAndReadCapabilities(arr),
