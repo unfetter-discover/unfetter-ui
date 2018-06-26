@@ -90,7 +90,7 @@
                                     [intrusionSets]="getIntrusionSetsByIndicatorId(indicator.id)"
                                     [sensors]="getSensorsByIndicatorId(indicator.id)"
                                     [creator]="getIdentityNameById(indicator.created_by_ref)" 
-                                    [searchParameters]="searchParameters$"
+                                    [highlightObj]="highlightObj"
                                     [collapseAllCardsSubject]="collapseAllCardsSubject" 
                                     (stateChange)="updateIndicator($event)" 
                                     (indicatorDeleted)="deleteIndicator($event)"

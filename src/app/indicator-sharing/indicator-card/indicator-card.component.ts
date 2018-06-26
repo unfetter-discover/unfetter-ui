@@ -31,6 +31,11 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
     @Input() public sensors: any;
     @Input() public searchParameters: Observable<SearchParameters>;
     @Input() public collapseAllCardsSubject: BehaviorSubject<boolean>;
+    @Input() public highlightObj = {
+        labels: {},
+        intrusionSets: {},
+        phases: {}
+    };
 
     @Output() public stateChange: EventEmitter<any> = new EventEmitter();
     @Output() public indicatorDeleted: EventEmitter<any> = new EventEmitter();
@@ -47,12 +52,6 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
     public showAttackPatternDetails: boolean = false;
     public canCrud: boolean = false;
     public collapseContents: boolean = false;
-    public initialHighlightObj = {
-        labels: {},
-        intrusionSets: {},
-        phases: {}
-    };
-    public highlightObj = { ...this.initialHighlightObj };
 
     public readonly copyText: string = 'Copied';
     public readonly runMode = environment.runMode;
@@ -111,31 +110,6 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
                 }
             );
         }
-
-        const searchParametersSub$ = this.searchParameters
-            .pipe(
-                finalize(() => searchParametersSub$ && searchParametersSub$.unsubscribe())
-            )
-            .subscribe(
-                (searchParameters) => {
-                    this.highlightObj = { ...this.initialHighlightObj };
-
-                    searchParameters.killChainPhases.forEach((phase) => {
-                        this.highlightObj.phases[phase] = true;
-                    });
-
-                    searchParameters.labels.forEach((label) => {
-                        this.highlightObj.labels[label] = true;
-                    });
-
-                    searchParameters.intrusionSets.forEach((intrusionSet) => {
-                        this.highlightObj.intrusionSets[intrusionSet] = true;
-                    });
-                },
-                (err) => {
-                    console.log(err);
-                }
-            );
     }
 
     public ngAfterViewInit() {
