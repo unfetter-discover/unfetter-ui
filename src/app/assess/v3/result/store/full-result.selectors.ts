@@ -5,6 +5,7 @@ import { ConfigState } from '../../../../root-store/config/config.reducers';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { Dictionary } from 'stix/common/dictionary';
 import { TacticChain } from '../../../../global/components/tactics-pane/tactics.model';
+import { AssessmentEvalTypeEnum } from 'stix';
 
 const getConfigState = createFeatureSelector<ConfigState>('config');
 
@@ -45,6 +46,10 @@ export const getUnassessedPhasesForCurrentFramework = createSelector(
     getFullAssessment,
     getTacticsChains,
     (group: FullAssessmentGroup, assessment: Assessment, tacticsChains: Dictionary<TacticChain>) => {
+        if (assessment === undefined || tacticsChains === undefined) {
+            return group.unassessedPhases;
+        }
+
         const riskByAttackPattern = group.riskByAttackPattern;
         const assessedPhases = riskByAttackPattern.phases.map((phase) => phase._id);
         const assessedPhaseIdSet = new Set<string>(assessedPhases);
@@ -66,4 +71,9 @@ export const getUnassessedPhasesForCurrentFramework = createSelector(
             .map((phase) => phase.id);
         return curFrameworkUnassessedPhases;
     },
+);
+
+export const getAttackPatternRelationships = createSelector(
+    getGroupState,
+    (group: FullAssessmentGroup) => group.attackPatternRelationships,
 );
