@@ -1,9 +1,6 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-
-import { SummaryCalculationService } from '../summary-calculation.service';
-import { AssessKillChainType } from '../../../../models/baseline/assess-kill-chain-type';
-import { SummaryAggregation } from '../../../../models/baseline/summary-aggregation';
+import { Component, OnInit } from '@angular/core';
 import { Constance } from '../../../../utils/constance';
+import { SummaryCalculationService } from '../summary-calculation.service';
 
 type mainWell = 'heatmap' | 'none';
 
