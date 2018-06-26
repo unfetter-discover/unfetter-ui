@@ -12,6 +12,8 @@ import { downloadBundle } from '../../global/static/stix-bundle';
 import { generateStixRelationship } from '../../global/static/stix-relationship';
 import { StixRelationshipTypes } from '../../global/enums/stix-relationship-types.enum';
 import { canCrud } from '../../global/static/stix-permissions';
+import { SearchParameters } from '../models/search-parameters';
+import { finalize } from 'rxjs/operators';
 
 @Component({
     selector: 'indicator-card',
@@ -25,10 +27,15 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
     @Input() public indicator: any;
     @Input() public attackPatterns: any;
     @Input() public intrusionSets: any;
-    @Input() public searchParameters: any;
     @Input() public creator: string;
     @Input() public sensors: any;
+    @Input() public searchParameters: Observable<SearchParameters>;
     @Input() public collapseAllCardsSubject: BehaviorSubject<boolean>;
+    @Input() public highlightObj = {
+        labels: {},
+        intrusionSets: {},
+        phases: {}
+    };
 
     @Output() public stateChange: EventEmitter<any> = new EventEmitter();
     @Output() public indicatorDeleted: EventEmitter<any> = new EventEmitter();
@@ -123,18 +130,6 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
         }
     }
 
-    public highlightPhase(phase) {
-        return this.searchParameters.killChainPhases.length > 0 && this.searchParameters.killChainPhases.includes(phase);
-    }
-
-    public highlightIs(isId) {
-        return this.searchParameters.intrusionSets.length > 0 && this.searchParameters.intrusionSets.includes(isId);
-    }
-
-    public labelSelected(label) {
-        return this.searchParameters.labels.length > 0 && this.searchParameters.labels.includes(label);
-    }
-
     public addLabel(label) {
         if (label.length > 0) {
             const newLabel = label;
@@ -180,7 +175,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
             );        
     }
 
-    public whitespaceToBreak(comment) {
+    public whitespaceToBreak(comment: string): string {
         return FormatHelpers.whitespaceToBreak(comment);
     }
 
