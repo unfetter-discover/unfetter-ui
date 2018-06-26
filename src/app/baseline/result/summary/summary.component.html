@@ -38,6 +38,12 @@
   </mat-sidenav-container>
 </div>
 
+<div class="flex flexRow">
+    <div class="flex">
+      <uf-info-bar *ngIf="percentCompleted < 100" isWarningMsg="true" [message]="percentCompletedMsg" [completeActionUrl]="editUrl||''"></uf-info-bar>
+    </div>
+  </div>
+
 <ng-template #loadingBlock>
   <loading-spinner></loading-spinner>
 </ng-template>

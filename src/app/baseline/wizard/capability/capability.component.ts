@@ -14,6 +14,7 @@ import { StixEnum } from 'stix/unfetter/stix.enum';
 import { AnswerOption } from '../../../settings/stix-objects/categories/categories-edit/answer-option'
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { SetCurrentBaselineObjectAssessment } from '../../store/baseline.actions';
+import { BaselineSummaryService } from '../../services/baseline-summary.service';
 
 @Component({
   selector: 'unf-baseline-wizard-capability',
@@ -39,6 +40,9 @@ export class CapabilityComponent implements OnInit {
   public currentObjectAssessment: ObjectAssessment;
   public currentAssessedObject: AssessedObject[];
   public allAttackPatterns: AttackPattern[];
+  public baselineObjectAssessments: ObjectAssessment[];
+  public ratioOfQuestionsAnswered: number;
+  public lastKnownObjectAssessment: ObjectAssessment;  // Used to determine if datasource should update (when changing capabilities)
 
   // PDR Table
   currentNumberOfAttackPatterns = 0;  // keep track so that we do not reload the pdr table on score changes
@@ -46,15 +50,20 @@ export class CapabilityComponent implements OnInit {
   displayedColumns = ['attackPattern', 'protect', 'detect', 'respond'];
   incomingListOfAttackPatterns: string[] = [];
   public readonly answers = [
-    new AnswerOption(QuestionAnswerEnum.UNANSWERED, 'NONE'),
+
+    new AnswerOption(QuestionAnswerEnum.UNANSWERED, ''),
+    new AnswerOption(QuestionAnswerEnum.NONE, 'NONE'),
     new AnswerOption(QuestionAnswerEnum.LOW, 'LOW'),
     new AnswerOption(QuestionAnswerEnum.MEDIUM, 'MEDIUM'),
     new AnswerOption(QuestionAnswerEnum.SIGNIFICANT, 'SIGNIFICANT'),
     new AnswerOption(QuestionAnswerEnum.NOT_APPLICABLE, 'NOT_APPLICABLE'),
   ];
+
+
+
   selectedAttackPatterns = new FormControl();
 
-  constructor(private wizardStore: Store<assessReducers.BaselineState>) {
+  constructor(private wizardStore: Store<assessReducers.BaselineState>, private _baselineSummaryService: BaselineSummaryService ) {
 
     this.dataSource = new MatTableDataSource<TableEntry>();
 
@@ -78,6 +87,15 @@ export class CapabilityComponent implements OnInit {
           this.allAttackPatterns = allAttackPatterns;
         }, (err) => console.log(err));
 
+    const sub21$ = this.wizardStore
+      .select('baseline').pipe(
+      pluck('baselineObjAssessments'),
+      distinctUntilChanged())
+      .subscribe(
+        (baselineObjectAssessments: ObjectAssessment[]) => {
+        this.baselineObjectAssessments = baselineObjectAssessments;
+      }, (err) => console.log(err));
+
     const sub3$ = this.wizardStore
       .select('baseline').pipe(
       pluck('currentObjectAssessment'))
@@ -86,13 +104,48 @@ export class CapabilityComponent implements OnInit {
         (currentObjectAssessment: ObjectAssessment) => {
           this.currentObjectAssessment = currentObjectAssessment;
           if (this.currentObjectAssessment) {
-            this.currentAssessedObject = currentObjectAssessment.assessed_objects;
+            this.currentAssessedObject = [...currentObjectAssessment.assessed_objects];
+
+
+
+            let numOfTotalQuestions = 0;
+
+            let numOFAnsweredQuestions = 0;
+
+            for (let oa of this.baselineObjectAssessments) {
+              for (let ao of oa.assessed_objects) {
+                for ( let question of ao.questions) {
+                  numOfTotalQuestions += 1;
+                  if ( question.score === QuestionAnswerEnum.LOW || question.score === QuestionAnswerEnum.MEDIUM || question.score === QuestionAnswerEnum.NOT_APPLICABLE ||
+                    question.score === QuestionAnswerEnum.SIGNIFICANT || question.score === QuestionAnswerEnum.NONE) {
+   
+                    numOFAnsweredQuestions += 1;
+                  }
+                }
+              }
+            }
+
+
+            console.log('numOfTotalQuestions == ', numOfTotalQuestions);
+            console.log('numOfAnsweredQuestions == ', numOFAnsweredQuestions);
+
+            // this._baselineSummaryService.baselinePercentComplete = numOFAnsweredQuestions / numOfTotalQuestions * 100;
+
+
+
+            console.log(this.dataSource.data);
+            console.log(this.currentAssessedObject);
+            console.log(this.currentObjectAssessment);
+            
+
             if (this.currentAssessedObject) {
               this.incomingListOfAttackPatterns = this.currentAssessedObject.map(x => x.assessed_object_ref);
 
-              if (this.currentNumberOfAttackPatterns === 0 || this.currentNumberOfAttackPatterns !== this.currentAssessedObject.length) {
+              if (this.currentNumberOfAttackPatterns === 0 || this.currentNumberOfAttackPatterns !== this.currentAssessedObject.length || this.lastKnownObjectAssessment.name !== this.currentObjectAssessment.name) {
                 // inital value for number of attack patterns
                 this.currentNumberOfAttackPatterns = this.currentAssessedObject.length;
+
+                console.log('Updating table for ' + this.currentObjectAssessment.name);
 
                 this.dataSource.data = this.currentAssessedObject.map(x => ({
                   assessed_obj_id: x.id,
@@ -105,10 +158,12 @@ export class CapabilityComponent implements OnInit {
                 }));
               }
             } else {
-              // console.log('pdr change, not reloading!   ' + this.currentNumberOfAttackPatterns );
+              console.log('pdr change, not reloading!   ' + this.currentNumberOfAttackPatterns );
               return;
             }
           }
+
+          this.lastKnownObjectAssessment = this.currentObjectAssessment;
         }, (err) => console.log(err));
 
     // this.subscriptions.push(sub1$, sub2$, sub3$)
@@ -116,6 +171,9 @@ export class CapabilityComponent implements OnInit {
 
 
   ngOnInit() {
+    // this.ratioOfQuestionsAnswered = this._baselineSummaryService.getBaselinePercentComplete();
+
+    
   }
 
   public onAttackPatternChange(event): void {
@@ -169,7 +227,7 @@ export class CapabilityComponent implements OnInit {
   updatePDRScore(index: number, pdr: string, value: QuestionAnswerEnum, id) {
     let correctIndex = this.currentAssessedObject.findIndex(x => x.assessed_object_ref === id);
     this.setScore(this.currentAssessedObject[correctIndex].questions, pdr, value)
-    this.currentObjectAssessment.assessed_objects = this.currentAssessedObject
+    this.currentObjectAssessment.assessed_objects = this.currentAssessedObject.slice();
     this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(this.currentObjectAssessment));
   }
 
