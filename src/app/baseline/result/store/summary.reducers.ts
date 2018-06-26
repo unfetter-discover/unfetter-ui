@@ -1,21 +1,22 @@
 import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
-import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
 import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
 import * as summaryActions from './summary.actions';
 
 export interface SummaryState {
     baseline: AssessmentSet[];
+    blAttackPatterns: string[];
+    blGroups: string[];
     summary: AssessmentSet;
     finishedLoading: boolean;
     summaryAggregations: SummaryAggregation[];
     finishedLoadingSummaryAggregationData: boolean;
 };
 
-
-
 const genState = (state?: Partial<SummaryState>) => {
     const tmp = {
         baseline: new Array<AssessmentSet>(),
+        blAttackPatterns: new Array<string>(),
+        blGroups: new Array<string>(),
         summary: new AssessmentSet(),
         finishedLoading: false,
         summaryAggregations: [],
@@ -40,6 +41,16 @@ export function summaryReducer(state = initialState, action: summaryActions.Summ
             return genState({
                 ...state,
                 baseline: [...action.payload],
+            });
+        case summaryActions.SET_ATTACK_PATTERNS:
+            return genState({
+                ...state,
+                blAttackPatterns: [...action.payload],
+            });
+        case summaryActions.SET_BASELINE_GROUPS:
+            return genState({
+                ...state,
+                blGroups: [...action.payload],
             });
         case summaryActions.FINISHED_LOADING:
             return genState({
