@@ -9,6 +9,7 @@ import { GenericApi } from './services/genericapi.service';
 import { UserPreferencesService } from './services/user-preferences.service';
 import { UsersService } from './services/users.service';
 import { WebsocketService } from './services/web-socket.service';
+import { NotificationsService } from './services/notifications.service';
 
 @NgModule({
 })
@@ -25,6 +26,7 @@ export class CoreModule {
                 UsersService,
                 UserPreferencesService,
                 WebsocketService,
+                NotificationsService,
                 HttpClientModule,
                 { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
             ],

@@ -263,7 +263,7 @@ export class BaselineService {
      * @return {Observable<any>}
      */
     public fetchObjectAssessments(ids: string[] = []): Observable<ObjectAssessment[]> {
-        if (!ids) {
+        if (!ids || ids.length === 0) {
             return observableOf([]);
         }
         const urlBase = this.objectAssessmentsBaseUrl;

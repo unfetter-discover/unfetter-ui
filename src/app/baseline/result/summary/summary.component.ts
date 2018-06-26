@@ -144,7 +144,23 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .subscribe((arr: AssessmentSet[]) => {this.calculationService.baseline = arr[0]; return this.calculationService.baseline},
         (err) => console.log(err));
 
-    this.subscriptions.push(baselineRetrieve$);
+    const apRetrieve$ = this.store
+      .select('summary').pipe(
+      pluck('blAttackPatterns'),
+      distinctUntilChanged(),
+      filter((arr: string[]) => arr && arr.length > 0))
+      .subscribe((arr: string[]) => {this.calculationService.blAttackPatterns = arr; return this.calculationService.blAttackPatterns},
+        (err) => console.log(err));
+
+    const groupRetrieve$ = this.store
+      .select('summary').pipe(
+      pluck('blGroups'),
+      distinctUntilChanged(),
+      filter((arr: string[]) => arr && arr.length > 0))
+      .subscribe((arr: string[]) => {this.calculationService.blGroups = arr; return this.calculationService.blGroups},
+        (err) => console.log(err));
+
+    this.subscriptions.push(baselineRetrieve$, apRetrieve$, groupRetrieve$);
   }
 
   /**

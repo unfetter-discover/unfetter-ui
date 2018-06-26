@@ -1,4 +1,4 @@
-import { take, filter, pluck, distinctUntilChanged } from 'rxjs/operators';
+import { take, filter, pluck, distinctUntilChanged, distinctUntilKeyChanged, finalize, debounceTime } from 'rxjs/operators';
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { MatDialog, MatSidenav } from '@angular/material';
 import { Store } from '@ngrx/store';
@@ -12,12 +12,12 @@ import { IndicatorBase } from '../models/indicator-base-class';
 import { fadeInOut } from '../../global/animations/fade-in-out';
 import { ConfirmationDialogComponent } from '../../components/dialogs/confirmation/confirmation-dialog.component';
 import { initialSearchParameters } from '../store/indicator-sharing.reducers';
-import { IndicatorHeatMapComponent } from '../indicator-tactics/indicator-heat-map.component';
 import { heightCollapse } from '../../global/animations/height-collapse';
 import { generateStixRelationship } from '../../global/static/stix-relationship';
 import { StixRelationshipTypes } from '../../global/enums/stix-relationship-types.enum';
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { downloadBundle } from '../../global/static/stix-bundle';
+import { SearchParameters } from '../models/search-parameters';
 
 type mainWell = 'stats' | 'tactics' | 'none';
 
@@ -33,13 +33,18 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     public displayedIndicators: any[];
     public filteredIndicators: any[];
     public DEFAULT_LENGTH: number = Constance.INDICATOR_SHARING.DEFAULT_LIST_LENGTH;
-    public searchParameters;
     public filterOpen: boolean = false;
     public filterOpened: boolean = false;
     public collapseAllCards: boolean = false;
     public activeMainWell: mainWell = 'tactics';
     public totalIndicatorCount$: Observable<number>
     public collapseAllCardsSubject: BehaviorSubject<boolean> = new BehaviorSubject(this.collapseAllCards);
+    public initialHighlightObj = {
+        labels: {},
+        intrusionSets: {},
+        phases: {}
+    };
+    public highlightObj = { ...this.initialHighlightObj };
 
     @ViewChild('filterContainer') public filterContainer: MatSidenav;
 
@@ -82,22 +87,40 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                 }
             );
 
-        const searchParametersSub$ = this.store.select('indicatorSharing').pipe(
-            pluck('searchParameters'),
-            distinctUntilChanged())
+        const searchParametersSub$ = this.store.select('indicatorSharing')
+            .pipe(
+                pluck('searchParameters'),
+                debounceTime(15),
+                distinctUntilChanged<SearchParameters>(),
+                finalize(() => searchParametersSub$ && searchParametersSub$.unsubscribe())
+            )
             .subscribe(
-                (res) => {
-                    if (!this.filterOpened && JSON.stringify(res) !== JSON.stringify(initialSearchParameters)) {
+                (searchParameters) => {
+                    // ~~~ Auto filter open on first search ~~~
+                    if (!this.filterOpened && JSON.stringify(searchParameters) !== JSON.stringify(initialSearchParameters)) {
                         // Open container on first valid search if it wasn't already opened
                         this.filterContainer.open();
                     }
-                    this.searchParameters = res;
+
+                    // ~~~ (Re)build highlightObj map ~~~
+                    this.highlightObj.phases = {};
+                    this.highlightObj.labels = {};
+                    this.highlightObj.intrusionSets = {};
+
+                    searchParameters.killChainPhases.forEach((phase) => {
+                        this.highlightObj.phases[phase] = true;
+                    });
+
+                    searchParameters.labels.forEach((label) => {
+                        this.highlightObj.labels[label] = true;
+                    });
+
+                    searchParameters.intrusionSets.forEach((intrusionSet) => {
+                        this.highlightObj.intrusionSets[intrusionSet] = true;
+                    });
                 },
                 (err) => {
                     console.log(err);
-                },
-                () => {
-                    searchParametersSub$.unsubscribe();
                 }
             );
 
@@ -112,7 +135,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                     console.log(err);
                 },
                 () => {
-                    searchParametersSub$.unsubscribe();
+                    indicatorToSensorMap$.unsubscribe();
                 }
             );
 
