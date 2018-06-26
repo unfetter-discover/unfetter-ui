@@ -1388,9 +1388,45 @@ export class WizardComponent extends Measurements
         .filter((el) => el !== undefined)
         .map((el) => el.tempModel)
         .filter((el) => el !== undefined)
-        .map((el) => this.generateXUnfetterAssessment(el, this.meta));
+        .map((el) => this.generateXUnfetterAssessment(el, this.meta))
+        .filter((el) => el.assessment_objects && el.assessment_objects.length);
+
+      // if the user declared intent to assess some categories, but didn't, create an empty assessment for each one
+      if (this.meta.includesIndicators && this.indicators && this.indicators.length
+          && !assessments.some(a => a.assessment_objects.some(o => o.stix && o.stix.type === 'indicator'))) {
+        this.addAssessment(assessments, this.indicators[0]);
+      }
+      if (this.meta.includesMitigations && this.mitigations && this.mitigations.length
+          && !assessments.some(a => a.assessment_objects.some(o => o.stix && o.stix.type === 'course-of-action'))) {
+        this.addAssessment(assessments, this.mitigations[0]);
+      }
+      if (this.capabilities && this.capabilities.length
+          && !assessments.some(a => a.assessment_objects
+              .some(o => o.stix && o.stix.type === 'x-unfetter-object-assessment'))) {
+        this.addAssessment(assessments, this.capabilities[0]);
+      }
+
       this.wizardStore.dispatch(new SaveAssessment(assessments));
     }
   }
 
+  private addAssessment(assessments: Assessment[], info: any) {
+    const stix = new Stix({
+      id: info.id,
+      type: info.type,
+      name: info.name,
+      description: info.description || '',
+      created_by_ref: info.created_by_ref,
+    });
+    const temp = new AssessmentObject(1, [], stix);
+    const assessment = new Assessment({
+      assessmentMeta: this.meta,
+      name: this.meta.title,
+      description: this.meta.description,
+      created: this.publishDate.toISOString(),
+      created_by_ref: this.meta.created_by_ref,
+      assessment_objects: [temp],
+    });
+    assessments.push(assessment);
+  }
 }
