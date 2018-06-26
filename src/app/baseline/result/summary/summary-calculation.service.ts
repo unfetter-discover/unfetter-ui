@@ -34,6 +34,7 @@ export class SummaryCalculationService {
   baselineValue: AssessmentSet;
   blGroups: string[] = [];
   blAttackPatterns: string[] = [];
+  blWeightings: {} = { protPct: 0, detPct: 0, respPct: 0 };
 
   constructor() {
     this.numericRisk = 0;
@@ -106,6 +107,10 @@ export class SummaryCalculationService {
     this.blAttackPatterns = blAttackPatterns;
   }
 
+  public set baselineWeightings(blWeightings: {}) {
+    this.blWeightings = blWeightings;
+  }
+
   public get numericRisk(): number {
     return this.numericRiskValue;
   }
@@ -159,6 +164,10 @@ export class SummaryCalculationService {
 
   public get baselineAttackPatterns(): string[] {
     return this.baselineAttackPatterns;
+  }
+
+  public get baselineWeightings(): {} {
+    return this.blWeightings;
   }
 
   public getRiskText(): string {
