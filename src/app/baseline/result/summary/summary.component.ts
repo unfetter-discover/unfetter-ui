@@ -164,7 +164,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .select('summary').pipe(
       pluck('blWeightings'),
       distinctUntilChanged())
-      .subscribe((weightings: {}) => {
+      .subscribe((weightings: { protPct, detPct, respPct }) => {
         this.calculationService.blWeightings = weightings;
         return this.calculationService.blWeightings;
       },
