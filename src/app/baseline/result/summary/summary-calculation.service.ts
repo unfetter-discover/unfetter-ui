@@ -107,7 +107,7 @@ export class SummaryCalculationService {
     this.blAttackPatterns = blAttackPatterns;
   }
 
-  public set baselineWeightings(blWeightings: {}) {
+  public set baselineWeightings(blWeightings: { protPct, detPct, respPct }) {
     this.blWeightings = blWeightings;
   }
 
@@ -166,7 +166,7 @@ export class SummaryCalculationService {
     return this.baselineAttackPatterns;
   }
 
-  public get baselineWeightings(): {} {
+  public get baselineWeightings(): { protPct, detPct, respPct } {
     return this.blWeightings;
   }
 
