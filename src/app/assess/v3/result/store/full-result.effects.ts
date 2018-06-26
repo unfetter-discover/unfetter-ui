@@ -10,7 +10,7 @@ import { Stix } from 'stix/unfetter/stix';
 import { Relationship } from '../../../../models';
 import { Constance } from '../../../../utils/constance';
 import { AssessService } from '../../services/assess.service';
-import { 
+import {
     DonePushUrl, FailedToLoad, FinishedLoading, LoadGroupData, LOAD_ASSESSMENTS_BY_ROLLUP_ID, LOAD_ASSESSMENT_BY_ID,
     LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS, LOAD_GROUP_CURRENT_ATTACK_PATTERN, LOAD_GROUP_DATA, PUSH_URL, SetAssessment,
     SetAssessments, SetGroupAttackPatternRelationships, SetGroupCurrentAttackPattern, SetGroupData, UPDATE_ASSESSMENT_OBJECT
@@ -32,12 +32,14 @@ export class FullResultEffects {
             pluck('payload'),
             switchMap((rollupId: string) => {
                 return this.assessService
-                    .getByRollupId(rollupId).pipe(
+                    .getByRollupId(rollupId)
+                    .pipe(
                         mergeMap((data: Assessment[]) => [new SetAssessments(data), new FinishedLoading(true)]),
                         catchError((err) => {
                             console.log(err);
                             return observableOf(new FailedToLoad(true));
-                        }));
+                        })
+                    );
             })
         );
 
@@ -49,12 +51,14 @@ export class FullResultEffects {
             pluck('payload'),
             switchMap((id: string) => {
                 return this.assessService
-                    .getById(id).pipe(
+                    .getById(id)
+                    .pipe(
                         mergeMap((data: Assessment) => [new SetAssessment(data), new FinishedLoading(true)]),
                         catchError((err) => {
                             console.log(err);
                             return observableOf(new FailedToLoad(true));
-                        }));
+                        })
+                    );
             })
         );
 
@@ -68,18 +72,19 @@ export class FullResultEffects {
                 const getAssessedObjects$ = this.assessService.getAssessedObjects(loadData.id);
                 const isCapability = loadData.isCapability || false;
                 const getRiskByAttackPattern$ = this.assessService.getRiskPerAttackPattern(loadData.id, true, isCapability);
-                return observableForkJoin(getAssessedObjects$, getRiskByAttackPattern$).pipe(
-                    map(([assessedObjects, riskByAttackPattern]) => {
-                        riskByAttackPattern = riskByAttackPattern || new RiskByAttack();
-                        return new SetGroupData({ assessedObjects, riskByAttackPattern });
-                    }),
-                    catchError((err) => {
-                        console.log(err);
-                        return observableOf(new FailedToLoad(true));
-                    }));
+                return observableForkJoin(getAssessedObjects$, getRiskByAttackPattern$)
+                    .pipe(
+                        map(([assessedObjects, riskByAttackPattern]) => {
+                            riskByAttackPattern = riskByAttackPattern || new RiskByAttack();
+                            return new SetGroupData({ assessedObjects, riskByAttackPattern });
+                        }),
+                        catchError((err) => {
+                            console.log(err);
+                            return observableOf(new FailedToLoad(true));
+                        })
+                    );
             })
         );
-
 
     @Effect()
     public loadGroupCurrentAttackPattern = this.actions$
@@ -90,14 +95,16 @@ export class FullResultEffects {
             pluck('payload'),
             switchMap((attackPatternId: string) => {
                 return this.assessService
-                    .getAs<Stix>(`${Constance.ATTACK_PATTERN_URL}/${attackPatternId}`).pipe(
+                    .getAs<Stix>(`${Constance.ATTACK_PATTERN_URL}/${attackPatternId}`)
+                    .pipe(
                         map((data: Stix) => {
                             return new SetGroupCurrentAttackPattern({ currentAttackPattern: data });
                         }),
                         catchError((err) => {
                             console.log(err);
                             return observableOf(new FailedToLoad(true));
-                        }));
+                        })
+                    );
             })
         );
 
@@ -109,7 +116,8 @@ export class FullResultEffects {
             pluck('payload'),
             switchMap((attackPatternId: string) => {
                 return this.assessService
-                    .getAttackPatternRelationships(attackPatternId).pipe(
+                    .getAttackPatternRelationships(attackPatternId)
+                    .pipe(
                         mergeMap((relationships: Relationship[]) => {
                             return [
                                 new SetGroupAttackPatternRelationships(relationships),
@@ -119,7 +127,8 @@ export class FullResultEffects {
                         catchError((err) => {
                             console.log(err);
                             return observableOf(new FailedToLoad(true));
-                        }));
+                        })
+                    );
             }));
 
 
