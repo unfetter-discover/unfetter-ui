@@ -34,7 +34,7 @@ export class SummaryCalculationService {
   baselineValue: AssessmentSet;
   blGroups: string[] = [];
   blAttackPatterns: string[] = [];
-  blWeightings: {} = { protPct: 0, detPct: 0, respPct: 0 };
+  blWeightings: { protPct: 0, detPct: 0, respPct: 0 };
 
   constructor() {
     this.numericRisk = 0;
