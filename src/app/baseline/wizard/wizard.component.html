@@ -51,7 +51,8 @@
     <div [ngSwitch]="openedSidePanel">
       <unf-baseline-wizard-group *ngSwitchCase="'categories'"></unf-baseline-wizard-group>
       <unf-baseline-wizard-capability-selector *ngSwitchCase="'capability-selector'"></unf-baseline-wizard-capability-selector>
-      <unf-baseline-wizard-capability *ngSwitchCase="'capabilities'" (onToggleHeatMap)="toggleHeatMap()"></unf-baseline-wizard-capability>
+      <unf-baseline-wizard-capability #capabilityPane
+          *ngSwitchCase="'capabilities'" (onToggleHeatMap)="toggleHeatMap($event)"></unf-baseline-wizard-capability>
       <div *ngSwitchCase="'capability'">
         <p>This is the attack pattern selection and capability scoring panel.</p>
       </div>

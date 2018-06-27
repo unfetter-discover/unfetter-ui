@@ -32,7 +32,7 @@ export class CapabilityComponent implements OnInit {
 
 
   @Output()
-  public onToggleHeatMap = new EventEmitter<boolean>();
+  public onToggleHeatMap = new EventEmitter<any>();
   public currentCapability: Capability;
   public currentCapabilityName: string;
   public currentCapabilityDescription: string;

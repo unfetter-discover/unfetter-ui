@@ -7,7 +7,7 @@
         </mat-card-title>
       </div>
       <div class="col-lg-1">
-        <button mat-icon-button matTooltip="HeatMap Chart View" (click)="onToggleHeatMap.emit(true)">
+        <button mat-icon-button matTooltip="HeatMap Chart View" (click)="onToggleHeatMap.emit(dataSource.data)">
           <mat-icon class="mat-24" aria-hidden="true" aria-label="view heat map">view_comfy</mat-icon>
           {{ attackMatrix }}
         </button>
@@ -30,7 +30,7 @@
       </div>
       <div class="row margin-bottom">
         <div class="col-sm-12">
-            <button mat-raised-button matTooltip="HeatMap Chart View" (click)="onToggleHeatMap.emit(true)">
+            <button mat-raised-button matTooltip="HeatMap Chart View" (click)="onToggleHeatMap.emit(dataSource.data)">
               {{ openAttackMatrix }}
             </button>
         </div>
