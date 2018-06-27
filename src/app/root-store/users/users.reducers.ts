@@ -7,7 +7,8 @@ export interface UserState {
     token: string,
     authenticated: boolean,
     approved: boolean,
-    role: string
+    role: string,
+    avatar_url: string
 }
 
 export const initialState: UserState = {
@@ -15,7 +16,8 @@ export const initialState: UserState = {
     token: null,
     authenticated: false,
     approved: false,
-    role: null
+    role: null,
+    avatar_url: null
 }
 
 export function usersReducer(state = initialState, action: userActions.UserActions) {
