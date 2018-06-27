@@ -3,7 +3,7 @@ import { of as observableOf,  Observable ,  Subscription  } from 'rxjs';
 
 import { take, filter, distinctUntilChanged, pluck } from 'rxjs/operators';
 import { Location } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren, ViewChild } from '@angular/core';
 import { MatDialog, MatSelect, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -19,6 +19,7 @@ import { BaselineState } from '../store/baseline.reducers';
 import { AttackPatternChooserComponent } from './attack-pattern-chooser/attack-pattern-chooser.component';
 import { Measurements } from './models/measurements';
 import { Assess3Meta } from 'stix/assess/v3';
+import { CapabilityComponent } from './capability/capability.component';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -57,12 +58,12 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public allCapabilities: Capability[] = [];
   public baselineCapabilities: Capability[] = [];
   public currentCapability = {} as Capability;
+  @ViewChild('capabilityPane') capabilityPane: CapabilityComponent;
   private baselineObjAssessments: ObjectAssessment[] = [];
-  
+
   public showHeatmap = false;
   public allAttackPatterns: Observable<AttackPattern[]> = observableOf([]);
   public selectedFrameworkAttackPatterns: Observable<AttackPattern[]> = observableOf([]);
-  public selectedAttackPatterns: AttackPattern[] = [];
 
   private readonly subscriptions: Subscription[] = [];
   
@@ -604,28 +605,30 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   /**
    * @description Displays a slide-out that shows the user a heat map of all attack patterns for filtering
    */
-  public toggleHeatMap(): void {
+  public toggleHeatMap(assessed: any[]): void {
     if (this.showHeatmap) {
       this.showHeatmap = false;
       this.dialog.closeAll();
     } else {
       this.showHeatmap = true;
+      const currentPatterns = assessed ? assessed.map(ap => ({
+        id: ap.capability_id,
+        name: ap.capability,
+        description: ap.definition,
+      })) : [];
       const dialog = this.dialog.open(AttackPatternChooserComponent, {
         width: '80vw',
         height: '80vh',
         hasBackdrop: true,
         disableClose: false,
         closeOnNavigation: true,
-        data: {
-          active: null, // @todo This needs to be replaced with the current capability's list of attack patterns!!
-                        //       The current model appears to have no hook for this.
-        },
+        data: { active: currentPatterns },
       });
 
       const sub$ = dialog.afterClosed().subscribe(
         (result) => {
           if (result) {
-            this.selectedAttackPatterns = result;
+            this.capabilityPane.onAttackPatternChange(result);
           }
           this.showHeatmap = false;
         },
