@@ -22,7 +22,6 @@ import { StixPermissions } from '../../../../../global/static/stix-permissions';
 import { Relationship } from '../../../../../models';
 import { AppState } from '../../../../../root-store/app.reducers';
 import { Constance } from '../../../../../utils/constance';
-import { AssessService } from '../../../services/assess.service';
 import { LoadGroupAttackPatternRelationships, LoadGroupCurrentAttackPattern, LoadGroupData, PushUrl, UpdateAssessmentObject } from '../../store/full-result.actions';
 import { FullAssessmentResultState } from '../../store/full-result.reducers';
 import { AddAssessedObjectComponent } from './add-assessed-object/add-assessed-object.component';
@@ -69,19 +68,15 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   public assessedObjects: AssessmentObject[];
   public attackPatternsByPhase: AssessAttackPatternMeta[];
   public canAddAssessedObjects: boolean = false;
-  public courseOfAction: any;
   public currentAttackPattern: AttackPattern;
   public displayedAssessedObjects: DisplayedAssessmentObject[];
-  public indicator: any;
   public riskByAttackPattern: RiskByAttack;
   public unassessedAttackPatterns: AttackPattern[];
-  public xUnfetterSensor: any;
 
   private readonly subscriptions: Subscription[] = [];
 
   constructor(
     private appStore: Store<AppState>,
-    private assessService: AssessService,
     private authService: AuthService,
     private changeDetector: ChangeDetectorRef,
     private store: Store<FullAssessmentResultState>,

@@ -1,7 +1,13 @@
+@import '../../../../../../../styles/_variables';
+
 #addAssessedObjectCard {
     position: fixed;
     bottom: 26px;
     right: 100px;
     width: 400px;
     z-index: 500;
+}
+
+.errMsg {
+    color: $warn-color;
 }

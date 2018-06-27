@@ -1,9 +1,17 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Observable, Subscription } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { Question } from 'stix/assess/v3/baseline/question';
+import { QuestionAnswerEnum } from 'stix/assess/v3/baseline/question-answer.enum';
+import { StixCoreEnum } from 'stix/stix/stix-core.enum';
+import { AttackPattern } from 'stix/unfetter/attack-pattern';
+import { StixEnum } from 'stix/unfetter/stix.enum';
 import { SpeedDialItem } from '../../../../../../global/components/speed-dial/speed-dial-item';
+import { RxjsHelpers } from '../../../../../../global/static/rxjs-helpers';
 import { Constance } from '../../../../../../utils/constance';
 import { AssessService } from '../../../../services/assess.service';
-import { map } from 'rxjs/operators';
+import { Weighting } from './weighting';
 
 @Component({
     selector: 'unf-add-assessed-object',
@@ -25,7 +33,7 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
     public assessment: any;
 
     @Input()
-    public xUnfetterSensor: any;
+    public xUnfetterCapability: any;
 
     @Input()
     public courseOfAction: any;
@@ -43,31 +51,37 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
     public addAssessmentEvent = new EventEmitter<boolean>();
 
     public addAssessedObjectName: string = '';
+    public errMsg: string;
+    public capabilityFormGroup: FormGroup;
+    public selectWeightings: Weighting[];
 
-    public speedDialItems: SpeedDialItem[] = [
+    public readonly speedDialItems = [
         new SpeedDialItem('toggle', 'add', true, null, 'Add Assessed Object'),
         new SpeedDialItem('indicator', null, false, 'indicator', 'Indicator'),
         new SpeedDialItem('mitigation', null, false, 'course-of-action', 'Mitigation'),
-        new SpeedDialItem('sensor', null, false, 'tool', 'Sensor')
+        new SpeedDialItem('capability', null, false, 'tool', 'Capability')
     ];
 
     private readonly subscriptions: Subscription[] = [];
 
     public constructor(
         private assessService: AssessService,
+        private changeDetectorRef: ChangeDetectorRef,
     ) { }
 
     /**
      * @description initialize this component
      */
-    public ngOnInit(): void { }
+    public ngOnInit(): void {
+        this.capabilityFormGroup = this.generateCapabilityFormGroup();
+        this.selectWeightings = this.generateCapabilityWeightingValues();
+    }
 
     /**
-     * @description unsubscribes from subscriptions, cleans up this component
+     * @description cleans subscriptions, cleans up this component
      */
     public ngOnDestroy(): void {
         this.subscriptions
-            .filter((el) => el !== undefined)
             .forEach((sub) => sub.unsubscribe());
     }
 
@@ -75,15 +89,13 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
      * @description create an assessment object
      * @param newAssessedObject
      * @param attackPattern
+     * @returns void
      */
-    public createAssessedObject(newAssessedObject, attackPattern) {
-
+    public createAssessedObject(newAssessedObject, attackPattern): void {
         const { created_by_ref } = this.assessment;
-
         newAssessedObject.created_by_ref = created_by_ref;
-
-        // Update & save questions for assessment
         // tslint:disable-next-line:prefer-for-of
+        // calculate risk, based on question options and answers
         for (let i = 0; i < newAssessedObject.questions.length; i++) {
             newAssessedObject.questions[i].selected_value.risk =
                 newAssessedObject.questions[i].risk;
@@ -93,115 +105,80 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
                 }
             }
         }
+
+        // Update & save questions for assessment
         const questions = newAssessedObject.questions;
-        delete newAssessedObject.questions;
+        // copy over assessed object, remove the questions
+        const convertedObj = Object.assign({}, newAssessedObject);
+        delete convertedObj.questions;
 
-        const convertedObj: any = {};
-        for (const prop in newAssessedObject) {
-            if (newAssessedObject[prop]) {
-                convertedObj[prop] = newAssessedObject[prop];
-            }
+        if (convertedObj.type === StixEnum.CAPABILITY) {
+            return;
+        } else {
+            this.inlineUpdateAssessment(convertedObj, attackPattern, questions);
         }
+    }
 
-        // Uploaded indicator, COA, or sensor
-        const sub = this.assessService
-            .genericPost(`api/${convertedObj.type}s`, convertedObj)
+    /**
+     * @description update this component's assessment with a newly created assessed object
+     * @param  {any} convertedObj
+     * @returns void
+     */
+    public inlineUpdateAssessment(convertedObj: any, attackPattern: AttackPattern, questions: any[]): void {
+        // Uploaded indicator, COA
+        const assessedObjSave$ = this.generateConvertedObjSaveObservable(convertedObj);
+        this.errMsg = '';
+        let createdObjs;
+        // save the object
+        const saveChain$ = assessedObjSave$
             .pipe(
-                map((assessments) => assessments.map((el) => el.attributes))
-            )
+                // remember the newly created obj
+                map((result) => createdObjs = result),
+                // save the object's relationship to the attack pattern
+                switchMap((result) => this.generateRelationshipSaveObservable(result, convertedObj, attackPattern)),
+                // save the object as part of the parent assessment
+                switchMap((_) => this.generateAssessmentUpdateObservable(createdObjs[0], convertedObj, questions))
+            );
+        const sub = saveChain$
             .subscribe(
-            (assessedRes) => {
-                const newId = assessedRes[0].id;
-                const createdObj = assessedRes[0];
-
-                // create relationship
-                const relationshipObj: any = { 
-                    type: 'relationship',
-                    created_by_ref
-                };
-                
-                switch (newAssessedObject.type) {
-                    case 'x-unfetter-sensor':
-                    case 'course-of-action':
-                        relationshipObj.relationship_type = 'mitigates';
-                        break;
-                    case 'indicator':
-                        relationshipObj.relationship_type = 'indicates';
-                        break;
-                    default:
-                        break;
-                }
-                relationshipObj.source_ref = newId;
-                relationshipObj.target_ref = attackPattern.id;
-                const sub1 = this.assessService
-                    .genericPost(Constance.RELATIONSHIPS_URL, relationshipObj)
-                    .subscribe(
-                    (relationshipRes) => {
-                    },
-                    (relationshipErr) => console.log(relationshipErr)
-                    );
-                this.subscriptions.push(sub1);
-
-                // update assessment
-                const tempAssessmentObject: any = {};
-                tempAssessmentObject.questions = questions;
-                tempAssessmentObject.stix = {
-                    id: newId,
-                    type: convertedObj.type,
-                    name: convertedObj.name
-                };
-                if (convertedObj.description !== undefined) {
-                    tempAssessmentObject.stix.description = convertedObj.description;
-                }
-                tempAssessmentObject.risk =
-                    questions
-                        .map((question) => question.risk)
-                        .reduce((prev, cur) => (prev += cur), 0) / questions.length;
-
-                this.assessment.assessment_objects.push(
-                    tempAssessmentObject
-                );
-                const assessmentToUpload: any = this.assessment;
-                assessmentToUpload.modified = new Date().toISOString();
-                const sub2 = this.assessService
-                    .genericPatch(`${Constance.X_UNFETTER_ASSESSMENT_URL}/${this.assessment.id}`, assessmentToUpload)
-                    .subscribe((assessmentRes) => {
-                        this.displayedAssessedObjects.push(tempAssessmentObject);
-                        this.assessedObjects.push({ stix: createdObj });
-                        this.resetNewAssessmentObjects();
-                        this.addAssessmentEvent.emit(true);
-                    },
-                    (assessmentErr) => console.log(assessmentErr)
-                    );
-                this.subscriptions.push(sub2);
-            },
-            (assessedErr) => console.log(assessedErr)
+                () => console.log('saved'),
+                (err) => {
+                    console.log(err);
+                    this.errMsg = err.statusText || 'Unknown Error';
+                    // change detection was needed to update the form
+                    // even with change detection default for this component
+                    this.changeDetectorRef.detectChanges();
+                },
+                () => console.log('done update')
             );
 
         this.subscriptions.push(sub);
     }
 
     /**
-     * @description
+     * @description resets this components ;
+     *  cleans forms for indicators, courses of action, and capabilities
+     *  closes the form
+     * @returns void
      */
     public resetNewAssessmentObjects(): void {
         this.addAssessedObject = false;
         this.addAssessedType = '';
         this.indicator = {
-            type: 'indicator',
+            type: StixCoreEnum.INDICATOR,
             name: '',
             description: '',
             pattern: '',
             questions: []
         };
         this.courseOfAction = {
-            type: 'course-of-action',
+            type: StixCoreEnum.COURSE_OF_ACTION,
             name: '',
             description: '',
             questions: []
         };
-        this.xUnfetterSensor = {
-            type: 'x-unfetter-sensor',
+        this.xUnfetterCapability = {
+            type: StixEnum.CAPABILITY,
             name: '',
             description: '',
             questions: []
@@ -210,7 +187,7 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
         for (const stixType in Constance.MEASUREMENTS) {
             for (const question in Constance.MEASUREMENTS[stixType]) {
                 switch (stixType) {
-                    case 'indicator':
+                    case StixCoreEnum.INDICATOR:
                         this.indicator.questions.push({
                             name: question,
                             risk: 1,
@@ -223,7 +200,7 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
                             }
                         });
                         break;
-                    case 'course-of-action':
+                    case StixCoreEnum.COURSE_OF_ACTION:
                         this.courseOfAction.questions.push({
                             name: question,
                             risk: 1,
@@ -236,8 +213,8 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
                             }
                         });
                         break;
-                    case 'x-unfetter-sensor':
-                        this.xUnfetterSensor.questions.push({
+                    case StixEnum.CAPABILITY:
+                        this.xUnfetterCapability.questions.push({
                             name: question,
                             risk: 1,
                             options: this.getOptions(
@@ -256,7 +233,11 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
         }
     }
 
-    public getOptions(options) {
+    /**
+     * @param  {} options
+     * @returns any
+     */
+    public getOptions(options): any[] {
         const retVal = [];
         options.forEach((label, index) => {
             const data: any = {};
@@ -266,7 +247,6 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
         });
         return retVal;
     }
-
 
     /**
      * @param  {SpeedDialItem} speedDialItem
@@ -278,17 +258,145 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
         switch (speedDialItem.name) {
             case 'indicator':
                 this.addAssessedObjectName = 'Indicator';
-                this.addAssessedType = 'indicator';
+                this.addAssessedType = StixCoreEnum.INDICATOR;
                 break;
             case 'mitigation':
                 this.addAssessedObjectName = 'Mitigation';
-                this.addAssessedType = 'course-of-action';
+                this.addAssessedType = StixCoreEnum.COURSE_OF_ACTION;
                 break;
-            case 'sensor':
-                this.addAssessedObjectName = 'Sensor';
-                this.addAssessedType = 'x-unfetter-sensor';
+            case 'capability':
+                this.addAssessedObjectName = 'Capability';
+                this.addAssessedType = StixEnum.CAPABILITY;
                 break;
         }
+    }
+
+    /**
+     * @param  {any} el
+     * @param  {Event} event?
+     * @returns void
+     */
+    public applyNewCapability(el: any, event?: Event): void {
+        if (event) {
+            event.preventDefault();
+        }
+
+        console.log(el);
+    }
+
+    /**
+     * @param  {any} convertedObj
+     * @returns Observable
+     */
+    private generateConvertedObjSaveObservable(convertedObj: any): Observable<any> {
+        return this.assessService
+            .genericPost(`api/${convertedObj.type}s`, convertedObj)
+            .pipe(
+                map((assessments) => assessments.map(RxjsHelpers.mapAttributes))
+            );
+    }
+
+    /**
+     * @param  {any} assessedObjects
+     * @param  {any} convertedObj
+     * @param  {AttackPattern} attackPattern
+     * @returns Observable
+     */
+    private generateRelationshipSaveObservable(assessedObjects: any, convertedObj: any, attackPattern: AttackPattern): Observable<any> {
+        const newId = assessedObjects[0].id;
+        // create relationship
+        const relationshipObj: any = {
+            type: 'relationship',
+            'created_by_ref': convertedObj.created_by_ref,
+        };
+
+        switch (convertedObj.type) {
+            case 'course-of-action':
+                relationshipObj.relationship_type = 'mitigates';
+                break;
+            case 'indicator':
+                relationshipObj.relationship_type = 'indicates';
+                break;
+            default:
+                break;
+        }
+        relationshipObj.source_ref = newId;
+        relationshipObj.target_ref = attackPattern.id;
+        return this.assessService
+            .genericPost(Constance.RELATIONSHIPS_URL, relationshipObj);
+    }
+
+    private generateAssessmentUpdateObservable(createdObj: any, convertedObj: any, questions: any[]): Observable<any> {
+        const newId = createdObj.id;
+        // update assessment
+        const tempAssessmentObject: any = {};
+        tempAssessmentObject.questions = questions;
+        tempAssessmentObject.stix = {
+            id: newId,
+            type: convertedObj.type,
+            name: convertedObj.name
+        };
+        if (convertedObj.description !== undefined) {
+            tempAssessmentObject.stix.description = convertedObj.description;
+        }
+        tempAssessmentObject.risk =
+            questions
+                .map((question) => question.risk)
+                .reduce((prev, cur) => (prev += cur), 0) / questions.length;
+
+        this.assessment.assessment_objects.push(
+            tempAssessmentObject
+        );
+        const assessmentToUpload: any = this.assessment;
+        assessmentToUpload.modified = new Date().toISOString();
+        return this.assessService
+            .genericPatch(`${Constance.X_UNFETTER_ASSESSMENT_URL}/${this.assessment.id}`, assessmentToUpload)
+            .pipe(
+                map((assessmentResult) => {
+                    this.displayedAssessedObjects.push(tempAssessmentObject);
+                    this.assessedObjects.push({ stix: createdObj });
+                    this.resetNewAssessmentObjects();
+                    this.addAssessmentEvent.emit(true);
+                    return assessmentResult;
+                })
+            );
+    }
+
+    /**
+     * @description reactive form for creating and using a new capability
+     * @returns FormGroup
+     */
+    private generateCapabilityFormGroup(): FormGroup {
+        const group = new FormGroup({
+            name: new FormControl('', [Validators.required]),
+            description: new FormControl('', [Validators.required]),
+            assessmentScore: new FormControl('', [Validators.required]),
+            category: new FormControl('', [Validators.required]),
+            attackPattern: new FormControl(this.currentAttackPattern, [Validators.required]),
+            protectWeight: new FormControl('', [Validators.required]),
+            detectWeight: new FormControl('', [Validators.required]),
+            respondWeight: new FormControl('', [Validators.required])
+        });
+
+        return group;
+    }
+
+    /**
+     * @description weight values used when mapping a capability to an attack pattern
+     * @returns Weighting[]
+     */
+    private generateCapabilityWeightingValues(): Weighting[] {
+        // const keys = Object.keys(QuestionAnswerEnum);
+        // type keys = keyof QuestionAnswerEnum;
+        const keys = [
+            QuestionAnswerEnum.NOT_APPLICABLE,
+            QuestionAnswerEnum.NONE,
+            QuestionAnswerEnum.LOW,
+            QuestionAnswerEnum.MEDIUM,
+            QuestionAnswerEnum.SIGNIFICANT,
+        ]
+        const longKeys = keys.map((k) => new Weighting(new Question().toLongForm(k), k))
+        return longKeys;
     }
 
 }

@@ -518,6 +518,15 @@ export const Constance = {
         'most critical systems covered',
         'all critical systems covered'
       ]
+    },
+    'x-unfetter-capability': {
+      coverage: [
+        'no coverage',
+        'some coverage',
+        'half coverage',
+        'most critical systems covered',
+        'all critical systems covered'
+      ]
     }
   },
   DIALOG_WIDTH_MEDIUM: '800px',
