@@ -20,10 +20,10 @@
     </a>
   </mat-menu>
 
-  <span *ngIf="user$ | async as user" class="flex flexItemsCenter">   
+  <span *ngIf="authService.loggedIn() && user$ | async as user" class="flex flexItemsCenter">   
 
     <span id="appMenuWrapper">
-      <button mat-icon-button class="navButton" *ngIf="authService.loggedIn()" (click)="showAppMenu = !showAppMenu">
+      <button mat-icon-button class="navButton" (click)="showAppMenu = !showAppMenu">
         <mat-icon class="mat-24">apps</mat-icon>
       </button>
       <div id="appMenuTriangle" *ngIf="showAppMenu" @fadeInOut>&nbsp;</div>
@@ -63,11 +63,11 @@
       </div>
     </span>
 
-    <span id="notificationContainer" class="navButton" *ngIf="!demoMode && authService.loggedIn()">
+    <span id="notificationContainer" class="navButton" *ngIf="!demoMode">
       <notification-window></notification-window>
     </span>
 
-    <span id="accountWrapper" class="navButton" *ngIf="!demoMode && authService.loggedIn()">
+    <span id="accountWrapper" class="navButton" *ngIf="!demoMode">
       <div class="cursor-pointer" (click)="showAccountMenu = !showAccountMenu">
         <img *ngIf="user.avatar_url" id="avatar" class="smallAvatar" src="{{ user.avatar_url }}" alt="User">
         <button mat-icon-button *ngIf="!user.avatar_url" id="accountBtn">
