@@ -1,7 +1,6 @@
 import { TestBed, ComponentFixture, async, fakeAsync, tick } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
-import { Location } from '@angular/common';
 import { Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -20,7 +19,6 @@ import { Themes } from './global/enums/themes.enum';
 
 @Component({template: 'Nothing to see here'})
 class NoopComponent {
-
 }
 
 describe(`App`, () => {
@@ -70,6 +68,7 @@ describe(`App`, () => {
         { path: 'intrusion-set-dashboard', component: NoopComponent },
         { path: 'assessments', component: NoopComponent },
         { path: 'assess', component: NoopComponent },
+        { path: 'assess-beta', component: NoopComponent },
         { path: 'baseline', component: NoopComponent },
         { path: 'threat-dashboard', component: NoopComponent },
         { path: 'users', component: NoopComponent },
@@ -109,8 +108,7 @@ describe(`App`, () => {
             })
             .compileComponents(); // compile template and css
 
-        // router = TestBed.get(Router);
-        // location = TestBed.get(Location);
+        router = TestBed.get(Router);
     }));
 
     it(`should be readly initialized`, () => {
@@ -141,11 +139,13 @@ describe(`App`, () => {
         });
     });
 
-    xit(`should handle various router outlets`, fakeAsync(() => {
+    it(`should handle various router outlets`, fakeAsync(() => {
         const routeChecks = [
-            { path: '', title: undefined, theme: Themes.DEFAULT },
+            { path: '', title: '', theme: Themes.DEFAULT },
             { path: 'admin', title: 'admin', theme: Themes.DEFAULT },
+            { path: 'assessments', title: 'assessments', theme: Themes.ASSESSMENTS },
             { path: 'assess', title: 'assessments', theme: Themes.ASSESSMENTS },
+            { path: 'assess-beta', title: 'assessments', theme: Themes.ASSESSMENTS },
             { path: 'baseline', title: 'Baselines', theme: Themes.ASSESSMENTS },
             { path: 'events', title: 'events', theme: Themes.EVENTS },
             { path: 'home', title: 'home', theme: Themes.DEFAULT },
@@ -162,7 +162,7 @@ describe(`App`, () => {
         comp = fixture.componentInstance;
         router.initialNavigation();
 
-        routeChecks.forEach((check, index, checks) => {
+        routeChecks.forEach((check) => {
             router.navigate([check.path]).then(
                 () => {
                     comp.ngOnInit();

@@ -51,6 +51,11 @@ describe('ConfirmationDialogComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+
+        // for coverage
+        mockData.type = 'UnrelationShips';
+        fixture.detectChanges();
+        expect(component).toBeTruthy();
     });
 
     it('should handle delete button presses', async(() => {
