@@ -113,16 +113,6 @@ export class HeaderNavigationComponent {
     return this._authServices;
   }
 
-  public getAvatar(user): string {
-    if (user && user.userProfile && user.userProfile.oauth) {
-      const oauth = user.userProfile.oauth;
-      if (user.userProfile[oauth] && user.userProfile[oauth].avatar_url) {
-        return user.userProfile[oauth].avatar_url;
-      }
-    }
-    return null;
-  }
-
   @HostListener('document:click', ['$event']) public clickedOutside(event) {
     if (this.showAppMenu && this.el.nativeElement.querySelector('#appMenuWrapper') && !this.el.nativeElement.querySelector('#appMenuWrapper').contains(event.target)) {
       this.showAppMenu = false;

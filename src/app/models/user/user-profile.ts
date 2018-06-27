@@ -21,5 +21,6 @@ export class UserProfile {
     public approved = false;
     public registered: boolean;
     public preferences?: UserPreferences;
+    public avatar_url?: string;
     organizations: OrganizationIdentity[] = [];
 }

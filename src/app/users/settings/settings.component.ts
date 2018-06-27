@@ -13,6 +13,7 @@ import { AppState } from '../../root-store/app.reducers';
 import { FetchConfig } from '../../root-store/config/config.actions';
 import { Constance } from '../../utils/constance';
 import { KillchainConfigEntry } from './killchain-config-entry';
+import { UserHelpers } from '../../global/static/user-helpers';
 
 @Component({
     selector: 'settings',
@@ -49,6 +50,7 @@ export class SettingsComponent implements OnInit {
         ).subscribe(
             (results: any) => {
                 this.user = results[0].attributes;
+                this.user.avatar_url = UserHelpers.getAvatarUrl(this.user);
                 const allOrgs = results[1].map((org) => org.attributes);
                 this.approvedOrganizations = this.user.organizations
                     .filter((org) => org.approved)
