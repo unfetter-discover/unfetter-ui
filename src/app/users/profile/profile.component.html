@@ -10,8 +10,8 @@
         <div class="col-xs-12 col-lg-6 col-lg-offset-3">
             <mat-card>
                 <mat-card-header>
-                    <div mat-card-avatar *ngIf="user.oauth.avatar_url !== undefined"
-                            class="avatar" [style.background]="'url(' + user.oauth.avatar_url + ')'"></div>
+                    <div mat-card-avatar *ngIf="user.avatar_url !== undefined"
+                            class="avatar" [style.background]="'url(' + user.avatar_url + ')'"></div>
                     <mat-card-title class="mt-5">{{user.userName}}</mat-card-title>
                     <mat-card-subtitle>{{user.firstName}}&nbsp;{{user.lastName}}</mat-card-subtitle>
                 </mat-card-header>
