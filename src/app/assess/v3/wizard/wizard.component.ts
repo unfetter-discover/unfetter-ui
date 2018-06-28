@@ -1304,6 +1304,75 @@ export class WizardComponent extends Measurements
   }
 
   /**
+   * @description lookup the category associated with the given 
+   *  capability id
+   * @param  {string} id of a capability
+   * @returns string - category of the capability, otherwise the id given
+   */
+  public lookupCategory(id: string): string {
+    if (!id) {
+      return id;
+    }
+
+    const capability = this.lookupCapabilities.find((_) => _.id === id);
+    if (!capability || !capability.category) {
+      return id;
+    }
+
+    const category = this.lookupCategories.find((_) => _.id === capability.category);
+    return (category && category.name) ? category.name : id;
+  }
+
+  /**
+   * @description save an assessment object to the database
+   * @param {void}
+   * @return {void}
+   */
+  private saveAssessments(): void {
+    if (this.model) {
+      const assessments = Object.values(this.model.relationships);
+      assessments.forEach((assessment) => {
+        assessment.modified = this.publishDate.toISOString();
+        assessment.description = this.meta.description;
+        if (this.meta.created_by_ref) {
+          assessment.created_by_ref = this.meta.created_by_ref;
+        }
+      });
+      this.wizardStore.dispatch(new SaveAssessment(assessments));
+    } else {
+      const assessments = ['indicators', 'mitigations', 'capabilities']
+        .filter(name => this[name] && this[name].length)
+        .map(name => this.assessmentTypeGroups[name] || {
+          assessmentsGroups: this.createAssessmentGroups(this[name]),
+          tempModel: {},
+        })
+        .map(group => this.collectAll(group))
+        .map(tempModel => this.generateXUnfetterAssessment(tempModel, this.meta))
+        .filter(assessment => assessment.assessment_objects && assessment.assessment_objects.length);
+      this.wizardStore.dispatch(new SaveAssessment(assessments));
+    }
+  }
+
+  // for all unassessed questions, add an assessment object for each one
+  private collectAll(group): TempModel {
+    const assessedIds = Object.keys(group.tempModel);
+    group.assessmentsGroups
+      .reduce((questions, grp) => [...questions, ...grp.assessments], [])
+      .filter(question => !assessedIds.includes(question.id))
+      .forEach(question => {
+        group.tempModel[question.id] = {
+          assessment: question,
+          measurements: question.measurements.map(m => ({
+            ...m,
+            risk: 1,
+            selected_value: {name: 'no coverage', risk: 1}
+          }))
+        };
+      })
+      return group.tempModel;
+  }
+
+  /**
    * @description
    * @param {any}
    * @return {Assessment}
@@ -1346,87 +1415,4 @@ export class WizardComponent extends Measurements
     return assessment;
   }
 
-  /**
-   * @description lookup the category associated with the given 
-   *  capability id
-   * @param  {string} id of a capability
-   * @returns string - category of the capability, otherwise the id given
-   */
-  public lookupCategory(id: string): string {
-    if (!id) {
-      return id;
-    }
-
-    const capability = this.lookupCapabilities.find((_) => _.id === id);
-    if (!capability || !capability.category) {
-      return id;
-    }
-
-    const category = this.lookupCategories.find((_) => _.id === capability.category);
-    return (category && category.name) ? category.name : id;
-  }
-
-  /**
-   * @description save an assessment object to the database
-   * @param {void}
-   * @return {void}
-   */
-  private saveAssessments(): void {
-    if (this.model) {
-      const assessments = Object.values(this.model.relationships);
-      assessments.forEach((assessment) => {
-        assessment.modified = this.publishDate.toISOString();
-        assessment.description = this.meta.description;
-        if (this.meta.created_by_ref) {
-          assessment.created_by_ref = this.meta.created_by_ref;
-        }
-      });
-      this.wizardStore.dispatch(new SaveAssessment(assessments));
-    } else {
-      const assessments = this.sidePanelOrder
-        .map((name) => this.assessmentTypeGroups[name])
-        .filter((el) => el !== undefined)
-        .map((el) => el.tempModel)
-        .filter((el) => el !== undefined)
-        .map((el) => this.generateXUnfetterAssessment(el, this.meta))
-        .filter((el) => el.assessment_objects && el.assessment_objects.length);
-
-      // if the user declared intent to assess some categories, but didn't, create an empty assessment for each one
-      if (this.meta.includesIndicators && this.indicators && this.indicators.length
-          && !assessments.some(a => a.assessment_objects.some(o => o.stix && o.stix.type === 'indicator'))) {
-        this.addAssessment(assessments, this.indicators[0]);
-      }
-      if (this.meta.includesMitigations && this.mitigations && this.mitigations.length
-          && !assessments.some(a => a.assessment_objects.some(o => o.stix && o.stix.type === 'course-of-action'))) {
-        this.addAssessment(assessments, this.mitigations[0]);
-      }
-      if (this.capabilities && this.capabilities.length
-          && !assessments.some(a => a.assessment_objects
-              .some(o => o.stix && o.stix.type === 'x-unfetter-object-assessment'))) {
-        this.addAssessment(assessments, this.capabilities[0]);
-      }
-
-      this.wizardStore.dispatch(new SaveAssessment(assessments));
-    }
-  }
-
-  private addAssessment(assessments: Assessment[], info: any) {
-    const stix = new Stix({
-      id: info.id,
-      type: info.type,
-      name: info.name,
-      description: info.description || '',
-      created_by_ref: info.created_by_ref,
-    });
-    const temp = new AssessmentObject(1, [], stix);
-    const assessment = new Assessment({
-      assessmentMeta: this.meta,
-      name: this.meta.title,
-      description: this.meta.description,
-      created: this.publishDate.toISOString(),
-      created_by_ref: this.meta.created_by_ref,
-      assessment_objects: [temp],
-    });
-    assessments.push(assessment);
-  }
 }
