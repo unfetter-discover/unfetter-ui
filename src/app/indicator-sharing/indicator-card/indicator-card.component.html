@@ -46,7 +46,7 @@
     <div *ngIf="!collapseContents">
 
       <label>Pseudocode</label>
-        <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.pattern" (cbOnSuccess)="handleCopy($event, patternTooltip)">
+        <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.pattern" (cbOnError)="handleCopy($event, patternTooltip)" (cbOnSuccess)="handleCopy($event, patternTooltip)">
           <mat-icon>content_copy</mat-icon>
           <div #patternTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
         </button>
@@ -166,7 +166,7 @@
             <h4 class="fw400">Generated Pattern Translations</h4>
             <div *ngIf="indicator.metaProperties.queries.carElastic && indicator.metaProperties.queries.carElastic.include && indicator.metaProperties.queries.carElastic.query">
               <label>Elastic Search</label>
-              <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.metaProperties.queries.carElastic.query" (cbOnSuccess)="flashTooltip(elasticTooltip)">
+              <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.metaProperties.queries.carElastic.query"  (cbOnError)="handleCopy($event, elasticTooltip)" (cbOnSuccess)="handleCopy($event, elasticTooltip)">
                 <mat-icon>content_copy</mat-icon>
                 <div #elasticTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
               </button>
@@ -176,7 +176,7 @@
             </div>
             <div *ngIf="indicator.metaProperties.queries.carSplunk && indicator.metaProperties.queries.carSplunk.include && indicator.metaProperties.queries.carSplunk.query">
               <label>Splunk (Cyber Analytic Repository)</label>
-              <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.metaProperties.queries.carSplunk.query" (cbOnSuccess)="flashTooltip(cimTooltip)">
+              <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.metaProperties.queries.carSplunk.query" (cbOnError)="handleCopy($event, cimTooltip)" (cbOnSuccess)="handleCopy($event, cimTooltip)">
                 <mat-icon>content_copy</mat-icon>
                 <div #cimTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
               </button>
@@ -186,7 +186,7 @@
             </div>
             <div *ngIf="indicator.metaProperties.queries.cimSplunk && indicator.metaProperties.queries.cimSplunk.include && indicator.metaProperties.queries.cimSplunk.query">
               <label>Splunk (Common Information Model)</label>
-              <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.metaProperties.queries.cimSplunk.query" (cbOnSuccess)="flashTooltip(carsplunkTooltip)">
+              <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.metaProperties.queries.cimSplunk.query" (cbOnError)="handleCopy($event, carsplunkTooltip)" (cbOnSuccess)="handleCopy($event, carsplunkTooltip)">
                 <mat-icon>content_copy</mat-icon>
                 <div #carsplunkTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
               </button>
@@ -199,7 +199,7 @@
             <h4 class="fw400">User Created Queries</h4>
             <div *ngFor="let query of indicator.metaProperties.additional_queries; let i = index">
               <label>{{ query.name }}</label>
-              <button mat-icon-button color="primary" ngxClipboard [cbContent]="query.query" (cbOnSuccess)="handleCopy($event, copyTooltip)">
+              <button mat-icon-button color="primary" ngxClipboard [cbContent]="query.query" (cbOnError)="handleCopy($event, copyTooltip)" (cbOnSuccess)="handleCopy($event, copyTooltip)">
                 <mat-icon>content_copy</mat-icon>
                 <div #copyTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
               </button>

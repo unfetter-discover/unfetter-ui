@@ -52,8 +52,8 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
     public showAttackPatternDetails: boolean = false;
     public canCrud: boolean = false;
     public collapseContents: boolean = false;
+    public copyText: string = 'Copied';
 
-    public readonly copyText: string = 'Copied';
     public readonly runMode = environment.runMode;
 
     private collapseCard$: Subscription;
@@ -328,7 +328,11 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     public handleCopy(event: { isSuccess: true }, toolTip: MatTooltip) {
-        console.log(event.isSuccess);
+        if (!event.isSuccess) {
+            this.copyText = 'Copy Failed';
+        } else {
+            this.copyText = 'Copied';
+        }
         this.flashTooltip(toolTip);
     }
 
