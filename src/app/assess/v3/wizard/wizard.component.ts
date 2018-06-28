@@ -1346,7 +1346,7 @@ export class WizardComponent extends Measurements
           assessmentsGroups: this.createAssessmentGroups(this[name]),
           tempModel: {},
         })
-        .map(group => this.collectAll(group))
+        .map(group => this.answerAll(group))
         .map(tempModel => this.generateXUnfetterAssessment(tempModel, this.meta))
         .filter(assessment => assessment.assessment_objects && assessment.assessment_objects.length);
       this.wizardStore.dispatch(new SaveAssessment(assessments));
@@ -1354,7 +1354,7 @@ export class WizardComponent extends Measurements
   }
 
   // for all unassessed questions, add an assessment object for each one
-  private collectAll(group): TempModel {
+  private answerAll(group): TempModel {
     const assessedIds = Object.keys(group.tempModel);
     group.assessmentsGroups
       .reduce((questions, grp) => [...questions, ...grp.assessments], [])
