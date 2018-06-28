@@ -145,17 +145,6 @@ export class BaselineService {
      *  fetch all assessment sets (aka baselines) from the server that this user can see
      *      given the rules of the security filter
      * @param {boolean} includeMeta - true to include metaProperties metadata
-     * @returns {Observable<AssessmentSet[]>}
-     */
-    public fetchAssessmentSets(includeMeta = true): Observable<AssessmentSet[]> {
-        return this.fetchBaselines(includeMeta);
-    }
-
-    /**
-     * @description
-     *  fetch all assessment sets (aka baselines) from the server that this user can see
-     *      given the rules of the security filter
-     * @param {boolean} includeMeta - true to include metaProperties metadata
      * @return {Observable<AssessmentSet[]>}
      */
     public fetchBaselines(includeMeta = true): Observable<AssessmentSet[]> {

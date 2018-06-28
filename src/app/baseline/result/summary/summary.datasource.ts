@@ -17,7 +17,7 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedBaseline>>
     protected dataChange = new BehaviorSubject(undefined);
 
     constructor(
-        protected assessService: BaselineService,
+        protected baselineService: BaselineService,
         protected creatorId?: string,
     ) {
         super();
@@ -33,7 +33,7 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedBaseline>>
             switchMap(() => {
                 const val = this.filterChange.getValue();
                 const filterVal = val.trim().toLowerCase() || '';
-                const baselines$ = this.assessService.getLatestAssessments();
+                const baselines$ = this.baselineService.getLatestAssessments();
                 if (!filterVal || filterVal.length === 0) {
                     return baselines$;
                 }

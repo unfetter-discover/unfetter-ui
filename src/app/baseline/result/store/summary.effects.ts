@@ -8,7 +8,7 @@ import { catchError, map, mergeMap, pluck, switchMap } from 'rxjs/operators';
 import { Capability, ObjectAssessment } from 'stix/assess/v3/baseline';
 import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
 import { BaselineService } from '../../services/baseline.service';
-import { FinishedLoading, LOAD_BASELINE_DATA, SetAndReadCapabilities, SetAttackPatterns, SetBaseline, SetBaselineGroups, SET_AND_READ_CAPABILITIES, SET_BASELINE, SetBaselineWeightings } from './summary.actions';
+import { FinishedLoading, LOAD_BASELINE_DATA, SetAndReadCapabilities, SetAttackPatterns, SetBaselines, SetBaseline, SetBaselineGroups, SET_AND_READ_CAPABILITIES, SET_BASELINE, SetBaselineWeightings } from './summary.actions';
 
 @Injectable()
 export class SummaryEffects {
@@ -26,11 +26,13 @@ export class SummaryEffects {
         .pipe(
           pluck('payload'),
           switchMap((baselineId: string) => {
+            // Get all baselines and save them as well as the one which is current
             return this.baselineService
-              .getById(baselineId)
+              .fetchBaselines(true)
               .pipe(
-                map((data: AssessmentSet) => {
-                  return new SetBaseline([data]);
+                mergeMap((data: AssessmentSet[]) => {
+                  const baseline = data.find((bl) => bl.id === baselineId);
+                  return [ new SetBaselines(data), new SetBaseline(baseline) ];
                 }),
                 catchError((err) => {
                   return observableEmpty();
