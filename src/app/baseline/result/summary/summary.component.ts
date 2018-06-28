@@ -58,9 +58,16 @@ export class SummaryComponent implements OnInit, OnDestroy {
         }
         return author ? author.name : 'Unknown';
       })
-      .addColumn('framework', 'Type', 'master-list-extra', false, (value) => value || 'ATT&CK')
-      .addColumn('industry', 'Industry', 'master-list-extra', false, (value) => value || 'Local')
-      .addColumn('created', 'Status', 'master-list-extra', false, (created) => created || 'not published')
+      // TODO: must change baselines in some way to save framework in place when it was created
+      //       once that is done, add this back in and update
+      // .addColumn('framework', 'Type', 'master-list-extra', false, (value) => value || 'ATT&CK')
+      // TODO: until there is an industry specification for a baseline, don't show this column
+      //       could borrow from specific user who created the baseline, but the user could
+      //       have more than one industry in its identity
+      // .addColumn('industry', 'Industry', 'master-list-extra', false, (value) => value || 'Local')
+      .addColumn('published', 'Status', 'master-list-extra', false, (published) => {
+        return published ? 'Published' : 'Not Published'
+      })
     ,
     displayRoute: this.baseAssessUrl + '/result/summary',
     modifyRoute: this.baseAssessUrl + '/wizard/edit',
@@ -223,7 +230,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
         // this.transformSummary()
       }, (err) => console.log(err));
 
-    const sub8$ = this.store
+    const sub3$ = this.store
       .select('summary').pipe(
       pluck('finishedLoadingSummaryAggregationData'),
       distinctUntilChanged())
@@ -234,16 +241,18 @@ export class SummaryComponent implements OnInit, OnDestroy {
         // }
       }, (err) => console.log(err));
 
-    const sub9$ = this.store
+    const sub4$ = this.store
       .select('summary').pipe(
       pluck('baseline'),
       distinctUntilChanged())
       .subscribe((baseline: AssessmentSet) => {
-        this.blName = baseline.name;
-        this.baselineName = observableOf(this.blName);
+        if (baseline) {
+          this.blName = baseline.name;
+          this.baselineName = observableOf(this.blName);
+        }
       }, (err) => console.log(err));
 
-    this.subscriptions.push(sub1$, sub2$, sub8$, sub9$);
+    this.subscriptions.push(sub1$, sub2$, sub3$, sub4$);
   }
 
 
