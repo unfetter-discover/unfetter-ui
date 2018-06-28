@@ -10,11 +10,15 @@ describe('LinkNodeGraphComponent', () => {
 
     const mockModel = {
         nodes: [
-            { id: 'A', classNames: 'tool', radius: 30, collideRadius: '100' },
-            { id: 'B', classNames: 'tool', radius: 40, collideRadius: '100' },
-            { id: 'C', classNames: 'tool', radius: 30, collideRadius: '100' },
-            { id: 'D', classNames: 'tool', radius: 60, collideRadius: '100' },
+            { id: 'A', classNames: 'indicator', radius: 30, collideRadius: '100' },
+            { id: 'B', classNames: 'threat-actor', radius: 40, collideRadius: '100' },
+            { id: 'C', classNames: 'malware', radius: 30, collideRadius: '100' },
+            { id: 'D', classNames: 'course-of-action', radius: 60, collideRadius: '100' },
             { id: 'E', classNames: 'tool', radius: 20, collideRadius: '100' },
+            { id: 'F', classNames: 'attack-pattern', radius: 10, collideRadius: '50' },
+            { id: 'G', classNames: 'observable-path', radius: 10, collideRadius: '50' },
+            { id: 'H', classNames: 'campaign', radius: 10, collideRadius: '50' },
+            { id: 'I', classNames: 'unselected', radius: 5, collideRadius: '50' },
         ],
         links: [
             { id: 'ab', source: 'A', target: 'B' },
@@ -44,12 +48,22 @@ describe('LinkNodeGraphComponent', () => {
         fixture = TestBed.createComponent(LinkNodeGraphComponent);
         component = fixture.componentInstance;
         component.config = mockModel;
-        component.forcesEnabled = {};
+        component.forcesEnabled = {
+            collide: true,
+            charge: true,
+            center: true,
+            link: true,
+            column: true,
+        };
         fixture.detectChanges();
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    /**
+     * @todo needs to test hover, drag and zoom
+     */
 
 });

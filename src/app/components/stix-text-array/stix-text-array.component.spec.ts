@@ -73,6 +73,11 @@ describe('StixTextArrayComponent', () => {
         expect(component.model.attributes.source.includes('')).toBeTruthy();
         let cards = fixture.debugElement.queryAll(By.css('mat-card'));
         expect(cards.length).toEqual(count + 1);
+
+        // coverage
+        component.propertyName = 'give and take';
+        add.nativeElement.click();
+        fixture.detectChanges();
     }));
 
     it('should handle removing model data', async(() => {
