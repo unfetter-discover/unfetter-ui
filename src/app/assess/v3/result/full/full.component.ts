@@ -7,6 +7,7 @@ import { Observable, Subscription } from 'rxjs';
 import { catchError, distinctUntilChanged, filter, map, pluck, take } from 'rxjs/operators';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { Assessment } from 'stix/assess/v3/assessment';
+import { Category } from 'stix/assess/v3/baseline/category';
 import { ConfirmationDialogComponent } from '../../../../components/dialogs/confirmation/confirmation-dialog.component';
 import { MasterListDialogTableHeaders } from '../../../../global/components/master-list-dialog/master-list-dialog.component';
 import { AngularHelper } from '../../../../global/static/angular-helper';
@@ -15,9 +16,12 @@ import { AppState } from '../../../../root-store/app.reducers';
 import { Constance } from '../../../../utils/constance';
 import { LastModifiedAssessment } from '../../models/last-modified-assessment';
 import { AssessService } from '../../services/assess.service';
+import { FetchCategories } from '../../store/assess.actions';
+import { AssessState } from '../../store/assess.reducers';
+import { getSortedCategories } from '../../store/assess.selectors';
 import { CleanAssessmentResultData, LoadAssessmentById } from '../store/full-result.actions';
 import { FullAssessmentResultState } from '../store/full-result.reducers';
-import { getFinishedLoadingAssessment, getFullAssessment, getGroupState, getUnassessedPhasesForCurrentFramework } from '../store/full-result.selectors';
+import { getFailedToLoadAssessment, getFinishedLoadingAssessment, getFullAssessment, getGroupState, getUnassessedPhasesForCurrentFramework } from '../store/full-result.selectors';
 import { SummaryDataSource } from '../summary/summary.datasource';
 import { FullAssessmentGroup } from './group/models/full-assessment-group';
 
@@ -32,16 +36,18 @@ export class FullComponent implements OnInit, OnDestroy {
   public readonly baseAssessUrl = '/assess-beta';
 
   public activePhase: string;
-  public assessment: Observable<Assessment>;
+  public assessment$: Observable<Assessment>;
   public assessmentGroup$: Observable<FullAssessmentGroup>;
-  public unassessedPhases$: Observable<string[]>;
   public assessmentId: string;
   public assessmentName: Observable<string>;
   public attackPatternId: string;
-  public finishedLoading: Observable<boolean>;
+  public categoryLookup$: Observable<Category[]>;
+  public failedToLoad$: Observable<boolean>;
+  public finishedLoading$: Observable<boolean>;
   public phase: string;
   public riskBreakdown: any;
   public rollupId: string;
+  public unassessedPhases$: Observable<string[]>;
   public masterListOptions = {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Modified'),
@@ -53,13 +59,14 @@ export class FullComponent implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription[] = [];
 
   constructor(
+    private appStore: Store<AppState>,
+    private assessService: AssessService,
+    private assessStore: Store<AssessState>,
+    private changeDetectorRef: ChangeDetectorRef,
+    private dialog: MatDialog,
     private route: ActivatedRoute,
     private router: Router,
-    private dialog: MatDialog,
     private store: Store<FullAssessmentResultState>,
-    private userStore: Store<AppState>,
-    private assessService: AssessService,
-    private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
   /**
@@ -74,7 +81,7 @@ export class FullComponent implements OnInit, OnDestroy {
         this.assessmentId = params.assessmentId || '';
         this.phase = params.phase || '';
         this.attackPatternId = params.attackPatternId || '';
-        const sub$ = this.userStore
+        const sub$ = this.appStore
           .select('users')
           .pipe(
             pluck('userProfile'),
@@ -98,12 +105,16 @@ export class FullComponent implements OnInit, OnDestroy {
    */
   public listenForDataChanges(): void {
 
-    this.assessment = this.store
+    this.assessment$ = this.store
       .select(getFullAssessment)
       .pipe(distinctUntilChanged());
 
-    this.finishedLoading = this.store
+    this.finishedLoading$ = this.store
       .select(getFinishedLoadingAssessment)
+      .pipe(distinctUntilChanged());
+
+    this.failedToLoad$ = this.store
+      .select(getFailedToLoadAssessment)
       .pipe(distinctUntilChanged());
 
     this.assessmentGroup$ = this.store
@@ -134,7 +145,7 @@ export class FullComponent implements OnInit, OnDestroy {
       .select(getFullAssessment)
       .pipe(
         distinctUntilChanged(),
-        // filter((assessment: Assessment) => assessment !== undefined),
+        filter((assessment: Assessment) => assessment !== undefined),
         map((assessment: Assessment) => {
           const assessmentType = assessment.determineAssessmentType() || 'Unknown';
           return `${assessment.name} - ${assessmentType}`;
@@ -148,6 +159,8 @@ export class FullComponent implements OnInit, OnDestroy {
     this.unassessedPhases$ = this.store
       .select(getUnassessedPhasesForCurrentFramework)
       .pipe(distinctUntilChanged());
+
+    this.categoryLookup$ = this.assessStore.select(getSortedCategories);
 
     this.subscriptions.push(sub$);
   }
@@ -163,6 +176,7 @@ export class FullComponent implements OnInit, OnDestroy {
       (row: any) => isSameAssessment(row) ? 'current-item' : 'cursor-pointer';
     this.masterListOptions.columns.id.selectable = (row: any) => !isSameAssessment(row);
     this.store.dispatch(new LoadAssessmentById(this.assessmentId));
+    this.assessStore.dispatch(new FetchCategories());
   }
 
   /**

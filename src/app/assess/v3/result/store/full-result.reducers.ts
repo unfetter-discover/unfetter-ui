@@ -84,7 +84,7 @@ export function fullAssessmentResultReducer(state = initialState, action: FullAs
         case fullAssessmentResultActions.FAILED_TO_LOAD:
             return {
                 ...state,
-                finishedLoading: !action.payload,
+                finishedLoading: true,
                 failedToLoad: action.payload,
             };
         case fullAssessmentResultActions.SET_GROUP_DATA:

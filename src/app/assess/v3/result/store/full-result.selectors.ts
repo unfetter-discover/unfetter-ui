@@ -1,11 +1,10 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { FullAssessmentGroup } from '../full/group/models/full-assessment-group';
-import { FullAssessmentResultState } from './full-result.reducers';
-import { ConfigState } from '../../../../root-store/config/config.reducers';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { Dictionary } from 'stix/common/dictionary';
 import { TacticChain } from '../../../../global/components/tactics-pane/tactics.model';
-import { AssessmentEvalTypeEnum } from 'stix';
+import { ConfigState } from '../../../../root-store/config/config.reducers';
+import { FullAssessmentGroup } from '../full/group/models/full-assessment-group';
+import { FullAssessmentResultState } from './full-result.reducers';
 
 const getConfigState = createFeatureSelector<ConfigState>('config');
 
@@ -18,6 +17,10 @@ export const getFullAssessmentState = createFeatureSelector<FullAssessmentResult
 export const getFinishedLoadingAssessment = createSelector(
     getFullAssessmentState,
     (state) => state.finishedLoading);
+
+export const getFailedToLoadAssessment = createSelector(
+    getFullAssessmentState,
+    (state) => state.failedToLoad);
 
 export const getGroupState = createSelector(
     getFullAssessmentState,

@@ -1,4 +1,3 @@
-
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
@@ -11,6 +10,7 @@ import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { AssessmentEvalTypeEnum } from 'stix/assess/v3/assessment-eval-type.enum';
+import { Category } from 'stix/assess/v3/baseline/category';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { Stix } from 'stix/unfetter/stix';
 import { AuthService } from '../../../../../core/services/auth.service';
@@ -35,34 +35,18 @@ import { FullAssessmentGroup } from './models/full-assessment-group';
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
+  @Input() public activePhase: string;
+  @Input() public assessment: Assessment;
+  @Input() public assessmentGroup: Observable<FullAssessmentGroup>;
+  @Input() public assessmentId: string;
+  @Input() public categoryLookup: Observable<Category[]>;
+  @Input() public initialAttackPatternId: string;
+  @Input() public rollupId: string;
+  @Input() public unassessedPhases: string[];
+  @Output() public riskByAttackPatternChanged = new EventEmitter<RiskByAttack>();
+  @ViewChildren('addAssessedObjectComponent') public addAssessedObjectComponents: QueryList<AddAssessedObjectComponent>;
 
-  @Input()
-  public assessment: Assessment;
-
-  @Input()
-  public assessmentId: string;
-
-  @Input()
-  public rollupId: string;
-
-  @Input()
-  public activePhase: string;
-
-  @Input()
-  public initialAttackPatternId: string;
-
-  @Input()
-  public assessmentGroup: Observable<FullAssessmentGroup>;
-  @Input()
-  public unassessedPhases: string[];
-
-  @Output()
-  public riskByAttackPatternChanged = new EventEmitter<RiskByAttack>();
-
-  @ViewChildren('addAssessedObjectComponent')
-  public addAssessedObjectComponents: QueryList<AddAssessedObjectComponent>;
   public addAssessedObjectComponent: AddAssessedObjectComponent;
-
   public addAssessedObject: boolean;
   public addAssessedType: string;
   public assessedObjects: AssessmentObject[];
@@ -72,6 +56,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   public displayedAssessedObjects: DisplayedAssessmentObject[];
   public riskByAttackPattern: RiskByAttack;
   public unassessedAttackPatterns: AttackPattern[];
+
 
   private readonly subscriptions: Subscription[] = [];
 

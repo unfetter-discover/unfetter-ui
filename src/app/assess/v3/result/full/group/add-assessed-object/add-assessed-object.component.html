@@ -51,7 +51,7 @@
               <p class="text-right">
                 <button mat-button (click)="addAssessedObject = !addAssessedObject">CANCEL
                 </button>
-                <button mat-raised-button color="accent" [disabled]="!indicator.name || !indicator.pattern" (click)="createAssessedObject(indicator, currentAttackPattern)">SAVE</button>
+                <button mat-raised-button color="accent" [disabled]="!indicator.name || !indicator.pattern" (click)="onCreateAssessedObject(indicator, currentAttackPattern, $event)">SAVE</button>
               </p>
             </div>
           </div>
@@ -87,44 +87,51 @@
             <div class="row">
               <p class="text-right">
                 <button mat-button (click)="addAssessedObject = !addAssessedObject">CANCEL</button>
-                <button color="accent" mat-raised-button [disabled]="!courseOfAction.name" (click)="createAssessedObject(courseOfAction, currentAttackPattern)">SAVE</button>
+                <button color="accent" mat-raised-button [disabled]="!courseOfAction.name" (click)="onCreateAssessedObject(courseOfAction, currentAttackPattern, $event)">SAVE</button>
               </p>
             </div>
           </div>
 
           <div *ngSwitchCase="'x-unfetter-capability'">
             <form [formGroup]="capabilityFormGroup" autocomplete="off">
-              <!-- <div class="row">
-                <div *ngFor="let measurement of xUnfetterCapability.questions" class="col-xs-12">
-                  <mat-form-field class="full-width">
-                    <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin" placeholder="{{ measurement.name }}">
-                      <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
-                        {{ option.name }}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
+              <div class="row errMsg" *ngIf="capabilityFormGroup.get('assessmentRisk').touched && capabilityFormGroup.get('assessmentRisk').errors as riskErrs">
+                {{ riskErrs | json }}
+              </div>
+              <div class="row">
+                <div class="col-md-12 mat-subheading-1">
+                  Capability
                 </div>
               </div>
               <div class="row">
                 <div class="col-md-12">
                   <mat-form-field class="full-width">
-                    <input matInput placeholder="Name" required [(ngModel)]="xUnfetterCapability.name" value="{{xUnfetterCapability.name}}" autocomplete="off">
+                    <input matInput placeholder="Name" formControlName="name" required>
                   </mat-form-field>
                 </div>
               </div>
-            -->
               <div class="row">
                 <div class="col-md-12">
                   <mat-form-field class="full-width">
                     <textarea matInput placeholder="Description" formControlName="description"></textarea>
                   </mat-form-field>
                 </div>
-              </div> 
+              </div>
               <div class="row">
                 <div class="col-md-12">
                   <mat-form-field class="full-width">
-                    <mat-select formControlName="protectWeight" placeholder="protect">
-                      <mat-option *ngFor="let weight of selectWeightings" [value]="weight">
+                    <mat-select formControlName="category" placeholder="Category">
+                      <mat-option *ngFor="let category of categoryLookup; trackBy: trackByFn" [value]="category">
+                        {{ category.name }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="protectWeight" placeholder="Protect">
+                      <mat-option *ngFor="let weight of capabilitySelectWeightings; trackBy: trackByFn" [value]="weight.shortForm">
                         {{ weight.longForm }}
                       </mat-option>
                     </mat-select>
@@ -134,8 +141,8 @@
               <div class="row">
                 <div class="col-md-12">
                   <mat-form-field class="full-width">
-                    <mat-select formControlName="detectWeight" placeholder="detect">
-                      <mat-option *ngFor="let weight of selectWeightings" [value]="weight">
+                    <mat-select formControlName="detectWeight" placeholder="Detect">
+                      <mat-option *ngFor="let weight of capabilitySelectWeightings; trackBy: trackByFn" [value]="weight.shortForm">
                         {{ weight.longForm }}
                       </mat-option>
                     </mat-select>
@@ -145,9 +152,25 @@
               <div class="row">
                 <div class="col-md-12">
                   <mat-form-field class="full-width">
-                    <mat-select formControlName="respondWeight" placeholder="respond">
-                      <mat-option *ngFor="let weight of selectWeightings" [value]="weight">
+                    <mat-select formControlName="respondWeight" placeholder="Respond">
+                      <mat-option *ngFor="let weight of capabilitySelectWeightings; trackBy: trackByFn" [value]="weight.shortForm">
                         {{ weight.longForm }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12 mat-subheading-1">
+                  Score Assessment
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="assessmentRisk" class="full-width matSelectBotMargin" placeholder="Coverage">
+                      <mat-option *ngFor="let option of capabiltyAssessmentSelectOptions" [value]="option.risk">
+                        {{ option.name }}
                       </mat-option>
                     </mat-select>
                   </mat-form-field>
@@ -156,8 +179,7 @@
               <div class="row">
                 <p class="text-right">
                   <button mat-button (click)="addAssessedObject = !addAssessedObject">CANCEL</button>
-                  <!-- <button color="accent" mat-raised-button [disabled]="!xUnfetterCapability.name" (click)="createAssessedObject(xUnfetterCapability, currentAttackPattern)">SAVE</button> -->
-                  <button color="accent" mat-raised-button [disabled]="!capabilityFormGroup" (click)="applyNewCapability(capabilityFormGroup?.value, $event)">SAVE</button>
+                  <button color="accent" mat-raised-button [disabled]="capabilityFormGroup.invalid" (click)="onCapabilitySave(capabilityFormGroup?.value, $event)">SAVE</button>
                 </p>
               </div>
             </form>
@@ -166,5 +188,5 @@
       </mat-card-content>
     </mat-card>
   </div>
-  <unf-speed-dial [items]="speedDialItems" (itemClickedEmitter)="speedDialClicked($event)" [(open)]="addAssessedObject"></unf-speed-dial>
+  <unf-speed-dial [items]="speedDialItems" (itemClickedEmitter)="onSpeedDialClicked($event)" [(open)]="addAssessedObject"></unf-speed-dial>
 </div>

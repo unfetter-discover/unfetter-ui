@@ -82,7 +82,17 @@ export const getCapabilities = createSelector(
     (state) => state.capabilities,
 );
 
+export const getSortedCapabilities = createSelector(
+    getCapabilities,
+    (capabilities) => capabilities.sort(SortHelper.sortDescByField('name'))
+);
+
 export const getCategories = createSelector(
     getAssessState,
     (state) => state.categories,
+);
+
+export const getSortedCategories = createSelector(
+    getCategories,
+    (categories) => categories.sort(SortHelper.sortDescByField('name')),
 );

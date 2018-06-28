@@ -1,59 +1,47 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
+import { EMPTY, Observable, of, Subscription } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { AssessedObject, ObjectAssessment } from 'stix';
+import { Capability } from 'stix/assess/v3/baseline/capability';
+import { Category } from 'stix/assess/v3/baseline/category';
 import { Question } from 'stix/assess/v3/baseline/question';
 import { QuestionAnswerEnum } from 'stix/assess/v3/baseline/question-answer.enum';
 import { StixCoreEnum } from 'stix/stix/stix-core.enum';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { StixEnum } from 'stix/unfetter/stix.enum';
 import { SpeedDialItem } from '../../../../../../global/components/speed-dial/speed-dial-item';
+import { AngularHelper } from '../../../../../../global/static/angular-helper';
 import { RxjsHelpers } from '../../../../../../global/static/rxjs-helpers';
 import { Constance } from '../../../../../../utils/constance';
 import { AssessService } from '../../../../services/assess.service';
+import { SelectOption } from './select-option';
 import { Weighting } from './weighting';
 
 @Component({
     selector: 'unf-add-assessed-object',
     templateUrl: './add-assessed-object.component.html',
-    styleUrls: ['./add-assessed-object.component.scss']
+    styleUrls: ['./add-assessed-object.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddAssessedObjectComponent implements OnInit, OnDestroy {
-
-    @Input()
-    public addAssessedObject = false;
-
-    @Input()
-    public addAssessedType: string;
-
-    @Input()
-    public currentAttackPattern: string;
-
-    @Input()
-    public assessment: any;
-
-    @Input()
-    public xUnfetterCapability: any;
-
-    @Input()
-    public courseOfAction: any;
-
-    @Input()
-    public indicator: any;
-
-    @Input()
-    public displayedAssessedObjects: any[];
-
-    @Input()
-    public assessedObjects: any[];
-
-    @Output()
-    public addAssessmentEvent = new EventEmitter<boolean>();
+    @Input() public addAssessedObject = false;
+    @Input() public addAssessedType: string;
+    @Input() public assessedObjects: any[];
+    @Input() public assessment: any;
+    @Input() public categoryLookup: Category[];
+    @Input() public courseOfAction: any;
+    @Input() public currentAttackPattern: AttackPattern;
+    @Input() public displayedAssessedObjects: any[];
+    @Input() public indicator: any;
+    @Input() public xUnfetterCapability: any;
+    @Output() public addAssessmentEvent = new EventEmitter<boolean>();
 
     public addAssessedObjectName: string = '';
-    public errMsg: string;
     public capabilityFormGroup: FormGroup;
-    public selectWeightings: Weighting[];
+    public capabilitySelectWeightings: Weighting[];
+    public capabiltyAssessmentSelectOptions: SelectOption[];
+    public errMsg: string;
 
     public readonly speedDialItems = [
         new SpeedDialItem('toggle', 'add', true, null, 'Add Assessed Object'),
@@ -74,24 +62,30 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
      */
     public ngOnInit(): void {
         this.capabilityFormGroup = this.generateCapabilityFormGroup();
-        this.selectWeightings = this.generateCapabilityWeightingValues();
+        this.capabilitySelectWeightings = this.generateCapabilityWeightingValues();
+        this.capabiltyAssessmentSelectOptions = this.generateCapabilityRiskSelectOptions();
     }
 
     /**
      * @description cleans subscriptions, cleans up this component
      */
     public ngOnDestroy(): void {
-        this.subscriptions
-            .forEach((sub) => sub.unsubscribe());
+        this.subscriptions.forEach((sub) => sub.unsubscribe());
     }
 
     /**
-     * @description create an assessment object
+     * @description create an assessment object, update the assessment with its value
+     *  this code path is for relationship derived assessments ie non capability assessments
+     * @see onCapabilitySave for capability saves
      * @param newAssessedObject
      * @param attackPattern
      * @returns void
      */
-    public createAssessedObject(newAssessedObject, attackPattern): void {
+    public onCreateAssessedObject(newAssessedObject, attackPattern, event?: Event): void {
+        if (event) {
+            event.preventDefault();
+        }
+
         const { created_by_ref } = this.assessment;
         newAssessedObject.created_by_ref = created_by_ref;
         // tslint:disable-next-line:prefer-for-of
@@ -112,11 +106,7 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
         const convertedObj = Object.assign({}, newAssessedObject);
         delete convertedObj.questions;
 
-        if (convertedObj.type === StixEnum.CAPABILITY) {
-            return;
-        } else {
-            this.inlineUpdateAssessment(convertedObj, attackPattern, questions);
-        }
+        this.inlineUpdateAssessment(convertedObj, attackPattern, questions);
     }
 
     /**
@@ -177,12 +167,6 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
             description: '',
             questions: []
         };
-        this.xUnfetterCapability = {
-            type: StixEnum.CAPABILITY,
-            name: '',
-            description: '',
-            questions: []
-        };
 
         for (const stixType in Constance.MEASUREMENTS) {
             for (const question in Constance.MEASUREMENTS[stixType]) {
@@ -191,7 +175,7 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
                         this.indicator.questions.push({
                             name: question,
                             risk: 1,
-                            options: this.getOptions(
+                            options: this.generateSelectOptions(
                                 Constance.MEASUREMENTS[stixType][question]
                             ),
                             selected_value: {
@@ -204,20 +188,7 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
                         this.courseOfAction.questions.push({
                             name: question,
                             risk: 1,
-                            options: this.getOptions(
-                                Constance.MEASUREMENTS[stixType][question]
-                            ),
-                            selected_value: {
-                                name: Constance.MEASUREMENTS[stixType][question][0].name,
-                                risk: 1
-                            }
-                        });
-                        break;
-                    case StixEnum.CAPABILITY:
-                        this.xUnfetterCapability.questions.push({
-                            name: question,
-                            risk: 1,
-                            options: this.getOptions(
+                            options: this.generateSelectOptions(
                                 Constance.MEASUREMENTS[stixType][question]
                             ),
                             selected_value: {
@@ -234,26 +205,26 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * @param  {} options
-     * @returns any
+     * @description generate select options, using given labels
+     *  this method assigns risk in descending order to the given labels
+     * @param  {string[]} labels
+     * @returns {SelectOption[]}
      */
-    public getOptions(options): any[] {
-        const retVal = [];
-        options.forEach((label, index) => {
-            const data: any = {};
-            data.name = label;
-            data.risk = 1 - index / (options.length - 1);
-            retVal.push(data);
+    public generateSelectOptions(labels: string[]): SelectOption[] {
+        const selectOptions = labels.map((label, index) => {
+            const risk = (1 - index / (labels.length - 1));
+            const data = new SelectOption(label, risk);
+            return data;
         });
-        return retVal;
+        return selectOptions;
     }
 
     /**
+     * @description Handler for speed dial click events
      * @param  {SpeedDialItem} speedDialItem
      * @returns void
-     * @description Handler for speed dial click events
      */
-    public speedDialClicked(speedDialItem: SpeedDialItem): void {
+    public onSpeedDialClicked(speedDialItem: SpeedDialItem): void {
         this.addAssessedObject = true;
         switch (speedDialItem.name) {
             case 'indicator':
@@ -272,19 +243,86 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * @param  {any} el
+     * @description save a new capabilty and update the assessment with its value
+     * @param  {any} formValues
      * @param  {Event} event?
      * @returns void
      */
-    public applyNewCapability(el: any, event?: Event): void {
+    public onCapabilitySave(formValues: any, event?: Event): void {
         if (event) {
             event.preventDefault();
         }
 
-        console.log(el);
+        const { created_by_ref } = this.assessment;
+        console.log(formValues);
+        const capability = new Capability();
+        capability.name = formValues.name;
+        capability.description = formValues.description;
+        capability.category = formValues.category.id;
+        capability.created_by_ref = created_by_ref;
+        const saveCapability$ = this.generateSaveCapabilityObservable(capability);
+
+
+
+        const sub$ = saveCapability$
+            .pipe(
+                // save the capability to assessment link
+                switchMap((savedCapability) => {
+                    return this.generateSaveObjectAssessmentObservable(formValues, savedCapability);
+                }),
+                // TODO: should we save the new object assessment into the baseline?
+                // TODO: save the object as part of the parent assessment
+                // switchMap((_) => this.generateAssessmentUpdateObservable(createdObjs[0], convertedObj, questions))
+                // TODO: save the object as part of the parent assessment
+                // switchMap((objectAssessment) => {
+                //     const options = this.generateCapabilityRiskSelectOptions();
+                //     const selectedOpt = options.find((opt) => {
+                //         return opt.risk === formValues.assessmentRisk;
+                //     })[0];
+                //     const questions = [
+                //         {
+                //             name: 'coverage',
+                //             risk: formValues.assessedRisk,
+                //             options,
+                //             selected_value: selectedOpt,
+                //         }
+                //     ];
+                //     const risk = this.calcTotalRisk(questions);
+                //     const assessmentObject = {
+                //         risk,
+                //         questions,
+                //     };
+
+                //     return this.assessment
+                // })
+            )
+            .subscribe(
+                () => {
+                    console.log('capability and assessment updates');
+
+                },
+                (err) => {
+                    console.log(err);
+                    this.errMsg = err.statusText || 'Unknown Error';
+                    // change detection was needed to update the form
+                    // even with change detection default for this component
+                    this.changeDetectorRef.detectChanges();
+                }
+            );
+        this.subscriptions.push(sub$);
     }
 
     /**
+     * @param  {number} index
+     * @param  {any} item
+     * @returns number
+     */
+    public trackByFn(index: number, item: any): number {
+        return AngularHelper.genericTrackBy(index, item);
+    }
+
+    /**
+     * @description generate an observable to tell the api to create a new assessed object
      * @param  {any} convertedObj
      * @returns Observable
      */
@@ -297,6 +335,8 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * @description generate an observable to tell the api to create a new relationship object
+     *  note: relationship objects are used for non capability assessments
      * @param  {any} assessedObjects
      * @param  {any} convertedObj
      * @param  {AttackPattern} attackPattern
@@ -326,6 +366,13 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
             .genericPost(Constance.RELATIONSHIPS_URL, relationshipObj);
     }
 
+    /**
+     * @description generate an observable to tell the api to update this components assessment
+     * @param  {any} createdObj
+     * @param  {any} convertedObj
+     * @param  {any[]} questions
+     * @returns Observable
+     */
     private generateAssessmentUpdateObservable(createdObj: any, convertedObj: any, questions: any[]): Observable<any> {
         const newId = createdObj.id;
         // update assessment
@@ -339,14 +386,9 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
         if (convertedObj.description !== undefined) {
             tempAssessmentObject.stix.description = convertedObj.description;
         }
-        tempAssessmentObject.risk =
-            questions
-                .map((question) => question.risk)
-                .reduce((prev, cur) => (prev += cur), 0) / questions.length;
+        tempAssessmentObject.risk = this.calcTotalRisk(questions);
 
-        this.assessment.assessment_objects.push(
-            tempAssessmentObject
-        );
+        this.assessment.assessment_objects.push(tempAssessmentObject);
         const assessmentToUpload: any = this.assessment;
         assessmentToUpload.modified = new Date().toISOString();
         return this.assessService
@@ -363,6 +405,80 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * @description generate an observable to tell the api to create a new capability object
+     * @param  {Capability} capability
+     * @returns Observable
+     */
+    private generateSaveCapabilityObservable(capability: Capability): Observable<Capability> {
+        if (!capability) {
+            return EMPTY;
+        }
+
+        // return this.assessService
+        //     .genericPost(`api/v3/x-unfetter-capabilities`, capability)
+        //     .pipe(
+        //         map((assessments) => assessments.map(RxjsHelpers.mapAttributes))
+        //     );
+        capability.id = '1243';
+        return of(capability);
+    }
+
+    /**
+     * @param  {any} form
+     * @param  {Capability} capability
+     * @returns Observable
+     */
+    private generateSaveObjectAssessmentObservable(form: any, capability: Capability): Observable<ObjectAssessment> {
+        if (!capability && capability.id) {
+            return EMPTY;
+        }
+
+        const { created_by_ref } = this.assessment;
+        const assessedObject = {
+            assessed_object_ref: this.currentAttackPattern.id,
+            questions: [
+                {
+                    name: 'protect',
+                    score: form.protectWeight,
+                } as Question,
+                {
+                    name: 'detect',
+                    score: form.detectWeight,
+                } as Question,
+                {
+                    name: 'respond',
+                    score: form.respondWeight,
+                } as Question,
+            ],
+        } as AssessedObject;
+        const objectAssessment = {
+            created_by_ref,
+            name: `${capability.name} Assessment`,
+            description: `${this.assessment.name} inline capabilty update`,
+            object_ref: capability.id,
+            assessed_objects: [
+                assessedObject,
+            ]
+        } as ObjectAssessment;
+
+        // return this.assessService
+        //     .genericPost(`api/v3/x-unfetter-object-assessments`, objectAssessment)
+        //     .pipe(
+        //         map((assessments) => assessments.map(RxjsHelpers.mapAttributes))
+        //     );
+        return of(objectAssessment);
+    }
+
+    /**
+     * @param  {any[]} questions
+     * @returns number
+     */
+    private calcTotalRisk(questions: any[]): number {
+        return questions
+            .map((question) => question.risk)
+            .reduce((prev, cur) => (prev += cur), 0) / questions.length;
+    }
+    /**
      * @description reactive form for creating and using a new capability
      * @returns FormGroup
      */
@@ -370,9 +486,9 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
         const group = new FormGroup({
             name: new FormControl('', [Validators.required]),
             description: new FormControl('', [Validators.required]),
-            assessmentScore: new FormControl('', [Validators.required]),
+            assessmentRisk: new FormControl('', [Validators.required]),
             category: new FormControl('', [Validators.required]),
-            attackPattern: new FormControl(this.currentAttackPattern, [Validators.required]),
+            // attackPattern: new FormControl(this.currentAttackPattern, [Validators.required]),
             protectWeight: new FormControl('', [Validators.required]),
             detectWeight: new FormControl('', [Validators.required]),
             respondWeight: new FormControl('', [Validators.required])
@@ -386,8 +502,6 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
      * @returns Weighting[]
      */
     private generateCapabilityWeightingValues(): Weighting[] {
-        // const keys = Object.keys(QuestionAnswerEnum);
-        // type keys = keyof QuestionAnswerEnum;
         const keys = [
             QuestionAnswerEnum.NOT_APPLICABLE,
             QuestionAnswerEnum.NONE,
@@ -397,6 +511,20 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
         ]
         const longKeys = keys.map((k) => new Weighting(new Question().toLongForm(k), k))
         return longKeys;
+    }
+
+    /**
+     * @description generate select options for assessing a capability
+     * @return any[]
+     */
+    private generateCapabilityRiskSelectOptions(): SelectOption[] {
+        return this.generateSelectOptions([
+            'no coverage',
+            'some coverage',
+            'half coverage',
+            'most critical systems covered',
+            'all critical systems covered'
+        ]);
     }
 
 }
