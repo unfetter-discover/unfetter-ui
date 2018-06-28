@@ -7,7 +7,7 @@ import { Observable, Subscription } from 'rxjs';
 import { catchError, distinctUntilChanged, filter, map, pluck, take } from 'rxjs/operators';
 import { AssessmentEvalTypeEnum } from 'stix';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
-import { RiskByKillChain } from 'stix/assess/v2/risk-by-kill-chain';
+import { RiskByKillChain } from 'stix/assess/v3/risk-by-kill-chain';
 import { SummaryAggregation } from 'stix/assess/v2/summary-aggregation';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { ConfirmationDialogComponent } from '../../../../components/dialogs/confirmation/confirmation-dialog.component';
@@ -41,7 +41,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
   summary: Assessment;
   riskByAttacks: RiskByAttack[];
   riskByAttack: RiskByAttack;
-  riskByKillChains: RiskByKillChain[];
   riskByKillChain: RiskByKillChain;
   summaryAggregation: SummaryAggregation;
   summaryAggregations: SummaryAggregation[];
@@ -131,7 +130,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
         const assessmentType = this.summary.determineAssessmentType() || 'Unknown';
         // TODO: temporary
         if (assessmentType === AssessmentEvalTypeEnum.CAPABILITIES) {
-          this.summaryCalculationService.isCapability = true;
+          // this.summaryCalculationService.isCapability = true;
         } else {
           this.summaryCalculationService.isCapability = false;
         }
@@ -194,13 +193,11 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .subscribe((arr: RiskByKillChain[]) => {
         if (!arr || arr.length === 0) {
           this.riskByKillChain = undefined;
-          this.riskByKillChains = [];
           return;
         }
 
         this.riskByKillChain = { ...arr[0] };
-        this.riskByKillChains = [...arr];
-      })
+      }, (err) => console.log(err))
 
     const sub6$ = this.store
       .select('summary')
@@ -209,6 +206,11 @@ export class SummaryComponent implements OnInit, OnDestroy {
         distinctUntilChanged()
       )
       .subscribe((done: boolean) => {
+        if (this.riskByKillChain === undefined) {
+          // fetching the killChaindData failed, set flag to done
+          this.finishedLoadingKCD = done;
+          return;
+        }
         this.finishedLoadingKCD = done;
         if (done) {
           this.transformKCD();

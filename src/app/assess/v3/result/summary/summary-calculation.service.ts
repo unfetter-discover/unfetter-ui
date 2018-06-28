@@ -5,7 +5,7 @@ import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';
 import { Phase } from 'stix/assess/v2/phase';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
-import { RiskByKillChain } from 'stix/assess/v2/risk-by-kill-chain';
+import { RiskByKillChain } from 'stix/assess/v3/risk-by-kill-chain';
 import { SummaryAggregation } from 'stix/assess/v2/summary-aggregation';
 import { Stix } from 'stix/unfetter/stix';
 import { Constance } from '../../../../utils/constance';
@@ -223,6 +223,9 @@ export class SummaryCalculationService {
       }
       if (riskByKillChain.sensors && riskByKillChain.sensors.length > 0) {
         risks = risks.concat(riskByKillChain.sensors);
+      }
+      if (riskByKillChain.capabilities && riskByKillChain.capabilities.length > 0) {
+        risks = risks.concat(riskByKillChain.capabilities);
       }
     }
     return risks;

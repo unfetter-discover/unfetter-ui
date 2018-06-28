@@ -1,5 +1,5 @@
 import { Assessment } from 'stix/assess/v3/assessment';
-import { RiskByKillChain } from 'stix/assess/v2/risk-by-kill-chain';
+import { RiskByKillChain } from 'stix/assess/v3/risk-by-kill-chain';
 import { SummaryAggregation } from 'stix/assess/v2/summary-aggregation';
 import * as summaryActions from './summary.actions';
 
