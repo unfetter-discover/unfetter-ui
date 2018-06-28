@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
 import { empty as observableEmpty } from 'rxjs';
 import { catchError, mergeMap, pluck, switchMap } from 'rxjs/operators';
-import { RiskByKillChain } from 'stix/assess/v2/risk-by-kill-chain';
+import { RiskByKillChain } from 'stix/assess/v3/risk-by-kill-chain';
 import { SummaryAggregation } from 'stix/assess/v2/summary-aggregation';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { AssessService } from '../../services/assess.service';
