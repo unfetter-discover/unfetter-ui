@@ -27,8 +27,7 @@ export class SummaryEffects {
           pluck('payload'),
           switchMap((baselineId: string) => {
             // Get all baselines and save them as well as the one which is current
-            return this.baselineService
-              .fetchBaselines(true)
+            return this.baselineService.fetchBaselines(true)
               .pipe(
                 mergeMap((data: AssessmentSet[]) => {
                   const baseline = data.find((bl) => bl.id === baselineId);
@@ -46,8 +45,8 @@ export class SummaryEffects {
         .ofType(SET_BASELINE)
         .pipe(
             pluck('payload'),
-            switchMap((assessmentSets: AssessmentSet[]) => {
-                return this.baselineService.fetchObjectAssessmentsByAssessmentSet(assessmentSets[0]);
+            switchMap((baseline: AssessmentSet) => {
+                return this.baselineService.fetchObjectAssessmentsByAssessmentSet(baseline);
             }),
             mergeMap((objAssessments: ObjectAssessment[]) => {
                 // Pull out unique list of attack patterns represented in all of these object assessments
@@ -65,9 +64,9 @@ export class SummaryEffects {
                         // Collect weighting summaries for P, D, and R
                         apTotal++;
                         aoObj.questions.map((question) => {
-                            protWeightings += (question.name === 'protect') ? 1 : 0;
-                            detWeightings += (question.name === 'detect') ? 1 : 0;
-                            respWeightings += (question.name === 'respond') ? 1 : 0;
+                            protWeightings += (question.name === 'protect' && question.score !== 'N') ? 1 : 0;
+                            detWeightings += (question.name === 'detect' && question.score !== 'N') ? 1 : 0;
+                            respWeightings += (question.name === 'respond' && question.score !== 'N') ? 1 : 0;
                         })
                     })
 
