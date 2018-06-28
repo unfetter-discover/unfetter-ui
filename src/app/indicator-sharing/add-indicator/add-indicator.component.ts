@@ -81,8 +81,17 @@ export class AddIndicatorComponent implements OnInit {
         ).subscribe(
             (res) => {
                 const identities = res[0].map((r) => r.attributes);
-                const userOrgs = res[1].attributes.organizations;
-                this.attackPatterns = res[2].map((r) => r.attributes);
+                const user = res[1].attributes;
+                const userOrgs = user.organizations;
+                this.attackPatterns = res[2]
+                    .map((r) => r.attributes)
+                    .filter((ap) => {
+                        if (user.preferences && user.preferences.killchain) {
+                            return ap.kill_chain_phases && ap.kill_chain_phases.map((kc) => kc.kill_chain_name).includes(user.preferences.killchain);
+                        } else {
+                            return true;
+                        }
+                    });
                 if (userOrgs && userOrgs.length) {
                     this.organizations = userOrgs
                         .filter((org) => org.approved)

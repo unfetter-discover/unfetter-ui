@@ -327,6 +327,11 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
 
     }
 
+    public handleCopy(event: { isSuccess: true }, toolTip: MatTooltip) {
+        console.log(event.isSuccess);
+        this.flashTooltip(toolTip);
+    }
+
     public flashTooltip(toolTip: MatTooltip) {
         toolTip.show();
         setTimeout(() => toolTip.hide(), this.FLASH_TOOLTIP_TIMER);
