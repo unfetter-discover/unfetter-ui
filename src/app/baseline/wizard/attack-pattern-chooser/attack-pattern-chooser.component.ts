@@ -82,15 +82,11 @@ export class AttackPatternChooserComponent implements OnInit {
 
     ngOnInit() {
         if (this.data && this.data.active) {
-            (this.data.active as Observable<AttackPattern[]>).pipe(
-                distinctUntilChanged())
-                .subscribe(
-                    (patterns) => {
-                        // @todo We need to convert whatever is provided to us into Tactic objects,
-                        //       and set their value to a heat property ('inactive' or 'selected').
-                    },
-                    (err) => console.log(`(${new Date().toISOString}) Attack Pattern Chooser preselects error`, err),
-                )
+            this.attackPatterns = this.data.active.map(ap => ({
+                ...ap,
+                phases: [],
+                adds: { highlights: [{ color: { style: 'active', } }], }
+            }));
         }
     }
 

@@ -20,7 +20,6 @@ export class RelationshipListComponent implements OnInit, OnChanges {
     public relationships: Relationship[];
 
     constructor(public baseComponentService: BaseComponentService, public router: Router) {
-        console.dir(this.model);
     }
 
     public ngOnInit() {
@@ -36,13 +35,15 @@ export class RelationshipListComponent implements OnInit, OnChanges {
 
     public loadRelationships(filter: any): void {
         let url = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
-        let sub =  this.baseComponentService.get( encodeURI(url) ).pipe(
-            finalize(() => {
-                // prevent memory links
-                if (sub) {
-                    sub.unsubscribe();
-                }
-            }))
+        let sub =  this.baseComponentService.get( encodeURI(url) )
+            .pipe(
+                finalize(() => {
+                    // prevent memory links
+                    if (sub) {
+                        sub.unsubscribe();
+                    }
+                })
+            )
             .subscribe(
                 (data) => {
                     this.relationships = data as Relationship[];
@@ -96,12 +97,14 @@ export class RelationshipListComponent implements OnInit, OnChanges {
 
     public load(url: string, id: string ): void {
         const uri = `${url}/${id}`;
-        let sub = this.baseComponentService.get(uri).pipe(
-            finalize(() => {
-                if (sub) {
-                    sub.unsubscribe();
-                }
-            }))
+        let sub = this.baseComponentService.get(uri)
+            .pipe(
+                finalize(() => {
+                    if (sub) {
+                        sub.unsubscribe();
+                    }
+                })
+            )
             .subscribe(
                 (data) => this.relationshipMapping.push(data),
                 (error) => console.log(error),

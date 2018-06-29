@@ -4,7 +4,7 @@ import { empty as observableEmpty, forkJoin as observableForkJoin, Observable, z
 import { map, mergeMap } from 'rxjs/operators';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
-import { RiskByKillChain } from 'stix/assess/v2/risk-by-kill-chain';
+import { RiskByKillChain } from 'stix/assess/v3/risk-by-kill-chain';
 import { SummaryAggregation } from 'stix/assess/v2/summary-aggregation';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { JsonApiData } from 'stix/json/jsonapi-data';

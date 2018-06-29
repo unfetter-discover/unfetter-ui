@@ -15,7 +15,11 @@ describe('ListStixObjectComponent', () => {
     let component: ListStixObjectComponent;
     let fixture: ComponentFixture<ListStixObjectComponent>;
 
-    const routes: Routes = [{ path: 'test', component: ListStixObjectComponent }];
+    const routes: Routes = [
+        { path: '.', component: ListStixObjectComponent },
+        { path: 'edit', component: ListStixObjectComponent },
+        { path: 'test', component: ListStixObjectComponent },
+    ];
     const mockRouter = {
         navigate: (paths: string[]) => { },
     }
@@ -29,27 +33,28 @@ describe('ListStixObjectComponent', () => {
     };
 
     beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [
-                RouterTestingModule.withRoutes(routes),
-                FormsModule,
-                DataListModule,
-                MatChipsModule,
-                MatIconModule,
-                MatInputModule,
-            ],
-            declarations: [
-                ListStixObjectComponent,
-                MarkdownEditorComponent,
-                MarkdownComponent,
-            ],
-            providers: [
-                { provide: ActivatedRoute, useValue: {} },
-                { provide: Router, useValue: mockRouter },
-                { provide: MatDialog, useValue: mockDialog },
-                { provide: Location, useValue: { back: () => { } } },
-            ]
-        })
+        TestBed
+            .configureTestingModule({
+                imports: [
+                    RouterTestingModule.withRoutes(routes),
+                    FormsModule,
+                    DataListModule,
+                    MatChipsModule,
+                    MatIconModule,
+                    MatInputModule,
+                ],
+                declarations: [
+                    ListStixObjectComponent,
+                    MarkdownEditorComponent,
+                    MarkdownComponent,
+                ],
+                providers: [
+                    { provide: ActivatedRoute, useValue: {} },
+                    { provide: Router, useValue: mockRouter },
+                    { provide: MatDialog, useValue: mockDialog },
+                    { provide: Location, useValue: { back: () => { } } },
+                ]
+            })
             .compileComponents();
     }));
 
@@ -90,6 +95,7 @@ describe('ListStixObjectComponent', () => {
 
     /**
      * @todo lots more LinkStixObjects tests to add
+     * Problem creating model data; can't get the test router to behave
      */
 
 });

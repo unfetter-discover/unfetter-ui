@@ -37,6 +37,7 @@ describe('FilterSearchBoxComponent', () => {
             {attributes: {name: 'fghij', desc: 'fwx'}},
             {attributes: {name: 'klmno', desc: {id: 'fyz', article: 'fgh'}}},
             {attributes: {name: 'pqrst', desc: ['fgh']}},
+            {attributes: {name: 'uvwxy', desc: 3}},
         ];
         component.filterItemsChange.subscribe(
             (results) => {

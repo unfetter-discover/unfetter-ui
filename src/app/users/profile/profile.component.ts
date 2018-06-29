@@ -9,6 +9,7 @@ import { UsersService } from '../../core/services/users.service';
 import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 import { UserProfile } from '../../models/user/user-profile';
 import { ProfileOrg } from './profile-org';
+import { UserHelpers } from '../../global/static/user-helpers';
 
 @Component({
     selector: 'profile',
@@ -37,6 +38,7 @@ export class ProfileComponent implements OnInit {
                     map(RxjsHelpers.mapArrayAttributes))
                     .subscribe(([userResults, allOrgs]) => {
                         this.user = userResults;
+                        this.user.avatar_url = UserHelpers.getAvatarUrl(this.user);
 
                         this.organizations = this.user.organizations
                             .filter((org) => org.approved)

@@ -246,11 +246,11 @@ export class AssessEffects {
               url = `${url}/${assessment.id}`;
               return this.genericServiceApi
                 .patchAs<Assessment[]>(url, json).pipe(
-                  map<any[], Assessment[]>(RxjsHelpers.mapArrayAttributes));
+                  map<any[], Assessment[]>(RxjsHelpers.mapAttributes));
             } else {
               return this.genericServiceApi
                 .postAs<Assessment[]>(url, json).pipe(
-                  map<any[], Assessment[]>(RxjsHelpers.mapArrayAttributes));
+                  map<any[], Assessment[]>(RxjsHelpers.mapAttributes));
             }
           });
 
