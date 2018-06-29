@@ -177,51 +177,38 @@ export class CapabilityComponent implements OnInit {
   }
 
   public onAttackPatternChange(event): void {
-
     const prevValues = this.currentAssessedObject.map(x => x.assessed_object_ref);
-    const selectedValues = event;
-
     if (prevValues === undefined) {
       return;
     }
 
+    const selectedValues = event;
 
+    // find all the attack patterns that were removed
+    prevValues
+      .filter(ap => !selectedValues.includes(ap))
+      .forEach(ap => {
+        let index = this.currentObjectAssessment.assessed_objects.findIndex(x => x.assessed_object_ref === ap);
+        this.currentObjectAssessment.assessed_objects.splice(index, 1);
+        this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(this.currentObjectAssessment));
+      });
 
-    if (selectedValues.length > prevValues.length) {
-      // Added AP - see which AP is in selectedValues and not in prevValues
-      // this.currentNumberOfAttackPatterns += 1;
-      for (let i in selectedValues) {
-        if (prevValues.indexOf(selectedValues[i]) === -1) {
-          let newAssessedObject = new AssessedObject();
-          newAssessedObject.assessed_object_ref = selectedValues[i];
-
-          let p = new Question();
-          let d = new Question();
-          let r = new Question();
-          p.name = 'protect';
-          d.name = 'detect';
-          r.name = 'respond';
-          newAssessedObject.questions = [p, d, r];
-          this.currentObjectAssessment.assessed_objects.push(newAssessedObject);
-          this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(this.currentObjectAssessment));
-          break;
-        }
-      }
-    } else if (selectedValues.length < prevValues.length) {
-      // Removed AP - see which AP is in prevValues and not in selected values
-      // this.currentNumberOfAttackPatterns -= 1;
-      for (let i in prevValues) {
-        if (selectedValues.indexOf(prevValues[i]) === -1) {
-          let index = this.currentObjectAssessment.assessed_objects.findIndex(x => x.assessed_object_ref === prevValues[i]);
-          this.currentObjectAssessment.assessed_objects.splice(index, 1);
-          this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(this.currentObjectAssessment));
-          break;
-        }
-      }
-    } else {
-      return;
-    }
-
+    // find all the attack patterns that were added
+    selectedValues
+      .filter(ap => !prevValues.includes(ap))
+      .forEach(ap => {
+        let newAssessedObject = new AssessedObject();
+        newAssessedObject.assessed_object_ref = ap;
+        let p = new Question();
+        let d = new Question();
+        let r = new Question();
+        p.name = 'protect';
+        d.name = 'detect';
+        r.name = 'respond';
+        newAssessedObject.questions = [p, d, r];
+        this.currentObjectAssessment.assessed_objects.push(newAssessedObject);
+        this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(this.currentObjectAssessment));
+      });
   }
 
   updatePDRScore(index: number, pdr: string, value: QuestionAnswerEnum, id) {
