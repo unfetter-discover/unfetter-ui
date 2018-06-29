@@ -10,7 +10,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
 import * as assessReducers from '../../store/baseline.reducers';
-
+import { GenericApi } from '../../../core/services/genericapi.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('CapabilityComponent', () => {
   let component: CapabilityComponent;
@@ -31,11 +32,13 @@ describe('CapabilityComponent', () => {
     TestBed.configureTestingModule({
       declarations: [CapabilityComponent],
       imports: [
+        HttpClientTestingModule,
         NoopAnimationsModule,
         ...matModules,
         StoreModule.forRoot(assessReducers),
         ReactiveFormsModule,
-      ]
+      ],
+      providers: [GenericApi]
     })
       .compileComponents();
   }));
