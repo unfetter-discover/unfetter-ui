@@ -43,7 +43,14 @@ export class SummaryComponent implements OnInit, OnDestroy {
   masterListOptions = {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Date Modified')
-      .addColumn('capabilities', '# of Capabilities', 'master-list-capabilities', false, (value) => value || '0')
+      .addColumn('id', '# of Capabilities', 'master-list-capabilities', false, (id) => {
+        if (id && this.summaries) {
+          const baseline = this.summaries.filter((bl) => bl.id === id);
+          return baseline[0].assessments.length.toString();
+        } else {
+          return '0';
+        }
+      })
       .addColumn('created_by_ref', 'Organization', 'master-list-organization', false, (value) => {
         let author: Identity = null;
         if (value) {
@@ -51,9 +58,16 @@ export class SummaryComponent implements OnInit, OnDestroy {
         }
         return author ? author.name : 'Unknown';
       })
-      .addColumn('framework', 'Type', 'master-list-extra', false, (value) => value || 'ATT&CK')
-      .addColumn('industry', 'Industry', 'master-list-extra', false, (value) => value || 'Local')
-      .addColumn('published', 'Status', 'master-list-extra', false, (published) => published ? 'Public' : 'Draft')
+      // TODO: must change baselines in some way to save framework in place when it was created
+      //       once that is done, add this back in and update
+      // .addColumn('framework', 'Type', 'master-list-extra', false, (value) => value || 'ATT&CK')
+      // TODO: until there is an industry specification for a baseline, don't show this column
+      //       could borrow from specific user who created the baseline, but the user could
+      //       have more than one industry in its identity
+      // .addColumn('industry', 'Industry', 'master-list-extra', false, (value) => value || 'Local')
+      .addColumn('published', 'Status', 'master-list-extra', false, (published) => {
+        return published ? 'Published' : 'Not Published'
+      })
     ,
     displayRoute: this.baseAssessUrl + '/result/summary',
     modifyRoute: this.baseAssessUrl + '/wizard/edit',
@@ -136,13 +150,26 @@ export class SummaryComponent implements OnInit, OnDestroy {
   // TODO unsubscribes
 
   public getBaseline(): void {
+    const baselinesRetrieve$ = this.store
+      .select('summary').pipe(
+      pluck('baselines'),
+      distinctUntilChanged(),
+      filter((baselines: AssessmentSet[]) => baselines && baselines.length > 0))
+      .subscribe((baselines: AssessmentSet[]) => {
+        this.summaries = [ ...baselines ];
+      },
+        (err) => console.log(err));
+
     const baselineRetrieve$ = this.store
       .select('summary').pipe(
       pluck('baseline'),
-      distinctUntilChanged(),
-      filter((arr: AssessmentSet[]) => arr && arr.length > 0))
-      .subscribe((arr: AssessmentSet[]) => {this.calculationService.baseline = arr[0]; return this.calculationService.baseline},
+      distinctUntilChanged())
+      .subscribe((baseline: AssessmentSet) => {
+        this.calculationService.baseline = baseline;
+        return this.calculationService.baseline;
+      },
         (err) => console.log(err));
+
 
     const apRetrieve$ = this.store
       .select('summary').pipe(
@@ -170,7 +197,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       },
         (err) => console.log(err));
   
-      this.subscriptions.push(baselineRetrieve$, apRetrieve$, groupRetrieve$, blWeightsRetrieve$);
+      this.subscriptions.push(baselinesRetrieve$, baselineRetrieve$, apRetrieve$, groupRetrieve$, blWeightsRetrieve$);
   }
 
   /**
@@ -203,7 +230,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
         // this.transformSummary()
       }, (err) => console.log(err));
 
-    const sub8$ = this.store
+    const sub3$ = this.store
       .select('summary').pipe(
       pluck('finishedLoadingSummaryAggregationData'),
       distinctUntilChanged())
@@ -214,20 +241,18 @@ export class SummaryComponent implements OnInit, OnDestroy {
         // }
       }, (err) => console.log(err));
 
-    const sub9$ = this.store
+    const sub4$ = this.store
       .select('summary').pipe(
       pluck('baseline'),
       distinctUntilChanged())
-      .subscribe((arr: AssessmentSet[]) => {
-        if (!arr || arr.length === 0) {
-          this.blName = '';
-        } else {
-          this.blName = arr[0].name;
+      .subscribe((baseline: AssessmentSet) => {
+        if (baseline) {
+          this.blName = baseline.name;
+          this.baselineName = observableOf(this.blName);
         }
-        this.baselineName = observableOf(this.blName);
       }, (err) => console.log(err));
 
-    this.subscriptions.push(sub1$, sub2$, sub8$, sub9$);
+    this.subscriptions.push(sub1$, sub2$, sub3$, sub4$);
   }
 
 
