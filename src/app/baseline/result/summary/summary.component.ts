@@ -45,7 +45,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     columns: new MasterListDialogTableHeaders('modified', 'Date Modified')
       .addColumn('id', '# of Capabilities', 'master-list-capabilities', false, (id) => {
         if (id && this.summaries) {
-          const baseline = this.summaries.filter((baseline) => baseline.id === id);
+          const baseline = this.summaries.filter((bl) => bl.id === id);
           return baseline[0].assessments.length.toString();
         } else {
           return '0';
