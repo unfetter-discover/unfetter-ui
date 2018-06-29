@@ -16,7 +16,7 @@ export class ResultHeaderComponent implements OnInit {
   public summaryLink: string;
   infoBarMsg: string;
   percentCompleted: number;
-  protected editUrl: string;
+  public editUrl: string;
 
   constructor() { }
 
