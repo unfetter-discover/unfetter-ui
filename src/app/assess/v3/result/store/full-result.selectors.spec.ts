@@ -1,7 +1,7 @@
 import { FullAssessmentResultState, genState } from './full-result.reducers';
 import { getFailedToLoadAssessment, getFinishedLoadingAssessment, getTacticsChains } from './full-result.selectors';
 
-fdescribe('assessment v3 - full result selectors spec', () => {
+describe('assessment v3 - full result selectors spec', () => {
 
     let state: { 'fullAssessment': FullAssessmentResultState };
     let configState;
