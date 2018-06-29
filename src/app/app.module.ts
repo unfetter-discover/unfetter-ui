@@ -25,7 +25,7 @@ import { ConfigEffects } from './root-store/config/config.effects';
 import { NotificationEffects } from './root-store/notification/notification.effects';
 import { UserEffects } from './root-store/users/user.effects';
 import { UtilityEffects } from './root-store/utility/utility.effects';
-import { IdentityEffects } from './root-store/identities/identity.effects';
+import { StixEffects } from './root-store/stix/stix.effects';
 import { RunConfigService } from './core/services/run-config.service';
 
 // make sure you export for AoT
@@ -74,7 +74,7 @@ import { RunConfigService } from './core/services/run-config.service';
       ConfigEffects,
       UtilityEffects,
       NotificationEffects,
-      IdentityEffects,
+      StixEffects,
     ]),
     (!environment.production && environment.runMode !== 'DEMO') ? StoreDevtoolsModule.instrument() : [],
     AppRoutingModule,

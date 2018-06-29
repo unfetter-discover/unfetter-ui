@@ -8,10 +8,11 @@ import { AuthService } from './core/services/auth.service';
 import { Themes } from './global/enums/themes.enum';
 import * as fromApp from './root-store/app.reducers';
 import * as configActions from './root-store/config/config.actions';
-import * as identityActions from './root-store/identities/identity.actions';
+import * as stixActions from './root-store/stix/stix.actions';
 import * as userActions from './root-store/users/user.actions';
 import { demoUser } from './testing/demo-user';
 import { RunConfigService } from './core/services/run-config.service';
+import { getAttackPatternsByPreferredFramework } from './root-store/stix/stix.selectors';
 
 @Component({
   selector: 'unf-app',
@@ -38,6 +39,17 @@ export class AppComponent implements OnInit {
   }
 
   public ngOnInit() {
+    this.store.select(getAttackPatternsByPreferredFramework)
+    .subscribe((res) => {
+        console.log('~~~', res);
+      },
+      (err) => {
+        console.log(err);
+      },
+      () => {
+        //.unsubscribe();
+      }
+    );
     if (this.runMode && this.runMode === 'UAC') {
       console.log('Running application in UAC mode');
     } else if (this.runMode && this.runMode === 'DEMO') {
@@ -69,7 +81,8 @@ export class AppComponent implements OnInit {
          */
         this.store.dispatch(new configActions.FetchConfig(false));
         this.store.dispatch(new configActions.FetchTactics());
-        this.store.dispatch(new identityActions.FetchIdentities());
+        this.store.dispatch(new stixActions.FetchIdentities());
+        this.store.dispatch(new stixActions.FetchAttackPatterns());
       }
     }
 

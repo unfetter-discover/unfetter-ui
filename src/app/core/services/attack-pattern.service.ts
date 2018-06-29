@@ -4,7 +4,6 @@ import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { Observable } from 'rxjs';
 import * as Stix from 'stix/unfetter/attack-pattern';
 import { AttackPattern } from '../../models';
-import { UserProfile } from '../../models/user/user-profile';
 import { Constance } from '../../utils/constance';
 import { GenericApi } from './genericapi.service';
 
