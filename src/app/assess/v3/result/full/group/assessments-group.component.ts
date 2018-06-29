@@ -189,9 +189,10 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     const sub3$ = this.assessmentGroup
       .pipe(
         filter((group: FullAssessmentGroup) => {
-          return group.finishedLoadingGroupData === true
-            && this.displayedAssessedObjects !== undefined
-            && this.currentAttackPattern !== undefined
+          const hasAttackPattern = this.currentAttackPattern !== undefined && this.currentAttackPattern.id !== undefined;
+          const hasDisplayObject = this.displayedAssessedObjects !== undefined;
+          const isFinishedLoading = group.finishedLoadingGroupData !== undefined && group.finishedLoadingGroupData === true;
+          return (isFinishedLoading && hasDisplayObject && hasAttackPattern);
         })
       )
       .subscribe(
