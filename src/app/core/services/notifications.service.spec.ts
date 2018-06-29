@@ -1,14 +1,12 @@
 import { TestBed, async, inject } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { StoreModule } from '@ngrx/store';
-import { of as observableOf, Observable } from 'rxjs';
+import { of as observableOf } from 'rxjs';
 
 import { NotificationsService } from './notifications.service';
 import { GenericApi } from './genericapi.service';
-import { StixMockFactory } from '../../models/stix/stix-mock';
-import { StixLabelEnum } from '../../models/stix/stix-label.enum';
+import { NotificationEmitTypes } from '../../root-store/notification/notification.model';
 
-fdescribe('NotificationsService should', () => {
+describe('NotificationsService should', () => {
 
     let service: NotificationsService;
 
@@ -16,7 +14,7 @@ fdescribe('NotificationsService should', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [
-                HttpClientTestingModule
+                HttpClientTestingModule,
             ],
             providers: [
                 NotificationsService,
@@ -30,10 +28,49 @@ fdescribe('NotificationsService should', () => {
         service = TestBed.get(NotificationsService);
     });
 
-    it('get user from token', inject([GenericApi], (api: GenericApi) => {
-        // const profile = UserProfileMockFactory.mockOne();
-        // spyOn(api, 'get').and.returnValue(observableOf(profile));
-        // service.getUserFromToken().subscribe(response => expect(response).toEqual(profile));
+    it('get user notifications', inject([GenericApi], (api: GenericApi) => {
+        const spy = spyOn(api, 'get').and.returnValue(observableOf({}));
+        service.getNotifications()
+            .subscribe(
+                response => expect(response).toEqual({})
+            );
+        expect(spy).toHaveBeenCalledWith(jasmine.stringMatching('user-notifications'));
+    }));
+
+    it('get read a specific notification', inject([GenericApi], (api: GenericApi) => {
+        const spy = spyOn(api, 'get').and.returnValue(observableOf({}));
+        service.readNotification('xyz')
+            .subscribe(
+                response => expect(response).toEqual({})
+            );
+        expect(spy).toHaveBeenCalledWith(jasmine.stringMatching(NotificationEmitTypes.READ_NOTIFICATION));
+    }));
+
+    it('get read all notifications', inject([GenericApi], (api: GenericApi) => {
+        const spy = spyOn(api, 'get').and.returnValue(observableOf({}));
+        service.readAllNotifications()
+            .subscribe(
+                response => expect(response).toEqual({})
+            );
+        expect(spy).toHaveBeenCalledWith(jasmine.stringMatching(NotificationEmitTypes.READ_ALL_NOTIFICATIONS));
+    }));
+
+    it('get delete a specific notification', inject([GenericApi], (api: GenericApi) => {
+        const spy = spyOn(api, 'get').and.returnValue(observableOf({}));
+        service.deleteNotification('abc')
+            .subscribe(
+                response => expect(response).toEqual({})
+            );
+        expect(spy).toHaveBeenCalledWith(jasmine.stringMatching(NotificationEmitTypes.DELETE_NOTIFICATION));
+    }));
+
+    it('get delete all notifications', inject([GenericApi], (api: GenericApi) => {
+        const spy = spyOn(api, 'get').and.returnValue(observableOf({}));
+        service.deleteAllNotifications()
+            .subscribe(
+                response => expect(response).toEqual({})
+            );
+        expect(spy).toHaveBeenCalledWith(jasmine.stringMatching(NotificationEmitTypes.DELETE_ALL_NOTIFICATIONS));
     }));
 
 });
