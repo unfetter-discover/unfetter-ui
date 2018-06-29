@@ -3,7 +3,7 @@ import { Location } from '@angular/common';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, async, fakeAsync, tick } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatInputModule, MatSelectModule, MatSnackBar } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -268,6 +268,7 @@ function moduleSetup() {
         CoreModule.forRoot(),
         ComponentModule,
         FormsModule,
+        ReactiveFormsModule,
         StoreModule.forRoot(reducers),
         ...matModules,
       ],

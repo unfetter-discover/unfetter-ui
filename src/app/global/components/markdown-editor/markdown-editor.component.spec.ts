@@ -1,6 +1,6 @@
 import { TestBed, ComponentFixture, async } from '@angular/core/testing';
 
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material';
 import { MarkdownModule, MarkdownService, MarkedOptions } from 'ngx-markdown';
 
@@ -20,6 +20,7 @@ describe('MarkdownEditorComponent', () => {
                 ],
                 imports: [
                     FormsModule,
+                    ReactiveFormsModule,
                     MatInputModule,
                     MarkdownModule,
                     NoopAnimationsModule,

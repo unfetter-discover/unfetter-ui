@@ -1,7 +1,7 @@
 import { TestBed, ComponentFixture, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatCardModule, MatFormFieldModule } from '@angular/material';
 import { MarkdownComponent } from 'ngx-markdown';
@@ -24,6 +24,7 @@ describe('TacticsTooltipComponent should', () => {
         TestBed.configureTestingModule({
             imports: [
                 FormsModule,
+                ReactiveFormsModule,
                 OverlayModule,
                 MatCardModule,
                 MatFormFieldModule,

@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule, MatChipsModule, MatInputModule } from '@angular/material';
 import { MarkdownComponent, MarkdownService } from 'ngx-markdown';
 
@@ -28,6 +28,7 @@ describe('ReadonlyContentComponent', () => {
             imports: [
                 HttpClientTestingModule,
                 FormsModule,
+                ReactiveFormsModule,
                 MatCardModule,
                 MatChipsModule,
                 MatInputModule,

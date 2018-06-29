@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule, Store } from '@ngrx/store';
 
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
     MatButtonToggleModule,
     MatCardModule,
@@ -44,6 +44,7 @@ describe('ThreatTacticsComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 FormsModule,
+                ReactiveFormsModule,
                 MatButtonToggleModule,
                 MatCardModule,
                 MatIconModule,
