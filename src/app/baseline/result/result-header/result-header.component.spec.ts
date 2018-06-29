@@ -4,16 +4,24 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { ResultHeaderComponent } from './result-header.component';
+import { SummaryCalculationService } from '../summary/summary-calculation.service';
 
 describe('ResultHeaderComponent', () => {
   let component: ResultHeaderComponent;
   let fixture: ComponentFixture<ResultHeaderComponent>;
 
+  const serviceMock = { baseline: {}};
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       schemas: [NO_ERRORS_SCHEMA],
-      declarations: [ResultHeaderComponent]
+      declarations: [ResultHeaderComponent],
+      providers: [
+        {
+          provide: SummaryCalculationService,
+          useValue: serviceMock
+        }
+      ]
     })
       .compileComponents();
   }));
