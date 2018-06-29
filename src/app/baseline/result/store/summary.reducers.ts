@@ -3,7 +3,8 @@ import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
 import * as summaryActions from './summary.actions';
 
 export interface SummaryState {
-    baseline: AssessmentSet[];
+    baselines: AssessmentSet[];
+    baseline: AssessmentSet;
     blAttackPatterns: string[];
     blWeightings: {};
     blGroups: string[];
@@ -15,7 +16,8 @@ export interface SummaryState {
 
 const genState = (state?: Partial<SummaryState>) => {
     const tmp = {
-        baseline: new Array<AssessmentSet>(),
+        baselines: new Array<AssessmentSet>(),
+        baseline: new AssessmentSet(),
         blAttackPatterns: new Array<string>(),
         blWeightings: { protPct: 0, detPct: 0, respPct: 0 },
         blGroups: new Array<string>(),
@@ -39,10 +41,15 @@ export function summaryReducer(state = initialState, action: summaryActions.Summ
             return genState({
                 ...state,
             });
+        case summaryActions.SET_BASELINES:
+            return genState({
+                ...state,
+                baselines: [...action.payload],
+            });
         case summaryActions.SET_BASELINE:
             return genState({
                 ...state,
-                baseline: [...action.payload],
+                baseline: action.payload,
             });
         case summaryActions.SET_ATTACK_PATTERNS:
             return genState({
