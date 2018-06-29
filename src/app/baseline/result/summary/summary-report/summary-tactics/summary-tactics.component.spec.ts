@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { StoreModule, Store } from '@ngrx/store';
 
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
     MatButtonToggleModule,
     MatCardModule,
@@ -47,6 +47,7 @@ describe('SummaryTacticsComponent', () => {
             .configureTestingModule({
                 imports: [
                     FormsModule,
+                    ReactiveFormsModule,
                     MatButtonToggleModule,
                     MatCardModule,
                     MatIconModule,
