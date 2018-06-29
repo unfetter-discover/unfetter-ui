@@ -262,8 +262,6 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
         capability.created_by_ref = created_by_ref;
         const saveCapability$ = this.generateSaveCapabilityObservable(capability);
 
-
-
         const sub$ = saveCapability$
             .pipe(
                 // save the capability to assessment link
@@ -271,35 +269,26 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
                     return this.generateSaveObjectAssessmentObservable(formValues, savedCapability);
                 }),
                 // TODO: should we save the new object assessment into the baseline?
-                // TODO: save the object as part of the parent assessment
-                // switchMap((_) => this.generateAssessmentUpdateObservable(createdObjs[0], convertedObj, questions))
-                // TODO: save the object as part of the parent assessment
-                // switchMap((objectAssessment) => {
-                //     const options = this.generateCapabilityRiskSelectOptions();
-                //     const selectedOpt = options.find((opt) => {
-                //         return opt.risk === formValues.assessmentRisk;
-                //     })[0];
-                //     const questions = [
-                //         {
-                //             name: 'coverage',
-                //             risk: formValues.assessedRisk,
-                //             options,
-                //             selected_value: selectedOpt,
-                //         }
-                //     ];
-                //     const risk = this.calcTotalRisk(questions);
-                //     const assessmentObject = {
-                //         risk,
-                //         questions,
-                //     };
-
-                //     return this.assessment
-                // })
+                // save the object as part of the parent assessment
+                switchMap((objectAssessment) => {
+                    const options = this.generateCapabilityRiskSelectOptions();
+                    const selectedRisk = formValues.assessmentRisk;
+                    const selectedOpt = options
+                        .find((opt) => opt.risk === selectedRisk);
+                    const questions = [
+                        {
+                            name: 'coverage',
+                            risk: selectedRisk,
+                            options,
+                            selected_value: selectedOpt,
+                        }
+                    ];
+                    return this.generateAssessmentUpdateObservable(objectAssessment, objectAssessment, questions);
+                })
             )
             .subscribe(
                 () => {
                     console.log('capability and assessment updates');
-
                 },
                 (err) => {
                     console.log(err);
@@ -414,13 +403,14 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
             return EMPTY;
         }
 
-        // return this.assessService
-        //     .genericPost(`api/v3/x-unfetter-capabilities`, capability)
-        //     .pipe(
-        //         map((assessments) => assessments.map(RxjsHelpers.mapAttributes))
-        //     );
-        capability.id = '1243';
-        return of(capability);
+        // testing
+        // capability.id = '1243';
+        // return of(capability);
+        return this.assessService
+            .genericPost(`api/v3/x-unfetter-capabilities`, capability)
+            .pipe(
+                map((assessments) => assessments.map(RxjsHelpers.mapAttributes))
+            );
     }
 
     /**
@@ -429,7 +419,7 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
      * @returns Observable
      */
     private generateSaveObjectAssessmentObservable(form: any, capability: Capability): Observable<ObjectAssessment> {
-        if (!capability && capability.id) {
+        if (!capability || !capability.id) {
             return EMPTY;
         }
 
@@ -458,15 +448,18 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
             object_ref: capability.id,
             assessed_objects: [
                 assessedObject,
-            ]
+            ],
+            type: StixEnum.OBJECT_ASSESSMENT,
         } as ObjectAssessment;
 
-        // return this.assessService
-        //     .genericPost(`api/v3/x-unfetter-object-assessments`, objectAssessment)
-        //     .pipe(
-        //         map((assessments) => assessments.map(RxjsHelpers.mapAttributes))
-        //     );
-        return of(objectAssessment);
+        // testing
+        // objectAssessment.id = '123x';
+        // return of(objectAssessment);
+        return this.assessService
+            .genericPost(`api/v3/x-unfetter-object-assessments`, objectAssessment)
+            .pipe(
+                map((assessments) => assessments.map(RxjsHelpers.mapAttributes))
+            );
     }
 
     /**
@@ -478,6 +471,7 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
             .map((question) => question.risk)
             .reduce((prev, cur) => (prev += cur), 0) / questions.length;
     }
+
     /**
      * @description reactive form for creating and using a new capability
      * @returns FormGroup
