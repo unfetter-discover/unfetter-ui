@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatChipsModule, MatDialog, MatIconModule, MatInputModule } from '@angular/material';
 import { ActivatedRoute, Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -38,6 +38,7 @@ describe('ListStixObjectComponent', () => {
                 imports: [
                     RouterTestingModule.withRoutes(routes),
                     FormsModule,
+                    ReactiveFormsModule,
                     DataListModule,
                     MatChipsModule,
                     MatIconModule,

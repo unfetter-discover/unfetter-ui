@@ -1,4 +1,6 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { finalize } from 'rxjs/operators';
 
 /**
  * 
@@ -8,7 +10,7 @@ import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@
     templateUrl: './markdown-editor.component.html',
     styleUrls: ['./markdown-editor.component.scss']
 })
-export class MarkdownEditorComponent {
+export class MarkdownEditorComponent implements OnInit {
 
     /**
      * 
@@ -41,9 +43,9 @@ export class MarkdownEditorComponent {
     @Input() previewLabel: string = 'Preview';
 
     /**
-     * 
+     * @description Pass in a FormControl for reactive support, otherwise wrap the value in a FormControl
      */
-    private text: string = '';
+    @Input() formCtrl: FormControl = new FormControl();
 
     /**
      * 
@@ -58,18 +60,36 @@ export class MarkdownEditorComponent {
     }
 
     /**
-     * 
+     * If a value is passed in, use the valueChanges observables to drive the event emitter
      */
-    @Input() get value() {
-        return this.text;
+    public ngOnInit() {
+        if (this.value !== null) {
+            const formChange$ = this.formCtrl.valueChanges
+                .pipe(
+                    finalize(() => formChange$ && formChange$.unsubscribe())
+                )
+                .subscribe(
+                    (text) => {
+                        this.changed.emit(text);
+                    },
+                    (err) => {
+                        console.log(err);
+                    }
+                );
+        }
     }
 
     /**
-     * 
+     * @description Return the form control value
      */
-    set value(value) {
-        this.text = value;
-        this.changed.emit(this.text);
+    @Input() get value() {
+        return this.formCtrl.value;
     }
 
+    /**
+     * @description Set the form control value to the input value
+     */
+    set value(value) {
+        this.formCtrl.patchValue(value);
+    }
 }

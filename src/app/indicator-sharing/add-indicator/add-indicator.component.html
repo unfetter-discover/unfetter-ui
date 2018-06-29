@@ -22,13 +22,11 @@
                         <mat-option *ngFor="let org of organizations" [value]="org.id">{{org.name}}</mat-option>
                     </mat-select>
                 </mat-form-field>
-                <!-- TODO wait for reactive forms support and formatting more consistent with this component -->
-                <!-- <markdown-editor [editing]="true" [flushed]="true" [inputLabel]="'Description (Markdown Editor)'"
-                        [value]="description" (changed)="description = $event"></markdown-editor> -->
-                
-                <mat-form-field class="full-width mb-6">
-                    <textarea matInput placeholder="Description" formControlName="description"></textarea>
-                </mat-form-field>
+
+                <markdown-editor 
+                    [editing]="true" 
+                    [inputLabel]="'Description (Markdown Editor)'"
+                    [formCtrl]="form.get('description')"></markdown-editor>
 
                 <div class="mb-6">
                     <span>

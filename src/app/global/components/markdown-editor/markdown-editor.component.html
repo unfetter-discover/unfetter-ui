@@ -2,13 +2,13 @@
     <div *ngIf="editing" class="flex1 pr-24 markdown-editor-pane">
         <label>{{inputLabel}}</label>
         <mat-form-field class="full-width">
-            <textarea #markdown matInput [(ngModel)]="value"></textarea>
+            <textarea #markdown matInput [formControl]="formCtrl"></textarea>
         </mat-form-field>
     </div>
-    <div *ngIf="viewing" class="flex1 markdown-preview-pane">
+    <div *ngIf="viewing && formCtrl" class="flex1 markdown-preview-pane">
         <label *ngIf="!truncate">{{previewLabel}}</label>
         <div class="preview" [ngClass]="{'preview-only': !editing, 'preview-truncate': truncate}">
-            <markdown [data]="value"></markdown>
+            <markdown [data]="formCtrl.value"></markdown>
         </div>
     </div>
 </div>
