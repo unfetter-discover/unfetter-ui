@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { SummaryCalculationService } from '../summary/summary-calculation.service';
 
 @Component({
   selector: 'result-header',
@@ -12,13 +13,14 @@ export class ResultHeaderComponent implements OnInit {
 
   @Input()
   public published: Date;
-
+  private percentCompleted: number;
   public summaryLink: string;
   infoBarMsg: string;
-  percentCompleted: number;
   public editUrl: string;
 
-  constructor() { }
+  constructor(
+    public calculationService: SummaryCalculationService
+  ) { }
 
   /**
    * @description on init
@@ -27,15 +29,14 @@ export class ResultHeaderComponent implements OnInit {
   public ngOnInit(): void {
     const base = '/baseline/result/';
     this.summaryLink = `${base}/summary/${this.baselineId}`;
-
-
-   
-
-    this.editUrl = `/baseline/wizard/edit/${this.baselineId}`;
     this.infoBarMsg = 'Baselines is currently in beta. Some functionality does not work.'
-    this.percentCompleted = 2;
-    this.infoBarMsg += ` ${this.percentCompleted}% of your baseline is complete.`;
 
+    this.percentCompleted = Math.round((this.calculationService.baselineWeightings.protPct + 
+                                        this.calculationService.baselineWeightings.protPct + 
+                                        this.calculationService.baselineWeightings.protPct) / 3);
+    if (this.percentCompleted < 100) {
+      this.infoBarMsg += ` ${this.percentCompleted}% of your baseline is complete.`;
+      this.editUrl = `/baseline/wizard/edit/${this.baselineId}`;
+    }
   }
-
 }
