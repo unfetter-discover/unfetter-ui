@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { EMPTY, Observable, of, Subscription } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, first } from 'rxjs/operators';
 import { AssessedObject, ObjectAssessment } from 'stix';
 import { Capability } from 'stix/assess/v3/baseline/capability';
 import { Category } from 'stix/assess/v3/baseline/category';
@@ -264,10 +264,14 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
 
         const sub$ = saveCapability$
             .pipe(
+                // grab first capability on list
+                first(),
                 // save the capability to assessment link
                 switchMap((savedCapability) => {
                     return this.generateSaveObjectAssessmentObservable(formValues, savedCapability);
                 }),
+                // grab first object assessent on list
+                first(),
                 // TODO: should we save the new object assessment into the baseline?
                 // save the object as part of the parent assessment
                 switchMap((objectAssessment) => {
@@ -405,11 +409,11 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
 
         // testing
         // capability.id = '1243';
-        // return of(capability);
+        // return of([capability]);
         return this.assessService
             .genericPost(`api/v3/x-unfetter-capabilities`, capability)
             .pipe(
-                map((assessments) => assessments.map(RxjsHelpers.mapAttributes))
+                map((capabilities) => capabilities.map(RxjsHelpers.mapAttributes)[0])
             );
     }
 
@@ -454,11 +458,11 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
 
         // testing
         // objectAssessment.id = '123x';
-        // return of(objectAssessment);
+        // return of([objectAssessment]);
         return this.assessService
             .genericPost(`api/v3/x-unfetter-object-assessments`, objectAssessment)
             .pipe(
-                map((assessments) => assessments.map(RxjsHelpers.mapAttributes))
+                map((objectAssessments) => objectAssessments.map(RxjsHelpers.mapAttributes)[0])
             );
     }
 
