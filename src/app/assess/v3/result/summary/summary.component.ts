@@ -39,7 +39,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
   assessmentId: string;
   summaries: Assessment[];
   summary: Assessment;
-  riskByAttacks: RiskByAttack[];
   riskByAttack: RiskByAttack;
   riskByKillChain: RiskByKillChain;
   summaryAggregation: SummaryAggregation;
@@ -92,7 +91,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
         this.summaries = undefined;
         this.finishedLoading = false;
         this.riskByAttack = undefined;
-        this.riskByAttacks = undefined;
         this.store.dispatch(new CleanAssessmentResultData());
         this.riskByAttackPatternStore.dispatch(new CleanAssessmentRiskByAttackPatternData());
         const sub$ = this.userStore
@@ -133,7 +131,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
         } else {
           this.summaryCalculationService.isCapability = false;
         }
-        this.riskByAttackPatternStore.dispatch(new LoadSingleAssessmentRiskByAttackPatternData(this.assessmentId));
+        this.riskByAttackPatternStore.dispatch(new LoadSingleAssessmentRiskByAttackPatternData({id: this.assessmentId, isCapability: this.summaryCalculationService.isCapability}));
         this.store.dispatch(new LoadSingleRiskPerKillChainData(this.assessmentId));
         this.store.dispatch(new LoadSingleSummaryAggregationData(this.assessmentId));
       },
@@ -164,7 +162,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
         filter((arr: RiskByAttack[]) => arr && arr.length > 0)
       )
       .subscribe((arr: RiskByAttack[]) => {
-        this.riskByAttacks = [...arr];
         this.riskByAttack = { ...arr[0] };
       },
         (err) => console.log(err));

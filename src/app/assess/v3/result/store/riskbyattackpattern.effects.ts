@@ -27,9 +27,10 @@ export class RiskByAttackPatternEffects {
         .ofType(LOAD_SINGLE_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA)
         .pipe(
             pluck('payload'),
-            switchMap((assessmentId: string) => {
+            switchMap((loadData: { id: string, isCapability: boolean }) => {
+                const isCapability = loadData.isCapability || false;
                 return this.assessService
-                    .getRiskPerAttackPattern(assessmentId)
+                    .getRiskPerAttackPattern(loadData.id, true, isCapability)
                     .pipe(
                         mergeMap((data: RiskByAttack) => [new SetRiskByAttackPattern([data]), new FinishedLoading(true)]),
                         catchError((err) => {
