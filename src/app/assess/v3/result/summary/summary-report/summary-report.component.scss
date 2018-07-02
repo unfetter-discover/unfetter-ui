@@ -116,6 +116,10 @@ $min-card-fullwidth: ($min-card-width * 2 + $padding-between-cards + $padding-be
   }
 }
 
+.risk-label {
+  font-size: 100%
+}
+
 #vulnerabilityCard {
   .mat-row {
     padding: 0px;
