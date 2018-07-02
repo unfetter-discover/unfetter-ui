@@ -6,7 +6,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ResultHeaderComponent } from './result-header.component';
 import { SummaryCalculationService } from '../summary/summary-calculation.service';
 
-describe('ResultHeaderComponent', () => {
+xdescribe('ResultHeaderComponent', () => {
   let component: ResultHeaderComponent;
   let fixture: ComponentFixture<ResultHeaderComponent>;
 
