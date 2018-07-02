@@ -48,7 +48,6 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChildren('addAssessedObjectComponent') public addAssessedObjectComponents: QueryList<AddAssessedObjectComponent>;
 
   public addAssessedObjectComponent: AddAssessedObjectComponent;
-  public addAssessedObject: boolean;
   public addAssessedType: string;
   public assessedObjects: AssessmentObject[];
   public attackPatternsByPhase: AssessAttackPatternMeta[];

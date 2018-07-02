@@ -92,7 +92,7 @@
             </div>
           </div>
 
-          <div *ngSwitchCase="'x-unfetter-capability'">
+          <div *ngSwitchCase="'x-unfetter-object-assessment'">
             <form [formGroup]="capabilityFormGroup" autocomplete="off">
               <div class="row errMsg" *ngIf="capabilityFormGroup.get('assessmentRisk').touched && capabilityFormGroup.get('assessmentRisk').errors as riskErrs">
                 {{ riskErrs | json }}
@@ -188,5 +188,10 @@
       </mat-card-content>
     </mat-card>
   </div>
-  <unf-speed-dial [items]="speedDialItems" (itemClickedEmitter)="onSpeedDialClicked($event)" [(open)]="addAssessedObject"></unf-speed-dial>
+  <!-- <unf-speed-dial [items]="speedDialItems" (itemClickedEmitter)="onSpeedDialClicked($event)" [(open)]="addAssessedObject"></unf-speed-dial> -->
+  <div class="add-assessed-object-fab">
+    <button mat-mini-fab color="primary" (click)="addAssessedObject = !addAssessedObject">
+      <mat-icon class="mat-24">add</mat-icon>
+    </button>
+  </div>
 </div>
