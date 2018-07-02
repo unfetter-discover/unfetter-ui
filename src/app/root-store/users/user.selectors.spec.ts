@@ -1,5 +1,4 @@
 import { demoUser } from '../../testing/demo-user';
-import { UserProfile } from '../../models/user/user-profile';
 import { initialState, UserState } from './users.reducers';
 import { AppState } from '../app.reducers';
 import { getUserState, getPreferredKillchain } from './user.selectors';

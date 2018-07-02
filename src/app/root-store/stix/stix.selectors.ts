@@ -4,6 +4,7 @@ import { AppState } from '../app.reducers';
 import { getConfigState } from '../config/config.selectors';
 import { Dictionary } from 'stix/common/dictionary';
 import { TacticChain, Tactic } from '../../global/components/tactics-pane/tactics.model';
+import { getPreferredKillchain } from '../users/user.selectors';
 
 export const getStixState = (state: AppState) => state.stix;
 
@@ -12,7 +13,30 @@ export const getAttackPatterns = createSelector(
     (stix) => stix.attackPatterns
 );
 
-export const getAttackPatternsByPreferredFramework = createSelector(
+/**
+ * @description Returns a list of attack patterns that chain the users preferred killchain
+ */
+export const getAttackPatternsByPreferredKillchain = createSelector(
+    getPreferredKillchain,
+    getAttackPatterns,
+    (killchain, attackPatterns) => {
+        if (killchain) {
+            return attackPatterns
+                .filter((ap) => {
+                    return ap.kill_chain_phases && ap.kill_chain_phases
+                        .map((kc) => kc.kill_chain_name)
+                        .includes(killchain);
+                });
+        } else {
+            return attackPatterns
+        }
+    }
+);
+
+/**
+ * @description Returns the object needed for heatmap and caroseul visualizations
+ */
+export const getAttackPatternsForVisualizations = createSelector(
     getConfigState,
     getAttackPatterns,
     (config, patterns) => {

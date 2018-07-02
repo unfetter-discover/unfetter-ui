@@ -27,6 +27,8 @@ import { HeatmapOptions } from '../heatmap/heatmap.data';
 import { TreemapOptions } from '../treemap/treemap.data';
 import { Dictionary } from '../../../models/json/dictionary';
 import { AppState } from '../../../root-store/app.reducers';
+import { getPreferredKillchain } from '../../../root-store/users/user.selectors';
+import { getAttackPatternsForVisualizations } from '../../../root-store/stix/stix.selectors';
 
 @Component({
     selector: 'tactics-pane',
@@ -214,8 +216,10 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
     protected initData() {
         console['debug'](`(${new Date().toISOString()}) TacticsPane querying store`);
 
-        this.framework$ = this.getFrameworks().pipe(
-            distinctUntilChanged())
+        this.framework$ = this.getFrameworks()
+            .pipe(
+                distinctUntilChanged()
+            )
             .subscribe(
                 (frameworks) => {
                     console['debug'](`(${new Date().toISOString()}) TacticsPane loaded frameworks`, frameworks);
@@ -230,10 +234,11 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
             );
 
         this.chain$ = this.store
-            .select('config').pipe(
-            pluck('tacticsChains'),
-            filter(t => t !== null),
-            distinctUntilChanged())
+            .select(getAttackPatternsForVisualizations)
+            .pipe(
+                filter(t => t !== null),
+                distinctUntilChanged()
+            )
             .subscribe(
                 (tactics: Dictionary<TacticChain>) => {
                     console['debug'](`(${new Date().toISOString()}) TacticsPane loaded tactics`, tactics);
@@ -263,14 +268,12 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
             }
         }
         return this.store
-            .select('users').pipe(
-            pluck('userProfile'),
-            take(1),
-            pluck('preferences'),
-            pluck('killchain'),
-            map((chain: string) => [chain]),
-            tap(() => console['debug'](`(${new Date().toISOString()}) TacticsPane`,
-                    'frameworks plucked from user preferences')));
+            .select(getPreferredKillchain)
+            .pipe(
+                map((chain: string) => [chain]),
+                tap(() => console['debug'](`(${new Date().toISOString()}) TacticsPane`,
+                        'frameworks plucked from user preferences'))
+            );
         }
 
     /**

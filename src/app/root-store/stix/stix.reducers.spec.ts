@@ -3,7 +3,7 @@ import { Identity } from 'stix';
 import { StixState, initialState, stixReducer } from './stix.reducers';
 import * as stixActions from './stix.actions';
 
-fdescribe('stixReducer', () => {
+describe('stixReducer', () => {
     let mockInitialState: StixState = null;
 
     beforeEach(() => {

@@ -12,7 +12,6 @@ import * as stixActions from './root-store/stix/stix.actions';
 import * as userActions from './root-store/users/user.actions';
 import { demoUser } from './testing/demo-user';
 import { RunConfigService } from './core/services/run-config.service';
-import { getAttackPatternsByPreferredFramework } from './root-store/stix/stix.selectors';
 
 @Component({
   selector: 'unf-app',
@@ -39,17 +38,6 @@ export class AppComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.store.select(getAttackPatternsByPreferredFramework)
-    .subscribe((res) => {
-        console.log('~~~', res);
-      },
-      (err) => {
-        console.log(err);
-      },
-      () => {
-        //.unsubscribe();
-      }
-    );
     if (this.runMode && this.runMode === 'UAC') {
       console.log('Running application in UAC mode');
     } else if (this.runMode && this.runMode === 'DEMO') {
