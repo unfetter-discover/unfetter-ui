@@ -1,4 +1,3 @@
-
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
@@ -11,6 +10,7 @@ import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { AssessmentEvalTypeEnum } from 'stix/assess/v3/assessment-eval-type.enum';
+import { Category } from 'stix/assess/v3/baseline/category';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { Stix } from 'stix/unfetter/stix';
 import { AuthService } from '../../../../../core/services/auth.service';
@@ -22,7 +22,6 @@ import { StixPermissions } from '../../../../../global/static/stix-permissions';
 import { Relationship } from '../../../../../models';
 import { AppState } from '../../../../../root-store/app.reducers';
 import { Constance } from '../../../../../utils/constance';
-import { AssessService } from '../../../services/assess.service';
 import { LoadGroupAttackPatternRelationships, LoadGroupCurrentAttackPattern, LoadGroupData, PushUrl, UpdateAssessmentObject } from '../../store/full-result.actions';
 import { FullAssessmentResultState } from '../../store/full-result.reducers';
 import { AddAssessedObjectComponent } from './add-assessed-object/add-assessed-object.component';
@@ -36,52 +35,33 @@ import { FullAssessmentGroup } from './models/full-assessment-group';
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
+  @Input() public activePhase: string;
+  @Input() public assessment: Assessment;
+  @Input() public assessmentGroup: Observable<FullAssessmentGroup>;
+  @Input() public assessmentId: string;
+  @Input() public categoryLookup: Observable<Category[]>;
+  @Input() public initialAttackPatternId: string;
+  @Input() public rollupId: string;
+  @Input() public unassessedPhases: string[];
+  @Output() public riskByAttackPatternChanged = new EventEmitter<RiskByAttack>();
+  @ViewChildren('addAssessedObjectComponent') public addAssessedObjectComponents: QueryList<AddAssessedObjectComponent>;
 
-  @Input()
-  public assessment: Assessment;
-
-  @Input()
-  public assessmentId: string;
-
-  @Input()
-  public rollupId: string;
-
-  @Input()
-  public activePhase: string;
-
-  @Input()
-  public initialAttackPatternId: string;
-
-  @Input()
-  public assessmentGroup: Observable<FullAssessmentGroup>;
-  @Input()
-  public unassessedPhases: string[];
-
-  @Output()
-  public riskByAttackPatternChanged = new EventEmitter<RiskByAttack>();
-
-  @ViewChildren('addAssessedObjectComponent')
-  public addAssessedObjectComponents: QueryList<AddAssessedObjectComponent>;
   public addAssessedObjectComponent: AddAssessedObjectComponent;
-
   public addAssessedObject: boolean;
   public addAssessedType: string;
   public assessedObjects: AssessmentObject[];
   public attackPatternsByPhase: AssessAttackPatternMeta[];
   public canAddAssessedObjects: boolean = false;
-  public courseOfAction: any;
   public currentAttackPattern: AttackPattern;
   public displayedAssessedObjects: DisplayedAssessmentObject[];
-  public indicator: any;
   public riskByAttackPattern: RiskByAttack;
   public unassessedAttackPatterns: AttackPattern[];
-  public xUnfetterSensor: any;
+
 
   private readonly subscriptions: Subscription[] = [];
 
   constructor(
     private appStore: Store<AppState>,
-    private assessService: AssessService,
     private authService: AuthService,
     private changeDetector: ChangeDetectorRef,
     private store: Store<FullAssessmentResultState>,
@@ -209,9 +189,10 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     const sub3$ = this.assessmentGroup
       .pipe(
         filter((group: FullAssessmentGroup) => {
-          return group.finishedLoadingGroupData === true
-            && this.displayedAssessedObjects !== undefined
-            && this.currentAttackPattern !== undefined
+          const hasAttackPattern = this.currentAttackPattern !== undefined && this.currentAttackPattern.id !== undefined;
+          const hasDisplayObject = this.displayedAssessedObjects !== undefined;
+          const isFinishedLoading = group.finishedLoadingGroupData !== undefined && group.finishedLoadingGroupData === true;
+          return (isFinishedLoading && hasDisplayObject && hasAttackPattern);
         })
       )
       .subscribe(

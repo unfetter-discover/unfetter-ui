@@ -123,8 +123,10 @@ export class BaselineService {
         const url = filter ?
             `${this.categoryBaseUrl}?${encodeURI(filter)}` : this.categoryBaseUrl;
         return this.genericApi
-            .getAs<JsonApiData<Category>[]>(url).pipe(
-                map(RxjsHelpers.mapAttributes));
+            .getAs<JsonApiData<Category>[]>(url)
+            .pipe(
+                map(RxjsHelpers.mapAttributes)
+            );
     }
 
     /**
@@ -136,8 +138,10 @@ export class BaselineService {
         const url = filter ?
             `${this.capabilityBaseUrl}?${encodeURI(filter)}` : this.capabilityBaseUrl;
         return this.genericApi
-            .getAs<JsonApiData<Capability>[]>(url).pipe(
-                map(RxjsHelpers.mapAttributes));
+            .getAs<JsonApiData<Capability>[]>(url)
+            .pipe(
+                map(RxjsHelpers.mapAttributes)
+            );
     }
 
     /**
@@ -150,8 +154,10 @@ export class BaselineService {
     public fetchBaselines(includeMeta = true): Observable<AssessmentSet[]> {
         const url = `${Constance.X_UNFETTER_ASSESSMENT_SETS_URL}?metaproperties=${includeMeta}`;
         return this.genericApi
-            .getAs<JsonApiData<AssessmentSet[]>>(url).pipe(
-                map(RxjsHelpers.mapAttributes));
+            .getAs<JsonApiData<AssessmentSet[]>>(url)
+            .pipe(
+                map(RxjsHelpers.mapAttributes)
+            );
     }
 
     /**
@@ -162,8 +168,10 @@ export class BaselineService {
     public getById(id: string, includeMeta = true): Observable<AssessmentSet> {
         const url = `${this.baselineBaseUrl}/${id}?metaproperties=${includeMeta}`;
         return this.genericApi
-            .getAs<JsonApiData<AssessmentSet>>(url).pipe(
-                map(RxjsHelpers.mapAttributes));
+            .getAs<JsonApiData<AssessmentSet>>(url)
+            .pipe(
+                map(RxjsHelpers.mapAttributes)
+            );
     }
 
     /**
@@ -174,8 +182,10 @@ export class BaselineService {
     public fetchAssessmentSet(id: string, includeMeta = true): Observable<AssessmentSet> {
         const url = `${Constance.X_UNFETTER_ASSESSMENT_SETS_URL}/${id}?metaproperties=${includeMeta}`;
         return this.genericApi
-            .getAs<JsonApiData<AssessmentSet>>(url).pipe(
-                map(RxjsHelpers.mapAttributes));
+            .getAs<JsonApiData<AssessmentSet>>(url)
+            .pipe(
+                map(RxjsHelpers.mapAttributes)
+            );
     }
 
     /**
@@ -226,8 +236,10 @@ export class BaselineService {
 
         const url = `${this.capabilityBaseUrl}/${capId}`;
         return this.genericApi
-            .getAs<Capability>(url).pipe(
-                map(RxjsHelpers.mapAttributes));
+            .getAs<Capability>(url)
+            .pipe(
+                map(RxjsHelpers.mapAttributes)
+            );
     }
 
     /**
@@ -242,8 +254,10 @@ export class BaselineService {
 
         const url = `${this.categoryBaseUrl}/${catId}`;
         return this.genericApi
-            .getAs<Category>(url).pipe(
-                map(RxjsHelpers.mapAttributes));
+            .getAs<Category>(url)
+            .pipe(
+                map(RxjsHelpers.mapAttributes)
+            );
     }
 
     /**
@@ -258,8 +272,10 @@ export class BaselineService {
         const urlBase = this.objectAssessmentsBaseUrl;
         const observables = ids.map((id) => {
             return this.genericApi
-                .getAs<JsonApiData<ObjectAssessment>>(`${this.baselineBaseUrl}/${id}`).pipe(
-                    map<JsonApiData<ObjectAssessment>, ObjectAssessment>(RxjsHelpers.mapAttributes));
+                .getAs<JsonApiData<ObjectAssessment>>(`${this.baselineBaseUrl}/${id}`)
+                .pipe(
+                    map<JsonApiData<ObjectAssessment>, ObjectAssessment>(RxjsHelpers.mapAttributes)
+                );
         });
 
         return observableForkJoin(...observables);

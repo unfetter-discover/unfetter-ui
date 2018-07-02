@@ -32,7 +32,7 @@ describe('assessment v3 - full result reducer spec', () => {
     it('should track failed to load', () => {
         const state = fullAssessmentResultReducer(initialState, new actions.FailedToLoad(true));
         expect(state).toBeDefined();
-        expect(state.finishedLoading).toBe(false);
+        expect(state.finishedLoading).toBe(true);
         expect(state.failedToLoad).toBe(true);
     });
 

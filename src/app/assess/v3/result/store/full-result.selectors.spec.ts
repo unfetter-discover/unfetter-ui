@@ -1,19 +1,48 @@
-import { getTacticsChains } from './full-result.selectors';
+import { FullAssessmentResultState, genState } from './full-result.reducers';
+import { getFailedToLoadAssessment, getFinishedLoadingAssessment, getTacticsChains } from './full-result.selectors';
 
 describe('assessment v3 - full result selectors spec', () => {
 
-    let appState;
+    let state: { 'fullAssessment': FullAssessmentResultState };
+    let configState;
 
     beforeEach(() => {
-        appState = {
+        state = { 'fullAssessment': genState() };
+        configState = {
             config: {
                 tacticsChains: genTacticsChains(),
             }
         }
     });
 
+    it('should return a failed to load false', () => {
+        const el = getFailedToLoadAssessment(state);
+        expect(el).toBeDefined();
+        expect(el).toBeFalsy();
+    });
+
+    it('should return a failed to load true', () => {
+        state.fullAssessment.failedToLoad = true;
+        const el = getFailedToLoadAssessment(state);
+        expect(el).toBeDefined();
+        expect(el).toBeTruthy();
+    });
+
+    it('should return a finished loading false', () => {
+        const el = getFinishedLoadingAssessment(state);
+        expect(el).toBeDefined();
+        expect(el).toBeFalsy();
+    });
+
+    it('should return a finished loading true', () => {
+        state.fullAssessment.finishedLoading = true;
+        const el = getFinishedLoadingAssessment(state);
+        expect(el).toBeDefined();
+        expect(el).toBeTruthy();
+    });
+
     it('getTacticsChains should return config tacticsChains', () => {
-        const el = getTacticsChains(appState);
+        const el = getTacticsChains(configState);
         expect(el).toBeTruthy();
         const id = 'mitre-attack';
         const attack = el[id];

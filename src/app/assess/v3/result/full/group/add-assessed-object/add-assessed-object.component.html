@@ -2,8 +2,13 @@
   <hr>
 
   <div *ngIf="addAssessedObject">
-    <mat-card class="mat-elevation-z18" id="addAssessedObjectCard">
+    <mat-card class="mat-elevation-z18 fadeIn" id="addAssessedObjectCard">
       <mat-card-title>Add {{ addAssessedObjectName }}</mat-card-title>
+      <mat-card-subtitle *ngIf="errMsg && errMsg.length > 0">
+        <span class="errMsg">
+          {{ errMsg }}
+        </span>
+      </mat-card-subtitle>
       <mat-card-content *ngIf="addAssessedType">
 
         <div [ngSwitch]="addAssessedType">
@@ -23,34 +28,33 @@
             <div class="row">
               <div class="col-md-12">
                 <mat-form-field class="full-width">
-                  <input matInput placeholder="Name" required [(ngModel)]="indicator.name" value="{{indicator.name}}" />
-                </mat-form-field>
-              </div>
-            </div>            
-            <div class="row">
-              <div class="col-md-12">
-                <mat-form-field class="full-width">
-                  <textarea matInput placeholder="Pattern" required [(ngModel)]="indicator.pattern" value="{{indicator.pattern}}"></textarea>
+                  <input matInput placeholder="Name" required [(ngModel)]="indicator.name" value="{{indicator.name}}" autocomplete="off" />
                 </mat-form-field>
               </div>
             </div>
             <div class="row">
-                <div class="col-md-12">
-                    <mat-form-field class="full-width">
-                        <textarea matInput placeholder="Description" [(ngModel)]="indicator.description" value="{{indicator.description}}"></textarea>
-                    </mat-form-field>
-                </div>
+              <div class="col-md-12">
+                <mat-form-field class="full-width">
+                  <textarea matInput placeholder="Pattern" required [(ngModel)]="indicator.pattern" value="{{indicator.pattern}}" autocomplete="off"></textarea>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <mat-form-field class="full-width">
+                  <textarea matInput placeholder="Description" [(ngModel)]="indicator.description" value="{{indicator.description}}" autocomplete="off"></textarea>
+                </mat-form-field>
+              </div>
             </div>
 
             <div class="row">
               <p class="text-right">
                 <button mat-button (click)="addAssessedObject = !addAssessedObject">CANCEL
                 </button>
-                <button mat-raised-button color="accent" [disabled]="!indicator.name || !indicator.pattern" (click)="createAssessedObject(indicator, currentAttackPattern)">SAVE</button>
+                <button mat-raised-button color="accent" [disabled]="!indicator.name || !indicator.pattern" (click)="onCreateAssessedObject(indicator, currentAttackPattern, $event)">SAVE</button>
               </p>
             </div>
           </div>
-          <!-- End indicator-->
 
           <div *ngSwitchCase="'course-of-action'">
             <div class="row">
@@ -67,14 +71,15 @@
             <div class="row">
               <div class="col-md-12">
                 <mat-form-field class="full-width">
-                  <input matInput placeholder="Name" required [(ngModel)]="courseOfAction.name" value="{{courseOfAction.name}}">
+                  <input matInput placeholder="Name" required [(ngModel)]="courseOfAction.name" value="{{courseOfAction.name}}" autocomplete="off">
                 </mat-form-field>
               </div>
             </div>
             <div class="row">
               <div class="col-md-12">
                 <mat-form-field class="full-width">
-                  <textarea matInput placeholder="Description" [(ngModel)]="courseOfAction.description" value="{{courseOfAction.description}}"></textarea>
+                  <textarea matInput placeholder="Description" [(ngModel)]="courseOfAction.description" value="{{courseOfAction.description}}"
+                    autocomplete="off"></textarea>
                 </mat-form-field>
               </div>
             </div>
@@ -82,50 +87,106 @@
             <div class="row">
               <p class="text-right">
                 <button mat-button (click)="addAssessedObject = !addAssessedObject">CANCEL</button>
-                <button color="accent" mat-raised-button [disabled]="!courseOfAction.name" (click)="createAssessedObject(courseOfAction, currentAttackPattern)">SAVE</button>
+                <button color="accent" mat-raised-button [disabled]="!courseOfAction.name" (click)="onCreateAssessedObject(courseOfAction, currentAttackPattern, $event)">SAVE</button>
               </p>
             </div>
           </div>
-          <!-- End COA -->
 
-          <div *ngSwitchCase="'x-unfetter-sensor'">
-            <div class="row">
-              <div *ngFor="let measurement of xUnfetterSensor.questions" class="col-xs-12">
-                <mat-form-field class="full-width">
-                  <mat-select [(ngModel)]="measurement.risk" class="full-width matSelectBotMargin" placeholder="{{ measurement.name }}">
-                    <mat-option *ngFor="let option of measurement.options" [value]="option.risk">
-                      {{ option.name }}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
+          <div *ngSwitchCase="'x-unfetter-capability'">
+            <form [formGroup]="capabilityFormGroup" autocomplete="off">
+              <div class="row errMsg" *ngIf="capabilityFormGroup.get('assessmentRisk').touched && capabilityFormGroup.get('assessmentRisk').errors as riskErrs">
+                {{ riskErrs | json }}
               </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <mat-form-field class="full-width">
-                  <input matInput placeholder="Name" required [(ngModel)]="xUnfetterSensor.name" value="{{xUnfetterSensor.name}}" />
-                </mat-form-field>
+              <div class="row">
+                <div class="col-md-12 mat-subheading-1">
+                  Capability
+                </div>
               </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <mat-form-field class="full-width">
-                  <textarea matInput placeholder="Description" [(ngModel)]="xUnfetterSensor.description" value="{{xUnfetterSensor.description}}"></textarea>
-                </mat-form-field>
+              <div class="row">
+                <div class="col-md-12">
+                  <mat-form-field class="full-width">
+                    <input matInput placeholder="Name" formControlName="name" required>
+                  </mat-form-field>
+                </div>
               </div>
-            </div>
-            <div class="row">
-              <p class="text-right">
-                <button mat-button (click)="addAssessedObject = !addAssessedObject">CANCEL</button>
-                <button color="accent" mat-raised-button [disabled]="!xUnfetterSensor.name" (click)="createAssessedObject(xUnfetterSensor, currentAttackPattern)">SAVE</button>
-              </p>
-            </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <mat-form-field class="full-width">
+                    <textarea matInput placeholder="Description" formControlName="description"></textarea>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="category" placeholder="Category">
+                      <mat-option *ngFor="let category of categoryLookup; trackBy: trackByFn" [value]="category">
+                        {{ category.name }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="protectWeight" placeholder="Protect">
+                      <mat-option *ngFor="let weight of capabilitySelectWeightings; trackBy: trackByFn" [value]="weight.shortForm">
+                        {{ weight.longForm }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="detectWeight" placeholder="Detect">
+                      <mat-option *ngFor="let weight of capabilitySelectWeightings; trackBy: trackByFn" [value]="weight.shortForm">
+                        {{ weight.longForm }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="respondWeight" placeholder="Respond">
+                      <mat-option *ngFor="let weight of capabilitySelectWeightings; trackBy: trackByFn" [value]="weight.shortForm">
+                        {{ weight.longForm }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12 mat-subheading-1">
+                  Score Assessment
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12">
+                  <mat-form-field class="full-width">
+                    <mat-select formControlName="assessmentRisk" class="full-width matSelectBotMargin" placeholder="Coverage">
+                      <mat-option *ngFor="let option of capabiltyAssessmentSelectOptions" [value]="option.risk">
+                        {{ option.name }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <p class="text-right">
+                  <button mat-button (click)="addAssessedObject = !addAssessedObject">CANCEL</button>
+                  <button color="accent" mat-raised-button [disabled]="capabilityFormGroup.invalid" (click)="onCapabilitySave(capabilityFormGroup?.value, $event)">SAVE</button>
+                </p>
+              </div>
+            </form>
           </div>
-          <!-- End sensor -->
-
         </div>
       </mat-card-content>
     </mat-card>
   </div>
-  <unf-speed-dial [items]="speedDialItems" (itemClickedEmitter)="speedDialClicked($event)" [(open)]="addAssessedObject"></unf-speed-dial>
+  <unf-speed-dial [items]="speedDialItems" (itemClickedEmitter)="onSpeedDialClicked($event)" [(open)]="addAssessedObject"></unf-speed-dial>
 </div>

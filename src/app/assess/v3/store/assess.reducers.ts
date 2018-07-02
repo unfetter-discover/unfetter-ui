@@ -24,7 +24,7 @@ export interface AssessState {
     showSummary: boolean;
 };
 
-const genAssessState = (state?: Partial<AssessState>) => {
+export const genAssessState = (state?: Partial<AssessState>) => {
     const tmp = {
         assessment: new Assessment(),
         backButton: false,
