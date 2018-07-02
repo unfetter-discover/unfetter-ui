@@ -33,6 +33,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
   baselineName: Observable<string>;
   blName: string;
   baselineId: string;
+  currentBaseline: AssessmentSet;
 
   dates: any[];
   summaries: AssessmentSet[];
@@ -247,6 +248,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       distinctUntilChanged())
       .subscribe((baseline: AssessmentSet) => {
         if (baseline) {
+          this.currentBaseline = baseline;
           this.blName = baseline.name;
           this.baselineName = observableOf(this.blName);
         }

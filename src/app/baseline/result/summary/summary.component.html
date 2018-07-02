@@ -31,7 +31,7 @@
     <mat-sidenav-content class="sidenavContentPolyfill320">
       <div class="main-panel">
         <!-- TODO replace true with published flag from metaproperties of baseline -->
-        <result-header [baselineId]="baselineId" [published]="calculationService.baseline.metaProperties.published ? calculationService.baseline.modified : undefined"></result-header>
+        <result-header [currentBaseline]="currentBaseline" [baselineId]="baselineId" [published]="calculationService.baseline.metaProperties.published ? calculationService.baseline.modified : undefined"></result-header>
         <summary-report></summary-report>
       </div>
     </mat-sidenav-content>
