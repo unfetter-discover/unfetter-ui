@@ -53,7 +53,14 @@ export class FullResultEffects {
                 return this.assessService
                     .getById(id)
                     .pipe(
-                        mergeMap((data: Assessment) => [new SetAssessment(data), new FinishedLoading(true)]),
+                        mergeMap((assessment: Assessment) => {
+                            const assessmentType = assessment.determineAssessmentType();
+                            let isCapability = false;
+                            if (assessmentType === AssessmentEvalTypeEnum.CAPABILITIES) {
+                              isCapability = true;
+                            }
+                            return [new SetAssessment(assessment), new LoadGroupData({ id, isCapability }), new FinishedLoading(true)]
+                        }),
                         catchError((err) => {
                             console.log(err);
                             return observableOf(new FailedToLoad(true));

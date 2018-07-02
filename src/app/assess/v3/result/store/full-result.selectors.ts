@@ -44,11 +44,32 @@ export const getUnassessedPhases = createSelector(
     },
 );
 
+export const getAllFinishedLoading = createSelector(
+    getFinishedLoadingAssessment,
+    getFinishedLoadingGroupData,
+    (finisedLoadingAssessment: boolean, finishedLoadingGroup: boolean) => {
+        return finisedLoadingAssessment && finishedLoadingGroup;
+    }
+);
+
+export const getFullAssessmentName = createSelector(
+    getFullAssessment,
+    (assessment: Assessment) => {
+        const assessmentType = (assessment !== undefined && assessment.determineAssessmentType) ?
+            assessment.determineAssessmentType() : 'Unknown';
+        return `${assessment.name} - ${assessmentType}`;
+    }
+);
+
 export const getUnassessedPhasesForCurrentFramework = createSelector(
     getGroupState,
     getFullAssessment,
     getTacticsChains,
     (group: FullAssessmentGroup, assessment: Assessment, tacticsChains: Dictionary<TacticChain>) => {
+        if (group.finishedLoadingGroupData === false) {
+            return [];
+        }
+
         if (assessment === undefined || tacticsChains === undefined) {
             return group.unassessedPhases;
         }
