@@ -10,6 +10,8 @@ import { UserPreferencesService } from './services/user-preferences.service';
 import { UsersService } from './services/users.service';
 import { WebsocketService } from './services/web-socket.service';
 import { NotificationsService } from './services/notifications.service';
+import { SnackBarService } from './services/snackbar.service';
+import { MatSnackBarModule } from '@angular/material';
 
 @NgModule({
 })
@@ -18,6 +20,7 @@ export class CoreModule {
         return {
             ngModule: CoreModule,
             providers: [
+                MatSnackBarModule,
                 GenericApi,
                 AuthGuard,
                 AuthService,
@@ -28,6 +31,7 @@ export class CoreModule {
                 WebsocketService,
                 NotificationsService,
                 HttpClientModule,
+                SnackBarService,                
                 { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
             ],
         };
