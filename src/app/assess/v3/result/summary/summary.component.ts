@@ -128,9 +128,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
         this.summaries = [...arr];
         this.summary = this.summaries[0] || new Assessment();
         const assessmentType = this.summary.determineAssessmentType() || 'Unknown';
-        // TODO: temporary
         if (assessmentType === AssessmentEvalTypeEnum.CAPABILITIES) {
-          // this.summaryCalculationService.isCapability = true;
+          this.summaryCalculationService.isCapability = true;
         } else {
           this.summaryCalculationService.isCapability = false;
         }
