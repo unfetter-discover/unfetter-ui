@@ -1,5 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SummaryCalculationService } from '../summary/summary-calculation.service';
+import { Store } from '@ngrx/store';
+import * as assessReducers from '../../store/baseline.reducers';
+import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
+import { SaveBaseline } from '../../store/baseline.actions';
 
 @Component({
   selector: 'result-header',
@@ -18,9 +22,13 @@ export class ResultHeaderComponent implements OnInit {
   infoBarMsg: string;
   public editUrl: string;
 
+  @Input() currentBaseline: AssessmentSet;
+
   constructor(
-    public calculationService: SummaryCalculationService
+    public calculationService: SummaryCalculationService,
+    private wizardStore: Store<assessReducers.BaselineState>
   ) { }
+
 
   /**
    * @description on init
@@ -38,5 +46,15 @@ export class ResultHeaderComponent implements OnInit {
       this.infoBarMsg += ` ${this.percentCompleted}% of your baseline is complete.`;
       this.editUrl = `/baseline/wizard/edit/${this.baselineId}`;
     }
+
+    this.editUrl = `/baseline/wizard/edit/${this.baselineId}`;
+    this.infoBarMsg = 'Baselines is currently in beta. Some functionality does not work.'
+    this.percentCompleted = 2;
+    this.infoBarMsg += ` ${this.percentCompleted}% of your baseline is complete.`;
+  }
+
+  public publishBaseline() {
+    this.currentBaseline.metaProperties.published = true;
+    this.wizardStore.dispatch(new SaveBaseline(this.currentBaseline));
   }
 }
