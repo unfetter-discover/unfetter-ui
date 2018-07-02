@@ -64,9 +64,9 @@ export class SummaryEffects {
                         // Collect weighting summaries for P, D, and R
                         apTotal++;
                         aoObj.questions.map((question) => {
-                            protWeightings += (question.name === 'protect' && question.score !== 'N') ? 1 : 0;
-                            detWeightings += (question.name === 'detect' && question.score !== 'N') ? 1 : 0;
-                            respWeightings += (question.name === 'respond' && question.score !== 'N') ? 1 : 0;
+                            protWeightings += (question.name === 'protect' && question.score !== '') ? 1 : 0;
+                            detWeightings += (question.name === 'detect' && question.score !== '') ? 1 : 0;
+                            respWeightings += (question.name === 'respond' && question.score !== '') ? 1 : 0;
                         })
                     })
 
