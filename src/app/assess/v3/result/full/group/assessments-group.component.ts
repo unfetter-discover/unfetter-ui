@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren, ChangeDetectionStrategy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
@@ -32,7 +32,7 @@ import { FullAssessmentGroup } from './models/full-assessment-group';
   selector: 'unf-assess-group',
   templateUrl: './assessments-group.component.html',
   styleUrls: ['./assessments-group.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() public activePhase: string;
@@ -43,7 +43,8 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() public initialAttackPatternId: string;
   @Input() public rollupId: string;
   @Input() public unassessedPhases: string[];
-  @Output() public riskByAttackPatternChanged = new EventEmitter<RiskByAttack>();
+  @Output() public onRiskByAttackPatternChanged = new EventEmitter<RiskByAttack>();
+  @Output() public onAddedAssessmentObject = new EventEmitter<boolean>();
   @ViewChildren('addAssessedObjectComponent') public addAssessedObjectComponents: QueryList<AddAssessedObjectComponent>;
 
   public addAssessedObjectComponent: AddAssessedObjectComponent;
@@ -56,7 +57,6 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   public displayedAssessedObjects: DisplayedAssessmentObject[];
   public riskByAttackPattern: RiskByAttack;
   public unassessedAttackPatterns: AttackPattern[];
-
 
   private readonly subscriptions: Subscription[] = [];
 
@@ -102,7 +102,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
           // one may encounter the
           //  "expression changed after it was checked"
           // this is one fix for that state
-          this.changeDetector.detectChanges();
+          // this.changeDetector.detectChanges();
         },
         (err) => console.log(err),
         () => sub.unsubscribe());
@@ -121,31 +121,16 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     const stixPermissions: StixPermissions = this.authService.getStixPermissions();
     this.canAddAssessedObjects = stixPermissions.canCreate(this.assessment);
     this.listenForDataChanges(attackPatternIndex);
-    // request for initial data changes
-    this.requestDataLoad();
   }
 
   /**
-   * @description request data
-   * @returns {void}
-   */
-  public requestDataLoad(): void {
-    const id = this.assessmentId;
-    const assessmentType = this.assessment.determineAssessmentType();
-    let isCapability = false;
-    if (assessmentType === AssessmentEvalTypeEnum.CAPABILITIES) {
-      isCapability = true;
-    }
-    this.store.dispatch(new LoadGroupData({ id, isCapability }));
-  }
-
-  /**
+   * @description trigger that we added an inline assessment object
    * @returns void
    */
   public onAddAssessment(): void {
     // clear objects for the observable will detect a change
     this.displayedAssessedObjects = undefined;
-    this.requestDataLoad();
+    this.onAddedAssessmentObject.emit(true);
   }
 
   /**
@@ -171,6 +156,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
           this.assessedObjects = group.assessedObjects || [];
           this.riskByAttackPattern = group.riskByAttackPattern || new RiskByAttack();
           this.loadDisplayedObjects(attackPatternIndex);
+          // this.changeDetector.detectChanges();
 
         },
         (err) => console.log(err)
@@ -198,6 +184,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe(
         (group: FullAssessmentGroup) => {
           this.displayedAssessedObjects = this.populateDisplayedAssessedObjects(group, this.currentAttackPattern);
+          // this.changeDetector.detectChanges();
         },
         (err) => console.log(err)
       );
@@ -282,7 +269,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
       activePhase = this.unassessedPhases[0];
     }
     this.setPhase(activePhase, attackPatternIndex);
-    this.riskByAttackPatternChanged.emit(this.riskByAttackPattern);
+    this.onRiskByAttackPatternChanged.emit(this.riskByAttackPattern);
   }
 
   /**
@@ -438,16 +425,14 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
           (state) => {
             // get all the phases across the frameworks
             const phases = Object.keys(state.tacticsChains)
-              .map((curFramework) => {
-                return state.tacticsChains[curFramework].phases;
-              })
+              .map((curFramework) => state.tacticsChains[curFramework].phases)
               .reduce((acc, val) => acc.concat(val), []);
             // look for the currently viewed phase
             // TODO: there is potential to get the wrong phase if the phase id exists in two frameworks
             const curPhase = phases.filter((phase) => phase.id === this.activePhase)[0];
             return of(curPhase.tactics);
-          }),
-    )
+          })
+      )
       .subscribe(
         (tactics: Tactic[]) => {
           // Give tactics for this current phase
@@ -457,7 +442,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
             .map((tactic) => Object.assign(new AttackPattern(), tactic))
             .sort(SortHelper.sortDescByField('name'));
           // trigger change detection when finished
-          this.changeDetector.detectChanges();
+          // this.changeDetector.detectChanges();
         },
         (err) => console.log(err));
     this.subscriptions.push(s$);

@@ -42,8 +42,7 @@ type ButtonLabel = 'SAVE' | 'CONTINUE';
   styleUrls: ['./wizard.component.scss'],
   animations: [heightCollapse],
 })
-export class WizardComponent extends Measurements
-  implements OnInit, AfterViewInit, OnDestroy {
+export class WizardComponent extends Measurements implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren('question') public questions: QueryList<MatSelect>;
 
   public readonly CHART_BG_COLORS: any[];
@@ -502,11 +501,11 @@ export class WizardComponent extends Measurements
 
     // reset progress
     this.setSelectedRiskValue();
-    this.changeDetection.detectChanges();
     if (panelName !== 'summary') {
       this.updateChart();
     }
     this.updateRatioOfAnswerQuestions();
+    this.changeDetection.detectChanges();
   }
 
   /**

@@ -59,7 +59,8 @@
         <div class="main-panel">
           <result-header [assessment]="assessment" [assessmentId]="assessmentId" [rollupId]="rollupId" [created]="assessment?.created"></result-header>
           <unf-assess-group #assessGroupMain [unassessedPhases]="unassessedPhases$ | async" [assessmentGroup]="assessmentGroup$" [activePhase]="phase"
-            [rollupId]="rollupId" [assessment]="assessment" (riskByAttackPatternChanged)="calculateRiskBreakdown($event)" [categoryLookup]="categoryLookup$">
+            [rollupId]="rollupId" [assessmentId]="assessmentId" [assessment]="assessment" [categoryLookup]="categoryLookup$"
+            (onRiskByAttackPatternChanged)="calculateRiskBreakdown($event)" (onAddedAssessmentObject)="requestGroupSectionDataLoad(assessment)">
           </unf-assess-group>
         </div>
       </mat-sidenav-content>

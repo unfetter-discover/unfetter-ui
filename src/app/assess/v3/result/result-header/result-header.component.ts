@@ -1,28 +1,28 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { Assessment } from 'stix/assess/v3/assessment';
 
 @Component({
   selector: 'result-header',
   templateUrl: './result-header.component.html',
-  styleUrls: ['./result-header.component.scss']
+  styleUrls: ['./result-header.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class ResultHeaderComponent implements OnInit {
 
-  @Input()
-  rollupId: string;
-  @Input()
-  assessmentId: string;
-  @Input()
-  public created: Date;
-  @Input()
-  public assessment: Assessment;
-  public summaryLink: string;
-  public resultsLink: string;
-  public percentCompletedMsg: string;
+  @Input() public assessment: Assessment;
+  @Input() public assessmentId: string;
+  @Input() public created: Date;
+  @Input() public rollupId: string;
   public percentCompleted = 0;
-  protected totalIndicators = 45;
-  protected totalCoas = 249;
-  protected totalSensors = 7;
+  public percentCompletedMsg: string;
+  public resultsLink: string;
+  public summaryLink: string;
+
+  // TODO: grab dynamic count of coas and indicators
+  protected readonly TOTAL_COAS = 249;
+  protected readonly TOTAL_INDICATORS = 45;
+  protected readonly TOTAL_SENSORS = 7;
+
   protected editUrl: string;
 
   constructor() { }
@@ -37,7 +37,7 @@ export class ResultHeaderComponent implements OnInit {
     this.summaryLink = `${resultBase}/summary/${this.rollupId}/${this.assessmentId}`;
     this.resultsLink = `${resultBase}/full/${this.rollupId}/${this.assessmentId}`;
     const editBase = `${base}/wizard/edit/`;
-    this.editUrl = `${editBase}/${this.rollupId}`; 
+    this.editUrl = `${editBase}/${this.rollupId}`;
     // TODO: initialize the correct total questions, by calling the server, may need a count endpoint
     this.percentCompleted = this.calcPercentCompleted(this.assessment);
     this.percentCompletedMsg = `Assessments BETA, some features do not work!`
@@ -63,20 +63,20 @@ export class ResultHeaderComponent implements OnInit {
     let totalQuestions;
     switch (assessmentType.toString()) {
       case 'indicator': {
-        totalQuestions = this.totalIndicators;
+        totalQuestions = this.TOTAL_INDICATORS;
         break;
       }
       case 'course-of-action': {
-        totalQuestions = this.totalCoas;
+        totalQuestions = this.TOTAL_COAS;
         break;
       }
       case 'x-unfetter-sensor': {
-        totalQuestions = this.totalSensors;
+        totalQuestions = this.TOTAL_SENSORS;
         break;
       }
-      case 'x-unfetter-capability': 
+      case 'x-unfetter-capability':
       case 'x-unfetter-object-assessment': {
-        totalQuestions = this.totalSensors;
+        totalQuestions = this.TOTAL_SENSORS;
         break;
       }
       default: {
@@ -89,7 +89,7 @@ export class ResultHeaderComponent implements OnInit {
     const numAssessed = assessmentObjects.length;
     const percent = Math.round((numAssessed / totalQuestions) * 100);
     // console.log('calc % completed', percent);
-    return percent;
+    return (percent > 100) ? 100 : percent;
   }
 
 }
