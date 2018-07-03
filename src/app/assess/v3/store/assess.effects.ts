@@ -67,21 +67,34 @@ export class AssessEffects {
           : observableOf<AssessmentSet>(new AssessmentSet());
         observables.push(capabilitiesQuestions$);
 
+        if (meta.baselineRef) {
+          const capabilitiesLookup$ = this.baselineService.getCapabilities();
+          observables.push(capabilitiesLookup$);
+          const categoriesLookup$ = this.baselineService.getCategories();
+          observables.push(categoriesLookup$);
+        }
+
         return observableForkJoin(...observables)
           .pipe(
-            mergeMap(([indicators, mitigations, baseline]) => {
+            mergeMap(([indicators, mitigations, baseline, capabilities, categories]) => {
               const actions: Action[] = [
                 new assessActions.SetIndicators(indicators as Indicator.UnfetterIndicator[]),
                 new assessActions.SetMitigations(mitigations as Stix[]),
                 new assessActions.SetCurrentBaseline(baseline as AssessmentSet),
               ];
+
+              if (capabilities !== undefined) {
+                actions.push(new assessActions.SetCapabilities(capabilities));
+              }
+
+              if (categories !== undefined) {
+                actions.push(new assessActions.SetCategories(categories));
+              }
+
               const curBaseline = baseline as AssessmentSet;
               if (curBaseline && curBaseline.assessments) {
                 // resolve baseline question ids to full questions
                 actions.push(new assessActions.LoadCurrentBaselineQuestions(curBaseline));
-                // full capabilities needs to look up category names
-                actions.push(new assessActions.FetchCapabilities());
-                actions.push(new assessActions.FetchCategories());
               } else {
                 actions.push(new assessActions.FinishedLoading(true));
               }
@@ -109,8 +122,11 @@ export class AssessEffects {
         return this.baselineService
           .fetchObjectAssessmentsByAssessmentSet(assessmentSet)
           .pipe(
-            map((arr) => {
-              return new assessActions.SetCurrentBaselineQuestions(arr);
+            mergeMap((arr) => {
+              return [
+                new assessActions.SetCurrentBaselineQuestions(arr),
+                new assessActions.FinishedLoading(true)
+              ];
             }),
             catchError((err) => {
               console.log(err);
@@ -174,12 +190,7 @@ export class AssessEffects {
         // fetch full capability objects, useful for lookups
         return this.baselineService.getCapabilities()
           .pipe(
-            mergeMap((arr) => {
-              return [
-                new assessActions.SetCapabilities(arr),
-                new assessActions.FinishedLoading(true)
-              ];
-            }),
+            map((arr) => new assessActions.SetCapabilities(arr)),
             catchError((err) => {
               console.log(err);
               return observableOf(new assessActions.FailedToLoad(true));
@@ -195,12 +206,7 @@ export class AssessEffects {
         // fetch full category objects, useful for lookups
         return this.baselineService.getCategories()
           .pipe(
-            mergeMap((arr) => {
-              return [
-                new assessActions.SetCategories(arr),
-                new assessActions.FinishedLoading(true)
-              ];
-            }),
+            map((arr) => new assessActions.SetCategories(arr)),
             catchError((err) => {
               console.log(err);
               return observableOf(new assessActions.FailedToLoad(true));

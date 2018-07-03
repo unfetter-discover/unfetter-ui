@@ -25,7 +25,7 @@
           </div>
           <div class="phases-list">
             <div class="phases-list-item cursor-pointer" *ngFor="let phase of assessmentGroup.riskByAttackPattern.phases; trackBy:trackByFn"
-              [ngClass]="{'highlightPhase': isCurrentPhase(phase._id)}" (click)="assessGroupMain.setPhase(phase._id); activePhase = phase._id">
+              [ngClass]="{'highlightPhase': isCurrentPhase(phase._id)}" (click)="activePhase = phase._id; assessGroupMain.setPhase(phase._id);">
               <div class="item-content flex">
                 <span class="phase-name flex-grow">
                   <b>{{phase._id | capitalize}}</b>
@@ -44,7 +44,7 @@
             <div class="header">Unassessed Tactics</div>
             <div class="unassessed-phases-list">
               <div class="unassessed-phases-list-item cursor-pointer" *ngFor="let phase of unassessedPhases; trackBy:trackByFn" [ngClass]="{'highlightPhase': isCurrentPhase(phase)}"
-                (click)="assessGroupMain.setPhase(phase); activePhase = phase">
+                (click)="activePhase = phase; assessGroupMain.setPhase(phase);">
                 <div class="item-content">
                   <span class="phase-name">
                     <b>{{phase | capitalize}}</b>

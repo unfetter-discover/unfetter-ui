@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
@@ -22,17 +22,18 @@ import { StixPermissions } from '../../../../../global/static/stix-permissions';
 import { Relationship } from '../../../../../models';
 import { AppState } from '../../../../../root-store/app.reducers';
 import { Constance } from '../../../../../utils/constance';
-import { LoadGroupAttackPatternRelationships, LoadGroupCurrentAttackPattern, LoadGroupData, PushUrl, UpdateAssessmentObject } from '../../store/full-result.actions';
+import { LoadGroupAttackPatternRelationships, LoadGroupCurrentAttackPattern, PushUrl, UpdateAssessmentObject } from '../../store/full-result.actions';
 import { FullAssessmentResultState } from '../../store/full-result.reducers';
 import { AddAssessedObjectComponent } from './add-assessed-object/add-assessed-object.component';
 import { DisplayedAssessmentObject } from './models/displayed-assessment-object';
 import { FullAssessmentGroup } from './models/full-assessment-group';
+import { AssessmentGroup } from 'stix/assess/v3/baseline/assessment-group';
 
 @Component({
   selector: 'unf-assess-group',
   templateUrl: './assessments-group.component.html',
   styleUrls: ['./assessments-group.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() public activePhase: string;
@@ -163,8 +164,9 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const sub2$ = this.assessmentGroup
       .pipe(
-        pluck('currentAttackPattern'),
-        distinctUntilChanged()
+        pluck<AssessmentGroup, AttackPattern>('currentAttackPattern'),
+        distinctUntilChanged(),
+        filter((attackPattern) => attackPattern.id !== undefined)
       )
       .subscribe(
         (currentAttackPattern: Stix) => this.currentAttackPattern = currentAttackPattern,
@@ -311,6 +313,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     this.resetNewAssessmentObjects();
     this.unassessedAttackPatterns = [];
     this.activePhase = phaseName;
+    this.currentAttackPattern = undefined;
     this.attackPatternsByPhase = this.getAttackPatternsByPhase(this.activePhase);
     let currentAttackPatternId = '';
     if (this.attackPatternsByPhase.length > 0) {
@@ -318,21 +321,18 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.setAttackPattern(currentAttackPatternId);
 
-    this.updateUrlIfNeeded();
   }
 
-  /** 
+  /**
    * @description if this component has the correct settings, update the url with out rerouting
-   * @return {void}
+   * @param  {string} rollUpId
+   * @param  {string} assessmentId
+   * @param  {string} phase
+   * @param  {} attackPattern=''
+   * @returns void
    */
-  public updateUrlIfNeeded(): void {
-    const rollupId = this.rollupId || '';
-    const assessmentId = this.assessmentId || '';
-    const phase = this.activePhase || '';
-    const attackPattern = (this.currentAttackPattern && this.currentAttackPattern.id)
-      ? this.currentAttackPattern.id : '';
-
-    if (rollupId && assessmentId && phase && attackPattern) {
+  public updateUrlIfNeeded(rollupId: string, assessmentId: string, phase: string, attackPattern = ''): void {
+    if (rollupId && assessmentId && phase) {
       this.store.dispatch(new PushUrl({ rollupId, assessmentId, phase, attackPattern }));
     }
   }
@@ -436,15 +436,34 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
         (tactics: Tactic[]) => {
           // Give tactics for this current phase
           //  Get unassessed and transform to attack patterns
-          this.unassessedAttackPatterns = tactics
+          const unassessedAttackPatterns = tactics
             .filter((tactic) => !assessedAps.includes(tactic.id))
             .map((tactic) => Object.assign(new AttackPattern(), tactic))
             .sort(SortHelper.sortDescByField('name'));
+
+          // if the current attack pattern is empty and we are entering an unassessed phase
+          //  select the first unassessed attack pattern, this is kind of buried place to put this
+          //  logic, but it was easiest to get to at the time
+          if (!this.currentAttackPattern || !this.currentAttackPattern.id) {
+            const assessedPhases = this.riskByAttackPattern.phases;
+            const isAssessedPhase = assessedPhases.find((phase) => phase._id === this.activePhase) !== undefined;
+            if (isAssessedPhase === false) {
+              const firstUnassessedAttackPattern = unassessedAttackPatterns[0];
+              this.currentAttackPattern = firstUnassessedAttackPattern;
+            }
+          }
+
+          this.unassessedAttackPatterns = unassessedAttackPatterns;
+          this.displayedAssessedObjects = [];
           // trigger change detection when finished
+          // this.changeDetector.markForCheck();
           // this.changeDetector.detectChanges();
+
         },
         (err) => console.log(err));
     this.subscriptions.push(s$);
+
+    this.updateUrlIfNeeded(this.rollupId, this.assessmentId, this.activePhase);
   }
 
   /**
