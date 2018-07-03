@@ -1,4 +1,4 @@
-export type HttpStatusCodes = 400 | 403 | 404 | 500 | 520;
+export type HttpStatusCodes = 400 | 403 | 404 | 500 | 503 | 520;
 
 export const HttpErrorMessages: { [index: number]: { title: string, message: string } } = {
     400: {

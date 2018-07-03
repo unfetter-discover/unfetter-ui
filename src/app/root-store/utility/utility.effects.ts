@@ -9,6 +9,7 @@ import * as utilityActions from './utility.actions';
 import { Constance } from '../../utils/constance';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { SnackBarService } from '../../core/services/snackbar.service';
+import { HttpStatusCodes } from '../../global/enums/http-status-codes.enum';
 
 @Injectable()
 export class UtilityEffects {
@@ -49,7 +50,15 @@ export class UtilityEffects {
     public navigate = this.actions$
         .ofType(utilityActions.NAVIGATE).pipe(
         pluck('payload'),
-        tap((route: any[]) => this.router.navigate(route)))
+        tap((route: any[]) => this.router.navigate(route)));
+
+    @Effect({ dispatch: false })
+    public navigateToErrorPage = this.actions$
+        .ofType(utilityActions.NAVIGATE_TO_ERROR_PAGE)
+        .pipe(
+            pluck('payload'),
+            tap((code: HttpStatusCodes) => this.router.navigate([`/error/${code}`]))
+        );
 
     @Effect({ dispatch: false })
     public recordVisit = this.actions$
