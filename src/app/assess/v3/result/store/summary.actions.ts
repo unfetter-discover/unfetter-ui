@@ -77,7 +77,7 @@ export class LoadSingleSummaryAggregationData implements Action {
     public readonly type = LOAD_SINGLE_SUMMARY_AGGREGATION_DATA;
 
     // individual assessment id
-    constructor(public payload: string) { }
+    constructor(public payload: { id: string, isCapability: boolean }) { }
 }
 
 export class LoadSummaryAggregationData implements Action {
