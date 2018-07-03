@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import * as utilityActions from './utility.actions';
 import { Constance } from '../../utils/constance';
 import { GenericApi } from '../../core/services/genericapi.service';
+import { SnackBarService } from '../../core/services/snackbar.service';
 
 @Injectable()
 export class UtilityEffects {
@@ -55,9 +56,39 @@ export class UtilityEffects {
         .ofType(utilityActions.RECORD_VISIT).pipe(
         switchMap((_) => this.genericApi.get(`${this.webAnalyticsUrl}/visit`)));
 
+    @Effect({ dispatch: false })
+    public openSnackbar = this.actions$
+        .ofType(utilityActions.OPEN_SNACKBAR)
+        .pipe(
+            pluck('payload'),
+            tap((payload: any) => {
+                let { message, panelClass, duration } = payload;
+                if (!message && typeof payload === 'string') {
+                    message = payload;
+                }
+
+                if (!panelClass && !duration) {
+                    console.log('No extras');
+                    this.snackBarService.openSnackbar(message);
+                } else if (!panelClass && duration) {
+                    console.log('Duration only');
+                    this.snackBarService.openSnackbar(message, [], duration);
+                } else if (panelClass && !duration) {
+                    console.log('panel class only');
+                    this.snackBarService.openSnackbar(message, panelClass);
+                } else if (panelClass && duration) {
+                    console.log('panel class and duration');
+                    this.snackBarService.openSnackbar(message, panelClass, duration);
+                } else {
+                    console.log('WARNING: Unable to process snackbar arguments');
+                }
+            })
+        );
+
     constructor(
         private actions$: Actions,
         private router: Router,
-        private genericApi: GenericApi
+        private genericApi: GenericApi,
+        private snackBarService: SnackBarService,
     ) { }
 }

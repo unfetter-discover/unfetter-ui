@@ -12,7 +12,6 @@ import * as stixActions from './root-store/stix/stix.actions';
 import * as userActions from './root-store/users/user.actions';
 import { demoUser } from './testing/demo-user';
 import { RunConfigService } from './core/services/run-config.service';
-import { SnackBarService } from './core/services/snackbar.service';
 
 @Component({
   selector: 'unf-app',
@@ -35,12 +34,10 @@ export class AppComponent implements OnInit {
     private store: Store<fromApp.AppState>,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private s: SnackBarService
   ) {
   }
 
   public ngOnInit() {
-    this.s.openSnackbar('hihihihi');
     if (this.runMode && this.runMode === 'UAC') {
       console.log('Running application in UAC mode');
     } else if (this.runMode && this.runMode === 'DEMO') {
