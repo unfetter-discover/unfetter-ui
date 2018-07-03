@@ -10,7 +10,7 @@ export class RxjsHelpers {
         return arr.map((el) => {
             if (el instanceof Array) {
                 return el.map((e) => e.attributes);
-            } else if (el instanceof Object) {
+            } else if (el instanceof Object && el.attributes) {
                 return el.attributes;
             } else {
                 return el;

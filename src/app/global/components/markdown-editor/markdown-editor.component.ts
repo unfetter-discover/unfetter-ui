@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { finalize } from 'rxjs/operators';
+import { finalize, distinctUntilChanged } from 'rxjs/operators';
 
 /**
  * 
@@ -66,6 +66,7 @@ export class MarkdownEditorComponent implements OnInit {
         if (this.value !== null) {
             const formChange$ = this.formCtrl.valueChanges
                 .pipe(
+                    distinctUntilChanged<string>(),
                     finalize(() => formChange$ && formChange$.unsubscribe())
                 )
                 .subscribe(

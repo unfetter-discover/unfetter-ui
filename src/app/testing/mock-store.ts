@@ -19,7 +19,7 @@ export const mockConfig = {
             ]
         },
         {
-            'name': 'ctf',
+            'name': 'ntctf',
             'phase_names': [
                 'planning',
                 'research'

@@ -52,7 +52,7 @@ export class ConfigEffects {
     public loadTactics = this.actions$
         .ofType(configActions.FETCH_TACTICS).pipe(
         switchMap(() => {
-            return observableForkJoin(this.configService.getConfig(), this.tacticsService.fetchByFramework());
+            return observableForkJoin(this.configService.getConfig({ configKey: 'killChains' }), this.tacticsService.fetchByFramework());
         }),
         map(([config, patterns]) => this.createTacticsChains(config, patterns)),
         map(tactics => new configActions.LoadTactics(tactics)));
