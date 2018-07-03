@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { EMPTY, Observable, of, Subscription } from 'rxjs';
-import { map, switchMap, first } from 'rxjs/operators';
-import { AssessedObject, ObjectAssessment } from 'stix';
+import { EMPTY, Observable, Subscription } from 'rxjs';
+import { first, map, switchMap } from 'rxjs/operators';
+import { AssessedObject, Assessment, ObjectAssessment } from 'stix/assess/v3';
 import { Capability } from 'stix/assess/v3/baseline/capability';
 import { Category } from 'stix/assess/v3/baseline/category';
 import { Question } from 'stix/assess/v3/baseline/question';
@@ -10,7 +10,6 @@ import { QuestionAnswerEnum } from 'stix/assess/v3/baseline/question-answer.enum
 import { StixCoreEnum } from 'stix/stix/stix-core.enum';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { StixEnum } from 'stix/unfetter/stix.enum';
-import { SpeedDialItem } from '../../../../../../global/components/speed-dial/speed-dial-item';
 import { AngularHelper } from '../../../../../../global/static/angular-helper';
 import { RxjsHelpers } from '../../../../../../global/static/rxjs-helpers';
 import { Constance } from '../../../../../../utils/constance';
@@ -28,7 +27,7 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
     @Input() public addAssessedObject = false;
     @Input() public addAssessedType: string;
     @Input() public assessedObjects: any[];
-    @Input() public assessment: any;
+    @Input() public assessment: Assessment;
     @Input() public categoryLookup: Category[];
     @Input() public courseOfAction: any;
     @Input() public currentAttackPattern: AttackPattern;
@@ -43,12 +42,12 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
     public capabiltyAssessmentSelectOptions: SelectOption[];
     public errMsg: string;
 
-    public readonly speedDialItems = [
-        new SpeedDialItem('toggle', 'add', true, null, 'Add Assessed Object'),
-        new SpeedDialItem('indicator', null, false, 'indicator', 'Indicator'),
-        new SpeedDialItem('mitigation', null, false, 'course-of-action', 'Mitigation'),
-        new SpeedDialItem('capability', null, false, 'tool', 'Capability')
-    ];
+    // public readonly speedDialItems = [
+    //     new SpeedDialItem('toggle', 'add', true, null, 'Add Assessed Object'),
+    //     new SpeedDialItem('indicator', null, false, 'indicator', 'Indicator'),
+    //     new SpeedDialItem('mitigation', null, false, 'course-of-action', 'Mitigation'),
+    //     new SpeedDialItem('capability', null, false, 'tool', 'Capability')
+    // ];
 
     private readonly subscriptions: Subscription[] = [];
 
@@ -61,6 +60,11 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
      * @description initialize this component
      */
     public ngOnInit(): void {
+        if (this.assessment && this.assessment.assessment_objects) {
+            const firstType = this.assessment.assessment_objects[0].stix.type || '';
+            this.addAssessedType = firstType;
+            this.addAssessedObjectName = this.assessment.determineAssessmentType();
+        }
         this.capabilityFormGroup = this.generateCapabilityFormGroup();
         this.capabilitySelectWeightings = this.generateCapabilityWeightingValues();
         this.capabiltyAssessmentSelectOptions = this.generateCapabilityRiskSelectOptions();
@@ -153,7 +157,7 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
      */
     public resetNewAssessmentObjects(): void {
         this.addAssessedObject = false;
-        this.addAssessedType = '';
+        // this.addAssessedType = '';
         this.indicator = {
             type: StixCoreEnum.INDICATOR,
             name: '',
@@ -224,23 +228,23 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
      * @param  {SpeedDialItem} speedDialItem
      * @returns void
      */
-    public onSpeedDialClicked(speedDialItem: SpeedDialItem): void {
-        this.addAssessedObject = true;
-        switch (speedDialItem.name) {
-            case 'indicator':
-                this.addAssessedObjectName = 'Indicator';
-                this.addAssessedType = StixCoreEnum.INDICATOR;
-                break;
-            case 'mitigation':
-                this.addAssessedObjectName = 'Mitigation';
-                this.addAssessedType = StixCoreEnum.COURSE_OF_ACTION;
-                break;
-            case 'capability':
-                this.addAssessedObjectName = 'Capability';
-                this.addAssessedType = StixEnum.CAPABILITY;
-                break;
-        }
-    }
+    // public onSpeedDialClicked(speedDialItem: SpeedDialItem): void {
+    //     this.addAssessedObject = true;
+    //     switch (speedDialItem.name) {
+    //         case 'indicator':
+    //             this.addAssessedObjectName = 'Indicator';
+    //             this.addAssessedType = StixCoreEnum.INDICATOR;
+    //             break;
+    //         case 'mitigation':
+    //             this.addAssessedObjectName = 'Mitigation';
+    //             this.addAssessedType = StixCoreEnum.COURSE_OF_ACTION;
+    //             break;
+    //         case 'capability':
+    //             this.addAssessedObjectName = 'Capability';
+    //             this.addAssessedType = StixEnum.CAPABILITY;
+    //             break;
+    //     }
+    // }
 
     /**
      * @description save a new capabilty and update the assessment with its value

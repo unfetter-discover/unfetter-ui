@@ -11,3 +11,17 @@
 .errMsg {
     color: $warn-color;
 }
+
+.add-assessed-object-fab {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 120;
+    width: 52px;
+    height: 52px;
+
+    button {
+        height: 100%;
+        width: 100%;
+    }
+}
