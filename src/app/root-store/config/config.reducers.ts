@@ -3,11 +3,14 @@ import { Dictionary } from '../../models/json/dictionary';
 import * as configActions from './config.actions';
 
 export interface ConfigState {
-    configurations: any
+    configurations: any,
+    tacticsChains?: Dictionary<TacticChain>,
+    tactics?: Tactic[],
 }
 
 export const initialState: ConfigState = {
-    configurations: {}
+    configurations: {},
+    tactics: [],
 }
 
 export function configReducer(state = initialState, action: configActions.ConfigActions) {
@@ -44,7 +47,23 @@ export function configReducer(state = initialState, action: configActions.Config
             return {
                 ...state,
                 ...initialState
+            };
+
+        case configActions.LOAD_TACTICS:
+            console.log('loaded tactics', action);
+            const patterns = [];
+            if (action.payload) {
+                Object.values(action.payload).forEach(chain => {
+                    chain.phases.forEach(phase => {
+                        phase.tactics.forEach(tactic => patterns.push(tactic));
+                    });
+                });
             }
+            return {
+                ...state,
+                tacticsChains: {...action.payload},
+                tactics: patterns,
+            };
 
         default:
             return state;

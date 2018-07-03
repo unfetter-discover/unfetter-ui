@@ -33,8 +33,14 @@ export class ConfigService {
             .catch((err) => console.log('Unable to initalize configurations ', err))
     }
 
-    public getConfig(): Observable<any> {
-        return this.genericApi.get(this.configUrl);
+    public getConfig(queryFilter?): Observable<any> {
+        let url;
+        if (queryFilter) {
+            url = `${this.configUrl}?filter=${encodeURI(JSON.stringify(queryFilter))}`;
+        } else {
+            url = this.configUrl;
+        }
+        return this.genericApi.get(url);
     }
 
     public getPublicConfig(): Observable<any> {

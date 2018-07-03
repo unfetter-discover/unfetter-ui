@@ -25,7 +25,7 @@ import { ConfigEffects } from './root-store/config/config.effects';
 import { NotificationEffects } from './root-store/notification/notification.effects';
 import { UserEffects } from './root-store/users/user.effects';
 import { UtilityEffects } from './root-store/utility/utility.effects';
-import { StixEffects } from './root-store/stix/stix.effects';
+import { IdentityEffects } from './root-store/identities/identity.effects';
 import { RunConfigService } from './core/services/run-config.service';
 import { MatSnackBarModule } from '@angular/material';
 
@@ -61,7 +61,7 @@ import { MatSnackBarModule } from '@angular/material';
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    MatSnackBarModule, // for snackbar service
+    MatSnackBarModule, // For SnackbarService
     ComponentModule,
     GlobalModule,
     // InMemoryWebApiModule.forRoot(InMemoryDataService),
@@ -76,7 +76,7 @@ import { MatSnackBarModule } from '@angular/material';
       ConfigEffects,
       UtilityEffects,
       NotificationEffects,
-      StixEffects,
+      IdentityEffects,
     ]),
     (!environment.production && environment.runMode !== 'DEMO') ? StoreDevtoolsModule.instrument() : [],
     AppRoutingModule,
