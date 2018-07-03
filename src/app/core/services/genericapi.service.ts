@@ -10,6 +10,7 @@ import { JsonApi } from '../../models/json/jsonapi';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { LastModifiedStix } from '../../global/models/last-modified-stix';
 import { StixLabelEnum } from '../../models/stix/stix-label.enum';
+import { NavigateToErrorPage } from '../../root-store/utility/utility.actions';
 
 @Injectable()
 export class GenericApi {
@@ -37,6 +38,23 @@ export class GenericApi {
             .pipe(
                 map((dat): any => this.extractData(dat)),
                 catchError(this.handleError)
+            );
+    }
+
+    /**
+     * @description fetch data of type T, with error handling for ngrx
+     * @param url
+     * @param data
+     * @return {Observable<T>} 
+     */
+    public getNgrx<T = JsonApiData>(url: string, data?: any): Observable<T> {
+        this.data = (data !== undefined && data !== null) ? '/' + data : '';
+        let builtUrl = this.baseUrl + url + this.data;
+
+        return this.http.get<JsonApi<T>>(builtUrl)
+            .pipe(
+                catchError(this.handleNgrxError),
+                map((dat): any => this.extractData(dat))
             );
     }
 
@@ -180,5 +198,13 @@ export class GenericApi {
      */
     private handleError(error: any): ErrorObservable<any> {
         return observableThrowError(error);
+    }
+
+    /**
+     * @description Error handler for NGRX effects, throws an action to navigate to error page
+     * @param error
+     */
+    private handleNgrxError(error: any): ErrorObservable<any> {
+        return observableThrowError(new NavigateToErrorPage(error.status || 520));
     }
 }

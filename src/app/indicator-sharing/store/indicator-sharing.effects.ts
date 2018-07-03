@@ -1,6 +1,6 @@
 
-import { forkJoin as observableForkJoin, of as observableOf, combineLatest as observableCombineLatest,  Observable  } from 'rxjs';
-import { withLatestFrom, switchMap, filter, map, mergeMap, pluck, skip } from 'rxjs/operators';
+import { forkJoin as observableForkJoin, of as observableOf, combineLatest as observableCombineLatest } from 'rxjs';
+import { withLatestFrom, switchMap, filter, map, mergeMap, pluck, skip, catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
@@ -175,9 +175,12 @@ export class IndicatorSharingEffects {
                 // Delete intrusion set since its driven by the derived attack patterns
                 delete searchParametersCopy.intrusionSets;
 
-                return this.indicatorSharingService.doSearch(searchParametersCopy, sortBy);
+                return this.indicatorSharingService.doSearch(searchParametersCopy, sortBy)
+                    .pipe(
+                        map((indicators: any[]) => new indicatorSharingActions.SetFilteredIndicators(indicators)),
+                        catchError((err) => observableOf(err))                        
+                    );
             }),
-            map((indicators: any[]) => new indicatorSharingActions.SetFilteredIndicators(indicators))
         );
 
     constructor(

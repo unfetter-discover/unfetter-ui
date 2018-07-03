@@ -1,6 +1,4 @@
-
-import { forkJoin as observableForkJoin, of as observableOf,  Observable  } from 'rxjs';
-
+import { forkJoin as observableForkJoin, of as observableOf,  Observable, throwError  } from 'rxjs';
 import { map, pluck } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 
@@ -154,8 +152,11 @@ export class IndicatorSharingService {
     }
 
     public doSearch(searchParameters: SearchParameters, sortType: SortTypes): Observable<any> {
-        return this.genericApi.get(`${this.baseUrl}/search?searchparameters=${encodeURIComponent(JSON.stringify(searchParameters))}&sorttype=${sortType}&metaproperties=true`).pipe(
-            map(RxjsHelpers.mapArrayAttributes));
+        const url = `${this.baseUrl}/search?searchparameters=${encodeURIComponent(JSON.stringify(searchParameters))}&sorttype=${sortType}&metaproperties=true`;
+        return this.genericApi.getNgrx<any>(url)
+            .pipe(
+                map(RxjsHelpers.mapArrayAttributes)
+            );
     }
 
     public getDownloadData(indicatorIds: string[], attackPatternIds: string[], sensorIds: string[]): Observable<any[]> {
