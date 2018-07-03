@@ -42,7 +42,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
   riskByAttack: RiskByAttack;
   riskByKillChain: RiskByKillChain;
   summaryAggregation: SummaryAggregation;
-  summaryAggregations: SummaryAggregation[];
   finishedLoading = false;
   finishedLoadingRBAP = false;
   finishedLoadingKCD = false;
@@ -133,7 +132,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
         }
         this.riskByAttackPatternStore.dispatch(new LoadSingleAssessmentRiskByAttackPatternData({id: this.assessmentId, isCapability: this.summaryCalculationService.isCapability}));
         this.store.dispatch(new LoadSingleRiskPerKillChainData(this.assessmentId));
-        this.store.dispatch(new LoadSingleSummaryAggregationData(this.assessmentId));
+        this.store.dispatch(new LoadSingleSummaryAggregationData({id: this.assessmentId, isCapability: this.summaryCalculationService.isCapability}));
       },
         (err) => console.log(err));
 
@@ -222,11 +221,9 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .subscribe((arr: SummaryAggregation[]) => {
         if (!arr || arr.length === 0) {
           this.summaryAggregation = undefined;
-          this.summaryAggregations = [];
           return;
         }
         this.summaryAggregation = { ...arr[0] };
-        this.summaryAggregations = [...arr];
       })
 
     const sub8$ = this.store

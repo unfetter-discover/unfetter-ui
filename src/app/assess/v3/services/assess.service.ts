@@ -238,12 +238,12 @@ export class AssessService {
      * @param {string} id
      * @return {Observable}
      */
-    public getSummaryAggregation(id: string): Observable<SummaryAggregation> {
+    public getSummaryAggregation(id: string, isCapability: boolean = false): Observable<SummaryAggregation> {
         if (!id) {
             return observableEmpty();
         }
 
-        const url = `${this.assessBaseUrl}/${id}/summary-aggregations`;
+        const url = `${this.assessBaseUrl}/${id}/summary-aggregations?isCapability=${isCapability}`;
         return this.genericApi.getAs<SummaryAggregation>(url);
     }
 

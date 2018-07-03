@@ -108,9 +108,10 @@ export class SummaryEffects {
         .ofType(LOAD_SINGLE_SUMMARY_AGGREGATION_DATA)
         .pipe(
             pluck('payload'),
-            switchMap((assessmentId: string) => {
+            switchMap((loadData: { id: string, isCapability: boolean }) => {
+                const isCapability = loadData.isCapability || false;
                 return this.assessService
-                    .getSummaryAggregation(assessmentId)
+                    .getSummaryAggregation(loadData.id, isCapability)
                     .pipe(
                         mergeMap((data: SummaryAggregation) => [new SetSummaryAggregationData([data]), new FinishedLoadingSummaryAggregationData(true)]),
                         catchError((err) => {
