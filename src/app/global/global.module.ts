@@ -81,6 +81,7 @@ import { AuthService } from '../core/services/auth.service';
 import { DataSourcesComponent } from './components/data-sources/data-sources.component';
 import { MarkdownEditorComponent } from './components/markdown-editor/markdown-editor.component';
 import { SelectionListComponent } from './components/selection-list/selection-list.component';
+import { ErrorPageComponent } from './components/error-page/error-page.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -153,6 +154,7 @@ const unfetterComponents = [
     DataSourcesComponent,
     MarkdownEditorComponent,
     SelectionListComponent,
+    ErrorPageComponent,
 ];
 
 @NgModule({
@@ -179,7 +181,7 @@ const unfetterComponents = [
         ...matModules
     ],
     declarations: [
-        ...unfetterComponents,        
+        ...unfetterComponents,      
     ],
     exports: [
         ...unfetterComponents,
