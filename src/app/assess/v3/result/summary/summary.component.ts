@@ -119,12 +119,12 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .pipe(
         pluck('summaries'),
         distinctUntilChanged(),
-        filter((arr: Assessment[]) => arr && arr.length > 0 && arr[0] !== undefined)
+        filter((arr: Assessment[]) => arr && arr.length > 0 && arr[0] !== undefined && arr[0].determineAssessmentType !== undefined)
       )
       .subscribe((arr: Assessment[]) => {
         this.summaries = [...arr];
         this.summary = this.summaries[0] || new Assessment();
-        const assessmentType = this.summary.determineAssessmentType() || 'Unknown';
+        const assessmentType = this.summary.determineAssessmentType();
         if (assessmentType === AssessmentEvalTypeEnum.CAPABILITIES) {
           this.summaryCalculationService.isCapability = true;
         } else {
@@ -244,10 +244,9 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .pipe(
         pluck('summaries'),
         distinctUntilChanged(),
-        filter((summaries: Assessment[]) => summaries && summaries.length > 0),
+        filter((arr: Assessment[]) => arr && arr.length > 0 && arr[0] !== undefined && arr[0].determineAssessmentType !== undefined),
         map((summaries: Assessment[]) => {
           const assessmentType = summaries[0].determineAssessmentType();
-
           return `${summaries[0].name} - ${assessmentType}`;
         }),
         catchError((err, caught) => {

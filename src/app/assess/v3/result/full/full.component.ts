@@ -1,4 +1,3 @@
-
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -22,7 +21,7 @@ import { AssessState } from '../../store/assess.reducers';
 import { getSortedCategories } from '../../store/assess.selectors';
 import { CleanAssessmentResultData, LoadAssessmentById, LoadGroupData } from '../store/full-result.actions';
 import { FullAssessmentResultState } from '../store/full-result.reducers';
-import { getFailedToLoadAssessment, getFinishedLoadingAssessment, getFullAssessment, getFullAssessmentName, getGroupState, getUnassessedPhasesForCurrentFramework, getAllFinishedLoading } from '../store/full-result.selectors';
+import { getAllFinishedLoading, getFailedToLoadAssessment, getFullAssessment, getFullAssessmentName, getGroupState, getUnassessedPhasesForCurrentFramework } from '../store/full-result.selectors';
 import { SummaryDataSource } from '../summary/summary.datasource';
 import { FullAssessmentGroup } from './group/models/full-assessment-group';
 
@@ -81,6 +80,7 @@ export class FullComponent implements OnInit, OnDestroy {
         this.rollupId = params.rollupId || '';
         this.assessmentId = params.assessmentId || '';
         this.phase = params.phase || '';
+        this.activePhase = this.activePhase || this.phase;
         this.attackPatternId = params.attackPatternId || '';
         const sub$ = this.appStore
           .select('users')
@@ -134,13 +134,13 @@ export class FullComponent implements OnInit, OnDestroy {
       .subscribe(
         (group: any) => {
           const riskByAttackPattern = group.riskByAttackPattern || {};
-          // active phase is either the current active phase,
+          // active phase is either the current active phase
           let activePhase = this.activePhase;
           if (!activePhase && riskByAttackPattern && riskByAttackPattern.phases.length > 0) {
-            //  the first assess attack pattern,
+            //  or use the first assessed phase
             activePhase = riskByAttackPattern.phases[0]._id;
           }
-          this.activePhase = activePhase;
+          this.activePhase = this.activePhase || activePhase;
           this.changeDetectorRef.markForCheck();
         },
         (err) => console.log(err));

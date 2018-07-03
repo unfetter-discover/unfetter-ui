@@ -184,11 +184,23 @@
               </div>
             </form>
           </div>
+          <div *ngSwitchDefault>
+            <div class="row">
+              <div class="col-md-12 mat-subheading-1">
+                The current assessment data are not compatible with this assessment viewer. Are you attempting to view an old version 2 assessment?
+              </div>
+            </div>
+            <div class="row">
+              <p class="text-right">
+                <button mat-button (click)="addAssessedObject = !addAssessedObject">CANCEL</button>
+              </p>
+            </div>
+          </div>
+
         </div>
       </mat-card-content>
     </mat-card>
   </div>
-  <!-- <unf-speed-dial [items]="speedDialItems" (itemClickedEmitter)="onSpeedDialClicked($event)" [(open)]="addAssessedObject"></unf-speed-dial> -->
   <div class="add-assessed-object-fab">
     <button mat-mini-fab color="primary" (click)="addAssessedObject = !addAssessedObject">
       <mat-icon class="mat-24">add</mat-icon>

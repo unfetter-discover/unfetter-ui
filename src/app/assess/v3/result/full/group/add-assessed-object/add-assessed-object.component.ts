@@ -411,9 +411,6 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
             return EMPTY;
         }
 
-        // testing
-        // capability.id = '1243';
-        // return of([capability]);
         return this.assessService
             .genericPost(`api/v3/x-unfetter-capabilities`, capability)
             .pipe(
@@ -451,8 +448,8 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
         } as AssessedObject;
         const objectAssessment = {
             created_by_ref,
-            name: `${capability.name} Assessment`,
-            description: `${this.assessment.name} inline capabilty update`,
+            name: `${capability.name}`,
+            description: `${capability.description}`,
             object_ref: capability.id,
             assessed_objects: [
                 assessedObject,
@@ -460,9 +457,6 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
             type: StixEnum.OBJECT_ASSESSMENT,
         } as ObjectAssessment;
 
-        // testing
-        // objectAssessment.id = '123x';
-        // return of([objectAssessment]);
         return this.assessService
             .genericPost(`api/v3/x-unfetter-object-assessments`, objectAssessment)
             .pipe(
