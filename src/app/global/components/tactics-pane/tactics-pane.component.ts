@@ -65,7 +65,7 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
      * @description These input values are only the "preselected" attack patterns. If there is nothing preselected, it
      *              is perfectly okay to not provide this input.
      */
-    @Input() public targets: Tactic[] = [];
+    @Input() public targets: Tactic[];
 
     /**
      * @description Title to display in the component's header.

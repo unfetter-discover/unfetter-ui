@@ -1,23 +1,12 @@
 
-import { finalize } from 'rxjs/operators';
-import {
-    Component,
-    OnInit,
-    Input,
-    ViewChild,
-    OnChanges,
-    SimpleChanges,
-} from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Store } from '@ngrx/store';
-
-import * as d3 from 'd3';
-
-import { Tactic } from '../../../../../global/components/tactics-pane/tactics.model';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map, pluck } from 'rxjs/operators';
 import { HeatmapOptions } from '../../../../../global/components/heatmap/heatmap.data';
-import { TreemapOptions } from '../../../../../global/components/treemap/treemap.data';
 import { CarouselOptions } from '../../../../../global/components/tactics-pane/tactics-carousel/carousel.data';
-import { TacticsPaneComponent } from '../../../../../global/components/tactics-pane/tactics-pane.component';
+import { Tactic } from '../../../../../global/components/tactics-pane/tactics.model';
+import { TreemapOptions } from '../../../../../global/components/treemap/treemap.data';
 import { Dictionary } from '../../../../../models/json/dictionary';
 import { AppState } from '../../../../../root-store/app.reducers';
 
@@ -31,12 +20,23 @@ export class SummaryTacticsComponent implements OnInit, OnChanges {
     /**
      * @description 
      */
-    public attackPatterns: Tactic[] = [];
+    @Input() public capabilities: any[] = [];
+
+    /**
+     * @description attack pattern ids to translate to tactics to hightlight in heat map
+     */
+    @Input() public selectedAttackPatternIds: string[] = [];
 
     /**
      * @description 
      */
-    @Input() private capabilities: any[] = [];
+    public attackPatterns: Tactic[] = [];
+
+    /**
+     * @description tactics to highlight in heat map
+     */
+    public selectedTactics$: Observable<Tactic[]>;
+    public selectedTactics: Tactic[];
 
     /**
      * @description 
@@ -93,7 +93,8 @@ export class SummaryTacticsComponent implements OnInit, OnChanges {
     public collapseContents: boolean;
 
     constructor(
-        private tacticsStore: Store<AppState>,
+        private appStore: Store<AppState>,
+        private changeDetectorRef: ChangeDetectorRef,
     ) {
     }
 
@@ -101,30 +102,53 @@ export class SummaryTacticsComponent implements OnInit, OnChanges {
      * @description 
      */
     ngOnInit() {
-        this.loadCapabilitiesMap();
-        this.collapseContents = false;
+        // this.loadCapabilitiesMap();
+        // this.collapseContents = false;
+        const sub$ = this.appStore
+            .select('config')
+            .pipe(
+                pluck<any, Tactic[]>('tactics'),
+                map((tactics) => {
+                    const attackPatternSet = new Set<string>(this.selectedAttackPatternIds);
+                    return tactics.filter((tactic) => attackPatternSet.has(tactic.id))
+                }),
+                map((tactics) => {
+                    this.selectedTactics = tactics;
+                    this.changeDetectorRef.markForCheck();
+                    return tactics;
+                })
+            )
+            .subscribe(
+                (tactics) => console.log(),
+                (err) => console.log(err),
+                () => {
+                    if (sub$) {
+                        sub$.unsubscribe();
+                    }
+                }
+            );
     }
 
     /**
      * @description 
      */
     ngOnChanges(changes: SimpleChanges) {
-        if (changes && changes.capabilities) {
-            const indicators = this.groupCapabilitiesByAttackPatterns();
-            requestAnimationFrame(() => {
-                this.attackPatterns = [];
-                // this.attackPatterns = this.collectAttackPatterns(patterns, indicators);
-            });
-        }
+        // if (changes && changes.capabilities) {
+        //     const indicators = this.groupCapabilitiesByAttackPatterns();
+        //     requestAnimationFrame(() => {
+        //         this.attackPatterns = [];
+        //         // this.attackPatterns = this.collectAttackPatterns(patterns, indicators);
+        //     });
+        // }
 
-        if (this.collapseSubject) {
-            const collapseCard$ = this.collapseSubject.pipe(
-              finalize(() => collapseCard$ && collapseCard$.unsubscribe()))
-              .subscribe(
-                (collapseContents) => this.collapseContents = collapseContents,
-                (err) => console.log(err),
-            );
-        }
+        // if (this.collapseSubject) {
+        //     const collapseCard$ = this.collapseSubject.pipe(
+        //         finalize(() => collapseCard$ && collapseCard$.unsubscribe()))
+        //         .subscribe(
+        //             (collapseContents) => this.collapseContents = collapseContents,
+        //             (err) => console.log(err),
+        //     );
+        // }
     }
 
     /**
@@ -175,17 +199,17 @@ export class SummaryTacticsComponent implements OnInit, OnChanges {
         patterns.forEach((pattern) => {
             const name = pattern.name;
             if (name) {
-            let analytics = indicators[name];
-            if (analytics) {
-                analytics = analytics.map(analytic => this.capabilities.find(a => a.id === analytic));
-                attackPatterns[name] = Object.assign({}, {
-                    ...pattern,
-                    analytics: analytics,
-                    adds: {
-                        highlights: [{value: analytics.length, color: {style: analytics.length > 0}}]
-                    },
-                });
-            }
+                let analytics = indicators[name];
+                if (analytics) {
+                    analytics = analytics.map(analytic => this.capabilities.find(a => a.id === analytic));
+                    attackPatterns[name] = Object.assign({}, {
+                        ...pattern,
+                        analytics: analytics,
+                        adds: {
+                            highlights: [{ value: analytics.length, color: { style: analytics.length > 0 } }]
+                        },
+                    });
+                }
             }
         });
         return Object.values(attackPatterns);
