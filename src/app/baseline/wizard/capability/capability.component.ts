@@ -104,7 +104,7 @@ export class CapabilityComponent implements OnInit {
         (currentObjectAssessment: ObjectAssessment) => {
           this.currentObjectAssessment = currentObjectAssessment;
           if (this.currentObjectAssessment) {
-            this.currentAssessedObject = [...currentObjectAssessment.assessed_objects];
+            this.currentAssessedObject = currentObjectAssessment.assessed_objects;
 
 
 
@@ -141,7 +141,7 @@ export class CapabilityComponent implements OnInit {
             if (this.currentAssessedObject) {
               this.incomingListOfAttackPatterns = this.currentAssessedObject.map(x => x.assessed_object_ref);
 
-              if (this.currentNumberOfAttackPatterns === 0 || this.currentNumberOfAttackPatterns !== this.currentAssessedObject.length || this.lastKnownObjectAssessment.name !== this.currentObjectAssessment.name) {
+              if (this.currentNumberOfAttackPatterns === 0 || this.currentNumberOfAttackPatterns !== this.currentAssessedObject.length || this.checkForOAChange()) {
                 // inital value for number of attack patterns
                 this.currentNumberOfAttackPatterns = this.currentAssessedObject.length;
 
@@ -172,7 +172,6 @@ export class CapabilityComponent implements OnInit {
 
   ngOnInit() {
     // this.ratioOfQuestionsAnswered = this._baselineSummaryService.getBaselinePercentComplete();
-
     
   }
 
@@ -259,6 +258,17 @@ export class CapabilityComponent implements OnInit {
         questionArray[i].score = score;
       }
     }
+  }
+
+  public checkForOAChange() {
+    try {
+      return this.lastKnownObjectAssessment.name !== this.currentObjectAssessment.name
+    } catch (TypeError) {
+      return false;
+    }  
+
+    
+
   }
 
   // public ngOnDestroy(): void {
