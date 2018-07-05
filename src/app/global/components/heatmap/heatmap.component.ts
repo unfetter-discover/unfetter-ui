@@ -70,10 +70,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, OnChanges, Heatm
      */
     ngAfterViewInit(): void {
         this.ngZone.runOutsideAngular(() => {
-            requestAnimationFrame(() => {
-                this.helper.createHeatmap();
-                // this.changeDetector.detectChanges();
-            });
+            this.helper.createHeatmap();
         });
     }
 
@@ -83,8 +80,6 @@ export class HeatmapComponent implements OnInit, AfterViewInit, OnChanges, Heatm
     ngOnChanges(changes: SimpleChanges) {
         if (changes && changes.data && !changes.data.firstChange) {
             console['debug'](`(${new Date().toISOString()}) heatmap data change detected`, changes.data);
-            // this.changeDetector.markForCheck();
-            // this.helper.createHeatmap();
             this.ngZone.runOutsideAngular(() => {
                 this.helper.createHeatmap();
             });
@@ -96,21 +91,15 @@ export class HeatmapComponent implements OnInit, AfterViewInit, OnChanges, Heatm
      */
     onResize(event?: ResizeEvent) {
         this.ngZone.runOutsideAngular(() => {
-            if (this.resizeTimer) {
-                window.clearTimeout(this.resizeTimer);
+            const node: any = d3.select(`${this.options.view.component} .heat-map`).node();
+            const rect: DOMRect = node ? node.getBoundingClientRect() : null;
+            if (!node || !rect || !rect.width || !rect.height) {
+                return;
+            } else if (!this.bounds || (this.bounds.width !== rect.width) || (this.bounds.height !== rect.height)) {
+                console['debug'](`(${new Date().toISOString()}) heatmap viewport change detected`);
+                this.bounds = rect;
+                this.redraw();
             }
-            this.resizeTimer = window.setTimeout(() => {
-                this.resizeTimer = null;
-                const node: any = d3.select(`${this.options.view.component} .heat-map`).node();
-                const rect: DOMRect = node ? node.getBoundingClientRect() : null;
-                if (!node || !rect || !rect.width || !rect.height) {
-                    return;
-                } else if (!this.bounds || (this.bounds.width !== rect.width) || (this.bounds.height !== rect.height)) {
-                    console['debug'](`(${new Date().toISOString()}) heatmap viewport change detected`);
-                    this.bounds = rect;
-                    this.redraw();
-                }
-            }, 100);
         });
     }
 
@@ -120,7 +109,6 @@ export class HeatmapComponent implements OnInit, AfterViewInit, OnChanges, Heatm
     public redraw() {
         this.ngZone.runOutsideAngular(() => {
             this.resizer.sensor.reset();
-            // this.changeDetector.markForCheck();
             this.helper.createHeatmap();
         });
     }
