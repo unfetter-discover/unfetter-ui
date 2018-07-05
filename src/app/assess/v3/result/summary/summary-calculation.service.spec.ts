@@ -332,28 +332,29 @@ describe('SummaryCalculationService', () => {
   }));
 
   it('should populate technique breakdown groupings given an array of asssesment objects', inject([SummaryCalculationService], (service: SummaryCalculationService) => {
+    const DEFAULT_TECHNIQUE_BREAKDOWN = { 0: 0, 1: 0, 2: 0, 3: 0};
     service.summaryAggregation = null;
     service.populateTechniqueBreakdown(null);
-    expect(service.techniqueBreakdown).toEqual({});
+    expect(service.techniqueBreakdown).toEqual(DEFAULT_TECHNIQUE_BREAKDOWN);
     service.populateTechniqueBreakdown([]);
-    expect(service.techniqueBreakdown).toEqual({});
+    expect(service.techniqueBreakdown).toEqual(DEFAULT_TECHNIQUE_BREAKDOWN);
     service.populateTechniqueBreakdown(AssessmentObjectMockFactory.mockMany(1));
-    expect(service.techniqueBreakdown).toEqual({});
+    expect(service.techniqueBreakdown).toEqual(DEFAULT_TECHNIQUE_BREAKDOWN);
     service.summaryAggregation = { assessedAttackPatternCountBySophisicationLevel: null, attackPatternsByAssessedObject: null, totalAttackPatternCountBySophisicationLevel: null };
     service.populateTechniqueBreakdown([]);
-    expect(service.techniqueBreakdown).toEqual({});
+    expect(service.techniqueBreakdown).toEqual(DEFAULT_TECHNIQUE_BREAKDOWN);
     service.populateTechniqueBreakdown(AssessmentObjectMockFactory.mockMany(1));
-    expect(service.techniqueBreakdown).toEqual({});
+    expect(service.techniqueBreakdown).toEqual(DEFAULT_TECHNIQUE_BREAKDOWN);
     service.summaryAggregation = { assessedAttackPatternCountBySophisicationLevel: null, attackPatternsByAssessedObject: [{ _id: null, attackPatterns: null }], totalAttackPatternCountBySophisicationLevel: null };
     service.populateTechniqueBreakdown([]);
-    expect(service.techniqueBreakdown).toEqual({});
+    expect(service.techniqueBreakdown).toEqual(DEFAULT_TECHNIQUE_BREAKDOWN);
     service.populateTechniqueBreakdown(AssessmentObjectMockFactory.mockMany(1));
-    expect(service.techniqueBreakdown).toEqual({});
+    expect(service.techniqueBreakdown).toEqual(DEFAULT_TECHNIQUE_BREAKDOWN);
     service.summaryAggregation = { assessedAttackPatternCountBySophisicationLevel: { index: null, count: null }, attackPatternsByAssessedObject: [{ _id: null, attackPatterns: null }], totalAttackPatternCountBySophisicationLevel: null };
     service.populateTechniqueBreakdown([]);
-    expect(service.techniqueBreakdown).toEqual({ 0: 0, 1: 0 });
+    expect(service.techniqueBreakdown).toEqual(DEFAULT_TECHNIQUE_BREAKDOWN);
     service.populateTechniqueBreakdown(AssessmentObjectMockFactory.mockMany(1));
-    expect(service.techniqueBreakdown).toEqual({ 0: 0, 1: 0 });
+    expect(service.techniqueBreakdown).toEqual(DEFAULT_TECHNIQUE_BREAKDOWN);
     service.summaryAggregation = {
       assessedAttackPatternCountBySophisicationLevel: { index: null, count: null },
       attackPatternsByAssessedObject: [{ _id: 'an id', attackPatterns: [{ kill_chain_phases: [{ kill_chain_name: null, phase_name: 'happy camper' }] }] }], totalAttackPatternCountBySophisicationLevel: null
@@ -361,13 +362,13 @@ describe('SummaryCalculationService', () => {
     const ao = AssessmentObjectMockFactory.mockWithRisk(.25);
     ao.stix = StixMockFactory.mockOne('an id');
     service.populateTechniqueBreakdown([ao]);
-    expect(service.techniqueBreakdown).toEqual({ 0: 0, 1: 0 });
+    expect(service.techniqueBreakdown).toEqual(DEFAULT_TECHNIQUE_BREAKDOWN);
     service.summaryAggregation = {
       assessedAttackPatternCountBySophisicationLevel: { index: 0, count: 3 },
       attackPatternsByAssessedObject: [{ _id: 'an id', attackPatterns: [{ kill_chain_phases: [{ kill_chain_name: null, phase_name: 'happy camper' }] }] }], totalAttackPatternCountBySophisicationLevel: null
     } as SummaryAggregation;
     service.populateTechniqueBreakdown([ao]);
-    expect(service.techniqueBreakdown).toEqual({ 0: 0, 1: 0 });
+    expect(service.techniqueBreakdown).toEqual(DEFAULT_TECHNIQUE_BREAKDOWN);
 
   }));
 
