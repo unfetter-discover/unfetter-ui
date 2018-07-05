@@ -75,11 +75,6 @@ export class SummaryTacticsComponent implements OnInit {
     public readonly carouselOptions: CarouselOptions = {
     };
 
-    /**
-     * @description 
-     */
-    @Input() public collapseSubject: BehaviorSubject<boolean>;
-
     public collapseContents: boolean;
 
     constructor(
