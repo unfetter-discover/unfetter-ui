@@ -69,9 +69,12 @@ export class HeatmapComponent implements OnInit, AfterViewInit, OnChanges, Heatm
      * @description init this component after it gets some screen real estate
      */
     ngAfterViewInit(): void {
-        this.ngZone.runOutsideAngular(() => {
-            this.helper.createHeatmap();
-        });
+        // this.ngZone.runOutsideAngular(() => {
+            requestAnimationFrame(() => {
+                this.helper.createHeatmap();
+                this.changeDetector.markForCheck();
+            });
+        // });
     }
 
     /**
@@ -80,9 +83,10 @@ export class HeatmapComponent implements OnInit, AfterViewInit, OnChanges, Heatm
     ngOnChanges(changes: SimpleChanges) {
         if (changes && changes.data && !changes.data.firstChange) {
             console['debug'](`(${new Date().toISOString()}) heatmap data change detected`, changes.data);
-            this.ngZone.runOutsideAngular(() => {
+            // this.ngZone.runOutsideAngular(() => {
                 this.helper.createHeatmap();
-            });
+                this.changeDetector.markForCheck();
+            // });
         }
     }
 
@@ -90,27 +94,33 @@ export class HeatmapComponent implements OnInit, AfterViewInit, OnChanges, Heatm
      * @description handle changes to the viewport size
      */
     onResize(event?: ResizeEvent) {
-        this.ngZone.runOutsideAngular(() => {
-            const node: any = d3.select(`${this.options.view.component} .heat-map`).node();
-            const rect: DOMRect = node ? node.getBoundingClientRect() : null;
-            if (!node || !rect || !rect.width || !rect.height) {
-                return;
-            } else if (!this.bounds || (this.bounds.width !== rect.width) || (this.bounds.height !== rect.height)) {
-                console['debug'](`(${new Date().toISOString()}) heatmap viewport change detected`);
-                this.bounds = rect;
-                this.redraw();
+        // this.ngZone.runOutsideAngular(() => {
+            if (this.resizeTimer) {
+                window.clearTimeout(this.resizeTimer);
             }
-        });
+            this.resizeTimer = window.setTimeout(() => {
+                this.resizeTimer = null;
+
+                const node: any = d3.select(`${this.options.view.component} .heat-map`).node();
+                const rect: DOMRect = node ? node.getBoundingClientRect() : null;
+                if (!node || !rect || !rect.width || !rect.height) {
+                    return;
+                } else if (!this.bounds || (this.bounds.width !== rect.width) || (this.bounds.height !== rect.height)) {
+                    console['debug'](`(${new Date().toISOString()}) heatmap viewport change detected`);
+                    this.bounds = rect;
+                    this.redraw();
+                }
+            }, 100);
+        // });
     }
 
     /**
      * @description Force a complete redraw of the heatmap.
      */
     public redraw() {
-        this.ngZone.runOutsideAngular(() => {
-            this.resizer.sensor.reset();
-            this.helper.createHeatmap();
-        });
+        this.resizer.sensor.reset();
+        this.helper.createHeatmap();
+        this.changeDetector.markForCheck();
     }
 
     /**

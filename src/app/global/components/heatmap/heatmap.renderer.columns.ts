@@ -31,9 +31,9 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
                 if (this.zoomOpts.zoomExtent) {
                     this.heatmap.workspace.zoom = d3.zoom().scaleExtent(this.zoomOpts.zoomExtent)
                         .on('zoom', () => {
-                            this.ngZone.runOutsideAngular(() => {
-                                this.onHeatmapZoom();
-                            })
+                            // this.ngZone.runOutsideAngular(() => {
+                            this.onHeatmapZoom();
+                            // })
                         });
                     this.heatmap.workspace.canvas.call(this.heatmap.workspace.zoom);
 
@@ -398,8 +398,8 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
         if (!isMini) {
             cell
                 .on('click', (p) => this.click.emit({ data: data, source: d3.event }))
-                .on('mouseover', () => this.ngZone.runOutsideAngular(() => this.onCellHover(data)))
-                .on('mouseout', () => this.ngZone.runOutsideAngular(() => this.offCellHover()));
+                .on('mouseover', () => this.onCellHover(data))
+                .on('mouseout', () => this.offCellHover());
         }
 
         const rect = cell
@@ -414,9 +414,9 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
             data.rect = rect;
             rect
                 .on('mouseover',
-                    (ev) => this.ngZone.runOutsideAngular(() => this.onRectHover(d3.event.target)))
+                    (ev) => this.onRectHover(d3.event.target))
                 .on('mouseout',
-                    (ev) => this.ngZone.runOutsideAngular(() => this.offRectHover(d3.event.target, color.bg as string)));
+                    (ev) => this.offRectHover(d3.event.target, color.bg as string));
         } else {
             data.mini = rect;
         }
@@ -624,7 +624,7 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
                             cell.rect.attr('fill', bg);
                         }
                         cell.rect.on('mouseout',
-                            (ev) => this.ngZone.runOutsideAngular(() => this.offRectHover(d3.event.target, bg)));
+                            (ev) => this.offRectHover(d3.event.target, bg));
                     }
                     if (cell.mini) {
                         if (bg.startsWith('.')) {

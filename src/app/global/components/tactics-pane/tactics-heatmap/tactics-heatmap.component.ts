@@ -9,7 +9,6 @@ import { TacticsTooltipService } from '../tactics-tooltip/tactics-tooltip.servic
 import { TacticsView } from '../tactics-view';
 import { Tactic, TacticChain } from '../tactics.model';
 
-
 /**
  * @description Common data that can be found on attack patterns displayed in a heatmap cell.
  */
@@ -94,11 +93,13 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
         // now convert the phases in the TacticChains into heat batches
         Object.values(data).forEach(batch => batch.cells.sort((ap1, ap2) => ap1.title.localeCompare(ap2.title)));
         this.data = Object.values(data);
-        console['debug'](`(${new Date().toISOString()}) heatmap tactics`, this.data);
-        if (this.heatmap && this.heatmap.options && this.heatmap.options.color) {
-            this.heatmap.options.color.heatColors = heats;
-            console['debug'](`(${new Date().toISOString()}) heatmap heats`, this.heatmap.options.color.heatColors);
-        }
+        requestAnimationFrame(() => {
+            console['debug'](`(${new Date().toISOString()}) heatmap tactics`, this.data);
+            if (this.heatmap && this.heatmap.options && this.heatmap.options.color) {
+                this.heatmap.options.color.heatColors = heats;
+                console['debug'](`(${new Date().toISOString()}) heatmap heats`, this.heatmap.options.color.heatColors);
+            }
+        });
     }
 
     /**
