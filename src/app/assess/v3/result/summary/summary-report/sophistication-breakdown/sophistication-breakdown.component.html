@@ -1,9 +1,12 @@
-<div id="sophisticationBreakdownComponent">
+<div *ngIf="summaryCalculationService.isValidSophisticationData; else noData"  id="sophisticationBreakdownComponent">
   <canvas baseChart
     [datasets]="barChartData" 
     [labels]="barChartLabels" 
-    [options]="barChartOptions" 
+    [options]="barChartOptions"
     [legend]="barChartLegend" 
     [chartType]="barChartType"
     [colors]="colors"></canvas>
 </div>
+<ng-template #noData>
+  <div>Sorry, none of the attack patterns in this assessment have been evaluated for an attacker's sophistication level.</div>
+</ng-template>
