@@ -41,7 +41,7 @@ export class ResultHeaderComponent implements OnInit {
     // TODO: initialize the correct total questions, by calling the server, may need a count endpoint
     this.percentCompleted = this.calcPercentCompleted(this.assessment);
     this.percentCompletedMsg = `Assessments BETA, some features do not work!`
-    this.percentCompletedMsg += ` ${this.percentCompleted}% of your assessment is complete.`;
+    // TODO: this.percentCompletedMsg += ` ${this.percentCompleted}% of your assessment is complete.`;
   }
 
   /**
