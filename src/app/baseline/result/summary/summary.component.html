@@ -30,19 +30,12 @@
     </mat-sidenav>
     <mat-sidenav-content class="sidenavContentPolyfill320">
       <div class="main-panel">
-        <!-- TODO replace true with published flag from metaproperties of baseline -->
-        <result-header [currentBaseline]="currentBaseline" [baselineId]="baselineId" [published]="calculationService.baseline.metaProperties.published ? calculationService.baseline.modified : undefined"></result-header>
+        <result-header [currentBaseline]="calculationService.baseline" [baselineId]="calculationService.baseline.id" [published]="calculationService.baseline.metaProperties.published ? calculationService.baseline.modified : undefined"></result-header>
         <summary-report></summary-report>
       </div>
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>
-
-<!-- <div class="flex flexRow">
-    <div class="flex">
-      <uf-info-bar *ngIf="percentCompleted < 100" isWarningMsg="true" [message]="percentCompletedMsg" [completeActionUrl]="editUrl||''"></uf-info-bar>
-    </div>
-  </div> -->
 
 <ng-template #loadingBlock>
   <loading-spinner></loading-spinner>

@@ -6,6 +6,7 @@ export interface SummaryState {
     baselines: AssessmentSet[];
     baseline: AssessmentSet;
     blAttackPatterns: string[];
+    blIncompleteAPs: number;
     blWeightings: {};
     blGroups: string[];
     summary: AssessmentSet;
@@ -19,6 +20,7 @@ const genState = (state?: Partial<SummaryState>) => {
         baselines: new Array<AssessmentSet>(),
         baseline: new AssessmentSet(),
         blAttackPatterns: new Array<string>(),
+        blIncompleteAPs: 0,
         blWeightings: { protPct: 0, detPct: 0, respPct: 0 },
         blGroups: new Array<string>(),
         summary: new AssessmentSet(),
@@ -54,7 +56,8 @@ export function summaryReducer(state = initialState, action: summaryActions.Summ
         case summaryActions.SET_ATTACK_PATTERNS:
             return genState({
                 ...state,
-                blAttackPatterns: [...action.payload],
+                blAttackPatterns: [...action.payload.apList],
+                blIncompleteAPs: action.payload.incompleteAPs
             });
         case summaryActions.SET_BASELINE_WEIGHTINGS:
             return genState({

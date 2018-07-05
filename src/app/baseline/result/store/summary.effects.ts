@@ -52,6 +52,7 @@ export class SummaryEffects {
                 // Pull out unique list of attack patterns represented in all of these object assessments
                 const apList = [];
                 let apTotal = 0;
+                let apIncomplete: number = 0;
                 let protWeightings = 0;
                 let detWeightings = 0;
                 let respWeightings = 0;
@@ -68,20 +69,27 @@ export class SummaryEffects {
                             detWeightings += (question.name === 'detect' && question.score !== '') ? 1 : 0;
                             respWeightings += (question.name === 'respond' && question.score !== '') ? 1 : 0;
                         })
+
+                        // If this AP is incomplete, keep track of it
+                        if (aoObj.questions[0].score === '' || aoObj.questions[1].score === '' || aoObj.questions[2].score === '') {
+                            apIncomplete += 1;
+                        }
                     })
 
                     return this.baselineService.fetchCapability(objAssessment.object_ref);
                 });
 
+                let incompleteAPs = 0;
                 if (observables.length === 0) {
-                    return [ new SetAttackPatterns(apList), new SetAndReadCapabilities([]) ];
+                    return [ new SetAttackPatterns({ apList, incompleteAPs }), new SetAndReadCapabilities([]) ];
                 } else {
                     return observableForkJoin(...observables).pipe(
                         mergeMap((arr) => {
                             const protPct = Math.round(protWeightings / apTotal * 100);
                             const detPct = Math.round(detWeightings / apTotal * 100);
                             const respPct = Math.round(respWeightings / apTotal * 100);
-                            return [ new SetAttackPatterns(apList), 
+                            incompleteAPs = Math.round(apIncomplete/apTotal * 100) / 100;
+                            return [ new SetAttackPatterns({ apList, incompleteAPs }), 
                                     new SetBaselineWeightings({ protPct, detPct, respPct }),
                                     new SetAndReadCapabilities(arr),
                                 ];
