@@ -17,7 +17,7 @@ export class SophisticationBreakdownComponent implements OnInit {
   public barChartLegend: any;
   public readonly barChartType: string;
   public colors: any;
-  constructor(private summaryCalculationService: SummaryCalculationService) {
+  constructor(public summaryCalculationService: SummaryCalculationService) {
     this.barChartData = [
       {
         data: [],
@@ -85,16 +85,18 @@ export class SophisticationBreakdownComponent implements OnInit {
   public calculateData() {
     let assessedAttackPatternKeys = Object.keys(this.assessedAttackPatterns);
     let allAttackPatternKeys = Object.keys(this.allAttackPatterns);
-
     this.barChartData[0].data = [];
     this.barChartData[1].data = [];
+    let validData = false;
     for (let index = 0; index < allAttackPatternKeys.length; index++) {
       let assessed = 0;
       if (assessedAttackPatternKeys.includes(index.toString())) {
         assessed = this.assessedAttackPatterns[index];
+        validData = true;
       }
       this.barChartData[0].data.push(assessed);
       this.barChartData[1].data.push(this.allAttackPatterns[index] - assessed);
     }
+    this.summaryCalculationService.isValidSophisticationData = validData;
   }
 }
