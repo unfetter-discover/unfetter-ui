@@ -27,7 +27,7 @@ import * as configActions from '../../../../../root-store/config/config.actions'
 import * as userActions from '../../../../../root-store/users/user.actions';
 import { SummaryTacticsComponent } from './summary-tactics.component';
 
-fdescribe('SummaryTacticsComponent', () => {
+describe('SummaryTacticsComponent', () => {
 
     let fixture: ComponentFixture<SummaryTacticsComponent>;
     let component: SummaryTacticsComponent;
