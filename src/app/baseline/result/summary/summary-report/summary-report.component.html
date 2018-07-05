@@ -12,7 +12,7 @@
     <div class="row">
       <div class="flex matchHeight">
         <div class="uf-mat-card card triple-card-width" id="chart-container" *ngIf="activeMainWell === 'heatmap'">
-            <summary-tactics [collapseSubject]="false"></summary-tactics>
+            <summary-tactics collapseSubject="false" [selectedAttackPatternIds]="summaryCalculationService.blAttackPatterns"></summary-tactics>
         </div>
       </div>
     </div>

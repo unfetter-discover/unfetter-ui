@@ -39,7 +39,8 @@ export class FullComponent implements OnInit, OnDestroy {
   public assessment$: Observable<Assessment>;
   public assessmentGroup$: Observable<FullAssessmentGroup>;
   public assessmentId: string;
-  public assessmentName: Observable<string>;
+  public assessmentName$: Observable<string>;
+  public assessmentName: string;
   public attackPatternId: string;
   public categoryLookup$: Observable<Category[]>;
   public failedToLoad$: Observable<boolean>;
@@ -145,9 +146,12 @@ export class FullComponent implements OnInit, OnDestroy {
         },
         (err) => console.log(err));
 
-    this.assessmentName = this.store
+    this.assessmentName$ = this.store
       .select(getFullAssessmentName)
-      .pipe(distinctUntilChanged());
+      .pipe(
+        distinctUntilChanged(),
+        tap((name) => this.assessmentName = name)
+      );
 
     this.unassessedPhases$ = this.store
       .select(getUnassessedPhasesForCurrentFramework)
@@ -233,9 +237,14 @@ export class FullComponent implements OnInit, OnDestroy {
    * @description clicked currently viewed assessment, confirm delete
    * @return {void}
    */
-  public onDeleteCurrent(assessment: LastModifiedAssessment): void {
-    const id = this.rollupId;
-    this.confirmDelete({ name: assessment.name, rollupId: id });
+  public onDeleteCurrent(event: Event): void {
+    if (!event || (event instanceof UIEvent)) {
+      event.preventDefault();
+    }
+
+    const rollupId = this.rollupId;
+    const name = this.assessmentName;
+    this.confirmDelete({ name, rollupId });
   }
 
   /**

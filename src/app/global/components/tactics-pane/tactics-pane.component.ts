@@ -1,32 +1,20 @@
 
-import { of as observableOf,  BehaviorSubject ,  Observable ,  Subscription  } from 'rxjs';
-
-import { tap, map, take, distinctUntilChanged, pluck, filter } from 'rxjs/operators';
-import {
-    Component,
-    Input,
-    Output,
-    ViewChild,
-    OnInit,
-    OnDestroy,
-    EventEmitter,
-    SimpleChange,
-} from '@angular/core';
-import { Store } from '@ngrx/store';
-
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material';
-
-import { Tactic, TacticChain } from './tactics.model';
+import { Store } from '@ngrx/store';
+import { BehaviorSubject, Observable, of as observableOf, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, map, pluck, take, tap } from 'rxjs/operators';
+import { Dictionary } from '../../../models/json/dictionary';
+import { AppState } from '../../../root-store/app.reducers';
+import { HeatmapOptions } from '../heatmap/heatmap.data';
+import { TreemapOptions } from '../treemap/treemap.data';
 import { CarouselOptions } from './tactics-carousel/carousel.data';
 import { TacticsCarouselComponent } from './tactics-carousel/tactics-carousel.component';
 import { TacticsHeatmapComponent } from './tactics-heatmap/tactics-heatmap.component';
-import { TacticsTreemapComponent } from './tactics-treemap/tactics-treemap.component';
 import { TacticsTooltipComponent } from './tactics-tooltip/tactics-tooltip.component';
-import { TooltipEvent, TacticsTooltipService } from './tactics-tooltip/tactics-tooltip.service';
-import { HeatmapOptions } from '../heatmap/heatmap.data';
-import { TreemapOptions } from '../treemap/treemap.data';
-import { Dictionary } from '../../../models/json/dictionary';
-import { AppState } from '../../../root-store/app.reducers';
+import { TooltipEvent } from './tactics-tooltip/tactics-tooltip.service';
+import { TacticsTreemapComponent } from './tactics-treemap/tactics-treemap.component';
+import { Tactic, TacticChain } from './tactics.model';
 
 @Component({
     selector: 'tactics-pane',
@@ -65,7 +53,7 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
      * @description These input values are only the "preselected" attack patterns. If there is nothing preselected, it
      *              is perfectly okay to not provide this input.
      */
-    @Input() public targets: Tactic[] = [];
+    @Input() public targets: Tactic[];
 
     /**
      * @description Title to display in the component's header.
