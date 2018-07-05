@@ -40,17 +40,12 @@ export class ResultHeaderComponent implements OnInit {
     this.infoBarMsg = 'Baselines is currently in beta. Some functionality does not work.'
 
     this.percentCompleted = Math.round((this.calculationService.baselineWeightings.protPct + 
-                                        this.calculationService.baselineWeightings.protPct + 
-                                        this.calculationService.baselineWeightings.protPct) / 3);
+                                        this.calculationService.baselineWeightings.detPct + 
+                                        this.calculationService.baselineWeightings.respPct) / 3);
     if (this.percentCompleted < 100) {
       this.infoBarMsg += ` ${this.percentCompleted}% of your baseline is complete.`;
       this.editUrl = `/baseline/wizard/edit/${this.baselineId}`;
     }
-
-    this.editUrl = `/baseline/wizard/edit/${this.baselineId}`;
-    this.infoBarMsg = 'Baselines is currently in beta. Some functionality does not work.'
-    this.percentCompleted = 2;
-    this.infoBarMsg += ` ${this.percentCompleted}% of your baseline is complete.`;
   }
 
   public publishBaseline() {
