@@ -1,23 +1,7 @@
 import * as d3 from 'd3';
-
-import {
-    HeatBatchData,
-    HeatCellData,
-    HeatColor,
-    BatchColor,
-    ViewRules,
-    HeatmapOptions,
-    DEFAULT_OPTIONS,
-    DOMRect,
-} from './heatmap.data';
-import {
-    HeatmapRenderer,
-    DrawingBounds,
-    BatchWork,
-    D3Selection,
-    HeatCellWork,
-} from './heatmap.renderer';
 import { Dictionary } from '../../../models/json/dictionary';
+import { DOMRect, HeatBatchData, HeatColor, HeatmapOptions } from './heatmap.data';
+import { BatchWork, D3Selection, DrawingBounds, HeatCellWork, HeatmapRenderer } from './heatmap.renderer';
 
 /**
  * This renderer draws each heatmap batch as an individual column.
@@ -38,17 +22,21 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
                 graphElement.select('svg').remove();
                 const window = graphElement
                     .append('svg')
-                        .attr('class', 'heat-map-graph')
-                        .attr('width', this.heatmap.view.width)
-                        .attr('height', this.heatmap.view.height);
-                        this.drawHeatmap(data, this.heatmap, window);
+                    .attr('class', 'heat-map-graph')
+                    .attr('width', this.heatmap.view.width)
+                    .attr('height', this.heatmap.view.height);
+                this.drawHeatmap(data, this.heatmap, window);
 
                 // Moved the zoom rule here, so that the minimap can reuse the drawHeatMap method
                 if (this.zoomOpts.zoomExtent) {
                     this.heatmap.workspace.zoom = d3.zoom().scaleExtent(this.zoomOpts.zoomExtent)
-                        .on('zoom', () => this.onHeatmapZoom());
+                        .on('zoom', () => {
+                            this.ngZone.runOutsideAngular(() => {
+                                this.onHeatmapZoom();
+                            })
+                        });
                     this.heatmap.workspace.canvas.call(this.heatmap.workspace.zoom);
-    
+
                     // Now create a minimap (if the component options asks for one)
                     this.createMinimap(data, window);
                 }
@@ -101,17 +89,17 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
                 this.minimap.workspace.zoom = d3.zoom().scaleExtent(extent).on('zoom', () => this.onMinimapZoom());
                 this.minimap.workspace.panner = this.minimap.workspace.canvas
                     .append('g')
-                        .attr('class', 'mini-map-panner')
-                        .call(this.minimap.workspace.zoom);
+                    .attr('class', 'mini-map-panner')
+                    .call(this.minimap.workspace.zoom);
                 this.minimap.workspace.panner
                     .append('rect')
-                        .attr('x', this.minimapOpts.border.width)
-                        .attr('y', this.minimapOpts.border.width)
-                        .attr('width', this.minimap.view.width - this.minimapOpts.border.width * 2)
-                        .attr('height', this.minimap.view.height - this.minimapOpts.border.width * 2)
-                        .attr('stroke-width', this.minimapOpts.panner.width)
-                        .attr('stroke', this.minimapOpts.panner.color)
-                        .attr('fill', 'transparent');
+                    .attr('x', this.minimapOpts.border.width)
+                    .attr('y', this.minimapOpts.border.width)
+                    .attr('width', this.minimap.view.width - this.minimapOpts.border.width * 2)
+                    .attr('height', this.minimap.view.height - this.minimapOpts.border.width * 2)
+                    .attr('stroke-width', this.minimapOpts.panner.width)
+                    .attr('stroke', this.minimapOpts.panner.color)
+                    .attr('fill', 'transparent');
                 this.minimap.workspace.canvas.on('click', () => this.handleMinimapClick());
                 this.addHotCorners();
             }
@@ -171,21 +159,21 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
             this.heatmap.workspace.columns = batchList.reduce(
                 (count, d: HeatBatchData) => {
                     const columns = Math.ceil(d.cells.length / maxRows);
-                    tempBatchData.push({columns: columns, width: 0});
+                    tempBatchData.push({ columns: columns, width: 0 });
                     return count + columns;
                 }, 0);
 
             // determine what the cell width would be for this many columns
             this.heatmap.cells.width = Math.floor(availableWidth / this.heatmap.workspace.columns);
         } while ((this.heatmap.body.width !== 0)
-                && (this.heatmap.cells.height < this.heatmap.cells.width / 2));
+            && (this.heatmap.cells.height < this.heatmap.cells.width / 2));
 
         // recalculate the width that a batch will need
         while (this.heatmap.body.width < this.calcNeededWidth()) {
             this.heatmap.cells.width--;
         }
         this.heatmap.workspace.sidePadding +=
-                Math.floor(Math.max(0, this.heatmap.body.width - this.calcNeededWidth()) / 2);
+            Math.floor(Math.max(0, this.heatmap.body.width - this.calcNeededWidth()) / 2);
         this.heatmap.workspace.largestBatch = Math.ceil(this.heatmap.workspace.largestBatch / passes);
     }
 
@@ -213,7 +201,7 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
         if (this.minimap.body.height > rescaledBatchHeight) {
             this.minimap.body.height = Math.ceil(rescaledBatchHeight);
             this.minimap.view.height = Math.ceil(rescaledBatchHeight
-                    + this.minimap.headers.height + this.viewOpts.minBottomPadding);
+                + this.minimap.headers.height + this.viewOpts.minBottomPadding);
         }
     }
 
@@ -249,9 +237,9 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
         // create the canvas
         bounds.workspace.window = graphElement
             .append('svg')
-                .attr('class', `${isMini ? 'mini-map-canvas' : 'heat-map-canvas'}`)
-                .attr('width', bounds.view.width)
-                .attr('height', bounds.view.height);
+            .attr('class', `${isMini ? 'mini-map-canvas' : 'heat-map-canvas'}`)
+            .attr('width', bounds.view.width)
+            .attr('height', bounds.view.height);
 
         if (!isMini) {
             this.addGradients(bounds);
@@ -265,14 +253,14 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
         // create the top x-axis, but without any ticks
         const header = bounds.workspace.canvas
             .append('g')
-                .attr('class', 'heat-map-headers')
-                .attr('transform', `translate(${bounds.workspace.sidePadding - 1}, 0)`);
+            .attr('class', 'heat-map-headers')
+            .attr('transform', `translate(${bounds.workspace.sidePadding - 1}, 0)`);
 
         // create the individual table body component
         const body = bounds.workspace.canvas
             .append('g')
-                .attr('class', 'heat-map-grid')
-                .attr('transform', `translate(${bounds.workspace.sidePadding}, ${bounds.headers.height})`);
+            .attr('class', 'heat-map-grid')
+            .attr('transform', `translate(${bounds.workspace.sidePadding}, ${bounds.headers.height})`);
 
         bounds.workspace.xPosition = 0;
         const batchColors = this.colorOpts.batchColors.slice(0);
@@ -285,19 +273,19 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
      */
     private positionMinimap(bounds: DrawingBounds) {
         bounds.workspace.startX = this.minimapOpts.startCorner.endsWith('left') ? 0
-                : (this.heatmap.view.width - bounds.view.width);
+            : (this.heatmap.view.width - bounds.view.width);
         bounds.workspace.startY = this.minimapOpts.startCorner.startsWith('top') ? 0
-                : (this.heatmap.view.height - bounds.view.height);
+            : (this.heatmap.view.height - bounds.view.height);
         bounds.workspace.window.attr('x', bounds.workspace.startX).attr('y', bounds.workspace.startY);
         bounds.workspace.canvas
             .append('rect')
-                .attr('x', 0)
-                .attr('y', 0)
-                .attr('width', '100%')
-                .attr('height', '100%')
-                .attr('fill', 'white')
-                .attr('stroke', this.minimapOpts.border.color)
-                .attr('stroke-width', this.minimapOpts.border.width);
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width', '100%')
+            .attr('height', '100%')
+            .attr('fill', 'white')
+            .attr('stroke', this.minimapOpts.border.color)
+            .attr('stroke-width', this.minimapOpts.border.width);
     }
 
     /**
@@ -305,7 +293,7 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
      */
     private drawBatch(batch: BatchWork, bounds: DrawingBounds, svg: D3Selection, header: D3Selection) {
         const batchWidth = bounds.cells.width * batch.columns.length
-                + (batch.columns.length - 1) * bounds.workspace.betweenPadding + 2;
+            + (batch.columns.length - 1) * bounds.workspace.betweenPadding + 2;
 
         // batch canvas, to group all the cells into
         const batchView = svg.append('g')
@@ -313,10 +301,10 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
 
         const batchRect = batchView
             .append('rect')
-                .attr('x', bounds.workspace.xPosition)
-                .attr('y', 0)
-                .attr('width', batchWidth)
-                .attr('height', bounds.body.height);
+            .attr('x', bounds.workspace.xPosition)
+            .attr('y', 0)
+            .attr('width', batchWidth)
+            .attr('height', bounds.body.height);
         const c = this.colorBatch(batchRect, batch.value);
         if (!bounds.workspace.miniVersion) {
             batch.body.rect = batchRect;
@@ -347,24 +335,24 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
      * @description draw the given batch's header
      */
     private drawBatchHeader(batch: BatchWork, header: D3Selection,
-            bounds: DrawingBounds, batchWidth: number, color: HeatColor) {
+        bounds: DrawingBounds, batchWidth: number, color: HeatColor) {
         const isMini = bounds.workspace.miniVersion;
 
         // bounding box and "tab"
         const batchHeader = header
             .append('g')
-                .attr('class', 'heat-map-header')
-                .attr('aria-label', batch.title)
-                .style('overflow', 'hidden');
+            .attr('class', 'heat-map-header')
+            .attr('aria-label', batch.title)
+            .style('overflow', 'hidden');
 
         const batchRect = batchHeader
             .append('rect')
-                .attr('x', bounds.workspace.xPosition + 1)
-                .attr('rx', 6)
-                .attr('y', 1)
-                .attr('ry', 6)
-                .attr('width', batchWidth)
-                .attr('height', bounds.headers.height + 5);
+            .attr('x', bounds.workspace.xPosition + 1)
+            .attr('rx', 6)
+            .attr('y', 1)
+            .attr('ry', 6)
+            .attr('width', batchWidth)
+            .attr('height', bounds.headers.height + 5);
         this.colorRect(batchRect, color);
         if (!isMini) {
             batch.header.rect = batchRect;
@@ -374,8 +362,8 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
 
         // add the batch name and make it fit in the box
         this.drawCellText(batch.title, batchHeader, bounds.workspace.xPosition, 1, batchWidth, bounds.headers.height,
-                isMini ? this.minimapOpts.text.fontSize : this.textOpts.headers.fontSize, color.fg,
-                !isMini && this.textOpts.headers.allowSplit, !isMini && this.textOpts.headers.hyphenate);
+            isMini ? this.minimapOpts.text.fontSize : this.textOpts.headers.fontSize, color.fg,
+            !isMini && this.textOpts.headers.allowSplit, !isMini && this.textOpts.headers.hyphenate);
     }
 
     /**
@@ -405,36 +393,38 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
 
         const cell = view
             .append('g')
-                .attr('class', 'heat-map-cell')
-                .attr('aria-label', data.title);
+            .attr('class', 'heat-map-cell')
+            .attr('aria-label', data.title);
         if (!isMini) {
             cell
-                .on('click', p => this.click.emit({data: data, source: d3.event}))
-                .on('mouseover', p => this.onCellHover(data))
-                .on('mouseout', () => this.offCellHover());
+                .on('click', (p) => this.click.emit({ data: data, source: d3.event }))
+                .on('mouseover', () => this.ngZone.runOutsideAngular(() => this.onCellHover(data)))
+                .on('mouseout', () => this.ngZone.runOutsideAngular(() => this.offCellHover()));
         }
 
         const rect = cell
             .append('rect')
-                .attr('x', bounds.workspace.xPosition)
-                .attr('y', y)
-                .attr('width', bounds.cells.width)
-                .attr('height', bounds.cells.height)
-                .style('padding-right', bounds.workspace.betweenPadding);
+            .attr('x', bounds.workspace.xPosition)
+            .attr('y', y)
+            .attr('width', bounds.cells.width)
+            .attr('height', bounds.cells.height)
+            .style('padding-right', bounds.workspace.betweenPadding);
         this.colorRect(rect, color);
         if (!isMini) {
             data.rect = rect;
             rect
-                .on('mouseover', ev => this.onRectHover(d3.event.target))
-                .on('mouseout', ev => this.offRectHover(d3.event.target, color.bg as string));
+                .on('mouseover',
+                    (ev) => this.ngZone.runOutsideAngular(() => this.onRectHover(d3.event.target)))
+                .on('mouseout',
+                    (ev) => this.ngZone.runOutsideAngular(() => this.offRectHover(d3.event.target, color.bg as string)));
         } else {
             data.mini = rect;
         }
 
         if (!isMini && this.textOpts.cells.showText) {
             this.drawCellText(data.title, cell, bounds.workspace.xPosition, y,
-                    bounds.cells.width, bounds.cells.height, this.textOpts.cells.fontSize, color.fg,
-                    this.textOpts.cells.allowSplit, this.textOpts.cells.hyphenate);
+                bounds.cells.width, bounds.cells.height, this.textOpts.cells.fontSize, color.fg,
+                this.textOpts.cells.allowSplit, this.textOpts.cells.hyphenate);
             if (bounds.workspace.showCellTextOnZoom) {
                 let texts = cell.selectAll('text').attr('fill-opacity', '0');
             }
@@ -445,13 +435,13 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
      * @description Try to draw the text of the cell.
      */
     private drawCellText(text: string, cell: D3Selection, x: number, y: number, width: number, height: number,
-            fontSize: number, color: string, allowSplit: boolean, allowHyphenation: boolean) {
+        fontSize: number, color: string, allowSplit: boolean, allowHyphenation: boolean) {
         const textNode = cell
             .append('text')
-                .attr('x', x + width / 2).attr('y', y)
-                .attr('text-anchor', 'middle')
-                .attr('font-size', `${fontSize}px`)
-                .style('pointer-events', 'none');
+            .attr('x', x + width / 2).attr('y', y)
+            .attr('text-anchor', 'middle')
+            .attr('font-size', `${fontSize}px`)
+            .style('pointer-events', 'none');
         if (color.startsWith('.')) {
             textNode.attr('class', color.substring(1));
         } else {
@@ -471,7 +461,7 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
         const maxRows = allowSplit ? Math.floor(height / (fontSize * 1.1)) : 1;
         let tspan = newTSpan(), lines = [];
 
-        wordLoop: for (let word, line = []; (word = words.shift()) && (lines.length < maxRows); ) {
+        wordLoop: for (let word, line = []; (word = words.shift()) && (lines.length < maxRows);) {
             line.push(word);
             let t = joinWords(line);
             tspan.text(t);
@@ -490,7 +480,7 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
                     // hyphenation failed or is turned off or we have no more lines available
                     this.ellipsize(t, width, tspan);
                     break wordLoop;
-                } else  if (lines.length === maxRows) {
+                } else if (lines.length === maxRows) {
                     // last row, ellipsize it
                     this.ellipsize(t, width, tspan);
                     break wordLoop;
@@ -511,7 +501,7 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
         const count = lines.length + 1;
         lines.forEach((span, index) => {
             span.attr('y', y + height / count * (index + 1)
-                    + (index - count / 2 + 1) * Math.floor(height / (fontSize * 1.6)));
+                + (index - count / 2 + 1) * Math.floor(height / (fontSize * 1.6)));
         });
     }
 
@@ -547,37 +537,39 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
     private addHotCorners() {
         const view = this.minimap.view;
         const corners = [
-            {x: 0, y: 0, top: 0, left: 0},
-            {x: view.width - 16, y: 0, top: 0, left: this.heatmap.view.width - view.width},
-            {x: view.width - 16, y: view.height - 16,
-                top: this.heatmap.view.height - view.height, left: this.heatmap.view.width - view.width},
-            {x: 0, y: view.height - 16, top: this.heatmap.view.height - view.height, left: 0},
+            { x: 0, y: 0, top: 0, left: 0 },
+            { x: view.width - 16, y: 0, top: 0, left: this.heatmap.view.width - view.width },
+            {
+                x: view.width - 16, y: view.height - 16,
+                top: this.heatmap.view.height - view.height, left: this.heatmap.view.width - view.width
+            },
+            { x: 0, y: view.height - 16, top: this.heatmap.view.height - view.height, left: 0 },
         ];
         corners.forEach(corner => {
             const hotCorner = this.minimap.workspace.canvas
                 .append('g')
-                    .attr('class', 'mini-map-hot-corner');
+                .attr('class', 'mini-map-hot-corner');
             const rect = hotCorner
                 .append('rect')
-                    .attr('x', corner.x)
-                    .attr('y', corner.y)
-                    .attr('width', 16)
-                    .attr('height', 16)
-                    .attr('stroke-width', 1)
-                    .attr('stroke', 'black')
-                    .attr('fill', 'white')
-                    .on('click', () => {
-                        this.minimap.workspace.window
-                            .attr('x', this.minimap.workspace.startX = corner.left)
-                            .attr('y', this.minimap.workspace.startY = corner.top);
-                    });
+                .attr('x', corner.x)
+                .attr('y', corner.y)
+                .attr('width', 16)
+                .attr('height', 16)
+                .attr('stroke-width', 1)
+                .attr('stroke', 'black')
+                .attr('fill', 'white')
+                .on('click', () => {
+                    this.minimap.workspace.window
+                        .attr('x', this.minimap.workspace.startX = corner.left)
+                        .attr('y', this.minimap.workspace.startY = corner.top);
+                });
             hotCorner
                 .append('circle')
-                    .attr('cx', corner.x + 8)
-                    .attr('cy', corner.y + 8)
-                    .attr('r', 6)
-                    .attr('class', 'theme-fill-accent')
-                    .attr('pointer-events', 'none');
+                .attr('cx', corner.x + 8)
+                .attr('cy', corner.y + 8)
+                .attr('r', 6)
+                .attr('class', 'theme-fill-accent')
+                .attr('pointer-events', 'none');
         });
     }
 
@@ -596,7 +588,7 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
             let batchBg = null;
             if (batch.value) {
                 const heat = this.colorOpts.heatColors[batch.value];
-                batchBg = heat ? {header: heat, body: heat} : null;
+                batchBg = heat ? { header: heat, body: heat } : null;
             }
             if (batchBg === null) {
                 batchBg = batch.body.fill;
@@ -631,7 +623,8 @@ export class HeatmapColumnRenderer extends HeatmapRenderer {
                             cell.rect.attr('class', null);
                             cell.rect.attr('fill', bg);
                         }
-                        cell.rect.on('mouseout', ev => this.offRectHover(d3.event.target, bg));
+                        cell.rect.on('mouseout',
+                            (ev) => this.ngZone.runOutsideAngular(() => this.offRectHover(d3.event.target, bg)));
                     }
                     if (cell.mini) {
                         if (bg.startsWith('.')) {

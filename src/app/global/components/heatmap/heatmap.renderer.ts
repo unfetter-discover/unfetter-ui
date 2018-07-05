@@ -1,18 +1,8 @@
-import { EventEmitter } from '@angular/core';
-
+import { EventEmitter, NgZone } from '@angular/core';
 import * as d3 from 'd3';
-
-import {
-    HeatmapOptions,
-    ViewRules,
-    HeatBatchData,
-    HeatCellData,
-    BatchColor,
-    HeatColor,
-    DOMRect,
-} from './heatmap.data';
-import { TooltipEvent } from '../tactics-pane/tactics-tooltip/tactics-tooltip.service';
 import { Dictionary } from '../../../models/json/dictionary';
+import { TooltipEvent } from '../tactics-pane/tactics-tooltip/tactics-tooltip.service';
+import { BatchColor, DOMRect, HeatBatchData, HeatCellData, HeatColor, HeatmapOptions, ViewRules } from './heatmap.data';
 
 export interface HeatmapPane {
     data: Array<HeatBatchData>;
@@ -121,10 +111,18 @@ export abstract class HeatmapRenderer {
      */
     protected minimap: DrawingBounds;
 
+    protected ngZone: NgZone;
+
     /**
      * @description 
      */
     private hoverTimeout: number;
+
+
+    public set angularZone(ngZone: NgZone) {
+        this.ngZone = ngZone;
+    }
+
 
     /**
      * @description Callback to this component to handle certain events(?).
@@ -234,12 +232,12 @@ export abstract class HeatmapRenderer {
                 if (Array.isArray(heat.bg)) {
                     const gradient = bounds.workspace.defs
                         .append('linearGradient')
-                            .attr('id', `gradient-${index}`);
+                        .attr('id', `gradient-${index}`);
                     heat.bg.forEach((bg, stop, stops) => {
                         gradient
                             .append('stop')
-                                .attr('offset', `${Math.round(stop / (stops.length - 1) * 100)}%`)
-                                .attr('stop-color', bg);
+                            .attr('offset', `${Math.round(stop / (stops.length - 1) * 100)}%`)
+                            .attr('stop-color', bg);
                     });
                     heat.bg = `url(#gradient-${index})`;
                 }
@@ -250,11 +248,11 @@ export abstract class HeatmapRenderer {
     /**
      * @description
      */
-    protected colorBatch(rect: D3Selection, value: string): {heat: HeatColor, color: BatchColor} {
+    protected colorBatch(rect: D3Selection, value: string): { heat: HeatColor, color: BatchColor } {
         const heat = value ? this.colorOpts.heatColors[value] : null;
-        const color: BatchColor = heat ? {header: heat, body: heat} : this.colorOpts.batchColors.shift();
+        const color: BatchColor = heat ? { header: heat, body: heat } : this.colorOpts.batchColors.shift();
         this.colorRect(rect, color.body);
-        return {heat, color};
+        return { heat, color };
     }
 
     /**
@@ -281,7 +279,7 @@ export abstract class HeatmapRenderer {
         window.clearTimeout(this.hoverTimeout);
         const ev = d3.event;
         this.hoverTimeout = window.setTimeout(
-            () => this.hover.emit({data: cellData, source: ev}),
+            () => this.hover.emit({ data: cellData, source: ev }),
             this.options.hover.delay);
     }
 
@@ -290,7 +288,7 @@ export abstract class HeatmapRenderer {
      */
     protected offCellHover() {
         window.clearTimeout(this.hoverTimeout);
-        this.hover.emit({data: null, source: d3.event});
+        this.hover.emit({ data: null, source: d3.event });
     }
 
     /**
@@ -339,7 +337,7 @@ export abstract class HeatmapRenderer {
         }
         if (this.minimap && this.minimap.workspace.panner) {
             this.minimap.workspace.zoom.transform(this.minimap.workspace.panner,
-                    this.convertHeatmapZoomToMinimap(boundedTransform));
+                this.convertHeatmapZoomToMinimap(boundedTransform));
         }
     }
 
@@ -352,7 +350,7 @@ export abstract class HeatmapRenderer {
          * This seems to add too much, so it probably requires rescaling?
          */
         const miniX = Math.abs(transform.x) * this.minimap.workspace.rescale
-                + (this.minimap.workspace.sidePadding - this.heatmap.workspace.sidePadding);
+            + (this.minimap.workspace.sidePadding - this.heatmap.workspace.sidePadding);
 
         // adjust the y position based on the vertical difference in the header heights and the ratio difference
         const headerDiff = this.heatmap.headers.height - this.minimap.headers.height;
@@ -377,7 +375,7 @@ export abstract class HeatmapRenderer {
             this.minimap.workspace.panner.attr('transform', boundedTransform);
             if ((d3.event.sourceEvent instanceof MouseEvent) || (d3.event.sourceEvent instanceof WheelEvent)) {
                 this.heatmap.workspace.zoom.transform(this.heatmap.workspace.canvas,
-                        this.convertMinimapZoomToHeatmap(boundedTransform));
+                    this.convertMinimapZoomToHeatmap(boundedTransform));
             }
             return boundedTransform;
         }
@@ -389,7 +387,7 @@ export abstract class HeatmapRenderer {
     private convertMinimapZoomToHeatmap(transform: d3.ZoomTransform): d3.ZoomTransform {
         // scale the x coordinate to match the heatmap (may have to adjust this based on the extra minimap padding)
         const heatX = Math.abs(transform.x) / this.minimap.workspace.rescale
-                - Math.abs(this.heatmap.workspace.sidePadding - this.minimap.workspace.sidePadding);
+            - Math.abs(this.heatmap.workspace.sidePadding - this.minimap.workspace.sidePadding);
 
         // scale the y coordinate based on the vertical difference in the header heights and the ratio difference
         const heatY = Math.abs(transform.y) / this.minimap.workspace.rescale;
@@ -411,7 +409,7 @@ export abstract class HeatmapRenderer {
                 window.clearTimeout(this.minimap.workspace.clicked);
                 this.minimap.workspace.clicked = null;
                 this.minimap.workspace.zoom.transform(this.minimap.workspace.panner,
-                        d3.zoomIdentity.translate(0, 0).scale(1));
+                    d3.zoomIdentity.translate(0, 0).scale(1));
             } else {
                 // create a timeout, and if it triggers, handle the click
                 this.minimap.workspace.clicked = window.setTimeout(() => {
@@ -431,14 +429,14 @@ export abstract class HeatmapRenderer {
             const pannerRect = this.minimap.workspace.panner.node().getBoundingClientRect();
             const transform = d3.zoomIdentity
                 .translate(ev.offsetX - this.minimap.workspace.startX - pannerRect.width / 2,
-                        ev.offsetY - this.minimap.workspace.startY - pannerRect.height / 2)
+                    ev.offsetY - this.minimap.workspace.startY - pannerRect.height / 2)
                 .scale(scale);
             const tx = Math.min(Math.max(0, transform.x), this.minimap.view.width * (1 - transform.k));
             const ty = Math.min(Math.max(0, transform.y), this.minimap.view.height * (1 - transform.k));
             const boundedTransform = d3.zoomIdentity.translate(tx, ty).scale(transform.k);
             this.minimap.workspace.zoom.transform(this.minimap.workspace.panner, boundedTransform);
             this.heatmap.workspace.zoom.transform(this.heatmap.workspace.canvas,
-                    this.convertMinimapZoomToHeatmap(boundedTransform));
+                this.convertMinimapZoomToHeatmap(boundedTransform));
         }
     }
 

@@ -1,11 +1,11 @@
 
-import { ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, pluck } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { HeatmapOptions } from '../../../../../global/components/heatmap/heatmap.data';
 import { CarouselOptions } from '../../../../../global/components/tactics-pane/tactics-carousel/carousel.data';
-import { Tactic } from '../../../../../global/components/tactics-pane/tactics.model';
+import { Tactic, TacticChain } from '../../../../../global/components/tactics-pane/tactics.model';
 import { TreemapOptions } from '../../../../../global/components/treemap/treemap.data';
 import { Dictionary } from '../../../../../models/json/dictionary';
 import { AppState } from '../../../../../root-store/app.reducers';
@@ -13,9 +13,10 @@ import { AppState } from '../../../../../root-store/app.reducers';
 @Component({
     selector: 'summary-tactics',
     templateUrl: './summary-tactics.component.html',
-    styleUrls: ['./summary-tactics.component.scss']
+    styleUrls: ['./summary-tactics.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Default,
 })
-export class SummaryTacticsComponent implements OnInit, OnChanges {
+export class SummaryTacticsComponent implements OnInit {
 
     /**
      * @description 
@@ -28,20 +29,9 @@ export class SummaryTacticsComponent implements OnInit, OnChanges {
     @Input() public selectedAttackPatternIds: string[] = [];
 
     /**
-     * @description 
+     * @description attack patterns selected on heat map
      */
     public attackPatterns: Tactic[] = [];
-
-    /**
-     * @description tactics to highlight in heat map
-     */
-    public selectedTactics$: Observable<Tactic[]>;
-    public selectedTactics: Tactic[];
-
-    /**
-     * @description 
-     */
-    private capabilitiesToAttackPatternMap: any;
 
     /**
      * @description 
@@ -101,25 +91,24 @@ export class SummaryTacticsComponent implements OnInit, OnChanges {
     /**
      * @description 
      */
-    ngOnInit() {
-        // this.loadCapabilitiesMap();
-        // this.collapseContents = false;
+    ngOnInit(): void {
         const sub$ = this.appStore
             .select('config')
             .pipe(
-                pluck<any, Tactic[]>('tactics'),
-                map((tactics) => {
-                    const attackPatternSet = new Set<string>(this.selectedAttackPatternIds);
-                    return tactics.filter((tactic) => attackPatternSet.has(tactic.id))
-                }),
-                map((tactics) => {
-                    this.selectedTactics = tactics;
-                    this.changeDetectorRef.markForCheck();
-                    return tactics;
+                filter((config) => config.tactics !== undefined && config.tacticsChains !== undefined),
+                map((config) => {
+                    const tactics = config.tactics;
+                    let attackPatterns = this.attackPatternIdsToTactics(this.selectedAttackPatternIds, tactics);
+                    const chains = config.tacticsChains;
+                    attackPatterns = this.deriveAttackPatternFramework(attackPatterns, chains);
+                    return this.enhanceWithHeatMapOptions(attackPatterns);
                 })
             )
             .subscribe(
-                (tactics) => console.log(),
+                (attackPatterns) => {
+                    this.attackPatterns = attackPatterns;
+                    this.changeDetectorRef.markForCheck();
+                },
                 (err) => console.log(err),
                 () => {
                     if (sub$) {
@@ -130,89 +119,50 @@ export class SummaryTacticsComponent implements OnInit, OnChanges {
     }
 
     /**
-     * @description 
+     * @param  {string[]} attackPatternIds
+     * @param  {Tactic[]} tactics
+     * @returns Tactic
      */
-    ngOnChanges(changes: SimpleChanges) {
-        // if (changes && changes.capabilities) {
-        //     const indicators = this.groupCapabilitiesByAttackPatterns();
-        //     requestAnimationFrame(() => {
-        //         this.attackPatterns = [];
-        //         // this.attackPatterns = this.collectAttackPatterns(patterns, indicators);
-        //     });
-        // }
-
-        // if (this.collapseSubject) {
-        //     const collapseCard$ = this.collapseSubject.pipe(
-        //         finalize(() => collapseCard$ && collapseCard$.unsubscribe()))
-        //         .subscribe(
-        //             (collapseContents) => this.collapseContents = collapseContents,
-        //             (err) => console.log(err),
-        //     );
-        // }
+    public attackPatternIdsToTactics(attackPatternIds: string[], tactics: Tactic[]): Tactic[] {
+        const attackPatternSet = new Set<string>(attackPatternIds);
+        return tactics.filter((tactic) => attackPatternSet.has(tactic.id));
     }
 
     /**
-     * @description retrieve the capabilities-to-attack-patterns map from the ngrx store
+     * @param  {Tactic[]} attackPatterns
+     * @param  {Dictionary<TacticChain>} chains
+     * @returns Tactic
      */
-    private loadCapabilitiesMap() {
-        // const getCapabilityToAttackPatternMap$ = this.store
-        //     .select('indicatorSharing')
-        //     .pluck('indicatorToApMap')
-        //     .distinctUntilChanged()
-        //     .finally(() => {
-        //         if (getCapabilityToAttackPatternMap$) {
-        //             getCapabilityToAttackPatternMap$.unsubscribe();
-        //         }
-        //     })
-        //     .subscribe(
-        //         (capabilityToAttackPatternMap) => this.capabilitiesToAttackPatternMap = capabilityToAttackPatternMap,
-        //         (err) => console.log(err)
-        //     );
-    }
-
-    /**
-     * @description create a map of attack patterns and their capabilities (inverted capabilities-to-attack-patterns map)
-     */
-    private groupCapabilitiesByAttackPatterns() {
-        const capabilityIds: string[] = this.capabilities ? this.capabilities.map(capability => capability.id) : [];
-        const patternCapabilities: Dictionary<string[]> = {};
-        // Object.entries(this.capabilitiesToAttackPatternMap)
-        //   .filter(capability => capabilityIds.includes(capability[0]))
-        //   .forEach(([capability, patterns]: [string, any[]]) => {
-        //     if (patterns && patterns.length) {
-        //       patterns.forEach((p: any) => {
-        //         if (!patternCapabilities[p.name]) {
-        //           patternCapabilities[p.name] = [];
-        //         }
-        //         patternCapabilities[p.name].push(capability);
-        //       });
-        //     }
-        //   });
-        return patternCapabilities;
-    }
-
-    /**
-     * @description Build a list of all the attack patterns.
-     */
-    private collectAttackPatterns(patterns: any[], indicators: Dictionary<string[]>): Tactic[] {
-        const attackPatterns: Dictionary<Tactic> = {};
-        patterns.forEach((pattern) => {
-            const name = pattern.name;
-            if (name) {
-                let analytics = indicators[name];
-                if (analytics) {
-                    analytics = analytics.map(analytic => this.capabilities.find(a => a.id === analytic));
-                    attackPatterns[name] = Object.assign({}, {
-                        ...pattern,
-                        analytics: analytics,
-                        adds: {
-                            highlights: [{ value: analytics.length, color: { style: analytics.length > 0 } }]
-                        },
-                    });
-                }
-            }
+    public deriveAttackPatternFramework(attackPatterns: Tactic[], chains: Dictionary<TacticChain>): Tactic[] {
+        const phaseMatches = Object.keys(chains).filter((key) => {
+            const curChain = chains[key];
+            const isPhaseMatch = curChain.phases.find((tacticPhase) => {
+                const id = tacticPhase.id;
+                return attackPatterns.find((attackPattern) => {
+                    return attackPattern.phases.find((phase) => phase === id) !== undefined;
+                }) !== undefined;
+            });
+            return isPhaseMatch;
         });
-        return Object.values(attackPatterns);
+        const chainNameMatch = chains[phaseMatches[0]].id;
+        const enhancedAttackPatterns = attackPatterns
+            .map((attackPattern) => {
+                attackPattern.framework = chainNameMatch;
+                return attackPattern;
+            });
+        return enhancedAttackPatterns;
     }
 
+    /**
+     * @param  {Tactic[]} tactics
+     * @returns Tactic
+     */
+    public enhanceWithHeatMapOptions(tactics: Tactic[]): Tactic[] {
+        return tactics.map((tactic) => {
+            tactic.adds = {
+                highlights: [{ value: 2, color: { style: 'selected', bg: '#33a0b0', fg: 'white' } }]
+            };
+            return tactic;
+        });
+    }
 }
