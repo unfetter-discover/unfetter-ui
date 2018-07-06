@@ -62,19 +62,19 @@
               Protect
             </div>
             <div class="card-row-data">
-              {{summaryCalculationService.baselineWeightings.protPct}}%
+              {{ summaryCalculationService.baselineWeightings.protPct | number:'1.2-2' }}
             </div>
             <div class="card-row-description second-row">
               Detect
             </div>
             <div class="card-row-data">
-              {{summaryCalculationService.baselineWeightings.detPct}}%
+              {{ summaryCalculationService.baselineWeightings.detPct | number:'1.2-2' }}
             </div>
             <div class="card-row-description third-row">
               Respond
             </div>
             <div class="card-row-data">
-              {{summaryCalculationService.baselineWeightings.respPct}}%
+              {{ summaryCalculationService.baselineWeightings.respPct | number:'1.2-2' }}
             </div>
           </mat-card-content>
         </mat-card>

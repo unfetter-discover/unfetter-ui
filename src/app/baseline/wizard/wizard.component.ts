@@ -297,13 +297,13 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @param {UIEvent} event
    * @return {void}
    */
-  public onOpenSidePanel(panelName: string, group?: Category): void {
+  public onOpenSidePanel(panelName: string, group?: Category, event?: Event): void {
     if (event) {
       event.preventDefault();
     }
 
     // Bail if this was implicitly called as the result of a wizard button press
-    if (event.target instanceof HTMLSpanElement) {
+    if (event && event.target instanceof HTMLSpanElement) {
       return;
     }
 

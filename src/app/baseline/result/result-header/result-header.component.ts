@@ -39,9 +39,7 @@ export class ResultHeaderComponent implements OnInit {
     this.summaryLink = `${base}/summary/${this.baselineId}`;
     this.infoBarMsg = 'Baselines is currently in beta. Some functionality does not work.'
 
-    this.percentCompleted = Math.round((this.calculationService.baselineWeightings.protPct + 
-                                        this.calculationService.baselineWeightings.detPct + 
-                                        this.calculationService.baselineWeightings.respPct) / 3);
+    this.percentCompleted = Math.round(((this.calculationService.blIncompleteWeightings / this.calculationService.totalWeightings) * 100));
     if (this.percentCompleted < 100) {
       this.infoBarMsg += ` ${this.percentCompleted}% of your baseline is complete.`;
       this.editUrl = `/baseline/wizard/edit/${this.baselineId}`;

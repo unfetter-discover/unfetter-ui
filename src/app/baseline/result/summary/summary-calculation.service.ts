@@ -35,6 +35,8 @@ export class SummaryCalculationService {
   blGroups: string[] = [];
   blAttackPatterns: string[] = [];
   blIncompleteAPs: number;
+  blIncompleteWeightings: number;
+  allWeightings: number = 500;
   blWeightings: { protPct: 0, detPct: 0, respPct: 0 };
 
   constructor() {
@@ -112,8 +114,16 @@ export class SummaryCalculationService {
     this.blIncompleteAPs = blIncompleteAPs;
   }
 
+  public set baselineIncompleteWeightings(blIncompleteWeightings: number) {
+    this.blIncompleteWeightings = blIncompleteWeightings;
+  }
+
   public set baselineWeightings(blWeightings: { protPct, detPct, respPct }) {
     this.blWeightings = blWeightings;
+  }
+
+  public set totalWeightings(weightings: number) {
+    this.allWeightings = weightings;
   }
 
   public get numericRisk(): number {
@@ -175,8 +185,16 @@ export class SummaryCalculationService {
     return this.baselineIncompleteAPs;
   }
 
+  public get baselineIncompleteWeights(): number {
+    return this.baselineIncompleteWeightings;
+  }
+
   public get baselineWeightings(): { protPct, detPct, respPct } {
     return this.blWeightings;
+  }
+
+  public get totalWeightings(): number {
+    return this.allWeightings;
   }
 
   public getRiskText(): string {
