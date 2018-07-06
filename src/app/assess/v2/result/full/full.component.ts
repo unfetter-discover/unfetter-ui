@@ -236,14 +236,8 @@ export class FullComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public onDeleteCurrent(assessment: LastModifiedAssessment): void {
-    if (!event || (event instanceof UIEvent)) {
-      event.preventDefault();
-    }
-
     const rollupId = this.rollupId;
     const name = this.assessmentName;
-    console.log('deleting current assessment');
-    console.log(this);
     this.confirmDelete({ name, rollupId });
   }
 
