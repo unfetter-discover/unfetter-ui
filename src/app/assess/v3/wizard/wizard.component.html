@@ -1,12 +1,12 @@
 <div class="sidenav" *ngIf="finishedLoading === true; else loadingBlock">
-  <div @heightCollapse class="flex-col mt-18 mb-12">
+  <div @heightCollapse class="mt-18 mb-12 text-center">
     <div class="center chart-header">
       <span *ngIf="showSummary === false; else summaryChartTitle">Phase Rating</span>
       <ng-template #summaryChartTitle>
         <span id="summary-chart-title">Overall Rating</span>
       </ng-template>
     </div>
-    <div style="display: block">
+    <div>
       <canvas *ngIf="showSummary === false; else summaryChart" baseChart [datasets]="doughnutChartData" [labels]="doughnutChartLabels"
         [chartType]="doughnutChartType" [colors]="doughnutChartColors" [options]="chartOptions"></canvas>
       <ng-template #summaryChart>
