@@ -11,6 +11,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { Constance } from '../../utils/constance';
 import { ConfigService } from '../../core/services/config.service';
 import { cleanObjectProperties } from '../../global/static/clean-object-properties';
+import { UserHelpers } from '../../global/static/user-helpers';
 
 @Component({
     selector: 'register',
@@ -57,6 +58,7 @@ To get the most out of Unfetter, users should be in one or more organizations. A
                 .subscribe(
                     (user) => {
                         this.userReturn = user = user.attributes;
+                        this.userReturn.avatar_url = UserHelpers.getAvatarUrl(user);
                         
                         this.form = new FormGroup({
                             unfetterInformation: new FormGroup({
