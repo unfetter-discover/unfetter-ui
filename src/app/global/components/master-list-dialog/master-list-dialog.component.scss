@@ -4,6 +4,8 @@
     padding: 0;
 
     .mat-dialog-title {
+        // FF31 fix
+        height: 49px;
         margin-bottom: 0px;
 
         h2.lead {
