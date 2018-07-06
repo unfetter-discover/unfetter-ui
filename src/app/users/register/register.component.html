@@ -26,8 +26,8 @@
             <mat-card *ngIf="form !== undefined" class="uf-mat-card">
 
                 <mat-card-header>
-                    <div mat-card-avatar *ngIf="userReturn.oauth.avatar_url !== undefined"
-                            class="avatar" [style.background]="'url(' + userReturn.oauth.avatar_url + ')'"></div>
+                    <div mat-card-avatar *ngIf="userReturn.avatar_url !== undefined"
+                            class="avatar" [style.background]="'url(' + userReturn.avatar_url + ')'"></div>
                     <mat-card-title>{{form.get('unfetterInformation').get('userName').value}}</mat-card-title>
                     <mat-card-subtitle>{{form.get('unfetterInformation').get('firstName').value}}&nbsp;{{form.get('unfetterInformation').get('lastName').value}}</mat-card-subtitle>
                 </mat-card-header>

@@ -1,6 +1,8 @@
 
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter, OnDestroy, Renderer2, ChangeDetectionStrategy } from '@angular/core';
 import * as d3 from 'd3';
+import { fromEvent } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
     selector: 'unf-collapsible-tree',
@@ -23,6 +25,15 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
      * @description initialize this component
      */
     public ngOnInit(): void {
+        fromEvent(window, 'resize')
+            .pipe(
+                debounceTime(500)
+            )
+            .subscribe((event) => {
+                d3.select(this.graphId).selectAll('*').remove();
+                this.cleanToolTips();
+                this.buildGraph('graph', 'graph-info');
+            });
     }
 
     /**
