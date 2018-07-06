@@ -4,11 +4,12 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
 import { empty as observableEmpty, forkJoin as observableForkJoin } from 'rxjs';
-import { catchError, map, mergeMap, pluck, switchMap } from 'rxjs/operators';
+import { catchError, mergeMap, pluck, switchMap } from 'rxjs/operators';
 import { Capability, ObjectAssessment } from 'stix/assess/v3/baseline';
 import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
 import { BaselineService } from '../../services/baseline.service';
-import { FinishedLoading, LOAD_BASELINE_DATA, SetAndReadCapabilities, SetAttackPatterns, SetBaselines, SetBaseline, SetBaselineGroups, SET_AND_READ_CAPABILITIES, SET_BASELINE, SetBaselineWeightings } from './summary.actions';
+import { FinishedLoading, LOAD_BASELINE_DATA, SetAndReadCapabilities, SetAttackPatterns, SetBaseline, SetBaselineGroups, SetBaselines, SetBaselineWeightings, SET_AND_READ_CAPABILITIES, SET_BASELINE } from './summary.actions';
+import { AttackPatternService } from '../../../core/services/attack-pattern.service';
 
 @Injectable()
 export class SummaryEffects {
@@ -18,8 +19,47 @@ export class SummaryEffects {
         private location: Location,
         private actions$: Actions,
         protected baselineService: BaselineService,
+        protected attackPatternService: AttackPatternService,
     ) { }
 
+    // @Effect()
+    // public fetchAttackPatterns = this.actions$
+    //     .ofType(FETCH_ATTACK_PATTERNS)
+    //     .pipe(
+
+    //         pluck('payload'),
+    //         switchMap((selectedFramework: string) => {
+    //             const o1$ = observableOf(selectedFramework);
+    //             // select all the attack patterns
+    //             const o2$ = this.attackPatternService.fetchAttackPatterns()
+    //                 .pipe(
+    //                     catchError((ex) => observableOf([] as AttackPattern[]))
+    //                 );
+    //             // merge selected framework and all system attack patterns                
+    //             return observableForkJoin(o1$, o2$);
+    //         }),
+    //         mergeMap(([framework, allAttackPatterns]) => {
+    //             // if no framework given, use all attack patterns
+    //             let selectedAttackPatterns = allAttackPatterns;
+    //             if (framework) {
+    //                 // filter if we are given a selected framework
+    //                 const isFromSelectedFramework = (el) => {
+    //                     return el 
+    //                     && el.kill_chain_phases
+    //                     .findIndex((_) => _.kill_chain_name === framework) > -1;
+    //                 };
+    //                 selectedAttackPatterns = allAttackPatterns
+    //                 .filter(isFromSelectedFramework);
+    //             }
+                
+    //             // tell reducer to set the attack pattern states
+    //             return [
+    //                 new baselineActions.SetAttackPatterns(allAttackPatterns),
+    //                 new baselineActions.SetSelectedFrameworkAttackPatterns(selectedAttackPatterns),
+    //             ];
+    //         })
+    //     )
+    
     @Effect()
     public fetchBaselineData = this.actions$
         .ofType(LOAD_BASELINE_DATA)
@@ -52,7 +92,8 @@ export class SummaryEffects {
                 // Pull out unique list of attack patterns represented in all of these object assessments
                 const apList = [];
                 let apTotal = 0;
-                let apIncomplete: number = 0;
+                let incompleteAPs: number = 0;
+                let incompleteWeightings: number = 0;
                 let protWeightings = 0;
                 let detWeightings = 0;
                 let respWeightings = 0;
@@ -65,31 +106,42 @@ export class SummaryEffects {
                         // Collect weighting summaries for P, D, and R
                         apTotal++;
                         aoObj.questions.map((question) => {
-                            protWeightings += (question.name === 'protect' && question.score !== '') ? 1 : 0;
-                            detWeightings += (question.name === 'detect' && question.score !== '') ? 1 : 0;
-                            respWeightings += (question.name === 'respond' && question.score !== '') ? 1 : 0;
+                            if (question.name === 'protect' && question.score !== '') {
+                                protWeightings += this.toWeight(question.score);
+                            } else {
+                                incompleteWeightings++;
+                            }
+                            if (question.name === 'detect' && question.score !== '') {
+                                detWeightings += this.toWeight(question.score);
+                            } else {
+                                incompleteWeightings++;
+                            }
+                            if (question.name === 'respond' && question.score !== '') {
+                                respWeightings += this.toWeight(question.score);
+                            } else {
+                                incompleteWeightings++;
+                            }
                         })
 
                         // If this AP is incomplete, keep track of it
                         if (aoObj.questions[0].score === '' || aoObj.questions[1].score === '' || aoObj.questions[2].score === '') {
-                            apIncomplete += 1;
+                            incompleteAPs += 1;
                         }
                     })
 
                     return this.baselineService.fetchCapability(objAssessment.object_ref);
                 });
 
-                let incompleteAPs = 0;
                 if (observables.length === 0) {
-                    return [ new SetAttackPatterns({ apList, incompleteAPs }), new SetAndReadCapabilities([]) ];
+                    return [ new SetAttackPatterns({ apList, incompleteAPs, incompleteWeightings }), new SetAndReadCapabilities([]) ];
                 } else {
                     return observableForkJoin(...observables).pipe(
                         mergeMap((arr) => {
-                            const protPct = Math.round(protWeightings / apTotal * 100);
-                            const detPct = Math.round(detWeightings / apTotal * 100);
-                            const respPct = Math.round(respWeightings / apTotal * 100);
-                            incompleteAPs = Math.round(apIncomplete/apTotal * 100) / 100;
-                            return [ new SetAttackPatterns({ apList, incompleteAPs }), 
+                            const protPct = protWeightings; // Math.round(protWeightings / apTotal * 100);
+                            const detPct = detWeightings; // Math.round(detWeightings / apTotal * 100);
+                            const respPct = respWeightings; // Math.round(respWeightings / apTotal * 100);
+                            incompleteAPs = Math.round(incompleteAPs/apTotal * 100) / 100;
+                            return [ new SetAttackPatterns({ apList, incompleteAPs, incompleteWeightings }), 
                                     new SetBaselineWeightings({ protPct, detPct, respPct }),
                                     new SetAndReadCapabilities(arr),
                                 ];
@@ -120,4 +172,27 @@ export class SummaryEffects {
                 return [ new SetBaselineGroups(catList), new FinishedLoading(true) ];
             })
         );
+
+    /**
+     * @description Returns the weight of the given score
+     * @param  {PdrString} name
+     * @returns number
+     */
+    private toWeight(name: string): number {
+        if (!name) {
+            return 0;
+        }
+        var lowerCaseName = name.toLowerCase();
+        switch (lowerCaseName) {
+            case ('s'):
+                return .9;
+            case ('m'):
+                return .6;
+            case ('l'):
+                return .3;
+            default:
+                return 0;
+        }
+    };
+
 }

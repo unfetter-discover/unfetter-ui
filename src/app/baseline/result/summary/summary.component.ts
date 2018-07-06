@@ -19,6 +19,7 @@ import { CleanBaselineResultData, LoadBaselineData } from '../store/summary.acti
 import { SummaryState } from '../store/summary.reducers';
 import { SummaryCalculationService } from './summary-calculation.service';
 import { SummaryDataSource } from './summary.datasource';
+import { getAttackPatternCount } from '../store/summary.selectors';
 
 
 @Component({
@@ -31,6 +32,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
   readonly baseAssessUrl = '/baseline';
 
+  attackPatternCount: number;
   baselineId: string;
   baselines: AssessmentSet[];
   baselineName: Observable<string>;
@@ -38,6 +40,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
   blGroups: string[];
   blAttackPatterns: string[];
   blIncompleteAPs: number;
+  blIncompleteWeightings: number;
   blWeightings: { protPct: 0, detPct: 0, respPct: 0 };
   dates: any[];
   
@@ -100,7 +103,12 @@ export class SummaryComponent implements OnInit, OnDestroy {
    *  initialize this component, fetching data from backend
    */
   public ngOnInit(): void {
-    const idParamSub$ = this.route.params.pipe(
+    const idParamSub1$ = this.store
+      .select(getAttackPatternCount)
+      .pipe(
+        distinctUntilChanged())
+      .subscribe((count) => this.attackPatternCount = count);
+    const idParamSub2$ = this.route.params.pipe(
       distinctUntilChanged())
       .subscribe((params) => {
         this.baselineId = params.baselineId || '';
@@ -108,7 +116,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
         this.finishedLoading = false;
         this.calculationService.baseline = undefined;
         this.store.dispatch(new CleanBaselineResultData());
-        const sub$ = this.userStore
+        const sub1$ = this.userStore
           .select('users').pipe(
           pluck('userProfile'),
           take(1))
@@ -118,7 +126,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
             this.requestBaseline(this.baselineId, createdById);
           },
             (err) => console.log(err));
-        this.subscriptions.push(sub$);
+
+        this.subscriptions.push(sub1$);
       },
         (err) => console.log(err));
 
@@ -134,7 +143,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     this.getBaseline();
     this.listenForDataChanges();
 
-    this.subscriptions.push(idParamSub$);
+    this.subscriptions.push(idParamSub1$, idParamSub2$);
     this.dates = ['Yesterday, 09:36:40 AM', 'Monday, 03:11:15 PM', 'Mar 15, 2018 01:14:55 PM'];
   }
 
@@ -185,7 +194,14 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .subscribe((incAP: number) => this.blIncompleteAPs = incAP,
         (err) => console.log(err));
 
-      const groupRetrieve$ = this.store
+    const wgtIncRetrieve$ = this.store
+      .select('summary').pipe(
+      pluck('blIncompleteWeightings'),
+      distinctUntilChanged())
+      .subscribe((incWgt: number) => this.blIncompleteWeightings = incWgt,
+        (err) => console.log(err));
+
+        const groupRetrieve$ = this.store
       .select('summary').pipe(
       pluck('blGroups'),
       distinctUntilChanged(),
@@ -200,7 +216,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .subscribe((weightings: { protPct, detPct, respPct }) => this.blWeightings = weightings,
         (err) => console.log(err));
   
-      this.subscriptions.push(baselinesRetrieve$, baselineRetrieve$, apRetrieve$, apIncRetrieve$, groupRetrieve$, blWeightsRetrieve$);
+      this.subscriptions.push(baselinesRetrieve$, baselineRetrieve$, apRetrieve$, apIncRetrieve$,
+                              wgtIncRetrieve$, groupRetrieve$, blWeightsRetrieve$);
   }
 
   /**
@@ -416,6 +433,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
     this.calculationService.baseline = this.currentBaseline;
     this.calculationService.blAttackPatterns = this.blAttackPatterns;
     this.calculationService.blIncompleteAPs = this.blIncompleteAPs;
+    this.calculationService.blIncompleteWeightings = this.blIncompleteWeightings;
+    this.calculationService.totalWeightings = this.attackPatternCount;
     this.calculationService.blGroups = this.blGroups;
     this.calculationService.blWeightings = this.blWeightings;
   }
