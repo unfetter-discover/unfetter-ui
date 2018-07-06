@@ -9,8 +9,8 @@ services:
       entrypoint:
       - npm
       - run
-      - build:prod:noclean:ff31
-      #- build:demo:noclean:ff31
+      # - build:prod:noclean:ff31
+      - build:demo:noclean:ff31
       # - build:prod:noclean
       # - build:demo:noclean
       volumes:
