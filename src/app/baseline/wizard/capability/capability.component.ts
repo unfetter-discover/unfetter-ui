@@ -124,29 +124,12 @@ export class CapabilityComponent implements OnInit {
                 }
               }
             }
-
-
-            console.log('numOfTotalQuestions == ', numOfTotalQuestions);
-            console.log('numOfAnsweredQuestions == ', numOFAnsweredQuestions);
-
-            // this._baselineSummaryService.baselinePercentComplete = numOFAnsweredQuestions / numOfTotalQuestions * 100;
-
-
-
-            console.log(this.dataSource.data);
-            console.log(this.currentAssessedObject);
-            console.log(this.currentObjectAssessment);
-            
-
             if (this.currentAssessedObject) {
               this.incomingListOfAttackPatterns = this.currentAssessedObject.map(x => x.assessed_object_ref);
 
               if (this.currentNumberOfAttackPatterns === 0 || this.currentNumberOfAttackPatterns !== this.currentAssessedObject.length || this.checkForOAChange()) {
                 // inital value for number of attack patterns
                 this.currentNumberOfAttackPatterns = this.currentAssessedObject.length;
-
-                console.log('Updating table for ' + this.currentObjectAssessment.name);
-
                 this.dataSource.data = this.currentAssessedObject.map(x => ({
                   assessed_obj_id: x.id,
                   capability_id: x.assessed_object_ref,
@@ -158,7 +141,7 @@ export class CapabilityComponent implements OnInit {
                 }));
               }
             } else {
-              console.log('pdr change, not reloading!   ' + this.currentNumberOfAttackPatterns );
+              // console.log('pdr change, not reloading!   ' + this.currentNumberOfAttackPatterns );
               return;
             }
           }
