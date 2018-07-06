@@ -1,10 +1,10 @@
 
-import { map, distinctUntilChanged, pluck, take, filter } from 'rxjs/operators';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable ,  Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, map, pluck, take, tap } from 'rxjs/operators';
 import { Assessment } from 'stix/assess/v2/assessment';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { ConfirmationDialogComponent } from '../../../../components/dialogs/confirmation/confirmation-dialog.component';
@@ -30,7 +30,8 @@ export class FullComponent implements OnInit, OnDestroy {
 
   readonly baseAssessUrl = '/assess';
   assessment: Observable<Assessment>;
-  assessmentName: Observable<string>;
+  assessmentName$: Observable<string>;
+  assessmentName: string;
   assessmentGroup: Observable<FullAssessmentGroup>;
   rollupId: string;
   assessmentId: string;
@@ -73,8 +74,8 @@ export class FullComponent implements OnInit, OnDestroy {
         this.attackPatternId = params.attackPatternId || '';
         const sub$ = this.userStore
           .select('users').pipe(
-          pluck('userProfile'),
-          take(1))
+            pluck('userProfile'),
+            take(1))
           .subscribe((user: UserProfile) => {
             this.requestData(this.rollupId);
           },
@@ -95,29 +96,29 @@ export class FullComponent implements OnInit, OnDestroy {
 
     this.assessment = this.store
       .select('fullAssessment').pipe(
-      pluck<object, Assessment>('fullAssessment'),
-      filter((el) => el !== undefined),
-      distinctUntilChanged())
-      // .filter((arr) => arr && arr.length > 0)
-      // .map((arr) => {
-      //   return arr.find((el) => el.id === this.assessmentId);
-      // });
+        pluck<object, Assessment>('fullAssessment'),
+        filter((el) => el !== undefined),
+        distinctUntilChanged())
+    // .filter((arr) => arr && arr.length > 0)
+    // .map((arr) => {
+    //   return arr.find((el) => el.id === this.assessmentId);
+    // });
 
     this.finishedLoading = this.store
       .select('fullAssessment').pipe(
-      pluck<Assessment, boolean>('finishedLoading'),
-      distinctUntilChanged());
+        pluck<Assessment, boolean>('finishedLoading'),
+        distinctUntilChanged());
 
     this.assessmentGroup = this.store
       .select('fullAssessment').pipe(
-      pluck<object, FullAssessmentGroup>('group'),
-      distinctUntilChanged());
+        pluck<object, FullAssessmentGroup>('group'),
+        distinctUntilChanged());
 
     const sub$ = this.store
       .select('fullAssessment').pipe(
-      pluck('group'),
-      distinctUntilChanged(),
-      filter((group: any) => group.finishedLoadingGroupData === true))
+        pluck('group'),
+        distinctUntilChanged(),
+        filter((group: any) => group.finishedLoadingGroupData === true))
       .subscribe(
         (group: any) => {
           const riskByAttackPattern = group.riskByAttackPattern || {};
@@ -132,38 +133,42 @@ export class FullComponent implements OnInit, OnDestroy {
         },
         (err) => console.log(err));
 
-    this.assessmentName = this.store
-      .select('fullAssessment').pipe(
-      pluck<object, Assessment>('fullAssessment'),
-      distinctUntilChanged(),
-      // .pluck<object, Assessment[]>('assessmentTypes')
-      // .filter((arr) => arr && arr.length > 0)
-      // .distinctUntilChanged()
-      // .map((arr) => {
-      //   return arr.find((el) => el.id === this.assessmentId);
-      // })
-      map((assessment: Assessment) => {
-        if (assessment.assessment_objects && assessment.assessment_objects.length) {
-          let retVal = assessment.name + ' - ';
-          const assessedType = assessment.assessment_objects[0].stix.type;
-          // NOTE this is a temporary fix for naming in rollupId
-          // TODO remove this when a better fix is in place
-          switch (assessedType) {
-            case 'course-of-action':
-              retVal += 'Mitigations';
-              break;
-            case 'indicator':
-              retVal += 'Indicators';
-              break;
-            case 'x-unfetter-sensor':
-              retVal += 'Sensors';
-              break;
+    this.assessmentName$ = this.store
+      .select('fullAssessment')
+      .pipe(
+        map((_) => {
+          console.log(_);
+          return _;
+        }),
+        pluck<object, Assessment>('fullAssessment'),
+        distinctUntilChanged(),
+        map((assessment: Assessment) => {
+          if (assessment.assessment_objects && assessment.assessment_objects.length) {
+            let retVal = assessment.name + ' - ';
+            const assessedType = assessment.assessment_objects[0].stix.type;
+            // NOTE this is a temporary fix for naming in rollupId
+            // TODO remove this when a better fix is in place
+            switch (assessedType) {
+              case 'course-of-action':
+                retVal += 'Mitigations';
+                break;
+              case 'indicator':
+                retVal += 'Indicators';
+                break;
+              case 'x-unfetter-sensor':
+                retVal += 'Sensors';
+                break;
+            }
+            return retVal;
+          } else {
+            return assessment.name;
           }
-          return retVal;
-        } else {
-          return assessment.name;
-        }
-      }));
+        }),
+        tap((name) => {
+          this.assessmentName = name;
+          console.log('setting full component current name', this.assessmentName);
+        })
+      );
 
     this.subscriptions.push(sub$);
   }
@@ -231,8 +236,15 @@ export class FullComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public onDeleteCurrent(assessment: LastModifiedAssessment): void {
-    const id = this.rollupId;
-    this.confirmDelete({ name: assessment.name, rollupId: id });
+    if (!event || (event instanceof UIEvent)) {
+      event.preventDefault();
+    }
+
+    const rollupId = this.rollupId;
+    const name = this.assessmentName;
+    console.log('deleting current assessment');
+    console.log(this);
+    this.confirmDelete({ name, rollupId });
   }
 
   /**
