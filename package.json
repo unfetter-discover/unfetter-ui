@@ -75,7 +75,7 @@
     "rxjs": "^6.2.1",
     "rxjs-compat": "^6.2.1",
     "rxjs-tslint": "^0.1.4",
-    "stix": "https://github.com/unfetter-discover/stix/tarball/develop",
+    "stix": "https://github.com/unfetter-discover/stix/tarball/v0.3.8",
     "ts-keycode-enum": "^1.0.4",
     "uuid": "^3.2.1",
     "zone.js": "^0.8.14"
