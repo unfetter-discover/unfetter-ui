@@ -238,7 +238,7 @@ export class FullComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public onDeleteCurrent(event: Event): void {
-    if (!event || (event instanceof UIEvent)) {
+    if (event && (event instanceof UIEvent)) {
       event.preventDefault();
     }
 
