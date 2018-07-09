@@ -49,7 +49,7 @@ export class SetBaseline implements Action {
 export class SetAttackPatterns implements Action {
     public readonly type = SET_ATTACK_PATTERNS;
 
-    constructor(public payload: { apList: string[], incompleteAPs: number, incompleteWeightings: number }) { }
+    constructor(public payload: { apList: string[], completeAPs: number, completeWeightings: number }) { }
 }
 
 export class SetBaselineWeightings implements Action {

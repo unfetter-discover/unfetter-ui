@@ -55,9 +55,9 @@ export class SummaryReportComponent implements OnInit {
   }
 
   ngOnInit() {
-    const incAPs = this.summaryCalculationService.blIncompleteAPs;
+    const incAPs = this.summaryCalculationService.blCompleteAPs;
     this.overallRatingChartData = [{
-      data: [incAPs, 1 - incAPs],
+      data: [1 - incAPs, incAPs],
       backgroundColor: this.CHART_BG_COLORS,
       hoverBackgroundColor: this.CHART_HOVER_BG_COLORS,
     }

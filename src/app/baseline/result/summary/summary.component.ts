@@ -39,8 +39,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
   currentBaseline: AssessmentSet;
   blGroups: string[];
   blAttackPatterns: string[];
-  blIncompleteAPs: number;
-  blIncompleteWeightings: number;
+  blCompleteAPs: number;
+  blCompleteWeightings: number;
   blWeightings: { protPct: 0, detPct: 0, respPct: 0 };
   dates: any[];
   
@@ -189,16 +189,16 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
     const apIncRetrieve$ = this.store
       .select('summary').pipe(
-      pluck('blIncompleteAPs'),
+      pluck('blCompleteAPs'),
       distinctUntilChanged())
-      .subscribe((incAP: number) => this.blIncompleteAPs = incAP,
+      .subscribe((incAP: number) => this.blCompleteAPs = incAP,
         (err) => console.log(err));
 
     const wgtIncRetrieve$ = this.store
       .select('summary').pipe(
-      pluck('blIncompleteWeightings'),
+      pluck('blCompleteWeightings'),
       distinctUntilChanged())
-      .subscribe((incWgt: number) => this.blIncompleteWeightings = incWgt,
+      .subscribe((incWgt: number) => this.blCompleteWeightings = incWgt,
         (err) => console.log(err));
 
         const groupRetrieve$ = this.store
@@ -432,8 +432,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
   public transformSummary() {
     this.calculationService.baseline = this.currentBaseline;
     this.calculationService.blAttackPatterns = this.blAttackPatterns;
-    this.calculationService.blIncompleteAPs = this.blIncompleteAPs;
-    this.calculationService.blIncompleteWeightings = this.blIncompleteWeightings;
+    this.calculationService.blCompleteAPs = this.blCompleteAPs / (this.currentBaseline.assessments.length * this.attackPatternCount);
+    this.calculationService.blCompleteWeightings = ((this.blCompleteWeightings / (3 * this.currentBaseline.assessments.length * this.attackPatternCount)) / 100) * 100;
     this.calculationService.totalWeightings = this.attackPatternCount;
     this.calculationService.blGroups = this.blGroups;
     this.calculationService.blWeightings = this.blWeightings;

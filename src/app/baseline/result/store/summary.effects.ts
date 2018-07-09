@@ -92,8 +92,8 @@ export class SummaryEffects {
                 // Pull out unique list of attack patterns represented in all of these object assessments
                 const apList = [];
                 let apTotal = 0;
-                let incompleteAPs: number = 0;
-                let incompleteWeightings: number = 0;
+                let completeAPs: number = 0;
+                let completeWeightings: number = 0;
                 let protWeightings = 0;
                 let detWeightings = 0;
                 let respWeightings = 0;
@@ -108,24 +108,21 @@ export class SummaryEffects {
                         aoObj.questions.map((question) => {
                             if (question.name === 'protect' && question.score !== '') {
                                 protWeightings += this.toWeight(question.score);
-                            } else {
-                                incompleteWeightings++;
+                                completeWeightings++;
                             }
                             if (question.name === 'detect' && question.score !== '') {
                                 detWeightings += this.toWeight(question.score);
-                            } else {
-                                incompleteWeightings++;
+                                completeWeightings++;
                             }
                             if (question.name === 'respond' && question.score !== '') {
                                 respWeightings += this.toWeight(question.score);
-                            } else {
-                                incompleteWeightings++;
+                                completeWeightings++;
                             }
                         })
 
-                        // If this AP is incomplete, keep track of it
-                        if (aoObj.questions[0].score === '' || aoObj.questions[1].score === '' || aoObj.questions[2].score === '') {
-                            incompleteAPs += 1;
+                        // If this is a complete weighted AP, keep track of it
+                        if (aoObj.questions[0].score !== '' && aoObj.questions[1].score !== '' && aoObj.questions[2].score !== '') {
+                            completeAPs += 1;
                         }
                     })
 
@@ -133,15 +130,14 @@ export class SummaryEffects {
                 });
 
                 if (observables.length === 0) {
-                    return [ new SetAttackPatterns({ apList, incompleteAPs, incompleteWeightings }), new SetAndReadCapabilities([]) ];
+                    return [ new SetAttackPatterns({ apList, completeAPs, completeWeightings }), new SetAndReadCapabilities([]) ];
                 } else {
                     return observableForkJoin(...observables).pipe(
                         mergeMap((arr) => {
-                            const protPct = protWeightings; // Math.round(protWeightings / apTotal * 100);
-                            const detPct = detWeightings; // Math.round(detWeightings / apTotal * 100);
-                            const respPct = respWeightings; // Math.round(respWeightings / apTotal * 100);
-                            incompleteAPs = Math.round(incompleteAPs/apTotal * 100) / 100;
-                            return [ new SetAttackPatterns({ apList, incompleteAPs, incompleteWeightings }), 
+                            const protPct = protWeightings;
+                            const detPct = detWeightings;
+                            const respPct = respWeightings;
+                            return [ new SetAttackPatterns({ apList, completeAPs, completeWeightings }), 
                                     new SetBaselineWeightings({ protPct, detPct, respPct }),
                                     new SetAndReadCapabilities(arr),
                                 ];

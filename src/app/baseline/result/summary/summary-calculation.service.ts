@@ -36,8 +36,8 @@ export class SummaryCalculationService {
   baselineValue: AssessmentSet;
   blGroups: string[] = [];
   blAttackPatterns: string[] = [];
-  blIncompleteAPs: number;
-  blIncompleteWeightings: number;
+  blCompleteAPs: number;
+  blCompleteWeightings: number;
   allWeightings: number = 500;
   blWeightings: { protPct: 0, detPct: 0, respPct: 0 };
 
@@ -112,12 +112,12 @@ export class SummaryCalculationService {
     this.blAttackPatterns = blAttackPatterns;
   }
 
-  public set baselineIncompleteAPs(blIncompleteAPs: number) {
-    this.blIncompleteAPs = blIncompleteAPs;
+  public set baselineIncompleteAPs(blCompleteAPs: number) {
+    this.blCompleteAPs = blCompleteAPs;
   }
 
-  public set baselineIncompleteWeightings(blIncompleteWeightings: number) {
-    this.blIncompleteWeightings = blIncompleteWeightings;
+  public set baselineIncompleteWeightings(blCompleteWeightings: number) {
+    this.blCompleteWeightings = blCompleteWeightings;
   }
 
   public set baselineWeightings(blWeightings: { protPct, detPct, respPct }) {
