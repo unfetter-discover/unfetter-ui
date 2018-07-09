@@ -51,7 +51,7 @@ export class SummaryEffects {
     //                 selectedAttackPatterns = allAttackPatterns
     //                 .filter(isFromSelectedFramework);
     //             }
-                
+
     //             // tell reducer to set the attack pattern states
     //             return [
     //                 new baselineActions.SetAttackPatterns(allAttackPatterns),
@@ -59,25 +59,25 @@ export class SummaryEffects {
     //             ];
     //         })
     //     )
-    
+
     @Effect()
     public fetchBaselineData = this.actions$
         .ofType(LOAD_BASELINE_DATA)
         .pipe(
-          pluck('payload'),
-          switchMap((baselineId: string) => {
-            // Get all baselines and save them as well as the one which is current
-            return this.baselineService.fetchBaselines(true)
-              .pipe(
-                mergeMap((data: AssessmentSet[]) => {
-                  const baseline = data.find((bl) => bl.id === baselineId);
-                  return [ new SetBaselines(data), new SetBaseline(baseline) ];
-                }),
-                catchError((err) => {
-                  return observableEmpty();
-                })
-              );
-          })
+            pluck('payload'),
+            switchMap((baselineId: string) => {
+                // Get all baselines and save them as well as the one which is current
+                return this.baselineService.fetchBaselines(true)
+                    .pipe(
+                        mergeMap((data: AssessmentSet[]) => {
+                            const baseline = data.find((bl) => bl.id === baselineId);
+                            return [new SetBaselines(data), new SetBaseline(baseline)];
+                        }),
+                        catchError((err) => {
+                            return observableEmpty();
+                        })
+                    );
+            })
         );
 
     @Effect()
@@ -130,17 +130,17 @@ export class SummaryEffects {
                 });
 
                 if (observables.length === 0) {
-                    return [ new SetAttackPatterns({ apList, completeAPs, completeWeightings }), new SetAndReadCapabilities([]) ];
+                    return [new SetAttackPatterns({ apList, completeAPs, completeWeightings }), new SetAndReadCapabilities([])];
                 } else {
                     return observableForkJoin(...observables).pipe(
                         mergeMap((arr) => {
                             const protPct = protWeightings;
                             const detPct = detWeightings;
                             const respPct = respWeightings;
-                            return [ new SetAttackPatterns({ apList, completeAPs, completeWeightings }), 
-                                    new SetBaselineWeightings({ protPct, detPct, respPct }),
-                                    new SetAndReadCapabilities(arr),
-                                ];
+                            return [new SetAttackPatterns({ apList, completeAPs, completeWeightings }),
+                            new SetBaselineWeightings({ protPct, detPct, respPct }),
+                            new SetAndReadCapabilities(arr),
+                            ];
                         }),
                         catchError((err) => {
                             console.log(err);
@@ -165,7 +165,7 @@ export class SummaryEffects {
                     }
                 });
 
-                return [ new SetBaselineGroups(catList), new FinishedLoading(true) ];
+                return [new SetBaselineGroups(catList), new FinishedLoading(true)];
             })
         );
 
@@ -178,7 +178,7 @@ export class SummaryEffects {
         if (!name) {
             return 0;
         }
-        var lowerCaseName = name.toLowerCase();
+        const lowerCaseName = name.toLowerCase();
         switch (lowerCaseName) {
             case ('s'):
                 return .9;

@@ -1,8 +1,8 @@
-import { createFeatureSelector, createSelector } from "@ngrx/store";
-import { ConfigState } from "../../../root-store/config/config.reducers";
-import { Dictionary } from "stix/common/dictionary";
-import { TacticChain } from "../../../global/components/tactics-pane/tactics.model";
-import { getPreferredKillchain } from "../../../root-store/users/user.selectors";
+import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { Dictionary } from 'stix/common/dictionary';
+import { TacticChain } from '../../../global/components/tactics-pane/tactics.model';
+import { ConfigState } from '../../../root-store/config/config.reducers';
+import { getPreferredKillchain } from '../../../root-store/users/user.selectors';
 
 const getConfigState = createFeatureSelector<ConfigState>('config');
 
