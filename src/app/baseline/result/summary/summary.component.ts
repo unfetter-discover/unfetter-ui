@@ -19,6 +19,7 @@ import { CleanBaselineResultData, LoadBaselineData } from '../store/summary.acti
 import { SummaryState } from '../store/summary.reducers';
 import { SummaryCalculationService } from './summary-calculation.service';
 import { SummaryDataSource } from './summary.datasource';
+import { getAttackPatternCount } from '../store/summary.selectors';
 
 
 @Component({
@@ -30,14 +31,19 @@ import { SummaryDataSource } from './summary.datasource';
 export class SummaryComponent implements OnInit, OnDestroy {
 
   readonly baseAssessUrl = '/baseline';
-  baselineName: Observable<string>;
-  blName: string;
+
+  attackPatternCount: number;
   baselineId: string;
+  baselines: AssessmentSet[];
+  baselineName: Observable<string>;
   currentBaseline: AssessmentSet;
-
+  blGroups: string[];
+  blAttackPatterns: string[];
+  blCompleteAPs: number;
+  blCompleteWeightings: number;
+  blWeightings: { protPct: 0, detPct: 0, respPct: 0 };
   dates: any[];
-  summaries: AssessmentSet[];
-
+  
   finishedLoading = false;
   private identities: Identity[];
 
@@ -45,8 +51,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Date Modified')
       .addColumn('id', '# of Capabilities', 'master-list-capabilities', false, (id) => {
-        if (id && this.summaries) {
-          const baseline = this.summaries.filter((bl) => bl.id === id);
+        if (id && this.baselines) {
+          const baseline = this.baselines.filter((bl) => bl.id === id);
           return baseline[0].assessments.length.toString();
         } else {
           return '0';
@@ -97,15 +103,20 @@ export class SummaryComponent implements OnInit, OnDestroy {
    *  initialize this component, fetching data from backend
    */
   public ngOnInit(): void {
-    const idParamSub$ = this.route.params.pipe(
+    const idParamSub1$ = this.store
+      .select(getAttackPatternCount)
+      .pipe(
+        distinctUntilChanged())
+      .subscribe((count) => this.attackPatternCount = count);
+    const idParamSub2$ = this.route.params.pipe(
       distinctUntilChanged())
       .subscribe((params) => {
         this.baselineId = params.baselineId || '';
-        this.summaries = undefined;
+        this.baselines = undefined;
         this.finishedLoading = false;
         this.calculationService.baseline = undefined;
         this.store.dispatch(new CleanBaselineResultData());
-        const sub$ = this.userStore
+        const sub1$ = this.userStore
           .select('users').pipe(
           pluck('userProfile'),
           take(1))
@@ -115,7 +126,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
             this.requestBaseline(this.baselineId, createdById);
           },
             (err) => console.log(err));
-        this.subscriptions.push(sub$);
+
+        this.subscriptions.push(sub1$);
       },
         (err) => console.log(err));
 
@@ -131,7 +143,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     this.getBaseline();
     this.listenForDataChanges();
 
-    this.subscriptions.push(idParamSub$);
+    this.subscriptions.push(idParamSub1$, idParamSub2$);
     this.dates = ['Yesterday, 09:36:40 AM', 'Monday, 03:11:15 PM', 'Mar 15, 2018 01:14:55 PM'];
   }
 
@@ -156,19 +168,14 @@ export class SummaryComponent implements OnInit, OnDestroy {
       pluck('baselines'),
       distinctUntilChanged(),
       filter((baselines: AssessmentSet[]) => baselines && baselines.length > 0))
-      .subscribe((baselines: AssessmentSet[]) => {
-        this.summaries = [ ...baselines ];
-      },
+      .subscribe((baselines: AssessmentSet[]) => this.baselines = [ ...baselines ],
         (err) => console.log(err));
 
     const baselineRetrieve$ = this.store
       .select('summary').pipe(
       pluck('baseline'),
       distinctUntilChanged())
-      .subscribe((baseline: AssessmentSet) => {
-        this.calculationService.baseline = baseline;
-        return this.calculationService.baseline;
-      },
+      .subscribe((baseline: AssessmentSet) => this.currentBaseline = baseline,
         (err) => console.log(err));
 
 
@@ -177,28 +184,40 @@ export class SummaryComponent implements OnInit, OnDestroy {
       pluck('blAttackPatterns'),
       distinctUntilChanged(),
       filter((arr: string[]) => arr && arr.length > 0))
-      .subscribe((arr: string[]) => {this.calculationService.blAttackPatterns = arr; return this.calculationService.blAttackPatterns},
+      .subscribe((arr: string[]) => this.blAttackPatterns = arr,
         (err) => console.log(err));
 
-    const groupRetrieve$ = this.store
+    const apIncRetrieve$ = this.store
+      .select('summary').pipe(
+      pluck('blCompleteAPs'),
+      distinctUntilChanged())
+      .subscribe((incAP: number) => this.blCompleteAPs = incAP,
+        (err) => console.log(err));
+
+    const wgtIncRetrieve$ = this.store
+      .select('summary').pipe(
+      pluck('blCompleteWeightings'),
+      distinctUntilChanged())
+      .subscribe((incWgt: number) => this.blCompleteWeightings = incWgt,
+        (err) => console.log(err));
+
+        const groupRetrieve$ = this.store
       .select('summary').pipe(
       pluck('blGroups'),
       distinctUntilChanged(),
       filter((arr: string[]) => arr && arr.length > 0))
-      .subscribe((arr: string[]) => {this.calculationService.blGroups = arr; return this.calculationService.blGroups},
+      .subscribe((arr: string[]) => this.blGroups = arr,
         (err) => console.log(err));
 
     const blWeightsRetrieve$ = this.store
       .select('summary').pipe(
       pluck('blWeightings'),
       distinctUntilChanged())
-      .subscribe((weightings: { protPct, detPct, respPct }) => {
-        this.calculationService.blWeightings = weightings;
-        return this.calculationService.blWeightings;
-      },
+      .subscribe((weightings: { protPct, detPct, respPct }) => this.blWeightings = weightings,
         (err) => console.log(err));
   
-      this.subscriptions.push(baselinesRetrieve$, baselineRetrieve$, apRetrieve$, groupRetrieve$, blWeightsRetrieve$);
+      this.subscriptions.push(baselinesRetrieve$, baselineRetrieve$, apRetrieve$, apIncRetrieve$,
+                              wgtIncRetrieve$, groupRetrieve$, blWeightsRetrieve$);
   }
 
   /**
@@ -212,7 +231,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
       filter((arr: AssessmentSet[]) => arr && arr.length > 0))
       .subscribe((arr: AssessmentSet[]) => {
-        this.summaries = [...arr];
+        this.baselines = [...arr];
       },
         (err) => console.log(err));
 
@@ -222,13 +241,14 @@ export class SummaryComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
       filter((el) => el === true))
       .subscribe((done: boolean) => {
-        if (this.calculationService.baseline === undefined) {
+        // If we have groups, we should have everything else
+        if (this.blGroups === undefined) {
           // fetching the summary failed, set all flags to done
           this.setLoadingToDone();
           return;
         }
         this.finishedLoading = done;
-        // this.transformSummary()
+        this.transformSummary()
       }, (err) => console.log(err));
 
     const sub3$ = this.store
@@ -249,8 +269,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .subscribe((baseline: AssessmentSet) => {
         if (baseline) {
           this.currentBaseline = baseline;
-          this.blName = baseline.name;
-          this.baselineName = observableOf(this.blName);
+          this.baselineName = observableOf(this.currentBaseline.name);
         }
       }, (err) => console.log(err));
 
@@ -308,7 +327,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public onDeleteCurrent(): void {
-    this.confirmDelete({ name: this.blName, id: this.baselineId });
+    this.confirmDelete({ name: this.currentBaseline.name, id: this.baselineId });
   }
 
   /**
@@ -409,4 +428,15 @@ export class SummaryComponent implements OnInit, OnDestroy {
   public setLoadingToDone(): void {
     this.finishedLoading = true;
   }
+
+  public transformSummary() {
+    this.calculationService.baseline = this.currentBaseline;
+    this.calculationService.blAttackPatterns = this.blAttackPatterns;
+    this.calculationService.blCompleteAPs = this.blCompleteAPs / (this.currentBaseline.assessments.length * this.attackPatternCount);
+    this.calculationService.blCompleteWeightings = ((this.blCompleteWeightings / (3 * this.currentBaseline.assessments.length * this.attackPatternCount)) / 100) * 100;
+    this.calculationService.totalWeightings = this.attackPatternCount;
+    this.calculationService.blGroups = this.blGroups;
+    this.calculationService.blWeightings = this.blWeightings;
+  }
+
 }

@@ -8,7 +8,6 @@ type mainWell = 'heatmap' | 'none';
   selector: 'summary-report',
   templateUrl: './summary-report.component.html',
   styleUrls: ['./summary-report.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SummaryReportComponent implements OnInit {
   public readonly CHART_TYPE: string;
@@ -24,9 +23,7 @@ export class SummaryReportComponent implements OnInit {
 
   public activeMainWell: mainWell;
 
-  constructor(public summaryCalculationService: SummaryCalculationService,
-              // protected changeDetectorRef: ChangeDetectorRef,
-  ) {
+  constructor(public summaryCalculationService: SummaryCalculationService) {
     this.CHART_TYPE = 'doughnut';
     this.DEFAULT_CHART_COLORS = [{}];
     this.CHART_LABELS = ['Attack Patterns Unweighted', 'Attack Patterns Weighted'];
@@ -58,8 +55,9 @@ export class SummaryReportComponent implements OnInit {
   }
 
   ngOnInit() {
+    const incAPs = this.summaryCalculationService.blCompleteAPs;
     this.overallRatingChartData = [{
-      data: [.6, .4],
+      data: [1 - incAPs, incAPs],
       backgroundColor: this.CHART_BG_COLORS,
       hoverBackgroundColor: this.CHART_HOVER_BG_COLORS,
     }
