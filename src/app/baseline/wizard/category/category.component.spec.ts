@@ -7,6 +7,7 @@ import { StoreModule, combineReducers } from '@ngrx/store';
 import * as fromRoot from 'app/root-store/app.reducers';
 import { baselineReducer } from '../../../baseline/store/baseline.reducers';
 import { CategoryComponent } from './category.component';
+import { FieldSortPipe } from '../../../global/pipes/field-sort.pipe';
 
 describe('CategoryComponent', () => {
   let component: CategoryComponent;
@@ -21,7 +22,7 @@ describe('CategoryComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [CategoryComponent],
+      declarations: [CategoryComponent, FieldSortPipe],
       imports: [
         FormsModule,
         RouterTestingModule,
