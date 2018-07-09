@@ -1,5 +1,5 @@
 
-import { pluck, distinctUntilChanged } from 'rxjs/operators';
+import { pluck, distinctUntilChanged, map } from 'rxjs/operators';
 import { Component, EventEmitter, OnInit, Output, NgModule, ViewEncapsulation, Inject } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material';
@@ -15,6 +15,7 @@ import { AnswerOption } from '../../../settings/stix-objects/categories/categori
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { SetCurrentBaselineObjectAssessment } from '../../store/baseline.actions';
 import { BaselineSummaryService } from '../../services/baseline-summary.service';
+import { RxjsHelpers } from '../../../global/static/rxjs-helpers';
 
 @Component({
   selector: 'unf-baseline-wizard-capability',
@@ -79,9 +80,12 @@ export class CapabilityComponent implements OnInit {
         }, (err) => console.log(err));
 
     const sub2$ = this.wizardStore
-      .select('baseline').pipe(
-      pluck('allAttackPatterns'),
-      distinctUntilChanged())
+      .select('baseline')
+      .pipe(
+        pluck('allAttackPatterns'),
+        map(RxjsHelpers.sortByField('name', 'ASCENDING')),
+        distinctUntilChanged()
+      )
       .subscribe(
         (allAttackPatterns: AttackPattern[]) => {
           this.allAttackPatterns = allAttackPatterns;

@@ -31,15 +31,15 @@
       </mat-form-field>
       <mat-form-field class="full-width mb-9">
         <mat-select placeholder="Intrusion Sets" [multiple]="true" formControlName="intrusionSets">
-          <mat-option *ngFor="let intrusionSet of intrusionSets$ | async | sortByField:'name':'ascending'" [value]="intrusionSet.id">
+          <mat-option *ngFor="let intrusionSet of intrusionSets$ | async" [value]="intrusionSet.id">
             {{ intrusionSet.name }}
           </mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field class="full-width mb-12">
         <mat-select placeholder="Publish Status" [multiple]="true" formControlName="published">
-          <mat-option value="true">Published</mat-option>
           <mat-option value="false">Draft</mat-option>
+          <mat-option value="true">Published</mat-option>
         </mat-select>
       </mat-form-field>      
       <div class="flex" id="attackPatternWrapper">

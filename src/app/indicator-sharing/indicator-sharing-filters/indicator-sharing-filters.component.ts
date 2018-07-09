@@ -48,9 +48,16 @@ export class IndicatorSharingFiltersComponent implements OnInit {
     this.searchForm = fb.group(params);
     this.searchForm.setValue(params);
     this.organizations$ = this.store.select('indicatorSharing')
-      .pipe(pluck('identities'));
+      .pipe(
+        pluck('identities'),
+        map(RxjsHelpers.sortByField('name', 'ASCENDING'))
+      );
+
     this.sensors$ = this.store.select('indicatorSharing')
-      .pipe(pluck('sensors'));
+      .pipe(
+        pluck('sensors'),
+        map(RxjsHelpers.sortByField('name', 'ASCENDING'))
+      );
   }
 
   public ngOnInit() {
@@ -72,18 +79,21 @@ export class IndicatorSharingFiltersComponent implements OnInit {
       
     this.killChainPhases$ = this.store.select(getPreferredKillchainPhases);
 
-    this.labels$ = this.store.select('indicatorSharing').pipe(
-      pluck('indicators'),
-      map((indicators: any) => {
-        return indicators
-          .filter((indicator) => indicator.labels && indicator.labels.length)
-          .map((indicator) => indicator.labels)
-          .reduce((prev, cur) => prev.concat(cur), []);
-      }),
-      map((labels: string[]) => {
-        const labelSet = new Set(labels);
-        return Array.from(labelSet);
-      }));
+    this.labels$ = this.store.select('indicatorSharing')
+      .pipe(
+        pluck('indicators'),
+        map((indicators: any) => {
+          return indicators
+            .filter((indicator) => indicator.labels && indicator.labels.length)
+            .map((indicator) => indicator.labels)
+            .reduce((prev, cur) => prev.concat(cur), [])
+            .sort();
+        }),
+        map((labels: string[]) => {
+          const labelSet = new Set(labels);
+          return Array.from(labelSet);
+        })
+      );
 
     this.dataSources$ = this.store.select('config').pipe(
       pluck('configurations'),
@@ -91,7 +101,8 @@ export class IndicatorSharingFiltersComponent implements OnInit {
       pluck(ConfigKeys.DATA_SOURCES),
       map((dataSources: string[]) => dataSources.sort()));
 
-    const getAttackPatterns$ = this.store.select('indicatorSharing').pipe(
+    const getAttackPatterns$ = this.store.select('indicatorSharing')
+      .pipe(
       pluck('attackPatterns'),
       withLatestFrom(this.store.select('users')))
       .subscribe(
@@ -118,8 +129,11 @@ export class IndicatorSharingFiltersComponent implements OnInit {
         }
     );
 
-    this.intrusionSets$ = this.store.select('indicatorSharing').pipe(
-      pluck('intrusionSets'));
+    this.intrusionSets$ = this.store.select('indicatorSharing')
+      .pipe(
+        pluck('intrusionSets'),
+        map(RxjsHelpers.sortByField('name', 'ASCENDING'))
+      );
   }
 
   public clearSearchParameters() {

@@ -31,7 +31,7 @@
               <form>
                 <mat-form-field class="full-width">
                   <mat-select #existingCategory name="existingCategory" (selectionChange)="updateCategory(existingCategory, i)" [value]="selectedCategory(existingCategory, i)">
-                    <mat-option *ngFor="let category of categories" [value]="category">
+                    <mat-option *ngFor="let category of categories | sortByField:'name':'ascending'" [value]="category">
                       {{ category.name }}
                     </mat-option>
                   </mat-select>
@@ -51,7 +51,7 @@
           <form>
             <mat-form-field class="full-width">
               <mat-select #newCategory name="newCategory" (selectionChange)="updateCategory(newCategory, -1)">
-                <mat-option *ngFor="let category of categories" [value]="category">
+                <mat-option *ngFor="let category of categories | sortByField:'name':'ascending'" [value]="category">
                   {{ category.name }}
                 </mat-option>
               </mat-select>
