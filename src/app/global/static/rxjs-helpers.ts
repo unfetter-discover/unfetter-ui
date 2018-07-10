@@ -35,8 +35,8 @@ export class RxjsHelpers {
     }
 
     public static unwrapJsonApi<T extends StixCore = any>() {
-        return <U extends JsonApiData<T>>(source: Observable<U>) => {
-            return new Observable<any>((observer) => {
+        return (source: Observable<any>) => {
+            return new Observable<T[]>((observer) => {
                 return source.subscribe({
                     next(data) {
                         if (data instanceof Array) {
