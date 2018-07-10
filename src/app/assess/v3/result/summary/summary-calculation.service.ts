@@ -1,18 +1,20 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { AssessKillChainType } from 'stix/assess/v2/assess-kill-chain-type';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';
 import { Phase } from 'stix/assess/v2/phase';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
-import { RiskByKillChain } from 'stix/assess/v2/risk-by-kill-chain';
+import { RiskByKillChain } from 'stix/assess/v3/risk-by-kill-chain';
 import { SummaryAggregation } from 'stix/assess/v2/summary-aggregation';
 import { Stix } from 'stix/unfetter/stix';
 import { Constance } from '../../../../utils/constance';
 import { ThresholdOption } from '../../models/threshold-option';
 import { SummarySortHelper } from './summary-sort-helper';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class SummaryCalculationService {
   public readonly topNRisks: number;
   public readonly riskSub: BehaviorSubject<number>;
@@ -29,8 +31,8 @@ export class SummaryCalculationService {
   techniqueBreakdownValue: any;
   assessmentObjects: AssessmentObject[];
   thresholdOptionsValue: ThresholdOption[];
-  // TODO temporary
   isCapabilityValue: boolean;
+  isValidSophisticationDataValue: boolean;
 
   constructor() {
     this.numericRisk = 0;
@@ -47,6 +49,7 @@ export class SummaryCalculationService {
     this.riskSub = new BehaviorSubject<number>(null);
     this.selectedRisk = 0.5;
     this.isCapability = false;
+    this.isValidSophisticationData = true;
   }
 
   public set numericRisk(newRisk: number) {
@@ -96,6 +99,10 @@ export class SummaryCalculationService {
     this.isCapabilityValue = newIsCapability;
   }
 
+  public set isValidSophisticationData(validData: boolean) {
+    this.isValidSophisticationDataValue = validData;
+  }
+
   public get numericRisk(): number {
     return this.numericRiskValue;
   }
@@ -141,6 +148,10 @@ export class SummaryCalculationService {
 
   public get isCapability(): boolean {
     return this.isCapabilityValue;
+  }
+
+  public get isValidSophisticationData(): boolean {
+    return this.isValidSophisticationDataValue
   }
 
   public getRiskText(): string {
@@ -222,6 +233,9 @@ export class SummaryCalculationService {
       if (riskByKillChain.sensors && riskByKillChain.sensors.length > 0) {
         risks = risks.concat(riskByKillChain.sensors);
       }
+      if (riskByKillChain.capabilities && riskByKillChain.capabilities.length > 0) {
+        risks = risks.concat(riskByKillChain.capabilities);
+      }
     }
     return risks;
   }
@@ -287,7 +301,7 @@ export class SummaryCalculationService {
    */
   public populateTechniqueBreakdown(assessmentObjects: AssessmentObject[]): void {
 
-    this.techniqueBreakdown = {};
+    this.techniqueBreakdown = {0: 0, 1: 0, 2: 0, 3: 0};
     if (assessmentObjects && this.summaryAggregation && this.summaryAggregation.attackPatternsByAssessedObject && this.summaryAggregation.assessedAttackPatternCountBySophisicationLevel) {
       this.assessmentObjects = assessmentObjects;
       // Total assessed objects to calculated risk
@@ -311,7 +325,6 @@ export class SummaryCalculationService {
         }
         ++attackPatternSetMap[curAp['x_unfetter_sophistication_level']];
       });
-
       for (const prop in Object.keys(assessedRiskMapping)) {
         if (attackPatternSetMap[prop] === undefined) {
           this.techniqueBreakdown[prop] = 0;

@@ -1,17 +1,19 @@
 import { HttpClientModule } from '@angular/common/http';
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule, MatCardModule, MatDatepickerModule, MatDialogModule, MatExpansionModule, MatInputModule, MatProgressBarModule, MatSelectModule, MatSnackBarModule } from '@angular/material';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { StoreModule, combineReducers } from '@ngrx/store';
+import { combineReducers, StoreModule } from '@ngrx/store';
 import * as fromRoot from 'app/root-store/app.reducers';
 import { ChartsModule } from 'ng2-charts';
 import { Assess3Meta } from 'stix';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { AssessmentObjectMockFactory } from 'stix/assess/v2/assessment-object.mock';
 import { Assessment } from 'stix/assess/v3/assessment';
+import { CapabilityMockFactory } from 'stix/assess/v3/baseline/capability.mock';
+import { CategoryMockFactory } from 'stix/assess/v3/baseline/category.mock';
 import { ObjectAssessmentMockFactory } from 'stix/assess/v3/baseline/object-assessment.mock';
 import * as Indicator from 'stix/unfetter/indicator';
 import { Stix } from 'stix/unfetter/stix';
@@ -36,32 +38,32 @@ class MockModel {
       assessmentMeta: null, assessment_objects: [
         {
           stix:
-            {
-              version: null, external_references: null, granular_markings: null, name: null,
-              description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
-              type: null, valid_from: null, labels: null, modified: null, created: null,
-              metaProperties: null, id: 'happyjack'
-            },
+          {
+            version: null, external_references: null, granular_markings: null, name: null,
+            description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
+            type: null, valid_from: null, labels: null, modified: null, created: null,
+            metaProperties: null, id: 'happyjack'
+          },
           risk: .25, questions: [{ name: 'sandychapsticks', risk: 3, options: null, selected_value: null }]
         },
         {
           stix:
-            {
-              version: null, external_references: null, granular_markings: null, name: null,
-              description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
-              type: null, valid_from: null, labels: null, modified: null, created: null,
-              metaProperties: null, id: 'bellystaple'
-            },
+          {
+            version: null, external_references: null, granular_markings: null, name: null,
+            description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
+            type: null, valid_from: null, labels: null, modified: null, created: null,
+            metaProperties: null, id: 'bellystaple'
+          },
           risk: 0, questions: [{ name: 'sandychapsticks', risk: 3, options: null, selected_value: null }]
         },
         {
           stix:
-            {
-              version: null, external_references: null, granular_markings: null, name: null,
-              description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
-              type: null, valid_from: null, labels: null, modified: null, created: null,
-              metaProperties: null, id: 'jumpyflashpan'
-            },
+          {
+            version: null, external_references: null, granular_markings: null, name: null,
+            description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
+            type: null, valid_from: null, labels: null, modified: null, created: null,
+            metaProperties: null, id: 'jumpyflashpan'
+          },
           risk: .75, questions: [{ name: 'sandychapsticks', risk: 3, options: null, selected_value: null }]
         }],
       created: null,
@@ -472,22 +474,22 @@ describe('WizardComponent', () => {
     component.capabilities[0].id = 'jumpyflashpan';
     component.model.attributes.assessment_objects.push({
       stix:
-        {
-          version: null, external_references: null, granular_markings: null, name: null,
-          description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
-          type: null, valid_from: null, labels: null, modified: null, created: null,
-          metaProperties: null, id: 'bellystaple'
-        },
+      {
+        version: null, external_references: null, granular_markings: null, name: null,
+        description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
+        type: null, valid_from: null, labels: null, modified: null, created: null,
+        metaProperties: null, id: 'bellystaple'
+      },
       risk: 0, questions: [{ name: 'sandychapsticks', risk: 3, options: null, selected_value: null }]
     } as AssessmentObject);
     component.model.attributes.assessment_objects.push({
       stix:
-        {
-          version: null, external_references: null, granular_markings: null, name: null,
-          description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
-          type: null, valid_from: null, labels: null, modified: null, created: null,
-          metaProperties: null, id: 'jumpyflashpan'
-        },
+      {
+        version: null, external_references: null, granular_markings: null, name: null,
+        description: null, pattern: null, kill_chain_phases: null, created_by_ref: null,
+        type: null, valid_from: null, labels: null, modified: null, created: null,
+        metaProperties: null, id: 'jumpyflashpan'
+      },
       risk: .75, questions: [{ name: 'sandychapsticks', risk: 3, options: null, selected_value: null }]
     } as AssessmentObject);
     component.updateSummaryChart();
@@ -547,6 +549,16 @@ describe('WizardComponent', () => {
     expect(component.model.relationships.indicators).toEqual(indicators);
     expect(component.model.relationships.mitigations).toEqual(mitigations);
     expect(component.model.relationships.capabilities).toEqual(capabilities);
+  });
+
+  it(`can load existing data`, () => {
+    const categories = CategoryMockFactory.mockMany(3);
+    const capabilities = CapabilityMockFactory.mockMany(3);
+    capabilities[0].category = categories[0].id;
+    component.lookupCategories = categories;
+    component.lookupCapabilities = capabilities;
+    const name = component.lookupCategory(capabilities[0].id);
+    expect(name).toEqual(categories[0].name);
   });
 
 });

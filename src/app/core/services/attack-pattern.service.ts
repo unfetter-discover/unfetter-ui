@@ -1,8 +1,9 @@
+
+import { map } from 'rxjs/operators';
 import { Injectable, Optional, SkipSelf } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import * as Stix from 'stix/unfetter/attack-pattern';
 import { AttackPattern } from '../../models';
-import { UserProfile } from '../../models/user/user-profile';
 import { Constance } from '../../utils/constance';
 import { GenericApi } from './genericapi.service';
 
@@ -25,10 +26,10 @@ export class AttackPatternService {
      * @returns Observable<Stix.AttackPattern[]>
      */
     public fetchAttackPatterns(userFramework?: string): Observable<Stix.AttackPattern[]> {
-        return this.fetchByFramework(userFramework)
-            .map((el) => {
+        return this.fetchByFramework(userFramework).pipe(
+            map((el) => {
                 return el.map((_) => Object.assign(new Stix.AttackPattern(), _.attributes));
-            });
+            }));
     }
 
     /**

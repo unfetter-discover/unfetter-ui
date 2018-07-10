@@ -1,22 +1,26 @@
+
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { Identity, AssessmentSet } from 'stix';
+import { Observable, of as observableOf, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, finalize, pluck, take } from 'rxjs/operators';
+import { AssessmentSet, Identity } from 'stix';
+import { ConfirmationDialogComponent } from '../../../components/dialogs/confirmation/confirmation-dialog.component';
 import { UsersService } from '../../../core/services/users.service';
 import { slideInOutAnimation } from '../../../global/animations/animations';
 import { MasterListDialogTableHeaders } from '../../../global/components/master-list-dialog/master-list-dialog.component';
-import { Baseline } from '../../../models/baseline/baseline';
 import { UserProfile } from '../../../models/user/user-profile';
 import { AppState } from '../../../root-store/app.reducers';
+import { Constance } from '../../../utils/constance';
 import { LastModifiedBaseline } from '../../models/last-modified-baseline';
 import { BaselineService } from '../../services/baseline.service';
 import { CleanBaselineResultData, LoadBaselineData } from '../store/summary.actions';
 import { SummaryState } from '../store/summary.reducers';
-import { SummaryDataSource } from './summary.datasource';
 import { SummaryCalculationService } from './summary-calculation.service';
+import { SummaryDataSource } from './summary.datasource';
+import { getAttackPatternCount } from '../store/summary.selectors';
+
 
 @Component({
   selector: 'summary',
@@ -27,19 +31,33 @@ import { SummaryCalculationService } from './summary-calculation.service';
 export class SummaryComponent implements OnInit, OnDestroy {
 
   readonly baseAssessUrl = '/baseline';
-  baselineName: Observable<string>;
+
+  attackPatternCount: number;
   baselineId: string;
-
+  baselines: AssessmentSet[];
+  baselineName: Observable<string>;
+  currentBaseline: AssessmentSet;
+  blGroups: string[];
+  blAttackPatterns: string[];
+  blCompleteAPs: number;
+  blCompleteWeightings: number;
+  blWeightings: { protPct: 0, detPct: 0, respPct: 0 };
   dates: any[];
-  summaries: AssessmentSet[];
-
+  
   finishedLoading = false;
   private identities: Identity[];
 
   masterListOptions = {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Date Modified')
-      .addColumn('capabilities', '# of Capabilities', 'master-list-capabilities', false, (value) => value || '0')
+      .addColumn('id', '# of Capabilities', 'master-list-capabilities', false, (id) => {
+        if (id && this.baselines) {
+          const baseline = this.baselines.filter((bl) => bl.id === id);
+          return baseline[0].assessments.length.toString();
+        } else {
+          return '0';
+        }
+      })
       .addColumn('created_by_ref', 'Organization', 'master-list-organization', false, (value) => {
         let author: Identity = null;
         if (value) {
@@ -47,9 +65,16 @@ export class SummaryComponent implements OnInit, OnDestroy {
         }
         return author ? author.name : 'Unknown';
       })
-      .addColumn('framework', 'Type', 'master-list-extra', false, (value) => value || 'ATT&CK')
-      .addColumn('industry', 'Industry', 'master-list-extra', false, (value) => value || 'Local')
-      .addColumn('published', 'Status', 'master-list-extra', false, (published) => published ? 'Public' : 'Draft')
+      // TODO: must change baselines in some way to save framework in place when it was created
+      //       once that is done, add this back in and update
+      // .addColumn('framework', 'Type', 'master-list-extra', false, (value) => value || 'ATT&CK')
+      // TODO: until there is an industry specification for a baseline, don't show this column
+      //       could borrow from specific user who created the baseline, but the user could
+      //       have more than one industry in its identity
+      // .addColumn('industry', 'Industry', 'master-list-extra', false, (value) => value || 'Local')
+      .addColumn('published', 'Status', 'master-list-extra', false, (published) => {
+        return published ? 'Published' : 'Not Published'
+      })
     ,
     displayRoute: this.baseAssessUrl + '/result/summary',
     modifyRoute: this.baseAssessUrl + '/wizard/edit',
@@ -78,32 +103,38 @@ export class SummaryComponent implements OnInit, OnDestroy {
    *  initialize this component, fetching data from backend
    */
   public ngOnInit(): void {
-    const idParamSub$ = this.route.params
-      .distinctUntilChanged()
+    const idParamSub1$ = this.store
+      .select(getAttackPatternCount)
+      .pipe(
+        distinctUntilChanged())
+      .subscribe((count) => this.attackPatternCount = count);
+    const idParamSub2$ = this.route.params.pipe(
+      distinctUntilChanged())
       .subscribe((params) => {
         this.baselineId = params.baselineId || '';
-        this.summaries = undefined;
+        this.baselines = undefined;
         this.finishedLoading = false;
         this.calculationService.baseline = undefined;
         this.store.dispatch(new CleanBaselineResultData());
-        const sub$ = this.userStore
-          .select('users')
-          .pluck('userProfile')
-          .take(1)
+        const sub1$ = this.userStore
+          .select('users').pipe(
+          pluck('userProfile'),
+          take(1))
           .subscribe((user: UserProfile) => {
             const creatorId = user._id;
             const createdById = user.organizations[0].id;
             this.requestBaseline(this.baselineId, createdById);
           },
             (err) => console.log(err));
-        this.subscriptions.push(sub$);
+
+        this.subscriptions.push(sub1$);
       },
         (err) => console.log(err));
 
     const subIdentitie$ = this.userStore
-      .select('identities')
-      .pluck('identities')
-      .finally(() => subIdentitie$ && subIdentitie$.unsubscribe())
+      .select('identities').pipe(
+      pluck('identities'),
+      finalize(() => subIdentitie$ && subIdentitie$.unsubscribe()))
       .subscribe(
         (identities: Identity[]) => this.identities = identities,
         (error) => console.log(`(${new Date().toISOString()}) error retrieving identities from app store`, error)
@@ -112,7 +143,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     this.getBaseline();
     this.listenForDataChanges();
 
-    this.subscriptions.push(idParamSub$);
+    this.subscriptions.push(idParamSub1$, idParamSub2$);
     this.dates = ['Yesterday, 09:36:40 AM', 'Monday, 03:11:15 PM', 'Mar 15, 2018 01:14:55 PM'];
   }
 
@@ -132,15 +163,61 @@ export class SummaryComponent implements OnInit, OnDestroy {
   // TODO unsubscribes
 
   public getBaseline(): void {
-    const baselineRetrieve$ = this.store
-      .select('summary')
-      .pluck('baseline')
-      .distinctUntilChanged()
-      .filter((arr: AssessmentSet[]) => arr && arr.length > 0)
-      .subscribe((arr: AssessmentSet[]) => {this.calculationService.baseline = arr[0]; return this.calculationService.baseline},
+    const baselinesRetrieve$ = this.store
+      .select('summary').pipe(
+      pluck('baselines'),
+      distinctUntilChanged(),
+      filter((baselines: AssessmentSet[]) => baselines && baselines.length > 0))
+      .subscribe((baselines: AssessmentSet[]) => this.baselines = [ ...baselines ],
         (err) => console.log(err));
 
-    this.subscriptions.push(baselineRetrieve$);
+    const baselineRetrieve$ = this.store
+      .select('summary').pipe(
+      pluck('baseline'),
+      distinctUntilChanged())
+      .subscribe((baseline: AssessmentSet) => this.currentBaseline = baseline,
+        (err) => console.log(err));
+
+
+    const apRetrieve$ = this.store
+      .select('summary').pipe(
+      pluck('blAttackPatterns'),
+      distinctUntilChanged(),
+      filter((arr: string[]) => arr && arr.length > 0))
+      .subscribe((arr: string[]) => this.blAttackPatterns = arr,
+        (err) => console.log(err));
+
+    const apIncRetrieve$ = this.store
+      .select('summary').pipe(
+      pluck('blCompleteAPs'),
+      distinctUntilChanged())
+      .subscribe((incAP: number) => this.blCompleteAPs = incAP,
+        (err) => console.log(err));
+
+    const wgtIncRetrieve$ = this.store
+      .select('summary').pipe(
+      pluck('blCompleteWeightings'),
+      distinctUntilChanged())
+      .subscribe((incWgt: number) => this.blCompleteWeightings = incWgt,
+        (err) => console.log(err));
+
+        const groupRetrieve$ = this.store
+      .select('summary').pipe(
+      pluck('blGroups'),
+      distinctUntilChanged(),
+      filter((arr: string[]) => arr && arr.length > 0))
+      .subscribe((arr: string[]) => this.blGroups = arr,
+        (err) => console.log(err));
+
+    const blWeightsRetrieve$ = this.store
+      .select('summary').pipe(
+      pluck('blWeightings'),
+      distinctUntilChanged())
+      .subscribe((weightings: { protPct, detPct, respPct }) => this.blWeightings = weightings,
+        (err) => console.log(err));
+  
+      this.subscriptions.push(baselinesRetrieve$, baselineRetrieve$, apRetrieve$, apIncRetrieve$,
+                              wgtIncRetrieve$, groupRetrieve$, blWeightsRetrieve$);
   }
 
   /**
@@ -149,34 +226,35 @@ export class SummaryComponent implements OnInit, OnDestroy {
    */
   public listenForDataChanges(): void {
     const sub1$ = this.store
-      .select('summary')
-      .pluck('summaries')
-      .distinctUntilChanged()
-      .filter((arr: AssessmentSet[]) => arr && arr.length > 0)
+      .select('summary').pipe(
+      pluck('summaries'),
+      distinctUntilChanged(),
+      filter((arr: AssessmentSet[]) => arr && arr.length > 0))
       .subscribe((arr: AssessmentSet[]) => {
-        this.summaries = [...arr];
+        this.baselines = [...arr];
       },
         (err) => console.log(err));
 
     const sub2$ = this.store
-      .select('summary')
-      .pluck('finishedLoading')
-      .distinctUntilChanged()
-      .filter((el) => el === true)
+      .select('summary').pipe(
+      pluck('finishedLoading'),
+      distinctUntilChanged(),
+      filter((el) => el === true))
       .subscribe((done: boolean) => {
-        if (this.calculationService.baseline === undefined) {
+        // If we have groups, we should have everything else
+        if (this.blGroups === undefined) {
           // fetching the summary failed, set all flags to done
           this.setLoadingToDone();
           return;
         }
         this.finishedLoading = done;
-        // this.transformSummary()
+        this.transformSummary()
       }, (err) => console.log(err));
 
-    const sub8$ = this.store
-      .select('summary')
-      .pluck('finishedLoadingSummaryAggregationData')
-      .distinctUntilChanged()
+    const sub3$ = this.store
+      .select('summary').pipe(
+      pluck('finishedLoadingSummaryAggregationData'),
+      distinctUntilChanged())
       .subscribe((done: boolean) => {
         // this.finishedLoadingSAD = done;
         // if (done) {
@@ -184,21 +262,18 @@ export class SummaryComponent implements OnInit, OnDestroy {
         // }
       }, (err) => console.log(err));
 
-    this.baselineName = this.store
-      .select('summary')
-      .pluck('baseline')
-      .distinctUntilChanged()
-      .switchMap((arr: AssessmentSet[]) => {
-        if (!arr || arr.length === 0) {
-          return Observable.of('');
+    const sub4$ = this.store
+      .select('summary').pipe(
+      pluck('baseline'),
+      distinctUntilChanged())
+      .subscribe((baseline: AssessmentSet) => {
+        if (baseline) {
+          this.currentBaseline = baseline;
+          this.baselineName = observableOf(this.currentBaseline.name);
         }
-        return Observable.of(arr[0].name);
-      });
-    
-    
+      }, (err) => console.log(err));
 
-
-    this.subscriptions.push(sub1$, sub2$, sub8$);
+    this.subscriptions.push(sub1$, sub2$, sub3$, sub4$);
   }
 
 
@@ -231,7 +306,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     if (!event || (event instanceof UIEvent)) {
       routePromise = this.router.navigate([this.masterListOptions.modifyRoute, this.baselineId]);
     } else {
-      routePromise = this.router.navigate([this.masterListOptions.modifyRoute, event.baselineId]);
+      routePromise = this.router.navigate([this.masterListOptions.modifyRoute, event.id]);
     }
 
     routePromise.catch((e) => console.log(e));
@@ -252,8 +327,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public onDeleteCurrent(): void {
-    const id = this.baselineId;
-    // this.confirmDelete({ name: this.summary.name, rollupId: id });
+    this.confirmDelete({ name: this.currentBaseline.name, id: this.baselineId });
   }
 
   /**
@@ -262,53 +336,52 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public onDelete(baseline: LastModifiedBaseline): void {
-    // this.confirmDelete({ name: baseline.name, rollupId: baseline.rollupId });
+    this.confirmDelete({ name: baseline.name, id: baseline.id });
   }
 
   // /**
   //  * @description confirmation to delete
-  //  *  loop thru all baselines related to the given rollupId - and delete them
   //  * @param {LastModifiedAssessment} baseline
   //  * @return {void}
   //  */
-  // public confirmDelete(baseline: { name: string, rollupId: string }): void {
-  //   if (!baseline || !baseline.name || !baseline.rollupId) {
-  //     console.log('confirm delete requires a name and id');
-  //     return;
-  //   }
+  public confirmDelete(baseline: { name: string, id: string }): void {
+    if (!baseline || !baseline.id) {
+      console.log('confirm delete requires an id');
+      return;
+    }
 
-  //   const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: { attributes: baseline } });
-  //   const dialogSub$ = dialogRef.afterClosed()
-  //     .subscribe(
-  //       (result) => {
-  //         const isBool = typeof result === 'boolean';
-  //         const isString = typeof result === 'string';
-  //         if (!result ||
-  //           (isBool && result !== true) ||
-  //           (isString && result !== 'true')) {
-  //           return;
-  //         }
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, { data: { attributes: baseline } });
+    const dialogSub$ = dialogRef.afterClosed()
+      .subscribe(
+        (result) => {
+          const isBool = typeof result === 'boolean';
+          const isString = typeof result === 'string';
+          if (!result ||
+            (isBool && result !== true) ||
+            (isString && result !== 'true')) {
+            return;
+          }
 
-  //         const isCurrentlyViewed = baseline.rollupId === this.rollupId ? true : false;
-  //         const sub$ = this.assessService
-  //           .deleteByRollupId(baseline.rollupId)
-  //           .subscribe(
-  //             (resp) => this.masterListOptions.dataSource.nextDataChange(resp),
-  //             (err) => console.log(err),
-  //             () => {
-  //               if (sub$) {
-  //                 sub$.unsubscribe();
-  //               }
+          const isCurrentlyViewed = baseline.id === this.baselineId ? true : false;
+          const sub$ = this.baselineService
+            .delete(baseline)
+            .subscribe(
+              (resp) => this.masterListOptions.dataSource.nextDataChange(resp),
+              (err) => console.log(err),
+              () => {
+                if (sub$) {
+                  sub$.unsubscribe();
+                }
 
-  //               // we deleted the current baseline
-  //               if (isCurrentlyViewed) {
-  //                 return this.router.navigate([Constance.X_UNFETTER_ASSESSMENT_NAVIGATE_URL]);
-  //               }
-  //             });
-  //       },
-  //       (err) => console.log(err),
-  //       () => dialogSub$.unsubscribe());
-  // }
+                // we deleted the current baseline
+                if (isCurrentlyViewed) {
+                  return this.router.navigate([Constance.X_UNFETTER_ASSESSMENT3_BASELINE_NAVIGATE_URL]);
+                }
+              });
+        },
+        (err) => console.log(err),
+        () => dialogSub$.unsubscribe());
+  }
 
   /**
    * @description
@@ -355,4 +428,15 @@ export class SummaryComponent implements OnInit, OnDestroy {
   public setLoadingToDone(): void {
     this.finishedLoading = true;
   }
+
+  public transformSummary() {
+    this.calculationService.baseline = this.currentBaseline;
+    this.calculationService.blAttackPatterns = this.blAttackPatterns;
+    this.calculationService.blCompleteAPs = this.blCompleteAPs / (this.currentBaseline.assessments.length * this.attackPatternCount);
+    this.calculationService.blCompleteWeightings = ((this.blCompleteWeightings / (3 * this.currentBaseline.assessments.length * this.attackPatternCount)) / 100) * 100;
+    this.calculationService.totalWeightings = this.attackPatternCount;
+    this.calculationService.blGroups = this.blGroups;
+    this.calculationService.blWeightings = this.blWeightings;
+  }
+
 }

@@ -1,9 +1,12 @@
+
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { empty as observableEmpty, Observable } from 'rxjs';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { Constance } from '../../../utils/constance';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class AssessSummaryService {
     public readonly baseUrl = Constance.X_UNFETTER_ASSESSMENT_URL;
 
@@ -16,7 +19,7 @@ export class AssessSummaryService {
      */
     public getSummaryAggregation(id: string): Observable<any> {
         if (!id) {
-            return Observable.empty();
+            return observableEmpty();
         }
 
         const url = `${this.baseUrl}/${id}/summary-aggregations`;

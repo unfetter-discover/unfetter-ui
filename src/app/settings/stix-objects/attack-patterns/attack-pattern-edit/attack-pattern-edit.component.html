@@ -4,20 +4,18 @@
             <div class="row">
                 <div class="col-md-12">
                      <div class="form-group">
-                        <mat-input-container class="full-width">
+                        <mat-form-field class="full-width">
                             <input matInput class="attack-pattern-name" required placeholder="Name" value="{{attackPattern.attributes.name}}"
                                 [(ngModel)]="attackPattern.attributes.name">
-                        </mat-input-container>
+                        </mat-form-field>
 
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12">
-                    <mat-input-container class="full-width">
-                        <textarea matInput class="attack-pattern-desc" matTextareaAutosize placeholder="Description" [(ngModel)]="attackPattern.attributes.description">{{attackPattern.attributes.description}}</textarea>
-                    </mat-input-container>
-                </div>
+                <markdown-editor #markdownEditor [inputLabel]="'Description (Markdown Editor)'"
+                        [value]="attackPattern.attributes.description"
+                        (changed)="attackPattern.attributes.description = $event"></markdown-editor>
             </div>
              <div class="row">
                 <div class="col-md-12">

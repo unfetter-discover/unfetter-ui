@@ -1,22 +1,27 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 
 import { IPGeoService } from './ipgeo.service';
 import { GenericApi } from '../core/services/genericapi.service';
+import { RunConfigService } from '../core/services/run-config.service';
 
 describe('ipgeo service', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
-            providers: [IPGeoService, GenericApi],
+            providers: [
+                RunConfigService,
+                IPGeoService,
+                GenericApi,
+            ],
         });
     });
 
     it('should fake lookup a machine', inject([IPGeoService, GenericApi], (service: IPGeoService, api: GenericApi) => {
         const ipaddr = '205.175.221.58'; // one of the services shows a sample using this ip
-        const spy = spyOn(api, 'get').and.returnValue(Observable.of({
+        const spy = spyOn(api, 'get').and.returnValue(observableOf({
             data: {
                 success: true,
                 ip: ipaddr,

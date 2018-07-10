@@ -1,5 +1,7 @@
+
+import { take, filter, pluck } from 'rxjs/operators';
 import { Injectable, SkipSelf, Optional } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { GenericApi } from './genericapi.service';
@@ -31,8 +33,14 @@ export class ConfigService {
             .catch((err) => console.log('Unable to initalize configurations ', err))
     }
 
-    public getConfig(): Observable<any> {
-        return this.genericApi.get(this.configUrl);
+    public getConfig(queryFilter?): Observable<any> {
+        let url;
+        if (queryFilter) {
+            url = `${this.configUrl}?filter=${encodeURI(JSON.stringify(queryFilter))}`;
+        } else {
+            url = this.configUrl;
+        }
+        return this.genericApi.get(url);
     }
 
     public getPublicConfig(): Observable<any> {
@@ -44,10 +52,10 @@ export class ConfigService {
             return Promise.resolve(this.configurations);
         } else {
             return new Promise((resolve, reject) => {
-                const getConfig$ = this.store.select('config')
-                    .pluck('configurations')
-                    .filter((configurations: any) => Object.keys(configurations).length > 0)
-                    .take(1)
+                const getConfig$ = this.store.select('config').pipe(
+                    pluck('configurations'),
+                    filter((configurations: any) => Object.keys(configurations).length > 0),
+                    take(1))
                     .subscribe(
                         (configurations) => {
                             this.configurations = configurations;

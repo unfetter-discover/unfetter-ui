@@ -1,5 +1,7 @@
+
+import { pluck } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { UserProfile } from '../../models/user/user-profile';
 import { Constance } from '../../utils/constance';
 import { GenericApi } from './genericapi.service';
@@ -51,21 +53,21 @@ export class UsersService {
     }
 
     public refreshToken(): Observable<string> {
-        return this.genericApi.get(this.refreshTokenUrl)
-            .pluck('attributes')
-            .pluck('token');
+        return this.genericApi.get(this.refreshTokenUrl).pipe(
+            pluck('attributes'),
+            pluck('token'));
     }
 
     public emailAvailable(email: string): Observable<boolean> {
-        return this.genericApi.get(`${this.authUrl}/email-available/${email}`)
-            .pluck('attributes')
-            .pluck('available');
+        return this.genericApi.get(`${this.authUrl}/email-available/${email}`).pipe(
+            pluck('attributes'),
+            pluck('available'));
     }
 
     public userNameAvailable(userName: string): Observable<boolean> {
-        return this.genericApi.get(`${this.authUrl}/username-available/${userName}`)
-            .pluck('attributes')
-            .pluck('available');
+        return this.genericApi.get(`${this.authUrl}/username-available/${userName}`).pipe(
+            pluck('attributes'),
+            pluck('available'));
     }
 
 }

@@ -1,10 +1,12 @@
+
+import { map, filter, take, distinctUntilChanged, pluck } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren } from '@angular/core';
 import { MatSelect, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MenuItem } from 'primeng/components/common/menuitem';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { Assessment } from 'stix/assess/v2/assessment';
 import { AssessmentMeta } from 'stix/assess/v2/assessment-meta';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
@@ -130,7 +132,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.CHART_HOVER_BG_COLORS = [Constance.COLORS.darkRed, Constance.COLORS.darkGreen];
   }
 
-  /*
+  /**
    * @description
    *  initializes this component, fetchs data to build page
    */
@@ -166,44 +168,49 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
             includesMitigations,
             includesSensors,
           };
-          let rollupId = params.rollupId || '';
+
+          const rollupId = params.rollupId || '';
           if (rollupId) {
+            // this is an edit
             this.loadExistingAssessment(rollupId, meta);
+          } else {
+            // this is a new wizard
+            this.wizardStore.dispatch(new LoadAssessmentWizardData(meta));
           }
-          this.wizardStore.dispatch(new LoadAssessmentWizardData(meta));
+
         },
         (err) => console.log(err),
         () => idParamSub$.unsubscribe());
 
     const sub1$ = this.wizardStore
-      .select('assessment')
-      .pluck('indicators')
-      .distinctUntilChanged()
-      .filter((el) => el !== undefined)
-      .map((arr: JsonApiData<Indicator.UnfetterIndicator>[]) => arr.map((el) => el.attributes))
+      .select('assessment').pipe(
+        pluck('indicators'),
+        distinctUntilChanged(),
+        filter((el) => el !== undefined),
+        map((arr: JsonApiData<Indicator.UnfetterIndicator>[]) => arr.map((el) => el.attributes)))
       .subscribe((arr: Indicator.UnfetterIndicator[]) => this.indicators = arr);
 
     const sub2$ = this.wizardStore
-      .select('assessment')
-      .pluck('mitigations')
-      .distinctUntilChanged()
-      .filter((el) => el !== undefined)
-      .map((arr: JsonApiData<Stix>[]) => arr.map((el) => el.attributes))
+      .select('assessment').pipe(
+        pluck('mitigations'),
+        distinctUntilChanged(),
+        filter((el) => el !== undefined),
+        map((arr: JsonApiData<Stix>[]) => arr.map((el) => el.attributes)))
       .subscribe((arr: Stix[]) => this.mitigations = arr);
 
     const sub3$ = this.wizardStore
-      .select('assessment')
-      .pluck('sensors')
-      .distinctUntilChanged()
-      .filter((el) => el !== undefined)
-      .map((arr: JsonApiData<Stix>[]) => arr.map((el) => el.attributes))
+      .select('assessment').pipe(
+        pluck('sensors'),
+        distinctUntilChanged(),
+        filter((el) => el !== undefined),
+        map((arr: JsonApiData<Stix>[]) => arr.map((el) => el.attributes)))
       .subscribe((arr: Stix[]) => this.sensors = arr);
 
     const sub4$ = this.wizardStore
-      .select('assessment')
-      .pluck('finishedLoading')
-      .distinctUntilChanged()
-      .filter((loaded: boolean) => loaded && loaded === true)
+      .select('assessment').pipe(
+        pluck('finishedLoading'),
+        distinctUntilChanged(),
+        filter((loaded: boolean) => loaded && loaded === true))
       .subscribe(
         (loaded: boolean) => {
           const panel = this.determineFirstOpenSidePanel();
@@ -214,19 +221,19 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         (err) => console.log(err));
 
     const sub5$ = this.wizardStore
-      .select('assessment')
-      .pluck('page')
-      .distinctUntilChanged()
+      .select('assessment').pipe(
+        pluck('page'),
+        distinctUntilChanged())
       .subscribe(
         (page: number) => this.page = page,
         (err) => console.log(err));
 
     interface SavedState { finished: boolean, rollupId: string, id: string };
     const sub6$ = this.wizardStore
-      .select('assessment')
-      .pluck('saved')
-      .distinctUntilChanged()
-      .filter((el: SavedState) => el && el.finished === true)
+      .select('assessment').pipe(
+        pluck('saved'),
+        distinctUntilChanged(),
+        filter((el: SavedState) => el && el.finished === true))
       .subscribe(
         (saved: SavedState) => {
           const rollupId = saved.rollupId;
@@ -236,19 +243,19 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         (err) => console.log(err));
 
     const sub7$ = this.wizardStore
-      .select('assessment')
-      .pluck('assessment')
-      .pluck('assessmentMeta')
-      .distinctUntilChanged()
+      .select('assessment').pipe(
+        pluck('assessment'),
+        pluck('assessmentMeta'),
+        distinctUntilChanged())
       .subscribe(
         (assessmentMeta: AssessmentMeta) => this.meta = assessmentMeta,
         (err) => console.log(err));
 
     const sub8$ = this.userStore
-      .select('users')
-      .pluck('userProfile')
-      .distinctUntilChanged()
-      .take(1)
+      .select('users').pipe(
+        pluck('userProfile'),
+        distinctUntilChanged(),
+        take(1))
       .subscribe(
         (user: UserProfile) => this.currentUser = user,
         (err) => console.log(err));
@@ -272,15 +279,15 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
   public loadExistingAssessment(rollupId: string, meta: Partial<AssessmentMeta>) {
     const sub$ = this.userStore
-      .select('users')
-      .pluck('userProfile')
-      .take(1)
+      .select('users').pipe(
+        pluck('userProfile'),
+        take(1))
       .subscribe(
         (user: UserProfile) => {
           const sub1$ = this.assessStore
-            .select('fullAssessment')
-            .pluck('assessmentTypes')
-            .distinctUntilChanged()
+            .select('fullAssessment').pipe(
+              pluck('assessmentTypes'),
+              distinctUntilChanged())
             .subscribe(
               (arr: Assessment[]) => this.loadAssessments(rollupId, arr, meta),
               (err) => console.log(err));
@@ -300,7 +307,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     meta.includesMitigations = false;
     meta.includesSensors = false;
 
-    /*
+    /**
      * making the model a collection of all the assessments matching the given rollup id, plus a summary of all the
      * assessed objects to make it easier to use the existing code to display the questions and existing answers
      */
@@ -351,7 +358,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.wizardStore.dispatch(new UpdatePageTitle(meta));
   }
 
-  /*
+  /**
    * @description
    *  cleans up this component, unsubscribes to data
    */
@@ -360,7 +367,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  /*
+  /**
    * @description find panel names with data
    * @return {SidePanelName[]}
    */
@@ -372,7 +379,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return hasContents;
   }
 
-  /*
+  /**
    * @description name of first side panel with data
    * @return {string} name of first open side panel
    */
@@ -382,7 +389,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return hasContents[0];
   }
 
-  /*
+  /**
    * @description first panel with data, after the currently opened
    * @return {string} name of last listed side panel with data
    */
@@ -394,7 +401,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return nextPanels[0];
   }
 
-  /*
+  /**
    * @description
    * @param {string} panel name
    * @param {UIEvent} event
@@ -434,7 +441,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.updateRatioOfAnswerQuestions();
   }
 
-  /*
+  /**
    * @description refresh the questions and graphs to the currently open assessment type
    * @return {void}
    */
@@ -447,7 +454,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     }
   }
 
-  /*
+  /**
    * @description
    * @return {void}
    */
@@ -471,7 +478,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     }
   }
 
-  /*
+  /**
    * @description
    */
   @HostListener('window:keyup', ['$event'])
@@ -491,7 +498,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     }
   }
 
-  /*
+  /**
    * @description
    * @param {answerIndex}
    * @return {void}
@@ -518,7 +525,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     });
   }
 
-  /*
+  /**
    * @description
    * @return {void}
    */
@@ -554,7 +561,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
   }
 
-  /*
+  /**
    * @description clicked a stepper
    * @param {number} step
    * @param {UIEvent} event optional
@@ -574,7 +581,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     }
   }
 
-  /*
+  /**
    * @description update riskss
    * @param option
    * @param measurement
@@ -663,7 +670,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.updateRatioOfAnswerQuestions();
   }
 
-  /*
+  /**
    * @description clicked back a page
    * @param {UIEvent} event optional
    * @returns {void}
@@ -685,7 +692,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.updateRatioOfAnswerQuestions();
   }
 
-  /*
+  /**
    * @description
    * @param {UIEvent} event optional
    */
@@ -696,7 +703,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.saveAssessments();
   }
 
-  /*
+  /**
    * @description clicked next page
    * @param {UIEvent} event optional
    * @return {void}
@@ -732,7 +739,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.updateRatioOfAnswerQuestions();
   }
 
-  /*
+  /**
    * @description
    * @return {void}
    */
@@ -744,7 +751,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.updateSummaryChart();
   }
 
-  /*
+  /**
    * @description
    * @param measurement 
    * @param option 
@@ -780,7 +787,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     }
   }
 
-  /*
+  /**
    * @description
    * @return {boolean} true if first page of first side panel otherwise false
    */
@@ -789,7 +796,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return isFirstPanel && this.isFirstPage();
   }
 
-  /*
+  /**
    * @description
    * @return {boolean} true if first page of first side panel otherwise false
    */
@@ -797,7 +804,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return this.page <= 1;
   }
 
-  /*
+  /**
    * @description
    * @return {boolean} true if title is empty otherwise false
    */
@@ -819,7 +826,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return index;
   }
 
-  /*
+  /**
    * @description build page and refresh chart
    * @param data 
    * @return {void}
@@ -834,7 +841,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.updateChart();
   }
 
-  /*
+  /**
    * @description
    * @param {void}
    * @return {any}
@@ -850,7 +857,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return this.assessmentGroups[index];
   }
 
-  /* 
+  /**
    * For testing only
    * @return {any[]}
    */
@@ -858,7 +865,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return this.assessmentGroups;
   }
 
-  /* 
+  /**
    * For testing only
    * @return {any[]}
    */
@@ -866,7 +873,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.assessmentGroups = newAssessementGroups;
   }
 
-  /*
+  /**
    * @description
    * @param {Stix[]}
    * @return {any[]}
@@ -878,7 +885,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       // Go through and build each assessment
       // We do this so we can just save all the assessments later.
       this.assessments = assessedObjects
-        // .map((el) => el.attributes)
+        .filter((assessedObject) => assessedObject !== undefined && assessedObject.metaProperties !== undefined)
         .map((assessedObject) => {
           const assessment = new WizardAssessment();
           if (assessedObject.metaProperties && assessedObject.metaProperties.groupings) {
@@ -926,7 +933,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return assessmentGroups;
   }
 
-  /*
+  /**
    * @description
    * @param stixObjects
    * @return {any} 
@@ -959,7 +966,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return groupings;
   }
 
-  /*
+  /**
    * @description
    * @param stixObjects
    * @return {any}
@@ -997,7 +1004,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return hash;
   }
 
-  /*
+  /**
    * @description
    * @param {any} assessmentGroup 
    * @return {number}
@@ -1015,7 +1022,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return groupRisk;
   }
 
-  /*
+  /**
    * @description update the chart data
    * @return {void}
    */
@@ -1026,7 +1033,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.doughnutChartData = chartData;
   }
 
-  /*
+  /**
    * @description handle an assessment's worth of summary chart data
    * @return {any[]}
    */
@@ -1051,7 +1058,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return result;
   }
 
-  /*
+  /**
    * @description update the summary chart data
    * @return {void}
    */
@@ -1101,7 +1108,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return result;
   }
 
-  /*
+  /**
    * @description
    * @param title
    * @return {string}
@@ -1118,7 +1125,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return split.join(' ');
   }
 
-  /*
+  /**
    * @description
    * @param {any}
    * @return {Assessment}
@@ -1160,7 +1167,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return assessment;
   }
 
-  /*
+  /**
    * @description save an assessment object to the database
    * @param {void}
    * @return {void}

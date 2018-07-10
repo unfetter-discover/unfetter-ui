@@ -8,18 +8,15 @@
     <div class="row">
       <div class="col-md-12">
         <div class="form-group">
-          <mat-input-container class="full-width">
+          <mat-form-field class="full-width">
             <input matInput class="category-name" required placeholder="Name" value="{{category.name}}" [(ngModel)]="category.name">
-          </mat-input-container>
+          </mat-form-field>
         </div>
       </div>
     </div>
     <div class="row">
-      <div class="col-md-12">
-        <mat-input-container class="full-width">
-          <textarea matInput class="category-desc" matTextareaAutosize placeholder="Description" [(ngModel)]="category.description">{{category.description}}</textarea>
-        </mat-input-container>
-      </div>
+      <markdown-editor [editing]="true" [inputLabel]="'Description (Markdown Editor)'"
+          [value]="category.description" (changed)="category.description = $event"></markdown-editor>
     </div>
     <div class="row" *ngFor="let framework of frameworks">
       <div class="col-md-12" *ngFor="let assessedObject of category.assessed_objects">

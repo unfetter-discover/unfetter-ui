@@ -1,7 +1,10 @@
+
+import { forkJoin as observableForkJoin,  Observable  } from 'rxjs';
+
+import { map, filter, distinctUntilChanged, pluck } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { MatSelectChange } from '@angular/material';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
 import { AuthService } from '../../core/services/auth.service';
 import { UserPreferencesService } from '../../core/services/user-preferences.service';
 import { UsersService } from '../../core/services/users.service';
@@ -10,6 +13,7 @@ import { AppState } from '../../root-store/app.reducers';
 import { FetchConfig } from '../../root-store/config/config.actions';
 import { Constance } from '../../utils/constance';
 import { KillchainConfigEntry } from './killchain-config-entry';
+import { UserHelpers } from '../../global/static/user-helpers';
 
 @Component({
     selector: 'settings',
@@ -40,12 +44,13 @@ export class SettingsComponent implements OnInit {
     }
 
     public fetchData() {
-        const getData$ = Observable.forkJoin(
+        const getData$ = observableForkJoin(
             this.usersService.getUserProfileById(this.userId),
             this.usersService.getOrganizations()
         ).subscribe(
             (results: any) => {
                 this.user = results[0].attributes;
+                this.user.avatar_url = UserHelpers.getAvatarUrl(this.user);
                 const allOrgs = results[1].map((org) => org.attributes);
                 this.approvedOrganizations = this.user.organizations
                     .filter((org) => org.approved)
@@ -80,13 +85,13 @@ export class SettingsComponent implements OnInit {
         );
 
         this.frameworks$ = this.store
-            .select('config')
-            .pluck('configurations')
-            .distinctUntilChanged()
-            .filter((el) => el !== undefined)
-            .map<object, KillchainConfigEntry[]>((el: any) => {
+            .select('config').pipe(
+            pluck('configurations'),
+            distinctUntilChanged(),
+            filter((el) => el !== undefined),
+            map<object, KillchainConfigEntry[]>((el: any) => {
                 return el.killChains;
-            });
+            }));
 
         this.store.dispatch(new FetchConfig(false));
     }

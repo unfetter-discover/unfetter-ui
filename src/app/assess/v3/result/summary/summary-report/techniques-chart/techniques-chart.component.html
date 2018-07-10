@@ -1,4 +1,4 @@
-<div style="display: block">
+<div *ngIf="summaryCalculationService.isValidSophisticationData; else noData" style="display: block">
   <canvas baseChart 
     [datasets]="barChartData" 
     [labels]="barChartLabels" 
@@ -7,3 +7,7 @@
     [chartType]="barChartType"
     [colors]="colors"></canvas>
 </div>
+
+<ng-template #noData>
+  <div>Sorry, none of the techniques in this assessment have been evaluated for an attacker's sophistication level.</div>
+</ng-template>

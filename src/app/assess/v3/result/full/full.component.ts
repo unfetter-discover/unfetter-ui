@@ -2,24 +2,26 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { catchError } from 'rxjs/operators/catchError';
-import { distinctUntilChanged } from 'rxjs/operators/distinctUntilChanged';
-import { filter } from 'rxjs/operators/filter';
-import { map } from 'rxjs/operators/map';
-import { take } from 'rxjs/operators/take';
+import { Observable, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, pluck, take, tap } from 'rxjs/operators';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { Assessment } from 'stix/assess/v3/assessment';
+import { AssessmentEvalTypeEnum } from 'stix/assess/v3/assessment-eval-type.enum';
+import { Category } from 'stix/assess/v3/baseline/category';
 import { ConfirmationDialogComponent } from '../../../../components/dialogs/confirmation/confirmation-dialog.component';
 import { MasterListDialogTableHeaders } from '../../../../global/components/master-list-dialog/master-list-dialog.component';
+import { AngularHelper } from '../../../../global/static/angular-helper';
 import { UserProfile } from '../../../../models/user/user-profile';
 import { AppState } from '../../../../root-store/app.reducers';
 import { Constance } from '../../../../utils/constance';
 import { LastModifiedAssessment } from '../../models/last-modified-assessment';
 import { AssessService } from '../../services/assess.service';
-import { CleanAssessmentResultData, LoadAssessmentById } from '../store/full-result.actions';
+import { FetchCategories } from '../../store/assess.actions';
+import { AssessState } from '../../store/assess.reducers';
+import { getSortedCategories } from '../../store/assess.selectors';
+import { CleanAssessmentResultData, LoadAssessmentById, LoadGroupData } from '../store/full-result.actions';
 import { FullAssessmentResultState } from '../store/full-result.reducers';
+import { getAllFinishedLoading, getFailedToLoadAssessment, getFullAssessment, getFullAssessmentName, getGroupState, getUnassessedPhasesForCurrentFramework } from '../store/full-result.selectors';
 import { SummaryDataSource } from '../summary/summary.datasource';
 import { FullAssessmentGroup } from './group/models/full-assessment-group';
 
@@ -27,22 +29,26 @@ import { FullAssessmentGroup } from './group/models/full-assessment-group';
   selector: 'unf-assess-full',
   templateUrl: './full.component.html',
   styleUrls: ['./full.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class FullComponent implements OnInit, OnDestroy {
 
   public readonly baseAssessUrl = '/assess-beta';
 
   public activePhase: string;
-  public assessment: Observable<Assessment>;
-  public assessmentGroup: Observable<FullAssessmentGroup>;
+  public assessment$: Observable<Assessment>;
+  public assessmentGroup$: Observable<FullAssessmentGroup>;
   public assessmentId: string;
-  public assessmentName: Observable<string>;
+  public assessmentName$: Observable<string>;
+  public assessmentName: string;
   public attackPatternId: string;
-  public finishedLoading: Observable<boolean>;
+  public categoryLookup$: Observable<Category[]>;
+  public failedToLoad$: Observable<boolean>;
+  public finishedLoading$: Observable<boolean>;
   public phase: string;
   public riskBreakdown: any;
   public rollupId: string;
+  public unassessedPhases$: Observable<string[]>;
   public masterListOptions = {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Modified'),
@@ -54,13 +60,14 @@ export class FullComponent implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription[] = [];
 
   constructor(
+    private appStore: Store<AppState>,
+    private assessService: AssessService,
+    private assessStore: Store<AssessState>,
+    private changeDetectorRef: ChangeDetectorRef,
+    private dialog: MatDialog,
     private route: ActivatedRoute,
     private router: Router,
-    private dialog: MatDialog,
     private store: Store<FullAssessmentResultState>,
-    private userStore: Store<AppState>,
-    private assessService: AssessService,
-    private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
   /**
@@ -74,16 +81,20 @@ export class FullComponent implements OnInit, OnDestroy {
         this.rollupId = params.rollupId || '';
         this.assessmentId = params.assessmentId || '';
         this.phase = params.phase || '';
+        this.activePhase = this.activePhase || this.phase;
         this.attackPatternId = params.attackPatternId || '';
-        const sub$ = this.userStore
+        const sub$ = this.appStore
           .select('users')
-          .pluck('userProfile')
-          .pipe(take(1))
+          .pipe(
+            pluck('userProfile'),
+            take(1)
+          )
           .subscribe((user: UserProfile) => {
-            this.requestData(this.rollupId);
+            this.requestDataLoad(this.rollupId);
           },
             (err) => console.log(err));
         this.subscriptions.push(sub$);
+        this.changeDetectorRef.detectChanges();
       },
         (err) => console.log(err));
 
@@ -96,25 +107,27 @@ export class FullComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public listenForDataChanges(): void {
+    this.assessment$ = this.store
+      .select(getFullAssessment)
+      .pipe(
+        distinctUntilChanged(),
+        tap((assessment) => this.requestGroupSectionDataLoad(assessment))
+      );
 
-    this.assessment = this.store
-      .select('fullAssessment')
-      .pluck<object, Assessment>('fullAssessment')
+    this.finishedLoading$ = this.store
+      .select(getAllFinishedLoading)
       .pipe(distinctUntilChanged());
 
-    this.finishedLoading = this.store
-      .select('fullAssessment')
-      .pluck<Assessment, boolean>('finishedLoading')
+    this.failedToLoad$ = this.store
+      .select(getFailedToLoadAssessment)
       .pipe(distinctUntilChanged());
 
-    this.assessmentGroup = this.store
-      .select('fullAssessment')
-      .pluck<object, FullAssessmentGroup>('group')
+    this.assessmentGroup$ = this.store
+      .select(getGroupState)
       .pipe(distinctUntilChanged());
 
     const sub$ = this.store
-      .select('fullAssessment')
-      .pluck('group')
+      .select(getGroupState)
       .pipe(
         distinctUntilChanged(),
         filter((group: any) => group.finishedLoadingGroupData === true)
@@ -122,31 +135,29 @@ export class FullComponent implements OnInit, OnDestroy {
       .subscribe(
         (group: any) => {
           const riskByAttackPattern = group.riskByAttackPattern || {};
-          // active phase is either the current active phase, 
+          // active phase is either the current active phase
           let activePhase = this.activePhase;
           if (!activePhase && riskByAttackPattern && riskByAttackPattern.phases.length > 0) {
-            //  the first assess attack pattern, 
+            //  or use the first assessed phase
             activePhase = riskByAttackPattern.phases[0]._id;
           }
-          this.activePhase = activePhase;
+          this.activePhase = this.activePhase || activePhase;
           this.changeDetectorRef.markForCheck();
         },
         (err) => console.log(err));
 
-    this.assessmentName = this.store
-      .select('fullAssessment')
-      .pluck<object, Assessment>('fullAssessment')
+    this.assessmentName$ = this.store
+      .select(getFullAssessmentName)
       .pipe(
         distinctUntilChanged(),
-        map((assessment: Assessment) => {
-          const assessmentType = assessment.determineAssessmentType();
-          return `${assessment.name} - ${assessmentType}`;
-        }),
-        catchError((err, caught) => {
-          console.log(err);
-          return caught;
-        }),
-    );
+        tap((name) => this.assessmentName = name)
+      );
+
+    this.unassessedPhases$ = this.store
+      .select(getUnassessedPhasesForCurrentFramework)
+      .pipe(distinctUntilChanged());
+
+    this.categoryLookup$ = this.assessStore.select(getSortedCategories);
 
     this.subscriptions.push(sub$);
   }
@@ -155,13 +166,28 @@ export class FullComponent implements OnInit, OnDestroy {
    * @description
    * @param {string} rollupId
    */
-  public requestData(rollupId: string): void {
+  public requestDataLoad(rollupId: string): void {
     const isSameAssessment = (row: any) => row && (row.id === this.assessmentId);
     this.masterListOptions.dataSource = new SummaryDataSource(this.assessService);
     this.masterListOptions.columns.id.classes =
       (row: any) => isSameAssessment(row) ? 'current-item' : 'cursor-pointer';
     this.masterListOptions.columns.id.selectable = (row: any) => !isSameAssessment(row);
     this.store.dispatch(new LoadAssessmentById(this.assessmentId));
+    this.assessStore.dispatch(new FetchCategories());
+  }
+
+  /**
+   * @param  {Assessment} assessment
+   * @returns void
+   */
+  public requestGroupSectionDataLoad(assessment: Assessment): void {
+    const id = assessment.id;
+    const assessmentType = assessment.determineAssessmentType();
+    let isCapability = false;
+    if (assessmentType === AssessmentEvalTypeEnum.CAPABILITIES) {
+      isCapability = true;
+    }
+    this.store.dispatch(new LoadGroupData({ id, isCapability }));
   }
 
   /**
@@ -211,9 +237,14 @@ export class FullComponent implements OnInit, OnDestroy {
    * @description clicked currently viewed assessment, confirm delete
    * @return {void}
    */
-  public onDeleteCurrent(assessment: LastModifiedAssessment): void {
-    const id = this.rollupId;
-    this.confirmDelete({ name: assessment.name, rollupId: id });
+  public onDeleteCurrent(event: Event): void {
+    if (event && (event instanceof UIEvent)) {
+      event.preventDefault();
+    }
+
+    const rollupId = this.rollupId;
+    const name = this.assessmentName;
+    this.confirmDelete({ name, rollupId });
   }
 
   /**
@@ -288,20 +319,21 @@ export class FullComponent implements OnInit, OnDestroy {
    * @description noop
    * @return {Promise<boolean>}
    */
-  public onFilterTabChanged($event?: UIEvent): Promise<boolean> {
+  public onFilterTabChanged(event?: Event): Promise<boolean> {
     console.log('noop');
     return Promise.resolve(false);
   }
 
   /**
-   * @description angular track by list function, uses the items id if
-   *  it exists, otherwise uses the index
+   * @description angular track by list function, 
+   *  uses the items id iff (if and only if) it exists, 
+   *  otherwise uses the index
    * @param {number} index
    * @param {item}
    * @return {number}
    */
   public trackByFn(index: number, item: any): number {
-    return item.id || index;
+    return AngularHelper.genericTrackBy(index, item);
   }
 
   /**
@@ -389,4 +421,5 @@ export class FullComponent implements OnInit, OnDestroy {
     }
     return riskBreakdownPhase;
   }
+
 }

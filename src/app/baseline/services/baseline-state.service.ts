@@ -1,12 +1,15 @@
+
 import { Injectable, Optional, SkipSelf } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { last } from 'rxjs/operators';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
 
 /**
  * @description maintain state across the assess create and wizard pages
  */
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class BaselineStateService {
 
     protected metaDataSubject = new BehaviorSubject<BaselineMeta>(new BaselineMeta());
@@ -36,7 +39,7 @@ export class BaselineStateService {
      * @return {Observable<BaselineMeta>}
      */
     public currentMeta(): Observable<BaselineMeta> {
-        return this.metaData$.last();
+        return this.metaData$.pipe(last());
     }
 
 }

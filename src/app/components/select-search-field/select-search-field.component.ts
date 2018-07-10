@@ -1,6 +1,8 @@
+
+import { map, startWith } from 'rxjs/operators';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { BaseComponentService } from '../base-service.component';
 
 
@@ -24,16 +26,20 @@ export class SelectSearchFieldComponent implements OnInit {
 
     constructor(public baseComponentService: BaseComponentService) {
         this.filteredOptions = this.formCtrl.valueChanges
-            .startWith(null)
-            .map((val) => val ? this.filter(val) : this.options.slice());
+            .pipe(
+                startWith(null),
+                map((val) => val ? this.filter(val) : this.options.slice())
+            );
     }
 
     public ngOnInit() {
         let url = 'api/' + this.searchUrl;
-        this.baseComponentService.autoComplete(url).subscribe(
-            (data) => data.forEach((record) => this.options.push(record))
-        );
+        this.baseComponentService.autoComplete(url)
+            .subscribe(
+                (data) => data.forEach((record) => this.options.push(record))
+            );
     }
+
     /**
      * @param  {string} val
      * @returns string | string[]
@@ -41,6 +47,7 @@ export class SelectSearchFieldComponent implements OnInit {
     public filter(val: string): string|string[] {
          return val ? this.options.filter((s) => new RegExp(`^${val}`, 'gi').test(s.attributes.name)) : this.options;
     }
+
     /**
      * @param  {string} option
      * @returns void

@@ -1,7 +1,9 @@
+
+import { pluck, distinctUntilChanged } from 'rxjs/operators';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { Category, Capability } from 'stix/assess/v3/baseline';
 import * as assessActions from '../../store/baseline.actions';
 import { SetBaselineGroups } from '../../store/baseline.actions';
@@ -31,17 +33,17 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
 
     const catSub1$ = this.wizardStore
-      .select('baseline')
-      .pluck('capabilityGroups')
-      .distinctUntilChanged()
+      .select('baseline').pipe(
+      pluck('capabilityGroups'),
+      distinctUntilChanged())
       .subscribe(
         (categories: Category[]) => this.categories = categories,
         (err) => console.log(err));
 
     const catSub2$ = this.wizardStore
-      .select('baseline')
-      .pluck('baselineGroups')
-      .distinctUntilChanged()
+      .select('baseline').pipe(
+      pluck('baselineGroups'),
+      distinctUntilChanged())
       .subscribe(
         (selectedCapabilityGroups: Category[]) => {
           this.selectedCapabilityGroups = selectedCapabilityGroups;
@@ -49,9 +51,9 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
         (err) => console.log(err));
   
     const catSub3$ = this.wizardStore
-      .select('baseline')
-      .pluck('baselineCapabilities')
-      .distinctUntilChanged()
+      .select('baseline').pipe(
+      pluck('baselineCapabilities'),
+      distinctUntilChanged())
       .subscribe(
         (capabilities: Capability[]) => {
           this.baselineCapabilities = capabilities;
@@ -90,6 +92,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   private createNewCategory(): void {
     this.isAddCategory = true;
     this.addCategory = new Category();
+    this.addCategory.created_by_ref = this.categories[0].created_by_ref;
   }
   
   /*
@@ -98,8 +101,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   private addNewCategory(): void {
     
-    this.categories.push(this.addCategory);
-    this.wizardStore.dispatch(new assessActions.SetCapabilityGroups(this.categories));
+    this.wizardStore.dispatch(new assessActions.AddCapabilityGroup(this.addCategory));
     
     this.isAddCategory = false;
     this.addCategory = new Category();
@@ -171,7 +173,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
       this.selectedCapabilityGroups.splice(index, 1); 
 
       // Must remove any capabilities for which this category were associated
-      this.wizardStore.dispatch(new assessActions.SetBaselineCapabilities(this.baselineCapabilities.filter(capability => capability.category !== option.value.name)));
+      this.wizardStore.dispatch(new assessActions.SetBaselineCapabilities(this.baselineCapabilities.filter(capability => capability.category !== option.value.id)));
 
       // Update wizard store with current category selections
       this.wizardStore.dispatch(new SetBaselineGroups(this.selectedCapabilityGroups.filter((capabilityGroup) => capabilityGroup !== undefined)));

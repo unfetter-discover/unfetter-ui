@@ -4,6 +4,8 @@
     padding: 0;
 
     .mat-dialog-title {
+        // FF31 fix
+        height: 49px;
         margin-bottom: 0px;
 
         h2.lead {
@@ -38,7 +40,7 @@
             align-items: center;
         }
 
-        .mat-input-prefix {
+        .mat-form-field-prefix {
             padding-right: 8px;
         }
 
@@ -46,7 +48,7 @@
             border-top: none;
         }
 
-        .mat-input-underline {
+        .mat-form-field-underline {
             display: none;
         }
     }
@@ -122,5 +124,13 @@
         justify-content: flex-end;
         padding: 6px 0;
         padding-right: 6px;
+    }
+
+    // mat-cell:last-child {
+    //     padding-right: 0px;
+    // }
+
+    .buttonGrp {
+        width: 100%;
     }
 }

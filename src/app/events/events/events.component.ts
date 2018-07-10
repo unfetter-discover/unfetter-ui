@@ -1,12 +1,13 @@
+
+import { forkJoin as observableForkJoin,  Observable ,  Subscription  } from 'rxjs';
+
+import { finalize, pluck, distinctUntilChanged, filter } from 'rxjs/operators';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { EventsService, SightingsDataSource } from '../events.service';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../root-store/app.reducers';
 import { EventsState } from '../store/events.reducers';
-import { UserProfile } from '../../models/user/user-profile';
 import { CleanSightingsData, StreamSightingIds, LoadData } from '../store/events.actions';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 import { Sighting } from '../../models';
 import { IPGeoService } from '../ipgeo.service';
 import { fadeInOut } from '../../global/animations/fade-in-out';
@@ -18,6 +19,7 @@ import { fadeInOut } from '../../global/animations/fade-in-out';
   animations: [fadeInOut],
 })
 export class EventsComponent implements OnInit, OnDestroy {
+  public filterOpen = true;
   private readonly subscriptions: Subscription[];
   private readonly ips = [];
   private sightingsGroup: any[];
@@ -28,7 +30,8 @@ export class EventsComponent implements OnInit, OnDestroy {
   private observedData: any[];
   private dummyValue: number;
 
-  constructor(private userStore: Store<AppState>,
+  constructor(
+    private userStore: Store<AppState>,
     private store: Store<EventsState>,
     public service: EventsService,
     public ipgeo: IPGeoService,
@@ -64,40 +67,40 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   public listenForDataChanges() {
     const sub1$ = this.store
-      .select('sightingsGroup')
-      .pluck('sightingsGroup')
-      .distinctUntilChanged()
-      .filter((arr: any[]) => arr && arr.length > 0)
+      .select('sightingsGroup').pipe(
+      pluck('sightingsGroup'),
+      distinctUntilChanged(),
+      filter((arr: any[]) => arr && arr.length > 0))
       .subscribe((arr: any[]) => {
         this.sightingsGroup = [...arr];
       },
         (err) => console.log(err));
 
     const sub2$ = this.store
-      .select('sightingsGroup')
-      .pluck('indicatorToAp')
-      .distinctUntilChanged()
-      .filter((obj: any) => obj && Object.keys(obj).length > 0)
+      .select('sightingsGroup').pipe(
+      pluck('indicatorToAp'),
+      distinctUntilChanged(),
+      filter((obj: any) => obj && Object.keys(obj).length > 0))
       .subscribe((obj: any) => {
         this.indicatorToAp = obj;
       },
         (err) => console.log(err));
 
     const sub3$ = this.store
-      .select('sightingsGroup')
-      .pluck('intrusionSetToAp')
-      .distinctUntilChanged()
-      .filter((obj: any) => obj && Object.keys(obj).length > 0)
+      .select('sightingsGroup').pipe(
+      pluck('intrusionSetToAp'),
+      distinctUntilChanged(),
+      filter((obj: any) => obj && Object.keys(obj).length > 0))
       .subscribe((obj: any) => {
         this.intrusionSetToAp = obj;
       },
         (err) => console.log(err));
 
     const sub4$ = this.store
-      .select('sightingsGroup')
-      .pluck('finishedLoading')
-      .distinctUntilChanged()
-      .filter((el) => el === true)
+      .select('sightingsGroup').pipe(
+      pluck('finishedLoading'),
+      distinctUntilChanged(),
+      filter((el) => el === true))
       .subscribe((done: boolean) => {
         if (this.sightingsGroup === undefined) {
           // fetching the summary failed, set all flags to done
@@ -108,9 +111,9 @@ export class EventsComponent implements OnInit, OnDestroy {
       }, (err) => console.log(err));
 
     const sub5$ = this.store
-      .select('sightingsGroup')
-      .pluck('newSighting')
-      .distinctUntilChanged()
+      .select('sightingsGroup').pipe(
+      pluck('newSighting'),
+      distinctUntilChanged())
       .subscribe((el: any) => {
         this.addSighting(el);
       },
@@ -131,27 +134,32 @@ export class EventsComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * 
    */
   public makeIPs() {
-    const subips$ = Observable
-      .forkJoin([1, 2, 3].map(v4 => this.ipgeo.lookup(v4 === 3 ? '124.91.183.46'
-          : [1, 2, 3, 4].map(b => Math.floor(Math.random() * 256)).join('.'))))
-      .finally(() => {
-        if (subips$) {
-          subips$.unsubscribe();
-        }
-        this.transformSightings();
-        this.service.finishedLoading = true;
-      })
+    const subips$ = observableForkJoin([1, 2, 3].map(v4 => this.ipgeo.lookup(v4 === 3 ? '124.91.183.46'
+      : [1, 2, 3, 4].map(() => Math.floor(Math.random() * 256)).join('.'))))
+      .pipe(
+        finalize(() => {
+          if (subips$) {
+            subips$.unsubscribe();
+          }
+          this.transformSightings();
+          this.service.finishedLoading = true;
+        })
+      )
       .subscribe(resp => {
         console.log('event ipgeo output', resp);
-        const ip = [].concat.apply([], resp).filter(r => r.success);
-        this.ips.push(...ip);
+        const ip = [].concat.apply([], resp).filter(r => r && r.success);
+        if (ip) {
+          this.ips.push(...ip);
+        }
         while (this.ips.length < 2) {
           this.ips.push({});
         }
       });
   }
+
   /**
    * @returns string
    */
@@ -159,9 +167,9 @@ export class EventsComponent implements OnInit, OnDestroy {
     // Default, matches default geo
     let dummyIp = '124.91.183.46';
     this.ipgeo.lookup(dummyIp);
-    if (this.ips[this.dummyValue].city && this.ips[this.dummyValue].ip) {
+    if (this.ips[this.dummyValue] && this.ips[this.dummyValue].city && this.ips[this.dummyValue].ip) {
       dummyIp = this.ips[this.dummyValue].ip;
-    } else if (this.ips[Math.abs(this.dummyValue - 1)].ip) {
+    } else if (this.ips[Math.abs(this.dummyValue - 1)] && this.ips[Math.abs(this.dummyValue - 1)].ip) {
       dummyIp = this.ips[Math.abs(this.dummyValue - 1)].ip;
     }
     return dummyIp;
@@ -169,23 +177,24 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   getDummyCity(): string {
     // Default, matches default Ip
-    let dummyCity = 'Hangzhou';
-    if (this.ips[this.dummyValue].city) {
+    let dummyCity = '--';
+    if (this.ips[this.dummyValue] && this.ips[this.dummyValue].city) {
       dummyCity = this.ips[this.dummyValue].city;
-    } else if (this.ips[Math.abs(this.dummyValue - 1)].city) {
+    } else if (this.ips[Math.abs(this.dummyValue - 1)] && this.ips[Math.abs(this.dummyValue - 1)].city) {
       dummyCity = this.ips[Math.abs(this.dummyValue - 1)].city;
     }
     return dummyCity;
   }
+
   /**
    * @returns string
    */
   getDummyCountry(): string {
     // Default, matches default Ip
-    let dummyCountry = 'CN';
-    if (this.ips[this.dummyValue].country) {
+    let dummyCountry = '--';
+    if (this.ips[this.dummyValue] && this.ips[this.dummyValue].country) {
       dummyCountry = this.ips[this.dummyValue].country;
-    } else if (this.ips[Math.abs(this.dummyValue - 1)].country) {
+    } else if (this.ips[Math.abs(this.dummyValue - 1)] && this.ips[Math.abs(this.dummyValue - 1)].country) {
       dummyCountry = this.ips[Math.abs(this.dummyValue - 1)].country;
     }
     return dummyCountry;

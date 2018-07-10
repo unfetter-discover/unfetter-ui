@@ -1,28 +1,30 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { Location } from '@angular/common';
-import { Router, NavigationEnd, Routes } from '@angular/router';
-import { inject, async, TestBed, ComponentFixture, tick, fakeAsync } from '@angular/core/testing';
+import { TestBed, ComponentFixture, async, fakeAsync, tick } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
+import { Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Observable } from 'rxjs/Observable';
+
 import { StoreModule } from '@ngrx/store';
+import { of as observableOf, Observable } from 'rxjs';
 
 // Load the implementations that should be tested
-import { AppModule } from './app.module';
 import { AppState } from './app.service';
 import { AppComponent } from './app.component';
 import { AuthService } from './core/services/auth.service';
-import { ConfigService } from './core/services/config.service';
+import { RunConfigService } from './core/services/run-config.service';
 import { GenericApi } from './core/services/genericapi.service';
 import { environment } from '../environments/environment';
 import { reducers } from './root-store/app.reducers';
 import { Themes } from './global/enums/themes.enum';
 
+@Component({template: 'Nothing to see here'})
+class NoopComponent {
+}
+
 describe(`App`, () => {
 
     let comp: AppComponent;
     let fixture: ComponentFixture<AppComponent>;
-    let location: Location;
     let router: Router;
 
     let loggedIn: boolean;
@@ -48,45 +50,65 @@ describe(`App`, () => {
         }
     };
 
+    const config = {
+        'showBanner': false,
+        'bannerText': '',
+        'authServices': [ 'github' ]
+    };
+    const mockRunConfig = {
+        loadPrivateConfig: () => {
+            console.log('i solemnly swear i am not trying to perform an http get...');
+        },
+        config: observableOf(config)
+    }
+
     const routes: Routes = [
-        { path: '', component: AppComponent },
-        { path: 'home', component: AppComponent },
-        { path: 'intrusion-set-dashboard', component: AppComponent },
-        { path: 'assessments', component: AppComponent },
-        { path: 'assess', component: AppComponent },
-        { path: 'baseline', component: AppComponent },
-        { path: 'threat-dashboard', component: AppComponent },
-        { path: 'users', component: AppComponent },
-        { path: 'indicator-sharing', component: AppComponent },
-        { path: 'events', component: AppComponent },
-        { path: 'organizations', component: AppComponent },
-        { path: 'admin', component: AppComponent },
-        { path: '**', component: AppComponent },
+        { path: '', component: NoopComponent },
+        { path: 'home', component: NoopComponent },
+        { path: 'intrusion-set-dashboard', component: NoopComponent },
+        { path: 'assessments', component: NoopComponent },
+        { path: 'assess', component: NoopComponent },
+        { path: 'assess-beta', component: NoopComponent },
+        { path: 'baseline', component: NoopComponent },
+        { path: 'threat-dashboard', component: NoopComponent },
+        { path: 'users', component: NoopComponent },
+        { path: 'indicator-sharing', component: NoopComponent },
+        { path: 'events', component: NoopComponent },
+        { path: 'organizations', component: NoopComponent },
+        { path: 'admin', component: NoopComponent },
+        { path: '**', component: NoopComponent },
     ];
 
     // async beforeEach
     beforeEach(async(() => {
-        const services = [
-            AppState,
-            { provide: AuthService, useValue: mockAuthService },
-            GenericApi,
-            ConfigService,
-        ];
-
-        TestBed.configureTestingModule({
-            imports: [
-                RouterTestingModule.withRoutes(routes),
-                HttpClientTestingModule,
-                StoreModule.forRoot(reducers)
-            ],
-            declarations: [AppComponent],
-            schemas: [NO_ERRORS_SCHEMA],
-            providers: [...services]
-        })
+        TestBed
+            .configureTestingModule({
+                imports: [
+                    RouterTestingModule.withRoutes(routes),
+                    HttpClientTestingModule,
+                    StoreModule.forRoot(reducers),
+                ],
+                declarations: [
+                    NoopComponent,
+                    AppComponent,
+                ],
+                schemas: [NO_ERRORS_SCHEMA],
+                providers: [
+                    AppState,
+                    {
+                        provide: AuthService,
+                        useValue: mockAuthService
+                    },
+                    {
+                        provide: RunConfigService,
+                        useValue: mockRunConfig
+                    },
+                    GenericApi,
+                ]
+            })
             .compileComponents(); // compile template and css
 
         router = TestBed.get(Router);
-        location = TestBed.get(Location);
     }));
 
     it(`should be readly initialized`, () => {
@@ -110,7 +132,7 @@ describe(`App`, () => {
                 fixture.detectChanges();
                 expect(fixture).toBeDefined();
                 expect(comp).toBeDefined();
-                expect(comp.authService.loggedIn()).toEqual(login,
+                expect(comp['authService'].loggedIn()).toEqual(login,
                     `user should ${login ? '' : 'not '}have been logged in`);
                 expect(comp.runMode).toBe(runmode, `run mode was supposed to be ${runmode}`);
             });
@@ -119,9 +141,11 @@ describe(`App`, () => {
 
     it(`should handle various router outlets`, fakeAsync(() => {
         const routeChecks = [
-            { path: '', title: undefined, theme: Themes.DEFAULT },
+            { path: '', title: '', theme: Themes.DEFAULT },
             { path: 'admin', title: 'admin', theme: Themes.DEFAULT },
+            { path: 'assessments', title: 'assessments', theme: Themes.ASSESSMENTS },
             { path: 'assess', title: 'assessments', theme: Themes.ASSESSMENTS },
+            { path: 'assess-beta', title: 'assessments beta', theme: Themes.ASSESSMENTS },
             { path: 'baseline', title: 'Baselines', theme: Themes.ASSESSMENTS },
             { path: 'events', title: 'events', theme: Themes.EVENTS },
             { path: 'home', title: 'home', theme: Themes.DEFAULT },
@@ -138,7 +162,7 @@ describe(`App`, () => {
         comp = fixture.componentInstance;
         router.initialNavigation();
 
-        routeChecks.forEach((check, index, checks) => {
+        routeChecks.forEach((check) => {
             router.navigate([check.path]).then(
                 () => {
                     comp.ngOnInit();

@@ -13,7 +13,6 @@ import {
 
 import { TreemapOptions } from './treemap.data';
 import { TreemapRenderer } from './treemap.renderer';
-import { GoogleTreemapRenderer } from './treemap.renderer.google';
 import { TacticsTooltipService } from '../tactics-pane/tactics-tooltip/tactics-tooltip.service';
 import { ResizeEvent, ResizeDirective } from '../../directives/resize.directive';
 import { DOMRect } from '../heatmap/heatmap.data';
@@ -63,7 +62,8 @@ export class TreemapComponent implements OnInit, OnChanges, AfterViewInit {
     /**
      * @description 
      */
-    @Input() public helper: TreemapRenderer = new GoogleTreemapRenderer();
+    @Input() public helper: TreemapRenderer;
+    // @Input() public helper: TreemapRenderer = new GoogleTreemapRenderer();
 
     /**
      * @description 
@@ -135,11 +135,11 @@ export class TreemapComponent implements OnInit, OnChanges, AfterViewInit {
     /**
      * @description initializes Google's api to draw the map
      */
-    private createTreeMap() {
-        if (this.helper) {
-            this.helper.initialize(this.data, this.options);
-            this.helper.draw(this.canvas, this.eventHandler);
+     private createTreeMap() {
+         if (this.helper) {
+             this.helper.initialize(this.data, this.options);
+             this.helper.draw(this.canvas, this.eventHandler);
+            }
         }
-    }
 
 }

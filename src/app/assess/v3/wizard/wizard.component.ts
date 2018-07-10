@@ -1,19 +1,16 @@
-import { Location } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren } from '@angular/core';
-import { MatSelect, MatSnackBar } from '@angular/material';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { MatSelect } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MenuItem } from 'primeng/components/common/menuitem';
-import { Subscription } from 'rxjs/Subscription';
-import { distinctUntilChanged } from 'rxjs/operators/distinctUntilChanged';
-import { filter } from 'rxjs/operators/filter';
-import { pluck } from 'rxjs/operators/pluck';
-import { take } from 'rxjs/operators/take';
-import { Capability } from 'stix';
+import { Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, pluck, take } from 'rxjs/operators';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';
 import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 import { Assessment } from 'stix/assess/v3/assessment';
+import { Capability } from 'stix/assess/v3/baseline/capability';
+import { Category } from 'stix/assess/v3/baseline/category';
 import { ObjectAssessment } from 'stix/assess/v3/baseline/object-assessment';
 import { Dictionary } from 'stix/common/dictionary';
 import { JsonApiData } from 'stix/json/jsonapi-data';
@@ -22,8 +19,8 @@ import * as Indicator from 'stix/unfetter/indicator';
 import { Stix } from 'stix/unfetter/stix';
 import { StixEnum } from 'stix/unfetter/stix.enum';
 import { Key } from 'ts-keycode-enum';
-import { GenericApi } from '../../../core/services/genericapi.service';
 import { heightCollapse } from '../../../global/animations/height-collapse';
+import { AngularHelper } from '../../../global/static/angular-helper';
 import { UserProfile } from '../../../models/user/user-profile';
 import { AppState } from '../../../root-store/app.reducers';
 import { Constance } from '../../../utils/constance';
@@ -31,6 +28,7 @@ import { LoadAssessmentsByRollupId } from '../result/store/full-result.actions';
 import { FullAssessmentResultState } from '../result/store/full-result.reducers';
 import { CleanAssessmentWizardData, LoadAssessmentWizardData, SaveAssessment, UpdatePageTitle } from '../store/assess.actions';
 import * as assessReducers from '../store/assess.reducers';
+import * as assessSelectors from '../store/assess.selectors';
 import { Measurements } from './models/measurements';
 import { SidePanelName } from './models/side-panel-name.enum';
 import { TempModel } from './models/temp-model';
@@ -44,8 +42,7 @@ type ButtonLabel = 'SAVE' | 'CONTINUE';
   styleUrls: ['./wizard.component.scss'],
   animations: [heightCollapse],
 })
-export class WizardComponent extends Measurements
-  implements OnInit, AfterViewInit, OnDestroy {
+export class WizardComponent extends Measurements implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren('question') public questions: QueryList<MatSelect>;
 
   public readonly CHART_BG_COLORS: any[];
@@ -60,6 +57,7 @@ export class WizardComponent extends Measurements
 
   public buttonLabel: ButtonLabel = 'CONTINUE';
   public lookupCapabilities: Capability[];
+  public lookupCategories: Category[];
   public currentAssessmentGroup = {} as any;
   public capabilities: ObjectAssessment[];
   public currentUser: UserProfile;
@@ -137,12 +135,8 @@ export class WizardComponent extends Measurements
   constructor(
     private assessStore: Store<FullAssessmentResultState>,
     private changeDetection: ChangeDetectorRef,
-    private genericApi: GenericApi,
-    private location: Location,
-    private renderer: Renderer2,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: MatSnackBar,
     private userStore: Store<AppState>,
     private wizardStore: Store<assessReducers.AssessState>,
   ) {
@@ -213,22 +207,22 @@ export class WizardComponent extends Measurements
     );
 
     const sub1$ = this.wizardStore
-      .select(assessReducers.getIndicatorQuestions)
+      .select(assessSelectors.getIndicatorQuestions)
       .pipe(distinctUntilChanged())
       .subscribe((arr) => (this.indicators = arr));
 
     const sub2$ = this.wizardStore
-      .select(assessReducers.getMitigationsQuestions)
+      .select(assessSelectors.getMitigationsQuestions)
       .pipe(distinctUntilChanged())
       .subscribe((arr) => (this.mitigations = arr));
 
     const sub3$ = this.wizardStore
-      .select(assessReducers.getCurrentBaselineQuestions)
+      .select(assessSelectors.getCurrentBaselineQuestions)
       .pipe(distinctUntilChanged())
       .subscribe((arr) => (this.capabilities = arr));
 
     const sub4$ = this.wizardStore
-      .select(assessReducers.getFinishedLoading)
+      .select(assessSelectors.getFinishedLoading)
       .pipe(
         distinctUntilChanged(),
         filter((loaded: boolean) => loaded && loaded === true)
@@ -245,7 +239,7 @@ export class WizardComponent extends Measurements
       );
 
     const sub5$ = this.wizardStore
-      .select(assessReducers.getCurrentWizardPage)
+      .select(assessSelectors.getCurrentWizardPage)
       .pipe(distinctUntilChanged())
       .subscribe((page: number) => (this.page = page), (err) => console.log(err));
 
@@ -255,7 +249,7 @@ export class WizardComponent extends Measurements
       id: string;
     }
     const sub6$ = this.wizardStore
-      .select(assessReducers.getAssessmentSavedState)
+      .select(assessSelectors.getAssessmentSavedState)
       .pipe(
         distinctUntilChanged(),
         filter((el: SavedState) => el && el.finished === true)
@@ -270,7 +264,7 @@ export class WizardComponent extends Measurements
       );
 
     const sub7$ = this.wizardStore
-      .select(assessReducers.getAssessmentMeta)
+      .select(assessSelectors.getAssessmentMeta)
       .pipe(distinctUntilChanged())
       .subscribe(
         (assessmentMeta: Assess3Meta) => (this.meta = assessmentMeta),
@@ -278,14 +272,22 @@ export class WizardComponent extends Measurements
       );
 
     const sub8$ = this.wizardStore
-      .select(assessReducers.getCapabilities)
+      .select(assessSelectors.getCapabilities)
       .pipe(distinctUntilChanged())
       .subscribe(
         (capabilities) => (this.lookupCapabilities = capabilities),
         (err) => console.log(err)
       );
 
-    this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$, sub7$, sub8$);
+    const sub9$ = this.wizardStore
+      .select(assessSelectors.getCategories)
+      .pipe(distinctUntilChanged())
+      .subscribe(
+        (categories) => (this.lookupCategories = categories),
+        (err) => console.log(err)
+      );
+
+    this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$, sub7$, sub8$, sub9$);
   }
 
   /**
@@ -499,11 +501,11 @@ export class WizardComponent extends Measurements
 
     // reset progress
     this.setSelectedRiskValue();
-    this.changeDetection.detectChanges();
     if (panelName !== 'summary') {
       this.updateChart();
     }
     this.updateRatioOfAnswerQuestions();
+    this.changeDetection.detectChanges();
   }
 
   /**
@@ -951,8 +953,8 @@ export class WizardComponent extends Measurements
    * @param item
    * @returns {number}
    */
-  public trackByFn(index, item): number {
-    return item && item.id ? item.id : index;
+  public trackByFn(index: number, item: any): number {
+    return AngularHelper.genericTrackBy(index, item);
   }
 
   /**
@@ -1301,6 +1303,75 @@ export class WizardComponent extends Measurements
   }
 
   /**
+   * @description lookup the category associated with the given 
+   *  capability id
+   * @param  {string} id of a capability
+   * @returns string - category of the capability, otherwise the id given
+   */
+  public lookupCategory(id: string): string {
+    if (!id) {
+      return id;
+    }
+
+    const capability = this.lookupCapabilities.find((_) => _.id === id);
+    if (!capability || !capability.category) {
+      return id;
+    }
+
+    const category = this.lookupCategories.find((_) => _.id === capability.category);
+    return (category && category.name) ? category.name : id;
+  }
+
+  /**
+   * @description save an assessment object to the database
+   * @param {void}
+   * @return {void}
+   */
+  private saveAssessments(): void {
+    if (this.model) {
+      const assessments = Object.values(this.model.relationships);
+      assessments.forEach((assessment) => {
+        assessment.modified = this.publishDate.toISOString();
+        assessment.description = this.meta.description;
+        if (this.meta.created_by_ref) {
+          assessment.created_by_ref = this.meta.created_by_ref;
+        }
+      });
+      this.wizardStore.dispatch(new SaveAssessment(assessments));
+    } else {
+      const assessments = ['indicators', 'mitigations', 'capabilities']
+        .filter(name => this[name] && this[name].length)
+        .map(name => this.assessmentTypeGroups[name] || {
+          assessmentsGroups: this.createAssessmentGroups(this[name]),
+          tempModel: {},
+        })
+        .map(group => this.answerAll(group))
+        .map(tempModel => this.generateXUnfetterAssessment(tempModel, this.meta))
+        .filter(assessment => assessment.assessment_objects && assessment.assessment_objects.length);
+      this.wizardStore.dispatch(new SaveAssessment(assessments));
+    }
+  }
+
+  // for all unassessed questions, add an assessment object for each one
+  private answerAll(group): TempModel {
+    const assessedIds = Object.keys(group.tempModel);
+    group.assessmentsGroups
+      .reduce((questions, grp) => [...questions, ...grp.assessments], [])
+      .filter(question => !assessedIds.includes(question.id))
+      .forEach(question => {
+        group.tempModel[question.id] = {
+          assessment: question,
+          measurements: question.measurements.map(m => ({
+            ...m,
+            risk: 1,
+            selected_value: {name: 'no coverage', risk: 1}
+          }))
+        };
+      })
+      return group.tempModel;
+  }
+
+  /**
    * @description
    * @param {any}
    * @return {Assessment}
@@ -1343,45 +1414,4 @@ export class WizardComponent extends Measurements
     return assessment;
   }
 
-  /**
-   * @description save an assessment object to the database
-   * @param {void}
-   * @return {void}
-   */
-  private saveAssessments(): void {
-    if (this.model) {
-      const assessments = Object.values(this.model.relationships);
-      assessments.forEach((assessment) => {
-        assessment.modified = this.publishDate.toISOString();
-        assessment.description = this.meta.description;
-        if (this.meta.created_by_ref) {
-          assessment.created_by_ref = this.meta.created_by_ref;
-        }
-      });
-      this.wizardStore.dispatch(new SaveAssessment(assessments));
-    } else {
-      const assessments = this.sidePanelOrder
-        .map((name) => this.assessmentTypeGroups[name])
-        .filter((el) => el !== undefined)
-        .map((el) => el.tempModel)
-        .filter((el) => el !== undefined)
-        .map((el) => this.generateXUnfetterAssessment(el, this.meta));
-      this.wizardStore.dispatch(new SaveAssessment(assessments));
-    }
-  }
-
-  /**
-   * @description lookup the category associated with the given 
-   *  capability id
-   * @param  {string} id of a capability
-   * @returns string - category of the capability, otherwise the id given
-   */
-  private lookupCategory(id: string): string {
-    if (!id) {
-      return id;
-    }
-
-    const capability = this.lookupCapabilities.find((_) => _.id === id);
-    return (capability && capability.category) ? capability.category : id;
-  }
 }

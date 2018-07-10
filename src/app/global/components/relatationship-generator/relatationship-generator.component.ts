@@ -1,3 +1,5 @@
+
+import { map } from 'rxjs/operators';
 import { Component, OnInit, Input } from '@angular/core';
 
 import { GenericApi } from '../../../core/services/genericapi.service';
@@ -27,8 +29,8 @@ export class RelatationshipGeneratorComponent implements OnInit {
     const filterStr = encodeURI(JSON.stringify({ 'stix.type': this.relatedObjectType }));
     const projectStr = encodeURI(JSON.stringify({ 'stix.name': 1, 'stix.id': 1 }));
 
-    const getCanidateObjs$ = this.genericApi.get(`${this.multiplesUrl}?filter=${filterStr}&project=${projectStr}`)
-      .map(RxjsHelpers.mapArrayAttributes)
+    const getCanidateObjs$ = this.genericApi.get(`${this.multiplesUrl}?filter=${filterStr}&project=${projectStr}`).pipe(
+      map(RxjsHelpers.mapArrayAttributes))
       .subscribe(
         (canidateObjs: any[]) => {
           this.canidateObjs = canidateObjs;

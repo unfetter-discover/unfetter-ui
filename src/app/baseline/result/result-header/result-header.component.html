@@ -1,7 +1,7 @@
 <div id="tabWrapper" class="flex flexColumn">
   <div class="flex flexRow">
     <div class="flex">
-      <uf-info-bar isWarningMsg="true" message="Baselines is currently in beta. Some functionality does not work."></uf-info-bar>
+      <uf-info-bar isWarningMsg="true" message="{{ infoBarMsg }}" [completeActionUrl]="editUrl||''"></uf-info-bar>
     </div>
   </div>
   <div class="flex1"></div>
@@ -15,7 +15,7 @@
     </div>
     <ng-template #notPublished>
       <div id="publishWrapper">
-        <button id="publishButton" mat-raised-button>PUBLISH</button>
+        <button (click)="publishBaseline()" id="publishButton" mat-raised-button>PUBLISH</button>
       </div>
     </ng-template>
   </div>

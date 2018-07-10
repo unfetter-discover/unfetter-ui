@@ -12,7 +12,8 @@ describe('usersReducer', () => {
             token: '1234',
             authenticated: false,
             approved: false,
-            role: 'STANDARD_USER'
+            role: 'STANDARD_USER',
+            avatar_url: '1234.com/img1'
         };
     });
 
@@ -23,16 +24,25 @@ describe('usersReducer', () => {
     it('should login user', () => {
         const payload = { 
             userData: { 
-                ...mockState
+                ...mockState,
+                oauth: 'github',
+                github: {
+                    avatar_url: mockState.avatar_url
+                }
             }, 
             token: mockState.token 
         };
         const expected = {
             ...mockState,
             userProfile: {
-                ...mockState
+                ...mockState,
+                oauth: 'github',
+                github: {
+                    avatar_url: mockState.avatar_url
+                }
             },
-            authenticated: true
+            authenticated: true,
+            avatar_url: mockState.avatar_url
         };
         expect(usersReducer(undefined, new userActions.LoginUser(payload))).toEqual(expected);
     });

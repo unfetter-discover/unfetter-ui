@@ -17,7 +17,7 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { Tactic } from '../tactics.model';
 import { TacticsTooltipService, TooltipEvent } from './tactics-tooltip.service';
 import { AuthService } from '../../../../core/services/auth.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'tactics-tooltip',
@@ -94,7 +94,7 @@ export class TacticsTooltipComponent implements OnInit, OnDestroy {
         if (this.backdropped && (event.type !== 'click')) {
             return;
         }
-        if (!event || !event.data) {
+        if (!event || !event.data || !event.data.id) {
             if (event.source) {
                 this.hideTacticTooltip(this.tooltipTarget);
             }

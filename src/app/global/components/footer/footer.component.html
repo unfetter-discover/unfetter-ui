@@ -1,39 +1,51 @@
 <footer class="footer" id="footerComponent">
-  <div class="container-fluid">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-4 col-sm-6 footer-tiny">
-          <a href="https://nsacyber.github.io/unfetter/" target=_blank>      
-            <img src="assets/images/logos/unfetter_logo_footer.svg" width="150px" height="40px">
-          </a>      
-          <p>
-            <small>Unfetter is an Information Assurance mission at the National Security Agency (nsa.gov)</small>
-          </p>
-        </div>
-        <div class="col-md-4 col-sm-6 footer-tiny">
-          <a href="https://www.oasis-open.org/" target=_blank>
-            <img src="assets/images/logos/oasis_logo_footer.svg" width="150px" height="40px">
-          </a>
-          <p>
-            <small>OASIS is a nonprofit consortium that drives the development, convergence and adoption of open standards for the
-              global information society. Cyber Threat Intelligence (CTI) subcommittee oversees the STIX&trade; and TAXII&trade;</small>
-          </p>
-        </div>
-        <div class="col-md-4">
-          <div class="row">
-            <div class="col-md-4 text-light largeLink">
-              <p>
-                <a href="https://github.com/unfetter-discover/unfetter/issues" target=_blank>Feedback</a>
-              </p>
-            </div>
-            <div class="col-md-6 text-light largeLink">
-              <p>
-                <a href="https://github.com/nsacyber/unfetter/blob/master/LICENSE.md" class="text-dkgrey" target=_blank>License</a>
-              </p>
-            </div>
+  <div class="container">
+    <div class="row" *ngIf="showBanner">
+      <div class="col-md-4 col-sm-6">
+        <p *ngIf="contentOwner">Content Owner: {{ contentOwner }}</p>
+        <p *ngIf="pagePublisher">Page Publisher: {{ pagePublisher }}</p>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <div *ngIf="footerTextHtml" [innerHTML]="footerTextHtml" id="footerTextHtml"></div>
+      </div>
+      <div class="col-md-4 col-sm-6">
+        <p *ngIf="lastReviewed">Content Owner: {{ lastReviewed }}</p>
+        <p *ngIf="lastModified">Last Reviewed: {{ lastModified }}</p>
+      </div>
+    </div>
+    <hr *ngIf="showBanner">
+    <div class="row">
+      <div class="col-md-4 col-sm-6 footer-tiny">
+        <a href="https://nsacyber.github.io/unfetter/" target=_blank>      
+          <img src="assets/images/logos/unfetter_logo_footer.svg" width="150px" height="40px">
+        </a>      
+        <p>
+          <small>Unfetter is a cybersecurity mission at the National Security Agency (nsa.gov)</small>
+        </p>
+      </div>
+      <div class="col-md-4 col-sm-6 footer-tiny">
+        <a href="https://www.oasis-open.org/" target=_blank>
+          <img src="assets/images/logos/oasis_logo_footer.svg" width="150px" height="40px">
+        </a>
+        <p>
+          <small>OASIS is a nonprofit consortium that drives the development, convergence and adoption of open standards for the
+            global information society. Cyber Threat Intelligence (CTI) subcommittee oversees the STIX&trade; and TAXII&trade;</small>
+        </p>
+      </div>
+      <div class="col-md-4">
+        <div class="row">
+          <div class="col-md-4 text-light largeLink">
+            <p>
+              <a href="https://github.com/unfetter-discover/unfetter/issues" target=_blank>Feedback</a>
+            </p>
+          </div>
+          <div class="col-md-6 text-light largeLink">
+            <p>
+              <a href="https://github.com/nsacyber/unfetter/blob/master/LICENSE.md" class="text-dkgrey" target=_blank>License</a>
+            </p>
           </div>
         </div>
       </div>
-    </div>
+    </div>    
   </div>
 </footer>

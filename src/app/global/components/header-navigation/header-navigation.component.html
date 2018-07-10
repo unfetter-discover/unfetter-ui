@@ -20,86 +20,89 @@
     </a>
   </mat-menu>
 
-  <span id="appMenuWrapper">
-    <button mat-icon-button class="navButton" *ngIf="authService.loggedIn()" (click)="showAppMenu = !showAppMenu">
-      <mat-icon class="mat-24">apps</mat-icon>
-    </button>
-    <div id="appMenuTriangle" *ngIf="showAppMenu" @fadeInOut>&nbsp;</div>
-    <div *ngIf="showAppMenu && authService.loggedIn()" id="appMenuWindow" class="uf-nav-popup" @fadeInOut>
-      <div id="appList" class="flex">
-        <span *ngFor="let appItem of appList" class="appLinkWrapper">
-          <a routerLink="./{{ appItem.url }}" class="appLink" (click)="showAppMenu = false">
-            <img src="{{ appItem.icon }}" class="appItemImg">
-            <div class="appItemText">{{ appItem.title }}</div>
-          </a>
-        </span>
-        <span class="appLinkWrapper">
-          <a href="{{ swaggerUrl }}?token={{ encodedToken }}&RUN_MODE={{ runMode }}" target=_blank class="appLink">
-            <img src="{{ apiDocsIcon }}" class="appItemImg">
-            <div class="appItemText">API Explorer</div>
-          </a>
-        </span>
-        <span class="appLinkWrapper" *ngIf="authService.isAdmin() || runMode === 'DEMO'">
-          <a routerLink="./stix/attack-patterns" class="appLink" (click)="showAppMenu = false">
-            <img src="{{ stixIcon }}" class="appItemImg">
-            <div class="appItemText">STIX</div>
-          </a>
-        </span>
-        <span class="appLinkWrapper" *ngIf="authService.isOrgLeader()">
-          <a routerLink="./organizations" class="appLink" (click)="showAppMenu = false">
-            <img src="{{ orgLeaderIcon }}" class="appItemImg">
-            <div class="appItemText">Organizations</div>
-          </a>
-        </span>
-        <span class="appLinkWrapper" *ngIf="authService.isAdmin()">
-          <a routerLink="./admin" class="appLink" (click)="showAppMenu = false">
-            <img src="{{ adminIcon }}" class="appItemImg">
-            <div class="appItemText">Admin</div>
-          </a>
-        </span>
-      </div>      
-    </div>
-  </span>
+  <span *ngIf="authService.loggedIn() && user$ | async as user" class="flex flexItemsCenter">   
 
-  <span id="notificationContainer" class="navButton" *ngIf="!demoMode && authService.loggedIn()">
-    <notification-window></notification-window>
-  </span>
-
-  <span id="accountWrapper" class="navButton" *ngIf="!demoMode && authService.loggedIn()">
-    <div class="cursor-pointer" *ngFor="let avatar of [getAvatar(user$ | async)]"
-        (click)="showAccountMenu = !showAccountMenu">
-      <img *ngIf="avatar" id="avatar" class="smallAvatar" src="{{avatar}}" alt="User">
-      <button mat-icon-button *ngIf="!avatar" id="accountBtn">
-        <mat-icon class="mat-24">account_circle</mat-icon>
+    <span id="appMenuWrapper">
+      <button mat-icon-button class="navButton" (click)="showAppMenu = !showAppMenu">
+        <mat-icon class="mat-24">apps</mat-icon>
       </button>
-      <i class="material-icons" id="accountCaret">arrow_drop_down</i>
-    </div>    
-    <div *ngIf="showAccountMenu" id="accountMenuTriangle" @fadeInOut>&nbsp;</div>
-    <div *ngIf="showAccountMenu" id="accountMenuWindow" class="uf-nav-popup" @fadeInOut>    
-      <div *ngIf="(user$ | async).userProfile !== null">
-        <strong>{{ (user$ | async).userProfile.userName }}</strong>
+      <div id="appMenuTriangle" *ngIf="showAppMenu" @fadeInOut>&nbsp;</div>
+      <div *ngIf="showAppMenu && authService.loggedIn()" id="appMenuWindow" class="uf-nav-popup" @fadeInOut>
+        <div id="appList" class="flex">
+          <span *ngFor="let appItem of appList" class="appLinkWrapper">
+            <a routerLink="./{{ appItem.url }}" class="appLink" (click)="showAppMenu = false">
+              <img src="{{ appItem.icon }}" class="appItemImg">
+              <div class="appItemText">{{ appItem.title }}</div>
+            </a>
+          </span>
+          <span class="appLinkWrapper">
+            <a href="{{ swaggerUrl }}?token={{ encodedToken }}&RUN_MODE={{ runMode }}" target=_blank class="appLink">
+              <img src="{{ apiDocsIcon }}" class="appItemImg">
+              <div class="appItemText">API Explorer</div>
+            </a>
+          </span>
+          <span class="appLinkWrapper" *ngIf="authService.isAdmin() || runMode === 'DEMO'">
+            <a routerLink="./stix/attack-patterns" class="appLink" (click)="showAppMenu = false">
+              <img src="{{ stixIcon }}" class="appItemImg">
+              <div class="appItemText">STIX</div>
+            </a>
+          </span>
+          <span class="appLinkWrapper" *ngIf="authService.isOrgLeader()">
+            <a routerLink="./organizations" class="appLink" (click)="showAppMenu = false">
+              <img src="{{ orgLeaderIcon }}" class="appItemImg">
+              <div class="appItemText">Organizations</div>
+            </a>
+          </span>
+          <span class="appLinkWrapper" *ngIf="authService.isAdmin()">
+            <a routerLink="./admin" class="appLink" (click)="showAppMenu = false">
+              <img src="{{ adminIcon }}" class="appItemImg">
+              <div class="appItemText">Admin</div>
+            </a>
+          </span>
+        </div>      
       </div>
-      <hr>
-      <div class="accountMenuLine">
-        <a routerLink="/users/settings" class="flexImportant flexItemsCenter">
-          <i class="material-icons">settings</i>
-          <span>&nbsp;&nbsp;Settings</span>
-        </a>
-      </div>
-      <div class="accountMenuLine">
-        <a routerLink="/users/profile/{{(user$ | async).userProfile._id}}" class="flexImportant flexItemsCenter">
-          <i class="material-icons">person_outline</i>
-          <span>&nbsp;&nbsp;Profile</span>
-        </a>
-      </div>
-      <hr>
-      <div class="accountMenuLine">
-        <a (click)="authService.logOut(); logoutStore()" class="flexImportant flexItemsCenter">
-          <i class="material-icons">exit_to_app</i>
-          <span>&nbsp;&nbsp;Sign Out</span>
-        </a>
-      </div>     
-    </div>
+    </span>
 
-  </span>  
+    <span id="notificationContainer" class="navButton" *ngIf="!demoMode">
+      <notification-window></notification-window>
+    </span>
+
+    <span id="accountWrapper" class="navButton" *ngIf="!demoMode">
+      <div class="cursor-pointer" (click)="showAccountMenu = !showAccountMenu">
+        <img *ngIf="user.avatar_url" id="avatar" class="smallAvatar" src="{{ user.avatar_url }}" alt="User">
+        <button mat-icon-button *ngIf="!user.avatar_url" id="accountBtn">
+          <mat-icon class="mat-24">account_circle</mat-icon>
+        </button>
+        <i class="material-icons" id="accountCaret">arrow_drop_down</i>
+      </div>    
+      <div *ngIf="showAccountMenu" id="accountMenuTriangle" @fadeInOut>&nbsp;</div>
+      <div *ngIf="showAccountMenu" id="accountMenuWindow" class="uf-nav-popup" @fadeInOut>    
+        <div *ngIf="user.userProfile !== null">
+          <strong>{{ user.userProfile.userName }}</strong>
+        </div>
+        <hr>
+        <div class="accountMenuLine">
+          <a routerLink="/users/settings" class="flexImportant flexItemsCenter">
+            <i class="material-icons">settings</i>
+            <span>&nbsp;&nbsp;Settings</span>
+          </a>
+        </div>
+        <div class="accountMenuLine">
+          <a routerLink="/users/profile/{{ user.userProfile._id }}" class="flexImportant flexItemsCenter">
+            <i class="material-icons">person_outline</i>
+            <span>&nbsp;&nbsp;Profile</span>
+          </a>
+        </div>
+        <hr>
+        <div class="accountMenuLine">
+          <a (click)="authService.logOut(); logoutStore()" class="flexImportant flexItemsCenter">
+            <i class="material-icons">exit_to_app</i>
+            <span>&nbsp;&nbsp;Sign Out</span>
+          </a>
+        </div>     
+      </div>
+    </span> 
+
+  </span>
+
 </mat-toolbar>

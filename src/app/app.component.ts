@@ -1,8 +1,9 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
+
+import { map, filter } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { environment } from '../environments/environment';
-import { runconfig } from './global/public-config';
 import { AuthService } from './core/services/auth.service';
 import { Themes } from './global/enums/themes.enum';
 import * as fromApp from './root-store/app.reducers';
@@ -10,6 +11,7 @@ import * as configActions from './root-store/config/config.actions';
 import * as identityActions from './root-store/identities/identity.actions';
 import * as userActions from './root-store/users/user.actions';
 import { demoUser } from './testing/demo-user';
+import { RunConfigService } from './core/services/run-config.service';
 
 @Component({
   selector: 'unf-app',
@@ -21,17 +23,17 @@ import { demoUser } from './testing/demo-user';
 export class AppComponent implements OnInit {
   public readonly runMode = environment.runMode;
   public readonly demoMode: boolean = (environment.runMode === 'DEMO');
-  public readonly showBanner = this.runMode ? runconfig[this.runMode.toLowerCase()].showBanner : false;
-  public readonly securityMarkingLabel = this.runMode ? runconfig[this.runMode.toLowerCase()].bannerText : '';
   public theme: Themes = Themes.DEFAULT;
-  public title;
+  public title = '';
+  public showBanner: boolean = false;
+  public securityMarkingLabel: string = '';
 
   constructor(
-    public authService: AuthService,
+    private authService: AuthService,
+    private runConfigService: RunConfigService,
     private store: Store<fromApp.AppState>,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private renderer: Renderer2,
   ) {
   }
 
@@ -41,6 +43,14 @@ export class AppComponent implements OnInit {
     } else if (this.runMode && this.runMode === 'DEMO') {
       console.log('Running application in DEMO mode');
     }
+    this.runConfigService.config.subscribe(
+      (cfg) => {
+        if (cfg) {
+          this.showBanner = cfg.showBanner || false;
+          this.securityMarkingLabel = cfg.bannerText || '';
+        }
+      }
+    );
 
     if (this.authService.loggedIn()) {
       if (!this.demoMode) {
@@ -52,17 +62,22 @@ export class AppComponent implements OnInit {
           userData: demoUser, 
           token: '1234'
         }));
+
+        /**
+         * These actions are dispatched by the userActions.FetchUser
+         * effect and do NOT pertain to UAC
+         */
+        this.store.dispatch(new configActions.FetchConfig(false));
+        this.store.dispatch(new configActions.FetchTactics());
+        this.store.dispatch(new identityActions.FetchIdentities());
       }
-      this.store.dispatch(new configActions.FetchConfig(false));
-      this.store.dispatch(new configActions.FetchTactics());
-      this.store.dispatch(new identityActions.FetchIdentities());
     }
 
     const bodyElement: HTMLElement = document.getElementsByTagName('body')[0];
 
-    this.router.events
-      .filter((event) => event instanceof NavigationEnd)
-      .map(() => this.activatedRoute)
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      map(() => this.activatedRoute))
       .subscribe((event: ActivatedRoute) => {
         const url = ((event as any)._routerState.snapshot.url.split('/'))[1];
         this.setTheme(url, bodyElement);
@@ -74,8 +89,8 @@ export class AppComponent implements OnInit {
           this.title = 'assessments';
         } else if (url === 'baseline') {
           this.title = 'Baselines';
-        } else if (url === 'assesss-beta') {
-            this.title = 'assessments';
+        } else if (url === 'assess-beta') {
+            this.title = 'assessments beta';
         } else {
           this.title = url;
         }

@@ -1,4 +1,5 @@
 import { Action } from '@ngrx/store';
+import { HttpStatusCodes } from '../../global/enums/http-status-codes.enum';
 
 export const CLEAR_ALL_LOCAL_STORAGE = '[Utility] Clear All Local Storage';
 export const ADD_LOCAL_STORAGE = '[Utility] Add Local Storage Item';
@@ -7,6 +8,8 @@ export const DELETE_LOCAL_STORAGE_ITEM = '[Utility] Delete Local Storage Item';
 export const NAVIGATE = '[Utility] Navigate';
 export const RECORD_VISIT = '[Utility] Record Visit';
 export const NULL_ACTION = '[Utility] Null Action';
+export const OPEN_SNACKBAR = '[Utility] Open Snackbar';
+export const NAVIGATE_TO_ERROR_PAGE = '[Utility] Navigate to Error Page';
 
 export class ClearAllLocalStorage implements Action {
     public readonly type = CLEAR_ALL_LOCAL_STORAGE;
@@ -42,6 +45,18 @@ export class NullAction implements Action {
     public readonly type = NULL_ACTION;
 }
 
+export class OpenSnackbar implements Action {
+    public readonly type = OPEN_SNACKBAR;
+
+    constructor(public payload: string | { message: string, panelClass?: string[], duration?: number }) { }
+}
+
+export class NavigateToErrorPage implements Action {
+    public readonly type = NAVIGATE_TO_ERROR_PAGE;
+
+    constructor(public payload: HttpStatusCodes) { }
+}
+
 export type UtilityActions =
     ClearAllLocalStorage |
     AddLocalStorage |
@@ -49,4 +64,6 @@ export type UtilityActions =
     DeleteLocalStorageItem |
     Navigate |
     RecordVisit |
-    NullAction;
+    NullAction |
+    OpenSnackbar |
+    NavigateToErrorPage;

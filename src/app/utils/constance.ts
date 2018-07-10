@@ -110,6 +110,7 @@ export const Constance = {
   PROFILE_BY_ID_URL: 'api/auth/profile',
   REFRESH_TOKEN_URL: 'api/auth/refreshtoken',
   PUBLIC_CONFIG_URL: 'api/auth/public-config',
+  NOTIFICATION_STORE_URL: 'api/notification-store',
 
   CONFIG_URL: 'api/config',
   WEB_ANALYTICS_URL: 'api/web-analytics',
@@ -134,6 +135,8 @@ export const Constance = {
   LOGO_IMG_API_EXPLORER: 'assets/icon/dashboard-logos/icon-api.png',
   LOGO_IMG_STIX: 'assets/icon/dashboard-logos/icon-STIX_Dashboard.png',
   LOGO_IMG_INTRUSION_SET: 'assets/icon/dashboard-logos/icon-Int_Set_Dashboard.png',
+  LOGO_IMG_ORGANIZATIONS_MANAGEMENT: 'assets/icon/dashboard-logos/icon-orgs.png',
+  LOGO_IMG_ADMIN: 'assets/icon/dashboard-logos/icon-admin.png',
 
   COLORS: {
     green: '#4CAF50',
@@ -515,9 +518,21 @@ export const Constance = {
         'most critical systems covered',
         'all critical systems covered'
       ]
+    },
+    'x-unfetter-capability': {
+      coverage: [
+        'no coverage',
+        'some coverage',
+        'half coverage',
+        'most critical systems covered',
+        'all critical systems covered'
+      ]
     }
   },
   DIALOG_WIDTH_MEDIUM: '800px',
   DIALOG_HEIGHT_TALL: 'calc(100vh - 50px)',
-  UNFETTER_OPEN_ID: 'identity--e240b257-5c42-402e-a0e8-7b81ecc1c09a'
+  UNFETTER_OPEN_ID: 'identity--e240b257-5c42-402e-a0e8-7b81ecc1c09a',
+  INDICATOR_SHARING: {
+    DEFAULT_LIST_LENGTH: 5
+  }
 };

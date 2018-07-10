@@ -1,3 +1,5 @@
+
+import { distinctUntilChanged } from 'rxjs/operators';
 import {
         Component,
         Inject,
@@ -9,7 +11,7 @@ import {
         ViewContainerRef,
         ChangeDetectorRef,
     } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
@@ -80,15 +82,11 @@ export class AttackPatternChooserComponent implements OnInit {
 
     ngOnInit() {
         if (this.data && this.data.active) {
-            (this.data.active as Observable<AttackPattern[]>)
-                .distinctUntilChanged()
-                .subscribe(
-                    (patterns) => {
-                        // @todo We need to convert whatever is provided to us into Tactic objects,
-                        //       and set their value to a heat property ('inactive' or 'selected').
-                    },
-                    (err) => console.log(`(${new Date().toISOString}) Attack Pattern Chooser preselects error`, err),
-                )
+            this.attackPatterns = this.data.active.map(ap => ({
+                ...ap,
+                phases: [],
+                adds: { highlights: [{ color: { style: 'active', } }], }
+            }));
         }
     }
 

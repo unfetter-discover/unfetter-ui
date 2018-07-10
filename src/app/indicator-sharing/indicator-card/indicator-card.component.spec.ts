@@ -17,10 +17,8 @@ import { AuthService } from '../../core/services/auth.service';
 import { Constance } from '../../utils/constance';
 import { mockConfigService } from '../../testing/mock-config-service';
 import { ConfigService } from '../../core/services/config.service';
-import { SearchParameters } from '../models/search-parameters';
-import { initialSearchParameters } from '../store/indicator-sharing.reducers';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 
 describe('IndicatorCardComponent', () => {
     let component: IndicatorCardComponent;
@@ -47,17 +45,11 @@ describe('IndicatorCardComponent', () => {
         }
     };
 
-    const mockSearchParams: SearchParameters = {
-        ...initialSearchParameters,
-        killChainPhases: ['test'],
-        labels: ['test']
-    };
-
     const mockCollapseAllCards = new BehaviorSubject(false);
 
     const mockIndService = {
         addLabel: (label, indicatorId) => {
-            return Observable.of({
+            return observableOf({
                 attributes: {
                     ...mockIndicator,
                     labels: [label]
@@ -65,7 +57,7 @@ describe('IndicatorCardComponent', () => {
             });
         },
         addComment: (comment, indicatorId) => {
-            return Observable.of({
+            return observableOf({
                 attributes: {
                     ...mockIndicator,
                     metaProperties: {
@@ -83,7 +75,7 @@ describe('IndicatorCardComponent', () => {
             });
         },
         addLike: (indicatorId) => {
-            return Observable.of({
+            return observableOf({
                 attributes: {
                     ...mockIndicator,
                     metaProperties: {
@@ -178,7 +170,6 @@ describe('IndicatorCardComponent', () => {
 
         // Input mocks
         component.indicator = { ...mockIndicator };
-        component.searchParameters = { ...mockSearchParams };
         component.collapseAllCardsSubject = mockCollapseAllCards;
         spyOn(component, 'exportIndicator').and.returnValue(true);
         fixture.detectChanges();

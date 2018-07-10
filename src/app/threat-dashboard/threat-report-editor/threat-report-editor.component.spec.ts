@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, from as observableFrom, Observable, empty } from 'rxjs';
 import * as UUID from 'uuid';
 import * as clone from 'clone';
 
@@ -48,12 +48,12 @@ describe('ThreatReportEditorComponent', () => {
 
     const mockThreatReportService = {
         load: (id: string): Observable<any> => {
-            return Observable.of(MockThreatReport.byId(id));
+            return observableOf(MockThreatReport.byId(id));
         },
 
         saveThreatReport(report: ThreatReport): Observable<ThreatReport> {
             if (!report) {
-                return Observable.empty();
+                return empty();
             }
             report.id = report.id || UUID.v4();
             const saveReports$ = this.upsertReports(report.reports as Report[], report)
@@ -73,12 +73,12 @@ describe('ThreatReportEditorComponent', () => {
                             report.attributes.metaProperties.work_products.concat({ ...threatReport });
                 });
             }
-            return Observable.from(reports);
+            return observableFrom(reports);
         },
 
         removeReport(report: Report, threatReport?: ThreatReport): Observable<Report> {
             if (!report || !threatReport) {
-                return Observable.from([]);
+                return observableFrom([]);
             }
             const id = threatReport.id;
             const attributes = Object.assign({}, report.attributes);
@@ -91,7 +91,7 @@ describe('ThreatReportEditorComponent', () => {
                 meta.work_products = [...associatedWorkProducts];
             }
             attributes.metaProperties = meta;
-            return Observable.from([report]);
+            return observableFrom([report]);
         },
     };
 

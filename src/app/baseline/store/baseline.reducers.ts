@@ -28,10 +28,12 @@ export interface BaselineState {
 };
 
 const genAssessState = (state?: Partial<BaselineState>) => {
+    const baseline = new AssessmentSet();
+    baseline.assessments = baseline.assessments || [];
     const tmp = {
         allAttackPatterns: [],
         backButton: false,
-        baseline: new AssessmentSet(),
+        baseline,
         baselineCapabilities: [],
         baselineGroups: [],
         capabilities: [],
@@ -62,9 +64,15 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
                 ...state,
             });
         case baselineActions.SET_BASELINE:
+        case baselineActions.SET_AND_READ_ASSESSMENT_SET:
             return genAssessState({
                 ...state,
                 baseline: action.payload,
+            });
+        case baselineActions.SET_AND_READ_OBJECT_ASSESSMENTS:
+            return genAssessState({
+                ...state,
+                baselineObjAssessments: action.payload,
             });
         case baselineActions.SET_CAPABILITY_GROUPS:
             return genAssessState({
@@ -86,7 +94,32 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
                 ...state,
                 capabilities: [...action.payload],
             });
-        case baselineActions.SET_BASELINE_CAPABILITIES:
+        case baselineActions.ADD_CAPABILITY_TO_BASELINE:
+            const capList1 = state.baselineCapabilities;
+            capList1.push(action.payload);
+            return genAssessState({
+                ...state,
+                baselineCapabilities: capList1,
+            });
+        case baselineActions.REPLACE_CAPABILITY_IN_BASELINE:
+            const oldCap = action.payload[0];
+            const newCap = action.payload[1];    
+            const capList2 = state.baselineCapabilities;
+            const replIndex = capList2.indexOf(oldCap);
+            capList2[replIndex] = newCap;
+            return genAssessState({
+                ...state,
+                baselineCapabilities: capList2,
+            });
+        case baselineActions.REMOVE_CAPABILITY_FROM_BASELINE:
+            const capList3 = state.baselineCapabilities;
+            const remIndex = capList3.indexOf(action.payload);
+            capList3.splice(remIndex, 1);
+            return genAssessState({
+                ...state,
+                baselineCapabilities: capList3,
+            });
+        case baselineActions.SET_AND_READ_CAPABILITIES:
             return genAssessState({
                 ...state,
                 baselineCapabilities: [...action.payload],
@@ -96,26 +129,44 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
                 ...state,
                 currentCapability: action.payload,
             });
-        case baselineActions.SAVE_OBJECT_ASSESSMENTS:
+        case baselineActions.ADD_OBJECT_ASSESSMENT:
+            const objAssessments = state.baselineObjAssessments;
+            objAssessments.push(action.payload);
             return genAssessState({
                 ...state,
+                baselineObjAssessments: objAssessments,
             });
-        case baselineActions.ADD_OBJECT_ASSESSMENTS_TO_BASELINE:
-            let currBaseline = state.baseline;
-            currBaseline.assessments.push(...action.payload);
+        case baselineActions.ADD_OBJECT_ASSESSMENT_TO_BASELINE:
+            const objAssessment = action.payload;
+
+            // Add object assessment to baseline and list of object assessments in this baseline
+            const currBaseline = state.baseline;
+            currBaseline.assessments.push(objAssessment.id);
+            const objAssessments2 = state.baselineObjAssessments;
+            objAssessments2.push(objAssessment);
+
             return genAssessState({
                 ...state,
                 baseline: currBaseline,
+                baselineObjAssessments: objAssessments2,
             });
-        case baselineActions.SET_BASELINE_OBJECT_ASSESSMENTS:
+        case baselineActions.REMOVE_OBJECT_ASSESSMENT_FROM_BASELINE:
+            const oaToRemove = action.payload;
+
+            // Remove object assessment from OAs in this baseline
+            const oasInBL = state.baselineObjAssessments;
+            const oaBLIndex = oasInBL.findIndex((oa) => oa.id === oaToRemove.id);
+            oasInBL.splice(oaBLIndex, 1);
+
+            // Remove object assessment from baseline
+            const currBaseline2 = state.baseline;
+            const oaIndex = currBaseline2.assessments.findIndex((oaId) => oaId === oaToRemove.id);
+            currBaseline2.assessments.splice(oaIndex, 1);
+            
             return genAssessState({
                 ...state,
-                baselineObjAssessments: [...action.payload],
-            });
-        case baselineActions.SET_BASELINE_OBJECT_ASSESSMENTS:
-            return genAssessState({
-                ...state,
-                baselineObjAssessments: [...action.payload],
+                baseline: currBaseline2,
+                baselineObjAssessments: oasInBL,
             });
         case baselineActions.SET_CURRENT_BASELINE_OBJECT_ASSESSMENT:
             return genAssessState({
@@ -133,17 +184,9 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
                 selectedFrameworkAttackPatterns: [...action.payload],
             });
         case baselineActions.START_BASELINE:
-            const newBaseline = new AssessmentSet();
-            const meta = action.payload;
-            newBaseline.name = meta.title;
-            newBaseline.description = meta.description;
-            newBaseline.created_by_ref = meta.created_by_ref;
-            newBaseline.created = new Date().toISOString();
-            newBaseline.assessments = [];
-            newBaseline.metaProperties = { published: false };
             return genAssessState({
               ...state,
-              baseline: newBaseline,
+              baseline: action.payload,
             });
         case baselineActions.UPDATE_PAGE_TITLE:
             const a1 = new AssessmentSet();
@@ -153,8 +196,8 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
                 const blMeta = action.payload as BaselineMeta;
                 a1.name = blMeta.title;
                 // Object.assign(a1, action.payload);
-                a1.description = meta.description;
-                a1.created_by_ref = meta.created_by_ref;
+                a1.description = blMeta.description;
+                a1.created_by_ref = blMeta.created_by_ref;
             }
             const s1 = genAssessState({
                 ...state,
@@ -175,6 +218,7 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
                 }
             });
         case baselineActions.SAVE_BASELINE:
+        case baselineActions.SET_BASELINE:
             return genAssessState({
                 ...state,
                 baseline: action.payload,

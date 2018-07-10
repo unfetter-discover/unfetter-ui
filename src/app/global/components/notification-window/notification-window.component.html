@@ -1,22 +1,22 @@
-<span id="notificationWindowComponent">
+<span id="notificationWindowComponent" *ngIf="(notifications$ | async)?.notifications as notifications">
 
   <span id="notificationBellWrapper">
     <button mat-icon-button (click)="showNotificationBar = !showNotificationBar">
       <mat-icon class="mat-24">notifications_none</mat-icon>
     </button>
-    <span class="badge bg-accent" id="notificationBadge" *ngIf="getNumUnreadNotifications((notifications$ | async).notifications)">{{ getNumUnreadNotifications((notifications$ | async).notifications) }}</span>
+    <span class="badge bg-accent" id="notificationBadge" *ngIf="getNumUnreadNotifications(notifications) as numUnread">{{ numUnread }}</span>
   </span>
 
   <div id="notificationBoxTriangle" *ngIf="showNotificationBar" @fadeInOut>&nbsp;</div>
   <div id="notificationBoxWrapper" *ngIf="showNotificationBar" class="uf-nav-popup" @fadeInOut>
-    <div *ngIf="(notifications$ | async).notifications.length">
+    <div *ngIf="notifications.length">
       <div class="notificationHeader">
         <div class="flex flexItemsCenter">
           <span>
             <p class="title">Notifications</p>
             <p>
               <small class="text-muted">
-                You have {{ getNumUnreadNotifications((notifications$ | async).notifications) }} new notifications.
+                You have {{ getNumUnreadNotifications(notifications) }} new notifications.
               </small>
             </p>
           </span>
@@ -27,7 +27,7 @@
         </div>
       </div>
       <div id="notificiationRowWrapper">
-        <div *ngFor="let notification of (notifications$ | async).notifications | sortByField:'submitted'; let i = index" class="notificationRow flex flexItemsCenter"
+        <div *ngFor="let notification of notifications | sortByField:'submitted'; let i = index" class="notificationRow flex flexItemsCenter"
           [ngClass]="{'readNotication': notification.read}" (mouseenter)="!notification.read ? markAsRead(notification) : ''">
           <span>
             <p class="lead">
@@ -55,7 +55,7 @@
       </div>
     </div>
 
-    <div *ngIf="!(notifications$ | async).notifications.length">
+    <div *ngIf="!notifications.length">
       <div class="notificationHeader">
         <div class="flex flexItemsCenter">
           <span>

@@ -1,7 +1,7 @@
-import { Phase3 } from '../../../models/baseline/phase3';
+import { SortHelper } from '../../../global/static/sort-helper';
 import { AssessAttackPattern } from '../../../models/assess/assess-attack-pattern';
 import { AssessKillChainType } from '../../../models/assess/assess-kill-chain-type';
-import { SortHelper } from '../../../global/static/sort-helper';
+import { Phase3 } from '../../../models/baseline/phase3';
 
 export class SummarySortHelper extends SortHelper {
 

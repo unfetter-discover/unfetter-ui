@@ -1,7 +1,5 @@
-import { ConfigState, initialState, configReducer } from './config.reducers';
 import * as configActions from './config.actions';
-import { Dictionary } from '../../models/json/dictionary';
-import { TacticChain } from '../../global/components/tactics-pane/tactics.model';
+import { configReducer, ConfigState, initialState } from './config.reducers';
 
 export const air_tactics = [
     {

@@ -1,84 +1,69 @@
-import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
+import { distinctUntilChanged, filter, pluck, switchMap } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
-import { distinctUntilChanged } from 'rxjs/operators/distinctUntilChanged';
-import { filter } from 'rxjs/operators/filter';
-import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { AssessAttackPatternMeta } from 'stix/assess/v2/assess-attack-pattern-meta';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { Assessment } from 'stix/assess/v3/assessment';
+import { AssessmentEvalTypeEnum } from 'stix/assess/v3/assessment-eval-type.enum';
+import { Category } from 'stix/assess/v3/baseline/category';
+import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { Stix } from 'stix/unfetter/stix';
 import { AuthService } from '../../../../../core/services/auth.service';
+import { Tactic } from '../../../../../global/components/tactics-pane/tactics.model';
+import { AngularHelper } from '../../../../../global/static/angular-helper';
 import { FormatHelpers } from '../../../../../global/static/format-helpers';
 import { SortHelper } from '../../../../../global/static/sort-helper';
 import { StixPermissions } from '../../../../../global/static/stix-permissions';
 import { Relationship } from '../../../../../models';
+import { AppState } from '../../../../../root-store/app.reducers';
 import { Constance } from '../../../../../utils/constance';
-import { AssessService } from '../../../services/assess.service';
-import { LoadGroupAttackPatternRelationships, LoadGroupCurrentAttackPattern, LoadGroupData, PushUrl, UpdateAssessmentObject } from '../../store/full-result.actions';
+import { LoadGroupAttackPatternRelationships, LoadGroupCurrentAttackPattern, PushUrl, UpdateAssessmentObject } from '../../store/full-result.actions';
 import { FullAssessmentResultState } from '../../store/full-result.reducers';
 import { AddAssessedObjectComponent } from './add-assessed-object/add-assessed-object.component';
 import { DisplayedAssessmentObject } from './models/displayed-assessment-object';
 import { FullAssessmentGroup } from './models/full-assessment-group';
+import { AssessmentGroup } from 'stix/assess/v3/baseline/assessment-group';
 
 @Component({
   selector: 'unf-assess-group',
   templateUrl: './assessments-group.component.html',
   styleUrls: ['./assessments-group.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
+  @Input() public activePhase: string;
+  @Input() public assessment: Assessment;
+  @Input() public assessmentGroup: Observable<FullAssessmentGroup>;
+  @Input() public assessmentId: string;
+  @Input() public categoryLookup: Observable<Category[]>;
+  @Input() public initialAttackPatternId: string;
+  @Input() public rollupId: string;
+  @Input() public unassessedPhases: string[];
+  @Output() public onRiskByAttackPatternChanged = new EventEmitter<RiskByAttack>();
+  @Output() public onAddedAssessmentObject = new EventEmitter<boolean>();
+  @ViewChildren('addAssessedObjectComponent') public addAssessedObjectComponents: QueryList<AddAssessedObjectComponent>;
 
-  @Input()
-  public assessment: Assessment;
-
-  @Input()
-  public assessmentId: string;
-
-  @Input()
-  public rollupId: string;
-
-  @Input()
-  public activePhase: string;
-
-  @Input()
-  public initialAttackPatternId: string;
-
-  @Input()
-  public assessmentGroup: Observable<FullAssessmentGroup>;
-
-  @Output('riskByAttackPatternChanged')
-  public riskByAttackPatternChanged = new EventEmitter<RiskByAttack>();
-
-  @ViewChildren('addAssessedObjectComponent')
-  public addAssessedObjectComponents: QueryList<AddAssessedObjectComponent>;
   public addAssessedObjectComponent: AddAssessedObjectComponent;
-
-  public addAssessedObject: boolean;
   public addAssessedType: string;
   public assessedObjects: AssessmentObject[];
   public attackPatternsByPhase: AssessAttackPatternMeta[];
   public canAddAssessedObjects: boolean = false;
-  public courseOfAction: any;
   public currentAttackPattern: AttackPattern;
   public displayedAssessedObjects: DisplayedAssessmentObject[];
-  public indicator: any;
   public riskByAttackPattern: RiskByAttack;
   public unassessedAttackPatterns: AttackPattern[];
-  public unassessedPhases: string[];
-  public xUnfetterSensor: any;
 
   private readonly subscriptions: Subscription[] = [];
 
   constructor(
-    private assessService: AssessService,
+    private appStore: Store<AppState>,
     private authService: AuthService,
     private changeDetector: ChangeDetectorRef,
-    private route: ActivatedRoute,
     private store: Store<FullAssessmentResultState>,
   ) { }
 
@@ -87,7 +72,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public ngOnInit(): void {
     this.assessmentId = this.assessment.id || '';
-    // TODO: translate the initialAttackPatternId to and index
+    // TODO: translate the initialAttackPatternId to an index
     this.initData();
   }
 
@@ -100,9 +85,12 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
-   * @description init after view
+   * @description init after child views initialize, called once
    */
   public ngAfterViewInit(): void {
+    if (!this.addAssessedObjectComponents) {
+      return;
+    }
     const sub = this.addAssessedObjectComponents.changes
       .subscribe(
         (comps: QueryList<AddAssessedObjectComponent>) => {
@@ -114,7 +102,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
           // one may encounter the
           //  "expression changed after it was checked"
           // this is one fix for that state
-          this.changeDetector.detectChanges();
+          // this.changeDetector.detectChanges();
         },
         (err) => console.log(err),
         () => sub.unsubscribe());
@@ -129,30 +117,20 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public initData(attackPatternIndex: number = 0): void {
     this.assessment = this.assessment || new Assessment();
-    this.listenForDataChanges(attackPatternIndex);
-    // request for initial data changes
-    this.requestDataLoad(this.assessmentId);
-
+    this.unassessedPhases = this.unassessedPhases || [];
     const stixPermissions: StixPermissions = this.authService.getStixPermissions();
     this.canAddAssessedObjects = stixPermissions.canCreate(this.assessment);
+    this.listenForDataChanges(attackPatternIndex);
   }
 
   /**
-   * @description request data
-   * @param {string} assessmentId
-   * @returns {void}
-   */
-  public requestDataLoad(assessmentId: string): void {
-    this.store.dispatch(new LoadGroupData(assessmentId));
-  }
-
-  /**
+   * @description trigger that we added an inline assessment object
    * @returns void
    */
   public onAddAssessment(): void {
     // clear objects for the observable will detect a change
     this.displayedAssessedObjects = undefined;
-    this.requestDataLoad(this.assessmentId);
+    this.onAddedAssessmentObject.emit(true);
   }
 
   /**
@@ -169,44 +147,111 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
           //  figure out a better way to short circuit
           return group.finishedLoadingGroupData === true
             && this.displayedAssessedObjects === undefined;
-        }))
-      .subscribe((group: FullAssessmentGroup) => {
-        // initialize the displayed assessed objects, 
-        //  used also to stop loop of network calls
-        this.displayedAssessedObjects = [];
-        this.assessedObjects = group.assessedObjects || [];
-        this.riskByAttackPattern = group.riskByAttackPattern || new RiskByAttack();
-        this.loadDisplayedObjects(attackPatternIndex);
-      },
-        (err) => console.log(err));
+        })
+      ).subscribe(
+        (group: FullAssessmentGroup) => {
+          // initialize the displayed assessed objects, 
+          //  used also to stop loop of network calls
+          this.displayedAssessedObjects = [];
+          this.assessedObjects = group.assessedObjects || [];
+          this.riskByAttackPattern = group.riskByAttackPattern || new RiskByAttack();
+          this.loadDisplayedObjects(attackPatternIndex);
+          // this.changeDetector.detectChanges();
+
+        },
+        (err) => console.log(err)
+      );
 
     const sub2$ = this.assessmentGroup
-      .pluck('currentAttackPattern')
-      .pipe(distinctUntilChanged())
-      .subscribe((currentAttackPattern: Stix) => this.currentAttackPattern = currentAttackPattern,
-        (err) => console.log(err));
+      .pipe(
+        pluck<AssessmentGroup, AttackPattern>('currentAttackPattern'),
+        distinctUntilChanged(),
+        filter((attackPattern) => attackPattern.id !== undefined)
+      )
+      .subscribe(
+        (currentAttackPattern: Stix) => this.currentAttackPattern = currentAttackPattern,
+        (err) => console.log(err)
+      );
 
     const sub3$ = this.assessmentGroup
-      .filter((group: FullAssessmentGroup) => group.finishedLoadingGroupData === true)
-      .pluck('attackPatternRelationships')
-      .pipe(distinctUntilChanged())
-      .subscribe((relationships: Relationship[]) => {
-        const assessmentCandidates = relationships
-          .map((el) => el.attributes)
-          .map((relationship) => relationship.source_ref);
-        this.displayedAssessedObjects = this.assessedObjects
-          .filter((assessedObj) => assessmentCandidates.indexOf(assessedObj.stix.id) > -1)
-          .map((assessedObj) => {
-            const retObj = Object.assign(new DisplayedAssessmentObject(), assessedObj);
-            retObj.risk = this.getRisk(assessedObj.stix.id);
-            retObj.editActive = false;
-            retObj.questions = this.getQuestions(assessedObj.stix.id);
-            return retObj;
-          });
-      },
-        (err) => console.log(err));
+      .pipe(
+        filter((group: FullAssessmentGroup) => {
+          const hasAttackPattern = this.currentAttackPattern !== undefined && this.currentAttackPattern.id !== undefined;
+          const hasDisplayObject = this.displayedAssessedObjects !== undefined;
+          const isFinishedLoading = group.finishedLoadingGroupData !== undefined && group.finishedLoadingGroupData === true;
+          return (isFinishedLoading && hasDisplayObject && hasAttackPattern);
+        })
+      )
+      .subscribe(
+        (group: FullAssessmentGroup) => {
+          this.displayedAssessedObjects = this.populateDisplayedAssessedObjects(group, this.currentAttackPattern);
+          // this.changeDetector.detectChanges();
+        },
+        (err) => console.log(err)
+      );
 
     this.subscriptions.push(sub1$, sub2$, sub3$);
+  }
+
+  /**
+   * @description builds the displayed object to display the inline edit cards in the groups section
+   *  this method uses the relationships endpoint for mitigations and indicator assessments
+   *  for capability assessment, this method will inspect the local ngrx store group data
+   * @param {FullAssessmentGroup} group
+   * @param {AttackPattern} currentAttackPattern optional only needed is this a capability assessment
+   * @returns void
+   */
+  public populateDisplayedAssessedObjects(group: FullAssessmentGroup, currentAttackPattern?: AttackPattern): DisplayedAssessmentObject[] {
+    const assessedObjects = group.assessedObjects;
+    const assessmentType = this.assessment.determineAssessmentType() || '';
+    const stixIdSet = (assessmentType !== AssessmentEvalTypeEnum.CAPABILITIES) ?
+      this.relationshipsToStixIds(group.attackPatternRelationships) :
+      this.assessedObjectToStixIds(assessedObjects, currentAttackPattern);
+    // match the assessed ids with assessed objects to populate the grouping section cards
+    const displayedAssessedObjects = assessedObjects
+      .filter((assessedObj) => stixIdSet.has(assessedObj.stix.id))
+      .map((assessedObj) => {
+        const retObj = Object.assign(new DisplayedAssessmentObject(), assessedObj);
+        retObj.risk = this.getRisk(assessedObj.stix.id);
+        retObj.editActive = false;
+        retObj.questions = this.getQuestions(assessedObj.stix.id);
+        return retObj;
+      });
+    return displayedAssessedObjects;
+  }
+
+  /**
+   * @description return set of ids that were assessed for an attack pattern
+   * @param  {Relationship[]} relationships
+   * @returns Set
+   */
+  public relationshipsToStixIds(relationships: Relationship[]): Set<string> {
+    const ids = relationships
+      .map((el) => el.attributes)
+      .map((relationship) => relationship.source_ref);
+    return new Set<string>(ids);
+  }
+
+  /**
+   * @description return set of ids that were assessed for an attack pattern
+   * @param  {AssessmentObject[]} assessedObjects
+   * @returns Set
+   */
+  public assessedObjectToStixIds(assessedObjects: AssessmentObject[], attackPattern: AttackPattern): Set<string> {
+    if (!assessedObjects || !attackPattern || !attackPattern.id) {
+      return new Set();
+    }
+
+    const ids = this.assessedObjects
+      .filter((assessedObject) => {
+        const el: any = assessedObject;
+        const assessesAttackPattern = el.stix.assessed_objects.filter((_) => attackPattern.id === _.assessed_object_ref);
+        return assessesAttackPattern && assessesAttackPattern.length > 0;
+      })
+      .map((assessedObject) => assessedObject.stix.id)
+      .filter((_) => _ !== undefined)
+      .reduce((acc, cur) => acc.concat(cur), []);
+    return new Set(ids);
   }
 
   /**
@@ -215,7 +260,6 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
    * @returns {void}
    */
   public loadDisplayedObjects(attackPatternIndex: number): void {
-    this.populateUnassessedPhases();
     // active phase is either the current active phase, 
     let activePhase = this.activePhase;
     if (!activePhase && this.riskByAttackPattern && this.riskByAttackPattern.phases.length > 0) {
@@ -226,7 +270,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
       activePhase = this.unassessedPhases[0];
     }
     this.setPhase(activePhase, attackPatternIndex);
-    this.riskByAttackPatternChanged.emit(this.riskByAttackPattern);
+    this.onRiskByAttackPatternChanged.emit(this.riskByAttackPattern);
   }
 
   /**
@@ -261,24 +305,15 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
-   * @description set the unassessedPhases from the risks per attack pattern query
-   * @return {void}
-   */
-  public populateUnassessedPhases(): void {
-    const assessedPhases = this.riskByAttackPattern.phases
-      .map((phase) => phase._id);
-    this.unassessedPhases = Constance.KILL_CHAIN_PHASES
-      .filter((phase) => assessedPhases.indexOf(phase) < 0);
-  }
-
-  /**
    * @description reload page with the phase and attack pattern
    * @param {string} phaseName
    * @param {number} attackPatternIndex
    */
   public setPhase(phaseName: string, attackPatternIndex: number = 0) {
     this.resetNewAssessmentObjects();
+    this.unassessedAttackPatterns = [];
     this.activePhase = phaseName;
+    this.currentAttackPattern = undefined;
     this.attackPatternsByPhase = this.getAttackPatternsByPhase(this.activePhase);
     let currentAttackPatternId = '';
     if (this.attackPatternsByPhase.length > 0) {
@@ -286,21 +321,18 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.setAttackPattern(currentAttackPatternId);
 
-    this.updateUrlIfNeeded();
   }
 
-  /** 
+  /**
    * @description if this component has the correct settings, update the url with out rerouting
-   * @return {void}
+   * @param  {string} rollUpId
+   * @param  {string} assessmentId
+   * @param  {string} phase
+   * @param  {} attackPattern=''
+   * @returns void
    */
-  public updateUrlIfNeeded(): void {
-    const rollupId = this.rollupId || '';
-    const assessmentId = this.assessmentId || '';
-    const phase = this.activePhase || '';
-    const attackPattern = (this.currentAttackPattern && this.currentAttackPattern.id)
-      ? this.currentAttackPattern.id : '';
-
-    if (rollupId && assessmentId && phase && attackPattern) {
+  public updateUrlIfNeeded(rollupId: string, assessmentId: string, phase: string, attackPattern = ''): void {
+    if (rollupId && assessmentId && phase) {
       this.store.dispatch(new PushUrl({ rollupId, assessmentId, phase, attackPattern }));
     }
   }
@@ -324,7 +356,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
         return 1;
       }
     });
-    return attackPatterns;
+    return ranked;
   }
 
   /**
@@ -378,25 +410,78 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
       // Get attack pattern details
       this.store.dispatch(new LoadGroupCurrentAttackPattern(attackPatternId));
       // Get relationships for attack pattern, link to assessed objects
-      this.store.dispatch(new LoadGroupAttackPatternRelationships(attackPatternId));
+      this.dispatchOptionalRelationships(attackPatternId);
     }
 
     const assessedAps = this.getAttackPatternsByPhase(this.activePhase)
       .map((ap) => ap.attackPatternId);
 
-    const query = { 'stix.kill_chain_phases.phase_name': this.activePhase };
-    const s1$ = this.assessService
-      .getAs<Stix>(`${Constance.ATTACK_PATTERN_URL}?filter=${encodeURI(JSON.stringify(query))}`)
+    const s$ = this.appStore
+      .select('config')
+      .pipe(
+        filter(() => this.activePhase !== undefined && this.activePhase.length > 0),
+        switchMap(
+          (state) => {
+            // get all the phases across the frameworks
+            const phases = Object.keys(state.tacticsChains)
+              .map((curFramework) => state.tacticsChains[curFramework].phases)
+              .reduce((acc, val) => acc.concat(val), []);
+            // look for the currently viewed phase
+            // TODO: there is potential to get the wrong phase if the phase id exists in two frameworks
+            const curPhase = phases.filter((phase) => phase.id === this.activePhase)[0];
+            return of(curPhase.tactics);
+          })
+      )
       .subscribe(
-        (data: Stix[]) => {
-          // Get unassessed attack patterns
-          this.unassessedAttackPatterns = data
-            .filter((ap) => !assessedAps.includes(ap.id))
+        (tactics: Tactic[]) => {
+          // Give tactics for this current phase
+          //  Get unassessed and transform to attack patterns
+          const unassessedAttackPatterns = tactics
+            .filter((tactic) => !assessedAps.includes(tactic.id))
+            .map((tactic) => Object.assign(new AttackPattern(), tactic))
             .sort(SortHelper.sortDescByField('name'));
+
+          // if the current attack pattern is empty and we are entering an unassessed phase
+          //  select the first unassessed attack pattern, this is kind of buried place to put this
+          //  logic, but it was easiest to get to at the time
+          if (!this.currentAttackPattern || !this.currentAttackPattern.id) {
+            const assessedPhases = this.riskByAttackPattern.phases;
+            const isAssessedPhase = assessedPhases.find((phase) => phase._id === this.activePhase) !== undefined;
+            if (isAssessedPhase === false) {
+              const firstUnassessedAttackPattern = unassessedAttackPatterns[0];
+              this.currentAttackPattern = firstUnassessedAttackPattern;
+            }
+          }
+
+          this.unassessedAttackPatterns = unassessedAttackPatterns;
+          this.displayedAssessedObjects = [];
+          // trigger change detection when finished
+          // this.changeDetector.markForCheck();
+          // this.changeDetector.detectChanges();
+
         },
-        (err) => console.log(err)
-      );
-    this.subscriptions.push(s1$);
+        (err) => console.log(err));
+    this.subscriptions.push(s$);
+
+    this.updateUrlIfNeeded(this.rollupId, this.assessmentId, this.activePhase);
+  }
+
+  /**
+   * @description non capability assessments need to fetch relationship objects
+   *  to populate this components displayed object cards
+   *  if the current assessment is not a capability,
+   *  then this method will dispatch to fetch those relationships
+   * @param attackPatternId 
+   */
+  public dispatchOptionalRelationships(attackPatternId: string): void {
+    if (!attackPatternId) {
+      return;
+    }
+
+    const assessmentType = this.assessment.determineAssessmentType();
+    if (assessmentType !== AssessmentEvalTypeEnum.CAPABILITIES) {
+      this.store.dispatch(new LoadGroupAttackPatternRelationships(attackPatternId));
+    }
   }
 
   /**
@@ -522,4 +607,17 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
   public isCurrentAttackPattern(attackPatternId = ''): boolean {
     return this.currentAttackPattern ? this.currentAttackPattern.id === attackPatternId : false;
   }
+
+  /**
+   * @description angular track by list function, 
+   *  uses the items id iff (if and only if) it exists, 
+   *  otherwise uses the index
+   * @param {number} index
+   * @param {item}
+   * @return {number}
+   */
+  public trackByFn(index: number, item: any): number {
+    return AngularHelper.genericTrackBy(index, item);
+  }
+
 }

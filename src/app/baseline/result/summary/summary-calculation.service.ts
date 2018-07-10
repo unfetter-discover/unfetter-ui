@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
-import { BaselineObject } from '../../../models/baseline/baseline-object';
-import { RiskByAttack3 } from '../../../models/baseline/risk-by-attack3';
-import { Phase3 } from '../../../models/baseline/phase3';
-import { AttackPattern } from '../../../models/attack-pattern';
-import { AssessAttackPattern } from '../../../models/baseline/assess-attack-pattern';
-import { SummarySortHelper } from './summary-sort-helper';
-import { Stix } from '../../../models/stix/stix';
-import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
-import { AssessKillChainType } from '../../../models/assess/assess-kill-chain-type';
-import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
-import { Constance } from '../../../utils/constance';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { ThresholdOption } from '../../models/threshold-option';
-import { BaselineQuestion } from '../../../models/baseline/baseline-question';
+import { BehaviorSubject } from 'rxjs';
 import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
+import { AssessKillChainType } from '../../../models/assess/assess-kill-chain-type';
+import { RiskByKillChain } from '../../../models/assess/risk-by-kill-chain';
+import { SummaryAggregation } from '../../../models/assess/summary-aggregation';
+import { BaselineObject } from '../../../models/baseline/baseline-object';
+import { BaselineQuestion } from '../../../models/baseline/baseline-question';
+import { Phase3 } from '../../../models/baseline/phase3';
+import { RiskByAttack3 } from '../../../models/baseline/risk-by-attack3';
+import { Stix } from '../../../models/stix/stix';
+import { Constance } from '../../../utils/constance';
+import { ThresholdOption } from '../../models/threshold-option';
+import { SummarySortHelper } from './summary-sort-helper';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class SummaryCalculationService {
   public readonly topNRisks: number;
   public readonly riskSub: BehaviorSubject<number>;
@@ -34,6 +34,12 @@ export class SummaryCalculationService {
   thresholdOptionsValue: ThresholdOption[];
 
   baselineValue: AssessmentSet;
+  blGroups: string[] = [];
+  blAttackPatterns: string[] = [];
+  blCompleteAPs: number;
+  blCompleteWeightings: number;
+  allWeightings: number = 500;
+  blWeightings: { protPct: 0, detPct: 0, respPct: 0 };
 
   constructor() {
     this.numericRisk = 0;
@@ -98,6 +104,30 @@ export class SummaryCalculationService {
     this.baselineValue = newBaseline;
   }
 
+  public set baselineGroups(blGroups: string[]) {
+    this.blGroups = blGroups;
+  }
+
+  public set baselineAttackPatterns(blAttackPatterns: string[]) {
+    this.blAttackPatterns = blAttackPatterns;
+  }
+
+  public set baselineIncompleteAPs(blCompleteAPs: number) {
+    this.blCompleteAPs = blCompleteAPs;
+  }
+
+  public set baselineIncompleteWeightings(blCompleteWeightings: number) {
+    this.blCompleteWeightings = blCompleteWeightings;
+  }
+
+  public set baselineWeightings(blWeightings: { protPct, detPct, respPct }) {
+    this.blWeightings = blWeightings;
+  }
+
+  public set totalWeightings(weightings: number) {
+    this.allWeightings = weightings;
+  }
+
   public get numericRisk(): number {
     return this.numericRiskValue;
   }
@@ -143,6 +173,30 @@ export class SummaryCalculationService {
 
   public get baseline(): AssessmentSet {
     return this.baselineValue;
+  }
+
+  public get baselineGroups(): string[] {
+    return this.baselineGroups;
+  }
+
+  public get baselineAttackPatterns(): string[] {
+    return this.baselineAttackPatterns;
+  }
+
+  public get baselineIncompleteAPs(): number {
+    return this.baselineIncompleteAPs;
+  }
+
+  public get baselineIncompleteWeights(): number {
+    return this.baselineIncompleteWeightings;
+  }
+
+  public get baselineWeightings(): { protPct, detPct, respPct } {
+    return this.blWeightings;
+  }
+
+  public get totalWeightings(): number {
+    return this.allWeightings;
   }
 
   public getRiskText(): string {

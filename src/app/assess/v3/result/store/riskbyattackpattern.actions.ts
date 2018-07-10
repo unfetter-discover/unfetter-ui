@@ -14,7 +14,7 @@ export class LoadSingleAssessmentRiskByAttackPatternData implements Action {
     public readonly type = LOAD_SINGLE_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA;
 
     // individual assessment id
-    constructor(public payload: string) { }
+    constructor(public payload: { id: string, isCapability: boolean }) { }
 }
 
 export class LoadAssessmentRiskByAttackPatternData implements Action {

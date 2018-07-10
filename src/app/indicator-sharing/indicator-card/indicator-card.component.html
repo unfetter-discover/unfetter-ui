@@ -46,7 +46,7 @@
     <div *ngIf="!collapseContents">
 
       <label>Pseudocode</label>
-        <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.pattern" (cbOnSuccess)="flashTooltip(patternTooltip)">
+        <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.pattern" (cbOnError)="handleCopy($event, patternTooltip)" (cbOnSuccess)="handleCopy($event, patternTooltip)">
           <mat-icon>content_copy</mat-icon>
           <div #patternTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
         </button>
@@ -60,7 +60,7 @@
         <label *ngIf="(indicator.labels && indicator.labels.length) || canCrud">Labels</label>
         <div class="flex flexItemsCenter">
             <mat-chip-list>
-                <mat-chip *ngFor="let label of indicator.labels" [selected]="labelSelected(label)" class="cursor-pointer chipListChip">{{label | capitalize}}</mat-chip>
+                <mat-chip *ngFor="let label of indicator.labels" [selected]="highlightObj.labels[label]" class="cursor-pointer chipListChip">{{label | capitalize}}</mat-chip>
             </mat-chip-list>
             <add-label-reactive [stixType]="'indicator'" (labelAdded)="addLabel($event)" [currentLabels]="indicator.labels" *ngIf="canCrud"></add-label-reactive>
         </div>
@@ -82,7 +82,7 @@
               <label>Tactics</label>
               <p>
                 <span *ngFor="let phase of ap.kill_chain_phases; let i = index" class="text-muted">
-                  <span [ngClass]="{'uf-highlight': highlightPhase(phase.phase_name)}" matTooltip="{{ phase.kill_chain_name | capitalize }}"
+                  <span [ngClass]="{'uf-highlight': highlightObj.phases[phase.phase_name]}" matTooltip="{{ phase.kill_chain_name | capitalize }}"
                     matTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>
                   <span *ngIf="i < (ap.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
                 </span>
@@ -96,7 +96,7 @@
                   <span *ngIf="i < (ap.x_mitre_platforms.length - 1)">&nbsp;&bull;&nbsp;</span>
                 </span>
               </p>
-            </div>
+            </div>            
             <div *ngIf="ap.x_unfetter_sophistication_level">
               <label>Sophistication Level:&nbsp;</label>
               <span>{{ ap.x_unfetter_sophistication_level }}</span>
@@ -109,15 +109,25 @@
         <mat-tab label="Details">
           <div *ngIf="indicator.description">
             <label>Description</label>
-            <p>{{ indicator.description }}</p>
+            <markdown-editor [editing]="false" [flushed]="true" [truncate]="true"
+                [value]="indicator.description"></markdown-editor>
           </div>
           <div *ngIf="indicator.kill_chain_phases">
             <label>Tactics</label>
             <p>
               <span *ngFor="let phase of indicator.kill_chain_phases; let i = index" class="text-muted">
-                <span [ngClass]="{'uf-highlight': highlightPhase(phase.phase_name)}" matTooltip="{{ phase.kill_chain_name | capitalize }}"
+                <span [ngClass]="{'uf-highlight': highlightObj.phases[phase.phase_name]}" matTooltip="{{ phase.kill_chain_name | capitalize }}"
                   matTooltipPosition="after">{{ phase.phase_name | capitalize }}</span>
                 <span *ngIf="i < (indicator.kill_chain_phases.length - 1)">&nbsp;&bull;&nbsp;</span>
+              </span>
+            </p>
+          </div>
+          <div *ngIf="intrusionSets && intrusionSets.length">
+            <label>Intrusion Sets</label>
+            <p>
+              <span *ngFor="let intrusionSet of intrusionSets; let i = index">
+                <a routerLink="/stix/intrusion-sets/{{ intrusionSet.id }}" [ngClass]="{'uf-highlight': highlightObj.intrusionSets[intrusionSet.id]}">{{ intrusionSet.name }}</a>
+                <span *ngIf="i < (intrusionSets.length - 1)">&nbsp;&bull;&nbsp;</span>
               </span>
             </p>
           </div>
@@ -129,6 +139,15 @@
           <div *ngIf="indicator.metaProperties && indicator.metaProperties.observedData && indicator.metaProperties.observedData.length">
             <label>Observed Data</label>
             <observable-data-summary [observedData]="indicator.metaProperties.observedData"></observable-data-summary>
+          </div>
+          <div *ngIf="indicator.x_mitre_data_sources">
+            <label>Required Data Sources:&nbsp;</label>
+            <p class="whiteSpaceNormal">
+              <span *ngFor="let dataSource of indicator.x_mitre_data_sources; let i = index" class="text-muted">
+                <span>{{ dataSource }}</span>
+                <span *ngIf="i < (indicator.x_mitre_data_sources.length - 1)">&nbsp;&bull;&nbsp;</span>
+              </span>
+            </p>
           </div>
           <div class="mt-3">
             <label>Unfetter User Interactions: </label>
@@ -147,7 +166,7 @@
             <h4 class="fw400">Generated Pattern Translations</h4>
             <div *ngIf="indicator.metaProperties.queries.carElastic && indicator.metaProperties.queries.carElastic.include && indicator.metaProperties.queries.carElastic.query">
               <label>Elastic Search</label>
-              <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.metaProperties.queries.carElastic.query" (cbOnSuccess)="flashTooltip(elasticTooltip)">
+              <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.metaProperties.queries.carElastic.query"  (cbOnError)="handleCopy($event, elasticTooltip)" (cbOnSuccess)="handleCopy($event, elasticTooltip)">
                 <mat-icon>content_copy</mat-icon>
                 <div #elasticTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
               </button>
@@ -157,7 +176,7 @@
             </div>
             <div *ngIf="indicator.metaProperties.queries.carSplunk && indicator.metaProperties.queries.carSplunk.include && indicator.metaProperties.queries.carSplunk.query">
               <label>Splunk (Cyber Analytic Repository)</label>
-              <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.metaProperties.queries.carSplunk.query" (cbOnSuccess)="flashTooltip(cimTooltip)">
+              <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.metaProperties.queries.carSplunk.query" (cbOnError)="handleCopy($event, cimTooltip)" (cbOnSuccess)="handleCopy($event, cimTooltip)">
                 <mat-icon>content_copy</mat-icon>
                 <div #cimTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
               </button>
@@ -167,7 +186,7 @@
             </div>
             <div *ngIf="indicator.metaProperties.queries.cimSplunk && indicator.metaProperties.queries.cimSplunk.include && indicator.metaProperties.queries.cimSplunk.query">
               <label>Splunk (Common Information Model)</label>
-              <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.metaProperties.queries.cimSplunk.query" (cbOnSuccess)="flashTooltip(carsplunkTooltip)">
+              <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.metaProperties.queries.cimSplunk.query" (cbOnError)="handleCopy($event, carsplunkTooltip)" (cbOnSuccess)="handleCopy($event, carsplunkTooltip)">
                 <mat-icon>content_copy</mat-icon>
                 <div #carsplunkTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
               </button>
@@ -180,7 +199,7 @@
             <h4 class="fw400">User Created Queries</h4>
             <div *ngFor="let query of indicator.metaProperties.additional_queries; let i = index">
               <label>{{ query.name }}</label>
-              <button mat-icon-button color="primary" ngxClipboard [cbContent]="query.query" (cbOnSuccess)="flashTooltip(copyTooltip)">
+              <button mat-icon-button color="primary" ngxClipboard [cbContent]="query.query" (cbOnError)="handleCopy($event, copyTooltip)" (cbOnSuccess)="handleCopy($event, copyTooltip)">
                 <mat-icon>content_copy</mat-icon>
                 <div #copyTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
               </button>
@@ -196,10 +215,7 @@
             <h4 class="fw400">
               <a routerLink="/stix/x-unfetter-sensors/{{sensor.id}}">{{sensor.name}}</a>
             </h4>
-            <p>
-              <label>Observed Data</label>
-              <observable-data-summary [observedData]="sensor.metaProperties.observedData"></observable-data-summary>
-            </p>
+            <p *ngIf="sensor.description">{{ sensor.description }}</p>
           </div>
         </mat-tab>
 

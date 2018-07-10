@@ -64,7 +64,7 @@ export class TechniquesChartComponent implements OnInit {
   ];
   public colors: any[];
 
-  public constructor(private summaryCalculationService: SummaryCalculationService) { }
+  public constructor(public summaryCalculationService: SummaryCalculationService) { }
   /**
    * @description
    *  initialize this class member, calls render when finished

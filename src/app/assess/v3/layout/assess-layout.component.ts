@@ -1,16 +1,11 @@
 import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { combineLatest } from 'rxjs/operators/combineLatest';
-import { distinctUntilChanged } from 'rxjs/operators/distinctUntilChanged';
-import { filter } from 'rxjs/operators/filter';
-import { map } from 'rxjs/operators/map';
-import { tap } from 'rxjs/operators/tap';
+import { BehaviorSubject } from 'rxjs';
+import { distinctUntilChanged, filter, take, tap } from 'rxjs/operators';
 import { fadeInOut } from '../../../global/animations/fade-in-out';
 import * as assessReducers from '../store/assess.reducers';
-import { defaultIfEmpty } from 'rxjs/operators/defaultIfEmpty';
-import { take } from 'rxjs/operators/take';
+import * as assessSelectors from '../store/assess.selectors';
 
 @Component({
   selector: 'assess-layout',
@@ -44,11 +39,11 @@ export class AssessLayoutComponent implements OnInit, AfterViewInit {
    */
   public ngAfterViewInit(): void {
     this.title = this.store
-      .select(assessReducers.getAssessmentMetaTitle)
+      .select(assessSelectors.getAssessmentMetaTitle)
       .pipe(distinctUntilChanged());
 
     this.showBackButton = this.store
-      .select(assessReducers.getBackButton)
+      .select(assessSelectors.getBackButton)
       .pipe(
         filter((el) => (el && typeof el === 'boolean')),
         distinctUntilChanged(),
@@ -56,7 +51,7 @@ export class AssessLayoutComponent implements OnInit, AfterViewInit {
       );
 
     this.failedToLoad = this.store
-      .select(assessReducers.getFailedToLoad)
+      .select(assessSelectors.getFailedToLoad)
       .pipe(distinctUntilChanged(), take(2));
 
     // this.finishedLoading = this.store

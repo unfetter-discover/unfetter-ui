@@ -1,9 +1,11 @@
+
+import { pluck, distinctUntilChanged, map } from 'rxjs/operators';
 import { Component, EventEmitter, OnInit, Output, NgModule, ViewEncapsulation, Inject } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as assessReducers from '../../store/baseline.reducers';
 import { Capability, AssessedObject, ObjectAssessment, Question, QuestionAnswerEnum } from 'stix/assess/v3';
@@ -12,6 +14,8 @@ import { StixEnum } from 'stix/unfetter/stix.enum';
 import { AnswerOption } from '../../../settings/stix-objects/categories/categories-edit/answer-option'
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { SetCurrentBaselineObjectAssessment } from '../../store/baseline.actions';
+import { BaselineSummaryService } from '../../services/baseline-summary.service';
+import { RxjsHelpers } from '../../../global/static/rxjs-helpers';
 
 @Component({
   selector: 'unf-baseline-wizard-capability',
@@ -30,13 +34,16 @@ export class CapabilityComponent implements OnInit {
 
 
   @Output()
-  public onToggleHeatMap = new EventEmitter<boolean>();
+  public onToggleHeatMap = new EventEmitter<any>();
   public currentCapability: Capability;
   public currentCapabilityName: string;
   public currentCapabilityDescription: string;
   public currentObjectAssessment: ObjectAssessment;
   public currentAssessedObject: AssessedObject[];
   public allAttackPatterns: AttackPattern[];
+  public baselineObjectAssessments: ObjectAssessment[];
+  public ratioOfQuestionsAnswered: number;
+  public lastKnownObjectAssessment: ObjectAssessment;  // Used to determine if datasource should update (when changing capabilities)
 
   // PDR Table
   currentNumberOfAttackPatterns = 0;  // keep track so that we do not reload the pdr table on score changes
@@ -44,22 +51,27 @@ export class CapabilityComponent implements OnInit {
   displayedColumns = ['attackPattern', 'protect', 'detect', 'respond'];
   incomingListOfAttackPatterns: string[] = [];
   public readonly answers = [
-    new AnswerOption(QuestionAnswerEnum.UNANSWERED, 'NONE'),
+
+    new AnswerOption(QuestionAnswerEnum.UNANSWERED, ''),
+    new AnswerOption(QuestionAnswerEnum.NONE, 'NONE'),
     new AnswerOption(QuestionAnswerEnum.LOW, 'LOW'),
     new AnswerOption(QuestionAnswerEnum.MEDIUM, 'MEDIUM'),
     new AnswerOption(QuestionAnswerEnum.SIGNIFICANT, 'SIGNIFICANT'),
     new AnswerOption(QuestionAnswerEnum.NOT_APPLICABLE, 'NOT_APPLICABLE'),
   ];
+
+
+
   selectedAttackPatterns = new FormControl();
 
-  constructor(private wizardStore: Store<assessReducers.BaselineState>) {
+  constructor(private wizardStore: Store<assessReducers.BaselineState>, private _baselineSummaryService: BaselineSummaryService ) {
 
     this.dataSource = new MatTableDataSource<TableEntry>();
 
     const sub1$ = this.wizardStore
-      .select('baseline')
-      .pluck('currentCapability')
-      .distinctUntilChanged()
+      .select('baseline').pipe(
+      pluck('currentCapability'),
+      distinctUntilChanged())
       .subscribe(
         (currentCapability: Capability) => {
           this.currentCapability = currentCapability;
@@ -69,29 +81,59 @@ export class CapabilityComponent implements OnInit {
 
     const sub2$ = this.wizardStore
       .select('baseline')
-      .pluck('allAttackPatterns')
-      .distinctUntilChanged()
+      .pipe(
+        pluck('allAttackPatterns'),
+        map(RxjsHelpers.sortByField('name', 'ASCENDING')),
+        distinctUntilChanged()
+      )
       .subscribe(
         (allAttackPatterns: AttackPattern[]) => {
           this.allAttackPatterns = allAttackPatterns;
         }, (err) => console.log(err));
 
+    const sub21$ = this.wizardStore
+      .select('baseline').pipe(
+      pluck('baselineObjAssessments'),
+      distinctUntilChanged())
+      .subscribe(
+        (baselineObjectAssessments: ObjectAssessment[]) => {
+        this.baselineObjectAssessments = baselineObjectAssessments;
+      }, (err) => console.log(err));
+
     const sub3$ = this.wizardStore
-      .select('baseline')
-      .pluck('currentObjectAssessment')
+      .select('baseline').pipe(
+      pluck('currentObjectAssessment'))
       // .distinctUntilChanged()
       .subscribe(
         (currentObjectAssessment: ObjectAssessment) => {
           this.currentObjectAssessment = currentObjectAssessment;
           if (this.currentObjectAssessment) {
-            this.currentAssessedObject = currentObjectAssessment.assessments_objects;
+            this.currentAssessedObject = currentObjectAssessment.assessed_objects;
+
+
+
+            let numOfTotalQuestions = 0;
+
+            let numOFAnsweredQuestions = 0;
+
+            for (let oa of this.baselineObjectAssessments) {
+              for (let ao of oa.assessed_objects) {
+                for ( let question of ao.questions) {
+                  numOfTotalQuestions += 1;
+                  if ( question.score === QuestionAnswerEnum.LOW || question.score === QuestionAnswerEnum.MEDIUM || question.score === QuestionAnswerEnum.NOT_APPLICABLE ||
+                    question.score === QuestionAnswerEnum.SIGNIFICANT || question.score === QuestionAnswerEnum.NONE) {
+   
+                    numOFAnsweredQuestions += 1;
+                  }
+                }
+              }
+            }
             if (this.currentAssessedObject) {
               this.incomingListOfAttackPatterns = this.currentAssessedObject.map(x => x.assessed_object_ref);
 
-              if (this.currentNumberOfAttackPatterns === 0 || this.currentNumberOfAttackPatterns !== this.currentAssessedObject.length) {
+              if (this.currentNumberOfAttackPatterns === 0 || this.currentNumberOfAttackPatterns !== this.currentAssessedObject.length || this.checkForOAChange()) {
                 // inital value for number of attack patterns
                 this.currentNumberOfAttackPatterns = this.currentAssessedObject.length;
-
                 this.dataSource.data = this.currentAssessedObject.map(x => ({
                   assessed_obj_id: x.id,
                   capability_id: x.assessed_object_ref,
@@ -107,6 +149,8 @@ export class CapabilityComponent implements OnInit {
               return;
             }
           }
+
+          this.lastKnownObjectAssessment = this.currentObjectAssessment;
         }, (err) => console.log(err));
 
     // this.subscriptions.push(sub1$, sub2$, sub3$)
@@ -114,60 +158,49 @@ export class CapabilityComponent implements OnInit {
 
 
   ngOnInit() {
+    // this.ratioOfQuestionsAnswered = this._baselineSummaryService.getBaselinePercentComplete();
+    
   }
 
   public onAttackPatternChange(event): void {
-
     const prevValues = this.currentAssessedObject.map(x => x.assessed_object_ref);
-    const selectedValues = event;
-
     if (prevValues === undefined) {
       return;
     }
 
+    const selectedValues = event;
 
+    // find all the attack patterns that were removed
+    prevValues
+      .filter(ap => !selectedValues.includes(ap))
+      .forEach(ap => {
+        let index = this.currentObjectAssessment.assessed_objects.findIndex(x => x.assessed_object_ref === ap);
+        this.currentObjectAssessment.assessed_objects.splice(index, 1);
+        this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(this.currentObjectAssessment));
+      });
 
-    if (selectedValues.length > prevValues.length) {
-      // Added AP - see which AP is in selectedValues and not in prevValues
-      // this.currentNumberOfAttackPatterns += 1;
-      for (let i in selectedValues) {
-        if (prevValues.indexOf(selectedValues[i]) === -1) {
-          let newAssessedObject = new AssessedObject();
-          newAssessedObject.assessed_object_ref = selectedValues[i];
-
-          let p = new Question();
-          let d = new Question();
-          let r = new Question();
-          p.name = 'protect';
-          d.name = 'detect';
-          r.name = 'respond';
-          newAssessedObject.questions = [p, d, r];
-          this.currentObjectAssessment.assessments_objects.push(newAssessedObject);
-          this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(this.currentObjectAssessment));
-          break;
-        }
-      }
-    } else if (selectedValues.length < prevValues.length) {
-      // Removed AP - see which AP is in prevValues and not in selected values
-      // this.currentNumberOfAttackPatterns -= 1;
-      for (let i in prevValues) {
-        if (selectedValues.indexOf(prevValues[i]) === -1) {
-          let index = this.currentObjectAssessment.assessments_objects.findIndex(x => x.assessed_object_ref === prevValues[i]);
-          this.currentObjectAssessment.assessments_objects.splice(index, 1);
-          this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(this.currentObjectAssessment));
-          break;
-        }
-      }
-    } else {
-      return;
-    }
-
+    // find all the attack patterns that were added
+    selectedValues
+      .filter(ap => !prevValues.includes(ap))
+      .forEach(ap => {
+        let newAssessedObject = new AssessedObject();
+        newAssessedObject.assessed_object_ref = ap;
+        let p = new Question();
+        let d = new Question();
+        let r = new Question();
+        p.name = 'protect';
+        d.name = 'detect';
+        r.name = 'respond';
+        newAssessedObject.questions = [p, d, r];
+        this.currentObjectAssessment.assessed_objects.push(newAssessedObject);
+        this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(this.currentObjectAssessment));
+      });
   }
 
   updatePDRScore(index: number, pdr: string, value: QuestionAnswerEnum, id) {
     let correctIndex = this.currentAssessedObject.findIndex(x => x.assessed_object_ref === id);
     this.setScore(this.currentAssessedObject[correctIndex].questions, pdr, value)
-    this.currentObjectAssessment.assessments_objects = this.currentAssessedObject
+    this.currentObjectAssessment.assessed_objects = this.currentAssessedObject.slice();
     this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(this.currentObjectAssessment));
   }
 
@@ -212,6 +245,17 @@ export class CapabilityComponent implements OnInit {
         questionArray[i].score = score;
       }
     }
+  }
+
+  public checkForOAChange() {
+    try {
+      return this.lastKnownObjectAssessment.name !== this.currentObjectAssessment.name
+    } catch (TypeError) {
+      return false;
+    }  
+
+    
+
   }
 
   // public ngOnDestroy(): void {

@@ -14,9 +14,6 @@ import { routing } from './baseline.routing';
 import { Create3Component } from './create/create3.component';
 import { BaselineLayoutComponent } from './layout/baseline-layout.component';
 import { ResultModule } from './result/result.module';
-import { BaselineStateService } from './services/baseline-state.service';
-import { BaselineSummaryService } from './services/baseline-summary.service';
-import { BaselineService } from './services/baseline.service';
 import { BaselineEffects } from './store/baseline.effects';
 import { baselineReducer } from './store/baseline.reducers';
 
@@ -26,11 +23,11 @@ const moduleComponents = [
 ];
 
 const materialModules = [
-  MatCardModule,
   MatButtonModule,
+  MatCardModule,
   MatCheckboxModule,
-  MatInputModule,
   MatIconModule,
+  MatInputModule,
 ]
 
 @NgModule({
@@ -51,9 +48,6 @@ const materialModules = [
   ],
   providers: [
     BaselineGuard,
-    BaselineService,
-    BaselineStateService,
-    BaselineSummaryService,
   ]
 })
 export class BaselineModule { }

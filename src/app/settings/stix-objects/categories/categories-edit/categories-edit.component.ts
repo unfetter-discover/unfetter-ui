@@ -1,10 +1,12 @@
+
+import { of as observableOf, forkJoin as observableForkJoin,  Observable ,  Subscription  } from 'rxjs';
+
+import { tap, filter, take, map, distinctUntilChanged, pluck } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatSelectChange, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 import { AssessedObject } from 'stix/assess/v3';
 import { PdrString, Question } from 'stix/assess/v3/baseline/question';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
@@ -65,20 +67,20 @@ export class CategoriesEditComponent extends CategoriesComponent implements OnIn
   public loadPage(): void {
     this.loading = true;
     const getUser$ = this.userStore
-      .select<any>('users')
-      .pluck<any, UserProfile>('userProfile')
-      .filter((user) => user !== undefined)
-      .take(1)
-      .distinctUntilChanged()
+      .select<any>('users').pipe(
+      pluck<any, UserProfile>('userProfile'),
+      filter((user) => user !== undefined),
+      take(1),
+      distinctUntilChanged())
       .subscribe((user: UserProfile) => {
         this.user = user;
         const framework = this.user.preferences.killchain;
         const params = this.route.snapshot.params;
         const observables = [];
         if (params['id']) {
-          const loadCat$ = this.loadCategory()
+          const loadCat$ = this.loadCategory().pipe(
             // initial questions answers for the drop downs
-            .map((category) => {
+            map((category) => {
                 // unrolls the questions array and adds values just for PDR/MIR dropdowns
                 const assessedObjects = category.assessed_objects;
                 assessedObjects.forEach((assessedObject) => {
@@ -89,14 +91,13 @@ export class CategoriesEditComponent extends CategoriesComponent implements OnIn
                   });
                 });
                 return category;
-            })
+            }),
             // sets the initial selected attack patterns drop down
-            .do((category) => this.selectedAttackPatterns = this.resetSelectedAttackPatterns(category.assessed_objects));
+            tap((category) => this.selectedAttackPatterns = this.resetSelectedAttackPatterns(category.assessed_objects)));
           observables.push(loadCat$);
         }
         observables.push(this.loadAttackPatterns(framework));
-        const sub$ = Observable
-          .forkJoin(observables)
+        const sub$ = observableForkJoin(observables)
           .subscribe(
             (data) => {
               console.log(data);
@@ -119,36 +120,36 @@ export class CategoriesEditComponent extends CategoriesComponent implements OnIn
       // have we loaded this framework?
       const index = this.frameworks.findIndex((el) => el.framework === framework);
       if (index >= 0) {
-        return Observable.of(this.frameworks[index].attackPatterns);
+        return observableOf(this.frameworks[index].attackPatterns);
       }
     }
 
     const sort = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
-    let filter = '';
+    let urlFilter = '';
     if (framework) {
       const userFrameworkFilter = { 'stix.kill_chain_phases.kill_chain_name': { $exists: true, $eq: framework } };
-      filter = 'filter=' + encodeURIComponent(JSON.stringify(userFrameworkFilter));
+      urlFilter = 'filter=' + encodeURIComponent(JSON.stringify(userFrameworkFilter));
     }
     let url = '';
-    if (filter) {
+    if (urlFilter) {
       url = `${Constance.ATTACK_PATTERN_URL}?${filter}&${sort}`;
     } else {
       url = `${Constance.ATTACK_PATTERN_URL}?${sort}`;
     }
 
-    return this.genericApiService.get(url)
+    return this.genericApiService.get(url).pipe(
       // stip the json data attributes
-      .map((attackPatterns) => attackPatterns.map((el) => el.attributes) as AttackPattern[])
+      map((attackPatterns) => attackPatterns.map((el) => el.attributes) as AttackPattern[]),
       // sort them by name
-      .map((attackPatterns) => {
+      map((attackPatterns) => {
         return attackPatterns
           .sort(SortHelper.sortDescByField<AttackPattern, 'name'>('name'))
-      })
+      }),
       // add them to the frameworks data array as display and cache
-      .map((attackPatterns) => {
+      map((attackPatterns) => {
         this.frameworks.push(new Framework(framework, attackPatterns));
         return attackPatterns;
-      });
+      }));
   }
 
   /**

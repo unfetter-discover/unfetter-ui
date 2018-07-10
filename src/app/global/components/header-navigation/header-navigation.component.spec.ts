@@ -4,7 +4,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
 import { StoreModule, Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatMenuModule } from '@angular/material';
@@ -17,15 +17,20 @@ import { GenericApi } from '../../../core/services/genericapi.service';
 import * as fromApp from '../../../root-store/app.reducers';
 import * as userActions from '../../../root-store/users/user.actions';
 import { environment } from '../../../../environments/environment';
-import { runconfig } from '../../public-config';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 import { FieldSortPipe } from '../../pipes/field-sort.pipe';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
+import { RunConfigService } from '../../../core/services/run-config.service';
 
 describe('HeaderNavigationComponent', () => {
 
     let component: HeaderNavigationComponent;
     let fixture: ComponentFixture<HeaderNavigationComponent>;
+    const config = {
+        'showBanner': false,
+        'bannerText': '',
+        'authServices': [ 'github' ]
+    };
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -48,6 +53,10 @@ describe('HeaderNavigationComponent', () => {
                     AuthService,
                     GenericApi,
                     ConfigService,
+                    {
+                        provide: RunConfigService,
+                        useValue: { config: observableOf(config) }
+                    },
                 ],
                 schemas: [ NO_ERRORS_SCHEMA ]
             })
@@ -67,7 +76,6 @@ describe('HeaderNavigationComponent', () => {
     });
 
     it('displays the proper title', () => {
-        const logoEl = 'img.logo';
         const titleEl = 'span#titleWrapper span#titleText';
         const tests = [
             {title: '', logo: /.*logo\-default\.svg/, text: undefined},
@@ -89,12 +97,12 @@ describe('HeaderNavigationComponent', () => {
 
         {
             expect(component.topPx).toEqual('0px');
-
-            runconfig.uac.showBanner = true;
+            config.showBanner = true;
             const titledFixture = TestBed.createComponent(HeaderNavigationComponent);
             const titledComponent = titledFixture.componentInstance;
             titledFixture.detectChanges();
             expect(titledComponent.topPx).toEqual('17px');
+            config.showBanner = false;
         }
     });
 
@@ -131,7 +139,8 @@ describe('HeaderNavigationComponent', () => {
             firstName: 'Demo',
             lastName: 'User',
             role: 'STANDARD_USER',
-            oauth: {id: 1, userName: 'demo', avatar_url: 'assets/icon/stix-icons/svg/identity-b.svg'},
+            oauth: 'lderp',
+            lderp: {id: 1, userName: 'demo'},
             approved: true
         };
         const adminUser = {
@@ -140,7 +149,8 @@ describe('HeaderNavigationComponent', () => {
             firstName: 'Admin',
             lastName: 'User',
             role: 'ADMIN',
-            oauth: {id: 2, userName: 'admin', avatar_url: 'assets/icon/stix-icons/svg/identity-b.svg'},
+            oauth: 'lderp',
+            lderp: {id: 2, userName: 'admin', avatar_url: 'assets/icon/stix-icons/svg/identity-b.svg'},
             approved: true
         };
         const orgUser = {
@@ -150,7 +160,8 @@ describe('HeaderNavigationComponent', () => {
             lastName: 'Chief',
             organizations : [{ 'approved': true, 'role': 'STANDARD_USER' }],
             role: 'ORG_LEADER',
-            oauth: {id: 3, userName: 'chief', avatar_url: 'assets/icon/stix-icons/svg/identity-b.svg'},
+            oauth: 'lderp',
+            lderp: {id: 3, userName: 'chief', avatar_url: 'assets/icon/stix-icons/svg/identity-b.svg'},
             approved: true
         };
     

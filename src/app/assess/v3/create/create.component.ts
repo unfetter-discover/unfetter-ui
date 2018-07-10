@@ -2,12 +2,13 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
 import * as assessActions from '../store/assess.actions';
 import { LoadBaselines, UpdatePageTitle } from '../store/assess.actions';
 import * as assessReducers from '../store/assess.reducers';
+import * as assessSelectors from '../store/assess.selectors';
 import { Assess3Form } from './assess3.form';
 
 @Component({
@@ -51,7 +52,7 @@ export class CreateComponent implements OnInit {
    * @returns void
    */
   public listenForChanges(): void {
-    this.baselines = this.store.select(assessReducers.getSortedBaselines);
+    this.baselines = this.store.select(assessSelectors.getSortedBaselines);
   }
 
   /**

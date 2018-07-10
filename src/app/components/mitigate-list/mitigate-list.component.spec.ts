@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 
 import { MatCardModule, MatCheckboxModule } from '@angular/material';
@@ -36,11 +36,11 @@ describe('MitigateListComponent', () => {
     let getRelationships = (url, id) => {
         const uri = url.toString();
         if (uri.startsWith(Constance.RELATIONSHIPS_URL)) {
-            return Observable.of(mockRelationships.slice(0));
+            return observableOf(mockRelationships.slice(0));
         }
         const relationship = mockRelationships
             .find(rel => uri.includes(rel.attributes.source_ref) || uri.includes(rel.attributes.target_ref));
-        return Observable.of(new Relationship({
+        return observableOf(new Relationship({
             id: 'attack-pattern--1',
             type: Constance.INDICATOR_TYPE,
             attributes: {
@@ -74,8 +74,8 @@ describe('MitigateListComponent', () => {
                     provide: BaseComponentService,
                     useValue: {
                         get: getRelationships,
-                        save: () => Observable.of({}),
-                        delete: () => Observable.of({}),
+                        save: () => observableOf({}),
+                        delete: () => observableOf({}),
                     }
                 },
             ]

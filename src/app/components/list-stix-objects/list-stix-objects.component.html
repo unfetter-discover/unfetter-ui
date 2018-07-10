@@ -18,7 +18,8 @@
                                 </a>
                             </div>
                             <div class="truncate">
-                                <small>{{data.attributes.description}}</small>
+                                <markdown-editor [editing]="false" [truncate]="true"
+                                        [value]="data.attributes.description"></markdown-editor>
                             </div>
 
                             <mat-chip-list class="pull-left" *ngIf="showLabels">
@@ -52,10 +53,10 @@
                         </div>
 
                         <div class="col-lg-3 col-xs-12">
-                            <button mat-button (click)="editButtonClicked(data)">
+                            <button mat-button id="create-button" (click)="editButtonClicked(data)">
                                 <mat-icon class="mat-24">create</mat-icon>
                             </button>
-                            <button mat-button (click)="deleteButtonClicked(data)">
+                            <button mat-button id="delete-button" (click)="deleteButtonClicked(data)">
                                 <mat-icon class="mat-24">delete
                             </mat-icon></button>
                         </div>

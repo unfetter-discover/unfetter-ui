@@ -1,5 +1,5 @@
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 export const IndicatorForm = () => {
     return new FormGroup({
@@ -12,6 +12,7 @@ export const IndicatorForm = () => {
         valid_until: new FormControl(),
         external_references: new FormArray([]),
         kill_chain_phases: new FormArray([]),
+        x_mitre_data_sources: new FormControl([]),
         metaProperties: new FormGroup({
             observedData: new FormArray([]),
             additional_queries: new FormArray([]),

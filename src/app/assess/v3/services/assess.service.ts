@@ -1,8 +1,10 @@
+
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { empty as observableEmpty, forkJoin as observableForkJoin, Observable, zip as observableZip } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
-import { RiskByKillChain } from 'stix/assess/v2/risk-by-kill-chain';
+import { RiskByKillChain } from 'stix/assess/v3/risk-by-kill-chain';
 import { SummaryAggregation } from 'stix/assess/v2/summary-aggregation';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { JsonApiData } from 'stix/json/jsonapi-data';
@@ -11,7 +13,9 @@ import { RxjsHelpers } from '../../../global/static/rxjs-helpers';
 import { Constance } from '../../../utils/constance';
 import { LastModifiedAssessment } from '../models/last-modified-assessment';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+  })
 export class AssessService {
     public readonly assessBaseUrl = Constance.X_UNFETTER_ASSESSMENT_URL;
     public readonly relationshipsBaseUrl = Constance.RELATIONSHIPS_URL;
@@ -26,7 +30,7 @@ export class AssessService {
      */
     public genericGet(route = '') {
         if (!route) {
-            return Observable.empty();
+            return observableEmpty();
         }
         return this.genericApi.get(route);
     }
@@ -36,14 +40,15 @@ export class AssessService {
      * @param {string} url
      * @return {Observable<T>}
      */
-    public getAs<T>(url = ''): Observable<T|T[]> {
+    public getAs<T>(url = ''): Observable<T | T[]> {
         if (!url) {
-            return Observable.empty();
+            return observableEmpty();
         }
 
-        return this.genericApi
-            .getAs<JsonApiData<T>>(url)
-            .map<any, T|T[]>(RxjsHelpers.mapAttributes);
+        return this.genericApi.getAs<JsonApiData<T>>(url)
+            .pipe(
+                map<any, T | T[]>(RxjsHelpers.mapAttributes)
+            );
     }
 
     /**
@@ -53,7 +58,7 @@ export class AssessService {
      */
     public genericPost(route: string, data: any) {
         if (!route) {
-            return Observable.empty();
+            return observableEmpty();
         }
 
         return this.genericApi.post(route, { 'data': { 'attributes': data } });
@@ -66,7 +71,7 @@ export class AssessService {
      */
     public genericPatch(route: string, data: any) {
         if (!route) {
-            return Observable.empty();
+            return observableEmpty();
         }
 
         return this.genericApi.patch(route, { 'data': { 'attributes': data } });
@@ -79,7 +84,7 @@ export class AssessService {
      */
     public delete(item?: any): Observable<any> {
         if (!item) {
-            return Observable.empty();
+            return observableEmpty();
         }
 
         const url = this.assessBaseUrl + '/' + item.id;
@@ -106,10 +111,12 @@ export class AssessService {
         const url = `${this.assessBaseUrl}/${id}?metaproperties=${includeMeta}`;
         return this.genericApi
             .getAs<JsonApiData<Assessment>>(url)
-            // remove the attributes wrapping
-            .map<any, Assessment>(RxjsHelpers.mapAttributes)
-            // cast the object literal to an actual object so we have its methods
-            .map((assessment: Assessment) => new Assessment(assessment));
+            .pipe(
+                // remove the attributes wrapping
+                map<any, Assessment>(RxjsHelpers.mapAttributes),
+                // cast the object literal to an actual object so we have its methods
+                map((assessment: Assessment) => new Assessment(assessment))
+            );
     }
 
     /**
@@ -125,10 +132,12 @@ export class AssessService {
         const url = `${this.assessBaseUrl}?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
         return this.genericApi
             .getAs<JsonApiData<Assessment>[]>(url)
-            // remove the attributes wrapping
-            .map<any[], Assessment[]>(RxjsHelpers.mapAttributes)
-            // cast the object literal to an actual object so we have its methods
-            .map((arr: Assessment[]) => arr.map((_) => new Assessment(_)));
+            .pipe(
+                // remove the attributes wrapping
+                map<any[], Assessment[]>(RxjsHelpers.mapAttributes),
+                // cast the object literal to an actual object so we have its methods
+                map((arr: Assessment[]) => arr.map((_) => new Assessment(_)))
+            );
     }
 
     /**
@@ -138,7 +147,7 @@ export class AssessService {
      */
     public deleteByRollupId(id: string): Observable<any> {
         if (!id || id.trim().length === 0) {
-            return Observable.empty();
+            return observableEmpty();
         }
         const url = `${this.assessBaseUrl}`;
         const loadAll$ = this.getByRollupId(id);
@@ -150,12 +159,13 @@ export class AssessService {
                     const deleteUrl = `${url}/${assessment.id}`;
                     return this.genericApi.delete(deleteUrl);
                 });
-            return Observable.forkJoin(...calls);
+            return observableForkJoin(...calls);
         };
 
-        return Observable
-            .zip(loadAll$, deleteAssociated$)
-            .mergeMap((val) => val);
+        return observableZip(loadAll$, deleteAssociated$)
+            .pipe(
+                mergeMap((val) => val)
+            );
     }
 
     /**
@@ -165,7 +175,7 @@ export class AssessService {
      */
     public getRiskPerKillChain(id: string): Observable<any> {
         if (!id) {
-            return Observable.empty();
+            return observableEmpty();
         }
 
         const url = `${this.assessBaseUrl}/${id}/risk-per-kill-chain`;
@@ -179,7 +189,7 @@ export class AssessService {
  */
     public getRiskPerKillChainByRollupId(id: string): Observable<any> {
         if (!id) {
-            return Observable.empty();
+            return observableEmpty();
         }
 
         const url = `${this.assessBaseUrl}/${id}/risk-per-kill-chain`;
@@ -191,15 +201,13 @@ export class AssessService {
      * @param {string} id
      * @return {Observable<RiskByAttack>}
      */
-    public getRiskPerAttackPattern(id: string, includeMeta = true): Observable<RiskByAttack> {
+    public getRiskPerAttackPattern(id: string, includeMeta = true, isCapability = false): Observable<RiskByAttack> {
         if (!id) {
-            return Observable.empty();
+            return observableEmpty();
         }
-        const url = `${this.assessBaseUrl}/${id}/risk-by-attack-pattern?metaproperties=${includeMeta}`;
-        return this.genericApi
-            .getAs<RiskByAttack>(url);
+        const url = `${this.assessBaseUrl}/${id}/risk-by-attack-pattern?metaproperties=${includeMeta}&isCapability=${isCapability}`;
+        return this.genericApi.getAs<RiskByAttack>(url);
     }
-
 
     /**
      * @description
@@ -208,7 +216,7 @@ export class AssessService {
      */
     public getRiskPerAttackPatternByRollupId(id: string, includeMeta = true): Observable<RiskByAttack[]> {
         if (!id) {
-            return Observable.empty();
+            return observableEmpty();
         }
         const filter = {
             'metaProperties.rollupId': id
@@ -217,10 +225,12 @@ export class AssessService {
         const url = `${this.assessBaseUrl}/${id}/risk-by-attack-pattern?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
         return this.genericApi
             .getAs<JsonApiData<RiskByAttack>[]>(url)
-            // remove the attributes wrapping
-            .map<any[], RiskByAttack[]>(RxjsHelpers.mapAttributes)
-            // cast the object literal to an actual object so we have its methods
-            .map((arr: RiskByAttack[]) => arr.map((_) => Object.assign(new RiskByAttack(), _)));
+            .pipe(
+                // remove the attributes wrapping
+                map<any[], RiskByAttack[]>(RxjsHelpers.mapAttributes),
+                // cast the object literal to an actual object so we have its methods
+                map((arr: RiskByAttack[]) => arr.map((_) => Object.assign(new RiskByAttack(), _)))
+            );
     }
 
     /**
@@ -228,12 +238,12 @@ export class AssessService {
      * @param {string} id
      * @return {Observable}
      */
-    public getSummaryAggregation(id: string): Observable<SummaryAggregation> {
+    public getSummaryAggregation(id: string, isCapability: boolean = false): Observable<SummaryAggregation> {
         if (!id) {
-            return Observable.empty();
+            return observableEmpty();
         }
 
-        const url = `${this.assessBaseUrl}/${id}/summary-aggregations`;
+        const url = `${this.assessBaseUrl}/${id}/summary-aggregations?isCapability=${isCapability}`;
         return this.genericApi.getAs<SummaryAggregation>(url);
     }
 
@@ -244,7 +254,7 @@ export class AssessService {
      */
     public getSummaryAggregationByRollup(id: string, includeMeta = true): Observable<SummaryAggregation[]> {
         if (!id) {
-            return Observable.empty();
+            return observableEmpty();
         }
         const filter = {
             'metaProperties.rollupId': id
@@ -253,7 +263,9 @@ export class AssessService {
         const url = `${this.assessBaseUrl}/${id}/summary-aggregations?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
         return this.genericApi
             .getAs<JsonApiData<SummaryAggregation>[]>(url)
-            .map<any[], SummaryAggregation[]>(RxjsHelpers.mapAttributes);
+            .pipe(
+                map<any[], SummaryAggregation[]>(RxjsHelpers.mapAttributes)
+            );
     }
 
 
@@ -270,7 +282,9 @@ export class AssessService {
         const url = `${this.assessBaseUrl}?metaproperties=${includeMeta}&filter=${encodeURI(JSON.stringify(filter))}`;
         return this.genericApi
             .getAs<JsonApiData<Assessment>[]>(url)
-            .map<any[], Assessment[]>(RxjsHelpers.mapAttributes);
+            .pipe(
+                map<any[], Assessment[]>(RxjsHelpers.mapAttributes)
+            );
     }
 
     /**
@@ -280,8 +294,7 @@ export class AssessService {
      */
     public getLatestAssessments(): Observable<Partial<LastModifiedAssessment>[]> {
         const url = `${this.assessBaseUrl}/latest`;
-        return this.genericApi
-            .getAs<Partial<LastModifiedAssessment>[]>(url);
+        return this.genericApi.getAs<Partial<LastModifiedAssessment>[]>(url);
     }
 
     /**
@@ -293,8 +306,7 @@ export class AssessService {
      */
     public getLatestAssessmentsByCreatorId(creatorId: string, includeMeta = true): Observable<Partial<LastModifiedAssessment>[]> {
         const url = `${this.assessBaseUrl}/latest/${creatorId}`;
-        return this.genericApi
-            .getAs<Partial<LastModifiedAssessment>[]>(url);
+        return this.genericApi.getAs<Partial<LastModifiedAssessment>[]>(url);
     }
 
     /**
@@ -304,7 +316,7 @@ export class AssessService {
      */
     public getAssessedObjects(id: string): Observable<AssessmentObject[]> {
         if (!id) {
-            return Observable.empty();
+            return observableEmpty();
         }
 
         return this.genericApi.getAs<AssessmentObject[]>(`${this.assessBaseUrl}/${id}/assessed-objects`);
@@ -317,7 +329,7 @@ export class AssessService {
      */
     public getAttackPatternRelationships(id: string): Observable<any> {
         if (!id) {
-            return Observable.empty();
+            return observableEmpty();
         }
 
         let query = { 'stix.target_ref': id, 'stix.relationship_type': { $in: ['mitigates', 'indicates'] } };

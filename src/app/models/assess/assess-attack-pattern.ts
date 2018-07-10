@@ -7,7 +7,7 @@ import { KillChainPhase } from '../kill-chain-phase';
  */
 export class AssessAttackPattern {
     public description?: string;
-    public external_references? = [] as ExternalReference[];
+    public external_references = [] as ExternalReference[];
     public id?: string;
     public kill_chain_phases = [] as KillChainPhase[];
     public name?: string;

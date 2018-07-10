@@ -1,10 +1,10 @@
+
+import { switchMap } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { Observer } from 'rxjs/Observer';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable ,  Observer ,  Subscription } from 'rxjs';
 import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
 import { BaseStixService } from './base-stix.service';
 
@@ -120,8 +120,8 @@ export class BaseStixComponent<T = any> {
      * @returns void
      */
     public getItem(observer: Observer<T>): void {
-        const subscription = this.route.params
-            .switchMap((params: Params) => this.service.get(params['id']))
+        const subscription = this.route.params.pipe(
+            switchMap((params: Params) => this.service.get(params['id'])))
             .subscribe(
                 (stixObject) => {
                     observer.next(stixObject);
@@ -132,8 +132,8 @@ export class BaseStixComponent<T = any> {
     }
 
     public deleteItem(item: any, observer: any): void {
-        const subscription = this.route.params
-            .switchMap((params: Params) => this.service.delete(item))
+        const subscription = this.route.params.pipe(
+            switchMap((params: Params) => this.service.delete(item)))
             .subscribe(
                 (stixObject) => {
                     observer.next(stixObject);
@@ -141,7 +141,7 @@ export class BaseStixComponent<T = any> {
                     if (item.attributes.name) {
                         this.snackBar.open(item.attributes.name + ' has been successfully deleted', '', {
                             duration: this.duration,
-                            extraClasses: ['snack-bar-background-success']
+                            panelClass: ['snack-bar-background-success']
                         });
                     }
                 },
@@ -157,7 +157,7 @@ export class BaseStixComponent<T = any> {
                 if (item.attributes.name) {
                     this.snackBar.open(item.attributes.name + ' has been successfully saved', '', {
                         duration: this.duration,
-                        extraClasses: ['snack-bar-background-success']
+                        panelClass: ['snack-bar-background-success']
                     });
                 }
                 // data.url = item.url;
@@ -167,7 +167,7 @@ export class BaseStixComponent<T = any> {
                 //         observer.complete();
                 //         this.snackBar.open(item.attributes.name + ' has been successfully save', '', {
                 //             duration: this.duration,
-                //             extraClasses: ['snack-bar-background-success']
+                //             panelClass: ['snack-bar-background-success']
                 //         });
                 //     } , (error) => {
                 //         // handle errors here
@@ -175,7 +175,7 @@ export class BaseStixComponent<T = any> {
                 //         this.deleteItem(data, observer);
                 //         this.snackBar.open('Error ' + error , '', {
                 //             duration: this.duration,
-                //             extraClasses: ['snack-bar-background-error']
+                //             panelClass: ['snack-bar-background-error']
                 //         });
                 //     }, () => {
                 //         // prevent memory links
@@ -197,7 +197,7 @@ export class BaseStixComponent<T = any> {
                 if (item.attributes.name) {
                     this.snackBar.open(item.attributes.name + ' has been successfully saved', '', {
                         duration: this.duration,
-                        extraClasses: ['snack-bar-background-success']
+                        panelClass: ['snack-bar-background-success']
                     });
                 }
             },
@@ -295,7 +295,7 @@ export class BaseStixComponent<T = any> {
         // display errors here
         this.snackBar.open('Error ' + msg, '', {
             duration: this.duration,
-            extraClasses: ['snack-bar-background-error']
+            panelClass: ['snack-bar-background-error']
         });
     }
 

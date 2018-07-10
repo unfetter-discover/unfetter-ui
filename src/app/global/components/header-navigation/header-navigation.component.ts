@@ -1,13 +1,14 @@
 import { Component, ElementRef, HostListener, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
+
 import { environment } from '../../../../environments/environment';
-import { runconfig } from '../../public-config';
 import { AuthService } from '../../../core/services/auth.service';
+import { RunConfigService } from '../../../core/services/run-config.service';
 import * as fromApp from '../../../root-store/app.reducers';
 import * as userActions from '../../../root-store/users/user.actions';
 import { Constance } from '../../../utils/constance';
 import { fadeInOut } from '../../animations/fade-in-out';
-import { UserState } from '../../../root-store/users/users.reducers';
+import { filter, pluck } from 'rxjs/operators';
 
 @Component({
   selector: 'header-navigation',
@@ -58,34 +59,41 @@ export class HeaderNavigationComponent {
   public readonly swaggerUrl = Constance.SWAGGER_URL;
   public readonly runMode = environment.runMode;
   public readonly demoMode: boolean = (environment.runMode === 'DEMO');
-  public readonly showBanner = runconfig[this.runMode.toLowerCase()].showBanner;
-  public readonly authServices: string[] = runconfig[this.runMode.toLowerCase()].authServices || ['github'];
   public collapsed: boolean = true;
   public showAppMenu: boolean = false;
   public showAccountMenu: boolean = false;
   public topPx = '0px';
   public user$;
   public apiDocsIcon: string = Constance.LOGO_IMG_API_EXPLORER;
-  public orgLeaderIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD; // Placeholder icon
-  public adminIcon: string = Constance.LOGO_IMG_THREAT_DASHBOARD; // Placeholder icon
+  public orgLeaderIcon: string = Constance.LOGO_IMG_ORGANIZATIONS_MANAGEMENT; // Placeholder icon
+  public adminIcon: string = Constance.LOGO_IMG_ADMIN; // Placeholder icon
   public stixIcon: string = Constance.LOGO_IMG_STIX;
   public encodedToken: string = '';
   @Input() public title;
+  private _authServices: string[] = null;
 
   constructor(
     public authService: AuthService,
+    private runConfigService: RunConfigService,
     private store: Store<fromApp.AppState>,
     private el: ElementRef
   ) {
     this.user$ = this.store.select('users');
 
-    if (this.showBanner && this.showBanner === true) {
-      this.topPx = '17px';
-    }
+    this.runConfigService.config.subscribe(
+      (cfg) => {
+        if (cfg.showBanner === true) {
+          this.topPx = '17px';
+        }
+        this._authServices = cfg.authServices || ['github'];
+      }
+    );
 
     const getToken$ = this.user$
-      .filter((user) => user.token)
-      .pluck('token')
+      .pipe(
+        filter((user: any) => user.token),
+        pluck('token')
+      )
       .subscribe(
         (token) => {
           this.encodedToken = encodeURI(token);
@@ -101,14 +109,8 @@ export class HeaderNavigationComponent {
       );
   }
 
-  public getAvatar(user): string {
-    if (user && user.userProfile && user.userProfile.oauth) {
-      const oauth = user.userProfile.oauth;
-      if (user.userProfile[oauth] && user.userProfile[oauth].avatar_url) {
-        return user.userProfile[oauth].avatar_url;
-      }
-    }
-    return null;
+  public get authServices(): string[] {
+    return this._authServices;
   }
 
   @HostListener('document:click', ['$event']) public clickedOutside(event) {

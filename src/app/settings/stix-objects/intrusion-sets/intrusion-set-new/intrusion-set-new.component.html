@@ -6,19 +6,19 @@
 
 <div class="row">
     <div class="col-md-12">
-        <mat-input-container class="full-width">
+        <mat-form-field class="full-width">
         <input matInput placeholder="Name" required [(ngModel)]="intrusionSet.attributes.name" value="">
-        </mat-input-container>
+        </mat-form-field>
     </div>
 </div>
 <div class="row">
      <div class="col-md-6">
                  <!-- <p-calendar [(ngModel)]="intrusionSet.attributes.first_seen"  dateFormat="M-dd-yy"  showIcon="true"></p-calendar> -->
 
-            <!--<mat-input-container class="full-width">
+            <!--<mat-form-field class="full-width">
                     <input matInput [matDatepicker]="picker" placeholder="First Seen" [(ngModel)]="intrusionSet.attributes.first_seen">
                     <button matSuffix [matDatepickerToggle]="picker"></button>
-                </mat-input-container>
+                </mat-form-field>
                 <mat-datepicker #picker></mat-datepicker>-->
 
                 <mat-form-field class="full-width">
@@ -29,10 +29,10 @@
     </div>
     <div class="col-md-6">
                  <!-- <p-calendar [(ngModel)]="intrusionSet.attributes.last_seen"  dateFormat="M-dd-yy" showIcon="true"></p-calendar> -->
-                <!--<mat-input-container class="full-width">
+                <!--<mat-form-field class="full-width">
                     <input matInput [matDatepicker]="picker_last_seen" placeholder="Last Seen" [(ngModel)]="intrusionSet.attributes.last_seen">
                     <button matSuffix [matDatepickerToggle]="picker_last_seen"></button>
-                </mat-input-container>
+                </mat-form-field>
                 <mat-datepicker #picker_last_seen></mat-datepicker>-->
                 <mat-form-field class="full-width">
                     <input matInput [matDatepicker]="picker_last_seen" placeholder="Last Seen" [(ngModel)]="intrusionSet.attributes.last_seen">
@@ -45,10 +45,10 @@
 <div class="row selectRow">
     <div class="col-md-12">
            <form>
-            <mat-input-container class="full-width">
+            <mat-form-field class="full-width">
                 <input matInput placeholder="Primary Motivation" aria-label="Primary Motivation" [matAutocomplete]="auto"
                 [formControl]="motivationCtrl" [(ngModel)]="intrusionSet.attributes.primary_motivation">
-            </mat-input-container>
+            </mat-form-field>
         </form>
         <mat-autocomplete name="auto" #auto="matAutocomplete" >
             <mat-option *ngFor="let motivation of motivations" [value]="motivation">
@@ -62,19 +62,19 @@
 
 <!-- <div class="row">
     <div class="col-md-12">
-       <mat-input-container class="full-width">
+       <mat-form-field class="full-width">
         <input matInput placeholder="Goals"  [(ngModel)]="intrusionSet.attributes.goals" value="">
-        </mat-input-container>
+        </mat-form-field>
     </div>
 </div> -->
 
 <div class="row selectRow">
     <div class="col-md-12">
          <form>
-            <mat-input-container class="full-width">
+            <mat-form-field class="full-width">
                 <input matInput placeholder="Resource Level" aria-label="Resource Level" [matAutocomplete]="autores"
                 [formControl]="resourceLevelCtrl" [(ngModel)]="intrusionSet.attributes.resource_level">
-            </mat-input-container>
+            </mat-form-field>
         </form>
         <mat-autocomplete name="autores" #autores="matAutocomplete">
             <mat-option *ngFor="let resourceLevel of resourceLevels" [value]="resourceLevel">
@@ -112,11 +112,9 @@
 </div>
 
 <div class="row">
-    <div class="col-md-12">
-        <mat-input-container class="full-width">
-            <textarea matInput placeholder="Description" [(ngModel)]="intrusionSet.attributes.description" value=""></textarea>
-        </mat-input-container>
-    </div>
+    <markdown-editor [editing]="true" [inputLabel]="'Description (Markdown Editor)'"
+            [value]="intrusionSet.attributes.description"
+            (changed)="intrusionSet.attributes.description = $event"></markdown-editor>
 </div>
 
 <!--<external-reference [(model)]="intrusionSet"></external-reference>-->

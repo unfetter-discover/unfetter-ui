@@ -1,14 +1,12 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { OverlayModule } from '@angular/cdk/overlay';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-
-import { OverlayModule } from '@angular/cdk/overlay';
 import * as d3 from 'd3';
-
+import { ResizeDirective } from '../../directives/resize.directive';
 import { HeatmapComponent } from './heatmap.component';
 import { HeatmapOptions } from './heatmap.data';
-import { ResizeDirective } from '../../directives/resize.directive';
 
 describe('HeatmapComponent', () => {
 

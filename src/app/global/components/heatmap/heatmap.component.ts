@@ -1,26 +1,10 @@
-import {
-    Component,
-    Input,
-    Output,
-    OnInit,
-    AfterViewInit,
-    ViewChild,
-    ElementRef,
-    OnChanges,
-    SimpleChanges,
-    ChangeDetectorRef,
-    ChangeDetectionStrategy,
-    EventEmitter,
-} from '@angular/core';
-
-import * as CSSElementQueries from 'css-element-queries';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, NgZone } from '@angular/core';
 import * as d3 from 'd3';
-
-import { HeatBatchData, HeatCellData, HeatmapOptions, DOMRect, DEFAULT_OPTIONS, } from './heatmap.data';
-import { HeatmapPane, HeatmapRenderer, } from './heatmap.renderer';
-import { HeatmapColumnRenderer } from './heatmap.renderer.columns';
+import { ResizeDirective, ResizeEvent } from '../../directives/resize.directive';
 import { TooltipEvent } from '../tactics-pane/tactics-tooltip/tactics-tooltip.service';
-import { ResizeEvent, ResizeDirective } from '../../directives/resize.directive';
+import { DEFAULT_OPTIONS, DOMRect, HeatBatchData, HeatmapOptions } from './heatmap.data';
+import { HeatmapPane, HeatmapRenderer } from './heatmap.renderer';
+import { HeatmapColumnRenderer } from './heatmap.renderer.columns';
 
 @Component({
     selector: 'unf-heatmap',
@@ -68,6 +52,7 @@ export class HeatmapComponent implements OnInit, AfterViewInit, OnChanges, Heatm
 
     constructor(
         private changeDetector: ChangeDetectorRef,
+        private ngZone: NgZone,
     ) {
     }
 
@@ -77,16 +62,19 @@ export class HeatmapComponent implements OnInit, AfterViewInit, OnChanges, Heatm
     ngOnInit(): void {
         this.options = HeatmapOptions.merge(this.options, DEFAULT_OPTIONS);
         this.helper.component = this;
+        this.helper.angularZone = this.ngZone;
     }
 
     /**
      * @description init this component after it gets some screen real estate
      */
     ngAfterViewInit(): void {
-        requestAnimationFrame(() => {
-            this.helper.createHeatmap();
-            this.changeDetector.detectChanges();
-        });
+        // this.ngZone.runOutsideAngular(() => {
+            requestAnimationFrame(() => {
+                this.helper.createHeatmap();
+                this.changeDetector.markForCheck();
+            });
+        // });
     }
 
     /**
@@ -95,8 +83,10 @@ export class HeatmapComponent implements OnInit, AfterViewInit, OnChanges, Heatm
     ngOnChanges(changes: SimpleChanges) {
         if (changes && changes.data && !changes.data.firstChange) {
             console['debug'](`(${new Date().toISOString()}) heatmap data change detected`, changes.data);
-            this.changeDetector.markForCheck();
-            this.helper.createHeatmap();
+            // this.ngZone.runOutsideAngular(() => {
+                this.helper.createHeatmap();
+                this.changeDetector.markForCheck();
+            // });
         }
     }
 
@@ -104,21 +94,24 @@ export class HeatmapComponent implements OnInit, AfterViewInit, OnChanges, Heatm
      * @description handle changes to the viewport size
      */
     onResize(event?: ResizeEvent) {
-        if (this.resizeTimer) {
-            window.clearTimeout(this.resizeTimer);
-        }
-        this.resizeTimer = window.setTimeout(() => {
-            this.resizeTimer = null;
-            const node: any = d3.select(`${this.options.view.component} .heat-map`).node();
-            const rect: DOMRect = node ? node.getBoundingClientRect() : null;
-            if (!node || !rect || !rect.width || !rect.height) {
-                return;
-            } else if (!this.bounds || (this.bounds.width !== rect.width) || (this.bounds.height !== rect.height)) {
-                console['debug'](`(${new Date().toISOString()}) heatmap viewport change detected`);
-                this.bounds = rect;
-                this.redraw();
+        // this.ngZone.runOutsideAngular(() => {
+            if (this.resizeTimer) {
+                window.clearTimeout(this.resizeTimer);
             }
-        }, 100);
+            this.resizeTimer = window.setTimeout(() => {
+                this.resizeTimer = null;
+
+                const node: any = d3.select(`${this.options.view.component} .heat-map`).node();
+                const rect: DOMRect = node ? node.getBoundingClientRect() : null;
+                if (!node || !rect || !rect.width || !rect.height) {
+                    return;
+                } else if (!this.bounds || (this.bounds.width !== rect.width) || (this.bounds.height !== rect.height)) {
+                    console['debug'](`(${new Date().toISOString()}) heatmap viewport change detected`);
+                    this.bounds = rect;
+                    this.redraw();
+                }
+            }, 100);
+        // });
     }
 
     /**
@@ -126,8 +119,8 @@ export class HeatmapComponent implements OnInit, AfterViewInit, OnChanges, Heatm
      */
     public redraw() {
         this.resizer.sensor.reset();
-        this.changeDetector.markForCheck();
         this.helper.createHeatmap();
+        this.changeDetector.markForCheck();
     }
 
     /**

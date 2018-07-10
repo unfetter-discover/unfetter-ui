@@ -1,0 +1,23 @@
+<div class="unfSelectionListComponent" *ngIf="stix && stix.length">
+  <div class="uf-well filterWell">
+    <mat-form-field class="full-width filterWrapper">
+      <input matInput placeholder="Filter List" [formControl]="filterCtrl">
+    </mat-form-field>
+  </div>
+  <div class="uf-well stixList" [style.maxHeight]="listMaxHeight">
+    <mat-selection-list [formControl]="formCtrl">
+      <mat-list-option *ngFor="let s of stix | sortByField:'name':'ascending'; let i = index" [value]="s.id" [style.display]="hideStixObj[s.id] ? 'none' : 'block'">
+        {{ s.name }}
+      </mat-list-option>
+    </mat-selection-list>
+  </div>
+  <div class="uf-well">
+    <p class="flex ctrlWrapper">
+      <small>
+        <mat-checkbox color="primary" [(ngModel)]="showSelectedOnly" (change)="hideObjs()">Show Selected Only</mat-checkbox>
+      </small>
+      <span class="flex1"></span>
+      <small>{{ formCtrl.value.length }} / {{ stix.length }} Items Selected</small>
+    </p>
+  </div>
+</div>

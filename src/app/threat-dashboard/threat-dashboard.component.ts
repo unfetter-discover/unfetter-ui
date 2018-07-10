@@ -1,9 +1,11 @@
+
+import { empty as observableEmpty, of as observableOf, forkJoin as observableForkJoin,  Observable ,  Subscription  } from 'rxjs';
+
+import { finalize, take, pluck, tap, map } from 'rxjs/operators';
 import { Component, EventEmitter, OnDestroy, OnInit, Output, Renderer2 } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
 import { AttackPatternService } from '../core/services/attack-pattern.service';
 import { GenericApi } from '../core/services/genericapi.service';
@@ -104,14 +106,14 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
       (row: any) => isSameThreatReport(row) ? 'current-item' : 'cursor-pointer';
     this.masterListOptions.columns.id.selectable = (row: any) => !isSameThreatReport(row);
 
-    const getId$ = this.route.params
-      .pluck('id')
+    const getId$ = this.route.params.pipe(
+      pluck('id'))
       .subscribe(
         (id: string) => {
           const getUser$ = this.userStore
-            .select('users')
-            .pluck('userProfile')
-            .take(1)
+            .select('users').pipe(
+            pluck('userProfile'),
+            take(1))
             .subscribe((user: UserProfile) => {
               this.user = user;
               this.threatReport = null;
@@ -150,10 +152,10 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     const loadAttackPatterns$ = this.loadAttackPatterns();
     const loadIntrusionSets$ = this.loadIntrusionSets();
     // load the report and attackpatterns
-    const loadAll$ = Observable.forkJoin(loadReport$, loadAttackPatterns$, loadIntrusionSets$);
+    const loadAll$ = observableForkJoin(loadReport$, loadAttackPatterns$, loadIntrusionSets$);
     const logErr = (err) => console.log('request err', err);
     const noop = () => { };
-    const sub$ = loadAll$.finally(() => this.fetchIntrusionSetsAndRender())
+    const sub$ = loadAll$.pipe(finalize(() => this.fetchIntrusionSetsAndRender()))
       .subscribe(noop, logErr.bind(this));
     this.subscriptions.push(sub$);
   }
@@ -185,12 +187,12 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
     }
 
     // build and render the visualizations
-    const sub2$ = this.loadIntrusionSetMapping(intrusionIds)
-      .map((mappings) => {
+    const sub2$ = this.loadIntrusionSetMapping(intrusionIds).pipe(
+      map((mappings) => {
         // finish load and render something so the svg has a size to work from
         this.notifyDoneLoading();
         this.renderVisualizations();
-      })
+      }))
       .subscribe(noop, logErr.bind(this));
     this.subscriptions.push(sub2$);
   }
@@ -255,7 +257,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    * @return {Obsevable<ThreatReport}
    */
   public loadThreatReport(): Observable<ThreatReport> {
-    return this.threatReportService.load(this.id).map((el) => this.threatReport = el as ThreatReport);
+    return this.threatReportService.load(this.id).pipe(map((el) => this.threatReport = el as ThreatReport));
   }
 
   /**
@@ -265,13 +267,13 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
   public loadAttackPatterns(): Observable<AttackPattern[]> {
     const userFramework = (this.user && this.user.preferences && this.user.preferences.killchain)
       ? this.user.preferences.killchain : '';
-    return this.attackPatternService.fetchAttackPatterns1(userFramework)
-      .map((el) => this.attackPatterns = el)
-      .do(() => {
+    return this.attackPatternService.fetchAttackPatterns1(userFramework).pipe(
+      map((el) => this.attackPatterns = el),
+      tap(() => {
         this.uniqChainNames = this.generateUniqChainNames(this.attackPatterns);
         this.selectedChain = this.determineFilter(this.uniqChainNames);
         this.attackPatterns = this.filterAttackPatterns(this.attackPatterns, this.selectedChain);
-      });
+      }));
   }
 
   /**
@@ -280,7 +282,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    */
   public loadIntrusionSets(): Observable<IntrusionSet[]> {
     const url = `${Constance.INTRUSION_SET_URL}?${this.sort}`;
-    return this.genericApi.get(url).map((data) => this.intrusionSets = data);
+    return this.genericApi.get(url).pipe(map((data) => this.intrusionSets = data));
   }
 
   /**
@@ -288,11 +290,11 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    */
   public loadIntrusionSetMapping(ids: string[] = []): Observable<ThreatDashboard> {
     if (ids.length === 0) {
-      return Observable.of();
+      return observableOf();
     }
     this.intrusionSetsDashboard.killChainPhases = undefined;
     const url = 'api/dashboards/intrusionSetView?intrusionSetIds=' + ids.join();
-    return this.genericApi.get(url).map((data) => this.intrusionSetsDashboard = data);
+    return this.genericApi.get(url).pipe(map((data) => this.intrusionSetsDashboard = data));
   }
 
   /**
@@ -496,7 +498,8 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
         //     (Math.log(selectedAttackPatterns.length) / Math.LN10) : 0;
         // dataPoint.value = val;
         dataPoint.value = Math.round((selectedAttackPatterns.length / total) * 100);
-        dataPoint.value = dataPoint.value > 0 ? Math.log(dataPoint.value) : 0;
+        // log does not work well for few elements
+        // dataPoint.value = dataPoint.value > 0 ? Math.log(dataPoint.value) : 0;
         return dataPoint;
       });
 
@@ -611,7 +614,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    */
   public load(workProductId: string): Observable<Partial<ThreatReport>> {
     if (!workProductId || workProductId.trim().length === 0) {
-      return Observable.empty();
+      return observableEmpty();
     }
     return this.threatReportService.load(workProductId);
   }

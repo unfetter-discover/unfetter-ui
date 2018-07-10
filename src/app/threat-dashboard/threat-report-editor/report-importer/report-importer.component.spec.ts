@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 import { compile } from 'handlebars';
 import * as UUID from 'uuid';
 
@@ -50,20 +50,20 @@ describe('ReportImporterComponent', () => {
         load: (id: string): Observable<ThreatReport> => {
             const workProduct = new ThreatReport();
             workProduct.reports = [loadReport(goodReportID)];
-            return Observable.of(workProduct);
+            return observableOf(workProduct);
         },
 
         loadAllReports(): Observable<Report[]> {
             const reports = new Array<Report>();
             const array = [UUID.v4(), UUID.v4(), UUID.v4(), UUID.v4()];
             array.concat(goodReportID, badReportID).forEach(id => reports.push(loadReport(id)));
-            return Observable.of(reports);
+            return observableOf(reports);
         }
     }
 
     const mockUploadService = {
         post: (file: File): Observable<Report[]> => {
-            return Observable.of([loadReport(UUID.v4())]);
+            return observableOf([loadReport(UUID.v4())]);
         }
     };
 

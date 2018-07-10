@@ -10,7 +10,7 @@ import { usersReducer } from '../../root-store/users/users.reducers';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { IndicatorSharingService } from '../indicator-sharing.service';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 
 describe('IndicatorSharingListComponent', () => {
     let component: IndicatorSharingListComponent;
@@ -25,7 +25,7 @@ describe('IndicatorSharingListComponent', () => {
 
     const mockIndicatorSharingService = {
         getDownloadData: (p1, p2, p3) => {
-            return Observable.of([]);
+            return observableOf([]);
         }
     };
 

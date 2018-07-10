@@ -6,6 +6,7 @@ import { StoreModule, combineReducers } from '@ngrx/store';
 import * as fromRoot from 'app/root-store/app.reducers';
 import { baselineReducer } from '../../../baseline/store/baseline.reducers';
 import { CapabilitySelectorComponent } from './capability-selector.component';
+import { FieldSortPipe } from '../../../global/pipes/field-sort.pipe';
 
 describe('CapabilitySelectorComponent', () => {
   let component: CapabilitySelectorComponent;
@@ -20,7 +21,7 @@ describe('CapabilitySelectorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CapabilitySelectorComponent ],
+      declarations: [ CapabilitySelectorComponent, FieldSortPipe ],
       imports: [
         RouterTestingModule,
         NoopAnimationsModule,
@@ -41,7 +42,7 @@ describe('CapabilitySelectorComponent', () => {
   });
 
   it('should create', () => {
-    // expect(component).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 
 });

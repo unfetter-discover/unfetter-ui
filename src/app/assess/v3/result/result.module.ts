@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule, MatProgressSpinnerModule, MatSelectModule, MatSliderModule, MatTableModule, MatTabsModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
@@ -17,7 +17,6 @@ import { RiskByAttackPatternEffects } from './store/riskbyattackpattern.effects'
 import { riskByAttackPatternReducer } from './store/riskbyattackpattern.reducers';
 import { SummaryEffects } from './store/summary.effects';
 import { summaryReducer } from './store/summary.reducers';
-import { SummaryCalculationService } from './summary/summary-calculation.service';
 import { SummaryHeaderComponent } from './summary/summary-header/summary-header.component';
 import { AssessmentChartComponent } from './summary/summary-report/assessment-chart/assessment-chart.component';
 import { SophisticationBreakdownComponent } from './summary/summary-report/sophistication-breakdown/sophistication-breakdown.component';
@@ -48,6 +47,7 @@ const moduleComponents = [
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     RouterModule,
     ...materialModules,
     GlobalModule,
@@ -67,6 +67,8 @@ const moduleComponents = [
     SophisticationBreakdownComponent,
     TechniquesChartComponent,
     AssessmentChartComponent],
-  providers: [SummaryCalculationService]
+  providers: [
+
+  ],
 })
 export class ResultModule { }

@@ -1,24 +1,18 @@
-import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { Assess3Meta } from 'stix/assess/v3/assess3-meta';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { AssessmentSet } from 'stix/assess/v3/baseline/assessment-set';
+import { Capability } from 'stix/assess/v3/baseline/capability';
+import { Category } from 'stix/assess/v3/baseline/category';
 import { ObjectAssessment } from 'stix/assess/v3/baseline/object-assessment';
 import { Indicator } from 'stix/stix/indicator';
 import { Stix } from 'stix/unfetter/stix';
-import { SortHelper } from '../../../global/static/sort-helper';
-import * as fromApp from '../../../root-store/app.reducers';
 import * as assessmentActions from './assess.actions';
-import { Capability } from 'stix/assess/v3/baseline/capability';
-
-export interface AssessFeatureState extends fromApp.AppState {
-    assessment: Assessment
-};
 
 export interface AssessState {
     assessment: Assessment;
     backButton: boolean;
     baselines?: AssessmentSet[];
     capabilities: Capability[];
+    categories: Category[];
     currentBaseline?: AssessmentSet;
     currentBaselineQuestions?: ObjectAssessment[];
     failedToLoad: boolean;
@@ -30,12 +24,13 @@ export interface AssessState {
     showSummary: boolean;
 };
 
-const genAssessState = (state?: Partial<AssessState>) => {
+export const genAssessState = (state?: Partial<AssessState>) => {
     const tmp = {
         assessment: new Assessment(),
         backButton: false,
         baselines: [],
         capabilities: [],
+        categories: [],
         failedToLoad: false,
         finishedLoading: false,
         page: 1,
@@ -94,7 +89,12 @@ export function assessmentReducer(state = initialState, action: assessmentAction
         case assessmentActions.SET_CAPABILITIES:
             return genAssessState({
                 ...state,
-                capabilities: [ ...action.payload ],
+                capabilities: [...action.payload],
+            });
+        case assessmentActions.SET_CATEGORIES:
+            return genAssessState({
+                ...state,
+                categories: [...action.payload],
             });
         case assessmentActions.SET_CURRENT_BASELINE:
             return genAssessState({
@@ -104,7 +104,7 @@ export function assessmentReducer(state = initialState, action: assessmentAction
         case assessmentActions.SET_CURRENT_BASELINE_QUESTIONS:
             return genAssessState({
                 ...state,
-                currentBaselineQuestions: [ ...action.payload ],
+                currentBaselineQuestions: [...action.payload],
             });
         case assessmentActions.FINISHED_LOADING:
             return genAssessState({
@@ -138,80 +138,3 @@ export function assessmentReducer(state = initialState, action: assessmentAction
             return state;
     }
 }
-
-const getAssessState = createFeatureSelector<AssessState>('assessment');
-
-export const getAssessmentState = createSelector(
-    getAssessState,
-    (state: AssessState) => state.assessment
-);
-
-export const getAssessmentName = createSelector(
-    getAssessmentState,
-    (state: Assessment) => state.name
-);
-
-export const getAssessmentMeta = createSelector(
-    getAssessmentState,
-    (state: Assessment) => state.assessmentMeta
-);
-
-export const getAssessmentMetaTitle = createSelector(
-    getAssessmentMeta,
-    (state: Assess3Meta) => state.title
-);
-
-export const getBaselines = createSelector(
-    getAssessState,
-    (state: AssessState) => state.baselines
-);
-
-export const getSortedBaselines = createSelector(
-    getBaselines,
-    (state: AssessmentSet[]) => state.sort(SortHelper.sortDescByField('name'))
-);
-
-export const getBackButton = createSelector(
-    getAssessState,
-    (state) => state.backButton
-);
-
-export const getMitigationsQuestions = createSelector(
-    getAssessState,
-    (state) => state.mitigations
-);
-
-export const getIndicatorQuestions = createSelector(
-    getAssessState,
-    (state) => state.indicators
-);
-
-export const getCurrentBaselineQuestions = createSelector(
-    getAssessState,
-    (state) => state.currentBaselineQuestions
-);
-
-export const getCurrentWizardPage = createSelector(
-    getAssessState,
-    (state) => state.page
-);
-
-export const getAssessmentSavedState = createSelector(
-    getAssessState,
-    (state) => state.saved
-);
-
-export const getFinishedLoading = createSelector(
-    getAssessState,
-    (state) => state.finishedLoading
-);
-
-export const getFailedToLoad = createSelector(
-    getAssessState,
-    (state) => state.failedToLoad
-);
-
-export const getCapabilities = createSelector(
-    getAssessState,
-    (state) => state.capabilities,
-)

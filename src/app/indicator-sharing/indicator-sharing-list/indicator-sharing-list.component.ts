@@ -1,10 +1,8 @@
+import { take, filter, pluck, distinctUntilChanged, distinctUntilKeyChanged, finalize, debounceTime } from 'rxjs/operators';
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { MatDialog, MatSidenav } from '@angular/material';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/pluck';
+import { Observable ,  BehaviorSubject } from 'rxjs';
 
 import { AddIndicatorComponent } from '../add-indicator/add-indicator.component';
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
@@ -14,17 +12,12 @@ import { IndicatorBase } from '../models/indicator-base-class';
 import { fadeInOut } from '../../global/animations/fade-in-out';
 import { ConfirmationDialogComponent } from '../../components/dialogs/confirmation/confirmation-dialog.component';
 import { initialSearchParameters } from '../store/indicator-sharing.reducers';
-import { IndicatorHeatMapComponent } from '../indicator-tactics/indicator-heat-map.component';
 import { heightCollapse } from '../../global/animations/height-collapse';
 import { generateStixRelationship } from '../../global/static/stix-relationship';
 import { StixRelationshipTypes } from '../../global/enums/stix-relationship-types.enum';
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { downloadBundle } from '../../global/static/stix-bundle';
-import { TreemapOptions } from '../../global/components/treemap/treemap.data';
-import { HeatmapOptions, HeatColor } from '../../global/components/heatmap/heatmap.data';
-import { Tactic } from '../../global/components/tactics-pane/tactics.model';
-import { Dictionary } from '../../models/json/dictionary';
-import { CarouselOptions } from '../../global/components/tactics-pane/tactics-carousel/carousel.data';
+import { SearchParameters } from '../models/search-parameters';
 
 type mainWell = 'stats' | 'tactics' | 'none';
 
@@ -39,13 +32,19 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
 
     public displayedIndicators: any[];
     public filteredIndicators: any[];
-    public DEFAULT_LENGTH: number = 10;
-    public searchParameters;
+    public DEFAULT_LENGTH: number = Constance.INDICATOR_SHARING.DEFAULT_LIST_LENGTH;
     public filterOpen: boolean = false;
     public filterOpened: boolean = false;
     public collapseAllCards: boolean = false;
     public activeMainWell: mainWell = 'tactics';
+    public totalIndicatorCount$: Observable<number>
     public collapseAllCardsSubject: BehaviorSubject<boolean> = new BehaviorSubject(this.collapseAllCards);
+    public initialHighlightObj = {
+        labels: {},
+        intrusionSets: {},
+        phases: {}
+    };
+    public highlightObj = { ...this.initialHighlightObj };
 
     @ViewChild('filterContainer') public filterContainer: MatSidenav;
 
@@ -57,23 +56,25 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
         protected changeDetectorRef: ChangeDetectorRef
     ) {
         super(store, changeDetectorRef);
+        this.totalIndicatorCount$ = this.store.select('indicatorSharing')
+            .pipe(pluck('totalIndicatorCount'));
     }
 
     public ngOnInit() {
         this.initBaseData();
 
-        const filteredIndicatorSub$ = this.store.select('indicatorSharing')
-            .pluck('filteredIndicators')
-            .distinctUntilChanged()
+        const filteredIndicatorSub$ = this.store.select('indicatorSharing').pipe(
+            pluck('filteredIndicators'),
+            distinctUntilChanged())
             .subscribe(
                 (res: any[]) => this.filteredIndicators = res,
                 (err) => console.log(err),
                 () => filteredIndicatorSub$.unsubscribe()
             );
 
-        const displayedIndicatorSub$ = this.store.select('indicatorSharing')
-            .pluck('displayedIndicators')
-            .distinctUntilChanged()
+        const displayedIndicatorSub$ = this.store.select('indicatorSharing').pipe(
+            pluck('displayedIndicators'),
+            distinctUntilChanged())
             .subscribe(
                 (res: any[]) => {
                     this.displayedIndicators = res;
@@ -87,27 +88,45 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
             );
 
         const searchParametersSub$ = this.store.select('indicatorSharing')
-            .pluck('searchParameters')
-            .distinctUntilChanged()
+            .pipe(
+                pluck('searchParameters'),
+                debounceTime(15),
+                distinctUntilChanged<SearchParameters>(),
+                finalize(() => searchParametersSub$ && searchParametersSub$.unsubscribe())
+            )
             .subscribe(
-                (res) => {
-                    if (!this.filterOpened && JSON.stringify(res) !== JSON.stringify(initialSearchParameters)) {
+                (searchParameters) => {
+                    // ~~~ Auto filter open on first search ~~~
+                    if (!this.filterOpened && JSON.stringify(searchParameters) !== JSON.stringify(initialSearchParameters)) {
                         // Open container on first valid search if it wasn't already opened
                         this.filterContainer.open();
                     }
-                    this.searchParameters = res;
+
+                    // ~~~ (Re)build highlightObj map ~~~
+                    this.highlightObj.phases = {};
+                    this.highlightObj.labels = {};
+                    this.highlightObj.intrusionSets = {};
+
+                    searchParameters.killChainPhases.forEach((phase) => {
+                        this.highlightObj.phases[phase] = true;
+                    });
+
+                    searchParameters.labels.forEach((label) => {
+                        this.highlightObj.labels[label] = true;
+                    });
+
+                    searchParameters.intrusionSets.forEach((intrusionSet) => {
+                        this.highlightObj.intrusionSets[intrusionSet] = true;
+                    });
                 },
                 (err) => {
                     console.log(err);
-                },
-                () => {
-                    searchParametersSub$.unsubscribe();
                 }
             );
 
-        const indicatorToSensorMap$ = this.store.select('indicatorSharing')
-            .pluck('indicatorToSensorMap')
-            .distinctUntilChanged()
+        const indicatorToSensorMap$ = this.store.select('indicatorSharing').pipe(
+            pluck('indicatorToSensorMap'),
+            distinctUntilChanged())
             .subscribe(
                 (res) => {
                     this.indicatorToSensorMap = res;
@@ -116,13 +135,13 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                     console.log(err);
                 },
                 () => {
-                    searchParametersSub$.unsubscribe();
+                    indicatorToSensorMap$.unsubscribe();
                 }
             );
 
-        const getUser$ = this.store.select('users')
-            .filter((users: any) => users.userProfile && users.userProfile._id)
-            .take(1)
+        const getUser$ = this.store.select('users').pipe(
+            filter((users: any) => users.userProfile && users.userProfile._id),
+            take(1))
             .subscribe(
                 (users: any) => {
                     this.store.dispatch(new indicatorSharingActions.StartSocialStream(users.userProfile._id));

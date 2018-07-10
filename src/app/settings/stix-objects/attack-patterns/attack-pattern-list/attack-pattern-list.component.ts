@@ -1,9 +1,11 @@
+
+import { take, pluck } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { AttackPattern, KillChainPhase } from '../../../../models';
 import { UserProfile } from '../../../../models/user/user-profile';
 import { AppState } from '../../../../root-store/app.reducers';
@@ -47,9 +49,9 @@ export class AttackPatternListComponent extends AttackPatternComponent implement
      */
     public ngOnInit(): void {
         const getUser$ = this.userStore
-            .select('users')
-            .pluck('userProfile')
-            .take(1)
+            .select('users').pipe(
+            pluck('userProfile'),
+            take(1))
             .subscribe((user: UserProfile) => {
                 this.user = user;
                 this.fetchData(user);

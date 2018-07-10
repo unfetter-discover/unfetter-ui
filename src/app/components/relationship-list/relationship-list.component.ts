@@ -1,6 +1,8 @@
+
+import { finalize } from 'rxjs/operators';
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Campaign, Indicator, AttackPattern, Relationship, Filter } from '../../models';
 import { Constance } from '../../utils/constance';
 import { BaseComponentService } from '../base-service.component';
@@ -18,7 +20,6 @@ export class RelationshipListComponent implements OnInit, OnChanges {
     public relationships: Relationship[];
 
     constructor(public baseComponentService: BaseComponentService, public router: Router) {
-        console.dir(this.model);
     }
 
     public ngOnInit() {
@@ -35,12 +36,14 @@ export class RelationshipListComponent implements OnInit, OnChanges {
     public loadRelationships(filter: any): void {
         let url = Constance.RELATIONSHIPS_URL + '?filter=' + JSON.stringify(filter);
         let sub =  this.baseComponentService.get( encodeURI(url) )
-            .finally(() => {
-                // prevent memory links
-                if (sub) {
-                    sub.unsubscribe();
-                }
-            })
+            .pipe(
+                finalize(() => {
+                    // prevent memory links
+                    if (sub) {
+                        sub.unsubscribe();
+                    }
+                })
+            )
             .subscribe(
                 (data) => {
                     this.relationships = data as Relationship[];
@@ -95,11 +98,13 @@ export class RelationshipListComponent implements OnInit, OnChanges {
     public load(url: string, id: string ): void {
         const uri = `${url}/${id}`;
         let sub = this.baseComponentService.get(uri)
-            .finally(() => {
-                if (sub) {
-                    sub.unsubscribe();
-                }
-            })
+            .pipe(
+                finalize(() => {
+                    if (sub) {
+                        sub.unsubscribe();
+                    }
+                })
+            )
             .subscribe(
                 (data) => this.relationshipMapping.push(data),
                 (error) => console.log(error),

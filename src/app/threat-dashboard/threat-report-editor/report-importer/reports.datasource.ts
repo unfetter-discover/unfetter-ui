@@ -1,9 +1,11 @@
+
+import { merge as observableMerge,  BehaviorSubject ,  Observable  } from 'rxjs';
+
+import { map, multicast } from 'rxjs/operators';
 import { EventEmitter } from '@angular/core';
 import { DataSource } from '@angular/cdk/table';
 import { CollectionViewer } from '@angular/cdk/collections';
 import { MatPaginator, PageEvent } from '@angular/material';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
 
 import { Report } from '../../../models/report';
 
@@ -28,7 +30,7 @@ export class ReportsDataSource extends DataSource<Report> {
 
     constructor(public reports$: Observable<Report[]>) {
         super();
-        const co = reports$.multicast(this.dataChange$);
+        const co: any = reports$.pipe(multicast(this.dataChange$));
         co.connect();
     }
 
@@ -42,7 +44,7 @@ export class ReportsDataSource extends DataSource<Report> {
             this.pageChange$,
         ];
 
-        return Observable.merge(...changes).map(() => {
+        return observableMerge(...changes).pipe(map(() => {
             let data = this.dataChange$.value;
             const value = this.filterChange$.value.toLowerCase();
             if (value || value.trim().length > 0) {
@@ -69,7 +71,7 @@ export class ReportsDataSource extends DataSource<Report> {
             const display = data.slice(startIndex, stopIndex);
             this.displayLenSubject$.next(data.length);
             return display;
-        });
+        }));
     }
 
     public disconnect(collectionViewer: CollectionViewer): void {

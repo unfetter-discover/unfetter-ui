@@ -1,8 +1,11 @@
+
+import { of as observableOf, forkJoin as observableForkJoin, empty as observableEmpty,  Observable  } from 'rxjs';
+
+import { filter, catchError, mergeMap, switchMap, map, tap, pluck } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
-import { Observable } from 'rxjs/Observable';
 import { Relationship } from '../../../../models';
 import { Assessment } from 'stix/assess/v2/assessment';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
@@ -26,71 +29,71 @@ export class FullResultEffects {
 
     @Effect()
     public fetchAssessmentsByRollupId = this.actions$
-        .ofType(LOAD_ASSESSMENTS_BY_ROLLUP_ID)
-        .pluck('payload')
-        .switchMap((rollupId: string) => {
+        .ofType(LOAD_ASSESSMENTS_BY_ROLLUP_ID).pipe(
+        pluck('payload'),
+        switchMap((rollupId: string) => {
             return this.assessService
-                .getByRollupId(rollupId)
-                .catch(() => Observable.empty());
-        })
-        .mergeMap((data: Assessment[]) => [new SetAssessments(data), new FinishedLoading(true)]);
+                .getByRollupId(rollupId).pipe(
+                catchError(() => observableEmpty()));
+        }),
+        mergeMap((data: Assessment[]) => [new SetAssessments(data), new FinishedLoading(true)]));
 
     @Effect()
     public fetchAssessmentById = this.actions$
-        .ofType(LOAD_ASSESSMENT_BY_ID)
-        .pluck('payload')
-        .switchMap((id: string) => {
+        .ofType(LOAD_ASSESSMENT_BY_ID).pipe(
+        pluck('payload'),
+        switchMap((id: string) => {
             return this.assessService
-                .getById(id)
-                .catch(() => Observable.empty());
-        })
-        .mergeMap((data: Assessment) => [new SetAssessment(data), new FinishedLoading(true)]);
+                .getById(id).pipe(
+                catchError(() => observableEmpty()));
+        }),
+        mergeMap((data: Assessment) => [new SetAssessment(data), new FinishedLoading(true)]));
 
     @Effect()
     public fetchAssessmentGroupData = this.actions$
-        .ofType(LOAD_GROUP_DATA)
-        .pluck('payload')
-        .switchMap((assessmentId: string) => {
+        .ofType(LOAD_GROUP_DATA).pipe(
+        pluck('payload'),
+        switchMap((assessmentId: string) => {
             const getAssessedObjects$ = this.assessService.getAssessedObjects(assessmentId);
             const getRiskByAttackPattern$ = this.assessService.getRiskPerAttackPattern(assessmentId);
-            return Observable.forkJoin(getAssessedObjects$, getRiskByAttackPattern$);
-        })
-        .map(([assessedObjects, riskByAttackPattern]) => {
+            return observableForkJoin(getAssessedObjects$, getRiskByAttackPattern$);
+        }),
+        map(([assessedObjects, riskByAttackPattern]) => {
             riskByAttackPattern = riskByAttackPattern || new RiskByAttack;
             return new SetGroupData({ assessedObjects, riskByAttackPattern });
-        });
+        }));
 
     @Effect()
     public loadGroupCurrentAttackPattern = this.actions$
-        .ofType(LOAD_GROUP_CURRENT_ATTACK_PATTERN)
-        .pluck('payload')
-        .switchMap((attackPatternId: string) => {
+        .ofType(LOAD_GROUP_CURRENT_ATTACK_PATTERN).pipe(
+        pluck('payload'),
+        switchMap((attackPatternId: string) => {
             return this.assessService.getAs<Stix>(`${Constance.ATTACK_PATTERN_URL}/${attackPatternId}`);
-        })
-        .map((data: Stix) => {
+        }),
+        map((data: Stix) => {
             return new SetGroupCurrentAttackPattern({ currentAttackPattern: data });
-        });
+        }));
 
     @Effect()
     public loadGroupAttackPatternRelationships = this.actions$
-        .ofType(LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS)
-        .pluck('payload')
-        .switchMap((attackPatternId: string) => {
+        .ofType(LOAD_GROUP_ATTACK_PATTERN_RELATIONSHIPS).pipe(
+        pluck('payload'),
+        switchMap((attackPatternId: string) => {
             return this.assessService.getAttackPatternRelationships(attackPatternId);
-        })
-        .mergeMap((relationships: Relationship[]) => {
+        }),
+        mergeMap((relationships: Relationship[]) => {
             return [
                 new SetGroupAttackPatternRelationships(relationships),
                 new FinishedLoading(true),
             ];
-        });
+        }));
 
     @Effect()
     public pushUrlState = this.actions$
-        .ofType(PUSH_URL)
-        .pluck('payload')
-        .filter((payload) => payload !== undefined)
-        .do((payload: any) => {
+        .ofType(PUSH_URL).pipe(
+        pluck('payload'),
+        filter((payload) => payload !== undefined),
+        tap((payload: any) => {
             const rollupId = payload.rollupId;
             const assessmentId = payload.assessmentId;
             const phase = payload.phase;
@@ -98,24 +101,26 @@ export class FullResultEffects {
             // const url = `${Constance.API_HOST}/assess/result/full/${rollupId}/${assessmentId}/phase/${phase}/attackPattern/${attackPattern}`;
             const url = `${Constance.API_HOST}/assess/result/full/${rollupId}/${assessmentId}/phase/${phase}`;
             this.location.replaceState(url);
-        })
-        .switchMap(() => Observable.of(new DonePushUrl()));
+        }),
+        switchMap(() => observableOf(new DonePushUrl())));
 
     @Effect()
     public updateAssesmentObject = this.actions$
-        .ofType(UPDATE_ASSESSMENT_OBJECT)
-        .pluck('payload')
-        .filter((payload: Assessment) => payload && payload.id !== undefined)
-        .switchMap((assessment: Assessment) => {
+        .ofType(UPDATE_ASSESSMENT_OBJECT).pipe(
+        pluck('payload'),
+        filter((payload: Assessment) => payload && payload.id !== undefined),
+        switchMap((assessment: Assessment) => {
             const id = assessment.id;
             const o1$ = this.assessService
                 .genericPatch(`${Constance.X_UNFETTER_ASSESSMENT_URL}/${id}`, assessment)
-                .map(() => new LoadGroupData(id))
-                .catch((err) => {
-                    // TODO: better error handling action
-                    console.log(err);
-                    return Observable.empty();
-                });
+                .pipe(
+                    map(() => new LoadGroupData(id)),
+                    catchError((err) => {
+                        // TODO: better error handling action
+                        console.log(err);
+                        return observableEmpty();
+                    })
+                )
             return o1$;
-        })
+        }))
 }

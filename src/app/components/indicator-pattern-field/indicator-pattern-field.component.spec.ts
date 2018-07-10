@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed, ComponentFixture, async, fakeAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,6 +13,7 @@ import {
     } from '@angular/material';
 
 import { IndicatorPatternFieldComponent } from './indicator-pattern-field.component';
+import { SelectMenuTestHelper } from '../../testing/select-menu-test.helper';
 
 describe('IndicatorPatternFieldComponent', () => {
 
@@ -49,27 +50,61 @@ describe('IndicatorPatternFieldComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should handle indicator type changes', async(() => {
-        const testType = Math.floor(Math.random() * component.objectTypes.length);
-        expect(component.selectedObjectType).toBeFalsy();
-        let input = fixture.debugElement.query(By.css('mat-select[name="objectTypes"]'));
-        expect(input).not.toBeNull();
-        input.componentInstance._setSelectionByValue(component.objectTypes[testType].label, true);
-        fixture.whenStable().then(() => {
-            expect(component.selectedObjectType).toEqual(component.objectTypes[testType].label);
-        });
-    }));
+    describe('', () => {
 
-    it('should handle indicator property changes', async(() => {
-        const testProp = Math.floor(Math.random() * component.objectProperties.length);
-        expect(component.selectedObjectProperty).toBeFalsy();
-        let input = fixture.debugElement.query(By.css('mat-select[name="objectProperties"]'));
-        expect(input).not.toBeNull();
-        input.componentInstance._setSelectionByValue(component.objectProperties[testProp].label, true);
-        fixture.whenStable().then(() => {
-            expect(component.selectedObjectProperty).toEqual(component.objectProperties[testProp].label);
+        let typeOptions: HTMLElement[];
+        let typesMenu: SelectMenuTestHelper;
+
+        beforeEach(() => {
+            typesMenu = new SelectMenuTestHelper(fixture, 'mat-select[name="objectTypes"]');
         });
-    }));
+
+        beforeEach(fakeAsync(() => {
+            typesMenu.triggerMenu();
+            typeOptions = typesMenu.getOptions();
+            typesMenu.triggerMenu();
+        }));
+
+        afterEach(() => {
+            typesMenu.cleanup();
+        });
+
+        it('changing types selector works', fakeAsync(() => {
+            const testType = Math.floor(Math.random() * component.objectTypes.length);
+            expect(component.selectedObjectType).toBeFalsy();
+            typesMenu.selectOption(typeOptions[testType]);
+            expect(component.selectedObjectType).toEqual(component.objectTypes[testType].label);
+        }));
+
+    });
+
+    describe('', () => {
+
+        let propertyOptions: HTMLElement[];
+        let propertiesMenu: SelectMenuTestHelper;
+
+        beforeEach(() => {
+            propertiesMenu = new SelectMenuTestHelper(fixture, 'mat-select[name="objectProperties"]');
+        });
+
+        beforeEach(fakeAsync(() => {
+            propertiesMenu.triggerMenu();
+            propertyOptions = propertiesMenu.getOptions();
+            propertiesMenu.triggerMenu();
+        }));
+
+        afterEach(() => {
+            propertiesMenu.cleanup();
+        });
+
+        it('changing properties selector works', fakeAsync(() => {
+            const testProp = Math.floor(Math.random() * component.objectProperties.length);
+            expect(component.selectedObjectProperty).toBeFalsy();
+            propertiesMenu.selectOption(propertyOptions[testProp]);
+            expect(component.selectedObjectProperty).toEqual(component.objectProperties[testProp].label);
+        }));
+
+    });
 
     it('should handle indicator value changes', async(() => {
         const testValue: string = 'test';

@@ -5,7 +5,7 @@ import { HeatmapOptions } from '../../global/components/heatmap/heatmap.data';
 import { TreemapOptions } from '../../global/components/treemap/treemap.data';
 import { CarouselOptions } from '../../global/components/tactics-pane/tactics-carousel/carousel.data';
 import { Dictionary } from '../../models/json/dictionary';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'indicator-tactics',

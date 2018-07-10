@@ -1,44 +1,20 @@
-import {
-    Component,
-    OnInit,
-    Input,
-    Output,
-    EventEmitter,
-    ViewChild,
-    Renderer2,
-    ElementRef,
-    TemplateRef,
-    ViewContainerRef,
-} from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
-
-import { Overlay, OverlayRef } from '@angular/cdk/overlay';
-import { TemplatePortal } from '@angular/cdk/portal';
-
+import { Dictionary } from '../../../../models/json/dictionary';
+import { AppState } from '../../../../root-store/app.reducers';
+import { HeatmapComponent } from '../../heatmap/heatmap.component';
+import { DEFAULT_OPTIONS, HeatBatchData, HeatCellData, HeatColor, HeatmapOptions } from '../../heatmap/heatmap.data';
+import { TacticsControlService } from '../tactics-control.service';
+import { TacticsTooltipService } from '../tactics-tooltip/tactics-tooltip.service';
 import { TacticsView } from '../tactics-view';
 import { Tactic, TacticChain } from '../tactics.model';
-import { TacticsControlService } from '../tactics-control.service';
-import { TacticsTooltipService, TooltipEvent } from '../tactics-tooltip/tactics-tooltip.service';
-import { HeatmapComponent } from '../../heatmap/heatmap.component';
-import {
-    HeatBatchData,
-    HeatCellData,
-    HeatColor,
-    HeatmapOptions,
-    DEFAULT_OPTIONS,
-} from '../../heatmap/heatmap.data';
-import { Dictionary } from '../../../../models/json/dictionary';
-import { UserProfile } from '../../../../models/user/user-profile';
-import { AppState } from '../../../../root-store/app.reducers';
-import { AuthService } from '../../../../core/services/auth.service';
 
 /**
  * @description Common data that can be found on attack patterns displayed in a heatmap cell.
  */
 export interface AttackPatternCell extends HeatCellData, Tactic {
     value: string,
-    values?: Array<{name: string, color: string}>,
+    values?: Array<{ name: string, color: string }>,
     text?: string, // the foreground, or text, color of an attack pattern cell
 }
 
@@ -46,6 +22,7 @@ export interface AttackPatternCell extends HeatCellData, Tactic {
     selector: 'tactics-heatmap',
     templateUrl: './tactics-heatmap.component.html',
     styleUrls: ['./tactics-heatmap.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, HeatmapOptions> {
 
@@ -56,7 +33,13 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
 
     @ViewChild(HeatmapComponent) private heatmap: HeatmapComponent;
 
-    private noColor: HeatColor = {bg: '#ccc', fg: 'black'};
+    private noColor: HeatColor = { bg: '#ccc', fg: 'black' };
+    private readonly undefinedData = 'no-stix-data-defined';
+    private readonly undefinedTactics = {
+        title: 'No STIX Data Defined',
+        value: this.undefinedData,
+    };
+    private readonly undefinedColor: HeatColor = { bg: 'transparent', fg: 'transparent' };
 
     /**
      * @description 
@@ -109,8 +92,8 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
 
         // now convert the phases in the TacticChains into heat batches
         Object.values(data).forEach(batch => batch.cells.sort((ap1, ap2) => ap1.title.localeCompare(ap2.title)));
+        this.data = Object.values(data);
         requestAnimationFrame(() => {
-            this.data = Object.values(data);
             console['debug'](`(${new Date().toISOString()}) heatmap tactics`, this.data);
             if (this.heatmap && this.heatmap.options && this.heatmap.options.color) {
                 this.heatmap.options.color.heatColors = heats;
@@ -140,7 +123,7 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
      * @description
      */
     private convertTacticChain(tactics: Dictionary<TacticChain>, chain: string,
-            data: Dictionary<HeatBatchData>, aps: any, heats: Dictionary<HeatColor>) {
+        data: Dictionary<HeatBatchData>, aps: any, heats: Dictionary<HeatColor>) {
         const framework = tactics[chain];
         if (framework) {
             framework.phases.forEach(phase => {
@@ -149,10 +132,18 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
                     value: null,
                     cells: [],
                 };
+
+                if (!phase.tactics || !phase.tactics.length) {
+                    data[phase.id].cells.push({ ...this.undefinedTactics });
+                    if (!heats[this.undefinedData]) {
+                        heats[this.undefinedData] = this.undefinedColor;
+                    }
+                }
+
                 phase.tactics.forEach(tactic => {
                     if (!aps[tactic.id]) {
                         // convert the tactic into a heat cell, colorize it if it is targeted
-                        const ap: AttackPatternCell = aps[tactic.id] = {...tactic, title: tactic.name, value: 'false'};
+                        const ap: AttackPatternCell = aps[tactic.id] = { ...tactic, title: tactic.name, value: 'false' };
                         const target = this.targets.find(t => t.id === tactic.id);
                         if (this.hasHighlights(target)) {
                             const colors = this.collectColors(target);

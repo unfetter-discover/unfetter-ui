@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatSelectModule } from '@angular/material';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 
 import { RelatationshipGeneratorComponent } from './relatationship-generator.component';
 import { GenericApi } from '../../../core/services/genericapi.service';
@@ -28,7 +28,7 @@ describe('RelatationshipGeneratorComponent', () => {
 
   const mockGenericApi = {
     get(url: string): Observable<any> {
-      return Observable.of([
+      return observableOf([
         {
           attributes: {
             id: 'attack-pattern-1234',

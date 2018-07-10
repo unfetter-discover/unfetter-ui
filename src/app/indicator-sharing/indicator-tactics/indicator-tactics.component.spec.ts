@@ -2,6 +2,7 @@ import { TestBed, ComponentFixture, async, } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule, Store } from '@ngrx/store';
 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
     MatButtonToggleModule,
     MatCardModule,
@@ -10,6 +11,7 @@ import {
     MatSelectModule,
     MatToolbarModule,
 } from '@angular/material';
+import { MarkdownComponent } from 'ngx-markdown';
 import { Carousel } from 'primeng/primeng';
 
 import { IndicatorTacticsComponent } from './indicator-tactics.component';
@@ -21,6 +23,7 @@ import { TacticsCarouselControlComponent } from '../../global/components/tactics
 import { TacticsTooltipComponent } from '../../global/components/tactics-pane/tactics-tooltip/tactics-tooltip.component';
 import { TacticsControlService } from '../../global/components/tactics-pane/tactics-control.service';
 import { TacticsTooltipService } from '../../global/components/tactics-pane/tactics-tooltip/tactics-tooltip.service';
+import { MarkdownEditorComponent } from '../../global/components/markdown-editor/markdown-editor.component';
 import { HeatmapComponent } from '../../global/components/heatmap/heatmap.component';
 import { TreemapComponent } from '../../global/components/treemap/treemap.component';
 import { CapitalizePipe } from '../../global/pipes/capitalize.pipe';
@@ -45,6 +48,8 @@ describe('IndicatorTacticsComponent', () => {
         TestBed
             .configureTestingModule({
                 imports: [
+                    FormsModule,
+                    ReactiveFormsModule,
                     MatButtonToggleModule,
                     MatCardModule,
                     MatIconModule,
@@ -64,6 +69,8 @@ describe('IndicatorTacticsComponent', () => {
                     TacticsTooltipComponent,
                     HeatmapComponent,
                     TreemapComponent,
+                    MarkdownEditorComponent,
+                    MarkdownComponent,
                     Carousel,
                     CapitalizePipe,
                 ],

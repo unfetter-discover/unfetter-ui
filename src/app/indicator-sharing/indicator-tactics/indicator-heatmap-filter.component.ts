@@ -1,3 +1,5 @@
+
+import { finalize, take, pluck } from 'rxjs/operators';
 import {
         Component,
         Inject,
@@ -9,7 +11,7 @@ import {
         ChangeDetectorRef,
         AfterViewInit,
     } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
@@ -78,10 +80,10 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
         // since there is a noticeable lag time when that occurs
         requestAnimationFrame(() => {
             const getAttackPatterns$ = this.store
-                .select('indicatorSharing')
-                .pluck('attackPatterns')
-                .take(1)
-                .finally(() => getAttackPatterns$ && getAttackPatterns$.unsubscribe())
+                .select('indicatorSharing').pipe(
+                pluck('attackPatterns'),
+                take(1),
+                finalize(() => getAttackPatterns$ && getAttackPatterns$.unsubscribe()))
                 .subscribe(
                     (attackPatterns: any[]) => {
                         const tactics = attackPatterns.reduce(

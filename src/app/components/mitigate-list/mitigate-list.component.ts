@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { AttackPattern, Filter, KillChainPhase, Relationship } from '../../models';
 import { Constance } from '../../utils/constance';
 import { BaseComponentService } from '../base-service.component';

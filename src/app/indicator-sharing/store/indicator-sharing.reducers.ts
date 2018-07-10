@@ -2,6 +2,7 @@ import * as indicatorSharingActions from './indicator-sharing.actions';
 import * as fromApp from '../../root-store/app.reducers'
 import { SearchParameters } from '../models/search-parameters';
 import { SortTypes } from '../models/sort-types.enum';
+import { Constance } from '../../utils/constance';
 
 export interface IndicatorSharingFeatureState extends fromApp.AppState {
     indicatorSharing: IndicatorSharingState
@@ -11,9 +12,11 @@ export interface IndicatorSharingState {
     indicators: any[],
     filteredIndicators: any[],
     displayedIndicators: any[]
+    intrusionSets: any[],
     sensors: any[],
     attackPatterns: any[],
     identities: any[],
+    intrusionSetsByAttackpattern: {},
     searchParameters: SearchParameters,
     indicatorToSensorMap: {},
     indicatorToApMap: {},
@@ -30,6 +33,9 @@ export const initialSearchParameters: SearchParameters = {
     sensors: [],
     attackPatterns: [],
     published: [],
+    dataSources: [],
+    intrusionSets: [],
+    observedData: [],
     validStixPattern: false
 };
 
@@ -37,9 +43,11 @@ export const initialState: IndicatorSharingState = {
     indicators: [],
     filteredIndicators: [],
     displayedIndicators: [],
+    intrusionSets: [],
     sensors: [],
     attackPatterns: [],
     identities: [],
+    intrusionSetsByAttackpattern: {},
     searchParameters: { ...initialSearchParameters },
     indicatorToSensorMap: {},
     indicatorToApMap: {},
@@ -48,7 +56,7 @@ export const initialState: IndicatorSharingState = {
     totalIndicatorCount: 0
 };
 
-const DEFAULT_DISPLAYED_LENGTH: number = 10;
+const DEFAULT_DISPLAYED_LENGTH: number = Constance.INDICATOR_SHARING.DEFAULT_LIST_LENGTH;
 
 export function indicatorSharingReducer(state = initialState, action: indicatorSharingActions.IndicatorSharingActions): IndicatorSharingState {
 
@@ -151,6 +159,11 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
                 displayedIndicators: displayedIndicatorsCopy,
                 totalIndicatorCount: (state.totalIndicatorCount - 1)
             };
+        case indicatorSharingActions.SET_INTRUSION_SETS:
+            return {
+                ...state,
+                intrusionSets: action.payload
+            };
         case indicatorSharingActions.SET_SENSORS:
             const indicatorToSensorMap = buildIndicatorToSensorMap(state.indicators, action.payload);
             return {
@@ -173,7 +186,11 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
                 ...state,
                 indicatorToApMap: action.payload
             };
-
+        case indicatorSharingActions.SET_INTRUSION_SETS_BY_ATTACK_PATTERN:
+            return {
+                ...state,
+                intrusionSetsByAttackpattern: action.payload
+            };
         case indicatorSharingActions.SET_SEARCH_PARAMETERS:
             return {
                 ...state,

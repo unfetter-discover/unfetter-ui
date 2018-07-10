@@ -1,7 +1,9 @@
     <mat-card-content>
       <div class="row margin-bottom flex-sm flexItemsCenter">
         <div class="col-sm-9">
-          Capability Groups
+          <mat-card-title>
+            Capability Groups
+          </mat-card-title>
         </div>
         <div class="col-sm-3">
           <div *ngIf="!isAddCategory" class="button-row">
@@ -13,9 +15,9 @@
         <div class="row margin-bottom flex-sm flexItemsCenter">
           <div class="col-sm-9">
             <div class="form-group">
-              <mat-input-container class="full-width">
+              <mat-form-field class="full-width">
                 <input matInput class="form-control" required placeholder="Capability Group Name" value="addCategory.name" [(ngModel)]="addCategory.name">
-              </mat-input-container>
+              </mat-form-field>
             </div>
             <button type="submit"  class="mat-primary" mat-raised-button [disabled]="!addCategory.name" (click)="addNewCategory(addCategory)"><i class="material-icons">save</i> SAVE {{ addCategory.name }}</button>
             <button type="submit"  class="mat-primary" mat-raised-button (click)="cancelAddNewCategory()">CANCEL</button>
@@ -28,8 +30,8 @@
             <div class="col-xs-10">
               <form>
                 <mat-form-field class="full-width">
-                  <mat-select #existingCategory name="existingCategory" (change)="updateCategory(existingCategory, i)" [value]="selectedCategory(existingCategory, i)">
-                    <mat-option *ngFor="let category of categories" [value]="category">
+                  <mat-select #existingCategory name="existingCategory" (selectionChange)="updateCategory(existingCategory, i)" [value]="selectedCategory(existingCategory, i)">
+                    <mat-option *ngFor="let category of categories | sortByField:'name':'ascending'" [value]="category">
                       {{ category.name }}
                     </mat-option>
                   </mat-select>
@@ -37,7 +39,7 @@
               </form>
             </div>
             <div class="col-xs-1" [hidden]="selectedCapabilityGroups.length === 0">
-              <button mat-button (click)="onDeleteCategory(existingCategory)">
+              <button mat-icon-button (click)="onDeleteCategory(existingCategory)">
                 <mat-icon class="mat-24">delete</mat-icon>
               </button>
             </div>
@@ -48,8 +50,8 @@
         <div class="col-xs-10">
           <form>
             <mat-form-field class="full-width">
-              <mat-select #newCategory name="newCategory" (change)="updateCategory(newCategory, -1)">
-                <mat-option *ngFor="let category of categories" [value]="category">
+              <mat-select #newCategory name="newCategory" (selectionChange)="updateCategory(newCategory, -1)">
+                <mat-option *ngFor="let category of categories | sortByField:'name':'ascending'" [value]="category">
                   {{ category.name }}
                 </mat-option>
               </mat-select>

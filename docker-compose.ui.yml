@@ -1,14 +1,12 @@
 
-version: '2.0'
+version: '3.3'
 services:
-  
     unfetter-ui:
       build: ./
       image: unfetter-ui
       container_name: unfetter-ui
       volumes:
       - ./src:/usr/share/unfetter-ui/src
-      - ./config:/usr/share/unfetter-ui/config
       entrypoint:
       - npm
       - run

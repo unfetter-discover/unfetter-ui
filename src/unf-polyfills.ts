@@ -1,55 +1,19 @@
 // UNFETTER polyfills
 
-// https://tc39.github.io/ecma262/#sec-array.prototype.includes
-if (!Array.prototype.includes) {
-    Object.defineProperty(Array.prototype, 'includes', {
-        value: (searchElement, fromIndex) => {
-            
-            // 1. Let O be ? ToObject(this value).
-            if (this == null) {
-                throw new TypeError('"this" is null or not defined');
-            }
-            
-            const o = Object(this);
-            
-            // 2. Let len be ? ToLength(? Get(O, "length")).
-            // tslint:disable-next-line:no-bitwise
-            const len = o.length >>> 0;
+(window as any).global = window;
 
-            // 3. If len is 0, return false.
-            if (len === 0) {
-                return false;
-            }
-
-            // 4. Let n be ? ToInteger(fromIndex).
-            //    (If fromIndex is undefined, this step produces the value 0.)
-            // tslint:disable-next-line:no-bitwise
-            const n = fromIndex | 0;
-
-            // 5. If n ≥ 0, then
-            //  a. Let k be n.
-            // 6. Else n < 0,
-            //  a. Let k be len + n.
-            //  b. If k < 0, let k be 0.
-            let k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
-
-            function sameValueZero(x, y) {
-                return x === y || (typeof x === 'number' && typeof y === 'number' && isNaN(x) && isNaN(y));
-            }
-
-            // 7. Repeat, while k < len
-            while (k < len) {
-                // a. Let elementK be the result of ? Get(O, ! ToString(k)).
-                // b. If SameValueZero(searchElement, elementK) is true, return true.
-                // c. Increase k by 1. 
-                if (sameValueZero(o[k], searchElement)) {
-                    return true;
-                }
-                k++;
-            }
-
-            // 8. Return false
-            return false;
-        }
+// TODO find a better polyfill - This is to fix a problem with Angular 6 menus
+/**
+ * "ERROR" Error: The animation trigger "transform" has failed to build due to the following errors:
+ * - The provided animation property "box-shadow" is not a supported CSS property for animations
+ */
+if (!document.body.style['box-shadow']) {
+    Object.defineProperty(document.body.style, 'box-shadow', {
+        value: () => {
+            return {
+                enumerable: true,
+                configurable: true
+            };
+        },
     });
 }

@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { RiskByKillChain } from 'stix/assess/v2/risk-by-kill-chain';
+import { RiskByKillChain } from 'stix/assess/v3/risk-by-kill-chain';
 import { SummaryAggregation } from 'stix/assess/v2/summary-aggregation';
 import { Assessment } from 'stix/assess/v3/assessment';
 
@@ -77,7 +77,7 @@ export class LoadSingleSummaryAggregationData implements Action {
     public readonly type = LOAD_SINGLE_SUMMARY_AGGREGATION_DATA;
 
     // individual assessment id
-    constructor(public payload: string) { }
+    constructor(public payload: { id: string, isCapability: boolean }) { }
 }
 
 export class LoadSummaryAggregationData implements Action {

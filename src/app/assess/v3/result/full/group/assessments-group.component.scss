@@ -48,9 +48,12 @@
 }
 
 .flex {
+    min-height: 100%;
+
     .flex-fixed {
         flex: 0 0 auto;
         width: 320px;
+        min-height: 100%;
 
         .phase-header {
             @include section-header();
@@ -64,6 +67,7 @@
 
 .main {
     font-size: 14px;
+    min-height: 100%;
     
     .fs-12 {
         font-size: 12px;
@@ -77,6 +81,7 @@
     }
     
     .phase-section {
+        min-height: calc(100vh - #{$navbar-height}px);
         @include space-top();
         background-color: $assessments-primary-lightest;
     }
@@ -91,3 +96,6 @@
     background-color: $assessments-primary-subtle !important;
 }
 
+.longText {
+    line-height: 1.6em;
+}

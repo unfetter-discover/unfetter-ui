@@ -9,6 +9,7 @@ import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { makeMockIndicatorSharingStore } from '../../testing/mock-store';
 import { By } from '@angular/platform-browser';
 import { SortTypes } from '../models/sort-types.enum';
+import { pluck } from 'rxjs/operators';
 
 describe('IndicatorSharingSortComponent', () => {
   let component: IndicatorSharingSortComponent;
@@ -49,7 +50,7 @@ describe('IndicatorSharingSortComponent', () => {
     fixture.detectChanges();
 
     const displayInd$ = component.store.select('indicatorSharing')
-      .pluck('sortBy')
+      .pipe(pluck('sortBy'))
       .subscribe(
         (sortBy: SortTypes) => {
           expect(sortBy).toEqual(SortTypes.COMMENTS);

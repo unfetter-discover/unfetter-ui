@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, EventEmitter, Output, ChangeDetectionStrategy, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable ,  BehaviorSubject } from 'rxjs';
 
 import { Constance } from '../../../utils/constance';
 import { UploadService } from './upload.service';
@@ -17,10 +16,10 @@ export class FileUploadComponent implements OnInit {
   @ViewChild('fileUpload')
   public fileUploadEl: ElementRef;
 
-  @Output('fileParsedEvent')
+  @Output()
   public fileParsedEvent = new EventEmitter<any[]>();
 
-  @Output('fileUploadFailed')
+  @Output()
   public fileUploadFailed = new EventEmitter<string>();
 
   public success = false;

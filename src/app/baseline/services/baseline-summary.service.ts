@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { Constance } from '../../utils/constance';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class BaselineSummaryService {
-    public readonly baseUrl = Constance.X_UNFETTER_BASELINE_URL;
+    public readonly baseUrl = Constance.X_UNFETTER_ASSESSMENT_SETS_URL;
 
     constructor(private genericApi: GenericApi) { }
 

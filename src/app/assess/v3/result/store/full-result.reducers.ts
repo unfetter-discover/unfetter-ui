@@ -3,12 +3,12 @@ import { Stix } from 'stix/unfetter/stix';
 import { FullAssessmentGroup } from '../full/group/models/full-assessment-group';
 import * as fullAssessmentResultActions from './full-result.actions';
 import { FullAssessmentResultActions, LOAD_ASSESSMENTS_BY_ROLLUP_ID } from './full-result.actions';
-import { FullBaselineGroup } from '../../../../baseline/result/full/group/models/full-baseline-group';
 
 export interface FullAssessmentResultState {
-    fullAssessment: Assessment;
     assessmentTypes: Assessment[];
+    failedToLoad: boolean;
     finishedLoading: boolean;
+    fullAssessment: Assessment;
     group: FullAssessmentGroup;
 };
 
@@ -39,9 +39,10 @@ export const genGroupState = (state?: Partial<FullAssessmentGroup>) => {
 
 export const genState = (state?: Partial<FullAssessmentResultState>) => {
     const tmp = {
-        fullAssessment: new Assessment(),
         assessmentTypes: [],
+        failedToLoad: false,
         finishedLoading: false,
+        fullAssessment: new Assessment(),
         group: genGroupState(),
     };
 
@@ -77,7 +78,14 @@ export function fullAssessmentResultReducer(state = initialState, action: FullAs
         case fullAssessmentResultActions.FINISHED_LOADING:
             return {
                 ...state,
-                finishedLoading: action.payload
+                finishedLoading: action.payload,
+                failedToLoad: false,
+            };
+        case fullAssessmentResultActions.FAILED_TO_LOAD:
+            return {
+                ...state,
+                finishedLoading: true,
+                failedToLoad: action.payload,
             };
         case fullAssessmentResultActions.SET_GROUP_DATA:
             return {

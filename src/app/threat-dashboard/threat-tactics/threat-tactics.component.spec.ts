@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule, Store } from '@ngrx/store';
 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
     MatButtonToggleModule,
     MatCardModule,
@@ -10,36 +11,24 @@ import {
     MatSelectModule,
     MatToolbarModule,
 } from '@angular/material';
+import { MarkdownComponent } from 'ngx-markdown';
 import { Carousel } from 'primeng/primeng';
 
 import { ThreatTacticsComponent } from './threat-tactics.component';
 import { TacticsPaneComponent } from '../../global/components/tactics-pane/tactics-pane.component';
-import {
-    TacticsHeatmapComponent
-} from '../../global/components/tactics-pane/tactics-heatmap/tactics-heatmap.component';
-import {
-    TacticsTreemapComponent
-} from '../../global/components/tactics-pane/tactics-treemap/tactics-treemap.component';
-import {
-    TacticsCarouselComponent
-} from '../../global/components/tactics-pane/tactics-carousel/tactics-carousel.component';
-import {
-    TacticsCarouselControlComponent
-} from '../../global/components/tactics-pane/tactics-carousel/tactics-carousel-control.component';
-import {
-    TacticsTooltipComponent
-} from '../../global/components/tactics-pane/tactics-tooltip/tactics-tooltip.component';
+import { TacticsHeatmapComponent } from '../../global/components/tactics-pane/tactics-heatmap/tactics-heatmap.component';
+import { TacticsTreemapComponent } from '../../global/components/tactics-pane/tactics-treemap/tactics-treemap.component';
+import { TacticsCarouselComponent } from '../../global/components/tactics-pane/tactics-carousel/tactics-carousel.component';
+import { TacticsCarouselControlComponent } from '../../global/components/tactics-pane/tactics-carousel/tactics-carousel-control.component';
+import { TacticsTooltipComponent } from '../../global/components/tactics-pane/tactics-tooltip/tactics-tooltip.component';
 import { TacticsTooltipService } from '../../global/components/tactics-pane/tactics-tooltip/tactics-tooltip.service';
 import { TacticsControlService } from '../../global/components/tactics-pane/tactics-control.service';
+import { MarkdownEditorComponent } from '../../global/components/markdown-editor/markdown-editor.component';
 import { HeatmapComponent } from '../../global/components/heatmap/heatmap.component';
 import { TreemapComponent } from '../../global/components/treemap/treemap.component';
 import { CapitalizePipe } from '../../global/pipes/capitalize.pipe';
 import { AuthService } from '../../core/services/auth.service';
-import {
-    mockUser,
-    mockTactics,
-    mockAttackPatternData
-} from '../../global/components/tactics-pane/tactics.model.test';
+import { mockUser, mockTactics } from '../../global/components/tactics-pane/tactics.model.test';
 import * as configActions from '../../root-store/config/config.actions';
 import * as userActions from '../../root-store/users/user.actions';
 import { reducers, AppState } from '../../root-store/app.reducers';
@@ -54,6 +43,8 @@ describe('ThreatTacticsComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [
+                FormsModule,
+                ReactiveFormsModule,
                 MatButtonToggleModule,
                 MatCardModule,
                 MatIconModule,
@@ -74,6 +65,8 @@ describe('ThreatTacticsComponent', () => {
                 HeatmapComponent,
                 TreemapComponent,
                 Carousel,
+                MarkdownEditorComponent,
+                MarkdownComponent,
                 CapitalizePipe,
             ],
             providers: [

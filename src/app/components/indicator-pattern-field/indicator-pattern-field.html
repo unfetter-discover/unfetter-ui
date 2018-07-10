@@ -2,7 +2,7 @@
     <div class="col-md-4">
         <mat-form-field class="full-width">
             <mat-select placeholder="Indicator Object Type" [(ngModel)]="selectedObjectType"
-                    name="objectTypes" class="full-width" (change)="onInputChange()">
+                    name="objectTypes" class="full-width" (selectionChange)="onInputChange()">
                 <mat-option *ngFor="let objectType of objectTypes" [value]="objectType.label">
                     {{ objectType.label }}
                 </mat-option>
@@ -12,7 +12,7 @@
     <div class="col-md-4">
         <mat-form-field class="full-width">
             <mat-select placeholder="Indicator Object Property" [(ngModel)]="selectedObjectProperty"
-                    name="objectProperties" class="full-width" (change)="onInputChange()">
+                    name="objectProperties" class="full-width" (selectionChange)="onInputChange()">
                 <mat-option *ngFor="let objectProperty of objectProperties" [value]="objectProperty.label">
                     {{ objectProperty.label }}
                 </mat-option>
@@ -20,10 +20,10 @@
         </mat-form-field>
     </div>
     <div class="col-md-3">
-        <mat-input-container class="full-width">
+        <mat-form-field class="full-width">
             <input matInput placeholder="Indicator Object Value" [(ngModel)]="selectedObjectValue"
                     name="objectValue" (change)="onInputChange()">
-        </mat-input-container>
+        </mat-form-field>
     </div>
     <div>
         <div class="col-md-1">

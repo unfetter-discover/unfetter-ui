@@ -7,6 +7,7 @@
         </mat-select>
         <span class="carousel-button carousel-prev-button {{options.toolboxTheme}}"
                 [ngClass]="{'disabled': page === 0}" (click)="goPreviousPage($event)"></span>
+        <span>&nbsp;</span>
         <span class="carousel-button carousel-next-button {{options.toolboxTheme}}"
                 [ngClass]="{'disabled': page >= pages - 1}" (click)="goNextPage($event)"></span>
     </div>

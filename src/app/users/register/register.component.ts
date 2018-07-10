@@ -1,13 +1,17 @@
+
+import { timer as observableTimer,  Observable  } from 'rxjs';
+
+import { map, switchMap } from 'rxjs/operators';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
 
 import { UsersService } from '../../core/services/users.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Constance } from '../../utils/constance';
 import { ConfigService } from '../../core/services/config.service';
 import { cleanObjectProperties } from '../../global/static/clean-object-properties';
+import { UserHelpers } from '../../global/static/user-helpers';
 
 @Component({
     selector: 'register',
@@ -29,11 +33,14 @@ export class RegisterComponent implements OnInit {
     public importStixEl: ElementRef;
 
     public helpHtml: string = `
-        <h4>Approval Process</h4>
-        <p>After completing registration, an Unfetter administrator will have to approve your account before you can use the application.</p>
-        <h4>Organizations</h4>
-        <p>To get the most out of Unfetters, users should be in one or more organizations.  After being approved to the application, you may apply to join organizations in the users settings dashboard.  An organization leader or an Unfetter administrator has to approve organization applicant.</p>
-    `;
+#### Approval Process
+
+After completing registration, an Unfetter administrator will have to approve your account before you can use the application.
+
+#### Organizations
+
+To get the most out of Unfetter, users should be in one or more organizations. After being approved to the application, you may apply to join organizations in the users settings dashboard. An organization leader or an Unfetter administrator has to approve organization applicants.
+`;
 
     private importedStixIdentity: any = {};
 
@@ -51,6 +58,7 @@ export class RegisterComponent implements OnInit {
                 .subscribe(
                     (user) => {
                         this.userReturn = user = user.attributes;
+                        this.userReturn.avatar_url = UserHelpers.getAvatarUrl(user);
                         
                         this.form = new FormGroup({
                             unfetterInformation: new FormGroup({
@@ -193,14 +201,14 @@ export class RegisterComponent implements OnInit {
     }
 
     private validateEmail(emailCtrl: FormControl): Observable<any> {
-        return Observable.timer(50)
-            .switchMap(() => this.usersService.emailAvailable(emailCtrl.value))
-            .map((emailAvailable: boolean) => emailAvailable ? null : { 'emailTaken': true });
+        return observableTimer(50).pipe(
+            switchMap(() => this.usersService.emailAvailable(emailCtrl.value)),
+            map((emailAvailable: boolean) => emailAvailable ? null : { 'emailTaken': true }));
     }
 
     private validateUserName(userNameCtrl: FormControl): Observable<any> {
-        return Observable.timer(50)
-            .switchMap(() => this.usersService.userNameAvailable(userNameCtrl.value))
-            .map((userNameAvailable: boolean) => userNameAvailable ? null : { 'userNameTaken': true });
+        return observableTimer(50).pipe(
+            switchMap(() => this.usersService.userNameAvailable(userNameCtrl.value)),
+            map((userNameAvailable: boolean) => userNameAvailable ? null : { 'userNameTaken': true }));
     }
 }

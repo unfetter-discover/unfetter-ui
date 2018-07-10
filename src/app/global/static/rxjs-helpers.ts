@@ -1,3 +1,4 @@
+import { ConfigKeys } from '../enums/config-keys.enum';
 
 export class RxjsHelpers {
 
@@ -9,7 +10,7 @@ export class RxjsHelpers {
         return arr.map((el) => {
             if (el instanceof Array) {
                 return el.map((e) => e.attributes);
-            } else if (el instanceof Object) {
+            } else if (el instanceof Object && el.attributes) {
                 return el.attributes;
             } else {
                 return el;
@@ -46,5 +47,48 @@ export class RxjsHelpers {
             }
         });
         return mapObj;
+    }
+    
+    /**
+     * @param  {ConfigKeys} configKey
+     * @returns {({}) => boolean }
+     * @description Usage: this.store.select('config').filter(RxjsHelpers.filterByConfigKey(ConfigKeys.KEY_NAME)).pluck(ConfigKeys.KEY_NAME)
+     *  Confirms a key is present in the ngrx config store before continuing with the observable
+     */
+    public static filterByConfigKey(configKey: ConfigKeys): ({}) => boolean {
+        return (configObj: {}): boolean => {
+            const UCkeys = Object.keys(configObj).map(key => key.toUpperCase());
+            return UCkeys.indexOf(configKey.toUpperCase()) > -1;
+        };
+    }
+    
+    /**
+     * @param  {string|number} field
+     * @param  {'ASCENDING'|'DESCENDING'='DESCENDING'} direction
+     * @returns {(T[]) => T[]}
+     * @description Sorts an array of objects based on a field inside of those objects.
+     *  Usage: arrayObservable$.map(RxjsHelpers.sortByField('created'))
+     */
+    public static sortByField<T = any>(field: string | number, direction: 'ASCENDING' | 'DESCENDING' = 'DESCENDING') {
+        return (arr: T[]): T[] => {
+            arr.sort((a: any, b: any) => {
+                if (a[field].toString().toUpperCase() > b[field].toString().toUpperCase()) {
+                    if (direction === 'ASCENDING') {
+                        return 1;
+                    } else {
+                        return -1;
+                    };
+                } else if (a[field].toString().toUpperCase() < b[field].toString().toUpperCase()) {
+                    if (direction === 'ASCENDING') {
+                        return -1;
+                    } else {
+                        return 1;
+                    };
+                } else {
+                    return 0;
+                }
+            });
+            return arr;
+        }        
     }
 }

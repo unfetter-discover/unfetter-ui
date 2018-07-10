@@ -1,48 +1,61 @@
 import { Location } from '@angular/common';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { MatChipsModule, MatDialog, MatIconModule } from '@angular/material';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatChipsModule, MatDialog, MatIconModule, MatInputModule } from '@angular/material';
 import { ActivatedRoute, Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MarkdownComponent } from 'ngx-markdown';
 import { DataListModule } from 'primeng/components/datalist/datalist';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 import { ListStixObjectComponent } from './list-stix-objects.component';
+import { MarkdownEditorComponent } from '../../global/components/markdown-editor/markdown-editor.component';
 
 describe('ListStixObjectComponent', () => {
 
     let component: ListStixObjectComponent;
     let fixture: ComponentFixture<ListStixObjectComponent>;
 
-    const routes: Routes = [{ path: 'test', component: ListStixObjectComponent }];
+    const routes: Routes = [
+        { path: '.', component: ListStixObjectComponent },
+        { path: 'edit', component: ListStixObjectComponent },
+        { path: 'test', component: ListStixObjectComponent },
+    ];
     const mockRouter = {
         navigate: (paths: string[]) => { },
     }
     const mockDialog = {
         open: () => {
             return {
-                afterClosed: () => Observable.of({})
+                afterClosed: () => observableOf({})
             };
         },
         closeAll: () => { },
     };
 
     beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [
-                RouterTestingModule.withRoutes(routes),
-                DataListModule,
-                MatChipsModule,
-                MatIconModule,
-            ],
-            declarations: [
-                ListStixObjectComponent,
-            ],
-            providers: [
-                { provide: ActivatedRoute, useValue: {} },
-                { provide: Router, useValue: mockRouter },
-                { provide: MatDialog, useValue: mockDialog },
-                { provide: Location, useValue: { back: () => { } } },
-            ]
-        })
+        TestBed
+            .configureTestingModule({
+                imports: [
+                    RouterTestingModule.withRoutes(routes),
+                    FormsModule,
+                    ReactiveFormsModule,
+                    DataListModule,
+                    MatChipsModule,
+                    MatIconModule,
+                    MatInputModule,
+                ],
+                declarations: [
+                    ListStixObjectComponent,
+                    MarkdownEditorComponent,
+                    MarkdownComponent,
+                ],
+                providers: [
+                    { provide: ActivatedRoute, useValue: {} },
+                    { provide: Router, useValue: mockRouter },
+                    { provide: MatDialog, useValue: mockDialog },
+                    { provide: Location, useValue: { back: () => { } } },
+                ]
+            })
             .compileComponents();
     }));
 
@@ -83,6 +96,7 @@ describe('ListStixObjectComponent', () => {
 
     /**
      * @todo lots more LinkStixObjects tests to add
+     * Problem creating model data; can't get the test router to behave
      */
 
 });

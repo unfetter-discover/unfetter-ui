@@ -1,10 +1,8 @@
+
+import { merge as observableMerge, BehaviorSubject, Observable } from 'rxjs';
 import { CollectionViewer } from '@angular/cdk/collections';
 import { DataSource } from '@angular/cdk/table';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import { catchError } from 'rxjs/operators/catchError';
-import { map } from 'rxjs/operators/map';
-import { switchMap } from 'rxjs/operators/switchMap';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { LastModifiedAssessment } from '../../models/last-modified-assessment';
 import { AssessService } from '../../services/assess.service';
 
@@ -26,7 +24,7 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment
      */
     public connect(collectionViewer: CollectionViewer): Observable<Partial<LastModifiedAssessment>[]> {
         const arr = [this.filterChange, this.dataChange];
-        return Observable.merge(...arr)
+        return observableMerge(...arr)
             .pipe(
                 switchMap(() => {
                     const val = this.filterChange.getValue() || '';
@@ -36,10 +34,10 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment
                         return assessments$;
                     }
 
-                    return assessments$
-                        .map((el) => {
+                    return assessments$.pipe(
+                        map((el) => {
                             return el.filter((_) => _.name.trim().toLowerCase().includes(filterVal));
-                        });
+                        }));
                 }),
                 catchError((err, caught) => {
                     console.log(err);
@@ -80,17 +78,16 @@ export class SummaryDataSource extends DataSource<Partial<LastModifiedAssessment
      * @return {Observable<Partial<LastModifiedAssessment>[]>}
      */
     public dedupByRollupId(o$: Observable<Partial<LastModifiedAssessment>[]>): Observable<Partial<LastModifiedAssessment>[]> {
-        return o$
-            .pipe(
-                map((val) => {
-                    const uniqIds = Array.from(new Set(val.map((el) => el.rollupId)));
-                    const uniq = uniqIds
-                        .map((key) => {
-                            return val.find((el) => el.rollupId === key);
-                        });
-                    return uniq;
-                })
-            );
+        return o$.pipe(
+            map((val) => {
+                const uniqIds = Array.from(new Set(val.map((el) => el.rollupId)));
+                const uniq = uniqIds
+                    .map((key) => {
+                        return val.find((el) => el.rollupId === key);
+                    });
+                return uniq;
+            }),
+        );
     }
 
 }

@@ -2,17 +2,15 @@
         <div class="row">
             <div class="col-md-12">
                 <created-by-ref [model]="attackPattern"></created-by-ref>
-                <mat-input-container class="full-width">
+                <mat-form-field class="full-width">
                     <input id="attack-pattern-name"  matInput placeholder="Name" required [(ngModel)]="attackPattern.attributes.name">
-                </mat-input-container>
+                </mat-form-field>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12">
-                <mat-input-container class="full-width">
-                    <textarea id="attack-pattern-desc" matInput [(ngModel)]="attackPattern.attributes.description"  placeholder="Description"></textarea>
-                </mat-input-container>
-            </div>
+            <markdown-editor [inputLabel]="'Description (Markdown Editor)'"
+                    [value]="attackPattern.attributes.description"
+                    (changed)="attackPattern.attributes.description = $event"></markdown-editor>
         </div>
          <div class="row">
             <div class="col-md-12">
