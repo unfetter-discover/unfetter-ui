@@ -91,4 +91,40 @@ describe('RxjsHelpers class', () => {
             expect(result).toBeFalsy();
         });
     });
+
+    describe('sortByField function', () => {
+        const objArray = [
+            {
+                foo: 5
+            },
+            {
+                foo: 3
+            },
+            {
+                foo: 7
+            }
+        ];
+
+        it('should sort by a field in ascending order', (done) => {
+            observableOf(objArray)
+                .pipe(
+                    RxjsHelpers.sortByField('foo', 'ASCENDING')
+                )
+                .subscribe((res) => {
+                    expect(res[0].foo).toBe(3);
+                    done();
+                });
+        });
+
+        it('should sort by a field in descending order', (done) => {
+            observableOf(objArray)
+                .pipe(
+                    RxjsHelpers.sortByField('foo')
+                )
+                .subscribe((res) => {
+                    expect(res[0].foo).toBe(7);
+                    done();
+                });
+        });
+    });
 });

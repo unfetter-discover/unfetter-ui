@@ -7,6 +7,7 @@ export class RxjsHelpers {
     /**
      * @param  {any[]=[]} arr
      * @returns any
+     * @deprecated This was made before Rxjs6 and is not pipeable
      */
     public static mapArrayAttributes(arr: any[] = []): any[] {
         return arr.map((el) => {
@@ -23,6 +24,7 @@ export class RxjsHelpers {
     /**
      * @param  {any[]|object|any} el
      * @returns any
+     * @deprecated This was made before Rxjs6 and is not pipeable
      */
     public static mapAttributes(el: any[] | object | any): any[] | object | any {
         if (el instanceof Array) {
@@ -34,6 +36,11 @@ export class RxjsHelpers {
         }
     }
 
+    /**
+     * @returns {() => Observable}
+     * @description Takes a JsonApi wrapped Object or Array objects and unwraps the attributes
+     *  Usage: obs$.pipe(RxjsHelpers.unwrapJsonApi()), or obs$.pipe(RxjsHelpers.unwrapJsonApi<AttackPattern>())
+     */
     public static unwrapJsonApi<T extends StixCore = any>() {
         return (source: Observable<any>) => {
             return new Observable<T[]>((observer) => {
@@ -87,30 +94,38 @@ export class RxjsHelpers {
     /**
      * @param  {string|number} field
      * @param  {'ASCENDING'|'DESCENDING'='DESCENDING'} direction
-     * @returns {(T[]) => T[]}
+     * @returns {(Observable<T>) => Observable<T>}
      * @description Sorts an array of objects based on a field inside of those objects.
-     *  Usage: arrayObservable$.map(RxjsHelpers.sortByField('created'))
+     *  Usage: arrayObservable$.pipe(RxjsHelpers.sortByField('created'))
      */
-    public static sortByField<T = any>(field: string | number, direction: 'ASCENDING' | 'DESCENDING' = 'DESCENDING') {
-        return (arr: T[]): T[] => {
-            arr.sort((a: any, b: any) => {
-                if (a[field].toString().toUpperCase() > b[field].toString().toUpperCase()) {
-                    if (direction === 'ASCENDING') {
-                        return 1;
-                    } else {
-                        return -1;
-                    };
-                } else if (a[field].toString().toUpperCase() < b[field].toString().toUpperCase()) {
-                    if (direction === 'ASCENDING') {
-                        return -1;
-                    } else {
-                        return 1;
-                    };
-                } else {
-                    return 0;
-                }
+    public static sortByField(field: string | number, direction: 'ASCENDING' | 'DESCENDING' = 'DESCENDING') {
+        return <T>(source: Observable<T>) => {
+            return new Observable<T>((observer) => {
+                return source.subscribe({
+                    next(data) {
+                        (data as any).sort((a: any, b: any) => {
+                            if (a[field].toString().toUpperCase() > b[field].toString().toUpperCase()) {
+                                if (direction === 'ASCENDING') {
+                                    return 1;
+                                } else {
+                                    return -1;
+                                };
+                            } else if (a[field].toString().toUpperCase() < b[field].toString().toUpperCase()) {
+                                if (direction === 'ASCENDING') {
+                                    return -1;
+                                } else {
+                                    return 1;
+                                };
+                            } else {
+                                return 0;
+                            }
+                        });
+                        observer.next(data);
+                    },
+                    error(err) { observer.error(err); },
+                    complete() { observer.complete(); }
+                })
             });
-            return arr;
-        }        
+        };     
     }
 }
