@@ -19,6 +19,27 @@ describe('RxjsHelpers class', () => {
         });
     });
 
+    describe('unwrapJsonApi function', () => {
+        const jsonApiArr = [
+            {
+                attributes: {
+                    foo: 1
+                }
+            }
+        ];
+
+        it('should map JSON API arrays', (done) => {
+            observableOf(jsonApiArr)
+                .pipe(
+                    RxjsHelpers.unwrapJsonApi()
+                )
+                .subscribe((res) => {
+                    expect(res[0].attributes).toBeUndefined();
+                    done();
+                });
+        });
+    });
+
     describe('relationshipArrayToObject function', () => {
         const relArr = [
             {

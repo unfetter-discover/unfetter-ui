@@ -1,4 +1,6 @@
 import { ConfigKeys } from '../enums/config-keys.enum';
+import { Observable } from 'rxjs';
+import { JsonApiData, StixCore } from 'stix';
 
 export class RxjsHelpers {
 
@@ -30,6 +32,26 @@ export class RxjsHelpers {
         } else {
             return el;
         }
+    }
+
+    public static unwrapJsonApi<T extends StixCore = any>() {
+        return <U extends JsonApiData<T>>(source: Observable<U>) => {
+            return new Observable<any>((observer) => {
+                return source.subscribe({
+                    next(data) {
+                        if (data instanceof Array) {
+                            observer.next(RxjsHelpers.mapArrayAttributes(data));
+                        } else if (data instanceof Object) {
+                            observer.next((data as any).attributes || data);
+                        } else {
+                            observer.next(data);
+                        }
+                    },
+                    error(err) { observer.error(err); },
+                    complete() { observer.complete(); }
+                })
+            });
+        };
     }
 
     /**
