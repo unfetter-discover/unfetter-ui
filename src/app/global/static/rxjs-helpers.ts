@@ -62,20 +62,29 @@ export class RxjsHelpers {
     }
 
     /**
-     * @param  {any[]} relationshipArray
      * @param  {string} relatedProperty
-     * @returns {object}
+     * @returns {(Observable<T>) => Observable<any>}
      * @description This is for attack patterns by indicator and intrusion sets by attack pattern unwrapping
      */
-    public static relationshipArrayToObject(relationshipArray: any[], relatedProperty: string): object {
-        const mapObj: any = {};
-        relationshipArray.forEach((item) => {
-            mapObj[item._id] = item[relatedProperty];
-            if (mapObj[item._id] === undefined) {
-                console.log('WARNING:', relatedProperty, 'not found on relationhip array');
-            }
-        });
-        return mapObj;
+    public static relationshipArrayToObject(relatedProperty: string) {
+        return <T>(source: Observable<T>) => {
+            return new Observable<any>((observer) => {
+                return source.subscribe({
+                    next(data) {
+                        const mapObj: any = {};
+                        (data as any).forEach((item) => {
+                            mapObj[item._id] = item[relatedProperty];
+                            if (mapObj[item._id] === undefined) {
+                                console.log('WARNING:', relatedProperty, 'not found on relationhip array');
+                            }
+                        });
+                        observer.next(mapObj);
+                    },
+                    error(err) { observer.error(err); },
+                    complete() { observer.complete(); }
+                });
+            });
+        };
     }
     
     /**

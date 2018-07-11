@@ -52,16 +52,28 @@ describe('RxjsHelpers class', () => {
             }
         ]
 
-        it('should transform relationship array to object', () => {
-            const relObj = RxjsHelpers.relationshipArrayToObject(relArr, 'mockData');
-            expect(relObj['1234'].length).toBe(3);
-            expect(relObj['4567'].length).toBe(2);
+        it('should transform relationship array to object', (done) => {
+            observableOf(relArr)
+                .pipe(
+                    RxjsHelpers.relationshipArrayToObject('mockData')
+                )
+                .subscribe((relObj) => {
+                    expect(relObj['1234'].length).toBe(3);
+                    expect(relObj['4567'].length).toBe(2);
+                    done();
+                });
         });
 
-        it('should return undefined when given wrong property', () => {
-            const relObj = RxjsHelpers.relationshipArrayToObject(relArr, 'wrongProperty');
-            expect(relObj['1234']).toBe(undefined);
-            expect(relObj['4567']).toBe(undefined);
+        it('should return undefined when given wrong property', (done) => {
+            observableOf(relArr)
+                .pipe(
+                    RxjsHelpers.relationshipArrayToObject('wrongProperty')
+                )
+                .subscribe((relObj) => {
+                    expect(relObj['1234']).toBe(undefined);
+                    expect(relObj['4567']).toBe(undefined);
+                    done();
+                });
         });
     });
 

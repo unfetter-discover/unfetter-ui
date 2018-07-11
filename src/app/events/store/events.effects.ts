@@ -24,10 +24,16 @@ export class EventsEffects {
         .ofType(LOAD_DATA).pipe(
         switchMap(() => observableForkJoin(
             this.eventsService.getSightingGroup(),
-            this.eventsService.getAttackPatternsByIndicator().pipe(
-                map((res) => RxjsHelpers.relationshipArrayToObject(res.attributes, 'attackPatterns'))),
-            this.eventsService.getInstrusionSetsByAttackPattern().pipe(
-                map((res) => RxjsHelpers.relationshipArrayToObject(res.attributes, 'intrusionSets')))
+            this.eventsService.getAttackPatternsByIndicator()
+                .pipe(
+                    RxjsHelpers.unwrapJsonApi(),
+                    RxjsHelpers.relationshipArrayToObject('attackPatterns')
+                ),
+            this.eventsService.getInstrusionSetsByAttackPattern()
+                .pipe(
+                    RxjsHelpers.unwrapJsonApi(),
+                    RxjsHelpers.relationshipArrayToObject('intrusionSets')
+                )
         )),
         tap((data) => console.log('Events / fetchData debug output: ', data)),
         // TODO create additional actions / filters to handle other types of objects
