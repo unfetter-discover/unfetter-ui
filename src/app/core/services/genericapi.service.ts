@@ -11,6 +11,8 @@ import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { LastModifiedStix } from '../../global/models/last-modified-stix';
 import { StixLabelEnum } from '../../models/stix/stix-label.enum';
 import { NavigateToErrorPage } from '../../root-store/utility/utility.actions';
+import { StixCore } from 'stix';
+import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 
 @Injectable()
 export class GenericApi {
@@ -55,6 +57,24 @@ export class GenericApi {
             .pipe(
                 catchError(this.handleNgrxError),
                 map((dat): any => this.extractData(dat))
+            );
+    }
+
+    /**
+     * @description fetch stix, and unwrap all json api stuff
+     * @param url
+     * @param data
+     * @return {Observable<T>} 
+     */
+    public getStix<T extends StixCore[] | StixCore>(url: string, data?: any): Observable<T> {
+        this.data = (data !== undefined && data !== null) ? '/' + data : '';
+        let builtUrl = this.baseUrl + url + this.data;
+
+        return this.http.get<JsonApi<T>>(builtUrl)
+            .pipe(
+                map((dat): any => this.extractData(dat)),
+                RxjsHelpers.unwrapJsonApi(),
+                catchError(this.handleError)
             );
     }
 

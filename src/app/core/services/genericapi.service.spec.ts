@@ -4,6 +4,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { GenericApi } from './genericapi.service';
 import { JsonApiData } from '../../models/json/jsonapi-data';
 import { StixLabelEnum } from '../../models/stix/stix-label.enum';
+import { AttackPattern } from 'stix';
 
 describe('GenericApi service', () => {
 
@@ -58,7 +59,7 @@ describe('GenericApi service', () => {
             },
         });
         httpMock.verify();
-    }));
+    }));    
 
     it('should POST', inject([GenericApi], (api: GenericApi) => {
         api.post('/testdork', {'when': 'nao'}).subscribe((response) => {
@@ -177,5 +178,67 @@ describe('GenericApi service', () => {
         });
         httpMock.verify();
     }));
+
+    describe('getStix', () => {
+
+        it('should GET attack patterns, and unwrap JSON api', inject([GenericApi], (api: GenericApi) => {
+            const mockAttackPatterns = [
+                {
+                    type: 'attack-pattern',
+                    id: 'attack-pattern--1234',
+                    attributes: {
+                        type: 'attack-pattern',
+                        id: 'attack-pattern--1234',
+                        name: 'bob'
+                    }
+                },
+                {
+                    type: 'attack-pattern',
+                    id: 'attack-pattern--5678',
+                    attributes: {
+                        type: 'attack-pattern',
+                        id: 'attack-pattern--5678',
+                        name: 'jim'
+                    }
+                },
+            ];
+            api.getStix<AttackPattern[]>('/attack-patterns').subscribe((response) => {
+                expect(response).toBeDefined();
+                expect(response[0].name).toBe('bob');
+                expect(response[1].name).toBe('jim');
+                expect((response[0] as any).attributes).toBeUndefined();
+                expect((response[1] as any).attributes).toBeUndefined();
+            });
+            const req = httpMock.expectOne(`/attack-patterns`);
+            expect(req.request.method).toBe('GET');
+            req.flush({
+                data: mockAttackPatterns
+            });
+            httpMock.verify();
+        }));
+
+        it('should GET an attack pattern by ID, and unwrap JSON api', inject([GenericApi], (api: GenericApi) => {
+            const mockAttackPattern = {
+                type: 'attack-pattern',
+                id: 'attack-pattern--1234',
+                attributes: {
+                    type: 'attack-pattern',
+                    id: 'attack-pattern--1234',
+                    name: 'bob'
+                }
+            };
+            api.getStix<AttackPattern>('/attack-patterns/attack-pattern--1234').subscribe((response) => {
+                expect(response).toBeDefined();
+                expect(response.name).toBe('bob');
+                expect((response as any).attributes).toBeUndefined();
+            });
+            const req = httpMock.expectOne(`/attack-patterns/attack-pattern--1234`);
+            expect(req.request.method).toBe('GET');
+            req.flush({
+                data: mockAttackPattern
+            });
+            httpMock.verify();
+        }));
+    });
 
 });
