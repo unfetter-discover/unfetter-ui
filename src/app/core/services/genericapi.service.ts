@@ -13,6 +13,8 @@ import { StixLabelEnum } from '../../models/stix/stix-label.enum';
 import { NavigateToErrorPage } from '../../root-store/utility/utility.actions';
 import { StixCore } from 'stix';
 import { RxjsHelpers } from '../../global/static/rxjs-helpers';
+import { StixApiOptions } from '../../global/models/stix-api-options';
+import { StixUrls } from '../../global/enums/stix-urls.enum';
 
 @Injectable()
 export class GenericApi {
@@ -62,13 +64,28 @@ export class GenericApi {
 
     /**
      * @description fetch stix, and unwrap all json api stuff
-     * @param url
-     * @param data
+     *  usage: 
+     *      - Get all attack patterns: getStix<AttackPattern[]>(StixUrls.ATTACK_PATTERNS)
+     *      - Get all attack patterns with options: getStix<AttackPattern[]>(StixUrls.ATTACK_PATTERNS, null, { sort: {'stix.name': -1} })
+     *      - Get attack pattern by ID: getStix<AttackPattern[]>(StixUrls.ATTACK_PATTERNS, 'attack-pattern--123')
+     * @param {StixUrls} url
+     * @param {string} id
+     * @param {StixApiOptions} options
      * @return {Observable<T>} 
      */
-    public getStix<T extends StixCore[] | StixCore>(url: string, data?: any): Observable<T> {
-        this.data = (data !== undefined && data !== null) ? '/' + data : '';
-        let builtUrl = this.baseUrl + url + this.data;
+    public getStix<T extends StixCore[] | StixCore>(url: StixUrls, id?: string, options?: StixApiOptions): Observable<T> {
+        let builtUrl = this.baseUrl + url;
+
+        if (id) {
+            builtUrl = builtUrl.concat(`/${id}`);
+        }
+
+        if (options) {
+            builtUrl = builtUrl.concat('?');
+            Object.entries(options).forEach((option) => {
+                builtUrl = builtUrl.concat(`${option[0]}=${encodeURI(JSON.stringify(option[1]))}&`);
+            });
+        }
 
         return this.http.get<JsonApi<T>>(builtUrl)
             .pipe(

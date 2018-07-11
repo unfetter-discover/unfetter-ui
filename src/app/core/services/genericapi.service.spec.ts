@@ -5,6 +5,8 @@ import { GenericApi } from './genericapi.service';
 import { JsonApiData } from '../../models/json/jsonapi-data';
 import { StixLabelEnum } from '../../models/stix/stix-label.enum';
 import { AttackPattern } from 'stix';
+import { StixUrls } from '../../global/enums/stix-urls.enum';
+import { StixApiOptions } from '../../global/models/stix-api-options';
 
 describe('GenericApi service', () => {
 
@@ -24,6 +26,10 @@ describe('GenericApi service', () => {
         httpMock = TestBed.get(HttpTestingController);
     });
 
+    afterEach(() => {
+        httpMock.verify();
+    });
+
     it('should GET', inject([GenericApi], (api: GenericApi) => {
         api.get('/testdata', 'nao').subscribe((response) => {
             expect(response).toBeDefined();
@@ -41,7 +47,6 @@ describe('GenericApi service', () => {
                 {'key2': 'value2'},
             ]
         });
-        httpMock.verify();
     }));
 
     it('should GET as a type', inject([GenericApi], (api: GenericApi) => {
@@ -58,7 +63,6 @@ describe('GenericApi service', () => {
                 attributes: {'animal': 'pangolin'}
             },
         });
-        httpMock.verify();
     }));    
 
     it('should POST', inject([GenericApi], (api: GenericApi) => {
@@ -71,7 +75,6 @@ describe('GenericApi service', () => {
             success: false,
             data: 'never'
         });
-        httpMock.verify();
     }));
 
     it('should POST as a type', inject([GenericApi], (api: GenericApi) => {
@@ -86,7 +89,6 @@ describe('GenericApi service', () => {
         const req = httpMock.expectOne(`/guess`);
         expect(req.request.method).toBe('POST');
         req.flush({ data: {vegetable: kumquat} });
-        httpMock.verify();
     }));
 
     it('should PATCH', inject([GenericApi], (api: GenericApi) => {
@@ -100,7 +102,6 @@ describe('GenericApi service', () => {
             success: false,
             data: { answer: 'because' }
         });
-        httpMock.verify();
     }));
 
     it('should PATCH as a type', inject([GenericApi], (api: GenericApi) => {
@@ -115,7 +116,6 @@ describe('GenericApi service', () => {
         const req = httpMock.expectOne(`/minerals/fluorite`);
         expect(req.request.method).toBe('PATCH');
         req.flush({ data: {mineral: fluorite} });
-        httpMock.verify();
     }));
 
     it('should DELETE', inject([GenericApi], (api: GenericApi) => {
@@ -129,7 +129,6 @@ describe('GenericApi service', () => {
         req.flush({
             data: { marbles: [] }
         });
-        httpMock.verify();
     }));
 
     it('should get latest by type', inject([GenericApi], (api: GenericApi) => {
@@ -147,7 +146,6 @@ describe('GenericApi service', () => {
                 {id: 'V', name: 'Hugo Weaving', type: 'thriller', modified: '2005'},
             ]
         });
-        httpMock.verify();
     }));
 
     it('should get latest by type for a creator', inject([GenericApi], (api: GenericApi) => {
@@ -176,7 +174,6 @@ describe('GenericApi service', () => {
                 },
             ]
         });
-        httpMock.verify();
     }));
 
     describe('getStix', () => {
@@ -202,19 +199,18 @@ describe('GenericApi service', () => {
                     }
                 },
             ];
-            api.getStix<AttackPattern[]>('/attack-patterns').subscribe((response) => {
+            api.getStix<AttackPattern[]>(StixUrls.ATTACK_PATTERN).subscribe((response) => {
                 expect(response).toBeDefined();
                 expect(response[0].name).toBe('bob');
                 expect(response[1].name).toBe('jim');
                 expect((response[0] as any).attributes).toBeUndefined();
                 expect((response[1] as any).attributes).toBeUndefined();
             });
-            const req = httpMock.expectOne(`/attack-patterns`);
+            const req = httpMock.expectOne(StixUrls.ATTACK_PATTERN);
             expect(req.request.method).toBe('GET');
             req.flush({
                 data: mockAttackPatterns
             });
-            httpMock.verify();
         }));
 
         it('should GET an attack pattern by ID, and unwrap JSON api', inject([GenericApi], (api: GenericApi) => {
@@ -227,18 +223,29 @@ describe('GenericApi service', () => {
                     name: 'bob'
                 }
             };
-            api.getStix<AttackPattern>('/attack-patterns/attack-pattern--1234').subscribe((response) => {
+            api.getStix<AttackPattern>(StixUrls.ATTACK_PATTERN, 'attack-pattern--1234').subscribe((response) => {
                 expect(response).toBeDefined();
                 expect(response.name).toBe('bob');
                 expect((response as any).attributes).toBeUndefined();
             });
-            const req = httpMock.expectOne(`/attack-patterns/attack-pattern--1234`);
-            expect(req.request.method).toBe('GET');
+            const req = httpMock.expectOne(`${StixUrls.ATTACK_PATTERN}/attack-pattern--1234`);
+            expect(req.request.method).toBe('GET');            
             req.flush({
                 data: mockAttackPattern
             });
-            httpMock.verify();
         }));
+
+        it('should place options on parameters', inject([GenericApi], (api: GenericApi) => {
+            const options: StixApiOptions = {
+                filter: { 'stix.name': 'bob' },
+                skip: 1,
+                limit: 3
+            };
+            api.getStix<AttackPattern>(StixUrls.ATTACK_PATTERN, null, options).subscribe();
+            const req = httpMock.expectOne(`${StixUrls.ATTACK_PATTERN}?filter=${encodeURI(JSON.stringify(options.filter))}&skip=1&limit=3&`);
+            expect(req.request.method).toBe('GET');
+        }));
+
     });
 
 });
