@@ -433,7 +433,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     this.calculationService.baseline = this.currentBaseline;
     this.calculationService.blAttackPatterns = this.blAttackPatterns;
     this.calculationService.blCompleteAPs = this.blCompleteAPs / (this.currentBaseline.assessments.length * this.attackPatternCount);
-    this.calculationService.blCompleteWeightings = ((this.blCompleteWeightings / (3 * this.currentBaseline.assessments.length * this.attackPatternCount)) / 100) * 100;
+    this.calculationService.blPercentComplete = (((this.blCompleteWeightings / (3 * this.currentBaseline.assessments.length * this.attackPatternCount)) / 100) * 100) * 100;
     this.calculationService.totalWeightings = this.attackPatternCount;
     this.calculationService.blGroups = this.blGroups;
     this.calculationService.blWeightings = this.blWeightings;
