@@ -303,7 +303,12 @@ export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy
                     console.log('translation success flag is', resp.translated.success);
                     return resp.translated.payload;
                 }),
-                map((wrappedStix) => wrappedStix.stix)
+                map((wrappedStix) => wrappedStix.stix),
+                map((stix: any) => {
+                    const report = new Report();
+                    report.attributes = stix;
+                    return report;
+                })
             )
             .subscribe(
                 (stix) => {
