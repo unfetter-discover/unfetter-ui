@@ -1,28 +1,16 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { of as observableOf, Observable } from 'rxjs';
-import { compile } from 'handlebars';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogModule, MatDialogRef, MatIconModule, MatPaginatorModule, MatProgressSpinnerModule, MatSnackBarModule, MatTableModule, MAT_DIALOG_DATA, MatFormFieldModule } from '@angular/material';
+import { Observable, of as observableOf } from 'rxjs';
 import * as UUID from 'uuid';
-
-import { FormsModule } from '@angular/forms';
-import {
-        MatDialogModule,
-        MatDialogRef,
-        MAT_DIALOG_DATA,
-        MatIconModule,
-        MatPaginatorModule,
-        MatProgressSpinnerModule,
-        MatSnackBarModule,
-        MatTableModule,
-    } from '@angular/material';
-
-import { Report } from '../../../models/report';
-import { ThreatReport } from '../../models/threat-report.model';
-import { ExternalReference } from '../../../models/stix/external_reference';
 import { GenericApi } from '../../../core/services/genericapi.service';
-import { ReportImporterComponent } from './report-importer.component';
 import { LoadingSpinnerComponent } from '../../../global/components/loading-spinner/loading-spinner.component';
+import { Report } from '../../../models/report';
+import { ExternalReference } from '../../../models/stix/external_reference';
 import { ThreatReportOverviewService } from '../../../threat-dashboard/services/threat-report-overview.service';
+import { ThreatReport } from '../../models/threat-report.model';
+import { ReportImporterComponent } from './report-importer.component';
 import { ReportUploadService } from './report-upload.service';
 
 describe('ReportImporterComponent', () => {
@@ -33,7 +21,7 @@ describe('ReportImporterComponent', () => {
     const goodReportID = UUID.v4();
     const badReportID = UUID.v4();
 
-    const loadReport = function(id: string) {
+    const loadReport = function (id: string) {
         const ref = new ExternalReference();
         ref.source_name = Math.random().toString(36).substring(2, 5);
         ref.url = `https://${Math.random().toString(36).substring(2, 5)}.com/report.pdf`;
@@ -70,6 +58,7 @@ describe('ReportImporterComponent', () => {
     beforeEach(() => {
         const materialModules = [
             MatDialogModule,
+            MatFormFieldModule,
             MatIconModule,
             MatPaginatorModule,
             MatProgressSpinnerModule,
@@ -78,15 +67,20 @@ describe('ReportImporterComponent', () => {
         ];
 
         TestBed.configureTestingModule({
-            declarations: [ ReportImporterComponent, LoadingSpinnerComponent ],
-            imports: [ HttpClientTestingModule, FormsModule, ...materialModules ],
+            declarations: [ReportImporterComponent, LoadingSpinnerComponent],
+            imports: [
+                HttpClientTestingModule,
+                FormsModule,
+                ReactiveFormsModule,
+                ...materialModules
+            ],
             providers: [
                 GenericApi,
                 { provide: MAT_DIALOG_DATA, useValue: {} },
                 {
                     provide: MatDialogRef,
                     useValue: {
-                        close: function() {}
+                        close: function () { }
                     }
                 },
                 {
