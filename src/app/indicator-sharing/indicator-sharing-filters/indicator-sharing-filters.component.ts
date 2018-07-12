@@ -49,14 +49,14 @@ export class IndicatorSharingFiltersComponent implements OnInit {
     this.searchForm.setValue(params);
     this.organizations$ = this.store.select('indicatorSharing')
       .pipe(
-        pluck('identities'),
-        map(RxjsHelpers.sortByField('name', 'ASCENDING'))
+        pluck<any, any[]>('identities'),
+        RxjsHelpers.sortByField('name', 'ASCENDING')
       );
 
     this.sensors$ = this.store.select('indicatorSharing')
       .pipe(
-        pluck('sensors'),
-        map(RxjsHelpers.sortByField('name', 'ASCENDING'))
+        pluck<any, any[]>('sensors'),
+        RxjsHelpers.sortByField('name', 'ASCENDING')
       );
   }
 
@@ -131,8 +131,8 @@ export class IndicatorSharingFiltersComponent implements OnInit {
 
     this.intrusionSets$ = this.store.select('indicatorSharing')
       .pipe(
-        pluck('intrusionSets'),
-        map(RxjsHelpers.sortByField('name', 'ASCENDING'))
+        pluck<any, any[]>('intrusionSets'),
+        RxjsHelpers.sortByField('name', 'ASCENDING')
       );
   }
 

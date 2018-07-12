@@ -83,7 +83,7 @@ export class CapabilityComponent implements OnInit {
       .select('baseline')
       .pipe(
         pluck('allAttackPatterns'),
-        map(RxjsHelpers.sortByField('name', 'ASCENDING')),
+        RxjsHelpers.sortByField('name', 'ASCENDING'),
         distinctUntilChanged()
       )
       .subscribe(

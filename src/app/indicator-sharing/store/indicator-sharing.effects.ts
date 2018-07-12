@@ -46,21 +46,29 @@ export class IndicatorSharingEffects {
             switchMap(() => observableForkJoin(
                 this.indicatorSharingService.getIdentities(),
                 this.indicatorSharingService.getIndicators(),
-                this.indicatorSharingService.getAttackPatternsByIndicator(),
+                this.indicatorSharingService.getAttackPatternsByIndicator()
+                    .pipe(
+                        RxjsHelpers.unwrapJsonApi(),
+                        RxjsHelpers.relationshipArrayToObject('attackPatterns')
+                    ),
                 this.indicatorSharingService.getSensors(),
                 this.indicatorSharingService.getAttackPatterns(),
                 this.indicatorSharingService.getTotalIndicatorCount(),
-                this.indicatorSharingService.getInstrusionSetsByAttackPattern(),
+                this.indicatorSharingService.getInstrusionSetsByAttackPattern()
+                    .pipe(
+                        RxjsHelpers.unwrapJsonApi(),
+                    RxjsHelpers.relationshipArrayToObject('intrusionSets')
+                    ),
                 this.indicatorSharingService.getIntrusionSets()
             )),
             map((results: any[]) => [
                 results[0].map((r) => r.attributes),
                 results[1].map((r) => r.attributes),
-                RxjsHelpers.relationshipArrayToObject(results[2].attributes, 'attackPatterns'),
+                results[2],
                 results[3].map((r) => r.attributes),
                 results[4].map((r) => r.attributes),
                 results[5],
-                RxjsHelpers.relationshipArrayToObject(results[6].attributes, 'intrusionSets'),
+                results[6],
                 results[7].map((r) => r.attributes)
             ]),
             mergeMap(([identities, indicators, indicatorToApMap, sensors, attackPatterns, indCount, intrToApMap, intrusionSets]) => [
@@ -140,7 +148,8 @@ export class IndicatorSharingEffects {
         .ofType(indicatorSharingActions.REFRESH_AP_MAP)
         .pipe(
             switchMap((_) => this.indicatorSharingService.getAttackPatternsByIndicator()),
-            map((res: any) => RxjsHelpers.relationshipArrayToObject(res.attributes, 'attackPatterns')),
+            RxjsHelpers.unwrapJsonApi(),
+            RxjsHelpers.relationshipArrayToObject('attackPatterns'),
             map((indicatorToApMap) => new indicatorSharingActions.SetIndicatorToApMap(indicatorToApMap))
         );
 

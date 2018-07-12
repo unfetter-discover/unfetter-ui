@@ -44,8 +44,8 @@ export class CreatedByRefComponent implements OnInit {
             switchMap((organizations: any[]) => {
                 return observableForkJoin(
                     observableOf(organizations),
-                    this.baseService.get(`${Constance.IDENTITIES_URL}?filter=${identityFilter}`).pipe(
-                        map(RxjsHelpers.mapArrayAttributes))
+                    this.baseService.get(`${Constance.IDENTITIES_URL}?filter=${identityFilter}`)
+                    .pipe(RxjsHelpers.unwrapJsonApi())
                 );
             }),
             map(([organizations, identities]) => {
