@@ -37,10 +37,6 @@ const moduleComponents = [
 ];
 
 const moduleServices = [
-  ReportTranslationService,
-  ReportUploadService,
-  ThreatReportOverviewService,
-  ThreatReportSharedService,
 ];
 
 const materialModules = [

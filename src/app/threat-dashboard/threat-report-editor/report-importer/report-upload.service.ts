@@ -1,23 +1,19 @@
 
-import { throwError as observableThrowError,  Observable  } from 'rxjs';
-
-import { catchError, map } from 'rxjs/operators';
+import { HttpClient, HttpEventType, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpRequest, HttpHeaders, HttpEvent, HttpEventType, HttpResponse, HttpClient } from '@angular/common/http';
-
-import { Constance } from '../../../utils/constance';
+import { Observable, throwError as observableThrowError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { Report } from '../../../models/report';
 import { JsonApiObject } from '../../../threat-dashboard/models/adapter/json-api-object';
+import { Constance } from '../../../utils/constance';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root',
+  })
 export class ReportUploadService {
-
     private data: any = null;
-
     private headers: HttpHeaders;
-
     public readonly baseUrl = Constance.API_HOST || '';
-
     public readonly path = `/api/ctf/upload`;
 
     constructor(private http: HttpClient) {

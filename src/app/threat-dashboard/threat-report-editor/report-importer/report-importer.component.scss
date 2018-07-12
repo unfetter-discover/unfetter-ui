@@ -33,6 +33,14 @@
     color: #444444;
 }
 
+.hideUrlInput {
+    display: none;
+}
+
+.showUrlInput {
+    display: block;
+}
+
 #imported-reports-table, #current-reports-table {
     .mat-header-row, .mat-row {
         min-height: 0;
@@ -40,8 +48,23 @@
     }
 
     .mat-column-title {
-        flex: 2;
+        flex: 5 0 0;
         margin: 8px 2px;
+        border-right: 1px solid #e0e0e0;
+    }
+
+    .mat-column-date {
+        flex: 1;
+    }
+
+    .mat-column-author {
+        flex: 1;
+    }
+
+    .mat-column-actions {
+        flex: 1;
+        max-width: 50px;
+        border-left: 1px solid #e0e0e0;
     }
 
     .text-fadeable {
@@ -67,6 +90,10 @@
 
     .mat-column-actions {
         text-align: right;
+    }
+
+    mat-cell:first-child {
+        padding-left: 8px;
     }
 }
 
