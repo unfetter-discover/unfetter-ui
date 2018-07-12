@@ -16,12 +16,17 @@ import { LastModifiedThreatReport } from '../models/last-modified-threat-report'
 import { ThreatReport } from '../models/threat-report.model';
 
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ThreatReportOverviewService {
 
   private readonly headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Accept': 'application/vnd.api+json' });
   private readonly reportsUrl = `${Constance.API_HOST}${Constance.REPORTS_URL}`;
-  constructor(private http: HttpClient, private genericService: GenericApi) { }
+  constructor(
+    private http: HttpClient,
+    private genericService: GenericApi
+  ) { }
 
   public setGenericApiService(service: GenericApi): ThreatReportOverviewService {
     this.genericService = service;
