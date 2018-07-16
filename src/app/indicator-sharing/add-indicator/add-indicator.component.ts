@@ -41,6 +41,7 @@ export class AddIndicatorComponent implements OnInit {
     public patternObjs: PatternHandlerPatternObject[] = [];
     public patternObjSubject: Subject<PatternHandlerPatternObject[]> = new Subject();
     public editMode: boolean = false;
+    public files: FileList;
 
     @ViewChild('associatedDataStep') 
     public associatedDataStep: MatStep;
@@ -220,6 +221,16 @@ export class AddIndicatorComponent implements OnInit {
                 );
         }
 
+    }
+
+    public fileInputChange(event) {
+        console.log('$$$$', event);
+        this.files = event.target.files;
+        console.log('@@@@@', this.files);
+        for (const idx in this.files) {
+            console.log('$$$$', this.files[idx]);
+        }
+        console.log(Object.values(this.files));
     }
 
     public stepperChanged(event: StepperSelectionEvent) {

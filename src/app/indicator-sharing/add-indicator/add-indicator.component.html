@@ -181,6 +181,15 @@
                     <add-label-reactive [parentForm]="form" [stixType]="'indicator'"></add-label-reactive>
                 </div>
 
+                <div *ngIf="!editMode">
+                    <h5>File Attachments</h5>
+                    <div class="uf-well">
+                        <p>
+                            <input type="file" name="attachments" id="attachments" (change)="fileInputChange($event)" multiple>
+                        </p>
+                    </div>
+                </div>
+
                 <div class="mt-6">
                     <button mat-raised-button matStepperNext type="button" color="primary">CONTINUE</button>
                     <button mat-button matStepperPrevious type="button">BACK</button>

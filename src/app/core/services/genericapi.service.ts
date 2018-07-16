@@ -1,9 +1,9 @@
 
 import { throwError as observableThrowError, of as observableOf,  Observable  } from 'rxjs';
 
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, filter, tap, pluck } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpRequest, HttpResponse, HttpEventType } from '@angular/common/http';
 import { Constance } from '../../utils/constance';
 import { JsonApiData } from '../../models/json/jsonapi-data';
 import { JsonApi } from '../../models/json/jsonapi';
@@ -15,6 +15,7 @@ import { StixCore } from 'stix';
 import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 import { StixApiOptions } from '../../global/models/stix-api-options';
 import { StixUrls } from '../../global/enums/stix-urls.enum';
+import { GridFSFile } from '../../global/models/grid-fs-file';
 
 @Injectable()
 export class GenericApi {
@@ -218,6 +219,27 @@ export class GenericApi {
                     map((dat): any => this.extractData(dat)),
                     catchError(this.handleError)
                 );
+    }
+
+    public uploadAttachments(files: FileList, progressCallback?: (number) => void): Observable<[{attributes: GridFSFile}]> {
+        const formData: FormData = new FormData();
+        Object.values(files).forEach((file) => formData.append('attachments', file));
+        const req = new HttpRequest('POST', `${Constance.UPLOAD_URL}/files`, formData, {
+            reportProgress: true
+        }); 
+        return this.http.request(req)
+            .pipe(
+                tap((event) => {
+                    if (event.type === HttpEventType.UploadProgress && progressCallback) {
+                        progressCallback(Math.round(100 * event.loaded / event.total));
+                    }
+                }),
+                filter((event) => event instanceof HttpResponse),
+                pluck('body'),
+                map(this.extractData),
+                RxjsHelpers.unwrapJsonApi(),
+                catchError(this.handleError)
+            );
     }
 
     /**
