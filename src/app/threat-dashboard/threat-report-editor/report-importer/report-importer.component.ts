@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MatSnackBar, MatTableDataSource, MAT_DIALOG_DATA, PageEvent } from '@angular/material';
-import { combineLatest as observableCombineLatest, fromEvent as observableFromEvent, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest as observableCombineLatest, fromEvent as observableFromEvent, Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { heightCollapse } from '../../../global/animations/height-collapse';
@@ -22,7 +22,7 @@ import { ReportsDataSource } from './reports.datasource';
 export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('fileUpload') public fileUpload: ElementRef;
     @ViewChildren('filter') public filters: QueryList<ElementRef>;
-    public curDisplayLen: Observable<number>;
+    public curDisplayLen: Observable<number> = new BehaviorSubject<number>(0);
     public currents: ReportsDataSource;
     public fName = '';
     public filter: ElementRef;
@@ -38,14 +38,14 @@ export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: any,
-        public changeDetectorRef: ChangeDetectorRef,
-        public dialogRef: MatDialogRef<any>,
+        protected changeDetectorRef: ChangeDetectorRef,
+        protected dialogRef: MatDialogRef<any>,
+        protected externalReportTranslationService: ReportTranslationService,
         protected formBuilder: FormBuilder,
         protected genericApiService: GenericApi,
         protected service: ThreatReportOverviewService,
         protected snackBar: MatSnackBar,
         protected uploadService: ReportUploadService,
-        protected externalReportTranslationService: ReportTranslationService,
     ) { }
 
     ngOnInit() {
@@ -61,27 +61,35 @@ export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy
         this.resetLoadReportByUrlForm();
 
         const loadReports$ = this.service.loadAllReports();
-        let loadAll$ = observableCombineLatest(loadReports$).pipe(
-            withLatestFrom((results) => {
-                let filter = [];
-                if (this.data && this.data.reports) {
-                    filter = this.data.reports;
-                }
-                return results[0].filter(report => !filter.some(have => this.areSameReport(have, report)));
-            }));
-        loadAll$ = loadAll$.pipe(
-            tap(() => {
-                // removing spinner, put on change queue
-                requestAnimationFrame(() => {
-                    this.reportsLoading = false;
-                });
-            }),
-            tap(() => {
-                // trigger change detection, to connect number of reports show needed or get expression changed error
-                requestAnimationFrame(() => {
-                    this.curDisplayLen = this.currents.curDisplayLen$;
-                });
-            }));
+        let loadAll$ = observableCombineLatest(loadReports$)
+            .pipe(
+                withLatestFrom((results) => {
+                    let filter = [];
+                    if (this.data && this.data.reports) {
+                        filter = this.data.reports;
+                    }
+                    return results[0].filter(report => !filter.some(have => this.areSameReport(have, report)));
+                })
+            );
+        loadAll$ = loadAll$
+            .pipe(
+                tap(() => {
+                    requestAnimationFrame(() => {
+                        // removing spinner
+                        this.reportsLoading = false;
+                        // trigger change detection
+                        this.changeDetectorRef.markForCheck();
+                    });
+                }),
+                tap(() => {
+                    requestAnimationFrame(() => {
+                        // connect number of reports shown needed or get expression changed error
+                        this.curDisplayLen = this.currents.curDisplayLen$;
+                        // trigger change detection
+                        this.changeDetectorRef.markForCheck();
+                    });
+                })
+            );
 
         this.currents = new ReportsDataSource(loadAll$);
         return loadReports$;
@@ -227,7 +235,7 @@ export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy
         return result;
     }
 
-    private areSameReport(report1: Partial<Report>, report2: Partial<Report>): boolean {
+    public areSameReport(report1: Partial<Report>, report2: Partial<Report>): boolean {
         if (report1 === report2) {
             return true;
         }

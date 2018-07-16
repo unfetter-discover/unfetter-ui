@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { empty as observableEmpty, forkJoin as observableForkJoin, from as observableFrom, merge as observableMerge, Observable, of as observableOf, throwError as observableThrowError, zip as observableZip } from 'rxjs';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
-import { catchError, filter, first, map, mergeMap, reduce } from 'rxjs/operators';
+import { catchError, filter, first, map, mergeMap, reduce, tap } from 'rxjs/operators';
 import * as UUID from 'uuid';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { SortHelper } from '../../global/static/sort-helper';
@@ -14,7 +14,6 @@ import { JsonApiObject } from '../models/adapter/json-api-object';
 import { Boundaries } from '../models/boundaries';
 import { LastModifiedThreatReport } from '../models/last-modified-threat-report';
 import { ThreatReport } from '../models/threat-report.model';
-
 
 @Injectable({
   providedIn: 'root',
@@ -196,47 +195,36 @@ export class ThreatReportOverviewService {
     // }
 
     const sourceReports$ = observableFrom(reports);
-    const hasIdPredicate = (report) => report.id === undefined;
-    const reportsForUpdate$: Observable<Report> = sourceReports$.pipe(filter(hasIdPredicate));
-    const reportsForInsert$: Observable<Report> = sourceReports$.pipe(filter(((x) => !hasIdPredicate(x))));
+    const hasId = (report: Report) => report.id !== undefined;
+    const reportsForUpdate$: Observable<Report> = sourceReports$.pipe(filter(hasId));
+    const reportsForInsert$: Observable<Report> = sourceReports$.pipe(filter((x) => !hasId(x)));
     // pull fresh copies of the reports
     const updates$ = reportsForUpdate$.pipe(mergeMap((report) => this.loadReport(report.id)));
     // assign the correct workproduct to these new reports
-    const inserts$ = reportsForInsert$.pipe(map((report: any) => {
-      if (threatReportMeta) {
-        const meta = report.attributes.metaProperties || {};
-        meta.work_products = meta.work_products || [];
-        meta.work_products = meta.work_products.concat({ ...threatReportMeta });
-        meta.published = threatReportMeta.published;
-        report.attributes.metaProperties = { ...report.attributes.metaProperties, ...meta };
-      }
-      return report;
-    }));
-    const updateReports$ = observableMerge(inserts$, updates$).pipe(
-      mergeMap((el) => {
-        // I cant explain why this an array of single element arrays
-        //  but lets unwrap
-        if (el instanceof Array) {
-          el = el[0];
-        }
-        return this.upsertReport(el, threatReportMeta);
-      }))
-    // .exhaustMap((val) => val)
-    // return updateReports$
-    //   // unroll fetch for latest reports
-    //   .mergeMap((latestReports) => {
-    //     // I cant explain why this an array of single element arrays
-    //     //  but lets unwrap
-    //     latestReports = latestReports.map((el) => {
-    //       if (el instanceof Array) {
-    //         return el[0];
-    //       }
-    //       return el;
-    //     });
-    //     // update/insert
-    //     const calls = latestReports.map((el) => this.upsertReport(el, threatReportMeta));
-    //     return Observable.forkJoin(...calls);
-    //   });
+    const inserts$ = reportsForInsert$
+      .pipe(
+        map((report: Report) => {
+          if (threatReportMeta) {
+            const meta = report.attributes.metaProperties || {};
+            meta.work_products = meta.work_products || [];
+            meta.work_products = meta.work_products.concat({ ...threatReportMeta });
+            meta.published = threatReportMeta.published;
+            report.attributes.metaProperties = { ...report.attributes.metaProperties, ...meta };
+          }
+          return report;
+        })
+      );
+    const updateReports$ = observableMerge(inserts$, updates$)
+      .pipe(
+        mergeMap((el) => {
+          // I cant explain why this an array of single element arrays
+          //  but lets unwrap
+          if (el instanceof Array) {
+            el = el[0];
+          }
+          return this.upsertReport(el, threatReportMeta);
+        })
+      );
     return updateReports$;
   }
 
@@ -332,9 +320,12 @@ export class ThreatReportOverviewService {
     const id = threatReport.id || UUID.v4();
     threatReport.id = id;
     const reports = threatReport.reports;
-    const saveReports$ = this.upsertReports(reports as Report[], threatReport).pipe(
-      reduce((acc, val) => acc.concat(val), []),
-      map((el) => threatReport));
+    const saveReports$ = this.upsertReports(reports as Report[], threatReport)
+      .pipe(
+        tap((el) => console.log('upserted report', el)),
+        reduce((acc, val) => acc.concat(val), []),
+        map((el) => threatReport)
+      );
     return saveReports$;
   }
 

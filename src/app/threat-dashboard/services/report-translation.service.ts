@@ -62,7 +62,10 @@ export class ReportTranslationService {
     return this.httpClient
       .post<JsonApiObject<ExternalDataTranslationResponse>>(url, body, { headers })
       .pipe(
-        this.mapData()
+        this.mapData<ExternalDataTranslationResponse>(),
+        this.verifyAndParseDtgs(),
+        this.verifyGranularMarking(),
+        this.verifySourceName()
       );
   }
 
@@ -123,8 +126,70 @@ export class ReportTranslationService {
  * @description unwrap the data attribute
  * @returns OperatorFunction
  */
-  public mapPayload<T = any>(): OperatorFunction<T, T> {
+  public mapPayload<T = any>(): OperatorFunction<T, any> {
     return map((data: any) => data.payload);
   }
 
+  /**
+   * @description verify the date time group fields are parsable as Date and in ISO String format
+   * @returns OperatorFunction
+   */
+  public verifyAndParseDtgs(): OperatorFunction<ExternalDataTranslationResponse, ExternalDataTranslationResponse> {
+    return map((resp: ExternalDataTranslationResponse) => {
+      const stix = resp.translated.payload.stix;
+      const dtgs = ['modified', 'created', 'published'];
+      dtgs.forEach((field) => {
+        stix[field] = new Date(stix[field]).toISOString();
+      });
+      resp.translated.payload.stix = stix;
+      return resp;
+    })
+  }
+
+  /**
+   * @description verify granular markings have selectors
+   * @returns OperatorFunction
+   */
+  public verifyGranularMarking(): OperatorFunction<ExternalDataTranslationResponse, ExternalDataTranslationResponse> {
+    return map((resp: ExternalDataTranslationResponse) => {
+      const stix = resp.translated.payload.stix;
+      const defaultSelectors = [
+        'name',
+        'description',
+        'title',
+        'x_unfetter_object_actions'
+      ];
+      stix.granular_markings.forEach((marking) => {
+        marking.selectors = marking.selectors || defaultSelectors;
+      });
+      resp.translated.payload.stix = stix;
+      return resp;
+    });
+  }
+
+  /**
+   * @description verify granular markings have selectors
+   * @returns OperatorFunction
+   */
+  public verifySourceName(): OperatorFunction<ExternalDataTranslationResponse, ExternalDataTranslationResponse> {
+    return map((resp: ExternalDataTranslationResponse) => {
+      const stix = resp.translated.payload.stix;
+      const defaultSourceName = 'External from Unfetter';
+      // const pattern = '^((http[s]?):\/)?\/?([^:\/\s]+)((\/\w+)*\/)?([\w\-\.]*[^#?\s]+)?(.*)?(#[\w\-]+)?$';
+      // const regex = new RegExp(pattern, 'i');
+      stix.external_references.forEach((ref) => {
+        let sourceName = ref.source_name;
+        if (sourceName === undefined || sourceName.length < 1) {
+          // source name is empty attempt to get a new one
+          // const match = regex.exec(sourceName);
+          // if (match) {
+          // }
+          sourceName = defaultSourceName;
+        }
+        ref.source_name = ref.source_name || sourceName;
+      });
+      resp.translated.payload.stix = stix;
+      return resp;
+    });
+  }
 }
