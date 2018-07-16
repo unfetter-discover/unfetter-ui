@@ -309,8 +309,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
     if (group) {
       // Adjust page based on given group
-      this.page = this.navigations.find(navigation => navigation.id === group.id).page;
-
       this.wizardStore.dispatch(new SetCurrentBaselineGroup(group));
     } else {
       // If Group Setup or Summary, indicate as such
