@@ -8,9 +8,10 @@
 }
 
 #radarChart {
-    padding-top: 32px;
-    padding-left: 32px;
-    background-color: #FFFFFF ;
+    padding-top: 24px;
+    padding-left: 24px;
+    background-color: #FFFFFF;
+    min-height: 780px;
 }
 
 :host ::ng-deep {

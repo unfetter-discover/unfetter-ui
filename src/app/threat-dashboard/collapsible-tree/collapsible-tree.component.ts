@@ -123,18 +123,20 @@ export class CollapsibleTreeComponent implements OnInit, OnDestroy, OnChanges {
 
         update(root);
 
+        root.children = root.children || [];
         root.children.forEach(collapse);
         const BreakException = {};
         try {
-            root.children.forEach(
-                (child: any) => {
+            root.children
+                .forEach((child: any) => {
                     if (child._children) {
                         click(child);
                         throw BreakException;
                     }
-                }
-            );
-        } catch (e) {}
+                });
+        } catch (e) {
+            console.error(e);
+        }
 
         d3.select(self.frameElement).style('height', '800px');
 

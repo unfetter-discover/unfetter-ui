@@ -495,8 +495,14 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
           .filter((attackPattern) => this.isTruthy(attackPattern.isSelected));
         const dataPoint = new RadarChartDataPoint();
         dataPoint.area = phase.name;
+        // calc percent
         dataPoint.value = Math.round((selectedAttackPatterns.length / total) * 100);
-        // dataPoint.value = dataPoint.value > 0 ? roundedLogBase2(dataPoint.value) : 0;
+        // log base 2 scale
+        dataPoint.value = dataPoint.value > 0 ? roundedLogBase2(dataPoint.value) : 0;
+        // log base 2 up to 100% has 0-7 segments
+        dataPoint.value = dataPoint.value * 10;
+        // for testing
+        // dataPoint.value = dataPoint.value > 10 ? dataPoint.value : 10;
         return dataPoint;
       });
 
