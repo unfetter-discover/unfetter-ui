@@ -219,6 +219,30 @@
           </div>
         </mat-tab>
 
+        <mat-tab label="Attachments" *ngIf="indicator.metaProperties && indicator.metaProperties.attachments">
+          <br>
+          <table class="uf-table">
+            <thead>
+              <tr>
+                <th>Filename</th>
+                <th>Size</th>
+                <th>Download</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let attachment of indicator.metaProperties.attachments">
+                <td>{{ attachment.filename }}</td>
+                <td>{{ attachment.length }}</td>
+                <td>
+                  <div class="mat-icon-button-cell-wrapper">
+                    <a href="{{ generateAttachmentLink(attachment) }}" mat-icon-button><i class="material-icons mat-24">cloud_download</i></a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </mat-tab>
+
       </mat-tab-group>
 
       <div class="mt-20 overFlowHidden" @heightCollapse *ngIf="showCommentTextArea">
