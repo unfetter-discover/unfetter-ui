@@ -33,6 +33,14 @@
     color: #444444;
 }
 
+.hideUrlInput {
+    display: none;
+}
+
+.showUrlInput {
+    display: block;
+}
+
 #imported-reports-table, #current-reports-table {
     .mat-header-row, .mat-row {
         min-height: 0;
@@ -40,8 +48,25 @@
     }
 
     .mat-column-title {
-        flex: 2;
+        flex: 5 0 0;
         margin: 8px 2px;
+        border-right: 1px solid #e0e0e0;
+    }
+
+    .mat-column-date {
+        flex: 1;
+        text-align: center;
+    }
+
+    .mat-column-author {
+        flex: 1;
+    }
+
+    .mat-column-actions {
+        flex: 1;
+        max-width: 50px;
+        border-left: 1px solid #e0e0e0;
+        text-align: right;
     }
 
     .text-fadeable {
@@ -61,13 +86,10 @@
         background: linear-gradient(to right, rgba(255, 255, 255, 0), $light-text-slightly-dimmed 100%);
     }
 
-    .mat-column-date {
-        text-align: center;
+    mat-cell:first-child {
+        padding-left: 8px;
     }
 
-    .mat-column-actions {
-        text-align: right;
-    }
 }
 
 #current-reports-table {

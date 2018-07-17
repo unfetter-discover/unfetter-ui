@@ -1,27 +1,20 @@
 
-import { merge as observableMerge,  BehaviorSubject ,  Observable  } from 'rxjs';
-
-import { map, multicast } from 'rxjs/operators';
-import { EventEmitter } from '@angular/core';
-import { DataSource } from '@angular/cdk/table';
 import { CollectionViewer } from '@angular/cdk/collections';
-import { MatPaginator, PageEvent } from '@angular/material';
-
+import { DataSource } from '@angular/cdk/table';
+import { PageEvent } from '@angular/material';
+import { BehaviorSubject, merge as observableMerge, Observable } from 'rxjs';
+import { map, multicast } from 'rxjs/operators';
 import { Report } from '../../../models/report';
 
 /**
  * @description handles filter events from the UI sent to the datasource, in this case a service call
  */
 export class ReportsDataSource extends DataSource<Report> {
-
+    
     public displayLenSubject$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-
     public curDisplayLen$: Observable<number> = this.displayLenSubject$.asObservable();
-
     protected readonly dataChange$: BehaviorSubject<Report[]> = new BehaviorSubject([]);
-
     protected readonly filterChange$ = new BehaviorSubject('');
-
     protected readonly pageChange$ = new BehaviorSubject<PageEvent>({
         pageIndex: 0,
         pageSize: 5,

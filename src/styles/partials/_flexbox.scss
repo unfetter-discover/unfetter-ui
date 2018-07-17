@@ -6,6 +6,11 @@
   display: flex;
 }
 
+.flexCol {
+  display: flex;
+  flex-direction: column;
+}
+
 .flexImportant {
   display: flex !important;
 }
@@ -16,6 +21,10 @@
 
 .flex1 {
   flex: 1;
+}
+
+.flex0 {
+  flex: 0 0 auto;
 }
 
 .flexAuto {

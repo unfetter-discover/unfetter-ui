@@ -128,10 +128,10 @@
                         matTooltip="Click to create a new report to be included in this work product"
                         aria-label="Click to create a new report to be included in this work product"
                         (click)="onCreateReport($event)">CREATE</button>
-                <button mat-button class="import-report-button"
-                        matTooltip="Click to select an existing report to include in this work product"
-                        aria-label="Click to select an existing report to include in this work product"
-                        (click)="onImportReport($event)">IMPORT</button>
+                <button mat-button class="import-report-button" color="primary"
+                        matTooltip="Click to add an existing report to include in this work product"
+                        aria-label="Click to add an existing report to include in this work product"
+                        (click)="onImportReport($event)">ADD</button>
             </div>
         </div>
 
@@ -141,7 +141,7 @@
             <mat-table class="reports-table" #table [dataSource]="reportsDataSource">
                 <ng-container matColumnDef="name">
                     <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-                    <mat-cell *matCellDef="let report"> {{report.attributes.name}} </mat-cell>
+                    <mat-cell *matCellDef="let report"> {{report.attributes.name || report.attributes.title}} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>

@@ -1,7 +1,9 @@
 import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { ThreatReport } from '../models/threat-report.model';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root',
+})
 export class ThreatReportSharedService {
 
     public threatReportOverview: ThreatReport = undefined;
