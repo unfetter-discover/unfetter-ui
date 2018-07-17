@@ -147,19 +147,21 @@
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let report">
                         <div class="buttonGrp text-right">
-                            <button mat-button disabled
+                            <!-- <button mat-button disabled
                                     matTooltip="Convert this personal report into a shared report"
                                     aria-label="Convert this personal report into a shared report"
                                     (click)="onShareReport(report, $event)">
                                 <mat-icon>share</mat-icon>
-                            </button>
-                            <button mat-button
+                            </button> -->
+                            <button mat-icon-button
+                                    class="mat-24"
                                     matTooltip="Edit the information about this report"
                                     aria-label="Edit the information about this report"
                                     (click)="onModifyReport(report, $event)">
                                 <mat-icon>edit</mat-icon>
                             </button>
-                            <button mat-button
+                            <button mat-icon-button
+                                    class="mat-24"
                                     matTooltip="Remove this report from this work product"
                                     aria-label="Remove this report from this work product"
                                     (click)="onRemoveReport(report, $event)">
