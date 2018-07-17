@@ -10,6 +10,7 @@ import { IndicatorSharingService } from '../indicator-sharing.service';
 import { of as observableOf, Observable } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { take } from 'rxjs/operators';
+import { GenericApi } from '../../core/services/genericapi.service';
 
 describe('AddIndicatorComponent', () => {
     let component: AddIndicatorComponent;
@@ -89,6 +90,17 @@ describe('AddIndicatorComponent', () => {
         }
     };
 
+    const mockGenericApi = {
+        uploadAttachments: (files, cb) => {
+            return observableOf([
+                {
+                    _id: '1234',
+                    filename: 'bob.txt'
+                }
+            ]);
+        }
+    };
+
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [
@@ -120,6 +132,10 @@ describe('AddIndicatorComponent', () => {
                 {
                     provide: AuthService,
                     useValue: mockAuthService
+                },
+                {
+                    provide: GenericApi,
+                    useValue: mockGenericApi
                 }
             ]
         })

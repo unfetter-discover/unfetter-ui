@@ -232,7 +232,7 @@
             <tbody>
               <tr *ngFor="let attachment of indicator.metaProperties.attachments">
                 <td>{{ attachment.filename }}</td>
-                <td>{{ attachment.length }}</td>
+                <td>{{ attachment.length | readableBytes }}</td>
                 <td>
                   <div class="mat-icon-button-cell-wrapper">
                     <a href="{{ generateAttachmentLink(attachment) }}" mat-icon-button><i class="material-icons mat-24">cloud_download</i></a>
