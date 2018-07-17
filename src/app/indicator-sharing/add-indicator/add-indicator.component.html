@@ -234,6 +234,10 @@
             
         </mat-vertical-stepper>
 
+        <div *ngIf="uploadProgress > 0">
+            <label>Uploading Files...</label>
+            <mat-progress-bar mode="determinate" [value]="uploadProgress"></mat-progress-bar>
+        </div>
         <p class="text-right mt-6">
             <button mat-button mat-dialog-close (click)="resetForm($event); dialogRef.close(false);">CANCEL</button>
             <button mat-raised-button color="primary" [disabled]="form.status !== 'VALID'" type="submit">SAVE</button>

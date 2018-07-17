@@ -1,7 +1,7 @@
 
 import { of as observableOf, forkJoin as observableForkJoin,  Observable ,  Subject  } from 'rxjs';
 
-import { distinctUntilChanged, debounceTime, switchMap, pluck } from 'rxjs/operators';
+import { distinctUntilChanged, debounceTime, switchMap, pluck, finalize } from 'rxjs/operators';
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatStep } from '@angular/material';
@@ -17,6 +17,8 @@ import { cleanObjectProperties } from '../../global/static/clean-object-properti
 import { ExternalReferencesForm } from '../../global/form-models/external-references';
 import { KillChainPhasesForm } from '../../global/form-models/kill-chain-phases';
 import { FormatHelpers } from '../../global/static/format-helpers';
+import { GenericApi } from '../../core/services/genericapi.service';
+import { GridFSFile } from '../../global/models/grid-fs-file';
 
 @Component({
     selector: 'add-indicator',
@@ -42,6 +44,7 @@ export class AddIndicatorComponent implements OnInit {
     public patternObjSubject: Subject<PatternHandlerPatternObject[]> = new Subject();
     public editMode: boolean = false;
     public files: FileList;
+    public uploadProgress: number;
 
     @ViewChild('associatedDataStep') 
     public associatedDataStep: MatStep;
@@ -64,7 +67,8 @@ export class AddIndicatorComponent implements OnInit {
         public dialogRef: MatDialogRef<any>,
         @Inject(MAT_DIALOG_DATA) public editData: any,
         private indicatorSharingService: IndicatorSharingService,
-        private authService: AuthService
+        private authService: AuthService,
+        private genericApi: GenericApi
     ) { }    
 
     public ngOnInit() {
@@ -186,10 +190,19 @@ export class AddIndicatorComponent implements OnInit {
         return this.form.get('name').status !== 'VALID' || this.form.get('created_by_ref').status !== 'VALID' || this.form.get('valid_from').status !== 'VALID';
     }
 
-    public submitIndicator() {
-        const tempIndicator: any = cleanObjectProperties({}, this.form.value);
-
+    public async submitIndicator() {
+        const tempIndicator: any = cleanObjectProperties({}, this.form.value);        
         this.pruneQueries(tempIndicator);
+
+        const filesToUpload = await this.uploadFiles();
+        if (filesToUpload && filesToUpload.length) {
+            if (!tempIndicator.metaProperties) {
+                tempIndicator.metaProperties = {};
+            }
+            tempIndicator.metaProperties.attachments = filesToUpload;
+        }
+
+        console.log('~~~~', tempIndicator, '###', filesToUpload);
         
         if (this.editMode) {
             tempIndicator.id = this.editData.id;
@@ -224,13 +237,7 @@ export class AddIndicatorComponent implements OnInit {
     }
 
     public fileInputChange(event) {
-        console.log('$$$$', event);
         this.files = event.target.files;
-        console.log('@@@@@', this.files);
-        for (const idx in this.files) {
-            console.log('$$$$', this.files[idx]);
-        }
-        console.log(Object.values(this.files));
     }
 
     public stepperChanged(event: StepperSelectionEvent) {
@@ -238,6 +245,28 @@ export class AddIndicatorComponent implements OnInit {
             // This is to prevent external reference and kill chain forms from showing errors if already visited
             this.associatedDataStep.interacted = false;
         }
+    }
+
+    private uploadFiles(): Promise<GridFSFile[]> {
+        this.uploadProgress = 0;
+        return new Promise((resolve, reject) => {
+            if (this.files && this.files.length) {
+                const uploadFile$ = this.genericApi.uploadAttachments(this.files, (prog) => this.uploadProgress = prog)
+                    .pipe(
+                        finalize(() => this.uploadProgress = 0 || uploadFile$ && uploadFile$.unsubscribe())
+                    )
+                    .subscribe(
+                        (response) => {
+                            resolve(response);     
+                        },
+                        (err) => {
+                            reject(err);
+                        }
+                    );
+            } else {
+                resolve(null);
+            }
+        });
     }
 
     private setEditValues() {
