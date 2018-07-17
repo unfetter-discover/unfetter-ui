@@ -486,6 +486,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    */
   public buildRadarData(): RadarChartDataPoint[][] {
     const phases = this.intrusionSetsDashboard.killChainPhases;
+    const roundedLogBase2 = (n) => Math.round(Math.log2(n));
     const dataPoints = phases
       .map((phase) => {
         const total = phase.attack_patterns.length || 0;
@@ -494,12 +495,8 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
           .filter((attackPattern) => this.isTruthy(attackPattern.isSelected));
         const dataPoint = new RadarChartDataPoint();
         dataPoint.area = phase.name;
-        // const val = selectedAttackPatterns.length > 0 ?
-        //     (Math.log(selectedAttackPatterns.length) / Math.LN10) : 0;
-        // dataPoint.value = val;
         dataPoint.value = Math.round((selectedAttackPatterns.length / total) * 100);
-        // log does not work well for few elements
-        // dataPoint.value = dataPoint.value > 0 ? Math.log(dataPoint.value) : 0;
+        // dataPoint.value = dataPoint.value > 0 ? roundedLogBase2(dataPoint.value) : 0;
         return dataPoint;
       });
 

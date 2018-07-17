@@ -39,8 +39,8 @@
                 </form>
         </div>
 
-        <div class="col-xs-12 col-sm-12 fadeIn" *ngIf="urlImports.data.length > 0">
-            <mat-table #table id="current-reports-table" [dataSource]="urlImports">
+        <div class="col-xs-12 col-sm-12 fadeIn urlImportsTable" *ngIf="urlImports.data.length > 0">
+            <mat-table #table id="url-import-reports-table" [dataSource]="urlImports">
                 <ng-container matColumnDef="title">
                     <mat-header-cell *matHeaderCellDef> Title </mat-header-cell>
                     <mat-cell *matCellDef="let report" class="flexCol">
