@@ -236,7 +236,8 @@
 
         <div *ngIf="uploadProgress > 0">
             <label>Uploading Files...</label>
-            <mat-progress-bar mode="determinate" [value]="uploadProgress"></mat-progress-bar>
+            <mat-progress-bar mode="determinate" [value]="uploadProgress" *ngIf="uploadProgress < 100"></mat-progress-bar>
+            <mat-progress-bar mode="indeterminate" *ngIf="uploadProgress === 100"></mat-progress-bar>
         </div>
         <div *ngIf="submitErrorMsg" class="uf-well-warn">
             <h5>An Error Occured</h5>
