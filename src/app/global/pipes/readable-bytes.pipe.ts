@@ -1,5 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
+/**
+ * @description Converts a number of bytes into a human readable string.
+ *  It will round to the neared KB, MB, GB, or TB if > 1024 bytes
+ */
 @Pipe({ name: 'readableBytes' })
 export class ReadableBytesPipe implements PipeTransform {
 

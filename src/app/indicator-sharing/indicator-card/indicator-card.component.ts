@@ -1,5 +1,4 @@
 import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, Renderer2, Output, EventEmitter, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-import { trigger, state, transition, style, animate, query } from '@angular/animations';
 import { Observable ,  Subscription ,  BehaviorSubject } from 'rxjs';
 import { MatTooltip } from '@angular/material';
 
@@ -96,21 +95,21 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
             }
         }
 
-        if (this.collapseAllCardsSubject) {            
+        if (this.collapseAllCardsSubject) {
             this.collapseCard$ = this.collapseAllCardsSubject
-            .subscribe(
-                (collapseContents) => {
-                    this.collapseContents = collapseContents;
-                },
-                (err) => {
-                    console.log(err);
-                },
-                () => {
-                    if (this.collapseCard$) {
-                        this.collapseCard$.unsubscribe();
+                .subscribe(
+                    (collapseContents) => {
+                        this.collapseContents = collapseContents;
+                    },
+                    (err) => {
+                        console.log(err);
+                    },
+                    () => {
+                        if (this.collapseCard$) {
+                            this.collapseCard$.unsubscribe();
+                        }
                     }
-                }
-            );
+                );
         }
     }
 
@@ -321,6 +320,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
                 },
                 (err) => {
                     this.flashMessage('Unable to generate download.');
+                    console.log(err);
                 },
                 () => {
                     downloadData$.unsubscribe();

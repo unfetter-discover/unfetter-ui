@@ -45,6 +45,7 @@ export class AddIndicatorComponent implements OnInit {
     public editMode: boolean = false;
     public files: FileList;
     public uploadProgress: number;
+    public submitErrorMsg: string;
 
     @ViewChild('associatedDataStep') 
     public associatedDataStep: MatStep;
@@ -191,23 +192,29 @@ export class AddIndicatorComponent implements OnInit {
     }
 
     public async submitIndicator() {
+        this.submitErrorMsg = '';
         const tempIndicator: any = cleanObjectProperties({}, this.form.value);        
         this.pruneQueries(tempIndicator);
 
-        const filesToUpload = await this.uploadFiles();
-        if (filesToUpload && filesToUpload.length) {
+        const [uploadError, filesToUpload] = await this.uploadFiles();
+        if (!uploadError && filesToUpload && filesToUpload.length) {
             if (!tempIndicator.metaProperties) {
                 tempIndicator.metaProperties = {};
             }
             tempIndicator.metaProperties.attachments = filesToUpload;
         }
 
-        console.log('~~~~', tempIndicator, '###', filesToUpload);
+        if (uploadError) {
+            this.submitErrorMsg = 'Unable to upload attachments.'
+        }
         
         if (this.editMode) {
             tempIndicator.id = this.editData.id;
             if (this.editData.metaProperties && this.editData.metaProperties.interactions) {
                 tempIndicator.metaProperties.interactions = this.editData.metaProperties.interactions;
+            }
+            if (this.editData.metaProperties && this.editData.metaProperties.attachments) {
+                tempIndicator.metaProperties.attachments = this.editData.metaProperties.attachments;
             }
             this.dialogRef.close({
                 'indicator': tempIndicator,
@@ -247,7 +254,7 @@ export class AddIndicatorComponent implements OnInit {
         }
     }
 
-    private uploadFiles(): Promise<GridFSFile[]> {
+    private uploadFiles(): Promise<[any, GridFSFile[]]> {
         this.uploadProgress = 0;
         return new Promise((resolve, reject) => {
             if (this.files && this.files.length) {
@@ -257,14 +264,14 @@ export class AddIndicatorComponent implements OnInit {
                     )
                     .subscribe(
                         (response) => {
-                            resolve(response);     
+                            resolve([null, response]);     
                         },
                         (err) => {
-                            reject(err);
+                            resolve([err, null]);
                         }
                     );
             } else {
-                resolve(null);
+                resolve([null, null]);
             }
         });
     }
