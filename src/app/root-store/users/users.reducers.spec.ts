@@ -25,8 +25,8 @@ describe('usersReducer', () => {
         const payload = { 
             userData: { 
                 ...mockState,
-                oauth: 'github',
-                github: {
+                auth: {
+                    service: 'github',
                     avatar_url: mockState.avatar_url
                 }
             }, 
@@ -36,8 +36,8 @@ describe('usersReducer', () => {
             ...mockState,
             userProfile: {
                 ...mockState,
-                oauth: 'github',
-                github: {
+                auth: {
+                    service: 'github',
                     avatar_url: mockState.avatar_url
                 }
             },

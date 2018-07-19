@@ -64,7 +64,7 @@ To get the most out of Unfetter, users should be in one or more organizations. A
                             unfetterInformation: new FormGroup({
                                 firstName: new FormControl(user.firstName ? user.firstName : '', Validators.required),
                                 lastName: new FormControl(user.lastName ? user.lastName : '', Validators.required),
-                                userName: new FormControl(user.userName ? user.userName : user.oauth.userName ? user.oauth.userName : '', Validators.required, this.validateUserName.bind(this)),
+                                userName: new FormControl(user.userName ? user.userName : user.auth.userName ? user.auth.userName : '', Validators.required, this.validateUserName.bind(this)),
                                 email: new FormControl(user.email ? user.email : '', [
                                     Validators.required,
                                     Validators.email
