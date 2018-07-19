@@ -8,6 +8,7 @@ import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatSelectModule } from '@angular/material';
 import { makeRootMockStore, mockConfig } from '../../../testing/mock-store';
 import { take } from 'rxjs/operators';
+import { NO_ERRORS_SCHEMA } from '../../../../../node_modules/@angular/core';
 
 describe('DataSourcesComponent', () => {
   let component: DataSourcesComponent;
@@ -20,11 +21,9 @@ describe('DataSourcesComponent', () => {
         DataSourcesComponent 
       ],
       imports: [
-        BrowserAnimationsModule,
-        ReactiveFormsModule,
-        MatSelectModule,
         StoreModule.forRoot(reducers)
-      ]
+      ],
+      schemas: [ NO_ERRORS_SCHEMA ]
     })
     .compileComponents();
   }));
@@ -48,7 +47,7 @@ describe('DataSourcesComponent', () => {
       .subscribe(
         (dataSources) => {          
           expect(dataSources).toBeTruthy();
-          expect(dataSources).toEqual(mockConfig.dataSources);
+          expect(dataSources.length).toBe(mockConfig.dataSources.length);
           done();
         },
         (err) => {

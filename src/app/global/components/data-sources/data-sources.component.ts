@@ -17,16 +17,20 @@ export class DataSourcesComponent implements OnInit {
 
   @Input()
   public formCtrl: FormControl;
-  public dataSources$: Observable<string[]>;
+
+  public dataSources$: Observable<any[]>;
 
   constructor(public store: Store<AppState>) { }
 
   ngOnInit() {
-    this.dataSources$ = this.store.select('config').pipe(
-      pluck('configurations'),
-      filter(RxjsHelpers.filterByConfigKey(ConfigKeys.DATA_SOURCES)),
-      pluck(ConfigKeys.DATA_SOURCES),
-      map((dataSources: string[]) => dataSources.sort()));
+    this.dataSources$ = this.store.select('config')
+      .pipe(
+        pluck('configurations'),
+        filter(RxjsHelpers.filterByConfigKey(ConfigKeys.DATA_SOURCES)),
+        pluck(ConfigKeys.DATA_SOURCES),
+        // Hack to get this data structure compatible with the selection list
+        map((dataSources: string[]) => dataSources.sort().map((ds) => ({ id: ds, name: ds })))
+      );
   }
 
 }

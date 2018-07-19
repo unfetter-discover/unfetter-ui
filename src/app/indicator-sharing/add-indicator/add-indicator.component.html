@@ -71,14 +71,15 @@
                     </mat-error>
                 </mat-form-field>
 
-                <p id="patternWarning" 
+                <!-- TODO delete this if its determine that only showing valid stix pattern is ok -->
+                <!-- <p id="patternWarning" 
                     [style.opacity]="form.get('pattern').dirty && !form.get('metaProperties').get('validStixPattern').value && form.get('pattern').value.length > 0 ? 1 : 0"
                     [style.marginTop]="!form.get('pattern').hasError('required') ? '-20px' : '-5px'" 
-                    [style.marginBottom]="!form.get('pattern').hasError('required') ? '15px' : '0px'">(Warning) Optional STIX patterning validation failed</p>
+                    [style.marginBottom]="!form.get('pattern').hasError('required') ? '15px' : '0px'">(Warning) Optional STIX patterning validation failed</p> -->
 
                 <p id="patternSuccess" 
                     [style.opacity]="form.get('metaProperties').get('validStixPattern').value && form.get('pattern').dirty && form.get('pattern').value.length > 0 ? 1 : 0"                    
-                    [style.marginTop]="!form.get('pattern').hasError('required') ? '-30px' : '-5px'" 
+                    [style.marginTop]="!form.get('pattern').hasError('required') ? '-20px' : '-5px'" 
                     [style.marginBottom]="!form.get('pattern').hasError('required') ? '15px' : '0px'"><i class="material-icons">check</i> Valid STIX Pattern</p>
                     
                 <pii-check-message [formCtrl]="form.get('pattern')"></pii-check-message>
@@ -196,21 +197,10 @@
                 </div>
             </mat-step>
             
-            <!-- TODO remove ngif once edit mode can update relationships -->
             <mat-step label="Relationships">
                 <div formGroupName="metaProperties" *ngIf="attackPatterns && attackPatterns.length">
                     <h5>Indicated Techniques</h5>
                     <unf-selection-list [stix]="attackPatterns" [formCtrl]="form.get('metaProperties').get('relationships')"></unf-selection-list>
-                    <!-- <mat-selection-list formControlName="relationships">
-                        <mat-list-option *ngFor="let ap of attackPatterns | sortByField:'name':'ascending'" [value]="ap.id">
-                        {{ap.name}}
-                        </mat-list-option>
-                    </mat-selection-list> -->
-                    <!-- <mat-form-field class="full-width mt-10">
-                        <mat-select placeholder="Indicated Techniques" [multiple]="true" formControlName="relationships">
-                            <mat-option [value]="ap.id" *ngFor="let ap of attackPatterns | sortByField:'name':'ascending'">{{ ap.name }}</mat-option>
-                        </mat-select>
-                    </mat-form-field> -->
                     <div class="mt-6">
                         <button mat-raised-button matStepperNext type="button" color="primary">CONTINUE</button>
                         <button mat-button matStepperPrevious type="button">BACK</button>
@@ -224,6 +214,7 @@
                 <div class="mt-10">
                     <observable-data-tree [parentForm]="form" [patternObjSubject]="patternObjSubject"></observable-data-tree>
                 </div>
+                <h5>Data Sources</h5>
                 <div class="mt-15">
                     <data-sources [formCtrl]="form.get('x_mitre_data_sources')"></data-sources>
                 </div>
