@@ -1,12 +1,16 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MatSnackBar, MatTableDataSource, MAT_DIALOG_DATA, PageEvent } from '@angular/material';
-import { BehaviorSubject, combineLatest as observableCombineLatest, fromEvent as observableFromEvent, Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { forkJoin, Observable } from 'rxjs';
+import { delay, finalize, map, switchMap, tap } from 'rxjs/operators';
+import { Identity } from 'stix/stix/identity';
+import { BaseComponentService } from '../../../components/base-service.component';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { heightCollapse } from '../../../global/animations/height-collapse';
+import { RxjsHelpers } from '../../../global/static/rxjs-helpers';
 import { Report } from '../../../models/report';
 import { ThreatReportOverviewService } from '../../../threat-dashboard/services/threat-report-overview.service';
+import { Constance } from '../../../utils/constance';
 import { ExternalDataTranslationRequest } from '../../models/adapter/external-data-translation-request';
 import { ReportTranslationService } from '../../services/report-translation.service';
 import { ReportUploadService } from './report-upload.service';
@@ -21,11 +25,10 @@ import { ReportsDataSource } from './reports.datasource';
 })
 export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('fileUpload') public fileUpload: ElementRef;
-    @ViewChildren('filter') public filters: QueryList<ElementRef>;
-    public curDisplayLen: Observable<number> = new BehaviorSubject<number>(0);
     public currents: ReportsDataSource;
+    public identities: Identity[];
+    public reports$: Observable<Report[]>;
     public fName = '';
-    public filter: ElementRef;
     public imports = new MatTableDataSource<Partial<Report>>();
     public urlImports = new MatTableDataSource<Partial<Report>>();
     public readonly displayColumns = ['title', 'author', 'date', 'actions'];
@@ -48,8 +51,8 @@ export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy
         protected uploadService: ReportUploadService,
     ) { }
 
-    ngOnInit() {
-        this.load();
+    public ngOnInit(): void {
+        this.reports$ = this.load();
     }
 
     /**
@@ -57,40 +60,24 @@ export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy
      * @param {string} optional threat report id
      */
     public load(threatReportId?: string): Observable<Report[]> {
-        this.reportsLoading = true;
         this.resetLoadReportByUrlForm();
-
+        const loadIdentities$ = this.fetchSystemIdentities();
         const loadReports$ = this.service.loadAllReports();
-        let loadAll$ = observableCombineLatest(loadReports$)
+        const loadAll$ = forkJoin(loadReports$, loadIdentities$)
             .pipe(
-                withLatestFrom((results) => {
-                    let filter = [];
-                    if (this.data && this.data.reports) {
-                        filter = this.data.reports;
-                    }
-                    return results[0].filter(report => !filter.some(have => this.areSameReport(have, report)));
-                })
-            );
-        loadAll$ = loadAll$
-            .pipe(
-                tap(() => {
-                    requestAnimationFrame(() => {
-                        // removing spinner
-                        this.reportsLoading = false;
-                        // trigger change detection
-                        this.changeDetectorRef.markForCheck();
-                    });
+                tap(() => this.reportsLoading = true),
+                map(([results, idents]) => {
+                    this.identities = idents;
+                    const filter = (this.data && this.data.reports) ? this.data.reports : [];
+                    return results.filter((report) => !filter.some((have) => this.areSameReport(have, report)));
                 }),
-                tap(() => {
-                    requestAnimationFrame(() => {
-                        // connect number of reports shown needed or get expression changed error
-                        this.curDisplayLen = this.currents.curDisplayLen$;
-                        // trigger change detection
-                        this.changeDetectorRef.markForCheck();
-                    });
-                })
-            );
-
+                finalize(() => {
+                    // removing spinner
+                    this.reportsLoading = false;
+                }),
+                // change detection
+                delay(0),
+        );
         this.currents = new ReportsDataSource(loadAll$);
         return loadReports$;
     }
@@ -102,33 +89,6 @@ export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy
         if (this.data && this.data.reports) {
             this.data.reports.forEach((report) => this.onSelectReport(report));
         }
-
-        const sub$ = this.filters.changes.subscribe(
-            (comps) => this.initFilter(comps.first),
-            (err) => console.log(err));
-        this.subscriptions.push(sub$);
-    }
-
-    /**
-     * @description initialize the filter input box
-     */
-    public initFilter(filter: ElementRef): void {
-        if (!filter || !filter.nativeElement) {
-            console.log('filter nativeElement is not initialized, cannot setup observable, moving on...')
-            return;
-        }
-
-        this.filter = filter;
-        const sub$ = observableFromEvent(this.filter.nativeElement, 'keyup').pipe(
-            debounceTime(150),
-            distinctUntilChanged())
-            .subscribe(() => {
-                if (!this.currents) {
-                    return;
-                }
-                this.currents.nextFilter(this.filter.nativeElement.value);
-            });
-        this.subscriptions.push(sub$);
     }
 
     /**
@@ -138,6 +98,17 @@ export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy
         if (this.subscriptions) {
             this.subscriptions.forEach((sub) => sub.unsubscribe());
         }
+    }
+
+    /**
+     * @description fetch system identities so we can resolve the name in the table
+     * @returns Observable
+     */
+    public fetchSystemIdentities(): Observable<Identity[]> {
+        const identityFilter = encodeURI(JSON.stringify({ 'stix.identity_class': 'organization' }));
+        return this.genericApiService
+            .get(`${Constance.IDENTITIES_URL}?filter=${identityFilter}`)
+            .pipe(RxjsHelpers.unwrapJsonApi()) as Observable<Identity[]>;
     }
 
     /**
@@ -160,24 +131,33 @@ export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     /**
+     * @description uploads a csv file to the unfetter backend
+     * CSV rows in, Stix reports come out
      * @param  {File} file
      * @returns void
      */
     public uploadFile(file: File): void {
         const s$ = this.uploadService.post(file)
-            .subscribe((response: any) => {
-                if (response && response.length > 0) {
-                    const el = response[0];
-                    if (el && el.error) {
-                        this.setErrorState(el.error);
-                        return;
-                    } else {
-                        this.imports.data.push(el);
+            .subscribe(
+                (response: any) => {
+                    if (response && response.length > 0) {
+                        const el = response[0];
+                        if (el && el.error) {
+                            this.setErrorState(el.error);
+                            return;
+                        } else {
+                            // convert the created by ref to the open group
+                            const reports = response.map((report) => {
+                                report.attributes.created_by_ref = this.lookupSystemIdentityId() || report.created_by_ref;
+                                return report;
+                            })
+                            // add to the material table
+                            this.imports.data.push(...reports);
+                        }
                     }
-                }
-            },
-                (err) => this.setErrorState(err),
-                () => { });
+                },
+                (err) => this.setErrorState(err)
+            );
         this.subscriptions.push(s$);
     }
 
@@ -188,7 +168,7 @@ export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy
      * @returns void
      */
     public onDropReport(report: any, event?: UIEvent): void {
-        this.imports.data = this.imports.data.filter(rep => report.attributes.name !== rep.attributes.name);
+        this.imports.data = this.imports.data.filter((rep) => report.attributes.name !== rep.attributes.name);
     }
 
     /**
@@ -284,12 +264,9 @@ export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy
      * @returns any
      */
     public resetLoadReportByUrlForm(): void {
-        this.loadReportByUrlFormResetComplete = false;
         this.loadReportByUrlForm = this.formBuilder.group({
             url: ['', Validators.required],
         });
-        this.changeDetectorRef.markForCheck();
-        this.loadReportByUrlFormResetComplete = true;
     }
 
     /**
@@ -313,27 +290,67 @@ export class ReportImporterComponent implements OnInit, AfterViewInit, OnDestroy
                 }),
                 map((wrappedStix) => wrappedStix.stix),
                 map((stix: any) => {
+                    stix.created_by_ref = this.lookupSystemIdentityId() || stix.created_by_ref;
+                    return stix;
+                }),
+                map((stix: any) => {
                     const report = new Report();
                     report.attributes = stix;
+                    return report;
+                }),
+                map((report: Report) => {
+                    console.log('adding report', report);
+                    this.urlImports.data.push(report);
+                    return report;
+                }),
+                map((report: Report) => {
+                    this.loadReportByUrlFormResetComplete = false;
+                    this.resetLoadReportByUrlForm();
+                    this.changeDetectorRef.detectChanges(); // To force rerender of angular material inputs
+                    this.loadReportByUrlFormResetComplete = true;
                     return report;
                 })
             )
             .subscribe(
-                (stix) => {
-                    console.log('adding report', stix);
-                    this.urlImports.data.push(stix);
-                },
+                (report) => { },
                 (err) => {
                     console.log('loading a report by url failed, perhaps CORS needs to be enabled on the external servers?');
                     console.log(err);
-                },
-                () => {
-                    this.resetLoadReportByUrlForm();
                 }
             );
 
         this.subscriptions.push(sub$);
 
+    }
+
+    /**
+     * @description look for system identity and reeturn its id
+     * @returns string
+     */
+    public lookupSystemIdentityId(): string {
+        const unfetter = 'Unfetter Open';
+        if (this.identities) {
+            return this.identities.find((ident) => ident.name === unfetter).id;
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * @description take an id and return its human readable name
+     * @param  {string} identityId
+     * @returns string
+     */
+    public resolveIdentityIdToName(identId: string): string {
+        if (!identId) {
+            return identId;
+        }
+
+        const ident = this.identities.find((cur) => cur.id === identId);
+        if (ident && ident.name) {
+            return ident.name;
+        }
+        return identId;
     }
 
 }

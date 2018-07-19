@@ -9,7 +9,7 @@ import { Constance } from '../../../utils/constance';
 
 @Injectable({
     providedIn: 'root',
-  })
+})
 export class ReportUploadService {
     private data: any = null;
     private headers: HttpHeaders;
@@ -36,19 +36,21 @@ export class ReportUploadService {
             reportProgress: true,
             headers
         });
-        return this.http.request<Array<JsonApiObject<Report>>>(req).pipe(
-            map((event) => {
-                if (event.type === HttpEventType.UploadProgress) {
-                    const percentDone = Math.round(100 * event.loaded / event.total);
-                    console.log(`File is ${percentDone}% uploaded`);
-                } else if (event instanceof HttpResponse) {
-                    console.log('File is completly uploaded');
-                    return event;
-                }
-            }),
-            map((event) => (event instanceof HttpResponse) ? event.body : []),
-            map((reports) => reports.map((report) => report.data)),
-            catchError(this.handleError));
+        return this.http.request<Array<JsonApiObject<Report>>>(req)
+            .pipe(
+                map((event) => {
+                    if (event.type === HttpEventType.UploadProgress) {
+                        const percentDone = Math.round(100 * event.loaded / event.total);
+                        console.log(`File is ${percentDone}% uploaded`);
+                    } else if (event instanceof HttpResponse) {
+                        console.log('File is completly uploaded');
+                        return event;
+                    }
+                }),
+                map((event) => (event instanceof HttpResponse) ? event.body : []),
+                map((reports) => reports.map((report) => report.data)),
+                catchError(this.handleError)
+            );
     }
 
     /**
