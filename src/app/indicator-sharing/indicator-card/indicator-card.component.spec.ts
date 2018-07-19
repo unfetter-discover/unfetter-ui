@@ -19,11 +19,11 @@ import { mockConfigService } from '../../testing/mock-config-service';
 import { ConfigService } from '../../core/services/config.service';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { of as observableOf, Observable } from 'rxjs';
+import { ReadableBytesPipe } from '../../global/pipes/readable-bytes.pipe';
 
 describe('IndicatorCardComponent', () => {
     let component: IndicatorCardComponent;
     let fixture: ComponentFixture<IndicatorCardComponent>;
-    let store;
 
     const mockIndicator = {
         name: 'test indicator',
@@ -126,6 +126,7 @@ describe('IndicatorCardComponent', () => {
                 TimeAgoPipe,
                 CapitalizePipe,
                 ChipLinksComponent,
+                ReadableBytesPipe,
             ],
             imports: [
                 MatButtonModule,

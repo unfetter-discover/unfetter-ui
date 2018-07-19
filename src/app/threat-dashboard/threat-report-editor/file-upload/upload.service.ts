@@ -37,6 +37,7 @@ export class UploadService {
         });
         return this.http.request<Array<JsonApiObject<Report>>>(req).pipe(
             map((event) => {
+                console.log(event);
                 if (event.type === HttpEventType.UploadProgress) {
                     const percentDone = Math.round(100 * event.loaded / event.total);
                     console.log(`File is ${percentDone}% uploaded`);

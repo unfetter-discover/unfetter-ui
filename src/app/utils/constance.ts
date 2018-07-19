@@ -118,6 +118,8 @@ export const Constance = {
   CONFIG_URL: 'api/config',
   WEB_ANALYTICS_URL: 'api/web-analytics',
   PATTERN_HANDLER_URL: 'api/pattern-handler',
+  DOWNLOAD_URL: 'api/download',
+  UPLOAD_URL: 'api/upload',
 
   IPGEO_LOOKUP_URL: 'api/lookup',
 
