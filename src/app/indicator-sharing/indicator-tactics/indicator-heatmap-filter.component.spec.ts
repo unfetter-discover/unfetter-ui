@@ -51,7 +51,8 @@ describe('IndicatorHeatMapFilterComponent', () => {
                 sectors: [],
                 identity_class: 'individual'
             },
-            github: {
+            auth: {
+                service: 'github',
                 userName: 'fake',
                 avatar_url: 'https://avatars2.githubusercontent.com/u/1234?v=4',
                 id: '1234'

@@ -139,8 +139,11 @@ describe('HeaderNavigationComponent', () => {
             firstName: 'Demo',
             lastName: 'User',
             role: 'STANDARD_USER',
-            oauth: 'lderp',
-            lderp: {id: 1, userName: 'demo'},
+            auth: {
+                service: 'testauth',
+                id: 1,
+                userName: 'demo'
+            },
             approved: true
         };
         const adminUser = {
@@ -149,8 +152,12 @@ describe('HeaderNavigationComponent', () => {
             firstName: 'Admin',
             lastName: 'User',
             role: 'ADMIN',
-            oauth: 'lderp',
-            lderp: {id: 2, userName: 'admin', avatar_url: 'assets/icon/stix-icons/svg/identity-b.svg'},
+            auth: {
+                service: 'testauth',
+                id: 2,
+                userName: 'admin',
+                avatar_url: 'assets/icon/stix-icons/svg/identity-b.svg'
+            },
             approved: true
         };
         const orgUser = {
@@ -160,8 +167,12 @@ describe('HeaderNavigationComponent', () => {
             lastName: 'Chief',
             organizations : [{ 'approved': true, 'role': 'STANDARD_USER' }],
             role: 'ORG_LEADER',
-            oauth: 'lderp',
-            lderp: {id: 3, userName: 'chief', avatar_url: 'assets/icon/stix-icons/svg/identity-b.svg'},
+            auth: {
+                service: 'testauth',
+                id: 3,
+                userName: 'chief',
+                avatar_url: 'assets/icon/stix-icons/svg/identity-b.svg'
+            },
             approved: true
         };
     
@@ -190,7 +201,7 @@ describe('HeaderNavigationComponent', () => {
                 expect(fixture.debugElement.query(By.css('#accountWrapper')).nativeElement).toBeDefined();
                 // @todo fix this later; can't get a handle on the avatar any more
                 // expect(fixture.debugElement.query(By.css('#accountWrapper div img#avatar')).nativeElement.src)
-                //     .toMatch(new RegExp(`${demoUser.oauth.avatar_url}$`));
+                //     .toMatch(new RegExp(`${demoUser.auth.avatar_url}$`));
                 expect(fixture.debugElement.query(By.css('#accountMenuWindow'))).toBeNull();
                 fixture.debugElement.query(By.css('#accountWrapper div.cursor-pointer'))
                     .triggerEventHandler('click', null);
