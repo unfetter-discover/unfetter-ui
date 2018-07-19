@@ -181,6 +181,15 @@
                     <add-label-reactive [parentForm]="form" [stixType]="'indicator'"></add-label-reactive>
                 </div>
 
+                <div *ngIf="!editMode">
+                    <h5>File Attachments</h5>
+                    <div class="uf-well">
+                        <p>
+                            <input type="file" name="attachments" id="attachments" (change)="fileInputChange($event)" multiple>
+                        </p>
+                    </div>
+                </div>
+
                 <div class="mt-6">
                     <button mat-raised-button matStepperNext type="button" color="primary">CONTINUE</button>
                     <button mat-button matStepperPrevious type="button">BACK</button>
@@ -225,6 +234,15 @@
             
         </mat-vertical-stepper>
 
+        <div *ngIf="uploadProgress > 0">
+            <label>Uploading Files...</label>
+            <mat-progress-bar mode="determinate" [value]="uploadProgress" *ngIf="uploadProgress < 100"></mat-progress-bar>
+            <mat-progress-bar mode="indeterminate" *ngIf="uploadProgress === 100"></mat-progress-bar>
+        </div>
+        <div *ngIf="submitErrorMsg" class="uf-well-warn">
+            <h5>An Error Occured</h5>
+            <p>{{ submitErrorMsg }}</p>
+        </div>
         <p class="text-right mt-6">
             <button mat-button mat-dialog-close (click)="resetForm($event); dialogRef.close(false);">CANCEL</button>
             <button mat-raised-button color="primary" [disabled]="form.status !== 'VALID'" type="submit">SAVE</button>

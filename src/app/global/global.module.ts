@@ -82,6 +82,7 @@ import { DataSourcesComponent } from './components/data-sources/data-sources.com
 import { MarkdownEditorComponent } from './components/markdown-editor/markdown-editor.component';
 import { SelectionListComponent } from './components/selection-list/selection-list.component';
 import { ErrorPageComponent } from './components/error-page/error-page.component';
+import { ReadableBytesPipe } from './pipes/readable-bytes.pipe';
 
 const matModules = [
     MatAutocompleteModule,
@@ -155,6 +156,7 @@ const unfetterComponents = [
     MarkdownEditorComponent,
     SelectionListComponent,
     ErrorPageComponent,
+    ReadableBytesPipe
 ];
 
 @NgModule({
