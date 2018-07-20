@@ -198,7 +198,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
       const sub12$ = this.wizardStore
         .select('baseline').pipe(
-        pluck('baselineCapabilities'))
+        pluck('baselineCapabilities'),
+        distinctUntilChanged())
         .subscribe(
           (capabilities: Capability[]) => {
             this.baselineCapabilities = (capabilities) ? capabilities.slice() : [];
