@@ -21,6 +21,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
   public currentCapabilityGroup: Category;
   public selectedCapabilities: Capability[] = [];
   public allCapabilities: Capability[];
+  public availableCapabilities: Capability[];
   private baselineCapabilities: Capability[] = [];
 
   private subscriptions: Subscription[] = [];
@@ -200,4 +201,5 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
   public getCapabilityDisabled(capability: Capability) {
     return (this.shouldCapabilityBeDisabled(capability) ? 'true' : 'false');
   }
+
 }
