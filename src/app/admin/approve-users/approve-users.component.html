@@ -11,7 +11,8 @@
                     <th>Name</th>
                     <th>Email</th>
                     <th>Registration Note</th>
-                    <th>Req. Organization</th>
+                    <th>Requested Orgs</th>
+                    <th>Join Orgs</th>
                     <th class="text-right" id="actionHeader">Approve / Deny User</th>
                 </thead>
                 <tbody>
@@ -28,6 +29,13 @@
                             <span *ngIf="user.registrationInformation && user.registrationInformation.requestedOrganization">
                                 {{ user.registrationInformation.requestedOrganization }}
                             </span>
+                        </td>
+                        <td>
+                            <mat-form-field class="full-width">
+                                <mat-select [formControl]="orgCtrl" multiple="true">
+                                    <mat-option *ngFor="let org of orgs$ | async" [value]="org.id">{{ org.name }}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
                         </td>
                         <td class="text-right">
                             <button mat-button class="mat-24" (click)="userAction(user, 'APPROVE_USER')">
