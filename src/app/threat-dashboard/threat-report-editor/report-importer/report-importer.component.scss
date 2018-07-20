@@ -96,7 +96,11 @@
 
 }
 
-#current-reports-table {
+#imported-reports-table, #current-reports-table {
     height: 35vh;
     overflow-y: auto;
+}
+
+loading-spinner ::ng-deep .loadingContainer {
+    height: 200px;
 }

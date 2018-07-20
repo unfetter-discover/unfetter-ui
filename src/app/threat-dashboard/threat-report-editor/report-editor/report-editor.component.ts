@@ -1,10 +1,9 @@
 
-import { of as observableOf,  Observable  } from 'rxjs';
-
-import { map, pluck, take } from 'rxjs/operators';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Store } from '@ngrx/store';
+import { Observable, of as observableOf } from 'rxjs';
+import { map, pluck, take } from 'rxjs/operators';
 import { AttackPatternService } from '../../../core/services/attack-pattern.service';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { AttackPattern } from '../../../models/attack-pattern';
@@ -39,43 +38,48 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
     private readonly subscriptions = [];
 
     constructor(
-        public dialogRef: MatDialogRef<any>,
-        @Inject(MAT_DIALOG_DATA) public data: Report,
+        @Inject(MAT_DIALOG_DATA) protected data: Report,
         protected attackPatternService: AttackPatternService,
+        protected dialogRef: MatDialogRef<any>,
         protected genericApiService: GenericApi,
         protected userStore: Store<AppState>,
     ) { }
 
     ngOnInit() {
         const getUser$ = this.userStore
-            .select('users').pipe(
-            pluck('userProfile'),
-            take(1))
-            .subscribe((user: UserProfile) => {
-                this.user = user;
-                // start loading the full list of attack patterns
-                const sub$ = this.loadAttackPatterns().pipe(
-                    map((arr) => arr.sort(this.genAttackPatternSorter())))
-                    .subscribe(
-                        (val) => {
-                            this.attackPatterns = val;
-                            // convert our report patterns to a list containing the already-selected attack patterns
-                            this.reportPatterns = val
-                                .filter(pattern => this.report.attributes.object_refs.includes(pattern.id))
-                                .map(pattern => {
-                                    return {
-                                        id: pattern.id,
-                                        name: pattern.attributes.name
-                                    };
-                                });
-                        },
-                        (err) => console.log(err),
-                        () => this.loading = false
-                    );
-                this.subscriptions.push(sub$);
-                this.initializeReport(this.data);
-            },
-                (err) => console.log(err));
+            .select('users')
+            .pipe(
+                pluck('userProfile'),
+                take(1)
+            ).subscribe(
+                (user: UserProfile) => {
+                    this.user = user;
+                    // start loading the full list of attack patterns
+                    const sub$ = this.loadAttackPatterns()
+                        .pipe(
+                            map((arr) => arr.sort(this.genAttackPatternSorter()))
+                        )
+                        .subscribe(
+                            (val) => {
+                                this.attackPatterns = val;
+                                // convert our report patterns to a list containing the already-selected attack patterns
+                                this.reportPatterns = val
+                                    .filter((pattern) => this.report.attributes.object_refs.includes(pattern.id))
+                                    .map((pattern) => {
+                                        return {
+                                            id: pattern.id,
+                                            name: pattern.attributes.name
+                                        };
+                                    });
+                            },
+                            (err) => console.log(err),
+                            () => this.loading = false
+                        );
+                    this.subscriptions.push(sub$);
+                    this.initializeReport(this.data);
+                },
+                (err) => console.log(err)
+            );
         this.subscriptions.push(getUser$);
     }
 
@@ -90,8 +94,10 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
 
         const userFramework = (this.user && this.user.preferences && this.user.preferences.killchain)
             ? this.user.preferences.killchain : '';
-        return this.attackPatternService.fetchAttackPatterns1(userFramework).pipe(
-            map((el) => this.attackPatterns = el));
+        return this.attackPatternService.fetchAttackPatterns1(userFramework)
+            .pipe(
+                map((el) => this.attackPatterns = el)
+            );
     }
 
     /**
@@ -167,7 +173,7 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
         if (!patternId) {
             return;
         }
-        this.reportPatterns = this.reportPatterns.filter(pattern => pattern.id !== patternId);
+        this.reportPatterns = this.reportPatterns.filter((pattern) => pattern.id !== patternId);
     }
 
     /**
@@ -202,7 +208,7 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
         if (this.isValid()) {
             const attribs = this.report.attributes;
             attribs.modified = new Date();
-            attribs.object_refs = this.reportPatterns.map(pattern => pattern.id);
+            attribs.object_refs = this.reportPatterns.map((pattern) => pattern.id);
             if (!this.editing) {
                 this.report.id = attribs.id = undefined;
                 this.report.type = 'report';

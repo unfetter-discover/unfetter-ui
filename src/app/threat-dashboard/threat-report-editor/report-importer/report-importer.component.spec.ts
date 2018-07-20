@@ -1,7 +1,8 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule, MatDialogRef, MatIconModule, MatPaginatorModule, MatProgressSpinnerModule, MatSnackBarModule, MatTableModule, MAT_DIALOG_DATA, MatFormFieldModule } from '@angular/material';
+import { MatDialogModule, MatDialogRef, MatFormFieldModule, MatIconModule, MatInputModule, MatPaginatorModule, MatProgressSpinnerModule, MatSnackBarModule, MatTableModule, MAT_DIALOG_DATA } from '@angular/material';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Observable, of as observableOf } from 'rxjs';
 import * as UUID from 'uuid';
 import { GenericApi } from '../../../core/services/genericapi.service';
@@ -60,6 +61,7 @@ describe('ReportImporterComponent', () => {
             MatDialogModule,
             MatFormFieldModule,
             MatIconModule,
+            MatInputModule,
             MatPaginatorModule,
             MatProgressSpinnerModule,
             MatSnackBarModule,
@@ -69,6 +71,7 @@ describe('ReportImporterComponent', () => {
         TestBed.configureTestingModule({
             declarations: [ReportImporterComponent, LoadingSpinnerComponent],
             imports: [
+                NoopAnimationsModule,
                 HttpClientTestingModule,
                 FormsModule,
                 ReactiveFormsModule,
@@ -119,41 +122,42 @@ describe('ReportImporterComponent', () => {
         expect(component.imports.data[0]).toBe(import2);
     });
 
-    it('should load, select, and deselect existing reports', () => {
-        let goodReport, badReport;
+    it('should load, select, and deselect existing reports', fakeAsync(() => {
         component.load(goodReportID);
         component.currents.reports$.subscribe((reports) => {
             expect(reports.length).toBe(6);
-            goodReport = reports.find(report => report.id === goodReportID);
-            badReport = reports.find(report => report.id === badReportID);
+            const goodReport = reports.find(report => report.id === goodReportID);
+            const badReport = reports.find(report => report.id === badReportID);
+            expect(goodReport).toBeDefined();
+            expect(badReport).toBeDefined();
+
+            // select a report
+            expect(component.isReportSelected(goodReport)).toBeFalsy();
+            expect(component.isReportSelected(badReport)).toBeFalsy();
+            expect(component.selections.size).toBe(0);
+            component.onSelectReport(goodReport);
+            expect(component.selections.size).toBe(1);
+            expect(component.isReportSelected(goodReport)).toBeTruthy();
+            expect(component.isReportSelected(badReport)).toBeFalsy();
+
+            // try to select it again
+            component.onSelectReport(goodReport);
+            expect(component.selections.size).toBe(1);
+            expect(component.isReportSelected(goodReport)).toBeTruthy();
+            expect(component.isReportSelected(badReport)).toBeFalsy();
+
+            // select another one
+            component.onSelectReport(badReport);
+            expect(component.selections.size).toBe(2);
+            expect(component.isReportSelected(goodReport)).toBeTruthy();
+            expect(component.isReportSelected(badReport)).toBeTruthy();
+
+            // deselect the first report
+            component.onDeselectReport(goodReport);
+            expect(component.selections.size).toBe(1);
+            expect(component.isReportSelected(goodReport)).toBeFalsy();
+            expect(component.isReportSelected(badReport)).toBeTruthy();
         });
-
-        // select a report
-        expect(component.isReportSelected(goodReport)).toBeFalsy();
-        expect(component.isReportSelected(badReport)).toBeFalsy();
-        expect(component.selections.size).toBe(0);
-        component.onSelectReport(goodReport);
-        expect(component.selections.size).toBe(1);
-        expect(component.isReportSelected(goodReport)).toBeTruthy();
-        expect(component.isReportSelected(badReport)).toBeFalsy();
-
-        // try to select it again
-        component.onSelectReport(goodReport);
-        expect(component.selections.size).toBe(1);
-        expect(component.isReportSelected(goodReport)).toBeTruthy();
-        expect(component.isReportSelected(badReport)).toBeFalsy();
-
-        // select another one
-        component.onSelectReport(badReport);
-        expect(component.selections.size).toBe(2);
-        expect(component.isReportSelected(goodReport)).toBeTruthy();
-        expect(component.isReportSelected(badReport)).toBeTruthy();
-
-        // deselect the first report
-        component.onDeselectReport(goodReport);
-        expect(component.selections.size).toBe(1);
-        expect(component.isReportSelected(goodReport)).toBeFalsy();
-        expect(component.isReportSelected(badReport)).toBeTruthy();
-    });
+    }));
 
 });
