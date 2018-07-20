@@ -125,7 +125,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
     const newCategoryName = option.selected.value;
 
     // Verify a selection and that this category doesn't already exist
-    const indexInList = this.selectedCapabilityGroups.indexOf(newCategoryName);
+    const indexInList = this.selectedCapabilityGroups.findIndex((category) => category.id === newCategoryName.id);
     if (indexInList < 0 && option.value !== CategoryComponent.DEFAULT_VALUE) {
       if (index === -1) {
         this.selectedCapabilityGroups.push(newCategoryName);
