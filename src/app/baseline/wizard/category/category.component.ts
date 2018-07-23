@@ -19,7 +19,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   
   public isAddCategory: boolean = false;
   public addCategory: Category = new Category();
-  public selectedCapabilityGroups: Category[] = [];
+  public selectedCategories: Category[] = [];
   public categories: Category[];
   private baselineCapabilities: Capability[];
   private subscriptions: Subscription[] = [];
@@ -46,7 +46,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
       distinctUntilChanged())
       .subscribe(
         (selectedCapabilityGroups: Category[]) => {
-          this.selectedCapabilityGroups = selectedCapabilityGroups;
+          this.selectedCategories = selectedCapabilityGroups;
         },
         (err) => console.log(err));
   
@@ -122,25 +122,22 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
    * @returns {void}
    */
   public updateCategory(option: any, index: number): void {
-    const newCategoryName = option.selected.value;
+    const newCategory = option.selected.value;
 
-    // Verify a selection and that this category doesn't already exist
-    const indexInList = this.selectedCapabilityGroups.findIndex((category) => category.id === newCategoryName.id);
-    if (indexInList < 0 && option.value !== CategoryComponent.DEFAULT_VALUE) {
-      if (index === -1) {
-        this.selectedCapabilityGroups.push(newCategoryName);
-        option.value = CategoryComponent.DEFAULT_VALUE;
-      } else {
-        this.selectedCapabilityGroups[index] = newCategoryName;
-      }
+    // If this is replacing a selected group, do a replace
+    if (this.selectedCategories[index]) {
+      // Must remove any capabilities for which this category was associated
+      this.wizardStore.dispatch(new assessActions.SetBaselineCapabilities(this.baselineCapabilities.filter(capability => capability.category !== this.selectedCategories[index].id)));
+
+      this.selectedCategories[index] = newCategory;
     } else {
-      // TODO: error message to user here saying this category is already selected
-
+      // Else, do an add
+      this.selectedCategories.push(newCategory);
       option.value = CategoryComponent.DEFAULT_VALUE;
     }
 
     // Update wizard store with current category selections
-    this.wizardStore.dispatch(new SetBaselineGroups(this.selectedCapabilityGroups));
+    this.wizardStore.dispatch(new SetBaselineGroups(this.selectedCategories));
   }
 
   /*
@@ -150,7 +147,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
    * @return {number}
    */
   public selectedCategory(option: any, index: number): Category {
-    const selValue = this.selectedCapabilityGroups[index];
+    const selValue = this.selectedCategories[index];
     if (selValue === undefined) {
       return CategoryComponent.DEFAULT_VALUE;
     } else {
@@ -169,14 +166,14 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (confirmed) {
       let catToDelete = option.value as Category;
-      const index = this.selectedCapabilityGroups.findIndex(category => category.id === catToDelete.id);
-      this.selectedCapabilityGroups.splice(index, 1); 
+      const index = this.selectedCategories.findIndex(category => category.id === catToDelete.id);
+      this.selectedCategories.splice(index, 1); 
 
       // Must remove any capabilities for which this category were associated
       this.wizardStore.dispatch(new assessActions.SetBaselineCapabilities(this.baselineCapabilities.filter(capability => capability.category !== option.value.id)));
 
       // Update wizard store with current category selections
-      this.wizardStore.dispatch(new SetBaselineGroups(this.selectedCapabilityGroups.filter((capabilityGroup) => capabilityGroup !== undefined)));
+      this.wizardStore.dispatch(new SetBaselineGroups(this.selectedCategories.filter((capabilityGroup) => capabilityGroup !== undefined)));
     }
   }
 
@@ -193,8 +190,14 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public addCategoryEntry(): void {
-    this.selectedCapabilityGroups.push(CategoryComponent.DEFAULT_VALUE);
+    this.selectedCategories.push(CategoryComponent.DEFAULT_VALUE);
   }
 
+  private shouldCategoryBeDisabled(category: Category) {
+    return this.selectedCategories.findIndex((cat) => cat.id === category.id) !== -1;
+  }
 
+  public getCategoryDisabled(category: Category) {
+    return (this.shouldCategoryBeDisabled(category) ? 'true' : 'false');
+  }
 }
