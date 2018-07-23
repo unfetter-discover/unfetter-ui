@@ -1,7 +1,5 @@
-<mat-dialog-content id="reportImporterDialog">
-
-    <div class="container">
-
+<div class="container-fluid full-height">
+    <div class="row full-height">
         <div class="col-xs-12 col-sm-12 mt-10 flex import-title-row">
             <button mat-icon-button class="mat-24 import-close-button" matTooltip="Cancel" aria-label="Cancel" (click)="onCancel($event)">
                 <mat-icon>close</mat-icon>
@@ -70,12 +68,12 @@
             </button>
         </div>
         <div class="col-xs-12 col-sm-12 hideUrlInput fadeIn" @heightCollapse [class.showUrlInput]="shouldShowUrlInput">
-                <form *ngIf="loadReportByUrlFormResetComplete" [formGroup]="loadReportByUrlForm" autocomplete="off" novalidate (ngSubmit)="onLoadReportByUrlSubmit()">
-                    <mat-form-field class="full-width">
-                        <input matInput placeholder="Load Report" formControlName="url">
-                    </mat-form-field>
-                    <button mat-raised-button [disabled]="!loadReportByUrlForm.valid" type="submit">Load</button>
-                </form>
+            <form *ngIf="loadReportByUrlFormResetComplete" [formGroup]="loadReportByUrlForm" autocomplete="off" novalidate (ngSubmit)="onLoadReportByUrlSubmit()">
+                <mat-form-field class="full-width">
+                    <input matInput placeholder="Load Report" formControlName="url">
+                </mat-form-field>
+                <button mat-raised-button [disabled]="!loadReportByUrlForm.valid" type="submit">Load</button>
+            </form>
         </div>
 
         <div class="col-xs-12 col-sm-12 fadeIn urlImportsTable" *ngIf="urlImports.data.length > 0">
@@ -163,7 +161,7 @@
                 <mat-row *matRowDef="let report; columns: displayColumns;"></mat-row>
             </mat-table>
             <!-- [showFirstLastButtons]="true" property caused error in tests and webapp? is this a new property and our lib is old? -->
-            <mat-paginator #paginator [length]="currents.curDisplayLen$ | async" [pageIndex]="0" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"
+            <mat-paginator #paginator [length]="currents.curDisplayLen$ | async" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"
                 (page)="onPage($event)">
             </mat-paginator>
         </div>
@@ -173,5 +171,4 @@
         </ng-template>
 
     </div>
-
-</mat-dialog-content>
+</div>

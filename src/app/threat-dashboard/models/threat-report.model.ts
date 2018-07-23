@@ -2,10 +2,11 @@ import { Boundaries } from './boundaries';
 import { Report } from '../../models/report';
 
 export class ThreatReport {
+    public author = '';
+    public date = new Date();
+    public description: string;
     public id = '';
     public name: string;
-    public date = new Date();
-    public author = '';
     public published = false;
 
     public boundaries = new Boundaries();

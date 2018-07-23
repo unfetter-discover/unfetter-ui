@@ -141,6 +141,7 @@ export class ThreatReportOverviewService {
           // we are ensured only on workproduct due filter and flatMaps above, ...riggghht?
           const workProduct = attribs.metaProperties.work_products[0];
           const name = workProduct.name;
+          const description = workProduct.description;
           const author = workProduct.author || '';
           const date = workProduct.date || '';
           const published = workProduct.published;
@@ -155,6 +156,7 @@ export class ThreatReportOverviewService {
             memo[key] = tr;
           }
           tr.name = name;
+          tr.description = description;
           tr.author = author;
           tr.published = published;
           tr.date = date;
@@ -294,6 +296,7 @@ export class ThreatReportOverviewService {
     workProduct.boundaries.malware = Array.from(threatReport.boundaries.malware || []);
     workProduct.boundaries.targets = Array.from(threatReport.boundaries.targets || []);
     workProduct.name = threatReport.name;
+    workProduct.description = threatReport.description;
     workProduct.date = threatReport.date;
     workProduct.author = threatReport.author;
     workProduct.published = threatReport.published;

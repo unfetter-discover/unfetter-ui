@@ -1,6 +1,9 @@
 import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { ThreatReport } from '../models/threat-report.model';
 
+/**
+ * @deprecated I think we can remove this after the screen redesigns
+ */
 @Injectable({
     providedIn: 'root',
 })
