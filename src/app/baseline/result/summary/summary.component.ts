@@ -201,7 +201,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .subscribe((incWgt: number) => this.blCompleteWeightings = incWgt,
         (err) => console.log(err));
 
-        const groupRetrieve$ = this.store
+    const groupRetrieve$ = this.store
       .select('summary').pipe(
       pluck('blGroups'),
       distinctUntilChanged(),
