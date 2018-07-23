@@ -368,6 +368,19 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     this.updateWizardData();
   }
 
+    /*
+   * @description
+   * @param {UIEvent} event optional
+   */
+  public onPublish(event?: UIEvent): void {
+    // set to publish
+    console.log(this.currentBaseline);
+    this.currentBaseline.metaProperties.published = true;
+    this.wizardStore.dispatch(new SaveBaseline(this.currentBaseline));
+
+    this.onSave(event);
+  }
+
   /*
    * @description
    * @param {UIEvent} event optional
@@ -536,6 +549,22 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    */
   public isTitleEmpty(): boolean {
     return !this.currentBaseline.name || this.currentBaseline.name.trim() === '';
+  }
+
+  /*
+   * @description
+   * @return {boolean} true if no groups have been selected, otherwise false
+   */
+  public isGroupsNone(): boolean {
+    return this.baselineGroups.length <= 0;
+  }
+
+  /*
+   * @description
+   * @return {boolean} true if no capabilities have been selected otherwise false
+   */
+  public isCapabilitiesNone(): boolean {
+    return this.baselineCapabilities.length <= 0;
   }
 
   /**
