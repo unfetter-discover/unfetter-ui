@@ -19,20 +19,6 @@
         margin-right: 10px;
     }
 
-    .edit-cancel-button {
-        // no styles at this time
-    }
-
-    .edit-save-button {
-
-    }
-
-    .boundaries-title {
-        color: #444444;
-        font-size: 20px;
-        padding: 0 15px;
-    }
-
     .boundaries-fieldsets {
         padding: 10px 15px 0px 15px;
     }
@@ -60,17 +46,13 @@
         align-items: center;
     }
 
-    .reports-title {
-        color: #444444;
-        font-size: 20px;
-    }
-
     .reports-table {
         background: transparent;
 
         mat-header-row {
             min-height: 0;
-            border-top: #dcdcdc 1px solid;
+
+
         }
 
         mat-header-cell {
@@ -83,22 +65,19 @@
             flex: 1;
         }
 
+        mat-row {
+            .mat-column-name {
+                border-right: 1px solid rgba(0,0,0, 0.12);
+            }
+        }
+
         .mat-column-actions {
-            flex: none;
+            flex: 0 0 auto;
 
             .mat-button {
                 min-width: 24px;
             }
         }
-    }
-
-    .reports-title-buttons {
-    }
-
-    .report-create-button {
-    }
-
-    .report-import-button {
     }
 
     mat-form-field {
@@ -123,10 +102,6 @@
 
     .error {
         color: get-color($orange, 500);
-    }
-
-    .clearfix {
-        clear: both;
     }
 
 }

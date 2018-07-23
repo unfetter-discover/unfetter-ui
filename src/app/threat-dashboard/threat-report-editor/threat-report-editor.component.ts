@@ -1,10 +1,10 @@
-
-import { combineLatest as observableCombineLatest,  Observable  } from 'rxjs';
 import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatSnackBar, MatTableDataSource } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import * as clone from 'clone';
+import { forkJoin } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { DateHelper } from '../../global/static/date-helper';
 import { SortHelper } from '../../global/static/sort-helper';
@@ -13,10 +13,8 @@ import { Malware } from '../../models/malware';
 import { Report } from '../../models/report';
 import { ThreatReportOverviewService } from '../../threat-dashboard/services/threat-report-overview.service';
 import { Constance } from '../../utils/constance';
-import { Boundaries } from '../models/boundaries';
 import { SelectOption } from '../models/select-option';
 import { ThreatReport } from '../models/threat-report.model';
-import { ThreatReportSharedService } from '../services/threat-report-shared.service';
 import { ReportEditorComponent } from './report-editor/report-editor.component';
 import { ReportImporterComponent } from './report-importer/report-importer.component';
 
@@ -26,28 +24,18 @@ import { ReportImporterComponent } from './report-importer/report-importer.compo
     styleUrls: ['./threat-report-editor.component.scss']
 })
 export class ThreatReportEditorComponent implements OnInit, OnDestroy {
-
     public id = '';
-
-    public loading = true;
-
-    public title = 'Create';
-
-    public threatReport = new ThreatReport();
-
-    public target: string = '';
-
     public intrusions: SelectOption[];
-
+    public loading = true;
     public malware: SelectOption[];
-
     public maxStartDate;
-
     public minEndDate;
-
-    public reportsDataSource: MatTableDataSource<Partial<Report>>;
-
     public reportRemovals = new Set<Partial<Report>>();
+    public reportsDataSource: MatTableDataSource<Partial<Report>>;
+    public target: string = '';
+    public threatReport = new ThreatReport();
+    public title = 'Create';
+    public threatReportDescriptionFormControl: FormControl;
 
     public readonly displayColumns = ['name', 'actions'];
 
@@ -68,98 +56,89 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
     private readonly subscriptions = [];
 
     constructor(
+        protected dialog: MatDialog,
+        protected genericApi: GenericApi,
+        protected location: Location,
         protected route: ActivatedRoute,
         protected router: Router,
-        protected location: Location,
-        protected genericApi: GenericApi,
-        protected dialog: MatDialog,
         protected service: ThreatReportOverviewService,
-        protected sharedService: ThreatReportSharedService,
-        protected snackBar: MatSnackBar) {
-    }
+        protected snackBar: MatSnackBar
+    ) { }
 
-    ngOnInit() {
+    /**
+     * @returns void
+     */
+    public ngOnInit(): void {
+        this.threatReportDescriptionFormControl = new FormControl('');
+        this.listenOnFormChanges();
         if (this.route.snapshot.routeConfig.path !== 'create') {
             // modifying an existing threat report
             this.id = this.route.snapshot.paramMap.get('id');
             this.load(this.id);
             this.initSelects();
             return;
-        } 
+        }
 
         this.threatReport = new ThreatReport();
         this.reportsDataSource = new MatTableDataSource(this.threatReport.reports);
-        if (this.sharedService.threatReportOverview) {
-            this.cloneThreatReport();
-        } else {
-            this.sharedService.threatReportOverview = this.threatReport;
-        }
         this.title = 'Create';
         // this.loading = false;
         this.initSelects();
     }
 
     /**
-     * @description deep clone `this.threatReportOverview` from this components `this.sharedService`
+     * @description listen to reactive form changes
+     * @returns void
      */
-    public cloneThreatReport(): void {
-        // remember to new up an object, otherwise object method will not exist, using just an object literal copy
-        this.threatReport = clone(this.sharedService.threatReportOverview);
-
-        // this is needed to make sure boundaries is acutally and object and not an object literal at runtime
-        this.threatReport.boundaries = new Boundaries();
-        this.threatReport.boundaries.intrusions =
-            this.sharedService.threatReportOverview.boundaries.intrusions || new Set<{ any }>();
-        this.threatReport.boundaries.targets =
-            this.sharedService.threatReportOverview.boundaries.targets || new Set<string>();
-        this.threatReport.boundaries.malware =
-            this.sharedService.threatReportOverview.boundaries.malware || new Set<{ any }>();
-        if (this.sharedService.threatReportOverview.boundaries.startDate) {
-            this.threatReport.boundaries.startDate =
-                    new Date(this.sharedService.threatReportOverview.boundaries.startDate);
-        }
-        if (this.sharedService.threatReportOverview.boundaries.endDate) {
-            this.threatReport.boundaries.endDate =
-                    new Date(this.sharedService.threatReportOverview.boundaries.endDate);
-        }
+    public listenOnFormChanges(): void {
+        const sub$ = this.threatReportDescriptionFormControl
+            .valueChanges
+            .pipe(
+                debounceTime(350)
+            )
+            .subscribe((val) => {
+                this.threatReport.description = val;
+            },
+                (err) => console.log(err)
+            );
+        this.subscriptions.push(sub$);
     }
 
     /**
      * @description load workproducts, setup this components datasource
+     * @param {string} threatReportId
+     * @returns {void}
      */
-    public load(threatReportId?: string): void {
+    public load(threatReportId: string): void {
         this.loading = true;
-        if (!threatReportId) {
-            // get any inprogress threat reports, or create a new one
-            this.threatReport = this.sharedService.threatReportOverview || new ThreatReport();
-            this.reportsDataSource = new MatTableDataSource(this.threatReport.reports);
-            this.sharedService.threatReportOverview = this.threatReport;
-            this.title = 'Create';
-            this.loading = false;
-        } else {
-            // this may be an unsaved threat report
-            this.service.load(threatReportId)
-                .subscribe(
-                    (data) => {
-                        this.threatReport = data as ThreatReport;
-                        this.threatReport.boundaries.targets.forEach((target) => this.target = target);
-                        this.reportsDataSource = new MatTableDataSource(this.threatReport.reports);
-                        // clear out an inprogress threat reports we were creating
-                        this.sharedService.threatReportOverview = this.threatReport;
-                        // removing spinner, put on change queue
-                        requestAnimationFrame(() => {
-                            this.title = 'Modify';
-                            this.loading = false;
-                        });
+        // this may be an unsaved threat report
+        this.service.load(threatReportId)
+            .subscribe(
+                (data) => {
+                    this.threatReport = data as ThreatReport;
+                    this.threatReport.boundaries.targets = this.threatReport.boundaries.targets || new Set<string>();
+                    this.threatReport.boundaries.malware = this.threatReport.boundaries.malware || new Set<any>();
+                    this.threatReport.boundaries.intrusions = this.threatReport.boundaries.intrusions || new Set<any>();
+                    this.threatReport.boundaries.targets.forEach((target) => this.target = target);
+                    this.threatReport.boundaries.intrusions =
+                        new Set(Array.from(this.threatReport.boundaries.intrusions.values()).sort(SortHelper.sortDescByField<any, any>('displayValue')));
+                    this.threatReport.boundaries.malware =
+                        new Set(Array.from(this.threatReport.boundaries.malware.values()).sort(SortHelper.sortDescByField<any, any>('displayValue')));
+                    this.reportsDataSource = new MatTableDataSource(this.threatReport.reports);
+                    this.title = 'Modify';
+                    if (this.threatReport.description) {
+                        this.threatReportDescriptionFormControl.setValue(this.threatReport.description);
                     }
-                );
-        }
+                    // removing spinner
+                    this.loading = false;
+                }
+            );
     }
 
     /**
-     * @description deep clone `this.threatReportOverview` from this components `this.sharedService`
+     * @description initialized the malware and intrustions selects
      */
-    private initSelects(): void {
+    public initSelects(): void {
         const intrusionFilter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
         const instrusionUrl = `${Constance.INTRUSION_SET_URL}?${intrusionFilter}`;
         const o1$ = this.genericApi.get(instrusionUrl);
@@ -168,7 +147,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
         const malwareUrl = `${Constance.MALWARE_URL}?${malwareFilter}`;
         const o2$ = this.genericApi.get(malwareUrl);
 
-        const sub1$ = observableCombineLatest(o1$, o2$, (s1, s2) => [s1, s2])
+        const sub1$ = forkJoin(o1$, o2$, (s1, s2) => [s1, s2])
             .subscribe(
                 (data) => {
                     const intrusions: IntrusionSet[] = data[0];
@@ -241,7 +220,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
     /**
      * @description Determine if the current end date is invalid against the current start date.
      */
-    private isEndDateSameOrBeforeStartDate(value: any): void {
+    public isEndDateSameOrBeforeStartDate(value: any): void {
         const dateValue = moment(value, this.dateFormat);
         const endDate = moment(this.threatReport.boundaries.endDate, this.dateFormat);
         const startDate = moment(this.threatReport.boundaries.startDate, this.dateFormat);
@@ -275,14 +254,23 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
             //     break;
         }
 
-        if (chips) {
-            if (typeof value === 'string') {
+        chips = chips || new Set();
+        if (typeof value === 'string') {
+            chips = chips.add(value);
+        } else if (value.value) {
+            if (!this.hasValue(chips, value)) {
                 chips = chips.add(value);
-            } else {
-                if (!this.hasValue(chips, value)) {
-                    chips = chips.add(value);
-                }
             }
+        }
+        const sortedChips = Array.from(chips.values()).sort(SortHelper.sortDescByField<any, any>('displayValue'));
+        chips = new Set(sortedChips);
+        switch (stixType) {
+            case 'intrusion-set':
+                this.threatReport.boundaries.intrusions = chips;
+                break;
+            case 'malware':
+                this.threatReport.boundaries.malware = chips;
+                break;
         }
     }
 
@@ -292,7 +280,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      * @param {{ value: any}} option
      * @return {boolean} true if found, otherwise false
      */
-    private hasValue(chips: Set<any>, option: { value: any }): boolean {
+    public hasValue(chips: Set<any>, option: { value: any }): boolean {
         return chips.has(option.value);
     }
 
@@ -324,7 +312,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
     /**
      * @return true is string and true or boolean and true, otherwise false
      */
-    private isTruthy(val: boolean | string = false): boolean {
+    public isTruthy(val: boolean | string = false): boolean {
         const isBool = typeof val === 'boolean';
         const isString = typeof val === 'string';
         return (isBool && val === true) || (isString && val === 'true');
@@ -333,13 +321,13 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
     /**
      * @return true is string and false or boolean and false, otherwise true
      */
-    private isFalsey(val: boolean | string | Partial<Report> | Array<Partial<Report>>| undefined): boolean {
+    public isFalsey(val: boolean | string | Partial<Report> | Array<Partial<Report>> | undefined): boolean {
         const isUndefined = typeof val === 'undefined';
         const isBool = typeof val === 'boolean';
         const isString = typeof val === 'string';
         const isArray = Array.isArray(val);
         return isUndefined || (isBool && val === false) || (isString && val === 'false')
-                || (isArray && (val as Array<any>).length === 0);
+            || (isArray && (val as Array<any>).length === 0);
     }
 
     /**
@@ -347,7 +335,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      */
     public isValid(): boolean {
         return !!this.threatReport.name && (this.threatReport.reports.length > 0) && !this.dateError.startDate.isError
-                && !this.dateError.endDate.isError && !this.dateError.endDate.isSameOrBefore;
+            && !this.dateError.endDate.isError && !this.dateError.endDate.isSameOrBefore;
     }
 
     /**
@@ -373,15 +361,11 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      * @param {Report} report - report which to modify, undefined if you wish to create a new report
      */
     private openReportDialog(event?: UIEvent, report?: Report): void {
-        const opts = new MatDialogConfig();
-        // opts.width = '100%';
-        // opts.maxWidth = '100%';
-        // opts.height = '80vh';
-        // opts.minHeight = '80vh';
+        const opts = this.generateDialogOptions();
         if (report) {
             opts.data = report;
         }
-        
+
         this.dialog
             .open(ReportEditorComponent, opts)
             .afterClosed()
@@ -396,12 +380,13 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      * @param {UIEvent} event optional
      */
     public onImportReport(event?: UIEvent): void {
+        const opts = this.generateDialogOptions();
+        if (this.reportsDataSource.data) {
+            opts.data = this.reportsDataSource.data;
+        }
+
         this.dialog
-            .open(ReportImporterComponent, {
-                data: {
-                    reports: this.reportsDataSource.data,
-                }
-            })
+            .open(ReportImporterComponent, opts)
             .afterClosed()
             .subscribe(
                 (result: Array<Partial<Report>> | boolean) => {
@@ -487,10 +472,10 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
          * the user clicked on. So now we count on all the required data matching instead.
          */
         return report1.attributes.name === report2.attributes.name &&
-                report1.attributes.external_references[0].url ===
-                        report2.attributes.external_references[0].url &&
-                report1.attributes.external_references[0].source_name ===
-                        report2.attributes.external_references[0].source_name
+            report1.attributes.external_references[0].url ===
+            report2.attributes.external_references[0].url &&
+            report1.attributes.external_references[0].source_name ===
+            report2.attributes.external_references[0].source_name
     }
 
     /**
@@ -499,7 +484,6 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      */
     public onCancel(event?: UIEvent): void {
         if (this.title === 'Modify') {
-            this.sharedService.threatReportOverview = null;
             this.router.navigate([`/${this.viewPath}/${this.id}`]);
         } else {
             this.location.back();
@@ -524,7 +508,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
                     this.router.navigate([`/${this.viewPath}/${reports.id}`]);
                 },
                 (err) => console.log(err),
-            );
+        );
         this.subscriptions.push(saveSub$);
 
         this.reportRemovals.forEach(report => {
@@ -534,6 +518,17 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
                     (err) => console.log(err),
                     () => sub$.unsubscribe());
         });
+    }
+
+    /**
+     * @returns MatDialogConfig
+     */
+    public generateDialogOptions(): MatDialogConfig {
+        const opts = new MatDialogConfig();
+        opts.maxWidth = '1024px';
+        opts.width = '70vw';
+        opts.height = '85vh';
+        return opts;
     }
 
 }
