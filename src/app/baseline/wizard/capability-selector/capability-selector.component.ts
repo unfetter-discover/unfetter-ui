@@ -21,9 +21,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
   public currentCapabilityGroup: Category;
   public selectedCapabilities: Capability[] = [];
   public allCapabilities: Capability[];
-  public availableCapabilities: Capability[];
   private baselineCapabilities: Capability[] = [];
-  private baselineObjAssessments: ObjectAssessment[] = [];
 
   private subscriptions: Subscription[] = [];
 
@@ -52,7 +50,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
       .subscribe(
         (currentCapabilityGroup: Category) => {
           this.currentCapabilityGroup = currentCapabilityGroup;
-          this.updateCapLists();
+          this.updateCapList();
         },
         (err) => console.log(err));
 
@@ -63,21 +61,11 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
       .subscribe(
         (baselineCapabilities: any[]) => {
           this.baselineCapabilities = (baselineCapabilities) ? baselineCapabilities.slice() : [];
-          this.updateCapLists();
+          this.updateCapList();
         },
         (err) => console.log(err));
 
-    const capSub4$ = this.wizardStore
-      .select('baseline').pipe(
-      pluck('baselineObjAssessments'),
-      distinctUntilChanged())
-      .subscribe(
-        (objAssessments: any[]) => {
-          this.baselineObjAssessments = objAssessments;
-        },
-        (err) => console.log(err));
-
-    this.subscriptions.push(capSub1$, capSub2$, capSub3$, capSub4$);
+    this.subscriptions.push(capSub1$, capSub2$, capSub3$);
   }
 
   ngAfterViewInit() {
@@ -178,7 +166,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
     return true;
   }
 
-  /** 
+    /** 
    * Returns only those capabilities which are specific to current category
    * @return {any[]}
    */
@@ -196,16 +184,20 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
       .sort();
   }
 
-  private updateCapLists(): void {
+  private updateCapList(): void {
     if (this.currentCapabilityGroup) {
       this.selectedCapabilities = this.baselineCapabilities.filter((cap) =>
                           cap.category === this.currentCapabilityGroup.id);
-      this.availableCapabilities = this.allCapabilities.filter((capability) =>
-                          capability.category === this.currentCapabilityGroup.id &&
-                          this.selectedCapabilities.findIndex((cap) => cap.id === capability.id) === -1);
     } else {
       this.selectedCapabilities = [];
     }
   }
 
+  private shouldCapabilityBeDisabled(capability: Capability) {
+    return this.selectedCapabilities.findIndex((cap) => cap.id === capability.id) !== -1;
+  }
+
+  public getCapabilityDisabled(capability: Capability) {
+    return (this.shouldCapabilityBeDisabled(capability) ? 'true' : 'false');
+  }
 }
