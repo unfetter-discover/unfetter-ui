@@ -183,7 +183,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .select('summary').pipe(
       pluck('blAttackPatterns'),
       distinctUntilChanged(),
-      filter((arr: string[]) => arr && arr.length > 0))
+      filter((arr: string[]) => arr && arr.length >= 0))
       .subscribe((arr: string[]) => this.blAttackPatterns = arr,
         (err) => console.log(err));
 
@@ -205,7 +205,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .select('summary').pipe(
       pluck('blGroups'),
       distinctUntilChanged(),
-      filter((arr: string[]) => arr && arr.length > 0))
+      filter((arr: string[]) => arr && arr.length >= 0))
       .subscribe((arr: string[]) => this.blGroups = arr,
         (err) => console.log(err));
 
