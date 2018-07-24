@@ -91,7 +91,8 @@
                                     [sensors]="getSensorsByIndicatorId(indicator.id)"
                                     [creator]="getIdentityNameById(indicator.created_by_ref)" 
                                     [highlightObj]="highlightObj"
-                                    [collapseAllCardsSubject]="collapseAllCardsSubject" 
+                                    [collapseAllCardsSubject]="collapseAllCardsSubject"
+                                    [userToken]="userToken$ | async"
                                     (stateChange)="updateIndicator($event)" 
                                     (indicatorDeleted)="deleteIndicator($event)"
                                     (indicatorEdit)="editIndicator($event)"></indicator-card>

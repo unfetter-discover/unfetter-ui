@@ -1,6 +1,10 @@
 <p class="mat-subheader">
     Copy and paste STIX JSON for this work product
+    <button *ngIf="jsonText" mat-icon-button color="primary" ngxClipboard [cbContent]="jsonText" (cbOnError)="onCopy($event, copiedTooltip)" (cbOnSuccess)="onCopy($event, copiedTooltip)">
+        <mat-icon>content_copy</mat-icon>
+        <div #copiedTooltip="matTooltip" matTooltip="{{ copyText || '...' }}" matTooltipPosition="after" class="inlineBlock"></div>
+      </button>
 </p>
 <pre>
-    {{generateJson()}}
+    {{jsonText}}
 </pre>

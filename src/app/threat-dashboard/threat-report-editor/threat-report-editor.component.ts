@@ -20,8 +20,6 @@ import { ThreatReportSharedService } from '../services/threat-report-shared.serv
 import { ReportEditorComponent } from './report-editor/report-editor.component';
 import { ReportImporterComponent } from './report-importer/report-importer.component';
 
-
-
 @Component({
     selector: 'threat-report-editor',
     templateUrl: './threat-report-editor.component.html',

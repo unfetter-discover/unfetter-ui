@@ -187,6 +187,10 @@ $utility-theme: mat-light-theme($utility-theme-primary, $utility-theme-accent, $
   }
 }
 
+a.mat-icon-button {
+  outline: none !important;
+}
+
 a.mat-button {
   text-decoration: none;
 }

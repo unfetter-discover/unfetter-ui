@@ -7,6 +7,9 @@ import { StixLabelEnum } from '../../models/stix/stix-label.enum';
 import { AttackPattern } from 'stix';
 import { StixUrls } from '../../global/enums/stix-urls.enum';
 import { StixApiOptions } from '../../global/models/stix-api-options';
+import { Constance } from '../../utils/constance';
+import { HttpEventType } from '../../../../node_modules/@angular/common/http';
+import { GridFSFile } from '../../global/models/grid-fs-file';
 
 describe('GenericApi service', () => {
     let httpMock: HttpTestingController;
@@ -245,6 +248,44 @@ describe('GenericApi service', () => {
             api.getStix<AttackPattern>(StixUrls.ATTACK_PATTERN, null, options).subscribe();
             const req = httpMock.expectOne(`${StixUrls.ATTACK_PATTERN}?filter=${encodeURI(JSON.stringify(options.filter))}&skip=1&limit=3&`);
             expect(req.request.method).toBe('GET');
+        });
+
+    });
+
+    describe('uploadAttachments', () => {
+        const mockFilelist: any = {
+            0: {
+                name: 'foo'
+            },
+            1: {
+                name: 'bar'
+            }
+        };
+
+        it('should update progress', (done) => {
+            let count = 0;
+            const mockGridFS: GridFSFile = {
+                _id: '123',
+                filename: 'foo.txt',
+                contentType: 'application/foo',
+                length: 4567,
+                chunkSize: 123,
+                uploadDate: '2018-07-17T17:48:18.057Z'
+            };
+            api.uploadAttachments(mockFilelist, () => count++)
+                .subscribe(
+                    (res) => {
+                        expect(count).toBe(3);
+                        expect(res).toEqual([mockGridFS]);
+                        done();
+                    }
+                );
+            const req = httpMock.expectOne(`${Constance.UPLOAD_URL}/files`);
+            expect(req.request.method).toBe('POST');
+            req.event({ loaded: 2, total: 10, type: HttpEventType.UploadProgress } as any);
+            req.event({ loaded: 5, total: 10, type: HttpEventType.UploadProgress } as any);
+            req.event({ loaded: 10, total: 10, type: HttpEventType.UploadProgress } as any);
+            req.flush({ data: [{ attributes: mockGridFS }] });
         });
 
     });

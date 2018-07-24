@@ -19,6 +19,7 @@ import {
         MatDialogModule,
         MatSidenavModule,
         MatMenuModule,
+        MatProgressBarModule,
     } from '@angular/material';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
@@ -67,7 +68,8 @@ const matModules = [
     MatTabsModule,
     MatTooltipModule,
     MatSidenavModule,
-    MatMenuModule
+    MatMenuModule,
+    MatProgressBarModule
 ];
 
 @NgModule({

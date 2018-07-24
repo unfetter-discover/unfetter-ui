@@ -6,62 +6,52 @@
 
             <unfetter-side-panel class="side-panel" [item]="threatReport" collapsible="false" width="320">
 
-                <sidepanel-option-item label="Edit" icon="mode_edit"
-                        (click)="editButtonClicked($event)"></sidepanel-option-item>
-                <sidepanel-option-item label="Share" icon="share" disabled="true"
-                        (click)="shareButtonClicked($event)"></sidepanel-option-item>
-                <sidepanel-option-item label="Delete" icon="delete"
-                        (click)="onDeleteCurrent($event)"></sidepanel-option-item>
+                <sidepanel-option-item label="Edit" icon="mode_edit" (click)="editButtonClicked($event)"></sidepanel-option-item>
+                <sidepanel-option-item label="Share" icon="share" disabled="true" (click)="shareButtonClicked($event)"></sidepanel-option-item>
+                <sidepanel-option-item label="Delete" icon="delete" (click)="onDeleteCurrent($event)"></sidepanel-option-item>
 
-                <master-list-dialog-trigger
-                        title="Work Products" width="750px" height="400px"
-                        [dataSource]="masterListOptions.dataSource"
-                        [columns]="masterListOptions.columns"
-                        (tabChange)="filterTabChanged($event)"
-                        (create)="createButtonClicked($event)"
-                        (select)="cellSelected($event)"
-                        (edit)="editButtonClicked($event)"
-                        (delete)="onDelete($event)"
-                ></master-list-dialog-trigger>
+                <master-list-dialog-trigger title="Work Products" width="750px" height="400px" [dataSource]="masterListOptions.dataSource"
+                    [columns]="masterListOptions.columns" (tabChange)="filterTabChanged($event)" (create)="createButtonClicked($event)"
+                    (select)="cellSelected($event)" (edit)="editButtonClicked($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
 
-                <sidepanel-list-item label="Threat Reports" icon="assets/icon/stix-icons/svg/all-defs.svg#campaign"
-                        [items]="threatReport?.reports" expandable="true">
-                    <mat-list-item *ngFor="let report of threatReport?.reports; trackBy:trackByFn"
-                            class="list-divider" [@slideInOutAnimation]>
+                <sidepanel-list-item label="Threat Reports" icon="assets/icon/stix-icons/svg/all-defs.svg#campaign" [items]="threatReport?.reports"
+                    expandable="true">
+                    <mat-list-item *ngFor="let report of threatReport?.reports; trackBy:trackByFn" class="list-divider" [@slideInOutAnimation]>
                         <h4 mat-line *ngIf="getReportURL(report) as url">
-                            <a *ngIf="url; else noLink" href="{{url}}" target="_blank">{{report?.attributes.name}}</a>
+                            <a *ngIf="url; else noLink" href="{{url}}" target="_blank">
+                                {{report?.attributes.name}}
+                            </a>
+                            <mat-icon aria-label="visit report">open_in_new</mat-icon>
                             <ng-template #noLink>{{report?.attributes.name}}</ng-template>
                         </h4>
                         <div mat-line class="mat-caption"> {{report?.attributes.description}} </div>
                     </mat-list-item>
                 </sidepanel-list-item>
-                <sidepanel-list-item label="Victims" icon="assets/icon/stix-icons/svg/all-defs.svg#identity"
-                        [items]="threatReport?.boundaries.targets" expandable="true">
-                    <mat-list-item *ngFor="let target of threatReport?.boundaries.targets; trackBy:trackByFn"
-                            class="list-divider" [@slideInOutAnimation]> {{target}} </mat-list-item>
+                <sidepanel-list-item label="Victims" icon="assets/icon/stix-icons/svg/all-defs.svg#identity" [items]="threatReport?.boundaries.targets"
+                    expandable="true">
+                    <mat-list-item *ngFor="let target of threatReport?.boundaries.targets; trackBy:trackByFn" class="list-divider" [@slideInOutAnimation]>
+                        {{target}} </mat-list-item>
                 </sidepanel-list-item>
-                <sidepanel-list-item label="Intrusion Sets" icon="assets/icon/stix-icons/svg/all-defs.svg#threat-actor"
-                        [items]="threatReport?.boundaries.intrusions" expandable="true">
-                    <mat-list-item *ngFor="let intrusion of threatReport?.boundaries.intrusions; trackBy:trackByFn"
-                            class="list-divider" [@slideInOutAnimation]
-                            (click)="onNavigateToIntrusion(intrusion.value, $event)"
-                            (mouseenter)="listItemMouseEnter($event)" (mouseleave)="listItemMouseLeave($event)">
+                <sidepanel-list-item label="Intrusion Sets" icon="assets/icon/stix-icons/svg/all-defs.svg#threat-actor" [items]="threatReport?.boundaries.intrusions"
+                    expandable="true">
+                    <mat-list-item *ngFor="let intrusion of threatReport?.boundaries.intrusions; trackBy:trackByFn" class="list-divider" [@slideInOutAnimation]
+                        (click)="onNavigateToIntrusion(intrusion.value, $event)" (mouseenter)="listItemMouseEnter($event)" (mouseleave)="listItemMouseLeave($event)">
                         <div mat-line>
                             <a href="#/stix/intrusion-sets/{{intrusion.value}}">{{intrusion?.displayValue}}</a>
                         </div>
                     </mat-list-item>
                 </sidepanel-list-item>
-                <sidepanel-list-item label="Malware" icon="assets/icon/stix-icons/svg/all-defs.svg#malware"
-                        [items]="threatReport?.boundaries.malware" expandable="true">
-                    <mat-list-item *ngFor="let malware of threatReport?.boundaries.malware; trackBy:trackByFn"
-                            class="list-divider" [@slideInOutAnimation]
-                            (click)="onNavigateToMalware(malware.value, $event)"
-                            (mouseenter)="listItemMouseEnter($event)" (mouseleave)="listItemMouseLeave($event)">
-                        <div mat-line><a href="#/stix/malwares/{{malware.value}}">{{malware?.displayValue}}</a></div>
+                <sidepanel-list-item label="Malware" icon="assets/icon/stix-icons/svg/all-defs.svg#malware" [items]="threatReport?.boundaries.malware"
+                    expandable="true">
+                    <mat-list-item *ngFor="let malware of threatReport?.boundaries.malware; trackBy:trackByFn" class="list-divider" [@slideInOutAnimation]
+                        (click)="onNavigateToMalware(malware.value, $event)" (mouseenter)="listItemMouseEnter($event)" (mouseleave)="listItemMouseLeave($event)">
+                        <div mat-line>
+                            <a href="#/stix/malwares/{{malware.value}}">{{malware?.displayValue}}</a>
+                        </div>
                     </mat-list-item>
                 </sidepanel-list-item>
 
-<!--
+                <!--
                 <sidepanel-mini-item tooltip="{{threatReport.name || ''}}"
                         icon="assets/icon/stix-icons/svg/all-defs.svg#attack-pattern"></sidepanel-mini-item>
                 <sidepanel-mini-item tooltip="{{threatReport.boundaries.targets.size || 0}} victim(s)"
@@ -83,19 +73,16 @@
                 <mat-tab-group id="tabGroup">
                     <mat-tab label="MATRIX">
                         <div class="matrix mb-18 mt-18 ml-16 mr-16 mat-elevation-z3 cardHoverShadow">
-                            <unf-bar-chart *ngIf="barChartData" [data]="barChartData"
-                                    (renderComplete)="barChartRendered()"></unf-bar-chart>
+                            <unf-bar-chart *ngIf="barChartData" [data]="barChartData" (renderComplete)="barChartRendered()"></unf-bar-chart>
                         </div>
                         <div class="matrix mb-18 mt-18 ml-16 mr-16 mat-elevation-z3 cardHoverShadow">
                             <threat-tactics [attackPatterns]="attackPatterns"></threat-tactics>
                         </div>
                         <div class="mt-18 mb-18 ml-16 mr-16 mat-elevation-z3 cardHoverShadow">
-                            <unf-collapsible-tree *ngIf="treeData" [data]="treeData"
-                                    (renderComplete)="treeRendered()"></unf-collapsible-tree>
+                            <unf-collapsible-tree *ngIf="treeData" [data]="treeData" (renderComplete)="treeRendered()"></unf-collapsible-tree>
                         </div>
                         <div class="mt-18 ml-16 mr-16 mb-5 mat-elevation-z3 cardHoverShadow">
-                            <unf-radar-chart #radarChart *ngIf="radarData" [data]="radarData"
-                                    (renderComplete)="radarRendered()"></unf-radar-chart>
+                            <unf-radar-chart #radarChart *ngIf="radarData" [data]="radarData" (renderComplete)="radarRendered()"></unf-radar-chart>
                         </div>
                     </mat-tab>
                     <mat-tab label="MITIGATIONS" disabled="true">
@@ -120,11 +107,10 @@
 
 <ng-template #notFound>
     <div class="container">
-      <div class="row mt-15">
-        <div class="col-xs-10 col-xs-offset-1">
-            <error-card errorTitle="Work Product Not Found"
-                    errorBody="404: The requested work product could not be found."></error-card>
+        <div class="row mt-15">
+            <div class="col-xs-10 col-xs-offset-1">
+                <error-card errorTitle="Work Product Not Found" errorBody="404: The requested work product could not be found."></error-card>
+            </div>
         </div>
-      </div>
     </div>
-  </ng-template>
+</ng-template>

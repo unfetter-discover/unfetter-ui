@@ -1,7 +1,6 @@
-import { HttpClientModule } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { TestBed, fakeAsync, inject } from '@angular/core/testing';
-import { of as observableOf, Observable } from 'rxjs';
+import { fakeAsync, inject, TestBed } from '@angular/core/testing';
+import { of as observableOf } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { ReportMock } from '../../models/report-mock.model';
@@ -16,7 +15,6 @@ describe('Threat Report Overview Spec', () => {
     subscriptions = [];
     TestBed.configureTestingModule({
       imports: [
-        HttpClientModule,
         HttpClientTestingModule
       ],
       providers: [ThreatReportOverviewService, GenericApi]

@@ -1,5 +1,4 @@
 import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, Renderer2, Output, EventEmitter, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-import { trigger, state, transition, style, animate, query } from '@angular/animations';
 import { Observable ,  Subscription ,  BehaviorSubject } from 'rxjs';
 import { MatTooltip } from '@angular/material';
 
@@ -13,7 +12,8 @@ import { generateStixRelationship } from '../../global/static/stix-relationship'
 import { StixRelationshipTypes } from '../../global/enums/stix-relationship-types.enum';
 import { canCrud } from '../../global/static/stix-permissions';
 import { SearchParameters } from '../models/search-parameters';
-import { finalize } from 'rxjs/operators';
+import { GridFSFile } from '../../global/models/grid-fs-file';
+import { Constance } from '../../utils/constance';
 
 @Component({
     selector: 'indicator-card',
@@ -31,6 +31,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
     @Input() public sensors: any;
     @Input() public searchParameters: Observable<SearchParameters>;
     @Input() public collapseAllCardsSubject: BehaviorSubject<boolean>;
+    @Input() public userToken: string;
     @Input() public highlightObj = {
         labels: {},
         intrusionSets: {},
@@ -94,21 +95,21 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
             }
         }
 
-        if (this.collapseAllCardsSubject) {            
+        if (this.collapseAllCardsSubject) {
             this.collapseCard$ = this.collapseAllCardsSubject
-            .subscribe(
-                (collapseContents) => {
-                    this.collapseContents = collapseContents;
-                },
-                (err) => {
-                    console.log(err);
-                },
-                () => {
-                    if (this.collapseCard$) {
-                        this.collapseCard$.unsubscribe();
+                .subscribe(
+                    (collapseContents) => {
+                        this.collapseContents = collapseContents;
+                    },
+                    (err) => {
+                        console.log(err);
+                    },
+                    () => {
+                        if (this.collapseCard$) {
+                            this.collapseCard$.unsubscribe();
+                        }
                     }
-                }
-            );
+                );
         }
     }
 
@@ -319,6 +320,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
                 },
                 (err) => {
                     this.flashMessage('Unable to generate download.');
+                    console.log(err);
                 },
                 () => {
                     downloadData$.unsubscribe();
@@ -339,6 +341,10 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
     public flashTooltip(toolTip: MatTooltip) {
         toolTip.show();
         setTimeout(() => toolTip.hide(), this.FLASH_TOOLTIP_TIMER);
+    }
+
+    public generateAttachmentLink(attachment: GridFSFile): string {
+        return `${Constance.DOWNLOAD_URL}/file/${this.indicator.id}/${attachment._id}?authorization=${this.userToken}`;
     }
 
     private flashMessage(msg: string) {
