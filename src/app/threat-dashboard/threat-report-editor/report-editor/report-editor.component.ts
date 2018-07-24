@@ -128,7 +128,7 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
      * @description create a function to sort attackpatterns by name
      * @return {Function} (a: AttackPattern, b: AttackPattern) => number
      */
-    private genAttackPatternSorter(): (a: AttackPattern, b: AttackPattern) => number {
+    public genAttackPatternSorter(): (a: AttackPattern, b: AttackPattern) => number {
         const sorter = (a: AttackPattern, b: AttackPattern) => {
             const val1 = a.attributes.name;
             const val2 = b.attributes.name;

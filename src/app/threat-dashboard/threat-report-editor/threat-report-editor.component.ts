@@ -110,6 +110,10 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      * @returns {void}
      */
     public load(threatReportId: string): void {
+        if (!threatReportId) {
+            return;
+        }
+
         this.loading = true;
         // this may be an unsaved threat report
         this.service.load(threatReportId)
@@ -131,7 +135,8 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
                     }
                     // removing spinner
                     this.loading = false;
-                }
+                },
+                (err) => console.log(err)
             );
     }
 

@@ -1,7 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatChipsModule, MatDialogModule, MatDialogRef, MatFormFieldModule, MatIconModule, MatOptionModule, MatSelectModule } from '@angular/material';
+import { MatChipsModule, MatDialogModule, MatDialogRef, MatFormFieldModule, MatIconModule, MatOptionModule, MatSelectModule, MAT_DIALOG_DATA } from '@angular/material';
 import { ActionReducerMap, StoreModule } from '@ngrx/store';
 import { BaseComponentService } from '../../../components/base-service.component';
 import { AttackPatternService } from '../../../core/services/attack-pattern.service';
@@ -89,29 +89,26 @@ describe('ReportEditorComponent', () => {
         expect(component.editing).toBeTruthy();
     });
 
-    it('should add and remove attack patterns', () => {
-        expect(component.reportPatterns.length).toBe(0);
+    it('should add attack patterns', () => {
+        expect(component.selectedPatternsFormControl).toBeDefined();
+        expect(component.selectedPatternsFormControl.value.length).toBe(0);
 
         // add a pattern
         const ap1 = new AttackPattern();
         ap1.id = 'a1';
         ap1.attributes.name = 'AP1';
-        component.addAttackPattern(ap1);
-        expect(component.reportPatterns.length).toBe(1);
-        expect(component.reportPatterns[0].id).toBe(ap1.id);
-        expect(component.reportPatterns[0].name).toBe(ap1.attributes.name);
+        component.selectedPatternsFormControl.setValue([ap1]);
 
-        // attempt to add it again
-        component.addAttackPattern(ap1);
-        expect(component.reportPatterns.length).toBe(1);
+        // build the form
+        component.onSave();
 
-        // attempt to delete nothing, and prove it
-        component.removeAttackPattern(undefined);
-        expect(component.reportPatterns.length).toBe(1);
-
-        // now attempt to really delete it
-        component.removeAttackPattern(ap1.id);
-        expect(component.reportPatterns.length).toBe(0);
+        // get the components report
+        const report = component.report;
+        expect(report).toBeDefined();
+        expect(report.attributes).toBeDefined();
+        expect(report.attributes.object_refs).toBeDefined();
+        expect(report.attributes.object_refs.length).toBe(1);
+        expect(report.attributes.object_refs[0]).toEqual('a1');
     });
 
     it('should know if a created report is valid or invalid', () => {
@@ -156,13 +153,29 @@ describe('ReportEditorComponent', () => {
         expect(component.report.attributes.modified).toBeTruthy();
 
         // let's save it as a new report
-        component.reportPatterns.push({ id: 'X2', name: 'X-Squared' });
+        component.selectedPatternsFormControl.value.push({ id: 'X2', name: 'X-Squared' });
         component.report.id = component.report.attributes.id;
         component.report.attributes.modified = undefined;
         component.report.attributes.name = 'Clone of The X File';
         component.onSaveAs();
         expect(component.report.id).toBeUndefined();
         expect(component.report.attributes.modified).toBeTruthy();
+    });
+
+    it('should know how to sort attack patterns', () => {
+        const sorter = component.genAttackPatternSorter();
+
+        const attackPattern1 = new AttackPattern();
+        attackPattern1.attributes.name = 'attack pattern 1';
+        const attackPattern2 = new AttackPattern();
+        attackPattern2.attributes.name = 'attack pattern 2';
+
+        const arr = [attackPattern2, attackPattern1];
+        const sorted = arr.sort(sorter);
+        expect(sorted).toBeDefined();
+        expect(sorted.length).toBe(2);
+        expect(sorted[0].attributes.name).toEqual('attack pattern 1');
+        expect(sorted[1].attributes.name).toEqual('attack pattern 2');
     });
 
 });
