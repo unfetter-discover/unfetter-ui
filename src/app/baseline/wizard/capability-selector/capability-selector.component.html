@@ -13,7 +13,8 @@
               <form>
                 <mat-form-field class="full-width">
                   <mat-select #existingCapability name="existingCapability" (selectionChange)="updateCapability(existingCapability, i)" [value]="selectedCapability(existingCapability, i)">
-                    <mat-option *ngFor="let capability of allCapabilities | sortByField:'name':'ascending'" [value]="capability">
+                    <mat-option *ngFor="let capability of getCapabilities(currentCapabilityGroup) | sortByField:'name':'ascending'"
+                                [disabled]="getCapabilityDisabled(capability)" [value]="capability">
                       {{ capability.name }}
                     </mat-option>
                   </mat-select>
@@ -33,7 +34,8 @@
           <form>
             <mat-form-field class="full-width">
               <mat-select #newCapability name="newCapability" (selectionChange)="updateCapability(newCapability, -1)">
-                <mat-option *ngFor="let capability of getCapabilities(currentCapabilityGroup) | sortByField:'name':'ascending'" [value]="capability">
+                <mat-option *ngFor="let capability of getCapabilities(currentCapabilityGroup) | sortByField:'name':'ascending'"
+                            [disabled]="getCapabilityDisabled(capability)" [value]="capability">
                   {{ capability.name }}
                 </mat-option>
               </mat-select>
