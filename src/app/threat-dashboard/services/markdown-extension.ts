@@ -34,7 +34,7 @@ export class MarkdownExtensionRegistry {
         const malwares = new MarkdownExtensionType(MarkdownExtensionEnum.Malware, '@malware');
         return registeredTypes.concat(intrusions, malwares);
     }
-} 
+}
 
 /**
  * @description a parsed found instance of a markdown extension
