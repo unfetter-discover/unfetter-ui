@@ -537,6 +537,22 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return !this.currentBaseline.name || this.currentBaseline.name.trim() === '';
   }
 
+  /*
+   * @description
+   * @return {boolean} true if no groups have been selected, otherwise false
+   */
+  public isGroupsNone(): boolean {
+    return this.baselineGroups.length <= 0;
+  }
+
+  /*
+   * @description
+   * @return {boolean} true if no capabilities have been selected otherwise false
+   */
+  public isCapabilitiesNone(): boolean {
+    return this.baselineCapabilities.length <= 0;
+  }
+
   /**
    * @description angular track by list function, uses the items id if
    *  it exists, otherwise uses the index
