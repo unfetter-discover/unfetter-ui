@@ -1,9 +1,9 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { Subscription } from 'rxjs/Subscription';
+import { MarkdownExtensionEnum, MarkdownExtensionRegistry } from './markdown-extension';
 import { ReportMarkdownParserService } from './report-markdown-parser.service';
-import { MarkdownExtensionRegistry, MarkdownExtensionType, MarkdownExtensionEnum } from './markdown-extension';
 
-fdescribe('Report Markdown Parser Spec', () => {
+describe('Report Markdown Parser Spec', () => {
 
   let subscriptions: Subscription[];
   let markdownWithHits;
@@ -53,7 +53,7 @@ fdescribe('Report Markdown Parser Spec', () => {
     const intrusionsReferences = extensionsFound.filter((extension) => extension.extensionType.extensionType === MarkdownExtensionEnum.Intrusions);
     const malwareReferences = extensionsFound.filter((extension) => extension.extensionType.extensionType === MarkdownExtensionEnum.Malware);
     const expectedIntrusions = ['APT1', 'APT16', 'Suckfly', 'Deep Panda'];
-    const expectedMalwares = [ 'Darkmoon', 'Hacking Team UEFI Rootkit', 'Duqu', 'gh0st'];
+    const expectedMalwares = ['Darkmoon', 'Hacking Team UEFI Rootkit', 'Duqu', 'gh0st'];
     expect(intrusionsReferences).toBeDefined();
     expect(intrusionsReferences.length).toEqual(expectedIntrusions.length);
     expect(malwareReferences).toBeDefined();
