@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { MarkdownExtensionEnum, MarkdownExtensionRegistry } from './markdown-extension';
 import { ReportMarkdownParserService } from './report-markdown-parser.service';
 
-describe('Report Markdown Parser Spec', () => {
+fdescribe('Report Markdown Parser Spec', () => {
 
   let subscriptions: Subscription[];
   let markdownWithHits;

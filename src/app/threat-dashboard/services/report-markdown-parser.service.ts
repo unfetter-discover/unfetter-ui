@@ -31,7 +31,8 @@ export class ReportMarkdownParserService {
     //  var r = new RegExp('\s?(@intrusion|@malware):\"?(.*[^\"])\"?\s?', 'igm');
     // works kinda
     //  const pattern = `(${triggers.join('|')}):"?(\\w+\\s+[^\"\\n@])"?\s?`;
-    const pattern = `(${triggers.join('|')}):(("+.*"+)|(\\w*))\s?`;
+    // const pattern = `(${triggers.join('|')}):(("+.*"+)|(\\w*))\s?`;
+    const pattern = `(${triggers.join('|')}):(?:"+(\\b.*\\b)?:"+)|((\\b\\w*\\b))\s?`;
     const regex = new RegExp(pattern, 'igm');
     // console.log(regex);
     // look across all line in the markdown for all triggers
