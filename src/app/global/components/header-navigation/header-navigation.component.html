@@ -16,7 +16,7 @@
   <ng-container *ngIf="!demoMode && !authService.loggedIn()">
     <ng-container *ngIf="authServices.length === 1">
       <a href="/api/auth/{{authServices[0]}}-login/">
-        <button mat-raised-button color="accent">Sign In / Register</button>
+        <button id="login-button" mat-raised-button color="accent">Sign In / Register</button>
       </a>
     </ng-container>
     <ng-container *ngIf="authServices.length > 1">
