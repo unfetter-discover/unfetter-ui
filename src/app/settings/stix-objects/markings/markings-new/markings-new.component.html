@@ -1,0 +1,82 @@
+<div class="row">
+    <div class="col-xs-12">       
+        <created-by-ref [model]="marking"></created-by-ref>       
+    </div>
+</div>
+
+<div class="row selectRow">
+    <div class="col-md-12">
+        <form>
+            <mat-form-field class="full-width">
+                <input matInput required placeholder="Definition Type" aria-label="Definition Type"
+                        [matAutocomplete]="autotype" [formControl]="definitionTypeCtrl" [(ngModel)]="definitionType">
+            </mat-form-field>
+        </form>
+        <mat-autocomplete name="autotype" #autotype="matAutocomplete" [displayWith]="displayDefinitionType">
+            <mat-option *ngFor="let definitionType of markingDefinitionTypes" [value]="definitionType">
+                <span>{{ definitionType.label }}</span>
+            </mat-option>
+        </mat-autocomplete>
+    </div>
+</div>
+
+<ng-container [ngSwitch]="definitionType.value">
+
+    <div *ngSwitchCase="'tlp'" class="row selectRow">
+        <div class="col-md-12">
+            <form>
+               <mat-form-field class="full-width">
+                    <input matInput required placeholder="TLP" aria-label="Definition Type"
+                            [matAutocomplete]="autotype" [formControl]="definitionTypeCtrl" [(ngModel)]="definitionType">
+               </mat-form-field>
+            </form>
+            <mat-autocomplete name="autotype" #autotype="matAutocomplete" [displayWith]="displayDefinitionType">
+                <mat-option *ngFor="let definitionType of markingDefinitionTypes" [value]="definitionType">
+                    <span>{{ definitionType.label }}</span>
+                </mat-option>
+            </mat-autocomplete>
+        </div>
+    </div>
+
+    <div *ngSwitchCase="'statement'" class="row selectRow">
+        <div class="col-md-12">
+        </div>
+    </div>
+
+    <div *ngSwitchCase="'rating'" class="row selectRow">
+        <div class="col-md-12">
+            <form>
+                <mat-form-field class="full-width">
+                    <input matInput required placeholder="Definition Type" aria-label="Definition Type"
+                            [matAutocomplete]="autotype" [formControl]="definitionTypeCtrl" [(ngModel)]="definitionType">
+                </mat-form-field>
+            </form>
+            <mat-autocomplete name="autotype" #autotype="matAutocomplete" [displayWith]="displayDefinitionType">
+                <mat-option *ngFor="let definitionType of markingDefinitionTypes" [value]="definitionType">
+                    <span>{{ definitionType.label }}</span>
+                </mat-option>
+            </mat-autocomplete>
+        </div>
+    </div>
+
+    <div *ngSwitchCase="'capco'" class="row selectRow">
+        <div class="col-md-12">
+        </div>
+    </div>
+
+</ng-container>
+
+<!--<external-reference [(model)]="marking"></external-reference>-->
+<published-checkbox [model]="marking"></published-checkbox>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="button-row pull-right">
+                <button mat-button (click)="cancelButtonClicked()">CANCEL</button>
+                <button mat-raised-button color="primary" [disabled]="invalidate(marking)"
+                        (click)="saveButtonClicked()">SAVE</button>
+        </div>
+    </div>
+</div>
+
+<validation-errors [validationErrorMessages]="validationErrorMessages"></validation-errors>

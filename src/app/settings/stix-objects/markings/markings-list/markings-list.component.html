@@ -1,0 +1,42 @@
+<div class="row mb-12 markings-header" *ngIf="markings">
+    <div class="col-xs-12 col-md-8">
+        <button mat-raised-button class="mat-primary margin-right-20" routerLink="./new"> NEW</button>
+        <button mat-raised-button class="mat-primary" (click)="download()"> DOWNLOAD</button>
+    </div>
+    <div class="col-xs-12 col-md-4">
+        <filter-search-box class="margin-right-20" [items]="markings"
+                (filterItemsChange)="onFilterItemsChange($event)"></filter-search-box>
+        <div *ngIf="filteredItems" class="filter-results">Results: {{filteredItems.length}}</div>
+    </div>
+</div>
+
+<div class="row" >
+    <div class="col-md-12" *ngFor="let marking of filteredItems">
+        <mat-card>
+            <mat-card-content>
+                <div class="row marking-definition">
+                    <div class="col-xs-12 col-sm-8" [ngSwitch]="marking.attributes.definition_type">
+                        <ng-container *ngSwitchCase="'capco'">
+                            <div>
+                                <span class="capco-label">{{marking.attributes.definition.label}}</span>
+                                <span class="capco-hash">({{marking.attributes.definition.hash}})</span>
+                                <span class="capco-category">{{marking.attributes.definition.category | capitalize}}</span>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'rating'">
+                            <div class="rating-label"><h4>Rating: {{marking.attributes.definition.label}}</h4></div>
+                            <div class="rating-value">Value: {{marking.attributes.definition.rating}}</div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'tlp'">
+                            <div class="tlp-value"><h4>TLP: {{marking.attributes.definition.tlp}}</h4></div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'statement'">
+                            <div class="marking-statement"><h4>"{{marking.attributes.definition.statement}}"</h4></div>
+                        </ng-container>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 marking-id">{{marking.attributes.id}}</div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
