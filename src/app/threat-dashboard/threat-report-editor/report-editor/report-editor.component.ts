@@ -184,12 +184,14 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
             const attribs = this.report.attributes;
             attribs.modified = new Date();
             attribs.description = this.reportDescriptionFormControl.value || '';
-            attribs.object_refs = this.selectedPatternsFormControl.value || [];
+            const selectedAttackPatterns = this.selectedPatternsFormControl.value || [];
+            attribs.object_refs = [...selectedAttackPatterns.map((_) => _.id)];
             if (!this.editing) {
                 this.report.id = undefined;
                 attribs.id = undefined;
                 this.report.type = 'report';
             }
+            this.report.attributes = attribs;
 
             // return it
             this.dialogRef.close(this.report);
