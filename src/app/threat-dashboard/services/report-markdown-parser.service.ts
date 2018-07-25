@@ -38,15 +38,10 @@ export class ReportMarkdownParserService {
     // look across all line in the markdown for all triggers
     let match;
     while (match = regex.exec(markdown)) {
-      const str = match[0];
       const trigger = match[1];
       let val = match[2];
-      if (val.startsWith('"')) {
-        val = val.substring(1, val.length - 1);
-      }
-      if (val.endsWith('"')) {
-        val = val.substring(0, val.length - 2);
-      }
+      val = this.ensureNoFrontQuote(val);
+      val = this.ensureNoEndQuote(val);
       const extensionType = triggerLookup[trigger];
       const extension = new MarkdownExtension(extensionType, val);
       extensionsFound.push(extension);
@@ -63,4 +58,27 @@ export class ReportMarkdownParserService {
     const extensions = this.parseForExtensions(markdown);
     return (extensions && extensions.length > 0) ? extensions[extensions.length - 1] : undefined;
   }
+
+  /**
+   * @param  {string} val
+   * @returns string
+   */
+  private ensureNoFrontQuote(val: string): string {
+    if (val && val.startsWith('"')) {
+      val = val.substring(1, val.length - 1);
+    }
+    return val;
+  }
+
+  /**
+   * @param  {} val
+   * @returns string
+   */
+  private ensureNoEndQuote(val): string {
+    if (val && val.endsWith('"')) {
+      val = val.substring(0, val.length - 2);
+    }
+    return val;
+  }
+  
 }
