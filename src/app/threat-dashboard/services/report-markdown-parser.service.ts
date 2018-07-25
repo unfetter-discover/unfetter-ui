@@ -29,17 +29,20 @@ export class ReportMarkdownParserService {
     // attempts
     //  const pattern = `(${triggers.join('|')}):\"?(\\b+[^\"])\"?\\s?`;
     //  var r = new RegExp('\s?(@intrusion|@malware):\"?(.*[^\"])\"?\s?', 'igm');
-    // works kinda
+    // works kind of sort of
     //  const pattern = `(${triggers.join('|')}):"?(\\w+\\s+[^\"\\n@])"?\s?`;
-    // const pattern = `(${triggers.join('|')}):(("+.*"+)|(\\w*))\s?`;
-    const pattern = `(${triggers.join('|')}):(?:"+(\\b.*\\b)?:"+)|((\\b\\w*\\b))\s?`;
+    // this regex is busted
+    //  const pattern = `(${triggers.join('|')}):("+(\\b.*\\b)"+)|((\\b\\w*\\b))\s?`;
+    const pattern = `(${triggers.join('|')}):(("+.*"+)|(\\w*))\s?`;
     const regex = new RegExp(pattern, 'igm');
-    // console.log(regex);
     // look across all line in the markdown for all triggers
     let match;
     while (match = regex.exec(markdown)) {
       const trigger = match[1];
       let val = match[2];
+      if (!trigger || !val) {
+        continue;
+      }
       val = this.ensureNoFrontQuote(val);
       val = this.ensureNoEndQuote(val);
       const extensionType = triggerLookup[trigger];

@@ -13,6 +13,7 @@ import { ExternalReference } from '../../models/stix/external_reference';
 import { ThreatReportOverviewService } from '../../threat-dashboard/services/threat-report-overview.service';
 import { ThreatReport } from '../models/threat-report.model';
 import { ThreatReportEditorComponent } from './threat-report-editor.component';
+import { SelectOption } from '../models/select-option';
 
 class MockThreatReport {
     public static empty(): ThreatReport {
@@ -229,12 +230,20 @@ describe('ThreatReportEditorComponent', () => {
         expect(component.threatReport.boundaries.intrusions.size).toBe(0);
 
         // Add one
-        const intrusion1 = 'intrusion1';
+        const i1 = 'intrusion1';
+        const intrusion1 = {
+            value: i1,
+            displayValue: i1,
+        } as SelectOption;
         component.addChip(intrusion1, intrusions);
         expect(component.threatReport.boundaries.intrusions.size).toBe(1);
 
         // Add another
-        const intrusion2 = 'intrusion2';
+        const i2 = 'intrusion2';
+        const intrusion2 = {
+            value: i2,
+            displayValue: i2,
+        } as SelectOption;
         component.addChip(intrusion2, intrusions);
         expect(component.threatReport.boundaries.intrusions.size).toBe(2);
 
@@ -249,7 +258,11 @@ describe('ThreatReportEditorComponent', () => {
         expect(component.threatReport.boundaries.intrusions.size).toBe(2);
 
         // Add a third
-        const intrusion3 = 'intrusion3';
+        const i3 = 'intrusion3';
+        const intrusion3 = {
+            value: i3,
+            displayValue: i3,
+        } as SelectOption;
         component.addChip(intrusion3, intrusions);
         expect(component.threatReport.boundaries.intrusions.size).toBe(3);
 
@@ -262,7 +275,11 @@ describe('ThreatReportEditorComponent', () => {
         expect(component.threatReport.boundaries.intrusions.size).toBe(1);
 
         // And a fourth
-        const intrusion4 = 'intrusion4';
+        const i4 = 'intrusion4';
+        const intrusion4 = {
+            value: i4,
+            displayValue: i4,
+        } as SelectOption;
         component.addChip(intrusion4, intrusions);
         expect(component.threatReport.boundaries.intrusions.size).toBe(2);
 
@@ -287,12 +304,20 @@ describe('ThreatReportEditorComponent', () => {
         expect(component.threatReport.boundaries.intrusions.size).toBe(0);
 
         // Add one
-        const malware1 = 'malware1';
+        const m1 = 'malware1';
+        const malware1 = {
+            value: m1,
+            displayValue: m1,
+        } as SelectOption;
         component.addChip(malware1, malwares);
         expect(component.threatReport.boundaries.malware.size).toBe(1);
 
         // Add another
-        const malware2 = 'malware2';
+        const m2 = 'malware2';
+        const malware2 = {
+            value: m2,
+            displayValue: m2,
+        } as SelectOption;
         component.addChip(malware2, malwares);
         expect(component.threatReport.boundaries.malware.size).toBe(2);
 
@@ -307,7 +332,11 @@ describe('ThreatReportEditorComponent', () => {
         expect(component.threatReport.boundaries.malware.size).toBe(2);
 
         // Add a third
-        const malware3 = 'malware3';
+        const m3 = 'malware3';
+        const malware3 = {
+            value: m3,
+            displayValue: m3,
+        } as SelectOption;
         component.addChip(malware3, malwares);
         expect(component.threatReport.boundaries.malware.size).toBe(3);
 
@@ -320,7 +349,11 @@ describe('ThreatReportEditorComponent', () => {
         expect(component.threatReport.boundaries.malware.size).toBe(1);
 
         // And a fourth
-        const malware4 = 'malware4';
+        const m4 = 'malware4';
+        const malware4 = {
+            value: m4,
+            displayValue: m4,
+        } as SelectOption;
         component.addChip(malware4, malwares);
         expect(component.threatReport.boundaries.malware.size).toBe(2);
 
