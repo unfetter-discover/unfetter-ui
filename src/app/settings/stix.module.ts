@@ -29,6 +29,7 @@ import { SensorComponent, SensorEditComponent, SensorHomeComponent, SensorListCo
 import { SightingComponent, SightingEditComponent, SightingHomeComponent, SightingListComponent, SightingNewComponent } from './stix-objects/sightings';
 import { ThreatActorEditComponent, ThreatActorHomeComponent, ThreatActorListComponent, ThreatActorNewComponent, ThreatActorsComponent } from './stix-objects/threat-actors';
 import { ToolComponent, ToolEditComponent, ToolHomeComponent, ToolListComponent, ToolNewComponent } from './stix-objects/tools';
+import { MarkingsHomeComponent, MarkingsListComponent, MarkingsNewComponent } from './stix-objects/markings';
 import { routing } from './stix.routing';
 import { StixService } from './stix.service';
 
@@ -94,6 +95,9 @@ const stixComponents = [
   MalwareHomeComponent,
   MalwareListComponent,
   MalwareNewComponent,
+  MarkingsHomeComponent,
+  MarkingsListComponent,
+  MarkingsNewComponent,
   MitigateComponent,
   MitigateListComponent,
   RelationshipNewComponent,

@@ -222,7 +222,8 @@ export class BaseStixComponent<T = any> {
         }
 
         // Name not on sighting or relationship
-        if (model.type !== 'sighting' && model.type !== 'relationship' && (!model.attributes.name || !model.attributes.name.length)) {
+        if (model.type !== 'sighting' && model.type !== 'relationship' && model.type !== 'marking-definition' &&
+                (!model.attributes.name || !model.attributes.name.length)) {
             this.validationErrorMessages.push('Name is required');
             invalid = true;
         }
