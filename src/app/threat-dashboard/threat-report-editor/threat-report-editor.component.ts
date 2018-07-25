@@ -4,7 +4,7 @@ import { FormControl } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatSnackBar, MatTableDataSource } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { DateHelper } from '../../global/static/date-helper';
 import { SortHelper } from '../../global/static/sort-helper';
@@ -15,6 +15,8 @@ import { ThreatReportOverviewService } from '../../threat-dashboard/services/thr
 import { Constance } from '../../utils/constance';
 import { SelectOption } from '../models/select-option';
 import { ThreatReport } from '../models/threat-report.model';
+import { MarkdownExtension, MarkdownExtensionEnum } from '../services/markdown-extension';
+import { ReportMarkdownParserService } from '../services/report-markdown-parser.service';
 import { ReportEditorComponent } from './report-editor/report-editor.component';
 import { ReportImporterComponent } from './report-importer/report-importer.component';
 
@@ -59,10 +61,11 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
         protected dialog: MatDialog,
         protected genericApi: GenericApi,
         protected location: Location,
+        protected reportMarkdownParserService: ReportMarkdownParserService,
         protected route: ActivatedRoute,
         protected router: Router,
-        protected service: ThreatReportOverviewService,
-        protected snackBar: MatSnackBar
+        protected snackBar: MatSnackBar,
+        protected threatReportOverviewService: ThreatReportOverviewService,
     ) { }
 
     /**
@@ -82,7 +85,6 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
         this.threatReport = new ThreatReport();
         this.reportsDataSource = new MatTableDataSource(this.threatReport.reports);
         this.title = 'Create';
-        // this.loading = false;
         this.initSelects();
     }
 
@@ -94,10 +96,13 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
         const sub$ = this.threatReportDescriptionFormControl
             .valueChanges
             .pipe(
-                debounceTime(350)
+                debounceTime(450),
+                distinctUntilChanged()
             )
             .subscribe((val) => {
                 this.threatReport.description = val;
+                const markdownExtensions = this.reportMarkdownParserService.parseForExtensions(val);
+                this.onMarkdownExtensionsFound(markdownExtensions);
             },
                 (err) => console.log(err)
             );
@@ -116,7 +121,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
 
         this.loading = true;
         // this may be an unsaved threat report
-        this.service.load(threatReportId)
+        this.threatReportOverviewService.load(threatReportId)
             .subscribe(
                 (data) => {
                     this.threatReport = data as ThreatReport;
@@ -241,7 +246,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      * @param {string} value
      * @param {string} stixType
      */
-    public addChip(value: any, stixType: string): void {
+    public addChip(value: any, stixType: 'intrusion-set' | 'malware'): void {
         if (!value || !stixType) {
             return;
         }
@@ -260,12 +265,8 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
         }
 
         chips = chips || new Set();
-        if (typeof value === 'string') {
+        if (!this.hasValue(chips, value)) {
             chips = chips.add(value);
-        } else if (value.value) {
-            if (!this.hasValue(chips, value)) {
-                chips = chips.add(value);
-            }
         }
         const sortedChips = Array.from(chips.values()).sort(SortHelper.sortDescByField<any, any>('displayValue'));
         chips = new Set(sortedChips);
@@ -286,7 +287,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      * @return {boolean} true if found, otherwise false
      */
     public hasValue(chips: Set<any>, option: { value: any }): boolean {
-        return chips.has(option.value);
+        return Array.from(chips.values()).map((_) => _.value).includes(option.value);
     }
 
     /**
@@ -294,7 +295,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      * @param {string} stixName
      * @param {string} stixType
      */
-    public removeChip(stixName: any, stixType: string) {
+    public removeChip(stixName: any, stixType: 'intrusion-set' | 'malware') {
         if (!stixName || !stixType) {
             return;
         }
@@ -307,9 +308,6 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
             case 'malware':
                 chips = this.threatReport.boundaries.malware;
                 break;
-            // case 'target':
-            //     chips = this.threatReport.boundaries.targets;
-            //     break;
         }
         chips.delete(stixName);
     }
@@ -331,7 +329,9 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
         const isBool = typeof val === 'boolean';
         const isString = typeof val === 'string';
         const isArray = Array.isArray(val);
-        return isUndefined || (isBool && val === false) || (isString && val === 'false')
+        return isUndefined
+            || (isBool && val === false)
+            || (isString && val === 'false')
             || (isArray && (val as Array<any>).length === 0);
     }
 
@@ -365,7 +365,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
      * @param {UIEvent} event optional
      * @param {Report} report - report which to modify, undefined if you wish to create a new report
      */
-    private openReportDialog(event?: UIEvent, report?: Report): void {
+    public openReportDialog(event?: UIEvent, report?: Report): void {
         const opts = this.generateDialogOptions();
         if (report) {
             opts.data = report;
@@ -455,7 +455,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
     /**
      * @description turn dates into ISO Date format or backend will complain on validation
      */
-    private fixReportDateBeforeSave(report: Report): Report {
+    public fixReportDateBeforeSave(report: Report): Report {
         const item = report;
         if (item && item.attributes && item.attributes.created) {
             // turn to required ISO8601 format or clear the date because we cant use it
@@ -464,7 +464,12 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
         return item;
     }
 
-    private areSameReport(report1: Partial<Report>, report2: Partial<Report>): boolean {
+    /**
+     * @param  {Partial<Report>} report1
+     * @param  {Partial<Report>} report2
+     * @returns boolean
+     */
+    public areSameReport(report1: Partial<Report>, report2: Partial<Report>): boolean {
         if (report1 === report2) {
             return true;
         }
@@ -506,7 +511,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
         }
         this.threatReport.boundaries.targets.clear();
         this.threatReport.boundaries.targets.add(this.target);
-        const saveSub$ = this.service.saveThreatReport(this.threatReport)
+        const saveSub$ = this.threatReportOverviewService.saveThreatReport(this.threatReport)
             .subscribe(
                 (reports) => {
                     console.log('saved ', reports);
@@ -517,7 +522,7 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
         this.subscriptions.push(saveSub$);
 
         this.reportRemovals.forEach(report => {
-            const sub$ = this.service.removeReport(report as Report, this.threatReport)
+            const sub$ = this.threatReportOverviewService.removeReport(report as Report, this.threatReport)
                 .subscribe(
                     (tro) => console.log(tro),
                     (err) => console.log(err),
@@ -534,6 +539,69 @@ export class ThreatReportEditorComponent implements OnInit, OnDestroy {
         opts.width = '70vw';
         opts.height = '85vh';
         return opts;
+    }
+
+    /**
+     * @param  {MarkdownExtension[]} markdownExtensions
+     * @returns void
+     */
+    public onMarkdownExtensionsFound(markdownExtensions: MarkdownExtension[]): void {
+        if (!markdownExtensions || markdownExtensions.length < 0) {
+            return;
+        }
+
+        markdownExtensions.map((extension) => {
+            const extensionType = extension.extensionType.extensionType;
+            if (extensionType === MarkdownExtensionEnum.Intrusions) {
+                this.onIntrusionMarkdownExtension(extension, this.intrusions);
+            } else if (extensionType === MarkdownExtensionEnum.Malware) {
+                this.onMalwareMarkdownExtension(extension, this.malware);
+            }
+        });
+    }
+
+    /**
+     * @param  {MarkdownExtension} markdownExtension
+     * @returns void
+     */
+    public onIntrusionMarkdownExtension(markdownExtension: MarkdownExtension, existingOpts: SelectOption[]): void {
+        if (!markdownExtension || !markdownExtension.extensionValue) {
+            return;
+        }
+
+        let markdownVal = markdownExtension.extensionValue || '';
+        markdownVal = markdownVal.toLowerCase();
+        const listMatch = existingOpts.find((opt) => opt.displayValue.toLowerCase() === markdownVal);
+        if (listMatch) {
+            const chip = {
+                ...listMatch,
+            } as SelectOption;
+            this.addChip(chip, 'intrusion-set');
+        } else {
+            console.log(`${markdownExtension.extensionValue} does not seem to be a valid intrusion set, moving on...`);
+        }
+    }
+
+    /**
+     * @param  {MarkdownExtension} markdownExtension
+     * @returns void
+     */
+    public onMalwareMarkdownExtension(markdownExtension: MarkdownExtension, existingOpts: SelectOption[]): void {
+        if (!markdownExtension || !markdownExtension.extensionValue) {
+            return;
+        }
+
+        let markdownVal = markdownExtension.extensionValue || '';
+        markdownVal = markdownVal.toLowerCase();
+        const listMatch = existingOpts.find((opt) => opt.displayValue.toLowerCase() === markdownVal);
+        if (listMatch) {
+            const chip = {
+                ...listMatch,
+            } as SelectOption;
+            this.addChip(chip, 'malware');
+        } else {
+            console.log(`${markdownExtension.extensionValue} does not seem to be a valid malware, moving on...`);
+        }
     }
 
 }
