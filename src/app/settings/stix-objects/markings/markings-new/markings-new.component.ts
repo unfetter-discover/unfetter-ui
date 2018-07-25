@@ -48,7 +48,7 @@ export class MarkingsNewComponent extends BaseStixComponent implements OnInit {
         {label: 'Statement', value: 'statement'},
     ];
     public readonly definitionTypeCtrl: FormControl = new FormControl();
-    private definitionType: MarkingDefinitionType = { label: undefined, value: undefined };
+    public definitionType: MarkingDefinitionType = { label: undefined, value: undefined };
 
     public readonly TLPValues: Array<string> = [
         'white',
