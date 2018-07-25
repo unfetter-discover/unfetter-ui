@@ -18,9 +18,9 @@
                     <div class="col-xs-12 col-sm-8" [ngSwitch]="marking.attributes.definition_type">
                         <ng-container *ngSwitchCase="'capco'">
                             <div>
-                                <span class="capco-label">{{marking.attributes.definition.label}}</span>
-                                <span class="capco-hash">({{marking.attributes.definition.hash}})</span>
                                 <span class="capco-category">{{marking.attributes.definition.category | capitalize}}</span>
+                                <span class="capco-portion">({{marking.attributes.definition.portion}})</span>
+                                <span class="capco-text">{{marking.attributes.definition.text}}</span>
                             </div>
                         </ng-container>
                         <ng-container *ngSwitchCase="'rating'">

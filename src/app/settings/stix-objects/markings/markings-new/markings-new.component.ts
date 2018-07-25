@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { MatDialog, MatSnackBar } from '@angular/material';
 
-import { MarkingDefinition, Identity, Relationship } from '../../../../models';
+import { MarkingDefinition } from '../../../../models';
 import { BaseStixComponent } from '../../../base-stix.component';
 import { StixService } from '../../../stix.service';
 import { Constance } from '../../../../utils/constance';
@@ -15,6 +15,22 @@ interface MarkingDefinitionType {
     label: string;
     value: string;
 };
+
+interface TLPMarkingDefinition {
+    tlp: 'white' | 'green' | 'amber' | 'red';
+}
+interface StatementMarkingDefinition {
+    statement: string;
+}
+interface RatingMarkingDefinition {
+    rating: number;
+    label: string;
+}
+interface CAPCOMarkingDefinition {
+    category: 'Classification' | 'Compartment' | 'Access' | 'Dissemination'
+    portion: string;
+    text: string;
+}
 
 @Component({
     selector: 'markings-new',
@@ -25,20 +41,43 @@ export class MarkingsNewComponent extends BaseStixComponent implements OnInit {
 
     public marking: MarkingDefinition = new MarkingDefinition();
 
-    public markingDefinitionTypes: Array<MarkingDefinitionType> = [
+    public readonly markingDefinitionTypes: Array<MarkingDefinitionType> = [
         {label: 'CAPCO', value: 'capco'},
         {label: 'Rating', value: 'rating'},
         {label: 'TLP', value: 'tlp'},
         {label: 'Statement', value: 'statement'},
     ];
-    public definitionTypeCtrl: FormControl = new FormControl();
+    public readonly definitionTypeCtrl: FormControl = new FormControl();
     private definitionType: MarkingDefinitionType = { label: undefined, value: undefined };
 
-    public identities: Identity[] = [];
+    public readonly TLPValues: Array<string> = [
+        'white',
+        'green',
+        'amber',
+        'red'
+    ];
+    public readonly tlpCtrl: FormControl = new FormControl();
+    private tlpValue: TLPMarkingDefinition = {tlp: undefined};
 
-    public newRelationships: Relationship[] = [];
-    public savedRelationships: Relationship[] = [];
-    public deletedRelationships: Relationship[] = [];
+    public statement: StatementMarkingDefinition = {statement: undefined};
+
+    public rating: RatingMarkingDefinition = {
+        rating: undefined,
+        label: undefined
+    };
+
+    public readonly CategoryValues: Array<string> = [
+        'Classification',
+        'Compartment',
+        'Access',
+        'Dissemination'
+    ];
+    public readonly categoryCtrl: FormControl = new FormControl();
+    public capco: CAPCOMarkingDefinition = {
+        category: undefined,
+        portion: undefined,
+        text: undefined
+    };
 
     constructor(
         stixService: StixService,
@@ -53,22 +92,6 @@ export class MarkingsNewComponent extends BaseStixComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.loadMarking();
-        console.log('marking', this.marking);
-    }
-
-    private loadMarking(): void {
-        const subscription =  super.get()
-            .subscribe(
-                (data) => this.marking = new MarkingDefinition(data),
-                (error) => console.log('error ' + error),
-                () => {
-                    // prevent memory links
-                    if (subscription) {
-                        subscription.unsubscribe();
-                    }
-                }
-            );
     }
 
     public displayDefinitionType(definitionType): string | undefined {
@@ -87,27 +110,107 @@ export class MarkingsNewComponent extends BaseStixComponent implements OnInit {
             invalid = true;
         } else {
             model.attributes.definition_type = this.definitionType.value;
+            switch (this.definitionType.value) {
+                case 'tlp':
+                    invalid = this.invalidateTLP(model) || invalid;
+                    break;
+                case 'statement':
+                    invalid = this.invalidateStatement(model) || invalid;
+                    break;
+                case 'rating':
+                    invalid = this.invalidateRating(model) || invalid;
+                    break;
+                case 'capco':
+                    invalid = this.invalidateCAPCO(model) || invalid;
+                    break;
+            }
+        }
+        return invalid;
+    }
+
+    private invalidateTLP(model: any): boolean {
+        let invalid = false;
+        if (!this.tlpValue.tlp) {
+            this.validationErrorMessages.push('You must select a TLP Value');
+            return true;
+        } else {
+            model.attributes.definition = this.tlpValue;
+        }
+        return invalid;
+    }
+
+    private invalidateStatement(model: any): boolean {
+        let invalid = false;
+        if (!this.statement.statement || !this.statement.statement.trim()) {
+            this.validationErrorMessages.push('You must provide a statement');
+            invalid = true;
+        } else {
+            model.attributes.definition = this.statement;
+        }
+        return invalid;
+    }
+
+    private invalidateRating(model: any): boolean {
+        let invalid = false;
+        if (this.rating.rating === undefined) {
+            this.validationErrorMessages.push('You must provide a rating value');
+            invalid = true;
+        } else if (this.rating.rating < 0) {
+            this.validationErrorMessages.push('The rating must be a non-negative integer');
+            invalid = true;
+        } else if (!Number.isInteger(this.rating.rating)) {
+            this.validationErrorMessages.push('The rating must be an integer');
+            invalid = true;
+        }
+        if (!this.rating.label) {
+            this.validationErrorMessages.push('You must provide a rating label');
+            invalid = true;
+        }
+        if (!invalid) {
+            model.attributes.definition = this.rating;
+        }
+        return invalid;
+    }
+
+    private invalidateCAPCO(model: any): boolean {
+        let invalid = false;
+        if (!this.capco.category) {
+            this.validationErrorMessages.push('You need to select a CAPCO category');
+            invalid = true;
+        }
+        if (!this.capco.portion || !this.capco.portion.trim()) {
+            this.validationErrorMessages.push('You must provide a portion marking');
+            invalid = true;
+        }
+        if (!this.capco.text || !this.capco.text.trim()) {
+            this.validationErrorMessages.push('You must provide the full syntax of the marking');
+            invalid = true;
+        }
+        if (!invalid) {
+            this.capco.portion = this.capco.portion.toLocaleUpperCase();
+            this.capco.text = this.capco.text.toLocaleUpperCase();
+            model.attributes.definition = this.capco;
         }
         return invalid;
     }
 
     public saveButtonClicked(): Observable<any> {
-        return Observable.create(observer => {
-            const subscription = super.save(this.marking)
-                .subscribe(
-                    (data) => {
-                        observer.next(data);
-                        observer.complete();
-                    },
-                    (error) => console.error(error),
-                    () => {
-                        // prevent memory links
-                        if (subscription) {
-                            subscription.unsubscribe();
-                        }
+        const observable = super.create(this.marking);
+        const sub = observable
+            .subscribe(
+                data => this.location.back(),
+                error => {
+                    // handle errors here
+                    console.log('error', error);
+                },
+                () => {
+                    // prevent memory links
+                    if (sub) {
+                        sub.unsubscribe();
                     }
-                );
-        });
+                }
+            );
+        return observable;
     }
 
 }

@@ -10,6 +10,9 @@ import { Constance } from '../../utils/constance';
 @Injectable()
 export class MarkingEffects {
 
+    /**
+     * To fetch markings, pass request to the REST API
+     */
     @Effect()
     public fetchMarkings = this.actions$
         .ofType(MarkingActions.FETCH_MARKINGS)
@@ -23,7 +26,6 @@ export class MarkingEffects {
                 };
                 const project = `project=${encodeURI(JSON.stringify(projections))}`;
                 const url = `${Constance.MARKINGS_URL}?${project}&${sort}`;
-                console.log('querying for markings', url);
                 return this.genericApi.getAs<MarkingDefinition[]>(url);
             }),
             mergeMap(markings => [ new MarkingActions.SetMarkings(markings) ])

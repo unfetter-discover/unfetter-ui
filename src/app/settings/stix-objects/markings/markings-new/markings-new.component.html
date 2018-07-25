@@ -8,8 +8,8 @@
     <div class="col-md-12">
         <form>
             <mat-form-field class="full-width">
-                <input matInput required placeholder="Definition Type" aria-label="Definition Type"
-                        [matAutocomplete]="autotype" [formControl]="definitionTypeCtrl" [(ngModel)]="definitionType">
+                <input matInput required [formControl]="definitionTypeCtrl" [(ngModel)]="definitionType"
+                        [matAutocomplete]="autotype" placeholder="Definition Type" aria-label="Definition Type">
             </mat-form-field>
         </form>
         <mat-autocomplete name="autotype" #autotype="matAutocomplete" [displayWith]="displayDefinitionType">
@@ -26,13 +26,13 @@
         <div class="col-md-12">
             <form>
                <mat-form-field class="full-width">
-                    <input matInput required placeholder="TLP" aria-label="Definition Type"
-                            [matAutocomplete]="autotype" [formControl]="definitionTypeCtrl" [(ngModel)]="definitionType">
+                    <input matInput required [formControl]="tlpCtrl" [(ngModel)]="tlpValue.tlp"
+                            [matAutocomplete]="autotlp" placeholder="TLP" aria-label="TLP Value">
                </mat-form-field>
             </form>
-            <mat-autocomplete name="autotype" #autotype="matAutocomplete" [displayWith]="displayDefinitionType">
-                <mat-option *ngFor="let definitionType of markingDefinitionTypes" [value]="definitionType">
-                    <span>{{ definitionType.label }}</span>
+            <mat-autocomplete name="autotlp" #autotlp="matAutocomplete">
+                <mat-option *ngFor="let TLPValue of TLPValues" [value]="TLPValue">
+                    <span>{{ TLPValue }}</span>
                 </mat-option>
             </mat-autocomplete>
         </div>
@@ -40,41 +40,70 @@
 
     <div *ngSwitchCase="'statement'" class="row selectRow">
         <div class="col-md-12">
+            <mat-form-field class="full-width">
+                <textarea matInput required [(ngModel)]="statement.statement"
+                        autocomplete="off" matTextareaAutosize placeholder="Statement">{{statement}}</textarea>
+                <button mat-button *ngIf="statement.statement" matSuffix mat-icon-button aria-label="Clear"
+                        (click)="statement.statement = ''"><mat-icon>close</mat-icon></button>
+            </mat-form-field>
         </div>
     </div>
 
     <div *ngSwitchCase="'rating'" class="row selectRow">
-        <div class="col-md-12">
-            <form>
-                <mat-form-field class="full-width">
-                    <input matInput required placeholder="Definition Type" aria-label="Definition Type"
-                            [matAutocomplete]="autotype" [formControl]="definitionTypeCtrl" [(ngModel)]="definitionType">
-                </mat-form-field>
-            </form>
-            <mat-autocomplete name="autotype" #autotype="matAutocomplete" [displayWith]="displayDefinitionType">
-                <mat-option *ngFor="let definitionType of markingDefinitionTypes" [value]="definitionType">
-                    <span>{{ definitionType.label }}</span>
-                </mat-option>
-            </mat-autocomplete>
+        <div class="col-md-3">
+            <mat-form-field class="full-width">
+                <input matInput required [(ngModel)]="rating.rating"
+                        type="number" autocomplete="off" placeholder="Rating Value" aria-label="Rating">
+            </mat-form-field>
+        </div>
+        <div class="col-md-9">
+            <mat-form-field class="full-width">
+                <input matInput required [(ngModel)]="rating.label"
+                        autocomplete="off" placeholder="Rating Label" aria-label="Label">
+            </mat-form-field>
         </div>
     </div>
 
     <div *ngSwitchCase="'capco'" class="row selectRow">
-        <div class="col-md-12">
+        <div class="col-md-3">
+            <form>
+               <mat-form-field class="full-width">
+                    <input matInput required [formControl]="categoryCtrl" [(ngModel)]="capco.category"
+                            [matAutocomplete]="autocat" placeholder="Category" aria-label="CAPCO Category">
+               </mat-form-field>
+            </form>
+            <mat-autocomplete name="autocat" #autocat="matAutocomplete">
+                <mat-option *ngFor="let category of CategoryValues" [value]="category">
+                    <span>{{ category }}</span>
+                </mat-option>
+            </mat-autocomplete>
+        </div>
+        <div class="col-md-3">
+            <mat-form-field class="full-width">
+                <input matInput required class="capco-input" [(ngModel)]="capco.portion"
+                        autocomplete="off" placeholder="Portion Marking" aria-label="CAPCO Portion Marking">
+            </mat-form-field>
+        </div>
+        <div class="col-md-6">
+            <mat-form-field class="full-width">
+                <input matInput required class="capco-input" [(ngModel)]="capco.text"
+                        autocomplete="off" placeholder="Banner Text" aria-label="CAPCO Banner">
+                <button mat-button *ngIf="capco.text" matSuffix mat-icon-button aria-label="Clear"
+                        (click)="capco.text = ''"><mat-icon>close</mat-icon></button>
+            </mat-form-field>
         </div>
     </div>
 
 </ng-container>
 
 <!--<external-reference [(model)]="marking"></external-reference>-->
-<published-checkbox [model]="marking"></published-checkbox>
 
 <div class="row">
     <div class="col-md-12">
         <div class="button-row pull-right">
-                <button mat-button (click)="cancelButtonClicked()">CANCEL</button>
-                <button mat-raised-button color="primary" [disabled]="invalidate(marking)"
-                        (click)="saveButtonClicked()">SAVE</button>
+            <button mat-button (click)="cancelButtonClicked()">CANCEL</button>
+            <button mat-raised-button color="primary" [disabled]="invalidate(marking)"
+                    (click)="saveButtonClicked()">SAVE</button>
         </div>
     </div>
 </div>

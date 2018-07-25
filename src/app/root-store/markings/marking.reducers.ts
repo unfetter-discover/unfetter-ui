@@ -10,19 +10,33 @@ export const initialState: MarkingState = {
 }
 
 export function markingsReducer(state = initialState, action: markingActions.MarkingActions): MarkingState {
+
     switch (action.type) {
+
+        /*
+         * When asked to assign marking definitions, replace the state with the data, and return it.
+         */
         case markingActions.SET_MARKINGS:
-            console.log('setting markings', action.payload);
             return {
                 ...state,
                 definitions: action.payload
             };
+
+        /*
+         * When asked to clear markings, reset the state to the initial state, and return it.
+         */
         case markingActions.CLEAR_MARKINGS:
             return {
                 ...state,
                 ...initialState
             };
+
+        /*
+         * For everything else, just return the current state.
+         */
         default:
             return state;
+
     }
+
 }

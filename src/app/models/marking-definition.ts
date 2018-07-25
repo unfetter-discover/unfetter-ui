@@ -13,7 +13,7 @@ export class MarkingDefinition {
         definition_type: string;
         definition: any;
         created_by_ref: string;
-        created: Date;
+        created: string;
         external_references: ExternalReference[];
     };
 
@@ -28,7 +28,7 @@ export class MarkingDefinition {
 
     private createAttributes(): any {
         return {
-            created: moment().format(Constance.DATE_FORMATE),
+            created: new Date().toISOString(),
             external_references: []
         };
     }

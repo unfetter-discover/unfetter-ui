@@ -39,6 +39,7 @@ export const Constance = {
   IDENTITIES_URL: StixUrls.IDENTITY as string,
 
   MARKINGS_URL: 'api/marking-definitions',
+  MARKING_ICON: 'assets/icon/stix-icons/svg/shield.svg',
 
   INDICATOR_URL: StixUrls.INDICATOR as string,
   INDICATOR_TYPE: 'indicator',

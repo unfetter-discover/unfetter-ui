@@ -10,9 +10,9 @@ export class MarkingsHomeComponent {
 
     public pageTitle = 'Marking Definitions';
 
-    public pageIcon = Constance.MALWARE_ICON;
+    public pageIcon = Constance.MARKING_ICON;
 
-    public description = 'Sometimes when creating STIX objects it may be useful to provide guidance or permissions' +
+    public description = 'Sometimes when creating STIX objects it may be useful to provide guidance or permissions ' +
         'on how those objects may be used.';
 
 }
