@@ -91,24 +91,24 @@ export class BaselineEffects {
         .pipe(
             pluck('payload'),
             switchMap((capabilities: Capability[]) => {
-            // Collect unique category references
-            const catList = new Array<string>();
-            capabilities.map((capability) => {
-                if (catList.indexOf(capability.category) < 0) {
-                    catList.push(capability.category);
-                }
-            });
-            const observables = catList
-                .map((catId) => {
-                    return this.baselineService.fetchCategory(catId);
+                // Collect unique category references
+                const catList = new Array<string>();
+                capabilities.map((capability) => {
+                    if (catList.indexOf(capability.category) < 0) {
+                        catList.push(capability.category);
+                    }
                 });
+                const observables = catList
+                    .map((catId) => {
+                        return this.baselineService.fetchCategory(catId);
+                    });
                 return observableForkJoin(...observables);
             }),
             mergeMap((groups) => {
-            const actions: Action[] = [
-                new baselineActions.SetBaselineGroups(groups),
-                new baselineActions.FinishedLoading(true) ];
-                return actions;
+                const actions: Action[] = [
+                    new baselineActions.SetBaselineGroups(groups),
+                    new baselineActions.FinishedLoading(true) ];
+                    return actions;
             })
         )
 
@@ -277,6 +277,21 @@ export class BaselineEffects {
         )
 
     @Effect()
+    public removeCapabilityGroupFromBaseline = this.actions$
+        .ofType(baselineActions.REMOVE_CAPABILITY_GROUP_FROM_BASELINE)
+        .pipe(
+            pluck('payload'),
+            withLatestFrom(this.store.select('baseline').pipe(pluck('baselineCapabilities'))),
+            map(( [ category, baselineCapabilities ]: [ Category, Capability[] ]) => {
+                // Gather related capabilities for this group
+                const capsToRemove = baselineCapabilities.filter((cap) => cap.category === category.id);
+
+                // Send action to remove object assessments for these capabilities from the baseline
+                return new baselineActions.RemoveCapabilitiesFromBaseline(capsToRemove);
+            })
+        )
+    
+    @Effect()
     public addCapabilityToBaselineCapabilities = this.actions$
         .ofType(baselineActions.ADD_CAPABILITY_TO_BASELINE)
         .pipe(
@@ -307,6 +322,23 @@ export class BaselineEffects {
         );
     
     @Effect()
+    public replaceCapabilityInBaseline = this.actions$
+        .ofType(baselineActions.REPLACE_CAPABILITY_IN_BASELINE)
+        .pipe(
+            pluck('payload'),
+            withLatestFrom(this.store.select('baseline').pipe(pluck('baselineObjAssessments'))),
+            mergeMap(([ oldAndNewCaps, baselineOA ]: [ Capability[], ObjectAssessment[] ]) => {
+                // Return action to remove the old OA and create the new OA
+                const newOA = this.createObjAssessment(oldAndNewCaps[1]);
+                const oldOA = baselineOA.filter((oa) => oa.object_ref === oldAndNewCaps[0].id);
+                return [
+                    new baselineActions.AddObjectAssessmentToBaseline(newOA),
+                    new baselineActions.RemoveObjectAssessmentsFromBaseline(oldOA),
+                ];
+            })
+        );
+
+    @Effect()
     public addObjectAssessmentToBaseline = this.actions$
         .ofType(baselineActions.ADD_OBJECT_ASSESSMENT_TO_BASELINE)
         .pipe(
@@ -332,42 +364,47 @@ export class BaselineEffects {
         );
 
     @Effect()
-    public removeCapabilityFromBaselineCapabilities = this.actions$
-        .ofType(baselineActions.REMOVE_CAPABILITY_FROM_BASELINE)
+    public removeCapabilitiesFromBaselineCapabilities = this.actions$
+        .ofType(baselineActions.REMOVE_CAPABILITIES_FROM_BASELINE)
         .pipe(
             pluck('payload'),
             withLatestFrom(this.store.select('baseline').pipe(pluck('baselineObjAssessments'))),
-            mergeMap(( [ capability, baselineOA ]: [ Capability, ObjectAssessment[] ] ) => {
-                // Get object assessment associated with this capability
-                const oaForCap = baselineOA.find((oa) => oa.object_ref === capability.id);
+            mergeMap(( [ capabilities, baselineOA ]: [ Capability[], ObjectAssessment[] ] ) => {
+                const oasToRemove = new Array<ObjectAssessment>();
+                const observables = capabilities
+                    .map((capability) => {
+                        // Get object assessment associated with this capability
+                        const oaForCap = baselineOA.find((oa) => oa.object_ref === capability.id);
+                        oasToRemove.push(oaForCap);
 
-                // Remove ObjectAssessment from baseline and delete it 
-                const jsonOA = {
-                    data: { attributes: oaForCap }
-                } as JsonApi<JsonApiData<ObjectAssessment>>;
-                let url = Constance.X_UNFETTER_OBJECT_ASSESSMENTS_URL;
-                return this.genericServiceApi.delete(url, jsonOA)
-                    .pipe(
-                        map((objAssessment) => {
-                            return new baselineActions.RemoveObjectAssessmentFromBaseline(objAssessment);
-                        })
-                    )
-                }),
+                        // Remove ObjectAssessment from baseline and delete it
+                        let url = Constance.X_UNFETTER_OBJECT_ASSESSMENTS_URL + '/' + oaForCap.id;
+
+                        return this.genericServiceApi.delete(url);
+                    });
+                return observableForkJoin(...observables).pipe(
+                    map((arr) => {
+                        return new baselineActions.RemoveObjectAssessmentsFromBaseline(oasToRemove);
+                    }),
+                    catchError((err) => {
+                        console.log(err);
+                        return observableOf(new baselineActions.FailedToLoad(true));
+                    })
+                );
+            }),
         );
 
     @Effect()
-    public removeObjectAssessmentFromBaseline = this.actions$
-        .ofType(baselineActions.REMOVE_OBJECT_ASSESSMENT_FROM_BASELINE)
+    public removeObjectAssessmentsFromBaseline = this.actions$
+        .ofType(baselineActions.REMOVE_OBJECT_ASSESSMENTS_FROM_BASELINE)
         .pipe(
             pluck('payload'),
             withLatestFrom(this.store.select('baseline').pipe(pluck('baseline'))),
-            mergeMap(([ objAssessment, baseline ]: [ ObjectAssessment, AssessmentSet ]) => {
-                const oaIndex = baseline.assessments.findIndex((oaId) => oaId === objAssessment.id);
-                baseline.assessments.splice(oaIndex, 1);
+            mergeMap(([ objAssessments, baseline ]: [ ObjectAssessment[], AssessmentSet ]) => {
                 const jsonBL = {
                     data: { attributes: baseline }
                 } as JsonApi<JsonApiData<AssessmentSet>>;
-                const url = Constance.X_UNFETTER_ASSESSMENT_SETS_URL;
+                const url = `${Constance.X_UNFETTER_ASSESSMENT_SETS_URL}/${baseline.id}`;
                 return this.genericServiceApi.patch(url, jsonBL)
                     .pipe(
                         map(RxjsHelpers.mapAttributes),
