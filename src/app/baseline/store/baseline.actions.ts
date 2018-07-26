@@ -18,11 +18,12 @@ export const SET_CAPABILITIES = '[Baseline] SET_CAPABILITIES';
 export const SET_BASELINE_CAPABILITIES = '[Baseline] SET_BASELINE_CAPABILITIES';
 export const ADD_CAPABILITY_TO_BASELINE = '[Baseline] ADD_CAPABILITY_TO_BASELINE';
 export const REPLACE_CAPABILITY_IN_BASELINE = '[Baseline] REPLACE_CAPABILITY_IN_BASELINE';
-export const REMOVE_CAPABILITY_FROM_BASELINE = '[Baseline] REMOVE_CAPABILITY_FROM_BASELINE';
-export const REMOVE_OBJECT_ASSESSMENT_FROM_BASELINE = '[Baseline] REMOVE_OBJECT_ASSESSMENT_FROM_BASELINE';
+export const REMOVE_CAPABILITIES_FROM_BASELINE = '[Baseline] REMOVE_CAPABILITIES_FROM_BASELINE';
+export const REMOVE_OBJECT_ASSESSMENTS_FROM_BASELINE = '[Baseline] REMOVE_OBJECT_ASSESSMENTS_FROM_BASELINE';
 export const SET_CURRENT_BASELINE_CAPABILITY = '[Baseline] SET_CURRENT_BASELINE_CAPABILITY';
 export const SET_BASELINE = '[Baseline] SET_BASELINE';
 export const ADD_CAPABILITY_GROUP = '[Baseline] ADD_CAPABILITY_GROUP';
+export const REMOVE_CAPABILITY_GROUP_FROM_BASELINE = '[Baseline] REMOVE_CAPABILITY_GROUP_FROM_BASELINE'
 export const SAVE_OBJECT_ASSESSMENTS = '[Baseline] SAVE_OBJECT_ASSESSMENTS';
 export const FAILED_TO_LOAD = '[Baseline] FAILED_TO_LOAD';
 export const SET_AND_READ_ASSESSMENT_SET = '[Baseline] SET_AND_READ_ASSESSMENT_SET';
@@ -68,28 +69,16 @@ export class SaveBaseline implements Action {
     constructor(public payload: AssessmentSet) { }
 }
 
-export class AddObjectAssessment implements Action {
-    public readonly type = ADD_OBJECT_ASSESSMENT;
-
-    constructor(public payload: ObjectAssessment) { }
-}
-
-export class SaveObjectAssessments implements Action {
-    public readonly type = SAVE_OBJECT_ASSESSMENTS;
-
-    constructor(public payload: ObjectAssessment[]) { }
-}
-
 export class AddObjectAssessmentToBaseline implements Action {
     public readonly type = ADD_OBJECT_ASSESSMENT_TO_BASELINE;
 
     constructor(public payload: ObjectAssessment) { }
 }
 
-export class RemoveObjectAssessmentFromBaseline implements Action {
-    public readonly type = REMOVE_OBJECT_ASSESSMENT_FROM_BASELINE;
+export class RemoveObjectAssessmentsFromBaseline implements Action {
+    public readonly type = REMOVE_OBJECT_ASSESSMENTS_FROM_BASELINE;
 
-    constructor(public payload: ObjectAssessment) { }
+    constructor(public payload: ObjectAssessment[]) { }
 }
 
 export class FetchBaseline implements Action {
@@ -140,6 +129,12 @@ export class AddCapabilityGroup implements Action {
     constructor(public payload: Category) { }
 }
 
+export class RemoveCapabilityGroupFromBaseline implements Action {
+    public readonly type = REMOVE_CAPABILITY_GROUP_FROM_BASELINE;
+
+    constructor(public payload: Category) { }
+}
+
 export class SetBaselineGroups implements Action {
     public readonly type = SET_BASELINE_GROUPS;
 
@@ -182,10 +177,10 @@ export class AddCapabilityToBaseline implements Action {
     constructor(public payload: Capability) { }
 }
 
-export class RemoveCapabilityFromBaseline implements Action {
-    public readonly type = REMOVE_CAPABILITY_FROM_BASELINE;
+export class RemoveCapabilitiesFromBaseline implements Action {
+    public readonly type = REMOVE_CAPABILITIES_FROM_BASELINE;
 
-    constructor(public payload: Capability) { }
+    constructor(public payload: Capability[]) { }
 }
 
 export class ReplaceCapabilityInBaseline implements Action {
@@ -258,7 +253,6 @@ export class FailedToLoad implements Action {
   }  
 
 export type BaselineActions =
-    AddObjectAssessment |
     AddObjectAssessmentToBaseline |
     CleanBaselineWizardData |
     FailedToLoad |
@@ -270,7 +264,7 @@ export type BaselineActions =
     FinishedSaving |
     SaveBaseline |
     AddCapabilityGroup |
-    SaveObjectAssessments |
+    RemoveCapabilityGroupFromBaseline |
     SetAndReadAssessmentSet |
     SetAndReadObjectAssessments |
     SetAndReadCapabilities |
@@ -278,8 +272,8 @@ export type BaselineActions =
     SetBaseline |
     AddCapabilityToBaseline |
     ReplaceCapabilityInBaseline |
-    RemoveCapabilityFromBaseline |
-    RemoveObjectAssessmentFromBaseline |
+    RemoveCapabilitiesFromBaseline |
+    RemoveObjectAssessmentsFromBaseline |
     SetBaselineGroups |
     SetCapabilities |
     SetBaselineCapabilities |

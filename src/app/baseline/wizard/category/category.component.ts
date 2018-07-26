@@ -6,7 +6,6 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Category, Capability } from 'stix/assess/v3/baseline';
 import * as assessActions from '../../store/baseline.actions';
-import { SetBaselineGroups } from '../../store/baseline.actions';
 import * as assessReducers from '../../store/baseline.reducers';
 
 @Component({
@@ -126,8 +125,15 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // If this is replacing a selected group, do a replace
     if (this.selectedCategories[index]) {
-      // Must remove any capabilities for which this category was associated
-      this.wizardStore.dispatch(new assessActions.SetBaselineCapabilities(this.baselineCapabilities.filter(capability => capability.category !== this.selectedCategories[index].id)));
+      // First remove the existing group
+      const confirmed = this.confirmDelete(this.selectedCategories[index]);
+
+      if (!confirmed) {
+        return;
+      }
+
+      // Update wizard store with current category selections
+      this.wizardStore.dispatch(new assessActions.RemoveCapabilityGroupFromBaseline(this.selectedCategories[index]));
 
       this.selectedCategories[index] = newCategory;
     } else {
@@ -137,7 +143,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     // Update wizard store with current category selections
-    this.wizardStore.dispatch(new SetBaselineGroups(this.selectedCategories));
+    this.wizardStore.dispatch(new assessActions.SetBaselineGroups(this.selectedCategories));
   }
 
   /*
@@ -157,33 +163,27 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * @description Delete category from the list, with confirmation
+   * @description Delete category and associated objects from the list, with confirmation
    * @param {LastModifiedAssessment} baseline
    * @return {void}
    */
   public onDeleteCategory(option: any): void {
-    const confirmed = this.confirmDelete(option.value);
+    let catToDelete = option.value as Category;
+    const confirmed = this.confirmDelete(catToDelete);
 
     if (confirmed) {
-      let catToDelete = option.value as Category;
-      const index = this.selectedCategories.findIndex(category => category.id === catToDelete.id);
-      this.selectedCategories.splice(index, 1); 
-
-      // Must remove any capabilities for which this category were associated
-      this.wizardStore.dispatch(new assessActions.SetBaselineCapabilities(this.baselineCapabilities.filter(capability => capability.category !== option.value.id)));
-
       // Update wizard store with current category selections
-      this.wizardStore.dispatch(new SetBaselineGroups(this.selectedCategories.filter((capabilityGroup) => capabilityGroup !== undefined)));
+      this.wizardStore.dispatch(new assessActions.RemoveCapabilityGroupFromBaseline(catToDelete));
     }
   }
 
   /**
    * @description Confirm deletion of a category from the list
-   * @param {string} category the name of the category to remove
+   * @param {string} category the category to remove
    * @param {UIEvent} optional event
    * @return {boolean} true to delete, false otherwise
    */
-  public confirmDelete(category: string, event?: UIEvent): boolean {
+  public confirmDelete(category: Category, event?: UIEvent): boolean {
     // TODO: Add confirmation dialog
 
     return true;

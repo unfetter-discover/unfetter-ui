@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
 import { Stix } from 'stix/unfetter/stix';
 import { StixEnum } from 'stix/unfetter/stix.enum';
-import { AddCapabilityToBaseline, AddObjectAssessmentToBaseline, RemoveCapabilityFromBaseline, ReplaceCapabilityInBaseline } from '../../store/baseline.actions';
+import { AddCapabilityToBaseline, AddObjectAssessmentToBaseline, RemoveCapabilitiesFromBaseline, ReplaceCapabilityInBaseline } from '../../store/baseline.actions';
 import * as assessReducers from '../../store/baseline.reducers';
 
 @Component({
@@ -96,28 +96,17 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
   public updateCapability(option: any, index: number): void {
     const newCapability = option.selected.value;
 
-    // Verify a selection and that this capability doesn't already exist
-    const indexInList = this.baselineCapabilities.findIndex((capability) => capability.id === newCapability.id);
-    if (indexInList < 0 && option.value !== CapabilitySelectorComponent.DEFAULT_VALUE) {
-      if (index === -1) {
+    // If this is replacing a selected group, do a replace
+    if (this.selectedCapabilities[index]) {
+        // Replace capabilities and associated object assessments
+        this.wizardStore.dispatch(new ReplaceCapabilityInBaseline([this.selectedCapabilities[index], newCapability]));
+    } else {
         // Apply category name to this capability
         newCapability.category = this.currentCapabilityGroup.id;
-        this.selectedCapabilities.push(newCapability);
 
         this.wizardStore.dispatch(new AddCapabilityToBaseline(newCapability));
 
         option.value = CapabilitySelectorComponent.DEFAULT_VALUE;
-      } else {
-        // Replace capabilities
-        this.wizardStore.dispatch(new ReplaceCapabilityInBaseline([this.selectedCapabilities[index], newCapability]));
-
-        // Replace it
-        this.selectedCapabilities[index] = newCapability;
-      }
-    } else {
-      // TODO: error message to user here saying this capability is already selected
-
-      option.value = CapabilitySelectorComponent.DEFAULT_VALUE;
     }
   }
 
@@ -150,7 +139,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
       const removedCapability = this.selectedCapabilities.splice(index, 1);
 
       // Remove the capability being replaced... (always only one at a time here)
-      this.wizardStore.dispatch(new RemoveCapabilityFromBaseline(removedCapability[0]));
+      this.wizardStore.dispatch(new RemoveCapabilitiesFromBaseline(removedCapability));
     }
   }
 
