@@ -11,7 +11,7 @@
       <tr *ngFor="let file of files; let i = index">
         <td>
           <div class="flex flexItemsCenter mat-icon-button-cell-wrapper">
-            <span>{{file.name}} ~ {{ file | json }}</span>
+            <span>{{file.name}}</span>
             <span class="flex1">&nbsp;</span>
             <span>
               <button type="button" mat-icon-button (click)="removeFile(i)">
