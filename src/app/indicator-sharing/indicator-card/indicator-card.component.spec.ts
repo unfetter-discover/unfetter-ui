@@ -20,6 +20,7 @@ import { ConfigService } from '../../core/services/config.service';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { of as observableOf, Observable } from 'rxjs';
 import { ReadableBytesPipe } from '../../global/pipes/readable-bytes.pipe';
+import { RunConfigService } from '../../core/services/run-config.service';
 
 describe('IndicatorCardComponent', () => {
     let component: IndicatorCardComponent;
@@ -159,6 +160,12 @@ describe('IndicatorCardComponent', () => {
                 {
                     provide: ConfigService,
                     useValue: mockConfigService
+                },
+                {
+                    provide: RunConfigService,
+                    useValue: {
+                        config: observableOf({})
+                    }
                 }
             ],
         })

@@ -253,14 +253,14 @@ describe('GenericApi service', () => {
     });
 
     describe('uploadAttachments', () => {
-        const mockFilelist: any = {
-            0: {
+        const mockFilelist: any = [
+            {
                 name: 'foo'
             },
-            1: {
+            {
                 name: 'bar'
             }
-        };
+        ];
 
         it('should update progress', (done) => {
             let count = 0;

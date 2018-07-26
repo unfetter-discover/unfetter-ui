@@ -14,6 +14,7 @@ import { canCrud } from '../../global/static/stix-permissions';
 import { SearchParameters } from '../models/search-parameters';
 import { GridFSFile } from '../../global/models/grid-fs-file';
 import { Constance } from '../../utils/constance';
+import { RunConfigService, MasterConfig } from '../../core/services/run-config.service';
 
 @Component({
     selector: 'indicator-card',
@@ -54,6 +55,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
     public canCrud: boolean = false;
     public collapseContents: boolean = false;
     public copyText: string = 'Copied';
+    public blockAttachments: boolean;
 
     public readonly runMode = environment.runMode;
 
@@ -67,7 +69,8 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
     constructor(
         private indicatorSharingService: IndicatorSharingService, 
         private authService: AuthService,
-        private renderer: Renderer2
+        private renderer: Renderer2,
+        private runConfigService: RunConfigService
     ) { }
 
     public ngOnInit() {
@@ -111,6 +114,11 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
                     }
                 );
         }
+
+        this.runConfigService.config.subscribe((config) => {
+                this.blockAttachments = config.blockAttachments;
+            }
+        );
     }
 
     public ngAfterViewInit() {
