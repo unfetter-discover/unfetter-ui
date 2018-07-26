@@ -128,7 +128,9 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
       // First remove the existing group
       const confirmed = this.confirmDelete(this.selectedCategories[index]);
 
-      if (!confirmed) return;
+      if (!confirmed) {
+        return;
+      }
 
       // Update wizard store with current category selections
       this.wizardStore.dispatch(new assessActions.RemoveCapabilityGroupFromBaseline(this.selectedCategories[index]));
