@@ -1,106 +1,81 @@
-<mat-dialog-content id="reportEditorDialog">
-
-    <div class="container-fluid">
-
-        <div class="col-xs-12 col-sm-12 mt-10 flex edit-title-row">
-            <button mat-icon-button class="mat-24 edit-close-button" matTooltip="Cancel" aria-label="Cancel"
-                    (click)="onCancel($event)"><mat-icon>close</mat-icon></button>
-            <div class="flex1 edit-title">{{title}} Report</div>
-            <div class="edit-title-buttons">
-                <button mat-button class="edit-cancel-button" matTooltip="Cancel" aria-label="Cancel"
-                        (click)="onCancel($event)">CANCEL</button>
-                <button mat-button class="edit-saveAs-button" *ngIf="editing"
-                        matTooltip="Save as a new report" aria-label="Save as a new report"
+<div class="container-fluid">
+    <form autocomplete="off" novalidate>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 mt-10 flex edit-title-row">
+                <button mat-icon-button class="mat-24 edit-close-button" matTooltip="Cancel" aria-label="Cancel" (click)="onCancel($event)">
+                    <mat-icon>close</mat-icon>
+                </button>
+                <div class="flex1 edit-title">{{title}} Report</div>
+                <div class="edit-title-buttons">
+                    <button mat-button class="edit-cancel-button" matTooltip="Cancel" aria-label="Cancel" (click)="onCancel($event)">CANCEL</button>
+                    <button mat-button class="edit-saveAs-button" *ngIf="editing" matTooltip="Save as a new report" aria-label="Save as a new report"
                         (click)="onSaveAs($event)">SAVE AS NEW</button>
-                <button mat-raised-button class="edit-save-button" [disabled]="!isValid()" color="primary"
-                        matTooltip="Save Changes" aria-label="Save Changes"
+                    <button mat-raised-button class="edit-save-button" [disabled]="!isValid()" color="primary" matTooltip="Save Changes" aria-label="Save Changes"
                         (click)="onSave($event)">SAVE</button>
+                </div>
             </div>
         </div>
 
-        <div class="col-xs-12 col-sm-12 mt-18">
-            <created-by-ref [model]="report"></created-by-ref>
-            <div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 mt-18">
+                <created-by-ref [model]="report"></created-by-ref>
                 <mat-form-field id="report-name">
-                    <input matInput required #filter [(ngModel)]="report.attributes.name"
-                            color="primary" placeholder="Report Name"
-                            matTooltip="Enter the report's name" aria-label="enter report name (required)">
-                </mat-form-field>
-            </div>
-        </div>
-        <div class="col-xs-12 col-sm-12">
-            <div>
-                <mat-form-field id="report-description">
-                    <input matInput #filter [(ngModel)]="report.attributes.description"
-                            color="primary" placeholder="Description"
-                            matTooltip="Enter the report's description"
-                            aria-label="enter report description (optional)">
+                    <input matInput required [ngModelOptions]="{standalone: true}" [(ngModel)]="report.attributes.name" color="primary" placeholder="Report Name"
+                        matTooltip="Enter the report's name" aria-label="enter report name (required)">
                 </mat-form-field>
             </div>
         </div>
 
-        <div class="col-xs-12 col-sm-12 mt-18 details-title"> External References </div>
+        <div class="row">
+            <markdown-editor color="primary" matTooltip="Enter the report's description" aria-label="enter report description (optional)"
+                [editing]="true" [inputLabel]="'Description (Markdown Editor)'" [formCtrl]="reportDescriptionFormControl"></markdown-editor>
+        </div>
 
-        <div class="col-xs-12 col-sm-12">
-            <div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 mat-h2"> External References </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-12">
                 <mat-form-field id="reference-name">
-                    <input matInput required #filter [(ngModel)]="references.source_name"
-                            color="primary" placeholder="Reference Name"
-                            matTooltip="Enter the reference's name" aria-label="enter reference name (required)">
+                    <input matInput required [ngModelOptions]="{standalone: true}" [(ngModel)]="references.source_name" color="primary" placeholder="Reference Name"
+                        matTooltip="Enter the reference's name" aria-label="enter reference name (required)">
                 </mat-form-field>
             </div>
         </div>
 
-        <div class="col-xs-12 col-sm-12">
-            <div class="col-xs-6 col-sm-6 source-block">
+        <div class="row">
+            <div class="col-xs-6 col-sm-6">
                 <mat-form-field id="reference-source">
-                    <input matInput required #filter [(ngModel)]="references.url"
-                            color="primary" placeholder="Source"
-                            matTooltip="Enter the reference's source" aria-label="enter reference source (required)">
+                    <input matInput required [ngModelOptions]="{standalone: true}" [(ngModel)]="references.url" color="primary" placeholder="Source"
+                        matTooltip="Enter the reference's source" aria-label="enter reference source (required)">
                 </mat-form-field>
             </div>
-            <div class="col-xs-6 col-sm-6 extId-block">
+            <div class="col-xs-6 col-sm-6">
                 <mat-form-field id="reference-external-id">
-                    <input matInput #filter [(ngModel)]="references.external_id"
-                            color="primary" placeholder="External ID"
-                            matTooltip="Enter the reference's external ID" aria-label="enter reference external ID">
+                    <input matInput [ngModelOptions]="{standalone: true}" [(ngModel)]="references.external_id" color="primary" placeholder="External ID"
+                        matTooltip="Enter the reference's external ID" aria-label="enter reference external ID">
                 </mat-form-field>
             </div>
         </div>
 
-        <div class="col-xs-12 col-sm-12">
-            <div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12">
                 <mat-form-field id="reference-description">
-                    <input matInput #filter [(ngModel)]="references.description"
-                            color="primary" placeholder="Description"
-                            matTooltip="Enter the reference's description"
-                            aria-label="enter reference description (optional)">
+                    <input matInput [ngModelOptions]="{standalone: true}" [(ngModel)]="references.description" color="primary" placeholder="Description"
+                        matTooltip="Enter the reference's description" aria-label="enter reference description (optional)">
                 </mat-form-field>
             </div>
         </div>
 
-        <div class="col-xs-12 col-sm-12">
-            <mat-form-field id="attack-patterns" floatPlaceholder="always">
-                <mat-select #attackPatternsSelected color="primary" placeholder="Attack Pattern(s)"
-                        matTooltip="Select all the attack patterns defined in the report"
-                        aria-label="Select all the attack patterns defined in the report"
-                        (selectionChange)="addAttackPattern($event.source.selected.value)">
-                    <mat-option *ngFor="let pattern of attackPatterns" [value]="pattern">
-                        {{ pattern.attributes.name }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <mat-chip-list class="mat-chip-list-stacked" selectable="true">
-                <mat-chip *ngFor="let pattern of reportPatterns" class="attack-pattern" removable="true">
-                    <div class="flex">
-                        <span class="flex1 flexNowrap">{{ pattern.name }}</span>
-                        <mat-icon matChipRemove aria-label="Click here to remove this attack pattern from the report"
-                                (click)="removeAttackPattern(pattern.id)">cancel</mat-icon>
-                    </div>
-                </mat-chip>
-            </mat-chip-list>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 mat-h2"> Attack Patterns </div>
         </div>
 
-    </div>
-
-</mat-dialog-content>
+        <div class="row">
+            <div class="col-xs-12">
+                <unf-selection-list [stix]="attackPatterns" [formCtrl]="selectedPatternsFormControl"></unf-selection-list>
+            </div>
+        </div>
+    </form>
+</div>

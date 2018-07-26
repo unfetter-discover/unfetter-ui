@@ -17,7 +17,7 @@ export class ReportsDataSource extends DataSource<Report> {
     protected readonly filterChange$ = new BehaviorSubject('');
     protected readonly pageChange$ = new BehaviorSubject<PageEvent>({
         pageIndex: 0,
-        pageSize: 5,
+        pageSize: 10,
         length: 0
     });
 

@@ -97,8 +97,10 @@
 }
 
 #imported-reports-table, #current-reports-table {
-    height: 35vh;
-    overflow-y: auto;
+    height: 100%;
+    // remove inner scroll bars for now
+    // max-height: 40vh;
+    // overflow-y: auto;
 }
 
 loading-spinner ::ng-deep .loadingContainer {
