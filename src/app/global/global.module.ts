@@ -83,6 +83,7 @@ import { MarkdownEditorComponent } from './components/markdown-editor/markdown-e
 import { SelectionListComponent } from './components/selection-list/selection-list.component';
 import { ErrorPageComponent } from './components/error-page/error-page.component';
 import { ReadableBytesPipe } from './pipes/readable-bytes.pipe';
+import { FileListComponent } from './components/file-list/file-list.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -156,7 +157,8 @@ const unfetterComponents = [
     MarkdownEditorComponent,
     SelectionListComponent,
     ErrorPageComponent,
-    ReadableBytesPipe
+    ReadableBytesPipe,
+    FileListComponent,
 ];
 
 @NgModule({
@@ -183,7 +185,7 @@ const unfetterComponents = [
         ...matModules
     ],
     declarations: [
-        ...unfetterComponents,      
+        ...unfetterComponents,             
     ],
     exports: [
         ...unfetterComponents,
